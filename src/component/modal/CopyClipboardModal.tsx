@@ -1,64 +1,50 @@
 /** @jsxImportSource @emotion/react */
+import { Button, Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
 import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import { FaCopy } from 'react-icons/fa';
 
-import { CloseButton } from '../elements/CloseButton';
-
-const styles = css`
-  overflow: auto;
-  width: 400px;
-
-  .inner-container {
-    padding: 5px;
-    width: 100%;
-    height: 180px;
-    border: none;
-  }
-
-  .main-buttons-container {
-    padding: 5px 0;
-    border-bottom: 0.55px solid #ebebeb;
-    display: flex;
-    justify-content: space-between;
-  }
-
-  button {
-    background-color: transparent;
-    border: none;
-    padding: 0 5px;
-  }
-
-  button:disabled {
-    opacity: 0.6;
-  }
+const Body = styled.div`
+  padding: 5px;
+  width: 100%;
+  height: 180px;
+  border: none;
 `;
 
 interface CopyClipboardModalProps {
-  text: string;
+  text?: string;
+  title: string;
   onClose: () => void;
   onCopyClick: (text: string) => void;
 }
 
-function CopyClipboardModal({
-  text,
-  onClose,
-  onCopyClick,
-}: CopyClipboardModalProps) {
-  return (
-    <div css={styles}>
-      <div className="main-buttons-container handle">
-        <button type="button" onClick={() => onCopyClick(text)}>
-          <FaCopy />
-        </button>
+function CopyClipboardModal(props: CopyClipboardModalProps) {
+  const { text, ...otherProps } = props;
 
-        <CloseButton tooltip="Close" onClick={onClose} />
-      </div>
-      <div
-        className="inner-container"
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: text }}
-      />
-    </div>
+  if (!text) return;
+
+  return <InnerCopyClipboardModal text={text} {...otherProps} />;
+}
+
+function InnerCopyClipboardModal(props: Required<CopyClipboardModalProps>) {
+  const { text, title, onClose, onCopyClick } = props;
+  return (
+    <Dialog isOpen title={title} onClose={onClose}>
+      <DialogBody
+        css={css`
+          background-color: white;
+        `}
+      >
+        <Body dangerouslySetInnerHTML={{ __html: text }} />
+      </DialogBody>
+      <DialogFooter>
+        <Button
+          onClick={() => onCopyClick(text)}
+          intent="success"
+          icon={<FaCopy />}
+        />
+      </DialogFooter>
+    </Dialog>
   );
 }
 

@@ -1,20 +1,20 @@
 /** @jsxImportSource @emotion/react */
 
 import { Global, css } from '@emotion/react';
-import { MouseEvent, RefObject, useCallback } from 'react';
+import { PrintPageOptions } from 'nmr-load-save';
+import { MouseEvent, ReactNode, RefObject, useCallback } from 'react';
 import { useFullscreen } from 'react-science/ui';
 
 import checkModifierKeyActivated from '../../data/utilities/checkModifierKeyActivated';
-import Viewer1D from '../1d/Viewer1D';
-import FloatMoleculeStructures from '../1d-2d/components/FloatMoleculeStructures';
-import Viewer2D from '../2d/Viewer2D';
 import KeysListenerTracker from '../EventsTrackers/KeysListenerTracker';
-import { useChartData } from '../context/ChartContext';
+import { usePreferences } from '../context/PreferencesContext';
+import { PrintContent } from '../elements/print/PrintContent';
 import Header from '../header/Header';
 import DropZone from '../loader/DropZone';
 import Panels from '../panels/Panels';
 import ToolBar from '../toolbar/ToolBar';
 
+import { NMRiumViewer } from './NMRiumViewer';
 import { SplitPaneWrapper } from './SplitPaneWrapper';
 import { StateError } from './StateError';
 
@@ -81,7 +81,6 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
   const { emptyText, mainDivRef, elementsWrapperRef, rootRef, viewerRef } =
     props;
 
-  const { displayerMode } = useChartData();
   const { isFullScreen } = useFullscreen();
 
   const preventContextMenuHandler = useCallback(
@@ -134,23 +133,8 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
               <SplitPaneWrapper>
                 <div css={viewerContainerStyle}>
                   <KeysListenerTracker mainDivRef={mainDivRef} />
-                  <div
-                    id="nmrium-viewer"
-                    data-testid="viewer"
-                    ref={viewerRef}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      position: 'relative',
-                    }}
-                  >
-                    <FloatMoleculeStructures />
-                    {displayerMode === '1D' ? (
-                      <Viewer1D emptyText={emptyText} />
-                    ) : (
-                      <Viewer2D emptyText={emptyText} />
-                    )}
-                  </div>
+
+                  <NMRiumViewer emptyText={emptyText} viewerRef={viewerRef} />
                 </div>
                 <Panels />
               </SplitPaneWrapper>
@@ -172,7 +156,36 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
             </div>
           </div>
         </DropZone>
+        <div />
+        <PrintWrapper>
+          <NMRiumViewer emptyText={emptyText} viewerRef={viewerRef} />
+        </PrintWrapper>
       </div>
     </>
+  );
+}
+
+interface PrintWrapperProps {
+  children: ReactNode;
+}
+
+function PrintWrapper(props: PrintWrapperProps) {
+  const { children } = props;
+  const {
+    current: { printPageOptions },
+    dispatch,
+  } = usePreferences();
+
+  function handleSavePrintOptions(options: PrintPageOptions) {
+    dispatch({ type: 'CHANGE_PRINT_PAGE_SETTINGS', payload: options });
+  }
+
+  return (
+    <PrintContent
+      defaultPrintPageOptions={printPageOptions}
+      onPrint={handleSavePrintOptions}
+    >
+      {children}
+    </PrintContent>
   );
 }

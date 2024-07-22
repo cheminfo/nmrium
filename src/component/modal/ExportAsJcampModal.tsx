@@ -1,9 +1,8 @@
 /** @jsxImportSource @emotion/react */
-import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
+import { Checkbox, Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
 import { css } from '@emotion/react';
-import { Formik, FormikProps } from 'formik';
 import { Spectrum } from 'nmr-load-save';
-import { useRef, CSSProperties } from 'react';
+import { useForm } from 'react-hook-form';
 
 import {
   DataExportStage,
@@ -12,37 +11,19 @@ import {
 } from '../../data/SpectraManager';
 import { useToaster } from '../context/ToasterContext';
 import ActionButtons from '../elements/ActionButtons';
-import FormikCheckBox from '../elements/formik/FormikCheckBox';
-import FormikSelect from '../elements/formik/FormikSelect';
+import Label, { LabelStyle } from '../elements/Label';
+import { Select2Controller } from '../elements/Select2Controller';
+import useSpectrum from '../hooks/useSpectrum';
 
 const initValues: ExportAsJcampOptions = {
   onlyReal: true,
   dataExportStage: 'PROCESSED',
 };
 
-const styles: Record<
-  'container' | 'row' | 'label' | 'innerContainer',
-  CSSProperties
-> = {
-  container: {
-    width: '25em',
-    padding: '1.5em 3em',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  row: {
-    display: 'flex',
-    paddingBottom: '0.5em',
-  },
-  label: {
-    flex: 6,
-    fontSize: '1em',
-    fontWeight: 'bold',
-  },
-  innerContainer: {
-    flex: 6,
-    justifyContent: 'flex-start',
-  },
+const labelStyle: LabelStyle = {
+  wrapper: { display: 'flex', height: '100%', flex: 1 },
+  container: { alignItems: 'flex-start' },
+  label: { paddingTop: '5px', width: 80 },
 };
 
 const DATA_STAGES = Object.keys(DataExportStage).map((key) => ({
@@ -50,17 +31,39 @@ const DATA_STAGES = Object.keys(DataExportStage).map((key) => ({
   value: DataExportStage[key],
 }));
 
-interface ExportAsJCAMPProps {
+interface InnerExportAsJCAMPProps {
   closeDialog: () => void;
-  spectrum: Spectrum;
+  spectrum?: Spectrum;
+}
+interface ExportAsJCAMPProps extends InnerExportAsJCAMPProps {
+  exportActiveSpectrum?: boolean;
 }
 
 function ExportAsJcampModal(props: ExportAsJCAMPProps) {
+  const { spectrum, exportActiveSpectrum = false } = props;
+  const activeSpectrum = useSpectrum();
+
+  if (!exportActiveSpectrum && !spectrum) {
+    return null;
+  }
+
+  if (exportActiveSpectrum && !activeSpectrum) return null;
+
+  const currentSpectrum = exportActiveSpectrum ? activeSpectrum : spectrum;
+
+  if (!currentSpectrum) return null;
+
+  return <InnerExportAsJcampModal spectrum={currentSpectrum} {...props} />;
+}
+
+function InnerExportAsJcampModal(props: Required<InnerExportAsJCAMPProps>) {
   const { closeDialog, spectrum } = props;
-  const refForm = useRef<FormikProps<any>>(null);
+  const { control, handleSubmit, register } = useForm<ExportAsJcampOptions>({
+    defaultValues: initValues,
+  });
   const toaster = useToaster();
 
-  function submitHandler(options) {
+  function submitHandler(options: ExportAsJcampOptions) {
     const hideLoading = toaster.showLoading({
       message: 'export as JCAMP-DX in progress',
     });
@@ -75,48 +78,38 @@ function ExportAsJcampModal(props: ExportAsJCAMPProps) {
   }
 
   return (
-    <Dialog isOpen onClose={closeDialog} title="Export as JCAMP">
+    <Dialog
+      isOpen
+      style={{ width: 400 }}
+      onClose={closeDialog}
+      title="Export as JCAMP"
+    >
       <DialogBody
         css={css`
           background-color: white;
+          padding: 1.5em 3em;
         `}
       >
-        <Formik
-          innerRef={refForm}
-          initialValues={initValues}
-          onSubmit={submitHandler}
-        >
-          <div style={styles.container}>
-            <div style={styles.row}>
-              <span style={styles.label}> Data </span>
-              <div style={styles.innerContainer}>
-                <FormikSelect
-                  name="dataExportStage"
-                  items={DATA_STAGES}
-                  style={{ width: '100%' }}
-                />
-              </div>
-            </div>
-            <div style={styles.row}>
-              <span style={styles.label}> Only real </span>
-              <div style={styles.innerContainer}>
-                <FormikCheckBox name="onlyReal" />
-              </div>
-            </div>
-          </div>
-        </Formik>
+        <Label title="Data" style={labelStyle}>
+          <Select2Controller
+            control={control}
+            name="dataExportStage"
+            items={DATA_STAGES}
+          />
+        </Label>
+        <Label title="Only real" style={labelStyle}>
+          <Checkbox {...register('onlyReal')} />
+        </Label>
       </DialogBody>
       <DialogFooter>
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <ActionButtons
-            style={{ flexDirection: 'row-reverse', margin: 0 }}
-            onDone={() => refForm.current?.submitForm()}
-            doneLabel="export"
-            onCancel={() => {
-              closeDialog?.();
-            }}
-          />
-        </div>
+        <ActionButtons
+          style={{ flexDirection: 'row-reverse', margin: 0 }}
+          onDone={() => void handleSubmit(submitHandler)()}
+          doneLabel="export"
+          onCancel={() => {
+            closeDialog?.();
+          }}
+        />
       </DialogFooter>
     </Dialog>
   );

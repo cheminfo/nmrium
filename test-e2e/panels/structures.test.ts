@@ -331,7 +331,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     );
   });
   await test.step('Check molecules in ranges', async () => {
-    await nmrium.clickPanel('Ranges');
+    await nmrium.clickPanel('Ranges / Multiplet analysis');
     await nmrium.page.click(
       '_react=ToolbarItem[tooltip *= "Change ranges sum" i]',
     );

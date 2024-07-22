@@ -3,10 +3,19 @@ import {
   SvgNmrPeaks,
   SvgNmrPeaksTopLabels,
 } from 'cheminfo-font';
+import { saveAs } from 'file-saver';
 import lodashGet from 'lodash/get';
 import { RangesViewState } from 'nmr-load-save';
-import { rangesToACS } from 'nmr-processing';
-import { FaFileExport, FaUnlink, FaSitemap, FaChartBar } from 'react-icons/fa';
+import { rangesToACS, rangesToTSV } from 'nmr-processing';
+import { useState } from 'react';
+import {
+  FaFileExport,
+  FaUnlink,
+  FaSitemap,
+  FaChartBar,
+  FaCopy,
+  FaDownload,
+} from 'react-icons/fa';
 import { ImLink } from 'react-icons/im';
 import { LuSubtitles } from 'react-icons/lu';
 import { ConfirmDialog, useOnOff } from 'react-science/ui';
@@ -16,6 +25,10 @@ import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useToaster } from '../../context/ToasterContext';
+import {
+  ToolbarPopoverItem,
+  ToolbarPopoverMenuItem,
+} from '../../elements/ToolbarPopoverItem';
 import { useModal } from '../../elements/popup/Modal';
 import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
@@ -24,6 +37,29 @@ import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
 import { booleanToString } from '../../utility/booleanToString';
 import { FilterType } from '../../utility/filterType';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
+
+type ExportRangesType = 'publicationString' | 'rangesToTSV';
+interface ExportData {
+  id: ExportRangesType;
+}
+type ExportItem = ToolbarPopoverMenuItem<ExportData>;
+
+const EXPORT_MENU: ExportItem[] = [
+  {
+    icon: <FaCopy />,
+    text: 'Preview publication string',
+    data: {
+      id: 'publicationString',
+    },
+  },
+  {
+    icon: <FaDownload />,
+    text: 'Export ranges as TSV',
+    data: {
+      id: 'rangesToTSV',
+    },
+  },
+] as const;
 
 function RangesHeader({
   ranges,
@@ -50,6 +86,7 @@ function RangesHeader({
 
   const currentSum = lodashGet(ranges, 'options.sum', null);
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
+  const [acs, setACS] = useState<string>();
 
   const {
     showMultiplicityTrees,
@@ -118,14 +155,7 @@ function RangesHeader({
         couplingFormat: rangesPreferences.coupling.format,
         observedFrequency, //400
       });
-      modal.show(
-        <CopyClipboardModal
-          text={result}
-          onCopyClick={saveToClipboardHandler}
-          onClose={() => modal.close()}
-        />,
-        {},
-      );
+      setACS(result);
     }
   }
 
@@ -140,6 +170,25 @@ function RangesHeader({
   }
   function toggleDisplayingMode() {
     dispatch({ type: 'TOGGLE_RANGES_PEAKS_DISPLAYING_MODE' });
+  }
+
+  function handleRangesToTSV() {
+    const tsv = rangesToTSV(ranges.values);
+    const blob = new Blob([tsv], { type: 'text/plain' });
+    saveAs(blob, `${info.name}.tsv`);
+  }
+
+  function exportHandler(data?: ExportData) {
+    switch (data?.id) {
+      case 'publicationString':
+        saveAsHTMLHandler();
+        break;
+      case 'rangesToTSV':
+        handleRangesToTSV();
+        break;
+      default:
+        break;
+    }
   }
 
   const hasRanges = Array.isArray(ranges?.values) && ranges.values.length > 0;
@@ -175,6 +224,12 @@ function RangesHeader({
       >
         All assignments will be removed. Are you sure?
       </ConfirmDialog>
+      <CopyClipboardModal
+        text={acs}
+        title="Publication string"
+        onCopyClick={saveToClipboardHandler}
+        onClose={() => setACS('')}
+      />
       <DefaultPanelHeader
         total={total}
         counter={filterCounter}
@@ -187,10 +242,15 @@ function RangesHeader({
         onSettingClick={onSettingClick}
         leftButtons={[
           {
-            disabled: !hasRanges,
-            icon: <FaFileExport />,
-            tooltip: 'Preview publication string',
-            onClick: saveAsHTMLHandler,
+            component: (
+              <ToolbarPopoverItem<ExportData>
+                disabled={!hasRanges}
+                icon={<FaFileExport />}
+                tooltip="Export as"
+                options={EXPORT_MENU}
+                onClick={exportHandler}
+              />
+            ),
           },
           {
             component: (
