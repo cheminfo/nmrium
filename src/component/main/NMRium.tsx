@@ -9,10 +9,9 @@ import {
 } from 'react-error-boundary';
 import { FullScreenProvider, RootLayout } from 'react-science/ui';
 
-import { BlobObject } from '../utility/export';
-
 import ErrorOverlay from './ErrorOverlay';
 import { InnerNMRium } from './InnerNMRium';
+import { NMRiumRefAPI } from './NMRiumRefAPI';
 import { NMRiumChangeCb, NMRiumData, NMRiumWorkspace } from './types';
 
 export interface NMRiumProps {
@@ -30,17 +29,13 @@ export interface NMRiumProps {
   getSpinner?: () => ReactElement;
 }
 
-export interface NMRiumRef {
-  getSpectraViewerAsBlob: () => BlobObject | null;
-}
-
-const NMRiumBase = forwardRef<NMRiumRef, NMRiumProps>(function NMRium(
+const NMRiumBase = forwardRef<NMRiumRefAPI, NMRiumProps>(function NMRium(
   props: NMRiumProps,
   ref,
 ) {
   const { noErrorBoundary = false, onError, ...otherProps } = props;
 
-  const innerNmrium = <InnerNMRium {...otherProps} innerRef={ref} />;
+  const innerNmrium = <InnerNMRium {...otherProps} apiRef={ref} />;
 
   const children = noErrorBoundary ? (
     innerNmrium

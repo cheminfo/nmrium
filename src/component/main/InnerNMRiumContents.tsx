@@ -2,7 +2,13 @@
 
 import { Global, css } from '@emotion/react';
 import { PrintPageOptions } from 'nmr-load-save';
-import { MouseEvent, ReactNode, RefObject, useCallback } from 'react';
+import {
+  ForwardedRef,
+  MouseEvent,
+  ReactNode,
+  RefObject,
+  useCallback,
+} from 'react';
 import { useFullscreen } from 'react-science/ui';
 
 import checkModifierKeyActivated from '../../data/utilities/checkModifierKeyActivated';
@@ -14,11 +20,12 @@ import DropZone from '../loader/DropZone';
 import Panels from '../panels/Panels';
 import ToolBar from '../toolbar/ToolBar';
 
+import { useNMRiumRefAPI } from './NMRiumRefAPI';
 import { NMRiumViewer } from './NMRiumViewer';
 import { SplitPaneWrapper } from './SplitPaneWrapper';
 import { StateError } from './StateError';
 
-import { NMRiumProps } from '.';
+import { NMRiumProps, NMRiumRefAPI } from '.';
 
 const viewerContainerStyle = css`
   border: 0.55px #e6e6e6 solid;
@@ -75,11 +82,18 @@ interface InnerNMRiumContentsProps {
   elementsWrapperRef: RefObject<HTMLDivElement>;
   rootRef: RefObject<HTMLDivElement>;
   viewerRef: RefObject<HTMLDivElement>;
+  apiRef: ForwardedRef<NMRiumRefAPI>;
 }
 
 export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
-  const { emptyText, mainDivRef, elementsWrapperRef, rootRef, viewerRef } =
-    props;
+  const {
+    emptyText,
+    mainDivRef,
+    elementsWrapperRef,
+    rootRef,
+    viewerRef,
+    apiRef,
+  } = props;
 
   const { isFullScreen } = useFullscreen();
 
@@ -91,6 +105,8 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
     },
     [],
   );
+
+  useNMRiumRefAPI(apiRef, rootRef);
 
   return (
     <>

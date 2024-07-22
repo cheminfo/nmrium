@@ -531,8 +531,8 @@ test('check callbacks count on changing structures', async ({ page }) => {
   const dataCount = nmrium.page.getByTestId('data-count');
   const viewCount = nmrium.page.getByTestId('view-count');
   await test.step('open test page', async () => {
-    await nmrium.page.click('li >> text=Callback');
-    await nmrium.page.click('li >> text=1H spectrum cytisine');
+    await nmrium.page.click('li >> text=Props debug');
+    await nmrium.page.click('li >> text=Callback - 1H spectrum cytisine');
     // wait the spectrum to load
     await expect(nmrium.page.getByTestId('spectrum-line')).toBeVisible();
 

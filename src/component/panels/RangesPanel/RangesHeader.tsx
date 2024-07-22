@@ -7,6 +7,7 @@ import { saveAs } from 'file-saver';
 import lodashGet from 'lodash/get';
 import { RangesViewState } from 'nmr-load-save';
 import { rangesToACS, rangesToTSV } from 'nmr-processing';
+import { useState } from 'react';
 import {
   FaFileExport,
   FaUnlink,
@@ -35,7 +36,6 @@ import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
 import { booleanToString } from '../../utility/booleanToString';
 import { FilterType } from '../../utility/filterType';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
-import { useState } from 'react';
 
 type ExportRangesType = 'publicationString' | 'rangesToTSV';
 interface ExportData {

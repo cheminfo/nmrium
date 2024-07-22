@@ -313,21 +313,25 @@
     ]
   },
   {
-    "groupName": "Callback",
+    "groupName": "Props debug",
     "children": [
       {
-        "title": "empty",
+        "title": "Callback - empty",
         "view": "Test"
       },
       {
         "file": "./data/cytisine/1H.json",
-        "title": "1H spectrum cytisine",
+        "title": "Callback - 1H spectrum cytisine",
         "view": "Test"
       },
       {
         "file": "./data/cytisine/2d/all.json",
-        "title": "Full cytisine",
+        "title": "Callback - Full cytisine",
         "view": "Test"
+      },
+      {
+        "title": "Ref API",
+        "view": "RefAPI"
       }
     ]
   },
