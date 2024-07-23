@@ -1,18 +1,19 @@
 import { lazy, memo } from 'react';
 
 export const possibleViews = {
+  AuoProcessingView: memo(lazy(() => import('./AuoProcessingView'))),
+  BenchtopNMRWorkspace: memo(lazy(() => import('./BenchtopNMRWorkspace'))),
+  CustomWorkspace: memo(lazy(() => import('./CustomWorkspace'))),
   Exam: memo(lazy(() => import('./Exam'))),
   Exercise: memo(lazy(() => import('./Exercise'))),
-  SingleView: memo(lazy(() => import('./SingleView'))),
-  Test: memo(lazy(() => import('./Test'))),
-  View: memo(lazy(() => import('./View'))),
-  TwoInstances: memo(lazy(() => import('./TwoInstances'))),
-  Teaching: memo(lazy(() => import('./Teaching'))),
   Prediction: memo(lazy(() => import('./Prediction'))),
+  RefAPI: memo(lazy(() => import('./RefAPI'))),
   Simulation: memo(lazy(() => import('./Simulation'))),
-  CustomWorkspace: memo(lazy(() => import('./CustomWorkspace'))),
-  BenchtopNMRWorkspace: memo(lazy(() => import('./BenchtopNMRWorkspace'))),
+  SingleView: memo(lazy(() => import('./SingleView'))),
   SnapshotView: memo(lazy(() => import('./SnapshotView'))),
+  Teaching: memo(lazy(() => import('./Teaching'))),
+  Test: memo(lazy(() => import('./Test'))),
+  TwoInstances: memo(lazy(() => import('./TwoInstances'))),
+  View: memo(lazy(() => import('./View'))),
   WebSourceView: memo(lazy(() => import('./WebSourceView'))),
-  AuoProcessingView: memo(lazy(() => import('./AuoProcessingView'))),
 };

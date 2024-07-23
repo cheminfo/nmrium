@@ -1,10 +1,4 @@
-import {
-  useEffect,
-  useReducer,
-  useRef,
-  useImperativeHandle,
-  ForwardedRef,
-} from 'react';
+import { useEffect, useReducer, useRef, ForwardedRef } from 'react';
 import { useFullscreen } from 'react-science/ui';
 
 import { AssignmentProvider } from '../assignment';
@@ -23,14 +17,14 @@ import preferencesReducer, {
   initPreferencesState,
   readSettings,
 } from '../reducer/preferences/preferencesReducer';
-import { getBlob } from '../utility/export';
 
 import { InnerNMRiumContents } from './InnerNMRiumContents';
-import type { NMRiumProps, NMRiumRef } from './NMRium';
+import type { NMRiumProps } from './NMRium';
+import { NMRiumRefAPI } from './NMRiumRefAPI';
 import NMRiumStateProvider from './NMRiumStateProvider';
 
 type InnerNMRiumProps = Omit<NMRiumProps, 'onError'> & {
-  innerRef: ForwardedRef<NMRiumRef>;
+  apiRef: ForwardedRef<NMRiumRefAPI>;
 };
 
 export function InnerNMRium({
@@ -41,7 +35,7 @@ export function InnerNMRium({
   getSpinner = defaultGetSpinner,
   onChange,
   emptyText,
-  innerRef,
+  apiRef,
 }: InnerNMRiumProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const elementsWrapperRef = useRef<HTMLDivElement>(null);
@@ -72,16 +66,6 @@ export function InnerNMRium({
       },
     });
   }, [customWorkspaces, preferences, workspace]);
-
-  useImperativeHandle(
-    innerRef,
-    () => ({
-      getSpectraViewerAsBlob: () => {
-        return rootRef?.current ? getBlob(rootRef.current, 'nmrSVG') : null;
-      },
-    }),
-    [],
-  );
 
   return (
     <div
@@ -116,6 +100,7 @@ export function InnerNMRium({
                                 elementsWrapperRef={elementsWrapperRef}
                                 rootRef={rootRef}
                                 viewerRef={viewerRef}
+                                apiRef={apiRef}
                               />
                             </SpinnerProvider>
                           </AssignmentProvider>
