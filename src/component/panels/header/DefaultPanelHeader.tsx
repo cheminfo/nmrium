@@ -44,6 +44,7 @@ interface DefaultPanelHeaderProps {
   className?: string;
   leftButtons?: ToolbarItemProps[];
   rightButtons?: ToolbarItemProps[];
+  hideCounter?: boolean;
 }
 
 export function formatCounterLabel(counter?: number, total?: number) {
@@ -78,6 +79,7 @@ function DefaultPanelHeader(props: DefaultPanelHeaderProps) {
     className = '',
     rightButtons = [],
     leftButtons = [],
+    hideCounter = false,
   } = props;
 
   const [isFiltered, setFilterStatus] = useState(false);
@@ -117,7 +119,9 @@ function DefaultPanelHeader(props: DefaultPanelHeaderProps) {
       </div>
 
       <Toolbar>{mapToolbarButtons(rightButtons)}</Toolbar>
-      <CounterLabel value={formatCounterLabel(counter, total)} />
+      {!hideCounter && (
+        <CounterLabel value={formatCounterLabel(counter, total)} />
+      )}
       {onSettingClick && (
         <PreferencesButton tooltip="Preferences" onClick={onSettingClick} />
       )}

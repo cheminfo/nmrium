@@ -8,6 +8,7 @@ import { LoggerProvider } from '../context/LoggerContext';
 import { PreferencesProvider } from '../context/PreferencesContext';
 import { ToasterProvider } from '../context/ToasterContext';
 import { TopicMoleculeProvider } from '../context/TopicMoleculeContext';
+import { AlertProvider } from '../elements/Alert';
 import { ModalProvider } from '../elements/popup/Modal';
 import { HighlightProvider } from '../highlight';
 import { defaultGetSpinner, SpinnerProvider } from '../loader/SpinnerContext';
@@ -89,20 +90,22 @@ export function InnerNMRium({
                 >
                   <TopicMoleculeProvider>
                     <ModalProvider wrapperRef={elementsWrapperRef.current}>
-                      <HighlightProvider>
-                        <AssignmentProvider>
-                          <SpinnerProvider value={getSpinner}>
-                            <InnerNMRiumContents
-                              emptyText={emptyText}
-                              mainDivRef={mainDivRef}
-                              elementsWrapperRef={elementsWrapperRef}
-                              rootRef={rootRef}
-                              viewerRef={viewerRef}
-                              apiRef={apiRef}
-                            />
-                          </SpinnerProvider>
-                        </AssignmentProvider>
-                      </HighlightProvider>
+                      <AlertProvider>
+                        <HighlightProvider>
+                          <AssignmentProvider>
+                            <SpinnerProvider value={getSpinner}>
+                              <InnerNMRiumContents
+                                emptyText={emptyText}
+                                mainDivRef={mainDivRef}
+                                elementsWrapperRef={elementsWrapperRef}
+                                rootRef={rootRef}
+                                viewerRef={viewerRef}
+                                apiRef={apiRef}
+                              />
+                            </SpinnerProvider>
+                          </AssignmentProvider>
+                        </HighlightProvider>
+                      </AlertProvider>
                     </ModalProvider>
                   </TopicMoleculeProvider>
                 </NMRiumStateProvider>

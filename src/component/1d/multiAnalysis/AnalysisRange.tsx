@@ -12,7 +12,7 @@ const styles = {
   common: css`
     pointer-events: bounding-box;
 
-    @-moz-document url-prefix("") {
+    @document url-prefix("") {
       pointer-events: fill;
     }
   `,

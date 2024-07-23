@@ -24,6 +24,7 @@ import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useToaster } from '../../context/ToasterContext';
+import { useAlert } from '../../elements/Alert';
 import {
   ToolbarPopoverItem,
   ToolbarPopoverMenuItem,
@@ -72,6 +73,7 @@ function RangesHeader({
 }) {
   const dispatch = useDispatch();
   const modal = useModal();
+  const alert = useAlert();
   const toaster = useToaster();
   const assignmentData = useAssignmentData();
 
@@ -99,24 +101,28 @@ function RangesHeader({
   }
 
   function handleOnRemoveAssignments() {
-    modal.showConfirmDialog({
+    alert.showAlert({
       message: 'All assignments will be removed. Are you sure?',
-      buttons: [{ text: 'Yes', handler: removeAssignments }, { text: 'No' }],
+      buttons: [
+        { text: 'Yes', onClick: removeAssignments, intent: 'danger' },
+        { text: 'No' },
+      ],
     });
   }
 
   function handleDeleteAll() {
-    modal.showConfirmDialog({
+    alert.showAlert({
       message: 'All ranges will be deleted. Are You sure?',
       buttons: [
         {
           text: 'Yes',
-          handler: () => {
+          onClick: () => {
             dispatch({
               type: 'DELETE_RANGE',
               payload: { assignmentData },
             });
           },
+          intent: 'danger',
         },
         { text: 'No' },
       ],

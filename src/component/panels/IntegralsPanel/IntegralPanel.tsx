@@ -9,7 +9,7 @@ import { ImLink } from 'react-icons/im';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import { useModal } from '../../elements/popup/Modal';
+import { useAlert } from '../../elements/Alert';
 import { useActiveSpectrumIntegralsViewState } from '../../hooks/useActiveSpectrumIntegralsViewState';
 import useSpectrum from '../../hooks/useSpectrum';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
@@ -39,7 +39,7 @@ function IntegralPanelInner({
   const dispatch = useDispatch();
   const { showIntegralsValues } = useActiveSpectrumIntegralsViewState();
 
-  const modal = useModal();
+  const alert = useAlert();
   const [isFlipped, setFlipStatus] = useState(false);
   const settingRef = useRef<any>();
 
@@ -55,11 +55,14 @@ function IntegralPanelInner({
   }, [dispatch]);
 
   const handleDeleteAll = useCallback(() => {
-    modal.showConfirmDialog({
+    alert.showAlert({
       message: 'All records will be deleted, Are You sure?',
-      buttons: [{ text: 'Yes', handler: yesHandler }, { text: 'No' }],
+      buttons: [
+        { text: 'Yes', onClick: yesHandler, intent: 'danger' },
+        { text: 'No' },
+      ],
     });
-  }, [modal, yesHandler]);
+  }, [alert, yesHandler]);
 
   const changeIntegralSumHandler = useCallback(
     (options) => {

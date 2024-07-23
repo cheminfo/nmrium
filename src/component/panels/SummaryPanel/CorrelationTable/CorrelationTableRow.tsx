@@ -9,6 +9,7 @@ import { useCallback, useMemo, useRef } from 'react';
 
 import { buildID } from '../../../../data/utilities/Concatenation';
 import { findRangeOrZoneID } from '../../../../data/utilities/FindUtilities';
+import { useAlert } from '../../../elements/Alert';
 import ContextMenu, { ContextMenuProps } from '../../../elements/ContextMenu';
 import EditableColumn from '../../../elements/EditableColumn';
 import { positions, useModal } from '../../../elements/popup/Modal';
@@ -32,6 +33,7 @@ function CorrelationTableRow({
 }) {
   const contextRef = useRef<any>();
   const modal = useModal();
+  const alert = useAlert();
 
   const highlightIDsRow = useMemo(() => {
     if (correlation.pseudo === true) {
@@ -218,19 +220,20 @@ function CorrelationTableRow({
             {
               label: `delete ${correlation.label.origin}`,
               onClick: () => {
-                modal.showConfirmDialog({
+                alert.showAlert({
                   message: `All signals of ${correlation.label.origin} (${(
                     getCorrelationDelta(correlation) as number
                   ).toFixed(2)}) will be deleted. Are you sure?`,
                   buttons: [
                     {
                       text: 'Yes',
-                      handler: () => {
+                      onClick: () => {
                         onEditCorrelationTableCellHandler(
                           [correlation],
                           'removeAll',
                         );
                       },
+                      intent: 'danger',
                     },
                     { text: 'No' },
                   ],
@@ -246,6 +249,7 @@ function CorrelationTableRow({
     modal,
     onEditCorrelationTableCellHandler,
     correlations,
+    alert,
   ]);
 
   const contextMenuHandler = useCallback(

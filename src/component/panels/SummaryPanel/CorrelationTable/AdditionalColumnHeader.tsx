@@ -4,6 +4,7 @@ import { useCallback, useMemo, useRef } from 'react';
 
 import { buildID } from '../../../../data/utilities/Concatenation';
 import { findRangeOrZoneID } from '../../../../data/utilities/FindUtilities';
+import { useAlert } from '../../../elements/Alert';
 import ContextMenu, { ContextMenuProps } from '../../../elements/ContextMenu';
 import { positions, useModal } from '../../../elements/popup/Modal';
 import { useHighlight } from '../../../highlight';
@@ -20,6 +21,7 @@ function AdditionalColumnHeader({
 }) {
   const contextRef = useRef<any>();
   const modal = useModal();
+  const alert = useAlert();
 
   const highlightIDsAdditionalColumn = useMemo(() => {
     if (correlation.pseudo === true) {
@@ -138,16 +140,17 @@ function AdditionalColumnHeader({
             {
               label: `delete all (${correlation.label.origin})`,
               onClick: () => {
-                modal.showConfirmDialog({
+                alert.showAlert({
                   message: `All signals of ${correlation.label.origin} (${(
                     getCorrelationDelta(correlation) as number
                   ).toFixed(2)}) will be deleted. Are you sure?`,
                   buttons: [
                     {
                       text: 'Yes',
-                      handler: () => {
+                      onClick: () => {
                         onEdit([correlation], 'removeAll');
                       },
+                      intent: 'danger',
                     },
                     { text: 'No' },
                   ],
@@ -158,6 +161,7 @@ function AdditionalColumnHeader({
           ])
       : [];
   }, [
+    alert,
     correlation,
     correlationsData.values,
     highlightAdditionalColumn,

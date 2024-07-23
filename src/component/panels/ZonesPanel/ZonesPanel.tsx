@@ -8,7 +8,7 @@ import { LuSubtitles } from 'react-icons/lu';
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import { useModal } from '../../elements/popup/Modal';
+import { useAlert } from '../../elements/Alert';
 import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState';
 import useSpectrum from '../../hooks/useSpectrum';
 import { booleanToString } from '../../utility/booleanToString';
@@ -35,7 +35,7 @@ function ZonesPanelInner({
   const assignmentData = useAssignmentData();
 
   const dispatch = useDispatch();
-  const modal = useModal();
+  const alert = useAlert();
   const [isFlipped, setFlipStatus] = useState(false);
   const settingRef = useRef<any>();
 
@@ -110,26 +110,34 @@ function ZonesPanelInner({
   }, [unlinkZoneHandler]);
 
   const handleOnRemoveAssignments = useCallback(() => {
-    modal.showConfirmDialog({
+    alert.showAlert({
       message: 'All assignments will be removed. Are you sure?',
-      buttons: [{ text: 'Yes', handler: removeAssignments }, { text: 'No' }],
-    });
-  }, [removeAssignments, modal]);
-
-  const handleDeleteAll = useCallback(() => {
-    modal.showConfirmDialog({
-      message: 'All zones will be deleted. Are You sure?',
       buttons: [
         {
           text: 'Yes',
-          handler: () => {
-            dispatch({ type: 'DELETE_2D_ZONE', payload: { assignmentData } });
-          },
+          onClick: removeAssignments,
+          intent: 'danger',
         },
         { text: 'No' },
       ],
     });
-  }, [assignmentData, dispatch, modal]);
+  }, [removeAssignments, alert]);
+
+  const handleDeleteAll = useCallback(() => {
+    alert.showAlert({
+      message: 'All zones will be deleted. Are You sure?',
+      buttons: [
+        {
+          text: 'Yes',
+          onClick: () => {
+            dispatch({ type: 'DELETE_2D_ZONE', payload: { assignmentData } });
+          },
+          intent: 'danger',
+        },
+        { text: 'No' },
+      ],
+    });
+  }, [assignmentData, dispatch, alert]);
 
   const settingsPanelHandler = useCallback(() => {
     setFlipStatus(!isFlipped);

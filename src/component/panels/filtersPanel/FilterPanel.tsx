@@ -4,7 +4,8 @@ import { css } from '@emotion/react';
 
 import { useDispatch } from '../../context/DispatchContext';
 import { useToaster } from '../../context/ToasterContext';
-import { useModal } from '../../elements/popup/Modal/Context';
+import { AlertButton, useAlert } from '../../elements/Alert';
+import useSpectrum from '../../hooks/useSpectrum';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
@@ -12,25 +13,27 @@ import FiltersTable from './FiltersTable';
 
 export default function FiltersPanel() {
   const dispatch = useDispatch();
-  const modal = useModal();
   const toaster = useToaster();
+  const { showAlert } = useAlert();
+  const { filters } = useSpectrum({ filters: [] });
 
   function handelDeleteFilter() {
-    const buttons = [
+    const buttons: AlertButton[] = [
       {
         text: 'Yes',
-        handler: async () => {
-          const hideLoading = toaster.showLoading({
+        onClick: async () => {
+          const hideLoading = await toaster.showAsyncLoading({
             message: 'Delete filters process in progress',
           });
           dispatch({ type: 'DELETE_FILTER', payload: {} });
           hideLoading();
         },
+        intent: 'danger',
       },
       { text: 'No' },
     ];
 
-    modal.showConfirmDialog({
+    showAlert({
       message: 'You are about to delete all processing steps, Are you sure?',
       buttons,
     });
@@ -41,6 +44,8 @@ export default function FiltersPanel() {
       <DefaultPanelHeader
         deleteToolTip="Delete all filters"
         onDelete={handelDeleteFilter}
+        total={filters?.length}
+        hideCounter
       />
       <div className="inner-container">
         <FiltersTable />
