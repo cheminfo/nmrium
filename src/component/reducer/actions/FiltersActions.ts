@@ -13,7 +13,6 @@ import {
   FiltersManager,
   BaselineCorrectionOptions,
   ApodizationOptions,
-  getBaselineZones,
   getBaselineZonesByDietrich,
 } from 'nmr-processing';
 
