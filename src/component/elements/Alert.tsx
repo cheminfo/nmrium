@@ -137,6 +137,7 @@ function Alerts(props: AlertsProps) {
         onHide(id);
         onClose?.();
       }}
+      role="alertdialog"
     >
       <Body>
         <Message className="message">{message}</Message>
