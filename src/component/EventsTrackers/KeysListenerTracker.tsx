@@ -8,7 +8,7 @@ import { useDispatch } from '../context/DispatchContext';
 import { useLoader } from '../context/LoaderContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { useToaster } from '../context/ToasterContext';
-import { useModal } from '../elements/popup/Modal';
+import { AlertButton, useAlert } from '../elements/Alert';
 import { HighlightEventSource, useHighlightData } from '../highlight/index';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 import useExport from '../hooks/useExport';
@@ -37,7 +37,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
     current: { nuclei },
   } = usePreferences();
   const toaster = useToaster();
-  const modal = useModal();
+  const alert = useAlert();
   const openLoader = useLoader();
   const [isSaveModalOpened, openSaveAsDialog, closeSaveAsDialog] =
     useOnOff(false);
@@ -160,10 +160,10 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
         case HighlightEventSource.EXCLUSION_ZONE: {
           const { zone, spectrumID } = extra || {};
 
-          const buttons = [
+          const buttons: AlertButton[] = [
             {
               text: 'Yes, for all spectra',
-              handler: async () => {
+              onClick: async () => {
                 if (zone) {
                   const hideLoading = toaster.showLoading({
                     message: 'Delete all spectra exclusion zones in progress',
@@ -180,7 +180,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
             },
             {
               text: 'Yes',
-              handler: async () => {
+              onClick: async () => {
                 if (spectrumID) {
                   const hideLoading = toaster.showLoading({
                     message: 'Delete exclusion zones in progress',
@@ -199,7 +199,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
             { text: 'No' },
           ];
 
-          modal.showConfirmDialog({
+          alert.showAlert({
             message: 'Are you sure you want to delete the exclusion zone/s?',
             buttons,
           });
@@ -208,10 +208,10 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
         case HighlightEventSource.MATRIX_GENERATION_EXCLUSION_ZONE: {
           const { zone } = extra || {};
 
-          const buttons = [
+          const buttons: AlertButton[] = [
             {
               text: 'Yes',
-              handler: async () => {
+              onClick: async () => {
                 if (zone) {
                   const hideLoading = toaster.showLoading({
                     message: 'Delete all spectra exclusion zones in progress',
@@ -230,7 +230,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
             { text: 'No' },
           ];
 
-          modal.showConfirmDialog({
+          alert.showAlert({
             message:
               'Are you sure you want to delete the Matrix generation exclusion zones?',
             buttons,
@@ -280,7 +280,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
       dispatch,
       remove,
       assignmentData,
-      modal,
+      alert,
       toaster,
       dispatchPreferences,
       activeTab,

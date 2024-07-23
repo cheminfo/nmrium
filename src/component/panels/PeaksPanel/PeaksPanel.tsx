@@ -12,7 +12,7 @@ import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import { useToaster } from '../../context/ToasterContext';
-import { useModal } from '../../elements/popup/Modal';
+import { useAlert } from '../../elements/Alert';
 import { useActiveSpectrumPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState';
 import useCheckExperimentalFeature from '../../hooks/useCheckExperimentalFeature';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
@@ -53,7 +53,7 @@ function PeaksPanelInner({
   const format = useFormatNumberByNucleus(info.nucleus);
 
   const dispatch = useDispatch();
-  const modal = useModal();
+  const alert = useAlert();
   const toaster = useToaster();
   const isExperimental = useCheckExperimentalFeature();
 
@@ -64,11 +64,14 @@ function PeaksPanelInner({
   }, [dispatch]);
 
   const handleDeleteAll = useCallback(() => {
-    modal.showConfirmDialog({
+    alert.showAlert({
       message: 'All records will be deleted, Are You sure?',
-      buttons: [{ text: 'Yes', handler: yesHandler }, { text: 'No' }],
+      buttons: [
+        { text: 'Yes', onClick: yesHandler, intent: 'danger' },
+        { text: 'No' },
+      ],
     });
-  }, [modal, yesHandler]);
+  }, [alert, yesHandler]);
 
   const settingsPanelHandler = useCallback(() => {
     setFlipStatus(!isFlipped);

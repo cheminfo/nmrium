@@ -9,7 +9,7 @@ import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import { useToaster } from '../../context/ToasterContext';
-import { useModal } from '../../elements/popup/Modal';
+import { useAlert } from '../../elements/Alert';
 import { useActiveSpectra } from '../../hooks/useActiveSpectra';
 import useSpectrum from '../../hooks/useSpectrum';
 import { useToggleSpectraVisibility } from '../../hooks/useToggleSpectraVisibility';
@@ -52,7 +52,7 @@ function SpectraPanelHeaderInner({
   displayerMode,
   onSettingClick,
 }: SpectraPanelHeaderInnerProps) {
-  const modal = useModal();
+  const alert = useAlert();
   const toaster = useToaster();
   const dispatch = useDispatch();
   const { getToggleVisibilityButtons } = useToggleSpectraVisibility('selected');
@@ -61,7 +61,7 @@ function SpectraPanelHeaderInner({
   } = usePreferences();
 
   const handleDelete = useCallback(() => {
-    modal.showConfirmDialog({
+    alert.showAlert({
       message: (
         <span>
           You are about to delete
@@ -72,14 +72,15 @@ function SpectraPanelHeaderInner({
       buttons: [
         {
           text: 'Yes',
-          handler: () => {
+          onClick: () => {
             dispatch({ type: 'DELETE_SPECTRA', payload: {} });
           },
+          intent: 'danger',
         },
         { text: 'No' },
       ],
     });
-  }, [activeSpectra?.length, dispatch, modal]);
+  }, [activeSpectra?.length, alert, dispatch]);
 
   function addMissingProjectionHandler() {
     const missingNucleus = getMissingProjection(data, activeTab);
