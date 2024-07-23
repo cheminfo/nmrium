@@ -10,6 +10,7 @@ import { ReactNode, createContext, useContext, useMemo, useRef } from 'react';
 interface ToasterContextProps {
   toaster: OverlayToaster | null;
   showLoading: (options: ToastProps) => () => void;
+  showAsyncLoading: (options: ToastProps) => Promise<() => void>;
   show: (options: ToastProps) => void;
 }
 
@@ -49,14 +50,25 @@ export function ToasterProvider({ children }: ToasterProviderProps) {
         ...otherProps,
       });
 
-      return () => {
+      function dismiss() {
         if (toastKey) {
           toasterRef.current?.dismiss(toastKey);
         }
-      };
+      }
+
+      return dismiss;
     }
 
-    return { toaster: toasterRef.current, showLoading, show };
+    function showAsyncLoading(options: ToastProps) {
+      return new Promise<() => void>((resolve) => {
+        const hideLoading = showLoading(options);
+        setTimeout(() => {
+          resolve(hideLoading);
+        }, 100);
+      });
+    }
+
+    return { toaster: toasterRef.current, showLoading, showAsyncLoading, show };
   }, []);
 
   return (
