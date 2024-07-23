@@ -18,7 +18,7 @@ import Signal from './Signal';
 const stylesOnHover = css`
   pointer-events: bounding-box;
 
-  @-moz-document url-prefix("") {
+  @document url-prefix("") {
     pointer-events: fill;
   }
 
@@ -32,7 +32,7 @@ const stylesOnHover = css`
 const stylesHighlighted = css`
   pointer-events: bounding-box;
 
-  @-moz-document url-prefix("") {
+  @document url-prefix("") {
     pointer-events: fill;
   }
 
