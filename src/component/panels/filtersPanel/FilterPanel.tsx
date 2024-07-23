@@ -5,6 +5,7 @@ import { css } from '@emotion/react';
 import { useDispatch } from '../../context/DispatchContext';
 import { useToaster } from '../../context/ToasterContext';
 import { AlertButton, useAlert } from '../../elements/Alert';
+import useSpectrum from '../../hooks/useSpectrum';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
@@ -14,6 +15,7 @@ export default function FiltersPanel() {
   const dispatch = useDispatch();
   const toaster = useToaster();
   const { showAlert } = useAlert();
+  const { filters } = useSpectrum({ filters: [] });
 
   function handelDeleteFilter() {
     const buttons: AlertButton[] = [
@@ -42,7 +44,8 @@ export default function FiltersPanel() {
       <DefaultPanelHeader
         deleteToolTip="Delete all filters"
         onDelete={handelDeleteFilter}
-        total={1}
+        total={filters?.length}
+        hideCounter
       />
       <div className="inner-container">
         <FiltersTable />
