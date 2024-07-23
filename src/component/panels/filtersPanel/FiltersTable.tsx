@@ -7,10 +7,10 @@ import { ObjectInspector } from 'react-inspector';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useToaster } from '../../context/ToasterContext';
+import { AlertButton, useAlert } from '../../elements/Alert';
 import Button from '../../elements/Button';
 import { ColumnWrapper } from '../../elements/ColumnWrapper';
 import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
-import { useModal } from '../../elements/popup/Modal';
 import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus';
 import useSpectrum from '../../hooks/useSpectrum';
 
@@ -47,7 +47,7 @@ function FiltersTableInner({
   activeFilterID,
 }: FiltersTableInnerProps) {
   const dispatch = useDispatch();
-  const modal = useModal();
+  const alert = useAlert();
   const toaster = useToaster();
   const selectedFilterIndex = useRef<number>();
 
@@ -66,16 +66,17 @@ function FiltersTableInner({
   );
   const handelDeleteFilter = useCallback(
     ({ id, name, label }) => {
-      const buttons = [
+      const buttons: AlertButton[] = [
         {
           text: 'Yes',
-          handler: () => {
-            const hideLoading = toaster.showLoading({
+          onClick: async () => {
+            const hideLoading = await toaster.showAsyncLoading({
               message: 'Delete filter process in progress',
             });
             dispatch({ type: 'DELETE_FILTER', payload: { id } });
             hideLoading();
           },
+          intent: 'danger',
         },
         { text: 'No' },
       ];
@@ -83,8 +84,8 @@ function FiltersTableInner({
       if (spectraCounter > 1) {
         buttons.unshift({
           text: 'Yes, for all spectra',
-          handler: () => {
-            const hideLoading = toaster.showLoading({
+          onClick: async () => {
+            const hideLoading = await toaster.showAsyncLoading({
               message: 'Delete all spectra filter process in progress',
             });
             dispatch({
@@ -93,23 +94,21 @@ function FiltersTableInner({
             });
             hideLoading();
           },
+          intent: spectraCounter ? 'danger' : 'none',
         });
       }
 
-      modal.showConfirmDialog(
-        {
-          message: (
-            <span>
-              You are about to delete this processing step
-              <span style={{ color: 'black' }}> {label} </span> , Are you sure?
-            </span>
-          ),
-          buttons,
-        },
-        { height: 'auto', width: 'auto' },
-      );
+      alert.showAlert({
+        message: (
+          <span>
+            You are about to delete this processing step
+            <span style={{ color: 'black' }}> {label} </span> , Are you sure?
+          </span>
+        ),
+        buttons,
+      });
     },
-    [dispatch, modal, spectraCounter, toaster],
+    [alert, dispatch, spectraCounter, toaster],
   );
   const filterSnapShotHandler = useCallback(
     (filter, index) => {
