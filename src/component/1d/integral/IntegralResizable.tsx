@@ -14,7 +14,7 @@ import { IntegralIndicator } from './IntegralIndicator';
 const stylesOnHover = css`
   pointer-events: bounding-box;
 
-  @-moz-document url-prefix("") {
+  @document url-prefix("") {
     pointer-events: fill;
   }
 
@@ -30,7 +30,7 @@ const stylesOnHover = css`
 const stylesHighlighted = css`
   pointer-events: bounding-box;
 
-  @-moz-document url-prefix("") {
+  @document url-prefix("") {
     pointer-events: fill;
   }
 
