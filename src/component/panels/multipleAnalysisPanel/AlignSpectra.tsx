@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import { Formik } from 'formik';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { Spectrum1D } from 'nmr-load-save';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import * as Yup from 'yup';
 
 import { REFERENCES } from '../../../data/constants/References';
@@ -16,7 +16,7 @@ import Message from '../../elements/Message';
 import Select from '../../elements/Select';
 import FormikInput from '../../elements/formik/FormikInput';
 import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus';
-import Events from '../../utility/Events';
+import { useEvent } from '../../utility/Events';
 
 const labelStyle: LabelStyle = {
   label: { flex: 4, fontWeight: '500' },
@@ -110,18 +110,17 @@ function AlignSpectra({ onClose = () => null, nucleus }: AlignSpectraProps) {
     }
   }
 
-  useEffect(() => {
-    function handler(event: any) {
-      const [from, to] = event.range;
-      setOptions((prevOptions) => ({ ...prevOptions, from, to }));
-    }
-
-    Events.on('brushEnd', handler);
-
-    return () => {
-      Events.off('brushEnd', handler);
-    };
-  }, []);
+  useEvent({
+    onBrushEnd: (options) => {
+      const {
+        range: [from, to],
+        shiftKey,
+      } = options;
+      if (shiftKey) {
+        setOptions((prevOptions) => ({ ...prevOptions, from, to }));
+      }
+    },
+  });
 
   function optionChangeHandler(key) {
     const { delta: targetX = 0, ...otherOptions } =
