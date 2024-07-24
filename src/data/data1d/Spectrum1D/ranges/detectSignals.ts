@@ -18,9 +18,9 @@ export default function detectSignals(
   const { from, to, frequency, nucleus, logger } = options;
 
   const { fromIndex, toIndex } = xGetFromToIndex(data.x, { from, to });
-
   const size = toIndex - fromIndex;
   if (size <= 16 || size >= MAX_LENGTH) {
+    const frequencyCluster = (to - from) * frequency;
     const ranges = xyAutoRangesPicking(data, {
       logger,
       peakPicking: {
@@ -39,7 +39,7 @@ export default function detectSignals(
         frequency,
         nucleus,
         compile: true,
-        frequencyCluster: 16,
+        frequencyCluster,
         keepPeaks: true,
         clean: 0.3,
       },
