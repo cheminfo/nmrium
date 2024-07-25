@@ -1,9 +1,30 @@
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { FaEye, FaEyeSlash, FaMinus, FaPlus } from 'react-icons/fa';
+import { GrRadialSelected } from 'react-icons/gr';
+import { TooltipHelpContent } from 'react-science/ui';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
+import { ToolbarItemProps } from '../panels/header/DefaultPanelHeader';
+import { SpectraSelectedMode } from '../reducer/actions/SpectraActions';
 
-export function useToggleSpectraVisibility(mode: 'selected' | 'all' = 'all') {
+interface ToggleSpectraVisibility {
+  enableShowAll: boolean;
+  enableShowSelected: boolean;
+  enableShowSelectedOnly: boolean;
+  enableHideSelected: boolean;
+  enableHideAll: boolean;
+}
+
+export function useToggleSpectraVisibility(
+  props: Partial<ToggleSpectraVisibility> = {},
+) {
+  const {
+    enableHideAll = true,
+    enableHideSelected = true,
+    enableShowAll = true,
+    enableShowSelectedOnly = true,
+    enableShowSelected = true,
+  } = props;
   const dispatch = useDispatch();
   const {
     view: {
@@ -11,14 +32,14 @@ export function useToggleSpectraVisibility(mode: 'selected' | 'all' = 'all') {
     },
   } = useChartData();
 
-  function showSpectraHandler() {
+  function showSpectraHandler(mode: SpectraSelectedMode) {
     dispatch({
       type: 'CHANGE_SPECTRA_VISIBILITY_BY_NUCLEUS',
       payload: { nucleus: activeTab, flag: true, mode },
     });
   }
 
-  function hideSpectraHandler() {
+  function hideSpectraHandler(mode: SpectraSelectedMode) {
     dispatch({
       type: 'CHANGE_SPECTRA_VISIBILITY_BY_NUCLEUS',
       payload: { nucleus: activeTab, flag: false, mode },
@@ -26,20 +47,49 @@ export function useToggleSpectraVisibility(mode: 'selected' | 'all' = 'all') {
   }
 
   function getToggleVisibilityButtons(disabled = false) {
-    return [
-      {
-        disabled,
-        icon: <FaEyeSlash />,
-        tooltip: `Hide ${mode} spectra`,
-        onClick: hideSpectraHandler,
-      },
-      {
-        disabled,
+    const output: ToolbarItemProps[] = [];
+    if (enableShowAll) {
+      output.push({
         icon: <FaEye />,
-        tooltip: `Show ${mode} spectra`,
-        onClick: showSpectraHandler,
-      },
-    ];
+        tooltip: <TooltipHelpContent title="Show all spectra" />,
+        onClick: () => showSpectraHandler('all'),
+      });
+    }
+    if (enableShowSelected) {
+      output.push({
+        disabled,
+        icon: <FaPlus />,
+        tooltip: <TooltipHelpContent title="Show selected spectra" />,
+        onClick: () => showSpectraHandler('selected'),
+      });
+    }
+
+    if (enableShowSelectedOnly) {
+      output.push({
+        disabled,
+        icon: <GrRadialSelected />,
+        tooltip: <TooltipHelpContent title="Focus on selected spectra" />,
+        onClick: () => showSpectraHandler('selectedOnly'),
+      });
+    }
+
+    if (enableHideSelected) {
+      output.push({
+        disabled,
+        icon: <FaMinus />,
+        tooltip: <TooltipHelpContent title="Hide selected spectra" />,
+        onClick: () => hideSpectraHandler('selected'),
+      });
+    }
+    if (enableHideAll) {
+      output.push({
+        icon: <FaEyeSlash />,
+        tooltip: <TooltipHelpContent title="Hide all spectra" />,
+        onClick: () => hideSpectraHandler('all'),
+      });
+    }
+
+    return output;
   }
 
   return {

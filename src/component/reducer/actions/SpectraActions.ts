@@ -64,12 +64,15 @@ type ChangeSpectrumVisibilityByIdAction = ActionType<
     key: 'isVisible' | 'isPositiveVisible' | 'isNegativeVisible';
   }
 >;
+
+export type SpectraSelectedMode = 'selected' | 'all' | 'selectedOnly';
+
 type ChangeSpectraVisibilityByNucleusAction = ActionType<
   'CHANGE_SPECTRA_VISIBILITY_BY_NUCLEUS',
   {
     nucleus: Nucleus;
     flag: boolean;
-    mode?: 'selected' | 'all';
+    mode?: SpectraSelectedMode;
   }
 >;
 type ChangeActiveSpectrumAction = ActionType<
@@ -294,12 +297,22 @@ function handleChangeSpectraVisibilityByNucleus(
   const { nucleus, flag, mode = 'all' } = action.payload;
   const activeSpectra = getActiveSpectraAsObject(draft);
   for (const datum of getSpectraByNucleus(nucleus, draft.data)) {
-    if (mode === 'selected') {
-      if (activeSpectra && datum.id in activeSpectra) {
+    switch (mode) {
+      case 'selected':
+        if (activeSpectra && datum.id in activeSpectra) {
+          setVisible(datum, flag);
+        }
+        break;
+      case 'selectedOnly':
+        if (activeSpectra && datum.id in activeSpectra) {
+          setVisible(datum, flag);
+        } else {
+          setVisible(datum, !flag);
+        }
+        break;
+
+      default:
         setVisible(datum, flag);
-      }
-    } else {
-      setVisible(datum, flag);
     }
   }
 }

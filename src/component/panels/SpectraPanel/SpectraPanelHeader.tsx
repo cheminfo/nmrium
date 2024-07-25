@@ -55,7 +55,7 @@ function SpectraPanelHeaderInner({
   const alert = useAlert();
   const toaster = useToaster();
   const dispatch = useDispatch();
-  const { getToggleVisibilityButtons } = useToggleSpectraVisibility('selected');
+  const { getToggleVisibilityButtons } = useToggleSpectraVisibility();
   const {
     current: { spectraColors },
   } = usePreferences();
