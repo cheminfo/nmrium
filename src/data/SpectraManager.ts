@@ -146,7 +146,7 @@ export function exportAsJcamp(
   let jcamp: string | null = null;
   if (isSpectrum1D(spectrum)) {
     const { dataExportStage = 'PROCESSED', onlyReal } = options;
-    const { originalData, originalInfo, data, info, filters, meta } = spectrum;
+    const { originalData, originalInfo, data, info, filters } = spectrum;
 
     if (onlyReal && info.isFid) {
       throw new Error('FID data should be complex');
@@ -157,17 +157,11 @@ export function exportAsJcamp(
     }
 
     if (dataExportStage === 'PROCESSED') {
-      const isFT = filters.find((f) => f.name === 'fft')?.flag;
       jcamp = spectrum1DToJcamp(
         {
           ...spectrum,
           data,
           info,
-          meta: {
-            ...meta,
-            SYMBOL: onlyReal ? '' : meta.SYMBOL,
-            DATATYPE: !info.isFid || isFT ? 'NMR SPECTRUM' : 'NMR FID',
-          },
           filters,
         },
         { onlyReal },
