@@ -57,9 +57,9 @@
     "react-dom": ">=18.0.0"
   },
   "dependencies": {
-    "@blueprintjs/core": "^5.10.5",
-    "@blueprintjs/icons": "^5.10.0",
-    "@blueprintjs/select": "^5.2.1",
+    "@blueprintjs/core": "^5.11.0",
+    "@blueprintjs/icons": "^5.11.0",
+    "@blueprintjs/select": "^5.2.2",
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
     "@hookform/resolvers": "^3.9.0",
@@ -95,7 +95,7 @@
     "nmr-processing": "^12.8.3",
     "nmredata": "^0.9.11",
     "numeral": "^2.0.6",
-    "openchemlib": "^8.14.0",
+    "openchemlib": "^8.15.0",
     "openchemlib-utils": "^6.3.0",
     "papaparse": "^5.4.1",
     "re-resizable": "6.9.17",
@@ -125,7 +125,7 @@
     "@simbathesailor/use-what-changed": "^2.0.0",
     "@types/d3": "^7.4.3",
     "@types/lodash": "^4.17.7",
-    "@types/node": "^20.14.11",
+    "@types/node": "^20.14.12",
     "@types/papaparse": "^5.3.14",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
@@ -150,7 +150,7 @@
     "stylelint": "^16.7.0",
     "stylelint-config-standard": "^36.0.1",
     "typescript": "^5.5.4",
-    "vite": "^5.3.4",
+    "vite": "^5.3.5",
     "vitest": "^2.0.4"
   }
 }
