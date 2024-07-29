@@ -1,4 +1,5 @@
 import { Draft } from 'immer';
+import { MF } from 'mf-parser';
 import { Spectrum1D } from 'nmr-load-save';
 import { Integrals, Ranges, SumOptions } from 'nmr-processing';
 
@@ -51,7 +52,7 @@ export function getSum(mf: string | null | undefined, nucleus: string) {
   if (!mf || !nucleus) return defaultSum;
 
   const atom = getAtom(nucleus);
-  const atoms = getAtoms(mf);
+  const atoms = new MF(mf).getInfo().atoms;
 
   return atoms[atom] || defaultSum;
 }
@@ -75,16 +76,6 @@ export function setSumOptions(
     const { mf, moleculeId, ...resOptions } = data.options;
     data.options = { ...resOptions, sumAuto: false, sum: options.sum };
   }
-}
-
-export function getAtoms(mf: string): Record<string, number> {
-  const result = {};
-  // eslint-disable-next-line prefer-named-capture-group
-  const data = mf.split(/(\d+)/);
-  for (let i = 0; i < data.length - 1; i = i + 2) {
-    result[data[i]] = Number(data[i + 1]);
-  }
-  return result;
 }
 
 /**
