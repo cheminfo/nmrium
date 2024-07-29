@@ -120,7 +120,11 @@ function InnerMatrixGenerationPanel() {
     originDomain,
     data,
   } = useChartData();
-  const { getToggleVisibilityButtons } = useToggleSpectraVisibility();
+  const { getToggleVisibilityButtons } = useToggleSpectraVisibility({
+    enableHideSelected: false,
+    enableShowSelected: false,
+    enableShowSelectedOnly: false,
+  });
   const formRef = useRef<FormikProps<any>>(null);
   const nucleusMatrixOptions = usePanelPreferences(
     'matrixGeneration',

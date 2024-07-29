@@ -55,7 +55,6 @@ function SpectraPanelHeaderInner({
   const alert = useAlert();
   const toaster = useToaster();
   const dispatch = useDispatch();
-  const { getToggleVisibilityButtons } = useToggleSpectraVisibility('selected');
   const {
     current: { spectraColors },
   } = usePreferences();
@@ -116,6 +115,15 @@ function SpectraPanelHeaderInner({
   }
   const hasActiveSpectra = activeSpectra && activeSpectra?.length > 0;
   const spectraLengthPerTab = getSpectraByNucleus(activeTab, data)?.length;
+  const { getToggleVisibilityButtons } = useToggleSpectraVisibility(
+    spectraLengthPerTab < 5
+      ? {
+          enableHideSelected: false,
+          enableShowSelected: false,
+          enableShowSelectedOnly: false,
+        }
+      : {},
+  );
 
   let leftButtons: ToolbarItemProps[] =
     getToggleVisibilityButtons(!hasActiveSpectra);
