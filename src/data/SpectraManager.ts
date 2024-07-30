@@ -6,7 +6,6 @@ import {
   serializeNmriumState,
   CURRENT_EXPORT_VERSION,
   spectrum1DToJcamp,
-  Spectrum1D,
 } from 'nmr-load-save';
 
 import { State } from '../component/reducer/Reducer';
