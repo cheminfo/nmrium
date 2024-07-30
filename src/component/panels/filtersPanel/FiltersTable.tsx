@@ -198,7 +198,7 @@ function FiltersTableInner({
       if (activeFilterID === id) {
         return rowColors.active;
       } else if (
-        selectedFilterIndex.current &&
+        selectedFilterIndex.current != null &&
         index > selectedFilterIndex.current
       ) {
         return rowColors.deActive;
