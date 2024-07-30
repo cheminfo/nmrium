@@ -1,8 +1,6 @@
 import { NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
 import { Draft, original } from 'immer';
 import lodashGet from 'lodash/get';
-import omitBy from 'lodash/omitBy';
-import lodashSet from 'lodash/set';
 import {
   Spectrum,
   Spectrum1D,
@@ -41,11 +39,9 @@ import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { State } from '../Reducer';
 import { setZoom } from '../helper/Zoom1DManager';
 import { getActiveSpectra } from '../helper/getActiveSpectra';
-import {
-  getActiveSpectraAsObject,
-  isActiveSpectrum,
-} from '../helper/getActiveSpectraAsObject';
+import { getActiveSpectraAsObject } from '../helper/getActiveSpectraAsObject';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
+import { removeSpectrumRelatedObjectsById } from '../helper/removeSpectrumRelatedObjectsById';
 import { ActionType } from '../types/ActionType';
 
 import { SetDomainOptions, setDomain, setMode } from './DomainActions';
@@ -225,32 +221,6 @@ function multipleSelect(
   } else {
     for (const spectrum of spectra.slice(endIndex, startIndex + 1)) {
       spectraIds.add(spectrum.id);
-    }
-  }
-}
-
-function removeActiveSpectra(
-  draft: Draft<State>,
-  relatedTargets: Array<{ jpath: string; key: string } | { jpath: string }>,
-) {
-  const activeSpectra = getActiveSpectraAsObject(draft);
-
-  // remove the active spectra
-  relatedTargets.unshift({ jpath: 'data', key: 'id' });
-
-  for (const target of relatedTargets) {
-    const { jpath } = target;
-    const targetObj = lodashGet(draft, jpath);
-    if (Array.isArray(targetObj)) {
-      const data = targetObj.filter(
-        (datum) => !isActiveSpectrum(activeSpectra, datum[(target as any).key]),
-      );
-      lodashSet(draft, jpath, data);
-    } else {
-      const data = omitBy(draft.view.peaks, (_, id) =>
-        isActiveSpectrum(activeSpectra, id),
-      );
-      lodashSet(draft, jpath, data);
     }
   }
 }
@@ -483,23 +453,50 @@ function handleChangeSpectrumSetting(
 
 //action
 function handleDeleteSpectra(draft: Draft<State>, action: DeleteSpectraAction) {
-  const state = original(draft) as State;
-  const { id: spectraId, domainOptions } = action?.payload || {};
-  if (spectraId) {
-    const index = state.data.findIndex((d) => d.id === spectraId);
-    draft.data.splice(index, 1);
-    // remove peaks State
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-    delete draft.view.peaks[spectraId];
+  const { id: spectrumID, domainOptions } = action?.payload || {};
+  const activeSpectra = getActiveSpectra(draft);
+
+  let spectraIDs: Array<{ id: string; index: number }> = [];
+
+  if (spectrumID) {
+    const index = draft.data.findIndex(
+      (spectrum) => spectrum.id === spectrumID,
+    );
+    spectraIDs = [{ id: spectrumID, index }];
   } else {
-    // remove spectra and it related data in the view object
-    removeActiveSpectra(draft, [
-      { jpath: 'view.ranges', key: 'spectrumID' },
-      { jpath: 'view.zones', key: 'spectrumID' },
-      { jpath: 'view.peaks' },
-      { jpath: 'view.zoom.levels' },
-    ]);
+    spectraIDs = activeSpectra || [];
   }
+
+  /**
+   * Sort the spectraIDs indices in descending order.
+   * This prevents shifting issues when removing elements, ensuring that each deletion doesn't changing the positions of remaining elements to be removed.
+   */
+  spectraIDs.sort((a, b) => b.index - a.index);
+
+  for (const { index, id } of spectraIDs) {
+    draft.data.splice(index, 1);
+    removeSpectrumRelatedObjectsById(draft, id);
+  }
+
+  //TODO refactor the view state, https://github.com/cheminfo/nmrium/issues/3169
+  //update keys preferences
+
+  const spectraRemovedIDs = {};
+
+  for (const { id } of spectraIDs) {
+    spectraRemovedIDs[id] = true;
+  }
+
+  for (const key of Object.keys(draft.keysPreferences)) {
+    const preferencesState = draft.keysPreferences[key];
+    // remove related object from save preferences for deleted spectra
+    for (const { id } of preferencesState.data) {
+      if (spectraRemovedIDs[id]) {
+        removeSpectrumRelatedObjectsById(preferencesState, id);
+      }
+    }
+  }
+
   setActiveTab(draft, {
     tab: draft.view.spectra.activeTab,
     refreshActiveTab: true,
