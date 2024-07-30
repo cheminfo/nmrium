@@ -61,6 +61,8 @@ const {
   shift2DY,
   exclusionZones,
   signalProcessing,
+  digitalFilter,
+  digitalFilter2D,
 } = Filters;
 
 type ShiftSpectrumAlongXAxisAction = ActionType<
@@ -271,7 +273,7 @@ function rollbackSpectrumByFilter(
       draft.toolOptions.data.activeFilterID =
         datum.filters?.[filterIndex]?.id || null;
 
-      const filters: any[] = datum.filters.slice(0, filterIndex || 1);
+      const filters: any[] = datum.filters.slice(0, filterIndex);
 
       updateDomainOptions = getFilterDomain(datum, {
         startIndex: Math.min(activeFilterIndex, filterIndex),
@@ -355,6 +357,8 @@ function rollbackSpectrum(
         shift2DX.id,
         shift2DY.id,
         signalProcessing.id,
+        digitalFilter.id,
+        digitalFilter2D.id,
       ].includes(filterKey);
 
   beforeRollback(draft, filterKey);
@@ -1247,10 +1251,14 @@ function handleSetFilterSnapshotHandler(
   action: SetFilterSnapshotAction,
 ) {
   const { name: filterKey, id } = action.payload;
+
   const reset = draft.toolOptions.data.activeFilterID === id;
   if (Tools?.[filterKey]?.isFilter) {
     activateTool(draft, { toolId: filterKey as Tool, reset });
   } else {
+    draft.toolOptions.selectedOptionPanel = null;
+    draft.toolOptions.selectedTool = 'zoom';
+
     rollbackSpectrum(draft, { filterKey, reset });
   }
 }
