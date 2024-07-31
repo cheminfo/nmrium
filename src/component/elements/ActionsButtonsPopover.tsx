@@ -54,7 +54,7 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
         >
           {buttons
             .filter((button) => button?.visible !== false)
-            .map(({ title, ...otherProps }, index, array) => (
+            .map(({ title, visible, ...otherProps }, index, array) => (
               <Fragment key={title || index}>
                 <Button
                   tooltipProps={{ content: title || '', compact: true }}
