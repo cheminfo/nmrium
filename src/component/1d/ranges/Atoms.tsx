@@ -27,10 +27,12 @@ function useAtoms(range: Range) {
   for (const [id, topicMoleculeObject] of Object.entries(topicMolecule)) {
     const atoms: number[] = [];
     const diaIDsObject = topicMoleculeObject.getDiaIDsObject();
-    for (const id of diaIDs) {
-      const existingAtoms = diaIDsObject[id]?.existingAtoms;
-      if (existingAtoms?.length > 0) {
-        atoms.push(...existingAtoms);
+    if (diaIDsObject) {
+      for (const id of diaIDs) {
+        const existingAtoms = diaIDsObject[id]?.existingAtoms;
+        if (existingAtoms?.length > 0) {
+          atoms.push(...existingAtoms);
+        }
       }
     }
     if (atoms.length > 0) {

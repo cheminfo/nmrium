@@ -123,11 +123,7 @@ export function SpectraTable(props: SpectraTableProps) {
     useClipboard();
 
   const COLUMNS: Partial<
-    Record<
-      // eslint-disable-next-line @typescript-eslint/ban-types
-      (string & {}) | PredefinedSpectraColumn,
-      Column<Spectrum>
-    >
+    Record<(string & {}) | PredefinedSpectraColumn, Column<Spectrum>>
   > = useMemo(
     () => ({
       visible: {

@@ -59,13 +59,11 @@ function getDefaultPreferences(panelKey: Panel, nucleus?: string) {
   }
 }
 
-function joinWithNucleusPreferences<
-  T extends Exclude<
+function joinWithNucleusPreferences(
+  data: PanelsPreferences[Exclude<
     Panel,
     'database' | 'matrixGeneration' | 'multipleSpectraAnalysis' | 'prediction'
-  >,
->(
-  data: PanelsPreferences[T],
+  >],
   nucleus: string,
   returnOnlyNucleusPreferences = false,
 ) {

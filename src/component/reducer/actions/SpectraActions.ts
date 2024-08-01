@@ -78,7 +78,6 @@ type ChangeActiveSpectrumAction = ActionType<
       | 'shift[false]_ctrl[true]'
       | 'shift[true]_ctrl[false]'
       | 'shift[true]_ctrl[true]'
-      // eslint-disable-next-line @typescript-eslint/ban-types
       | (string & {});
 
     id?: string; // spectrum id

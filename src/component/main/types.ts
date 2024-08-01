@@ -25,7 +25,6 @@ type NMRiumWorkspace =
   | 'embedded'
   | 'assignment'
   | 'simulation'
-  // eslint-disable-next-line @typescript-eslint/ban-types
   | (string & {});
 
 type NMRiumChangeCb = (

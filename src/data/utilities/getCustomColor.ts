@@ -36,9 +36,11 @@ function isInstanceOfOneDimensionColor(
 }
 
 export function getCustomColor<
-  SpectrumType extends Spectrum1D | Spectrum2D,
   ColorType extends SpectrumOneDimensionColor | SpectrumTwoDimensionsColor,
->(spectrum: SpectrumType, colors?: ColorType[]): ReturnColor<ColorType> | null {
+>(
+  spectrum: Spectrum1D | Spectrum2D,
+  colors?: ColorType[],
+): ReturnColor<ColorType> | null {
   if (!colors || colors.length === 0) return null;
 
   let color: ReturnColor<ColorType> | null = null;
