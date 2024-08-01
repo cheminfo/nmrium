@@ -13,16 +13,13 @@ export function fromJSON(
   const molecules: StateMoleculeExtended[] = [];
   for (const mol of mols) {
     const molecule = OCLMolecule.fromMolfile(mol.molfile);
-    const fragments = molecule.getFragments();
-    for (const fragment of fragments) {
-      molecules.push(
-        initMolecule({
-          molfile: fragment.toMolfileV3(),
-          label: mol.label || `P${getLabelNumber(reservedNumbers)}`,
-          id: mol.id,
-        }),
-      );
-    }
+    molecules.push(
+      initMolecule({
+        molfile: molecule.toMolfileV3(),
+        label: mol.label || `P${getLabelNumber(reservedNumbers)}`,
+        id: mol.id,
+      }),
+    );
   }
 
   return molecules;
@@ -37,16 +34,12 @@ export function addMolfile(
   // try to parse molfile
   // this will throw if the molecule can not be parsed !
   const molecule = OCLMolecule.fromMolfile(molfile);
-  const fragments = molecule.getFragments();
-  for (const fragment of fragments) {
-    molecules.push(
-      initMolecule({
-        molfile: fragment.toMolfileV3(),
-        label: `P${getLabelNumber(reservedNumbers)}`,
-      }),
-    );
-  }
-  // we will split if we have many fragments
+  molecules.push(
+    initMolecule({
+      molfile: molecule.toMolfileV3(),
+      label: `P${getLabelNumber(reservedNumbers)}`,
+    }),
+  );
 }
 
 export function setMolfile(
@@ -54,36 +47,16 @@ export function setMolfile(
   currentMolecule: StateMolecule,
 ) {
   const { molfile, id, label } = currentMolecule;
-  const reservedNumbers = extractLabelsNumbers(molecules);
-
   // try to parse molfile
   // this will throw if the molecule can not be parsed !
   const molecule = OCLMolecule.fromMolfile(molfile);
-  const fragments = molecule.getFragments();
-
-  if (fragments.length > 1) {
-    molecules = molecules.filter((m) => m.id !== id);
-
-    for (const fragment of fragments) {
-      molecules.push(
-        initMolecule({
-          molfile: fragment.toMolfileV3(),
-          label: `P${getLabelNumber(reservedNumbers)}`,
-        }),
-      );
-    }
-  } else if (fragments.length === 1) {
-    const fragment = fragments[0];
-    const _mol = initMolecule({
-      molfile: fragment.toMolfileV3(),
-      id,
-      label,
-    });
-    const molIndex = molecules.findIndex((m) => m.id === id);
-    molecules.splice(molIndex, 1, _mol);
-  }
-
-  // we will split if we have many fragments
+  const _mol = initMolecule({
+    molfile: molecule.toMolfileV3(),
+    id,
+    label,
+  });
+  const molIndex = molecules.findIndex((m) => m.id === id);
+  molecules.splice(molIndex, 1, _mol);
 }
 
 export function extractNumber(value: string) {
