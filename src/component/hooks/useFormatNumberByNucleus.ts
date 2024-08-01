@@ -6,7 +6,6 @@ import { formatNumber } from '../utility/formatNumber';
 
 export type ReturnFunction = (
   value?: number | string,
-  // eslint-disable-next-line @typescript-eslint/ban-types
   formatKey?: 'ppmFormat' | 'hzFormat' | (string & {}),
   prefix?: string,
   suffix?: string,

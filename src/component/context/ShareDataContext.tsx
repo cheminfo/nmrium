@@ -17,19 +17,13 @@ export function useShareData<T>(): ShareDataState<T> {
   return context;
 }
 
-export function ShareDataProvider<T>({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const [data, setData] = useState<T | null>(null);
+export function ShareDataProvider({ children }: { children: React.ReactNode }) {
+  const [data, setData] = useState<unknown | null>(null);
 
   const state = useMemo(() => {
     return {
       data,
-      setData: (newData: T) => {
-        setData(newData);
-      },
+      setData,
     };
   }, [data]);
 

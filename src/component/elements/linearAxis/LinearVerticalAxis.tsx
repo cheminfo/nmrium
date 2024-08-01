@@ -28,7 +28,6 @@ interface Ticks {
 
 interface TickAxis {
   ticks: Ticks[];
-  // eslint-disable-next-line react/no-unused-prop-types
   ref: MutableRefObject<SVGGElement | null>;
 }
 

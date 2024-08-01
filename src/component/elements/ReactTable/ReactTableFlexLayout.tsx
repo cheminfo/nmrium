@@ -1,12 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { CSSProperties } from 'react';
-import {
-  useTable,
-  useSortBy,
-  useFlexLayout,
-  UseSortByOptions,
-} from 'react-table';
+import { useTable, useSortBy, useFlexLayout } from 'react-table';
 
 import { ReactTableStyle } from './Style';
 
@@ -16,9 +11,6 @@ interface ReactTableFlexLayoutProps {
   onMouseDown?: () => void;
   style?: CSSProperties;
 }
-
-export interface TableOptions<D extends Record<string, unknown>>
-  extends UseSortByOptions<D> {}
 
 function ReactTableFlexLayout({
   data,

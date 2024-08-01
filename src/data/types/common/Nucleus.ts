@@ -17,8 +17,6 @@ export type Nuclei =
   | '63Cu'
   | '67Zn'
   | '129Xe'
-  // eslint-disable-next-line @typescript-eslint/ban-types
   | (string & {});
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 export type Nucleus = Nuclei | `${Nuclei},${Nuclei}` | (string & {});
