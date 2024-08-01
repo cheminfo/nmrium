@@ -125,57 +125,32 @@ export function toJSON(
   }
 }
 
-export const DataExportStage = {
-  Original: 'ORIGINAL',
-  Processed: 'PROCESSED',
-} as const;
-
-export type DataExportStageStrings =
-  (typeof DataExportStage)[keyof typeof DataExportStage];
-
-export interface ExportAsJcampOptions {
-  onlyReal?: boolean;
-  dataExportStage?: DataExportStageStrings;
-}
+export type DataExportStage =
+  | 'originalFid'
+  | 'originalFtReal'
+  | 'originalFtRealImaginary'
+  | 'processedReal'
+  | 'processedRealImaginary';
 
 export function exportAsJcamp(
   spectrum: Spectrum,
-  options: ExportAsJcampOptions = {},
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  dataExportStage: DataExportStage,
 ) {
   let jcamp: string | null = null;
   if (isSpectrum1D(spectrum)) {
-    const { dataExportStage = 'PROCESSED', onlyReal } = options;
     const { originalData, originalInfo, data, info, filters } = spectrum;
-
-    if (onlyReal && info.isFid) {
-      throw new Error('FID data should be complex');
-    }
 
     if (!originalData || !originalInfo) {
       throw new Error('original data should exists');
     }
 
-    if (dataExportStage === 'PROCESSED') {
-      jcamp = spectrum1DToJcamp(
-        {
-          ...spectrum,
-          data,
-          info,
-          filters,
-        },
-        { onlyReal },
-      );
-    } else {
-      jcamp = spectrum1DToJcamp(
-        {
-          ...spectrum,
-          data: originalData,
-          info: originalInfo,
-          filters: [],
-        },
-        { onlyReal },
-      );
-    }
+    jcamp = spectrum1DToJcamp({
+      ...spectrum,
+      data,
+      info,
+      filters,
+    });
   } else {
     throw new Error('convert 2D spectrum to JCAMP is not supported');
   }
