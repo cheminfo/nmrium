@@ -82,7 +82,7 @@ function getExportDataTypes(spectrum: Spectrum) {
   }
 
   if (originalInfo?.isFt) {
-    return originalFtDataTypes;
+    return [...originalFtDataTypes, ...processedDataTypes];
   }
 
   if (originalInfo?.isFid) {

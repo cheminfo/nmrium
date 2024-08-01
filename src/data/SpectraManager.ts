@@ -134,26 +134,33 @@ export type DataExportStage =
 
 export function exportAsJcamp(
   spectrum: Spectrum,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   dataExportStage: DataExportStage,
 ) {
   let jcamp: string | null = null;
-  if (isSpectrum1D(spectrum)) {
-    const { originalData, originalInfo, data, info, filters } = spectrum;
+  if (!isSpectrum1D(spectrum)) {
+    throw new Error('convert 2D spectrum to JCAMP is not supported');
+  }
+  const { originalData, originalInfo, ...otherSpectrum } = spectrum;
 
+  const exportedSpectrum: Spectrum = { ...otherSpectrum };
+
+  if (!['processedReal', 'processedRealImaginary'].includes(dataExportStage)) {
     if (!originalData || !originalInfo) {
       throw new Error('original data should exists');
     }
 
-    jcamp = spectrum1DToJcamp({
-      ...spectrum,
-      data,
-      info,
-      filters,
-    });
+    exportedSpectrum.data = originalData;
+    exportedSpectrum.info = originalInfo;
   } else {
-    throw new Error('convert 2D spectrum to JCAMP is not supported');
+    exportedSpectrum.filters = [];
   }
+
+  const onlyReal =
+    dataExportStage === 'processedReal' || dataExportStage === 'originalFtReal';
+
+  jcamp = spectrum1DToJcamp(exportedSpectrum, {
+    onlyReal,
+  });
 
   if (!jcamp) {
     throw new Error('convert spectrum to JCAMP failed');
