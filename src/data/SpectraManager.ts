@@ -149,10 +149,9 @@ export function exportAsJcamp(
       throw new Error('original data should exists');
     }
 
+    exportedSpectrum.filters = [];
     exportedSpectrum.data = originalData;
     exportedSpectrum.info = originalInfo;
-  } else {
-    exportedSpectrum.filters = [];
   }
 
   const onlyReal =
