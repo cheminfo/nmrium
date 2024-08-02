@@ -75,21 +75,22 @@ function ExportAsJcampModal(props: ExportAsJCAMPProps) {
 }
 
 function getExportDataTypes(spectrum: Spectrum) {
-  const { info, originalInfo } = spectrum;
+  const { originalInfo, filters } = spectrum;
 
-  if (info.isFt && originalInfo?.isFid) {
-    return [...originalFidExportDataTypes, ...processedDataTypes];
-  }
-
+  const menuItems: ExportDataTypeItem[] = [];
   if (originalInfo?.isFt) {
-    return [...originalFtDataTypes, ...processedDataTypes];
+    menuItems.push(...originalFtDataTypes);
   }
 
   if (originalInfo?.isFid) {
-    return originalFidExportDataTypes;
+    menuItems.push(...originalFidExportDataTypes);
   }
 
-  return [];
+  if (filters?.length > 0) {
+    menuItems.push(...processedDataTypes);
+  }
+
+  return menuItems;
 }
 
 function InnerExportAsJcampModal(props: Required<InnerExportAsJCAMPProps>) {
