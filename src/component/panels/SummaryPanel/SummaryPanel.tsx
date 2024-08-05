@@ -324,6 +324,12 @@ function SummaryPanel() {
 
   const deleteCorrelationHandler = useCallback(
     (correlation: Correlation) => {
+      const correlationLinks = correlation?.links;
+
+      if (!(Array.isArray(correlationLinks) && correlationLinks.length > 0)) {
+        return;
+      }
+
       dispatch({
         type: 'DELETE_CORRELATION',
         payload: {
