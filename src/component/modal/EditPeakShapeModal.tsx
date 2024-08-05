@@ -1,39 +1,33 @@
 /** @jsxImportSource @emotion/react */
+import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
 import { css } from '@emotion/react';
-import { Formik } from 'formik';
-import { PeaksNucleusPreferences } from 'nmr-load-save';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { Peak1D } from 'nmr-processing';
-import { useCallback, useRef, useState } from 'react';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
+import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
-import { CloseButton } from '../elements/CloseButton';
-import { InputStyle } from '../elements/Input';
 import Label, { LabelStyle } from '../elements/Label';
-import Select from '../elements/Select';
-import FormikInput from '../elements/formik/FormikInput';
+import { NumberInput2Controller } from '../elements/NumberInput2Controller';
+import { Select2 } from '../elements/Select2';
+import { usePanelPreferences } from '../hooks/usePanelPreferences';
 import { formatNumber } from '../utility/formatNumber';
 
-import { ModalStyles } from './ModalStyle';
+type Shape = NonNullable<Peak1D['shape']>;
 
-const styles = css`
-  width: 400px;
-  min-height: 250px;
+type Kind = 'gaussian' | 'lorentzian' | 'pseudoVoigt';
 
-  .inner-content {
-    flex: 1;
-  }
-`;
-
-const getKindDefaultValues = (kind: string) => {
+function getKindDefaultValues(kind: Kind) {
   return {
     kind,
     fwhm: 500,
     ...(kind === 'pseudoVoigt' && { mu: 0.5 }),
   };
-};
-const getValues = (peak: Peak1D, kind: string) => {
+}
+function getValues(peak: Peak1D, kind: Kind): Shape {
   const { shape } = peak;
   const shapeData =
     (shape?.kind || '').toLocaleLowerCase() !== kind
@@ -42,16 +36,18 @@ const getValues = (peak: Peak1D, kind: string) => {
           ...(shape?.fwhm && { fwhm: shape?.fwhm }),
         }
       : shape;
-  return shapeData;
-};
 
-const validation = (kind: string) =>
-  Yup.object().shape({
+  return shapeData as Shape;
+}
+
+function validation(kind: Kind) {
+  return Yup.object().shape({
     fwhm: Yup.number().required(),
     ...(kind === 'pseudoVoigt' && { mu: Yup.number().required() }),
   });
+}
 
-const KINDS = [
+const KINDS: Array<{ label: string; value: Kind }> = [
   {
     value: 'gaussian',
     label: 'Gaussian',
@@ -72,92 +68,95 @@ const labelStyle: LabelStyle = {
   wrapper: { flex: 7, display: 'flex' },
 };
 
-const inputStyle: InputStyle = { input: { width: '200px', textAlign: 'left' } };
-
 interface EditPeakShapeModalProps {
-  onClose?: (element?: string) => void;
-  peak: Peak1D;
-  peaksPreferences: PeaksNucleusPreferences;
+  onCloseDialog: () => void;
+  peak?: Peak1D;
 }
 
-function EditPeakShapeModal({
-  onClose = () => null,
-  peak,
-  peaksPreferences,
-}: EditPeakShapeModalProps) {
+export function EditPeakShapeModal(props: EditPeakShapeModalProps) {
+  const { peak, ...otherProps } = props;
+  if (!peak) return;
+
+  return <InnerEditPeakShapeModal peak={peak} {...otherProps} />;
+}
+
+function InnerEditPeakShapeModal(props: Required<EditPeakShapeModalProps>) {
+  const { peak, onCloseDialog } = props;
   const dispatch = useDispatch();
-  const refForm = useRef<any>();
-  const [kind, setKind] = useState(peak.shape?.kind as string);
-
-  const changePeakShapeHandler = useCallback(
-    (values) => {
-      dispatch({
-        type: 'CHANGE_PEAK_SHAPE',
-        payload: {
-          id: peak.id,
-          shape: {
-            ...values,
-          },
-        },
-      });
-      onClose();
+  const {
+    view: {
+      spectra: { activeTab },
     },
-    [dispatch, onClose, peak.id],
-  );
+  } = useChartData();
+  const peaksPreferences = usePanelPreferences('peaks', activeTab);
 
-  const values = getValues(peak, kind);
+  const [kind, setKind] = useState<Kind>(peak.shape?.kind || 'gaussian');
+  const { handleSubmit, control, reset } = useForm<Shape>({
+    defaultValues: getValues(peak, kind),
+    resolver: yupResolver(validation(kind)) as any,
+  });
+
+  function changePeakShapeHandler(values) {
+    dispatch({
+      type: 'CHANGE_PEAK_SHAPE',
+      payload: {
+        id: peak.id,
+        shape: {
+          ...values,
+        },
+      },
+    });
+    onCloseDialog();
+  }
+
+  function handleChangeKind({ value }) {
+    reset(getValues(peak, value));
+    setKind(value);
+  }
+
   const valuePPM = formatNumber(peak.x, peaksPreferences.deltaPPM.format);
 
   return (
-    <div css={[ModalStyles, styles]}>
-      <div className="header handle">
-        <span>{`Peak Shape Edition ( ${valuePPM} PPM)`} </span>
-        <CloseButton
-          tooltip="Close"
-          onClick={() => onClose?.()}
-          className="close-bt"
-        />
-      </div>
-      <div className="inner-content">
-        <Formik
-          enableReinitialize
-          innerRef={refForm}
-          initialValues={values}
-          validationSchema={validation(kind)}
-          onSubmit={changePeakShapeHandler}
-        >
-          <>
-            <Label title="Kind:" style={labelStyle}>
-              <Select
-                items={KINDS}
-                style={{ margin: 0, height: 30 }}
-                value={kind}
-                onChange={(kind) => setKind(kind)}
-              />
-            </Label>
+    <Dialog
+      isOpen
+      style={{ width: 400 }}
+      onClose={onCloseDialog}
+      title={`Peak Shape Edition ( ${valuePPM} PPM )`}
+    >
+      <DialogBody
+        css={css`
+          background-color: white;
+          padding: 1.5em 3em;
+        `}
+      >
+        <>
+          <Label title="Kind:" style={labelStyle}>
+            <Select2
+              items={KINDS}
+              selectedItemValue={kind}
+              onItemSelect={handleChangeKind}
+            />
+          </Label>
 
-            <Label title="FWHM:" style={labelStyle}>
-              <FormikInput name="fwhm" style={inputStyle} />
-            </Label>
+          <Label title="FWHM:" style={labelStyle}>
+            <NumberInput2Controller min={0} control={control} name="fwhm" />
+          </Label>
 
-            {kind === 'pseudoVoigt' && (
-              <Label title="Mu:" style={labelStyle}>
-                <FormikInput name="mu" style={inputStyle} />
-              </Label>
-            )}
-          </>
-        </Formik>
-      </div>
-      <div className="footer-container">
+          {kind === 'pseudoVoigt' && (
+            <Label title="Mu:" style={labelStyle}>
+              <NumberInput2Controller min={0} control={control} name="mu" />
+            </Label>
+          )}
+        </>
+      </DialogBody>
+      <DialogFooter>
         <ActionButtons
           style={{ flexDirection: 'row-reverse', margin: 0 }}
-          onDone={() => refForm.current.submitForm()}
+          onDone={() => handleSubmit(changePeakShapeHandler)()}
           doneLabel="Save"
-          onCancel={() => onClose?.()}
+          onCancel={() => onCloseDialog?.()}
         />
-      </div>
-    </div>
+      </DialogFooter>
+    </Dialog>
   );
 }
-
-export default EditPeakShapeModal;
