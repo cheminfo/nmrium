@@ -1,6 +1,6 @@
 import lodashGet from 'lodash/get';
-import { Info1D } from 'nmr-processing';
-import { useCallback, useMemo, memo } from 'react';
+import { Info1D, Peak1D } from 'nmr-processing';
+import { useCallback, useMemo, memo, useState } from 'react';
 import { FaEdit, FaRegTrashAlt } from 'react-icons/fa';
 
 import { useDispatch } from '../../context/DispatchContext';
@@ -10,10 +10,8 @@ import addCustomColumn, {
   ControlCustomColumn,
   createActionColumn,
 } from '../../elements/ReactTable/utility/addCustomColumn';
-import { useModal } from '../../elements/popup/Modal';
-import { positions, transitions } from '../../elements/popup/options';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import EditPeakShapeModal from '../../modal/EditPeakShapeModal';
+import { EditPeakShapeModal } from '../../modal/EditPeakShapeModal';
 import { formatNumber } from '../../utility/formatNumber';
 import NoDataForFid from '../extra/placeholder/NoDataForFid';
 import NoTableData from '../extra/placeholder/NoTableData';
@@ -32,8 +30,8 @@ function handleActiveRow(row) {
 
 function PeaksTable({ activeTab, data, info }: PeaksTableProps) {
   const dispatch = useDispatch();
-  const modal = useModal();
   const peaksPreferences = usePanelPreferences('peaks', activeTab);
+  const [peak, setEditedPeak] = useState<Peak1D | undefined>();
 
   const deletePeakHandler = useCallback(
     (row) => {
@@ -45,22 +43,9 @@ function PeaksTable({ activeTab, data, info }: PeaksTableProps) {
     },
     [dispatch],
   );
-  const editPeakHandler = useCallback(
-    (row) => {
-      modal.show(
-        <EditPeakShapeModal
-          peak={row.original}
-          peaksPreferences={peaksPreferences}
-        />,
-        {
-          position: positions.MIDDLE_RIGHT,
-          transition: transitions.SCALE,
-          isBackgroundBlur: false,
-        },
-      );
-    },
-    [modal, peaksPreferences],
-  );
+  const editPeakHandler = useCallback((row) => {
+    setEditedPeak(row.original);
+  }, []);
 
   const saveDeltaPPMRefsHandler = useCallback(
     (event, row) => {
@@ -205,14 +190,20 @@ function PeaksTable({ activeTab, data, info }: PeaksTableProps) {
   }
 
   return (
-    <ReactTable
-      activeRow={handleActiveRow}
-      rowStyle={{ activated: { backgroundColor: '#f5f5dc' } }}
-      data={data}
-      columns={tableColumns}
-      approxItemHeight={24}
-      enableVirtualScroll
-    />
+    <>
+      <EditPeakShapeModal
+        peak={peak}
+        onCloseDialog={() => setEditedPeak(undefined)}
+      />
+      <ReactTable
+        activeRow={handleActiveRow}
+        rowStyle={{ activated: { backgroundColor: '#f5f5dc' } }}
+        data={data}
+        columns={tableColumns}
+        approxItemHeight={24}
+        enableVirtualScroll
+      />
+    </>
   );
 }
 
