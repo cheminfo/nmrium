@@ -1,36 +1,54 @@
 /** @jsxImportSource @emotion/react */
-import { Checkbox, Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
+import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { Spectrum } from 'nmr-load-save';
-import { useForm } from 'react-hook-form';
+import { useRef } from 'react';
 
-import {
-  DataExportStage,
-  ExportAsJcampOptions,
-  exportAsJcamp,
-} from '../../data/SpectraManager';
+import { DataExportStage, exportAsJcamp } from '../../data/SpectraManager';
 import { useToaster } from '../context/ToasterContext';
 import ActionButtons from '../elements/ActionButtons';
 import Label, { LabelStyle } from '../elements/Label';
-import { Select2Controller } from '../elements/Select2Controller';
+import { Select2 } from '../elements/Select2';
 import useSpectrum from '../hooks/useSpectrum';
 
-const initValues: ExportAsJcampOptions = {
-  onlyReal: true,
-  dataExportStage: 'PROCESSED',
-};
+interface ExportDataTypeItem {
+  label: string;
+  value: DataExportStage;
+}
+
+const originalFidExportDataTypes: ExportDataTypeItem[] = [
+  {
+    label: 'Original FID',
+    value: 'originalFid',
+  },
+];
+
+const originalFtDataTypes: ExportDataTypeItem[] = [
+  {
+    label: 'Original FT real',
+    value: 'originalFtReal',
+  },
+  {
+    label: 'Original FT real and imaginary',
+    value: 'originalFtRealImaginary',
+  },
+];
+const processedDataTypes: ExportDataTypeItem[] = [
+  {
+    label: 'Processed real',
+    value: 'processedReal',
+  },
+  {
+    label: 'Processed real and imaginary',
+    value: 'processedRealImaginary',
+  },
+];
 
 const labelStyle: LabelStyle = {
   wrapper: { display: 'flex', height: '100%', flex: 1 },
   container: { alignItems: 'flex-start' },
   label: { paddingTop: '5px', width: 80 },
 };
-
-const DATA_STAGES = Object.keys(DataExportStage).map((key) => ({
-  label: key,
-  value: DataExportStage[key],
-}));
-
 interface InnerExportAsJCAMPProps {
   closeDialog: () => void;
   spectrum?: Spectrum;
@@ -56,25 +74,47 @@ function ExportAsJcampModal(props: ExportAsJCAMPProps) {
   return <InnerExportAsJcampModal spectrum={currentSpectrum} {...props} />;
 }
 
+function getExportDataTypes(spectrum: Spectrum) {
+  const { originalInfo, filters } = spectrum;
+
+  const menuItems: ExportDataTypeItem[] = [];
+  if (originalInfo?.isFt) {
+    menuItems.push(...originalFtDataTypes);
+  }
+
+  if (originalInfo?.isFid) {
+    menuItems.push(...originalFidExportDataTypes);
+  }
+
+  if (filters?.length > 0) {
+    menuItems.push(...processedDataTypes);
+  }
+
+  return menuItems;
+}
+
 function InnerExportAsJcampModal(props: Required<InnerExportAsJCAMPProps>) {
   const { closeDialog, spectrum } = props;
-  const { control, handleSubmit, register } = useForm<ExportAsJcampOptions>({
-    defaultValues: initValues,
-  });
   const toaster = useToaster();
+  const exportDataTypes = getExportDataTypes(spectrum);
+  const exportDataAsRef = useRef<DataExportStage>(exportDataTypes[0].value);
 
-  function submitHandler(options: ExportAsJcampOptions) {
+  function submitHandler() {
     const hideLoading = toaster.showLoading({
       message: 'export as JCAMP-DX in progress',
     });
     try {
-      exportAsJcamp(spectrum, options);
+      exportAsJcamp(spectrum, exportDataAsRef.current);
     } catch (error: any) {
       toaster.show({ message: error.message, intent: 'danger' });
     } finally {
       closeDialog?.();
       hideLoading();
     }
+  }
+
+  function handleChangeExportDataType(data) {
+    exportDataAsRef.current = data.value;
   }
 
   return (
@@ -91,20 +131,17 @@ function InnerExportAsJcampModal(props: Required<InnerExportAsJCAMPProps>) {
         `}
       >
         <Label title="Data" style={labelStyle}>
-          <Select2Controller
-            control={control}
-            name="dataExportStage"
-            items={DATA_STAGES}
+          <Select2
+            defaultSelectedItem={exportDataTypes[0]}
+            onItemSelect={handleChangeExportDataType}
+            items={exportDataTypes}
           />
-        </Label>
-        <Label title="Only real" style={labelStyle}>
-          <Checkbox {...register('onlyReal')} />
         </Label>
       </DialogBody>
       <DialogFooter>
         <ActionButtons
           style={{ flexDirection: 'row-reverse', margin: 0 }}
-          onDone={() => void handleSubmit(submitHandler)()}
+          onDone={submitHandler}
           doneLabel="export"
           onCancel={() => {
             closeDialog?.();
