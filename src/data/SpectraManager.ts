@@ -1,4 +1,5 @@
 import { saveAs } from 'file-saver';
+import JSZip from 'jszip';
 import {
   Spectrum,
   Workspace,
@@ -6,7 +7,9 @@ import {
   serializeNmriumState,
   CURRENT_EXPORT_VERSION,
   spectrum1DToJcamp,
+  StateMolecule,
 } from 'nmr-load-save';
+import OCL from 'openchemlib/full';
 
 import { State } from '../component/reducer/Reducer';
 
@@ -167,4 +170,52 @@ export function exportAsJcamp(
 
   const blob = new Blob([jcamp], { type: 'text/plain' });
   saveAs(blob, `${spectrum.info.name}.jdx`);
+}
+
+interface ExportForCTOptions {
+  spectrum: Spectrum;
+  molecules: StateMolecule[];
+}
+
+export async function exportForCT(options: ExportForCTOptions) {
+  const { spectrum, molecules } = options;
+
+  if (!isSpectrum1D(spectrum)) {
+    throw new Error('2D spectrum is not supported');
+  }
+  if (!spectrum.info.isFt) {
+    throw new Error('The spectrum must be a Fourier Transform (FT) spectrum.');
+  }
+  if (!(Array.isArray(molecules) && molecules.length > 0)) {
+    throw new Error('Molecule file is required. Please add a molecule');
+  }
+
+  const jcamp = spectrum1DToJcamp(spectrum, {
+    onlyReal: true,
+  });
+
+  if (!jcamp) {
+    throw new Error('Failed to convert the 1D spectrum to JCAMP');
+  }
+  const name = spectrum.info.name;
+  const zip = new JSZip();
+
+  //add jcamp file
+  zip.file(`${name}.dx`, jcamp);
+  //add mol file
+  const { molfile } = molecules[0];
+  const molecule = OCL.Molecule.fromMolfile(molfile);
+  const molFileName = molecule.getMolecularFormula().formula;
+
+  zip.file(`${molFileName}.mol`, molecule.toMolfile());
+
+  const blob = await zip.generateAsync({
+    type: 'blob',
+    compression: 'DEFLATE',
+    compressionOptions: {
+      level: 9,
+    },
+  });
+
+  saveAs(blob, name);
 }
