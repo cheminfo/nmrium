@@ -92,6 +92,7 @@ function ReactTableRow(props: ReactTableRowProps) {
   const { key: rowKey, ...otherKeyProps } = row.getRowProps();
   return (
     <ContextMenu
+      data={row.original}
       options={contextMenu}
       onSelect={(selected) => onContextMenuSelect?.(selected, row.original)}
       as="tr"
