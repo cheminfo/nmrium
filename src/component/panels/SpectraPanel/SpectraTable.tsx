@@ -7,14 +7,17 @@ import {
   PredefinedTableColumn,
   SpectraTableColumn,
   Spectrum,
+  StateMolecule,
 } from 'nmr-load-save';
 import { useMemo, CSSProperties, useCallback, useState } from 'react';
 import { FaCopy, FaRegTrashAlt, FaFileExport } from 'react-icons/fa';
 import { IoColorPaletteOutline } from 'react-icons/io5';
 
+import { exportForCT } from '../../../data/SpectraManager';
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D';
 import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents';
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
+import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useToaster } from '../../context/ToasterContext';
 import {
@@ -71,6 +74,7 @@ enum SpectraContextMenuOptionsKeys {
   ExportAsJcamp = 'ExportAsJcamp',
   ExportAsText = 'ExportAsText',
   CopyAsText = 'CopyAsText',
+  ExportForCT = 'ExportForCT',
 }
 
 const Spectra2DContextMenuOptions: ContextMenuItem[] = [
@@ -86,24 +90,59 @@ const Spectra2DContextMenuOptions: ContextMenuItem[] = [
   },
 ];
 
-const Spectra1DContextMenuOptions: ContextMenuItem[] = [
-  ...Spectra2DContextMenuOptions,
-  {
-    text: 'Export as JCAMP-DX',
-    icon: <FaFileExport />,
-    data: { id: SpectraContextMenuOptionsKeys.ExportAsJcamp },
-  },
-  {
-    text: 'Export as text',
-    icon: <FaFileExport />,
-    data: { id: SpectraContextMenuOptionsKeys.ExportAsText },
-  },
-  {
-    text: 'Copy as text',
-    icon: <FaCopy />,
-    data: { id: SpectraContextMenuOptionsKeys.CopyAsText },
-  },
-];
+interface Spectra1DContextMenuOptions {
+  molecules?: StateMolecule[];
+}
+
+function getSpectra1DContextMenuOptions(
+  options: Spectra1DContextMenuOptions,
+): ContextMenuItem[] {
+  const { molecules = [] } = options;
+
+  return [
+    ...Spectra2DContextMenuOptions,
+    {
+      text: 'Export as JCAMP-DX',
+      icon: <FaFileExport />,
+      data: { id: SpectraContextMenuOptionsKeys.ExportAsJcamp },
+    },
+    {
+      text: 'Export as text',
+      icon: <FaFileExport />,
+      data: { id: SpectraContextMenuOptionsKeys.ExportAsText },
+    },
+    {
+      text: 'Copy as text',
+      icon: <FaCopy />,
+      data: { id: SpectraContextMenuOptionsKeys.CopyAsText },
+    },
+    {
+      text: 'Export for CT',
+      icon: <FaFileExport />,
+      data: { id: SpectraContextMenuOptionsKeys.ExportForCT },
+      tooltip: {
+        content:
+          'A chemical structure and a processed proton spectrum are required to use CT',
+      },
+      disabled: (spectrum: Spectrum) =>
+        !isValidExportForCT(spectrum, molecules),
+    },
+  ];
+}
+
+function isValidExportForCT(spectrum: Spectrum, molecules: StateMolecule[]) {
+  if (!isSpectrum1D(spectrum)) {
+    return false;
+  }
+  if (!spectrum.info.isFt) {
+    return false;
+  }
+  if (!(Array.isArray(molecules) && molecules.length > 0)) {
+    return false;
+  }
+
+  return true;
+}
 
 export function SpectraTable(props: SpectraTableProps) {
   const {
@@ -121,6 +160,7 @@ export function SpectraTable(props: SpectraTableProps) {
   const [exportedSpectrum, setExportedSpectrum] = useState<Spectrum | null>();
   const { rawWriteWithType, shouldFallback, cleanShouldFallback, text } =
     useClipboard();
+  const { molecules } = useChartData();
 
   const COLUMNS: Partial<
     Record<(string & {}) | PredefinedSpectraColumn, Column<Spectrum>>
@@ -173,7 +213,7 @@ export function SpectraTable(props: SpectraTableProps) {
   );
 
   const selectContextMenuHandler = useCallback(
-    (option, spectrum) => {
+    async (option, spectrum) => {
       const { id } = option;
       switch (id) {
         case SpectraContextMenuOptionsKeys.CopyToClipboard: {
@@ -220,6 +260,18 @@ export function SpectraTable(props: SpectraTableProps) {
           );
           break;
         }
+        case SpectraContextMenuOptionsKeys.ExportForCT: {
+          try {
+            await exportForCT({ spectrum, molecules });
+          } catch (error: unknown) {
+            const message = (error as Error)?.message;
+
+            if (message) {
+              toaster.show({ intent: 'danger', message });
+            }
+          }
+          break;
+        }
 
         default: {
           break;
@@ -227,7 +279,7 @@ export function SpectraTable(props: SpectraTableProps) {
       }
     },
 
-    [dispatch, rawWriteWithType, toaster],
+    [dispatch, molecules, rawWriteWithType, toaster],
   );
 
   function handleActiveRow(row) {
@@ -302,7 +354,9 @@ export function SpectraTable(props: SpectraTableProps) {
 
   const contextMenu =
     nucleus.split(',').length === 1
-      ? Spectra1DContextMenuOptions
+      ? getSpectra1DContextMenuOptions({
+          molecules,
+        })
       : Spectra2DContextMenuOptions;
   return (
     <>
