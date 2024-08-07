@@ -3,7 +3,7 @@ import { Controller, ControllerProps, FieldValues } from 'react-hook-form';
 import { Select2, Select2Props, SelectDefaultItem } from './Select2';
 
 type Select2ControllerProps<
-  T extends SelectDefaultItem = SelectDefaultItem,
+  T extends Record<string, any> = SelectDefaultItem,
   TFieldValues extends FieldValues = FieldValues,
 > = {
   controllerProps?: Omit<ControllerProps<TFieldValues>, 'render'>;
@@ -12,7 +12,7 @@ type Select2ControllerProps<
   Partial<Pick<Select2Props<T>, 'onItemSelect'>>;
 
 export function Select2Controller<
-  T extends SelectDefaultItem = SelectDefaultItem,
+  T extends Record<string, any>,
   TFieldValues extends FieldValues = FieldValues,
 >(props: Select2ControllerProps<T, TFieldValues>) {
   const {
@@ -20,6 +20,8 @@ export function Select2Controller<
     control,
     controllerProps = {},
     onItemSelect,
+    intent,
+    itemValueKey = 'value',
     ...otherSelectProps
   } = props;
   return (
@@ -27,15 +29,17 @@ export function Select2Controller<
       name={name}
       control={control}
       {...controllerProps}
-      render={({ field }) => {
+      render={({ field, fieldState: { invalid } }) => {
         return (
           <Select2<T>
+            itemValueKey={itemValueKey}
             selectedItemValue={field.value}
             onItemSelect={(item, event) => {
-              field.onChange(item.value);
+              field.onChange(item[itemValueKey]);
               onItemSelect?.(item, event);
             }}
             {...otherSelectProps}
+            intent={invalid ? 'danger' : intent}
           />
         );
       }}
