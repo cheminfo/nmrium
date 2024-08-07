@@ -42,6 +42,7 @@ import PredefinedWorkspaces from '../../workspaces';
 import WorkspaceItem from './WorkspaceItem';
 import DatabasesTabContent from './settings-tabs/DatabasesTabContent';
 import DisplayTabContent from './settings-tabs/DisplayTabContent';
+import { ExternalAPIsTabContent } from './settings-tabs/ExternalAPIsTabContent';
 import GeneralTabContent from './settings-tabs/GeneralTabContent';
 import ImportationFiltersTabContent from './settings-tabs/ImportationFiltersTabContent';
 import InfoBlockTabContent from './settings-tabs/InfoBlockTabContent';
@@ -132,8 +133,7 @@ function InnerGeneralSettingsModal(props: InnerGeneralSettingsModalProps) {
     defaultValues: currentWorkspace,
     resolver: yupResolver(validation),
   });
-  const { reset, getValues } = methods;
-
+  const { reset, getValues, watch } = methods;
   const workspacesList = useMemo(() => {
     return baseWorkspaces.concat([
       {
@@ -184,7 +184,8 @@ function InnerGeneralSettingsModal(props: InnerGeneralSettingsModalProps) {
     },
     [dispatch, preferences.workspace, workspaces, reset],
   );
-
+  const isExperimentalFeatures =
+    watch('display.general.experimentalFeatures.display') || false;
   useEffect(() => {
     if (pastRef.current) {
       setWorkspaceSetting(pastRef.current);
@@ -292,6 +293,13 @@ function InnerGeneralSettingsModal(props: InnerGeneralSettingsModalProps) {
                 id="spectra-colors"
                 panel={<SpectraColorsTabContent />}
               />
+              {isExperimentalFeatures && (
+                <Tab
+                  title="External APIs"
+                  id="external-apis"
+                  panel={<ExternalAPIsTabContent />}
+                />
+              )}
             </Tabs>
           </div>
         </DialogBody>

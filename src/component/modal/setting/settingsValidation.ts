@@ -1,4 +1,5 @@
-import { array, object, string, number } from 'yup';
+import { ExternalAPIKeyType, EXTERNAL_API_KEYS } from 'nmr-load-save';
+import { array, object, string, number, mixed } from 'yup';
 
 import { checkUniqueByKey } from '../../utility/checkUniqueByKey';
 
@@ -49,6 +50,24 @@ const spectraColorsSchemaValidation = object({
 const generalValidation = object({
   dimmedSpectraOpacity: number().min(0).max(1).required(),
 });
+const externalAPIsValidation = array()
+  .of(
+    object({
+      key: mixed<ExternalAPIKeyType>()
+        .oneOf(EXTERNAL_API_KEYS.map(({ key }) => key))
+        .required(),
+      serverLink: string().url().required(),
+      APIKey: string().required(),
+    }),
+  )
+  .test(
+    'Unique',
+    'External API provider need te be unique',
+    function check(apis) {
+      // eslint-disable-next-line no-invalid-this
+      return checkUniqueByKey(apis, 'key', this);
+    },
+  );
 
 export const validation: any = object().shape({
   nuclei: nucleiValidation,
@@ -56,4 +75,5 @@ export const validation: any = object().shape({
   infoBlock: infoBlockValidation,
   general: generalValidation,
   spectraColors: spectraColorsSchemaValidation,
+  externalAPIs: externalAPIsValidation,
 });
