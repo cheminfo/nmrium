@@ -1,6 +1,6 @@
 import { Button, ButtonProps } from '@blueprintjs/core';
 import { Select, SelectProps } from '@blueprintjs/select';
-import { ReactNode, useEffect } from 'react';
+import { forwardRef, ForwardedRef, ReactNode, useEffect } from 'react';
 import { useSelect } from 'react-science/ui';
 
 import { FilterType } from '../utility/filterType';
@@ -10,26 +10,30 @@ interface ItemOptions<T> {
   defaultSelectedItem?: T;
 }
 
-interface ItemSelectOptions<T extends SelectDefaultItem = SelectDefaultItem> {
+interface ItemSelectOptions<T extends Record<string, any> = SelectDefaultItem> {
   itemTextKey?: keyof FilterType<T, string>;
   itemValueKey?: keyof T;
   selectedItemValue?: T[keyof T];
+  placeholder?: string;
+  filterPlaceholder?: string;
 }
 
-type SelectOptions<T extends SelectDefaultItem = SelectDefaultItem> =
-  ItemOptions<T> & ItemSelectOptions;
+type SelectOptions<T extends Record<string, any> = SelectDefaultItem> =
+  ItemOptions<T> & ItemSelectOptions<T>;
 
 type ReturnedUseSelectOptions = ReturnType<typeof useSelect>;
 
-export type Select2Props<T extends SelectDefaultItem = SelectDefaultItem> =
+export type Select2Props<T extends Record<string, any> = SelectDefaultItem> =
   Omit<
     SelectProps<T>,
     keyof Omit<ReturnedUseSelectOptions, 'onItemSelect' | 'value'>
   > &
-    SelectOptions<T> & { selectedButtonProps?: Omit<ButtonProps, 'text'> };
+    SelectOptions<T> & {
+      selectedButtonProps?: Omit<ButtonProps, 'text'>;
+    } & Pick<ButtonProps, 'intent'>;
 
 export function getDefaultSelectedItem<
-  T extends SelectDefaultItem = SelectDefaultItem,
+  T extends Record<string, any> = SelectDefaultItem,
 >(items: T[], itemValueKey?: keyof T, value?: any) {
   return items.find((item) => itemValueKey && item[itemValueKey] === value);
 }
@@ -39,8 +43,9 @@ export interface SelectDefaultItem {
   value: any;
 }
 
-export function Select2<T extends SelectDefaultItem = SelectDefaultItem>(
+function InnerSelect2<T extends Record<string, any> = SelectDefaultItem>(
   props: Select2Props<T>,
+  ref,
 ) {
   const {
     items,
@@ -51,6 +56,9 @@ export function Select2<T extends SelectDefaultItem = SelectDefaultItem>(
     onItemSelect,
     selectedButtonProps,
     fill,
+    intent,
+    placeholder = '',
+    filterPlaceholder,
     ...otherProps
   } = props;
 
@@ -83,14 +91,23 @@ export function Select2<T extends SelectDefaultItem = SelectDefaultItem>(
       }}
       {...defaultSelectProps}
       {...otherProps}
+      placeholder={filterPlaceholder}
       fill={fill}
     >
       <Button
+        ref={ref}
         fill={fill}
-        text={item?.[itemTextKey] ? String(item[itemTextKey]) : ''}
+        text={item?.[itemTextKey] ? String(item[itemTextKey]) : placeholder}
         {...selectedButtonProps}
         rightIcon="double-caret-vertical"
+        intent={intent}
       />
     </Select>
   );
 }
+
+export const Select2 = forwardRef(InnerSelect2) as <
+  T extends Record<string, any> = SelectDefaultItem,
+>(
+  props: Select2Props<T> & { ref?: ForwardedRef<HTMLButtonElement> },
+) => ReturnType<typeof InnerSelect2>;
