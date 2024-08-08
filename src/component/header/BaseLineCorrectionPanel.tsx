@@ -191,6 +191,9 @@ function BaseLineCorrectionInnerPanel(
             onItemSelect(item);
             const { values } = getData(item.value, props?.filter?.value || {});
             reset(values);
+            setTimeout(() => {
+              submitHandler();
+            }, 0);
           }}
           {...defaultSelectProps}
         >
