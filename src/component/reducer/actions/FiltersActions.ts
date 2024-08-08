@@ -13,7 +13,7 @@ import {
   FiltersManager,
   BaselineCorrectionOptions,
   ApodizationOptions,
-  getBaselineZones,
+  getBaselineZonesByDietrich,
 } from 'nmr-processing';
 
 import { defaultApodizationOptions } from '../../../data/constants/DefaultApodizationOptions';
@@ -494,9 +494,8 @@ function beforeRollback(draft: Draft<State>, filterKey) {
           (baselineCorrectionFilter &&
             baselineCorrectionFilter.value.zones?.length === 0)
         ) {
-          draft.toolOptions.data.baselineCorrection.zones = getBaselineZones(
-            datum.data as NmrData1D,
-          );
+          draft.toolOptions.data.baselineCorrection.zones =
+            getBaselineZonesByDietrich(datum.data as NmrData1D);
         } else {
           draft.toolOptions.data.baselineCorrection.zones =
             baselineCorrectionFilter.value.zones;
