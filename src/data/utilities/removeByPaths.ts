@@ -34,11 +34,10 @@ function remove(obj: any, path: string, key: string | null, value) {
       current[finalKey] = target.filter((item) => item[key] !== value);
     }
   } else if (typeof target === 'object' && target !== null) {
+    // eslint-disable-next-line unicorn/no-lonely-if
     if (Object.hasOwn(target, value)) {
       // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete target[value];
     }
-  } else {
-    throw new Error(`Target is not an array or object: ${path}`);
   }
 }

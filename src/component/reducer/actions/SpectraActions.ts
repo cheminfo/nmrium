@@ -17,7 +17,7 @@ import {
   isSpectrum1D,
   get1DColor,
   initiateDatum1D,
-  generateSpectrumFromRanges,
+  resurrectSpectrumFromRanges,
 } from '../../../data/data1d/Spectrum1D';
 import {
   SpectrumSimulationOptions,
@@ -567,7 +567,10 @@ function handleGenerateSpectrumFromPublicationStringHandler(
   action: GenerateSpectrumFromPublicationStringAction,
 ) {
   const { ranges, info } = action.payload;
-  const spectrum = generateSpectrumFromRanges(ranges, info, draft.usedColors);
+  const spectrum = resurrectSpectrumFromRanges(ranges, {
+    info,
+    usedColors: draft.usedColors,
+  });
 
   if (spectrum) {
     draft.data.push(spectrum);

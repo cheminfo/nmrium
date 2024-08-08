@@ -1,82 +1,120 @@
 import { Draft } from 'immer';
-import { Spectrum1D } from 'nmr-load-save';
-import { NMRRange } from 'nmr-processing';
+import { Spectrum, Spectrum1D } from 'nmr-load-save';
+import { DatabaseNMREntry, Info1D } from 'nmr-processing';
 
-import { get1DColor, mapRanges } from '../../../data/data1d/Spectrum1D';
 import {
-  ResurrectSpectrumInfo,
-  generateSpectrumFromRanges,
-} from '../../../data/data1d/Spectrum1D/ranges/generateSpectrumFromRanges';
+  get1DColor,
+  isSpectrum1D,
+  mapRanges,
+} from '../../../data/data1d/Spectrum1D';
+import {
+  resurrectSpectrumFromRanges,
+  resurrectSpectrumFromSignals,
+} from '../../../data/data1d/Spectrum1D/ranges/resurrectSpectrum';
 import { State } from '../Reducer';
 import { setZoom } from '../helper/Zoom1DManager';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
+import { getSpectrum } from '../helper/getSpectrum';
 import { ActionType } from '../types/ActionType';
 
 import { setDomain } from './DomainActions';
 
-type ResurrectSpectrumFromJcampAction = ActionType<
-  'RESURRECTING_SPECTRUM_FROM_JCAMP',
-  { ranges: NMRRange[]; spectrum: Spectrum1D }
->;
-type ResurrectSpectrumFromRangesAction = ActionType<
-  'RESURRECTING_SPECTRUM_FROM_RANGES',
-  { ranges: NMRRange[]; info: ResurrectSpectrumInfo }
+interface BaseResurrectSpectrum {
+  databaseEntry: DatabaseNMREntry;
+}
+interface ResurrectSpectrumFromJCAMP extends BaseResurrectSpectrum {
+  source: 'jcamp';
+  spectrum: Spectrum1D;
+}
+interface ResurrectSpectrumFromRangesOrSignals extends BaseResurrectSpectrum {
+  source: 'rangesOrSignals';
+}
+
+type ResurrectSpectrum =
+  | ResurrectSpectrumFromJCAMP
+  | ResurrectSpectrumFromRangesOrSignals;
+
+type ResurrectSpectrumAction = ActionType<
+  'RESURRECTING_SPECTRUM',
+  ResurrectSpectrum
 >;
 
 export type DatabaseActions =
   | ActionType<'TOGGLE_SIMILARITY_TREE'>
-  | ResurrectSpectrumFromJcampAction
-  | ResurrectSpectrumFromRangesAction;
+  | ResurrectSpectrumAction;
 
-function handleResurrectSpectrumFromJcamp(
+function handleResurrectSpectrum(
   draft: Draft<State>,
-  action: ResurrectSpectrumFromJcampAction,
+  action: ResurrectSpectrumAction,
 ) {
-  const { ranges } = action.payload;
-  let { spectrum } = action.payload;
-  spectrum = {
-    ...spectrum,
-    ranges: {
-      ...spectrum.ranges,
-      values: mapRanges(ranges, spectrum),
-    },
-    display: {
-      ...spectrum.display,
-      ...get1DColor(spectrum.display, { usedColors: draft.usedColors }),
-    },
-  };
+  const {
+    spectra: { activeTab: nucleus },
+  } = draft.view;
+  const { databaseEntry, source } = action.payload;
+  const {
+    ranges,
+    signals,
+    solvent,
+    names = [],
+    id: spectrumID,
+  } = databaseEntry;
 
-  draft.data.push(spectrum);
+  let resurrectedSpectrum: Spectrum | null | undefined = null;
 
-  setDomain(draft, { isYDomainShared: false });
-
-  //rescale the vertical zoom
-  setZoom(draft, { scale: 0.8, spectrumID: spectrum.id });
-
-  //keep the last horizontal zoom
-  const zoomHistory = zoomHistoryManager(
-    draft.zoom.history,
-    draft.view.spectra.activeTab,
-  );
-  const zoomValue = zoomHistory.getLast();
-  if (zoomValue) {
-    draft.xDomain = zoomValue.xDomain;
-    draft.yDomain = zoomValue.yDomain;
+  if (source === 'jcamp') {
+    const { spectrum } = action.payload;
+    resurrectedSpectrum = {
+      ...spectrum,
+      id: spectrumID,
+      ranges: {
+        ...spectrum.ranges,
+        values: mapRanges(ranges, spectrum),
+      },
+      display: {
+        ...spectrum.display,
+        ...get1DColor(spectrum.display, { usedColors: draft.usedColors }),
+      },
+    };
   }
-}
 
-function handleResurrectSpectrumFromRanges(
-  draft: Draft<State>,
-  action: ResurrectSpectrumFromRangesAction,
-) {
-  const { ranges, info } = action.payload;
-  const datum = generateSpectrumFromRanges(ranges, info, draft.usedColors);
-  if (!datum) return;
+  if (source === 'rangesOrSignals') {
+    const activeSpectrum = getSpectrum(draft) || draft.data[0];
+    let options: { from?: number; to?: number } = {};
+    let info: Partial<Info1D> = { solvent, name: names[0], nucleus };
 
-  draft.data.push(datum);
+    if (activeSpectrum && isSpectrum1D(activeSpectrum)) {
+      const {
+        data: { x },
+        info: spectrumInfo,
+      } = activeSpectrum;
+      options = { from: x[0], to: x.at(-1) };
+      info = { ...spectrumInfo, ...info };
+    }
+
+    if (signals) {
+      resurrectedSpectrum = resurrectSpectrumFromSignals(signals, {
+        spectrumID,
+        info,
+        usedColors: draft.usedColors,
+        ...options,
+      });
+    } else if (ranges) {
+      resurrectedSpectrum = resurrectSpectrumFromRanges(ranges, {
+        spectrumID,
+        info,
+        usedColors: draft.usedColors,
+        ...options,
+      });
+    }
+  }
+
+  if (!resurrectedSpectrum) return;
+
+  draft.data.push(resurrectedSpectrum);
+
   setDomain(draft, { isYDomainShared: false });
   //rescale the vertical zoom
-  setZoom(draft, { scale: 0.8, spectrumID: datum.id });
+  setZoom(draft, { scale: 0.8, spectrumID: resurrectedSpectrum.id });
 
   //keep the last horizontal zoom
   const zoomHistory = zoomHistoryManager(
@@ -95,8 +133,4 @@ function handleToggleSimilarityTree(draft: Draft<State>) {
     !draft.view.spectra.showSimilarityTree;
 }
 
-export {
-  handleResurrectSpectrumFromRanges,
-  handleResurrectSpectrumFromJcamp,
-  handleToggleSimilarityTree,
-};
+export { handleResurrectSpectrum, handleToggleSimilarityTree };
