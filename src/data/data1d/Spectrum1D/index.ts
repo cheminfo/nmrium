@@ -12,7 +12,10 @@ export { changeRangeSignal } from './ranges/changeRangeSignal';
 export { checkRangeKind } from './ranges/checkRangeKind';
 export { detectRange } from './ranges/detectRange';
 export { detectRanges } from './ranges/detectRanges';
-export { generateSpectrumFromRanges } from './ranges/generateSpectrumFromRanges';
+export {
+  resurrectSpectrumFromRanges,
+  resurrectSpectrumFromSignals,
+} from './ranges/resurrectSpectrum';
 export {
   mapRanges,
   getShiftX,

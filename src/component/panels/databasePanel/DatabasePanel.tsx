@@ -257,12 +257,7 @@ function DatabasePanelInner({
   const resurrectHandler = useCallback(
     (rowData) => {
       const { index, baseURL, jcampURL: jcampRelativeURL } = rowData;
-      const {
-        ranges,
-        solvent,
-        names = [],
-        id: spectrumID,
-      } = result.data[index];
+      const databaseEntry = result.data[index];
       if (jcampRelativeURL) {
         const url = new URL(jcampRelativeURL, baseURL);
         setTimeout(async () => {
@@ -274,11 +269,10 @@ function DatabasePanelInner({
               entries: [{ baseURL: url.origin, relativePath: url.pathname }],
             });
             const spectrum = data?.spectra?.[0] || null;
-            if (spectrum && isSpectrum1D(spectrum) && spectrumID) {
-              spectrum.id = spectrumID;
+            if (spectrum && isSpectrum1D(spectrum)) {
               dispatch({
-                type: 'RESURRECTING_SPECTRUM_FROM_JCAMP',
-                payload: { ranges, spectrum },
+                type: 'RESURRECTING_SPECTRUM',
+                payload: { source: 'jcamp', databaseEntry, spectrum },
               });
             }
           } catch {
@@ -289,12 +283,12 @@ function DatabasePanelInner({
         }, 0);
       } else {
         dispatch({
-          type: 'RESURRECTING_SPECTRUM_FROM_RANGES',
-          payload: { ranges, info: { solvent, nucleus, name: names[0] } },
+          type: 'RESURRECTING_SPECTRUM',
+          payload: { source: 'rangesOrSignals', databaseEntry },
         });
       }
     },
-    [dispatch, nucleus, result.data, toaster],
+    [dispatch, result.data, toaster],
   );
   const saveHandler = useCallback(
     (row) => {

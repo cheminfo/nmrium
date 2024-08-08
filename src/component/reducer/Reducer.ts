@@ -720,10 +720,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
       case 'ORDER_MULTIPLE_SPECTRA_ANALYSIS':
         return SpectraAnalysisActions.handleOrderSpectra(draft, action);
 
-      case 'RESURRECTING_SPECTRUM_FROM_RANGES':
-        return DatabaseActions.handleResurrectSpectrumFromRanges(draft, action);
-      case 'RESURRECTING_SPECTRUM_FROM_JCAMP':
-        return DatabaseActions.handleResurrectSpectrumFromJcamp(draft, action);
+      case 'RESURRECTING_SPECTRUM':
+        return DatabaseActions.handleResurrectSpectrum(draft, action);
       case 'TOGGLE_SIMILARITY_TREE':
         return DatabaseActions.handleToggleSimilarityTree(draft);
 
