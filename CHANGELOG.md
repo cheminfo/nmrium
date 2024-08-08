@@ -1,5 +1,50 @@
 # Changelog
 
+## [0.59.0](https://github.com/cheminfo/nmrium/compare/v0.58.0...v0.59.0) (2024-08-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* rename `NMRiumRef` type to `NMRiumRefAPI`
+
+### release-as
+
+* v0.59.0 ([#3187](https://github.com/cheminfo/nmrium/issues/3187)) ([0bed397](https://github.com/cheminfo/nmrium/commit/0bed3979cb998524380364c099aeb730c19832b9))
+
+
+### Features
+
+* add external ref API to load files ([#3147](https://github.com/cheminfo/nmrium/issues/3147)) ([3620af4](https://github.com/cheminfo/nmrium/commit/3620af47e72127426f89c00b6571a6fac06f9ef2))
+* avoid splitting molecule fragments into separate molecules ([#3174](https://github.com/cheminfo/nmrium/issues/3174)) ([c05db64](https://github.com/cheminfo/nmrium/commit/c05db642f1a4f4351bfcaa1d3f7c96faa518a872))
+* create alert component ([6de9be1](https://github.com/cheminfo/nmrium/commit/6de9be125355ab361f16c1c05681602b1c2572fe))
+* export as JCAMP-DX includes all metadata ([#3162](https://github.com/cheminfo/nmrium/issues/3162)) ([6caf0a7](https://github.com/cheminfo/nmrium/commit/6caf0a71f0d3ed5ea12e415b39636a94ab1fbc22))
+* export for CT ([23b2f1d](https://github.com/cheminfo/nmrium/commit/23b2f1df55037a8d76f997021f3b6913022cf92b))
+* export JCAMP-DX from the main export menu ([cbc5a4c](https://github.com/cheminfo/nmrium/commit/cbc5a4c6f85cc8712a3006270917bea717b1bd81))
+* export ranges as TSV file ([cea8135](https://github.com/cheminfo/nmrium/commit/cea81353adb1d72a24206c7cff99bd8c668f61d6))
+* hide External APIs tab behind experimental feature flag ([7dae46b](https://github.com/cheminfo/nmrium/commit/7dae46bceb52ca84580ec91fb266b0e303ed67d3))
+* implement external APIs management in general settings ([7dae46b](https://github.com/cheminfo/nmrium/commit/7dae46bceb52ca84580ec91fb266b0e303ed67d3))
+* improve selection of spectra ([#3159](https://github.com/cheminfo/nmrium/issues/3159)) ([2df4b33](https://github.com/cheminfo/nmrium/commit/2df4b3345c44b0758ce9ae7145157183e6f0f2c2))
+* print spectra ([#2786](https://github.com/cheminfo/nmrium/issues/2786)) ([1287bc1](https://github.com/cheminfo/nmrium/commit/1287bc18e8f7d6073c1f905cd3564f257508b563)), closes [#3139](https://github.com/cheminfo/nmrium/issues/3139)
+* resurrect spectrum from signals ([c32b594](https://github.com/cheminfo/nmrium/commit/c32b594dfbad2394ee5fdd81c153fdb0cb38e0c9))
+
+
+### Bug Fixes
+
+* allow big couplings when a range is added manually ([#3157](https://github.com/cheminfo/nmrium/issues/3157)) ([e6fb70a](https://github.com/cheminfo/nmrium/commit/e6fb70ac17341c21624edb1b79cc197a70896e2c))
+* avoid nesting a button within another button inside accordion item ([#3167](https://github.com/cheminfo/nmrium/issues/3167)) ([903ca53](https://github.com/cheminfo/nmrium/commit/903ca530b66725e1c7a524624cd433b63eafa520))
+* delete all filters should be enabled ([6a12a9d](https://github.com/cheminfo/nmrium/commit/6a12a9d635afc71a26e02430ca7d365bc9e3966b))
+* disabled toolbar popover item ([9c59558](https://github.com/cheminfo/nmrium/commit/9c59558ad1662520d14205da01a1bc1179c6b45c))
+* do not allow deletion of digital filter ([e41fa05](https://github.com/cheminfo/nmrium/commit/e41fa05e95b37afc4c7d4e34047fbbd4df644b2b)), closes [#3136](https://github.com/cheminfo/nmrium/issues/3136)
+* extract atoms correctly using mf-parser ([2b5b905](https://github.com/cheminfo/nmrium/commit/2b5b905507ed2c9af30d3bc001308025c4c8d98f))
+* import from publication string with common names of multiplicities ([#3154](https://github.com/cheminfo/nmrium/issues/3154)) ([9ff4ee0](https://github.com/cheminfo/nmrium/commit/9ff4ee02634dec0459d58f93930060e3a07d325c))
+* pre-calculated baseline zones using Dietrich algor ([#3153](https://github.com/cheminfo/nmrium/issues/3153)) ([90a3f97](https://github.com/cheminfo/nmrium/commit/90a3f9749d1340fe362ab0b925cf9b04435bb566))
+* prevent deletion in case no correlations links in summary panel ([5f2b614](https://github.com/cheminfo/nmrium/commit/5f2b6143c948c80629afe1321315babbdf78c1a9))
+* prevent vertical 2D scale from triggering data change callback ([d1a48f1](https://github.com/cheminfo/nmrium/commit/d1a48f10061ecf5a80c97f7408de905b7ef40f60))
+* remove associated objects from the view and keyPreferences upon spectrum deletion ([b0d41e9](https://github.com/cheminfo/nmrium/commit/b0d41e9dc3250d99714174a0ea220c691837eaae)), closes [#3125](https://github.com/cheminfo/nmrium/issues/3125)
+* reprocess spectra when all filters are deleted ([af618ec](https://github.com/cheminfo/nmrium/commit/af618ecafc7fe51bb96e7e477f51e75b39873a0c))
+* rollback to digital filter ([218891b](https://github.com/cheminfo/nmrium/commit/218891b5f392fd49e90c98321b4c477c334f7050)), closes [#3163](https://github.com/cheminfo/nmrium/issues/3163)
+* switch between baseline algorithms should affect the spectrum ([1549ce0](https://github.com/cheminfo/nmrium/commit/1549ce0b5afbc860b52e6d2c1d1e2921c80d4e4f))
+
 ## [0.58.0](https://github.com/cheminfo/nmrium/compare/v0.57.1...v0.58.0) (2024-07-10)
 
 
