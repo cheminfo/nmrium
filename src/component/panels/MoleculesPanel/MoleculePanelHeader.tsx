@@ -184,9 +184,18 @@ export default function MoleculePanelHeader({
   }
   async function handlePasteMolfile(molfile: string | undefined) {
     if (!molfile) return;
-    const molecules = await getMolecules(molfile);
-    dispatch({ type: 'ADD_MOLECULES', payload: { molecules } });
-    cleanShouldFallback();
+    try {
+      const molecules = getMolecules(molfile);
+      dispatch({ type: 'ADD_MOLECULES', payload: { molecules } });
+    } catch {
+      toaster.show({
+        intent: 'danger',
+        message:
+          'Failed to parse SMILES or molfile. Please paste a valid format',
+      });
+    } finally {
+      cleanShouldFallback();
+    }
   }
 
   const handleDelete = useCallback(() => {

@@ -1,5 +1,4 @@
-import { fileCollectionFromFiles } from 'filelist-utils';
-import { read } from 'nmr-load-save';
+import { readSDF, readSMILES } from 'nmr-load-save';
 import { Molecule as OCLMolecule } from 'openchemlib/full';
 
 import { initMolecule, StateMolecule, StateMoleculeExtended } from './Molecule';
@@ -88,22 +87,10 @@ export function getLabelNumber(reserveNumbers: number[]): number {
   return 1;
 }
 
-export async function getMolecules(text: string) {
-  let extension = 'smi';
-
+export function getMolecules(text: string) {
+  // parse SDF
   if (/v[23]000/i.test(text)) {
-    extension = 'sdf';
+    return readSDF(text);
   }
-
-  const file = new File([text], `file.${extension}`, {
-    type: 'text/plain',
-  });
-
-  const collection = await fileCollectionFromFiles([file]);
-
-  const {
-    nmriumState: { data },
-  } = await read(collection);
-
-  return data?.molecules || [];
+  return readSMILES(text);
 }
