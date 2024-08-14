@@ -29,7 +29,6 @@ import {
   ToolbarPopoverItem,
   ToolbarPopoverMenuItem,
 } from '../../elements/ToolbarPopoverItem';
-import { useModal } from '../../elements/popup/Modal';
 import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import CopyClipboardModal from '../../modal/CopyClipboardModal';
@@ -72,7 +71,6 @@ function RangesHeader({
   activeTab,
 }) {
   const dispatch = useDispatch();
-  const modal = useModal();
   const alert = useAlert();
   const toaster = useToaster();
   const assignmentData = useAssignmentData();
@@ -93,7 +91,6 @@ function RangesHeader({
 
   function changeRangesSumHandler(options) {
     dispatch({ type: 'CHANGE_RANGE_SUM', payload: { options } });
-    modal.close();
   }
 
   function removeAssignments() {
