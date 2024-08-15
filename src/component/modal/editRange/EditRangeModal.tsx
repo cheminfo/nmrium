@@ -1,20 +1,21 @@
 /** @jsxImportSource @emotion/react */
+import { Button, DialogBody, DialogFooter } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { v4 } from '@lukeed/uuid';
 import { Formik } from 'formik';
 import { Spectrum1D } from 'nmr-load-save';
 import { Range, splitPatterns, translateMultiplet } from 'nmr-processing';
-import { useMemo, useCallback, useRef, useEffect } from 'react';
+import { useMemo, useCallback, useRef } from 'react';
 import { FaSearchPlus } from 'react-icons/fa';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import Button from '../../elements/Button';
-import { CloseButton } from '../../elements/CloseButton';
-import { SaveButton } from '../../elements/SaveButton';
+import { useShareData } from '../../context/ShareDataContext';
+import { DraggableDialog } from '../../elements/DraggableDialog';
 import FormikOnChange from '../../elements/formik/FormikOnChange';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
+import useEditRangeModal from '../../panels/RangesPanel/hooks/useEditRangeModal';
 import { hasCouplingConstant } from '../../panels/extra/utilities/MultiplicityUtilities';
 import { formatNumber } from '../../utility/formatNumber';
 
@@ -22,36 +23,7 @@ import SignalsContent from './forms/components/SignalsContent';
 import editRangeFormValidation from './forms/validation/EditRangeValidation';
 
 const styles = css`
-  min-height: 500px;
-  padding: 5px;
-
-  button:focus {
-    outline: none;
-  }
-
-  .header {
-    border-bottom: 1px solid #f0f0f0;
-    display: flex;
-    align-items: center;
-
-    .title {
-      color: #464646;
-      font-size: 15px;
-      flex: 1;
-      border-left: 1px solid #ececec;
-      padding-left: 6px;
-    }
-
-    button {
-      background-color: transparent;
-      border: none;
-      padding: 5px;
-
-      svg {
-        height: 16px;
-      }
-    }
-  }
+  background-color: white;
 
   .tabs .tab-list {
     overflow-x: auto;
@@ -59,11 +31,13 @@ const styles = css`
 `;
 
 interface EditRangeModalProps {
+  rangeID: string;
+}
+
+interface InnerEditRangeModalProps extends EditRangeModalProps {
   onSave: (value: any) => Promise<void> | null | void;
-  onClose?: () => void;
   onRest: (originalRange: Range) => void;
   onZoom: (value: any) => void;
-  rangeId: string;
 }
 
 interface Coupling {
@@ -71,13 +45,34 @@ interface Coupling {
   coupling: string | number;
 }
 
-function EditRangeModal({
-  onSave,
-  onClose,
-  onZoom,
-  onRest,
-  rangeId,
-}: EditRangeModalProps) {
+export function EditRangeModal() {
+  const { reset, saveEditRange, zoomRange } = useEditRangeModal();
+  const { data: rangeID, setData: closeEditionModal } = useShareData<
+    string | null
+  >();
+
+  if (!rangeID) {
+    return null;
+  }
+
+  return (
+    <InnerEditRangeModal
+      onRest={(range) => {
+        closeEditionModal(null);
+        reset(range);
+      }}
+      onSave={(range) => {
+        closeEditionModal(null);
+        saveEditRange(range);
+      }}
+      onZoom={zoomRange}
+      rangeID={rangeID}
+    />
+  );
+}
+
+function InnerEditRangeModal(props: InnerEditRangeModalProps) {
+  const { onSave, onZoom, onRest, rangeID } = props;
   const formRef = useRef<any>(null);
   const {
     view: {
@@ -85,27 +80,15 @@ function EditRangeModal({
     },
   } = useChartData();
   const dispatch = useDispatch();
-  const range = useRange(rangeId);
+  const range = useRange(rangeID);
   const originalRangeRef = useRef(range);
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
 
-  const handleOnZoom = useCallback(() => {
+  function handleOnZoom() {
     onZoom(range);
-  }, [onZoom, range]);
+  }
 
-  useEffect(() => {
-    dispatch({
-      type: 'SET_SELECTED_TOOL',
-      payload: {
-        selectedTool: 'zoom',
-      },
-    });
-    if (!range) {
-      onClose?.();
-    }
-  }, [activeTab, dispatch, onClose, range]);
-
-  const handleOnClose = useCallback(() => {
+  function handleOnClose() {
     dispatch({
       type: 'SET_SELECTED_TOOL',
       payload: {
@@ -113,7 +96,7 @@ function EditRangeModal({
       },
     });
     onRest(originalRangeRef.current);
-  }, [dispatch, onRest]);
+  }
 
   const getCouplings = useCallback(
     (couplings) =>
@@ -208,45 +191,52 @@ function EditRangeModal({
     return;
   }
 
-  return (
-    <div css={styles}>
-      <div className="header handle">
-        <Button.Action
-          onClick={handleOnZoom}
-          fill="outline"
-          style={{ fontSize: '14' }}
-          color={{ base: '#5f5f5f', hover: 'white' }}
-        >
-          <FaSearchPlus title="Set to default view on range in spectrum" />
-        </Button.Action>
-        <span className="title">
-          {` Range and Signal edition: ${formatNumber(
-            range?.from,
-            rangesPreferences.from.format,
-          )} ppm to ${formatNumber(
-            range?.to,
-            rangesPreferences.to.format,
-          )} ppm`}
-        </span>
-        <SaveButton
-          onClick={() => formRef.current.submitForm()}
-          tooltip="Save and Exit"
-        />
+  const title = ` Range and Signal edition: ${formatNumber(
+    range?.from,
+    rangesPreferences.from.format,
+  )} ppm to ${formatNumber(range?.to, rangesPreferences.to.format)} ppm`;
 
-        <CloseButton tooltip="Close" onClick={handleOnClose} />
-      </div>
-      <Formik
-        innerRef={formRef}
-        initialValues={data}
-        validationSchema={editRangeFormValidation}
-        onSubmit={handleOnSave}
-      >
-        <>
-          <SignalsContent range={range} />
-          <FormikOnChange onChange={changeHandler} />
-        </>
-      </Formik>
-    </div>
+  return (
+    <DraggableDialog
+      hasBackdrop={false}
+      canOutsideClickClose={false}
+      style={{ width: 700 }}
+      title={title}
+      isOpen
+      headerLeftElement={
+        <Button
+          intent="success"
+          style={{ marginRight: '5px', borderRadius: '5px' }}
+          icon={
+            <FaSearchPlus title="Set to default view on range in spectrum" />
+          }
+          minimal
+          onClick={handleOnZoom}
+        />
+      }
+      onClose={handleOnClose}
+    >
+      <DialogBody css={styles}>
+        <Formik
+          innerRef={formRef}
+          initialValues={data}
+          validationSchema={editRangeFormValidation}
+          onSubmit={handleOnSave}
+        >
+          <>
+            <SignalsContent range={range} />
+            <FormikOnChange onChange={changeHandler} />
+          </>
+        </Formik>
+      </DialogBody>
+      <DialogFooter>
+        <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
+          <Button intent="success" onClick={() => formRef.current.submitForm()}>
+            Save and Exit
+          </Button>
+        </div>
+      </DialogFooter>
+    </DraggableDialog>
   );
 }
 
@@ -260,5 +250,3 @@ function useRange(rangeId: string) {
   );
   return ranges.values[index];
 }
-
-export default EditRangeModal;

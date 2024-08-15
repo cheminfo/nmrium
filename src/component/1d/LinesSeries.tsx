@@ -4,6 +4,7 @@ import { Spectrum1D } from 'nmr-load-save';
 
 import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY';
 import { isSpectrum1D } from '../../data/data1d/Spectrum1D/isSpectrum1D';
+import { useBrushTracker } from '../EventsTrackers/BrushTracker';
 import { useChartData } from '../context/ChartContext';
 import { useScaleChecked } from '../context/ScaleContext';
 import { useActiveSpectra } from '../hooks/useActiveSpectra';
@@ -12,7 +13,6 @@ import { useVerticalAlign } from '../hooks/useVerticalAlign';
 
 import Line from './Line';
 import { SPECTRA_BOTTOM_MARGIN } from './utilities/scale';
-import { useBrushTracker } from '../EventsTrackers/BrushTracker';
 
 const BOX_SIZE = 10;
 

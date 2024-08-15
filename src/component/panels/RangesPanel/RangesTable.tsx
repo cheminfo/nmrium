@@ -4,8 +4,10 @@ import { WorkSpacePanelPreferences } from 'nmr-load-save';
 import { Info1D } from 'nmr-processing';
 import { FaLink } from 'react-icons/fa';
 
+import { ShareDataProvider } from '../../context/ShareDataContext';
 import { TableContextMenuProps } from '../../elements/ReactTable/ReactTable';
 import useTableSortBy from '../../hooks/useTableSortBy';
+import { EditRangeModal } from '../../modal/editRange/EditRangeModal';
 import NoDataForFid from '../extra/placeholder/NoDataForFid';
 import NoTableData from '../extra/placeholder/NoTableData';
 
@@ -90,70 +92,73 @@ function RangesTable({
     preferences.showEditAction ||
     preferences.showZoomAction;
   return (
-    <table css={tableStyle}>
-      <thead>
-        <tr>
-          {preferences.showSerialNumber && <th>#</th>}
-          {preferences.showAssignmentLabel && (
-            <th title="Assignment">Assignment</th>
-          )}
-          {preferences.from.show && (
-            <th id="from" {...onSort}>
-              From
-              {isSortedDesc('from').content}
-            </th>
-          )}
-          {preferences.to.show && (
-            <th id="to" {...onSort}>
-              To {isSortedDesc('to').content}
-            </th>
-          )}
-          {preferences.deltaPPM.show && (
-            <th id="from" {...onSort}>
-              δ (ppm) {isSortedDesc('from').content}
-            </th>
-          )}
-          {preferences.deltaHz.show && <th>δ (Hz) </th>}
-
-          {preferences.relative.show && (
-            <th id="integration" {...onSort}>
-              Rel. {element} {isSortedDesc('integration').content}
-            </th>
-          )}
-          {preferences.absolute.show && <th>Absolute</th>}
-          {preferences.showMultiplicity && <th>Mult.</th>}
-          {preferences.coupling.show && <th>J (Hz)</th>}
-
-          {preferences.showAssignment && (
-            <>
-              <th title="Assign multiplets">
-                <FaLink style={{ fontSize: 10, margin: 'auto' }} />
+    <ShareDataProvider>
+      <EditRangeModal />
+      <table css={tableStyle}>
+        <thead>
+          <tr>
+            {preferences.showSerialNumber && <th>#</th>}
+            {preferences.showAssignmentLabel && (
+              <th title="Assignment">Assignment</th>
+            )}
+            {preferences.from.show && (
+              <th id="from" {...onSort}>
+                From
+                {isSortedDesc('from').content}
               </th>
-              <th title="Assign ranges" style={{ minWidth: '50px' }}>
-                Σ
+            )}
+            {preferences.to.show && (
+              <th id="to" {...onSort}>
+                To {isSortedDesc('to').content}
               </th>
-            </>
-          )}
-          {preferences.showKind && <th>Kind</th>}
-          {showActions && <th>{''}</th>}
-        </tr>
-      </thead>
-      <tbody>
-        {data?.map((range) => {
-          return (
-            <RangesTableRow
-              key={range.rowKey}
-              rowData={range}
-              onUnlink={onUnlink}
-              preferences={preferences}
-              info={info}
-              contextMenu={contextMenu}
-              onContextMenuSelect={onContextMenuSelect}
-            />
-          );
-        })}
-      </tbody>
-    </table>
+            )}
+            {preferences.deltaPPM.show && (
+              <th id="from" {...onSort}>
+                δ (ppm) {isSortedDesc('from').content}
+              </th>
+            )}
+            {preferences.deltaHz.show && <th>δ (Hz) </th>}
+
+            {preferences.relative.show && (
+              <th id="integration" {...onSort}>
+                Rel. {element} {isSortedDesc('integration').content}
+              </th>
+            )}
+            {preferences.absolute.show && <th>Absolute</th>}
+            {preferences.showMultiplicity && <th>Mult.</th>}
+            {preferences.coupling.show && <th>J (Hz)</th>}
+
+            {preferences.showAssignment && (
+              <>
+                <th title="Assign multiplets">
+                  <FaLink style={{ fontSize: 10, margin: 'auto' }} />
+                </th>
+                <th title="Assign ranges" style={{ minWidth: '50px' }}>
+                  Σ
+                </th>
+              </>
+            )}
+            {preferences.showKind && <th>Kind</th>}
+            {showActions && <th>{''}</th>}
+          </tr>
+        </thead>
+        <tbody>
+          {data?.map((range) => {
+            return (
+              <RangesTableRow
+                key={range.rowKey}
+                rowData={range}
+                onUnlink={onUnlink}
+                preferences={preferences}
+                info={info}
+                contextMenu={contextMenu}
+                onContextMenuSelect={onContextMenuSelect}
+              />
+            );
+          })}
+        </tbody>
+      </table>
+    </ShareDataProvider>
   );
 }
 
