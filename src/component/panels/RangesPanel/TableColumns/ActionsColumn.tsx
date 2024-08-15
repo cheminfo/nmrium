@@ -1,9 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { Fragment, CSSProperties } from 'react';
-import { FaRegTrashAlt, FaSearchPlus, FaEdit } from 'react-icons/fa';
+import { FaEdit, FaRegTrashAlt, FaSearchPlus } from 'react-icons/fa';
 
 import { SIGNAL_KINDS } from '../../../../data/constants/signalsKinds';
+import { useDispatch } from '../../../context/DispatchContext';
+import { useShareData } from '../../../context/ShareDataContext';
 import Select from '../../../elements/Select';
 import {
   OnHoverEvent,
@@ -54,10 +56,10 @@ function ActionsColumn({
   showEditAction,
   showZoomAction,
 }: ActionsColumnProps) {
-  const { editRange, deleteRange, changeRangeSignalKind, zoomRange } =
-    useEditRangeModal(row);
+  const { deleteRange, changeRangeSignalKind, zoomRange } = useEditRangeModal();
   const showActions = showDeleteAction || showEditAction || showZoomAction;
-
+  const { setData: openEditionModal } = useShareData();
+  const dispatch = useDispatch();
   return (
     <Fragment>
       {showKind && (
@@ -66,7 +68,7 @@ function ActionsColumn({
             ''
           ) : (
             <Select
-              onChange={changeRangeSignalKind}
+              onChange={(kind) => changeRangeSignalKind(kind, row)}
               items={SIGNAL_KINDS}
               defaultValue={row?.tableMetaInfo?.signal?.kind}
               style={selectBoxStyle}
@@ -80,7 +82,7 @@ function ActionsColumn({
             <button
               type="button"
               className="delete-button"
-              onClick={() => deleteRange()}
+              onClick={() => deleteRange(row?.id)}
             >
               <FaRegTrashAlt />
             </button>
@@ -89,7 +91,7 @@ function ActionsColumn({
             <button
               type="button"
               className="zoom-button"
-              onClick={() => zoomRange()}
+              onClick={() => zoomRange(row)}
             >
               <FaSearchPlus title="Zoom to range in spectrum" />
             </button>
@@ -98,7 +100,16 @@ function ActionsColumn({
             <button
               type="button"
               className="edit-button"
-              onClick={() => editRange()}
+              onClick={() => {
+                dispatch({
+                  type: 'SET_SELECTED_TOOL',
+                  payload: {
+                    selectedTool: 'zoom',
+                  },
+                });
+                zoomRange(row);
+                openEditionModal(row.id);
+              }}
             >
               <FaEdit color="blue" />
             </button>
