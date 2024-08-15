@@ -22,7 +22,6 @@ type addMatrixGenerationExclusionZoneAction = ActionType<
       from: number;
       to: number;
     };
-    range: { from: number; to: number };
     nucleus: string;
   }
 >;
@@ -96,7 +95,7 @@ function addExclusionZone(
   draft: Draft<PreferencesState>,
   action: addMatrixGenerationExclusionZoneAction,
 ) {
-  const { zone, range, nucleus } = action.payload;
+  const { zone, nucleus } = action.payload;
 
   const matrixGeneration = getMatrixGenerationPanelOptions(draft, nucleus);
 
@@ -106,7 +105,6 @@ function addExclusionZone(
     id: v4(),
     ...zone,
   };
-  matrixGeneration.matrixOptions.range = range;
   matrixGeneration.matrixOptions.exclusionsZones.push(exclusionZone);
 }
 

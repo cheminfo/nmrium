@@ -247,7 +247,6 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
                   payload: {
                     zone: { from, to },
                     nucleus: activeTab,
-                    range: { from: xDomain[0], to: xDomain[1] },
                   },
                 });
 
@@ -305,7 +304,6 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
       logger,
       dispatchPreferences,
       activeTab,
-      xDomain,
       openAnalysisModal,
     ],
   );
