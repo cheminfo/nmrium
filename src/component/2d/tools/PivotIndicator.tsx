@@ -32,7 +32,7 @@ function getStyle(direction: TraceDirection, translate: number) {
   };
 }
 
-function PivotIndicator() {
+export function PivotIndicator() {
   const { pivot, activeTraceDirection } = useActivePhaseTraces();
   const {
     toolOptions: { selectedTool },
@@ -61,5 +61,3 @@ function PivotIndicator() {
   }
   return <div style={getStyle(activeTraceDirection, translate)} />;
 }
-
-export default PivotIndicator;

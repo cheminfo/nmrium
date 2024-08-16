@@ -94,6 +94,7 @@ export default class NmriumPage {
     const distinctColors = [...new Set(colors)];
     return distinctColors.length;
   }
+
   public async applyPhaseCorrection(
     options: {
       keyboard?: boolean;
@@ -118,6 +119,16 @@ export default class NmriumPage {
         .locator('input[name="ph0"].debounce-end')
         .waitFor({ state: 'visible' });
     }
+
+    //check change the pivot point for 1D
+    await this.viewer.locator.click({
+      position: { x: 100, y: 200 },
+      modifiers: ['Shift'],
+    });
+    const pivotIndicatorLocator = this.viewer.locator.locator(
+      '_react=PivotIndicator >> _react=Indicator[x=100]',
+    );
+    await expect(pivotIndicatorLocator).toBeVisible();
 
     const selectLocator = this.page.getByRole('combobox');
     if (mode === 'automatic') {

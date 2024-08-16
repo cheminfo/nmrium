@@ -47,7 +47,7 @@ import Chart1D from './Chart1D';
 import FooterBanner from './FooterBanner';
 import BaseLine from './tool/BaseLine';
 import PeakPointer from './tool/PeakPointer';
-import VerticalIndicator from './tool/VerticalIndicator';
+import { PivotIndicator } from './tool/PivotIndicator';
 import XLabelPointer from './tool/XLabelPointer';
 import { getXScale } from './utilities/scale';
 
@@ -386,6 +386,15 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
               }
               break;
             }
+            case 'phaseCorrection':
+              dispatch({
+                type: 'SET_ONE_DIMENSION_PIVOT_POINT',
+                payload: {
+                  value: event.x,
+                },
+              });
+
+              break;
             case 'zoom':
             case 'matrixGenerationExclusionZones':
               if (!showStocsy || !event.shiftKey) break;
@@ -455,7 +464,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
                       <BrushXY brushType={BRUSH_TYPE.X} />
                       <XLabelPointer />
                       <PeakPointer />
-                      <VerticalIndicator />
+                      <PivotIndicator />
                       <FooterBanner />
                       <Chart1D
                         width={widthProp}
