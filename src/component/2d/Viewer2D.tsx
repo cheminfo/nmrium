@@ -23,7 +23,7 @@ import { PhaseTraces } from './1d-tracer/phase-correction-traces';
 import Chart2D from './Chart2D';
 import FooterBanner from './FooterBanner';
 import SlicingView from './SlicingView';
-import PivotIndicator from './tools/PivotIndicator';
+import { PivotIndicator } from './tools/PivotIndicator';
 import XYLabelPointer from './tools/XYLabelPointer';
 import { get2DDimensionLayout, getLayoutID } from './utilities/DimensionLayout';
 import { get2DXScale, get2DYScale } from './utilities/scale';

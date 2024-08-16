@@ -13,7 +13,7 @@ const styles: CSSProperties = {
   backgroundColor: 'red',
 };
 
-function VerticalIndicator() {
+export function PivotIndicator() {
   const {
     height,
     toolOptions: {
@@ -24,15 +24,24 @@ function VerticalIndicator() {
   const { scaleX } = useScaleChecked();
 
   if (options.phaseCorrection.id !== selectedTool) return null;
+  const x = Math.round(scaleX()(pivot.value));
+  return <Indicator height={height} x={x} />;
+}
+
+interface IndicatorProps {
+  x: number;
+  height: number;
+}
+
+function Indicator(props: IndicatorProps) {
+  const { x, height } = props;
   return (
     <div
       style={{
         ...styles,
-        transform: `translate(${scaleX()(pivot.value)}px, 0px)`,
+        transform: `translate(${x}px, 0px)`,
         height,
       }}
     />
   );
 }
-
-export default VerticalIndicator;
