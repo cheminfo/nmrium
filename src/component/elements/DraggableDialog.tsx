@@ -32,7 +32,7 @@ interface Position {
   y: number;
 }
 
-type DialogPosition =
+type DialogPlacement =
   | 'top'
   | 'bottom'
   | 'center'
@@ -52,7 +52,7 @@ interface DraggableDialogProps
   extends Omit<DialogProps, 'hasBackdrop'>,
     Pick<OverlayProps, 'hasBackdrop'>,
     HeaderElement {
-  position?: DialogPosition;
+  placement?: DialogPlacement;
 }
 
 interface InnerDraggableDialogProps extends DraggableDialogProps {
@@ -63,7 +63,8 @@ export function DraggableDialog(props: DraggableDialogProps) {
     onClose,
     headerLeftElement,
     headerRightElement,
-    position,
+    placement,
+    hasBackdrop,
     ...otherProps
   } = props;
 
@@ -75,6 +76,9 @@ export function DraggableDialog(props: DraggableDialogProps) {
         styles={css`
           div[class*='-portal']:has(.draggable-portal) {
             height: 100%;
+            pointer-events: ${hasBackdrop === undefined || hasBackdrop
+              ? 'all'
+              : 'none'};
           }
         `}
       />
@@ -83,6 +87,7 @@ export function DraggableDialog(props: DraggableDialogProps) {
         childRef={dialogRef}
         onClose={onClose}
         className="draggable-portal"
+        hasBackdrop={hasBackdrop}
       >
         <InnerDraggableDialog innerDialogRef={dialogRef} {...props} />
       </Overlay2>
@@ -102,7 +107,7 @@ function InnerDraggableDialog(props: InnerDraggableDialogProps) {
     title,
     headerLeftElement,
     headerRightElement,
-    position = 'center',
+    placement = 'center',
     innerDialogRef,
   } = props;
   const offsetRef = useRef<Position>({
@@ -119,7 +124,7 @@ function InnerDraggableDialog(props: InnerDraggableDialogProps) {
       const dialogRect = innerDialogRef.current.getBoundingClientRect();
       const parentContainerRect =
         containerRefInternal.current.getBoundingClientRect();
-      const { transformX, transformY } = calculateTransform(position, {
+      const { transformX, transformY } = calculateTransform(placement, {
         dialogRect,
         parentContainerRect,
       });
@@ -132,7 +137,7 @@ function InnerDraggableDialog(props: InnerDraggableDialogProps) {
     return () => {
       cancelAnimationFrame(frameId);
     };
-  }, [innerDialogRef, position]);
+  }, [innerDialogRef, placement]);
 
   function handleMouseDown(event: React.MouseEvent<HTMLDivElement>) {
     const target = event.currentTarget as HTMLElement;
@@ -184,7 +189,7 @@ function InnerDraggableDialog(props: InnerDraggableDialogProps) {
         role={role}
         style={{
           ...style,
-          position: 'absolute',
+          position: 'fixed',
           margin: 0,
         }}
       >
@@ -257,7 +262,7 @@ function Header(props: HeaderProps) {
 }
 
 function calculateTransform(
-  position: DialogPosition,
+  placement: DialogPlacement,
   option: {
     dialogRect: DOMRect;
     parentContainerRect: DOMRect;
@@ -266,7 +271,7 @@ function calculateTransform(
   let transformX = 0;
   let transformY = 0;
   const { parentContainerRect, dialogRect } = option;
-  switch (position) {
+  switch (placement) {
     case 'top':
       transformX = (parentContainerRect.width - dialogRect.width) / 2;
       transformY = 0;
