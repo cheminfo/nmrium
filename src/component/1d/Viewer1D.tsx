@@ -464,7 +464,6 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
                       <BrushXY brushType={BRUSH_TYPE.X} />
                       <XLabelPointer />
                       <PeakPointer />
-                      <PivotIndicator />
                       <FooterBanner />
                       <Chart1D
                         width={widthProp}
@@ -474,6 +473,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
                         displayerKey={displayerKey}
                       />
                       <BaseLine />
+                      <PivotIndicator />
                     </MouseTracker>
                   </BrushTracker>
                 )}
