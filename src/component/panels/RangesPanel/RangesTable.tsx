@@ -4,7 +4,7 @@ import { WorkSpacePanelPreferences } from 'nmr-load-save';
 import { Info1D } from 'nmr-processing';
 import { FaLink } from 'react-icons/fa';
 
-import { ShareDataProvider } from '../../context/ShareDataContext';
+import { withDialog } from '../../elements/DialogManager';
 import { TableContextMenuProps } from '../../elements/ReactTable/ReactTable';
 import useTableSortBy from '../../hooks/useTableSortBy';
 import { EditRangeModal } from '../../modal/editRange/EditRangeModal';
@@ -66,6 +66,8 @@ interface RangesTableProps extends TableContextMenuProps {
   info: Info1D;
 }
 
+const EditRangeDialog = withDialog(EditRangeModal, { force: true });
+
 function RangesTable({
   tableData,
   onUnlink,
@@ -91,9 +93,10 @@ function RangesTable({
     preferences.showDeleteAction ||
     preferences.showEditAction ||
     preferences.showZoomAction;
+
   return (
-    <ShareDataProvider>
-      <EditRangeModal />
+    <>
+      <EditRangeDialog />
       <table css={tableStyle}>
         <thead>
           <tr>
@@ -158,7 +161,7 @@ function RangesTable({
           })}
         </tbody>
       </table>
-    </ShareDataProvider>
+    </>
   );
 }
 

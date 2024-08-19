@@ -5,8 +5,9 @@ import { FaEdit, FaRegTrashAlt, FaSearchPlus } from 'react-icons/fa';
 
 import { SIGNAL_KINDS } from '../../../../data/constants/signalsKinds';
 import { useDispatch } from '../../../context/DispatchContext';
-import { useShareData } from '../../../context/ShareDataContext';
+import { useDialog } from '../../../elements/DialogManager';
 import Select from '../../../elements/Select';
+import { EditRangeModal } from '../../../modal/editRange/EditRangeModal';
 import {
   OnHoverEvent,
   BaseRangeColumnProps,
@@ -58,7 +59,7 @@ function ActionsColumn({
 }: ActionsColumnProps) {
   const { deleteRange, changeRangeSignalKind, zoomRange } = useEditRangeModal();
   const showActions = showDeleteAction || showEditAction || showZoomAction;
-  const { setData: openEditionModal } = useShareData();
+  const { openDialog } = useDialog();
   const dispatch = useDispatch();
   return (
     <Fragment>
@@ -108,7 +109,7 @@ function ActionsColumn({
                   },
                 });
                 zoomRange(row);
-                openEditionModal(row.id);
+                openDialog(EditRangeModal, row.id);
               }}
             >
               <FaEdit color="blue" />
