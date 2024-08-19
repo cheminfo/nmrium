@@ -10,7 +10,7 @@ import { FaSearchPlus } from 'react-icons/fa';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import { useShareData } from '../../context/ShareDataContext';
+import { DialogProps } from '../../elements/DialogManager';
 import { DraggableDialog } from '../../elements/DraggableDialog';
 import FormikOnChange from '../../elements/formik/FormikOnChange';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
@@ -45,24 +45,18 @@ interface Coupling {
   coupling: string | number;
 }
 
-export function EditRangeModal() {
+export function EditRangeModal(props: DialogProps<string>) {
   const { reset, saveEditRange, zoomRange } = useEditRangeModal();
-  const { data: rangeID, setData: closeEditionModal } = useShareData<
-    string | null
-  >();
-
-  if (!rangeID) {
-    return null;
-  }
+  const { dialogData: rangeID, onCloseDialog } = props;
 
   return (
     <InnerEditRangeModal
       onRest={(range) => {
-        closeEditionModal(null);
+        onCloseDialog();
         reset(range);
       }}
       onSave={(range) => {
-        closeEditionModal(null);
+        onCloseDialog();
         saveEditRange(range);
       }}
       onZoom={zoomRange}
