@@ -122,8 +122,6 @@ function ApodizationOptionsInnerPanel(
           control={control}
           name="lineBroadening"
           debounceTime={250}
-          min={0}
-          max={1}
           stepSize={0.1}
           style={{ width: '60px' }}
           onValueChange={() => {
@@ -140,8 +138,6 @@ function ApodizationOptionsInnerPanel(
           control={control}
           name="gaussBroadening"
           debounceTime={250}
-          min={0}
-          max={1}
           stepSize={0.1}
           style={{ width: '60px' }}
           onValueChange={() => {
