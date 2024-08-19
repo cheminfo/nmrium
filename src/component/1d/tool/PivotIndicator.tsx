@@ -10,7 +10,7 @@ const styles: CSSProperties = {
   top: '0px',
   left: '0px',
   width: 1,
-  backgroundColor: 'red',
+  backgroundColor: 'yellow',
 };
 
 export function PivotIndicator() {
