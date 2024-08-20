@@ -19,12 +19,13 @@ import {
   ActionsButtonsPopover,
   ActionsButtonsPopoverProps,
 } from '../../elements/ActionsButtonsPopover';
+import { useDialogData } from '../../elements/DialogManager';
 import { ResizerWithScale } from '../../elements/ResizerWithScale';
 import { HighlightEventSource, useHighlight } from '../../highlight';
 import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
 import { useResizerStatus } from '../../hooks/useResizerStatus';
 import useSpectrum from '../../hooks/useSpectrum';
-import { options } from '../../toolbar/ToolTypes';
+import { EditRangeModal } from '../../modal/editRange/EditRangeModal';
 import { IntegralIndicator } from '../integral/IntegralIndicator';
 import { useScaleX } from '../utilities/scale';
 
@@ -78,8 +79,9 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
   const spectrum = useSpectrum();
   const { showIntegralsValues } = useActiveSpectrumRangesViewState();
 
-  const isBlockedByEditing =
-    selectedTool && selectedTool === options.editRange.id;
+  const { isDialogOpen } = useDialogData();
+
+  const isBlockedByEditing = selectedTool && isDialogOpen(EditRangeModal);
 
   function handleOnStopResizing(position) {
     if (!spectrum || !isSpectrum1D(spectrum)) return;

@@ -108,6 +108,11 @@ function ActionsColumn({
                     selectedTool: 'zoom',
                   },
                 });
+                dispatch({
+                  type: 'TOGGLE_RANGES_VIEW_PROPERTY',
+                  payload: { key: 'showMultiplicityTrees', value: true },
+                });
+
                 zoomRange(row);
                 openDialog(EditRangeModal, row.id);
               }}

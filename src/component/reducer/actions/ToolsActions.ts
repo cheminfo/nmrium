@@ -10,7 +10,6 @@ import { getYScale, getXScale } from '../../1d/utilities/scale';
 import { LAYOUT, Layout } from '../../2d/utilities/DimensionLayout';
 import { get2DXScale, get2DYScale } from '../../2d/utilities/scale';
 import { ZoomOptions } from '../../EventsTrackers/BrushTracker';
-import { defaultRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
 import { Tool, options as Tools } from '../../toolbar/ToolTypes';
 import groupByInfoKey from '../../utility/GroupByInfoKey';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
@@ -178,23 +177,6 @@ function activateTool(draft: Draft<State>, options: ActivateToolOptions) {
       draft.toolOptions.selectedOptionPanel = toolId;
     }
   }
-
-  // start Range edit mode
-  if (toolId === Tools.editRange.id) {
-    const activeSpectrum = getActiveSpectrum(draft);
-    if (activeSpectrum) {
-      const range = draft.view.ranges?.[activeSpectrum?.id];
-      if (range) {
-        range.showMultiplicityTrees = true;
-      } else {
-        draft.view.ranges[activeSpectrum.id] = {
-          ...defaultRangesViewState,
-          showMultiplicityTrees: true,
-        };
-      }
-    }
-  }
-
   setMargin(draft);
 }
 

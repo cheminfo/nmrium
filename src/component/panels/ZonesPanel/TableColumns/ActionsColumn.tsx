@@ -103,7 +103,7 @@ function ActionsColumn({
   const openEditZoneHandler = useCallback(() => {
     dispatch({
       type: 'SET_SELECTED_TOOL',
-      payload: { selectedTool: 'editRange' },
+      payload: { selectedTool: 'zoom' },
     });
     modal.show(
       <EditZoneModal
