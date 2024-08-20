@@ -209,6 +209,7 @@ function InnerEditRangeModal(props: InnerEditRangeModalProps) {
         />
       }
       onClose={handleOnClose}
+      placement="top-right"
     >
       <DialogBody css={styles}>
         <Formik
