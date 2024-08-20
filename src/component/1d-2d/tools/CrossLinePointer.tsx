@@ -25,7 +25,6 @@ const allowTools = new Set([
   options.slicing.id,
   options.integral.id,
   options.rangePicking.id,
-  options.editRange.id,
   options.multipleSpectraAnalysis.id,
   options.exclusionZones.id,
   options.databaseRangesSelection.id,

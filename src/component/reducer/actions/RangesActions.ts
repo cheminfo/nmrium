@@ -131,6 +131,7 @@ type ToggleRangesViewAction = ActionType<
   'TOGGLE_RANGES_VIEW_PROPERTY',
   {
     key: keyof FilterType<RangesViewState, boolean>;
+    value?: boolean;
   }
 >;
 
@@ -583,8 +584,13 @@ function handleUpdateRange(draft: Draft<State>, action: UpdateRangAction) {
 function toggleRangesViewProperty(
   draft: Draft<State>,
   key: keyof FilterType<RangesViewState, boolean>,
+  value?: boolean,
 ) {
-  setRangesViewProperty(draft, key, (flag) => !flag);
+  if (typeof value === 'boolean') {
+    setRangesViewProperty(draft, key, value);
+  } else {
+    setRangesViewProperty(draft, key, (flag) => !flag);
+  }
 }
 
 //action
@@ -592,8 +598,8 @@ function handleToggleRangesViewProperty(
   draft: Draft<State>,
   action: ToggleRangesViewAction,
 ) {
-  const { key } = action.payload;
-  toggleRangesViewProperty(draft, key);
+  const { key, value } = action.payload;
+  toggleRangesViewProperty(draft, key, value);
 }
 
 function handleCutRange(draft: Draft<State>, action: CutRangAction) {

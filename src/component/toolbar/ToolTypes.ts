@@ -28,7 +28,6 @@ export type Tool =
   | 'HMove'
   | 'equalizer'
   | 'generalSelector'
-  | 'editRange'
   | 'databaseRangesSelection'
   | 'matrixGenerationExclusionZones';
 
@@ -219,22 +218,6 @@ export const options: RecordOptions = {
     ],
     isToggle: true,
   },
-
-  editRange: {
-    id: 'editRange',
-    label: 'edit range',
-    hasOptionPanel: false,
-    isFilter: false,
-    mode: '1D',
-    spectraOptions: [
-      {
-        info: [{ key: 'isFt', value: true }],
-        active: true,
-      },
-    ],
-    isToggle: true,
-  },
-
   multipleSpectraAnalysis: {
     id: 'multipleSpectraAnalysis',
     label: 'Multiple spectra analysis',
