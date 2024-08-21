@@ -18,7 +18,7 @@ import {
   findSignal2D,
   findSpectrum,
 } from '../../../../data/utilities/FindUtilities';
-import isDefaultPathLength from '../../../modal/editZone/validation/isDefaultPathLength';
+import { isDefaultPathLength } from '../../../modal/editZone/validation/isDefaultPathLength';
 import { DisplayerMode } from '../../../reducer/Reducer';
 import { ErrorColors } from '../CorrelationTable/Constants';
 

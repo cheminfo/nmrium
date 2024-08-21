@@ -2,15 +2,10 @@ import { FromTo } from 'cheminfo-types';
 
 import DefaultPathLengths from '../../../../data/constants/DefaultPathLengths';
 
-function isDefaultPathLength(
+export function isDefaultPathLength(
   pathLength: FromTo,
   experimentType: string,
 ): boolean {
-  return (
-    DefaultPathLengths[experimentType] &&
-    pathLength.from === DefaultPathLengths[experimentType].from &&
-    pathLength.to === DefaultPathLengths[experimentType].to
-  );
+  const { from, to } = DefaultPathLengths?.[experimentType] || {};
+  return pathLength.from === from && pathLength.to === to;
 }
-
-export default isDefaultPathLength;
