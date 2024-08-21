@@ -1,5 +1,4 @@
 import { createContext, useContext, useMemo, useState } from 'react';
-
 interface DialogItem {
   isOpen: boolean;
   data: any;
@@ -51,8 +50,10 @@ export function DialogProvider({ children }) {
     function closeDialog(componentIdentifier: ComponentIdentifier) {
       const identifier = getDialogIdentifier(componentIdentifier);
       setDialog((prevDialogState) => {
-        prevDialogState[identifier].isOpen = false;
-        return prevDialogState;
+        return {
+          ...prevDialogState,
+          [identifier]: { isOpen: false, data: null },
+        };
       });
     }
 
@@ -135,7 +136,6 @@ export function withDialog<P extends object>(
       isOpen: false,
       data: null,
     };
-
     function handleCloseDialog() {
       closeDialog(dialogIdentifier);
     }
