@@ -1,21 +1,12 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import { Tab, Tabs } from '@blueprintjs/core';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import DefaultPathLengths from '../../../data/constants/DefaultPathLengths';
+import IsotopesViewer from '../../elements/IsotopesViewer';
 import Label from '../../elements/Label';
 import { NumberInput2Controller } from '../../elements/NumberInput2Controller';
-import Tab from '../../elements/Tab/Tab';
-import Tabs from '../../elements/Tab/Tabs';
-
-const tabStylesAddition = css`
-  color: red;
-`;
-const tabStyles = css`
-  display: inline-grid;
-  list-style: none;
-  padding: 0.5rem 1.5rem;
-`;
+import { TabTitle } from '../../elements/TabTitle';
 
 export function SignalsForm() {
   const {
@@ -24,34 +15,32 @@ export function SignalsForm() {
   } = useFormContext();
   const { signals = [], activeTab, experimentType } = useWatch();
 
-  function handleTapChange({ tabid }) {
-    setValue('activeTab', tabid);
+  function handleTapChange(tabID) {
+    setValue('activeTab', tabID);
   }
 
-  function handleDeleteSignal({ tabid }) {
-    const filteredSignals = signals.filter((_signal, i) => i !== Number(tabid));
+  function handleDeleteSignal(index) {
+    const filteredSignals = signals.filter((_signal, i) => i !== index);
     setValue('signals', filteredSignals);
   }
 
   return (
     <div>
-      <Tabs
-        activeTab={activeTab}
-        onClick={handleTapChange}
-        onDelete={handleDeleteSignal}
-      >
+      <Tabs selectedTabId={activeTab} onChange={handleTapChange}>
         {signals.map((signal, index) => {
           return (
             <Tab
               // eslint-disable-next-line react/no-array-index-key
               key={`zone-signal-${index}`}
-              tabid={`${index}`}
-              tabstyles={
-                errors?.signals?.[index] ? tabStylesAddition : tabStyles
+              id={`${index}`}
+              style={{ ...(errors?.signals?.[index] && { color: 'red' }) }}
+              panel={
+                <SignalTab index={index} experimentType={experimentType} />
               }
-              render={() => <TabTitle signal={signal} />}
             >
-              <SignalTab index={index} experimentType={experimentType} />
+              <TabTitle onDelete={() => handleDeleteSignal(index)}>
+                <Title signal={signal} />
+              </TabTitle>
             </Tab>
           );
         })}
@@ -80,6 +69,9 @@ function SignalTab(props: SignalTabProps) {
             defaultValue={from}
             min={1}
             max={to}
+            step={1}
+            majorStepSize={1}
+            minorStepSize={1}
           />
         </Label>
         <Label title="Max:" style={{ container: { paddingLeft: '5px' } }}>
@@ -88,6 +80,9 @@ function SignalTab(props: SignalTabProps) {
             control={control}
             defaultValue={to}
             min={from}
+            step={1}
+            majorStepSize={1}
+            minorStepSize={1}
           />
         </Label>
       </div>
@@ -95,22 +90,16 @@ function SignalTab(props: SignalTabProps) {
   );
 }
 
-function TabTitle({ signal }) {
+function Title({ signal }) {
+  const { x, y } = signal;
+
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        fontSize: '11px',
-      }}
-    >
-      <span>
-        𝛅<sub>{signal.x.nucleus}</sub>: {signal.x.delta.toFixed(2)}
-      </span>
-      <span>
-        𝛅<sub>{signal.y.nucleus}</sub>: {signal.y.delta.toFixed(2)}
-      </span>
-    </div>
+    <>
+      𝛅
+      <IsotopesViewer value={x.nucleus} style={{ display: 'inline-block' }} />:
+      {x.delta.toFixed(2)} , 𝛅
+      <IsotopesViewer value={y.nucleus} style={{ display: 'inline-block' }} />:
+      {y.delta.toFixed(2)}
+    </>
   );
 }

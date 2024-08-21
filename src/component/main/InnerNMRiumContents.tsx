@@ -118,6 +118,11 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
             padding: 5px;
             background-color: white;
           }
+
+          .popover-tab {
+            background-color: transparent;
+            box-shadow: none;
+          }
         `}
       />
       <div
