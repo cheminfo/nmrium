@@ -1,160 +1,147 @@
 /** @jsxImportSource @emotion/react */
+import { Button, DialogBody, DialogFooter } from '@blueprintjs/core';
 import { css } from '@emotion/react';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { FromTo } from 'cheminfo-types';
-import { Formik } from 'formik';
 import { Signal2D } from 'nmr-processing';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 import { FaSearchPlus } from 'react-icons/fa';
+import * as Yup from 'yup';
 
 import DefaultPathLengths from '../../../data/constants/DefaultPathLengths';
-import Button from '../../elements/Button';
-import { CloseButton } from '../../elements/CloseButton';
-import { SaveButton } from '../../elements/SaveButton';
+import { DialogProps } from '../../elements/DialogManager';
+import { DraggableDialog } from '../../elements/DraggableDialog';
+import { ZoneData } from '../../panels/ZonesPanel/hooks/useMapZones';
+import { useZoneActions } from '../../panels/ZonesPanel/hooks/useZoneActions';
 
-import SignalsForm from './SignalsForm';
-import zoneFormValidation from './validation/EditZoneValidation';
-import isDefaultPathLength from './validation/isDefaultPathLength';
+import { SignalsForm } from './SignalsForm';
+import { isDefaultPathLength } from './validation/isDefaultPathLength';
 
-const styles = css`
-  width: 500px;
-  height: 250px;
-  padding: 5px;
+interface FormData {
+  activeTab: string;
+  signals: Signal2D[];
+}
 
-  button:focus {
-    outline: none;
+const signalSchema = Yup.object().shape({
+  j: Yup.object().shape({
+    pathLength: Yup.object().shape({
+      from: Yup.number().required().positive().integer(),
+      to: Yup.number().required().positive().integer(),
+    }),
+  }),
+});
+
+const zoneFormValidation = Yup.object().shape({
+  activeTab: Yup.string(),
+  signals: Yup.array()
+    .of(signalSchema)
+    .min(1, 'There must be at least one signal in a zone!'),
+});
+
+export function EditZoneModal(props: DialogProps<ZoneData>) {
+  const { dialogData: zone, onCloseDialog } = props;
+  const { saveZone, zoomToZone } = useZoneActions();
+
+  function handleSave(values) {
+    void (async () => {
+      const zoneData = {
+        ...zone,
+        signals: mapSignalsBeforeSave(
+          values?.signals,
+          zone.tableMetaInfo.experiment,
+        ),
+      };
+      saveZone(zoneData);
+      onCloseDialog();
+    })();
   }
 
-  .header {
-    height: 24px;
-    border-bottom: 1px solid #f0f0f0;
-    display: flex;
-    align-items: center;
+  const methods = useForm<FormData>({
+    defaultValues: {
+      activeTab: '0',
+      signals: mapSignals(zone),
+    },
+    resolver: yupResolver(zoneFormValidation) as any,
+  });
 
-    span {
-      color: #464646;
-      font-size: 15px;
-      flex: 1;
-      border-left: 1px solid #ececec;
-      padding-left: 6px;
-    }
+  const { handleSubmit } = methods;
+  return (
+    <DraggableDialog
+      hasBackdrop={false}
+      canOutsideClickClose={false}
+      style={{ width: 700 }}
+      title="Zone and Signal edition"
+      isOpen
+      headerLeftElement={
+        <Button
+          intent="success"
+          style={{ marginRight: '5px', borderRadius: '5px' }}
+          icon={
+            <FaSearchPlus title="Set to default view on range in spectrum" />
+          }
+          minimal
+          onClick={() => zoomToZone(zone)}
+        />
+      }
+      onClose={onCloseDialog}
+      placement="top-right"
+    >
+      <DialogBody
+        css={css`
+          background-color: white;
+        `}
+      >
+        <FormProvider {...methods}>
+          <SignalsForm />
+        </FormProvider>
+      </DialogBody>
+      <DialogFooter>
+        <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
+          <Button intent="success" onClick={() => handleSubmit(handleSave)()}>
+            Save and Exit
+          </Button>
+        </div>
+      </DialogFooter>
+    </DraggableDialog>
+  );
+}
 
-    button {
-      background-color: transparent;
-      border: none;
-      padding: 5px;
+function mapSignalsBeforeSave(signals, experiment) {
+  const outputSignals: Signal2D[] = [];
 
-      svg {
-        height: 16px;
+  for (const signal of signals) {
+    if (isDefaultPathLength(signal.j?.pathLength as FromTo, experiment)) {
+      delete signal.j?.pathLength;
+      if (signal.j && Object.keys(signal.j).length === 0) {
+        delete signal.j;
       }
     }
+    outputSignals.push(signal);
   }
 
-  .container {
-    display: flex;
-    margin: 30px 5px;
-  }
-`;
-
-interface EditZoneModalProps {
-  onSaveEditZoneModal: (value: any) => Promise<void> | null | void;
-  onCloseEditZoneModal: () => void;
-  onZoomEditZoneModal: (value: any) => void;
-  rowData: any;
+  return outputSignals;
 }
-
-function EditZoneModal({
-  onSaveEditZoneModal = () => null,
-  onCloseEditZoneModal = () => null,
-  onZoomEditZoneModal = () => null,
-  rowData,
-}: EditZoneModalProps) {
-  const formRef = useRef<any>(null);
-
-  const handleOnZoom = useCallback(() => {
-    onZoomEditZoneModal(rowData);
-  }, [onZoomEditZoneModal, rowData]);
-
-  useEffect(() => {
-    handleOnZoom();
-  }, [handleOnZoom]);
-
-  const handleOnClose = useCallback(() => {
-    onCloseEditZoneModal();
-  }, [onCloseEditZoneModal]);
-
-  const handleOnSave = useCallback(
-    (formValues) => {
-      void (async () => {
-        const _rowData = {
-          ...rowData,
-          signals: formValues.signals.map((signal: Signal2D) => {
-            if (
-              isDefaultPathLength(
-                signal.j?.pathLength as FromTo,
-                rowData.tableMetaInfo.experiment,
-              )
-            ) {
-              delete signal.j?.pathLength;
-              if (signal.j && Object.keys(signal.j).length === 0) {
-                delete signal.j;
-              }
-            }
-
-            return signal;
-          }),
-        };
-
-        await onSaveEditZoneModal(_rowData);
-        handleOnClose();
-      })();
-    },
-    [handleOnClose, onSaveEditZoneModal, rowData],
-  );
-
-  const data = useMemo(() => {
-    return {
-      activeTab: '0',
-      signals: rowData.signals.map((signal: Signal2D): Signal2D => {
-        return {
-          ...signal,
-          j: {
-            pathLength: {
-              from:
-                DefaultPathLengths[rowData.tableMetaInfo.experiment]?.from || 1,
-              to: DefaultPathLengths[rowData.tableMetaInfo.experiment]?.to || 1,
-            },
-            ...signal.j,
-          },
-        };
-      }),
+function mapSignals(zone: ZoneData) {
+  const outputSignals: Signal2D[] = [];
+  const {
+    signals,
+    tableMetaInfo: { experiment },
+  } = zone;
+  const { from = 1, to = 1 } = DefaultPathLengths?.[experiment] || {};
+  for (const signal of signals) {
+    const mappedSignal = {
+      ...signal,
+      j: {
+        pathLength: {
+          from,
+          to,
+        },
+        ...signal.j,
+      },
     };
-  }, [rowData.signals, rowData.tableMetaInfo.experiment]);
 
-  return (
-    <div css={styles}>
-      <Formik
-        innerRef={formRef}
-        initialValues={data}
-        validationSchema={zoneFormValidation}
-        onSubmit={handleOnSave}
-      >
-        <>
-          <div className="header handle">
-            <Button onClick={handleOnZoom} className="zoom-button">
-              <FaSearchPlus title="Set to default view on range in spectrum" />
-            </Button>
-            <span>{`Zone and Signal edition`}</span>
-            <SaveButton
-              onClick={() => formRef.current.submitForm()}
-              tooltip="Save and exit"
-            />
-            <CloseButton tooltip="Close" onClick={handleOnClose} />
-          </div>
-          <SignalsForm />
-        </>
-      </Formik>
-    </div>
-  );
+    outputSignals.push(mappedSignal);
+  }
+
+  return outputSignals;
 }
-
-export default EditZoneModal;

@@ -1,21 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useFormikContext } from 'formik';
-import { useCallback, useMemo } from 'react';
+import { useFormContext, useWatch } from 'react-hook-form';
 
+import DefaultPathLengths from '../../../data/constants/DefaultPathLengths';
+import Label from '../../elements/Label';
+import { NumberInput2Controller } from '../../elements/NumberInput2Controller';
 import Tab from '../../elements/Tab/Tab';
 import Tabs from '../../elements/Tab/Tabs';
-
-import SignalFormTab from './SignalFormTab';
-
-const textStyles = css`
-  text-align: center;
-  width: 100%;
-
-  .error-text {
-    color: red;
-  }
-`;
 
 const tabStylesAddition = css`
   color: red;
@@ -26,92 +17,100 @@ const tabStyles = css`
   padding: 0.5rem 1.5rem;
 `;
 
-function SignalsForm() {
+export function SignalsForm() {
   const {
-    values,
-    setFieldValue,
-    errors,
-  }: {
-    values: any;
-    setFieldValue: (
-      field: string,
-      value: any,
-      shouldValidate?: boolean | undefined,
-    ) => void;
-    errors: any;
-  } = useFormikContext<any>();
+    setValue,
+    formState: { errors },
+  } = useFormContext();
+  const { signals = [], activeTab, experimentType } = useWatch();
 
-  const tabContainsErrors = useCallback(
-    (i) => {
-      return !!errors?.signals?.[i];
-    },
-    [errors],
-  );
+  function handleTapChange({ tabid }) {
+    setValue('activeTab', tabid);
+  }
 
-  const signalFormTabs = useMemo(() => {
-    const signalTabs =
-      values.signals.length > 0
-        ? values.signals.map((signal, i) => (
-            <Tab
-              // eslint-disable-next-line react/no-array-index-key
-              key={`signalForm_zone${i}`}
-              tabid={`${i}`}
-              tabstyles={tabContainsErrors(i) ? tabStylesAddition : tabStyles}
-              render={() => (
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    fontSize: '11px',
-                  }}
-                >
-                  <span>
-                    𝛅<sub>{signal.x.nucleus}</sub>: {signal.x.delta.toFixed(2)}
-                  </span>
-                  <span>
-                    𝛅<sub>{signal.y.nucleus}</sub>: {signal.y.delta.toFixed(2)}
-                  </span>
-                </div>
-              )}
-            >
-              <SignalFormTab signalIndex={i} />
-            </Tab>
-          ))
-        : [];
-
-    return signalTabs;
-  }, [tabContainsErrors, values.signals]);
-
-  const tapClickHandler = useCallback(
-    ({ tabid }) => {
-      setFieldValue('activeTab', tabid);
-    },
-    [setFieldValue],
-  );
-
-  const handleDeleteSignal = useCallback(
-    ({ tabid }) => {
-      const _signals = values.signals.filter(
-        (_signal, i) => i !== Number(tabid),
-      );
-      setFieldValue('signals', _signals);
-    },
-    [setFieldValue, values.signals],
-  );
+  function handleDeleteSignal({ tabid }) {
+    const filteredSignals = signals.filter((_signal, i) => i !== Number(tabid));
+    setValue('signals', filteredSignals);
+  }
 
   return (
     <div>
-      <div css={textStyles} />
       <Tabs
-        activeTab={values.activeTab}
-        onClick={tapClickHandler}
+        activeTab={activeTab}
+        onClick={handleTapChange}
         onDelete={handleDeleteSignal}
       >
-        {signalFormTabs}
+        {signals.map((signal, index) => {
+          return (
+            <Tab
+              // eslint-disable-next-line react/no-array-index-key
+              key={`zone-signal-${index}`}
+              tabid={`${index}`}
+              tabstyles={
+                errors?.signals?.[index] ? tabStylesAddition : tabStyles
+              }
+              render={() => <TabTitle signal={signal} />}
+            >
+              <SignalTab index={index} experimentType={experimentType} />
+            </Tab>
+          );
+        })}
       </Tabs>
     </div>
   );
 }
 
-export default SignalsForm;
+interface SignalTabProps {
+  index: number;
+  experimentType: string;
+}
+
+function SignalTab(props: SignalTabProps) {
+  const { index, experimentType } = props;
+  const { control } = useFormContext();
+  const { from = 1, to = 1 } = DefaultPathLengths?.[experimentType] || {};
+  return (
+    <div>
+      <p>Setting of the minimum and maximum path length (J coupling).</p>
+      <div style={{ display: 'flex', flexDirection: 'row' }}>
+        <Label title="Min:">
+          <NumberInput2Controller
+            name={`signals[${index}].j.pathLength.from`}
+            control={control}
+            defaultValue={from}
+            min={1}
+            max={to}
+          />
+        </Label>
+        <Label title="Max:" style={{ container: { paddingLeft: '5px' } }}>
+          <NumberInput2Controller
+            name={`signals[${index}].j.pathLength.to`}
+            control={control}
+            defaultValue={to}
+            min={from}
+          />
+        </Label>
+      </div>
+    </div>
+  );
+}
+
+function TabTitle({ signal }) {
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        fontSize: '11px',
+      }}
+    >
+      <span>
+        𝛅<sub>{signal.x.nucleus}</sub>: {signal.x.delta.toFixed(2)}
+      </span>
+      <span>
+        𝛅<sub>{signal.y.nucleus}</sub>: {signal.y.delta.toFixed(2)}
+      </span>
+    </div>
+  );
+}

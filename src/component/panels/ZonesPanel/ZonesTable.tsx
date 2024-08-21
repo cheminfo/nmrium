@@ -11,6 +11,8 @@ import NoTableData from '../extra/placeholder/NoTableData';
 
 import ZonesTableRow from './ZonesTableRow';
 import { useMapZones } from './hooks/useMapZones';
+import { withDialog } from '../../elements/DialogManager';
+import { EditZoneModal } from '../../modal/editZone/EditZoneModal';
 
 const tableStyle = css`
   border-spacing: 0;
@@ -82,6 +84,7 @@ interface ZonesTableProps {
   nucleus: string;
   info: Info2D;
 }
+const ZoneEditionDialog = withDialog(EditZoneModal, { force: true });
 
 function ZonesTable({ tableData, onUnlink, nucleus, info }: ZonesTableProps) {
   const { experiment, isFid } = info;
@@ -113,6 +116,7 @@ function ZonesTable({ tableData, onUnlink, nucleus, info }: ZonesTableProps) {
 
   return (
     <div>
+      <ZoneEditionDialog />
       <table css={tableStyle}>
         <thead>
           <tr>
