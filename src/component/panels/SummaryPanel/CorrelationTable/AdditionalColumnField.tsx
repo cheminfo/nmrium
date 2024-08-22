@@ -1,10 +1,10 @@
 import { v4 } from '@lukeed/uuid';
 import { buildLink, Correlation, Link } from 'nmr-correlation';
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { buildID } from '../../../../data/utilities/Concatenation';
 import { findRangeOrZoneID } from '../../../../data/utilities/FindUtilities';
-import ContextMenu, { ContextMenuProps } from '../../../elements/ContextMenu';
+import { ContextMenu } from '../../../elements/ContextMenuBluePrint';
 import { useDialog } from '../../../elements/DialogManager';
 import { useHighlight } from '../../../highlight';
 import {
@@ -15,6 +15,34 @@ import useInView from '../utilities/useInView';
 
 import { EditLinkModal, EditLinkDialogData } from './editLink/EditLinkModal';
 
+function getContextMenuLinkText(commonLink: Link) {
+  const {
+    signal: { x, y },
+    edited,
+  } = commonLink;
+
+  const output: string[] = [getAbbreviation(commonLink)];
+  const delta: string[] = [];
+
+  if (x?.delta) {
+    delta.push(x.delta.toFixed(2));
+  } else {
+    delta.push('?');
+  }
+  if (y?.delta) {
+    delta.push(y.delta.toFixed(2));
+  } else {
+    delta.push('?');
+  }
+  output.push(`(${delta.join(' , ')})`);
+
+  if (edited?.moved) {
+    output.push('[MOVED]');
+  }
+
+  return output.join(' ');
+}
+
 function AdditionalColumnField({
   rowCorrelation,
   columnCorrelation,
@@ -22,7 +50,6 @@ function AdditionalColumnField({
   spectraData,
   onEdit,
 }) {
-  const contextRef = useRef<any>();
   const { openDialog } = useDialog();
 
   const highlightIDsCommonLinks = useMemo(() => {
@@ -60,13 +87,10 @@ function AdditionalColumnField({
     [highlightCommonLinks],
   );
 
-  const contextMenuHandler = useCallback(
-    (e) => {
-      e.preventDefault();
-      contextRef.current.handleContextMenu(e);
-    },
-    [contextRef],
-  );
+  function contextMenuHandler(data) {
+    highlightCommonLinks.hide();
+    openDialog<EditLinkDialogData>(EditLinkModal, data);
+  }
 
   const handleEditPseudoHSQC = useCallback(
     (action: 'add' | 'remove', link?: Link) => {
@@ -131,30 +155,24 @@ function AdditionalColumnField({
     [columnCorrelation, onEdit, rowCorrelation],
   );
 
-  const contextMenu: ContextMenuProps['context'] = useMemo(() => {
+  const contextMenu = useMemo(() => {
     // allow the edition of correlations
     const commonLinksMenu = commonLinks.flatMap((commonLink) => {
-      const commonLinkContextMenuLabel = `${getAbbreviation(commonLink)} (${
-        commonLink.signal.x?.delta ? commonLink.signal.x.delta.toFixed(2) : '?'
-      }, ${
-        commonLink.signal.y?.delta ? commonLink.signal.y.delta.toFixed(2) : '?'
-      })${commonLink.edited?.moved === true ? '[MOVED]' : ''}`;
+      if (commonLink.pseudo !== false) {
+        return [];
+      }
 
-      return commonLink.pseudo === false
-        ? [
-            {
-              label: `edit ${commonLinkContextMenuLabel}`,
-              onClick: () => {
-                highlightCommonLinks.hide();
-                openDialog<EditLinkDialogData>(EditLinkModal, {
-                  link: commonLink,
-                  correlationDim1: columnCorrelation,
-                  correlationDim2: rowCorrelation,
-                });
-              },
-            },
-          ]
-        : [];
+      return [
+        {
+          text: `Edit ${getContextMenuLinkText(commonLink)}`,
+          icon: 'edit',
+          data: {
+            link: commonLink,
+            correlationDim1: columnCorrelation,
+            correlationDim2: rowCorrelation,
+          },
+        },
+      ];
     });
     // allow addition or removal of a pseudo HSQC link between pseudo heavy atom and proton
     const commonPseudoLinkHSQC = commonLinks.find(
@@ -176,14 +194,7 @@ function AdditionalColumnField({
     }
 
     return commonLinksMenu;
-  }, [
-    columnCorrelation,
-    commonLinks,
-    handleEditPseudoHSQC,
-    highlightCommonLinks,
-    openDialog,
-    rowCorrelation,
-  ]);
+  }, [columnCorrelation, commonLinks, handleEditPseudoHSQC, rowCorrelation]);
 
   const contentLabel = useMemo(
     () =>
@@ -209,12 +220,10 @@ function AdditionalColumnField({
   const isInViewColumn = useInView({ correlation: columnCorrelation });
 
   return (
-    <td
-      onContextMenu={(e) => {
-        if (contextMenu.length > 0) {
-          contextMenuHandler(e);
-        }
-      }}
+    <ContextMenu
+      as="td"
+      options={contextMenu}
+      onSelect={contextMenuHandler}
       style={{
         backgroundColor: highlightCommonLinks.isActive
           ? '#ff6f0057'
@@ -227,8 +236,7 @@ function AdditionalColumnField({
       onMouseLeave={mouseLeaveHandler}
     >
       {contentLabel}
-      <ContextMenu ref={contextRef} context={contextMenu} />
-    </td>
+    </ContextMenu>
   );
 }
 

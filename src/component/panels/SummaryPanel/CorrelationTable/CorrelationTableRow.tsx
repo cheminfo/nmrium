@@ -5,12 +5,15 @@ import {
   getLinkDim,
   Link,
 } from 'nmr-correlation';
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { buildID } from '../../../../data/utilities/Concatenation';
 import { findRangeOrZoneID } from '../../../../data/utilities/FindUtilities';
 import { useAlert } from '../../../elements/Alert';
-import ContextMenu, { ContextMenuProps } from '../../../elements/ContextMenu';
+import {
+  ContextMenu,
+  ContextMenuItem,
+} from '../../../elements/ContextMenuBluePrint';
 import { useDialog } from '../../../elements/DialogManager';
 import EditableColumn from '../../../elements/EditableColumn';
 import { useHighlight } from '../../../highlight';
@@ -31,7 +34,6 @@ function CorrelationTableRow({
   onEditCorrelationTableCellHandler,
   spectraData,
 }) {
-  const contextRef = useRef<any>();
   const { openDialog } = useDialog();
   const alert = useAlert();
 
@@ -207,15 +209,16 @@ function CorrelationTableRow({
     highlightRow.hide();
   }, [alert, correlation, highlightRow, onEditCorrelationTableCellHandler]);
 
-  const contextMenu: ContextMenuProps['context'] = useMemo(() => {
+  const contextMenus = useMemo(() => {
     if (correlation.pseudo !== false) {
       return [];
     }
 
-    const contextMenus = [
+    const contextMenus: ContextMenuItem[] = [
       {
-        label: `delete ${correlation.label.origin}`,
-        onClick: deleteCorrelationLink,
+        text: `Delete ${correlation.label.origin}`,
+        icon: 'trash',
+        data: { action: 'delete' },
       },
     ];
 
@@ -223,17 +226,18 @@ function CorrelationTableRow({
       const isValidLink = getLinkDim(link) === 1 && link.pseudo === false;
 
       if (isValidLink) {
-        const contextMenu = {
-          label: `edit 1D (${link.signal.delta.toFixed(3)})${
+        const contextMenu: ContextMenuItem = {
+          text: `Edit 1D (${link.signal.delta.toFixed(3)})${
             link.edited?.moved === true ? '[MOVED]' : ''
           }`,
-          onClick: () => {
-            highlightRow.hide();
-            openDialog<EditLinkDialogData>(EditLinkModal, {
+          icon: 'edit',
+          data: {
+            action: 'edit',
+            data: {
               link,
               correlationDim1: correlation,
               correlationDim2: null,
-            });
+            },
           },
         };
         contextMenus.push(contextMenu);
@@ -241,36 +245,42 @@ function CorrelationTableRow({
     }
 
     return contextMenus;
-  }, [correlation, deleteCorrelationLink, highlightRow, openDialog]);
+  }, [correlation]);
 
-  const contextMenuHandler = useCallback(
-    (e) => {
-      e.preventDefault();
-      contextRef.current.handleContextMenu(e);
-    },
-    [contextRef],
-  );
+  function contextMenuHandler(selectedItem) {
+    const { action, data } = selectedItem;
+    switch (action) {
+      case 'delete': {
+        deleteCorrelationLink();
+        break;
+      }
+      case 'edit': {
+        highlightRow.hide();
+        openDialog<EditLinkDialogData>(EditLinkModal, data);
+        break;
+      }
+      default:
+        break;
+    }
+  }
 
   const { title, ...otherTableDataProps } = tableDataProps;
   const t = title || '';
 
   return (
     <tr style={styleRow}>
-      <td
+      <ContextMenu
+        as="td"
+        options={contextMenus}
         title={t}
         {...{
           ...otherTableDataProps,
           style: { ...tableDataProps.style, styleLabel },
         }}
-        onContextMenu={(e) => {
-          if (contextMenu.length > 0) {
-            contextMenuHandler(e);
-          }
-        }}
+        onSelect={contextMenuHandler}
       >
         {getLabel(correlations, correlation)}
-        <ContextMenu ref={contextRef} context={contextMenu} />
-      </td>
+      </ContextMenu>
       <td title={t} {...otherTableDataProps}>
         {getCorrelationDelta(correlation)
           ? getCorrelationDelta(correlation)?.toFixed(2)
