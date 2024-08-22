@@ -15,32 +15,17 @@ import useInView from '../utilities/useInView';
 
 import { EditLinkModal, EditLinkDialogData } from './editLink/EditLinkModal';
 
-function getContextMenuLinkText(commonLink: Link) {
+function getLinkText(link: Link) {
   const {
     signal: { x, y },
     edited,
-  } = commonLink;
+  } = link;
 
-  const output: string[] = [getAbbreviation(commonLink)];
-  const delta: string[] = [];
+  const deltaX = x?.delta?.toFixed(2) ?? '?';
+  const deltaY = y?.delta?.toFixed(2) ?? '?';
+  const movedLabel = edited?.moved ? '[MOVED]' : '';
 
-  if (x?.delta) {
-    delta.push(x.delta.toFixed(2));
-  } else {
-    delta.push('?');
-  }
-  if (y?.delta) {
-    delta.push(y.delta.toFixed(2));
-  } else {
-    delta.push('?');
-  }
-  output.push(`(${delta.join(' , ')})`);
-
-  if (edited?.moved) {
-    output.push('[MOVED]');
-  }
-
-  return output.join(' ');
+  return `${getAbbreviation(link)} (${deltaX} , ${deltaY}) ${movedLabel}`;
 }
 
 function AdditionalColumnField({
@@ -164,7 +149,7 @@ function AdditionalColumnField({
 
       return [
         {
-          text: `Edit ${getContextMenuLinkText(commonLink)}`,
+          text: `Edit ${getLinkText(commonLink)}`,
           icon: 'edit',
           data: {
             link: commonLink,
