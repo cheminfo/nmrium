@@ -16,7 +16,8 @@ export interface DialogProps<T> {
 }
 
 interface DialogContextType {
-  openDialog: (identifier: ComponentIdentifier, data?: any) => void;
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
+  openDialog: <T>(identifier: ComponentIdentifier, data?: T) => void;
   closeDialog: (identifier: ComponentIdentifier) => void;
 }
 
@@ -58,7 +59,8 @@ export function DialogProvider({ children }) {
       });
     }
 
-    function openDialog(componentIdentifier: ComponentIdentifier, data?: any) {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
+    function openDialog<T>(componentIdentifier: ComponentIdentifier, data?: T) {
       const identifier = getDialogIdentifier(componentIdentifier);
       setDialog((prevDialogState) => ({
         ...prevDialogState,
