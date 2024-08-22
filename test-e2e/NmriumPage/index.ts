@@ -197,12 +197,9 @@ export default class NmriumPage {
     await this.page.locator('input[name="workspaceName"]').fill(name);
 
     // Save the user workspace.
-    await this.page
-      .getByTestId('save-workspace-dialog')
-      .locator('button')
-      .locator('text=Save')
-      .click();
-
+    await this.page.click(
+      'div[role="dialog"] >> button:has-text("Save workspace")',
+    );
     await this.dismissAlert('Preferences saved');
   }
 
