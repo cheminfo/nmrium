@@ -1,86 +1,33 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
-import { getLinkDim, Link } from 'nmr-correlation';
-import { useCallback, useMemo, useState } from 'react';
+import { DialogBody, Tab, Tabs } from '@blueprintjs/core';
+import { getLinkDim, Link, Correlation } from 'nmr-correlation';
 
-import { CloseButton } from '../../../../elements/CloseButton';
-import Tab from '../../../../elements/Tab/Tab';
-import Tabs, { PositionsEnum } from '../../../../elements/Tab/Tabs';
+import { useChartData } from '../../../../context/ChartContext';
+import { DialogProps } from '../../../../elements/DialogManager';
+import { DraggableDialog } from '../../../../elements/DraggableDialog';
+import { OnEditCorrelationCallback } from '../../SummaryPanel';
 import { getEditedCorrelations } from '../../utilities/Utilities';
 
 import EditLinkConfirmation from './Confirmation';
 import EditPathLength from './EditPathLength';
 import MoveLink from './MoveLink';
 
-const modalContainer = css`
-  width: 490px;
-  height: 220px;
-  padding: 5px;
+export interface EditLinkDialogData {
+  correlationDim1: Correlation;
+  correlationDim2: Correlation;
+  link: Link;
+}
+interface EditLinkModalProps extends DialogProps<EditLinkDialogData> {
+  onEdit: OnEditCorrelationCallback;
+}
 
-  button {
-    flex: 2;
-    padding: 5px;
-    border: 1px solid gray;
-    border-radius: 5px;
-    height: 30px;
-    margin: 0 auto;
-    margin-top: 15px;
-    display: block;
-    width: 20%;
-    color: white;
-    background-color: gray;
-  }
+export function EditLinkModal(props: EditLinkModalProps) {
+  const { onCloseDialog, dialogData, onEdit } = props;
+  const { correlations: correlationData } = useChartData();
+  const correlations: Correlation[] = correlationData?.values || [];
+  const { correlationDim1, correlationDim2, link } = dialogData;
 
-  button:focus {
-    outline: none;
-  }
-
-  .header {
-    height: 24px;
-    border-bottom: 1px solid #f0f0f0;
-    display: flex;
-    align-items: center;
-
-    button {
-      height: 36px;
-      margin: 2px;
-      background-color: transparent;
-      border: none;
-
-      svg {
-        height: 16px;
-      }
-    }
-
-    p {
-      font-weight: bold;
-      margin-bottom: 5px;
-      margin-right: 30px;
-      padding: 0 10px;
-      width: 100%;
-      text-align: center;
-    }
-  }
-
-  .tabs-container {
-    width: 100%;
-    flex: 1;
-    overflow: auto;
-    border: none;
-  }
-`;
-
-export default function EditLinkModal({
-  correlationDim1,
-  correlationDim2,
-  link,
-  correlations,
-  onClose,
-  onEdit,
-}) {
-  const [activeTab, setActiveTab] = useState<string>('move');
-
-  const getLinkLabel = useCallback(() => {
+  function getLinkLabel() {
     const linkDim = getLinkDim(link);
     if (linkDim === 1) {
       return ` 1D (${link.signal.delta.toFixed(3)})`;
@@ -93,105 +40,107 @@ export default function EditLinkModal({
     }
 
     return '';
-  }, [correlationDim1.label.origin, link, correlationDim2]);
+  }
 
-  const handleOnEdit = useCallback(
-    (
-      action: 'move' | 'remove' | 'unmove' | 'setPathLength',
-      selectedCorrelationIdDim1: string | undefined,
-      selectedCorrelationIdDim2: string | undefined,
-      editedLink?: Link,
-    ) => {
-      const { editedCorrelations, buildCorrelationDataOptions } =
-        getEditedCorrelations({
-          correlationDim1,
-          correlationDim2,
-          selectedCorrelationIdDim1,
-          selectedCorrelationIdDim2,
-          action,
-          link: editedLink || link,
-          correlations,
-        });
-      onEdit(
-        editedCorrelations,
+  function handleOnEdit(
+    action: 'move' | 'remove' | 'unmove' | 'setPathLength',
+    selectedCorrelationIdDim1: string | undefined,
+    selectedCorrelationIdDim2: string | undefined,
+    editedLink?: Link,
+  ) {
+    const { editedCorrelations, buildCorrelationDataOptions } =
+      getEditedCorrelations({
+        correlationDim1,
+        correlationDim2,
+        selectedCorrelationIdDim1,
+        selectedCorrelationIdDim2,
         action,
-        editedLink || link,
-        buildCorrelationDataOptions,
-      );
+        link: editedLink || link,
+        correlations,
+      });
+    onEdit(
+      editedCorrelations,
+      action,
+      editedLink || link,
+      buildCorrelationDataOptions,
+    );
 
-      onClose?.();
-    },
-    [correlationDim1, correlationDim2, correlations, link, onClose, onEdit],
-  );
-
-  const tabsContainer = useMemo(
-    () => (
-      <div className="tabs-container">
-        <Tabs
-          position={PositionsEnum.TOP}
-          activeTab={activeTab}
-          onClick={(tab) => setActiveTab(tab.tabid)}
-        >
-          <Tab title="Move" tabid={'move'}>
-            <MoveLink
-              correlationDim1={correlationDim1}
-              correlationDim2={correlationDim2}
-              link={link}
-              correlations={correlations}
-              onEdit={(correlationIdDim1, correlationIdDim2) =>
-                handleOnEdit('move', correlationIdDim1, correlationIdDim2)
-              }
-            />
-          </Tab>
-          <Tab title="Unmove" tabid="unmove">
-            <EditLinkConfirmation
-              description="Movement of signal to its original place."
-              onConfirm={() =>
-                handleOnEdit('unmove', correlationDim1.id, correlationDim2.id)
-              }
-            />
-          </Tab>
-          <Tab title="Remove" tabid={'remove'}>
-            <EditLinkConfirmation
-              description="Deletion of signal."
-              onConfirm={() => handleOnEdit('remove', undefined, undefined)}
-            />
-          </Tab>
-          <Tab title="J Coupling" tabid={'setPathLength'}>
-            <EditPathLength
-              signal={link.signal}
-              experimentType={link.experimentType}
-              onEdit={(editedSignal) => {
-                const editedLink = { ...link, signal: editedSignal };
-                handleOnEdit(
-                  'setPathLength',
-                  correlationDim1,
-                  correlationDim2,
-                  editedLink,
-                );
-              }}
-            />
-          </Tab>
-        </Tabs>
-      </div>
-    ),
-    [
-      activeTab,
-      correlationDim1,
-      correlationDim2,
-      correlations,
-      handleOnEdit,
-      link,
-    ],
-  );
+    onCloseDialog?.();
+  }
 
   return (
-    <div css={modalContainer}>
-      <div className="header handle">
-        <CloseButton tooltip="Close" onClick={onClose} />
-        <p className="header-info">{`${link.experimentType.toUpperCase()} signal at ${getLinkLabel()}`}</p>
-      </div>
-      {tabsContainer}
-    </div>
+    <DraggableDialog
+      hasBackdrop={false}
+      canOutsideClickClose={false}
+      style={{ width: 500 }}
+      title={`${link.experimentType.toUpperCase()} signal at ${getLinkLabel()}`}
+      isOpen
+      onClose={onCloseDialog}
+      placement="center-right"
+    >
+      <DialogBody>
+        <Tabs defaultSelectedTabId="move">
+          <Tab
+            title="Move"
+            id="move"
+            panel={
+              <MoveLink
+                correlationDim1={correlationDim1}
+                correlationDim2={correlationDim2}
+                link={link}
+                correlations={correlations}
+                onEdit={(correlationIdDim1, correlationIdDim2) =>
+                  handleOnEdit('move', correlationIdDim1, correlationIdDim2)
+                }
+              />
+            }
+          />
+
+          <Tab
+            title="Unmove"
+            id="unmove"
+            panel={
+              <EditLinkConfirmation
+                description="Movement of signal to its original place."
+                onConfirm={() =>
+                  handleOnEdit('unmove', correlationDim1.id, correlationDim2.id)
+                }
+              />
+            }
+          />
+
+          <Tab
+            title="Remove"
+            id="remove"
+            panel={
+              <EditLinkConfirmation
+                description="Deletion of signal."
+                onConfirm={() => handleOnEdit('remove', undefined, undefined)}
+              />
+            }
+          />
+
+          <Tab
+            title="J Coupling"
+            id="setPathLength"
+            panel={
+              <EditPathLength
+                signal={link.signal}
+                experimentType={link.experimentType}
+                onEdit={(editedSignal) => {
+                  const editedLink = { ...link, signal: editedSignal };
+                  handleOnEdit(
+                    'setPathLength',
+                    correlationDim1,
+                    correlationDim2,
+                    editedLink,
+                  );
+                }}
+              />
+            }
+          />
+        </Tabs>
+      </DialogBody>
+    </DraggableDialog>
   );
 }

@@ -5,7 +5,7 @@ import { useCallback, useMemo, useRef } from 'react';
 import { buildID } from '../../../../data/utilities/Concatenation';
 import { findRangeOrZoneID } from '../../../../data/utilities/FindUtilities';
 import ContextMenu, { ContextMenuProps } from '../../../elements/ContextMenu';
-import { positions, useModal } from '../../../elements/popup/Modal';
+import { useDialog } from '../../../elements/DialogManager';
 import { useHighlight } from '../../../highlight';
 import {
   cloneCorrelationAndEditLink,
@@ -13,18 +13,17 @@ import {
 } from '../utilities/Utilities';
 import useInView from '../utilities/useInView';
 
-import EditLinkModal from './editLink/EditLinkModal';
+import { EditLinkModal, EditLinkDialogData } from './editLink/EditLinkModal';
 
 function AdditionalColumnField({
   rowCorrelation,
   columnCorrelation,
   commonLinks,
-  correlations,
   spectraData,
   onEdit,
 }) {
   const contextRef = useRef<any>();
-  const modal = useModal();
+  const { openDialog } = useDialog();
 
   const highlightIDsCommonLinks = useMemo(() => {
     return commonLinks.flatMap((link: Link) => {
@@ -147,20 +146,11 @@ function AdditionalColumnField({
               label: `edit ${commonLinkContextMenuLabel}`,
               onClick: () => {
                 highlightCommonLinks.hide();
-                modal.show(
-                  <EditLinkModal
-                    onClose={() => modal.close()}
-                    onEdit={onEdit}
-                    link={commonLink}
-                    correlationDim1={columnCorrelation}
-                    correlationDim2={rowCorrelation}
-                    correlations={correlations}
-                  />,
-                  {
-                    position: positions.MIDDLE_RIGHT,
-                    isBackgroundBlur: false,
-                  },
-                );
+                openDialog<EditLinkDialogData>(EditLinkModal, {
+                  link: commonLink,
+                  correlationDim1: columnCorrelation,
+                  correlationDim2: rowCorrelation,
+                });
               },
             },
           ]
@@ -189,11 +179,9 @@ function AdditionalColumnField({
   }, [
     columnCorrelation,
     commonLinks,
-    correlations,
     handleEditPseudoHSQC,
     highlightCommonLinks,
-    modal,
-    onEdit,
+    openDialog,
     rowCorrelation,
   ]);
 
