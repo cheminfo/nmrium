@@ -22,11 +22,13 @@ import {
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
+import { withDialog } from '../../elements/DialogManager';
 import Select from '../../elements/Select';
 import { useDialogToggle } from '../../hooks/useDialogToggle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
 import CorrelationTable from './CorrelationTable/CorrelationTable';
+import { EditLinkModal } from './CorrelationTable/editLink/EditLinkModal';
 import Overview from './Overview';
 import { SetMolecularFormulaModal } from './SetMolecularFormulaModal';
 import { SetShiftToleranceModal } from './SetShiftTolerancesModal';
@@ -35,6 +37,20 @@ import {
   findSignalMatch2D,
   getAtomType,
 } from './utilities/Utilities';
+
+type EditCorrelationAction =
+  | 'add'
+  | 'move'
+  | 'remove'
+  | 'unmove'
+  | 'setPathLength';
+
+export type OnEditCorrelationCallback = (
+  editedCorrelations: Correlation[],
+  action: EditCorrelationAction,
+  link?: Link,
+  options?: CorrelationOptions,
+) => void;
 
 const panelStyle = css`
   display: flex;
@@ -69,6 +85,8 @@ const panelStyle = css`
     }
   }
 `;
+
+const EditLinkDialog = withDialog(EditLinkModal);
 
 function SummaryPanel() {
   const {
@@ -458,6 +476,7 @@ function SummaryPanel() {
   const total = correlationsData ? correlationsData.values.length : 0;
   return (
     <div css={panelStyle}>
+      <EditLinkDialog onEdit={editCorrelationTableCellHandler} />
       <SetMolecularFormulaModal
         isOpen={dialog.molecularFormula}
         onClose={closeDialog}

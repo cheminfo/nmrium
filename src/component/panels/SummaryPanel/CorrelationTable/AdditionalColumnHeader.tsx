@@ -6,12 +6,12 @@ import { buildID } from '../../../../data/utilities/Concatenation';
 import { findRangeOrZoneID } from '../../../../data/utilities/FindUtilities';
 import { useAlert } from '../../../elements/Alert';
 import ContextMenu, { ContextMenuProps } from '../../../elements/ContextMenu';
-import { positions, useModal } from '../../../elements/popup/Modal';
+import { useDialog } from '../../../elements/DialogManager';
 import { useHighlight } from '../../../highlight';
 import { getLabelColor } from '../utilities/Utilities';
 import useInView from '../utilities/useInView';
 
-import EditLinkModal from './editLink/EditLinkModal';
+import { EditLinkModal, EditLinkDialogData } from './editLink/EditLinkModal';
 
 function AdditionalColumnHeader({
   spectraData,
@@ -20,9 +20,9 @@ function AdditionalColumnHeader({
   onEdit,
 }) {
   const contextRef = useRef<any>();
-  const modal = useModal();
   const alert = useAlert();
 
+  const { openDialog } = useDialog();
   const highlightIDsAdditionalColumn = useMemo(() => {
     if (correlation.pseudo === true) {
       return [];
@@ -112,62 +112,56 @@ function AdditionalColumnHeader({
   }, [correlation]);
 
   const contextMenu: ContextMenuProps['context'] = useMemo(() => {
-    return correlation.pseudo === false
-      ? correlation.link
-          .filter((link) => getLinkDim(link) === 1 && link.pseudo === false)
-          .map((link) => {
-            return {
-              label: `edit 1D (${link.signal.delta.toFixed(3)}${
-                link.edited?.moved === true ? '[MOVED]' : ''
-              })`,
-              onClick: () => {
-                highlightAdditionalColumn.hide();
-                modal.show(
-                  <EditLinkModal
-                    onClose={() => modal.close()}
-                    onEdit={onEdit}
-                    link={link}
-                    correlationDim1={correlation}
-                    correlationDim2={undefined}
-                    correlations={correlationsData.values}
-                  />,
-                  { position: positions.MIDDLE_RIGHT, isBackgroundBlur: false },
-                );
+    if (correlation.pseudo !== false) {
+      return [];
+    }
+
+    const contextMenus = [
+      {
+        label: `delete all (${correlation.label.origin})`,
+        onClick: () => {
+          alert.showAlert({
+            message: `All signals of ${correlation.label.origin} (${(
+              getCorrelationDelta(correlation) as number
+            ).toFixed(2)}) will be deleted. Are you sure?`,
+            buttons: [
+              {
+                text: 'Yes',
+                onClick: () => {
+                  onEdit([correlation], 'removeAll');
+                },
+                intent: 'danger',
               },
-            };
-          })
-          .concat([
-            {
-              label: `delete all (${correlation.label.origin})`,
-              onClick: () => {
-                alert.showAlert({
-                  message: `All signals of ${correlation.label.origin} (${(
-                    getCorrelationDelta(correlation) as number
-                  ).toFixed(2)}) will be deleted. Are you sure?`,
-                  buttons: [
-                    {
-                      text: 'Yes',
-                      onClick: () => {
-                        onEdit([correlation], 'removeAll');
-                      },
-                      intent: 'danger',
-                    },
-                    { text: 'No' },
-                  ],
-                });
-                highlightAdditionalColumn.hide();
-              },
-            },
-          ])
-      : [];
-  }, [
-    alert,
-    correlation,
-    correlationsData.values,
-    highlightAdditionalColumn,
-    modal,
-    onEdit,
-  ]);
+              { text: 'No' },
+            ],
+          });
+          highlightAdditionalColumn.hide();
+        },
+      },
+    ];
+
+    for (const link of correlation.link) {
+      const isValidLink = getLinkDim(link) === 1 && link.pseudo === false;
+
+      if (isValidLink) {
+        const contextMenu = {
+          label: `edit 1D (${link.signal.delta.toFixed(3)}${
+            link.edited?.moved === true ? '[MOVED]' : ''
+          })`,
+          onClick: () => {
+            highlightAdditionalColumn.hide();
+            openDialog<EditLinkDialogData>(EditLinkModal, {
+              link,
+              correlationDim1: correlation,
+              correlationDim2: null,
+            });
+          },
+        };
+        contextMenus.push(contextMenu);
+      }
+    }
+    return contextMenus;
+  }, [alert, correlation, highlightAdditionalColumn, onEdit, openDialog]);
 
   const contextMenuHandler = useCallback(
     (e) => {

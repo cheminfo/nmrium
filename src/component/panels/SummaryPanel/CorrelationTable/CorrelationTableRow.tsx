@@ -11,14 +11,14 @@ import { buildID } from '../../../../data/utilities/Concatenation';
 import { findRangeOrZoneID } from '../../../../data/utilities/FindUtilities';
 import { useAlert } from '../../../elements/Alert';
 import ContextMenu, { ContextMenuProps } from '../../../elements/ContextMenu';
+import { useDialog } from '../../../elements/DialogManager';
 import EditableColumn from '../../../elements/EditableColumn';
-import { positions, useModal } from '../../../elements/popup/Modal';
 import { useHighlight } from '../../../highlight';
 import { convertValuesString } from '../utilities/Utilities';
 import useInView from '../utilities/useInView';
 
 import AdditionalColumnField from './AdditionalColumnField';
-import EditLinkModal from './editLink/EditLinkModal';
+import { EditLinkModal, EditLinkDialogData } from './editLink/EditLinkModal';
 
 function CorrelationTableRow({
   additionalColumnData,
@@ -32,7 +32,7 @@ function CorrelationTableRow({
   spectraData,
 }) {
   const contextRef = useRef<any>();
-  const modal = useModal();
+  const { openDialog } = useDialog();
   const alert = useAlert();
 
   const highlightIDsRow = useMemo(() => {
@@ -112,7 +112,6 @@ function CorrelationTableRow({
           rowCorrelation={correlation}
           columnCorrelation={_correlation}
           commonLinks={commonLinks}
-          correlations={correlations}
           spectraData={spectraData}
           onEdit={onEditCorrelationTableCellHandler}
         />
@@ -121,7 +120,6 @@ function CorrelationTableRow({
   }, [
     additionalColumnData,
     correlation,
-    correlations,
     onEditCorrelationTableCellHandler,
     spectraData,
   ]);
@@ -188,69 +186,62 @@ function CorrelationTableRow({
     styleRow,
   ]);
 
+  const deleteCorrelationLink = useCallback(() => {
+    const message = `All signals of ${correlation.label.origin} (${(
+      getCorrelationDelta(correlation) as number
+    ).toFixed(2)}) will be deleted. Are you sure?`;
+
+    alert.showAlert({
+      message,
+      buttons: [
+        {
+          text: 'Yes',
+          onClick: () => {
+            onEditCorrelationTableCellHandler([correlation], 'removeAll');
+          },
+          intent: 'danger',
+        },
+        { text: 'No' },
+      ],
+    });
+    highlightRow.hide();
+  }, [alert, correlation, highlightRow, onEditCorrelationTableCellHandler]);
+
   const contextMenu: ContextMenuProps['context'] = useMemo(() => {
-    return correlation.pseudo === false
-      ? correlation.link
-          .filter((link) => getLinkDim(link) === 1 && link.pseudo === false)
-          .map((link) => {
-            return {
-              label: `edit 1D (${link.signal.delta.toFixed(3)})${
-                link.edited?.moved === true ? '[MOVED]' : ''
-              }`,
-              onClick: () => {
-                highlightRow.hide();
-                modal.show(
-                  <EditLinkModal
-                    onClose={() => modal.close()}
-                    onEdit={onEditCorrelationTableCellHandler}
-                    link={link}
-                    correlationDim1={correlation}
-                    correlationDim2={undefined}
-                    correlations={correlations}
-                  />,
-                  {
-                    position: positions.MIDDLE_RIGHT,
-                    isBackgroundBlur: false,
-                  },
-                );
-              },
-            };
-          })
-          .concat([
-            {
-              label: `delete ${correlation.label.origin}`,
-              onClick: () => {
-                alert.showAlert({
-                  message: `All signals of ${correlation.label.origin} (${(
-                    getCorrelationDelta(correlation) as number
-                  ).toFixed(2)}) will be deleted. Are you sure?`,
-                  buttons: [
-                    {
-                      text: 'Yes',
-                      onClick: () => {
-                        onEditCorrelationTableCellHandler(
-                          [correlation],
-                          'removeAll',
-                        );
-                      },
-                      intent: 'danger',
-                    },
-                    { text: 'No' },
-                  ],
-                });
-                highlightRow.hide();
-              },
-            },
-          ])
-      : [];
-  }, [
-    correlation,
-    highlightRow,
-    modal,
-    onEditCorrelationTableCellHandler,
-    correlations,
-    alert,
-  ]);
+    if (correlation.pseudo !== false) {
+      return [];
+    }
+
+    const contextMenus = [
+      {
+        label: `delete ${correlation.label.origin}`,
+        onClick: deleteCorrelationLink,
+      },
+    ];
+
+    for (const link of correlation?.link || []) {
+      const isValidLink = getLinkDim(link) === 1 && link.pseudo === false;
+
+      if (isValidLink) {
+        const contextMenu = {
+          label: `edit 1D (${link.signal.delta.toFixed(3)})${
+            link.edited?.moved === true ? '[MOVED]' : ''
+          }`,
+          onClick: () => {
+            highlightRow.hide();
+            openDialog<EditLinkDialogData>(EditLinkModal, {
+              link,
+              correlationDim1: correlation,
+              correlationDim2: null,
+            });
+          },
+        };
+        contextMenus.push(contextMenu);
+      }
+    }
+
+    return contextMenus;
+  }, [correlation, deleteCorrelationLink, highlightRow, openDialog]);
 
   const contextMenuHandler = useCallback(
     (e) => {
