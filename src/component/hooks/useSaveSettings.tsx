@@ -1,4 +1,6 @@
-import { Dialog } from '@blueprintjs/core';
+/** @jsxImportSource @emotion/react */
+import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
+import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Workspace } from 'nmr-load-save';
 import { useRef } from 'react';
@@ -8,8 +10,8 @@ import * as Yup from 'yup';
 
 import { usePreferences } from '../context/PreferencesContext';
 import { useToaster } from '../context/ToasterContext';
+import ActionButtons from '../elements/ActionButtons';
 import { Input2Controller } from '../elements/Input2Controller';
-import ConfirmationDialog from '../elements/popup/Modal/ConfirmDialog';
 
 import { useWorkspaceAction } from './useWorkspaceAction';
 
@@ -61,7 +63,6 @@ export function useSaveSettings() {
     resolver: yupResolver(schema),
   });
   const { saveWorkspace, addNewWorkspace } = useWorkspaceAction();
-
   function handleAddNewWorkspace({ workspaceName }) {
     addNewWorkspace(workspaceName, settingsRef.current);
 
@@ -86,40 +87,47 @@ export function useSaveSettings() {
   return {
     saveSettings,
     SaveSettingsModal: () => {
-      const alertConfig: any = {
-        message:
-          'Please enter a new user workspace name in order to save your changes locally',
-        render: (props) => (
-          <WorkspaceAddForm
-            {...props}
-            onEnter={() => {
-              void handleSubmit(handleAddNewWorkspace)();
-            }}
-            control={control}
-          />
-        ),
-        buttons: [
-          {
-            text: 'Save',
-            handler: () => {
-              void handleSubmit(handleAddNewWorkspace)();
-            },
-            preventClose: true,
-          },
-          { text: 'Cancel' },
-        ],
-        id: 'save-workspace-dialog',
-        onClose: closeDialog,
-      };
       return (
         <Dialog
           onClose={closeDialog}
           isOpen={isOpenDialog}
           title="Save workspace"
+          role="dialog"
         >
-          <ConfirmationDialog disableDefaultStyle {...alertConfig} />
+          <DialogContent>
+            <Title>
+              Please enter a new user workspace name in order to save your
+              changes locally
+            </Title>
+            <WorkspaceAddForm
+              onEnter={() => {
+                void handleSubmit(handleAddNewWorkspace)();
+              }}
+              control={control}
+            />
+          </DialogContent>
+          <DialogFooter>
+            <ActionButtons
+              style={{ flexDirection: 'row-reverse', margin: 0 }}
+              onCancel={closeDialog}
+              doneLabel="Save workspace"
+              onDone={() => void handleSubmit(handleAddNewWorkspace)()}
+            />
+          </DialogFooter>
         </Dialog>
       );
     },
   };
 }
+
+const DialogContent = styled(DialogBody)`
+  background-color: white;
+  text-align: center;
+`;
+
+const Title = styled.p`
+  padding: 0 30px;
+  font-weight: bold;
+  text-align: left;
+  font-size: 1em;
+`;
