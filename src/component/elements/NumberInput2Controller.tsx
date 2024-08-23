@@ -6,7 +6,10 @@ interface NumberInput2ControllerProps<
   TFieldValues extends FieldValues = FieldValues,
 > extends Omit<NumberInput2Props, 'name'>,
     Pick<ControllerProps<TFieldValues>, 'control' | 'name'> {
-  controllerProps?: Omit<ControllerProps<TFieldValues>, 'render'>;
+  controllerProps?: Omit<
+    ControllerProps<TFieldValues>,
+    'control' | 'name' | 'render'
+  >;
   noShadowBox?: boolean;
 }
 
