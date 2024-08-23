@@ -1,18 +1,11 @@
-import { Formik } from 'formik';
-import {
-  useCallback,
-  useImperativeHandle,
-  useRef,
-  memo,
-  forwardRef,
-  useMemo,
-} from 'react';
+import { useCallback, memo, forwardRef, useMemo } from 'react';
+import { useForm } from 'react-hook-form';
 
 import { usePreferences } from '../../context/PreferencesContext';
+import { ColorPickerDropdownController } from '../../elements/ColorPickerDropdownController';
+import { fieldLabelStyle } from '../../elements/FormatField';
 import Label from '../../elements/Label';
-import FormikColorPickerDropdown from '../../elements/formik/FormikColorPickerDropdown';
-import { formatFieldLabelStyle } from '../../elements/formik/FormikColumnFormatField';
-import FormikInput from '../../elements/formik/FormikInput';
+import { NumberInput2Controller } from '../../elements/NumberInput2Controller';
 import useNucleus from '../../hooks/useNucleus';
 import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
 import { getUniqueNuclei } from '../../utility/getUniqueNuclei';
@@ -21,48 +14,52 @@ import {
   NucleusPreferences,
 } from '../extra/preferences/NucleusPreferences';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
+import {
+  SettingsRef,
+  useSettingImperativeHandle,
+} from '../extra/utilities/settingImperativeHandle';
 
 const formatFields: NucleusPreferenceField[] = [
   {
     id: 1,
     label: 'Serial number :',
-    checkControllerName: 'showSerialNumber',
+    checkFieldName: 'showSerialNumber',
     hideFormatField: true,
   },
   {
     id: 2,
     label: 'Absolute :',
-    checkControllerName: 'absolute.show',
-    formatControllerName: 'absolute.format',
+    checkFieldName: 'absolute.show',
+    formatFieldName: 'absolute.format',
   },
   {
     id: 3,
     label: 'Relative :',
-    checkControllerName: 'relative.show',
-    formatControllerName: 'relative.format',
+    checkFieldName: 'relative.show',
+    formatFieldName: 'relative.format',
   },
   {
     id: 4,
     label: 'from :',
-    checkControllerName: 'from.show',
-    formatControllerName: 'from.format',
+    checkFieldName: 'from.show',
+    formatFieldName: 'from.format',
   },
   {
     id: 5,
     label: 'to :',
-    checkControllerName: 'to.show',
-    formatControllerName: 'to.format',
+    checkFieldName: 'to.show',
+    formatFieldName: 'to.format',
   },
   {
     id: 6,
     label: 'Kind :',
-    checkControllerName: 'showKind',
+    checkFieldName: 'showKind',
     hideFormatField: true,
   },
   {
     id: 7,
     label: 'Delete action :',
-    checkControllerName: 'showDeleteAction',
+    checkFieldName: 'showDeleteAction',
     hideFormatField: true,
   },
 ];
@@ -73,8 +70,6 @@ function IntegralsPreferences(props, ref) {
   const nuclei = useMemo(() => getUniqueNuclei(nucleus), [nucleus]);
   const preferencesByNuclei = usePanelPreferencesByNuclei('integrals', nuclei);
 
-  const formRef = useRef<any>();
-
   const saveHandler = useCallback(
     (values) => {
       preferences.dispatch({
@@ -84,63 +79,51 @@ function IntegralsPreferences(props, ref) {
     },
     [preferences],
   );
+  const { handleSubmit, control } = useForm<any>({
+    defaultValues: preferencesByNuclei,
+  });
 
-  useImperativeHandle(ref, () => ({
-    saveSetting: () => {
-      formRef.current.submitForm();
-    },
-  }));
+  useSettingImperativeHandle(ref, handleSubmit, saveHandler);
 
   return (
     <PreferencesContainer>
-      <Formik
-        initialValues={preferencesByNuclei}
-        onSubmit={saveHandler}
-        innerRef={formRef}
-      >
-        <>
-          {nuclei?.map((n) => (
-            <NucleusPreferences
-              key={n}
-              nucleus={n}
-              fields={formatFields}
-              renderTop={() => (
-                <>
-                  <Label title="Color" style={formatFieldLabelStyle}>
-                    <div style={{ display: 'flex', padding: '2px 0' }}>
-                      <div style={{ width: '23px' }} />
-                      <FormikColorPickerDropdown name={`nuclei.${n}.color`} />
-                    </div>
-                  </Label>
-                  <Label title="Stroke width:" style={formatFieldLabelStyle}>
-                    <div style={{ display: 'flex', padding: '2px 0' }}>
-                      <div style={{ width: '23px' }} />
-                      <FormikInput
-                        name={`nuclei.${n}.strokeWidth`}
-                        type="number"
-                        style={{
-                          input: {
-                            textAlign: 'center',
-                            padding: '2px',
-                          },
-                          inputWrapper: {
-                            width: '60%',
-                          },
-                        }}
-                        min={1}
-                        max={9}
-                        pattern="[1-9]+"
-                      />
-                    </div>
-                  </Label>
-                </>
-              )}
-            />
-          ))}
-        </>
-      </Formik>
+      {nuclei?.map((n) => (
+        <NucleusPreferences
+          key={n}
+          control={control}
+          nucleus={n}
+          fields={formatFields}
+          renderTop={() => (
+            <>
+              <Label title="Color" style={fieldLabelStyle}>
+                <div style={{ display: 'flex', padding: '2px 0' }}>
+                  <div style={{ width: '23px' }} />
+                  <ColorPickerDropdownController
+                    control={control}
+                    name={`nuclei.${n}.color`}
+                  />
+                </div>
+              </Label>
+              <Label title="Stroke width:" style={fieldLabelStyle}>
+                <div style={{ display: 'flex', padding: '2px 0' }}>
+                  <div style={{ width: '23px' }} />
+                  <NumberInput2Controller
+                    name={`nuclei.${n}.strokeWidth`}
+                    control={control}
+                    min={1}
+                    max={9}
+                    controllerProps={{
+                      rules: { min: 1, max: 9, required: true },
+                    }}
+                  />
+                </div>
+              </Label>
+            </>
+          )}
+        />
+      ))}
     </PreferencesContainer>
   );
 }
 
-export default memo(forwardRef(IntegralsPreferences));
+export default memo(forwardRef<SettingsRef>(IntegralsPreferences));
