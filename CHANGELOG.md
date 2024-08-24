@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.60.0](https://github.com/cheminfo/nmrium/compare/v0.59.0...v0.60.0) (2024-08-24)
+
+
+### Features
+
+* add draggable functionality for BlueprintJS dialog ([960e844](https://github.com/cheminfo/nmrium/commit/960e84416edab1e8f036fe33ce2618d43eaed35b))
+* implement dialog manager ([61a7192](https://github.com/cheminfo/nmrium/commit/61a719269706a79a5155a6707cb8a915c6cd28a6))
+* improve draggable dialog ([0af665b](https://github.com/cheminfo/nmrium/commit/0af665b2d79828782abdc3a5ac9f0ce06907af4e))
+
+
+### Bug Fixes
+
+* automatic phase correction if phase correction values is undefined ([#3204](https://github.com/cheminfo/nmrium/issues/3204)) ([3ce2b4f](https://github.com/cheminfo/nmrium/commit/3ce2b4f0fc4a5c190c6323f356099de6cb4c459a))
+* display error message when pasting MOL or SMILES fails ([0ada098](https://github.com/cheminfo/nmrium/commit/0ada098b88ec04020832c8884a2cbe2b0d554789))
+* keep matrix range unchanged when adding exclusion zones ([dbf70c7](https://github.com/cheminfo/nmrium/commit/dbf70c7660aafd60a22b46ec7162b7beb60797cd)), closes [#3198](https://github.com/cheminfo/nmrium/issues/3198)
+* prevent spectrum selection during zoom in stack mode ([4f4cd45](https://github.com/cheminfo/nmrium/commit/4f4cd45664adca979913aa9ef647f20799ab141b)), closes [#3190](https://github.com/cheminfo/nmrium/issues/3190)
+* restore pivot functionality and add test case ([571fc64](https://github.com/cheminfo/nmrium/commit/571fc64bff52711c3f3473f924897c067b370e2e))
+
 ## [0.59.0](https://github.com/cheminfo/nmrium/compare/v0.58.0...v0.59.0) (2024-08-08)
 
 
