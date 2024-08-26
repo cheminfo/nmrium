@@ -1,12 +1,5 @@
-import { Formik } from 'formik';
-import {
-  useCallback,
-  useImperativeHandle,
-  useRef,
-  memo,
-  forwardRef,
-  useMemo,
-} from 'react';
+import { useCallback, memo, forwardRef, useMemo } from 'react';
+import { useForm } from 'react-hook-form';
 
 import { usePreferences } from '../../context/PreferencesContext';
 import useNucleus from '../../hooks/useNucleus';
@@ -17,71 +10,71 @@ import {
   NucleusPreferenceField,
 } from '../extra/preferences/NucleusPreferences';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
+import { useSettingImperativeHandle } from '../extra/utilities/settingImperativeHandle';
 
 const formatFields: NucleusPreferenceField[] = [
   {
     id: 1,
     label: 'Serial number :',
-    checkControllerName: 'showSerialNumber',
+    checkFieldName: 'showSerialNumber',
     hideFormatField: true,
   },
   {
     id: 2,
     label: 'δ (ppm) :',
-    checkControllerName: 'deltaPPM.show',
-    formatControllerName: 'deltaPPM.format',
+    checkFieldName: 'deltaPPM.show',
+    formatFieldName: 'deltaPPM.format',
   },
   {
     id: 3,
     label: 'δ (Hz) :',
-    checkControllerName: 'deltaHz.show',
-    formatControllerName: 'deltaHz.format',
+    checkFieldName: 'deltaHz.show',
+    formatFieldName: 'deltaHz.format',
   },
   {
     id: 4,
     label: 'Peak Width (Hz)',
-    checkControllerName: 'peakWidth.show',
-    formatControllerName: 'peakWidth.format',
+    checkFieldName: 'peakWidth.show',
+    formatFieldName: 'peakWidth.format',
   },
   {
     id: 5,
     label: 'Intensity :',
-    checkControllerName: 'intensity.show',
-    formatControllerName: 'intensity.format',
+    checkFieldName: 'intensity.show',
+    formatFieldName: 'intensity.format',
   },
   {
     id: 6,
     label: 'kind :',
-    checkControllerName: 'fwhm.show',
+    checkFieldName: 'fwhm.show',
   },
   {
     id: 7,
     label: 'fwhm :',
-    checkControllerName: 'fwhm.show',
-    formatControllerName: 'fwhm.format',
+    checkFieldName: 'fwhm.show',
+    formatFieldName: 'fwhm.format',
   },
   {
     id: 8,
     label: 'mu :',
-    checkControllerName: 'mu.show',
-    formatControllerName: 'mu.format',
+    checkFieldName: 'mu.show',
+    formatFieldName: 'mu.format',
   },
   {
     id: 9,
     label: 'Delete action :',
-    checkControllerName: 'showDeleteAction',
+    checkFieldName: 'showDeleteAction',
     hideFormatField: true,
   },
   {
     id: 10,
     label: 'Edit peak shape action :',
-    checkControllerName: 'showEditPeakShapeAction',
+    checkFieldName: 'showEditPeakShapeAction',
     hideFormatField: true,
   },
 ];
 
 function PeaksPreferences(props, ref: any) {
-  const formRef = useRef<any>(null);
   const preferences = usePreferences();
   const nucleus = useNucleus();
   const nuclei = useMemo(() => getUniqueNuclei(nucleus), [nucleus]);
@@ -97,29 +90,22 @@ function PeaksPreferences(props, ref: any) {
     [preferences],
   );
 
-  useImperativeHandle(
-    ref,
-    () => ({
-      saveSetting: () => {
-        formRef.current.submitForm();
-      },
-    }),
-    [],
-  );
+  const { handleSubmit, control } = useForm<any>({
+    defaultValues: preferencesByNuclei,
+  });
+
+  useSettingImperativeHandle(ref, handleSubmit, saveHandler);
 
   return (
     <PreferencesContainer>
-      <Formik
-        initialValues={preferencesByNuclei}
-        onSubmit={saveHandler}
-        innerRef={formRef}
-      >
-        <>
-          {nuclei?.map((n) => (
-            <NucleusPreferences key={n} nucleus={n} fields={formatFields} />
-          ))}
-        </>
-      </Formik>
+      {nuclei?.map((n) => (
+        <NucleusPreferences
+          control={control}
+          key={n}
+          nucleus={n}
+          fields={formatFields}
+        />
+      ))}
     </PreferencesContainer>
   );
 }
