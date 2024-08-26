@@ -1,13 +1,5 @@
-import { Formik, FormikProps } from 'formik';
-import {
-  useEffect,
-  useCallback,
-  useImperativeHandle,
-  useRef,
-  forwardRef,
-  useMemo,
-  memo,
-} from 'react';
+import { useEffect, useCallback, forwardRef, useMemo, memo } from 'react';
+import { useForm } from 'react-hook-form';
 
 import { usePreferences } from '../../context/PreferencesContext';
 import useNucleus from '../../hooks/useNucleus';
@@ -19,63 +11,65 @@ import {
   NucleusPreferenceField,
 } from '../extra/preferences/NucleusPreferences';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
+import {
+  SettingsRef,
+  useSettingImperativeHandle,
+} from '../extra/utilities/settingImperativeHandle';
 
 const preferences1DFields: NucleusPreferenceField[] = [
   {
     id: 1,
     label: 'δ (ppm) :',
-    checkControllerName: 'deltaPPM.show',
-    formatControllerName: 'deltaPPM.format',
+    checkFieldName: 'deltaPPM.show',
+    formatFieldName: 'deltaPPM.format',
   },
 ];
 const preferences2DFields: NucleusPreferenceField[] = [
   {
     id: 1,
     label: 'Serial number:',
-    checkControllerName: 'showSerialNumber',
+    checkFieldName: 'showSerialNumber',
     hideFormatField: true,
   },
   {
     id: 2,
     label: 'Assignment label:',
-    checkControllerName: 'showAssignmentLabel',
+    checkFieldName: 'showAssignmentLabel',
     hideFormatField: true,
   },
   {
     id: 3,
     label: 'Kind:',
-    checkControllerName: 'showKind',
+    checkFieldName: 'showKind',
     hideFormatField: true,
   },
   {
     id: 4,
     label: 'Assignment links:',
-    checkControllerName: 'showAssignment',
+    checkFieldName: 'showAssignment',
     hideFormatField: true,
   },
   {
     id: 5,
     label: 'Delete action:',
-    checkControllerName: 'showDeleteAction',
+    checkFieldName: 'showDeleteAction',
     hideFormatField: true,
   },
   {
     id: 6,
     label: 'Zoom action:',
-    checkControllerName: 'showZoomAction',
+    checkFieldName: 'showZoomAction',
     hideFormatField: true,
   },
   {
     id: 7,
     label: 'Edit action :',
-    checkControllerName: 'showEditAction',
+    checkFieldName: 'showEditAction',
     hideFormatField: true,
   },
 ];
 
 function ZonesPreferences(props, ref) {
-  const formRef = useRef<FormikProps<any>>(null);
-
   const preferences = usePreferences();
   const nucleus = useNucleus();
   const nuclei2D = nucleus.filter((n) => is2DNucleus(n));
@@ -84,10 +78,6 @@ function ZonesPreferences(props, ref) {
     ...nuclei,
     ...nuclei2D,
   ]);
-
-  useEffect(() => {
-    void formRef.current?.setValues(zonesPreferences);
-  }, [zonesPreferences]);
 
   const saveHandler = useCallback(
     (values) => {
@@ -99,38 +89,36 @@ function ZonesPreferences(props, ref) {
     [preferences],
   );
 
-  useImperativeHandle(
-    ref,
-    () => ({
-      saveSetting: () => {
-        void formRef.current?.submitForm();
-      },
-    }),
-    [],
-  );
+  const { handleSubmit, reset, control } = useForm<any>({
+    defaultValues: {},
+  });
+
+  useSettingImperativeHandle(ref, handleSubmit, saveHandler);
+
+  useEffect(() => {
+    reset(zonesPreferences);
+  }, [reset, zonesPreferences]);
 
   return (
     <PreferencesContainer>
-      <Formik initialValues={{}} onSubmit={saveHandler} innerRef={formRef}>
-        <>
-          {nuclei?.map((n) => (
-            <NucleusPreferences
-              key={n}
-              nucleus={n}
-              fields={preferences1DFields}
-            />
-          ))}
-          {nuclei2D?.map((n) => (
-            <NucleusPreferences
-              key={n}
-              nucleus={n}
-              fields={preferences2DFields}
-            />
-          ))}
-        </>
-      </Formik>
+      {nuclei?.map((n) => (
+        <NucleusPreferences
+          control={control}
+          key={n}
+          nucleus={n}
+          fields={preferences1DFields}
+        />
+      ))}
+      {nuclei2D?.map((n) => (
+        <NucleusPreferences
+          control={control}
+          key={n}
+          nucleus={n}
+          fields={preferences2DFields}
+        />
+      ))}
     </PreferencesContainer>
   );
 }
 
-export default memo(forwardRef(ZonesPreferences));
+export default memo(forwardRef<SettingsRef>(ZonesPreferences));
