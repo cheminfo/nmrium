@@ -20,6 +20,7 @@ import useSpectrum from '../../hooks/useSpectrum';
 import { booleanToString } from '../../utility/booleanToString';
 import { FilterType } from '../../utility/filterType';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
+import { SettingsRef } from '../extra/utilities/settingImperativeHandle';
 import DefaultPanelHeader, {
   ToolbarItemProps,
 } from '../header/DefaultPanelHeader';
@@ -57,7 +58,7 @@ function PeaksPanelInner({
   const toaster = useToaster();
   const isExperimental = useCheckExperimentalFeature();
 
-  const settingRef = useRef<any>();
+  const settingRef = useRef<SettingsRef | null>(null);
 
   const yesHandler = useCallback(() => {
     dispatch({ type: 'DELETE_PEAK', payload: {} });
@@ -77,10 +78,12 @@ function PeaksPanelInner({
     setFlipStatus(!isFlipped);
   }, [isFlipped]);
 
-  const saveSettingHandler = useCallback(() => {
-    settingRef.current.saveSetting();
-    setFlipStatus(false);
-  }, []);
+  async function saveSettingHandler() {
+    const isSettingsValid = await settingRef.current?.saveSetting();
+    if (isSettingsValid) {
+      setFlipStatus(false);
+    }
+  }
 
   const handleOnFilter = useCallback(() => {
     setFilterIsActive(!filterIsActive);
