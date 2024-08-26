@@ -1,15 +1,15 @@
 import { Dialog, DialogBody, Tab, Tabs } from '@blueprintjs/core';
-import { Formik } from 'formik';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { CSSProperties, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
 import getAtomsFromMF from '../../../data/utilities/getAtomsFromMF';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/Button';
+import { Input2Controller } from '../../elements/Input2Controller';
 import MoleculeSelection from '../../elements/MoleculeSelection';
-import FormikError from '../../elements/formik/FormikError';
-import FormikInput from '../../elements/formik/FormikInput';
 
 function isValidMf(value: string): boolean {
   try {
@@ -110,35 +110,26 @@ function ManualFormula(props) {
     props?.onSave(data.mf);
   }
 
+  const { handleSubmit, control } = useForm({
+    defaultValues: { mf: correlations?.options?.mf },
+    resolver: yupResolver(validationSchema),
+  });
+
   return (
     <div style={styles.container}>
       <p>Please type in a molecular formula!</p>
-
-      <Formik
-        onSubmit={saveHandler}
-        initialValues={{ mf: correlations?.options?.mf }}
-        validationSchema={validationSchema}
+      <Input2Controller
+        enableErrorMessage
+        control={control}
+        name="mf"
+        placeholder="Enter a molecular formula"
+      />
+      <Button.Done
+        onClick={() => handleSubmit(saveHandler)()}
+        style={{ marginTop: '10px' }}
       >
-        {({ isValid, handleSubmit }) => (
-          <>
-            <FormikError name="mf">
-              <FormikInput
-                name="mf"
-                placeholder="Enter a molecular formula"
-                style={{ input: styles.input }}
-                checkErrorAfterInputTouched={false}
-              />
-            </FormikError>
-            <Button.Done
-              onClick={() => handleSubmit()}
-              disabled={!isValid}
-              style={{ marginTop: '10px' }}
-            >
-              Set molecular formula
-            </Button.Done>
-          </>
-        )}
-      </Formik>
+        Set molecular formula
+      </Button.Done>
     </div>
   );
 }
