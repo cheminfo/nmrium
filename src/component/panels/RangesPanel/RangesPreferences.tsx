@@ -1,13 +1,10 @@
-import { Formik } from 'formik';
-import { useImperativeHandle, useRef, forwardRef, useMemo } from 'react';
+import { forwardRef, useEffect, useMemo } from 'react';
+import { useForm } from 'react-hook-form';
 
 import { usePreferences } from '../../context/PreferencesContext';
+import { fieldLabelStyle } from '../../elements/FormatField';
 import Label from '../../elements/Label';
-import {
-  formatFieldInputStyle,
-  formatFieldLabelStyle,
-} from '../../elements/formik/FormikColumnFormatField';
-import FormikInput from '../../elements/formik/FormikInput';
+import { NumberInput2Controller } from '../../elements/NumberInput2Controller';
 import useNucleus from '../../hooks/useNucleus';
 import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
 import { getUniqueNuclei } from '../../utility/getUniqueNuclei';
@@ -16,102 +13,102 @@ import {
   NucleusPreferences,
 } from '../extra/preferences/NucleusPreferences';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
+import { useSettingImperativeHandle } from '../extra/utilities/settingImperativeHandle';
 
 const formatFields: NucleusPreferenceField[] = [
   {
     id: 1,
     label: 'Serial number :',
-    checkControllerName: 'showSerialNumber',
+    checkFieldName: 'showSerialNumber',
     hideFormatField: true,
   },
   {
     id: 2,
     label: 'Assignment label :',
-    checkControllerName: 'showAssignmentLabel',
+    checkFieldName: 'showAssignmentLabel',
     hideFormatField: true,
   },
   {
     id: 3,
     label: 'From (ppm) :',
-    checkControllerName: 'from.show',
-    formatControllerName: 'from.format',
+    checkFieldName: 'from.show',
+    formatFieldName: 'from.format',
   },
   {
     id: 4,
     label: 'To (ppm) :',
-    checkControllerName: 'to.show',
-    formatControllerName: 'to.format',
+    checkFieldName: 'to.show',
+    formatFieldName: 'to.format',
   },
   {
     id: 5,
     label: 'Absolute integration :',
-    checkControllerName: 'absolute.show',
-    formatControllerName: 'absolute.format',
+    checkFieldName: 'absolute.show',
+    formatFieldName: 'absolute.format',
   },
   {
     id: 6,
     label: 'Relative integration :',
-    checkControllerName: 'relative.show',
-    formatControllerName: 'relative.format',
+    checkFieldName: 'relative.show',
+    formatFieldName: 'relative.format',
   },
   {
     id: 7,
     label: 'δ (ppm) :',
-    checkControllerName: 'deltaPPM.show',
-    formatControllerName: 'deltaPPM.format',
+    checkFieldName: 'deltaPPM.show',
+    formatFieldName: 'deltaPPM.format',
   },
   {
     id: 8,
     label: 'δ (Hz) :',
-    checkControllerName: 'deltaHz.show',
-    formatControllerName: 'deltaHz.format',
+    checkFieldName: 'deltaHz.show',
+    formatFieldName: 'deltaHz.format',
   },
   {
     id: 9,
     label: 'Coupling (Hz) :',
-    checkControllerName: 'coupling.show',
-    formatControllerName: 'coupling.format',
+    checkFieldName: 'coupling.show',
+    formatFieldName: 'coupling.format',
   },
   {
     id: 10,
     label: 'Kind :',
-    checkControllerName: 'showKind',
+    checkFieldName: 'showKind',
     hideFormatField: true,
   },
   {
     id: 11,
     label: 'Multiplicity :',
-    checkControllerName: 'showMultiplicity',
+    checkFieldName: 'showMultiplicity',
     hideFormatField: true,
   },
   {
     id: 12,
     label: 'Assignment links :',
-    checkControllerName: 'showAssignment',
+    checkFieldName: 'showAssignment',
     hideFormatField: true,
   },
   {
     id: 13,
     label: 'Delete action :',
-    checkControllerName: 'showDeleteAction',
+    checkFieldName: 'showDeleteAction',
     hideFormatField: true,
   },
   {
     id: 14,
     label: 'Zoom action :',
-    checkControllerName: 'showZoomAction',
+    checkFieldName: 'showZoomAction',
     hideFormatField: true,
   },
   {
     id: 15,
     label: 'Edit action :',
-    checkControllerName: 'showEditAction',
+    checkFieldName: 'showEditAction',
     hideFormatField: true,
   },
 ];
 
 function RangesPreferences(props, ref) {
-  const formRef = useRef<any>();
   const preferences = usePreferences();
   const nucleus = useNucleus();
   const nuclei = useMemo(() => getUniqueNuclei(nucleus), [nucleus]);
@@ -124,49 +121,39 @@ function RangesPreferences(props, ref) {
     });
   }
 
-  useImperativeHandle(
-    ref,
-    () => ({
-      saveSetting: () => {
-        formRef.current.submitForm();
-      },
-    }),
-    [],
-  );
+  const { handleSubmit, control, reset } = useForm<any>({
+    defaultValues: preferencesByNuclei,
+  });
+
+  useSettingImperativeHandle(ref, handleSubmit, saveHandler);
+
+  useEffect(() => {
+    reset(preferencesByNuclei);
+  }, [preferencesByNuclei, reset]);
 
   return (
     <PreferencesContainer>
-      <Formik
-        initialValues={preferencesByNuclei}
-        enableReinitialize
-        onSubmit={saveHandler}
-        innerRef={formRef}
-      >
-        <>
-          {nuclei?.map((n) => (
-            <NucleusPreferences
-              key={n}
-              nucleus={n}
-              fields={formatFields}
-              renderBottom={() => (
-                <Label
-                  title="J graph tolerance (Hz):"
-                  style={formatFieldLabelStyle}
-                >
-                  <div style={{ display: 'flex' }}>
-                    <div style={{ width: '23px' }} />
-                    <FormikInput
-                      name={`nuclei.${n}.jGraphTolerance`}
-                      type="number"
-                      style={formatFieldInputStyle}
-                    />
-                  </div>
-                </Label>
-              )}
-            />
-          ))}
-        </>
-      </Formik>
+      {nuclei?.map((n) => (
+        <NucleusPreferences
+          key={n}
+          control={control}
+          nucleus={n}
+          fields={formatFields}
+          renderBottom={() => (
+            <Label title="J graph tolerance (Hz):" style={fieldLabelStyle}>
+              <div style={{ display: 'flex' }}>
+                <div style={{ width: '23px' }} />
+                <NumberInput2Controller
+                  control={control}
+                  name={`nuclei.${n}.jGraphTolerance`}
+                  min={0}
+                  controllerProps={{ rules: { required: true, min: 0 } }}
+                />
+              </div>
+            </Label>
+          )}
+        />
+      ))}
     </PreferencesContainer>
   );
 }
