@@ -39,6 +39,7 @@ import DatabasePreferences from './DatabasePreferences';
 import { DatabaseSearchOptions } from './DatabaseSearchOptions';
 import { DatabaseStructureSearchModal } from './DatabaseStructureSearchModal';
 import DatabaseTable from './DatabaseTable';
+import { SettingsRef } from '../extra/utilities/settingImperativeHandle';
 
 export type Databases = Array<LocalDatabase | Database>;
 
@@ -95,7 +96,7 @@ function DatabasePanelInner({
     openSearchByStructure,
     closeSearchByStructure,
   ] = useOnOff(false);
-  const settingRef = useRef<any>();
+  const settingRef = useRef<SettingsRef | null>(null);
   const [keywords, setKeywords] =
     useState<DatabaseSearchKeywords>(emptyKeywords);
   const databaseInstance = useRef<InitiateDatabaseResult | null>(null);
@@ -111,9 +112,11 @@ function DatabasePanelInner({
     setFlipStatus((flag) => !flag);
   }
 
-  function saveSettingHandler() {
-    settingRef.current.saveSetting();
-    setFlipStatus(false);
+  async function saveSettingHandler() {
+    const isSettingValid = await settingRef.current?.saveSetting();
+    if (isSettingValid) {
+      setFlipStatus(false);
+    }
   }
 
   const search = useCallback(
