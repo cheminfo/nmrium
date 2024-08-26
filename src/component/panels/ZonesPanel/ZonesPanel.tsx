@@ -13,6 +13,7 @@ import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZo
 import useSpectrum from '../../hooks/useSpectrum';
 import { booleanToString } from '../../utility/booleanToString';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
+import { SettingsRef } from '../extra/utilities/settingImperativeHandle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
@@ -37,7 +38,7 @@ function ZonesPanelInner({
   const dispatch = useDispatch();
   const alert = useAlert();
   const [isFlipped, setFlipStatus] = useState(false);
-  const settingRef = useRef<any>();
+  const settingRef = useRef<SettingsRef | null>(null);
 
   const tableData = useMemo(() => {
     const isInView = (xFrom, xTo, yFrom, yTo) => {
@@ -143,9 +144,11 @@ function ZonesPanelInner({
     setFlipStatus(!isFlipped);
   }, [isFlipped]);
 
-  const saveSettingHandler = useCallback(() => {
-    settingRef.current.saveSetting();
-    setFlipStatus(false);
+  const saveSettingHandler = useCallback(async () => {
+    const isSettingValid = await settingRef.current?.saveSetting();
+    if (isSettingValid) {
+      setFlipStatus(false);
+    }
   }, []);
 
   const handleSetShowZones = () => {
