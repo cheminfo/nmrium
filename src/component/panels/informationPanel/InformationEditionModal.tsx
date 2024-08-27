@@ -1,31 +1,37 @@
 /** @jsxImportSource @emotion/react */
 import { Classes, Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
 import { css } from '@emotion/react';
-import { Formik, FormikProps } from 'formik';
-import { useCallback, useMemo, useRef } from 'react';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useCallback, useMemo } from 'react';
+import { useForm } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
 import { Column } from 'react-table';
 import { array, object, string } from 'yup';
 
 import { useDispatch } from '../../context/DispatchContext';
+import { Input2Controller } from '../../elements/Input2Controller';
 import ReactTable from '../../elements/ReactTable/ReactTable';
-import { tableInputStyle } from '../../elements/ReactTable/Style';
-import FormikInput from '../../elements/formik/FormikInput';
 import useSpectrum from '../../hooks/useSpectrum';
 import { checkUniqueByKey } from '../../utility/checkUniqueByKey';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 
-const metaInfoValidationSchema = array()
+const metaInfoArraySchema = array()
   .of(
-    object().shape({
+    object({
       key: string().required().trim(),
       value: string().required().trim(),
     }),
   )
-  .test('Unique', 'Key need te be unique', function check(metaInfo) {
+  .required();
+
+const metaInfoValidationSchema = object()
+  .shape({
+    metaInfo: metaInfoArraySchema,
+  })
+  .test('Unique', 'Key need te be unique', function check(values) {
     // eslint-disable-next-line no-invalid-this
-    return checkUniqueByKey(metaInfo, 'key', this);
+    return checkUniqueByKey(values.metaInfo, 'key', this, 'metaInfo');
   });
 
 interface MetaInfoItem {
@@ -71,26 +77,36 @@ export function InformationEditionModal(props: InformationEditionModalProps) {
 function InnerInformationPanel(props: InnerInformationPanelProps) {
   const { metaInfo = [], onCloseDialog } = props;
   const dispatch = useDispatch();
-  const formRef = useRef<FormikProps<MetaInfoItem[]>>(null);
+  const { handleSubmit, reset, control, watch } = useForm<{
+    metaInfo: MetaInfoItem[];
+  }>({
+    defaultValues: { metaInfo },
+    resolver: yupResolver(metaInfoValidationSchema),
+  });
 
-  const addHandler = useCallback((data, index = 0) => {
-    const meta = { key: '', value: '' };
-    void formRef.current?.setValues([
-      ...data.slice(0, index),
-      meta,
-      ...data.slice(index),
-    ]);
-  }, []);
+  const addHandler = useCallback(
+    (data, index = 0) => {
+      const meta = { key: '', value: '' };
+      reset({
+        metaInfo: [...data.slice(0, index), meta, ...data.slice(index)],
+      });
+    },
+    [reset],
+  );
 
-  const deleteHandler = useCallback((data, index: number) => {
-    const meta = data.filter((_, columnIndex) => columnIndex !== index);
-    void formRef.current?.setValues(meta);
-  }, []);
+  const deleteHandler = useCallback(
+    (data, index: number) => {
+      const meta = data.filter((_, columnIndex) => columnIndex !== index);
+      reset({ metaInfo: meta });
+    },
+    [reset],
+  );
 
-  function saveHandler(metaArray: MetaInfoItem[]) {
+  function saveHandler(values) {
+    const { metaInfo } = values;
     const meta = {};
 
-    for (const { key, value } of metaArray) {
+    for (const { key, value } of metaInfo) {
       meta[key] = value;
     }
 
@@ -110,7 +126,11 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
         style: { padding: 0 },
         Cell: ({ row }) => {
           return (
-            <FormikInput name={`${row.index}.key`} style={tableInputStyle} />
+            <Input2Controller
+              control={control}
+              name={`metaInfo.${row.index}.key`}
+              noShadowBox
+            />
           );
         },
       },
@@ -119,7 +139,11 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
         style: { padding: 0 },
         Cell: ({ row }) => {
           return (
-            <FormikInput name={`${row.index}.value`} style={tableInputStyle} />
+            <Input2Controller
+              control={control}
+              name={`metaInfo.${row.index}.value`}
+              noShadowBox
+            />
           );
         },
       },
@@ -159,63 +183,54 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
         },
       },
     ],
-    [addHandler, deleteHandler],
+    [addHandler, control, deleteHandler],
   );
 
+  const values = watch('metaInfo');
   return (
-    <Formik
-      innerRef={formRef}
-      initialValues={metaInfo}
-      validationSchema={metaInfoValidationSchema}
-      onSubmit={saveHandler}
-    >
-      {({ values, submitForm, isValid }) => (
-        <>
-          <DialogBody
-            css={css`
-              background-color: white;
-            `}
-          >
-            <div css={tablePanelStyle} style={{ height: 'calc(100% - 30px)' }}>
-              <div style={{ padding: '5px 0', display: 'flex' }}>
-                <Button
-                  intent="success"
-                  small
-                  outlined
-                  onClick={() => addHandler(values)}
-                  tooltipProps={{ content: '', disabled: true }}
-                >
-                  Add a new meta
-                </Button>
-              </div>
-
-              <ReactTable
-                data={values}
-                columns={COLUMNS}
-                emptyDataRowText="No meta"
-                style={{
-                  'thead tr th': { zIndex: 1 },
-                  td: { padding: 0 },
-                }}
-                rowStyle={{
-                  hover: { backgroundColor: '#f7f7f7' },
-                  active: { backgroundColor: '#f5f5f5' },
-                }}
-              />
-            </div>
-          </DialogBody>
-          <DialogFooter>
+    <>
+      <DialogBody
+        css={css`
+          background-color: white;
+        `}
+      >
+        <div css={tablePanelStyle} style={{ height: 'calc(100% - 30px)' }}>
+          <div style={{ padding: '5px 0', display: 'flex' }}>
             <Button
               intent="success"
-              onClick={submitForm}
+              small
+              outlined
+              onClick={() => addHandler(values)}
               tooltipProps={{ content: '', disabled: true }}
-              disabled={!isValid}
             >
-              Save meta
+              Add a new meta
             </Button>
-          </DialogFooter>
-        </>
-      )}
-    </Formik>
+          </div>
+
+          <ReactTable
+            data={values}
+            columns={COLUMNS}
+            emptyDataRowText="No meta"
+            style={{
+              'thead tr th': { zIndex: 1 },
+              td: { padding: 0 },
+            }}
+            rowStyle={{
+              hover: { backgroundColor: '#f7f7f7' },
+              active: { backgroundColor: '#f5f5f5' },
+            }}
+          />
+        </div>
+      </DialogBody>
+      <DialogFooter>
+        <Button
+          intent="success"
+          onClick={() => handleSubmit(saveHandler)()}
+          tooltipProps={{ content: '', disabled: true }}
+        >
+          Save meta
+        </Button>
+      </DialogFooter>
+    </>
   );
 }
