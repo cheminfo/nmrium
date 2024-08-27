@@ -4,6 +4,7 @@ export function checkUniqueByKey<T>(
   data: T[] | undefined,
   checkKey: keyof T,
   context: TestContext,
+  basePath = '',
 ) {
   if (!data) return true;
 
@@ -39,7 +40,7 @@ export function checkUniqueByKey<T>(
         errors.push(
           context.createError({
             message: `${key} must be unique`,
-            path: `${context.path}[${index}].${String(checkKey)}`,
+            path: `${basePath ? `${basePath}.` : ''}${context.path}[${index}].${String(checkKey)}`,
           }),
         );
       }
