@@ -1,24 +1,14 @@
-import { useFormikContext } from 'formik';
 import { CSSProperties, useMemo } from 'react';
+import { useFormContext, useWatch } from 'react-hook-form';
 
-import { InputStyle } from '../../elements/Input';
+import { NumberInput2Controller } from '../../elements/NumberInput2Controller';
 import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
 import addCustomColumn from '../../elements/ReactTable/utility/addCustomColumn';
-import FormikInput from '../../elements/formik/FormikInput';
 
 const cellStyle: CSSProperties = {
   padding: '1px',
   border: 'none',
   borderWidth: 0,
-};
-
-const inputStyle: InputStyle = {
-  input: {
-    padding: '5px',
-  },
-  inputWrapper: {
-    borderRadius: 0,
-  },
 };
 
 interface SpinSystemTableProps {
@@ -27,9 +17,8 @@ interface SpinSystemTableProps {
 
 export function SpinSystemTable(props: SpinSystemTableProps) {
   const { spinSystem } = props;
-  const {
-    values: { data },
-  } = useFormikContext<any>();
+  const { control } = useFormContext();
+  const data = useWatch({ name: 'data' });
 
   const tableColumns = useMemo(() => {
     const columns: Array<Column<Array<number | null>>> = [
@@ -42,11 +31,11 @@ export function SpinSystemTable(props: SpinSystemTableProps) {
         Header: 'Delta',
         style: cellStyle,
         Cell: ({ row }) => (
-          <FormikInput
+          <NumberInput2Controller
+            control={control}
             name={`data.${row.index}.0`}
-            style={inputStyle}
-            value={row.original[0] || 0}
-            type="number"
+            fill
+            controllerProps={{ rules: { required: true } }}
           />
         ),
       },
@@ -63,10 +52,11 @@ export function SpinSystemTable(props: SpinSystemTableProps) {
           const val = row.original?.[columnIndex] ?? null;
           if (val !== null) {
             return (
-              <FormikInput
+              <NumberInput2Controller
+                control={control}
                 name={`data.${row.index}.${columnIndex}`}
-                style={inputStyle}
-                type="number"
+                fill
+                controllerProps={{ rules: { required: true } }}
               />
             );
           }
@@ -81,7 +71,7 @@ export function SpinSystemTable(props: SpinSystemTableProps) {
       i++;
     }
     return columns;
-  }, [spinSystem]);
+  }, [control, spinSystem]);
 
   if (!spinSystem) {
     return null;

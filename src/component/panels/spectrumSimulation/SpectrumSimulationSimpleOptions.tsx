@@ -1,9 +1,12 @@
+import { Tag } from '@blueprintjs/core';
+import { useFormContext } from 'react-hook-form';
+
 import { FREQUENCIES } from '../../../data/PredictionManager';
 import { getSpinSystems } from '../../../data/data1d/spectrumSimulation';
 import Label, { LabelStyle } from '../../elements/Label';
-import Select from '../../elements/Select';
-import FormikInput from '../../elements/formik/FormikInput';
-import FormikSelect from '../../elements/formik/FormikSelect';
+import { NumberInput2Controller } from '../../elements/NumberInput2Controller';
+import { Select2 } from '../../elements/Select2';
+import { Select2Controller } from '../../elements/Select2Controller';
 
 const SPIN_SYSTEMS = getSpinSystems().map((key) => ({
   label: key,
@@ -16,8 +19,6 @@ const labelStyle: LabelStyle = {
   container: { padding: '0 5px' },
 };
 
-const selectStyles = { width: '100%', minWidth: '80px', fontSize: '10px' };
-
 export default function SpectrumSimulationSimpleOptions({
   onSpinSystemChange,
   spinSystem,
@@ -25,6 +26,7 @@ export default function SpectrumSimulationSimpleOptions({
   onSpinSystemChange: (value: string) => void;
   spinSystem: string;
 }) {
+  const { control } = useFormContext();
   return (
     <div
       style={{
@@ -34,34 +36,33 @@ export default function SpectrumSimulationSimpleOptions({
       }}
     >
       <Label title="" style={labelStyle}>
-        <Select
+        <Select2
           items={SPIN_SYSTEMS}
-          style={selectStyles}
-          onChange={onSpinSystemChange}
-          value={spinSystem}
+          onItemSelect={({ value }) => onSpinSystemChange(value)}
+          selectedItemValue={spinSystem}
+          selectedButtonProps={{ minimal: true, small: true }}
         />
       </Label>
       <Label title="Frequency" style={labelStyle}>
-        <FormikSelect
+        <Select2Controller
+          control={control}
           items={FREQUENCIES}
-          style={selectStyles}
+          selectedButtonProps={{ minimal: true, small: true }}
           name="options.frequency"
         />
       </Label>
       <Label title="Line width" style={labelStyle}>
-        <FormikInput
+        <NumberInput2Controller
+          control={control}
           name="options.lineWidth"
-          type="number"
-          style={{
-            input: {
-              width: '40px',
-              textAlign: 'center',
-            },
-          }}
-          step={0.1}
+          small
+          controllerProps={{ rules: { required: true, min: 0.1 } }}
           min={0.1}
+          stepSize={0.1}
+          majorStepSize={1}
+          rightElement={<Tag>Hz</Tag>}
+          style={{ width: 70 }}
         />
-        <span style={{ padding: '0 5px' }}>Hz</span>
       </Label>
     </div>
   );

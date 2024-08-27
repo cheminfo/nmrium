@@ -1,24 +1,17 @@
-import { Formik, FormikProps } from 'formik';
-import { forwardRef, useImperativeHandle, useRef } from 'react';
+import { Tag } from '@blueprintjs/core';
+import { forwardRef } from 'react';
+import { useForm, useWatch } from 'react-hook-form';
 
 import { FREQUENCIES } from '../../../data/PredictionManager';
 import { SpectrumSimulationOptions } from '../../../data/data1d/spectrumSimulation';
 import generateNumbersPowerOfX from '../../../data/utilities/generateNumbersPowerOfX';
-import { InputStyle } from '../../elements/Input';
 import Label, { LabelStyle } from '../../elements/Label';
-import FormikInput from '../../elements/formik/FormikInput';
-import FormikSelect from '../../elements/formik/FormikSelect';
+import { NumberInput2Controller } from '../../elements/NumberInput2Controller';
+import { Select2Controller } from '../../elements/Select2Controller';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
+import { useSettingImperativeHandle } from '../extra/utilities/settingImperativeHandle';
 
 const SIMULATION_NUMBER_OF_POINTS = generateNumbersPowerOfX(12, 19);
-
-const selectStyles = {
-  width: '100%',
-  minWidth: '50px',
-  maxWidth: '280px',
-  height: 30,
-  margin: 0,
-};
 
 const labelStyle: LabelStyle = {
   label: { flex: 3, fontWeight: '500' },
@@ -26,77 +19,68 @@ const labelStyle: LabelStyle = {
   container: { padding: '5px' },
 };
 
-const inputStyle: InputStyle = {
-  input: {
-    padding: '5px',
-  },
-};
-
-export interface SpectrumSimulationPreferencesRefProps {
-  saveSetting: () => void;
-}
 interface SpectrumSimulationPreferencesProps {
-  options: SpectrumSimulationOptions;
   onSave: (options: SpectrumSimulationOptions) => void;
 }
 function SpectrumSimulationPreferences(
-  { options, onSave }: SpectrumSimulationPreferencesProps,
+  { onSave }: SpectrumSimulationPreferencesProps,
   ref,
 ) {
-  const formRef = useRef<FormikProps<any>>(null);
+  const options = useWatch<SpectrumSimulationOptions>();
 
-  useImperativeHandle(
-    ref,
-    () => ({
-      saveSetting: () => {
-        void formRef.current?.submitForm();
-      },
-    }),
-    [],
-  );
+  const { handleSubmit, control } = useForm({ defaultValues: options });
+  useSettingImperativeHandle(ref, handleSubmit, onSave);
 
   return (
     <PreferencesContainer style={{ backgroundColor: 'white' }}>
-      <Formik initialValues={options} onSubmit={onSave} innerRef={formRef}>
-        <>
-          <Label title="Frequency" style={labelStyle}>
-            <FormikSelect
-              items={FREQUENCIES}
-              style={selectStyles}
-              name="options.frequency"
-            />
-          </Label>
-          <Label title="Number of points" style={labelStyle}>
-            <FormikSelect
-              items={SIMULATION_NUMBER_OF_POINTS}
-              name="options.nbPoints"
-              style={selectStyles}
-            />
-          </Label>
+      <Label title="Frequency" style={labelStyle}>
+        <Select2Controller
+          control={control}
+          items={FREQUENCIES}
+          name="options.frequency"
+        />
+      </Label>
+      <Label title="Number of points" style={labelStyle}>
+        <Select2Controller
+          control={control}
+          items={SIMULATION_NUMBER_OF_POINTS}
+          name="options.nbPoints"
+        />
+      </Label>
 
-          <Label title="Range" style={labelStyle}>
-            <Label title="From">
-              <FormikInput
-                name="options.from"
-                type="number"
-                style={inputStyle}
-              />
-            </Label>
-            <Label title="To" style={{ label: { padding: '0 10px' } }}>
-              <FormikInput name="options.to" type="number" style={inputStyle} />
-            </Label>
-          </Label>
+      <Label title="Range" style={labelStyle}>
+        <Label title="From">
+          <NumberInput2Controller
+            control={control}
+            name="options.from"
+            controllerProps={{ rules: { required: true } }}
+            fill
+            allowNumericCharactersOnly
+          />
+        </Label>
+        <Label title="To" style={{ label: { padding: '0 10px' } }}>
+          <NumberInput2Controller
+            control={control}
+            name="options.to"
+            controllerProps={{ rules: { required: true } }}
+            fill
+            allowNumericCharactersOnly
+          />
+        </Label>
+      </Label>
 
-          <Label title="Line width" style={labelStyle}>
-            <FormikInput
-              name="options.lineWidth"
-              type="number"
-              style={inputStyle}
-            />
-            <span style={{ paddingLeft: '0.4rem' }}> Hz </span>
-          </Label>
-        </>
-      </Formik>
+      <Label title="Line width" style={labelStyle}>
+        <NumberInput2Controller
+          control={control}
+          name="options.lineWidth"
+          min={0.1}
+          stepSize={0.1}
+          majorStepSize={1}
+          controllerProps={{ rules: { required: true, min: 0.1 } }}
+          rightElement={<Tag>Hz</Tag>}
+          allowNumericCharactersOnly
+        />
+      </Label>
     </PreferencesContainer>
   );
 }
