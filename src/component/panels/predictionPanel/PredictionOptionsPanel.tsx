@@ -1,5 +1,7 @@
-import { Formik, FormikConfig } from 'formik';
+import { Tag } from '@blueprintjs/core';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { forwardRef } from 'react';
+import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
 import {
@@ -7,69 +9,72 @@ import {
   PredictionOptions,
 } from '../../../data/PredictionManager';
 import generateNumbersPowerOfX from '../../../data/utilities/generateNumbersPowerOfX';
+import { CheckController } from '../../elements/CheckController';
 import { GroupPane } from '../../elements/GroupPane';
-import { InputStyle } from '../../elements/Input';
+import { Input2Controller } from '../../elements/Input2Controller';
 import IsotopesViewer from '../../elements/IsotopesViewer';
 import Label, { LabelStyle } from '../../elements/Label';
-import FormikCheckBox from '../../elements/formik/FormikCheckBox';
-import FormikErrorsSummary from '../../elements/formik/FormikErrorsSummary';
-import FormikInput from '../../elements/formik/FormikInput';
-import FormikSelect from '../../elements/formik/FormikSelect';
+import { NumberInput2Controller } from '../../elements/NumberInput2Controller';
+import { Select2Controller } from '../../elements/Select2Controller';
+import { useSettingImperativeHandle } from '../extra/utilities/settingImperativeHandle';
 
 const NUMBER_OF_POINTS_1D = generateNumbersPowerOfX(12, 19);
 const NUMBER_OF_POINTS_2D = generateNumbersPowerOfX(10, 10, {
   format: String,
 });
 
-const predictionFormValidation = Yup.object().shape({
-  name: Yup.string().label('Name'),
-  frequency: Yup.number().integer().required().label('Frequency'),
-  autoExtendRange: Yup.boolean(),
-  '1d': Yup.object({
-    '1H': Yup.object({
-      from: Yup.number().required().label("1H ' From ' "),
-      to: Yup.number().required().label("1H ' To ' "),
+const getPredictionFormValidation = (isNameRequired = false) =>
+  Yup.object().shape({
+    name: Yup.string()
+      .when([], {
+        is: () => isNameRequired,
+        // eslint-disable-next-line unicorn/no-thenable
+        then: (nameSchema) => nameSchema.required('Name is required'),
+        otherwise: (nameSchema) => nameSchema.notRequired(),
+      })
+      .label('Name'),
+    frequency: Yup.number().integer().required().label('Frequency'),
+    autoExtendRange: Yup.boolean(),
+    '1d': Yup.object({
+      '1H': Yup.object({
+        from: Yup.number().required().label("1H ' From ' "),
+        to: Yup.number().required().label("1H ' To ' "),
+      }),
+      '13C': Yup.object().shape({
+        from: Yup.number().required().label("13C ' From ' "),
+        to: Yup.number().required().label("13C ' To ' "),
+      }),
+      lineWidth: Yup.number().integer().min(1).required().label('Line Width'),
+      nbPoints: Yup.number().integer().required().label('1D Number Of Points'),
     }),
-    '13C': Yup.object().shape({
-      from: Yup.number().required().label("13C ' From ' "),
-      to: Yup.number().required().label("13C ' To ' "),
+    '2d': Yup.object({
+      nbPoints: Yup.object({
+        x: Yup.number().integer().required().label('2D Number Of Points'),
+        y: Yup.number().integer().required().label('2D Number Of Points'),
+      }),
     }),
-    lineWidth: Yup.number().integer().min(1).required().label('Line Width'),
-    nbPoints: Yup.number().integer().required().label('1D Number Of Points'),
-  }),
-  '2d': Yup.object({
-    nbPoints: Yup.object({
-      x: Yup.number().integer().required().label('2D Number Of Points'),
-      y: Yup.number().integer().required().label('2D Number Of Points'),
-    }),
-  }),
-  spectra: Yup.object({
-    proton: Yup.boolean(),
-    carbon: Yup.boolean(),
-    cosy: Yup.boolean(),
-    hsqc: Yup.boolean(),
-    hmbc: Yup.boolean(),
-  }).test(
-    'check-options',
-    'You must check one of the options to start prediction',
-    (obj) => {
-      if (Object.values(obj).includes(true)) {
-        return true;
-      }
-      return false;
-    },
-  ),
-});
+    spectra: Yup.object({
+      proton: Yup.boolean(),
+      carbon: Yup.boolean(),
+      cosy: Yup.boolean(),
+      hsqc: Yup.boolean(),
+      hmbc: Yup.boolean(),
+    }).test(
+      'check-options',
+      'You must check one of the options to start prediction',
+      (obj) => {
+        if (Object.values(obj).includes(true)) {
+          return true;
+        }
+        return false;
+      },
+    ),
+  });
 
 const labelStyle: LabelStyle = {
   label: { flex: 4, fontWeight: '500' },
   wrapper: { flex: 8, display: 'flex', alignItems: 'center' },
   container: { padding: '5px 0' },
-};
-const inputStyle: InputStyle = {
-  input: {
-    padding: '5px',
-  },
 };
 
 const styles = {
@@ -88,148 +93,145 @@ const styles = {
   },
 };
 
-interface PredictionOptionsPanelProps
-  extends Pick<FormikConfig<any>, 'onSubmit'> {
+interface PredictionOptionsPanelProps {
   options: PredictionOptions;
   hideName?: boolean;
+  onSave: (values: any) => void;
 }
 
 function PredictionOptionsPanel(props: PredictionOptionsPanelProps, ref) {
-  const { options, onSubmit, hideName = false } = props;
+  const { options, onSave, hideName = false } = props;
+  const { handleSubmit, control } = useForm({
+    defaultValues: options,
+    resolver: yupResolver(getPredictionFormValidation(!hideName)),
+  });
+  useSettingImperativeHandle(ref, handleSubmit, onSave);
 
   return (
-    <Formik
-      initialValues={options}
-      validationSchema={predictionFormValidation}
-      enableReinitialize
-      onSubmit={onSubmit}
-      innerRef={ref}
-    >
-      <>
-        <FormikErrorsSummary />
-        {!hideName && (
-          <Label title="Name" style={labelStyle}>
-            <FormikInput name="name" style={inputStyle} />
+    <>
+      {!hideName && (
+        <Label title="Name" style={labelStyle}>
+          <Input2Controller control={control} name="name" fill />
+        </Label>
+      )}
+      <Label title="Frequency" style={labelStyle}>
+        <Select2Controller
+          control={control}
+          items={FREQUENCIES}
+          name="frequency"
+        />
+      </Label>
+
+      <GroupPane
+        text="1D Options"
+        style={{
+          header: styles.groupHeader,
+        }}
+      >
+        <Label title="Auto extend range" style={labelStyle}>
+          <CheckController control={control} name="autoExtendRange" />
+        </Label>
+        <Label
+          title="1H"
+          renderTitle={(title) => (
+            <IsotopesViewer value={title} className="custom-label" />
+          )}
+          style={labelStyle}
+        >
+          <Label title="From">
+            <NumberInput2Controller control={control} name="1d.1H.from" fill />
           </Label>
-        )}
-        <Label title="Frequency" style={labelStyle}>
-          <FormikSelect
-            items={FREQUENCIES}
-            style={styles.select}
-            name="frequency"
+          <Label title="To" style={{ label: { padding: '0 10px' } }}>
+            <NumberInput2Controller control={control} name="1d.1H.to" fill />
+          </Label>
+        </Label>
+        <Label
+          title="13C"
+          renderTitle={(title) => (
+            <IsotopesViewer value={title} className="custom-label" />
+          )}
+          style={labelStyle}
+        >
+          <Label title="From">
+            <NumberInput2Controller control={control} name="1d.13C.from" fill />
+          </Label>
+          <Label title="To" style={{ label: { padding: '0 10px' } }}>
+            <NumberInput2Controller control={control} name="1d.13C.to" fill />
+          </Label>
+        </Label>
+        <Label title="Line width" style={labelStyle}>
+          <NumberInput2Controller
+            control={control}
+            name="1d.lineWidth"
+            min={1}
+            stepSize={1}
+            majorStepSize={1}
+            rightElement={<Tag>Hz</Tag>}
           />
         </Label>
-
-        <GroupPane
-          text="1D Options"
-          style={{
-            header: styles.groupHeader,
-          }}
-        >
-          <Label title="Auto extend range" style={labelStyle}>
-            <FormikCheckBox name="autoExtendRange" />
-          </Label>
-          <Label
-            title="1H"
-            renderTitle={(title) => (
-              <IsotopesViewer value={title} className="custom-label" />
-            )}
-            style={labelStyle}
-          >
-            <Label title="From">
-              <FormikInput name="1d.1H.from" type="number" style={inputStyle} />
-            </Label>
-            <Label title="To" style={{ label: { padding: '0 10px' } }}>
-              <FormikInput name="1d.1H.to" type="number" style={inputStyle} />
-            </Label>
-          </Label>
-          <Label
-            title="13C"
-            renderTitle={(title) => (
-              <IsotopesViewer value={title} className="custom-label" />
-            )}
-            style={labelStyle}
-          >
-            <Label title="From">
-              <FormikInput
-                name="1d.13C.from"
-                type="number"
-                style={inputStyle}
-              />
-            </Label>
-            <Label title="To" style={{ label: { padding: '0 10px' } }}>
-              <FormikInput name="1d.13C.to" type="number" style={inputStyle} />
-            </Label>
-          </Label>
-          <Label title="Line width" style={labelStyle}>
-            <FormikInput name="1d.lineWidth" type="number" style={inputStyle} />
-            <span style={{ paddingLeft: '0.4rem' }}> Hz </span>
-          </Label>
-          <Label title="Number of points" style={labelStyle}>
-            <FormikSelect
-              items={NUMBER_OF_POINTS_1D}
-              name="1d.nbPoints"
-              style={styles.select}
-            />
-          </Label>
-        </GroupPane>
-        <GroupPane
-          text="2D Options"
-          style={{
-            header: styles.groupHeader,
-          }}
-        >
-          <Label title="Number of points" style={labelStyle}>
-            <FormikSelect
-              items={NUMBER_OF_POINTS_2D}
-              name="2d.nbPoints.x"
-              style={{ margin: 0, height: 30 }}
-            />
-            <span style={{ padding: '0 10px' }}> X </span>
-            <FormikSelect
-              items={NUMBER_OF_POINTS_2D}
-              name="2d.nbPoints.y"
-              style={{ margin: 0, height: 30 }}
-            />
-          </Label>
-        </GroupPane>
-        <GroupPane
-          text="Spectra"
-          style={{
-            header: styles.groupHeader,
-          }}
-        >
-          <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-            <IsotopesOption title="1H" name="spectra.proton" />
-            <IsotopesOption title="13C" name="spectra.carbon" />
-            <IsotopesOption title="COSY" name="spectra.cosy" />
-            <IsotopesOption title="HSQC" name="spectra.hsqc" />
-            <IsotopesOption title="HMBC" name="spectra.hmbc" />
-          </div>
-        </GroupPane>
-      </>
-    </Formik>
+        <Label title="Number of points" style={labelStyle}>
+          <Select2Controller
+            control={control}
+            items={NUMBER_OF_POINTS_1D}
+            name="1d.nbPoints"
+          />
+        </Label>
+      </GroupPane>
+      <GroupPane
+        text="2D Options"
+        style={{
+          header: styles.groupHeader,
+        }}
+      >
+        <Label title="Number of points" style={labelStyle}>
+          <Select2Controller
+            control={control}
+            items={NUMBER_OF_POINTS_2D}
+            name="2d.nbPoints.x"
+          />
+          <span style={{ padding: '0 10px' }}> X </span>
+          <Select2Controller
+            control={control}
+            items={NUMBER_OF_POINTS_2D}
+            name="2d.nbPoints.y"
+          />
+        </Label>
+      </GroupPane>
+      <GroupPane
+        text="Spectra"
+        style={{
+          header: styles.groupHeader,
+        }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+          <IsotopesOption control={control} title="1H" name="spectra.proton" />
+          <IsotopesOption control={control} title="13C" name="spectra.carbon" />
+          <IsotopesOption control={control} title="COSY" name="spectra.cosy" />
+          <IsotopesOption control={control} title="HSQC" name="spectra.hsqc" />
+          <IsotopesOption control={control} title="HMBC" name="spectra.hmbc" />
+        </div>
+      </GroupPane>
+    </>
   );
 }
 
 interface IsotopesOptionProps {
   name: string;
   title: string;
+  control: any;
 }
 function IsotopesOption(props: IsotopesOptionProps) {
-  const { name, title } = props;
+  const { name, title, control } = props;
   return (
-    <FormikCheckBox
+    <CheckController
       name={name}
-      style={{
-        checkbox: { display: 'flex' },
-        container: { flexDirection: 'row-reverse', padding: '0 5px' },
-      }}
-      renderLabel={() => (
-        <label htmlFor={name}>
-          <IsotopesViewer value={title} style={{ padding: '0 5px' }} />
-        </label>
-      )}
+      control={control}
+      labelElement={
+        <IsotopesViewer
+          value={title}
+          style={{ display: 'inline-block', padding: '0 5px' }}
+        />
+      }
     />
   );
 }

@@ -3,11 +3,12 @@ import { useCallback, useImperativeHandle, useRef, forwardRef } from 'react';
 import { usePreferences } from '../../context/PreferencesContext';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
+import { SettingsRef } from '../extra/utilities/settingImperativeHandle';
 
 import PredictionOptionsPanel from './PredictionOptionsPanel';
 
 function PredictionPreferences(props, ref: any) {
-  const formRef = useRef<any>(null);
+  const formRef = useRef<SettingsRef | null>(null);
   const preferences = usePreferences();
   const predictionPreferences = usePanelPreferences('prediction');
 
@@ -25,7 +26,7 @@ function PredictionPreferences(props, ref: any) {
     ref,
     () => ({
       saveSetting: () => {
-        formRef.current.submitForm();
+        return formRef.current?.saveSetting();
       },
     }),
     [],
@@ -34,7 +35,7 @@ function PredictionPreferences(props, ref: any) {
   return (
     <PreferencesContainer style={{ backgroundColor: 'white' }}>
       <PredictionOptionsPanel
-        onSubmit={saveHandler}
+        onSave={saveHandler}
         options={predictionPreferences}
         ref={formRef}
         hideName

@@ -15,6 +15,7 @@ import { useDispatch } from '../context/DispatchContext';
 import { useLogger } from '../context/LoggerContext';
 import { useToaster } from '../context/ToasterContext';
 import Button from '../elements/Button';
+import { SettingsRef } from '../panels/extra/utilities/settingImperativeHandle';
 import PredictionPreferences from '../panels/predictionPanel/PredictionOptionsPanel';
 import { useStateWithLocalStorage } from '../utility/LocalStorage';
 
@@ -59,7 +60,7 @@ export function PredictSpectraModal({
   molecule,
 }: PredictSpectraModalProps) {
   const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
-  const refForm = useRef<any>();
+  const refForm = useRef<SettingsRef | null>(null);
   const dispatch = useDispatch();
   const toaster = useToaster();
   const [predictionPreferences, setPredictionPreferences] =
@@ -74,7 +75,7 @@ export function PredictSpectraModal({
   } = useChartData();
 
   const handleSave = useCallback(() => {
-    refForm.current.submitForm();
+    void refForm.current?.saveSetting();
   }, []);
 
   const initValues = useMemo(() => {
@@ -156,7 +157,7 @@ export function PredictSpectraModal({
       >
         <DialogBody css={styles}>
           <PredictionPreferences
-            onSubmit={submitHandler}
+            onSave={submitHandler}
             options={initValues}
             ref={refForm}
           />
