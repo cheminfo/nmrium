@@ -13,11 +13,13 @@ interface NumberInput2ControllerProps<
   noShadowBox?: boolean;
 }
 
+const numberPattern = /^-?\d+(\.\d+)?$/;
+
 export function NumberInput2Controller<
   TFieldValues extends FieldValues = FieldValues,
 >(props: NumberInput2ControllerProps<TFieldValues>) {
   const {
-    controllerProps,
+    controllerProps = {},
     onValueChange,
     name,
     control,
@@ -27,17 +29,25 @@ export function NumberInput2Controller<
     ...otherInputProps
   } = props;
 
+  const { rules, ...otherControllerProps } = controllerProps;
+
   return (
     <Controller
       name={name}
       control={control}
-      {...controllerProps}
+      rules={{ pattern: numberPattern, ...rules }}
+      {...otherControllerProps}
       render={({ field, fieldState: { invalid } }) => {
+        const { onChange, ...otherFieldProps } = field;
         return (
           <NumberInput2
-            {...field}
+            {...otherFieldProps}
             onValueChange={(valueAsNumber, valueAsString, event) => {
-              field.onChange(valueAsString);
+              if (numberPattern.test(valueAsString)) {
+                onChange(valueAsNumber);
+              } else {
+                onChange(valueAsString);
+              }
               onValueChange?.(valueAsNumber, valueAsString, event);
             }}
             {...otherInputProps}
