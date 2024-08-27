@@ -18,6 +18,7 @@ import { useMoleculeEditor } from '../../modal/MoleculeStructureEditorModal';
 import MoleculeHeader from '../MoleculesPanel/MoleculeHeader';
 import MoleculePanelHeader from '../MoleculesPanel/MoleculePanelHeader';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
+import { SettingsRef } from '../extra/utilities/settingImperativeHandle';
 import PreferencesHeader from '../header/PreferencesHeader';
 
 import PredictionPreferences from './PredictionPreferences';
@@ -45,7 +46,7 @@ export default function PredictionPanel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [molfile, setMolfile] = useState<string | null>(null);
   const [isFlipped, setFlipStatus] = useState(false);
-  const settingRef = useRef<any>();
+  const settingRef = useRef<SettingsRef | null>(null);
   const {
     item: spectraPanelState,
     utils: { toggle: openSpectraPanel },
@@ -126,9 +127,11 @@ export default function PredictionPanel() {
     setFlipStatus(!isFlipped);
   }
 
-  function saveSettingHandler() {
-    settingRef.current.saveSetting();
-    setFlipStatus(false);
+  async function saveSettingHandler() {
+    const isSettingValid = await settingRef.current?.saveSetting();
+    if (isSettingValid) {
+      setFlipStatus(false);
+    }
   }
 
   const isPredictedBefore = !!(

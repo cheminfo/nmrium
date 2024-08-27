@@ -1,6 +1,8 @@
-import { Formik } from 'formik';
+import { Tag } from '@blueprintjs/core';
+import { yupResolver } from '@hookform/resolvers/yup';
 import lodashMerge from 'lodash/merge';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
 import {
@@ -9,12 +11,12 @@ import {
 } from '../../../data/PredictionManager';
 import { usePreferences } from '../../context/PreferencesContext';
 import Label, { LabelStyle } from '../../elements/Label';
-import FormikInput from '../../elements/formik/FormikInput';
-import FormikOnChange from '../../elements/formik/FormikOnChange';
-import FormikSelect from '../../elements/formik/FormikSelect';
+import { NumberInput2Controller } from '../../elements/NumberInput2Controller';
+import { Select2Controller } from '../../elements/Select2Controller';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 
 const predictionFormValidation = Yup.object().shape({
+  frequency: Yup.number().integer().required().label('Frequency'),
   '1d': Yup.object({
     lineWidth: Yup.number().integer().min(1).required(),
   }),
@@ -25,8 +27,6 @@ const labelStyle: LabelStyle = {
   wrapper: { display: 'flex', alignItems: 'center', height: '100%' },
   container: { padding: '0 5px', height: '100%' },
 };
-
-const selectStyles = { width: '100%', minWidth: '75px', fontSize: '10px' };
 
 function PredictionSimpleOptions() {
   const { dispatch } = usePreferences();
@@ -43,41 +43,57 @@ function PredictionSimpleOptions() {
     [dispatch],
   );
 
+  const { watch, reset, control } = useForm({
+    defaultValues: predictionPreferences,
+    resolver: yupResolver(predictionFormValidation),
+  });
+
+  useEffect(() => {
+    reset(predictionPreferences, { keepValues: true });
+  }, [predictionPreferences, reset]);
+
+  useEffect(() => {
+    const { unsubscribe } = watch(async (values) => {
+      const isValid = await predictionFormValidation.isValid(values);
+      if (!isValid) return;
+
+      optionsChangeHandler(values);
+    });
+    return () => unsubscribe();
+  }, [optionsChangeHandler, watch]);
+
   return (
-    <Formik
-      initialValues={predictionPreferences}
-      validationSchema={predictionFormValidation}
-      enableReinitialize
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      onSubmit={() => {}}
+    <div
+      style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'flex-end',
+        flex: '1',
+        height: '100%',
+      }}
     >
-      <div
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          justifyContent: 'flex-end',
-          flex: '1',
-          height: '100%',
-        }}
-      >
-        <Label title="Frequency" style={labelStyle}>
-          <FormikSelect
-            items={FREQUENCIES}
-            style={selectStyles}
-            name="frequency"
-          />
-        </Label>
-        <Label title="Line width" style={labelStyle}>
-          <FormikInput
-            name="1d.lineWidth"
-            type="number"
-            style={{ input: { width: '40px', textAlign: 'center' } }}
-          />
-          <span style={{ padding: '0 5px' }}>Hz</span>
-        </Label>
-        <FormikOnChange enableValidation onChange={optionsChangeHandler} />
-      </div>
-    </Formik>
+      <Label title="Frequency" style={labelStyle}>
+        <Select2Controller
+          control={control}
+          name="frequency"
+          items={FREQUENCIES}
+          selectedButtonProps={{ minimal: true, small: true }}
+        />
+      </Label>
+      <Label title="Line width" style={labelStyle}>
+        <NumberInput2Controller
+          control={control}
+          name="1d.lineWidth"
+          small
+          controllerProps={{ rules: { required: true, min: 1 } }}
+          min={1}
+          stepSize={1}
+          majorStepSize={1}
+          rightElement={<Tag>Hz</Tag>}
+          style={{ width: 70 }}
+        />
+      </Label>
+    </div>
   );
 }
 
