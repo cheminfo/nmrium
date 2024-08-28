@@ -85,7 +85,11 @@ function setData(draft: Draft<State>, input: InputProps) {
   const {
     nmriumState: { data, view },
     parseMetaFileResult = null,
-    spectraColors = { oneDimension: [], twoDimensions: [] },
+    spectraColors = {
+      oneDimension: [],
+      twoDimensions: [],
+      highlightColor: '#ffd700',
+    },
   } = input || {
     nmriumState: { data: { spectra: [], molecules: [], correlations: {} } },
     multipleAnalysis: {},
