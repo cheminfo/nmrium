@@ -1,39 +1,25 @@
-import { useFormikContext } from 'formik';
+import { Button, Classes } from '@blueprintjs/core';
 import { LegendField, PredefinedLegendField } from 'nmr-load-save';
-import { CSSProperties, useCallback, useMemo } from 'react';
-import { FaPlus, FaTimes } from 'react-icons/fa';
+import { useCallback, useMemo } from 'react';
+import { useFormContext, useWatch } from 'react-hook-form';
+import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 
 import { useChartData } from '../../../context/ChartContext';
-import Button from '../../../elements/Button';
-import { CheckBoxCell } from '../../../elements/CheckBoxCell';
+import { CheckController } from '../../../elements/CheckController';
+import { Input2Controller } from '../../../elements/Input2Controller';
 import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
-import FormikInput from '../../../elements/formik/FormikInput';
 import { convertPathArrayToString } from '../../../utility/convertPathArrayToString';
 import { getSpectraObjectPaths } from '../../../utility/getSpectraObjectPaths';
 
-const styles: Record<'input' | 'column', CSSProperties> = {
-  input: {
-    width: '100%',
-    border: 'none',
-    padding: 0,
-    height: '100%',
-    textAlign: 'left',
-    borderRadius: 0,
-  },
-  column: {
-    padding: '5px',
-  },
-};
-
 function LegendsPreferences() {
-  const { values, setFieldValue } = useFormikContext();
+  const { setValue, control } = useFormContext();
   const { data } = useChartData();
   const { datalist, paths } = useMemo(
     () => getSpectraObjectPaths(data),
     [data],
   );
 
-  const fields = (values as any)?.legendsFields;
+  const fields = useWatch({ name: 'legendsFields' });
 
   const addHandler = useCallback(
     (data: readonly any[], index: number) => {
@@ -47,24 +33,24 @@ function LegendsPreferences() {
       } else {
         columns.push(emptyField);
       }
-      void setFieldValue('legendsFields', columns);
+      setValue('legendsFields', columns);
     },
-    [setFieldValue],
+    [setValue],
   );
 
   const deleteHandler = useCallback(
     (data, index: number) => {
       const _fields = data.filter((_, columnIndex) => columnIndex !== index);
-      void setFieldValue('legendsFields', _fields);
+      setValue('legendsFields', _fields);
     },
-    [setFieldValue],
+    [setValue],
   );
 
   const COLUMNS: Array<Column<LegendField>> = useMemo(
     () => [
       {
         Header: '#',
-        style: { width: '25px', ...styles.column },
+        style: { width: '25px' },
         accessor: (_, index) => index + 1,
       },
       {
@@ -72,58 +58,68 @@ function LegendsPreferences() {
         Cell: ({ row }) => {
           const predefinedColumn = row.original as PredefinedLegendField;
           if (predefinedColumn?.name) {
-            return <p>{predefinedColumn.label}</p>;
+            return (
+              <p style={{ padding: '5px 10px', margin: 0 }}>
+                {predefinedColumn.label}
+              </p>
+            );
           }
 
           return (
-            <FormikInput
+            <Input2Controller
+              control={control}
               name={`legendsFields.${row.index}.jpath`}
-              style={{ input: styles.input }}
+              filterItems={datalist}
               mapOnChangeValue={(key) => paths?.[key] || null}
-              mapValue={(paths) => convertPathArrayToString(paths)}
-              datalist={datalist}
+              mapValue={convertPathArrayToString}
+              style={{ backgroundColor: 'transparent' }}
+              noShadowBox
             />
           );
         },
       },
       {
         Header: 'Visible',
-        style: { width: '30px', ...styles.column },
+        style: { width: '30px', textAlign: 'center' },
         Cell: ({ row }) => (
-          <CheckBoxCell
+          <CheckController
+            control={control}
+            style={{ margin: 0 }}
             name={`legendsFields.${row.index}.visible`}
-            defaultValue
           />
         ),
       },
       {
         Header: '',
-        style: { width: '30px', ...styles.column },
-        id: 'add-button',
+        style: { width: '70px' },
+        id: 'operation-button',
         Cell: ({ data, row }) => {
           const record: any = row.original;
           return (
-            <div style={{ display: 'flex' }}>
-              <Button.Done
-                fill="outline"
+            <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+              <Button
+                small
+                intent="success"
+                outlined
                 onClick={() => addHandler(data, row.index + 1)}
               >
-                <FaPlus />
-              </Button.Done>
-              {!record?.name && (
-                <Button.Danger
-                  fill="outline"
-                  onClick={() => deleteHandler(data, row.index)}
-                >
-                  <FaTimes />
-                </Button.Danger>
-              )}
+                <FaPlus className={Classes.ICON} />
+              </Button>
+              <Button
+                small
+                outlined
+                intent="danger"
+                onClick={() => deleteHandler(data, row.index)}
+                disabled={record?.name}
+              >
+                <FaRegTrashAlt className={Classes.ICON} />
+              </Button>
             </div>
           );
         },
       },
     ],
-    [addHandler, datalist, deleteHandler, paths],
+    [addHandler, control, datalist, deleteHandler, paths],
   );
 
   return (

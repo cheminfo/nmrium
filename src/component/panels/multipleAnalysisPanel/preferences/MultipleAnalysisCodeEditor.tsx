@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { useFormikContext } from 'formik';
 import { memo, useEffect, useState } from 'react';
+import { useFormContext, useWatch } from 'react-hook-form';
 
 import evaluate from '../../../utility/Evaluate';
 
@@ -16,8 +16,9 @@ interface MultipleAnalysisCodeEditorProps {
 }
 
 function MultipleAnalysisCodeEditor({ data }: MultipleAnalysisCodeEditorProps) {
-  const { values, setFieldValue } = useFormikContext<any>();
-  const [code, setCode] = useState(values.code || initCode);
+  const { setValue } = useFormContext();
+  const previousCode = useWatch({ name: 'code' });
+  const [code, setCode] = useState(previousCode || initCode);
   const [result, setResult] = useState('');
 
   useEffect(() => {
@@ -25,10 +26,10 @@ function MultipleAnalysisCodeEditor({ data }: MultipleAnalysisCodeEditorProps) {
     if (evalResult instanceof Error) {
       setResult(evalResult.message);
     } else {
-      void setFieldValue('code', code);
+      setValue('code', code);
       setResult(evalResult);
     }
-  }, [code, data, setFieldValue]);
+  }, [code, data, setValue]);
 
   return (
     <div style={{ marginTop: '20px' }}>
