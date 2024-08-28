@@ -4,12 +4,12 @@ import { useMemo, useRef, useState } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 import { FaFileExport } from 'react-icons/fa';
 import { Axis, LineSeries, Plot } from 'react-plot';
+import { Button } from 'react-science/ui';
 
 import { SpectraAnalysisData } from '../../../data/data1d/multipleSpectraAnalysis';
 import { useChartData } from '../../context/ChartContext';
 import { useToaster } from '../../context/ToasterContext';
-import Button from '../../elements/Button';
-import Input from '../../elements/Input';
+import { Input2 } from '../../elements/Input2';
 import Label from '../../elements/Label';
 import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus';
 import { copyPNGToClipboard } from '../../utility/export';
@@ -117,8 +117,12 @@ export default function AnalysisChart(props: PlotChartPros) {
     return { datalist, paths };
   }, [data, spectraAnalysisData]);
 
-  function handleChangeKey(event: React.ChangeEvent<HTMLInputElement>) {
-    const { name, value } = event.target;
+  function handleChangeKey(
+    value: string,
+    event?: React.ChangeEvent<HTMLInputElement>,
+  ) {
+    if (!event) return;
+    const { name } = event.target;
     setPlotOptions((prevOptions) => ({ ...prevOptions, [name]: value }));
   }
 
@@ -141,33 +145,28 @@ export default function AnalysisChart(props: PlotChartPros) {
     <div>
       <div style={{ display: 'flex', padding: '5px' }}>
         <Label title="X">
-          <Input
+          <Input2
             name="xPath"
-            style={{
-              input: { padding: '5px' },
-            }}
             value={plotOptions.xPath}
-            datalist={datalist}
+            filterItems={datalist}
             onChange={handleChangeKey}
           />
         </Label>
         <Label title="Y" style={{ container: { paddingLeft: '5px' } }}>
-          <Input
+          <Input2
             name="yPath"
-            style={{
-              input: { padding: '5px' },
-            }}
             value={plotOptions.yPath}
-            datalist={datalist}
+            filterItems={datalist}
             onChange={handleChangeKey}
           />
         </Label>
-        <Button.BarButton
-          toolTip="Copy chart to clipboard"
+        <Button
+          intent="success"
+          icon={<FaFileExport />}
+          minimal
           onClick={handleCopy}
-        >
-          <FaFileExport />
-        </Button.BarButton>
+          tooltipProps={{ content: 'Copy chart to clipboard' }}
+        />
       </div>
       <div
         style={{

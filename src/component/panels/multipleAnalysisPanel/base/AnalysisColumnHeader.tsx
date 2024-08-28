@@ -1,8 +1,8 @@
 import { AnalysisColumnsTypes, AnalisisColumnsValuesKeys } from 'nmr-load-save';
 import { CSSProperties, MouseEvent } from 'react';
 
+import { Select2 } from '../../../elements/Select2';
 import DeleteButton from '../../../elements/Tab/DeleteButton';
-import DropDownButton from '../../../elements/dropDownButton/DropDownButton';
 import { useHighlight } from '../../../highlight/index';
 
 const styles: Record<
@@ -47,17 +47,17 @@ const styles: Record<
   },
 };
 
-const columnsFilters: Array<{ key: string; label: string }> = [
-  { key: AnalisisColumnsValuesKeys.RELATIVE, label: 'Relative' },
-  { key: AnalisisColumnsValuesKeys.ABSOLUTE, label: 'Absolute' },
-  { key: AnalisisColumnsValuesKeys.MIN, label: 'Min Intensity' },
-  { key: AnalisisColumnsValuesKeys.MAX, label: 'Max Intensity' },
+const columnsFilters: Array<{ value: string; label: string }> = [
+  { value: AnalisisColumnsValuesKeys.RELATIVE, label: 'Relative' },
+  { value: AnalisisColumnsValuesKeys.ABSOLUTE, label: 'Absolute' },
+  { value: AnalisisColumnsValuesKeys.MIN, label: 'Min Intensity' },
+  { value: AnalisisColumnsValuesKeys.MAX, label: 'Max Intensity' },
 ];
 
 interface AnalysisColumnHeaderProps {
   columnKey: string;
   rangeLabel: string;
-  onColumnFilter: (element: any) => void;
+  onColumnFilter: (value: string) => void;
   data: {
     type: string;
     valueKey: string;
@@ -85,12 +85,18 @@ function AnalysisColumnHeader({
     >
       <div style={styles.innerContainer}>
         {data.type === AnalysisColumnsTypes.NORMAL && (
-          <div style={styles.dropdownContainer}>
-            <DropDownButton
-              data={columnsFilters}
-              formatSelectedValue={(item) => item.label.slice(0, 3)}
-              selectedKey={data.valueKey}
-              onSelect={onColumnFilter}
+          <div
+            style={styles.dropdownContainer}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <Select2
+              getSelectedText={(item) => item.label.slice(0, 3)}
+              items={columnsFilters}
+              selectedItemValue={data.valueKey}
+              onItemSelect={({ value }) => {
+                onColumnFilter(value);
+              }}
+              selectedButtonProps={{ small: true, minimal: true }}
             />
           </div>
         )}
