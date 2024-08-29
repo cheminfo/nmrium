@@ -138,7 +138,6 @@ export function usePanelPreferences<T extends Panel>(
   nucleus?: string,
 ): WorkSpacePanelPreferences[T] {
   const { current } = usePreferences();
-
   return useMemo(() => {
     return getPanelPreferences(current, panelKey, nucleus);
   }, [current, nucleus, panelKey]);
