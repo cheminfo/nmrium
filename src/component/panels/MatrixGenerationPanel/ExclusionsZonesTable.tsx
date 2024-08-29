@@ -1,31 +1,22 @@
 /** @jsxImportSource @emotion/react */
-import { useFormikContext } from 'formik';
-import { FaTimes } from 'react-icons/fa';
+import { Button, Classes } from '@blueprintjs/core';
+import { useFormContext, useWatch } from 'react-hook-form';
+import { FaRegTrashAlt } from 'react-icons/fa';
 
-import Button from '../../elements/Button';
-import { InputStyle } from '../../elements/Input';
+import { NumberInput2Controller } from '../../elements/NumberInput2Controller';
 import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
-import FormikInput from '../../elements/formik/FormikInput';
-
-const inputStyle: InputStyle = {
-  input: {
-    width: '100%',
-    fontSize: '1.1em',
-    textAlign: 'left',
-  },
-};
 
 export function ExclusionsZonesTable() {
-  const { values, setFieldValue } = useFormikContext<any>();
-
-  if (!values?.exclusionsZones || !Array.isArray(values.exclusionsZones)) {
+  const { setValue, control } = useFormContext<any>();
+  const exclusionsZones = useWatch({ name: 'exclusionsZones' });
+  if (!exclusionsZones || !Array.isArray(exclusionsZones)) {
     return null;
   }
 
   function handleDelete(index) {
-    void setFieldValue(
+    setValue(
       'exclusionsZones',
-      values.exclusionsZones.filter((_, i) => i !== index),
+      exclusionsZones.filter((_, i) => i !== index),
     );
   }
 
@@ -38,20 +29,23 @@ export function ExclusionsZonesTable() {
     {
       Header: 'from',
       Cell: ({ row }) => (
-        <FormikInput
+        <NumberInput2Controller
+          control={control}
           name={`exclusionsZones.${row.index}.from`}
-          type="number"
-          style={inputStyle}
+          fill
+          noShadowBox
+          style={{ backgroundColor: 'transparent' }}
         />
       ),
     },
     {
       Header: 'To',
       Cell: ({ row }) => (
-        <FormikInput
+        <NumberInput2Controller
           name={`exclusionsZones.${row.index}.to`}
-          type="number"
-          style={inputStyle}
+          fill
+          noShadowBox
+          style={{ backgroundColor: 'transparent' }}
         />
       ),
     },
@@ -62,9 +56,14 @@ export function ExclusionsZonesTable() {
       id: 'actions',
       Cell: ({ row }) => {
         return (
-          <Button.Danger fill="outline" onClick={() => handleDelete(row.index)}>
-            <FaTimes />
-          </Button.Danger>
+          <Button
+            small
+            outlined
+            intent="danger"
+            onClick={() => handleDelete(row.index)}
+          >
+            <FaRegTrashAlt className={Classes.ICON} />
+          </Button>
         );
       },
     },
@@ -73,7 +72,7 @@ export function ExclusionsZonesTable() {
   return (
     <ReactTable
       columns={exclusionsZonesColumns}
-      data={values.exclusionsZones}
+      data={exclusionsZones}
       emptyDataRowText="No Zones"
     />
   );

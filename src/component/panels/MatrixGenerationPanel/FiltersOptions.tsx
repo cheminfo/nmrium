@@ -1,35 +1,43 @@
 /** @jsxImportSource @emotion/react */
-import { useFormikContext } from 'formik';
+import { Button, Classes } from '@blueprintjs/core';
 import { ReactNode } from 'react';
-import { FaPlus, FaTimes } from 'react-icons/fa';
+import { useFormContext, useWatch } from 'react-hook-form';
+import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 
-import { MatrixFilter, normalCase } from '../../../data/matrixGeneration';
-import Button from '../../elements/Button';
+import {
+  getMatrixFilters,
+  MatrixFilter,
+  normalCase,
+} from '../../../data/matrixGeneration';
+import { CheckController } from '../../elements/CheckController';
 import { GroupPane } from '../../elements/GroupPane';
-import { InputStyle } from '../../elements/Input';
+import { Input2Controller } from '../../elements/Input2Controller';
 import Label from '../../elements/Label';
-import Select from '../../elements/Select';
-import FormikCheckBox from '../../elements/formik/FormikCheckBox';
-import FormikInput from '../../elements/formik/FormikInput';
-import FormikSelect from '../../elements/formik/FormikSelect';
+import { NumberInput2Controller } from '../../elements/NumberInput2Controller';
+import { Select2Controller } from '../../elements/Select2Controller';
 
 import {
   DEFAULT_MATRIX_FILTERS,
   GroupPanelStyle,
 } from './MatrixGenerationPanel';
 
-const inputStyle: InputStyle = {
-  input: { padding: '0.4em', width: '100%' },
-};
+interface SelectMatrixFilter extends MatrixFilter {
+  label: string;
+}
+
+const matrixFilters: SelectMatrixFilter[] = getMatrixFilters().map((item) => ({
+  ...item,
+  label: normalCase(item.name),
+}));
 
 export function FiltersOptions() {
-  const { values } = useFormikContext<any>();
+  const filters = useWatch({ name: 'filters' });
 
-  if (!values?.filters || !Array.isArray(values.filters)) {
+  if (!filters || !Array.isArray(filters)) {
     return null;
   }
 
-  return values.filters.map((filter, index) => {
+  return filters.map((filter, index) => {
     return (
       <GroupPane
         // eslint-disable-next-line react/no-array-index-key
@@ -48,6 +56,7 @@ export function FiltersOptions() {
 
 function Fields(props: { filter: MatrixFilter; basePath: string }) {
   const fields = Object.entries(props.filter.properties);
+  const { control } = useFormContext();
 
   return (
     <div>
@@ -73,65 +82,44 @@ function Fields(props: { filter: MatrixFilter; basePath: string }) {
               </Label>
             );
           }
-          case 'string':
-          case 'number': {
-            const Field = (
-              <Label
-                key={key}
-                title={field.name}
-                style={{
-                  label: { width: '150px' },
-                  container: {
-                    paddingLeft: `${10 * field.level}px`,
-                    paddingTop: '5px',
-                  },
-                }}
-              >
-                <FormikInput
+          case 'string': {
+            return (
+              <LevelLabel field={field}>
+                <Input2Controller
+                  control={control}
                   name={keyPath}
-                  type={field.type === 'string' ? 'text' : 'number'}
-                  style={inputStyle}
+                  placeholder={field.default}
+                />
+              </LevelLabel>
+            );
+          }
+          case 'number': {
+            return (
+              <LevelLabel field={field}>
+                <NumberInput2Controller
+                  control={control}
+                  name={keyPath}
                   placeholder={`${field.default}`}
                 />
-              </Label>
+              </LevelLabel>
             );
-            return Field;
           }
           case 'boolean': {
             return (
-              <Label
-                key={key}
-                title={field.name}
-                style={{
-                  label: { width: '150px' },
-                  container: {
-                    paddingTop: '5px',
-                    paddingLeft: `${10 * field.level}px`,
-                  },
-                }}
-              >
-                <FormikCheckBox name={keyPath} />
-              </Label>
+              <LevelLabel field={field}>
+                <CheckController control={control} name={keyPath} />
+              </LevelLabel>
             );
           }
           case 'select': {
             return (
-              <Label
-                key={key}
-                title={field.name}
-                style={{
-                  label: { width: '150px' },
-                  container: {
-                    paddingTop: '5px',
-                    paddingLeft: `${10 * field.level}px`,
-                  },
-                }}
-              >
-                <FormikSelect
+              <LevelLabel field={field}>
+                <Select2Controller
+                  control={control}
                   items={mapSelectList(field.choices)}
                   name={keyPath}
                 />
-              </Label>
+              </LevelLabel>
             );
           }
           default:
@@ -146,31 +134,31 @@ function mapSelectList(array: string[]) {
   return array.map((val) => ({ value: val, label: normalCase(val) }));
 }
 
-function FiltersPanelGroupHeader({ index, name }) {
-  const { values, setFieldValue } = useFormikContext<any>();
+function FiltersPanelGroupHeader({ index }) {
+  const { setValue } = useFormContext();
+  const filters = useWatch({ name: 'filters' });
 
   function handelSelectFilter(value, index) {
-    const filters = values.filters.slice(0);
-    filters.splice(index, 1, value);
-    void setFieldValue('filters', filters);
+    const clonedFilters = filters.slice();
+    clonedFilters.splice(index, 1, value);
+    setValue('filters', clonedFilters);
   }
 
   function handleAdd(index) {
-    if (values.filters) {
-      void setFieldValue('filters', [
-        ...values.filters.slice(0, index),
+    if (filters) {
+      setValue('filters', [
+        ...filters.slice(0, index),
         DEFAULT_MATRIX_FILTERS[0],
-        ...values.filters.slice(index),
+        ...filters.slice(index),
       ]);
     }
   }
   function handleDelete(index) {
-    void setFieldValue(
+    setValue(
       'filters',
-      values.filters.filter((_, i) => i !== index),
+      filters.filter((_, i) => i !== index),
     );
   }
-
   return (
     <div
       className="section-header"
@@ -186,33 +174,42 @@ function FiltersPanelGroupHeader({ index, name }) {
       >
         {index + 1}-
       </p>
-      <Select
-        value={name}
-        items={DEFAULT_MATRIX_FILTERS}
-        onChange={(value) => handelSelectFilter(value, index)}
-        style={{ width: '100%' }}
-        returnValue={false}
-        itemTextField="name"
-        itemValueField="name"
-        textRender={(text) => normalCase(text)}
+      <Select2Controller
+        name={`filters[${index}].name`}
+        items={matrixFilters}
+        onItemSelect={(value) => handelSelectFilter(value, index)}
+        fill
+        itemTextKey="label"
+        itemValueKey="name"
+        selectedButtonProps={{ small: true }}
+        popoverProps={{ matchTargetWidth: true }}
+        filterable
       />
 
-      <div style={{ display: 'flex' }}>
-        <Button.Danger
-          fill="outline"
-          onClick={() => handleDelete(index)}
-          style={{ marginLeft: '5px' }}
-        >
-          <FaTimes />
-        </Button.Danger>
-
-        <Button.Done
-          fill="outline"
+      <div
+        style={{
+          display: 'flex',
+          minWidth: '60px',
+          width: '60px',
+          justifyContent: 'space-evenly',
+        }}
+      >
+        <Button
+          small
+          intent="success"
+          outlined
           onClick={() => handleAdd(index + 1)}
-          style={{ marginLeft: '5px' }}
         >
-          <FaPlus />
-        </Button.Done>
+          <FaPlus className={Classes.ICON} />
+        </Button>
+        <Button
+          small
+          outlined
+          intent="danger"
+          onClick={() => handleDelete(index)}
+        >
+          <FaRegTrashAlt className={Classes.ICON} />
+        </Button>
       </div>
     </div>
   );
@@ -227,5 +224,24 @@ function FieldInfo(props: { children: ReactNode; description: string }) {
         {props.description}
       </span>
     </div>
+  );
+}
+
+function LevelLabel({ field, children }) {
+  const { name, level } = field;
+
+  return (
+    <Label
+      title={name}
+      style={{
+        label: { width: '150px' },
+        container: {
+          paddingLeft: `${10 * level}px`,
+          paddingTop: '5px',
+        },
+      }}
+    >
+      {children}
+    </Label>
   );
 }
