@@ -167,13 +167,11 @@ export function usePanelPreferencesByNuclei<T extends Panel>(
 ): UsePanelPreferencesByNucleiResult<T> {
   const { current } = usePreferences();
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { nuclei: omitNuclei = null, ...restPreferences } = getPanelPreferences(
-    current,
-    panelKey,
-  );
-
   return useMemo(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { nuclei: omitNuclei = null, ...restPreferences } =
+      getPanelPreferences(current, panelKey);
+
     return {
       nuclei: Object.fromEntries(
         nuclei.map((nucleusLabel) => [
@@ -183,5 +181,5 @@ export function usePanelPreferencesByNuclei<T extends Panel>(
       ),
       ...restPreferences,
     };
-  }, [current, nuclei, panelKey, restPreferences]);
+  }, [current, nuclei, panelKey]);
 }
