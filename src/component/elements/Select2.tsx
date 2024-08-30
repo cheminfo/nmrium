@@ -27,7 +27,10 @@ type ReturnedUseSelectOptions = ReturnType<typeof useSelect>;
 export type Select2Props<T extends Record<string, any> = SelectDefaultItem> =
   Omit<
     SelectProps<T>,
-    keyof Omit<ReturnedUseSelectOptions, 'onItemSelect' | 'value'>
+    keyof Omit<
+      ReturnedUseSelectOptions,
+      'onItemSelect' | 'value' | 'popoverProps'
+    >
   > &
     SelectOptions<T> & {
       selectedButtonProps?: Omit<ButtonProps, 'text'>;
@@ -60,6 +63,7 @@ function InnerSelect2<T extends Record<string, any> = SelectDefaultItem>(
     intent,
     placeholder = '',
     filterPlaceholder,
+    popoverProps,
     getSelectedText,
     ...otherProps
   } = props;
@@ -101,6 +105,7 @@ function InnerSelect2<T extends Record<string, any> = SelectDefaultItem>(
       {...otherProps}
       placeholder={filterPlaceholder}
       fill={fill}
+      popoverProps={{ minimal: true, ...popoverProps }}
     >
       <Button
         ref={ref}
