@@ -1,10 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
-import { Formik, FormikProps } from 'formik';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { ParseResult } from 'papaparse';
-import { CSSProperties, useState, useMemo, useRef, useEffect } from 'react';
+import { CSSProperties, useState, useMemo, useEffect } from 'react';
 import type { FileWithPath } from 'react-dropzone';
 import { FileError } from 'react-dropzone';
+import { useForm } from 'react-hook-form';
 import { DropZone } from 'react-science/ui';
 import * as Yup from 'yup';
 
@@ -19,10 +20,10 @@ import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useToaster } from '../../context/ToasterContext';
 import Button from '../../elements/Button';
+import { Input2Controller } from '../../elements/Input2Controller';
 import Label from '../../elements/Label';
 import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
-import FormikInput from '../../elements/formik/FormikInput';
-import FormikSelect from '../../elements/formik/FormikSelect';
+import { Select2Controller } from '../../elements/Select2Controller';
 import { convertPathArrayToString } from '../../utility/convertPathArrayToString';
 import { getSpectraObjectPaths } from '../../utility/getSpectraObjectPaths';
 
@@ -78,9 +79,14 @@ interface CompareResultItem {
 }
 type CompareResult = Record<number, CompareResultItem>;
 
+interface ImportLinkItem {
+  source: string;
+  target: string[];
+}
+
 const validationSchema = Yup.object({
   source: Yup.string().required(),
-  target: Yup.array(Yup.string()).min(1).required(),
+  target: Yup.array(Yup.string().required()).min(1).required(),
 });
 
 interface InnerMetaImportationModalPropsProps {
@@ -115,8 +121,6 @@ function InnerMetaImportationModal({
 }: InnerMetaImportationModalPropsProps) {
   const toaster = useToaster();
   const dispatch = useDispatch();
-
-  const formRef = useRef<FormikProps<any>>(null);
   const [parseResult, setParseResult] = useState<ParseResult<any> | null>();
   const [compareResults, setCompareResults] = useState<CompareResult>({});
   const [matches, setMatchesResults] = useState<Record<string, any>>({});
@@ -130,6 +134,14 @@ function InnerMetaImportationModal({
       setParseResult(results);
     })();
   }
+
+  const { handleSubmit, control, setValue } = useForm<ImportLinkItem>({
+    defaultValues: {
+      source: '',
+      target: [],
+    },
+    resolver: yupResolver(validationSchema),
+  });
 
   useEffect(() => {
     if (file) {
@@ -195,8 +207,7 @@ function InnerMetaImportationModal({
         }
       } catch (error: any) {
         if (error instanceof TargetPathError) {
-          void formRef.current?.setFieldValue('target', null);
-          formRef.current?.setFieldError('target', '');
+          setValue('target', []);
         }
         toaster.show({
           message: error.message,
@@ -256,57 +267,37 @@ function InnerMetaImportationModal({
           ) : (
             <>
               <div style={{ height: '130px' }}>
-                <Formik
-                  innerRef={formRef}
-                  initialValues={{
-                    source: null,
-                    target: [],
-                  }}
-                  onSubmit={handleLinkSpectra}
-                  validationSchema={validationSchema}
+                <Label
+                  title="Source field"
+                  style={{ label: { width: '100px' } }}
                 >
-                  <>
-                    <Label
-                      title="Source field"
-                      style={{ label: { width: '100px' } }}
-                    >
-                      <FormikSelect
-                        name="source"
-                        items={mapColumnToSelectItems(
-                          parseResult?.meta.fields || [],
-                        )}
-                        style={{
-                          width: '300px',
-                          padding: '5px',
-                          margin: 0,
-                        }}
-                      />
-                    </Label>
-                    <Label
-                      title="Target field path"
-                      style={{
-                        label: { width: '100px', padding: '20px 0px' },
-                      }}
-                    >
-                      <FormikInput
-                        name="target"
-                        style={{
-                          input: {
-                            width: '300px',
-                            textAlign: 'left',
-                            padding: '5px',
-                            fontSize: '14px',
-                          },
-                        }}
-                        placeholder="Example: info.plus"
-                        datalist={datalist}
-                        mapOnChangeValue={(key) => paths?.[key] || key}
-                        mapValue={(paths) => convertPathArrayToString(paths)}
-                      />
-                    </Label>
-                  </>
-                </Formik>
-                <Button.Done onClick={() => formRef.current?.submitForm()}>
+                  <Select2Controller
+                    control={control}
+                    name="source"
+                    items={mapColumnToSelectItems(
+                      parseResult?.meta.fields || [],
+                    )}
+                    filterable
+                    selectedButtonProps={{ style: { minWidth: '200px' } }}
+                  />
+                </Label>
+                <Label
+                  title="Target field path"
+                  style={{
+                    label: { width: '100px', padding: '20px 0px' },
+                  }}
+                >
+                  <Input2Controller
+                    control={control}
+                    name="target"
+                    placeholder="Example: info.plus"
+                    filterItems={datalist}
+                    mapOnChangeValue={(key) => paths?.[key] || key}
+                    mapValue={convertPathArrayToString}
+                    style={{ minWidth: '200px' }}
+                  />
+                </Label>
+                <Button.Done onClick={() => handleSubmit(handleLinkSpectra)()}>
                   Link Spectra
                 </Button.Done>
               </div>
