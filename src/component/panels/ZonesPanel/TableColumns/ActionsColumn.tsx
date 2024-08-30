@@ -1,21 +1,13 @@
-import { CSSProperties, Fragment, useCallback } from 'react';
 import { FaEdit, FaRegTrashAlt, FaSearchPlus } from 'react-icons/fa';
 
 import { SIGNAL_KINDS } from '../../../../data/constants/signalsKinds';
 import { useAssignmentData } from '../../../assignment/AssignmentsContext';
 import { useDispatch } from '../../../context/DispatchContext';
-import Select from '../../../elements/Select';
+import { useDialog } from '../../../elements/DialogManager';
+import { Select2 } from '../../../elements/Select2';
+import { EditZoneModal } from '../../../modal/editZone/EditZoneModal';
 import { ZoneData } from '../hooks/useMapZones';
 import { useZoneActions } from '../hooks/useZoneActions';
-import { useDialog } from '../../../elements/DialogManager';
-import { EditZoneModal } from '../../../modal/editZone/EditZoneModal';
-
-const selectBoxStyle: CSSProperties = {
-  marginLeft: 2,
-  marginRight: 2,
-  border: 'none',
-  height: '20px',
-};
 
 interface ActionsColumnProps {
   rowData: ZoneData;
@@ -38,20 +30,17 @@ function ActionsColumn({
   const assignmentData = useAssignmentData();
   const showActions = showDeleteAction || showEditAction || showZoomAction;
 
-  const changeSignalKindHandler = useCallback(
-    (kind) => {
-      dispatch({
-        type: 'CHANGE_ZONE_SIGNAL_KIND',
-        payload: {
-          zoneData: rowData,
-          kind,
-        },
-      });
-    },
-    [dispatch, rowData],
-  );
+  function changeSignalKindHandler(kind) {
+    dispatch({
+      type: 'CHANGE_ZONE_SIGNAL_KIND',
+      payload: {
+        zoneData: rowData,
+        kind,
+      },
+    });
+  }
 
-  const deleteZoneHandler = useCallback(() => {
+  function deleteZoneHandler() {
     dispatch({
       type: 'DELETE_2D_ZONE',
       payload: {
@@ -59,64 +48,10 @@ function ActionsColumn({
         assignmentData,
       },
     });
-  }, [assignmentData, dispatch, rowData]);
-
-  // const zoomZoneHandler = useCallback(() => {
-  //   const xMargin = Math.abs(rowData.x.from - rowData.x.to) * 10;
-  //   dispatch({
-  //     type: 'SET_X_DOMAIN',
-  //     payload: {
-  //       xDomain:
-  //         rowData.x.from <= rowData.x.to
-  //           ? [rowData.x.from - xMargin, rowData.x.to + xMargin]
-  //           : [rowData.x.to - xMargin, rowData.x.from + xMargin],
-  //     },
-  //   });
-  //   const yMargin = Math.abs(rowData.y.from - rowData.y.to) * 10;
-  //   dispatch({
-  //     type: 'SET_Y_DOMAIN',
-  //     payload: {
-  //       yDomain:
-  //         rowData.y.from <= rowData.y.to
-  //           ? [rowData.y.from - yMargin, rowData.y.to + yMargin]
-  //           : [rowData.y.to - yMargin, rowData.y.from + yMargin],
-  //     },
-  //   });
-  // }, [dispatch, rowData.x.from, rowData.x.to, rowData.y.from, rowData.y.to]);
-
-  // const saveEditZoneHandler = useCallback(
-  //   (zone) => {
-  //     dispatch({
-  //       type: 'SAVE_EDITED_ZONE',
-  //       payload: {
-  //         zone,
-  //       },
-  //     });
-  //   },
-  //   [dispatch],
-  // );
+  }
 
   const { zoomToZone } = useZoneActions();
   const { openDialog } = useDialog();
-  // const openEditZoneHandler = useCallback(() => {
-  //   dispatch({
-  //     type: 'SET_SELECTED_TOOL',
-  //     payload: { selectedTool: 'zoom' },
-  //   });
-  //   modal.show(
-  //     <EditZoneModal
-  //       onCloseEditZoneModal={() => modal.close()}
-  //       // onSaveEditZoneModal={saveEditZoneHandler}
-  //       onZoomEditZoneModal={() => zoomZoneHandler()}
-  //       rowData={rowData}
-  //     />,
-  //     {
-  //       position: positions.MIDDLE_RIGHT,
-  //       transition: transitions.SCALE,
-  //       isBackgroundBlur: false,
-  //     },
-  //   );
-  // }, [dispatch, modal, rowData, saveEditZoneHandler, zoomZoneHandler]);
 
   function handleEditZone() {
     openDialog(EditZoneModal, rowData);
@@ -124,16 +59,15 @@ function ActionsColumn({
   }
 
   return (
-    <Fragment>
+    <>
       {showKind && (
         <td>
-          <Select
-            onChange={(value) => {
-              changeSignalKindHandler(value);
-            }}
+          <Select2
+            onItemSelect={({ value }) => changeSignalKindHandler(value)}
             items={SIGNAL_KINDS}
-            defaultValue={rowData.tableMetaInfo.signal.kind}
-            style={selectBoxStyle}
+            selectedItemValue={rowData.tableMetaInfo.signal.kind}
+            selectedButtonProps={{ minimal: true, small: true }}
+            fill
           />
         </td>
       )}
@@ -168,7 +102,7 @@ function ActionsColumn({
           )}
         </td>
       )}
-    </Fragment>
+    </>
   );
 }
 
