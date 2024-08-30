@@ -200,12 +200,6 @@ function InnerInput<FilterItem extends string = string>(
           inputValueRenderer: getFilterValue,
           itemPredicate,
           popoverProps: { minimal: true, placement: 'bottom' },
-          popoverContentProps: {
-            style: {
-              maxHeight: '250px',
-              overflowY: 'auto',
-            },
-          },
           noResults: (
             <MenuItem disabled text="No results." roleStructure="listoption" />
           ),
