@@ -1,12 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Fragment, CSSProperties } from 'react';
 import { FaEdit, FaRegTrashAlt, FaSearchPlus } from 'react-icons/fa';
 
 import { SIGNAL_KINDS } from '../../../../data/constants/signalsKinds';
 import { useDispatch } from '../../../context/DispatchContext';
 import { useDialog } from '../../../elements/DialogManager';
-import Select from '../../../elements/Select';
+import { Select2 } from '../../../elements/Select2';
 import { EditRangeModal } from '../../../modal/editRange/EditRangeModal';
 import {
   OnHoverEvent,
@@ -29,13 +28,6 @@ const styles = css`
     opacity: 0.6;
   }
 `;
-
-const selectBoxStyle: CSSProperties = {
-  marginLeft: 2,
-  marginRight: 2,
-  border: 'none',
-  height: '20px',
-};
 
 interface ActionsColumnProps
   extends Omit<BaseRangeColumnProps, 'format'>,
@@ -62,17 +54,18 @@ function ActionsColumn({
   const { openDialog } = useDialog();
   const dispatch = useDispatch();
   return (
-    <Fragment>
+    <>
       {showKind && (
         <td {...onHoverSignal}>
           {!row?.tableMetaInfo?.signal ? (
             ''
           ) : (
-            <Select
-              onChange={(kind) => changeRangeSignalKind(kind, row)}
+            <Select2
+              onItemSelect={({ value }) => changeRangeSignalKind(value, row)}
               items={SIGNAL_KINDS}
-              defaultValue={row?.tableMetaInfo?.signal?.kind}
-              style={selectBoxStyle}
+              selectedItemValue={row?.tableMetaInfo?.signal?.kind}
+              selectedButtonProps={{ minimal: true, small: true }}
+              fill
             />
           )}
         </td>
@@ -122,7 +115,7 @@ function ActionsColumn({
           )}
         </td>
       )}
-    </Fragment>
+    </>
   );
 }
 
