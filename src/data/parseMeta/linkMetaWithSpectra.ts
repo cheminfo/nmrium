@@ -13,7 +13,7 @@ type CompareResult = Record<number, CompareResultItem>;
 
 function linkMetaWithSpectra(options: {
   source?: string;
-  target?: string;
+  target?: string | string[];
   autolink?: boolean;
   parseMetaFileResult: ParseResult<any>;
   spectra: Spectrum[];
