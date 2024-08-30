@@ -105,7 +105,7 @@ function InnerSelect2<T extends Record<string, any> = SelectDefaultItem>(
       {...otherProps}
       placeholder={filterPlaceholder}
       fill={fill}
-      popoverProps={{ minimal: true, ...popoverProps }}
+      popoverProps={{ minimal: true, placement: 'bottom', ...popoverProps }}
     >
       <Button
         ref={ref}
