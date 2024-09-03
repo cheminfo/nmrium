@@ -177,45 +177,67 @@ function range(from: number, to: number, step: number) {
 function drawContours(
   level: ContourItem,
   spectrum: Spectrum2D,
+  contourCache: Record<string, any>,
   negative = false,
   quadrant = 'rr',
 ) {
   const { contourLevels, numberOfLayers } = level;
+  const key = negative ? 'negative' : 'positive';
 
-  return getContours({
+  const nbLevels = Math.min(
+    numberOfLayers,
+    contourLevels[1] - contourLevels[0],
+  );
+
+  const { id, data } = spectrum;
+  if (!contourCache[id]) {
+    contourCache[id] = {};
+  }
+
+  if (!(key in contourCache[id])) {
+    contourCache[id][key] = { contours: [], timeout: false };
+  }
+
+  const oneSenseContours = contourCache[id][key].contours;
+  const selectedLevels = getRange(
+    Math.max(0, contourLevels[0]),
+    contourLevels[1],
+    nbLevels,
+  ).map((e) => Math.round(e));
+
+  const levels = selectedLevels.filter((level) => !oneSenseContours[level]);
+  const { contours, timeout } = getContours({
+    levels,
     negative,
-    boundary: contourLevels,
-    nbLevels: numberOfLayers,
-    data: spectrum.data[quadrant],
+    data: data[quadrant],
   });
+
+  for (const [i, level] of contours.entries()) {
+    oneSenseContours[levels[i]] = level;
+  }
+  contourCache[id][key] = { contours: oneSenseContours, timeout };
+
+  return {
+    contours: selectedLevels.map((level) => oneSenseContours[level]),
+    timeout,
+  };
 }
 
 interface ContoursCalcOptions {
-  boundary: [number, number];
+  levels: number[];
   negative?: boolean;
   timeout?: number;
-  nbLevels: number;
   data: NmrData2DFt['rr'];
 }
 
 function getContours(options: ContoursCalcOptions) {
-  const {
-    boundary,
-    negative = false,
-    timeout = 2000,
-    nbLevels,
-    data,
-  } = options;
+  const { levels, negative = false, timeout = 2000, data } = options;
   const xs = getRange(data.minX, data.maxX, data.z[0].length);
   const ys = getRange(data.minY, data.maxY, data.z.length);
   const conrec = new Conrec(data.z, { xs, ys, swapAxes: false });
   const max = Math.max(Math.abs(data.minZ), Math.abs(data.maxZ));
-  const minLevel = calculateValueOfLevel(boundary[0], max);
-  const maxLevel = calculateValueOfLevel(boundary[1], max);
 
-  const diffRange = boundary[1] - boundary[0];
-
-  let _range = getRange(minLevel, maxLevel, Math.min(nbLevels, diffRange), 2);
+  let _range = levels.map((level) => calculateValueOfLevel(level, max));
   if (negative) {
     _range = _range.map((value) => -value);
   }

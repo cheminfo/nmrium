@@ -1,7 +1,7 @@
 import debounce from 'lodash/debounce';
 import get from 'lodash/get';
 import { Spectrum2D } from 'nmr-load-save';
-import { memo, useMemo, useRef } from 'react';
+import { memo, useEffect, useMemo, useRef } from 'react';
 
 import {
   drawContours,
@@ -9,6 +9,7 @@ import {
   LevelSign,
 } from '../../../data/data2d/Spectrum2D/contours';
 import { useChartData } from '../../context/ChartContext';
+import { useContourCache } from '../../context/ContourCacheContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import { useToaster } from '../../context/ToasterContext';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
@@ -76,20 +77,25 @@ function ContoursPaths({
   const activeSpectrum = useActiveSpectrum();
   const preferences = usePreferences();
   const level = useContoursLevel(spectrum, sign);
+  const [cache, setCache] = useContourCache();
 
   const contours = useMemo(() => {
     const { contours, timeout } = drawContours(
       level,
       spectrum,
+      cache,
       sign === 'negative',
     );
     if (timeout) {
       onTimeout();
     }
-    return contours;
-  }, [spectrum, level, onTimeout, sign]);
+    setCache(cache);
+    return { contours, cache };
+  }, [spectrum, level, onTimeout, sign, cache, setCache]);
 
-  const path = usePath(spectrum, contours);
+  // useEffect(() => {}, [setCache, contours]);
+
+  const path = usePath(spectrum, contours.contours);
 
   const opacity =
     activeSpectrum === null || spectrumID === activeSpectrum.id
