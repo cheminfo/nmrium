@@ -1,7 +1,7 @@
 import debounce from 'lodash/debounce';
 import get from 'lodash/get';
 import { Spectrum2D } from 'nmr-load-save';
-import { memo, useEffect, useMemo, useRef } from 'react';
+import { memo, useMemo, useRef } from 'react';
 
 import {
   drawContours,
