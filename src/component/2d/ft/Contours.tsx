@@ -9,10 +9,10 @@ import {
   LevelSign,
 } from '../../../data/data2d/Spectrum2D/contours';
 import { useChartData } from '../../context/ChartContext';
-import { useContourCache } from '../../context/ContourCacheContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import { useToaster } from '../../context/ToasterContext';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
+import { useContourCache } from '../../hooks/useContourCache';
 import { PathBuilder } from '../../utility/PathBuilder';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { useScale2DX, useScale2DY } from '../utilities/scale';
