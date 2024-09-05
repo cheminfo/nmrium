@@ -80,16 +80,14 @@ function ContoursPaths({
   const [cache, setCache] = useContourCache();
 
   const contours = useMemo(() => {
-    const { contours, timeout } = drawContours(
-      level,
-      spectrum,
-      cache,
-      sign === 'negative',
-    );
+    const { contours, timeout } = drawContours(level, spectrum, cache, sign);
+    
     if (timeout) {
       onTimeout();
+    } else {
+      setCache(cache);
     }
-    setCache(cache);
+
     return { contours, cache };
   }, [spectrum, level, onTimeout, sign, cache, setCache]);
 

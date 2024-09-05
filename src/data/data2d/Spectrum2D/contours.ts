@@ -3,6 +3,10 @@ import { Conrec } from 'ml-conrec';
 import { xMaxAbsoluteValue } from 'ml-spectra-processing';
 import { Spectrum2D } from 'nmr-load-save';
 
+import {
+  ContourCache,
+  ContourResult,
+} from '../../../component/hooks/useContourCache';
 import { calculateSanPlot } from '../../utilities/calculateSanPlot';
 
 interface Level {
@@ -177,12 +181,11 @@ function range(from: number, to: number, step: number) {
 function drawContours(
   level: ContourItem,
   spectrum: Spectrum2D,
-  contourCache: Record<string, any>,
-  negative = false,
+  contourCache: ContourCache,
+  sign: 'positive' | 'negative' = 'positive',
   quadrant = 'rr',
 ) {
   const { contourLevels, numberOfLayers } = level;
-  const key = negative ? 'negative' : 'positive';
 
   const nbLevels = Math.min(
     numberOfLayers,
@@ -194,11 +197,11 @@ function drawContours(
     contourCache[id] = {};
   }
 
-  if (!(key in contourCache[id])) {
-    contourCache[id][key] = { contours: [], timeout: false };
+  if (!(sign in contourCache[id])) {
+    contourCache[id][sign] = { contours: [], timeout: false };
   }
 
-  const oneSenseContours = contourCache[id][key].contours;
+  const oneSenseContours = (contourCache[id][sign] as ContourResult).contours;
   const selectedLevels = getRange(
     Math.max(0, contourLevels[0]),
     contourLevels[1],
@@ -206,16 +209,27 @@ function drawContours(
   ).map((e) => Math.round(e));
 
   const levels = selectedLevels.filter((level) => !oneSenseContours[level]);
+  
+  if (levels.length > 0 && levels.length < numberOfLayers) {
+    const totalSize = data[quadrant].z[0].length * data[quadrant].z.length;
+    if (totalSize < 5e6) {
+      addAditionalLevels(levels, oneSenseContours, numberOfLayers);
+    }
+  }
+  
   const { contours, timeout } = getContours({
     levels,
-    negative,
+    sign,
     data: data[quadrant],
   });
 
+  if (sign === 'negative') {
+    levels.reverse();
+  }
   for (const [i, level] of contours.entries()) {
     oneSenseContours[levels[i]] = level;
   }
-  contourCache[id][key] = { contours: oneSenseContours, timeout };
+  contourCache[id][sign] = { contours: oneSenseContours, timeout };
 
   return {
     contours: selectedLevels.map((level) => oneSenseContours[level]),
@@ -223,38 +237,58 @@ function drawContours(
   };
 }
 
+function addAditionalLevels(
+  levels: number[],
+  oneSenseContours: ContourResult['contours'],
+  numberOfLayers: number,
+) {
+  for (let i = 100; levels.length < numberOfLayers && i <= 0; i--) {
+    if (!oneSenseContours[i] && !levels[i]) levels.push(i);
+  }
+  levels.sort((a, b) => a - b);
+}
+
 interface ContoursCalcOptions {
   levels: number[];
-  negative?: boolean;
+  sign?: 'positive' | 'negative';
   timeout?: number;
   data: NmrData2DFt['rr'];
 }
 
 function getContours(options: ContoursCalcOptions) {
-  const { levels, negative = false, timeout = 2000, data } = options;
-  const xs = getRange(data.minX, data.maxX, data.z[0].length);
-  const ys = getRange(data.minY, data.maxY, data.z.length);
-  const conrec = new Conrec(data.z, { xs, ys, swapAxes: false });
+  const { levels, sign = 'positive', timeout = 4000, data } = options;
   const max = Math.max(Math.abs(data.minZ), Math.abs(data.maxZ));
-
   let _range = levels.map((level) => calculateValueOfLevel(level, max));
-  if (negative) {
+
+  if (sign === 'negative') {
     _range = _range.map((value) => -value);
+    if (_range.filter((value) => value >= data.minZ).length === 0) {
+      return emptyResult(_range);
+    }
+  } else if (_range.filter((value) => value <= data.maxZ).length === 0) {
+    return emptyResult(_range);
   }
 
   if (_range.every((r) => r === 0)) {
-    const emptyLine: number[] = [];
-    return {
-      contours: _range.map((r) => ({ zValue: r, lines: emptyLine })),
-      timeout: false,
-    };
+    return emptyResult(_range);
   }
-
+  const ys = getRange(data.minY, data.maxY, data.z.length);
+  const xs = getRange(data.minX, data.maxX, data.z[0].length);
+  
+  const conrec = new Conrec(data.z, { xs, ys, swapAxes: false });
   return conrec.drawContour({
     contourDrawer: 'basic',
     levels: Array.from(_range),
     timeout,
   });
+}
+
+function emptyResult(_range: number[]) {
+  const emptyLine: number[] = [];
+  return {
+    contours: _range.map((r) => ({ zValue: r, lines: emptyLine })),
+    timeout: false,
+  };
 }
 
 /**
