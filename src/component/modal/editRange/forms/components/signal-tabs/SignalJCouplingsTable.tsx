@@ -1,30 +1,21 @@
-import { useFormikContext } from 'formik';
+import { Button, Callout, Classes } from '@blueprintjs/core';
+import lodashGet from 'lodash/get';
 import { Jcoupling, Peak1D, translateMultiplet } from 'nmr-processing';
-import {
-  CSSProperties,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { CSSProperties, useCallback, useMemo, useRef } from 'react';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Toolbar } from 'react-science/ui';
 
-import { Multiplets } from '../../../../../../data/constants/Multiplets';
+import { multiplets } from '../../../../../../data/constants/Multiplets';
 import { isSpectrum1D } from '../../../../../../data/data1d/Spectrum1D';
-import { useChartData } from '../../../../../context/ChartContext';
-import Button from '../../../../../elements/Button';
+import { NumberInput2Controller } from '../../../../../elements/NumberInput2Controller';
 import ReactTable, {
   Column,
 } from '../../../../../elements/ReactTable/ReactTable';
-import FormikInput from '../../../../../elements/formik/FormikInput';
-import FormikSelect from '../../../../../elements/formik/FormikSelect';
-import { usePanelPreferences } from '../../../../../hooks/usePanelPreferences';
+import { Select2Controller } from '../../../../../elements/Select2Controller';
 import useSpectrum from '../../../../../hooks/useSpectrum';
 import { hasCouplingConstant } from '../../../../../panels/extra/utilities/MultiplicityUtilities';
 import { useEvent } from '../../../../../utility/Events';
-import { formatNumber } from '../../../../../utility/formatNumber';
 
 const styles: Record<'input' | 'select' | 'column', CSSProperties> = {
   input: {
@@ -52,37 +43,38 @@ function getJCouplingKey(
   return `signals[${signalIndex}].js.${jIndex}.${jCouplingKey}`;
 }
 
+function getCouplingMinErrorMessage(errors, index) {
+  return lodashGet(errors, `signals.${index}.js.root.message`);
+}
+
 export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
-  const { values, setFieldValue } = useFormikContext<any>();
-  const signal = values?.signals?.[values?.signalIndex] || {};
-  const [lastSelectedCouplingIndex, setLastSelectedCouplingIndex] = useState<
-    number | null
-  >(null);
-  const spectrum = useSpectrum();
   const {
-    view: {
-      spectra: { activeTab },
-    },
-  } = useChartData();
-  const rangesPreferences = usePanelPreferences('ranges', activeTab);
-  const inputRef = useRef<HTMLInputElement[]>([]);
+    setValue,
+    control,
+    setFocus,
+    formState: { errors },
+  } = useFormContext();
+  const signals = useWatch({ name: 'signals' });
+  const signalIndex = useWatch({ name: 'signalIndex' });
+  const signal = signals?.[signalIndex] || {};
+
+  const lastSelectedCouplingIndexRef = useRef<number | null>(null);
+  const spectrum = useSpectrum();
 
   useEvent({
     onClick: ({ xPPM, shiftKey }) => {
       if (
-        `${props.index}` === values.signalIndex &&
-        typeof lastSelectedCouplingIndex === 'number' &&
+        props.index === signalIndex &&
+        typeof lastSelectedCouplingIndexRef.current === 'number' &&
         shiftKey
       ) {
-        const x = formatNumber(xPPM, rangesPreferences.deltaHz.format);
-
-        void setFieldValue(
+        setValue(
           getJCouplingKey(
-            values.signalIndex,
-            lastSelectedCouplingIndex,
+            signalIndex,
+            lastSelectedCouplingIndexRef.current,
             'coupling',
           ),
-          x,
+          xPPM,
         );
       }
     },
@@ -93,22 +85,17 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
         shiftKey,
       } = options;
       if (
-        `${props.index}` === values.signalIndex &&
-        typeof lastSelectedCouplingIndex === 'number' &&
+        props.index === signalIndex &&
+        typeof lastSelectedCouplingIndexRef.current === 'number' &&
         shiftKey &&
         isSpectrum1D(spectrum)
       ) {
-        const value = Number(
-          formatNumber(
-            Math.abs(to - from) * spectrum.info.originFrequency,
-            rangesPreferences.deltaHz.format,
-          ),
-        );
+        const value = Math.abs(to - from) * spectrum.info.originFrequency;
 
-        void setFieldValue(
+        setValue(
           getJCouplingKey(
-            values.signalIndex,
-            lastSelectedCouplingIndex,
+            signalIndex,
+            lastSelectedCouplingIndexRef.current,
             'coupling',
           ),
           value,
@@ -123,41 +110,28 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
         multiplicity: translateMultiplet('m'),
         coupling: '',
       };
-      void setFieldValue(`signals[${values?.signalIndex}].js`, [
-        ...data,
-        coupling,
-      ]);
-      setLastSelectedCouplingIndex(data.length);
+      setValue(`signals[${signalIndex}].js`, [...data, coupling]);
+      lastSelectedCouplingIndexRef.current = data.length;
     },
-    [setFieldValue, values?.signalIndex],
+    [setValue, signalIndex],
   );
 
   const deleteHandler = useCallback(
     (data, index: number) => {
       const jCouplings = data.filter((_, columnIndex) => columnIndex !== index);
 
-      void setFieldValue(`signals[${values?.signalIndex}].js`, jCouplings);
-      if (lastSelectedCouplingIndex === index) {
-        setLastSelectedCouplingIndex(null);
+      setValue(`signals[${signalIndex}].js`, jCouplings);
+      if (lastSelectedCouplingIndexRef.current === index) {
+        lastSelectedCouplingIndexRef.current = null;
       }
     },
-    [lastSelectedCouplingIndex, setFieldValue, values?.signalIndex],
+    [setValue, signalIndex],
   );
 
   function deleteAllHandler() {
-    void setFieldValue(`signals[${values?.signalIndex}].js`, []);
-    setLastSelectedCouplingIndex(null);
+    setValue(`signals[${signalIndex}].js`, []);
+    lastSelectedCouplingIndexRef.current = null;
   }
-
-  const multiplicityChangeHandler = useCallback(
-    (value, name) => {
-      if (!hasCouplingConstant(value)) {
-        void setFieldValue(name, '');
-      }
-    },
-    [setFieldValue],
-  );
-
   const COLUMNS: Array<Column<any>> = useMemo(
     () => [
       {
@@ -170,30 +144,29 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
         style: { padding: 0, ...styles.column },
         Cell: ({ row }) => {
           return (
-            <FormikSelect
-              className="select-box"
-              name={getJCouplingKey(
-                values.signalIndex,
-                row.index,
-                'multiplicity',
-              )}
-              items={Multiplets}
-              itemValueField="label"
-              onChange={(value) => {
-                multiplicityChangeHandler(
-                  value,
-                  getJCouplingKey(values.signalIndex, row.index, 'coupling'),
+            <Select2Controller
+              control={control}
+              name={getJCouplingKey(signalIndex, row.index, 'multiplicity')}
+              items={multiplets}
+              itemValueKey="label"
+              onItemSelect={({ label }) => {
+                const name = getJCouplingKey(
+                  signalIndex,
+                  row.index,
+                  'coupling',
                 );
-
-                if (
-                  hasCouplingConstant(row.original?.multiplicity) &&
-                  typeof lastSelectedCouplingIndex === 'number'
-                ) {
-                  inputRef.current[lastSelectedCouplingIndex].focus();
+                if (!hasCouplingConstant(label)) {
+                  setValue(name, '');
+                } else {
+                  requestAnimationFrame(() => {
+                    setTimeout(() => {
+                      setFocus(name, { shouldSelect: true });
+                    }, 0);
+                  });
                 }
               }}
-              style={styles.select}
-              onClick={(e) => e.stopPropagation()}
+              fill
+              selectedButtonProps={{ small: true, minimal: true }}
             />
           );
         },
@@ -203,17 +176,16 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
         style: { padding: 0, ...styles.column },
         Cell: ({ row }) => {
           return (
-            <FormikInput
-              ref={(ref) => {
-                if (ref) {
-                  inputRef.current[row.index] = ref;
-                }
-              }}
-              name={getJCouplingKey(values.signalIndex, row.index, 'coupling')}
-              type="number"
-              placeholder={'J (Hz)'}
-              style={{ input: styles.input }}
+            <NumberInput2Controller
+              control={control}
+              name={getJCouplingKey(signalIndex, row.index, 'coupling')}
+              placeholder="J (Hz)"
               disabled={!hasCouplingConstant(row.original?.multiplicity)}
+              fill
+              noShadowBox
+              style={{ backgroundColor: 'transparent' }}
+              debounceTime={250}
+              buttonPosition="none"
             />
           );
         },
@@ -227,43 +199,35 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
           return (
             <div style={{ display: 'flex', justifyContent: 'space-around' }}>
               {!record?.name && (
-                <Button.Danger
-                  fill="outline"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    deleteHandler(data, row.index);
-                  }}
+                <Button
+                  small
+                  outlined
+                  intent="danger"
+                  onClick={() => deleteHandler(data, row.index)}
                 >
-                  <FaRegTrashAlt />
-                </Button.Danger>
+                  <FaRegTrashAlt className={Classes.ICON} />
+                </Button>
               )}
             </div>
           );
         },
       },
     ],
-    [
-      deleteHandler,
-      lastSelectedCouplingIndex,
-      multiplicityChangeHandler,
-      values.signalIndex,
-    ],
+    [control, deleteHandler, setFocus, setValue, signalIndex],
   );
 
   function selectRowHandler(index) {
-    setLastSelectedCouplingIndex((prevIndex) =>
-      prevIndex === index ? null : index,
-    );
+    lastSelectedCouplingIndexRef.current = index;
   }
 
-  useEffect(() => {
-    if (typeof lastSelectedCouplingIndex === 'number') {
-      inputRef.current[lastSelectedCouplingIndex].focus();
-    }
-  }, [lastSelectedCouplingIndex, signal?.js]);
-
+  const minErrorMessage = getCouplingMinErrorMessage(errors, props.index);
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
+      {minErrorMessage && (
+        <Callout intent="danger" icon="error" style={{ textAlign: 'left' }}>
+          {minErrorMessage}
+        </Callout>
+      )}
       <div style={{ padding: '5px 0', display: 'flex' }}>
         <Toolbar>
           <Toolbar.Item

@@ -1,18 +1,24 @@
 /** @jsxImportSource @emotion/react */
 import { Button, DialogBody, DialogFooter } from '@blueprintjs/core';
 import { css } from '@emotion/react';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { v4 } from '@lukeed/uuid';
-import { Formik } from 'formik';
 import { Spectrum1D } from 'nmr-load-save';
-import { Range, splitPatterns, translateMultiplet } from 'nmr-processing';
-import { useMemo, useCallback, useRef } from 'react';
+import {
+  Jcoupling,
+  Range,
+  Signal1D,
+  splitPatterns,
+  translateMultiplet,
+} from 'nmr-processing';
+import { useCallback, useEffect, useRef } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 import { FaSearchPlus } from 'react-icons/fa';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { DialogProps } from '../../elements/DialogManager';
 import { DraggableDialog } from '../../elements/DraggableDialog';
-import FormikOnChange from '../../elements/formik/FormikOnChange';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
 import useEditRangeModal from '../../panels/RangesPanel/hooks/useEditRangeModal';
@@ -40,10 +46,10 @@ interface InnerEditRangeModalProps extends EditRangeModalProps {
   onZoom: (value: any) => void;
 }
 
-interface Coupling {
-  multiplicity: any;
-  coupling: string | number;
-}
+// interface Coupling {
+//   multiplicity: any;
+//   coupling: string | number;
+// }
 
 export function EditRangeModal(props: DialogProps<string>) {
   const { reset, saveEditRange, zoomRange } = useEditRangeModal();
@@ -67,7 +73,6 @@ export function EditRangeModal(props: DialogProps<string>) {
 
 function InnerEditRangeModal(props: InnerEditRangeModalProps) {
   const { onSave, onZoom, onRest, rangeID } = props;
-  const formRef = useRef<any>(null);
   const {
     view: {
       spectra: { activeTab },
@@ -121,7 +126,7 @@ function InnerEditRangeModal(props: InnerEditRangeModalProps) {
     [getCouplings],
   );
 
-  const handleOnSave = useCallback(
+  const handleSave = useCallback(
     (formValues) => {
       void (async () => {
         const _range = { ...range };
@@ -132,54 +137,39 @@ function InnerEditRangeModal(props: InnerEditRangeModalProps) {
     [getSignals, onSave, range],
   );
 
-  const data = useMemo(() => {
-    const signals = range?.signals.map((signal) => {
-      // counter within j array to access to right j values
+  const methods = useForm({
+    defaultValues: mapData(range, {
+      couplingFormat: rangesPreferences.coupling.format,
+    }),
+    resolver: yupResolver(editRangeFormValidation) as any,
+  });
 
-      let counterJ = 0;
-      const couplings: Coupling[] = [];
-      if (signal.multiplicity) {
-        for (const multiplicity of splitPatterns(signal.multiplicity)) {
-          let js: Coupling = {
-            multiplicity,
-            coupling: '',
-          };
-          if (hasCouplingConstant(multiplicity) && signal?.js.length > 0) {
-            js = { ...signal.js[counterJ] } as Coupling;
-            js.coupling = Number(
-              formatNumber(js.coupling, rangesPreferences.coupling.format),
-            );
-            counterJ++;
-          }
-          js.multiplicity = translateMultiplet(js.multiplicity || multiplicity);
-          couplings.push(js);
-        }
-      }
-      return { ...signal, js: couplings };
-    });
-    return { activeTab: '0', signals };
-  }, [range?.signals, rangesPreferences]);
+  const isDirtyRef = useRef<boolean>(true);
 
-  const changeHandler = useCallback(
-    (values) => {
-      const signals = getSignals(values.signals);
+  useEffect(() => {
+    isDirtyRef.current = false;
+    methods.reset(
+      mapData(range, { couplingFormat: rangesPreferences.coupling.format }),
+    );
+  }, [methods, range, rangesPreferences.coupling.format]);
 
-      if (
-        JSON.stringify(range?.signals, (key, value) => {
-          if (key !== 'id') return value;
-        }) !==
-        JSON.stringify(signals, (key, value) => {
-          if (key !== 'id') return value;
-        })
-      ) {
+  useEffect(() => {
+    const { unsubscribe } = methods.watch(async (values) => {
+      const isValid = await editRangeFormValidation.isValid(values);
+      if (!isValid) return;
+      if (isDirtyRef.current) {
+        const signals = getSignals(values.signals);
+
         dispatch({
           type: 'UPDATE_RANGE',
-          payload: { range: { ...range, signals } },
+          payload: { range: { ...values, signals } as Range },
         });
       }
-    },
-    [dispatch, getSignals, range],
-  );
+
+      isDirtyRef.current = true;
+    });
+    return () => unsubscribe();
+  }, [dispatch, getSignals, methods, methods.watch]);
 
   if (!rangesPreferences || !range) {
     return;
@@ -191,47 +181,42 @@ function InnerEditRangeModal(props: InnerEditRangeModalProps) {
   )} ppm to ${formatNumber(range?.to, rangesPreferences.to.format)} ppm`;
 
   return (
-    <DraggableDialog
-      hasBackdrop={false}
-      canOutsideClickClose={false}
-      style={{ width: 700 }}
-      title={title}
-      isOpen
-      headerLeftElement={
-        <Button
-          intent="success"
-          style={{ marginRight: '5px', borderRadius: '5px' }}
-          icon={
-            <FaSearchPlus title="Set to default view on range in spectrum" />
-          }
-          minimal
-          onClick={handleOnZoom}
-        />
-      }
-      onClose={handleOnClose}
-      placement="top-right"
-    >
-      <DialogBody css={styles}>
-        <Formik
-          innerRef={formRef}
-          initialValues={data}
-          validationSchema={editRangeFormValidation}
-          onSubmit={handleOnSave}
-        >
-          <>
-            <SignalsContent range={range} />
-            <FormikOnChange onChange={changeHandler} />
-          </>
-        </Formik>
-      </DialogBody>
-      <DialogFooter>
-        <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
-          <Button intent="success" onClick={() => formRef.current.submitForm()}>
-            Save and Exit
-          </Button>
-        </div>
-      </DialogFooter>
-    </DraggableDialog>
+    <FormProvider {...methods}>
+      <DraggableDialog
+        hasBackdrop={false}
+        canOutsideClickClose={false}
+        style={{ width: 700 }}
+        title={title}
+        isOpen
+        headerLeftElement={
+          <Button
+            intent="success"
+            style={{ marginRight: '5px', borderRadius: '5px' }}
+            icon={
+              <FaSearchPlus title="Set to default view on range in spectrum" />
+            }
+            minimal
+            onClick={handleOnZoom}
+          />
+        }
+        onClose={handleOnClose}
+        placement="top-right"
+      >
+        <DialogBody css={styles}>
+          <SignalsContent range={range} />
+        </DialogBody>
+        <DialogFooter>
+          <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
+            <Button
+              intent="success"
+              onClick={() => methods.handleSubmit(handleSave)()}
+            >
+              Save and Exit
+            </Button>
+          </div>
+        </DialogFooter>
+      </DraggableDialog>
+    </FormProvider>
   );
 }
 
@@ -244,4 +229,41 @@ function useRange(rangeId: string) {
     (rangeRecord) => rangeRecord.id === rangeId,
   );
   return ranges.values[index];
+}
+
+interface MapDataOptions {
+  couplingFormat: string;
+}
+
+function mapData(range: Range, options: MapDataOptions) {
+  const { couplingFormat } = options;
+
+  const signals: Signal1D[] = [];
+
+  for (const signal of range?.signals || []) {
+    let counterJ = 0;
+    const couplings: Array<
+      Partial<Pick<Jcoupling, 'coupling' | 'multiplicity'>>
+    > = [];
+
+    if (!signal.multiplicity) {
+      signals.push(signal);
+      continue;
+    }
+
+    for (const multiplicity of splitPatterns(signal.multiplicity)) {
+      const js = { ...signal.js[counterJ] };
+
+      if (hasCouplingConstant(multiplicity) && signal?.js.length > 0) {
+        const coupling = Number(formatNumber(js.coupling, couplingFormat));
+        js.coupling = coupling;
+        counterJ++;
+      }
+      js.multiplicity = translateMultiplet(js.multiplicity || multiplicity);
+      couplings.push(js);
+    }
+
+    signals.push({ ...signal, js: couplings as Jcoupling[] });
+  }
+  return { ...range, activeTab: '0', signals };
 }

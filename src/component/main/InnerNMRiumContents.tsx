@@ -120,8 +120,11 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
           }
 
           .popover-tab {
-            background-color: transparent;
             box-shadow: none;
+
+            div[class*='popover-content'] {
+              background-color: transparent;
+            }
           }
         `}
       />
