@@ -1,133 +1,88 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
-import { useFormikContext } from 'formik';
+import { Tab, Tabs } from '@blueprintjs/core';
 import { Range } from 'nmr-processing';
 import { useCallback, useMemo, memo, useEffect } from 'react';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { FaPlus } from 'react-icons/fa';
 
-import Tab from '../../../../elements/Tab/Tab';
-import Tabs from '../../../../elements/Tab/Tabs';
+import { TabTitle } from '../../../../elements/TabTitle';
 
 import { DeltaInput } from './DeltaInput';
 import { InfoBlock } from './InfoBlock';
 import { NewSignalTab } from './NewSignalTab';
 import SignalTab from './SignalTab';
 
-const tabStylesAddition = css`
-  color: red;
-`;
-const tabStyles = css`
-  padding: 0 1.5rem !important;
-  height: 40px;
-`;
-const newTabStyles = css`
-  padding: 0 !important;
-  height: 40px;
-`;
-
 interface SignalsFormProps {
   range: Range;
 }
 
 function SignalsContent({ range }: SignalsFormProps) {
-  const {
-    values,
-    setFieldValue,
-    errors,
-  }: {
-    values: any;
-    setFieldValue: (
-      field: string,
-      value: any,
-      shouldValidate?: boolean | undefined,
-    ) => void;
-    errors: any;
-  } = useFormikContext<any>();
+  const { setValue } = useFormContext();
+  const { signals, signalIndex } = useWatch();
 
   const tapClickHandler = useCallback(
-    ({ tabid }) => {
-      setFieldValue('signalIndex', tabid);
+    (id) => {
+      setValue('signalIndex', id);
     },
-    [setFieldValue],
+    [setValue],
   );
 
   const handleDeleteSignal = useCallback(
-    ({ tabid }) => {
-      const _signals = values.signals.filter(
-        (_signal, i) => i !== Number(tabid),
-      );
-      setFieldValue('signals', _signals);
+    (index) => {
+      const _signals = signals.filter((_signal, i) => i !== index);
+      setValue('signals', _signals);
     },
-    [setFieldValue, values.signals],
+    [setValue, signals],
   );
 
   useEffect(() => {
-    setFieldValue(
-      'signalIndex',
-      values.signals.length > 0 ? (values.signals.length - 1).toString() : '-1',
-    );
-  }, [setFieldValue, values.signals.length]);
-
-  const tabContainsErrors = useCallback(
-    (i) => {
-      return !!errors?.signals?.[i];
-    },
-    [errors],
-  );
+    setValue('signalIndex', signals.length > 0 ? signals.length - 1 : -1);
+  }, [setValue, signals.length]);
 
   const signalFormTabs = useMemo(() => {
     const signalTabs: any[] =
-      values.signals.length > 0
-        ? values.signals.map((signal, i) => (
+      signals.length > 0
+        ? signals.map((signal, i) => (
             <Tab
               // eslint-disable-next-line react/no-array-index-key
               key={`signalForm${i}`}
-              tabid={`${i}`}
-              tabstyles={tabContainsErrors(i) ? tabStylesAddition : tabStyles}
-              canDelete
-              render={() => <DeltaInput signal={signal} index={i} />}
+              id={i}
+              panel={<SignalTab index={i} />}
             >
-              <SignalTab index={i} />
+              <TabTitle onDelete={() => handleDeleteSignal(i)}>
+                <DeltaInput signal={signal} index={i} />
+              </TabTitle>
             </Tab>
           ))
         : [];
 
     const addSignalTab = (
-      <Tab
-        tabid="-1"
-        canDelete={false}
-        key="addSignalTab"
-        tabstyles={newTabStyles}
-        render={() => (
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              padding: '0 1.5rem',
-              fontSize: '12px',
-              color: '#28ba62',
-              textWrap: 'nowrap',
-            }}
-          >
-            <FaPlus style={{ display: 'inline-block' }} />
-            <span style={{ display: 'inline-block' }}>New Signal</span>
-          </div>
-        )}
-      >
-        <NewSignalTab range={range} />
+      <Tab id={-1} key="addSignalTab" panel={<NewSignalTab range={range} />}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            color: '#28ba62',
+            textWrap: 'nowrap',
+          }}
+        >
+          <FaPlus style={{ display: 'inline-block' }} />
+          <span style={{ display: 'inline-block' }}>New Signal</span>
+        </div>
       </Tab>
     );
 
     return [...signalTabs, addSignalTab];
-  }, [range, tabContainsErrors, values.signals]);
+  }, [handleDeleteSignal, range, signals]);
 
   return (
     <div>
       <InfoBlock />
       <Tabs
-        activeTab={values.signalIndex}
-        onClick={tapClickHandler}
-        onDelete={handleDeleteSignal}
+        renderActiveTabPanelOnly
+        selectedTabId={signalIndex}
+        onChange={(id) => tapClickHandler(id)}
+        animate={false}
       >
         {signalFormTabs}
       </Tabs>
