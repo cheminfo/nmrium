@@ -1,7 +1,7 @@
 import debounce from 'lodash/debounce';
 import get from 'lodash/get';
 import { Spectrum2D } from 'nmr-load-save';
-import { memo, useMemo, useRef } from 'react';
+import { memo, useEffect, useMemo, useRef } from 'react';
 
 import {
   drawContours,
@@ -12,10 +12,11 @@ import { useChartData } from '../../context/ChartContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import { useToaster } from '../../context/ToasterContext';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
-import { useContourCache } from '../../hooks/useContourCache';
 import { PathBuilder } from '../../utility/PathBuilder';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { useScale2DX, useScale2DY } from '../utilities/scale';
+
+import { ContoursProvider, useContours } from './ContoursContext';
 
 interface ContoursPathsProps {
   id: string;
@@ -77,23 +78,20 @@ function ContoursPaths({
   const activeSpectrum = useActiveSpectrum();
   const preferences = usePreferences();
   const level = useContoursLevel(spectrum, sign);
-  const [cache, setCache] = useContourCache();
 
-  const contours = useMemo(() => {
-    const { contours, timeout } = drawContours(level, spectrum, cache, sign);
-    
-    if (timeout) {
+  const contours = useContours();
+  const signContours = contours?.[spectrumID][sign] || {
+    contours: [],
+    timeout: false,
+  };
+
+  useEffect(() => {
+    if (signContours.timeout) {
       onTimeout();
-    } else {
-      setCache(cache);
     }
+  }, [onTimeout, signContours.timeout]);
 
-    return { contours, cache };
-  }, [spectrum, level, onTimeout, sign, cache, setCache]);
-
-  // useEffect(() => {}, [setCache, contours]);
-
-  const path = usePath(spectrum, contours.contours);
+  const path = usePath(spectrum, signContours.contours);
 
   const opacity =
     activeSpectrum === null || spectrumID === activeSpectrum.id
@@ -173,5 +171,9 @@ export default function Contours() {
     ) as Spectrum2D[];
   }, [activeTab, spectra]);
 
-  return <MemoizedContours {...{ spectra: spectra2d, displayerKey }} />;
+  return (
+    <ContoursProvider>
+      <MemoizedContours {...{ spectra: spectra2d, displayerKey }} />
+    </ContoursProvider>
+  );
 }
