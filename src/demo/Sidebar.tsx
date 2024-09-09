@@ -121,7 +121,6 @@ function Sidebar(props) {
           onClick={(e) => {
             // TODO: use non-deprecated API of rc-menu
             // @ts-expect-error This will be fixed by updating use of rc-menu
-            // eslint-disable-next-line deprecation/deprecation
             const itemProps = e.item.props;
             navigate({
               pathname: `/SamplesDashboard/${Math.random()
