@@ -1,11 +1,12 @@
-import { Formik, useFormikContext } from 'formik';
+import { Button } from '@blueprintjs/core';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { translateMultiplet } from 'nmr-processing';
-import { CSSProperties, useEffect, useRef, useState } from 'react';
+import { CSSProperties, useEffect } from 'react';
+import { useForm, useFormContext, useWatch } from 'react-hook-form';
 import * as Yup from 'yup';
 
 import { useChartData } from '../../../../context/ChartContext';
-import Button from '../../../../elements/Button';
-import FormikInput from '../../../../elements/formik/FormikInput';
+import { NumberInput2Controller } from '../../../../elements/NumberInput2Controller';
 import { usePanelPreferences } from '../../../../hooks/usePanelPreferences';
 import { useEvent } from '../../../../utility/Events';
 import { formatNumber } from '../../../../utility/formatNumber';
@@ -35,12 +36,9 @@ interface NewSignalTabProps {
 
 export function NewSignalTab(props: NewSignalTabProps) {
   const { range } = props;
-  const { values, setFieldValue } = useFormikContext<any>();
-  const [signalValue, setSignalValue] = useState<number>(
-    (range.from + range.to) / 2,
-  );
-  const newSignalFormRef = useRef<any>();
-  const inputRef = useRef<HTMLInputElement>(null);
+  const { setValue } = useFormContext();
+  const { signals, signalIndex } = useWatch();
+
   const {
     view: {
       spectra: { activeTab },
@@ -52,19 +50,25 @@ export function NewSignalTab(props: NewSignalTabProps) {
     const newSignal = {
       multiplicity: 'm',
       kind: 'signal',
-      delta: Number(val.newSignalDelta),
+      delta: val.delta,
       js: [{ multiplicity: translateMultiplet('m'), coupling: '' }],
     };
-    const _signals = values.signals.slice().concat(newSignal);
+    const _signals = signals.slice().concat(newSignal);
 
-    void setFieldValue('signals', _signals);
-    void setFieldValue('signalIndex', String(_signals.length - 1));
+    setValue('signals', _signals);
+    setValue('signalIndex', String(_signals.length - 1));
   }
+  const { handleSubmit, reset, control, setFocus } = useForm({
+    defaultValues: {
+      delta: (range.from + range.to) / 2,
+    },
+    resolver: yupResolver(getSignalValidationSchema(range)),
+  });
 
   useEvent({
     onClick: ({ xPPM, shiftKey }) => {
-      if (values.signalIndex === '-1' && shiftKey) {
-        setSignalValue(xPPM);
+      if (signalIndex === -1 && shiftKey) {
+        reset({ delta: xPPM });
       }
     },
     onBrushEnd: (options) => {
@@ -72,70 +76,55 @@ export function NewSignalTab(props: NewSignalTabProps) {
         range: [from, to],
         shiftKey,
       } = options;
-      if (values.signalIndex === '-1' && shiftKey) {
-        setSignalValue((to - from) / 2 + from);
+      if (signalIndex === -1 && shiftKey) {
+        reset({ delta: (to - from) / 2 + from });
       }
     },
   });
 
   useEffect(() => {
-    setTimeout(() => {
-      inputRef.current?.select();
-    }, 50);
-  }, [signalValue]);
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        setFocus('delta', { shouldSelect: true });
+      }, 0);
+    });
+  });
 
   return (
     <div style={styles.container}>
-      <Formik
-        innerRef={newSignalFormRef}
-        validationSchema={getSignalValidationSchema(range)}
-        initialValues={{
-          newSignalDelta: signalValue,
-        }}
-        enableReinitialize
-        onSubmit={saveHandler}
-      >
-        <div style={styles.innerContainer}>
-          <p style={styles.infoText}>
-            Edit or select a delta value of new signal in range [
-            {`${formatNumber(
-              range.from,
-              rangesPreferences.from.format,
-            )} ppm - ${formatNumber(range.to, rangesPreferences.to.format)} ppm`}
-            ]:
-          </p>
-          <FormikInput
-            ref={inputRef}
-            name="newSignalDelta"
-            type="number"
-            placeholder={`𝛅(ppm)`}
-            style={{
-              input: {
-                height: '30px',
-                padding: '0.25rem 0.5rem',
-              },
-            }}
-            autoSelect
-            checkErrorAfterInputTouched={false}
-          />
-          <Button.Done
-            style={{
-              marginTop: '20px',
-              height: '30px',
-            }}
-            onClick={() => newSignalFormRef.current.submitForm()}
-          >
-            Add a signal
-          </Button.Done>
-        </div>
-      </Formik>
+      <div style={styles.innerContainer}>
+        <p style={styles.infoText}>
+          Edit or select a delta value of new signal in range [
+          {`${formatNumber(
+            range.from,
+            rangesPreferences.from.format,
+          )} ppm - ${formatNumber(range.to, rangesPreferences.to.format)} ppm`}
+          ]:
+        </p>
+        <NumberInput2Controller
+          control={control}
+          name="delta"
+          placeholder={`𝛅(ppm)`}
+          autoSelect
+          fill
+        />
+        <Button
+          intent="success"
+          style={{
+            marginTop: '20px',
+          }}
+          onClick={() => handleSubmit(saveHandler)()}
+        >
+          Add a signal
+        </Button>
+      </div>
     </div>
   );
 }
 
 function getSignalValidationSchema(range) {
   return Yup.object().shape({
-    newSignalDelta: Yup.number()
+    delta: Yup.number()
       .test(`test-range`, '', function testNewSignalDelta(value) {
         // eslint-disable-next-line no-invalid-this
         const { path, createError } = this;

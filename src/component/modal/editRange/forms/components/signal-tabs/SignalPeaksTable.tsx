@@ -1,29 +1,19 @@
+import { Button, Classes } from '@blueprintjs/core';
 import { v4 } from '@lukeed/uuid';
-import { useFormikContext } from 'formik';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { Spectrum1D } from 'nmr-load-save';
 import { Peak1D, getShiftX } from 'nmr-processing';
-import {
-  CSSProperties,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { CSSProperties, useCallback, useMemo, useRef } from 'react';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Toolbar } from 'react-science/ui';
 
-import { useChartData } from '../../../../../context/ChartContext';
-import Button from '../../../../../elements/Button';
+import { NumberInput2Controller } from '../../../../../elements/NumberInput2Controller';
 import ReactTable, {
   Column,
 } from '../../../../../elements/ReactTable/ReactTable';
-import FormikInput from '../../../../../elements/formik/FormikInput';
-import { usePanelPreferences } from '../../../../../hooks/usePanelPreferences';
 import useSpectrum from '../../../../../hooks/useSpectrum';
 import { useEvent } from '../../../../../utility/Events';
-import { formatNumber } from '../../../../../utility/formatNumber';
 
 const styles: Record<'input' | 'column', CSSProperties> = {
   input: {
@@ -50,46 +40,32 @@ function getPeakKey(signalIndex: number, peakIndex, key?: keyof Peak1D) {
 }
 
 export function SignalPeaksTable(props: SignalPeaksTableProps) {
-  const { values, setFieldValue } = useFormikContext<any>();
-  const signal = values?.signals?.[values?.signalIndex] || {};
+  const { setValue, control, setFocus } = useFormContext();
+  const { signals, signalIndex } = useWatch();
+  const signal = signals?.[signalIndex] || {};
   const delta = signal?.delta || 0;
   const spectrum = useSpectrum() as Spectrum1D;
   const {
     data: { x: xArray, re },
   } = spectrum;
   const shiftX = getShiftX(spectrum);
-  const [lastSelectedPeakIndex, setLastSelectedPeakIndex] = useState<
-    number | null
-  >(null);
+  const lastSelectedPeakIndexRef = useRef<number | null>(null);
 
-  const {
-    view: {
-      spectra: { activeTab },
-    },
-  } = useChartData();
-  const rangesPreferences = usePanelPreferences('ranges', activeTab);
-  const inputRef = useRef<HTMLInputElement[]>([]);
   useEvent({
     onClick: ({ xPPM, shiftKey }) => {
       if (
-        `${props.index}` === values.signalIndex &&
-        typeof lastSelectedPeakIndex === 'number' &&
+        props.index === signalIndex &&
+        typeof lastSelectedPeakIndexRef.current === 'number' &&
         shiftKey
       ) {
-        const delta = formatNumber(xPPM, rangesPreferences.deltaPPM.format);
+        const delta = xPPM;
         const xIndex = xFindClosestIndex(xArray, delta, { sorted: false });
-        const intensity = formatNumber(
-          re[xIndex],
-          rangesPreferences.deltaPPM.format,
-        );
-        void setFieldValue(
-          getPeakKey(values?.signalIndex, lastSelectedPeakIndex),
-          {
-            ...signal?.peaks?.[lastSelectedPeakIndex],
-            x: delta,
-            y: intensity,
-          },
-        );
+        const intensity = re[xIndex];
+        setValue(getPeakKey(signalIndex, lastSelectedPeakIndexRef.current), {
+          ...signal?.peaks?.[lastSelectedPeakIndexRef.current],
+          x: delta,
+          y: intensity,
+        });
       }
     },
     onBrushEnd: (options) => {
@@ -98,21 +74,19 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
         shiftKey,
       } = options;
       if (
-        `${props.index}` === values.signalIndex &&
-        typeof lastSelectedPeakIndex === 'number' &&
+        props.index === signalIndex &&
+        typeof lastSelectedPeakIndexRef.current === 'number' &&
         shiftKey
       ) {
-        const value = Number(
-          formatNumber(
-            (to - from) / 2 + from,
-            rangesPreferences.deltaPPM.format,
-          ),
-        );
+        const delta = (to - from) / 2 + from;
 
-        void setFieldValue(
-          getPeakKey(values.signalIndex, lastSelectedPeakIndex, 'x'),
-          value,
-        );
+        const xIndex = xFindClosestIndex(xArray, delta, { sorted: false });
+
+        setValue(getPeakKey(signalIndex, lastSelectedPeakIndexRef.current), {
+          ...signal?.peaks?.[lastSelectedPeakIndexRef.current],
+          x: delta,
+          y: re[xIndex],
+        });
       }
     },
   });
@@ -128,45 +102,37 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
         originalX: delta - shiftX,
         width: 1,
       };
-      void setFieldValue(`signals[${values?.signalIndex}].peaks`, [
-        ...data,
-        peak,
-      ]);
+      setValue(`signals[${signalIndex}].peaks`, [...data, peak]);
       const rowIndex = data?.length || 0;
-      setLastSelectedPeakIndex(rowIndex);
+      lastSelectedPeakIndexRef.current = rowIndex;
     },
-    [delta, re, setFieldValue, shiftX, values?.signalIndex, xArray],
+    [delta, re, setValue, shiftX, signalIndex, xArray],
   );
 
   const deleteHandler = useCallback(
     (data, index: number) => {
       const peaks = data.filter((_, columnIndex) => columnIndex !== index);
 
-      void setFieldValue(`signals[${values?.signalIndex}].peaks`, peaks);
-      if (lastSelectedPeakIndex === index) {
-        setLastSelectedPeakIndex(null);
+      setValue(`signals[${signalIndex}].peaks`, peaks);
+      if (lastSelectedPeakIndexRef.current === index) {
+        lastSelectedPeakIndexRef.current = null;
       }
     },
-    [lastSelectedPeakIndex, setFieldValue, values?.signalIndex],
+    [setValue, signalIndex],
   );
 
   function deleteAllHandler() {
-    void setFieldValue(`signals[${values?.signalIndex}].peaks`, []);
-    setLastSelectedPeakIndex(null);
+    setValue(`signals[${signalIndex}].peaks`, []);
+    lastSelectedPeakIndexRef.current = null;
   }
 
   const changeDeltaHandler = useCallback(
-    (event, index: number) => {
-      const delta = Number(event.target.value);
-
+    (delta, index: number) => {
       const xIndex = xFindClosestIndex(xArray, delta, { sorted: false });
 
-      void setFieldValue(
-        `signals[${values?.signalIndex}].peaks.${index}.y`,
-        re[xIndex],
-      );
+      setValue(`signals[${signalIndex}].peaks.${index}.y`, re[xIndex]);
     },
-    [re, setFieldValue, values?.signalIndex, xArray],
+    [re, setValue, signalIndex, xArray],
   );
 
   const COLUMNS: Array<Column<any>> = useMemo(
@@ -181,16 +147,16 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
         style: { padding: 0, ...styles.column },
         Cell: ({ row }) => {
           return (
-            <FormikInput
-              ref={(ref) => {
-                if (ref) {
-                  inputRef.current[row.index] = ref;
-                }
-              }}
-              name={`signals.${values?.signalIndex}.peaks.${row.index}.x`}
-              style={{ input: styles.input }}
-              onChange={(event) => changeDeltaHandler(event, row.index)}
-              type="number"
+            <NumberInput2Controller
+              control={control}
+              name={`signals.${signalIndex}.peaks.${row.index}.x`}
+              onValueChange={(valueAsNumber) =>
+                changeDeltaHandler(valueAsNumber, row.index)
+              }
+              noShadowBox
+              style={{ backgroundColor: 'transparent' }}
+              fill
+              buttonPosition="none"
             />
           );
         },
@@ -200,10 +166,14 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
         style: { padding: 0, ...styles.column },
         Cell: ({ row }) => {
           return (
-            <FormikInput
-              name={`signals.${values?.signalIndex}.peaks.${row.index}.y`}
-              style={{ input: styles.input }}
+            <NumberInput2Controller
+              control={control}
+              name={`signals.${signalIndex}.peaks.${row.index}.y`}
+              noShadowBox
+              style={{ backgroundColor: 'transparent' }}
+              fill
               readOnly
+              buttonPosition="none"
             />
           );
         },
@@ -217,34 +187,27 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
           return (
             <div style={{ display: 'flex', justifyContent: 'space-around' }}>
               {!record?.name && (
-                <Button.Danger
-                  fill="outline"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    deleteHandler(data, row.index);
-                  }}
+                <Button
+                  small
+                  outlined
+                  intent="danger"
+                  onClick={() => deleteHandler(data, row.index)}
                 >
-                  <FaRegTrashAlt />
-                </Button.Danger>
+                  <FaRegTrashAlt className={Classes.ICON} />
+                </Button>
               )}
             </div>
           );
         },
       },
     ],
-    [changeDeltaHandler, deleteHandler, values?.signalIndex],
+    [changeDeltaHandler, control, deleteHandler, signalIndex],
   );
 
   function selectRowHandler(index) {
-    setLastSelectedPeakIndex(index);
-    inputRef.current[index].select();
+    lastSelectedPeakIndexRef.current = index;
+    setFocus(`signals.${signalIndex}.peaks.${index}.x`, { shouldSelect: true });
   }
-
-  useEffect(() => {
-    if (typeof lastSelectedPeakIndex === 'number') {
-      inputRef.current[lastSelectedPeakIndex].focus();
-    }
-  }, [lastSelectedPeakIndex, signal?.peaks]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>

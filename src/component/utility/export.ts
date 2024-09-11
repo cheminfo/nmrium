@@ -157,7 +157,6 @@ function copyDataURLClipboardFireFox(image) {
   const range = document.createRange();
   range.selectNode(img);
   window.getSelection()?.addRange(range);
-  // eslint-disable-next-line deprecation/deprecation
   document.execCommand('Copy');
   img.remove();
 }

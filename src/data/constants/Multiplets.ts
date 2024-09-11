@@ -6,7 +6,7 @@ export interface MultipletDefinition {
   multiplicity: number | null;
 }
 
-export const Multiplets: MultipletDefinition[] = MultiplicityPatterns.map(
+export const multiplets: MultipletDefinition[] = MultiplicityPatterns.map(
   ({ label, value, acs, multiplicity }) => ({
     label,
     value: acs || value,

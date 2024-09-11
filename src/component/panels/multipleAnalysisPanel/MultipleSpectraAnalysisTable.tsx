@@ -85,8 +85,8 @@ function MultipleSpectraAnalysisTable({
           onDelete={() => handleDeleteColumn(columnKey)}
           columnKey={columnKey}
           data={columnData}
-          onColumnFilter={(item) =>
-            handleChangeColumnValueKey(columnKey, item.key)
+          onColumnFilter={(value) =>
+            handleChangeColumnValueKey(columnKey, value)
           }
           rangeLabel={
             columnData.from && columnData.to

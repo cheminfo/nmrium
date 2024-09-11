@@ -5,6 +5,7 @@ import { hasCouplingConstant } from '../../../../panels/extra/utilities/Multipli
 const editRangeFormValidation = Yup.object().shape({
   signals: Yup.array().of(
     Yup.object().shape({
+      delta: Yup.number().required(),
       js: Yup.array()
         .of(
           Yup.object().shape({
@@ -19,6 +20,7 @@ const editRangeFormValidation = Yup.object().shape({
                   // eslint-disable-next-line no-invalid-this
                   this.parent.multiplicity,
                 );
+
                 if ((!hasCoupling && !value) || (hasCoupling && value)) {
                   return true;
                 }

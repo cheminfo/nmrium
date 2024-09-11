@@ -16,6 +16,7 @@ interface ItemSelectOptions<T extends Record<string, any> = SelectDefaultItem> {
   selectedItemValue?: T[keyof T];
   placeholder?: string;
   filterPlaceholder?: string;
+  getSelectedText?: (item: T) => string;
 }
 
 type SelectOptions<T extends Record<string, any> = SelectDefaultItem> =
@@ -26,7 +27,10 @@ type ReturnedUseSelectOptions = ReturnType<typeof useSelect>;
 export type Select2Props<T extends Record<string, any> = SelectDefaultItem> =
   Omit<
     SelectProps<T>,
-    keyof Omit<ReturnedUseSelectOptions, 'onItemSelect' | 'value'>
+    keyof Omit<
+      ReturnedUseSelectOptions,
+      'onItemSelect' | 'value' | 'popoverProps'
+    >
   > &
     SelectOptions<T> & {
       selectedButtonProps?: Omit<ButtonProps, 'text'>;
@@ -59,6 +63,8 @@ function InnerSelect2<T extends Record<string, any> = SelectDefaultItem>(
     intent,
     placeholder = '',
     filterPlaceholder,
+    popoverProps,
+    getSelectedText,
     ...otherProps
   } = props;
 
@@ -81,6 +87,12 @@ function InnerSelect2<T extends Record<string, any> = SelectDefaultItem>(
     setValue(value || null);
   }, [defaultSelectedItem, itemValueKey, items, selectedItemValue, setValue]);
 
+  const selectedText = item?.[itemTextKey]
+    ? typeof getSelectedText === 'function'
+      ? getSelectedText(item)
+      : String(item[itemTextKey])
+    : placeholder;
+
   return (
     <Select
       items={items}
@@ -93,11 +105,12 @@ function InnerSelect2<T extends Record<string, any> = SelectDefaultItem>(
       {...otherProps}
       placeholder={filterPlaceholder}
       fill={fill}
+      popoverProps={{ minimal: true, placement: 'bottom', ...popoverProps }}
     >
       <Button
         ref={ref}
         fill={fill}
-        text={item?.[itemTextKey] ? String(item[itemTextKey]) : placeholder}
+        text={selectedText}
         {...selectedButtonProps}
         rightIcon="double-caret-vertical"
         intent={intent}

@@ -1,34 +1,47 @@
 import { translateMultiplet } from 'nmr-processing';
+import { useFormContext } from 'react-hook-form';
 
-import { InputStyle } from '../../../../elements/Input';
-import FormikInput from '../../../../elements/formik/FormikInput';
-
-const style: InputStyle = {
-  input: {
-    width: '60px',
-    height: '30px',
-  },
-  inputWrapper: {
-    borderWidth: 0,
-    margin: '0 5px',
-  },
-};
+import { NumberInput2Controller } from '../../../../elements/NumberInput2Controller';
 
 interface DeltaInputProps {
   signal: any;
   index: number;
 }
 
+function hasError(errors, i) {
+  return !!errors?.signals?.[i];
+}
+
 export function DeltaInput({ signal, index }: DeltaInputProps) {
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext();
+  const isNotValid = hasError(errors, index);
   return (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        color: isNotValid ? 'red' : 'black',
+      }}
+    >
       <span>𝛅: </span>
-      <FormikInput
+      <NumberInput2Controller
+        control={control}
         name={`signals.${index}.delta`}
-        type="number"
-        placeholder={'Delta (PPM)'}
-        style={style}
-        checkErrorAfterInputTouched={false}
+        placeholder="Delta (PPM)"
+        style={{
+          width: 50,
+          height: 20,
+          minHeight: 20,
+          paddingRight: 0,
+          paddingLeft: 0,
+        }}
+        fill
+        noShadowBox
+        buttonPosition="none"
+        debounceTime={250}
       />
       <span>
         {signal.js

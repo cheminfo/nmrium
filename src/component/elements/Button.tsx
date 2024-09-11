@@ -238,7 +238,6 @@ export interface InnerButtonProps<E extends ElementType = 'button'>
   as?: E;
   disabled?: boolean;
 }
-
 export type ButtonProps<E extends ElementType = 'button'> =
   InnerButtonProps<E> &
     Omit<ElementProps<E>, 'color' | 'style' | 'disabled' | 'fill'>;
@@ -318,22 +317,22 @@ function Button<E extends ElementType = 'button'>(props: ButtonProps<E>) {
 }
 
 Button.Done = function ButtonDone<E extends ElementType = 'button'>(
-  props: ButtonProps<E>,
+  props: Omit<ButtonProps<E>, 'theme'>,
 ) {
   return <Button {...props} theme="success" />;
 };
 Button.Danger = function ButtonDanger<E extends ElementType = 'button'>(
-  props: ButtonProps<E>,
+  props: Omit<ButtonProps<E>, 'theme'>,
 ) {
   return <Button {...props} theme="danger" />;
 };
 Button.Action = function ButtonAction<E extends ElementType = 'button'>(
-  props: ButtonProps<E>,
+  props: Omit<ButtonProps<E>, 'theme'>,
 ) {
   return <Button {...props} theme="medium" />;
 };
 Button.Secondary = function ButtonAction<E extends ElementType = 'button'>(
-  props: ButtonProps<E>,
+  props: Omit<ButtonProps<E>, 'theme'>,
 ) {
   return <Button {...props} theme="secondary" />;
 };
@@ -348,7 +347,7 @@ Button.Info = function ButtonInfo<E extends ElementType = 'button'>(
 };
 
 Button.BarButton = function BarButton<E extends ElementType = 'button'>(
-  props: ButtonProps<E>,
+  props: Omit<ButtonProps<E>, 'theme'>,
 ) {
   const { ...otherProps } = props;
   return (

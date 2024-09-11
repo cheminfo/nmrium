@@ -21,6 +21,7 @@ import { DisplayerMode } from '../../reducer/Reducer';
 import { booleanToString } from '../../utility/booleanToString';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
+import { SettingsRef } from '../extra/utilities/settingImperativeHandle';
 import DefaultPanelHeader, {
   ToolbarItemProps,
 } from '../header/DefaultPanelHeader';
@@ -55,7 +56,7 @@ function MultipleSpectraAnalysisPanelInner({
     activeTab,
   ) as any;
 
-  const settingRef = useRef<any>();
+  const settingRef = useRef<SettingsRef | null>(null);
   const toaster = useToaster();
   const dispatch = useDispatch();
 
@@ -63,9 +64,9 @@ function MultipleSpectraAnalysisPanelInner({
     setFlipStatus(!isFlipped);
   }, [isFlipped]);
 
-  const saveSettingHandler = useCallback(() => {
-    settingRef.current.saveSetting();
-  }, []);
+  function saveSettingHandler() {
+    void settingRef.current?.saveSetting();
+  }
 
   const afterSaveHandler = useCallback(() => {
     setFlipStatus(false);

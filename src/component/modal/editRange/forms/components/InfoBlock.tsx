@@ -1,5 +1,5 @@
-import { useFormikContext } from 'formik';
 import { CSSProperties } from 'react';
+import { useWatch } from 'react-hook-form';
 
 const styles: Record<'container' | 'infoText' | 'errorText', CSSProperties> = {
   container: {
@@ -36,14 +36,7 @@ const InfoText = (props: { value: string; type?: 'info' | 'error' }) => {
 };
 
 export function InfoBlock() {
-  const {
-    values,
-    errors,
-  }: {
-    values: any;
-    errors: any;
-  } = useFormikContext();
-
+  const { signalIndex } = useWatch();
   return (
     <div
       style={{
@@ -51,17 +44,7 @@ export function InfoBlock() {
         width: '100%',
       }}
     >
-      {errors.signals &&
-      (errors.signals.noSignals || errors.signals.noCouplings) ? (
-        <div>
-          <p className="error-text">
-            {errors.signals.noSignals || errors.signals.noCouplings[0].message}
-          </p>
-          {errors.signals.noSignals && (
-            <InfoText value={ADD_SIGNAL_INFO_TEXT} />
-          )}
-        </div>
-      ) : values.signalIndex === '-1' ? (
+      {signalIndex === -1 ? (
         <InfoText value={ADD_SIGNAL_INFO_TEXT} />
       ) : (
         <InfoText value={EDIT_SIGNAL_INFO_TEXT} />

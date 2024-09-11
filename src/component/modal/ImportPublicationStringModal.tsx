@@ -1,21 +1,20 @@
-import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
+import {
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  TextArea,
+  Button,
+} from '@blueprintjs/core';
 import { FifoLogger, LogEntry } from 'fifo-logger';
-import { Formik } from 'formik';
 import debounce from 'lodash/debounce';
 import { resurrect } from 'nmr-processing';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import * as yup from 'yup';
+import { Controller, useForm } from 'react-hook-form';
 
 import { useDispatch } from '../context/DispatchContext';
 import { useToaster } from '../context/ToasterContext';
-import Button from '../elements/Button';
 import { GroupPane } from '../elements/GroupPane';
 import ReactTable, { Column } from '../elements/ReactTable/ReactTable';
-import FormikTextarea from '../elements/formik/FormikTextarea';
-
-const validationSchema = yup.object({
-  publicationText: yup.string().required(),
-});
 
 interface InnerImportPublicationStringModalProps {
   onClose: () => void;
@@ -43,6 +42,23 @@ const INITIAL_VALUES = {
     '1H NMR (CDCl3, 400MHz) δ 1 (s, 1H), 2 (d, 1H, J=7), 3 (t, 1H, J=7), 4 (q, 1H, J=7), 5 (quint, 1H, J=7), 6 (hex, 1H, J=7), 7 (hept, 1H, J=7), 8 (dd, 1H, J=7, J=4)',
 };
 
+const COLUMNS: Array<Column<LogEntry>> = [
+  {
+    Header: '#',
+    accessor: (_, index) => index + 1,
+    style: { width: '40px' },
+  },
+  {
+    Header: 'Label',
+    accessor: 'levelLabel',
+    style: { width: '60px' },
+  },
+  {
+    Header: 'Message',
+    accessor: 'message',
+  },
+];
+
 export function ImportPublicationStringModal(
   props: ImportPublicationStringModalProps,
 ) {
@@ -57,11 +73,15 @@ function InnerImportPublicationStringModal(
 ) {
   const { onClose } = props;
 
-  const formRef = useRef<any>();
   const dispatch = useDispatch();
   const toaster = useToaster();
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const loggerRef = useRef<FifoLogger>(new FifoLogger());
+  const {
+    handleSubmit,
+    control,
+    formState: { isValid },
+  } = useForm({ defaultValues: INITIAL_VALUES, mode: 'onChange' });
 
   useEffect(() => {
     function handleLogs({ detail: { logs } }) {
@@ -74,26 +94,6 @@ function InnerImportPublicationStringModal(
       loggerInstance.removeEventListener('change', handleLogs);
     };
   }, []);
-
-  const COLUMNS: Array<Column<LogEntry>> = useMemo(
-    () => [
-      {
-        Header: '#',
-        accessor: (_, index) => index + 1,
-        style: { width: '40px' },
-      },
-      {
-        Header: 'Label',
-        accessor: 'levelLabel',
-        style: { width: '60px' },
-      },
-      {
-        Header: 'Message',
-        accessor: 'message',
-      },
-    ],
-    [],
-  );
 
   const debounceChanges = useMemo(
     () =>
@@ -127,12 +127,13 @@ function InnerImportPublicationStringModal(
     })();
   }
 
-  function handleOnChange(event) {
+  function handleOnChange(value) {
     loggerRef.current.clear();
-    const value = event.target.value;
-    if (value) {
-      debounceChanges(value);
+
+    if (!value) {
+      return;
     }
+    debounceChanges(value);
   }
 
   const isNotValid = logs.some((log) =>
@@ -146,70 +147,62 @@ function InnerImportPublicationStringModal(
       onClose={onClose}
       style={{ width: 800, height: 500 }}
     >
-      <Formik
-        innerRef={formRef}
-        initialValues={INITIAL_VALUES}
-        validationSchema={validationSchema}
-        onSubmit={publicationStringHandler}
-      >
-        {({ isValid }) => (
-          <>
-            <DialogBody>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  height: '100%',
-                }}
-              >
-                <div
-                  style={{ display: 'flex', flexDirection: 'column', flex: 1 }}
-                >
-                  <p>
-                    Paste a publication string in the text area below and click
-                    on the button <i>Generate spectrum</i>
-                  </p>
-                  <FormikTextarea
-                    style={{
-                      width: '100%',
-                      flex: 1,
-                      outline: 'none',
-                      borderWidth: '1px',
-                      borderColor: '#dedede',
-                      borderRadius: '5px',
-                      resize: 'none',
-                      padding: '15px',
-                    }}
-                    name="publicationText"
-                    className="text-area"
+      <DialogBody>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%',
+          }}
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+            <p>
+              Paste a publication string in the text area below and click on the
+              button <i>Generate spectrum</i>
+            </p>
+            <Controller
+              control={control}
+              name="publicationText"
+              rules={{ required: true }}
+              render={({ field, fieldState: { invalid } }) => {
+                const { onChange, ...otherFieldProps } = field;
+                return (
+                  <TextArea
+                    {...otherFieldProps}
                     placeholder="Enter publication string"
-                    onChange={handleOnChange}
+                    onChange={(event) => {
+                      onChange(event);
+                      handleOnChange(event.target.value);
+                    }}
+                    intent={invalid ? 'danger' : 'none'}
+                    style={{ flex: 1, width: '100%', resize: 'none' }}
                   />
-                </div>
-                <GroupPane text="Logs">
-                  <ReactTable
-                    columns={COLUMNS}
-                    data={logs}
-                    emptyDataRowText="No Logs"
-                    rowStyle={handleRowStyle}
-                    style={{ height: '120px' }}
-                  />
-                </GroupPane>
-              </div>
-            </DialogBody>
-            <DialogFooter>
-              <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
-                <Button.Done
-                  onClick={() => formRef.current.submitForm()}
-                  disabled={isNotValid || !isValid}
-                >
-                  Generate spectrum
-                </Button.Done>
-              </div>
-            </DialogFooter>
-          </>
-        )}
-      </Formik>
+                );
+              }}
+            />
+          </div>
+          <GroupPane text="Logs">
+            <ReactTable
+              columns={COLUMNS}
+              data={logs}
+              emptyDataRowText="No Logs"
+              rowStyle={handleRowStyle}
+              style={{ height: '120px' }}
+            />
+          </GroupPane>
+        </div>
+      </DialogBody>
+      <DialogFooter>
+        <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
+          <Button
+            onClick={() => handleSubmit(publicationStringHandler)()}
+            disabled={isNotValid || !isValid}
+            intent="success"
+          >
+            Generate spectrum
+          </Button>
+        </div>
+      </DialogFooter>
     </Dialog>
   );
 }

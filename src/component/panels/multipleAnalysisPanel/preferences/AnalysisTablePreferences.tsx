@@ -1,25 +1,20 @@
-import { useFormikContext } from 'formik';
+import { Classes } from '@blueprintjs/core';
 import { AnalysisColumnsTypes } from 'nmr-load-save';
 import { useMemo, useCallback } from 'react';
-import { FaPlus, FaTimes } from 'react-icons/fa';
+import { useFormContext, useWatch } from 'react-hook-form';
+import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
+import { Button } from 'react-science/ui';
 
-import Button from '../../../elements/Button';
+import { Input2Controller } from '../../../elements/Input2Controller';
 import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
-import FormikInput from '../../../elements/formik/FormikInput';
-
-const inputStyle = { input: { width: '100%', fontSize: '1.15em' } };
 
 export function AnalysisTablePreferences() {
-  const {
-    values: {
-      analysisOptions: { columns },
-    },
-    setFieldValue,
-  } = useFormikContext<any>();
+  const { setValue, control } = useFormContext();
+  const columns = useWatch({ name: 'analysisOptions.columns' });
 
   const addNewColumn = useCallback(
     (index, columns) => {
-      void setFieldValue('analysisOptions.columns', [
+      setValue('analysisOptions.columns', [
         ...columns,
         {
           tempKey: '',
@@ -30,17 +25,17 @@ export function AnalysisTablePreferences() {
         },
       ]);
     },
-    [setFieldValue],
+    [setValue],
   );
 
   const handleDelete = useCallback(
     (index, columns) => {
-      void setFieldValue(
+      setValue(
         'analysisOptions.columns',
         columns.filter((_, colIndex) => colIndex !== index),
       );
     },
-    [setFieldValue],
+    [setValue],
   );
 
   const COLUMNS: Array<Column<any>> = useMemo(() => {
@@ -52,9 +47,11 @@ export function AnalysisTablePreferences() {
       {
         Header: 'Label',
         Cell: ({ row }) => (
-          <FormikInput
+          <Input2Controller
+            control={control}
             name={`analysisOptions.columns.${row.index}.tempKey`}
-            style={inputStyle}
+            style={{ backgroundColor: 'transparent' }}
+            noShadowBox
           />
         ),
       },
@@ -64,41 +61,45 @@ export function AnalysisTablePreferences() {
           const isFormulaColumn =
             row.original.type === AnalysisColumnsTypes.FORMULA;
           return (
-            <FormikInput
+            <Input2Controller
+              control={control}
               disabled={!isFormulaColumn}
               name={`analysisOptions.columns.${row.index}.formula`}
-              style={inputStyle}
+              style={{ backgroundColor: 'transparent' }}
+              noShadowBox
             />
           );
         },
       },
       {
         Header: '',
-        style: { width: '50px' },
-        id: 'add-button',
+        style: { width: '70px' },
+        id: 'actions-button',
         Cell: ({ data, row }) => {
           return (
-            <div style={{ display: 'flex' }}>
-              <Button.Danger
-                fill="outline"
+            <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+              <Button
+                small
+                intent="success"
+                outlined
+                onClick={() => addNewColumn(row.index + 1, data)}
+              >
+                <FaPlus className={Classes.ICON} />
+              </Button>
+              <Button
+                small
+                outlined
+                intent="danger"
                 onClick={() => handleDelete(row.index, data)}
               >
-                <FaTimes />
-              </Button.Danger>
-              {data.length === row.index + 1 && (
-                <Button.Done
-                  fill="outline"
-                  onClick={() => addNewColumn(row.index + 1, data)}
-                >
-                  <FaPlus />
-                </Button.Done>
-              )}
+                <FaRegTrashAlt className={Classes.ICON} />
+              </Button>
             </div>
           );
         },
       },
     ];
-  }, [addNewColumn, handleDelete]);
+  }, [addNewColumn, control, handleDelete]);
 
   return <ReactTable columns={COLUMNS} data={columns} />;
 }

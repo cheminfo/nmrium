@@ -61,6 +61,8 @@ function InnerSpectraLegends({
   spectra,
   legendsFields,
 }: InnerSpectraLegendsProps) {
+  const visibleLegendsFields = legendsFields.filter((legend) => legend.visible);
+
   return (
     <g className="spectra-intensity-legend">
       {spectra.map((spectrum, index) => (
@@ -72,10 +74,9 @@ function InnerSpectraLegends({
             }}
           />
           <SVGGroup space={5} transform="translate(12 0)">
-            {legendsFields.map((field) => {
-              const predefinedField = field as PredefinedLegendField;
-
-              switch (predefinedField?.name) {
+            {visibleLegendsFields.map((field) => {
+              const { name } = field as PredefinedLegendField;
+              switch (name) {
                 case 'intensity':
                   return (
                     <g key="intensity">

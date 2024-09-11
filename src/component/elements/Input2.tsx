@@ -132,6 +132,7 @@ function InnerInput<FilterItem extends string = string>(
     leftIcon,
     autoSelect = false,
     fill,
+    name,
     ...otherInputProps
   } = props;
 
@@ -147,6 +148,7 @@ function InnerInput<FilterItem extends string = string>(
   function handleItemSelect(item: FilterItem, event) {
     const val = getFilterValue(item);
     setValue(val);
+    event = { ...event, target: { ...event.target, name } };
     onChange?.(val, event);
   }
 
@@ -182,6 +184,7 @@ function InnerInput<FilterItem extends string = string>(
         leftIcon: icon,
         inputClassName: classes,
         inputRef: innerRef,
+        name,
         ...otherInputProps,
       }}
       items={[]}
@@ -197,12 +200,6 @@ function InnerInput<FilterItem extends string = string>(
           inputValueRenderer: getFilterValue,
           itemPredicate,
           popoverProps: { minimal: true, placement: 'bottom' },
-          popoverContentProps: {
-            style: {
-              maxHeight: '250px',
-              overflowY: 'auto',
-            },
-          },
           noResults: (
             <MenuItem disabled text="No results." roleStructure="listoption" />
           ),
