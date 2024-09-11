@@ -13,6 +13,7 @@ import {
 } from '../../../../data/molecules/Molecule';
 import { useDispatch } from '../../../context/DispatchContext';
 import { useGlobal } from '../../../context/GlobalContext';
+import { useHighlightColor } from '../../../hooks/useHighlightColor';
 import { useMoleculeEditor } from '../../../modal/MoleculeStructureEditorModal';
 import useAtomAssignment from '../../../panels/MoleculesPanel/useAtomAssignment';
 import { DisplayerMode } from '../../../reducer/Reducer';
@@ -72,6 +73,7 @@ export function DraggableStructure(props: DraggableStructureProps) {
     handleOnClickAtom,
     assignedDiaIDsMerged,
   } = useAtomAssignment({ zones, ranges, activeTab, displayerMode });
+  const highlightColor = useHighlightColor();
 
   function floatMoleculeHandler() {
     dispatch({
@@ -137,9 +139,11 @@ export function DraggableStructure(props: DraggableStructureProps) {
                 molfile={molecule.molfile}
                 setSelectedAtom={handleOnClickAtom}
                 atomHighlightColor={
-                  currentDiaIDsToHighlight?.length > 0 ? 'red' : '#FFD700'
+                  currentDiaIDsToHighlight?.length > 0
+                    ? '#ff000080'
+                    : highlightColor
                 }
-                atomHighlightOpacity={0.35}
+                atomHighlightOpacity={1}
                 highlights={
                   currentDiaIDsToHighlight?.length > 0
                     ? currentDiaIDsToHighlight

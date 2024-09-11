@@ -88,7 +88,7 @@ function setData(draft: Draft<State>, input: InputProps) {
     spectraColors = {
       oneDimension: [],
       twoDimensions: [],
-      highlightColor: '#ffd700',
+      highlightColor: '#ffd70080',
     },
   } = input || {
     nmriumState: { data: { spectra: [], molecules: [], correlations: {} } },

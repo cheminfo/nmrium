@@ -4,7 +4,7 @@ import { CSSProperties, useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
-
+import Label from '../../../elements/Label';
 import { useChartData } from '../../../context/ChartContext';
 import { ColorPickerDropdownController } from '../../../elements/ColorPickerDropdownController';
 import { GroupPane } from '../../../elements/GroupPane';
@@ -33,7 +33,7 @@ function getKeyPath(key: SpectraColorsKeys, index: number, fieldKey: string) {
 }
 
 function SpectraColorsTabContent() {
-  const { setValue } = useFormContext<WorkspaceWithSource>();
+  const { setValue, control } = useFormContext<WorkspaceWithSource>();
   const { data } = useChartData();
   const { datalist, paths } = useMemo(
     () => getSpectraObjectPaths(data),
@@ -80,6 +80,15 @@ function SpectraColorsTabContent() {
 
   return (
     <div>
+      <Label title="Highlight color ">
+        <div style={colorInputStyle}>
+          <ColorPickerDropdownController
+            control={control}
+            name="spectraColors.highlightColor"
+          />
+        </div>
+      </Label>
+
       <SpectraColorsFields
         groupLabel="One dimension"
         baseObjectPath="oneDimension"
