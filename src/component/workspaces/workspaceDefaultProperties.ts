@@ -201,7 +201,7 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
     },
   },
   spectraColors: {
-    highlightColor: '#ffd700',
+    highlightColor: '#ffd70080',
     oneDimension: [],
     twoDimensions: [
       {

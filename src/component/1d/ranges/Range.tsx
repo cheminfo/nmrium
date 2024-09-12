@@ -23,6 +23,7 @@ import { useDialogData } from '../../elements/DialogManager';
 import { ResizerWithScale } from '../../elements/ResizerWithScale';
 import { HighlightEventSource, useHighlight } from '../../highlight';
 import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
+import { useHighlightColor } from '../../hooks/useHighlightColor';
 import { useResizerStatus } from '../../hooks/useResizerStatus';
 import useSpectrum from '../../hooks/useSpectrum';
 import { EditRangeModal } from '../../modal/editRange/EditRangeModal';
@@ -61,6 +62,7 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
     diaIDs: rangeDiaIDs,
     assignment,
   } = range;
+  const highlightColor = useHighlightColor();
   const assignmentData = useAssignmentData();
   const assignmentRange = useAssignment(id);
   const highlightRange = useHighlight(
@@ -176,7 +178,6 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
       visible: !!assignment,
     },
   ];
-
   return (
     <g
       data-testid="range"
@@ -205,8 +206,7 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
                   <rect
                     width={width}
                     height="10px"
-                    fill="#ffd700"
-                    opacity="0.35"
+                    fill={highlightColor}
                     data-no-export="true"
                   />
                 )}

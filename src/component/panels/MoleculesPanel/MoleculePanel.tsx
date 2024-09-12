@@ -14,6 +14,7 @@ import {
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { NextPrev } from '../../elements/NextPrev';
+import { useHighlightColor } from '../../hooks/useHighlightColor';
 import useSpectrum from '../../hooks/useSpectrum';
 import { useMoleculeEditor } from '../../modal/MoleculeStructureEditorModal';
 import { DisplayerMode } from '../../reducer/Reducer';
@@ -78,6 +79,7 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
 
   const dispatch = useDispatch();
   const { modal, openMoleculeEditor } = useMoleculeEditor();
+  const highlightColor = useHighlightColor();
 
   const {
     currentDiaIDsToHighlight,
@@ -161,10 +163,10 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
                             atomHighlightColor={
                               currentDiaIDsToHighlight &&
                               currentDiaIDsToHighlight.length > 0
-                                ? 'red'
-                                : '#FFD700'
+                                ? '#ff000080'
+                                : highlightColor
                             }
-                            atomHighlightOpacity={0.35}
+                            atomHighlightOpacity={1}
                             highlights={
                               currentDiaIDsToHighlight &&
                               currentDiaIDsToHighlight.length > 0
