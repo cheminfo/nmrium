@@ -93,7 +93,7 @@ type ChangeSpectrumSettingAction = ActionType<
 type DeleteSpectraAction = ActionType<
   'DELETE_SPECTRA',
   {
-    id?: string;
+    ids?: string[];
     domainOptions?: SetDomainOptions;
   }
 >;
@@ -452,27 +452,34 @@ function handleChangeSpectrumSetting(
 
 //action
 function handleDeleteSpectra(draft: Draft<State>, action: DeleteSpectraAction) {
-  const { id: spectrumID, domainOptions } = action?.payload || {};
+  const { ids, domainOptions } = action?.payload || {};
   const activeSpectra = getActiveSpectra(draft);
 
-  let spectraIDs: Array<{ id: string; index: number }> = [];
+  let deleteSpectraIDs: Array<{ id: string; index: number }> = [];
+  if (ids) {
+    const hashIDs = new Set(ids);
+    for (let index = 0; index < draft.data.length; index++) {
+      const { id } = draft.data[index];
+      if (hashIDs.has(id)) {
+        deleteSpectraIDs.push({ id, index });
+        hashIDs.delete(id);
 
-  if (spectrumID) {
-    const index = draft.data.findIndex(
-      (spectrum) => spectrum.id === spectrumID,
-    );
-    spectraIDs = [{ id: spectrumID, index }];
+        if (hashIDs.size === 0) {
+          break;
+        }
+      }
+    }
   } else {
-    spectraIDs = activeSpectra || [];
+    deleteSpectraIDs = activeSpectra || [];
   }
 
   /**
    * Sort the spectraIDs indices in descending order.
    * This prevents shifting issues when removing elements, ensuring that each deletion doesn't changing the positions of remaining elements to be removed.
    */
-  spectraIDs.sort((a, b) => b.index - a.index);
+  deleteSpectraIDs.sort((a, b) => b.index - a.index);
 
-  for (const { index, id } of spectraIDs) {
+  for (const { index, id } of deleteSpectraIDs) {
     draft.data.splice(index, 1);
     removeSpectrumRelatedObjectsById(draft, id);
   }
@@ -482,7 +489,7 @@ function handleDeleteSpectra(draft: Draft<State>, action: DeleteSpectraAction) {
 
   const spectraRemovedIDs = {};
 
-  for (const { id } of spectraIDs) {
+  for (const { id } of deleteSpectraIDs) {
     spectraRemovedIDs[id] = true;
   }
 

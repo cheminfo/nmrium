@@ -236,7 +236,10 @@ export function SpectraTable(props: SpectraTableProps) {
         }
         case SpectraContextMenuOptionsKeys.Delete: {
           setTimeout(() => {
-            dispatch({ type: 'DELETE_SPECTRA', payload: { id: spectrum.id } });
+            dispatch({
+              type: 'DELETE_SPECTRA',
+              payload: { ids: [spectrum.id] },
+            });
           }, 0);
           break;
         }
