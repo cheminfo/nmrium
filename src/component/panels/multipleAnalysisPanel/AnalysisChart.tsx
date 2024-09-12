@@ -128,11 +128,10 @@ export default function AnalysisChart(props: PlotChartPros) {
 
   function handleCopy() {
     if (chartParentRef.current) {
-      void copyPNGToClipboard(
-        chartParentRef.current,
-        svgId,
-        css({ text: { fill: 'black' } }),
-      );
+      void copyPNGToClipboard(svgId, {
+        rootElement: chartParentRef.current,
+        css: css({ text: { fill: 'black' } }),
+      });
       toaster.show({ message: 'Chart copied to clipboard', intent: 'success' });
     }
   }
