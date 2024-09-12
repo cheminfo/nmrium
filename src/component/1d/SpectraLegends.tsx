@@ -16,6 +16,7 @@ import { useScale } from '../context/ScaleContext';
 import { SVGGroup } from '../elements/SVGGroup';
 import { usePanelPreferences } from '../hooks/usePanelPreferences';
 import { convertPathArrayToString } from '../utility/convertPathArrayToString';
+import { useActiveSpectra } from '../hooks/useActiveSpectra';
 
 const styles: Record<'text' | 'colorIndicator', CSSProperties> = {
   text: {
@@ -130,13 +131,19 @@ function SpectraLegends() {
     activeTab,
   );
 
+  const selectedSpectra = useActiveSpectra() || [];
+  const selectedSpectraIDs = new Set(
+    selectedSpectra.map((spectrum) => spectrum.id),
+  );
+
   if (!showLegend) return null;
 
   const spectra = data.filter(
     (spectrum) =>
       spectrum.display.isVisible &&
       xDomains[spectrum.id] &&
-      spectrum.info.nucleus === activeTab,
+      spectrum.info.nucleus === activeTab &&
+      (selectedSpectraIDs.size === 0 || selectedSpectraIDs.has(spectrum.id)),
   );
 
   return (
