@@ -137,7 +137,10 @@ export function DraggableStructure(props: DraggableStructureProps) {
                 labelFontSize={15}
                 labelColor="rgb(0,0,0)"
                 molfile={molecule.molfile}
-                setSelectedAtom={handleOnClickAtom}
+                setSelectedAtom={(atom, event) => {
+                  handleOnAtomHover();
+                  handleOnClickAtom(atom, event);
+                }}
                 atomHighlightColor={
                   currentDiaIDsToHighlight?.length > 0
                     ? '#ff000080'

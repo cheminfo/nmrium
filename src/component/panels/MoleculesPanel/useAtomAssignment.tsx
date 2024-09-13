@@ -233,7 +233,7 @@ export default function useAtomAssignment({
   );
 
   const handleOnAtomHover = useCallback(
-    (diaIDAndInfo: DiaIDAndInfo | undefined) => {
+    (diaIDAndInfo?: DiaIDAndInfo) => {
       const { oclIDs } = extractFromAtom(diaIDAndInfo, nucleus);
 
       // on enter the atom
