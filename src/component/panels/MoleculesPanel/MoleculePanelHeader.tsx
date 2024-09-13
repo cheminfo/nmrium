@@ -116,7 +116,7 @@ export default function MoleculePanelHeader({
 
   const saveAsPNGHandler = useCallback(async () => {
     if (!rootRef) return;
-    await copyPNGToClipboard(rootRef, `molSVG${currentIndex} `);
+    await copyPNGToClipboard(`molSVG${currentIndex}`, { rootElement: rootRef });
     toaster.show({
       message: 'MOL copied as PNG to clipboard',
       intent: 'success',

@@ -238,4 +238,9 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
   },
   printPageOptions: {},
   externalAPIs: [],
+  export: {
+    png: {
+      resolution: 300,
+    },
+  },
 };

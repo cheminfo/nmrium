@@ -110,25 +110,56 @@ function exportAsSVG(
   saveAs(blob, `${fileName}.svg`);
 }
 
-function exportAsPng(
-  rootRef: HTMLDivElement,
-  elementID: string,
-  fileName = 'experiment',
-) {
-  const { blob, width, height } = getBlob(rootRef, elementID);
+interface ExportAsPNGOptions {
+  fileName?: string;
+  resolution?: number;
+  rootElement: HTMLDivElement;
+}
+
+interface CreateObjectURLOptions {
+  width: number;
+  height: number;
+  resolution: number;
+}
+
+function createObjectURL(blob: Blob, options: CreateObjectURLOptions) {
+  const { resolution, width, height } = options;
+
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d');
+
+  /**
+   * Change the canvas size based on DPI
+   * 96 is the default DPI for web
+   * */
+  const scaleFactor = resolution / 96;
+  canvas.width = width * scaleFactor;
+  canvas.height = height * scaleFactor;
+
+  if (context) {
+    context.fillStyle = 'white';
+    context.scale(scaleFactor, scaleFactor);
+    context.fillRect(
+      0,
+      0,
+      canvas.width / scaleFactor,
+      canvas.height / scaleFactor,
+    );
+  }
+
+  return { url: URL.createObjectURL(blob), canvas, context };
+}
+
+function exportAsPng(targetElementID: string, options: ExportAsPNGOptions) {
+  const { rootElement, fileName = 'experiment', resolution = 300 } = options;
+  const { blob, width, height } = getBlob(rootElement, targetElementID);
   try {
-    const canvas = document.createElement('canvas');
-    canvas.width = width;
-    canvas.height = height;
-    const context = canvas.getContext('2d');
-
-    if (context) {
-      context.fillStyle = 'white';
-      context.fillRect(0, 0, canvas.width, canvas.height);
-    }
-
+    const { url, context, canvas } = createObjectURL(blob, {
+      width,
+      height,
+      resolution,
+    });
     const img = new Image();
-    const url = URL.createObjectURL(blob);
     img.addEventListener('load', () => {
       context?.drawImage(img, 0, 0);
       const png = canvas.toDataURL('image/png', 1);
@@ -189,25 +220,25 @@ async function copyBlobToClipboard(canvas: HTMLCanvasElement) {
   });
 }
 
+interface CopyPNGToClipboardOptions {
+  css?: SerializedStyles;
+  resolution?: number;
+  rootElement: HTMLDivElement;
+}
+
 async function copyPNGToClipboard(
-  rootRef: HTMLDivElement,
-  elementID: string,
-  css?: SerializedStyles,
+  targetElementID: string,
+  options: CopyPNGToClipboardOptions,
 ) {
-  const { blob, width, height } = getBlob(rootRef, elementID, css);
+  const { rootElement, css, resolution = 300 } = options;
+  const { blob, width, height } = getBlob(rootElement, targetElementID, css);
   try {
-    const canvas = document.createElement('canvas');
-    canvas.width = width;
-    canvas.height = height;
-    const context = canvas.getContext('2d');
-
-    if (context) {
-      context.fillStyle = 'white';
-      context.fillRect(0, 0, canvas.width, canvas.height);
-    }
-
     const img = new Image();
-    const url = URL.createObjectURL(blob);
+    const { url, context, canvas } = createObjectURL(blob, {
+      width,
+      height,
+      resolution,
+    });
     img.addEventListener('load', async () => {
       context?.drawImage(img, 0, 0);
       await copyBlobToClipboard(canvas);
