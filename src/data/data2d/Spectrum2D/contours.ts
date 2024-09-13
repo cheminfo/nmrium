@@ -5,6 +5,7 @@ import type { Spectrum2D } from 'nmr-load-save';
 
 import { calculateSanPlot } from '../../utilities/calculateSanPlot.js';
 
+const cache = new Map();
 interface Level {
   positive: ContourItem;
   negative: ContourItem;
@@ -228,11 +229,47 @@ function getContours(options: ContoursCalcOptions) {
     };
   }
 
-  return conrec.drawContour({
+  // assuming there is a global variable cache;
+
+  const contoursInCache = [];
+  const levelsToCalculate = [];
+  for (const level of _range) {
+    if (cache.has(level)) {
+      contoursInCache.push(cache.get(level));
+    } else {
+      levelsToCalculate.push(level);
+    }
+  }
+
+  console.log({ contoursInCache, levelsToCalculate });
+
+  console.time('drawContour');
+  const conrecResult = conrec.drawContour({
     contourDrawer: 'basic',
-    levels: Array.from(_range),
+    levels: levelsToCalculate,
     timeout,
   });
+  console.timeEnd('drawContour');
+  console.log(conrecResult);
+
+  console.time('dummy');
+  // dummy calculation
+  // I don't understand why it takes any time (in my case 50ms)
+  const dummyResult = conrec.drawContour({
+    contourDrawer: 'basic',
+    levels: [],
+  });
+  console.timeEnd('dummy');
+  console.log(dummyResult);
+
+  for (const contour of conrecResult.contours) {
+    cache.set(contour.zValue, contour);
+  }
+
+  return {
+    contours: [...contoursInCache, ...conrecResult.contours],
+    timeout: conrecResult.timeout,
+  };
 }
 
 /**
