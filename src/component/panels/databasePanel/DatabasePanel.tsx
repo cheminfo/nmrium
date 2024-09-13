@@ -26,6 +26,7 @@ import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import { useToaster } from '../../context/ToasterContext';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
+import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus';
 import { options } from '../../toolbar/ToolTypes';
 import Events from '../../utility/Events';
 import { exportAsJSON } from '../../utility/export';
@@ -33,13 +34,13 @@ import nucleusToString from '../../utility/nucleusToString';
 import { PanelNoData } from '../PanelNoData';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import NoTableData from '../extra/placeholder/NoTableData';
+import { SettingsRef } from '../extra/utilities/settingImperativeHandle';
 import PreferencesHeader from '../header/PreferencesHeader';
 
 import DatabasePreferences from './DatabasePreferences';
 import { DatabaseSearchOptions } from './DatabaseSearchOptions';
 import { DatabaseStructureSearchModal } from './DatabaseStructureSearchModal';
 import DatabaseTable from './DatabaseTable';
-import { SettingsRef } from '../extra/utilities/settingImperativeHandle';
 
 export type Databases = Array<LocalDatabase | Database>;
 
@@ -329,13 +330,35 @@ function DatabasePanelInner({
       dispatch({
         type: 'DELETE_SPECTRA',
         payload: {
-          id,
+          ids: [id],
           domainOptions: { isYDomainShared: false, updateYDomain: false },
         },
       });
     },
     [dispatch],
   );
+
+  const spectra = useSpectraByActiveNucleus();
+  const removeAllHandler = useCallback(() => {
+    const addedSpectraIDs: string[] = [];
+    const dataBaseSpectraIds = new Set(
+      databaseInstance.current?.data.map((databaseEntry) => databaseEntry.id),
+    );
+
+    for (const spectrum of spectra) {
+      if (dataBaseSpectraIds.has(spectrum.id)) {
+        addedSpectraIDs.push(spectrum.id);
+      }
+    }
+
+    dispatch({
+      type: 'DELETE_SPECTRA',
+      payload: {
+        ids: addedSpectraIDs,
+        domainOptions: { isYDomainShared: false, updateYDomain: false },
+      },
+    });
+  }, [dispatch, spectra]);
   const searchByStructureHandler = (idCodeValue: string) => {
     setIdCode(idCodeValue);
   };
@@ -370,6 +393,7 @@ function DatabasePanelInner({
             onSettingClick={settingsPanelHandler}
             onStructureClick={openSearchByStructure}
             onDatabaseChange={handleChangeDatabase}
+            onRemoveAll={removeAllHandler}
           />
           <DatabaseStructureSearchModal
             isOpen={isOpenSearchByStructure}

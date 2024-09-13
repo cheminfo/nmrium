@@ -1,8 +1,8 @@
 import { BsHexagon, BsHexagonFill } from 'react-icons/bs';
-import { FaICursor } from 'react-icons/fa';
+import { FaICursor, FaRegTrashAlt } from 'react-icons/fa';
 import { IoSearchOutline } from 'react-icons/io5';
 import { TbBinaryTree } from 'react-icons/tb';
-import { ToolbarItemProps } from 'react-science/ui';
+import { Toolbar, ToolbarItemProps } from 'react-science/ui';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
@@ -33,20 +33,24 @@ interface DatabaseSearchOptionsProps {
   onSettingClick: ToolbarItemProps['onClick'];
   onStructureClick: ToolbarItemProps['onClick'];
   onDatabaseChange: (databaseKey: string) => void;
+  onRemoveAll: () => void;
 }
 
-export function DatabaseSearchOptions({
-  databases,
-  defaultDatabase,
-  keywords,
-  result,
-  idCode,
-  total,
-  onKeywordsChange,
-  onSettingClick,
-  onStructureClick,
-  onDatabaseChange,
-}: DatabaseSearchOptionsProps) {
+export function DatabaseSearchOptions(props: DatabaseSearchOptionsProps) {
+  const {
+    databases,
+    defaultDatabase,
+    keywords,
+    result,
+    idCode,
+    total,
+    onKeywordsChange,
+    onSettingClick,
+    onStructureClick,
+    onDatabaseChange,
+    onRemoveAll,
+  } = props;
+
   const { handleChangeOption } = useToolsFunctions();
   const {
     view: {
@@ -145,13 +149,22 @@ export function DatabaseSearchOptions({
           onClear={clearHandler}
           canClear
         />
-        <ToolBarButton
-          tooltip="Search by substructure"
-          icon={!idCode ? <BsHexagon /> : <BsHexagonFill />}
-          intent="success"
-          active={!!idCode}
-          onClick={onStructureClick}
-        />
+
+        <Toolbar>
+          <Toolbar.Item
+            tooltip="Search by substructure"
+            icon={!idCode ? <BsHexagon /> : <BsHexagonFill />}
+            intent="success"
+            active={!!idCode}
+            onClick={onStructureClick}
+          />
+          <Toolbar.Item
+            tooltip="Remove all added spectra"
+            icon={<FaRegTrashAlt />}
+            intent="danger"
+            onClick={onRemoveAll}
+          />
+        </Toolbar>
       </div>
     </PanelHeader>
   );
