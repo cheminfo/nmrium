@@ -81,7 +81,7 @@
     "ml-array-median": "^1.1.6",
     "ml-array-xy-equally-spaced": "^1.2.1",
     "ml-baseline-correction-regression": "^2.0.1",
-    "ml-conrec": "^5.0.2",
+    "ml-conrec": "^5.0.3",
     "ml-gsd": "^12.1.6",
     "ml-matrix": "^6.11.1",
     "ml-signal-processing": "^1.0.4",
