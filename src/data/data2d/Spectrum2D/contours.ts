@@ -241,27 +241,15 @@ function getContours(options: ContoursCalcOptions) {
     }
   }
 
-  console.log({ contoursInCache, levelsToCalculate });
-
-  console.time('drawContour');
   const conrecResult = conrec.drawContour({
     contourDrawer: 'basic',
     levels: levelsToCalculate,
     timeout,
   });
-  console.timeEnd('drawContour');
-  console.log(conrecResult);
 
-  console.time('dummy');
-  // dummy calculation
-  // I don't understand why it takes any time (in my case 50ms)
-  const dummyResult = conrec.drawContour({
-    contourDrawer: 'basic',
-    levels: [],
-  });
-  console.timeEnd('dummy');
-  console.log(dummyResult);
-
+  // TODO
+  // cache may of course not be Global !
+  // moreover cache must be by spectrum !!!
   for (const contour of conrecResult.contours) {
     cache.set(contour.zValue, contour);
   }
