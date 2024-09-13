@@ -490,7 +490,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
 
   const handleOnKeyDown = useCallback(
     (e) => {
-      if (checkNotInputField(e) && mouseIsOverDisplayer.current) {
+      if (!ignoreElement(e) && mouseIsOverDisplayer.current) {
         const num = Number(e.code.slice(-1)) || 0;
         if (num > 0) {
           keysPreferencesListenerHandler(e, num);
@@ -523,13 +523,15 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
     <SaveAsModal isOpen={isSaveModalOpened} onCloseDialog={closeSaveAsDialog} />
   );
 }
+const tags = new Set(['INPUT', 'TEXTAREA']);
+const inputTypes = new Set(['checkbox', 'radio']);
 
-function checkNotInputField(e: Event) {
-  const tags = ['input', 'textarea'];
-  const tagName = (e.composedPath()[0] as HTMLElement).tagName.toLowerCase();
-  if (!tags.includes(tagName)) return true;
-
-  return false;
+function ignoreElement(e: Event) {
+  const element = e.target as HTMLInputElement;
+  return (
+    (tags.has(element.tagName) && !inputTypes.has(element.type)) ||
+    element.isContentEditable
+  );
 }
 
 export default KeysListenerTracker;
