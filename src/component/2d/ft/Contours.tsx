@@ -75,19 +75,8 @@ function ContoursPaths({
 }: ContoursPathsProps) {
   const activeSpectrum = useActiveSpectrum();
   const preferences = usePreferences();
-  const level = useContoursLevel(spectrum, sign);
 
-  const contours = useMemo(() => {
-    const { contours, timeout } = drawContours(
-      level,
-      spectrum,
-      sign === 'negative',
-    );
-    if (timeout) {
-      onTimeout();
-    }
-    return contours;
-  }, [spectrum, level, onTimeout, sign]);
+  const contours = useContours(spectrum, sign, onTimeout);
 
   const path = usePath(spectrum, contours);
 
@@ -170,4 +159,20 @@ export default function Contours() {
   }, [activeTab, spectra]);
 
   return <MemoizedContours {...{ spectra: spectra2d, displayerKey }} />;
+}
+
+function useContours(spectrum: Spectrum2D, sign, onTimeout) {
+  const cache = useRef(new Map());
+  const level = useContoursLevel(spectrum, sign);
+
+  return useMemo(() => {
+    const { contours, timeout } = drawContours(spectrum, level, {
+      negative: sign === 'negative',
+      cache: cache.current,
+    });
+    if (timeout) {
+      onTimeout();
+    }
+    return contours;
+  }, [spectrum, level, onTimeout, sign]);
 }

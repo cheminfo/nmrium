@@ -1,11 +1,11 @@
 import type { NmrData2DFt } from 'cheminfo-types';
 import { Conrec } from 'ml-conrec';
+import { BasicContour } from 'ml-conrec/lib/BasicContourDrawer';
 import { xMaxAbsoluteValue } from 'ml-spectra-processing';
 import type { Spectrum2D } from 'nmr-load-save';
 
 import { calculateSanPlot } from '../../utilities/calculateSanPlot.js';
 
-const cache = new Map();
 interface Level {
   positive: ContourItem;
   negative: ContourItem;
@@ -175,12 +175,18 @@ function range(from: number, to: number, step: number) {
   return result;
 }
 
+interface DrawContoursOptions {
+  negative?: boolean;
+  quadrant?: 'rr' | 'ri' | 'ir' | 'ii';
+  cache: Map<number, BasicContour>;
+}
+
 function drawContours(
-  level: ContourItem,
   spectrum: Spectrum2D,
-  negative = false,
-  quadrant = 'rr',
+  level: ContourItem,
+  options: DrawContoursOptions,
 ) {
+  const { negative = false, quadrant = 'rr', cache } = options;
   const { contourLevels, numberOfLayers } = level;
 
   return getContours({
@@ -188,6 +194,7 @@ function drawContours(
     boundary: contourLevels,
     nbLevels: numberOfLayers,
     data: spectrum.data[quadrant],
+    cache,
   });
 }
 
@@ -197,6 +204,7 @@ interface ContoursCalcOptions {
   timeout?: number;
   nbLevels: number;
   data: NmrData2DFt['rr'];
+  cache: Map<number, BasicContour>;
 }
 
 function getContours(options: ContoursCalcOptions) {
@@ -206,6 +214,7 @@ function getContours(options: ContoursCalcOptions) {
     timeout = 2000,
     nbLevels,
     data,
+    cache,
   } = options;
   const xs = getRange(data.minX, data.maxX, data.z[0].length);
   const ys = getRange(data.minY, data.maxY, data.z.length);
@@ -231,11 +240,11 @@ function getContours(options: ContoursCalcOptions) {
 
   // assuming there is a global variable cache;
 
-  const contoursInCache = [];
-  const levelsToCalculate = [];
+  const contoursInCache: BasicContour[] = [];
+  const levelsToCalculate: number[] = [];
   for (const level of _range) {
     if (cache.has(level)) {
-      contoursInCache.push(cache.get(level));
+      contoursInCache.push(cache.get(level) as BasicContour);
     } else {
       levelsToCalculate.push(level);
     }
