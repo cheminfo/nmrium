@@ -178,7 +178,7 @@ function range(from: number, to: number, step: number) {
 interface DrawContoursOptions {
   negative?: boolean;
   quadrant?: 'rr' | 'ri' | 'ir' | 'ii';
-  cache: Map<number, BasicContour>;
+  cache: Map<number, BasicContour[]>;
 }
 
 function drawContours(
@@ -204,7 +204,7 @@ interface ContoursCalcOptions {
   timeout?: number;
   nbLevels: number;
   data: NmrData2DFt['rr'];
-  cache: Map<number, BasicContour>;
+  cache: Map<number, BasicContour[]>;
 }
 
 function getContours(options: ContoursCalcOptions) {
@@ -216,57 +216,31 @@ function getContours(options: ContoursCalcOptions) {
     data,
     cache,
   } = options;
-  const xs = getRange(data.minX, data.maxX, data.z[0].length);
-  const ys = getRange(data.minY, data.maxY, data.z.length);
-  const conrec = new Conrec(data.z, { xs, ys, swapAxes: false });
-  const max = Math.max(Math.abs(data.minZ), Math.abs(data.maxZ));
-  const minLevel = calculateValueOfLevel(boundary[0], max);
-  const maxLevel = calculateValueOfLevel(boundary[1], max);
+
+  const range = calculateRange(boundary, data, nbLevels, negative);
+
+  if (isZeroRange(range)) {
+    return createEmptyResult(range);
+  }
 
   const diffRange = boundary[1] - boundary[0];
 
-  let _range = getRange(minLevel, maxLevel, Math.min(nbLevels, diffRange), 2);
-  if (negative) {
-    _range = _range.map((value) => -value);
-  }
-
-  if (_range.every((r) => r === 0)) {
-    const emptyLine: number[] = [];
+  if (cache.has(diffRange)) {
     return {
-      contours: _range.map((r) => ({ zValue: r, lines: emptyLine })),
+      contours: cache.get(diffRange) ?? [],
       timeout: false,
     };
   }
 
-  // assuming there is a global variable cache;
-
-  const contoursInCache: BasicContour[] = [];
-  const levelsToCalculate: number[] = [];
-  for (const level of _range) {
-    if (cache.has(level)) {
-      contoursInCache.push(cache.get(level) as BasicContour);
-    } else {
-      levelsToCalculate.push(level);
-    }
-  }
-
-  const conrecResult = conrec.drawContour({
+  const conrec = initializeConrec(data);
+  const result = conrec.drawContour({
     contourDrawer: 'basic',
-    levels: levelsToCalculate,
+    levels: range,
     timeout,
   });
+  cache.set(diffRange, result.contours);
 
-  // TODO
-  // cache may of course not be Global !
-  // moreover cache must be by spectrum !!!
-  for (const contour of conrecResult.contours) {
-    cache.set(contour.zValue, contour);
-  }
-
-  return {
-    contours: [...contoursInCache, ...conrecResult.contours],
-    timeout: conrecResult.timeout,
-  };
+  return result;
 }
 
 /**
@@ -283,6 +257,38 @@ function calculateValueOfLevel(level: number, max: number, invert = false) {
   }
 
   return (max * (2 ** (level / 10) - 1)) / (2 ** 10 - 1);
+}
+
+function calculateRange(
+  boundary: [number, number],
+  data: ContoursCalcOptions['data'],
+  nbLevels: number,
+  negative: boolean,
+): number[] {
+  const max = Math.max(Math.abs(data.minZ), Math.abs(data.maxZ));
+  const minLevel = calculateValueOfLevel(boundary[0], max);
+  const maxLevel = calculateValueOfLevel(boundary[1], max);
+  const diffRange = boundary[1] - boundary[0];
+
+  const range = getRange(minLevel, maxLevel, Math.min(nbLevels, diffRange), 2);
+  return negative ? range.map((value) => -value) : range;
+}
+
+function isZeroRange(range: number[]): boolean {
+  return range.every((r) => r === 0);
+}
+
+function createEmptyResult(range: number[]) {
+  return {
+    contours: range.map((r) => ({ zValue: r, lines: [] })),
+    timeout: false,
+  };
+}
+
+function initializeConrec(data: ContoursCalcOptions['data']): Conrec {
+  const xs = getRange(data.minX, data.maxX, data.z[0].length);
+  const ys = getRange(data.minY, data.maxY, data.z.length);
+  return new Conrec(data.z, { xs, ys, swapAxes: false });
 }
 
 export {
