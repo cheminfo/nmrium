@@ -9,7 +9,7 @@ import useSpectrum from '../../hooks/useSpectrum';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
-import FiltersTable from './FiltersTable';
+import { Filters } from './Filters';
 
 export default function FiltersPanel() {
   const dispatch = useDispatch();
@@ -48,7 +48,8 @@ export default function FiltersPanel() {
         hideCounter
       />
       <div className="inner-container">
-        <FiltersTable />
+        <Filters />
+        {/* <FiltersTable /> */}
       </div>
     </div>
   );
