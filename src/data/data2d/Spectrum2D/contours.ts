@@ -52,18 +52,17 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
 
   const quadrantData = data[quadrant];
 
-  //@ts-expect-error will be included in nexts versions
-  const { noise = calculateSanPlot('2D', quadrantData) } = info;
+  // todo: if we choice the noise from the info we need to calculate the noise before
+  //  const { noise = calculateSanPlot('2D', quadrantData) } = info;
+  const value = getNoise(quadrantData.z) * 3;
 
-  const { positive, negative } = noise;
-
-  const value = 3 * xMaxAbsoluteValue([positive, negative]);
+  //  const { positive, negative } = noise;
 
   const allLevelValues = getLevelValues(
     new Array(101).fill(0).map((_, index) => index),
     quadrantData,
   );
-  const minLevel = xFindClosestIndex(allLevelValues, value);
+  const minLevel = Math.max(xFindClosestIndex(allLevelValues, value), 1);
 
   console.log({ minLevel, value });
 
@@ -220,7 +219,19 @@ function getLevels(min, max, nbLevels) {
   return levels;
 }
 
-function getLevelValues(levels: number[], data, options = {}) {
+interface GetLevelValuesOptions {
+  negative?: boolean;
+  exponent?: boolean;
+}
+
+/**
+ * From the levels as integer (0->100) we calculate the corresponding intensity values
+ */
+function getLevelValues(
+  levels: number[],
+  data,
+  options: GetLevelValuesOptions = {},
+) {
   const { negative = false, exponent = true } = options;
   const max = Math.max(Math.abs(data.minZ), Math.abs(data.maxZ));
   const min = 0;
@@ -341,6 +352,21 @@ function initializeConrec(data: ContoursCalcOptions['data']): Conrec {
   const xs = getRange(data.minX, data.maxX, data.z[0].length);
   const ys = getRange(data.minY, data.maxY, data.z.length);
   return new Conrec(data.z, { xs, ys, swapAxes: false });
+}
+
+function getNoise(matrix, options = {}) {
+  const { level = 0.99 } = options;
+  const nbColumns = matrix[0].length;
+  const flatten = new Float64Array(matrix.length * nbColumns);
+  for (let row = 0; row < matrix.length; row++) {
+    const currentRow = row * nbColumns;
+    for (let column = 0; column < nbColumns; column++) {
+      flatten[currentRow + column] = Math.abs(matrix[row][column]);
+    }
+  }
+  flatten.sort();
+
+  return flatten[(flatten.length * level) >> 0];
 }
 
 export {
