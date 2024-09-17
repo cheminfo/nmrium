@@ -1,7 +1,7 @@
 import { NmrData2DFt } from 'cheminfo-types';
 import { Conrec } from 'ml-conrec';
 import { BasicContour } from 'ml-conrec/lib/BasicContourDrawer';
-import { xMaxAbsoluteValue } from 'ml-spectra-processing';
+import { xFindClosestIndex, xMaxAbsoluteValue } from 'ml-spectra-processing';
 import { Spectrum2D } from 'nmr-load-save';
 
 import { calculateSanPlot } from '../../utilities/calculateSanPlot';
@@ -26,13 +26,15 @@ interface WheelOptions {
 }
 
 type ContoursLevels = Record<string, Level>;
+
+const MAX_LEVELS = 100;
 const DEFAULT_CONTOURS_OPTIONS: ContourOptions = {
   positive: {
-    contourLevels: [15, 100],
+    contourLevels: [15, MAX_LEVELS],
     numberOfLayers: 10,
   },
   negative: {
-    contourLevels: [15, 100],
+    contourLevels: [15, MAX_LEVELS],
     numberOfLayers: 10,
   },
 };
@@ -55,21 +57,24 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
 
   const { positive, negative } = noise;
 
-  const max = Math.max(
-    Math.abs(quadrantData.minZ),
-    Math.abs(quadrantData.maxZ),
-  );
   const value = 3 * xMaxAbsoluteValue([positive, negative]);
-  const minLevel = calculateValueOfLevel(value, max, true);
+
+  const allLevelValues = getLevelValues(
+    new Array(101).fill(0).map((_, index) => index),
+    quadrantData,
+  );
+  const minLevel = xFindClosestIndex(allLevelValues, value);
+
+  console.log({ minLevel, value });
 
   const defaultLevel: ContourOptions = {
     negative: {
       numberOfLayers: 10,
-      contourLevels: [minLevel, 100],
+      contourLevels: [minLevel, MAX_LEVELS],
     },
     positive: {
       numberOfLayers: 10,
-      contourLevels: [minLevel, 100],
+      contourLevels: [minLevel, MAX_LEVELS],
     },
   };
   return defaultLevel;
@@ -146,23 +151,9 @@ function prepareCheckLevel(options: ContourOptions) {
   return options;
 }
 
-function getRange(min: number, max: number, length: number, exp?: number) {
-  if (exp !== undefined) {
-    const factors = new Float64Array(length + 1);
-
-    for (let i = 1; i < length + 1; i++) {
-      factors[i] = factors[i - 1] + (exp - 1) / exp ** i;
-    }
-    const scaleFactor = factors[length - 1];
-    const result = new Float64Array(length);
-    for (let i = 0; i < length; i++) {
-      result[i] = (max - min) * (1 - factors[i] / scaleFactor) + min;
-    }
-    return Array.from(result);
-  } else {
-    const step = (max - min) / (length - 1);
-    return range(min, max + step / 2, step);
-  }
+function getRange(min: number, max: number, length: number) {
+  const step = (max - min) / (length - 1);
+  return range(min, max + step / 2, step);
 }
 
 function range(from: number, to: number, step: number) {
@@ -178,7 +169,7 @@ function range(from: number, to: number, step: number) {
 interface DrawContoursOptions {
   negative?: boolean;
   quadrant?: 'rr' | 'ri' | 'ir' | 'ii';
-  cache: Map<number, BasicContour[]>;
+  cache: Map<number, BasicContour>;
 }
 
 function drawContours(
@@ -204,7 +195,60 @@ interface ContoursCalcOptions {
   timeout?: number;
   nbLevels: number;
   data: NmrData2DFt['rr'];
-  cache: Map<number, BasicContour[]>;
+  cache: Map<number, BasicContour>;
+}
+
+/**
+ * We calculate the current levels (0->100) to be considered
+ * @param min
+ * @param max
+ * @param nbLevels
+ * @returns
+ */
+function getLevels(min, max, nbLevels) {
+  const levels: number[] = [];
+  if (max - min + 1 < nbLevels) {
+    for (let i = min; i <= max; i++) {
+      levels.push(i);
+    }
+  } else {
+    const step = (max - min) / (nbLevels - 1);
+    for (let i = 0; i < nbLevels; i++) {
+      levels.push(Math.round(min + i * step));
+    }
+  }
+  return levels;
+}
+
+function getLevelValues(levels: number[], data, options = {}) {
+  const { negative = false, exponent = true } = options;
+  const max = Math.max(Math.abs(data.minZ), Math.abs(data.maxZ));
+  const min = 0;
+  const levelValues: number[] = [];
+
+  if (exponent) {
+    const factors = new Float64Array(MAX_LEVELS + 1);
+    factors[0] = 1;
+
+    for (let i = 1; i <= MAX_LEVELS; i++) {
+      factors[i] = factors[i - 1] * 1.1;
+    }
+    const scaleFactor = factors[MAX_LEVELS];
+    for (const level of levels) {
+      levelValues.push(
+        (max - min) * ((factors[level] - factors[0]) / scaleFactor) + min,
+      );
+    }
+  } else {
+    const step = (max - min) / MAX_LEVELS;
+    for (const level of levels) {
+      levelValues.push(min + step * level);
+    }
+  }
+  if (negative) {
+    return levelValues.map((value) => -value);
+  }
+  return levelValues;
 }
 
 function getContours(options: ContoursCalcOptions) {
@@ -217,30 +261,55 @@ function getContours(options: ContoursCalcOptions) {
     cache,
   } = options;
 
-  const range = calculateRange(boundary, data, nbLevels, negative);
+  const levels = getLevels(boundary[0], boundary[1], nbLevels);
+  const levelValues = getLevelValues(levels, data, {
+    negative,
+  });
 
-  if (isZeroRange(range)) {
-    return createEmptyResult(range);
-  }
+  //  if (isZeroLevelValues(levelValues)) {
+  //   return createEmptyResult(levelValues);
+  // }
 
-  const diffRange = boundary[1] - boundary[0];
-
-  if (cache.has(diffRange)) {
-    return {
-      contours: cache.get(diffRange) ?? [],
-      timeout: false,
-    };
+  const contours: BasicContour[] = [];
+  const levelValuesToCalculate: number[] = [];
+  const levelsToCalculate: number[] = [];
+  for (let i = 0; i < levels.length; i++) {
+    const level = levels[i];
+    if (cache.has(level)) {
+      contours.push(cache.get(level) as BasicContour);
+    } else {
+      levelValuesToCalculate.push(levelValues[i]);
+      levelsToCalculate.push(level);
+    }
   }
 
   const conrec = initializeConrec(data);
-  const result = conrec.drawContour({
+  console.time('contour');
+  const { timeout: hasTimeout, contours: conrecContours } = conrec.drawContour({
     contourDrawer: 'basic',
-    levels: range,
+    levels: levelValuesToCalculate,
     timeout,
   });
-  cache.set(diffRange, result.contours);
+  console.timeEnd('contour');
 
-  return result;
+  /*
+  const nbContoursLines = conrecContours.reduce(
+    (acc, contour) => acc + contour.lines.length,
+    0,
+  );
+  console.log('nbContoursLines', nbContoursLines);
+  */
+
+  for (const conrecContour of conrecContours) {
+    const index = levelValuesToCalculate.indexOf(conrecContour.zValue);
+    cache.set(levelsToCalculate[index], conrecContour);
+  }
+  contours.push(...conrecContours);
+
+  return {
+    contours,
+    timeout: hasTimeout,
+  };
 }
 
 /**
@@ -249,38 +318,21 @@ function getContours(options: ContoursCalcOptions) {
  * max * (2 ** (level / 10) - 1)) / (2 ** 10 - 1)
  * @param level - integer of the contour level
  * @param max - max value of the Z matrix
- * @param invert - if it is true it calculates the contour level.
  */
-function calculateValueOfLevel(level: number, max: number, invert = false) {
-  if (invert) {
-    return Math.ceil(10 * Math.log2(1 + (level * (2 ** 10 - 1)) / max));
-  }
-
-  return (max * (2 ** (level / 10) - 1)) / (2 ** 10 - 1);
+function calculateValueOfLevel(level: number, max: number) {
+  return Math.ceil(10 * Math.log2(1 + (level * (2 ** 10 - 1)) / max));
 }
 
-function calculateRange(
-  boundary: [number, number],
-  data: ContoursCalcOptions['data'],
-  nbLevels: number,
-  negative: boolean,
-): number[] {
-  const max = Math.max(Math.abs(data.minZ), Math.abs(data.maxZ));
-  const minLevel = calculateValueOfLevel(boundary[0], max);
-  const maxLevel = calculateValueOfLevel(boundary[1], max);
-  const diffRange = boundary[1] - boundary[0];
-
-  const range = getRange(minLevel, maxLevel, Math.min(nbLevels, diffRange), 2);
-  return negative ? range.map((value) => -value) : range;
+function isZeroLevelValues(levels: number[]): boolean {
+  return levels.every((level) => level === 0);
 }
 
-function isZeroRange(range: number[]): boolean {
-  return range.every((r) => r === 0);
-}
-
-function createEmptyResult(range: number[]) {
+function createEmptyResult(levelValues: number[]) {
   return {
-    contours: range.map((r) => ({ zValue: r, lines: [] })),
+    contours: levelValues.map((levelValue) => ({
+      zValue: levelValue,
+      lines: [],
+    })),
     timeout: false,
   };
 }
