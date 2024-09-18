@@ -1,17 +1,19 @@
-import { Switch, Button } from '@blueprintjs/core';
+import { Button, Switch } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { Filter } from 'nmr-processing';
 import { memo, useRef, useState } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { ObjectInspector } from 'react-inspector';
 
-import { useChartData } from '../../context/ChartContext';
-import { useDispatch } from '../../context/DispatchContext';
-import { useToaster } from '../../context/ToasterContext';
-import { AlertButton, useAlert } from '../../elements/Alert';
-import { Sections } from '../../elements/Sections';
-import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus';
-import useSpectrum from '../../hooks/useSpectrum';
+import { useChartData } from '../../../context/ChartContext';
+import { useDispatch } from '../../../context/DispatchContext';
+import { useToaster } from '../../../context/ToasterContext';
+import { AlertButton, useAlert } from '../../../elements/Alert';
+import { Sections } from '../../../elements/Sections';
+import useSpectraByActiveNucleus from '../../../hooks/useSpectraPerNucleus';
+import useSpectrum from '../../../hooks/useSpectrum';
+
+import { filterOptionPanels } from './index';
 
 const IconButton = styled(Button)`
   padding: 2px;
@@ -23,7 +25,6 @@ interface FiltersProps extends Filter {
 
 interface FilterElementsProps {
   filter: Filter;
-  isOpen: boolean;
   spectraCounter: number;
   onEnableChange: () => void;
 }
@@ -32,7 +33,7 @@ function FilterElements(props: FilterElementsProps) {
   const dispatch = useDispatch();
   const alert = useAlert();
   const toaster = useToaster();
-  const { filter, isOpen, spectraCounter, onEnableChange } = props;
+  const { filter, spectraCounter, onEnableChange } = props;
   const { id, name, flag, label, isDeleteAllow } = filter;
 
   function handelFilterCheck(id, event: React.ChangeEvent<HTMLInputElement>) {
@@ -93,28 +94,6 @@ function FilterElements(props: FilterElementsProps) {
 
   return (
     <>
-      {isOpen && (
-        <>
-          <IconButton
-            icon="reset"
-            minimal
-            intent="warning"
-            onClick={() => {
-              // eslint-disable-next-line no-console
-              console.log('Reset');
-            }}
-          />
-          <IconButton
-            icon="tick"
-            minimal
-            intent="success"
-            onClick={() => {
-              // eslint-disable-next-line no-console
-              console.log('Save');
-            }}
-          />
-        </>
-      )}
       <IconButton
         intent="danger"
         minimal
@@ -175,7 +154,7 @@ function FiltersInner(props: FiltersInnerProps) {
     const { id } = filter;
 
     if (activeFilterID === id) {
-      return { backgroundColor: '#8ad22f6e' };
+      return { backgroundColor: '#c2ea8f' };
     }
 
     if (
@@ -193,6 +172,7 @@ function FiltersInner(props: FiltersInnerProps) {
     <Sections overflow renderActiveSectionContentOnly>
       {filters.map((filter, index) => {
         const { id, label, error, value } = filter;
+        const FilterOptionsPanel = filterOptionPanels[filter.name];
         return (
           <Sections.Item
             key={id}
@@ -204,17 +184,23 @@ function FiltersInner(props: FiltersInnerProps) {
               filterSnapShotHandler(filter, index);
             }}
             selectedSectionId={openSection}
-            rightElement={(isOpen) => (
+            rightElement={
               <FilterElements
-                isOpen={isOpen}
                 filter={filter}
                 spectraCounter={spectraCounter}
                 onEnableChange={() => setOpenSection('')}
               />
-            )}
+            }
             headerStyle={getStyle(filter, index)}
+            sticky
           >
-            <ObjectInspector data={error || value} />
+            {FilterOptionsPanel ? (
+              <FilterOptionsPanel filter={filter} />
+            ) : (
+              <Sections.Body>
+                <ObjectInspector data={error || value} />
+              </Sections.Body>
+            )}
           </Sections.Item>
         );
       })}
@@ -226,7 +212,7 @@ const emptyData = { filters: [] };
 
 const MemoizedFilters = memo(FiltersInner);
 
-export function Filters() {
+export function FiltersSectionsPanel() {
   const {
     toolOptions: {
       data: { activeFilterID },

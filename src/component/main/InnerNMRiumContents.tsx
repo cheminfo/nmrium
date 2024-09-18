@@ -13,6 +13,7 @@ import { useFullscreen } from 'react-science/ui';
 
 import checkModifierKeyActivated from '../../data/utilities/checkModifierKeyActivated';
 import KeysListenerTracker from '../EventsTrackers/KeysListenerTracker';
+import { FilterSyncOptionsProvider } from '../context/FilterSyncOptionsContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { PrintContent } from '../elements/print/PrintContent';
 import Header from '../header/Header';
@@ -144,40 +145,40 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
               width: '100%',
             }}
           >
-            <Header />
-
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                height: '100%',
-              }}
-            >
-              <ToolBar />
-              <SplitPaneWrapper>
-                <div css={viewerContainerStyle}>
-                  <KeysListenerTracker mainDivRef={mainDivRef} />
-
-                  <NMRiumViewer emptyText={emptyText} viewerRef={viewerRef} />
-                </div>
-                <Panels />
-              </SplitPaneWrapper>
-
+            <FilterSyncOptionsProvider>
+              <Header />
               <div
-                ref={elementsWrapperRef}
-                key={String(isFullScreen)}
-                id="main-wrapper"
                 style={{
-                  position: 'absolute',
-                  pointerEvents: 'none',
-                  zIndex: 10,
-                  left: 0,
-                  right: 0,
-                  top: 0,
-                  bottom: 0,
+                  display: 'flex',
+                  flexDirection: 'row',
+                  height: '100%',
                 }}
-              />
-            </div>
+              >
+                <ToolBar />
+                <SplitPaneWrapper>
+                  <div css={viewerContainerStyle}>
+                    <KeysListenerTracker mainDivRef={mainDivRef} />
+
+                    <NMRiumViewer emptyText={emptyText} viewerRef={viewerRef} />
+                  </div>
+                  <Panels />
+                </SplitPaneWrapper>
+                <div
+                  ref={elementsWrapperRef}
+                  key={String(isFullScreen)}
+                  id="main-wrapper"
+                  style={{
+                    position: 'absolute',
+                    pointerEvents: 'none',
+                    zIndex: 10,
+                    left: 0,
+                    right: 0,
+                    top: 0,
+                    bottom: 0,
+                  }}
+                />
+              </div>
+            </FilterSyncOptionsProvider>
           </div>
         </DropZone>
         <div />
