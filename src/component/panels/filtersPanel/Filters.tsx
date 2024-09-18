@@ -190,7 +190,7 @@ function FiltersInner(props: FiltersInnerProps) {
   }
 
   return (
-    <Sections overflow>
+    <Sections overflow renderActiveSectionContentOnly>
       {filters.map((filter, index) => {
         const { id, label, error, value } = filter;
         return (
