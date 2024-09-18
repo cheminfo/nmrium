@@ -1,7 +1,4 @@
 /** @jsxImportSource @emotion/react */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { css } from '@emotion/react';
-
 import { useDispatch } from '../../context/DispatchContext';
 import { useToaster } from '../../context/ToasterContext';
 import { AlertButton, useAlert } from '../../elements/Alert';
@@ -9,7 +6,7 @@ import useSpectrum from '../../hooks/useSpectrum';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
-import { Filters } from './Filters';
+import { FiltersSectionsPanel } from './Filters/FiltersSectionsPanel';
 
 export default function FiltersPanel() {
   const dispatch = useDispatch();
@@ -48,8 +45,7 @@ export default function FiltersPanel() {
         hideCounter
       />
       <div className="inner-container">
-        <Filters />
-        {/* <FiltersTable /> */}
+        <FiltersSectionsPanel />
       </div>
     </div>
   );

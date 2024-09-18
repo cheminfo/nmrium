@@ -29,13 +29,13 @@ import GeneralSettingsModal from '../modal/setting/GeneralSettings';
 import WorkspaceItem from '../modal/setting/WorkspaceItem';
 import { options } from '../toolbar/ToolTypes';
 
-import ApodizationOptionsPanel from './ApodizationOptionsPanel';
 import { AutoPeakPickingOptionPanel } from './AutoPeakPickingOptionPanel';
 import BaseLineCorrectionPanel from './BaseLineCorrectionPanel';
 import { HeaderContainer } from './HeaderContainer';
 import PhaseCorrectionPanel from './PhaseCorrectionPanel';
 import PhaseCorrectionTwoDimensionsPanel from './PhaseCorrectionTwoDimensionsPanel';
 import RangesPickingOptionPanel from './RangesPickingOptionPanel';
+import { SimpleApodizationOptionsPanel } from './SimpleApodizationOptionsPanel';
 import ZeroFillingOptionsPanel from './ZeroFillingOptionsPanel';
 import Zones2DOptionPanel from './Zones2DOptionPanel';
 
@@ -104,7 +104,7 @@ function HeaderInner(props: HeaderInnerProps) {
   const selectedPanel = useMemo(() => {
     switch (selectedOptionPanel) {
       case options.apodization.id:
-        return <ApodizationOptionsPanel />;
+        return <SimpleApodizationOptionsPanel />;
       case options.zeroFilling.id:
         return <ZeroFillingOptionsPanel />;
       case options.phaseCorrection.id:
