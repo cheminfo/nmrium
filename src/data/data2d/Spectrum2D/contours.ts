@@ -281,18 +281,20 @@ function getContours(options: ContoursCalcOptions) {
   //   return createEmptyResult(levelValues);
   // }
 
-  const contours: BasicContour[] = [];
   const levelValuesToCalculate: number[] = [];
   const levelsToCalculate: number[] = [];
   for (let i = 0; i < levels.length; i++) {
     const level = levels[i];
-    if (cache.has(level)) {
-      contours.push(cache.get(level) as BasicContour);
-    } else {
+    if (!cache.has(level)) {
       levelValuesToCalculate.push(levelValues[i]);
       levelsToCalculate.push(level);
     }
   }
+  console.log({
+    width: data.z.length,
+    height: data.z[0].length,
+    levelsToCalculate,
+  });
 
   const conrec = initializeConrec(data);
   console.time('contour');
@@ -313,9 +315,30 @@ function getContours(options: ContoursCalcOptions) {
 
   for (const conrecContour of conrecContours) {
     const index = levelValuesToCalculate.indexOf(conrecContour.zValue);
-    cache.set(levelsToCalculate[index], conrecContour);
+    cache.set(levelsToCalculate[index], {
+      zValue: conrecContour.zValue,
+      lines: Float32Array.from(conrecContour.lines),
+    });
   }
-  contours.push(...conrecContours);
+
+  const contours: BasicContour[] = [];
+  for (let i = 0; i < levels.length; i++) {
+    const level = levels[i];
+    if (cache.has(level)) {
+      contours.push(cache.get(level) as BasicContour);
+    }
+  }
+
+  let nbLines = 0;
+  let maxNbLines = 0;
+  for (const cacheItem of cache) {
+    nbLines += cacheItem[1].lines.length;
+    if (cacheItem[1].lines.length > maxNbLines) {
+      maxNbLines = cacheItem[1].lines.length;
+    }
+    //  console.log(cacheItem[1].zValue, cacheItem[1].lines.length);
+  }
+  console.log({ nbLines, maxNbLines, cacheSize: cache.size });
 
   return {
     contours,
