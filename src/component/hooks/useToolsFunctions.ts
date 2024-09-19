@@ -47,7 +47,10 @@ export default function useToolsFunctions() {
         });
       }
 
-      if (Object.keys(TOOLS_PANELS_ACCORDION).includes(selectedTool)) {
+      if (options[selectedTool].isFilter) {
+        //Open the Processing accordion if the select tool is a filter
+        openPanel('Processings');
+      } else if (Object.keys(TOOLS_PANELS_ACCORDION).includes(selectedTool)) {
         openPanel(TOOLS_PANELS_ACCORDION[selectedTool]);
       }
 
