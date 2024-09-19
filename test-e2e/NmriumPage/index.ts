@@ -144,7 +144,7 @@ export default class NmriumPage {
     await this.page.click('button >> text=Apply', { delay: 200 });
 
     await expect(
-      this.page.locator('_react=FilterTable >> text=Phase correction'),
+      this.page.locator('_react=FiltersSectionsPanel >> text=Phase correction'),
     ).toBeVisible();
   }
 
