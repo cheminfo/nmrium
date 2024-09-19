@@ -1,7 +1,8 @@
 import { Button, Switch } from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import { Filter } from 'nmr-processing';
-import { memo, useRef, useState } from 'react';
+import { v4 } from '@lukeed/uuid';
+import { Filter, Filters } from 'nmr-processing';
+import { memo, useEffect, useRef, useState } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { ObjectInspector } from 'react-inspector';
 
@@ -12,6 +13,7 @@ import { AlertButton, useAlert } from '../../../elements/Alert';
 import { Sections } from '../../../elements/Sections';
 import useSpectraByActiveNucleus from '../../../hooks/useSpectraPerNucleus';
 import useSpectrum from '../../../hooks/useSpectrum';
+import { options } from '../../../toolbar/ToolTypes';
 
 import { filterOptionPanels } from './index';
 
@@ -126,14 +128,16 @@ interface FiltersInnerProps {
 
 function FiltersInner(props: FiltersInnerProps) {
   const { filters, spectraCounter, activeFilterID } = props;
+  const { toolOptions: { selectedTool } } = useChartData();
+  const [newFilter, setNewFilter] = useState<Filter | null>();
 
-  const [openSection, setOpenSection] = useState('');
+  const [selectedSection, openSection] = useState('');
   const dispatch = useDispatch();
   const toaster = useToaster();
   const selectedFilterIndex = useRef<number>();
 
   function toggleSection(sectionKey) {
-    setOpenSection(openSection === sectionKey ? null : sectionKey);
+    openSection(selectedSection === sectionKey ? null : sectionKey);
   }
 
   function filterSnapShotHandler(filter, index) {
@@ -168,27 +172,51 @@ function FiltersInner(props: FiltersInnerProps) {
     return {};
   }
 
+
+
+  useEffect(() => {
+
+    const isFilterExists = filters.some((filter) => filter.name === selectedTool);
+
+    if (!isFilterExists && Filters?.[selectedTool]) {
+      const { id: name, name: label } = Filters[selectedTool];
+      setNewFilter({ flag: true, id: v4(), name, label, value: {}, isDeleteAllow: true });
+    } else {
+      setNewFilter(null)
+    }
+
+
+    openSection(options?.[selectedTool] ? selectedTool : '');
+  }, [filters, selectedTool])
+
+
+  const filtersList = [...filters];
+
+  if (newFilter) {
+    filtersList.push(newFilter);
+  }
+
   return (
     <Sections overflow renderActiveSectionContentOnly>
-      {filters.map((filter, index) => {
-        const { id, label, error, value } = filter;
+      {filtersList.map((filter, index) => {
+        const { id, name, label, error, value } = filter;
         const FilterOptionsPanel = filterOptionPanels[filter.name];
         return (
           <Sections.Item
             key={id}
-            id={id}
+            id={name}
             title={label}
             serial={index + 1}
             onClick={(id) => {
               toggleSection(id);
               filterSnapShotHandler(filter, index);
             }}
-            selectedSectionId={openSection}
+            selectedSectionId={selectedSection}
             rightElement={
               <FilterElements
                 filter={filter}
                 spectraCounter={spectraCounter}
-                onEnableChange={() => setOpenSection('')}
+                onEnableChange={() => openSection('')}
               />
             }
             headerStyle={getStyle(filter, index)}
