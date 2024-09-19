@@ -114,6 +114,7 @@ const Header = styled.div`
   justify-content: space-between;
   padding: 5px 10px;
   background-color: #f5f5f5;
+
   &:hover {
     background-color: #e0e0e0;
   }

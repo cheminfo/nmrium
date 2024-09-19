@@ -128,7 +128,9 @@ interface FiltersInnerProps {
 
 function FiltersInner(props: FiltersInnerProps) {
   const { filters, spectraCounter, activeFilterID } = props;
-  const { toolOptions: { selectedTool } } = useChartData();
+  const {
+    toolOptions: { selectedTool },
+  } = useChartData();
   const [newFilter, setNewFilter] = useState<Filter | null>();
 
   const [selectedSection, openSection] = useState('');
@@ -172,23 +174,27 @@ function FiltersInner(props: FiltersInnerProps) {
     return {};
   }
 
-
-
   useEffect(() => {
-
-    const isFilterExists = filters.some((filter) => filter.name === selectedTool);
+    const isFilterExists = filters.some(
+      (filter) => filter.name === selectedTool,
+    );
 
     if (!isFilterExists && Filters?.[selectedTool]) {
       const { id: name, name: label } = Filters[selectedTool];
-      setNewFilter({ flag: true, id: v4(), name, label, value: {}, isDeleteAllow: true });
+      setNewFilter({
+        flag: true,
+        id: v4(),
+        name,
+        label,
+        value: {},
+        isDeleteAllow: true,
+      });
     } else {
-      setNewFilter(null)
+      setNewFilter(null);
     }
 
-
     openSection(options?.[selectedTool] ? selectedTool : '');
-  }, [filters, selectedTool])
-
+  }, [filters, selectedTool]);
 
   const filtersList = [...filters];
 
