@@ -9,7 +9,8 @@ import * as Yup from 'yup';
 
 import { defaultApodizationOptions } from '../../../../data/constants/DefaultApodizationOptions';
 import { useDispatch } from '../../../context/DispatchContext';
-import { useFilterSyncOptions } from '../../../context/FilterSyncOptionsContext';
+
+import { useSyncedFilterOptions } from './useSyncedFilterOptions';
 
 const simpleValidationSchema = Yup.object().shape({
   lineBroadening: Yup.number().required(),
@@ -40,8 +41,6 @@ export const useSharedApodization = (
   } = options;
 
   const dispatch = useDispatch();
-  const { sharedFilterOptions, updateFilterOptions } = useFilterSyncOptions();
-  const isSynOptionsDirty = useRef(true);
   const previousPreviewRef = useRef<boolean>(true);
 
   let formData = initialValues;
@@ -55,6 +54,13 @@ export const useSharedApodization = (
       resolver: yupResolver(validationSchema),
       mode: 'onChange',
     });
+
+  function syncWatch(sharedFilterOptions) {
+    reset({ ...getValues(), ...sharedFilterOptions });
+  }
+
+  const { syncFilterOptions, clearSyncFilterOptions } =
+    useSyncedFilterOptions(syncWatch);
 
   const onChange = useCallback(
     (values: ApodizationOptions) => {
@@ -86,7 +92,7 @@ export const useSharedApodization = (
             type: 'APPLY_APODIZATION_FILTER',
             payload: { options },
           });
-          updateFilterOptions(null);
+          clearSyncFilterOptions();
 
           break;
         }
@@ -96,31 +102,22 @@ export const useSharedApodization = (
 
       previousPreviewRef.current = livePreview;
     },
-    [dispatch, onChange, updateFilterOptions],
+    [clearSyncFilterOptions, dispatch, onChange],
   );
 
   const handleCancelFilter = useCallback(() => {
     dispatch({
       type: 'RESET_SELECTED_TOOL',
     });
-    updateFilterOptions(null);
-  }, [dispatch, updateFilterOptions]);
+    clearSyncFilterOptions();
+  }, [clearSyncFilterOptions, dispatch]);
 
   const submitHandler = useCallback(() => {
     void handleSubmit((values) => {
-      isSynOptionsDirty.current = false;
-      updateFilterOptions(values);
+      syncFilterOptions(values);
       handleApplyFilter(values, 'onChange');
     })();
-  }, [handleSubmit, updateFilterOptions, handleApplyFilter]);
-
-  useEffect(() => {
-    if (sharedFilterOptions && isSynOptionsDirty.current) {
-      reset({ ...getValues(), ...sharedFilterOptions });
-    } else {
-      isSynOptionsDirty.current = true;
-    }
-  }, [getValues, sharedFilterOptions, reset]);
+  }, [handleSubmit, syncFilterOptions, handleApplyFilter]);
 
   useEffect(() => {
     if (applyFilterOnload) {
