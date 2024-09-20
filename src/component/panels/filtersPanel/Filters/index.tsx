@@ -4,11 +4,14 @@ import { LabelStyle } from '../../../elements/Label';
 
 import ApodizationOptionsPanel from './ApodizationOptionsPanel';
 import PhaseCorrectionOptionsPanel from './PhaseCorrectionOptionsPanel';
+import ZeroFillingOptionsPanel from './ZeroFillingOptionsPanel';
 
-const { apodization, phaseCorrection } = Filters;
+const { apodization, phaseCorrection, zeroFilling } = Filters;
 export const filterOptionPanels = {
   [apodization.id]: ApodizationOptionsPanel,
   [phaseCorrection.id]: PhaseCorrectionOptionsPanel,
+  [phaseCorrection.id]: PhaseCorrectionOptionsPanel,
+  [zeroFilling.id]: ZeroFillingOptionsPanel,
 };
 
 export const formLabelStyle: LabelStyle = {
