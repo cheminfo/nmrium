@@ -266,7 +266,7 @@ const EmptyContainer = styled.div`
   display: flex;
   justify-content: center;
   color: #6a6a6a;
-  padding: 10px 0px;
+  padding: 10px 0;
 `;
 
 export function EmptyFilters() {
