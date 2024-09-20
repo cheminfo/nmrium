@@ -49,18 +49,12 @@ export const useSharedApodization = (
     formData = { ...initialValues, ...filter.value, livePreview: true };
   }
 
-  const {
-    handleSubmit,
-    register,
-    control,
-    reset,
-    getValues,
-    formState: { isValid },
-  } = useForm<ApodizationOptions>({
-    defaultValues: formData,
-    resolver: yupResolver(validationSchema),
-    mode: 'onChange',
-  });
+  const { handleSubmit, register, control, reset, getValues, formState } =
+    useForm<ApodizationOptions>({
+      defaultValues: formData,
+      resolver: yupResolver(validationSchema),
+      mode: 'onChange',
+    });
 
   const onChange = useCallback(
     (values: ApodizationOptions) => {
@@ -138,7 +132,7 @@ export const useSharedApodization = (
     handleSubmit,
     register,
     control,
-    isValid,
+    formState,
     submitHandler,
     handleApplyFilter,
     handleCancelFilter,

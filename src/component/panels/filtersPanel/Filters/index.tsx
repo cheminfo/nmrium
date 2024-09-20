@@ -3,10 +3,12 @@ import { Filters } from 'nmr-processing';
 import { LabelStyle } from '../../../elements/Label';
 
 import ApodizationOptionsPanel from './ApodizationOptionsPanel';
+import PhaseCorrectionOptionsPanel from './PhaseCorrectionOptionsPanel';
 
-const { apodization } = Filters;
+const { apodization, phaseCorrection } = Filters;
 export const filterOptionPanels = {
   [apodization.id]: ApodizationOptionsPanel,
+  [phaseCorrection.id]: PhaseCorrectionOptionsPanel,
 };
 
 export const formLabelStyle: LabelStyle = {

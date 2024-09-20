@@ -34,12 +34,16 @@ export default function ApodizationOptionsPanel(
     handleApplyFilter,
     handleCancelFilter,
     register,
+    formState: { isDirty },
   } = useSharedApodization(filter, {
     validationSchema: advanceValidationSchema,
   });
 
   const { onChange: onLivePreviewFieldChange, ...livePreviewFieldOptions } =
     register('livePreview');
+
+  const disabledAction = filter.value && !isDirty;
+
   return (
     <>
       <StickyHeader>
@@ -60,6 +64,8 @@ export default function ApodizationOptionsPanel(
               handleSubmit((values) => handleApplyFilter(values))()
             }
             onCancel={handleCancelFilter}
+            disabledConfirm={disabledAction}
+            disabledCancel={disabledAction}
           />
         </HeaderContainer>
       </StickyHeader>
