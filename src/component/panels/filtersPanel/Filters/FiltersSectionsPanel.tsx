@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { v4 } from '@lukeed/uuid';
 import { Filter, Filters } from 'nmr-processing';
 import { memo, useEffect, useRef, useState } from 'react';
-import { FaRegTrashAlt } from 'react-icons/fa';
+import { FaRegTrashAlt, FaRegEyeSlash } from 'react-icons/fa';
 import { ObjectInspector } from 'react-inspector';
 
 import { useChartData } from '../../../context/ChartContext';
@@ -202,6 +202,10 @@ function FiltersInner(props: FiltersInnerProps) {
     filtersList.push(newFilter);
   }
 
+  if (filtersList?.length === 0) {
+    return <EmptyFilters />;
+  }
+
   return (
     <Sections overflow renderActiveSectionContentOnly>
       {filtersList.map((filter, index) => {
@@ -256,4 +260,31 @@ export function FiltersSectionsPanel() {
   const spectraCounter = useSpectraByActiveNucleus().length;
 
   return <MemoizedFilters {...{ filters, spectraCounter, activeFilterID }} />;
+}
+
+const EmptyContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  color: #6a6a6a;
+  padding: 10px 0px;
+`;
+
+export function EmptyFilters() {
+  return (
+    <EmptyContainer>
+      <FaRegEyeSlash
+        style={{
+          margin: '0px 10px',
+          fontSize: '16px',
+        }}
+      />
+      <span
+        style={{
+          fontSize: '11px',
+        }}
+      >
+        No Filters
+      </span>
+    </EmptyContainer>
+  );
 }
