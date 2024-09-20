@@ -130,7 +130,9 @@ export default class NmriumPage {
     );
     await expect(pivotIndicatorLocator).toBeVisible();
 
-    const selectLocator = this.page.getByRole('combobox');
+    const selectLocator = this.page
+      .locator('_react=SimplePhaseCorrectionOptionsPanel')
+      .getByRole('combobox');
     if (mode === 'automatic') {
       await selectLocator.click();
       await this.page.getByRole('option', { name: 'automatic' }).click();

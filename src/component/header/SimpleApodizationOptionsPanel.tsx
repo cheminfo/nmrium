@@ -22,7 +22,7 @@ function ApodizationOptionsInnerPanel(
     register,
     handleSubmit,
     control,
-    isValid,
+    formState: { isValid },
     submitHandler,
     handleApplyFilter,
     handleCancelFilter,

@@ -32,10 +32,10 @@ import { options } from '../toolbar/ToolTypes';
 import { AutoPeakPickingOptionPanel } from './AutoPeakPickingOptionPanel';
 import BaseLineCorrectionPanel from './BaseLineCorrectionPanel';
 import { HeaderContainer } from './HeaderContainer';
-import PhaseCorrectionPanel from './PhaseCorrectionPanel';
 import PhaseCorrectionTwoDimensionsPanel from './PhaseCorrectionTwoDimensionsPanel';
 import RangesPickingOptionPanel from './RangesPickingOptionPanel';
 import { SimpleApodizationOptionsPanel } from './SimpleApodizationOptionsPanel';
+import { SimplePhaseCorrectionOptionsPanel } from './SimplePhaseCorrectionOptionsPanel';
 import ZeroFillingOptionsPanel from './ZeroFillingOptionsPanel';
 import Zones2DOptionPanel from './Zones2DOptionPanel';
 
@@ -108,7 +108,7 @@ function HeaderInner(props: HeaderInnerProps) {
       case options.zeroFilling.id:
         return <ZeroFillingOptionsPanel />;
       case options.phaseCorrection.id:
-        return <PhaseCorrectionPanel />;
+        return <SimplePhaseCorrectionOptionsPanel />;
       case options.phaseCorrectionTwoDimensions.id:
         return <PhaseCorrectionTwoDimensionsPanel />;
       case options.peakPicking.id:
