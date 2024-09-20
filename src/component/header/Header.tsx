@@ -36,7 +36,7 @@ import PhaseCorrectionTwoDimensionsPanel from './PhaseCorrectionTwoDimensionsPan
 import RangesPickingOptionPanel from './RangesPickingOptionPanel';
 import { SimpleApodizationOptionsPanel } from './SimpleApodizationOptionsPanel';
 import { SimplePhaseCorrectionOptionsPanel } from './SimplePhaseCorrectionOptionsPanel';
-import ZeroFillingOptionsPanel from './ZeroFillingOptionsPanel';
+import { SimpleZeroFillingOptionsPanel } from './SimpleZeroFillingOptionsPanel';
 import Zones2DOptionPanel from './Zones2DOptionPanel';
 
 export const headerLabelStyle: LabelStyle = {
@@ -106,7 +106,7 @@ function HeaderInner(props: HeaderInnerProps) {
       case options.apodization.id:
         return <SimpleApodizationOptionsPanel />;
       case options.zeroFilling.id:
-        return <ZeroFillingOptionsPanel />;
+        return <SimpleZeroFillingOptionsPanel />;
       case options.phaseCorrection.id:
         return <SimplePhaseCorrectionOptionsPanel />;
       case options.phaseCorrectionTwoDimensions.id:
