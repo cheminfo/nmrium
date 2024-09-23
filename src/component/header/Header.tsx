@@ -30,12 +30,12 @@ import WorkspaceItem from '../modal/setting/WorkspaceItem';
 import { options } from '../toolbar/ToolTypes';
 
 import { AutoPeakPickingOptionPanel } from './AutoPeakPickingOptionPanel';
-import BaseLineCorrectionPanel from './BaseLineCorrectionPanel';
 import { HeaderContainer } from './HeaderContainer';
-import { SimplePhaseCorrectionTwoDimensionsPanel } from './SimplePhaseCorrectionTwoDimensionsPanel';
 import RangesPickingOptionPanel from './RangesPickingOptionPanel';
 import { SimpleApodizationOptionsPanel } from './SimpleApodizationOptionsPanel';
+import { SimpleBaseLineCorrectionOptionsPanel } from './SimpleBaseLineCorrectionOptionsPanel';
 import { SimplePhaseCorrectionOptionsPanel } from './SimplePhaseCorrectionOptionsPanel';
+import { SimplePhaseCorrectionTwoDimensionsPanel } from './SimplePhaseCorrectionTwoDimensionsPanel';
 import { SimpleZeroFillingOptionsPanel } from './SimpleZeroFillingOptionsPanel';
 import Zones2DOptionPanel from './Zones2DOptionPanel';
 
@@ -111,12 +111,12 @@ function HeaderInner(props: HeaderInnerProps) {
         return <SimplePhaseCorrectionOptionsPanel />;
       case options.phaseCorrectionTwoDimensions.id:
         return <SimplePhaseCorrectionTwoDimensionsPanel />;
+      case options.baselineCorrection.id:
+        return <SimpleBaseLineCorrectionOptionsPanel />;
       case options.peakPicking.id:
         return <AutoPeakPickingOptionPanel />;
       case options.rangePicking.id:
         return <RangesPickingOptionPanel />;
-      case options.baselineCorrection.id:
-        return <BaseLineCorrectionPanel />;
       case options.zonePicking.id:
         return <Zones2DOptionPanel />;
       default:
