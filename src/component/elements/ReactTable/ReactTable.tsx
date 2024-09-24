@@ -1,7 +1,7 @@
 /* eslint-disable unicorn/prefer-logical-operator-over-ternary */
 /** @jsxImportSource @emotion/react */
 import { CSSObject, SerializedStyles, css } from '@emotion/react';
-import {
+import React, {
   useRef,
   memo,
   forwardRef,
@@ -43,21 +43,22 @@ import useRowSpan, {
   RowSpanHeaders,
 } from './utility/useRowSpan';
 
-interface ExtraColumn<T extends object> {
+interface ExtraColumn<T extends object = any> {
   enableRowSpan?: boolean;
   style?: CSSProperties;
   Cell?: (cell: CellProps<T>) => ReactElement | string;
 }
 
-export type Column<T extends object> = ReactColumn<T> &
+export type Column<T extends object = any> = ReactColumn<T> &
   ExtraColumn<T> &
   UseSortByColumnOptions<T>;
 
-type TableInstanceWithHooks = TableInstance & {
+type TableInstanceWithHooks<T extends object = any> = TableInstance<T> & {
   rowSpanHeaders: RowSpanHeaders;
-} & UseSortByInstanceProps<any>;
+} & UseSortByInstanceProps<T>;
 
-type TableOptions = UseTableOptions<any> & UseSortByOptions<any>;
+type TableOptions<T extends object = any> = UseTableOptions<T> &
+  UseSortByOptions<T>;
 
 interface SortEvent {
   onSortEnd?: (data: any) => void;
@@ -77,9 +78,12 @@ export interface TableContextMenuProps {
   ) => void;
   contextMenu?: BaseContextMenuProps['options'];
 }
-interface ReactTableProps extends TableContextMenuProps, ClickEvent, SortEvent {
-  data: any;
-  columns: any;
+interface ReactTableProps<T extends object = any>
+  extends TableContextMenuProps,
+    ClickEvent,
+    SortEvent {
+  data: T[];
+  columns: Array<Column<T>>;
   highlightedSource?: HighlightEventSource;
   approxItemHeight?: number;
   approxColumnWidth?: number;
@@ -91,13 +95,13 @@ interface ReactTableProps extends TableContextMenuProps, ClickEvent, SortEvent {
   enableDefaultActiveRow?: boolean;
   totalCount?: number;
   emptyDataRowText?: string;
-  rowStyle?: BaseRowStyle | ((data: any) => BaseRowStyle | undefined);
+  rowStyle?: BaseRowStyle | ((data: T) => BaseRowStyle | undefined);
   style?: CSSObject | SerializedStyles;
   disableDefaultRowStyle?: boolean;
 }
 
-interface ReactTableInnerProps extends ReactTableProps {
-  onScroll: (event: WheelEvent<HTMLDivElement>) => void;
+interface ReactTableInnerProps<T extends object> extends ReactTableProps<T> {
+  onScroll?: (event: WheelEvent<HTMLDivElement>) => void;
 }
 
 const styles = {
@@ -131,8 +135,12 @@ const counterStyle: CSSProperties = {
   fontSize: '1.4em',
 };
 
-const ReactTableInner = forwardRef(function ReactTableInner(
-  props: ReactTableInnerProps,
+const ReactTableInner = forwardRef(TableInner) as <T extends object = any>(
+  props: ReactTableInnerProps<T> & { ref?: Ref<HTMLDivElement> },
+) => React.JSX.Element;
+
+function TableInner<T extends object>(
+  props: ReactTableInnerProps<T>,
   ref: Ref<HTMLDivElement>,
 ) {
   const {
@@ -187,10 +195,10 @@ const ReactTableInner = forwardRef(function ReactTableInner(
       columns: memoColumns,
       data,
       autoResetSortBy: false,
-    } as TableOptions,
+    } as TableOptions<T>,
     useSortBy,
     useRowSpan,
-  ) as TableInstanceWithHooks;
+  ) as TableInstanceWithHooks<T>;
 
   function clickHandler(event, row) {
     setRowIndex(row.index);
@@ -199,7 +207,7 @@ const ReactTableInner = forwardRef(function ReactTableInner(
 
   function scrollHandler(e) {
     if (enableVirtualScroll) {
-      onScroll(e);
+      onScroll?.(e);
     }
 
     if (timeoutIdRef.current) {
@@ -311,7 +319,9 @@ const ReactTableInner = forwardRef(function ReactTableInner(
                       : activeRow(row)
                   }
                   rowStyle={
-                    typeof rowStyle === 'function' ? rowStyle(row) : rowStyle
+                    typeof rowStyle === 'function'
+                      ? rowStyle(row as T)
+                      : rowStyle
                   }
                   disableDefaultRowStyle={disableDefaultRowStyle}
                 />
@@ -338,7 +348,7 @@ const ReactTableInner = forwardRef(function ReactTableInner(
       )}
     </>
   );
-});
+}
 
 export interface VirtualBoundary {
   start: number;
@@ -349,7 +359,7 @@ export interface TableVirtualBoundary {
   columns: VirtualBoundary;
 }
 
-function ReactTable(props: ReactTableProps) {
+function ReactTable<T extends object>(props: ReactTableProps<T>) {
   const {
     data,
     approxItemHeight = 40,
@@ -401,7 +411,7 @@ function ReactTable(props: ReactTableProps) {
 
   function lookForGroupIndex(currentIndex: number, side: 1 | -1) {
     const currentItem = data[currentIndex];
-    if (currentItem?.index && groupKey) {
+    if ((currentItem as { index: number })?.index && groupKey) {
       switch (side) {
         case -1: {
           let index = currentIndex - 1;
@@ -494,7 +504,7 @@ function ReactTable(props: ReactTableProps) {
           style,
         )}
       >
-        <ReactTableInner
+        <ReactTableInner<T>
           onScroll={scrollHandler}
           onSortEnd={onSortEnd}
           ref={containerRef}
@@ -505,4 +515,6 @@ function ReactTable(props: ReactTableProps) {
   );
 }
 
-export default memo(ReactTable);
+export default memo(ReactTable) as <T extends object = any>(
+  props: ReactTableInnerProps<T>,
+) => JSX.Element;

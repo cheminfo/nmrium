@@ -120,7 +120,7 @@ function DisplayTabContent() {
 
   return (
     <div style={{ width: '100%', overflow: 'hidden' }}>
-      <ReactTable
+      <ReactTable<ListItem>
         columns={COLUMNS}
         data={LIST}
         rowStyle={{

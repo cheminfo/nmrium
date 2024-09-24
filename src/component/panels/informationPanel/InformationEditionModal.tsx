@@ -6,12 +6,11 @@ import { useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
-import { Column } from 'react-table';
 import { array, object, string } from 'yup';
 
 import { useDispatch } from '../../context/DispatchContext';
 import { Input2Controller } from '../../elements/Input2Controller';
-import ReactTable from '../../elements/ReactTable/ReactTable';
+import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
 import useSpectrum from '../../hooks/useSpectrum';
 import { checkUniqueByKey } from '../../utility/checkUniqueByKey';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
@@ -207,7 +206,7 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
             </Button>
           </div>
 
-          <ReactTable
+          <ReactTable<MetaInfoItem>
             data={values}
             columns={COLUMNS}
             emptyDataRowText="No meta"

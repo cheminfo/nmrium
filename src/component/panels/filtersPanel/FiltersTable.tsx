@@ -127,7 +127,7 @@ function FiltersTableInner({
     [dispatch, toaster],
   );
 
-  const COLUMNS: Array<Column<any>> = useMemo(
+  const COLUMNS: Column[] = useMemo(
     () => [
       {
         Header: '#',
