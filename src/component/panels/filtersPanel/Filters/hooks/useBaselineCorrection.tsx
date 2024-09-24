@@ -5,8 +5,8 @@ import { useForm } from 'react-hook-form';
 import { useSelect } from 'react-science/ui';
 import * as Yup from 'yup';
 
-import { useDispatch } from '../../../context/DispatchContext';
-import { useSyncedFilterOptions } from './useSyncedFilterOptions';
+import { useDispatch } from '../../../../context/DispatchContext';
+import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsContext';
 
 export const baselineCorrectionsAlgorithms = ['airPLS', 'Polynomial'].map(
   (val) => ({

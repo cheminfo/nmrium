@@ -8,7 +8,7 @@ import { useFilter } from '../hooks/useFilter';
 import {
   useZeroFilling,
   zeroFillingSizes,
-} from '../panels/filtersPanel/Filters/useZeroFilling';
+} from '../panels/filtersPanel/Filters/hooks/useZeroFilling';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';

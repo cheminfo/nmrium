@@ -7,10 +7,9 @@ import { useCallback, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
-import { defaultApodizationOptions } from '../../../../data/constants/DefaultApodizationOptions';
-import { useDispatch } from '../../../context/DispatchContext';
-
-import { useSyncedFilterOptions } from './useSyncedFilterOptions';
+import { defaultApodizationOptions } from '../../../../../data/constants/DefaultApodizationOptions';
+import { useDispatch } from '../../../../context/DispatchContext';
+import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsContext';
 
 const simpleValidationSchema = Yup.object().shape({
   lineBroadening: Yup.number().required(),

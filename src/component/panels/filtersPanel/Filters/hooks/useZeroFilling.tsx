@@ -6,11 +6,10 @@ import {
 import { useCallback, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 
-import generateNumbersPowerOfX from '../../../../data/utilities/generateNumbersPowerOfX';
-import { useDispatch } from '../../../context/DispatchContext';
-import useSpectrum from '../../../hooks/useSpectrum';
-
-import { useSyncedFilterOptions } from './useSyncedFilterOptions';
+import generateNumbersPowerOfX from '../../../../../data/utilities/generateNumbersPowerOfX';
+import { useDispatch } from '../../../../context/DispatchContext';
+import useSpectrum from '../../../../hooks/useSpectrum';
+import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsContext';
 
 export type ZeroFillingOptions = BaseZeroFillingOptions & {
   livePreview: boolean;

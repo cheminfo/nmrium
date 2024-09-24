@@ -3,10 +3,10 @@ import { Filters } from 'nmr-processing';
 import { LabelStyle } from '../../../elements/Label';
 
 import ApodizationOptionsPanel from './ApodizationOptionsPanel';
+import BaseLineCorrectionOptionsPanel from './BaseLineCorrectionOptionsPanel';
 import PhaseCorrectionOptionsPanel from './PhaseCorrectionOptionsPanel';
 import PhaseCorrectionTwoDimensionsOptionsPanel from './PhaseCorrectionTwoDimensionsOptionsPanel';
 import ZeroFillingOptionsPanel from './ZeroFillingOptionsPanel';
-import BaseLineCorrectionOptionsPanel from './BaseLineCorrectionOptionsPanel';
 
 const {
   apodization,

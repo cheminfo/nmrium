@@ -12,7 +12,7 @@ import {
   baselineCorrectionsAlgorithms,
   getBaselineData,
   useBaselineCorrection,
-} from '../panels/filtersPanel/Filters/useBaselineCorrection';
+} from '../panels/filtersPanel/Filters/hooks/useBaselineCorrection';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';

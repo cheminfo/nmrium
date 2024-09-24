@@ -3,11 +3,10 @@ import { Filter } from 'nmr-processing';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelect } from 'react-science/ui';
 
-import { useChartData } from '../../../context/ChartContext';
-import { useDispatch } from '../../../context/DispatchContext';
-import useSpectrum from '../../../hooks/useSpectrum';
-
-import { useSyncedFilterOptions } from './useSyncedFilterOptions';
+import { useChartData } from '../../../../context/ChartContext';
+import { useDispatch } from '../../../../context/DispatchContext';
+import useSpectrum from '../../../../hooks/useSpectrum';
+import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsContext';
 
 type PhaseCorrectionTypes = 'manual' | 'automatic' | 'absolute';
 
