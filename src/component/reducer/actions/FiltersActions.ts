@@ -65,10 +65,17 @@ const {
   digitalFilter2D,
 } = Filters;
 
-type ShiftSpectrumAlongXAxisAction = ActionType<
-  'SHIFT_SPECTRUM',
-  { shift: number }
->;
+interface ShiftOneDimension {
+  shift: number;
+}
+interface ShiftTwoDimensions {
+  shiftX?: number;
+  shiftY?: number;
+}
+
+type ShiftSpectrumOptions = ShiftOneDimension | ShiftTwoDimensions;
+
+type ShiftSpectrumAction = ActionType<'SHIFT_SPECTRUM', ShiftSpectrumOptions>;
 type ApodizationFilterAction = ActionType<
   'APPLY_APODIZATION_FILTER',
   { options: ApodizationOptions }
@@ -157,7 +164,7 @@ type SetTwoDimensionPhaseCorrectionPivotPoint = ActionType<
 >;
 
 export type FiltersActions =
-  | ShiftSpectrumAlongXAxisAction
+  | ShiftSpectrumAction
   | ApodizationFilterAction
   | ApodizationFilterLiveAction
   | ZeroFillingFilterAction
@@ -571,10 +578,38 @@ function disableLivePreview(draft: Draft<State>, id: string) {
   }
 }
 
+function isOneDimensionShift(
+  values: ShiftSpectrumOptions,
+): values is ShiftOneDimension {
+  return 'shift' in values;
+}
+
+function rollbackOrUpdateSpectrum(
+  draft: Draft<State>,
+  options: {
+    filterKey: string;
+
+    filterUpdateDomainRules: FiltersManager.FilterDomainUpdateRules;
+  },
+) {
+  const { filterKey, filterUpdateDomainRules } = options;
+  const activeFilterIndex = getActiveFilterIndex(draft);
+
+  if (activeFilterIndex !== -1) {
+    rollbackSpectrumByFilter(draft, {
+      searchBy: 'name',
+      key: filterKey,
+      triggerSource: 'Apply',
+    });
+  } else {
+    updateView(draft, filterUpdateDomainRules);
+  }
+}
+
 //action
 function handleShiftSpectrumAlongXAxis(
   draft: Draft<State>,
-  action: ShiftSpectrumAlongXAxisAction,
+  action: ShiftSpectrumAction,
 ) {
   const activeSpectrum = getActiveSpectrum(draft);
 
@@ -583,23 +618,42 @@ function handleShiftSpectrumAlongXAxis(
   }
 
   //apply filter into the spectrum
-  const { shift } = action.payload;
+  const options = action.payload;
 
-  const activeFilterIndex = getActiveFilterIndex(draft);
   const index = activeSpectrum?.index;
 
-  FiltersManager.applyFilter(draft.data[index], [
-    { name: shiftX.id, value: { shift } },
-  ]);
+  if (isOneDimensionShift(options)) {
+    const { shift } = options;
 
-  if (activeFilterIndex !== -1) {
-    rollbackSpectrumByFilter(draft, {
-      searchBy: 'name',
-      key: shiftX.id,
-      triggerSource: 'Apply',
+    FiltersManager.applyFilter(draft.data[index], [
+      { name: shiftX.id, value: { shift } },
+    ]);
+    rollbackOrUpdateSpectrum(draft, {
+      filterKey: shiftX.id,
+      filterUpdateDomainRules: shiftX.DOMAIN_UPDATE_RULES,
     });
   } else {
-    updateView(draft, shiftX.DOMAIN_UPDATE_RULES);
+    const { shiftX, shiftY } = options;
+
+    if (shiftX) {
+      FiltersManager.applyFilter(draft.data[index], [
+        { name: shift2DX.id, value: { shift: shiftX } },
+      ]);
+      rollbackOrUpdateSpectrum(draft, {
+        filterKey: shift2DX.id,
+        filterUpdateDomainRules: shift2DX.DOMAIN_UPDATE_RULES,
+      });
+    }
+
+    if (shiftY) {
+      FiltersManager.applyFilter(draft.data[index], [
+        { name: shift2DY.id, value: { shift: shiftY } },
+      ]);
+      rollbackOrUpdateSpectrum(draft, {
+        filterKey: shift2DY.id,
+        filterUpdateDomainRules: shift2DY.DOMAIN_UPDATE_RULES,
+      });
+    }
   }
 }
 

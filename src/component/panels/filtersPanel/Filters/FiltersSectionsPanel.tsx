@@ -193,7 +193,9 @@ function FiltersInner(props: FiltersInnerProps) {
       setNewFilter(null);
     }
 
-    openSection(options?.[selectedTool] ? selectedTool : '');
+    if (options?.[selectedTool]?.isFilter) {
+      openSection(selectedTool);
+    }
   }, [filters, selectedTool]);
 
   const filtersList = [...filters];
