@@ -14,9 +14,9 @@ import { useMouseTracker } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
 import { SVGGroup } from '../elements/SVGGroup';
+import { useActiveSpectra } from '../hooks/useActiveSpectra';
 import { usePanelPreferences } from '../hooks/usePanelPreferences';
 import { convertPathArrayToString } from '../utility/convertPathArrayToString';
-import { useActiveSpectra } from '../hooks/useActiveSpectra';
 
 const styles: Record<'text' | 'colorIndicator', CSSProperties> = {
   text: {

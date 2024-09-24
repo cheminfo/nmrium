@@ -1,4 +1,5 @@
 import { useDispatch } from '../../../context/DispatchContext';
+
 import { ZoneData } from './useMapZones';
 
 function getZoomDomain(zone: ZoneData, marginFactor = 10) {

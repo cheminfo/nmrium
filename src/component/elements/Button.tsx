@@ -1,5 +1,5 @@
 //TODO resolve the eslint rules
-/* eslint-disable react/no-unused-prop-types */
+
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject, SerializedStyles } from '@emotion/react';
 import { CSSProperties, ComponentPropsWithoutRef, ElementType } from 'react';

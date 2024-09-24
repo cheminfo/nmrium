@@ -4,15 +4,15 @@ import { Info2D } from 'nmr-processing';
 import { ReactNode } from 'react';
 import { FaLink } from 'react-icons/fa';
 
+import { withDialog } from '../../elements/DialogManager';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useTableSortBy from '../../hooks/useTableSortBy';
+import { EditZoneModal } from '../../modal/editZone/EditZoneModal';
 import NoDataForFid from '../extra/placeholder/NoDataForFid';
 import NoTableData from '../extra/placeholder/NoTableData';
 
 import ZonesTableRow from './ZonesTableRow';
 import { useMapZones } from './hooks/useMapZones';
-import { withDialog } from '../../elements/DialogManager';
-import { EditZoneModal } from '../../modal/editZone/EditZoneModal';
 
 const tableStyle = css`
   border-spacing: 0;
