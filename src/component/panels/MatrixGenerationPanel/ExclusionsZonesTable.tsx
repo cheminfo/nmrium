@@ -20,7 +20,7 @@ export function ExclusionsZonesTable() {
     );
   }
 
-  const exclusionsZonesColumns: Array<Column<any>> = [
+  const exclusionsZonesColumns: Column[] = [
     {
       Header: '#',
       style: { width: '50px' },

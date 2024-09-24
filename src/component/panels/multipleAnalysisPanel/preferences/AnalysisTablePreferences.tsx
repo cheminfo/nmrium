@@ -38,7 +38,7 @@ export function AnalysisTablePreferences() {
     [setValue],
   );
 
-  const COLUMNS: Array<Column<any>> = useMemo(() => {
+  const COLUMNS: Column[] = useMemo(() => {
     return [
       {
         Header: '#',

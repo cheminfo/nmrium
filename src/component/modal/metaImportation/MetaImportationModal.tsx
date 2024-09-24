@@ -164,7 +164,7 @@ function InnerMetaImportationModal({
 
   const columns = useMemo(() => {
     const fields = parseResult?.meta.fields || [];
-    const columns: Array<Column<any>> = [
+    const columns: Column[] = [
       { Header: '#', accessor: (_, index) => index + 1 },
     ];
 

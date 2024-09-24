@@ -5,7 +5,10 @@ export function readText(): Promise<string> {
 }
 
 export function read(): Promise<ClipboardItems> {
-  return import('clipboard-polyfill').then((c) => c.read());
+  return import('clipboard-polyfill').then((c) => {
+    const readItems = c.read() as Promise<ClipboardItems>;
+    return readItems;
+  });
 }
 
 export function writeText(data: string): Promise<void> {
@@ -28,6 +31,6 @@ export function newClipboardItem(
   options?: ClipboardItemOptions,
 ): Promise<ClipboardItem> {
   return import('clipboard-polyfill').then(
-    (c) => new c.ClipboardItem(items, options),
+    (c) => new (c.ClipboardItem as typeof ClipboardItem)(items, options), // Type assertion
   );
 }

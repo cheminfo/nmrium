@@ -67,7 +67,7 @@ function DatabasesTabContent({
     [setValue],
   );
 
-  const COLUMNS: Array<Column<any>> = useMemo(
+  const COLUMNS: Column[] = useMemo(
     () => [
       {
         Header: '#',
