@@ -239,7 +239,7 @@ export const options: RecordOptions = {
     id: 'exclusionZones',
     label: 'Exclusion zones',
     hasOptionPanel: false,
-    isFilter: false,
+    isFilter: true,
     mode: '1D',
     spectraOptions: [
       {
