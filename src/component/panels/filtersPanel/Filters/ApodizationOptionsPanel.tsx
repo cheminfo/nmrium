@@ -8,7 +8,7 @@ import { Sections } from '../../../elements/Sections';
 
 import { FilterActionButtons } from './FilterActionButtons';
 import { HeaderContainer, StickyHeader } from './InnerFilterHeader';
-import { useSharedApodization } from './useSharedApodization';
+import { useSharedApodization } from './hooks/useSharedApodization';
 
 import { formLabelStyle } from '.';
 

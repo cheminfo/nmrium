@@ -9,7 +9,7 @@ import {
   algorithms,
   AlgorithmItem,
   usePhaseCorrection,
-} from '../panels/filtersPanel/Filters/usePhaseCorrection';
+} from '../panels/filtersPanel/Filters/hooks/usePhaseCorrection';
 
 import { HeaderContainer } from './HeaderContainer';
 

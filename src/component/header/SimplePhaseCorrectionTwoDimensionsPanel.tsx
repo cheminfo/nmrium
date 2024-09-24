@@ -14,7 +14,7 @@ import {
   phaseCorrectionalAlgorithms,
   usePhaseCorrectionTwoDimensions,
   AlgorithmItem,
-} from '../panels/filtersPanel/Filters/usePhaseCorrectionTwoDimensions';
+} from '../panels/filtersPanel/Filters/hooks/usePhaseCorrectionTwoDimensions';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';

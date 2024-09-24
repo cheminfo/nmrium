@@ -6,7 +6,7 @@ import ActionButtons from '../elements/ActionButtons';
 import Label from '../elements/Label';
 import { NumberInput2Controller } from '../elements/NumberInput2Controller';
 import { useFilter } from '../hooks/useFilter';
-import { useSharedApodization } from '../panels/filtersPanel/Filters/useSharedApodization';
+import { useSharedApodization } from '../panels/filtersPanel/Filters/hooks/useSharedApodization';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';

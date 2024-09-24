@@ -14,7 +14,7 @@ import {
   algorithms,
   usePhaseCorrection,
   AlgorithmItem,
-} from './usePhaseCorrection';
+} from './hooks/usePhaseCorrection';
 
 interface PhaseCorrectionOptionsPanelProps {
   filter: Filter;

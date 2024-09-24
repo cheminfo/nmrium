@@ -7,7 +7,7 @@ import { Select2Controller } from '../../../elements/Select2Controller';
 
 import { FilterActionButtons } from './FilterActionButtons';
 import { HeaderContainer, StickyHeader } from './InnerFilterHeader';
-import { useZeroFilling, zeroFillingSizes } from './useZeroFilling';
+import { useZeroFilling, zeroFillingSizes } from './hooks/useZeroFilling';
 
 interface ZeroFillingOptionsPanelProps {
   filter: Filter;

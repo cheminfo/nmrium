@@ -12,7 +12,7 @@ import {
   baselineCorrectionsAlgorithms,
   getBaselineData,
   useBaselineCorrection,
-} from './useBaselineCorrection';
+} from './hooks/useBaselineCorrection';
 
 import { formLabelStyle } from '.';
 
