@@ -129,6 +129,10 @@ type SetFilterSnapshotAction = ActionType<
   'SET_FILTER_SNAPSHOT',
   { name: string; id: string }
 >;
+type ExclusionZoneFilterAction = ActionType<
+  'APPLY_EXCLUSION_ZONE',
+  { zones: ExclusionZone[] }
+>;
 type AddExclusionZoneAction = ActionType<
   'ADD_EXCLUSION_ZONE',
   { startX: number; endX: number }
@@ -176,6 +180,7 @@ export type FiltersActions =
   | DeleteFilterAction
   | DeleteSpectraFilterAction
   | SetFilterSnapshotAction
+  | ExclusionZoneFilterAction
   | AddExclusionZoneAction
   | DeleteExclusionZoneAction
   | ApplySignalProcessingAction
@@ -1344,6 +1349,30 @@ function handleSignalProcessingFilter(
 }
 
 //action
+function handleApplyExclusionZone(
+  draft: Draft<State>,
+  action: ExclusionZoneFilterAction,
+) {
+  const { zones } = action.payload;
+
+  const activeSpectrum = getActiveSpectrum(draft);
+
+  if (!activeSpectrum) {
+    return;
+  }
+
+  FiltersManager.applyFilter(draft.data[activeSpectrum.index], [
+    {
+      name: exclusionZones.id,
+      value: zones,
+    },
+  ]);
+
+  const { updateXDomain, updateYDomain } = exclusionZones.DOMAIN_UPDATE_RULES;
+
+  setDomain(draft, { updateXDomain, updateYDomain });
+}
+//action
 function handleAddExclusionZone(
   draft: Draft<State>,
   action: AddExclusionZoneAction,
@@ -1649,4 +1678,5 @@ export {
   handleCalculateManualTwoDimensionPhaseCorrection,
   handleToggleAddTracesToBothDirections,
   handleApplyAutoPhaseCorrectionTwoDimensionsFilter,
+  handleApplyExclusionZone,
 };

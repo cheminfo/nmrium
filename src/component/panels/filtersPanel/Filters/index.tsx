@@ -4,6 +4,7 @@ import { LabelStyle } from '../../../elements/Label';
 
 import ApodizationOptionsPanel from './ApodizationOptionsPanel';
 import BaseLineCorrectionOptionsPanel from './BaseLineCorrectionOptionsPanel';
+import ExclusionZonesOptionsPanel from './ExclusionZonesOptionsPanel';
 import PhaseCorrectionOptionsPanel from './PhaseCorrectionOptionsPanel';
 import PhaseCorrectionTwoDimensionsOptionsPanel from './PhaseCorrectionTwoDimensionsOptionsPanel';
 import ShiftOptionsPanel from './ShiftOptionsPanel';
@@ -18,6 +19,7 @@ const {
   shiftX,
   shift2DX,
   shift2DY,
+  exclusionZones,
 } = Filters;
 export const filterOptionPanels = {
   [apodization.id]: ApodizationOptionsPanel,
@@ -28,6 +30,7 @@ export const filterOptionPanels = {
   [shiftX.id]: ShiftOptionsPanel,
   [shift2DX.id]: ShiftOptionsPanel,
   [shift2DY.id]: ShiftOptionsPanel,
+  [exclusionZones.id]: ExclusionZonesOptionsPanel,
 };
 
 export const formLabelStyle: LabelStyle = {

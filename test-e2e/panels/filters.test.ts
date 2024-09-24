@@ -190,7 +190,7 @@ test('Processed spectra filters', async ({ page }) => {
     await nmrium.page.click('li >> text=Cytisine');
     await nmrium.page.click('li >> text=Processed 13C FID');
 
-    // wait specturm to load
+    // wait spectrum to load
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
   });
   await test.step('Check filters panel', async () => {
@@ -250,8 +250,6 @@ test('Exclusion zones', async ({ page }) => {
     const spectraTable = nmrium.page.locator('_react=SpectraTable');
     await spectraTable.locator(`_react=[role="row"]`).nth(2).click();
 
-    // Open processings panel
-    await nmrium.clickPanel('Processings');
     const filters = nmrium.page.locator('_react=FiltersSectionsPanel');
 
     await expect(filters.locator('text=Exclusion zones')).toBeVisible();

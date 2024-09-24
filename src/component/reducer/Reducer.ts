@@ -499,6 +499,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return FiltersActions.handleSetFilterSnapshotHandler(draft, action);
       case 'APPLY_SIGNAL_PROCESSING_FILTER':
         return FiltersActions.handleSignalProcessingFilter(draft, action);
+      case 'APPLY_EXCLUSION_ZONE':
+        return FiltersActions.handleApplyExclusionZone(draft, action);
       case 'ADD_EXCLUSION_ZONE':
         return FiltersActions.handleAddExclusionZone(draft, action);
       case 'DELETE_EXCLUSION_ZONE':
