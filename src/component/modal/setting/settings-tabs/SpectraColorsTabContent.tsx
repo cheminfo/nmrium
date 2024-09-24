@@ -4,11 +4,12 @@ import { CSSProperties, useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
-import Label from '../../../elements/Label';
+
 import { useChartData } from '../../../context/ChartContext';
 import { ColorPickerDropdownController } from '../../../elements/ColorPickerDropdownController';
 import { GroupPane } from '../../../elements/GroupPane';
 import { Input2Controller } from '../../../elements/Input2Controller';
+import Label from '../../../elements/Label';
 import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
 import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer';
 import { convertPathArrayToString } from '../../../utility/convertPathArrayToString';
@@ -125,8 +126,8 @@ function SpectraColorsFields(props: SpectraColorsProps) {
     props;
   const { control } = useFormContext();
 
-  const COLUMNS: Array<Column<any>> = useMemo(() => {
-    const baseColumns: Array<Column<any>> = [
+  const COLUMNS: Column[] = useMemo(() => {
+    const baseColumns: Column[] = [
       {
         Header: '#',
         style: { width: '25px', textAlign: 'center' },

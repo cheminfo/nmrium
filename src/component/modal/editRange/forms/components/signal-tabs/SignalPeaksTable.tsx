@@ -135,7 +135,7 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
     [re, setValue, signalIndex, xArray],
   );
 
-  const COLUMNS: Array<Column<any>> = useMemo(
+  const COLUMNS: Column[] = useMemo(
     () => [
       {
         Header: '#',

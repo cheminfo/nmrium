@@ -6,8 +6,8 @@ import { GroupPane } from '../../../elements/GroupPane';
 import Label, { LabelStyle } from '../../../elements/Label';
 import { NumberInput2Controller } from '../../../elements/NumberInput2Controller';
 import { Select2 } from '../../../elements/Select2';
-import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer';
 import { Select2Controller } from '../../../elements/Select2Controller';
+import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer';
 
 const labelStyle: LabelStyle = {
   label: { flex: 6 },

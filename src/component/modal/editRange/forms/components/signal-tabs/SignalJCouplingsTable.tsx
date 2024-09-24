@@ -132,7 +132,7 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
     setValue(`signals[${signalIndex}].js`, []);
     lastSelectedCouplingIndexRef.current = null;
   }
-  const COLUMNS: Array<Column<any>> = useMemo(
+  const COLUMNS: Column[] = useMemo(
     () => [
       {
         Header: '#',
