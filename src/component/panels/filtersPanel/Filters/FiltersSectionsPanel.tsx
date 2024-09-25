@@ -186,7 +186,7 @@ function FiltersInner(props: FiltersInnerProps) {
         id: v4(),
         name,
         label,
-        value: {},
+        value: null,
         isDeleteAllow: true,
       });
     } else {
