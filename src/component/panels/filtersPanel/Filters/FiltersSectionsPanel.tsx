@@ -13,7 +13,6 @@ import { AlertButton, useAlert } from '../../../elements/Alert';
 import { Sections } from '../../../elements/Sections';
 import useSpectraByActiveNucleus from '../../../hooks/useSpectraPerNucleus';
 import useSpectrum from '../../../hooks/useSpectrum';
-import { options } from '../../../toolbar/ToolTypes';
 
 import { filterOptionPanels } from './index';
 
@@ -190,10 +189,15 @@ function FiltersInner(props: FiltersInnerProps) {
         isDeleteAllow: true,
       });
     } else {
-      setNewFilter(null);
+      setNewFilter((previousNewFilter) => {
+        if (previousNewFilter) {
+          openSection('');
+        }
+        return null;
+      });
     }
 
-    if (options?.[selectedTool]?.isFilter) {
+    if (Filters?.[selectedTool]) {
       openSection(selectedTool);
     }
   }, [filters, selectedTool]);
