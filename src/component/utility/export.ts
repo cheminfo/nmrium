@@ -101,12 +101,16 @@ function exportAsMol(data, fileName = 'mol') {
  * export the vitalization result as SVG, if you need to remove some content during exportation process enclose the the content with <!-- export-remove --> ${content} <!-- export-remove -->
  */
 
-function exportAsSVG(
-  rootRef: HTMLDivElement,
-  elementID: string,
-  fileName = 'experiment',
-) {
-  const { blob } = getBlob(rootRef, elementID);
+interface ExportAsSVGOptions {
+  fileName?: string;
+  rootElement: HTMLDivElement;
+  width?: number;
+  height?: number;
+}
+
+function exportAsSVG(targetElementID: string, options: ExportAsSVGOptions) {
+  const { fileName, rootElement } = options;
+  const { blob } = getBlob(rootElement, targetElementID);
   saveAs(blob, `${fileName}.svg`);
 }
 
@@ -114,6 +118,8 @@ interface ExportAsPNGOptions {
   fileName?: string;
   resolution?: number;
   rootElement: HTMLDivElement;
+  width?: number;
+  height?: number;
 }
 
 interface CreateObjectURLOptions {
@@ -151,8 +157,22 @@ function createObjectURL(blob: Blob, options: CreateObjectURLOptions) {
 }
 
 function exportAsPng(targetElementID: string, options: ExportAsPNGOptions) {
-  const { rootElement, fileName = 'experiment', resolution = 300 } = options;
-  const { blob, width, height } = getBlob(rootElement, targetElementID);
+  const {
+    rootElement,
+    fileName = 'experiment',
+    resolution = 300,
+    width: externalWidth,
+    height: externalHeight,
+  } = options;
+  const {
+    blob,
+    width: originWidth,
+    height: originHeight,
+  } = getBlob(rootElement, targetElementID);
+
+  const width = externalWidth ?? originWidth;
+  const height = externalHeight ?? originHeight;
+
   try {
     const { url, context, canvas } = createObjectURL(blob, {
       width,
