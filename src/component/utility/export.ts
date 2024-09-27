@@ -103,7 +103,7 @@ function exportAsMol(data, fileName = 'mol') {
 
 interface ExportAsSVGOptions {
   fileName?: string;
-  rootElement: HTMLDivElement;
+  rootElement: HTMLElement;
   width?: number;
   height?: number;
 }
@@ -117,7 +117,7 @@ function exportAsSVG(targetElementID: string, options: ExportAsSVGOptions) {
 interface ExportAsPNGOptions {
   fileName?: string;
   resolution?: number;
-  rootElement: HTMLDivElement;
+  rootElement: HTMLElement;
   width?: number;
   height?: number;
 }
@@ -125,7 +125,7 @@ interface ExportAsPNGOptions {
 interface CreateObjectURLOptions {
   width: number;
   height: number;
-  resolution: number;
+  resolution?: number;
 }
 
 function createObjectURL(blob: Blob, options: CreateObjectURLOptions) {
@@ -138,9 +138,17 @@ function createObjectURL(blob: Blob, options: CreateObjectURLOptions) {
    * Change the canvas size based on DPI
    * 96 is the default DPI for web
    * */
-  const scaleFactor = resolution / 96;
-  canvas.width = width * scaleFactor;
-  canvas.height = height * scaleFactor;
+
+  let scaleFactor = 1;
+
+  if (resolution) {
+    scaleFactor = resolution / 96;
+    canvas.width = width * scaleFactor;
+    canvas.height = height * scaleFactor;
+  } else {
+    canvas.width = width;
+    canvas.height = height;
+  }
 
   if (context) {
     context.fillStyle = 'white';
@@ -160,7 +168,7 @@ function exportAsPng(targetElementID: string, options: ExportAsPNGOptions) {
   const {
     rootElement,
     fileName = 'experiment',
-    resolution = 300,
+    resolution,
     width: externalWidth,
     height: externalHeight,
   } = options;
@@ -179,6 +187,7 @@ function exportAsPng(targetElementID: string, options: ExportAsPNGOptions) {
       height,
       resolution,
     });
+
     const img = new Image();
     img.addEventListener('load', () => {
       context?.drawImage(img, 0, 0);
@@ -243,14 +252,14 @@ async function copyBlobToClipboard(canvas: HTMLCanvasElement) {
 interface CopyPNGToClipboardOptions {
   css?: SerializedStyles;
   resolution?: number;
-  rootElement: HTMLDivElement;
+  rootElement: HTMLElement;
 }
 
 async function copyPNGToClipboard(
   targetElementID: string,
   options: CopyPNGToClipboardOptions,
 ) {
-  const { rootElement, css, resolution = 300 } = options;
+  const { rootElement, css, resolution } = options;
   const { blob, width, height } = getBlob(rootElement, targetElementID, css);
   try {
     const img = new Image();
@@ -283,7 +292,7 @@ export interface BlobObject {
 }
 
 function getBlob(
-  rootRef: HTMLDivElement,
+  rootRef: HTMLElement,
   elementID: string,
   css?: SerializedStyles,
 ): BlobObject {
@@ -293,6 +302,7 @@ function getBlob(
 
   const width = Number(_svg?.getAttribute('width').replace('px', ''));
   const height = Number(_svg?.getAttribute('height').replace('px', ''));
+
   for (const element of _svg.querySelectorAll('[data-no-export="true"]')) {
     element.remove();
   }
@@ -350,8 +360,7 @@ function getMoleculesElement(rootRef) {
     group.append(molElement);
     group.setAttribute(
       'transform',
-      `translate(${matrix.m41} ${
-        matrix.m42 + actionHeaderElement.clientHeight
+      `translate(${matrix.m41} ${matrix.m42 + actionHeaderElement.clientHeight
       })`,
     );
     floatingMoleculesGroup.append(group);
