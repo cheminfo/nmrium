@@ -40,6 +40,7 @@ import {
   ToolbarPopoverMenuItem,
   ToolbarPopoverItem,
 } from '../elements/ToolbarPopoverItem';
+import { useExportManagerActionsRef } from '../elements/export/ExportManager';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
 import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature';
 import {
@@ -48,7 +49,7 @@ import {
 } from '../hooks/useCheckToolsVisibility';
 import useDatumWithSpectraStatistics from '../hooks/useDatumWithSpectraStatistics';
 import { useDialogToggle } from '../hooks/useDialogToggle';
-import useExport from '../hooks/useExport';
+import { useExport } from '../hooks/useExport';
 import useToolsFunctions from '../hooks/useToolsFunctions';
 import { useVerticalAlign } from '../hooks/useVerticalAlign';
 import ExportAsJcampModal from '../modal/ExportAsJcampModal';
@@ -165,12 +166,9 @@ export default function ToolBar() {
     });
   }, [dispatch]);
 
-  const {
-    saveAsSVGHandler,
-    saveAsPNGHandler,
-    saveAsJSONHandler,
-    saveToClipboardHandler,
-  } = useExport();
+  const { saveAsJSONHandler } = useExport();
+
+  const exportActions = useExportManagerActionsRef();
 
   function importHandler(data) {
     switch (data?.id) {
@@ -193,10 +191,11 @@ export default function ToolBar() {
   function exportHandler(data) {
     switch (data?.id) {
       case 'svg':
-        saveAsSVGHandler();
+        exportActions.current?.export({ format: 'svg' });
         break;
       case 'png':
-        void saveAsPNGHandler();
+        exportActions.current?.export({ format: 'png' });
+        // void saveAsPNGHandler();
         break;
       case 'json':
         saveAsJSONHandler();
@@ -205,7 +204,10 @@ export default function ToolBar() {
         openDialog('saveAs');
         break;
       case 'copy':
-        void saveToClipboardHandler();
+        exportActions.current?.export({
+          format: 'png',
+          destination: 'clipboard',
+        });
         break;
       case 'exportAsJcamp':
         openDialog('exportAsJcamp');

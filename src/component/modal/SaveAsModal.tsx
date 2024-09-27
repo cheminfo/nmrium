@@ -15,7 +15,7 @@ import { useChartData } from '../context/ChartContext';
 import ActionButtons from '../elements/ActionButtons';
 import { Input2Controller } from '../elements/Input2Controller';
 import Label, { LabelStyle } from '../elements/Label';
-import useExport from '../hooks/useExport';
+import { useExport } from '../hooks/useExport';
 
 const INITIAL_VALUE = {
   name: '',
