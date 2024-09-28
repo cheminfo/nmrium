@@ -138,7 +138,7 @@ function FiltersPanelGroupHeader({ index }) {
   const { setValue } = useFormContext();
   const filters = useWatch({ name: 'filters' });
 
-  function handelSelectFilter(value, index) {
+  function handleSelectFilter(value, index) {
     const clonedFilters = filters.slice();
     clonedFilters.splice(index, 1, value);
     setValue('filters', clonedFilters);
@@ -177,7 +177,7 @@ function FiltersPanelGroupHeader({ index }) {
       <Select2Controller
         name={`filters[${index}].name`}
         items={matrixFilters}
-        onItemSelect={(value) => handelSelectFilter(value, index)}
+        onItemSelect={(value) => handleSelectFilter(value, index)}
         fill
         itemTextKey="label"
         itemValueKey="name"

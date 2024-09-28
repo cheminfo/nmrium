@@ -46,7 +46,7 @@ function PhaseTrace(props: SpectrumTraceProps) {
     spectrum: { x, y, id },
     direction,
   } = props;
-  const highligh = useHighlight([id], {
+  const highlight = useHighlight([id], {
     type: HighlightEventSource.PHASE_CORRECTION_TRACE,
     extra: { id },
   });
@@ -60,7 +60,7 @@ function PhaseTrace(props: SpectrumTraceProps) {
     <SpectrumPhaseTrace
       positionUnit="PPM"
       position={{ x, y }}
-      {...highligh.onHover}
+      {...highlight.onHover}
     >
       {direction === 'horizontal' && (
         <rect

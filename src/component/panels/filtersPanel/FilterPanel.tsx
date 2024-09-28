@@ -14,7 +14,7 @@ export default function FiltersPanel() {
   const { showAlert } = useAlert();
   const { filters } = useSpectrum({ filters: [] });
 
-  function handelDeleteFilter() {
+  function handleDeleteFilter() {
     const buttons: AlertButton[] = [
       {
         text: 'Yes',
@@ -40,7 +40,7 @@ export default function FiltersPanel() {
     <div css={tablePanelStyle}>
       <DefaultPanelHeader
         deleteToolTip="Delete all filters"
-        onDelete={handelDeleteFilter}
+        onDelete={handleDeleteFilter}
         total={filters?.length}
         hideCounter
       />

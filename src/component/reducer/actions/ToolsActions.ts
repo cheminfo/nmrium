@@ -677,7 +677,7 @@ function setActiveTab(draft: Draft<State>, options?: SetActiveTabOptions) {
   setMode(draft);
 }
 
-function handelSetActiveTab(draft: Draft<State>, action: SetActiveTabAction) {
+function handleSetActiveTab(draft: Draft<State>, action: SetActiveTabAction) {
   const { tab } = action.payload;
   if (tab) {
     setActiveTab(draft, { tab });
@@ -743,7 +743,7 @@ export {
   handleBrushEnd,
   handleZoom,
   zoomOut,
-  handelSetActiveTab,
+  handleSetActiveTab,
   levelChangeHandler,
   setActiveTab,
   setTab,

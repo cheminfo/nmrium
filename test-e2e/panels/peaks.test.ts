@@ -108,7 +108,7 @@ test('Processed spectra peaks', async ({ page }) => {
     await nmrium.page.click('li >> text=Cytisine');
     await nmrium.page.click('li >> text=Processed 13C FID');
 
-    // wait specturm to load
+    // wait spectrum to load
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
   });
   await test.step('Check peaks', async () => {
@@ -144,7 +144,7 @@ test('Check no negative peaks in processed spectra', async ({ page }) => {
     await nmrium.page.click('li >> text=Cytisine');
     await nmrium.page.click('li >> text=Processed 13C FID');
 
-    // wait specturm to load
+    // wait spectrum to load
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
   });
   await test.step('Check negative peaks', async () => {

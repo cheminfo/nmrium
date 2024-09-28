@@ -29,7 +29,7 @@ export enum HighlightEventSource {
   UNKNOWN = 'UNKNOWN',
 }
 
-const HightLightStyle: CSSProperties = {
+const highLightStyle: CSSProperties = {
   backgroundColor: '#ff6f0091',
 };
 
@@ -291,7 +291,7 @@ export function useHighlight(
   return useMemo(() => {
     return {
       isActive,
-      defaultActiveStyle: isActive ? HightLightStyle : {},
+      defaultActiveStyle: isActive ? highLightStyle : {},
       onHover: {
         onMouseEnter: show,
         onMouseLeave: hide,

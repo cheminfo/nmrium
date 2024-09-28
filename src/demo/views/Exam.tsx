@@ -223,7 +223,7 @@ export default function Exam(props) {
     }
   }, [baseURL, file, props]);
 
-  const showAnswerAreaHander = useCallback(() => {
+  const showAnswerAreaHandler = useCallback(() => {
     showAnswerArea((prev) => !prev);
   }, []);
 
@@ -241,7 +241,7 @@ export default function Exam(props) {
         >
           <NMRium data={data} workspace="exercise" />
         </div>
-        <button css={showButton} type="button" onClick={showAnswerAreaHander}>
+        <button css={showButton} type="button" onClick={showAnswerAreaHandler}>
           {!answerAreaVisible ? 'Show answer area' : 'Hide answer area '}
         </button>
         <div

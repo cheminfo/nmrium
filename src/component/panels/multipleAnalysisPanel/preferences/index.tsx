@@ -69,7 +69,7 @@ function MultipleSpectraAnalysisPreferences(
   const columns = getMultipleSpectraAnalysisData(panelPreferences);
   const isExperimental = useCheckExperimentalFeature();
 
-  function saveHander(values) {
+  function saveHandler(values) {
     onAfterSave?.(true);
     preferences.dispatch({
       type: 'SET_SPECTRA_ANALYSIS_PREFERENCES',
@@ -87,7 +87,7 @@ function MultipleSpectraAnalysisPreferences(
 
   const { handleSubmit, control } = methods;
 
-  useSettingImperativeHandle(ref, handleSubmit, saveHander);
+  useSettingImperativeHandle(ref, handleSubmit, saveHandler);
 
   return (
     <FormProvider {...methods}>
@@ -145,7 +145,7 @@ function columnSchema(columns) {
     tempKey: Yup.string().required(),
     formula: Yup.string().test(
       'required',
-      'Pease enter formula field',
+      'Please enter formula field',
       function checkRequired() {
         const errors: Yup.ValidationError[] = [];
         for (let index = 0; index < columns.length; index++) {

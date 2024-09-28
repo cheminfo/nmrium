@@ -121,7 +121,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
     yDomains,
   ]);
 
-  function handelBrush(brushData) {
+  function handleBrush(brushData) {
     const { startX: startXInPixel, endX: endXInPixel, mouseButton } = brushData;
 
     if (mouseButton === 'secondary') {
@@ -142,7 +142,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
 
   const { getModifiersKey, primaryKeyIdentifier } = useMapKeyModifiers();
 
-  const handelBrushEnd = useCallback<OnBrush>(
+  const handleBrushEnd = useCallback<OnBrush>(
     (brushData) => {
       //reset the brush start
       brushStartRef.current = null;
@@ -308,7 +308,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
     ],
   );
 
-  const handelOnDoubleClick = useCallback(() => {
+  const handleOnDoubleClick = useCallback(() => {
     dispatch({
       type: 'FULL_ZOOM_OUT',
       payload: { zoomType: ZOOM_TYPES.STEP_HORIZONTAL },
@@ -438,9 +438,9 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
                 data &&
                 data.length > 0 && (
                   <BrushTracker
-                    onBrush={handelBrush}
-                    onBrushEnd={handelBrushEnd}
-                    onDoubleClick={handelOnDoubleClick}
+                    onBrush={handleBrush}
+                    onBrushEnd={handleBrushEnd}
+                    onDoubleClick={handleOnDoubleClick}
                     onClick={mouseClick}
                     onZoom={handleZoom}
                     style={{

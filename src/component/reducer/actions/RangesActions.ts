@@ -7,7 +7,7 @@ import { Signal1D, Range, Filters, FiltersManager } from 'nmr-processing';
 
 import {
   DATUM_KIND,
-  SIGNAL_INLCUDED_KINDS,
+  SIGNAL_INCLUDED_KINDS,
 } from '../../../data/constants/signalsKinds';
 import {
   changeRangeSignal,
@@ -295,7 +295,7 @@ function handleChangeRangeSignalKind(
     const _range = (draft.data[index] as Spectrum1D).ranges.values[rangeIndex];
     if (_range?.signals) {
       _range.signals[range.tableMetaInfo.signalIndex].kind = kind;
-      _range.kind = SIGNAL_INLCUDED_KINDS.includes(kind)
+      _range.kind = SIGNAL_INCLUDED_KINDS.includes(kind)
         ? DATUM_KIND.signal
         : DATUM_KIND.mixed;
       updateRangesRelativeValues(draft.data[index] as Spectrum1D);

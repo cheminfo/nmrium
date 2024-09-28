@@ -71,7 +71,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
 
   const DIMENSION = get2DDimensionLayout(state);
 
-  function handelBrush(brushData) {
+  function handleBrush(brushData) {
     const {
       startX: startXInPixel,
       endX: endXInPixel,
@@ -96,7 +96,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
     }
   }
 
-  const handelBrushEnd = useCallback<OnBrush>(
+  const handleBrushEnd = useCallback<OnBrush>(
     (brushData) => {
       //reset the brush start
       brushStartRef.current = null;
@@ -153,7 +153,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
     [getModifiersKey, DIMENSION, selectedTool, primaryKeyIdentifier, dispatch],
   );
 
-  const handelOnDoubleClick: OnDoubleClick = useCallback(
+  const handleOnDoubleClick: OnDoubleClick = useCallback(
     (e) => {
       const { x: startX, y: startY } = e;
       const trackID = getLayoutID(DIMENSION, { startX, startY });
@@ -216,9 +216,9 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
           <Spinner isLoading={isLoading} emptyText={emptyText} />
           {data && data.length > 0 && (
             <BrushTracker
-              onBrush={handelBrush}
-              onBrushEnd={handelBrushEnd}
-              onDoubleClick={handelOnDoubleClick}
+              onBrush={handleBrush}
+              onBrushEnd={handleBrushEnd}
+              onDoubleClick={handleOnDoubleClick}
               onClick={mouseClick}
               onZoom={handleZoom}
               style={{

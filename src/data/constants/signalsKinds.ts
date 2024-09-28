@@ -22,5 +22,5 @@ export const SIGNAL_KINDS: SignalKindItem[] = KINDS.map((key) => ({
   label: stringCapitalize(key),
 }));
 
-export const SIGNAL_INLCUDED_KINDS: SignalKind[] = ['signal'];
+export const SIGNAL_INCLUDED_KINDS: SignalKind[] = ['signal'];
 export const DATUM_KIND = { signal: 'signal', mixed: 'mixed' } as const;

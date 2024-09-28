@@ -86,7 +86,7 @@ interface AddIntegralOptions {
   to: number;
 }
 
-function initiateIntergalSumOptions(datum: Spectrum1D, options: SumParams) {
+function initiateIntegralSumOptions(datum: Spectrum1D, options: SumParams) {
   const { molecules, nucleus } = options;
   datum.integrals.options = initSumOptions(datum.integrals.options, {
     molecules,
@@ -128,7 +128,7 @@ function handleAddIntegral(draft: Draft<State>, action: AddIntegralAction) {
     const [from, to] = getRange(draft, { startX, endX });
     const datum = data[activeSpectrum.index] as Spectrum1D;
     addIntegral(datum, { from, to });
-    initiateIntergalSumOptions(datum, { molecules, nucleus });
+    initiateIntegralSumOptions(datum, { molecules, nucleus });
     updateIntegralsRelativeValues(datum);
   }
 }
