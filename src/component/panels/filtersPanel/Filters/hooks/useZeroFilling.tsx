@@ -8,8 +8,8 @@ import { useForm } from 'react-hook-form';
 
 import generateNumbersPowerOfX from '../../../../../data/utilities/generateNumbersPowerOfX';
 import { useDispatch } from '../../../../context/DispatchContext';
-import useSpectrum from '../../../../hooks/useSpectrum';
 import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsContext';
+import useSpectrum from '../../../../hooks/useSpectrum';
 
 export type ZeroFillingOptions = BaseZeroFillingOptions & {
   livePreview: boolean;
