@@ -5,8 +5,8 @@ import { useSelect } from 'react-science/ui';
 
 import { useChartData } from '../../../../context/ChartContext';
 import { useDispatch } from '../../../../context/DispatchContext';
-import useSpectrum from '../../../../hooks/useSpectrum';
 import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsContext';
+import useSpectrum from '../../../../hooks/useSpectrum';
 
 type PhaseCorrectionTypes = 'manual' | 'automatic' | 'absolute';
 

@@ -12,14 +12,14 @@ import Label, { LabelStyle } from '../../../elements/Label';
 import { NumberInput2 } from '../../../elements/NumberInput2';
 import { Sections } from '../../../elements/Sections';
 import { useFilter } from '../../../hooks/useFilter';
+
+import { FilterActionButtons } from './FilterActionButtons';
+import { HeaderContainer, StickyHeader } from './InnerFilterHeader';
 import {
   phaseCorrectionalAlgorithms,
   usePhaseCorrectionTwoDimensions,
   AlgorithmItem,
 } from './hooks/usePhaseCorrectionTwoDimensions';
-
-import { FilterActionButtons } from './FilterActionButtons';
-import { HeaderContainer, StickyHeader } from './InnerFilterHeader';
 
 const inputRangeStyle: CSSProperties = {
   padding: '5px 10px',

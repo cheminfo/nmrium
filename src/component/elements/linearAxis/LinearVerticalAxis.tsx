@@ -1,5 +1,5 @@
 import { ScaleLinear } from 'd3';
-import { forwardRef, useRef, MutableRefObject } from 'react';
+import { forwardRef, useRef } from 'react';
 import { useLinearPrimaryTicks } from 'react-d3-utils';
 
 interface BaseAxis {
@@ -28,7 +28,6 @@ interface Ticks {
 
 interface TickAxis {
   ticks: Ticks[];
-  ref: MutableRefObject<SVGGElement | null>;
 }
 
 type VerticalAxisProps = BaseAxis & (Vertical | VerticalGrid) & ScaleAxis;

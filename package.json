@@ -46,11 +46,7 @@
     "url": "git+https://github.com/cheminfo/nmrium.git"
   },
   "volta": {
-    "node": "22.5.1"
-  },
-  "overrides": {
-    "react": "$react",
-    "react-dom": "$react-dom"
+    "node": "22.9.0"
   },
   "peerDependencies": {
     "react": ">=18.0.0",
@@ -83,7 +79,7 @@
     "ml-array-xy-equally-spaced": "^1.2.1",
     "ml-baseline-correction-regression": "^2.0.1",
     "ml-conrec": "^5.0.3",
-    "ml-gsd": "^12.1.6",
+    "ml-gsd": "^12.1.8",
     "ml-matrix": "^6.11.1",
     "ml-signal-processing": "^1.0.4",
     "ml-spectra-processing": "^14.5.3",
@@ -110,7 +106,7 @@
     "react-ocl-nmr": "^3.0.3",
     "react-plot": "^2.0.0",
     "react-rnd": "^10.4.13",
-    "react-science": "^6.0.1",
+    "react-science": "^6.0.2",
     "react-table": "^7.8.0",
     "react-transition-group": "^4.4.5",
     "react-use": "^17.5.1",
@@ -125,9 +121,9 @@
     "@simbathesailor/use-what-changed": "^2.0.0",
     "@types/d3": "^7.4.3",
     "@types/lodash": "^4.17.9",
-    "@types/node": "^22.6.1",
+    "@types/node": "^22.7.4",
     "@types/papaparse": "^5.3.14",
-    "@types/react": "^18.3.8",
+    "@types/react": "^18.3.10",
     "@types/react-dom": "^18.3.0",
     "@types/react-table": "^7.7.20",
     "@vitejs/plugin-react-swc": "^3.7.0",
@@ -150,7 +146,7 @@
     "stylelint": "^16.9.0",
     "stylelint-config-standard": "^36.0.1",
     "typescript": "^5.6.2",
-    "vite": "^5.4.7",
+    "vite": "^5.4.8",
     "vitest": "^2.1.1"
   }
 }

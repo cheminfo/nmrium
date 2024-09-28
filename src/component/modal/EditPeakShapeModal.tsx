@@ -18,7 +18,7 @@ import { formatNumber } from '../utility/formatNumber';
 
 type Shape = NonNullable<Peak1D['shape']>;
 
-type Kind = 'gaussian' | 'lorentzian' | 'pseudoVoigt';
+type Kind = 'gaussian' | 'lorentzian' | 'pseudoVoigt' | 'generalizedLorentzian';
 
 function getKindDefaultValues(kind: Kind) {
   return {

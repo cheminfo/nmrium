@@ -7,9 +7,9 @@ import { useSelect } from 'react-science/ui';
 
 import { useActivePhaseTraces } from '../../../../2d/1d-tracer/phase-correction-traces/useActivePhaseTraces';
 import { useDispatch } from '../../../../context/DispatchContext';
+import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsContext';
 import useSpectrum from '../../../../hooks/useSpectrum';
 import { TraceDirection } from '../../../../reducer/Reducer';
-import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsContext';
 
 type PhaseCorrectionTypes = 'manual' | 'automatic';
 
