@@ -7,7 +7,7 @@ import { PathBuilder } from '../../utility/PathBuilder';
 import { useScale2DX, getSliceYScale } from '../utilities/scale';
 
 interface BaseProps {
-  vericalMargin?: number;
+  verticalMargin?: number;
   reverse?: boolean;
 }
 interface HorizontalSliceChartProps extends BaseProps {
@@ -19,7 +19,7 @@ interface UsePathOptions extends BaseProps {
 }
 
 function usePath(data: NmrData1D, options: UsePathOptions) {
-  const { height = 100, vericalMargin = 10 } = options;
+  const { height = 100, verticalMargin = 10 } = options;
   const { mode } = useChartData();
   const scaleX = useScale2DX();
   const spectrum = useSpectrum() as Spectrum2D;
@@ -29,7 +29,7 @@ function usePath(data: NmrData1D, options: UsePathOptions) {
   const { x, re: y } = data;
 
   const scaleY = getSliceYScale(spectrum.data, height, mode, {
-    margin: vericalMargin,
+    margin: verticalMargin,
   });
 
   const pathBuilder = new PathBuilder();
@@ -42,11 +42,11 @@ function usePath(data: NmrData1D, options: UsePathOptions) {
 }
 
 function HorizontalSliceChart(props: HorizontalSliceChartProps) {
-  const { vericalMargin = 10, data, reverse = false } = props;
+  const { verticalMargin = 10, data, reverse = false } = props;
   const { width, margin, displayerKey } = useChartData();
   const height = margin.top;
 
-  const path = usePath(data, { height, reverse, vericalMargin });
+  const path = usePath(data, { height, reverse, verticalMargin });
 
   const innerWidth = width - margin.left - margin.right;
 

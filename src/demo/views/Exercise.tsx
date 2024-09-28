@@ -165,7 +165,7 @@ export default function Exercise(props) {
     };
   }, [baseURL, file, props]);
 
-  const showAnswerAreaHander = useCallback(() => {
+  const showAnswerAreaHandler = useCallback(() => {
     showAnswerArea((prev) => !prev);
   }, []);
 
@@ -185,7 +185,7 @@ export default function Exercise(props) {
         <button
           css={showButtonCss}
           type="button"
-          onClick={showAnswerAreaHander}
+          onClick={showAnswerAreaHandler}
         >
           {!answerAreaVisible ? 'Show answer area' : 'Hide answer area '}
         </button>

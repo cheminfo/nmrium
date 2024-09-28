@@ -149,9 +149,9 @@ function resetDefaultViewMatrixGenerationOptions(
   const matrixGeneration = initMatrixGeneration(draft, nucleus);
   const currentOptions = getMatrixGenerationPanelOptions(draft, nucleus);
   const { matrixOptions } = currentOptions;
-  const { matrixOptions: defaultMatrixOptions, ...vewOptions } =
+  const { matrixOptions: defaultMatrixOptions, ...viewOptions } =
     getMatrixGenerationDefaultOptions();
-  matrixGeneration[nucleus] = { matrixOptions, ...vewOptions };
+  matrixGeneration[nucleus] = { matrixOptions, ...viewOptions };
 }
 
 function changeMatrixGenerationScale(

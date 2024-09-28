@@ -191,11 +191,11 @@
       },
       {
         "file": "./data/tests/simulated/d2-changingHeigh.json",
-        "title": "δ=2 Variating heigh"
+        "title": "δ=2 Variable height"
       },
       {
         "file": "./data/tests/simulated/d2-5-8-changingNbPoints.json",
-        "title": "δ=2,5,8 Variating nbPoints"
+        "title": "δ=2,5,8 Variable nbPoints"
       },
       {
         "file": "./data/tests/simulated/d1-2-3-4-5-6-7-8.json",

@@ -37,7 +37,7 @@ function FilterElements(props: FilterElementsProps) {
   const { filter, spectraCounter, onEnableChange } = props;
   const { id, name, flag, label, isDeleteAllow } = filter;
 
-  function handelFilterCheck(id, event: React.ChangeEvent<HTMLInputElement>) {
+  function handleFilterCheck(id, event: React.ChangeEvent<HTMLInputElement>) {
     const enabled = event.target.checked;
     const hideLoading = toaster.showLoading({
       message: `${enabled ? 'Enable' : 'Disable'} filter in progress`,
@@ -49,7 +49,7 @@ function FilterElements(props: FilterElementsProps) {
     onEnableChange();
   }
 
-  function handelDeleteFilter() {
+  function handleDeleteFilter() {
     const buttons: AlertButton[] = [
       {
         text: 'Yes',
@@ -99,7 +99,7 @@ function FilterElements(props: FilterElementsProps) {
         intent="danger"
         minimal
         onClick={() => {
-          handelDeleteFilter();
+          handleDeleteFilter();
         }}
         disabled={!isDeleteAllow}
       >
@@ -112,7 +112,7 @@ function FilterElements(props: FilterElementsProps) {
         innerLabel="Off"
         checked={flag || false}
         onChange={(event) => {
-          handelFilterCheck(id, event);
+          handleFilterCheck(id, event);
         }}
       />
     </>

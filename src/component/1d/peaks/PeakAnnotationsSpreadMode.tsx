@@ -58,7 +58,7 @@ function PeakAnnotationsTreeStyle(props: PeaksAnnotationsProps) {
                     value={value}
                     format={peakFormat}
                     color={spectrumColor}
-                    peakEditionFieldPositon={{
+                    peakEditionFieldPosition={{
                       x: group.meta.groupStartX + startX,
                       y: decimalsCount * 10,
                     }}
@@ -81,7 +81,7 @@ interface PeakAnnotationProps {
   color: string;
   id: string;
   value: number;
-  peakEditionFieldPositon: { x: number; y: number };
+  peakEditionFieldPosition: { x: number; y: number };
   peaksSource: PeaksSource;
   parentKeys: string[];
 }
@@ -93,7 +93,7 @@ function PeakAnnotation(props: PeakAnnotationProps) {
     id,
     value,
     x,
-    peakEditionFieldPositon,
+    peakEditionFieldPosition,
     peaksSource,
     parentKeys,
   } = props;
@@ -106,7 +106,7 @@ function PeakAnnotation(props: PeakAnnotationProps) {
       onMouseEnter={() => highlight.show()}
       onMouseLeave={() => highlight.hide()}
     >
-      <PeakEditionListener {...{ ...peakEditionFieldPositon, id, value }}>
+      <PeakEditionListener {...{ ...peakEditionFieldPosition, id, value }}>
         <text
           transform={`rotate(-90) translate(0 ${startX})`}
           dominantBaseline="middle"

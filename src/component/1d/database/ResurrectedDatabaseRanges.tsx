@@ -27,8 +27,8 @@ function ResurrectedDatabaseRanges() {
   }
 
   const fullHeight = height - margin.bottom;
-  const blockHight = fullHeight / 4;
-  const translateY = fullHeight - blockHight - marginBottom;
+  const blockHeight = fullHeight / 4;
+  const translateY = fullHeight - blockHeight - marginBottom;
 
   const { ranges = [] } = highlight.sourceData.extra || {};
 
@@ -54,7 +54,7 @@ function ResurrectedDatabaseRanges() {
   });
 
   const scaleY = getYScale({
-    height: blockHight,
+    height: blockHeight,
     margin: { top: 0, bottom: 0 },
     verticalAlign,
     yDomain,

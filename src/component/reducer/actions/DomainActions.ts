@@ -245,12 +245,12 @@ function setDomain(draft: Draft<State>, options?: SetDomainOptions) {
 
 function setMode(draft: Draft<State>) {
   const { xDomains, view, data, displayerMode } = draft;
-  const nuclues = view.spectra.activeTab;
+  const nucleus = view.spectra.activeTab;
 
   if (displayerMode === '1D') {
     const datum_ = data.find(
       (datum) =>
-        xDomains[datum.id] && nucleusToString(datum.info.nucleus) === nuclues,
+        xDomains[datum.id] && nucleusToString(datum.info.nucleus) === nucleus,
     );
     draft.mode = (datum_ as Spectrum1D)?.info.isFid ? 'LTR' : 'RTL';
   } else {
@@ -264,7 +264,7 @@ function setMode(draft: Draft<State>) {
       hasFt = data.some(
         (spectrum) =>
           !spectrum.info.isFid &&
-          nucleusToString(spectrum.info.nucleus) === nuclues,
+          nucleusToString(spectrum.info.nucleus) === nucleus,
       );
     }
 

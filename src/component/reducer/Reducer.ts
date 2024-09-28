@@ -599,7 +599,7 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
       case 'SET_SPECTRA_VERTICAL_ALIGN':
         return ToolsActions.setSpectraVerticalAlign(draft);
       case 'SET_ACTIVE_TAB':
-        return ToolsActions.handelSetActiveTab(draft, action);
+        return ToolsActions.handleSetActiveTab(draft, action);
       case 'ADD_BASE_LINE_ZONE':
         return ToolsActions.handleAddBaseLineZone(draft, action);
       case 'DELETE_BASE_LINE_ZONE':
