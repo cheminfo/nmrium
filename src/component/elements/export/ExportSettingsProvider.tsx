@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useContext, useMemo } from 'react';
 
-interface ExportSettingsContextProps {
+export interface ExportSettingsContextProps {
   width: number;
   height: number;
 }
