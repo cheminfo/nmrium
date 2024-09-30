@@ -251,7 +251,7 @@ function PrintPageOptionsModal(props: PrintOptionsModalProps) {
 const labelStyle: LabelStyle = {
   label: {
     color: '#232323',
-    width: '50px',
+    width: '80px',
   },
   wrapper: {
     display: 'flex',
@@ -332,6 +332,11 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
           background-color: white;
         `}
       >
+        <Label style={labelStyle} title="Description:">
+          <Tag>
+            {`${convertToPixels(currentWidth, unit, currentDPI)} px x ${convertToPixels(currentHeight, unit, currentDPI)} px @ ${currentDPI}DPI`}
+          </Tag>
+        </Label>
         <Label style={labelStyle} title="Size">
           <div style={{ display: 'flex', flexDirection: 'row' }}>
             <NumberInput2Controller
@@ -387,9 +392,6 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
             debounceTime={250}
           />
         </Label>
-        <span>
-          {`Description: ${convertToPixels(currentWidth, unit, currentDPI)} px x ${convertToPixels(currentHeight, unit, currentDPI)} px @ ${currentDPI}DPI`}
-        </span>
       </DialogBody>
       <DialogFooter>
         <ActionButtons
