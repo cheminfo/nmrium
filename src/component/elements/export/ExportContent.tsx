@@ -349,6 +349,7 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
                 transformSize(value, 'height', 'width')
               }
               debounceTime={250}
+              placeholder="width"
             />
             <div style={{ padding: '0px 5px' }}>
               <Button
@@ -370,6 +371,7 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
                 transformSize(value, 'width', 'height')
               }
               debounceTime={250}
+              placeholder="height"
             />
           </div>
         </Label>
@@ -390,6 +392,7 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
             controllerProps={{ rules: { required: true } }}
             transformValue={transformResolution}
             debounceTime={250}
+            placeholder="DPI"
           />
         </Label>
       </DialogBody>
