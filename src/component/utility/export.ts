@@ -164,12 +164,67 @@ interface CreateCanvasByChunksOptions {
   scaleFactor?: number;
 }
 
+interface DrawImageOptions {
+  context: OffscreenCanvasRenderingContext2D;
+  chunkX: number;
+  chunkY: number;
+  chunkSize: number;
+  width: number;
+  height: number;
+  scaleFactor: number;
+  img: HTMLImageElement;
+}
+
+function drawImage(options: DrawImageOptions) {
+  const {
+    context,
+    img,
+    scaleFactor,
+    chunkX,
+    chunkY,
+    chunkSize,
+    width,
+    height,
+  } = options;
+
+  const x = chunkX * chunkSize;
+  const y = chunkY * chunkSize;
+  const chunkWidth = Math.min(chunkSize, width - x);
+  const chunkHeight = Math.min(chunkSize, height - y);
+
+  return new Promise<void>((resolve, reject) => {
+    try {
+      context.save();
+      context.scale(scaleFactor, scaleFactor);
+      context.drawImage(
+        img,
+        x / scaleFactor,
+        y / scaleFactor,
+        chunkWidth / scaleFactor,
+        chunkHeight / scaleFactor,
+        x,
+        y,
+        chunkWidth,
+        chunkHeight,
+      );
+      context.restore();
+      setTimeout(resolve, 0);
+    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+      reject(error);
+    }
+  });
+}
+
 async function createCanvasByChunks(
   img: HTMLImageElement,
   options: CreateCanvasByChunksOptions,
-): Promise<{ canvas: HTMLCanvasElement; context: CanvasRenderingContext2D }> {
+): Promise<{
+  canvas: OffscreenCanvas;
+  context: OffscreenCanvasRenderingContext2D;
+}> {
   const { width, height, scaleFactor = 1, chunkSize = 512 } = options;
-  const canvas = document.createElement('canvas');
+  const canvas = new OffscreenCanvas(width, height);
   canvas.width = width;
   canvas.height = height;
   const context = canvas.getContext('2d');
@@ -189,29 +244,16 @@ async function createCanvasByChunks(
 
   for (let chunkX = 0; chunkX < numChunksX; chunkX++) {
     for (let chunkY = 0; chunkY < numChunksY; chunkY++) {
-      const x = chunkX * chunkSize;
-      const y = chunkY * chunkSize;
-      const chunkWidth = Math.min(chunkSize, width - x);
-      const chunkHeight = Math.min(chunkSize, height - y);
-
-      const chunkPromise = new Promise<void>((resolve) => {
-        context.save();
-        context.scale(scaleFactor, scaleFactor);
-        context.drawImage(
-          img,
-          x / scaleFactor,
-          y / scaleFactor,
-          chunkWidth / scaleFactor,
-          chunkHeight / scaleFactor,
-          x,
-          y,
-          chunkWidth,
-          chunkHeight,
-        );
-        context.restore();
-        setTimeout(resolve, 0);
+      const chunkPromise = drawImage({
+        context,
+        img,
+        chunkSize,
+        chunkX,
+        chunkY,
+        width,
+        height,
+        scaleFactor,
       });
-
       chunksPromises.push(chunkPromise);
     }
   }
@@ -247,11 +289,8 @@ async function exportAsPng(
       resolution,
     });
 
-    canvas.toBlob((pngBlob) => {
-      if (pngBlob) {
-        saveAs(pngBlob, `${fileName}.png`);
-      }
-    }, 'image/png');
+    const pngBlob = await canvas.convertToBlob({ type: 'image/png' });
+    saveAs(pngBlob, `${fileName}.png`);
   } catch (error) {
     // TODO: handle error.
     reportError(error);
@@ -274,6 +313,19 @@ function createImageFromBlob(blob: Blob): Promise<HTMLImageElement> {
   });
 }
 
+function transferToCanvas(offscreenCanvas: OffscreenCanvas) {
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d');
+
+  if (!context) {
+    return null;
+  }
+
+  // Transfer the offscreen canvas to the main canvas
+  context.drawImage(offscreenCanvas, 0, 0);
+
+  return canvas;
+}
 // hack way to copy the image to the clipboard
 // TODO: remove when Firefox widely supports ClipboardItem
 // https://caniuse.com/mdn-api_clipboarditem
@@ -304,21 +356,24 @@ async function writeImageToClipboard(image: Blob, isSafari = false) {
     new ClipboardItem({ [image.type]: isSafari ? resolveBlob(image) : image }),
   ]);
 }
-async function copyBlobToClipboard(canvas: HTMLCanvasElement) {
-  canvas.toBlob(async (b) => {
-    if (!b) return;
-    const isSafari = /^(?<safari>(?!chrome|android).)*safari/i.test(
-      navigator.userAgent,
-    );
-    if (typeof ClipboardItem !== 'undefined') {
-      // eslint-disable-next-line @typescript-eslint/use-unknown-in-catch-callback-variable
-      await writeImageToClipboard(b, isSafari).catch(reportError);
-    } else {
-      const png = canvas.toDataURL('image/png', 1);
-      copyDataURLClipboardFireFox(png);
-      URL.revokeObjectURL(png);
+async function copyBlobToClipboard(canvas: OffscreenCanvas) {
+  const pngBlob = await canvas.convertToBlob({ type: 'image/png' });
+  if (!pngBlob) return;
+  const isSafari = /^(?<safari>(?!chrome|android).)*safari/i.test(
+    navigator.userAgent,
+  );
+  if (typeof ClipboardItem !== 'undefined') {
+    // eslint-disable-next-line @typescript-eslint/use-unknown-in-catch-callback-variable
+    await writeImageToClipboard(pngBlob, isSafari).catch(reportError);
+  } else {
+    const screenCanvas = transferToCanvas(canvas);
+    if (!screenCanvas) {
+      return null;
     }
-  });
+    const png = screenCanvas.toDataURL('image/png', 1);
+    copyDataURLClipboardFireFox(png);
+    URL.revokeObjectURL(png);
+  }
 }
 
 interface CopyPNGToClipboardOptions {
