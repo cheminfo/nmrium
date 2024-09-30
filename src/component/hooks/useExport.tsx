@@ -11,8 +11,6 @@ import {
   exportAsSVG,
 } from '../utility/export';
 
-import { useExportSettings } from './useExportSettings';
-
 interface SaveOptions {
   include: ExportOptions;
   name: string;
@@ -84,10 +82,6 @@ export function useExportViewPort() {
   const toaster = useToaster();
   const state = useChartData();
 
-  const {
-    png: { resolution: pngResolution },
-  } = useExportSettings();
-
   function copyPNGToClipboardHandler(targetElement: HTMLElement) {
     return new Promise<void>((resolve) => {
       if (state.data.length === 0 || !targetElement) {
@@ -101,7 +95,6 @@ export function useExportViewPort() {
       setTimeout(async () => {
         await copyPNGToClipboard('nmrSVG', {
           rootElement: targetElement,
-          resolution: pngResolution,
         });
         toaster.show({
           message: 'Image copied to clipboard',
@@ -142,10 +135,9 @@ export function useExportViewPort() {
       });
       void setTimeout(async () => {
         const fileName = state.data[0]?.info?.name;
-        exportAsPng('nmrSVG', {
+        void exportAsPng('nmrSVG', {
           rootElement: targetElement,
           fileName,
-          resolution: pngResolution,
         });
         hideLoading();
         resolve();

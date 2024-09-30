@@ -9,13 +9,13 @@ import { useLoader } from '../context/LoaderContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { useToaster } from '../context/ToasterContext';
 import { AlertButton, useAlert } from '../elements/Alert';
+import { useExportManagerAPI } from '../elements/export/ExportManager';
 import { HighlightEventSource, useHighlightData } from '../highlight/index';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 import { useExport } from '../hooks/useExport';
 import useToolsFunctions from '../hooks/useToolsFunctions';
 import SaveAsModal from '../modal/SaveAsModal';
 import { options } from '../toolbar/ToolTypes';
-import { useExportManagerActionsRef } from '../elements/export/ExportManager';
 
 interface KeysListenerTrackerProps {
   mainDivRef: RefObject<HTMLDivElement>;
@@ -54,7 +54,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
   const isToolVisible = useCheckToolsVisibility();
 
   const { highlight, remove } = useHighlightData();
-  const exportViewportAPI = useExportManagerActionsRef();
+  const exportViewportAPI = useExportManagerAPI();
 
   const mouseIsOverDisplayer = useRef(false);
   useEffect(() => {

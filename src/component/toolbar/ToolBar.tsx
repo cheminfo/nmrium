@@ -40,7 +40,7 @@ import {
   ToolbarPopoverMenuItem,
   ToolbarPopoverItem,
 } from '../elements/ToolbarPopoverItem';
-import { useExportManagerActionsRef } from '../elements/export/ExportManager';
+import { useExportManagerAPI } from '../elements/export/ExportManager';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
 import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature';
 import {
@@ -168,7 +168,7 @@ export default function ToolBar() {
 
   const { saveAsJSONHandler } = useExport();
 
-  const exportActions = useExportManagerActionsRef();
+  const exportViewportAPI = useExportManagerAPI();
 
   function importHandler(data) {
     switch (data?.id) {
@@ -191,11 +191,10 @@ export default function ToolBar() {
   function exportHandler(data) {
     switch (data?.id) {
       case 'svg':
-        exportActions.current?.export({ format: 'svg' });
+        exportViewportAPI.current?.export({ format: 'svg' });
         break;
       case 'png':
-        exportActions.current?.export({ format: 'png' });
-        // void saveAsPNGHandler();
+        exportViewportAPI.current?.export({ format: 'png' });
         break;
       case 'json':
         saveAsJSONHandler();
@@ -204,7 +203,7 @@ export default function ToolBar() {
         openDialog('saveAs');
         break;
       case 'copy':
-        exportActions.current?.export({
+        exportViewportAPI.current?.export({
           format: 'png',
           destination: 'clipboard',
         });

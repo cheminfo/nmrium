@@ -128,11 +128,8 @@ interface CreateObjectURLOptions {
   resolution?: number;
 }
 
-function createObjectURL(blob: Blob, options: CreateObjectURLOptions) {
+async function createCanvas(blob: Blob, options: CreateObjectURLOptions) {
   const { resolution, width, height } = options;
-
-  const canvas = document.createElement('canvas');
-  const context = canvas.getContext('2d');
 
   /**
    * Change the canvas size based on DPI
@@ -140,31 +137,93 @@ function createObjectURL(blob: Blob, options: CreateObjectURLOptions) {
    * */
 
   let scaleFactor = 1;
+  let scaledWidth = width;
+  let scaledHeight = height;
 
   if (resolution) {
     scaleFactor = resolution / 96;
-    canvas.width = width * scaleFactor;
-    canvas.height = height * scaleFactor;
-  } else {
-    canvas.width = width;
-    canvas.height = height;
+    scaledWidth = width * scaleFactor;
+    scaledHeight = height * scaleFactor;
   }
 
-  if (context) {
-    context.fillStyle = 'white';
-    context.scale(scaleFactor, scaleFactor);
-    context.fillRect(
-      0,
-      0,
-      canvas.width / scaleFactor,
-      canvas.height / scaleFactor,
-    );
-  }
+  const img = await createImageFromBlob(blob);
 
-  return { url: URL.createObjectURL(blob), canvas, context };
+  const { canvas, context } = await createCanvasByChunks(img, {
+    width: scaledWidth,
+    height: scaledHeight,
+    scaleFactor,
+  });
+
+  return { canvas, context };
 }
 
-function exportAsPng(targetElementID: string, options: ExportAsPNGOptions) {
+interface CreateCanvasByChunksOptions {
+  width: number;
+  height: number;
+  chunkSize?: number;
+  scaleFactor?: number;
+}
+
+async function createCanvasByChunks(
+  img: HTMLImageElement,
+  options: CreateCanvasByChunksOptions,
+): Promise<{ canvas: HTMLCanvasElement; context: CanvasRenderingContext2D }> {
+  const { width, height, scaleFactor = 1, chunkSize = 512 } = options;
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const context = canvas.getContext('2d');
+
+  if (!context) {
+    throw new Error('Failed to get canvas context');
+  }
+
+  // Fill the background with white
+  context.fillStyle = 'white';
+  context.fillRect(0, 0, width, height);
+
+  const chunksPromises: Array<Promise<void>> = [];
+
+  const numChunksX = Math.ceil(width / chunkSize);
+  const numChunksY = Math.ceil(height / chunkSize);
+
+  for (let chunkX = 0; chunkX < numChunksX; chunkX++) {
+    for (let chunkY = 0; chunkY < numChunksY; chunkY++) {
+      const x = chunkX * chunkSize;
+      const y = chunkY * chunkSize;
+      const chunkWidth = Math.min(chunkSize, width - x);
+      const chunkHeight = Math.min(chunkSize, height - y);
+
+      const chunkPromise = new Promise<void>((resolve) => {
+        context.save();
+        context.scale(scaleFactor, scaleFactor);
+        context.drawImage(
+          img,
+          x / scaleFactor,
+          y / scaleFactor,
+          chunkWidth / scaleFactor,
+          chunkHeight / scaleFactor,
+          x,
+          y,
+          chunkWidth,
+          chunkHeight,
+        );
+        context.restore();
+        setTimeout(resolve, 0);
+      });
+
+      chunksPromises.push(chunkPromise);
+    }
+  }
+
+  await Promise.all(chunksPromises);
+
+  return { canvas, context };
+}
+async function exportAsPng(
+  targetElementID: string,
+  options: ExportAsPNGOptions,
+) {
   const {
     rootElement,
     fileName = 'experiment',
@@ -182,24 +241,37 @@ function exportAsPng(targetElementID: string, options: ExportAsPNGOptions) {
   const height = externalHeight ?? originHeight;
 
   try {
-    const { url, context, canvas } = createObjectURL(blob, {
+    const { canvas } = await createCanvas(blob, {
       width,
       height,
       resolution,
     });
 
-    const img = new Image();
-    img.addEventListener('load', () => {
-      context?.drawImage(img, 0, 0);
-      const png = canvas.toDataURL('image/png', 1);
-      saveAs(png, `${fileName}.png`);
-      URL.revokeObjectURL(png);
-    });
-    img.src = url;
+    canvas.toBlob((pngBlob) => {
+      if (pngBlob) {
+        saveAs(pngBlob, `${fileName}.png`);
+      }
+    }, 'image/png');
   } catch (error) {
     // TODO: handle error.
     reportError(error);
   }
+}
+
+function createImageFromBlob(blob: Blob): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(blob);
+    const img = new Image();
+    img.addEventListener('load', () => {
+      URL.revokeObjectURL(url);
+      resolve(img);
+    });
+    img.addEventListener('error', () => {
+      URL.revokeObjectURL(url);
+      reject(new Error('Failed to load image'));
+    });
+    img.src = url;
+  });
 }
 
 // hack way to copy the image to the clipboard
@@ -262,17 +334,12 @@ async function copyPNGToClipboard(
   const { rootElement, css, resolution } = options;
   const { blob, width, height } = getBlob(rootElement, targetElementID, css);
   try {
-    const img = new Image();
-    const { url, context, canvas } = createObjectURL(blob, {
+    const { canvas } = await createCanvas(blob, {
       width,
       height,
       resolution,
     });
-    img.addEventListener('load', async () => {
-      context?.drawImage(img, 0, 0);
-      await copyBlobToClipboard(canvas);
-    });
-    img.src = url;
+    await copyBlobToClipboard(canvas);
   } catch (error) {
     if (error instanceof ReferenceError) {
       // eslint-disable-next-line no-alert
@@ -330,7 +397,9 @@ function getBlob(
   ${css?.styles || nmrCss}
   </style>`;
   const svg = `${head + style + _svg.innerHTML}</svg>`;
+
   const blob = new Blob([svg], { type: 'image/svg+xml' });
+
   return { blob, width, height };
 }
 
@@ -360,7 +429,8 @@ function getMoleculesElement(rootRef) {
     group.append(molElement);
     group.setAttribute(
       'transform',
-      `translate(${matrix.m41} ${matrix.m42 + actionHeaderElement.clientHeight
+      `translate(${matrix.m41} ${
+        matrix.m42 + actionHeaderElement.clientHeight
       })`,
     );
     floatingMoleculesGroup.append(group);

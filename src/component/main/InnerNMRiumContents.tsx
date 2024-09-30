@@ -15,6 +15,7 @@ import checkModifierKeyActivated from '../../data/utilities/checkModifierKeyActi
 import KeysListenerTracker from '../EventsTrackers/KeysListenerTracker';
 import { FilterSyncOptionsProvider } from '../context/FilterSyncOptionsContext';
 import { usePreferences } from '../context/PreferencesContext';
+import { ExportManagerController } from '../elements/export/ExportManager';
 import { PrintContent } from '../elements/print/PrintContent';
 import Header from '../header/Header';
 import DropZone from '../loader/DropZone';
@@ -185,6 +186,9 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
         <PrintWrapper>
           <NMRiumViewer emptyText={emptyText} viewerRef={viewerRef} />
         </PrintWrapper>
+        <ExportManagerController>
+          <NMRiumViewer emptyText={emptyText} viewerRef={viewerRef} />
+        </ExportManagerController>
       </div>
     </>
   );
