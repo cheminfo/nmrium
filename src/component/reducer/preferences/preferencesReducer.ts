@@ -1,9 +1,11 @@
 import { Draft, produce } from 'immer';
 import {
   CURRENT_EXPORT_VERSION,
+  ExportPreferences,
   migrateSettings,
   MultipleSpectraAnalysisPreferences,
   PrintPageOptions,
+  UniversalExportSettings,
   Workspace,
   WorkSpaceSource,
 } from 'nmr-load-save';
@@ -43,6 +45,7 @@ import { setVerticalSplitterPosition } from './actions/setVerticalSplitterPositi
 import { setWorkspace } from './actions/setWorkspace';
 import { toggleInformationBlock } from './actions/toggleInformationBlock';
 import { mapWorkspaces } from './utilities/mapWorkspaces';
+import { changeExportSettings } from './actions/changeExportSettings';
 
 const LOCAL_STORAGE_SETTINGS_KEY = 'nmr-general-settings';
 
@@ -128,6 +131,13 @@ export type ChangePrintPageSettingsAction = ActionType<
   'CHANGE_PRINT_PAGE_SETTINGS',
   PrintPageOptions
 >;
+export type ChangeExportSettingsAction = ActionType<
+  'CHANGE_EXPORT_SETTINGS',
+  {
+    key: keyof ExportPreferences;
+    options: UniversalExportSettings;
+  }
+>;
 
 type PreferencesActions =
   | InitPreferencesAction
@@ -145,7 +155,8 @@ type PreferencesActions =
   | SetVerticalSplitterPositionAction
   | ChangeInformationBlockPosition
   | ToggleInformationBlock
-  | ChangePrintPageSettingsAction;
+  | ChangePrintPageSettingsAction
+  | ChangeExportSettingsAction;
 
 export const WORKSPACES: Array<{
   key: NMRiumWorkspace;
@@ -298,6 +309,8 @@ function innerPreferencesReducer(
       return toggleInformationBlock(draft, action);
     case 'CHANGE_PRINT_PAGE_SETTINGS':
       return changePrintPageSettings(draft, action);
+    case 'CHANGE_EXPORT_SETTINGS':
+      return changeExportSettings(draft, action);
 
     default:
       return draft;
