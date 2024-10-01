@@ -10,7 +10,7 @@ import {
   AnalysisColumnsTypes,
   SpectraAnalysisColumns,
   SpectraAnalysisColumn,
-  AnalisisColumnsValuesKeys,
+  AnalysisColumnsValuesKeys,
 } from 'nmr-load-save';
 
 import { RangeDetectionResult } from '../types/data1d/index';
@@ -133,7 +133,7 @@ export function changeColumnValueKey(
   spectraAnalysis: PanelsPreferences['multipleSpectraAnalysis'],
   nucleus: string,
   columnKey: string,
-  newKey: AnalisisColumnsValuesKeys,
+  newKey: AnalysisColumnsValuesKeys,
 ) {
   spectraAnalysis[nucleus].analysisOptions.columns[columnKey].valueKey = newKey;
 }
@@ -149,7 +149,7 @@ export function analyzeSpectra(
     nucleus,
     {
       type: AnalysisColumnsTypes.NORMAL,
-      valueKey: AnalisisColumnsValuesKeys.ABSOLUTE,
+      valueKey: AnalysisColumnsValuesKeys.ABSOLUTE,
       from,
       to,
       index: 1,

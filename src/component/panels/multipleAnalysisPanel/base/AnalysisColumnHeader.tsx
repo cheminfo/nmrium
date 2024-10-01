@@ -1,4 +1,4 @@
-import { AnalysisColumnsTypes, AnalisisColumnsValuesKeys } from 'nmr-load-save';
+import { AnalysisColumnsTypes, AnalysisColumnsValuesKeys } from 'nmr-load-save';
 import { CSSProperties, MouseEvent } from 'react';
 
 import { Select2 } from '../../../elements/Select2';
@@ -48,10 +48,10 @@ const styles: Record<
 };
 
 const columnsFilters: Array<{ value: string; label: string }> = [
-  { value: AnalisisColumnsValuesKeys.RELATIVE, label: 'Relative' },
-  { value: AnalisisColumnsValuesKeys.ABSOLUTE, label: 'Absolute' },
-  { value: AnalisisColumnsValuesKeys.MIN, label: 'Min Intensity' },
-  { value: AnalisisColumnsValuesKeys.MAX, label: 'Max Intensity' },
+  { value: AnalysisColumnsValuesKeys.RELATIVE, label: 'Relative' },
+  { value: AnalysisColumnsValuesKeys.ABSOLUTE, label: 'Absolute' },
+  { value: AnalysisColumnsValuesKeys.MIN, label: 'Min Intensity' },
+  { value: AnalysisColumnsValuesKeys.MAX, label: 'Max Intensity' },
 ];
 
 interface AnalysisColumnHeaderProps {
