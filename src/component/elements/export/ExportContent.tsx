@@ -11,6 +11,7 @@ import {
   CSSProperties,
   ReactNode,
   useCallback,
+  useDeferredValue,
   useEffect,
   useRef,
   useState,
@@ -24,7 +25,7 @@ import { NumberInput2Controller } from '../NumberInput2Controller';
 import { Select2Controller } from '../Select2Controller';
 
 import { ExportSettingsProvider } from './ExportSettingsProvider';
-import { convertToPixels, round, Unit, units } from './units';
+import { convert, convertToPixels, round, Unit, units } from './units';
 
 const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
 
@@ -43,7 +44,7 @@ interface BaseExportProps {
 
 interface BaseExportFrameProps {
   children: ReactNode;
-  onRenderComplete: (
+  onExportReady: (
     documentElement: HTMLElement,
     dimension: Pick<ExportOptions, 'width' | 'height'>,
   ) => void;
@@ -55,11 +56,12 @@ interface ExportFrameProps
   extends BaseExportFrameProps,
     Partial<BaseExportProps> {
   exportPageOptions?: ExportOptions;
+  onExportDialogClose?: () => void;
 }
 
 export function ExportContent(props: ExportFrameProps) {
-  const [isPageOptionModalOpened, togglePageOptionDialog] =
-    useState<boolean>(false);
+  // const [isPageOptionModalOpened, togglePageOptionDialog] =
+  //   useState<boolean>(false);
   const [pageOptions, setPageOptions] = useState<Pick<
     ExportOptions,
     'width' | 'height'
@@ -70,26 +72,26 @@ export function ExportContent(props: ExportFrameProps) {
     exportPageOptions,
     defaultExportPageOptions,
     onExportOptionsChange,
-    onRenderComplete,
+    onExportReady,
+    onExportDialogClose,
   } = props;
 
-  useEffect(() => {
-    if (!exportPageOptions) {
-      togglePageOptionDialog(true);
-    } else {
-      setPageOptions(getSizeInPixel(exportPageOptions));
-    }
-  }, [exportPageOptions]);
+  // useEffect(() => {
+  //   if (!exportPageOptions) {
+  //     setPageOptions(null);
+  //   } else {
+  //     setPageOptions(getSizeInPixel(exportPageOptions));
+  //   }
+  // }, [exportPageOptions]);
 
   if (!pageOptions) {
     return (
       <PrintPageOptionsModal
-        isOpen={isPageOptionModalOpened}
+        isOpen
         onCloseDialog={() => {
-          togglePageOptionDialog(false);
+          onExportDialogClose?.();
         }}
         onExportOptionsChange={(options) => {
-          togglePageOptionDialog(false);
           onExportOptionsChange?.(options);
           setPageOptions(getSizeInPixel(options));
         }}
@@ -98,7 +100,8 @@ export function ExportContent(props: ExportFrameProps) {
     );
   }
 
-  const { width = 400, height = 400 } = pageOptions;
+  const { width = 400, height = 400 } =
+    (exportPageOptions && getSizeInPixel(exportPageOptions)) || pageOptions;
   return (
     <>
       <div
@@ -115,7 +118,7 @@ export function ExportContent(props: ExportFrameProps) {
       />
       <InnerPrintFrame
         exportPageOptions={{ width, height }}
-        onRenderComplete={onRenderComplete}
+        onExportReady={onExportReady}
       >
         {children}
       </InnerPrintFrame>
@@ -124,7 +127,7 @@ export function ExportContent(props: ExportFrameProps) {
 }
 
 export function InnerPrintFrame(props: InnerExportFrameProps) {
-  const { children, exportPageOptions, onRenderComplete } = props;
+  const { children, exportPageOptions, onExportReady } = props;
 
   const { width, height } = exportPageOptions;
 
@@ -166,10 +169,10 @@ export function InnerPrintFrame(props: InnerExportFrameProps) {
         {content &&
           createPortal(
             <RenderContainer
-              onRenderComplete={() => {
+              onExportReady={() => {
                 const document = frameRef.current?.contentWindow?.document;
                 if (document) {
-                  onRenderComplete(document.documentElement, { width, height });
+                  onExportReady(document.documentElement, { width, height });
                 }
               }}
               style={{
@@ -188,16 +191,16 @@ export function InnerPrintFrame(props: InnerExportFrameProps) {
 }
 
 function RenderContainer(props: {
-  onRenderComplete: () => void;
+  onExportReady: () => void;
   children: ReactNode;
   style?: CSSProperties;
 }) {
-  const { onRenderComplete, style, children } = props;
+  const { onExportReady, style, children } = props;
 
   useEffect(() => {
     const handleRenderComplete = () => {
       setTimeout(() => {
-        onRenderComplete();
+        onExportReady();
       }, 250);
     };
 
@@ -206,7 +209,7 @@ function RenderContainer(props: {
     return () => {
       cancelAnimationFrame(animationFrameId);
     };
-  }, [onRenderComplete]);
+  }, [onExportReady]);
 
   return <div style={style}>{children}</div>;
 }
@@ -284,7 +287,6 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
 
   function submitHandler(values) {
     onExportOptionsChange(values);
-    onCloseDialog?.();
   }
 
   const { handleSubmit, control, watch, setValue } = useForm<ExportOptions>({
@@ -297,6 +299,8 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
     height: currentHeight,
     dpi: currentDPI,
   } = watch();
+
+  const previousUnit = useDeferredValue(unit);
 
   function transformSize(
     value: number,
@@ -324,6 +328,14 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
     }
 
     return value;
+  }
+
+  function handleUnitChange({ unit }) {
+    const w = round(convert(currentWidth, previousUnit, unit, dpi));
+    const h = round(convert(currentHeight, previousUnit, unit, dpi));
+    setValue('width', w);
+    setValue('height', h);
+    refSize.current = { width: w, height: h, dpi };
   }
   return (
     <Dialog isOpen title="Export options" onClose={onCloseDialog}>
@@ -382,6 +394,7 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
             itemTextKey="name"
             itemValueKey="unit"
             items={units}
+            onItemSelect={handleUnitChange}
           />
         </Label>
         <Label style={labelStyle} title="DPI">

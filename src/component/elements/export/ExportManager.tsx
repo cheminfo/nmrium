@@ -81,6 +81,10 @@ export function ExportManagerController(props: ExportManagerControllerProps) {
   const { saveAsPNGHandler, saveAsSVGHandler, copyPNGToClipboardHandler } =
     useExportViewPort();
 
+  function handleCloseExportOptionsDialog() {
+    triggerExport(null);
+  }
+
   async function handleExport(targetElement: HTMLElement) {
     if (!exportOptions) {
       return null;
@@ -111,12 +115,17 @@ export function ExportManagerController(props: ExportManagerControllerProps) {
       }
     }
 
-    triggerExport(null);
+    handleCloseExportOptionsDialog();
   }
 
   if (!exportOptions) return null;
 
   return (
-    <ExportContent onRenderComplete={handleExport}>{children}</ExportContent>
+    <ExportContent
+      onExportReady={handleExport}
+      onExportDialogClose={handleCloseExportOptionsDialog}
+    >
+      {children}
+    </ExportContent>
   );
 }
