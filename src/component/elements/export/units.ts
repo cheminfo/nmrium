@@ -19,7 +19,7 @@ export interface UnitItem {
   unit: Unit;
 }
 
-export function round(value: number, power = 100): number {
+export function round(value: number, power = 100000): number {
   return Math.round(value * power) / power;
 }
 
@@ -43,4 +43,26 @@ export function convertToPixels(value: number, unit: Unit, dpi = 1): number {
   const factor = conversionFactors[unit] || 1;
 
   return round(value * factor * dpi);
+}
+
+export function convert(
+  value: number,
+  fromUnit: Unit,
+  toUnit: Unit,
+  dpi,
+): number {
+  let fromDPI = dpi;
+  let toDPI = dpi;
+  if (fromUnit !== 'px') {
+    fromDPI = 1;
+  }
+  if (toUnit !== 'px') {
+    toDPI = 1;
+  }
+
+  const valueInInch = (conversionFactors[fromUnit] / fromDPI) * value;
+
+  const convertedValue = (valueInInch / conversionFactors[toUnit]) * toDPI;
+
+  return round(convertedValue);
 }
