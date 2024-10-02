@@ -1,3 +1,4 @@
+import { ExportPreferences, UniversalExportSettings } from 'nmr-load-save';
 import {
   createContext,
   ReactNode,
@@ -8,12 +9,14 @@ import {
   useState,
 } from 'react';
 
+import { usePreferences } from '../../context/PreferencesContext';
 import { useExportViewPort } from '../../hooks/useExport';
+import { useWorkspaceExportSettings } from '../../hooks/useWorkspaceExportSettings';
 
 import { ExportContent } from './ExportContent';
 
-type ExportFormat = 'png' | 'svg';
-type ExportDestination = 'file' | 'clipboard';
+export type ExportFormat = 'png' | 'svg';
+export type ExportDestination = 'file' | 'clipboard';
 
 interface ExportOptions {
   format: ExportFormat;
@@ -64,7 +67,8 @@ export function ExportManagerController(props: ExportManagerControllerProps) {
 
   const [exportOptions, triggerExport] = useState<ExportOptions | null>(null);
   const exportRef = useExportManagerAPI();
-
+  const workspaceExportSettings = useWorkspaceExportSettings();
+  const { dispatch } = usePreferences();
   useImperativeHandle(
     exportRef,
     () => ({
@@ -85,12 +89,16 @@ export function ExportManagerController(props: ExportManagerControllerProps) {
     triggerExport(null);
   }
 
-  async function handleExport(targetElement: HTMLElement) {
+  async function handleExport(
+    targetElement: HTMLElement,
+    options: UniversalExportSettings,
+  ) {
     if (!exportOptions) {
       return null;
     }
 
     const { format, destination = 'file' } = exportOptions;
+    let exportKey: keyof ExportPreferences = format;
 
     if (destination === 'file') {
       switch (format) {
@@ -102,28 +110,53 @@ export function ExportManagerController(props: ExportManagerControllerProps) {
           break;
 
         default:
+          // eslint-disable-next-line no-console
+          console.error(
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            `Unsupported format '${format}' for destination 'file'.`,
+          );
           break;
       }
     }
     if (destination === 'clipboard') {
+      exportKey = 'clipboard';
       switch (format) {
         case 'png':
           await copyPNGToClipboardHandler(targetElement);
           break;
         default:
+          // eslint-disable-next-line no-console
+          console.error(
+            `Unsupported format '${format}' for destination 'clipboard'.`,
+          );
           break;
       }
     }
-
     handleCloseExportOptionsDialog();
+    dispatch({
+      type: 'CHANGE_EXPORT_SETTINGS',
+      payload: { key: exportKey, options },
+    });
   }
 
   if (!exportOptions) return null;
+
+  const { format, destination = 'file' } = exportOptions;
+
+  let exportAs: keyof ExportPreferences = format;
+
+  if (destination === 'clipboard') {
+    exportAs = 'clipboard';
+  }
+
+  const settings = workspaceExportSettings[exportAs];
 
   return (
     <ExportContent
       onExportReady={handleExport}
       onExportDialogClose={handleCloseExportOptionsDialog}
+      exportOptions={settings}
+      defaultExportOptions={settings}
     >
       {children}
     </ExportContent>

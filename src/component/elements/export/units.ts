@@ -1,27 +1,11 @@
-export const units = [
-  { name: 'Pixels', unit: 'px' },
-  { name: 'Inches', unit: 'in' },
-  { name: 'Feet', unit: 'ft' },
-  { name: 'Yards', unit: 'yd' },
-  { name: 'Centimetres', unit: 'cm' },
-  { name: 'Millimetres', unit: 'mm' },
-  { name: 'Meters', unit: 'm' },
-  { name: 'Points', unit: 'pt' },
-  { name: 'Picas', unit: 'pc' },
-];
+import { units as baseUnits, Unit } from 'nmr-load-save';
 
-type UnitElement = (typeof units)[number];
-export type Unit = UnitElement['unit'];
-export type UnitName = UnitElement['name'];
+import { roundNumber } from '../../utility/roundNumber';
 
-export interface UnitItem {
-  name: string;
-  unit: Unit;
-}
-
-export function round(value: number, power = 100000): number {
-  return Math.round(value * power) / power;
-}
+export const units = baseUnits.map((unit) => ({
+  ...unit,
+  name: unit.name[0].toUpperCase() + unit.name.slice(1),
+}));
 
 const conversionFactors: Record<Unit, number> = {
   in: 1, // inches
@@ -35,14 +19,29 @@ const conversionFactors: Record<Unit, number> = {
   px: 1, // pixels (default, no conversion)
 };
 
-export function convertToPixels(value: number, unit: Unit, dpi = 1): number {
+interface ConvertOptions {
+  precision?: number; // Number of decimal places for rounding
+}
+
+export function convertToPixels(
+  value: number,
+  unit: Unit,
+  dpi: number,
+  options: ConvertOptions = {},
+): number {
+  const { precision } = options;
   if (unit === 'px') {
     return value;
   }
 
   const factor = conversionFactors[unit] || 1;
+  const convertedValue = value * factor * dpi;
 
-  return round(value * factor * dpi);
+  if (typeof precision === 'number') {
+    return roundNumber(convertedValue, precision);
+  }
+
+  return convertedValue;
 }
 
 export function convert(
@@ -50,7 +49,10 @@ export function convert(
   fromUnit: Unit,
   toUnit: Unit,
   dpi,
+  options: ConvertOptions = {},
 ): number {
+  const { precision } = options;
+
   let fromDPI = dpi;
   let toDPI = dpi;
   if (fromUnit !== 'px') {
@@ -64,5 +66,8 @@ export function convert(
 
   const convertedValue = (valueInInch / conversionFactors[toUnit]) * toDPI;
 
-  return round(convertedValue);
+  if (typeof precision === 'number') {
+    return roundNumber(convertedValue, precision);
+  }
+  return convertedValue;
 }

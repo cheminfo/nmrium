@@ -1,107 +1,80 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Button,
-  Dialog,
-  DialogBody,
-  DialogFooter,
-  Tag,
-} from '@blueprintjs/core';
-import { css } from '@emotion/react';
-import {
-  CSSProperties,
-  ReactNode,
-  useCallback,
-  useDeferredValue,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { UniversalExportSettings } from 'nmr-load-save';
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { useForm } from 'react-hook-form';
 
-import ActionButtons from '../ActionButtons';
-import Label, { LabelStyle } from '../Label';
-import { NumberInput2Controller } from '../NumberInput2Controller';
-import { Select2Controller } from '../Select2Controller';
-
+import { ExportOptionsModal } from './ExportOptionsModal';
 import { ExportSettingsProvider } from './ExportSettingsProvider';
-import { convert, convertToPixels, round, Unit, units } from './units';
+import { RenderDetector } from './RenderDetector';
+import { getSizeInPixel } from './utilities/getSizeInPixel';
+import { transferDocumentStyles } from './utilities/transferDocumentStyles';
 
 const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
 
-function getSizeInPixel(exportPageOptions: ExportOptions) {
-  const { width, height, dpi, unit } = exportPageOptions;
-  const widthInPixel = convertToPixels(width, unit, dpi);
-  const heightInPixel = convertToPixels(height, unit, dpi);
-
-  return { width: widthInPixel, height: heightInPixel };
-}
-
-interface BaseExportProps {
-  onExportOptionsChange: (options: ExportOptions) => void;
-  defaultExportPageOptions: Partial<ExportOptions>;
+export interface BaseExportProps {
+  onExportOptionsChange: (options: UniversalExportSettings) => void;
+  defaultExportOptions?: UniversalExportSettings;
 }
 
 interface BaseExportFrameProps {
   children: ReactNode;
   onExportReady: (
     documentElement: HTMLElement,
-    dimension: Pick<ExportOptions, 'width' | 'height'>,
+    options: UniversalExportSettings,
   ) => void;
 }
 interface InnerExportFrameProps extends BaseExportFrameProps {
-  exportPageOptions: Pick<ExportOptions, 'width' | 'height'>;
+  exportOptions: UniversalExportSettings;
 }
 interface ExportFrameProps
   extends BaseExportFrameProps,
     Partial<BaseExportProps> {
-  exportPageOptions?: ExportOptions;
+  exportOptions?: UniversalExportSettings;
   onExportDialogClose?: () => void;
 }
 
+export const INITIAL_EXPORT_OPTIONS: UniversalExportSettings = {
+  dpi: 72,
+  width: 1920,
+  height: 1080,
+  unit: 'px',
+  useDefaultSettings: false,
+};
+
 export function ExportContent(props: ExportFrameProps) {
-  // const [isPageOptionModalOpened, togglePageOptionDialog] =
-  //   useState<boolean>(false);
-  const [pageOptions, setPageOptions] = useState<Pick<
-    ExportOptions,
-    'width' | 'height'
-  > | null>();
+  const [innerExportOptions, setInnerExportOptions] =
+    useState<UniversalExportSettings | null>();
 
   const {
     children,
-    exportPageOptions,
-    defaultExportPageOptions,
+    exportOptions,
+    defaultExportOptions,
     onExportOptionsChange,
     onExportReady,
     onExportDialogClose,
   } = props;
 
-  // useEffect(() => {
-  //   if (!exportPageOptions) {
-  //     setPageOptions(null);
-  //   } else {
-  //     setPageOptions(getSizeInPixel(exportPageOptions));
-  //   }
-  // }, [exportPageOptions]);
-
-  if (!pageOptions) {
+  if (!innerExportOptions && exportOptions?.useDefaultSettings === false) {
     return (
-      <PrintPageOptionsModal
+      <ExportOptionsModal
         isOpen
         onCloseDialog={() => {
           onExportDialogClose?.();
         }}
         onExportOptionsChange={(options) => {
           onExportOptionsChange?.(options);
-          setPageOptions(getSizeInPixel(options));
+          setInnerExportOptions({ ...options, ...getSizeInPixel(options) });
         }}
-        defaultExportPageOptions={defaultExportPageOptions || {}}
+        defaultExportOptions={defaultExportOptions}
       />
     );
   }
 
-  const { width = 400, height = 400 } =
-    (exportPageOptions && getSizeInPixel(exportPageOptions)) || pageOptions;
+  const options =
+    innerExportOptions ||
+    (exportOptions && { ...exportOptions, ...getSizeInPixel(exportOptions) }) ||
+    defaultExportOptions;
+
   return (
     <>
       <div
@@ -117,7 +90,7 @@ export function ExportContent(props: ExportFrameProps) {
         }}
       />
       <InnerPrintFrame
-        exportPageOptions={{ width, height }}
+        exportOptions={options || INITIAL_EXPORT_OPTIONS}
         onExportReady={onExportReady}
       >
         {children}
@@ -127,9 +100,9 @@ export function ExportContent(props: ExportFrameProps) {
 }
 
 export function InnerPrintFrame(props: InnerExportFrameProps) {
-  const { children, exportPageOptions, onExportReady } = props;
+  const { children, exportOptions, onExportReady } = props;
 
-  const { width, height } = exportPageOptions;
+  const { width, height } = exportOptions;
 
   const frameRef = useRef<HTMLIFrameElement>(null);
   const [content, setContent] = useState<HTMLElement>();
@@ -141,7 +114,7 @@ export function InnerPrintFrame(props: InnerExportFrameProps) {
 
     setContent(document.body);
 
-    transferStyles(document);
+    transferDocumentStyles(document);
     return contentWindow;
   }, []);
 
@@ -168,11 +141,11 @@ export function InnerPrintFrame(props: InnerExportFrameProps) {
       >
         {content &&
           createPortal(
-            <RenderContainer
-              onExportReady={() => {
+            <RenderDetector
+              onRender={() => {
                 const document = frameRef.current?.contentWindow?.document;
                 if (document) {
-                  onExportReady(document.documentElement, { width, height });
+                  onExportReady(document.documentElement, exportOptions);
                 }
               }}
               style={{
@@ -182,243 +155,10 @@ export function InnerPrintFrame(props: InnerExportFrameProps) {
               }}
             >
               {children}
-            </RenderContainer>,
+            </RenderDetector>,
             content,
           )}
       </iframe>
     </ExportSettingsProvider>
-  );
-}
-
-function RenderContainer(props: {
-  onExportReady: () => void;
-  children: ReactNode;
-  style?: CSSProperties;
-}) {
-  const { onExportReady, style, children } = props;
-
-  useEffect(() => {
-    const handleRenderComplete = () => {
-      setTimeout(() => {
-        onExportReady();
-      }, 250);
-    };
-
-    const animationFrameId = requestAnimationFrame(handleRenderComplete);
-
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, [onExportReady]);
-
-  return <div style={style}>{children}</div>;
-}
-
-function transferStyles(targetDocument: Document) {
-  // Copy the style from the main page and inject it inside the iframe
-  const styleSheets = Array.from(document.styleSheets);
-  const targetHead = targetDocument.head;
-
-  for (const styleSheet of styleSheets) {
-    try {
-      if (styleSheet.cssRules) {
-        const newStyleEl = document.createElement('style');
-        const cssRules = Array.from(styleSheet.cssRules);
-        const cssText = cssRules.map((rule) => rule.cssText).join('\n');
-
-        newStyleEl.append(document.createTextNode(cssText));
-        targetHead.append(newStyleEl);
-      }
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Error transferring styles:', error);
-    }
-  }
-}
-
-interface InnerExportOptionsModalProps extends BaseExportProps {
-  onCloseDialog: () => void;
-}
-interface PrintOptionsModalProps extends InnerExportOptionsModalProps {
-  isOpen: boolean;
-}
-
-function PrintPageOptionsModal(props: PrintOptionsModalProps) {
-  const { isOpen, ...otherProps } = props;
-
-  if (!isOpen) return;
-
-  return <InnerExportOptionsModal {...otherProps} />;
-}
-
-const labelStyle: LabelStyle = {
-  label: {
-    color: '#232323',
-    width: '80px',
-  },
-  wrapper: {
-    display: 'flex',
-    justifyContent: 'flex-start',
-  },
-  container: { margin: '5px 0' },
-};
-
-interface ExportOptions {
-  unit: Unit;
-  width: number;
-  height: number;
-  dpi: number;
-}
-
-const INITIAL_VALUE: ExportOptions = {
-  unit: 'px',
-  width: 400,
-  height: 400,
-  dpi: 72,
-};
-
-function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
-  const { onCloseDialog, onExportOptionsChange, defaultExportPageOptions } =
-    props;
-  const [isAspectRatioEnabled, enableAspectRatio] = useState(true);
-  const defaultValues = { ...INITIAL_VALUE, ...defaultExportPageOptions };
-  const { width, height, dpi } = defaultValues;
-  const refSize = useRef({ width, height, dpi });
-
-  function submitHandler(values) {
-    onExportOptionsChange(values);
-  }
-
-  const { handleSubmit, control, watch, setValue } = useForm<ExportOptions>({
-    defaultValues,
-  });
-
-  const {
-    unit,
-    width: currentWidth,
-    height: currentHeight,
-    dpi: currentDPI,
-  } = watch();
-
-  const previousUnit = useDeferredValue(unit);
-
-  function transformSize(
-    value: number,
-    target: 'width' | 'height',
-    source: 'width' | 'height',
-  ) {
-    if (isAspectRatioEnabled) {
-      const { width, height } = refSize.current;
-      const aspectRation = width / height;
-      const newSize = value * aspectRation;
-      refSize.current[target] = newSize;
-      refSize.current[source] = value;
-      setValue(target, newSize);
-    } else {
-      refSize.current[source] = value;
-    }
-    return value;
-  }
-
-  function transformResolution(value) {
-    const { width, height, dpi } = refSize.current;
-    if (unit === 'px') {
-      setValue('width', round((convertToPixels(width, unit) * value) / dpi));
-      setValue('height', round((convertToPixels(height, unit) * value) / dpi));
-    }
-
-    return value;
-  }
-
-  function handleUnitChange({ unit }) {
-    const w = round(convert(currentWidth, previousUnit, unit, dpi));
-    const h = round(convert(currentHeight, previousUnit, unit, dpi));
-    setValue('width', w);
-    setValue('height', h);
-    refSize.current = { width: w, height: h, dpi };
-  }
-  return (
-    <Dialog isOpen title="Export options" onClose={onCloseDialog}>
-      <DialogBody
-        css={css`
-          background-color: white;
-        `}
-      >
-        <Label style={labelStyle} title="Description:">
-          <Tag>
-            {`${convertToPixels(currentWidth, unit, currentDPI)} px x ${convertToPixels(currentHeight, unit, currentDPI)} px @ ${currentDPI}DPI`}
-          </Tag>
-        </Label>
-        <Label style={labelStyle} title="Size">
-          <div style={{ display: 'flex', flexDirection: 'row' }}>
-            <NumberInput2Controller
-              name="width"
-              control={control}
-              style={{ width: 100 }}
-              rightElement={<Tag>{unit}</Tag>}
-              controllerProps={{ rules: { required: true } }}
-              transformValue={(value) =>
-                transformSize(value, 'height', 'width')
-              }
-              debounceTime={250}
-              placeholder="width"
-            />
-            <div style={{ padding: '0px 5px' }}>
-              <Button
-                icon="link"
-                minimal
-                active={isAspectRatioEnabled}
-                onClick={() => {
-                  enableAspectRatio((prevFlag) => !prevFlag);
-                }}
-              />
-            </div>
-            <NumberInput2Controller
-              name="height"
-              control={control}
-              style={{ width: 100 }}
-              rightElement={<Tag>{unit}</Tag>}
-              controllerProps={{ rules: { required: true } }}
-              transformValue={(value) =>
-                transformSize(value, 'width', 'height')
-              }
-              debounceTime={250}
-              placeholder="height"
-            />
-          </div>
-        </Label>
-        <Label style={labelStyle} title="Units">
-          <Select2Controller
-            control={control}
-            name="unit"
-            itemTextKey="name"
-            itemValueKey="unit"
-            items={units}
-            onItemSelect={handleUnitChange}
-          />
-        </Label>
-        <Label style={labelStyle} title="DPI">
-          <NumberInput2Controller
-            name="dpi"
-            control={control}
-            style={{ width: 100 }}
-            controllerProps={{ rules: { required: true } }}
-            transformValue={transformResolution}
-            debounceTime={250}
-            placeholder="DPI"
-          />
-        </Label>
-      </DialogBody>
-      <DialogFooter>
-        <ActionButtons
-          style={{ flexDirection: 'row-reverse', margin: 0 }}
-          onDone={() => {
-            void handleSubmit(submitHandler)();
-          }}
-          doneLabel="Save"
-          onCancel={() => onCloseDialog?.()}
-        />
-      </DialogFooter>
-    </Dialog>
   );
 }
