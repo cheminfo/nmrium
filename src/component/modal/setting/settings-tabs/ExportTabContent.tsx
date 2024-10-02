@@ -56,7 +56,11 @@ interface ExportOptionsProps {
 export function ExportOptions(props: ExportOptionsProps) {
   const { exportAs } = props;
   const path: `export.${keyof ExportPreferences}` = `export.${exportAs}`;
-  const { setValue, control } = useFormContext<WorkspaceWithSource>();
+  const {
+    setValue,
+    control,
+    formState: { isValid },
+  } = useFormContext<WorkspaceWithSource>();
   const currentOptions = useWatch({
     name: path,
     defaultValue: INITIAL_EXPORT_OPTIONS,
@@ -77,7 +81,9 @@ export function ExportOptions(props: ExportOptionsProps) {
   return (
     <>
       <Label style={labelStyle} title="Description:">
-        <Tag>{`${widthInPixel} px x ${heightInPixel} px @ ${unit}DPI`}</Tag>
+        <Tag
+          intent={!isValid ? 'danger' : 'none'}
+        >{`${widthInPixel} px x ${heightInPixel} px @ ${unit}DPI`}</Tag>
       </Label>
       <Label style={labelStyle} title="Size">
         <div style={{ display: 'flex', flexDirection: 'row' }}>

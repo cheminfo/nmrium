@@ -7,6 +7,7 @@ import {
   Tag,
 } from '@blueprintjs/core';
 import { css } from '@emotion/react';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { UniversalExportSettings } from 'nmr-load-save';
 import { useForm } from 'react-hook-form';
 
@@ -17,6 +18,7 @@ import { NumberInput2Controller } from '../NumberInput2Controller';
 import { Select2Controller } from '../Select2Controller';
 
 import { BaseExportProps, INITIAL_EXPORT_OPTIONS } from './ExportContent';
+import { exportOptionValidationSchema } from './exportOptionValidationSchema';
 import { units } from './units';
 import { useExportConfigurer } from './useExportConfigurer';
 
@@ -62,8 +64,15 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
 
   const methods = useForm<UniversalExportSettings>({
     defaultValues,
+    resolver: yupResolver(exportOptionValidationSchema),
   });
-  const { handleSubmit, control, watch, setValue } = methods;
+  const {
+    handleSubmit,
+    control,
+    watch,
+    setValue,
+    formState: { isValid },
+  } = methods;
 
   const { unit, width, height, dpi, useDefaultSettings } = watch();
 
@@ -96,7 +105,9 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
         `}
       >
         <Label style={labelStyle} title="Description:">
-          <Tag>{`${widthInPixel} px x ${heightInPixel} px @ ${unit}DPI`}</Tag>
+          <Tag
+            intent={!isValid ? 'danger' : 'none'}
+          >{`${widthInPixel} px x ${heightInPixel} px @ ${unit}DPI`}</Tag>
         </Label>
         <Label style={labelStyle} title="Size">
           <div style={{ display: 'flex', flexDirection: 'row' }}>
