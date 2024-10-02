@@ -1,9 +1,8 @@
-import { Button, Tag } from '@blueprintjs/core';
-import { ExportPreferences, UniversalExportSettings } from 'nmr-load-save';
+import { Button, Section, SectionCard, Tag } from '@blueprintjs/core';
+import { ExportPreferences } from 'nmr-load-save';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { CheckController } from '../../../elements/CheckController';
-import { GroupPane } from '../../../elements/GroupPane';
 import Label from '../../../elements/Label';
 import { NumberInput2Controller } from '../../../elements/NumberInput2Controller';
 import { Select2Controller } from '../../../elements/Select2Controller';
@@ -11,27 +10,41 @@ import { units } from '../../../elements/export/units';
 import { useExportConfigurer } from '../../../elements/export/useExportConfigurer';
 import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer';
 import { labelStyle } from '../../SaveAsModal';
-
-const INITIAL_VALUE: UniversalExportSettings = {
-  unit: 'px',
-  width: 400,
-  height: 400,
-  dpi: 72,
-  useDefaultSettings: false,
-};
+import { INITIAL_EXPORT_OPTIONS } from '../../../elements/export';
 
 export function ExportTabContent() {
   return (
     <>
-      <GroupPane text="Png export options">
-        <ExportOptions exportAs="png" />
-      </GroupPane>
-      <GroupPane text="Svg export options">
-        <ExportOptions exportAs="svg" />
-      </GroupPane>
-      <GroupPane text="Clipboard export options">
-        <ExportOptions exportAs="clipboard" />
-      </GroupPane>
+      <Section
+        collapsible
+        collapseProps={{ defaultIsOpen: true }}
+        title="Png export options"
+        compact={false}
+      >
+        <SectionCard padded>
+          <ExportOptions exportAs="png" />
+        </SectionCard>
+      </Section>
+      <Section
+        collapsible
+        collapseProps={{ defaultIsOpen: false }}
+        title="Svg export options"
+        compact={false}
+      >
+        <SectionCard padded>
+          <ExportOptions exportAs="svg" />
+        </SectionCard>
+      </Section>
+      <Section
+        collapsible
+        collapseProps={{ defaultIsOpen: false }}
+        title="Clipboard export options"
+        compact={false}
+      >
+        <SectionCard padded>
+          <ExportOptions exportAs="clipboard" />
+        </SectionCard>
+      </Section>
     </>
   );
 }
@@ -46,7 +59,7 @@ export function ExportOptions(props: ExportOptionsProps) {
   const { setValue, control } = useFormContext<WorkspaceWithSource>();
   const currentOptions = useWatch({
     name: path,
-    defaultValue: INITIAL_VALUE,
+    defaultValue: INITIAL_EXPORT_OPTIONS,
   });
 
   const { unit } = currentOptions;
