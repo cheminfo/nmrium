@@ -34,7 +34,7 @@ interface ExportFrameProps
 }
 
 export const INITIAL_EXPORT_OPTIONS: UniversalExportSettings = {
-  dpi: 72,
+  dpi: 300,
   width: 1920,
   height: 1080,
   unit: 'px',

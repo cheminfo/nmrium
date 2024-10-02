@@ -240,21 +240,21 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
   externalAPIs: [],
   export: {
     png: {
-      dpi: 72,
+      dpi: 300,
       width: 1920,
       height: 1080,
       unit: 'px',
       useDefaultSettings: false,
     },
     svg: {
-      dpi: 72,
+      dpi: 300,
       width: 1920,
       height: 1080,
       unit: 'px',
       useDefaultSettings: false,
     },
     clipboard: {
-      dpi: 72,
+      dpi: 300,
       width: 1920,
       height: 1080,
       unit: 'px',
