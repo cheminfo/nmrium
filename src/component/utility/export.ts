@@ -4,6 +4,8 @@ import JSZip from 'jszip';
 import lodashGet from 'lodash/get';
 import { JpathTableColumn, SpectraTableColumn } from 'nmr-load-save';
 
+import { convertPixelsBasedOnDPI } from '../elements/export/utilities/convertPixelsBasedOnDPI';
+
 /**
  * export the experiments result in JSON format
  * @param data
@@ -106,17 +108,18 @@ interface ExportAsSVGOptions {
   rootElement: HTMLElement;
   width?: number;
   height?: number;
+  dpi?: number;
 }
 
 function exportAsSVG(targetElementID: string, options: ExportAsSVGOptions) {
-  const { fileName, rootElement } = options;
-  const { blob } = getBlob(rootElement, targetElementID);
+  const { fileName, rootElement, dpi = 300 } = options;
+  const { blob } = getBlob(targetElementID, { rootElement, dpi });
   saveAs(blob, `${fileName}.svg`);
 }
 
 interface ExportAsPNGOptions {
   fileName?: string;
-  resolution?: number;
+  dpi?: number;
   rootElement: HTMLElement;
   width?: number;
   height?: number;
@@ -125,26 +128,26 @@ interface ExportAsPNGOptions {
 interface CreateObjectURLOptions {
   width: number;
   height: number;
-  resolution?: number;
+  dpi?: number;
 }
 
 async function createCanvas(blob: Blob, options: CreateObjectURLOptions) {
-  const { resolution, width, height } = options;
+  const { width, height } = options;
 
   /**
    * Change the canvas size based on DPI
    * 96 is the default DPI for web
    * */
 
-  let scaleFactor = 1;
-  let scaledWidth = width;
-  let scaledHeight = height;
+  const scaleFactor = 1;
+  const scaledWidth = width;
+  const scaledHeight = height;
 
-  if (resolution) {
-    scaleFactor = resolution / 96;
-    scaledWidth = width * scaleFactor;
-    scaledHeight = height * scaleFactor;
-  }
+  // if (dpi) {
+  //   scaleFactor = resolution / 96;
+  //   scaledWidth = width * scaleFactor;
+  //   scaledHeight = height * scaleFactor;
+  // }
 
   const img = await createImageFromBlob(blob);
 
@@ -269,7 +272,7 @@ async function exportAsPng(
   const {
     rootElement,
     fileName = 'experiment',
-    resolution,
+    dpi = 300,
     width: externalWidth,
     height: externalHeight,
   } = options;
@@ -277,7 +280,7 @@ async function exportAsPng(
     blob,
     width: originWidth,
     height: originHeight,
-  } = getBlob(rootElement, targetElementID);
+  } = getBlob(targetElementID, { rootElement, dpi });
 
   const width = externalWidth ?? originWidth;
   const height = externalHeight ?? originHeight;
@@ -286,7 +289,7 @@ async function exportAsPng(
     const { canvas } = await createCanvas(blob, {
       width,
       height,
-      resolution,
+      dpi,
     });
 
     const pngBlob = await canvas.convertToBlob({ type: 'image/png' });
@@ -378,7 +381,7 @@ async function copyBlobToClipboard(canvas: OffscreenCanvas) {
 
 interface CopyPNGToClipboardOptions {
   css?: SerializedStyles;
-  resolution?: number;
+  dpi?: number;
   rootElement: HTMLElement;
 }
 
@@ -386,13 +389,17 @@ async function copyPNGToClipboard(
   targetElementID: string,
   options: CopyPNGToClipboardOptions,
 ) {
-  const { rootElement, css, resolution } = options;
-  const { blob, width, height } = getBlob(rootElement, targetElementID, css);
+  const { rootElement, css, dpi = 300 } = options;
+  const { blob, width, height } = getBlob(targetElementID, {
+    rootElement,
+    dpi,
+    css,
+  });
   try {
     const { canvas } = await createCanvas(blob, {
       width,
       height,
-      resolution,
+      dpi,
     });
     await copyBlobToClipboard(canvas);
   } catch (error) {
@@ -413,13 +420,16 @@ export interface BlobObject {
   height: number;
 }
 
-function getBlob(
-  rootRef: HTMLElement,
-  elementID: string,
-  css?: SerializedStyles,
-): BlobObject {
-  const _svg: any = (rootRef.getRootNode() as Document)
-    .querySelector(`#${elementID}`)
+interface GetBlobOptions {
+  dpi?: number;
+  rootElement: HTMLElement;
+  css?: SerializedStyles;
+}
+
+function getBlob(targetElementID: string, options: GetBlobOptions): BlobObject {
+  const { rootElement, css, dpi = 96 } = options;
+  const _svg: any = (rootElement.getRootNode() as Document)
+    .querySelector(`#${targetElementID}`)
     ?.cloneNode(true);
 
   const width = Number(_svg?.getAttribute('width').replace('px', ''));
@@ -430,21 +440,30 @@ function getBlob(
   }
 
   //append the floating molecules in svg element
-  const floatingMoleculesGroup = getMoleculesElement(rootRef);
+  const floatingMoleculesGroup = getMoleculesElement(rootElement);
   _svg.append(floatingMoleculesGroup);
 
   const nmrCss = `
+     
   * {
     font-family: Arial, Helvetica, sans-serif;
   }
   .grid line,.grid path{stroke:none;} .peaks-text{fill:#730000} .x path{stroke-width:1px} .x text{
-    font-size: 12px;
     font-weight: bold;
   } 
   .nmr-svg,.contours{
     background-color:white;
     fill:white;
   }
+
+  path,line {
+     stroke-width: ${Math.max(convertPixelsBasedOnDPI(1, dpi), 1)}px !important;
+  }
+
+  text{
+  font-size: ${Math.max(convertPixelsBasedOnDPI(8, dpi), 12)}px !important;
+  }
+
   `;
 
   const head = `<svg class="nmr-svg"  viewBox='0 0 ${width} ${height}' width="${width}"  height="${height}"  version="1.1" xmlns="http://www.w3.org/2000/svg">`;

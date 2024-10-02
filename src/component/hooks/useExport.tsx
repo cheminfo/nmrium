@@ -82,7 +82,7 @@ export function useExportViewPort() {
   const toaster = useToaster();
   const state = useChartData();
 
-  function copyPNGToClipboardHandler(targetElement: HTMLElement) {
+  function copyPNGToClipboardHandler(targetElement: HTMLElement, dpi?: number) {
     return new Promise<void>((resolve) => {
       if (state.data.length === 0 || !targetElement) {
         return;
@@ -95,6 +95,7 @@ export function useExportViewPort() {
       setTimeout(async () => {
         await copyPNGToClipboard('nmrSVG', {
           rootElement: targetElement,
+          dpi,
         });
         toaster.show({
           message: 'Image copied to clipboard',
@@ -106,7 +107,7 @@ export function useExportViewPort() {
     });
   }
 
-  function saveAsSVGHandler(targetElement: HTMLElement) {
+  function saveAsSVGHandler(targetElement: HTMLElement, dpi?: number) {
     return new Promise<void>((resolve) => {
       if (state.data.length === 0 || !targetElement) {
         return;
@@ -117,14 +118,14 @@ export function useExportViewPort() {
       });
       void setTimeout(async () => {
         const fileName = state.data[0]?.info?.name;
-        exportAsSVG('nmrSVG', { rootElement: targetElement, fileName });
+        exportAsSVG('nmrSVG', { rootElement: targetElement, fileName, dpi });
         hideLoading();
         resolve();
       }, 0);
     });
   }
 
-  function saveAsPNGHandler(targetElement: HTMLElement) {
+  function saveAsPNGHandler(targetElement: HTMLElement, dpi?: number) {
     return new Promise<void>((resolve) => {
       if (state.data.length === 0 || !targetElement) {
         return;
@@ -138,6 +139,7 @@ export function useExportViewPort() {
         void exportAsPng('nmrSVG', {
           rootElement: targetElement,
           fileName,
+          dpi,
         });
         hideLoading();
         resolve();
