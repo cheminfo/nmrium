@@ -18,7 +18,7 @@ export function ExportTabContent() {
       <Section
         collapsible
         collapseProps={{ defaultIsOpen: true }}
-        title="Png export options"
+        title="Export PNG to file options"
         compact={false}
       >
         <SectionCard padded>
@@ -28,7 +28,7 @@ export function ExportTabContent() {
       <Section
         collapsible
         collapseProps={{ defaultIsOpen: false }}
-        title="Svg export options"
+        title="Export SVG to file options"
         compact={false}
       >
         <SectionCard padded>
@@ -38,7 +38,7 @@ export function ExportTabContent() {
       <Section
         collapsible
         collapseProps={{ defaultIsOpen: false }}
-        title="Clipboard export options"
+        title="Export PNG to clipboard options"
         compact={false}
       >
         <SectionCard padded>
