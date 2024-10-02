@@ -31,6 +31,7 @@ interface ExportFrameProps
     Partial<BaseExportProps> {
   exportOptions?: UniversalExportSettings;
   onExportDialogClose?: () => void;
+  confirmButtonText?: string;
 }
 
 export const INITIAL_EXPORT_OPTIONS: UniversalExportSettings = {
@@ -52,6 +53,7 @@ export function ExportContent(props: ExportFrameProps) {
     onExportOptionsChange,
     onExportReady,
     onExportDialogClose,
+    confirmButtonText = 'Save',
   } = props;
 
   if (!innerExportOptions && exportOptions?.useDefaultSettings === false) {
@@ -66,6 +68,7 @@ export function ExportContent(props: ExportFrameProps) {
           setInnerExportOptions({ ...options, ...getSizeInPixel(options) });
         }}
         defaultExportOptions={defaultExportOptions}
+        confirmButtonText={confirmButtonText}
       />
     );
   }

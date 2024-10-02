@@ -22,6 +22,7 @@ import { useExportConfigurer } from './useExportConfigurer';
 
 interface InnerExportOptionsModalProps extends BaseExportProps {
   onCloseDialog: () => void;
+  confirmButtonText?: string;
 }
 interface ExportOptionsModalProps extends InnerExportOptionsModalProps {
   isOpen: boolean;
@@ -48,7 +49,12 @@ const labelStyle: LabelStyle = {
 };
 
 function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
-  const { onCloseDialog, onExportOptionsChange, defaultExportOptions } = props;
+  const {
+    onCloseDialog,
+    onExportOptionsChange,
+    confirmButtonText,
+    defaultExportOptions,
+  } = props;
   const defaultValues = { ...INITIAL_EXPORT_OPTIONS, ...defaultExportOptions };
   function submitHandler(values) {
     onExportOptionsChange(values);
@@ -188,7 +194,7 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
             onDone={() => {
               void handleSubmit(submitHandler)();
             }}
-            doneLabel="Save"
+            doneLabel={confirmButtonText}
             onCancel={() => onCloseDialog?.()}
           />
         </div>

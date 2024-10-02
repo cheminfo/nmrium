@@ -159,6 +159,7 @@ export function ExportManagerController(props: ExportManagerControllerProps) {
       onExportDialogClose={handleCloseExportOptionsDialog}
       exportOptions={settings}
       defaultExportOptions={settings}
+      confirmButtonText={destination === 'clipboard' ? 'Copy' : 'Save'}
     >
       {children}
     </ExportContent>
