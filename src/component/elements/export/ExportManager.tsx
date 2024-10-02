@@ -97,18 +97,16 @@ export function ExportManagerController(props: ExportManagerControllerProps) {
       return null;
     }
 
-    const { dpi } = options;
-
     const { format, destination = 'file' } = exportOptions;
     let exportKey: keyof ExportPreferences = format;
 
     if (destination === 'file') {
       switch (format) {
         case 'png':
-          await saveAsPNGHandler(targetElement, dpi);
+          await saveAsPNGHandler(targetElement, options);
           break;
         case 'svg':
-          await saveAsSVGHandler(targetElement, dpi);
+          await saveAsSVGHandler(targetElement, options);
           break;
 
         default:
@@ -124,7 +122,7 @@ export function ExportManagerController(props: ExportManagerControllerProps) {
       exportKey = 'clipboard';
       switch (format) {
         case 'png':
-          await copyPNGToClipboardHandler(targetElement, dpi);
+          await copyPNGToClipboardHandler(targetElement, options);
           break;
         default:
           // eslint-disable-next-line no-console
@@ -160,6 +158,7 @@ export function ExportManagerController(props: ExportManagerControllerProps) {
       exportOptions={settings}
       defaultExportOptions={settings}
       confirmButtonText={destination === 'clipboard' ? 'Copy' : 'Save'}
+      baseDPI={format === 'png' ? 96 : undefined}
     >
       {children}
     </ExportContent>

@@ -4,8 +4,6 @@ import JSZip from 'jszip';
 import lodashGet from 'lodash/get';
 import { JpathTableColumn, SpectraTableColumn } from 'nmr-load-save';
 
-import { convertPixelsBasedOnDPI } from '../elements/export/utilities/convertPixelsBasedOnDPI';
-
 /**
  * export the experiments result in JSON format
  * @param data
@@ -112,8 +110,8 @@ interface ExportAsSVGOptions {
 }
 
 function exportAsSVG(targetElementID: string, options: ExportAsSVGOptions) {
-  const { fileName, rootElement, dpi = 300 } = options;
-  const { blob } = getBlob(targetElementID, { rootElement, dpi });
+  const { fileName, rootElement } = options;
+  const { blob } = getBlob(targetElementID, { rootElement });
   saveAs(blob, `${fileName}.svg`);
 }
 
@@ -132,28 +130,24 @@ interface CreateObjectURLOptions {
 }
 
 async function createCanvas(blob: Blob, options: CreateObjectURLOptions) {
-  const { width, height } = options;
+  const { width, height, dpi } = options;
 
   /**
    * Change the canvas size based on DPI
    * 96 is the default DPI for web
    * */
 
-  const scaleFactor = 1;
-  const scaledWidth = width;
-  const scaledHeight = height;
+  let scaleFactor = 1;
 
-  // if (dpi) {
-  //   scaleFactor = resolution / 96;
-  //   scaledWidth = width * scaleFactor;
-  //   scaledHeight = height * scaleFactor;
-  // }
+  if (dpi) {
+    scaleFactor = dpi / 96;
+  }
 
   const img = await createImageFromBlob(blob);
 
   const { canvas, context } = await createCanvasByChunks(img, {
-    width: scaledWidth,
-    height: scaledHeight,
+    width,
+    height,
     scaleFactor,
   });
 
@@ -190,25 +184,29 @@ function drawImage(options: DrawImageOptions) {
     height,
   } = options;
 
-  const x = chunkX * chunkSize;
-  const y = chunkY * chunkSize;
-  const chunkWidth = Math.min(chunkSize, width - x);
-  const chunkHeight = Math.min(chunkSize, height - y);
+  const sourceX = (chunkX * chunkSize) / scaleFactor;
+  const sourceY = (chunkY * chunkSize) / scaleFactor;
+  const sourceWidth = Math.min(chunkSize / scaleFactor, width - sourceX);
+  const sourceHeight = Math.min(chunkSize / scaleFactor, height - sourceY);
+
+  const destX = chunkX * chunkSize;
+  const destY = chunkY * chunkSize;
+  const destWidth = sourceWidth * scaleFactor;
+  const destHeight = sourceHeight * scaleFactor;
 
   return new Promise<void>((resolve, reject) => {
     try {
       context.save();
-      context.scale(scaleFactor, scaleFactor);
       context.drawImage(
         img,
-        x / scaleFactor,
-        y / scaleFactor,
-        chunkWidth / scaleFactor,
-        chunkHeight / scaleFactor,
-        x,
-        y,
-        chunkWidth,
-        chunkHeight,
+        sourceX,
+        sourceY,
+        sourceWidth,
+        sourceHeight,
+        destX,
+        destY,
+        destWidth,
+        destHeight,
       );
       context.restore();
       setTimeout(resolve, 0);
@@ -280,7 +278,7 @@ async function exportAsPng(
     blob,
     width: originWidth,
     height: originHeight,
-  } = getBlob(targetElementID, { rootElement, dpi });
+  } = getBlob(targetElementID, { rootElement });
 
   const width = externalWidth ?? originWidth;
   const height = externalHeight ?? originHeight;
@@ -392,7 +390,6 @@ async function copyPNGToClipboard(
   const { rootElement, css, dpi = 300 } = options;
   const { blob, width, height } = getBlob(targetElementID, {
     rootElement,
-    dpi,
     css,
   });
   try {
@@ -421,13 +418,12 @@ export interface BlobObject {
 }
 
 interface GetBlobOptions {
-  dpi?: number;
   rootElement: HTMLElement;
   css?: SerializedStyles;
 }
 
 function getBlob(targetElementID: string, options: GetBlobOptions): BlobObject {
-  const { rootElement, css, dpi = 96 } = options;
+  const { rootElement, css } = options;
   const _svg: any = (rootElement.getRootNode() as Document)
     .querySelector(`#${targetElementID}`)
     ?.cloneNode(true);
@@ -455,15 +451,6 @@ function getBlob(targetElementID: string, options: GetBlobOptions): BlobObject {
     background-color:white;
     fill:white;
   }
-
-  path,line {
-     stroke-width: ${Math.max(convertPixelsBasedOnDPI(1, dpi), 1)}px !important;
-  }
-
-  text{
-  font-size: ${Math.max(convertPixelsBasedOnDPI(8, dpi), 12)}px !important;
-  }
-
   `;
 
   const head = `<svg class="nmr-svg"  viewBox='0 0 ${width} ${height}' width="${width}"  height="${height}"  version="1.1" xmlns="http://www.w3.org/2000/svg">`;

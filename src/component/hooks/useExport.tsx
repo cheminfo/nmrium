@@ -1,3 +1,4 @@
+import { UniversalExportSettings } from 'nmr-load-save';
 import { useCallback } from 'react';
 
 import { ExportOptions, toJSON } from '../../data/SpectraManager';
@@ -82,7 +83,10 @@ export function useExportViewPort() {
   const toaster = useToaster();
   const state = useChartData();
 
-  function copyPNGToClipboardHandler(targetElement: HTMLElement, dpi?: number) {
+  function copyPNGToClipboardHandler(
+    targetElement: HTMLElement,
+    options: Partial<UniversalExportSettings>,
+  ) {
     return new Promise<void>((resolve) => {
       if (state.data.length === 0 || !targetElement) {
         return;
@@ -95,7 +99,7 @@ export function useExportViewPort() {
       setTimeout(async () => {
         await copyPNGToClipboard('nmrSVG', {
           rootElement: targetElement,
-          dpi,
+          ...options,
         });
         toaster.show({
           message: 'Image copied to clipboard',
@@ -107,7 +111,10 @@ export function useExportViewPort() {
     });
   }
 
-  function saveAsSVGHandler(targetElement: HTMLElement, dpi?: number) {
+  function saveAsSVGHandler(
+    targetElement: HTMLElement,
+    options: Partial<UniversalExportSettings>,
+  ) {
     return new Promise<void>((resolve) => {
       if (state.data.length === 0 || !targetElement) {
         return;
@@ -118,14 +125,21 @@ export function useExportViewPort() {
       });
       void setTimeout(async () => {
         const fileName = state.data[0]?.info?.name;
-        exportAsSVG('nmrSVG', { rootElement: targetElement, fileName, dpi });
+        exportAsSVG('nmrSVG', {
+          rootElement: targetElement,
+          fileName,
+          ...options,
+        });
         hideLoading();
         resolve();
       }, 0);
     });
   }
 
-  function saveAsPNGHandler(targetElement: HTMLElement, dpi?: number) {
+  function saveAsPNGHandler(
+    targetElement: HTMLElement,
+    options: Partial<UniversalExportSettings>,
+  ) {
     return new Promise<void>((resolve) => {
       if (state.data.length === 0 || !targetElement) {
         return;
@@ -139,7 +153,7 @@ export function useExportViewPort() {
         void exportAsPng('nmrSVG', {
           rootElement: targetElement,
           fileName,
-          dpi,
+          ...options,
         });
         hideLoading();
         resolve();

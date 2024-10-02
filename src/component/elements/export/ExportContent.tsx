@@ -22,6 +22,7 @@ interface BaseExportFrameProps {
     documentElement: HTMLElement,
     options: UniversalExportSettings,
   ) => void;
+  baseDPI?: number;
 }
 interface InnerExportFrameProps extends BaseExportFrameProps {
   exportOptions: UniversalExportSettings;
@@ -54,6 +55,7 @@ export function ExportContent(props: ExportFrameProps) {
     onExportReady,
     onExportDialogClose,
     confirmButtonText = 'Save',
+    baseDPI,
   } = props;
 
   if (!innerExportOptions && exportOptions?.useDefaultSettings === false) {
@@ -76,7 +78,10 @@ export function ExportContent(props: ExportFrameProps) {
   const options =
     innerExportOptions ||
     (exportOptions && { ...exportOptions, ...getSizeInPixel(exportOptions) }) ||
-    defaultExportOptions;
+    defaultExportOptions ||
+    INITIAL_EXPORT_OPTIONS;
+
+  const { width, height, dpi, ...other } = options;
 
   return (
     <>
@@ -93,8 +98,9 @@ export function ExportContent(props: ExportFrameProps) {
         }}
       />
       <InnerPrintFrame
-        exportOptions={options || INITIAL_EXPORT_OPTIONS}
+        exportOptions={{ width, height, dpi, ...other }}
         onExportReady={onExportReady}
+        baseDPI={baseDPI}
       >
         {children}
       </InnerPrintFrame>
@@ -103,9 +109,9 @@ export function ExportContent(props: ExportFrameProps) {
 }
 
 export function InnerPrintFrame(props: InnerExportFrameProps) {
-  const { children, exportOptions, onExportReady } = props;
+  const { children, exportOptions, baseDPI, onExportReady } = props;
 
-  const { width, height } = exportOptions;
+  const { width, height, dpi } = exportOptions;
 
   const frameRef = useRef<HTMLIFrameElement>(null);
   const [content, setContent] = useState<HTMLElement>();
@@ -127,8 +133,11 @@ export function InnerPrintFrame(props: InnerExportFrameProps) {
     }
   }, [load]);
 
+  const widthInPixel = baseDPI ? (baseDPI / dpi) * width : width;
+  const heightInPixel = baseDPI ? (baseDPI / dpi) * height : height;
+
   return (
-    <ExportSettingsProvider width={width} height={height}>
+    <ExportSettingsProvider width={widthInPixel} height={heightInPixel}>
       <iframe
         ref={frameRef}
         style={{
@@ -152,8 +161,8 @@ export function InnerPrintFrame(props: InnerExportFrameProps) {
                 }
               }}
               style={{
-                width: `${width}px`,
-                height: `${height}px`,
+                width: `${widthInPixel}px`,
+                height: `${heightInPixel}px`,
                 margin: 0,
               }}
             >
