@@ -381,17 +381,34 @@ interface CopyPNGToClipboardOptions {
   css?: SerializedStyles;
   dpi?: number;
   rootElement: HTMLElement;
+  width?: number;
+  height?: number;
 }
 
 async function copyPNGToClipboard(
   targetElementID: string,
   options: CopyPNGToClipboardOptions,
 ) {
-  const { rootElement, css, dpi = 300 } = options;
-  const { blob, width, height } = getBlob(targetElementID, {
+  const {
+    rootElement,
+    css,
+    dpi = 300,
+
+    width: externalWidth,
+    height: externalHeight,
+  } = options;
+  const {
+    blob,
+    width: originWidth,
+    height: originHeight,
+  } = getBlob(targetElementID, {
     rootElement,
     css,
   });
+
+  const width = externalWidth ?? originWidth;
+  const height = externalHeight ?? originHeight;
+
   try {
     const { canvas } = await createCanvas(blob, {
       width,
