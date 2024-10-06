@@ -39,7 +39,7 @@ export default function generateJGraphData(
       if (restSignal.js) {
         signals.push({ id: `${range.id}${signalId}`, ...restSignal });
         const tempMax = getJsCouplingMax(restSignal.js);
-        jCouplingMax = tempMax > jCouplingMax ? tempMax : jCouplingMax;
+        jCouplingMax = Math.max(tempMax, jCouplingMax);
       }
     }
   }
@@ -50,7 +50,7 @@ export default function generateJGraphData(
 function getJsCouplingMax(js: Jcoupling[]): number {
   let max = Number.NEGATIVE_INFINITY;
   for (const { coupling } of js) {
-    max = coupling > max ? coupling : max;
+    max = Math.max(coupling, max);
   }
   return max;
 }

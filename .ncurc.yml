@@ -1,4 +1,1 @@
 dep: 'prod,dev'
-reject:
-  # https://github.com/cheminfo/eslint-config/issues/49
-  - eslint

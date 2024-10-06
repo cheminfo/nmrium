@@ -88,7 +88,7 @@ export default function Test(props) {
       } catch (error) {
         reportError(error);
         // eslint-disable-next-line no-alert
-        window.alert('Invalid JSON file');
+        globalThis.alert('Invalid JSON file');
       }
     })();
   }, []);
@@ -186,7 +186,7 @@ export default function Test(props) {
           }}
         >
           <div style={{ flex: 3 }}>
-            <DropZone onDrop={dropFileHandler} color="gray" />
+            <DropZone onDrop={dropFileHandler} />
           </div>
           <div style={{ flex: 9 }}>
             <h3

@@ -112,7 +112,7 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
   }
 
   const lastIndex = molecules?.length > 0 ? molecules.length - 1 : 0;
-  const activeIndex = currentIndex > lastIndex ? lastIndex : currentIndex;
+  const activeIndex = Math.min(currentIndex, lastIndex);
 
   return (
     <div css={styles.panel}>

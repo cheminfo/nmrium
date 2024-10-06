@@ -65,8 +65,8 @@ export default function useDraggable(props: UseDraggable): Draggable {
         onChange({ position: { x, y }, action: 'start', isActive: true });
       }
 
-      window.addEventListener('pointermove', moveCallback);
-      window.addEventListener('pointerup', upCallback);
+      globalThis.addEventListener('pointermove', moveCallback);
+      globalThis.addEventListener('pointerup', upCallback);
     }
 
     function upCallback(e: PointerEvent) {
@@ -83,8 +83,8 @@ export default function useDraggable(props: UseDraggable): Draggable {
         isActive.current = false;
       }
 
-      window.removeEventListener('pointermove', moveCallback);
-      window.removeEventListener('pointerup', upCallback);
+      globalThis.removeEventListener('pointermove', moveCallback);
+      globalThis.removeEventListener('pointerup', upCallback);
     }
     function moveCallback(e: PointerEvent) {
       e.stopPropagation();
