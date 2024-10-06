@@ -103,7 +103,7 @@ const Main = () => {
     setRoutes({ isLoaded: true, status: 200, routes });
   }, []);
 
-  const href = window.location.href;
+  const href = globalThis.location.href;
   useEffect(() => {
     const qs = new URL(href).searchParams;
     if (qs.has('sampleURL')) {

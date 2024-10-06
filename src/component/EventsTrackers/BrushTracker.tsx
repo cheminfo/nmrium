@@ -162,12 +162,12 @@ export function BrushTracker({
         dispatch({
           type: 'UP',
         });
-        window.removeEventListener('pointermove', moveCallback);
-        window.removeEventListener('pointerup', upCallback);
+        globalThis.removeEventListener('pointermove', moveCallback);
+        globalThis.removeEventListener('pointerup', upCallback);
       }
 
-      window.addEventListener('pointermove', moveCallback);
-      window.addEventListener('pointerup', upCallback);
+      globalThis.addEventListener('pointermove', moveCallback);
+      globalThis.addEventListener('pointerup', upCallback);
 
       return false;
     },

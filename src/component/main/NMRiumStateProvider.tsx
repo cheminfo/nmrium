@@ -116,7 +116,7 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
 
           if (error instanceof Error) {
             // eslint-disable-next-line no-alert
-            window.alert(error.message);
+            globalThis.alert(error.message);
           }
           reportError(error);
         });

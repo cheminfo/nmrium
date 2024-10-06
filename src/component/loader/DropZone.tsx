@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useCallback, useState } from 'react';
+import { ReactNode, useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FaUpload } from 'react-icons/fa';
 
@@ -41,7 +41,11 @@ const containerStyle = css`
   height: 100%;
 `;
 
-function DropZone(props) {
+interface DropZoneProps {
+  children: ReactNode;
+}
+
+export default function DropZone(props: DropZoneProps) {
   const { width, height } = useChartData();
   const isToolEnabled = useCheckToolsVisibility();
   const [metaInformationFile, openMetaInformationDialog] =
@@ -99,5 +103,3 @@ function DropZone(props) {
     </LoaderProvider>
   );
 }
-
-export default DropZone;

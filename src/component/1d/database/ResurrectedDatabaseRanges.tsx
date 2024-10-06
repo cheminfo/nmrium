@@ -47,8 +47,8 @@ function ResurrectedDatabaseRanges() {
     });
     //calculate y domain
     const domain = extent(data.y) as number[];
-    yDomain[0] = domain[0] < yDomain[0] ? domain[0] : yDomain[0];
-    yDomain[1] = domain[1] > yDomain[1] ? domain[1] : yDomain[1];
+    yDomain[0] = Math.min(domain[0], yDomain[0]);
+    yDomain[1] = Math.max(domain[1], yDomain[1]);
 
     return { data, from: newForm, to: newTo };
   });

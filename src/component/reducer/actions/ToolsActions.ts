@@ -346,10 +346,7 @@ function zoomWithScroll(
         xDomain: [x1, x2],
       },
     } = draft;
-    draft.xDomain = [
-      domain[0] < x1 ? x1 : domain[0],
-      domain[1] > x2 ? x2 : domain[1],
-    ];
+    draft.xDomain = [Math.max(domain[0], x1), Math.min(domain[1], x2)];
   }
 
   if (
@@ -368,10 +365,7 @@ function zoomWithScroll(
         yDomain: [x1, x2],
       },
     } = draft;
-    draft.yDomain = [
-      domain[0] < x1 ? x1 : domain[0],
-      domain[1] > x2 ? x2 : domain[1],
-    ];
+    draft.yDomain = [Math.max(domain[0], x1), Math.min(domain[1], x2)];
   }
 }
 

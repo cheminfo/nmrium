@@ -93,7 +93,7 @@ export function NextPrev(props: NextPrevProps) {
   const [ref, { width }] = useMeasure<HTMLDivElement>();
   const slidersCount = Children.count(children);
   const lastIndex = slidersCount > 0 ? slidersCount - 1 : 0;
-  const activeIndex = index > lastIndex ? lastIndex : index;
+  const activeIndex = Math.min(index, lastIndex);
 
   function nextHandler() {
     if (index === lastIndex) {

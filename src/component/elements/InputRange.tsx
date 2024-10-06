@@ -77,13 +77,13 @@ function InputRange(props: InputRangeProps, ref: any) {
       }
 
       function mouseUpCallback() {
-        window.removeEventListener('mousemove', mouseMoveCallback);
-        window.removeEventListener('mouseup', mouseUpCallback);
+        globalThis.removeEventListener('mousemove', mouseMoveCallback);
+        globalThis.removeEventListener('mouseup', mouseUpCallback);
       }
 
       previousPosition.current = event.clientX;
-      window.addEventListener('mousemove', mouseMoveCallback);
-      window.addEventListener('mouseup', mouseUpCallback);
+      globalThis.addEventListener('mousemove', mouseMoveCallback);
+      globalThis.addEventListener('mouseup', mouseUpCallback);
     },
     [name, onChange],
   );

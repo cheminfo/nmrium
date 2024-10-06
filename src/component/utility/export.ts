@@ -187,7 +187,7 @@ function copyDataURLClipboardFireFox(image) {
   document.body.append(img);
   const range = document.createRange();
   range.selectNode(img);
-  window.getSelection()?.addRange(range);
+  globalThis.getSelection()?.addRange(range);
   document.execCommand('Copy');
   img.remove();
 }
@@ -247,7 +247,7 @@ async function copyPNGToClipboard(
   } catch (error) {
     if (error instanceof ReferenceError) {
       // eslint-disable-next-line no-alert
-      window.alert(
+      globalThis.alert(
         'Your browser does not support this feature, please use Google Chrome or Firefox',
       );
     }
@@ -305,7 +305,7 @@ function getBlob(
 }
 
 function getMatrix(element) {
-  const transform = window
+  const transform = globalThis
     .getComputedStyle(element)
     .getPropertyValue('transform');
   return new DOMMatrix(transform);

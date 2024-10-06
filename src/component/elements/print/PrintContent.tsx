@@ -154,10 +154,10 @@ export function PrintContent(props: PrintFrameProps) {
       }
     }
 
-    window.addEventListener('keydown', handleKeyDow);
+    globalThis.addEventListener('keydown', handleKeyDow);
 
     return () => {
-      window.removeEventListener('keydown', handleKeyDow);
+      globalThis.removeEventListener('keydown', handleKeyDow);
     };
   }, [printPageOptions]);
 

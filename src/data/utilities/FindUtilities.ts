@@ -22,7 +22,7 @@ function findSignal1D(
     const signalIndex = range.signals.findIndex(
       (_signal) => _signal.id === signalID,
     );
-    if (signalIndex >= 0) {
+    if (signalIndex !== -1) {
       return range.signals[signalIndex];
     }
   }
@@ -36,7 +36,7 @@ function findSignal2D(
     const signalIndex = zone.signals.findIndex(
       (_signal) => _signal.id === signalID,
     );
-    if (signalIndex >= 0) {
+    if (signalIndex !== -1) {
       return zone.signals[signalIndex];
     }
   }
@@ -47,7 +47,7 @@ function findRange(spectrum: Spectrum1D, signalID: string): Range | undefined {
     const signalIndex = range.signals.findIndex(
       (_signal) => _signal.id === signalID,
     );
-    if (signalIndex >= 0) {
+    if (signalIndex !== -1) {
       return range;
     }
   }
@@ -58,7 +58,7 @@ function findZone(spectrum: Spectrum2D, signalID: string): Zone | undefined {
     const signalIndex = zone.signals.findIndex(
       (_signal) => _signal.id === signalID,
     );
-    if (signalIndex >= 0) {
+    if (signalIndex !== -1) {
       return zone;
     }
   }
