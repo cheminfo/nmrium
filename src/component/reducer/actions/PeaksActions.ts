@@ -9,6 +9,7 @@ import type {
   RangesViewState,
 } from 'nmr-load-save';
 import type { Peak1D, OptionsXYAutoPeaksPicking } from 'nmr-processing';
+import { mapPeaks } from 'nmr-processing';
 
 import {
   getShiftX,
@@ -87,9 +88,16 @@ function handleAddPeak(draft: Draft<State>, action: AddPeakAction) {
         originalX: candidatePeak.x - shiftX,
         x: candidatePeak.x,
         y: candidatePeak.y,
-        width: 0,
+        width: 0.001,
+        shape: {
+          kind: 'generalizedLorentzian',
+          fwhm: 1,
+          gamma: 0.5,
+        },
       };
-      (draft.data[index] as Spectrum1D).peaks.values.push(peak);
+      (draft.data[index] as Spectrum1D).peaks.values.push(
+        ...mapPeaks([peak], draft.data[index] as Spectrum1D),
+      );
     }
   }
 }
@@ -111,7 +119,6 @@ function handleAddPeaks(draft: Draft<State>, action: AddPeaksAction) {
       const peak = getClosePeak(datumOriginal, { from, to });
 
       const shiftX = getShiftX(draft.data[index] as Spectrum1D);
-
       if (peak && !datumOriginal.peaks.values.some((p) => p.x === peak.x)) {
         const newPeak: Peak1D = {
           id: v4(),
@@ -119,6 +126,11 @@ function handleAddPeaks(draft: Draft<State>, action: AddPeaksAction) {
           x: peak.x,
           y: peak.y,
           width: 0,
+          shape: {
+            kind: 'generalizedLorentzian',
+            fwhm: 0.001,
+            gamma: 0.5,
+          },
         };
         (draft.data[index] as Spectrum1D).peaks.values.push(newPeak);
       }
@@ -194,7 +206,6 @@ function handleAutoPeakPicking(
       windowFromIndex,
       windowToIndex,
     });
-
     datum.peaks.values = datum.peaks.values.concat(peaks);
   }
 }
