@@ -10,7 +10,6 @@ import type {
   Spectrum2D,
 } from 'nmr-load-save';
 import type {
-  ApodizationOptions,
   BaselineCorrectionOptions,
 } from 'nmr-processing';
 import {
@@ -20,6 +19,7 @@ import {
 } from 'nmr-processing';
 
 import { defaultApodizationOptions } from '../../../data/constants/DefaultApodizationOptions.js';
+import type { Apodization1DOptions } from '../../../data/constants/DefaultApodizationOptions.js';
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import { getProjection } from '../../../data/data2d/Spectrum2D/getMissingProjection.js';
 import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.js';
@@ -84,11 +84,11 @@ type ShiftSpectrumOptions = ShiftOneDimension | ShiftTwoDimensions;
 type ShiftSpectrumAction = ActionType<'SHIFT_SPECTRUM', ShiftSpectrumOptions>;
 type ApodizationFilterAction = ActionType<
   'APPLY_APODIZATION_FILTER',
-  { options: ApodizationOptions }
+  { options: Apodization1DOptions }
 >;
 type ApodizationFilterLiveAction = ActionType<
   'CALCULATE_APODIZATION_FILTER',
-  { options: ApodizationOptions; livePreview: boolean }
+  { options: Apodization1DOptions; livePreview: boolean }
 >;
 type ZeroFillingFilterAction = ActionType<
   'APPLY_ZERO_FILLING_FILTER',
@@ -197,15 +197,15 @@ export type FiltersActions =
   | SetTwoDimensionPhaseCorrectionPivotPoint
   | ManualTwoDimensionsPhaseCorrectionFilterAction
   | ActionType<
-      | 'APPLY_FFT_FILTER'
-      | 'APPLY_FFT_DIMENSION_1_FILTER'
-      | 'APPLY_FFT_DIMENSION_2_FILTER'
-      | 'APPLY_AUTO_PHASE_CORRECTION_FILTER'
-      | 'APPLY_ABSOLUTE_FILTER'
-      | 'APPLY_MANUAL_PHASE_CORRECTION_TOW_DIMENSION_FILTER'
-      | 'TOGGLE_ADD_PHASE_CORRECTION_TRACE_TO_BOTH_DIRECTIONS'
-      | 'APPLY_AUTO_PHASE_CORRECTION_TOW_DIMENSION_FILTER'
-    >;
+    | 'APPLY_FFT_FILTER'
+    | 'APPLY_FFT_DIMENSION_1_FILTER'
+    | 'APPLY_FFT_DIMENSION_2_FILTER'
+    | 'APPLY_AUTO_PHASE_CORRECTION_FILTER'
+    | 'APPLY_ABSOLUTE_FILTER'
+    | 'APPLY_MANUAL_PHASE_CORRECTION_TOW_DIMENSION_FILTER'
+    | 'TOGGLE_ADD_PHASE_CORRECTION_TRACE_TO_BOTH_DIRECTIONS'
+    | 'APPLY_AUTO_PHASE_CORRECTION_TOW_DIMENSION_FILTER'
+  >;
 
 function getFilterUpdateDomainRules(
   filterName: string,
@@ -371,16 +371,16 @@ function rollbackSpectrum(
   const applyFilter = !filterKey
     ? true
     : [
-        phaseCorrection.id,
-        phaseCorrectionTwoDimensions.id,
-        fft.id,
-        shiftX.id,
-        shift2DX.id,
-        shift2DY.id,
-        signalProcessing.id,
-        digitalFilter.id,
-        digitalFilter2D.id,
-      ].includes(filterKey);
+      phaseCorrection.id,
+      phaseCorrectionTwoDimensions.id,
+      fft.id,
+      shiftX.id,
+      shift2DX.id,
+      shift2DY.id,
+      signalProcessing.id,
+      digitalFilter.id,
+      digitalFilter2D.id,
+    ].includes(filterKey);
 
   beforeRollback(draft, filterKey);
 
