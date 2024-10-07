@@ -66,10 +66,10 @@ function ApodizationLine() {
                 options: {
                   length,
                   dw,
-                  exponentialHz:
+                  lineBroadening:
                     gaussBroadening > 0 ? lineBroadening : -lineBroadening,
-                  gaussianHz: gaussBroadening,
-                  center: lineBroadeningCenter,
+                  gaussBroadening,
+                  lineBroadeningCenter,
                 },
               },
             },

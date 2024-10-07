@@ -12,11 +12,13 @@ import {
   Filters,
   FiltersManager,
   BaselineCorrectionOptions,
-  ApodizationOptions,
   getBaselineZonesByDietrich,
 } from 'nmr-processing';
 
-import { defaultApodizationOptions } from '../../../data/constants/DefaultApodizationOptions';
+import {
+  Apodization1DOptions,
+  defaultApodizationOptions,
+} from '../../../data/constants/DefaultApodizationOptions';
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D';
 import { isSpectrum2D } from '../../../data/data2d/Spectrum2D';
 import { getProjection } from '../../../data/data2d/Spectrum2D/getMissingProjection';
@@ -78,11 +80,11 @@ type ShiftSpectrumOptions = ShiftOneDimension | ShiftTwoDimensions;
 type ShiftSpectrumAction = ActionType<'SHIFT_SPECTRUM', ShiftSpectrumOptions>;
 type ApodizationFilterAction = ActionType<
   'APPLY_APODIZATION_FILTER',
-  { options: ApodizationOptions }
+  { options: Apodization1DOptions }
 >;
 type ApodizationFilterLiveAction = ActionType<
   'CALCULATE_APODIZATION_FILTER',
-  { options: ApodizationOptions; livePreview: boolean }
+  { options: Apodization1DOptions; livePreview: boolean }
 >;
 type ZeroFillingFilterAction = ActionType<
   'APPLY_ZERO_FILLING_FILTER',
