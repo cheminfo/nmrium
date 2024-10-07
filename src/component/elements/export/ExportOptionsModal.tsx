@@ -4,18 +4,25 @@ import {
   Dialog,
   DialogBody,
   DialogFooter,
+  OptionProps,
+  Radio,
+  RadioGroup,
+  SegmentedControl,
   Tag,
 } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { UniversalExportSettings } from 'nmr-load-save';
+import { Layout, PageSizeName, UniversalExportSettings } from 'nmr-load-save';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import ActionButtons from '../ActionButtons';
 import { CheckController } from '../CheckController';
 import Label, { LabelStyle } from '../Label';
 import { NumberInput2Controller } from '../NumberInput2Controller';
+import { Select2 } from '../Select2';
 import { Select2Controller } from '../Select2Controller';
+import { getPageDimension, getSizesList } from '../print/pageSize';
 
 import { BaseExportProps, INITIAL_EXPORT_OPTIONS } from './ExportContent';
 import { exportOptionValidationSchema } from './exportOptionValidationSchema';
@@ -50,6 +57,19 @@ const labelStyle: LabelStyle = {
   container: { margin: '5px 0' },
 };
 
+const segmentOptions: Array<OptionProps<string>> = [
+  {
+    label: 'Basic',
+    value: 'basic',
+  },
+  {
+    label: 'Advance',
+    value: 'advance',
+  },
+];
+
+type Mode = (typeof segmentOptions)[number]['value'];
+
 function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
   const {
     onCloseDialog,
@@ -57,7 +77,14 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
     confirmButtonText,
     defaultExportOptions,
   } = props;
-  const defaultValues = { ...INITIAL_EXPORT_OPTIONS, ...defaultExportOptions };
+  const [mode, setMode] = useState<Mode>('basic');
+  const [layout, setLayout] = useState<Layout>('landscape');
+  const [pageSize, setPagSize] = useState<PageSizeName>('A5');
+
+  const defaultValues = {
+    ...INITIAL_EXPORT_OPTIONS,
+    ...defaultExportOptions,
+  };
   function submitHandler(values) {
     onExportOptionsChange(values);
   }
@@ -92,6 +119,30 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
     useDefaultSettings,
   });
 
+  const sizesList = getSizesList(layout);
+
+  function updatePageDimension(pageSize: PageSizeName, layout: Layout) {
+    const pageDimension = getPageDimension(pageSize, layout);
+    if (pageDimension) {
+      const { width, height } = pageDimension;
+      setValue('width', width);
+      setValue('height', height);
+      setValue('unit', 'cm');
+    }
+  }
+
+  function handleChangeLayout(event) {
+    const layout: Layout = event.currentTarget.value;
+
+    updatePageDimension(pageSize, layout);
+    setLayout(layout);
+  }
+
+  function handleSelectPageSize({ value: selectedPageSize }) {
+    updatePageDimension(selectedPageSize, layout);
+    setPagSize(selectedPageSize);
+  }
+
   return (
     <Dialog
       isOpen
@@ -104,67 +155,103 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
           background-color: white;
         `}
       >
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <SegmentedControl
+            defaultValue="list"
+            inline
+            options={segmentOptions}
+            value={mode}
+            onValueChange={(value) => setMode(value)}
+          />
+        </div>
+
         <Label style={labelStyle} title="Description:">
           <Tag
             intent={!isValid ? 'danger' : 'none'}
-          >{`${widthInPixel} px x ${heightInPixel} px @ ${unit}DPI`}</Tag>
+          >{`${widthInPixel} px x ${heightInPixel} px @ ${dpi}DPI`}</Tag>
         </Label>
-        <Label style={labelStyle} title="Size">
-          <div style={{ display: 'flex', flexDirection: 'row' }}>
-            <NumberInput2Controller
-              name="width"
-              control={control}
-              style={{ width: 100 }}
-              rightElement={<Tag>{unit}</Tag>}
-              controllerProps={{ rules: { required: true } }}
-              transformValue={(value) => {
-                const newHeight = changeSize(value, 'height', 'width');
-                setValue('height', newHeight);
-                return value;
-              }}
-              debounceTime={250}
-              placeholder="width"
-            />
-            <div style={{ padding: '0px 5px' }}>
-              <Button
-                icon="link"
-                minimal
-                active={isAspectRatioEnabled}
-                onClick={() => {
-                  enableAspectRatio((prevFlag) => !prevFlag);
+        {mode === 'basic' && (
+          <>
+            <Label style={labelStyle} title="Size">
+              <Select2
+                items={sizesList}
+                selectedItemValue={pageSize}
+                onItemSelect={handleSelectPageSize}
+              />
+            </Label>
+            <Label style={labelStyle} title="Layout">
+              <RadioGroup
+                inline
+                onChange={handleChangeLayout}
+                selectedValue={layout}
+              >
+                <Radio label="Portrait" value="portrait" />
+                <Radio label="Landscape" value="landscape" />
+              </RadioGroup>
+            </Label>
+          </>
+        )}
+        {mode === 'advance' && (
+          <>
+            {' '}
+            <Label style={labelStyle} title="Size">
+              <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <NumberInput2Controller
+                  name="width"
+                  control={control}
+                  style={{ width: 100 }}
+                  rightElement={<Tag>{unit}</Tag>}
+                  controllerProps={{ rules: { required: true } }}
+                  transformValue={(value) => {
+                    const newHeight = changeSize(value, 'height', 'width');
+                    setValue('height', newHeight);
+                    return value;
+                  }}
+                  debounceTime={250}
+                  placeholder="width"
+                />
+                <div style={{ padding: '0px 5px' }}>
+                  <Button
+                    icon="link"
+                    minimal
+                    active={isAspectRatioEnabled}
+                    onClick={() => {
+                      enableAspectRatio((prevFlag) => !prevFlag);
+                    }}
+                  />
+                </div>
+                <NumberInput2Controller
+                  name="height"
+                  control={control}
+                  style={{ width: 100 }}
+                  rightElement={<Tag>{unit}</Tag>}
+                  controllerProps={{ rules: { required: true } }}
+                  transformValue={(value) => {
+                    const newWidth = changeSize(value, 'width', 'height');
+                    setValue('width', newWidth);
+                    return value;
+                  }}
+                  debounceTime={250}
+                  placeholder="height"
+                />
+              </div>
+            </Label>
+            <Label style={labelStyle} title="Units">
+              <Select2Controller
+                control={control}
+                name="unit"
+                itemTextKey="name"
+                itemValueKey="unit"
+                items={units}
+                onItemSelect={({ unit }) => {
+                  const newSize = changeUnit({ unit });
+                  setValue('width', newSize.width);
+                  setValue('height', newSize.height);
                 }}
               />
-            </div>
-            <NumberInput2Controller
-              name="height"
-              control={control}
-              style={{ width: 100 }}
-              rightElement={<Tag>{unit}</Tag>}
-              controllerProps={{ rules: { required: true } }}
-              transformValue={(value) => {
-                const newWidth = changeSize(value, 'width', 'height');
-                setValue('width', newWidth);
-                return value;
-              }}
-              debounceTime={250}
-              placeholder="height"
-            />
-          </div>
-        </Label>
-        <Label style={labelStyle} title="Units">
-          <Select2Controller
-            control={control}
-            name="unit"
-            itemTextKey="name"
-            itemValueKey="unit"
-            items={units}
-            onItemSelect={({ unit }) => {
-              const newSize = changeUnit({ unit });
-              setValue('width', newSize.width);
-              setValue('height', newSize.height);
-            }}
-          />
-        </Label>
+            </Label>
+          </>
+        )}
         <Label style={labelStyle} title="DPI">
           <NumberInput2Controller
             name="dpi"

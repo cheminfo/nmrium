@@ -6,6 +6,7 @@ import Viewer2D from '../2d/Viewer2D';
 import { useChartData } from '../context/ChartContext';
 
 import { NMRiumProps } from './NMRium';
+import { useViewportSize } from '../hooks/useViewportSize';
 
 interface NMRiumViewerProps {
   emptyText: NMRiumProps['emptyText'];
@@ -18,6 +19,7 @@ export function NMRiumViewer(props: NMRiumViewerProps) {
   const { emptyText, viewerRef, onRender, style = {} } = props;
   const { displayerMode, width, height } = useChartData();
   const renderDimension = useDeferredValue({ width, height });
+  const viewPort = useViewportSize();
   useEffect(() => {
     function handleRenderComplete() {
       if (typeof onRender !== 'function') {
@@ -45,7 +47,7 @@ export function NMRiumViewer(props: NMRiumViewerProps) {
     <div
       id="nmrium-viewer"
       data-testid="viewer"
-      ref={viewerRef}
+      ref={!viewPort ? viewerRef : null}
       style={{
         width: '100%',
         height: '100%',

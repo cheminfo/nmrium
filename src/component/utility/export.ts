@@ -270,7 +270,7 @@ async function exportAsPng(
 
   const width = externalWidth ?? originWidth;
   const height = externalHeight ?? originHeight;
-  const scaleFactor = externalWidth ? externalWidth / originWidth : 1
+  const scaleFactor = externalWidth ? externalWidth / originWidth : 1;
   try {
     const { canvas } = await createCanvas(blob, {
       width,
@@ -394,7 +394,7 @@ async function copyPNGToClipboard(
 
   const width = externalWidth ?? originWidth;
   const height = externalHeight ?? originHeight;
-  const scaleFactor = externalWidth ? externalWidth / originWidth : 1
+  const scaleFactor = externalWidth ? externalWidth / originWidth : 1;
 
   try {
     const { canvas } = await createCanvas(blob, {
@@ -494,7 +494,8 @@ function getMoleculesElement(rootRef) {
     group.append(molElement);
     group.setAttribute(
       'transform',
-      `translate(${matrix.m41} ${matrix.m42 + actionHeaderElement.clientHeight
+      `translate(${matrix.m41} ${
+        matrix.m42 + actionHeaderElement.clientHeight
       })`,
     );
     floatingMoleculesGroup.append(group);

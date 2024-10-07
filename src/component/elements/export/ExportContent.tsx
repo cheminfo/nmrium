@@ -20,7 +20,6 @@ interface RenderSizeOption {
   width: number;
   minWidth?: number;
   rescale?: boolean;
-
 }
 interface BaseExportFrameProps {
   children: ReactNode;
@@ -28,15 +27,14 @@ interface BaseExportFrameProps {
     documentElement: HTMLElement,
     options: UniversalExportSettings,
   ) => void;
-  renderOptions: RenderSizeOption
-
+  renderOptions: RenderSizeOption;
 }
 interface InnerExportFrameProps extends BaseExportFrameProps {
   exportOptions: UniversalExportSettings;
 }
 interface ExportFrameProps
   extends BaseExportFrameProps,
-  Partial<BaseExportProps> {
+    Partial<BaseExportProps> {
   exportOptions?: UniversalExportSettings;
   onExportDialogClose?: () => void;
   confirmButtonText?: string;
@@ -44,9 +42,9 @@ interface ExportFrameProps
 
 export const INITIAL_EXPORT_OPTIONS: UniversalExportSettings = {
   dpi: 300,
-  width: 1920,
-  height: 1080,
-  unit: 'px',
+  width: 21,
+  height: 14.8,
+  unit: 'cm',
   useDefaultSettings: false,
 };
 
@@ -140,16 +138,19 @@ export function InnerPrintFrame(props: InnerExportFrameProps) {
     }
   }, [load]);
 
+  let widthInPixel = Math.round(width);
+  let heightInPixel = Math.round(height);
 
-  let widthInPixel = width;
-  let heightInPixel = height;
-
-  const { width: baseRenderWidth, rescale = true, minWidth = 0, } = renderOptions;
+  const {
+    width: baseRenderWidth,
+    rescale = true,
+    minWidth = 0,
+  } = renderOptions;
 
   if (rescale) {
     const renderWidth = Math.max(baseRenderWidth, minWidth);
-    widthInPixel = renderWidth;
-    heightInPixel = height / width * renderWidth;
+    widthInPixel = Math.round(renderWidth);
+    heightInPixel = Math.round((height / width) * renderWidth);
   }
 
   return (

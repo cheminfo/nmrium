@@ -50,10 +50,10 @@ export function useExportConfigurer(options: UniversalExportSettings) {
   }
 
   const widthInPixel = convertToPixels(width, unit, dpi, {
-    precision: 2,
+    precision: 0,
   });
   const heightInPixel = convertToPixels(height, unit, dpi, {
-    precision: 2,
+    precision: 0,
   });
 
   return {

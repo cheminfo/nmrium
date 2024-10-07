@@ -66,7 +66,7 @@ export function ExportOptions(props: ExportOptionsProps) {
     defaultValue: INITIAL_EXPORT_OPTIONS,
   });
 
-  const { unit } = currentOptions;
+  const { dpi, unit } = currentOptions;
 
   const {
     widthInPixel,
@@ -83,7 +83,7 @@ export function ExportOptions(props: ExportOptionsProps) {
       <Label style={labelStyle} title="Description:">
         <Tag
           intent={!isValid ? 'danger' : 'none'}
-        >{`${widthInPixel} px x ${heightInPixel} px @ ${unit}DPI`}</Tag>
+        >{`${widthInPixel} px x ${heightInPixel} px @ ${dpi}DPI`}</Tag>
       </Label>
       <Label style={labelStyle} title="Size">
         <div style={{ display: 'flex', flexDirection: 'row' }}>

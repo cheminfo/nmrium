@@ -160,7 +160,7 @@ export function ExportManagerController(props: ExportManagerControllerProps) {
       exportOptions={settings}
       defaultExportOptions={settings}
       confirmButtonText={destination === 'clipboard' ? 'Copy' : 'Save'}
-      renderOptions={{ minWidth: 1200, width, rescale: format !== 'svg' }}
+      renderOptions={{ minWidth: 800, width, rescale: format !== 'svg' }}
     >
       {children}
     </ExportContent>
