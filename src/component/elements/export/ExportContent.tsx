@@ -16,20 +16,27 @@ export interface BaseExportProps {
   defaultExportOptions?: UniversalExportSettings;
 }
 
+interface RenderSizeOption {
+  width: number;
+  minWidth?: number;
+  rescale?: boolean;
+
+}
 interface BaseExportFrameProps {
   children: ReactNode;
   onExportReady: (
     documentElement: HTMLElement,
     options: UniversalExportSettings,
   ) => void;
-  baseDPI?: number;
+  renderOptions: RenderSizeOption
+
 }
 interface InnerExportFrameProps extends BaseExportFrameProps {
   exportOptions: UniversalExportSettings;
 }
 interface ExportFrameProps
   extends BaseExportFrameProps,
-    Partial<BaseExportProps> {
+  Partial<BaseExportProps> {
   exportOptions?: UniversalExportSettings;
   onExportDialogClose?: () => void;
   confirmButtonText?: string;
@@ -55,7 +62,7 @@ export function ExportContent(props: ExportFrameProps) {
     onExportReady,
     onExportDialogClose,
     confirmButtonText = 'Save',
-    baseDPI,
+    renderOptions,
   } = props;
 
   if (!innerExportOptions && exportOptions?.useDefaultSettings === false) {
@@ -81,7 +88,7 @@ export function ExportContent(props: ExportFrameProps) {
     defaultExportOptions ||
     INITIAL_EXPORT_OPTIONS;
 
-  const { width, height, dpi, ...other } = options;
+  const { width, height, ...other } = options;
 
   return (
     <>
@@ -98,9 +105,9 @@ export function ExportContent(props: ExportFrameProps) {
         }}
       />
       <InnerPrintFrame
-        exportOptions={{ width, height, dpi, ...other }}
+        exportOptions={{ width, height, ...other }}
         onExportReady={onExportReady}
-        baseDPI={baseDPI}
+        renderOptions={renderOptions}
       >
         {children}
       </InnerPrintFrame>
@@ -109,9 +116,9 @@ export function ExportContent(props: ExportFrameProps) {
 }
 
 export function InnerPrintFrame(props: InnerExportFrameProps) {
-  const { children, exportOptions, baseDPI, onExportReady } = props;
+  const { children, exportOptions, onExportReady, renderOptions } = props;
 
-  const { width, height, dpi } = exportOptions;
+  const { width, height } = exportOptions;
 
   const frameRef = useRef<HTMLIFrameElement>(null);
   const [content, setContent] = useState<HTMLElement>();
@@ -133,8 +140,17 @@ export function InnerPrintFrame(props: InnerExportFrameProps) {
     }
   }, [load]);
 
-  const widthInPixel = baseDPI ? (baseDPI / dpi) * width : width;
-  const heightInPixel = baseDPI ? (baseDPI / dpi) * height : height;
+
+  let widthInPixel = width;
+  let heightInPixel = height;
+
+  const { width: baseRenderWidth, rescale = true, minWidth = 0, } = renderOptions;
+
+  if (rescale) {
+    const renderWidth = Math.max(baseRenderWidth, minWidth);
+    widthInPixel = renderWidth;
+    heightInPixel = height / width * renderWidth;
+  }
 
   return (
     <ExportSettingsProvider width={widthInPixel} height={heightInPixel}>

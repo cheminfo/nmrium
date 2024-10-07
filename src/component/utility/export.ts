@@ -126,22 +126,11 @@ interface ExportAsPNGOptions {
 interface CreateObjectURLOptions {
   width: number;
   height: number;
-  dpi?: number;
+  scaleFactor?: number;
 }
 
 async function createCanvas(blob: Blob, options: CreateObjectURLOptions) {
-  const { width, height, dpi } = options;
-
-  /**
-   * Change the canvas size based on DPI
-   * 96 is the default DPI for web
-   * */
-
-  let scaleFactor = 1;
-
-  if (dpi) {
-    scaleFactor = dpi / 96;
-  }
+  const { width, height, scaleFactor = 1 } = options;
 
   const img = await createImageFromBlob(blob);
 
@@ -270,7 +259,6 @@ async function exportAsPng(
   const {
     rootElement,
     fileName = 'experiment',
-    dpi = 300,
     width: externalWidth,
     height: externalHeight,
   } = options;
@@ -282,12 +270,12 @@ async function exportAsPng(
 
   const width = externalWidth ?? originWidth;
   const height = externalHeight ?? originHeight;
-
+  const scaleFactor = externalWidth ? externalWidth / originWidth : 1
   try {
     const { canvas } = await createCanvas(blob, {
       width,
       height,
-      dpi,
+      scaleFactor,
     });
 
     const pngBlob = await canvas.convertToBlob({ type: 'image/png' });
@@ -392,8 +380,6 @@ async function copyPNGToClipboard(
   const {
     rootElement,
     css,
-    dpi = 300,
-
     width: externalWidth,
     height: externalHeight,
   } = options;
@@ -408,12 +394,13 @@ async function copyPNGToClipboard(
 
   const width = externalWidth ?? originWidth;
   const height = externalHeight ?? originHeight;
+  const scaleFactor = externalWidth ? externalWidth / originWidth : 1
 
   try {
     const { canvas } = await createCanvas(blob, {
       width,
       height,
-      dpi,
+      scaleFactor,
     });
     await copyBlobToClipboard(canvas);
   } catch (error) {
@@ -507,8 +494,7 @@ function getMoleculesElement(rootRef) {
     group.append(molElement);
     group.setAttribute(
       'transform',
-      `translate(${matrix.m41} ${
-        matrix.m42 + actionHeaderElement.clientHeight
+      `translate(${matrix.m41} ${matrix.m42 + actionHeaderElement.clientHeight
       })`,
     );
     floatingMoleculesGroup.append(group);

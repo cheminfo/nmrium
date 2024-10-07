@@ -9,6 +9,7 @@ import {
   useState,
 } from 'react';
 
+import { useChartData } from '../../context/ChartContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import { useExportViewPort } from '../../hooks/useExport';
 import { useWorkspaceExportSettings } from '../../hooks/useWorkspaceExportSettings';
@@ -138,6 +139,7 @@ export function ExportManagerController(props: ExportManagerControllerProps) {
       payload: { key: exportKey, options },
     });
   }
+  const { width } = useChartData();
 
   if (!exportOptions) return null;
 
@@ -158,7 +160,7 @@ export function ExportManagerController(props: ExportManagerControllerProps) {
       exportOptions={settings}
       defaultExportOptions={settings}
       confirmButtonText={destination === 'clipboard' ? 'Copy' : 'Save'}
-      baseDPI={format === 'png' ? 96 : undefined}
+      renderOptions={{ minWidth: 1200, width, rescale: format !== 'svg' }}
     >
       {children}
     </ExportContent>
