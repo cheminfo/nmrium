@@ -16,7 +16,7 @@ import {
   BasicExportSettings,
   ExportSettings,
 } from 'nmr-load-save';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
 import ActionButtons from '../ActionButtons';
@@ -75,10 +75,6 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
 
   const [mode, setMode] = useState<Mode>(defaultValues.mode);
 
-  function submitHandler(values) {
-    onExportOptionsChange(values);
-  }
-
   const methods = useForm<ExportSettings>({
     defaultValues,
     resolver: yupResolver(exportOptionValidationSchema) as any,
@@ -90,6 +86,7 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
     setValue,
     formState: { isValid, errors },
     reset,
+    setFocus,
   } = methods;
 
   const watchSettings = watch();
@@ -124,12 +121,41 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
     }
   }
 
+  useEffect(() => {
+    const handleRenderComplete = () => {
+      setTimeout(() => {
+        if (mode === 'advance') {
+          setFocus('width');
+        } else {
+          setFocus('dpi');
+        }
+      }, 0);
+    };
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Enter') {
+        void handleSubmit(onExportOptionsChange)();
+      }
+    };
+
+    globalThis.addEventListener('keydown', handleKeyDown);
+
+    const animationFrameId = requestAnimationFrame(handleRenderComplete);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      globalThis.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [handleSubmit, mode, onExportOptionsChange, setFocus]);
+
   return (
     <Dialog
       isOpen
       title="Export options"
       onClose={onCloseDialog}
       style={{ width: 600 }}
+      canEscapeKeyClose
+      autoFocus
     >
       <DialogBody
         css={css`
@@ -288,7 +314,7 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
           <ActionButtons
             style={{ flexDirection: 'row-reverse', margin: 0 }}
             onDone={() => {
-              void handleSubmit(submitHandler)();
+              void handleSubmit(onExportOptionsChange)();
             }}
             doneLabel={confirmButtonText}
             onCancel={() => onCloseDialog?.()}
