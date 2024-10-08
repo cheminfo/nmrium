@@ -1,11 +1,13 @@
-import { UniversalExportSettings } from 'nmr-load-save';
+import { ExportSettings } from 'nmr-load-save';
 
 import { convertToPixels } from '../units';
 
-export function getSizeInPixel(exportPageOptions: UniversalExportSettings) {
-  const { width, height, dpi, unit } = exportPageOptions;
-  const widthInPixel = convertToPixels(width, unit, dpi);
-  const heightInPixel = convertToPixels(height, unit, dpi);
+import { getExportOptions } from './getExportOptions';
+
+export function getSizeInPixel(exportPageOptions: ExportSettings) {
+  const { width, height, dpi, unit } = getExportOptions(exportPageOptions);
+  const widthInPixel = convertToPixels(width, unit, dpi, { precision: 0 });
+  const heightInPixel = convertToPixels(height, unit, dpi, { precision: 0 });
 
   return { width: widthInPixel, height: heightInPixel };
 }

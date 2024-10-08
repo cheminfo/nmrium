@@ -1,19 +1,20 @@
 /** @jsxImportSource @emotion/react */
-import { UniversalExportSettings } from 'nmr-load-save';
+import { ExportSettings } from 'nmr-load-save';
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { ExportOptionsModal } from './ExportOptionsModal';
 import { ExportSettingsProvider } from './ExportSettingsProvider';
 import { RenderDetector } from './RenderDetector';
+import { INITIAL_BASIC_EXPORT_OPTIONS } from './utilities/getExportOptions';
 import { getSizeInPixel } from './utilities/getSizeInPixel';
 import { transferDocumentStyles } from './utilities/transferDocumentStyles';
 
 const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
 
 export interface BaseExportProps {
-  onExportOptionsChange: (options: UniversalExportSettings) => void;
-  defaultExportOptions?: UniversalExportSettings;
+  onExportOptionsChange: (options: ExportSettings) => void;
+  defaultExportOptions?: ExportSettings;
 }
 
 interface RenderSizeOption {
@@ -25,32 +26,24 @@ interface BaseExportFrameProps {
   children: ReactNode;
   onExportReady: (
     documentElement: HTMLElement,
-    options: UniversalExportSettings,
+    options: ExportSettings,
   ) => void;
   renderOptions: RenderSizeOption;
 }
 interface InnerExportFrameProps extends BaseExportFrameProps {
-  exportOptions: UniversalExportSettings;
+  exportOptions: ExportSettings;
 }
 interface ExportFrameProps
   extends BaseExportFrameProps,
     Partial<BaseExportProps> {
-  exportOptions?: UniversalExportSettings;
+  exportOptions?: ExportSettings;
   onExportDialogClose?: () => void;
   confirmButtonText?: string;
 }
 
-export const INITIAL_EXPORT_OPTIONS: UniversalExportSettings = {
-  dpi: 300,
-  width: 21,
-  height: 14.8,
-  unit: 'cm',
-  useDefaultSettings: false,
-};
-
 export function ExportContent(props: ExportFrameProps) {
   const [innerExportOptions, setInnerExportOptions] =
-    useState<UniversalExportSettings | null>();
+    useState<ExportSettings | null>();
 
   const {
     children,
@@ -72,7 +65,7 @@ export function ExportContent(props: ExportFrameProps) {
         }}
         onExportOptionsChange={(options) => {
           onExportOptionsChange?.(options);
-          setInnerExportOptions({ ...options, ...getSizeInPixel(options) });
+          setInnerExportOptions(options);
         }}
         defaultExportOptions={defaultExportOptions}
         confirmButtonText={confirmButtonText}
@@ -82,11 +75,9 @@ export function ExportContent(props: ExportFrameProps) {
 
   const options =
     innerExportOptions ||
-    (exportOptions && { ...exportOptions, ...getSizeInPixel(exportOptions) }) ||
+    exportOptions ||
     defaultExportOptions ||
-    INITIAL_EXPORT_OPTIONS;
-
-  const { width, height, ...other } = options;
+    INITIAL_BASIC_EXPORT_OPTIONS;
 
   return (
     <>
@@ -103,7 +94,7 @@ export function ExportContent(props: ExportFrameProps) {
         }}
       />
       <InnerPrintFrame
-        exportOptions={{ width, height, ...other }}
+        exportOptions={options}
         onExportReady={onExportReady}
         renderOptions={renderOptions}
       >
@@ -115,8 +106,7 @@ export function ExportContent(props: ExportFrameProps) {
 
 export function InnerPrintFrame(props: InnerExportFrameProps) {
   const { children, exportOptions, onExportReady, renderOptions } = props;
-
-  const { width, height } = exportOptions;
+  const { width, height } = getSizeInPixel(exportOptions);
 
   const frameRef = useRef<HTMLIFrameElement>(null);
   const [content, setContent] = useState<HTMLElement>();

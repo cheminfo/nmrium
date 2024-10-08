@@ -5,7 +5,7 @@ import {
   migrateSettings,
   MultipleSpectraAnalysisPreferences,
   PrintPageOptions,
-  UniversalExportSettings,
+  ExportSettings,
   Workspace,
   WorkSpaceSource,
 } from 'nmr-load-save';
@@ -135,7 +135,7 @@ export type ChangeExportSettingsAction = ActionType<
   'CHANGE_EXPORT_SETTINGS',
   {
     key: keyof ExportPreferences;
-    options: UniversalExportSettings;
+    options: ExportSettings;
   }
 >;
 

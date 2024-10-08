@@ -1,4 +1,3 @@
-import { UniversalExportSettings } from 'nmr-load-save';
 import { useCallback } from 'react';
 
 import { ExportOptions, toJSON } from '../../data/SpectraManager';
@@ -17,6 +16,11 @@ interface SaveOptions {
   name: string;
   compressed: boolean;
   pretty: boolean;
+}
+
+interface ExportSizeOptions {
+  width: number;
+  height: number;
 }
 
 export function useExport() {
@@ -85,7 +89,7 @@ export function useExportViewPort() {
 
   function copyPNGToClipboardHandler(
     targetElement: HTMLElement,
-    options: Partial<UniversalExportSettings>,
+    options: Partial<ExportSizeOptions>,
   ) {
     return new Promise<void>((resolve) => {
       if (state.data.length === 0 || !targetElement) {
@@ -113,7 +117,7 @@ export function useExportViewPort() {
 
   function saveAsSVGHandler(
     targetElement: HTMLElement,
-    options: Partial<UniversalExportSettings>,
+    options: Partial<ExportSizeOptions>,
   ) {
     return new Promise<void>((resolve) => {
       if (state.data.length === 0 || !targetElement) {
@@ -138,7 +142,7 @@ export function useExportViewPort() {
 
   function saveAsPNGHandler(
     targetElement: HTMLElement,
-    options: Partial<UniversalExportSettings>,
+    options: Partial<ExportSizeOptions>,
   ) {
     return new Promise<void>((resolve) => {
       if (state.data.length === 0 || !targetElement) {

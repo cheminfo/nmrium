@@ -1,12 +1,13 @@
-import { UniversalExportSettings } from 'nmr-load-save';
+import { ExportSettings } from 'nmr-load-save';
 import { useDeferredValue, useRef, useState } from 'react';
 
 import { roundNumber } from '../../utility/roundNumber';
 
 import { convert, convertToPixels } from './units';
+import { getExportOptions } from './utilities/getExportOptions';
 
-export function useExportConfigurer(options: UniversalExportSettings) {
-  const { width, height, unit, dpi } = options;
+export function useExportConfigurer(options: ExportSettings) {
+  const { width, height, unit, dpi } = getExportOptions(options);
   const [isAspectRatioEnabled, enableAspectRatio] = useState(true);
   const refSize = useRef({ width, height, dpi });
   const previousUnit = useDeferredValue(unit);

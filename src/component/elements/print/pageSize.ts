@@ -70,8 +70,13 @@ export const pageSizes: PageSize[] = [
   },
 ];
 
+export interface SizeItem {
+  label: string;
+  value: PageSizeName;
+}
+
 export function getSizesList(layout: Layout) {
-  const output: Array<{ label: string; value: PageSizeName }> = [];
+  const output: SizeItem[] = [];
 
   for (const item of pageSizes) {
     const { name, ...otherKeys } = item;

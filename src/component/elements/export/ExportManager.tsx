@@ -1,4 +1,4 @@
-import { ExportPreferences, UniversalExportSettings } from 'nmr-load-save';
+import { ExportPreferences, ExportSettings } from 'nmr-load-save';
 import {
   createContext,
   ReactNode,
@@ -15,6 +15,7 @@ import { useExportViewPort } from '../../hooks/useExport';
 import { useWorkspaceExportSettings } from '../../hooks/useWorkspaceExportSettings';
 
 import { ExportContent } from './ExportContent';
+import { getSizeInPixel } from './utilities/getSizeInPixel';
 
 export type ExportFormat = 'png' | 'svg';
 export type ExportDestination = 'file' | 'clipboard';
@@ -92,7 +93,7 @@ export function ExportManagerController(props: ExportManagerControllerProps) {
 
   async function handleExport(
     targetElement: HTMLElement,
-    options: UniversalExportSettings,
+    options: ExportSettings,
   ) {
     if (!exportOptions) {
       return null;
@@ -101,13 +102,15 @@ export function ExportManagerController(props: ExportManagerControllerProps) {
     const { format, destination = 'file' } = exportOptions;
     let exportKey: keyof ExportPreferences = format;
 
+    const sizeInPixel = getSizeInPixel(options);
+
     if (destination === 'file') {
       switch (format) {
         case 'png':
-          await saveAsPNGHandler(targetElement, options);
+          await saveAsPNGHandler(targetElement, sizeInPixel);
           break;
         case 'svg':
-          await saveAsSVGHandler(targetElement, options);
+          await saveAsSVGHandler(targetElement, sizeInPixel);
           break;
 
         default:
@@ -123,7 +126,7 @@ export function ExportManagerController(props: ExportManagerControllerProps) {
       exportKey = 'clipboard';
       switch (format) {
         case 'png':
-          await copyPNGToClipboardHandler(targetElement, options);
+          await copyPNGToClipboardHandler(targetElement, sizeInPixel);
           break;
         default:
           // eslint-disable-next-line no-console
