@@ -6,7 +6,7 @@ export const MODES: Array<OptionProps<string>> = [
     value: 'basic',
   },
   {
-    label: 'Advance',
+    label: 'Advanced',
     value: 'advance',
   },
 ];
