@@ -1,5 +1,37 @@
 # Changelog
 
+## [0.61.0](https://github.com/cheminfo/nmrium/compare/v0.60.0...v0.61.0) (2024-10-09)
+
+
+### Features
+
+* add new Filter section in case the filter does not exists ([c0dfee0](https://github.com/cheminfo/nmrium/commit/c0dfee07c07bf1dd35902ec1ee8d0cb2ff12b57a))
+* clear all added spectra from the database ([#3240](https://github.com/cheminfo/nmrium/issues/3240)) ([1ae01cd](https://github.com/cheminfo/nmrium/commit/1ae01cd263864c4987572d94fac50c891acddd52)), closes [#3235](https://github.com/cheminfo/nmrium/issues/3235)
+* customize assignment highlight color ([#3230](https://github.com/cheminfo/nmrium/issues/3230)) ([b6ae57c](https://github.com/cheminfo/nmrium/commit/b6ae57c1f04435faf527cc8644ab8b8dfcbbc269))
+* display 'No filters' when no filters ([cd28f64](https://github.com/cheminfo/nmrium/commit/cd28f649f91a5f22791ff5286db3ec151b6f9c4c))
+* display tracking for selected spectra ([d29fad9](https://github.com/cheminfo/nmrium/commit/d29fad9b156f32a6f03e9ac1de003c589831c790)), closes [#3231](https://github.com/cheminfo/nmrium/issues/3231)
+* hook to manager syn filter options ([84e9dc7](https://github.com/cheminfo/nmrium/commit/84e9dc708d87c396e509a2019aee2aed56b8aebe))
+* improve 1D phase correction options panel ([18f5574](https://github.com/cheminfo/nmrium/commit/18f55744a751ecf05018d4c8e3fa383d07eaf4cb))
+* improve 2D phase correction filter options panel ([bcf945e](https://github.com/cheminfo/nmrium/commit/bcf945e5235331f74805ee36207da17fc4a3ffa3))
+* improve apodization filter options ([860473c](https://github.com/cheminfo/nmrium/commit/860473ca6c1100f1ba510d1c917b266605b5463f))
+* improve baseline correction filter options panel ([7db0a08](https://github.com/cheminfo/nmrium/commit/7db0a0814aad7928dc19318cc72cc13cf6aee9e2))
+* improve editing of exclusion zones filter options ([fc2bc59](https://github.com/cheminfo/nmrium/commit/fc2bc5985fa93428f866c841dc18298f2b94a4c2))
+* improve editing of Shift filter options ([c850388](https://github.com/cheminfo/nmrium/commit/c850388e753892f69e70157dfe9d0fd3671a0438))
+* improve save as PNG, SVG and copy to clipboard ([#3252](https://github.com/cheminfo/nmrium/issues/3252)) ([683eb63](https://github.com/cheminfo/nmrium/commit/683eb63d2ca33cf2b5886eb5793f1f2ac8d5af38))
+* PNG export resolution ([#3237](https://github.com/cheminfo/nmrium/issues/3237)) ([4cbf6c4](https://github.com/cheminfo/nmrium/commit/4cbf6c40aa1043d91f214908ab6d83cc475a7efd))
+* section component ([3f23dcd](https://github.com/cheminfo/nmrium/commit/3f23dcd031f3cc54574c9dff52a4162b5e016c8e))
+
+
+### Bug Fixes
+
+* ensure shortcuts are not ignored when the focused element is a radio or checkbox ([e8f3667](https://github.com/cheminfo/nmrium/commit/e8f3667f1dff1d77107110ec3853e69a9e9ff362))
+* highlight when toggling hydrogens in molecule could fail ([#3245](https://github.com/cheminfo/nmrium/issues/3245)) ([2276fe0](https://github.com/cheminfo/nmrium/commit/2276fe03cfead4fbd9e85b1f293c96a083327b60))
+* remove group delay points ([#3246](https://github.com/cheminfo/nmrium/issues/3246)) ([960ac94](https://github.com/cheminfo/nmrium/commit/960ac947fce7c665de1ff0cba110391e0d869fa9))
+* rescale the canvas based on the DPI ([4cbf6c4](https://github.com/cheminfo/nmrium/commit/4cbf6c40aa1043d91f214908ab6d83cc475a7efd))
+* select component style ([f1a24e5](https://github.com/cheminfo/nmrium/commit/f1a24e5a1289ed4bde2d42a2610b9fa41ff11f66))
+* show/hide the spectra legend fields ([20126dd](https://github.com/cheminfo/nmrium/commit/20126dd157b07e04041306407d8f2bf6554050db))
+* **varian:** include procPar into metadata ([#3241](https://github.com/cheminfo/nmrium/issues/3241)) ([39ee706](https://github.com/cheminfo/nmrium/commit/39ee706f07a0fa9b1be1d37e27ab41c1f35d30dd))
+
 ## [0.60.0](https://github.com/cheminfo/nmrium/compare/v0.59.0...v0.60.0) (2024-08-24)
 
 
