@@ -17,7 +17,9 @@ export function useNMRiumRefAPI(
     ref,
     () => ({
       getSpectraViewerAsBlob: () => {
-        return rootRef.current ? getBlob(rootRef.current, 'nmrSVG') : null;
+        return rootRef.current
+          ? getBlob('nmrSVG', { rootElement: rootRef.current })
+          : null;
       },
       loadFiles,
     }),

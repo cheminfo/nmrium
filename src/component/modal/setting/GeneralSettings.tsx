@@ -42,6 +42,7 @@ import PredefinedWorkspaces from '../../workspaces';
 import WorkspaceItem from './WorkspaceItem';
 import DatabasesTabContent from './settings-tabs/DatabasesTabContent';
 import DisplayTabContent from './settings-tabs/DisplayTabContent';
+import { ExportTabContent } from './settings-tabs/ExportTabContent';
 import { ExternalAPIsTabContent } from './settings-tabs/ExternalAPIsTabContent';
 import GeneralTabContent from './settings-tabs/GeneralTabContent';
 import ImportationFiltersTabContent from './settings-tabs/ImportationFiltersTabContent';
@@ -293,6 +294,7 @@ function InnerGeneralSettingsModal(props: InnerGeneralSettingsModalProps) {
                 id="spectra-colors"
                 panel={<SpectraColorsTabContent />}
               />
+
               {isExperimentalFeatures && (
                 <Tab
                   title="External APIs"
@@ -300,6 +302,11 @@ function InnerGeneralSettingsModal(props: InnerGeneralSettingsModalProps) {
                   panel={<ExternalAPIsTabContent />}
                 />
               )}
+              <Tab
+                title="Export"
+                id="export-options"
+                panel={<ExportTabContent />}
+              />
             </Tabs>
           </div>
         </DialogBody>

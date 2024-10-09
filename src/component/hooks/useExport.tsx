@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 
 import { ExportOptions, toJSON } from '../../data/SpectraManager';
 import { useChartData } from '../context/ChartContext';
-import { useGlobal } from '../context/GlobalContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { useToaster } from '../context/ToasterContext';
 import {
@@ -12,8 +11,6 @@ import {
   exportAsSVG,
 } from '../utility/export';
 
-import { useExportSettings } from './useExportSettings';
-
 interface SaveOptions {
   include: ExportOptions;
   name: string;
@@ -21,34 +18,15 @@ interface SaveOptions {
   pretty: boolean;
 }
 
-export default function useExport() {
-  const { rootRef } = useGlobal();
+interface ExportSizeOptions {
+  width: number;
+  height: number;
+}
+
+export function useExport() {
   const toaster = useToaster();
   const state = useChartData();
   const preferencesState = usePreferences();
-  const {
-    png: { resolution: pngResolution },
-  } = useExportSettings();
-
-  const saveToClipboardHandler = useCallback(async () => {
-    if (state.data.length > 0 && rootRef) {
-      const hideLoading = toaster.showLoading({
-        message: 'Exporting as NMRium process in progress',
-      });
-
-      setTimeout(async () => {
-        await copyPNGToClipboard('nmrSVG', {
-          rootElement: rootRef,
-          resolution: pngResolution,
-        });
-        toaster.show({
-          message: 'Image copied to clipboard',
-          intent: 'success',
-        });
-        hideLoading();
-      }, 0);
-    }
-  }, [state.data.length, rootRef, toaster, pngResolution]);
 
   const saveAsJSONHandler = useCallback(
     (spaceIndent = 0, isCompressed = true) => {
@@ -73,36 +51,6 @@ export default function useExport() {
     },
     [preferencesState, state, toaster],
   );
-
-  const saveAsSVGHandler = useCallback(() => {
-    if (state.data.length > 0 && rootRef) {
-      const hideLoading = toaster.showLoading({
-        message: 'Exporting as SVG process in progress',
-      });
-      void setTimeout(async () => {
-        const fileName = state.data[0]?.info?.name;
-        exportAsSVG(rootRef, 'nmrSVG', fileName);
-        hideLoading();
-      }, 0);
-    }
-  }, [state.data, rootRef, toaster]);
-
-  const saveAsPNGHandler = useCallback(async () => {
-    if (state.data.length > 0 && rootRef) {
-      const hideLoading = toaster.showLoading({
-        message: 'Exporting as PNG process in progress',
-      });
-      void setTimeout(async () => {
-        const fileName = state.data[0]?.info?.name;
-        exportAsPng('nmrSVG', {
-          rootElement: rootRef,
-          fileName,
-          resolution: pngResolution,
-        });
-        hideLoading();
-      }, 0);
-    }
-  }, [state.data, rootRef, toaster, pngResolution]);
 
   const saveHandler = useCallback(
     (options: SaveOptions) => {
@@ -130,10 +78,96 @@ export default function useExport() {
   );
 
   return {
-    saveToClipboardHandler,
     saveAsJSONHandler,
+    saveHandler,
+  };
+}
+
+export function useExportViewPort() {
+  const toaster = useToaster();
+  const state = useChartData();
+
+  function copyPNGToClipboardHandler(
+    targetElement: HTMLElement,
+    options: Partial<ExportSizeOptions>,
+  ) {
+    return new Promise<void>((resolve) => {
+      if (state.data.length === 0 || !targetElement) {
+        return;
+      }
+
+      const hideLoading = toaster.showLoading({
+        message: 'Exporting as NMRium process in progress',
+      });
+
+      setTimeout(async () => {
+        await copyPNGToClipboard('nmrSVG', {
+          rootElement: targetElement,
+          ...options,
+        });
+        toaster.show({
+          message: 'Image copied to clipboard',
+          intent: 'success',
+        });
+        hideLoading();
+        resolve();
+      }, 0);
+    });
+  }
+
+  function saveAsSVGHandler(
+    targetElement: HTMLElement,
+    options: Partial<ExportSizeOptions>,
+  ) {
+    return new Promise<void>((resolve) => {
+      if (state.data.length === 0 || !targetElement) {
+        return;
+      }
+
+      const hideLoading = toaster.showLoading({
+        message: 'Exporting as SVG process in progress',
+      });
+      void setTimeout(async () => {
+        const fileName = state.data[0]?.info?.name;
+        exportAsSVG('nmrSVG', {
+          rootElement: targetElement,
+          fileName,
+          ...options,
+        });
+        hideLoading();
+        resolve();
+      }, 0);
+    });
+  }
+
+  function saveAsPNGHandler(
+    targetElement: HTMLElement,
+    options: Partial<ExportSizeOptions>,
+  ) {
+    return new Promise<void>((resolve) => {
+      if (state.data.length === 0 || !targetElement) {
+        return;
+      }
+
+      const hideLoading = toaster.showLoading({
+        message: 'Exporting as PNG process in progress',
+      });
+      void setTimeout(async () => {
+        const fileName = state.data[0]?.info?.name;
+        void exportAsPng('nmrSVG', {
+          rootElement: targetElement,
+          fileName,
+          ...options,
+        });
+        hideLoading();
+        resolve();
+      }, 0);
+    });
+  }
+
+  return {
+    copyPNGToClipboardHandler,
     saveAsSVGHandler,
     saveAsPNGHandler,
-    saveHandler,
   };
 }

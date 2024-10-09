@@ -10,6 +10,7 @@ import { ToasterProvider } from '../context/ToasterContext';
 import { TopicMoleculeProvider } from '../context/TopicMoleculeContext';
 import { AlertProvider } from '../elements/Alert';
 import { DialogProvider } from '../elements/DialogManager';
+import { ExportManagerProvider } from '../elements/export/ExportManager';
 import { HighlightProvider } from '../highlight';
 import { defaultGetSpinner, SpinnerProvider } from '../loader/SpinnerContext';
 import preferencesReducer, {
@@ -73,47 +74,49 @@ export function InnerNMRium({
       style={{ height: '100%', position: 'relative' }}
       translate="no"
     >
-      <GlobalProvider
-        value={{
-          rootRef: rootRef.current,
-          elementsWrapperRef: elementsWrapperRef.current,
-          viewerRef: viewerRef.current,
-        }}
-      >
-        <PreferencesProvider value={preferencesState}>
-          <LoggerProvider>
-            <KeyModifiersProvider>
-              <ToasterProvider>
-                <NMRiumStateProvider
-                  onChange={onChange}
-                  nmriumData={nmriumData}
-                >
-                  <TopicMoleculeProvider>
-                    <DialogProvider>
-                      <AlertProvider>
-                        <HighlightProvider>
-                          <AssignmentProvider>
-                            <SpinnerProvider value={getSpinner}>
-                              <InnerNMRiumContents
-                                emptyText={emptyText}
-                                mainDivRef={mainDivRef}
-                                elementsWrapperRef={elementsWrapperRef}
-                                rootRef={rootRef}
-                                viewerRef={viewerRef}
-                                apiRef={apiRef}
-                              />
-                            </SpinnerProvider>
-                          </AssignmentProvider>
-                        </HighlightProvider>
-                      </AlertProvider>
-                    </DialogProvider>
-                  </TopicMoleculeProvider>
-                </NMRiumStateProvider>
-              </ToasterProvider>
-            </KeyModifiersProvider>
-          </LoggerProvider>
-        </PreferencesProvider>
-      </GlobalProvider>
+      <ExportManagerProvider>
+        <GlobalProvider
+          value={{
+            rootRef: rootRef.current,
+            elementsWrapperRef: elementsWrapperRef.current,
+            viewerRef: viewerRef.current,
+          }}
+        >
+          <PreferencesProvider value={preferencesState}>
+            <LoggerProvider>
+              <KeyModifiersProvider>
+                <ToasterProvider>
+                  <NMRiumStateProvider
+                    onChange={onChange}
+                    nmriumData={nmriumData}
+                  >
+                    <TopicMoleculeProvider>
+                      <DialogProvider>
+                        <AlertProvider>
+                          <HighlightProvider>
+                            <AssignmentProvider>
+                              <SpinnerProvider value={getSpinner}>
+                                <InnerNMRiumContents
+                                  emptyText={emptyText}
+                                  mainDivRef={mainDivRef}
+                                  elementsWrapperRef={elementsWrapperRef}
+                                  rootRef={rootRef}
+                                  viewerRef={viewerRef}
+                                  apiRef={apiRef}
+                                />
+                              </SpinnerProvider>
+                            </AssignmentProvider>
+                          </HighlightProvider>
+                        </AlertProvider>
+                      </DialogProvider>
+                    </TopicMoleculeProvider>
+                  </NMRiumStateProvider>
+                </ToasterProvider>
+              </KeyModifiersProvider>
+            </LoggerProvider>
+          </PreferencesProvider>
+        </GlobalProvider>
+      </ExportManagerProvider>
     </div>
   );
 }

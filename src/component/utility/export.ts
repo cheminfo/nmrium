@@ -101,78 +101,220 @@ function exportAsMol(data, fileName = 'mol') {
  * export the vitalization result as SVG, if you need to remove some content during exportation process enclose the the content with <!-- export-remove --> ${content} <!-- export-remove -->
  */
 
-function exportAsSVG(
-  rootRef: HTMLDivElement,
-  elementID: string,
-  fileName = 'experiment',
-) {
-  const { blob } = getBlob(rootRef, elementID);
+interface ExportAsSVGOptions {
+  fileName?: string;
+  rootElement: HTMLElement;
+  width?: number;
+  height?: number;
+  dpi?: number;
+}
+
+function exportAsSVG(targetElementID: string, options: ExportAsSVGOptions) {
+  const { fileName, rootElement } = options;
+  const { blob } = getBlob(targetElementID, { rootElement });
   saveAs(blob, `${fileName}.svg`);
 }
 
 interface ExportAsPNGOptions {
   fileName?: string;
-  resolution?: number;
-  rootElement: HTMLDivElement;
+  dpi?: number;
+  rootElement: HTMLElement;
+  width?: number;
+  height?: number;
 }
 
 interface CreateObjectURLOptions {
   width: number;
   height: number;
-  resolution: number;
+  scaleFactor?: number;
 }
 
-function createObjectURL(blob: Blob, options: CreateObjectURLOptions) {
-  const { resolution, width, height } = options;
+async function createCanvas(blob: Blob, options: CreateObjectURLOptions) {
+  const { width, height, scaleFactor = 1 } = options;
 
-  const canvas = document.createElement('canvas');
+  const img = await createImageFromBlob(blob);
+
+  const { canvas, context } = await createCanvasByChunks(img, {
+    width,
+    height,
+    scaleFactor,
+  });
+
+  return { canvas, context };
+}
+
+interface CreateCanvasByChunksOptions {
+  width: number;
+  height: number;
+  chunkSize?: number;
+  scaleFactor?: number;
+}
+
+interface DrawImageOptions {
+  context: OffscreenCanvasRenderingContext2D;
+  chunkX: number;
+  chunkY: number;
+  chunkSize: number;
+  width: number;
+  height: number;
+  scaleFactor: number;
+  img: HTMLImageElement;
+}
+
+function drawImage(options: DrawImageOptions) {
+  const {
+    context,
+    img,
+    scaleFactor,
+    chunkX,
+    chunkY,
+    chunkSize,
+    width,
+    height,
+  } = options;
+
+  const sourceX = (chunkX * chunkSize) / scaleFactor;
+  const sourceY = (chunkY * chunkSize) / scaleFactor;
+  const sourceWidth = Math.min(chunkSize / scaleFactor, width - sourceX);
+  const sourceHeight = Math.min(chunkSize / scaleFactor, height - sourceY);
+
+  const destX = chunkX * chunkSize;
+  const destY = chunkY * chunkSize;
+  const destWidth = sourceWidth * scaleFactor;
+  const destHeight = sourceHeight * scaleFactor;
+
+  return new Promise<void>((resolve, reject) => {
+    try {
+      context.save();
+      context.drawImage(
+        img,
+        sourceX,
+        sourceY,
+        sourceWidth,
+        sourceHeight,
+        destX,
+        destY,
+        destWidth,
+        destHeight,
+      );
+      context.restore();
+      setTimeout(resolve, 0);
+    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+      reject(error);
+    }
+  });
+}
+
+async function createCanvasByChunks(
+  img: HTMLImageElement,
+  options: CreateCanvasByChunksOptions,
+): Promise<{
+  canvas: OffscreenCanvas;
+  context: OffscreenCanvasRenderingContext2D;
+}> {
+  const { width, height, scaleFactor = 1, chunkSize = 512 } = options;
+  const canvas = new OffscreenCanvas(width, height);
+  canvas.width = width;
+  canvas.height = height;
   const context = canvas.getContext('2d');
 
-  /**
-   * Change the canvas size based on DPI
-   * 96 is the default DPI for web
-   * */
-  const scaleFactor = resolution / 96;
-  canvas.width = width * scaleFactor;
-  canvas.height = height * scaleFactor;
-
-  if (context) {
-    context.fillStyle = 'white';
-    context.scale(scaleFactor, scaleFactor);
-    context.fillRect(
-      0,
-      0,
-      canvas.width / scaleFactor,
-      canvas.height / scaleFactor,
-    );
+  if (!context) {
+    throw new Error('Failed to get canvas context');
   }
 
-  return { url: URL.createObjectURL(blob), canvas, context };
-}
+  // Fill the background with white
+  context.fillStyle = 'white';
+  context.fillRect(0, 0, width, height);
 
-function exportAsPng(targetElementID: string, options: ExportAsPNGOptions) {
-  const { rootElement, fileName = 'experiment', resolution = 300 } = options;
-  const { blob, width, height } = getBlob(rootElement, targetElementID);
+  const chunksPromises: Array<Promise<void>> = [];
+
+  const numChunksX = Math.ceil(width / chunkSize);
+  const numChunksY = Math.ceil(height / chunkSize);
+
+  for (let chunkX = 0; chunkX < numChunksX; chunkX++) {
+    for (let chunkY = 0; chunkY < numChunksY; chunkY++) {
+      const chunkPromise = drawImage({
+        context,
+        img,
+        chunkSize,
+        chunkX,
+        chunkY,
+        width,
+        height,
+        scaleFactor,
+      });
+      chunksPromises.push(chunkPromise);
+    }
+  }
+
+  await Promise.all(chunksPromises);
+
+  return { canvas, context };
+}
+async function exportAsPng(
+  targetElementID: string,
+  options: ExportAsPNGOptions,
+) {
+  const {
+    rootElement,
+    fileName = 'experiment',
+    width: externalWidth,
+    height: externalHeight,
+  } = options;
+  const {
+    blob,
+    width: originWidth,
+    height: originHeight,
+  } = getBlob(targetElementID, { rootElement });
+
+  const width = externalWidth ?? originWidth;
+  const height = externalHeight ?? originHeight;
+  const scaleFactor = externalWidth ? externalWidth / originWidth : 1;
   try {
-    const { url, context, canvas } = createObjectURL(blob, {
+    const { canvas } = await createCanvas(blob, {
       width,
       height,
-      resolution,
+      scaleFactor,
     });
-    const img = new Image();
-    img.addEventListener('load', () => {
-      context?.drawImage(img, 0, 0);
-      const png = canvas.toDataURL('image/png', 1);
-      saveAs(png, `${fileName}.png`);
-      URL.revokeObjectURL(png);
-    });
-    img.src = url;
+
+    const pngBlob = await canvas.convertToBlob({ type: 'image/png' });
+    saveAs(pngBlob, `${fileName}.png`);
   } catch (error) {
     // TODO: handle error.
     reportError(error);
   }
 }
 
+function createImageFromBlob(blob: Blob): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(blob);
+    const img = new Image();
+    img.addEventListener('load', () => {
+      URL.revokeObjectURL(url);
+      resolve(img);
+    });
+    img.addEventListener('error', () => {
+      URL.revokeObjectURL(url);
+      reject(new Error('Failed to load image'));
+    });
+    img.src = url;
+  });
+}
+
+function transferToCanvas(offscreenCanvas: OffscreenCanvas) {
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d');
+
+  if (!context) {
+    return null;
+  }
+
+  // Transfer the offscreen canvas to the main canvas
+  context.drawImage(offscreenCanvas, 0, 0);
+
+  return canvas;
+}
 // hack way to copy the image to the clipboard
 // TODO: remove when Firefox widely supports ClipboardItem
 // https://caniuse.com/mdn-api_clipboarditem
@@ -203,47 +345,64 @@ async function writeImageToClipboard(image: Blob, isSafari = false) {
     new ClipboardItem({ [image.type]: isSafari ? resolveBlob(image) : image }),
   ]);
 }
-async function copyBlobToClipboard(canvas: HTMLCanvasElement) {
-  canvas.toBlob(async (b) => {
-    if (!b) return;
-    const isSafari = /^(?<safari>(?!chrome|android).)*safari/i.test(
-      navigator.userAgent,
-    );
-    if (typeof ClipboardItem !== 'undefined') {
-      // eslint-disable-next-line @typescript-eslint/use-unknown-in-catch-callback-variable
-      await writeImageToClipboard(b, isSafari).catch(reportError);
-    } else {
-      const png = canvas.toDataURL('image/png', 1);
-      copyDataURLClipboardFireFox(png);
-      URL.revokeObjectURL(png);
+async function copyBlobToClipboard(canvas: OffscreenCanvas) {
+  const pngBlob = await canvas.convertToBlob({ type: 'image/png' });
+  if (!pngBlob) return;
+  const isSafari = /^(?<safari>(?!chrome|android).)*safari/i.test(
+    navigator.userAgent,
+  );
+  if (typeof ClipboardItem !== 'undefined') {
+    // eslint-disable-next-line @typescript-eslint/use-unknown-in-catch-callback-variable
+    await writeImageToClipboard(pngBlob, isSafari).catch(reportError);
+  } else {
+    const screenCanvas = transferToCanvas(canvas);
+    if (!screenCanvas) {
+      return null;
     }
-  });
+    const png = screenCanvas.toDataURL('image/png', 1);
+    copyDataURLClipboardFireFox(png);
+    URL.revokeObjectURL(png);
+  }
 }
 
 interface CopyPNGToClipboardOptions {
   css?: SerializedStyles;
-  resolution?: number;
-  rootElement: HTMLDivElement;
+  dpi?: number;
+  rootElement: HTMLElement;
+  width?: number;
+  height?: number;
 }
 
 async function copyPNGToClipboard(
   targetElementID: string,
   options: CopyPNGToClipboardOptions,
 ) {
-  const { rootElement, css, resolution = 300 } = options;
-  const { blob, width, height } = getBlob(rootElement, targetElementID, css);
+  const {
+    rootElement,
+    css,
+    width: externalWidth,
+    height: externalHeight,
+  } = options;
+  const {
+    blob,
+    width: originWidth,
+    height: originHeight,
+  } = getBlob(targetElementID, {
+    rootElement,
+    css,
+  });
+
+  const width = externalWidth ?? originWidth;
+  const height = externalHeight ?? originHeight;
+  const scaleFactor = externalWidth ? externalWidth / originWidth : 1;
+
   try {
-    const img = new Image();
-    const { url, context, canvas } = createObjectURL(blob, {
+    const { canvas } = await createCanvas(blob, {
       width,
       height,
-      resolution,
+      scaleFactor,
     });
-    img.addEventListener('load', async () => {
-      context?.drawImage(img, 0, 0);
-      await copyBlobToClipboard(canvas);
-    });
-    img.src = url;
+    await copyBlobToClipboard(canvas);
   } catch (error) {
     if (error instanceof ReferenceError) {
       // eslint-disable-next-line no-alert
@@ -262,31 +421,34 @@ export interface BlobObject {
   height: number;
 }
 
-function getBlob(
-  rootRef: HTMLDivElement,
-  elementID: string,
-  css?: SerializedStyles,
-): BlobObject {
-  const _svg: any = (rootRef.getRootNode() as Document)
-    .querySelector(`#${elementID}`)
+interface GetBlobOptions {
+  rootElement: HTMLElement;
+  css?: SerializedStyles;
+}
+
+function getBlob(targetElementID: string, options: GetBlobOptions): BlobObject {
+  const { rootElement, css } = options;
+  const _svg: any = (rootElement.getRootNode() as Document)
+    .querySelector(`#${targetElementID}`)
     ?.cloneNode(true);
 
   const width = Number(_svg?.getAttribute('width').replace('px', ''));
   const height = Number(_svg?.getAttribute('height').replace('px', ''));
+
   for (const element of _svg.querySelectorAll('[data-no-export="true"]')) {
     element.remove();
   }
 
   //append the floating molecules in svg element
-  const floatingMoleculesGroup = getMoleculesElement(rootRef);
+  const floatingMoleculesGroup = getMoleculesElement(rootElement);
   _svg.append(floatingMoleculesGroup);
 
   const nmrCss = `
+     
   * {
     font-family: Arial, Helvetica, sans-serif;
   }
   .grid line,.grid path{stroke:none;} .peaks-text{fill:#730000} .x path{stroke-width:1px} .x text{
-    font-size: 12px;
     font-weight: bold;
   } 
   .nmr-svg,.contours{
@@ -300,7 +462,9 @@ function getBlob(
   ${css?.styles || nmrCss}
   </style>`;
   const svg = `${head + style + _svg.innerHTML}</svg>`;
+
   const blob = new Blob([svg], { type: 'image/svg+xml' });
+
   return { blob, width, height };
 }
 

@@ -40,6 +40,7 @@ import {
   ToolbarPopoverMenuItem,
   ToolbarPopoverItem,
 } from '../elements/ToolbarPopoverItem';
+import { useExportManagerAPI } from '../elements/export/ExportManager';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
 import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature';
 import {
@@ -48,7 +49,7 @@ import {
 } from '../hooks/useCheckToolsVisibility';
 import useDatumWithSpectraStatistics from '../hooks/useDatumWithSpectraStatistics';
 import { useDialogToggle } from '../hooks/useDialogToggle';
-import useExport from '../hooks/useExport';
+import { useExport } from '../hooks/useExport';
 import useToolsFunctions from '../hooks/useToolsFunctions';
 import { useVerticalAlign } from '../hooks/useVerticalAlign';
 import ExportAsJcampModal from '../modal/ExportAsJcampModal';
@@ -165,12 +166,9 @@ export default function ToolBar() {
     });
   }, [dispatch]);
 
-  const {
-    saveAsSVGHandler,
-    saveAsPNGHandler,
-    saveAsJSONHandler,
-    saveToClipboardHandler,
-  } = useExport();
+  const { saveAsJSONHandler } = useExport();
+
+  const exportViewportAPI = useExportManagerAPI();
 
   function importHandler(data) {
     switch (data?.id) {
@@ -193,10 +191,10 @@ export default function ToolBar() {
   function exportHandler(data) {
     switch (data?.id) {
       case 'svg':
-        saveAsSVGHandler();
+        exportViewportAPI.current?.export({ format: 'svg' });
         break;
       case 'png':
-        void saveAsPNGHandler();
+        exportViewportAPI.current?.export({ format: 'png' });
         break;
       case 'json':
         saveAsJSONHandler();
@@ -205,7 +203,10 @@ export default function ToolBar() {
         openDialog('saveAs');
         break;
       case 'copy':
-        void saveToClipboardHandler();
+        exportViewportAPI.current?.export({
+          format: 'png',
+          destination: 'clipboard',
+        });
         break;
       case 'exportAsJcamp':
         openDialog('exportAsJcamp');

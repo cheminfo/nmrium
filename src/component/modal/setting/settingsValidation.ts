@@ -1,6 +1,7 @@
 import { ExternalAPIKeyType, EXTERNAL_API_KEYS } from 'nmr-load-save';
 import { array, object, string, number, mixed } from 'yup';
 
+import { exportOptionValidationSchema } from '../../elements/export/utilities/exportOptionValidationSchema';
 import { checkUniqueByKey } from '../../utility/checkUniqueByKey';
 
 const nucleiValidation = array()
@@ -69,6 +70,12 @@ const externalAPIsValidation = array()
     },
   );
 
+const exportValidation = object().shape({
+  png: exportOptionValidationSchema,
+  svg: exportOptionValidationSchema,
+  clipboard: exportOptionValidationSchema,
+});
+
 export const validation: any = object().shape({
   nuclei: nucleiValidation,
   databases: databasesValidation,
@@ -76,4 +83,5 @@ export const validation: any = object().shape({
   general: generalValidation,
   spectraColors: spectraColorsSchemaValidation,
   externalAPIs: externalAPIsValidation,
+  export: exportValidation,
 });

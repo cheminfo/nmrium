@@ -11,6 +11,7 @@ interface NumberInput2ControllerProps<
     'control' | 'name' | 'render'
   >;
   noShadowBox?: boolean;
+  transformValue?: (value: number) => number;
 }
 
 const numberPattern = /^-?\d+(\.\d+)?$/;
@@ -26,6 +27,7 @@ export function NumberInput2Controller<
     intent = 'none',
     noShadowBox = false,
     style,
+    transformValue,
     ...otherInputProps
   } = props;
 
@@ -44,7 +46,11 @@ export function NumberInput2Controller<
             {...otherFieldProps}
             onValueChange={(valueAsNumber, valueAsString, event) => {
               if (numberPattern.test(valueAsString)) {
-                onChange(valueAsNumber);
+                onChange(
+                  typeof transformValue === 'function'
+                    ? transformValue(valueAsNumber)
+                    : valueAsNumber,
+                );
               } else {
                 onChange(valueAsString);
               }

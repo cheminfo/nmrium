@@ -9,9 +9,10 @@ import { useLoader } from '../context/LoaderContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { useToaster } from '../context/ToasterContext';
 import { AlertButton, useAlert } from '../elements/Alert';
+import { useExportManagerAPI } from '../elements/export/ExportManager';
 import { HighlightEventSource, useHighlightData } from '../highlight/index';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
-import useExport from '../hooks/useExport';
+import { useExport } from '../hooks/useExport';
 import useToolsFunctions from '../hooks/useToolsFunctions';
 import SaveAsModal from '../modal/SaveAsModal';
 import { options } from '../toolbar/ToolTypes';
@@ -49,10 +50,11 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
     changeDisplayViewModeHandler,
   } = useToolsFunctions();
 
-  const { saveToClipboardHandler, saveAsJSONHandler } = useExport();
+  const { saveAsJSONHandler } = useExport();
   const isToolVisible = useCheckToolsVisibility();
 
   const { highlight, remove } = useHighlightData();
+  const exportViewportAPI = useExportManagerAPI();
 
   const mouseIsOverDisplayer = useRef(false);
   useEffect(() => {
@@ -418,7 +420,10 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
         if (!e.shiftKey && (e.metaKey || e.ctrlKey)) {
           switch (e.key) {
             case 'c':
-              void saveToClipboardHandler();
+              exportViewportAPI.current?.export({
+                format: 'png',
+                destination: 'clipboard',
+              });
               e.preventDefault();
               break;
             case 's':
@@ -476,6 +481,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
       allow1DTool,
       changeDisplayViewModeHandler,
       dispatch,
+      exportViewportAPI,
       handleChangeOption,
       handleFullZoomOut,
       isToolVisible,
@@ -483,7 +489,6 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
       openLoader,
       openSaveAsDialog,
       saveAsJSONHandler,
-      saveToClipboardHandler,
       toaster,
     ],
   );
