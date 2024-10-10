@@ -88,7 +88,7 @@ function handleAddPeak(draft: Draft<State>, action: AddPeakAction) {
         originalX: candidatePeak.x - shiftX,
         x: candidatePeak.x,
         y: candidatePeak.y,
-        width: 0.001,
+        width: 1,
         shape: {
           kind: 'generalizedLorentzian',
           fwhm: 1,
@@ -125,10 +125,10 @@ function handleAddPeaks(draft: Draft<State>, action: AddPeaksAction) {
           originalX: peak.x - shiftX,
           x: peak.x,
           y: peak.y,
-          width: 0,
+          width: 1,
           shape: {
             kind: 'generalizedLorentzian',
-            fwhm: 0.001,
+            fwhm: 1,
             gamma: 0.5,
           },
         };
