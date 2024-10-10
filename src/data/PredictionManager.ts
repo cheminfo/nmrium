@@ -249,7 +249,7 @@ function generated1DSpectrum(params: {
 
   const {
     name,
-    '1d': { nbPoints },
+    '1d': { nbPoints, lineWidth },
     frequency: freq,
   } = options;
   const SpectrumName = generateName(name, { frequency: freq, experiment });
@@ -258,6 +258,7 @@ function generated1DSpectrum(params: {
     ...options['1d'][nucleus],
     frequency,
     nbPoints,
+    lineWidth,
   });
   const datum = initiateDatum1D(
     {
