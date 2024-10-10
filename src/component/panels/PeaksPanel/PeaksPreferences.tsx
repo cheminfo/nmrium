@@ -59,6 +59,12 @@ const formatFields: NucleusPreferenceField[] = [
     formatFieldName: 'mu.format',
   },
   {
+    id: 11,
+    label: 'gamma :',
+    checkFieldName: 'gamma.show',
+    formatFieldName: 'gamma.format',
+  },
+  {
     id: 9,
     label: 'Delete action :',
     checkFieldName: 'showDeleteAction',
