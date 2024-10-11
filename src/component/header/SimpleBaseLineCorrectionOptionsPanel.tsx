@@ -15,7 +15,7 @@ import {
 } from '../panels/filtersPanel/Filters/hooks/useBaselineCorrection';
 
 import { headerLabelStyle } from './Header';
-import { HeaderContainer } from './HeaderContainer';
+import { HeaderWrapper } from './HeaderWrapper';
 
 interface BaseLineCorrectionInnerPanelProps {
   filter: Filter | null;
@@ -39,7 +39,7 @@ function BaseLineCorrectionInnerPanel(
     register(`livePreview`);
 
   return (
-    <HeaderContainer>
+    <HeaderWrapper>
       <Label title="Algorithm: " style={headerLabelStyle}>
         <Select
           items={baselineCorrectionsAlgorithms}
@@ -130,7 +130,7 @@ function BaseLineCorrectionInnerPanel(
         onDone={() => handleSubmit((values) => handleApplyFilter(values))()}
         onCancel={handleCancelFilter}
       />
-    </HeaderContainer>
+    </HeaderWrapper>
   );
 }
 

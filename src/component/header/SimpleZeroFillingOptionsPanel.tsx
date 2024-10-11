@@ -11,7 +11,7 @@ import {
 } from '../panels/filtersPanel/Filters/hooks/useZeroFilling';
 
 import { headerLabelStyle } from './Header';
-import { HeaderContainer } from './HeaderContainer';
+import { HeaderWrapper } from './HeaderWrapper';
 
 export function SimpleZeroFillingOptionsPanel() {
   const filter = useFilter(Filters.zeroFilling.id);
@@ -21,7 +21,7 @@ export function SimpleZeroFillingOptionsPanel() {
   const { onChange: onLivePreviewChange, ...otherLivePreviewRegisterOptions } =
     register('livePreview');
   return (
-    <HeaderContainer>
+    <HeaderWrapper>
       <Label title="Size:" style={headerLabelStyle}>
         <Select2Controller
           control={control}
@@ -47,6 +47,6 @@ export function SimpleZeroFillingOptionsPanel() {
         onDone={() => submitHandler()}
         onCancel={handleCancelFilter}
       />
-    </HeaderContainer>
+    </HeaderWrapper>
   );
 }

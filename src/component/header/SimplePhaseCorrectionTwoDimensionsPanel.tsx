@@ -17,7 +17,7 @@ import {
 } from '../panels/filtersPanel/Filters/hooks/usePhaseCorrectionTwoDimensions';
 
 import { headerLabelStyle } from './Header';
-import { HeaderContainer } from './HeaderContainer';
+import { HeaderWrapper } from './HeaderWrapper';
 
 export function SimplePhaseCorrectionTwoDimensionsPanel() {
   const filter = useFilter(Filters.phaseCorrectionTwoDimensions.id);
@@ -36,7 +36,7 @@ export function SimplePhaseCorrectionTwoDimensionsPanel() {
   } = usePhaseCorrectionTwoDimensions(filter);
 
   return (
-    <HeaderContainer style={{ padding: '0 5px' }}>
+    <HeaderWrapper style={{ padding: '0 5px' }}>
       <div style={{ padding: '0 5px' }}>
         <Select<AlgorithmItem>
           items={phaseCorrectionalAlgorithms}
@@ -103,6 +103,6 @@ export function SimplePhaseCorrectionTwoDimensionsPanel() {
         </>
       )}
       <ActionButtons onDone={handleApplyFilter} onCancel={handleCancelFilter} />
-    </HeaderContainer>
+    </HeaderWrapper>
   );
 }

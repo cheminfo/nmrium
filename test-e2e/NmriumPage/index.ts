@@ -143,7 +143,9 @@ export default class NmriumPage {
         .getByRole('option', { name: 'Convert to absolute spectrum' })
         .click();
     }
-    await this.page.click('button >> text=Apply', { delay: 200 });
+    await this.page.click('_react=Header >> button >> text=Apply', {
+      delay: 200,
+    });
 
     await expect(
       this.page.locator('_react=FiltersSectionsPanel >> text=Phase correction'),
