@@ -1,7 +1,7 @@
 import { Switch } from '@blueprintjs/core';
-import { Filter } from 'nmr-processing';
 
 import Label from '../../../elements/Label';
+import { ReadOnly } from '../../../elements/ReadOnly';
 import { Sections } from '../../../elements/Sections';
 import { Select2Controller } from '../../../elements/Select2Controller';
 
@@ -9,14 +9,12 @@ import { FilterActionButtons } from './FilterActionButtons';
 import { HeaderContainer, StickyHeader } from './InnerFilterHeader';
 import { useZeroFilling, zeroFillingSizes } from './hooks/useZeroFilling';
 
-interface ZeroFillingOptionsPanelProps {
-  filter: Filter;
-}
+import { BaseFilterOptionsPanelProps } from '.';
 
 export default function ZeroFillingOptionsPanel(
-  props: ZeroFillingOptionsPanelProps,
+  props: BaseFilterOptionsPanelProps,
 ) {
-  const { filter } = props;
+  const { filter, enableEdit = true, onCancel, onConfirm } = props;
   const {
     control,
     submitHandler,
@@ -25,33 +23,45 @@ export default function ZeroFillingOptionsPanel(
     formState: { isDirty },
   } = useZeroFilling(filter);
 
+  function handleConfirm(event) {
+    submitHandler();
+    onConfirm?.(event);
+  }
+
+  function handleCancel(event) {
+    handleCancelFilter();
+    onCancel?.(event);
+  }
+
   const { onChange: onLivePreviewFieldChange, ...livePreviewFieldOptions } =
     register('livePreview');
 
   const disabledAction = filter.value && !isDirty;
   return (
-    <>
-      <StickyHeader>
-        <HeaderContainer>
-          <Switch
-            style={{ margin: 0, marginLeft: '5px' }}
-            innerLabelChecked="On"
-            innerLabel="Off"
-            {...livePreviewFieldOptions}
-            onChange={(event) => {
-              void onLivePreviewFieldChange(event);
-              submitHandler('onChange');
-            }}
-            label="Live preview"
-          />
-          <FilterActionButtons
-            onConfirm={() => submitHandler()}
-            onCancel={handleCancelFilter}
-            disabledConfirm={disabledAction}
-            disabledCancel={disabledAction}
-          />
-        </HeaderContainer>
-      </StickyHeader>
+    <ReadOnly enabled={!enableEdit}>
+      {enableEdit && (
+        <StickyHeader>
+          <HeaderContainer>
+            <Switch
+              style={{ margin: 0, marginLeft: '5px' }}
+              innerLabelChecked="On"
+              innerLabel="Off"
+              {...livePreviewFieldOptions}
+              onChange={(event) => {
+                void onLivePreviewFieldChange(event);
+                submitHandler('onChange');
+              }}
+              label="Live preview"
+            />
+            <FilterActionButtons
+              onConfirm={handleConfirm}
+              onCancel={handleCancel}
+              disabledConfirm={disabledAction}
+              disabledCancel={disabledAction}
+            />
+          </HeaderContainer>
+        </StickyHeader>
+      )}
       <Sections.Body>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <Label title="Size:">
@@ -66,6 +76,6 @@ export default function ZeroFillingOptionsPanel(
           </Label>
         </div>
       </Sections.Body>
-    </>
+    </ReadOnly>
   );
 }
