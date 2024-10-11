@@ -18,6 +18,15 @@ export function FilterActionButtons(props: FilterActionButtonsProps) {
   return (
     <div style={{ display: 'flex', flexShrink: 0 }}>
       <Button
+        outlined
+        intent="success"
+        onClick={onConfirm}
+        small
+        disabled={disabledConfirm}
+      >
+        Apply
+      </Button>
+      <Button
         minimal
         intent="danger"
         onClick={onCancel}
@@ -25,16 +34,6 @@ export function FilterActionButtons(props: FilterActionButtonsProps) {
         disabled={disabledCancel}
       >
         Cancel
-      </Button>
-
-      <Button
-        outlined
-        intent="success"
-        onClick={onConfirm}
-        small
-        disabled={disabledConfirm}
-      >
-        Save
       </Button>
     </div>
   );
