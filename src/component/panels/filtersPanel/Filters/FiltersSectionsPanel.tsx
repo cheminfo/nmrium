@@ -274,7 +274,8 @@ function FiltersInner(props: FiltersInnerProps) {
             {FilterOptionsPanel ? (
               <FilterOptionsPanel
                 filter={filter}
-                enableEdit={activeFilterID !== null || filter.value === null}
+                // Enable editing if the current filter is new or if it is the active filter
+                enableEdit={activeFilterID === id || filter.value === null}
                 onCancel={handleClose}
                 onConfirm={handleClose}
               />
