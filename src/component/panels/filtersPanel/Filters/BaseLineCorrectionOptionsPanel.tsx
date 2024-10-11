@@ -1,9 +1,9 @@
 import { Button, Switch } from '@blueprintjs/core';
 import { Select } from '@blueprintjs/select';
-import { Filter } from 'nmr-processing';
 
 import Label from '../../../elements/Label';
 import { NumberInput2Controller } from '../../../elements/NumberInput2Controller';
+import { ReadOnly } from '../../../elements/ReadOnly';
 import { Sections } from '../../../elements/Sections';
 
 import { FilterActionButtons } from './FilterActionButtons';
@@ -14,16 +14,12 @@ import {
   useBaselineCorrection,
 } from './hooks/useBaselineCorrection';
 
-import { formLabelStyle } from '.';
-
-interface BaseLineCorrectionOptionsPanelProps {
-  filter: Filter;
-}
+import { BaseFilterOptionsPanelProps, formLabelStyle } from '.';
 
 export default function BaseLineCorrectionOptionsPanel(
-  props: BaseLineCorrectionOptionsPanelProps,
+  props: BaseFilterOptionsPanelProps,
 ) {
-  const { filter } = props;
+  const { filter, enableEdit = true, onCancel, onConfirm } = props;
 
   const {
     register,
@@ -40,6 +36,16 @@ export default function BaseLineCorrectionOptionsPanel(
     getValues,
   } = useBaselineCorrection(filter);
 
+  function handleConfirm(event) {
+    void handleSubmit((values) => handleApplyFilter(values))();
+    onConfirm?.(event);
+  }
+
+  function handleCancel(event) {
+    handleCancelFilter();
+    onCancel?.(event);
+  }
+
   const { onChange: onLivePreviewFieldChange, ...livePreviewFieldOptions } =
     register('livePreview');
 
@@ -48,30 +54,30 @@ export default function BaseLineCorrectionOptionsPanel(
     !isDirty &&
     filter.value?.algorithm === getValues()?.algorithm;
   return (
-    <>
-      <StickyHeader>
-        <HeaderContainer>
-          <Switch
-            style={{ margin: 0, marginLeft: '5px' }}
-            innerLabelChecked="On"
-            innerLabel="Off"
-            {...livePreviewFieldOptions}
-            onChange={(event) => {
-              void onLivePreviewFieldChange(event);
-              submitHandler();
-            }}
-            label="Live preview"
-          />
-          <FilterActionButtons
-            onConfirm={() =>
-              handleSubmit((values) => handleApplyFilter(values))()
-            }
-            onCancel={handleCancelFilter}
-            disabledConfirm={disabledAction}
-            disabledCancel={disabledAction}
-          />
-        </HeaderContainer>
-      </StickyHeader>
+    <ReadOnly enabled={!enableEdit}>
+      {enableEdit && (
+        <StickyHeader>
+          <HeaderContainer>
+            <Switch
+              style={{ margin: 0, marginLeft: '5px' }}
+              innerLabelChecked="On"
+              innerLabel="Off"
+              {...livePreviewFieldOptions}
+              onChange={(event) => {
+                void onLivePreviewFieldChange(event);
+                submitHandler();
+              }}
+              label="Live preview"
+            />
+            <FilterActionButtons
+              onConfirm={handleConfirm}
+              onCancel={handleCancel}
+              disabledConfirm={disabledAction}
+              disabledCancel={disabledAction}
+            />
+          </HeaderContainer>
+        </StickyHeader>
+      )}
       <Sections.Body>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <Label title="Algorithm: " style={formLabelStyle}>
@@ -152,6 +158,6 @@ export default function BaseLineCorrectionOptionsPanel(
             )}
         </div>
       </Sections.Body>
-    </>
+    </ReadOnly>
   );
 }
