@@ -1,10 +1,11 @@
-import { Button, Switch } from '@blueprintjs/core';
+import { Switch } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { v4 } from '@lukeed/uuid';
 import { Filter, Filters } from 'nmr-processing';
 import { memo, useEffect, useRef, useState } from 'react';
 import { FaRegTrashAlt, FaRegEyeSlash } from 'react-icons/fa';
 import { ObjectInspector } from 'react-inspector';
+import { Button } from 'react-science/ui';
 
 import { useChartData } from '../../../context/ChartContext';
 import { useDispatch } from '../../../context/DispatchContext';
@@ -18,6 +19,7 @@ import { filterOptionPanels } from './index';
 
 const IconButton = styled(Button)`
   padding: 2px;
+  font-size: 16px;
 `;
 
 interface FiltersProps extends Filter {
@@ -28,13 +30,23 @@ interface FilterElementsProps {
   filter: Filter;
   spectraCounter: number;
   onEnableChange: () => void;
+  onFilterRestore: () => void;
+  activeFilterID: string | null;
+  hideFilterRestoreButton?: boolean;
 }
 
 function FilterElements(props: FilterElementsProps) {
   const dispatch = useDispatch();
   const alert = useAlert();
   const toaster = useToaster();
-  const { filter, spectraCounter, onEnableChange } = props;
+  const {
+    filter,
+    spectraCounter,
+    onEnableChange,
+    activeFilterID,
+    onFilterRestore,
+    hideFilterRestoreButton = false,
+  } = props;
   const { id, name, flag, label, isDeleteAllow } = filter;
 
   function handleFilterCheck(id, event: React.ChangeEvent<HTMLInputElement>) {
@@ -95,8 +107,20 @@ function FilterElements(props: FilterElementsProps) {
 
   return (
     <>
+      {!hideFilterRestoreButton && (
+        <IconButton
+          intent={activeFilterID === id ? 'danger' : 'success'}
+          tooltipProps={{
+            content: activeFilterID === id ? 'Reset filter' : 'Restore filter',
+          }}
+          minimal
+          onClick={onFilterRestore}
+          icon={activeFilterID === id ? 'undo' : 'history'}
+        />
+      )}
       <IconButton
         intent="danger"
+        tooltipProps={{ content: 'Delete filter' }}
         minimal
         onClick={() => {
           handleDeleteFilter();
@@ -212,6 +236,10 @@ function FiltersInner(props: FiltersInnerProps) {
     return <EmptyFilters />;
   }
 
+  function handleClose() {
+    openSection('');
+  }
+
   return (
     <Sections overflow renderActiveSectionContentOnly>
       {filtersList.map((filter, index) => {
@@ -225,21 +253,31 @@ function FiltersInner(props: FiltersInnerProps) {
             serial={index + 1}
             onClick={(id) => {
               toggleSection(id);
-              filterSnapShotHandler(filter, index);
             }}
             selectedSectionId={selectedSection}
             rightElement={
               <FilterElements
                 filter={filter}
                 spectraCounter={spectraCounter}
-                onEnableChange={() => openSection('')}
+                onEnableChange={handleClose}
+                activeFilterID={activeFilterID}
+                onFilterRestore={() => {
+                  filterSnapShotHandler(filter, index);
+                }}
+                /** Hide filter restore button when the filter is new */
+                hideFilterRestoreButton={value === null}
               />
             }
             headerStyle={getStyle(filter, index)}
             sticky
           >
             {FilterOptionsPanel ? (
-              <FilterOptionsPanel filter={filter} />
+              <FilterOptionsPanel
+                filter={filter}
+                enableEdit={activeFilterID !== null || filter.value === null}
+                onCancel={handleClose}
+                onConfirm={handleClose}
+              />
             ) : (
               <Sections.Body>
                 <ObjectInspector data={error || value} />
