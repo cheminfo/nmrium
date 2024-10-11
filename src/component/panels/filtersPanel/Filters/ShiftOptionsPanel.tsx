@@ -1,24 +1,22 @@
-import { Filter, Filters } from 'nmr-processing';
+import { Filters } from 'nmr-processing';
 import { useForm } from 'react-hook-form';
 
 import { useDispatch } from '../../../context/DispatchContext';
 import Label from '../../../elements/Label';
 import { NumberInput2Controller } from '../../../elements/NumberInput2Controller';
+import { ReadOnly } from '../../../elements/ReadOnly';
 import { Sections } from '../../../elements/Sections';
 
 import { FilterActionButtons } from './FilterActionButtons';
 import { HeaderContainer, StickyHeader } from './InnerFilterHeader';
 
-import { formLabelStyle } from '.';
+import { BaseFilterOptionsPanelProps, formLabelStyle } from '.';
 
 const { shiftX, shift2DX, shift2DY } = Filters;
 
-interface ShiftOptionsPanelProps {
-  filter: Filter;
-}
+export default function ShiftOptionsPanel(props: BaseFilterOptionsPanelProps) {
+  const { filter, enableEdit = true, onCancel, onConfirm } = props;
 
-export default function ShiftOptionsPanel(props: ShiftOptionsPanelProps) {
-  const { filter } = props;
   const dispatch = useDispatch();
   const {
     handleSubmit,
@@ -64,19 +62,31 @@ export default function ShiftOptionsPanel(props: ShiftOptionsPanelProps) {
     }
   }
 
+  function handleConfirm(event) {
+    void handleSubmit(handleApplyFilter)();
+    onConfirm?.(event);
+  }
+
+  function handleCancel(event) {
+    handleCancelFilter();
+    onCancel?.(event);
+  }
+
   return (
-    <>
-      <StickyHeader>
-        <HeaderContainer>
-          <div />
-          <FilterActionButtons
-            onConfirm={() => handleSubmit(handleApplyFilter)()}
-            onCancel={handleCancelFilter}
-            disabledConfirm={!isDirty}
-            disabledCancel={!isDirty}
-          />
-        </HeaderContainer>
-      </StickyHeader>
+    <ReadOnly enabled={!enableEdit}>
+      {enableEdit && (
+        <StickyHeader>
+          <HeaderContainer>
+            <div />
+            <FilterActionButtons
+              onConfirm={handleConfirm}
+              onCancel={handleCancel}
+              disabledConfirm={!isDirty}
+              disabledCancel={!isDirty}
+            />
+          </HeaderContainer>
+        </StickyHeader>
+      )}
       <Sections.Body>
         <Label title="Shift:" style={formLabelStyle}>
           <NumberInput2Controller
@@ -88,6 +98,6 @@ export default function ShiftOptionsPanel(props: ShiftOptionsPanelProps) {
           />
         </Label>
       </Sections.Body>
-    </>
+    </ReadOnly>
   );
 }
