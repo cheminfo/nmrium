@@ -1,11 +1,11 @@
 import { Button } from '@blueprintjs/core';
 import { Select } from '@blueprintjs/select';
-import { Filter } from 'nmr-processing';
 import { CSSProperties } from 'react';
 
 import InputRange from '../../../elements/InputRange';
 import Label, { LabelStyle } from '../../../elements/Label';
 import { NumberInput2 } from '../../../elements/NumberInput2';
+import { ReadOnly } from '../../../elements/ReadOnly';
 import { Sections } from '../../../elements/Sections';
 
 import { FilterActionButtons } from './FilterActionButtons';
@@ -16,9 +16,7 @@ import {
   AlgorithmItem,
 } from './hooks/usePhaseCorrection';
 
-interface PhaseCorrectionOptionsPanelProps {
-  filter: Filter;
-}
+import { BaseFilterOptionsPanelProps } from '.';
 
 const inputRangeStyle: CSSProperties = {
   padding: '5px 10px',
@@ -38,9 +36,9 @@ const formLabelStyle: LabelStyle = {
 };
 
 export default function PhaseCorrectionOptionsPanel(
-  props: PhaseCorrectionOptionsPanelProps,
+  props: BaseFilterOptionsPanelProps,
 ) {
-  const { filter } = props;
+  const { filter, enableEdit = true, onCancel, onConfirm } = props;
   const {
     handleApplyFilter,
     handleCancelFilter,
@@ -53,17 +51,29 @@ export default function PhaseCorrectionOptionsPanel(
     ph1Ref,
   } = usePhaseCorrection(filter);
 
+  function handleConfirm(event) {
+    handleApplyFilter();
+    onConfirm?.(event);
+  }
+
+  function handleCancel(event) {
+    handleCancelFilter();
+    onCancel?.(event);
+  }
+
   return (
-    <>
-      <StickyHeader>
-        <HeaderContainer>
-          <div />
-          <FilterActionButtons
-            onConfirm={handleApplyFilter}
-            onCancel={handleCancelFilter}
-          />
-        </HeaderContainer>
-      </StickyHeader>
+    <ReadOnly enabled={!enableEdit}>
+      {enableEdit && (
+        <StickyHeader>
+          <HeaderContainer>
+            <div />
+            <FilterActionButtons
+              onConfirm={handleConfirm}
+              onCancel={handleCancel}
+            />
+          </HeaderContainer>
+        </StickyHeader>
+      )}
       <Sections.Body>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <Label title="Algorithm:" style={formLabelStyle}>
@@ -118,6 +128,6 @@ export default function PhaseCorrectionOptionsPanel(
           )}
         </div>
       </Sections.Body>
-    </>
+    </ReadOnly>
   );
 }

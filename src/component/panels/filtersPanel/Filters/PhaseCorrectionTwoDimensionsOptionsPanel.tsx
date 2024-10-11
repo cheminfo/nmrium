@@ -10,6 +10,7 @@ import { Button, Toolbar } from 'react-science/ui';
 import InputRange from '../../../elements/InputRange';
 import Label, { LabelStyle } from '../../../elements/Label';
 import { NumberInput2 } from '../../../elements/NumberInput2';
+import { ReadOnly } from '../../../elements/ReadOnly';
 import { Sections } from '../../../elements/Sections';
 import { useFilter } from '../../../hooks/useFilter';
 
@@ -20,6 +21,8 @@ import {
   usePhaseCorrectionTwoDimensions,
   AlgorithmItem,
 } from './hooks/usePhaseCorrectionTwoDimensions';
+
+import { BaseFilterOptionsPanelProps } from '.';
 
 const inputRangeStyle: CSSProperties = {
   padding: '5px 10px',
@@ -38,7 +41,11 @@ const formLabelStyle: LabelStyle = {
   },
 };
 
-export default function PhaseCorrectionTwoDimensionsOptionsPanel() {
+export default function PhaseCorrectionTwoDimensionsOptionsPanel(
+  props: BaseFilterOptionsPanelProps,
+) {
+  const { enableEdit = true, onCancel, onConfirm } = props;
+
   const filter = useFilter(Filters.phaseCorrectionTwoDimensions.id);
   const {
     ph0Ref,
@@ -56,54 +63,66 @@ export default function PhaseCorrectionTwoDimensionsOptionsPanel() {
     value,
   } = usePhaseCorrectionTwoDimensions(filter);
 
+  function handleConfirm(event) {
+    handleApplyFilter();
+    onConfirm?.(event);
+  }
+
+  function handleCancel(event) {
+    handleCancelFilter();
+    onCancel?.(event);
+  }
+
   return (
-    <>
-      <StickyHeader>
-        <HeaderContainer>
-          <div style={{ display: 'flex' }}>
-            {phaseCorrectionSelectItem?.value === 'manual' && (
-              <>
-                <Label title="Direction:">
-                  <Toolbar>
-                    <Toolbar.Item
-                      css={css`
-                        border: 1px solid #f7f7f7;
-                      `}
-                      tooltip="Horizontal"
-                      icon={<FaRulerHorizontal />}
-                      active={activeTraceDirection === 'horizontal'}
-                      onClick={() => onChangeHandler('horizontal')}
-                    />
-                    <Toolbar.Item
-                      css={css`
-                        border: 1px solid #f7f7f7;
-                      `}
-                      tooltip="Vertical"
-                      icon={<FaRulerVertical />}
-                      active={activeTraceDirection === 'vertical'}
-                      onClick={() => onChangeHandler('vertical')}
-                    />
-                  </Toolbar>
-                </Label>
-                <div style={{ paddingRight: '5px' }}>
-                  <Toolbar>
-                    <Toolbar.Item
-                      tooltip="Add the trace in both directions"
-                      icon={<MdLooksTwo />}
-                      active={addTracesToBothDirections}
-                      onClick={handleToggleAddTraceToBothDirections}
-                    />
-                  </Toolbar>
-                </div>
-              </>
-            )}
-          </div>
-          <FilterActionButtons
-            onConfirm={handleApplyFilter}
-            onCancel={handleCancelFilter}
-          />
-        </HeaderContainer>
-      </StickyHeader>
+    <ReadOnly enabled={!enableEdit}>
+      {enableEdit && (
+        <StickyHeader>
+          <HeaderContainer>
+            <div style={{ display: 'flex' }}>
+              {phaseCorrectionSelectItem?.value === 'manual' && (
+                <>
+                  <Label title="Direction:">
+                    <Toolbar>
+                      <Toolbar.Item
+                        css={css`
+                          border: 1px solid #f7f7f7;
+                        `}
+                        tooltip="Horizontal"
+                        icon={<FaRulerHorizontal />}
+                        active={activeTraceDirection === 'horizontal'}
+                        onClick={() => onChangeHandler('horizontal')}
+                      />
+                      <Toolbar.Item
+                        css={css`
+                          border: 1px solid #f7f7f7;
+                        `}
+                        tooltip="Vertical"
+                        icon={<FaRulerVertical />}
+                        active={activeTraceDirection === 'vertical'}
+                        onClick={() => onChangeHandler('vertical')}
+                      />
+                    </Toolbar>
+                  </Label>
+                  <div style={{ paddingRight: '5px' }}>
+                    <Toolbar>
+                      <Toolbar.Item
+                        tooltip="Add the trace in both directions"
+                        icon={<MdLooksTwo />}
+                        active={addTracesToBothDirections}
+                        onClick={handleToggleAddTraceToBothDirections}
+                      />
+                    </Toolbar>
+                  </div>
+                </>
+              )}
+            </div>
+            <FilterActionButtons
+              onConfirm={handleConfirm}
+              onCancel={handleCancel}
+            />
+          </HeaderContainer>
+        </StickyHeader>
+      )}
       <Sections.Body>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <Label title="Algorithm:" style={formLabelStyle}>
@@ -160,6 +179,6 @@ export default function PhaseCorrectionTwoDimensionsOptionsPanel() {
           )}
         </div>
       </Sections.Body>
-    </>
+    </ReadOnly>
   );
 }
