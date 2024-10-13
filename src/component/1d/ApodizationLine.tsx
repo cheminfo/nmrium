@@ -58,8 +58,8 @@ function ApodizationLine() {
         apply: false,
         compose: {
           length,
-          shapes: [
-            {
+          shapes: {
+            lorentzToGauss: {
               start: 0,
               shape: {
                 kind: 'lorentzToGauss',
@@ -73,7 +73,7 @@ function ApodizationLine() {
                 },
               },
             },
-          ],
+          },
         },
       },
     );
