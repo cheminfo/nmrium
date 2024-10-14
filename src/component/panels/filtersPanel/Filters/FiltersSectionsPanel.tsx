@@ -111,7 +111,8 @@ function FilterElements(props: FilterElementsProps) {
         <IconButton
           intent={activeFilterID === id ? 'danger' : 'success'}
           tooltipProps={{
-            content: activeFilterID === id ? 'Reset filter' : 'Restore filter',
+            content:
+              activeFilterID === id ? 'Reapply all filters' : 'Edit filter',
           }}
           minimal
           onClick={onFilterRestore}
