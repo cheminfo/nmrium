@@ -20,7 +20,7 @@ const styles: Record<'header', CSSProperties> = {
   },
 };
 
-export function Header(props: HeaderProps) {
+export function HeaderContainer(props: HeaderProps) {
   const {
     children,
     style: { leftStyle = {}, rightStyle = {}, containerStyle = {} } = {},

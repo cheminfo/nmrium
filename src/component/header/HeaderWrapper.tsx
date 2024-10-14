@@ -9,7 +9,7 @@ interface HeaderContainerProps {
   children: ReactNode;
 }
 
-export function HeaderContainer(props: HeaderContainerProps) {
+export function HeaderWrapper(props: HeaderContainerProps) {
   const { style = {}, children } = props;
   return <div style={{ ...containerStyle, ...style }}>{children}</div>;
 }

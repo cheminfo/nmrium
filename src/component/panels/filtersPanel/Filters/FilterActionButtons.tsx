@@ -1,4 +1,5 @@
 import { Button, ButtonProps } from '@blueprintjs/core';
+import styled from '@emotion/styled';
 
 interface FilterActionButtonsProps {
   onConfirm: ButtonProps['onClick'];
@@ -6,6 +7,12 @@ interface FilterActionButtonsProps {
   onCancel: ButtonProps['onClick'];
   disabledCancel?: boolean;
 }
+
+const Container = styled.div`
+  display: flex;
+  flex-shrink: 0;
+  gap: 5px;
+`;
 
 export function FilterActionButtons(props: FilterActionButtonsProps) {
   const {
@@ -16,7 +23,16 @@ export function FilterActionButtons(props: FilterActionButtonsProps) {
   } = props;
 
   return (
-    <div style={{ display: 'flex', flexShrink: 0 }}>
+    <Container>
+      <Button
+        outlined
+        intent="success"
+        onClick={onConfirm}
+        small
+        disabled={disabledConfirm}
+      >
+        Apply
+      </Button>
       <Button
         minimal
         intent="danger"
@@ -26,16 +42,6 @@ export function FilterActionButtons(props: FilterActionButtonsProps) {
       >
         Cancel
       </Button>
-
-      <Button
-        outlined
-        intent="success"
-        onClick={onConfirm}
-        small
-        disabled={disabledConfirm}
-      >
-        Save
-      </Button>
-    </div>
+    </Container>
   );
 }

@@ -16,7 +16,7 @@ import {
   useWorkspacesList,
 } from '../context/PreferencesContext';
 import Button from '../elements/Button';
-import { Header } from '../elements/Header';
+import { HeaderContainer } from '../elements/HeaderContainer';
 import { LabelStyle } from '../elements/Label';
 import DropDownButton, {
   DropDownListItem,
@@ -30,7 +30,7 @@ import WorkspaceItem from '../modal/setting/WorkspaceItem';
 import { options } from '../toolbar/ToolTypes';
 
 import { AutoPeakPickingOptionPanel } from './AutoPeakPickingOptionPanel';
-import { HeaderContainer } from './HeaderContainer';
+import { HeaderWrapper } from './HeaderWrapper';
 import RangesPickingOptionPanel from './RangesPickingOptionPanel';
 import { SimpleApodizationOptionsPanel } from './SimpleApodizationOptionsPanel';
 import { SimpleBaseLineCorrectionOptionsPanel } from './SimpleBaseLineCorrectionOptionsPanel';
@@ -134,10 +134,10 @@ function HeaderInner(props: HeaderInnerProps) {
 
   return (
     <div css={styles}>
-      <Header
+      <HeaderContainer
         style={{ leftStyle: { flex: 1 }, containerStyle: { padding: '2px' } }}
       >
-        <HeaderContainer
+        <HeaderWrapper
           style={{
             alignItems: 'center',
           }}
@@ -150,8 +150,8 @@ function HeaderInner(props: HeaderInnerProps) {
           <div className="toolOptionsPanel" style={{ flex: 1 }}>
             {selectedPanel}
           </div>
-        </HeaderContainer>
-        <HeaderContainer
+        </HeaderWrapper>
+        <HeaderWrapper
           style={{
             alignItems: 'center',
           }}
@@ -201,8 +201,8 @@ function HeaderInner(props: HeaderInnerProps) {
               )}
             </Toolbar>
           </div>
-        </HeaderContainer>
-      </Header>
+        </HeaderWrapper>
+      </HeaderContainer>
     </div>
   );
 }
@@ -241,7 +241,7 @@ function SaveButton() {
 
 const MemoizedHeader = memo(HeaderInner);
 
-export default function HeaderWrapper() {
+export function Header() {
   const {
     toolOptions: { selectedOptionPanel },
     height,

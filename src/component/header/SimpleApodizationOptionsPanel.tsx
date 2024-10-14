@@ -9,7 +9,7 @@ import { useFilter } from '../hooks/useFilter';
 import { useSharedApodization } from '../panels/filtersPanel/Filters/hooks/useSharedApodization';
 
 import { headerLabelStyle } from './Header';
-import { HeaderContainer } from './HeaderContainer';
+import { HeaderWrapper } from './HeaderWrapper';
 
 interface ApodizationOptionsInnerPanelProps {
   filter: Filter | null;
@@ -32,7 +32,7 @@ function ApodizationOptionsInnerPanel(
     register('livePreview');
 
   return (
-    <HeaderContainer>
+    <HeaderWrapper>
       <Label title="Line broadening:" shortTitle="LB:" style={headerLabelStyle}>
         <NumberInput2Controller
           control={control}
@@ -62,7 +62,7 @@ function ApodizationOptionsInnerPanel(
         onDone={() => handleSubmit((values) => handleApplyFilter(values))()}
         onCancel={handleCancelFilter}
       />
-    </HeaderContainer>
+    </HeaderWrapper>
   );
 }
 

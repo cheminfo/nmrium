@@ -29,7 +29,7 @@ async function apodizationFilter(
     )
     .waitFor({ state: 'visible' });
 
-  await nmrium.page.click('button >> text=Apply');
+  await nmrium.page.click('_react=Header >> button >> text=Apply');
 
   await expect(
     nmrium.page.locator('_react=FiltersSectionsPanel >> text=Apodization'),
@@ -38,7 +38,7 @@ async function apodizationFilter(
 
 async function zeroFillingFilter(nmrium: NmriumPage) {
   await nmrium.clickTool('zeroFilling');
-  await nmrium.page.click('button >> text=Apply');
+  await nmrium.page.click('_react=Header >> button >> text=Apply');
 
   await expect(
     nmrium.page.locator('_react=FiltersSectionsPanel >> text=Zero Filling'),
@@ -63,7 +63,7 @@ async function baselineCorrectionFilter(
   } else {
     await nmrium.clickTool('baselineCorrection');
   }
-  await nmrium.page.click('button >> text=Apply');
+  await nmrium.page.click('_react=Header >> button >> text=Apply');
 
   await expect(
     nmrium.page.locator(
@@ -89,7 +89,7 @@ async function addPeaks(
       ratio.toString(),
     );
   }
-  await nmrium.page.click('button >> text=Apply');
+  await nmrium.page.click('_react=Header >> button >> text=Apply');
 
   await expect(
     nmrium.page.locator(

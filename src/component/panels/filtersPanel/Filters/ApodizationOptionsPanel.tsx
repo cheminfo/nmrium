@@ -1,20 +1,16 @@
 import { Switch } from '@blueprintjs/core';
-import { Filter } from 'nmr-processing';
 import * as Yup from 'yup';
 
 import Label from '../../../elements/Label';
 import { NumberInput2Controller } from '../../../elements/NumberInput2Controller';
+import { ReadOnly } from '../../../elements/ReadOnly';
 import { Sections } from '../../../elements/Sections';
 
 import { FilterActionButtons } from './FilterActionButtons';
 import { HeaderContainer, StickyHeader } from './InnerFilterHeader';
 import { useSharedApodization } from './hooks/useSharedApodization';
 
-import { formLabelStyle } from '.';
-
-interface ApodizationOptionsProps {
-  filter: Filter;
-}
+import { BaseFilterOptionsPanelProps, formLabelStyle } from '.';
 
 const advanceValidationSchema = Yup.object().shape({
   lineBroadening: Yup.number().required(),
@@ -24,9 +20,9 @@ const advanceValidationSchema = Yup.object().shape({
 });
 
 export default function ApodizationOptionsPanel(
-  props: ApodizationOptionsProps,
+  props: BaseFilterOptionsPanelProps,
 ) {
-  const { filter } = props;
+  const { filter, enableEdit = true, onCancel, onConfirm } = props;
   const {
     handleSubmit,
     control,
@@ -39,36 +35,46 @@ export default function ApodizationOptionsPanel(
     validationSchema: advanceValidationSchema,
   });
 
+  function handleConfirm(event) {
+    void handleSubmit((values) => handleApplyFilter(values))();
+    onConfirm?.(event);
+  }
+
+  function handleCancel(event) {
+    handleCancelFilter();
+    onCancel?.(event);
+  }
+
   const { onChange: onLivePreviewFieldChange, ...livePreviewFieldOptions } =
     register('livePreview');
 
   const disabledAction = filter.value && !isDirty;
 
   return (
-    <>
-      <StickyHeader>
-        <HeaderContainer>
-          <Switch
-            style={{ margin: 0, marginLeft: '5px' }}
-            innerLabelChecked="On"
-            innerLabel="Off"
-            {...livePreviewFieldOptions}
-            onChange={(event) => {
-              void onLivePreviewFieldChange(event);
-              submitHandler();
-            }}
-            label="Live preview"
-          />
-          <FilterActionButtons
-            onConfirm={() =>
-              handleSubmit((values) => handleApplyFilter(values))()
-            }
-            onCancel={handleCancelFilter}
-            disabledConfirm={disabledAction}
-            disabledCancel={disabledAction}
-          />
-        </HeaderContainer>
-      </StickyHeader>
+    <ReadOnly enabled={!enableEdit}>
+      {enableEdit && (
+        <StickyHeader>
+          <HeaderContainer>
+            <Switch
+              style={{ margin: 0, marginLeft: '5px' }}
+              innerLabelChecked="On"
+              innerLabel="Off"
+              {...livePreviewFieldOptions}
+              onChange={(event) => {
+                void onLivePreviewFieldChange(event);
+                submitHandler();
+              }}
+              label="Live preview"
+            />
+            <FilterActionButtons
+              onConfirm={handleConfirm}
+              onCancel={handleCancel}
+              disabledConfirm={disabledAction}
+              disabledCancel={disabledAction}
+            />
+          </HeaderContainer>
+        </StickyHeader>
+      )}
       <Sections.Body>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <Label
@@ -121,6 +127,6 @@ export default function ApodizationOptionsPanel(
           </Label>
         </div>
       </Sections.Body>
-    </>
+    </ReadOnly>
   );
 }

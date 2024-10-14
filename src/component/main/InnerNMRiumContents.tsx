@@ -17,7 +17,7 @@ import { FilterSyncOptionsProvider } from '../context/FilterSyncOptionsContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { ExportManagerController } from '../elements/export/ExportManager';
 import { PrintContent } from '../elements/print/PrintContent';
-import Header from '../header/Header';
+import { Header } from '../header/Header';
 import DropZone from '../loader/DropZone';
 import Panels from '../panels/Panels';
 import ToolBar from '../toolbar/ToolBar';

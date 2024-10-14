@@ -11,7 +11,7 @@ import {
   usePhaseCorrection,
 } from '../panels/filtersPanel/Filters/hooks/usePhaseCorrection';
 
-import { HeaderContainer } from './HeaderContainer';
+import { HeaderWrapper } from './HeaderWrapper';
 
 export function SimplePhaseCorrectionOptionsPanel() {
   const filter = useFilter(Filters.phaseCorrection.id);
@@ -27,7 +27,7 @@ export function SimplePhaseCorrectionOptionsPanel() {
   } = usePhaseCorrection(filter);
 
   return (
-    <HeaderContainer>
+    <HeaderWrapper>
       <div style={{ padding: '0 5px' }}>
         <Select<AlgorithmItem>
           items={algorithms}
@@ -63,6 +63,6 @@ export function SimplePhaseCorrectionOptionsPanel() {
       )}
 
       <ActionButtons onDone={handleApplyFilter} onCancel={handleCancelFilter} />
-    </HeaderContainer>
+    </HeaderWrapper>
   );
 }

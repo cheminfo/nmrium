@@ -14,7 +14,7 @@ import {
 } from '../hooks/useCheckPointsNumberInWindowArea';
 
 import { headerLabelStyle } from './Header';
-import { HeaderContainer } from './HeaderContainer';
+import { HeaderWrapper } from './HeaderWrapper';
 
 type Direction = 'positive' | 'negative' | 'both';
 
@@ -85,7 +85,7 @@ export function AutoPeakPickingOptionPanel() {
   }
 
   return (
-    <HeaderContainer>
+    <HeaderWrapper>
       <Label title="Direction:" shortTitle="" style={headerLabelStyle}>
         <Select2Controller control={control} name="direction" items={LookFor} />
       </Label>
@@ -134,6 +134,6 @@ export function AutoPeakPickingOptionPanel() {
       >
         Apply
       </Button>
-    </HeaderContainer>
+    </HeaderWrapper>
   );
 }

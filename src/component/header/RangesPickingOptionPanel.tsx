@@ -13,7 +13,7 @@ import {
 } from '../hooks/useCheckPointsNumberInWindowArea';
 
 import { headerLabelStyle } from './Header';
-import { HeaderContainer } from './HeaderContainer';
+import { HeaderWrapper } from './HeaderWrapper';
 
 interface AutoRangesOptions {
   minMaxRatio: number;
@@ -60,7 +60,7 @@ function RangesPickingOptionPanel() {
   }
 
   return (
-    <HeaderContainer>
+    <HeaderWrapper>
       <Label title="Detect negative" style={headerLabelStyle}>
         <Checkbox
           style={{ margin: 0 }}
@@ -88,7 +88,7 @@ function RangesPickingOptionPanel() {
       >
         Auto ranges picking
       </Button>
-    </HeaderContainer>
+    </HeaderWrapper>
   );
 }
 

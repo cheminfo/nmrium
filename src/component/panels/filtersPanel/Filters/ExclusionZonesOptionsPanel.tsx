@@ -1,6 +1,5 @@
 import { Classes } from '@blueprintjs/core';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Filter } from 'nmr-processing';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { FaRegTrashAlt } from 'react-icons/fa';
@@ -12,14 +11,13 @@ import { useChartData } from '../../../context/ChartContext';
 import { useDispatch } from '../../../context/DispatchContext';
 import { NumberInput2Controller } from '../../../elements/NumberInput2Controller';
 import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
+import { ReadOnly } from '../../../elements/ReadOnly';
 import { Sections } from '../../../elements/Sections';
 
 import { FilterActionButtons } from './FilterActionButtons';
 import { HeaderContainer, StickyHeader } from './InnerFilterHeader';
 
-interface ExclusionZonesOptionsPanelProps {
-  filter: Filter;
-}
+import { BaseFilterOptionsPanelProps } from '.';
 
 const validationSchema = (min: number, max: number) =>
   Yup.object().shape({
@@ -35,9 +33,9 @@ const validationSchema = (min: number, max: number) =>
   });
 
 export default function ExclusionZonesOptionsPanel(
-  options: ExclusionZonesOptionsPanelProps,
+  props: BaseFilterOptionsPanelProps,
 ) {
-  const { filter } = options;
+  const { filter, enableEdit = true, onCancel, onConfirm } = props;
   const dispatch = useDispatch();
   const {
     originDomain: {
@@ -138,25 +136,33 @@ export default function ExclusionZonesOptionsPanel(
     });
   }
 
-  function handleCancelFilter() {
+  function handleConfirm(event) {
+    void handleSubmit(handleApplyFilter)();
+    onConfirm?.(event);
+  }
+
+  function handleCancel(event) {
     dispatch({
       type: 'RESET_SELECTED_TOOL',
     });
+    onCancel?.(event);
   }
 
   return (
-    <>
-      <StickyHeader>
-        <HeaderContainer>
-          <div />
-          <FilterActionButtons
-            onConfirm={() => handleSubmit(handleApplyFilter)()}
-            onCancel={handleCancelFilter}
-            disabledConfirm={!isDirty}
-            disabledCancel={!isDirty}
-          />
-        </HeaderContainer>
-      </StickyHeader>
+    <ReadOnly enabled={!enableEdit}>
+      {enableEdit && (
+        <StickyHeader>
+          <HeaderContainer>
+            <div />
+            <FilterActionButtons
+              onConfirm={handleConfirm}
+              onCancel={handleCancel}
+              disabledConfirm={!isDirty}
+              disabledCancel={!isDirty}
+            />
+          </HeaderContainer>
+        </StickyHeader>
+      )}
       <Sections.Body>
         <ReactTable<ExclusionZone>
           columns={exclusionsZonesColumns}
@@ -164,6 +170,6 @@ export default function ExclusionZonesOptionsPanel(
           emptyDataRowText="No Zones"
         />
       </Sections.Body>
-    </>
+    </ReadOnly>
   );
 }

@@ -1,4 +1,5 @@
-import { Filters } from 'nmr-processing';
+import { ButtonProps } from '@blueprintjs/core';
+import { Filter, Filters } from 'nmr-processing';
 
 import { LabelStyle } from '../../../elements/Label';
 
@@ -32,6 +33,13 @@ export const filterOptionPanels = {
   [shift2DY.id]: ShiftOptionsPanel,
   [exclusionZones.id]: ExclusionZonesOptionsPanel,
 };
+
+export interface BaseFilterOptionsPanelProps {
+  filter: Filter;
+  enableEdit: boolean;
+  onConfirm: ButtonProps['onClick'];
+  onCancel: ButtonProps['onClick'];
+}
 
 export const formLabelStyle: LabelStyle = {
   label: {

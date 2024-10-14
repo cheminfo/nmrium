@@ -8,7 +8,7 @@ import Label from '../elements/Label';
 import { NumberInput2Controller } from '../elements/NumberInput2Controller';
 
 import { headerLabelStyle } from './Header';
-import { HeaderContainer } from './HeaderContainer';
+import { HeaderWrapper } from './HeaderWrapper';
 
 const validationSchema = Yup.object().shape({
   zonesNoiseFactor: Yup.number().integer().min(0).required(),
@@ -50,7 +50,7 @@ function Zones2DOptionPanel() {
   });
 
   return (
-    <HeaderContainer>
+    <HeaderWrapper>
       <Label title="Noise factor:" style={headerLabelStyle}>
         <NumberInput2Controller
           control={control}
@@ -84,7 +84,7 @@ function Zones2DOptionPanel() {
       >
         Auto Zones Picking
       </Button>
-    </HeaderContainer>
+    </HeaderWrapper>
   );
 }
 
