@@ -3,9 +3,10 @@ import { WebSource as Source } from 'filelist-utils';
 import { Draft, produce, original } from 'immer';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
 import { Spectrum, ViewState } from 'nmr-load-save';
-import { ApodizationOptions, BaselineCorrectionZone } from 'nmr-processing';
+import { BaselineCorrectionZone } from 'nmr-processing';
 import { Reducer } from 'react';
 
+import { Apodization1DOptions } from '../../data/constants/DefaultApodizationOptions';
 import { StateMoleculeExtended } from '../../data/molecules/Molecule';
 import { UsedColors } from '../../types/UsedColors';
 import { Action } from '../context/DispatchContext';
@@ -165,7 +166,7 @@ export const getInitialState = (): State => ({
         zones: [],
         livePreview: true,
       },
-      apodizationOptions: {} as ApodizationOptions,
+      apodizationOptions: {} as Apodization1DOptions,
       twoDimensionPhaseCorrection: {
         activeTraceDirection: 'horizontal',
         addTracesToBothDirections: true,
@@ -343,7 +344,7 @@ export interface State {
         options: any;
         livePreview: boolean;
       };
-      apodizationOptions: ApodizationOptions;
+      apodizationOptions: Apodization1DOptions;
       /**
        * pivot point for manual phase correction
        * @default {value:0,index:0}
