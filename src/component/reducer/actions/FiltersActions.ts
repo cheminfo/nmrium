@@ -326,12 +326,15 @@ function rollbackSpectrumByFilter(
       draft.toolOptions.data.activeFilterID = null;
       draft.tempData = null;
 
-      if (datum.filters.length > 0 && filterIndex !== -1) {
+      if (filterIndex !== -1 && datum.filters.length > 0) {
         updateDomainOptions = getFilterDomain(datum, {
           startIndex: filterIndex,
           lastIndex: datum.filters.length - 1,
         });
+      } else {
+        updateDomainOptions = { updateXDomain: true, updateYDomain: true };
       }
+
       const {
         toolOptions: { data },
       } = getInitialState();
