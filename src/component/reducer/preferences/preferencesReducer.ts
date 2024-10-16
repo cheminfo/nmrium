@@ -25,7 +25,9 @@ import {
   setSpectraAnalysisPanelsPreferences,
 } from './actions/analyzeSpectra';
 import { applyGeneralPreferences } from './actions/applyGeneralPreferences';
+import { changeExportSettings } from './actions/changeExportSettings';
 import { changeInformationBlockPosition } from './actions/changeInformationBlockPosition';
+import { changePeaksLabelPosition } from './actions/changePeaksLabelPosition';
 import { changePrintPageSettings } from './actions/changePrintPageSettings';
 import { initPreferences } from './actions/initPreferences';
 import {
@@ -45,7 +47,6 @@ import { setVerticalSplitterPosition } from './actions/setVerticalSplitterPositi
 import { setWorkspace } from './actions/setWorkspace';
 import { toggleInformationBlock } from './actions/toggleInformationBlock';
 import { mapWorkspaces } from './utilities/mapWorkspaces';
-import { changeExportSettings } from './actions/changeExportSettings';
 
 const LOCAL_STORAGE_SETTINGS_KEY = 'nmr-general-settings';
 
@@ -121,6 +122,7 @@ export type ChangeInformationBlockPosition = ActionType<
     coordination: { x: number; y: number };
   }
 >;
+
 export type ToggleInformationBlock = ActionType<
   'TOGGLE_INFORMATION_BLOCK',
   {
@@ -136,6 +138,12 @@ export type ChangeExportSettingsAction = ActionType<
   {
     key: keyof ExportPreferences;
     options: ExportSettings;
+  }
+>;
+export type ChangePeaksLabelPositionAction = ActionType<
+  'CHANGE_PEAKS_LABEL_POSITION',
+  {
+    marginTop: number;
   }
 >;
 
@@ -156,7 +164,8 @@ type PreferencesActions =
   | ChangeInformationBlockPosition
   | ToggleInformationBlock
   | ChangePrintPageSettingsAction
-  | ChangeExportSettingsAction;
+  | ChangeExportSettingsAction
+  | ChangePeaksLabelPositionAction;
 
 export const WORKSPACES: Array<{
   key: NMRiumWorkspace;
@@ -311,6 +320,8 @@ function innerPreferencesReducer(
       return changePrintPageSettings(draft, action);
     case 'CHANGE_EXPORT_SETTINGS':
       return changeExportSettings(draft, action);
+    case 'CHANGE_PEAKS_LABEL_POSITION':
+      return changePeaksLabelPosition(draft, action);
 
     default:
       return draft;
