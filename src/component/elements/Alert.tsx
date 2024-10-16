@@ -4,7 +4,7 @@ import { Button, Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { v4 } from '@lukeed/uuid';
 import type { ReactNode } from 'react';
-import React, { createContext, useState, useContext, useMemo } from 'react';
+import { createContext, useContext, useMemo, useState } from 'react';
 
 const Message = styled.p`
   font-weight: bold;
@@ -74,9 +74,7 @@ export function useAlert() {
   return context;
 }
 
-export const AlertProvider: React.FC<{ children: ReactNode }> = ({
-  children,
-}) => {
+export function AlertProvider({ children }: { children: ReactNode }) {
   const [alerts, setAlerts] = useState<AlertItem[]>([]);
 
   function hideAlert(id: string) {
@@ -100,7 +98,7 @@ export const AlertProvider: React.FC<{ children: ReactNode }> = ({
       </AlertContext.Provider>
     </>
   );
-};
+}
 
 interface AlertsProps {
   onHide: (id: string) => void;

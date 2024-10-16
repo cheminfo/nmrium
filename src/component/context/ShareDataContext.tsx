@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useMemo, useState } from 'react';
+import type { ReactNode } from 'react';
+import { createContext, useContext, useMemo, useState } from 'react';
 
 interface ShareDataState<T> {
   data: T | null;
@@ -17,7 +18,7 @@ export function useShareData<T>(): ShareDataState<T> {
   return context;
 }
 
-export function ShareDataProvider({ children }: { children: React.ReactNode }) {
+export function ShareDataProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState<unknown | null>(null);
 
   const state = useMemo(() => {

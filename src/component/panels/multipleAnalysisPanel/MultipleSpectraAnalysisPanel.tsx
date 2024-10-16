@@ -5,7 +5,7 @@ import type { Spectrum1D } from 'nmr-load-save';
 import { memo, useCallback, useRef, useState } from 'react';
 import { FaChartBar, FaFileExport } from 'react-icons/fa';
 import { IoPulseOutline } from 'react-icons/io5';
-import reactUse from 'react-use';
+import { useToggle } from 'react-science/ui';
 
 import {
   generateAnalyzeSpectra,
@@ -48,7 +48,7 @@ function MultipleSpectraAnalysisPanelInner({
   const [calibration, setCalibration] = useState(false);
   const spectraPreferences = usePanelPreferences('spectra', activeTab);
   const preferences = usePanelPreferences('multipleSpectraAnalysis', activeTab);
-  const [showAnalysisChart, toggleAnalysisChart] = reactUse.useToggle(false);
+  const [showAnalysisChart, toggleAnalysisChart] = useToggle(false);
   const spectraAnalysis = generateAnalyzeSpectra(
     preferences as any,
     spectra,

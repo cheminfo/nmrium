@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import type { CSSProperties, ReactElement } from 'react';
 import { Children } from 'react';
 import { FaAngleLeft } from 'react-icons/fa';
-import reactUse from 'react-use';
+import useResizeObserver from 'use-resize-observer';
 
 interface ArrowProps {
   direction: 'right' | 'left';
@@ -90,7 +90,11 @@ export function NextPrev(props: NextPrevProps) {
     onChange = () => null,
     style = {},
   } = props;
-  const [ref, { width }] = reactUse.useMeasure<HTMLDivElement>();
+  const {
+    ref,
+    width = 0,
+    // @ts-expect-error Module is not published correctly.
+  } = useResizeObserver();
   const slidersCount = Children.count(children);
   const lastIndex = slidersCount > 0 ? slidersCount - 1 : 0;
   const activeIndex = Math.min(index, lastIndex);

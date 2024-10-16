@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import type { ReactNode } from 'react';
 import { useCallback, useState } from 'react';
-import dropzone from 'react-dropzone';
+import * as dropzone from 'react-dropzone';
 import { FaUpload } from 'react-icons/fa';
 
 import { useChartData } from '../context/ChartContext.js';

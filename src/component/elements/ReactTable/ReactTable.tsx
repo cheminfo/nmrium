@@ -3,7 +3,7 @@
 import type { CSSObject, SerializedStyles } from '@emotion/react';
 import { css } from '@emotion/react';
 import type { CSSProperties, ReactElement, Ref, WheelEvent } from 'react';
-import React, {
+import {
   forwardRef,
   memo,
   useEffect,
@@ -22,7 +22,7 @@ import type {
   UseTableOptions,
 } from 'react-table';
 import { useSortBy, useTable } from 'react-table';
-import reactUse from 'react-use';
+import useResizeObserver from 'use-resize-observer';
 
 import type { HighlightEventSource } from '../../highlight/index.js';
 import type { BaseContextMenuProps } from '../ContextMenuBluePrint.js';
@@ -133,7 +133,7 @@ const counterStyle: CSSProperties = {
 
 const ReactTableInner = forwardRef(TableInner) as <T extends object = any>(
   props: ReactTableInnerProps<T> & { ref?: Ref<HTMLDivElement> },
-) => React.JSX.Element;
+) => ReactElement;
 
 function TableInner<T extends object>(
   props: ReactTableInnerProps<T>,
@@ -368,7 +368,12 @@ function ReactTable<T extends object>(props: ReactTableProps<T>) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const visibleRowsCountRef = useRef<number>(0);
   const visibleColumnsCountRef = useRef<number>(0);
-  const [mRef, { height, width }] = reactUse.useMeasure<HTMLDivElement>();
+  const {
+    ref: mRef,
+    width = 0,
+    height = 0,
+    // @ts-expect-error Module is not published correctly.
+  } = useResizeObserver();
 
   const [tableVirtualBoundary, setTableVirtualBoundary] =
     useState<TableVirtualBoundary>({
@@ -513,4 +518,4 @@ function ReactTable<T extends object>(props: ReactTableProps<T>) {
 
 export default memo(ReactTable) as <T extends object = any>(
   props: ReactTableInnerProps<T>,
-) => JSX.Element;
+) => ReactElement;

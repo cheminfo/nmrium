@@ -5,7 +5,7 @@ import type { CSSProperties } from 'react';
 import { useState } from 'react';
 import { BsArrowsMove } from 'react-icons/bs';
 import { FaTimes } from 'react-icons/fa';
-import reactUse from 'react-use';
+import useResizeObserver from 'use-resize-observer';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { useGlobal } from '../../context/GlobalContext.js';
@@ -94,7 +94,12 @@ function SpectrumInfoBlock() {
       : infoFields?.length - (infoFields?.length % 2)
         ? 2
         : 1) || 0);
-  const [ref, boxSize] = reactUse.useMeasure<SVGGElement>();
+  const {
+    ref,
+    width: boxWidth = 0,
+    height: boxHeight = 0,
+    // @ts-expect-error Module is not published correctly.
+  } = useResizeObserver();
   const { onPointerDown } = useDraggable({
     position: coordinate,
     onChange: (dragEvent) => {
@@ -139,23 +144,23 @@ function SpectrumInfoBlock() {
 
   let { x, y } = currentPosition;
 
-  if (x + boxSize.width + boxPadding > width - margin.right) {
-    x = width - margin.right - boxSize.width - boxPadding;
+  if (x + boxWidth + boxPadding > width - margin.right) {
+    x = width - margin.right - boxWidth - boxPadding;
   }
 
   if (x - boxPadding < margin.left) {
     x = margin.left + boxPadding;
   }
-  if (y + boxSize.height + bothSidePadding + shift > height - margin.bottom) {
-    y = height - margin.bottom - boxSize.height - bothSidePadding - shift;
+  if (y + boxHeight + bothSidePadding + shift > height - margin.bottom) {
+    y = height - margin.bottom - boxHeight - bothSidePadding - shift;
   }
 
   if (y + shift < margin.top) {
     y = margin.top - shift;
   }
 
-  const boxWidth = boxSize.width + bothSidePadding;
-  const boxHeight = boxSize.height + bothSidePadding;
+  const finalBoxWidth = boxWidth + bothSidePadding;
+  const finalBoxHeight = boxHeight + bothSidePadding;
 
   const actionsButtons: ActionsButtonsPopoverProps['buttons'] = [
     {
@@ -201,8 +206,8 @@ function SpectrumInfoBlock() {
           data-no-export="true"
           x={-boxPadding}
           y={-boxPadding + totalSpace}
-          width={boxWidth}
-          height={boxHeight}
+          width={finalBoxWidth}
+          height={finalBoxHeight}
           rx="5"
           fill={isMoveActive ? 'white' : 'transparent'}
           opacity={isMoveActive ? 0.9 : 0}
