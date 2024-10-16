@@ -1,5 +1,5 @@
 import { AnalysisColumnsTypes, AnalysisColumnsValuesKeys } from 'nmr-load-save';
-import { CSSProperties, MouseEvent } from 'react';
+import type { CSSProperties, MouseEvent } from 'react';
 
 import { Select2 } from '../../../elements/Select2.js';
 import DeleteButton from '../../../elements/Tab/DeleteButton.js';

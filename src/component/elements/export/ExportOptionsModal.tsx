@@ -11,7 +11,7 @@ import {
 } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import {
+import type {
   AdvanceExportSettings,
   BasicExportSettings,
   ExportSettings,
@@ -21,12 +21,14 @@ import { Controller, useForm } from 'react-hook-form';
 
 import ActionButtons from '../ActionButtons.js';
 import { CheckController } from '../CheckController.js';
-import Label, { LabelStyle } from '../Label.js';
+import type { LabelStyle } from '../Label.js';
+import Label from '../Label.js';
 import { NumberInput2Controller } from '../NumberInput2Controller.js';
 import { Select2Controller } from '../Select2Controller.js';
-import { getSizesList, SizeItem } from '../print/pageSize.js';
+import type { SizeItem } from '../print/pageSize.js';
+import { getSizesList } from '../print/pageSize.js';
 
-import { BaseExportProps } from './ExportContent.js';
+import type { BaseExportProps } from './ExportContent.js';
 import { units } from './units.js';
 import { useExportConfigurer } from './useExportConfigurer.js';
 import { exportOptionValidationSchema } from './utilities/exportOptionValidationSchema.js';
@@ -34,7 +36,8 @@ import {
   getExportDefaultOptions,
   getExportDefaultOptionsByMode,
 } from './utilities/getExportOptions.js';
-import { Mode, MODES } from './utilities/getModes.js';
+import type { Mode } from './utilities/getModes.js';
+import { MODES } from './utilities/getModes.js';
 
 interface InnerExportOptionsModalProps extends BaseExportProps {
   onCloseDialog: () => void;

@@ -1,4 +1,5 @@
-import { TestContext, ValidationError } from 'yup';
+import type { TestContext } from 'yup';
+import { ValidationError } from 'yup';
 
 export function checkUniqueByKey<T>(
   data: T[] | undefined,

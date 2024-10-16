@@ -1,4 +1,5 @@
-import { CSSProperties, useMemo } from 'react';
+import type { CSSProperties } from 'react';
+import { useMemo } from 'react';
 
 import { useScaleChecked } from '../context/ScaleContext.js';
 import useActiveSpectrumStyleOptions from '../hooks/useActiveSpectrumStyleOptions.js';

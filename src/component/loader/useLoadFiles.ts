@@ -1,6 +1,6 @@
 import { fileCollectionFromFileList } from 'filelist-utils';
 import { read as readDropFiles } from 'nmr-load-save';
-import { ParseResult } from 'papaparse';
+import type { ParseResult } from 'papaparse';
 import { useCallback } from 'react';
 
 import { isMetaFile, parseMetaFile } from '../../data/parseMeta/index.js';

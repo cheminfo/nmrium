@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import { ExportSettings } from 'nmr-load-save';
-import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import type { ExportSettings } from 'nmr-load-save';
+import type { ReactNode } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { ExportOptionsModal } from './ExportOptionsModal.js';

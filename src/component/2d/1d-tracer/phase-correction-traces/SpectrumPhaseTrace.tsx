@@ -1,12 +1,12 @@
-import { Spectrum1D, Spectrum2D } from 'nmr-load-save';
+import type { Spectrum1D, Spectrum2D } from 'nmr-load-save';
 import { Filters } from 'nmr-processing';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { getSlice } from '../../../../data/data2d/Spectrum2D/index.js';
 import { useChartData } from '../../../context/ChartContext.js';
 import { useActiveSpectrum } from '../../../hooks/useActiveSpectrum.js';
 import useSpectrum from '../../../hooks/useSpectrum.js';
-import { TraceDirection } from '../../../reducer/Reducer.js';
+import type { TraceDirection } from '../../../reducer/Reducer.js';
 import { PathBuilder } from '../../../utility/PathBuilder.js';
 import {
   get2DXScale,

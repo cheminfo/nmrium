@@ -1,7 +1,5 @@
+import type { CSSProperties, ChangeEvent, KeyboardEvent } from 'react';
 import {
-  CSSProperties,
-  ChangeEvent,
-  KeyboardEvent,
   forwardRef,
   useCallback,
   useEffect,
@@ -9,7 +7,8 @@ import {
   useState,
 } from 'react';
 
-import Input, { InputProps } from './Input.js';
+import type { InputProps } from './Input.js';
+import Input from './Input.js';
 
 function extractNumber(val: string | number, type: string) {
   if (type === 'number' && typeof val !== 'number') {

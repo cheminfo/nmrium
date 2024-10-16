@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 
-import { CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
 
-import {
+import type {
   AssignmentsData,
   Axis,
 } from '../../../assignment/AssignmentsContext.js';
@@ -10,7 +10,7 @@ import {
   removeAssignmentCssStyle,
   RemoveAssignmentsButton,
 } from '../../../elements/RemoveAssignmentsButton.js';
-import { ZoneData } from '../hooks/useMapZones.js';
+import type { ZoneData } from '../hooks/useMapZones.js';
 
 export interface SignalAssignmentsColumnProps {
   rowData: ZoneData;

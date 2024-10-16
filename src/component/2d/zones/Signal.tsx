@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { Signal2D } from 'nmr-processing';
+import type { Signal2D } from 'nmr-processing';
 import { useCallback, useEffect, useState } from 'react';
 
 import { buildID } from '../../../data/utilities/Concatenation.js';

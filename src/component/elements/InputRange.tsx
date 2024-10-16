@@ -1,10 +1,5 @@
-import {
-  CSSProperties,
-  forwardRef,
-  useCallback,
-  useImperativeHandle,
-  useRef,
-} from 'react';
+import type { CSSProperties } from 'react';
+import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
 
 const styles: Record<'container' | 'label', CSSProperties> = {
   container: {

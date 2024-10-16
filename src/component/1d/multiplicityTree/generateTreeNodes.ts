@@ -1,6 +1,6 @@
 import lodashGet from 'lodash/get.js';
-import { Spectrum1D } from 'nmr-load-save';
-import { Jcoupling, Range } from 'nmr-processing';
+import type { Spectrum1D } from 'nmr-load-save';
+import type { Jcoupling, Range } from 'nmr-processing';
 
 import {
   getMultiplicityNumber,

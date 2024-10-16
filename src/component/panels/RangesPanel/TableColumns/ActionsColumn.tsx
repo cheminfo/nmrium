@@ -7,7 +7,7 @@ import { useDispatch } from '../../../context/DispatchContext.js';
 import { useDialog } from '../../../elements/DialogManager.js';
 import { Select2 } from '../../../elements/Select2.js';
 import { EditRangeModal } from '../../../modal/editRange/EditRangeModal.js';
-import {
+import type {
   BaseRangeColumnProps,
   OnHoverEvent,
   RowSpanTags,

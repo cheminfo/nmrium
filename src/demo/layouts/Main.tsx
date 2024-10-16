@@ -1,4 +1,5 @@
-import { CSSProperties, useCallback, useEffect, useState } from 'react';
+import type { CSSProperties } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import routes from '../samples.json';
 

@@ -1,4 +1,5 @@
-import { CSSProperties, ForwardedRef, forwardRef, useEffect } from 'react';
+import type { CSSProperties, ForwardedRef } from 'react';
+import { forwardRef, useEffect } from 'react';
 
 import useCombinedRefs from '../hooks/useCombinedRefs.js';
 

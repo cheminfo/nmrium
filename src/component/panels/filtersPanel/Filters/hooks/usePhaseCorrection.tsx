@@ -1,5 +1,5 @@
-import { Spectrum1D } from 'nmr-load-save';
-import { Filter } from 'nmr-processing';
+import type { Spectrum1D } from 'nmr-load-save';
+import type { Filter } from 'nmr-processing';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelect } from 'react-science/ui';
 

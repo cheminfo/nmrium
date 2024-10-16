@@ -3,11 +3,12 @@ import { Controller, useFormContext } from 'react-hook-form';
 
 import { LOGGER_LEVELS } from '../../../context/LoggerContext.js';
 import { GroupPane } from '../../../elements/GroupPane.js';
-import Label, { LabelStyle } from '../../../elements/Label.js';
+import type { LabelStyle } from '../../../elements/Label.js';
+import Label from '../../../elements/Label.js';
 import { NumberInput2Controller } from '../../../elements/NumberInput2Controller.js';
 import { Select2 } from '../../../elements/Select2.js';
 import { Select2Controller } from '../../../elements/Select2Controller.js';
-import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
+import type { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
 
 const labelStyle: LabelStyle = {
   label: { flex: 6 },

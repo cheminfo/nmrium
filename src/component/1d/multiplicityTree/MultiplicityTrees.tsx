@@ -1,5 +1,5 @@
-import { Spectrum1D } from 'nmr-load-save';
-import { Ranges as RangesProps } from 'nmr-processing';
+import type { Spectrum1D } from 'nmr-load-save';
+import type { Ranges as RangesProps } from 'nmr-processing';
 import { memo } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';

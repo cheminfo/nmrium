@@ -1,4 +1,4 @@
-import { ScaleLinear } from 'd3';
+import type { ScaleLinear } from 'd3';
 import { xyReduce } from 'ml-spectra-processing';
 
 import { getIntegralYScale } from '../1d/utilities/scale.js';

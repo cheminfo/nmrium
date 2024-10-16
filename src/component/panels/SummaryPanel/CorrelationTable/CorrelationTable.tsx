@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Correlation } from 'nmr-correlation';
+import type { Correlation } from 'nmr-correlation';
 import { useMemo } from 'react';
 
 import { getLabelColor } from '../utilities/Utilities.js';

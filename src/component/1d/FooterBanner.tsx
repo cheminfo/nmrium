@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import { ActiveSpectrum, Spectrum1D } from 'nmr-load-save';
+import type { ActiveSpectrum, Spectrum1D } from 'nmr-load-save';
 import { memo } from 'react';
 import { BsCursor } from 'react-icons/bs';
 import { IoPulseSharp } from 'react-icons/io5';

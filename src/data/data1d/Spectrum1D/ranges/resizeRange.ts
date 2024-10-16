@@ -1,7 +1,8 @@
-import { Logger } from 'cheminfo-types';
+import type { Logger } from 'cheminfo-types';
 import { xyIntegration } from 'ml-spectra-processing';
-import { Spectrum1D } from 'nmr-load-save';
-import { mapRanges, Range, Signal1D } from 'nmr-processing';
+import type { Spectrum1D } from 'nmr-load-save';
+import type { Range, Signal1D } from 'nmr-processing';
+import { mapRanges } from 'nmr-processing';
 
 import detectSignals from './detectSignals.js';
 

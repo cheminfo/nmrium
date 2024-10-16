@@ -3,7 +3,7 @@ import { checkMultiplicity } from 'nmr-processing';
 import { useDispatch } from '../../../context/DispatchContext.js';
 import EditableColumn from '../../../elements/EditableColumn.js';
 import { formatNumber } from '../../../utility/formatNumber.js';
-import { RangeColumnProps } from '../RangesTableRow.js';
+import type { RangeColumnProps } from '../RangesTableRow.js';
 
 function SignalDeltaColumn({
   row,

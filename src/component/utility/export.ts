@@ -1,8 +1,8 @@
-import { SerializedStyles } from '@emotion/react';
+import type { SerializedStyles } from '@emotion/react';
 import fileSaver from 'file-saver';
 import JSZip from 'jszip';
 import lodashGet from 'lodash/get.js';
-import { JpathTableColumn, SpectraTableColumn } from 'nmr-load-save';
+import type { JpathTableColumn, SpectraTableColumn } from 'nmr-load-save';
 
 /**
  * export the experiments result in JSON format

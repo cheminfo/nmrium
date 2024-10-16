@@ -1,11 +1,8 @@
 import { readSDF, readSMILES } from 'nmr-load-save';
 import { Molecule as OCLMolecule } from 'openchemlib/full';
 
-import {
-  initMolecule,
-  StateMolecule,
-  StateMoleculeExtended,
-} from './Molecule.js';
+import type { StateMolecule, StateMoleculeExtended } from './Molecule.js';
+import { initMolecule } from './Molecule.js';
 
 export function fromJSON(
   mols: StateMolecule[],

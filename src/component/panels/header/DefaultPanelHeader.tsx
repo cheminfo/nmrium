@@ -1,9 +1,8 @@
-import { CSSProperties, Fragment, ReactNode, useState } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
+import { Fragment, useState } from 'react';
 import { FaFilter, FaRegTrashAlt } from 'react-icons/fa';
-import {
-  Toolbar,
-  ToolbarItemProps as BaseToolbarItemProps,
-} from 'react-science/ui';
+import type { ToolbarItemProps as BaseToolbarItemProps } from 'react-science/ui';
+import { Toolbar } from 'react-science/ui';
 
 import { CounterLabel } from '../../elements/CounterLabel.js';
 import { PreferencesButton } from '../../elements/PreferencesButton.js';

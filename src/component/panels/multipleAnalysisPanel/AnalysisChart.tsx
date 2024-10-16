@@ -6,7 +6,7 @@ import { FaFileExport } from 'react-icons/fa';
 import { Axis, LineSeries, Plot } from 'react-plot';
 import { Button } from 'react-science/ui';
 
-import { SpectraAnalysisData } from '../../../data/data1d/multipleSpectraAnalysis.js';
+import type { SpectraAnalysisData } from '../../../data/data1d/multipleSpectraAnalysis.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import { Input2 } from '../../elements/Input2.js';

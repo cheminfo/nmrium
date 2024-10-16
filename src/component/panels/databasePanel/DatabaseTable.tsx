@@ -1,18 +1,18 @@
 /** @jsxImportSource @emotion/react */
 import { Classes } from '@blueprintjs/core';
 import lodashGet from 'lodash/get.js';
-import { CSSProperties, memo, useMemo } from 'react';
+import type { CSSProperties } from 'react';
+import { memo, useMemo } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 import { FaDownload, FaMinus, FaPlus } from 'react-icons/fa';
 import { IdcodeSvgRenderer, SmilesSvgRenderer } from 'react-ocl/full';
 import { Button } from 'react-science/ui';
 
-import { PrepareDataResult } from '../../../data/data1d/database.js';
+import type { PrepareDataResult } from '../../../data/data1d/database.js';
 import { ColumnWrapper } from '../../elements/ColumnWrapper.js';
 import ReactTable from '../../elements/ReactTable/ReactTable.js';
-import addCustomColumn, {
-  CustomColumn,
-} from '../../elements/ReactTable/utility/addCustomColumn.js';
+import type { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn.js';
+import addCustomColumn from '../../elements/ReactTable/utility/addCustomColumn.js';
 import { HighlightEventSource } from '../../highlight/index.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus.js';

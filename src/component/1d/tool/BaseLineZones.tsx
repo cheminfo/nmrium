@@ -1,4 +1,4 @@
-import { BaselineCorrectionZone } from 'nmr-processing';
+import type { BaselineCorrectionZone } from 'nmr-processing';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';

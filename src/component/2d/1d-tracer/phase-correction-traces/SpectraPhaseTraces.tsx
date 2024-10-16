@@ -6,7 +6,10 @@ import {
   HighlightEventSource,
   useHighlight,
 } from '../../../highlight/index.js';
-import { SpectrumTrace, TraceDirection } from '../../../reducer/Reducer.js';
+import type {
+  SpectrumTrace,
+  TraceDirection,
+} from '../../../reducer/Reducer.js';
 
 import { SpectrumPhaseTrace } from './SpectrumPhaseTrace.js';
 import { useActivePhaseTraces } from './useActivePhaseTraces.js';

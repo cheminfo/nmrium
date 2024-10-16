@@ -1,5 +1,6 @@
 import { createTree } from 'ml-tree-similarity';
-import { CSSProperties, Fragment } from 'react';
+import type { CSSProperties } from 'react';
+import { Fragment } from 'react';
 
 import { isSpectrum1D } from '../../data/data1d/Spectrum1D/index.js';
 import { useChartData } from '../context/ChartContext.js';

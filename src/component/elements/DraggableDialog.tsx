@@ -1,21 +1,24 @@
 /** @jsxImportSource @emotion/react */
 
+import type {
+  DialogProps,
+  HTMLDivProps,
+  OverlayProps,
+} from '@blueprintjs/core';
 import {
   Button,
   Classes,
-  DialogProps,
   H6,
-  HTMLDivProps,
   Icon,
   IconSize,
   mergeRefs,
   Overlay2,
-  OverlayProps,
 } from '@blueprintjs/core';
 import { SmallCross } from '@blueprintjs/icons';
 import { css, Global } from '@emotion/react';
 import styled from '@emotion/styled';
-import { ReactNode, RefObject, useLayoutEffect, useRef } from 'react';
+import type { ReactNode, RefObject } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 
 const Container = styled.div`
   min-height: 100%;

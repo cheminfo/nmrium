@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Range as RangeType } from 'nmr-processing';
+import type { Range as RangeType } from 'nmr-processing';
 import { LuLink, LuUnlink } from 'react-icons/lu';
 import { PiTextTBold, PiTextTSlashBold } from 'react-icons/pi';
 
@@ -18,10 +18,8 @@ import { filterForIDsWithAssignment } from '../../assignment/utilities/filterFor
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useLogger } from '../../context/LoggerContext.js';
 import { useShareData } from '../../context/ShareDataContext.js';
-import {
-  ActionsButtonsPopover,
-  ActionsButtonsPopoverProps,
-} from '../../elements/ActionsButtonsPopover.js';
+import type { ActionsButtonsPopoverProps } from '../../elements/ActionsButtonsPopover.js';
+import { ActionsButtonsPopover } from '../../elements/ActionsButtonsPopover.js';
 import { useDialogData } from '../../elements/DialogManager.js';
 import { ResizerWithScale } from '../../elements/ResizerWithScale.js';
 import { HighlightEventSource, useHighlight } from '../../highlight/index.js';

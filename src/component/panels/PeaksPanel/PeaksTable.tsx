@@ -1,13 +1,13 @@
 import lodashGet from 'lodash/get.js';
-import { Info1D, Peak1D } from 'nmr-processing';
+import type { Info1D, Peak1D } from 'nmr-processing';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { FaEdit, FaRegTrashAlt } from 'react-icons/fa';
 
 import { useDispatch } from '../../context/DispatchContext.js';
 import EditableColumn from '../../elements/EditableColumn.js';
 import ReactTable from '../../elements/ReactTable/ReactTable.js';
+import type { ControlCustomColumn } from '../../elements/ReactTable/utility/addCustomColumn.js';
 import addCustomColumn, {
-  ControlCustomColumn,
   createActionColumn,
 } from '../../elements/ReactTable/utility/addCustomColumn.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
@@ -16,7 +16,7 @@ import { formatNumber } from '../../utility/formatNumber.js';
 import NoDataForFid from '../extra/placeholder/NoDataForFid.js';
 import NoTableData from '../extra/placeholder/NoTableData.js';
 
-import { PeakRecord } from './PeaksPanel.js';
+import type { PeakRecord } from './PeaksPanel.js';
 
 interface PeaksTableProps {
   activeTab: string;

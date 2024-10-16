@@ -6,12 +6,8 @@ import { getDecimalsCount } from '../utilities/getDecimalsCount.js';
 import { resolve } from '../utilities/intersectionResolver.js';
 
 import { PeakEditionListener } from './PeakEditionManager.js';
-import {
-  getHighlightExtraId,
-  getHighlightSource,
-  PeaksAnnotationsProps,
-  PeaksSource,
-} from './Peaks.js';
+import type { PeaksAnnotationsProps, PeaksSource } from './Peaks.js';
+import { getHighlightExtraId, getHighlightSource } from './Peaks.js';
 
 const notationWidth = 10;
 const notationMargin = 2;

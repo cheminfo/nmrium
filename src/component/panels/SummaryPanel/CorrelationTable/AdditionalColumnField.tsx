@@ -1,5 +1,6 @@
 import { v4 } from '@lukeed/uuid';
-import { buildLink, Correlation, Link } from 'nmr-correlation';
+import type { Correlation, Link } from 'nmr-correlation';
+import { buildLink } from 'nmr-correlation';
 import { useCallback, useMemo } from 'react';
 
 import { buildID } from '../../../../data/utilities/Concatenation.js';
@@ -13,7 +14,8 @@ import {
 } from '../utilities/Utilities.js';
 import useInView from '../utilities/useInView.js';
 
-import { EditLinkDialogData, EditLinkModal } from './editLink/EditLinkModal.js';
+import type { EditLinkDialogData } from './editLink/EditLinkModal.js';
+import { EditLinkModal } from './editLink/EditLinkModal.js';
 
 function getLinkText(link: Link) {
   const {

@@ -1,7 +1,8 @@
-import { CSSProperties, useCallback } from 'react';
+import type { CSSProperties } from 'react';
+import { useCallback } from 'react';
 import { MF } from 'react-mf';
 
-import { StateMoleculeExtended } from '../../../data/molecules/Molecule.js';
+import type { StateMoleculeExtended } from '../../../data/molecules/Molecule.js';
 import {
   extractLabelsNumbers,
   extractNumber,

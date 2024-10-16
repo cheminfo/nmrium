@@ -1,4 +1,4 @@
-import { ScaleLinear } from 'd3';
+import type { ScaleLinear } from 'd3';
 import { produce } from 'immer';
 
 import { getXScale, getYScale } from '../1d/utilities/scale.js';

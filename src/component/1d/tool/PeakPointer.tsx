@@ -1,4 +1,4 @@
-import { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from 'nmr-load-save';
 
 import { useBrushTracker } from '../../EventsTrackers/BrushTracker.js';
 import { useMouseTracker } from '../../EventsTrackers/MouseTracker.js';

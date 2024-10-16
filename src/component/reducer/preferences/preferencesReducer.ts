@@ -1,21 +1,21 @@
-import { Draft, produce } from 'immer';
-import {
-  CURRENT_EXPORT_VERSION,
+import type { Draft } from 'immer';
+import { produce } from 'immer';
+import type {
   ExportPreferences,
   ExportSettings,
-  migrateSettings,
   MultipleSpectraAnalysisPreferences,
   PrintPageOptions,
   Workspace,
   WorkSpaceSource,
 } from 'nmr-load-save';
-import { Reducer } from 'react';
-import { SplitPaneSize } from 'react-science/ui';
+import { CURRENT_EXPORT_VERSION, migrateSettings } from 'nmr-load-save';
+import type { Reducer } from 'react';
+import type { SplitPaneSize } from 'react-science/ui';
 
 import type { NMRiumPreferences, NMRiumWorkspace } from '../../main/index.js';
 import { getLocalStorage, storeData } from '../../utility/LocalStorage.js';
 import Workspaces from '../../workspaces/index.js';
-import { ActionType } from '../types/ActionType.js';
+import type { ActionType } from '../types/ActionType.js';
 
 import { addWorkspace } from './actions/addWorkspace.js';
 import {
@@ -29,12 +29,12 @@ import { changeExportSettings } from './actions/changeExportSettings.js';
 import { changeInformationBlockPosition } from './actions/changeInformationBlockPosition.js';
 import { changePrintPageSettings } from './actions/changePrintPageSettings.js';
 import { initPreferences } from './actions/initPreferences.js';
+import type { MatrixGenerationActions } from './actions/matrixGeneration.js';
 import {
   addExclusionZone,
   changeMatrixGenerationScale,
   changeMatrixGenerationStocsyChemicalShift,
   deleteExclusionZone,
-  MatrixGenerationActions,
   setMatrixGenerationOptions,
   toggleMatrixGenerationViewProperty,
 } from './actions/matrixGeneration.js';

@@ -1,20 +1,20 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { NmrData1D } from 'cheminfo-types';
+import type { NmrData1D } from 'cheminfo-types';
 import { xGetFromToIndex } from 'ml-spectra-processing';
-import { Spectrum1D, WorkSpacePanelPreferences } from 'nmr-load-save';
-import { Info1D, Ranges } from 'nmr-processing';
+import type { Spectrum1D, WorkSpacePanelPreferences } from 'nmr-load-save';
+import type { Info1D, Ranges } from 'nmr-processing';
 import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { FaCopy } from 'react-icons/fa';
 
-import { StateMoleculeExtended } from '../../../data/molecules/Molecule.js';
+import type { StateMoleculeExtended } from '../../../data/molecules/Molecule.js';
 import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents.js';
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks.js';
 import { useAssignmentData } from '../../assignment/AssignmentsContext.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
-import { BaseContextMenuProps } from '../../elements/ContextMenuBluePrint.js';
+import type { BaseContextMenuProps } from '../../elements/ContextMenuBluePrint.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import { tablePanelStyle } from '../extra/BasicPanelStyle.js';

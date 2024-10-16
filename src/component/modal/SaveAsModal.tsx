@@ -14,7 +14,8 @@ import { DataExportOptions } from '../../data/SpectraManager.js';
 import { useChartData } from '../context/ChartContext.js';
 import ActionButtons from '../elements/ActionButtons.js';
 import { Input2Controller } from '../elements/Input2Controller.js';
-import Label, { LabelStyle } from '../elements/Label.js';
+import type { LabelStyle } from '../elements/Label.js';
+import Label from '../elements/Label.js';
 import { useExport } from '../hooks/useExport.js';
 
 const INITIAL_VALUE = {

@@ -5,7 +5,8 @@ import {
   DialogFooter,
   TextArea,
 } from '@blueprintjs/core';
-import { FifoLogger, LogEntry } from 'fifo-logger';
+import type { LogEntry } from 'fifo-logger';
+import { FifoLogger } from 'fifo-logger';
 import debounce from 'lodash/debounce.js';
 import { resurrect } from 'nmr-processing';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -14,7 +15,8 @@ import { Controller, useForm } from 'react-hook-form';
 import { useDispatch } from '../context/DispatchContext.js';
 import { useToaster } from '../context/ToasterContext.js';
 import { GroupPane } from '../elements/GroupPane.js';
-import ReactTable, { Column } from '../elements/ReactTable/ReactTable.js';
+import type { Column } from '../elements/ReactTable/ReactTable.js';
+import ReactTable from '../elements/ReactTable/ReactTable.js';
 
 interface InnerImportPublicationStringModalProps {
   onClose: () => void;

@@ -2,17 +2,18 @@
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from 'nmr-load-save';
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
 import { REFERENCES } from '../../../data/constants/References.js';
-import { CalibrateOptions } from '../../../data/data1d/Spectrum1D/getReferenceShift.js';
+import type { CalibrateOptions } from '../../../data/data1d/Spectrum1D/getReferenceShift.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import ActionButtons from '../../elements/ActionButtons.js';
-import Label, { LabelStyle } from '../../elements/Label.js';
+import type { LabelStyle } from '../../elements/Label.js';
+import Label from '../../elements/Label.js';
 import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
 import { Select2 } from '../../elements/Select2.js';
 import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus.js';

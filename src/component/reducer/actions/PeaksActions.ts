@@ -1,13 +1,14 @@
 import { v4 } from '@lukeed/uuid';
-import { Draft, original } from 'immer';
+import type { Draft } from 'immer';
+import { original } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import {
+import type {
   Spectrum1D,
   PeaksViewState,
   ViewState,
   RangesViewState,
 } from 'nmr-load-save';
-import { Peak1D, OptionsXYAutoPeaksPicking } from 'nmr-processing';
+import type { Peak1D, OptionsXYAutoPeaksPicking } from 'nmr-processing';
 
 import {
   getShiftX,
@@ -16,12 +17,12 @@ import {
 } from '../../../data/data1d/Spectrum1D/index.js';
 import { defaultPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState.js';
 import { defaultRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
-import { FilterType } from '../../utility/filterType.js';
+import type { FilterType } from '../../utility/filterType.js';
 import { getClosePeak } from '../../utility/getClosePeak.js';
-import { State } from '../Reducer.js';
+import type { State } from '../Reducer.js';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
 import getRange from '../helper/getRange.js';
-import { ActionType } from '../types/ActionType.js';
+import type { ActionType } from '../types/ActionType.js';
 
 type AddPeakAction = ActionType<'ADD_PEAK', { x: number }>;
 type AddPeaksAction = ActionType<'ADD_PEAKS', { startX: number; endX: number }>;

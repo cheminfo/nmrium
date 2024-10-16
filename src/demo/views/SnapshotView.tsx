@@ -1,4 +1,4 @@
-import { CustomWorkspaces } from 'nmr-load-save';
+import type { CustomWorkspaces } from 'nmr-load-save';
 
 import View from './View.js';
 

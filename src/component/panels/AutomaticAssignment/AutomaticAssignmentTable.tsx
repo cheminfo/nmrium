@@ -3,9 +3,9 @@ import { memo, useCallback, useMemo } from 'react';
 
 import { useDispatch } from '../../context/DispatchContext.js';
 import ReactTable from '../../elements/ReactTable/ReactTable.js';
-import { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn.js';
+import type { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn.js';
 
-import { AutoAssignmentsData } from './useAutoAssignments.js';
+import type { AutoAssignmentsData } from './useAutoAssignments.js';
 
 interface AutomaticAssignmentTableProps {
   data: AutoAssignmentsData[];

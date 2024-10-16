@@ -1,4 +1,4 @@
-import { NmrData1D } from 'cheminfo-types';
+import type { NmrData1D } from 'cheminfo-types';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 
 import { maxAbsoluteValue } from '../../utility/maxAbsoluteValue.js';

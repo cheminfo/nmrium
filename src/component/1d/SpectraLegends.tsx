@@ -1,13 +1,13 @@
 import lodashGet from 'lodash/get.js';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import {
+import type {
   JpathLegendField,
   LegendField,
   PredefinedLegendField,
   Spectrum,
   Spectrum1D,
 } from 'nmr-load-save';
-import { CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
 
 import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY.js';
 import { useMouseTracker } from '../EventsTrackers/MouseTracker.js';

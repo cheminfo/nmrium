@@ -1,16 +1,17 @@
-import { Spectrum1D } from 'nmr-load-save';
-import { ReactNode, useCallback, useEffect, useMemo, useRef } from 'react';
+import type { Spectrum1D } from 'nmr-load-save';
+import type { ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 
 import BrushXY, { BRUSH_TYPE } from '../1d-2d/tools/BrushXY.js';
 import CrossLinePointer from '../1d-2d/tools/CrossLinePointer.js';
-import {
-  BrushTracker,
+import type {
   OnBrush,
   OnClick,
   OnDoubleClick,
   OnZoom,
 } from '../EventsTrackers/BrushTracker.js';
+import { BrushTracker } from '../EventsTrackers/BrushTracker.js';
 import { MouseTracker } from '../EventsTrackers/MouseTracker.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useDispatch } from '../context/DispatchContext.js';

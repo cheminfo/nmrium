@@ -2,17 +2,16 @@ import type {
   CustomWorkspaces,
   WorkspacePreferences as NMRiumPreferences,
 } from 'nmr-load-save';
-import { forwardRef, memo, ReactElement, ReactNode } from 'react';
-import {
-  ErrorBoundary,
-  ErrorBoundaryPropsWithComponent,
-} from 'react-error-boundary';
+import type { ReactElement, ReactNode } from 'react';
+import { forwardRef, memo } from 'react';
+import type { ErrorBoundaryPropsWithComponent } from 'react-error-boundary';
+import { ErrorBoundary } from 'react-error-boundary';
 import { FullScreenProvider, RootLayout } from 'react-science/ui';
 
 import ErrorOverlay from './ErrorOverlay.js';
 import { InnerNMRium } from './InnerNMRium.js';
-import { NMRiumRefAPI } from './NMRiumRefAPI.js';
-import { NMRiumChangeCb, NMRiumData, NMRiumWorkspace } from './types.js';
+import type { NMRiumRefAPI } from './NMRiumRefAPI.js';
+import type { NMRiumChangeCb, NMRiumData, NMRiumWorkspace } from './types.js';
 
 export interface NMRiumProps {
   data?: NMRiumData;

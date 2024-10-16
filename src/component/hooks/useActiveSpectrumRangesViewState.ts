@@ -1,4 +1,4 @@
-import { RangesViewState } from 'nmr-load-save';
+import type { RangesViewState } from 'nmr-load-save';
 
 import { useChartData } from '../context/ChartContext.js';
 

@@ -1,6 +1,6 @@
-import { Draft } from 'immer';
+import type { Draft } from 'immer';
 
-import { State } from '../Reducer.js';
+import type { State } from '../Reducer.js';
 
 import { getActiveSpectra } from './getActiveSpectra.js';
 

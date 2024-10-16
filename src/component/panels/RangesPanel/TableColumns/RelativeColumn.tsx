@@ -2,7 +2,7 @@ import { checkRangeKind } from '../../../../data/utilities/RangeUtilities.js';
 import { useDispatch } from '../../../context/DispatchContext.js';
 import EditableColumn from '../../../elements/EditableColumn.js';
 import { formatNumber } from '../../../utility/formatNumber.js';
-import { RangeColumnProps } from '../RangesTableRow.js';
+import type { RangeColumnProps } from '../RangesTableRow.js';
 
 function RelativeColumn({
   row,

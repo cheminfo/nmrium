@@ -1,4 +1,4 @@
-import { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from 'nmr-load-save';
 
 import { get1DDataXY } from '../../data/data1d/Spectrum1D/index.js';
 

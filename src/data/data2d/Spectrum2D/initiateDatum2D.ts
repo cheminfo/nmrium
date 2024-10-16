@@ -1,8 +1,8 @@
 import { v4 } from '@lukeed/uuid';
-import { Spectrum2D, SpectrumTwoDimensionsColor } from 'nmr-load-save';
+import type { Spectrum2D, SpectrumTwoDimensionsColor } from 'nmr-load-save';
 import { FiltersManager } from 'nmr-processing';
 
-import { UsedColors } from '../../../types/UsedColors.js';
+import type { UsedColors } from '../../../types/UsedColors.js';
 import { initiateFilters } from '../../initiateFilters.js';
 
 import {

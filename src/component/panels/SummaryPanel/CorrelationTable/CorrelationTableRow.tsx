@@ -1,19 +1,17 @@
+import type { Link } from 'nmr-correlation';
 import {
   buildLink,
   getCorrelationDelta,
   getLabel,
   getLinkDim,
-  Link,
 } from 'nmr-correlation';
 import { useCallback, useMemo } from 'react';
 
 import { buildID } from '../../../../data/utilities/Concatenation.js';
 import { findRangeOrZoneID } from '../../../../data/utilities/FindUtilities.js';
 import { useAlert } from '../../../elements/Alert.js';
-import {
-  ContextMenu,
-  ContextMenuItem,
-} from '../../../elements/ContextMenuBluePrint.js';
+import type { ContextMenuItem } from '../../../elements/ContextMenuBluePrint.js';
+import { ContextMenu } from '../../../elements/ContextMenuBluePrint.js';
 import { useDialog } from '../../../elements/DialogManager.js';
 import EditableColumn from '../../../elements/EditableColumn.js';
 import { useHighlight } from '../../../highlight/index.js';
@@ -21,7 +19,8 @@ import { convertValuesString } from '../utilities/Utilities.js';
 import useInView from '../utilities/useInView.js';
 
 import AdditionalColumnField from './AdditionalColumnField.js';
-import { EditLinkDialogData, EditLinkModal } from './editLink/EditLinkModal.js';
+import type { EditLinkDialogData } from './editLink/EditLinkModal.js';
+import { EditLinkModal } from './editLink/EditLinkModal.js';
 
 function CorrelationTableRow({
   additionalColumnData,

@@ -1,12 +1,13 @@
 /** @jsxImportSource @emotion/react */
-import OCL from 'openchemlib/full';
-import { CSSProperties, useEffect, useRef, useState } from 'react';
+import type OCL from 'openchemlib/full';
+import type { CSSProperties } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 import { StructureEditor } from 'react-ocl/full';
 import { useAccordionContext } from 'react-science/ui';
 
 import { predictSpectra } from '../../../data/PredictionManager.js';
-import { StateMoleculeExtended } from '../../../data/molecules/Molecule.js';
+import type { StateMoleculeExtended } from '../../../data/molecules/Molecule.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useLogger } from '../../context/LoggerContext.js';
@@ -18,7 +19,7 @@ import { useMoleculeEditor } from '../../modal/MoleculeStructureEditorModal.js';
 import MoleculeHeader from '../MoleculesPanel/MoleculeHeader.js';
 import MoleculePanelHeader from '../MoleculesPanel/MoleculePanelHeader.js';
 import { tablePanelStyle } from '../extra/BasicPanelStyle.js';
-import { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
+import type { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
 import PreferencesHeader from '../header/PreferencesHeader.js';
 
 import PredictionPreferences from './PredictionPreferences.js';

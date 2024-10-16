@@ -1,4 +1,4 @@
-import { Correlation } from 'nmr-correlation';
+import type { Correlation } from 'nmr-correlation';
 import { useMemo } from 'react';
 
 import { useChartData } from '../../../context/ChartContext.js';

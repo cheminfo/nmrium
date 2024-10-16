@@ -1,15 +1,15 @@
-import { original, Draft } from 'immer';
+import type { Draft } from 'immer';
+import { original } from 'immer';
 import lodashCloneDeep from 'lodash/cloneDeep.js';
-import {
-  buildCorrelationData,
-  setCorrelation,
+import type {
   Tolerance,
   Options as CorrelationOptions,
   Correlation,
   Spectrum,
   Values as CorrelationValues,
 } from 'nmr-correlation';
-import { Spectrum1D, Spectrum2D } from 'nmr-load-save';
+import { buildCorrelationData, setCorrelation } from 'nmr-correlation';
+import type { Spectrum1D, Spectrum2D } from 'nmr-load-save';
 
 import {
   findRange,
@@ -18,9 +18,9 @@ import {
   findSpectrum,
   findZone,
 } from '../../../data/utilities/FindUtilities.js';
-import { AssignmentContext } from '../../assignment/AssignmentsContext.js';
-import { State } from '../Reducer.js';
-import { ActionType } from '../types/ActionType.js';
+import type { AssignmentContext } from '../../assignment/AssignmentsContext.js';
+import type { State } from '../Reducer.js';
+import type { ActionType } from '../types/ActionType.js';
 
 import { deleteSignal1D } from './RangesActions.js';
 import { deleteSignal2D } from './ZonesActions.js';

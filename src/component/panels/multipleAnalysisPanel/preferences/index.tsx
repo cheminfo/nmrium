@@ -1,13 +1,11 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import {
-  AnalysisColumnsTypes,
-  MultipleSpectraAnalysisPreferences as MultipleSpectraAnalysisPreferencesInterface,
-} from 'nmr-load-save';
+import type { MultipleSpectraAnalysisPreferences as MultipleSpectraAnalysisPreferencesInterface } from 'nmr-load-save';
+import { AnalysisColumnsTypes } from 'nmr-load-save';
 import { forwardRef } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
-import { SpectraAnalysisData } from '../../../../data/data1d/multipleSpectraAnalysis.js';
+import type { SpectraAnalysisData } from '../../../../data/data1d/multipleSpectraAnalysis.js';
 import { usePreferences } from '../../../context/PreferencesContext.js';
 import { CheckController } from '../../../elements/CheckController.js';
 import { GroupPane } from '../../../elements/GroupPane.js';

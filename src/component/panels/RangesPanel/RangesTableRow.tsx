@@ -1,18 +1,19 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import lodashGet from 'lodash/get.js';
-import { WorkSpacePanelPreferences } from 'nmr-load-save';
-import { Info1D } from 'nmr-processing';
-import { useMemo, useCallback, MouseEvent, CSSProperties } from 'react';
+import type { WorkSpacePanelPreferences } from 'nmr-load-save';
+import type { Info1D } from 'nmr-processing';
+import type { MouseEvent, CSSProperties } from 'react';
+import { useMemo, useCallback } from 'react';
 
+import type { AssignmentsData } from '../../assignment/AssignmentsContext.js';
 import {
-  AssignmentsData,
   useAssignment,
   useAssignmentData,
 } from '../../assignment/AssignmentsContext.js';
 import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment.js';
 import { ContextMenu } from '../../elements/ContextMenuBluePrint.js';
-import { TableContextMenuProps } from '../../elements/ReactTable/ReactTable.js';
+import type { TableContextMenuProps } from '../../elements/ReactTable/ReactTable.js';
 import {
   HighlightEventSource,
   useHighlight,
@@ -29,7 +30,7 @@ import RelativeColumn from './TableColumns/RelativeColumn.js';
 import SignalAssignmentsColumn from './TableColumns/SignalAssignmentsColumn.js';
 import SignalDeltaColumn from './TableColumns/SignalDeltaColumn.js';
 import SignalDeltaHzColumn from './TableColumns/SignalDeltaHzColumn.js';
-import { RangeData } from './hooks/useMapRanges.js';
+import type { RangeData } from './hooks/useMapRanges.js';
 
 const HighlightedRowStyle = css`
   background-color: #ff6f0057;

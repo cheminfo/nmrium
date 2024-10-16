@@ -1,12 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Ranges, Zones } from 'nmr-processing';
+import type { Ranges, Zones } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 import { ResponsiveChart } from 'react-d3-utils';
 import OCLnmr from 'react-ocl-nmr';
 import { Rnd } from 'react-rnd';
 
-import {
+import type {
   MoleculeBoundingRect,
   MoleculeView,
   StateMoleculeExtended,
@@ -16,7 +16,7 @@ import { useGlobal } from '../../../context/GlobalContext.js';
 import { useHighlightColor } from '../../../hooks/useHighlightColor.js';
 import { useMoleculeEditor } from '../../../modal/MoleculeStructureEditorModal.js';
 import useAtomAssignment from '../../../panels/MoleculesPanel/useAtomAssignment.js';
-import { DisplayerMode } from '../../../reducer/Reducer.js';
+import type { DisplayerMode } from '../../../reducer/Reducer.js';
 
 import ActionsButton from './ActionsButton.js';
 

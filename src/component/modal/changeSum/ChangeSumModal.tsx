@@ -2,10 +2,8 @@ import { Dialog } from '@blueprintjs/core';
 import { SvgNmrSum } from 'cheminfo-font';
 import { Toolbar, useOnOff } from 'react-science/ui';
 
-import {
-  ChangeSumModalContents,
-  ChangeSumModalContentsProps,
-} from './ChangeSumModalContents.js';
+import type { ChangeSumModalContentsProps } from './ChangeSumModalContents.js';
+import { ChangeSumModalContents } from './ChangeSumModalContents.js';
 
 export interface ChangeSumModalProps
   extends Omit<ChangeSumModalContentsProps, 'onClose'> {

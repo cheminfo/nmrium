@@ -1,8 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { isValidElement, useMemo, Children, memo, ReactElement } from 'react';
+import type { ReactElement } from 'react';
+import { isValidElement, useMemo, Children, memo } from 'react';
 
-import Tab, { TabEvents, TabProps } from './Tab.js';
+import type { TabEvents, TabProps } from './Tab.js';
+import Tab from './Tab.js';
 
 const topStyles = css`
   height: 100%;

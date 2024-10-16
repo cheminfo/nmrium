@@ -1,6 +1,8 @@
-import { Classes, InputGroupProps, MenuItem } from '@blueprintjs/core';
+import type { InputGroupProps } from '@blueprintjs/core';
+import { Classes, MenuItem } from '@blueprintjs/core';
 import { Suggest } from '@blueprintjs/select';
 import debounce from 'lodash/debounce.js';
+import type { ForwardedRef } from 'react';
 import {
   useEffect,
   useRef,
@@ -8,7 +10,6 @@ import {
   useState,
   isValidElement,
   forwardRef,
-  ForwardedRef,
 } from 'react';
 
 import useCombinedRefs from '../hooks/useCombinedRefs.js';

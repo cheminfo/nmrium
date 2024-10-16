@@ -1,6 +1,7 @@
 import { Classes } from '@blueprintjs/core';
-import { SpectraColors } from 'nmr-load-save';
-import { CSSProperties, useCallback, useMemo } from 'react';
+import type { SpectraColors } from 'nmr-load-save';
+import type { CSSProperties } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
@@ -10,8 +11,9 @@ import { ColorPickerDropdownController } from '../../../elements/ColorPickerDrop
 import { GroupPane } from '../../../elements/GroupPane.js';
 import { Input2Controller } from '../../../elements/Input2Controller.js';
 import Label from '../../../elements/Label.js';
-import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable.js';
-import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
+import type { Column } from '../../../elements/ReactTable/ReactTable.js';
+import ReactTable from '../../../elements/ReactTable/ReactTable.js';
+import type { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
 import { convertPathArrayToString } from '../../../utility/convertPathArrayToString.js';
 import { getSpectraObjectPaths } from '../../../utility/getSpectraObjectPaths.js';
 import { Section } from '../GeneralSettings.js';

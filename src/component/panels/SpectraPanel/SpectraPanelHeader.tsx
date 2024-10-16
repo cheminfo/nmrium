@@ -1,5 +1,5 @@
 import { SvgNmrResetScale, SvgNmrSameTop } from 'cheminfo-font';
-import { ActiveSpectrum, Spectrum, Spectrum2D } from 'nmr-load-save';
+import type { ActiveSpectrum, Spectrum, Spectrum2D } from 'nmr-load-save';
 import { memo, useCallback } from 'react';
 import { FaCreativeCommonsSamplingPlus } from 'react-icons/fa';
 import { IoColorPaletteOutline } from 'react-icons/io5';
@@ -13,11 +13,10 @@ import { useAlert } from '../../elements/Alert.js';
 import { useActiveSpectra } from '../../hooks/useActiveSpectra.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import { useToggleSpectraVisibility } from '../../hooks/useToggleSpectraVisibility.js';
-import { DisplayerMode } from '../../reducer/Reducer.js';
+import type { DisplayerMode } from '../../reducer/Reducer.js';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus.js';
-import DefaultPanelHeader, {
-  ToolbarItemProps,
-} from '../header/DefaultPanelHeader.js';
+import type { ToolbarItemProps } from '../header/DefaultPanelHeader.js';
+import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
 import { SpectraAutomaticPickingButton } from '../header/SpectraAutomaticPickingButton.js';
 
 function getMissingProjection(spectraData, activeTab) {

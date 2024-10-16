@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
+import type { NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { Fragment, useMemo } from 'react';
 import { MF } from 'react-mf';

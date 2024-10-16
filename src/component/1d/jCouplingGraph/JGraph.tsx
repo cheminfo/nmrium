@@ -1,11 +1,10 @@
 import { scaleLinear } from 'd3';
-import { Spectrum1D } from 'nmr-load-save';
-import { Signal1D } from 'nmr-processing';
+import type { Spectrum1D } from 'nmr-load-save';
+import type { Signal1D } from 'nmr-processing';
 import { memo, useMemo } from 'react';
 
-import generateJGraphData, {
-  CouplingLink,
-} from '../../../data/data1d/Spectrum1D/generateJGraphData.js';
+import type { CouplingLink } from '../../../data/data1d/Spectrum1D/generateJGraphData.js';
+import generateJGraphData from '../../../data/data1d/Spectrum1D/generateJGraphData.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';

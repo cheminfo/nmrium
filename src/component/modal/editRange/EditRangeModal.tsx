@@ -3,21 +3,16 @@ import { Button, DialogBody, DialogFooter } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { v4 } from '@lukeed/uuid';
-import { Spectrum1D } from 'nmr-load-save';
-import {
-  Jcoupling,
-  Range,
-  Signal1D,
-  splitPatterns,
-  translateMultiplet,
-} from 'nmr-processing';
+import type { Spectrum1D } from 'nmr-load-save';
+import type { Jcoupling, Range, Signal1D } from 'nmr-processing';
+import { splitPatterns, translateMultiplet } from 'nmr-processing';
 import { useCallback, useEffect, useRef } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { FaSearchPlus } from 'react-icons/fa';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
-import { DialogProps } from '../../elements/DialogManager.js';
+import type { DialogProps } from '../../elements/DialogManager.js';
 import { DraggableDialog } from '../../elements/DraggableDialog.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import useSpectrum from '../../hooks/useSpectrum.js';

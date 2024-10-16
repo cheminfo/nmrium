@@ -1,24 +1,22 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import {
-  Database,
-  NmriumState,
-  readFromWebSource,
-  serializeNmriumState,
-  Spectrum1D,
-} from 'nmr-load-save';
-import { DatabaseNMREntry, mapRanges } from 'nmr-processing';
+import type { Database, NmriumState, Spectrum1D } from 'nmr-load-save';
+import { readFromWebSource, serializeNmriumState } from 'nmr-load-save';
+import type { DatabaseNMREntry } from 'nmr-processing';
+import { mapRanges } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useAccordionContext, useOnOff } from 'react-science/ui';
 
 import { getSum } from '../../../data/data1d/Spectrum1D/SumManager.js';
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
+import type {
+  InitiateDatabaseResult,
+  LocalDatabase,
+} from '../../../data/data1d/database.js';
 import {
   DATA_BASES,
   initiateDatabase,
-  InitiateDatabaseResult,
-  LocalDatabase,
   prepareData,
 } from '../../../data/data1d/database.js';
 import { useChartData } from '../../context/ChartContext.js';
@@ -34,7 +32,7 @@ import nucleusToString from '../../utility/nucleusToString.js';
 import { PanelNoData } from '../PanelNoData.js';
 import { tablePanelStyle } from '../extra/BasicPanelStyle.js';
 import NoTableData from '../extra/placeholder/NoTableData.js';
-import { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
+import type { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
 import PreferencesHeader from '../header/PreferencesHeader.js';
 
 import DatabasePreferences from './DatabasePreferences.js';

@@ -1,4 +1,5 @@
-import { expect, Locator, test } from '@playwright/test';
+import type { Locator } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 import NmriumPage from '../NmriumPage/index.js';
 

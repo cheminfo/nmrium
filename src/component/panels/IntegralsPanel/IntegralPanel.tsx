@@ -2,8 +2,8 @@
 import { css } from '@emotion/react';
 import { SvgNmrIntegrate } from 'cheminfo-font';
 import lodashGet from 'lodash/get.js';
-import { Spectrum1D } from 'nmr-load-save';
-import { Info1D, Integrals } from 'nmr-processing';
+import type { Spectrum1D } from 'nmr-load-save';
+import type { Info1D, Integrals } from 'nmr-processing';
 import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { ImLink } from 'react-icons/im';
 
@@ -15,7 +15,7 @@ import useSpectrum from '../../hooks/useSpectrum.js';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal.js';
 import { booleanToString } from '../../utility/booleanToString.js';
 import { tablePanelStyle } from '../extra/BasicPanelStyle.js';
-import { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
+import type { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
 import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
 import PreferencesHeader from '../header/PreferencesHeader.js';
 

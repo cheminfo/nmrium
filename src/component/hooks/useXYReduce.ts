@@ -1,4 +1,4 @@
-import { DataXY } from 'cheminfo-types';
+import type { DataXY } from 'cheminfo-types';
 import { xyReduce } from 'ml-spectra-processing';
 import { useCallback } from 'react';
 

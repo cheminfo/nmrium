@@ -1,10 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Classes,
-  HTMLInputProps,
-  NumericInput,
-  NumericInputProps,
-} from '@blueprintjs/core';
+import type { HTMLInputProps, NumericInputProps } from '@blueprintjs/core';
+import { Classes, NumericInput } from '@blueprintjs/core';
 import debounce from 'lodash/debounce.js';
 import {
   useEffect,

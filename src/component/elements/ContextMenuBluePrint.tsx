@@ -1,13 +1,11 @@
-import {
+import type {
   ContextMenuProps as BluePrintContextMenuProps,
-  Menu,
-  MenuItem,
   MenuItemProps,
-  showContextMenu,
-  Tooltip,
   TooltipProps,
 } from '@blueprintjs/core';
-import React, { ComponentProps, ElementType, ReactNode } from 'react';
+import { Menu, MenuItem, showContextMenu, Tooltip } from '@blueprintjs/core';
+import type { ComponentProps, ElementType, ReactNode } from 'react';
+import React from 'react';
 
 export type ContextMenuCheck = boolean | ((data: any) => boolean);
 export interface ContextMenuItem extends Omit<MenuItemProps, 'disabled'> {

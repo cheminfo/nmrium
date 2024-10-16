@@ -5,8 +5,8 @@ import { Button } from 'react-science/ui';
 import ActionButtons from '../elements/ActionButtons.js';
 import InputRange from '../elements/InputRange.js';
 import { useFilter } from '../hooks/useFilter.js';
+import type { AlgorithmItem } from '../panels/filtersPanel/Filters/hooks/usePhaseCorrection.js';
 import {
-  AlgorithmItem,
   algorithms,
   usePhaseCorrection,
 } from '../panels/filtersPanel/Filters/hooks/usePhaseCorrection.js';

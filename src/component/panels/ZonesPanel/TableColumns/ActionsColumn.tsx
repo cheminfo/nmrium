@@ -6,7 +6,7 @@ import { useDispatch } from '../../../context/DispatchContext.js';
 import { useDialog } from '../../../elements/DialogManager.js';
 import { Select2 } from '../../../elements/Select2.js';
 import { EditZoneModal } from '../../../modal/editZone/EditZoneModal.js';
-import { ZoneData } from '../hooks/useMapZones.js';
+import type { ZoneData } from '../hooks/useMapZones.js';
 import { useZoneActions } from '../hooks/useZoneActions.js';
 
 interface ActionsColumnProps {

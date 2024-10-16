@@ -1,4 +1,4 @@
-import { DataXY, Logger } from 'cheminfo-types';
+import type { DataXY, Logger } from 'cheminfo-types';
 import { xGetFromToIndex } from 'ml-spectra-processing';
 import { xyAutoRangesPicking } from 'nmr-processing';
 

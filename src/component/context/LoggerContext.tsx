@@ -1,7 +1,8 @@
-import { FifoLogger, LogEntry } from 'fifo-logger';
+import type { LogEntry } from 'fifo-logger';
+import { FifoLogger } from 'fifo-logger';
+import type { ReactNode } from 'react';
 import {
   createContext,
-  ReactNode,
   useCallback,
   useContext,
   useEffect,

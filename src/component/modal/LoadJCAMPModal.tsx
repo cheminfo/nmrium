@@ -9,7 +9,8 @@ import * as Yup from 'yup';
 import { useDispatch } from '../context/DispatchContext.js';
 import { useToaster } from '../context/ToasterContext.js';
 import { Input2Controller } from '../elements/Input2Controller.js';
-import Label, { LabelStyle } from '../elements/Label.js';
+import type { LabelStyle } from '../elements/Label.js';
+import Label from '../elements/Label.js';
 
 const allowedExtensions = new Set(['dx', 'jdx', 'jcamp']);
 

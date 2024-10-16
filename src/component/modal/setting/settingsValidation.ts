@@ -1,4 +1,5 @@
-import { EXTERNAL_API_KEYS, ExternalAPIKeyType } from 'nmr-load-save';
+import type { ExternalAPIKeyType } from 'nmr-load-save';
+import { EXTERNAL_API_KEYS } from 'nmr-load-save';
 import { array, mixed, number, object, string } from 'yup';
 
 import { exportOptionValidationSchema } from '../../elements/export/utilities/exportOptionValidationSchema.js';

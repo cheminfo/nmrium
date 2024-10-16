@@ -1,10 +1,10 @@
 import { v4 } from '@lukeed/uuid';
 import lodashMerge from 'lodash/merge.js';
-import { Workspace } from 'nmr-load-save';
+import type { Workspace } from 'nmr-load-save';
 
 import { usePreferences } from '../context/PreferencesContext.js';
+import type { Settings } from '../reducer/preferences/preferencesReducer.js';
 import {
-  Settings,
   readSettings,
   updateSettings,
 } from '../reducer/preferences/preferencesReducer.js';

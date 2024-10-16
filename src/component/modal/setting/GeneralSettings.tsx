@@ -10,7 +10,7 @@ import {
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Workspace } from 'nmr-load-save';
+import type { Workspace } from 'nmr-load-save';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import {
   FormProvider,
@@ -30,12 +30,11 @@ import {
 import { useToaster } from '../../context/ToasterContext.js';
 import ActionButtons from '../../elements/ActionButtons.js';
 import Label from '../../elements/Label.js';
-import DropDownButton, {
-  DropDownListItem,
-} from '../../elements/dropDownButton/DropDownButton.js';
+import type { DropDownListItem } from '../../elements/dropDownButton/DropDownButton.js';
+import DropDownButton from '../../elements/dropDownButton/DropDownButton.js';
 import { useSaveSettings } from '../../hooks/useSaveSettings.js';
 import { useWorkspaceAction } from '../../hooks/useWorkspaceAction.js';
-import { WorkspaceWithSource } from '../../reducer/preferences/preferencesReducer.js';
+import type { WorkspaceWithSource } from '../../reducer/preferences/preferencesReducer.js';
 import { getPreferencesByWorkspace } from '../../reducer/preferences/utilities/getPreferencesByWorkspace.js';
 import PredefinedWorkspaces from '../../workspaces/index.js';
 

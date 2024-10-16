@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
-import { ReactNode, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useState } from 'react';
 import { IoLockClosedOutline } from 'react-icons/io5';
 
 const fadeIn = keyframes`

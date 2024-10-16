@@ -1,4 +1,4 @@
-import { ZonesViewState } from 'nmr-load-save';
+import type { ZonesViewState } from 'nmr-load-save';
 
 import { useChartData } from '../context/ChartContext.js';
 

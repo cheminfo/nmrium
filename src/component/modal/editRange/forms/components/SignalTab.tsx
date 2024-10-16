@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { Tab, Tabs } from '@blueprintjs/core';
 import { css } from '@emotion/react';
-import { CSSProperties, memo } from 'react';
+import type { CSSProperties } from 'react';
+import { memo } from 'react';
 
 import { SignalJCouplingsTable } from './signal-tabs/SignalJCouplingsTable.js';
 import { SignalPeaksTable } from './signal-tabs/SignalPeaksTable.js';

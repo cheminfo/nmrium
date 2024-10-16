@@ -1,4 +1,4 @@
-import { ScaleLinear } from 'd3';
+import type { ScaleLinear } from 'd3';
 import { createContext, useContext } from 'react';
 
 interface JGraphState {

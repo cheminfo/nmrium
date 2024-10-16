@@ -1,4 +1,4 @@
-import { CSSProperties, ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 
 import { useLoader } from '../context/LoaderContext.js';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility.js';

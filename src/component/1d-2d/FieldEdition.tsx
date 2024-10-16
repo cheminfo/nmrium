@@ -1,8 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import { Popover, PopoverProps } from '@blueprintjs/core';
+import type { PopoverProps } from '@blueprintjs/core';
+import { Popover } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { ReactNode, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 

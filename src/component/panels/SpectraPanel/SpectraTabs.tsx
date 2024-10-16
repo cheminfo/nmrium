@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { ActiveSpectrum, Spectrum } from 'nmr-load-save';
+import type { ActiveSpectrum, Spectrum } from 'nmr-load-save';
 import { memo, useCallback, useMemo, useState } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';

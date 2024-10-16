@@ -5,16 +5,15 @@ import { useCallback, useMemo } from 'react';
 import { buildID } from '../../../../data/utilities/Concatenation.js';
 import { findRangeOrZoneID } from '../../../../data/utilities/FindUtilities.js';
 import { useAlert } from '../../../elements/Alert.js';
-import {
-  ContextMenu,
-  ContextMenuItem,
-} from '../../../elements/ContextMenuBluePrint.js';
+import type { ContextMenuItem } from '../../../elements/ContextMenuBluePrint.js';
+import { ContextMenu } from '../../../elements/ContextMenuBluePrint.js';
 import { useDialog } from '../../../elements/DialogManager.js';
 import { useHighlight } from '../../../highlight/index.js';
 import { getLabelColor } from '../utilities/Utilities.js';
 import useInView from '../utilities/useInView.js';
 
-import { EditLinkDialogData, EditLinkModal } from './editLink/EditLinkModal.js';
+import type { EditLinkDialogData } from './editLink/EditLinkModal.js';
+import { EditLinkModal } from './editLink/EditLinkModal.js';
 
 function AdditionalColumnHeader({
   spectraData,

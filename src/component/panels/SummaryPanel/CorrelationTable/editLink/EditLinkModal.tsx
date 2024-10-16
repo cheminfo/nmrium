@@ -1,11 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { DialogBody, Tab, Tabs } from '@blueprintjs/core';
-import { Correlation, getLinkDim, Link } from 'nmr-correlation';
+import type { Correlation, Link } from 'nmr-correlation';
+import { getLinkDim } from 'nmr-correlation';
 
 import { useChartData } from '../../../../context/ChartContext.js';
-import { DialogProps } from '../../../../elements/DialogManager.js';
+import type { DialogProps } from '../../../../elements/DialogManager.js';
 import { DraggableDialog } from '../../../../elements/DraggableDialog.js';
-import { OnEditCorrelationCallback } from '../../SummaryPanel.js';
+import type { OnEditCorrelationCallback } from '../../SummaryPanel.js';
 import { getEditedCorrelations } from '../../utilities/Utilities.js';
 
 import EditLinkConfirmation from './Confirmation.js';

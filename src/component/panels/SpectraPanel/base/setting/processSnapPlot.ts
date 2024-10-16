@@ -1,4 +1,4 @@
-import { NmrData1D, NmrData2DFt } from 'cheminfo-types';
+import type { NmrData1D, NmrData2DFt } from 'cheminfo-types';
 import { xyReduce } from 'ml-spectra-processing';
 
 import { calculateSanPlot } from '../../../../../data/utilities/calculateSanPlot.js';

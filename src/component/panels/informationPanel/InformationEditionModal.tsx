@@ -10,7 +10,8 @@ import { array, object, string } from 'yup';
 
 import { useDispatch } from '../../context/DispatchContext.js';
 import { Input2Controller } from '../../elements/Input2Controller.js';
-import ReactTable, { Column } from '../../elements/ReactTable/ReactTable.js';
+import type { Column } from '../../elements/ReactTable/ReactTable.js';
+import ReactTable from '../../elements/ReactTable/ReactTable.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import { checkUniqueByKey } from '../../utility/checkUniqueByKey.js';
 import { tablePanelStyle } from '../extra/BasicPanelStyle.js';

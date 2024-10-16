@@ -1,14 +1,9 @@
 /** @jsxImportSource @emotion/react */
 
 import { css, Global } from '@emotion/react';
-import { PrintPageOptions } from 'nmr-load-save';
-import {
-  ForwardedRef,
-  MouseEvent,
-  ReactNode,
-  RefObject,
-  useCallback,
-} from 'react';
+import type { PrintPageOptions } from 'nmr-load-save';
+import type { ForwardedRef, MouseEvent, ReactNode, RefObject } from 'react';
+import { useCallback } from 'react';
 import { useFullscreen } from 'react-science/ui';
 
 import checkModifierKeyActivated from '../../data/utilities/checkModifierKeyActivated.js';
@@ -27,7 +22,7 @@ import { NMRiumViewer } from './NMRiumViewer.js';
 import { SplitPaneWrapper } from './SplitPaneWrapper.js';
 import { StateError } from './StateError.js';
 
-import { NMRiumProps, NMRiumRefAPI } from './index.js';
+import type { NMRiumProps, NMRiumRefAPI } from './index.js';
 
 const viewerContainerStyle = css`
   border: 0.55px #e6e6e6 solid;

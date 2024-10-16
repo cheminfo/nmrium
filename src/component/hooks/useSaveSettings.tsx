@@ -2,7 +2,7 @@
 import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Workspace } from 'nmr-load-save';
+import type { Workspace } from 'nmr-load-save';
 import { useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useOnOff } from 'react-science/ui';

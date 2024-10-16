@@ -1,5 +1,5 @@
-import { NmrData1D } from 'cheminfo-types';
-import { Spectrum2D } from 'nmr-load-save';
+import type { NmrData1D } from 'cheminfo-types';
+import type { Spectrum2D } from 'nmr-load-save';
 
 import { useChartData } from '../../context/ChartContext.js';
 import useSpectrum from '../../hooks/useSpectrum.js';

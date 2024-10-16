@@ -9,13 +9,13 @@ import {
   getDefaultPredictionOptions,
   predictSpectra,
 } from '../../data/PredictionManager.js';
-import { StateMoleculeExtended } from '../../data/molecules/Molecule.js';
+import type { StateMoleculeExtended } from '../../data/molecules/Molecule.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useDispatch } from '../context/DispatchContext.js';
 import { useLogger } from '../context/LoggerContext.js';
 import { useToaster } from '../context/ToasterContext.js';
 import Button from '../elements/Button.js';
-import { SettingsRef } from '../panels/extra/utilities/settingImperativeHandle.js';
+import type { SettingsRef } from '../panels/extra/utilities/settingImperativeHandle.js';
 import PredictionPreferences from '../panels/predictionPanel/PredictionOptionsPanel.js';
 import { useStateWithLocalStorage } from '../utility/LocalStorage.js';
 

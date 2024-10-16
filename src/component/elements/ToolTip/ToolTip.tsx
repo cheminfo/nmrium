@@ -1,3 +1,4 @@
+import type { CSSProperties, ReactNode } from 'react';
 import {
   useRef,
   useLayoutEffect,
@@ -5,8 +6,6 @@ import {
   useState,
   memo,
   Fragment,
-  CSSProperties,
-  ReactNode,
 } from 'react';
 import { createPortal } from 'react-dom';
 

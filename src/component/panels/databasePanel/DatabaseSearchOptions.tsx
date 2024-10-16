@@ -2,7 +2,8 @@ import { BsHexagon, BsHexagonFill } from 'react-icons/bs';
 import { FaICursor, FaRegTrashAlt } from 'react-icons/fa';
 import { IoSearchOutline } from 'react-icons/io5';
 import { TbBinaryTree } from 'react-icons/tb';
-import { Toolbar, ToolbarItemProps } from 'react-science/ui';
+import type { ToolbarItemProps } from 'react-science/ui';
+import { Toolbar } from 'react-science/ui';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
@@ -16,7 +17,7 @@ import { options } from '../../toolbar/ToolTypes.js';
 import { formatCounterLabel } from '../header/DefaultPanelHeader.js';
 import PanelHeader from '../header/PanelHeader.js';
 
-import {
+import type {
   Databases,
   DatabaseSearchKeywords,
   DataBaseSearchResultEntry,

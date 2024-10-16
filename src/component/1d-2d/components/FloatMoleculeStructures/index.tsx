@@ -1,15 +1,15 @@
-import { Spectrum1D, Spectrum2D } from 'nmr-load-save';
-import { Ranges, Zones } from 'nmr-processing';
+import type { Spectrum1D, Spectrum2D } from 'nmr-load-save';
+import type { Ranges, Zones } from 'nmr-processing';
 import { memo } from 'react';
 
-import {
+import type {
   MoleculesView,
   MoleculeView,
   StateMoleculeExtended,
 } from '../../../../data/molecules/Molecule.js';
 import { useChartData } from '../../../context/ChartContext.js';
 import useSpectrum from '../../../hooks/useSpectrum.js';
-import { DisplayerMode } from '../../../reducer/Reducer.js';
+import type { DisplayerMode } from '../../../reducer/Reducer.js';
 import { assert } from '../../../utility/assert.js';
 
 import { DraggableStructure } from './DraggableStructure.js';

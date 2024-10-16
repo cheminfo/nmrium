@@ -1,7 +1,7 @@
 import lodashGet from 'lodash/get.js';
 
 import { formatNumber } from '../../../utility/formatNumber.js';
-import { BaseRangeColumnProps, OnHoverEvent } from '../RangesTableRow.js';
+import type { BaseRangeColumnProps, OnHoverEvent } from '../RangesTableRow.js';
 
 type CouplingColumnProps = BaseRangeColumnProps & OnHoverEvent;
 

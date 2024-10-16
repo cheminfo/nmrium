@@ -1,17 +1,21 @@
 import { v4 } from '@lukeed/uuid';
-import { Draft, original } from 'immer';
+import type { Draft } from 'immer';
+import { original } from 'immer';
 import cloneDeep from 'lodash/cloneDeep.js';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import { RangesViewState, Spectrum, Spectrum1D } from 'nmr-load-save';
-import { Signal1D, Range, Filters, FiltersManager } from 'nmr-processing';
+import type { RangesViewState, Spectrum, Spectrum1D } from 'nmr-load-save';
+import type { Signal1D, Range } from 'nmr-processing';
+import { Filters, FiltersManager } from 'nmr-processing';
 
 import {
   DATUM_KIND,
   SIGNAL_INCLUDED_KINDS,
 } from '../../../data/constants/signalsKinds.js';
-import {
+import type {
   SetSumOptions,
   SumParams,
+} from '../../../data/data1d/Spectrum1D/SumManager.js';
+import {
   initSumOptions,
   setSumOptions,
 } from '../../../data/data1d/Spectrum1D/SumManager.js';
@@ -22,22 +26,22 @@ import {
   changeRangeRelativeValue,
   isSpectrum1D,
 } from '../../../data/data1d/Spectrum1D/index.js';
-import { ChangeRangeRelativeValueProps } from '../../../data/data1d/Spectrum1D/ranges/changeRangeRelativeValue.js';
+import type { ChangeRangeRelativeValueProps } from '../../../data/data1d/Spectrum1D/ranges/changeRangeRelativeValue.js';
 import {
   unlink,
   unlinkInAssignmentData,
 } from '../../../data/utilities/RangeUtilities.js';
-import { AssignmentContext } from '../../assignment/AssignmentsContext.js';
-import { RangeData } from '../../panels/RangesPanel/hooks/useMapRanges.js';
-import { FilterType } from '../../utility/filterType.js';
-import { State } from '../Reducer.js';
+import type { AssignmentContext } from '../../assignment/AssignmentsContext.js';
+import type { RangeData } from '../../panels/RangesPanel/hooks/useMapRanges.js';
+import type { FilterType } from '../../utility/filterType.js';
+import type { State } from '../Reducer.js';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
 import { getSpectrum } from '../helper/getSpectrum.js';
 import {
   initializeRangeViewObject,
   setRangesViewProperty,
 } from '../helper/setRangesViewProperty.js';
-import { ActionType } from '../types/ActionType.js';
+import type { ActionType } from '../types/ActionType.js';
 
 import { handleUpdateCorrelations } from './CorrelationsActions.js';
 import { setDomain } from './DomainActions.js';

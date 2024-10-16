@@ -4,16 +4,15 @@ import { forwardRef } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
-import {
-  FREQUENCIES,
-  PredictionOptions,
-} from '../../../data/PredictionManager.js';
+import type { PredictionOptions } from '../../../data/PredictionManager.js';
+import { FREQUENCIES } from '../../../data/PredictionManager.js';
 import generateNumbersPowerOfX from '../../../data/utilities/generateNumbersPowerOfX.js';
 import { CheckController } from '../../elements/CheckController.js';
 import { GroupPane } from '../../elements/GroupPane.js';
 import { Input2Controller } from '../../elements/Input2Controller.js';
 import IsotopesViewer from '../../elements/IsotopesViewer.js';
-import Label, { LabelStyle } from '../../elements/Label.js';
+import type { LabelStyle } from '../../elements/Label.js';
+import Label from '../../elements/Label.js';
 import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
 import { Select2Controller } from '../../elements/Select2Controller.js';
 import { useSettingImperativeHandle } from '../extra/utilities/settingImperativeHandle.js';

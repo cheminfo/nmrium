@@ -1,5 +1,5 @@
-import { NumberArray } from 'cheminfo-types';
-import { Spectrum } from 'nmr-load-save';
+import type { NumberArray } from 'cheminfo-types';
+import type { Spectrum } from 'nmr-load-save';
 import { Filters } from 'nmr-processing';
 import { useMemo } from 'react';
 

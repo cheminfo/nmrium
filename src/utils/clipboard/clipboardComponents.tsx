@@ -2,11 +2,12 @@
 import { Dialog, DialogBody } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { FormEvent, useCallback, useEffect, useMemo, useRef } from 'react';
+import type { FormEvent } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 import Button from '../../component/elements/Button.js';
 
-import { ClipboardMode } from './types.js';
+import type { ClipboardMode } from './types.js';
 
 const ClipboardForm = styled.form`
   padding: 0.5rem;

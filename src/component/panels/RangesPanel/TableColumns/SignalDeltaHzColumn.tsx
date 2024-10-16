@@ -1,7 +1,8 @@
-import { checkMultiplicity, Info1D } from 'nmr-processing';
+import type { Info1D } from 'nmr-processing';
+import { checkMultiplicity } from 'nmr-processing';
 
 import { formatNumber } from '../../../utility/formatNumber.js';
-import { RangeColumnProps } from '../RangesTableRow.js';
+import type { RangeColumnProps } from '../RangesTableRow.js';
 
 interface SignalDeltaHzColumnProps extends RangeColumnProps {
   info: Info1D;

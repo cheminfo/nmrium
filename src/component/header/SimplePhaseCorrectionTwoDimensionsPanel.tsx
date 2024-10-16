@@ -9,8 +9,8 @@ import ActionButtons from '../elements/ActionButtons.js';
 import InputRange from '../elements/InputRange.js';
 import Label from '../elements/Label.js';
 import { useFilter } from '../hooks/useFilter.js';
+import type { AlgorithmItem } from '../panels/filtersPanel/Filters/hooks/usePhaseCorrectionTwoDimensions.js';
 import {
-  AlgorithmItem,
   phaseCorrectionalAlgorithms,
   usePhaseCorrectionTwoDimensions,
 } from '../panels/filtersPanel/Filters/hooks/usePhaseCorrectionTwoDimensions.js';

@@ -1,16 +1,21 @@
 import { v4 } from '@lukeed/uuid';
-import { WebSource as Source } from 'filelist-utils';
-import { Draft, produce, original } from 'immer';
-import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
-import { Spectrum, ViewState } from 'nmr-load-save';
-import { ApodizationOptions, BaselineCorrectionZone } from 'nmr-processing';
-import { Reducer } from 'react';
+import type { WebSource as Source } from 'filelist-utils';
+import type { Draft } from 'immer';
+import { produce, original } from 'immer';
+import type { CorrelationData } from 'nmr-correlation';
+import { buildCorrelationData } from 'nmr-correlation';
+import type { Spectrum, ViewState } from 'nmr-load-save';
+import type {
+  ApodizationOptions,
+  BaselineCorrectionZone,
+} from 'nmr-processing';
+import type { Reducer } from 'react';
 
-import { StateMoleculeExtended } from '../../data/molecules/Molecule.js';
-import { UsedColors } from '../../types/UsedColors.js';
-import { Action } from '../context/DispatchContext.js';
+import type { StateMoleculeExtended } from '../../data/molecules/Molecule.js';
+import type { UsedColors } from '../../types/UsedColors.js';
+import type { Action } from '../context/DispatchContext.js';
 import { DefaultTolerance } from '../panels/SummaryPanel/CorrelationTable/Constants.js';
-import { Tool } from '../toolbar/ToolTypes.js';
+import type { Tool } from '../toolbar/ToolTypes.js';
 
 import * as AssignmentsActions from './actions/AssignmentsActions.js';
 import * as CorrelationsActions from './actions/CorrelationsActions.js';
@@ -28,7 +33,7 @@ import * as SpectraActions from './actions/SpectraActions.js';
 import * as SpectraAnalysisActions from './actions/SpectraAnalysisAction.js';
 import * as ToolsActions from './actions/ToolsActions.js';
 import * as ZonesActions from './actions/ZonesActions.js';
-import { ZoomHistory } from './helper/ZoomHistoryManager.js';
+import type { ZoomHistory } from './helper/ZoomHistoryManager.js';
 
 export type DisplayerMode = '1D' | '2D';
 

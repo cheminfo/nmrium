@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import lodashGet from 'lodash/get.js';
-import { Spectrum } from 'nmr-load-save';
-import { CSSProperties, useState } from 'react';
+import type { Spectrum } from 'nmr-load-save';
+import type { CSSProperties } from 'react';
+import { useState } from 'react';
 import { BsArrowsMove } from 'react-icons/bs';
 import { FaTimes } from 'react-icons/fa';
 import reactUse from 'react-use';
@@ -9,14 +10,12 @@ import reactUse from 'react-use';
 import { useChartData } from '../../context/ChartContext.js';
 import { useGlobal } from '../../context/GlobalContext.js';
 import { usePreferences } from '../../context/PreferencesContext.js';
-import {
-  ActionsButtonsPopover,
-  ActionsButtonsPopoverProps,
-} from '../../elements/ActionsButtonsPopover.js';
+import type { ActionsButtonsPopoverProps } from '../../elements/ActionsButtonsPopover.js';
+import { ActionsButtonsPopover } from '../../elements/ActionsButtonsPopover.js';
 import { SVGGroup } from '../../elements/SVGGroup.js';
 import useDraggable from '../../elements/draggable/useDraggable.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
-import { Margin } from '../../reducer/Reducer.js';
+import type { Margin } from '../../reducer/Reducer.js';
 import { formatNumber } from '../../utility/formatNumber.js';
 
 const verticalSpace = 5;

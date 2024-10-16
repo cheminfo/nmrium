@@ -1,8 +1,8 @@
-import { Draft } from 'immer';
-import { IntegralsViewState } from 'nmr-load-save';
+import type { Draft } from 'immer';
+import type { IntegralsViewState } from 'nmr-load-save';
 
 import { defaultIntegralsViewState } from '../../hooks/useActiveSpectrumIntegralsViewState.js';
-import { State } from '../Reducer.js';
+import type { State } from '../Reducer.js';
 
 import { getActiveSpectrum } from './getActiveSpectrum.js';
 

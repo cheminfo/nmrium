@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { Tab, Tabs } from '@blueprintjs/core';
-import { Range } from 'nmr-processing';
+import type { Range } from 'nmr-processing';
 import { memo, useCallback, useEffect, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { FaPlus } from 'react-icons/fa';

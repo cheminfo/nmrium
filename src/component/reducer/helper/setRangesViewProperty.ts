@@ -1,8 +1,8 @@
-import { Draft } from 'immer';
-import { RangesViewState } from 'nmr-load-save';
+import type { Draft } from 'immer';
+import type { RangesViewState } from 'nmr-load-save';
 
 import { defaultRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
-import { State } from '../Reducer.js';
+import type { State } from '../Reducer.js';
 
 import { getActiveSpectrum } from './getActiveSpectrum.js';
 

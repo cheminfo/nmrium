@@ -2,16 +2,16 @@
 import { Button, DialogBody, DialogFooter } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { FromTo } from 'cheminfo-types';
-import { Signal2D } from 'nmr-processing';
+import type { FromTo } from 'cheminfo-types';
+import type { Signal2D } from 'nmr-processing';
 import { FormProvider, useForm } from 'react-hook-form';
 import { FaSearchPlus } from 'react-icons/fa';
 import * as Yup from 'yup';
 
 import DefaultPathLengths from '../../../data/constants/DefaultPathLengths.js';
-import { DialogProps } from '../../elements/DialogManager.js';
+import type { DialogProps } from '../../elements/DialogManager.js';
 import { DraggableDialog } from '../../elements/DraggableDialog.js';
-import { ZoneData } from '../../panels/ZonesPanel/hooks/useMapZones.js';
+import type { ZoneData } from '../../panels/ZonesPanel/hooks/useMapZones.js';
 import { useZoneActions } from '../../panels/ZonesPanel/hooks/useZoneActions.js';
 
 import { SignalsForm } from './SignalsForm.js';

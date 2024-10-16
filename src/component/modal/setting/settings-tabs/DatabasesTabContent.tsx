@@ -2,7 +2,7 @@
 import { Checkbox, Classes, Radio } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { v4 } from '@lukeed/uuid';
-import { CustomWorkspaces, Database } from 'nmr-load-save';
+import type { CustomWorkspaces, Database } from 'nmr-load-save';
 import { useCallback, useMemo } from 'react';
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
 import { FaLink, FaPlus, FaRegTrashAlt } from 'react-icons/fa';
@@ -10,9 +10,10 @@ import { Button } from 'react-science/ui';
 
 import { GroupPane } from '../../../elements/GroupPane.js';
 import { Input2Controller } from '../../../elements/Input2Controller.js';
-import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable.js';
+import type { Column } from '../../../elements/ReactTable/ReactTable.js';
+import ReactTable from '../../../elements/ReactTable/ReactTable.js';
 import type { NMRiumWorkspace } from '../../../main/index.js';
-import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
+import type { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
 import { getPreferencesByWorkspace } from '../../../reducer/preferences/utilities/getPreferencesByWorkspace.js';
 import { isGoogleDocument } from '../../../utility/isGoogleDocument.js';
 import { Section } from '../GeneralSettings.js';

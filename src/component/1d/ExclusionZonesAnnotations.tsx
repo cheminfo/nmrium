@@ -1,8 +1,8 @@
-import { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from 'nmr-load-save';
 import { Filters } from 'nmr-processing';
 import { memo } from 'react';
 
-import { ExclusionZone } from '../../data/types/data1d/ExclusionZone.js';
+import type { ExclusionZone } from '../../data/types/data1d/ExclusionZone.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useScale } from '../context/ScaleContext.js';
 import useSpectraByActiveNucleus from '../hooks/useSpectraPerNucleus.js';

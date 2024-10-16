@@ -1,5 +1,5 @@
 import { FaCog } from 'react-icons/fa';
-import { ToolbarItemProps } from 'react-science/ui';
+import type { ToolbarItemProps } from 'react-science/ui';
 
 import { ToolBarButton } from './ToolBarButton.js';
 

@@ -1,6 +1,6 @@
-import { NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
+import type { NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
 import { matrixZPivotRescale } from 'ml-spectra-processing';
-import { Spectrum2D } from 'nmr-load-save';
+import type { Spectrum2D } from 'nmr-load-save';
 import { useEffect, useMemo, useRef } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';

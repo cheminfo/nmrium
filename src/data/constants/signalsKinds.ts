@@ -1,5 +1,5 @@
 import { stringCapitalize } from '../../utils/stringCapitalize.js';
-import { SignalKind } from '../types/common/SignalKind.js';
+import type { SignalKind } from '../types/common/SignalKind.js';
 
 const KINDS: SignalKind[] = [
   'undefined',

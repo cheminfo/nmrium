@@ -4,15 +4,13 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
-import {
-  defaultSimulationOptions,
-  SpectrumSimulationOptions,
-} from '../../../data/data1d/spectrumSimulation.js';
+import type { SpectrumSimulationOptions } from '../../../data/data1d/spectrumSimulation.js';
+import { defaultSimulationOptions } from '../../../data/data1d/spectrumSimulation.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import Button from '../../elements/Button.js';
 import AboutSpectrumSimulationModal from '../../modal/AboutSpectrumSimulationModal.js';
 import { tablePanelStyle } from '../extra/BasicPanelStyle.js';
-import { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
+import type { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
 import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
 import PreferencesHeader from '../header/PreferencesHeader.js';
 

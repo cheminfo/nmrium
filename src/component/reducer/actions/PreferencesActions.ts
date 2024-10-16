@@ -1,11 +1,11 @@
-import { Draft } from 'immer';
-import { Spectrum1D } from 'nmr-load-save';
+import type { Draft } from 'immer';
+import type { Spectrum1D } from 'nmr-load-save';
 
 import groupByInfoKey from '../../utility/GroupByInfoKey.js';
 import nucleusToString from '../../utility/nucleusToString.js';
-import { State, VerticalAlignment } from '../Reducer.js';
+import type { State, VerticalAlignment } from '../Reducer.js';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
-import { ActionType } from '../types/ActionType.js';
+import type { ActionType } from '../types/ActionType.js';
 
 import { setDomain } from './DomainActions.js';
 

@@ -1,8 +1,7 @@
-import { ExportPreferences, ExportSettings } from 'nmr-load-save';
+import type { ExportPreferences, ExportSettings } from 'nmr-load-save';
+import type { ReactNode, RefObject } from 'react';
 import {
   createContext,
-  ReactNode,
-  RefObject,
   useContext,
   useImperativeHandle,
   useRef,

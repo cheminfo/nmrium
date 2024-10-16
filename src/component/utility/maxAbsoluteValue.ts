@@ -1,9 +1,6 @@
-import { NumberArray } from 'cheminfo-types';
-import {
-  XGetFromToIndexOptions,
-  xCheck,
-  xGetFromToIndex,
-} from 'ml-spectra-processing';
+import type { NumberArray } from 'cheminfo-types';
+import type { XGetFromToIndexOptions } from 'ml-spectra-processing';
+import { xCheck, xGetFromToIndex } from 'ml-spectra-processing';
 
 //This function is an adapted version of the xMaxAbsoluteValue function from ml-spectra-processing. It identifies the maximum absolute value and returns the corresponding maximum value along with its sign
 export function maxAbsoluteValue(

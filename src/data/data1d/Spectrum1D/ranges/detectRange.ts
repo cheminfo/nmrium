@@ -1,9 +1,9 @@
 import { v4 } from '@lukeed/uuid';
 import { xyIntegration, xyMaxYPoint, xyMinYPoint } from 'ml-spectra-processing';
-import { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from 'nmr-load-save';
 import { getShiftX } from 'nmr-processing';
 
-import { RangeDetectionResult } from '../../../types/data1d/index.js';
+import type { RangeDetectionResult } from '../../../types/data1d/index.js';
 
 interface DetectRangeOptions {
   from: number;

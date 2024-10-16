@@ -1,20 +1,20 @@
 import lodashGet from 'lodash/get.js';
-import { NMRiumPanelPreferences, PanelPreferencesType } from 'nmr-load-save';
-import { CSSProperties, memo, ReactElement, useCallback } from 'react';
+import type {
+  NMRiumPanelPreferences,
+  PanelPreferencesType,
+} from 'nmr-load-save';
+import type { CSSProperties, ReactElement } from 'react';
+import { memo, useCallback } from 'react';
 import { FaRegEdit } from 'react-icons/fa';
-import {
-  Accordion,
-  AccordionItemProps,
-  Toolbar,
-  ToolbarItemProps,
-} from 'react-science/ui';
+import type { AccordionItemProps, ToolbarItemProps } from 'react-science/ui';
+import { Accordion, Toolbar } from 'react-science/ui';
 
 import { useChartData } from '../context/ChartContext.js';
 import { usePreferences } from '../context/PreferencesContext.js';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
 import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature.js';
 import { useDialogToggle } from '../hooks/useDialogToggle.js';
-import { DisplayerMode } from '../reducer/Reducer.js';
+import type { DisplayerMode } from '../reducer/Reducer.js';
 
 import AutomaticAssignment from './AutomaticAssignment/AutomaticAssignment.js';
 import IntegralPanel from './IntegralsPanel/IntegralPanel.js';

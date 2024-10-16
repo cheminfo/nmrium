@@ -1,5 +1,5 @@
-import { Spectrum1D } from 'nmr-load-save';
-import { CSSProperties } from 'react';
+import type { Spectrum1D } from 'nmr-load-save';
+import type { CSSProperties } from 'react';
 
 import { useBrushTracker } from '../../EventsTrackers/BrushTracker.js';
 import { useMouseTracker } from '../../EventsTrackers/MouseTracker.js';

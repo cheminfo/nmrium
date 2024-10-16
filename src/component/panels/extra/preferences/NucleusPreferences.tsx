@@ -1,11 +1,10 @@
-import { ControllerProps, FieldValues } from 'react-hook-form';
+import type { ControllerProps, FieldValues } from 'react-hook-form';
 
-import {
-  FormatField,
-  FormatFieldProps,
-} from '../../../elements/FormatField.js';
+import type { FormatFieldProps } from '../../../elements/FormatField.js';
+import { FormatField } from '../../../elements/FormatField.js';
 
-import { NucleusGroup, NucleusGroupProps } from './NucleusGroup.js';
+import type { NucleusGroupProps } from './NucleusGroup.js';
+import { NucleusGroup } from './NucleusGroup.js';
 
 export type NucleusPreferenceField = Omit<FormatFieldProps, 'control'> & {
   id: string | number;

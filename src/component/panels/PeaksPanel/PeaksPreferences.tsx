@@ -5,10 +5,8 @@ import { usePreferences } from '../../context/PreferencesContext.js';
 import useNucleus from '../../hooks/useNucleus.js';
 import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences.js';
 import { getUniqueNuclei } from '../../utility/getUniqueNuclei.js';
-import {
-  NucleusPreferenceField,
-  NucleusPreferences,
-} from '../extra/preferences/NucleusPreferences.js';
+import type { NucleusPreferenceField } from '../extra/preferences/NucleusPreferences.js';
+import { NucleusPreferences } from '../extra/preferences/NucleusPreferences.js';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer.js';
 import { useSettingImperativeHandle } from '../extra/utilities/settingImperativeHandle.js';
 

@@ -1,5 +1,5 @@
 import { Checkbox, Classes } from '@blueprintjs/core';
-import { InfoBlockField } from 'nmr-load-save';
+import type { InfoBlockField } from 'nmr-load-save';
 import { useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
@@ -9,8 +9,9 @@ import { useChartData } from '../../../context/ChartContext.js';
 import { GroupPane } from '../../../elements/GroupPane.js';
 import { Input2Controller } from '../../../elements/Input2Controller.js';
 import Label from '../../../elements/Label.js';
-import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable.js';
-import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
+import type { Column } from '../../../elements/ReactTable/ReactTable.js';
+import ReactTable from '../../../elements/ReactTable/ReactTable.js';
+import type { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
 import { convertPathArrayToString } from '../../../utility/convertPathArrayToString.js';
 import { getSpectraObjectPaths } from '../../../utility/getSpectraObjectPaths.js';
 import { Section } from '../GeneralSettings.js';

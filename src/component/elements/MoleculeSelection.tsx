@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { MF } from 'react-mf';
 import { MolfileSvgRenderer } from 'react-ocl/full';
 
-import { StateMoleculeExtended } from '../../data/molecules/Molecule.js';
+import type { StateMoleculeExtended } from '../../data/molecules/Molecule.js';
 
 import { NextPrev } from './NextPrev.js';
 

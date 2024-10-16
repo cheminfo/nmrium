@@ -1,4 +1,5 @@
-import { CSSProperties, RefObject, useDeferredValue, useEffect } from 'react';
+import type { CSSProperties, RefObject } from 'react';
+import { useDeferredValue, useEffect } from 'react';
 
 import Viewer1D from '../1d/Viewer1D.js';
 import FloatMoleculeStructures from '../1d-2d/components/FloatMoleculeStructures/index.js';
@@ -6,7 +7,7 @@ import Viewer2D from '../2d/Viewer2D.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useViewportSize } from '../hooks/useViewportSize.js';
 
-import { NMRiumProps } from './NMRium.js';
+import type { NMRiumProps } from './NMRium.js';
 
 interface NMRiumViewerProps {
   emptyText: NMRiumProps['emptyText'];

@@ -1,10 +1,6 @@
 import { v4 } from '@lukeed/uuid';
-import {
-  carbonImpurities,
-  DatabaseNMREntry,
-  Jcoupling,
-  protonImpurities,
-} from 'nmr-processing';
+import type { DatabaseNMREntry, Jcoupling } from 'nmr-processing';
+import { carbonImpurities, protonImpurities } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 import { MoleculesDB } from 'openchemlib-utils';
 import { filter } from 'smart-array-filter';

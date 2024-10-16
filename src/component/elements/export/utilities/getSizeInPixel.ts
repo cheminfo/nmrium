@@ -1,4 +1,4 @@
-import { ExportSettings } from 'nmr-load-save';
+import type { ExportSettings } from 'nmr-load-save';
 
 import { convertToPixels } from '../units.js';
 

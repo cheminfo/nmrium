@@ -3,7 +3,7 @@ import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
 import { usePreferences } from '../../context/PreferencesContext.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer.js';
-import { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
+import type { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
 
 import PredictionOptionsPanel from './PredictionOptionsPanel.js';
 

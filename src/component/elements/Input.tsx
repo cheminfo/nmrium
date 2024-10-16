@@ -1,15 +1,11 @@
 import debounce from 'lodash/debounce.js';
-import {
-  useEffect,
-  useRef,
+import type {
   CSSProperties,
-  forwardRef,
   ForwardedRef,
   ReactElement,
-  useMemo,
   ChangeEvent,
-  useState,
 } from 'react';
+import { useEffect, useRef, forwardRef, useMemo, useState } from 'react';
 
 import useCombinedRefs from '../hooks/useCombinedRefs.js';
 

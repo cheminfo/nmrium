@@ -8,16 +8,16 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { Button, Toolbar } from 'react-science/ui';
 import * as yup from 'yup';
 
-import {
-  getMatrixFilters,
-  MatrixFilter,
-} from '../../../data/matrixGeneration.js';
-import { MatrixOptions } from '../../../data/types/data1d/MatrixOptions.js';
+import type { MatrixFilter } from '../../../data/matrixGeneration.js';
+import { getMatrixFilters } from '../../../data/matrixGeneration.js';
+import type { MatrixOptions } from '../../../data/types/data1d/MatrixOptions.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { usePreferences } from '../../context/PreferencesContext.js';
-import { GroupPane, GroupPaneStyle } from '../../elements/GroupPane.js';
-import Label, { LabelStyle } from '../../elements/Label.js';
+import type { GroupPaneStyle } from '../../elements/GroupPane.js';
+import { GroupPane } from '../../elements/GroupPane.js';
+import type { LabelStyle } from '../../elements/Label.js';
+import Label from '../../elements/Label.js';
 import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus.js';

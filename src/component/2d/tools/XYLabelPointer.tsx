@@ -1,4 +1,5 @@
-import { CSSProperties, useMemo } from 'react';
+import type { CSSProperties } from 'react';
+import { useMemo } from 'react';
 
 import { useBrushTracker } from '../../EventsTrackers/BrushTracker.js';
 import { useMouseTracker } from '../../EventsTrackers/MouseTracker.js';

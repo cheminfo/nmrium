@@ -1,5 +1,5 @@
 import omit from 'lodash/omit.js';
-import { Range, Signal1D } from 'nmr-processing';
+import type { Range, Signal1D } from 'nmr-processing';
 
 import { DATUM_KIND } from '../constants/signalsKinds.js';
 

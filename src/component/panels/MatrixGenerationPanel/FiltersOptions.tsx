@@ -1,12 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { Button, Classes } from '@blueprintjs/core';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 
+import type { MatrixFilter } from '../../../data/matrixGeneration.js';
 import {
   getMatrixFilters,
-  MatrixFilter,
   normalCase,
 } from '../../../data/matrixGeneration.js';
 import { CheckController } from '../../elements/CheckController.js';

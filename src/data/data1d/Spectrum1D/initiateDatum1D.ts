@@ -1,10 +1,10 @@
 import { v4 } from '@lukeed/uuid';
-import { Spectrum1D, SpectrumOneDimensionColor } from 'nmr-load-save';
+import type { Spectrum1D, SpectrumOneDimensionColor } from 'nmr-load-save';
 import { FiltersManager } from 'nmr-processing';
 
-import { UsedColors } from '../../../types/UsedColors.js';
+import type { UsedColors } from '../../../types/UsedColors.js';
 import { initiateFilters } from '../../initiateFilters.js';
-import { StateMoleculeExtended } from '../../molecules/Molecule.js';
+import type { StateMoleculeExtended } from '../../molecules/Molecule.js';
 
 import { initSumOptions } from './SumManager.js';
 import { convertDataToFloat64Array } from './convertDataToFloat64Array.js';

@@ -6,9 +6,9 @@ import type {
 } from 'cheminfo-types';
 import { xSequentialFillFromTo } from 'ml-spectra-processing';
 import type { Spectrum1D, Spectrum2D } from 'nmr-load-save';
-import { Info2D } from 'nmr-processing';
+import type { Info2D } from 'nmr-processing';
 
-import { TraceDirection } from '../../../component/reducer/Reducer.js';
+import type { TraceDirection } from '../../../component/reducer/Reducer.js';
 import { initiateDatum1D } from '../../data1d/Spectrum1D/index.js';
 
 /** get 2d projection

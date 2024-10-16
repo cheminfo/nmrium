@@ -17,10 +17,9 @@ import {
 } from '../context/PreferencesContext.js';
 import Button from '../elements/Button.js';
 import { HeaderContainer } from '../elements/HeaderContainer.js';
-import { LabelStyle } from '../elements/Label.js';
-import DropDownButton, {
-  DropDownListItem,
-} from '../elements/dropDownButton/DropDownButton.js';
+import type { LabelStyle } from '../elements/Label.js';
+import type { DropDownListItem } from '../elements/dropDownButton/DropDownButton.js';
+import DropDownButton from '../elements/dropDownButton/DropDownButton.js';
 import { useSaveSettings } from '../hooks/useSaveSettings.js';
 import { useWorkspaceAction } from '../hooks/useWorkspaceAction.js';
 import { LogsHistoryModal } from '../modal/LogsHistoryModal.js';

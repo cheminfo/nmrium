@@ -1,4 +1,4 @@
-import { NmrData1D, NmrData2DFt } from 'cheminfo-types';
+import type { NmrData1D, NmrData2DFt } from 'cheminfo-types';
 import { xNoiseSanPlot } from 'ml-spectra-processing';
 
 export function calculateSanPlot<T extends '1D' | '2D'>(

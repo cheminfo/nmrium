@@ -1,6 +1,7 @@
 import { Checkbox } from '@blueprintjs/core';
 import { Select } from '@blueprintjs/select';
-import { Filter, Filters } from 'nmr-processing';
+import type { Filter } from 'nmr-processing';
+import { Filters } from 'nmr-processing';
 import { memo } from 'react';
 import { Button } from 'react-science/ui';
 

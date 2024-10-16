@@ -1,13 +1,13 @@
 import { Checkbox, Tab, Tabs } from '@blueprintjs/core';
-import { WorkspacePreferences } from 'nmr-load-save';
-import { BaseFilter } from 'nmr-processing';
+import type { WorkspacePreferences } from 'nmr-load-save';
+import type { BaseFilter } from 'nmr-processing';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import IsotopesViewer from '../../../elements/IsotopesViewer.js';
 import Label from '../../../elements/Label.js';
 import ReactTable from '../../../elements/ReactTable/ReactTable.js';
-import { CustomColumn } from '../../../elements/ReactTable/utility/addCustomColumn.js';
-import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
+import type { CustomColumn } from '../../../elements/ReactTable/utility/addCustomColumn.js';
+import type { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
 
 function OnLoadProcessingTabContent() {
   const { register, control } = useFormContext<WorkspacePreferences>();

@@ -1,5 +1,6 @@
 import { Checkbox } from '@blueprintjs/core';
-import { Filter, Filters } from 'nmr-processing';
+import type { Filter } from 'nmr-processing';
+import { Filters } from 'nmr-processing';
 import { memo } from 'react';
 
 import ActionButtons from '../elements/ActionButtons.js';

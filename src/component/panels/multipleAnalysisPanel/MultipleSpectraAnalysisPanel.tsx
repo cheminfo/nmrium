@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { SvgNmrOverlay } from 'cheminfo-font';
-import { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from 'nmr-load-save';
 import { memo, useCallback, useRef, useState } from 'react';
 import { FaChartBar, FaFileExport } from 'react-icons/fa';
 import { IoPulseOutline } from 'react-icons/io5';
@@ -17,14 +17,13 @@ import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
-import { DisplayerMode } from '../../reducer/Reducer.js';
+import type { DisplayerMode } from '../../reducer/Reducer.js';
 import { booleanToString } from '../../utility/booleanToString.js';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus.js';
 import { tablePanelStyle } from '../extra/BasicPanelStyle.js';
-import { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
-import DefaultPanelHeader, {
-  ToolbarItemProps,
-} from '../header/DefaultPanelHeader.js';
+import type { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
+import type { ToolbarItemProps } from '../header/DefaultPanelHeader.js';
+import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
 import PreferencesHeader from '../header/PreferencesHeader.js';
 
 import AlignSpectra from './AlignSpectra.js';

@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { Children, CSSProperties, ReactElement } from 'react';
+import type { CSSProperties, ReactElement } from 'react';
+import { Children } from 'react';
 import { FaAngleLeft } from 'react-icons/fa';
 import reactUse from 'react-use';
 

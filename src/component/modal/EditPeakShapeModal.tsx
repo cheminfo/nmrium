@@ -2,7 +2,7 @@
 import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Peak1D } from 'nmr-processing';
+import type { Peak1D } from 'nmr-processing';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
@@ -10,7 +10,8 @@ import * as Yup from 'yup';
 import { useChartData } from '../context/ChartContext.js';
 import { useDispatch } from '../context/DispatchContext.js';
 import ActionButtons from '../elements/ActionButtons.js';
-import Label, { LabelStyle } from '../elements/Label.js';
+import type { LabelStyle } from '../elements/Label.js';
+import Label from '../elements/Label.js';
 import { NumberInput2Controller } from '../elements/NumberInput2Controller.js';
 import { Select2 } from '../elements/Select2.js';
 import { usePanelPreferences } from '../hooks/usePanelPreferences.js';

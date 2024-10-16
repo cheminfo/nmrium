@@ -1,6 +1,7 @@
 import { Dialog, DialogBody, Tab, Tabs } from '@blueprintjs/core';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { CSSProperties, useState } from 'react';
+import type { CSSProperties } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 

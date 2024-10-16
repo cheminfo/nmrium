@@ -1,20 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Button,
-  ButtonProps,
-  Dialog,
-  DialogBody,
-  DialogFooter,
-} from '@blueprintjs/core';
+import type { ButtonProps } from '@blueprintjs/core';
+import { Button, Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { v4 } from '@lukeed/uuid';
-import React, {
-  createContext,
-  useState,
-  useContext,
-  ReactNode,
-  useMemo,
-} from 'react';
+import type { ReactNode } from 'react';
+import React, { createContext, useState, useContext, useMemo } from 'react';
 
 const Message = styled.p`
   font-weight: bold;

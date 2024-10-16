@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
-import { Spectrum2D } from 'nmr-load-save';
-import { Zone, Zones as ZonesType } from 'nmr-processing';
+import type { Spectrum2D } from 'nmr-load-save';
+import type { Zone, Zones as ZonesType } from 'nmr-processing';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { PiTextTSlash } from 'react-icons/pi';
 
@@ -11,9 +11,8 @@ import { useGlobal } from '../../context/GlobalContext.js';
 import { useShareData } from '../../context/ShareDataContext.js';
 import { SVGButton } from '../../elements/SVGButton.js';
 import { SVGGroup } from '../../elements/SVGGroup.js';
-import useDraggable, {
-  Position,
-} from '../../elements/draggable/useDraggable.js';
+import type { Position } from '../../elements/draggable/useDraggable.js';
+import useDraggable from '../../elements/draggable/useDraggable.js';
 import { useHighlight } from '../../highlight/index.js';
 import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState.js';
 import useSpectrum from '../../hooks/useSpectrum.js';

@@ -1,4 +1,5 @@
-import { RefObject, useCallback, useEffect, useMemo, useRef } from 'react';
+import type { RefObject } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useOnOff } from 'react-science/ui';
 
 import checkModifierKeyActivated from '../../data/utilities/checkModifierKeyActivated.js';
@@ -8,7 +9,8 @@ import { useDispatch } from '../context/DispatchContext.js';
 import { useLoader } from '../context/LoaderContext.js';
 import { usePreferences } from '../context/PreferencesContext.js';
 import { useToaster } from '../context/ToasterContext.js';
-import { AlertButton, useAlert } from '../elements/Alert.js';
+import type { AlertButton } from '../elements/Alert.js';
+import { useAlert } from '../elements/Alert.js';
 import { useExportManagerAPI } from '../elements/export/ExportManager.js';
 import { HighlightEventSource, useHighlightData } from '../highlight/index.js';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility.js';

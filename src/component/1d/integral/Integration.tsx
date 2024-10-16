@@ -3,7 +3,7 @@ import useIntegralPath from '../../hooks/useIntegralPath.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 
 import IntegralResizable from './IntegralResizable.js';
-import { IntegralData } from './IntegralsSeries.js';
+import type { IntegralData } from './IntegralsSeries.js';
 
 interface IntegralProps {
   integral: IntegralData;

@@ -1,13 +1,8 @@
-import { Spectrum1D } from 'nmr-load-save';
-import {
-  Info1D,
-  NMRRange,
-  NMRSignal1D,
-  rangesToXY,
-  signalsToXY,
-} from 'nmr-processing';
+import type { Spectrum1D } from 'nmr-load-save';
+import type { Info1D, NMRRange, NMRSignal1D } from 'nmr-processing';
+import { rangesToXY, signalsToXY } from 'nmr-processing';
 
-import { UsedColors } from '../../../../types/UsedColors.js';
+import type { UsedColors } from '../../../../types/UsedColors.js';
 import { initiateDatum1D } from '../initiateDatum1D.js';
 
 interface ResurrectSpectrumOptions {

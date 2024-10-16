@@ -10,7 +10,8 @@ import { FilterActionButtons } from './FilterActionButtons.js';
 import { HeaderContainer, StickyHeader } from './InnerFilterHeader.js';
 import { useSharedApodization } from './hooks/useSharedApodization.js';
 
-import { BaseFilterOptionsPanelProps, formLabelStyle } from './index.js';
+import type { BaseFilterOptionsPanelProps } from './index.js';
+import { formLabelStyle } from './index.js';
 
 const advanceValidationSchema = Yup.object().shape({
   lineBroadening: Yup.number().required(),

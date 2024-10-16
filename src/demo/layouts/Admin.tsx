@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 
 import { css } from '@emotion/react';
-import { ReactElement, Suspense, useCallback, useMemo, useState } from 'react';
+import type { ReactElement } from 'react';
+import { Suspense, useCallback, useMemo, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 
 import Sidebar from '../Sidebar.js';

@@ -1,6 +1,6 @@
-import { Draft } from 'immer';
+import type { Draft } from 'immer';
 
-import { PreferencesState } from '../preferencesReducer.js';
+import type { PreferencesState } from '../preferencesReducer.js';
 import { getActiveWorkspace } from '../utilities/getActiveWorkspace.js';
 
 export function setPanelsPreferences(draft: Draft<PreferencesState>, action) {

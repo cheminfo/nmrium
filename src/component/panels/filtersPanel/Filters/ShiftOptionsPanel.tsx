@@ -10,7 +10,8 @@ import { Sections } from '../../../elements/Sections.js';
 import { FilterActionButtons } from './FilterActionButtons.js';
 import { HeaderContainer, StickyHeader } from './InnerFilterHeader.js';
 
-import { BaseFilterOptionsPanelProps, formLabelStyle } from './index.js';
+import type { BaseFilterOptionsPanelProps } from './index.js';
+import { formLabelStyle } from './index.js';
 
 const { shiftX, shift2DX, shift2DY } = Filters;
 

@@ -1,16 +1,17 @@
 /** @jsxImportSource @emotion/react */
 
 import lodashGet from 'lodash/get.js';
-import { CSSProperties, MouseEvent, useCallback, useMemo } from 'react';
+import type { CSSProperties, MouseEvent } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { buildID } from '../../../data/utilities/Concatenation.js';
-import {
+import type {
   AssignmentsData,
   Axis,
-  useAssignment,
 } from '../../assignment/AssignmentsContext.js';
+import { useAssignment } from '../../assignment/AssignmentsContext.js';
 import { ContextMenu } from '../../elements/ContextMenuBluePrint.js';
-import { TableContextMenuProps } from '../../elements/ReactTable/ReactTable.js';
+import type { TableContextMenuProps } from '../../elements/ReactTable/ReactTable.js';
 import { useHighlight } from '../../highlight/index.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 
@@ -19,7 +20,7 @@ import SignalAssignmentsColumns from './TableColumns/SignalAssignmentsColumns.js
 import SignalDeltaColumn from './TableColumns/SignalDeltaColumn.js';
 import { ZoneAssignmentLabelColumn } from './TableColumns/ZoneAssignmentLabelColumn.js';
 import ZoneAssignmentsColumns from './TableColumns/ZoneAssignmentsColumns.js';
-import { ZoneData } from './hooks/useMapZones.js';
+import type { ZoneData } from './hooks/useMapZones.js';
 
 const HighlightedRowStyle: CSSProperties = { backgroundColor: '#ff6f0057' };
 

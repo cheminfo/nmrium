@@ -1,13 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { Select } from '@blueprintjs/select';
 import { Filters } from 'nmr-processing';
-import { CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
 import { FaRulerHorizontal, FaRulerVertical } from 'react-icons/fa';
 import { MdLooksTwo } from 'react-icons/md';
 import { Button, Toolbar } from 'react-science/ui';
 
 import InputRange from '../../../elements/InputRange.js';
-import Label, { LabelStyle } from '../../../elements/Label.js';
+import type { LabelStyle } from '../../../elements/Label.js';
+import Label from '../../../elements/Label.js';
 import { NumberInput2 } from '../../../elements/NumberInput2.js';
 import { ReadOnly } from '../../../elements/ReadOnly.js';
 import { Sections } from '../../../elements/Sections.js';
@@ -15,13 +16,13 @@ import { useFilter } from '../../../hooks/useFilter.js';
 
 import { FilterActionButtons } from './FilterActionButtons.js';
 import { HeaderContainer, StickyHeader } from './InnerFilterHeader.js';
+import type { AlgorithmItem } from './hooks/usePhaseCorrectionTwoDimensions.js';
 import {
-  AlgorithmItem,
   phaseCorrectionalAlgorithms,
   usePhaseCorrectionTwoDimensions,
 } from './hooks/usePhaseCorrectionTwoDimensions.js';
 
-import { BaseFilterOptionsPanelProps } from './index.js';
+import type { BaseFilterOptionsPanelProps } from './index.js';
 
 const inputRangeStyle: CSSProperties = {
   padding: '5px 10px',

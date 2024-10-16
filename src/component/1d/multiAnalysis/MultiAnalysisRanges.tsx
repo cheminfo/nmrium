@@ -1,4 +1,5 @@
-import { AnalysisColumnsTypes, SpectraAnalysisColumns } from 'nmr-load-save';
+import type { SpectraAnalysisColumns } from 'nmr-load-save';
+import { AnalysisColumnsTypes } from 'nmr-load-save';
 import { memo } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';

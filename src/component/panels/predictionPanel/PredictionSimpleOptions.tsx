@@ -10,7 +10,8 @@ import {
   getDefaultPredictionOptions,
 } from '../../../data/PredictionManager.js';
 import { usePreferences } from '../../context/PreferencesContext.js';
-import Label, { LabelStyle } from '../../elements/Label.js';
+import type { LabelStyle } from '../../elements/Label.js';
+import Label from '../../elements/Label.js';
 import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
 import { Select2Controller } from '../../elements/Select2Controller.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';

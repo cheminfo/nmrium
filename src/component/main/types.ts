@@ -1,5 +1,5 @@
-import { WebSource } from 'filelist-utils';
-import { CorrelationData } from 'nmr-correlation';
+import type { WebSource } from 'filelist-utils';
+import type { CorrelationData } from 'nmr-correlation';
 import type {
   NmriumState as NMRiumState,
   Spectrum,

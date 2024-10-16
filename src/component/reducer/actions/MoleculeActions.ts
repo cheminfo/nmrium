@@ -1,26 +1,27 @@
-import { Logger } from 'cheminfo-types';
-import { FifoLogger } from 'fifo-logger';
-import { Draft } from 'immer';
+import type { Logger } from 'cheminfo-types';
+import type { FifoLogger } from 'fifo-logger';
+import type { Draft } from 'immer';
 import OCL from 'openchemlib/full';
-import { nbLabileH, getAtoms, TopicMolecule } from 'openchemlib-utils';
+import type { TopicMolecule } from 'openchemlib-utils';
+import { nbLabileH, getAtoms } from 'openchemlib-utils';
 
-import {
+import type {
   PredictedSpectraResult,
   PredictionOptions,
-  generateSpectra,
 } from '../../../data/PredictionManager.js';
+import { generateSpectra } from '../../../data/PredictionManager.js';
 import { changeSpectraRelativeSum } from '../../../data/data1d/Spectrum1D/SumManager.js';
-import {
-  DRAGGABLE_STRUCTURE_INITIAL_BOUNDING_REACT,
+import type {
   MoleculeBoundingRect,
   StateMolecule,
 } from '../../../data/molecules/Molecule.js';
+import { DRAGGABLE_STRUCTURE_INITIAL_BOUNDING_REACT } from '../../../data/molecules/Molecule.js';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager.js';
 import { generateColor } from '../../../data/utilities/generateColor.js';
-import { AssignmentContext } from '../../assignment/AssignmentsContext.js';
-import { State } from '../Reducer.js';
+import type { AssignmentContext } from '../../assignment/AssignmentsContext.js';
+import type { State } from '../Reducer.js';
 import { MARGIN } from '../core/Constants.js';
-import { ActionType } from '../types/ActionType.js';
+import type { ActionType } from '../types/ActionType.js';
 
 import { unlinkRange } from './RangesActions.js';
 import { setActiveTab } from './ToolsActions.js';

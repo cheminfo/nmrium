@@ -6,7 +6,8 @@ import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
 
 import { Input2Controller } from '../../../elements/Input2Controller.js';
-import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable.js';
+import type { Column } from '../../../elements/ReactTable/ReactTable.js';
+import ReactTable from '../../../elements/ReactTable/ReactTable.js';
 
 export function AnalysisTablePreferences() {
   const { setValue, control } = useFormContext();

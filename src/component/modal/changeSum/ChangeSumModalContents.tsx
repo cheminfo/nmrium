@@ -3,7 +3,7 @@ import { Button, DialogBody, DialogFooter, Tab, Tabs } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { SumOptions } from 'nmr-load-save';
+import type { SumOptions } from 'nmr-load-save';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';

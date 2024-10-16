@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-import {
+import type {
   DropDownListItem,
   DropDownListProps,
   ItemProps,

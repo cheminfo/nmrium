@@ -1,5 +1,5 @@
 import { Button } from '@blueprintjs/core';
-import { CSSProperties, MouseEvent } from 'react';
+import type { CSSProperties, MouseEvent } from 'react';
 
 interface ActionButtonsProps {
   onDone: (event?: MouseEvent) => void;

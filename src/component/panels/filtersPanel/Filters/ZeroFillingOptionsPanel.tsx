@@ -9,7 +9,7 @@ import { FilterActionButtons } from './FilterActionButtons.js';
 import { HeaderContainer, StickyHeader } from './InnerFilterHeader.js';
 import { useZeroFilling, zeroFillingSizes } from './hooks/useZeroFilling.js';
 
-import { BaseFilterOptionsPanelProps } from './index.js';
+import type { BaseFilterOptionsPanelProps } from './index.js';
 
 export default function ZeroFillingOptionsPanel(
   props: BaseFilterOptionsPanelProps,

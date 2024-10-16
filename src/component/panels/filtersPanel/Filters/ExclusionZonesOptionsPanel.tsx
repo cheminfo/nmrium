@@ -6,18 +6,19 @@ import { FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
 import * as Yup from 'yup';
 
-import { ExclusionZone } from '../../../../data/types/data1d/ExclusionZone.js';
+import type { ExclusionZone } from '../../../../data/types/data1d/ExclusionZone.js';
 import { useChartData } from '../../../context/ChartContext.js';
 import { useDispatch } from '../../../context/DispatchContext.js';
 import { NumberInput2Controller } from '../../../elements/NumberInput2Controller.js';
-import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable.js';
+import type { Column } from '../../../elements/ReactTable/ReactTable.js';
+import ReactTable from '../../../elements/ReactTable/ReactTable.js';
 import { ReadOnly } from '../../../elements/ReadOnly.js';
 import { Sections } from '../../../elements/Sections.js';
 
 import { FilterActionButtons } from './FilterActionButtons.js';
 import { HeaderContainer, StickyHeader } from './InnerFilterHeader.js';
 
-import { BaseFilterOptionsPanelProps } from './index.js';
+import type { BaseFilterOptionsPanelProps } from './index.js';
 
 const validationSchema = (min: number, max: number) =>
   Yup.object().shape({

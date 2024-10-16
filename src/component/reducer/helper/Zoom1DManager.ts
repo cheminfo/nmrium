@@ -1,8 +1,8 @@
 import { scaleLinear, zoomIdentity } from 'd3';
-import { Draft } from 'immer';
+import type { Draft } from 'immer';
 
-import { ZoomOptions } from '../../EventsTrackers/BrushTracker.js';
-import { State } from '../Reducer.js';
+import type { ZoomOptions } from '../../EventsTrackers/BrushTracker.js';
+import type { State } from '../Reducer.js';
 
 import { getActiveSpectrum } from './getActiveSpectrum.js';
 

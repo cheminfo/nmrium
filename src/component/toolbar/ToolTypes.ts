@@ -1,8 +1,8 @@
-import { NMRiumToolBarPreferences } from 'nmr-load-save';
+import type { NMRiumToolBarPreferences } from 'nmr-load-save';
 import type { Info1D, Info2D } from 'nmr-processing';
 import { Filters } from 'nmr-processing';
 
-import { DisplayerMode } from '../reducer/Reducer.js';
+import type { DisplayerMode } from '../reducer/Reducer.js';
 
 type InfoKey = keyof Info1D | keyof Info2D;
 

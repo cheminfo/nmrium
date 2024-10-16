@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { FromTo } from 'cheminfo-types';
-import { Signal2D } from 'nmr-processing';
+import type { FromTo } from 'cheminfo-types';
+import type { Signal2D } from 'nmr-processing';
 import { useCallback, useEffect, useState } from 'react';
 
 import DefaultPathLengths from '../../../../../data/constants/DefaultPathLengths.js';

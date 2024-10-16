@@ -1,4 +1,5 @@
-import { CSSProperties, ReactNode, useEffect } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
+import { useEffect } from 'react';
 
 interface RenderDetectorProps {
   onRender: () => void;

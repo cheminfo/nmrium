@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import {
+import type {
   ApodizationOptions as BaseApodizationOptions,
   Filter,
 } from 'nmr-processing';

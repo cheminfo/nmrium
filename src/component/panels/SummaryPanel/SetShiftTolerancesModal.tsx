@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Tolerance } from 'nmr-correlation';
+import type { Tolerance } from 'nmr-correlation';
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
@@ -10,7 +10,8 @@ import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import Button from '../../elements/Button.js';
 import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
-import ReactTable, { Column } from '../../elements/ReactTable/ReactTable.js';
+import type { Column } from '../../elements/ReactTable/ReactTable.js';
+import ReactTable from '../../elements/ReactTable/ReactTable.js';
 
 interface ToleranceItem {
   atom: string;

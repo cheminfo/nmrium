@@ -1,4 +1,4 @@
-import { Spectrum2D } from 'nmr-load-save';
+import type { Spectrum2D } from 'nmr-load-save';
 import { xyzAutoZonesPicking } from 'nmr-processing';
 
 export interface DetectionZonesOptions {

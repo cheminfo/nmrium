@@ -1,11 +1,11 @@
-import { SpectraRendering, Spectrum1D } from 'nmr-load-save';
+import type { SpectraRendering, Spectrum1D } from 'nmr-load-save';
 import { memo } from 'react';
 
 import SpectrumInfoBlock from '../1d-2d/components/SpectrumInfoBlock.js';
 import { useChartData } from '../context/ChartContext.js';
 import { usePreferences } from '../context/PreferencesContext.js';
 import { ShareDataProvider } from '../context/ShareDataContext.js';
-import { Margin } from '../reducer/Reducer.js';
+import type { Margin } from '../reducer/Reducer.js';
 
 import XAxis from './XAxis.js';
 import YAxis from './YAxis.js';

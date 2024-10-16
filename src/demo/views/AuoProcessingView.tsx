@@ -2,7 +2,8 @@ import { fileCollectionFromWebSource } from 'filelist-utils';
 import { read } from 'nmr-load-save';
 import { useEffect, useState } from 'react';
 
-import BaseView, { BaseViewProps } from './BaseView.js';
+import type { BaseViewProps } from './BaseView.js';
+import BaseView from './BaseView.js';
 import { Loading } from './Loading.js';
 
 export async function loadData(file) {

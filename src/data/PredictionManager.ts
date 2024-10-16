@@ -1,20 +1,22 @@
 import { v4 } from '@lukeed/uuid';
-import { Logger } from 'cheminfo-types';
+import type { Logger } from 'cheminfo-types';
 import { xMinMaxValues } from 'ml-spectra-processing';
-import { Spectrum } from 'nmr-load-save';
-import {
-  getFrequency,
-  predict,
+import type { Spectrum } from 'nmr-load-save';
+import type {
   Predicted,
   Prediction1D,
   Prediction2D,
   PredictionBase1D,
   PredictionBase2D,
   Signal2D,
+  Zone,
+} from 'nmr-processing';
+import {
+  getFrequency,
+  predict,
   signals2DToZ,
   signalsToRanges,
   signalsToXY,
-  Zone,
 } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 

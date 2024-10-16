@@ -1,6 +1,6 @@
 import lodashGet from 'lodash/get.js';
-import { Spectrum } from 'nmr-load-save';
-import { ParseResult } from 'papaparse';
+import type { Spectrum } from 'nmr-load-save';
+import type { ParseResult } from 'papaparse';
 
 import { prepareKey } from './prepareKey.js';
 

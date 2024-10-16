@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { PanelsPreferences, Workspace } from 'nmr-load-save';
+import type { PanelsPreferences, Workspace } from 'nmr-load-save';
 import {
   forwardRef,
   memo,
@@ -12,7 +12,8 @@ import * as Yup from 'yup';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { usePreferences } from '../../context/PreferencesContext.js';
-import { GroupPane, GroupPaneStyle } from '../../elements/GroupPane.js';
+import type { GroupPaneStyle } from '../../elements/GroupPane.js';
+import { GroupPane } from '../../elements/GroupPane.js';
 import { Scroller } from '../../elements/Scroller.js';
 import useNucleus from '../../hooks/useNucleus.js';
 import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences.js';

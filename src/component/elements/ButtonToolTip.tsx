@@ -1,4 +1,4 @@
-import { CSSProperties, InputHTMLAttributes, ReactNode } from 'react';
+import type { CSSProperties, InputHTMLAttributes, ReactNode } from 'react';
 
 import ToolTip from './ToolTip/ToolTip.js';
 

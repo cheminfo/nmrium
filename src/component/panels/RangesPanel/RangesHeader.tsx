@@ -5,7 +5,7 @@ import {
 } from 'cheminfo-font';
 import fileSaver from 'file-saver';
 import lodashGet from 'lodash/get.js';
-import { RangesViewState } from 'nmr-load-save';
+import type { RangesViewState } from 'nmr-load-save';
 import { rangesToACS, rangesToTSV } from 'nmr-processing';
 import { useState } from 'react';
 import {
@@ -25,16 +25,14 @@ import { useAssignmentData } from '../../assignment/AssignmentsContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import { useAlert } from '../../elements/Alert.js';
-import {
-  ToolbarPopoverItem,
-  ToolbarPopoverMenuItem,
-} from '../../elements/ToolbarPopoverItem.js';
+import type { ToolbarPopoverMenuItem } from '../../elements/ToolbarPopoverItem.js';
+import { ToolbarPopoverItem } from '../../elements/ToolbarPopoverItem.js';
 import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import CopyClipboardModal from '../../modal/CopyClipboardModal.js';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal.js';
 import { booleanToString } from '../../utility/booleanToString.js';
-import { FilterType } from '../../utility/filterType.js';
+import type { FilterType } from '../../utility/filterType.js';
 import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
 
 type ExportRangesType = 'publicationString' | 'rangesToTSV';

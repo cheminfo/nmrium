@@ -1,7 +1,9 @@
 import { Button, Callout, Classes } from '@blueprintjs/core';
 import lodashGet from 'lodash/get.js';
-import { Jcoupling, Peak1D, translateMultiplet } from 'nmr-processing';
-import { CSSProperties, useCallback, useMemo, useRef } from 'react';
+import type { Jcoupling, Peak1D } from 'nmr-processing';
+import { translateMultiplet } from 'nmr-processing';
+import type { CSSProperties } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Toolbar } from 'react-science/ui';
@@ -9,9 +11,8 @@ import { Toolbar } from 'react-science/ui';
 import { multiplets } from '../../../../../../data/constants/Multiplets.js';
 import { isSpectrum1D } from '../../../../../../data/data1d/Spectrum1D/index.js';
 import { NumberInput2Controller } from '../../../../../elements/NumberInput2Controller.js';
-import ReactTable, {
-  Column,
-} from '../../../../../elements/ReactTable/ReactTable.js';
+import type { Column } from '../../../../../elements/ReactTable/ReactTable.js';
+import ReactTable from '../../../../../elements/ReactTable/ReactTable.js';
 import { Select2Controller } from '../../../../../elements/Select2Controller.js';
 import useSpectrum from '../../../../../hooks/useSpectrum.js';
 import { hasCouplingConstant } from '../../../../../panels/extra/utilities/MultiplicityUtilities.js';

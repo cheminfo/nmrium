@@ -1,4 +1,5 @@
-import { Fragment, ReactNode, useContext, useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
+import { Fragment, useContext, useEffect, useState } from 'react';
 
 import { useChartData } from '../context/ChartContext.js';
 

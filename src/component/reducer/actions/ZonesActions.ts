@@ -1,5 +1,6 @@
-import { FromTo, NmrData2DFt } from 'cheminfo-types';
-import { Draft, original } from 'immer';
+import type { FromTo, NmrData2DFt } from 'cheminfo-types';
+import type { Draft } from 'immer';
+import { original } from 'immer';
 import lodashCloneDeep from 'lodash/cloneDeep.js';
 import { setPathLength } from 'nmr-correlation';
 import type { Spectrum, Spectrum2D, ZonesViewState } from 'nmr-load-save';
@@ -16,23 +17,24 @@ import {
   detectZonesManual,
   isSpectrum2D,
 } from '../../../data/data2d/Spectrum2D/index.js';
-import { DetectionZonesOptions } from '../../../data/data2d/Spectrum2D/zones/getDetectionZones.js';
+import type { DetectionZonesOptions } from '../../../data/data2d/Spectrum2D/zones/getDetectionZones.js';
 import {
   unlink,
   unlinkInAssignmentData,
 } from '../../../data/utilities/ZoneUtilities.js';
 import { isNumber } from '../../../data/utilities/isNumber.js';
-import {
+import type {
   AssignmentContext,
   Axis,
 } from '../../assignment/AssignmentsContext.js';
 import { defaultZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState.js';
-import { ZoneData } from '../../panels/ZonesPanel/hooks/useMapZones.js';
-import { FilterType } from '../../utility/filterType.js';
-import { State } from '../Reducer.js';
-import get2DRange, { ZoneBoundary } from '../helper/get2DRange.js';
+import type { ZoneData } from '../../panels/ZonesPanel/hooks/useMapZones.js';
+import type { FilterType } from '../../utility/filterType.js';
+import type { State } from '../Reducer.js';
+import type { ZoneBoundary } from '../helper/get2DRange.js';
+import get2DRange from '../helper/get2DRange.js';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
-import { ActionType } from '../types/ActionType.js';
+import type { ActionType } from '../types/ActionType.js';
 
 import { handleUpdateCorrelations } from './CorrelationsActions.js';
 import { setDomain } from './DomainActions.js';

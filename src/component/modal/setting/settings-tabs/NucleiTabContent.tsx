@@ -1,5 +1,5 @@
 import { Classes } from '@blueprintjs/core';
-import { NucleiPreferences } from 'nmr-load-save';
+import type { NucleiPreferences } from 'nmr-load-save';
 import { useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
@@ -8,8 +8,9 @@ import { Button } from 'react-science/ui';
 import { GroupPane } from '../../../elements/GroupPane.js';
 import { Input2Controller } from '../../../elements/Input2Controller.js';
 import { NumberInput2Controller } from '../../../elements/NumberInput2Controller.js';
-import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable.js';
-import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
+import type { Column } from '../../../elements/ReactTable/ReactTable.js';
+import ReactTable from '../../../elements/ReactTable/ReactTable.js';
+import type { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
 import { Section } from '../GeneralSettings.js';
 
 function getKeyPath<T extends keyof NucleiPreferences>(

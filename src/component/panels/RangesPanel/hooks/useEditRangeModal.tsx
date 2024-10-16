@@ -3,7 +3,7 @@ import { useCallback, useMemo } from 'react';
 import { useAssignmentData } from '../../../assignment/AssignmentsContext.js';
 import { useDispatch } from '../../../context/DispatchContext.js';
 
-import { RangeData } from './useMapRanges.js';
+import type { RangeData } from './useMapRanges.js';
 
 function getZoomRange(range: RangeData): [number, number] {
   const { from, to } = range;

@@ -1,4 +1,4 @@
-import { CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
 
 import { useHighlight } from '../../../highlight/index.js';
 import { useFormatNumberByNucleus } from '../../../hooks/useFormatNumberByNucleus.js';

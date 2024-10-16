@@ -4,10 +4,11 @@ import { css } from '@emotion/react';
 import { Molecule } from 'openchemlib/full';
 import { TopicMolecule } from 'openchemlib-utils';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { StructureEditor, StructureEditorProps } from 'react-ocl/full';
+import type { StructureEditorProps } from 'react-ocl/full';
+import { StructureEditor } from 'react-ocl/full';
 import { useOnOff } from 'react-science/ui';
 
-import { StateMoleculeExtended } from '../../data/molecules/Molecule.js';
+import type { StateMoleculeExtended } from '../../data/molecules/Molecule.js';
 import { useDispatch } from '../context/DispatchContext.js';
 import ActionButtons from '../elements/ActionButtons.js';
 

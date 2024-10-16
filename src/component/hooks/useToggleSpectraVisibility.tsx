@@ -4,8 +4,8 @@ import { TooltipHelpContent } from 'react-science/ui';
 
 import { useChartData } from '../context/ChartContext.js';
 import { useDispatch } from '../context/DispatchContext.js';
-import { ToolbarItemProps } from '../panels/header/DefaultPanelHeader.js';
-import { SpectraSelectedMode } from '../reducer/actions/SpectraActions.js';
+import type { ToolbarItemProps } from '../panels/header/DefaultPanelHeader.js';
+import type { SpectraSelectedMode } from '../reducer/actions/SpectraActions.js';
 
 interface ToggleSpectraVisibility {
   enableShowAll: boolean;

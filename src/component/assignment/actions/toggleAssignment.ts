@@ -1,9 +1,9 @@
-import {
+import type {
   AssignmentDimension,
   AssignmentState,
   Axis,
 } from '../AssignmentsContext.js';
-import { ToggleAction } from '../AssignmentsReducer.js';
+import type { ToggleAction } from '../AssignmentsReducer.js';
 
 import { removeAssignment } from './removeAssignment.js';
 

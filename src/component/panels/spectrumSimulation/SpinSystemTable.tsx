@@ -1,8 +1,10 @@
-import { CSSProperties, useMemo } from 'react';
+import type { CSSProperties } from 'react';
+import { useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
-import ReactTable, { Column } from '../../elements/ReactTable/ReactTable.js';
+import type { Column } from '../../elements/ReactTable/ReactTable.js';
+import ReactTable from '../../elements/ReactTable/ReactTable.js';
 import addCustomColumn from '../../elements/ReactTable/utility/addCustomColumn.js';
 
 const cellStyle: CSSProperties = {

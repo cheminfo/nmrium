@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { WorkSpacePanelPreferences } from 'nmr-load-save';
-import { Info1D } from 'nmr-processing';
+import type { WorkSpacePanelPreferences } from 'nmr-load-save';
+import type { Info1D } from 'nmr-processing';
 import { FaLink } from 'react-icons/fa';
 
 import { withDialog } from '../../elements/DialogManager.js';
-import { TableContextMenuProps } from '../../elements/ReactTable/ReactTable.js';
+import type { TableContextMenuProps } from '../../elements/ReactTable/ReactTable.js';
 import useTableSortBy from '../../hooks/useTableSortBy.js';
 import { EditRangeModal } from '../../modal/editRange/EditRangeModal.js';
 import NoDataForFid from '../extra/placeholder/NoDataForFid.js';

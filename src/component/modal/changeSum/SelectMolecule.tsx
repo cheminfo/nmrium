@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ControllerProps, FieldValues, useController } from 'react-hook-form';
+import type { ControllerProps, FieldValues } from 'react-hook-form';
+import { useController } from 'react-hook-form';
 
 import getAtom from '../../../data/utilities/getAtom.js';
 import { useChartData } from '../../context/ChartContext.js';

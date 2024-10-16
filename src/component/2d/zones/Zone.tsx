@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { Zone as ZoneType } from 'nmr-processing';
+import type { Zone as ZoneType } from 'nmr-processing';
 import { useEffect, useState } from 'react';
 import { PiTextTBold } from 'react-icons/pi';
 

@@ -1,5 +1,5 @@
 import lodashMerge from 'lodash/merge.js';
-import { WorkSpaceSource } from 'nmr-load-save';
+import type { WorkSpaceSource } from 'nmr-load-save';
 
 import { workspaceDefaultProperties } from '../../../workspaces/workspaceDefaultProperties.js';
 

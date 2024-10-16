@@ -1,17 +1,16 @@
-import { FromTo } from 'cheminfo-types';
+import type { FromTo } from 'cheminfo-types';
 import lodashCloneDeep from 'lodash/cloneDeep.js';
 import lodashGet from 'lodash/get.js';
+import type { Correlation, Link } from 'nmr-correlation';
 import {
   addLink,
   buildCorrelation,
   buildLink,
-  Correlation,
   getLinkDelta,
   getLinkDim,
-  Link,
   removeLink,
 } from 'nmr-correlation';
-import { ActiveSpectrum, Spectrum, Spectrum2D } from 'nmr-load-save';
+import type { ActiveSpectrum, Spectrum, Spectrum2D } from 'nmr-load-save';
 
 import DefaultPathLengths from '../../../../data/constants/DefaultPathLengths.js';
 import {
@@ -19,7 +18,7 @@ import {
   findSpectrum,
 } from '../../../../data/utilities/FindUtilities.js';
 import { isDefaultPathLength } from '../../../modal/editZone/validation/isDefaultPathLength.js';
-import { DisplayerMode } from '../../../reducer/Reducer.js';
+import type { DisplayerMode } from '../../../reducer/Reducer.js';
 import { ErrorColors } from '../CorrelationTable/Constants.js';
 
 function getAtomType(nucleus: string): string {

@@ -1,6 +1,7 @@
 import { extent } from 'd3';
 import throttle from 'lodash/throttle.js';
-import { readFromWebSource, Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from 'nmr-load-save';
+import { readFromWebSource } from 'nmr-load-save';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';

@@ -1,5 +1,5 @@
 import lodashGet from 'lodash/get.js';
-import { Spectrum } from 'nmr-load-save';
+import type { Spectrum } from 'nmr-load-save';
 
 interface RenderAsHTMLProps {
   data: Spectrum;

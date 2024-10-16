@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { useVerticalAlign } from '../../hooks/useVerticalAlign.js';
-import {
+import type {
   Domains,
   Margin,
   SpectraDirection,

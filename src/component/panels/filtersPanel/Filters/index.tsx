@@ -1,7 +1,8 @@
-import { ButtonProps } from '@blueprintjs/core';
-import { Filter, Filters } from 'nmr-processing';
+import type { ButtonProps } from '@blueprintjs/core';
+import type { Filter } from 'nmr-processing';
+import { Filters } from 'nmr-processing';
 
-import { LabelStyle } from '../../../elements/Label.js';
+import type { LabelStyle } from '../../../elements/Label.js';
 
 import ApodizationOptionsPanel from './ApodizationOptionsPanel.js';
 import BaseLineCorrectionOptionsPanel from './BaseLineCorrectionOptionsPanel.js';

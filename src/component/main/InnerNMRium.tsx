@@ -1,4 +1,5 @@
-import { ForwardedRef, useEffect, useReducer, useRef } from 'react';
+import type { ForwardedRef } from 'react';
+import { useEffect, useReducer, useRef } from 'react';
 import { useFullscreen } from 'react-science/ui';
 
 import { AssignmentProvider } from '../assignment/index.js';
@@ -24,7 +25,7 @@ import preferencesReducer, {
 
 import { InnerNMRiumContents } from './InnerNMRiumContents.js';
 import type { NMRiumProps } from './NMRium.js';
-import { NMRiumRefAPI } from './NMRiumRefAPI.js';
+import type { NMRiumRefAPI } from './NMRiumRefAPI.js';
 import NMRiumStateProvider from './NMRiumStateProvider.js';
 
 type InnerNMRiumProps = Omit<NMRiumProps, 'onError'> & {

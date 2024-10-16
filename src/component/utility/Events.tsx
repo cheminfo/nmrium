@@ -1,7 +1,7 @@
 import { EventEmitter } from 'eventemitter3';
 import { useEffect } from 'react';
 
-import {
+import type {
   BrushTrackerContext,
   ClickOptions,
 } from '../EventsTrackers/BrushTracker.js';

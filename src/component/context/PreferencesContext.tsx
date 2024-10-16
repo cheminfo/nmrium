@@ -1,10 +1,10 @@
 import { createContext, useContext, useMemo } from 'react';
 
-import {
-  preferencesInitialState,
+import type {
   PreferencesState,
   WorkspaceWithSource,
 } from '../reducer/preferences/preferencesReducer.js';
+import { preferencesInitialState } from '../reducer/preferences/preferencesReducer.js';
 import { isReadOnlyWorkspace } from '../reducer/preferences/utilities/isReadOnlyWorkspace.js';
 
 export interface PreferencesContextData extends PreferencesState {

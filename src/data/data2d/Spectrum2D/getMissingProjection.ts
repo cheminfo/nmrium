@@ -1,8 +1,8 @@
-import { NmrData2DFt } from 'cheminfo-types';
+import type { NmrData2DFt } from 'cheminfo-types';
 import { xSequentialFillFromTo } from 'ml-spectra-processing';
-import { Info1D, Info2D } from 'nmr-processing';
+import type { Info1D, Info2D } from 'nmr-processing';
 
-import { UsedColors } from '../../../types/UsedColors.js';
+import type { UsedColors } from '../../../types/UsedColors.js';
 import { initiateDatum1D } from '../../data1d/Spectrum1D/index.js';
 
 /**

@@ -1,17 +1,15 @@
 import fileSaver from 'file-saver';
 import JSZip from 'jszip';
+import type { Spectrum, StateMolecule, Workspace } from 'nmr-load-save';
 import {
   CURRENT_EXPORT_VERSION,
   processJcamp,
   serializeNmriumState,
-  Spectrum,
   spectrum1DToJcamp,
-  StateMolecule,
-  Workspace,
 } from 'nmr-load-save';
 import OCL from 'openchemlib/full';
 
-import { State } from '../component/reducer/Reducer.js';
+import type { State } from '../component/reducer/Reducer.js';
 
 import { initiateDatum1D, isSpectrum1D } from './data1d/Spectrum1D/index.js';
 import { initiateDatum2D } from './data2d/Spectrum2D/index.js';

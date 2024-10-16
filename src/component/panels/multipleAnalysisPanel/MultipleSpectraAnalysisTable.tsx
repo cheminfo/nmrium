@@ -1,12 +1,11 @@
 import { Fragment, useMemo } from 'react';
 
-import { SpectraAnalysisData } from '../../../data/data1d/multipleSpectraAnalysis.js';
+import type { SpectraAnalysisData } from '../../../data/data1d/multipleSpectraAnalysis.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { usePreferences } from '../../context/PreferencesContext.js';
 import ReactTable from '../../elements/ReactTable/ReactTable.js';
-import addCustomColumn, {
-  CustomColumn,
-} from '../../elements/ReactTable/utility/addCustomColumn.js';
+import type { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn.js';
+import addCustomColumn from '../../elements/ReactTable/utility/addCustomColumn.js';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import evaluate from '../../utility/Evaluate.js';

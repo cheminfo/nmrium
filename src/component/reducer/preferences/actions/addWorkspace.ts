@@ -1,6 +1,6 @@
-import { Draft } from 'immer';
+import type { Draft } from 'immer';
 
-import {
+import type {
   AddWorkspaceAction,
   PreferencesState,
   WorkspaceWithSource,

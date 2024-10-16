@@ -1,6 +1,7 @@
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 
-import useDraggable, { Position } from './useDraggable.js';
+import type { Position } from './useDraggable.js';
+import useDraggable from './useDraggable.js';
 
 type ChildType = ReactElement[] | ReactElement | boolean | null;
 

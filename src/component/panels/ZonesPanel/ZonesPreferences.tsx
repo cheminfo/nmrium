@@ -6,15 +6,11 @@ import useNucleus from '../../hooks/useNucleus.js';
 import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences.js';
 import { getUniqueNuclei } from '../../utility/getUniqueNuclei.js';
 import { is2DNucleus } from '../../utility/nucleusToString.js';
-import {
-  NucleusPreferenceField,
-  NucleusPreferences,
-} from '../extra/preferences/NucleusPreferences.js';
+import type { NucleusPreferenceField } from '../extra/preferences/NucleusPreferences.js';
+import { NucleusPreferences } from '../extra/preferences/NucleusPreferences.js';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer.js';
-import {
-  SettingsRef,
-  useSettingImperativeHandle,
-} from '../extra/utilities/settingImperativeHandle.js';
+import type { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
+import { useSettingImperativeHandle } from '../extra/utilities/settingImperativeHandle.js';
 
 const preferences1DFields: NucleusPreferenceField[] = [
   {

@@ -1,12 +1,12 @@
 import debounce from 'lodash/debounce.js';
 import get from 'lodash/get.js';
-import { Spectrum2D } from 'nmr-load-save';
+import type { Spectrum2D } from 'nmr-load-save';
 import { memo, useMemo, useRef } from 'react';
 
+import type { LevelSign } from '../../../data/data2d/Spectrum2D/contours.js';
 import {
   drawContours,
   getDefaultContoursLevel,
-  LevelSign,
 } from '../../../data/data2d/Spectrum2D/contours.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { usePreferences } from '../../context/PreferencesContext.js';

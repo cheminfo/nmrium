@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from 'nmr-load-save';
 import { useEffect, useState } from 'react';
 
 import { SIGNAL_INCLUDED_KINDS } from '../../../data/constants/signalsKinds.js';

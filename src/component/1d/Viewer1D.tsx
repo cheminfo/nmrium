@@ -1,11 +1,5 @@
-import {
-  ReactNode,
-  useCallback,
-  useEffect,
-  useReducer,
-  useRef,
-  useState,
-} from 'react';
+import type { ReactNode } from 'react';
+import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 import { useOnOff } from 'react-science/ui';
 
@@ -17,13 +11,13 @@ import { cutRange } from '../../data/data1d/Spectrum1D/ranges/createRange.js';
 import BrushXY, { BRUSH_TYPE } from '../1d-2d/tools/BrushXY.js';
 import CrossLinePointer from '../1d-2d/tools/CrossLinePointer.js';
 import { ViewerResponsiveWrapper } from '../2d/Viewer2D.js';
-import {
-  BrushTracker,
+import type {
   BrushTrackerContext,
   OnBrush,
   OnClick,
   OnZoom,
 } from '../EventsTrackers/BrushTracker.js';
+import { BrushTracker } from '../EventsTrackers/BrushTracker.js';
 import { MouseTracker } from '../EventsTrackers/MouseTracker.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useDispatch } from '../context/DispatchContext.js';
@@ -43,7 +37,8 @@ import scaleReducer, {
   scaleInitialState,
   SET_SCALE,
 } from '../reducer/scaleReducer.js';
-import { options, Tool } from '../toolbar/ToolTypes.js';
+import type { Tool } from '../toolbar/ToolTypes.js';
+import { options } from '../toolbar/ToolTypes.js';
 import Events from '../utility/Events.js';
 
 import Chart1D from './Chart1D.js';

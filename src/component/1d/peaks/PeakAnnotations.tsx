@@ -5,13 +5,8 @@ import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.js';
 import { formatNumber } from '../../utility/formatNumber.js';
 
 import { PeakEditionListener } from './PeakEditionManager.js';
-import {
-  getHighlightExtraId,
-  getHighlightSource,
-  Peak,
-  PeaksAnnotationsProps,
-  PeaksSource,
-} from './Peaks.js';
+import type { Peak, PeaksAnnotationsProps, PeaksSource } from './Peaks.js';
+import { getHighlightExtraId, getHighlightSource } from './Peaks.js';
 
 function PeakAnnotations(props: PeaksAnnotationsProps) {
   const { peaks, peaksSource, spectrumId, peakFormat } = props;

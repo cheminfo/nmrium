@@ -1,6 +1,6 @@
 import { xyIntegral, xyMaxY } from 'ml-spectra-processing';
-import { Spectrum1D } from 'nmr-load-save';
-import { Integral as IntegralType } from 'nmr-processing';
+import type { Spectrum1D } from 'nmr-load-save';
+import type { Integral as IntegralType } from 'nmr-processing';
 
 import { useChartData } from '../../context/ChartContext.js';
 import useSpectrum from '../../hooks/useSpectrum.js';

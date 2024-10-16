@@ -1,5 +1,5 @@
-import { AssignmentState } from '../AssignmentsContext.js';
-import { SetActiveAction } from '../AssignmentsReducer.js';
+import type { AssignmentState } from '../AssignmentsContext.js';
+import type { SetActiveAction } from '../AssignmentsReducer.js';
 
 export default function setActiveAssignment(
   state: AssignmentState,

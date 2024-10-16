@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import { css, SerializedStyles } from '@emotion/react';
-import { CSSProperties, ReactNode } from 'react';
+import type { SerializedStyles } from '@emotion/react';
+import { css } from '@emotion/react';
+import type { CSSProperties, ReactNode } from 'react';
 
 import DeleteButton from './DeleteButton.js';
 

@@ -1,6 +1,6 @@
 import fileSaver from 'file-saver';
 import lodashGet from 'lodash/get.js';
-import {
+import type {
   ActiveSpectrum,
   JpathTableColumn,
   PredefinedSpectraColumn,
@@ -9,7 +9,8 @@ import {
   Spectrum,
   StateMolecule,
 } from 'nmr-load-save';
-import { CSSProperties, useCallback, useMemo, useState } from 'react';
+import type { CSSProperties } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { FaCopy, FaFileExport, FaRegTrashAlt } from 'react-icons/fa';
 import { IoColorPaletteOutline } from 'react-icons/io5';
 
@@ -20,19 +21,17 @@ import { useClipboard } from '../../../utils/clipboard/clipboardHooks.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
-import {
-  ContextMenu,
-  ContextMenuItem,
-} from '../../elements/ContextMenuBluePrint.js';
-import ReactTable, { Column } from '../../elements/ReactTable/ReactTable.js';
+import type { ContextMenuItem } from '../../elements/ContextMenuBluePrint.js';
+import { ContextMenu } from '../../elements/ContextMenuBluePrint.js';
+import type { Column } from '../../elements/ReactTable/ReactTable.js';
+import ReactTable from '../../elements/ReactTable/ReactTable.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import ExportAsJcampModal from '../../modal/ExportAsJcampModal.js';
 
 import ColorIndicator from './base/ColorIndicator.js';
 import { RenderAsHTML } from './base/RenderAsHTML.js';
-import ShowHideSpectrumButton, {
-  OnChangeVisibilityEvent,
-} from './base/ShowHideSpectrumButton.js';
+import type { OnChangeVisibilityEvent } from './base/ShowHideSpectrumButton.js';
+import ShowHideSpectrumButton from './base/ShowHideSpectrumButton.js';
 import { SpectrumName } from './base/SpectrumName.js';
 
 function getActiveSpectraAsObject(activeSpectra: ActiveSpectrum[] | null) {

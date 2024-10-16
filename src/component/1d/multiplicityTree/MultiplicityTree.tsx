@@ -1,12 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import { Spectrum1D } from 'nmr-load-save';
-import { Range } from 'nmr-processing';
+import type { Spectrum1D } from 'nmr-load-save';
+import type { Range } from 'nmr-processing';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
+import type { AssignmentsData } from '../../assignment/AssignmentsContext.js';
 import {
-  AssignmentsData,
   useAssignment,
   useAssignmentData,
 } from '../../assignment/AssignmentsContext.js';
@@ -17,7 +17,8 @@ import { HighlightEventSource, useHighlight } from '../../highlight/index.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import { AssignmentActionsButtons } from '../ranges/AssignmentActionsButtons.js';
 
-import { generateTreeNodes, TreeNodes } from './generateTreeNodes.js';
+import type { TreeNodes } from './generateTreeNodes.js';
+import { generateTreeNodes } from './generateTreeNodes.js';
 
 const styles = {
   cursor: 'default',

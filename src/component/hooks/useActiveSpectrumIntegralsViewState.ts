@@ -1,4 +1,4 @@
-import { IntegralsViewState } from 'nmr-load-save';
+import type { IntegralsViewState } from 'nmr-load-save';
 
 import { useChartData } from '../context/ChartContext.js';
 

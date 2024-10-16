@@ -1,10 +1,10 @@
-import { Draft } from 'immer';
+import type { Draft } from 'immer';
 
-import {
+import type {
   PreferencesState,
   SetWorkspaceAction,
-  WORKSPACES_KEYS,
 } from '../preferencesReducer.js';
+import { WORKSPACES_KEYS } from '../preferencesReducer.js';
 import { getPreferencesByWorkspace } from '../utilities/getPreferencesByWorkspace.js';
 import { initWorkspace } from '../utilities/initWorkspace.js';
 

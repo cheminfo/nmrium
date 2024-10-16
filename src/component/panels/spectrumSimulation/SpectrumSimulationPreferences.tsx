@@ -3,9 +3,10 @@ import { forwardRef } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { FREQUENCIES } from '../../../data/PredictionManager.js';
-import { SpectrumSimulationOptions } from '../../../data/data1d/spectrumSimulation.js';
+import type { SpectrumSimulationOptions } from '../../../data/data1d/spectrumSimulation.js';
 import generateNumbersPowerOfX from '../../../data/utilities/generateNumbersPowerOfX.js';
-import Label, { LabelStyle } from '../../elements/Label.js';
+import type { LabelStyle } from '../../elements/Label.js';
+import Label from '../../elements/Label.js';
 import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
 import { Select2Controller } from '../../elements/Select2Controller.js';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer.js';

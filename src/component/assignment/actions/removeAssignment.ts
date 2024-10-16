@@ -1,4 +1,4 @@
-import { AssignmentState, Axis } from '../AssignmentsContext.js';
+import type { AssignmentState, Axis } from '../AssignmentsContext.js';
 
 interface RemoveAction {
   ids: string[];

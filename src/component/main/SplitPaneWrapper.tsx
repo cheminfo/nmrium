@@ -1,4 +1,5 @@
-import { SplitPane, SplitPaneSize } from 'react-science/ui';
+import type { SplitPaneSize } from 'react-science/ui';
+import { SplitPane } from 'react-science/ui';
 
 import { usePreferences } from '../context/PreferencesContext.js';
 

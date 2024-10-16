@@ -1,4 +1,4 @@
-import { Signal1D } from 'nmr-processing';
+import type { Signal1D } from 'nmr-processing';
 
 import { useScaleChecked } from '../../context/ScaleContext.js';
 

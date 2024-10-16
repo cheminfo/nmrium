@@ -1,5 +1,6 @@
 import { Molecule as OCLMolecule } from 'openchemlib/full';
-import { CSSProperties, ReactNode, useCallback } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
+import { useCallback } from 'react';
 import {
   FaCopy,
   FaDownload,
@@ -12,7 +13,7 @@ import {
 import { IoOpenOutline } from 'react-icons/io5';
 import { Toolbar } from 'react-science/ui';
 
-import {
+import type {
   MoleculesView,
   StateMoleculeExtended,
 } from '../../../data/molecules/Molecule.js';
@@ -24,10 +25,8 @@ import { useDispatch } from '../../context/DispatchContext.js';
 import { useGlobal } from '../../context/GlobalContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import { PreferencesButton } from '../../elements/PreferencesButton.js';
-import {
-  ToolbarPopoverItem,
-  ToolbarPopoverMenuItem,
-} from '../../elements/ToolbarPopoverItem.js';
+import type { ToolbarPopoverMenuItem } from '../../elements/ToolbarPopoverItem.js';
+import { ToolbarPopoverItem } from '../../elements/ToolbarPopoverItem.js';
 import AboutPredictionModal from '../../modal/AboutPredictionModal.js';
 import PredictSpectraModal from '../../modal/PredictSpectraModal.js';
 import { copyPNGToClipboard, exportAsSVG } from '../../utility/export.js';

@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 
-import { ExportOptions, toJSON } from '../../data/SpectraManager.js';
+import type { ExportOptions } from '../../data/SpectraManager.js';
+import { toJSON } from '../../data/SpectraManager.js';
 import { useChartData } from '../context/ChartContext.js';
 import { usePreferences } from '../context/PreferencesContext.js';
 import { useToaster } from '../context/ToasterContext.js';

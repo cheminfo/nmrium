@@ -1,5 +1,5 @@
 import { formatNumber } from '../../../utility/formatNumber.js';
-import { RangeColumnProps } from '../RangesTableRow.js';
+import type { RangeColumnProps } from '../RangesTableRow.js';
 
 function AbsoluteColumn({
   rowSpanTags,

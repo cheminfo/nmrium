@@ -1,4 +1,4 @@
-import { FromTo } from 'cheminfo-types';
+import type { FromTo } from 'cheminfo-types';
 
 export type DefaultPathLengthsInterface = Record<string, FromTo>;
 

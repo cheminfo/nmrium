@@ -1,7 +1,8 @@
-import { NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
-import { Draft, original } from 'immer';
+import type { NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
+import type { Draft } from 'immer';
+import { original } from 'immer';
 import lodashGet from 'lodash/get.js';
-import {
+import type {
   Color2D,
   Display1D,
   Display2D,
@@ -10,7 +11,8 @@ import {
   Spectrum1D,
   Spectrum2D,
 } from 'nmr-load-save';
-import { Filters, FiltersManager, NMRRange } from 'nmr-processing';
+import type { NMRRange } from 'nmr-processing';
+import { Filters, FiltersManager } from 'nmr-processing';
 
 import {
   get1DColor,
@@ -19,32 +21,31 @@ import {
   isSpectrum1D,
   resurrectSpectrumFromRanges,
 } from '../../../data/data1d/Spectrum1D/index.js';
-import {
-  simulateSpectrum,
-  SpectrumSimulationOptions,
-} from '../../../data/data1d/spectrumSimulation.js';
+import type { SpectrumSimulationOptions } from '../../../data/data1d/spectrumSimulation.js';
+import { simulateSpectrum } from '../../../data/data1d/spectrumSimulation.js';
 import { contoursManager } from '../../../data/data2d/Spectrum2D/contours.js';
 import {
   get2DColor,
   getMissingProjection,
   isSpectrum2D,
 } from '../../../data/data2d/Spectrum2D/index.js';
-import { Nuclei, Nucleus } from '../../../data/types/common/Nucleus.js';
+import type { Nuclei, Nucleus } from '../../../data/types/common/Nucleus.js';
 import {
   adjustAlpha,
   generateColor,
 } from '../../../data/utilities/generateColor.js';
 import groupByInfoKey from '../../utility/GroupByInfoKey.js';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus.js';
-import { State } from '../Reducer.js';
+import type { State } from '../Reducer.js';
 import { setZoom } from '../helper/Zoom1DManager.js';
 import { getActiveSpectra } from '../helper/getActiveSpectra.js';
 import { getActiveSpectraAsObject } from '../helper/getActiveSpectraAsObject.js';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
 import { removeSpectrumRelatedObjectsById } from '../helper/removeSpectrumRelatedObjectsById.js';
-import { ActionType } from '../types/ActionType.js';
+import type { ActionType } from '../types/ActionType.js';
 
-import { setDomain, SetDomainOptions, setMode } from './DomainActions.js';
+import type { SetDomainOptions } from './DomainActions.js';
+import { setDomain, setMode } from './DomainActions.js';
 import { rollbackSpectrumByFilter } from './FiltersActions.js';
 import {
   resetSelectedTool,

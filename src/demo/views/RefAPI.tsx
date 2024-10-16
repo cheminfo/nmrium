@@ -1,7 +1,8 @@
 import { useCallback, useRef } from 'react';
 import { DropZone } from 'react-science/ui';
 
-import { NMRium, NMRiumRefAPI } from '../../component/main/index.js';
+import type { NMRiumRefAPI } from '../../component/main/index.js';
+import { NMRium } from '../../component/main/index.js';
 
 export default function RefAPI() {
   const nmriumRef = useRef<NMRiumRefAPI>(null);

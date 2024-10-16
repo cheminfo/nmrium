@@ -1,6 +1,6 @@
-import { Draft } from 'immer';
-import { Spectrum, Spectrum1D } from 'nmr-load-save';
-import { DatabaseNMREntry, Info1D } from 'nmr-processing';
+import type { Draft } from 'immer';
+import type { Spectrum, Spectrum1D } from 'nmr-load-save';
+import type { DatabaseNMREntry, Info1D } from 'nmr-processing';
 
 import {
   get1DColor,
@@ -11,11 +11,11 @@ import {
   resurrectSpectrumFromRanges,
   resurrectSpectrumFromSignals,
 } from '../../../data/data1d/Spectrum1D/ranges/resurrectSpectrum.js';
-import { State } from '../Reducer.js';
+import type { State } from '../Reducer.js';
 import { setZoom } from '../helper/Zoom1DManager.js';
 import zoomHistoryManager from '../helper/ZoomHistoryManager.js';
 import { getSpectrum } from '../helper/getSpectrum.js';
-import { ActionType } from '../types/ActionType.js';
+import type { ActionType } from '../types/ActionType.js';
 
 import { setDomain } from './DomainActions.js';
 

@@ -1,6 +1,6 @@
-import { Draft } from 'immer';
+import type { Draft } from 'immer';
 
-import {
+import type {
   ChangeInformationBlockPosition,
   PreferencesState,
 } from '../preferencesReducer.js';

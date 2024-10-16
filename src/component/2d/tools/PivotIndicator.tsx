@@ -1,7 +1,7 @@
-import { CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';
-import { TraceDirection } from '../../reducer/Reducer.js';
+import type { TraceDirection } from '../../reducer/Reducer.js';
 import { options } from '../../toolbar/ToolTypes.js';
 import { useActivePhaseTraces } from '../1d-tracer/phase-correction-traces/useActivePhaseTraces.js';
 import { get2DXScale, get2DYScale } from '../utilities/scale.js';

@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Info2D } from 'nmr-processing';
-import { ReactNode } from 'react';
+import type { Info2D } from 'nmr-processing';
+import type { ReactNode } from 'react';
 import { FaLink } from 'react-icons/fa';
 
 import { withDialog } from '../../elements/DialogManager.js';

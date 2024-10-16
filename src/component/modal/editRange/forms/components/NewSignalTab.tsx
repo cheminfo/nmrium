@@ -1,7 +1,8 @@
 import { Button } from '@blueprintjs/core';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { translateMultiplet } from 'nmr-processing';
-import { CSSProperties, useEffect } from 'react';
+import type { CSSProperties } from 'react';
+import { useEffect } from 'react';
 import { useForm, useFormContext, useWatch } from 'react-hook-form';
 import * as Yup from 'yup';
 

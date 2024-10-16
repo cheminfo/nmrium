@@ -1,22 +1,22 @@
 import { createContext, useContext } from 'react';
 
-import { AssignmentsActions } from '../reducer/actions/AssignmentsActions.js';
-import { CorrelationsActions } from '../reducer/actions/CorrelationsActions.js';
-import { DatabaseActions } from '../reducer/actions/DatabaseActions.js';
-import { DimensionsActions } from '../reducer/actions/DimensionsActions.js';
-import { DomainActions } from '../reducer/actions/DomainActions.js';
-import { FiltersActions } from '../reducer/actions/FiltersActions.js';
-import { IntegralsActions } from '../reducer/actions/IntegralsActions.js';
-import { LoadActions } from '../reducer/actions/LoadActions.js';
-import { MoleculeActions } from '../reducer/actions/MoleculeActions.js';
-import { PeaksActions } from '../reducer/actions/PeaksActions.js';
-import { PreferencesActions } from '../reducer/actions/PreferencesActions.js';
-import { RangesActions } from '../reducer/actions/RangesActions.js';
-import { SpectrumActions } from '../reducer/actions/SpectraActions.js';
-import { SpectraAnalysisActions } from '../reducer/actions/SpectraAnalysisAction.js';
-import { ToolsActions } from '../reducer/actions/ToolsActions.js';
-import { ZonesActions } from '../reducer/actions/ZonesActions.js';
-import { ActionType } from '../reducer/types/ActionType.js';
+import type { AssignmentsActions } from '../reducer/actions/AssignmentsActions.js';
+import type { CorrelationsActions } from '../reducer/actions/CorrelationsActions.js';
+import type { DatabaseActions } from '../reducer/actions/DatabaseActions.js';
+import type { DimensionsActions } from '../reducer/actions/DimensionsActions.js';
+import type { DomainActions } from '../reducer/actions/DomainActions.js';
+import type { FiltersActions } from '../reducer/actions/FiltersActions.js';
+import type { IntegralsActions } from '../reducer/actions/IntegralsActions.js';
+import type { LoadActions } from '../reducer/actions/LoadActions.js';
+import type { MoleculeActions } from '../reducer/actions/MoleculeActions.js';
+import type { PeaksActions } from '../reducer/actions/PeaksActions.js';
+import type { PreferencesActions } from '../reducer/actions/PreferencesActions.js';
+import type { RangesActions } from '../reducer/actions/RangesActions.js';
+import type { SpectrumActions } from '../reducer/actions/SpectraActions.js';
+import type { SpectraAnalysisActions } from '../reducer/actions/SpectraAnalysisAction.js';
+import type { ToolsActions } from '../reducer/actions/ToolsActions.js';
+import type { ZonesActions } from '../reducer/actions/ZonesActions.js';
+import type { ActionType } from '../reducer/types/ActionType.js';
 
 export type Action =
   | ToolsActions

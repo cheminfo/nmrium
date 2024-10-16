@@ -1,10 +1,10 @@
 import { Fragment } from 'react';
 
-import {
+import type {
   AssignmentsData,
   Axis,
 } from '../../../assignment/AssignmentsContext.js';
-import { ZoneData } from '../hooks/useMapZones.js';
+import type { ZoneData } from '../hooks/useMapZones.js';
 
 import ZoneAssignmentColumn from './ZoneAssignmentsColumn.js';
 

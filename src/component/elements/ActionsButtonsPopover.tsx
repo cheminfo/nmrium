@@ -1,8 +1,12 @@
 /** @jsxImportSource @emotion/react */
-import { Popover, PopoverProps } from '@blueprintjs/core';
-import { css, Interpolation, Theme } from '@emotion/react';
-import { CSSProperties, Fragment } from 'react';
-import { Button, ButtonProps } from 'react-science/ui';
+import type { PopoverProps } from '@blueprintjs/core';
+import { Popover } from '@blueprintjs/core';
+import type { Interpolation, Theme } from '@emotion/react';
+import { css } from '@emotion/react';
+import type { CSSProperties } from 'react';
+import { Fragment } from 'react';
+import type { ButtonProps } from 'react-science/ui';
+import { Button } from 'react-science/ui';
 
 export interface ActionsButtonsPopoverProps
   extends Omit<PopoverProps, 'interactionKind' | 'content'> {

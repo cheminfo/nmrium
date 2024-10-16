@@ -1,9 +1,9 @@
-import { Draft } from 'immer';
+import type { Draft } from 'immer';
 
 import * as MultipleAnalysis from '../../../../data/data1d/multipleSpectraAnalysis.js';
 import { orderRange } from '../../helper/getRange.js';
 import { getMultipleSpectraAnalysisDefaultValues } from '../panelsPreferencesDefaultValues.js';
-import {
+import type {
   AnalyzeSpectraAction,
   ChangeAnalysisColumnValueKeyAction,
   DeleteAnalysisColumn,

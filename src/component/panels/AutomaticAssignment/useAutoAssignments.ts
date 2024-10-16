@@ -1,8 +1,6 @@
-import { Spectrum, Spectrum1D, Spectrum2D } from 'nmr-load-save';
-import {
-  getAssignments as getAssignmentsData,
-  SpectraData,
-} from 'nmr-processing';
+import type { Spectrum, Spectrum1D, Spectrum2D } from 'nmr-load-save';
+import type { SpectraData } from 'nmr-processing';
+import { getAssignments as getAssignmentsData } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 import { useRef, useState } from 'react';
 

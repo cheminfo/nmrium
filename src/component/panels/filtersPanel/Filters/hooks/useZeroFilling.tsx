@@ -1,5 +1,5 @@
-import { NmrData1D } from 'cheminfo-types';
-import {
+import type { NmrData1D } from 'cheminfo-types';
+import type {
   Filter,
   ZeroFillingOptions as BaseZeroFillingOptions,
 } from 'nmr-processing';

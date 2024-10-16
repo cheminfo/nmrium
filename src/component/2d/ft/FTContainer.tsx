@@ -1,4 +1,4 @@
-import { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from 'nmr-load-save';
 
 import useSpectrum from '../../hooks/useSpectrum.js';
 import Left1DChart from '../1d-tracer/Left1DChart.js';

@@ -1,5 +1,5 @@
 import has from 'lodash/has.js';
-import {
+import type {
   MatrixGenerationOptions,
   MultipleSpectraAnalysisPreferences,
   PanelsPreferences,

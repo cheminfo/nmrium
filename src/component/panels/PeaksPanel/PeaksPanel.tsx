@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { SvgNmrFt, SvgNmrPeaks, SvgNmrPeaksTopLabels } from 'cheminfo-font';
-import { PeaksViewState, Spectrum1D } from 'nmr-load-save';
-import { Info1D, Peak1D, Peaks } from 'nmr-processing';
+import type { PeaksViewState, Spectrum1D } from 'nmr-load-save';
+import type { Info1D, Peak1D, Peaks } from 'nmr-processing';
 import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { FaThinkPeaks } from 'react-icons/fa';
 
@@ -17,12 +17,11 @@ import useCheckExperimentalFeature from '../../hooks/useCheckExperimentalFeature
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import { booleanToString } from '../../utility/booleanToString.js';
-import { FilterType } from '../../utility/filterType.js';
+import type { FilterType } from '../../utility/filterType.js';
 import { tablePanelStyle } from '../extra/BasicPanelStyle.js';
-import { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
-import DefaultPanelHeader, {
-  ToolbarItemProps,
-} from '../header/DefaultPanelHeader.js';
+import type { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
+import type { ToolbarItemProps } from '../header/DefaultPanelHeader.js';
+import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
 import PreferencesHeader from '../header/PreferencesHeader.js';
 
 import PeaksPreferences from './PeaksPreferences.js';

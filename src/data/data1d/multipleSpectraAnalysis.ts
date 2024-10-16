@@ -1,7 +1,5 @@
 import lodashGet from 'lodash/get.js';
-import {
-  AnalysisColumnsTypes,
-  AnalysisColumnsValuesKeys,
+import type {
   AnalysisOptions,
   JpathTableColumn,
   MultipleSpectraAnalysisPreferences,
@@ -12,8 +10,9 @@ import {
   Spectrum1D,
   WorkSpacePanelPreferences,
 } from 'nmr-load-save';
+import { AnalysisColumnsTypes, AnalysisColumnsValuesKeys } from 'nmr-load-save';
 
-import { RangeDetectionResult } from '../types/data1d/index.js';
+import type { RangeDetectionResult } from '../types/data1d/index.js';
 import { convertSpectraArrayToObject } from '../utilities/convertSpectraListToObject.js';
 import generateChar from '../utilities/generateChar.js';
 

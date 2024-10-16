@@ -1,47 +1,43 @@
 /* eslint-disable unicorn/prefer-logical-operator-over-ternary */
 /** @jsxImportSource @emotion/react */
-import { css, CSSObject, SerializedStyles } from '@emotion/react';
+import type { CSSObject, SerializedStyles } from '@emotion/react';
+import { css } from '@emotion/react';
+import type { CSSProperties, ReactElement, Ref, WheelEvent } from 'react';
 import React, {
-  CSSProperties,
   forwardRef,
   memo,
-  ReactElement,
-  Ref,
   useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
   useState,
-  WheelEvent,
 } from 'react';
-import {
+import type {
   CellProps,
   Column as ReactColumn,
   TableInstance,
-  useSortBy,
   UseSortByColumnOptions,
   UseSortByInstanceProps,
   UseSortByOptions,
-  useTable,
   UseTableOptions,
 } from 'react-table';
+import { useSortBy, useTable } from 'react-table';
 import reactUse from 'react-use';
 
-import { HighlightEventSource } from '../../highlight/index.js';
-import { BaseContextMenuProps } from '../ContextMenuBluePrint.js';
+import type { HighlightEventSource } from '../../highlight/index.js';
+import type { BaseContextMenuProps } from '../ContextMenuBluePrint.js';
 
 import { EmptyDataRow } from './Elements/EmptyDataRow.js';
 import ReactTableHeader from './Elements/ReactTableHeader.js';
-import ReactTableRow, { ClickEvent } from './Elements/ReactTableRow.js';
+import type { ClickEvent } from './Elements/ReactTableRow.js';
+import ReactTableRow from './Elements/ReactTableRow.js';
 import { ReactTableStyle } from './Style.js';
 import {
   ReactTableProvider,
   useReactTableContext,
 } from './utility/ReactTableContext.js';
-import useRowSpan, {
-  prepareRowSpan,
-  RowSpanHeaders,
-} from './utility/useRowSpan.js';
+import type { RowSpanHeaders } from './utility/useRowSpan.js';
+import useRowSpan, { prepareRowSpan } from './utility/useRowSpan.js';
 
 interface ExtraColumn<T extends object = any> {
   enableRowSpan?: boolean;

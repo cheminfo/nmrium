@@ -14,7 +14,8 @@ import {
   useBaselineCorrection,
 } from './hooks/useBaselineCorrection.js';
 
-import { BaseFilterOptionsPanelProps, formLabelStyle } from './index.js';
+import type { BaseFilterOptionsPanelProps } from './index.js';
+import { formLabelStyle } from './index.js';
 
 export default function BaseLineCorrectionOptionsPanel(
   props: BaseFilterOptionsPanelProps,

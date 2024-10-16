@@ -1,13 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { Icon, Tag } from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import React, {
-  createContext,
-  CSSProperties,
-  ReactNode,
-  useContext,
-  useMemo,
-} from 'react';
+import type { CSSProperties, ReactNode } from 'react';
+import React, { createContext, useContext, useMemo } from 'react';
 
 interface SelectionsContextState {
   overflow: boolean;

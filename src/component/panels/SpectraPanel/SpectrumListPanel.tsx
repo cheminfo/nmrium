@@ -1,4 +1,5 @@
-import { CSSProperties, memo, useRef, useState } from 'react';
+import type { CSSProperties } from 'react';
+import { memo, useRef, useState } from 'react';
 
 import PreferencesHeader from '../header/PreferencesHeader.js';
 

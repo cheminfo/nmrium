@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { CSSProperties, memo, ReactNode, useCallback } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
+import { memo, useCallback } from 'react';
 
 import ToolTip from './ToolTip/ToolTip.js';
 

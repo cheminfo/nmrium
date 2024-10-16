@@ -1,4 +1,4 @@
-import { CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { formatNumber } from '../../utility/formatNumber.js';

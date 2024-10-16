@@ -1,8 +1,8 @@
-import { NmrData1D, NmrData2D } from 'cheminfo-types';
+import type { NmrData1D, NmrData2D } from 'cheminfo-types';
 
-import { ActionType } from '../reducer/types/ActionType.js';
+import type { ActionType } from '../reducer/types/ActionType.js';
 
-import {
+import type {
   AssignmentDimension,
   AssignmentState,
   Axis,

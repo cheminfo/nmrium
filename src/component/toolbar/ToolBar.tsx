@@ -14,7 +14,7 @@ import {
   SvgNmrRealImag,
   SvgNmrZeroFilling,
 } from 'cheminfo-font';
-import { NMRiumToolBarPreferences } from 'nmr-load-save';
+import type { NMRiumToolBarPreferences } from 'nmr-load-save';
 import { useCallback } from 'react';
 import {
   FaSearchPlus,
@@ -25,28 +25,20 @@ import {
   FaDownload,
 } from 'react-icons/fa';
 import { PiKnifeBold } from 'react-icons/pi';
-import {
-  Toolbar,
-  ToolbarItemProps,
-  TooltipItem,
-  TooltipHelpContent,
-} from 'react-science/ui';
+import type { ToolbarItemProps, TooltipItem } from 'react-science/ui';
+import { Toolbar, TooltipHelpContent } from 'react-science/ui';
 
 import { useChartData } from '../context/ChartContext.js';
 import { useDispatch } from '../context/DispatchContext.js';
 import { useLoader } from '../context/LoaderContext.js';
 import { usePreferences } from '../context/PreferencesContext.js';
-import {
-  ToolbarPopoverMenuItem,
-  ToolbarPopoverItem,
-} from '../elements/ToolbarPopoverItem.js';
+import type { ToolbarPopoverMenuItem } from '../elements/ToolbarPopoverItem.js';
+import { ToolbarPopoverItem } from '../elements/ToolbarPopoverItem.js';
 import { useExportManagerAPI } from '../elements/export/ExportManager.js';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
 import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature.js';
-import {
-  CheckOptions,
-  useCheckToolsVisibility,
-} from '../hooks/useCheckToolsVisibility.js';
+import type { CheckOptions } from '../hooks/useCheckToolsVisibility.js';
+import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility.js';
 import useDatumWithSpectraStatistics from '../hooks/useDatumWithSpectraStatistics.js';
 import { useDialogToggle } from '../hooks/useDialogToggle.js';
 import { useExport } from '../hooks/useExport.js';
