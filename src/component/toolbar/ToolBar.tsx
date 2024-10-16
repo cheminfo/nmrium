@@ -462,7 +462,7 @@ export default function ToolBar() {
         <ExportAsJcampModal exportActiveSpectrum closeDialog={closeDialog} />
       )}
       <SaveAsModal isOpen={dialog.saveAs} onCloseDialog={closeDialog} />
-      <Toolbar vertical>
+      <Toolbar vertical minimal>
         {toolItems.map((item) => {
           const { id, icon, tooltip, checkOptions, condition } = item;
           const show =

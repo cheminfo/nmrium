@@ -143,7 +143,7 @@ function HeaderInner(props: HeaderInnerProps) {
           }}
         >
           <div>
-            <Toolbar>
+            <Toolbar minimal>
               <AboutUsModal />
             </Toolbar>
           </div>
@@ -168,7 +168,7 @@ function HeaderInner(props: HeaderInnerProps) {
           {!general?.hideLogs && <LogsHistoryModal />}
 
           <div>
-            <Toolbar>
+            <Toolbar minimal>
               {!general?.hideHelp && (
                 <Toolbar.Item
                   id="user-manual"
@@ -195,7 +195,6 @@ function HeaderInner(props: HeaderInnerProps) {
                   id="full-screen"
                   onClick={fullscreen.toggle}
                   tooltip="Full screen"
-                  className="windowButton"
                   icon={<FaRegWindowMaximize />}
                 />
               )}

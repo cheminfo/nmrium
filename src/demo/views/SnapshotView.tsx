@@ -290,6 +290,14 @@ const customWorkspaces: CustomWorkspaces = {
       ranges: {
         nuclei: {
           '1H': {
+            isSumConstant: false,
+            showAssignment: false,
+            showAssignmentLabel: false,
+            showSerialNumber: false,
+            showDeleteAction: false,
+            showEditAction: false,
+            showMultiplicity: false,
+            showZoomAction: false,
             from: {
               show: false,
               format: '0.00',
@@ -322,6 +330,14 @@ const customWorkspaces: CustomWorkspaces = {
             showKind: false,
           },
           '13C': {
+            isSumConstant: false,
+            showAssignment: false,
+            showAssignmentLabel: false,
+            showSerialNumber: false,
+            showDeleteAction: false,
+            showEditAction: false,
+            showMultiplicity: false,
+            showZoomAction: false,
             from: {
               show: false,
               format: '0.00',
@@ -381,6 +397,7 @@ const customWorkspaces: CustomWorkspaces = {
     },
     infoBlock: {
       visible: false,
+      position: { x: 0, y: 0 },
       fields: [
         { label: 'Name', jpath: ['info', 'name'], visible: true, format: '' },
         {
@@ -474,7 +491,6 @@ const customWorkspaces: CustomWorkspaces = {
       },
     },
     label: 'Snapshots',
-    version: 1,
   },
 };
 

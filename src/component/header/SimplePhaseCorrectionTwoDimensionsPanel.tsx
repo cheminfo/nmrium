@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { Select } from '@blueprintjs/select';
-import { css } from '@emotion/react';
 import { Filters } from 'nmr-processing';
 import { FaRulerHorizontal, FaRulerVertical } from 'react-icons/fa';
 import { MdLooksTwo } from 'react-icons/md';
@@ -53,20 +52,14 @@ export function SimplePhaseCorrectionTwoDimensionsPanel() {
       {phaseCorrectionSelectItem?.value === 'manual' && (
         <>
           <Label title="Direction:" style={headerLabelStyle}>
-            <Toolbar>
+            <Toolbar minimal>
               <Toolbar.Item
-                css={css`
-                  border: 1px solid #f7f7f7;
-                `}
                 tooltip="Horizontal"
                 icon={<FaRulerHorizontal />}
                 active={activeTraceDirection === 'horizontal'}
                 onClick={() => onChangeHandler('horizontal')}
               />
               <Toolbar.Item
-                css={css`
-                  border: 1px solid #f7f7f7;
-                `}
                 tooltip="Vertical"
                 icon={<FaRulerVertical />}
                 active={activeTraceDirection === 'vertical'}
@@ -75,7 +68,7 @@ export function SimplePhaseCorrectionTwoDimensionsPanel() {
             </Toolbar>
           </Label>
           <div style={{ paddingRight: '5px' }}>
-            <Toolbar>
+            <Toolbar minimal>
               <Toolbar.Item
                 tooltip="Add the trace in both directions"
                 icon={<MdLooksTwo />}

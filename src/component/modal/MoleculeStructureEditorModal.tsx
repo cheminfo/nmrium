@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 import { Molecule } from 'openchemlib/full';
 import { TopicMolecule } from 'openchemlib-utils';
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { StructureEditor, IStructureEditorProps } from 'react-ocl/full';
+import { StructureEditor, StructureEditorProps } from 'react-ocl/full';
 import { useOnOff } from 'react-science/ui';
 
 import { StateMoleculeExtended } from '../../data/molecules/Molecule';
@@ -51,7 +51,7 @@ function MoleculeStructureEditorModal(
     }
   }, [initialEnhancedMolfile]);
 
-  const cb = useCallback<Exclude<IStructureEditorProps['onChange'], undefined>>(
+  const cb = useCallback<Exclude<StructureEditorProps['onChange'], undefined>>(
     (newMolfile, molecule) => {
       if (molecule.getAllAtoms() === 0) {
         setMolfile(null);

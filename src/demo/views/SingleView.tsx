@@ -58,6 +58,7 @@ export default function SingleView(props) {
           {path}
         </p>
       )}
+      {/* @ts-expect-error data type is wrong */}
       <NMRium data={data} />
     </div>
   );

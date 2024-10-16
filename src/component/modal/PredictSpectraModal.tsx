@@ -139,7 +139,7 @@ export function PredictSpectraModal({
 
   return (
     <>
-      <Toolbar>
+      <Toolbar minimal>
         <Toolbar.Item
           icon={<SvgNmrFt />}
           tooltip="Predict spectra"

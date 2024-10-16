@@ -2,7 +2,7 @@ import { Toolbar, ToolbarItemProps } from 'react-science/ui';
 
 export function ToolBarButton(props: ToolbarItemProps) {
   return (
-    <Toolbar>
+    <Toolbar minimal>
       <Toolbar.Item {...props} />
     </Toolbar>
   );

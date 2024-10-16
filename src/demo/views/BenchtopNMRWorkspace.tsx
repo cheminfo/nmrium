@@ -165,6 +165,7 @@ const customWorkspaces: CustomWorkspaces = {
     },
     infoBlock: {
       visible: false,
+      position: { x: 0, y: 0 },
       fields: [
         {
           label: 'Name',
@@ -262,6 +263,7 @@ const customWorkspaces: CustomWorkspaces = {
       },
     },
     spectraColors: {
+      highlightColor: '#ffd70080',
       oneDimension: [],
       twoDimensions: [
         {
@@ -302,7 +304,6 @@ const customWorkspaces: CustomWorkspaces = {
         },
       ],
     },
-    version: 2,
     label: 'Simple NMR analysis',
     visible: true,
   },

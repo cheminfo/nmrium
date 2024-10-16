@@ -246,7 +246,7 @@ function InformationPanelToolBar(props: {
   const activeSpectrum = useActiveSpectrum();
 
   return (
-    <Toolbar>
+    <Toolbar minimal>
       <Toolbar.Item
         disabled={!activeSpectrum}
         tooltipProps={{ intent: !activeSpectrum ? 'danger' : 'none' }}
