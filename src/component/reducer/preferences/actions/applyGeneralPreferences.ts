@@ -4,7 +4,7 @@ import {
   ApplyGeneralPreferences,
   PreferencesState,
   WorkspaceWithSource,
-} from '../preferencesReducer';
+} from '../preferencesReducer.js';
 
 export function applyGeneralPreferences(
   draft: Draft<PreferencesState>,

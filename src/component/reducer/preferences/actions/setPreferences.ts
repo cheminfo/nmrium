@@ -1,8 +1,8 @@
 import { Draft } from 'immer';
-import cloneDeep from 'lodash/cloneDeep';
+import cloneDeep from 'lodash/cloneDeep.js';
 
-import { PreferencesState } from '../preferencesReducer';
-import { getActiveWorkspace } from '../utilities/getActiveWorkspace';
+import { PreferencesState } from '../preferencesReducer.js';
+import { getActiveWorkspace } from '../utilities/getActiveWorkspace.js';
 
 export function setPreferences(draft: Draft<PreferencesState>, action) {
   const currentWorkspacePreferences = getActiveWorkspace(draft);

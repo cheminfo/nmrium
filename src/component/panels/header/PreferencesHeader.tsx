@@ -1,5 +1,5 @@
-import { CloseButton } from '../../elements/CloseButton';
-import { SaveButton } from '../../elements/SaveButton';
+import { CloseButton } from '../../elements/CloseButton.js';
+import { SaveButton } from '../../elements/SaveButton.js';
 
 interface PreferencesHeaderProps {
   onClose: () => void;

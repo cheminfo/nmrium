@@ -1,5 +1,5 @@
-import { formatNumber } from '../../../utility/formatNumber';
-import { RangeColumnProps } from '../RangesTableRow';
+import { formatNumber } from '../../../utility/formatNumber.js';
+import { RangeColumnProps } from '../RangesTableRow.js';
 
 interface RangeColumnInnerProps extends Omit<RangeColumnProps, 'row'> {
   value: any;

@@ -1,7 +1,7 @@
 import { ForwardedRef, RefObject, useImperativeHandle } from 'react';
 
-import { useLoadFiles } from '../loader/useLoadFiles';
-import { BlobObject, getBlob } from '../utility/export';
+import { useLoadFiles } from '../loader/useLoadFiles.js';
+import { BlobObject, getBlob } from '../utility/export.js';
 
 export interface NMRiumRefAPI {
   getSpectraViewerAsBlob: () => BlobObject | null;

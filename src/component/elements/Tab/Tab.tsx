@@ -2,7 +2,7 @@
 import { css, SerializedStyles } from '@emotion/react';
 import { CSSProperties, ReactNode } from 'react';
 
-import DeleteButton from './DeleteButton';
+import DeleteButton from './DeleteButton.js';
 
 const styles = (styles) => css`
   position: relative;

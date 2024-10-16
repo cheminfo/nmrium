@@ -10,15 +10,15 @@ import {
   MoleculeBoundingRect,
   MoleculeView,
   StateMoleculeExtended,
-} from '../../../../data/molecules/Molecule';
-import { useDispatch } from '../../../context/DispatchContext';
-import { useGlobal } from '../../../context/GlobalContext';
-import { useHighlightColor } from '../../../hooks/useHighlightColor';
-import { useMoleculeEditor } from '../../../modal/MoleculeStructureEditorModal';
-import useAtomAssignment from '../../../panels/MoleculesPanel/useAtomAssignment';
-import { DisplayerMode } from '../../../reducer/Reducer';
+} from '../../../../data/molecules/Molecule.js';
+import { useDispatch } from '../../../context/DispatchContext.js';
+import { useGlobal } from '../../../context/GlobalContext.js';
+import { useHighlightColor } from '../../../hooks/useHighlightColor.js';
+import { useMoleculeEditor } from '../../../modal/MoleculeStructureEditorModal.js';
+import useAtomAssignment from '../../../panels/MoleculesPanel/useAtomAssignment.js';
+import { DisplayerMode } from '../../../reducer/Reducer.js';
 
-import ActionsButton from './ActionsButton';
+import ActionsButton from './ActionsButton.js';
 
 interface DraggableStructureProps {
   zones: Zones;

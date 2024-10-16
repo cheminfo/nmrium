@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 
-import { TableVirtualBoundary } from '../ReactTable';
+import { TableVirtualBoundary } from '../ReactTable.js';
 
 const reactContext = createContext<TableVirtualBoundary | null>(null);
 export const ReactTableProvider = reactContext.Provider;

@@ -1,17 +1,17 @@
 import { memo } from 'react';
 
-import { useHighlight } from '../../highlight';
-import { formatNumber } from '../../utility/formatNumber';
-import { getDecimalsCount } from '../utilities/getDecimalsCount';
-import { resolve } from '../utilities/intersectionResolver';
+import { useHighlight } from '../../highlight/index.js';
+import { formatNumber } from '../../utility/formatNumber.js';
+import { getDecimalsCount } from '../utilities/getDecimalsCount.js';
+import { resolve } from '../utilities/intersectionResolver.js';
 
-import { PeakEditionListener } from './PeakEditionManager';
+import { PeakEditionListener } from './PeakEditionManager.js';
 import {
-  PeaksAnnotationsProps,
-  PeaksSource,
   getHighlightExtraId,
   getHighlightSource,
-} from './Peaks';
+  PeaksAnnotationsProps,
+  PeaksSource,
+} from './Peaks.js';
 
 const notationWidth = 10;
 const notationMargin = 2;

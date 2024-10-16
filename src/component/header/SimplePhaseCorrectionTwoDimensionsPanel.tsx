@@ -5,18 +5,18 @@ import { FaRulerHorizontal, FaRulerVertical } from 'react-icons/fa';
 import { MdLooksTwo } from 'react-icons/md';
 import { Button, Toolbar } from 'react-science/ui';
 
-import ActionButtons from '../elements/ActionButtons';
-import InputRange from '../elements/InputRange';
-import Label from '../elements/Label';
-import { useFilter } from '../hooks/useFilter';
+import ActionButtons from '../elements/ActionButtons.js';
+import InputRange from '../elements/InputRange.js';
+import Label from '../elements/Label.js';
+import { useFilter } from '../hooks/useFilter.js';
 import {
+  AlgorithmItem,
   phaseCorrectionalAlgorithms,
   usePhaseCorrectionTwoDimensions,
-  AlgorithmItem,
-} from '../panels/filtersPanel/Filters/hooks/usePhaseCorrectionTwoDimensions';
+} from '../panels/filtersPanel/Filters/hooks/usePhaseCorrectionTwoDimensions.js';
 
-import { headerLabelStyle } from './Header';
-import { HeaderWrapper } from './HeaderWrapper';
+import { headerLabelStyle } from './Header.js';
+import { HeaderWrapper } from './HeaderWrapper.js';
 
 export function SimplePhaseCorrectionTwoDimensionsPanel() {
   const filter = useFilter(Filters.phaseCorrectionTwoDimensions.id);

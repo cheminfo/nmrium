@@ -1,7 +1,7 @@
 import { NmrData1D } from 'cheminfo-types';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 
-import { maxAbsoluteValue } from '../../utility/maxAbsoluteValue';
+import { maxAbsoluteValue } from '../../utility/maxAbsoluteValue.js';
 
 export function findStrongestPeak(data: NmrData1D) {
   if (!data) return null;

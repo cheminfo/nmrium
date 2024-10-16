@@ -1,12 +1,12 @@
 import { Spectrum1D } from 'nmr-load-save';
 import { CSSProperties } from 'react';
 
-import { useBrushTracker } from '../../EventsTrackers/BrushTracker';
-import { useMouseTracker } from '../../EventsTrackers/MouseTracker';
-import { useChartData } from '../../context/ChartContext';
-import { useScaleChecked } from '../../context/ScaleContext';
-import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
-import useSpectrum from '../../hooks/useSpectrum';
+import { useBrushTracker } from '../../EventsTrackers/BrushTracker.js';
+import { useMouseTracker } from '../../EventsTrackers/MouseTracker.js';
+import { useChartData } from '../../context/ChartContext.js';
+import { useScaleChecked } from '../../context/ScaleContext.js';
+import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus.js';
+import useSpectrum from '../../hooks/useSpectrum.js';
 
 const style: CSSProperties = {
   cursor: 'crosshair',

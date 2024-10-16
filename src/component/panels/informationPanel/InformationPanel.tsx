@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { InfoPanel, InfoPanelData } from 'react-science/ui';
 
-import useSpectrum from '../../hooks/useSpectrum';
+import useSpectrum from '../../hooks/useSpectrum.js';
 
 const emptyData = { info: {}, meta: {} };
 

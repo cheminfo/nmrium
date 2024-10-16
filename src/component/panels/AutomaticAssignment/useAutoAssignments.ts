@@ -6,10 +6,10 @@ import {
 import OCL from 'openchemlib/full';
 import { useRef, useState } from 'react';
 
-import { useChartData } from '../../context/ChartContext';
-import { useDispatch } from '../../context/DispatchContext';
-import { useToaster } from '../../context/ToasterContext';
-import { assert } from '../../utility/assert';
+import { useChartData } from '../../context/ChartContext.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { useToaster } from '../../context/ToasterContext.js';
+import { assert } from '../../utility/assert.js';
 
 export interface AutoAssignmentsData {
   score: number;

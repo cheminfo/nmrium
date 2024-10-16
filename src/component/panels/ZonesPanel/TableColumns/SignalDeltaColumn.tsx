@@ -1,10 +1,10 @@
-import lodashGet from 'lodash/get';
+import lodashGet from 'lodash/get.js';
 
-import { useDispatch } from '../../../context/DispatchContext';
-import EditableColumn from '../../../elements/EditableColumn';
-import { usePanelPreferences } from '../../../hooks/usePanelPreferences';
-import { formatNumber } from '../../../utility/formatNumber';
-import { ZoneData } from '../hooks/useMapZones';
+import { useDispatch } from '../../../context/DispatchContext.js';
+import EditableColumn from '../../../elements/EditableColumn.js';
+import { usePanelPreferences } from '../../../hooks/usePanelPreferences.js';
+import { formatNumber } from '../../../utility/formatNumber.js';
+import { ZoneData } from '../hooks/useMapZones.js';
 
 interface SignalDeltaColumnProps {
   rowData: ZoneData;

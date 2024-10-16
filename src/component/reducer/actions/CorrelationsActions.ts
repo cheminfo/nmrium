@@ -1,5 +1,5 @@
 import { original, Draft } from 'immer';
-import lodashCloneDeep from 'lodash/cloneDeep';
+import lodashCloneDeep from 'lodash/cloneDeep.js';
 import {
   buildCorrelationData,
   setCorrelation,
@@ -17,13 +17,13 @@ import {
   findSignal2D,
   findSpectrum,
   findZone,
-} from '../../../data/utilities/FindUtilities';
-import { AssignmentContext } from '../../assignment/AssignmentsContext';
-import { State } from '../Reducer';
-import { ActionType } from '../types/ActionType';
+} from '../../../data/utilities/FindUtilities.js';
+import { AssignmentContext } from '../../assignment/AssignmentsContext.js';
+import { State } from '../Reducer.js';
+import { ActionType } from '../types/ActionType.js';
 
-import { deleteSignal1D } from './RangesActions';
-import { deleteSignal2D } from './ZonesActions';
+import { deleteSignal1D } from './RangesActions.js';
+import { deleteSignal2D } from './ZonesActions.js';
 
 type SetMFAction = ActionType<'SET_CORRELATIONS_MF', { mf: string }>;
 type SetToleranceAction = ActionType<

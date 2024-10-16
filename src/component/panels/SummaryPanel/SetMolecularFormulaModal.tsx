@@ -4,12 +4,12 @@ import { CSSProperties, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
-import getAtomsFromMF from '../../../data/utilities/getAtomsFromMF';
-import { useChartData } from '../../context/ChartContext';
-import { useDispatch } from '../../context/DispatchContext';
-import Button from '../../elements/Button';
-import { Input2Controller } from '../../elements/Input2Controller';
-import MoleculeSelection from '../../elements/MoleculeSelection';
+import getAtomsFromMF from '../../../data/utilities/getAtomsFromMF.js';
+import { useChartData } from '../../context/ChartContext.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import Button from '../../elements/Button.js';
+import { Input2Controller } from '../../elements/Input2Controller.js';
+import MoleculeSelection from '../../elements/MoleculeSelection.js';
 
 function isValidMf(value: string): boolean {
   try {

@@ -1,6 +1,6 @@
 import { Classes, InputGroupProps, MenuItem } from '@blueprintjs/core';
 import { Suggest } from '@blueprintjs/select';
-import debounce from 'lodash/debounce';
+import debounce from 'lodash/debounce.js';
 import {
   useEffect,
   useRef,
@@ -11,7 +11,7 @@ import {
   ForwardedRef,
 } from 'react';
 
-import useCombinedRefs from '../hooks/useCombinedRefs';
+import useCombinedRefs from '../hooks/useCombinedRefs.js';
 
 interface UseInputProps extends BaseInputProps {
   value?: string;

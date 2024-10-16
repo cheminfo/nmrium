@@ -5,8 +5,8 @@ import {
   SpectraPreferences,
 } from 'nmr-load-save';
 
-import { DeepPartial } from '../../../data/types/common/DeepPartial';
-import { is2DNucleus } from '../../utility/nucleusToString';
+import { DeepPartial } from '../../../data/types/common/DeepPartial.js';
+import { is2DNucleus } from '../../utility/nucleusToString.js';
 
 function getPreferences<T>(data: T, nucleus?: string) {
   return { nuclei: { ...(nucleus ? { [nucleus]: data } : {}) } };

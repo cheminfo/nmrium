@@ -2,7 +2,7 @@ import { DataXY } from 'cheminfo-types';
 import { xyReduce } from 'ml-spectra-processing';
 import { useCallback } from 'react';
 
-import { useChartData } from '../context/ChartContext';
+import { useChartData } from '../context/ChartContext.js';
 
 export enum XYReducerDomainAxis {
   XAxis = 'XAxis',

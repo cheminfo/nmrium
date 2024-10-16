@@ -10,7 +10,7 @@ import {
   CSSProperties,
 } from 'react';
 
-import { triggerSource } from './AccordionItem';
+import { triggerSource } from './AccordionItem.js';
 
 const styles: Record<'container', CSSProperties> = {
   container: {

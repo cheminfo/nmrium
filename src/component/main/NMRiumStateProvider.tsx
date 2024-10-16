@@ -1,15 +1,19 @@
 import { NmriumState, readNMRiumObject } from 'nmr-load-save';
 import { ReactNode, useCallback, useEffect, useReducer, useRef } from 'react';
 
-import { toJSON } from '../../data/SpectraManager';
-import { ChartDataProvider } from '../context/ChartContext';
-import { DispatchProvider } from '../context/DispatchContext';
-import { useLogger } from '../context/LoggerContext';
-import { usePreferences } from '../context/PreferencesContext';
-import checkActionType from '../reducer/IgnoreActions';
-import { spectrumReducer, initialState, initState } from '../reducer/Reducer';
+import { toJSON } from '../../data/SpectraManager.js';
+import { ChartDataProvider } from '../context/ChartContext.js';
+import { DispatchProvider } from '../context/DispatchContext.js';
+import { useLogger } from '../context/LoggerContext.js';
+import { usePreferences } from '../context/PreferencesContext.js';
+import checkActionType from '../reducer/IgnoreActions.js';
+import {
+  initialState,
+  initState,
+  spectrumReducer,
+} from '../reducer/Reducer.js';
 
-import { NMRiumChangeCb, NMRiumData } from './types';
+import { NMRiumChangeCb, NMRiumData } from './types.js';
 
 interface NMRiumStateProviderProps {
   children: ReactNode;

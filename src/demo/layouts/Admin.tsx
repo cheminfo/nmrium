@@ -1,12 +1,12 @@
 /** @jsxImportSource @emotion/react */
 
 import { css } from '@emotion/react';
-import { Suspense, useMemo, useState, useCallback, ReactElement } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { ReactElement, Suspense, useCallback, useMemo, useState } from 'react';
+import { Route, Routes, useLocation } from 'react-router-dom';
 
-import Sidebar from '../Sidebar';
-import { mapTreeToFlatArray, getKey } from '../utility/menu';
-import { possibleViews } from '../views';
+import Sidebar from '../Sidebar.js';
+import { getKey, mapTreeToFlatArray } from '../utility/menu.js';
+import { possibleViews } from '../views/index.js';
 
 const mainPanelCss = css`
   position: relative;

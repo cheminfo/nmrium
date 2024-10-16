@@ -3,7 +3,7 @@ import mean from 'ml-array-mean';
 import { gsd } from 'ml-gsd';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 
-import { getRange } from '../../constants/References';
+import { getRange } from '../../constants/References.js';
 
 export interface CalibrateOptions {
   from: number;

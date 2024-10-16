@@ -2,13 +2,13 @@
 
 import { CSSProperties, memo } from 'react';
 
-import { AssignmentsData } from '../../../assignment/AssignmentsContext';
+import { AssignmentsData } from '../../../assignment/AssignmentsContext.js';
 import {
-  RemoveAssignmentsButton,
   removeAssignmentCssStyle,
-} from '../../../elements/RemoveAssignmentsButton';
-import { HighlightEventSource } from '../../../highlight';
-import { RangeColumnProps } from '../RangesTableRow';
+  RemoveAssignmentsButton,
+} from '../../../elements/RemoveAssignmentsButton.js';
+import { HighlightEventSource } from '../../../highlight/index.js';
+import { RangeColumnProps } from '../RangesTableRow.js';
 
 const columnStyle: CSSProperties = {
   padding: 0,

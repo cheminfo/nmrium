@@ -3,10 +3,10 @@ import { css } from '@emotion/react';
 import { Correlation } from 'nmr-correlation';
 import { useMemo } from 'react';
 
-import { getLabelColor } from '../utilities/Utilities';
+import { getLabelColor } from '../utilities/Utilities.js';
 
-import AdditionalColumnHeader from './AdditionalColumnHeader';
-import CorrelationTableRow from './CorrelationTableRow';
+import AdditionalColumnHeader from './AdditionalColumnHeader.js';
+import CorrelationTableRow from './CorrelationTableRow.js';
 
 const tableStyle = css`
   overflow: auto;

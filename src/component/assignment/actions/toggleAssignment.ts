@@ -2,10 +2,10 @@ import {
   AssignmentDimension,
   AssignmentState,
   Axis,
-} from '../AssignmentsContext';
-import { ToggleAction } from '../AssignmentsReducer';
+} from '../AssignmentsContext.js';
+import { ToggleAction } from '../AssignmentsReducer.js';
 
-import { removeAssignment } from './removeAssignment';
+import { removeAssignment } from './removeAssignment.js';
 
 interface AddAction {
   id: string;

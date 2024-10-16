@@ -1,8 +1,8 @@
 import { produce } from 'immer';
 import { createContext, useContext } from 'react';
 
-import { useViewportSize } from '../hooks/useViewportSize';
-import { initialState, State } from '../reducer/Reducer';
+import { useViewportSize } from '../hooks/useViewportSize.js';
+import { initialState, State } from '../reducer/Reducer.js';
 
 export const ChartContext = createContext<State>(initialState);
 export const ChartDataProvider = ChartContext.Provider;

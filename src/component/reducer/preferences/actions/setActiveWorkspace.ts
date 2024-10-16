@@ -1,6 +1,6 @@
 import { Draft } from 'immer';
 
-import { PreferencesState, WorkspaceAction } from '../preferencesReducer';
+import { PreferencesState, WorkspaceAction } from '../preferencesReducer.js';
 
 export function setActiveWorkspace(
   draft: Draft<PreferencesState>,

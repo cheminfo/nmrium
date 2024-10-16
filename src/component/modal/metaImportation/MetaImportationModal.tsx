@@ -1,10 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { ParseResult } from 'papaparse';
-import { CSSProperties, useState, useMemo, useEffect } from 'react';
-import type { FileWithPath } from 'react-dropzone';
-import { FileError } from 'react-dropzone';
+import type { ParseResult } from 'papaparse';
+import { type CSSProperties, useEffect, useMemo, useState } from 'react';
+import type { FileError, FileWithPath } from 'react-dropzone';
 import { useForm } from 'react-hook-form';
 import { DropZone } from 'react-science/ui';
 import * as Yup from 'yup';
@@ -12,22 +11,22 @@ import * as Yup from 'yup';
 import {
   isMetaFile,
   linkMetaWithSpectra,
+  mapErrors,
   parseMetaFile,
   TargetPathError,
-  mapErrors,
-} from '../../../data/parseMeta';
-import { useChartData } from '../../context/ChartContext';
-import { useDispatch } from '../../context/DispatchContext';
-import { useToaster } from '../../context/ToasterContext';
-import Button from '../../elements/Button';
-import { Input2Controller } from '../../elements/Input2Controller';
-import Label from '../../elements/Label';
-import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
-import { Select2Controller } from '../../elements/Select2Controller';
-import { convertPathArrayToString } from '../../utility/convertPathArrayToString';
-import { getSpectraObjectPaths } from '../../utility/getSpectraObjectPaths';
+} from '../../../data/parseMeta/index.js';
+import { useChartData } from '../../context/ChartContext.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { useToaster } from '../../context/ToasterContext.js';
+import Button from '../../elements/Button.js';
+import { Input2Controller } from '../../elements/Input2Controller.js';
+import Label from '../../elements/Label.js';
+import ReactTable, { Column } from '../../elements/ReactTable/ReactTable.js';
+import { Select2Controller } from '../../elements/Select2Controller.js';
+import { convertPathArrayToString } from '../../utility/convertPathArrayToString.js';
+import { getSpectraObjectPaths } from '../../utility/getSpectraObjectPaths.js';
 
-import { mapColumnToSelectItems } from './utils/mapColumnToSelectItems';
+import { mapColumnToSelectItems } from './utils/mapColumnToSelectItems.js';
 
 const styles: Record<'container' | 'column', CSSProperties> = {
   container: {

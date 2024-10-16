@@ -1,9 +1,12 @@
 import { Fragment } from 'react';
 
-import { AssignmentsData, Axis } from '../../../assignment/AssignmentsContext';
-import { ZoneData } from '../hooks/useMapZones';
+import {
+  AssignmentsData,
+  Axis,
+} from '../../../assignment/AssignmentsContext.js';
+import { ZoneData } from '../hooks/useMapZones.js';
 
-import SignalAssignmentsColumn from './SignalAssignmentsColumn';
+import SignalAssignmentsColumn from './SignalAssignmentsColumn.js';
 
 interface SignalAssignmentsColumnsProps {
   rowData: ZoneData;

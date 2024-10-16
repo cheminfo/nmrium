@@ -1,8 +1,8 @@
 import { Draft } from 'immer';
 
-import { State } from '../Reducer';
+import { State } from '../Reducer.js';
 
-import { getActiveSpectra } from './getActiveSpectra';
+import { getActiveSpectra } from './getActiveSpectra.js';
 
 export function getActiveSpectraAsObject(
   state: Draft<State> | State,

@@ -1,14 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { Molecule } from 'openchemlib/full';
-import { useState, useEffect, useCallback } from 'react';
-import { FaRegCopy, FaCheck } from 'react-icons/fa';
+import { useCallback, useEffect, useState } from 'react';
+import { FaCheck, FaRegCopy } from 'react-icons/fa';
 import { MF } from 'react-mf';
 import { StructureEditor } from 'react-ocl/full';
 
-import { NMRium } from '../../component/main';
-import { ClipboardFallbackModal } from '../../utils/clipboard/clipboardComponents';
-import { useClipboard } from '../../utils/clipboard/clipboardHooks';
+import { NMRium } from '../../component/main/index.js';
+import { ClipboardFallbackModal } from '../../utils/clipboard/clipboardComponents.js';
+import { useClipboard } from '../../utils/clipboard/clipboardHooks.js';
 
 const answers = JSON.parse(localStorage.getItem('nmrium-exams') || '{}');
 

@@ -1,14 +1,14 @@
 import { useReducer, useMemo, useEffect, Reducer, ReactNode } from 'react';
 
-import { useChartData } from '../context/ChartContext';
+import { useChartData } from '../context/ChartContext.js';
 
 import {
   AssignmentContext,
   assignmentState,
   AssignmentState,
   assignmentContext,
-} from './AssignmentsContext';
-import assignmentReducer, { AssignmentsActions } from './AssignmentsReducer';
+} from './AssignmentsContext.js';
+import assignmentReducer, { AssignmentsActions } from './AssignmentsReducer.js';
 
 interface AssignmentProviderProps {
   children: ReactNode;

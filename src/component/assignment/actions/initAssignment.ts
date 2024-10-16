@@ -1,8 +1,12 @@
 import { Spectrum } from 'nmr-load-save';
 import { Ranges, Zones } from 'nmr-processing';
 
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D';
-import { assignmentState, AssignmentState, Axis } from '../AssignmentsContext';
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
+import {
+  assignmentState,
+  AssignmentState,
+  Axis,
+} from '../AssignmentsContext.js';
 
 export default function initAssignment(action) {
   const newState = {

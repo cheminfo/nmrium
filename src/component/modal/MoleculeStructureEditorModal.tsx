@@ -3,13 +3,13 @@ import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { Molecule } from 'openchemlib/full';
 import { TopicMolecule } from 'openchemlib-utils';
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { StructureEditor, StructureEditorProps } from 'react-ocl/full';
 import { useOnOff } from 'react-science/ui';
 
-import { StateMoleculeExtended } from '../../data/molecules/Molecule';
-import { useDispatch } from '../context/DispatchContext';
-import ActionButtons from '../elements/ActionButtons';
+import { StateMoleculeExtended } from '../../data/molecules/Molecule.js';
+import { useDispatch } from '../context/DispatchContext.js';
+import ActionButtons from '../elements/ActionButtons.js';
 
 interface MoleculeStructureEditorModalProps {
   onClose?: (element?: string) => void;

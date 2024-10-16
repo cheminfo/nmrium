@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 
-import { CouplingLink } from '../../../data/data1d/Spectrum1D/generateJGraphData';
-import { useScaleChecked } from '../../context/ScaleContext';
+import { CouplingLink } from '../../../data/data1d/Spectrum1D/generateJGraphData.js';
+import { useScaleChecked } from '../../context/ScaleContext.js';
 
-import { useJGraph } from './JGraphContext';
+import { useJGraph } from './JGraphContext.js';
 
 interface JsCouplingLinksProps {
   links: CouplingLink[];

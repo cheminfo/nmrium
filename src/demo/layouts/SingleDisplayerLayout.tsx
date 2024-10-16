@@ -1,8 +1,8 @@
 import { Suspense } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
-import { getKey } from '../utility/menu';
-import { possibleViews } from '../views';
+import { getKey } from '../utility/menu.js';
+import { possibleViews } from '../views/index.js';
 
 interface SingleDisplayerLayoutProps {
   path: any;

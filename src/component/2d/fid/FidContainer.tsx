@@ -1,13 +1,13 @@
 import { Spectrum2D } from 'nmr-load-save';
 
-import { getSlice } from '../../../data/data2d/Spectrum2D';
-import { useMouseTracker } from '../../EventsTrackers/MouseTracker';
-import useSpectrum from '../../hooks/useSpectrum';
-import HorizontalSliceChart from '../1d-tracer/HorizontalSliceChart';
-import VerticalSliceChart from '../1d-tracer/VerticalSliceChart';
-import { useScale2DX, useScale2DY } from '../utilities/scale';
+import { getSlice } from '../../../data/data2d/Spectrum2D/index.js';
+import { useMouseTracker } from '../../EventsTrackers/MouseTracker.js';
+import useSpectrum from '../../hooks/useSpectrum.js';
+import HorizontalSliceChart from '../1d-tracer/HorizontalSliceChart.js';
+import VerticalSliceChart from '../1d-tracer/VerticalSliceChart.js';
+import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 
-import { FidCanvas } from './FidCanvas';
+import { FidCanvas } from './FidCanvas.js';
 
 export function FidContainer() {
   const spectrum = useSpectrum() as Spectrum2D;

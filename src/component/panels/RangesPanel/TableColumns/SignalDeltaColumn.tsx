@@ -1,9 +1,9 @@
 import { checkMultiplicity } from 'nmr-processing';
 
-import { useDispatch } from '../../../context/DispatchContext';
-import EditableColumn from '../../../elements/EditableColumn';
-import { formatNumber } from '../../../utility/formatNumber';
-import { RangeColumnProps } from '../RangesTableRow';
+import { useDispatch } from '../../../context/DispatchContext.js';
+import EditableColumn from '../../../elements/EditableColumn.js';
+import { formatNumber } from '../../../utility/formatNumber.js';
+import { RangeColumnProps } from '../RangesTableRow.js';
 
 function SignalDeltaColumn({
   row,

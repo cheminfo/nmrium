@@ -1,14 +1,14 @@
 import { v4 } from '@lukeed/uuid';
-import lodashMerge from 'lodash/merge';
+import lodashMerge from 'lodash/merge.js';
 import { Workspace } from 'nmr-load-save';
 
-import { usePreferences } from '../context/PreferencesContext';
+import { usePreferences } from '../context/PreferencesContext.js';
 import {
   Settings,
   readSettings,
   updateSettings,
-} from '../reducer/preferences/preferencesReducer';
-import { workspaceDefaultProperties } from '../workspaces/workspaceDefaultProperties';
+} from '../reducer/preferences/preferencesReducer.js';
+import { workspaceDefaultProperties } from '../workspaces/workspaceDefaultProperties.js';
 
 export function useWorkspaceAction() {
   const { dispatch, current, workspace } = usePreferences();

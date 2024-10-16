@@ -5,10 +5,10 @@ import { useFormContext } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
 
-import { InputStyle } from '../../../elements/Input';
-import { Input2Controller } from '../../../elements/Input2Controller';
-import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
-import { convertPathArrayToString } from '../../../utility/convertPathArrayToString';
+import { InputStyle } from '../../../elements/Input.js';
+import { Input2Controller } from '../../../elements/Input2Controller.js';
+import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable.js';
+import { convertPathArrayToString } from '../../../utility/convertPathArrayToString.js';
 
 const inputStyle: InputStyle = {
   input: {

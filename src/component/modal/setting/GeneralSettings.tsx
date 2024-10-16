@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import {
+  Classes,
   Dialog,
   DialogBody,
   DialogFooter,
-  Classes,
-  Tabs,
   Tab,
+  Tabs,
 } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
@@ -21,37 +21,37 @@ import {
 import { FaBolt, FaPaste, FaRegCopy, FaWrench } from 'react-icons/fa';
 import { Button, Toolbar, useOnOff } from 'react-science/ui';
 
-import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents';
-import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
+import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents.js';
+import { useClipboard } from '../../../utils/clipboard/clipboardHooks.js';
 import {
   usePreferences,
   useWorkspacesList,
-} from '../../context/PreferencesContext';
-import { useToaster } from '../../context/ToasterContext';
-import ActionButtons from '../../elements/ActionButtons';
-import Label from '../../elements/Label';
+} from '../../context/PreferencesContext.js';
+import { useToaster } from '../../context/ToasterContext.js';
+import ActionButtons from '../../elements/ActionButtons.js';
+import Label from '../../elements/Label.js';
 import DropDownButton, {
   DropDownListItem,
-} from '../../elements/dropDownButton/DropDownButton';
-import { useSaveSettings } from '../../hooks/useSaveSettings';
-import { useWorkspaceAction } from '../../hooks/useWorkspaceAction';
-import { WorkspaceWithSource } from '../../reducer/preferences/preferencesReducer';
-import { getPreferencesByWorkspace } from '../../reducer/preferences/utilities/getPreferencesByWorkspace';
-import PredefinedWorkspaces from '../../workspaces';
+} from '../../elements/dropDownButton/DropDownButton.js';
+import { useSaveSettings } from '../../hooks/useSaveSettings.js';
+import { useWorkspaceAction } from '../../hooks/useWorkspaceAction.js';
+import { WorkspaceWithSource } from '../../reducer/preferences/preferencesReducer.js';
+import { getPreferencesByWorkspace } from '../../reducer/preferences/utilities/getPreferencesByWorkspace.js';
+import PredefinedWorkspaces from '../../workspaces/index.js';
 
-import WorkspaceItem from './WorkspaceItem';
-import DatabasesTabContent from './settings-tabs/DatabasesTabContent';
-import DisplayTabContent from './settings-tabs/DisplayTabContent';
-import { ExportTabContent } from './settings-tabs/ExportTabContent';
-import { ExternalAPIsTabContent } from './settings-tabs/ExternalAPIsTabContent';
-import GeneralTabContent from './settings-tabs/GeneralTabContent';
-import ImportationFiltersTabContent from './settings-tabs/ImportationFiltersTabContent';
-import InfoBlockTabContent from './settings-tabs/InfoBlockTabContent';
-import NucleiTabContent from './settings-tabs/NucleiTabContent';
-import OnLoadProcessingTabContent from './settings-tabs/OnLoadProcessingTabContent';
-import SpectraColorsTabContent from './settings-tabs/SpectraColorsTabContent';
-import ToolsTabContent from './settings-tabs/ToolsTabContent';
-import { validation } from './settingsValidation';
+import WorkspaceItem from './WorkspaceItem.js';
+import DatabasesTabContent from './settings-tabs/DatabasesTabContent.js';
+import DisplayTabContent from './settings-tabs/DisplayTabContent.js';
+import { ExportTabContent } from './settings-tabs/ExportTabContent.js';
+import { ExternalAPIsTabContent } from './settings-tabs/ExternalAPIsTabContent.js';
+import GeneralTabContent from './settings-tabs/GeneralTabContent.js';
+import ImportationFiltersTabContent from './settings-tabs/ImportationFiltersTabContent.js';
+import InfoBlockTabContent from './settings-tabs/InfoBlockTabContent.js';
+import NucleiTabContent from './settings-tabs/NucleiTabContent.js';
+import OnLoadProcessingTabContent from './settings-tabs/OnLoadProcessingTabContent.js';
+import SpectraColorsTabContent from './settings-tabs/SpectraColorsTabContent.js';
+import ToolsTabContent from './settings-tabs/ToolsTabContent.js';
+import { validation } from './settingsValidation.js';
 
 export const Section = styled.div`
   display: flex;

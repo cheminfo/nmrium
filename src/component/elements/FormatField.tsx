@@ -1,9 +1,9 @@
 import { CSSProperties } from 'react';
 import { ControllerProps, FieldValues } from 'react-hook-form';
 
-import { CheckController } from './CheckController';
-import { Input2Controller } from './Input2Controller';
-import Label, { LabelStyle } from './Label';
+import { CheckController } from './CheckController.js';
+import { Input2Controller } from './Input2Controller.js';
+import Label, { LabelStyle } from './Label.js';
 
 export const formatFieldInputStyle: CSSProperties = {
   textAlign: 'center',

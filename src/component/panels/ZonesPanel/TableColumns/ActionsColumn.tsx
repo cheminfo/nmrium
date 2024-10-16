@@ -1,13 +1,13 @@
 import { FaEdit, FaRegTrashAlt, FaSearchPlus } from 'react-icons/fa';
 
-import { SIGNAL_KINDS } from '../../../../data/constants/signalsKinds';
-import { useAssignmentData } from '../../../assignment/AssignmentsContext';
-import { useDispatch } from '../../../context/DispatchContext';
-import { useDialog } from '../../../elements/DialogManager';
-import { Select2 } from '../../../elements/Select2';
-import { EditZoneModal } from '../../../modal/editZone/EditZoneModal';
-import { ZoneData } from '../hooks/useMapZones';
-import { useZoneActions } from '../hooks/useZoneActions';
+import { SIGNAL_KINDS } from '../../../../data/constants/signalsKinds.js';
+import { useAssignmentData } from '../../../assignment/AssignmentsContext.js';
+import { useDispatch } from '../../../context/DispatchContext.js';
+import { useDialog } from '../../../elements/DialogManager.js';
+import { Select2 } from '../../../elements/Select2.js';
+import { EditZoneModal } from '../../../modal/editZone/EditZoneModal.js';
+import { ZoneData } from '../hooks/useMapZones.js';
+import { useZoneActions } from '../hooks/useZoneActions.js';
 
 interface ActionsColumnProps {
   rowData: ZoneData;

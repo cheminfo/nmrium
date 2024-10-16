@@ -1,7 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
-  ReactNode,
   createContext,
+  ReactNode,
   useCallback,
   useContext,
   useMemo,
@@ -10,11 +10,11 @@ import {
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
-import { useChartData } from '../../context/ChartContext';
-import { useDispatch } from '../../context/DispatchContext';
-import { useScaleChecked } from '../../context/ScaleContext';
-import { NumberInput2Controller } from '../../elements/NumberInput2Controller';
-import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
+import { useChartData } from '../../context/ChartContext.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { useScaleChecked } from '../../context/ScaleContext.js';
+import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
+import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.js';
 
 const validationSchema = Yup.object({
   value: Yup.number().required(),

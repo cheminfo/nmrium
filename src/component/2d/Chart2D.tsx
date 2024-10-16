@@ -1,19 +1,19 @@
-import { Spectrum1D, SpectraRendering } from 'nmr-load-save';
+import { SpectraRendering, Spectrum1D } from 'nmr-load-save';
 import { memo } from 'react';
 
-import SpectrumInfoBlock from '../1d-2d/components/SpectrumInfoBlock';
-import { useChartData } from '../context/ChartContext';
-import { usePreferences } from '../context/PreferencesContext';
-import { ShareDataProvider } from '../context/ShareDataContext';
-import { Margin } from '../reducer/Reducer';
+import SpectrumInfoBlock from '../1d-2d/components/SpectrumInfoBlock.js';
+import { useChartData } from '../context/ChartContext.js';
+import { usePreferences } from '../context/PreferencesContext.js';
+import { ShareDataProvider } from '../context/ShareDataContext.js';
+import { Margin } from '../reducer/Reducer.js';
 
-import XAxis from './XAxis';
-import YAxis from './YAxis';
-import { FidContainer } from './fid/FidContainer';
-import { FTContainer } from './ft/FTContainer';
-import IndicationLines from './zones/IndicationLines';
-import Zones from './zones/Zones';
-import ZonesAssignmentsLabels from './zones/ZonesAssignmentsLabels';
+import XAxis from './XAxis.js';
+import YAxis from './YAxis.js';
+import { FidContainer } from './fid/FidContainer.js';
+import { FTContainer } from './ft/FTContainer.js';
+import IndicationLines from './zones/IndicationLines.js';
+import Zones from './zones/Zones.js';
+import ZonesAssignmentsLabels from './zones/ZonesAssignmentsLabels.js';
 
 interface Chart2DProps {
   spectra?: Spectrum1D[];

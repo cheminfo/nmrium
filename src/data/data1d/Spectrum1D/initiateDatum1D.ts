@@ -2,16 +2,16 @@ import { v4 } from '@lukeed/uuid';
 import { Spectrum1D, SpectrumOneDimensionColor } from 'nmr-load-save';
 import { FiltersManager } from 'nmr-processing';
 
-import { UsedColors } from '../../../types/UsedColors';
-import { initiateFilters } from '../../initiateFilters';
-import { StateMoleculeExtended } from '../../molecules/Molecule';
+import { UsedColors } from '../../../types/UsedColors.js';
+import { initiateFilters } from '../../initiateFilters.js';
+import { StateMoleculeExtended } from '../../molecules/Molecule.js';
 
-import { initSumOptions } from './SumManager';
-import { convertDataToFloat64Array } from './convertDataToFloat64Array';
-import { get1DColor } from './get1DColor';
-import { initiateIntegrals } from './integrals/initiateIntegrals';
-import { initiatePeaks } from './peaks/initiatePeaks';
-import { initiateRanges } from './ranges/initiateRanges';
+import { initSumOptions } from './SumManager.js';
+import { convertDataToFloat64Array } from './convertDataToFloat64Array.js';
+import { get1DColor } from './get1DColor.js';
+import { initiateIntegrals } from './integrals/initiateIntegrals.js';
+import { initiatePeaks } from './peaks/initiatePeaks.js';
+import { initiateRanges } from './ranges/initiateRanges.js';
 
 export interface InitiateDatum1DOptions {
   usedColors?: UsedColors;

@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 
-import { InputStyle } from '../Input';
+import { InputStyle } from '../Input.js';
 
 const ReactTableStyle = css`
   border-spacing: 0;

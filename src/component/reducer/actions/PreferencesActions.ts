@@ -1,13 +1,13 @@
 import { Draft } from 'immer';
 import { Spectrum1D } from 'nmr-load-save';
 
-import groupByInfoKey from '../../utility/GroupByInfoKey';
-import nucleusToString from '../../utility/nucleusToString';
-import { State, VerticalAlignment } from '../Reducer';
-import { getActiveSpectrum } from '../helper/getActiveSpectrum';
-import { ActionType } from '../types/ActionType';
+import groupByInfoKey from '../../utility/GroupByInfoKey.js';
+import nucleusToString from '../../utility/nucleusToString.js';
+import { State, VerticalAlignment } from '../Reducer.js';
+import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
+import { ActionType } from '../types/ActionType.js';
 
-import { setDomain } from './DomainActions';
+import { setDomain } from './DomainActions.js';
 
 type KeyPreferencesAction = ActionType<
   'SET_KEY_PREFERENCES' | 'APPLY_KEY_PREFERENCES',

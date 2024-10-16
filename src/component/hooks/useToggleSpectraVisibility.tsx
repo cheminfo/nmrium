@@ -2,10 +2,10 @@ import { FaEye, FaEyeSlash, FaMinus, FaPlus } from 'react-icons/fa';
 import { GrRadialSelected } from 'react-icons/gr';
 import { TooltipHelpContent } from 'react-science/ui';
 
-import { useChartData } from '../context/ChartContext';
-import { useDispatch } from '../context/DispatchContext';
-import { ToolbarItemProps } from '../panels/header/DefaultPanelHeader';
-import { SpectraSelectedMode } from '../reducer/actions/SpectraActions';
+import { useChartData } from '../context/ChartContext.js';
+import { useDispatch } from '../context/DispatchContext.js';
+import { ToolbarItemProps } from '../panels/header/DefaultPanelHeader.js';
+import { SpectraSelectedMode } from '../reducer/actions/SpectraActions.js';
 
 interface ToggleSpectraVisibility {
   enableShowAll: boolean;

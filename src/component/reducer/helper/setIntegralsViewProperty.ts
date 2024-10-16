@@ -1,10 +1,10 @@
 import { Draft } from 'immer';
 import { IntegralsViewState } from 'nmr-load-save';
 
-import { defaultIntegralsViewState } from '../../hooks/useActiveSpectrumIntegralsViewState';
-import { State } from '../Reducer';
+import { defaultIntegralsViewState } from '../../hooks/useActiveSpectrumIntegralsViewState.js';
+import { State } from '../Reducer.js';
 
-import { getActiveSpectrum } from './getActiveSpectrum';
+import { getActiveSpectrum } from './getActiveSpectrum.js';
 
 export function setIntegralsViewProperty<T extends keyof IntegralsViewState>(
   draft: Draft<State>,

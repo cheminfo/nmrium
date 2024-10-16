@@ -1,9 +1,9 @@
 import { Draft } from 'immer';
 import { Spectrum1D } from 'nmr-load-save';
 
-import { AnalysisRow } from '../../../data/data1d/multipleSpectraAnalysis';
-import { State } from '../Reducer';
-import { ActionType } from '../types/ActionType';
+import { AnalysisRow } from '../../../data/data1d/multipleSpectraAnalysis.js';
+import { State } from '../Reducer.js';
+import { ActionType } from '../types/ActionType.js';
 
 type OrderSpectraAction = ActionType<
   'ORDER_MULTIPLE_SPECTRA_ANALYSIS',

@@ -2,7 +2,7 @@
 import { SerializedStyles, css } from '@emotion/react';
 import { ReactNode, useState, useCallback, useRef } from 'react';
 
-import ToolTip from './ToolTip/ToolTip';
+import ToolTip from './ToolTip/ToolTip.js';
 
 const menuStyles = css`
   .menu {

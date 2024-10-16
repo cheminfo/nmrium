@@ -1,55 +1,58 @@
 import {
+  ReactNode,
   useCallback,
   useEffect,
   useReducer,
-  ReactNode,
   useRef,
   useState,
 } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 import { useOnOff } from 'react-science/ui';
 
-import { createRange, isSpectrum1D } from '../../data/data1d/Spectrum1D';
-import { cutRange } from '../../data/data1d/Spectrum1D/ranges/createRange';
-import BrushXY, { BRUSH_TYPE } from '../1d-2d/tools/BrushXY';
-import CrossLinePointer from '../1d-2d/tools/CrossLinePointer';
-import { ViewerResponsiveWrapper } from '../2d/Viewer2D';
+import {
+  createRange,
+  isSpectrum1D,
+} from '../../data/data1d/Spectrum1D/index.js';
+import { cutRange } from '../../data/data1d/Spectrum1D/ranges/createRange.js';
+import BrushXY, { BRUSH_TYPE } from '../1d-2d/tools/BrushXY.js';
+import CrossLinePointer from '../1d-2d/tools/CrossLinePointer.js';
+import { ViewerResponsiveWrapper } from '../2d/Viewer2D.js';
 import {
   BrushTracker,
   BrushTrackerContext,
   OnBrush,
   OnClick,
   OnZoom,
-} from '../EventsTrackers/BrushTracker';
-import { MouseTracker } from '../EventsTrackers/MouseTracker';
-import { useChartData } from '../context/ChartContext';
-import { useDispatch } from '../context/DispatchContext';
-import { useMapKeyModifiers } from '../context/KeyModifierContext';
-import { useLogger } from '../context/LoggerContext';
-import { usePreferences } from '../context/PreferencesContext';
-import { ScaleProvider } from '../context/ScaleContext';
-import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
-import { usePanelPreferences } from '../hooks/usePanelPreferences';
-import useSpectrum from '../hooks/useSpectrum';
-import { useVerticalAlign } from '../hooks/useVerticalAlign';
-import Spinner from '../loader/Spinner';
-import MultipletAnalysisModal from '../modal/MultipletAnalysisModal';
-import { ZOOM_TYPES } from '../reducer/helper/Zoom1DManager';
-import getRange from '../reducer/helper/getRange';
+} from '../EventsTrackers/BrushTracker.js';
+import { MouseTracker } from '../EventsTrackers/MouseTracker.js';
+import { useChartData } from '../context/ChartContext.js';
+import { useDispatch } from '../context/DispatchContext.js';
+import { useMapKeyModifiers } from '../context/KeyModifierContext.js';
+import { useLogger } from '../context/LoggerContext.js';
+import { usePreferences } from '../context/PreferencesContext.js';
+import { ScaleProvider } from '../context/ScaleContext.js';
+import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
+import { usePanelPreferences } from '../hooks/usePanelPreferences.js';
+import useSpectrum from '../hooks/useSpectrum.js';
+import { useVerticalAlign } from '../hooks/useVerticalAlign.js';
+import Spinner from '../loader/Spinner.js';
+import MultipletAnalysisModal from '../modal/MultipletAnalysisModal.js';
+import { ZOOM_TYPES } from '../reducer/helper/Zoom1DManager.js';
+import getRange from '../reducer/helper/getRange.js';
 import scaleReducer, {
   scaleInitialState,
   SET_SCALE,
-} from '../reducer/scaleReducer';
-import { Tool, options } from '../toolbar/ToolTypes';
-import Events from '../utility/Events';
+} from '../reducer/scaleReducer.js';
+import { options, Tool } from '../toolbar/ToolTypes.js';
+import Events from '../utility/Events.js';
 
-import Chart1D from './Chart1D';
-import FooterBanner from './FooterBanner';
-import BaseLine from './tool/BaseLine';
-import PeakPointer from './tool/PeakPointer';
-import { PivotIndicator } from './tool/PivotIndicator';
-import XLabelPointer from './tool/XLabelPointer';
-import { getXScale } from './utilities/scale';
+import Chart1D from './Chart1D.js';
+import FooterBanner from './FooterBanner.js';
+import BaseLine from './tool/BaseLine.js';
+import PeakPointer from './tool/PeakPointer.js';
+import { PivotIndicator } from './tool/PivotIndicator.js';
+import XLabelPointer from './tool/XLabelPointer.js';
+import { getXScale } from './utilities/scale.js';
 
 interface Viewer1DProps {
   emptyText?: ReactNode;

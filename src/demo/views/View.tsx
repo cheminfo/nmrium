@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-import BaseView, { BaseViewProps } from './BaseView';
+import BaseView, { BaseViewProps } from './BaseView.js';
 
 export async function loadData(file) {
   const response = await fetch(file);

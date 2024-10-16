@@ -1,6 +1,6 @@
 import { Controller, ControllerProps, FieldValues } from 'react-hook-form';
 
-import { NumberInput2, NumberInput2Props } from './NumberInput2';
+import { NumberInput2, NumberInput2Props } from './NumberInput2.js';
 
 interface NumberInput2ControllerProps<
   TFieldValues extends FieldValues = FieldValues,

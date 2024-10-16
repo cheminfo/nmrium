@@ -1,7 +1,7 @@
 import { FaTimes } from 'react-icons/fa';
 import { ToolbarItemProps } from 'react-science/ui';
 
-import { ToolBarButton } from './ToolBarButton';
+import { ToolBarButton } from './ToolBarButton.js';
 
 export function CloseButton(
   props: Pick<ToolbarItemProps, 'onClick' | 'tooltip'>,

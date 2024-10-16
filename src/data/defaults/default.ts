@@ -1,5 +1,5 @@
-import c13 from './13c';
-import h1 from './1h';
+import c13 from './13c.js';
+import h1 from './1h.js';
 
 const defaults = {
   '1h': h1,

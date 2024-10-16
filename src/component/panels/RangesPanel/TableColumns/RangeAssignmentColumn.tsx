@@ -1,7 +1,7 @@
-import { useDispatch } from '../../../context/DispatchContext';
-import EditableColumn from '../../../elements/EditableColumn';
-import { OnHoverEvent, RowSpanTags } from '../RangesTableRow';
-import { RangeData } from '../hooks/useMapRanges';
+import { useDispatch } from '../../../context/DispatchContext.js';
+import EditableColumn from '../../../elements/EditableColumn.js';
+import { OnHoverEvent, RowSpanTags } from '../RangesTableRow.js';
+import { RangeData } from '../hooks/useMapRanges.js';
 
 type RangeAssignmentColumnProps = OnHoverEvent &
   RowSpanTags & { row: RangeData };

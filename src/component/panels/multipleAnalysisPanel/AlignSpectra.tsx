@@ -7,16 +7,16 @@ import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
-import { REFERENCES } from '../../../data/constants/References';
-import { CalibrateOptions } from '../../../data/data1d/Spectrum1D/getReferenceShift';
-import { useDispatch } from '../../context/DispatchContext';
-import { useToaster } from '../../context/ToasterContext';
-import ActionButtons from '../../elements/ActionButtons';
-import Label, { LabelStyle } from '../../elements/Label';
-import { NumberInput2Controller } from '../../elements/NumberInput2Controller';
-import { Select2 } from '../../elements/Select2';
-import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus';
-import { useEvent } from '../../utility/Events';
+import { REFERENCES } from '../../../data/constants/References.js';
+import { CalibrateOptions } from '../../../data/data1d/Spectrum1D/getReferenceShift.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { useToaster } from '../../context/ToasterContext.js';
+import ActionButtons from '../../elements/ActionButtons.js';
+import Label, { LabelStyle } from '../../elements/Label.js';
+import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
+import { Select2 } from '../../elements/Select2.js';
+import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus.js';
+import { useEvent } from '../../utility/Events.js';
 
 const labelStyle: LabelStyle = {
   label: { flex: 4, fontWeight: '500' },

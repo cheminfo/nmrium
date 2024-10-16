@@ -1,6 +1,6 @@
 import { CustomWorkspaces } from 'nmr-load-save';
 
-import View from './View';
+import View from './View.js';
 
 const customWorkspaces: CustomWorkspaces = {
   snapshots: {

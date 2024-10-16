@@ -4,15 +4,15 @@ import { WorkSpacePanelPreferences } from 'nmr-load-save';
 import { Info1D } from 'nmr-processing';
 import { FaLink } from 'react-icons/fa';
 
-import { withDialog } from '../../elements/DialogManager';
-import { TableContextMenuProps } from '../../elements/ReactTable/ReactTable';
-import useTableSortBy from '../../hooks/useTableSortBy';
-import { EditRangeModal } from '../../modal/editRange/EditRangeModal';
-import NoDataForFid from '../extra/placeholder/NoDataForFid';
-import NoTableData from '../extra/placeholder/NoTableData';
+import { withDialog } from '../../elements/DialogManager.js';
+import { TableContextMenuProps } from '../../elements/ReactTable/ReactTable.js';
+import useTableSortBy from '../../hooks/useTableSortBy.js';
+import { EditRangeModal } from '../../modal/editRange/EditRangeModal.js';
+import NoDataForFid from '../extra/placeholder/NoDataForFid.js';
+import NoTableData from '../extra/placeholder/NoTableData.js';
 
-import RangesTableRow from './RangesTableRow';
-import useMapRanges from './hooks/useMapRanges';
+import RangesTableRow from './RangesTableRow.js';
+import useMapRanges from './hooks/useMapRanges.js';
 
 const tableStyle = css`
   border-spacing: 0;

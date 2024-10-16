@@ -1,16 +1,16 @@
 /** @jsxImportSource @emotion/react */
 import { Tab, Tabs } from '@blueprintjs/core';
 import { Range } from 'nmr-processing';
-import { useCallback, useMemo, memo, useEffect } from 'react';
+import { memo, useCallback, useEffect, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { FaPlus } from 'react-icons/fa';
 
-import { TabTitle } from '../../../../elements/TabTitle';
+import { TabTitle } from '../../../../elements/TabTitle.js';
 
-import { DeltaInput } from './DeltaInput';
-import { InfoBlock } from './InfoBlock';
-import { NewSignalTab } from './NewSignalTab';
-import SignalTab from './SignalTab';
+import { DeltaInput } from './DeltaInput.js';
+import { InfoBlock } from './InfoBlock.js';
+import { NewSignalTab } from './NewSignalTab.js';
+import SignalTab from './SignalTab.js';
 
 interface SignalsFormProps {
   range: Range;

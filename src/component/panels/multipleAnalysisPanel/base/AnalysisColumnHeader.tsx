@@ -1,9 +1,9 @@
 import { AnalysisColumnsTypes, AnalysisColumnsValuesKeys } from 'nmr-load-save';
 import { CSSProperties, MouseEvent } from 'react';
 
-import { Select2 } from '../../../elements/Select2';
-import DeleteButton from '../../../elements/Tab/DeleteButton';
-import { useHighlight } from '../../../highlight/index';
+import { Select2 } from '../../../elements/Select2.js';
+import DeleteButton from '../../../elements/Tab/DeleteButton.js';
+import { useHighlight } from '../../../highlight/index.js';
 
 const styles: Record<
   | 'container'

@@ -6,11 +6,11 @@ import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
-import { useChartData } from '../../context/ChartContext';
-import { useDispatch } from '../../context/DispatchContext';
-import Button from '../../elements/Button';
-import { NumberInput2Controller } from '../../elements/NumberInput2Controller';
-import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
+import { useChartData } from '../../context/ChartContext.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import Button from '../../elements/Button.js';
+import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
+import ReactTable, { Column } from '../../elements/ReactTable/ReactTable.js';
 
 interface ToleranceItem {
   atom: string;

@@ -3,7 +3,7 @@ import { Select, SelectProps } from '@blueprintjs/select';
 import { forwardRef, ForwardedRef, ReactNode, useEffect } from 'react';
 import { useSelect } from 'react-science/ui';
 
-import { FilterType } from '../utility/filterType';
+import { FilterType } from '../utility/filterType.js';
 
 interface ItemOptions<T> {
   renderItem?: (item: T) => ReactNode;

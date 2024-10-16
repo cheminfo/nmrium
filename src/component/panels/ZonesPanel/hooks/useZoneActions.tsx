@@ -1,6 +1,6 @@
-import { useDispatch } from '../../../context/DispatchContext';
+import { useDispatch } from '../../../context/DispatchContext.js';
 
-import { ZoneData } from './useMapZones';
+import { ZoneData } from './useMapZones.js';
 
 function getZoomDomain(zone: ZoneData, marginFactor = 10) {
   const {

@@ -1,8 +1,8 @@
 import OCL from 'openchemlib/full';
 import { TopicMolecule } from 'openchemlib-utils';
-import { ReactNode, createContext, useContext, useEffect, useRef } from 'react';
+import { createContext, ReactNode, useContext, useEffect, useRef } from 'react';
 
-import { useChartData } from './ChartContext';
+import { useChartData } from './ChartContext.js';
 
 const TopicMoleculeContext = createContext<Record<string, TopicMolecule>>({});
 

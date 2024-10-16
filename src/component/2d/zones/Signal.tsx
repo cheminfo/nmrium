@@ -1,15 +1,15 @@
 /** @jsxImportSource @emotion/react */
 
 import { Signal2D } from 'nmr-processing';
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { buildID } from '../../../data/utilities/Concatenation';
-import { useAssignment } from '../../assignment/AssignmentsContext';
-import { useHighlightData, useHighlight } from '../../highlight';
-import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState';
-import { useScale2DX, useScale2DY } from '../utilities/scale';
+import { buildID } from '../../../data/utilities/Concatenation.js';
+import { useAssignment } from '../../assignment/AssignmentsContext.js';
+import { useHighlight, useHighlightData } from '../../highlight/index.js';
+import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState.js';
+import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 
-import SignalCrosshair from './SignalCrosshair';
+import SignalCrosshair from './SignalCrosshair.js';
 
 interface SignalProps {
   signal: Signal2D;

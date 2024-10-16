@@ -1,12 +1,12 @@
 /** @jsxImportSource @emotion/react */
-import { useDispatch } from '../../context/DispatchContext';
-import { useToaster } from '../../context/ToasterContext';
-import { AlertButton, useAlert } from '../../elements/Alert';
-import useSpectrum from '../../hooks/useSpectrum';
-import { tablePanelStyle } from '../extra/BasicPanelStyle';
-import DefaultPanelHeader from '../header/DefaultPanelHeader';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { useToaster } from '../../context/ToasterContext.js';
+import { AlertButton, useAlert } from '../../elements/Alert.js';
+import useSpectrum from '../../hooks/useSpectrum.js';
+import { tablePanelStyle } from '../extra/BasicPanelStyle.js';
+import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
 
-import { FiltersSectionsPanel } from './Filters/FiltersSectionsPanel';
+import { FiltersSectionsPanel } from './Filters/FiltersSectionsPanel.js';
 
 export default function FiltersPanel() {
   const dispatch = useDispatch();

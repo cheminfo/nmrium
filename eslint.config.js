@@ -32,7 +32,8 @@ export default [
         'error',
         {
           name: 'lodash',
-          message: "Use a deep import instead, like for example 'lodash/get'",
+          message:
+            "Use a deep import instead, like for example 'lodash/get.js'",
         },
         {
           name: '@simbathesailor/use-what-changed',

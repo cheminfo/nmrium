@@ -1,6 +1,6 @@
-import { useDispatch } from '../../../context/DispatchContext';
-import EditableColumn from '../../../elements/EditableColumn';
-import { ZoneData } from '../hooks/useMapZones';
+import { useDispatch } from '../../../context/DispatchContext.js';
+import EditableColumn from '../../../elements/EditableColumn.js';
+import { ZoneData } from '../hooks/useMapZones.js';
 
 interface ZoneAssignmentLabelColumnProps {
   rowData: ZoneData;

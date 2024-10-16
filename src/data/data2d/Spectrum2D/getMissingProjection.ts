@@ -2,8 +2,8 @@ import { NmrData2DFt } from 'cheminfo-types';
 import { xSequentialFillFromTo } from 'ml-spectra-processing';
 import { Info1D, Info2D } from 'nmr-processing';
 
-import { UsedColors } from '../../../types/UsedColors';
-import { initiateDatum1D } from '../../data1d/Spectrum1D';
+import { UsedColors } from '../../../types/UsedColors.js';
+import { initiateDatum1D } from '../../data1d/Spectrum1D/index.js';
 
 /**
  * calculate the missing projection

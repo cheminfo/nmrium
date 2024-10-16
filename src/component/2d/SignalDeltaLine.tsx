@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-import { useChartData } from '../context/ChartContext';
+import { useChartData } from '../context/ChartContext.js';
 
-import { useScale2DX, useScale2DY } from './utilities/scale';
+import { useScale2DX, useScale2DY } from './utilities/scale.js';
 
 const lineStyle = css`
   stroke: green;

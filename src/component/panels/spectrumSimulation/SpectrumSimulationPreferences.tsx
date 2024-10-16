@@ -2,14 +2,14 @@ import { Tag } from '@blueprintjs/core';
 import { forwardRef } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import { FREQUENCIES } from '../../../data/PredictionManager';
-import { SpectrumSimulationOptions } from '../../../data/data1d/spectrumSimulation';
-import generateNumbersPowerOfX from '../../../data/utilities/generateNumbersPowerOfX';
-import Label, { LabelStyle } from '../../elements/Label';
-import { NumberInput2Controller } from '../../elements/NumberInput2Controller';
-import { Select2Controller } from '../../elements/Select2Controller';
-import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
-import { useSettingImperativeHandle } from '../extra/utilities/settingImperativeHandle';
+import { FREQUENCIES } from '../../../data/PredictionManager.js';
+import { SpectrumSimulationOptions } from '../../../data/data1d/spectrumSimulation.js';
+import generateNumbersPowerOfX from '../../../data/utilities/generateNumbersPowerOfX.js';
+import Label, { LabelStyle } from '../../elements/Label.js';
+import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
+import { Select2Controller } from '../../elements/Select2Controller.js';
+import { PreferencesContainer } from '../extra/preferences/PreferencesContainer.js';
+import { useSettingImperativeHandle } from '../extra/utilities/settingImperativeHandle.js';
 
 const SIMULATION_NUMBER_OF_POINTS = generateNumbersPowerOfX(12, 19);
 

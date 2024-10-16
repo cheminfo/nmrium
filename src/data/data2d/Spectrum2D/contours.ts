@@ -3,7 +3,7 @@ import { Conrec } from 'ml-conrec';
 import { xMaxAbsoluteValue } from 'ml-spectra-processing';
 import { Spectrum2D } from 'nmr-load-save';
 
-import { calculateSanPlot } from '../../utilities/calculateSanPlot';
+import { calculateSanPlot } from '../../utilities/calculateSanPlot.js';
 
 interface Level {
   positive: ContourItem;

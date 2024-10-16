@@ -2,21 +2,21 @@ import { Button } from '@blueprintjs/core';
 import { Select } from '@blueprintjs/select';
 import { CSSProperties } from 'react';
 
-import InputRange from '../../../elements/InputRange';
-import Label, { LabelStyle } from '../../../elements/Label';
-import { NumberInput2 } from '../../../elements/NumberInput2';
-import { ReadOnly } from '../../../elements/ReadOnly';
-import { Sections } from '../../../elements/Sections';
+import InputRange from '../../../elements/InputRange.js';
+import Label, { LabelStyle } from '../../../elements/Label.js';
+import { NumberInput2 } from '../../../elements/NumberInput2.js';
+import { ReadOnly } from '../../../elements/ReadOnly.js';
+import { Sections } from '../../../elements/Sections.js';
 
-import { FilterActionButtons } from './FilterActionButtons';
-import { HeaderContainer, StickyHeader } from './InnerFilterHeader';
+import { FilterActionButtons } from './FilterActionButtons.js';
+import { HeaderContainer, StickyHeader } from './InnerFilterHeader.js';
 import {
+  AlgorithmItem,
   algorithms,
   usePhaseCorrection,
-  AlgorithmItem,
-} from './hooks/usePhaseCorrection';
+} from './hooks/usePhaseCorrection.js';
 
-import { BaseFilterOptionsPanelProps } from '.';
+import { BaseFilterOptionsPanelProps } from './index.js';
 
 const inputRangeStyle: CSSProperties = {
   padding: '5px 10px',

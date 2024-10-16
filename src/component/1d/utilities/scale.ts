@@ -1,14 +1,14 @@
 import { scaleLinear, zoomIdentity } from 'd3';
 import { useCallback } from 'react';
 
-import { useChartData } from '../../context/ChartContext';
-import { useVerticalAlign } from '../../hooks/useVerticalAlign';
+import { useChartData } from '../../context/ChartContext.js';
+import { useVerticalAlign } from '../../hooks/useVerticalAlign.js';
 import {
   Domains,
   Margin,
   SpectraDirection,
   VerticalAlignment,
-} from '../../reducer/Reducer';
+} from '../../reducer/Reducer.js';
 
 interface ScaleXOptions {
   width: number;

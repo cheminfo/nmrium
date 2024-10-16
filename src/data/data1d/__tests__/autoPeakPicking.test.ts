@@ -1,9 +1,9 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
-import { autoPeakPicking, initiateDatum1D } from '../Spectrum1D';
+import { autoPeakPicking, initiateDatum1D } from '../Spectrum1D/index.js';
 
 describe('test peakPicking', () => {
   const data = JSON.parse(

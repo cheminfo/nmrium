@@ -1,6 +1,6 @@
-import { MatrixFilter } from '../../matrixGeneration';
+import { MatrixFilter } from '../../matrixGeneration.js';
 
-import { ExclusionZone } from './ExclusionZone';
+import { ExclusionZone } from './ExclusionZone.js';
 
 export interface MatrixOptions {
   /**

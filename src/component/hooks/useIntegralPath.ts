@@ -1,11 +1,11 @@
 import { ScaleLinear } from 'd3';
 import { xyReduce } from 'ml-spectra-processing';
 
-import { getIntegralYScale } from '../1d/utilities/scale';
-import { useChartData } from '../context/ChartContext';
-import { PathBuilder } from '../utility/PathBuilder';
+import { getIntegralYScale } from '../1d/utilities/scale.js';
+import { useChartData } from '../context/ChartContext.js';
+import { PathBuilder } from '../utility/PathBuilder.js';
 
-import { useXScale } from './useXScale';
+import { useXScale } from './useXScale.js';
 
 function useIntegralYDomain(
   max: number,

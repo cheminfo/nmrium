@@ -5,16 +5,16 @@ import { memo, useMemo } from 'react';
 
 import generateJGraphData, {
   CouplingLink,
-} from '../../../data/data1d/Spectrum1D/generateJGraphData';
-import { useChartData } from '../../context/ChartContext';
-import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
-import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import useSpectrum from '../../hooks/useSpectrum';
+} from '../../../data/data1d/Spectrum1D/generateJGraphData.js';
+import { useChartData } from '../../context/ChartContext.js';
+import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
+import useSpectrum from '../../hooks/useSpectrum.js';
 
-import { JGraphContextProvider } from './JGraphContext';
-import { JGraphVerticalAxis } from './JGraphVerticalAxis';
-import JCouplingLinks from './JsCouplingLinks';
-import JsCouplings from './JsCouplings';
+import { JGraphContextProvider } from './JGraphContext.js';
+import { JGraphVerticalAxis } from './JGraphVerticalAxis.js';
+import JCouplingLinks from './JsCouplingLinks.js';
+import JsCouplings from './JsCouplings.js';
 
 const marginTop = 50;
 

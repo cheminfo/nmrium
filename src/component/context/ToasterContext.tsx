@@ -5,7 +5,7 @@ import {
   Spinner,
   ToastProps,
 } from '@blueprintjs/core';
-import { ReactNode, createContext, useContext, useMemo, useRef } from 'react';
+import { createContext, ReactNode, useContext, useMemo, useRef } from 'react';
 
 interface ToasterContextProps {
   toaster: OverlayToaster | null;

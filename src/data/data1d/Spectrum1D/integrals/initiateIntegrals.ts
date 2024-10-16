@@ -1,4 +1,4 @@
-import merge from 'lodash/merge';
+import merge from 'lodash/merge.js';
 import { Spectrum1D } from 'nmr-load-save';
 import { Integrals, mapIntegrals } from 'nmr-processing';
 

@@ -5,23 +5,23 @@ import { IntegralsViewState, Spectrum1D } from 'nmr-load-save';
 import { Integral } from 'nmr-processing';
 
 import {
-  updateIntegralsRelativeValues,
-  changeIntegralsRelative,
-  getShiftX,
-} from '../../../data/data1d/Spectrum1D';
-import {
   SetSumOptions,
   SumParams,
   initSumOptions,
   setSumOptions,
-} from '../../../data/data1d/Spectrum1D/SumManager';
-import { FilterType } from '../../utility/filterType';
-import { State } from '../Reducer';
-import { getActiveSpectrum } from '../helper/getActiveSpectrum';
-import getRange from '../helper/getRange';
-import { getSpectrum } from '../helper/getSpectrum';
-import { setIntegralsViewProperty } from '../helper/setIntegralsViewProperty';
-import { ActionType } from '../types/ActionType';
+} from '../../../data/data1d/Spectrum1D/SumManager.js';
+import {
+  updateIntegralsRelativeValues,
+  changeIntegralsRelative,
+  getShiftX,
+} from '../../../data/data1d/Spectrum1D/index.js';
+import { FilterType } from '../../utility/filterType.js';
+import { State } from '../Reducer.js';
+import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
+import getRange from '../helper/getRange.js';
+import { getSpectrum } from '../helper/getSpectrum.js';
+import { setIntegralsViewProperty } from '../helper/setIntegralsViewProperty.js';
+import { ActionType } from '../types/ActionType.js';
 
 type ChangeIntegralSumAction = ActionType<
   'CHANGE_INTEGRAL_SUM',

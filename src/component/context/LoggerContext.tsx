@@ -1,18 +1,18 @@
 import { FifoLogger, LogEntry } from 'fifo-logger';
 import {
   createContext,
-  useContext,
   ReactNode,
-  useRef,
-  useMemo,
-  useState,
   useCallback,
+  useContext,
   useEffect,
+  useMemo,
+  useRef,
+  useState,
 } from 'react';
 
-import { LogsHistoryModal } from '../modal/LogsHistoryModal';
+import { LogsHistoryModal } from '../modal/LogsHistoryModal.js';
 
-import { usePreferences } from './PreferencesContext';
+import { usePreferences } from './PreferencesContext.js';
 
 export const LoggerContext = createContext<{
   logger: FifoLogger;

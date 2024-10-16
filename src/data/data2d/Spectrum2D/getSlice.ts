@@ -8,8 +8,8 @@ import { xSequentialFillFromTo } from 'ml-spectra-processing';
 import type { Spectrum1D, Spectrum2D } from 'nmr-load-save';
 import { Info2D } from 'nmr-processing';
 
-import { TraceDirection } from '../../../component/reducer/Reducer';
-import { initiateDatum1D } from '../../data1d/Spectrum1D';
+import { TraceDirection } from '../../../component/reducer/Reducer.js';
+import { initiateDatum1D } from '../../data1d/Spectrum1D/index.js';
 
 /** get 2d projection
  * @param {number} x in ppm

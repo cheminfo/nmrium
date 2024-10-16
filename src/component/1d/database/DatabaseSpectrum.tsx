@@ -1,16 +1,19 @@
 import { extent } from 'd3';
-import throttle from 'lodash/throttle';
+import throttle from 'lodash/throttle.js';
 import { readFromWebSource, Spectrum1D } from 'nmr-load-save';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
-import { useChartData } from '../../context/ChartContext';
-import { useScaleChecked } from '../../context/ScaleContext';
-import { useToaster } from '../../context/ToasterContext';
-import { HighlightEventSource, useHighlightData } from '../../highlight';
-import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import { spinnerContext } from '../../loader/SpinnerContext';
-import { PathBuilder } from '../../utility/PathBuilder';
-import { getYScaleWithRation } from '../utilities/scale';
+import { useChartData } from '../../context/ChartContext.js';
+import { useScaleChecked } from '../../context/ScaleContext.js';
+import { useToaster } from '../../context/ToasterContext.js';
+import {
+  HighlightEventSource,
+  useHighlightData,
+} from '../../highlight/index.js';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
+import { spinnerContext } from '../../loader/SpinnerContext.js';
+import { PathBuilder } from '../../utility/PathBuilder.js';
+import { getYScaleWithRation } from '../utilities/scale.js';
 
 function DatabaseSpectrum() {
   const { displayerKey, height, margin } = useChartData();

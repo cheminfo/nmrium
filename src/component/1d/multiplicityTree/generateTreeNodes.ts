@@ -1,13 +1,11 @@
-import lodashGet from 'lodash/get';
+import lodashGet from 'lodash/get.js';
 import { Spectrum1D } from 'nmr-load-save';
 import { Jcoupling, Range } from 'nmr-processing';
 
 import {
   getMultiplicityNumber,
   getPascal,
-} from '../../panels/extra/utilities/MultiplicityUtilities';
-
-// import { TREE_LEVEL_COLORS } from './TreeColors';
+} from '../../panels/extra/utilities/MultiplicityUtilities.js';
 
 export interface TreeNode {
   x: number;

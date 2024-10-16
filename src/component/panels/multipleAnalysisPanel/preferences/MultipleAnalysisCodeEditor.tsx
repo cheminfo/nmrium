@@ -2,7 +2,7 @@
 import { memo, useEffect, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
-import evaluate from '../../../utility/Evaluate';
+import evaluate from '../../../utility/Evaluate.js';
 
 const initCode = `function run(data) {
 

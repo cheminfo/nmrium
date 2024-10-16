@@ -1,24 +1,24 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useCallback, useState, useRef, useEffect } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
 import {
-  SpectrumSimulationOptions,
   defaultSimulationOptions,
-} from '../../../data/data1d/spectrumSimulation';
-import { useDispatch } from '../../context/DispatchContext';
-import Button from '../../elements/Button';
-import AboutSpectrumSimulationModal from '../../modal/AboutSpectrumSimulationModal';
-import { tablePanelStyle } from '../extra/BasicPanelStyle';
-import { SettingsRef } from '../extra/utilities/settingImperativeHandle';
-import DefaultPanelHeader from '../header/DefaultPanelHeader';
-import PreferencesHeader from '../header/PreferencesHeader';
+  SpectrumSimulationOptions,
+} from '../../../data/data1d/spectrumSimulation.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import Button from '../../elements/Button.js';
+import AboutSpectrumSimulationModal from '../../modal/AboutSpectrumSimulationModal.js';
+import { tablePanelStyle } from '../extra/BasicPanelStyle.js';
+import { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
+import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
+import PreferencesHeader from '../header/PreferencesHeader.js';
 
-import SpectrumSimulationPreferences from './SpectrumSimulationPreferences';
-import SpectrumSimulationSimpleOptions from './SpectrumSimulationSimpleOptions';
-import { SpinSystemTable } from './SpinSystemTable';
+import SpectrumSimulationPreferences from './SpectrumSimulationPreferences.js';
+import SpectrumSimulationSimpleOptions from './SpectrumSimulationSimpleOptions.js';
+import { SpinSystemTable } from './SpinSystemTable.js';
 
 const validationSchema = Yup.object({
   data: Yup.array().of(

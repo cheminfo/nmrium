@@ -1,9 +1,13 @@
-import { Zone, mapZones } from 'nmr-processing';
+import { mapZones, type Zone } from 'nmr-processing';
 
-import { DetectionZonesOptions, getDetectionZones } from './getDetectionZones';
+import {
+  type DetectionZonesOptions,
+  getDetectionZones,
+} from './getDetectionZones.js';
 
 /**
  *
+ * @param datum
  * @param {object} options
  * @param {object} options.selectedZone
  * @param {number} options.selectedZone.fromX

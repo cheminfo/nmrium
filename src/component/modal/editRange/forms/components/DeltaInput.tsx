@@ -1,7 +1,7 @@
 import { translateMultiplet } from 'nmr-processing';
 import { useFormContext } from 'react-hook-form';
 
-import { NumberInput2Controller } from '../../../../elements/NumberInput2Controller';
+import { NumberInput2Controller } from '../../../../elements/NumberInput2Controller.js';
 
 interface DeltaInputProps {
   signal: any;

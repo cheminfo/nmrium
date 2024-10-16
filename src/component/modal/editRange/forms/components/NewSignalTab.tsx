@@ -5,11 +5,11 @@ import { CSSProperties, useEffect } from 'react';
 import { useForm, useFormContext, useWatch } from 'react-hook-form';
 import * as Yup from 'yup';
 
-import { useChartData } from '../../../../context/ChartContext';
-import { NumberInput2Controller } from '../../../../elements/NumberInput2Controller';
-import { usePanelPreferences } from '../../../../hooks/usePanelPreferences';
-import { useEvent } from '../../../../utility/Events';
-import { formatNumber } from '../../../../utility/formatNumber';
+import { useChartData } from '../../../../context/ChartContext.js';
+import { NumberInput2Controller } from '../../../../elements/NumberInput2Controller.js';
+import { usePanelPreferences } from '../../../../hooks/usePanelPreferences.js';
+import { useEvent } from '../../../../utility/Events.js';
+import { formatNumber } from '../../../../utility/formatNumber.js';
 
 const styles: Record<
   'container' | 'innerContainer' | 'infoText',

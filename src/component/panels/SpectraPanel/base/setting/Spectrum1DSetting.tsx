@@ -1,10 +1,10 @@
 import { Controller, useForm } from 'react-hook-form';
 import { ColorPicker } from 'react-science/ui';
 
-import { COLORS } from '../../../../../data/utilities/generateColor';
-import { colorToHexWithAlpha } from '../../../../utility/colorToHexWithAlpha';
+import { COLORS } from '../../../../../data/utilities/generateColor.js';
+import { colorToHexWithAlpha } from '../../../../utility/colorToHexWithAlpha.js';
 
-import Spectrum1DHistogram from './Spectrum1DHistogram';
+import Spectrum1DHistogram from './Spectrum1DHistogram.js';
 
 interface Spectrum1DSettingProps {
   data: any;

@@ -1,19 +1,19 @@
-import { useMemo, Fragment } from 'react';
+import { Fragment, useMemo } from 'react';
 
-import { SpectraAnalysisData } from '../../../data/data1d/multipleSpectraAnalysis';
-import { useDispatch } from '../../context/DispatchContext';
-import { usePreferences } from '../../context/PreferencesContext';
-import ReactTable from '../../elements/ReactTable/ReactTable';
+import { SpectraAnalysisData } from '../../../data/data1d/multipleSpectraAnalysis.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { usePreferences } from '../../context/PreferencesContext.js';
+import ReactTable from '../../elements/ReactTable/ReactTable.js';
 import addCustomColumn, {
   CustomColumn,
-} from '../../elements/ReactTable/utility/addCustomColumn';
-import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
-import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import evaluate from '../../utility/Evaluate';
-import NoTableData from '../extra/placeholder/NoTableData';
+} from '../../elements/ReactTable/utility/addCustomColumn.js';
+import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus.js';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
+import evaluate from '../../utility/Evaluate.js';
+import NoTableData from '../extra/placeholder/NoTableData.js';
 
-import AnalysisCell from './base/AnalysisCell';
-import AnalysisColumnHeader from './base/AnalysisColumnHeader';
+import AnalysisCell from './base/AnalysisCell.js';
+import AnalysisColumnHeader from './base/AnalysisColumnHeader.js';
 
 interface MultipleSpectraAnalysisTableProps {
   data: SpectraAnalysisData;

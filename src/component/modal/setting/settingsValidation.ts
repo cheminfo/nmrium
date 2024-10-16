@@ -1,8 +1,8 @@
-import { ExternalAPIKeyType, EXTERNAL_API_KEYS } from 'nmr-load-save';
-import { array, object, string, number, mixed } from 'yup';
+import { EXTERNAL_API_KEYS, ExternalAPIKeyType } from 'nmr-load-save';
+import { array, mixed, number, object, string } from 'yup';
 
-import { exportOptionValidationSchema } from '../../elements/export/utilities/exportOptionValidationSchema';
-import { checkUniqueByKey } from '../../utility/checkUniqueByKey';
+import { exportOptionValidationSchema } from '../../elements/export/utilities/exportOptionValidationSchema.js';
+import { checkUniqueByKey } from '../../utility/checkUniqueByKey.js';
 
 const nucleiValidation = array()
   .of(

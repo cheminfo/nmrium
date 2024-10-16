@@ -2,7 +2,10 @@
 
 import { css } from '@emotion/react';
 
-import { HighlightProvider, useHighlight } from '../../component/highlight';
+import {
+  HighlightProvider,
+  useHighlight,
+} from '../../component/highlight/index.js';
 
 const tableOne = [
   { id: 'A', highlight: [1, 2] },

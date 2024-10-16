@@ -2,10 +2,10 @@ import { NmrData1D, NmrData2D } from 'cheminfo-types';
 import { Info1D, Info2D } from 'nmr-processing';
 import { useMemo } from 'react';
 
-import { useChartData } from '../context/ChartContext';
-import nucleusToString from '../utility/nucleusToString';
+import { useChartData } from '../context/ChartContext.js';
+import nucleusToString from '../utility/nucleusToString.js';
 
-import { useActiveSpectrum } from './useActiveSpectrum';
+import { useActiveSpectrum } from './useActiveSpectrum.js';
 
 interface SpectrumWithStatisticsProps {
   info: Info1D | Info2D;

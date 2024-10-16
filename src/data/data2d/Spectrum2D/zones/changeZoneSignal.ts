@@ -1,6 +1,6 @@
 import { Spectrum2D } from 'nmr-load-save';
 
-import { isNumber } from '../../../utilities/isNumber';
+import { isNumber } from '../../../utilities/isNumber.js';
 
 /**
  *

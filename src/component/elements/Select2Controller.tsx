@@ -1,6 +1,6 @@
 import { Controller, ControllerProps, FieldValues } from 'react-hook-form';
 
-import { Select2, Select2Props, SelectDefaultItem } from './Select2';
+import { Select2, Select2Props, SelectDefaultItem } from './Select2.js';
 
 type Select2ControllerProps<
   T extends Record<string, any> = SelectDefaultItem,

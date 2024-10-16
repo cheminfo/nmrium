@@ -3,8 +3,8 @@ import { Draft } from 'immer';
 import {
   ChangeInformationBlockPosition,
   PreferencesState,
-} from '../preferencesReducer';
-import { getActiveWorkspace } from '../utilities/getActiveWorkspace';
+} from '../preferencesReducer.js';
+import { getActiveWorkspace } from '../utilities/getActiveWorkspace.js';
 
 export function changeInformationBlockPosition(
   draft: Draft<PreferencesState>,

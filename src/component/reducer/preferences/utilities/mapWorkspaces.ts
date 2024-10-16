@@ -1,7 +1,7 @@
-import lodashMerge from 'lodash/merge';
+import lodashMerge from 'lodash/merge.js';
 import { Workspace, WorkSpaceSource } from 'nmr-load-save';
 
-import { workspaceDefaultProperties } from '../../../workspaces/workspaceDefaultProperties';
+import { workspaceDefaultProperties } from '../../../workspaces/workspaceDefaultProperties.js';
 
 interface MapWorkspacesOptions {
   ignoreKeys?: object;

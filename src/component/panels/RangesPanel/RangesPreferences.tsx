@@ -1,19 +1,19 @@
 import { forwardRef, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { usePreferences } from '../../context/PreferencesContext';
-import { fieldLabelStyle } from '../../elements/FormatField';
-import Label from '../../elements/Label';
-import { NumberInput2Controller } from '../../elements/NumberInput2Controller';
-import useNucleus from '../../hooks/useNucleus';
-import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
-import { getUniqueNuclei } from '../../utility/getUniqueNuclei';
+import { usePreferences } from '../../context/PreferencesContext.js';
+import { fieldLabelStyle } from '../../elements/FormatField.js';
+import Label from '../../elements/Label.js';
+import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
+import useNucleus from '../../hooks/useNucleus.js';
+import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences.js';
+import { getUniqueNuclei } from '../../utility/getUniqueNuclei.js';
 import {
   NucleusPreferenceField,
   NucleusPreferences,
-} from '../extra/preferences/NucleusPreferences';
-import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
-import { useSettingImperativeHandle } from '../extra/utilities/settingImperativeHandle';
+} from '../extra/preferences/NucleusPreferences.js';
+import { PreferencesContainer } from '../extra/preferences/PreferencesContainer.js';
+import { useSettingImperativeHandle } from '../extra/utilities/settingImperativeHandle.js';
 
 const formatFields: NucleusPreferenceField[] = [
   {

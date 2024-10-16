@@ -1,16 +1,16 @@
 import { Switch } from '@blueprintjs/core';
 import * as Yup from 'yup';
 
-import Label from '../../../elements/Label';
-import { NumberInput2Controller } from '../../../elements/NumberInput2Controller';
-import { ReadOnly } from '../../../elements/ReadOnly';
-import { Sections } from '../../../elements/Sections';
+import Label from '../../../elements/Label.js';
+import { NumberInput2Controller } from '../../../elements/NumberInput2Controller.js';
+import { ReadOnly } from '../../../elements/ReadOnly.js';
+import { Sections } from '../../../elements/Sections.js';
 
-import { FilterActionButtons } from './FilterActionButtons';
-import { HeaderContainer, StickyHeader } from './InnerFilterHeader';
-import { useSharedApodization } from './hooks/useSharedApodization';
+import { FilterActionButtons } from './FilterActionButtons.js';
+import { HeaderContainer, StickyHeader } from './InnerFilterHeader.js';
+import { useSharedApodization } from './hooks/useSharedApodization.js';
 
-import { BaseFilterOptionsPanelProps, formLabelStyle } from '.';
+import { BaseFilterOptionsPanelProps, formLabelStyle } from './index.js';
 
 const advanceValidationSchema = Yup.object().shape({
   lineBroadening: Yup.number().required(),

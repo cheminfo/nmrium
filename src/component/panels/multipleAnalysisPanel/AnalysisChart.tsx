@@ -1,19 +1,19 @@
 import { css } from '@emotion/react';
-import lodashGet from 'lodash/get';
+import lodashGet from 'lodash/get.js';
 import { useMemo, useRef, useState } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 import { FaFileExport } from 'react-icons/fa';
 import { Axis, LineSeries, Plot } from 'react-plot';
 import { Button } from 'react-science/ui';
 
-import { SpectraAnalysisData } from '../../../data/data1d/multipleSpectraAnalysis';
-import { useChartData } from '../../context/ChartContext';
-import { useToaster } from '../../context/ToasterContext';
-import { Input2 } from '../../elements/Input2';
-import Label from '../../elements/Label';
-import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus';
-import { copyPNGToClipboard } from '../../utility/export';
-import { getSpectraObjectPaths } from '../../utility/getSpectraObjectPaths';
+import { SpectraAnalysisData } from '../../../data/data1d/multipleSpectraAnalysis.js';
+import { useChartData } from '../../context/ChartContext.js';
+import { useToaster } from '../../context/ToasterContext.js';
+import { Input2 } from '../../elements/Input2.js';
+import Label from '../../elements/Label.js';
+import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus.js';
+import { copyPNGToClipboard } from '../../utility/export.js';
+import { getSpectraObjectPaths } from '../../utility/getSpectraObjectPaths.js';
 
 interface PlotAxisOptions {
   xPath: string;

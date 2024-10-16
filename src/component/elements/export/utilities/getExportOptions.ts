@@ -4,7 +4,7 @@ import {
   ExportSettings,
 } from 'nmr-load-save';
 
-import { getPageDimension } from '../../print/pageSize';
+import { getPageDimension } from '../../print/pageSize.js';
 
 type ReturnExportOptions = Omit<AdvanceExportSettings, 'mode'>;
 

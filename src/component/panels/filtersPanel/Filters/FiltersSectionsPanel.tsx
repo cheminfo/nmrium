@@ -3,19 +3,19 @@ import styled from '@emotion/styled';
 import { v4 } from '@lukeed/uuid';
 import { Filter, Filters } from 'nmr-processing';
 import { memo, useEffect, useRef, useState } from 'react';
-import { FaRegTrashAlt, FaRegEyeSlash } from 'react-icons/fa';
+import { FaRegEyeSlash, FaRegTrashAlt } from 'react-icons/fa';
 import { ObjectInspector } from 'react-inspector';
 import { Button } from 'react-science/ui';
 
-import { useChartData } from '../../../context/ChartContext';
-import { useDispatch } from '../../../context/DispatchContext';
-import { useToaster } from '../../../context/ToasterContext';
-import { AlertButton, useAlert } from '../../../elements/Alert';
-import { Sections } from '../../../elements/Sections';
-import useSpectraByActiveNucleus from '../../../hooks/useSpectraPerNucleus';
-import useSpectrum from '../../../hooks/useSpectrum';
+import { useChartData } from '../../../context/ChartContext.js';
+import { useDispatch } from '../../../context/DispatchContext.js';
+import { useToaster } from '../../../context/ToasterContext.js';
+import { AlertButton, useAlert } from '../../../elements/Alert.js';
+import { Sections } from '../../../elements/Sections.js';
+import useSpectraByActiveNucleus from '../../../hooks/useSpectraPerNucleus.js';
+import useSpectrum from '../../../hooks/useSpectrum.js';
 
-import { filterOptionPanels } from './index';
+import { filterOptionPanels } from './index.js';
 
 const IconButton = styled(Button)`
   padding: 2px;

@@ -1,9 +1,9 @@
 import { CSSProperties, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
-import { NumberInput2Controller } from '../../elements/NumberInput2Controller';
-import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
-import addCustomColumn from '../../elements/ReactTable/utility/addCustomColumn';
+import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
+import ReactTable, { Column } from '../../elements/ReactTable/ReactTable.js';
+import addCustomColumn from '../../elements/ReactTable/utility/addCustomColumn.js';
 
 const cellStyle: CSSProperties = {
   padding: '1px',

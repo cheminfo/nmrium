@@ -3,7 +3,7 @@
 import { CSSProperties } from 'react';
 import { useTable, useSortBy, useFlexLayout } from 'react-table';
 
-import { ReactTableStyle } from './Style';
+import { ReactTableStyle } from './Style.js';
 
 interface ReactTableFlexLayoutProps {
   data: any;

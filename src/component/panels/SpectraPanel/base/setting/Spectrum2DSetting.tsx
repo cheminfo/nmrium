@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { RangeSlider } from '@blueprintjs/core';
 import { css } from '@emotion/react';
-import debounce from 'lodash/debounce';
+import debounce from 'lodash/debounce.js';
 import { useMemo } from 'react';
 import {
   Controller,
@@ -12,12 +12,12 @@ import {
 } from 'react-hook-form';
 import { ColorPicker } from 'react-science/ui';
 
-import { COLORS } from '../../../../../data/utilities/generateColor';
-import { NumberInput2 } from '../../../../elements/NumberInput2';
-import { useFormValidateField } from '../../../../elements/useFormValidateField';
-import { colorToHexWithAlpha } from '../../../../utility/colorToHexWithAlpha';
+import { COLORS } from '../../../../../data/utilities/generateColor.js';
+import { NumberInput2 } from '../../../../elements/NumberInput2.js';
+import { useFormValidateField } from '../../../../elements/useFormValidateField.js';
+import { colorToHexWithAlpha } from '../../../../utility/colorToHexWithAlpha.js';
 
-import Spectrum2DHistogram from './Spectrum2DHistogram';
+import Spectrum2DHistogram from './Spectrum2DHistogram.js';
 
 interface Spectrum2DSettingProps {
   data: any;

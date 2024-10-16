@@ -9,7 +9,7 @@ import {
   useState,
 } from 'react';
 
-import Input, { InputProps } from './Input';
+import Input, { InputProps } from './Input.js';
 
 function extractNumber(val: string | number, type: string) {
   if (type === 'number' && typeof val !== 'number') {

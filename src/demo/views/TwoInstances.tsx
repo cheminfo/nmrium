@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { NMRium } from '../../component/main';
+import { NMRium } from '../../component/main/index.js';
 
 const data1 = {
   spectra: [

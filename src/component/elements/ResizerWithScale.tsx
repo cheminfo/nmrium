@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { useScaleX } from '../1d/utilities/scale';
-import { useGlobal } from '../context/GlobalContext';
+import { useScaleX } from '../1d/utilities/scale.js';
+import { useGlobal } from '../context/GlobalContext.js';
 
-import SVGResizer, { Position, ResizerProps } from './resizer/SVGResizer';
+import SVGResizer, { Position, ResizerProps } from './resizer/SVGResizer.js';
 
 interface ResizerWithScaleProps {
   disabled: boolean;

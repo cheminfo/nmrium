@@ -5,7 +5,7 @@ import {
   NumericInput,
   NumericInputProps,
 } from '@blueprintjs/core';
-import debounce from 'lodash/debounce';
+import debounce from 'lodash/debounce.js';
 import {
   useEffect,
   useMemo,

@@ -1,9 +1,9 @@
 import { createRoot } from 'react-dom/client';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 
-import Main from './demo/layouts/Main';
-import TestHighlight from './demo/test/TestHighlight';
-import Test from './demo/views/Test';
+import Main from './demo/layouts/Main.js';
+import TestHighlight from './demo/test/TestHighlight.js';
+import Test from './demo/views/Test.js';
 
 // Reset styles so they do not affect development of the React component.
 import 'modern-normalize/modern-normalize.css';

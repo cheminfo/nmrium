@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import { isValidElement, useMemo, Children, memo, ReactElement } from 'react';
 
-import Tab, { TabEvents, TabProps } from './Tab';
+import Tab, { TabEvents, TabProps } from './Tab.js';
 
 const topStyles = css`
   height: 100%;

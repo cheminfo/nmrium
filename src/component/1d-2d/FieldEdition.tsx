@@ -6,8 +6,8 @@ import { ReactNode, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
-import { Input2Controller } from '../elements/Input2Controller';
-import { NumberInput2Controller } from '../elements/NumberInput2Controller';
+import { Input2Controller } from '../elements/Input2Controller.js';
+import { NumberInput2Controller } from '../elements/NumberInput2Controller.js';
 
 type InputType = 'number' | 'text';
 

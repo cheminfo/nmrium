@@ -1,8 +1,8 @@
 import { CSSProperties } from 'react';
 
-import { useChartData } from '../../context/ChartContext';
-import { useScaleChecked } from '../../context/ScaleContext';
-import { options } from '../../toolbar/ToolTypes';
+import { useChartData } from '../../context/ChartContext.js';
+import { useScaleChecked } from '../../context/ScaleContext.js';
+import { options } from '../../toolbar/ToolTypes.js';
 
 const styles: CSSProperties = {
   transformOrigin: 'top left',

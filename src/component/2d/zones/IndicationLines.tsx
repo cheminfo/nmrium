@@ -1,12 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { Spectrum1D } from 'nmr-load-save';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-import { SIGNAL_INCLUDED_KINDS } from '../../../data/constants/signalsKinds';
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D';
-import { useChartData } from '../../context/ChartContext';
-import { useScale2DX, useScale2DY } from '../utilities/scale';
+import { SIGNAL_INCLUDED_KINDS } from '../../../data/constants/signalsKinds.js';
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
+import { useChartData } from '../../context/ChartContext.js';
+import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 
 const lineStyle = css`
   stroke: lightgrey;

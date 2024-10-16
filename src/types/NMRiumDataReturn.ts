@@ -1,7 +1,7 @@
 import { CorrelationData } from 'nmr-correlation';
-import { Workspace, ViewState, Spectrum } from 'nmr-load-save';
+import { Spectrum, ViewState, Workspace } from 'nmr-load-save';
 
-import { StateMolecule } from '../data/molecules/Molecule';
+import { StateMolecule } from '../data/molecules/Molecule.js';
 
 export interface NMRiumDataReturn {
   version: number;

@@ -5,15 +5,15 @@ import { IoAnalytics } from 'react-icons/io5';
 import { TbBrandGoogleAnalytics } from 'react-icons/tb';
 import { TooltipHelpContent } from 'react-science/ui';
 
-import { useChartData } from '../../context/ChartContext';
-import { usePreferences } from '../../context/PreferencesContext';
-import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import { useToggleSpectraVisibility } from '../../hooks/useToggleSpectraVisibility';
-import { booleanToString } from '../../utility/booleanToString';
-import { exportAsMatrix } from '../../utility/export';
-import DefaultPanelHeader from '../header/DefaultPanelHeader';
+import { useChartData } from '../../context/ChartContext.js';
+import { usePreferences } from '../../context/PreferencesContext.js';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
+import { useToggleSpectraVisibility } from '../../hooks/useToggleSpectraVisibility.js';
+import { booleanToString } from '../../utility/booleanToString.js';
+import { exportAsMatrix } from '../../utility/export.js';
+import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
 
-import { useHasSignalProcessingFilter } from './MatrixGenerationPanel';
+import { useHasSignalProcessingFilter } from './MatrixGenerationPanel.js';
 
 interface MatrixGenerationPanelHeaderProps {
   showStocsy: boolean;

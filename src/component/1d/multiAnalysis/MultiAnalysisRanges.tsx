@@ -1,10 +1,10 @@
 import { AnalysisColumnsTypes, SpectraAnalysisColumns } from 'nmr-load-save';
 import { memo } from 'react';
 
-import { useChartData } from '../../context/ChartContext';
-import { usePanelPreferences } from '../../hooks/usePanelPreferences';
+import { useChartData } from '../../context/ChartContext.js';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 
-import AnalysisRange from './AnalysisRange';
+import AnalysisRange from './AnalysisRange.js';
 
 interface MultiAnalysisRangesInnerProps {
   displayerKey: string;

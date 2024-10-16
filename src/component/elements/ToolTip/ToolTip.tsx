@@ -10,7 +10,7 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 
-import { useGlobal } from '../../context/GlobalContext';
+import { useGlobal } from '../../context/GlobalContext.js';
 
 const styles: Record<'popup', CSSProperties> = {
   popup: {

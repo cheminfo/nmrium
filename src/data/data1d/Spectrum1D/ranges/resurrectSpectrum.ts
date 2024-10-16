@@ -7,8 +7,8 @@ import {
   signalsToXY,
 } from 'nmr-processing';
 
-import { UsedColors } from '../../../../types/UsedColors';
-import { initiateDatum1D } from '../initiateDatum1D';
+import { UsedColors } from '../../../../types/UsedColors.js';
+import { initiateDatum1D } from '../initiateDatum1D.js';
 
 interface ResurrectSpectrumOptions {
   info: Partial<Info1D>;

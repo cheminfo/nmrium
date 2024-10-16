@@ -1,19 +1,19 @@
 import { Tag } from '@blueprintjs/core';
 import { yupResolver } from '@hookform/resolvers/yup';
-import lodashMerge from 'lodash/merge';
+import lodashMerge from 'lodash/merge.js';
 import { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
 import {
-  getDefaultPredictionOptions,
   FREQUENCIES,
-} from '../../../data/PredictionManager';
-import { usePreferences } from '../../context/PreferencesContext';
-import Label, { LabelStyle } from '../../elements/Label';
-import { NumberInput2Controller } from '../../elements/NumberInput2Controller';
-import { Select2Controller } from '../../elements/Select2Controller';
-import { usePanelPreferences } from '../../hooks/usePanelPreferences';
+  getDefaultPredictionOptions,
+} from '../../../data/PredictionManager.js';
+import { usePreferences } from '../../context/PreferencesContext.js';
+import Label, { LabelStyle } from '../../elements/Label.js';
+import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
+import { Select2Controller } from '../../elements/Select2Controller.js';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 
 const predictionFormValidation = Yup.object().shape({
   frequency: Yup.number().integer().required().label('Frequency'),

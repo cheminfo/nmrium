@@ -1,7 +1,7 @@
 import { Draft } from 'immer';
 
-import { State } from '../Reducer';
-import { ActionType } from '../types/ActionType';
+import { State } from '../Reducer.js';
+import { ActionType } from '../types/ActionType.js';
 
 type SetDimensionsAction = ActionType<
   'SET_DIMENSIONS',

@@ -1,6 +1,6 @@
 import { CSSProperties, ForwardedRef, forwardRef, useEffect } from 'react';
 
-import useCombinedRefs from '../hooks/useCombinedRefs';
+import useCombinedRefs from '../hooks/useCombinedRefs.js';
 
 const inputStyle: CSSProperties = {
   height: '100%',

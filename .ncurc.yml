@@ -1,1 +1,4 @@
 dep: 'prod,dev'
+reject:
+  # https://github.com/react-dropzone/react-dropzone/issues/1259#issuecomment-2395085954
+  - react-dropzone

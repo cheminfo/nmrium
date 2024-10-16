@@ -1,7 +1,7 @@
 import { Spectrum2D } from 'nmr-load-save';
 import { Zone } from 'nmr-processing';
 
-import { Zone2DError } from '../get2DSpectrumErrorValue';
+import { Zone2DError } from '../get2DSpectrumErrorValue.js';
 
 export function isZoneExists(
   zone: Zone,

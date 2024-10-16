@@ -1,6 +1,6 @@
-import { useMouseTracker } from '../../../EventsTrackers/MouseTracker';
+import { useMouseTracker } from '../../../EventsTrackers/MouseTracker.js';
 
-import { SpectrumPhaseTrace } from './SpectrumPhaseTrace';
+import { SpectrumPhaseTrace } from './SpectrumPhaseTrace.js';
 
 export function PhaseTraceWithMouse() {
   const position = useMouseTracker();

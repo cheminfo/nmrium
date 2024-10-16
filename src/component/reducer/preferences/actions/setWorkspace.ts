@@ -4,9 +4,9 @@ import {
   PreferencesState,
   SetWorkspaceAction,
   WORKSPACES_KEYS,
-} from '../preferencesReducer';
-import { getPreferencesByWorkspace } from '../utilities/getPreferencesByWorkspace';
-import { initWorkspace } from '../utilities/initWorkspace';
+} from '../preferencesReducer.js';
+import { getPreferencesByWorkspace } from '../utilities/getPreferencesByWorkspace.js';
+import { initWorkspace } from '../utilities/initWorkspace.js';
 
 export function setWorkspace(
   draft: Draft<PreferencesState>,

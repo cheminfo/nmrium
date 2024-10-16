@@ -4,12 +4,12 @@ import { useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 
-import { useChartData } from '../../../context/ChartContext';
-import { CheckController } from '../../../elements/CheckController';
-import { Input2Controller } from '../../../elements/Input2Controller';
-import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
-import { convertPathArrayToString } from '../../../utility/convertPathArrayToString';
-import { getSpectraObjectPaths } from '../../../utility/getSpectraObjectPaths';
+import { useChartData } from '../../../context/ChartContext.js';
+import { CheckController } from '../../../elements/CheckController.js';
+import { Input2Controller } from '../../../elements/Input2Controller.js';
+import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable.js';
+import { convertPathArrayToString } from '../../../utility/convertPathArrayToString.js';
+import { getSpectraObjectPaths } from '../../../utility/getSpectraObjectPaths.js';
 
 function LegendsPreferences() {
   const { setValue, control } = useFormContext();

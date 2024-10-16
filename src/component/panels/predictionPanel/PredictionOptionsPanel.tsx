@@ -7,16 +7,16 @@ import * as Yup from 'yup';
 import {
   FREQUENCIES,
   PredictionOptions,
-} from '../../../data/PredictionManager';
-import generateNumbersPowerOfX from '../../../data/utilities/generateNumbersPowerOfX';
-import { CheckController } from '../../elements/CheckController';
-import { GroupPane } from '../../elements/GroupPane';
-import { Input2Controller } from '../../elements/Input2Controller';
-import IsotopesViewer from '../../elements/IsotopesViewer';
-import Label, { LabelStyle } from '../../elements/Label';
-import { NumberInput2Controller } from '../../elements/NumberInput2Controller';
-import { Select2Controller } from '../../elements/Select2Controller';
-import { useSettingImperativeHandle } from '../extra/utilities/settingImperativeHandle';
+} from '../../../data/PredictionManager.js';
+import generateNumbersPowerOfX from '../../../data/utilities/generateNumbersPowerOfX.js';
+import { CheckController } from '../../elements/CheckController.js';
+import { GroupPane } from '../../elements/GroupPane.js';
+import { Input2Controller } from '../../elements/Input2Controller.js';
+import IsotopesViewer from '../../elements/IsotopesViewer.js';
+import Label, { LabelStyle } from '../../elements/Label.js';
+import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
+import { Select2Controller } from '../../elements/Select2Controller.js';
+import { useSettingImperativeHandle } from '../extra/utilities/settingImperativeHandle.js';
 
 const NUMBER_OF_POINTS_1D = generateNumbersPowerOfX(12, 19);
 const NUMBER_OF_POINTS_2D = generateNumbersPowerOfX(10, 10, {

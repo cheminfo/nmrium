@@ -2,17 +2,17 @@
 import { css } from '@emotion/react';
 import { Spectrum1D } from 'nmr-load-save';
 
-import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY';
-import { isSpectrum1D } from '../../data/data1d/Spectrum1D/isSpectrum1D';
-import { useBrushTracker } from '../EventsTrackers/BrushTracker';
-import { useChartData } from '../context/ChartContext';
-import { useScaleChecked } from '../context/ScaleContext';
-import { useActiveSpectra } from '../hooks/useActiveSpectra';
-import { useSetActiveSpectrumAction } from '../hooks/useSetActiveSpectrumAction';
-import { useVerticalAlign } from '../hooks/useVerticalAlign';
+import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY.js';
+import { isSpectrum1D } from '../../data/data1d/Spectrum1D/isSpectrum1D.js';
+import { useBrushTracker } from '../EventsTrackers/BrushTracker.js';
+import { useChartData } from '../context/ChartContext.js';
+import { useScaleChecked } from '../context/ScaleContext.js';
+import { useActiveSpectra } from '../hooks/useActiveSpectra.js';
+import { useSetActiveSpectrumAction } from '../hooks/useSetActiveSpectrumAction.js';
+import { useVerticalAlign } from '../hooks/useVerticalAlign.js';
 
-import Line from './Line';
-import { SPECTRA_BOTTOM_MARGIN } from './utilities/scale';
+import Line from './Line.js';
+import { SPECTRA_BOTTOM_MARGIN } from './utilities/scale.js';
 
 const BOX_SIZE = 10;
 

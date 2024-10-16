@@ -1,47 +1,47 @@
 /* eslint-disable unicorn/prefer-logical-operator-over-ternary */
 /** @jsxImportSource @emotion/react */
-import { CSSObject, SerializedStyles, css } from '@emotion/react';
+import { css, CSSObject, SerializedStyles } from '@emotion/react';
 import React, {
-  useRef,
-  memo,
-  forwardRef,
-  useState,
-  Ref,
   CSSProperties,
-  WheelEvent,
-  useLayoutEffect,
-  useEffect,
-  useMemo,
+  forwardRef,
+  memo,
   ReactElement,
+  Ref,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  WheelEvent,
 } from 'react';
 import {
-  useTable,
-  useSortBy,
-  TableInstance,
   CellProps,
   Column as ReactColumn,
+  TableInstance,
+  useSortBy,
   UseSortByColumnOptions,
   UseSortByInstanceProps,
-  UseTableOptions,
   UseSortByOptions,
+  useTable,
+  UseTableOptions,
 } from 'react-table';
-import { useMeasure } from 'react-use';
+import reactUse from 'react-use';
 
-import { HighlightEventSource } from '../../highlight';
-import { BaseContextMenuProps } from '../ContextMenuBluePrint';
+import { HighlightEventSource } from '../../highlight/index.js';
+import { BaseContextMenuProps } from '../ContextMenuBluePrint.js';
 
-import { EmptyDataRow } from './Elements/EmptyDataRow';
-import ReactTableHeader from './Elements/ReactTableHeader';
-import ReactTableRow, { ClickEvent } from './Elements/ReactTableRow';
-import { ReactTableStyle } from './Style';
+import { EmptyDataRow } from './Elements/EmptyDataRow.js';
+import ReactTableHeader from './Elements/ReactTableHeader.js';
+import ReactTableRow, { ClickEvent } from './Elements/ReactTableRow.js';
+import { ReactTableStyle } from './Style.js';
 import {
   ReactTableProvider,
   useReactTableContext,
-} from './utility/ReactTableContext';
+} from './utility/ReactTableContext.js';
 import useRowSpan, {
   prepareRowSpan,
   RowSpanHeaders,
-} from './utility/useRowSpan';
+} from './utility/useRowSpan.js';
 
 interface ExtraColumn<T extends object = any> {
   enableRowSpan?: boolean;
@@ -372,7 +372,7 @@ function ReactTable<T extends object>(props: ReactTableProps<T>) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const visibleRowsCountRef = useRef<number>(0);
   const visibleColumnsCountRef = useRef<number>(0);
-  const [mRef, { height, width }] = useMeasure<HTMLDivElement>();
+  const [mRef, { height, width }] = reactUse.useMeasure<HTMLDivElement>();
 
   const [tableVirtualBoundary, setTableVirtualBoundary] =
     useState<TableVirtualBoundary>({

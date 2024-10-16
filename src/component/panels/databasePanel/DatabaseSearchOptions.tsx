@@ -4,23 +4,23 @@ import { IoSearchOutline } from 'react-icons/io5';
 import { TbBinaryTree } from 'react-icons/tb';
 import { Toolbar, ToolbarItemProps } from 'react-science/ui';
 
-import { useChartData } from '../../context/ChartContext';
-import { useDispatch } from '../../context/DispatchContext';
-import { CounterLabel } from '../../elements/CounterLabel';
-import Input from '../../elements/Input';
-import { PreferencesButton } from '../../elements/PreferencesButton';
-import Select from '../../elements/Select';
-import { ToolBarButton } from '../../elements/ToolBarButton';
-import useToolsFunctions from '../../hooks/useToolsFunctions';
-import { options } from '../../toolbar/ToolTypes';
-import { formatCounterLabel } from '../header/DefaultPanelHeader';
-import PanelHeader from '../header/PanelHeader';
+import { useChartData } from '../../context/ChartContext.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { CounterLabel } from '../../elements/CounterLabel.js';
+import Input from '../../elements/Input.js';
+import { PreferencesButton } from '../../elements/PreferencesButton.js';
+import Select from '../../elements/Select.js';
+import { ToolBarButton } from '../../elements/ToolBarButton.js';
+import useToolsFunctions from '../../hooks/useToolsFunctions.js';
+import { options } from '../../toolbar/ToolTypes.js';
+import { formatCounterLabel } from '../header/DefaultPanelHeader.js';
+import PanelHeader from '../header/PanelHeader.js';
 
 import {
-  DataBaseSearchResultEntry,
-  DatabaseSearchKeywords,
   Databases,
-} from './DatabasePanel';
+  DatabaseSearchKeywords,
+  DataBaseSearchResultEntry,
+} from './DatabasePanel.js';
 
 interface DatabaseSearchOptionsProps {
   databases: Databases;

@@ -3,8 +3,8 @@ import { Button, Classes } from '@blueprintjs/core';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
-import { NumberInput2Controller } from '../../elements/NumberInput2Controller';
-import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
+import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
+import ReactTable, { Column } from '../../elements/ReactTable/ReactTable.js';
 
 export function ExclusionsZonesTable() {
   const { setValue, control } = useFormContext<any>();

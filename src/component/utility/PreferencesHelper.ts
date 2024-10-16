@@ -1,6 +1,6 @@
-import { readSettings } from '../reducer/preferences/preferencesReducer';
+import { readSettings } from '../reducer/preferences/preferencesReducer.js';
 
-import { getValue } from './LocalStorage';
+import { getValue } from './LocalStorage.js';
 
 function GetPreference(preferences, key) {
   const localData = readSettings() || {};

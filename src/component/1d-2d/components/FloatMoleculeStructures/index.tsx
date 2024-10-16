@@ -1,18 +1,18 @@
 import { Spectrum1D, Spectrum2D } from 'nmr-load-save';
-import { Zones, Ranges } from 'nmr-processing';
+import { Ranges, Zones } from 'nmr-processing';
 import { memo } from 'react';
 
 import {
   MoleculesView,
   MoleculeView,
   StateMoleculeExtended,
-} from '../../../../data/molecules/Molecule';
-import { useChartData } from '../../../context/ChartContext';
-import useSpectrum from '../../../hooks/useSpectrum';
-import { DisplayerMode } from '../../../reducer/Reducer';
-import { assert } from '../../../utility/assert';
+} from '../../../../data/molecules/Molecule.js';
+import { useChartData } from '../../../context/ChartContext.js';
+import useSpectrum from '../../../hooks/useSpectrum.js';
+import { DisplayerMode } from '../../../reducer/Reducer.js';
+import { assert } from '../../../utility/assert.js';
 
-import { DraggableStructure } from './DraggableStructure';
+import { DraggableStructure } from './DraggableStructure.js';
 
 interface FloatMoleculeStructuresProps {
   zones: Zones;

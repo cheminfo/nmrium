@@ -5,24 +5,24 @@ import { ResponsiveChart } from 'react-d3-utils';
 import { StructureEditor } from 'react-ocl/full';
 import { useAccordionContext } from 'react-science/ui';
 
-import { predictSpectra } from '../../../data/PredictionManager';
-import { StateMoleculeExtended } from '../../../data/molecules/Molecule';
-import { useChartData } from '../../context/ChartContext';
-import { useDispatch } from '../../context/DispatchContext';
-import { useLogger } from '../../context/LoggerContext';
-import { useToaster } from '../../context/ToasterContext';
-import Button from '../../elements/Button';
-import { NextPrev } from '../../elements/NextPrev';
-import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import { useMoleculeEditor } from '../../modal/MoleculeStructureEditorModal';
-import MoleculeHeader from '../MoleculesPanel/MoleculeHeader';
-import MoleculePanelHeader from '../MoleculesPanel/MoleculePanelHeader';
-import { tablePanelStyle } from '../extra/BasicPanelStyle';
-import { SettingsRef } from '../extra/utilities/settingImperativeHandle';
-import PreferencesHeader from '../header/PreferencesHeader';
+import { predictSpectra } from '../../../data/PredictionManager.js';
+import { StateMoleculeExtended } from '../../../data/molecules/Molecule.js';
+import { useChartData } from '../../context/ChartContext.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { useLogger } from '../../context/LoggerContext.js';
+import { useToaster } from '../../context/ToasterContext.js';
+import Button from '../../elements/Button.js';
+import { NextPrev } from '../../elements/NextPrev.js';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
+import { useMoleculeEditor } from '../../modal/MoleculeStructureEditorModal.js';
+import MoleculeHeader from '../MoleculesPanel/MoleculeHeader.js';
+import MoleculePanelHeader from '../MoleculesPanel/MoleculePanelHeader.js';
+import { tablePanelStyle } from '../extra/BasicPanelStyle.js';
+import { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
+import PreferencesHeader from '../header/PreferencesHeader.js';
 
-import PredictionPreferences from './PredictionPreferences';
-import PredictionSimpleOptions from './PredictionSimpleOptions';
+import PredictionPreferences from './PredictionPreferences.js';
+import PredictionSimpleOptions from './PredictionSimpleOptions.js';
 
 const styles: Record<'flexColumnContainer' | 'slider', CSSProperties> = {
   flexColumnContainer: {

@@ -15,18 +15,18 @@ import { useCallback, useEffect, useRef } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { FaSearchPlus } from 'react-icons/fa';
 
-import { useChartData } from '../../context/ChartContext';
-import { useDispatch } from '../../context/DispatchContext';
-import { DialogProps } from '../../elements/DialogManager';
-import { DraggableDialog } from '../../elements/DraggableDialog';
-import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import useSpectrum from '../../hooks/useSpectrum';
-import useEditRangeModal from '../../panels/RangesPanel/hooks/useEditRangeModal';
-import { hasCouplingConstant } from '../../panels/extra/utilities/MultiplicityUtilities';
-import { formatNumber } from '../../utility/formatNumber';
+import { useChartData } from '../../context/ChartContext.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { DialogProps } from '../../elements/DialogManager.js';
+import { DraggableDialog } from '../../elements/DraggableDialog.js';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
+import useSpectrum from '../../hooks/useSpectrum.js';
+import useEditRangeModal from '../../panels/RangesPanel/hooks/useEditRangeModal.js';
+import { hasCouplingConstant } from '../../panels/extra/utilities/MultiplicityUtilities.js';
+import { formatNumber } from '../../utility/formatNumber.js';
 
-import SignalsContent from './forms/components/SignalsContent';
-import editRangeFormValidation from './forms/validation/EditRangeValidation';
+import SignalsContent from './forms/components/SignalsContent.js';
+import editRangeFormValidation from './forms/validation/EditRangeValidation.js';
 
 const styles = css`
   background-color: white;

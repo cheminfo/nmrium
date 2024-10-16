@@ -1,9 +1,9 @@
 import { useCallback, useMemo } from 'react';
 
-import { useAssignmentData } from '../../../assignment/AssignmentsContext';
-import { useDispatch } from '../../../context/DispatchContext';
+import { useAssignmentData } from '../../../assignment/AssignmentsContext.js';
+import { useDispatch } from '../../../context/DispatchContext.js';
 
-import { RangeData } from './useMapRanges';
+import { RangeData } from './useMapRanges.js';
 
 function getZoomRange(range: RangeData): [number, number] {
   const { from, to } = range;

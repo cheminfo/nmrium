@@ -1,10 +1,10 @@
 import { NmrData2D } from 'cheminfo-types';
 import { scaleLinear } from 'd3';
 
-import { useChartData } from '../../context/ChartContext';
-import { Margin, SpectraDirection } from '../../reducer/Reducer';
+import { useChartData } from '../../context/ChartContext.js';
+import { Margin, SpectraDirection } from '../../reducer/Reducer.js';
 
-import { LAYOUT, Layout } from './DimensionLayout';
+import { LAYOUT, Layout } from './DimensionLayout.js';
 
 interface Scale2DXOptions {
   width: number;

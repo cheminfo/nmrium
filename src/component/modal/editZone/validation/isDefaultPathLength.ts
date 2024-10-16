@@ -1,6 +1,6 @@
 import { FromTo } from 'cheminfo-types';
 
-import DefaultPathLengths from '../../../../data/constants/DefaultPathLengths';
+import DefaultPathLengths from '../../../../data/constants/DefaultPathLengths.js';
 
 export function isDefaultPathLength(
   pathLength: FromTo,

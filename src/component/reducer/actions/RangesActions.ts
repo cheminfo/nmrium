@@ -1,6 +1,6 @@
 import { v4 } from '@lukeed/uuid';
 import { Draft, original } from 'immer';
-import cloneDeep from 'lodash/cloneDeep';
+import cloneDeep from 'lodash/cloneDeep.js';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { RangesViewState, Spectrum, Spectrum1D } from 'nmr-load-save';
 import { Signal1D, Range, Filters, FiltersManager } from 'nmr-processing';
@@ -8,41 +8,41 @@ import { Signal1D, Range, Filters, FiltersManager } from 'nmr-processing';
 import {
   DATUM_KIND,
   SIGNAL_INCLUDED_KINDS,
-} from '../../../data/constants/signalsKinds';
+} from '../../../data/constants/signalsKinds.js';
+import {
+  SetSumOptions,
+  SumParams,
+  initSumOptions,
+  setSumOptions,
+} from '../../../data/data1d/Spectrum1D/SumManager.js';
 import {
   changeRangeSignal,
   detectRanges,
   updateRangesRelativeValues,
   changeRangeRelativeValue,
   isSpectrum1D,
-} from '../../../data/data1d/Spectrum1D';
-import {
-  SetSumOptions,
-  SumParams,
-  initSumOptions,
-  setSumOptions,
-} from '../../../data/data1d/Spectrum1D/SumManager';
-import { ChangeRangeRelativeValueProps } from '../../../data/data1d/Spectrum1D/ranges/changeRangeRelativeValue';
+} from '../../../data/data1d/Spectrum1D/index.js';
+import { ChangeRangeRelativeValueProps } from '../../../data/data1d/Spectrum1D/ranges/changeRangeRelativeValue.js';
 import {
   unlink,
   unlinkInAssignmentData,
-} from '../../../data/utilities/RangeUtilities';
-import { AssignmentContext } from '../../assignment/AssignmentsContext';
-import { RangeData } from '../../panels/RangesPanel/hooks/useMapRanges';
-import { FilterType } from '../../utility/filterType';
-import { State } from '../Reducer';
-import { getActiveSpectrum } from '../helper/getActiveSpectrum';
-import { getSpectrum } from '../helper/getSpectrum';
+} from '../../../data/utilities/RangeUtilities.js';
+import { AssignmentContext } from '../../assignment/AssignmentsContext.js';
+import { RangeData } from '../../panels/RangesPanel/hooks/useMapRanges.js';
+import { FilterType } from '../../utility/filterType.js';
+import { State } from '../Reducer.js';
+import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
+import { getSpectrum } from '../helper/getSpectrum.js';
 import {
   initializeRangeViewObject,
   setRangesViewProperty,
-} from '../helper/setRangesViewProperty';
-import { ActionType } from '../types/ActionType';
+} from '../helper/setRangesViewProperty.js';
+import { ActionType } from '../types/ActionType.js';
 
-import { handleUpdateCorrelations } from './CorrelationsActions';
-import { setDomain } from './DomainActions';
-import { toggleDisplayingPeaks } from './PeaksActions';
-import { resetSelectedTool } from './ToolsActions';
+import { handleUpdateCorrelations } from './CorrelationsActions.js';
+import { setDomain } from './DomainActions.js';
+import { toggleDisplayingPeaks } from './PeaksActions.js';
+import { resetSelectedTool } from './ToolsActions.js';
 
 type AutoRangesDetectionAction = ActionType<
   'AUTO_RANGES_DETECTION',

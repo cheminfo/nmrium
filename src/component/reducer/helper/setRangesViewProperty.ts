@@ -1,10 +1,10 @@
 import { Draft } from 'immer';
 import { RangesViewState } from 'nmr-load-save';
 
-import { defaultRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
-import { State } from '../Reducer';
+import { defaultRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
+import { State } from '../Reducer.js';
 
-import { getActiveSpectrum } from './getActiveSpectrum';
+import { getActiveSpectrum } from './getActiveSpectrum.js';
 
 export function setRangesViewProperty<T extends keyof RangesViewState>(
   draft: Draft<State>,

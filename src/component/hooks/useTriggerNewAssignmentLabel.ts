@@ -1,4 +1,4 @@
-import { useShareData } from '../context/ShareDataContext';
+import { useShareData } from '../context/ShareDataContext.js';
 
 export function useTriggerNewAssignmentLabel(id) {
   const { data: rangeKey, setData } = useShareData<string | null>();

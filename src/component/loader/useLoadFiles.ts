@@ -3,12 +3,12 @@ import { read as readDropFiles } from 'nmr-load-save';
 import { ParseResult } from 'papaparse';
 import { useCallback } from 'react';
 
-import { isMetaFile, parseMetaFile } from '../../data/parseMeta';
-import { useDispatch } from '../context/DispatchContext';
-import { useLogger } from '../context/LoggerContext';
-import { usePreferences } from '../context/PreferencesContext';
-import { useToaster } from '../context/ToasterContext';
-import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature';
+import { isMetaFile, parseMetaFile } from '../../data/parseMeta/index.js';
+import { useDispatch } from '../context/DispatchContext.js';
+import { useLogger } from '../context/LoggerContext.js';
+import { usePreferences } from '../context/PreferencesContext.js';
+import { useToaster } from '../context/ToasterContext.js';
+import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature.js';
 
 export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
   const dispatch = useDispatch();

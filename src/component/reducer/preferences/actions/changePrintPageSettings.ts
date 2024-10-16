@@ -3,8 +3,8 @@ import { Draft } from 'immer';
 import {
   PreferencesState,
   ChangePrintPageSettingsAction,
-} from '../preferencesReducer';
-import { getActiveWorkspace } from '../utilities/getActiveWorkspace';
+} from '../preferencesReducer.js';
+import { getActiveWorkspace } from '../utilities/getActiveWorkspace.js';
 
 export function changePrintPageSettings(
   draft: Draft<PreferencesState>,

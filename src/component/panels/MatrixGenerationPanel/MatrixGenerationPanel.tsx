@@ -3,30 +3,33 @@ import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SvgNmrMultipleAnalysis } from 'cheminfo-font';
 import { Filters } from 'nmr-processing';
-import { useEffect, useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Button, Toolbar } from 'react-science/ui';
 import * as yup from 'yup';
 
-import { getMatrixFilters, MatrixFilter } from '../../../data/matrixGeneration';
-import { MatrixOptions } from '../../../data/types/data1d/MatrixOptions';
-import { useChartData } from '../../context/ChartContext';
-import { useDispatch } from '../../context/DispatchContext';
-import { usePreferences } from '../../context/PreferencesContext';
-import { GroupPane, GroupPaneStyle } from '../../elements/GroupPane';
-import Label, { LabelStyle } from '../../elements/Label';
-import { NumberInput2Controller } from '../../elements/NumberInput2Controller';
-import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus';
-import useToolsFunctions from '../../hooks/useToolsFunctions';
-import { getMatrixGenerationDefaultOptions } from '../../reducer/preferences/panelsPreferencesDefaultValues';
-import { options } from '../../toolbar/ToolTypes';
-import { tablePanelStyle } from '../extra/BasicPanelStyle';
-import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
+import {
+  getMatrixFilters,
+  MatrixFilter,
+} from '../../../data/matrixGeneration.js';
+import { MatrixOptions } from '../../../data/types/data1d/MatrixOptions.js';
+import { useChartData } from '../../context/ChartContext.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { usePreferences } from '../../context/PreferencesContext.js';
+import { GroupPane, GroupPaneStyle } from '../../elements/GroupPane.js';
+import Label, { LabelStyle } from '../../elements/Label.js';
+import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
+import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus.js';
+import useToolsFunctions from '../../hooks/useToolsFunctions.js';
+import { getMatrixGenerationDefaultOptions } from '../../reducer/preferences/panelsPreferencesDefaultValues.js';
+import { options } from '../../toolbar/ToolTypes.js';
+import { tablePanelStyle } from '../extra/BasicPanelStyle.js';
+import { PreferencesContainer } from '../extra/preferences/PreferencesContainer.js';
 
-import { ExclusionsZonesTable } from './ExclusionsZonesTable';
-import { FiltersOptions } from './FiltersOptions';
-import { MatrixGenerationPanelHeader } from './MatrixGenerationPanelHeader';
+import { ExclusionsZonesTable } from './ExclusionsZonesTable.js';
+import { FiltersOptions } from './FiltersOptions.js';
+import { MatrixGenerationPanelHeader } from './MatrixGenerationPanelHeader.js';
 
 const { signalProcessing } = Filters;
 

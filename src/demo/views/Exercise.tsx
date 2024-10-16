@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { Molecule } from 'openchemlib/full';
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { MF } from 'react-mf';
 import { StructureEditor } from 'react-ocl/full';
 
-import { NMRium, NMRiumData } from '../../component/main';
+import { NMRium, NMRiumData } from '../../component/main/index.js';
 
 const answers = JSON.parse(localStorage.getItem('nmrium-exercises') || '{}');
 

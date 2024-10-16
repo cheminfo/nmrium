@@ -1,4 +1,4 @@
-import { setDomain, getDomain } from './DomainActions';
+import { setDomain, getDomain } from './DomainActions.js';
 
 function handleHistoryUndo(draft) {
   const { past, present, future } = draft.history;

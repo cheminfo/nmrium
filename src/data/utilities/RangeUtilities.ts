@@ -1,7 +1,7 @@
-import omit from 'lodash/omit';
+import omit from 'lodash/omit.js';
 import { Range, Signal1D } from 'nmr-processing';
 
-import { DATUM_KIND } from '../constants/signalsKinds';
+import { DATUM_KIND } from '../constants/signalsKinds.js';
 
 export function getDiaIDs(range: Range): string[] {
   return ([] as string[]).concat(

@@ -1,7 +1,7 @@
 import { Draft } from 'immer';
 
-import { Layout } from '../../2d/utilities/DimensionLayout';
-import { State } from '../Reducer';
+import { Layout } from '../../2d/utilities/DimensionLayout.js';
+import { State } from '../Reducer.js';
 
 interface HistoryItem {
   xDomain: number[];

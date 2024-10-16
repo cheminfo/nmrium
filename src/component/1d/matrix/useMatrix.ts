@@ -3,9 +3,9 @@ import { Spectrum } from 'nmr-load-save';
 import { Filters } from 'nmr-processing';
 import { useMemo } from 'react';
 
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D';
-import { useChartData } from '../../context/ChartContext';
-import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus';
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
+import { useChartData } from '../../context/ChartContext.js';
+import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus.js';
 
 const { signalProcessing } = Filters;
 

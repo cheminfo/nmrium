@@ -3,8 +3,8 @@ import { Tab, Tabs } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { CSSProperties, memo } from 'react';
 
-import { SignalJCouplingsTable } from './signal-tabs/SignalJCouplingsTable';
-import { SignalPeaksTable } from './signal-tabs/SignalPeaksTable';
+import { SignalJCouplingsTable } from './signal-tabs/SignalJCouplingsTable.js';
+import { SignalPeaksTable } from './signal-tabs/SignalPeaksTable.js';
 
 const style: CSSProperties = {
   borderSpacing: '0',

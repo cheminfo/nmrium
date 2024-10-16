@@ -1,8 +1,8 @@
 import { readFileSync } from 'node:fs';
 
-import { Page, expect } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 
-import { NmriumPageViewer } from './NmriumPageViewer';
+import { NmriumPageViewer } from './NmriumPageViewer.js';
 
 type ClickOptions = Parameters<Page['click']>[1];
 

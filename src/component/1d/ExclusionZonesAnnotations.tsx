@@ -2,12 +2,12 @@ import { Spectrum1D } from 'nmr-load-save';
 import { Filters } from 'nmr-processing';
 import { memo } from 'react';
 
-import { ExclusionZone } from '../../data/types/data1d/ExclusionZone';
-import { useChartData } from '../context/ChartContext';
-import { useScale } from '../context/ScaleContext';
-import useSpectraByActiveNucleus from '../hooks/useSpectraPerNucleus';
+import { ExclusionZone } from '../../data/types/data1d/ExclusionZone.js';
+import { useChartData } from '../context/ChartContext.js';
+import { useScale } from '../context/ScaleContext.js';
+import useSpectraByActiveNucleus from '../hooks/useSpectraPerNucleus.js';
 
-import ExclusionZoneAnnotation from './ExclusionZoneAnnotation';
+import ExclusionZoneAnnotation from './ExclusionZoneAnnotation.js';
 
 interface ExclusionZonesAnnotationsInnerProps {
   displayerKey: string;

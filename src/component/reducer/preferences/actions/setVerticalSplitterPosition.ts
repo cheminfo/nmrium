@@ -3,8 +3,8 @@ import { Draft } from 'immer';
 import {
   PreferencesState,
   SetVerticalSplitterPositionAction,
-} from '../preferencesReducer';
-import { getActiveWorkspace } from '../utilities/getActiveWorkspace';
+} from '../preferencesReducer.js';
+import { getActiveWorkspace } from '../utilities/getActiveWorkspace.js';
 
 export function setVerticalSplitterPosition(
   draft: Draft<PreferencesState>,

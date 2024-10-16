@@ -1,20 +1,20 @@
-import { useEffect, useCallback, forwardRef, useMemo, memo } from 'react';
+import { forwardRef, memo, useCallback, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { usePreferences } from '../../context/PreferencesContext';
-import useNucleus from '../../hooks/useNucleus';
-import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
-import { getUniqueNuclei } from '../../utility/getUniqueNuclei';
-import { is2DNucleus } from '../../utility/nucleusToString';
+import { usePreferences } from '../../context/PreferencesContext.js';
+import useNucleus from '../../hooks/useNucleus.js';
+import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences.js';
+import { getUniqueNuclei } from '../../utility/getUniqueNuclei.js';
+import { is2DNucleus } from '../../utility/nucleusToString.js';
 import {
-  NucleusPreferences,
   NucleusPreferenceField,
-} from '../extra/preferences/NucleusPreferences';
-import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
+  NucleusPreferences,
+} from '../extra/preferences/NucleusPreferences.js';
+import { PreferencesContainer } from '../extra/preferences/PreferencesContainer.js';
 import {
   SettingsRef,
   useSettingImperativeHandle,
-} from '../extra/utilities/settingImperativeHandle';
+} from '../extra/utilities/settingImperativeHandle.js';
 
 const preferences1DFields: NucleusPreferenceField[] = [
   {

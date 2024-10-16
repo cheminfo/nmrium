@@ -1,7 +1,10 @@
 import { Range, Zone } from 'nmr-processing';
 import { DiaIDAndInfo } from 'openchemlib-utils';
 
-import { AssignmentContext, Axis } from '../../assignment/AssignmentsContext';
+import {
+  AssignmentContext,
+  Axis,
+} from '../../assignment/AssignmentsContext.js';
 
 export interface AtomData {
   oclIDs: string[];

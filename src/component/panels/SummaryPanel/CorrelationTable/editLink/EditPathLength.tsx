@@ -4,10 +4,10 @@ import { FromTo } from 'cheminfo-types';
 import { Signal2D } from 'nmr-processing';
 import { useCallback, useEffect, useState } from 'react';
 
-import DefaultPathLengths from '../../../../../data/constants/DefaultPathLengths';
-import Button from '../../../../elements/Button';
-import Input from '../../../../elements/Input';
-import Label from '../../../../elements/Label';
+import DefaultPathLengths from '../../../../../data/constants/DefaultPathLengths.js';
+import Button from '../../../../elements/Button.js';
+import Input from '../../../../elements/Input.js';
+import Label from '../../../../elements/Label.js';
 
 const editPathLengthsStyles = css`
   width: 100%;

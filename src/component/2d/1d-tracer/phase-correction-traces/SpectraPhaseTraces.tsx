@@ -1,12 +1,15 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-import { useChartData } from '../../../context/ChartContext';
-import { HighlightEventSource, useHighlight } from '../../../highlight';
-import { SpectrumTrace, TraceDirection } from '../../../reducer/Reducer';
+import { useChartData } from '../../../context/ChartContext.js';
+import {
+  HighlightEventSource,
+  useHighlight,
+} from '../../../highlight/index.js';
+import { SpectrumTrace, TraceDirection } from '../../../reducer/Reducer.js';
 
-import { SpectrumPhaseTrace } from './SpectrumPhaseTrace';
-import { useActivePhaseTraces } from './useActivePhaseTraces';
+import { SpectrumPhaseTrace } from './SpectrumPhaseTrace.js';
+import { useActivePhaseTraces } from './useActivePhaseTraces.js';
 
 const BOX_SIZE = 20;
 

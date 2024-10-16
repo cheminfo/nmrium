@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import lodashGet from 'lodash/get';
+import lodashGet from 'lodash/get.js';
 import { WorkSpacePanelPreferences } from 'nmr-load-save';
 import { Info1D } from 'nmr-processing';
 import { useMemo, useCallback, MouseEvent, CSSProperties } from 'react';
@@ -9,27 +9,27 @@ import {
   AssignmentsData,
   useAssignment,
   useAssignmentData,
-} from '../../assignment/AssignmentsContext';
-import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment';
-import { ContextMenu } from '../../elements/ContextMenuBluePrint';
-import { TableContextMenuProps } from '../../elements/ReactTable/ReactTable';
+} from '../../assignment/AssignmentsContext.js';
+import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment.js';
+import { ContextMenu } from '../../elements/ContextMenuBluePrint.js';
+import { TableContextMenuProps } from '../../elements/ReactTable/ReactTable.js';
 import {
   HighlightEventSource,
   useHighlight,
   useHighlightData,
-} from '../../highlight';
+} from '../../highlight/index.js';
 
-import AbsoluteColumn from './TableColumns/AbsoluteColumn';
-import ActionsColumn from './TableColumns/ActionsColumn';
-import CouplingColumn from './TableColumns/CouplingColumn';
-import { RangeAssignmentColumn } from './TableColumns/RangeAssignmentColumn';
-import RangeAssignmentsColumn from './TableColumns/RangeAssignmentsColumn';
-import RangeColumn from './TableColumns/RangeColumn';
-import RelativeColumn from './TableColumns/RelativeColumn';
-import SignalAssignmentsColumn from './TableColumns/SignalAssignmentsColumn';
-import SignalDeltaColumn from './TableColumns/SignalDeltaColumn';
-import SignalDeltaHzColumn from './TableColumns/SignalDeltaHzColumn';
-import { RangeData } from './hooks/useMapRanges';
+import AbsoluteColumn from './TableColumns/AbsoluteColumn.js';
+import ActionsColumn from './TableColumns/ActionsColumn.js';
+import CouplingColumn from './TableColumns/CouplingColumn.js';
+import { RangeAssignmentColumn } from './TableColumns/RangeAssignmentColumn.js';
+import RangeAssignmentsColumn from './TableColumns/RangeAssignmentsColumn.js';
+import RangeColumn from './TableColumns/RangeColumn.js';
+import RelativeColumn from './TableColumns/RelativeColumn.js';
+import SignalAssignmentsColumn from './TableColumns/SignalAssignmentsColumn.js';
+import SignalDeltaColumn from './TableColumns/SignalDeltaColumn.js';
+import SignalDeltaHzColumn from './TableColumns/SignalDeltaHzColumn.js';
+import { RangeData } from './hooks/useMapRanges.js';
 
 const HighlightedRowStyle = css`
   background-color: #ff6f0057;

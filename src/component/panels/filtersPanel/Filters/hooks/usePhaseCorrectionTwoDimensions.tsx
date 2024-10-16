@@ -1,15 +1,15 @@
 import { NmrData2DFt } from 'cheminfo-types';
-import debounce from 'lodash/debounce';
+import debounce from 'lodash/debounce.js';
 import { Spectrum2D } from 'nmr-load-save';
 import { Filter } from 'nmr-processing';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelect } from 'react-science/ui';
 
-import { useActivePhaseTraces } from '../../../../2d/1d-tracer/phase-correction-traces/useActivePhaseTraces';
-import { useDispatch } from '../../../../context/DispatchContext';
-import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsContext';
-import useSpectrum from '../../../../hooks/useSpectrum';
-import { TraceDirection } from '../../../../reducer/Reducer';
+import { useActivePhaseTraces } from '../../../../2d/1d-tracer/phase-correction-traces/useActivePhaseTraces.js';
+import { useDispatch } from '../../../../context/DispatchContext.js';
+import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsContext.js';
+import useSpectrum from '../../../../hooks/useSpectrum.js';
+import { TraceDirection } from '../../../../reducer/Reducer.js';
 
 type PhaseCorrectionTypes = 'manual' | 'automatic';
 

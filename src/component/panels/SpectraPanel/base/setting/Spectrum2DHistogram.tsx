@@ -1,7 +1,7 @@
 import { memo, useMemo } from 'react';
 
-import PlotChart from './PlotChart';
-import { processSnapPlot } from './processSnapPlot';
+import PlotChart from './PlotChart.js';
+import { processSnapPlot } from './processSnapPlot.js';
 
 interface Spectrum2DHistogramProps {
   color?: string;

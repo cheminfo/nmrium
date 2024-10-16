@@ -8,18 +8,18 @@ import {
   getMatrixFilters,
   MatrixFilter,
   normalCase,
-} from '../../../data/matrixGeneration';
-import { CheckController } from '../../elements/CheckController';
-import { GroupPane } from '../../elements/GroupPane';
-import { Input2Controller } from '../../elements/Input2Controller';
-import Label from '../../elements/Label';
-import { NumberInput2Controller } from '../../elements/NumberInput2Controller';
-import { Select2Controller } from '../../elements/Select2Controller';
+} from '../../../data/matrixGeneration.js';
+import { CheckController } from '../../elements/CheckController.js';
+import { GroupPane } from '../../elements/GroupPane.js';
+import { Input2Controller } from '../../elements/Input2Controller.js';
+import Label from '../../elements/Label.js';
+import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
+import { Select2Controller } from '../../elements/Select2Controller.js';
 
 import {
   DEFAULT_MATRIX_FILTERS,
   GroupPanelStyle,
-} from './MatrixGenerationPanel';
+} from './MatrixGenerationPanel.js';
 
 interface SelectMatrixFilter extends MatrixFilter {
   label: string;

@@ -1,23 +1,23 @@
-import lodashGet from 'lodash/get';
+import lodashGet from 'lodash/get.js';
 import {
-  Spectrum,
-  Spectrum1D,
+  AnalysisColumnsTypes,
+  AnalysisColumnsValuesKeys,
+  AnalysisOptions,
   JpathTableColumn,
   MultipleSpectraAnalysisPreferences,
   PanelsPreferences,
-  WorkSpacePanelPreferences,
-  AnalysisOptions,
-  AnalysisColumnsTypes,
-  SpectraAnalysisColumns,
   SpectraAnalysisColumn,
-  AnalysisColumnsValuesKeys,
+  SpectraAnalysisColumns,
+  Spectrum,
+  Spectrum1D,
+  WorkSpacePanelPreferences,
 } from 'nmr-load-save';
 
-import { RangeDetectionResult } from '../types/data1d/index';
-import { convertSpectraArrayToObject } from '../utilities/convertSpectraListToObject';
-import generateChar from '../utilities/generateChar';
+import { RangeDetectionResult } from '../types/data1d/index.js';
+import { convertSpectraArrayToObject } from '../utilities/convertSpectraListToObject.js';
+import generateChar from '../utilities/generateChar.js';
 
-import { detectRange, isSpectrum1D } from './Spectrum1D/index';
+import { detectRange, isSpectrum1D } from './Spectrum1D/index.js';
 
 export type ColumnType = keyof typeof AnalysisColumnsTypes;
 

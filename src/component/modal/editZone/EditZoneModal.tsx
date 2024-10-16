@@ -8,14 +8,14 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { FaSearchPlus } from 'react-icons/fa';
 import * as Yup from 'yup';
 
-import DefaultPathLengths from '../../../data/constants/DefaultPathLengths';
-import { DialogProps } from '../../elements/DialogManager';
-import { DraggableDialog } from '../../elements/DraggableDialog';
-import { ZoneData } from '../../panels/ZonesPanel/hooks/useMapZones';
-import { useZoneActions } from '../../panels/ZonesPanel/hooks/useZoneActions';
+import DefaultPathLengths from '../../../data/constants/DefaultPathLengths.js';
+import { DialogProps } from '../../elements/DialogManager.js';
+import { DraggableDialog } from '../../elements/DraggableDialog.js';
+import { ZoneData } from '../../panels/ZonesPanel/hooks/useMapZones.js';
+import { useZoneActions } from '../../panels/ZonesPanel/hooks/useZoneActions.js';
 
-import { SignalsForm } from './SignalsForm';
-import { isDefaultPathLength } from './validation/isDefaultPathLength';
+import { SignalsForm } from './SignalsForm.js';
+import { isDefaultPathLength } from './validation/isDefaultPathLength.js';
 
 interface FormData {
   activeTab: string;

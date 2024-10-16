@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { Global, css } from '@emotion/react';
+import { css, Global } from '@emotion/react';
 import { PrintPageOptions } from 'nmr-load-save';
 import {
   ForwardedRef,
@@ -11,23 +11,23 @@ import {
 } from 'react';
 import { useFullscreen } from 'react-science/ui';
 
-import checkModifierKeyActivated from '../../data/utilities/checkModifierKeyActivated';
-import KeysListenerTracker from '../EventsTrackers/KeysListenerTracker';
-import { FilterSyncOptionsProvider } from '../context/FilterSyncOptionsContext';
-import { usePreferences } from '../context/PreferencesContext';
-import { ExportManagerController } from '../elements/export/ExportManager';
-import { PrintContent } from '../elements/print/PrintContent';
-import { Header } from '../header/Header';
-import DropZone from '../loader/DropZone';
-import Panels from '../panels/Panels';
-import ToolBar from '../toolbar/ToolBar';
+import checkModifierKeyActivated from '../../data/utilities/checkModifierKeyActivated.js';
+import KeysListenerTracker from '../EventsTrackers/KeysListenerTracker.js';
+import { FilterSyncOptionsProvider } from '../context/FilterSyncOptionsContext.js';
+import { usePreferences } from '../context/PreferencesContext.js';
+import { ExportManagerController } from '../elements/export/ExportManager.js';
+import { PrintContent } from '../elements/print/PrintContent.js';
+import { Header } from '../header/Header.js';
+import DropZone from '../loader/DropZone.js';
+import Panels from '../panels/Panels.js';
+import ToolBar from '../toolbar/ToolBar.js';
 
-import { useNMRiumRefAPI } from './NMRiumRefAPI';
-import { NMRiumViewer } from './NMRiumViewer';
-import { SplitPaneWrapper } from './SplitPaneWrapper';
-import { StateError } from './StateError';
+import { useNMRiumRefAPI } from './NMRiumRefAPI.js';
+import { NMRiumViewer } from './NMRiumViewer.js';
+import { SplitPaneWrapper } from './SplitPaneWrapper.js';
+import { StateError } from './StateError.js';
 
-import { NMRiumProps, NMRiumRefAPI } from '.';
+import { NMRiumProps, NMRiumRefAPI } from './index.js';
 
 const viewerContainerStyle = css`
   border: 0.55px #e6e6e6 solid;

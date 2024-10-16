@@ -1,4 +1,4 @@
-import has from 'lodash/has';
+import has from 'lodash/has.js';
 import {
   MatrixGenerationOptions,
   MultipleSpectraAnalysisPreferences,
@@ -8,8 +8,8 @@ import {
 } from 'nmr-load-save';
 import { useMemo } from 'react';
 
-import { getDefaultPredictionOptions } from '../../data/PredictionManager';
-import { usePreferences } from '../context/PreferencesContext';
+import { getDefaultPredictionOptions } from '../../data/PredictionManager.js';
+import { usePreferences } from '../context/PreferencesContext.js';
 import {
   getIntegralDefaultValues,
   getPeaksDefaultValues,
@@ -19,8 +19,8 @@ import {
   getMultipleSpectraAnalysisDefaultValues,
   getSpectraDefaultValues,
   getMatrixGenerationDefaultValues,
-} from '../reducer/preferences/panelsPreferencesDefaultValues';
-import { getValue } from '../utility/LocalStorage';
+} from '../reducer/preferences/panelsPreferencesDefaultValues.js';
+import { getValue } from '../utility/LocalStorage.js';
 
 type Panel =
   | 'spectra'

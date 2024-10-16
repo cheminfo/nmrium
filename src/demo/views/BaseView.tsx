@@ -1,9 +1,9 @@
 import { CustomWorkspaces } from 'nmr-load-save';
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { ObjectInspector } from 'react-inspector';
 
-import { NMRium, NMRiumWorkspace } from '../../component/main';
-import { PageConfig } from '../layouts/Main';
+import { NMRium, NMRiumWorkspace } from '../../component/main/index.js';
+import { PageConfig } from '../layouts/Main.js';
 
 export async function loadData(file) {
   const response = await fetch(file);

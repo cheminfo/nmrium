@@ -1,5 +1,5 @@
-import { useChartData } from '../context/ChartContext';
-import { getActiveSpectra } from '../reducer/helper/getActiveSpectra';
+import { useChartData } from '../context/ChartContext.js';
+import { getActiveSpectra } from '../reducer/helper/getActiveSpectra.js';
 
 export function useActiveSpectra() {
   const state = useChartData();

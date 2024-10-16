@@ -8,24 +8,24 @@ import {
   PredictedSpectraResult,
   PredictionOptions,
   generateSpectra,
-} from '../../../data/PredictionManager';
-import { changeSpectraRelativeSum } from '../../../data/data1d/Spectrum1D/SumManager';
+} from '../../../data/PredictionManager.js';
+import { changeSpectraRelativeSum } from '../../../data/data1d/Spectrum1D/SumManager.js';
 import {
   DRAGGABLE_STRUCTURE_INITIAL_BOUNDING_REACT,
   MoleculeBoundingRect,
   StateMolecule,
-} from '../../../data/molecules/Molecule';
-import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
-import { generateColor } from '../../../data/utilities/generateColor';
-import { AssignmentContext } from '../../assignment/AssignmentsContext';
-import { State } from '../Reducer';
-import { MARGIN } from '../core/Constants';
-import { ActionType } from '../types/ActionType';
+} from '../../../data/molecules/Molecule.js';
+import * as MoleculeManager from '../../../data/molecules/MoleculeManager.js';
+import { generateColor } from '../../../data/utilities/generateColor.js';
+import { AssignmentContext } from '../../assignment/AssignmentsContext.js';
+import { State } from '../Reducer.js';
+import { MARGIN } from '../core/Constants.js';
+import { ActionType } from '../types/ActionType.js';
 
-import { unlinkRange } from './RangesActions';
-import { setActiveTab } from './ToolsActions';
-import { unlinkZone } from './ZonesActions';
-import { deepReplaceDiaIDs } from './utilities/deepReplaceDiaIDs';
+import { unlinkRange } from './RangesActions.js';
+import { setActiveTab } from './ToolsActions.js';
+import { unlinkZone } from './ZonesActions.js';
+import { deepReplaceDiaIDs } from './utilities/deepReplaceDiaIDs.js';
 
 interface AddMoleculeProps {
   molfile: string;

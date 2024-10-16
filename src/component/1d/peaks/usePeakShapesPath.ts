@@ -1,10 +1,10 @@
 import { DataXY } from 'cheminfo-types';
 import { Spectrum1D } from 'nmr-load-save';
-import { Peak1D, peakToXY, peaksToXY } from 'nmr-processing';
+import { Peak1D, peaksToXY, peakToXY } from 'nmr-processing';
 
-import { useChartData } from '../../context/ChartContext';
-import { useScaleChecked } from '../../context/ScaleContext';
-import { PathBuilder } from '../../utility/PathBuilder';
+import { useChartData } from '../../context/ChartContext.js';
+import { useScaleChecked } from '../../context/ScaleContext.js';
+import { PathBuilder } from '../../utility/PathBuilder.js';
 
 type PeaksShapesOptions =
   | {

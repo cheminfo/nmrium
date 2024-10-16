@@ -1,5 +1,5 @@
-import { useDispatch } from '../context/DispatchContext';
-import { getModifiers } from '../context/KeyModifierContext';
+import { useDispatch } from '../context/DispatchContext.js';
+import { getModifiers } from '../context/KeyModifierContext.js';
 
 export function useSetActiveSpectrumAction() {
   const dispatch = useDispatch();

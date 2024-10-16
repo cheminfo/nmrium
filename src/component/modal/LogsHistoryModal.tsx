@@ -8,10 +8,10 @@ import { IoBugOutline } from 'react-icons/io5';
 import { ObjectInspector } from 'react-inspector';
 import { useOnOff } from 'react-science/ui';
 
-import { useLogger } from '../context/LoggerContext';
-import Button from '../elements/Button';
-import { ColumnWrapper } from '../elements/ColumnWrapper';
-import ReactTable, { Column } from '../elements/ReactTable/ReactTable';
+import { useLogger } from '../context/LoggerContext.js';
+import Button from '../elements/Button.js';
+import { ColumnWrapper } from '../elements/ColumnWrapper.js';
+import ReactTable, { Column } from '../elements/ReactTable/ReactTable.js';
 
 const logsDataFormat = new Intl.DateTimeFormat('default', {
   hour: 'numeric',

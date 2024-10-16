@@ -1,11 +1,11 @@
-import debounce from 'lodash/debounce';
-import { useState, useEffect, useCallback, useReducer } from 'react';
+import debounce from 'lodash/debounce.js';
+import { useCallback, useEffect, useReducer, useState } from 'react';
 import { ObjectInspector } from 'react-inspector';
 import { DropZone } from 'react-science/ui';
 
-import { NMRium } from '../../component/main';
+import { NMRium } from '../../component/main/index.js';
 
-import { loadData } from './View';
+import { loadData } from './View.js';
 
 function searchDeep(obj, searchKey) {
   const result: any = [];

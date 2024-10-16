@@ -1,4 +1,4 @@
-import debounce from 'lodash/debounce';
+import debounce from 'lodash/debounce.js';
 import {
   useEffect,
   useRef,
@@ -11,7 +11,7 @@ import {
   useState,
 } from 'react';
 
-import useCombinedRefs from '../hooks/useCombinedRefs';
+import useCombinedRefs from '../hooks/useCombinedRefs.js';
 
 const styles: Record<'input' | 'inputWrapper' | 'clearButton', CSSProperties> =
   {

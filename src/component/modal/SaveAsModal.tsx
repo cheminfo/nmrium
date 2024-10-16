@@ -10,12 +10,12 @@ import {
 import { css } from '@emotion/react';
 import { Controller, useForm } from 'react-hook-form';
 
-import { DataExportOptions } from '../../data/SpectraManager';
-import { useChartData } from '../context/ChartContext';
-import ActionButtons from '../elements/ActionButtons';
-import { Input2Controller } from '../elements/Input2Controller';
-import Label, { LabelStyle } from '../elements/Label';
-import { useExport } from '../hooks/useExport';
+import { DataExportOptions } from '../../data/SpectraManager.js';
+import { useChartData } from '../context/ChartContext.js';
+import ActionButtons from '../elements/ActionButtons.js';
+import { Input2Controller } from '../elements/Input2Controller.js';
+import Label, { LabelStyle } from '../elements/Label.js';
+import { useExport } from '../hooks/useExport.js';
 
 const INITIAL_VALUE = {
   name: '',

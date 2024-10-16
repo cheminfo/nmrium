@@ -22,6 +22,7 @@ export default () => {
     build: {
       sourcemap: 'inline',
       rollupOptions: {
+        // @ts-expect-error analyzer types are wrong.
         plugins: process.env.ANALYZE ? [analyze()] : [],
         output: {
           manualChunks(id) {

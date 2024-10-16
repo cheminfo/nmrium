@@ -1,11 +1,11 @@
 import { SvgNmrAssignment } from 'cheminfo-font';
-import { useCallback, useMemo, memo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 
-import { useDispatch } from '../../context/DispatchContext';
-import ReactTable from '../../elements/ReactTable/ReactTable';
-import { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn';
+import { useDispatch } from '../../context/DispatchContext.js';
+import ReactTable from '../../elements/ReactTable/ReactTable.js';
+import { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn.js';
 
-import { AutoAssignmentsData } from './useAutoAssignments';
+import { AutoAssignmentsData } from './useAutoAssignments.js';
 
 interface AutomaticAssignmentTableProps {
   data: AutoAssignmentsData[];

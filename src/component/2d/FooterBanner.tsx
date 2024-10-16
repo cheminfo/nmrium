@@ -2,19 +2,19 @@
 import { css } from '@emotion/react';
 import { NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import { useMemo, Fragment } from 'react';
+import { Fragment, useMemo } from 'react';
 import { MF } from 'react-mf';
 
-import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY';
-import { useBrushTracker } from '../EventsTrackers/BrushTracker';
-import { useMouseTracker } from '../EventsTrackers/MouseTracker';
-import { useChartData } from '../context/ChartContext';
-import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
-import { useFormatNumberByNucleus } from '../hooks/useFormatNumberByNucleus';
-import { options } from '../toolbar/ToolTypes';
+import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY.js';
+import { useBrushTracker } from '../EventsTrackers/BrushTracker.js';
+import { useMouseTracker } from '../EventsTrackers/MouseTracker.js';
+import { useChartData } from '../context/ChartContext.js';
+import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
+import { useFormatNumberByNucleus } from '../hooks/useFormatNumberByNucleus.js';
+import { options } from '../toolbar/ToolTypes.js';
 
-import { getLayoutID, LAYOUT } from './utilities/DimensionLayout';
-import { get2DXScale, get1DYScale, get2DYScale } from './utilities/scale';
+import { getLayoutID, LAYOUT } from './utilities/DimensionLayout.js';
+import { get1DYScale, get2DXScale, get2DYScale } from './utilities/scale.js';
 
 const styles = css`
   display: flex;

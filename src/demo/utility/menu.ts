@@ -1,5 +1,5 @@
-import { SubMenu, MenuItem } from 'rc-menu';
-import { createElement, cloneElement } from 'react';
+import { MenuItem, SubMenu } from 'rc-menu';
+import { cloneElement, createElement } from 'react';
 
 function buildMenu(array: any[] = []) {
   const menu: any[] = [];

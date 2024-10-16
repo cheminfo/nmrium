@@ -1,10 +1,10 @@
 import { Spectrum1D } from 'nmr-load-save';
 import { memo } from 'react';
 
-import { useChartData } from '../../context/ChartContext';
-import useXYReduce, { XYReducerDomainAxis } from '../../hooks/useXYReduce';
-import { PathBuilder } from '../../utility/PathBuilder';
-import { use1DTraceYScale, useScale2DY } from '../utilities/scale';
+import { useChartData } from '../../context/ChartContext.js';
+import useXYReduce, { XYReducerDomainAxis } from '../../hooks/useXYReduce.js';
+import { PathBuilder } from '../../utility/PathBuilder.js';
+import { use1DTraceYScale, useScale2DY } from '../utilities/scale.js';
 
 interface Left1DChartProps {
   horizontalMargin?: number;

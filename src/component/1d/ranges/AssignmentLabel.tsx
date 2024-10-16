@@ -1,11 +1,11 @@
 import { Range } from 'nmr-processing';
 import { useRef } from 'react';
 
-import { FieldEdition } from '../../1d-2d/FieldEdition';
-import { useChartData } from '../../context/ChartContext';
-import { useDispatch } from '../../context/DispatchContext';
-import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
-import { useTriggerNewAssignmentLabel } from '../../hooks/useTriggerNewAssignmentLabel';
+import { FieldEdition } from '../../1d-2d/FieldEdition.js';
+import { useChartData } from '../../context/ChartContext.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
+import { useTriggerNewAssignmentLabel } from '../../hooks/useTriggerNewAssignmentLabel.js';
 
 const marginTop = 15;
 

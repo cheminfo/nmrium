@@ -1,14 +1,14 @@
-import { useCallback, CSSProperties } from 'react';
+import { CSSProperties, useCallback } from 'react';
 import { MF } from 'react-mf';
 
-import { StateMoleculeExtended } from '../../../data/molecules/Molecule';
+import { StateMoleculeExtended } from '../../../data/molecules/Molecule.js';
 import {
   extractLabelsNumbers,
   extractNumber,
-} from '../../../data/molecules/MoleculeManager';
-import { useDispatch } from '../../context/DispatchContext';
-import EditableColumn from '../../elements/EditableColumn';
-import Label from '../../elements/Label';
+} from '../../../data/molecules/MoleculeManager.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import EditableColumn from '../../elements/EditableColumn.js';
+import Label from '../../elements/Label.js';
 
 interface MoleculeHeaderProps {
   currentMolecule: StateMoleculeExtended;

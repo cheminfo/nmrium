@@ -8,12 +8,12 @@ import { useForm } from 'react-hook-form';
 import { useOnOff } from 'react-science/ui';
 import * as Yup from 'yup';
 
-import { usePreferences } from '../context/PreferencesContext';
-import { useToaster } from '../context/ToasterContext';
-import ActionButtons from '../elements/ActionButtons';
-import { Input2Controller } from '../elements/Input2Controller';
+import { usePreferences } from '../context/PreferencesContext.js';
+import { useToaster } from '../context/ToasterContext.js';
+import ActionButtons from '../elements/ActionButtons.js';
+import { Input2Controller } from '../elements/Input2Controller.js';
 
-import { useWorkspaceAction } from './useWorkspaceAction';
+import { useWorkspaceAction } from './useWorkspaceAction.js';
 
 const schema = Yup.object().shape({
   workspaceName: Yup.string().required(),

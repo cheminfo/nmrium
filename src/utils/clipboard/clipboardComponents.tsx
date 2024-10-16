@@ -4,9 +4,9 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { FormEvent, useCallback, useEffect, useMemo, useRef } from 'react';
 
-import Button from '../../component/elements/Button';
+import Button from '../../component/elements/Button.js';
 
-import { ClipboardMode } from './types';
+import { ClipboardMode } from './types.js';
 
 const ClipboardForm = styled.form`
   padding: 0.5rem;

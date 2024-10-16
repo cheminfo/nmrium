@@ -13,15 +13,15 @@ import {
   getShiftX,
   autoPeakPicking,
   optimizePeaks,
-} from '../../../data/data1d/Spectrum1D';
-import { defaultPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState';
-import { defaultRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
-import { FilterType } from '../../utility/filterType';
-import { getClosePeak } from '../../utility/getClosePeak';
-import { State } from '../Reducer';
-import { getActiveSpectrum } from '../helper/getActiveSpectrum';
-import getRange from '../helper/getRange';
-import { ActionType } from '../types/ActionType';
+} from '../../../data/data1d/Spectrum1D/index.js';
+import { defaultPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState.js';
+import { defaultRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
+import { FilterType } from '../../utility/filterType.js';
+import { getClosePeak } from '../../utility/getClosePeak.js';
+import { State } from '../Reducer.js';
+import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
+import getRange from '../helper/getRange.js';
+import { ActionType } from '../types/ActionType.js';
 
 type AddPeakAction = ActionType<'ADD_PEAK', { x: number }>;
 type AddPeaksAction = ActionType<'ADD_PEAKS', { startX: number; endX: number }>;

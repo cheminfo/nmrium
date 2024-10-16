@@ -1,16 +1,16 @@
 import { NmrData1D, NmrData2D } from 'cheminfo-types';
 
-import { ActionType } from '../reducer/types/ActionType';
+import { ActionType } from '../reducer/types/ActionType.js';
 
 import {
   AssignmentDimension,
   AssignmentState,
   Axis,
-} from './AssignmentsContext';
-import initAssignment from './actions/initAssignment';
-import removeAssignments from './actions/removeAssignment';
-import setActiveAssignment from './actions/setActiveAssignment';
-import toggleAssignment from './actions/toggleAssignment';
+} from './AssignmentsContext.js';
+import initAssignment from './actions/initAssignment.js';
+import removeAssignments from './actions/removeAssignment.js';
+import setActiveAssignment from './actions/setActiveAssignment.js';
+import toggleAssignment from './actions/toggleAssignment.js';
 
 export type InitiateAction = ActionType<
   'INITIATE_ASSIGNMENTS',

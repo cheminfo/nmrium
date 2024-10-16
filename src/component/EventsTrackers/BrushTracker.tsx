@@ -1,19 +1,19 @@
-import lodashDebounce from 'lodash/debounce';
-import lodashMap from 'lodash/map';
+import lodashDebounce from 'lodash/debounce.js';
+import lodashMap from 'lodash/map.js';
 import {
   createContext,
   CSSProperties,
   ReactNode,
+  Reducer,
   useCallback,
+  useContext,
   useEffect,
   useReducer,
   useRef,
   useState,
-  useContext,
-  Reducer,
 } from 'react';
 
-import { ActionType } from '../reducer/types/ActionType';
+import { ActionType } from '../reducer/types/ActionType.js';
 
 type Step = 'initial' | 'start' | 'end' | 'brushing';
 export interface BrushTrackerContext {

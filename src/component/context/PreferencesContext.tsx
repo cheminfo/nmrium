@@ -4,8 +4,8 @@ import {
   preferencesInitialState,
   PreferencesState,
   WorkspaceWithSource,
-} from '../reducer/preferences/preferencesReducer';
-import { isReadOnlyWorkspace } from '../reducer/preferences/utilities/isReadOnlyWorkspace';
+} from '../reducer/preferences/preferencesReducer.js';
+import { isReadOnlyWorkspace } from '../reducer/preferences/utilities/isReadOnlyWorkspace.js';
 
 export interface PreferencesContextData extends PreferencesState {
   isCurrentWorkspaceReadOnly: boolean;

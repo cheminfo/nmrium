@@ -1,28 +1,31 @@
-import { useEffect, useReducer, useRef, ForwardedRef } from 'react';
+import { ForwardedRef, useEffect, useReducer, useRef } from 'react';
 import { useFullscreen } from 'react-science/ui';
 
-import { AssignmentProvider } from '../assignment';
-import { GlobalProvider } from '../context/GlobalContext';
-import { KeyModifiersProvider } from '../context/KeyModifierContext';
-import { LoggerProvider } from '../context/LoggerContext';
-import { PreferencesProvider } from '../context/PreferencesContext';
-import { ToasterProvider } from '../context/ToasterContext';
-import { TopicMoleculeProvider } from '../context/TopicMoleculeContext';
-import { AlertProvider } from '../elements/Alert';
-import { DialogProvider } from '../elements/DialogManager';
-import { ExportManagerProvider } from '../elements/export/ExportManager';
-import { HighlightProvider } from '../highlight';
-import { defaultGetSpinner, SpinnerProvider } from '../loader/SpinnerContext';
+import { AssignmentProvider } from '../assignment/index.js';
+import { GlobalProvider } from '../context/GlobalContext.js';
+import { KeyModifiersProvider } from '../context/KeyModifierContext.js';
+import { LoggerProvider } from '../context/LoggerContext.js';
+import { PreferencesProvider } from '../context/PreferencesContext.js';
+import { ToasterProvider } from '../context/ToasterContext.js';
+import { TopicMoleculeProvider } from '../context/TopicMoleculeContext.js';
+import { AlertProvider } from '../elements/Alert.js';
+import { DialogProvider } from '../elements/DialogManager.js';
+import { ExportManagerProvider } from '../elements/export/ExportManager.js';
+import { HighlightProvider } from '../highlight/index.js';
+import {
+  defaultGetSpinner,
+  SpinnerProvider,
+} from '../loader/SpinnerContext.js';
 import preferencesReducer, {
-  preferencesInitialState,
   initPreferencesState,
+  preferencesInitialState,
   readSettings,
-} from '../reducer/preferences/preferencesReducer';
+} from '../reducer/preferences/preferencesReducer.js';
 
-import { InnerNMRiumContents } from './InnerNMRiumContents';
-import type { NMRiumProps } from './NMRium';
-import { NMRiumRefAPI } from './NMRiumRefAPI';
-import NMRiumStateProvider from './NMRiumStateProvider';
+import { InnerNMRiumContents } from './InnerNMRiumContents.js';
+import type { NMRiumProps } from './NMRium.js';
+import { NMRiumRefAPI } from './NMRiumRefAPI.js';
+import NMRiumStateProvider from './NMRiumStateProvider.js';
 
 type InnerNMRiumProps = Omit<NMRiumProps, 'onError'> & {
   apiRef: ForwardedRef<NMRiumRefAPI>;

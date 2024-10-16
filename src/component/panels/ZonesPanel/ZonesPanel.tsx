@@ -1,24 +1,24 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { Spectrum2D } from 'nmr-load-save';
-import { useState, useMemo, useCallback, useRef, memo } from 'react';
+import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { FaUnlink } from 'react-icons/fa';
 import { LuSubtitles } from 'react-icons/lu';
 
-import { useAssignmentData } from '../../assignment/AssignmentsContext';
-import { useChartData } from '../../context/ChartContext';
-import { useDispatch } from '../../context/DispatchContext';
-import { useAlert } from '../../elements/Alert';
-import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState';
-import useSpectrum from '../../hooks/useSpectrum';
-import { booleanToString } from '../../utility/booleanToString';
-import { tablePanelStyle } from '../extra/BasicPanelStyle';
-import { SettingsRef } from '../extra/utilities/settingImperativeHandle';
-import DefaultPanelHeader from '../header/DefaultPanelHeader';
-import PreferencesHeader from '../header/PreferencesHeader';
+import { useAssignmentData } from '../../assignment/AssignmentsContext.js';
+import { useChartData } from '../../context/ChartContext.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { useAlert } from '../../elements/Alert.js';
+import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState.js';
+import useSpectrum from '../../hooks/useSpectrum.js';
+import { booleanToString } from '../../utility/booleanToString.js';
+import { tablePanelStyle } from '../extra/BasicPanelStyle.js';
+import { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
+import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
+import PreferencesHeader from '../header/PreferencesHeader.js';
 
-import ZonesPreferences from './ZonesPreferences';
-import ZonesTable from './ZonesTable';
+import ZonesPreferences from './ZonesPreferences.js';
+import ZonesTable from './ZonesTable.js';
 
 function ZonesPanelInner({
   zones,

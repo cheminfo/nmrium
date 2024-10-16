@@ -10,7 +10,7 @@ import {
   CSSProperties,
 } from 'react';
 
-import { ExclusionZone } from '../../data/types/data1d/ExclusionZone';
+import { ExclusionZone } from '../../data/types/data1d/ExclusionZone.js';
 
 export enum HighlightEventSource {
   PEAK = 'PEAK',

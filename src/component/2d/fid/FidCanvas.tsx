@@ -1,16 +1,16 @@
 import { NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
 import { matrixZPivotRescale } from 'ml-spectra-processing';
 import { Spectrum2D } from 'nmr-load-save';
-import { useEffect, useRef, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 
-import { useChartData } from '../../context/ChartContext';
-import useSpectrum from '../../hooks/useSpectrum';
+import { useChartData } from '../../context/ChartContext.js';
+import useSpectrum from '../../hooks/useSpectrum.js';
 import {
   get2DXScale,
   get2DYScale,
   useScale2DX,
   useScale2DY,
-} from '../utilities/scale';
+} from '../utilities/scale.js';
 
 export function FidCanvas() {
   const { width, height, margin, mode, xDomain, yDomain, originDomain } =

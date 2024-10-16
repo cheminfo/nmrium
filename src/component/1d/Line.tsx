@@ -1,10 +1,10 @@
 import { CSSProperties, useMemo } from 'react';
 
-import { useScaleChecked } from '../context/ScaleContext';
-import useActiveSpectrumStyleOptions from '../hooks/useActiveSpectrumStyleOptions';
-import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce';
-import { PathBuilder } from '../utility/PathBuilder';
-import { parseColor } from '../utility/parseColor';
+import { useScaleChecked } from '../context/ScaleContext.js';
+import useActiveSpectrumStyleOptions from '../hooks/useActiveSpectrumStyleOptions.js';
+import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce.js';
+import { PathBuilder } from '../utility/PathBuilder.js';
+import { parseColor } from '../utility/parseColor.js';
 
 interface LineProps {
   data?: {

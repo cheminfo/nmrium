@@ -1,10 +1,10 @@
 import { Spectrum1D } from 'nmr-load-save';
 
-import useSpectrum from '../../hooks/useSpectrum';
-import Left1DChart from '../1d-tracer/Left1DChart';
-import Top1DChart from '../1d-tracer/Top1DChart';
+import useSpectrum from '../../hooks/useSpectrum.js';
+import Left1DChart from '../1d-tracer/Left1DChart.js';
+import Top1DChart from '../1d-tracer/Top1DChart.js';
 
-import Contours from './Contours';
+import Contours from './Contours.js';
 
 interface FTContainerProps {
   spectra?: Spectrum1D[];

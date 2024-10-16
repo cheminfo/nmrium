@@ -4,18 +4,20 @@ import { Zone, Zones as ZonesType } from 'nmr-processing';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { PiTextTSlash } from 'react-icons/pi';
 
-import { FieldEdition } from '../../1d-2d/FieldEdition';
-import { useChartData } from '../../context/ChartContext';
-import { useDispatch } from '../../context/DispatchContext';
-import { useGlobal } from '../../context/GlobalContext';
-import { useShareData } from '../../context/ShareDataContext';
-import { SVGButton } from '../../elements/SVGButton';
-import { SVGGroup } from '../../elements/SVGGroup';
-import useDraggable, { Position } from '../../elements/draggable/useDraggable';
-import { useHighlight } from '../../highlight';
-import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState';
-import useSpectrum from '../../hooks/useSpectrum';
-import { useScale2DX, useScale2DY } from '../utilities/scale';
+import { FieldEdition } from '../../1d-2d/FieldEdition.js';
+import { useChartData } from '../../context/ChartContext.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { useGlobal } from '../../context/GlobalContext.js';
+import { useShareData } from '../../context/ShareDataContext.js';
+import { SVGButton } from '../../elements/SVGButton.js';
+import { SVGGroup } from '../../elements/SVGGroup.js';
+import useDraggable, {
+  Position,
+} from '../../elements/draggable/useDraggable.js';
+import { useHighlight } from '../../highlight/index.js';
+import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState.js';
+import useSpectrum from '../../hooks/useSpectrum.js';
+import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 
 interface ZonesInnerProps {
   zones: ZonesType;

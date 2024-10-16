@@ -3,9 +3,12 @@
 import { css, CSSObject, SerializedStyles } from '@emotion/react';
 import { useMemo, useEffect, useCallback } from 'react';
 
-import { HighlightEventSource, useHighlight } from '../../../highlight/index';
-import { ContextMenu } from '../../ContextMenuBluePrint';
-import { BaseRowStyle, TableContextMenuProps } from '../ReactTable';
+import {
+  HighlightEventSource,
+  useHighlight,
+} from '../../../highlight/index.js';
+import { ContextMenu } from '../../ContextMenuBluePrint.js';
+import { BaseRowStyle, TableContextMenuProps } from '../ReactTable.js';
 
 function getRowStyle(
   isActive: boolean,

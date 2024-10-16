@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import { CSSProperties, memo, ReactNode, useCallback } from 'react';
 
-import ToolTip from './ToolTip/ToolTip';
+import ToolTip from './ToolTip/ToolTip.js';
 
 const styles = css`
   background-color: #f5f5f5;

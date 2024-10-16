@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import React, { CSSProperties, ReactNode } from 'react';
 
-import Button from './Button';
+import Button from './Button.js';
 
 export interface LabelStyle {
   label?: CSSProperties;

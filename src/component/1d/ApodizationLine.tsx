@@ -1,16 +1,16 @@
 import { Spectrum1D } from 'nmr-load-save';
-import { Filters, apodization } from 'nmr-processing';
+import { apodization, Filters } from 'nmr-processing';
 
-import { defaultApodizationOptions } from '../../data/constants/DefaultApodizationOptions';
-import { useChartData } from '../context/ChartContext';
-import { useScaleChecked } from '../context/ScaleContext';
-import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
-import useSpectrum from '../hooks/useSpectrum';
-import { useVerticalAlign } from '../hooks/useVerticalAlign';
-import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce';
-import { PathBuilder } from '../utility/PathBuilder';
+import { defaultApodizationOptions } from '../../data/constants/DefaultApodizationOptions.js';
+import { useChartData } from '../context/ChartContext.js';
+import { useScaleChecked } from '../context/ScaleContext.js';
+import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
+import useSpectrum from '../hooks/useSpectrum.js';
+import { useVerticalAlign } from '../hooks/useVerticalAlign.js';
+import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce.js';
+import { PathBuilder } from '../utility/PathBuilder.js';
 
-import { getYScale } from './utilities/scale';
+import { getYScale } from './utilities/scale.js';
 
 const emptyData = { data: {}, info: {} };
 

@@ -1,4 +1,4 @@
-import { usePreferences } from '../context/PreferencesContext';
+import { usePreferences } from '../context/PreferencesContext.js';
 
 export function useHighlightColor() {
   const { current } = usePreferences();

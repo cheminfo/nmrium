@@ -4,7 +4,7 @@ import {
   AddWorkspaceAction,
   PreferencesState,
   WorkspaceWithSource,
-} from '../preferencesReducer';
+} from '../preferencesReducer.js';
 
 export function addWorkspace(
   draft: Draft<PreferencesState>,

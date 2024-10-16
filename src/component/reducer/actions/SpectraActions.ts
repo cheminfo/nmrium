@@ -1,57 +1,57 @@
 import { NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
 import { Draft, original } from 'immer';
-import lodashGet from 'lodash/get';
+import lodashGet from 'lodash/get.js';
 import {
-  Spectrum,
-  Spectrum1D,
-  Spectrum2D,
+  Color2D,
   Display1D,
   Display2D,
   SpectraColors,
-  Color2D,
+  Spectrum,
+  Spectrum1D,
+  Spectrum2D,
 } from 'nmr-load-save';
 import { Filters, FiltersManager, NMRRange } from 'nmr-processing';
 
 import {
-  getReferenceShift,
-  isSpectrum1D,
   get1DColor,
+  getReferenceShift,
   initiateDatum1D,
+  isSpectrum1D,
   resurrectSpectrumFromRanges,
-} from '../../../data/data1d/Spectrum1D';
+} from '../../../data/data1d/Spectrum1D/index.js';
 import {
-  SpectrumSimulationOptions,
   simulateSpectrum,
-} from '../../../data/data1d/spectrumSimulation';
+  SpectrumSimulationOptions,
+} from '../../../data/data1d/spectrumSimulation.js';
+import { contoursManager } from '../../../data/data2d/Spectrum2D/contours.js';
 import {
+  get2DColor,
   getMissingProjection,
   isSpectrum2D,
-  get2DColor,
-} from '../../../data/data2d/Spectrum2D';
-import { contoursManager } from '../../../data/data2d/Spectrum2D/contours';
-import { Nuclei, Nucleus } from '../../../data/types/common/Nucleus';
+} from '../../../data/data2d/Spectrum2D/index.js';
+import { Nuclei, Nucleus } from '../../../data/types/common/Nucleus.js';
 import {
   adjustAlpha,
   generateColor,
-} from '../../../data/utilities/generateColor';
-import groupByInfoKey from '../../utility/GroupByInfoKey';
-import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
-import { State } from '../Reducer';
-import { setZoom } from '../helper/Zoom1DManager';
-import { getActiveSpectra } from '../helper/getActiveSpectra';
-import { getActiveSpectraAsObject } from '../helper/getActiveSpectraAsObject';
-import { getActiveSpectrum } from '../helper/getActiveSpectrum';
-import { removeSpectrumRelatedObjectsById } from '../helper/removeSpectrumRelatedObjectsById';
-import { ActionType } from '../types/ActionType';
+} from '../../../data/utilities/generateColor.js';
+import groupByInfoKey from '../../utility/GroupByInfoKey.js';
+import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus.js';
+import { State } from '../Reducer.js';
+import { setZoom } from '../helper/Zoom1DManager.js';
+import { getActiveSpectra } from '../helper/getActiveSpectra.js';
+import { getActiveSpectraAsObject } from '../helper/getActiveSpectraAsObject.js';
+import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
+import { removeSpectrumRelatedObjectsById } from '../helper/removeSpectrumRelatedObjectsById.js';
+import { ActionType } from '../types/ActionType.js';
 
-import { SetDomainOptions, setDomain, setMode } from './DomainActions';
-import { rollbackSpectrumByFilter } from './FiltersActions';
+import { setDomain, SetDomainOptions, setMode } from './DomainActions.js';
+import { rollbackSpectrumByFilter } from './FiltersActions.js';
 import {
-  setTab,
+  resetSelectedTool,
   setActiveTab,
   setMargin,
-  resetSelectedTool,
-} from './ToolsActions';
+  setTab,
+} from './ToolsActions.js';
 
 type ChangeSpectrumVisibilityByIdAction = ActionType<
   'CHANGE_SPECTRUM_VISIBILITY',

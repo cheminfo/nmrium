@@ -1,4 +1,4 @@
-import { flatObject } from './flatObject';
+import { flatObject } from './flatObject.js';
 
 export function checkKeysExists(sourceObject, targetObject) {
   const source = flatObject(sourceObject);

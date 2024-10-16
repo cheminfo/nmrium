@@ -1,6 +1,6 @@
 import { Draft } from 'immer';
 
-import { State, VerticalAlignment } from '../Reducer';
+import { State, VerticalAlignment } from '../Reducer.js';
 
 export function getVerticalAlign(
   state: State | Draft<State>,

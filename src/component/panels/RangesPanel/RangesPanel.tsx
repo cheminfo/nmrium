@@ -4,25 +4,25 @@ import { NmrData1D } from 'cheminfo-types';
 import { xGetFromToIndex } from 'ml-spectra-processing';
 import { Spectrum1D, WorkSpacePanelPreferences } from 'nmr-load-save';
 import { Info1D, Ranges } from 'nmr-processing';
-import { useCallback, useMemo, memo, useState, useRef } from 'react';
+import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { FaCopy } from 'react-icons/fa';
 
-import { StateMoleculeExtended } from '../../../data/molecules/Molecule';
-import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents';
-import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
-import { useAssignmentData } from '../../assignment/AssignmentsContext';
-import { useChartData } from '../../context/ChartContext';
-import { useDispatch } from '../../context/DispatchContext';
-import { useToaster } from '../../context/ToasterContext';
-import { BaseContextMenuProps } from '../../elements/ContextMenuBluePrint';
-import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import useSpectrum from '../../hooks/useSpectrum';
-import { tablePanelStyle } from '../extra/BasicPanelStyle';
-import PreferencesHeader from '../header/PreferencesHeader';
+import { StateMoleculeExtended } from '../../../data/molecules/Molecule.js';
+import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents.js';
+import { useClipboard } from '../../../utils/clipboard/clipboardHooks.js';
+import { useAssignmentData } from '../../assignment/AssignmentsContext.js';
+import { useChartData } from '../../context/ChartContext.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { useToaster } from '../../context/ToasterContext.js';
+import { BaseContextMenuProps } from '../../elements/ContextMenuBluePrint.js';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
+import useSpectrum from '../../hooks/useSpectrum.js';
+import { tablePanelStyle } from '../extra/BasicPanelStyle.js';
+import PreferencesHeader from '../header/PreferencesHeader.js';
 
-import RangesHeader from './RangesHeader';
-import RangesPreferences from './RangesPreferences';
-import RangesTable from './RangesTable';
+import RangesHeader from './RangesHeader.js';
+import RangesPreferences from './RangesPreferences.js';
+import RangesTable from './RangesTable.js';
 
 const rangesContextMenuOptions: BaseContextMenuProps['options'] = [
   {

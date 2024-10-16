@@ -1,6 +1,6 @@
 import { CSSProperties, InputHTMLAttributes, ReactNode } from 'react';
 
-import ToolTip from './ToolTip/ToolTip';
+import ToolTip from './ToolTip/ToolTip.js';
 
 interface ButtonToolTipProps
   extends Omit<InputHTMLAttributes<HTMLButtonElement>, 'type'> {

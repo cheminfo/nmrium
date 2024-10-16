@@ -5,10 +5,10 @@ import {
   ToolbarItemProps as BaseToolbarItemProps,
 } from 'react-science/ui';
 
-import { CounterLabel } from '../../elements/CounterLabel';
-import { PreferencesButton } from '../../elements/PreferencesButton';
+import { CounterLabel } from '../../elements/CounterLabel.js';
+import { PreferencesButton } from '../../elements/PreferencesButton.js';
 
-import PanelHeader from './PanelHeader';
+import PanelHeader from './PanelHeader.js';
 
 const styles: Record<'leftContainer', CSSProperties> = {
   leftContainer: {

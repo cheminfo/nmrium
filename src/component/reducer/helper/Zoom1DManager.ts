@@ -1,10 +1,10 @@
-import { zoomIdentity, scaleLinear } from 'd3';
+import { scaleLinear, zoomIdentity } from 'd3';
 import { Draft } from 'immer';
 
-import { ZoomOptions } from '../../EventsTrackers/BrushTracker';
-import { State } from '../Reducer';
+import { ZoomOptions } from '../../EventsTrackers/BrushTracker.js';
+import { State } from '../Reducer.js';
 
-import { getActiveSpectrum } from './getActiveSpectrum';
+import { getActiveSpectrum } from './getActiveSpectrum.js';
 
 export const ZOOM_TYPES = {
   HORIZONTAL: 'HORIZONTAL',

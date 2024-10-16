@@ -1,10 +1,10 @@
 import { CSSProperties } from 'react';
 
-import { useChartData } from '../../context/ChartContext';
-import { TraceDirection } from '../../reducer/Reducer';
-import { options } from '../../toolbar/ToolTypes';
-import { useActivePhaseTraces } from '../1d-tracer/phase-correction-traces/useActivePhaseTraces';
-import { get2DXScale, get2DYScale } from '../utilities/scale';
+import { useChartData } from '../../context/ChartContext.js';
+import { TraceDirection } from '../../reducer/Reducer.js';
+import { options } from '../../toolbar/ToolTypes.js';
+import { useActivePhaseTraces } from '../1d-tracer/phase-correction-traces/useActivePhaseTraces.js';
+import { get2DXScale, get2DYScale } from '../utilities/scale.js';
 
 function getStyle(direction: TraceDirection, translate: number) {
   const base: CSSProperties = {

@@ -1,8 +1,8 @@
 import { Spectrum } from 'nmr-load-save';
 import { useMemo } from 'react';
 
-import { useChartData } from '../context/ChartContext';
-import nucleusToString from '../utility/nucleusToString';
+import { useChartData } from '../context/ChartContext.js';
+import nucleusToString from '../utility/nucleusToString.js';
 
 export default function useSpectraByActiveNucleus() {
   const {

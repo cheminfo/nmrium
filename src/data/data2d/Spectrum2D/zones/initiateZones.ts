@@ -1,6 +1,6 @@
-import merge from 'lodash/merge';
+import merge from 'lodash/merge.js';
 import { Spectrum2D } from 'nmr-load-save';
-import { Zones, mapZones } from 'nmr-processing';
+import { mapZones, Zones } from 'nmr-processing';
 
 export function initiateZones(
   options: Partial<{ zones: Zones }>,

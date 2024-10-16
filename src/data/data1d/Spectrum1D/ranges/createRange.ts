@@ -1,9 +1,9 @@
 import { Logger } from 'cheminfo-types';
 import { xyIntegration } from 'ml-spectra-processing';
 import { Spectrum1D } from 'nmr-load-save';
-import { Range, Signal1D, mapRanges } from 'nmr-processing';
+import { mapRanges, Range, Signal1D } from 'nmr-processing';
 
-import detectSignals from './detectSignals';
+import detectSignals from './detectSignals.js';
 
 export function cutRange(spectrum: Spectrum1D, x: number) {
   const cutRanges: Record<string, Range[]> = {};

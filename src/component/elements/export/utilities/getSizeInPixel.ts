@@ -1,8 +1,8 @@
 import { ExportSettings } from 'nmr-load-save';
 
-import { convertToPixels } from '../units';
+import { convertToPixels } from '../units.js';
 
-import { getExportOptions } from './getExportOptions';
+import { getExportOptions } from './getExportOptions.js';
 
 export function getSizeInPixel(exportPageOptions: ExportSettings) {
   const { width, height, dpi, unit } = getExportOptions(exportPageOptions);

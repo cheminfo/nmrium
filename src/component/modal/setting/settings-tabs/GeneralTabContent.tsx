@@ -1,13 +1,13 @@
 import { Checkbox } from '@blueprintjs/core';
 import { Controller, useFormContext } from 'react-hook-form';
 
-import { LOGGER_LEVELS } from '../../../context/LoggerContext';
-import { GroupPane } from '../../../elements/GroupPane';
-import Label, { LabelStyle } from '../../../elements/Label';
-import { NumberInput2Controller } from '../../../elements/NumberInput2Controller';
-import { Select2 } from '../../../elements/Select2';
-import { Select2Controller } from '../../../elements/Select2Controller';
-import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer';
+import { LOGGER_LEVELS } from '../../../context/LoggerContext.js';
+import { GroupPane } from '../../../elements/GroupPane.js';
+import Label, { LabelStyle } from '../../../elements/Label.js';
+import { NumberInput2Controller } from '../../../elements/NumberInput2Controller.js';
+import { Select2 } from '../../../elements/Select2.js';
+import { Select2Controller } from '../../../elements/Select2Controller.js';
+import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
 
 const labelStyle: LabelStyle = {
   label: { flex: 6 },

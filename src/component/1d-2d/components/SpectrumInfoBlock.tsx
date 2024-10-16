@@ -1,23 +1,23 @@
 /** @jsxImportSource @emotion/react */
-import lodashGet from 'lodash/get';
+import lodashGet from 'lodash/get.js';
 import { Spectrum } from 'nmr-load-save';
 import { CSSProperties, useState } from 'react';
 import { BsArrowsMove } from 'react-icons/bs';
 import { FaTimes } from 'react-icons/fa';
-import { useMeasure } from 'react-use';
+import reactUse from 'react-use';
 
-import { useChartData } from '../../context/ChartContext';
-import { useGlobal } from '../../context/GlobalContext';
-import { usePreferences } from '../../context/PreferencesContext';
+import { useChartData } from '../../context/ChartContext.js';
+import { useGlobal } from '../../context/GlobalContext.js';
+import { usePreferences } from '../../context/PreferencesContext.js';
 import {
   ActionsButtonsPopover,
   ActionsButtonsPopoverProps,
-} from '../../elements/ActionsButtonsPopover';
-import { SVGGroup } from '../../elements/SVGGroup';
-import useDraggable from '../../elements/draggable/useDraggable';
-import useSpectrum from '../../hooks/useSpectrum';
-import { Margin } from '../../reducer/Reducer';
-import { formatNumber } from '../../utility/formatNumber';
+} from '../../elements/ActionsButtonsPopover.js';
+import { SVGGroup } from '../../elements/SVGGroup.js';
+import useDraggable from '../../elements/draggable/useDraggable.js';
+import useSpectrum from '../../hooks/useSpectrum.js';
+import { Margin } from '../../reducer/Reducer.js';
+import { formatNumber } from '../../utility/formatNumber.js';
 
 const verticalSpace = 5;
 const boxPadding = 0;
@@ -95,7 +95,7 @@ function SpectrumInfoBlock() {
       : infoFields?.length - (infoFields?.length % 2)
         ? 2
         : 1) || 0);
-  const [ref, boxSize] = useMeasure<SVGGElement>();
+  const [ref, boxSize] = reactUse.useMeasure<SVGGElement>();
   const { onPointerDown } = useDraggable({
     position: coordinate,
     onChange: (dragEvent) => {

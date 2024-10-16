@@ -1,32 +1,35 @@
 import { Spectrum1D } from 'nmr-load-save';
-import { useCallback, useEffect, useMemo, ReactNode, useRef } from 'react';
+import { ReactNode, useCallback, useEffect, useMemo, useRef } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 
-import BrushXY, { BRUSH_TYPE } from '../1d-2d/tools/BrushXY';
-import CrossLinePointer from '../1d-2d/tools/CrossLinePointer';
+import BrushXY, { BRUSH_TYPE } from '../1d-2d/tools/BrushXY.js';
+import CrossLinePointer from '../1d-2d/tools/CrossLinePointer.js';
 import {
   BrushTracker,
   OnBrush,
   OnClick,
   OnDoubleClick,
   OnZoom,
-} from '../EventsTrackers/BrushTracker';
-import { MouseTracker } from '../EventsTrackers/MouseTracker';
-import { useChartData } from '../context/ChartContext';
-import { useDispatch } from '../context/DispatchContext';
-import { useMapKeyModifiers } from '../context/KeyModifierContext';
-import { useViewportSize } from '../hooks/useViewportSize';
-import Spinner from '../loader/Spinner';
-import { options } from '../toolbar/ToolTypes';
+} from '../EventsTrackers/BrushTracker.js';
+import { MouseTracker } from '../EventsTrackers/MouseTracker.js';
+import { useChartData } from '../context/ChartContext.js';
+import { useDispatch } from '../context/DispatchContext.js';
+import { useMapKeyModifiers } from '../context/KeyModifierContext.js';
+import { useViewportSize } from '../hooks/useViewportSize.js';
+import Spinner from '../loader/Spinner.js';
+import { options } from '../toolbar/ToolTypes.js';
 
-import { PhaseTraces } from './1d-tracer/phase-correction-traces';
-import Chart2D from './Chart2D';
-import FooterBanner from './FooterBanner';
-import SlicingView from './SlicingView';
-import { PivotIndicator } from './tools/PivotIndicator';
-import XYLabelPointer from './tools/XYLabelPointer';
-import { get2DDimensionLayout, getLayoutID } from './utilities/DimensionLayout';
-import { get2DXScale, get2DYScale } from './utilities/scale';
+import { PhaseTraces } from './1d-tracer/phase-correction-traces/index.js';
+import Chart2D from './Chart2D.js';
+import FooterBanner from './FooterBanner.js';
+import SlicingView from './SlicingView.js';
+import { PivotIndicator } from './tools/PivotIndicator.js';
+import XYLabelPointer from './tools/XYLabelPointer.js';
+import {
+  get2DDimensionLayout,
+  getLayoutID,
+} from './utilities/DimensionLayout.js';
+import { get2DXScale, get2DYScale } from './utilities/scale.js';
 
 interface Viewer2DProps {
   emptyText: ReactNode;

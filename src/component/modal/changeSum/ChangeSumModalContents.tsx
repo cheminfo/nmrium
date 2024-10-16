@@ -8,10 +8,10 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
-import { usePreferences } from '../../context/PreferencesContext';
-import { NumberInput2Controller } from '../../elements/NumberInput2Controller';
+import { usePreferences } from '../../context/PreferencesContext.js';
+import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
 
-import SelectMolecule from './SelectMolecule';
+import SelectMolecule from './SelectMolecule.js';
 
 function getValidationSchema(option: SumSetOption) {
   if (option === 'auto') {

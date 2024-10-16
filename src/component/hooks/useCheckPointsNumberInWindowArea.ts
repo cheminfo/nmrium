@@ -1,9 +1,9 @@
 import { xGetFromToIndex } from 'ml-spectra-processing';
 import { Spectrum1D } from 'nmr-load-save';
 
-import { useChartData } from '../context/ChartContext';
+import { useChartData } from '../context/ChartContext.js';
 
-import useSpectrum from './useSpectrum';
+import useSpectrum from './useSpectrum.js';
 
 export const MIN_AREA_POINTS = 5;
 

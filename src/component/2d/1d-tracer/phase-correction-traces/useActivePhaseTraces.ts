@@ -1,5 +1,5 @@
-import { COLORS } from '../../../../data/utilities/generateColor';
-import { useChartData } from '../../../context/ChartContext';
+import { COLORS } from '../../../../data/utilities/generateColor.js';
+import { useChartData } from '../../../context/ChartContext.js';
 
 export function useActivePhaseTraces() {
   const {

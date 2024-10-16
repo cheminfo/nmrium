@@ -1,11 +1,11 @@
 import { createTree } from 'ml-tree-similarity';
 import { CSSProperties, Fragment } from 'react';
 
-import { isSpectrum1D } from '../../data/data1d/Spectrum1D';
-import { useChartData } from '../context/ChartContext';
-import { useScaleChecked } from '../context/ScaleContext';
-import { useFormatNumberByNucleus } from '../hooks/useFormatNumberByNucleus';
-import useSpectrum from '../hooks/useSpectrum';
+import { isSpectrum1D } from '../../data/data1d/Spectrum1D/index.js';
+import { useChartData } from '../context/ChartContext.js';
+import { useScaleChecked } from '../context/ScaleContext.js';
+import { useFormatNumberByNucleus } from '../hooks/useFormatNumberByNucleus.js';
+import useSpectrum from '../hooks/useSpectrum.js';
 
 const circleSize = 3;
 const marginTop = circleSize + 10;

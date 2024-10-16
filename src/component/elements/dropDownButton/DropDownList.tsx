@@ -5,7 +5,7 @@ import {
   DropDownListItem,
   DropDownListProps,
   ItemProps,
-} from './DropDownButton';
+} from './DropDownButton.js';
 
 const styles = {
   ul: css`

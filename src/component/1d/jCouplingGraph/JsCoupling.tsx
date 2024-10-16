@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { useJGraph } from './JGraphContext';
+import { useJGraph } from './JGraphContext.js';
 
 interface JsCouplingProps {
   value: number;

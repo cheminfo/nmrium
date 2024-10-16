@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Children, CSSProperties, ReactElement } from 'react';
 import { FaAngleLeft } from 'react-icons/fa';
-import { useMeasure } from 'react-use';
+import reactUse from 'react-use';
 
 interface ArrowProps {
   direction: 'right' | 'left';
@@ -20,7 +20,6 @@ function Arrow({ direction, onClick, style = {} }: ArrowProps) {
         height: 40px;
         width: 40px;
         justify-content: center;
-        background: white;
         border-radius: 50%;
         cursor: pointer;
         align-items: center;
@@ -90,7 +89,7 @@ export function NextPrev(props: NextPrevProps) {
     onChange = () => null,
     style = {},
   } = props;
-  const [ref, { width }] = useMeasure<HTMLDivElement>();
+  const [ref, { width }] = reactUse.useMeasure<HTMLDivElement>();
   const slidersCount = Children.count(children);
   const lastIndex = slidersCount > 0 ? slidersCount - 1 : 0;
   const activeIndex = Math.min(index, lastIndex);
