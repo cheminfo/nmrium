@@ -124,7 +124,6 @@ function InnerPeaks(props: InnerPeaksProps) {
         spectrumColor={spectrum.display.color}
         peakFormat={peakFormat}
         displayerKey={displayerKey}
-        xDomain={xDomain}
       />
     );
   }

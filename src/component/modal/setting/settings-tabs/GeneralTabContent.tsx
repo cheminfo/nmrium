@@ -1,4 +1,4 @@
-import { Checkbox } from '@blueprintjs/core';
+import { Checkbox, Tag } from '@blueprintjs/core';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import { LOGGER_LEVELS } from '../../../context/LoggerContext';
@@ -128,6 +128,19 @@ function GeneralTabContent() {
                 />
               );
             }}
+          />
+        </Label>
+      </GroupPane>
+      <GroupPane text="Peaks label">
+        <Label title="Margin top" style={labelStyle}>
+          <NumberInput2Controller
+            control={control}
+            name="peaksLabel.marginTop"
+            min={0}
+            max={1}
+            stepSize={0.1}
+            style={{ width: 70 }}
+            rightElement={<Tag>px</Tag>}
           />
         </Label>
       </GroupPane>

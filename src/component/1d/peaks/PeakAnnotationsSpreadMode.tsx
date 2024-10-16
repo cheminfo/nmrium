@@ -1,8 +1,9 @@
 import { memo } from 'react';
+import { useMeasure } from 'react-use';
 
 import { useHighlight } from '../../highlight';
+import { usePeaksLabelSettings } from '../../hooks/usePeaksLabelSettings';
 import { formatNumber } from '../../utility/formatNumber';
-import { getDecimalsCount } from '../utilities/getDecimalsCount';
 import { resolve } from '../utilities/intersectionResolver';
 
 import { PeakEditionListener } from './PeakEditionManager';
@@ -16,17 +17,13 @@ import {
 const notationWidth = 10;
 const notationMargin = 2;
 
-function PeakAnnotationsTreeStyle(props: PeaksAnnotationsProps) {
-  const {
-    peaks,
-    peaksSource,
-    spectrumColor,
-    xDomain,
-    displayerKey,
-    peakFormat,
-  } = props;
+function PeakAnnotationsSpreadMode(
+  props: Omit<PeaksAnnotationsProps, 'xDomain'>,
+) {
+  const { peaks, peaksSource, spectrumColor, displayerKey, peakFormat } = props;
 
-  const decimalsCount = getDecimalsCount(xDomain[1], peakFormat);
+  const [ref, boxSize] = useMeasure<SVGGElement>();
+  const { marginTop } = usePeaksLabelSettings();
 
   const mapPeaks = resolve(peaks, {
     key: 'scaleX',
@@ -35,9 +32,17 @@ function PeakAnnotationsTreeStyle(props: PeaksAnnotationsProps) {
     groupMargin: 10,
   });
 
+  const y = boxSize.height + marginTop;
   return (
-    <g className="peaks" clipPath={`url(#${displayerKey}clip-chart-1d)`}>
-      <g transform={`translate(0,${decimalsCount * 10})`}>
+    <g
+      ref={ref}
+      className="peaks"
+      clipPath={`url(#${displayerKey}clip-chart-1d)`}
+    >
+      <g
+        transform={`translate(0,${y})`}
+        style={{ visibility: boxSize.height > 0 ? 'visible' : 'hidden' }}
+      >
         {mapPeaks.map((group) => {
           return (
             <g
@@ -60,7 +65,7 @@ function PeakAnnotationsTreeStyle(props: PeaksAnnotationsProps) {
                     color={spectrumColor}
                     peakEditionFieldPosition={{
                       x: group.meta.groupStartX + startX,
-                      y: decimalsCount * 10,
+                      y,
                     }}
                     peaksSource={peaksSource}
                   />
@@ -127,4 +132,4 @@ function PeakAnnotation(props: PeakAnnotationProps) {
   );
 }
 
-export default memo(PeakAnnotationsTreeStyle);
+export default memo(PeakAnnotationsSpreadMode);

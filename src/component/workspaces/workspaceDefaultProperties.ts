@@ -261,4 +261,7 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
       useDefaultSettings: false,
     },
   },
+  peaksLabel: {
+    marginTop: 0,
+  },
 };
