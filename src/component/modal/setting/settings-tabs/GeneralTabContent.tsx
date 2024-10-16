@@ -1,4 +1,4 @@
-import { Checkbox } from '@blueprintjs/core';
+import { Checkbox, Tag } from '@blueprintjs/core';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import { LOGGER_LEVELS } from '../../../context/LoggerContext';
@@ -6,7 +6,6 @@ import { GroupPane } from '../../../elements/GroupPane';
 import Label, { LabelStyle } from '../../../elements/Label';
 import { NumberInput2Controller } from '../../../elements/NumberInput2Controller';
 import { Select2 } from '../../../elements/Select2';
-import { Select2Controller } from '../../../elements/Select2Controller';
 import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer';
 
 const labelStyle: LabelStyle = {
@@ -43,10 +42,6 @@ const LOGS_LEVELS = Object.keys(LOGGER_LEVELS).map((level) => ({
   label: level.replace(/^\w/, (c) => c.toUpperCase()),
   value: level,
 }));
-
-const RESOLUTIONS = [72, 96, 150, 200, 300, 400, 500, 600].map(
-  (resolution) => ({ value: resolution, label: String(resolution) }),
-);
 
 function GeneralTabContent() {
   const { register, control } = useFormContext<WorkspaceWithSource>();
@@ -136,9 +131,17 @@ function GeneralTabContent() {
           />
         </Label>
       </GroupPane>
-      <GroupPane text="Export settings">
-        <Label title="PNG Resolution " style={labelStyle}>
-          <Select2Controller name="export.png.resolution" items={RESOLUTIONS} />
+      <GroupPane text="Peaks label">
+        <Label title="Margin top" style={labelStyle}>
+          <NumberInput2Controller
+            control={control}
+            name="peaksLabel.marginTop"
+            min={0}
+            max={1}
+            stepSize={0.1}
+            style={{ width: 70 }}
+            rightElement={<Tag>px</Tag>}
+          />
         </Label>
       </GroupPane>
     </>
