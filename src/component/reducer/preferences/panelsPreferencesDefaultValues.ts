@@ -140,11 +140,11 @@ const getPeaksDefaultValues = (
     intensity: { show: true, format: '0.00' },
     fwhm: { show: true, format: '0.00000' },
     mu: { show: false, format: '0.00000' },
+    gamma: { show: false, format: '0.000' },
     showDeleteAction: true,
     showEditPeakShapeAction: true,
     showKind: true,
   };
-
   return getPreferences(preferences, nucleus);
 };
 

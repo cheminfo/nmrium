@@ -75,6 +75,9 @@ const exportValidation = object().shape({
   svg: exportOptionValidationSchema,
   clipboard: exportOptionValidationSchema,
 });
+const peaksLabelValidation = object().shape({
+  marginTop: number().integer().required().min(0),
+});
 
 export const validation: any = object().shape({
   nuclei: nucleiValidation,
@@ -84,4 +87,5 @@ export const validation: any = object().shape({
   spectraColors: spectraColorsSchemaValidation,
   externalAPIs: externalAPIsValidation,
   export: exportValidation,
+  peaksLabel: peaksLabelValidation,
 });

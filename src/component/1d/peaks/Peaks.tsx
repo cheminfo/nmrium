@@ -7,6 +7,7 @@ import { useActiveSpectrumPeaksViewState } from '../../hooks/useActiveSpectrumPe
 import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
+import { Margin } from '../../reducer/Reducer';
 import { useScaleX } from '../utilities/scale';
 
 import PeakAnnotations from './PeakAnnotations';
@@ -104,11 +105,21 @@ function useMapPeaks(spectrum: Spectrum1D, filterBy: FilterPeaksBy) {
 interface InnerPeaksProps extends BasePeaksProps {
   spectrum: Spectrum1D;
   mode: PeaksMode;
+  height: number;
+  margin: Margin;
 }
 
 function InnerPeaks(props: InnerPeaksProps) {
-  const { peaksSource, spectrum, mode, displayerKey, xDomain, peakFormat } =
-    props;
+  const {
+    peaksSource,
+    spectrum,
+    mode,
+    displayerKey,
+    xDomain,
+    height,
+    margin,
+    peakFormat,
+  } = props;
 
   const peaks = useMapPeaks(
     spectrum,
@@ -124,7 +135,8 @@ function InnerPeaks(props: InnerPeaksProps) {
         spectrumColor={spectrum.display.color}
         peakFormat={peakFormat}
         displayerKey={displayerKey}
-        xDomain={xDomain}
+        height={height}
+        margin={margin}
       />
     );
   }
@@ -154,6 +166,8 @@ export default function Peaks(props) {
     },
     displayerKey,
     xDomain,
+    height,
+    margin,
   } = useChartData();
   const spectrum = useSpectrum(emptyData) as Spectrum1D;
   const peaksViewState = useActiveSpectrumPeaksViewState();
@@ -197,7 +211,16 @@ export default function Peaks(props) {
 
   return (
     <MemoizedPeaksPanel
-      {...{ spectrum, mode, peaksSource, displayerKey, xDomain, peakFormat }}
+      {...{
+        spectrum,
+        mode,
+        peaksSource,
+        displayerKey,
+        xDomain,
+        peakFormat,
+        margin,
+        height,
+      }}
     />
   );
 }
