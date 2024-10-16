@@ -6,7 +6,6 @@ import { GroupPane } from '../../../elements/GroupPane';
 import Label, { LabelStyle } from '../../../elements/Label';
 import { NumberInput2Controller } from '../../../elements/NumberInput2Controller';
 import { Select2 } from '../../../elements/Select2';
-import { Select2Controller } from '../../../elements/Select2Controller';
 import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer';
 
 const labelStyle: LabelStyle = {
@@ -43,10 +42,6 @@ const LOGS_LEVELS = Object.keys(LOGGER_LEVELS).map((level) => ({
   label: level.replace(/^\w/, (c) => c.toUpperCase()),
   value: level,
 }));
-
-const RESOLUTIONS = [72, 96, 150, 200, 300, 400, 500, 600].map(
-  (resolution) => ({ value: resolution, label: String(resolution) }),
-);
 
 function GeneralTabContent() {
   const { register, control } = useFormContext<WorkspaceWithSource>();
@@ -134,11 +129,6 @@ function GeneralTabContent() {
               );
             }}
           />
-        </Label>
-      </GroupPane>
-      <GroupPane text="Export settings">
-        <Label title="PNG Resolution " style={labelStyle}>
-          <Select2Controller name="export.png.resolution" items={RESOLUTIONS} />
         </Label>
       </GroupPane>
     </>
