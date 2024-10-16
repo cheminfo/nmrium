@@ -1,26 +1,27 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { PanelsPreferences, Workspace } from 'nmr-load-save';
+import type { PanelsPreferences, Workspace } from 'nmr-load-save';
 import {
-  useImperativeHandle,
-  memo,
   forwardRef,
+  memo,
   useCallback,
+  useImperativeHandle,
   useMemo,
 } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
-import { useChartData } from '../../context/ChartContext';
-import { usePreferences } from '../../context/PreferencesContext';
-import { GroupPane, GroupPaneStyle } from '../../elements/GroupPane';
-import { Scroller } from '../../elements/Scroller';
-import useNucleus from '../../hooks/useNucleus';
-import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
-import { getSpectraObjectPaths } from '../../utility/getSpectraObjectPaths';
-import { NucleusGroup } from '../extra/preferences/NucleusGroup';
-import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
+import { useChartData } from '../../context/ChartContext.js';
+import { usePreferences } from '../../context/PreferencesContext.js';
+import type { GroupPaneStyle } from '../../elements/GroupPane.js';
+import { GroupPane } from '../../elements/GroupPane.js';
+import { Scroller } from '../../elements/Scroller.js';
+import useNucleus from '../../hooks/useNucleus.js';
+import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences.js';
+import { getSpectraObjectPaths } from '../../utility/getSpectraObjectPaths.js';
+import { NucleusGroup } from '../extra/preferences/NucleusGroup.js';
+import { PreferencesContainer } from '../extra/preferences/PreferencesContainer.js';
 
-import { SpectraColumnsManager } from './base/SpectraColumnsManager';
+import { SpectraColumnsManager } from './base/SpectraColumnsManager.js';
 
 function replaceNucleusKeys(
   data: PanelsPreferences['spectra'],

@@ -1,8 +1,11 @@
-import { HighlightEventSource, useHighlightData } from '../../highlight';
-import { usePanelPreferences } from '../../hooks/usePanelPreferences';
+import {
+  HighlightEventSource,
+  useHighlightData,
+} from '../../highlight/index.js';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 
-import DatabaseSpectrum from './DatabaseSpectrum';
-import ResurrectedDatabaseRanges from './ResurrectedDatabaseRanges';
+import DatabaseSpectrum from './DatabaseSpectrum.js';
+import ResurrectedDatabaseRanges from './ResurrectedDatabaseRanges.js';
 
 function DatabaseElements() {
   const { highlight } = useHighlightData();

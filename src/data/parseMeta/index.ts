@@ -1,11 +1,14 @@
-export { isMetaFile } from './isMetaFile';
-export { mapErrors } from './mapErrors';
-export { parseMetaFile } from './parseMetaFile';
+export { isMetaFile } from './isMetaFile.js';
+export { mapErrors } from './mapErrors.js';
+export { parseMetaFile } from './parseMetaFile.js';
 export {
   linkMetaWithSpectra,
   AutomaticPathsMatchesError,
   TargetPathError,
   SourcePathError,
-} from './linkMetaWithSpectra';
+} from './linkMetaWithSpectra.js';
 
-export type { CompareResultItem, CompareResult } from './linkMetaWithSpectra';
+export type {
+  CompareResultItem,
+  CompareResult,
+} from './linkMetaWithSpectra.js';

@@ -1,11 +1,11 @@
-import { Display2D, Spectrum2D } from 'nmr-load-save';
-import { Zones as ZonesType } from 'nmr-processing';
+import type { Display2D, Spectrum2D } from 'nmr-load-save';
+import type { Zones as ZonesType } from 'nmr-processing';
 import { memo } from 'react';
 
-import { useChartData } from '../../context/ChartContext';
-import useSpectrum from '../../hooks/useSpectrum';
+import { useChartData } from '../../context/ChartContext.js';
+import useSpectrum from '../../hooks/useSpectrum.js';
 
-import Zone from './Zone';
+import Zone from './Zone.js';
 
 interface ZonesInnerProps {
   zones: ZonesType;

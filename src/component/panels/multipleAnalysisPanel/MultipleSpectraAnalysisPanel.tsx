@@ -1,36 +1,35 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { SvgNmrOverlay } from 'cheminfo-font';
-import { Spectrum1D } from 'nmr-load-save';
-import { useCallback, useState, useRef, memo } from 'react';
+import type { Spectrum1D } from 'nmr-load-save';
+import { memo, useCallback, useRef, useState } from 'react';
 import { FaChartBar, FaFileExport } from 'react-icons/fa';
 import { IoPulseOutline } from 'react-icons/io5';
-import { useToggle } from 'react-use';
+import { useToggle } from 'react-science/ui';
 
 import {
-  getDataAsString,
   generateAnalyzeSpectra,
-} from '../../../data/data1d/multipleSpectraAnalysis';
-import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents';
-import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
-import { useChartData } from '../../context/ChartContext';
-import { useDispatch } from '../../context/DispatchContext';
-import { useToaster } from '../../context/ToasterContext';
-import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import { DisplayerMode } from '../../reducer/Reducer';
-import { booleanToString } from '../../utility/booleanToString';
-import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
-import { tablePanelStyle } from '../extra/BasicPanelStyle';
-import { SettingsRef } from '../extra/utilities/settingImperativeHandle';
-import DefaultPanelHeader, {
-  ToolbarItemProps,
-} from '../header/DefaultPanelHeader';
-import PreferencesHeader from '../header/PreferencesHeader';
+  getDataAsString,
+} from '../../../data/data1d/multipleSpectraAnalysis.js';
+import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents.js';
+import { useClipboard } from '../../../utils/clipboard/clipboardHooks.js';
+import { useChartData } from '../../context/ChartContext.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { useToaster } from '../../context/ToasterContext.js';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
+import type { DisplayerMode } from '../../reducer/Reducer.js';
+import { booleanToString } from '../../utility/booleanToString.js';
+import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus.js';
+import { tablePanelStyle } from '../extra/BasicPanelStyle.js';
+import type { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
+import type { ToolbarItemProps } from '../header/DefaultPanelHeader.js';
+import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
+import PreferencesHeader from '../header/PreferencesHeader.js';
 
-import AlignSpectra from './AlignSpectra';
-import AnalysisChart from './AnalysisChart';
-import MultipleSpectraAnalysisTable from './MultipleSpectraAnalysisTable';
-import MultipleSpectraAnalysisPreferences from './preferences';
+import AlignSpectra from './AlignSpectra.js';
+import AnalysisChart from './AnalysisChart.js';
+import MultipleSpectraAnalysisTable from './MultipleSpectraAnalysisTable.js';
+import MultipleSpectraAnalysisPreferences from './preferences/index.js';
 
 interface MultipleSpectraAnalysisPanelInnerProps {
   spectra: Spectrum1D[];

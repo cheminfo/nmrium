@@ -1,4 +1,5 @@
-import { useCallback, forwardRef, ForwardedRef, CSSProperties } from 'react';
+import type { ForwardedRef, CSSProperties } from 'react';
+import { useCallback, forwardRef } from 'react';
 
 export interface CheckBoxProps
   extends React.InputHTMLAttributes<HTMLInputElement> {

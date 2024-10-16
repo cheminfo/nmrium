@@ -1,5 +1,5 @@
-import lodashGet from 'lodash/get';
-import {
+import lodashGet from 'lodash/get.js';
+import type {
   Color2D,
   Spectrum1D,
   Spectrum2D,

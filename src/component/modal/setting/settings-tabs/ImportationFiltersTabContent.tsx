@@ -2,12 +2,13 @@ import { Checkbox } from '@blueprintjs/core';
 import { useMemo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
-import { Keys } from '../../../../data/types/common/Keys';
-import { GroupPane } from '../../../elements/GroupPane';
-import { Input2Controller } from '../../../elements/Input2Controller';
-import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
-import { Select2 } from '../../../elements/Select2';
-import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer';
+import type { Keys } from '../../../../data/types/common/Keys.js';
+import { GroupPane } from '../../../elements/GroupPane.js';
+import { Input2Controller } from '../../../elements/Input2Controller.js';
+import type { Column } from '../../../elements/ReactTable/ReactTable.js';
+import ReactTable from '../../../elements/ReactTable/ReactTable.js';
+import { Select2 } from '../../../elements/Select2.js';
+import type { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
 
 const DataSelectionOptions = [
   { label: 'FT', value: 'ft' },

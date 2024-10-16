@@ -1,6 +1,6 @@
 import react from '@vitejs/plugin-react-swc';
 import analyze from 'rollup-plugin-analyzer';
-import type { AliasOptions } from 'vite'
+import type { AliasOptions } from 'vite';
 import { defineConfig } from 'vitest/config';
 
 // https://vitejs.dev/config/
@@ -22,10 +22,10 @@ export default () => {
     build: {
       sourcemap: 'inline',
       rollupOptions: {
+        // @ts-expect-error analyzer types are wrong.
         plugins: process.env.ANALYZE ? [analyze()] : [],
         output: {
           manualChunks(id) {
-
             if (id.includes('node_modules/openchemlib/')) {
               return 'openchemlib';
             }

@@ -2,10 +2,10 @@ import { SvgNmrRangePicking } from 'cheminfo-font';
 import { useCallback } from 'react';
 import { Toolbar } from 'react-science/ui';
 
-import { useChartData } from '../../context/ChartContext';
-import { useDispatch } from '../../context/DispatchContext';
-import { useToaster } from '../../context/ToasterContext';
-import { useCheckToolsVisibility } from '../../hooks/useCheckToolsVisibility';
+import { useChartData } from '../../context/ChartContext.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { useToaster } from '../../context/ToasterContext.js';
+import { useCheckToolsVisibility } from '../../hooks/useCheckToolsVisibility.js';
 
 export function SpectraAutomaticPickingButton() {
   const dispatch = useDispatch();

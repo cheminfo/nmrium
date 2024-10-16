@@ -1,4 +1,4 @@
-import { CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
 import { useWatch } from 'react-hook-form';
 
 const styles: Record<'container' | 'infoText' | 'errorText', CSSProperties> = {

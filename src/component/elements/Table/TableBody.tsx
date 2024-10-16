@@ -1,11 +1,5 @@
-import {
-  useMemo,
-  memo,
-  Children,
-  cloneElement,
-  ReactNode,
-  CSSProperties,
-} from 'react';
+import type { ReactNode, CSSProperties } from 'react';
+import { useMemo, memo, Children, cloneElement } from 'react';
 
 const styles: CSSProperties = {
   width: '100%',

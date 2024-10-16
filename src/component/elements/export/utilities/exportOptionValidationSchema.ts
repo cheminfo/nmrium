@@ -1,8 +1,8 @@
-import { ExportSettings, Layout, PageSizeName, Unit } from 'nmr-load-save';
+import type { ExportSettings, Layout, PageSizeName, Unit } from 'nmr-load-save';
 import * as Yup from 'yup';
 
-import { pageSizes } from '../../print/pageSize';
-import { convertToPixels, units } from '../units';
+import { pageSizes } from '../../print/pageSize.js';
+import { convertToPixels, units } from '../units.js';
 
 const MAX_PIXEL = 16000;
 

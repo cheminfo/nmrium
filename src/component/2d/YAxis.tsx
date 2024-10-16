@@ -1,13 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import * as d3 from 'd3';
-import { Spectrum2D } from 'nmr-load-save';
-import { useEffect, useRef, memo } from 'react';
+import type { Spectrum2D } from 'nmr-load-save';
+import { memo, useEffect, useRef } from 'react';
 
-import { useChartData } from '../context/ChartContext';
-import useSpectrum from '../hooks/useSpectrum';
+import { useChartData } from '../context/ChartContext.js';
+import useSpectrum from '../hooks/useSpectrum.js';
 
-import { useScale2DY } from './utilities/scale';
+import { useScale2DY } from './utilities/scale.js';
 
 const axisStyles = css`
   user-select: none;

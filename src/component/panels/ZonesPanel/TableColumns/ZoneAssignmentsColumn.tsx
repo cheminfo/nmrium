@@ -1,12 +1,15 @@
 /** @jsxImportSource @emotion/react */
-import { MouseEvent } from 'react';
+import type { MouseEvent } from 'react';
 
-import { AssignmentsData, Axis } from '../../../assignment/AssignmentsContext';
+import type {
+  AssignmentsData,
+  Axis,
+} from '../../../assignment/AssignmentsContext.js';
 import {
-  RemoveAssignmentsButton,
   removeAssignmentCssStyle,
-} from '../../../elements/RemoveAssignmentsButton';
-import { ZoneData } from '../hooks/useMapZones';
+  RemoveAssignmentsButton,
+} from '../../../elements/RemoveAssignmentsButton.js';
+import type { ZoneData } from '../hooks/useMapZones.js';
 
 function getStyle(flag: boolean, isCompletelyAssigned: boolean) {
   if (flag) {

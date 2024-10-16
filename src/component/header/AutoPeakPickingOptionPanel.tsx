@@ -3,18 +3,18 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
-import { useDispatch } from '../context/DispatchContext';
-import { useToaster } from '../context/ToasterContext';
-import Label from '../elements/Label';
-import { NumberInput2Controller } from '../elements/NumberInput2Controller';
-import { Select2Controller } from '../elements/Select2Controller';
+import { useDispatch } from '../context/DispatchContext.js';
+import { useToaster } from '../context/ToasterContext.js';
+import Label from '../elements/Label.js';
+import { NumberInput2Controller } from '../elements/NumberInput2Controller.js';
+import { Select2Controller } from '../elements/Select2Controller.js';
 import {
   MIN_AREA_POINTS,
   useCheckPointsNumberInWindowArea,
-} from '../hooks/useCheckPointsNumberInWindowArea';
+} from '../hooks/useCheckPointsNumberInWindowArea.js';
 
-import { headerLabelStyle } from './Header';
-import { HeaderWrapper } from './HeaderWrapper';
+import { headerLabelStyle } from './Header.js';
+import { HeaderWrapper } from './HeaderWrapper.js';
 
 type Direction = 'positive' | 'negative' | 'both';
 

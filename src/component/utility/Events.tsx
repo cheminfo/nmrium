@@ -1,12 +1,12 @@
-import EE from 'eventemitter3';
+import { EventEmitter } from 'eventemitter3';
 import { useEffect } from 'react';
 
-import {
+import type {
   BrushTrackerContext,
   ClickOptions,
-} from '../EventsTrackers/BrushTracker';
+} from '../EventsTrackers/BrushTracker.js';
 
-const eventEmitter = new EE();
+const eventEmitter = new EventEmitter();
 
 const Emitter = {
   on: (event, fn) => eventEmitter.on(event, fn),

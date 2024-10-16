@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
 
-import { Signal2D } from 'nmr-processing';
+import type { Signal2D } from 'nmr-processing';
 import { useMemo } from 'react';
 
-import { buildID } from '../../../data/utilities/Concatenation';
-import { useHighlight } from '../../highlight';
-import SignalDeltaLine from '../SignalDeltaLine';
+import { buildID } from '../../../data/utilities/Concatenation.js';
+import { useHighlight } from '../../highlight/index.js';
+import SignalDeltaLine from '../SignalDeltaLine.js';
 
 interface SignalCrosshairProps {
   signal: Signal2D;

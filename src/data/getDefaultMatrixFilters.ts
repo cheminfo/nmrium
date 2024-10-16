@@ -1,5 +1,5 @@
 import type { FilterXYType } from 'ml-signal-processing';
-import filterXY from 'ml-signal-processing/FilterXYSchema.json';
+import filterXY from 'ml-signal-processing/FilterXYSchema.js';
 
 interface FilterOptionsInfo {
   defaultValue: string | number;

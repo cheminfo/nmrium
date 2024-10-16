@@ -1,4 +1,5 @@
-import { LegacyRef, MutableRefObject, useEffect, useRef } from 'react';
+import type { LegacyRef, MutableRefObject } from 'react';
+import { useEffect, useRef } from 'react';
 
 export default function useCombinedRefs(
   refs: Array<MutableRefObject<any> | LegacyRef<any>>,

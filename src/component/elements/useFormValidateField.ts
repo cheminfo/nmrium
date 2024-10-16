@@ -1,4 +1,4 @@
-import has from 'lodash/has';
+import has from 'lodash/has.js';
 import { useCallback } from 'react';
 import { useFormContext } from 'react-hook-form';
 

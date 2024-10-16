@@ -1,16 +1,17 @@
 /** @jsxImportSource @emotion/react */
 import { DialogBody, Tab, Tabs } from '@blueprintjs/core';
-import { getLinkDim, Link, Correlation } from 'nmr-correlation';
+import type { Correlation, Link } from 'nmr-correlation';
+import { getLinkDim } from 'nmr-correlation';
 
-import { useChartData } from '../../../../context/ChartContext';
-import { DialogProps } from '../../../../elements/DialogManager';
-import { DraggableDialog } from '../../../../elements/DraggableDialog';
-import { OnEditCorrelationCallback } from '../../SummaryPanel';
-import { getEditedCorrelations } from '../../utilities/Utilities';
+import { useChartData } from '../../../../context/ChartContext.js';
+import type { DialogProps } from '../../../../elements/DialogManager.js';
+import { DraggableDialog } from '../../../../elements/DraggableDialog.js';
+import type { OnEditCorrelationCallback } from '../../SummaryPanel.js';
+import { getEditedCorrelations } from '../../utilities/Utilities.js';
 
-import EditLinkConfirmation from './Confirmation';
-import EditPathLength from './EditPathLength';
-import MoveLink from './MoveLink';
+import EditLinkConfirmation from './Confirmation.js';
+import EditPathLength from './EditPathLength.js';
+import MoveLink from './MoveLink.js';
 
 export interface EditLinkDialogData {
   correlationDim1: Correlation;

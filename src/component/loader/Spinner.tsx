@@ -1,9 +1,10 @@
-import { useState, Fragment, useEffect, useContext, ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import { Fragment, useContext, useEffect, useState } from 'react';
 
-import { useChartData } from '../context/ChartContext';
+import { useChartData } from '../context/ChartContext.js';
 
-import NoData from './NoData';
-import { spinnerContext } from './SpinnerContext';
+import NoData from './NoData.js';
+import { spinnerContext } from './SpinnerContext.js';
 
 interface SpinnerProps {
   isLoading?: boolean;

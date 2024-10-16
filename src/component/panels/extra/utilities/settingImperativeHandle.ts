@@ -1,5 +1,6 @@
-import { RefObject, useImperativeHandle } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import type { RefObject } from 'react';
+import { useImperativeHandle } from 'react';
+import type { UseFormReturn } from 'react-hook-form';
 
 export interface SettingsRef {
   saveSetting: () => Promise<boolean>;

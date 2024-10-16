@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
 import { FaTimes } from 'react-icons/fa';
 
 const styles = css`

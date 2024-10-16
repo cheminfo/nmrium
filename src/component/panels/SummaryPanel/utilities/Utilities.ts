@@ -1,6 +1,7 @@
-import { FromTo } from 'cheminfo-types';
-import lodashCloneDeep from 'lodash/cloneDeep';
-import lodashGet from 'lodash/get';
+import type { FromTo } from 'cheminfo-types';
+import lodashCloneDeep from 'lodash/cloneDeep.js';
+import lodashGet from 'lodash/get.js';
+import type { Correlation, Link } from 'nmr-correlation';
 import {
   addLink,
   buildCorrelation,
@@ -8,19 +9,17 @@ import {
   getLinkDelta,
   getLinkDim,
   removeLink,
-  Correlation,
-  Link,
 } from 'nmr-correlation';
-import { Spectrum2D, Spectrum, ActiveSpectrum } from 'nmr-load-save';
+import type { ActiveSpectrum, Spectrum, Spectrum2D } from 'nmr-load-save';
 
-import DefaultPathLengths from '../../../../data/constants/DefaultPathLengths';
+import DefaultPathLengths from '../../../../data/constants/DefaultPathLengths.js';
 import {
   findSignal2D,
   findSpectrum,
-} from '../../../../data/utilities/FindUtilities';
-import { isDefaultPathLength } from '../../../modal/editZone/validation/isDefaultPathLength';
-import { DisplayerMode } from '../../../reducer/Reducer';
-import { ErrorColors } from '../CorrelationTable/Constants';
+} from '../../../../data/utilities/FindUtilities.js';
+import { isDefaultPathLength } from '../../../modal/editZone/validation/isDefaultPathLength.js';
+import type { DisplayerMode } from '../../../reducer/Reducer.js';
+import { ErrorColors } from '../CorrelationTable/Constants.js';
 
 function getAtomType(nucleus: string): string {
   return nucleus.split(/\d+/)[1];

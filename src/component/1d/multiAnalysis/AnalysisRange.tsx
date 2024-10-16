@@ -2,11 +2,11 @@
 import { css } from '@emotion/react';
 import { useCallback } from 'react';
 
-import { usePreferences } from '../../context/PreferencesContext';
-import { useScaleChecked } from '../../context/ScaleContext';
-import { ResizerWithScale } from '../../elements/ResizerWithScale';
-import { useHighlight } from '../../highlight';
-import { useResizerStatus } from '../../hooks/useResizerStatus';
+import { usePreferences } from '../../context/PreferencesContext.js';
+import { useScaleChecked } from '../../context/ScaleContext.js';
+import { ResizerWithScale } from '../../elements/ResizerWithScale.js';
+import { useHighlight } from '../../highlight/index.js';
+import { useResizerStatus } from '../../hooks/useResizerStatus.js';
 
 const styles = {
   common: css`

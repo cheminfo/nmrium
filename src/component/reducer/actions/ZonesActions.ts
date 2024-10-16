@@ -1,6 +1,7 @@
-import { FromTo, NmrData2DFt } from 'cheminfo-types';
-import { Draft, original } from 'immer';
-import lodashCloneDeep from 'lodash/cloneDeep';
+import type { FromTo, NmrData2DFt } from 'cheminfo-types';
+import type { Draft } from 'immer';
+import { original } from 'immer';
+import lodashCloneDeep from 'lodash/cloneDeep.js';
 import { setPathLength } from 'nmr-correlation';
 import type { Spectrum, Spectrum2D, ZonesViewState } from 'nmr-load-save';
 import type { Signal2D, Zone } from 'nmr-processing';
@@ -9,30 +10,34 @@ import { Filters, FiltersManager } from 'nmr-processing';
 import {
   DATUM_KIND,
   SIGNAL_INCLUDED_KINDS,
-} from '../../../data/constants/signalsKinds';
+} from '../../../data/constants/signalsKinds.js';
 import {
   changeZoneSignal,
   detectZones,
   detectZonesManual,
   isSpectrum2D,
-} from '../../../data/data2d/Spectrum2D';
-import { DetectionZonesOptions } from '../../../data/data2d/Spectrum2D/zones/getDetectionZones';
+} from '../../../data/data2d/Spectrum2D/index.js';
+import type { DetectionZonesOptions } from '../../../data/data2d/Spectrum2D/zones/getDetectionZones.js';
 import {
   unlink,
   unlinkInAssignmentData,
-} from '../../../data/utilities/ZoneUtilities';
-import { isNumber } from '../../../data/utilities/isNumber';
-import { AssignmentContext, Axis } from '../../assignment/AssignmentsContext';
-import { defaultZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState';
-import { ZoneData } from '../../panels/ZonesPanel/hooks/useMapZones';
-import { FilterType } from '../../utility/filterType';
-import { State } from '../Reducer';
-import get2DRange, { ZoneBoundary } from '../helper/get2DRange';
-import { getActiveSpectrum } from '../helper/getActiveSpectrum';
-import { ActionType } from '../types/ActionType';
+} from '../../../data/utilities/ZoneUtilities.js';
+import { isNumber } from '../../../data/utilities/isNumber.js';
+import type {
+  AssignmentContext,
+  Axis,
+} from '../../assignment/AssignmentsContext.js';
+import { defaultZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState.js';
+import type { ZoneData } from '../../panels/ZonesPanel/hooks/useMapZones.js';
+import type { FilterType } from '../../utility/filterType.js';
+import type { State } from '../Reducer.js';
+import type { ZoneBoundary } from '../helper/get2DRange.js';
+import get2DRange from '../helper/get2DRange.js';
+import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
+import type { ActionType } from '../types/ActionType.js';
 
-import { handleUpdateCorrelations } from './CorrelationsActions';
-import { setDomain } from './DomainActions';
+import { handleUpdateCorrelations } from './CorrelationsActions.js';
+import { setDomain } from './DomainActions.js';
 
 interface DeleteSignal2DProps {
   spectrum: Spectrum;

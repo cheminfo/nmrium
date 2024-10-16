@@ -1,7 +1,7 @@
-import { NmrData2DFt, NmrData1D } from 'cheminfo-types';
+import type { NmrData1D, NmrData2DFt } from 'cheminfo-types';
 import { xyReduce } from 'ml-spectra-processing';
 
-import { calculateSanPlot } from '../../../../../data/utilities/calculateSanPlot';
+import { calculateSanPlot } from '../../../../../data/utilities/calculateSanPlot.js';
 
 export function processSnapPlot<T extends '1D' | '2D'>(
   dimension: T,

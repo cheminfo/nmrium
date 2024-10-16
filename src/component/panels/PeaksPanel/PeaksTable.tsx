@@ -1,22 +1,22 @@
-import lodashGet from 'lodash/get';
-import { Info1D, Peak1D } from 'nmr-processing';
-import { useCallback, useMemo, memo, useState } from 'react';
+import lodashGet from 'lodash/get.js';
+import type { Info1D, Peak1D } from 'nmr-processing';
+import { memo, useCallback, useMemo, useState } from 'react';
 import { FaEdit, FaRegTrashAlt } from 'react-icons/fa';
 
-import { useDispatch } from '../../context/DispatchContext';
-import EditableColumn from '../../elements/EditableColumn';
-import ReactTable from '../../elements/ReactTable/ReactTable';
+import { useDispatch } from '../../context/DispatchContext.js';
+import EditableColumn from '../../elements/EditableColumn.js';
+import ReactTable from '../../elements/ReactTable/ReactTable.js';
+import type { ControlCustomColumn } from '../../elements/ReactTable/utility/addCustomColumn.js';
 import addCustomColumn, {
-  ControlCustomColumn,
   createActionColumn,
-} from '../../elements/ReactTable/utility/addCustomColumn';
-import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import { EditPeakShapeModal } from '../../modal/EditPeakShapeModal';
-import { formatNumber } from '../../utility/formatNumber';
-import NoDataForFid from '../extra/placeholder/NoDataForFid';
-import NoTableData from '../extra/placeholder/NoTableData';
+} from '../../elements/ReactTable/utility/addCustomColumn.js';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
+import { EditPeakShapeModal } from '../../modal/EditPeakShapeModal.js';
+import { formatNumber } from '../../utility/formatNumber.js';
+import NoDataForFid from '../extra/placeholder/NoDataForFid.js';
+import NoTableData from '../extra/placeholder/NoTableData.js';
 
-import { PeakRecord } from './PeaksPanel';
+import type { PeakRecord } from './PeaksPanel.js';
 
 interface PeaksTableProps {
   activeTab: string;

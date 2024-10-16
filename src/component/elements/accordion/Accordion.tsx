@@ -1,5 +1,5 @@
+import type { ReactNode, CSSProperties } from 'react';
 import {
-  ReactNode,
   useState,
   useRef,
   useCallback,
@@ -7,10 +7,9 @@ import {
   useEffect,
   Children,
   cloneElement,
-  CSSProperties,
 } from 'react';
 
-import { triggerSource } from './AccordionItem';
+import { triggerSource } from './AccordionItem.js';
 
 const styles: Record<'container', CSSProperties> = {
   container: {

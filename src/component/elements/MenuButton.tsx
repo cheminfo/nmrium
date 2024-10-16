@@ -1,8 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import { SerializedStyles, css } from '@emotion/react';
-import { ReactNode, useState, useCallback, useRef } from 'react';
+import type { SerializedStyles } from '@emotion/react';
+import { css } from '@emotion/react';
+import type { ReactNode } from 'react';
+import { useState, useCallback, useRef } from 'react';
 
-import ToolTip from './ToolTip/ToolTip';
+import ToolTip from './ToolTip/ToolTip.js';
 
 const menuStyles = css`
   .menu {

@@ -8,12 +8,13 @@ import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
 import { array, object, string } from 'yup';
 
-import { useDispatch } from '../../context/DispatchContext';
-import { Input2Controller } from '../../elements/Input2Controller';
-import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
-import useSpectrum from '../../hooks/useSpectrum';
-import { checkUniqueByKey } from '../../utility/checkUniqueByKey';
-import { tablePanelStyle } from '../extra/BasicPanelStyle';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { Input2Controller } from '../../elements/Input2Controller.js';
+import type { Column } from '../../elements/ReactTable/ReactTable.js';
+import ReactTable from '../../elements/ReactTable/ReactTable.js';
+import useSpectrum from '../../hooks/useSpectrum.js';
+import { checkUniqueByKey } from '../../utility/checkUniqueByKey.js';
+import { tablePanelStyle } from '../extra/BasicPanelStyle.js';
 
 const metaInfoArraySchema = array()
   .of(

@@ -1,12 +1,13 @@
 import { Classes } from '@blueprintjs/core';
 import { AnalysisColumnsTypes } from 'nmr-load-save';
-import { useMemo, useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
 
-import { Input2Controller } from '../../../elements/Input2Controller';
-import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
+import { Input2Controller } from '../../../elements/Input2Controller.js';
+import type { Column } from '../../../elements/ReactTable/ReactTable.js';
+import ReactTable from '../../../elements/ReactTable/ReactTable.js';
 
 export function AnalysisTablePreferences() {
   const { setValue, control } = useFormContext();

@@ -1,12 +1,9 @@
-import { DataXY } from 'cheminfo-types';
+import type { DataXY } from 'cheminfo-types';
 import { optimizePeaksWithLogs } from 'ml-gsd';
 import { xMaxValue } from 'ml-spectra-processing';
 import { analyseMultiplet } from 'multiplet-analysis';
-import {
-  NMRPeak1DWithShapeID,
-  signalJoinCouplings,
-  xyAutoPeaksPicking,
-} from 'nmr-processing';
+import type { NMRPeak1DWithShapeID } from 'nmr-processing';
+import { signalJoinCouplings, xyAutoPeaksPicking } from 'nmr-processing';
 
 export function detectSignalsByMultipletAnalysis(
   data: DataXY<Float64Array>,

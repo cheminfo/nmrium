@@ -1,7 +1,8 @@
-import { CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
 import { LuLink, LuUnlink } from 'react-icons/lu';
 
-import Button, { ButtonProps } from '../../elements/Button';
+import type { ButtonProps } from '../../elements/Button.js';
+import Button from '../../elements/Button.js';
 
 const styles: Record<'button' | 'icon', CSSProperties> = {
   button: { width: '16px', height: '16px', padding: 0 },

@@ -1,23 +1,24 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import { Spectrum1D } from 'nmr-load-save';
-import { Range } from 'nmr-processing';
+import type { Spectrum1D } from 'nmr-load-save';
+import type { Range } from 'nmr-processing';
 
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D';
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
+import type { AssignmentsData } from '../../assignment/AssignmentsContext.js';
 import {
-  AssignmentsData,
   useAssignment,
   useAssignmentData,
-} from '../../assignment/AssignmentsContext';
-import { useChartData } from '../../context/ChartContext';
-import { useDispatch } from '../../context/DispatchContext';
-import { useScaleChecked } from '../../context/ScaleContext';
-import { HighlightEventSource, useHighlight } from '../../highlight';
-import useSpectrum from '../../hooks/useSpectrum';
-import { AssignmentActionsButtons } from '../ranges/AssignmentActionsButtons';
+} from '../../assignment/AssignmentsContext.js';
+import { useChartData } from '../../context/ChartContext.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { useScaleChecked } from '../../context/ScaleContext.js';
+import { HighlightEventSource, useHighlight } from '../../highlight/index.js';
+import useSpectrum from '../../hooks/useSpectrum.js';
+import { AssignmentActionsButtons } from '../ranges/AssignmentActionsButtons.js';
 
-import { TreeNodes, generateTreeNodes } from './generateTreeNodes';
+import type { TreeNodes } from './generateTreeNodes.js';
+import { generateTreeNodes } from './generateTreeNodes.js';
 
 const styles = {
   cursor: 'default',

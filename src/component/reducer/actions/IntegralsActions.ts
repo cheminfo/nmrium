@@ -1,27 +1,30 @@
 import { v4 } from '@lukeed/uuid';
-import { Draft, original } from 'immer';
+import type { Draft } from 'immer';
+import { original } from 'immer';
 import { xyIntegration } from 'ml-spectra-processing';
-import { IntegralsViewState, Spectrum1D } from 'nmr-load-save';
-import { Integral } from 'nmr-processing';
+import type { IntegralsViewState, Spectrum1D } from 'nmr-load-save';
+import type { Integral } from 'nmr-processing';
 
+import type {
+  SetSumOptions,
+  SumParams,
+} from '../../../data/data1d/Spectrum1D/SumManager.js';
+import {
+  initSumOptions,
+  setSumOptions,
+} from '../../../data/data1d/Spectrum1D/SumManager.js';
 import {
   updateIntegralsRelativeValues,
   changeIntegralsRelative,
   getShiftX,
-} from '../../../data/data1d/Spectrum1D';
-import {
-  SetSumOptions,
-  SumParams,
-  initSumOptions,
-  setSumOptions,
-} from '../../../data/data1d/Spectrum1D/SumManager';
-import { FilterType } from '../../utility/filterType';
-import { State } from '../Reducer';
-import { getActiveSpectrum } from '../helper/getActiveSpectrum';
-import getRange from '../helper/getRange';
-import { getSpectrum } from '../helper/getSpectrum';
-import { setIntegralsViewProperty } from '../helper/setIntegralsViewProperty';
-import { ActionType } from '../types/ActionType';
+} from '../../../data/data1d/Spectrum1D/index.js';
+import type { FilterType } from '../../utility/filterType.js';
+import type { State } from '../Reducer.js';
+import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
+import getRange from '../helper/getRange.js';
+import { getSpectrum } from '../helper/getSpectrum.js';
+import { setIntegralsViewProperty } from '../helper/setIntegralsViewProperty.js';
+import type { ActionType } from '../types/ActionType.js';
 
 type ChangeIntegralSumAction = ActionType<
   'CHANGE_INTEGRAL_SUM',

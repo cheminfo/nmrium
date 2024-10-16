@@ -1,4 +1,4 @@
-import lodashGet from 'lodash/get';
+import lodashGet from 'lodash/get.js';
 import { useCallback, useMemo, useState } from 'react';
 
 export enum SortType {

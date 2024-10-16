@@ -1,8 +1,8 @@
-import { DataXY, Logger } from 'cheminfo-types';
+import type { DataXY, Logger } from 'cheminfo-types';
 import { xGetFromToIndex } from 'ml-spectra-processing';
 import { xyAutoRangesPicking } from 'nmr-processing';
 
-import { detectSignalsByMultipletAnalysis } from './detectSignalsByMultipletAnalysis';
+import { detectSignalsByMultipletAnalysis } from './detectSignalsByMultipletAnalysis.js';
 
 const MAX_LENGTH = 4092;
 export default function detectSignals(

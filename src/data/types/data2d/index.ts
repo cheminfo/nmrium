@@ -1,1 +1,1 @@
-export { type ContourOptions } from './ContourOptions';
+export { type ContourOptions } from './ContourOptions.js';

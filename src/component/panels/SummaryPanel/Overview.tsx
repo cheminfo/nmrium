@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import { getAtomCounts } from 'nmr-correlation';
 import { memo } from 'react';
 
-import { ErrorColors, Errors } from './CorrelationTable/Constants';
+import { ErrorColors, Errors } from './CorrelationTable/Constants.js';
 
 const styles = css`
   display: flex;

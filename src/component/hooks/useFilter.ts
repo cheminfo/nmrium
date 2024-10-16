@@ -1,8 +1,8 @@
-import { Spectrum1D } from 'nmr-load-save';
-import { Filter } from 'nmr-processing';
+import type { Spectrum1D } from 'nmr-load-save';
+import type { Filter } from 'nmr-processing';
 import { useMemo } from 'react';
 
-import useSpectrum from './useSpectrum';
+import useSpectrum from './useSpectrum.js';
 
 const emptyData = { filters: {} };
 

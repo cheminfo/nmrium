@@ -1,7 +1,7 @@
-import { Draft } from 'immer';
+import type { Draft } from 'immer';
 
-import { removeByPaths } from '../../../data/utilities/removeByPaths';
-import { State } from '../Reducer';
+import { removeByPaths } from '../../../data/utilities/removeByPaths.js';
+import type { State } from '../Reducer.js';
 
 export function removeSpectrumRelatedObjectsById(
   data: Draft<State> | Partial<State>,

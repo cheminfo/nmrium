@@ -1,21 +1,23 @@
-import { RefObject, useCallback, useEffect, useMemo, useRef } from 'react';
+import type { RefObject } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useOnOff } from 'react-science/ui';
 
-import checkModifierKeyActivated from '../../data/utilities/checkModifierKeyActivated';
-import { useAssignmentData } from '../assignment/AssignmentsContext';
-import { useChartData } from '../context/ChartContext';
-import { useDispatch } from '../context/DispatchContext';
-import { useLoader } from '../context/LoaderContext';
-import { usePreferences } from '../context/PreferencesContext';
-import { useToaster } from '../context/ToasterContext';
-import { AlertButton, useAlert } from '../elements/Alert';
-import { useExportManagerAPI } from '../elements/export/ExportManager';
-import { HighlightEventSource, useHighlightData } from '../highlight/index';
-import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
-import { useExport } from '../hooks/useExport';
-import useToolsFunctions from '../hooks/useToolsFunctions';
-import SaveAsModal from '../modal/SaveAsModal';
-import { options } from '../toolbar/ToolTypes';
+import checkModifierKeyActivated from '../../data/utilities/checkModifierKeyActivated.js';
+import { useAssignmentData } from '../assignment/AssignmentsContext.js';
+import { useChartData } from '../context/ChartContext.js';
+import { useDispatch } from '../context/DispatchContext.js';
+import { useLoader } from '../context/LoaderContext.js';
+import { usePreferences } from '../context/PreferencesContext.js';
+import { useToaster } from '../context/ToasterContext.js';
+import type { AlertButton } from '../elements/Alert.js';
+import { useAlert } from '../elements/Alert.js';
+import { useExportManagerAPI } from '../elements/export/ExportManager.js';
+import { HighlightEventSource, useHighlightData } from '../highlight/index.js';
+import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility.js';
+import { useExport } from '../hooks/useExport.js';
+import useToolsFunctions from '../hooks/useToolsFunctions.js';
+import SaveAsModal from '../modal/SaveAsModal.js';
+import { options } from '../toolbar/ToolTypes.js';
 
 interface KeysListenerTrackerProps {
   mainDivRef: RefObject<HTMLDivElement>;

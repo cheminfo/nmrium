@@ -1,9 +1,9 @@
-import { Spectrum } from 'nmr-load-save';
+import type { Spectrum } from 'nmr-load-save';
 import { useMemo } from 'react';
 
-import { useChartData } from '../context/ChartContext';
+import { useChartData } from '../context/ChartContext.js';
 
-import { useActiveSpectrum } from './useActiveSpectrum';
+import { useActiveSpectrum } from './useActiveSpectrum.js';
 
 export default function useSpectrum(defaultValue: any = null) {
   const { data } = useChartData();

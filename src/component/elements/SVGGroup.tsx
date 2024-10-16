@@ -1,10 +1,5 @@
-import {
-  Children,
-  useLayoutEffect,
-  useRef,
-  SVGAttributes,
-  ReactElement,
-} from 'react';
+import type { SVGAttributes, ReactElement } from 'react';
+import { Children, useLayoutEffect, useRef } from 'react';
 
 interface SVGGroupProps extends SVGAttributes<SVGElement> {
   children: ReactElement | ReactElement[];

@@ -1,5 +1,6 @@
-import { WorkSpaceSource } from 'nmr-load-save';
-import { CSSProperties, useState } from 'react';
+import type { WorkSpaceSource } from 'nmr-load-save';
+import type { CSSProperties } from 'react';
+import { useState } from 'react';
 import { Button } from 'react-science/ui';
 
 const styles: Record<

@@ -1,17 +1,18 @@
 /** @jsxImportSource @emotion/react */
 import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
 import { css } from '@emotion/react';
-import { LogEntry } from 'fifo-logger';
+import type { LogEntry } from 'fifo-logger';
 import { useMemo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { IoBugOutline } from 'react-icons/io5';
 import { ObjectInspector } from 'react-inspector';
 import { useOnOff } from 'react-science/ui';
 
-import { useLogger } from '../context/LoggerContext';
-import Button from '../elements/Button';
-import { ColumnWrapper } from '../elements/ColumnWrapper';
-import ReactTable, { Column } from '../elements/ReactTable/ReactTable';
+import { useLogger } from '../context/LoggerContext.js';
+import Button from '../elements/Button.js';
+import { ColumnWrapper } from '../elements/ColumnWrapper.js';
+import type { Column } from '../elements/ReactTable/ReactTable.js';
+import ReactTable from '../elements/ReactTable/ReactTable.js';
 
 const logsDataFormat = new Intl.DateTimeFormat('default', {
   hour: 'numeric',

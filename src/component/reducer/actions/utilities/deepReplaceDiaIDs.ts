@@ -1,5 +1,5 @@
-import { Draft } from 'immer';
-import { TopicMolecule } from 'openchemlib-utils';
+import type { Draft } from 'immer';
+import type { TopicMolecule } from 'openchemlib-utils';
 
 export function deepReplaceDiaIDs(
   data: Draft<object>,

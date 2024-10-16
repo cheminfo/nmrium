@@ -4,10 +4,10 @@ import { css } from '@emotion/react';
 import { SvgLogoNmrium } from 'cheminfo-font';
 import { Toolbar, useOnOff } from 'react-science/ui';
 
-import versionInfo from '../../../versionInfo';
-import Logo from '../../elements/Logo';
+import versionInfo from '../../../versionInfo.js';
+import Logo from '../../elements/Logo.js';
 
-import AboutUsZakodium from './AboutUsZakodium';
+import AboutUsZakodium from './AboutUsZakodium.js';
 
 const styles = css`
   display: flex;

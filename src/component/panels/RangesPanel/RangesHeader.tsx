@@ -3,39 +3,37 @@ import {
   SvgNmrPeaks,
   SvgNmrPeaksTopLabels,
 } from 'cheminfo-font';
-import { saveAs } from 'file-saver';
-import lodashGet from 'lodash/get';
-import { RangesViewState } from 'nmr-load-save';
+import fileSaver from 'file-saver';
+import lodashGet from 'lodash/get.js';
+import type { RangesViewState } from 'nmr-load-save';
 import { rangesToACS, rangesToTSV } from 'nmr-processing';
 import { useState } from 'react';
 import {
-  FaFileExport,
-  FaUnlink,
-  FaSitemap,
   FaChartBar,
   FaCopy,
   FaDownload,
+  FaFileExport,
+  FaSitemap,
+  FaUnlink,
 } from 'react-icons/fa';
 import { ImLink } from 'react-icons/im';
 import { LuSubtitles } from 'react-icons/lu';
 
-import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents';
-import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
-import { useAssignmentData } from '../../assignment/AssignmentsContext';
-import { useDispatch } from '../../context/DispatchContext';
-import { useToaster } from '../../context/ToasterContext';
-import { useAlert } from '../../elements/Alert';
-import {
-  ToolbarPopoverItem,
-  ToolbarPopoverMenuItem,
-} from '../../elements/ToolbarPopoverItem';
-import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
-import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import CopyClipboardModal from '../../modal/CopyClipboardModal';
-import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
-import { booleanToString } from '../../utility/booleanToString';
-import { FilterType } from '../../utility/filterType';
-import DefaultPanelHeader from '../header/DefaultPanelHeader';
+import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents.js';
+import { useClipboard } from '../../../utils/clipboard/clipboardHooks.js';
+import { useAssignmentData } from '../../assignment/AssignmentsContext.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { useToaster } from '../../context/ToasterContext.js';
+import { useAlert } from '../../elements/Alert.js';
+import type { ToolbarPopoverMenuItem } from '../../elements/ToolbarPopoverItem.js';
+import { ToolbarPopoverItem } from '../../elements/ToolbarPopoverItem.js';
+import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
+import CopyClipboardModal from '../../modal/CopyClipboardModal.js';
+import ChangeSumModal from '../../modal/changeSum/ChangeSumModal.js';
+import { booleanToString } from '../../utility/booleanToString.js';
+import type { FilterType } from '../../utility/filterType.js';
+import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
 
 type ExportRangesType = 'publicationString' | 'rangesToTSV';
 interface ExportData {
@@ -198,7 +196,7 @@ function RangesHeader({
   function handleRangesToTSV() {
     const tsv = rangesToTSV(ranges.values);
     const blob = new Blob([tsv], { type: 'text/plain' });
-    saveAs(blob, `${info.name}.tsv`);
+    fileSaver.saveAs(blob, `${info.name}.tsv`);
   }
 
   function exportHandler(data?: ExportData) {

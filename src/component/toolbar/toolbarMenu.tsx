@@ -6,7 +6,7 @@ import {
   FaFileImage,
 } from 'react-icons/fa';
 
-import { ToolbarPopoverMenuItem } from '../elements/ToolbarPopoverItem';
+import type { ToolbarPopoverMenuItem } from '../elements/ToolbarPopoverItem.js';
 
 const IMPORT_MENU: ToolbarPopoverMenuItem[] = [
   {

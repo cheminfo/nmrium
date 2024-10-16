@@ -1,6 +1,6 @@
-import { Draft } from 'immer';
+import type { Draft } from 'immer';
 
-import { PreferencesState } from '../preferencesReducer';
+import type { PreferencesState } from '../preferencesReducer.js';
 
 export function isReadOnlyWorkspace(
   draft: Draft<PreferencesState> | PreferencesState,

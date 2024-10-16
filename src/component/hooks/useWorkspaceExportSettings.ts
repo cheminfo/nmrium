@@ -1,5 +1,5 @@
-import { usePreferences } from '../context/PreferencesContext';
-import { workspaceDefaultProperties } from '../workspaces/workspaceDefaultProperties';
+import { usePreferences } from '../context/PreferencesContext.js';
+import { workspaceDefaultProperties } from '../workspaces/workspaceDefaultProperties.js';
 
 export function useWorkspaceExportSettings() {
   const { current } = usePreferences();

@@ -1,4 +1,4 @@
-import { CSSProperties, MouseEvent } from 'react';
+import type { CSSProperties, MouseEvent } from 'react';
 import { FaSortAmountDown, FaSortAmountUp } from 'react-icons/fa';
 
 interface TableCellEvent {

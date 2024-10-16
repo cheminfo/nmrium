@@ -1,26 +1,24 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import {
-  AnalysisColumnsTypes,
-  MultipleSpectraAnalysisPreferences as MultipleSpectraAnalysisPreferencesInterface,
-} from 'nmr-load-save';
+import type { MultipleSpectraAnalysisPreferences as MultipleSpectraAnalysisPreferencesInterface } from 'nmr-load-save';
+import { AnalysisColumnsTypes } from 'nmr-load-save';
 import { forwardRef } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
-import { SpectraAnalysisData } from '../../../../data/data1d/multipleSpectraAnalysis';
-import { usePreferences } from '../../../context/PreferencesContext';
-import { CheckController } from '../../../elements/CheckController';
-import { GroupPane } from '../../../elements/GroupPane';
-import Label from '../../../elements/Label';
-import useCheckExperimentalFeature from '../../../hooks/useCheckExperimentalFeature';
-import { usePanelPreferences } from '../../../hooks/usePanelPreferences';
-import { checkUniqueByKey } from '../../../utility/checkUniqueByKey';
-import { PreferencesContainer } from '../../extra/preferences/PreferencesContainer';
-import { useSettingImperativeHandle } from '../../extra/utilities/settingImperativeHandle';
+import type { SpectraAnalysisData } from '../../../../data/data1d/multipleSpectraAnalysis.js';
+import { usePreferences } from '../../../context/PreferencesContext.js';
+import { CheckController } from '../../../elements/CheckController.js';
+import { GroupPane } from '../../../elements/GroupPane.js';
+import Label from '../../../elements/Label.js';
+import useCheckExperimentalFeature from '../../../hooks/useCheckExperimentalFeature.js';
+import { usePanelPreferences } from '../../../hooks/usePanelPreferences.js';
+import { checkUniqueByKey } from '../../../utility/checkUniqueByKey.js';
+import { PreferencesContainer } from '../../extra/preferences/PreferencesContainer.js';
+import { useSettingImperativeHandle } from '../../extra/utilities/settingImperativeHandle.js';
 
-import { AnalysisTablePreferences } from './AnalysisTablePreferences';
-import LegendsPreferences from './LegendsPreferences';
-import MultipleAnalysisCodeEditor from './MultipleAnalysisCodeEditor';
+import { AnalysisTablePreferences } from './AnalysisTablePreferences.js';
+import LegendsPreferences from './LegendsPreferences.js';
+import MultipleAnalysisCodeEditor from './MultipleAnalysisCodeEditor.js';
 
 function getMultipleSpectraAnalysisData(
   preferences: MultipleSpectraAnalysisPreferencesInterface,

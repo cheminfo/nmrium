@@ -1,12 +1,12 @@
-import { Spectrum1D } from 'nmr-load-save';
-import { Filter } from 'nmr-processing';
+import type { Spectrum1D } from 'nmr-load-save';
+import type { Filter } from 'nmr-processing';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelect } from 'react-science/ui';
 
-import { useChartData } from '../../../../context/ChartContext';
-import { useDispatch } from '../../../../context/DispatchContext';
-import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsContext';
-import useSpectrum from '../../../../hooks/useSpectrum';
+import { useChartData } from '../../../../context/ChartContext.js';
+import { useDispatch } from '../../../../context/DispatchContext.js';
+import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsContext.js';
+import useSpectrum from '../../../../hooks/useSpectrum.js';
 
 type PhaseCorrectionTypes = 'manual' | 'automatic' | 'absolute';
 

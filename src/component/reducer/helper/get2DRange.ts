@@ -1,4 +1,4 @@
-import { get2DXScale, get2DYScale } from '../../2d/utilities/scale';
+import { get2DXScale, get2DYScale } from '../../2d/utilities/scale.js';
 
 export interface ZoneBoundary {
   startX: number;

@@ -1,8 +1,8 @@
-import lodashGet from 'lodash/get';
+import lodashGet from 'lodash/get.js';
 import { useMemo } from 'react';
 
-import { usePreferences } from '../context/PreferencesContext';
-import { formatNumber } from '../utility/formatNumber';
+import { usePreferences } from '../context/PreferencesContext.js';
+import { formatNumber } from '../utility/formatNumber.js';
 
 export type ReturnFunction = (
   value?: number | string,

@@ -1,25 +1,26 @@
 /** @jsxImportSource @emotion/react */
 
-import lodashGet from 'lodash/get';
-import { CSSProperties, useMemo, useCallback, MouseEvent } from 'react';
+import lodashGet from 'lodash/get.js';
+import type { CSSProperties, MouseEvent } from 'react';
+import { useCallback, useMemo } from 'react';
 
-import { buildID } from '../../../data/utilities/Concatenation';
-import {
-  Axis,
-  useAssignment,
+import { buildID } from '../../../data/utilities/Concatenation.js';
+import type {
   AssignmentsData,
-} from '../../assignment/AssignmentsContext';
-import { ContextMenu } from '../../elements/ContextMenuBluePrint';
-import { TableContextMenuProps } from '../../elements/ReactTable/ReactTable';
-import { useHighlight } from '../../highlight';
-import { usePanelPreferences } from '../../hooks/usePanelPreferences';
+  Axis,
+} from '../../assignment/AssignmentsContext.js';
+import { useAssignment } from '../../assignment/AssignmentsContext.js';
+import { ContextMenu } from '../../elements/ContextMenuBluePrint.js';
+import type { TableContextMenuProps } from '../../elements/ReactTable/ReactTable.js';
+import { useHighlight } from '../../highlight/index.js';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 
-import ActionsColumn from './TableColumns/ActionsColumn';
-import SignalAssignmentsColumns from './TableColumns/SignalAssignmentsColumns';
-import SignalDeltaColumn from './TableColumns/SignalDeltaColumn';
-import { ZoneAssignmentLabelColumn } from './TableColumns/ZoneAssignmentLabelColumn';
-import ZoneAssignmentsColumns from './TableColumns/ZoneAssignmentsColumns';
-import { ZoneData } from './hooks/useMapZones';
+import ActionsColumn from './TableColumns/ActionsColumn.js';
+import SignalAssignmentsColumns from './TableColumns/SignalAssignmentsColumns.js';
+import SignalDeltaColumn from './TableColumns/SignalDeltaColumn.js';
+import { ZoneAssignmentLabelColumn } from './TableColumns/ZoneAssignmentLabelColumn.js';
+import ZoneAssignmentsColumns from './TableColumns/ZoneAssignmentsColumns.js';
+import type { ZoneData } from './hooks/useMapZones.js';
 
 const HighlightedRowStyle: CSSProperties = { backgroundColor: '#ff6f0057' };
 

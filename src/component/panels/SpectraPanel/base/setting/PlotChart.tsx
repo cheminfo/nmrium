@@ -1,11 +1,5 @@
-import {
-  Axis,
-  Heading,
-  Legend,
-  LineSeries,
-  Plot,
-  SeriesPoint,
-} from 'react-plot';
+import type { SeriesPoint } from 'react-plot';
+import { Axis, Heading, Legend, LineSeries, Plot } from 'react-plot';
 
 interface PlotData {
   positive: SeriesPoint[];

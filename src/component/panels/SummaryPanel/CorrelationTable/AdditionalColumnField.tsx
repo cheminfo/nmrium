@@ -1,19 +1,21 @@
 import { v4 } from '@lukeed/uuid';
-import { buildLink, Correlation, Link } from 'nmr-correlation';
+import type { Correlation, Link } from 'nmr-correlation';
+import { buildLink } from 'nmr-correlation';
 import { useCallback, useMemo } from 'react';
 
-import { buildID } from '../../../../data/utilities/Concatenation';
-import { findRangeOrZoneID } from '../../../../data/utilities/FindUtilities';
-import { ContextMenu } from '../../../elements/ContextMenuBluePrint';
-import { useDialog } from '../../../elements/DialogManager';
-import { useHighlight } from '../../../highlight';
+import { buildID } from '../../../../data/utilities/Concatenation.js';
+import { findRangeOrZoneID } from '../../../../data/utilities/FindUtilities.js';
+import { ContextMenu } from '../../../elements/ContextMenuBluePrint.js';
+import { useDialog } from '../../../elements/DialogManager.js';
+import { useHighlight } from '../../../highlight/index.js';
 import {
   cloneCorrelationAndEditLink,
   getAbbreviation,
-} from '../utilities/Utilities';
-import useInView from '../utilities/useInView';
+} from '../utilities/Utilities.js';
+import useInView from '../utilities/useInView.js';
 
-import { EditLinkModal, EditLinkDialogData } from './editLink/EditLinkModal';
+import type { EditLinkDialogData } from './editLink/EditLinkModal.js';
+import { EditLinkModal } from './editLink/EditLinkModal.js';
 
 function getLinkText(link: Link) {
   const {

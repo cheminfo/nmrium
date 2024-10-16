@@ -1,9 +1,11 @@
-import { readFromWebSource, CustomWorkspaces } from 'nmr-load-save';
-import { useState, useEffect, useCallback } from 'react';
+import type { CustomWorkspaces } from 'nmr-load-save';
+import { readFromWebSource } from 'nmr-load-save';
+import { useCallback, useEffect, useState } from 'react';
 import { ObjectInspector } from 'react-inspector';
 
-import { NMRium, NMRiumWorkspace } from '../../component/main';
-import { PageConfig } from '../layouts/Main';
+import type { NMRiumWorkspace } from '../../component/main/index.js';
+import { NMRium } from '../../component/main/index.js';
+import type { PageConfig } from '../layouts/Main.js';
 
 async function loadFromURL(url: string) {
   const { pathname: relativePath, origin: baseURL } = new URL(url);

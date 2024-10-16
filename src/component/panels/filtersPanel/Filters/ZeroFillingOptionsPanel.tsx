@@ -1,15 +1,15 @@
 import { Switch } from '@blueprintjs/core';
 
-import Label from '../../../elements/Label';
-import { ReadOnly } from '../../../elements/ReadOnly';
-import { Sections } from '../../../elements/Sections';
-import { Select2Controller } from '../../../elements/Select2Controller';
+import Label from '../../../elements/Label.js';
+import { ReadOnly } from '../../../elements/ReadOnly.js';
+import { Sections } from '../../../elements/Sections.js';
+import { Select2Controller } from '../../../elements/Select2Controller.js';
 
-import { FilterActionButtons } from './FilterActionButtons';
-import { HeaderContainer, StickyHeader } from './InnerFilterHeader';
-import { useZeroFilling, zeroFillingSizes } from './hooks/useZeroFilling';
+import { FilterActionButtons } from './FilterActionButtons.js';
+import { HeaderContainer, StickyHeader } from './InnerFilterHeader.js';
+import { useZeroFilling, zeroFillingSizes } from './hooks/useZeroFilling.js';
 
-import { BaseFilterOptionsPanelProps } from '.';
+import type { BaseFilterOptionsPanelProps } from './index.js';
 
 export default function ZeroFillingOptionsPanel(
   props: BaseFilterOptionsPanelProps,

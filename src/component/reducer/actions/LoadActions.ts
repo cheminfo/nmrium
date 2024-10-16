@@ -1,23 +1,31 @@
-import { Draft, produce } from 'immer';
-import lodashMerge from 'lodash/merge';
-import lodashMergeWith from 'lodash/mergeWith';
-import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
-import { Spectrum, ViewState, NmriumState, SpectraColors } from 'nmr-load-save';
-import { ParseResult } from 'papaparse';
+import type { Draft } from 'immer';
+import { produce } from 'immer';
+import lodashMerge from 'lodash/merge.js';
+import lodashMergeWith from 'lodash/mergeWith.js';
+import type { CorrelationData } from 'nmr-correlation';
+import { buildCorrelationData } from 'nmr-correlation';
+import type {
+  NmriumState,
+  SpectraColors,
+  Spectrum,
+  ViewState,
+} from 'nmr-load-save';
+import type { ParseResult } from 'papaparse';
 
-import { initiateDatum1D } from '../../../data/data1d/Spectrum1D';
-import { initiateDatum2D } from '../../../data/data2d/Spectrum2D';
-import { StateMoleculeExtended } from '../../../data/molecules/Molecule';
-import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
-import { linkMetaWithSpectra } from '../../../data/parseMeta/linkMetaWithSpectra';
-import { UsedColors } from '../../../types/UsedColors';
-import { DefaultTolerance } from '../../panels/SummaryPanel/CorrelationTable/Constants';
-import { getDefaultViewState, getInitialState, State } from '../Reducer';
-import { ActionType } from '../types/ActionType';
+import { initiateDatum1D } from '../../../data/data1d/Spectrum1D/index.js';
+import { initiateDatum2D } from '../../../data/data2d/Spectrum2D/index.js';
+import type { StateMoleculeExtended } from '../../../data/molecules/Molecule.js';
+import * as MoleculeManager from '../../../data/molecules/MoleculeManager.js';
+import { linkMetaWithSpectra } from '../../../data/parseMeta/linkMetaWithSpectra.js';
+import type { UsedColors } from '../../../types/UsedColors.js';
+import { DefaultTolerance } from '../../panels/SummaryPanel/CorrelationTable/Constants.js';
+import type { State } from '../Reducer.js';
+import { getDefaultViewState, getInitialState } from '../Reducer.js';
+import type { ActionType } from '../types/ActionType.js';
 
-import { changeSpectrumVerticalAlignment } from './PreferencesActions';
-import { setSpectraMetaInfo } from './SpectraActions';
-import { setActiveTab } from './ToolsActions';
+import { changeSpectrumVerticalAlignment } from './PreferencesActions.js';
+import { setSpectraMetaInfo } from './SpectraActions.js';
+import { setActiveTab } from './ToolsActions.js';
 
 //TODO use viewState type instead of any { view?: ViewState }
 interface InitiateProps {

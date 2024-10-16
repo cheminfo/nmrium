@@ -1,6 +1,9 @@
-import { Draft } from 'immer';
+import type { Draft } from 'immer';
 
-import { PreferencesState, WorkspaceAction } from '../preferencesReducer';
+import type {
+  PreferencesState,
+  WorkspaceAction,
+} from '../preferencesReducer.js';
 
 export function removeWorkspace(
   draft: Draft<PreferencesState>,

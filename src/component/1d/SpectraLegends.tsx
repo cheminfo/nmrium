@@ -1,22 +1,22 @@
-import lodashGet from 'lodash/get';
+import lodashGet from 'lodash/get.js';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import {
-  Spectrum,
-  Spectrum1D,
+import type {
   JpathLegendField,
   LegendField,
   PredefinedLegendField,
+  Spectrum,
+  Spectrum1D,
 } from 'nmr-load-save';
-import { CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
 
-import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY';
-import { useMouseTracker } from '../EventsTrackers/MouseTracker';
-import { useChartData } from '../context/ChartContext';
-import { useScale } from '../context/ScaleContext';
-import { SVGGroup } from '../elements/SVGGroup';
-import { useActiveSpectra } from '../hooks/useActiveSpectra';
-import { usePanelPreferences } from '../hooks/usePanelPreferences';
-import { convertPathArrayToString } from '../utility/convertPathArrayToString';
+import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY.js';
+import { useMouseTracker } from '../EventsTrackers/MouseTracker.js';
+import { useChartData } from '../context/ChartContext.js';
+import { useScale } from '../context/ScaleContext.js';
+import { SVGGroup } from '../elements/SVGGroup.js';
+import { useActiveSpectra } from '../hooks/useActiveSpectra.js';
+import { usePanelPreferences } from '../hooks/usePanelPreferences.js';
+import { convertPathArrayToString } from '../utility/convertPathArrayToString.js';
 
 const styles: Record<'text' | 'colorIndicator', CSSProperties> = {
   text: {

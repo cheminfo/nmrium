@@ -1,4 +1,4 @@
-import { OptionProps } from '@blueprintjs/core';
+import type { OptionProps } from '@blueprintjs/core';
 
 export const MODES: Array<OptionProps<string>> = [
   {

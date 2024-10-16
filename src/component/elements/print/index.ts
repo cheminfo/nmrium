@@ -1,2 +1,2 @@
-export * from './PrintContent';
-export * from './PrintProvider';
+export * from './PrintContent.js';
+export * from './PrintProvider.js';

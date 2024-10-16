@@ -1,12 +1,12 @@
-import { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from 'nmr-load-save';
 
-import { useChartData } from '../../context/ChartContext';
-import { useScale } from '../../context/ScaleContext';
-import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
-import { useActiveSpectrumPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState';
-import useSpectrum from '../../hooks/useSpectrum';
+import { useChartData } from '../../context/ChartContext.js';
+import { useScale } from '../../context/ScaleContext.js';
+import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.js';
+import { useActiveSpectrumPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState.js';
+import useSpectrum from '../../hooks/useSpectrum.js';
 
-import { usePeakShapesPath } from './usePeakShapesPath';
+import { usePeakShapesPath } from './usePeakShapesPath.js';
 
 const emptyData = { peaks: {}, display: {} };
 

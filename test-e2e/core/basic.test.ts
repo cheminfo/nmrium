@@ -1,6 +1,6 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
-import NmriumPage from '../NmriumPage';
+import NmriumPage from '../NmriumPage/index.js';
 
 test('should load and display the 1D and 2D spectrum', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);

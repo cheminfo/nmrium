@@ -1,14 +1,13 @@
-import { CSSProperties, Fragment, ReactNode, useState } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
+import { Fragment, useState } from 'react';
 import { FaFilter, FaRegTrashAlt } from 'react-icons/fa';
-import {
-  Toolbar,
-  ToolbarItemProps as BaseToolbarItemProps,
-} from 'react-science/ui';
+import type { ToolbarItemProps as BaseToolbarItemProps } from 'react-science/ui';
+import { Toolbar } from 'react-science/ui';
 
-import { CounterLabel } from '../../elements/CounterLabel';
-import { PreferencesButton } from '../../elements/PreferencesButton';
+import { CounterLabel } from '../../elements/CounterLabel.js';
+import { PreferencesButton } from '../../elements/PreferencesButton.js';
 
-import PanelHeader from './PanelHeader';
+import PanelHeader from './PanelHeader.js';
 
 const styles: Record<'leftContainer', CSSProperties> = {
   leftContainer: {
@@ -92,7 +91,7 @@ function DefaultPanelHeader(props: DefaultPanelHeaderProps) {
   return (
     <PanelHeader {...{ style, className }}>
       <div style={styles.leftContainer}>
-        <Toolbar>
+        <Toolbar minimal>
           {onDelete && (
             <Toolbar.Item
               id="delete-button"
@@ -118,7 +117,7 @@ function DefaultPanelHeader(props: DefaultPanelHeaderProps) {
         {children}
       </div>
 
-      <Toolbar>{mapToolbarButtons(rightButtons)}</Toolbar>
+      <Toolbar minimal>{mapToolbarButtons(rightButtons)}</Toolbar>
       {!hideCounter && (
         <CounterLabel value={formatCounterLabel(counter, total)} />
       )}

@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { FallbackProps } from 'react-error-boundary';
+import type { FallbackProps } from 'react-error-boundary';
 
 const WrongP = styled.p`
   background-color: white;

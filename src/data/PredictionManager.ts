@@ -1,31 +1,33 @@
 import { v4 } from '@lukeed/uuid';
-import { Logger } from 'cheminfo-types';
+import type { Logger } from 'cheminfo-types';
 import { xMinMaxValues } from 'ml-spectra-processing';
-import { Spectrum } from 'nmr-load-save';
-import {
-  Signal2D,
-  Zone,
-  predict,
-  signalsToXY,
-  signals2DToZ,
-  getFrequency,
+import type { Spectrum } from 'nmr-load-save';
+import type {
   Predicted,
-  signalsToRanges,
   Prediction1D,
   Prediction2D,
   PredictionBase1D,
   PredictionBase2D,
+  Signal2D,
+  Zone,
+} from 'nmr-processing';
+import {
+  getFrequency,
+  predict,
+  signals2DToZ,
+  signalsToRanges,
+  signalsToXY,
 } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 
-import { DATUM_KIND } from './constants/signalsKinds';
+import { DATUM_KIND } from './constants/signalsKinds.js';
 import {
   initiateDatum1D,
   mapRanges,
   updateIntegralsRelativeValues,
-} from './data1d/Spectrum1D';
-import { initiateDatum2D } from './data2d/Spectrum2D';
-import { adjustAlpha } from './utilities/generateColor';
+} from './data1d/Spectrum1D/index.js';
+import { initiateDatum2D } from './data2d/Spectrum2D/index.js';
+import { adjustAlpha } from './utilities/generateColor.js';
 
 export type Experiment = 'proton' | 'carbon' | 'cosy' | 'hsqc' | 'hmbc';
 export type SpectraPredictionOptions = Record<Experiment, boolean>;

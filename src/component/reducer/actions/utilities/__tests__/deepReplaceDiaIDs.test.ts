@@ -4,7 +4,7 @@ import path from 'node:path';
 import { produce } from 'immer';
 import { describe, it, expect } from 'vitest';
 
-import { deepReplaceDiaIDs } from '../deepReplaceDiaIDs';
+import { deepReplaceDiaIDs } from '../deepReplaceDiaIDs.js';
 
 describe('deepReplaceDiaIDs', () => {
   it('basic case', () => {

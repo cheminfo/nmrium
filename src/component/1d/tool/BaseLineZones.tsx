@@ -1,11 +1,11 @@
-import { BaselineCorrectionZone } from 'nmr-processing';
+import type { BaselineCorrectionZone } from 'nmr-processing';
 
-import { useChartData } from '../../context/ChartContext';
-import { useDispatch } from '../../context/DispatchContext';
-import { useScaleChecked } from '../../context/ScaleContext';
-import { ResizerWithScale } from '../../elements/ResizerWithScale';
-import { useHighlight } from '../../highlight';
-import { useResizerStatus } from '../../hooks/useResizerStatus';
+import { useChartData } from '../../context/ChartContext.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { useScaleChecked } from '../../context/ScaleContext.js';
+import { ResizerWithScale } from '../../elements/ResizerWithScale.js';
+import { useHighlight } from '../../highlight/index.js';
+import { useResizerStatus } from '../../hooks/useResizerStatus.js';
 
 function BaseLineZones() {
   const {

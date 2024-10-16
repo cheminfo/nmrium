@@ -1,9 +1,10 @@
 import { fileCollectionFromWebSource } from 'filelist-utils';
 import { read } from 'nmr-load-save';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-import BaseView, { BaseViewProps } from './BaseView';
-import { Loading } from './Loading';
+import type { BaseViewProps } from './BaseView.js';
+import BaseView from './BaseView.js';
+import { Loading } from './Loading.js';
 
 export async function loadData(file) {
   const response = await fetch(file);

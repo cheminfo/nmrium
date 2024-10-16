@@ -1,10 +1,10 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 
-import { test, expect } from 'vitest';
+import { expect, test } from 'vitest';
 
-import { addJcamp } from '../../SpectraManager';
-import { drawContours } from '../Spectrum2D/contours';
+import { addJcamp } from '../../SpectraManager.js';
+import { drawContours } from '../Spectrum2D/contours.js';
 
 test('Datum2D', () => {
   const jcamp = readFileSync(path.join(__dirname, './data/cosy.jdx'), 'utf8');

@@ -1,6 +1,7 @@
 import { createContext, useContext } from 'react';
 
-import { scaleInitialState, ScaleState } from '../reducer/scaleReducer';
+import type { ScaleState } from '../reducer/scaleReducer.js';
+import { scaleInitialState } from '../reducer/scaleReducer.js';
 
 export const scaleContext = createContext<ScaleState>(scaleInitialState);
 export const ScaleProvider = scaleContext.Provider;

@@ -1,45 +1,48 @@
 import { v4 } from '@lukeed/uuid';
 import { zoomIdentity } from 'd3';
-import { Draft } from 'immer';
-import { Spectrum, Spectrum1D, Spectrum2D } from 'nmr-load-save';
-import { BaselineCorrectionZone } from 'nmr-processing';
+import type { Draft } from 'immer';
+import type { Spectrum, Spectrum1D, Spectrum2D } from 'nmr-load-save';
+import type { BaselineCorrectionZone } from 'nmr-processing';
 
-import { contoursManager } from '../../../data/data2d/Spectrum2D/contours';
-import { Nucleus } from '../../../data/types/common/Nucleus';
-import { getYScale, getXScale } from '../../1d/utilities/scale';
-import { LAYOUT, Layout } from '../../2d/utilities/DimensionLayout';
-import { get2DXScale, get2DYScale } from '../../2d/utilities/scale';
-import { ZoomOptions } from '../../EventsTrackers/BrushTracker';
-import { Tool, options as Tools } from '../../toolbar/ToolTypes';
-import groupByInfoKey from '../../utility/GroupByInfoKey';
-import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
-import { State } from '../Reducer';
-import { MARGIN } from '../core/Constants';
+import { contoursManager } from '../../../data/data2d/Spectrum2D/contours.js';
+import type { Nucleus } from '../../../data/types/common/Nucleus.js';
+import { getYScale, getXScale } from '../../1d/utilities/scale.js';
+import type { Layout } from '../../2d/utilities/DimensionLayout.js';
+import { LAYOUT } from '../../2d/utilities/DimensionLayout.js';
+import { get2DXScale, get2DYScale } from '../../2d/utilities/scale.js';
+import type { ZoomOptions } from '../../EventsTrackers/BrushTracker.js';
+import type { Tool } from '../../toolbar/ToolTypes.js';
+import { options as Tools } from '../../toolbar/ToolTypes.js';
+import groupByInfoKey from '../../utility/GroupByInfoKey.js';
+import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus.js';
+import type { State } from '../Reducer.js';
+import { MARGIN } from '../core/Constants.js';
+import type { ZoomType } from '../helper/Zoom1DManager.js';
 import {
   setZoom,
   toScaleRatio,
   wheelZoom,
   ZOOM_TYPES,
-  ZoomType,
-} from '../helper/Zoom1DManager';
+} from '../helper/Zoom1DManager.js';
 import zoomHistoryManager, {
   addToBrushHistory,
-} from '../helper/ZoomHistoryManager';
-import { getActiveSpectra } from '../helper/getActiveSpectra';
-import { getActiveSpectrum } from '../helper/getActiveSpectrum';
-import { getTwoDimensionPhaseCorrectionOptions } from '../helper/getTwoDimensionPhaseCorrectionOptions';
-import { getVerticalAlign } from '../helper/getVerticalAlign';
-import { setIntegralsViewProperty } from '../helper/setIntegralsViewProperty';
-import { setRangesViewProperty } from '../helper/setRangesViewProperty';
-import { ActionType } from '../types/ActionType';
+} from '../helper/ZoomHistoryManager.js';
+import { getActiveSpectra } from '../helper/getActiveSpectra.js';
+import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
+import { getTwoDimensionPhaseCorrectionOptions } from '../helper/getTwoDimensionPhaseCorrectionOptions.js';
+import { getVerticalAlign } from '../helper/getVerticalAlign.js';
+import { setIntegralsViewProperty } from '../helper/setIntegralsViewProperty.js';
+import { setRangesViewProperty } from '../helper/setRangesViewProperty.js';
+import type { ActionType } from '../types/ActionType.js';
 
-import { setDomain, SetDomainOptions, setMode } from './DomainActions';
+import type { SetDomainOptions } from './DomainActions.js';
+import { setDomain, setMode } from './DomainActions.js';
+import type { RollbackSpectrumOptions } from './FiltersActions.js';
 import {
-  RollbackSpectrumOptions,
   calculateBaseLineCorrection,
   rollbackSpectrum,
-} from './FiltersActions';
-import { changeSpectrumVerticalAlignment } from './PreferencesActions';
+} from './FiltersActions.js';
+import { changeSpectrumVerticalAlignment } from './PreferencesActions.js';
 
 interface BrushBoundary {
   startX: number;

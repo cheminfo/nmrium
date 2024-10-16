@@ -43,7 +43,7 @@ function AboutSpectrumSimulationModal() {
   const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
   return (
     <>
-      <Toolbar>
+      <Toolbar minimal>
         <Toolbar.Item
           onClick={openDialog}
           tooltip="About prediction"

@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { getCorrelationDelta, Correlation, Link } from 'nmr-correlation';
+import type { Correlation, Link } from 'nmr-correlation';
+import { getCorrelationDelta } from 'nmr-correlation';
 import { useCallback, useState } from 'react';
 
-import Select from '../../../../elements/Select';
+import Select from '../../../../elements/Select.js';
 
 const moveLinkStyles = css`
   width: 100%;

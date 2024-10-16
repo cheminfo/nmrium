@@ -1,15 +1,15 @@
-import { NmrData1D } from 'cheminfo-types';
-import {
+import type { NmrData1D } from 'cheminfo-types';
+import type {
   Filter,
   ZeroFillingOptions as BaseZeroFillingOptions,
 } from 'nmr-processing';
 import { useCallback, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 
-import generateNumbersPowerOfX from '../../../../../data/utilities/generateNumbersPowerOfX';
-import { useDispatch } from '../../../../context/DispatchContext';
-import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsContext';
-import useSpectrum from '../../../../hooks/useSpectrum';
+import generateNumbersPowerOfX from '../../../../../data/utilities/generateNumbersPowerOfX.js';
+import { useDispatch } from '../../../../context/DispatchContext.js';
+import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsContext.js';
+import useSpectrum from '../../../../hooks/useSpectrum.js';
 
 export type ZeroFillingOptions = BaseZeroFillingOptions & {
   livePreview: boolean;

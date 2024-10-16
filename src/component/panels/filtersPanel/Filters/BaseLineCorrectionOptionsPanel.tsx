@@ -1,20 +1,21 @@
 import { Button, Switch } from '@blueprintjs/core';
 import { Select } from '@blueprintjs/select';
 
-import Label from '../../../elements/Label';
-import { NumberInput2Controller } from '../../../elements/NumberInput2Controller';
-import { ReadOnly } from '../../../elements/ReadOnly';
-import { Sections } from '../../../elements/Sections';
+import Label from '../../../elements/Label.js';
+import { NumberInput2Controller } from '../../../elements/NumberInput2Controller.js';
+import { ReadOnly } from '../../../elements/ReadOnly.js';
+import { Sections } from '../../../elements/Sections.js';
 
-import { FilterActionButtons } from './FilterActionButtons';
-import { HeaderContainer, StickyHeader } from './InnerFilterHeader';
+import { FilterActionButtons } from './FilterActionButtons.js';
+import { HeaderContainer, StickyHeader } from './InnerFilterHeader.js';
 import {
   baselineCorrectionsAlgorithms,
   getBaselineData,
   useBaselineCorrection,
-} from './hooks/useBaselineCorrection';
+} from './hooks/useBaselineCorrection.js';
 
-import { BaseFilterOptionsPanelProps, formLabelStyle } from '.';
+import type { BaseFilterOptionsPanelProps } from './index.js';
+import { formLabelStyle } from './index.js';
 
 export default function BaseLineCorrectionOptionsPanel(
   props: BaseFilterOptionsPanelProps,

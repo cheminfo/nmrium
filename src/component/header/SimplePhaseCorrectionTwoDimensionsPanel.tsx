@@ -1,23 +1,22 @@
 /** @jsxImportSource @emotion/react */
 import { Select } from '@blueprintjs/select';
-import { css } from '@emotion/react';
 import { Filters } from 'nmr-processing';
 import { FaRulerHorizontal, FaRulerVertical } from 'react-icons/fa';
 import { MdLooksTwo } from 'react-icons/md';
 import { Button, Toolbar } from 'react-science/ui';
 
-import ActionButtons from '../elements/ActionButtons';
-import InputRange from '../elements/InputRange';
-import Label from '../elements/Label';
-import { useFilter } from '../hooks/useFilter';
+import ActionButtons from '../elements/ActionButtons.js';
+import InputRange from '../elements/InputRange.js';
+import Label from '../elements/Label.js';
+import { useFilter } from '../hooks/useFilter.js';
+import type { AlgorithmItem } from '../panels/filtersPanel/Filters/hooks/usePhaseCorrectionTwoDimensions.js';
 import {
   phaseCorrectionalAlgorithms,
   usePhaseCorrectionTwoDimensions,
-  AlgorithmItem,
-} from '../panels/filtersPanel/Filters/hooks/usePhaseCorrectionTwoDimensions';
+} from '../panels/filtersPanel/Filters/hooks/usePhaseCorrectionTwoDimensions.js';
 
-import { headerLabelStyle } from './Header';
-import { HeaderWrapper } from './HeaderWrapper';
+import { headerLabelStyle } from './Header.js';
+import { HeaderWrapper } from './HeaderWrapper.js';
 
 export function SimplePhaseCorrectionTwoDimensionsPanel() {
   const filter = useFilter(Filters.phaseCorrectionTwoDimensions.id);
@@ -53,20 +52,14 @@ export function SimplePhaseCorrectionTwoDimensionsPanel() {
       {phaseCorrectionSelectItem?.value === 'manual' && (
         <>
           <Label title="Direction:" style={headerLabelStyle}>
-            <Toolbar>
+            <Toolbar minimal>
               <Toolbar.Item
-                css={css`
-                  border: 1px solid #f7f7f7;
-                `}
                 tooltip="Horizontal"
                 icon={<FaRulerHorizontal />}
                 active={activeTraceDirection === 'horizontal'}
                 onClick={() => onChangeHandler('horizontal')}
               />
               <Toolbar.Item
-                css={css`
-                  border: 1px solid #f7f7f7;
-                `}
                 tooltip="Vertical"
                 icon={<FaRulerVertical />}
                 active={activeTraceDirection === 'vertical'}
@@ -75,7 +68,7 @@ export function SimplePhaseCorrectionTwoDimensionsPanel() {
             </Toolbar>
           </Label>
           <div style={{ paddingRight: '5px' }}>
-            <Toolbar>
+            <Toolbar minimal>
               <Toolbar.Item
                 tooltip="Add the trace in both directions"
                 icon={<MdLooksTwo />}

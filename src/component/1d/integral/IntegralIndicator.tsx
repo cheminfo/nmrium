@@ -1,7 +1,7 @@
-import { CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
 
-import { useChartData } from '../../context/ChartContext';
-import { formatNumber } from '../../utility/formatNumber';
+import { useChartData } from '../../context/ChartContext.js';
+import { formatNumber } from '../../utility/formatNumber.js';
 
 interface IntegralIndicatorProps {
   value: number | undefined;

@@ -1,2 +1,2 @@
-export * from './ExportContent';
-export * from './ExportSettingsProvider';
+export * from './ExportContent.js';
+export * from './ExportSettingsProvider.js';

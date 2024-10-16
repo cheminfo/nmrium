@@ -2,9 +2,11 @@
 
 import { FormGroup } from '@blueprintjs/core';
 import { css } from '@emotion/react';
-import { Controller, ControllerProps, FieldValues } from 'react-hook-form';
+import type { ControllerProps, FieldValues } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 
-import { Input2, Input2Props } from './Input2';
+import type { Input2Props } from './Input2.js';
+import { Input2 } from './Input2.js';
 
 export interface InputMapValueFunctions {
   mapOnChangeValue?: (value: string) => any;

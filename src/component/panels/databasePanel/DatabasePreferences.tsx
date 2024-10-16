@@ -1,15 +1,15 @@
-import { useEffect, useCallback, forwardRef } from 'react';
+import { forwardRef, useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { usePreferences } from '../../context/PreferencesContext';
-import { ColorPickerDropdownController } from '../../elements/ColorPickerDropdownController';
-import { FormatField, fieldLabelStyle } from '../../elements/FormatField';
-import Label from '../../elements/Label';
-import { NumberInput2Controller } from '../../elements/NumberInput2Controller';
-import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
-import { PreferencesGroup } from '../extra/preferences/PreferencesGroup';
-import { useSettingImperativeHandle } from '../extra/utilities/settingImperativeHandle';
+import { usePreferences } from '../../context/PreferencesContext.js';
+import { ColorPickerDropdownController } from '../../elements/ColorPickerDropdownController.js';
+import { fieldLabelStyle, FormatField } from '../../elements/FormatField.js';
+import Label from '../../elements/Label.js';
+import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
+import { PreferencesContainer } from '../extra/preferences/PreferencesContainer.js';
+import { PreferencesGroup } from '../extra/preferences/PreferencesGroup.js';
+import { useSettingImperativeHandle } from '../extra/utilities/settingImperativeHandle.js';
 
 function DatabasePreferences(props, ref) {
   const preferences = usePreferences();

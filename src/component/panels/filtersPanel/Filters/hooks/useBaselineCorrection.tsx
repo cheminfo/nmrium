@@ -1,12 +1,12 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Filter, BaselineCorrectionOptions } from 'nmr-processing';
+import type { Filter, BaselineCorrectionOptions } from 'nmr-processing';
 import { useCallback, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelect } from 'react-science/ui';
 import * as Yup from 'yup';
 
-import { useDispatch } from '../../../../context/DispatchContext';
-import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsContext';
+import { useDispatch } from '../../../../context/DispatchContext.js';
+import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsContext.js';
 
 export const baselineCorrectionsAlgorithms = ['airPLS', 'Polynomial'].map(
   (val) => ({

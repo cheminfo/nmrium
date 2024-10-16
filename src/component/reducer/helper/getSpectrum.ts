@@ -1,8 +1,8 @@
-import { Draft } from 'immer';
+import type { Draft } from 'immer';
 
-import { State } from '../Reducer';
+import type { State } from '../Reducer.js';
 
-import { getActiveSpectrum } from './getActiveSpectrum';
+import { getActiveSpectrum } from './getActiveSpectrum.js';
 
 export function getSpectrum(state: Draft<State>);
 export function getSpectrum(state: Draft<State>, index: number);

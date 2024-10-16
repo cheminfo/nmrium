@@ -1,8 +1,8 @@
-import lodashGet from 'lodash/get';
-import { Spectrum } from 'nmr-load-save';
-import { ParseResult } from 'papaparse';
+import lodashGet from 'lodash/get.js';
+import type { Spectrum } from 'nmr-load-save';
+import type { ParseResult } from 'papaparse';
 
-import { prepareKey } from './prepareKey';
+import { prepareKey } from './prepareKey.js';
 
 interface CompareResultItem {
   key: string;

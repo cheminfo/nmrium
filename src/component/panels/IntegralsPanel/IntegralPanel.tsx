@@ -1,26 +1,26 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { SvgNmrIntegrate } from 'cheminfo-font';
-import lodashGet from 'lodash/get';
-import { Spectrum1D } from 'nmr-load-save';
-import { Info1D, Integrals } from 'nmr-processing';
-import { useCallback, useMemo, useState, useRef, memo } from 'react';
+import lodashGet from 'lodash/get.js';
+import type { Spectrum1D } from 'nmr-load-save';
+import type { Info1D, Integrals } from 'nmr-processing';
+import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { ImLink } from 'react-icons/im';
 
-import { useChartData } from '../../context/ChartContext';
-import { useDispatch } from '../../context/DispatchContext';
-import { useAlert } from '../../elements/Alert';
-import { useActiveSpectrumIntegralsViewState } from '../../hooks/useActiveSpectrumIntegralsViewState';
-import useSpectrum from '../../hooks/useSpectrum';
-import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
-import { booleanToString } from '../../utility/booleanToString';
-import { tablePanelStyle } from '../extra/BasicPanelStyle';
-import { SettingsRef } from '../extra/utilities/settingImperativeHandle';
-import DefaultPanelHeader from '../header/DefaultPanelHeader';
-import PreferencesHeader from '../header/PreferencesHeader';
+import { useChartData } from '../../context/ChartContext.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { useAlert } from '../../elements/Alert.js';
+import { useActiveSpectrumIntegralsViewState } from '../../hooks/useActiveSpectrumIntegralsViewState.js';
+import useSpectrum from '../../hooks/useSpectrum.js';
+import ChangeSumModal from '../../modal/changeSum/ChangeSumModal.js';
+import { booleanToString } from '../../utility/booleanToString.js';
+import { tablePanelStyle } from '../extra/BasicPanelStyle.js';
+import type { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
+import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
+import PreferencesHeader from '../header/PreferencesHeader.js';
 
-import IntegralTable from './IntegralTable';
-import IntegralsPreferences from './IntegralsPreferences';
+import IntegralTable from './IntegralTable.js';
+import IntegralsPreferences from './IntegralsPreferences.js';
 
 export interface IntegralPanelInnerProps {
   integrals: Integrals;

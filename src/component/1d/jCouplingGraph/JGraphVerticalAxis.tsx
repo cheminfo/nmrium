@@ -1,7 +1,7 @@
-import { useChartData } from '../../context/ChartContext';
-import { LinearVerticalAxis } from '../../elements/linearAxis/LinearVerticalAxis';
+import { useChartData } from '../../context/ChartContext.js';
+import { LinearVerticalAxis } from '../../elements/linearAxis/LinearVerticalAxis.js';
 
-import { useJGraph } from './JGraphContext';
+import { useJGraph } from './JGraphContext.js';
 
 export function JGraphVerticalAxis() {
   const { width, margin } = useChartData();

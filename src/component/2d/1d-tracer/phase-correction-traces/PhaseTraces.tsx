@@ -1,8 +1,8 @@
-import { useChartData } from '../../../context/ChartContext';
-import { useActiveSpectrum } from '../../../hooks/useActiveSpectrum';
+import { useChartData } from '../../../context/ChartContext.js';
+import { useActiveSpectrum } from '../../../hooks/useActiveSpectrum.js';
 
-import { PhaseTraceWithMouse } from './PhaseTraceWithMouse';
-import { SpectraPhaseTraces } from './SpectraPhaseTraces';
+import { PhaseTraceWithMouse } from './PhaseTraceWithMouse.js';
+import { SpectraPhaseTraces } from './SpectraPhaseTraces.js';
 
 export function PhaseTraces() {
   const { width, height, margin, displayerKey } = useChartData();

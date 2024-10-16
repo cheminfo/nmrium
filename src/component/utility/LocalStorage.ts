@@ -1,5 +1,5 @@
-import lodashGet from 'lodash/get';
-import lodashSet from 'lodash/set';
+import lodashGet from 'lodash/get.js';
+import lodashSet from 'lodash/set.js';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 export function useStateWithLocalStorage(localStorageKey, key?: string) {

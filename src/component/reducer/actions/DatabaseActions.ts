@@ -1,23 +1,23 @@
-import { Draft } from 'immer';
-import { Spectrum, Spectrum1D } from 'nmr-load-save';
-import { DatabaseNMREntry, Info1D } from 'nmr-processing';
+import type { Draft } from 'immer';
+import type { Spectrum, Spectrum1D } from 'nmr-load-save';
+import type { DatabaseNMREntry, Info1D } from 'nmr-processing';
 
 import {
   get1DColor,
   isSpectrum1D,
   mapRanges,
-} from '../../../data/data1d/Spectrum1D';
+} from '../../../data/data1d/Spectrum1D/index.js';
 import {
   resurrectSpectrumFromRanges,
   resurrectSpectrumFromSignals,
-} from '../../../data/data1d/Spectrum1D/ranges/resurrectSpectrum';
-import { State } from '../Reducer';
-import { setZoom } from '../helper/Zoom1DManager';
-import zoomHistoryManager from '../helper/ZoomHistoryManager';
-import { getSpectrum } from '../helper/getSpectrum';
-import { ActionType } from '../types/ActionType';
+} from '../../../data/data1d/Spectrum1D/ranges/resurrectSpectrum.js';
+import type { State } from '../Reducer.js';
+import { setZoom } from '../helper/Zoom1DManager.js';
+import zoomHistoryManager from '../helper/ZoomHistoryManager.js';
+import { getSpectrum } from '../helper/getSpectrum.js';
+import type { ActionType } from '../types/ActionType.js';
 
-import { setDomain } from './DomainActions';
+import { setDomain } from './DomainActions.js';
 
 interface BaseResurrectSpectrum {
   databaseEntry: DatabaseNMREntry;

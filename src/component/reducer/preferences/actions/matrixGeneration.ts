@@ -1,15 +1,15 @@
 import { v4 } from '@lukeed/uuid';
-import { Draft } from 'immer';
-import { MatrixGenerationOptions } from 'nmr-load-save';
+import type { Draft } from 'immer';
+import type { MatrixGenerationOptions } from 'nmr-load-save';
 
-import { MatrixOptions } from '../../../../data/types/data1d/MatrixOptions';
-import { ZoomOptions } from '../../../EventsTrackers/BrushTracker';
-import { FilterType } from '../../../utility/filterType';
-import { toScaleRatio } from '../../helper/Zoom1DManager';
-import { ActionType } from '../../types/ActionType';
-import { getMatrixGenerationDefaultOptions } from '../panelsPreferencesDefaultValues';
-import { PreferencesState } from '../preferencesReducer';
-import { getActiveWorkspace } from '../utilities/getActiveWorkspace';
+import type { MatrixOptions } from '../../../../data/types/data1d/MatrixOptions.js';
+import type { ZoomOptions } from '../../../EventsTrackers/BrushTracker.js';
+import type { FilterType } from '../../../utility/filterType.js';
+import { toScaleRatio } from '../../helper/Zoom1DManager.js';
+import type { ActionType } from '../../types/ActionType.js';
+import { getMatrixGenerationDefaultOptions } from '../panelsPreferencesDefaultValues.js';
+import type { PreferencesState } from '../preferencesReducer.js';
+import { getActiveWorkspace } from '../utilities/getActiveWorkspace.js';
 
 type setMatrixGenerationOptionsAction = ActionType<
   'SET_MATRIX_GENERATION_OPTIONS',

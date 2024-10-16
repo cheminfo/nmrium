@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-import { Sections } from '../../../elements/Sections';
+import { Sections } from '../../../elements/Sections.js';
 
 export const StickyHeader = styled(Sections.Header)`
   position: sticky;

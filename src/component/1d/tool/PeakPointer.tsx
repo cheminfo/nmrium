@@ -1,13 +1,13 @@
-import { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from 'nmr-load-save';
 
-import { useBrushTracker } from '../../EventsTrackers/BrushTracker';
-import { useMouseTracker } from '../../EventsTrackers/MouseTracker';
-import { useChartData } from '../../context/ChartContext';
-import { useScaleChecked } from '../../context/ScaleContext';
-import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
-import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus';
-import { options } from '../../toolbar/ToolTypes';
-import { getClosePeak } from '../../utility/getClosePeak';
+import { useBrushTracker } from '../../EventsTrackers/BrushTracker.js';
+import { useMouseTracker } from '../../EventsTrackers/MouseTracker.js';
+import { useChartData } from '../../context/ChartContext.js';
+import { useScaleChecked } from '../../context/ScaleContext.js';
+import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.js';
+import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus.js';
+import { options } from '../../toolbar/ToolTypes.js';
+import { getClosePeak } from '../../utility/getClosePeak.js';
 
 const styles = {
   radius: 10,

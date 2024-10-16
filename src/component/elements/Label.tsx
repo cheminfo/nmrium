@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import React, { CSSProperties, ReactNode } from 'react';
+import type { CSSProperties, LabelHTMLAttributes, ReactNode } from 'react';
 
-import Button from './Button';
+import Button from './Button.js';
 
 export interface LabelStyle {
   label?: CSSProperties;
@@ -10,7 +10,7 @@ export interface LabelStyle {
   container?: CSSProperties;
 }
 interface LabelProps
-  extends Omit<React.LabelHTMLAttributes<HTMLLabelElement>, 'style'> {
+  extends Omit<LabelHTMLAttributes<HTMLLabelElement>, 'style'> {
   title: string;
   renderTitle?: (title: string) => ReactNode;
   shortTitle?: string;

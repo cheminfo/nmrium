@@ -1,9 +1,12 @@
-import { Button, ButtonProps } from '@blueprintjs/core';
-import { Select, SelectProps } from '@blueprintjs/select';
-import { forwardRef, ForwardedRef, ReactNode, useEffect } from 'react';
+import type { ButtonProps } from '@blueprintjs/core';
+import { Button } from '@blueprintjs/core';
+import type { SelectProps } from '@blueprintjs/select';
+import { Select } from '@blueprintjs/select';
+import type { ForwardedRef, ReactNode } from 'react';
+import { forwardRef, useEffect } from 'react';
 import { useSelect } from 'react-science/ui';
 
-import { FilterType } from '../utility/filterType';
+import type { FilterType } from '../utility/filterType.js';
 
 interface ItemOptions<T> {
   renderItem?: (item: T) => ReactNode;

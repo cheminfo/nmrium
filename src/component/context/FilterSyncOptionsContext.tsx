@@ -1,4 +1,5 @@
-import React, {
+import type { ReactNode } from 'react';
+import {
   createContext,
   useCallback,
   useContext,
@@ -68,7 +69,7 @@ export function useSyncedFilterOptions(onWatch: (options: any) => void) {
 export function FilterSyncOptionsProvider({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   const [sharedFilterOptions, updateFilterOptions] = useState<unknown | null>(
     null,

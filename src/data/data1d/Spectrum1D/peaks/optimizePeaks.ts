@@ -1,6 +1,7 @@
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import { Spectrum1D } from 'nmr-load-save';
-import { Peak1D, xyPeaksOptimization, mapPeaks } from 'nmr-processing';
+import type { Spectrum1D } from 'nmr-load-save';
+import type { Peak1D } from 'nmr-processing';
+import { mapPeaks, xyPeaksOptimization } from 'nmr-processing';
 
 interface OptimizePeaksOptions {
   from: number;

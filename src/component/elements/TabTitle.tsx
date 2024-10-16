@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
-import { Button, ButtonProps, Popover } from '@blueprintjs/core';
+import type { ButtonProps } from '@blueprintjs/core';
+import { Button, Popover } from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 interface TabTitleProps {
   onDelete?: ButtonProps['onClick'];

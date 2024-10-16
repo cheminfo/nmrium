@@ -1,9 +1,10 @@
-import { Menu, MenuItem, MenuItemProps } from '@blueprintjs/core';
-import {
-  Toolbar,
+import type { MenuItemProps } from '@blueprintjs/core';
+import { Menu, MenuItem } from '@blueprintjs/core';
+import type {
   ToolbarPopoverItemProps as BaseToolbarPopoverItemProps,
   ToolbarItemProps,
 } from 'react-science/ui';
+import { Toolbar } from 'react-science/ui';
 
 export interface ToolbarPopoverMenuItem<T = object> extends MenuItemProps {
   data?: T;

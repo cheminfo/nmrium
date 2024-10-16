@@ -1,9 +1,10 @@
-import { Draft } from 'immer';
+import type { Draft } from 'immer';
 
-import type { NMRiumWorkspace } from '../../../main';
-import { PreferencesState, WORKSPACES_KEYS } from '../preferencesReducer';
-import { initWorkspace } from '../utilities/initWorkspace';
-import { mapWorkspaces } from '../utilities/mapWorkspaces';
+import type { NMRiumWorkspace } from '../../../main/index.js';
+import type { PreferencesState } from '../preferencesReducer.js';
+import { WORKSPACES_KEYS } from '../preferencesReducer.js';
+import { initWorkspace } from '../utilities/initWorkspace.js';
+import { mapWorkspaces } from '../utilities/mapWorkspaces.js';
 
 function getWorkspace(
   draft: Draft<PreferencesState>,

@@ -1,9 +1,9 @@
-import { useActiveSpectrumIntegralsViewState } from '../../hooks/useActiveSpectrumIntegralsViewState';
-import useIntegralPath from '../../hooks/useIntegralPath';
-import { usePanelPreferences } from '../../hooks/usePanelPreferences';
+import { useActiveSpectrumIntegralsViewState } from '../../hooks/useActiveSpectrumIntegralsViewState.js';
+import useIntegralPath from '../../hooks/useIntegralPath.js';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 
-import IntegralResizable from './IntegralResizable';
-import { IntegralData } from './IntegralsSeries';
+import IntegralResizable from './IntegralResizable.js';
+import type { IntegralData } from './IntegralsSeries.js';
 
 interface IntegralProps {
   integral: IntegralData;

@@ -1,10 +1,10 @@
-import { Draft } from 'immer';
+import type { Draft } from 'immer';
 
-import {
+import type {
   ApplyGeneralPreferences,
   PreferencesState,
   WorkspaceWithSource,
-} from '../preferencesReducer';
+} from '../preferencesReducer.js';
 
 export function applyGeneralPreferences(
   draft: Draft<PreferencesState>,

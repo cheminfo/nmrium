@@ -1,19 +1,19 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import { ActiveSpectrum, Spectrum1D } from 'nmr-load-save';
+import type { ActiveSpectrum, Spectrum1D } from 'nmr-load-save';
 import { memo } from 'react';
 import { BsCursor } from 'react-icons/bs';
 import { IoPulseSharp } from 'react-icons/io5';
 
-import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY';
-import { useBrushTracker } from '../EventsTrackers/BrushTracker';
-import { useMouseTracker } from '../EventsTrackers/MouseTracker';
-import { useChartData } from '../context/ChartContext';
-import { useScaleChecked } from '../context/ScaleContext';
-import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
-import { useFormatNumberByNucleus } from '../hooks/useFormatNumberByNucleus';
-import useSpectrum from '../hooks/useSpectrum';
+import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY.js';
+import { useBrushTracker } from '../EventsTrackers/BrushTracker.js';
+import { useMouseTracker } from '../EventsTrackers/MouseTracker.js';
+import { useChartData } from '../context/ChartContext.js';
+import { useScaleChecked } from '../context/ScaleContext.js';
+import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
+import { useFormatNumberByNucleus } from '../hooks/useFormatNumberByNucleus.js';
+import useSpectrum from '../hooks/useSpectrum.js';
 
 const styles = css`
   display: flex;

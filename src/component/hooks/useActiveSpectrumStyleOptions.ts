@@ -1,9 +1,9 @@
-import get from 'lodash/get';
+import get from 'lodash/get.js';
 import { useMemo } from 'react';
 
-import { usePreferences } from '../context/PreferencesContext';
+import { usePreferences } from '../context/PreferencesContext.js';
 
-import { useActiveSpectra } from './useActiveSpectra';
+import { useActiveSpectra } from './useActiveSpectra.js';
 
 interface ActiveSpectrumOptionsResult {
   isActive: boolean;

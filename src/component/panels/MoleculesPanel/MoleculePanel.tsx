@@ -1,27 +1,28 @@
 /** @jsxImportSource @emotion/react */
-import { css, SerializedStyles } from '@emotion/react';
-import { Spectrum1D, Spectrum2D } from 'nmr-load-save';
-import { Ranges, Zones } from 'nmr-processing';
+import type { SerializedStyles } from '@emotion/react';
+import { css } from '@emotion/react';
+import type { Spectrum1D, Spectrum2D } from 'nmr-load-save';
+import type { Ranges, Zones } from 'nmr-processing';
 import OCL from 'openchemlib/full';
-import { useState, useEffect, memo } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 import OCLnmr from 'react-ocl-nmr';
 
-import {
+import type {
   MoleculesView,
   StateMoleculeExtended,
-} from '../../../data/molecules/Molecule';
-import { useChartData } from '../../context/ChartContext';
-import { useDispatch } from '../../context/DispatchContext';
-import { NextPrev } from '../../elements/NextPrev';
-import { useHighlightColor } from '../../hooks/useHighlightColor';
-import useSpectrum from '../../hooks/useSpectrum';
-import { useMoleculeEditor } from '../../modal/MoleculeStructureEditorModal';
-import { DisplayerMode } from '../../reducer/Reducer';
+} from '../../../data/molecules/Molecule.js';
+import { useChartData } from '../../context/ChartContext.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { NextPrev } from '../../elements/NextPrev.js';
+import { useHighlightColor } from '../../hooks/useHighlightColor.js';
+import useSpectrum from '../../hooks/useSpectrum.js';
+import { useMoleculeEditor } from '../../modal/MoleculeStructureEditorModal.js';
+import type { DisplayerMode } from '../../reducer/Reducer.js';
 
-import MoleculeHeader from './MoleculeHeader';
-import MoleculePanelHeader from './MoleculePanelHeader';
-import useAtomAssignment from './useAtomAssignment';
+import MoleculeHeader from './MoleculeHeader.js';
+import MoleculePanelHeader from './MoleculePanelHeader.js';
+import useAtomAssignment from './useAtomAssignment.js';
 
 const styles: Record<
   'panel' | 'innerPanel' | 'molecule' | 'slider' | 'items',

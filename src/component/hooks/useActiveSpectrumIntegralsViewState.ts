@@ -1,8 +1,8 @@
-import { IntegralsViewState } from 'nmr-load-save';
+import type { IntegralsViewState } from 'nmr-load-save';
 
-import { useChartData } from '../context/ChartContext';
+import { useChartData } from '../context/ChartContext.js';
 
-import { useActiveSpectrum } from './useActiveSpectrum';
+import { useActiveSpectrum } from './useActiveSpectrum.js';
 
 export const defaultIntegralsViewState: IntegralsViewState = {
   scaleRatio: 1,

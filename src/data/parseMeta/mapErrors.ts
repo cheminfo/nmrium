@@ -1,4 +1,4 @@
-import { ParseError } from 'papaparse';
+import type { ParseError } from 'papaparse';
 
 export function mapErrors(errors: ParseError[]) {
   const result = {};

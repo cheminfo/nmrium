@@ -1,9 +1,9 @@
-import { Range } from 'nmr-processing';
+import type { Range } from 'nmr-processing';
 
-import { useChartData } from '../../context/ChartContext';
-import { useTopicMolecule } from '../../context/TopicMoleculeContext';
-import { SVGGroup } from '../../elements/SVGGroup';
-import { SVGText } from '../../elements/SVGText';
+import { useChartData } from '../../context/ChartContext.js';
+import { useTopicMolecule } from '../../context/TopicMoleculeContext.js';
+import { SVGGroup } from '../../elements/SVGGroup.js';
+import { SVGText } from '../../elements/SVGText.js';
 
 const fontSize = 12;
 const marginTop = 45;

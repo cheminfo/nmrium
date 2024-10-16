@@ -1,51 +1,57 @@
 import { v4 } from '@lukeed/uuid';
-import { NmrData1D, NmrData2DFt } from 'cheminfo-types';
-import { current, Draft } from 'immer';
+import type { NmrData1D, NmrData2DFt } from 'cheminfo-types';
+import type { Draft } from 'immer';
+import { current } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import {
+import type {
   ActiveSpectrum,
   Spectrum,
   Spectrum1D,
   Spectrum2D,
 } from 'nmr-load-save';
+import type {
+  ApodizationOptions,
+  BaselineCorrectionOptions,
+} from 'nmr-processing';
 import {
   Filters,
   FiltersManager,
-  BaselineCorrectionOptions,
-  ApodizationOptions,
   getBaselineZonesByDietrich,
 } from 'nmr-processing';
 
-import { defaultApodizationOptions } from '../../../data/constants/DefaultApodizationOptions';
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D';
-import { isSpectrum2D } from '../../../data/data2d/Spectrum2D';
-import { getProjection } from '../../../data/data2d/Spectrum2D/getMissingProjection';
-import { ExclusionZone } from '../../../data/types/data1d/ExclusionZone';
-import { MatrixOptions } from '../../../data/types/data1d/MatrixOptions';
-import { getXScale } from '../../1d/utilities/scale';
-import { get2DXScale, get2DYScale } from '../../2d/utilities/scale';
-import { Tool, options as Tools } from '../../toolbar/ToolTypes';
-import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
-import nucleusToString from '../../utility/nucleusToString';
-import {
-  getDefaultTwoDimensionsPhaseCorrectionTraceOptions,
-  getInitialState,
+import { defaultApodizationOptions } from '../../../data/constants/DefaultApodizationOptions.js';
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
+import { getProjection } from '../../../data/data2d/Spectrum2D/getMissingProjection.js';
+import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.js';
+import type { ExclusionZone } from '../../../data/types/data1d/ExclusionZone.js';
+import type { MatrixOptions } from '../../../data/types/data1d/MatrixOptions.js';
+import { getXScale } from '../../1d/utilities/scale.js';
+import { get2DXScale, get2DYScale } from '../../2d/utilities/scale.js';
+import type { Tool } from '../../toolbar/ToolTypes.js';
+import { options as Tools } from '../../toolbar/ToolTypes.js';
+import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus.js';
+import nucleusToString from '../../utility/nucleusToString.js';
+import type {
   PhaseCorrectionTraceData,
   State,
   TraceDirection,
   TwoDimensionPhaseCorrection,
-} from '../Reducer';
-import zoomHistoryManager from '../helper/ZoomHistoryManager';
-import { findStrongestPeak } from '../helper/findStrongestPeak';
-import { getActiveSpectrum } from '../helper/getActiveSpectrum';
-import getRange from '../helper/getRange';
-import { getSpectrum } from '../helper/getSpectrum';
-import { getTwoDimensionPhaseCorrectionOptions } from '../helper/getTwoDimensionPhaseCorrectionOptions';
-import { ActionType } from '../types/ActionType';
+} from '../Reducer.js';
+import {
+  getDefaultTwoDimensionsPhaseCorrectionTraceOptions,
+  getInitialState,
+} from '../Reducer.js';
+import zoomHistoryManager from '../helper/ZoomHistoryManager.js';
+import { findStrongestPeak } from '../helper/findStrongestPeak.js';
+import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
+import getRange from '../helper/getRange.js';
+import { getSpectrum } from '../helper/getSpectrum.js';
+import { getTwoDimensionPhaseCorrectionOptions } from '../helper/getTwoDimensionPhaseCorrectionOptions.js';
+import type { ActionType } from '../types/ActionType.js';
 
-import { setDomain, setMode } from './DomainActions';
-import { changeSpectrumVerticalAlignment } from './PreferencesActions';
-import { activateTool, resetSelectedTool } from './ToolsActions';
+import { setDomain, setMode } from './DomainActions.js';
+import { changeSpectrumVerticalAlignment } from './PreferencesActions.js';
+import { activateTool, resetSelectedTool } from './ToolsActions.js';
 
 const {
   fft,

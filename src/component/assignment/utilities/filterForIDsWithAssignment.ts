@@ -1,4 +1,4 @@
-import { AssignmentContext } from '../AssignmentsContext';
+import type { AssignmentContext } from '../AssignmentsContext.js';
 
 export function filterForIDsWithAssignment(
   assignmentData: AssignmentContext,

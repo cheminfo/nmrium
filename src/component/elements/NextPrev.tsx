@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { Children, CSSProperties, ReactElement } from 'react';
+import type { CSSProperties, ReactElement } from 'react';
+import { Children } from 'react';
 import { FaAngleLeft } from 'react-icons/fa';
-import { useMeasure } from 'react-use';
+import useResizeObserver from 'use-resize-observer';
 
 interface ArrowProps {
   direction: 'right' | 'left';
@@ -20,7 +21,6 @@ function Arrow({ direction, onClick, style = {} }: ArrowProps) {
         height: 40px;
         width: 40px;
         justify-content: center;
-        background: white;
         border-radius: 50%;
         cursor: pointer;
         align-items: center;
@@ -90,7 +90,11 @@ export function NextPrev(props: NextPrevProps) {
     onChange = () => null,
     style = {},
   } = props;
-  const [ref, { width }] = useMeasure<HTMLDivElement>();
+  const {
+    ref,
+    width = 0,
+    // @ts-expect-error Module is not published correctly.
+  } = useResizeObserver();
   const slidersCount = Children.count(children);
   const lastIndex = slidersCount > 0 ? slidersCount - 1 : 0;
   const activeIndex = Math.min(index, lastIndex);

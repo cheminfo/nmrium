@@ -2,14 +2,14 @@
 import { SvgNmrAssignment2 } from 'cheminfo-font';
 import { FaBolt } from 'react-icons/fa';
 
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D';
-import { useChartData } from '../../context/ChartContext';
-import { tablePanelStyle } from '../extra/BasicPanelStyle';
-import DefaultPanelHeader from '../header/DefaultPanelHeader';
-import { SpectraAutomaticPickingButton } from '../header/SpectraAutomaticPickingButton';
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
+import { useChartData } from '../../context/ChartContext.js';
+import { tablePanelStyle } from '../extra/BasicPanelStyle.js';
+import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
+import { SpectraAutomaticPickingButton } from '../header/SpectraAutomaticPickingButton.js';
 
-import AutomaticAssignmentTable from './AutomaticAssignmentTable';
-import { useAutoAssignments } from './useAutoAssignments';
+import AutomaticAssignmentTable from './AutomaticAssignmentTable.js';
+import { useAutoAssignments } from './useAutoAssignments.js';
 
 function useCheckEnableAutomaticAssignments() {
   const { data } = useChartData();

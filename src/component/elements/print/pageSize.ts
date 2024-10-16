@@ -1,4 +1,4 @@
-import { Layout, PageSizeName } from 'nmr-load-save';
+import type { Layout, PageSizeName } from 'nmr-load-save';
 
 export interface PageSize {
   name: PageSizeName;

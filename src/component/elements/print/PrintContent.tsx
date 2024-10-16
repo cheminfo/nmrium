@@ -8,25 +8,20 @@ import {
   Tag,
 } from '@blueprintjs/core';
 import { css } from '@emotion/react';
-import { PageSizeName, PrintPageOptions } from 'nmr-load-save';
-import {
-  CSSProperties,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import type { PageSizeName, PrintPageOptions } from 'nmr-load-save';
+import type { CSSProperties, ReactNode } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Controller, useForm } from 'react-hook-form';
 
-import ActionButtons from '../ActionButtons';
-import Label, { LabelStyle } from '../Label';
-import { NumberInput2Controller } from '../NumberInput2Controller';
-import { Select2Controller } from '../Select2Controller';
+import ActionButtons from '../ActionButtons.js';
+import type { LabelStyle } from '../Label.js';
+import Label from '../Label.js';
+import { NumberInput2Controller } from '../NumberInput2Controller.js';
+import { Select2Controller } from '../Select2Controller.js';
 
-import { PrintProvider } from './PrintProvider';
-import { getSizesList, pageSizes } from './pageSize';
+import { PrintProvider } from './PrintProvider.js';
+import { getSizesList, pageSizes } from './pageSize.js';
 
 const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
 

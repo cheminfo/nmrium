@@ -1,7 +1,7 @@
 import { v4 } from '@lukeed/uuid';
 import { Molecule as OCLMolecule } from 'openchemlib/full';
 
-import getAtomsFromMF from '../utilities/getAtomsFromMF';
+import getAtomsFromMF from '../utilities/getAtomsFromMF.js';
 
 export interface StateMolecule {
   id?: string;

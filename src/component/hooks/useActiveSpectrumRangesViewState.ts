@@ -1,8 +1,8 @@
-import { RangesViewState } from 'nmr-load-save';
+import type { RangesViewState } from 'nmr-load-save';
 
-import { useChartData } from '../context/ChartContext';
+import { useChartData } from '../context/ChartContext.js';
 
-import { useActiveSpectrum } from './useActiveSpectrum';
+import { useActiveSpectrum } from './useActiveSpectrum.js';
 
 export const defaultRangesViewState: RangesViewState = {
   showPeaks: false,

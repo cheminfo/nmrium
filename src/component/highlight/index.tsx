@@ -1,4 +1,5 @@
-import { Range } from 'nmr-processing';
+import type { Range } from 'nmr-processing';
+import type { MouseEvent, CSSProperties } from 'react';
 import {
   createContext,
   useReducer,
@@ -6,11 +7,9 @@ import {
   useContext,
   useCallback,
   useEffect,
-  MouseEvent,
-  CSSProperties,
 } from 'react';
 
-import { ExclusionZone } from '../../data/types/data1d/ExclusionZone';
+import type { ExclusionZone } from '../../data/types/data1d/ExclusionZone.js';
 
 export enum HighlightEventSource {
   PEAK = 'PEAK',

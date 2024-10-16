@@ -1,7 +1,7 @@
-import { ScaleLinear } from 'd3';
+import type { ScaleLinear } from 'd3';
 import { produce } from 'immer';
 
-import { getXScale, getYScale } from '../1d/utilities/scale';
+import { getXScale, getYScale } from '../1d/utilities/scale.js';
 
 export const SET_X_SCALE = 'SET_X_SCALE';
 export const SET_Y_SCALE = 'SET_Y_SCALE';

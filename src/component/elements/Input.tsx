@@ -1,17 +1,13 @@
-import debounce from 'lodash/debounce';
-import {
-  useEffect,
-  useRef,
+import debounce from 'lodash/debounce.js';
+import type {
   CSSProperties,
-  forwardRef,
   ForwardedRef,
   ReactElement,
-  useMemo,
   ChangeEvent,
-  useState,
 } from 'react';
+import { useEffect, useRef, forwardRef, useMemo, useState } from 'react';
 
-import useCombinedRefs from '../hooks/useCombinedRefs';
+import useCombinedRefs from '../hooks/useCombinedRefs.js';
 
 const styles: Record<'input' | 'inputWrapper' | 'clearButton', CSSProperties> =
   {

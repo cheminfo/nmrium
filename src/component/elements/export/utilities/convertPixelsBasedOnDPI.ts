@@ -1,4 +1,4 @@
-import { roundNumber } from '../../../utility/roundNumber';
+import { roundNumber } from '../../../utility/roundNumber.js';
 
 export function convertPixelsBasedOnDPI(
   originalPixelSize: number,

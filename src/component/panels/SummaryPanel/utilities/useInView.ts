@@ -1,10 +1,10 @@
-import { Correlation } from 'nmr-correlation';
+import type { Correlation } from 'nmr-correlation';
 import { useMemo } from 'react';
 
-import { useChartData } from '../../../context/ChartContext';
-import { useActiveSpectrum } from '../../../hooks/useActiveSpectrum';
+import { useChartData } from '../../../context/ChartContext.js';
+import { useActiveSpectrum } from '../../../hooks/useActiveSpectrum.js';
 
-import { isInView } from './Utilities';
+import { isInView } from './Utilities.js';
 
 interface InputProps {
   correlation: Correlation;

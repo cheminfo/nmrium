@@ -3,8 +3,8 @@ import { css } from '@emotion/react';
 import * as d3 from 'd3';
 import { useEffect, useRef } from 'react';
 
-import { useChartData } from '../context/ChartContext';
-import { useScale } from '../context/ScaleContext';
+import { useChartData } from '../context/ChartContext.js';
+import { useScale } from '../context/ScaleContext.js';
 
 const axisStyles = css`
   user-select: none;

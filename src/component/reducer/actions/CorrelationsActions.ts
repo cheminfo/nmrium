@@ -1,15 +1,15 @@
-import { original, Draft } from 'immer';
-import lodashCloneDeep from 'lodash/cloneDeep';
-import {
-  buildCorrelationData,
-  setCorrelation,
+import type { Draft } from 'immer';
+import { original } from 'immer';
+import lodashCloneDeep from 'lodash/cloneDeep.js';
+import type {
   Tolerance,
   Options as CorrelationOptions,
   Correlation,
   Spectrum,
   Values as CorrelationValues,
 } from 'nmr-correlation';
-import { Spectrum1D, Spectrum2D } from 'nmr-load-save';
+import { buildCorrelationData, setCorrelation } from 'nmr-correlation';
+import type { Spectrum1D, Spectrum2D } from 'nmr-load-save';
 
 import {
   findRange,
@@ -17,13 +17,13 @@ import {
   findSignal2D,
   findSpectrum,
   findZone,
-} from '../../../data/utilities/FindUtilities';
-import { AssignmentContext } from '../../assignment/AssignmentsContext';
-import { State } from '../Reducer';
-import { ActionType } from '../types/ActionType';
+} from '../../../data/utilities/FindUtilities.js';
+import type { AssignmentContext } from '../../assignment/AssignmentsContext.js';
+import type { State } from '../Reducer.js';
+import type { ActionType } from '../types/ActionType.js';
 
-import { deleteSignal1D } from './RangesActions';
-import { deleteSignal2D } from './ZonesActions';
+import { deleteSignal1D } from './RangesActions.js';
+import { deleteSignal2D } from './ZonesActions.js';
 
 type SetMFAction = ActionType<'SET_CORRELATIONS_MF', { mf: string }>;
 type SetToleranceAction = ActionType<

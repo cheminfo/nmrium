@@ -7,7 +7,7 @@ import { FaBars } from 'react-icons/fa';
 import { createSearchParams, useNavigate } from 'react-router-dom';
 import 'rc-menu/assets/index.css';
 
-import { buildMenu, getKey } from './utility/menu';
+import { buildMenu, getKey } from './utility/menu.js';
 
 const sidebarCss = css`
   background: #2ca8ff;
@@ -117,10 +117,10 @@ function Sidebar(props) {
         </button>
       </div>
       <div css={sidebarWrapperCss} style={{ display: subDisplay }}>
+        {/* @ts-expect-error menu typings are wrong */}
         <Menu
           onClick={(e) => {
             // TODO: use non-deprecated API of rc-menu
-            // @ts-expect-error This will be fixed by updating use of rc-menu
             const itemProps = e.item.props;
             navigate({
               pathname: `/SamplesDashboard/${Math.random()

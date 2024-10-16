@@ -1,6 +1,6 @@
-import { Spectrum } from 'nmr-load-save';
+import type { Spectrum } from 'nmr-load-save';
 
-import nucleusToString from './nucleusToString';
+import nucleusToString from './nucleusToString.js';
 
 export function getSpectraByNucleus(nucleus: string, data: Spectrum[]) {
   return data.filter(

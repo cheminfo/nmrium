@@ -1,4 +1,4 @@
-import { Action } from '../context/DispatchContext';
+import type { Action } from '../context/DispatchContext.js';
 
 const ignoreActions = new Set<Partial<Action['type']>>([
   'INITIALIZE_NMRIUM',

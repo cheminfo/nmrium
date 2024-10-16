@@ -1,8 +1,13 @@
 //TODO resolve the eslint rules
 
 /** @jsxImportSource @emotion/react */
-import { css, CSSObject, SerializedStyles } from '@emotion/react';
-import { CSSProperties, ComponentPropsWithoutRef, ElementType } from 'react';
+import type { CSSObject, SerializedStyles } from '@emotion/react';
+import { css } from '@emotion/react';
+import type {
+  CSSProperties,
+  ComponentPropsWithoutRef,
+  ElementType,
+} from 'react';
 import { FaInfoCircle } from 'react-icons/fa';
 
 type Size = 'xSmall' | 'small' | 'medium' | 'large';

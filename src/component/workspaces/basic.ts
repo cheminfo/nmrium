@@ -1,4 +1,4 @@
-import { InnerWorkspace } from 'nmr-load-save';
+import type { InnerWorkspace } from 'nmr-load-save';
 
 export const basic: InnerWorkspace = {
   label: 'Simple NMR analysis',

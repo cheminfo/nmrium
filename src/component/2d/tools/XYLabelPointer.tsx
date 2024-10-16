@@ -1,12 +1,13 @@
-import { useMemo, CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
+import { useMemo } from 'react';
 
-import { useBrushTracker } from '../../EventsTrackers/BrushTracker';
-import { useMouseTracker } from '../../EventsTrackers/MouseTracker';
-import { useChartData } from '../../context/ChartContext';
-import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
-import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
-import { getLayoutID, LAYOUT } from '../utilities/DimensionLayout';
-import { get1DYScale, useScale2DX, useScale2DY } from '../utilities/scale';
+import { useBrushTracker } from '../../EventsTrackers/BrushTracker.js';
+import { useMouseTracker } from '../../EventsTrackers/MouseTracker.js';
+import { useChartData } from '../../context/ChartContext.js';
+import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.js';
+import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus.js';
+import { getLayoutID, LAYOUT } from '../utilities/DimensionLayout.js';
+import { get1DYScale, useScale2DX, useScale2DY } from '../utilities/scale.js';
 
 const style: CSSProperties = {
   cursor: 'crosshair',

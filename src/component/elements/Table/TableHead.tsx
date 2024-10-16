@@ -1,4 +1,5 @@
-import { CSSProperties, memo, ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
+import { memo } from 'react';
 
 const styles: CSSProperties = {
   width: '100%',

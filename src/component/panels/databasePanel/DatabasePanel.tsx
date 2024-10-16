@@ -1,46 +1,44 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import {
-  Database,
-  NmriumState,
-  Spectrum1D,
-  readFromWebSource,
-  serializeNmriumState,
-} from 'nmr-load-save';
-import { DatabaseNMREntry, mapRanges } from 'nmr-processing';
+import type { Database, NmriumState, Spectrum1D } from 'nmr-load-save';
+import { readFromWebSource, serializeNmriumState } from 'nmr-load-save';
+import type { DatabaseNMREntry } from 'nmr-processing';
+import { mapRanges } from 'nmr-processing';
 import OCL from 'openchemlib/full';
-import { useCallback, useState, useRef, memo, useEffect, useMemo } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useAccordionContext, useOnOff } from 'react-science/ui';
 
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D';
-import { getSum } from '../../../data/data1d/Spectrum1D/SumManager';
-import {
-  initiateDatabase,
+import { getSum } from '../../../data/data1d/Spectrum1D/SumManager.js';
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
+import type {
   InitiateDatabaseResult,
-  prepareData,
-  DATA_BASES,
   LocalDatabase,
-} from '../../../data/data1d/database';
-import { useChartData } from '../../context/ChartContext';
-import { useDispatch } from '../../context/DispatchContext';
-import { usePreferences } from '../../context/PreferencesContext';
-import { useToaster } from '../../context/ToasterContext';
-import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
-import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus';
-import { options } from '../../toolbar/ToolTypes';
-import Events from '../../utility/Events';
-import { exportAsJSON } from '../../utility/export';
-import nucleusToString from '../../utility/nucleusToString';
-import { PanelNoData } from '../PanelNoData';
-import { tablePanelStyle } from '../extra/BasicPanelStyle';
-import NoTableData from '../extra/placeholder/NoTableData';
-import { SettingsRef } from '../extra/utilities/settingImperativeHandle';
-import PreferencesHeader from '../header/PreferencesHeader';
+} from '../../../data/data1d/database.js';
+import {
+  DATA_BASES,
+  initiateDatabase,
+  prepareData,
+} from '../../../data/data1d/database.js';
+import { useChartData } from '../../context/ChartContext.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { usePreferences } from '../../context/PreferencesContext.js';
+import { useToaster } from '../../context/ToasterContext.js';
+import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus.js';
+import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus.js';
+import { options } from '../../toolbar/ToolTypes.js';
+import Events from '../../utility/Events.js';
+import { exportAsJSON } from '../../utility/export.js';
+import nucleusToString from '../../utility/nucleusToString.js';
+import { PanelNoData } from '../PanelNoData.js';
+import { tablePanelStyle } from '../extra/BasicPanelStyle.js';
+import NoTableData from '../extra/placeholder/NoTableData.js';
+import type { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
+import PreferencesHeader from '../header/PreferencesHeader.js';
 
-import DatabasePreferences from './DatabasePreferences';
-import { DatabaseSearchOptions } from './DatabaseSearchOptions';
-import { DatabaseStructureSearchModal } from './DatabaseStructureSearchModal';
-import DatabaseTable from './DatabaseTable';
+import DatabasePreferences from './DatabasePreferences.js';
+import { DatabaseSearchOptions } from './DatabaseSearchOptions.js';
+import { DatabaseStructureSearchModal } from './DatabaseStructureSearchModal.js';
+import DatabaseTable from './DatabaseTable.js';
 
 export type Databases = Array<LocalDatabase | Database>;
 

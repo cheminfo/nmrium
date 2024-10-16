@@ -1,11 +1,15 @@
 /** @jsxImportSource @emotion/react */
 
-import { css, CSSObject, SerializedStyles } from '@emotion/react';
+import type { CSSObject, SerializedStyles } from '@emotion/react';
+import { css } from '@emotion/react';
 import { useMemo, useEffect, useCallback } from 'react';
 
-import { HighlightEventSource, useHighlight } from '../../../highlight/index';
-import { ContextMenu } from '../../ContextMenuBluePrint';
-import { BaseRowStyle, TableContextMenuProps } from '../ReactTable';
+import {
+  HighlightEventSource,
+  useHighlight,
+} from '../../../highlight/index.js';
+import { ContextMenu } from '../../ContextMenuBluePrint.js';
+import type { BaseRowStyle, TableContextMenuProps } from '../ReactTable.js';
 
 function getRowStyle(
   isActive: boolean,

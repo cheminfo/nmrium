@@ -1,37 +1,38 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Range as RangeType } from 'nmr-processing';
-import { LuUnlink, LuLink } from 'react-icons/lu';
+import type { Range as RangeType } from 'nmr-processing';
+import { LuLink, LuUnlink } from 'react-icons/lu';
 import { PiTextTBold, PiTextTSlashBold } from 'react-icons/pi';
 
-import { isSpectrum1D, resizeRange } from '../../../data/data1d/Spectrum1D';
-import { isRangeAssigned } from '../../../data/data1d/Spectrum1D/isRangeAssigned';
-import { checkRangeKind } from '../../../data/utilities/RangeUtilities';
+import {
+  isSpectrum1D,
+  resizeRange,
+} from '../../../data/data1d/Spectrum1D/index.js';
+import { isRangeAssigned } from '../../../data/data1d/Spectrum1D/isRangeAssigned.js';
+import { checkRangeKind } from '../../../data/utilities/RangeUtilities.js';
 import {
   useAssignment,
   useAssignmentData,
-} from '../../assignment/AssignmentsContext';
-import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment';
-import { useDispatch } from '../../context/DispatchContext';
-import { useLogger } from '../../context/LoggerContext';
-import { useShareData } from '../../context/ShareDataContext';
-import {
-  ActionsButtonsPopover,
-  ActionsButtonsPopoverProps,
-} from '../../elements/ActionsButtonsPopover';
-import { useDialogData } from '../../elements/DialogManager';
-import { ResizerWithScale } from '../../elements/ResizerWithScale';
-import { HighlightEventSource, useHighlight } from '../../highlight';
-import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
-import { useHighlightColor } from '../../hooks/useHighlightColor';
-import { useResizerStatus } from '../../hooks/useResizerStatus';
-import useSpectrum from '../../hooks/useSpectrum';
-import { EditRangeModal } from '../../modal/editRange/EditRangeModal';
-import { IntegralIndicator } from '../integral/IntegralIndicator';
-import { useScaleX } from '../utilities/scale';
+} from '../../assignment/AssignmentsContext.js';
+import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { useLogger } from '../../context/LoggerContext.js';
+import { useShareData } from '../../context/ShareDataContext.js';
+import type { ActionsButtonsPopoverProps } from '../../elements/ActionsButtonsPopover.js';
+import { ActionsButtonsPopover } from '../../elements/ActionsButtonsPopover.js';
+import { useDialogData } from '../../elements/DialogManager.js';
+import { ResizerWithScale } from '../../elements/ResizerWithScale.js';
+import { HighlightEventSource, useHighlight } from '../../highlight/index.js';
+import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
+import { useHighlightColor } from '../../hooks/useHighlightColor.js';
+import { useResizerStatus } from '../../hooks/useResizerStatus.js';
+import useSpectrum from '../../hooks/useSpectrum.js';
+import { EditRangeModal } from '../../modal/editRange/EditRangeModal.js';
+import { IntegralIndicator } from '../integral/IntegralIndicator.js';
+import { useScaleX } from '../utilities/scale.js';
 
-import { AssignmentLabel } from './AssignmentLabel';
-import { Atoms } from './Atoms';
+import { AssignmentLabel } from './AssignmentLabel.js';
+import { Atoms } from './Atoms.js';
 
 const style = css`
   .target {

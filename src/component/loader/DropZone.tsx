@@ -1,15 +1,16 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { ReactNode, useCallback, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
+import type { ReactNode } from 'react';
+import { useCallback, useState } from 'react';
+import * as dropzone from 'react-dropzone';
 import { FaUpload } from 'react-icons/fa';
 
-import { useChartData } from '../context/ChartContext';
-import { LoaderProvider } from '../context/LoaderContext';
-import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
-import { MetaImportationModal } from '../modal/metaImportation/MetaImportationModal';
+import { useChartData } from '../context/ChartContext.js';
+import { LoaderProvider } from '../context/LoaderContext.js';
+import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility.js';
+import { MetaImportationModal } from '../modal/metaImportation/MetaImportationModal.js';
 
-import { useLoadFiles } from './useLoadFiles';
+import { useLoadFiles } from './useLoadFiles.js';
 
 const style = css`
   height: 100%;
@@ -60,7 +61,7 @@ export default function DropZone(props: DropZoneProps) {
     getInputProps,
     isDragActive,
     open: openImportDialog,
-  } = useDropzone({
+  } = dropzone.useDropzone({
     onDrop: loadFiles,
     noClick: true,
     noKeyboard: true,

@@ -1,7 +1,7 @@
 import {
-  translateMultiplet,
-  findMultiplet,
   checkMultiplicity,
+  findMultiplet,
+  translateMultiplet,
 } from 'nmr-processing';
 
 function getMultiplicityNumber(string) {
