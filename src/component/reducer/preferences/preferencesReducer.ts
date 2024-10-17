@@ -30,7 +30,6 @@ import { changeInformationBlockPosition } from './actions/changeInformationBlock
 import { changePeaksLabelPosition } from './actions/changePeaksLabelPosition.js';
 import { changePrintPageSettings } from './actions/changePrintPageSettings.js';
 import { initPreferences } from './actions/initPreferences.js';
-import type { MatrixGenerationActions } from './actions/matrixGeneration.js';
 import {
   addExclusionZone,
   changeMatrixGenerationScale,
@@ -39,6 +38,7 @@ import {
   setMatrixGenerationOptions,
   toggleMatrixGenerationViewProperty,
 } from './actions/matrixGeneration.js';
+import type { MatrixGenerationActions } from './actions/matrixGeneration.js';
 import { removeWorkspace } from './actions/removeWorkspace.js';
 import { setActiveWorkspace } from './actions/setActiveWorkspace.js';
 import { setPanelsPreferences } from './actions/setPanelsPreferences.js';

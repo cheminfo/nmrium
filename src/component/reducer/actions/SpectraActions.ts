@@ -36,6 +36,7 @@ import {
 } from '../../../data/utilities/generateColor.js';
 import groupByInfoKey from '../../utility/GroupByInfoKey.js';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus.js';
+import nucleusToString from '../../utility/nucleusToString.js';
 import type { State } from '../Reducer.js';
 import { setZoom } from '../helper/Zoom1DManager.js';
 import { getActiveSpectra } from '../helper/getActiveSpectra.js';
@@ -159,6 +160,12 @@ type UpdateSpectrumMetaAction = ActionType<
     meta: Record<string, string>;
   }
 >;
+type SortSpectraAction = ActionType<
+  'SORT_SPECTRA',
+  {
+    path: string;
+  }
+>;
 
 export type SpectrumActions =
   | ActionType<'TOGGLE_SPECTRA_LEGEND'>
@@ -174,7 +181,8 @@ export type SpectrumActions =
   | ReColorSpectraBasedOnDistinctValueAction
   | OrderSpectraAction
   | SimulateSpectrumAction
-  | UpdateSpectrumMetaAction;
+  | UpdateSpectrumMetaAction
+  | SortSpectraAction;
 
 const { applyFilter } = FiltersManager;
 function checkIsVisible2D(datum: Spectrum2D): boolean {
@@ -781,6 +789,50 @@ function handleUpdateSpectrumMeta(
 
   draft.data[activeSpectrum.index].customInfo = meta;
 }
+function handleSortSpectra(draft: Draft<State>, action: SortSpectraAction) {
+  const {
+    payload: { path },
+  } = action;
+  const {
+    spectra: { activeTab },
+  } = draft.view;
+
+  const sortedSpectra: Array<{
+    spectrum: Spectrum;
+    sortValue: string | number;
+  }> = [];
+  const originIndexes: number[] = [];
+  for (let index = 0; index < draft.data.length; index++) {
+    const spectrum = draft.data[index];
+    if (nucleusToString(spectrum.info.nucleus) === activeTab) {
+      sortedSpectra.push({
+        spectrum,
+        sortValue: lodashGet(spectrum, path),
+      });
+      originIndexes.push(index);
+    }
+  }
+
+  sortedSpectra.sort((a, b) => {
+    if (typeof a.sortValue === 'string' && typeof b.sortValue === 'string') {
+      return a.sortValue.localeCompare(b.sortValue);
+    }
+
+    if (typeof a.sortValue === 'number' && typeof b.sortValue === 'number') {
+      return a.sortValue - b.sortValue;
+    }
+
+    if (typeof a.sortValue === 'boolean' && typeof b.sortValue === 'boolean') {
+      return a.sortValue === b.sortValue ? 0 : a.sortValue ? -1 : 1;
+    }
+
+    return 0;
+  });
+
+  for (let index = 0; index < sortedSpectra.length; index++) {
+    draft.data[originIndexes[index]] = sortedSpectra[index].spectrum;
+  }
+}
 
 export {
   handleChangeSpectrumVisibilityById,
@@ -798,4 +850,5 @@ export {
   handleSimulateSpectrum,
   setSpectraMetaInfo,
   handleUpdateSpectrumMeta,
+  handleSortSpectra,
 };

@@ -581,6 +581,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return SpectraActions.handleSimulateSpectrum(draft, action);
       case 'UPDATE_SPECTRUM_META':
         return SpectraActions.handleUpdateSpectrumMeta(draft, action);
+      case 'SORT_SPECTRA':
+        return SpectraActions.handleSortSpectra(draft, action);
 
       case 'SET_SELECTED_TOOL':
         return ToolsActions.setSelectedTool(draft, action);

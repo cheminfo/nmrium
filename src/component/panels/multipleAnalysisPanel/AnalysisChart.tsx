@@ -8,6 +8,7 @@ import { Button } from 'react-science/ui';
 
 import type { SpectraAnalysisData } from '../../../data/data1d/multipleSpectraAnalysis.js';
 import { useChartData } from '../../context/ChartContext.js';
+import { useDispatch } from '../../context/DispatchContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import { Input2 } from '../../elements/Input2.js';
 import Label from '../../elements/Label.js';
@@ -97,6 +98,7 @@ function getAnalysisColumnsPaths(spectraAnalysisData: SpectraAnalysisData) {
 export default function AnalysisChart(props: PlotChartPros) {
   const { spectraAnalysisData } = props;
   const { data } = useChartData();
+  const dispatch = useDispatch();
   const toaster = useToaster();
   const chartParentRef = useRef<HTMLDivElement>(null);
   const [plotOptions, setPlotOptions] = useState<PlotAxisOptions>({
@@ -140,6 +142,15 @@ export default function AnalysisChart(props: PlotChartPros) {
   const xLabel = paths?.[plotOptions.xPath]?.at(-1) || '';
   const yLabel = paths?.[plotOptions.yPath]?.at(-1) || '';
 
+  function handleSort(path) {
+    dispatch({ type: 'SORT_SPECTRA', payload: { path } });
+  }
+
+  const disabledXPath =
+    !plotOptions.xPath || plotOptions.xPath?.split('.').length === 1;
+  const disabledYPath =
+    !plotOptions.yPath || plotOptions.yPath?.split('.').length === 1;
+
   return (
     <div>
       <div style={{ display: 'flex', padding: '5px' }}>
@@ -149,6 +160,14 @@ export default function AnalysisChart(props: PlotChartPros) {
             value={plotOptions.xPath}
             filterItems={datalist}
             onChange={handleChangeKey}
+            rightElement={
+              <Button
+                disabled={disabledXPath}
+                icon="sort-alphabetical"
+                outlined
+                onClick={() => handleSort(plotOptions.xPath)}
+              />
+            }
           />
         </Label>
         <Label title="Y" style={{ container: { paddingLeft: '5px' } }}>
@@ -157,6 +176,14 @@ export default function AnalysisChart(props: PlotChartPros) {
             value={plotOptions.yPath}
             filterItems={datalist}
             onChange={handleChangeKey}
+            rightElement={
+              <Button
+                disabled={disabledYPath}
+                icon="sort-alphabetical"
+                outlined
+                onClick={() => handleSort(plotOptions.yPath)}
+              />
+            }
           />
         </Label>
         <Button
