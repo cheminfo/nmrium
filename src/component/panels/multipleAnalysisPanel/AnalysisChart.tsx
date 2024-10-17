@@ -1,20 +1,47 @@
 import { css } from '@emotion/react';
 import lodashGet from 'lodash/get.js';
+import type {
+  JpathTableColumn,
+  Spectrum,
+  WorkSpacePanelPreferences,
+} from 'nmr-load-save';
 import { useMemo, useRef, useState } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
-import { FaFileExport } from 'react-icons/fa';
+import { FaCopy, FaFileExport, FaFileImage } from 'react-icons/fa';
 import { Axis, LineSeries, Plot } from 'react-plot';
-import { Button } from 'react-science/ui';
+import { Button, Toolbar } from 'react-science/ui';
 
 import type { SpectraAnalysisData } from '../../../data/data1d/multipleSpectraAnalysis.js';
+import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents.js';
+import { useClipboard } from '../../../utils/clipboard/clipboardHooks.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import { Input2 } from '../../elements/Input2.js';
 import Label from '../../elements/Label.js';
+import { ToolbarPopoverItem } from '../../elements/ToolbarPopoverItem.js';
+import type { ToolbarPopoverMenuItem } from '../../elements/ToolbarPopoverItem.js';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus.js';
 import { copyPNGToClipboard } from '../../utility/export.js';
 import { getSpectraObjectPaths } from '../../utility/getSpectraObjectPaths.js';
+
+const MOL_EXPORT_MENU: ToolbarPopoverMenuItem[] = [
+  {
+    icon: <FaCopy />,
+    text: 'Copy chart to clipboard',
+    data: {
+      id: 'copyChart',
+    },
+  },
+  {
+    icon: <FaFileImage />,
+    text: 'Copy tab-delimited to clipboard',
+    data: {
+      id: 'copyData',
+    },
+  },
+];
 
 interface PlotAxisOptions {
   xPath: string;
@@ -43,12 +70,72 @@ function prepareAnalysisData(
   return spectraAnalysis;
 }
 
-function usePlotData(
-  analysisData: SpectraAnalysisData,
-  options: PlotAxisOptions & { paths: Record<string, string[]> },
-) {
-  const spectra = useSpectraByActiveNucleus();
+type PlotOptions = PlotAxisOptions & { paths: Record<string, string[]> };
 
+export function getPlotDataAsString(
+  spectraAnalysis: SpectraAnalysisData,
+  options: {
+    plotOptions: PlotOptions;
+    spectra: Spectrum[];
+    spectraPanelPreferences: WorkSpacePanelPreferences['spectra'];
+  },
+) {
+  const { plotOptions, spectra, spectraPanelPreferences } = options;
+  const { xPath, yPath } = plotOptions;
+
+  if (spectraAnalysis) {
+    const { xData, yData, xPathKeys, yPathKeys } = preparePlotData(
+      spectraAnalysis,
+      plotOptions,
+    );
+
+    const columnsLabels: string[] = [xPath || 'serial', yPath || 'serial'];
+    let headerIndex = 0;
+    // listed the spectra panel columns
+    for (const col of spectraPanelPreferences.columns) {
+      if (col.visible && 'jpath' in col) {
+        columnsLabels.splice(headerIndex, 0, col.label);
+        headerIndex++;
+      }
+    }
+
+    let result = `${columnsLabels.join('\t')}\n`;
+    let index = 0;
+
+    for (const spectrum of spectra) {
+      const cellsValues: string[] = [];
+
+      // listed the spectra cell values
+      for (const col of spectraPanelPreferences.columns) {
+        if (col.visible && 'jpath' in col) {
+          const jpath = (col as JpathTableColumn)?.jpath;
+          const value = lodashGet(spectrum, jpath, `null`);
+          cellsValues.push(value);
+        }
+      }
+
+      const x = xData
+        ? xData[spectrum.id]
+        : lodashGet(spectrum, xPathKeys, index);
+      const y = yData
+        ? yData[spectrum.id]
+        : lodashGet(spectrum, yPathKeys, index);
+
+      cellsValues.push(x, y);
+
+      result += `${cellsValues.join('\t')}\n`;
+      index++;
+    }
+
+    return result;
+  }
+  return null;
+}
+
+function preparePlotData(
+  analysisData: SpectraAnalysisData,
+  options: PlotOptions,
+) {
   const { yPath, xPath, paths } = options;
   const xPathKeys = paths?.[xPath];
   const yPathKeys = paths?.[yPath];
@@ -64,7 +151,18 @@ function usePlotData(
   if (analysisColumns.includes(yPath)) {
     yData = prepareAnalysisData(analysisData, yPath);
   }
+  return { xPathKeys, yPathKeys, xData, yData };
+}
 
+function usePlotData(
+  analysisData: SpectraAnalysisData,
+  options: { plotOption: PlotOptions; spectra: Spectrum[] },
+) {
+  const { spectra, plotOption } = options;
+  const { xData, yData, xPathKeys, yPathKeys } = preparePlotData(
+    analysisData,
+    plotOption,
+  );
   return spectra.map((spectrum, index) => {
     const x = xData
       ? xData[spectrum.id]
@@ -97,9 +195,17 @@ function getAnalysisColumnsPaths(spectraAnalysisData: SpectraAnalysisData) {
 
 export default function AnalysisChart(props: PlotChartPros) {
   const { spectraAnalysisData } = props;
-  const { data } = useChartData();
+  const {
+    data,
+    view: {
+      spectra: { activeTab },
+    },
+  } = useChartData();
   const dispatch = useDispatch();
   const toaster = useToaster();
+  const spectraPreferences = usePanelPreferences('spectra', activeTab);
+  const spectra = useSpectraByActiveNucleus();
+
   const chartParentRef = useRef<HTMLDivElement>(null);
   const [plotOptions, setPlotOptions] = useState<PlotAxisOptions>({
     xPath: '',
@@ -128,7 +234,7 @@ export default function AnalysisChart(props: PlotChartPros) {
     setPlotOptions((prevOptions) => ({ ...prevOptions, [name]: value }));
   }
 
-  function handleCopy() {
+  function handleCopyChart() {
     if (chartParentRef.current) {
       void copyPNGToClipboard(svgId, {
         rootElement: chartParentRef.current,
@@ -138,9 +244,43 @@ export default function AnalysisChart(props: PlotChartPros) {
     }
   }
 
-  const plotData = usePlotData(spectraAnalysisData, { ...plotOptions, paths });
+  const plotData = usePlotData(spectraAnalysisData, {
+    plotOption: { ...plotOptions, paths },
+    spectra,
+  });
   const xLabel = paths?.[plotOptions.xPath]?.at(-1) || '';
   const yLabel = paths?.[plotOptions.yPath]?.at(-1) || '';
+
+  const { rawWriteWithType, cleanShouldFallback, shouldFallback, text } =
+    useClipboard();
+
+  function handleCopyData() {
+    const data = getPlotDataAsString(spectraAnalysisData, {
+      plotOptions: { ...plotOptions, paths },
+      spectra,
+      spectraPanelPreferences: spectraPreferences,
+    });
+    if (!data) return;
+
+    void rawWriteWithType(data).then(() =>
+      toaster.show({ message: 'Data copied to clipboard', intent: 'success' }),
+    );
+  }
+
+  function exportHandler(selected) {
+    switch (selected?.id) {
+      case 'copyChart': {
+        handleCopyChart();
+        break;
+      }
+      case 'copyData': {
+        handleCopyData();
+        break;
+      }
+      default:
+        break;
+    }
+  }
 
   function handleSort(path) {
     dispatch({ type: 'SORT_SPECTRA', payload: { path } });
@@ -186,13 +326,14 @@ export default function AnalysisChart(props: PlotChartPros) {
             }
           />
         </Label>
-        <Button
-          intent="success"
-          icon={<FaFileExport />}
-          minimal
-          onClick={handleCopy}
-          tooltipProps={{ content: 'Copy chart to clipboard' }}
-        />
+        <Toolbar>
+          <ToolbarPopoverItem
+            options={MOL_EXPORT_MENU}
+            onClick={exportHandler}
+            tooltip="Export As"
+            icon={<FaFileExport />}
+          />
+        </Toolbar>
       </div>
       <div
         style={{
@@ -235,6 +376,12 @@ export default function AnalysisChart(props: PlotChartPros) {
           )}
         </ResponsiveChart>
       </div>
+      <ClipboardFallbackModal
+        mode={shouldFallback}
+        onDismiss={cleanShouldFallback}
+        text={text}
+        label="Spectra Analysis"
+      />
     </div>
   );
 }
