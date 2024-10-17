@@ -25,6 +25,7 @@ import {
   setSpectraAnalysisPanelsPreferences,
 } from './actions/analyzeSpectra';
 import { applyGeneralPreferences } from './actions/applyGeneralPreferences';
+import { changeExportSettings } from './actions/changeExportSettings';
 import { changeInformationBlockPosition } from './actions/changeInformationBlockPosition';
 import { changePrintPageSettings } from './actions/changePrintPageSettings';
 import { initPreferences } from './actions/initPreferences';
@@ -45,7 +46,6 @@ import { setVerticalSplitterPosition } from './actions/setVerticalSplitterPositi
 import { setWorkspace } from './actions/setWorkspace';
 import { toggleInformationBlock } from './actions/toggleInformationBlock';
 import { mapWorkspaces } from './utilities/mapWorkspaces';
-import { changeExportSettings } from './actions/changeExportSettings';
 
 const LOCAL_STORAGE_SETTINGS_KEY = 'nmr-general-settings';
 
