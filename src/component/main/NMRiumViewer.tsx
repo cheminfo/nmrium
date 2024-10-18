@@ -4,9 +4,9 @@ import Viewer1D from '../1d/Viewer1D';
 import FloatMoleculeStructures from '../1d-2d/components/FloatMoleculeStructures';
 import Viewer2D from '../2d/Viewer2D';
 import { useChartData } from '../context/ChartContext';
+import { useViewportSize } from '../hooks/useViewportSize';
 
 import { NMRiumProps } from './NMRium';
-import { useViewportSize } from '../hooks/useViewportSize';
 
 interface NMRiumViewerProps {
   emptyText: NMRiumProps['emptyText'];

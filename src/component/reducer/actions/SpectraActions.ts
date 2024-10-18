@@ -36,6 +36,7 @@ import {
 } from '../../../data/utilities/generateColor';
 import groupByInfoKey from '../../utility/GroupByInfoKey';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
+import nucleusToString from '../../utility/nucleusToString';
 import { State } from '../Reducer';
 import { setZoom } from '../helper/Zoom1DManager';
 import { getActiveSpectra } from '../helper/getActiveSpectra';
@@ -159,6 +160,19 @@ type UpdateSpectrumMetaAction = ActionType<
   }
 >;
 
+interface SortByPath {
+  path: string;
+  sort?: 'asc' | 'desc' | null;
+}
+
+interface SortByIds {
+  spectraIds: string[];
+}
+
+type SortOptions = SortByPath | SortByIds;
+
+type SortSpectraAction = ActionType<'SORT_SPECTRA', SortOptions>;
+
 export type SpectrumActions =
   | ActionType<'TOGGLE_SPECTRA_LEGEND'>
   | ChangeSpectrumVisibilityByIdAction
@@ -173,7 +187,8 @@ export type SpectrumActions =
   | ReColorSpectraBasedOnDistinctValueAction
   | OrderSpectraAction
   | SimulateSpectrumAction
-  | UpdateSpectrumMetaAction;
+  | UpdateSpectrumMetaAction
+  | SortSpectraAction;
 
 const { applyFilter } = FiltersManager;
 function checkIsVisible2D(datum: Spectrum2D): boolean {
@@ -781,6 +796,73 @@ function handleUpdateSpectrumMeta(
   draft.data[activeSpectrum.index].customInfo = meta;
 }
 
+function sortByPath(draft: Draft<State>, options: SortByPath) {
+  const { path, sort } = options;
+  const {
+    spectra: { activeTab },
+  } = draft.view;
+
+  const sortedSpectra: Array<{
+    spectrum: Spectrum;
+    sortValue: string | number;
+  }> = [];
+  const originIndexes: number[] = [];
+  for (let index = 0; index < draft.data.length; index++) {
+    const spectrum = draft.data[index];
+    if (nucleusToString(spectrum.info.nucleus) === activeTab) {
+      sortedSpectra.push({
+        spectrum,
+        sortValue: lodashGet(spectrum, path),
+      });
+      originIndexes.push(index);
+    }
+  }
+
+  sortedSpectra.sort((a, b) => {
+    if (sort !== null) {
+      if (typeof a.sortValue === 'string' && typeof b.sortValue === 'string') {
+        return sort === 'asc'
+          ? a.sortValue.localeCompare(b.sortValue)
+          : b.sortValue.localeCompare(a.sortValue);
+      }
+
+      if (typeof a.sortValue === 'number' && typeof b.sortValue === 'number') {
+        return sort === 'asc'
+          ? a.sortValue - b.sortValue
+          : b.sortValue - a.sortValue;
+      }
+
+      if (
+        typeof a.sortValue === 'boolean' &&
+        typeof b.sortValue === 'boolean'
+      ) {
+        const sign = sort === 'asc' ? 1 : -1;
+        return a.sortValue === b.sortValue
+          ? 0
+          : a.sortValue
+            ? sign * -1
+            : sign * 1;
+      }
+    }
+    return 0;
+  });
+
+  for (let index = 0; index < sortedSpectra.length; index++) {
+    draft.data[originIndexes[index]] = sortedSpectra[index].spectrum;
+  }
+}
+
+function isSortByPath(options: SortOptions): options is SortByPath {
+  return 'path' in options;
+}
+function handleSortSpectra(draft: Draft<State>, action: SortSpectraAction) {
+  const { payload: sortOptions } = action;
+
+  if (isSortByPath(sortOptions)) {
+    sortByPath(draft, sortOptions);
+  }
+}
+
 export {
   handleChangeSpectrumVisibilityById,
   handleChangeSpectraVisibilityByNucleus,
@@ -797,4 +879,5 @@ export {
   handleSimulateSpectrum,
   setSpectraMetaInfo,
   handleUpdateSpectrumMeta,
+  handleSortSpectra,
 };
