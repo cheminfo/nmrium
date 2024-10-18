@@ -285,7 +285,7 @@ export default function AnalysisChart(props: PlotChartPros) {
   }
 
   function handleSort(path) {
-    dispatch({ type: 'SORT_SPECTRA', payload: { path } });
+    dispatch({ type: 'SORT_SPECTRA', payload: { path, sort: 'asc' } });
   }
 
   const disabledXPath =
