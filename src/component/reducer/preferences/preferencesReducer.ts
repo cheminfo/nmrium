@@ -27,6 +27,7 @@ import {
 import { applyGeneralPreferences } from './actions/applyGeneralPreferences.js';
 import { changeExportSettings } from './actions/changeExportSettings.js';
 import { changeInformationBlockPosition } from './actions/changeInformationBlockPosition.js';
+import { changePeaksLabelPosition } from './actions/changePeaksLabelPosition.js';
 import { changePrintPageSettings } from './actions/changePrintPageSettings.js';
 import { initPreferences } from './actions/initPreferences.js';
 import type { MatrixGenerationActions } from './actions/matrixGeneration.js';
@@ -121,6 +122,7 @@ export type ChangeInformationBlockPosition = ActionType<
     coordination: { x: number; y: number };
   }
 >;
+
 export type ToggleInformationBlock = ActionType<
   'TOGGLE_INFORMATION_BLOCK',
   {
@@ -136,6 +138,12 @@ export type ChangeExportSettingsAction = ActionType<
   {
     key: keyof ExportPreferences;
     options: ExportSettings;
+  }
+>;
+export type ChangePeaksLabelPositionAction = ActionType<
+  'CHANGE_PEAKS_LABEL_POSITION',
+  {
+    marginTop: number;
   }
 >;
 
@@ -156,7 +164,8 @@ type PreferencesActions =
   | ChangeInformationBlockPosition
   | ToggleInformationBlock
   | ChangePrintPageSettingsAction
-  | ChangeExportSettingsAction;
+  | ChangeExportSettingsAction
+  | ChangePeaksLabelPositionAction;
 
 export const WORKSPACES: Array<{
   key: NMRiumWorkspace;
@@ -311,6 +320,8 @@ function innerPreferencesReducer(
       return changePrintPageSettings(draft, action);
     case 'CHANGE_EXPORT_SETTINGS':
       return changeExportSettings(draft, action);
+    case 'CHANGE_PEAKS_LABEL_POSITION':
+      return changePeaksLabelPosition(draft, action);
 
     default:
       return draft;

@@ -145,7 +145,6 @@ const getPeaksDefaultValues = (
     showEditPeakShapeAction: true,
     showKind: true,
   };
-
   return getPreferences(preferences, nucleus);
 };
 
