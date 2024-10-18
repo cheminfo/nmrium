@@ -1,6 +1,6 @@
-import { CustomWorkspaces } from 'nmr-load-save';
+import type { CustomWorkspaces } from 'nmr-load-save';
 
-import View from './View';
+import View from './View.js';
 
 const customWorkspaces: CustomWorkspaces = {
   metabo: {
@@ -93,6 +93,7 @@ const customWorkspaces: CustomWorkspaces = {
     },
     infoBlock: {
       visible: false,
+      position: { x: 0, y: 0 },
       fields: [
         { label: 'Name', jpath: ['info', 'name'], visible: true, format: '' },
         {
@@ -166,7 +167,6 @@ const customWorkspaces: CustomWorkspaces = {
       },
     },
     label: 'Metabolomics',
-    version: 1,
   },
 };
 

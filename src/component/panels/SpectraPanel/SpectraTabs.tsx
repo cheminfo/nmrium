@@ -1,18 +1,18 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { ActiveSpectrum, Spectrum } from 'nmr-load-save';
-import { useState, useMemo, memo, useCallback } from 'react';
+import type { ActiveSpectrum, Spectrum } from 'nmr-load-save';
+import { memo, useCallback, useMemo, useState } from 'react';
 
-import { useChartData } from '../../context/ChartContext';
-import { useDispatch } from '../../context/DispatchContext';
-import IsotopesViewer from '../../elements/IsotopesViewer';
-import Tab from '../../elements/Tab/Tab';
-import Tabs from '../../elements/Tab/Tabs';
-import { useSetActiveSpectrumAction } from '../../hooks/useSetActiveSpectrumAction';
-import groupByInfoKey from '../../utility/GroupByInfoKey';
+import { useChartData } from '../../context/ChartContext.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import IsotopesViewer from '../../elements/IsotopesViewer.js';
+import Tab from '../../elements/Tab/Tab.js';
+import Tabs from '../../elements/Tab/Tabs.js';
+import { useSetActiveSpectrumAction } from '../../hooks/useSetActiveSpectrumAction.js';
+import groupByInfoKey from '../../utility/GroupByInfoKey.js';
 
-import { SpectraTable } from './SpectraTable';
-import SpectrumSetting from './base/setting/SpectrumSetting';
+import { SpectraTable } from './SpectraTable.js';
+import SpectrumSetting from './base/setting/SpectrumSetting.js';
 
 interface SpectraTabsInnerProps {
   data: Spectrum[];

@@ -1,16 +1,16 @@
-import type { NmrData2DFt, NmrData2DFid } from 'cheminfo-types';
+import type { NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
 import { extent } from 'd3';
-import { Draft } from 'immer';
-import { Spectrum1D, Spectrum2D, NucleiPreferences } from 'nmr-load-save';
+import type { Draft } from 'immer';
+import type { NucleiPreferences, Spectrum1D, Spectrum2D } from 'nmr-load-save';
 
-import { get1DDataXY } from '../../../data/data1d/Spectrum1D/get1DDataXY';
-import { isSpectrum2D } from '../../../data/data2d/Spectrum2D';
-import nucleusToString from '../../utility/nucleusToString';
-import { State } from '../Reducer';
-import { addToBrushHistory } from '../helper/ZoomHistoryManager';
-import { getActiveSpectra } from '../helper/getActiveSpectra';
-import { getActiveSpectrum } from '../helper/getActiveSpectrum';
-import { ActionType } from '../types/ActionType';
+import { get1DDataXY } from '../../../data/data1d/Spectrum1D/get1DDataXY.js';
+import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.js';
+import nucleusToString from '../../utility/nucleusToString.js';
+import type { State } from '../Reducer.js';
+import { addToBrushHistory } from '../helper/ZoomHistoryManager.js';
+import { getActiveSpectra } from '../helper/getActiveSpectra.js';
+import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
+import type { ActionType } from '../types/ActionType.js';
 
 type SetAxisDomainAction = ActionType<
   'SET_AXIS_DOMAIN',

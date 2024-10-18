@@ -3,15 +3,15 @@ import { Button, DialogBody, DialogFooter, Tab, Tabs } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { SumOptions } from 'nmr-load-save';
+import type { SumOptions } from 'nmr-load-save';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
-import { usePreferences } from '../../context/PreferencesContext';
-import { NumberInput2Controller } from '../../elements/NumberInput2Controller';
+import { usePreferences } from '../../context/PreferencesContext.js';
+import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
 
-import SelectMolecule from './SelectMolecule';
+import SelectMolecule from './SelectMolecule.js';
 
 function getValidationSchema(option: SumSetOption) {
   if (option === 'auto') {

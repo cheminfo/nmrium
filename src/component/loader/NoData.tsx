@@ -1,7 +1,7 @@
-import { CSSProperties, ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 
-import { useLoader } from '../context/LoaderContext';
-import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
+import { useLoader } from '../context/LoaderContext.js';
+import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility.js';
 
 const styles: Record<'container' | 'text', CSSProperties> = {
   container: {

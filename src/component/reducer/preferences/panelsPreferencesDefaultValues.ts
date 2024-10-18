@@ -1,12 +1,12 @@
-import {
+import type {
   MatrixGenerationOptions,
   MultipleSpectraAnalysisPreferences,
   PanelsPreferences,
   SpectraPreferences,
 } from 'nmr-load-save';
 
-import { DeepPartial } from '../../../data/types/common/DeepPartial';
-import { is2DNucleus } from '../../utility/nucleusToString';
+import type { DeepPartial } from '../../../data/types/common/DeepPartial.js';
+import { is2DNucleus } from '../../utility/nucleusToString.js';
 
 function getPreferences<T>(data: T, nucleus?: string) {
   return { nuclei: { ...(nucleus ? { [nucleus]: data } : {}) } };

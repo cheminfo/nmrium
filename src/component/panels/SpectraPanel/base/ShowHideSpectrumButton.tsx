@@ -1,5 +1,5 @@
-import { Display1D, Display2D, Spectrum } from 'nmr-load-save';
-import { CSSProperties } from 'react';
+import type { Display1D, Display2D, Spectrum } from 'nmr-load-save';
+import type { CSSProperties } from 'react';
 import { FaEye } from 'react-icons/fa';
 
 const buttonStyle: CSSProperties = {

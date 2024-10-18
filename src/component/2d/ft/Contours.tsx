@@ -1,20 +1,20 @@
-import debounce from 'lodash/debounce';
-import get from 'lodash/get';
-import { Spectrum2D } from 'nmr-load-save';
+import debounce from 'lodash/debounce.js';
+import get from 'lodash/get.js';
+import type { Spectrum2D } from 'nmr-load-save';
 import { memo, useMemo, useRef } from 'react';
 
+import type { LevelSign } from '../../../data/data2d/Spectrum2D/contours.js';
 import {
   drawContours,
   getDefaultContoursLevel,
-  LevelSign,
-} from '../../../data/data2d/Spectrum2D/contours';
-import { useChartData } from '../../context/ChartContext';
-import { usePreferences } from '../../context/PreferencesContext';
-import { useToaster } from '../../context/ToasterContext';
-import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
-import { PathBuilder } from '../../utility/PathBuilder';
-import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
-import { useScale2DX, useScale2DY } from '../utilities/scale';
+} from '../../../data/data2d/Spectrum2D/contours.js';
+import { useChartData } from '../../context/ChartContext.js';
+import { usePreferences } from '../../context/PreferencesContext.js';
+import { useToaster } from '../../context/ToasterContext.js';
+import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.js';
+import { PathBuilder } from '../../utility/PathBuilder.js';
+import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus.js';
+import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 
 interface ContoursPathsProps {
   id: string;

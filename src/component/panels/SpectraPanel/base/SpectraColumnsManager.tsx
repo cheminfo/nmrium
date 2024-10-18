@@ -1,14 +1,15 @@
 import { Checkbox, Classes } from '@blueprintjs/core';
-import { SpectraTableColumn } from 'nmr-load-save';
+import type { SpectraTableColumn } from 'nmr-load-save';
 import { useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
 
-import { InputStyle } from '../../../elements/Input';
-import { Input2Controller } from '../../../elements/Input2Controller';
-import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
-import { convertPathArrayToString } from '../../../utility/convertPathArrayToString';
+import type { InputStyle } from '../../../elements/Input.js';
+import { Input2Controller } from '../../../elements/Input2Controller.js';
+import type { Column } from '../../../elements/ReactTable/ReactTable.js';
+import ReactTable from '../../../elements/ReactTable/ReactTable.js';
+import { convertPathArrayToString } from '../../../utility/convertPathArrayToString.js';
 
 const inputStyle: InputStyle = {
   input: {

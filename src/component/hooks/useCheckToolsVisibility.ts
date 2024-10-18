@@ -1,14 +1,15 @@
-import lodashGet from 'lodash/get';
-import { NMRiumToolBarPreferences } from 'nmr-load-save';
-import { Info1D, Info2D } from 'nmr-processing';
+import lodashGet from 'lodash/get.js';
+import type { NMRiumToolBarPreferences } from 'nmr-load-save';
+import type { Info1D, Info2D } from 'nmr-processing';
 import { useCallback } from 'react';
 
-import { useChartData } from '../context/ChartContext';
-import { usePreferences } from '../context/PreferencesContext';
-import { options, ToolOptionItem } from '../toolbar/ToolTypes';
+import { useChartData } from '../context/ChartContext.js';
+import { usePreferences } from '../context/PreferencesContext.js';
+import type { ToolOptionItem } from '../toolbar/ToolTypes.js';
+import { options } from '../toolbar/ToolTypes.js';
 
-import useCheckExperimentalFeature from './useCheckExperimentalFeature';
-import useSpectrum from './useSpectrum';
+import useCheckExperimentalFeature from './useCheckExperimentalFeature.js';
+import useSpectrum from './useSpectrum.js';
 
 type SpectrumInfo = Info1D | Info2D;
 

@@ -1,7 +1,7 @@
-import React, { CSSProperties } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 
 interface PreferencesContainerProps {
-  children: React.ReactNode;
+  children: ReactNode;
   style?: CSSProperties;
 }
 

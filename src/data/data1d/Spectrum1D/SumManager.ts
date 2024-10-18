@@ -1,17 +1,17 @@
-import { Draft } from 'immer';
+import type { Draft } from 'immer';
 import { MF } from 'mf-parser';
-import { Spectrum1D } from 'nmr-load-save';
-import { Integrals, Ranges, SumOptions } from 'nmr-processing';
+import type { Spectrum1D } from 'nmr-load-save';
+import type { Integrals, Ranges, SumOptions } from 'nmr-processing';
 
-import { State } from '../../../component/reducer/Reducer';
-import { StateMoleculeExtended } from '../../molecules/Molecule';
-import getAtom from '../../utilities/getAtom';
+import type { State } from '../../../component/reducer/Reducer.js';
+import type { StateMoleculeExtended } from '../../molecules/Molecule.js';
+import getAtom from '../../utilities/getAtom.js';
 
 import {
   isSpectrum1D,
-  updateRangesRelativeValues,
   updateIntegralsRelativeValues,
-} from '.';
+  updateRangesRelativeValues,
+} from './index.js';
 
 export interface SumParams {
   nucleus: string;

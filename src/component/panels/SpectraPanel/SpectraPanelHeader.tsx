@@ -1,24 +1,23 @@
-import { SvgNmrSameTop, SvgNmrResetScale } from 'cheminfo-font';
-import { ActiveSpectrum, Spectrum, Spectrum2D } from 'nmr-load-save';
+import { SvgNmrResetScale, SvgNmrSameTop } from 'cheminfo-font';
+import type { ActiveSpectrum, Spectrum, Spectrum2D } from 'nmr-load-save';
 import { memo, useCallback } from 'react';
 import { FaCreativeCommonsSamplingPlus } from 'react-icons/fa';
 import { IoColorPaletteOutline } from 'react-icons/io5';
 import { MdFormatColorFill } from 'react-icons/md';
 
-import { useChartData } from '../../context/ChartContext';
-import { useDispatch } from '../../context/DispatchContext';
-import { usePreferences } from '../../context/PreferencesContext';
-import { useToaster } from '../../context/ToasterContext';
-import { useAlert } from '../../elements/Alert';
-import { useActiveSpectra } from '../../hooks/useActiveSpectra';
-import useSpectrum from '../../hooks/useSpectrum';
-import { useToggleSpectraVisibility } from '../../hooks/useToggleSpectraVisibility';
-import { DisplayerMode } from '../../reducer/Reducer';
-import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
-import DefaultPanelHeader, {
-  ToolbarItemProps,
-} from '../header/DefaultPanelHeader';
-import { SpectraAutomaticPickingButton } from '../header/SpectraAutomaticPickingButton';
+import { useChartData } from '../../context/ChartContext.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { usePreferences } from '../../context/PreferencesContext.js';
+import { useToaster } from '../../context/ToasterContext.js';
+import { useAlert } from '../../elements/Alert.js';
+import { useActiveSpectra } from '../../hooks/useActiveSpectra.js';
+import useSpectrum from '../../hooks/useSpectrum.js';
+import { useToggleSpectraVisibility } from '../../hooks/useToggleSpectraVisibility.js';
+import type { DisplayerMode } from '../../reducer/Reducer.js';
+import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus.js';
+import type { ToolbarItemProps } from '../header/DefaultPanelHeader.js';
+import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
+import { SpectraAutomaticPickingButton } from '../header/SpectraAutomaticPickingButton.js';
 
 function getMissingProjection(spectraData, activeTab) {
   let nucleus = activeTab.split(',');

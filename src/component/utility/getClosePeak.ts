@@ -1,8 +1,8 @@
-import { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from 'nmr-load-save';
 
-import { get1DDataXY } from '../../data/data1d/Spectrum1D';
+import { get1DDataXY } from '../../data/data1d/Spectrum1D/index.js';
 
-import { maxAbsoluteValue } from './maxAbsoluteValue';
+import { maxAbsoluteValue } from './maxAbsoluteValue.js';
 
 interface PeakPosition {
   x: number;

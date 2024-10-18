@@ -1,14 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import {
-  getLinkDelta,
-  getLinkDim,
+import type {
   Correlation,
-  Values as CorrelationValues,
-  Options as CorrelationOptions,
   Link,
+  Options as CorrelationOptions,
+  Values as CorrelationValues,
 } from 'nmr-correlation';
-import { Spectrum1D, Spectrum2D } from 'nmr-load-save';
+import { getLinkDelta, getLinkDim } from 'nmr-correlation';
+import type { Spectrum1D, Spectrum2D } from 'nmr-load-save';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { FaFlask, FaSlidersH } from 'react-icons/fa';
 
@@ -18,25 +17,25 @@ import {
   findSignal2D,
   findSpectrum,
   findZone,
-} from '../../../data/utilities/FindUtilities';
-import { useAssignmentData } from '../../assignment/AssignmentsContext';
-import { useChartData } from '../../context/ChartContext';
-import { useDispatch } from '../../context/DispatchContext';
-import { withDialog } from '../../elements/DialogManager';
-import Select from '../../elements/Select';
-import { useDialogToggle } from '../../hooks/useDialogToggle';
-import DefaultPanelHeader from '../header/DefaultPanelHeader';
+} from '../../../data/utilities/FindUtilities.js';
+import { useAssignmentData } from '../../assignment/AssignmentsContext.js';
+import { useChartData } from '../../context/ChartContext.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { withDialog } from '../../elements/DialogManager.js';
+import Select from '../../elements/Select.js';
+import { useDialogToggle } from '../../hooks/useDialogToggle.js';
+import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
 
-import CorrelationTable from './CorrelationTable/CorrelationTable';
-import { EditLinkModal } from './CorrelationTable/editLink/EditLinkModal';
-import Overview from './Overview';
-import { SetMolecularFormulaModal } from './SetMolecularFormulaModal';
-import { SetShiftToleranceModal } from './SetShiftTolerancesModal';
+import CorrelationTable from './CorrelationTable/CorrelationTable.js';
+import { EditLinkModal } from './CorrelationTable/editLink/EditLinkModal.js';
+import Overview from './Overview.js';
+import { SetMolecularFormulaModal } from './SetMolecularFormulaModal.js';
+import { SetShiftToleranceModal } from './SetShiftTolerancesModal.js';
 import {
   findSignalMatch1D,
   findSignalMatch2D,
   getAtomType,
-} from './utilities/Utilities';
+} from './utilities/Utilities.js';
 
 type EditCorrelationAction =
   | 'add'

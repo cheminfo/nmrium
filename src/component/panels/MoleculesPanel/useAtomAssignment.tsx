@@ -1,27 +1,31 @@
-import { Range, Ranges, Zone, Zones } from 'nmr-processing';
-import { DiaIDAndInfo } from 'openchemlib-utils';
-import { MouseEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import type { Range, Ranges, Zone, Zones } from 'nmr-processing';
+import type { DiaIDAndInfo } from 'openchemlib-utils';
+import type { MouseEvent } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { ConcatenationString } from '../../../data/utilities/Concatenation';
-import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated';
+import { ConcatenationString } from '../../../data/utilities/Concatenation.js';
+import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated.js';
 import {
   useAssignment,
   useAssignmentData,
-} from '../../assignment/AssignmentsContext';
-import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment';
-import { useDispatch } from '../../context/DispatchContext';
-import { useToaster } from '../../context/ToasterContext';
-import { HighlightEventSource, useHighlightData } from '../../highlight';
-import { DisplayerMode } from '../../reducer/Reducer';
-
+} from '../../assignment/AssignmentsContext.js';
+import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { useToaster } from '../../context/ToasterContext.js';
 import {
-  AtomData,
+  HighlightEventSource,
+  useHighlightData,
+} from '../../highlight/index.js';
+import type { DisplayerMode } from '../../reducer/Reducer.js';
+
+import type { AtomData } from './Utilities.js';
+import {
   extractFromAtom,
   findDatumAndSignalIndex,
   getCurrentDiaIDsToHighlight,
   getHighlightsOnHover,
   toggleDiaIDs,
-} from './Utilities';
+} from './Utilities.js';
 
 interface UseAtomAssignmentProps {
   displayerMode: DisplayerMode;

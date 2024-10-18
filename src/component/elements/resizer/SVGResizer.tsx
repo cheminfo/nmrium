@@ -1,9 +1,9 @@
 /* eslint-disable react/no-unused-prop-types */
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
 
-import useResizer from './useResizer';
+import useResizer from './useResizer.js';
 
 const style: Record<'anchor' | 'innerContainer', CSSProperties> = {
   anchor: {

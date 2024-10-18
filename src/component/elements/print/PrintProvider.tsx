@@ -1,6 +1,7 @@
-import { createContext, ReactNode, useContext, useMemo } from 'react';
+import type { ReactNode } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 
-interface PrintPagContextProps {
+export interface PrintPagContextProps {
   width: number;
   height: number;
 }

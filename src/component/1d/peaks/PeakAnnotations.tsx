@@ -1,17 +1,12 @@
-import { useChartData } from '../../context/ChartContext';
-import { useScaleChecked } from '../../context/ScaleContext';
-import { useHighlight } from '../../highlight';
-import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
-import { formatNumber } from '../../utility/formatNumber';
+import { useChartData } from '../../context/ChartContext.js';
+import { useScaleChecked } from '../../context/ScaleContext.js';
+import { useHighlight } from '../../highlight/index.js';
+import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.js';
+import { formatNumber } from '../../utility/formatNumber.js';
 
-import { PeakEditionListener } from './PeakEditionManager';
-import {
-  Peak,
-  PeaksAnnotationsProps,
-  PeaksSource,
-  getHighlightExtraId,
-  getHighlightSource,
-} from './Peaks';
+import { PeakEditionListener } from './PeakEditionManager.js';
+import type { Peak, PeaksAnnotationsProps, PeaksSource } from './Peaks.js';
+import { getHighlightExtraId, getHighlightSource } from './Peaks.js';
 
 function PeakAnnotations(props: PeaksAnnotationsProps) {
   const { peaks, peaksSource, spectrumId, peakFormat } = props;

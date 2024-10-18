@@ -1,9 +1,9 @@
-import { WebSource } from 'filelist-utils';
-import { CorrelationData } from 'nmr-correlation';
+import type { WebSource } from 'filelist-utils';
+import type { CorrelationData } from 'nmr-correlation';
 import type {
   NmriumState as NMRiumState,
-  WorkspacePreferences as NMRiumPreferences,
   Spectrum,
+  WorkspacePreferences as NMRiumPreferences,
 } from 'nmr-load-save';
 
 type DeepPartial<T> = {

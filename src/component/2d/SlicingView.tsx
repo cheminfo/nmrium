@@ -1,13 +1,13 @@
-import { Spectrum2D } from 'nmr-load-save';
+import type { Spectrum2D } from 'nmr-load-save';
 
-import { getSlice } from '../../data/data2d/Spectrum2D';
-import { useMouseTracker } from '../EventsTrackers/MouseTracker';
-import { useChartData } from '../context/ChartContext';
-import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
+import { getSlice } from '../../data/data2d/Spectrum2D/index.js';
+import { useMouseTracker } from '../EventsTrackers/MouseTracker.js';
+import { useChartData } from '../context/ChartContext.js';
+import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
 
-import HorizontalSliceChart from './1d-tracer/HorizontalSliceChart';
-import VerticalSliceChart from './1d-tracer/VerticalSliceChart';
-import { useScale2DX, useScale2DY } from './utilities/scale';
+import HorizontalSliceChart from './1d-tracer/HorizontalSliceChart.js';
+import VerticalSliceChart from './1d-tracer/VerticalSliceChart.js';
+import { useScale2DX, useScale2DY } from './utilities/scale.js';
 
 function SlicingView() {
   const { width, height, margin, data: spectra } = useChartData();

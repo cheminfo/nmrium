@@ -1,22 +1,22 @@
 /** @jsxImportSource @emotion/react */
 import { Classes } from '@blueprintjs/core';
-import lodashGet from 'lodash/get';
-import { useMemo, memo, CSSProperties } from 'react';
+import lodashGet from 'lodash/get.js';
+import type { CSSProperties } from 'react';
+import { memo, useMemo } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 import { FaDownload, FaMinus, FaPlus } from 'react-icons/fa';
 import { IdcodeSvgRenderer, SmilesSvgRenderer } from 'react-ocl/full';
 import { Button } from 'react-science/ui';
 
-import { PrepareDataResult } from '../../../data/data1d/database';
-import { ColumnWrapper } from '../../elements/ColumnWrapper';
-import ReactTable from '../../elements/ReactTable/ReactTable';
-import addCustomColumn, {
-  CustomColumn,
-} from '../../elements/ReactTable/utility/addCustomColumn';
-import { HighlightEventSource } from '../../highlight';
-import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus';
-import { formatNumber } from '../../utility/formatNumber';
+import type { PrepareDataResult } from '../../../data/data1d/database.js';
+import { ColumnWrapper } from '../../elements/ColumnWrapper.js';
+import ReactTable from '../../elements/ReactTable/ReactTable.js';
+import type { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn.js';
+import addCustomColumn from '../../elements/ReactTable/utility/addCustomColumn.js';
+import { HighlightEventSource } from '../../highlight/index.js';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
+import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus.js';
+import { formatNumber } from '../../utility/formatNumber.js';
 
 interface ToggleEvent {
   onAdd: (row: any) => void;

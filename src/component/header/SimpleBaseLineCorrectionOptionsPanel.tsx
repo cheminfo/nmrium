@@ -1,21 +1,22 @@
 import { Checkbox } from '@blueprintjs/core';
 import { Select } from '@blueprintjs/select';
-import { Filter, Filters } from 'nmr-processing';
+import type { Filter } from 'nmr-processing';
+import { Filters } from 'nmr-processing';
 import { memo } from 'react';
 import { Button } from 'react-science/ui';
 
-import ActionButtons from '../elements/ActionButtons';
-import Label from '../elements/Label';
-import { NumberInput2Controller } from '../elements/NumberInput2Controller';
-import { useFilter } from '../hooks/useFilter';
+import ActionButtons from '../elements/ActionButtons.js';
+import Label from '../elements/Label.js';
+import { NumberInput2Controller } from '../elements/NumberInput2Controller.js';
+import { useFilter } from '../hooks/useFilter.js';
 import {
   baselineCorrectionsAlgorithms,
   getBaselineData,
   useBaselineCorrection,
-} from '../panels/filtersPanel/Filters/hooks/useBaselineCorrection';
+} from '../panels/filtersPanel/Filters/hooks/useBaselineCorrection.js';
 
-import { headerLabelStyle } from './Header';
-import { HeaderWrapper } from './HeaderWrapper';
+import { headerLabelStyle } from './Header.js';
+import { HeaderWrapper } from './HeaderWrapper.js';
 
 interface BaseLineCorrectionInnerPanelProps {
   filter: Filter | null;

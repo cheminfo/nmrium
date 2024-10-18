@@ -3,12 +3,12 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
-import { useDispatch } from '../context/DispatchContext';
-import Label from '../elements/Label';
-import { NumberInput2Controller } from '../elements/NumberInput2Controller';
+import { useDispatch } from '../context/DispatchContext.js';
+import Label from '../elements/Label.js';
+import { NumberInput2Controller } from '../elements/NumberInput2Controller.js';
 
-import { headerLabelStyle } from './Header';
-import { HeaderWrapper } from './HeaderWrapper';
+import { headerLabelStyle } from './Header.js';
+import { HeaderWrapper } from './HeaderWrapper.js';
 
 const validationSchema = Yup.object().shape({
   zonesNoiseFactor: Yup.number().integer().min(0).required(),

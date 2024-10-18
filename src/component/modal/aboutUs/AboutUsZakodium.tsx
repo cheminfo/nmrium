@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
-import { MouseEvent } from 'react';
+import type { MouseEvent } from 'react';
 import { Button, useOnOff } from 'react-science/ui';
 
-import { useDispatch } from '../../context/DispatchContext';
+import { useDispatch } from '../../context/DispatchContext.js';
 
 export default function AboutUsZakodium() {
   const [isSecretOpen, openSecret] = useOnOff();

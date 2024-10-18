@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { useChartData } from '../context/ChartContext';
+import { useChartData } from '../context/ChartContext.js';
 
 export default function useNucleus() {
   const {

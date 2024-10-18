@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-import {
+import type {
   DropDownListItem,
   DropDownListProps,
   ItemProps,
-} from './DropDownButton';
+} from './DropDownButton.js';
 
 const styles = {
   ul: css`

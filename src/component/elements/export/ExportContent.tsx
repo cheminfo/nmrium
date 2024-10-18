@@ -1,14 +1,15 @@
 /** @jsxImportSource @emotion/react */
-import { ExportSettings } from 'nmr-load-save';
-import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import type { ExportSettings } from 'nmr-load-save';
+import type { ReactNode } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-import { ExportOptionsModal } from './ExportOptionsModal';
-import { ExportSettingsProvider } from './ExportSettingsProvider';
-import { RenderDetector } from './RenderDetector';
-import { INITIAL_BASIC_EXPORT_OPTIONS } from './utilities/getExportOptions';
-import { getSizeInPixel } from './utilities/getSizeInPixel';
-import { transferDocumentStyles } from './utilities/transferDocumentStyles';
+import { ExportOptionsModal } from './ExportOptionsModal.js';
+import { ExportSettingsProvider } from './ExportSettingsProvider.js';
+import { RenderDetector } from './RenderDetector.js';
+import { INITIAL_BASIC_EXPORT_OPTIONS } from './utilities/getExportOptions.js';
+import { getSizeInPixel } from './utilities/getSizeInPixel.js';
+import { transferDocumentStyles } from './utilities/transferDocumentStyles.js';
 
 const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
 

@@ -1,15 +1,17 @@
 /** @jsxImportSource @emotion/react */
 import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
 import { css } from '@emotion/react';
-import { Spectrum } from 'nmr-load-save';
+import type { Spectrum } from 'nmr-load-save';
 import { useRef } from 'react';
 
-import { DataExportStage, exportAsJcamp } from '../../data/SpectraManager';
-import { useToaster } from '../context/ToasterContext';
-import ActionButtons from '../elements/ActionButtons';
-import Label, { LabelStyle } from '../elements/Label';
-import { Select2 } from '../elements/Select2';
-import useSpectrum from '../hooks/useSpectrum';
+import type { DataExportStage } from '../../data/SpectraManager.js';
+import { exportAsJcamp } from '../../data/SpectraManager.js';
+import { useToaster } from '../context/ToasterContext.js';
+import ActionButtons from '../elements/ActionButtons.js';
+import type { LabelStyle } from '../elements/Label.js';
+import Label from '../elements/Label.js';
+import { Select2 } from '../elements/Select2.js';
+import useSpectrum from '../hooks/useSpectrum.js';
 
 interface ExportDataTypeItem {
   label: string;

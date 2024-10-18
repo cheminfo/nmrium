@@ -1,5 +1,6 @@
 import { Molecule as OCLMolecule } from 'openchemlib/full';
-import { CSSProperties, ReactNode, useCallback } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
+import { useCallback } from 'react';
 import {
   FaCopy,
   FaDownload,
@@ -12,26 +13,24 @@ import {
 import { IoOpenOutline } from 'react-icons/io5';
 import { Toolbar } from 'react-science/ui';
 
-import {
+import type {
   MoleculesView,
   StateMoleculeExtended,
-} from '../../../data/molecules/Molecule';
-import { getMolecules } from '../../../data/molecules/MoleculeManager';
-import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents';
-import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
-import { useAssignmentData } from '../../assignment/AssignmentsContext';
-import { useDispatch } from '../../context/DispatchContext';
-import { useGlobal } from '../../context/GlobalContext';
-import { useToaster } from '../../context/ToasterContext';
-import { PreferencesButton } from '../../elements/PreferencesButton';
-import {
-  ToolbarPopoverItem,
-  ToolbarPopoverMenuItem,
-} from '../../elements/ToolbarPopoverItem';
-import AboutPredictionModal from '../../modal/AboutPredictionModal';
-import PredictSpectraModal from '../../modal/PredictSpectraModal';
-import { copyPNGToClipboard, exportAsSVG } from '../../utility/export';
-import PanelHeader from '../header/PanelHeader';
+} from '../../../data/molecules/Molecule.js';
+import { getMolecules } from '../../../data/molecules/MoleculeManager.js';
+import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents.js';
+import { useClipboard } from '../../../utils/clipboard/clipboardHooks.js';
+import { useAssignmentData } from '../../assignment/AssignmentsContext.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { useGlobal } from '../../context/GlobalContext.js';
+import { useToaster } from '../../context/ToasterContext.js';
+import { PreferencesButton } from '../../elements/PreferencesButton.js';
+import type { ToolbarPopoverMenuItem } from '../../elements/ToolbarPopoverItem.js';
+import { ToolbarPopoverItem } from '../../elements/ToolbarPopoverItem.js';
+import AboutPredictionModal from '../../modal/AboutPredictionModal.js';
+import PredictSpectraModal from '../../modal/PredictSpectraModal.js';
+import { copyPNGToClipboard, exportAsSVG } from '../../utility/export.js';
+import PanelHeader from '../header/PanelHeader.js';
 
 const styles: Record<'counter' | 'atomLabel', CSSProperties> = {
   counter: {

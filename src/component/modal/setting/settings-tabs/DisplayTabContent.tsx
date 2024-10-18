@@ -1,11 +1,11 @@
 import { Checkbox } from '@blueprintjs/core';
-import { NMRiumPanelPreferences } from 'nmr-load-save';
+import type { NMRiumPanelPreferences } from 'nmr-load-save';
 import { useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import ReactTable from '../../../elements/ReactTable/ReactTable';
-import { CustomColumn } from '../../../elements/ReactTable/utility/addCustomColumn';
-import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer';
+import ReactTable from '../../../elements/ReactTable/ReactTable.js';
+import type { CustomColumn } from '../../../elements/ReactTable/utility/addCustomColumn.js';
+import type { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
 
 interface ListItem {
   label: string;

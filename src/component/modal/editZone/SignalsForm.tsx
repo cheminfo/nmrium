@@ -2,11 +2,11 @@
 import { Tab, Tabs } from '@blueprintjs/core';
 import { useFormContext, useWatch } from 'react-hook-form';
 
-import DefaultPathLengths from '../../../data/constants/DefaultPathLengths';
-import IsotopesViewer from '../../elements/IsotopesViewer';
-import Label from '../../elements/Label';
-import { NumberInput2Controller } from '../../elements/NumberInput2Controller';
-import { TabTitle } from '../../elements/TabTitle';
+import DefaultPathLengths from '../../../data/constants/DefaultPathLengths.js';
+import IsotopesViewer from '../../elements/IsotopesViewer.js';
+import Label from '../../elements/Label.js';
+import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
+import { TabTitle } from '../../elements/TabTitle.js';
 
 export function SignalsForm() {
   const {

@@ -1,28 +1,28 @@
 /** @jsxImportSource @emotion/react */
 import { Select } from '@blueprintjs/select';
-import { css } from '@emotion/react';
 import { Filters } from 'nmr-processing';
-import { CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
 import { FaRulerHorizontal, FaRulerVertical } from 'react-icons/fa';
 import { MdLooksTwo } from 'react-icons/md';
 import { Button, Toolbar } from 'react-science/ui';
 
-import InputRange from '../../../elements/InputRange';
-import Label, { LabelStyle } from '../../../elements/Label';
-import { NumberInput2 } from '../../../elements/NumberInput2';
-import { ReadOnly } from '../../../elements/ReadOnly';
-import { Sections } from '../../../elements/Sections';
-import { useFilter } from '../../../hooks/useFilter';
+import InputRange from '../../../elements/InputRange.js';
+import type { LabelStyle } from '../../../elements/Label.js';
+import Label from '../../../elements/Label.js';
+import { NumberInput2 } from '../../../elements/NumberInput2.js';
+import { ReadOnly } from '../../../elements/ReadOnly.js';
+import { Sections } from '../../../elements/Sections.js';
+import { useFilter } from '../../../hooks/useFilter.js';
 
-import { FilterActionButtons } from './FilterActionButtons';
-import { HeaderContainer, StickyHeader } from './InnerFilterHeader';
+import { FilterActionButtons } from './FilterActionButtons.js';
+import { HeaderContainer, StickyHeader } from './InnerFilterHeader.js';
+import type { AlgorithmItem } from './hooks/usePhaseCorrectionTwoDimensions.js';
 import {
   phaseCorrectionalAlgorithms,
   usePhaseCorrectionTwoDimensions,
-  AlgorithmItem,
-} from './hooks/usePhaseCorrectionTwoDimensions';
+} from './hooks/usePhaseCorrectionTwoDimensions.js';
 
-import { BaseFilterOptionsPanelProps } from '.';
+import type { BaseFilterOptionsPanelProps } from './index.js';
 
 const inputRangeStyle: CSSProperties = {
   padding: '5px 10px',
@@ -84,18 +84,12 @@ export default function PhaseCorrectionTwoDimensionsOptionsPanel(
                   <Label title="Direction:">
                     <Toolbar>
                       <Toolbar.Item
-                        css={css`
-                          border: 1px solid #f7f7f7;
-                        `}
                         tooltip="Horizontal"
                         icon={<FaRulerHorizontal />}
                         active={activeTraceDirection === 'horizontal'}
                         onClick={() => onChangeHandler('horizontal')}
                       />
                       <Toolbar.Item
-                        css={css`
-                          border: 1px solid #f7f7f7;
-                        `}
                         tooltip="Vertical"
                         icon={<FaRulerVertical />}
                         active={activeTraceDirection === 'vertical'}

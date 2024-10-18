@@ -1,6 +1,6 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
-import NMriumPage from '../NmriumPage';
+import NMriumPage from '../NmriumPage/index.js';
 
 test('should Change the visibility of the panels', async ({ page }) => {
   const nmrium = await NMriumPage.create(page);

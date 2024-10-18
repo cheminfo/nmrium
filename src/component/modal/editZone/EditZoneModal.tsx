@@ -2,20 +2,20 @@
 import { Button, DialogBody, DialogFooter } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { FromTo } from 'cheminfo-types';
-import { Signal2D } from 'nmr-processing';
+import type { FromTo } from 'cheminfo-types';
+import type { Signal2D } from 'nmr-processing';
 import { FormProvider, useForm } from 'react-hook-form';
 import { FaSearchPlus } from 'react-icons/fa';
 import * as Yup from 'yup';
 
-import DefaultPathLengths from '../../../data/constants/DefaultPathLengths';
-import { DialogProps } from '../../elements/DialogManager';
-import { DraggableDialog } from '../../elements/DraggableDialog';
-import { ZoneData } from '../../panels/ZonesPanel/hooks/useMapZones';
-import { useZoneActions } from '../../panels/ZonesPanel/hooks/useZoneActions';
+import DefaultPathLengths from '../../../data/constants/DefaultPathLengths.js';
+import type { DialogProps } from '../../elements/DialogManager.js';
+import { DraggableDialog } from '../../elements/DraggableDialog.js';
+import type { ZoneData } from '../../panels/ZonesPanel/hooks/useMapZones.js';
+import { useZoneActions } from '../../panels/ZonesPanel/hooks/useZoneActions.js';
 
-import { SignalsForm } from './SignalsForm';
-import { isDefaultPathLength } from './validation/isDefaultPathLength';
+import { SignalsForm } from './SignalsForm.js';
+import { isDefaultPathLength } from './validation/isDefaultPathLength.js';
 
 interface FormData {
   activeTab: string;

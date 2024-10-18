@@ -1,21 +1,20 @@
-import { ExportPreferences, ExportSettings } from 'nmr-load-save';
+import type { ExportPreferences, ExportSettings } from 'nmr-load-save';
+import type { ReactNode, RefObject } from 'react';
 import {
   createContext,
-  ReactNode,
-  RefObject,
   useContext,
   useImperativeHandle,
   useRef,
   useState,
 } from 'react';
 
-import { useChartData } from '../../context/ChartContext';
-import { usePreferences } from '../../context/PreferencesContext';
-import { useExportViewPort } from '../../hooks/useExport';
-import { useWorkspaceExportSettings } from '../../hooks/useWorkspaceExportSettings';
+import { useChartData } from '../../context/ChartContext.js';
+import { usePreferences } from '../../context/PreferencesContext.js';
+import { useExportViewPort } from '../../hooks/useExport.js';
+import { useWorkspaceExportSettings } from '../../hooks/useWorkspaceExportSettings.js';
 
-import { ExportContent } from './ExportContent';
-import { getSizeInPixel } from './utilities/getSizeInPixel';
+import { ExportContent } from './ExportContent.js';
+import { getSizeInPixel } from './utilities/getSizeInPixel.js';
 
 export type ExportFormat = 'png' | 'svg';
 export type ExportDestination = 'file' | 'clipboard';

@@ -1,19 +1,20 @@
 import { Button, Classes } from '@blueprintjs/core';
 import { v4 } from '@lukeed/uuid';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import { Spectrum1D } from 'nmr-load-save';
-import { Peak1D, getShiftX } from 'nmr-processing';
-import { CSSProperties, useCallback, useMemo, useRef } from 'react';
+import type { Spectrum1D } from 'nmr-load-save';
+import type { Peak1D } from 'nmr-processing';
+import { getShiftX } from 'nmr-processing';
+import type { CSSProperties } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Toolbar } from 'react-science/ui';
 
-import { NumberInput2Controller } from '../../../../../elements/NumberInput2Controller';
-import ReactTable, {
-  Column,
-} from '../../../../../elements/ReactTable/ReactTable';
-import useSpectrum from '../../../../../hooks/useSpectrum';
-import { useEvent } from '../../../../../utility/Events';
+import { NumberInput2Controller } from '../../../../../elements/NumberInput2Controller.js';
+import type { Column } from '../../../../../elements/ReactTable/ReactTable.js';
+import ReactTable from '../../../../../elements/ReactTable/ReactTable.js';
+import useSpectrum from '../../../../../hooks/useSpectrum.js';
+import { useEvent } from '../../../../../utility/Events.js';
 
 const styles: Record<'input' | 'column', CSSProperties> = {
   input: {

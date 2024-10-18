@@ -1,13 +1,16 @@
 import { v4 } from '@lukeed/uuid';
-import { Spectrum2D, SpectrumTwoDimensionsColor } from 'nmr-load-save';
+import type { Spectrum2D, SpectrumTwoDimensionsColor } from 'nmr-load-save';
 import { FiltersManager } from 'nmr-processing';
 
-import { UsedColors } from '../../../types/UsedColors';
-import { initiateFilters } from '../../initiateFilters';
+import type { UsedColors } from '../../../types/UsedColors.js';
+import { initiateFilters } from '../../initiateFilters.js';
 
-import { DEFAULT_CONTOURS_OPTIONS, getDefaultContoursLevel } from './contours';
-import { get2DColor } from './get2DColor';
-import { initiateZones } from './zones/initiateZones';
+import {
+  DEFAULT_CONTOURS_OPTIONS,
+  getDefaultContoursLevel,
+} from './contours.js';
+import { get2DColor } from './get2DColor.js';
+import { initiateZones } from './zones/initiateZones.js';
 
 const defaultMinMax = { z: [], minX: 0, minY: 0, maxX: 0, maxY: 0 };
 

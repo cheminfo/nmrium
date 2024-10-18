@@ -1,11 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useCallback, useState, useEffect, useMemo } from 'react';
-import { ControllerProps, FieldValues, useController } from 'react-hook-form';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import type { ControllerProps, FieldValues } from 'react-hook-form';
+import { useController } from 'react-hook-form';
 
-import getAtom from '../../../data/utilities/getAtom';
-import { useChartData } from '../../context/ChartContext';
-import MoleculeSelection from '../../elements/MoleculeSelection';
+import getAtom from '../../../data/utilities/getAtom.js';
+import { useChartData } from '../../context/ChartContext.js';
+import MoleculeSelection from '../../elements/MoleculeSelection.js';
 
 const styles = css`
   .molecule-container {

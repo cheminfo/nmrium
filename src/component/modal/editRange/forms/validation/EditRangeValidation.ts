@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 
-import { hasCouplingConstant } from '../../../../panels/extra/utilities/MultiplicityUtilities';
+import { hasCouplingConstant } from '../../../../panels/extra/utilities/MultiplicityUtilities.js';
 
 const editRangeFormValidation = Yup.object().shape({
   signals: Yup.array().of(

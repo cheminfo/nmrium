@@ -1,8 +1,8 @@
-import { SerializedStyles } from '@emotion/react';
-import { saveAs } from 'file-saver';
+import type { SerializedStyles } from '@emotion/react';
+import fileSaver from 'file-saver';
 import JSZip from 'jszip';
-import lodashGet from 'lodash/get';
-import { JpathTableColumn, SpectraTableColumn } from 'nmr-load-save';
+import lodashGet from 'lodash/get.js';
+import type { JpathTableColumn, SpectraTableColumn } from 'nmr-load-save';
 
 /**
  * export the experiments result in JSON format
@@ -25,7 +25,7 @@ async function exportAsJSON(
   );
   if (!isCompressed) {
     const blob = new Blob([fileData], { type: 'text/plain' });
-    saveAs(blob, `${fileName}.nmrium`);
+    fileSaver.saveAs(blob, `${fileName}.nmrium`);
   } else {
     try {
       const zip = new JSZip();
@@ -37,7 +37,7 @@ async function exportAsJSON(
           level: 9,
         },
       });
-      saveAs(blob, `${fileName}.nmrium`);
+      fileSaver.saveAs(blob, `${fileName}.nmrium`);
     } catch (error) {
       // TODO: handle error.
       reportError(error);
@@ -84,18 +84,18 @@ function exportAsMatrix(
   }
 
   const blob = new Blob([matrix], { type: 'text/tab-separated-values' });
-  saveAs(blob, `${fileName}.tsv`);
+  fileSaver.saveAs(blob, `${fileName}.tsv`);
 }
 
 function exportAsNMRE(data, fileName = 'experiment') {
   data.generateAsync({ type: 'blob' }).then((content) => {
-    saveAs(content, `${fileName}.nmredata`);
+    fileSaver.saveAs(content, `${fileName}.nmredata`);
   });
 }
 
 function exportAsMol(data, fileName = 'mol') {
   const blob = new Blob([data], { type: 'text/plain' });
-  saveAs(blob, `${fileName}.mol`);
+  fileSaver.saveAs(blob, `${fileName}.mol`);
 }
 /**
  * export the vitalization result as SVG, if you need to remove some content during exportation process enclose the the content with <!-- export-remove --> ${content} <!-- export-remove -->
@@ -112,7 +112,7 @@ interface ExportAsSVGOptions {
 function exportAsSVG(targetElementID: string, options: ExportAsSVGOptions) {
   const { fileName, rootElement } = options;
   const { blob } = getBlob(targetElementID, { rootElement });
-  saveAs(blob, `${fileName}.svg`);
+  fileSaver.saveAs(blob, `${fileName}.svg`);
 }
 
 interface ExportAsPNGOptions {
@@ -279,7 +279,7 @@ async function exportAsPng(
     });
 
     const pngBlob = await canvas.convertToBlob({ type: 'image/png' });
-    saveAs(pngBlob, `${fileName}.png`);
+    fileSaver.saveAs(pngBlob, `${fileName}.png`);
   } catch (error) {
     // TODO: handle error.
     reportError(error);

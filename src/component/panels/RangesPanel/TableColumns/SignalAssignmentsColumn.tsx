@@ -1,14 +1,15 @@
 /** @jsxImportSource @emotion/react */
 
-import lodashGet from 'lodash/get';
-import { CSSProperties, memo, MouseEvent } from 'react';
+import lodashGet from 'lodash/get.js';
+import type { CSSProperties, MouseEvent } from 'react';
+import { memo } from 'react';
 
-import { AssignmentsData } from '../../../assignment/AssignmentsContext';
+import type { AssignmentsData } from '../../../assignment/AssignmentsContext.js';
 import {
-  RemoveAssignmentsButton,
   removeAssignmentCssStyle,
-} from '../../../elements/RemoveAssignmentsButton';
-import { OnHoverEvent, BaseRangeColumnProps } from '../RangesTableRow';
+  RemoveAssignmentsButton,
+} from '../../../elements/RemoveAssignmentsButton.js';
+import type { BaseRangeColumnProps, OnHoverEvent } from '../RangesTableRow.js';
 
 interface SignalAssignmentsColumnProps
   extends Omit<BaseRangeColumnProps, 'format'>,

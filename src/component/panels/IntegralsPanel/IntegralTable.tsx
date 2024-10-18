@@ -1,24 +1,24 @@
-import lodashGet from 'lodash/get';
-import { Info1D, Integral } from 'nmr-processing';
-import { useCallback, useMemo, memo } from 'react';
+import lodashGet from 'lodash/get.js';
+import type { Info1D, Integral } from 'nmr-processing';
+import { memo, useCallback, useMemo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
-import { SIGNAL_KINDS } from '../../../data/constants/signalsKinds';
-import { checkIntegralKind } from '../../../data/data1d/Spectrum1D';
-import { useDispatch } from '../../context/DispatchContext';
-import EditableColumn from '../../elements/EditableColumn';
-import ReactTable from '../../elements/ReactTable/ReactTable';
+import { SIGNAL_KINDS } from '../../../data/constants/signalsKinds.js';
+import { checkIntegralKind } from '../../../data/data1d/Spectrum1D/index.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import EditableColumn from '../../elements/EditableColumn.js';
+import ReactTable from '../../elements/ReactTable/ReactTable.js';
+import type { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn.js';
 import addCustomColumn, {
-  CustomColumn,
   createActionColumn,
-} from '../../elements/ReactTable/utility/addCustomColumn';
-import Select from '../../elements/Select';
-import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import { formatNumber } from '../../utility/formatNumber';
-import NoDataForFid from '../extra/placeholder/NoDataForFid';
-import NoTableData from '../extra/placeholder/NoTableData';
+} from '../../elements/ReactTable/utility/addCustomColumn.js';
+import Select from '../../elements/Select.js';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
+import { formatNumber } from '../../utility/formatNumber.js';
+import NoDataForFid from '../extra/placeholder/NoDataForFid.js';
+import NoTableData from '../extra/placeholder/NoTableData.js';
 
-import { IntegralPanelInnerProps } from './IntegralPanel';
+import type { IntegralPanelInnerProps } from './IntegralPanel.js';
 
 const selectStyle = { width: '100%', border: 'none' };
 

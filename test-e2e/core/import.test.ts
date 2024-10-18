@@ -1,6 +1,6 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
-import NmriumPage from '../NmriumPage';
+import NmriumPage from '../NmriumPage/index.js';
 
 test('should load and migrate .nmrium data from version 0 to version 1', async ({
   page,

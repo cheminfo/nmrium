@@ -3,13 +3,14 @@ import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { Molecule } from 'openchemlib/full';
 import { TopicMolecule } from 'openchemlib-utils';
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { StructureEditor, IStructureEditorProps } from 'react-ocl/full';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import type { StructureEditorProps } from 'react-ocl/full';
+import { StructureEditor } from 'react-ocl/full';
 import { useOnOff } from 'react-science/ui';
 
-import { StateMoleculeExtended } from '../../data/molecules/Molecule';
-import { useDispatch } from '../context/DispatchContext';
-import ActionButtons from '../elements/ActionButtons';
+import type { StateMoleculeExtended } from '../../data/molecules/Molecule.js';
+import { useDispatch } from '../context/DispatchContext.js';
+import ActionButtons from '../elements/ActionButtons.js';
 
 interface MoleculeStructureEditorModalProps {
   onClose?: (element?: string) => void;
@@ -51,7 +52,7 @@ function MoleculeStructureEditorModal(
     }
   }, [initialEnhancedMolfile]);
 
-  const cb = useCallback<Exclude<IStructureEditorProps['onChange'], undefined>>(
+  const cb = useCallback<Exclude<StructureEditorProps['onChange'], undefined>>(
     (newMolfile, molecule) => {
       if (molecule.getAllAtoms() === 0) {
         setMolfile(null);

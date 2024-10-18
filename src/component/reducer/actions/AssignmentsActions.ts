@@ -1,9 +1,9 @@
-import { Draft } from 'immer';
-import { Spectrum1D, Spectrum2D } from 'nmr-load-save';
-import { Range, Zone, SpectraData1D, SpectraData2D } from 'nmr-processing';
+import type { Draft } from 'immer';
+import type { Spectrum1D, Spectrum2D } from 'nmr-load-save';
+import type { Range, Zone, SpectraData1D, SpectraData2D } from 'nmr-processing';
 
-import { State } from '../Reducer';
-import { ActionType } from '../types/ActionType';
+import type { State } from '../Reducer.js';
+import type { ActionType } from '../types/ActionType.js';
 
 type SetAutomaticAssignmentsAction = ActionType<
   'SET_AUTOMATIC_ASSIGNMENTS',

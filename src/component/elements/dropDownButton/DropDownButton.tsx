@@ -1,10 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { Popover, Button } from '@blueprintjs/core';
 import { css } from '@emotion/react';
-import { CSSProperties, ReactNode, useEffect, useState } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 import { FaEllipsisH } from 'react-icons/fa';
 
-import DropDownList from './DropDownList';
+import DropDownList from './DropDownList.js';
 
 export interface DropDownListItem {
   key: string;

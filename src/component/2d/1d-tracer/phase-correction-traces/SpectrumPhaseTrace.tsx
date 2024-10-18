@@ -1,22 +1,22 @@
-import { Spectrum1D, Spectrum2D } from 'nmr-load-save';
+import type { Spectrum1D, Spectrum2D } from 'nmr-load-save';
 import { Filters } from 'nmr-processing';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-import { getSlice } from '../../../../data/data2d/Spectrum2D';
-import { useChartData } from '../../../context/ChartContext';
-import { useActiveSpectrum } from '../../../hooks/useActiveSpectrum';
-import useSpectrum from '../../../hooks/useSpectrum';
-import { TraceDirection } from '../../../reducer/Reducer';
-import { PathBuilder } from '../../../utility/PathBuilder';
+import { getSlice } from '../../../../data/data2d/Spectrum2D/index.js';
+import { useChartData } from '../../../context/ChartContext.js';
+import { useActiveSpectrum } from '../../../hooks/useActiveSpectrum.js';
+import useSpectrum from '../../../hooks/useSpectrum.js';
+import type { TraceDirection } from '../../../reducer/Reducer.js';
+import { PathBuilder } from '../../../utility/PathBuilder.js';
 import {
   get2DXScale,
   get2DYScale,
   getSliceYScale,
   useScale2DX,
   useScale2DY,
-} from '../../utilities/scale';
+} from '../../utilities/scale.js';
 
-import { useActivePhaseTraces } from './useActivePhaseTraces';
+import { useActivePhaseTraces } from './useActivePhaseTraces.js';
 
 interface BaseComponentProps extends React.SVGAttributes<SVGGElement> {
   children?: ReactNode;

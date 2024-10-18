@@ -1,4 +1,4 @@
-import { KeyboardEvent, ModifierKey, MouseEvent } from 'react';
+import type { KeyboardEvent, ModifierKey, MouseEvent } from 'react';
 
 const modifiersKeys: ModifierKey[] = [
   'Alt',

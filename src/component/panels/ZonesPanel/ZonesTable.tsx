@@ -1,18 +1,18 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Info2D } from 'nmr-processing';
-import { ReactNode } from 'react';
+import type { Info2D } from 'nmr-processing';
+import type { ReactNode } from 'react';
 import { FaLink } from 'react-icons/fa';
 
-import { withDialog } from '../../elements/DialogManager';
-import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import useTableSortBy from '../../hooks/useTableSortBy';
-import { EditZoneModal } from '../../modal/editZone/EditZoneModal';
-import NoDataForFid from '../extra/placeholder/NoDataForFid';
-import NoTableData from '../extra/placeholder/NoTableData';
+import { withDialog } from '../../elements/DialogManager.js';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
+import useTableSortBy from '../../hooks/useTableSortBy.js';
+import { EditZoneModal } from '../../modal/editZone/EditZoneModal.js';
+import NoDataForFid from '../extra/placeholder/NoDataForFid.js';
+import NoTableData from '../extra/placeholder/NoTableData.js';
 
-import ZonesTableRow from './ZonesTableRow';
-import { useMapZones } from './hooks/useMapZones';
+import ZonesTableRow from './ZonesTableRow.js';
+import { useMapZones } from './hooks/useMapZones.js';
 
 const tableStyle = css`
   border-spacing: 0;

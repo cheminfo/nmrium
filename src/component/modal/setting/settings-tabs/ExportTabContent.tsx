@@ -7,26 +7,28 @@ import {
   SegmentedControl,
   Tag,
 } from '@blueprintjs/core';
-import {
+import type {
+  AdvanceExportSettings,
+  BasicExportSettings,
   ExportPreferences,
   ExportSettings,
-  BasicExportSettings,
-  AdvanceExportSettings,
 } from 'nmr-load-save';
 import { useState } from 'react';
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
 
-import { CheckController } from '../../../elements/CheckController';
-import Label from '../../../elements/Label';
-import { NumberInput2Controller } from '../../../elements/NumberInput2Controller';
-import { Select2Controller } from '../../../elements/Select2Controller';
-import { units } from '../../../elements/export/units';
-import { useExportConfigurer } from '../../../elements/export/useExportConfigurer';
-import { getExportDefaultOptionsByMode } from '../../../elements/export/utilities/getExportOptions';
-import { Mode, MODES } from '../../../elements/export/utilities/getModes';
-import { getSizesList, SizeItem } from '../../../elements/print/pageSize';
-import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer';
-import { labelStyle } from '../../SaveAsModal';
+import { CheckController } from '../../../elements/CheckController.js';
+import Label from '../../../elements/Label.js';
+import { NumberInput2Controller } from '../../../elements/NumberInput2Controller.js';
+import { Select2Controller } from '../../../elements/Select2Controller.js';
+import { units } from '../../../elements/export/units.js';
+import { useExportConfigurer } from '../../../elements/export/useExportConfigurer.js';
+import { getExportDefaultOptionsByMode } from '../../../elements/export/utilities/getExportOptions.js';
+import type { Mode } from '../../../elements/export/utilities/getModes.js';
+import { MODES } from '../../../elements/export/utilities/getModes.js';
+import type { SizeItem } from '../../../elements/print/pageSize.js';
+import { getSizesList } from '../../../elements/print/pageSize.js';
+import type { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
+import { labelStyle } from '../../SaveAsModal.js';
 
 export function ExportTabContent() {
   return (

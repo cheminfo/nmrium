@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import {
+import type {
   ApodizationOptions as BaseApodizationOptions,
   Filter,
 } from 'nmr-processing';
@@ -7,9 +7,9 @@ import { useCallback, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
-import { defaultApodizationOptions } from '../../../../../data/constants/DefaultApodizationOptions';
-import { useDispatch } from '../../../../context/DispatchContext';
-import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsContext';
+import { defaultApodizationOptions } from '../../../../../data/constants/DefaultApodizationOptions.js';
+import { useDispatch } from '../../../../context/DispatchContext.js';
+import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsContext.js';
 
 const simpleValidationSchema = Yup.object().shape({
   lineBroadening: Yup.number().required(),

@@ -1,8 +1,8 @@
-import { checkRangeKind } from '../../../../data/utilities/RangeUtilities';
-import { useDispatch } from '../../../context/DispatchContext';
-import EditableColumn from '../../../elements/EditableColumn';
-import { formatNumber } from '../../../utility/formatNumber';
-import { RangeColumnProps } from '../RangesTableRow';
+import { checkRangeKind } from '../../../../data/utilities/RangeUtilities.js';
+import { useDispatch } from '../../../context/DispatchContext.js';
+import EditableColumn from '../../../elements/EditableColumn.js';
+import { formatNumber } from '../../../utility/formatNumber.js';
+import type { RangeColumnProps } from '../RangesTableRow.js';
 
 function RelativeColumn({
   row,

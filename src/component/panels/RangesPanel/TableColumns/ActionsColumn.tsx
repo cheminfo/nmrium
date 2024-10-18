@@ -2,17 +2,17 @@
 import { css } from '@emotion/react';
 import { FaEdit, FaRegTrashAlt, FaSearchPlus } from 'react-icons/fa';
 
-import { SIGNAL_KINDS } from '../../../../data/constants/signalsKinds';
-import { useDispatch } from '../../../context/DispatchContext';
-import { useDialog } from '../../../elements/DialogManager';
-import { Select2 } from '../../../elements/Select2';
-import { EditRangeModal } from '../../../modal/editRange/EditRangeModal';
-import {
-  OnHoverEvent,
+import { SIGNAL_KINDS } from '../../../../data/constants/signalsKinds.js';
+import { useDispatch } from '../../../context/DispatchContext.js';
+import { useDialog } from '../../../elements/DialogManager.js';
+import { Select2 } from '../../../elements/Select2.js';
+import { EditRangeModal } from '../../../modal/editRange/EditRangeModal.js';
+import type {
   BaseRangeColumnProps,
+  OnHoverEvent,
   RowSpanTags,
-} from '../RangesTableRow';
-import useEditRangeModal from '../hooks/useEditRangeModal';
+} from '../RangesTableRow.js';
+import useEditRangeModal from '../hooks/useEditRangeModal.js';
 
 const styles = css`
   width: 66px;

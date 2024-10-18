@@ -1,17 +1,17 @@
 import { Checkbox } from '@blueprintjs/core';
 import { Filters } from 'nmr-processing';
 
-import ActionButtons from '../elements/ActionButtons';
-import Label from '../elements/Label';
-import { Select2Controller } from '../elements/Select2Controller';
-import { useFilter } from '../hooks/useFilter';
+import ActionButtons from '../elements/ActionButtons.js';
+import Label from '../elements/Label.js';
+import { Select2Controller } from '../elements/Select2Controller.js';
+import { useFilter } from '../hooks/useFilter.js';
 import {
   useZeroFilling,
   zeroFillingSizes,
-} from '../panels/filtersPanel/Filters/hooks/useZeroFilling';
+} from '../panels/filtersPanel/Filters/hooks/useZeroFilling.js';
 
-import { headerLabelStyle } from './Header';
-import { HeaderWrapper } from './HeaderWrapper';
+import { headerLabelStyle } from './Header.js';
+import { HeaderWrapper } from './HeaderWrapper.js';
 
 export function SimpleZeroFillingOptionsPanel() {
   const filter = useFilter(Filters.zeroFilling.id);

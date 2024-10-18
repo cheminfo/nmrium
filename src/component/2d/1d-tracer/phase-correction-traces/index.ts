@@ -1,1 +1,1 @@
-export { PhaseTraces } from './PhaseTraces';
+export { PhaseTraces } from './PhaseTraces.js';

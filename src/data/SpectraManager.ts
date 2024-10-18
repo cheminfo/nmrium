@@ -1,21 +1,19 @@
-import { saveAs } from 'file-saver';
+import fileSaver from 'file-saver';
 import JSZip from 'jszip';
+import type { Spectrum, StateMolecule, Workspace } from 'nmr-load-save';
 import {
-  Spectrum,
-  Workspace,
+  CURRENT_EXPORT_VERSION,
   processJcamp,
   serializeNmriumState,
-  CURRENT_EXPORT_VERSION,
   spectrum1DToJcamp,
-  StateMolecule,
 } from 'nmr-load-save';
 import OCL from 'openchemlib/full';
 
-import { State } from '../component/reducer/Reducer';
+import type { State } from '../component/reducer/Reducer.js';
 
-import { isSpectrum1D, initiateDatum1D } from './data1d/Spectrum1D';
-import { initiateDatum2D } from './data2d/Spectrum2D';
-import * as Molecule from './molecules/Molecule';
+import { initiateDatum1D, isSpectrum1D } from './data1d/Spectrum1D/index.js';
+import { initiateDatum2D } from './data2d/Spectrum2D/index.js';
+import * as Molecule from './molecules/Molecule.js';
 
 export enum DataExportOptions {
   ROW_DATA = 'ROW_DATA',
@@ -169,7 +167,7 @@ export function exportAsJcamp(
   }
 
   const blob = new Blob([jcamp], { type: 'text/plain' });
-  saveAs(blob, `${spectrum.info.name}.jdx`);
+  fileSaver.saveAs(blob, `${spectrum.info.name}.jdx`);
 }
 
 interface ExportForCTOptions {
@@ -217,5 +215,5 @@ export async function exportForCT(options: ExportForCTOptions) {
     },
   });
 
-  saveAs(blob, name);
+  fileSaver.saveAs(blob, name);
 }

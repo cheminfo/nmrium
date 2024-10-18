@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-import IsotopesViewer from '../../../elements/IsotopesViewer';
+import IsotopesViewer from '../../../elements/IsotopesViewer.js';
 
 export interface NucleusGroupProps {
   nucleus: string;

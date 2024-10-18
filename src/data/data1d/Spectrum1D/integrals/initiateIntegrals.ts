@@ -1,6 +1,7 @@
-import merge from 'lodash/merge';
-import { Spectrum1D } from 'nmr-load-save';
-import { Integrals, mapIntegrals } from 'nmr-processing';
+import merge from 'lodash/merge.js';
+import type { Spectrum1D } from 'nmr-load-save';
+import type { Integrals } from 'nmr-processing';
+import { mapIntegrals } from 'nmr-processing';
 
 export function initiateIntegrals(
   inputSpectrum: Partial<Spectrum1D>,

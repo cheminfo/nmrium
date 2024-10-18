@@ -1,7 +1,7 @@
 import { memo, useMemo } from 'react';
 
-import PlotChart from './PlotChart';
-import { processSnapPlot } from './processSnapPlot';
+import PlotChart from './PlotChart.js';
+import { processSnapPlot } from './processSnapPlot.js';
 
 const yLogBase = 2;
 interface Spectrum1DHistogramProps {

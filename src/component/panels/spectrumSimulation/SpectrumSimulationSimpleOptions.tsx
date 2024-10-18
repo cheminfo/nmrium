@@ -1,12 +1,13 @@
 import { Tag } from '@blueprintjs/core';
 import { useFormContext } from 'react-hook-form';
 
-import { FREQUENCIES } from '../../../data/PredictionManager';
-import { getSpinSystems } from '../../../data/data1d/spectrumSimulation';
-import Label, { LabelStyle } from '../../elements/Label';
-import { NumberInput2Controller } from '../../elements/NumberInput2Controller';
-import { Select2 } from '../../elements/Select2';
-import { Select2Controller } from '../../elements/Select2Controller';
+import { FREQUENCIES } from '../../../data/PredictionManager.js';
+import { getSpinSystems } from '../../../data/data1d/spectrumSimulation.js';
+import type { LabelStyle } from '../../elements/Label.js';
+import Label from '../../elements/Label.js';
+import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
+import { Select2 } from '../../elements/Select2.js';
+import { Select2Controller } from '../../elements/Select2Controller.js';
 
 const SPIN_SYSTEMS = getSpinSystems().map((key) => ({
   label: key,

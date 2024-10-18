@@ -1,6 +1,6 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
-import NmriumPage from '../NmriumPage';
+import NmriumPage from '../NmriumPage/index.js';
 
 const PEAK_ANNOTATIONS_SELECTOR =
   '_react=Peaks[peaksSource="peaks"] >> _react=PeakAnnotation';

@@ -1,6 +1,6 @@
+import type { ReactNode } from 'react';
 import {
   Children,
-  ReactNode,
   createContext,
   isValidElement,
   useContext,

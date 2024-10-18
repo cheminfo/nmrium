@@ -1,15 +1,16 @@
 import { useCallback } from 'react';
 
-import { ExportOptions, toJSON } from '../../data/SpectraManager';
-import { useChartData } from '../context/ChartContext';
-import { usePreferences } from '../context/PreferencesContext';
-import { useToaster } from '../context/ToasterContext';
+import type { ExportOptions } from '../../data/SpectraManager.js';
+import { toJSON } from '../../data/SpectraManager.js';
+import { useChartData } from '../context/ChartContext.js';
+import { usePreferences } from '../context/PreferencesContext.js';
+import { useToaster } from '../context/ToasterContext.js';
 import {
   copyPNGToClipboard,
   exportAsJSON,
   exportAsPng,
   exportAsSVG,
-} from '../utility/export';
+} from '../utility/export.js';
 
 interface SaveOptions {
   include: ExportOptions;

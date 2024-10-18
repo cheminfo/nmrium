@@ -1,6 +1,6 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
-import NmriumPage from '../NmriumPage';
+import NmriumPage from '../NmriumPage/index.js';
 
 test('Slicing too should show 1d (horizontal and vertical) traces', async ({
   page,

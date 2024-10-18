@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-import { NMRium } from '../../component/main';
+import { NMRium } from '../../component/main/index.js';
 
 export default function SingleView(props) {
   const [data, setData] = useState<
@@ -58,6 +58,7 @@ export default function SingleView(props) {
           {path}
         </p>
       )}
+      {/* @ts-expect-error data type is wrong */}
       <NMRium data={data} />
     </div>
   );

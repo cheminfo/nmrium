@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
-import { useChartData } from '../context/ChartContext';
-import { useLogger } from '../context/LoggerContext';
+import { useChartData } from '../context/ChartContext.js';
+import { useLogger } from '../context/LoggerContext.js';
 
 /**
  * Alert user in UI when state have errorAction (error from reducer)

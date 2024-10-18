@@ -1,15 +1,16 @@
-import { ButtonProps } from '@blueprintjs/core';
-import { Filter, Filters } from 'nmr-processing';
+import type { ButtonProps } from '@blueprintjs/core';
+import type { Filter } from 'nmr-processing';
+import { Filters } from 'nmr-processing';
 
-import { LabelStyle } from '../../../elements/Label';
+import type { LabelStyle } from '../../../elements/Label.js';
 
-import ApodizationOptionsPanel from './ApodizationOptionsPanel';
-import BaseLineCorrectionOptionsPanel from './BaseLineCorrectionOptionsPanel';
-import ExclusionZonesOptionsPanel from './ExclusionZonesOptionsPanel';
-import PhaseCorrectionOptionsPanel from './PhaseCorrectionOptionsPanel';
-import PhaseCorrectionTwoDimensionsOptionsPanel from './PhaseCorrectionTwoDimensionsOptionsPanel';
-import ShiftOptionsPanel from './ShiftOptionsPanel';
-import ZeroFillingOptionsPanel from './ZeroFillingOptionsPanel';
+import ApodizationOptionsPanel from './ApodizationOptionsPanel.js';
+import BaseLineCorrectionOptionsPanel from './BaseLineCorrectionOptionsPanel.js';
+import ExclusionZonesOptionsPanel from './ExclusionZonesOptionsPanel.js';
+import PhaseCorrectionOptionsPanel from './PhaseCorrectionOptionsPanel.js';
+import PhaseCorrectionTwoDimensionsOptionsPanel from './PhaseCorrectionTwoDimensionsOptionsPanel.js';
+import ShiftOptionsPanel from './ShiftOptionsPanel.js';
+import ZeroFillingOptionsPanel from './ZeroFillingOptionsPanel.js';
 
 const {
   apodization,

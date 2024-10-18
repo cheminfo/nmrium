@@ -1,19 +1,19 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { Zone as ZoneType } from 'nmr-processing';
-import { useState, useEffect } from 'react';
+import type { Zone as ZoneType } from 'nmr-processing';
+import { useEffect, useState } from 'react';
 import { PiTextTBold } from 'react-icons/pi';
 
-import { checkZoneKind } from '../../../data/utilities/ZoneUtilities';
-import { useAssignment } from '../../assignment/AssignmentsContext';
-import { useShareData } from '../../context/ShareDataContext';
-import { SVGButton } from '../../elements/SVGButton';
-import { HighlightEventSource, useHighlight } from '../../highlight';
-import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState';
-import { useScale2DX, useScale2DY } from '../utilities/scale';
+import { checkZoneKind } from '../../../data/utilities/ZoneUtilities.js';
+import { useAssignment } from '../../assignment/AssignmentsContext.js';
+import { useShareData } from '../../context/ShareDataContext.js';
+import { SVGButton } from '../../elements/SVGButton.js';
+import { HighlightEventSource, useHighlight } from '../../highlight/index.js';
+import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState.js';
+import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 
-import Signal from './Signal';
+import Signal from './Signal.js';
 
 const stylesOnHover = css`
   pointer-events: bounding-box;

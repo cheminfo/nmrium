@@ -1,12 +1,12 @@
-import { Spectrum1D } from 'nmr-load-save';
-import { Ranges as RangesProps } from 'nmr-processing';
+import type { Spectrum1D } from 'nmr-load-save';
+import type { Ranges as RangesProps } from 'nmr-processing';
 import { memo } from 'react';
 
-import { useChartData } from '../../context/ChartContext';
-import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
-import useSpectrum from '../../hooks/useSpectrum';
+import { useChartData } from '../../context/ChartContext.js';
+import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
+import useSpectrum from '../../hooks/useSpectrum.js';
 
-import MultiplicityTreeNode from './MultiplicityTree';
+import MultiplicityTreeNode from './MultiplicityTree.js';
 
 interface MultiplicityTreesInnerProps {
   displayerKey: string;

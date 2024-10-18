@@ -1,5 +1,7 @@
-import { Checkbox, CheckboxProps } from '@blueprintjs/core';
-import { Controller, ControllerProps, FieldValues } from 'react-hook-form';
+import type { CheckboxProps } from '@blueprintjs/core';
+import { Checkbox } from '@blueprintjs/core';
+import type { ControllerProps, FieldValues } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 
 interface CheckControllerProps<TFieldValues extends FieldValues = FieldValues>
   extends Omit<CheckboxProps, 'name'>,

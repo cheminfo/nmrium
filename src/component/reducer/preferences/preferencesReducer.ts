@@ -1,52 +1,52 @@
-import { Draft, produce } from 'immer';
-import {
-  CURRENT_EXPORT_VERSION,
+import type { Draft } from 'immer';
+import { produce } from 'immer';
+import type {
   ExportPreferences,
-  migrateSettings,
+  ExportSettings,
   MultipleSpectraAnalysisPreferences,
   PrintPageOptions,
-  ExportSettings,
   Workspace,
   WorkSpaceSource,
 } from 'nmr-load-save';
-import { Reducer } from 'react';
-import { SplitPaneSize } from 'react-science/ui';
+import { CURRENT_EXPORT_VERSION, migrateSettings } from 'nmr-load-save';
+import type { Reducer } from 'react';
+import type { SplitPaneSize } from 'react-science/ui';
 
-import type { NMRiumWorkspace, NMRiumPreferences } from '../../main';
-import { getLocalStorage, storeData } from '../../utility/LocalStorage';
-import Workspaces from '../../workspaces';
-import { ActionType } from '../types/ActionType';
+import type { NMRiumPreferences, NMRiumWorkspace } from '../../main/index.js';
+import { getLocalStorage, storeData } from '../../utility/LocalStorage.js';
+import Workspaces from '../../workspaces/index.js';
+import type { ActionType } from '../types/ActionType.js';
 
-import { addWorkspace } from './actions/addWorkspace';
+import { addWorkspace } from './actions/addWorkspace.js';
 import {
   analyzeSpectra,
   changeAnalysisColumnValueKey,
   deleteAnalysisColumn,
   setSpectraAnalysisPanelsPreferences,
-} from './actions/analyzeSpectra';
-import { applyGeneralPreferences } from './actions/applyGeneralPreferences';
-import { changeExportSettings } from './actions/changeExportSettings';
-import { changeInformationBlockPosition } from './actions/changeInformationBlockPosition';
-import { changePeaksLabelPosition } from './actions/changePeaksLabelPosition';
-import { changePrintPageSettings } from './actions/changePrintPageSettings';
-import { initPreferences } from './actions/initPreferences';
+} from './actions/analyzeSpectra.js';
+import { applyGeneralPreferences } from './actions/applyGeneralPreferences.js';
+import { changeExportSettings } from './actions/changeExportSettings.js';
+import { changeInformationBlockPosition } from './actions/changeInformationBlockPosition.js';
+import { changePeaksLabelPosition } from './actions/changePeaksLabelPosition.js';
+import { changePrintPageSettings } from './actions/changePrintPageSettings.js';
+import { initPreferences } from './actions/initPreferences.js';
+import type { MatrixGenerationActions } from './actions/matrixGeneration.js';
 import {
-  setMatrixGenerationOptions,
   addExclusionZone,
-  deleteExclusionZone,
-  MatrixGenerationActions,
-  toggleMatrixGenerationViewProperty,
   changeMatrixGenerationScale,
   changeMatrixGenerationStocsyChemicalShift,
-} from './actions/matrixGeneration';
-import { removeWorkspace } from './actions/removeWorkspace';
-import { setActiveWorkspace } from './actions/setActiveWorkspace';
-import { setPanelsPreferences } from './actions/setPanelsPreferences';
-import { setPreferences } from './actions/setPreferences';
-import { setVerticalSplitterPosition } from './actions/setVerticalSplitterPosition';
-import { setWorkspace } from './actions/setWorkspace';
-import { toggleInformationBlock } from './actions/toggleInformationBlock';
-import { mapWorkspaces } from './utilities/mapWorkspaces';
+  deleteExclusionZone,
+  setMatrixGenerationOptions,
+  toggleMatrixGenerationViewProperty,
+} from './actions/matrixGeneration.js';
+import { removeWorkspace } from './actions/removeWorkspace.js';
+import { setActiveWorkspace } from './actions/setActiveWorkspace.js';
+import { setPanelsPreferences } from './actions/setPanelsPreferences.js';
+import { setPreferences } from './actions/setPreferences.js';
+import { setVerticalSplitterPosition } from './actions/setVerticalSplitterPosition.js';
+import { setWorkspace } from './actions/setWorkspace.js';
+import { toggleInformationBlock } from './actions/toggleInformationBlock.js';
+import { mapWorkspaces } from './utilities/mapWorkspaces.js';
 
 const LOCAL_STORAGE_SETTINGS_KEY = 'nmr-general-settings';
 

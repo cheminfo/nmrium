@@ -1,10 +1,10 @@
-import { Draft } from 'immer';
+import type { Draft } from 'immer';
 
-import {
+import type {
   ChangePeaksLabelPositionAction,
   PreferencesState,
-} from '../preferencesReducer';
-import { getActiveWorkspace } from '../utilities/getActiveWorkspace';
+} from '../preferencesReducer.js';
+import { getActiveWorkspace } from '../utilities/getActiveWorkspace.js';
 
 export function changePeaksLabelPosition(
   draft: Draft<PreferencesState>,

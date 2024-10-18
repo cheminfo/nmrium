@@ -1,6 +1,6 @@
 import { test } from '@playwright/test';
 
-import NmriumPage from '../NmriumPage';
+import NmriumPage from '../NmriumPage/index.js';
 
 test('process 1d FID 13c spectrum', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);

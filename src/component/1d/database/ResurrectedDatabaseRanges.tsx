@@ -1,15 +1,18 @@
 import { extent } from 'd3';
-import { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from 'nmr-load-save';
 import { rangesToXY } from 'nmr-processing';
 
-import { useChartData } from '../../context/ChartContext';
-import { useScaleChecked } from '../../context/ScaleContext';
-import { HighlightEventSource, useHighlightData } from '../../highlight';
-import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import useSpectrum from '../../hooks/useSpectrum';
-import { useVerticalAlign } from '../../hooks/useVerticalAlign';
-import { PathBuilder } from '../../utility/PathBuilder';
-import { getYScale } from '../utilities/scale';
+import { useChartData } from '../../context/ChartContext.js';
+import { useScaleChecked } from '../../context/ScaleContext.js';
+import {
+  HighlightEventSource,
+  useHighlightData,
+} from '../../highlight/index.js';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
+import useSpectrum from '../../hooks/useSpectrum.js';
+import { useVerticalAlign } from '../../hooks/useVerticalAlign.js';
+import { PathBuilder } from '../../utility/PathBuilder.js';
+import { getYScale } from '../utilities/scale.js';
 
 const emptyData = { info: { originFrequency: 400 } };
 

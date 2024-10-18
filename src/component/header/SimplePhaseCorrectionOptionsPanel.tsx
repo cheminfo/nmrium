@@ -2,16 +2,16 @@ import { Select } from '@blueprintjs/select';
 import { Filters } from 'nmr-processing';
 import { Button } from 'react-science/ui';
 
-import ActionButtons from '../elements/ActionButtons';
-import InputRange from '../elements/InputRange';
-import { useFilter } from '../hooks/useFilter';
+import ActionButtons from '../elements/ActionButtons.js';
+import InputRange from '../elements/InputRange.js';
+import { useFilter } from '../hooks/useFilter.js';
+import type { AlgorithmItem } from '../panels/filtersPanel/Filters/hooks/usePhaseCorrection.js';
 import {
   algorithms,
-  AlgorithmItem,
   usePhaseCorrection,
-} from '../panels/filtersPanel/Filters/hooks/usePhaseCorrection';
+} from '../panels/filtersPanel/Filters/hooks/usePhaseCorrection.js';
 
-import { HeaderWrapper } from './HeaderWrapper';
+import { HeaderWrapper } from './HeaderWrapper.js';
 
 export function SimplePhaseCorrectionOptionsPanel() {
   const filter = useFilter(Filters.phaseCorrection.id);

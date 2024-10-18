@@ -1,8 +1,8 @@
-import React, { CSSProperties } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 
 interface PreferencesGroupProps {
-  children: React.ReactNode[];
-  header?: ((style: CSSProperties) => React.ReactNode) | string;
+  children: ReactNode[];
+  header?: ((style: CSSProperties) => ReactNode) | string;
 }
 
 const styles = {

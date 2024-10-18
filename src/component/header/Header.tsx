@@ -1,43 +1,42 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useMemo, memo } from 'react';
+import { memo, useMemo } from 'react';
 import {
-  FaRegWindowMaximize,
+  FaFilm,
   FaQuestionCircle,
   FaRegSave,
-  FaFilm,
+  FaRegWindowMaximize,
 } from 'react-icons/fa';
 import { Toolbar, useFullscreen } from 'react-science/ui';
 
-import { docsBaseUrl } from '../../constants';
-import { useChartData } from '../context/ChartContext';
+import { docsBaseUrl } from '../../constants.js';
+import { useChartData } from '../context/ChartContext.js';
 import {
   usePreferences,
   useWorkspacesList,
-} from '../context/PreferencesContext';
-import Button from '../elements/Button';
-import { HeaderContainer } from '../elements/HeaderContainer';
-import { LabelStyle } from '../elements/Label';
-import DropDownButton, {
-  DropDownListItem,
-} from '../elements/dropDownButton/DropDownButton';
-import { useSaveSettings } from '../hooks/useSaveSettings';
-import { useWorkspaceAction } from '../hooks/useWorkspaceAction';
-import { LogsHistoryModal } from '../modal/LogsHistoryModal';
-import AboutUsModal from '../modal/aboutUs/AboutUsModal';
-import GeneralSettingsModal from '../modal/setting/GeneralSettings';
-import WorkspaceItem from '../modal/setting/WorkspaceItem';
-import { options } from '../toolbar/ToolTypes';
+} from '../context/PreferencesContext.js';
+import Button from '../elements/Button.js';
+import { HeaderContainer } from '../elements/HeaderContainer.js';
+import type { LabelStyle } from '../elements/Label.js';
+import type { DropDownListItem } from '../elements/dropDownButton/DropDownButton.js';
+import DropDownButton from '../elements/dropDownButton/DropDownButton.js';
+import { useSaveSettings } from '../hooks/useSaveSettings.js';
+import { useWorkspaceAction } from '../hooks/useWorkspaceAction.js';
+import { LogsHistoryModal } from '../modal/LogsHistoryModal.js';
+import AboutUsModal from '../modal/aboutUs/AboutUsModal.js';
+import GeneralSettingsModal from '../modal/setting/GeneralSettings.js';
+import WorkspaceItem from '../modal/setting/WorkspaceItem.js';
+import { options } from '../toolbar/ToolTypes.js';
 
-import { AutoPeakPickingOptionPanel } from './AutoPeakPickingOptionPanel';
-import { HeaderWrapper } from './HeaderWrapper';
-import RangesPickingOptionPanel from './RangesPickingOptionPanel';
-import { SimpleApodizationOptionsPanel } from './SimpleApodizationOptionsPanel';
-import { SimpleBaseLineCorrectionOptionsPanel } from './SimpleBaseLineCorrectionOptionsPanel';
-import { SimplePhaseCorrectionOptionsPanel } from './SimplePhaseCorrectionOptionsPanel';
-import { SimplePhaseCorrectionTwoDimensionsPanel } from './SimplePhaseCorrectionTwoDimensionsPanel';
-import { SimpleZeroFillingOptionsPanel } from './SimpleZeroFillingOptionsPanel';
-import Zones2DOptionPanel from './Zones2DOptionPanel';
+import { AutoPeakPickingOptionPanel } from './AutoPeakPickingOptionPanel.js';
+import { HeaderWrapper } from './HeaderWrapper.js';
+import RangesPickingOptionPanel from './RangesPickingOptionPanel.js';
+import { SimpleApodizationOptionsPanel } from './SimpleApodizationOptionsPanel.js';
+import { SimpleBaseLineCorrectionOptionsPanel } from './SimpleBaseLineCorrectionOptionsPanel.js';
+import { SimplePhaseCorrectionOptionsPanel } from './SimplePhaseCorrectionOptionsPanel.js';
+import { SimplePhaseCorrectionTwoDimensionsPanel } from './SimplePhaseCorrectionTwoDimensionsPanel.js';
+import { SimpleZeroFillingOptionsPanel } from './SimpleZeroFillingOptionsPanel.js';
+import Zones2DOptionPanel from './Zones2DOptionPanel.js';
 
 export const headerLabelStyle: LabelStyle = {
   label: {
@@ -195,7 +194,6 @@ function HeaderInner(props: HeaderInnerProps) {
                   id="full-screen"
                   onClick={fullscreen.toggle}
                   tooltip="Full screen"
-                  className="windowButton"
                   icon={<FaRegWindowMaximize />}
                 />
               )}

@@ -1,4 +1,4 @@
-import { FileCollectionItem } from 'filelist-utils';
+import type { FileCollectionItem } from 'filelist-utils';
 
 export function isMetaFile(file: File | FileCollectionItem) {
   if (file instanceof File) {

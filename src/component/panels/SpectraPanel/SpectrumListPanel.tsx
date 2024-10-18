@@ -1,10 +1,11 @@
-import { memo, useState, CSSProperties, useRef } from 'react';
+import type { CSSProperties } from 'react';
+import { memo, useRef, useState } from 'react';
 
-import PreferencesHeader from '../header/PreferencesHeader';
+import PreferencesHeader from '../header/PreferencesHeader.js';
 
-import SpectraPanelHeader from './SpectraPanelHeader';
-import SpectraPreferences from './SpectraPreferences';
-import SpectraTabs from './SpectraTabs';
+import SpectraPanelHeader from './SpectraPanelHeader.js';
+import SpectraPreferences from './SpectraPreferences.js';
+import SpectraTabs from './SpectraTabs.js';
 
 const styles: CSSProperties = {
   overflow: 'hidden',

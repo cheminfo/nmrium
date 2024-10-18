@@ -14,52 +14,44 @@ import {
   SvgNmrRealImag,
   SvgNmrZeroFilling,
 } from 'cheminfo-font';
-import { NMRiumToolBarPreferences } from 'nmr-load-save';
+import type { NMRiumToolBarPreferences } from 'nmr-load-save';
 import { useCallback } from 'react';
 import {
-  FaSearchPlus,
-  FaExpand,
   FaDiceFour,
-  FaFileImport,
-  FaFileExport,
   FaDownload,
+  FaExpand,
+  FaFileExport,
+  FaFileImport,
+  FaSearchPlus,
 } from 'react-icons/fa';
 import { PiKnifeBold } from 'react-icons/pi';
-import {
-  Toolbar,
-  ToolbarItemProps,
-  TooltipItem,
-  TooltipHelpContent,
-} from 'react-science/ui';
+import type { ToolbarItemProps, TooltipItem } from 'react-science/ui';
+import { Toolbar, TooltipHelpContent } from 'react-science/ui';
 
-import { useChartData } from '../context/ChartContext';
-import { useDispatch } from '../context/DispatchContext';
-import { useLoader } from '../context/LoaderContext';
-import { usePreferences } from '../context/PreferencesContext';
-import {
-  ToolbarPopoverMenuItem,
-  ToolbarPopoverItem,
-} from '../elements/ToolbarPopoverItem';
-import { useExportManagerAPI } from '../elements/export/ExportManager';
-import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
-import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature';
-import {
-  CheckOptions,
-  useCheckToolsVisibility,
-} from '../hooks/useCheckToolsVisibility';
-import useDatumWithSpectraStatistics from '../hooks/useDatumWithSpectraStatistics';
-import { useDialogToggle } from '../hooks/useDialogToggle';
-import { useExport } from '../hooks/useExport';
-import useToolsFunctions from '../hooks/useToolsFunctions';
-import { useVerticalAlign } from '../hooks/useVerticalAlign';
-import ExportAsJcampModal from '../modal/ExportAsJcampModal';
-import { ImportPublicationStringModal } from '../modal/ImportPublicationStringModal';
-import { LoadJCAMPModal } from '../modal/LoadJCAMPModal';
-import SaveAsModal from '../modal/SaveAsModal';
-import { MetaImportationModal } from '../modal/metaImportation/MetaImportationModal';
+import { useChartData } from '../context/ChartContext.js';
+import { useDispatch } from '../context/DispatchContext.js';
+import { useLoader } from '../context/LoaderContext.js';
+import { usePreferences } from '../context/PreferencesContext.js';
+import type { ToolbarPopoverMenuItem } from '../elements/ToolbarPopoverItem.js';
+import { ToolbarPopoverItem } from '../elements/ToolbarPopoverItem.js';
+import { useExportManagerAPI } from '../elements/export/ExportManager.js';
+import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
+import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature.js';
+import type { CheckOptions } from '../hooks/useCheckToolsVisibility.js';
+import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility.js';
+import useDatumWithSpectraStatistics from '../hooks/useDatumWithSpectraStatistics.js';
+import { useDialogToggle } from '../hooks/useDialogToggle.js';
+import { useExport } from '../hooks/useExport.js';
+import useToolsFunctions from '../hooks/useToolsFunctions.js';
+import { useVerticalAlign } from '../hooks/useVerticalAlign.js';
+import ExportAsJcampModal from '../modal/ExportAsJcampModal.js';
+import { ImportPublicationStringModal } from '../modal/ImportPublicationStringModal.js';
+import { LoadJCAMPModal } from '../modal/LoadJCAMPModal.js';
+import SaveAsModal from '../modal/SaveAsModal.js';
+import { MetaImportationModal } from '../modal/metaImportation/MetaImportationModal.js';
 
-import { options } from './ToolTypes';
-import { EXPORT_MENU, IMPORT_MENU } from './toolbarMenu';
+import { options } from './ToolTypes.js';
+import { EXPORT_MENU, IMPORT_MENU } from './toolbarMenu.js';
 
 interface BaseToolItem extends Pick<ToolbarItemProps, 'icon'> {
   id: keyof NMRiumToolBarPreferences;

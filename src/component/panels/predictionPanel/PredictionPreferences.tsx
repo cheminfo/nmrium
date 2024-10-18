@@ -1,11 +1,11 @@
-import { useCallback, useImperativeHandle, useRef, forwardRef } from 'react';
+import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
 
-import { usePreferences } from '../../context/PreferencesContext';
-import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
-import { SettingsRef } from '../extra/utilities/settingImperativeHandle';
+import { usePreferences } from '../../context/PreferencesContext.js';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
+import { PreferencesContainer } from '../extra/preferences/PreferencesContainer.js';
+import type { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
 
-import PredictionOptionsPanel from './PredictionOptionsPanel';
+import PredictionOptionsPanel from './PredictionOptionsPanel.js';
 
 function PredictionPreferences(props, ref: any) {
   const formRef = useRef<SettingsRef | null>(null);

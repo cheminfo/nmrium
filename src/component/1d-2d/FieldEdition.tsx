@@ -1,13 +1,15 @@
 /** @jsxImportSource @emotion/react */
-import { Popover, PopoverProps } from '@blueprintjs/core';
+import type { PopoverProps } from '@blueprintjs/core';
+import { Popover } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { ReactNode, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
-import { Input2Controller } from '../elements/Input2Controller';
-import { NumberInput2Controller } from '../elements/NumberInput2Controller';
+import { Input2Controller } from '../elements/Input2Controller.js';
+import { NumberInput2Controller } from '../elements/NumberInput2Controller.js';
 
 type InputType = 'number' | 'text';
 

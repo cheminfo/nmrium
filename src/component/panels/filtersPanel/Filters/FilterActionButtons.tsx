@@ -1,4 +1,5 @@
-import { Button, ButtonProps } from '@blueprintjs/core';
+import type { ButtonProps } from '@blueprintjs/core';
+import { Button } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 
 interface FilterActionButtonsProps {

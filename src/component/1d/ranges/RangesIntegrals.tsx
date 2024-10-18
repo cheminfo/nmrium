@@ -1,10 +1,10 @@
 import { xyIntegral, xyMaxY } from 'ml-spectra-processing';
-import { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from 'nmr-load-save';
 
-import { useChartData } from '../../context/ChartContext';
-import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
-import useIntegralPath from '../../hooks/useIntegralPath';
-import useSpectrum from '../../hooks/useSpectrum';
+import { useChartData } from '../../context/ChartContext.js';
+import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
+import useIntegralPath from '../../hooks/useIntegralPath.js';
+import useSpectrum from '../../hooks/useSpectrum.js';
 
 interface IntegralData {
   x: Float64Array;

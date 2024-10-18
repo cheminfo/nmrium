@@ -1,6 +1,6 @@
-import { saveAs } from 'file-saver';
-import lodashGet from 'lodash/get';
-import {
+import fileSaver from 'file-saver';
+import lodashGet from 'lodash/get.js';
+import type {
   ActiveSpectrum,
   JpathTableColumn,
   PredefinedSpectraColumn,
@@ -9,31 +9,30 @@ import {
   Spectrum,
   StateMolecule,
 } from 'nmr-load-save';
-import { useMemo, CSSProperties, useCallback, useState } from 'react';
-import { FaCopy, FaRegTrashAlt, FaFileExport } from 'react-icons/fa';
+import type { CSSProperties } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import { FaCopy, FaFileExport, FaRegTrashAlt } from 'react-icons/fa';
 import { IoColorPaletteOutline } from 'react-icons/io5';
 
-import { exportForCT } from '../../../data/SpectraManager';
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D';
-import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents';
-import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
-import { useChartData } from '../../context/ChartContext';
-import { useDispatch } from '../../context/DispatchContext';
-import { useToaster } from '../../context/ToasterContext';
-import {
-  ContextMenu,
-  ContextMenuItem,
-} from '../../elements/ContextMenuBluePrint';
-import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
-import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import ExportAsJcampModal from '../../modal/ExportAsJcampModal';
+import { exportForCT } from '../../../data/SpectraManager.js';
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
+import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents.js';
+import { useClipboard } from '../../../utils/clipboard/clipboardHooks.js';
+import { useChartData } from '../../context/ChartContext.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { useToaster } from '../../context/ToasterContext.js';
+import type { ContextMenuItem } from '../../elements/ContextMenuBluePrint.js';
+import { ContextMenu } from '../../elements/ContextMenuBluePrint.js';
+import type { Column } from '../../elements/ReactTable/ReactTable.js';
+import ReactTable from '../../elements/ReactTable/ReactTable.js';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
+import ExportAsJcampModal from '../../modal/ExportAsJcampModal.js';
 
-import ColorIndicator from './base/ColorIndicator';
-import { RenderAsHTML } from './base/RenderAsHTML';
-import ShowHideSpectrumButton, {
-  OnChangeVisibilityEvent,
-} from './base/ShowHideSpectrumButton';
-import { SpectrumName } from './base/SpectrumName';
+import ColorIndicator from './base/ColorIndicator.js';
+import { RenderAsHTML } from './base/RenderAsHTML.js';
+import type { OnChangeVisibilityEvent } from './base/ShowHideSpectrumButton.js';
+import ShowHideSpectrumButton from './base/ShowHideSpectrumButton.js';
+import { SpectrumName } from './base/SpectrumName.js';
 
 function getActiveSpectraAsObject(activeSpectra: ActiveSpectrum[] | null) {
   const result = {};
@@ -250,7 +249,7 @@ export function SpectraTable(props: SpectraTableProps) {
         case SpectraContextMenuOptionsKeys.ExportAsText: {
           const data = convertSpectrumToText(spectrum);
           const blob = new Blob([data], { type: 'text/plain' });
-          saveAs(blob, `${spectrum.info.name}.tsv`);
+          fileSaver.saveAs(blob, `${spectrum.info.name}.tsv`);
           break;
         }
         case SpectraContextMenuOptionsKeys.CopyAsText: {

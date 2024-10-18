@@ -1,11 +1,5 @@
-import {
-  useState,
-  useRef,
-  useEffect,
-  useCallback,
-  CSSProperties,
-  ReactNode,
-} from 'react';
+import type { CSSProperties, ReactNode } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 
 const styles: Record<
   'container' | 'button' | 'buttonTitle' | 'content',

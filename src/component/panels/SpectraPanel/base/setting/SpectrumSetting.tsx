@@ -2,10 +2,10 @@
 import { css } from '@emotion/react';
 import { memo, useCallback } from 'react';
 
-import { useDispatch } from '../../../../context/DispatchContext';
+import { useDispatch } from '../../../../context/DispatchContext.js';
 
-import Spectrum1DSetting from './Spectrum1DSetting';
-import Spectrum2DSetting from './Spectrum2DSetting';
+import Spectrum1DSetting from './Spectrum1DSetting.js';
+import Spectrum2DSetting from './Spectrum2DSetting.js';
 
 const style = css`
   position: fixed;

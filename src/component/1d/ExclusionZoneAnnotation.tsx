@@ -3,10 +3,10 @@ import { css } from '@emotion/react';
 import { Filters } from 'nmr-processing';
 import { memo } from 'react';
 
-import { ExclusionZone } from '../../data/types/data1d/ExclusionZone';
-import { useScaleChecked } from '../context/ScaleContext';
-import { HighlightEventSource, useHighlight } from '../highlight';
-import useActiveSpectrumStyleOptions from '../hooks/useActiveSpectrumStyleOptions';
+import type { ExclusionZone } from '../../data/types/data1d/ExclusionZone.js';
+import { useScaleChecked } from '../context/ScaleContext.js';
+import { HighlightEventSource, useHighlight } from '../highlight/index.js';
+import useActiveSpectrumStyleOptions from '../hooks/useActiveSpectrumStyleOptions.js';
 
 interface ExclusionZoneProps {
   zone: ExclusionZone;

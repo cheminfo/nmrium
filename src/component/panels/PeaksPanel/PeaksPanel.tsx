@@ -1,33 +1,31 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { SvgNmrFt, SvgNmrPeaks, SvgNmrPeaksTopLabels } from 'cheminfo-font';
-import SvgPeaks from 'cheminfo-font/lib-react-cjs/lib-react-tsx/nmr/Peaks';
-import { PeaksViewState, Spectrum1D } from 'nmr-load-save';
-import { Info1D, Peak1D, Peaks } from 'nmr-processing';
-import { useCallback, useMemo, useState, useRef, memo } from 'react';
+import type { PeaksViewState, Spectrum1D } from 'nmr-load-save';
+import type { Info1D, Peak1D, Peaks } from 'nmr-processing';
+import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { FaThinkPeaks } from 'react-icons/fa';
 
-import isInRange from '../../../data/utilities/isInRange';
-import { useChartData } from '../../context/ChartContext';
-import { useDispatch } from '../../context/DispatchContext';
-import { usePreferences } from '../../context/PreferencesContext';
-import { useToaster } from '../../context/ToasterContext';
-import { useAlert } from '../../elements/Alert';
-import { useActiveSpectrumPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState';
-import useCheckExperimentalFeature from '../../hooks/useCheckExperimentalFeature';
-import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
-import useSpectrum from '../../hooks/useSpectrum';
-import { booleanToString } from '../../utility/booleanToString';
-import { FilterType } from '../../utility/filterType';
-import { tablePanelStyle } from '../extra/BasicPanelStyle';
-import { SettingsRef } from '../extra/utilities/settingImperativeHandle';
-import DefaultPanelHeader, {
-  ToolbarItemProps,
-} from '../header/DefaultPanelHeader';
-import PreferencesHeader from '../header/PreferencesHeader';
+import isInRange from '../../../data/utilities/isInRange.js';
+import { useChartData } from '../../context/ChartContext.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { usePreferences } from '../../context/PreferencesContext.js';
+import { useToaster } from '../../context/ToasterContext.js';
+import { useAlert } from '../../elements/Alert.js';
+import { useActiveSpectrumPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState.js';
+import useCheckExperimentalFeature from '../../hooks/useCheckExperimentalFeature.js';
+import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus.js';
+import useSpectrum from '../../hooks/useSpectrum.js';
+import { booleanToString } from '../../utility/booleanToString.js';
+import type { FilterType } from '../../utility/filterType.js';
+import { tablePanelStyle } from '../extra/BasicPanelStyle.js';
+import type { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
+import type { ToolbarItemProps } from '../header/DefaultPanelHeader.js';
+import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
+import PreferencesHeader from '../header/PreferencesHeader.js';
 
-import PeaksPreferences from './PeaksPreferences';
-import PeaksTable from './PeaksTable';
+import PeaksPreferences from './PeaksPreferences.js';
+import PeaksTable from './PeaksTable.js';
 
 interface PeaksPanelInnerProps {
   peaks: Peaks;
@@ -163,7 +161,7 @@ function PeaksPanelInner({
     leftButtons.unshift(
       {
         disabled,
-        icon: <SvgPeaks />,
+        icon: <SvgNmrPeaks />,
         tooltip: `${booleanToString(!showPeaksShapes)} peaks shapes`,
         onClick: () => toggleViewProperty('showPeaksShapes'),
         active: showPeaksShapes,

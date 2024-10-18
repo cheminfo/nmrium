@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useMemo } from 'react';
 
-import { AssignmentsActions } from './AssignmentsReducer';
+import type { AssignmentsActions } from './AssignmentsReducer.js';
 
 export type Axis = 'x' | 'y';
 export type Assignment = Record<Axis, string[]>;

@@ -1,4 +1,4 @@
-import { getXScale } from '../../1d/utilities/scale';
+import { getXScale } from '../../1d/utilities/scale.js';
 
 interface RangeOptions {
   startX: number;

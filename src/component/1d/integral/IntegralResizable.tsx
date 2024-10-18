@@ -1,15 +1,15 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Integral } from 'nmr-processing';
+import type { Integral } from 'nmr-processing';
 
-import { useChartData } from '../../context/ChartContext';
-import { useDispatch } from '../../context/DispatchContext';
-import { useScaleChecked } from '../../context/ScaleContext';
-import { ResizerWithScale } from '../../elements/ResizerWithScale';
-import { HighlightEventSource, useHighlight } from '../../highlight/index';
-import { useResizerStatus } from '../../hooks/useResizerStatus';
+import { useChartData } from '../../context/ChartContext.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { useScaleChecked } from '../../context/ScaleContext.js';
+import { ResizerWithScale } from '../../elements/ResizerWithScale.js';
+import { HighlightEventSource, useHighlight } from '../../highlight/index.js';
+import { useResizerStatus } from '../../hooks/useResizerStatus.js';
 
-import { IntegralIndicator } from './IntegralIndicator';
+import { IntegralIndicator } from './IntegralIndicator.js';
 
 const stylesOnHover = css`
   pointer-events: bounding-box;

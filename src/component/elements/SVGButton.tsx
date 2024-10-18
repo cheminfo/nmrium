@@ -1,5 +1,6 @@
-import { Icon, IconName, Tooltip, TooltipProps } from '@blueprintjs/core';
-import { CSSProperties, ReactNode } from 'react';
+import type { IconName, TooltipProps } from '@blueprintjs/core';
+import { Icon, Tooltip } from '@blueprintjs/core';
+import type { CSSProperties, ReactNode } from 'react';
 
 interface IconButtonProps extends React.SVGAttributes<SVGElement> {
   size?: number;

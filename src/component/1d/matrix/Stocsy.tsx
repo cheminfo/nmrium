@@ -3,17 +3,17 @@ import { xFindClosestIndex } from 'ml-spectra-processing';
 import { matrixToStocsy } from 'nmr-processing';
 import { useMemo } from 'react';
 
-import { useChartData } from '../../context/ChartContext';
-import { useScaleChecked } from '../../context/ScaleContext';
-import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import { PathBuilder } from '../../utility/PathBuilder';
-import { getYScaleWithRation } from '../utilities/scale';
+import { useChartData } from '../../context/ChartContext.js';
+import { useScaleChecked } from '../../context/ScaleContext.js';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
+import { PathBuilder } from '../../utility/PathBuilder.js';
+import { getYScaleWithRation } from '../utilities/scale.js';
 
 import {
-  sliceArrayForDomain,
   groupPointsByColor,
+  sliceArrayForDomain,
   useMatrix,
-} from './useMatrix';
+} from './useMatrix.js';
 
 interface StocsyProps {
   x: Float64Array | number[];

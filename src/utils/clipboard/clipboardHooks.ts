@@ -6,8 +6,8 @@ import {
   readText,
   write,
   writeText,
-} from './clipboard';
-import { ClipboardMode } from './types';
+} from './clipboard.js';
+import type { ClipboardMode } from './types.js';
 
 type PN = PermissionName | 'clipboard-read' | 'clipboard-write';
 

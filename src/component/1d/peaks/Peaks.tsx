@@ -1,17 +1,17 @@
-import { Spectrum1D } from 'nmr-load-save';
-import { NMRPeak1D, Peak1D, Range } from 'nmr-processing';
+import type { Spectrum1D } from 'nmr-load-save';
+import type { NMRPeak1D, Peak1D, Range } from 'nmr-processing';
 import { memo, useMemo } from 'react';
 
-import { useChartData } from '../../context/ChartContext';
-import { useActiveSpectrumPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState';
-import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
-import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import useSpectrum from '../../hooks/useSpectrum';
-import { Margin } from '../../reducer/Reducer';
-import { useScaleX } from '../utilities/scale';
+import { useChartData } from '../../context/ChartContext.js';
+import { useActiveSpectrumPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState.js';
+import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
+import useSpectrum from '../../hooks/useSpectrum.js';
+import type { Margin } from '../../reducer/Reducer.js';
+import { useScaleX } from '../utilities/scale.js';
 
-import PeakAnnotations from './PeakAnnotations';
-import PeakAnnotationsSpreadMode from './PeakAnnotationsSpreadMode';
+import PeakAnnotations from './PeakAnnotations.js';
+import PeakAnnotationsSpreadMode from './PeakAnnotationsSpreadMode.js';
 
 interface Peak1DWithParentKeys extends Peak1D {
   parentKeys?: string[];

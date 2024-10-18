@@ -1,16 +1,16 @@
-import { Draft } from 'immer';
+import type { Draft } from 'immer';
 
-import * as MultipleAnalysis from '../../../../data/data1d/multipleSpectraAnalysis';
-import { orderRange } from '../../helper/getRange';
-import { getMultipleSpectraAnalysisDefaultValues } from '../panelsPreferencesDefaultValues';
-import {
+import * as MultipleAnalysis from '../../../../data/data1d/multipleSpectraAnalysis.js';
+import { orderRange } from '../../helper/getRange.js';
+import { getMultipleSpectraAnalysisDefaultValues } from '../panelsPreferencesDefaultValues.js';
+import type {
   AnalyzeSpectraAction,
   ChangeAnalysisColumnValueKeyAction,
   DeleteAnalysisColumn,
   PreferencesState,
   SetSpectraAnalysisPanelPreferencesAction,
-} from '../preferencesReducer';
-import { getActiveWorkspace } from '../utilities/getActiveWorkspace';
+} from '../preferencesReducer.js';
+import { getActiveWorkspace } from '../utilities/getActiveWorkspace.js';
 
 export function analyzeSpectra(
   draft: Draft<PreferencesState>,

@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
-import getAtomsFromMF from '../getAtomsFromMF';
+import getAtomsFromMF from '../getAtomsFromMF.js';
 
 describe('getAtomsFromMF', () => {
   it('correct mf', () => {

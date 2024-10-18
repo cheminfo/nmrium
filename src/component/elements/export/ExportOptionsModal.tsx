@@ -11,7 +11,7 @@ import {
 } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import {
+import type {
   AdvanceExportSettings,
   BasicExportSettings,
   ExportSettings,
@@ -19,22 +19,25 @@ import {
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
-import ActionButtons from '../ActionButtons';
-import { CheckController } from '../CheckController';
-import Label, { LabelStyle } from '../Label';
-import { NumberInput2Controller } from '../NumberInput2Controller';
-import { Select2Controller } from '../Select2Controller';
-import { getSizesList, SizeItem } from '../print/pageSize';
+import ActionButtons from '../ActionButtons.js';
+import { CheckController } from '../CheckController.js';
+import type { LabelStyle } from '../Label.js';
+import Label from '../Label.js';
+import { NumberInput2Controller } from '../NumberInput2Controller.js';
+import { Select2Controller } from '../Select2Controller.js';
+import type { SizeItem } from '../print/pageSize.js';
+import { getSizesList } from '../print/pageSize.js';
 
-import { BaseExportProps } from './ExportContent';
-import { units } from './units';
-import { useExportConfigurer } from './useExportConfigurer';
-import { exportOptionValidationSchema } from './utilities/exportOptionValidationSchema';
+import type { BaseExportProps } from './ExportContent.js';
+import { units } from './units.js';
+import { useExportConfigurer } from './useExportConfigurer.js';
+import { exportOptionValidationSchema } from './utilities/exportOptionValidationSchema.js';
 import {
   getExportDefaultOptions,
   getExportDefaultOptionsByMode,
-} from './utilities/getExportOptions';
-import { Mode, MODES } from './utilities/getModes';
+} from './utilities/getExportOptions.js';
+import type { Mode } from './utilities/getModes.js';
+import { MODES } from './utilities/getModes.js';
 
 interface InnerExportOptionsModalProps extends BaseExportProps {
   onCloseDialog: () => void;

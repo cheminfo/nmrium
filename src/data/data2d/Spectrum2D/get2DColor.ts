@@ -1,8 +1,8 @@
-import { Color2D, SpectrumTwoDimensionsColor } from 'nmr-load-save';
+import type { Color2D, SpectrumTwoDimensionsColor } from 'nmr-load-save';
 
-import { UsedColors } from '../../../types/UsedColors';
-import { adjustAlpha, generateColor } from '../../utilities/generateColor';
-import { getCustomColor } from '../../utilities/getCustomColor';
+import type { UsedColors } from '../../../types/UsedColors.js';
+import { adjustAlpha, generateColor } from '../../utilities/generateColor.js';
+import { getCustomColor } from '../../utilities/getCustomColor.js';
 
 interface BaseColorOptions {
   usedColors?: UsedColors;

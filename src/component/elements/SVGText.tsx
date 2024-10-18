@@ -1,4 +1,5 @@
-import { SVGAttributes, useLayoutEffect, useRef, useState } from 'react';
+import type { SVGAttributes } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 
 interface SVGTextProps extends SVGAttributes<SVGTextElement> {
   rectProps?: SVGAttributes<SVGRectElement>;

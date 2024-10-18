@@ -1,13 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { Icon, Tag } from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import React, {
-  createContext,
+import type {
   CSSProperties,
+  HTMLAttributes,
+  HTMLProps,
+  MouseEvent,
   ReactNode,
-  useContext,
-  useMemo,
 } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 
 interface SelectionsContextState {
   overflow: boolean;
@@ -140,7 +141,7 @@ interface BaseSectionProps {
 
 interface SectionItemProps extends BaseSectionProps {
   id?: string;
-  onClick?: (id, event?: React.MouseEvent<HTMLDivElement>) => void;
+  onClick?: (id, event?: MouseEvent<HTMLDivElement>) => void;
   children?: ReactNode | ((options: { isOpen?: boolean }) => ReactNode);
   selectedSectionId?: string;
   sticky?: boolean;
@@ -169,12 +170,12 @@ export function Sections(props: SectionProps) {
   );
 }
 
-function SectionHeader(props: React.HTMLAttributes<HTMLDivElement>) {
+function SectionHeader(props: HTMLAttributes<HTMLDivElement>) {
   const { children, ...otherProps } = props;
   return <InnerHeader {...otherProps}>{children}</InnerHeader>;
 }
 
-function SectionBody(props: React.HTMLAttributes<HTMLDivElement>) {
+function SectionBody(props: HTMLAttributes<HTMLDivElement>) {
   const { children, ...otherProps } = props;
 
   return <Content {...otherProps}>{children}</Content>;
@@ -238,7 +239,7 @@ function Wrapper(props: WrapperProps) {
 }
 
 interface MainSectionHeaderProps
-  extends Pick<React.HTMLProps<HTMLDivElement>, 'onClick'>,
+  extends Pick<HTMLProps<HTMLDivElement>, 'onClick'>,
     BaseSectionProps {
   isOpen: boolean;
   sticky: boolean;

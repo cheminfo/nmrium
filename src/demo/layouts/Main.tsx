@@ -1,9 +1,10 @@
-import { useEffect, useState, useCallback, CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import routes from '../samples.json';
 
-import AdminLayout from './Admin';
-import SingleDisplayerLayout from './SingleDisplayerLayout';
+import AdminLayout from './Admin.js';
+import SingleDisplayerLayout from './SingleDisplayerLayout.js';
 
 const styles: Record<
   | 'bodyContainer'

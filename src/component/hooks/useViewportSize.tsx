@@ -1,5 +1,5 @@
-import { useExportSettings } from '../elements/export';
-import { usePrintPage } from '../elements/print';
+import { useExportSettings } from '../elements/export/index.js';
+import { usePrintPage } from '../elements/print/index.js';
 
 export function useViewportSize() {
   const printOptions = usePrintPage();

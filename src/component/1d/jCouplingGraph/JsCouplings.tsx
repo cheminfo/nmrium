@@ -1,9 +1,9 @@
-import { Signal1D } from 'nmr-processing';
+import type { Signal1D } from 'nmr-processing';
 
-import { useScaleChecked } from '../../context/ScaleContext';
+import { useScaleChecked } from '../../context/ScaleContext.js';
 
-import { useJGraph } from './JGraphContext';
-import JsCoupling from './JsCoupling';
+import { useJGraph } from './JGraphContext.js';
+import JsCoupling from './JsCoupling.js';
 
 interface JsCouplingsProps {
   signals: Signal1D[];

@@ -1,6 +1,7 @@
-import { createContext, ReactElement } from 'react';
+import type { ReactElement } from 'react';
+import { createContext } from 'react';
 
-import DefaultSpinnerComponent from './DefaultSpinnerComponent';
+import DefaultSpinnerComponent from './DefaultSpinnerComponent.js';
 
 export function defaultGetSpinner(loadingText = 'Loading ...') {
   return <DefaultSpinnerComponent loadingText={loadingText} />;

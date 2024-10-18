@@ -1,6 +1,6 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
-import NmriumPage from '../NmriumPage';
+import NmriumPage from '../NmriumPage/index.js';
 
 async function open13CFidSpectrum(nmrium: NmriumPage) {
   await nmrium.page.click('li >> text=Cytisine');

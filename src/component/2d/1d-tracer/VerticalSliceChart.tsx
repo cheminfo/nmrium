@@ -1,10 +1,10 @@
-import { NmrData1D } from 'cheminfo-types';
-import { Spectrum2D } from 'nmr-load-save';
+import type { NmrData1D } from 'cheminfo-types';
+import type { Spectrum2D } from 'nmr-load-save';
 
-import { useChartData } from '../../context/ChartContext';
-import useSpectrum from '../../hooks/useSpectrum';
-import { PathBuilder } from '../../utility/PathBuilder';
-import { getSliceYScale, useScale2DY } from '../utilities/scale';
+import { useChartData } from '../../context/ChartContext.js';
+import useSpectrum from '../../hooks/useSpectrum.js';
+import { PathBuilder } from '../../utility/PathBuilder.js';
+import { getSliceYScale, useScale2DY } from '../utilities/scale.js';
 
 interface BaseProps {
   reverse?: boolean;

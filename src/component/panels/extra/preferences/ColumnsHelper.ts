@@ -1,6 +1,6 @@
-import lodashGet from 'lodash/get';
+import lodashGet from 'lodash/get.js';
 
-import { formatNumber } from '../../../utility/formatNumber';
+import { formatNumber } from '../../../utility/formatNumber.js';
 
 export default class ColumnsHelper {
   private preferences: any;

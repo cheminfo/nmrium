@@ -1,14 +1,14 @@
-import lodashDebounce from 'lodash/debounce';
-import lodashMap from 'lodash/map';
+import lodashDebounce from 'lodash/debounce.js';
+import lodashMap from 'lodash/map.js';
 import { useCallback, useRef, useState } from 'react';
 import { useToggleAccordion } from 'react-science/ui';
 
-import { useChartData } from '../context/ChartContext';
-import { useDispatch } from '../context/DispatchContext';
-import { usePreferences } from '../context/PreferencesContext';
-import { useToaster } from '../context/ToasterContext';
-import { TOOLS_PANELS_ACCORDION } from '../panels/Panels';
-import { options } from '../toolbar/ToolTypes';
+import { useChartData } from '../context/ChartContext.js';
+import { useDispatch } from '../context/DispatchContext.js';
+import { usePreferences } from '../context/PreferencesContext.js';
+import { useToaster } from '../context/ToasterContext.js';
+import { TOOLS_PANELS_ACCORDION } from '../panels/Panels.js';
+import { options } from '../toolbar/ToolTypes.js';
 
 export default function useToolsFunctions() {
   const dispatch = useDispatch();

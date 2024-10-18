@@ -1,27 +1,21 @@
 import { memo, useState } from 'react';
 import { BsArrowsMove } from 'react-icons/bs';
-import { useMeasure } from 'react-use';
+import useResizeObserver from 'use-resize-observer';
 
-import { useGlobal } from '../../context/GlobalContext';
-import { usePreferences } from '../../context/PreferencesContext';
-import {
-  ActionsButtonsPopover,
-  ActionsButtonsPopoverProps,
-} from '../../elements/ActionsButtonsPopover';
-import useDraggable from '../../elements/draggable/useDraggable';
-import { useHighlight } from '../../highlight';
-import { usePeaksLabelSettings } from '../../hooks/usePeaksLabelSettings';
-import { Margin } from '../../reducer/Reducer';
-import { formatNumber } from '../../utility/formatNumber';
-import { resolve } from '../utilities/intersectionResolver';
+import { useGlobal } from '../../context/GlobalContext.js';
+import { usePreferences } from '../../context/PreferencesContext.js';
+import type { ActionsButtonsPopoverProps } from '../../elements/ActionsButtonsPopover.js';
+import { ActionsButtonsPopover } from '../../elements/ActionsButtonsPopover.js';
+import useDraggable from '../../elements/draggable/useDraggable.js';
+import { useHighlight } from '../../highlight/index.js';
+import { usePeaksLabelSettings } from '../../hooks/usePeaksLabelSettings.js';
+import type { Margin } from '../../reducer/Reducer.js';
+import { formatNumber } from '../../utility/formatNumber.js';
+import { resolve } from '../utilities/intersectionResolver.js';
 
-import { PeakEditionListener } from './PeakEditionManager';
-import {
-  PeaksAnnotationsProps,
-  PeaksSource,
-  getHighlightExtraId,
-  getHighlightSource,
-} from './Peaks';
+import { PeakEditionListener } from './PeakEditionManager.js';
+import type { PeaksAnnotationsProps, PeaksSource } from './Peaks.js';
+import { getHighlightExtraId, getHighlightSource } from './Peaks.js';
 
 const notationWidth = 10;
 const notationMargin = 2;
@@ -84,7 +78,11 @@ function PeakAnnotationsSpreadMode(props: PeakAnnotationsSpreadModeProps) {
     margin,
     height,
   } = props;
-  const [ref, boxSize] = useMeasure<SVGGElement>();
+  const {
+    ref,
+    height: boxSizeHeight = 0,
+    // @ts-expect-error Module is not published correctly.
+  } = useResizeObserver();
   const { marginTop, isDragActive, onPointerDown } = usePeaksPosition();
 
   const actionsButtons: ActionsButtonsPopoverProps['buttons'] = [
@@ -107,16 +105,16 @@ function PeakAnnotationsSpreadMode(props: PeakAnnotationsSpreadModeProps) {
     groupMargin: 10,
   });
 
-  const boxHeight = Math.round(boxSize.height);
+  const roundedBoxHeight = Math.round(boxSizeHeight);
 
-  let y = boxHeight + marginTop;
+  let y = roundedBoxHeight + marginTop;
 
-  if (y + boxHeight > height - margin.bottom) {
-    y = height - margin.bottom - boxHeight;
+  if (y + roundedBoxHeight > height - margin.bottom) {
+    y = height - margin.bottom - roundedBoxHeight;
   }
 
   if (marginTop < 0) {
-    y = boxHeight;
+    y = roundedBoxHeight;
   }
   return (
     <ActionsButtonsPopover
@@ -135,13 +133,13 @@ function PeakAnnotationsSpreadMode(props: PeakAnnotationsSpreadModeProps) {
       <g className="peaks" clipPath={`url(#${displayerKey}clip-chart-1d)`}>
         <g
           transform={`translate(0,${y})`}
-          style={{ visibility: boxSize.height > 0 ? 'visible' : 'hidden' }}
+          style={{ visibility: boxSizeHeight > 0 ? 'visible' : 'hidden' }}
         >
           <rect
             data-no-export="true"
             width="100%"
-            y={-boxHeight / 2}
-            height={boxHeight}
+            y={-roundedBoxHeight / 2}
+            height={roundedBoxHeight}
             fill={isDragActive ? 'white' : 'transparent'}
             opacity={isDragActive ? 0.9 : 0}
           />

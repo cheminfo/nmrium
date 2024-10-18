@@ -1,6 +1,6 @@
-import { PeaksLabel } from 'nmr-load-save';
+import type { PeaksLabel } from 'nmr-load-save';
 
-import { usePreferences } from '../context/PreferencesContext';
+import { usePreferences } from '../context/PreferencesContext.js';
 
 const peaksLabelDefaultValues: PeaksLabel = {
   marginTop: 0,

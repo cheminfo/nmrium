@@ -1,4 +1,4 @@
-import { Spectrum2D } from 'nmr-load-save';
+import type { Spectrum2D } from 'nmr-load-save';
 import { mapZones } from 'nmr-processing';
 
 export function updateZones(spectrum: Spectrum2D) {

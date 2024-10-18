@@ -1,4 +1,5 @@
-import { Controller, ControllerProps, FieldValues } from 'react-hook-form';
+import type { ControllerProps, FieldValues } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 import { ColorPickerDropdown } from 'react-science/ui';
 
 export function ColorPickerDropdownController<

@@ -1,37 +1,37 @@
-import lodashGet from 'lodash/get';
-import { NMRiumPanelPreferences, PanelPreferencesType } from 'nmr-load-save';
-import { useCallback, memo, ReactElement, CSSProperties } from 'react';
+import lodashGet from 'lodash/get.js';
+import type {
+  NMRiumPanelPreferences,
+  PanelPreferencesType,
+} from 'nmr-load-save';
+import type { CSSProperties, ReactElement } from 'react';
+import { memo, useCallback } from 'react';
 import { FaRegEdit } from 'react-icons/fa';
-import {
-  Accordion,
-  AccordionItemProps,
-  Toolbar,
-  ToolbarItemProps,
-} from 'react-science/ui';
+import type { AccordionItemProps, ToolbarItemProps } from 'react-science/ui';
+import { Accordion, Toolbar } from 'react-science/ui';
 
-import { useChartData } from '../context/ChartContext';
-import { usePreferences } from '../context/PreferencesContext';
-import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
-import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature';
-import { useDialogToggle } from '../hooks/useDialogToggle';
-import { DisplayerMode } from '../reducer/Reducer';
+import { useChartData } from '../context/ChartContext.js';
+import { usePreferences } from '../context/PreferencesContext.js';
+import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
+import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature.js';
+import { useDialogToggle } from '../hooks/useDialogToggle.js';
+import type { DisplayerMode } from '../reducer/Reducer.js';
 
-import AutomaticAssignment from './AutomaticAssignment/AutomaticAssignment';
-import IntegralPanel from './IntegralsPanel/IntegralPanel';
-import { MatrixGenerationPanel } from './MatrixGenerationPanel/MatrixGenerationPanel';
-import MoleculePanel from './MoleculesPanel/MoleculePanel';
-import PeaksPanel from './PeaksPanel/PeaksPanel';
-import RangesPanel from './RangesPanel/RangesPanel';
-import SpectrumListPanel from './SpectraPanel/SpectrumListPanel';
-import SummaryPanel from './SummaryPanel/SummaryPanel';
-import ZonesPanel from './ZonesPanel/ZonesPanel';
-import DatabasePanel from './databasePanel/DatabasePanel';
-import FilterPanel from './filtersPanel/FilterPanel';
-import { InformationEditionModal } from './informationPanel/InformationEditionModal';
-import { InformationPanel } from './informationPanel/InformationPanel';
-import MultipleSpectraAnalysisPanel from './multipleAnalysisPanel/MultipleSpectraAnalysisPanel';
-import PredictionPane from './predictionPanel/PredictionPanel';
-import SpectrumSimulation from './spectrumSimulation/SpectrumSimulation';
+import AutomaticAssignment from './AutomaticAssignment/AutomaticAssignment.js';
+import IntegralPanel from './IntegralsPanel/IntegralPanel.js';
+import { MatrixGenerationPanel } from './MatrixGenerationPanel/MatrixGenerationPanel.js';
+import MoleculePanel from './MoleculesPanel/MoleculePanel.js';
+import PeaksPanel from './PeaksPanel/PeaksPanel.js';
+import RangesPanel from './RangesPanel/RangesPanel.js';
+import SpectrumListPanel from './SpectraPanel/SpectrumListPanel.js';
+import SummaryPanel from './SummaryPanel/SummaryPanel.js';
+import ZonesPanel from './ZonesPanel/ZonesPanel.js';
+import DatabasePanel from './databasePanel/DatabasePanel.js';
+import FilterPanel from './filtersPanel/FilterPanel.js';
+import { InformationEditionModal } from './informationPanel/InformationEditionModal.js';
+import { InformationPanel } from './informationPanel/InformationPanel.js';
+import MultipleSpectraAnalysisPanel from './multipleAnalysisPanel/MultipleSpectraAnalysisPanel.js';
+import PredictionPane from './predictionPanel/PredictionPanel.js';
+import SpectrumSimulation from './spectrumSimulation/SpectrumSimulation.js';
 
 interface AccordionItem
   extends Omit<AccordionItemProps, 'children' | 'defaultOpened'> {

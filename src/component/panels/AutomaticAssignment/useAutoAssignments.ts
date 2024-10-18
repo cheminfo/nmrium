@@ -1,15 +1,13 @@
-import { Spectrum, Spectrum1D, Spectrum2D } from 'nmr-load-save';
-import {
-  getAssignments as getAssignmentsData,
-  SpectraData,
-} from 'nmr-processing';
+import type { Spectrum, Spectrum1D, Spectrum2D } from 'nmr-load-save';
+import type { SpectraData } from 'nmr-processing';
+import { getAssignments as getAssignmentsData } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 import { useRef, useState } from 'react';
 
-import { useChartData } from '../../context/ChartContext';
-import { useDispatch } from '../../context/DispatchContext';
-import { useToaster } from '../../context/ToasterContext';
-import { assert } from '../../utility/assert';
+import { useChartData } from '../../context/ChartContext.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { useToaster } from '../../context/ToasterContext.js';
+import { assert } from '../../utility/assert.js';
 
 export interface AutoAssignmentsData {
   score: number;

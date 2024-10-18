@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useCallback, memo, useState, useEffect } from 'react';
-import { ColorPicker, ColorPickerProps } from 'react-science/ui';
+import type { ColorPickerProps } from 'react-science/ui';
+import { ColorPicker } from 'react-science/ui';
 
 const style = css`
   display: flex;

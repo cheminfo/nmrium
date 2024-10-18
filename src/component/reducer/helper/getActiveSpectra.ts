@@ -1,6 +1,6 @@
-import { Draft } from 'immer';
+import type { Draft } from 'immer';
 
-import { State } from '../Reducer';
+import type { State } from '../Reducer.js';
 
 export function getActiveSpectra(state: Draft<State> | State) {
   const { activeSpectra, activeTab } = state.view.spectra;

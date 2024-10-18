@@ -1,10 +1,10 @@
-import { ExportSettings } from 'nmr-load-save';
+import type { ExportSettings } from 'nmr-load-save';
 import { useDeferredValue, useRef, useState } from 'react';
 
-import { roundNumber } from '../../utility/roundNumber';
+import { roundNumber } from '../../utility/roundNumber.js';
 
-import { convert, convertToPixels } from './units';
-import { getExportOptions } from './utilities/getExportOptions';
+import { convert, convertToPixels } from './units.js';
+import { getExportOptions } from './utilities/getExportOptions.js';
 
 export function useExportConfigurer(options: ExportSettings) {
   const { width, height, unit, dpi } = getExportOptions(options);

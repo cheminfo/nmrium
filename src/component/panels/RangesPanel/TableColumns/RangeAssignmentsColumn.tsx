@@ -1,14 +1,15 @@
 /** @jsxImportSource @emotion/react */
 
-import { CSSProperties, memo } from 'react';
+import type { CSSProperties } from 'react';
+import { memo } from 'react';
 
-import { AssignmentsData } from '../../../assignment/AssignmentsContext';
+import type { AssignmentsData } from '../../../assignment/AssignmentsContext.js';
 import {
-  RemoveAssignmentsButton,
   removeAssignmentCssStyle,
-} from '../../../elements/RemoveAssignmentsButton';
-import { HighlightEventSource } from '../../../highlight';
-import { RangeColumnProps } from '../RangesTableRow';
+  RemoveAssignmentsButton,
+} from '../../../elements/RemoveAssignmentsButton.js';
+import { HighlightEventSource } from '../../../highlight/index.js';
+import type { RangeColumnProps } from '../RangesTableRow.js';
 
 const columnStyle: CSSProperties = {
   padding: 0,
