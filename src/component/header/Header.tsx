@@ -142,7 +142,7 @@ function HeaderInner(props: HeaderInnerProps) {
           }}
         >
           <div>
-            <Toolbar minimal>
+            <Toolbar>
               <AboutUsModal />
             </Toolbar>
           </div>
@@ -167,7 +167,7 @@ function HeaderInner(props: HeaderInnerProps) {
           {!general?.hideLogs && <LogsHistoryModal />}
 
           <div>
-            <Toolbar minimal>
+            <Toolbar>
               {!general?.hideHelp && (
                 <Toolbar.Item
                   id="user-manual"

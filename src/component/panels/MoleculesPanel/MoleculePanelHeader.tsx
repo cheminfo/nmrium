@@ -234,7 +234,7 @@ export default function MoleculePanelHeader({
 
   return (
     <PanelHeader>
-      <Toolbar minimal>
+      <Toolbar>
         {renderSource === 'predictionPanel' && <AboutPredictionModal />}
         {renderSource === 'moleculePanel' && (
           <>

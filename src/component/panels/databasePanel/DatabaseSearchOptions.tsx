@@ -151,7 +151,7 @@ export function DatabaseSearchOptions(props: DatabaseSearchOptionsProps) {
           canClear
         />
 
-        <Toolbar minimal>
+        <Toolbar>
           <Toolbar.Item
             tooltip="Search by substructure"
             icon={!idCode ? <BsHexagon /> : <BsHexagonFill />}

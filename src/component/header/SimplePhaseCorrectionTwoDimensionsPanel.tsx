@@ -52,7 +52,7 @@ export function SimplePhaseCorrectionTwoDimensionsPanel() {
       {phaseCorrectionSelectItem?.value === 'manual' && (
         <>
           <Label title="Direction:" style={headerLabelStyle}>
-            <Toolbar minimal>
+            <Toolbar>
               <Toolbar.Item
                 tooltip="Horizontal"
                 icon={<FaRulerHorizontal />}
@@ -68,7 +68,7 @@ export function SimplePhaseCorrectionTwoDimensionsPanel() {
             </Toolbar>
           </Label>
           <div style={{ paddingRight: '5px' }}>
-            <Toolbar minimal>
+            <Toolbar>
               <Toolbar.Item
                 tooltip="Add the trace in both directions"
                 icon={<MdLooksTwo />}

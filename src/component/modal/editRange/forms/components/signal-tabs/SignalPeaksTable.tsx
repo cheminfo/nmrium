@@ -213,7 +213,7 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <div style={{ padding: '5px 0', display: 'flex' }}>
-        <Toolbar minimal>
+        <Toolbar>
           <Toolbar.Item
             icon={<FaPlus />}
             tooltip="Add a new peak"

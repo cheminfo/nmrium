@@ -230,7 +230,7 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
         </Callout>
       )}
       <div style={{ padding: '5px 0', display: 'flex' }}>
-        <Toolbar minimal>
+        <Toolbar>
           <Toolbar.Item
             icon={<FaPlus />}
             tooltip="Add a new J coupling"

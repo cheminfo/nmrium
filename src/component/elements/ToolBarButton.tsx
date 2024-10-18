@@ -3,7 +3,7 @@ import { Toolbar } from 'react-science/ui';
 
 export function ToolBarButton(props: ToolbarItemProps) {
   return (
-    <Toolbar minimal>
+    <Toolbar>
       <Toolbar.Item {...props} />
     </Toolbar>
   );

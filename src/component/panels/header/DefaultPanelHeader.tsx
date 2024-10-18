@@ -91,7 +91,7 @@ function DefaultPanelHeader(props: DefaultPanelHeaderProps) {
   return (
     <PanelHeader {...{ style, className }}>
       <div style={styles.leftContainer}>
-        <Toolbar minimal>
+        <Toolbar>
           {onDelete && (
             <Toolbar.Item
               id="delete-button"
@@ -117,7 +117,7 @@ function DefaultPanelHeader(props: DefaultPanelHeaderProps) {
         {children}
       </div>
 
-      <Toolbar minimal>{mapToolbarButtons(rightButtons)}</Toolbar>
+      <Toolbar>{mapToolbarButtons(rightButtons)}</Toolbar>
       {!hideCounter && (
         <CounterLabel value={formatCounterLabel(counter, total)} />
       )}

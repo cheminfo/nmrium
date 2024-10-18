@@ -17,12 +17,12 @@ import {
 import type { NMRiumToolBarPreferences } from 'nmr-load-save';
 import { useCallback } from 'react';
 import {
-  FaSearchPlus,
-  FaExpand,
   FaDiceFour,
-  FaFileImport,
-  FaFileExport,
   FaDownload,
+  FaExpand,
+  FaFileExport,
+  FaFileImport,
+  FaSearchPlus,
 } from 'react-icons/fa';
 import { PiKnifeBold } from 'react-icons/pi';
 import type { ToolbarItemProps, TooltipItem } from 'react-science/ui';
@@ -454,7 +454,7 @@ export default function ToolBar() {
         <ExportAsJcampModal exportActiveSpectrum closeDialog={closeDialog} />
       )}
       <SaveAsModal isOpen={dialog.saveAs} onCloseDialog={closeDialog} />
-      <Toolbar vertical minimal>
+      <Toolbar vertical>
         {toolItems.map((item) => {
           const { id, icon, tooltip, checkOptions, condition } = item;
           const show =

@@ -218,7 +218,7 @@ function InnerMatrixGenerationPanel() {
               style={GroupPanelStyle}
               renderHeader={(text) => (
                 <CustomGroupHeader text={text}>
-                  <Toolbar minimal>
+                  <Toolbar>
                     <Toolbar.Item
                       tooltip={'Use current range'}
                       onClick={handleUseCurrentRange}
@@ -314,7 +314,7 @@ function ExclusionZonesGroupHeaderContent() {
   }
 
   return (
-    <Toolbar minimal>
+    <Toolbar>
       <Toolbar.Item
         tooltip="Select exclusions zones"
         onClick={handleToggleExclusionZoneTool}
