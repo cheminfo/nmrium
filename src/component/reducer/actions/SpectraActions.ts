@@ -36,7 +36,6 @@ import {
 } from '../../../data/utilities/generateColor.js';
 import groupByInfoKey from '../../utility/GroupByInfoKey.js';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus.js';
-import nucleusToString from '../../utility/nucleusToString.js';
 import type { State } from '../Reducer.js';
 import { setZoom } from '../helper/Zoom1DManager.js';
 import { getActiveSpectra } from '../helper/getActiveSpectra.js';
@@ -140,12 +139,6 @@ type ReColorSpectraBasedOnDistinctValueAction = ActionType<
     customColors?: SpectraColors;
   }
 >;
-type OrderSpectraAction = ActionType<
-  'ORDER_SPECTRA',
-  {
-    data: Spectrum[];
-  }
->;
 type SimulateSpectrumAction = ActionType<
   'SIMULATE_SPECTRUM',
   {
@@ -161,19 +154,6 @@ type UpdateSpectrumMetaAction = ActionType<
   }
 >;
 
-interface SortByPath {
-  path: string;
-  sort?: 'asc' | 'desc' | null;
-}
-
-interface SortByIds {
-  spectraIds: string[];
-}
-
-type SortOptions = SortByPath | SortByIds;
-
-type SortSpectraAction = ActionType<'SORT_SPECTRA', SortOptions>;
-
 export type SpectrumActions =
   | ActionType<'TOGGLE_SPECTRA_LEGEND'>
   | ChangeSpectrumVisibilityByIdAction
@@ -186,10 +166,8 @@ export type SpectrumActions =
   | GenerateSpectrumFromPublicationStringAction
   | ImportSpectraMetaInfoAction
   | ReColorSpectraBasedOnDistinctValueAction
-  | OrderSpectraAction
   | SimulateSpectrumAction
-  | UpdateSpectrumMetaAction
-  | SortSpectraAction;
+  | UpdateSpectrumMetaAction;
 
 const { applyFilter } = FiltersManager;
 function checkIsVisible2D(datum: Spectrum2D): boolean {
@@ -708,29 +686,6 @@ function handleRecolorSpectraBasedOnDistinctValue(
   }
 }
 
-//action
-function handleOrderSpectra(draft: Draft<State>, action: OrderSpectraAction) {
-  const { data } = action.payload;
-  const spectraIndexes = {};
-  let index = 0;
-  for (const spectrum of draft.data) {
-    spectraIndexes[spectrum.id] = index;
-    index++;
-  }
-  const sortedSpectraKey = {};
-  const sortedSpectra: Spectrum1D[] = [];
-
-  for (const spectrum of data) {
-    const spectrumId = spectrum.id;
-    sortedSpectraKey[spectrumId] = true;
-    sortedSpectra.push(draft.data[spectraIndexes[spectrumId]] as Spectrum1D);
-  }
-
-  draft.data = draft.data
-    .filter((s) => !sortedSpectraKey[s.id])
-    .concat(sortedSpectra);
-}
-
 function handleSimulateSpectrum(
   draft: Draft<State>,
   simulateSpectrumOptions: SimulateSpectrumAction,
@@ -797,73 +752,6 @@ function handleUpdateSpectrumMeta(
   draft.data[activeSpectrum.index].customInfo = meta;
 }
 
-function sortByPath(draft: Draft<State>, options: SortByPath) {
-  const { path, sort } = options;
-  const {
-    spectra: { activeTab },
-  } = draft.view;
-
-  const sortedSpectra: Array<{
-    spectrum: Spectrum;
-    sortValue: string | number;
-  }> = [];
-  const originIndexes: number[] = [];
-  for (let index = 0; index < draft.data.length; index++) {
-    const spectrum = draft.data[index];
-    if (nucleusToString(spectrum.info.nucleus) === activeTab) {
-      sortedSpectra.push({
-        spectrum,
-        sortValue: lodashGet(spectrum, path),
-      });
-      originIndexes.push(index);
-    }
-  }
-
-  sortedSpectra.sort((a, b) => {
-    if (sort !== null) {
-      if (typeof a.sortValue === 'string' && typeof b.sortValue === 'string') {
-        return sort === 'asc'
-          ? a.sortValue.localeCompare(b.sortValue)
-          : b.sortValue.localeCompare(a.sortValue);
-      }
-
-      if (typeof a.sortValue === 'number' && typeof b.sortValue === 'number') {
-        return sort === 'asc'
-          ? a.sortValue - b.sortValue
-          : b.sortValue - a.sortValue;
-      }
-
-      if (
-        typeof a.sortValue === 'boolean' &&
-        typeof b.sortValue === 'boolean'
-      ) {
-        const sign = sort === 'asc' ? 1 : -1;
-        return a.sortValue === b.sortValue
-          ? 0
-          : a.sortValue
-            ? sign * -1
-            : sign * 1;
-      }
-    }
-    return 0;
-  });
-
-  for (let index = 0; index < sortedSpectra.length; index++) {
-    draft.data[originIndexes[index]] = sortedSpectra[index].spectrum;
-  }
-}
-
-function isSortByPath(options: SortOptions): options is SortByPath {
-  return 'path' in options;
-}
-function handleSortSpectra(draft: Draft<State>, action: SortSpectraAction) {
-  const { payload: sortOptions } = action;
-
-  if (isSortByPath(sortOptions)) {
-    sortByPath(draft, sortOptions);
-  }
-}
-
 export {
   handleChangeSpectrumVisibilityById,
   handleChangeSpectraVisibilityByNucleus,
@@ -876,9 +764,7 @@ export {
   handleImportSpectraMetaInfo,
   handleToggleSpectraLegend,
   handleRecolorSpectraBasedOnDistinctValue,
-  handleOrderSpectra,
   handleSimulateSpectrum,
   setSpectraMetaInfo,
   handleUpdateSpectrumMeta,
-  handleSortSpectra,
 };
