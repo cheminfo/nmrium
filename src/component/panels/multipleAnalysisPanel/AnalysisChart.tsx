@@ -1,3 +1,4 @@
+import type { ButtonProps } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import lodashGet from 'lodash/get.js';
 import type {
@@ -15,7 +16,7 @@ import type { SpectraAnalysisData } from '../../../data/data1d/multipleSpectraAn
 import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents.js';
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks.js';
 import { useChartData } from '../../context/ChartContext.js';
-import { useDispatch } from '../../context/DispatchContext.js';
+import { useSortSpectra } from '../../context/SortSpectraContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import { Input2 } from '../../elements/Input2.js';
 import Label from '../../elements/Label.js';
@@ -201,9 +202,9 @@ export default function AnalysisChart(props: PlotChartPros) {
       spectra: { activeTab },
     },
   } = useChartData();
-  const dispatch = useDispatch();
   const toaster = useToaster();
   const spectraPreferences = usePanelPreferences('spectra', activeTab);
+  const { sort } = useSortSpectra();
   const spectra = useSpectraByActiveNucleus();
 
   const chartParentRef = useRef<HTMLDivElement>(null);
@@ -282,14 +283,51 @@ export default function AnalysisChart(props: PlotChartPros) {
     }
   }
 
-  function handleSort(path) {
-    dispatch({ type: 'SORT_SPECTRA', payload: { path, sort: 'asc' } });
-  }
+  function handleSort(axis: 'x' | 'y') {
+    const analysisData = preparePlotData(spectraAnalysisData, {
+      ...plotOptions,
+      paths,
+    });
+    let sortByReferences;
+    let path;
+    let activeSort;
+    if (axis === 'x') {
+      if (analysisData.xData) {
+        path = 'value';
+        sortByReferences = Object.keys(analysisData.xData).map(
+          (spectrumKey) => ({
+            id: spectrumKey,
+            value: analysisData.xData[spectrumKey],
+          }),
+        );
+      } else {
+        path = plotOptions.xPath;
+      }
+      activeSort = plotOptions.xPath;
+    }
 
-  const disabledXPath =
-    !plotOptions.xPath || plotOptions.xPath?.split('.').length === 1;
-  const disabledYPath =
-    !plotOptions.yPath || plotOptions.yPath?.split('.').length === 1;
+    if (axis === 'y') {
+      if (analysisData.yData) {
+        path = 'value';
+        sortByReferences = Object.keys(analysisData.yData).map(
+          (spectrumKey) => ({
+            id: spectrumKey,
+            value: analysisData.yData[spectrumKey],
+          }),
+        );
+      } else {
+        path = plotOptions.yPath;
+      }
+      activeSort = plotOptions.yPath;
+    }
+
+    sort({
+      sortType: sortByReferences ? 'sortByReference' : 'sortByPath',
+      path,
+      sortByReferences,
+      activeSort,
+    });
+  }
 
   return (
     <div>
@@ -301,11 +339,9 @@ export default function AnalysisChart(props: PlotChartPros) {
             filterItems={datalist}
             onChange={handleChangeKey}
             rightElement={
-              <Button
-                disabled={disabledXPath}
-                icon="sort-alphabetical"
-                outlined
-                onClick={() => handleSort(plotOptions.xPath)}
+              <SortButton
+                value={plotOptions.xPath}
+                onClick={() => handleSort('x')}
               />
             }
           />
@@ -317,11 +353,9 @@ export default function AnalysisChart(props: PlotChartPros) {
             filterItems={datalist}
             onChange={handleChangeKey}
             rightElement={
-              <Button
-                disabled={disabledYPath}
-                icon="sort-alphabetical"
-                outlined
-                onClick={() => handleSort(plotOptions.yPath)}
+              <SortButton
+                value={plotOptions.yPath}
+                onClick={() => handleSort('y')}
               />
             }
           />
@@ -384,4 +418,32 @@ export default function AnalysisChart(props: PlotChartPros) {
       />
     </div>
   );
+}
+
+interface SortButtonProps {
+  value: string;
+  onClick: ButtonProps['onClick'];
+}
+
+function SortButton(props: SortButtonProps) {
+  const { value, onClick } = props;
+  const { sortOptions, activeSort } = useSortSpectra();
+
+  let icon: ButtonProps['icon'] = 'sort';
+
+  if (
+    activeSort === value &&
+    sortOptions?.sortType !== 'sortByReferenceIndexes'
+  ) {
+    switch (sortOptions?.sortDirection) {
+      case 'asc':
+        icon = 'sort-asc';
+        break;
+      case 'desc':
+        icon = 'sort-desc';
+        break;
+      default:
+    }
+  }
+  return <Button disabled={!value} icon={icon} outlined onClick={onClick} />;
 }

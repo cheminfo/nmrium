@@ -6,20 +6,20 @@ import nucleusToString from '../utility/nucleusToString.js';
 
 export default function useSpectraByActiveNucleus() {
   const {
-    data,
+    data: spectra,
     view: {
       spectra: { activeTab },
     },
   } = useChartData();
 
   return useMemo<Spectrum[]>(() => {
-    if (data) {
+    if (spectra) {
       return (
-        data.filter(
+        spectra.filter(
           (spectrum) => activeTab === nucleusToString(spectrum.info.nucleus),
         ) || []
       );
     }
     return [];
-  }, [activeTab, data]);
+  }, [activeTab, spectra]);
 }
