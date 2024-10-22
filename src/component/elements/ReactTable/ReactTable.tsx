@@ -57,7 +57,7 @@ type TableOptions<T extends object = any> = UseTableOptions<T> &
   UseSortByOptions<T>;
 
 interface SortEvent {
-  onSortEnd?: (data: any) => void;
+  onSortEnd?: (data: any, isTableSorted?: boolean) => void;
 }
 
 export interface BaseRowStyle {
@@ -186,6 +186,7 @@ function TableInner<T extends object>(
     rows,
     prepareRow,
     rowSpanHeaders,
+    state, // Access the sort state here
   } = useTable(
     {
       columns: memoColumns,
@@ -195,6 +196,8 @@ function TableInner<T extends object>(
     useSortBy,
     useRowSpan,
   ) as TableInstanceWithHooks<T>;
+
+  const { sortBy } = state as any;
 
   function clickHandler(event, row) {
     setRowIndex(row.index);
@@ -218,11 +221,12 @@ function TableInner<T extends object>(
 
   useEffect(() => {
     if (isSortedEventTriggered.current) {
+      const isTableSorted = sortBy.length > 0;
       const data = rows.map((row) => row.original);
-      onSortEnd?.(data);
+      onSortEnd?.(data, isTableSorted);
       isSortedEventTriggered.current = false;
     }
-  }, [onSortEnd, rows]);
+  }, [onSortEnd, rows, sortBy?.length]);
 
   function headerClickHandler() {
     isSortedEventTriggered.current = true;

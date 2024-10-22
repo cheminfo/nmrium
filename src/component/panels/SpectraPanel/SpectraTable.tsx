@@ -20,6 +20,7 @@ import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardCompon
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
+import { useSortSpectra } from '../../context/SortSpectraContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import type { ContextMenuItem } from '../../elements/ContextMenuBluePrint.js';
 import { ContextMenu } from '../../elements/ContextMenuBluePrint.js';
@@ -160,6 +161,7 @@ export function SpectraTable(props: SpectraTableProps) {
   const { rawWriteWithType, shouldFallback, cleanShouldFallback, text } =
     useClipboard();
   const { molecules } = useChartData();
+  const { sort, reset } = useSortSpectra();
 
   const COLUMNS: Partial<
     Record<(string & {}) | PredefinedSpectraColumn, Column<Spectrum>>
@@ -338,13 +340,12 @@ export function SpectraTable(props: SpectraTableProps) {
     return columns;
   }, [COLUMNS, spectraPreferences.columns]);
 
-  function handleSortEnd(data) {
-    dispatch({
-      type: 'ORDER_SPECTRA',
-      payload: {
-        data,
-      },
-    });
+  function handleSortEnd(data, isTabledSorted) {
+    if (isTabledSorted) {
+      sort({ sortType: 'sortByReferenceIndexes', sortByReferences: data });
+    } else {
+      reset();
+    }
   }
 
   function handleRowStyle(data) {

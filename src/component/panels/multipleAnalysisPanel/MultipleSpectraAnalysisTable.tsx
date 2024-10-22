@@ -1,8 +1,8 @@
 import { Fragment, useMemo } from 'react';
 
 import type { SpectraAnalysisData } from '../../../data/data1d/multipleSpectraAnalysis.js';
-import { useDispatch } from '../../context/DispatchContext.js';
 import { usePreferences } from '../../context/PreferencesContext.js';
+import { useSortSpectra } from '../../context/SortSpectraContext.js';
 import ReactTable from '../../elements/ReactTable/ReactTable.js';
 import type { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn.js';
 import addCustomColumn from '../../elements/ReactTable/utility/addCustomColumn.js';
@@ -26,7 +26,6 @@ function MultipleSpectraAnalysisTable({
   resortSpectra,
 }: MultipleSpectraAnalysisTableProps) {
   const format = useFormatNumberByNucleus(activeTab);
-  const dispatch = useDispatch();
   const { dispatch: dispatchPreferences } = usePreferences();
   const panelPreferences = usePanelPreferences(
     'multipleSpectraAnalysis',
@@ -118,14 +117,22 @@ function MultipleSpectraAnalysisTable({
     panelPreferences?.analysisOptions?.columns,
   ]);
 
-  function handleSortEnd(data) {
+  const { sort, reset } = useSortSpectra();
+
+  function handleSortEnd(data: any, isTableSorted?: boolean) {
     if (resortSpectra) {
-      dispatch({
-        type: 'ORDER_MULTIPLE_SPECTRA_ANALYSIS',
-        payload: {
-          data,
-        },
-      });
+      if (isTableSorted) {
+        sort({
+          sortType: 'sortByReferenceIndexes',
+          sortByReferences: data.map((analysisData) => {
+            const key = Object.keys(analysisData)[0];
+            const id = analysisData[key].SID;
+            return { id };
+          }),
+        });
+      } else {
+        reset();
+      }
     }
   }
   return data?.values.length > 0 ? (

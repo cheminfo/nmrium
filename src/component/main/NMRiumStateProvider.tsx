@@ -1,13 +1,15 @@
+import { produce } from 'immer';
 import type { NmriumState } from 'nmr-load-save';
 import { readNMRiumObject } from 'nmr-load-save';
 import type { ReactNode } from 'react';
-import { useCallback, useEffect, useReducer, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
 
 import { toJSON } from '../../data/SpectraManager.js';
 import { ChartDataProvider } from '../context/ChartContext.js';
 import { DispatchProvider } from '../context/DispatchContext.js';
 import { useLogger } from '../context/LoggerContext.js';
 import { usePreferences } from '../context/PreferencesContext.js';
+import { sortSpectra, useSortSpectra } from '../context/SortSpectraContext.js';
 import checkActionType from '../reducer/IgnoreActions.js';
 import {
   initialState,
@@ -128,10 +130,24 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
         });
     }
   }, [nmriumData, dispatch, dispatchPreferences]);
+  const { sortOptions } = useSortSpectra();
+
+  const spectra = useMemo(() => {
+    if (sortOptions) {
+      return sortSpectra(state.data, sortOptions);
+    }
+    return state.data;
+  }, [sortOptions, state.data]);
+
+  const updatedState = useMemo(() => {
+    return produce(state, (draft) => {
+      draft.data = spectra;
+    });
+  }, [state, spectra]);
 
   return (
     <DispatchProvider value={dispatch}>
-      <ChartDataProvider value={state}>{children}</ChartDataProvider>
+      <ChartDataProvider value={updatedState}>{children}</ChartDataProvider>
     </DispatchProvider>
   );
 }

@@ -7,6 +7,7 @@ import { GlobalProvider } from '../context/GlobalContext.js';
 import { KeyModifiersProvider } from '../context/KeyModifierContext.js';
 import { LoggerProvider } from '../context/LoggerContext.js';
 import { PreferencesProvider } from '../context/PreferencesContext.js';
+import { SortSpectraProvider } from '../context/SortSpectraContext.js';
 import { ToasterProvider } from '../context/ToasterContext.js';
 import { TopicMoleculeProvider } from '../context/TopicMoleculeContext.js';
 import { AlertProvider } from '../elements/Alert.js';
@@ -90,31 +91,33 @@ export function InnerNMRium({
             <LoggerProvider>
               <KeyModifiersProvider>
                 <ToasterProvider>
-                  <NMRiumStateProvider
-                    onChange={onChange}
-                    nmriumData={nmriumData}
-                  >
-                    <TopicMoleculeProvider>
-                      <DialogProvider>
-                        <AlertProvider>
-                          <HighlightProvider>
-                            <AssignmentProvider>
-                              <SpinnerProvider value={getSpinner}>
-                                <InnerNMRiumContents
-                                  emptyText={emptyText}
-                                  mainDivRef={mainDivRef}
-                                  elementsWrapperRef={elementsWrapperRef}
-                                  rootRef={rootRef}
-                                  viewerRef={viewerRef}
-                                  apiRef={apiRef}
-                                />
-                              </SpinnerProvider>
-                            </AssignmentProvider>
-                          </HighlightProvider>
-                        </AlertProvider>
-                      </DialogProvider>
-                    </TopicMoleculeProvider>
-                  </NMRiumStateProvider>
+                  <SortSpectraProvider>
+                    <NMRiumStateProvider
+                      onChange={onChange}
+                      nmriumData={nmriumData}
+                    >
+                      <TopicMoleculeProvider>
+                        <DialogProvider>
+                          <AlertProvider>
+                            <HighlightProvider>
+                              <AssignmentProvider>
+                                <SpinnerProvider value={getSpinner}>
+                                  <InnerNMRiumContents
+                                    emptyText={emptyText}
+                                    mainDivRef={mainDivRef}
+                                    elementsWrapperRef={elementsWrapperRef}
+                                    rootRef={rootRef}
+                                    viewerRef={viewerRef}
+                                    apiRef={apiRef}
+                                  />
+                                </SpinnerProvider>
+                              </AssignmentProvider>
+                            </HighlightProvider>
+                          </AlertProvider>
+                        </DialogProvider>
+                      </TopicMoleculeProvider>
+                    </NMRiumStateProvider>
+                  </SortSpectraProvider>
                 </ToasterProvider>
               </KeyModifiersProvider>
             </LoggerProvider>

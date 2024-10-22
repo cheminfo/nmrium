@@ -25,7 +25,7 @@ const style = css`
 `;
 
 function LinesSeries() {
-  const { data, displayerKey, xDomains } = useChartData();
+  const { displayerKey, xDomains, data } = useChartData();
   const activeSpectra = useActiveSpectra();
   const spectra = (data?.filter(
     (d) => isSpectrum1D(d) && d.display.isVisible && xDomains[d.id],

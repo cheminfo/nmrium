@@ -15,13 +15,13 @@ import { SpectraTable } from './SpectraTable.js';
 import SpectrumSetting from './base/setting/SpectrumSetting.js';
 
 interface SpectraTabsInnerProps {
-  data: Spectrum[];
+  spectra: Spectrum[];
   activeTab: string;
   activeSpectra: Record<string, ActiveSpectrum[] | null>;
 }
 
 function SpectraTabsInner({
-  data,
+  spectra,
   activeSpectra,
   activeTab,
 }: SpectraTabsInnerProps) {
@@ -34,10 +34,10 @@ function SpectraTabsInner({
   const dispatch = useDispatch();
 
   const spectraGroupByNucleus = useMemo(() => {
-    if (!data) return [];
+    if (!spectra) return [];
     const groupByNucleus = groupByInfoKey('nucleus');
-    return groupByNucleus(data, true);
-  }, [data]);
+    return groupByNucleus(spectra, true);
+  }, [spectra]);
   const { setActiveSpectrum } = useSetActiveSpectrumAction();
 
   function onTabChangeHandler(tab) {
@@ -120,11 +120,11 @@ const MemoizedSpectra = memo(SpectraTabsInner);
 
 export default function SpectraTabs() {
   const {
-    data,
+    data: spectra,
     view: {
       spectra: { activeTab, activeSpectra },
     },
   } = useChartData();
 
-  return <MemoizedSpectra {...{ data, activeSpectra, activeTab }} />;
+  return <MemoizedSpectra {...{ spectra, activeSpectra, activeTab }} />;
 }
