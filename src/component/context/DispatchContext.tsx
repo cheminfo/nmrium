@@ -13,7 +13,6 @@ import type { PeaksActions } from '../reducer/actions/PeaksActions.js';
 import type { PreferencesActions } from '../reducer/actions/PreferencesActions.js';
 import type { RangesActions } from '../reducer/actions/RangesActions.js';
 import type { SpectrumActions } from '../reducer/actions/SpectraActions.js';
-import type { SpectraAnalysisActions } from '../reducer/actions/SpectraAnalysisAction.js';
 import type { ToolsActions } from '../reducer/actions/ToolsActions.js';
 import type { ZonesActions } from '../reducer/actions/ZonesActions.js';
 import type { ActionType } from '../reducer/types/ActionType.js';
@@ -21,7 +20,6 @@ import type { ActionType } from '../reducer/types/ActionType.js';
 export type Action =
   | ToolsActions
   | SpectrumActions
-  | SpectraAnalysisActions
   | LoadActions
   | IntegralsActions
   | RangesActions

@@ -30,7 +30,6 @@ import * as PeaksActions from './actions/PeaksActions.js';
 import * as PreferencesActions from './actions/PreferencesActions.js';
 import * as RangesActions from './actions/RangesActions.js';
 import * as SpectraActions from './actions/SpectraActions.js';
-import * as SpectraAnalysisActions from './actions/SpectraAnalysisAction.js';
 import * as ToolsActions from './actions/ToolsActions.js';
 import * as ZonesActions from './actions/ZonesActions.js';
 import type { ZoomHistory } from './helper/ZoomHistoryManager.js';
@@ -720,9 +719,6 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
           draft,
           action,
         );
-
-      case 'ORDER_MULTIPLE_SPECTRA_ANALYSIS':
-        return SpectraAnalysisActions.handleOrderSpectra(draft, action);
 
       case 'RESURRECTING_SPECTRUM':
         return DatabaseActions.handleResurrectSpectrum(draft, action);
