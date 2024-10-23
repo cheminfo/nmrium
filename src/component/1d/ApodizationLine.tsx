@@ -58,22 +58,22 @@ function ApodizationLine() {
         apply: false,
         compose: {
           length,
-          shapes: [
-            {
+          shapes: {
+            lorentzToGauss: {
               start: 0,
               shape: {
                 kind: 'lorentzToGauss',
                 options: {
                   length,
                   dw,
-                  exponentialHz:
+                  lineBroadening:
                     gaussBroadening > 0 ? lineBroadening : -lineBroadening,
-                  gaussianHz: gaussBroadening,
-                  center: lineBroadeningCenter,
+                  gaussBroadening,
+                  lineBroadeningCenter,
                 },
               },
             },
-          ],
+          },
         },
       },
     );

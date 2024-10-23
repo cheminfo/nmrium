@@ -9,10 +9,7 @@ import type {
   Spectrum1D,
   Spectrum2D,
 } from 'nmr-load-save';
-import type {
-  ApodizationOptions,
-  BaselineCorrectionOptions,
-} from 'nmr-processing';
+import type { BaselineCorrectionOptions } from 'nmr-processing';
 import {
   Filters,
   FiltersManager,
@@ -20,6 +17,7 @@ import {
 } from 'nmr-processing';
 
 import { defaultApodizationOptions } from '../../../data/constants/DefaultApodizationOptions.js';
+import type { Apodization1DOptions } from '../../../data/constants/DefaultApodizationOptions.js';
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import { getProjection } from '../../../data/data2d/Spectrum2D/getMissingProjection.js';
 import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.js';
@@ -84,11 +82,11 @@ type ShiftSpectrumOptions = ShiftOneDimension | ShiftTwoDimensions;
 type ShiftSpectrumAction = ActionType<'SHIFT_SPECTRUM', ShiftSpectrumOptions>;
 type ApodizationFilterAction = ActionType<
   'APPLY_APODIZATION_FILTER',
-  { options: ApodizationOptions }
+  { options: Apodization1DOptions }
 >;
 type ApodizationFilterLiveAction = ActionType<
   'CALCULATE_APODIZATION_FILTER',
-  { options: ApodizationOptions; livePreview: boolean }
+  { options: Apodization1DOptions; livePreview: boolean }
 >;
 type ZeroFillingFilterAction = ActionType<
   'APPLY_ZERO_FILLING_FILTER',

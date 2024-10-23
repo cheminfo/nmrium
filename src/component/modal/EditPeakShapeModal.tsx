@@ -25,7 +25,9 @@ function getKindDefaultValues(kind: Kind) {
   return {
     kind,
     fwhm: 500,
-    ...(kind === 'pseudoVoigt' && { mu: 0.5 }),
+    ...(kind === 'pseudoVoigt'
+      ? { mu: 0.5 }
+      : kind === 'generalizedLorentzian' && { gamma: 0.5 }),
   };
 }
 function getValues(peak: Peak1D, kind: Kind): Shape {
@@ -60,6 +62,10 @@ const KINDS: Array<{ label: string; value: Kind }> = [
   {
     value: 'pseudoVoigt',
     label: 'PseudoVoigt',
+  },
+  {
+    value: 'generalizedLorentzian',
+    label: 'Generalized Lorentzian',
   },
 ];
 
@@ -146,6 +152,16 @@ function InnerEditPeakShapeModal(props: Required<EditPeakShapeModalProps>) {
           {kind === 'pseudoVoigt' && (
             <Label title="Mu:" style={labelStyle}>
               <NumberInput2Controller min={0} control={control} name="mu" />
+            </Label>
+          )}
+          {kind === 'generalizedLorentzian' && (
+            <Label title="Gamma:" style={labelStyle}>
+              <NumberInput2Controller
+                min={-1}
+                max={2}
+                control={control}
+                name="gamma"
+              />
             </Label>
           )}
         </>
