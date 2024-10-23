@@ -257,7 +257,7 @@ function FiltersInner(props: FiltersInnerProps) {
             onClick={(id) => {
               toggleSection(id);
             }}
-            selectedSectionId={selectedSection}
+            isOpen={name === selectedSection}
             rightElement={
               <FilterElements
                 filter={filter}
