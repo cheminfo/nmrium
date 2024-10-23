@@ -1,17 +1,11 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import type {
-  Filter,
-} from 'nmr-processing';
+import type { Filter } from 'nmr-processing';
 import { useCallback, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
-import type {
-  Apodization1DOptions as BaseApodizationOptions
-} from '../../../../../data/constants/DefaultApodizationOptions.js';
-import {
-  defaultApodizationOptions
-} from '../../../../../data/constants/DefaultApodizationOptions.js';
+import type { Apodization1DOptions as BaseApodizationOptions } from '../../../../../data/constants/DefaultApodizationOptions.js';
+import { defaultApodizationOptions } from '../../../../../data/constants/DefaultApodizationOptions.js';
 import { useDispatch } from '../../../../context/DispatchContext.js';
 import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsContext.js';
 
