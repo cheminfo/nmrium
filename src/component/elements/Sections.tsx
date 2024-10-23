@@ -47,11 +47,14 @@ const Container = styled.div<{ overflow: boolean }>(
 `,
 );
 
-const SectionWrapper = styled.div<ActiveProps>(
-  ({ isOpen, overflow }) => `
+const SectionWrapper = styled.div<
+  ActiveProps & { matchContentHeight: boolean }
+>(
+  ({ isOpen, overflow, matchContentHeight }) => `
   display: flex;
   flex-direction: column;
-  flex: ${isOpen ? (overflow ? '1' : overflow ? '1' : '1 1 1px') : 'none'};
+  flex:none;
+  flex: ${isOpen && !matchContentHeight ? (overflow ? '1' : overflow ? '1' : '1 1 1px') : 'none'};
 `,
 );
 
@@ -88,12 +91,10 @@ const OpenIcon = styled(Icon)<ActiveProps>`
 const ContentWrapper = styled.div<ActiveProps>(
   ({ isOpen, overflow }) => `
   background-color: white;
-  // overflow: hidden;
   display: ${isOpen ? 'flex' : 'none'};
   flex: ${isOpen ? (overflow ? '1' : '1 1 1px') : 'none'};
   max-height: 100%;
   flex-direction:column;
-
 `,
 );
 const Content = styled.div`
@@ -104,7 +105,7 @@ const Content = styled.div`
   flex-direction: column;
   padding: 10px;
 `;
-const RightElementsContainer = styled.div`
+const ElementsContainer = styled.div`
   display: flex;
   align-items: center;
 `;
@@ -136,6 +137,7 @@ interface BaseSectionProps {
   title: string;
   serial?: number;
   rightElement?: ReactNode | ((isOpen) => ReactNode);
+  leftElement?: ReactNode | ((isOpen) => ReactNode);
   headerStyle?: CSSProperties;
 }
 
@@ -143,8 +145,9 @@ interface SectionItemProps extends BaseSectionProps {
   id?: string;
   onClick?: (id, event?: MouseEvent<HTMLDivElement>) => void;
   children?: ReactNode | ((options: { isOpen?: boolean }) => ReactNode);
-  selectedSectionId?: string;
+  isOpen: boolean;
   sticky?: boolean;
+  matchContentHeight?: boolean;
 }
 
 interface SectionProps {
@@ -188,29 +191,33 @@ function SectionItem(props: SectionItemProps) {
     onClick,
     serial,
     rightElement,
+    leftElement,
     children,
-    selectedSectionId,
     headerStyle,
+    isOpen,
     sticky = false,
+    matchContentHeight = false,
   } = props;
 
-  const isOpen = selectedSectionId === id;
   const { overflow } = useSections();
 
   return (
-    <SectionWrapper isOpen={isOpen} overflow={overflow}>
+    <SectionWrapper
+      isOpen={isOpen}
+      overflow={overflow}
+      matchContentHeight={matchContentHeight}
+    >
       <MainSectionHeader
         title={title}
         isOpen={isOpen}
         onClick={(event) => onClick?.(id, event)}
         serial={serial}
         rightElement={rightElement}
+        leftElement={leftElement}
         headerStyle={headerStyle}
         sticky={sticky}
       />
-      <Wrapper isOpen={isOpen} id={id} selectedSectionId={selectedSectionId}>
-        {children}
-      </Wrapper>
+      <Wrapper isOpen={isOpen}>{children}</Wrapper>
     </SectionWrapper>
   );
 }
@@ -218,16 +225,14 @@ function SectionItem(props: SectionItemProps) {
 interface WrapperProps {
   children: ReactNode | ((options: { isOpen?: boolean }) => ReactNode);
   isOpen: boolean;
-  id: string;
-  selectedSectionId?: string;
 }
 
 function Wrapper(props: WrapperProps) {
   const { overflow, renderActiveSectionContentOnly } = useSections();
 
-  const { children, isOpen, selectedSectionId, id } = props;
+  const { children, isOpen } = props;
 
-  if (renderActiveSectionContentOnly && id !== selectedSectionId) {
+  if (renderActiveSectionContentOnly && !isOpen) {
     return null;
   }
 
@@ -252,6 +257,7 @@ function MainSectionHeader(props: MainSectionHeaderProps) {
     onClick,
     serial,
     rightElement,
+    leftElement,
     headerStyle = {},
     sticky,
   } = props;
@@ -268,19 +274,26 @@ function MainSectionHeader(props: MainSectionHeaderProps) {
       }}
     >
       <TitleContainer>
-        <Active round isOpen={isOpen}>
-          {serial}
-        </Active>
+        {typeof serial === 'number' && (
+          <Active round isOpen={isOpen}>
+            {serial}
+          </Active>
+        )}
+        <ElementsContainer onClick={(event) => event.stopPropagation()}>
+          {typeof leftElement === 'function'
+            ? leftElement(isOpen)
+            : leftElement}
+        </ElementsContainer>
         <Title>{title}</Title>
       </TitleContainer>
-      <RightElementsContainer>
-        <RightElementsContainer onClick={(event) => event.stopPropagation()}>
+      <ElementsContainer>
+        <ElementsContainer onClick={(event) => event.stopPropagation()}>
           {typeof rightElement === 'function'
             ? rightElement(isOpen)
             : rightElement}
-        </RightElementsContainer>
+        </ElementsContainer>
         <OpenIcon icon="chevron-right" isOpen={isOpen} />
-      </RightElementsContainer>
+      </ElementsContainer>
     </Header>
   );
 }
