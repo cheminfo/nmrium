@@ -9,9 +9,7 @@ import type {
   Spectrum1D,
   Spectrum2D,
 } from 'nmr-load-save';
-import type {
-  BaselineCorrectionOptions,
-} from 'nmr-processing';
+import type { BaselineCorrectionOptions } from 'nmr-processing';
 import {
   Filters,
   FiltersManager,
@@ -197,15 +195,15 @@ export type FiltersActions =
   | SetTwoDimensionPhaseCorrectionPivotPoint
   | ManualTwoDimensionsPhaseCorrectionFilterAction
   | ActionType<
-    | 'APPLY_FFT_FILTER'
-    | 'APPLY_FFT_DIMENSION_1_FILTER'
-    | 'APPLY_FFT_DIMENSION_2_FILTER'
-    | 'APPLY_AUTO_PHASE_CORRECTION_FILTER'
-    | 'APPLY_ABSOLUTE_FILTER'
-    | 'APPLY_MANUAL_PHASE_CORRECTION_TOW_DIMENSION_FILTER'
-    | 'TOGGLE_ADD_PHASE_CORRECTION_TRACE_TO_BOTH_DIRECTIONS'
-    | 'APPLY_AUTO_PHASE_CORRECTION_TOW_DIMENSION_FILTER'
-  >;
+      | 'APPLY_FFT_FILTER'
+      | 'APPLY_FFT_DIMENSION_1_FILTER'
+      | 'APPLY_FFT_DIMENSION_2_FILTER'
+      | 'APPLY_AUTO_PHASE_CORRECTION_FILTER'
+      | 'APPLY_ABSOLUTE_FILTER'
+      | 'APPLY_MANUAL_PHASE_CORRECTION_TOW_DIMENSION_FILTER'
+      | 'TOGGLE_ADD_PHASE_CORRECTION_TRACE_TO_BOTH_DIRECTIONS'
+      | 'APPLY_AUTO_PHASE_CORRECTION_TOW_DIMENSION_FILTER'
+    >;
 
 function getFilterUpdateDomainRules(
   filterName: string,
@@ -371,16 +369,16 @@ function rollbackSpectrum(
   const applyFilter = !filterKey
     ? true
     : [
-      phaseCorrection.id,
-      phaseCorrectionTwoDimensions.id,
-      fft.id,
-      shiftX.id,
-      shift2DX.id,
-      shift2DY.id,
-      signalProcessing.id,
-      digitalFilter.id,
-      digitalFilter2D.id,
-    ].includes(filterKey);
+        phaseCorrection.id,
+        phaseCorrectionTwoDimensions.id,
+        fft.id,
+        shiftX.id,
+        shift2DX.id,
+        shift2DY.id,
+        signalProcessing.id,
+        digitalFilter.id,
+        digitalFilter2D.id,
+      ].includes(filterKey);
 
   beforeRollback(draft, filterKey);
 

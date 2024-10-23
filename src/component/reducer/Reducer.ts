@@ -5,9 +5,7 @@ import { produce, original } from 'immer';
 import type { CorrelationData } from 'nmr-correlation';
 import { buildCorrelationData } from 'nmr-correlation';
 import type { Spectrum, ViewState } from 'nmr-load-save';
-import type {
-  BaselineCorrectionZone,
-} from 'nmr-processing';
+import type { BaselineCorrectionZone } from 'nmr-processing';
 import type { Reducer } from 'react';
 
 import type { Apodization1DOptions } from '../../data/constants/DefaultApodizationOptions.js';
