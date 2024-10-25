@@ -8,20 +8,26 @@ import {
   useState,
   isValidElement,
   forwardRef,
+  useRef,
 } from 'react';
+import type { ForwardedRef } from 'react';
+
+import useCombinedRefs from '../hooks/useCombinedRefs.js';
 
 interface ValueProps
   extends Pick<React.InputHTMLAttributes<HTMLInputElement>, 'name' | 'style'>,
     Pick<NumericInputProps, 'onValueChange' | 'value'> {
   checkValue?: (element?: number) => boolean;
   debounceTime?: number;
+  autoSelect?: boolean;
 }
-type UseInputProps = Omit<ValueProps, 'name'>;
+interface UseInputProps extends Omit<ValueProps, 'name'> {
+  ref: ForwardedRef<HTMLInputElement>;
+}
 export interface NumberInput2Props
   extends Omit<HTMLInputProps & NumericInputProps, 'value' | 'onValueChange'>,
     ValueProps {
   format?: () => (element: string) => number | string;
-  autoSelect?: boolean;
 }
 
 function useNumberInput(props: UseInputProps) {
@@ -29,9 +35,13 @@ function useNumberInput(props: UseInputProps) {
     value: externalValue,
     debounceTime,
     onValueChange,
+    ref,
+    autoSelect,
     checkValue,
   } = props;
   const [internalValue, setValue] = useState<number | string>();
+  const localRef = useRef<HTMLInputElement>();
+  const innerRef = useCombinedRefs([ref, localRef]);
   const value = debounceTime ? internalValue : externalValue;
   const [isDebounced, setDebouncedStatus] = useState<boolean>(false);
 
@@ -57,6 +67,12 @@ function useNumberInput(props: UseInputProps) {
     }
   }, [debounceTime, externalValue]);
 
+  useEffect(() => {
+    if (autoSelect) {
+      innerRef?.current?.select();
+    }
+  }, [autoSelect, innerRef]);
+
   function handleValueChange(
     valueAsNumber: number,
     valueAsString: string,
@@ -79,6 +95,7 @@ function useNumberInput(props: UseInputProps) {
     debounceOnValueChange,
     isDebounced,
     value,
+    innerRef,
   };
 }
 
@@ -110,9 +127,11 @@ function InnerNumberInput(props: NumberInput2Props, ref) {
     ...otherInputProps
   } = props;
 
-  const { handleValueChange, isDebounced, value } = useNumberInput({
+  const { handleValueChange, isDebounced, value, innerRef } = useNumberInput({
     value: externalValue,
     debounceTime,
+    autoSelect,
+    ref,
     onValueChange,
     checkValue,
   });
@@ -124,7 +143,7 @@ function InnerNumberInput(props: NumberInput2Props, ref) {
     <NumericInput
       leftIcon={icon}
       inputClassName={classes}
-      inputRef={ref}
+      inputRef={innerRef}
       onValueChange={handleValueChange}
       value={value}
       selectAllOnFocus={autoSelect}
