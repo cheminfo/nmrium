@@ -4,7 +4,7 @@ import { memo, useCallback, useMemo, useState } from 'react';
 import { FaEdit, FaRegTrashAlt } from 'react-icons/fa';
 
 import { useDispatch } from '../../context/DispatchContext.js';
-import EditableColumn from '../../elements/EditableColumn.js';
+import { EditableColumn } from '../../elements/EditableColumn.js';
 import ReactTable from '../../elements/ReactTable/ReactTable.js';
 import type { ControlCustomColumn } from '../../elements/ReactTable/utility/addCustomColumn.js';
 import addCustomColumn, {

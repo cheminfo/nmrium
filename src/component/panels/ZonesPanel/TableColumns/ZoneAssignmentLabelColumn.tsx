@@ -1,5 +1,5 @@
 import { useDispatch } from '../../../context/DispatchContext.js';
-import EditableColumn from '../../../elements/EditableColumn.js';
+import { EditableColumn } from '../../../elements/EditableColumn.js';
 import type { ZoneData } from '../hooks/useMapZones.js';
 
 interface ZoneAssignmentLabelColumnProps {
@@ -27,6 +27,7 @@ export function ZoneAssignmentLabelColumn({
         value={rowData?.assignment || ''}
         onSave={saveHandler}
         style={{ padding: '0.1rem 0.4rem' }}
+        type="text"
       />
     </td>
   );

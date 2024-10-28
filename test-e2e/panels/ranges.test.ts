@@ -288,7 +288,7 @@ test('Range state', async ({ page }) => {
   await test.step('Check that first spectrum range state saved', async () => {
     // Change spectra
     await nmrium.page.click(
-      '_react=SpectraTable >> _react=ReactTableRow>> nth=0',
+      '_react=SpectraTable >> _react=ReactTableRow >> nth=0',
     );
     // Change spectra
     await nmrium.page.click(
@@ -458,7 +458,7 @@ test('2D spectra reference change', async ({ page }) => {
       .locator(
         '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=1',
       )
-      .dblclick();
+      .click();
 
     await nmrium.page.keyboard.type(x.toString());
     await nmrium.page.keyboard.press('Enter');
@@ -467,7 +467,7 @@ test('2D spectra reference change', async ({ page }) => {
       .locator(
         '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=2',
       )
-      .dblclick();
+      .click();
 
     await nmrium.page.keyboard.type(y.toString());
     await nmrium.page.keyboard.press('Enter');

@@ -8,7 +8,7 @@ import {
   extractNumber,
 } from '../../../data/molecules/MoleculeManager.js';
 import { useDispatch } from '../../context/DispatchContext.js';
-import EditableColumn from '../../elements/EditableColumn.js';
+import { EditableColumn } from '../../elements/EditableColumn.js';
 import Label from '../../elements/Label.js';
 
 interface MoleculeHeaderProps {
@@ -61,7 +61,8 @@ export default function MoleculeHeader(props: MoleculeHeaderProps) {
           style={styles.labelInput}
           validate={validateLabel}
           onSave={(event) => saveLabelHandler(currentMolecule.id, event)}
-          textOverFlowEllipses
+          textOverflowEllipses
+          type="text"
         />
       </Label>
       <span>

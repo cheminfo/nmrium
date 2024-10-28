@@ -13,7 +13,7 @@ import { useAlert } from '../../../elements/Alert.js';
 import type { ContextMenuItem } from '../../../elements/ContextMenuBluePrint.js';
 import { ContextMenu } from '../../../elements/ContextMenuBluePrint.js';
 import { useDialog } from '../../../elements/DialogManager.js';
-import EditableColumn from '../../../elements/EditableColumn.js';
+import { EditableColumn } from '../../../elements/EditableColumn.js';
 import { useHighlight } from '../../../highlight/index.js';
 import { convertValuesString } from '../utilities/Utilities.js';
 import useInView from '../utilities/useInView.js';
