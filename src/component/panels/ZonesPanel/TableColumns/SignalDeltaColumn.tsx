@@ -1,7 +1,7 @@
 import lodashGet from 'lodash/get.js';
 
 import { useDispatch } from '../../../context/DispatchContext.js';
-import EditableColumn from '../../../elements/EditableColumn.js';
+import { EditableColumn } from '../../../elements/EditableColumn.js';
 import { usePanelPreferences } from '../../../hooks/usePanelPreferences.js';
 import { formatNumber } from '../../../utility/formatNumber.js';
 import type { ZoneData } from '../hooks/useMapZones.js';

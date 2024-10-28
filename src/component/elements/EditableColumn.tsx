@@ -1,4 +1,6 @@
-import type { CSSProperties, ChangeEvent, KeyboardEvent } from 'react';
+import { Button } from '@blueprintjs/core';
+import styled from '@emotion/styled';
+import type { CSSProperties, KeyboardEvent } from 'react';
 import {
   forwardRef,
   useCallback,
@@ -7,8 +9,41 @@ import {
   useState,
 } from 'react';
 
-import type { InputProps } from './Input.js';
-import Input from './Input.js';
+import { Input2 } from './Input2.js';
+import { NumberInput2 } from './NumberInput2.js';
+
+interface OverflowProps {
+  textOverflowEllipses: boolean;
+}
+
+const Text = styled.span<OverflowProps>`
+  display: table-cell;
+  vertical-align: middle;
+  width: 100%;
+  height: 100%;
+  ${({ textOverflowEllipses }) =>
+    textOverflowEllipses &&
+    `
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    `}
+`;
+const Container = styled.span<OverflowProps>`
+  display: table;
+  width: 100%;
+  min-height: 22px;
+  height: 100%;
+  ${({ textOverflowEllipses }) =>
+    textOverflowEllipses &&
+    `
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items:end;
+    `}
+`;
 
 function extractNumber(val: string | number, type: string) {
   if (type === 'number' && typeof val !== 'number') {
@@ -18,37 +53,45 @@ function extractNumber(val: string | number, type: string) {
   return val;
 }
 
-interface EditableColumnProps
-  extends Omit<InputProps, 'style' | 'value' | 'type'> {
-  onSave?: (element: KeyboardEvent<HTMLInputElement>) => void;
-  onEditStart?: (element: boolean) => void;
-  type?: 'number' | 'text';
-  editStatus?: boolean;
-  value: string | number;
-  style?: CSSProperties;
-  validate?: (value?: string | number) => boolean;
-  textOverFlowEllipses?: boolean;
+function handleMousedown(event) {
+  event.stopPropagation();
 }
 
-const EditableColumn = forwardRef(function EditableColumn(
+const style: CSSProperties = { minWidth: 60 };
+const className = 'editable-column';
+
+interface BaseEditableColumnProps {
+  type: 'number' | 'text';
+  value: number | string;
+  validate?: (value?: string | number) => boolean;
+}
+
+interface EditableColumnProps extends BaseEditableColumnProps {
+  onSave?: (element: KeyboardEvent<HTMLInputElement>) => void;
+  onEditStart?: (element: boolean) => void;
+  editStatus?: boolean;
+  style?: CSSProperties;
+  textOverflowEllipses?: boolean;
+  clickType?: 'single' | 'double';
+}
+
+export const EditableColumn = forwardRef(function EditableColumn(
   props: EditableColumnProps,
   ref: any,
 ) {
   const {
-    onSave = () => null,
+    onSave,
     value,
-    type = 'text',
+    type,
     style,
-    onEditStart = () => null,
+    onEditStart,
     editStatus = false,
-    validate = () => true,
-    textOverFlowEllipses = false,
-    ...InputProps
+    validate,
+    textOverflowEllipses = false,
+    clickType = 'single',
   } = props;
 
   const [enabled, enableEdit] = useState<boolean | undefined>();
-  const [isValid, setValid] = useState<boolean>(true);
-  const [val, setVal] = useState(extractNumber(value, type));
   useEffect(() => {
     enableEdit(editStatus);
   }, [editStatus]);
@@ -71,85 +114,131 @@ const EditableColumn = forwardRef(function EditableColumn(
 
   function startEditHandler() {
     globalThis.addEventListener('mousedown', mouseClickCallback);
-    onEditStart(true);
+    onEditStart?.(true);
     enableEdit(true);
   }
 
-  function saveHandler(event: KeyboardEvent<HTMLInputElement>) {
-    const valid = validate(val);
-    setValid(valid);
-    // when press Enter or Tab
-    if (valid && ['Enter', 'Tab'].includes(event.key)) {
-      onSave(event);
-      enableEdit(false);
-      globalThis.removeEventListener('mousedown', mouseClickCallback);
-    }
-    // close edit mode if press Enter, Tab or Escape
-    if (['Escape'].includes(event.key)) {
-      enableEdit(false);
-      globalThis.removeEventListener('mousedown', mouseClickCallback);
-    }
+  function onConfirm(event: KeyboardEvent<HTMLInputElement>) {
+    onSave?.(event);
+    enableEdit(false);
+    globalThis.removeEventListener('mousedown', mouseClickCallback);
   }
 
-  function handleChange(e: ChangeEvent<HTMLInputElement>) {
-    setVal(e.target.value);
+  function onCancel() {
+    enableEdit(false);
+    globalThis.removeEventListener('mousedown', mouseClickCallback);
+  }
+
+  let clickHandler = {};
+
+  if (clickType === 'single' && !enabled) {
+    clickHandler = { onClick: startEditHandler };
+  }
+
+  if (clickType === 'double' && !enabled) {
+    clickHandler = { onDoubleClick: startEditHandler };
   }
 
   return (
-    <div
-      style={{
-        display: 'table',
-        width: '100%',
-        height: '100%',
-        ...(textOverFlowEllipses
-          ? { whiteSpace: 'nowrap', overflow: 'hidden', display: 'inline-flex' }
-          : {}),
-        ...style,
-      }}
+    <Container
+      style={style}
+      textOverflowEllipses={textOverflowEllipses}
       className="editable-column-input"
-      onDoubleClick={startEditHandler}
+      {...clickHandler}
     >
       {!enabled && (
-        <span
-          style={{
-            display: 'table-cell',
-            verticalAlign: 'middle',
-            width: '100%',
-            ...(textOverFlowEllipses
-              ? { textOverflow: 'ellipsis', overflow: 'hidden' }
-              : {}),
-          }}
-        >
-          {value} &nbsp;
-        </span>
+        <Text textOverflowEllipses={textOverflowEllipses}>
+          {value ?? '&nbsp;'}
+        </Text>
       )}
       {enabled && (
         <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>
-          <Input
-            style={{
-              inputWrapper: {
-                ...(!isValid && { borderColor: 'red' }),
-                width: '100%',
-              },
-              input: {
-                padding: '5px',
-                width: '100%',
-                minWidth: '60px',
-              },
-            }}
-            autoSelect
-            className="editable-column"
-            value={val}
+          <EditFiled
+            value={value}
             type={type}
-            onChange={handleChange}
-            onKeyDown={saveHandler}
-            onMouseDown={(e) => e.stopPropagation()}
-            {...InputProps}
+            onConfirm={onConfirm}
+            onCancel={onCancel}
+            validate={validate}
           />
         </div>
       )}
-    </div>
+    </Container>
   );
 });
 
-export default EditableColumn;
+interface EditFiledProps extends BaseEditableColumnProps {
+  onConfirm: (event: KeyboardEvent<HTMLInputElement>) => void;
+  onCancel: (event?: KeyboardEvent<HTMLInputElement>) => void;
+}
+
+function EditFiled(props: EditFiledProps) {
+  const { value: externalValue, type, onConfirm, onCancel, validate } = props;
+
+  const [isValid, setValid] = useState<boolean>(true);
+  const [value, setVal] = useState(extractNumber(externalValue, type));
+
+  function handleKeydown(event: KeyboardEvent<HTMLInputElement>) {
+    const valid = typeof validate === 'function' ? validate(value) : true;
+    setValid(valid);
+    // when press Enter or Tab
+    if (valid && ['Enter', 'Tab'].includes(event.key)) {
+      onConfirm(event);
+    }
+    // close edit mode if press Enter, Tab or Escape
+    if (['Escape'].includes(event.key)) {
+      onCancel(event);
+    }
+  }
+
+  function handleChange(value: string | number) {
+    setVal(value);
+  }
+
+  const intent = !isValid ? 'danger' : 'none';
+
+  const rightElement = (
+    <Button
+      minimal
+      icon="cross"
+      onMouseDown={handleMousedown}
+      onClick={() => onCancel()}
+    />
+  );
+
+  if (type === 'number') {
+    return (
+      <NumberInput2
+        intent={intent}
+        style={style}
+        autoSelect
+        className={className}
+        value={value}
+        onValueChange={(valueAsNumber, valueString) =>
+          handleChange(valueString ?? Number(valueString))
+        }
+        onKeyDown={handleKeydown}
+        onMouseDown={handleMousedown}
+        small
+        fill
+        buttonPosition="none"
+        stepSize={1}
+        rightElement={rightElement}
+      />
+    );
+  }
+
+  return (
+    <Input2
+      intent={intent}
+      style={style}
+      autoSelect
+      className={className}
+      value={value as string}
+      onChange={(value) => handleChange(value)}
+      onKeyDown={handleKeydown}
+      onMouseDown={handleMousedown}
+      small
+      rightElement={rightElement}
+    />
+  );
+}

@@ -1,5 +1,5 @@
 import { useDispatch } from '../../../context/DispatchContext.js';
-import EditableColumn from '../../../elements/EditableColumn.js';
+import { EditableColumn } from '../../../elements/EditableColumn.js';
 import type { OnHoverEvent, RowSpanTags } from '../RangesTableRow.js';
 import type { RangeData } from '../hooks/useMapRanges.js';
 
@@ -29,6 +29,7 @@ export function RangeAssignmentColumn({
         value={row?.assignment || ''}
         onSave={saveHandler}
         style={{ padding: '0.1rem 0.4rem' }}
+        type="text"
       />
     </td>
   );

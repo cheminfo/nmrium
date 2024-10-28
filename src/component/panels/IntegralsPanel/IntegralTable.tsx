@@ -6,7 +6,7 @@ import { FaRegTrashAlt } from 'react-icons/fa';
 import { SIGNAL_KINDS } from '../../../data/constants/signalsKinds.js';
 import { checkIntegralKind } from '../../../data/data1d/Spectrum1D/index.js';
 import { useDispatch } from '../../context/DispatchContext.js';
-import EditableColumn from '../../elements/EditableColumn.js';
+import { EditableColumn } from '../../elements/EditableColumn.js';
 import ReactTable from '../../elements/ReactTable/ReactTable.js';
 import type { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn.js';
 import addCustomColumn, {
