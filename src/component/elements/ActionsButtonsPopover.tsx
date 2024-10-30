@@ -4,7 +4,6 @@ import { Popover } from '@blueprintjs/core';
 import type { Interpolation, Theme } from '@emotion/react';
 import { css } from '@emotion/react';
 import type { CSSProperties } from 'react';
-import { Fragment } from 'react';
 import type { ButtonProps } from 'react-science/ui';
 import { Button } from 'react-science/ui';
 
@@ -44,7 +43,12 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
       enforceFocus={false}
       content={
         <div
-          style={{ display: 'flex', flexDirection: direction, ...contentStyle }}
+          style={{
+            display: 'flex',
+            flexDirection: direction,
+            gap: space,
+            ...contentStyle,
+          }}
           css={css`
             button,
             a[role='button'] {
@@ -58,22 +62,12 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
         >
           {buttons
             .filter((button) => button?.visible !== false)
-            .map(({ title, visible, ...otherProps }, index, array) => (
-              <Fragment key={title || index}>
-                <Button
-                  tooltipProps={{ content: title || '', compact: true }}
-                  {...otherProps}
-                />
-                {index < array.length - 1 && (
-                  <div
-                    key={`spacer-${index}`}
-                    style={{
-                      margin:
-                        direction === 'row' ? `0 ${space}px` : `${space}px 0`,
-                    }}
-                  />
-                )}
-              </Fragment>
+            .map(({ title, visible, ...otherProps }, index) => (
+              <Button
+                key={title || index}
+                tooltipProps={{ content: title || '', compact: true }}
+                {...otherProps}
+              />
             ))}
         </div>
       }

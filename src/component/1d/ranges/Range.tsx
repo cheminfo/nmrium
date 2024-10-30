@@ -192,6 +192,7 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
         targetTagName="g"
         {...(assignmentRange.isActive && { isOpen: true })}
         buttons={actionsButtons}
+        space={2}
       >
         <ResizerWithScale
           from={from}
