@@ -1,11 +1,11 @@
-export interface Apodization1DOptions {
-  lineBroadening: number;
-  gaussBroadening: number;
-  lineBroadeningCenter: number;
-}
+import { Shapes as Apodization1DOptions } from 'nmr-processing';
 
 export const defaultApodizationOptions: Apodization1DOptions = {
-  lineBroadening: 1,
-  gaussBroadening: 0,
-  lineBroadeningCenter: 0,
+  lorentzToGauss: {
+    shape: {
+      lineBroadening: 1,
+      gaussBroadening: 0,
+      lineBroadeningCenter: 0,
+    },
+  },
 };

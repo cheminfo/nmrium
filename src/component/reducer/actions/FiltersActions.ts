@@ -11,9 +11,12 @@ import type {
 } from 'nmr-load-save';
 import type { BaselineCorrectionOptions } from 'nmr-processing';
 import {
-  Filters,
-  FiltersManager,
+  BaselineCorrectionOptions,
   getBaselineZonesByDietrich,
+  Filters1DManager,
+  Filters2DManager,
+  Filters1D,
+  Filters2D,
 } from 'nmr-processing';
 
 import { defaultApodizationOptions } from '../../../data/constants/DefaultApodizationOptions.js';
@@ -53,22 +56,25 @@ import { activateTool, resetSelectedTool } from './ToolsActions.js';
 
 const {
   fft,
-  fftDimension1,
-  fftDimension2,
   apodization,
   baselineCorrection,
   phaseCorrection,
-  phaseCorrectionTwoDimensions,
   zeroFilling,
   shiftX,
-  shift2DX,
-  shift2DY,
+
   exclusionZones,
   signalProcessing,
   digitalFilter,
-  digitalFilter2D,
-} = Filters;
+} = Filters1D;
 
+const {
+  fftDimension1,
+  fftDimension2,
+  phaseCorrectionTwoDimensions,
+  shift2DX,
+  shift2DY,
+  digitalFilter2D,
+} = Filters2D;
 interface ShiftOneDimension {
   shift: number;
 }
@@ -207,7 +213,7 @@ export type FiltersActions =
 
 function getFilterUpdateDomainRules(
   filterName: string,
-  defaultRule?: FiltersManager.FilterDomainUpdateRules,
+  defaultRule?: Filters1DManager.FilterDomainUpdateRules,
 ) {
   return (
     Filters[filterName]?.DOMAIN_UPDATE_RULES ||
@@ -232,7 +238,7 @@ function getFilterDomain(
   options: { startIndex: number; lastIndex: number },
 ) {
   const { startIndex, lastIndex } = options;
-  const updateDomainOptions: FiltersManager.FilterDomainUpdateRules = {
+  const updateDomainOptions: Filters1DManager.FilterDomainUpdateRules = {
     updateXDomain: false,
     updateYDomain: false,
   };
@@ -296,7 +302,11 @@ function rollbackSpectrumByFilter(
         lastIndex: Math.max(activeFilterIndex, filterIndex),
       });
 
-      FiltersManager.reapplyFilters(datum, filters);
+      if (datum.info.dimension === 1) {
+        Filters1DManager.reapplyFilters(datum as Spectrum1D, filters);
+      } else {
+        Filters2DManager.reapplyFilters(datum as Spectrum2D, filters);
+      }
 
       draft.tempData = current(draft).data;
       // apply the current Filters
@@ -319,7 +329,11 @@ function rollbackSpectrumByFilter(
 
     if (filterIndex === -1 || reset) {
       if (draft.tempData) {
-        FiltersManager.reapplyFilters(datum);
+        if (datum.info.dimension === 1) {
+          Filters1DManager.reapplyFilters(datum as Spectrum1D);
+        } else {
+          Filters2DManager.reapplyFilters(datum as Spectrum2D);
+        }
       }
       //if the filter is not exists, create a clone of the current data
       draft.tempData = current(draft).data;
@@ -615,7 +629,7 @@ function handleShiftSpectrumAlongXAxis(
   if (isOneDimensionShift(options)) {
     const { shift } = options;
 
-    FiltersManager.applyFilter(draft.data[index], [
+    FiltersManager.applyFilters(draft.data[index], [
       { name: shiftX.id, value: { shift } },
     ]);
 
@@ -624,14 +638,14 @@ function handleShiftSpectrumAlongXAxis(
     const { shiftX, shiftY } = options;
 
     if (shiftX) {
-      FiltersManager.applyFilter(draft.data[index], [
+      FiltersManager.applyFilters(draft.data[index], [
         { name: shift2DX.id, value: { shift: shiftX } },
       ]);
       updateView(draft, shift2DX.DOMAIN_UPDATE_RULES);
     }
 
     if (shiftY) {
-      FiltersManager.applyFilter(draft.data[index], [
+      FiltersManager.applyFilters(draft.data[index], [
         { name: shift2DY.id, value: { shift: shiftY } },
       ]);
 
@@ -658,7 +672,7 @@ function handleApplyZeroFillingFilter(
       value: action.payload.options,
     },
   ];
-  FiltersManager.applyFilter(draft.tempData[index], filters);
+  FiltersManager.applyFilters(draft.tempData[index], filters);
   draft.data[index] = draft.tempData[index];
 
   updateView(draft, zeroFilling.DOMAIN_UPDATE_RULES);
@@ -741,7 +755,7 @@ function handleApplyApodizationFilter(
 
   const index = activeSpectrum.index;
 
-  FiltersManager.applyFilter(draft.tempData[index], [
+  Filters1DManager.applyFilters(draft.tempData[index], [
     {
       name: apodization.id,
       value: action.payload.options,
@@ -764,9 +778,9 @@ function handleApplyFFTFilter(draft: Draft<State>) {
   const activeFilterIndex = getActiveFilterIndex(draft);
 
   //apply filter into the spectrum
-  FiltersManager.applyFilter(
+  Filters1DManager.applyFilters(
     activeFilterIndex !== -1 ? draft.tempData[index] : draft.data[index],
-    [{ name: fft.id, value: {} }],
+    [{ name: fft.id }],
   );
 
   if (activeFilterIndex !== -1) {
@@ -793,7 +807,7 @@ function handleApplyFFtDimension1Filter(draft: Draft<State>) {
   const activeFilterIndex = getActiveFilterIndex(draft);
 
   //apply filter into the spectrum
-  FiltersManager.applyFilter(
+  Filters2DManager.applyFilters(
     activeFilterIndex !== -1 ? draft.tempData[index] : draft.data[index],
     [{ name: fftDimension1.id, value: {} }],
   );
@@ -822,7 +836,7 @@ function handleApplyFFtDimension2Filter(draft: Draft<State>) {
   const activeFilterIndex = getActiveFilterIndex(draft);
 
   //apply filter into the spectrum
-  FiltersManager.applyFilter(
+  FiltersManager.applyFilters(
     activeFilterIndex !== -1 ? draft.tempData[index] : draft.data[index],
     [{ name: fftDimension2.id, value: {} }],
   );
@@ -855,7 +869,7 @@ function handleApplyManualPhaseCorrectionFilter(
   const { ph0, ph1 } = action.payload;
   draft.data = draft.tempData;
 
-  FiltersManager.applyFilter(draft.tempData[index], [
+  FiltersManager.applyFilters(draft.tempData[index], [
     {
       name: phaseCorrection.id,
       value: { ph0, ph1 },
@@ -994,7 +1008,7 @@ function handleApplyAbsoluteFilter(draft: Draft<State>) {
 
   const { index } = activeSpectrum;
 
-  FiltersManager.applyFilter(draft.tempData[index], [
+  FiltersManager.applyFilters(draft.tempData[index], [
     {
       name: phaseCorrection.id,
       value: { absolute: true },
@@ -1015,7 +1029,7 @@ function handleApplyAutoPhaseCorrectionFilter(draft: Draft<State>) {
 
   const { index } = activeSpectrum;
 
-  FiltersManager.applyFilter(draft.tempData[index], [
+  FiltersManager.applyFilters(draft.tempData[index], [
     {
       name: phaseCorrection.id,
       value: {},
@@ -1041,7 +1055,7 @@ function handleBaseLineCorrectionFilter(
   const { index } = activeSpectrum;
   const { zones } = draft.toolOptions.data.baselineCorrection;
   const { options } = action.payload;
-  FiltersManager.applyFilter(draft.tempData[index], [
+  FiltersManager.applyFilters(draft.tempData[index], [
     {
       name: baselineCorrection.id,
       value: {
@@ -1206,7 +1220,7 @@ function handleSignalProcessingFilter(
 
   const spectra = getSpectraByNucleus(nucleus, data) as Spectrum1D[];
   for (const spectrum of spectra) {
-    FiltersManager.applyFilter(
+    FiltersManager.applyFilters(
       spectrum,
       [
         {
@@ -1235,7 +1249,7 @@ function handleApplyExclusionZone(
     return;
   }
 
-  FiltersManager.applyFilter(draft.data[activeSpectrum.index], [
+  FiltersManager.applyFilters(draft.data[activeSpectrum.index], [
     {
       name: exclusionZones.id,
       value: zones,
@@ -1268,7 +1282,7 @@ function handleAddExclusionZone(
   }
 
   for (const spectrum of spectra) {
-    FiltersManager.applyFilter(spectrum, [
+    FiltersManager.applyFilters(spectrum, [
       {
         name: exclusionZones.id,
         value: [
@@ -1457,7 +1471,7 @@ function handleApplyManualTowDimensionsPhaseCorrectionFilter(
   draft.data = draft.tempData;
   const filterOptions = getTwoDimensionsPhaseCorrectionOptions(draft);
 
-  FiltersManager.applyFilter(draft.tempData[index], [
+  FiltersManager.applyFilters(draft.tempData[index], [
     {
       name: phaseCorrectionTwoDimensions.id,
       value: filterOptions,
@@ -1480,7 +1494,7 @@ function handleApplyAutoPhaseCorrectionTwoDimensionsFilter(
 
   const { index } = activeSpectrum;
 
-  FiltersManager.applyFilter(draft.tempData[index], [
+  FiltersManager.applyFilters(draft.tempData[index], [
     {
       name: phaseCorrectionTwoDimensions.id,
       value: {},

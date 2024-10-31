@@ -1,6 +1,5 @@
 import { Checkbox } from '@blueprintjs/core';
-import type { Filter } from 'nmr-processing';
-import { Filters } from 'nmr-processing';
+import { Filter1D, Filters1D } from 'nmr-processing';
 import { memo } from 'react';
 
 import ActionButtons from '../elements/ActionButtons.js';
@@ -13,7 +12,7 @@ import { headerLabelStyle } from './Header.js';
 import { HeaderWrapper } from './HeaderWrapper.js';
 
 interface ApodizationOptionsInnerPanelProps {
-  filter: Filter | null;
+  filter: Extract<Filter1D, { name: 'apodization' }> | null;
 }
 
 function ApodizationOptionsInnerPanel(
@@ -70,6 +69,14 @@ function ApodizationOptionsInnerPanel(
 const MemoizedApodizationPanel = memo(ApodizationOptionsInnerPanel);
 
 export function SimpleApodizationOptionsPanel() {
-  const filter = useFilter(Filters.apodization.id);
-  return <MemoizedApodizationPanel filter={filter} />;
+  const filter = useFilter(Filters1D.apodization.id);
+  if (isApodizationFilter(filter)) {
+    return <MemoizedApodizationPanel filter={filter} />;
+  }
+}
+
+function isApodizationFilter(
+  filter: Filter1D | null,
+): filter is Extract<Filter1D, { name: 'apodization' }> {
+  return filter?.name === 'apodization';
 }

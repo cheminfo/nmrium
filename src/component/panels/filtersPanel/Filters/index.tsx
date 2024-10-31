@@ -1,6 +1,5 @@
-import type { ButtonProps } from '@blueprintjs/core';
-import type { Filter } from 'nmr-processing';
-import { Filters } from 'nmr-processing';
+import { ButtonProps } from '@blueprintjs/core';
+import { Filter1D, Filters1D, Filters2D } from 'nmr-processing';
 
 import type { LabelStyle } from '../../../elements/Label.js';
 
@@ -15,14 +14,14 @@ import ZeroFillingOptionsPanel from './ZeroFillingOptionsPanel.js';
 const {
   apodization,
   phaseCorrection,
-  phaseCorrectionTwoDimensions,
   zeroFilling,
   baselineCorrection,
   shiftX,
-  shift2DX,
-  shift2DY,
   exclusionZones,
-} = Filters;
+} = Filters1D;
+
+const { shift2DX, shift2DY, phaseCorrectionTwoDimensions } = Filters2D;
+
 export const filterOptionPanels = {
   [apodization.id]: ApodizationOptionsPanel,
   [phaseCorrection.id]: PhaseCorrectionOptionsPanel,
@@ -36,7 +35,7 @@ export const filterOptionPanels = {
 };
 
 export interface BaseFilterOptionsPanelProps {
-  filter: Filter;
+  filter: Extract<Filter1D, { name: 'baselineCorrection' }>;
   enableEdit: boolean;
   onConfirm: ButtonProps['onClick'];
   onCancel: ButtonProps['onClick'];

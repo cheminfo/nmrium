@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import type { Filter, BaselineCorrectionOptions } from 'nmr-processing';
+import { BaselineCorrectionOptions, Filter1D } from 'nmr-processing';
 import { useCallback, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelect } from 'react-science/ui';
@@ -37,7 +37,7 @@ export function getBaselineData(
   algorithm,
   filterValues: BaselineCorrectionOptions,
 ) {
-  const { zones, algorithm: baseAlgorithm, ...other } = filterValues;
+  const { algorithm: baseAlgorithm, ...other } = filterValues;
   switch (algorithm) {
     case 'airpls': {
       const validation = Yup.object().shape({
@@ -87,7 +87,9 @@ export function getBaselineData(
   }
 }
 
-export function useBaselineCorrection(filter: Filter | null) {
+export function useBaselineCorrection(
+  filter: Extract<Filter1D, { name: 'baselineCorrection' }>,
+) {
   const dispatch = useDispatch();
   const previousPreviewRef = useRef<boolean>(true);
   const { algorithm: baseAlgorithm = 'polynomial' } = filter?.value || {};
@@ -100,10 +102,7 @@ export function useBaselineCorrection(filter: Filter | null) {
     itemTextKey: 'label',
   });
 
-  const { resolver, values } = getBaselineData(
-    algorithm?.value,
-    filter?.value || {},
-  );
+  const { resolver, values } = getBaselineData(algorithm?.value, filter?.value);
 
   const { handleSubmit, reset, ...otherFormOptions } = useForm<
     AirplsOptions | PolynomialOptions

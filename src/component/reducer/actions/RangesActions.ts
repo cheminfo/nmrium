@@ -3,9 +3,8 @@ import type { Draft } from 'immer';
 import { original } from 'immer';
 import cloneDeep from 'lodash/cloneDeep.js';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import type { RangesViewState, Spectrum, Spectrum1D } from 'nmr-load-save';
-import type { Signal1D, Range } from 'nmr-processing';
-import { Filters, FiltersManager } from 'nmr-processing';
+import { RangesViewState, Spectrum, Spectrum1D } from 'nmr-load-save';
+import { Signal1D, Range, Filters1DManager, Filters1D } from 'nmr-processing';
 
 import {
   DATUM_KIND,
@@ -551,8 +550,8 @@ function handleChangeRangeSignalValue(
       signalID,
       newSignalValue: value,
     });
-    FiltersManager.applyFilter(draft.data[index], [
-      { name: Filters.shiftX.id, value: { shift } },
+    Filters1DManager.applyFilters(draft.data[index], [
+      { name: Filters1D.shiftX.id, value: { shift } },
     ]);
 
     handleUpdateCorrelations(draft);

@@ -169,7 +169,7 @@ export type SpectrumActions =
   | SimulateSpectrumAction
   | UpdateSpectrumMetaAction;
 
-const { applyFilter } = FiltersManager;
+const { applyFilters } = FiltersManager;
 function checkIsVisible2D(datum: Spectrum2D): boolean {
   if (!datum.display.isPositiveVisible && !datum.display.isNegativeVisible) {
     return false;
@@ -548,7 +548,7 @@ function handleAlignSpectraHandler(
         !datum.info?.isFid
       ) {
         const shift = getReferenceShift(datum, { ...action.payload });
-        applyFilter(datum, [
+        applyFilters(datum, [
           {
             name: Filters.shiftX.id,
             value: { shift },

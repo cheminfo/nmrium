@@ -1,8 +1,7 @@
 import { Switch } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { v4 } from '@lukeed/uuid';
-import type { Filter } from 'nmr-processing';
-import { Filters } from 'nmr-processing';
+import { Filter1D, Filter2D } from 'nmr-processing';
 import { memo, useEffect, useRef, useState } from 'react';
 import { FaRegEyeSlash, FaRegTrashAlt } from 'react-icons/fa';
 import { ObjectInspector } from 'react-inspector';
@@ -24,12 +23,13 @@ const IconButton = styled(Button)`
   font-size: 16px;
 `;
 
-interface FiltersProps extends Filter {
-  error?: any;
-}
+type FiltersProps = Filter1D &
+  Filter2D & {
+    error?: any;
+  };
 
 interface FilterElementsProps {
-  filter: Filter;
+  filter: Filter1D | Filter2D;
   spectraCounter: number;
   onEnableChange: () => void;
   onFilterRestore: () => void;
@@ -157,7 +157,7 @@ function FiltersInner(props: FiltersInnerProps) {
   const {
     toolOptions: { selectedTool },
   } = useChartData();
-  const [newFilter, setNewFilter] = useState<Filter | null>();
+  const [newFilter, setNewFilter] = useState<Filter1D | Filter2D | null>();
 
   const [selectedSection, openSection] = useState('');
   const dispatch = useDispatch();

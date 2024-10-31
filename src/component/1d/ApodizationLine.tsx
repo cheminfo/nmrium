@@ -1,5 +1,5 @@
-import type { Spectrum1D } from 'nmr-load-save';
-import { apodization, Filters } from 'nmr-processing';
+import { Spectrum1D } from 'nmr-load-save';
+import { Filters1D, createApodizationWindowData } from 'nmr-processing';
 
 import { defaultApodizationOptions } from '../../data/constants/DefaultApodizationOptions.js';
 import { useChartData } from '../context/ChartContext.js';
@@ -39,44 +39,37 @@ function ApodizationLine() {
   const xyReduce = useXYReduce(XYReducerDomainAxis.XAxis);
   const scaleY = useWindowYScale();
 
-  if (!activeSpectrum?.id || selectedTool !== Filters.apodization.id) {
+  if (!activeSpectrum?.id || selectedTool !== Filters1D.apodization.id) {
     return null;
   }
 
   const paths = () => {
     const pathBuilder = new PathBuilder();
-    const { re, im = [], x } = spectrum.data;
+    const { re, x } = spectrum.data;
 
     const { lineBroadening, gaussBroadening, lineBroadeningCenter } =
       apodizationOptions || defaultApodizationOptions;
 
     const length = re.length;
     const dw = (x[length - 1] - x[0]) / (length - 1);
-    const { windowData: y } = apodization(
-      { re, im },
-      {
-        apply: false,
-        compose: {
-          length,
-          shapes: {
-            lorentzToGauss: {
-              start: 0,
-              shape: {
-                kind: 'lorentzToGauss',
-                options: {
-                  length,
-                  dw,
-                  lineBroadening:
-                    gaussBroadening > 0 ? lineBroadening : -lineBroadening,
-                  gaussBroadening,
-                  lineBroadeningCenter,
-                },
-              },
+    const y = createApodizationWindowData({
+      length,
+      shapes: {
+        lorentzToGauss: {
+          shape: {
+            kind: 'lorentzToGauss',
+            options: {
+              length,
+              dw,
+              lineBroadening:
+                gaussBroadening > 0 ? lineBroadening : -lineBroadening,
+              gaussBroadening,
+              lineBroadeningCenter,
             },
           },
         },
       },
-    );
+    });
 
     if (x && y) {
       const pathPoints = xyReduce({ x, y });
