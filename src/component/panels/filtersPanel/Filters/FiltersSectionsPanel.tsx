@@ -1,7 +1,12 @@
 import { Switch } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { v4 } from '@lukeed/uuid';
-import { Filter1D, Filter2D } from 'nmr-processing';
+import {
+  Filters1D,
+  Filters2D,
+  type Filter1D,
+  type Filter2D,
+} from 'nmr-processing';
 import { memo, useEffect, useRef, useState } from 'react';
 import { FaRegEyeSlash, FaRegTrashAlt } from 'react-icons/fa';
 import { ObjectInspector } from 'react-inspector';
@@ -23,11 +28,12 @@ const IconButton = styled(Button)`
   font-size: 16px;
 `;
 
-type FiltersProps = Filter1D &
-  Filter2D & {
-    error?: any;
-  };
+type FiltersProps = Filter1D | Filter2D;
 
+const Filters = {
+  ...Filters1D,
+  ...Filters2D,
+};
 interface FilterElementsProps {
   filter: Filter1D | Filter2D;
   spectraCounter: number;
@@ -212,7 +218,7 @@ function FiltersInner(props: FiltersInnerProps) {
         id: v4(),
         name,
         label,
-        value: null,
+        value: {},
         isDeleteAllow: true,
       });
     } else {

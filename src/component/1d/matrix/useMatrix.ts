@@ -1,13 +1,13 @@
 import type { NumberArray } from 'cheminfo-types';
 import type { Spectrum } from 'nmr-load-save';
-import { Filters } from 'nmr-processing';
+import { Filters1D } from 'nmr-processing';
 import { useMemo } from 'react';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import { useChartData } from '../../context/ChartContext.js';
 import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus.js';
 
-const { signalProcessing } = Filters;
+const { signalProcessing } = Filters1D;
 
 /**
  * This method will slice the array from the fromIndex to the toIndex and add the first and last element of the original array

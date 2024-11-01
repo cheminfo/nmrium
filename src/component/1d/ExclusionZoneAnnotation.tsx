@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Filters } from 'nmr-processing';
+import { Filters1D } from 'nmr-processing';
 import { memo } from 'react';
 
 import type { ExclusionZone } from '../../data/types/data1d/ExclusionZone.js';
@@ -31,7 +31,7 @@ function ExclusionZoneAnnotation({
 }: ExclusionZoneProps) {
   const { scaleX, scaleY } = useScaleChecked();
   const type =
-    filterId === Filters.signalProcessing.id
+    filterId === Filters1D.signalProcessing.id
       ? HighlightEventSource.MATRIX_GENERATION_EXCLUSION_ZONE
       : HighlightEventSource.EXCLUSION_ZONE;
   const highlight = useHighlight([], {
@@ -50,7 +50,7 @@ function ExclusionZoneAnnotation({
         width={`${scaleX()(zone.from) - scaleX()(zone.to)}`}
         height="10px"
         style={{
-          fill: filterId === Filters.signalProcessing.id ? 'gray' : color,
+          fill: filterId === Filters1D.signalProcessing.id ? 'gray' : color,
           opacity,
         }}
         {...highlight.onHover}

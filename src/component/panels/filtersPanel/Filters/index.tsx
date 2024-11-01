@@ -1,5 +1,7 @@
 import { ButtonProps } from '@blueprintjs/core';
-import { Filter1D, Filters1D, Filters2D } from 'nmr-processing';
+
+import type { Filter1D } from 'nmr-processing';
+import { Filters1D, Filters2D } from 'nmr-processing';
 
 import type { LabelStyle } from '../../../elements/Label.js';
 

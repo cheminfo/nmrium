@@ -1,6 +1,6 @@
 import { Checkbox } from '@blueprintjs/core';
 import { Select } from '@blueprintjs/select';
-import { Filter1D, Filters1D } from 'nmr-processing';
+import { Filters1D } from 'nmr-processing';
 import { memo } from 'react';
 import { Button } from 'react-science/ui';
 
@@ -16,6 +16,8 @@ import {
 
 import { headerLabelStyle } from './Header.js';
 import { HeaderWrapper } from './HeaderWrapper.js';
+
+import type { Filter1D } from 'nmr-processing';
 
 interface BaseLineCorrectionInnerPanelProps {
   filter: Extract<Filter1D, { name: 'baselineCorrection' }>;
@@ -137,15 +139,10 @@ function BaseLineCorrectionInnerPanel(
 const MemoizedBaseLineCorrectionPanel = memo(BaseLineCorrectionInnerPanel);
 
 export function SimpleBaseLineCorrectionOptionsPanel() {
-  const filter = useFilter(Filters1D.baselineCorrection.id);
+  const filter = useFilter(Filters1D.baselineCorrection.id) as Extract<
+    Filter1D,
+    { name: 'baselineCorrection' }
+  >;
 
-  if (isBaselineCorrectionFilter(filter)) {
-    return <MemoizedBaseLineCorrectionPanel filter={filter} />;
-  }
-}
-
-function isBaselineCorrectionFilter(
-  filter: Filter1D | null,
-): filter is Extract<Filter1D, { name: 'baselineCorrection' }> {
-  return filter?.name === 'baselineCorrection';
+  return <MemoizedBaseLineCorrectionPanel filter={filter} />;
 }

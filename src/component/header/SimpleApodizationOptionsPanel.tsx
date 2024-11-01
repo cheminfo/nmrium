@@ -1,5 +1,5 @@
 import { Checkbox } from '@blueprintjs/core';
-import { Filter1D, Filters1D } from 'nmr-processing';
+import { Filters1D } from 'nmr-processing';
 import { memo } from 'react';
 
 import ActionButtons from '../elements/ActionButtons.js';
@@ -11,6 +11,7 @@ import { useSharedApodization } from '../panels/filtersPanel/Filters/hooks/useSh
 import { headerLabelStyle } from './Header.js';
 import { HeaderWrapper } from './HeaderWrapper.js';
 
+import type { Filter1D } from 'nmr-processing';
 interface ApodizationOptionsInnerPanelProps {
   filter: Extract<Filter1D, { name: 'apodization' }> | null;
 }
@@ -69,14 +70,9 @@ function ApodizationOptionsInnerPanel(
 const MemoizedApodizationPanel = memo(ApodizationOptionsInnerPanel);
 
 export function SimpleApodizationOptionsPanel() {
-  const filter = useFilter(Filters1D.apodization.id);
-  if (isApodizationFilter(filter)) {
-    return <MemoizedApodizationPanel filter={filter} />;
-  }
-}
-
-function isApodizationFilter(
-  filter: Filter1D | null,
-): filter is Extract<Filter1D, { name: 'apodization' }> {
-  return filter?.name === 'apodization';
+  const filter = useFilter(Filters1D.apodization.id) as Extract<
+    Filter1D,
+    { name: 'apodization' }
+  >;
+  return <MemoizedApodizationPanel filter={filter} />;
 }

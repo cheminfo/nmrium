@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { BaselineCorrectionOptions, Filter1D } from 'nmr-processing';
+import type { BaselineCorrectionOptions, Filter1D } from 'nmr-processing';
 import { useCallback, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelect } from 'react-science/ui';
