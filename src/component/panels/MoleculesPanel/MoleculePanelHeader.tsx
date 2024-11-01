@@ -11,7 +11,7 @@ import {
   FaRegTrashAlt,
 } from 'react-icons/fa';
 import { IoOpenOutline } from 'react-icons/io5';
-import { Toolbar } from 'react-science/ui';
+import { PanelHeader, Toolbar } from 'react-science/ui';
 
 import type {
   MoleculesView,
@@ -24,13 +24,11 @@ import { useAssignmentData } from '../../assignment/AssignmentsContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useGlobal } from '../../context/GlobalContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
-import { PreferencesButton } from '../../elements/PreferencesButton.js';
 import type { ToolbarPopoverMenuItem } from '../../elements/ToolbarPopoverItem.js';
 import { ToolbarPopoverItem } from '../../elements/ToolbarPopoverItem.js';
 import AboutPredictionModal from '../../modal/AboutPredictionModal.js';
 import PredictSpectraModal from '../../modal/PredictSpectraModal.js';
 import { copyPNGToClipboard, exportAsSVG } from '../../utility/export.js';
-import PanelHeader from '../header/PanelHeader.js';
 
 const styles: Record<'counter' | 'atomLabel', CSSProperties> = {
   counter: {
@@ -233,7 +231,11 @@ export default function MoleculePanelHeader({
   const hasMolecules = molecules && molecules.length > 0;
 
   return (
-    <PanelHeader>
+    <PanelHeader
+      onClickSettings={onClickPreferences}
+      current={molecules && molecules.length > 0 ? currentIndex + 1 : undefined}
+      total={molecules && molecules.length > 0 ? molecules.length : undefined}
+    >
       <Toolbar>
         {renderSource === 'predictionPanel' && <AboutPredictionModal />}
         {renderSource === 'moleculePanel' && (
@@ -290,14 +292,6 @@ export default function MoleculePanelHeader({
       </Toolbar>
 
       <div style={{ flex: 1 }}>{children}</div>
-      {molecules && molecules.length > 0 && (
-        <p style={styles.counter}>
-          {`${+(currentIndex + 1)} / ${molecules.length}`}
-        </p>
-      )}
-      {onClickPreferences && (
-        <PreferencesButton tooltip="Preferences" onClick={onClickPreferences} />
-      )}
 
       <ClipboardFallbackModal
         mode={shouldFallback}

@@ -2,12 +2,7 @@ import type { CSSProperties, ReactNode } from 'react';
 import { Fragment, useState } from 'react';
 import { FaFilter, FaRegTrashAlt } from 'react-icons/fa';
 import type { ToolbarItemProps as BaseToolbarItemProps } from 'react-science/ui';
-import { Toolbar } from 'react-science/ui';
-
-import { CounterLabel } from '../../elements/CounterLabel.js';
-import { PreferencesButton } from '../../elements/PreferencesButton.js';
-
-import PanelHeader from './PanelHeader.js';
+import { PanelHeader, Toolbar } from 'react-science/ui';
 
 const styles: Record<'leftContainer', CSSProperties> = {
   leftContainer: {
@@ -46,23 +41,6 @@ interface DefaultPanelHeaderProps {
   hideCounter?: boolean;
 }
 
-export function formatCounterLabel(counter?: number, total?: number) {
-  if (
-    counter !== undefined &&
-    total !== undefined &&
-    counter >= 0 &&
-    total >= 0 &&
-    counter !== total
-  ) {
-    return `[ ${counter}/${total} ]`;
-  }
-
-  if (total !== undefined) {
-    return `[ ${total} ]`;
-  }
-  return '';
-}
-
 function DefaultPanelHeader(props: DefaultPanelHeaderProps) {
   const {
     total,
@@ -89,7 +67,12 @@ function DefaultPanelHeader(props: DefaultPanelHeaderProps) {
   }
 
   return (
-    <PanelHeader {...{ style, className }}>
+    <PanelHeader
+      {...{ style, className }}
+      onClickSettings={onSettingClick}
+      current={hideCounter ? undefined : counter}
+      total={hideCounter ? undefined : total}
+    >
       <div style={styles.leftContainer}>
         <Toolbar>
           {onDelete && (
@@ -118,12 +101,6 @@ function DefaultPanelHeader(props: DefaultPanelHeaderProps) {
       </div>
 
       <Toolbar>{mapToolbarButtons(rightButtons)}</Toolbar>
-      {!hideCounter && (
-        <CounterLabel value={formatCounterLabel(counter, total)} />
-      )}
-      {onSettingClick && (
-        <PreferencesButton tooltip="Preferences" onClick={onSettingClick} />
-      )}
     </PanelHeader>
   );
 }
