@@ -70,7 +70,7 @@ function DefaultPanelHeader(props: DefaultPanelHeaderProps) {
     <PanelHeader
       {...{ style, className }}
       onClickSettings={onSettingClick}
-      current={hideCounter ? undefined : counter}
+      current={hideCounter || total === counter ? undefined : counter}
       total={hideCounter ? undefined : total}
     >
       <div style={styles.leftContainer}>
