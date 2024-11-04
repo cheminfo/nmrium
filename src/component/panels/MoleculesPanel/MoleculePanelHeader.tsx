@@ -30,14 +30,7 @@ import AboutPredictionModal from '../../modal/AboutPredictionModal.js';
 import PredictSpectraModal from '../../modal/PredictSpectraModal.js';
 import { copyPNGToClipboard, exportAsSVG } from '../../utility/export.js';
 
-const styles: Record<'counter' | 'atomLabel', CSSProperties> = {
-  counter: {
-    margin: 0,
-    textAlign: 'right',
-    lineHeight: '22px',
-    padding: '0 5px',
-    whiteSpace: 'nowrap',
-  },
+const styles: Record<'atomLabel', CSSProperties> = {
   atomLabel: {
     width: '14px',
     height: '14px',
