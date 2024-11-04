@@ -5,7 +5,7 @@ import lodashCloneDeep from 'lodash/cloneDeep.js';
 import { setPathLength } from 'nmr-correlation';
 import type { Spectrum, Spectrum2D, ZonesViewState } from 'nmr-load-save';
 import type { Signal2D, Zone } from 'nmr-processing';
-import { Filters, FiltersManager } from 'nmr-processing';
+import { Filters2D, Filters2DManager } from 'nmr-processing';
 
 import {
   DATUM_KIND,
@@ -236,13 +236,13 @@ function handleChangeZoneSignalDelta(
     );
     const filters: any = [];
     if (xShift !== 0) {
-      filters.push({ name: Filters.shift2DX.id, value: { shift: xShift } });
+      filters.push({ name: Filters2D.shift2DX.id, value: { shift: xShift } });
     }
     if (yShift !== 0) {
-      filters.push({ name: Filters.shift2DY.id, value: { shift: yShift } });
+      filters.push({ name: Filters2D.shift2DY.id, value: { shift: yShift } });
     }
 
-    FiltersManager.applyFilters(draft.data[index], filters);
+    Filters2DManager.applyFilters(draft.data[index], filters);
 
     setDomain(draft);
     handleUpdateCorrelations(draft);

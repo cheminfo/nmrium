@@ -1,6 +1,6 @@
 import { ButtonProps } from '@blueprintjs/core';
 
-import type { Filter1D } from 'nmr-processing';
+import type { Filter1DOptions, Filter2DOptions } from 'nmr-processing';
 import { Filters1D, Filters2D } from 'nmr-processing';
 
 import type { LabelStyle } from '../../../elements/Label.js';
@@ -37,7 +37,7 @@ export const filterOptionPanels = {
 };
 
 export interface BaseFilterOptionsPanelProps {
-  filter: Extract<Filter1D, { name: 'baselineCorrection' }>;
+  filter: Filter1DOptions | Filter2DOptions;
   enableEdit: boolean;
   onConfirm: ButtonProps['onClick'];
   onCancel: ButtonProps['onClick'];

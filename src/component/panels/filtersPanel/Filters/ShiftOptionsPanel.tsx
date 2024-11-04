@@ -1,4 +1,4 @@
-import { Filters } from 'nmr-processing';
+import { Filters1D, Filters2D } from 'nmr-processing';
 import { useForm } from 'react-hook-form';
 
 import { useDispatch } from '../../../context/DispatchContext.js';
@@ -13,7 +13,8 @@ import { HeaderContainer, StickyHeader } from './InnerFilterHeader.js';
 import type { BaseFilterOptionsPanelProps } from './index.js';
 import { formLabelStyle } from './index.js';
 
-const { shiftX, shift2DX, shift2DY } = Filters;
+const { shiftX } = Filters1D;
+const { shift2DX, shift2DY } = Filters2D;
 
 export default function ShiftOptionsPanel(props: BaseFilterOptionsPanelProps) {
   const { filter, enableEdit = true, onCancel, onConfirm } = props;

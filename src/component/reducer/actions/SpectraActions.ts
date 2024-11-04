@@ -12,7 +12,7 @@ import type {
   Spectrum2D,
 } from 'nmr-load-save';
 import type { NMRRange } from 'nmr-processing';
-import { Filters, FiltersManager } from 'nmr-processing';
+import { Filters1D, Filters1DManager } from 'nmr-processing';
 
 import {
   get1DColor,
@@ -169,7 +169,6 @@ export type SpectrumActions =
   | SimulateSpectrumAction
   | UpdateSpectrumMetaAction;
 
-const { applyFilters } = FiltersManager;
 function checkIsVisible2D(datum: Spectrum2D): boolean {
   if (!datum.display.isPositiveVisible && !datum.display.isNegativeVisible) {
     return false;
@@ -548,9 +547,9 @@ function handleAlignSpectraHandler(
         !datum.info?.isFid
       ) {
         const shift = getReferenceShift(datum, { ...action.payload });
-        applyFilters(datum, [
+        Filters1DManager.applyFilters(datum as Spectrum1D, [
           {
-            name: Filters.shiftX.id,
+            name: Filters1D.shiftX.id,
             value: { shift },
           },
         ]);

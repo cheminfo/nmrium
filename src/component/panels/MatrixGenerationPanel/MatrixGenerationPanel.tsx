@@ -2,7 +2,7 @@
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SvgNmrMultipleAnalysis } from 'cheminfo-font';
-import { Filters } from 'nmr-processing';
+import { Filters1D } from 'nmr-processing';
 import { useCallback, useEffect, useRef } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Button, Toolbar } from 'react-science/ui';
@@ -31,7 +31,7 @@ import { ExclusionsZonesTable } from './ExclusionsZonesTable.js';
 import { FiltersOptions } from './FiltersOptions.js';
 import { MatrixGenerationPanelHeader } from './MatrixGenerationPanelHeader.js';
 
-const { signalProcessing } = Filters;
+const { signalProcessing } = Filters1D;
 
 const StickyFooter = styled.div({
   position: 'sticky',
