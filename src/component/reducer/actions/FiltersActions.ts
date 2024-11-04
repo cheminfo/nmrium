@@ -9,7 +9,7 @@ import type {
   Spectrum1D,
   Spectrum2D,
 } from 'nmr-load-save';
-import type { BaselineCorrectionOptions } from 'nmr-processing';
+import type { BaselineCorrectionOptions, Filter1D } from 'nmr-processing';
 import {
   getBaselineZonesByDietrich,
   Filters1DManager,
@@ -1065,7 +1065,7 @@ function handleBaseLineCorrectionFilter(
         ...options,
         zones,
       },
-    },
+    } as Extract<Filter1D, { name: 'baseLineCorrection' }>,
   ]);
   draft.data[index] = draft.tempData[index];
 
@@ -1504,7 +1504,7 @@ function handleApplyManualTowDimensionsPhaseCorrectionFilter(
   draft.data = draft.tempData;
   const filterOptions = getTwoDimensionsPhaseCorrectionOptions(draft);
 
-  FiltersManager.applyFilters(draft.tempData[index], [
+  Filters2DManager.applyFilters(draft.tempData[index], [
     {
       name: phaseCorrectionTwoDimensions.id,
       value: filterOptions,
@@ -1527,7 +1527,7 @@ function handleApplyAutoPhaseCorrectionTwoDimensionsFilter(
 
   const { index } = activeSpectrum;
 
-  FiltersManager.applyFilters(draft.tempData[index], [
+  Filters2DManager.applyFilters(draft.tempData[index], [
     {
       name: phaseCorrectionTwoDimensions.id,
       value: {},

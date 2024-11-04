@@ -8,7 +8,7 @@ import type { Spectrum, ViewState } from 'nmr-load-save';
 import type { BaselineCorrectionZone } from 'nmr-processing';
 import type { Reducer } from 'react';
 
-import type { Apodization1DOptions } from '../../data/constants/DefaultApodizationOptions.js';
+import type { Apodization1DOptions } from 'nmr-processing';
 import type { StateMoleculeExtended } from '../../data/molecules/Molecule.js';
 import type { UsedColors } from '../../types/UsedColors.js';
 import type { Action } from '../context/DispatchContext.js';
