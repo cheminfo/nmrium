@@ -9,7 +9,6 @@ import type {
   Spectrum1D,
   Spectrum2D,
 } from 'nmr-load-save';
-import type { BaselineCorrectionOptions, Filter1D } from 'nmr-processing';
 import {
   getBaselineZonesByDietrich,
   Filters1DManager,
@@ -17,9 +16,13 @@ import {
   Filters1D,
   Filters2D,
 } from 'nmr-processing';
+import type {
+  BaselineCorrectionOptions,
+  Filter1D,
+  Apodization1DOptions,
+} from 'nmr-processing';
 
 import { defaultApodizationOptions } from '../../../data/constants/DefaultApodizationOptions.js';
-import type { Apodization1DOptions } from 'nmr-processing';
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import { getProjection } from '../../../data/data2d/Spectrum2D/getMissingProjection.js';
 import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.js';
@@ -439,7 +442,7 @@ function beforeRollback(draft: Draft<State>, filterKey) {
         const spectrum = current(draft).data[activeSpectrum.index];
 
         const phaseCorrectionFilter = spectrum.filters.find(
-          (filter) => filter.name === Tools.phaseCorrectionTwoDimensions.id,
+          (filter) => filter.name === Filters2D.phaseCorrectionTwoDimensions.id,
         );
 
         if (isSpectrum1D(spectrum)) {
