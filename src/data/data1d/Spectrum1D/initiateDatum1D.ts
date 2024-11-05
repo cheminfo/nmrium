@@ -1,6 +1,6 @@
 import { v4 } from '@lukeed/uuid';
 import type { Spectrum1D, SpectrumOneDimensionColor } from 'nmr-load-save';
-import { FiltersManager } from 'nmr-processing';
+import { Filters1DManager } from 'nmr-processing';
 
 import type { UsedColors } from '../../../types/UsedColors.js';
 import { initiateFilters } from '../../initiateFilters.js';
@@ -80,7 +80,7 @@ export function initiateDatum1D(
   spectrumObj.ranges = initiateRanges(spectrum, spectrumObj, rangesOptions);
 
   //reapply filters after load the original data
-  FiltersManager.reapplyFilters(spectrumObj);
+  Filters1DManager.reapplyFilters(spectrumObj);
 
   return spectrumObj;
 }

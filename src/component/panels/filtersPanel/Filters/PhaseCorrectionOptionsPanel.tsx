@@ -15,6 +15,7 @@ import type { AlgorithmItem } from './hooks/usePhaseCorrection.js';
 import { algorithms, usePhaseCorrection } from './hooks/usePhaseCorrection.js';
 
 import type { BaseFilterOptionsPanelProps } from './index.js';
+import type { Filter1DOptions } from 'nmr-processing';
 
 const inputRangeStyle: CSSProperties = {
   padding: '5px 10px',
@@ -34,7 +35,9 @@ const formLabelStyle: LabelStyle = {
 };
 
 export default function PhaseCorrectionOptionsPanel(
-  props: BaseFilterOptionsPanelProps,
+  props: BaseFilterOptionsPanelProps<
+    Extract<Filter1DOptions, { name: 'phaseCorrection' }>
+  >,
 ) {
   const { filter, enableEdit = true, onCancel, onConfirm } = props;
   const {

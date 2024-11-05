@@ -1,6 +1,6 @@
 import { v4 } from '@lukeed/uuid';
 import type { Spectrum2D, SpectrumTwoDimensionsColor } from 'nmr-load-save';
-import { FiltersManager } from 'nmr-processing';
+import { Filters2DManager } from 'nmr-processing';
 
 import type { UsedColors } from '../../../types/UsedColors.js';
 import { initiateFilters } from '../../initiateFilters.js';
@@ -63,7 +63,7 @@ export function initiateDatum2D(
   datum.zones = initiateZones(spectrum, datum as Spectrum2D);
 
   //reapply filters after load the original data
-  FiltersManager.reapplyFilters(datum);
+  Filters2DManager.reapplyFilters(datum);
 
   return datum;
 }

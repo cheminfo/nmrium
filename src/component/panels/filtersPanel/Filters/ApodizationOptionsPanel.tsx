@@ -12,6 +12,7 @@ import { useSharedApodization } from './hooks/useSharedApodization.js';
 
 import type { BaseFilterOptionsPanelProps } from './index.js';
 import { formLabelStyle } from './index.js';
+import type { Filter1DOptions } from 'nmr-processing';
 
 const advanceValidationSchema = Yup.object().shape({
   lineBroadening: Yup.number().required(),
@@ -21,7 +22,9 @@ const advanceValidationSchema = Yup.object().shape({
 });
 
 export default function ApodizationOptionsPanel(
-  props: BaseFilterOptionsPanelProps,
+  props: BaseFilterOptionsPanelProps<
+    Extract<Filter1DOptions, { name: 'apodization' }>
+  >,
 ) {
   const { filter, enableEdit = true, onCancel, onConfirm } = props;
   const {

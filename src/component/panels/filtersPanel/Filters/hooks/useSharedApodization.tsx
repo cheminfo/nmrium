@@ -1,10 +1,10 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import type { Filter } from 'nmr-processing';
+import type { Filter1DOptions } from 'nmr-processing';
 import { useCallback, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
-import type { Apodization1DOptions as BaseApodizationOptions } from '../../../../../data/constants/DefaultApodizationOptions.js';
+import type { Apodization1DOptions as BaseApodizationOptions } from 'nmr-processing';
 import { defaultApodizationOptions } from '../../../../../data/constants/DefaultApodizationOptions.js';
 import { useDispatch } from '../../../../context/DispatchContext.js';
 import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsContext.js';
@@ -29,7 +29,7 @@ interface UseSharedApodizationOptions {
 }
 
 export const useSharedApodization = (
-  filter: Filter | null,
+  filter: Extract<Filter1DOptions, { name: 'apodization' }> | null,
   options: UseSharedApodizationOptions,
 ) => {
   const {

@@ -526,7 +526,7 @@ function beforeRollback(draft: Draft<State>, filterKey) {
       if (activeSpectrum) {
         const datum = current(draft).data[activeSpectrum.index];
         const baselineCorrectionFilter = datum.filters.find(
-          (filter) => filter.name === Tools.baselineCorrection.id,
+          (filter) => filter.name === Filters1D.baselineCorrection.id,
         );
         if (
           !baselineCorrectionFilter ||

@@ -16,9 +16,12 @@ import {
 
 import type { BaseFilterOptionsPanelProps } from './index.js';
 import { formLabelStyle } from './index.js';
+import type { Filter1DOptions } from 'nmr-processing';
 
 export default function BaseLineCorrectionOptionsPanel(
-  props: BaseFilterOptionsPanelProps,
+  props: BaseFilterOptionsPanelProps<
+    Extract<Filter1DOptions, { name: 'baselineCorrection' }>
+  >,
 ) {
   const { filter, enableEdit = true, onCancel, onConfirm } = props;
 

@@ -1,6 +1,6 @@
 import { Checkbox, Tab, Tabs } from '@blueprintjs/core';
 import type { WorkspacePreferences } from 'nmr-load-save';
-import type { BaseFilter } from 'nmr-processing';
+import type { Filter1D, Filter2D } from 'nmr-processing';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import IsotopesViewer from '../../../elements/IsotopesViewer.js';
@@ -63,7 +63,7 @@ function AutoProcessingFilters() {
 function FiltersTable({ data, nucleus }) {
   const { register } = useFormContext();
 
-  const COLUMNS: Array<CustomColumn<BaseFilter>> = [
+  const COLUMNS: Array<CustomColumn<Filter1D | Filter2D>> = [
     {
       index: 1,
       Header: '#',

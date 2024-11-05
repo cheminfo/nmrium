@@ -1,5 +1,5 @@
 import type { Spectrum1D } from 'nmr-load-save';
-import type { Filter } from 'nmr-processing';
+import type { Filter1DOptions } from 'nmr-processing';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelect } from 'react-science/ui';
 
@@ -33,7 +33,9 @@ export const algorithms: AlgorithmItem[] = [
 ];
 const emptyData = { datum: {}, filter: null };
 
-export function usePhaseCorrection(filter: Filter | null) {
+export function usePhaseCorrection(
+  filter: Extract<Filter1DOptions, { name: 'phaseCorrection' }> | null,
+) {
   const {
     toolOptions: {
       data: { pivot },

@@ -10,9 +10,12 @@ import { HeaderContainer, StickyHeader } from './InnerFilterHeader.js';
 import { useZeroFilling, zeroFillingSizes } from './hooks/useZeroFilling.js';
 
 import type { BaseFilterOptionsPanelProps } from './index.js';
+import type { Filter1DOptions } from 'nmr-processing';
 
 export default function ZeroFillingOptionsPanel(
-  props: BaseFilterOptionsPanelProps,
+  props: BaseFilterOptionsPanelProps<
+    Extract<Filter1DOptions, { name: 'zeroFilling' }>
+  >,
 ) {
   const { filter, enableEdit = true, onCancel, onConfirm } = props;
   const {

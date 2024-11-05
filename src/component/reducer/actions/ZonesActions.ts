@@ -242,7 +242,7 @@ function handleChangeZoneSignalDelta(
       filters.push({ name: Filters2D.shift2DY.id, value: { shift: yShift } });
     }
 
-    Filters2DManager.applyFilters(draft.data[index], filters);
+    Filters2DManager.applyFilters(draft.data[index] as Spectrum2D, filters);
 
     setDomain(draft);
     handleUpdateCorrelations(draft);

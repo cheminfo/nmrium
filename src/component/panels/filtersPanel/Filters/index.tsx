@@ -36,8 +36,10 @@ export const filterOptionPanels = {
   [exclusionZones.id]: ExclusionZonesOptionsPanel,
 };
 
-export interface BaseFilterOptionsPanelProps {
-  filter: Filter1DOptions | Filter2DOptions;
+export interface BaseFilterOptionsPanelProps<
+  T = Filter1DOptions | Filter2DOptions,
+> {
+  filter: T;
   enableEdit: boolean;
   onConfirm: ButtonProps['onClick'];
   onCancel: ButtonProps['onClick'];

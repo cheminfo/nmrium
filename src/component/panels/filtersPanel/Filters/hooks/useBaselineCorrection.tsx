@@ -1,5 +1,8 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import type { BaselineCorrectionOptions, Filter1D } from 'nmr-processing';
+import type {
+  BaselineCorrectionOptions,
+  Filter1DOptions,
+} from 'nmr-processing';
 import { useCallback, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelect } from 'react-science/ui';
@@ -88,7 +91,7 @@ export function getBaselineData(
 }
 
 export function useBaselineCorrection(
-  filter: Extract<Filter1D, { name: 'baselineCorrection' }>,
+  filter: Extract<Filter1DOptions, { name: 'baselineCorrection' }>,
 ) {
   const dispatch = useDispatch();
   const previousPreviewRef = useRef<boolean>(true);

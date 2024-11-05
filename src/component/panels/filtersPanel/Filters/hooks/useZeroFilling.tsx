@@ -1,7 +1,7 @@
 import type { NmrData1D } from 'cheminfo-types';
 import type {
-  Filter,
   ZeroFillingOptions as BaseZeroFillingOptions,
+  Filter1DOptions,
 } from 'nmr-processing';
 import { useCallback, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
@@ -30,7 +30,7 @@ function useZeroFillingDefaultSize() {
 }
 
 export const useZeroFilling = (
-  filter: Filter | null,
+  filter: Extract<Filter1DOptions, { name: 'zeroFilling' }> | null,
   options: UseZeroFillingOptions = {},
 ) => {
   const { applyFilterOnload = false } = options;
@@ -42,9 +42,7 @@ export const useZeroFilling = (
   const { handleSubmit, register, reset, control, getValues, formState } =
     useForm({
       defaultValues: {
-        nbPoints:
-          (filter?.value as BaseZeroFillingOptions)?.nbPoints ||
-          defaultNbPoints,
+        nbPoints: filter?.value?.nbPoints || defaultNbPoints,
         livePreview: true,
       },
     });
