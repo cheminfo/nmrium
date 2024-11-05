@@ -1,4 +1,5 @@
 import { Filters1D, Filters2D } from 'nmr-processing';
+import type { Filter1DOptions, Filter2DOptions } from 'nmr-processing';
 import { useForm } from 'react-hook-form';
 
 import { useDispatch } from '../../../context/DispatchContext.js';
@@ -16,7 +17,14 @@ import { formLabelStyle } from './index.js';
 const { shiftX } = Filters1D;
 const { shift2DX, shift2DY } = Filters2D;
 
-export default function ShiftOptionsPanel(props: BaseFilterOptionsPanelProps) {
+type ShiftFilterPanelOptions =
+  | Extract<Filter1DOptions, { name: 'shiftX' }>
+  | Extract<Filter2DOptions, { name: 'shift2DX' }>
+  | Extract<Filter2DOptions, { name: 'shift2DY' }>;
+
+export default function ShiftOptionsPanel(
+  props: BaseFilterOptionsPanelProps<ShiftFilterPanelOptions>,
+) {
   const { filter, enableEdit = true, onCancel, onConfirm } = props;
 
   const dispatch = useDispatch();

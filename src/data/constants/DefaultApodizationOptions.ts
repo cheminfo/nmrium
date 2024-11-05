@@ -1,6 +1,4 @@
-import type { Apodization1DOptions } from 'nmr-processing';
-
-export const defaultApodizationOptions: Apodization1DOptions = {
+export const defaultApodizationOptions = {
   lorentzToGauss: {
     apply: true,
     shape: {

@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { Select } from '@blueprintjs/select';
 import { Filters2D } from 'nmr-processing';
+import type { Filter2D } from 'nmr-processing';
 import { FaRulerHorizontal, FaRulerVertical } from 'react-icons/fa';
 import { MdLooksTwo } from 'react-icons/md';
 import { Button, Toolbar } from 'react-science/ui';
@@ -32,7 +33,9 @@ export function SimplePhaseCorrectionTwoDimensionsPanel() {
     handleCancelFilter,
     handleToggleAddTraceToBothDirections,
     onChangeHandler,
-  } = usePhaseCorrectionTwoDimensions(filter);
+  } = usePhaseCorrectionTwoDimensions(
+    filter as Extract<Filter2D, { name: 'phaseCorrectionTwoDimensions' }>,
+  );
 
   return (
     <HeaderWrapper style={{ padding: '0 5px' }}>

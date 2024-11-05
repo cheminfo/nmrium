@@ -441,28 +441,28 @@ function beforeRollback(draft: Draft<State>, filterKey) {
       if (activeSpectrum) {
         const spectrum = current(draft).data[activeSpectrum.index];
 
-        const phaseCorrectionFilter = spectrum.filters.find(
-          (filter) => filter.name === Filters2D.phaseCorrectionTwoDimensions.id,
-        );
+        // const phaseCorrectionFilter = spectrum.filters.find(
+        //   (filter) => filter.name === Filters2D.phaseCorrectionTwoDimensions.id,
+        // );
 
         if (isSpectrum1D(spectrum)) {
-          const { value: filterOptions } = phaseCorrectionFilter || {};
+          // const { value: filterOptions } = phaseCorrectionFilter || {};
           let pivotObj = {
             value: 0,
             index: 0,
           };
-          if (typeof filterOptions?.pivot === 'number') {
-            const { pivot } = filterOptions;
-            const index = xFindClosestIndex(spectrum.data.re, pivot);
-            pivotObj = { value: pivot, index };
-          } else {
-            // look for the strongest peak to set it as a pivot
-            const peak = findStrongestPeak(spectrum.data);
-            if (peak) {
-              const { xValue, index } = peak;
-              pivotObj = { value: xValue, index };
-            }
+          // if (typeof filterOptions?.pivot === 'number') {
+          //   const { pivot } = filterOptions;
+          //   const index = xFindClosestIndex(spectrum.data.re, pivot);
+          //   pivotObj = { value: pivot, index };
+          // } else {
+          // look for the strongest peak to set it as a pivot
+          const peak = findStrongestPeak(spectrum.data);
+          if (peak) {
+            const { xValue, index } = peak;
+            pivotObj = { value: xValue, index };
           }
+          // }
 
           draft.toolOptions.data.pivot = pivotObj;
         }
@@ -552,7 +552,8 @@ function afterRollback(draft: Draft<State>, filterKey) {
 
   switch (filterKey) {
     case apodization.id: {
-      draft.toolOptions.data.apodizationOptions = defaultApodizationOptions;
+      draft.toolOptions.data.apodizationOptions =
+        defaultApodizationOptions as Apodization1DOptions;
       break;
     }
     default:
@@ -602,7 +603,8 @@ function disableLivePreview(draft: Draft<State>, id: string) {
   // reset default options
   switch (id) {
     case apodization.id: {
-      draft.toolOptions.data.apodizationOptions = defaultApodizationOptions;
+      draft.toolOptions.data.apodizationOptions =
+        defaultApodizationOptions as Apodization1DOptions;
       break;
     }
     default:

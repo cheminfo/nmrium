@@ -1,10 +1,12 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import type { Filter1DOptions } from 'nmr-processing';
+import type {
+  Filter1DOptions,
+  Apodization1DOptions as BaseApodizationOptions,
+} from 'nmr-processing';
 import { useCallback, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
-import type { Apodization1DOptions as BaseApodizationOptions } from 'nmr-processing';
 import { defaultApodizationOptions } from '../../../../../data/constants/DefaultApodizationOptions.js';
 import { useDispatch } from '../../../../context/DispatchContext.js';
 import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsContext.js';
@@ -14,12 +16,13 @@ const simpleValidationSchema = Yup.object().shape({
   livePreview: Yup.boolean().required(),
 });
 
-export type ApodizationOptions = BaseApodizationOptions & {
+export interface ApodizationOptions {
   livePreview: boolean;
-};
+  options: BaseApodizationOptions;
+}
 
 const initialValues: ApodizationOptions = {
-  ...defaultApodizationOptions,
+  options: defaultApodizationOptions as BaseApodizationOptions,
   livePreview: true,
 };
 
@@ -61,7 +64,7 @@ export const useSharedApodization = (
 
   const onChange = useCallback(
     (values: ApodizationOptions) => {
-      const { livePreview, ...options } = values;
+      const { livePreview, options } = values;
 
       if (livePreview || previousPreviewRef.current !== livePreview) {
         dispatch({
@@ -78,7 +81,7 @@ export const useSharedApodization = (
       values: ApodizationOptions,
       triggerSource: 'apply' | 'onChange' = 'apply',
     ) => {
-      const { livePreview, ...options } = values;
+      const { livePreview, options } = values;
       switch (triggerSource) {
         case 'onChange': {
           onChange(values);

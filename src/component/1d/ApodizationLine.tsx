@@ -1,4 +1,4 @@
-import { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from 'nmr-load-save';
 import { Filters1D, createApodizationWindowData } from 'nmr-processing';
 
 import { defaultApodizationOptions } from '../../data/constants/DefaultApodizationOptions.js';
@@ -47,8 +47,10 @@ function ApodizationLine() {
     const pathBuilder = new PathBuilder();
     const { re, x } = spectrum.data;
 
-    const { lineBroadening, gaussBroadening, lineBroadeningCenter } =
-      apodizationOptions || defaultApodizationOptions;
+    const { lineBroadening, gaussBroadening, lineBroadeningCenter } = {
+      ...apodizationOptions.lorentzToGauss?.shape.options,
+      ...defaultApodizationOptions.lorentzToGauss.shape.options,
+    };
 
     const length = re.length;
     const dw = (x[length - 1] - x[0]) / (length - 1);

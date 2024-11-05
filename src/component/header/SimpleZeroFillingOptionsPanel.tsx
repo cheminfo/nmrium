@@ -1,5 +1,6 @@
 import { Checkbox } from '@blueprintjs/core';
 import { Filters1D } from 'nmr-processing';
+import type { Filter1DOptions } from 'nmr-processing';
 
 import ActionButtons from '../elements/ActionButtons.js';
 import Label from '../elements/Label.js';
@@ -16,7 +17,10 @@ import { HeaderWrapper } from './HeaderWrapper.js';
 export function SimpleZeroFillingOptionsPanel() {
   const filter = useFilter(Filters1D.zeroFilling.id);
   const { control, submitHandler, register, handleCancelFilter } =
-    useZeroFilling(filter, { applyFilterOnload: true });
+    useZeroFilling(
+      filter as Extract<Filter1DOptions, { name: 'zeroFilling' }>,
+      { applyFilterOnload: true },
+    );
 
   const { onChange: onLivePreviewChange, ...otherLivePreviewRegisterOptions } =
     register('livePreview');

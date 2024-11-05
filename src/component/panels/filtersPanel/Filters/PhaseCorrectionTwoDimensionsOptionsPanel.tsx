@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { Select } from '@blueprintjs/select';
 import { Filters2D } from 'nmr-processing';
+import type { Filter1DOptions } from 'nmr-processing';
 import type { CSSProperties } from 'react';
 import { FaRulerHorizontal, FaRulerVertical } from 'react-icons/fa';
 import { MdLooksTwo } from 'react-icons/md';
@@ -46,7 +47,10 @@ export default function PhaseCorrectionTwoDimensionsOptionsPanel(
 ) {
   const { enableEdit = true, onCancel, onConfirm } = props;
 
-  const filter = useFilter(Filters2D.phaseCorrectionTwoDimensions.id);
+  const filter = useFilter(
+    Filters2D.phaseCorrectionTwoDimensions.id,
+  ) as Extract<Filter1DOptions, { name: 'phaseCorrectionTwoDimensions' }>;
+
   const {
     ph0Ref,
     ph1Ref,
