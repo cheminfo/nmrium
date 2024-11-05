@@ -1465,10 +1465,10 @@ function handleCalculateManualTwoDimensionPhaseCorrection(
 
   const filterOptions = getTwoDimensionsPhaseCorrectionOptions(draft);
 
-  const { data, info } = spectrum;
-  const _data = { data, info };
-  phaseCorrectionTwoDimensions.apply(_data, filterOptions);
-  draft.data[index].data = _data.data;
+  phaseCorrectionTwoDimensions.apply(
+    draft.data[index] as Spectrum2D,
+    filterOptions,
+  );
 }
 
 function getTwoDimensionsPhaseCorrectionOptions(draft: Draft<State>) {
