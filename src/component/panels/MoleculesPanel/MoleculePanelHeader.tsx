@@ -239,6 +239,7 @@ export default function MoleculePanelHeader({
               disabled={!hasMolecules}
               tooltip="Export As"
               icon={<FaFileExport />}
+              id="molecule-export-as"
             />
 
             <Toolbar.Item
