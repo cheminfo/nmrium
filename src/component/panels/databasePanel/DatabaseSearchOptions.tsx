@@ -3,19 +3,15 @@ import { FaICursor, FaRegTrashAlt } from 'react-icons/fa';
 import { IoSearchOutline } from 'react-icons/io5';
 import { TbBinaryTree } from 'react-icons/tb';
 import type { ToolbarItemProps } from 'react-science/ui';
-import { Toolbar } from 'react-science/ui';
+import { PanelHeader, Toolbar } from 'react-science/ui';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
-import { CounterLabel } from '../../elements/CounterLabel.js';
 import Input from '../../elements/Input.js';
-import { PreferencesButton } from '../../elements/PreferencesButton.js';
 import Select from '../../elements/Select.js';
 import { ToolBarButton } from '../../elements/ToolBarButton.js';
 import useToolsFunctions from '../../hooks/useToolsFunctions.js';
 import { options } from '../../toolbar/ToolTypes.js';
-import { formatCounterLabel } from '../header/DefaultPanelHeader.js';
-import PanelHeader from '../header/PanelHeader.js';
 
 import type {
   Databases,
@@ -31,7 +27,7 @@ interface DatabaseSearchOptionsProps {
   idCode?: string;
   total: number;
   onKeywordsChange: (k: Partial<DatabaseSearchKeywords>) => void;
-  onSettingClick: ToolbarItemProps['onClick'];
+  onSettingClick: () => void;
   onStructureClick: ToolbarItemProps['onClick'];
   onDatabaseChange: (databaseKey: string) => void;
   onRemoveAll: () => void;
@@ -85,51 +81,44 @@ export function DatabaseSearchOptions(props: DatabaseSearchOptionsProps) {
   }
 
   return (
-    <PanelHeader style={{ flexDirection: 'column', alignItems: 'normal' }}>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          paddingBottom: '2px',
-        }}
+    <>
+      <PanelHeader
+        onClickSettings={() => onSettingClick()}
+        current={total || 0}
+        total={result.data.length}
       >
-        <ToolBarButton
-          tooltip={`${showSimilarityTree ? 'Hide' : 'Show'} similarity tree`}
-          icon={<TbBinaryTree />}
-          active={showSimilarityTree}
-          onClick={handleShowSimilarityTree}
-        />
-
-        <Select
-          style={{ flex: 6, marginLeft: '5px' }}
-          items={databases}
-          itemTextField="label"
-          itemValueField="key"
-          onChange={onDatabaseChange}
-          placeholder="Select database"
-          defaultValue={defaultDatabase}
-        />
-        <Select
-          style={{ flex: 4, margin: '0px 5px' }}
-          items={result.solvents}
-          placeholder="Solvent"
-          onChange={handleSearch}
-          value={keywords.solvent}
-        />
         <div
           style={{
             display: 'flex',
-            alignItems: 'center',
-            flex: 2,
-            justifyContent: 'flex-end',
+            justifyContent: 'space-between',
+            paddingBottom: '2px',
           }}
         >
-          <CounterLabel
-            value={formatCounterLabel(total || 0, result.data.length)}
+          <ToolBarButton
+            tooltip={`${showSimilarityTree ? 'Hide' : 'Show'} similarity tree`}
+            icon={<TbBinaryTree />}
+            active={showSimilarityTree}
+            onClick={handleShowSimilarityTree}
           />
-          <PreferencesButton tooltip="Preferences" onClick={onSettingClick} />
+
+          <Select
+            style={{ flex: 6, marginLeft: '5px' }}
+            items={databases}
+            itemTextField="label"
+            itemValueField="key"
+            onChange={onDatabaseChange}
+            placeholder="Select database"
+            defaultValue={defaultDatabase}
+          />
+          <Select
+            style={{ flex: 4, margin: '0px 5px' }}
+            items={result.solvents}
+            placeholder="Solvent"
+            onChange={handleSearch}
+            value={keywords.solvent}
+          />
         </div>
-      </div>
+      </PanelHeader>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <ToolBarButton
           tooltip="Filter by select ranges"
@@ -167,6 +156,6 @@ export function DatabaseSearchOptions(props: DatabaseSearchOptionsProps) {
           />
         </Toolbar>
       </div>
-    </PanelHeader>
+    </>
   );
 }
