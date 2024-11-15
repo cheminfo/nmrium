@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 import { v4 } from '@lukeed/uuid';
 import type { CustomWorkspaces, Database } from 'nmr-load-save';
 import { useCallback, useMemo } from 'react';
-import { Controller, useFormContext, useWatch } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 import { FaLink, FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
 
@@ -34,10 +34,11 @@ function DatabasesTabContent({
   currentWorkspace,
   originalWorkspaces,
 }: DatabasesTabContentProps) {
-  const { setValue, register, control } = useFormContext<WorkspaceWithSource>();
+  const { setValue, register, control, watch } =
+    useFormContext<WorkspaceWithSource>();
 
   const databases: Database[] =
-    useWatch<WorkspaceWithSource>({
+    watch({
       name: 'databases.data',
     }) || [];
 

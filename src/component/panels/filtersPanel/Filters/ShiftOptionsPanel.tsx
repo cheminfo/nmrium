@@ -1,7 +1,6 @@
-import { Filters1D, Filters2D } from 'nmr-processing';
-import type { Filter1DOptions, Filter2DOptions } from 'nmr-processing';
 import { useForm } from 'react-hook-form';
 
+import type { ExtractFilterEntry } from '../../../../data/types/common/ExtractFilterEntry.js';
 import { useDispatch } from '../../../context/DispatchContext.js';
 import Label from '../../../elements/Label.js';
 import { NumberInput2Controller } from '../../../elements/NumberInput2Controller.js';
@@ -14,13 +13,10 @@ import { HeaderContainer, StickyHeader } from './InnerFilterHeader.js';
 import type { BaseFilterOptionsPanelProps } from './index.js';
 import { formLabelStyle } from './index.js';
 
-const { shiftX } = Filters1D;
-const { shift2DX, shift2DY } = Filters2D;
-
 type ShiftFilterPanelOptions =
-  | Extract<Filter1DOptions, { name: 'shiftX' }>
-  | Extract<Filter2DOptions, { name: 'shift2DX' }>
-  | Extract<Filter2DOptions, { name: 'shift2DY' }>;
+  | ExtractFilterEntry<'shiftX'>
+  | ExtractFilterEntry<'shift2DX'>
+  | ExtractFilterEntry<'shift2DY'>;
 
 export default function ShiftOptionsPanel(
   props: BaseFilterOptionsPanelProps<ShiftFilterPanelOptions>,
@@ -43,7 +39,7 @@ export default function ShiftOptionsPanel(
   function handleApplyFilter(values) {
     const { shift } = values;
     switch (filter.name) {
-      case shiftX.id: {
+      case 'shiftX': {
         dispatch({
           type: 'SHIFT_SPECTRUM',
           payload: { shift },
@@ -51,7 +47,7 @@ export default function ShiftOptionsPanel(
         break;
       }
 
-      case shift2DX.id: {
+      case 'shift2DX': {
         dispatch({
           type: 'SHIFT_SPECTRUM',
           payload: { shiftX: shift },
@@ -59,7 +55,7 @@ export default function ShiftOptionsPanel(
         break;
       }
 
-      case shift2DY.id: {
+      case 'shift2DY': {
         dispatch({
           type: 'SHIFT_SPECTRUM',
           payload: { shiftY: shift },

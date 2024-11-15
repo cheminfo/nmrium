@@ -129,73 +129,56 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
     filters: {
       '1H': [
         {
-          name: Filters1D.digitalFilter.id,
-          label: Filters1D.digitalFilter.name,
+          name: Filters1D.digitalFilter.name,
           value: {},
-          flag: true,
+          enabled: true,
         },
         {
-          name: Filters1D.apodization.id,
-          label: Filters1D.apodization.name,
+          name: Filters1D.apodization.name,
           value: {},
-          flag: false,
+          enabled: false,
         },
         {
-          name: Filters1D.zeroFilling.id,
-          label: Filters1D.zeroFilling.name,
-
+          name: Filters1D.zeroFilling.name,
           value: {},
-          flag: true,
+          enabled: true,
         },
         {
-          name: Filters1D.fft.id,
-          label: Filters1D.fft.name,
-
+          name: Filters1D.fft.name,
           value: {},
-          flag: true,
+          enabled: true,
         },
         {
-          name: Filters1D.phaseCorrection.id,
-          label: Filters1D.phaseCorrection.name,
-
+          name: Filters1D.phaseCorrection.name,
           value: {},
-          flag: true,
+          enabled: true,
         },
       ],
       '13C': [
         {
-          name: Filters1D.digitalFilter.id,
-          label: Filters1D.digitalFilter.name,
-
+          name: Filters1D.digitalFilter.name,
           value: {},
-          flag: true,
+          enabled: true,
         },
         {
-          name: Filters1D.apodization.id,
-          label: Filters1D.apodization.name,
+          name: Filters1D.apodization.name,
           value: {},
-          flag: true,
+          enabled: true,
         },
         {
-          name: Filters1D.zeroFilling.id,
-          label: Filters1D.zeroFilling.name,
-
+          name: Filters1D.zeroFilling.name,
           value: {},
-          flag: true,
+          enabled: true,
         },
         {
-          name: Filters1D.fft.id,
-          label: Filters1D.fft.name,
-
+          name: Filters1D.fft.name,
           value: {},
-          flag: true,
+          enabled: true,
         },
         {
-          name: Filters1D.phaseCorrection.id,
-          label: Filters1D.phaseCorrection.name,
-
+          name: Filters1D.phaseCorrection.name,
           value: {},
-          flag: true,
+          enabled: true,
         },
       ],
     },

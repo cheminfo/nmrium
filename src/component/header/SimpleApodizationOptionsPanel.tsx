@@ -1,7 +1,7 @@
 import { Checkbox } from '@blueprintjs/core';
-import { Filters1D } from 'nmr-processing';
 import { memo } from 'react';
 
+import type { ExtractFilterEntry } from '../../data/types/common/ExtractFilterEntry.js';
 import ActionButtons from '../elements/ActionButtons.js';
 import Label from '../elements/Label.js';
 import { NumberInput2Controller } from '../elements/NumberInput2Controller.js';
@@ -11,9 +11,8 @@ import { useSharedApodization } from '../panels/filtersPanel/Filters/hooks/useSh
 import { headerLabelStyle } from './Header.js';
 import { HeaderWrapper } from './HeaderWrapper.js';
 
-import type { Filter1D } from 'nmr-processing';
 interface ApodizationOptionsInnerPanelProps {
-  filter: Extract<Filter1D, { name: 'apodization' }> | null;
+  filter: ExtractFilterEntry<'apodization'> | null;
 }
 
 function ApodizationOptionsInnerPanel(
@@ -37,7 +36,7 @@ function ApodizationOptionsInnerPanel(
       <Label title="Line broadening:" shortTitle="LB:" style={headerLabelStyle}>
         <NumberInput2Controller
           control={control}
-          name="lineBroadening"
+          name="options.gaussian.options.lineBroadening"
           debounceTime={250}
           stepSize={0.1}
           style={{ width: '60px' }}
@@ -70,9 +69,6 @@ function ApodizationOptionsInnerPanel(
 const MemoizedApodizationPanel = memo(ApodizationOptionsInnerPanel);
 
 export function SimpleApodizationOptionsPanel() {
-  const filter = useFilter(Filters1D.apodization.id) as Extract<
-    Filter1D,
-    { name: 'apodization' }
-  >;
+  const filter = useFilter('apodization');
   return <MemoizedApodizationPanel filter={filter} />;
 }

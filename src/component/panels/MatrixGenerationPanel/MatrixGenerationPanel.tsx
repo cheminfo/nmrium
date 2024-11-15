@@ -83,7 +83,7 @@ export function useHasSignalProcessingFilter() {
 
   for (const spectrum of spectra) {
     for (const filter of spectrum.filters || []) {
-      if (filter.name === signalProcessing.id) {
+      if (filter.name === signalProcessing.name) {
         return filter.value;
       }
     }
@@ -145,7 +145,7 @@ function InnerMatrixGenerationPanel() {
   function handleRemoveProcessing() {
     dispatch({
       type: 'DELETE_SPECTRA_FILTER',
-      payload: { filterName: signalProcessing.id },
+      payload: { filterName: signalProcessing.name },
     });
   }
 
@@ -342,9 +342,11 @@ function FooterActionsButtons(props: FooterActionsButtonsProps) {
         onClick={onClickApply}
         tooltipProps={{ disabled: true, content: '' }}
         disabled={
-          signalProcessingFilterData &&
-          JSON.stringify(signalProcessingFilterData) ===
-            JSON.stringify(matrixOptions)
+          !!(
+            signalProcessingFilterData &&
+            JSON.stringify(signalProcessingFilterData) ===
+              JSON.stringify(matrixOptions)
+          )
         }
       >
         {signalProcessingFilterData ? 'Update processing' : 'Apply processing'}

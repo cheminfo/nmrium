@@ -31,7 +31,7 @@ function ExclusionZoneAnnotation({
 }: ExclusionZoneProps) {
   const { scaleX, scaleY } = useScaleChecked();
   const type =
-    filterId === Filters1D.signalProcessing.id
+    filterId === Filters1D.signalProcessing.name
       ? HighlightEventSource.MATRIX_GENERATION_EXCLUSION_ZONE
       : HighlightEventSource.EXCLUSION_ZONE;
   const highlight = useHighlight([], {
@@ -50,7 +50,7 @@ function ExclusionZoneAnnotation({
         width={`${scaleX()(zone.from) - scaleX()(zone.to)}`}
         height="10px"
         style={{
-          fill: filterId === Filters1D.signalProcessing.id ? 'gray' : color,
+          fill: filterId === Filters1D.signalProcessing.name ? 'gray' : color,
           opacity,
         }}
         {...highlight.onHover}

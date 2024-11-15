@@ -2,6 +2,7 @@ import { Button } from '@blueprintjs/core';
 import { Select } from '@blueprintjs/select';
 import type { CSSProperties } from 'react';
 
+import type { ExtractFilterEntry } from '../../../../data/types/common/ExtractFilterEntry.js';
 import InputRange from '../../../elements/InputRange.js';
 import type { LabelStyle } from '../../../elements/Label.js';
 import Label from '../../../elements/Label.js';
@@ -15,7 +16,6 @@ import type { AlgorithmItem } from './hooks/usePhaseCorrection.js';
 import { algorithms, usePhaseCorrection } from './hooks/usePhaseCorrection.js';
 
 import type { BaseFilterOptionsPanelProps } from './index.js';
-import type { Filter1DOptions } from 'nmr-processing';
 
 const inputRangeStyle: CSSProperties = {
   padding: '5px 10px',
@@ -35,9 +35,7 @@ const formLabelStyle: LabelStyle = {
 };
 
 export default function PhaseCorrectionOptionsPanel(
-  props: BaseFilterOptionsPanelProps<
-    Extract<Filter1DOptions, { name: 'phaseCorrection' }>
-  >,
+  props: BaseFilterOptionsPanelProps<ExtractFilterEntry<'phaseCorrection'>>,
 ) {
   const { filter, enableEdit = true, onCancel, onConfirm } = props;
   const {

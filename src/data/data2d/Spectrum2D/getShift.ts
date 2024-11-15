@@ -10,11 +10,11 @@ export function getShift(spectrum: Spectrum2D): Shift2D {
   const shift = { x: 0, y: 0 };
   if (spectrum?.filters) {
     for (const filter of spectrum.filters) {
-      if (filter.name === Filters2D.shift2DX.id) {
-        shift.x = filter?.flag ? filter.value.shift : 0;
+      if (filter.name === Filters2D.shift2DX.name) {
+        shift.x = filter?.enabled ? filter.value.shift : 0;
       }
-      if (filter.name === Filters2D.shift2DY.id) {
-        shift.y = filter?.flag ? filter.value.shift : 0;
+      if (filter.name === Filters2D.shift2DY.name) {
+        shift.y = filter?.enabled ? filter.value.shift : 0;
       }
     }
   }

@@ -12,7 +12,7 @@ import type {
   Spectrum2D,
 } from 'nmr-load-save';
 import type { NMRRange } from 'nmr-processing';
-import { Filters1D, Filters1DManager } from 'nmr-processing';
+import { Filters1DManager } from 'nmr-processing';
 
 import {
   get1DColor,
@@ -549,7 +549,7 @@ function handleAlignSpectraHandler(
         const shift = getReferenceShift(datum, { ...action.payload });
         Filters1DManager.applyFilters(datum as Spectrum1D, [
           {
-            name: Filters1D.shiftX.id,
+            name: 'shiftX',
             value: { shift },
           },
         ]);

@@ -39,7 +39,7 @@ function ApodizationLine() {
   const xyReduce = useXYReduce(XYReducerDomainAxis.XAxis);
   const scaleY = useWindowYScale();
 
-  if (!activeSpectrum?.id || selectedTool !== Filters1D.apodization.id) {
+  if (!activeSpectrum?.id || selectedTool !== Filters1D.apodization.name) {
     return null;
   }
 
@@ -47,27 +47,23 @@ function ApodizationLine() {
     const pathBuilder = new PathBuilder();
     const { re, x } = spectrum.data;
 
-    const { lineBroadening, gaussBroadening, lineBroadeningCenter } = {
-      ...apodizationOptions.lorentzToGauss?.shape.options,
-      ...defaultApodizationOptions.lorentzToGauss.shape.options,
+    const { lineBroadening, lineBroadeningCenter } = {
+      ...apodizationOptions.gaussian?.options,
+      ...defaultApodizationOptions?.gaussian?.options,
     };
 
     const length = re.length;
     const dw = (x[length - 1] - x[0]) / (length - 1);
+
     const y = createApodizationWindowData({
       length,
       shapes: {
-        lorentzToGauss: {
-          shape: {
-            kind: 'lorentzToGauss',
-            options: {
-              length,
-              dw,
-              lineBroadening:
-                gaussBroadening > 0 ? lineBroadening : -lineBroadening,
-              gaussBroadening,
-              lineBroadeningCenter,
-            },
+        gaussian: {
+          options: {
+            length,
+            dw,
+            lineBroadening,
+            lineBroadeningCenter,
           },
         },
       },

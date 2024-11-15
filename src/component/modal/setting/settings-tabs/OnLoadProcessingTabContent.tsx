@@ -1,6 +1,8 @@
 import { Checkbox, Tab, Tabs } from '@blueprintjs/core';
-import type { WorkspacePreferences } from 'nmr-load-save';
-import type { Filter1D, Filter2D } from 'nmr-processing';
+import type {
+  WorkspacePreferences,
+  AutoProcessingFilterEntry,
+} from 'nmr-load-save';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import IsotopesViewer from '../../../elements/IsotopesViewer.js';
@@ -10,11 +12,10 @@ import type { CustomColumn } from '../../../elements/ReactTable/utility/addCusto
 import type { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
 
 function OnLoadProcessingTabContent() {
-  const { register, control } = useFormContext<WorkspacePreferences>();
+  const { register, control, watch } = useFormContext<WorkspacePreferences>();
 
   const isExperimentalFeatures =
-    useWatch({
-      control,
+    watch({
       name: 'display.general.experimentalFeatures.display',
     }) || false;
   return (
@@ -63,7 +64,7 @@ function AutoProcessingFilters() {
 function FiltersTable({ data, nucleus }) {
   const { register } = useFormContext();
 
-  const COLUMNS: Array<CustomColumn<Filter1D | Filter2D>> = [
+  const COLUMNS: Array<CustomColumn<AutoProcessingFilterEntry>> = [
     {
       index: 1,
       Header: '#',
@@ -81,7 +82,9 @@ function FiltersTable({ data, nucleus }) {
       Cell: ({ row }) => (
         <Checkbox
           style={{ margin: 0 }}
-          {...register(`onLoadProcessing.filters.${nucleus}.${row.index}.flag`)}
+          {...register(
+            `onLoadProcessing.filters.${nucleus}.${row.index}.enabled`,
+          )}
           defaultChecked={false}
         />
       ),

@@ -1,13 +1,11 @@
-export const defaultApodizationOptions = {
-  lorentzToGauss: {
+import type { Apodization1DOptions } from 'nmr-processing';
+
+export const defaultApodizationOptions: Apodization1DOptions = {
+  gaussian: {
     apply: true,
-    shape: {
-      kind: 'lorentzToGauss',
-      options: {
-        lineBroadening: 1,
-        gaussBroadening: 0,
-        lineBroadeningCenter: 0,
-      },
+    options: {
+      lineBroadening: 0,
+      lineBroadeningCenter: 1,
     },
   },
 };

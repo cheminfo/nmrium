@@ -140,8 +140,8 @@ export const options: RecordOptions = {
     isToggle: true,
   },
   apodization: {
-    id: Filters1D.apodization.id,
-    label: Filters1D.apodization.name,
+    id: Filters1D.apodization.name,
+    label: Filters1D.apodization.label,
     hasOptionPanel: true,
     isFilter: true,
     mode: '1D',
@@ -157,8 +157,8 @@ export const options: RecordOptions = {
     isToggle: true,
   },
   zeroFilling: {
-    id: Filters1D.zeroFilling.id,
-    label: Filters1D.zeroFilling.name,
+    id: Filters1D.zeroFilling.name,
+    label: Filters1D.zeroFilling.label,
     hasOptionPanel: true,
     isFilter: true,
     mode: '1D',
@@ -174,8 +174,8 @@ export const options: RecordOptions = {
     isToggle: true,
   },
   phaseCorrection: {
-    id: Filters1D.phaseCorrection.id,
-    label: Filters1D.phaseCorrection.name,
+    id: Filters1D.phaseCorrection.name,
+    label: Filters1D.phaseCorrection.label,
     hasOptionPanel: true,
     isFilter: true,
     mode: '1D',
@@ -191,8 +191,8 @@ export const options: RecordOptions = {
     isToggle: true,
   },
   baselineCorrection: {
-    id: Filters1D.baselineCorrection.id,
-    label: Filters1D.baselineCorrection.name,
+    id: Filters1D.baselineCorrection.name,
+    label: Filters1D.baselineCorrection.label,
     hasOptionPanel: true,
     isFilter: true,
     mode: '1D',

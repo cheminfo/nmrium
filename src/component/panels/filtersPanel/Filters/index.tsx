@@ -1,6 +1,4 @@
-import { ButtonProps } from '@blueprintjs/core';
-
-import type { Filter1DOptions, Filter2DOptions } from 'nmr-processing';
+import type { ButtonProps } from '@blueprintjs/core';
 import { Filters1D, Filters2D } from 'nmr-processing';
 
 import type { LabelStyle } from '../../../elements/Label.js';
@@ -25,20 +23,18 @@ const {
 const { shift2DX, shift2DY, phaseCorrectionTwoDimensions } = Filters2D;
 
 export const filterOptionPanels = {
-  [apodization.id]: ApodizationOptionsPanel,
-  [phaseCorrection.id]: PhaseCorrectionOptionsPanel,
-  [zeroFilling.id]: ZeroFillingOptionsPanel,
-  [phaseCorrectionTwoDimensions.id]: PhaseCorrectionTwoDimensionsOptionsPanel,
-  [baselineCorrection.id]: BaseLineCorrectionOptionsPanel,
-  [shiftX.id]: ShiftOptionsPanel,
-  [shift2DX.id]: ShiftOptionsPanel,
-  [shift2DY.id]: ShiftOptionsPanel,
-  [exclusionZones.id]: ExclusionZonesOptionsPanel,
+  [apodization.name]: ApodizationOptionsPanel,
+  [phaseCorrection.name]: PhaseCorrectionOptionsPanel,
+  [zeroFilling.name]: ZeroFillingOptionsPanel,
+  [phaseCorrectionTwoDimensions.name]: PhaseCorrectionTwoDimensionsOptionsPanel,
+  [baselineCorrection.name]: BaseLineCorrectionOptionsPanel,
+  [shiftX.name]: ShiftOptionsPanel,
+  [shift2DX.name]: ShiftOptionsPanel,
+  [shift2DY.name]: ShiftOptionsPanel,
+  [exclusionZones.name]: ExclusionZonesOptionsPanel,
 };
 
-export interface BaseFilterOptionsPanelProps<
-  T = Filter1DOptions | Filter2DOptions,
-> {
+export interface BaseFilterOptionsPanelProps<T> {
   filter: T;
   enableEdit: boolean;
   onConfirm: ButtonProps['onClick'];

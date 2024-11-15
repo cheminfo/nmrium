@@ -1,13 +1,11 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import type {
-  BaselineCorrectionOptions,
-  Filter1DOptions,
-} from 'nmr-processing';
+import type { BaselineCorrectionOptions } from 'nmr-processing';
 import { useCallback, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelect } from 'react-science/ui';
 import * as Yup from 'yup';
 
+import type { ExtractFilterEntry } from '../../../../../data/types/common/ExtractFilterEntry.js';
 import { useDispatch } from '../../../../context/DispatchContext.js';
 import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsContext.js';
 
@@ -38,9 +36,9 @@ function findAlgorithmItem(algorithmName: string) {
 
 export function getBaselineData(
   algorithm,
-  filterValues: BaselineCorrectionOptions,
+  filterValues?: BaselineCorrectionOptions | null,
 ) {
-  const { algorithm: baseAlgorithm, ...other } = filterValues;
+  const { algorithm: baseAlgorithm, ...other } = filterValues || {};
   switch (algorithm) {
     case 'airpls': {
       const validation = Yup.object().shape({
@@ -91,7 +89,7 @@ export function getBaselineData(
 }
 
 export function useBaselineCorrection(
-  filter: Extract<Filter1DOptions, { name: 'baselineCorrection' }>,
+  filter: ExtractFilterEntry<'baselineCorrection'> | null,
 ) {
   const dispatch = useDispatch();
   const previousPreviewRef = useRef<boolean>(true);

@@ -1,17 +1,13 @@
 import { Switch } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { v4 } from '@lukeed/uuid';
-import {
-  Filters1D,
-  Filters2D,
-  type Filter1D,
-  type Filter2D,
-} from 'nmr-processing';
+import { Filters1D, Filters2D } from 'nmr-processing';
 import { memo, useEffect, useRef, useState } from 'react';
 import { FaRegEyeSlash, FaRegTrashAlt } from 'react-icons/fa';
 import { ObjectInspector } from 'react-inspector';
 import { Button } from 'react-science/ui';
 
+import type { FilterEntry } from '../../../../data/types/common/FilterEntry.js';
 import { useChartData } from '../../../context/ChartContext.js';
 import { useDispatch } from '../../../context/DispatchContext.js';
 import { useToaster } from '../../../context/ToasterContext.js';
@@ -23,19 +19,22 @@ import useSpectrum from '../../../hooks/useSpectrum.js';
 
 import { filterOptionPanels } from './index.js';
 
+const nonRemovableFilters = new Set<FilterEntry['name']>([
+  'digitalFilter',
+  'digitalFilter2D',
+]);
+
 const IconButton = styled(Button)`
   padding: 2px;
   font-size: 16px;
 `;
-
-type FiltersProps = Filter1D | Filter2D;
 
 const Filters = {
   ...Filters1D,
   ...Filters2D,
 };
 interface FilterElementsProps {
-  filter: Filter1D | Filter2D;
+  filter: FilterEntry;
   spectraCounter: number;
   onEnableChange: () => void;
   onFilterRestore: () => void;
@@ -55,7 +54,8 @@ function FilterElements(props: FilterElementsProps) {
     onFilterRestore,
     hideFilterRestoreButton = false,
   } = props;
-  const { id, name, flag, label, isDeleteAllow } = filter;
+  const { id, name, enabled } = filter;
+  const label = getFilterLabel(name);
 
   function handleFilterCheck(id, event: React.ChangeEvent<HTMLInputElement>) {
     const enabled = event.target.checked;
@@ -134,7 +134,7 @@ function FilterElements(props: FilterElementsProps) {
         onClick={() => {
           handleDeleteFilter();
         }}
-        disabled={!isDeleteAllow}
+        disabled={nonRemovableFilters.has(name)}
       >
         <FaRegTrashAlt />
       </IconButton>
@@ -143,7 +143,7 @@ function FilterElements(props: FilterElementsProps) {
         style={{ margin: 0, marginLeft: '5px' }}
         innerLabelChecked="On"
         innerLabel="Off"
-        checked={flag || false}
+        checked={enabled || false}
         onChange={(event) => {
           handleFilterCheck(id, event);
         }}
@@ -153,7 +153,7 @@ function FilterElements(props: FilterElementsProps) {
 }
 
 interface FiltersInnerProps {
-  filters: FiltersProps[];
+  filters: FilterEntry[];
   spectraCounter: number;
   activeFilterID: string | null;
 }
@@ -163,7 +163,7 @@ function FiltersInner(props: FiltersInnerProps) {
   const {
     toolOptions: { selectedTool },
   } = useChartData();
-  const [newFilter, setNewFilter] = useState<Filter1D | Filter2D | null>();
+  const [newFilter, setNewFilter] = useState<FilterEntry | null>();
 
   const [selectedSection, openSection] = useState('');
   const dispatch = useDispatch();
@@ -212,14 +212,12 @@ function FiltersInner(props: FiltersInnerProps) {
     );
 
     if (!isFilterExists && Filters?.[selectedTool]) {
-      const { id: name, name: label } = Filters[selectedTool];
+      const { id: name } = Filters[selectedTool];
       setNewFilter({
-        flag: true,
+        enabled: true,
         id: v4(),
         name,
-        label,
         value: {},
-        isDeleteAllow: true,
       });
     } else {
       setNewFilter((previousNewFilter) => {
@@ -252,13 +250,13 @@ function FiltersInner(props: FiltersInnerProps) {
   return (
     <Sections overflow renderActiveSectionContentOnly>
       {filtersList.map((filter, index) => {
-        const { id, name, label, error, value } = filter;
+        const { id, name, error, value } = filter;
         const FilterOptionsPanel = filterOptionPanels[filter.name];
         return (
           <Sections.Item
             key={id}
             id={name}
-            title={label}
+            title={getFilterLabel(name)}
             serial={index + 1}
             onClick={(id) => {
               toggleSection(id);
@@ -341,4 +339,14 @@ export function EmptyFilters() {
       </span>
     </EmptyContainer>
   );
+}
+
+function getFilterLabel(name: FilterEntry['name']): string {
+  if (name in Filters1D) {
+    return Filters1D[name].label;
+  }
+  if (name in Filters2D) {
+    return Filters2D[name].label;
+  }
+  return '';
 }

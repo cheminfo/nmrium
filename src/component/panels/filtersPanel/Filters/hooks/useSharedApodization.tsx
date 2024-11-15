@@ -1,18 +1,24 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import type {
-  Filter1DOptions,
-  Apodization1DOptions as BaseApodizationOptions,
-} from 'nmr-processing';
+import type { Apodization1DOptions as BaseApodizationOptions } from 'nmr-processing';
 import { useCallback, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
 import { defaultApodizationOptions } from '../../../../../data/constants/DefaultApodizationOptions.js';
+import type { ExtractFilterEntry } from '../../../../../data/types/common/ExtractFilterEntry.js';
 import { useDispatch } from '../../../../context/DispatchContext.js';
 import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsContext.js';
 
 const simpleValidationSchema = Yup.object().shape({
-  lineBroadening: Yup.number().required(),
+  options: Yup.object().shape({
+    gaussian: Yup.object()
+      .shape({
+        options: Yup.object().shape({
+          lineBroadening: Yup.number().required(),
+        }),
+      })
+      .notRequired(),
+  }),
   livePreview: Yup.boolean().required(),
 });
 
@@ -22,7 +28,7 @@ export interface ApodizationOptions {
 }
 
 const initialValues: ApodizationOptions = {
-  options: defaultApodizationOptions as BaseApodizationOptions,
+  options: defaultApodizationOptions,
   livePreview: true,
 };
 
@@ -32,7 +38,7 @@ interface UseSharedApodizationOptions {
 }
 
 export const useSharedApodization = (
-  filter: Extract<Filter1DOptions, { name: 'apodization' }> | null,
+  filter: ExtractFilterEntry<'apodization'> | null,
   options: UseSharedApodizationOptions,
 ) => {
   const {
@@ -44,8 +50,9 @@ export const useSharedApodization = (
   const previousPreviewRef = useRef<boolean>(true);
 
   let formData = initialValues;
+
   if (filter) {
-    formData = { ...initialValues, ...filter.value, livePreview: true };
+    formData = { ...initialValues, options: filter.value, livePreview: true };
   }
 
   const { handleSubmit, register, control, reset, getValues, formState } =
@@ -65,7 +72,6 @@ export const useSharedApodization = (
   const onChange = useCallback(
     (values: ApodizationOptions) => {
       const { livePreview, options } = values;
-
       if (livePreview || previousPreviewRef.current !== livePreview) {
         dispatch({
           type: 'CALCULATE_APODIZATION_FILTER',

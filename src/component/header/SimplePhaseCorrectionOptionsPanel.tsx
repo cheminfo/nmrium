@@ -1,6 +1,4 @@
 import { Select } from '@blueprintjs/select';
-import { Filters1D } from 'nmr-processing';
-import type { Filter1DOptions } from 'nmr-processing';
 import { Button } from 'react-science/ui';
 
 import ActionButtons from '../elements/ActionButtons.js';
@@ -15,7 +13,7 @@ import {
 import { HeaderWrapper } from './HeaderWrapper.js';
 
 export function SimplePhaseCorrectionOptionsPanel() {
-  const filter = useFilter(Filters1D.phaseCorrection.id);
+  const filter = useFilter('phaseCorrection');
 
   const {
     handleApplyFilter,
@@ -25,9 +23,7 @@ export function SimplePhaseCorrectionOptionsPanel() {
     phaseCorrectionTypeItem,
     ph0Ref,
     ph1Ref,
-  } = usePhaseCorrection(
-    filter as Extract<Filter1DOptions, { name: 'phaseCorrection' }> | null,
-  );
+  } = usePhaseCorrection(filter);
 
   return (
     <HeaderWrapper>

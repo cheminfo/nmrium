@@ -1,6 +1,7 @@
 import { Switch } from '@blueprintjs/core';
 import * as Yup from 'yup';
 
+import type { ExtractFilterEntry } from '../../../../data/types/common/ExtractFilterEntry.js';
 import Label from '../../../elements/Label.js';
 import { NumberInput2Controller } from '../../../elements/NumberInput2Controller.js';
 import { ReadOnly } from '../../../elements/ReadOnly.js';
@@ -12,19 +13,23 @@ import { useSharedApodization } from './hooks/useSharedApodization.js';
 
 import type { BaseFilterOptionsPanelProps } from './index.js';
 import { formLabelStyle } from './index.js';
-import type { Filter1DOptions } from 'nmr-processing';
 
 const advanceValidationSchema = Yup.object().shape({
-  lineBroadening: Yup.number().required(),
-  gaussBroadening: Yup.number().required(),
-  lineBroadeningCenter: Yup.number().required().min(0).max(1),
+  options: Yup.object().shape({
+    gaussian: Yup.object()
+      .shape({
+        options: Yup.object().shape({
+          lineBroadening: Yup.number().required(),
+          lineBroadeningCenter: Yup.number().required().min(0).max(1),
+        }),
+      })
+      .notRequired(),
+  }),
   livePreview: Yup.boolean().required(),
 });
 
 export default function ApodizationOptionsPanel(
-  props: BaseFilterOptionsPanelProps<
-    Extract<Filter1DOptions, { name: 'apodization' }>
-  >,
+  props: BaseFilterOptionsPanelProps<ExtractFilterEntry<'apodization'>>,
 ) {
   const { filter, enableEdit = true, onCancel, onConfirm } = props;
   const {
@@ -88,23 +93,7 @@ export default function ApodizationOptionsPanel(
           >
             <NumberInput2Controller
               control={control}
-              name="lineBroadening"
-              debounceTime={250}
-              stepSize={0.1}
-              onValueChange={() => {
-                submitHandler();
-              }}
-            />
-          </Label>
-
-          <Label
-            title="Gauss broadening:"
-            shortTitle="GB:"
-            style={formLabelStyle}
-          >
-            <NumberInput2Controller
-              control={control}
-              name="gaussBroadening"
+              name="options.gaussian.options.lineBroadening"
               debounceTime={250}
               stepSize={0.1}
               onValueChange={() => {
@@ -119,7 +108,7 @@ export default function ApodizationOptionsPanel(
           >
             <NumberInput2Controller
               control={control}
-              name="lineBroadeningCenter"
+              name="options.gaussian.options.lineBroadeningCenter"
               debounceTime={250}
               min={0}
               max={1}

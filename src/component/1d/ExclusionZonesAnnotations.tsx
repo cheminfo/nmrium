@@ -76,11 +76,14 @@ function getExclusionZones(
 ): Array<{ id: string; zones: ExclusionZone[] }> {
   const zones: Array<{ id: string; zones: ExclusionZone[] }> = [];
   for (const filter of data.filters) {
-    if (filter.name === Filters1D.exclusionZones.id && filter.flag) {
-      zones.push({ id: Filters1D.exclusionZones.id, zones: filter.value });
-    } else if (filter.name === Filters1D.signalProcessing.id && filter.flag) {
+    if (filter.name === Filters1D.exclusionZones.name && filter.enabled) {
+      zones.push({ id: Filters1D.exclusionZones.name, zones: filter.value });
+    } else if (
+      filter.name === Filters1D.signalProcessing.name &&
+      filter.enabled
+    ) {
       zones.push({
-        id: Filters1D.signalProcessing.id,
+        id: Filters1D.signalProcessing.name,
         zones: filter.value.exclusionsZones,
       });
     }

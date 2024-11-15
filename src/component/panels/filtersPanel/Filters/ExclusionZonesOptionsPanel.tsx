@@ -6,6 +6,7 @@ import { FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
 import * as Yup from 'yup';
 
+import type { ExtractFilterEntry } from '../../../../data/types/common/ExtractFilterEntry.js';
 import type { ExclusionZone } from '../../../../data/types/data1d/ExclusionZone.js';
 import { useChartData } from '../../../context/ChartContext.js';
 import { useDispatch } from '../../../context/DispatchContext.js';
@@ -34,7 +35,7 @@ const validationSchema = (min: number, max: number) =>
   });
 
 export default function ExclusionZonesOptionsPanel(
-  props: BaseFilterOptionsPanelProps,
+  props: BaseFilterOptionsPanelProps<ExtractFilterEntry<'exclusionZones'>>,
 ) {
   const { filter, enableEdit = true, onCancel, onConfirm } = props;
   const dispatch = useDispatch();
