@@ -1,7 +1,10 @@
 import type { Spectrum1D } from 'nmr-load-save';
-import { Filters1D, createApodizationWindowData } from 'nmr-processing';
+import {
+  Filters1D,
+  createApodizationWindowData,
+  default1DApodization,
+} from 'nmr-processing';
 
-import { defaultApodizationOptions } from '../../data/constants/DefaultApodizationOptions.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useScaleChecked } from '../context/ScaleContext.js';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
@@ -26,11 +29,11 @@ function useWindowYScale() {
   });
 }
 
-function ApodizationLine() {
+export function ApodizationLine() {
   const {
     toolOptions: {
       selectedTool,
-      data: { apodizationOptions },
+      data: { apodizationOptions: externalApodizationOptions },
     },
   } = useChartData();
   const activeSpectrum = useActiveSpectrum();
@@ -47,26 +50,19 @@ function ApodizationLine() {
     const pathBuilder = new PathBuilder();
     const { re, x } = spectrum.data;
 
-    const { lineBroadening, lineBroadeningCenter } = {
-      ...apodizationOptions.gaussian?.options,
-      ...defaultApodizationOptions?.gaussian?.options,
-    };
-
+    const apodizationOptions = structuredClone({
+      ...default1DApodization,
+      ...externalApodizationOptions,
+    });
     const length = re.length;
     const dw = (x[length - 1] - x[0]) / (length - 1);
 
+    updateApodizationOptions(apodizationOptions.gaussian, dw);
+    updateApodizationOptions(apodizationOptions.exponential, dw);
+
     const y = createApodizationWindowData({
       length,
-      shapes: {
-        gaussian: {
-          options: {
-            length,
-            dw,
-            lineBroadening,
-            lineBroadeningCenter,
-          },
-        },
-      },
+      shapes: apodizationOptions,
     });
 
     if (x && y) {
@@ -94,4 +90,8 @@ function ApodizationLine() {
   );
 }
 
-export default ApodizationLine;
+function updateApodizationOptions(apodization, dw) {
+  if (apodization) {
+    apodization.options = { ...apodization.options, dw };
+  }
+}
