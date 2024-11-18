@@ -1,5 +1,5 @@
 import type { SpectraAnalysisColumns } from 'nmr-load-save';
-import { AnalysisColumnsTypes } from 'nmr-load-save';
+import { ANALYSIS_COLUMN_TYPES } from 'nmr-load-save';
 import { memo } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';
@@ -19,7 +19,7 @@ function MultiAnalysisRangesInner({
   activeTab,
 }: MultiAnalysisRangesInnerProps) {
   const ranges = Object.keys(columns).filter(
-    (key) => columns[key].type !== AnalysisColumnsTypes.FORMULA,
+    (key) => columns[key].type !== ANALYSIS_COLUMN_TYPES.FORMULA,
   );
 
   if (!ranges || ranges.length === 0) {

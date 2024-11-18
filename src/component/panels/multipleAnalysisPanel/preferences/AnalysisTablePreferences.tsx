@@ -1,5 +1,5 @@
 import { Classes } from '@blueprintjs/core';
-import { AnalysisColumnsTypes } from 'nmr-load-save';
+import { ANALYSIS_COLUMN_TYPES } from 'nmr-load-save';
 import { useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
@@ -60,7 +60,7 @@ export function AnalysisTablePreferences() {
         Header: 'Value',
         Cell: ({ row }) => {
           const isFormulaColumn =
-            row.original.type === AnalysisColumnsTypes.FORMULA;
+            row.original.type === ANALYSIS_COLUMN_TYPES.FORMULA;
           return (
             <Input2Controller
               control={control}

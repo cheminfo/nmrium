@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import type { MultipleSpectraAnalysisPreferences as MultipleSpectraAnalysisPreferencesInterface } from 'nmr-load-save';
-import { AnalysisColumnsTypes } from 'nmr-load-save';
+import { ANALYSIS_COLUMN_TYPES } from 'nmr-load-save';
 import { forwardRef } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
@@ -149,7 +149,7 @@ function columnSchema(columns) {
         for (let index = 0; index < columns.length; index++) {
           const column = columns[index];
           if (
-            column?.type === AnalysisColumnsTypes.FORMULA &&
+            column?.type === ANALYSIS_COLUMN_TYPES.FORMULA &&
             (!column.formula || column.formula === '')
           ) {
             errors.push(
