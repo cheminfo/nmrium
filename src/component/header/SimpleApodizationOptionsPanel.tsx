@@ -18,15 +18,15 @@ interface ApodizationOptionsInnerPanelProps {
 function ApodizationOptionsInnerPanel(
   props: ApodizationOptionsInnerPanelProps,
 ) {
+  const { formMethods, submitHandler, handleApplyFilter, handleCancelFilter } =
+    useSharedApodization(props.filter, { applyFilterOnload: true });
+
   const {
     register,
     handleSubmit,
     control,
     formState: { isValid },
-    submitHandler,
-    handleApplyFilter,
-    handleCancelFilter,
-  } = useSharedApodization(props.filter, { applyFilterOnload: true });
+  } = formMethods;
 
   const { onChange: onLivePreviewFieldChange, ...livePreviewFieldOptions } =
     register('livePreview');
@@ -36,7 +36,7 @@ function ApodizationOptionsInnerPanel(
       <Label title="Line broadening:" shortTitle="LB:" style={headerLabelStyle}>
         <NumberInput2Controller
           control={control}
-          name="options.gaussian.options.lineBroadening"
+          name="options.exponential.options.lineBroadening"
           debounceTime={250}
           stepSize={0.1}
           style={{ width: '60px' }}

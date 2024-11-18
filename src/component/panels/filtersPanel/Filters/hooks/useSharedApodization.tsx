@@ -1,17 +1,18 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import type { Apodization1DOptions as BaseApodizationOptions } from 'nmr-processing';
+import lodashMerge from 'lodash/merge.js';
+import { default1DApodization } from 'nmr-processing';
+import type { Apodization1DOptions } from 'nmr-processing';
 import { useCallback, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
-import { defaultApodizationOptions } from '../../../../../data/constants/DefaultApodizationOptions.js';
 import type { ExtractFilterEntry } from '../../../../../data/types/common/ExtractFilterEntry.js';
 import { useDispatch } from '../../../../context/DispatchContext.js';
 import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsContext.js';
 
 const simpleValidationSchema = Yup.object().shape({
   options: Yup.object().shape({
-    gaussian: Yup.object()
+    exponential: Yup.object()
       .shape({
         options: Yup.object().shape({
           lineBroadening: Yup.number().required(),
@@ -24,11 +25,11 @@ const simpleValidationSchema = Yup.object().shape({
 
 export interface ApodizationOptions {
   livePreview: boolean;
-  options: BaseApodizationOptions;
+  options: Apodization1DOptions;
 }
 
 const initialValues: ApodizationOptions = {
-  options: defaultApodizationOptions,
+  options: structuredClone(default1DApodization),
   livePreview: true,
 };
 
@@ -49,21 +50,26 @@ export const useSharedApodization = (
   const dispatch = useDispatch();
   const previousPreviewRef = useRef<boolean>(true);
 
-  let formData = initialValues;
+  const formData = lodashMerge(
+    {},
+    initialValues,
+    filter?.value ? { options: filter?.value } : {},
+  );
 
-  if (filter) {
-    formData = { ...initialValues, options: filter.value, livePreview: true };
-  }
+  // if (filter) {
+  //   formData = { ...initialValues, options: filter.value, livePreview: true };
+  // }
 
-  const { handleSubmit, register, control, reset, getValues, formState } =
-    useForm<ApodizationOptions>({
-      defaultValues: formData,
-      resolver: yupResolver(validationSchema),
-      mode: 'onChange',
-    });
+  const formMethods = useForm<ApodizationOptions>({
+    defaultValues: formData,
+    resolver: yupResolver(validationSchema),
+    mode: 'onChange',
+  });
+
+  const { handleSubmit, reset, getValues } = formMethods;
 
   function syncWatch(sharedFilterOptions) {
-    reset({ ...getValues(), ...sharedFilterOptions });
+    reset(lodashMerge(getValues(), sharedFilterOptions));
   }
 
   const { syncFilterOptions, clearSyncFilterOptions } =
@@ -75,7 +81,7 @@ export const useSharedApodization = (
       if (livePreview || previousPreviewRef.current !== livePreview) {
         dispatch({
           type: 'CALCULATE_APODIZATION_FILTER',
-          payload: { livePreview, options },
+          payload: { livePreview, options: structuredClone(options) },
         });
       }
     },
@@ -132,10 +138,7 @@ export const useSharedApodization = (
   }, [applyFilterOnload, handleSubmit, onChange]);
 
   return {
-    handleSubmit,
-    register,
-    control,
-    formState,
+    formMethods,
     submitHandler,
     handleApplyFilter,
     handleCancelFilter,

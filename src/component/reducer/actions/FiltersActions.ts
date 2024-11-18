@@ -10,6 +10,7 @@ import {
   Filters2DManager,
   Filters1D,
   Filters2D,
+  default1DApodization,
 } from 'nmr-processing';
 import type {
   BaselineCorrectionOptions,
@@ -19,7 +20,6 @@ import type {
   FilterDomainUpdateRules,
 } from 'nmr-processing';
 
-import { defaultApodizationOptions } from '../../../data/constants/DefaultApodizationOptions.js';
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import { getProjection } from '../../../data/data2d/Spectrum2D/getMissingProjection.js';
 import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.js';
@@ -549,7 +549,8 @@ function afterRollback(draft: Draft<State>, filterKey) {
 
   switch (filterKey) {
     case apodization.name: {
-      draft.toolOptions.data.apodizationOptions = defaultApodizationOptions;
+      draft.toolOptions.data.apodizationOptions =
+        structuredClone(default1DApodization);
       break;
     }
     default:
@@ -599,7 +600,8 @@ function disableLivePreview(draft: Draft<State>, id: string) {
   // reset default options
   switch (id) {
     case apodization.name: {
-      draft.toolOptions.data.apodizationOptions = defaultApodizationOptions;
+      draft.toolOptions.data.apodizationOptions =
+        structuredClone(default1DApodization);
       break;
     }
     default:
@@ -743,6 +745,7 @@ function handleCalculateApodizationFilter(
     } = draft.tempData[index];
 
     const _data = { data: { x, re, im }, info } as Spectrum1D;
+
     draft.toolOptions.data.apodizationOptions = options;
     apodization.apply(_data, options);
     const { im: newIm, re: newRe } = _data.data;

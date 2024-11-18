@@ -5,10 +5,12 @@ import { produce, original } from 'immer';
 import type { CorrelationData } from 'nmr-correlation';
 import { buildCorrelationData } from 'nmr-correlation';
 import type { Spectrum, ViewState } from 'nmr-load-save';
-import type { BaselineCorrectionZone } from 'nmr-processing';
+import type {
+  BaselineCorrectionZone,
+  Apodization1DOptions,
+} from 'nmr-processing';
 import type { Reducer } from 'react';
 
-import type { Apodization1DOptions } from 'nmr-processing';
 import type { StateMoleculeExtended } from '../../data/molecules/Molecule.js';
 import type { UsedColors } from '../../types/UsedColors.js';
 import type { Action } from '../context/DispatchContext.js';

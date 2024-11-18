@@ -1,3 +1,4 @@
+import merge from 'lodash/merge.js';
 import type { Spectrum1D } from 'nmr-load-save';
 import {
   Filters1D,
@@ -50,10 +51,10 @@ export function ApodizationLine() {
     const pathBuilder = new PathBuilder();
     const { re, x } = spectrum.data;
 
-    const apodizationOptions = structuredClone({
-      ...default1DApodization,
-      ...externalApodizationOptions,
-    });
+    const apodizationOptions = merge(
+      default1DApodization,
+      externalApodizationOptions,
+    );
     const length = re.length;
     const dw = (x[length - 1] - x[0]) / (length - 1);
 

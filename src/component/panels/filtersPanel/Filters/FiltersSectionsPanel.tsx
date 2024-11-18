@@ -7,7 +7,7 @@ import { FaRegEyeSlash, FaRegTrashAlt } from 'react-icons/fa';
 import { ObjectInspector } from 'react-inspector';
 import { Button } from 'react-science/ui';
 
-import type { FilterEntry } from '../../../../data/types/common/FilterEntry.js';
+import type { FilterEntry as BaseFilterEntry } from '../../../../data/types/common/FilterEntry.js';
 import { useChartData } from '../../../context/ChartContext.js';
 import { useDispatch } from '../../../context/DispatchContext.js';
 import { useToaster } from '../../../context/ToasterContext.js';
@@ -19,7 +19,7 @@ import useSpectrum from '../../../hooks/useSpectrum.js';
 
 import { filterOptionPanels } from './index.js';
 
-const nonRemovableFilters = new Set<FilterEntry['name']>([
+const nonRemovableFilters = new Set<BaseFilterEntry['name']>([
   'digitalFilter',
   'digitalFilter2D',
 ]);
@@ -32,6 +32,10 @@ const IconButton = styled(Button)`
 const Filters = {
   ...Filters1D,
   ...Filters2D,
+};
+
+type FilterEntry = Omit<BaseFilterEntry, 'value'> & {
+  value: null | BaseFilterEntry['value'];
 };
 interface FilterElementsProps {
   filter: FilterEntry;
@@ -212,12 +216,12 @@ function FiltersInner(props: FiltersInnerProps) {
     );
 
     if (!isFilterExists && Filters?.[selectedTool]) {
-      const { id: name } = Filters[selectedTool];
+      const { name } = Filters[selectedTool];
       setNewFilter({
         enabled: true,
         id: v4(),
         name,
-        value: {},
+        value: null,
       });
     } else {
       setNewFilter((previousNewFilter) => {
