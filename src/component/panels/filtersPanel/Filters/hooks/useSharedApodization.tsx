@@ -56,10 +56,6 @@ export const useSharedApodization = (
     filter?.value ? { options: filter?.value } : {},
   );
 
-  // if (filter) {
-  //   formData = { ...initialValues, options: filter.value, livePreview: true };
-  // }
-
   const formMethods = useForm<ApodizationOptions>({
     defaultValues: formData,
     resolver: yupResolver(validationSchema),

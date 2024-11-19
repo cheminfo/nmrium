@@ -58,11 +58,8 @@ export function ApodizationLine() {
     const length = re.length;
     const dw = (x[length - 1] - x[0]) / (length - 1);
 
-    updateApodizationOptions(apodizationOptions.gaussian, dw);
-    updateApodizationOptions(apodizationOptions.exponential, dw);
-
     const y = createApodizationWindowData({
-      length,
+      windowOptions: { dw, length },
       shapes: apodizationOptions,
     });
 
@@ -89,10 +86,4 @@ export function ApodizationLine() {
       d={paths()}
     />
   );
-}
-
-function updateApodizationOptions(apodization, dw) {
-  if (apodization) {
-    apodization.options = { ...apodization.options, dw };
-  }
 }
