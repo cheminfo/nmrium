@@ -26,6 +26,12 @@ export default [
   },
   {
     rules: {
+      //todo remove the following rules once fixed: https://github.com/eslint/eslint/issues/19134
+      // start 
+      '@typescript-eslint/no-unused-expressions': 'off',
+      '@typescript-eslint/dot-notation': 'off',
+      '@typescript-eslint/no-empty-function': 'off',
+      //end
       'import/default': 'off',
       'import/no-unresolved': 'off',
       'react-refresh/only-export-components': 'off',
