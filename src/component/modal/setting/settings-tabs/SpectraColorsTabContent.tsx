@@ -42,10 +42,10 @@ function SpectraColorsTabContent() {
     () => getSpectraObjectPaths(data),
     [data],
   );
-  const { oneDimension = [], twoDimensions = [] }: SpectraColors =
-    useWatch<WorkspaceWithSource>({
-      name: 'spectraColors',
-    }) || {};
+  const { oneDimension = [], twoDimensions = [] }: SpectraColors = useWatch({
+    name: 'spectraColors',
+    defaultValue: {},
+  });
 
   const addHandler = useCallback(
     (data: readonly any[], index: number, key: SpectraColorsKeys) => {

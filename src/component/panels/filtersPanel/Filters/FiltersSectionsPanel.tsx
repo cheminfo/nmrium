@@ -18,6 +18,7 @@ import useSpectraByActiveNucleus from '../../../hooks/useSpectraPerNucleus.js';
 import useSpectrum from '../../../hooks/useSpectrum.js';
 
 import { filterOptionPanels } from './index.js';
+import { getFilterLabel } from '../../../../data/getFilterLabel.js';
 
 const nonRemovableFilters = new Set<BaseFilterEntry['name']>([
   'digitalFilter',
@@ -343,14 +344,4 @@ export function EmptyFilters() {
       </span>
     </EmptyContainer>
   );
-}
-
-function getFilterLabel(name: FilterEntry['name']): string {
-  if (name in Filters1D) {
-    return Filters1D[name].label;
-  }
-  if (name in Filters2D) {
-    return Filters2D[name].label;
-  }
-  return '';
 }

@@ -130,54 +130,54 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
       '1H': [
         {
           name: Filters1D.digitalFilter.name,
-          value: {},
+
           enabled: true,
         },
         {
           name: Filters1D.apodization.name,
-          value: {},
+
           enabled: false,
         },
         {
           name: Filters1D.zeroFilling.name,
-          value: {},
+
           enabled: true,
         },
         {
           name: Filters1D.fft.name,
-          value: {},
+
           enabled: true,
         },
         {
           name: Filters1D.phaseCorrection.name,
-          value: {},
+
           enabled: true,
         },
       ],
       '13C': [
         {
           name: Filters1D.digitalFilter.name,
-          value: {},
+
           enabled: true,
         },
         {
           name: Filters1D.apodization.name,
-          value: {},
+
           enabled: true,
         },
         {
           name: Filters1D.zeroFilling.name,
-          value: {},
+
           enabled: true,
         },
         {
           name: Filters1D.fft.name,
-          value: {},
+
           enabled: true,
         },
         {
           name: Filters1D.phaseCorrection.name,
-          value: {},
+
           enabled: true,
         },
       ],

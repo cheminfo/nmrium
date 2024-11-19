@@ -24,10 +24,10 @@ function getKeyPath<T extends keyof ExternalAPI>(
 export function ExternalAPIsTabContent() {
   const { control, setValue } = useFormContext<WorkspaceWithSource>();
 
-  const fields: ExternalAPI[] =
-    useWatch<WorkspaceWithSource>({
-      name: 'externalAPIs',
-    }) || [];
+  const fields: ExternalAPI[] = useWatch({
+    name: 'externalAPIs',
+    defaultValue: [],
+  });
 
   const addHandler = useCallback(
     (data: readonly any[], index: number) => {

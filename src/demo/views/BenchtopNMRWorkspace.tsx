@@ -199,56 +199,54 @@ const customWorkspaces: CustomWorkspaces = {
         '1H': [
           {
             name: 'digitalFilter',
-            value: {},
+
             enabled: true,
           },
           {
             name: 'apodization',
-            value: {},
+
             enabled: false,
           },
           {
             name: 'zeroFilling',
-            value: {},
+
             enabled: true,
           },
           {
             name: 'fft',
-            value: {},
+
             enabled: true,
           },
           {
             name: 'phaseCorrection',
 
-            value: {},
             enabled: true,
           },
         ],
         '13C': [
           {
             name: 'digitalFilter',
-            value: {},
+
             enabled: true,
           },
           {
             name: 'apodization',
-            value: {},
+
             enabled: true,
           },
           {
             name: 'zeroFilling',
-            value: {},
+
             enabled: true,
           },
           {
             name: 'fft',
-            value: {},
+
             enabled: true,
           },
           {
             name: 'phaseCorrection',
 
-            value: {},
             enabled: true,
           },
         ],

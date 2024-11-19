@@ -10,14 +10,15 @@ import Label from '../../../elements/Label.js';
 import ReactTable from '../../../elements/ReactTable/ReactTable.js';
 import type { CustomColumn } from '../../../elements/ReactTable/utility/addCustomColumn.js';
 import type { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
+import { getFilterLabel } from '../../../../data/getFilterLabel.js';
 
 function OnLoadProcessingTabContent() {
-  const { register, control, watch } = useFormContext<WorkspacePreferences>();
+  const { register } = useFormContext<WorkspacePreferences>();
 
-  const isExperimentalFeatures =
-    watch({
-      name: 'display.general.experimentalFeatures.display',
-    }) || false;
+  const isExperimentalFeatures = useWatch({
+    name: 'display.general.experimentalFeatures.display',
+    defaultValue: false,
+  });
   return (
     <div>
       <Label
@@ -73,7 +74,7 @@ function FiltersTable({ data, nucleus }) {
     {
       index: 1,
       Header: 'Filter',
-      accessor: 'label',
+      accessor: (row) => getFilterLabel(row.name),
       style: { width: '60%' },
     },
     {

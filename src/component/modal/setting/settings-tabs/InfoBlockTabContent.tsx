@@ -30,10 +30,10 @@ function InfoBlockTabContent() {
     () => getSpectraObjectPaths(data),
     [data],
   );
-  const fields: InfoBlockField[] =
-    useWatch<WorkspaceWithSource>({
-      name: 'infoBlock.fields',
-    }) || [];
+  const fields: InfoBlockField[] = useWatch({
+    name: 'infoBlock.fields',
+    defaultValue: [],
+  });
 
   const addHandler = useCallback(
     (data: readonly any[], index: number) => {
