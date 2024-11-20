@@ -194,8 +194,11 @@ function FiltersInner(props: FiltersInnerProps) {
   }
 
   function getStyle(filter, index) {
-    const { id } = filter;
+    const { id, error } = filter;
 
+    if (error) {
+      return { backgroundColor: '#ea8f8f' };
+    }
     if (activeFilterID === id) {
       return { backgroundColor: '#c2ea8f' };
     }
@@ -261,7 +264,7 @@ function FiltersInner(props: FiltersInnerProps) {
           <Sections.Item
             key={id}
             id={name}
-            title={getFilterLabel(name)}
+            title={error || getFilterLabel(name)}
             serial={index + 1}
             onClick={(id) => {
               toggleSection(id);
