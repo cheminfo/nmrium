@@ -143,7 +143,7 @@ function InnerSpectrumPhaseTrace(props: InnerSpectrumPhaseTraceProps) {
     info: { isComplex: true, isFid: false },
   };
 
-  Filters1D.phaseCorrection.apply(spectrum as unknown as Spectrum1D, {
+  Filters1D.phaseCorrection.apply(spectrum as Spectrum1D, {
     ph0,
     ph1,
   });

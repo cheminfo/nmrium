@@ -1,4 +1,5 @@
 import lodashGet from 'lodash/get.js';
+import type { Zones1DNucleusPreferences } from 'nmr-load-save';
 
 import { useDispatch } from '../../../context/DispatchContext.js';
 import { EditableColumn } from '../../../elements/EditableColumn.js';
@@ -21,8 +22,14 @@ function SignalDeltaColumn({
 }: SignalDeltaColumnProps) {
   const dispatch = useDispatch();
   const nuclei = nucleus.split(',');
-  const { deltaPPM: deltaX } = usePanelPreferences('zones', nuclei[0]);
-  const { deltaPPM: deltaY } = usePanelPreferences('zones', nuclei[1]);
+  const { deltaPPM: deltaX } = usePanelPreferences(
+    'zones',
+    nuclei[0],
+  ) as Zones1DNucleusPreferences;
+  const { deltaPPM: deltaY } = usePanelPreferences(
+    'zones',
+    nuclei[1],
+  ) as Zones1DNucleusPreferences;
 
   const signalDeltaX = lodashGet(rowData, 'tableMetaInfo.signal.x.delta', null);
   const signalDeltaY = lodashGet(rowData, 'tableMetaInfo.signal.y.delta', null);

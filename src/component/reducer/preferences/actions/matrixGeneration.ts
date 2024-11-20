@@ -1,8 +1,8 @@
 import { v4 } from '@lukeed/uuid';
 import type { Draft } from 'immer';
 import type { MatrixGenerationOptions } from 'nmr-load-save';
+import type { MatrixOptions } from 'nmr-processing';
 
-import type { MatrixOptions } from '../../../../data/types/data1d/MatrixOptions.js';
 import type { ZoomOptions } from '../../../EventsTrackers/BrushTracker.js';
 import type { FilterType } from '../../../utility/filterType.js';
 import { toScaleRatio } from '../../helper/Zoom1DManager.js';
@@ -69,10 +69,7 @@ function getMatrixGenerationPanelOptions(
   const currentWorkspacePreferences = getActiveWorkspace(draft);
   const panels = currentWorkspacePreferences.panels;
 
-  const matrixGeneration: MatrixGenerationOptions =
-    panels.matrixGeneration?.[nucleus];
-
-  return matrixGeneration;
+  return panels.matrixGeneration?.[nucleus] || null;
 }
 
 function initMatrixGeneration(draft: Draft<PreferencesState>, nucleus: string) {
@@ -81,7 +78,6 @@ function initMatrixGeneration(draft: Draft<PreferencesState>, nucleus: string) {
 
   if (!panels.matrixGeneration?.[nucleus]) {
     const options = getMatrixGenerationDefaultOptions();
-
     panels.matrixGeneration = {
       ...panels.matrixGeneration,
       [nucleus]: options,
@@ -114,7 +110,7 @@ function deleteExclusionZone(draft: Draft<PreferencesState>, action) {
 
   if (!matrixGeneration) return;
 
-  const options: MatrixOptions = matrixGeneration.matrixOptions;
+  const options = matrixGeneration.matrixOptions;
   options.exclusionsZones = options.exclusionsZones.filter(
     (_zone) => _zone.id !== zone.id,
   );
@@ -123,6 +119,10 @@ function deleteExclusionZone(draft: Draft<PreferencesState>, action) {
 function setMatrixGenerationOptions(draft: Draft<PreferencesState>, action) {
   const { options, nucleus } = action.payload;
   const matrixGeneration = getMatrixGenerationPanelOptions(draft, nucleus);
+
+  if (!matrixGeneration) {
+    return;
+  }
 
   matrixGeneration.matrixOptions = options;
 }
@@ -148,10 +148,13 @@ function resetDefaultViewMatrixGenerationOptions(
 
   const matrixGeneration = initMatrixGeneration(draft, nucleus);
   const currentOptions = getMatrixGenerationPanelOptions(draft, nucleus);
-  const { matrixOptions } = currentOptions;
   const { matrixOptions: defaultMatrixOptions, ...viewOptions } =
     getMatrixGenerationDefaultOptions();
-  matrixGeneration[nucleus] = { matrixOptions, ...viewOptions };
+
+  if (currentOptions) {
+    const { matrixOptions } = currentOptions;
+    matrixGeneration[nucleus] = { matrixOptions, ...viewOptions };
+  }
 }
 
 function changeMatrixGenerationScale(

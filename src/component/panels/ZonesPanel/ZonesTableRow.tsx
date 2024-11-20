@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import lodashGet from 'lodash/get.js';
+import type { Zones2DNucleusPreferences } from 'nmr-load-save';
 import type { CSSProperties, MouseEvent } from 'react';
 import { useCallback, useMemo } from 'react';
 
@@ -77,7 +78,7 @@ function ZonesTableRow({
     showEditAction,
     showZoomAction,
     showAssignmentLabel,
-  } = usePanelPreferences('zones', nucleus);
+  } = usePanelPreferences('zones', nucleus) as Zones2DNucleusPreferences;
 
   const rowSpanTags = useMemo(() => {
     return {

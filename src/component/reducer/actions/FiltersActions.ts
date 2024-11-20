@@ -18,13 +18,13 @@ import type {
   Apodization1DOptions,
   Filter1DEntry,
   FilterDomainUpdateRules,
+  MatrixOptions,
 } from 'nmr-processing';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import { getProjection } from '../../../data/data2d/Spectrum2D/getMissingProjection.js';
 import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.js';
 import type { ExclusionZone } from '../../../data/types/data1d/ExclusionZone.js';
-import type { MatrixOptions } from '../../../data/types/data1d/MatrixOptions.js';
 import { getXScale } from '../../1d/utilities/scale.js';
 import { get2DXScale, get2DYScale } from '../../2d/utilities/scale.js';
 import type { Tool } from '../../toolbar/ToolTypes.js';
@@ -1259,6 +1259,9 @@ function handleSignalProcessingFilter(
   const { data, view } = draft;
   const nucleus = view.spectra.activeTab;
   const value = action.payload.options;
+  if (!value.range) {
+    return;
+  }
 
   const spectra = getSpectraByNucleus(nucleus, data);
   for (const spectrum of spectra) {
@@ -1267,7 +1270,7 @@ function handleSignalProcessingFilter(
       [
         {
           name: 'signalProcessing',
-          value,
+          value: value as Required<MatrixOptions>,
         },
       ],
       { forceReapply: true },
