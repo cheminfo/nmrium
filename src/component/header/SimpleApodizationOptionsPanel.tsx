@@ -2,6 +2,7 @@ import { Checkbox } from '@blueprintjs/core';
 import { memo } from 'react';
 
 import type { ExtractFilterEntry } from '../../data/types/common/ExtractFilterEntry.js';
+import { useToaster } from '../context/ToasterContext.js';
 import ActionButtons from '../elements/ActionButtons.js';
 import Label from '../elements/Label.js';
 import { NumberInput2Controller } from '../elements/NumberInput2Controller.js';
@@ -18,6 +19,7 @@ interface ApodizationOptionsInnerPanelProps {
 function ApodizationOptionsInnerPanel(
   props: ApodizationOptionsInnerPanelProps,
 ) {
+  const toaster = useToaster();
   const { formMethods, submitHandler, handleApplyFilter, handleCancelFilter } =
     useSharedApodization(props.filter, { applyFilterOnload: true });
 
@@ -26,10 +28,23 @@ function ApodizationOptionsInnerPanel(
     handleSubmit,
     control,
     formState: { isValid },
+    watch,
   } = formMethods;
+
+  const isExponentialActive = watch('options.exponential.apply') || false;
 
   const { onChange: onLivePreviewFieldChange, ...livePreviewFieldOptions } =
     register('livePreview');
+
+  function handleClick() {
+    if (!isExponentialActive) {
+      toaster.show({
+        intent: 'danger',
+        message:
+          'Activate "Exponential" filter from the Processing panel first',
+      });
+    }
+  }
 
   return (
     <HeaderWrapper>
@@ -43,6 +58,8 @@ function ApodizationOptionsInnerPanel(
           onValueChange={() => {
             submitHandler();
           }}
+          readOnly={!isExponentialActive}
+          onClick={handleClick}
         />
       </Label>
 
