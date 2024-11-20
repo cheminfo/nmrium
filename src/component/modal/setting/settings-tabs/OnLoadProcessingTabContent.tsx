@@ -1,7 +1,7 @@
 import { Checkbox, Tab, Tabs } from '@blueprintjs/core';
 import type {
-  WorkspacePreferences,
   AutoProcessingFilterEntry,
+  WorkspacePreferences,
 } from 'nmr-load-save';
 import { useFormContext } from 'react-hook-form';
 

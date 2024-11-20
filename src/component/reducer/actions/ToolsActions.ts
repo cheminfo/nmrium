@@ -5,8 +5,7 @@ import type { Spectrum, Spectrum1D, Spectrum2D } from 'nmr-load-save';
 import type { BaselineCorrectionZone } from 'nmr-processing';
 
 import { contoursManager } from '../../../data/data2d/Spectrum2D/contours.js';
-import type { Nucleus } from '../../../data/types/common/Nucleus.js';
-import { getYScale, getXScale } from '../../1d/utilities/scale.js';
+import { getXScale, getYScale } from '../../1d/utilities/scale.js';
 import type { Layout } from '../../2d/utilities/DimensionLayout.js';
 import { LAYOUT } from '../../2d/utilities/DimensionLayout.js';
 import { get2DXScale, get2DYScale } from '../../2d/utilities/scale.js';
@@ -60,7 +59,7 @@ interface ResetToolOptions {
 }
 
 interface SetActiveTabOptions {
-  tab?: Nucleus | null;
+  tab?: string | null;
   refreshActiveTab?: boolean;
   domainOptions?: SetDomainOptions;
 }
@@ -94,7 +93,7 @@ type ZoomOutAction = ActionType<
   'FULL_ZOOM_OUT',
   { zoomType?: ZoomType; trackID?: Layout }
 >;
-type SetActiveTabAction = ActionType<'SET_ACTIVE_TAB', { tab?: Nucleus }>;
+type SetActiveTabAction = ActionType<'SET_ACTIVE_TAB', { tab?: string }>;
 type LevelChangeAction = ActionType<'SET_2D_LEVEL', { options: ZoomOptions }>;
 
 export type ToolsActions =

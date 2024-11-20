@@ -29,7 +29,6 @@ import {
   getMissingProjection,
   isSpectrum2D,
 } from '../../../data/data2d/Spectrum2D/index.js';
-import type { Nuclei, Nucleus } from '../../../data/types/common/Nucleus.js';
 import {
   adjustAlpha,
   generateColor,
@@ -67,7 +66,7 @@ export type SpectraSelectedMode = 'selected' | 'all' | 'selectedOnly';
 type ChangeSpectraVisibilityByNucleusAction = ActionType<
   'CHANGE_SPECTRA_VISIBILITY_BY_NUCLEUS',
   {
-    nucleus: Nucleus;
+    nucleus: string;
     flag: boolean;
     mode?: SpectraSelectedMode;
   }
@@ -101,7 +100,7 @@ type DeleteSpectraAction = ActionType<
 type AddMissingProjectionAction = ActionType<
   'ADD_MISSING_PROJECTION',
   {
-    nucleus: Nuclei[];
+    nucleus: string[];
   }
 >;
 type AlignSpectraAction = ActionType<
