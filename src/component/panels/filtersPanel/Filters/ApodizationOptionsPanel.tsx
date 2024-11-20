@@ -1,7 +1,7 @@
 import { Switch } from '@blueprintjs/core';
 import type { Apodization1DOptions } from 'nmr-processing';
 import type { ReactNode } from 'react';
-import { FormProvider, useFormContext, useWatch } from 'react-hook-form';
+import { FormProvider, useFormContext } from 'react-hook-form';
 import * as Yup from 'yup';
 
 import type { ExtractFilterEntry } from '../../../../data/types/common/ExtractFilterEntry.js';
@@ -45,7 +45,6 @@ export default function ApodizationOptionsPanel(
     register,
     formState: { isDirty },
   } = formMethods;
-
   function handleConfirm(event) {
     void handleSubmit((values) => handleApplyFilter(values))();
     onConfirm?.(event);
@@ -255,11 +254,8 @@ interface OptionsSectionProps extends SectionOptions {
 function OptionsSection(options: OptionsSectionProps) {
   const { onChange, algorithm, algorithmTitle, children } = options;
 
-  const { setValue } = useFormContext();
-  const isApplyChecked = useWatch({
-    name: `options.${algorithm}.apply`,
-    defaultValue: false,
-  });
+  const { setValue, watch } = useFormContext();
+  const isApplyChecked = watch(`options.${algorithm}.apply`) || false;
 
   function handleToggleApply(event) {
     const checked = event.target.checked;
