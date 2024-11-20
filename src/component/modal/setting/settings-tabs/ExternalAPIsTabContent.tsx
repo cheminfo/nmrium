@@ -2,7 +2,7 @@ import { Classes } from '@blueprintjs/core';
 import type { ExternalAPI } from 'nmr-load-save';
 import { EXTERNAL_API_KEYS } from 'nmr-load-save';
 import { useCallback, useMemo } from 'react';
-import { useFormContext, useWatch } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
 
@@ -22,12 +22,9 @@ function getKeyPath<T extends keyof ExternalAPI>(
 }
 
 export function ExternalAPIsTabContent() {
-  const { control, setValue } = useFormContext<WorkspaceWithSource>();
+  const { control, setValue, watch } = useFormContext<WorkspaceWithSource>();
 
-  const fields: ExternalAPI[] = useWatch({
-    name: 'externalAPIs',
-    defaultValue: [],
-  });
+  const fields: ExternalAPI[] = watch('externalAPIs') || [];
 
   const addHandler = useCallback(
     (data: readonly any[], index: number) => {

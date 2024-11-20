@@ -1,7 +1,7 @@
 import { Checkbox, Classes } from '@blueprintjs/core';
 import type { InfoBlockField } from 'nmr-load-save';
 import { useCallback, useMemo } from 'react';
-import { useFormContext, useWatch } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
 
@@ -24,16 +24,14 @@ function getKeyPath<T extends keyof InfoBlockField>(
 }
 
 function InfoBlockTabContent() {
-  const { control, setValue, register } = useFormContext<WorkspaceWithSource>();
+  const { control, setValue, register, watch } =
+    useFormContext<WorkspaceWithSource>();
   const { data } = useChartData();
   const { datalist, paths } = useMemo(
     () => getSpectraObjectPaths(data),
     [data],
   );
-  const fields: InfoBlockField[] = useWatch({
-    name: 'infoBlock.fields',
-    defaultValue: [],
-  });
+  const fields: InfoBlockField[] = watch('infoBlock.fields') || [];
 
   const addHandler = useCallback(
     (data: readonly any[], index: number) => {

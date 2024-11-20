@@ -3,7 +3,7 @@ import type {
   WorkspacePreferences,
   AutoProcessingFilterEntry,
 } from 'nmr-load-save';
-import { useFormContext, useWatch } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 
 import IsotopesViewer from '../../../elements/IsotopesViewer.js';
 import Label from '../../../elements/Label.js';
@@ -13,12 +13,10 @@ import type { WorkspaceWithSource } from '../../../reducer/preferences/preferenc
 import { getFilterLabel } from '../../../../data/getFilterLabel.js';
 
 function OnLoadProcessingTabContent() {
-  const { register } = useFormContext<WorkspacePreferences>();
+  const { register, watch } = useFormContext<WorkspacePreferences>();
 
-  const isExperimentalFeatures = useWatch({
-    name: 'display.general.experimentalFeatures.display',
-    defaultValue: false,
-  });
+  const isExperimentalFeatures =
+    watch('display.general.experimentalFeatures.display') || false;
   return (
     <div>
       <Label
