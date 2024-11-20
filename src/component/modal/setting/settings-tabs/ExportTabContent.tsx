@@ -11,7 +11,6 @@ import type {
   AdvanceExportSettings,
   BasicExportSettings,
   ExportPreferences,
-  ExportSettings,
 } from 'nmr-load-save';
 import { useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
@@ -100,7 +99,7 @@ export function ExportOptions(props: ExportOptionsProps) {
     enableAspectRatio,
     changeSize,
     changeUnit,
-  } = useExportConfigurer(currentOptions as ExportSettings);
+  } = useExportConfigurer(currentOptions);
 
   let sizesList: SizeItem[] = [];
 
