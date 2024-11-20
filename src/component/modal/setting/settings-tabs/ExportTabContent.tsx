@@ -11,10 +11,9 @@ import type {
   AdvanceExportSettings,
   BasicExportSettings,
   ExportPreferences,
-  ExportSettings,
 } from 'nmr-load-save';
 import { useState } from 'react';
-import { Controller, useFormContext, useWatch } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 
 import { CheckController } from '../../../elements/CheckController.js';
 import Label from '../../../elements/Label.js';
@@ -79,12 +78,10 @@ export function ExportOptions(props: ExportOptionsProps) {
     control,
     formState: { isValid, errors },
     getValues,
+    watch,
   } = useFormContext<WorkspaceWithSource>();
   const defaultValue = getValues(path);
-  const currentOptions = useWatch({
-    name: path,
-    defaultValue,
-  });
+  const currentOptions = watch(path) || defaultValue;
 
   const {
     dpi = 0,
@@ -102,7 +99,7 @@ export function ExportOptions(props: ExportOptionsProps) {
     enableAspectRatio,
     changeSize,
     changeUnit,
-  } = useExportConfigurer(currentOptions as ExportSettings);
+  } = useExportConfigurer(currentOptions);
 
   let sizesList: SizeItem[] = [];
 

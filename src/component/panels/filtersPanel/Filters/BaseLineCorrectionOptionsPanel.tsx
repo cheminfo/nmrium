@@ -1,6 +1,7 @@
 import { Button, Switch } from '@blueprintjs/core';
 import { Select } from '@blueprintjs/select';
 
+import type { ExtractFilterEntry } from '../../../../data/types/common/ExtractFilterEntry.js';
 import Label from '../../../elements/Label.js';
 import { NumberInput2Controller } from '../../../elements/NumberInput2Controller.js';
 import { ReadOnly } from '../../../elements/ReadOnly.js';
@@ -18,7 +19,7 @@ import type { BaseFilterOptionsPanelProps } from './index.js';
 import { formLabelStyle } from './index.js';
 
 export default function BaseLineCorrectionOptionsPanel(
-  props: BaseFilterOptionsPanelProps,
+  props: BaseFilterOptionsPanelProps<ExtractFilterEntry<'baselineCorrection'>>,
 ) {
   const { filter, enableEdit = true, onCancel, onConfirm } = props;
 

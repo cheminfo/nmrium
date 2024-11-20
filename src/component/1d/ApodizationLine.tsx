@@ -1,7 +1,11 @@
+import merge from 'lodash/merge.js';
 import type { Spectrum1D } from 'nmr-load-save';
-import { apodization, Filters } from 'nmr-processing';
+import {
+  Filters1D,
+  createApodizationWindowData,
+  default1DApodization,
+} from 'nmr-processing';
 
-import { defaultApodizationOptions } from '../../data/constants/DefaultApodizationOptions.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useScaleChecked } from '../context/ScaleContext.js';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
@@ -26,11 +30,11 @@ function useWindowYScale() {
   });
 }
 
-function ApodizationLine() {
+export function ApodizationLine() {
   const {
     toolOptions: {
       selectedTool,
-      data: { apodizationOptions },
+      data: { apodizationOptions: externalApodizationOptions },
     },
   } = useChartData();
   const activeSpectrum = useActiveSpectrum();
@@ -39,44 +43,25 @@ function ApodizationLine() {
   const xyReduce = useXYReduce(XYReducerDomainAxis.XAxis);
   const scaleY = useWindowYScale();
 
-  if (!activeSpectrum?.id || selectedTool !== Filters.apodization.id) {
+  if (!activeSpectrum?.id || selectedTool !== Filters1D.apodization.name) {
     return null;
   }
 
   const paths = () => {
     const pathBuilder = new PathBuilder();
-    const { re, im = [], x } = spectrum.data;
+    const { re, x } = spectrum.data;
 
-    const { lineBroadening, gaussBroadening, lineBroadeningCenter } =
-      apodizationOptions || defaultApodizationOptions;
-
+    const apodizationOptions = merge(
+      default1DApodization,
+      externalApodizationOptions,
+    );
     const length = re.length;
     const dw = (x[length - 1] - x[0]) / (length - 1);
-    const { windowData: y } = apodization(
-      { re, im },
-      {
-        apply: false,
-        compose: {
-          length,
-          shapes: [
-            {
-              start: 0,
-              shape: {
-                kind: 'lorentzToGauss',
-                options: {
-                  length,
-                  dw,
-                  exponentialHz:
-                    gaussBroadening > 0 ? lineBroadening : -lineBroadening,
-                  gaussianHz: gaussBroadening,
-                  center: lineBroadeningCenter,
-                },
-              },
-            },
-          ],
-        },
-      },
-    );
+
+    const y = createApodizationWindowData({
+      windowOptions: { dw, length },
+      shapes: apodizationOptions,
+    });
 
     if (x && y) {
       const pathPoints = xyReduce({ x, y });
@@ -102,5 +87,3 @@ function ApodizationLine() {
     />
   );
 }
-
-export default ApodizationLine;

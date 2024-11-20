@@ -1,5 +1,5 @@
 import type { Spectrum1D, Spectrum2D } from 'nmr-load-save';
-import { Filters } from 'nmr-processing';
+import { Filters1D } from 'nmr-processing';
 import type { ReactNode } from 'react';
 
 import { getSlice } from '../../../../data/data2d/Spectrum2D/index.js';
@@ -143,7 +143,7 @@ function InnerSpectrumPhaseTrace(props: InnerSpectrumPhaseTraceProps) {
     info: { isComplex: true, isFid: false },
   };
 
-  Filters.phaseCorrection.apply(spectrum as unknown as Spectrum1D, {
+  Filters1D.phaseCorrection.apply(spectrum as Spectrum1D, {
     ph0,
     ph1,
   });

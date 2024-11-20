@@ -1,5 +1,6 @@
 import { Switch } from '@blueprintjs/core';
 
+import type { ExtractFilterEntry } from '../../../../data/types/common/ExtractFilterEntry.js';
 import Label from '../../../elements/Label.js';
 import { ReadOnly } from '../../../elements/ReadOnly.js';
 import { Sections } from '../../../elements/Sections.js';
@@ -12,7 +13,7 @@ import { useZeroFilling, zeroFillingSizes } from './hooks/useZeroFilling.js';
 import type { BaseFilterOptionsPanelProps } from './index.js';
 
 export default function ZeroFillingOptionsPanel(
-  props: BaseFilterOptionsPanelProps,
+  props: BaseFilterOptionsPanelProps<ExtractFilterEntry<'zeroFilling'>>,
 ) {
   const { filter, enableEdit = true, onCancel, onConfirm } = props;
   const {

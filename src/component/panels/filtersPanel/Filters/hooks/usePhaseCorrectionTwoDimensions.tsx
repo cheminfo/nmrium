@@ -1,7 +1,7 @@
 import type { NmrData2DFt } from 'cheminfo-types';
 import debounce from 'lodash/debounce.js';
 import type { Spectrum2D } from 'nmr-load-save';
-import type { Filter } from 'nmr-processing';
+import type { Filter2DEntry } from 'nmr-processing';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelect } from 'react-science/ui';
 
@@ -38,7 +38,7 @@ const defaultPhaseOptions: PhaseOptions = {
   vertical: { ph0: 0, ph1: 0 },
 };
 
-export function usePhaseCorrectionTwoDimensions(filter: Filter | null) {
+export function usePhaseCorrectionTwoDimensions(filter: Filter2DEntry | null) {
   const { activeTraceDirection, pivot, addTracesToBothDirections } =
     useActivePhaseTraces();
 

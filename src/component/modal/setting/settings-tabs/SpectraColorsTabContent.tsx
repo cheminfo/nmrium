@@ -2,7 +2,7 @@ import { Classes } from '@blueprintjs/core';
 import type { SpectraColors } from 'nmr-load-save';
 import type { CSSProperties } from 'react';
 import { useCallback, useMemo } from 'react';
-import { useFormContext, useWatch } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
 
@@ -36,16 +36,14 @@ function getKeyPath(key: SpectraColorsKeys, index: number, fieldKey: string) {
 }
 
 function SpectraColorsTabContent() {
-  const { setValue, control } = useFormContext<WorkspaceWithSource>();
+  const { setValue, control, watch } = useFormContext<WorkspaceWithSource>();
   const { data } = useChartData();
   const { datalist, paths } = useMemo(
     () => getSpectraObjectPaths(data),
     [data],
   );
   const { oneDimension = [], twoDimensions = [] }: SpectraColors =
-    useWatch<WorkspaceWithSource>({
-      name: 'spectraColors',
-    }) || {};
+    watch('spectraColors') || {};
 
   const addHandler = useCallback(
     (data: readonly any[], index: number, key: SpectraColorsKeys) => {

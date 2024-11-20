@@ -1,5 +1,5 @@
 import type { Spectrum1D } from 'nmr-load-save';
-import { Filters } from 'nmr-processing';
+import { Filters1D } from 'nmr-processing';
 import { memo } from 'react';
 
 import type { ExclusionZone } from '../../data/types/data1d/ExclusionZone.js';
@@ -76,11 +76,14 @@ function getExclusionZones(
 ): Array<{ id: string; zones: ExclusionZone[] }> {
   const zones: Array<{ id: string; zones: ExclusionZone[] }> = [];
   for (const filter of data.filters) {
-    if (filter.name === Filters.exclusionZones.id && filter.flag) {
-      zones.push({ id: Filters.exclusionZones.id, zones: filter.value });
-    } else if (filter.name === Filters.signalProcessing.id && filter.flag) {
+    if (filter.name === Filters1D.exclusionZones.name && filter.enabled) {
+      zones.push({ id: Filters1D.exclusionZones.name, zones: filter.value });
+    } else if (
+      filter.name === Filters1D.signalProcessing.name &&
+      filter.enabled
+    ) {
       zones.push({
-        id: Filters.signalProcessing.id,
+        id: Filters1D.signalProcessing.name,
         zones: filter.value.exclusionsZones,
       });
     }

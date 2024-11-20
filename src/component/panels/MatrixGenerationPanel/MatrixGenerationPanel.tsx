@@ -2,7 +2,8 @@
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SvgNmrMultipleAnalysis } from 'cheminfo-font';
-import { Filters } from 'nmr-processing';
+import { Filters1D } from 'nmr-processing';
+import type { MatrixOptions } from 'nmr-processing';
 import { useCallback, useEffect, useRef } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Button, Toolbar } from 'react-science/ui';
@@ -10,7 +11,6 @@ import * as yup from 'yup';
 
 import type { MatrixFilter } from '../../../data/matrixGeneration.js';
 import { getMatrixFilters } from '../../../data/matrixGeneration.js';
-import type { MatrixOptions } from '../../../data/types/data1d/MatrixOptions.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { usePreferences } from '../../context/PreferencesContext.js';
@@ -31,7 +31,7 @@ import { ExclusionsZonesTable } from './ExclusionsZonesTable.js';
 import { FiltersOptions } from './FiltersOptions.js';
 import { MatrixGenerationPanelHeader } from './MatrixGenerationPanelHeader.js';
 
-const { signalProcessing } = Filters;
+const { signalProcessing } = Filters1D;
 
 const StickyFooter = styled.div({
   position: 'sticky',
@@ -61,14 +61,21 @@ export const DEFAULT_MATRIX_FILTERS: MatrixFilter[] = getMatrixFilters();
 const DEFAULT_MATRIX_OPTIONS = getMatrixGenerationDefaultOptions();
 
 function getMatrixOptions(
-  options: Partial<MatrixOptions>,
+  options: MatrixOptions,
   range: { from: number; to: number },
 ): MatrixOptions {
+  const {
+    range: { from, to },
+    ...other
+  } = options;
   return {
     ...DEFAULT_MATRIX_OPTIONS.matrixOptions,
-    range,
-    ...options,
-  } as MatrixOptions;
+    range: {
+      from: from === to ? range.from : from,
+      to: from === to ? range.to : to,
+    },
+    ...other,
+  };
 }
 
 export const GroupPanelStyle: GroupPaneStyle = {
@@ -76,14 +83,14 @@ export const GroupPanelStyle: GroupPaneStyle = {
   header: { color: 'black', fontWeight: 'bolder' },
 };
 
-export function useHasSignalProcessingFilter() {
+export function useHasSignalProcessingFilter(): MatrixOptions | null {
   const spectra = useSpectraByActiveNucleus();
 
   if (!spectra) return null;
 
   for (const spectrum of spectra) {
     for (const filter of spectrum.filters || []) {
-      if (filter.name === signalProcessing.id) {
+      if (filter.name === 'signalProcessing') {
         return filter.value;
       }
     }
@@ -145,7 +152,7 @@ function InnerMatrixGenerationPanel() {
   function handleRemoveProcessing() {
     dispatch({
       type: 'DELETE_SPECTRA_FILTER',
-      payload: { filterName: signalProcessing.id },
+      payload: { filterName: signalProcessing.name },
     });
   }
 
@@ -158,7 +165,6 @@ function InnerMatrixGenerationPanel() {
 
   const { showStocsy, showBoxPlot } =
     nucleusMatrixOptions || DEFAULT_MATRIX_OPTIONS;
-
   const methods = useForm({
     defaultValues: matrixOptions,
     resolver: yupResolver(schema),
@@ -178,8 +184,13 @@ function InnerMatrixGenerationPanel() {
 
   useEffect(() => {
     isDirtyRef.current = false;
-    reset(nucleusMatrixOptions.matrixOptions);
-  }, [nucleusMatrixOptions.matrixOptions, reset]);
+    reset(
+      getMatrixOptions(nucleusMatrixOptions.matrixOptions, {
+        from: originDomain.xDomain[0],
+        to: originDomain.xDomain[1],
+      }),
+    );
+  }, [nucleusMatrixOptions.matrixOptions, originDomain.xDomain, reset]);
 
   return (
     <div css={tablePanelStyle}>
@@ -342,9 +353,11 @@ function FooterActionsButtons(props: FooterActionsButtonsProps) {
         onClick={onClickApply}
         tooltipProps={{ disabled: true, content: '' }}
         disabled={
-          signalProcessingFilterData &&
-          JSON.stringify(signalProcessingFilterData) ===
-            JSON.stringify(matrixOptions)
+          !!(
+            signalProcessingFilterData &&
+            JSON.stringify(signalProcessingFilterData) ===
+              JSON.stringify(matrixOptions)
+          )
         }
       >
         {signalProcessingFilterData ? 'Update processing' : 'Apply processing'}

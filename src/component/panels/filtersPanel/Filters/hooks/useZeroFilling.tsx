@@ -1,11 +1,9 @@
 import type { NmrData1D } from 'cheminfo-types';
-import type {
-  Filter,
-  ZeroFillingOptions as BaseZeroFillingOptions,
-} from 'nmr-processing';
+import type { ZeroFillingOptions as BaseZeroFillingOptions } from 'nmr-processing';
 import { useCallback, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 
+import type { ExtractFilterEntry } from '../../../../../data/types/common/ExtractFilterEntry.js';
 import generateNumbersPowerOfX from '../../../../../data/utilities/generateNumbersPowerOfX.js';
 import { useDispatch } from '../../../../context/DispatchContext.js';
 import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsContext.js';
@@ -30,7 +28,7 @@ function useZeroFillingDefaultSize() {
 }
 
 export const useZeroFilling = (
-  filter: Filter | null,
+  filter: ExtractFilterEntry<'zeroFilling'> | null,
   options: UseZeroFillingOptions = {},
 ) => {
   const { applyFilterOnload = false } = options;
@@ -42,9 +40,7 @@ export const useZeroFilling = (
   const { handleSubmit, register, reset, control, getValues, formState } =
     useForm({
       defaultValues: {
-        nbPoints:
-          (filter?.value as BaseZeroFillingOptions)?.nbPoints ||
-          defaultNbPoints,
+        nbPoints: filter?.value?.nbPoints || defaultNbPoints,
         livePreview: true,
       },
     });

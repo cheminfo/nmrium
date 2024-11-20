@@ -123,45 +123,39 @@ const customWorkspaces: CustomWorkspaces = {
         '1H': [
           {
             name: 'digitalFilter',
-            label: 'Digital Filter',
-            value: {},
-            flag: true,
+
+            enabled: true,
           },
-          { name: 'apodization', label: 'Apodization', value: {}, flag: false },
-          { name: 'zeroFilling', label: 'Zero Filling', value: {}, flag: true },
+          { name: 'apodization', enabled: false },
+          { name: 'zeroFilling', enabled: true },
           {
             name: 'fft',
-            label: 'Fast fourier transform',
-            value: {},
-            flag: true,
+
+            enabled: true,
           },
           {
             name: 'phaseCorrection',
-            label: 'Phase correction',
-            value: {},
-            flag: true,
+
+            enabled: true,
           },
         ],
         '13C': [
           {
             name: 'digitalFilter',
-            label: 'Digital Filter',
-            value: {},
-            flag: true,
+
+            enabled: true,
           },
-          { name: 'apodization', label: 'Apodization', value: {}, flag: true },
-          { name: 'zeroFilling', label: 'Zero Filling', value: {}, flag: true },
+          { name: 'apodization', enabled: true },
+          { name: 'zeroFilling', enabled: true },
           {
             name: 'fft',
-            label: 'Fast fourier transform',
-            value: {},
-            flag: true,
+
+            enabled: true,
           },
           {
             name: 'phaseCorrection',
-            label: 'Phase correction',
-            value: {},
-            flag: true,
+
+            enabled: true,
           },
         ],
       },

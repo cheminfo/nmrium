@@ -1,13 +1,13 @@
 import { Switch } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { v4 } from '@lukeed/uuid';
-import type { Filter } from 'nmr-processing';
-import { Filters } from 'nmr-processing';
+import { Filters1D, Filters2D } from 'nmr-processing';
 import { memo, useEffect, useRef, useState } from 'react';
 import { FaRegEyeSlash, FaRegTrashAlt } from 'react-icons/fa';
 import { ObjectInspector } from 'react-inspector';
 import { Button } from 'react-science/ui';
 
+import type { FilterEntry as BaseFilterEntry } from '../../../../data/types/common/FilterEntry.js';
 import { useChartData } from '../../../context/ChartContext.js';
 import { useDispatch } from '../../../context/DispatchContext.js';
 import { useToaster } from '../../../context/ToasterContext.js';
@@ -18,18 +18,28 @@ import useSpectraByActiveNucleus from '../../../hooks/useSpectraPerNucleus.js';
 import useSpectrum from '../../../hooks/useSpectrum.js';
 
 import { filterOptionPanels } from './index.js';
+import { getFilterLabel } from '../../../../data/getFilterLabel.js';
+
+const nonRemovableFilters = new Set<BaseFilterEntry['name']>([
+  'digitalFilter',
+  'digitalFilter2D',
+]);
 
 const IconButton = styled(Button)`
   padding: 2px;
   font-size: 16px;
 `;
 
-interface FiltersProps extends Filter {
-  error?: any;
-}
+const Filters = {
+  ...Filters1D,
+  ...Filters2D,
+};
 
+type FilterEntry = Omit<BaseFilterEntry, 'value'> & {
+  value: null | BaseFilterEntry['value'];
+};
 interface FilterElementsProps {
-  filter: Filter;
+  filter: FilterEntry;
   spectraCounter: number;
   onEnableChange: () => void;
   onFilterRestore: () => void;
@@ -49,7 +59,8 @@ function FilterElements(props: FilterElementsProps) {
     onFilterRestore,
     hideFilterRestoreButton = false,
   } = props;
-  const { id, name, flag, label, isDeleteAllow } = filter;
+  const { id, name, enabled } = filter;
+  const label = getFilterLabel(name);
 
   function handleFilterCheck(id, event: React.ChangeEvent<HTMLInputElement>) {
     const enabled = event.target.checked;
@@ -128,7 +139,7 @@ function FilterElements(props: FilterElementsProps) {
         onClick={() => {
           handleDeleteFilter();
         }}
-        disabled={!isDeleteAllow}
+        disabled={nonRemovableFilters.has(name)}
       >
         <FaRegTrashAlt />
       </IconButton>
@@ -137,7 +148,7 @@ function FilterElements(props: FilterElementsProps) {
         style={{ margin: 0, marginLeft: '5px' }}
         innerLabelChecked="On"
         innerLabel="Off"
-        checked={flag || false}
+        checked={enabled || false}
         onChange={(event) => {
           handleFilterCheck(id, event);
         }}
@@ -147,7 +158,7 @@ function FilterElements(props: FilterElementsProps) {
 }
 
 interface FiltersInnerProps {
-  filters: FiltersProps[];
+  filters: FilterEntry[];
   spectraCounter: number;
   activeFilterID: string | null;
 }
@@ -157,7 +168,7 @@ function FiltersInner(props: FiltersInnerProps) {
   const {
     toolOptions: { selectedTool },
   } = useChartData();
-  const [newFilter, setNewFilter] = useState<Filter | null>();
+  const [newFilter, setNewFilter] = useState<FilterEntry | null>();
 
   const [selectedSection, openSection] = useState('');
   const dispatch = useDispatch();
@@ -183,8 +194,11 @@ function FiltersInner(props: FiltersInnerProps) {
   }
 
   function getStyle(filter, index) {
-    const { id } = filter;
+    const { id, error } = filter;
 
+    if (error) {
+      return { backgroundColor: '#ea8f8f' };
+    }
     if (activeFilterID === id) {
       return { backgroundColor: '#c2ea8f' };
     }
@@ -206,14 +220,12 @@ function FiltersInner(props: FiltersInnerProps) {
     );
 
     if (!isFilterExists && Filters?.[selectedTool]) {
-      const { id: name, name: label } = Filters[selectedTool];
+      const { name } = Filters[selectedTool];
       setNewFilter({
-        flag: true,
+        enabled: true,
         id: v4(),
         name,
-        label,
         value: null,
-        isDeleteAllow: true,
       });
     } else {
       setNewFilter((previousNewFilter) => {
@@ -246,13 +258,13 @@ function FiltersInner(props: FiltersInnerProps) {
   return (
     <Sections overflow renderActiveSectionContentOnly>
       {filtersList.map((filter, index) => {
-        const { id, name, label, error, value } = filter;
+        const { id, name, error, value } = filter;
         const FilterOptionsPanel = filterOptionPanels[filter.name];
         return (
           <Sections.Item
             key={id}
             id={name}
-            title={label}
+            title={error || getFilterLabel(name)}
             serial={index + 1}
             onClick={(id) => {
               toggleSection(id);

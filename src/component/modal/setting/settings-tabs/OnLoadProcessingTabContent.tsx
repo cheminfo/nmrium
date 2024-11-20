@@ -1,22 +1,22 @@
 import { Checkbox, Tab, Tabs } from '@blueprintjs/core';
-import type { WorkspacePreferences } from 'nmr-load-save';
-import type { BaseFilter } from 'nmr-processing';
-import { useFormContext, useWatch } from 'react-hook-form';
+import type {
+  AutoProcessingFilterEntry,
+  WorkspacePreferences,
+} from 'nmr-load-save';
+import { useFormContext } from 'react-hook-form';
 
 import IsotopesViewer from '../../../elements/IsotopesViewer.js';
 import Label from '../../../elements/Label.js';
 import ReactTable from '../../../elements/ReactTable/ReactTable.js';
 import type { CustomColumn } from '../../../elements/ReactTable/utility/addCustomColumn.js';
 import type { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
+import { getFilterLabel } from '../../../../data/getFilterLabel.js';
 
 function OnLoadProcessingTabContent() {
-  const { register, control } = useFormContext<WorkspacePreferences>();
+  const { register, watch } = useFormContext<WorkspacePreferences>();
 
   const isExperimentalFeatures =
-    useWatch({
-      control,
-      name: 'display.general.experimentalFeatures.display',
-    }) || false;
+    watch('display.general.experimentalFeatures.display') || false;
   return (
     <div>
       <Label
@@ -63,7 +63,7 @@ function AutoProcessingFilters() {
 function FiltersTable({ data, nucleus }) {
   const { register } = useFormContext();
 
-  const COLUMNS: Array<CustomColumn<BaseFilter>> = [
+  const COLUMNS: Array<CustomColumn<AutoProcessingFilterEntry>> = [
     {
       index: 1,
       Header: '#',
@@ -72,7 +72,7 @@ function FiltersTable({ data, nucleus }) {
     {
       index: 1,
       Header: 'Filter',
-      accessor: 'label',
+      accessor: (row) => getFilterLabel(row.name),
       style: { width: '60%' },
     },
     {
@@ -81,7 +81,9 @@ function FiltersTable({ data, nucleus }) {
       Cell: ({ row }) => (
         <Checkbox
           style={{ margin: 0 }}
-          {...register(`onLoadProcessing.filters.${nucleus}.${row.index}.flag`)}
+          {...register(
+            `onLoadProcessing.filters.${nucleus}.${row.index}.enabled`,
+          )}
           defaultChecked={false}
         />
       ),

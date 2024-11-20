@@ -142,6 +142,23 @@ function PeaksTable({ activeTab, data, info }: PeaksTableProps) {
         },
       },
       {
+        showWhen: 'gamma.show',
+        index: 9,
+        Header: 'gamma',
+        accessor: (row) =>
+          (row?.shape?.kind === 'generalizedLorentzian' && row?.shape?.gamma) ||
+          '',
+        Cell: ({ row }) => {
+          const gamma =
+            row.original?.shape?.kind === 'generalizedLorentzian' &&
+            row.original?.shape?.gamma;
+          if (gamma) {
+            return formatNumber(gamma, peaksPreferences.gamma.format);
+          }
+          return '';
+        },
+      },
+      {
         showWhen: 'showEditPeakShapeAction',
         ...createActionColumn<PeakRecord>({
           index: 20,

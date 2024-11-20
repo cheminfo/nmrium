@@ -1,11 +1,14 @@
 import type {
+  BaseNucleus1DPreferences,
+  BaseNucleus2DPreferences,
   MatrixGenerationOptions,
   MultipleSpectraAnalysisPreferences,
   PanelsPreferences,
   SpectraPreferences,
+  Zones1DNucleusPreferences,
+  Zones2DNucleusPreferences,
 } from 'nmr-load-save';
 
-import type { DeepPartial } from '../../../data/types/common/DeepPartial.js';
 import { is2DNucleus } from '../../utility/nucleusToString.js';
 
 function getPreferences<T>(data: T, nucleus?: string) {
@@ -78,14 +81,15 @@ const getZoneDefaultValues = (nucleus?: string): PanelsPreferences['zones'] => {
   const common = {
     absolute: { show: false, format: '0.00' },
     relative: { show: true, format: '0.00' },
+    nuclei: {},
   };
 
   if (!nucleus) {
-    return { nuclei: {} };
+    return { ...common, nuclei: {} };
   }
 
   if (is2DNucleus(nucleus)) {
-    const preferences2D = {
+    const preferences2D: Zones2DNucleusPreferences = {
       showSerialNumber: true,
       showKind: true,
       showDeleteAction: true,
@@ -94,12 +98,23 @@ const getZoneDefaultValues = (nucleus?: string): PanelsPreferences['zones'] => {
       showAssignment: true,
       showAssignmentLabel: false,
     };
-    return { ...common, ...getPreferences(preferences2D, nucleus) };
+
+    const output: BaseNucleus2DPreferences<Zones2DNucleusPreferences> = {
+      ...common,
+      ...getPreferences(preferences2D, nucleus),
+    };
+
+    return output;
   } else {
-    const preferences1D = {
+    const preferences1D: Zones1DNucleusPreferences = {
       deltaPPM: { show: true, format: '0.00' },
     };
-    return { ...common, ...getPreferences(preferences1D, nucleus) };
+
+    const output: BaseNucleus1DPreferences<Zones1DNucleusPreferences> = {
+      ...common,
+      ...getPreferences(preferences1D, nucleus),
+    };
+    return output;
   }
 };
 
@@ -181,12 +196,13 @@ const getMultipleSpectraAnalysisDefaultValues = (
   return nucleus ? { [nucleus]: preferences } : {};
 };
 
-function getMatrixGenerationDefaultOptions(): DeepPartial<MatrixGenerationOptions> {
+function getMatrixGenerationDefaultOptions(): MatrixGenerationOptions {
   return {
     matrixOptions: {
       exclusionsZones: [],
       filters: [],
       numberOfPoints: 1024,
+      range: { from: 0, to: 0 },
     },
     chemicalShift: null,
     scaleRatio: 1,

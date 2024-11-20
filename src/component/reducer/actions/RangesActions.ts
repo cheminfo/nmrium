@@ -5,7 +5,7 @@ import cloneDeep from 'lodash/cloneDeep.js';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import type { RangesViewState, Spectrum, Spectrum1D } from 'nmr-load-save';
 import type { Signal1D, Range } from 'nmr-processing';
-import { Filters, FiltersManager } from 'nmr-processing';
+import { Filters1DManager } from 'nmr-processing';
 
 import {
   DATUM_KIND,
@@ -551,8 +551,8 @@ function handleChangeRangeSignalValue(
       signalID,
       newSignalValue: value,
     });
-    FiltersManager.applyFilter(draft.data[index], [
-      { name: Filters.shiftX.id, value: { shift } },
+    Filters1DManager.applyFilters(draft.data[index], [
+      { name: 'shiftX', value: { shift } },
     ]);
 
     handleUpdateCorrelations(draft);

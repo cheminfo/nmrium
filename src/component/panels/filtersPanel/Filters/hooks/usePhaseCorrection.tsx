@@ -1,8 +1,8 @@
 import type { Spectrum1D } from 'nmr-load-save';
-import type { Filter } from 'nmr-processing';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelect } from 'react-science/ui';
 
+import type { ExtractFilterEntry } from '../../../../../data/types/common/ExtractFilterEntry.js';
 import { useChartData } from '../../../../context/ChartContext.js';
 import { useDispatch } from '../../../../context/DispatchContext.js';
 import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsContext.js';
@@ -33,7 +33,9 @@ export const algorithms: AlgorithmItem[] = [
 ];
 const emptyData = { datum: {}, filter: null };
 
-export function usePhaseCorrection(filter: Filter | null) {
+export function usePhaseCorrection(
+  filter: ExtractFilterEntry<'phaseCorrection'> | null,
+) {
   const {
     toolOptions: {
       data: { pivot },

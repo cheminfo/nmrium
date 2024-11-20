@@ -1,10 +1,9 @@
 import { Checkbox } from '@blueprintjs/core';
 import { Select } from '@blueprintjs/select';
-import type { Filter } from 'nmr-processing';
-import { Filters } from 'nmr-processing';
 import { memo } from 'react';
 import { Button } from 'react-science/ui';
 
+import type { ExtractFilterEntry } from '../../data/types/common/ExtractFilterEntry.js';
 import ActionButtons from '../elements/ActionButtons.js';
 import Label from '../elements/Label.js';
 import { NumberInput2Controller } from '../elements/NumberInput2Controller.js';
@@ -19,11 +18,12 @@ import { headerLabelStyle } from './Header.js';
 import { HeaderWrapper } from './HeaderWrapper.js';
 
 interface BaseLineCorrectionInnerPanelProps {
-  filter: Filter | null;
+  filter: ExtractFilterEntry<'baselineCorrection'> | null;
 }
 function BaseLineCorrectionInnerPanel(
   props: BaseLineCorrectionInnerPanelProps,
 ) {
+  const { filter } = props;
   const {
     register,
     reset,
@@ -35,7 +35,7 @@ function BaseLineCorrectionInnerPanel(
     control,
     algorithm,
     defaultAlgorithmSelectProps,
-  } = useBaselineCorrection(props.filter);
+  } = useBaselineCorrection(filter);
   const { onChange: onLivePreviewChange, ...otherLivePreviewRegisterOptions } =
     register(`livePreview`);
 
@@ -48,10 +48,7 @@ function BaseLineCorrectionInnerPanel(
           itemsEqual="value"
           onItemSelect={(item) => {
             onAlgorithmChange(item);
-            const { values } = getBaselineData(
-              item.value,
-              props?.filter?.value || {},
-            );
+            const { values } = getBaselineData(item.value, filter?.value);
             reset(values);
             setTimeout(() => {
               submitHandler();
@@ -138,6 +135,7 @@ function BaseLineCorrectionInnerPanel(
 const MemoizedBaseLineCorrectionPanel = memo(BaseLineCorrectionInnerPanel);
 
 export function SimpleBaseLineCorrectionOptionsPanel() {
-  const filter = useFilter(Filters.baselineCorrection.id);
+  const filter = useFilter('baselineCorrection');
+
   return <MemoizedBaseLineCorrectionPanel filter={filter} />;
 }

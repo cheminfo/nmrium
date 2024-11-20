@@ -1,7 +1,7 @@
 import { Classes } from '@blueprintjs/core';
 import type { NucleiPreferences } from 'nmr-load-save';
 import { useCallback, useMemo } from 'react';
-import { useFormContext, useWatch } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
 
@@ -21,12 +21,9 @@ function getKeyPath<T extends keyof NucleiPreferences>(
 }
 
 function NucleiTabContent() {
-  const { control, setValue } = useFormContext<WorkspaceWithSource>();
+  const { control, setValue, watch } = useFormContext<WorkspaceWithSource>();
 
-  const fields: NucleiPreferences[] =
-    useWatch({
-      name: 'nuclei',
-    }) || [];
+  const fields: NucleiPreferences[] = watch('nuclei') || [];
 
   const addHandler = useCallback(
     (data: readonly any[], index: number) => {

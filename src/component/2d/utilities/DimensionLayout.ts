@@ -51,9 +51,7 @@ interface StartEndProps {
   endY?: number;
 }
 
-type DimensionType = {
-  [key in Layout]: Required<StartEndProps>;
-};
+type DimensionType = Record<Layout, Required<StartEndProps>>;
 
 function getLayoutID(
   dimension: DimensionType,

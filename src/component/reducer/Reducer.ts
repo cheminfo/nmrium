@@ -6,8 +6,8 @@ import type { CorrelationData } from 'nmr-correlation';
 import { buildCorrelationData } from 'nmr-correlation';
 import type { Spectrum, ViewState } from 'nmr-load-save';
 import type {
-  ApodizationOptions,
   BaselineCorrectionZone,
+  Apodization1DOptions,
 } from 'nmr-processing';
 import type { Reducer } from 'react';
 
@@ -169,7 +169,7 @@ export const getInitialState = (): State => ({
         zones: [],
         livePreview: true,
       },
-      apodizationOptions: {} as ApodizationOptions,
+      apodizationOptions: {} as Apodization1DOptions,
       twoDimensionPhaseCorrection: {
         activeTraceDirection: 'horizontal',
         addTracesToBothDirections: true,
@@ -347,7 +347,7 @@ export interface State {
         options: any;
         livePreview: boolean;
       };
-      apodizationOptions: ApodizationOptions;
+      apodizationOptions: Apodization1DOptions;
       /**
        * pivot point for manual phase correction
        * @default {value:0,index:0}

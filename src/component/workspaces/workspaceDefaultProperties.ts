@@ -1,5 +1,5 @@
 import type { WorkspacePreferences } from 'nmr-load-save';
-import { Filters } from 'nmr-processing';
+import { Filters1D } from 'nmr-processing';
 
 import { color2D } from '../../data/data2d/Spectrum2D/get2DColor.js';
 
@@ -129,73 +129,56 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
     filters: {
       '1H': [
         {
-          name: Filters.digitalFilter.id,
-          label: Filters.digitalFilter.name,
-          value: {},
-          flag: true,
-        },
-        {
-          name: Filters.apodization.id,
-          label: Filters.apodization.name,
-          value: {},
-          flag: false,
-        },
-        {
-          name: Filters.zeroFilling.id,
-          label: Filters.zeroFilling.name,
+          name: Filters1D.digitalFilter.name,
 
-          value: {},
-          flag: true,
+          enabled: true,
         },
         {
-          name: Filters.fft.id,
-          label: Filters.fft.name,
+          name: Filters1D.apodization.name,
 
-          value: {},
-          flag: true,
+          enabled: false,
         },
         {
-          name: Filters.phaseCorrection.id,
-          label: Filters.phaseCorrection.name,
+          name: Filters1D.zeroFilling.name,
 
-          value: {},
-          flag: true,
+          enabled: true,
+        },
+        {
+          name: Filters1D.fft.name,
+
+          enabled: true,
+        },
+        {
+          name: Filters1D.phaseCorrection.name,
+
+          enabled: true,
         },
       ],
       '13C': [
         {
-          name: Filters.digitalFilter.id,
-          label: Filters.digitalFilter.name,
+          name: Filters1D.digitalFilter.name,
 
-          value: {},
-          flag: true,
+          enabled: true,
         },
         {
-          name: Filters.apodization.id,
-          label: Filters.apodization.name,
-          value: {},
-          flag: true,
+          name: Filters1D.apodization.name,
+
+          enabled: true,
         },
         {
-          name: Filters.zeroFilling.id,
-          label: Filters.zeroFilling.name,
+          name: Filters1D.zeroFilling.name,
 
-          value: {},
-          flag: true,
+          enabled: true,
         },
         {
-          name: Filters.fft.id,
-          label: Filters.fft.name,
+          name: Filters1D.fft.name,
 
-          value: {},
-          flag: true,
+          enabled: true,
         },
         {
-          name: Filters.phaseCorrection.id,
-          label: Filters.phaseCorrection.name,
+          name: Filters1D.phaseCorrection.name,
 
-          value: {},
-          flag: true,
+          enabled: true,
         },
       ],
     },

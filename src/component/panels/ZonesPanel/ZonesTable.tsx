@@ -13,6 +13,10 @@ import NoTableData from '../extra/placeholder/NoTableData.js';
 
 import ZonesTableRow from './ZonesTableRow.js';
 import { useMapZones } from './hooks/useMapZones.js';
+import type {
+  Zones1DNucleusPreferences,
+  Zones2DNucleusPreferences,
+} from 'nmr-load-save';
 
 const tableStyle = css`
   border-spacing: 0;
@@ -92,8 +96,14 @@ function ZonesTable({ tableData, onUnlink, nucleus, info }: ZonesTableProps) {
   const nuclei = nucleus.split(',');
   const data = useMapZones(tableData, { nuclei, experiment });
   const { items: sortedData, isSortedDesc, onSort } = useTableSortBy(data);
-  const { deltaPPM: deltaX } = usePanelPreferences('zones', nuclei?.[0]);
-  const { deltaPPM: deltaY } = usePanelPreferences('zones', nuclei?.[1]);
+  const { deltaPPM: deltaX } = usePanelPreferences(
+    'zones',
+    nuclei?.[0],
+  ) as Zones1DNucleusPreferences;
+  const { deltaPPM: deltaY } = usePanelPreferences(
+    'zones',
+    nuclei?.[1],
+  ) as Zones1DNucleusPreferences;
   const {
     showSerialNumber,
     showAssignment,
@@ -102,7 +112,7 @@ function ZonesTable({ tableData, onUnlink, nucleus, info }: ZonesTableProps) {
     showEditAction,
     showZoomAction,
     showAssignmentLabel,
-  } = usePanelPreferences('zones', nucleus);
+  } = usePanelPreferences('zones', nucleus) as Zones2DNucleusPreferences;
 
   const showActions = showDeleteAction || showEditAction || showZoomAction;
 

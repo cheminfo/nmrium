@@ -1,7 +1,7 @@
 import SpectrumInfoBlock from '../1d-2d/components/SpectrumInfoBlock.js';
 import { usePreferences } from '../context/PreferencesContext.js';
 
-import ApodizationLine from './ApodizationLine.js';
+import { ApodizationLine } from './ApodizationLine.js';
 import ExclusionZonesAnnotations from './ExclusionZonesAnnotations.js';
 import LinesSeries from './LinesSeries.js';
 import SimilarityTree from './SimilarityTree.js';

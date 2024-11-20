@@ -1,4 +1,7 @@
-import { AnalysisColumnsTypes, AnalysisColumnsValuesKeys } from 'nmr-load-save';
+import {
+  ANALYSIS_COLUMN_TYPES,
+  ANALYSIS_COLUMN_VALUES_KEYS,
+} from 'nmr-load-save';
 import type { CSSProperties, MouseEvent } from 'react';
 
 import { Select2 } from '../../../elements/Select2.js';
@@ -48,10 +51,10 @@ const styles: Record<
 };
 
 const columnsFilters: Array<{ value: string; label: string }> = [
-  { value: AnalysisColumnsValuesKeys.RELATIVE, label: 'Relative' },
-  { value: AnalysisColumnsValuesKeys.ABSOLUTE, label: 'Absolute' },
-  { value: AnalysisColumnsValuesKeys.MIN, label: 'Min Intensity' },
-  { value: AnalysisColumnsValuesKeys.MAX, label: 'Max Intensity' },
+  { value: ANALYSIS_COLUMN_VALUES_KEYS.RELATIVE, label: 'Relative' },
+  { value: ANALYSIS_COLUMN_VALUES_KEYS.ABSOLUTE, label: 'Absolute' },
+  { value: ANALYSIS_COLUMN_VALUES_KEYS.MIN, label: 'Min Intensity' },
+  { value: ANALYSIS_COLUMN_VALUES_KEYS.MAX, label: 'Max Intensity' },
 ];
 
 interface AnalysisColumnHeaderProps {
@@ -84,7 +87,7 @@ function AnalysisColumnHeader({
       {...highlight.onHover}
     >
       <div style={styles.innerContainer}>
-        {data.type === AnalysisColumnsTypes.NORMAL && (
+        {data.type === ANALYSIS_COLUMN_TYPES.NORMAL && (
           <div
             style={styles.dropdownContainer}
             onClick={(event) => event.stopPropagation()}

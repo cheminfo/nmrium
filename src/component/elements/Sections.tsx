@@ -13,11 +13,13 @@ import { createContext, useContext, useMemo } from 'react';
 interface SelectionsContextState {
   overflow: boolean;
   renderActiveSectionContentOnly: boolean;
+  matchContentHeight: boolean;
 }
 
 const selectionState: SelectionsContextState = {
   overflow: false,
   renderActiveSectionContentOnly: false,
+  matchContentHeight: false,
 };
 
 const SectionsContext = createContext<SelectionsContextState>(selectionState);
@@ -36,10 +38,13 @@ interface ActiveProps {
   overflow?: boolean;
 }
 
-const Container = styled.div<{ overflow: boolean }>(
-  ({ overflow }) => `
+const Container = styled.div<{
+  overflow: boolean;
+  matchContentHeight: boolean;
+}>(
+  ({ overflow, matchContentHeight }) => `
   width: 100%;
-  height: 100%;
+  height: ${matchContentHeight ? 'auto' : '100%'};
   display: flex;
   flex-direction: column;
   overflow: ${overflow ? 'auto' : 'hidden'};
@@ -139,6 +144,7 @@ interface BaseSectionProps {
   rightElement?: ReactNode | ((isOpen) => ReactNode);
   leftElement?: ReactNode | ((isOpen) => ReactNode);
   headerStyle?: CSSProperties;
+  arrowProps?: { style?: CSSProperties; hide?: boolean };
 }
 
 interface SectionItemProps extends BaseSectionProps {
@@ -147,13 +153,13 @@ interface SectionItemProps extends BaseSectionProps {
   children?: ReactNode | ((options: { isOpen?: boolean }) => ReactNode);
   isOpen: boolean;
   sticky?: boolean;
-  matchContentHeight?: boolean;
 }
 
 interface SectionProps {
   children?: ReactNode;
   overflow?: boolean;
   renderActiveSectionContentOnly?: boolean;
+  matchContentHeight?: boolean;
 }
 
 export function Sections(props: SectionProps) {
@@ -161,14 +167,17 @@ export function Sections(props: SectionProps) {
     children,
     overflow = false,
     renderActiveSectionContentOnly = false,
+    matchContentHeight = false,
   } = props;
 
   const state = useMemo(() => {
-    return { overflow, renderActiveSectionContentOnly };
-  }, [overflow, renderActiveSectionContentOnly]);
+    return { overflow, renderActiveSectionContentOnly, matchContentHeight };
+  }, [overflow, renderActiveSectionContentOnly, matchContentHeight]);
   return (
     <SectionsContext.Provider value={state}>
-      <Container overflow={overflow}>{children}</Container>
+      <Container overflow={overflow} matchContentHeight={matchContentHeight}>
+        {children}
+      </Container>
     </SectionsContext.Provider>
   );
 }
@@ -196,10 +205,10 @@ function SectionItem(props: SectionItemProps) {
     headerStyle,
     isOpen,
     sticky = false,
-    matchContentHeight = false,
+    arrowProps = { hide: false, style: {} },
   } = props;
 
-  const { overflow } = useSections();
+  const { overflow, matchContentHeight } = useSections();
 
   return (
     <SectionWrapper
@@ -216,6 +225,7 @@ function SectionItem(props: SectionItemProps) {
         leftElement={leftElement}
         headerStyle={headerStyle}
         sticky={sticky}
+        arrowProps={arrowProps}
       />
       <Wrapper isOpen={isOpen}>{children}</Wrapper>
     </SectionWrapper>
@@ -260,6 +270,7 @@ function MainSectionHeader(props: MainSectionHeaderProps) {
     leftElement,
     headerStyle = {},
     sticky,
+    arrowProps,
   } = props;
   return (
     <Header
@@ -292,7 +303,13 @@ function MainSectionHeader(props: MainSectionHeaderProps) {
             ? rightElement(isOpen)
             : rightElement}
         </ElementsContainer>
-        <OpenIcon icon="chevron-right" isOpen={isOpen} />
+        {!arrowProps?.hide && (
+          <OpenIcon
+            icon="chevron-right"
+            isOpen={isOpen}
+            style={arrowProps?.style}
+          />
+        )}
       </ElementsContainer>
     </Header>
   );

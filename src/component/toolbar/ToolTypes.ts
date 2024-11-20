@@ -1,6 +1,6 @@
 import type { NMRiumToolBarPreferences } from 'nmr-load-save';
 import type { Info1D, Info2D } from 'nmr-processing';
-import { Filters } from 'nmr-processing';
+import { Filters1D } from 'nmr-processing';
 
 import type { DisplayerMode } from '../reducer/Reducer.js';
 
@@ -140,8 +140,8 @@ export const options: RecordOptions = {
     isToggle: true,
   },
   apodization: {
-    id: Filters.apodization.id,
-    label: Filters.apodization.name,
+    id: Filters1D.apodization.name,
+    label: Filters1D.apodization.label,
     hasOptionPanel: true,
     isFilter: true,
     mode: '1D',
@@ -157,8 +157,8 @@ export const options: RecordOptions = {
     isToggle: true,
   },
   zeroFilling: {
-    id: Filters.zeroFilling.id,
-    label: Filters.zeroFilling.name,
+    id: Filters1D.zeroFilling.name,
+    label: Filters1D.zeroFilling.label,
     hasOptionPanel: true,
     isFilter: true,
     mode: '1D',
@@ -174,8 +174,8 @@ export const options: RecordOptions = {
     isToggle: true,
   },
   phaseCorrection: {
-    id: Filters.phaseCorrection.id,
-    label: Filters.phaseCorrection.name,
+    id: Filters1D.phaseCorrection.name,
+    label: Filters1D.phaseCorrection.label,
     hasOptionPanel: true,
     isFilter: true,
     mode: '1D',
@@ -191,8 +191,8 @@ export const options: RecordOptions = {
     isToggle: true,
   },
   baselineCorrection: {
-    id: Filters.baselineCorrection.id,
-    label: Filters.baselineCorrection.name,
+    id: Filters1D.baselineCorrection.name,
+    label: Filters1D.baselineCorrection.label,
     hasOptionPanel: true,
     isFilter: true,
     mode: '1D',

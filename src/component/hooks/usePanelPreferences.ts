@@ -165,7 +165,6 @@ export function usePanelPreferencesByNuclei<T extends Panel>(
   nuclei: string[],
 ): UsePanelPreferencesByNucleiResult<T> {
   const { current } = usePreferences();
-
   return useMemo(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { nuclei: omitNuclei = null, ...restPreferences } =

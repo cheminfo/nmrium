@@ -12,7 +12,7 @@ import type {
   Spectrum2D,
 } from 'nmr-load-save';
 import type { NMRRange } from 'nmr-processing';
-import { Filters, FiltersManager } from 'nmr-processing';
+import { Filters1DManager } from 'nmr-processing';
 
 import {
   get1DColor,
@@ -29,7 +29,6 @@ import {
   getMissingProjection,
   isSpectrum2D,
 } from '../../../data/data2d/Spectrum2D/index.js';
-import type { Nuclei, Nucleus } from '../../../data/types/common/Nucleus.js';
 import {
   adjustAlpha,
   generateColor,
@@ -67,7 +66,7 @@ export type SpectraSelectedMode = 'selected' | 'all' | 'selectedOnly';
 type ChangeSpectraVisibilityByNucleusAction = ActionType<
   'CHANGE_SPECTRA_VISIBILITY_BY_NUCLEUS',
   {
-    nucleus: Nucleus;
+    nucleus: string;
     flag: boolean;
     mode?: SpectraSelectedMode;
   }
@@ -101,7 +100,7 @@ type DeleteSpectraAction = ActionType<
 type AddMissingProjectionAction = ActionType<
   'ADD_MISSING_PROJECTION',
   {
-    nucleus: Nuclei[];
+    nucleus: string[];
   }
 >;
 type AlignSpectraAction = ActionType<
@@ -169,7 +168,6 @@ export type SpectrumActions =
   | SimulateSpectrumAction
   | UpdateSpectrumMetaAction;
 
-const { applyFilter } = FiltersManager;
 function checkIsVisible2D(datum: Spectrum2D): boolean {
   if (!datum.display.isPositiveVisible && !datum.display.isNegativeVisible) {
     return false;
@@ -548,9 +546,9 @@ function handleAlignSpectraHandler(
         !datum.info?.isFid
       ) {
         const shift = getReferenceShift(datum, { ...action.payload });
-        applyFilter(datum, [
+        Filters1DManager.applyFilters(datum as Spectrum1D, [
           {
-            name: Filters.shiftX.id,
+            name: 'shiftX',
             value: { shift },
           },
         ]);

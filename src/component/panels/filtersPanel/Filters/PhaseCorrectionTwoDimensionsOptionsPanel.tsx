@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { Select } from '@blueprintjs/select';
-import { Filters } from 'nmr-processing';
 import type { CSSProperties } from 'react';
 import { FaRulerHorizontal, FaRulerVertical } from 'react-icons/fa';
 import { MdLooksTwo } from 'react-icons/md';
 import { Button, Toolbar } from 'react-science/ui';
 
+import type { ExtractFilterEntry } from '../../../../data/types/common/ExtractFilterEntry.js';
 import InputRange from '../../../elements/InputRange.js';
 import type { LabelStyle } from '../../../elements/Label.js';
 import Label from '../../../elements/Label.js';
@@ -42,11 +42,14 @@ const formLabelStyle: LabelStyle = {
 };
 
 export default function PhaseCorrectionTwoDimensionsOptionsPanel(
-  props: BaseFilterOptionsPanelProps,
+  props: BaseFilterOptionsPanelProps<
+    ExtractFilterEntry<'phaseCorrectionTwoDimensions'>
+  >,
 ) {
   const { enableEdit = true, onCancel, onConfirm } = props;
 
-  const filter = useFilter(Filters.phaseCorrectionTwoDimensions.id);
+  const filter = useFilter('phaseCorrectionTwoDimensions');
+
   const {
     ph0Ref,
     ph1Ref,

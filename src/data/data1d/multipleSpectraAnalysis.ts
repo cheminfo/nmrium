@@ -1,5 +1,6 @@
 import lodashGet from 'lodash/get.js';
 import type {
+  AnalysisColumnsValuesKeys,
   AnalysisOptions,
   JpathTableColumn,
   MultipleSpectraAnalysisPreferences,
@@ -10,7 +11,10 @@ import type {
   Spectrum1D,
   WorkSpacePanelPreferences,
 } from 'nmr-load-save';
-import { AnalysisColumnsTypes, AnalysisColumnsValuesKeys } from 'nmr-load-save';
+import {
+  ANALYSIS_COLUMN_TYPES,
+  ANALYSIS_COLUMN_VALUES_KEYS,
+} from 'nmr-load-save';
 
 import type { RangeDetectionResult } from '../types/data1d/index.js';
 import { convertSpectraArrayToObject } from '../utilities/convertSpectraListToObject.js';
@@ -18,7 +22,7 @@ import generateChar from '../utilities/generateChar.js';
 
 import { detectRange, isSpectrum1D } from './Spectrum1D/index.js';
 
-export type ColumnType = keyof typeof AnalysisColumnsTypes;
+export type ColumnType = keyof typeof ANALYSIS_COLUMN_TYPES;
 
 export interface AnalysisRow extends RangeDetectionResult {
   SID: string;
@@ -147,8 +151,8 @@ export function analyzeSpectra(
     spectraAnalysis,
     nucleus,
     {
-      type: AnalysisColumnsTypes.NORMAL,
-      valueKey: AnalysisColumnsValuesKeys.ABSOLUTE,
+      type: ANALYSIS_COLUMN_TYPES.NORMAL,
+      valueKey: ANALYSIS_COLUMN_VALUES_KEYS.ABSOLUTE,
       from,
       to,
       index: 1,
@@ -192,7 +196,7 @@ export function generateAnalyzeSpectra(
     Object.entries(data).map((spectra: any) => {
       const result = Object.fromEntries(
         Object.keys(columns).map((key) => {
-          const isFormula = columns[key].type === AnalysisColumnsTypes.FORMULA;
+          const isFormula = columns[key].type === ANALYSIS_COLUMN_TYPES.FORMULA;
           if (isFormula) {
             const { SID, id } = spectra[1][key];
             return [
