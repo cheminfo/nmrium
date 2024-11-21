@@ -23,6 +23,7 @@ import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { usePreferences } from '../../context/PreferencesContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
+import { EmptyText } from '../../elements/EmptyText.js';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus.js';
 import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus.js';
 import { options } from '../../toolbar/ToolTypes.js';
@@ -31,7 +32,6 @@ import { exportAsJSON } from '../../utility/export.js';
 import nucleusToString from '../../utility/nucleusToString.js';
 import { PanelNoData } from '../PanelNoData.js';
 import { tablePanelStyle } from '../extra/BasicPanelStyle.js';
-import NoTableData from '../extra/placeholder/NoTableData.js';
 import type { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
 import PreferencesHeader from '../header/PreferencesHeader.js';
 
@@ -418,7 +418,7 @@ function DatabasePanelInner({
               onSave={saveHandler}
             />
           ) : (
-            <NoTableData
+            <EmptyText
               text={
                 databases && databases?.length > 0
                   ? 'Please select a database'

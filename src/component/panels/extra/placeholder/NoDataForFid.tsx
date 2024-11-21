@@ -1,5 +1,5 @@
-import NoTableData from './NoTableData.js';
+import { EmptyText } from '../../../elements/EmptyText.js';
 
-export default function NoDataForFid() {
-  return <NoTableData text="Not available for FID" />;
+export function NoDataForFid() {
+  return <EmptyText text="Not available for FID" />;
 }

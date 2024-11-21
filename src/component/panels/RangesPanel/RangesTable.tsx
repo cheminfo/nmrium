@@ -5,11 +5,11 @@ import type { Info1D } from 'nmr-processing';
 import { FaLink } from 'react-icons/fa';
 
 import { withDialog } from '../../elements/DialogManager.js';
+import { EmptyText } from '../../elements/EmptyText.js';
 import type { TableContextMenuProps } from '../../elements/ReactTable/ReactTable.js';
 import useTableSortBy from '../../hooks/useTableSortBy.js';
 import { EditRangeModal } from '../../modal/editRange/EditRangeModal.js';
-import NoDataForFid from '../extra/placeholder/NoDataForFid.js';
-import NoTableData from '../extra/placeholder/NoTableData.js';
+import { NoDataForFid } from '../extra/placeholder/NoDataForFid.js';
 
 import RangesTableRow from './RangesTableRow.js';
 import useMapRanges from './hooks/useMapRanges.js';
@@ -86,7 +86,7 @@ function RangesTable({
   }
 
   if (!tableData || tableData.length === 0) {
-    return <NoTableData />;
+    return <EmptyText text="No data" />;
   }
 
   const showActions =

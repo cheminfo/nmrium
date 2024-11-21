@@ -5,12 +5,12 @@ import type {
 } from 'nmr-load-save';
 import { useFormContext } from 'react-hook-form';
 
+import { getFilterLabel } from '../../../../data/getFilterLabel.js';
 import IsotopesViewer from '../../../elements/IsotopesViewer.js';
 import Label from '../../../elements/Label.js';
 import ReactTable from '../../../elements/ReactTable/ReactTable.js';
 import type { CustomColumn } from '../../../elements/ReactTable/utility/addCustomColumn.js';
 import type { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
-import { getFilterLabel } from '../../../../data/getFilterLabel.js';
 
 function OnLoadProcessingTabContent() {
   const { register, watch } = useFormContext<WorkspacePreferences>();

@@ -3,13 +3,13 @@ import { Fragment, useMemo } from 'react';
 import type { SpectraAnalysisData } from '../../../data/data1d/multipleSpectraAnalysis.js';
 import { usePreferences } from '../../context/PreferencesContext.js';
 import { useSortSpectra } from '../../context/SortSpectraContext.js';
+import { EmptyText } from '../../elements/EmptyText.js';
 import ReactTable from '../../elements/ReactTable/ReactTable.js';
 import type { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn.js';
 import addCustomColumn from '../../elements/ReactTable/utility/addCustomColumn.js';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import evaluate from '../../utility/Evaluate.js';
-import NoTableData from '../extra/placeholder/NoTableData.js';
 
 import AnalysisCell from './base/AnalysisCell.js';
 import AnalysisColumnHeader from './base/AnalysisColumnHeader.js';
@@ -152,7 +152,7 @@ function MultipleSpectraAnalysisTable({
       />
     </Fragment>
   ) : (
-    <NoTableData />
+    <EmptyText text="No data" />
   );
 }
 
