@@ -24,17 +24,14 @@ const styles = {
   header: {
     borderBottom: '1px solid #e8e8e8',
     paddingBottom: '5px',
+    marginBottom: '10px',
     fontWeight: 'bold',
     color: '#4a4a4a',
   },
 };
 
-export function NucleusGroup({
-  nucleus,
-  children,
-  renderTop,
-  renderBottom,
-}: NucleusGroupWithChildrenProps) {
+export function NucleusGroup(props: NucleusGroupWithChildrenProps) {
+  const { nucleus, children, renderTop, renderBottom } = props;
   return (
     <div key={nucleus} style={styles.groupContainer}>
       <IsotopesViewer style={styles.header} value={nucleus} />
