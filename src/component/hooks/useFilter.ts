@@ -2,10 +2,10 @@ import type { Spectrum1D, Spectrum2D } from 'nmr-load-save';
 import type { Filter1DEntry, Filter2DEntry } from 'nmr-processing';
 import { useMemo } from 'react';
 
+import type { ExtractFilterEntry } from '../../data/types/common/ExtractFilterEntry.js';
 import type { FilterEntry } from '../../data/types/common/FilterEntry.js';
 
 import useSpectrum from './useSpectrum.js';
-import type { ExtractFilterEntry } from '../../data/types/common/ExtractFilterEntry.js';
 
 const emptyData = { filters: {} };
 type FilterReturnType<T> = T extends Filter1DEntry['name']

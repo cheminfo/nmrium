@@ -3,22 +3,23 @@ import styled from '@emotion/styled';
 import { v4 } from '@lukeed/uuid';
 import { Filters1D, Filters2D } from 'nmr-processing';
 import { memo, useEffect, useRef, useState } from 'react';
-import { FaRegEyeSlash, FaRegTrashAlt } from 'react-icons/fa';
+import { FaRegTrashAlt } from 'react-icons/fa';
 import { ObjectInspector } from 'react-inspector';
 import { Button } from 'react-science/ui';
 
+import { getFilterLabel } from '../../../../data/getFilterLabel.js';
 import type { FilterEntry as BaseFilterEntry } from '../../../../data/types/common/FilterEntry.js';
 import { useChartData } from '../../../context/ChartContext.js';
 import { useDispatch } from '../../../context/DispatchContext.js';
 import { useToaster } from '../../../context/ToasterContext.js';
 import type { AlertButton } from '../../../elements/Alert.js';
 import { useAlert } from '../../../elements/Alert.js';
+import { EmptyText } from '../../../elements/EmptyText.js';
 import { Sections } from '../../../elements/Sections.js';
 import useSpectraByActiveNucleus from '../../../hooks/useSpectraPerNucleus.js';
 import useSpectrum from '../../../hooks/useSpectrum.js';
 
 import { filterOptionPanels } from './index.js';
-import { getFilterLabel } from '../../../../data/getFilterLabel.js';
 
 const nonRemovableFilters = new Set<BaseFilterEntry['name']>([
   'digitalFilter',
@@ -248,7 +249,7 @@ function FiltersInner(props: FiltersInnerProps) {
   }
 
   if (filtersList?.length === 0) {
-    return <EmptyFilters />;
+    return <EmptyText text="No Filters" />;
   }
 
   function handleClose() {
@@ -296,7 +297,11 @@ function FiltersInner(props: FiltersInnerProps) {
               />
             ) : (
               <Sections.Body>
-                <ObjectInspector data={error || value} />
+                {value && Object.keys(value).length > 0 ? (
+                  <ObjectInspector data={value} />
+                ) : (
+                  <EmptyText text=" No options available" />
+                )}
               </Sections.Body>
             )}
           </Sections.Item>
@@ -320,31 +325,4 @@ export function FiltersSectionsPanel() {
   const spectraCounter = useSpectraByActiveNucleus().length;
 
   return <MemoizedFilters {...{ filters, spectraCounter, activeFilterID }} />;
-}
-
-const EmptyContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  color: #6a6a6a;
-  padding: 10px 0;
-`;
-
-export function EmptyFilters() {
-  return (
-    <EmptyContainer>
-      <FaRegEyeSlash
-        style={{
-          margin: '0px 10px',
-          fontSize: '16px',
-        }}
-      />
-      <span
-        style={{
-          fontSize: '11px',
-        }}
-      >
-        No Filters
-      </span>
-    </EmptyContainer>
-  );
 }

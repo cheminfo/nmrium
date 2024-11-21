@@ -1,4 +1,5 @@
 import { Filters1D, Filters2D } from 'nmr-processing';
+
 import type { FilterEntry } from './types/common/FilterEntry.js';
 
 export function getFilterLabel(name: FilterEntry['name']): string {

@@ -5,6 +5,7 @@ import { FaEdit, FaRegTrashAlt } from 'react-icons/fa';
 
 import { useDispatch } from '../../context/DispatchContext.js';
 import { EditableColumn } from '../../elements/EditableColumn.js';
+import { EmptyText } from '../../elements/EmptyText.js';
 import ReactTable from '../../elements/ReactTable/ReactTable.js';
 import type { ControlCustomColumn } from '../../elements/ReactTable/utility/addCustomColumn.js';
 import addCustomColumn, {
@@ -13,8 +14,7 @@ import addCustomColumn, {
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import { EditPeakShapeModal } from '../../modal/EditPeakShapeModal.js';
 import { formatNumber } from '../../utility/formatNumber.js';
-import NoDataForFid from '../extra/placeholder/NoDataForFid.js';
-import NoTableData from '../extra/placeholder/NoTableData.js';
+import { NoDataForFid } from '../extra/placeholder/NoDataForFid.js';
 
 import type { PeakRecord } from './PeaksPanel.js';
 
@@ -203,7 +203,7 @@ function PeaksTable({ activeTab, data, info }: PeaksTableProps) {
   }
 
   if (!data || data.length === 0) {
-    return <NoTableData />;
+    return <EmptyText text="No data" />;
   }
 
   return (

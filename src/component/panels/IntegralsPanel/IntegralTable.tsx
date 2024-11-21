@@ -7,6 +7,7 @@ import { SIGNAL_KINDS } from '../../../data/constants/signalsKinds.js';
 import { checkIntegralKind } from '../../../data/data1d/Spectrum1D/index.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { EditableColumn } from '../../elements/EditableColumn.js';
+import { EmptyText } from '../../elements/EmptyText.js';
 import ReactTable from '../../elements/ReactTable/ReactTable.js';
 import type { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn.js';
 import addCustomColumn, {
@@ -15,8 +16,7 @@ import addCustomColumn, {
 import Select from '../../elements/Select.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import { formatNumber } from '../../utility/formatNumber.js';
-import NoDataForFid from '../extra/placeholder/NoDataForFid.js';
-import NoTableData from '../extra/placeholder/NoTableData.js';
+import { NoDataForFid } from '../extra/placeholder/NoDataForFid.js';
 
 import type { IntegralPanelInnerProps } from './IntegralPanel.js';
 
@@ -180,7 +180,7 @@ function IntegralTable({ activeTab, data, info }: IntegralTableProps) {
   }
 
   if (!data || data.length === 0) {
-    return <NoTableData />;
+    return <EmptyText text="No data" />;
   }
 
   return <ReactTable data={data} columns={tableColumns} />;
