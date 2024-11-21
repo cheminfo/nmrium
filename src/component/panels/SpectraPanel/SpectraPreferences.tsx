@@ -18,23 +18,11 @@ import { Scroller } from '../../elements/Scroller.js';
 import useNucleus from '../../hooks/useNucleus.js';
 import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences.js';
 import { getSpectraObjectPaths } from '../../utility/getSpectraObjectPaths.js';
+import { replaceNucleiObjectKeys } from '../../utility/replaceNucleiObjectKeys.js';
 import { NucleusGroup } from '../extra/preferences/NucleusGroup.js';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer.js';
 
 import { SpectraColumnsManager } from './base/SpectraColumnsManager.js';
-
-function replaceNucleusKeys(
-  data: PanelsPreferences['spectra'],
-  searchValue: string,
-  replaceValue: string,
-) {
-  const nuclei = {};
-
-  for (const key in data.nuclei) {
-    nuclei[key.replace(searchValue, replaceValue)] = data.nuclei[key];
-  }
-  return { ...data, nuclei };
-}
 
 const groupPaneStyle: GroupPaneStyle = {
   header: {
@@ -90,7 +78,7 @@ function SpectraPreferences(props, ref: any) {
 
   const preferencesByNuclei = usePanelPreferencesByNuclei('spectra', nuclei);
   const methods = useForm({
-    defaultValues: replaceNucleusKeys(preferencesByNuclei, ',', '_'),
+    defaultValues: replaceNucleiObjectKeys(preferencesByNuclei, ',', '_'),
     resolver: yupResolver(spectraPreferencesValidation),
   });
   const {
@@ -110,7 +98,7 @@ function SpectraPreferences(props, ref: any) {
         type: 'SET_PANELS_PREFERENCES',
         payload: {
           key: 'spectra',
-          value: replaceNucleusKeys(values, '_', ','),
+          value: replaceNucleiObjectKeys(values, '_', ','),
         },
       });
       return true;

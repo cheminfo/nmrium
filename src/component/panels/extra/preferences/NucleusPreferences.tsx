@@ -15,13 +15,21 @@ interface NucleusPreferencesProps<
 > extends NucleusGroupProps,
     Pick<ControllerProps<TFieldValues>, 'control'> {
   fields: NucleusPreferenceField[];
+  nucleusTitle?: string;
 }
 
 export function NucleusPreferences(props: NucleusPreferencesProps) {
-  const { nucleus, fields, renderTop, renderBottom, control } = props;
+  const {
+    nucleus,
+    nucleusTitle = nucleus,
+    fields,
+    renderTop,
+    renderBottom,
+    control,
+  } = props;
   return (
     <NucleusGroup
-      nucleus={nucleus}
+      nucleus={nucleusTitle}
       renderTop={renderTop}
       renderBottom={renderBottom}
     >
