@@ -210,17 +210,20 @@ export type FiltersActions =
       | 'APPLY_AUTO_PHASE_CORRECTION_TOW_DIMENSION_FILTER'
     >;
 
+const DEFAULT_FILTER_DOMAIN_UPDATE_RULES: FilterDomainUpdateRules = {
+  updateXDomain: false,
+  updateYDomain: false,
+};
+
 function getFilterUpdateDomainRules(
   filterName: string,
-  defaultRule?: FilterDomainUpdateRules,
+  defaultRule: FilterDomainUpdateRules = DEFAULT_FILTER_DOMAIN_UPDATE_RULES,
 ) {
-  return (
-    Filters1D[filterName]?.domainUpdateRules ||
-    defaultRule || {
-      updateXDomain: false,
-      updateYDomain: false,
-    }
-  );
+  const filterDomainUpdateRules =
+    Filters1D?.[filterName]?.domainUpdateRules ??
+    Filters2D?.[filterName]?.domainUpdateRules;
+
+  return filterDomainUpdateRules || defaultRule;
 }
 
 export interface RollbackSpectrumByFilterOptions {
