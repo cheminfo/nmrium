@@ -27,6 +27,7 @@ import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.js';
 import type { ExclusionZone } from '../../../data/types/data1d/ExclusionZone.js';
 import { getXScale } from '../../1d/utilities/scale.js';
 import { get2DXScale, get2DYScale } from '../../2d/utilities/scale.js';
+import { nonRemovableFilters } from '../../panels/filtersPanel/Filters/FiltersSectionsPanel.js';
 import type { Tool } from '../../toolbar/ToolTypes.js';
 import { options as Tools } from '../../toolbar/ToolTypes.js';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus.js';
@@ -1179,6 +1180,31 @@ function handleEnableFilter(draft: Draft<State>, action: EnableFilterAction) {
   }
 }
 
+function deleteFilter(datum: Spectrum, id?: string) {
+  const filters = datum.filters.slice(0);
+
+  let removedFilter;
+  if (!id) {
+    datum.filters = filters.filter((filter) =>
+      nonRemovableFilters.has(filter.name),
+    ) as typeof filters;
+  } else {
+    removedFilter = datum.filters.find((filter) => filter.id === id);
+    datum.filters = filters.filter(
+      (filter) => filter.id !== id,
+    ) as typeof filters;
+  }
+
+  // do not reprocess the filters when the deleted filter is inactive
+  if (removedFilter && !removedFilter.enabled) return;
+
+  if (isSpectrum1D(datum)) {
+    Filters1DManager.reapplyFilters(datum);
+  } else {
+    Filters2DManager.reapplyFilters(datum);
+  }
+}
+
 //action
 function handleDeleteFilter(draft: Draft<State>, action: DeleteFilterAction) {
   const activeSpectrum = getActiveSpectrum(draft);
@@ -1189,14 +1215,8 @@ function handleDeleteFilter(draft: Draft<State>, action: DeleteFilterAction) {
 
   const filterID = action?.payload?.id;
   const datum = draft.data[activeSpectrum.index];
+  deleteFilter(datum, filterID);
 
-  //apply filter into the spectrum
-  if (isSpectrum1D(datum)) {
-    Filters1DManager.deleteFilter(datum, filterID);
-  }
-  if (isSpectrum2D(datum)) {
-    Filters2DManager.deleteFilter(datum, filterID);
-  }
   draft.toolOptions.data.activeFilterID = null;
   resetSelectedTool(draft);
   setDomain(draft);

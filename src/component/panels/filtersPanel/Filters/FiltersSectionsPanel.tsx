@@ -21,7 +21,7 @@ import useSpectrum from '../../../hooks/useSpectrum.js';
 
 import { filterOptionPanels } from './index.js';
 
-const nonRemovableFilters = new Set<BaseFilterEntry['name']>([
+export const nonRemovableFilters = new Set<BaseFilterEntry['name']>([
   'digitalFilter',
   'digitalFilter2D',
 ]);
