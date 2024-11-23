@@ -1,3 +1,4 @@
+import type { Logger } from 'cheminfo-types';
 import type { Draft } from 'immer';
 import { produce } from 'immer';
 import lodashMerge from 'lodash/merge.js';
@@ -29,6 +30,7 @@ import { setActiveTab } from './ToolsActions.js';
 
 //TODO use viewState type instead of any { view?: ViewState }
 interface InitiateProps {
+  logger?: Logger;
   nmriumState: Partial<NmriumState>;
 }
 interface InputProps extends InitiateProps {
@@ -91,6 +93,7 @@ function setCorrelation(draft: Draft<State>, correlations: CorrelationData) {
 
 function setData(draft: Draft<State>, input: InputProps) {
   const {
+    logger,
     nmriumState: { data, view },
     parseMetaFileResult = null,
     spectraColors = {
@@ -134,6 +137,7 @@ function setData(draft: Draft<State>, input: InputProps) {
       usedColors: draft.usedColors,
       molecules: draft.molecules,
       spectraColors,
+      logger,
     }),
   );
   setCorrelation(draft, correlations);
@@ -151,18 +155,20 @@ function setData(draft: Draft<State>, input: InputProps) {
 function initSpectra(
   inputSpectra: Spectrum[],
   options: {
+    logger?: Logger;
     usedColors: UsedColors;
     molecules: StateMoleculeExtended[];
     spectraColors: SpectraColors;
   },
 ) {
   const spectra: any = [];
-  const { usedColors, molecules, spectraColors } = options;
+  const { usedColors, molecules, spectraColors, logger } = options;
   for (const spectrum of inputSpectra) {
     const { info } = spectrum;
     if (info.dimension === 1) {
       spectra.push(
         initiateDatum1D(spectrum, {
+          logger,
           usedColors,
           molecules,
           colors: spectraColors.oneDimension,
@@ -172,7 +178,7 @@ function initSpectra(
       spectra.push(
         initiateDatum2D(
           { ...spectrum },
-          { usedColors, colors: spectraColors.twoDimensions },
+          { usedColors, colors: spectraColors.twoDimensions, logger },
         ),
       );
     }

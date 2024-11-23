@@ -1,5 +1,5 @@
 import { v4 } from '@lukeed/uuid';
-import type { NmrData1D, NmrData2DFt } from 'cheminfo-types';
+import type { Logger, NmrData1D, NmrData2DFt } from 'cheminfo-types';
 import type { Draft } from 'immer';
 import { current } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
@@ -148,12 +148,15 @@ type BaselineCorrectionFilterLiveAction = ActionType<
 >;
 type EnableFilterAction = ActionType<
   'ENABLE_FILTER',
-  { id: string; enabled: boolean }
+  { id: string; enabled: boolean; logger?: Logger }
 >;
-type DeleteFilterAction = ActionType<'DELETE_FILTER', { id?: string }>;
+type DeleteFilterAction = ActionType<
+  'DELETE_FILTER',
+  { id?: string; logger?: Logger }
+>;
 type DeleteSpectraFilterAction = ActionType<
   'DELETE_SPECTRA_FILTER',
-  { filterName: string }
+  { filterName: string; logger?: Logger }
 >;
 type SetFilterSnapshotAction = ActionType<
   'SET_FILTER_SNAPSHOT',
@@ -169,7 +172,7 @@ type AddExclusionZoneAction = ActionType<
 >;
 type DeleteExclusionZoneAction = ActionType<
   'DELETE_EXCLUSION_ZONE',
-  { zone: ExclusionZone; spectrumId?: string }
+  { zone: ExclusionZone; spectrumId?: string; logger?: Logger }
 >;
 type ApplySignalProcessingAction = ActionType<
   'APPLY_SIGNAL_PROCESSING_FILTER',
@@ -258,6 +261,7 @@ export interface RollbackSpectrumByFilterOptions {
   key?: string | null;
   activeSpectrum?: ActiveSpectrum | null;
   triggerSource?: 'Apply' | 'none';
+  logger?: Logger;
 }
 
 function getFilterDomain(
@@ -296,6 +300,7 @@ function rollbackSpectrumByFilter(
     reset = false,
     key,
     activeSpectrum,
+    logger,
     triggerSource = 'none',
   } = options || {};
 
@@ -330,19 +335,28 @@ function rollbackSpectrumByFilter(
       });
 
       if (isSpectrum1D(datum)) {
-        Filters1DManager.reapplyFilters(datum, filters);
+        Filters1DManager.reapplyFilters(datum, { filters, logger });
       } else {
-        Filters2DManager.reapplyFilters(datum, filters);
+        Filters2DManager.reapplyFilters(datum, { filters, logger });
       }
 
       draft.tempData = current(draft).data;
       // apply the current Filters
       if (applyFilter) {
-        const { name, value } = datum.filters[filterIndex];
         if (datum.info.dimension === 1) {
-          Filters1D[name].apply(datum, value);
+          const datum1D = datum as Spectrum1D;
+          Filters1DManager.applyFilter(
+            datum1D,
+            datum1D.filters[filterIndex],
+            logger,
+          );
         } else {
-          Filters2D[name].apply(datum, value);
+          const datum2D = datum as Spectrum2D;
+          Filters2DManager.applyFilter(
+            datum2D,
+            datum2D.filters[filterIndex],
+            logger,
+          );
         }
       }
 
@@ -361,9 +375,9 @@ function rollbackSpectrumByFilter(
     if (filterIndex === -1 || reset) {
       if (draft.tempData) {
         if (isSpectrum1D(datum)) {
-          Filters1DManager.reapplyFilters(datum);
+          Filters1DManager.reapplyFilters(datum, { logger });
         } else {
-          Filters2DManager.reapplyFilters(datum);
+          Filters2DManager.reapplyFilters(datum, { logger });
         }
       }
       //if the filter is not exists, create a clone of the current data
@@ -1271,15 +1285,15 @@ function handleEnableFilter(draft: Draft<State>, action: EnableFilterAction) {
     return;
   }
 
-  const { id: filterID, enabled } = action.payload;
+  const { id: filterID, enabled, logger } = action.payload;
   const datum = draft.data[activeSpectrum.index];
 
   //apply filter into the spectrum
   if (isSpectrum1D(datum)) {
-    Filters1DManager.enableFilter(datum, filterID, enabled);
+    Filters1DManager.enableFilter(datum, { id: filterID, enabled, logger });
   }
   if (isSpectrum2D(datum)) {
-    Filters2DManager.enableFilter(datum, filterID, enabled);
+    Filters2DManager.enableFilter(datum, { id: filterID, enabled, logger });
   }
 
   resetSelectedTool(draft);
@@ -1298,28 +1312,26 @@ function handleEnableFilter(draft: Draft<State>, action: EnableFilterAction) {
   }
 }
 
-function deleteFilter(datum: Spectrum, id?: string) {
+function deleteFilter(datum: Spectrum, id?: string, logger?: Logger) {
   const filters = datum.filters.slice(0);
 
   let removedFilter;
   if (!id) {
     datum.filters = filters.filter((filter) =>
       nonRemovableFilters.has(filter.name),
-    ) as typeof filters;
+    );
   } else {
     removedFilter = datum.filters.find((filter) => filter.id === id);
-    datum.filters = filters.filter(
-      (filter) => filter.id !== id,
-    ) as typeof filters;
+    datum.filters = filters.filter((filter) => filter.id !== id);
   }
 
   // do not reprocess the filters when the deleted filter is inactive
   if (removedFilter && !removedFilter.enabled) return;
 
   if (isSpectrum1D(datum)) {
-    Filters1DManager.reapplyFilters(datum);
+    Filters1DManager.reapplyFilters(datum, { logger });
   } else {
-    Filters2DManager.reapplyFilters(datum);
+    Filters2DManager.reapplyFilters(datum, { logger });
   }
 }
 
@@ -1331,9 +1343,9 @@ function handleDeleteFilter(draft: Draft<State>, action: DeleteFilterAction) {
     return;
   }
 
-  const filterID = action?.payload?.id;
+  const { id, logger } = action?.payload || {};
   const datum = draft.data[activeSpectrum.index];
-  deleteFilter(datum, filterID);
+  deleteFilter(datum, id, logger);
 
   draft.toolOptions.data.activeFilterID = null;
   resetSelectedTool(draft);
@@ -1346,7 +1358,7 @@ function handleDeleteSpectraFilter(
   draft: Draft<State>,
   action: DeleteSpectraFilterAction,
 ) {
-  const filterName = action.payload.filterName;
+  const { filterName, logger } = action.payload;
 
   if (draft.view.spectra.activeTab) {
     for (const datum of draft.data) {
@@ -1358,11 +1370,11 @@ function handleDeleteSpectraFilter(
 
         for (const filter of filtersResult) {
           if (isSpectrum1D(datum)) {
-            Filters1DManager.deleteFilter(datum, filter.id);
+            Filters1DManager.deleteFilter(datum, filter.id, logger);
           }
 
           if (isSpectrum2D(datum)) {
-            Filters2DManager.deleteFilter(datum, filter.id);
+            Filters2DManager.deleteFilter(datum, filter.id, logger);
           }
         }
       }
@@ -1497,7 +1509,7 @@ function handleDeleteExclusionZone(
   draft: Draft<State>,
   action: DeleteExclusionZoneAction,
 ) {
-  const { zone, spectrumId } = action.payload;
+  const { zone, spectrumId, logger } = action.payload;
 
   // if spectrum id exists, remove the selected exclusion zone in the spectrum
   if (spectrumId) {
@@ -1510,10 +1522,10 @@ function handleDeleteExclusionZone(
     );
     if (filter && isSpectrum1D(spectrum)) {
       if (filter.value.length === 1) {
-        Filters1DManager.deleteFilter(spectrum, filter.id);
+        Filters1DManager.deleteFilter(spectrum, filter.id, logger);
       } else {
         filter.value = filter.value.filter((_zone) => _zone.id !== zone?.id);
-        Filters1DManager.reapplyFilters(spectrum);
+        Filters1DManager.reapplyFilters(spectrum, { logger });
       }
     }
   } else {
@@ -1525,7 +1537,7 @@ function handleDeleteExclusionZone(
           filter.value = filter.value.filter(
             (_zone) => zone.from !== _zone.from && zone.to !== _zone.to,
           );
-          Filters1DManager.reapplyFilters(datum);
+          Filters1DManager.reapplyFilters(datum, { logger });
         }
       }
     }

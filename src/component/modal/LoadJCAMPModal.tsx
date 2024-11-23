@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
 import { useDispatch } from '../context/DispatchContext.js';
+import { useLogger } from '../context/LoggerContext.js';
 import { useToaster } from '../context/ToasterContext.js';
 import { Input2Controller } from '../elements/Input2Controller.js';
 import type { LabelStyle } from '../elements/Label.js';

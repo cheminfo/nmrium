@@ -67,6 +67,7 @@ export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
               containsNmrium,
               parseMetaFileResult,
               spectraColors,
+              logger,
             },
           });
         }

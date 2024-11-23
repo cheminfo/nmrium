@@ -117,7 +117,7 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
               },
             });
           }
-          dispatch({ type: 'INITIATE', payload: { nmriumState } });
+          dispatch({ type: 'INITIATE', payload: { nmriumState, logger } });
         })
         .catch((error: unknown) => {
           dispatch({ type: 'SET_LOADING_FLAG', payload: { isLoading: false } });
@@ -129,7 +129,7 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
           reportError(error);
         });
     }
-  }, [nmriumData, dispatch, dispatchPreferences]);
+  }, [nmriumData, dispatch, dispatchPreferences, logger]);
   const { sortOptions } = useSortSpectra();
 
   const spectra = useMemo(() => {

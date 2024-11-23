@@ -13,6 +13,7 @@ import type { MatrixFilter } from '../../../data/matrixGeneration.js';
 import { getMatrixFilters } from '../../../data/matrixGeneration.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
+import { useLogger } from '../../context/LoggerContext.js';
 import { usePreferences } from '../../context/PreferencesContext.js';
 import type { GroupPaneStyle } from '../../elements/GroupPane.js';
 import { GroupPane } from '../../elements/GroupPane.js';
@@ -124,6 +125,7 @@ function InnerMatrixGenerationPanel() {
     activeTab,
   );
 
+  const { logger } = useLogger();
   const matrixOptions = getMatrixOptions(nucleusMatrixOptions.matrixOptions, {
     from: originDomain.xDomain[0],
     to: originDomain.xDomain[1],
@@ -152,7 +154,7 @@ function InnerMatrixGenerationPanel() {
   function handleRemoveProcessing() {
     dispatch({
       type: 'DELETE_SPECTRA_FILTER',
-      payload: { filterName: signalProcessing.name },
+      payload: { filterName: signalProcessing.name, logger },
     });
   }
 
