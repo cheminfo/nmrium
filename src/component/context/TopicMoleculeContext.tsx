@@ -1,7 +1,7 @@
 import OCL from 'openchemlib/full';
 import { TopicMolecule } from 'openchemlib-utils';
 import type { ReactNode } from 'react';
-import { createContext, useContext, useEffect, useRef } from 'react';
+import { createContext, useContext, useEffect, useMemo } from 'react';
 
 import { useChartData } from './ChartContext.js';
 
@@ -24,23 +24,23 @@ interface TopicMoleculeProviderProps {
 export function TopicMoleculeProvider({
   children,
 }: TopicMoleculeProviderProps) {
-  const moleculesRef = useRef<Record<string, TopicMolecule>>({});
+  const topicMolecules = useMemo<Record<string, TopicMolecule>>(() => ({}), []);
   const { molecules } = useChartData();
 
   useEffect(() => {
     for (const { id, molfile } of molecules) {
-      const topicMolecule = moleculesRef.current?.[id];
+      const topicMolecule = topicMolecules.current?.[id];
       const molecule = OCL.Molecule.fromMolfile(molfile);
       if (topicMolecule) {
-        moleculesRef.current[id] = topicMolecule.fromMolecule(molecule);
+        topicMolecules.current[id] = topicMolecule.fromMolecule(molecule);
       } else {
-        moleculesRef.current[id] = new TopicMolecule(molecule);
+        topicMolecules.current[id] = new TopicMolecule(molecule);
       }
     }
-  }, [molecules]);
+  }, [topicMolecules, molecules]);
 
   return (
-    <TopicMoleculeContext.Provider value={moleculesRef.current}>
+    <TopicMoleculeContext.Provider value={topicMolecules}>
       {children}
     </TopicMoleculeContext.Provider>
   );
