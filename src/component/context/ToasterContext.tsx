@@ -4,7 +4,6 @@ import type { ReactNode } from 'react';
 import { createContext, useContext, useMemo, useRef } from 'react';
 
 interface ToasterContextProps {
-  toaster: OverlayToaster | null;
   showLoading: (options: ToastProps) => () => void;
   showAsyncLoading: (options: ToastProps) => Promise<() => void>;
   show: (options: ToastProps) => void;
@@ -28,7 +27,7 @@ interface ToasterProviderProps {
 export function ToasterProvider({ children }: ToasterProviderProps) {
   const toasterRef = useRef<OverlayToaster>(null);
 
-  const toaster = useMemo(() => {
+  const toasterApi = useMemo(() => {
     function show(options: ToastProps) {
       toasterRef.current?.show(options);
     }
@@ -64,7 +63,7 @@ export function ToasterProvider({ children }: ToasterProviderProps) {
       });
     }
 
-    return { toaster: toasterRef.current, showLoading, showAsyncLoading, show };
+    return { showLoading, showAsyncLoading, show };
   }, []);
 
   return (
@@ -74,7 +73,7 @@ export function ToasterProvider({ children }: ToasterProviderProps) {
         position={Position.BOTTOM}
         ref={toasterRef}
       />
-      <ToasterContext.Provider value={toaster}>
+      <ToasterContext.Provider value={toasterApi}>
         {children}
       </ToasterContext.Provider>
     </>
