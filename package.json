@@ -134,6 +134,7 @@
     "eslint": "^9.15.0",
     "eslint-config-cheminfo-react": "^14.0.0",
     "eslint-config-cheminfo-typescript": "^16.0.0",
+    "eslint-plugin-react-compiler": "^19.0.0-beta-df7b47d-20241124",
     "modern-normalize": "^3.0.1",
     "postcss-styled-syntax": "^0.7.0",
     "prettier": "^3.3.3",

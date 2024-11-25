@@ -1,6 +1,7 @@
 import react from 'eslint-config-cheminfo-react/base';
 import ts from 'eslint-config-cheminfo-typescript/base';
 import unicorn from 'eslint-config-cheminfo-typescript/unicorn';
+import reactCompiler from 'eslint-plugin-react-compiler';
 
 export default [
   {
@@ -17,6 +18,14 @@ export default [
   ...ts,
   ...unicorn,
   ...react,
+  {
+    plugins: {
+      'react-compiler': reactCompiler,
+    },
+    rules: {
+      'react-compiler/react-compiler': 'error',
+    },
+  },
   {
     files: ['**/*.{ts,tsx,cts,mts}'],
     rules: {
