@@ -1,4 +1,5 @@
 import { v4 } from '@lukeed/uuid';
+import type { Logger } from 'cheminfo-types';
 import type { Spectrum2D, SpectrumTwoDimensionsColor } from 'nmr-load-save';
 import { Filters2DManager } from 'nmr-processing';
 
@@ -17,13 +18,14 @@ const defaultMinMax = { z: [], minX: 0, minY: 0, maxX: 0, maxY: 0 };
 export interface InitiateDatum2DOptions {
   usedColors?: UsedColors;
   colors?: SpectrumTwoDimensionsColor[];
+  logger?: Logger;
 }
 
 export function initiateDatum2D(
   spectrum: any,
   options: InitiateDatum2DOptions = {},
 ): Spectrum2D {
-  const { usedColors, colors } = options;
+  const { usedColors, colors, logger } = options;
   const datum: any = { ...spectrum };
 
   datum.id = spectrum.id || v4();
@@ -63,7 +65,7 @@ export function initiateDatum2D(
   datum.zones = initiateZones(spectrum, datum as Spectrum2D);
 
   //reapply filters after load the original data
-  Filters2DManager.reapplyFilters(datum);
+  Filters2DManager.reapplyFilters(datum, { logger });
 
   return datum;
 }

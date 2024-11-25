@@ -11,6 +11,7 @@ import { getFilterLabel } from '../../../../data/getFilterLabel.js';
 import type { FilterEntry as BaseFilterEntry } from '../../../../data/types/common/FilterEntry.js';
 import { useChartData } from '../../../context/ChartContext.js';
 import { useDispatch } from '../../../context/DispatchContext.js';
+import { useLogger } from '../../../context/LoggerContext.js';
 import { useToaster } from '../../../context/ToasterContext.js';
 import type { AlertButton } from '../../../elements/Alert.js';
 import { useAlert } from '../../../elements/Alert.js';
@@ -62,14 +63,14 @@ function FilterElements(props: FilterElementsProps) {
   } = props;
   const { id, name, enabled } = filter;
   const label = getFilterLabel(name);
-
+  const { logger } = useLogger();
   function handleFilterCheck(id, event: React.ChangeEvent<HTMLInputElement>) {
     const enabled = event.target.checked;
     const hideLoading = toaster.showLoading({
       message: `${enabled ? 'Enable' : 'Disable'} filter in progress`,
     });
     setTimeout(() => {
-      dispatch({ type: 'ENABLE_FILTER', payload: { id, enabled } });
+      dispatch({ type: 'ENABLE_FILTER', payload: { id, enabled, logger } });
       hideLoading();
     }, 0);
     onEnableChange();
@@ -83,7 +84,10 @@ function FilterElements(props: FilterElementsProps) {
           const hideLoading = await toaster.showAsyncLoading({
             message: 'Delete filter process in progress',
           });
-          dispatch({ type: 'DELETE_FILTER', payload: { id } });
+          dispatch({
+            type: 'DELETE_FILTER',
+            payload: { id, logger },
+          });
           hideLoading();
         },
         intent: 'danger',
@@ -100,7 +104,7 @@ function FilterElements(props: FilterElementsProps) {
           });
           dispatch({
             type: 'DELETE_SPECTRA_FILTER',
-            payload: { filterName: name },
+            payload: { filterName: name, logger },
           });
           hideLoading();
         },

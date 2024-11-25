@@ -1,4 +1,5 @@
 import { v4 } from '@lukeed/uuid';
+import type { Logger } from 'cheminfo-types';
 import type { Spectrum1D, SpectrumOneDimensionColor } from 'nmr-load-save';
 import { Filters1DManager } from 'nmr-processing';
 
@@ -17,13 +18,14 @@ export interface InitiateDatum1DOptions {
   usedColors?: UsedColors;
   molecules?: StateMoleculeExtended[];
   colors?: SpectrumOneDimensionColor[];
+  logger?: Logger;
 }
 
 export function initiateDatum1D(
   spectrum: any,
   options: InitiateDatum1DOptions = {},
 ): Spectrum1D {
-  const { usedColors, colors, molecules = [] } = options;
+  const { usedColors, colors, molecules = [], logger } = options;
 
   const { integrals, ranges, ...restSpectrum } = spectrum;
   const spectrumObj: Spectrum1D = { ...restSpectrum };
@@ -80,7 +82,7 @@ export function initiateDatum1D(
   spectrumObj.ranges = initiateRanges(spectrum, spectrumObj, rangesOptions);
 
   //reapply filters after load the original data
-  Filters1DManager.reapplyFilters(spectrumObj);
+  Filters1DManager.reapplyFilters(spectrumObj, { logger });
 
   return spectrumObj;
 }

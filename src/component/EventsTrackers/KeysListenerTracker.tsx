@@ -7,6 +7,7 @@ import { useAssignmentData } from '../assignment/AssignmentsContext.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useDispatch } from '../context/DispatchContext.js';
 import { useLoader } from '../context/LoaderContext.js';
+import { useLogger } from '../context/LoggerContext.js';
 import { usePreferences } from '../context/PreferencesContext.js';
 import { useToaster } from '../context/ToasterContext.js';
 import type { AlertButton } from '../elements/Alert.js';
@@ -83,6 +84,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
     return displayerMode === '1D' && data && data.length > 0;
   }, [data, displayerMode]);
 
+  const { logger } = useLogger();
   const deleteHandler = useCallback(
     async (sourceData) => {
       const { type, extra } = sourceData;
@@ -176,6 +178,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
                     type: 'DELETE_EXCLUSION_ZONE',
                     payload: {
                       zone,
+                      logger,
                     },
                   });
                   hideLoading();
@@ -194,6 +197,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
                     payload: {
                       zone,
                       spectrumId: spectrumID,
+                      logger,
                     },
                   });
                   hideLoading();
@@ -288,6 +292,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
       toaster,
       dispatchPreferences,
       activeTab,
+      logger,
     ],
   );
 
