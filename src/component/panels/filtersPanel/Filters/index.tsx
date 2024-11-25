@@ -3,6 +3,8 @@ import { Filters1D, Filters2D } from 'nmr-processing';
 
 import type { LabelStyle } from '../../../elements/Label.js';
 
+import ApodizationDimensionOneOptionsPanel from './ApodizationDimensionOneOptionsPanel.js';
+import ApodizationDimensionTwoOptionsPanel from './ApodizationDimensionTwoOptionsPanel.js';
 import ApodizationOptionsPanel from './ApodizationOptionsPanel.js';
 import BaseLineCorrectionOptionsPanel from './BaseLineCorrectionOptionsPanel.js';
 import ExclusionZonesOptionsPanel from './ExclusionZonesOptionsPanel.js';
@@ -20,10 +22,18 @@ const {
   exclusionZones,
 } = Filters1D;
 
-const { shift2DX, shift2DY, phaseCorrectionTwoDimensions } = Filters2D;
+const {
+  shift2DX,
+  shift2DY,
+  phaseCorrectionTwoDimensions,
+  apodizationDimension1,
+  apodizationDimension2,
+} = Filters2D;
 
 export const filterOptionPanels = {
   [apodization.name]: ApodizationOptionsPanel,
+  [apodizationDimension1.name]: ApodizationDimensionOneOptionsPanel,
+  [apodizationDimension2.name]: ApodizationDimensionTwoOptionsPanel,
   [phaseCorrection.name]: PhaseCorrectionOptionsPanel,
   [zeroFilling.name]: ZeroFillingOptionsPanel,
   [phaseCorrectionTwoDimensions.name]: PhaseCorrectionTwoDimensionsOptionsPanel,

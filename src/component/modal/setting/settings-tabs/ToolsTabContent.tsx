@@ -68,6 +68,14 @@ const LIST: ListItem[] = [
     name: 'apodization',
   },
   {
+    label: 'Apodization dimension one',
+    name: 'apodizationDimension1',
+  },
+  {
+    label: 'Apodization dimension two',
+    name: 'apodizationDimension2',
+  },
+  {
     label: 'Zero filling',
     name: 'zeroFilling',
   },

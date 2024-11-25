@@ -31,6 +31,8 @@ import { options } from '../toolbar/ToolTypes.js';
 import { AutoPeakPickingOptionPanel } from './AutoPeakPickingOptionPanel.js';
 import { HeaderWrapper } from './HeaderWrapper.js';
 import RangesPickingOptionPanel from './RangesPickingOptionPanel.js';
+import { SimpleApodizationDimensionOneOptionsPanel } from './SimpleApodizationDimensionOneOptionsPanel.js';
+import { SimpleApodizationDimensionTwoOptionsPanel } from './SimpleApodizationDimensionTwoOptionsPanel.js';
 import { SimpleApodizationOptionsPanel } from './SimpleApodizationOptionsPanel.js';
 import { SimpleBaseLineCorrectionOptionsPanel } from './SimpleBaseLineCorrectionOptionsPanel.js';
 import { SimplePhaseCorrectionOptionsPanel } from './SimplePhaseCorrectionOptionsPanel.js';
@@ -104,6 +106,10 @@ function HeaderInner(props: HeaderInnerProps) {
     switch (selectedOptionPanel) {
       case options.apodization.id:
         return <SimpleApodizationOptionsPanel />;
+      case options.apodizationDimension1.id:
+        return <SimpleApodizationDimensionOneOptionsPanel />;
+      case options.apodizationDimension2.id:
+        return <SimpleApodizationDimensionTwoOptionsPanel />;
       case options.zeroFilling.id:
         return <SimpleZeroFillingOptionsPanel />;
       case options.phaseCorrection.id:

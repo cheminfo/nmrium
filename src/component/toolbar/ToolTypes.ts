@@ -1,6 +1,6 @@
 import type { NMRiumToolBarPreferences } from 'nmr-load-save';
 import type { Info1D, Info2D } from 'nmr-processing';
-import { Filters1D } from 'nmr-processing';
+import { Filters1D, Filters2D } from 'nmr-processing';
 
 import type { DisplayerMode } from '../reducer/Reducer.js';
 
@@ -416,5 +416,35 @@ export const options: RecordOptions = {
     hasOptionPanel: false,
     isFilter: false,
     isToggle: false,
+  },
+  apodizationDimension1: {
+    id: Filters2D.apodizationDimension1.name,
+    label: Filters2D.apodizationDimension1.label,
+    hasOptionPanel: true,
+    isFilter: true,
+    mode: '2D',
+    spectraOptions: [
+      {
+        info: [{ key: 'isFid', value: true }],
+        active: true,
+      },
+    ],
+    isToggle: true,
+    isExperimental: true,
+  },
+  apodizationDimension2: {
+    id: Filters2D.apodizationDimension2.name,
+    label: Filters2D.apodizationDimension2.label,
+    hasOptionPanel: true,
+    isFilter: true,
+    mode: '2D',
+    spectraOptions: [
+      {
+        info: [{ key: 'isFt', value: true }],
+        active: true,
+      },
+    ],
+    isToggle: true,
+    isExperimental: true,
   },
 };
