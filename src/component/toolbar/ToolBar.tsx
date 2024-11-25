@@ -306,6 +306,20 @@ export default function ToolBar() {
       icon: <SvgNmrApodization />,
     },
     {
+      id: 'apodizationDimension1',
+      tooltip: {
+        title: options.apodizationDimension1.label,
+      },
+      icon: <SvgNmrApodization />,
+    },
+    {
+      id: 'apodizationDimension2',
+      tooltip: {
+        title: options.apodizationDimension2.label,
+      },
+      icon: <SvgNmrApodization />,
+    },
+    {
       id: 'zeroFilling',
       tooltip: {
         title: options.zeroFilling.label,

@@ -5,10 +5,7 @@ import { produce, original } from 'immer';
 import type { CorrelationData } from 'nmr-correlation';
 import { buildCorrelationData } from 'nmr-correlation';
 import type { Spectrum, ViewState } from 'nmr-load-save';
-import type {
-  BaselineCorrectionZone,
-  Apodization1DOptions,
-} from 'nmr-processing';
+import type { BaselineCorrectionZone } from 'nmr-processing';
 import type { Reducer } from 'react';
 
 import type { StateMoleculeExtended } from '../../data/molecules/Molecule.js';
@@ -169,7 +166,6 @@ export const getInitialState = (): State => ({
         zones: [],
         livePreview: true,
       },
-      apodizationOptions: {} as Apodization1DOptions,
       twoDimensionPhaseCorrection: {
         activeTraceDirection: 'horizontal',
         addTracesToBothDirections: true,
@@ -347,7 +343,6 @@ export interface State {
         options: any;
         livePreview: boolean;
       };
-      apodizationOptions: Apodization1DOptions;
       /**
        * pivot point for manual phase correction
        * @default {value:0,index:0}
@@ -463,8 +458,28 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return FiltersActions.handleShiftSpectrumAlongXAxis(draft, action);
       case 'APPLY_APODIZATION_FILTER':
         return FiltersActions.handleApplyApodizationFilter(draft, action);
+      case 'APPLY_APODIZATION_DIMENSION_ONE_FILTER':
+        return FiltersActions.handleApplyApodizationDimensionOneFilter(
+          draft,
+          action,
+        );
+      case 'APPLY_APODIZATION_DIMENSION_TWO_FILTER':
+        return FiltersActions.handleApplyApodizationDimensionTwoFilter(
+          draft,
+          action,
+        );
       case 'CALCULATE_APODIZATION_FILTER':
         return FiltersActions.handleCalculateApodizationFilter(draft, action);
+      case 'CALCULATE_APODIZATION_DIMENSION_ONE_FILTER':
+        return FiltersActions.handleCalculateApodizationDimensionOneFilter(
+          draft,
+          action,
+        );
+      case 'CALCULATE_APODIZATION_DIMENSION_TWO_FILTER':
+        return FiltersActions.handleCalculateApodizationDimensionTwoFilter(
+          draft,
+          action,
+        );
       case 'APPLY_ZERO_FILLING_FILTER':
         return FiltersActions.handleApplyZeroFillingFilter(draft, action);
       case 'CALCULATE_ZERO_FILLING_FILTER':

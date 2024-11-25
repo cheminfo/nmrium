@@ -3,14 +3,18 @@ import type { NmrData1D, NmrData2DFt } from 'cheminfo-types';
 import type { Draft } from 'immer';
 import { current } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import type { ActiveSpectrum, Spectrum, Spectrum1D } from 'nmr-load-save';
+import type {
+  ActiveSpectrum,
+  Spectrum,
+  Spectrum1D,
+  Spectrum2D,
+} from 'nmr-load-save';
 import {
   getBaselineZonesByDietrich,
   Filters1DManager,
   Filters2DManager,
   Filters1D,
   Filters2D,
-  default1DApodization,
 } from 'nmr-processing';
 import type {
   BaselineCorrectionOptions,
@@ -90,8 +94,24 @@ type ApodizationFilterAction = ActionType<
   'APPLY_APODIZATION_FILTER',
   { options: Apodization1DOptions }
 >;
+type ApodizationDimensionOneFilterAction = ActionType<
+  'APPLY_APODIZATION_DIMENSION_ONE_FILTER',
+  { options: Apodization1DOptions }
+>;
+type ApodizationDimensionTwoFilterAction = ActionType<
+  'APPLY_APODIZATION_DIMENSION_TWO_FILTER',
+  { options: Apodization1DOptions }
+>;
 type ApodizationFilterLiveAction = ActionType<
   'CALCULATE_APODIZATION_FILTER',
+  { options: Apodization1DOptions; livePreview: boolean }
+>;
+type ApodizationDimensionOneFilterLiveAction = ActionType<
+  'CALCULATE_APODIZATION_DIMENSION_ONE_FILTER',
+  { options: Apodization1DOptions; livePreview: boolean }
+>;
+type ApodizationDimensionTwoFilterLiveAction = ActionType<
+  'CALCULATE_APODIZATION_DIMENSION_TWO_FILTER',
   { options: Apodization1DOptions; livePreview: boolean }
 >;
 type ZeroFillingFilterAction = ActionType<
@@ -180,7 +200,11 @@ type SetTwoDimensionPhaseCorrectionPivotPoint = ActionType<
 export type FiltersActions =
   | ShiftSpectrumAction
   | ApodizationFilterAction
+  | ApodizationDimensionOneFilterAction
+  | ApodizationDimensionTwoFilterAction
   | ApodizationFilterLiveAction
+  | ApodizationDimensionOneFilterLiveAction
+  | ApodizationDimensionTwoFilterLiveAction
   | ZeroFillingFilterAction
   | ZeroFillingFilterLiveAction
   | ManualPhaseCorrectionFilterAction
@@ -549,14 +573,8 @@ function beforeRollback(draft: Draft<State>, filterKey) {
   }
 }
 function afterRollback(draft: Draft<State>, filterKey) {
-  // const activeSpectrum = getActiveSpectrum(draft);
-
   switch (filterKey) {
-    case apodization.name: {
-      draft.toolOptions.data.apodizationOptions =
-        structuredClone(default1DApodization);
-      break;
-    }
+    //specify the filters here
     default:
       break;
   }
@@ -599,17 +617,6 @@ function disableLivePreview(draft: Draft<State>, id: string) {
   draft.data[index].data = data;
   if (baselineCorrection.name !== id) {
     setDomain(draft);
-  }
-
-  // reset default options
-  switch (id) {
-    case apodization.name: {
-      draft.toolOptions.data.apodizationOptions =
-        structuredClone(default1DApodization);
-      break;
-    }
-    default:
-      break;
   }
 }
 
@@ -750,7 +757,6 @@ function handleCalculateApodizationFilter(
 
     const _data = { data: { x, re, im }, info } as Spectrum1D;
 
-    draft.toolOptions.data.apodizationOptions = options;
     apodization.apply(_data, options);
     const { im: newIm, re: newRe } = _data.data;
     const datum = draft.data[index];
@@ -762,6 +768,72 @@ function handleCalculateApodizationFilter(
     datum.data.re = newRe;
   } else {
     disableLivePreview(draft, apodization.name);
+  }
+}
+//action
+function handleCalculateApodizationDimensionOneFilter(
+  draft: Draft<State>,
+  action: ApodizationDimensionOneFilterLiveAction,
+) {
+  const activeSpectrum = getActiveSpectrum(draft);
+
+  if (!activeSpectrum || !draft.tempData) {
+    return;
+  }
+
+  const index = activeSpectrum.index;
+  const { livePreview, options } = action.payload;
+  if (livePreview) {
+    const { data, info } = current(draft).tempData[index];
+
+    const _data = structuredClone({
+      data,
+      info,
+    }) as Spectrum2D;
+
+    Filters2D.apodizationDimension1.apply(_data, options);
+
+    const datum = draft.data[index];
+
+    if (!isSpectrum2D(datum)) {
+      return;
+    }
+    datum.data = _data.data;
+  } else {
+    disableLivePreview(draft, Filters2D.apodizationDimension1.name);
+  }
+}
+//action
+function handleCalculateApodizationDimensionTwoFilter(
+  draft: Draft<State>,
+  action: ApodizationDimensionTwoFilterLiveAction,
+) {
+  const activeSpectrum = getActiveSpectrum(draft);
+
+  if (!activeSpectrum || !draft.tempData) {
+    return;
+  }
+
+  const index = activeSpectrum.index;
+  const { livePreview, options } = action.payload;
+  if (livePreview) {
+    const { data, info } = current(draft).tempData[index];
+
+    const _data = structuredClone({
+      data,
+      info,
+    }) as Spectrum2D;
+
+    Filters2D.apodizationDimension2.apply(_data, options);
+
+    const datum = draft.data[index];
+
+    if (!isSpectrum2D(datum)) {
+      return;
+    }
+    datum.data = _data.data;
+  } else {
+    disableLivePreview(draft, Filters2D.apodizationDimension2.name);
   }
 }
 
@@ -781,6 +853,52 @@ function handleApplyApodizationFilter(
   Filters1DManager.applyFilters(draft.tempData[index], [
     {
       name: 'apodization',
+      value: action.payload.options,
+    },
+  ]);
+  draft.data[index] = draft.tempData[index];
+
+  updateView(draft, apodization.domainUpdateRules);
+}
+//action
+function handleApplyApodizationDimensionOneFilter(
+  draft: Draft<State>,
+  action: ApodizationDimensionOneFilterAction,
+) {
+  const activeSpectrum = getActiveSpectrum(draft);
+
+  if (!activeSpectrum || !draft.tempData) {
+    return;
+  }
+
+  const index = activeSpectrum.index;
+
+  Filters2DManager.applyFilters(draft.tempData[index], [
+    {
+      name: 'apodizationDimension1',
+      value: action.payload.options,
+    },
+  ]);
+  draft.data[index] = draft.tempData[index];
+
+  updateView(draft, apodization.domainUpdateRules);
+}
+//action
+function handleApplyApodizationDimensionTwoFilter(
+  draft: Draft<State>,
+  action: ApodizationDimensionTwoFilterAction,
+) {
+  const activeSpectrum = getActiveSpectrum(draft);
+
+  if (!activeSpectrum || !draft.tempData) {
+    return;
+  }
+
+  const index = activeSpectrum.index;
+
+  Filters2DManager.applyFilters(draft.tempData[index], [
+    {
+      name: 'apodizationDimension2',
       value: action.payload.options,
     },
   ]);
@@ -1589,6 +1707,8 @@ export {
   handleShiftSpectrumAlongXAxis,
   handleApplyZeroFillingFilter,
   handleApplyApodizationFilter,
+  handleApplyApodizationDimensionOneFilter,
+  handleApplyApodizationDimensionTwoFilter,
   handleApplyFFTFilter,
   handleApplyFFtDimension1Filter,
   handleApplyFFtDimension2Filter,
@@ -1600,6 +1720,8 @@ export {
   calculateBaseLineCorrection,
   handleCalculateBaseLineCorrection,
   handleCalculateApodizationFilter,
+  handleCalculateApodizationDimensionOneFilter,
+  handleCalculateApodizationDimensionTwoFilter,
   handleCalculateZeroFillingFilter,
   handleEnableFilter,
   handleDeleteFilter,
