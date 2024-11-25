@@ -33,18 +33,27 @@ const initialValues: ApodizationOptions = {
   livePreview: true,
 };
 
-interface UseSharedApodizationOptions {
+export interface UseSharedApodizationOptions {
   validationSchema?: Yup.ObjectSchema<any>;
   applyFilterOnload?: boolean;
+  onApplyDispatch: (options: ApodizationOptions) => void;
+  onChangeDispatch: (options: ApodizationOptions) => void;
 }
 
+export type ApodizationFilterOptions =
+  | ExtractFilterEntry<'apodization'>
+  | ExtractFilterEntry<'apodizationDimension1'>
+  | ExtractFilterEntry<'apodizationDimension2'>;
+
 export const useSharedApodization = (
-  filter: ExtractFilterEntry<'apodization'> | null,
+  filter: ApodizationFilterOptions | null,
   options: UseSharedApodizationOptions,
 ) => {
   const {
     validationSchema = simpleValidationSchema,
     applyFilterOnload = false,
+    onApplyDispatch,
+    onChangeDispatch,
   } = options;
 
   const dispatch = useDispatch();
@@ -73,15 +82,12 @@ export const useSharedApodization = (
 
   const onChange = useCallback(
     (values: ApodizationOptions) => {
-      const { livePreview, options } = values;
+      const { livePreview } = values;
       if (livePreview || previousPreviewRef.current !== livePreview) {
-        dispatch({
-          type: 'CALCULATE_APODIZATION_FILTER',
-          payload: { livePreview, options: structuredClone(options) },
-        });
+        onChangeDispatch(structuredClone(values));
       }
     },
-    [dispatch],
+    [onChangeDispatch],
   );
 
   const handleApplyFilter = useCallback(
@@ -89,28 +95,20 @@ export const useSharedApodization = (
       values: ApodizationOptions,
       triggerSource: 'apply' | 'onChange' = 'apply',
     ) => {
-      const { livePreview, options } = values;
-      switch (triggerSource) {
-        case 'onChange': {
-          onChange(values);
-          break;
-        }
-        case 'apply': {
-          dispatch({
-            type: 'APPLY_APODIZATION_FILTER',
-            payload: { options },
-          });
-          clearSyncFilterOptions();
+      const { livePreview } = values;
 
-          break;
-        }
-        default:
-          break;
+      if (triggerSource === 'onChange') {
+        onChange(values);
+      }
+
+      if (triggerSource === 'apply') {
+        onApplyDispatch(values);
+        clearSyncFilterOptions();
       }
 
       previousPreviewRef.current = livePreview;
     },
-    [clearSyncFilterOptions, dispatch, onChange],
+    [clearSyncFilterOptions, onApplyDispatch, onChange],
   );
 
   const handleCancelFilter = useCallback(() => {

@@ -7,11 +7,13 @@ import {
 } from 'nmr-processing';
 
 import { useChartData } from '../context/ChartContext.js';
+import { useFilterSyncOptions } from '../context/FilterSyncOptionsContext.js';
 import { useScaleChecked } from '../context/ScaleContext.js';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
 import useSpectrum from '../hooks/useSpectrum.js';
 import { useVerticalAlign } from '../hooks/useVerticalAlign.js';
 import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce.js';
+import type { ApodizationOptions } from '../panels/filtersPanel/Filters/hooks/useSharedApodization.js';
 import { PathBuilder } from '../utility/PathBuilder.js';
 
 import { getYScale } from './utilities/scale.js';
@@ -32,16 +34,15 @@ function useWindowYScale() {
 
 export function ApodizationLine() {
   const {
-    toolOptions: {
-      selectedTool,
-      data: { apodizationOptions: externalApodizationOptions },
-    },
+    toolOptions: { selectedTool },
   } = useChartData();
   const activeSpectrum = useActiveSpectrum();
   const { scaleX } = useScaleChecked();
   const spectrum = useSpectrum({ emptyData }) as Spectrum1D;
   const xyReduce = useXYReduce(XYReducerDomainAxis.XAxis);
   const scaleY = useWindowYScale();
+  const { sharedFilterOptions: externalApodizationOptions } =
+    useFilterSyncOptions<ApodizationOptions>();
 
   if (!activeSpectrum?.id || selectedTool !== Filters1D.apodization.name) {
     return null;
@@ -53,7 +54,7 @@ export function ApodizationLine() {
 
     const apodizationOptions = merge(
       default1DApodization,
-      externalApodizationOptions,
+      externalApodizationOptions?.options,
     );
     const length = re.length;
     const dw = (x[length - 1] - x[0]) / (length - 1);
