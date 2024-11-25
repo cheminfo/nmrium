@@ -130,7 +130,7 @@ function FilterElements(props: FilterElementsProps) {
           }}
           minimal
           onClick={onFilterRestore}
-          icon={activeFilterID === id ? 'undo' : 'history'}
+          icon={activeFilterID === id ? 'undo' : 'annotation'}
         />
       )}
       <IconButton
