@@ -51,11 +51,6 @@ export interface BaseFilterOptionsPanelProps<T> {
   onCancel: ButtonProps['onClick'];
 }
 
-export interface BaseFilterDispatchActions<T> {
-  onApplyDispatch: (options: T) => void;
-  onChangeDispatch: (options: T) => void;
-}
-
 export const formLabelStyle: LabelStyle = {
   label: {
     flex: 5,
