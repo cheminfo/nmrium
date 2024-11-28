@@ -1,6 +1,5 @@
 import { Switch } from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import { v4 } from '@lukeed/uuid';
 import { Filters1D, Filters2D } from 'nmr-processing';
 import { memo, useEffect, useRef, useState } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
@@ -18,6 +17,7 @@ import { EmptyText } from '../../../elements/EmptyText.js';
 import { Sections } from '../../../elements/Sections.js';
 import useSpectraByActiveNucleus from '../../../hooks/useSpectraPerNucleus.js';
 import useSpectrum from '../../../hooks/useSpectrum.js';
+import { getDefaultFilterOptions } from '../../../utility/getDefaultFilterOptions.js';
 
 import { filterOptionPanels } from './index.js';
 
@@ -222,12 +222,7 @@ function FiltersInner(props: FiltersInnerProps) {
 
     if (!isFilterExists && Filters?.[selectedTool]) {
       const { name } = Filters[selectedTool];
-      setNewFilter({
-        enabled: true,
-        id: v4(),
-        name,
-        value: null,
-      });
+      setNewFilter(getDefaultFilterOptions(name));
     } else {
       setNewFilter((previousNewFilter) => {
         if (previousNewFilter) {

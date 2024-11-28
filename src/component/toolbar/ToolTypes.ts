@@ -440,7 +440,11 @@ export const options: RecordOptions = {
     mode: '2D',
     spectraOptions: [
       {
-        info: [{ key: 'isFt', value: true }],
+        info: [
+          { key: 'isFid', value: true },
+          { key: 'isFtDimensionOne', value: true },
+          { key: 'isComplex', value: true },
+        ],
         active: true,
       },
     ],
