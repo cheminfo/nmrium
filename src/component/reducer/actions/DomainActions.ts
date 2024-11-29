@@ -361,6 +361,7 @@ function handleMoveOverXAxis(draft: Draft<State>, action: MoveXAxisAction) {
 
 export {
   getDomain,
+  get2DDomain,
   setDomain,
   setMode,
   handleSetXDomain,

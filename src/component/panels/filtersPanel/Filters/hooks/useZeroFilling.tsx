@@ -19,7 +19,13 @@ interface UseZeroFillingOptions {
   applyFilterOnload?: boolean;
 }
 
-export const zeroFillingSizes = generateNumbersPowerOfX(8, 21);
+export function getZeroFillingNbPoints(filter: ZeroFillingEntry) {
+  if (filter.name === 'zeroFilling') {
+    return generateNumbersPowerOfX(8, 21);
+  }
+
+  return generateNumbersPowerOfX(8, 12);
+}
 
 function getZeroFillingSize(length: number) {
   return 2 ** Math.round(Math.log2(length * 2));
@@ -46,7 +52,7 @@ export type ZeroFillingEntry =
   | ExtractFilterEntry<'zeroFillingDimension1'>
   | ExtractFilterEntry<'zeroFillingDimension2'>;
 
-export const useDispatchZeroFilling = () => {
+export const useDispatchZeroFilling = (filter: ZeroFillingEntry | null) => {
   const dispatch = useDispatch();
 
   const defaultNbPoints = useZeroFillingDefaultSize();
@@ -54,26 +60,63 @@ export const useDispatchZeroFilling = () => {
   const dispatchApply = useCallback(
     (data: ZeroFillingOptions) => {
       const { nbPoints } = data;
-      dispatch({
-        type: 'APPLY_ZERO_FILLING_FILTER',
-        payload: { options: { nbPoints } },
-      });
+
+      if (filter?.name === 'zeroFilling') {
+        dispatch({
+          type: 'APPLY_ZERO_FILLING_FILTER',
+          payload: { options: { nbPoints } },
+        });
+      }
+      if (filter?.name === 'zeroFillingDimension1') {
+        dispatch({
+          type: 'APPLY_ZERO_FILLING_DIMENSION_ONE_FILTER',
+          payload: { options: { nbPoints } },
+        });
+      }
+      if (filter?.name === 'zeroFillingDimension2') {
+        dispatch({
+          type: 'APPLY_ZERO_FILLING_DIMENSION_TWO_FILTER',
+          payload: { options: { nbPoints } },
+        });
+      }
     },
-    [dispatch],
+    [dispatch, filter?.name],
   );
   const dispatchChange = useCallback(
     (data: ZeroFillingOptions) => {
       const { livePreview, nbPoints } = data;
 
-      dispatch({
-        type: 'CALCULATE_ZERO_FILLING_FILTER',
-        payload: {
-          options: { nbPoints },
-          livePreview,
-        },
-      });
+      if (filter?.name === 'zeroFilling') {
+        dispatch({
+          type: 'CALCULATE_ZERO_FILLING_FILTER',
+          payload: {
+            options: { nbPoints },
+            livePreview,
+          },
+        });
+      }
+
+      if (filter?.name === 'zeroFillingDimension1') {
+        dispatch({
+          type: 'CALCULATE_ZERO_FILLING_DIMENSION_ONE_FILTER',
+          payload: {
+            options: { nbPoints },
+            livePreview,
+          },
+        });
+      }
+
+      if (filter?.name === 'zeroFillingDimension2') {
+        dispatch({
+          type: 'CALCULATE_ZERO_FILLING_DIMENSION_TWO_FILTER',
+          payload: {
+            options: { nbPoints },
+            livePreview,
+          },
+        });
+      }
     },
-    [dispatch],
+    [dispatch, filter?.name],
   );
 
   return { defaultNbPoints, dispatchApply, dispatchChange };
@@ -87,7 +130,7 @@ export const useZeroFilling = (
 
   const dispatch = useDispatch();
   const { dispatchChange, dispatchApply, defaultNbPoints } =
-    useDispatchZeroFilling();
+    useDispatchZeroFilling(filter);
   const previousPreviewRef = useRef<boolean>(true);
 
   const { handleSubmit, register, reset, control, getValues, formState } =

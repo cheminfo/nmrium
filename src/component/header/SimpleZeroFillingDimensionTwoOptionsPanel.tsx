@@ -3,10 +3,10 @@ import { getDefaultFilterOptions } from '../utility/getDefaultFilterOptions.js';
 
 import { BaseSimpleZeroFillingOptionsPanel } from './base/BaseSimpleZeroFillingOptionsPanel.js';
 
-const defaultOptions = getDefaultFilterOptions('zeroFilling');
+const defaultOptions = getDefaultFilterOptions('zeroFillingDimension2');
 
-export function SimpleZeroFillingOptionsPanel() {
-  const filter = useFilter('zeroFilling');
+export function SimpleZeroFillingDimensionTwoOptionsPanel() {
+  const filter = useFilter('zeroFillingDimension2');
 
   return (
     <BaseSimpleZeroFillingOptionsPanel filter={filter || defaultOptions} />

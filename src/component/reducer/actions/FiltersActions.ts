@@ -23,6 +23,7 @@ import type {
   Filter1DEntry,
   FilterDomainUpdateRules,
   MatrixOptions,
+  Filter2DEntry,
 } from 'nmr-processing';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
@@ -54,7 +55,7 @@ import { getSpectrum } from '../helper/getSpectrum.js';
 import { getTwoDimensionPhaseCorrectionOptions } from '../helper/getTwoDimensionPhaseCorrectionOptions.js';
 import type { ActionType } from '../types/ActionType.js';
 
-import { setDomain, setMode } from './DomainActions.js';
+import { get2DDomain, setDomain, setMode } from './DomainActions.js';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions.js';
 import { activateTool, resetSelectedTool } from './ToolsActions.js';
 
@@ -114,13 +115,32 @@ type ApodizationDimensionTwoFilterLiveAction = ActionType<
   'CALCULATE_APODIZATION_DIMENSION_TWO_FILTER',
   { options: Apodization1DOptions; livePreview: boolean }
 >;
+interface ZeroFillingOptions {
+  nbPoints: number;
+}
 type ZeroFillingFilterAction = ActionType<
   'APPLY_ZERO_FILLING_FILTER',
-  { options: { nbPoints: number } }
+  { options: ZeroFillingOptions }
+>;
+type ZeroFillingDimensionOneFilterAction = ActionType<
+  'APPLY_ZERO_FILLING_DIMENSION_ONE_FILTER',
+  { options: ZeroFillingOptions }
+>;
+type ZeroFillingDimensionTwoFilterAction = ActionType<
+  'APPLY_ZERO_FILLING_DIMENSION_TWO_FILTER',
+  { options: ZeroFillingOptions }
 >;
 type ZeroFillingFilterLiveAction = ActionType<
   'CALCULATE_ZERO_FILLING_FILTER',
-  { options: { nbPoints: number }; livePreview: boolean }
+  { options: ZeroFillingOptions; livePreview: boolean }
+>;
+type ZeroFillingDimensionOneFilterLiveAction = ActionType<
+  'CALCULATE_ZERO_FILLING_DIMENSION_ONE_FILTER',
+  { options: ZeroFillingOptions; livePreview: boolean }
+>;
+type ZeroFillingDimensionTwoFilterLiveAction = ActionType<
+  'CALCULATE_ZERO_FILLING_DIMENSION_TWO_FILTER',
+  { options: ZeroFillingOptions; livePreview: boolean }
 >;
 type ManualPhaseCorrectionFilterAction = ActionType<
   | 'APPLY_MANUAL_PHASE_CORRECTION_FILTER'
@@ -206,7 +226,11 @@ export type FiltersActions =
   | ApodizationDimensionOneFilterLiveAction
   | ApodizationDimensionTwoFilterLiveAction
   | ZeroFillingFilterAction
+  | ZeroFillingDimensionOneFilterAction
+  | ZeroFillingDimensionTwoFilterAction
   | ZeroFillingFilterLiveAction
+  | ZeroFillingDimensionOneFilterLiveAction
+  | ZeroFillingDimensionTwoFilterLiveAction
   | ManualPhaseCorrectionFilterAction
   | BaselineCorrectionFilterAction
   | BaselineCorrectionFilterLiveAction
@@ -330,9 +354,9 @@ function rollbackSpectrumByFilter(
       });
 
       if (isSpectrum1D(datum)) {
-        Filters1DManager.reapplyFilters(datum, filters);
+        Filters1DManager.reapplyFilters(datum, { filters });
       } else {
-        Filters2DManager.reapplyFilters(datum, filters);
+        Filters2DManager.reapplyFilters(datum, { filters });
       }
 
       draft.tempData = current(draft).data;
@@ -697,6 +721,54 @@ function handleApplyZeroFillingFilter(
 
   updateView(draft, zeroFilling.domainUpdateRules);
 }
+//action
+function handleApplyZeroFillingDimensionOneFilter(
+  draft: Draft<State>,
+  action: ZeroFillingDimensionOneFilterAction,
+) {
+  const activeSpectrum = getActiveSpectrum(draft);
+
+  if (!activeSpectrum || !draft.tempData) {
+    return;
+  }
+
+  const index = activeSpectrum.index;
+  const filters: Filter2DEntry[] = [
+    {
+      name: 'zeroFillingDimension1',
+      value: action.payload.options,
+      enabled: true,
+    },
+  ];
+  Filters2DManager.applyFilters(draft.tempData[index], filters);
+  draft.data[index] = draft.tempData[index];
+
+  updateView(draft, Filters2D.zeroFillingDimension1.domainUpdateRules);
+}
+//action
+function handleApplyZeroFillingDimensionTwoFilter(
+  draft: Draft<State>,
+  action: ZeroFillingDimensionTwoFilterAction,
+) {
+  const activeSpectrum = getActiveSpectrum(draft);
+
+  if (!activeSpectrum || !draft.tempData) {
+    return;
+  }
+
+  const index = activeSpectrum.index;
+  const filters: Filter2DEntry[] = [
+    {
+      name: 'zeroFillingDimension2',
+      value: action.payload.options,
+      enabled: true,
+    },
+  ];
+  Filters2DManager.applyFilters(draft.tempData[index], filters);
+  draft.data[index] = draft.tempData[index];
+
+  updateView(draft, Filters2D.zeroFillingDimension2.domainUpdateRules);
+}
 
 //action
 function handleCalculateZeroFillingFilter(
@@ -733,6 +805,83 @@ function handleCalculateZeroFillingFilter(
     draft.xDomain = [newX[0], newX.at(-1) as number];
   } else {
     disableLivePreview(draft, zeroFilling.name);
+  }
+}
+//action
+function handleCalculateZeroFillingDimensionOneFilter(
+  draft: Draft<State>,
+  action: ZeroFillingDimensionOneFilterLiveAction,
+) {
+  const activeSpectrum = getActiveSpectrum(draft);
+
+  if (!activeSpectrum || !draft.tempData) {
+    return;
+  }
+
+  const { options, livePreview } = action.payload;
+  if (livePreview) {
+    const index = activeSpectrum.index;
+    const { data, info, filters } = current(draft).tempData[index];
+
+    const _data = structuredClone({
+      data,
+      info,
+      filters,
+    }) as Spectrum2D;
+
+    Filters2D.zeroFillingDimension1.apply(_data, options);
+
+    const datum = draft.data[index];
+
+    if (!isSpectrum2D(datum)) {
+      return;
+    }
+    datum.data = _data.data;
+    const { xDomain, yDomain } = get2DDomain(current(draft));
+    draft.xDomain = xDomain as number[];
+    draft.yDomain = yDomain as number[];
+
+    // updateView(draft, Filters2D.zeroFillingDimension1.domainUpdateRules);
+  } else {
+    disableLivePreview(draft, Filters2D.zeroFillingDimension1.name);
+  }
+}
+//action
+function handleCalculateZeroFillingDimensionTwoFilter(
+  draft: Draft<State>,
+  action: ZeroFillingDimensionTwoFilterLiveAction,
+) {
+  const activeSpectrum = getActiveSpectrum(draft);
+
+  if (!activeSpectrum || !draft.tempData) {
+    return;
+  }
+
+  const { options, livePreview } = action.payload;
+  if (livePreview) {
+    const index = activeSpectrum.index;
+    const { data, info, filters } = current(draft).tempData[index];
+
+    const _data = structuredClone({
+      data,
+      info,
+      filters,
+    }) as Spectrum2D;
+
+    Filters2D.zeroFillingDimension2.apply(_data, options);
+
+    const datum = draft.data[index];
+
+    if (!isSpectrum2D(datum)) {
+      return;
+    }
+    datum.data = _data.data;
+
+    const { xDomain, yDomain } = get2DDomain(current(draft));
+    draft.xDomain = xDomain as number[];
+    draft.yDomain = yDomain as number[];
+  } else {
+    disableLivePreview(draft, Filters2D.zeroFillingDimension2.name);
   }
 }
 
@@ -1271,15 +1420,15 @@ function handleEnableFilter(draft: Draft<State>, action: EnableFilterAction) {
     return;
   }
 
-  const { id: filterID, enabled } = action.payload;
+  const { id, enabled } = action.payload;
   const datum = draft.data[activeSpectrum.index];
 
   //apply filter into the spectrum
   if (isSpectrum1D(datum)) {
-    Filters1DManager.enableFilter(datum, filterID, enabled);
+    Filters1DManager.enableFilter(datum, { id, enabled });
   }
   if (isSpectrum2D(datum)) {
-    Filters2DManager.enableFilter(datum, filterID, enabled);
+    Filters2DManager.enableFilter(datum, { id, enabled });
   }
 
   resetSelectedTool(draft);
@@ -1706,6 +1855,8 @@ function handleApplyAutoPhaseCorrectionTwoDimensionsFilter(
 export {
   handleShiftSpectrumAlongXAxis,
   handleApplyZeroFillingFilter,
+  handleApplyZeroFillingDimensionOneFilter,
+  handleApplyZeroFillingDimensionTwoFilter,
   handleApplyApodizationFilter,
   handleApplyApodizationDimensionOneFilter,
   handleApplyApodizationDimensionTwoFilter,
@@ -1723,6 +1874,8 @@ export {
   handleCalculateApodizationDimensionOneFilter,
   handleCalculateApodizationDimensionTwoFilter,
   handleCalculateZeroFillingFilter,
+  handleCalculateZeroFillingDimensionOneFilter,
+  handleCalculateZeroFillingDimensionTwoFilter,
   handleEnableFilter,
   handleDeleteFilter,
   handleDeleteSpectraFilter,

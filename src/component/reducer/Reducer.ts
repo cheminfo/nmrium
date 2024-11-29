@@ -482,8 +482,28 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         );
       case 'APPLY_ZERO_FILLING_FILTER':
         return FiltersActions.handleApplyZeroFillingFilter(draft, action);
+      case 'APPLY_ZERO_FILLING_DIMENSION_ONE_FILTER':
+        return FiltersActions.handleApplyZeroFillingDimensionOneFilter(
+          draft,
+          action,
+        );
+      case 'APPLY_ZERO_FILLING_DIMENSION_TWO_FILTER':
+        return FiltersActions.handleApplyZeroFillingDimensionTwoFilter(
+          draft,
+          action,
+        );
       case 'CALCULATE_ZERO_FILLING_FILTER':
         return FiltersActions.handleCalculateZeroFillingFilter(draft, action);
+      case 'CALCULATE_ZERO_FILLING_DIMENSION_ONE_FILTER':
+        return FiltersActions.handleCalculateZeroFillingDimensionOneFilter(
+          draft,
+          action,
+        );
+      case 'CALCULATE_ZERO_FILLING_DIMENSION_TWO_FILTER':
+        return FiltersActions.handleCalculateZeroFillingDimensionTwoFilter(
+          draft,
+          action,
+        );
       case 'APPLY_FFT_FILTER':
         return FiltersActions.handleApplyFFTFilter(draft);
       case 'APPLY_FFT_DIMENSION_1_FILTER':

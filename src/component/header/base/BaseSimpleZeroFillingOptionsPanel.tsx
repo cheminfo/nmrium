@@ -4,15 +4,15 @@ import ActionButtons from '../../elements/ActionButtons.js';
 import Label from '../../elements/Label.js';
 import { Select2Controller } from '../../elements/Select2Controller.js';
 import {
+  getZeroFillingNbPoints,
   useZeroFilling,
-  zeroFillingSizes,
 } from '../../panels/filtersPanel/Filters/hooks/useZeroFilling.js';
 import type { ZeroFillingEntry } from '../../panels/filtersPanel/Filters/hooks/useZeroFilling.js';
 import { headerLabelStyle } from '../Header.js';
 import { HeaderWrapper } from '../HeaderWrapper.js';
 
 interface BaseSimpleZeroFillingOptionsPanelProps {
-  filter: ZeroFillingEntry | null;
+  filter: ZeroFillingEntry;
 }
 export function BaseSimpleZeroFillingOptionsPanel(
   props: BaseSimpleZeroFillingOptionsPanelProps,
@@ -26,13 +26,16 @@ export function BaseSimpleZeroFillingOptionsPanel(
 
   const { onChange: onLivePreviewChange, ...otherLivePreviewRegisterOptions } =
     register('livePreview');
+
+  const nbPointsList = getZeroFillingNbPoints(filter);
+
   return (
     <HeaderWrapper>
       <Label title="Size:" style={headerLabelStyle}>
         <Select2Controller
           control={control}
           name="nbPoints"
-          items={zeroFillingSizes}
+          items={nbPointsList}
           onItemSelect={() => {
             submitHandler('onChange');
           }}

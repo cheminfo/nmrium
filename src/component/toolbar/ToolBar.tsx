@@ -331,6 +331,24 @@ export default function ToolBar() {
       icon: <SvgNmrZeroFilling />,
     },
     {
+      id: 'zeroFillingDimension1',
+      tooltip: {
+        title: options.zeroFilling.label,
+        description:
+          'Improve spectrum quality by increasing the number of points',
+      },
+      icon: <SvgNmrZeroFilling />,
+    },
+    {
+      id: 'zeroFillingDimension2',
+      tooltip: {
+        title: options.zeroFilling.label,
+        description:
+          'Improve spectrum quality by increasing the number of points.',
+      },
+      icon: <SvgNmrZeroFilling />,
+    },
+    {
       id: 'phaseCorrection',
       tooltip: {
         title: options.phaseCorrection.label,

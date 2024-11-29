@@ -80,6 +80,14 @@ const LIST: ListItem[] = [
     name: 'zeroFilling',
   },
   {
+    label: 'Zero filling dimension one',
+    name: 'zeroFillingDimension1',
+  },
+  {
+    label: 'Zero filling dimension two',
+    name: 'zeroFillingDimension2',
+  },
+  {
     label: 'Fourier transform',
     name: 'fft',
   },

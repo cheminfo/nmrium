@@ -37,6 +37,8 @@ import { SimpleApodizationOptionsPanel } from './SimpleApodizationOptionsPanel.j
 import { SimpleBaseLineCorrectionOptionsPanel } from './SimpleBaseLineCorrectionOptionsPanel.js';
 import { SimplePhaseCorrectionOptionsPanel } from './SimplePhaseCorrectionOptionsPanel.js';
 import { SimplePhaseCorrectionTwoDimensionsPanel } from './SimplePhaseCorrectionTwoDimensionsPanel.js';
+import { SimpleZeroFillingDimensionOneOptionsPanel } from './SimpleZeroFillingDimensionOneOptionsPanel.js';
+import { SimpleZeroFillingDimensionTwoOptionsPanel } from './SimpleZeroFillingDimensionTwoOptionsPanel.js';
 import { SimpleZeroFillingOptionsPanel } from './SimpleZeroFillingOptionsPanel.js';
 import Zones2DOptionPanel from './Zones2DOptionPanel.js';
 
@@ -112,6 +114,10 @@ function HeaderInner(props: HeaderInnerProps) {
         return <SimpleApodizationDimensionTwoOptionsPanel />;
       case options.zeroFilling.id:
         return <SimpleZeroFillingOptionsPanel />;
+      case options.zeroFillingDimension1.id:
+        return <SimpleZeroFillingDimensionOneOptionsPanel />;
+      case options.zeroFillingDimension2.id:
+        return <SimpleZeroFillingDimensionTwoOptionsPanel />;
       case options.phaseCorrection.id:
         return <SimplePhaseCorrectionOptionsPanel />;
       case options.phaseCorrectionTwoDimensions.id:
