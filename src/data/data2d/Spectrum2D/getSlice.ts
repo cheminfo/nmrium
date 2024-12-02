@@ -1,15 +1,11 @@
-import type {
-  NmrData1D,
-  NmrData2D,
-  NmrData2DFid,
-  NmrData2DFt,
-} from 'cheminfo-types';
+import type { NmrData1D, NmrData2D } from 'cheminfo-types';
 import { xSequentialFillFromTo } from 'ml-spectra-processing';
 import type { Spectrum1D, Spectrum2D } from 'nmr-load-save';
-import type { Info2D } from 'nmr-processing';
 
 import type { TraceDirection } from '../../../component/reducer/Reducer.js';
 import { initiateDatum1D } from '../../data1d/Spectrum1D/index.js';
+
+import { isFid2DData } from './isSpectrum2D.js';
 
 /** get 2d projection
  * @param {number} x in ppm
@@ -39,8 +35,8 @@ export function getSlice(
   const { sliceType = 'real' } = options;
   const { data: spectraData, info } = spectrum;
 
-  const real = getRealData(spectraData, info);
-  const imaginary = getImaginaryData(spectraData, info);
+  const real = getRealData(spectraData);
+  const imaginary = getImaginaryData(spectraData);
 
   const xLength = real.z[0].length;
   const yLength = real.z.length;
@@ -83,7 +79,7 @@ export function getSlice(
     }
 
     //FT spectra vertical slicing should use ri instead of ir
-    const imaginaryVerticalData = getImaginaryData(spectraData, info, {
+    const imaginaryVerticalData = getImaginaryData(spectraData, {
       ftObjectKey: 'ri',
     });
 
@@ -108,21 +104,20 @@ function initiateData(from: number, to: number, size: number): NmrData1D {
   };
 }
 
-function getRealData(data: NmrData2D, info: Info2D) {
-  if (info.isFid) {
-    return (data as NmrData2DFid).re;
+function getRealData(data: NmrData2D) {
+  if (isFid2DData(data)) {
+    return data.re;
   }
-  return (data as NmrData2DFt).rr;
+  return data.rr;
 }
 function getImaginaryData(
   data: NmrData2D,
-  info: Info2D,
   options: { ftObjectKey?: 'ir' | 'ri' } = {},
 ) {
-  if (info.isFid) {
-    return (data as NmrData2DFid).im;
+  if (isFid2DData(data)) {
+    return data.im;
   }
   const { ftObjectKey = 'ir' } = options;
 
-  return (data as NmrData2DFt)?.[ftObjectKey];
+  return data?.[ftObjectKey];
 }
