@@ -18,11 +18,15 @@ const styles: Record<'line', CSSProperties> = {
 const allowTools = new Set([
   options.zoom.id,
   options.apodization.id,
+  options.apodizationDimension1.id,
+  options.apodizationDimension2.id,
   options.equalizer.id,
   options.baselineCorrection.id,
   options.phaseCorrectionTwoDimensions.id,
   options.zonePicking.id,
   options.slicing.id,
+  options.zeroFillingDimension1.id,
+  options.zeroFillingDimension2.id,
   options.integral.id,
   options.rangePicking.id,
   options.multipleSpectraAnalysis.id,
@@ -68,7 +72,7 @@ function CrossLinePointer() {
         overflow: 'visible',
         width: 2 * width,
         height: 2 * height,
-        zIndex: 9,
+        zIndex: 10,
       }}
     >
       <svg width={2 * width} height={2 * height}>

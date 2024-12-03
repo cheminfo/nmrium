@@ -18,7 +18,11 @@ const styles: Record<'container', CSSProperties> = {
 const allowTools = new Set([
   options.zoom.id,
   options.apodization.id,
+  options.apodizationDimension1.id,
+  options.apodizationDimension2.id,
   options.zeroFilling.id,
+  options.zeroFillingDimension1.id,
+  options.zeroFillingDimension2.id,
   options.peakPicking.id,
   options.integral.id,
   options.phaseCorrection.id,

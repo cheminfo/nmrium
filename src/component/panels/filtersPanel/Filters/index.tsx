@@ -11,9 +11,9 @@ import ExclusionZonesOptionsPanel from './ExclusionZonesOptionsPanel.js';
 import PhaseCorrectionOptionsPanel from './PhaseCorrectionOptionsPanel.js';
 import PhaseCorrectionTwoDimensionsOptionsPanel from './PhaseCorrectionTwoDimensionsOptionsPanel.js';
 import ShiftOptionsPanel from './ShiftOptionsPanel.js';
-import ZeroFillingOptionsPanel from './ZeroFillingOptionsPanel.js';
 import ZeroFillingDimensionOneOptionsPanel from './ZeroFillingDimensionOneOptionsPanel.js';
 import ZeroFillingDimensionTwoOptionsPanel from './ZeroFillingDimensionTwoOptionsPanel.js';
+import ZeroFillingOptionsPanel from './ZeroFillingOptionsPanel.js';
 
 const {
   apodization,

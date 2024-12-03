@@ -17,6 +17,7 @@ const style: CSSProperties = {
   pointerEvents: 'none',
   overflow: 'visible',
   userSelect: 'none',
+  zIndex: 10,
 };
 
 function XYLabelPointer({ layout, data1D }) {
