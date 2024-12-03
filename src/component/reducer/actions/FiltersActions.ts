@@ -27,8 +27,10 @@ import type {
 } from 'nmr-processing';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
+import { isFid1DSpectrum } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
 import { getProjection } from '../../../data/data2d/Spectrum2D/getMissingProjection.js';
 import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.js';
+import { isFid2DSpectrum } from '../../../data/data2d/Spectrum2D/isSpectrum2D.js';
 import type { ExclusionZone } from '../../../data/types/data1d/ExclusionZone.js';
 import { getXScale } from '../../1d/utilities/scale.js';
 import { get2DXScale, get2DYScale } from '../../2d/utilities/scale.js';
@@ -334,7 +336,7 @@ function rollbackSpectrumByFilter(
   if (currentActiveSpectrum) {
     const index = currentActiveSpectrum.index;
     const datum = draft.data[index] as Spectrum;
-    previousIsFid = datum.info.isFid;
+    previousIsFid = isFid1DSpectrum(datum) || isFid2DSpectrum(datum);
     const filterIndex = datum.filters.findIndex((f) => f[searchBy] === key);
 
     if (filterIndex !== -1 && !reset) {
@@ -370,7 +372,7 @@ function rollbackSpectrumByFilter(
         }
       }
 
-      currentIsFid = datum.info.isFid;
+      currentIsFid = isFid1DSpectrum(datum) || isFid2DSpectrum(datum);
 
       //if we still point to the same filter then close the filter options panel and reset the selected tool to default one (zoom tool)
       if (
@@ -412,7 +414,7 @@ function rollbackSpectrumByFilter(
         toolOptions: { data },
       } = getInitialState();
       draft.toolOptions.data = data;
-      currentIsFid = datum.info.isFid;
+      currentIsFid = isFid1DSpectrum(datum) || isFid2DSpectrum(datum);
     }
   }
 
@@ -837,11 +839,13 @@ function handleCalculateZeroFillingDimensionOneFilter(
       return;
     }
     datum.data = _data.data;
-    const { xDomain, yDomain } = get2DDomain(current(draft));
-    draft.xDomain = xDomain as number[];
-    draft.yDomain = yDomain as number[];
-
-    // updateView(draft, Filters2D.zeroFillingDimension1.domainUpdateRules);
+    const { xDomain, yDomain, xDomains, yDomains } = get2DDomain(
+      current(draft),
+    );
+    draft.xDomain = xDomain;
+    draft.yDomain = yDomain;
+    draft.xDomains = xDomains;
+    draft.yDomains = yDomains;
   } else {
     disableLivePreview(draft, Filters2D.zeroFillingDimension1.name);
   }
@@ -877,9 +881,14 @@ function handleCalculateZeroFillingDimensionTwoFilter(
     }
     datum.data = _data.data;
 
-    const { xDomain, yDomain } = get2DDomain(current(draft));
-    draft.xDomain = xDomain as number[];
-    draft.yDomain = yDomain as number[];
+    const { xDomain, yDomain, xDomains, yDomains } = get2DDomain(
+      current(draft),
+    );
+
+    draft.xDomain = xDomain;
+    draft.yDomain = yDomain;
+    draft.xDomains = xDomains;
+    draft.yDomains = yDomains;
   } else {
     disableLivePreview(draft, Filters2D.zeroFillingDimension2.name);
   }
