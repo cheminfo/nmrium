@@ -1,6 +1,12 @@
-import { Dialog } from '@blueprintjs/core';
+/** @jsxImportSource @emotion/react */
+import { Dialog, DialogBody } from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import { xGetFromToIndex, xyToXYObject } from 'ml-spectra-processing';
+import type { DoubleArray } from 'cheminfo-types';
+import {
+  xGetFromToIndex,
+  xyToXYObject,
+  reimPhaseCorrection,
+} from 'ml-spectra-processing';
 import { analyseMultiplet } from 'multiplet-analysis';
 import type { ActiveSpectrum } from 'nmr-load-save';
 import { useEffect, useState } from 'react';
@@ -9,44 +15,6 @@ import { Axis, LineSeries, Plot } from 'react-plot';
 import { isSpectrum2D } from '../../data/data2d/Spectrum2D/index.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useScaleChecked } from '../context/ScaleContext.js';
-import { StyledDialogBody } from '../elements/StyledDialogBody.js';
-
-const DialogBody = styled(StyledDialogBody)`
-  button:focus {
-    outline: none;
-  }
-
-  .header {
-    color: #464646;
-    font-size: 15px;
-    height: 20px;
-  }
-
-  .container {
-    padding: 10px;
-    max-height: 500px;
-    overflow-y: auto;
-
-    .row {
-      outline: none;
-      display: flex !important;
-      flex-direction: row;
-      margin: 0;
-
-      .multiplicity {
-        flex: 2;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0 20px;
-      }
-    }
-
-    .row:nth-child(odd) {
-      background: #fafafa;
-    }
-  }
-`;
 
 const LoaderContainer = styled.div`
   display: flex;
@@ -138,7 +106,7 @@ function InnerMultipleAnalysis(props: InnerMultipleAnalysisProps) {
       }
 
       const {
-        data: { x, re },
+        data: { x, re, im },
         info,
       } = spectrum;
 
@@ -149,18 +117,34 @@ function InnerMultipleAnalysis(props: InnerMultipleAnalysisProps) {
         from,
         to,
       });
+
+      let currentRe = re.slice(fromIndex, toIndex);
+      if (im) {
+        const currentIm = im.slice(fromIndex, toIndex);
+        const ph0 = autoPhaseRegion(currentRe, currentIm);
+        const phased = reimPhaseCorrection(
+          { re: currentRe, im: currentIm },
+          toRadians(ph0),
+          0,
+        );
+        currentRe = phased.re;
+      }
+
       const analysesProps = {
         x: x.slice(fromIndex, toIndex),
         y: re.slice(fromIndex, toIndex),
       };
+
       try {
         const result = analyseMultiplet(analysesProps, {
           frequency: info.originFrequency,
           minimalResolution: 0.1,
+          critFoundJ: 0.75,
           maxTestedJ: 17,
+          minTestedJ: 1,
           takeBestPartMultiplet: true,
           correctVerticalOffset: true,
-          symmetrizeEachStep: true,
+          symmetrizeEachStep: false,
           decreasingJvalues: true,
           makeShortCutForSpeed: true,
           debug: true,
@@ -256,4 +240,41 @@ function InnerMultipleAnalysis(props: InnerMultipleAnalysisProps) {
       })}
     </div>
   );
+}
+
+function autoPhaseRegion(re: DoubleArray, im: DoubleArray): any {
+  let start = -180;
+  let stop = 180;
+  const nSteps = 6;
+  let maxSteps = 10;
+
+  let bestAng = 0;
+  let minArea = Number.MAX_SAFE_INTEGER;
+  while (maxSteps > 0) {
+    const dAng = (stop - start) / (nSteps + 1);
+    for (let i = start; i <= stop; i += dAng) {
+      const tmpPhased = reimPhaseCorrection({ re, im }, toRadians(i), 0);
+      const negArea = getNegArea(tmpPhased.re);
+      if (negArea < minArea) {
+        [minArea, bestAng] = [negArea, i];
+      }
+    }
+    start = bestAng - dAng;
+    stop = bestAng + dAng;
+    maxSteps--;
+  }
+
+  return bestAng;
+}
+
+function toRadians(degree: number): number {
+  return (degree * Math.PI) / 180;
+}
+
+function getNegArea(data: DoubleArray): number {
+  let area = 0;
+  for (const element of data) {
+    if (element < 0) area -= element;
+  }
+  return area;
 }
