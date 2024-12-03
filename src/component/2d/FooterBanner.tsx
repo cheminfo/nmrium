@@ -1,11 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import type { NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { Fragment, useMemo } from 'react';
 import { MF } from 'react-mf';
 
 import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY.js';
+import {
+  isFid2DData,
+  isSpectrum2D,
+} from '../../data/data2d/Spectrum2D/isSpectrum2D.js';
 import { useBrushTracker } from '../EventsTrackers/BrushTracker.js';
 import { useMouseTracker } from '../EventsTrackers/MouseTracker.js';
 import { useChartData } from '../context/ChartContext.js';
@@ -71,7 +74,7 @@ function FooterBanner({ layout, data1D }) {
     view: {
       spectra: { activeTab },
     },
-    data,
+    data: spectra,
     toolOptions: { selectedTool },
     mode,
   } = useChartData();
@@ -246,11 +249,13 @@ function FooterBanner({ layout, data1D }) {
   };
 
   const getZValue = () => {
-    if (trackID === LAYOUT.CENTER_2D) {
-      const { info, data: spectraData } = data[activeSpectrum.index];
-      const { maxX, maxY, minX, minY, z } = info.isFid
-        ? (spectraData as NmrData2DFid).re
-        : ((spectraData as NmrData2DFt).rr as any);
+    const spectrum = spectra[activeSpectrum.index];
+
+    if (trackID === LAYOUT.CENTER_2D && isSpectrum2D(spectrum)) {
+      const { data } = spectrum;
+      const { maxX, maxY, minX, minY, z } = isFid2DData(data)
+        ? data.re
+        : data.rr;
 
       const xStep = (maxX - minX) / (z[0].length - 1);
       const yStep = (maxY - minY) / (z.length - 1);
