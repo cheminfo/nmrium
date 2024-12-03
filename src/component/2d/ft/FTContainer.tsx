@@ -16,7 +16,7 @@ export function FTContainer(props: FTContainerProps) {
 
   const activeSpectrum = useSpectrum();
 
-  if (!isFt2DSpectrum(activeSpectrum)) {
+  if (activeSpectrum && !isFt2DSpectrum(activeSpectrum)) {
     return null;
   }
 

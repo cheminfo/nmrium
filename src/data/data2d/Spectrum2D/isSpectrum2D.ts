@@ -2,7 +2,7 @@ import type { NmrData2D, NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
 import type { Spectrum, Spectrum2D } from 'nmr-load-save';
 
 export function isSpectrum2D(spectrum: Spectrum): spectrum is Spectrum2D {
-  return spectrum.info.dimension === 2;
+  return spectrum && spectrum.info.dimension === 2;
 }
 
 export function isFt2DData(data: NmrData2D): data is NmrData2DFt {
