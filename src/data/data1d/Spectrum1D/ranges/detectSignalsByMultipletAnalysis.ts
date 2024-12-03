@@ -81,6 +81,7 @@ export function detectSignalsByMultipletAnalysis(
     checkSymmetryFirst: true,
     takeBestPartMultiplet: true,
     correctVerticalOffset: true,
+    critFoundJ: 0.75,
     symmetrizeEachStep: false,
     decreasingJvalues: true,
     makeShortCutForSpeed: true,
