@@ -88,12 +88,7 @@ export function FidCanvas() {
   ]);
 
   return (
-    <foreignObject
-      width={canvasWidth}
-      height={canvasHeight}
-      x={left}
-      y={top}
-    >
+    <foreignObject width={canvasWidth} height={canvasHeight} x={left} y={top}>
       <canvas
         ref={canvasRef}
         width={canvasWidth}
