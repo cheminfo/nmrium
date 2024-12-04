@@ -330,9 +330,9 @@ function rollbackSpectrumByFilter(
       });
 
       if (isSpectrum1D(datum)) {
-        Filters1DManager.reapplyFilters(datum, filters);
+        Filters1DManager.reapplyFilters(datum, { filters });
       } else {
-        Filters2DManager.reapplyFilters(datum, filters);
+        Filters2DManager.reapplyFilters(datum, { filters });
       }
 
       draft.tempData = current(draft).data;
@@ -1276,10 +1276,10 @@ function handleEnableFilter(draft: Draft<State>, action: EnableFilterAction) {
 
   //apply filter into the spectrum
   if (isSpectrum1D(datum)) {
-    Filters1DManager.enableFilter(datum, filterID, enabled);
+    Filters1DManager.enableFilter(datum, { id: filterID, enabled });
   }
   if (isSpectrum2D(datum)) {
-    Filters2DManager.enableFilter(datum, filterID, enabled);
+    Filters2DManager.enableFilter(datum, { id: filterID, enabled });
   }
 
   resetSelectedTool(draft);

@@ -1,7 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { Dialog, DialogBody } from '@blueprintjs/core';
 import { css } from '@emotion/react';
-import { xGetFromToIndex, xyToXYObject } from 'ml-spectra-processing';
+import type { DoubleArray } from 'cheminfo-types';
+import {
+  reimPhaseCorrection,
+  xGetFromToIndex,
+  xyToXYObject,
+} from 'ml-spectra-processing';
 import { analyseMultiplet } from 'multiplet-analysis';
 import type { ActiveSpectrum, Spectrum } from 'nmr-load-save';
 import { useEffect, useState } from 'react';
@@ -142,7 +147,7 @@ function InnerMultipleAnalysis(props: InnerMultipleAnalysisProps) {
       }
 
       const {
-        data: { x, re },
+        data: { x, re, im },
         info,
       } = spectrum;
 
@@ -153,18 +158,34 @@ function InnerMultipleAnalysis(props: InnerMultipleAnalysisProps) {
         from,
         to,
       });
+
+      let currentRe = re.slice(fromIndex, toIndex);
+      if (im) {
+        const currentIm = im.slice(fromIndex, toIndex);
+        const ph0 = autoPhaseRegion(currentRe, currentIm);
+        const phased = reimPhaseCorrection(
+          { re: currentRe, im: currentIm },
+          toRadians(ph0),
+          0,
+        );
+        currentRe = phased.re;
+      }
+
       const analysesProps = {
         x: x.slice(fromIndex, toIndex),
         y: re.slice(fromIndex, toIndex),
       };
+
       try {
         const result = analyseMultiplet(analysesProps, {
           frequency: info.originFrequency,
           minimalResolution: 0.1,
+          critFoundJ: 0.75,
           maxTestedJ: 17,
+          minTestedJ: 1,
           takeBestPartMultiplet: true,
           correctVerticalOffset: true,
-          symmetrizeEachStep: true,
+          symmetrizeEachStep: false,
           decreasingJvalues: true,
           makeShortCutForSpeed: true,
           debug: true,
@@ -260,4 +281,41 @@ function InnerMultipleAnalysis(props: InnerMultipleAnalysisProps) {
       })}
     </div>
   );
+}
+
+function autoPhaseRegion(re: DoubleArray, im: DoubleArray): any {
+  let start = -180;
+  let stop = 180;
+  const nSteps = 6;
+  let maxSteps = 10;
+
+  let bestAng = 0;
+  let minArea = Number.MAX_SAFE_INTEGER;
+  while (maxSteps > 0) {
+    const dAng = (stop - start) / (nSteps + 1);
+    for (let i = start; i <= stop; i += dAng) {
+      const tmpPhased = reimPhaseCorrection({ re, im }, toRadians(i), 0);
+      const negArea = getNegArea(tmpPhased.re);
+      if (negArea < minArea) {
+        [minArea, bestAng] = [negArea, i];
+      }
+    }
+    start = bestAng - dAng;
+    stop = bestAng + dAng;
+    maxSteps--;
+  }
+
+  return bestAng;
+}
+
+function toRadians(degree: number): number {
+  return (degree * Math.PI) / 180;
+}
+
+function getNegArea(data: DoubleArray): number {
+  let area = 0;
+  for (const element of data) {
+    if (element < 0) area -= element;
+  }
+  return area;
 }
