@@ -10,6 +10,7 @@ import { getFilterLabel } from '../../../../data/getFilterLabel.js';
 import type { FilterEntry as BaseFilterEntry } from '../../../../data/types/common/FilterEntry.js';
 import { useChartData } from '../../../context/ChartContext.js';
 import { useDispatch } from '../../../context/DispatchContext.js';
+import { useFilterSyncOptions } from '../../../context/FilterSyncOptionsContext.js';
 import { useToaster } from '../../../context/ToasterContext.js';
 import type { AlertButton } from '../../../elements/Alert.js';
 import { useAlert } from '../../../elements/Alert.js';
@@ -170,14 +171,15 @@ function FiltersInner(props: FiltersInnerProps) {
     toolOptions: { selectedTool },
   } = useChartData();
   const [newFilter, setNewFilter] = useState<FilterEntry | null>();
+  const { updateFilterOptions } = useFilterSyncOptions();
 
-  const [selectedSection, openSection] = useState('');
+  const [selectedSection, openSection] = useState<string | null>();
   const dispatch = useDispatch();
   const toaster = useToaster();
   const selectedFilterIndex = useRef<number>();
 
   function toggleSection(sectionKey) {
-    openSection(selectedSection === sectionKey ? null : sectionKey);
+    openSection(selectedSection === sectionKey ? '' : sectionKey);
   }
 
   function filterSnapShotHandler(filter, index) {
@@ -185,6 +187,13 @@ function FiltersInner(props: FiltersInnerProps) {
       selectedFilterIndex.current && index === selectedFilterIndex.current
         ? null
         : index;
+
+    if (activeFilterID) {
+      //Clear the filter sync object
+      updateFilterOptions(null);
+      //Close the opened section
+      openSection(null);
+    }
     const hideLoading = toaster.showLoading({
       message: 'Filter snapshot process in progress',
     });
@@ -248,7 +257,7 @@ function FiltersInner(props: FiltersInnerProps) {
   }
 
   function handleClose() {
-    openSection('');
+    openSection(null);
   }
 
   return (

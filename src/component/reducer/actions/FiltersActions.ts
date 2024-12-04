@@ -398,17 +398,19 @@ function rollbackSpectrumByFilter(
 
     // re-implement all filters and rest all view property that related to filters
     if (reset) {
-      draft.toolOptions.data.activeFilterID = null;
-      draft.tempData = null;
-
       if (filterIndex !== -1 && datum.filters.length > 0) {
         updateDomainOptions = getFilterDomain(datum, {
           startIndex: filterIndex,
           lastIndex: datum.filters.length - 1,
         });
-      } else {
+      } else if (draft.toolOptions.data.activeFilterID) {
         updateDomainOptions = { updateXDomain: true, updateYDomain: true };
+      } else {
+        updateDomainOptions = { updateXDomain: false, updateYDomain: false };
       }
+
+      draft.toolOptions.data.activeFilterID = null;
+      draft.tempData = null;
 
       const {
         toolOptions: { data },
@@ -417,7 +419,6 @@ function rollbackSpectrumByFilter(
       currentIsFid = isFid1DSpectrum(datum) || isFid2DSpectrum(datum);
     }
   }
-
   setDomain(draft, updateDomainOptions);
   if (previousIsFid !== currentIsFid) {
     setMode(draft);
