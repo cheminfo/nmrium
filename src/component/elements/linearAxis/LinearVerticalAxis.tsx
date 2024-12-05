@@ -72,6 +72,6 @@ const VerticalAxis = forwardRef<SVGGElement | null, VerticalRenderProps>(
 export function LinearVerticalAxis(props: VerticalAxisProps) {
   const { scale, ...other } = props;
   const ref = useRef<SVGGElement>(null);
-  const ticks = useLinearPrimaryTicks(scale, 'vertical', ref);
-  return <VerticalAxis {...other} ticks={ticks} ref={ref} />;
+  const result = useLinearPrimaryTicks(scale, 'vertical', ref);
+  return <VerticalAxis {...other} ticks={result.ticks} ref={ref} />;
 }

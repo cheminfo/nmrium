@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import type { Spectrum2D } from 'nmr-load-save';
 import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { FaUnlink } from 'react-icons/fa';
-import { LuSubtitles } from 'react-icons/lu';
+import { LuMessageSquareText } from 'react-icons/lu';
 
 import { useAssignmentData } from '../../assignment/AssignmentsContext.js';
 import { useChartData } from '../../context/ChartContext.js';
@@ -229,7 +229,7 @@ function ZonesPanelInner({
             },
             {
               disabled: !hasZones,
-              icon: <LuSubtitles />,
+              icon: <LuMessageSquareText />,
               tooltip: `${booleanToString(!showAssignmentsLabels)} assignments labels`,
               onClick: handleShowAssignmentsLabel,
               active: showAssignmentsLabels,

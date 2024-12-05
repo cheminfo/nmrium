@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 
-import routes from '../samples.json';
+import routes from '../samples.json' assert { type: 'json' };
 
 import AdminLayout from './Admin.js';
 import SingleDisplayerLayout from './SingleDisplayerLayout.js';

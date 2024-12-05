@@ -45,7 +45,10 @@ export default class NmriumPage {
   }
 
   public async clickTool(id: string) {
-    await this.page.click(`_react=ToolbarItem[id="${id}"] >> nth=0`);
+    await this.page
+      .locator(`_react=ToolbarItem[id="${id}"] >> nth=0`)
+      .or(this.page.locator(`_react=ToolbarPopoverItem[id="${id}"] >> nth=0`))
+      .click();
   }
   public async clickToolByTitle(title: string) {
     await this.page.click(`_react=ToolbarItem[tooltip="${title}"] >> nth=0`);
