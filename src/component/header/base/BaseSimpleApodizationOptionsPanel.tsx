@@ -1,24 +1,16 @@
 import { Checkbox } from '@blueprintjs/core';
 
-import { useToaster } from '../context/ToasterContext.js';
-import ActionButtons from '../elements/ActionButtons.js';
-import Label from '../elements/Label.js';
-import { NumberInput2Controller } from '../elements/NumberInput2Controller.js';
-import { useSharedApodization } from '../panels/filtersPanel/Filters/hooks/useSharedApodization.js';
-import type {
-  ApodizationFilterOptions,
-  UseSharedApodizationOptions,
-} from '../panels/filtersPanel/Filters/hooks/useSharedApodization.js';
+import { useToaster } from '../../context/ToasterContext.js';
+import ActionButtons from '../../elements/ActionButtons.js';
+import Label from '../../elements/Label.js';
+import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
+import { useApodization } from '../../panels/filtersPanel/Filters/hooks/useApodization.js';
+import type { ApodizationFilterEntry } from '../../panels/filtersPanel/Filters/hooks/useApodization.js';
+import { headerLabelStyle } from '../Header.js';
+import { HeaderWrapper } from '../HeaderWrapper.js';
 
-import { headerLabelStyle } from './Header.js';
-import { HeaderWrapper } from './HeaderWrapper.js';
-
-interface BaseSimpleApodizationOptionsPanelProps
-  extends Pick<
-    UseSharedApodizationOptions,
-    'onApplyDispatch' | 'onChangeDispatch'
-  > {
-  filter: ApodizationFilterOptions | null;
+interface BaseSimpleApodizationOptionsPanelProps {
+  filter: ApodizationFilterEntry | null;
 }
 
 export function BaseSimpleApodizationOptionsPanel(
@@ -26,13 +18,11 @@ export function BaseSimpleApodizationOptionsPanel(
 ) {
   const toaster = useToaster();
 
-  const { filter, onApplyDispatch, onChangeDispatch } = props;
+  const { filter } = props;
 
   const { formMethods, submitHandler, handleApplyFilter, handleCancelFilter } =
-    useSharedApodization(filter, {
+    useApodization(filter, {
       applyFilterOnload: true,
-      onApplyDispatch,
-      onChangeDispatch,
     });
 
   const {

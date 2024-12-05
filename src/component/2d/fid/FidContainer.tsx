@@ -1,6 +1,7 @@
 import type { Spectrum2D } from 'nmr-load-save';
 
 import { getSlice } from '../../../data/data2d/Spectrum2D/index.js';
+import { isFt2DSpectrum } from '../../../data/data2d/Spectrum2D/isSpectrum2D.js';
 import { useMouseTracker } from '../../EventsTrackers/MouseTracker.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import HorizontalSliceChart from '../1d-tracer/HorizontalSliceChart.js';
@@ -12,7 +13,7 @@ import { FidCanvas } from './FidCanvas.js';
 export function FidContainer() {
   const spectrum = useSpectrum() as Spectrum2D;
 
-  if (!spectrum || spectrum?.info?.isFt) return null;
+  if (!spectrum || isFt2DSpectrum(spectrum)) return null;
 
   return (
     <>
@@ -29,7 +30,7 @@ function TrackerContainer() {
 
   const position = useMouseTracker();
 
-  if (!position || !spectrum || spectrum?.info?.isFt) return null;
+  if (!position || !spectrum || isFt2DSpectrum(spectrum)) return null;
 
   const { x, y } = position;
   const data = getSlice(spectrum, {

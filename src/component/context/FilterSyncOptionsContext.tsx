@@ -31,18 +31,30 @@ export function useFilterSyncOptions<T>(): FilterSyncOptionsState<T> {
   return context;
 }
 
-export function useSyncedFilterOptions(onWatch: (options: any) => void) {
+export function useSyncedFilterOptions(
+  onWatch: (options: any) => void,
+  onReset?: () => void,
+) {
   const { sharedFilterOptions, updateFilterOptions } = useFilterSyncOptions();
   const isSyncOptionsDirty = useRef(true);
 
   const watchRef = useRef(onWatch);
+  const resetRef = useRef(onReset);
 
   // Update the ref when onWatch changes
   useEffect(() => {
     watchRef.current = onWatch;
   }, [onWatch]);
+  // Update the ref when onWatch changes
+  useEffect(() => {
+    resetRef.current = onReset;
+  }, [onReset]);
 
   useEffect(() => {
+    if (sharedFilterOptions === null) {
+      resetRef.current?.();
+    }
+
     if (sharedFilterOptions && isSyncOptionsDirty.current) {
       watchRef.current(sharedFilterOptions);
     } else {
@@ -52,6 +64,7 @@ export function useSyncedFilterOptions(onWatch: (options: any) => void) {
 
   const clearSyncFilterOptions = useCallback(() => {
     isSyncOptionsDirty.current = true;
+    resetRef.current?.();
     updateFilterOptions(null);
   }, [updateFilterOptions]);
 
@@ -78,7 +91,8 @@ export function FilterSyncOptionsProvider({
   const state = useMemo(() => {
     return {
       sharedFilterOptions,
-      updateFilterOptions: (options) => updateFilterOptions({ ...options }),
+      updateFilterOptions: (options) =>
+        updateFilterOptions(structuredClone(options)),
     };
   }, [sharedFilterOptions]);
 

@@ -10,11 +10,8 @@ import { ReadOnly } from '../../../../elements/ReadOnly.js';
 import { Sections } from '../../../../elements/Sections.js';
 import { FilterActionButtons } from '../FilterActionButtons.js';
 import { HeaderContainer, StickyHeader } from '../InnerFilterHeader.js';
-import { useSharedApodization } from '../hooks/useSharedApodization.js';
-import type {
-  ApodizationFilterOptions,
-  UseSharedApodizationOptions,
-} from '../hooks/useSharedApodization.js';
+import { useApodization } from '../hooks/useApodization.js';
+import type { ApodizationFilterEntry } from '../hooks/useApodization.js';
 import type { BaseFilterOptionsPanelProps } from '../index.js';
 import { formLabelStyle } from '../index.js';
 
@@ -33,23 +30,13 @@ const advanceValidationSchema = Yup.object().shape({
 });
 
 export function BaseApodizationOptions(
-  props: BaseFilterOptionsPanelProps<ApodizationFilterOptions> &
-    Pick<UseSharedApodizationOptions, 'onApplyDispatch' | 'onChangeDispatch'>,
+  props: BaseFilterOptionsPanelProps<ApodizationFilterEntry>,
 ) {
-  const {
-    filter,
-    enableEdit = true,
-    onCancel,
-    onConfirm,
-    onApplyDispatch,
-    onChangeDispatch,
-  } = props;
+  const { filter, enableEdit = true, onCancel, onConfirm } = props;
 
   const { submitHandler, handleApplyFilter, handleCancelFilter, formMethods } =
-    useSharedApodization(filter, {
+    useApodization(filter, {
       validationSchema: advanceValidationSchema,
-      onApplyDispatch,
-      onChangeDispatch,
     });
 
   const {

@@ -1,16 +1,30 @@
-import type { NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
+import type { NmrData2DFt } from 'cheminfo-types';
 import { extent } from 'd3';
+import type { Numeric } from 'd3';
 import type { Draft } from 'immer';
-import type { NucleiPreferences, Spectrum1D, Spectrum2D } from 'nmr-load-save';
+import type {
+  NucleiPreferences,
+  Spectrum,
+  Spectrum1D,
+  Spectrum2D,
+} from 'nmr-load-save';
 
 import { get1DDataXY } from '../../../data/data1d/Spectrum1D/get1DDataXY.js';
 import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.js';
+import {
+  isFid2DData,
+  isFt2DSpectrum,
+} from '../../../data/data2d/Spectrum2D/isSpectrum2D.js';
 import nucleusToString from '../../utility/nucleusToString.js';
 import type { State } from '../Reducer.js';
 import { addToBrushHistory } from '../helper/ZoomHistoryManager.js';
 import { getActiveSpectra } from '../helper/getActiveSpectra.js';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
 import type { ActionType } from '../types/ActionType.js';
+import {
+  isFid1DSpectrum,
+  isFt1DSpectrum,
+} from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
 
 type SetAxisDomainAction = ActionType<
   'SET_AXIS_DOMAIN',
@@ -25,6 +39,20 @@ type SetYDomainAction = ActionType<
   { yDomain: [number, number] }
 >;
 type MoveXAxisAction = ActionType<'MOVE', { shiftX: number; shiftY: number }>;
+
+function extentArray<T extends Numeric>(iterable: Iterable<T>) {
+  const [min = 0, max = 0] = extent(iterable);
+  return [min, max];
+}
+
+function is2DFTSpectrum(
+  spectrum: Spectrum,
+  nucleus: string,
+): spectrum is Spectrum2D & { data: NmrData2DFt } {
+  return (
+    isFt2DSpectrum(spectrum) && spectrum.info.nucleus?.join(',') === nucleus
+  );
+}
 
 export type DomainActions =
   | SetXDomainAction
@@ -47,11 +75,11 @@ function getActiveData(draft: Draft<State>): Spectrum1D[] {
       (datum) => datum.id === activeSpectrum?.id,
     );
     if (activeSpectrumIndex !== -1) {
-      const isFid = data[activeSpectrumIndex].info.isFid || false;
+      const isFid = isFid1DSpectrum(data[activeSpectrumIndex]);
       data = data.filter((datum) => datum.info.isFid === isFid);
     }
   } else {
-    data = data.filter((datum) => !datum.info.isFid);
+    data = data.filter((datum) => isFt1DSpectrum(datum));
   }
 
   return data as Spectrum1D[];
@@ -74,7 +102,7 @@ function getDomain(draft: Draft<State>, options: GetDomainOptions = {}) {
       const { display, data, id } = d;
       const { y } = get1DDataXY(d);
 
-      const _extent = extent(y) as number[];
+      const _extent = extentArray(y);
       const domain = [data.x[0], data.x.at(-1) as number];
 
       yDomains[id] = _extent;
@@ -102,8 +130,7 @@ function getDomain(draft: Draft<State>, options: GetDomainOptions = {}) {
 function get2DDomain(state: State) {
   let xArray: number[] = [];
   let yArray: number[] = [];
-  const yDomains: Record<string, [number, number] | [undefined, undefined]> =
-    {};
+  const yDomains: Record<string, number[]> = {};
   const xDomains: Record<string, number[]> = {};
 
   const {
@@ -117,41 +144,38 @@ function get2DDomain(state: State) {
   const activeSpectrum = getActiveSpectrum(state);
   const spectrum =
     data.find((datum) => datum.id === activeSpectrum?.id) || null;
-  if (spectrum?.info.isFid) {
-    const { minX, maxX, minY, maxY } = (spectrum.data as NmrData2DFid).re;
-    xArray = [minX, maxX];
-    yArray = [minY, maxY];
-  } else {
-    try {
-      xArray = (
-        data.filter(
-          (datum) =>
-            isSpectrum2D(datum) &&
-            datum.info.nucleus?.join(',') === activeTab &&
-            datum.info.isFt,
-        ) as Spectrum2D[]
-      ).flatMap((datum: Spectrum2D) => {
-        const { minX, maxX } = (datum.data as NmrData2DFt).rr;
-        return [minX, maxX];
-      });
 
-      yArray = (
-        data.filter(
-          (d) =>
-            isSpectrum2D(d) &&
-            d.info.nucleus?.join(',') === activeTab &&
-            d.info.isFt,
-        ) as Spectrum2D[]
-      ).flatMap((datum: Spectrum2D) => {
-        const { minY, maxY } = (datum.data as NmrData2DFt).rr;
-        return [minY, maxY];
-      });
-    } catch (error) {
-      // TODO: handle error
-      reportError(error);
+  if (spectrum && isSpectrum2D(spectrum)) {
+    if (isFid2DData(spectrum.data)) {
+      const { minX, maxX, minY, maxY } = spectrum.data.re;
+      xArray = [minX, maxX];
+      yArray = [minY, maxY];
+    } else {
+      try {
+        xArray = data
+          .filter((datum) => is2DFTSpectrum(datum, activeTab))
+          .flatMap((datum) => {
+            const { minX, maxX } = datum.data.rr;
+            return [minX, maxX];
+          });
+
+        yArray = (
+          data.filter(
+            (d) =>
+              isSpectrum2D(d) &&
+              d.info.nucleus?.join(',') === activeTab &&
+              d.info.isFt,
+          ) as Spectrum2D[]
+        ).flatMap((datum: Spectrum2D) => {
+          const { minY, maxY } = (datum.data as NmrData2DFt).rr;
+          return [minY, maxY];
+        });
+      } catch (error) {
+        // TODO: handle error
+        reportError(error);
+      }
     }
   }
-
   const spectraIDs = new Set();
 
   for (const n of nucleus) {
@@ -160,7 +184,6 @@ function get2DDomain(state: State) {
       spectraIDs.add(spectra[0].id);
     }
   }
-
   const filteredData = data
     .filter((d) => spectraIDs.has(d.id) && d.info.dimension === 1)
     .map((datum) => {
@@ -172,7 +195,7 @@ function get2DDomain(state: State) {
       const { x, re } = d.data;
       const domain = [x[0], x.at(-1) as number];
       xDomains[d.id] = domain;
-      const _extent = extent(re);
+      const _extent = extentArray(re);
       yDomains[d.id] = _extent;
     }
   } catch (error) {
@@ -181,8 +204,8 @@ function get2DDomain(state: State) {
   }
 
   return {
-    xDomain: extent(xArray),
-    yDomain: extent(yArray),
+    xDomain: extentArray(xArray),
+    yDomain: extentArray(yArray),
     yDomains,
     xDomains,
   };
@@ -248,22 +271,22 @@ function setMode(draft: Draft<State>) {
   const nucleus = view.spectra.activeTab;
 
   if (displayerMode === '1D') {
-    const datum_ = data.find(
+    const spectrum = data.find(
       (datum) =>
         xDomains[datum.id] && nucleusToString(datum.info.nucleus) === nucleus,
     );
-    draft.mode = (datum_ as Spectrum1D)?.info.isFid ? 'LTR' : 'RTL';
+    draft.mode = spectrum && isFid1DSpectrum(spectrum) ? 'LTR' : 'RTL';
   } else {
     const activeSpectra = getActiveSpectra(draft);
     let hasFt = false;
     if (Array.isArray(activeSpectra) && activeSpectra?.length > 0) {
-      hasFt = activeSpectra.some(
-        (spectrum) => !data[spectrum.index].info.isFid,
+      hasFt = activeSpectra.some((spectrum) =>
+        isFt2DSpectrum(data[spectrum.index]),
       );
     } else {
       hasFt = data.some(
         (spectrum) =>
-          !spectrum.info.isFid &&
+          isFt2DSpectrum(spectrum) &&
           nucleusToString(spectrum.info.nucleus) === nucleus,
       );
     }
@@ -361,6 +384,7 @@ function handleMoveOverXAxis(draft: Draft<State>, action: MoveXAxisAction) {
 
 export {
   getDomain,
+  get2DDomain,
   setDomain,
   setMode,
   handleSetXDomain,

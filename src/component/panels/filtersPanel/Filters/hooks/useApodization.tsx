@@ -36,26 +36,92 @@ const initialValues: ApodizationOptions = {
 export interface UseSharedApodizationOptions {
   validationSchema?: Yup.ObjectSchema<any>;
   applyFilterOnload?: boolean;
-  onApplyDispatch: (options: ApodizationOptions) => void;
-  onChangeDispatch: (options: ApodizationOptions) => void;
 }
 
-export type ApodizationFilterOptions =
+export type ApodizationFilterEntry =
   | ExtractFilterEntry<'apodization'>
   | ExtractFilterEntry<'apodizationDimension1'>
   | ExtractFilterEntry<'apodizationDimension2'>;
 
-export const useSharedApodization = (
-  filter: ApodizationFilterOptions | null,
+function useDispatchApodization(filter: ApodizationFilterEntry | null) {
+  const dispatch = useDispatch();
+  const dispatchChange = useCallback(
+    (values: ApodizationOptions) => {
+      switch (filter?.name) {
+        case 'apodization':
+          dispatch({
+            type: 'CALCULATE_APODIZATION_FILTER',
+            payload: { ...values },
+          });
+
+          break;
+        case 'apodizationDimension1':
+          dispatch({
+            type: 'CALCULATE_APODIZATION_DIMENSION_ONE_FILTER',
+            payload: { ...values },
+          });
+
+          break;
+        case 'apodizationDimension2':
+          dispatch({
+            type: 'CALCULATE_APODIZATION_DIMENSION_TWO_FILTER',
+            payload: { ...values },
+          });
+
+          break;
+
+        default:
+          break;
+      }
+    },
+    [dispatch, filter?.name],
+  );
+
+  const dispatchApply = useCallback(
+    (values: ApodizationOptions) => {
+      const { options } = values;
+
+      switch (filter?.name) {
+        case 'apodization':
+          dispatch({
+            type: 'APPLY_APODIZATION_FILTER',
+            payload: { options },
+          });
+
+          break;
+        case 'apodizationDimension1':
+          dispatch({
+            type: 'APPLY_APODIZATION_DIMENSION_ONE_FILTER',
+            payload: { options },
+          });
+
+          break;
+        case 'apodizationDimension2':
+          dispatch({
+            type: 'APPLY_APODIZATION_DIMENSION_TWO_FILTER',
+            payload: { options },
+          });
+
+          break;
+
+        default:
+          break;
+      }
+    },
+    [dispatch, filter?.name],
+  );
+
+  return { dispatchChange, dispatchApply };
+}
+
+export const useApodization = (
+  filter: ApodizationFilterEntry | null,
   options: UseSharedApodizationOptions,
 ) => {
   const {
     validationSchema = simpleValidationSchema,
     applyFilterOnload = false,
-    onApplyDispatch,
-    onChangeDispatch,
   } = options;
-
   const dispatch = useDispatch();
   const previousPreviewRef = useRef<boolean>(true);
 
@@ -80,14 +146,16 @@ export const useSharedApodization = (
   const { syncFilterOptions, clearSyncFilterOptions } =
     useSyncedFilterOptions(syncWatch);
 
+  const { dispatchApply, dispatchChange } = useDispatchApodization(filter);
+
   const onChange = useCallback(
     (values: ApodizationOptions) => {
       const { livePreview } = values;
       if (livePreview || previousPreviewRef.current !== livePreview) {
-        onChangeDispatch(structuredClone(values));
+        dispatchChange(structuredClone(values));
       }
     },
-    [onChangeDispatch],
+    [dispatchChange],
   );
 
   const handleApplyFilter = useCallback(
@@ -102,13 +170,13 @@ export const useSharedApodization = (
       }
 
       if (triggerSource === 'apply') {
-        onApplyDispatch(values);
+        dispatchApply(values);
         clearSyncFilterOptions();
       }
 
       previousPreviewRef.current = livePreview;
     },
-    [clearSyncFilterOptions, onApplyDispatch, onChange],
+    [dispatchApply, clearSyncFilterOptions, onChange],
   );
 
   const handleCancelFilter = useCallback(() => {

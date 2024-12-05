@@ -173,6 +173,41 @@ export const options: RecordOptions = {
     ],
     isToggle: true,
   },
+  zeroFillingDimension1: {
+    id: Filters2D.zeroFillingDimension1.name,
+    label: Filters2D.zeroFillingDimension1.label,
+    hasOptionPanel: true,
+    isFilter: true,
+    mode: '2D',
+    spectraOptions: [
+      {
+        info: [
+          { key: 'isFid', value: true },
+          { key: 'isComplex', value: true },
+        ],
+        active: true,
+      },
+    ],
+    isToggle: true,
+  },
+  zeroFillingDimension2: {
+    id: Filters2D.zeroFillingDimension2.name,
+    label: Filters2D.zeroFillingDimension2.label,
+    hasOptionPanel: true,
+    isFilter: true,
+    mode: '2D',
+    spectraOptions: [
+      {
+        info: [
+          { key: 'isFid', value: true },
+          { key: 'isFtDimensionOne', value: true },
+          { key: 'isComplex', value: true },
+        ],
+        active: true,
+      },
+    ],
+    isToggle: true,
+  },
   phaseCorrection: {
     id: Filters1D.phaseCorrection.name,
     label: Filters1D.phaseCorrection.label,
@@ -440,7 +475,11 @@ export const options: RecordOptions = {
     mode: '2D',
     spectraOptions: [
       {
-        info: [{ key: 'isFt', value: true }],
+        info: [
+          { key: 'isFid', value: true },
+          { key: 'isFtDimensionOne', value: true },
+          { key: 'isComplex', value: true },
+        ],
         active: true,
       },
     ],

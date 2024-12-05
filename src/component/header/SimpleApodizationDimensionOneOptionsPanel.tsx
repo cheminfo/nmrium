@@ -1,10 +1,12 @@
-import { memo, useCallback } from 'react';
+import { memo } from 'react';
 
 import type { ExtractFilterEntry } from '../../data/types/common/ExtractFilterEntry.js';
-import { useDispatch } from '../context/DispatchContext.js';
 import { useFilter } from '../hooks/useFilter.js';
+import { getDefaultFilterOptions } from '../utility/getDefaultFilterOptions.js';
 
-import { BaseSimpleApodizationOptionsPanel } from './BaseSimpleApodizationOptionsPanel.js';
+import { BaseSimpleApodizationOptionsPanel } from './base/BaseSimpleApodizationOptionsPanel.js';
+
+const defaultOptions = getDefaultFilterOptions('apodizationDimension2');
 
 interface ApodizationOptionsInnerPanelProps {
   filter: ExtractFilterEntry<'apodizationDimension1'> | null;
@@ -13,35 +15,9 @@ interface ApodizationOptionsInnerPanelProps {
 function ApodizationOptionsInnerPanel(
   props: ApodizationOptionsInnerPanelProps,
 ) {
-  const dispatch = useDispatch();
-
-  const applyHandler = useCallback(
-    (data) => {
-      const { options } = data;
-      dispatch({
-        type: 'APPLY_APODIZATION_DIMENSION_ONE_FILTER',
-        payload: { options },
-      });
-    },
-    [dispatch],
-  );
-  const changeHandler = useCallback(
-    (data) => {
-      const { livePreview, options } = data;
-
-      dispatch({
-        type: 'CALCULATE_APODIZATION_DIMENSION_ONE_FILTER',
-        payload: { livePreview, options: structuredClone(options) },
-      });
-    },
-    [dispatch],
-  );
-
   return (
     <BaseSimpleApodizationOptionsPanel
-      filter={props.filter}
-      onApplyDispatch={applyHandler}
-      onChangeDispatch={changeHandler}
+      filter={props.filter || defaultOptions}
     />
   );
 }

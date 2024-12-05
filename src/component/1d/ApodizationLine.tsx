@@ -13,7 +13,7 @@ import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
 import useSpectrum from '../hooks/useSpectrum.js';
 import { useVerticalAlign } from '../hooks/useVerticalAlign.js';
 import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce.js';
-import type { ApodizationOptions } from '../panels/filtersPanel/Filters/hooks/useSharedApodization.js';
+import type { ApodizationOptions } from '../panels/filtersPanel/Filters/hooks/useApodization.js';
 import { PathBuilder } from '../utility/PathBuilder.js';
 
 import { getYScale } from './utilities/scale.js';
