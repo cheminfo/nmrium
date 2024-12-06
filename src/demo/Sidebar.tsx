@@ -122,7 +122,7 @@ function Sidebar(props) {
           onClick={(e) => {
             // TODO: use non-deprecated API of rc-menu
             const itemProps = e.item.props;
-            navigate({
+            void navigate({
               pathname: `/SamplesDashboard/${Math.random()
                 .toString(36)
                 .replace('0.', '')}/${

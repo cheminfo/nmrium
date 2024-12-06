@@ -214,7 +214,7 @@ function PanelsInner({ displayerMode: displayedMode }) {
           if (id === 'informationPanel') {
             toolbar = (
               <InformationPanelToolBar
-                onEdit={({ event }) => {
+                onEdit={(event) => {
                   event.stopPropagation();
                   openDialog('informationModal');
                 }}

@@ -17,7 +17,7 @@ import {
   FaUnlink,
 } from 'react-icons/fa';
 import { ImLink } from 'react-icons/im';
-import { LuSubtitles } from 'react-icons/lu';
+import { LuMessageSquareText } from 'react-icons/lu';
 
 import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents.js';
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks.js';
@@ -312,7 +312,7 @@ function RangesHeader({
           },
           {
             disabled: !hasRanges,
-            icon: <LuSubtitles />,
+            icon: <LuMessageSquareText />,
             tooltip: `${booleanToString(!showAssignmentsLabels)} assignments labels`,
             onClick: handleShowAssignmentsLabel,
             active: showAssignmentsLabels,
