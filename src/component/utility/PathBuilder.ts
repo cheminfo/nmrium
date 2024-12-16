@@ -1,28 +1,32 @@
 export class PathBuilder {
-  private array: string[] = [];
+  private path = '';
+
+  private appendPath(segment: string) {
+    this.path += `${segment} `;
+  }
 
   public moveTo(x: number, y: number) {
     x = clamp(x);
     y = clamp(y);
-    this.array.push(`M ${x} ${y}`);
+    this.appendPath(`M ${x} ${y}`);
   }
 
   public lineTo(x: number, y: number) {
     x = clamp(x);
     y = clamp(y);
-    this.array.push(`L ${x} ${y}`);
+    this.appendPath(`L ${x} ${y}`);
   }
 
   public closePath() {
-    if (this.array.length > 0) this.array.push('Z');
+    if (this.path.length > 0) this.appendPath('Z');
   }
 
   public toString() {
-    return this.array.join(' ');
+    return this.path.trim();
   }
 
   public concatPath(pathBuilder: PathBuilder) {
-    return this.array.concat(pathBuilder.array).join(' ');
+    return (this.path + pathBuilder.path).trim();
   }
 }
 
