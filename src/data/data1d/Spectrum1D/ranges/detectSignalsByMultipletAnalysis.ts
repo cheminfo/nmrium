@@ -1,9 +1,12 @@
 import type { DataXY } from 'cheminfo-types';
 import { optimizePeaksWithLogs } from 'ml-gsd';
 import { xMaxValue } from 'ml-spectra-processing';
-import { analyseMultiplet } from 'multiplet-analysis';
 import type { NMRPeak1DWithShapeID } from 'nmr-processing';
-import { signalJoinCouplings, xyAutoPeaksPicking } from 'nmr-processing';
+import {
+  signalJoinCouplings,
+  xreimMultipletAnalysis,
+  xyAutoPeaksPicking,
+} from 'nmr-processing';
 
 export function detectSignalsByMultipletAnalysis(
   data: DataXY<Float64Array>,
@@ -74,17 +77,27 @@ export function detectSignalsByMultipletAnalysis(
     }
   }
 
-  const result = analyseMultiplet(dataRoi, {
-    frequency,
-    minimalResolution: 0.1,
-    maxTestedJ: 17,
-    checkSymmetryFirst: true,
-    takeBestPartMultiplet: true,
-    correctVerticalOffset: true,
-    symmetrizeEachStep: false,
-    decreasingJvalues: true,
-    makeShortCutForSpeed: true,
-  });
+  const result = xreimMultipletAnalysis(
+    {
+      x: dataRoi.x,
+      re: dataRoi.y,
+    },
+    {
+      autoPhase: true,
+      analyzer: {
+        frequency,
+        minimalResolution: 0.1,
+        maxTestedJ: 17,
+        checkSymmetryFirst: true,
+        takeBestPartMultiplet: true,
+        correctVerticalOffset: true,
+        critFoundJ: 0.75,
+        symmetrizeEachStep: false,
+        decreasingJvalues: true,
+        makeShortCutForSpeed: true,
+      },
+    },
+  );
 
   if (result && result.chemShift === undefined) return [];
 

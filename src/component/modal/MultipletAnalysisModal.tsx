@@ -2,8 +2,8 @@
 import { Dialog, DialogBody } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { xGetFromToIndex, xyToXYObject } from 'ml-spectra-processing';
-import { analyseMultiplet } from 'multiplet-analysis';
 import type { ActiveSpectrum, Spectrum } from 'nmr-load-save';
+import { xreimMultipletAnalysis } from 'nmr-processing';
 import { useEffect, useState } from 'react';
 import { Axis, LineSeries, Plot } from 'react-plot';
 
@@ -142,7 +142,7 @@ function InnerMultipleAnalysis(props: InnerMultipleAnalysisProps) {
       }
 
       const {
-        data: { x, re },
+        data: { x, re, im },
         info,
       } = spectrum;
 
@@ -153,21 +153,35 @@ function InnerMultipleAnalysis(props: InnerMultipleAnalysisProps) {
         from,
         to,
       });
+
       const analysesProps = {
         x: x.slice(fromIndex, toIndex),
-        y: re.slice(fromIndex, toIndex),
+        re: re.slice(fromIndex, toIndex),
+        im: im?.slice(fromIndex, toIndex),
       };
+      // console.log(
+      //   'hola',
+      //   JSON.stringify(analysesProps, (key, value) =>
+      //     ArrayBuffer.isView(value) ? Array.from(value as any) : value,
+      //   ),
+      // );
       try {
-        const result = analyseMultiplet(analysesProps, {
-          frequency: info.originFrequency,
-          minimalResolution: 0.1,
-          maxTestedJ: 17,
-          takeBestPartMultiplet: true,
-          correctVerticalOffset: true,
-          symmetrizeEachStep: true,
-          decreasingJvalues: true,
-          makeShortCutForSpeed: true,
-          debug: true,
+        const result = xreimMultipletAnalysis(analysesProps, {
+          autoPhase: false,
+          analyzer: {
+            frequency: info.originFrequency,
+            minimalResolution: 0.1,
+            critFoundJ: 0.75,
+            maxTestedJ: 17,
+            minTestedJ: 1,
+            checkSymmetryFirst: false,
+            takeBestPartMultiplet: true,
+            correctVerticalOffset: true,
+            symmetrizeEachStep: false,
+            decreasingJvalues: true,
+            makeShortCutForSpeed: true,
+            debug: true,
+          },
         });
         setCalcFinished(true);
         setAnalysisData(result);
