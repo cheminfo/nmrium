@@ -132,16 +132,16 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
         onContextMenu={preventContextMenuHandler}
         style={{ height: '100%', width: '100%' }}
       >
-        <DropZone>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              backgroundColor: 'white',
-              width: '100%',
-            }}
-          >
-            <FilterSyncOptionsProvider>
+        <FilterSyncOptionsProvider>
+          <DropZone>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                backgroundColor: 'white',
+                width: '100%',
+              }}
+            >
               <Header />
               <div
                 style={{
@@ -174,16 +174,16 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
                   }}
                 />
               </div>
-            </FilterSyncOptionsProvider>
-          </div>
-        </DropZone>
-        <div />
-        <PrintWrapper>
-          <NMRiumViewer emptyText={emptyText} viewerRef={viewerRef} />
-        </PrintWrapper>
-        <ExportManagerController>
-          <NMRiumViewer emptyText={emptyText} viewerRef={viewerRef} />
-        </ExportManagerController>
+            </div>
+          </DropZone>
+          <div />
+          <PrintWrapper>
+            <NMRiumViewer emptyText={emptyText} viewerRef={viewerRef} />
+          </PrintWrapper>
+          <ExportManagerController>
+            <NMRiumViewer emptyText={emptyText} viewerRef={viewerRef} />
+          </ExportManagerController>
+        </FilterSyncOptionsProvider>
       </div>
     </>
   );
