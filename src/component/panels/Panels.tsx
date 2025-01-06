@@ -26,6 +26,7 @@ import { ToolbarPopoverItem } from '../elements/ToolbarPopoverItem.js';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
 import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature.js';
 import { useDialogToggle } from '../hooks/useDialogToggle.js';
+import { useSplit } from '../main/SplitPaneWrapper.js';
 import type { DisplayerMode } from '../reducer/Reducer.js';
 
 import AutomaticAssignment from './AutomaticAssignment/AutomaticAssignment.js';
@@ -55,7 +56,7 @@ const PanelsBarContainer = styled(ButtonGroup)`
   background-color: ${Colors.WHITE};
 `;
 
-function usePanelBarItems() {
+export function useAccordionItems() {
   const { displayerMode } = useChartData();
   const isExperimental = useCheckExperimentalFeature();
 
@@ -67,7 +68,10 @@ function usePanelBarItems() {
   );
 }
 
-function generateHiddenItemsMenu(hiddenItems, getPanelPreferences) {
+function useHiddenItemsMenu(items, sliceIndex) {
+  const getPanelPreferences = usePanelPreferences();
+  const hiddenItems = items.slice(sliceIndex);
+
   return hiddenItems.map((item) => {
     const panelOptions = getPanelPreferences(item);
     return {
@@ -81,28 +85,49 @@ function generateHiddenItemsMenu(hiddenItems, getPanelPreferences) {
   });
 }
 
+function useTogglePanel(items) {
+  const getPanelPreferences = usePanelPreferences();
+  const { toggleSplit } = useSplit();
+  const { dispatch } = usePreferences();
+
+  function togglePanel(id?: string) {
+    if (!id) {
+      return;
+    }
+
+    const activeItems = items.filter((item) => {
+      const panelOptions = getPanelPreferences(item);
+      return panelOptions.display;
+    });
+
+    if (activeItems.length === 1 && id === activeItems[0].id) {
+      toggleSplit(true);
+    } else {
+      toggleSplit(false);
+    }
+
+    dispatch({ type: 'TOGGLE_PANEL', payload: { id } });
+  }
+
+  return togglePanel;
+}
+
 export function PanelsBar({ itemHeight = 44 }) {
   const {
     ref,
     height,
     // @ts-expect-error Module is not published correctly.
   } = useResizeObserver();
-  const { dispatch } = usePreferences();
   const getPanelPreferences = usePanelPreferences();
 
   const sliceIndex = Math.floor((height - itemHeight) / itemHeight);
 
-  const items = usePanelBarItems();
+  const items = useAccordionItems();
   const visibleItems = items.filter((_, index) => index < sliceIndex);
-  const hiddenItems = items.slice(sliceIndex);
-  const menu = generateHiddenItemsMenu(hiddenItems, getPanelPreferences);
+  const menu = useHiddenItemsMenu(items, sliceIndex);
+  const isMenuActive = menu.some((item) => item.active);
 
-  function togglePanel(id?: string) {
-    if (!id) {
-      return;
-    }
-    dispatch({ type: 'TOGGLE_PANEL', payload: { id } });
-  }
+  const togglePanel = useTogglePanel(items);
 
   return (
     <PanelsBarContainer vertical large minimal ref={ref}>
@@ -119,15 +144,16 @@ export function PanelsBar({ itemHeight = 44 }) {
           />
         );
       })}
-      {hiddenItems.length > 0 && (
+      {menu.length > 0 && (
         <Toolbar>
           <ToolbarPopoverItem<{ id: string }>
             placement="left"
             tooltipProps={{ placement: 'left' }}
             options={menu}
-            tooltip={`More panels [ +${hiddenItems.length} ]`}
+            tooltip={`More panels [ +${menu.length} ]`}
             icon="more"
             onClick={(data) => togglePanel(data?.id)}
+            active={isMenuActive}
           />
         </Toolbar>
       )}
@@ -313,17 +339,20 @@ export function useCheckPanel(displayerMode) {
   );
 }
 
-function PanelsInner({ displayerMode }) {
+function PanelsInner() {
   const getPanelPreferences = usePanelPreferences();
   const { dialog, openDialog, closeDialog } = useDialogToggle({
     informationModal: false,
   });
 
-  const check = useCheckPanel(displayerMode);
-
+  const items = useAccordionItems();
   function isOpened(item: AccordionItem) {
     const panelOptions = getPanelPreferences(item);
-    return panelOptions?.display && panelOptions?.open;
+    return panelOptions?.open;
+  }
+  function isVisible(item: AccordionItem) {
+    const panelOptions = getPanelPreferences(item);
+    return panelOptions?.display;
   }
 
   return (
@@ -333,11 +362,11 @@ function PanelsInner({ displayerMode }) {
         onCloseDialog={closeDialog}
       />
       <Accordion>
-        {accordionItems.map((item) => {
-          const { title, component, id } = item;
-
-          return (
-            check(item) && (
+        {items
+          .filter((item) => isVisible(item))
+          .map((item) => {
+            const { title, component, id } = item;
+            return (
               <Accordion.Item
                 key={title}
                 title={title}
@@ -345,6 +374,7 @@ function PanelsInner({ displayerMode }) {
                 toolbar={
                   <RightButtons
                     id={id}
+                    items={items}
                     onEdit={(event) => {
                       event.stopPropagation();
                       openDialog('informationModal');
@@ -354,9 +384,8 @@ function PanelsInner({ displayerMode }) {
               >
                 {component}
               </Accordion.Item>
-            )
-          );
-        })}
+            );
+          })}
       </Accordion>
     </div>
   );
@@ -365,14 +394,14 @@ function PanelsInner({ displayerMode }) {
 function RightButtons(props: {
   id: keyof NMRiumPanelPreferences;
   onEdit: ToolbarItemProps['onClick'];
+  items: AccordionItem[];
 }) {
-  const { onEdit, id } = props;
+  const { onEdit, id, items } = props;
   const activeSpectrum = useActiveSpectrum();
-  const { dispatch } = usePreferences();
-
+  const toggle = useTogglePanel(items);
   function handleClosePanel(event) {
     event?.stopPropagation();
-    dispatch({ type: 'TOGGLE_PANEL', payload: { id } });
+    toggle(id);
   }
 
   return (
@@ -402,10 +431,5 @@ function RightButtons(props: {
 const MemoizedPanels = memo(PanelsInner);
 
 export default function Panels() {
-  const {
-    displayerMode,
-    toolOptions: { selectedTool },
-  } = useChartData();
-
-  return <MemoizedPanels {...{ displayerMode, selectedTool }} />;
+  return <MemoizedPanels />;
 }

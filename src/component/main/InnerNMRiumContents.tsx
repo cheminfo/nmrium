@@ -19,7 +19,7 @@ import ToolBar from '../toolbar/ToolBar.js';
 
 import { useNMRiumRefAPI } from './NMRiumRefAPI.js';
 import { NMRiumViewer } from './NMRiumViewer.js';
-import { SplitPaneWrapper } from './SplitPaneWrapper.js';
+import { SplitPaneWrapper, SplitProvider } from './SplitPaneWrapper.js';
 import { StateError } from './StateError.js';
 
 import type { NMRiumProps, NMRiumRefAPI } from './index.js';
@@ -150,16 +150,21 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
                   height: '100%',
                 }}
               >
-                <ToolBar />
-                <SplitPaneWrapper>
-                  <div css={viewerContainerStyle}>
-                    <KeysListenerTracker mainDivRef={mainDivRef} />
+                <SplitProvider>
+                  <ToolBar />
+                  <SplitPaneWrapper>
+                    <div css={viewerContainerStyle}>
+                      <KeysListenerTracker mainDivRef={mainDivRef} />
 
-                    <NMRiumViewer emptyText={emptyText} viewerRef={viewerRef} />
-                  </div>
-                  <Panels />
-                </SplitPaneWrapper>
-                <PanelsBar />
+                      <NMRiumViewer
+                        emptyText={emptyText}
+                        viewerRef={viewerRef}
+                      />
+                    </div>
+                    <Panels />
+                  </SplitPaneWrapper>
+                  <PanelsBar />
+                </SplitProvider>
 
                 <div
                   ref={elementsWrapperRef}
