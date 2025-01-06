@@ -23,7 +23,6 @@ import useResizeObserver from 'use-resize-observer';
 import { useChartData } from '../context/ChartContext.js';
 import { usePreferences } from '../context/PreferencesContext.js';
 import { ToolbarPopoverItem } from '../elements/ToolbarPopoverItem.js';
-import type { ToolbarPopoverMenuItem } from '../elements/ToolbarPopoverItem.js';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
 import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature.js';
 import { useDialogToggle } from '../hooks/useDialogToggle.js';
@@ -55,37 +54,48 @@ const PanelsBarContainer = styled(ButtonGroup)`
   border-left: 1px solid ${Colors.LIGHT_GRAY4};
   background-color: ${Colors.WHITE};
 `;
-export function PanelsBar({ elementHeight = 44 }) {
+
+function usePanelBarItems() {
+  const { displayerMode } = useChartData();
+  const isExperimental = useCheckExperimentalFeature();
+
+  return accordionItems.filter(
+    (item) =>
+      (item.isExperimental === undefined ||
+        (item.isExperimental && isExperimental)) &&
+      checkMode(item, displayerMode),
+  );
+}
+
+function generateHiddenItemsMenu(hiddenItems, getPanelPreferences) {
+  return hiddenItems.map((item) => {
+    const panelOptions = getPanelPreferences(item);
+    return {
+      icon: item.icon,
+      text: item.title,
+      active: panelOptions.display,
+      data: {
+        id: item.id,
+      },
+    };
+  });
+}
+
+export function PanelsBar({ itemHeight = 44 }) {
   const {
     ref,
     height,
     // @ts-expect-error Module is not published correctly.
   } = useResizeObserver();
-  const { displayerMode } = useChartData();
-  // const check = useCheckPanel(displayerMode);
   const { dispatch } = usePreferences();
-  const isExperimental = useCheckExperimentalFeature();
   const getPanelPreferences = usePanelPreferences();
 
-  const elementsCount = accordionItems.length;
-  const sliceIndex = Math.floor((height - elementHeight) / elementHeight);
-  const index = Math.min(sliceIndex, elementsCount);
+  const sliceIndex = Math.floor((height - itemHeight) / itemHeight);
 
-  const hiddenItems = accordionItems.slice(index);
-  const checkHideItems = new Set(hiddenItems.map((item) => item.id));
-  const menu: Array<ToolbarPopoverMenuItem<{ id: string }>> = hiddenItems.map(
-    (item) => {
-      const panelOptions = getPanelPreferences(item);
-      return {
-        icon: item.icon,
-        text: item.title,
-        active: panelOptions.display,
-        data: {
-          id: item.id,
-        },
-      };
-    },
-  );
+  const items = usePanelBarItems();
+  const visibleItems = items.filter((_, index) => index < sliceIndex);
+  const hiddenItems = items.slice(sliceIndex);
+  const menu = generateHiddenItemsMenu(hiddenItems, getPanelPreferences);
 
   function togglePanel(id?: string) {
     if (!id) {
@@ -96,28 +106,19 @@ export function PanelsBar({ elementHeight = 44 }) {
 
   return (
     <PanelsBarContainer vertical large minimal ref={ref}>
-      {accordionItems
-        .filter(
-          (item) =>
-            (!checkHideItems.has(item.id) &&
-              item.isExperimental === undefined &&
-              checkMode(item, displayerMode)) ||
-            (item.isExperimental && isExperimental),
-        )
-        .map((item) => {
-          const panelOptions = getPanelPreferences(item);
-
-          return (
-            <ActivityBarItem
-              key={item.id}
-              id={item.id}
-              tooltip={item.title}
-              icon={item.icon}
-              active={panelOptions.display}
-              onClick={() => togglePanel(item.id)}
-            />
-          );
-        })}
+      {visibleItems.map((item) => {
+        const panelOptions = getPanelPreferences(item);
+        return (
+          <ActivityBarItem
+            key={item.id}
+            id={item.id}
+            tooltip={item.title}
+            icon={item.icon}
+            active={panelOptions.display}
+            onClick={() => togglePanel(item.id)}
+          />
+        );
+      })}
       {hiddenItems.length > 0 && (
         <Toolbar>
           <ToolbarPopoverItem<{ id: string }>

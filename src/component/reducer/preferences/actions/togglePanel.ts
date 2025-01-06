@@ -14,9 +14,17 @@ export function togglePanel(
   const currentWorkspacePreferences = getActiveWorkspace(draft);
   const { id } = action.payload || {};
 
-  const panel: PanelPreferencesType =
-    currentWorkspacePreferences.display.panels?.[id];
-  if (panel) {
-    panel.display = !panel.display;
-  }
+  if (!id) return;
+
+  const panels = currentWorkspacePreferences.display.panels || {};
+
+  const existingPanel: PanelPreferencesType = panels[id];
+
+  currentWorkspacePreferences.display.panels = {
+    ...panels,
+    [id]: {
+      display: existingPanel ? !existingPanel.display : true,
+      open: true,
+    },
+  };
 }
