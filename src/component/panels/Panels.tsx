@@ -1,3 +1,13 @@
+import { ButtonGroup, Colors } from '@blueprintjs/core';
+import type { IconName } from '@blueprintjs/icons';
+import styled from '@emotion/styled';
+import {
+  SvgNmrAssignment2,
+  SvgNmrIntegrate,
+  SvgNmrMultipleAnalysis,
+  SvgNmrPeakPicking,
+  SvgNmrRangePicking,
+} from 'cheminfo-font';
 import lodashGet from 'lodash/get.js';
 import type {
   NMRiumPanelPreferences,
@@ -5,12 +15,15 @@ import type {
 } from 'nmr-load-save';
 import type { CSSProperties, ReactElement } from 'react';
 import { memo, useCallback } from 'react';
-import { FaRegEdit } from 'react-icons/fa';
+import { FaDiceFour, FaRegEdit } from 'react-icons/fa';
 import type { AccordionItemProps, ToolbarItemProps } from 'react-science/ui';
-import { Accordion, Toolbar } from 'react-science/ui';
+import { Accordion, ActivityBarItem, Toolbar } from 'react-science/ui';
+import useResizeObserver from 'use-resize-observer';
 
 import { useChartData } from '../context/ChartContext.js';
 import { usePreferences } from '../context/PreferencesContext.js';
+import { ToolbarPopoverItem } from '../elements/ToolbarPopoverItem.js';
+import type { ToolbarPopoverMenuItem } from '../elements/ToolbarPopoverItem.js';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
 import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature.js';
 import { useDialogToggle } from '../hooks/useDialogToggle.js';
@@ -33,108 +46,210 @@ import MultipleSpectraAnalysisPanel from './multipleAnalysisPanel/MultipleSpectr
 import PredictionPane from './predictionPanel/PredictionPanel.js';
 import SpectrumSimulation from './spectrumSimulation/SpectrumSimulation.js';
 
-interface AccordionItem
-  extends Omit<AccordionItemProps, 'children' | 'defaultOpened'> {
-  id?: keyof NMRiumPanelPreferences;
-  component: ReactElement;
-  style?: CSSProperties;
-  hidePreferenceKey: string;
-  mode: DisplayerMode | null;
-  isExperimental?: boolean;
+const PanelsBarContainer = styled(ButtonGroup)`
+  flex-wrap: nowrap;
+  overflow: hidden;
+  height: 100%;
+  gap: 4px;
+  padding: 4px;
+  border-left: 1px solid ${Colors.LIGHT_GRAY4};
+  background-color: ${Colors.WHITE};
+`;
+export function PanelsBar({ elementHeight = 44 }) {
+  const {
+    ref,
+    height,
+    // @ts-expect-error Module is not published correctly.
+  } = useResizeObserver();
+  const { displayerMode } = useChartData();
+  // const check = useCheckPanel(displayerMode);
+  const { dispatch } = usePreferences();
+  const isExperimental = useCheckExperimentalFeature();
+  const getPanelPreferences = usePanelPreferences();
+
+  const elementsCount = accordionItems.length;
+  const sliceIndex = Math.floor((height - elementHeight) / elementHeight);
+  const index = Math.min(sliceIndex, elementsCount);
+
+  const hiddenItems = accordionItems.slice(index);
+  const checkHideItems = new Set(hiddenItems.map((item) => item.id));
+  const menu: Array<ToolbarPopoverMenuItem<{ id: string }>> = hiddenItems.map(
+    (item) => {
+      const panelOptions = getPanelPreferences(item);
+      return {
+        icon: item.icon,
+        text: item.title,
+        active: panelOptions.display,
+        data: {
+          id: item.id,
+        },
+      };
+    },
+  );
+
+  function togglePanel(id?: string) {
+    if (!id) {
+      return;
+    }
+    dispatch({ type: 'TOGGLE_PANEL', payload: { id } });
+  }
+
+  return (
+    <PanelsBarContainer vertical large minimal ref={ref}>
+      {accordionItems
+        .filter(
+          (item) =>
+            (!checkHideItems.has(item.id) &&
+              item.isExperimental === undefined &&
+              checkMode(item, displayerMode)) ||
+            (item.isExperimental && isExperimental),
+        )
+        .map((item) => {
+          const panelOptions = getPanelPreferences(item);
+
+          return (
+            <ActivityBarItem
+              key={item.id}
+              id={item.id}
+              tooltip={item.title}
+              icon={item.icon}
+              active={panelOptions.display}
+              onClick={() => togglePanel(item.id)}
+            />
+          );
+        })}
+      {hiddenItems.length > 0 && (
+        <Toolbar>
+          <ToolbarPopoverItem<{ id: string }>
+            placement="left"
+            tooltipProps={{ placement: 'left' }}
+            options={menu}
+            tooltip={`More panels [ +${hiddenItems.length} ]`}
+            icon="more"
+            onClick={(data) => togglePanel(data?.id)}
+          />
+        </Toolbar>
+      )}
+    </PanelsBarContainer>
+  );
 }
 
-const accordionItems: AccordionItem[] = [
+interface AccordionItem
+  extends Omit<AccordionItemProps, 'children' | 'defaultOpened'> {
+  id: keyof NMRiumPanelPreferences;
+  component: ReactElement;
+  style?: CSSProperties;
+  mode: DisplayerMode | null;
+  isExperimental?: boolean;
+  icon: IconName | ReactElement;
+}
+
+export const accordionItems: AccordionItem[] = [
   {
+    id: 'spectraPanel',
     title: 'Spectra',
     component: <SpectrumListPanel />,
-    hidePreferenceKey: 'spectraPanel',
     mode: null,
+    icon: 'list-columns',
   },
   {
     id: 'informationPanel',
     title: 'Information',
     component: <InformationPanel />,
     style: { overflow: 'hidden' },
-    hidePreferenceKey: 'informationPanel',
     mode: null,
+    icon: 'info-sign',
   },
   {
+    id: 'peaksPanel',
     title: 'Peaks',
     component: <PeaksPanel />,
-    hidePreferenceKey: 'peaksPanel',
     mode: '1D',
+    icon: <SvgNmrPeakPicking />,
   },
   {
+    id: 'processingsPanel',
     title: 'Processings',
     component: <FilterPanel />,
-    hidePreferenceKey: 'processingsPanel',
     mode: null,
+    icon: 'series-derived',
   },
   {
+    id: 'integralsPanel',
     title: 'Integrals',
     component: <IntegralPanel />,
-    hidePreferenceKey: 'integralsPanel',
     mode: '1D',
+    icon: <SvgNmrIntegrate />,
   },
   {
+    id: 'rangesPanel',
     title: 'Ranges / Multiplet analysis',
     component: <RangesPanel />,
-    hidePreferenceKey: 'rangesPanel',
     mode: '1D',
+    icon: <SvgNmrRangePicking />,
   },
   {
+    id: 'multipleSpectraAnalysisPanel',
     title: 'Multiple spectra analysis',
     component: <MultipleSpectraAnalysisPanel />,
-    hidePreferenceKey: 'multipleSpectraAnalysisPanel',
     mode: null,
+    icon: <SvgNmrMultipleAnalysis />,
   },
   {
+    id: 'matrixGenerationPanel',
     title: 'Matrix generation',
     component: <MatrixGenerationPanel />,
-    hidePreferenceKey: 'matrixGenerationPanel',
     mode: '1D',
+    icon: 'derive-column',
   },
   {
+    id: 'zonesPanel',
     title: 'Zones',
     component: <ZonesPanel />,
-    hidePreferenceKey: 'zonesPanel',
     mode: '2D',
+    icon: <FaDiceFour />,
   },
   {
+    id: 'summaryPanel',
     title: 'Summary',
     component: <SummaryPanel />,
-    hidePreferenceKey: 'summaryPanel',
     mode: null,
+    icon: 'document',
   },
   {
+    id: 'structuresPanel',
     title: 'Chemical structures',
     component: <MoleculePanel />,
-    hidePreferenceKey: 'structuresPanel',
     mode: null,
+    icon: 'hexagon',
   },
   {
+    id: 'databasePanel',
     title: 'Databases',
     component: <DatabasePanel />,
-    hidePreferenceKey: 'databasePanel',
     mode: null,
+    icon: 'database',
   },
   {
+    id: 'automaticAssignmentPanel',
     title: 'Automatic assignment',
     component: <AutomaticAssignment />,
-    hidePreferenceKey: 'automaticAssignmentPanel',
     mode: null,
+    icon: <SvgNmrAssignment2 />,
   },
   {
+    id: 'predictionPanel',
     title: 'Prediction',
     component: <PredictionPane />,
-    hidePreferenceKey: 'predictionPanel',
     mode: null,
+    icon: 'new-grid-item',
   },
   {
+    id: 'simulationPanel',
     title: 'Spectrum simulation',
     component: <SpectrumSimulation />,
-    hidePreferenceKey: 'simulationPanel',
     mode: '1D',
+    icon: 'lab-test',
   },
 ];
 
@@ -157,7 +272,7 @@ function usePanelPreferences(): (item: AccordionItem) => PanelPreferencesType {
         open: false,
       };
 
-      if (item?.isExperimental && !item.hidePreferenceKey) {
+      if (item?.isExperimental && !item.id) {
         return {
           display: true,
           open: false,
@@ -166,7 +281,7 @@ function usePanelPreferences(): (item: AccordionItem) => PanelPreferencesType {
 
       return lodashGet(
         preferences.current,
-        `display.panels.${item.hidePreferenceKey}`,
+        `display.panels.${item.id}`,
         defaultValue,
       );
     },
@@ -174,26 +289,36 @@ function usePanelPreferences(): (item: AccordionItem) => PanelPreferencesType {
   );
 }
 
-function PanelsInner({ displayerMode: displayedMode }) {
+function checkMode(item: AccordionItem, displayerMode: DisplayerMode) {
+  return item.mode == null || item.mode === displayerMode;
+}
+
+export function useCheckPanel(displayerMode) {
   const getPanelPreferences = usePanelPreferences();
   const isExperimental = useCheckExperimentalFeature();
-  const { dialog, openDialog, closeDialog } = useDialogToggle({
-    informationModal: false,
-  });
 
-  const check = useCallback(
+  return useCallback(
     (item) => {
       const panelOptions = getPanelPreferences(item);
 
       return (
         (panelOptions?.display &&
           item.isExperimental === undefined &&
-          (item.mode == null || item.mode === displayedMode)) ||
+          checkMode(item, displayerMode)) ||
         (item.isExperimental && isExperimental)
       );
     },
-    [displayedMode, getPanelPreferences, isExperimental],
+    [displayerMode, getPanelPreferences, isExperimental],
   );
+}
+
+function PanelsInner({ displayerMode }) {
+  const getPanelPreferences = usePanelPreferences();
+  const { dialog, openDialog, closeDialog } = useDialogToggle({
+    informationModal: false,
+  });
+
+  const check = useCheckPanel(displayerMode);
 
   function isOpened(item: AccordionItem) {
     const panelOptions = getPanelPreferences(item);
@@ -209,25 +334,22 @@ function PanelsInner({ displayerMode: displayedMode }) {
       <Accordion>
         {accordionItems.map((item) => {
           const { title, component, id } = item;
-          let toolbar;
 
-          if (id === 'informationPanel') {
-            toolbar = (
-              <InformationPanelToolBar
-                onEdit={(event) => {
-                  event.stopPropagation();
-                  openDialog('informationModal');
-                }}
-              />
-            );
-          }
           return (
             check(item) && (
               <Accordion.Item
                 key={title}
                 title={title}
                 defaultOpened={isOpened(item)}
-                toolbar={toolbar}
+                toolbar={
+                  <RightButtons
+                    id={id}
+                    onEdit={(event) => {
+                      event.stopPropagation();
+                      openDialog('informationModal');
+                    }}
+                  />
+                }
               >
                 {component}
               </Accordion.Item>
@@ -239,24 +361,38 @@ function PanelsInner({ displayerMode: displayedMode }) {
   );
 }
 
-function InformationPanelToolBar(props: {
+function RightButtons(props: {
+  id: keyof NMRiumPanelPreferences;
   onEdit: ToolbarItemProps['onClick'];
 }) {
-  const { onEdit } = props;
+  const { onEdit, id } = props;
   const activeSpectrum = useActiveSpectrum();
+  const { dispatch } = usePreferences();
+
+  function handleClosePanel(event) {
+    event?.stopPropagation();
+    dispatch({ type: 'TOGGLE_PANEL', payload: { id } });
+  }
 
   return (
     <Toolbar>
+      {id === 'informationPanel' && (
+        <Toolbar.Item
+          disabled={!activeSpectrum}
+          tooltipProps={{ intent: !activeSpectrum ? 'danger' : 'none' }}
+          icon={<FaRegEdit />}
+          onClick={onEdit}
+          tooltip={
+            !activeSpectrum
+              ? 'Select a spectrum to edit its meta information'
+              : 'Edit spectrum meta information'
+          }
+        />
+      )}
       <Toolbar.Item
-        disabled={!activeSpectrum}
-        tooltipProps={{ intent: !activeSpectrum ? 'danger' : 'none' }}
-        icon={<FaRegEdit />}
-        onClick={onEdit}
-        tooltip={
-          !activeSpectrum
-            ? 'Select a spectrum to edit its meta information'
-            : 'Edit spectrum meta information'
-        }
+        icon="cross"
+        tooltip="Close panel"
+        onClick={handleClosePanel}
       />
     </Toolbar>
   );

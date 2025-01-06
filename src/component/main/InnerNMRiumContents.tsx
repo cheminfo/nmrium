@@ -14,7 +14,7 @@ import { ExportManagerController } from '../elements/export/ExportManager.js';
 import { PrintContent } from '../elements/print/PrintContent.js';
 import { Header } from '../header/Header.js';
 import DropZone from '../loader/DropZone.js';
-import Panels from '../panels/Panels.js';
+import Panels, { PanelsBar } from '../panels/Panels.js';
 import ToolBar from '../toolbar/ToolBar.js';
 
 import { useNMRiumRefAPI } from './NMRiumRefAPI.js';
@@ -159,6 +159,8 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
                   </div>
                   <Panels />
                 </SplitPaneWrapper>
+                <PanelsBar />
+
                 <div
                   ref={elementsWrapperRef}
                   key={String(isFullScreen)}
