@@ -95,8 +95,8 @@ test('Should ranges Add/resize/delete', async ({ page }) => {
 
   await test.step('Add ranges', async () => {
     //add two ranges
-    await addRange(nmrium, 200, 210, 1);
-    await addRange(nmrium, 110, 120, 2);
+    await addRange(nmrium, 160, 170, 1);
+    await addRange(nmrium, 70, 80, 2);
   });
 
   await test.step('Clicking and subsequently releasing the resizing action should not crash or add a new range', async () => {
