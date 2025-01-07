@@ -4,7 +4,7 @@ export const embedded: InnerWorkspace = {
   label: 'Embedded',
   display: {
     general: {
-      experimentalFeatures: { display: true },
+      experimentalFeatures: { display: true, visible: true },
       hidePanelOnLoad: true,
       hideHelp: true,
       hideLogs: true,
@@ -14,14 +14,14 @@ export const embedded: InnerWorkspace = {
     },
 
     panels: {
-      spectraPanel: { display: true, open: true },
-      informationPanel: { display: true, open: false },
-      peaksPanel: { display: true, open: false },
-      integralsPanel: { display: true, open: false },
-      rangesPanel: { display: true, open: false },
-      structuresPanel: { display: true, open: false },
-      processingsPanel: { display: true, open: false },
-      zonesPanel: { display: true, open: false },
+      spectraPanel: { display: true, visible: true, open: true },
+      informationPanel: { display: true, visible: true, open: false },
+      peaksPanel: { display: true, visible: true, open: false },
+      integralsPanel: { display: true, visible: true, open: false },
+      rangesPanel: { display: true, visible: true, open: false },
+      structuresPanel: { display: true, visible: true, open: false },
+      processingsPanel: { display: true, visible: true, open: false },
+      zonesPanel: { display: true, visible: true, open: false },
     },
     toolBarButtons: {
       peakPicking: true,

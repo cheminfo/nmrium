@@ -18,8 +18,8 @@ export const simulation: InnerWorkspace = {
       hideWorkspaces: true,
     },
     panels: {
-      spectraPanel: { display: true },
-      simulationPanel: { display: true, open: true },
+      spectraPanel: { display: true, visible: true },
+      simulationPanel: { display: true, visible: true, open: true },
     },
     toolBarButtons: {
       exportAs: true,

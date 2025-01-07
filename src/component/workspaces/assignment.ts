@@ -5,12 +5,12 @@ export const assignment: InnerWorkspace = {
   visible: true,
   display: {
     panels: {
-      spectraPanel: { display: true, open: true },
-      informationPanel: { display: true, open: false },
-      rangesPanel: { display: true, open: false },
-      structuresPanel: { display: true, open: false },
-      processingsPanel: { display: true, open: false },
-      zonesPanel: { display: true, open: false },
+      spectraPanel: { display: true, visible: true, open: true },
+      informationPanel: { display: true, visible: true, open: false },
+      rangesPanel: { display: true, visible: true, open: false },
+      structuresPanel: { display: true, visible: true, open: false },
+      processingsPanel: { display: true, visible: true, open: false },
+      zonesPanel: { display: true, visible: true, open: false },
     },
     toolBarButtons: {
       zoom: true,

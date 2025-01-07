@@ -23,8 +23,8 @@ export function togglePanel(
   currentWorkspacePreferences.display.panels = {
     ...panels,
     [id]: {
+      ...existingPanel,
       display: existingPanel ? !existingPanel.display : true,
-      open: true,
     },
   };
 }

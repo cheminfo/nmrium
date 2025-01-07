@@ -1,56 +1,20 @@
-import { createContext, useContext, useMemo, useState } from 'react';
-import type { SplitPaneProps, SplitPaneSize } from 'react-science/ui';
+import { useEffect, useState } from 'react';
+import type { SplitPaneSize } from 'react-science/ui';
 import { SplitPane } from 'react-science/ui';
 
 import { usePreferences } from '../context/PreferencesContext.js';
-
-interface SplitContextState extends Pick<SplitPaneProps, 'closed'> {
-  toggleSplit: (value: boolean) => void;
-}
-
-const SplitContext = createContext<SplitContextState | null>(null);
-
-export function useSplit() {
-  const context = useContext(SplitContext);
-
-  if (!context) {
-    throw new Error('split context must be used within SplitProvider');
-  }
-
-  return context;
-}
-
-export function SplitProvider({ children }) {
-  const { current } = usePreferences();
-
-  const {
-    general: { verticalSplitterCloseThreshold },
-    display: { general = {} },
-  } = current;
-
-  const [closed, setClosedValue] = useState(
-    general?.hidePanelOnLoad ? true : verticalSplitterCloseThreshold,
-  );
-
-  const state = useMemo(() => {
-    function toggleSplit(value: boolean) {
-      setClosedValue(value);
-    }
-
-    return { closed, toggleSplit };
-  }, [closed]);
-  return (
-    <SplitContext.Provider value={state}>{children}</SplitContext.Provider>
-  );
-}
+import { useAccordionItems } from '../panels/hooks/useAccordionItems.js';
+import { useGetPanelOptions } from '../panels/hooks/useGetPanelOptions.js';
 
 export function SplitPaneWrapper({ children }) {
   const { current, dispatch } = usePreferences();
-  const {
-    general: { verticalSplitterPosition },
-  } = current;
+  const getPanelPreferences = useGetPanelOptions();
 
-  const { closed } = useSplit();
+  const {
+    general: { verticalSplitterPosition, verticalSplitterCloseThreshold },
+    display: { general = {} },
+  } = current;
+  const items = useAccordionItems();
 
   function resizeHandler(value: SplitPaneSize) {
     dispatch({
@@ -59,6 +23,27 @@ export function SplitPaneWrapper({ children }) {
         value,
       },
     });
+  }
+  const [closed, setClosedValue] = useState(
+    general?.hidePanelOnLoad ? true : verticalSplitterCloseThreshold,
+  );
+  const displayedPanels = items.filter((item) => {
+    const panelOptions = getPanelPreferences(item);
+    return panelOptions.display;
+  });
+
+  const hasDisplayedPanels = displayedPanels.length > 0;
+
+  useEffect(() => {
+    if (!hasDisplayedPanels) {
+      setClosedValue(true);
+    } else {
+      setClosedValue(false);
+    }
+  }, [hasDisplayedPanels]);
+
+  if (items?.length === 0 || !hasDisplayedPanels) {
+    return <div style={{ width: '100%', height: '100%' }}>{children}</div>;
   }
 
   return (

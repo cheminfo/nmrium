@@ -9,6 +9,7 @@ const customWorkspaces: CustomWorkspaces = {
         hideGeneralSettings: false,
         experimentalFeatures: {
           display: true,
+          visible: true,
         },
         hidePanelOnLoad: false,
         hideLogs: false,
@@ -19,58 +20,72 @@ const customWorkspaces: CustomWorkspaces = {
       panels: {
         spectraPanel: {
           display: true,
+          visible: true,
           open: true,
         },
         informationPanel: {
           display: true,
+          visible: true,
           open: false,
         },
         integralsPanel: {
           display: false,
+          visible: false,
           open: false,
         },
         rangesPanel: {
           display: true,
+          visible: true,
           open: false,
         },
         structuresPanel: {
           display: true,
+          visible: true,
           open: false,
         },
         processingsPanel: {
           display: true,
+          visible: true,
           open: true,
         },
         zonesPanel: {
           display: true,
+          visible: true,
           open: false,
         },
         automaticAssignmentPanel: {
           display: false,
+          visible: false,
           open: false,
         },
         databasePanel: {
           display: false,
+          visible: false,
           open: false,
         },
         multipleSpectraAnalysisPanel: {
           display: false,
+          visible: false,
           open: false,
         },
         peaksPanel: {
           display: false,
+          visible: false,
           open: false,
         },
         predictionPanel: {
           display: false,
+          visible: false,
           open: false,
         },
         summaryPanel: {
           display: false,
+          visible: false,
           open: false,
         },
         simulationPanel: {
           display: false,
+          visible: false,
           open: false,
         },
       },

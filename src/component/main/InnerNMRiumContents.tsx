@@ -14,12 +14,13 @@ import { ExportManagerController } from '../elements/export/ExportManager.js';
 import { PrintContent } from '../elements/print/PrintContent.js';
 import { Header } from '../header/Header.js';
 import DropZone from '../loader/DropZone.js';
-import Panels, { PanelsBar } from '../panels/Panels.js';
+import { Panels } from '../panels/Panels.js';
+import { PanelsBar } from '../panels/PanelsBar.js';
 import ToolBar from '../toolbar/ToolBar.js';
 
 import { useNMRiumRefAPI } from './NMRiumRefAPI.js';
 import { NMRiumViewer } from './NMRiumViewer.js';
-import { SplitPaneWrapper, SplitProvider } from './SplitPaneWrapper.js';
+import { SplitPaneWrapper } from './SplitPaneWrapper.js';
 import { StateError } from './StateError.js';
 
 import type { NMRiumProps, NMRiumRefAPI } from './index.js';
@@ -150,22 +151,16 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
                   height: '100%',
                 }}
               >
-                <SplitProvider>
-                  <ToolBar />
-                  <SplitPaneWrapper>
-                    <div css={viewerContainerStyle}>
-                      <KeysListenerTracker mainDivRef={mainDivRef} />
+                <ToolBar />
+                <SplitPaneWrapper>
+                  <div css={viewerContainerStyle}>
+                    <KeysListenerTracker mainDivRef={mainDivRef} />
 
-                      <NMRiumViewer
-                        emptyText={emptyText}
-                        viewerRef={viewerRef}
-                      />
-                    </div>
-                    <Panels />
-                  </SplitPaneWrapper>
-                  <PanelsBar />
-                </SplitProvider>
-
+                    <NMRiumViewer emptyText={emptyText} viewerRef={viewerRef} />
+                  </div>
+                  <Panels />
+                </SplitPaneWrapper>
+                <PanelsBar />
                 <div
                   ref={elementsWrapperRef}
                   key={String(isFullScreen)}
