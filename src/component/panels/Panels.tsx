@@ -1,41 +1,62 @@
 import type { NMRiumPanelPreferences } from 'nmr-load-save';
-import { memo, useCallback } from 'react';
+import { createContext, memo, useContext, useMemo, useState } from 'react';
 import { FaRegEdit } from 'react-icons/fa';
 import type { ToolbarItemProps } from 'react-science/ui';
 import { Accordion, Toolbar } from 'react-science/ui';
 
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
-import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature.js';
 import { useDialogToggle } from '../hooks/useDialogToggle.js';
 
 import type { AccordionItem } from './accordionItems.js';
-import { checkAccordionItemMode } from './checkAccordionItemMode.js';
-import { InformationEditionModal } from './informationPanel/InformationEditionModal.js';
 import { useAccordionItems } from './hooks/useAccordionItems.js';
 import { useGetPanelOptions } from './hooks/useGetPanelOptions.js';
 import { useTogglePanel } from './hooks/useTogglePanel.js';
+import { InformationEditionModal } from './informationPanel/InformationEditionModal.js';
 
-export function useCheckPanel(displayerMode) {
-  const getPanelPreferences = useGetPanelOptions();
-  const isExperimental = useCheckExperimentalFeature();
+type PanelOpenState = Partial<Record<keyof NMRiumPanelPreferences, boolean>>;
+interface PanelStateContext {
+  setPanelOpenState: (id: keyof NMRiumPanelPreferences, value: boolean) => void;
+  panelOpenState: PanelOpenState;
+}
 
-  return useCallback(
-    (item) => {
-      const panelOptions = getPanelPreferences(item);
+const AccordionContext = createContext<PanelStateContext | null>(null);
 
-      return (
-        (panelOptions?.display &&
-          item.isExperimental === undefined &&
-          checkAccordionItemMode(item, displayerMode)) ||
-        (item.isExperimental && isExperimental)
-      );
-    },
-    [displayerMode, getPanelPreferences, isExperimental],
+export function usePanelOpenState() {
+  const context = useContext(AccordionContext);
+
+  if (!context) {
+    throw new Error('Panel open context must be used within PanelOpenProvider');
+  }
+
+  return context;
+}
+
+export function PanelOpenProviderProvider({ children }) {
+  const [panelOpenState, toggleAccordionItem] = useState<PanelOpenState>({});
+
+  const state = useMemo(() => {
+    function setPanelOpenState(
+      id: keyof NMRiumPanelPreferences,
+      value: boolean,
+    ) {
+      toggleAccordionItem((prev) => ({
+        ...prev,
+        [id]: value,
+      }));
+    }
+    return { setPanelOpenState, panelOpenState };
+  }, [panelOpenState]);
+
+  return (
+    <AccordionContext.Provider value={state}>
+      {children}
+    </AccordionContext.Provider>
   );
 }
 
 function PanelsInner() {
   const getPanelPreferences = useGetPanelOptions();
+  const { panelOpenState } = usePanelOpenState();
   const { dialog, openDialog, closeDialog } = useDialogToggle({
     informationModal: false,
   });
@@ -65,7 +86,7 @@ function PanelsInner() {
               <Accordion.Item
                 key={title}
                 title={title}
-                defaultOpened={isOpened(item)}
+                defaultOpened={isOpened(item) || panelOpenState[id]}
                 toolbar={
                   <RightButtons
                     id={id}
