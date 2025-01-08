@@ -13,8 +13,12 @@ test('automatic assignment panel', async ({ page }) => {
     await nmrium.page.click('_react=ToolbarItem[id="general-settings"]');
     await nmrium.page.click('div[role="dialog"] >> text=Panels');
 
+    //change the checkbox value for 'visible' and 'display' to true
     await nmrium.page
       .locator('td:has-text("Automatic assignment panel")  + td')
+      .click();
+    await nmrium.page
+      .locator('td:has-text("Automatic assignment panel")  + td + td')
       .click();
 
     await nmrium.saveWorkspaceModal('test');
