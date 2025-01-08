@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import type { SplitPaneSize } from 'react-science/ui';
 import { SplitPane } from 'react-science/ui';
 
@@ -24,27 +23,20 @@ export function SplitPaneWrapper({ children }) {
       },
     });
   }
-  const [closed, setClosedValue] = useState(
-    general?.hidePanelOnLoad ? true : verticalSplitterCloseThreshold,
-  );
+
   const displayedPanels = items.filter((item) => {
     const panelOptions = getPanelPreferences(item);
     return panelOptions.display;
   });
-
   const hasDisplayedPanels = displayedPanels.length > 0;
-
-  useEffect(() => {
-    if (!hasDisplayedPanels) {
-      setClosedValue(true);
-    } else {
-      setClosedValue(false);
-    }
-  }, [hasDisplayedPanels]);
 
   if (items?.length === 0 || !hasDisplayedPanels) {
     return <div style={{ width: '100%', height: '100%' }}>{children}</div>;
   }
+
+  const closed: number | boolean = general?.hidePanelOnLoad
+    ? true
+    : verticalSplitterCloseThreshold;
 
   return (
     <SplitPane
