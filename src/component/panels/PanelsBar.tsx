@@ -1,8 +1,10 @@
 import { ButtonGroup, Colors } from '@blueprintjs/core';
 import styled from '@emotion/styled';
+import type { NMRiumPanelPreferences } from 'nmr-load-save';
 import { ActivityBarItem, Toolbar } from 'react-science/ui';
 import useResizeObserver from 'use-resize-observer';
 
+import type { ToolbarPopoverMenuItem } from '../elements/ToolbarPopoverItem.js';
 import { ToolbarPopoverItem } from '../elements/ToolbarPopoverItem.js';
 
 import { useAccordionItems } from './hooks/useAccordionItems.js';
@@ -19,7 +21,10 @@ const PanelsBarContainer = styled(ButtonGroup)`
   background-color: ${Colors.WHITE};
 `;
 
-function useHiddenItemsMenu(items, sliceIndex) {
+function useHiddenItemsMenu(
+  items,
+  sliceIndex,
+): Array<ToolbarPopoverMenuItem<{ id: keyof NMRiumPanelPreferences }>> {
   const getPanelPreferences = useGetPanelOptions();
   const hiddenItems = items.slice(sliceIndex);
 
@@ -72,13 +77,17 @@ export function PanelsBar({ itemHeight = 44 }) {
       })}
       {menu.length > 0 && (
         <Toolbar>
-          <ToolbarPopoverItem<{ id: string }>
+          <ToolbarPopoverItem
             placement="left"
             tooltipProps={{ placement: 'left' }}
             options={menu}
             tooltip={`More panels [ +${menu.length} ]`}
             icon="more"
-            onClick={(data) => togglePanel(data?.id)}
+            onClick={(data) => {
+              if (data?.id) {
+                togglePanel(data.id);
+              }
+            }}
             active={isMenuActive}
           />
         </Toolbar>
