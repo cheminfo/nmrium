@@ -46,6 +46,7 @@ import { setPreferences } from './actions/setPreferences.js';
 import { setVerticalSplitterPosition } from './actions/setVerticalSplitterPosition.js';
 import { setWorkspace } from './actions/setWorkspace.js';
 import { toggleInformationBlock } from './actions/toggleInformationBlock.js';
+import { togglePanel } from './actions/togglePanel.js';
 import { mapWorkspaces } from './utilities/mapWorkspaces.js';
 
 const LOCAL_STORAGE_SETTINGS_KEY = 'nmr-general-settings';
@@ -147,6 +148,8 @@ export type ChangePeaksLabelPositionAction = ActionType<
   }
 >;
 
+export type TogglePanelAction = ActionType<'TOGGLE_PANEL', { id: string }>;
+
 type PreferencesActions =
   | InitPreferencesAction
   | SetPreferencesAction
@@ -165,7 +168,8 @@ type PreferencesActions =
   | ToggleInformationBlock
   | ChangePrintPageSettingsAction
   | ChangeExportSettingsAction
-  | ChangePeaksLabelPositionAction;
+  | ChangePeaksLabelPositionAction
+  | TogglePanelAction;
 
 export const WORKSPACES: Array<{
   key: NMRiumWorkspace;
@@ -322,6 +326,8 @@ function innerPreferencesReducer(
       return changeExportSettings(draft, action);
     case 'CHANGE_PEAKS_LABEL_POSITION':
       return changePeaksLabelPosition(draft, action);
+    case 'TOGGLE_PANEL':
+      return togglePanel(draft, action);
 
     default:
       return draft;

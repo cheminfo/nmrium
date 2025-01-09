@@ -7,11 +7,11 @@ export const process1D: InnerWorkspace = {
     general: {},
 
     panels: {
-      spectraPanel: { display: true, open: true },
-      informationPanel: { display: true },
-      peaksPanel: { display: true },
-      processingsPanel: { display: true },
-      multipleSpectraAnalysisPanel: { display: true },
+      spectraPanel: { display: true, visible: true, open: true },
+      informationPanel: { display: true, visible: true },
+      peaksPanel: { display: true, visible: true },
+      processingsPanel: { display: true, visible: true },
+      multipleSpectraAnalysisPanel: { display: true, visible: true },
     },
 
     toolBarButtons: {

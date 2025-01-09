@@ -84,11 +84,14 @@ export default function Teaching(props) {
               preferences={{
                 display: {
                   panels: {
-                    informationPanel: { display: true },
-                    peaksPanel: { display: true },
-                    integralsPanel: { display: true },
-                    processingsPanel: { display: true },
-                    multipleSpectraAnalysisPanel: { display: true },
+                    informationPanel: { display: true, visible: true },
+                    peaksPanel: { display: true, visible: true },
+                    integralsPanel: { display: true, visible: true },
+                    processingsPanel: { display: true, visible: true },
+                    multipleSpectraAnalysisPanel: {
+                      display: true,
+                      visible: true,
+                    },
                   },
                 },
               }}

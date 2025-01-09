@@ -7,7 +7,7 @@ import { useChartData } from '../context/ChartContext.js';
 import { useDispatch } from '../context/DispatchContext.js';
 import { usePreferences } from '../context/PreferencesContext.js';
 import { useToaster } from '../context/ToasterContext.js';
-import { TOOLS_PANELS_ACCORDION } from '../panels/Panels.js';
+import { TOOLS_PANELS_ACCORDION } from '../panels/accordionItems.js';
 import { options } from '../toolbar/ToolTypes.js';
 
 export default function useToolsFunctions() {

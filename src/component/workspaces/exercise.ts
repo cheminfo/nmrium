@@ -9,8 +9,8 @@ export const exercise: InnerWorkspace = {
       hideWorkspaces: true,
     },
     panels: {
-      spectraPanel: { display: true, open: true },
-      integralsPanel: { display: true },
+      spectraPanel: { display: true, visible: true, open: true },
+      integralsPanel: { display: true, visible: true },
     },
     toolBarButtons: {
       zoom: true,

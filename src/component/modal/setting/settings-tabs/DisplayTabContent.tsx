@@ -93,6 +93,18 @@ function DisplayTabContent() {
       },
       {
         index: 2,
+        Header: 'Visible',
+        style: { textAlign: 'center' },
+        Cell: ({ row }) => (
+          <Checkbox
+            style={{ margin: 0 }}
+            {...register(`display.${row.original.name}.visible`)}
+            defaultChecked={false}
+          />
+        ),
+      },
+      {
+        index: 3,
         Header: 'Active',
         style: { textAlign: 'center' },
         Cell: ({ row }) => (
@@ -104,7 +116,7 @@ function DisplayTabContent() {
         ),
       },
       {
-        index: 3,
+        index: 4,
         Header: 'Open on load',
         style: { textAlign: 'center' },
         Cell: ({ row }) => (

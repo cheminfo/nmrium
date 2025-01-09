@@ -18,10 +18,10 @@ export const prediction: InnerWorkspace = {
       hideWorkspaces: true,
     },
     panels: {
-      spectraPanel: { display: true },
-      rangesPanel: { display: true },
-      zonesPanel: { display: true },
-      predictionPanel: { display: true, open: true },
+      spectraPanel: { display: true, visible: true },
+      rangesPanel: { display: true, visible: true },
+      zonesPanel: { display: true, visible: true },
+      predictionPanel: { display: true, visible: true, open: true },
     },
     toolBarButtons: {
       baselineCorrection: true,

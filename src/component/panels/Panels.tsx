@@ -1,203 +1,74 @@
-import lodashGet from 'lodash/get.js';
-import type {
-  NMRiumPanelPreferences,
-  PanelPreferencesType,
-} from 'nmr-load-save';
-import type { CSSProperties, ReactElement } from 'react';
-import { memo, useCallback } from 'react';
+import type { NMRiumPanelPreferences } from 'nmr-load-save';
+import { createContext, memo, useContext, useMemo, useState } from 'react';
 import { FaRegEdit } from 'react-icons/fa';
-import type { AccordionItemProps, ToolbarItemProps } from 'react-science/ui';
+import type { ToolbarItemProps } from 'react-science/ui';
 import { Accordion, Toolbar } from 'react-science/ui';
 
-import { useChartData } from '../context/ChartContext.js';
-import { usePreferences } from '../context/PreferencesContext.js';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
-import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature.js';
 import { useDialogToggle } from '../hooks/useDialogToggle.js';
-import type { DisplayerMode } from '../reducer/Reducer.js';
 
-import AutomaticAssignment from './AutomaticAssignment/AutomaticAssignment.js';
-import IntegralPanel from './IntegralsPanel/IntegralPanel.js';
-import { MatrixGenerationPanel } from './MatrixGenerationPanel/MatrixGenerationPanel.js';
-import MoleculePanel from './MoleculesPanel/MoleculePanel.js';
-import PeaksPanel from './PeaksPanel/PeaksPanel.js';
-import RangesPanel from './RangesPanel/RangesPanel.js';
-import SpectrumListPanel from './SpectraPanel/SpectrumListPanel.js';
-import SummaryPanel from './SummaryPanel/SummaryPanel.js';
-import ZonesPanel from './ZonesPanel/ZonesPanel.js';
-import DatabasePanel from './databasePanel/DatabasePanel.js';
-import FilterPanel from './filtersPanel/FilterPanel.js';
+import type { AccordionItem } from './accordionItems.js';
+import { useAccordionItems } from './hooks/useAccordionItems.js';
+import { useGetPanelOptions } from './hooks/useGetPanelOptions.js';
+import { useTogglePanel } from './hooks/useTogglePanel.js';
 import { InformationEditionModal } from './informationPanel/InformationEditionModal.js';
-import { InformationPanel } from './informationPanel/InformationPanel.js';
-import MultipleSpectraAnalysisPanel from './multipleAnalysisPanel/MultipleSpectraAnalysisPanel.js';
-import PredictionPane from './predictionPanel/PredictionPanel.js';
-import SpectrumSimulation from './spectrumSimulation/SpectrumSimulation.js';
 
-interface AccordionItem
-  extends Omit<AccordionItemProps, 'children' | 'defaultOpened'> {
-  id?: keyof NMRiumPanelPreferences;
-  component: ReactElement;
-  style?: CSSProperties;
-  hidePreferenceKey: string;
-  mode: DisplayerMode | null;
-  isExperimental?: boolean;
+type PanelOpenState = Partial<Record<keyof NMRiumPanelPreferences, boolean>>;
+interface PanelStateContext {
+  setPanelOpenState: (id: keyof NMRiumPanelPreferences, value: boolean) => void;
+  panelOpenState: PanelOpenState;
 }
 
-const accordionItems: AccordionItem[] = [
-  {
-    title: 'Spectra',
-    component: <SpectrumListPanel />,
-    hidePreferenceKey: 'spectraPanel',
-    mode: null,
-  },
-  {
-    id: 'informationPanel',
-    title: 'Information',
-    component: <InformationPanel />,
-    style: { overflow: 'hidden' },
-    hidePreferenceKey: 'informationPanel',
-    mode: null,
-  },
-  {
-    title: 'Peaks',
-    component: <PeaksPanel />,
-    hidePreferenceKey: 'peaksPanel',
-    mode: '1D',
-  },
-  {
-    title: 'Processings',
-    component: <FilterPanel />,
-    hidePreferenceKey: 'processingsPanel',
-    mode: null,
-  },
-  {
-    title: 'Integrals',
-    component: <IntegralPanel />,
-    hidePreferenceKey: 'integralsPanel',
-    mode: '1D',
-  },
-  {
-    title: 'Ranges / Multiplet analysis',
-    component: <RangesPanel />,
-    hidePreferenceKey: 'rangesPanel',
-    mode: '1D',
-  },
-  {
-    title: 'Multiple spectra analysis',
-    component: <MultipleSpectraAnalysisPanel />,
-    hidePreferenceKey: 'multipleSpectraAnalysisPanel',
-    mode: null,
-  },
-  {
-    title: 'Matrix generation',
-    component: <MatrixGenerationPanel />,
-    hidePreferenceKey: 'matrixGenerationPanel',
-    mode: '1D',
-  },
-  {
-    title: 'Zones',
-    component: <ZonesPanel />,
-    hidePreferenceKey: 'zonesPanel',
-    mode: '2D',
-  },
-  {
-    title: 'Summary',
-    component: <SummaryPanel />,
-    hidePreferenceKey: 'summaryPanel',
-    mode: null,
-  },
-  {
-    title: 'Chemical structures',
-    component: <MoleculePanel />,
-    hidePreferenceKey: 'structuresPanel',
-    mode: null,
-  },
-  {
-    title: 'Databases',
-    component: <DatabasePanel />,
-    hidePreferenceKey: 'databasePanel',
-    mode: null,
-  },
-  {
-    title: 'Automatic assignment',
-    component: <AutomaticAssignment />,
-    hidePreferenceKey: 'automaticAssignmentPanel',
-    mode: null,
-  },
-  {
-    title: 'Prediction',
-    component: <PredictionPane />,
-    hidePreferenceKey: 'predictionPanel',
-    mode: null,
-  },
-  {
-    title: 'Spectrum simulation',
-    component: <SpectrumSimulation />,
-    hidePreferenceKey: 'simulationPanel',
-    mode: '1D',
-  },
-];
+const AccordionContext = createContext<PanelStateContext | null>(null);
 
-export const TOOLS_PANELS_ACCORDION: Record<string, string> = {
-  null: 'Spectra',
-  peakPicking: 'Peaks',
-  integral: 'Integrals',
-  rangePicking: 'Ranges / Multiplet analysis',
-  zonePicking: 'Zones',
-  multipleSpectraAnalysis: 'Multiple Spectra Analysis',
-};
+export function usePanelOpenState() {
+  const context = useContext(AccordionContext);
 
-function usePanelPreferences(): (item: AccordionItem) => PanelPreferencesType {
-  const preferences = usePreferences();
+  if (!context) {
+    throw new Error('Panel open context must be used within PanelOpenProvider');
+  }
 
-  return useCallback(
-    (item: AccordionItem) => {
-      const defaultValue: PanelPreferencesType = {
-        display: false,
-        open: false,
-      };
+  return context;
+}
 
-      if (item?.isExperimental && !item.hidePreferenceKey) {
-        return {
-          display: true,
-          open: false,
-        };
-      }
+export function PanelOpenProviderProvider({ children }) {
+  const [panelOpenState, toggleAccordionItem] = useState<PanelOpenState>({});
 
-      return lodashGet(
-        preferences.current,
-        `display.panels.${item.hidePreferenceKey}`,
-        defaultValue,
-      );
-    },
-    [preferences],
+  const state = useMemo(() => {
+    function setPanelOpenState(
+      id: keyof NMRiumPanelPreferences,
+      value: boolean,
+    ) {
+      toggleAccordionItem((prev) => ({
+        ...prev,
+        [id]: value,
+      }));
+    }
+    return { setPanelOpenState, panelOpenState };
+  }, [panelOpenState]);
+
+  return (
+    <AccordionContext.Provider value={state}>
+      {children}
+    </AccordionContext.Provider>
   );
 }
 
-function PanelsInner({ displayerMode: displayedMode }) {
-  const getPanelPreferences = usePanelPreferences();
-  const isExperimental = useCheckExperimentalFeature();
+function PanelsInner() {
+  const getPanelPreferences = useGetPanelOptions();
+  const { panelOpenState } = usePanelOpenState();
   const { dialog, openDialog, closeDialog } = useDialogToggle({
     informationModal: false,
   });
 
-  const check = useCallback(
-    (item) => {
-      const panelOptions = getPanelPreferences(item);
-
-      return (
-        (panelOptions?.display &&
-          item.isExperimental === undefined &&
-          (item.mode == null || item.mode === displayedMode)) ||
-        (item.isExperimental && isExperimental)
-      );
-    },
-    [displayedMode, getPanelPreferences, isExperimental],
-  );
-
+  const items = useAccordionItems();
   function isOpened(item: AccordionItem) {
     const panelOptions = getPanelPreferences(item);
-    return panelOptions?.display && panelOptions?.open;
+    return panelOptions?.open;
+  }
+  function isVisible(item: AccordionItem) {
+    const panelOptions = getPanelPreferences(item);
+    return panelOptions?.display;
   }
 
   return (
@@ -207,56 +78,65 @@ function PanelsInner({ displayerMode: displayedMode }) {
         onCloseDialog={closeDialog}
       />
       <Accordion>
-        {accordionItems.map((item) => {
-          const { title, component, id } = item;
-          let toolbar;
-
-          if (id === 'informationPanel') {
-            toolbar = (
-              <InformationPanelToolBar
-                onEdit={(event) => {
-                  event.stopPropagation();
-                  openDialog('informationModal');
-                }}
-              />
-            );
-          }
-          return (
-            check(item) && (
+        {items
+          .filter((item) => isVisible(item))
+          .map((item) => {
+            const { title, component, id } = item;
+            return (
               <Accordion.Item
                 key={title}
                 title={title}
-                defaultOpened={isOpened(item)}
-                toolbar={toolbar}
+                defaultOpened={isOpened(item) || panelOpenState[id]}
+                toolbar={
+                  <RightButtons
+                    id={id}
+                    onEdit={(event) => {
+                      event.stopPropagation();
+                      openDialog('informationModal');
+                    }}
+                  />
+                }
               >
                 {component}
               </Accordion.Item>
-            )
-          );
-        })}
+            );
+          })}
       </Accordion>
     </div>
   );
 }
 
-function InformationPanelToolBar(props: {
+function RightButtons(props: {
+  id: keyof NMRiumPanelPreferences;
   onEdit: ToolbarItemProps['onClick'];
 }) {
-  const { onEdit } = props;
+  const { onEdit, id } = props;
   const activeSpectrum = useActiveSpectrum();
+  const toggle = useTogglePanel();
+  function handleClosePanel(event) {
+    event?.stopPropagation();
+    toggle(id);
+  }
 
   return (
     <Toolbar>
+      {id === 'informationPanel' && (
+        <Toolbar.Item
+          disabled={!activeSpectrum}
+          tooltipProps={{ intent: !activeSpectrum ? 'danger' : 'none' }}
+          icon={<FaRegEdit />}
+          onClick={onEdit}
+          tooltip={
+            !activeSpectrum
+              ? 'Select a spectrum to edit its meta information'
+              : 'Edit spectrum meta information'
+          }
+        />
+      )}
       <Toolbar.Item
-        disabled={!activeSpectrum}
-        tooltipProps={{ intent: !activeSpectrum ? 'danger' : 'none' }}
-        icon={<FaRegEdit />}
-        onClick={onEdit}
-        tooltip={
-          !activeSpectrum
-            ? 'Select a spectrum to edit its meta information'
-            : 'Edit spectrum meta information'
-        }
+        icon="cross"
+        tooltip="Close panel"
+        onClick={handleClosePanel}
       />
     </Toolbar>
   );
@@ -264,11 +144,6 @@ function InformationPanelToolBar(props: {
 
 const MemoizedPanels = memo(PanelsInner);
 
-export default function Panels() {
-  const {
-    displayerMode,
-    toolOptions: { selectedTool },
-  } = useChartData();
-
-  return <MemoizedPanels {...{ displayerMode, selectedTool }} />;
+export function Panels() {
+  return <MemoizedPanels />;
 }

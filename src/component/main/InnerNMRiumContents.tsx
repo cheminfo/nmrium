@@ -14,7 +14,8 @@ import { ExportManagerController } from '../elements/export/ExportManager.js';
 import { PrintContent } from '../elements/print/PrintContent.js';
 import { Header } from '../header/Header.js';
 import DropZone from '../loader/DropZone.js';
-import Panels from '../panels/Panels.js';
+import { PanelOpenProviderProvider, Panels } from '../panels/Panels.js';
+import { PanelsBar } from '../panels/PanelsBar.js';
 import ToolBar from '../toolbar/ToolBar.js';
 
 import { useNMRiumRefAPI } from './NMRiumRefAPI.js';
@@ -150,15 +151,21 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
                   height: '100%',
                 }}
               >
-                <ToolBar />
-                <SplitPaneWrapper>
-                  <div css={viewerContainerStyle}>
-                    <KeysListenerTracker mainDivRef={mainDivRef} />
+                <PanelOpenProviderProvider>
+                  <ToolBar />
+                  <SplitPaneWrapper>
+                    <div css={viewerContainerStyle}>
+                      <KeysListenerTracker mainDivRef={mainDivRef} />
 
-                    <NMRiumViewer emptyText={emptyText} viewerRef={viewerRef} />
-                  </div>
-                  <Panels />
-                </SplitPaneWrapper>
+                      <NMRiumViewer
+                        emptyText={emptyText}
+                        viewerRef={viewerRef}
+                      />
+                    </div>
+                    <Panels />
+                  </SplitPaneWrapper>
+                  <PanelsBar />
+                </PanelOpenProviderProvider>
                 <div
                   ref={elementsWrapperRef}
                   key={String(isFullScreen)}
