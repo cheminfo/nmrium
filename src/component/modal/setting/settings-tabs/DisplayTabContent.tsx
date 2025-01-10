@@ -7,6 +7,8 @@ import ReactTable from '../../../elements/ReactTable/ReactTable.js';
 import type { CustomColumn } from '../../../elements/ReactTable/utility/addCustomColumn.js';
 import { Select2 } from '../../../elements/Select2.js';
 import type { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
+import Label from '../../../elements/Label.js';
+import { GroupPane } from '../../../elements/GroupPane.js';
 
 const basePath = 'display.panels';
 interface ListItem {
@@ -186,14 +188,26 @@ function DisplayTabContent() {
 
   return (
     <div style={{ width: '100%', overflow: 'hidden' }}>
-      <ReactTable<ListItem>
-        columns={COLUMNS}
-        data={LIST}
-        rowStyle={{
-          hover: { backgroundColor: '#f7f7f7' },
-          active: { backgroundColor: '#f5f5f5' },
-        }}
-      />
+      <Label
+        title="Hide panels bar "
+        style={{ wrapper: { padding: '10px 0' } }}
+      >
+        <Checkbox
+          style={{ margin: 0 }}
+          {...register('display.general.hidePanelsBar')}
+        />
+      </Label>
+
+      <GroupPane text="Panels settings">
+        <ReactTable<ListItem>
+          columns={COLUMNS}
+          data={LIST}
+          rowStyle={{
+            hover: { backgroundColor: '#f7f7f7' },
+            active: { backgroundColor: '#f5f5f5' },
+          }}
+        />
+      </GroupPane>
     </div>
   );
 }
