@@ -1,13 +1,10 @@
-/** @jsxImportSource @emotion/react */
 import {
   Classes,
   Dialog,
-  DialogBody,
   DialogFooter,
   Tab,
-  Tabs,
+  Tabs as BaseTabs,
 } from '@blueprintjs/core';
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
 import type { Workspace } from 'nmr-load-save';
@@ -29,6 +26,7 @@ import {
 } from '../../context/PreferencesContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import ActionButtons from '../../elements/ActionButtons.js';
+import { DialogBody } from '../../elements/DialogBody.js';
 import Label from '../../elements/Label.js';
 import type { DropDownListItem } from '../../elements/dropDownButton/DropDownButton.js';
 import DropDownButton from '../../elements/dropDownButton/DropDownButton.js';
@@ -59,6 +57,25 @@ export const Section = styled.div`
   margin-bottom: 10px;
   border-bottom: 0.55px solid #f9f9f9;
   padding: 6px 2px;
+`;
+
+const Tabs = styled(BaseTabs)`
+  height: 100%;
+
+  div[role='tablist'] {
+    gap: 0;
+  }
+
+  div[role='tabpanel'] {
+    width: 100%;
+    padding: 0.8rem;
+    overflow: auto;
+    max-height: 100%;
+  }
+`;
+
+const StyledButton = styled(Button)<{ marginHorizontal: number }>`
+  margin: 0 ${(props) => props.marginHorizontal}px;
 `;
 
 function isRestButtonDisable(
@@ -227,30 +244,9 @@ function InnerGeneralSettingsModal(props: InnerGeneralSettingsModalProps) {
             />
           </div>
         </div>
-        <DialogBody
-          css={css`
-            padding: 0;
-            background-color: white;
-          `}
-        >
+        <DialogBody>
           <div style={{ height }}>
-            <Tabs
-              vertical
-              css={css`
-                height: 100%;
-
-                div[role='tablist'] {
-                  gap: 0;
-                }
-
-                div[role='tabpanel'] {
-                  width: 100%;
-                  padding: 0.8rem;
-                  overflow: auto;
-                  max-height: 100%;
-                }
-              `}
-            >
+            <Tabs vertical>
               <Tab title="General" id="general" panel={<GeneralTabContent />} />
 
               <Tab title="Nuclei" id="nuclei" panel={<NucleiTabContent />} />
@@ -389,14 +385,14 @@ function WorkSpaceActionsButtons(props) {
       >
         <FaBolt className={Classes.ICON} />
       </Button>
-      <Button
+      <StyledButton
         outlined
         onClick={handleCopyWorkspace}
         tooltipProps={{ content: 'Copy workspace preferences', compact: true }}
-        css={css({ margin: '0 5px' })}
+        marginHorizontal={5}
       >
         <FaRegCopy className={Classes.ICON} />
-      </Button>
+      </StyledButton>
       <Button
         outlined
         intent="success"
@@ -456,13 +452,13 @@ function DialogActionButtons(props: BasseGeneralModalProps) {
           props.onCloseDialog?.();
         }}
       />
-      <Button
+      <StyledButton
         intent="primary"
-        css={css({ margin: '0 10px' })}
         onClick={applyPreferencesHandler}
+        marginHorizontal={10}
       >
         Apply
-      </Button>
+      </StyledButton>
     </div>
   );
 }

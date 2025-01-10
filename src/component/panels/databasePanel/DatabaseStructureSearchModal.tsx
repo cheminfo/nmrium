@@ -1,7 +1,7 @@
-/** @jsxImportSource @emotion/react */
-import { Dialog, DialogBody } from '@blueprintjs/core';
-import { css } from '@emotion/react';
+import { Dialog } from '@blueprintjs/core';
 import { StructureEditor } from 'react-ocl/full';
+
+import { DialogBody } from '../../elements/DialogBody.js';
 
 interface DatabaseStructureSearchModalProps {
   onChange: (idCode: string) => void;
@@ -25,11 +25,7 @@ export function DatabaseStructureSearchModal({
       style={{ width: 720 }}
       title="Search by structure"
     >
-      <DialogBody
-        css={css`
-          background-color: white;
-        `}
-      >
+      <DialogBody>
         <StructureEditor
           initialIDCode={idCode}
           svgMenu

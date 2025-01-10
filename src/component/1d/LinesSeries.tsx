@@ -1,5 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import type { Spectrum1D } from 'nmr-load-save';
 
 import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY.js';
@@ -16,7 +15,7 @@ import { SPECTRA_BOTTOM_MARGIN } from './utilities/scale.js';
 
 const BOX_SIZE = 10;
 
-const style = css`
+const Rect = styled.rect`
   fill: transparent;
 
   &:hover {
@@ -75,8 +74,7 @@ function HeadlightRectStackMode(props: HeadlightRectStackModeProps) {
   }
 
   return (
-    <rect
-      css={style}
+    <Rect
       y={innerHeight - shiftY * index - BOX_SIZE / 2}
       x={margin.left}
       width={`${innerWidth}px`}

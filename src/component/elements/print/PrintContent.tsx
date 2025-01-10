@@ -1,13 +1,10 @@
-/** @jsxImportSource @emotion/react */
 import {
   Dialog,
-  DialogBody,
   DialogFooter,
   Radio,
   RadioGroup,
   Tag,
 } from '@blueprintjs/core';
-import { css } from '@emotion/react';
 import type { PageSizeName, PrintPageOptions } from 'nmr-load-save';
 import type { CSSProperties, ReactNode } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -15,6 +12,7 @@ import { createPortal } from 'react-dom';
 import { Controller, useForm } from 'react-hook-form';
 
 import ActionButtons from '../ActionButtons.js';
+import { DialogBody } from '../DialogBody.js';
 import type { LabelStyle } from '../Label.js';
 import Label from '../Label.js';
 import { NumberInput2Controller } from '../NumberInput2Controller.js';
@@ -351,11 +349,7 @@ function InnerPrintOptionsModal(props: InnerPrintOptionsModalProps) {
       onClose={onCloseDialog}
       style={{ width: 600 }}
     >
-      <DialogBody
-        css={css`
-          background-color: white;
-        `}
-      >
+      <DialogBody>
         <Label style={labelStyle} title="Size">
           <Select2Controller control={control} name="size" items={sizesList} />
         </Label>

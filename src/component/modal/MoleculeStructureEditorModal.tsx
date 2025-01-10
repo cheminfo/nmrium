@@ -1,6 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
-import { css } from '@emotion/react';
+import { Dialog, DialogFooter } from '@blueprintjs/core';
 import { Molecule } from 'openchemlib/full';
 import { TopicMolecule } from 'openchemlib-utils';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -11,6 +9,7 @@ import { useOnOff } from 'react-science/ui';
 import type { StateMoleculeExtended } from '../../data/molecules/Molecule.js';
 import { useDispatch } from '../context/DispatchContext.js';
 import ActionButtons from '../elements/ActionButtons.js';
+import { DialogBody } from '../elements/DialogBody.js';
 
 interface MoleculeStructureEditorModalProps {
   onClose?: (element?: string) => void;
@@ -106,11 +105,7 @@ function MoleculeStructureEditorModal(
 
   return (
     <Dialog isOpen={isOpen} onClose={handleClose} style={{ width: 710 }}>
-      <DialogBody
-        css={css`
-          background-color: white;
-        `}
-      >
+      <DialogBody>
         <StructureEditor
           initialMolfile={initialEnhancedMolfile?.molfile}
           svgMenu

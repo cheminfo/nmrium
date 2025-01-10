@@ -1,12 +1,11 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import * as d3 from 'd3';
 import { useEffect, useRef } from 'react';
 
 import { useChartData } from '../context/ChartContext.js';
 import { useScale } from '../context/ScaleContext.js';
 
-const axisStyles = css`
+const AxisGroup = styled.g`
   user-select: none;
 
   path,
@@ -19,7 +18,7 @@ const axisStyles = css`
   }
 `;
 
-const gridStyles = css`
+const GridGroup = styled.g`
   user-select: none;
 
   line {
@@ -80,21 +79,19 @@ export function XAxis1D(props: XAxisProps) {
   return (
     <>
       {show && (
-        <g
+        <AxisGroup
           className="x"
-          css={axisStyles}
           transform={`translate(0,${height - margin.bottom})`}
           ref={refAxis}
         >
           <text fill="#000" x={width - 10} y="30" dy="0.70em" textAnchor="end">
             {label}
           </text>
-        </g>
+        </AxisGroup>
       )}
       {showGrid && (
-        <g
+        <GridGroup
           data-no-export="true"
-          css={gridStyles}
           className="grid"
           ref={refGrid}
           transform={`translate(0,${height - margin.bottom})`}

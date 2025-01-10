@@ -1,18 +1,16 @@
-/** @jsxImportSource @emotion/react */
 import {
   Checkbox,
   Dialog,
-  DialogBody,
   DialogFooter,
   Radio,
   RadioGroup,
 } from '@blueprintjs/core';
-import { css } from '@emotion/react';
 import { Controller, useForm } from 'react-hook-form';
 
 import { DataExportOptions } from '../../data/SpectraManager.js';
 import { useChartData } from '../context/ChartContext.js';
 import ActionButtons from '../elements/ActionButtons.js';
+import { DialogBody } from '../elements/DialogBody.js';
 import { Input2Controller } from '../elements/Input2Controller.js';
 import type { LabelStyle } from '../elements/Label.js';
 import Label from '../elements/Label.js';
@@ -78,11 +76,7 @@ function InnerSaveAsModal(props: InnerSaveAsModalProps) {
       onClose={onCloseDialog}
       style={{ width: 600 }}
     >
-      <DialogBody
-        css={css`
-          background-color: white;
-        `}
-      >
+      <DialogBody>
         <Label style={labelStyle} title="Name">
           <Input2Controller
             name="name"

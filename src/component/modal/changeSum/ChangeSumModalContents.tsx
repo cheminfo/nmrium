@@ -1,6 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { Button, DialogBody, DialogFooter, Tab, Tabs } from '@blueprintjs/core';
-import { css } from '@emotion/react';
+import { Button, DialogFooter, Tab, Tabs } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
 import type { SumOptions } from 'nmr-load-save';
@@ -9,9 +7,16 @@ import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
 import { usePreferences } from '../../context/PreferencesContext.js';
+import { DialogBody as BaseDialogBody } from '../../elements/DialogBody.js';
 import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
 
 import SelectMolecule from './SelectMolecule.js';
+
+const DialogBody = styled(BaseDialogBody)`
+  [role='tablist'] {
+    border-bottom: 1px solid #f0f0f0;
+  }
+`;
 
 function getValidationSchema(option: SumSetOption) {
   if (option === 'auto') {
@@ -116,16 +121,7 @@ export function ChangeSumModalContents(props: ChangeSumModalContentsProps) {
 
   return (
     <>
-      <DialogBody
-        css={css`
-          padding: 5px;
-          background-color: white;
-
-          [role='tablist'] {
-            border-bottom: 1px solid #f0f0f0;
-          }
-        `}
-      >
+      <DialogBody padding="5px">
         <Tabs
           selectedTabId={setOption}
           onChange={onTabChangeHandler}

@@ -1,5 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import type { Integral } from 'nmr-processing';
 
 import { useChartData } from '../../context/ChartContext.js';
@@ -11,21 +10,13 @@ import { useResizerStatus } from '../../hooks/useResizerStatus.js';
 
 import { IntegralIndicator } from './IntegralIndicator.js';
 
-const stylesOnHover = css`
-  .highlight {
-    fill: transparent;
+const Group = styled.g<{ isActive: boolean }>`
+  rect {
+    fill: ${(props) => (props.isActive ? '#ff6f0057' : 'transparent')};
   }
 
   .target {
-    visibility: hidden;
-  }
-`;
-
-const stylesHighlighted = css`
-  fill: #ff6f0057;
-
-  .target {
-    visibility: visible;
+    visibility: ${(props) => (props.isActive ? 'visible' : 'hidden')};
   }
 `;
 
@@ -79,25 +70,14 @@ function IntegralResizable({
           const width = x2 - x1;
 
           return (
-            <g
-              css={
-                highlight.isActive || isActive
-                  ? stylesHighlighted
-                  : stylesOnHover
-              }
-            >
-              <rect
-                width={width}
-                height={bottom}
-                className="highlight"
-                data-no-export="true"
-              />
+            <Group isActive={highlight.isActive || isActive}>
+              <rect width={width} height={bottom} data-no-export="true" />
               <IntegralIndicator
                 value={integral}
                 format={integralFormat}
                 width={width}
               />
-            </g>
+            </Group>
           );
         }}
       </ResizerWithScale>

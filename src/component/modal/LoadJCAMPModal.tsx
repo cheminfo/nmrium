@@ -1,6 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { Button, Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
-import { css } from '@emotion/react';
+import { Button, Dialog, DialogFooter } from '@blueprintjs/core';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { readFromWebSource } from 'nmr-load-save';
 import { useForm } from 'react-hook-form';
@@ -8,6 +6,7 @@ import * as Yup from 'yup';
 
 import { useDispatch } from '../context/DispatchContext.js';
 import { useToaster } from '../context/ToasterContext.js';
+import { DialogBody } from '../elements/DialogBody.js';
 import { Input2Controller } from '../elements/Input2Controller.js';
 import type { LabelStyle } from '../elements/Label.js';
 import Label from '../elements/Label.js';
@@ -90,11 +89,7 @@ function InnerLoadJCAMPModal({ onCloseDialog }: InnerLoadJCAMPModalProps) {
       title="Load JCAMP"
       style={{ minWidth: 400 }}
     >
-      <DialogBody
-        css={css`
-          background-color: white;
-        `}
-      >
+      <DialogBody>
         <Label title="URL" style={labelStyle}>
           <Input2Controller
             name="url"

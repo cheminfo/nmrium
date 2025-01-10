@@ -1,6 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
-import { css } from '@emotion/react';
+import { Dialog, DialogFooter } from '@blueprintjs/core';
 import type { Spectrum } from 'nmr-load-save';
 import { useRef } from 'react';
 
@@ -8,6 +6,7 @@ import type { DataExportStage } from '../../data/SpectraManager.js';
 import { exportAsJcamp } from '../../data/SpectraManager.js';
 import { useToaster } from '../context/ToasterContext.js';
 import ActionButtons from '../elements/ActionButtons.js';
+import { DialogBody } from '../elements/DialogBody.js';
 import type { LabelStyle } from '../elements/Label.js';
 import Label from '../elements/Label.js';
 import { Select2 } from '../elements/Select2.js';
@@ -126,12 +125,7 @@ function InnerExportAsJcampModal(props: Required<InnerExportAsJCAMPProps>) {
       onClose={closeDialog}
       title="Export as JCAMP"
     >
-      <DialogBody
-        css={css`
-          background-color: white;
-          padding: 1.5em 3em;
-        `}
-      >
+      <DialogBody padding="1.5em 3em">
         <Label title="Data" style={labelStyle}>
           <Select2
             defaultSelectedItem={exportDataTypes[0]}

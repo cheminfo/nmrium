@@ -1,7 +1,6 @@
-/** @jsxImportSource @emotion/react */
 import type { PopoverProps } from '@blueprintjs/core';
-import { Popover } from '@blueprintjs/core';
-import { css } from '@emotion/react';
+import { Popover as BasePopover } from '@blueprintjs/core';
+import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
@@ -10,6 +9,12 @@ import * as Yup from 'yup';
 
 import { Input2Controller } from '../elements/Input2Controller.js';
 import { NumberInput2Controller } from '../elements/NumberInput2Controller.js';
+
+const Popover = styled(BasePopover)`
+  .field-edition-popover {
+    border-radius: 5px;
+  }
+`;
 
 type InputType = 'number' | 'text';
 
@@ -52,11 +57,6 @@ export function FieldEdition(props: FieldEditionsProps) {
 
   return (
     <Popover
-      css={css`
-        .field-edition-popover {
-          border-radius: 5px;
-        }
-      `}
       popoverClassName="field-edition-popover"
       isOpen={isOpen}
       onClose={() => setIsOpen(false)}

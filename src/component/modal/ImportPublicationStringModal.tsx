@@ -1,10 +1,4 @@
-import {
-  Button,
-  Dialog,
-  DialogBody,
-  DialogFooter,
-  TextArea,
-} from '@blueprintjs/core';
+import { Button, Dialog, DialogFooter, TextArea } from '@blueprintjs/core';
 import type { LogEntry } from 'fifo-logger';
 import { FifoLogger } from 'fifo-logger';
 import debounce from 'lodash/debounce.js';
@@ -14,6 +8,7 @@ import { Controller, useForm } from 'react-hook-form';
 
 import { useDispatch } from '../context/DispatchContext.js';
 import { useToaster } from '../context/ToasterContext.js';
+import { DialogBody } from '../elements/DialogBody.js';
 import { GroupPane } from '../elements/GroupPane.js';
 import type { Column } from '../elements/ReactTable/ReactTable.js';
 import ReactTable from '../elements/ReactTable/ReactTable.js';

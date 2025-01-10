@@ -1,6 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
-import { css } from '@emotion/react';
+import { Dialog, DialogFooter } from '@blueprintjs/core';
 import type { LogEntry } from 'fifo-logger';
 import { useMemo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
@@ -11,6 +9,7 @@ import { useOnOff } from 'react-science/ui';
 import { useLogger } from '../context/LoggerContext.js';
 import Button from '../elements/Button.js';
 import { ColumnWrapper } from '../elements/ColumnWrapper.js';
+import { DialogBody } from '../elements/DialogBody.js';
 import type { Column } from '../elements/ReactTable/ReactTable.js';
 import ReactTable from '../elements/ReactTable/ReactTable.js';
 
@@ -171,11 +170,7 @@ export function LogsHistoryModal(props: LogsHistoryModalProps) {
         title="Logs history"
         style={{ width: '50vw', height: '50vh' }}
       >
-        <DialogBody
-          css={css`
-            background-color: white;
-          `}
-        >
+        <DialogBody>
           <ReactTable
             columns={COLUMNS}
             data={sortedLogs}

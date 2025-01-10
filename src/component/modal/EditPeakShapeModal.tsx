@@ -1,6 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
-import { css } from '@emotion/react';
+import { Dialog, DialogFooter } from '@blueprintjs/core';
 import { yupResolver } from '@hookform/resolvers/yup';
 import type { Peak1D } from 'nmr-processing';
 import { useState } from 'react';
@@ -10,6 +8,7 @@ import * as Yup from 'yup';
 import { useChartData } from '../context/ChartContext.js';
 import { useDispatch } from '../context/DispatchContext.js';
 import ActionButtons from '../elements/ActionButtons.js';
+import { DialogBody } from '../elements/DialogBody.js';
 import type { LabelStyle } from '../elements/Label.js';
 import Label from '../elements/Label.js';
 import { NumberInput2Controller } from '../elements/NumberInput2Controller.js';
@@ -130,12 +129,7 @@ function InnerEditPeakShapeModal(props: Required<EditPeakShapeModalProps>) {
       onClose={onCloseDialog}
       title={`Peak Shape Edition ( ${valuePPM} PPM )`}
     >
-      <DialogBody
-        css={css`
-          background-color: white;
-          padding: 1.5em 3em;
-        `}
-      >
+      <DialogBody padding="1.5em 3em">
         <>
           <Label title="Kind:" style={labelStyle}>
             <Select2

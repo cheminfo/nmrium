@@ -1,54 +1,56 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import type { CSSProperties, ReactElement } from 'react';
 import { Children } from 'react';
 import { FaAngleLeft } from 'react-icons/fa';
 import useResizeObserver from 'use-resize-observer';
 
+type Direction = 'right' | 'left';
+
 interface ArrowProps {
-  direction: 'right' | 'left';
+  direction: Direction;
   onClick: () => void;
   style?: CSSProperties;
 }
 
+const ArrowButton = styled.div<{
+  direction: Direction;
+}>`
+  display: inline-flex;
+  height: 40px;
+  width: 40px;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  align-items: center;
+  border: none;
+  transition: transform ease-in 0.1s;
+  background-color: #f7f7f7;
+  pointer-events: auto;
+
+  &:hover {
+    transform: scale(1.1);
+    background-color: #607d8b !important;
+    color: white;
+  }
+
+  img {
+    transform: translateX(
+      ${(props) => (props.direction === 'left' ? '-2' : '2')}px
+    );
+
+    &:focus {
+      outline: 0;
+    }
+  }
+`;
+
 function Arrow({ direction, onClick, style = {} }: ArrowProps) {
   return (
-    <div
-      onClick={onClick}
-      css={css`
-        display: inline-flex;
-        height: 40px;
-        width: 40px;
-        justify-content: center;
-        border-radius: 50%;
-        cursor: pointer;
-        align-items: center;
-        border: none;
-        transition: transform ease-in 0.1s;
-        background-color: #f7f7f7;
-        pointer-events: auto;
-
-        &:hover {
-          transform: scale(1.1);
-          background-color: #607d8b !important;
-          color: white;
-        }
-
-        img {
-          transform: translateX(${direction === 'left' ? '-2' : '2'}px);
-
-          &:focus {
-            outline: 0;
-          }
-        }
-      `}
-      style={style}
-    >
+    <ArrowButton onClick={onClick} direction={direction} style={style}>
       <FaAngleLeft
         style={{ transform: `scaleX(${direction === 'right' ? '-1' : '1'})` }}
       />
-    </div>
+    </ArrowButton>
   );
 }
 
@@ -71,6 +73,11 @@ const TransformController = styled.div<{
   display: flex;
 `,
 );
+
+const Content = styled.div<{ width: number }>`
+  width: ${(props) => props.width}px;
+  height: 100%;
+`;
 
 const transition = 0.45;
 
@@ -141,15 +148,9 @@ export function NextPrev(props: NextPrevProps) {
       >
         {Children.map(children, (child: ReactElement) => {
           return (
-            <div
-              key={child.key}
-              css={css`
-                width: ${width}px;
-                height: 100%;
-              `}
-            >
+            <Content key={child.key} width={width}>
               {child}
-            </div>
+            </Content>
           );
         })}
       </TransformController>

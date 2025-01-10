@@ -1,6 +1,5 @@
-/** @jsxImportSource @emotion/react */
-import { Checkbox, Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
-import { css } from '@emotion/react';
+import { Checkbox, Dialog, DialogFooter } from '@blueprintjs/core';
+import styled from '@emotion/styled';
 import { SvgNmrFt } from 'cheminfo-font';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { Toolbar, useOnOff } from 'react-science/ui';
@@ -15,13 +14,12 @@ import { useDispatch } from '../context/DispatchContext.js';
 import { useLogger } from '../context/LoggerContext.js';
 import { useToaster } from '../context/ToasterContext.js';
 import Button from '../elements/Button.js';
+import { DialogBody as BaseDialogBody } from '../elements/DialogBody.js';
 import type { SettingsRef } from '../panels/extra/utilities/settingImperativeHandle.js';
 import PredictionPreferences from '../panels/predictionPanel/PredictionOptionsPanel.js';
 import { useStateWithLocalStorage } from '../utility/LocalStorage.js';
 
-const styles = css`
-  background-color: white;
-
+const DialogBody = styled(BaseDialogBody)`
   .inner-content {
     flex: 1;
   }
@@ -155,7 +153,7 @@ export function PredictSpectraModal({
         style={{ width: 600, maxWidth: 1000 }}
         title="Prediction of NMR spectrum"
       >
-        <DialogBody css={styles}>
+        <DialogBody>
           <PredictionPreferences
             onSave={submitHandler}
             options={initValues}

@@ -1,12 +1,11 @@
-/** @jsxImportSource @emotion/react */
-import { Dialog, DialogBody } from '@blueprintjs/core';
-import { css } from '@emotion/react';
+import { Dialog } from '@blueprintjs/core';
+import styled from '@emotion/styled';
 import { FaInfo } from 'react-icons/fa';
 import { Toolbar, useOnOff } from 'react-science/ui';
 
-const styles = css`
-  background-color: white;
+import { DialogBody as BasedDialogBody } from '../elements/DialogBody.js';
 
+const DialogBody = styled(BasedDialogBody)`
   ul {
     list-style-type: disc;
     margin-left: 25px;
@@ -54,7 +53,7 @@ function AboutPredictionModal() {
         title="About prediction"
         style={{ width: '600px' }}
       >
-        <DialogBody css={styles}>
+        <DialogBody>
           <p>If you are using our tools please cite us:</p>
           <ul>
             <li>

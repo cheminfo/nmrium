@@ -1,6 +1,4 @@
-/** @jsxImportSource @emotion/react */
-
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 
 import {
   HighlightProvider,
@@ -24,39 +22,39 @@ const tableTwo = [
   { id: '5', highlight: [] },
 ];
 
-const mainDiv = css`
+const Container = styled.div`
   display: flex;
   padding: 20px;
 `;
 
-const tableDiv = css`
+const PanelContainer = styled.div`
   padding: 20px;
 `;
 
-const table = css`
+const Table = styled.table`
   border: 1px solid black;
 `;
 
-const th = css`
+const TableHeader = styled.th`
   padding: 5px;
   font-weight: 600;
 `;
 
-const td = css`
+const TableCell = styled.td`
   padding: 5px;
 `;
 
 export default function TestHighlight() {
   return (
     <HighlightProvider>
-      <div css={mainDiv}>
-        <div css={tableDiv}>
+      <Container>
+        <PanelContainer>
           <HighlightTable data={tableOne} />
-        </div>
-        <div css={tableDiv}>
+        </PanelContainer>
+        <PanelContainer>
           <HighlightTable data={tableTwo} />
-        </div>
-      </div>
+        </PanelContainer>
+      </Container>
     </HighlightProvider>
   );
 }
@@ -67,11 +65,11 @@ interface HighlightTableProps {
 
 function HighlightTable(props: HighlightTableProps) {
   return (
-    <table css={table}>
+    <Table>
       <thead>
         <tr>
-          <th css={th}>ID</th>
-          <th css={th}>Highlight ids</th>
+          <TableHeader>ID</TableHeader>
+          <TableHeader>Highlight ids</TableHeader>
         </tr>
       </thead>
       <tbody>
@@ -79,7 +77,7 @@ function HighlightTable(props: HighlightTableProps) {
           <Tr key={datum.id} value={datum} />
         ))}
       </tbody>
-    </table>
+    </Table>
   );
 }
 
@@ -100,8 +98,8 @@ function Tr(props: TrProps) {
       }}
       {...highlight.onHover}
     >
-      <td css={td}>{value.id}</td>
-      <td css={td}>{value.highlight.join(', ')}</td>
+      <TableCell>{value.id}</TableCell>
+      <TableCell>{value.highlight.join(', ')}</TableCell>
     </tr>
   );
 }

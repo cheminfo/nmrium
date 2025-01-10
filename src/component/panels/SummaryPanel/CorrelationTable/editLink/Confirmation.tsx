@@ -1,8 +1,7 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import { useCallback } from 'react';
 
-const styles = css`
+const Container = styled.div`
   margin-top: 10px;
   padding: 5px;
   text-align: center;
@@ -50,12 +49,12 @@ function EditLinkConfirmation({
   );
 
   return (
-    <div css={styles}>
+    <Container>
       <p>{description}</p>
       <button type="button" onClick={handleOnConfirm}>
         Confirm
       </button>
-    </div>
+    </Container>
   );
 }
 

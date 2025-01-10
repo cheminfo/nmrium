@@ -1,11 +1,25 @@
-/** @jsxImportSource @emotion/react */
 import type { PopoverProps } from '@blueprintjs/core';
 import { Popover } from '@blueprintjs/core';
 import type { Interpolation, Theme } from '@emotion/react';
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import type { CSSProperties } from 'react';
 import type { ButtonProps } from 'react-science/ui';
 import { Button } from 'react-science/ui';
+
+const Container = styled.div<Pick<CSSProperties, 'flexDirection' | 'gap'>>`
+  display: flex;
+  flex-direction: ${(props) => props.flexDirection};
+  gap: ${(props) => props.gap};
+
+  button,
+  a[role='button'] {
+    border-radius: 50%;
+    min-width: 16px;
+    min-height: 16px;
+    font-size: 10px;
+    padding: 5px;
+  }
+`;
 
 export interface ActionsButtonsPopoverProps
   extends Omit<PopoverProps, 'interactionKind' | 'content'> {
@@ -42,24 +56,7 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
       interactionKind="hover"
       enforceFocus={false}
       content={
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: direction,
-            gap: space,
-            ...contentStyle,
-          }}
-          css={css`
-            button,
-            a[role='button'] {
-              border-radius: 50%;
-              min-width: 16px;
-              min-height: 16px;
-              font-size: 10px;
-              padding: 5px;
-            }
-          `}
-        >
+        <Container style={contentStyle} flexDirection={direction} gap={space}>
           {buttons
             .filter((button) => button?.visible !== false)
             .map(({ title, visible, ...otherProps }, index) => (
@@ -69,7 +66,7 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
                 {...otherProps}
               />
             ))}
-        </div>
+        </Container>
       }
       {...otherProps}
     >
