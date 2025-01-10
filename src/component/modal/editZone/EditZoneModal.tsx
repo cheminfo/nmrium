@@ -1,6 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { Button, DialogBody, DialogFooter } from '@blueprintjs/core';
-import { css } from '@emotion/react';
+import { Button, DialogFooter } from '@blueprintjs/core';
 import { yupResolver } from '@hookform/resolvers/yup';
 import type { FromTo } from 'cheminfo-types';
 import type { Signal2D } from 'nmr-processing';
@@ -9,6 +7,7 @@ import { FaSearchPlus } from 'react-icons/fa';
 import * as Yup from 'yup';
 
 import DefaultPathLengths from '../../../data/constants/DefaultPathLengths.js';
+import { DialogBody } from '../../elements/DialogBody.js';
 import type { DialogProps } from '../../elements/DialogManager.js';
 import { DraggableDialog } from '../../elements/DraggableDialog.js';
 import type { ZoneData } from '../../panels/ZonesPanel/hooks/useMapZones.js';
@@ -86,11 +85,7 @@ export function EditZoneModal(props: DialogProps<ZoneData>) {
       onClose={onCloseDialog}
       placement="top-right"
     >
-      <DialogBody
-        css={css`
-          background-color: white;
-        `}
-      >
+      <DialogBody>
         <FormProvider {...methods}>
           <SignalsForm />
         </FormProvider>

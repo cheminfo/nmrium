@@ -1,12 +1,11 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import type { Correlation, Link } from 'nmr-correlation';
 import { getCorrelationDelta } from 'nmr-correlation';
 import { useCallback, useState } from 'react';
 
 import Select from '../../../../elements/Select.js';
 
-const moveLinkStyles = css`
+const Container = styled.div`
   width: 100%;
   height: 100%;
   margin-top: 10px;
@@ -119,7 +118,7 @@ function MoveLink({
   );
 
   return (
-    <div css={moveLinkStyles}>
+    <Container>
       <p>Move of signals on either one or both axes.</p>
       <p>&quot;New&quot; means to separate into a new row or column.</p>
       <div className="selection-container">
@@ -134,7 +133,7 @@ function MoveLink({
       >
         Move
       </button>
-    </div>
+    </Container>
   );
 }
 

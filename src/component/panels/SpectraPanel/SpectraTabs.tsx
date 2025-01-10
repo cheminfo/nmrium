@@ -1,5 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import type { ActiveSpectrum, Spectrum } from 'nmr-load-save';
 import { memo, useCallback, useMemo, useState } from 'react';
 
@@ -14,6 +13,13 @@ import groupByInfoKey from '../../utility/GroupByInfoKey.js';
 import { SpectraTable } from './SpectraTable.js';
 import SpectrumSetting from './base/setting/SpectrumSetting.js';
 
+const Container = styled.div`
+  height: calc(100% - 25px);
+
+  tbody tr {
+    height: 20px;
+  }
+`;
 interface SpectraTabsInnerProps {
   spectra: Spectrum[];
   activeTab: string;
@@ -76,14 +82,7 @@ function SpectraTabsInner({
   }
 
   return (
-    <div
-      style={{ height: 'calc(100% - 25px)' }}
-      css={css`
-        tbody tr {
-          height: 20px;
-        }
-      `}
-    >
+    <Container>
       <Tabs key={activeTab} activeTab={activeTab} onClick={onTabChangeHandler}>
         {spectraGroupByNucleus &&
           Object.keys(spectraGroupByNucleus).map((nucleus) => (
@@ -112,7 +111,7 @@ function SpectraTabsInner({
           position={settingModalPosition}
         />
       ) : null}
-    </div>
+    </Container>
   );
 }
 

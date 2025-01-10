@@ -1,8 +1,8 @@
-/** @jsxImportSource @emotion/react */
-import { RangeSlider } from '@blueprintjs/core';
-import { css } from '@emotion/react';
+import { RangeSlider as BaseRangeSlider } from '@blueprintjs/core';
+import styled from '@emotion/styled';
 import debounce from 'lodash/debounce.js';
 import { useMemo } from 'react';
+import type { CSSProperties } from 'react';
 import {
   Controller,
   FormProvider,
@@ -19,19 +19,27 @@ import { colorToHexWithAlpha } from '../../../../utility/colorToHexWithAlpha.js'
 
 import Spectrum2DHistogram from './Spectrum2DHistogram.js';
 
+const RangeSlider = styled(BaseRangeSlider)<{
+  progressColor: CSSProperties['backgroundColor'];
+}>`
+  width: 90%;
+
+  [class*='slider-progress']:nth-child(2) {
+    background-color: ${(props) => props.progressColor};
+  }
+`;
 interface Spectrum2DSettingProps {
   data: any;
   onSubmit: (values: any) => void;
 }
 
-const style = (color: string) => css`
+const Container = styled.div<{ color: CSSProperties['backgroundColor'] }>`
   display: inline-block;
 
   .track-1 {
-    background-color: ${color} !important;
+    background-color: ${(props) => props.color} !important;
   }
 `;
-
 function Spectrum2DSetting({
   data: SpectrumData,
   onSubmit,
@@ -42,14 +50,14 @@ function Spectrum2DSetting({
   return (
     <FormProvider {...methods}>
       <div>
-        <div css={style(positiveColor)}>
+        <Container color={positiveColor}>
           <span style={{ padding: '0 10px' }}>Positive</span>
           <Settings sign="positive" onSubmit={onSubmit} />
-        </div>
-        <div css={style(negativeColor)}>
+        </Container>
+        <Container color={negativeColor}>
           <span style={{ padding: '0 10px' }}>Negative</span>
           <Settings sign="negative" onSubmit={onSubmit} />
-        </div>
+        </Container>
         <Spectrum2DHistogram data={SpectrumData.data} />
       </div>
     </FormProvider>
@@ -116,13 +124,7 @@ function Settings(props: SettingsProps) {
                 }}
                 value={value}
                 showTrackFill
-                css={css`
-                  width: 90%;
-
-                  [class*='slider-progress']:nth-child(2) {
-                    background-color: ${progressColor};
-                  }
-                `}
+                progressColor={progressColor}
               />
             );
           }}

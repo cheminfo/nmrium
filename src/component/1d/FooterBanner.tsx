@@ -1,5 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import type { ActiveSpectrum, Spectrum1D } from 'nmr-load-save';
 import { memo } from 'react';
@@ -15,7 +14,7 @@ import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
 import { useFormatNumberByNucleus } from '../hooks/useFormatNumberByNucleus.js';
 import useSpectrum from '../hooks/useSpectrum.js';
 
-const styles = css`
+const Container = styled.div`
   display: flex;
   align-items: center;
   user-select: none;
@@ -112,7 +111,7 @@ function FooterBannerInner({
     position.x > width - margin.right ||
     position.y > height - margin.bottom
   ) {
-    return <div css={styles} />;
+    return <Container />;
   }
 
   function getXIndex(xPosition) {
@@ -135,7 +134,7 @@ function FooterBannerInner({
   const isBrushing = step === 'brushing' && mouseButton === 'main';
 
   return (
-    <div css={styles}>
+    <Container>
       <BsCursor />
       <div>
         <span className="label"> 𝛅: </span>
@@ -210,7 +209,7 @@ function FooterBannerInner({
           </div>
         </div>
       )}
-    </div>
+    </Container>
   );
 }
 

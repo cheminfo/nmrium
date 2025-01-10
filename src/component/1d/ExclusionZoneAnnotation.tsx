@@ -1,5 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import { Filters1D } from 'nmr-processing';
 import { memo } from 'react';
 
@@ -16,7 +15,7 @@ interface ExclusionZoneProps {
   filterId: string;
 }
 
-const style = css`
+const Rect = styled.rect`
   &:hover {
     fill: #ff6f0057 !important;
   }
@@ -43,9 +42,8 @@ function ExclusionZoneAnnotation({
 
   return (
     <g key={zone.id} transform={`translate(${scaleX()(zone.to)},0)`}>
-      <rect
+      <Rect
         x="0"
-        css={style}
         transform={`translate(0,${scaleY()(0) - (vAlign + 5)})`}
         width={`${scaleX()(zone.from) - scaleX()(zone.to)}`}
         height="10px"

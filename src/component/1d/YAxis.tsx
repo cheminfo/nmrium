@@ -1,12 +1,11 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import * as d3 from 'd3';
 import { useEffect, useRef } from 'react';
 
 import { useChartData } from '../context/ChartContext.js';
 import { useScale } from '../context/ScaleContext.js';
 
-const axisStyles = css`
+const AxisGroup = styled.g`
   user-select: none;
 
   path,
@@ -47,9 +46,8 @@ function YAxis(props: YAxisProps) {
   return (
     <>
       {show && (
-        <g
+        <AxisGroup
           className="y"
-          css={axisStyles}
           transform={`translate(${width - 50})`}
           ref={refAxis}
         >
@@ -63,7 +61,7 @@ function YAxis(props: YAxisProps) {
           >
             {label}
           </text>
-        </g>
+        </AxisGroup>
       )}
     </>
   );

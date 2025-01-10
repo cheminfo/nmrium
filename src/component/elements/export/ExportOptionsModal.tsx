@@ -1,15 +1,12 @@
-/** @jsxImportSource @emotion/react */
 import {
   Button,
   Dialog,
-  DialogBody,
   DialogFooter,
   Radio,
   RadioGroup,
   SegmentedControl,
   Tag,
 } from '@blueprintjs/core';
-import { css } from '@emotion/react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import type {
   AdvanceExportSettings,
@@ -21,6 +18,7 @@ import { Controller, useForm } from 'react-hook-form';
 
 import ActionButtons from '../ActionButtons.js';
 import { CheckController } from '../CheckController.js';
+import { DialogBody } from '../DialogBody.js';
 import type { LabelStyle } from '../Label.js';
 import Label from '../Label.js';
 import { NumberInput2Controller } from '../NumberInput2Controller.js';
@@ -160,11 +158,7 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
       canEscapeKeyClose
       autoFocus
     >
-      <DialogBody
-        css={css`
-          background-color: white;
-        `}
-      >
+      <DialogBody>
         <div
           style={{
             display: 'flex',

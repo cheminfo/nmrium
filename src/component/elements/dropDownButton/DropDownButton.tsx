@@ -1,12 +1,15 @@
-/** @jsxImportSource @emotion/react */
 import { Popover, Button } from '@blueprintjs/core';
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import type { CSSProperties, ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { FaEllipsisH } from 'react-icons/fa';
 
 import DropDownList from './DropDownList.js';
 
+const PopoverButton = styled(Button)`
+  border: 0.55px solid lightgray;
+  border-radius: 5px;
+`;
 export interface DropDownListItem {
   key: string;
   label: string;
@@ -80,17 +83,13 @@ function DropDownButton<T extends DropDownListItem>(
         />
       }
     >
-      <Button
+      <PopoverButton
         style={{ boxShadow: 'none', ...style }}
-        css={css`
-          border: 0.55px solid lightgray;
-          border-radius: 5px;
-        `}
         rightIcon="chevron-down"
         onClick={() => setOpen((flag) => !flag)}
       >
         {!item ? <FaEllipsisH /> : formatSelectedValue(item)}
-      </Button>
+      </PopoverButton>
     </Popover>
   );
 }

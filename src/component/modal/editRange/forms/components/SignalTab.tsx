@@ -1,6 +1,5 @@
-/** @jsxImportSource @emotion/react */
 import { Tab, Tabs } from '@blueprintjs/core';
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import type { CSSProperties } from 'react';
 import { memo } from 'react';
 
@@ -21,16 +20,15 @@ interface SignalTabProps {
   index: number;
 }
 
+const Container = styled.div`
+  div[role='tabpanel'] {
+    width: 100%;
+  }
+`;
+
 function SignalTab({ index }: SignalTabProps) {
   return (
-    <div
-      style={style}
-      css={css`
-        div[role='tabpanel'] {
-          width: 100%;
-        }
-      `}
-    >
+    <Container style={style}>
       <Tabs vertical fill renderActiveTabPanelOnly>
         <Tab
           id="couplings"
@@ -43,7 +41,7 @@ function SignalTab({ index }: SignalTabProps) {
           panel={<SignalPeaksTable index={index} />}
         />
       </Tabs>
-    </div>
+    </Container>
   );
 }
 

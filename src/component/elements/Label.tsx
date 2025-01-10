@@ -1,8 +1,11 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import type { CSSProperties, LabelHTMLAttributes, ReactNode } from 'react';
 
 import Button from './Button.js';
+
+const ShortTitle = styled.span`
+  display: none;
+`;
 
 export interface LabelStyle {
   label?: CSSProperties;
@@ -53,9 +56,7 @@ export default function Label(props: LabelProps) {
           <span className={shortTitle ? 'large-label' : ''}>{title}</span>
         )}
         {shortTitle && (
-          <span className="small-label" css={css({ display: 'none' })}>
-            {shortTitle}
-          </span>
+          <ShortTitle className="small-label">{shortTitle}</ShortTitle>
         )}
         {description && (
           <Button.Info
