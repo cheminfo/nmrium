@@ -13,6 +13,7 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
       hideHelp: false,
       hideMaximize: false,
       hideWorkspaces: false,
+      hidePanelsBar: false,
     },
 
     panels: {

@@ -1,82 +1,127 @@
 import { Checkbox } from '@blueprintjs/core';
 import type { NMRiumPanelPreferences } from 'nmr-load-save';
-import { useMemo } from 'react';
-import { useFormContext } from 'react-hook-form';
+import { useCallback, useMemo } from 'react';
+import { Controller, useFormContext } from 'react-hook-form';
 
 import ReactTable from '../../../elements/ReactTable/ReactTable.js';
 import type { CustomColumn } from '../../../elements/ReactTable/utility/addCustomColumn.js';
+import { Select2 } from '../../../elements/Select2.js';
 import type { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
+import Label from '../../../elements/Label.js';
+import { GroupPane } from '../../../elements/GroupPane.js';
 
+const basePath = 'display.panels';
 interface ListItem {
   label: string;
-  name: `panels.${keyof NMRiumPanelPreferences}`;
+  name: keyof NMRiumPanelPreferences;
   hideOpenOption?: boolean;
 }
+
+type PanelStatus = 'hidden' | 'available' | 'active';
+interface PanelStatusItem {
+  label: string;
+  value: PanelStatus;
+}
+
+const PANEL_STATUS: PanelStatusItem[] = [
+  {
+    label: 'Hidden',
+    value: 'hidden',
+  },
+  {
+    label: 'Available',
+    value: 'available',
+  },
+  {
+    label: 'Active',
+    value: 'active',
+  },
+];
 const LIST: ListItem[] = [
   {
     label: 'Spectra selection panel',
-    name: 'panels.spectraPanel',
+    name: 'spectraPanel',
   },
   {
     label: 'Spectra information panel',
-    name: 'panels.informationPanel',
+    name: 'informationPanel',
   },
   {
     label: 'Peaks and peak picking',
-    name: 'panels.peaksPanel',
+    name: 'peaksPanel',
   },
   {
     label: 'Integration and integrals',
-    name: 'panels.integralsPanel',
+    name: 'integralsPanel',
   },
   {
     label: '1D ranges peak picking',
-    name: 'panels.rangesPanel',
+    name: 'rangesPanel',
   },
   {
     label: 'Chemical structures panel',
-    name: 'panels.structuresPanel',
+    name: 'structuresPanel',
   },
   {
     label: 'Processings panel',
-    name: 'panels.processingsPanel',
+    name: 'processingsPanel',
   },
   {
     label: '2D zones peak picking',
-    name: 'panels.zonesPanel',
+    name: 'zonesPanel',
   },
   {
     label: 'Assignment summary panel',
-    name: 'panels.summaryPanel',
+    name: 'summaryPanel',
   },
   {
     label: 'Multiple spectra analysis panel',
-    name: 'panels.multipleSpectraAnalysisPanel',
+    name: 'multipleSpectraAnalysisPanel',
   },
   {
     label: 'Databases panel',
-    name: 'panels.databasePanel',
+    name: 'databasePanel',
   },
   {
     label: 'Prediction panel',
-    name: 'panels.predictionPanel',
+    name: 'predictionPanel',
   },
   {
     label: 'Automatic assignment panel',
-    name: 'panels.automaticAssignmentPanel',
+    name: 'automaticAssignmentPanel',
   },
   {
     label: 'Matrix generation Panel',
-    name: 'panels.matrixGenerationPanel',
+    name: 'matrixGenerationPanel',
   },
   {
     label: 'Simulation panel',
-    name: 'panels.simulationPanel',
+    name: 'simulationPanel',
   },
 ];
 
 function DisplayTabContent() {
-  const { register } = useFormContext<WorkspaceWithSource>();
+  const { register, control, setValue } = useFormContext<WorkspaceWithSource>();
+
+  const onChange = useCallback(
+    (panelName: keyof NMRiumPanelPreferences, status: PanelStatus) => {
+      let visible = false;
+      let display = false;
+
+      if (status === 'available') {
+        visible = true;
+      }
+
+      if (status === 'active') {
+        visible = true;
+        display = true;
+      }
+
+      setValue(`${basePath}.${panelName}.display`, display);
+      setValue(`${basePath}.${panelName}.visible`, visible);
+    },
+    [setValue],
+  );
 
   const COLUMNS: Array<CustomColumn<ListItem>> = useMemo(
     () => [
@@ -86,32 +131,43 @@ function DisplayTabContent() {
         accessor: (_, index) => index + 1,
       },
       {
-        index: 1,
+        index: 2,
         Header: 'Feature',
         accessor: 'label',
         style: { width: '60%' },
       },
       {
-        index: 2,
-        Header: 'Visible',
-        style: { textAlign: 'center' },
-        Cell: ({ row }) => (
-          <Checkbox
-            style={{ margin: 0 }}
-            {...register(`display.${row.original.name}.visible`)}
-            defaultChecked={false}
-          />
-        ),
-      },
-      {
         index: 3,
-        Header: 'Active',
+        Header: 'Status',
         style: { textAlign: 'center' },
         Cell: ({ row }) => (
-          <Checkbox
-            style={{ margin: 0 }}
-            {...register(`display.${row.original.name}.display`)}
-            defaultChecked={false}
+          <Controller
+            control={control}
+            name={`${basePath}.${row.original.name}`}
+            render={({ field }) => {
+              const { value: state } = field;
+              const { visible = false, display = false } = state || {};
+              let value: PanelStatus = 'hidden';
+
+              if (visible && display) {
+                value = 'active';
+              } else if (visible) {
+                value = 'available';
+              }
+
+              return (
+                <Select2<PanelStatusItem>
+                  fill
+                  items={PANEL_STATUS}
+                  itemTextKey="label"
+                  itemValueKey="value"
+                  selectedItemValue={value}
+                  onItemSelect={(item) =>
+                    onChange(row.original.name, item.value)
+                  }
+                />
+              );
+            }}
           />
         ),
       },
@@ -122,24 +178,36 @@ function DisplayTabContent() {
         Cell: ({ row }) => (
           <Checkbox
             style={{ margin: 0 }}
-            {...register(`display.${row.original.name}.open`)}
+            {...register(`${basePath}.${row.original.name}.open`)}
           />
         ),
       },
     ],
-    [register],
+    [control, onChange, register],
   );
 
   return (
     <div style={{ width: '100%', overflow: 'hidden' }}>
-      <ReactTable<ListItem>
-        columns={COLUMNS}
-        data={LIST}
-        rowStyle={{
-          hover: { backgroundColor: '#f7f7f7' },
-          active: { backgroundColor: '#f5f5f5' },
-        }}
-      />
+      <Label
+        title="Hide panels bar "
+        style={{ wrapper: { padding: '10px 0' } }}
+      >
+        <Checkbox
+          style={{ margin: 0 }}
+          {...register('display.general.hidePanelsBar')}
+        />
+      </Label>
+
+      <GroupPane text="Panels settings">
+        <ReactTable<ListItem>
+          columns={COLUMNS}
+          data={LIST}
+          rowStyle={{
+            hover: { backgroundColor: '#f7f7f7' },
+            active: { backgroundColor: '#f5f5f5' },
+          }}
+        />
+      </GroupPane>
     </div>
   );
 }

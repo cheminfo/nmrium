@@ -217,4 +217,15 @@ export default class NmriumPage {
     });
     await alert.locator('button').click();
   }
+
+  async changePanelStatus(
+    panelTitle: string,
+    status: 'hidden' | 'active' | 'available',
+  ) {
+    const selectLocator = this.page.locator(
+      `td:has-text("${panelTitle}")  + td`,
+    );
+    await selectLocator.click();
+    await this.page.getByRole('option', { name: status }).click();
+  }
 }

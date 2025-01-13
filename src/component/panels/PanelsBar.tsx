@@ -4,6 +4,7 @@ import type { NMRiumPanelPreferences } from 'nmr-load-save';
 import { ActivityBarItem, Toolbar } from 'react-science/ui';
 import useResizeObserver from 'use-resize-observer';
 
+import { usePreferences } from '../context/PreferencesContext.js';
 import type { ToolbarPopoverMenuItem } from '../elements/ToolbarPopoverItem.js';
 import { ToolbarPopoverItem } from '../elements/ToolbarPopoverItem.js';
 
@@ -42,6 +43,11 @@ function useHiddenItemsMenu(
 }
 
 export function PanelsBar({ itemHeight = 44 }) {
+  const { current } = usePreferences();
+
+  const {
+    display: { general = {} },
+  } = current;
   const {
     ref,
     height,
@@ -58,7 +64,7 @@ export function PanelsBar({ itemHeight = 44 }) {
 
   const togglePanel = useTogglePanel();
 
-  if (items.length === 0) return null;
+  if (items.length === 0 || general?.hidePanelsBar) return null;
 
   return (
     <PanelsBarContainer vertical large minimal ref={ref}>

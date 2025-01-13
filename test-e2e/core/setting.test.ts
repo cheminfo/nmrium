@@ -21,11 +21,8 @@ test('should Change the visibility of the panels', async ({ page }) => {
     //click on the display tab
     await nmrium.page.getByRole('tablist').locator('text=Panels').click();
 
-    //change  the checkbox value to true
-    await nmrium.page.locator('td:has-text("Databases panel")  + td').click();
-    await nmrium.page
-      .locator('td:has-text("Databases panel")  + td + td')
-      .click();
+    //change panel status to active (displays the panel in the accordion panels and the right bar )
+    await nmrium.changePanelStatus('Databases panel', 'active');
 
     await nmrium.saveWorkspaceModal('test');
 
