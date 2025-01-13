@@ -22,7 +22,6 @@ import { get1DYScale, get2DXScale, get2DYScale } from './utilities/scale.js';
 const styles = css`
   display: flex;
   align-items: center;
-  pointer-events: bounding-box;
   user-select: none;
   background-color: #f7f7f7;
   height: 30px;

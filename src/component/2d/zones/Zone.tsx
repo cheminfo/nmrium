@@ -16,12 +16,6 @@ import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 import Signal from './Signal.js';
 
 const stylesOnHover = css`
-  pointer-events: bounding-box;
-
-  @document url-prefix("") {
-    pointer-events: fill;
-  }
-
   user-select: none;
 
   .delete-button {
@@ -30,12 +24,6 @@ const stylesOnHover = css`
 `;
 
 const stylesHighlighted = css`
-  pointer-events: bounding-box;
-
-  @document url-prefix("") {
-    pointer-events: fill;
-  }
-
   .integral-area {
     fill: #ff6f0057;
   }

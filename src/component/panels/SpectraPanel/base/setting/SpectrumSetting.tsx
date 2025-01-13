@@ -29,7 +29,7 @@ const style = css`
   }
 
   .sketch-picker {
-    border-radius: none !important;
+    border-radius: 0 !important;
     box-shadow: none !important;
   }
 
