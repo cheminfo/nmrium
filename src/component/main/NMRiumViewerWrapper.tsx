@@ -1,11 +1,22 @@
+import type { RefObject } from 'react';
 import type { SplitPaneSize } from 'react-science/ui';
 import { SplitPane } from 'react-science/ui';
 
 import { usePreferences } from '../context/PreferencesContext.js';
+import { Panels } from '../panels/Panels.js';
 import { useAccordionItems } from '../panels/hooks/useAccordionItems.js';
 import { useGetPanelOptions } from '../panels/hooks/useGetPanelOptions.js';
 
-export function SplitPaneWrapper({ children }) {
+import type { NMRiumProps } from './NMRium.js';
+import { NMRiumViewer } from './NMRiumViewer.js';
+
+interface NMRiumViewerWrapperProps {
+  viewerRef: RefObject<HTMLDivElement>;
+  emptyText: NMRiumProps['emptyText'];
+}
+
+export function NMRiumViewerWrapper(props: NMRiumViewerWrapperProps) {
+  const { emptyText, viewerRef } = props;
   const { current, dispatch } = usePreferences();
   const getPanelPreferences = useGetPanelOptions();
 
@@ -31,7 +42,7 @@ export function SplitPaneWrapper({ children }) {
   const hasDisplayedPanels = displayedPanels.length > 0;
 
   if (items?.length === 0 || !hasDisplayedPanels) {
-    return <div style={{ width: '100%', height: '100%' }}>{children}</div>;
+    return <NMRiumViewer emptyText={emptyText} viewerRef={viewerRef} />;
   }
 
   const closed: number | boolean = general?.hidePanelOnLoad
@@ -46,7 +57,8 @@ export function SplitPaneWrapper({ children }) {
       closed={closed}
       onResize={resizeHandler}
     >
-      {children}
+      <NMRiumViewer emptyText={emptyText} viewerRef={viewerRef} />
+      <Panels />
     </SplitPane>
   );
 }
