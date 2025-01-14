@@ -14,25 +14,16 @@ import { ExportManagerController } from '../elements/export/ExportManager.js';
 import { PrintContent } from '../elements/print/PrintContent.js';
 import { Header } from '../header/Header.js';
 import DropZone from '../loader/DropZone.js';
-import { PanelOpenProviderProvider, Panels } from '../panels/Panels.js';
+import { PanelOpenProviderProvider } from '../panels/Panels.js';
 import { PanelsBar } from '../panels/PanelsBar.js';
 import ToolBar from '../toolbar/ToolBar.js';
 
 import { useNMRiumRefAPI } from './NMRiumRefAPI.js';
 import { NMRiumViewer } from './NMRiumViewer.js';
-import { SplitPaneWrapper } from './SplitPaneWrapper.js';
+import { NMRiumViewerWrapper } from './NMRiumViewerWrapper.js';
 import { StateError } from './StateError.js';
 
 import type { NMRiumProps, NMRiumRefAPI } from './index.js';
-
-const viewerContainerStyle = css`
-  border: 0.55px #e6e6e6 solid;
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  height: 100%;
-  margin-left: -1px;
-`;
 
 const containerStyles = css`
   background-color: white;
@@ -151,19 +142,14 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
                   height: '100%',
                 }}
               >
+                <KeysListenerTracker mainDivRef={mainDivRef} />
+
                 <PanelOpenProviderProvider>
                   <ToolBar />
-                  <SplitPaneWrapper>
-                    <div css={viewerContainerStyle}>
-                      <KeysListenerTracker mainDivRef={mainDivRef} />
-
-                      <NMRiumViewer
-                        emptyText={emptyText}
-                        viewerRef={viewerRef}
-                      />
-                    </div>
-                    <Panels />
-                  </SplitPaneWrapper>
+                  <NMRiumViewerWrapper
+                    viewerRef={viewerRef}
+                    emptyText={emptyText}
+                  />
                   <PanelsBar />
                 </PanelOpenProviderProvider>
                 <div
