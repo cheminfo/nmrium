@@ -1,6 +1,5 @@
-/** @jsxImportSource @emotion/react */
-import { Classes, Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
-import { css } from '@emotion/react';
+import { Classes, Dialog, DialogFooter } from '@blueprintjs/core';
+import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
@@ -9,12 +8,19 @@ import { Button } from 'react-science/ui';
 import { array, object, string } from 'yup';
 
 import { useDispatch } from '../../context/DispatchContext.js';
+import { DialogBody } from '../../elements/DialogBody.js';
 import { Input2Controller } from '../../elements/Input2Controller.js';
 import type { Column } from '../../elements/ReactTable/ReactTable.js';
 import ReactTable from '../../elements/ReactTable/ReactTable.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import { checkUniqueByKey } from '../../utility/checkUniqueByKey.js';
-import { tablePanelStyle } from '../extra/BasicPanelStyle.js';
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 30px);
+  width: 100%;
+`;
 
 const metaInfoArraySchema = array()
   .of(
@@ -189,12 +195,8 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
   const values = watch('metaInfo');
   return (
     <>
-      <DialogBody
-        css={css`
-          background-color: white;
-        `}
-      >
-        <div css={tablePanelStyle} style={{ height: 'calc(100% - 30px)' }}>
+      <DialogBody>
+        <Container>
           <div style={{ padding: '5px 0', display: 'flex' }}>
             <Button
               intent="success"
@@ -220,7 +222,7 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
               active: { backgroundColor: '#f5f5f5' },
             }}
           />
-        </div>
+        </Container>
       </DialogBody>
       <DialogFooter>
         <Button
