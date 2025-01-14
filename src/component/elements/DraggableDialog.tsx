@@ -15,7 +15,7 @@ import {
   Overlay2,
 } from '@blueprintjs/core';
 import { SmallCross } from '@blueprintjs/icons';
-import { css, Global } from '@emotion/react';
+import { Global } from '@emotion/react';
 import styled from '@emotion/styled';
 import type { ReactNode, RefObject } from 'react';
 import { useLayoutEffect, useRef } from 'react';
@@ -76,14 +76,13 @@ export function DraggableDialog(props: DraggableDialogProps) {
   return (
     <>
       <Global
-        styles={css`
-          div[class*='-portal']:has(.draggable-portal) {
-            height: 100%;
-            pointer-events: ${hasBackdrop === undefined || hasBackdrop
-              ? 'all'
-              : 'none'};
-          }
-        `}
+        styles={{
+          "div[class*='-portal']:has(.draggable-portal)": {
+            height: '100%',
+            pointerEvents:
+              hasBackdrop === undefined || hasBackdrop ? 'all' : 'none',
+          },
+        }}
       />
       <Overlay2
         {...otherProps}
