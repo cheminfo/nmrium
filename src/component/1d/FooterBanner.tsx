@@ -18,7 +18,6 @@ import useSpectrum from '../hooks/useSpectrum.js';
 const styles = css`
   display: flex;
   align-items: center;
-  pointer-events: bounding-box;
   user-select: none;
   background-color: #f7f7f7;
   height: 30px;

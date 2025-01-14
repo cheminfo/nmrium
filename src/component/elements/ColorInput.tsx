@@ -46,7 +46,7 @@ const style = css`
   }
 
   .chrome-picker {
-    border-radius: none !important;
+    border-radius: 0 !important;
     width: 200px !important;
     height: 60px !important;
     display: flex;

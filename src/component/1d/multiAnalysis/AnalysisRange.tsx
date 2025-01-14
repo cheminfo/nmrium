@@ -9,13 +9,6 @@ import { useHighlight } from '../../highlight/index.js';
 import { useResizerStatus } from '../../hooks/useResizerStatus.js';
 
 const styles = {
-  common: css`
-    pointer-events: bounding-box;
-
-    @document url-prefix("") {
-      pointer-events: fill;
-    }
-  `,
   hover: css`
     .delete-button {
       visibility: hidden;
@@ -82,12 +75,9 @@ function AnalysisRange({
         {({ x1, x2 }, isActive) => (
           <g
             transform={`translate(0,25)`}
-            css={[
-              styles.common,
-              highlight.isActive || isActive
-                ? styles.Highlighted
-                : styles.hover,
-            ]}
+            css={
+              highlight.isActive || isActive ? styles.Highlighted : styles.hover
+            }
           >
             <rect
               x="0"

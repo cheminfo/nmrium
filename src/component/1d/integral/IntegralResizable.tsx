@@ -12,12 +12,6 @@ import { useResizerStatus } from '../../hooks/useResizerStatus.js';
 import { IntegralIndicator } from './IntegralIndicator.js';
 
 const stylesOnHover = css`
-  pointer-events: bounding-box;
-
-  @document url-prefix("") {
-    pointer-events: fill;
-  }
-
   .highlight {
     fill: transparent;
   }
@@ -28,12 +22,6 @@ const stylesOnHover = css`
 `;
 
 const stylesHighlighted = css`
-  pointer-events: bounding-box;
-
-  @document url-prefix("") {
-    pointer-events: fill;
-  }
-
   fill: #ff6f0057;
 
   .target {

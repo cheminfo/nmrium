@@ -37,7 +37,6 @@ const menuStyles = css`
     border: none;
     border-bottom: 0.55px solid whitesmoke;
     height: 35px;
-    outline: outline;
     display: table-cell;
     vertical-align: middle;
     text-align: left;
