@@ -1,6 +1,4 @@
-/** @jsxImportSource @emotion/react */
-
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import type { ReactElement } from 'react';
 import { Suspense, useCallback, useMemo, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
@@ -9,20 +7,13 @@ import Sidebar from '../Sidebar.js';
 import { getKey, mapTreeToFlatArray } from '../utility/menu.js';
 import { possibleViews } from '../views/index.js';
 
-const mainPanelCss = css`
+const Container = styled.div<{ isMenuClosed: boolean }>`
   position: relative;
   float: right;
   height: 100%;
   background-color: #ebecf1;
-`;
-
-const mainPanelOpenCss = css`
-  width: calc(100% - 260px);
-`;
-
-const mainPanelClosedCss = css`
-  width: 98%;
-  margin-left: 20px !important;
+  width: ${({ isMenuClosed }) => (isMenuClosed ? '98%' : 'calc(100% - 260px)')};
+  margin-left: ${({ isMenuClosed }) => (isMenuClosed ? '20px' : '0px')};
 `;
 
 interface DashboardProps {
@@ -71,13 +62,7 @@ export function Dashboard(props: DashboardProps) {
         menuIsClosed={menuIsClosed}
         onMenuToggle={toggleMenu}
       />
-      <div
-        className="demo-main-container"
-        css={css(
-          mainPanelCss,
-          menuIsClosed ? mainPanelClosedCss : mainPanelOpenCss,
-        )}
-      >
+      <Container isMenuClosed={menuIsClosed} className="demo-main-container">
         {/*<StrictMode>*/}
         <Suspense fallback={<div>Loading...</div>}>
           <Routes>
@@ -97,7 +82,7 @@ export function Dashboard(props: DashboardProps) {
           </Routes>
         </Suspense>
         {/*</StrictMode>*/}
-      </div>
+      </Container>
     </div>
   );
 }

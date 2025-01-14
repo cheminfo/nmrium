@@ -1,15 +1,18 @@
-/** @jsxImportSource @emotion/react */
-
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import Menu from 'rc-menu';
 import { memo, useMemo } from 'react';
 import { FaBars } from 'react-icons/fa';
 import { createSearchParams, useNavigate } from 'react-router-dom';
+
 import 'rc-menu/assets/index.css';
 
 import { buildMenu, getKey } from './utility/menu.js';
 
-const sidebarCss = css`
+interface MenuStatus {
+  isMenuClosed: boolean;
+}
+
+const SideBarContainer = styled.div<MenuStatus>`
   background: #2ca8ff;
   position: fixed;
   top: 0;
@@ -17,17 +20,10 @@ const sidebarCss = css`
   bottom: 0;
   left: 0;
   z-index: 19;
+  width: ${({ isMenuClosed }) => (isMenuClosed ? '3%' : '260px')};
 `;
 
-const sidebarOpenCss = css`
-  width: 260px;
-`;
-
-const sidebarClosedCss = css`
-  width: 3%;
-`;
-
-const menuBtCss = css`
+const MenuButton = styled.button`
   margin: 2px 4px;
   z-index: 7;
   font-size: 18px;
@@ -56,7 +52,7 @@ const menuBtCss = css`
   }
 `;
 
-const logoCss = css`
+const SideBarHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -64,7 +60,12 @@ const logoCss = css`
   border-bottom: 1px solid #eee;
 `;
 
-const simpleTextCss = css`
+const TitleContainer = styled.div<MenuStatus>`
+  display: ${({ isMenuClosed }) => (isMenuClosed ? 'none' : 'block')};
+  padding: 0.5rem 0.7rem;
+`;
+
+const Title = styled.a`
   text-transform: uppercase;
   padding: 0.5rem 0;
   display: block;
@@ -75,21 +76,18 @@ const simpleTextCss = css`
   font-weight: 400;
   line-height: 30px;
   overflow: hidden;
-`;
-
-const logoNormalCss = css`
-  display: block;
   opacity: 1;
   transform: translateZ(0);
 `;
 
-const sidebarWrapperCss = css`
+const SideBarWrapper = styled.div<MenuStatus>`
   position: relative;
   height: calc(100vh - 75px);
   overflow: hidden auto;
   width: 260px;
   z-index: 4;
   padding-bottom: 100px;
+  display: ${({ isMenuClosed }) => (isMenuClosed ? 'none' : 'block')};
 `;
 
 function Sidebar(props) {
@@ -98,25 +96,19 @@ function Sidebar(props) {
     return buildMenu(props.routes);
   }, [props.routes]);
 
-  const subDisplay = props.menuIsClosed ? 'none' : 'block';
+  const { menuIsClosed } = props;
 
   return (
-    <div
-      className="demo-side-bar"
-      css={css(
-        sidebarCss,
-        props.menuIsClosed ? sidebarClosedCss : sidebarOpenCss,
-      )}
-    >
-      <div css={logoCss}>
-        <div style={{ display: subDisplay, padding: '0.5rem 0.7rem' }}>
-          <a css={css(simpleTextCss, logoNormalCss)}>NMRium</a>
-        </div>
-        <button type="button" css={menuBtCss} onClick={props.onMenuToggle}>
+    <SideBarContainer isMenuClosed={menuIsClosed} className="demo-side-bar">
+      <SideBarHeader>
+        <TitleContainer isMenuClosed={menuIsClosed}>
+          <Title>NMRium</Title>
+        </TitleContainer>
+        <MenuButton type="button" onClick={props.onMenuToggle}>
           <FaBars />
-        </button>
-      </div>
-      <div css={sidebarWrapperCss} style={{ display: subDisplay }}>
+        </MenuButton>
+      </SideBarHeader>
+      <SideBarWrapper isMenuClosed={menuIsClosed}>
         {/* @ts-expect-error menu typings are wrong */}
         <Menu
           onClick={(e) => {
@@ -135,8 +127,8 @@ function Sidebar(props) {
         >
           {routes}
         </Menu>
-      </div>
-    </div>
+      </SideBarWrapper>
+    </SideBarContainer>
   );
 }
 
