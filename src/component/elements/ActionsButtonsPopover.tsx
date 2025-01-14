@@ -9,7 +9,7 @@ import { Button } from 'react-science/ui';
 const Container = styled.div<Pick<CSSProperties, 'flexDirection' | 'gap'>>`
   display: flex;
   flex-direction: ${(props) => props.flexDirection};
-  gap: ${(props) => props.gap};
+  gap: ${(props) => props.gap}px;
 
   button,
   a[role='button'] {
