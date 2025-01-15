@@ -21,7 +21,7 @@ import { formLabelStyle } from './index.js';
 export default function BaseLineCorrectionOptionsPanel(
   props: BaseFilterOptionsPanelProps<ExtractFilterEntry<'baselineCorrection'>>,
 ) {
-  const { filter, enableEdit = true, onCancel, onConfirm } = props;
+  const { filter, enableEdit = true, onCancel, onConfirm, onEditStart } = props;
 
   const {
     register,
@@ -56,7 +56,7 @@ export default function BaseLineCorrectionOptionsPanel(
     !isDirty &&
     filter.value?.algorithm === getValues()?.algorithm;
   return (
-    <ReadOnly enabled={!enableEdit}>
+    <ReadOnly enabled={!enableEdit} onClick={onEditStart}>
       {enableEdit && (
         <StickyHeader>
           <HeaderContainer>
@@ -75,7 +75,6 @@ export default function BaseLineCorrectionOptionsPanel(
               onConfirm={handleConfirm}
               onCancel={handleCancel}
               disabledConfirm={disabledAction}
-              disabledCancel={disabledAction}
             />
           </HeaderContainer>
         </StickyHeader>

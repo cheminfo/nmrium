@@ -37,7 +37,7 @@ const formLabelStyle: LabelStyle = {
 export default function PhaseCorrectionOptionsPanel(
   props: BaseFilterOptionsPanelProps<ExtractFilterEntry<'phaseCorrection'>>,
 ) {
-  const { filter, enableEdit = true, onCancel, onConfirm } = props;
+  const { filter, enableEdit = true, onCancel, onConfirm, onEditStart } = props;
   const {
     handleApplyFilter,
     handleCancelFilter,
@@ -61,7 +61,7 @@ export default function PhaseCorrectionOptionsPanel(
   }
 
   return (
-    <ReadOnly enabled={!enableEdit}>
+    <ReadOnly enabled={!enableEdit} onClick={onEditStart}>
       {enableEdit && (
         <StickyHeader>
           <HeaderContainer>

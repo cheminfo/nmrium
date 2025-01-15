@@ -7,7 +7,7 @@ import type { BaseFilterOptionsPanelProps } from './index.js';
 export default function ApodizationOptionsPanel(
   props: BaseFilterOptionsPanelProps<ExtractFilterEntry<'apodization'>>,
 ) {
-  const { filter, enableEdit = true, onCancel, onConfirm } = props;
+  const { filter, enableEdit = true, onCancel, onConfirm, onEditStart } = props;
 
   return (
     <BaseApodizationOptions
@@ -15,6 +15,7 @@ export default function ApodizationOptionsPanel(
       filter={filter}
       onCancel={onCancel}
       onConfirm={onConfirm}
+      onEditStart={onEditStart}
     />
   );
 }

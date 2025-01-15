@@ -21,7 +21,7 @@ type ShiftFilterPanelOptions =
 export default function ShiftOptionsPanel(
   props: BaseFilterOptionsPanelProps<ShiftFilterPanelOptions>,
 ) {
-  const { filter, enableEdit = true, onCancel, onConfirm } = props;
+  const { filter, enableEdit = true, onCancel, onConfirm, onEditStart } = props;
 
   const dispatch = useDispatch();
   const {
@@ -79,7 +79,7 @@ export default function ShiftOptionsPanel(
   }
 
   return (
-    <ReadOnly enabled={!enableEdit}>
+    <ReadOnly enabled={!enableEdit} onClick={onEditStart}>
       {enableEdit && (
         <StickyHeader>
           <HeaderContainer>
@@ -88,7 +88,6 @@ export default function ShiftOptionsPanel(
               onConfirm={handleConfirm}
               onCancel={handleCancel}
               disabledConfirm={!isDirty}
-              disabledCancel={!isDirty}
             />
           </HeaderContainer>
         </StickyHeader>

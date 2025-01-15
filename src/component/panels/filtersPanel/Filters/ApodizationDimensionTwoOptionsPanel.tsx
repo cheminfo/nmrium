@@ -9,7 +9,7 @@ export default function ApodizationDimensionTwoOptionsPanel(
     ExtractFilterEntry<'apodizationDimension2'>
   >,
 ) {
-  const { filter, enableEdit = true, onCancel, onConfirm } = props;
+  const { filter, enableEdit = true, onCancel, onConfirm, onEditStart } = props;
 
   return (
     <BaseApodizationOptions
@@ -17,6 +17,7 @@ export default function ApodizationDimensionTwoOptionsPanel(
       filter={filter}
       onCancel={onCancel}
       onConfirm={onConfirm}
+      onEditStart={onEditStart}
     />
   );
 }

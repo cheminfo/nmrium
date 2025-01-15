@@ -32,7 +32,7 @@ const advanceValidationSchema = Yup.object().shape({
 export function BaseApodizationOptions(
   props: BaseFilterOptionsPanelProps<ApodizationFilterEntry>,
 ) {
-  const { filter, enableEdit = true, onCancel, onConfirm } = props;
+  const { filter, enableEdit = true, onCancel, onConfirm, onEditStart } = props;
 
   const { submitHandler, handleApplyFilter, handleCancelFilter, formMethods } =
     useApodization(filter, {
@@ -61,7 +61,7 @@ export function BaseApodizationOptions(
 
   return (
     <FormProvider {...formMethods}>
-      <ReadOnly enabled={!enableEdit}>
+      <ReadOnly enabled={!enableEdit} onClick={onEditStart}>
         {enableEdit && (
           <StickyHeader>
             <HeaderContainer>
@@ -80,7 +80,6 @@ export function BaseApodizationOptions(
                 onConfirm={handleConfirm}
                 onCancel={handleCancel}
                 disabledConfirm={disabledAction}
-                disabledCancel={disabledAction}
               />
             </HeaderContainer>
           </StickyHeader>
