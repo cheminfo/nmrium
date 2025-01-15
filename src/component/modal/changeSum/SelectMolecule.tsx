@@ -1,6 +1,6 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import type { CSSProperties } from 'react';
 import type { ControllerProps, FieldValues } from 'react-hook-form';
 import { useController } from 'react-hook-form';
 
@@ -8,37 +8,33 @@ import getAtom from '../../../data/utilities/getAtom.js';
 import { useChartData } from '../../context/ChartContext.js';
 import MoleculeSelection from '../../elements/MoleculeSelection.js';
 
-const styles = css`
-  .molecule-container {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+`;
+const SelectionContainer = styled.div`
+  width: 450px;
+  display: block;
+  margin: 0 auto;
+`;
+const Title = styled.p`
+  padding: 0 10px;
+  width: 100%;
+  text-align: center;
+`;
 
-    .title {
-      padding: 0 10px;
-      width: 100%;
-      text-align: center;
-    }
-
-    .molecule-selection-container {
-      width: 450px;
-      display: block;
-      margin: 0 auto;
-    }
-
-    .new-sum-text {
-      margin-top: 15px;
-      padding: 0 10px;
-      width: 100%;
-      text-align: center;
-    }
-  }
-
-  .empty {
-    width: 100%;
-    padding: 20%;
-    text-align: center;
-  }
+const SumValue = styled.p`
+  margin-top: 15px;
+  padding: 0 10px;
+  width: 100%;
+  text-align: center;
+`;
+const EmptyText = styled.p<{ color: CSSProperties['color'] }>`
+  width: 100%;
+  padding: 20%;
+  text-align: center;
+  color: ${({ color }) => color};
 `;
 
 export default function SelectMolecule<
@@ -92,27 +88,27 @@ export default function SelectMolecule<
   );
 
   return (
-    <div css={styles}>
+    <div>
       {element && molecules && molecules.length > 0 ? (
-        <div className="molecule-container">
-          <p className="title">Select a molecule as reference!</p>
+        <Container>
+          <Title>Select a molecule as reference!</Title>
 
-          <div className="molecule-selection-container">
+          <SelectionContainer>
             <MoleculeSelection
               index={currentIndex}
               molecules={molecules}
               onChange={onChangeMoleculeSelectionHandler}
             />
-            <p className="new-sum-text">
+            <SumValue>
               New sum for {element} will be {newSum}!
-            </p>
-          </div>
-        </div>
+            </SumValue>
+          </SelectionContainer>
+        </Container>
       ) : (
-        <p className="empty" style={{ color: invalid ? 'red' : 'black' }}>
+        <EmptyText color={invalid ? 'red' : 'black'}>
           You have to Select a spectrum and Add a molecule from the Structure
           panel to select as a reference!
-        </p>
+        </EmptyText>
       )}
     </div>
   );

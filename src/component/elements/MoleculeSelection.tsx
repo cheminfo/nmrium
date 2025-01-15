@@ -1,5 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import { useCallback, useEffect, useState } from 'react';
 import { MF } from 'react-mf';
 import { MolfileSvgRenderer } from 'react-ocl/full';
@@ -8,7 +7,7 @@ import type { StateMoleculeExtended } from '../../data/molecules/Molecule.js';
 
 import { NextPrev } from './NextPrev.js';
 
-const toolbarStyle = css`
+const BarContainer = styled.div`
   display: flex;
   flex-direction: row;
   border-top: 0.55px solid rgb(240 240 240);
@@ -24,31 +23,9 @@ const toolbarStyle = css`
   }
 `;
 
-const moleculeContainerStyle = css`
+const MoleculeContainer = styled.div`
   width: 100%;
   position: relative;
-
-  .slider {
-    height: 180px;
-    width: 100%;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-  }
-
-  .slider p {
-    width: 100%;
-    margin: 0 auto;
-    display: block;
-    position: relative;
-    text-align: center;
-  }
-
-  .slider svg polygon {
-    fill: gray !important;
-  }
 
   button {
     flex: 2;
@@ -62,6 +39,28 @@ const moleculeContainerStyle = css`
     width: 20%;
     color: white;
     background-color: gray;
+  }
+`;
+
+const SliderContent = styled.div`
+  height: 180px;
+  width: 100%;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  p {
+    width: 100%;
+    margin: 0 auto;
+    display: block;
+    position: relative;
+    text-align: center;
+  }
+
+  svg polygon {
+    fill: gray !important;
   }
 `;
 
@@ -92,17 +91,17 @@ export default function MoleculeSelection(props: MoleculeSelectionProps) {
 
   return (
     <div>
-      <div css={toolbarStyle}>
+      <BarContainer>
         <p>
           {molecules &&
             molecules.length > 0 &&
             `${+(currentIndex + 1)} / ${molecules.length}`}{' '}
         </p>
-      </div>
-      <div css={moleculeContainerStyle}>
+      </BarContainer>
+      <MoleculeContainer>
         <NextPrev index={currentIndex} onChange={onChangeHandler}>
           {molecules?.map((mol, index) => (
-            <div key={mol.id} className="slider">
+            <SliderContent key={mol.id}>
               <div>
                 {mol.molfile && (
                   <MolfileSvgRenderer
@@ -115,10 +114,10 @@ export default function MoleculeSelection(props: MoleculeSelectionProps) {
               <p>
                 <MF mf={mol.mf} /> - {mol.mw?.toFixed(2)}
               </p>
-            </div>
+            </SliderContent>
           ))}
         </NextPrev>
-      </div>
+      </MoleculeContainer>
     </div>
   );
 }

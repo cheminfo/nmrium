@@ -1,5 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import { memo, useMemo } from 'react';
 import {
   FaFilm,
@@ -55,7 +54,7 @@ export const headerLabelStyle: LabelStyle = {
   },
 };
 
-const styles = css`
+const Container = styled.div`
   container-type: inline-size;
   z-index: 1;
 
@@ -144,7 +143,7 @@ function HeaderInner(props: HeaderInnerProps) {
   }
 
   return (
-    <div css={styles}>
+    <Container>
       <HeaderContainer
         style={{ leftStyle: { flex: 1 }, containerStyle: { padding: '2px' } }}
       >
@@ -213,7 +212,7 @@ function HeaderInner(props: HeaderInnerProps) {
           </div>
         </HeaderWrapper>
       </HeaderContainer>
-    </div>
+    </Container>
   );
 }
 

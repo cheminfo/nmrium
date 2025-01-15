@@ -1,5 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import type { Correlation } from 'nmr-correlation';
 import { useMemo } from 'react';
 
@@ -8,7 +7,7 @@ import { getLabelColor } from '../utilities/Utilities.js';
 import AdditionalColumnHeader from './AdditionalColumnHeader.js';
 import CorrelationTableRow from './CorrelationTableRow.js';
 
-const tableStyle = css`
+const Container = styled.div`
   overflow: auto;
   height: 100%;
   display: block;
@@ -131,7 +130,7 @@ function CorrelationTable({
   );
 
   return (
-    <div css={tableStyle}>
+    <Container>
       <table>
         <thead>
           <tr>
@@ -145,7 +144,7 @@ function CorrelationTable({
         </thead>
         <tbody>{rows}</tbody>
       </table>
-    </div>
+    </Container>
   );
 }
 

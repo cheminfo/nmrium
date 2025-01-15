@@ -1,9 +1,8 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import type { CSSProperties } from 'react';
 import { FaTimes } from 'react-icons/fa';
 
-const styles = css`
+const BaseButton = styled.button`
   border-radius: 50%;
   width: 16px;
   height: 16px;
@@ -41,15 +40,14 @@ function DeleteButton({
   style = {},
 }: DeleteButtonProps) {
   return (
-    <button
-      css={styles}
+    <BaseButton
       className={className}
       style={style}
       type="button"
       onClick={onDelete}
     >
       <FaTimes className="icon" />
-    </button>
+    </BaseButton>
   );
 }
 

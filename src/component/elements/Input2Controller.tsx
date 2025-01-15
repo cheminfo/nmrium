@@ -1,7 +1,5 @@
-/** @jsxImportSource @emotion/react */
-
 import { FormGroup } from '@blueprintjs/core';
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import type { ControllerProps, FieldValues } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
 
@@ -12,6 +10,17 @@ export interface InputMapValueFunctions {
   mapOnChangeValue?: (value: string) => any;
   mapValue?: (value: any) => string;
 }
+
+const CustomFormGroup = styled(FormGroup)<{ isFill?: boolean }>`
+  ${({ isFill }) =>
+    isFill
+      ? `
+      div {
+                    flex: 1;
+                  }
+   `
+      : ''}
+`;
 
 interface Input2ControllerProps<TFieldValues extends FieldValues = FieldValues>
   extends Omit<Input2Props, 'name'>,
@@ -78,20 +87,14 @@ export function Input2Controller<
 
         if (enableErrorMessage && error?.message) {
           return (
-            <FormGroup
+            <CustomFormGroup
               fill={fill}
-              {...(fill && {
-                css: css`
-                  div {
-                    flex: 1;
-                  }
-                `,
-              })}
+              isFill={fill}
               helperText={error.message}
               intent={invalid ? 'danger' : intent}
             >
               {inputComponent}
-            </FormGroup>
+            </CustomFormGroup>
           );
         }
 

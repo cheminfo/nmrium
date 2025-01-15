@@ -1,5 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 
 import type {
   DropDownListItem,
@@ -7,31 +6,30 @@ import type {
   ItemProps,
 } from './DropDownButton.js';
 
-const styles = {
-  ul: css`
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-  `,
-  li: css`
-    text-align: center;
-    white-space: nowrap;
-    color: black;
-    border-bottom: 0.55px solid #f9f9f9;
+const Menu = styled.ul`
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+`;
+const MenuItem = styled.li`
+  text-align: center;
+  white-space: nowrap;
+  color: black;
+  border-bottom: 0.55px solid #f9f9f9;
 
-    &:last-of-type {
-      border-bottom: none;
-    }
+  &:last-of-type {
+    border-bottom: none;
+  }
 
-    &:hover {
-      background-color: #f6f6f6;
-    }
-  `,
-  label: css`
-    padding: 5px 20px;
-    display: block;
-  `,
-};
+  &:hover {
+    background-color: #f6f6f6;
+  }
+`;
+
+const Text = styled.span`
+  padding: 5px 20px;
+  display: block;
+`;
 
 interface InnerDropDownListProps<T>
   extends DropDownListProps<T>,
@@ -49,10 +47,9 @@ function DropDownList({
 }: InnerDropDownListProps<DropDownListItem>) {
   return (
     <div>
-      <ul css={styles.ul}>
+      <Menu>
         {data.map((item, index) => (
-          <li
-            css={styles.li}
+          <MenuItem
             key={item[itemKey]}
             onClick={(e) => {
               e.stopPropagation();
@@ -64,12 +61,10 @@ function DropDownList({
               cursor: 'pointer',
             }}
           >
-            {renderItem?.(item) || (
-              <span css={styles.label}>{item[labelKey]}</span>
-            )}
-          </li>
+            {renderItem?.(item) || <Text>{item[labelKey]}</Text>}
+          </MenuItem>
         ))}
-      </ul>
+      </Menu>
     </div>
   );
 }

@@ -1,5 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 
 import { useChartData } from '../../../context/ChartContext.js';
 import {
@@ -16,7 +15,7 @@ import { useActivePhaseTraces } from './useActivePhaseTraces.js';
 
 const BOX_SIZE = 20;
 
-const style = css`
+const Rect = styled.rect`
   fill: transparent;
 
   &:hover {
@@ -69,8 +68,7 @@ function PhaseTrace(props: SpectrumTraceProps) {
       {...highlight.onHover}
     >
       {direction === 'horizontal' && (
-        <rect
-          css={style}
+        <Rect
           y={transformY}
           x={margin.left}
           width={`${innerWidth}px`}
@@ -78,8 +76,7 @@ function PhaseTrace(props: SpectrumTraceProps) {
         />
       )}
       {direction === 'vertical' && (
-        <rect
-          css={style}
+        <Rect
           y={margin.top}
           x={transformX}
           width={`${BOX_SIZE}px`}

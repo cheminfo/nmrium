@@ -1,10 +1,9 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import { useCallback, memo, useState, useEffect } from 'react';
 import type { ColorPickerProps } from 'react-science/ui';
 import { ColorPicker } from 'react-science/ui';
 
-const style = css`
+const Container = styled.div`
   display: flex;
   margin: 5px 0;
 
@@ -18,31 +17,6 @@ const style = css`
   .input {
     width: 60%;
     text-align: center;
-  }
-
-  .color {
-    width: 36px;
-    height: 14px;
-    border-radius: 2px;
-  }
-
-  .swatch {
-    padding: 5px;
-    background: #fff;
-    border-radius: 1px;
-    box-shadow: 0 0 0 1px rgb(0 0 0 / 10%);
-    display: inline-block;
-    cursor: pointer;
-  }
-
-  .color-popover {
-    position: absolute;
-    z-index: 2;
-  }
-
-  .cover {
-    position: fixed;
-    inset: 0;
   }
 
   .chrome-picker {
@@ -63,6 +37,28 @@ const style = css`
   .chrome-picker > div:last-child > div:last-child {
     display: none !important;
   }
+`;
+
+const Switch = styled.div`
+  padding: 5px;
+  background: #fff;
+  border-radius: 1px;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 10%);
+  display: inline-block;
+  cursor: pointer;
+`;
+const Color = styled.div`
+  width: 36px;
+  height: 14px;
+  border-radius: 2px;
+`;
+const ColorPopover = styled.div`
+  position: absolute;
+  z-index: 2;
+`;
+const Cover = styled.div`
+  position: fixed;
+  inset: 0;
 `;
 
 export interface ColorInputProps {
@@ -100,21 +96,21 @@ function ColorInput(props: ColorInputProps) {
     [name, onColorChange],
   );
   return (
-    <div css={style}>
-      <div className="swatch" onClick={handleClick}>
-        <div className="color" style={{ backgroundColor: selectedColor }} />
+    <Container>
+      <Switch onClick={handleClick}>
+        <Color style={{ backgroundColor: selectedColor }} />
         <input type="hidden" value={selectedColor} name={name} />
-      </div>
+      </Switch>
       {displayColorPicker ? (
-        <div className="color-popover">
-          <div className="cover" onClick={handleClose} />
+        <ColorPopover>
+          <Cover onClick={handleClose} />
           <ColorPicker
             color={{ hex: selectedColor }}
             onChangeComplete={handleOnColorChanged}
           />
-        </div>
+        </ColorPopover>
       ) : null}
-    </div>
+    </Container>
   );
 }
 

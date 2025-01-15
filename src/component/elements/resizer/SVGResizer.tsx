@@ -1,6 +1,5 @@
 /* eslint-disable react/no-unused-prop-types */
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import type { CSSProperties } from 'react';
 
 import useResizer from './useResizer.js';
@@ -23,15 +22,13 @@ const style: Record<'anchor' | 'innerContainer', CSSProperties> = {
   },
 };
 
-const styles = {
-  container: css`
-    &:hover {
-      rect:last-child {
-        fill: red !important;
-      }
+const Group = styled.g`
+  &:hover {
+    rect:last-child {
+      fill: red !important;
     }
-  `,
-};
+  }
+`;
 
 export interface Position {
   x1: number;
@@ -79,14 +76,13 @@ function SVGResizerHandle(props: {
   position: number;
 }) {
   return (
-    <g
+    <Group
       onPointerDown={props.onPointerDown}
-      css={styles.container}
       transform={`translate(${props.position})`}
       data-no-export="true"
     >
       <rect x="-5px" style={style.innerContainer} />
       <rect x="-2.5px" style={style.anchor} />
-    </g>
+    </Group>
   );
 }

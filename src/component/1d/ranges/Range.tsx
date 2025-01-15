@@ -1,5 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import type { Range as RangeType } from 'nmr-processing';
 import { LuLink, LuUnlink } from 'react-icons/lu';
 import { PiTextTBold, PiTextTSlashBold } from 'react-icons/pi';
@@ -34,9 +33,9 @@ import { useScaleX } from '../utilities/scale.js';
 import { AssignmentLabel } from './AssignmentLabel.js';
 import { Atoms } from './Atoms.js';
 
-const style = css`
+const Group = styled.g<{ isActive: boolean }>`
   .target {
-    visibility: hidden;
+    visibility: ${({ isActive }) => (isActive ? 'visible' : 'hidden')};
   }
 
   &:hover {
@@ -180,13 +179,13 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
     },
   ];
   return (
-    <g
+    <Group
       data-testid="range"
       style={{ outline: 'none' }}
       key={id}
       onMouseEnter={mouseEnterHandler}
       onMouseLeave={mouseLeaveHandler}
-      {...(!assignmentRange.isActive && { css: style })}
+      isActive={assignmentRange.isActive}
     >
       <ActionsButtonsPopover
         targetTagName="g"
@@ -236,7 +235,7 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
           }}
         </ResizerWithScale>
       </ActionsButtonsPopover>
-    </g>
+    </Group>
   );
 }
 

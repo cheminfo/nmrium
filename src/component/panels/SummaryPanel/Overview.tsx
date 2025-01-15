@@ -1,11 +1,10 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import { getAtomCounts } from 'nmr-correlation';
 import { memo } from 'react';
 
 import { ErrorColors, Errors } from './CorrelationTable/Constants.js';
 
-const styles = css`
+const Container = styled.div`
   display: flex;
   width: 100%;
   font-size: 15px;
@@ -69,7 +68,7 @@ function Overview({ correlationsData }: OverviewProps) {
       </p>
     );
 
-  return <div css={styles}>{elements}</div>;
+  return <Container>{elements}</Container>;
 }
 
 export default memo(Overview);

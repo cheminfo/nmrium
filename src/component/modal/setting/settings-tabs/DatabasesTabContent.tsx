@@ -1,6 +1,5 @@
-/** @jsxImportSource @emotion/react */
 import { Checkbox, Classes, Radio } from '@blueprintjs/core';
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import { v4 } from '@lukeed/uuid';
 import type { CustomWorkspaces, Database } from 'nmr-load-save';
 import { useCallback, useMemo } from 'react';
@@ -17,6 +16,10 @@ import type { WorkspaceWithSource } from '../../../reducer/preferences/preferenc
 import { getPreferencesByWorkspace } from '../../../reducer/preferences/utilities/getPreferencesByWorkspace.js';
 import { isGoogleDocument } from '../../../utility/isGoogleDocument.js';
 import { Section } from '../GeneralSettings.js';
+
+const StyledButton = styled(Button)<{ marginHorizontal: number }>`
+  margin: 0 ${({ marginHorizontal }) => marginHorizontal}px;
+`;
 
 function getKeyPath<T extends keyof Database>(
   index: number,
@@ -158,18 +161,16 @@ function DatabasesTabContent({
               >
                 <FaPlus className={Classes.ICON} />
               </Button>
-              <Button
+              <StyledButton
+                marginHorizontal={3}
                 small
                 outlined
                 intent="danger"
                 tooltipProps={{ content: '', disabled: true }}
                 onClick={() => deleteHandler(data, index)}
-                css={css`
-                  margin: 0 3px;
-                `}
               >
                 <FaRegTrashAlt className={Classes.ICON} />
-              </Button>
+              </StyledButton>
 
               {isGoogleDocument(record.url) && (
                 <Button

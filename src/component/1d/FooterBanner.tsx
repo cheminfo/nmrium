@@ -10,70 +10,19 @@ import { useBrushTracker } from '../EventsTrackers/BrushTracker.js';
 import { useMouseTracker } from '../EventsTrackers/MouseTracker.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useScaleChecked } from '../context/ScaleContext.js';
+import { FooterContainer, InfoItem } from '../elements/Footer.js';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
 import { useFormatNumberByNucleus } from '../hooks/useFormatNumberByNucleus.js';
 import useSpectrum from '../hooks/useSpectrum.js';
 
-const Container = styled.div`
-  display: flex;
+const FlexInfoItem = styled(InfoItem)`
   align-items: center;
-  user-select: none;
-  background-color: #f7f7f7;
-  height: 30px;
-  padding: 6px;
-  color: #8d0018;
-  position: absolute;
-  width: 100%;
-  bottom: 0;
-  container-type: inline-size;
-
-  @container (max-width:600px) {
-    .small-width-none {
-      display: none !important;
-    }
-  }
-
-  .flex-row {
-    display: flex;
-    align-items: center;
-  }
-
-  div {
-    margin: 0 10px;
-    display: inline-block;
-
-    .label {
-      font-size: 12px;
-      color: #4d4d4d;
-      font-weight: bold;
-    }
-
-    .value {
-      font-weight: bold;
-      font-size: 14px;
-      display: inline-block;
-    }
-
-    .unit {
-      font-weight: bold;
-      font-size: 10px;
-    }
-
-    .x-value {
-      min-width: 50px;
-    }
-
-    .y-value {
-      min-width: 80px;
-    }
-  }
-
-  .separator {
-    border-left: 2px solid gray;
-    margin: 0 20px;
-    width: 1px;
-    height: 100%;
-  }
+`;
+const Separator = styled.div`
+  border-left: 2px solid gray;
+  margin: 0 20px;
+  width: 1px;
+  height: 100%;
 `;
 
 interface FooterBannerInnerProps {
@@ -111,7 +60,7 @@ function FooterBannerInner({
     position.x > width - margin.right ||
     position.y > height - margin.bottom
   ) {
-    return <Container />;
+    return <FooterContainer />;
   }
 
   function getXIndex(xPosition) {
@@ -134,82 +83,82 @@ function FooterBannerInner({
   const isBrushing = step === 'brushing' && mouseButton === 'main';
 
   return (
-    <Container>
+    <FooterContainer>
       <BsCursor />
       <div>
-        <span className="label"> 𝛅: </span>
-        <span className="value">{format(scaleX().invert(position.x))}</span>
-        <span className="unit">ppm</span>
+        <InfoItem.Label> 𝛅: </InfoItem.Label>
+        <InfoItem.Value>{format(scaleX().invert(position.x))}</InfoItem.Value>
+        <InfoItem.Unit>ppm</InfoItem.Unit>
         {activeSpectrum && spectrum?.info?.originFrequency && (
           <>
-            <span className="value">
+            <InfoItem.Value>
               &nbsp;(
               {format(
                 scaleX().invert(position.x) * spectrum?.info?.originFrequency,
                 'hz',
               )}
-            </span>
-            <span className="unit">Hz</span>
-            <span className="value">) </span>
-            <span className="small-width-none">
+            </InfoItem.Value>
+            <InfoItem.Unit>Hz</InfoItem.Unit>
+            <InfoItem.Value>) </InfoItem.Value>
+            <InfoItem>
               <span>,</span>
-              <span className="label"> Index: </span>
-              <span className="value">{getXIndex(position.x)}</span>
-            </span>
+              <InfoItem.Label> Index: </InfoItem.Label>
+              <InfoItem.Value>{getXIndex(position.x)}</InfoItem.Value>
+            </InfoItem>
           </>
         )}
       </div>
 
       {isBrushing && (
-        <div className="flex-row small-width-none">
-          <span className="label"> Δppm: </span>
-          <span className="value">
+        <FlexInfoItem autoHide>
+          <InfoItem.Label> Δppm: </InfoItem.Label>
+          <InfoItem.Value>
             {(scaleX().invert(startX) - scaleX().invert(endX)).toPrecision(6)}
-          </span>
-        </div>
+          </InfoItem.Value>
+        </FlexInfoItem>
       )}
 
       {activeSpectrum && (
-        <div className=" flex-row small-width-none">
+        <FlexInfoItem autoHide>
           {spectrum?.info?.originFrequency && isBrushing && (
             <div>
-              <span className="label"> ΔHz: </span>
-              <span className="value">
+              <InfoItem.Label> ΔHz: </InfoItem.Label>
+              <InfoItem.Value>
                 {(
                   (scaleX().invert(startX) - scaleX().invert(endX)) *
                   spectrum?.info?.originFrequency
                 ).toPrecision(5)}
-              </span>
+              </InfoItem.Value>
             </div>
           )}
           {isBrushing && (
             <div>
-              <span className="label"> ratio :</span>
-              <span className="value">
+              <InfoItem.Label> ratio :</InfoItem.Label>
+              <InfoItem.Value>
                 {(
                   (getYValue(startX) / (getYValue(endX) || Number.MIN_VALUE)) *
                   100
                 ).toFixed(2)}
                 %
-              </span>
+              </InfoItem.Value>
             </div>
           )}
-        </div>
+        </FlexInfoItem>
       )}
 
       {activeSpectrum && (
-        <div className="flex-row small-width-none">
-          <div className="separator" />
+        <FlexInfoItem>
+          <Separator />
           <IoPulseSharp />
           <div>
-            <span className="label">Intensity: </span>
-            <span className="value y-value">
+            <InfoItem.Label>Intensity: </InfoItem.Label>
+            <InfoItem.Value style={{ minWidth: 80 }}>
               {format(getYValue(position.x))}
-            </span>
+            </InfoItem.Value>
           </div>
-        </div>
+        </FlexInfoItem>
       )}
-    </Container>
+    </FooterContainer>
   );
 }
 

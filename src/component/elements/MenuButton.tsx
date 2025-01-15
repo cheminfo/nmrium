@@ -1,59 +1,56 @@
 /** @jsxImportSource @emotion/react */
 import type { SerializedStyles } from '@emotion/react';
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import type { ReactNode } from 'react';
 import { useState, useCallback, useRef } from 'react';
 
 import ToolTip from './ToolTip/ToolTip.js';
 
-const menuStyles = css`
-  .menu {
-    box-shadow: 0 0 10px rgb(0 0 0 / 50%);
-    margin: 0;
-    border-radius: 5px;
-    display: flex;
-    flex-direction: column;
-    position: absolute;
-    z-index: 99999;
-    padding: 2px;
-    background-color: white;
+const MenuCover = styled.div`
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+`;
+const Menu = styled.div`
+  box-shadow: 0 0 10px rgb(0 0 0 / 50%);
+  margin: 0;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  z-index: 99999;
+  padding: 2px;
+  background-color: white;
 
-    button:hover {
-      background-color: #fafafa;
-    }
+  button:hover {
+    background-color: #fafafa;
+  }
+`;
+
+const MenuItemButton = styled.button`
+  background-color: transparent;
+  border: none;
+  border-bottom: 0.55px solid whitesmoke;
+  height: 35px;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: left;
+  padding: 0 10px;
+
+  svg {
+    display: inline-block;
   }
 
-  .menu-cover {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    z-index: 1;
+  :focus {
+    outline: none !important;
   }
 
-  .menu-item {
-    background-color: transparent;
-    border: none;
-    border-bottom: 0.55px solid whitesmoke;
-    height: 35px;
-    display: table-cell;
-    vertical-align: middle;
-    text-align: left;
+  span {
+    font-size: 10px;
     padding: 0 10px;
-
-    svg {
-      display: inline-block;
-    }
-
-    :focus {
-      outline: none !important;
-    }
-
-    span {
-      font-size: 10px;
-      padding: 0 10px;
-    }
   }
 `;
 
@@ -65,10 +62,10 @@ interface MenuItemProps {
 
 function MenuItem({ icon, label, onClick }: MenuItemProps) {
   return (
-    <button type="button" className="menu-item" onClick={onClick}>
+    <MenuItemButton type="button" onClick={onClick}>
       {icon}
       <span>{label}</span>
-    </button>
+    </MenuItemButton>
   );
 }
 export interface BoundingBox {
@@ -90,8 +87,7 @@ function MenuList({
   onClick,
 }: MenuListProps) {
   return (
-    <div
-      className="menu"
+    <Menu
       style={{
         transform: `translate(${boxBounding.width}px, -${boxBounding.height}px) `,
       }}
@@ -101,7 +97,7 @@ function MenuList({
           <MenuItem key={item.id} {...item} onClick={() => onClick(item)} />
         );
       })}
-    </div>
+    </Menu>
   );
 }
 
@@ -139,7 +135,7 @@ export default function MenuButton({
   );
 
   return (
-    <div style={{ height: 'auto' }} css={menuStyles}>
+    <div>
       <button
         ref={menuButtonRef}
         type="button"
@@ -160,7 +156,7 @@ export default function MenuButton({
         />
       )}
 
-      {isShown && <div className="menu-cover" onClick={closeMenuButton} />}
+      {isShown && <MenuCover onClick={closeMenuButton} />}
     </div>
   );
 }
