@@ -1,26 +1,12 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 import * as d3 from 'd3';
 import type { Spectrum2D } from 'nmr-load-save';
 import { memo, useEffect, useRef } from 'react';
 
 import { useChartData } from '../context/ChartContext.js';
+import { AxisGroup } from '../elements/AxisGroup.js';
 import useSpectrum from '../hooks/useSpectrum.js';
 
 import { useScale2DX } from './utilities/scale.js';
-
-const axisStyles = css`
-  user-select: none;
-
-  path,
-  line {
-    fill: none;
-    stroke: black;
-    stroke-width: 1;
-    shape-rendering: crispedges;
-    user-select: none;
-  }
-`;
 
 const defaultMargin = { right: 100, top: 0, left: 0, bottom: 0 };
 
@@ -59,9 +45,8 @@ function XAxis(props: XAxisProps) {
   return (
     <>
       {show && (
-        <g
+        <AxisGroup
           className="x"
-          css={axisStyles}
           transform={`translate(0,${
             height - (margin.bottom + marginProps.bottom)
           })`}
@@ -70,7 +55,7 @@ function XAxis(props: XAxisProps) {
           <text fill="#000" x={width - 60} y="20" dy="0.71em" textAnchor="end">
             {spectrum?.info?.isFid ? 'Time [sec]' : 'δ [ppm]'}
           </text>
-        </g>
+        </AxisGroup>
       )}
     </>
   );

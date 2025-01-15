@@ -1,5 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import type { Ranges, Zones } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 import { ResponsiveChart } from 'react-d3-utils';
@@ -38,7 +37,7 @@ interface DraggableStructureProps {
 
 const AUTO_CROP_MARGIN = 30;
 
-const style = css`
+const ReactRnd = styled(Rnd)`
   border: 1px solid transparent;
 
   button {
@@ -97,7 +96,7 @@ export function DraggableStructure(props: DraggableStructureProps) {
   }
 
   return (
-    <Rnd
+    <ReactRnd
       default={moleculeView.floating.bounding}
       minWidth={90 + AUTO_CROP_MARGIN * 2}
       minHeight={100 + AUTO_CROP_MARGIN * 2}
@@ -113,7 +112,6 @@ export function DraggableStructure(props: DraggableStructureProps) {
         dragFloatMoleculeHandler({ x, y });
       }}
       resizeHandleWrapperStyle={{ backgroundColor: 'white' }}
-      css={style}
     >
       <div
         className="content"
@@ -127,7 +125,7 @@ export function DraggableStructure(props: DraggableStructureProps) {
         </ResponsiveChart>
       </div>
       {modal}
-    </Rnd>
+    </ReactRnd>
   );
 }
 

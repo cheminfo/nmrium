@@ -1,5 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import { FaEdit, FaRegTrashAlt, FaSearchPlus } from 'react-icons/fa';
 
 import { SIGNAL_KINDS } from '../../../../data/constants/signalsKinds.js';
@@ -14,7 +13,7 @@ import type {
 } from '../RangesTableRow.js';
 import useEditRangeModal from '../hooks/useEditRangeModal.js';
 
-const styles = css`
+const ActionsCell = styled.td`
   width: 66px;
   padding: 0 !important;
 
@@ -71,7 +70,7 @@ function ActionsColumn({
         </td>
       )}
       {showActions && (
-        <td {...rowSpanTags} css={styles}>
+        <ActionsCell {...rowSpanTags}>
           {showDeleteAction && (
             <button
               type="button"
@@ -113,7 +112,7 @@ function ActionsColumn({
               <FaEdit color="blue" />
             </button>
           )}
-        </td>
+        </ActionsCell>
       )}
     </>
   );

@@ -7,6 +7,8 @@ import { useEffect, useState } from 'react';
 import { Axis, LineSeries, Plot } from 'react-plot';
 
 import { isSpectrum2D } from '../../data/data2d/Spectrum2D/index.js';
+import { useChartData } from '../context/ChartContext.js';
+import { useScaleChecked } from '../context/ScaleContext.js';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 
 const DialogBody = styled(StyledDialogBody)`
@@ -219,8 +221,8 @@ function InnerMultipleAnalysis(props: InnerMultipleAnalysisProps) {
               <p>
                 {analysisData.js[index]
                   ? `${analysisData.js[index]?.multiplicity}: ${analysisData.js[
-                    index
-                  ]?.coupling.toFixed(3)} Hz`
+                      index
+                    ]?.coupling.toFixed(3)} Hz`
                   : ''}
               </p>
             </div>

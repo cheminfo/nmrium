@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Button, DialogBody, DialogFooter } from '@blueprintjs/core';
-import { css } from '@emotion/react';
+import { Button, DialogFooter } from '@blueprintjs/core';
+import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { v4 } from '@lukeed/uuid';
 import type { Spectrum1D } from 'nmr-load-save';
@@ -14,6 +14,7 @@ import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import type { DialogProps } from '../../elements/DialogManager.js';
 import { DraggableDialog } from '../../elements/DraggableDialog.js';
+import { StyledDialogBody } from '../../elements/StyledDialogBody.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import useEditRangeModal from '../../panels/RangesPanel/hooks/useEditRangeModal.js';
@@ -23,9 +24,7 @@ import { formatNumber } from '../../utility/formatNumber.js';
 import SignalsContent from './forms/components/SignalsContent.js';
 import editRangeFormValidation from './forms/validation/EditRangeValidation.js';
 
-const styles = css`
-  background-color: white;
-
+const DialogBody = styled(StyledDialogBody)`
   .tabs .tab-list {
     overflow-x: auto;
   }
@@ -197,7 +196,7 @@ function InnerEditRangeModal(props: InnerEditRangeModalProps) {
         onClose={handleOnClose}
         placement="top-right"
       >
-        <DialogBody css={styles}>
+        <DialogBody>
           <SignalsContent range={range} />
         </DialogBody>
         <DialogFooter>

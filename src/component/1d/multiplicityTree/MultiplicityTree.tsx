@@ -1,5 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import type { Spectrum1D } from 'nmr-load-save';
 import type { Range } from 'nmr-processing';
@@ -20,15 +19,13 @@ import { AssignmentActionsButtons } from '../ranges/AssignmentActionsButtons.js'
 import type { TreeNodes } from './generateTreeNodes.js';
 import { generateTreeNodes } from './generateTreeNodes.js';
 
-const styles = {
-  cursor: 'default',
-  opacity: 0.6,
-  strokeWidth: 1,
-};
+const Group = styled.g<{ isActive: boolean; isHighlighted: boolean }>`
+  cursor: default;
+  opacity: ${({ isHighlighted }) => (isHighlighted ? '1' : '0.6')};
+  stroke-width: ${({ isHighlighted }) => (isHighlighted ? '1.5' : '1')}px;
 
-const cssStyle = css`
   .signal-target {
-    visibility: hidden;
+    visibility: ${({ isActive }) => (isActive ? 'visible' : 'hidden')};
   }
 
   &:hover {
@@ -159,10 +156,9 @@ function Tree(props: TreeProps) {
     treeHeight + headTextMargin + multiplicityTextSize + padding * 2;
 
   return (
-    <g
-      style={
-        isHighlighted ? { ...styles, opacity: 1, strokeWidth: 1.5 } : styles
-      }
+    <Group
+      isActive={assignment.isActive}
+      isHighlighted={isHighlighted}
       onMouseEnter={() => {
         assignment.show('x');
         highlight.show();
@@ -172,7 +168,6 @@ function Tree(props: TreeProps) {
         highlight.hide();
       }}
       pointerEvents="bounding-box"
-      {...(!assignment.isActive && { css: cssStyle })}
     >
       <rect
         x={x}
@@ -254,7 +249,7 @@ function Tree(props: TreeProps) {
         onUnAssign={unAssignHandler}
         borderRadius={16}
       />
-    </g>
+    </Group>
   );
 }
 

@@ -4,19 +4,7 @@ import { useEffect, useRef } from 'react';
 
 import { useChartData } from '../context/ChartContext.js';
 import { useScale } from '../context/ScaleContext.js';
-
-const AxisGroup = styled.g`
-  user-select: none;
-
-  path,
-  line {
-    fill: none;
-    stroke: black;
-    stroke-width: 1;
-    shape-rendering: crispedges;
-    user-select: none;
-  }
-`;
+import { AxisGroup } from '../elements/AxisGroup.js';
 
 const GridGroup = styled.g`
   user-select: none;

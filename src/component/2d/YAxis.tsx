@@ -1,26 +1,12 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 import * as d3 from 'd3';
 import type { Spectrum2D } from 'nmr-load-save';
 import { memo, useEffect, useRef } from 'react';
 
 import { useChartData } from '../context/ChartContext.js';
+import { AxisGroup } from '../elements/AxisGroup.js';
 import useSpectrum from '../hooks/useSpectrum.js';
 
 import { useScale2DY } from './utilities/scale.js';
-
-const axisStyles = css`
-  user-select: none;
-
-  path,
-  line {
-    fill: none;
-    stroke: black;
-    stroke-width: 1;
-    shape-rendering: crispedges;
-    user-select: none;
-  }
-`;
 
 const defaultMargin = { right: 50, top: 0, bottom: 0, left: 0 };
 
@@ -62,9 +48,8 @@ function YAxis(props: YAxisProps) {
   }
 
   return (
-    <g
+    <AxisGroup
       className="y"
-      css={axisStyles}
       transform={`translate(${width - marginProps.right})`}
       ref={refAxis}
     >
@@ -78,7 +63,7 @@ function YAxis(props: YAxisProps) {
       >
         {label}
       </text>
-    </g>
+    </AxisGroup>
   );
 }
 

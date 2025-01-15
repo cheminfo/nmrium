@@ -1,5 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import { memo, useCallback } from 'react';
 
 import { useDispatch } from '../../../../context/DispatchContext.js';
@@ -7,7 +6,7 @@ import { useDispatch } from '../../../../context/DispatchContext.js';
 import Spectrum1DSetting from './Spectrum1DSetting.js';
 import Spectrum2DSetting from './Spectrum2DSetting.js';
 
-const style = css`
+const Container = styled.div`
   position: fixed;
   z-index: 999999999;
   width: 100%;
@@ -101,7 +100,7 @@ function SpectrumSetting({ position, data, onClose }: SpectrumSettingProps) {
   const { x, y } = position;
 
   return (
-    <div css={style} onClick={clickHandler}>
+    <Container onClick={clickHandler}>
       <div
         className="inner-container"
         style={{
@@ -117,7 +116,7 @@ function SpectrumSetting({ position, data, onClose }: SpectrumSettingProps) {
           <Spectrum1DSetting onSubmit={submitHandler} data={data} />
         )}
       </div>
-    </div>
+    </Container>
   );
 }
 

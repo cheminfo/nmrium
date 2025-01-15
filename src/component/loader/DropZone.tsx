@@ -1,5 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import type { ReactNode } from 'react';
 import { useCallback, useState } from 'react';
 import * as dropzone from 'react-dropzone';
@@ -12,7 +11,7 @@ import { MetaImportationModal } from '../modal/metaImportation/MetaImportationMo
 
 import { useLoadFiles } from './useLoadFiles.js';
 
-const style = css`
+const DropContainer = styled.div`
   height: 100%;
   background-color: #b5b5b599;
   position: absolute;
@@ -22,14 +21,6 @@ const style = css`
   flex-flow: column;
   z-index: 8;
 
-  p {
-    color: white;
-    background-color: rgb(104 104 104);
-    padding: 1.5%;
-    border-radius: 30px;
-    margin: 0;
-  }
-
   svg {
     stroke-width: 0;
     font-size: 3rem !important;
@@ -37,7 +28,15 @@ const style = css`
   }
 `;
 
-const containerStyle = css`
+const DropText = styled.p`
+  color: white;
+  background-color: rgb(104 104 104);
+  padding: 1.5%;
+  border-radius: 30px;
+  margin: 0;
+`;
+
+const Container = styled.div`
   display: flex;
   height: 100%;
 `;
@@ -83,11 +82,10 @@ export default function DropZone(props: DropZoneProps) {
           onCloseDialog={() => openMetaInformationDialog(null)}
         />
       )}
-      <div {...getRootProps()} role="none" css={containerStyle}>
+      <Container {...getRootProps()} role="none">
         <input {...getInputProps()} />
         {isDragActive && (
-          <div
-            css={style}
+          <DropContainer
             style={{
               width: `${width}px`,
               height: `${height}px`,
@@ -96,11 +94,11 @@ export default function DropZone(props: DropZoneProps) {
             }}
           >
             <FaUpload />
-            <p>Drop your files here</p>
-          </div>
+            <DropText>Drop your files here</DropText>
+          </DropContainer>
         )}
         {props.children}
-      </div>
+      </Container>
     </LoaderProvider>
   );
 }

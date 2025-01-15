@@ -1,11 +1,10 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 
 import { useChartData } from '../context/ChartContext.js';
 
 import { useScale2DX, useScale2DY } from './utilities/scale.js';
 
-const lineStyle = css`
+const Line = styled.line`
   stroke: green;
   stroke-width: 2;
   opacity: 0.5;
@@ -26,8 +25,7 @@ function SignalDeltaLine({ delta, axis, show }: SignalDeltaLineProps) {
 
   if (axis === 'X') {
     return (
-      <line
-        css={lineStyle}
+      <Line
         key={`signalLine_${delta}_X`}
         x1={scaleX(delta)}
         x2={scaleX(delta)}
@@ -39,8 +37,7 @@ function SignalDeltaLine({ delta, axis, show }: SignalDeltaLineProps) {
 
   if (axis === 'Y') {
     return (
-      <line
-        css={lineStyle}
+      <Line
         key={`signalLine_${delta}_Y`}
         x1={scaleX(xDomain[0])}
         x2={scaleX(xDomain[1])}

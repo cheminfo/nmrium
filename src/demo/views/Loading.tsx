@@ -1,7 +1,6 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 
-const style = css`
+const LoadingContainer = styled.div`
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -39,12 +38,12 @@ const style = css`
 
 export function Loading() {
   return (
-    <div css={style}>
+    <LoadingContainer>
       <span id="title">
         <strong>NMR</strong>
         <strong>ium</strong> loading ...
       </span>
       <div id="loader" />
-    </div>
+    </LoadingContainer>
   );
 }

@@ -1,5 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import type { FromTo } from 'cheminfo-types';
 import type { Signal2D } from 'nmr-processing';
 import { useCallback, useEffect, useState } from 'react';
@@ -9,21 +8,11 @@ import Button from '../../../../elements/Button.js';
 import Input from '../../../../elements/Input.js';
 import Label from '../../../../elements/Label.js';
 
-const editPathLengthsStyles = css`
+const Container = styled.div`
   width: 100%;
   height: 100%;
   margin-top: 10px;
   text-align: center;
-
-  .input-container {
-    width: 100%;
-    margin-top: 5px;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
 
   button {
     flex: 2;
@@ -38,11 +27,20 @@ const editPathLengthsStyles = css`
     color: white;
     background-color: gray;
   }
+`;
 
-  .warning {
-    margin-top: 5px;
-    color: red;
-  }
+const InputContainer = styled.div`
+  width: 100%;
+  margin-top: 5px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+const WarningText = styled.span`
+  margin-top: 5px;
+  color: red;
 `;
 
 interface InputProps {
@@ -85,9 +83,9 @@ function EditPathLength({ signal, experimentType, onEdit }: InputProps) {
   }, [to, from]);
 
   return (
-    <div css={editPathLengthsStyles}>
+    <Container>
       <p>Setting of the minimum and maximum path length (J coupling).</p>
-      <div className="input-container">
+      <InputContainer>
         <Label
           title="Min:"
           style={{
@@ -125,17 +123,17 @@ function EditPathLength({ signal, experimentType, onEdit }: InputProps) {
             }}
           />
         </Label>
-      </div>
+      </InputContainer>
       {isError ? (
-        <p className="warning">
+        <WarningText>
           Minimum must not be 0 or higher than the maximum value.{' '}
-        </p>
+        </WarningText>
       ) : (
         <Button type="button" onClick={handleOnEdit} disabled={isError}>
           Set
         </Button>
       )}
-    </div>
+    </Container>
   );
 }
 

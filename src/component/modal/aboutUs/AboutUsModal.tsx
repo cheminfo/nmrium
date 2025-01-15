@@ -1,32 +1,21 @@
-/** @jsxImportSource @emotion/react */
-import { Dialog, DialogBody } from '@blueprintjs/core';
-import { css } from '@emotion/react';
+import { Dialog } from '@blueprintjs/core';
+import styled from '@emotion/styled';
 import { SvgLogoNmrium } from 'cheminfo-font';
 import { Toolbar, useOnOff } from 'react-science/ui';
 
 import versionInfo from '../../../versionInfo.js';
 import Logo from '../../elements/Logo.js';
+import { StyledDialogBody } from '../../elements/StyledDialogBody.js';
 
 import AboutUsZakodium from './AboutUsZakodium.js';
 
-const styles = css`
+const CustomDialogBody = styled(StyledDialogBody)`
   display: flex;
   flex-direction: column;
   user-select: none;
-  background-color: white;
 
   button:focus {
     outline: none;
-  }
-
-  .container {
-    padding: 20px;
-  }
-
-  .center-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
   }
 
   ul {
@@ -62,13 +51,22 @@ const styles = css`
   a:focus {
     color: #00bcd4;
   }
+`;
 
-  .separator {
-    border-bottom: 1px solid gray;
-    width: 15px;
-    height: 1px;
-    margin: 10px 0;
-  }
+const InfoBlock = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+const Container = styled.div`
+  padding: 20px;
+`;
+
+const Separator = styled.span`
+  border-bottom: 1px solid gray;
+  width: 15px;
+  height: 1px;
+  margin: 10px 0;
 `;
 
 function AboutUsModal() {
@@ -91,29 +89,29 @@ function AboutUsModal() {
         }}
         title="About NMRium"
       >
-        <DialogBody css={styles}>
-          <div className="container">
-            <div className="center-container">
+        <CustomDialogBody>
+          <Container>
+            <InfoBlock>
               <Logo width={160} height={50} />
               Version <VersionInfo />
-              <span className="separator" />
+              <Separator />
               <a href="https://git.nmrium.org" target="_blank" rel="noreferrer">
                 GitHub ( https://git.nmrium.org )
               </a>
-            </div>
-            <div className="center-container">
-              <span className="separator" />
-            </div>
+            </InfoBlock>
+            <InfoBlock>
+              <Separator />
+            </InfoBlock>
             <span className="content">
               This project is developed by Zakodium Sàrl (Switzerland), the
               University of Cologne (Germany), Johannes Gutenberg University
               Mainz (Germany) and Universidad del Valle (Colombia).
             </span>
-            <div className="center-container">
-              <span className="separator" />
+            <InfoBlock>
+              <Separator />
               <span className="title">Funding is provided by</span>
-              <span className="separator" />
-            </div>
+              <Separator />
+            </InfoBlock>
             <div className="content">
               <ul>
                 <li>
@@ -133,9 +131,9 @@ function AboutUsModal() {
                 </li>
               </ul>
             </div>
-            <span className="separator" />
-          </div>
-        </DialogBody>
+            <Separator />
+          </Container>
+        </CustomDialogBody>
       </Dialog>
     </>
   );

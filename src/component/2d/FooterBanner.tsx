@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { Fragment, useMemo } from 'react';
 import { MF } from 'react-mf';
@@ -12,53 +10,13 @@ import {
 import { useBrushTracker } from '../EventsTrackers/BrushTracker.js';
 import { useMouseTracker } from '../EventsTrackers/MouseTracker.js';
 import { useChartData } from '../context/ChartContext.js';
+import { FooterContainer, InfoItem } from '../elements/Footer.js';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
 import { useFormatNumberByNucleus } from '../hooks/useFormatNumberByNucleus.js';
 import { options } from '../toolbar/ToolTypes.js';
 
 import { getLayoutID, LAYOUT } from './utilities/DimensionLayout.js';
 import { get1DYScale, get2DXScale, get2DYScale } from './utilities/scale.js';
-
-const styles = css`
-  display: flex;
-  align-items: center;
-  user-select: none;
-  background-color: #f7f7f7;
-  height: 30px;
-  padding: 6px;
-  color: #8d0018;
-  position: absolute;
-  width: 100%;
-  bottom: 0;
-  container-type: inline-size;
-
-  @container (max-width:600px) {
-    .small-width-none {
-      display: none !important;
-    }
-  }
-
-  div {
-    margin: 0 10px;
-    display: inline-block;
-
-    .label {
-      font-size: 12px;
-      color: #4d4d4d;
-      font-weight: bold;
-    }
-
-    .value {
-      font-weight: bold;
-      font-size: 14px;
-    }
-
-    .unit {
-      font-weight: bold;
-      font-size: 10px;
-    }
-  }
-`;
 
 function FooterBanner({ layout, data1D }) {
   const position = useMouseTracker();
@@ -154,7 +112,7 @@ function FooterBanner({ layout, data1D }) {
     position.y > height - margin.bottom ||
     !data1D
   ) {
-    return <div css={styles} />;
+    return <FooterContainer />;
   }
   const getRealYValue = (coordinate) => {
     let index: number | null = null;
@@ -272,36 +230,36 @@ function FooterBanner({ layout, data1D }) {
   const isBrushing = step === 'brushing' && mouseButton === 'main';
 
   return (
-    <div css={styles}>
-      <div>
-        <span className="label">{getLabel('F2', 'X', nuclei[0])} :</span>
-        <span className="value">{formatX(getXValue())}</span>
-        <span className="unit">ppm</span>
-      </div>
+    <FooterContainer>
+      <InfoItem>
+        <InfoItem.Label>{getLabel('F2', 'X', nuclei[0])} :</InfoItem.Label>
+        <InfoItem.Value>{formatX(getXValue())}</InfoItem.Value>
+        <InfoItem.Unit>ppm</InfoItem.Unit>
+      </InfoItem>
 
-      <div>
-        <span className="label">{getLabel('F1', 'Y', nuclei[1])} :</span>
-        <span className="value">{formatY(getYValue())}</span>
-        <span className="unit">ppm</span>
-      </div>
-      <div className="small-width-none">
-        <span className="label">Intensity :</span>
-        <span className="value">{getZValue()}</span>
-      </div>
+      <InfoItem>
+        <InfoItem.Label>{getLabel('F1', 'Y', nuclei[1])} :</InfoItem.Label>
+        <InfoItem.Value>{formatY(getYValue())}</InfoItem.Value>
+        <InfoItem.Unit>ppm</InfoItem.Unit>
+      </InfoItem>
+      <InfoItem autoHide>
+        <InfoItem.Label>Intensity :</InfoItem.Label>
+        <InfoItem.Value>{getZValue()}</InfoItem.Value>
+      </InfoItem>
       {isBrushing && (
-        <div className="small-width-none">
-          <span className="label"> Δppm :</span>
-          <span className="value">{getDeltaX()}</span>
-        </div>
+        <InfoItem autoHide>
+          <InfoItem.Label> Δppm :</InfoItem.Label>
+          <InfoItem.Value>{getDeltaX()}</InfoItem.Value>
+        </InfoItem>
       )}
 
       {isBrushing && (
-        <div className="small-width-none">
-          <span className="label"> ratio :</span>
-          <span className="value">{getRation()}%</span>
-        </div>
+        <InfoItem autoHide>
+          <InfoItem.Label> ratio :</InfoItem.Label>
+          <InfoItem.Value>{getRation()}%</InfoItem.Value>
+        </InfoItem>
       )}
-    </div>
+    </FooterContainer>
   );
 }
 

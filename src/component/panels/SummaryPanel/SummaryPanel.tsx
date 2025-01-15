@@ -1,5 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import type {
   Correlation,
   Link,
@@ -51,38 +50,37 @@ export type OnEditCorrelationCallback = (
   options?: CorrelationOptions,
 ) => void;
 
-const panelStyle = css`
+const Container = styled.div`
   display: flex;
   flex-direction: column;
   text-align: center;
   height: 100%;
   width: 100%;
+`;
 
-  .extra-header-content {
-    display: flex;
-    flex: 1;
-    justify-content: center;
+const InnerHeader = styled.div`
+  display: flex;
+  flex: 1;
+  justify-content: center;
+`;
+const OverviewContainer = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+`;
 
-    .overview-container {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      margin-left: 10px;
-    }
+const SelectionContainer = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-right: 2px;
+  white-space: nowrap;
+`;
 
-    .table-view-selection {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      margin-right: 2px;
-      white-space: nowrap;
-
-      label {
-        font-size: 13px;
-      }
-    }
-  }
+const SelectionLabel = styled.label`
+  font-size: 13px;
 `;
 
 const EditLinkDialog = withDialog(EditLinkModal);
@@ -474,7 +472,7 @@ function SummaryPanel() {
 
   const total = correlationsData ? correlationsData.values.length : 0;
   return (
-    <div css={panelStyle}>
+    <Container>
       <EditLinkDialog onEdit={editCorrelationTableCellHandler} />
       <SetMolecularFormulaModal
         isOpen={dialog.molecularFormula}
@@ -506,13 +504,13 @@ function SummaryPanel() {
           },
         ]}
       >
-        <div className="extra-header-content">
-          <div className="overview-container">
+        <InnerHeader>
+          <OverviewContainer>
             <Overview correlationsData={correlationsData} />
-          </div>
-          <div className="table-view-selection">
+          </OverviewContainer>
+          <SelectionContainer>
             <span>
-              <label>View:</label>
+              <SelectionLabel>View:</SelectionLabel>
               <Select
                 onChange={(selection) => {
                   setSelectedAdditionalColumnsAtomType(selection);
@@ -532,8 +530,8 @@ function SummaryPanel() {
                 }}
               />
             </span>
-          </div>
-        </div>
+          </SelectionContainer>
+        </InnerHeader>
       </DefaultPanelHeader>
       <CorrelationTable
         correlationsData={correlationsData}
@@ -545,7 +543,7 @@ function SummaryPanel() {
         showProtonsAsRows={showProtonsAsRows}
         spectraData={spectraData}
       />
-    </div>
+    </Container>
   );
 }
 
