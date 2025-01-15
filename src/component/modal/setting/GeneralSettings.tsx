@@ -1,10 +1,4 @@
-import {
-  Classes,
-  Dialog,
-  DialogFooter,
-  Tab,
-  Tabs as BaseTabs,
-} from '@blueprintjs/core';
+import { Classes, Dialog, DialogFooter, Tab, Tabs } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
 import type { Workspace } from 'nmr-load-save';
@@ -26,8 +20,8 @@ import {
 } from '../../context/PreferencesContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import ActionButtons from '../../elements/ActionButtons.js';
-import { DialogBody } from '../../elements/DialogBody.js';
 import Label from '../../elements/Label.js';
+import { StyledDialogBody } from '../../elements/StyledDialogBody.js';
 import type { DropDownListItem } from '../../elements/dropDownButton/DropDownButton.js';
 import DropDownButton from '../../elements/dropDownButton/DropDownButton.js';
 import { useSaveSettings } from '../../hooks/useSaveSettings.js';
@@ -59,7 +53,7 @@ export const Section = styled.div`
   padding: 6px 2px;
 `;
 
-const Tabs = styled(BaseTabs)`
+const StyledTabs = styled(Tabs)`
   height: 100%;
 
   div[role='tablist'] {
@@ -244,9 +238,9 @@ function InnerGeneralSettingsModal(props: InnerGeneralSettingsModalProps) {
             />
           </div>
         </div>
-        <DialogBody>
+        <StyledDialogBody>
           <div style={{ height }}>
-            <Tabs vertical>
+            <StyledTabs vertical>
               <Tab title="General" id="general" panel={<GeneralTabContent />} />
 
               <Tab title="Nuclei" id="nuclei" panel={<NucleiTabContent />} />
@@ -302,9 +296,9 @@ function InnerGeneralSettingsModal(props: InnerGeneralSettingsModalProps) {
                 id="export-options"
                 panel={<ExportTabContent />}
               />
-            </Tabs>
+            </StyledTabs>
           </div>
-        </DialogBody>
+        </StyledDialogBody>
         <DialogFooter>
           <DialogActionButtons onCloseDialog={onCloseDialog} onSave={onSave} />
         </DialogFooter>

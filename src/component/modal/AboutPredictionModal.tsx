@@ -3,9 +3,9 @@ import styled from '@emotion/styled';
 import { FaInfo } from 'react-icons/fa';
 import { Toolbar, useOnOff } from 'react-science/ui';
 
-import { DialogBody as BasedDialogBody } from '../elements/DialogBody.js';
+import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 
-const DialogBody = styled(BasedDialogBody)`
+const DialogBody = styled(StyledDialogBody)`
   ul {
     list-style-type: disc;
     margin-left: 25px;

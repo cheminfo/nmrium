@@ -10,10 +10,10 @@ import { Controller, useForm } from 'react-hook-form';
 import { DataExportOptions } from '../../data/SpectraManager.js';
 import { useChartData } from '../context/ChartContext.js';
 import ActionButtons from '../elements/ActionButtons.js';
-import { DialogBody } from '../elements/DialogBody.js';
 import { Input2Controller } from '../elements/Input2Controller.js';
 import type { LabelStyle } from '../elements/Label.js';
 import Label from '../elements/Label.js';
+import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 import { useExport } from '../hooks/useExport.js';
 
 const INITIAL_VALUE = {
@@ -76,7 +76,7 @@ function InnerSaveAsModal(props: InnerSaveAsModalProps) {
       onClose={onCloseDialog}
       style={{ width: 600 }}
     >
-      <DialogBody>
+      <StyledDialogBody>
         <Label style={labelStyle} title="Name">
           <Input2Controller
             name="name"
@@ -122,7 +122,7 @@ function InnerSaveAsModal(props: InnerSaveAsModalProps) {
             }}
           />
         </Label>
-      </DialogBody>
+      </StyledDialogBody>
       <DialogFooter>
         <ActionButtons
           style={{ flexDirection: 'row-reverse', margin: 0 }}

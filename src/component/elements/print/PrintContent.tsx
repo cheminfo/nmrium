@@ -12,11 +12,11 @@ import { createPortal } from 'react-dom';
 import { Controller, useForm } from 'react-hook-form';
 
 import ActionButtons from '../ActionButtons.js';
-import { DialogBody } from '../DialogBody.js';
 import type { LabelStyle } from '../Label.js';
 import Label from '../Label.js';
 import { NumberInput2Controller } from '../NumberInput2Controller.js';
 import { Select2Controller } from '../Select2Controller.js';
+import { StyledDialogBody } from '../StyledDialogBody.js';
 
 import { PrintProvider } from './PrintProvider.js';
 import { getSizesList, pageSizes } from './pageSize.js';
@@ -349,7 +349,7 @@ function InnerPrintOptionsModal(props: InnerPrintOptionsModalProps) {
       onClose={onCloseDialog}
       style={{ width: 600 }}
     >
-      <DialogBody>
+      <StyledDialogBody>
         <Label style={labelStyle} title="Size">
           <Select2Controller control={control} name="size" items={sizesList} />
         </Label>
@@ -382,7 +382,7 @@ function InnerPrintOptionsModal(props: InnerPrintOptionsModalProps) {
             rightElement={<Tag>cm</Tag>}
           />
         </Label>
-      </DialogBody>
+      </StyledDialogBody>
       <DialogFooter>
         <ActionButtons
           style={{ flexDirection: 'row-reverse', margin: 0 }}

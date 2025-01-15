@@ -2,7 +2,7 @@ import { Button, Dialog, DialogFooter } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { FaCopy } from 'react-icons/fa';
 
-import { DialogBody } from '../elements/DialogBody.js';
+import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 
 const Body = styled.div`
   padding: 5px;
@@ -30,9 +30,9 @@ function InnerCopyClipboardModal(props: Required<CopyClipboardModalProps>) {
   const { text, title, onClose, onCopyClick } = props;
   return (
     <Dialog isOpen title={title} onClose={onClose}>
-      <DialogBody>
+      <StyledDialogBody>
         <Body dangerouslySetInnerHTML={{ __html: text }} />
-      </DialogBody>
+      </StyledDialogBody>
       <DialogFooter>
         <Button
           onClick={() => onCopyClick(text)}

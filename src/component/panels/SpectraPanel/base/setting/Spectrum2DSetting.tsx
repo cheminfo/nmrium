@@ -1,4 +1,4 @@
-import { RangeSlider as BaseRangeSlider } from '@blueprintjs/core';
+import { RangeSlider } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import debounce from 'lodash/debounce.js';
 import { useMemo } from 'react';
@@ -19,7 +19,7 @@ import { colorToHexWithAlpha } from '../../../../utility/colorToHexWithAlpha.js'
 
 import Spectrum2DHistogram from './Spectrum2DHistogram.js';
 
-const RangeSlider = styled(BaseRangeSlider)<{
+const StyledRangeSlider = styled(RangeSlider)<{
   progressColor: CSSProperties['backgroundColor'];
 }>`
   width: 90%;
@@ -113,7 +113,7 @@ function Settings(props: SettingsProps) {
             const { value, onChange } = field;
 
             return (
-              <RangeSlider
+              <StyledRangeSlider
                 min={0}
                 max={100}
                 stepSize={1}

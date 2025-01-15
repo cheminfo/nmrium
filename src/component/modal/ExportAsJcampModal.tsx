@@ -6,10 +6,10 @@ import type { DataExportStage } from '../../data/SpectraManager.js';
 import { exportAsJcamp } from '../../data/SpectraManager.js';
 import { useToaster } from '../context/ToasterContext.js';
 import ActionButtons from '../elements/ActionButtons.js';
-import { DialogBody } from '../elements/DialogBody.js';
 import type { LabelStyle } from '../elements/Label.js';
 import Label from '../elements/Label.js';
 import { Select2 } from '../elements/Select2.js';
+import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 import useSpectrum from '../hooks/useSpectrum.js';
 
 interface ExportDataTypeItem {
@@ -125,7 +125,7 @@ function InnerExportAsJcampModal(props: Required<InnerExportAsJCAMPProps>) {
       onClose={closeDialog}
       title="Export as JCAMP"
     >
-      <DialogBody padding="1.5em 3em">
+      <StyledDialogBody padding="1.5em 3em">
         <Label title="Data" style={labelStyle}>
           <Select2
             defaultSelectedItem={exportDataTypes[0]}
@@ -133,7 +133,7 @@ function InnerExportAsJcampModal(props: Required<InnerExportAsJCAMPProps>) {
             items={exportDataTypes}
           />
         </Label>
-      </DialogBody>
+      </StyledDialogBody>
       <DialogFooter>
         <ActionButtons
           style={{ flexDirection: 'row-reverse', margin: 0 }}

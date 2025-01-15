@@ -7,12 +7,12 @@ import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
 import { usePreferences } from '../../context/PreferencesContext.js';
-import { DialogBody as BaseDialogBody } from '../../elements/DialogBody.js';
 import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
+import { StyledDialogBody } from '../../elements/StyledDialogBody.js';
 
 import SelectMolecule from './SelectMolecule.js';
 
-const DialogBody = styled(BaseDialogBody)`
+const DialogBody = styled(StyledDialogBody)`
   [role='tablist'] {
     border-bottom: 1px solid #f0f0f0;
   }

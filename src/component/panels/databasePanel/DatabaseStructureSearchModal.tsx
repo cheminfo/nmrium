@@ -1,7 +1,7 @@
 import { Dialog } from '@blueprintjs/core';
 import { StructureEditor } from 'react-ocl/full';
 
-import { DialogBody } from '../../elements/DialogBody.js';
+import { StyledDialogBody } from '../../elements/StyledDialogBody.js';
 
 interface DatabaseStructureSearchModalProps {
   onChange: (idCode: string) => void;
@@ -25,14 +25,14 @@ export function DatabaseStructureSearchModal({
       style={{ width: 720 }}
       title="Search by structure"
     >
-      <DialogBody>
+      <StyledDialogBody>
         <StructureEditor
           initialIDCode={idCode}
           svgMenu
           fragment
           onChange={(molFile, molecule, idCode) => onChange(idCode)}
         />
-      </DialogBody>
+      </StyledDialogBody>
     </Dialog>
   );
 }

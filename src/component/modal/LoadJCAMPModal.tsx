@@ -6,10 +6,10 @@ import * as Yup from 'yup';
 
 import { useDispatch } from '../context/DispatchContext.js';
 import { useToaster } from '../context/ToasterContext.js';
-import { DialogBody } from '../elements/DialogBody.js';
 import { Input2Controller } from '../elements/Input2Controller.js';
 import type { LabelStyle } from '../elements/Label.js';
 import Label from '../elements/Label.js';
+import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 
 const allowedExtensions = new Set(['dx', 'jdx', 'jcamp']);
 
@@ -89,7 +89,7 @@ function InnerLoadJCAMPModal({ onCloseDialog }: InnerLoadJCAMPModalProps) {
       title="Load JCAMP"
       style={{ minWidth: 400 }}
     >
-      <DialogBody>
+      <StyledDialogBody>
         <Label title="URL" style={labelStyle}>
           <Input2Controller
             name="url"
@@ -99,7 +99,7 @@ function InnerLoadJCAMPModal({ onCloseDialog }: InnerLoadJCAMPModalProps) {
             enableErrorMessage
           />
         </Label>
-      </DialogBody>
+      </StyledDialogBody>
       <DialogFooter>
         <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
           <Button

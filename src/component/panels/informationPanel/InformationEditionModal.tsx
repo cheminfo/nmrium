@@ -8,10 +8,10 @@ import { Button } from 'react-science/ui';
 import { array, object, string } from 'yup';
 
 import { useDispatch } from '../../context/DispatchContext.js';
-import { DialogBody } from '../../elements/DialogBody.js';
 import { Input2Controller } from '../../elements/Input2Controller.js';
 import type { Column } from '../../elements/ReactTable/ReactTable.js';
 import ReactTable from '../../elements/ReactTable/ReactTable.js';
+import { StyledDialogBody } from '../../elements/StyledDialogBody.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import { checkUniqueByKey } from '../../utility/checkUniqueByKey.js';
 
@@ -195,7 +195,7 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
   const values = watch('metaInfo');
   return (
     <>
-      <DialogBody>
+      <StyledDialogBody>
         <Container>
           <div style={{ padding: '5px 0', display: 'flex' }}>
             <Button
@@ -223,7 +223,7 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
             }}
           />
         </Container>
-      </DialogBody>
+      </StyledDialogBody>
       <DialogFooter>
         <Button
           intent="success"
