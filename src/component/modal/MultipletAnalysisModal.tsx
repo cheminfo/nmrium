@@ -7,9 +7,9 @@ import { useEffect, useState } from 'react';
 import { Axis, LineSeries, Plot } from 'react-plot';
 
 import { isSpectrum2D } from '../../data/data2d/Spectrum2D/index.js';
-import { DialogBody as BaseDialogBody } from '../elements/DialogBody.js';
+import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 
-const DialogBody = styled(BaseDialogBody)`
+const DialogBody = styled(StyledDialogBody)`
   button:focus {
     outline: none;
   }

@@ -3,9 +3,9 @@ import styled from '@emotion/styled';
 import { FaInfo } from 'react-icons/fa';
 import { Toolbar, useOnOff } from 'react-science/ui';
 
-import { DialogBody as BaseDialogBody } from '../elements/DialogBody.js';
+import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 
-const DialogBody = styled(BaseDialogBody)`
+const DialogBody = styled(StyledDialogBody)`
   background-color: white;
 
   ul {

@@ -1,7 +1,7 @@
 import type { MenuItemProps } from '@blueprintjs/core';
 import { Menu, MenuItem } from '@blueprintjs/core';
 import type {
-  ToolbarPopoverItemProps as BaseToolbarPopoverItemProps,
+  ToolbarPopoverItemProps,
   ToolbarItemProps,
 } from 'react-science/ui';
 import { Toolbar } from 'react-science/ui';
@@ -10,11 +10,8 @@ export interface ToolbarPopoverMenuItem<T = object> extends MenuItemProps {
   data?: T;
 }
 
-interface ToolbarPopoverItemProps<T = object>
-  extends Omit<
-      BaseToolbarPopoverItemProps,
-      'onClick' | 'content' | 'itemProps'
-    >,
+interface CustomToolbarPopoverItemProps<T = object>
+  extends Omit<ToolbarPopoverItemProps, 'onClick' | 'content' | 'itemProps'>,
     Pick<
       ToolbarItemProps,
       'tooltip' | 'icon' | 'tooltipProps' | 'active' | 'id'
@@ -25,7 +22,7 @@ interface ToolbarPopoverItemProps<T = object>
 }
 
 export function ToolbarPopoverItem<T = object>(
-  props: ToolbarPopoverItemProps<T>,
+  props: CustomToolbarPopoverItemProps<T>,
 ) {
   const {
     options,

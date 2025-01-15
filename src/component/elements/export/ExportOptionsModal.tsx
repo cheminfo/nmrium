@@ -18,11 +18,11 @@ import { Controller, useForm } from 'react-hook-form';
 
 import ActionButtons from '../ActionButtons.js';
 import { CheckController } from '../CheckController.js';
-import { DialogBody } from '../DialogBody.js';
 import type { LabelStyle } from '../Label.js';
 import Label from '../Label.js';
 import { NumberInput2Controller } from '../NumberInput2Controller.js';
 import { Select2Controller } from '../Select2Controller.js';
+import { StyledDialogBody } from '../StyledDialogBody.js';
 import type { SizeItem } from '../print/pageSize.js';
 import { getSizesList } from '../print/pageSize.js';
 
@@ -158,7 +158,7 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
       canEscapeKeyClose
       autoFocus
     >
-      <DialogBody>
+      <StyledDialogBody>
         <div
           style={{
             display: 'flex',
@@ -292,7 +292,7 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
             placeholder="DPI"
           />
         </Label>
-      </DialogBody>
+      </StyledDialogBody>
       <DialogFooter>
         <div
           style={{

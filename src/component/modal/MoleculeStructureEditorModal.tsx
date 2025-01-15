@@ -9,7 +9,7 @@ import { useOnOff } from 'react-science/ui';
 import type { StateMoleculeExtended } from '../../data/molecules/Molecule.js';
 import { useDispatch } from '../context/DispatchContext.js';
 import ActionButtons from '../elements/ActionButtons.js';
-import { DialogBody } from '../elements/DialogBody.js';
+import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 
 interface MoleculeStructureEditorModalProps {
   onClose?: (element?: string) => void;
@@ -105,14 +105,14 @@ function MoleculeStructureEditorModal(
 
   return (
     <Dialog isOpen={isOpen} onClose={handleClose} style={{ width: 710 }}>
-      <DialogBody>
+      <StyledDialogBody>
         <StructureEditor
           initialMolfile={initialEnhancedMolfile?.molfile}
           svgMenu
           fragment={false}
           onChange={cb}
         />
-      </DialogBody>
+      </StyledDialogBody>
       <DialogFooter>
         <ActionButtons
           style={{ flexDirection: 'row-reverse', margin: 0 }}

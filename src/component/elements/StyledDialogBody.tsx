@@ -1,8 +1,8 @@
-import { DialogBody as BaseDialogBody } from '@blueprintjs/core';
+import { DialogBody } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import type { CSSProperties } from 'react';
 
-export const DialogBody = styled(BaseDialogBody)<
+export const StyledDialogBody = styled(DialogBody)<
   Pick<CSSProperties, 'padding' | 'backgroundColor'>
 >`
   padding: ${({ padding = '15px' }) => padding};

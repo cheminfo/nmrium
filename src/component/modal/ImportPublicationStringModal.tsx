@@ -8,10 +8,10 @@ import { Controller, useForm } from 'react-hook-form';
 
 import { useDispatch } from '../context/DispatchContext.js';
 import { useToaster } from '../context/ToasterContext.js';
-import { DialogBody } from '../elements/DialogBody.js';
 import { GroupPane } from '../elements/GroupPane.js';
 import type { Column } from '../elements/ReactTable/ReactTable.js';
 import ReactTable from '../elements/ReactTable/ReactTable.js';
+import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 
 interface InnerImportPublicationStringModalProps {
   onClose: () => void;
@@ -144,7 +144,7 @@ function InnerImportPublicationStringModal(
       onClose={onClose}
       style={{ width: 800, height: 500 }}
     >
-      <DialogBody>
+      <StyledDialogBody>
         <div
           style={{
             display: 'flex',
@@ -188,7 +188,7 @@ function InnerImportPublicationStringModal(
             />
           </GroupPane>
         </div>
-      </DialogBody>
+      </StyledDialogBody>
       <DialogFooter>
         <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
           <Button

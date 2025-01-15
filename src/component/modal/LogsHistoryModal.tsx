@@ -9,9 +9,9 @@ import { useOnOff } from 'react-science/ui';
 import { useLogger } from '../context/LoggerContext.js';
 import Button from '../elements/Button.js';
 import { ColumnWrapper } from '../elements/ColumnWrapper.js';
-import { DialogBody } from '../elements/DialogBody.js';
 import type { Column } from '../elements/ReactTable/ReactTable.js';
 import ReactTable from '../elements/ReactTable/ReactTable.js';
+import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 
 const logsDataFormat = new Intl.DateTimeFormat('default', {
   hour: 'numeric',
@@ -170,14 +170,14 @@ export function LogsHistoryModal(props: LogsHistoryModalProps) {
         title="Logs history"
         style={{ width: '50vw', height: '50vh' }}
       >
-        <DialogBody>
+        <StyledDialogBody>
           <ReactTable
             columns={COLUMNS}
             data={sortedLogs}
             emptyDataRowText="No Logs"
             rowStyle={handleRowStyle}
           />
-        </DialogBody>
+        </StyledDialogBody>
         <DialogFooter>
           <Button.Danger onClick={() => logger.clear()} fill="outline">
             <div style={{ display: 'flex', alignItems: 'center' }}>

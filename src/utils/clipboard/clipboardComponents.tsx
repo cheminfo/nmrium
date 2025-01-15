@@ -4,7 +4,7 @@ import type { FormEvent } from 'react';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 import Button from '../../component/elements/Button.js';
-import { DialogBody } from '../../component/elements/DialogBody.js';
+import { StyledDialogBody } from '../../component/elements/StyledDialogBody.js';
 
 import type { ClipboardMode } from './types.js';
 
@@ -126,9 +126,9 @@ export function ClipboardFallbackModal(props: ClipboardFallbackProps) {
 
   return (
     <Dialog isOpen onClose={props.onDismiss} title={titles[props.mode]}>
-      <DialogBody padding="0px">
+      <StyledDialogBody padding="0px">
         <ClipboardFallback {...props} />
-      </DialogBody>
+      </StyledDialogBody>
     </Dialog>
   );
 }

@@ -14,12 +14,12 @@ import { useDispatch } from '../context/DispatchContext.js';
 import { useLogger } from '../context/LoggerContext.js';
 import { useToaster } from '../context/ToasterContext.js';
 import Button from '../elements/Button.js';
-import { DialogBody as BaseDialogBody } from '../elements/DialogBody.js';
+import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 import type { SettingsRef } from '../panels/extra/utilities/settingImperativeHandle.js';
 import PredictionPreferences from '../panels/predictionPanel/PredictionOptionsPanel.js';
 import { useStateWithLocalStorage } from '../utility/LocalStorage.js';
 
-const DialogBody = styled(BaseDialogBody)`
+const DialogBody = styled(StyledDialogBody)`
   .inner-content {
     flex: 1;
   }

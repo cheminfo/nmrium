@@ -7,9 +7,9 @@ import { FaSearchPlus } from 'react-icons/fa';
 import * as Yup from 'yup';
 
 import DefaultPathLengths from '../../../data/constants/DefaultPathLengths.js';
-import { DialogBody } from '../../elements/DialogBody.js';
 import type { DialogProps } from '../../elements/DialogManager.js';
 import { DraggableDialog } from '../../elements/DraggableDialog.js';
+import { StyledDialogBody } from '../../elements/StyledDialogBody.js';
 import type { ZoneData } from '../../panels/ZonesPanel/hooks/useMapZones.js';
 import { useZoneActions } from '../../panels/ZonesPanel/hooks/useZoneActions.js';
 
@@ -85,11 +85,11 @@ export function EditZoneModal(props: DialogProps<ZoneData>) {
       onClose={onCloseDialog}
       placement="top-right"
     >
-      <DialogBody>
+      <StyledDialogBody>
         <FormProvider {...methods}>
           <SignalsForm />
         </FormProvider>
-      </DialogBody>
+      </StyledDialogBody>
       <DialogFooter>
         <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
           <Button intent="success" onClick={() => handleSubmit(handleSave)()}>
