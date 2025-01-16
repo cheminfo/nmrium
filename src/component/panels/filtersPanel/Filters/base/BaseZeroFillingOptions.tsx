@@ -17,7 +17,7 @@ import type { BaseFilterOptionsPanelProps } from '../index.js';
 export function BaseZeroFillingOptions(
   props: BaseFilterOptionsPanelProps<ZeroFillingEntry>,
 ) {
-  const { filter, enableEdit = true, onCancel, onConfirm } = props;
+  const { filter, enableEdit = true, onCancel, onConfirm, onEditStart } = props;
 
   const {
     control,
@@ -44,7 +44,7 @@ export function BaseZeroFillingOptions(
 
   const nbPointsList = getZeroFillingNbPoints(filter);
   return (
-    <ReadOnly enabled={!enableEdit}>
+    <ReadOnly enabled={!enableEdit} onClick={onEditStart}>
       {enableEdit && (
         <StickyHeader>
           <HeaderContainer>
@@ -63,7 +63,6 @@ export function BaseZeroFillingOptions(
               onConfirm={handleConfirm}
               onCancel={handleCancel}
               disabledConfirm={disabledAction}
-              disabledCancel={disabledAction}
             />
           </HeaderContainer>
         </StickyHeader>

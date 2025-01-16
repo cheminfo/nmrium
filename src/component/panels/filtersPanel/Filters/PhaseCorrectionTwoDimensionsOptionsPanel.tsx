@@ -46,7 +46,7 @@ export default function PhaseCorrectionTwoDimensionsOptionsPanel(
     ExtractFilterEntry<'phaseCorrectionTwoDimensions'>
   >,
 ) {
-  const { enableEdit = true, onCancel, onConfirm } = props;
+  const { enableEdit = true, onCancel, onConfirm, onEditStart } = props;
 
   const filter = useFilter('phaseCorrectionTwoDimensions');
 
@@ -77,7 +77,7 @@ export default function PhaseCorrectionTwoDimensionsOptionsPanel(
   }
 
   return (
-    <ReadOnly enabled={!enableEdit}>
+    <ReadOnly enabled={!enableEdit} onClick={onEditStart}>
       {enableEdit && (
         <StickyHeader>
           <HeaderContainer>

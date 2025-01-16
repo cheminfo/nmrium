@@ -55,6 +55,7 @@ export interface BaseFilterOptionsPanelProps<T> {
   enableEdit: boolean;
   onConfirm: ButtonProps['onClick'];
   onCancel: ButtonProps['onClick'];
+  onEditStart: ButtonProps['onClick'];
 }
 
 export const formLabelStyle: LabelStyle = {

@@ -39,7 +39,8 @@ const MessageContainer = styled.div<{ show: boolean }>`
   gap: 8px;
 `;
 
-interface ReadOnlyProps {
+interface ReadOnlyProps
+  extends Pick<React.HTMLAttributes<HTMLDivElement>, 'onClick'> {
   enabled: boolean;
   children: ReactNode;
   message?: string;
@@ -52,10 +53,12 @@ export function ReadOnly(props: ReadOnlyProps) {
     children,
     message = 'Read only',
     messageDisplayDuration = 800,
+    onClick,
   } = props;
   const [showMessage, setShowMessage] = useState(false);
 
-  function handleOverlayClick() {
+  function handleOverlayClick(event) {
+    onClick?.(event);
     setShowMessage(true);
     setTimeout(() => setShowMessage(false), messageDisplayDuration);
   }

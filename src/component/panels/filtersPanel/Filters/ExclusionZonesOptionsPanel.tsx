@@ -37,7 +37,7 @@ const validationSchema = (min: number, max: number) =>
 export default function ExclusionZonesOptionsPanel(
   props: BaseFilterOptionsPanelProps<ExtractFilterEntry<'exclusionZones'>>,
 ) {
-  const { filter, enableEdit = true, onCancel, onConfirm } = props;
+  const { filter, enableEdit = true, onCancel, onConfirm, onEditStart } = props;
   const dispatch = useDispatch();
   const {
     originDomain: {
@@ -151,7 +151,7 @@ export default function ExclusionZonesOptionsPanel(
   }
 
   return (
-    <ReadOnly enabled={!enableEdit}>
+    <ReadOnly enabled={!enableEdit} onClick={onEditStart}>
       {enableEdit && (
         <StickyHeader>
           <HeaderContainer>
@@ -160,7 +160,6 @@ export default function ExclusionZonesOptionsPanel(
               onConfirm={handleConfirm}
               onCancel={handleCancel}
               disabledConfirm={!isDirty}
-              disabledCancel={!isDirty}
             />
           </HeaderContainer>
         </StickyHeader>

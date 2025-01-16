@@ -122,16 +122,15 @@ function FilterElements(props: FilterElementsProps) {
 
   return (
     <>
-      {!hideFilterRestoreButton && (
+      {!hideFilterRestoreButton && activeFilterID !== id && (
         <IconButton
-          intent={activeFilterID === id ? 'danger' : 'success'}
+          intent="success"
           tooltipProps={{
-            content:
-              activeFilterID === id ? 'Reapply all filters' : 'Edit filter',
+            content: 'Edit filter',
           }}
           minimal
           onClick={onFilterRestore}
-          icon={activeFilterID === id ? 'undo' : 'annotation'}
+          icon="annotation"
         />
       )}
       <IconButton
@@ -265,6 +264,7 @@ function FiltersInner(props: FiltersInnerProps) {
       {filtersList.map((filter, index) => {
         const { id, name, error, value } = filter;
         const FilterOptionsPanel = filterOptionPanels[filter.name];
+        const enableEdit = activeFilterID === id || filter.value === null;
         return (
           <Sections.Item
             key={id}
@@ -295,9 +295,10 @@ function FiltersInner(props: FiltersInnerProps) {
               <FilterOptionsPanel
                 filter={filter}
                 // Enable editing if the current filter is new or if it is the active filter
-                enableEdit={activeFilterID === id || filter.value === null}
+                enableEdit={enableEdit}
                 onCancel={handleClose}
                 onConfirm={handleClose}
+                onEditStart={() => filterSnapShotHandler(filter, index)}
               />
             ) : (
               <Sections.Body>
