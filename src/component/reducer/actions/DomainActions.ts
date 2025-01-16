@@ -10,6 +10,10 @@ import type {
 } from 'nmr-load-save';
 
 import { get1DDataXY } from '../../../data/data1d/Spectrum1D/get1DDataXY.js';
+import {
+  isFid1DSpectrum,
+  isFt1DSpectrum,
+} from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
 import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.js';
 import {
   isFid2DData,
@@ -21,10 +25,6 @@ import { addToBrushHistory } from '../helper/ZoomHistoryManager.js';
 import { getActiveSpectra } from '../helper/getActiveSpectra.js';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
 import type { ActionType } from '../types/ActionType.js';
-import {
-  isFid1DSpectrum,
-  isFt1DSpectrum,
-} from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
 
 type SetAxisDomainAction = ActionType<
   'SET_AXIS_DOMAIN',

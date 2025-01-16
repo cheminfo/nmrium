@@ -3,12 +3,12 @@ import type { NMRiumPanelPreferences } from 'nmr-load-save';
 import { useCallback, useMemo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
+import { GroupPane } from '../../../elements/GroupPane.js';
+import Label from '../../../elements/Label.js';
 import ReactTable from '../../../elements/ReactTable/ReactTable.js';
 import type { CustomColumn } from '../../../elements/ReactTable/utility/addCustomColumn.js';
 import { Select2 } from '../../../elements/Select2.js';
 import type { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
-import Label from '../../../elements/Label.js';
-import { GroupPane } from '../../../elements/GroupPane.js';
 
 const basePath = 'display.panels';
 interface ListItem {
