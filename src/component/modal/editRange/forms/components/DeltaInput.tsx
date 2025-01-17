@@ -1,7 +1,10 @@
 import { translateMultiplet } from 'nmr-processing';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 
 import { NumberInput2Controller } from '../../../../elements/NumberInput2Controller.js';
+import { useEvent } from '../../../../utility/Events.js';
+
+import { useEventFocusInput } from './SignalsContent.js';
 
 interface DeltaInputProps {
   signal: any;
@@ -16,8 +19,30 @@ export function DeltaInput({ signal, index }: DeltaInputProps) {
   const {
     control,
     formState: { errors },
+    setValue,
   } = useFormContext();
   const isNotValid = hasError(errors, index);
+  const { signalIndex } = useWatch();
+  const { focusSource, setFocusSource } = useEventFocusInput();
+
+  useEvent({
+    onClick: ({ xPPM, shiftKey }) => {
+      if (index === signalIndex && shiftKey && focusSource === 'delta') {
+        setValue(`signals.${index}.delta`, xPPM);
+      }
+    },
+    onBrushEnd: (options) => {
+      const {
+        range: [from, to],
+        shiftKey,
+      } = options;
+      if (index === signalIndex && shiftKey && focusSource === 'delta') {
+        const delta = (to - from) / 2 + from;
+        setValue(`signals.${index}.delta`, delta);
+      }
+    },
+  });
+
   return (
     <div
       style={{
@@ -42,6 +67,9 @@ export function DeltaInput({ signal, index }: DeltaInputProps) {
         noShadowBox
         buttonPosition="none"
         debounceTime={250}
+        onClick={() => {
+          setFocusSource('delta');
+        }}
       />
       <span>
         {signal.js

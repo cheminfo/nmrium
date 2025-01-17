@@ -17,6 +17,7 @@ import { Select2Controller } from '../../../../../elements/Select2Controller.js'
 import useSpectrum from '../../../../../hooks/useSpectrum.js';
 import { hasCouplingConstant } from '../../../../../panels/extra/utilities/MultiplicityUtilities.js';
 import { useEvent } from '../../../../../utility/Events.js';
+import { useEventFocusInput } from '../SignalsContent.js';
 
 const styles: Record<'input' | 'select' | 'column', CSSProperties> = {
   input: {
@@ -49,6 +50,8 @@ function getCouplingMinErrorMessage(errors, index) {
 }
 
 export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
+  const { focusSource, setFocusSource } = useEventFocusInput();
+
   const {
     setValue,
     control,
@@ -67,7 +70,8 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
       if (
         props.index === signalIndex &&
         typeof lastSelectedCouplingIndexRef.current === 'number' &&
-        shiftKey
+        shiftKey &&
+        focusSource === 'coupling'
       ) {
         setValue(
           getJCouplingKey(
@@ -89,7 +93,8 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
         props.index === signalIndex &&
         typeof lastSelectedCouplingIndexRef.current === 'number' &&
         shiftKey &&
-        isSpectrum1D(spectrum)
+        isSpectrum1D(spectrum) &&
+        focusSource === 'coupling'
       ) {
         const value = Math.abs(to - from) * spectrum.info.originFrequency;
 
@@ -218,6 +223,7 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
   );
 
   function selectRowHandler(index) {
+    setFocusSource('coupling');
     lastSelectedCouplingIndexRef.current = index;
   }
 

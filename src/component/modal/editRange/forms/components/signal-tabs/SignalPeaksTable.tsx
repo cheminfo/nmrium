@@ -15,6 +15,7 @@ import type { Column } from '../../../../../elements/ReactTable/ReactTable.js';
 import ReactTable from '../../../../../elements/ReactTable/ReactTable.js';
 import useSpectrum from '../../../../../hooks/useSpectrum.js';
 import { useEvent } from '../../../../../utility/Events.js';
+import { useEventFocusInput } from '../SignalsContent.js';
 
 const styles: Record<'input' | 'column', CSSProperties> = {
   input: {
@@ -41,6 +42,8 @@ function getPeakKey(signalIndex: number, peakIndex, key?: keyof Peak1D) {
 }
 
 export function SignalPeaksTable(props: SignalPeaksTableProps) {
+  const { focusSource, setFocusSource } = useEventFocusInput();
+
   const { setValue, control, setFocus } = useFormContext();
   const { signals, signalIndex } = useWatch();
   const signal = signals?.[signalIndex] || {};
@@ -57,7 +60,8 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
       if (
         props.index === signalIndex &&
         typeof lastSelectedPeakIndexRef.current === 'number' &&
-        shiftKey
+        shiftKey &&
+        focusSource === 'peak'
       ) {
         const delta = xPPM;
         const xIndex = xFindClosestIndex(xArray, delta, { sorted: false });
@@ -77,7 +81,8 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
       if (
         props.index === signalIndex &&
         typeof lastSelectedPeakIndexRef.current === 'number' &&
-        shiftKey
+        shiftKey &&
+        focusSource === 'peak'
       ) {
         const delta = (to - from) / 2 + from;
 
@@ -206,6 +211,7 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
   );
 
   function selectRowHandler(index) {
+    setFocusSource('peak');
     lastSelectedPeakIndexRef.current = index;
     setFocus(`signals.${signalIndex}.peaks.${index}.x`, { shouldSelect: true });
   }

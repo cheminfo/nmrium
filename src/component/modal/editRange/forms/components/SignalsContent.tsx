@@ -1,7 +1,15 @@
 /** @jsxImportSource @emotion/react */
 import { Tab, Tabs } from '@blueprintjs/core';
 import type { Range } from 'nmr-processing';
-import { memo, useCallback, useEffect, useMemo } from 'react';
+import {
+  createContext,
+  memo,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { FaPlus } from 'react-icons/fa';
 
@@ -14,6 +22,38 @@ import SignalTab from './SignalTab.js';
 
 interface SignalsFormProps {
   range: Range;
+}
+
+type FocusSource = 'peak' | 'coupling' | 'delta' | null;
+interface FocusInputContextState {
+  focusSource: 'peak' | 'coupling' | 'delta' | null;
+  setFocusSource: (source: FocusSource) => void;
+}
+
+const FocusInputContext = createContext<FocusInputContextState | null>(null);
+
+export function useEventFocusInput() {
+  const context = useContext(FocusInputContext);
+
+  if (!context) {
+    throw new Error('FocusInputContext was not found.');
+  }
+
+  return context;
+}
+
+function FocusInputProvider({ children }) {
+  const [focusSource, setFocusSource] = useState<FocusSource>(null);
+
+  const state = useMemo(() => {
+    return { focusSource, setFocusSource };
+  }, [focusSource]);
+
+  return (
+    <FocusInputContext.Provider value={state}>
+      {children}
+    </FocusInputContext.Provider>
+  );
 }
 
 function SignalsContent({ range }: SignalsFormProps) {
@@ -78,14 +118,16 @@ function SignalsContent({ range }: SignalsFormProps) {
   return (
     <div>
       <InfoBlock />
-      <Tabs
-        renderActiveTabPanelOnly
-        selectedTabId={signalIndex}
-        onChange={(id) => tapClickHandler(id)}
-        animate={false}
-      >
-        {signalFormTabs}
-      </Tabs>
+      <FocusInputProvider>
+        <Tabs
+          renderActiveTabPanelOnly
+          selectedTabId={signalIndex}
+          onChange={(id) => tapClickHandler(id)}
+          animate={false}
+        >
+          {signalFormTabs}
+        </Tabs>
+      </FocusInputProvider>
     </div>
   );
 }
