@@ -61,10 +61,8 @@ export function ResizableSVG(props: ResizableSVGProps) {
 
   const [isResizing, setIsResizing] = useState(false);
   const svgRef = useRef<SVGGElement>(null);
-  const enableHorizontalResize =
-    axis === 'both' || axis === 'x';
-  const enableVerticalResize =
-    axis === 'both' || axis === 'y';
+  const enableHorizontalResize = axis === 'both' || axis === 'x';
+  const enableVerticalResize = axis === 'both' || axis === 'y';
   const isControl = size?.width !== undefined && size?.height !== undefined;
 
   useEffect(() => {
