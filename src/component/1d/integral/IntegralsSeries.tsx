@@ -26,7 +26,7 @@ export default function IntegralsSeries() {
 
   if (!integrals) return null;
   return (
-    <g clipPath={`url(#${displayerKey}clip-chart-1d)`} className="integrals">
+    <g clipPath={`url(#${displayerKey}clip-chart)`} className="integrals">
       {integrals.values.map((integral) => (
         <Integration
           nucleus={nucleus}

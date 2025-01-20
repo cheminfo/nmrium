@@ -415,7 +415,7 @@ export function AssignmentLabel(props: AssignmentLabelProps) {
 function ZonesAssignmentsLabelsInner({ zones, displayerKey }: ZonesInnerProps) {
   return (
     <g
-      clipPath={`url(#${displayerKey}clip-chart-2d)`}
+      clipPath={`url(#${displayerKey}clip-chart)`}
       className="2d-zones-assignments-labels"
     >
       {zones.values.map((zone) => (

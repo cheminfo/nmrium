@@ -27,7 +27,7 @@ function RangesInner({
 }: RangesInnerProps) {
   return (
     <ShareDataProvider>
-      <g clipPath={`url(#${displayerKey}clip-chart-1d)`}>
+      <g clipPath={`url(#${displayerKey}clip-chart)`}>
         {ranges?.values?.map((range) => (
           <Range
             key={range.id}

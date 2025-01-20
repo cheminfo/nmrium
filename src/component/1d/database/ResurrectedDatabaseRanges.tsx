@@ -77,7 +77,7 @@ function ResurrectedDatabaseRanges() {
 
   return (
     <g
-      clipPath={`url(#${displayerKey}clip-chart-1d)`}
+      clipPath={`url(#${displayerKey}clip-chart)`}
       className="resurrected-database-ranges"
       width="100%"
       height="100%"

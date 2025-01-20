@@ -87,7 +87,7 @@ function DatabaseSpectrum() {
     </foreignObject>
   ) : (
     <g
-      clipPath={`url(#${displayerKey}clip-chart-1d)`}
+      clipPath={`url(#${displayerKey}clip-chart)`}
       className="database-spectrum"
     >
       <path stroke={color} fill="none" d={path} />

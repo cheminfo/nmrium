@@ -61,7 +61,7 @@ function RangesIntegrals() {
   }
 
   return (
-    <g clipPath={`url(#${displayerKey}clip-chart-1d)`}>
+    <g clipPath={`url(#${displayerKey}clip-chart)`}>
       {integrals.values.map((integral) => {
         return (
           <Integral

@@ -24,7 +24,7 @@ function PeaksShapes() {
   const shift = (activeSpectrum?.index || 0) * shiftY;
 
   return (
-    <g className="peaks-shapes" clipPath={`url(#${displayerKey}clip-chart-1d)`}>
+    <g className="peaks-shapes" clipPath={`url(#${displayerKey}clip-chart)`}>
       {showPeaksShapes && <PeaksShapesItems vAlign={shift} />}
       {showPeaksSum && <PeaksShapesSum vAlign={shift} />}
     </g>

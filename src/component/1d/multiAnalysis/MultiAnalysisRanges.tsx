@@ -27,7 +27,7 @@ function MultiAnalysisRangesInner({
   }
 
   return (
-    <g clipPath={`url(#${displayerKey}clip-chart-1d)`}>
+    <g clipPath={`url(#${displayerKey}clip-chart)`}>
       {ranges.map((columnKey) => (
         <AnalysisRange
           key={columnKey}
