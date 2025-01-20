@@ -130,7 +130,7 @@ function PeakAnnotationsSpreadMode(props: PeakAnnotationsSpreadModeProps) {
         },
       }}
     >
-      <g className="peaks" clipPath={`url(#${displayerKey}clip-chart-1d)`}>
+      <g className="peaks" clipPath={`url(#${displayerKey}clip-chart)`}>
         <g
           transform={`translate(0,${y})`}
           style={{ visibility: boxSizeHeight > 0 ? 'visible' : 'hidden' }}

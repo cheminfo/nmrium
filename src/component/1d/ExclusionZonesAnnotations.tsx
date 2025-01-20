@@ -25,7 +25,7 @@ function ExclusionZonesAnnotationsInner({
   return (
     <g
       className="spectrum-exclusion-zones-group"
-      clipPath={`url(#${displayerKey}clip-chart-1d)`}
+      clipPath={`url(#${displayerKey}clip-chart)`}
     >
       {spectra
         .filter((d) => d.display.isVisible && xDomains[d.id])

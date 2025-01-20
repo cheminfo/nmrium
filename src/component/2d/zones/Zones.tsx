@@ -15,7 +15,7 @@ interface ZonesInnerProps {
 
 function ZonesInner({ zones, display, displayerKey }: ZonesInnerProps) {
   return (
-    <g clipPath={`url(#${displayerKey}clip-chart-2d)`} className="2D-Zones">
+    <g clipPath={`url(#${displayerKey}clip-chart)`} className="2D-Zones">
       {display.isVisible &&
         zones.values.map((zone) => (
           <g className="zone" key={zone.id}>

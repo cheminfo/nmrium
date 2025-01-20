@@ -18,7 +18,7 @@ function MultiplicityTreesInner({
   displayerKey,
 }: MultiplicityTreesInnerProps) {
   return (
-    <g clipPath={`url(#${displayerKey}clip-chart-1d)`}>
+    <g clipPath={`url(#${displayerKey}clip-chart)`}>
       {ranges?.values?.map((range) => (
         <MultiplicityTreeNode key={range.id} range={range} />
       ))}

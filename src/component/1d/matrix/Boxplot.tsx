@@ -145,7 +145,7 @@ export function InnerBoxplot(props: InnerBoxplotProps) {
   const { x, max, min, median, q1, q3, yDomain } = data;
 
   return (
-    <g clipPath={`url(#${displayerKey}clip-chart-1d)`}>
+    <g clipPath={`url(#${displayerKey}clip-chart)`}>
       <RenderAreaPath
         x={x}
         y1={max}

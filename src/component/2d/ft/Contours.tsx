@@ -124,7 +124,7 @@ function ContoursInner({ spectra, displayerKey }: ContoursInnerProps) {
   }
 
   return (
-    <g clipPath={`url(#${displayerKey}clip-chart-2d)`} className="contours">
+    <g clipPath={`url(#${displayerKey}clip-chart)`} className="contours">
       {spectra?.map((spectrum) => {
         return (
           <g key={spectrum.id}>

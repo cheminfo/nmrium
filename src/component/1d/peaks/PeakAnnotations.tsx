@@ -15,7 +15,7 @@ function PeakAnnotations(props: PeaksAnnotationsProps) {
   const { shiftY } = useScaleChecked();
 
   return (
-    <g className="peaks" clipPath={`url(#${displayerKey}clip-chart-1d)`}>
+    <g className="peaks" clipPath={`url(#${displayerKey}clip-chart)`}>
       <g transform={`translate(0,-${(activeSpectrum?.index || 0) * shiftY})`}>
         {peaks.map((peak) => (
           <PeakAnnotation

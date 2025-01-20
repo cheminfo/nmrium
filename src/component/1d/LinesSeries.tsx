@@ -32,7 +32,7 @@ function LinesSeries() {
   ) || []) as Spectrum1D[];
 
   return (
-    <g clipPath={`url(#${displayerKey}clip-chart-1d)`} className="spectra">
+    <g clipPath={`url(#${displayerKey}clip-chart)`} className="spectra">
       {spectra.map((d, i) => (
         <g key={d.id}>
           <Line display={d.display} id={d.id} data={get1DDataXY(d)} index={i} />

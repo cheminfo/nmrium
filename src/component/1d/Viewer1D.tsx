@@ -68,7 +68,6 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
     xDomains,
     yDomain,
     yDomains,
-    displayerKey,
     view: {
       spectra: { activeTab },
     },
@@ -461,13 +460,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
                       <XLabelPointer />
                       <PeakPointer />
                       <FooterBanner />
-                      <Chart1D
-                        width={widthProp}
-                        height={heightProp}
-                        margin={margin}
-                        mode={mode}
-                        displayerKey={displayerKey}
-                      />
+                      <Chart1D mode={mode} />
                       <BaseLine />
                       <PivotIndicator />
                     </MouseTracker>
