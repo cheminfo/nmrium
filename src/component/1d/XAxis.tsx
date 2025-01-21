@@ -39,13 +39,12 @@ const gridStyles = css`
 interface XAxisProps {
   show?: boolean;
   showGrid?: boolean;
-  mode?: string;
   label?: string;
 }
 
 function XAxis(props: XAxisProps) {
-  const { show = true, showGrid = false, mode, label: labelProp } = props;
-  const { xDomain, height, width, margin } = useChartData();
+  const { show = true, showGrid = false, label: labelProp } = props;
+  const { xDomain, height, width, margin, mode } = useChartData();
   const { scaleX } = useScale();
 
   const refAxis = useRef<SVGGElement>(null);
