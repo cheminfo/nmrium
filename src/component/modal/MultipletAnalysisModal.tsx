@@ -3,11 +3,13 @@ import { Dialog, DialogBody } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { xGetFromToIndex, xyToXYObject } from 'ml-spectra-processing';
 import { analyseMultiplet } from 'multiplet-analysis';
-import type { ActiveSpectrum, Spectrum } from 'nmr-load-save';
+import type { ActiveSpectrum } from 'nmr-load-save';
 import { useEffect, useState } from 'react';
 import { Axis, LineSeries, Plot } from 'react-plot';
 
 import { isSpectrum2D } from '../../data/data2d/Spectrum2D/index.js';
+import { useChartData } from '../context/ChartContext.js';
+import { useScaleChecked } from '../context/ScaleContext.js';
 
 const styles = css`
   background-color: white;
@@ -78,9 +80,7 @@ const loaderStyles = css`
 `;
 
 interface InnerMultipleAnalysisProps {
-  data: Spectrum[];
   activeSpectrum: ActiveSpectrum | null;
-  scaleX: any;
   startX: any;
   endX: any;
 }
@@ -91,9 +91,7 @@ interface MultipletAnalysisModalProps extends InnerMultipleAnalysisProps {
 }
 
 export default function MultipletAnalysisModal({
-  data,
   activeSpectrum,
-  scaleX,
   startX,
   endX,
   onClose,
@@ -109,9 +107,7 @@ export default function MultipletAnalysisModal({
       <DialogBody css={styles}>
         <InnerMultipleAnalysis
           {...{
-            data,
             activeSpectrum,
-            scaleX,
             startX,
             endX,
           }}
@@ -124,6 +120,8 @@ export default function MultipletAnalysisModal({
 function InnerMultipleAnalysis(props: InnerMultipleAnalysisProps) {
   const [calcStart, setCalcStartStatus] = useState(false);
   const [isCalcFinished, setCalcFinished] = useState(false);
+  const { data } = useChartData();
+  const { scaleX } = useScaleChecked();
 
   useEffect(() => {
     setTimeout(() => {
@@ -131,7 +129,7 @@ function InnerMultipleAnalysis(props: InnerMultipleAnalysisProps) {
     }, 400);
   }, []);
 
-  const { data, activeSpectrum, scaleX, startX, endX } = props;
+  const { activeSpectrum, startX, endX } = props;
   const [analysisData, setAnalysisData] = useState<any>();
 
   useEffect(() => {

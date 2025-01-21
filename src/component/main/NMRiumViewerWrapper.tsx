@@ -9,6 +9,7 @@ import { useGetPanelOptions } from '../panels/hooks/useGetPanelOptions.js';
 
 import type { NMRiumProps } from './NMRium.js';
 import { NMRiumViewer } from './NMRiumViewer.js';
+// import { useViewportSize } from '../hooks/useViewportSize.js';
 
 interface NMRiumViewerWrapperProps {
   viewerRef: RefObject<HTMLDivElement>;
@@ -25,6 +26,7 @@ export function NMRiumViewerWrapper(props: NMRiumViewerWrapperProps) {
     display: { general = {} },
   } = current;
   const items = useAccordionItems();
+  // const isExportReady = useViewportSize();
 
   function resizeHandler(value: SplitPaneSize) {
     dispatch({
@@ -40,6 +42,10 @@ export function NMRiumViewerWrapper(props: NMRiumViewerWrapperProps) {
     return panelOptions.display;
   });
   const hasDisplayedPanels = displayedPanels.length > 0;
+
+  // if(isExportReady) {
+
+  // }
 
   if (items?.length === 0 || !hasDisplayedPanels) {
     return <NMRiumViewer emptyText={emptyText} viewerRef={viewerRef} />;

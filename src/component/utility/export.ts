@@ -439,68 +439,15 @@ function getBlob(targetElementID: string, options: GetBlobOptions): BlobObject {
     element.remove();
   }
 
-  //append the floating molecules in svg element
-  const floatingMoleculesGroup = getMoleculesElement(rootElement);
-  _svg.append(floatingMoleculesGroup);
-
-  const nmrCss = `
-     
-  * {
-    font-family: Arial, Helvetica, sans-serif;
-  }
-  .grid line,.grid path{stroke:none;} .peaks-text{fill:#730000} .x path{stroke-width:1px} .x text{
-    font-weight: bold;
-  } 
-  .nmr-svg,.contours{
-    background-color:white;
-    fill:white;
-  }
-  `;
-
   const head = `<svg class="nmr-svg"  viewBox='0 0 ${width} ${height}' width="${width}"  height="${height}"  version="1.1" xmlns="http://www.w3.org/2000/svg">`;
   const style = `<style>
-  ${css?.styles || nmrCss}
+  ${css?.styles}
   </style>`;
   const svg = `${head + style + _svg.innerHTML}</svg>`;
 
   const blob = new Blob([svg], { type: 'image/svg+xml' });
 
   return { blob, width, height };
-}
-
-function getMatrix(element) {
-  const transform = globalThis
-    .getComputedStyle(element)
-    .getPropertyValue('transform');
-  return new DOMMatrix(transform);
-}
-
-function getMoleculesElement(rootRef) {
-  const nmriumViewer: any = (rootRef.getRootNode() as Document).querySelector(
-    `#nmrium-viewer`,
-  );
-
-  const floatingMoleculesGroup = document.createElement('g');
-
-  for (const element of nmriumViewer.querySelectorAll('.draggable-molecule')) {
-    const matrix = getMatrix(element);
-    const actionHeaderElement = element.querySelector(
-      '.float-molecule-actions',
-    );
-    const molElement = element
-      .cloneNode(true)
-      .querySelector('svg[id^="molSVG"]');
-    const group = document.createElement('g');
-    group.append(molElement);
-    group.setAttribute(
-      'transform',
-      `translate(${matrix.m41} ${
-        matrix.m42 + actionHeaderElement.clientHeight
-      })`,
-    );
-    floatingMoleculesGroup.append(group);
-  }
-  return floatingMoleculesGroup;
 }
 
 export {

@@ -14,20 +14,26 @@ import type {
 import { useDispatch } from '../../../context/DispatchContext.js';
 import { useGlobal } from '../../../context/GlobalContext.js';
 import { useHighlightColor } from '../../../hooks/useHighlightColor.js';
+import { useCheckExportStatus } from '../../../hooks/useViewportSize.js';
 import { useMoleculeEditor } from '../../../modal/MoleculeStructureEditorModal.js';
 import useAtomAssignment from '../../../panels/MoleculesPanel/useAtomAssignment.js';
 import type { DisplayerMode } from '../../../reducer/Reducer.js';
 
 import ActionsButton from './ActionsButton.js';
 
+interface DraggableMoleculeProps extends DraggableStructureProps {
+  width: number;
+  height: number;
+}
+
 interface DraggableStructureProps {
+  moleculeView: MoleculeView;
   zones: Zones;
   ranges: Ranges;
-  molecule: StateMoleculeExtended;
-  moleculeView: MoleculeView;
   activeTab: string;
   displayerMode: DisplayerMode;
   index?: number;
+  molecule: StateMoleculeExtended;
 }
 
 const AUTO_CROP_MARGIN = 30;
@@ -55,25 +61,11 @@ const style = css`
 `;
 
 export function DraggableStructure(props: DraggableStructureProps) {
-  const {
-    zones,
-    ranges,
-    molecule,
-    activeTab,
-    displayerMode,
-    index,
-    moleculeView,
-  } = props;
+  const { molecule, moleculeView } = props;
   const { viewerRef } = useGlobal();
+  const isExportProcessStart = useCheckExportStatus();
   const dispatch = useDispatch();
   const { modal, openMoleculeEditor } = useMoleculeEditor();
-  const {
-    currentDiaIDsToHighlight,
-    handleOnAtomHover,
-    handleOnClickAtom,
-    assignedDiaIDsMerged,
-  } = useAtomAssignment({ zones, ranges, activeTab, displayerMode });
-  const highlightColor = useHighlightColor();
 
   function floatMoleculeHandler() {
     dispatch({
@@ -98,6 +90,11 @@ export function DraggableStructure(props: DraggableStructureProps) {
   }
 
   if (!viewerRef) return null;
+
+  if (isExportProcessStart) {
+    const { width, height } = moleculeView.floating.bounding;
+    return <DraggableMolecule {...{ width, height }} {...props} />;
+  }
 
   return (
     <Rnd
@@ -125,48 +122,70 @@ export function DraggableStructure(props: DraggableStructureProps) {
         <ActionsButton onFloatBtnClick={floatMoleculeHandler} />
         <ResponsiveChart>
           {({ width, height }) => {
-            return (
-              <OCLnmr
-                OCL={OCL}
-                id={`molSVG${index || ''}`}
-                autoCrop
-                autoCropMargin={AUTO_CROP_MARGIN}
-                height={height - AUTO_CROP_MARGIN * 2}
-                width={width - AUTO_CROP_MARGIN * 2}
-                label={molecule.label}
-                labelFontSize={15}
-                labelColor="rgb(0,0,0)"
-                molfile={molecule.molfile}
-                setSelectedAtom={handleOnClickAtom}
-                atomHighlightColor={
-                  currentDiaIDsToHighlight?.length > 0
-                    ? '#ff000080'
-                    : highlightColor
-                }
-                atomHighlightOpacity={1}
-                highlights={
-                  currentDiaIDsToHighlight?.length > 0
-                    ? currentDiaIDsToHighlight
-                    : assignedDiaIDsMerged
-                }
-                setHoverAtom={handleOnAtomHover}
-                setMolfile={(molfile) => {
-                  dispatch({
-                    type: 'SET_MOLECULE',
-                    payload: {
-                      molfile,
-                      id: molecule.id,
-                      label: molecule.label,
-                    },
-                  });
-                }}
-                showAtomNumber={moleculeView.showAtomNumber}
-              />
-            );
+            return <DraggableMolecule {...{ width, height }} {...props} />;
           }}
         </ResponsiveChart>
       </div>
       {modal}
     </Rnd>
+  );
+}
+
+function DraggableMolecule(props: DraggableMoleculeProps) {
+  const {
+    zones,
+    ranges,
+    activeTab,
+    displayerMode,
+    molecule,
+    index,
+    moleculeView,
+    width,
+    height,
+  } = props;
+  const {
+    currentDiaIDsToHighlight,
+    handleOnAtomHover,
+    handleOnClickAtom,
+    assignedDiaIDsMerged,
+  } = useAtomAssignment({ zones, ranges, activeTab, displayerMode });
+  const highlightColor = useHighlightColor();
+  const dispatch = useDispatch();
+
+  return (
+    <OCLnmr
+      OCL={OCL}
+      id={`molSVG${index || ''}`}
+      autoCrop
+      autoCropMargin={AUTO_CROP_MARGIN}
+      height={height - AUTO_CROP_MARGIN * 2}
+      width={width - AUTO_CROP_MARGIN * 2}
+      label={molecule.label}
+      labelFontSize={15}
+      labelColor="rgb(0,0,0)"
+      molfile={molecule.molfile}
+      setSelectedAtom={handleOnClickAtom}
+      atomHighlightColor={
+        currentDiaIDsToHighlight?.length > 0 ? '#ff000080' : highlightColor
+      }
+      atomHighlightOpacity={1}
+      highlights={
+        currentDiaIDsToHighlight?.length > 0
+          ? currentDiaIDsToHighlight
+          : assignedDiaIDsMerged
+      }
+      setHoverAtom={handleOnAtomHover}
+      setMolfile={(molfile) => {
+        dispatch({
+          type: 'SET_MOLECULE',
+          payload: {
+            molfile,
+            id: molecule.id,
+            label: molecule.label,
+          },
+        });
+      }}
+      showAtomNumber={moleculeView.showAtomNumber}
+    />
   );
 }

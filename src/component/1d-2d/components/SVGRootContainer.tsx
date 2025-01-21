@@ -16,7 +16,6 @@ export function SVGRootContainer(props: SVGRootContainerProps) {
       general: { spectraRendering },
     },
   } = usePreferences();
-
   const { width, height, margin, displayerKey } = useChartData();
 
   const innerWidth = width - margin.left - margin.right;

@@ -7,3 +7,9 @@ export function useViewportSize() {
 
   return printOptions || exportOptions;
 }
+export function useCheckExportStatus() {
+  const printOptions = usePrintPage();
+  const exportOptions = useExportSettings();
+
+  return !!(printOptions || exportOptions);
+}
