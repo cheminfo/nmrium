@@ -16,7 +16,7 @@ import { SVGContent1D } from './SVGContent1D.js';
 import { PeakEditionProvider } from './peaks/PeakEditionManager.js';
 import BaseLine from './tool/BaseLine.js';
 import PeakPointer from './tool/PeakPointer.js';
-import { PivotIndicator } from './tool/PivotIndicator.js';
+import { PivotIndicator1D } from './tool/PivotIndicator1D.js';
 import XLabelPointer from './tool/XLabelPointer.js';
 
 interface InnerViewer1DProps {
@@ -57,7 +57,7 @@ function InnerViewer1D(props: InnerViewer1DProps) {
                     </SVGRootContainer>
                   </PeakEditionProvider>
                   <BaseLine />
-                  <PivotIndicator />
+                  <PivotIndicator1D />
                 </MouseTracker>
               </BrushTracker1D>
             )}

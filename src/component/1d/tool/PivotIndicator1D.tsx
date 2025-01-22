@@ -13,7 +13,7 @@ const styles: CSSProperties = {
   backgroundColor: 'yellow',
 };
 
-export function PivotIndicator() {
+export function PivotIndicator1D() {
   const {
     height,
     toolOptions: {
