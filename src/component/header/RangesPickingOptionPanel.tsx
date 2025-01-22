@@ -77,6 +77,7 @@ function RangesPickingOptionPanel() {
           majorStepSize={0.01}
           minorStepSize={0.01}
           style={{ width: '70px' }}
+          debounceTime={500}
         />
       </Label>
 
