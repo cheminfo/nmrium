@@ -5,7 +5,7 @@ import ExclusionZonesAnnotations from './ExclusionZonesAnnotations.js';
 import LinesSeries from './LinesSeries.js';
 import SimilarityTree from './SimilarityTree.js';
 import SpectraTracker from './SpectraLegends.js';
-import XAxis from './XAxis.js';
+import { XAxis1D } from './XAxis1D.js';
 import DatabaseElements from './database/DatabaseElements.js';
 import IntegralsSeries from './integral/IntegralsSeries.js';
 import JGraph from './jCouplingGraph/JGraph.js';
@@ -43,7 +43,7 @@ export function SVGContent1D() {
 
       <SimilarityTree />
       <g className="container" style={{ pointerEvents: 'none' }}>
-        <XAxis showGrid />
+        <XAxis1D showGrid />
       </g>
     </>
   );

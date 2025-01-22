@@ -27,7 +27,7 @@ async function shiftSignal(nmrium: NmriumPage) {
   await inputLocator.selectText();
   await inputLocator.fill('100');
   await inputLocator.press('Enter');
-  const trackerLocator = nmrium.page.locator('_react=XAxis >> text=100');
+  const trackerLocator = nmrium.page.locator('_react=XAxis1D >> text=100');
   await expect(trackerLocator).toHaveCount(1);
 }
 

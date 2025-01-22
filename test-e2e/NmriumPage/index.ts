@@ -130,7 +130,7 @@ export default class NmriumPage {
       modifiers: ['Shift'],
     });
     const pivotIndicatorLocator = this.viewer.locator.locator(
-      '_react=PivotIndicator >> _react=Indicator[x=100]',
+      '_react=PivotIndicator1D >> _react=Indicator[x=100]',
     );
     await expect(pivotIndicatorLocator).toBeVisible();
 

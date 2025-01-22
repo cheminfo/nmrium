@@ -42,7 +42,7 @@ interface XAxisProps {
   label?: string;
 }
 
-function XAxis(props: XAxisProps) {
+export function XAxis1D(props: XAxisProps) {
   const { show = true, showGrid = false, label: labelProp } = props;
   const { xDomain, height, width, margin, mode } = useChartData();
   const { scaleX } = useScale();
@@ -103,5 +103,3 @@ function XAxis(props: XAxisProps) {
     </>
   );
 }
-
-export default XAxis;
