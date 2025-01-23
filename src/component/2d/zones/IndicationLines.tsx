@@ -7,7 +7,7 @@ import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 
-const Line = styled.line`
+const IndicatorLine = styled.line`
   stroke: lightgrey;
   opacity: 0.7;
 `;
@@ -65,7 +65,7 @@ function IndicationLines({ axis, show }: IndicationLinesProps) {
       {deltas1D.map((_delta, i) => {
         if (axis === 'X') {
           return (
-            <Line
+            <IndicatorLine
               // eslint-disable-next-line react/no-array-index-key
               key={`indicationLine${axis}${i}`}
               x1={scaleX(_delta)}
@@ -76,7 +76,7 @@ function IndicationLines({ axis, show }: IndicationLinesProps) {
           );
         } else {
           return (
-            <Line
+            <IndicatorLine
               // eslint-disable-next-line react/no-array-index-key
               key={`indicationLine${axis}${i}`}
               x1={scaleX(xDomain[0])}
