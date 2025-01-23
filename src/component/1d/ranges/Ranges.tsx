@@ -11,7 +11,6 @@ import useSpectrum from '../../hooks/useSpectrum.js';
 import Range from './Range.js';
 
 interface RangesInnerProps {
-  displayerKey: string;
   selectedTool: string;
   ranges: RangesProps;
   showMultiplicityTrees: boolean;
@@ -20,14 +19,13 @@ interface RangesInnerProps {
 
 function RangesInner({
   ranges,
-  displayerKey,
   selectedTool,
   showMultiplicityTrees,
   relativeFormat,
 }: RangesInnerProps) {
   return (
     <ShareDataProvider>
-      <g clipPath={`url(#${displayerKey}clip-chart)`}>
+      <g>
         {ranges?.values?.map((range) => (
           <Range
             key={range.id}

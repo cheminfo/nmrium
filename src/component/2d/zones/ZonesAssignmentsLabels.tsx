@@ -5,7 +5,6 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { PiTextTSlash } from 'react-icons/pi';
 
 import { FieldEdition } from '../../1d-2d/FieldEdition.js';
-import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useGlobal } from '../../context/GlobalContext.js';
 import { useShareData } from '../../context/ShareDataContext.js';
@@ -20,7 +19,6 @@ import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 
 interface ZonesInnerProps {
   zones: ZonesType;
-  displayerKey: string;
 }
 
 interface AssignmentLabelProps {
@@ -412,12 +410,9 @@ export function AssignmentLabel(props: AssignmentLabelProps) {
   );
 }
 
-function ZonesAssignmentsLabelsInner({ zones, displayerKey }: ZonesInnerProps) {
+function ZonesAssignmentsLabelsInner({ zones }: ZonesInnerProps) {
   return (
-    <g
-      clipPath={`url(#${displayerKey}clip-chart)`}
-      className="2d-zones-assignments-labels"
-    >
+    <g className="2d-zones-assignments-labels">
       {zones.values.map((zone) => (
         <AssignmentLabel key={zone.id} zone={zone} />
       ))}
@@ -428,8 +423,6 @@ function ZonesAssignmentsLabelsInner({ zones, displayerKey }: ZonesInnerProps) {
 const emptyData = { zones: {}, display: {} };
 
 export default function ZonesAssignmentsLabels() {
-  const { displayerKey } = useChartData();
-
   const { zones, display } = useSpectrum(emptyData) as Spectrum2D;
   const { showAssignmentsLabels } = useActiveSpectrumZonesViewState();
   const { data: NewAssignmentLabelState } = useShareData();
@@ -440,5 +433,5 @@ export default function ZonesAssignmentsLabels() {
     return null;
   }
 
-  return <ZonesAssignmentsLabelsInner {...{ zones, displayerKey }} />;
+  return <ZonesAssignmentsLabelsInner {...{ zones }} />;
 }

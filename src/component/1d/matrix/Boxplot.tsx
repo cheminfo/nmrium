@@ -138,14 +138,13 @@ export function Boxplot() {
 export function InnerBoxplot(props: InnerBoxplotProps) {
   const { scaleRatio } = props;
   const data = useBoxPlot();
-  const { displayerKey } = useChartData();
 
   if (!data) return null;
 
   const { x, max, min, median, q1, q3, yDomain } = data;
 
   return (
-    <g clipPath={`url(#${displayerKey}clip-chart)`}>
+    <g>
       <RenderAreaPath
         x={x}
         y1={max}

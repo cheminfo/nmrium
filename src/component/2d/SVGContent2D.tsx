@@ -1,5 +1,6 @@
 import type { Spectrum1D } from 'nmr-load-save';
 
+import { ClipPathContainer } from '../1d-2d/components/ClipPathContainer.js';
 import SpectrumInfoBlock from '../1d-2d/components/SpectrumInfoBlock.js';
 import { ShareDataProvider } from '../context/ShareDataContext.js';
 
@@ -18,21 +19,25 @@ interface Chart2DProps {
 
 export function SVGContent2D({ spectra }: Chart2DProps) {
   return (
-    <>
+    <g>
       <FTContainer spectra={spectra} />
       <FidContainer />
-      <ShareDataProvider>
-        <Zones />
-        <ZonesAssignmentsLabels />
-      </ShareDataProvider>
+      <ClipPathContainer>
+        <ShareDataProvider>
+          <Zones />
+          <ZonesAssignmentsLabels />
+        </ShareDataProvider>
+      </ClipPathContainer>
+
       <IndicationLines axis="X" show />
       <IndicationLines axis="Y" show />
       <SpectrumInfoBlock />
+
       <g className="container" style={{ pointerEvents: 'none' }}>
         <XAxis />
         <YAxis />
       </g>
-    </>
+    </g>
   );
 }
 

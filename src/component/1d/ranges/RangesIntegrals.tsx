@@ -46,7 +46,6 @@ const emptyData = { ranges: {}, info: {}, display: {} };
 
 function RangesIntegrals() {
   const {
-    displayerKey,
     xDomain: [from, to],
   } = useChartData();
   const spectrum = useSpectrum(emptyData) as Spectrum1D;
@@ -61,7 +60,7 @@ function RangesIntegrals() {
   }
 
   return (
-    <g clipPath={`url(#${displayerKey}clip-chart)`}>
+    <g>
       {integrals.values.map((integral) => {
         return (
           <Integral

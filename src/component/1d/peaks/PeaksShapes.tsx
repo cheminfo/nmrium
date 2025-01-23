@@ -1,6 +1,5 @@
 import type { Spectrum1D } from 'nmr-load-save';
 
-import { useChartData } from '../../context/ChartContext.js';
 import { useScale } from '../../context/ScaleContext.js';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.js';
 import { useActiveSpectrumPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState.js';
@@ -11,7 +10,6 @@ import { usePeakShapesPath } from './usePeakShapesPath.js';
 const emptyData = { peaks: {}, display: {} };
 
 function PeaksShapes() {
-  const { displayerKey } = useChartData();
   const { shiftY } = useScale();
   const { showPeaksShapes, showPeaksSum } = useActiveSpectrumPeaksViewState();
   const activeSpectrum = useActiveSpectrum();
@@ -24,7 +22,7 @@ function PeaksShapes() {
   const shift = (activeSpectrum?.index || 0) * shiftY;
 
   return (
-    <g className="peaks-shapes" clipPath={`url(#${displayerKey}clip-chart)`}>
+    <g className="peaks-shapes">
       {showPeaksShapes && <PeaksShapesItems vAlign={shift} />}
       {showPeaksSum && <PeaksShapesSum vAlign={shift} />}
     </g>

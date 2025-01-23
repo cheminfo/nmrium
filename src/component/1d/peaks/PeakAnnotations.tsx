@@ -1,4 +1,3 @@
-import { useChartData } from '../../context/ChartContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';
 import { useHighlight } from '../../highlight/index.js';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.js';
@@ -10,12 +9,11 @@ import { getHighlightExtraId, getHighlightSource } from './Peaks.js';
 
 function PeakAnnotations(props: PeaksAnnotationsProps) {
   const { peaks, peaksSource, spectrumId, peakFormat } = props;
-  const { displayerKey } = useChartData();
   const activeSpectrum = useActiveSpectrum();
   const { shiftY } = useScaleChecked();
 
   return (
-    <g className="peaks" clipPath={`url(#${displayerKey}clip-chart)`}>
+    <g className="peaks">
       <g transform={`translate(0,-${(activeSpectrum?.index || 0) * shiftY})`}>
         {peaks.map((peak) => (
           <PeakAnnotation
