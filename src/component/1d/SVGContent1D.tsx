@@ -1,3 +1,4 @@
+import { ClipPathContainer } from '../1d-2d/components/ClipPathContainer.js';
 import SpectrumInfoBlock from '../1d-2d/components/SpectrumInfoBlock.js';
 
 import { ApodizationLine } from './ApodizationLine.js';
@@ -21,30 +22,33 @@ import BaseLineZones from './tool/BaseLineZones.js';
 
 export function SVGContent1D() {
   return (
-    <>
-      <LinesSeries />
-      <ApodizationLine />
-      <IntegralsSeries />
-      <Peaks peaksSource="peaks" />
-      <RangesIntegrals />
-      <Ranges />
-      <Peaks peaksSource="ranges" />
-      <MultiplicityTrees />
-      <JGraph />
-      <MultiAnalysisRanges />
-      <BaseLineZones />
-      <ExclusionZonesAnnotations />
-      <DatabaseElements />
-      <PeaksShapes />
-      <Stocsy />
-      <Boxplot />
-      <SpectraTracker />
-      <SpectrumInfoBlock />
+    <g>
+      <ClipPathContainer>
+        <LinesSeries />
+        <ApodizationLine />
+        <IntegralsSeries />
+        <Peaks peaksSource="peaks" />
+        <RangesIntegrals />
+        <Ranges />
+        <Peaks peaksSource="ranges" />
+        <MultiplicityTrees />
+        <JGraph />
+        <MultiAnalysisRanges />
+        <BaseLineZones />
+        <ExclusionZonesAnnotations />
+        <DatabaseElements />
+        <PeaksShapes />
+        <Stocsy />
+        <Boxplot />
+        <SpectraTracker />
+        <SpectrumInfoBlock />
 
-      <SimilarityTree />
+        <SimilarityTree />
+      </ClipPathContainer>
+
       <g className="container" style={{ pointerEvents: 'none' }}>
         <XAxis1D showGrid />
       </g>
-    </>
+    </g>
   );
 }

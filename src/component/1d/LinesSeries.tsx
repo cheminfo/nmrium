@@ -25,14 +25,14 @@ const style = css`
 `;
 
 function LinesSeries() {
-  const { displayerKey, xDomains, data } = useChartData();
+  const { xDomains, data } = useChartData();
   const activeSpectra = useActiveSpectra();
   const spectra = (data?.filter(
     (d) => isSpectrum1D(d) && d.display.isVisible && xDomains[d.id],
   ) || []) as Spectrum1D[];
 
   return (
-    <g clipPath={`url(#${displayerKey}clip-chart)`} className="spectra">
+    <g className="spectra">
       {spectra.map((d, i) => (
         <g key={d.id}>
           <Line display={d.display} id={d.id} data={get1DDataXY(d)} index={i} />
@@ -64,7 +64,6 @@ function HeadlightRectStackMode(props: HeadlightRectStackModeProps) {
   const verticalAlign = useVerticalAlign();
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.bottom - SPECTRA_BOTTOM_MARGIN;
-
   const { setActiveSpectrum } = useSetActiveSpectrumAction();
 
   if (

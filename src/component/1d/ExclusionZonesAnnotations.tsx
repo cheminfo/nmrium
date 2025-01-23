@@ -10,23 +10,18 @@ import useSpectraByActiveNucleus from '../hooks/useSpectraPerNucleus.js';
 import ExclusionZoneAnnotation from './ExclusionZoneAnnotation.js';
 
 interface ExclusionZonesAnnotationsInnerProps {
-  displayerKey: string;
   spectra: Spectrum1D[];
   xDomains: Record<string, number[]>;
   shiftY: number;
 }
 
 function ExclusionZonesAnnotationsInner({
-  displayerKey,
   xDomains,
   spectra,
   shiftY,
 }: ExclusionZonesAnnotationsInnerProps) {
   return (
-    <g
-      className="spectrum-exclusion-zones-group"
-      clipPath={`url(#${displayerKey}clip-chart)`}
-    >
+    <g className="spectrum-exclusion-zones-group">
       {spectra
         .filter((d) => d.display.isVisible && xDomains[d.id])
         .map((d, index) =>
@@ -52,7 +47,7 @@ function ExclusionZonesAnnotationsInner({
 const MemoizedPeakAnnotations = memo(ExclusionZonesAnnotationsInner);
 
 function ExclusionZonesAnnotations() {
-  const { displayerKey, xDomains, displayerMode } = useChartData();
+  const { xDomains, displayerMode } = useChartData();
   const { shiftY } = useScale();
 
   const spectra = useSpectraByActiveNucleus() as Spectrum1D[];
@@ -62,7 +57,6 @@ function ExclusionZonesAnnotations() {
   return (
     <MemoizedPeakAnnotations
       spectra={spectra}
-      displayerKey={displayerKey}
       xDomains={xDomains}
       shiftY={shiftY}
     />

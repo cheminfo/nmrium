@@ -17,7 +17,7 @@ import { getYScale } from '../utilities/scale.js';
 const emptyData = { info: { originFrequency: 400 } };
 
 function ResurrectedDatabaseRanges() {
-  const { displayerKey, height, margin, yDomains } = useChartData();
+  const { height, margin, yDomains } = useChartData();
   const verticalAlign = useVerticalAlign();
 
   const { info } = useSpectrum(emptyData) as Spectrum1D;
@@ -76,12 +76,7 @@ function ResurrectedDatabaseRanges() {
   });
 
   return (
-    <g
-      clipPath={`url(#${displayerKey}clip-chart)`}
-      className="resurrected-database-ranges"
-      width="100%"
-      height="100%"
-    >
+    <g className="resurrected-database-ranges" width="100%" height="100%">
       {paths.map(({ path, from, to }, index) => (
         // eslint-disable-next-line react/no-array-index-key
         <g key={`${index}`}>

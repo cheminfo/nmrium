@@ -16,7 +16,6 @@ export interface IntegralData extends IntegralType {
 
 export default function IntegralsSeries() {
   const {
-    displayerKey,
     view: {
       spectra: { activeTab: nucleus },
     },
@@ -26,7 +25,7 @@ export default function IntegralsSeries() {
 
   if (!integrals) return null;
   return (
-    <g clipPath={`url(#${displayerKey}clip-chart)`} className="integrals">
+    <g className="integrals">
       {integrals.values.map((integral) => (
         <Integration
           nucleus={nucleus}

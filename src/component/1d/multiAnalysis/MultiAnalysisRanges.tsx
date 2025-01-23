@@ -8,14 +8,12 @@ import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import AnalysisRange from './AnalysisRange.js';
 
 interface MultiAnalysisRangesInnerProps {
-  displayerKey: string;
   columns: SpectraAnalysisColumns;
   activeTab: string;
 }
 
 function MultiAnalysisRangesInner({
   columns,
-  displayerKey,
   activeTab,
 }: MultiAnalysisRangesInnerProps) {
   const ranges = Object.keys(columns).filter(
@@ -27,7 +25,7 @@ function MultiAnalysisRangesInner({
   }
 
   return (
-    <g clipPath={`url(#${displayerKey}clip-chart)`}>
+    <g>
       {ranges.map((columnKey) => (
         <AnalysisRange
           key={columnKey}
@@ -47,14 +45,11 @@ export default function MultiAnalysisRanges() {
     view: {
       spectra: { activeTab },
     },
-    displayerKey,
   } = useChartData();
   const multipleSpectraAnalysis = usePanelPreferences(
     'multipleSpectraAnalysis',
     activeTab,
   );
   const columns = multipleSpectraAnalysis.analysisOptions.columns;
-  return (
-    <MemoizedMultiAnalysisRanges {...{ columns, displayerKey, activeTab }} />
-  );
+  return <MemoizedMultiAnalysisRanges {...{ columns, activeTab }} />;
 }

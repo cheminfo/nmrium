@@ -26,7 +26,6 @@ interface ContoursPathsProps {
 
 interface ContoursInnerProps {
   spectra: Spectrum2D[];
-  displayerKey: string;
 }
 
 function usePath(
@@ -108,7 +107,7 @@ function ContoursPaths({
   );
 }
 
-function ContoursInner({ spectra, displayerKey }: ContoursInnerProps) {
+function ContoursInner({ spectra }: ContoursInnerProps) {
   const toaster = useToaster();
   const debounceAlert = useRef(
     debounce(() => {
@@ -124,7 +123,7 @@ function ContoursInner({ spectra, displayerKey }: ContoursInnerProps) {
   }
 
   return (
-    <g clipPath={`url(#${displayerKey}clip-chart)`} className="contours">
+    <g className="contours">
       {spectra?.map((spectrum) => {
         return (
           <g key={spectrum.id}>

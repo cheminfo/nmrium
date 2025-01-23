@@ -69,15 +69,8 @@ interface PeakAnnotationsSpreadModeProps
 }
 
 function PeakAnnotationsSpreadMode(props: PeakAnnotationsSpreadModeProps) {
-  const {
-    peaks,
-    peaksSource,
-    spectrumColor,
-    displayerKey,
-    peakFormat,
-    margin,
-    height,
-  } = props;
+  const { peaks, peaksSource, spectrumColor, peakFormat, margin, height } =
+    props;
   const {
     ref,
     height: boxSizeHeight = 0,
@@ -130,7 +123,7 @@ function PeakAnnotationsSpreadMode(props: PeakAnnotationsSpreadModeProps) {
         },
       }}
     >
-      <g className="peaks" clipPath={`url(#${displayerKey}clip-chart)`}>
+      <g className="peaks">
         <g
           transform={`translate(0,${y})`}
           style={{ visibility: boxSizeHeight > 0 ? 'visible' : 'hidden' }}

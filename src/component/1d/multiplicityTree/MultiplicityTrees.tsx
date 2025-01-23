@@ -2,23 +2,18 @@ import type { Spectrum1D } from 'nmr-load-save';
 import type { Ranges as RangesProps } from 'nmr-processing';
 import { memo } from 'react';
 
-import { useChartData } from '../../context/ChartContext.js';
 import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 
 import MultiplicityTreeNode from './MultiplicityTree.js';
 
 interface MultiplicityTreesInnerProps {
-  displayerKey: string;
   ranges: RangesProps;
 }
 
-function MultiplicityTreesInner({
-  ranges,
-  displayerKey,
-}: MultiplicityTreesInnerProps) {
+function MultiplicityTreesInner({ ranges }: MultiplicityTreesInnerProps) {
   return (
-    <g clipPath={`url(#${displayerKey}clip-chart)`}>
+    <g>
       {ranges?.values?.map((range) => (
         <MultiplicityTreeNode key={range.id} range={range} />
       ))}
@@ -31,7 +26,6 @@ const MemoizedMultiplicityTrees = memo(MultiplicityTreesInner);
 const emptyData = { ranges: {}, info: {}, display: {} };
 
 export default function MultiplicityTrees() {
-  const { displayerKey } = useChartData();
   const { showMultiplicityTrees } = useActiveSpectrumRangesViewState();
   const spectrum = useSpectrum(emptyData) as Spectrum1D;
 
@@ -44,10 +38,5 @@ export default function MultiplicityTrees() {
     return null;
   }
 
-  return (
-    <MemoizedMultiplicityTrees
-      ranges={spectrum.ranges}
-      displayerKey={displayerKey}
-    />
-  );
+  return <MemoizedMultiplicityTrees ranges={spectrum.ranges} />;
 }

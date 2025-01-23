@@ -92,13 +92,12 @@ export function Stocsy() {
 export function InnerStocsy({ scaleRatio, chemicalShift }) {
   const stocsyData = useStocsy(chemicalShift);
   const data = useSliceStocsyData(stocsyData);
-  const { displayerKey } = useChartData();
 
   if (!data || !stocsyData) return null;
   const { yDomain } = stocsyData;
   const { x, y, color } = data;
   return (
-    <g clipPath={`url(#${displayerKey}clip-chart)`}>
+    <g>
       <StocsyIndexPoint chemicalShift={chemicalShift} />
 
       <RenderStocsyAsSVG

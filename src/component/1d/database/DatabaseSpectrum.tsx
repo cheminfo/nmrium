@@ -17,7 +17,7 @@ import { PathBuilder } from '../../utility/PathBuilder.js';
 import { getYScaleWithRation } from '../utilities/scale.js';
 
 function DatabaseSpectrum() {
-  const { displayerKey, height, margin } = useChartData();
+  const { height, margin } = useChartData();
   const [path, setPath] = useState<string>();
   const [isLoading, setLoading] = useState<boolean>(false);
   const { highlight } = useHighlightData();
@@ -86,10 +86,7 @@ function DatabaseSpectrum() {
       {getSpinner('Load Jcamp ....')}
     </foreignObject>
   ) : (
-    <g
-      clipPath={`url(#${displayerKey}clip-chart)`}
-      className="database-spectrum"
-    >
+    <g className="database-spectrum">
       <path stroke={color} fill="none" d={path} />
     </g>
   );
