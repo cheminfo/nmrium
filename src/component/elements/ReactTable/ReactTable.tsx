@@ -31,13 +31,13 @@ import { EmptyDataRow } from './Elements/EmptyDataRow.js';
 import ReactTableHeader from './Elements/ReactTableHeader.js';
 import type { ClickEvent } from './Elements/ReactTableRow.js';
 import ReactTableRow from './Elements/ReactTableRow.js';
-import { ReactTableStyle } from './Style.js';
 import {
   ReactTableProvider,
   useReactTableContext,
 } from './utility/ReactTableContext.js';
 import type { RowSpanHeaders } from './utility/useRowSpan.js';
 import useRowSpan, { prepareRowSpan } from './utility/useRowSpan.js';
+import { BaseReactTable } from './BaseReactTable.js';
 
 interface ExtraColumn<T extends object = any> {
   enableRowSpan?: boolean;
@@ -76,8 +76,8 @@ export interface TableContextMenuProps {
 }
 interface ReactTableProps<T extends object = any>
   extends TableContextMenuProps,
-    ClickEvent,
-    SortEvent {
+  ClickEvent,
+  SortEvent {
   data: T[];
   columns: Array<Column<T>>;
   highlightedSource?: HighlightEventSource;
@@ -271,9 +271,8 @@ function TableInner<T extends object>(
             pointerEvents: 'none',
           }}
         />
-        <table
+        <BaseReactTable
           {...getTableProps()}
-          css={ReactTableStyle}
           style={styles.table(enableVirtualScroll, enableColumnsVirtualScroll)}
         >
           <ReactTableHeader
@@ -328,7 +327,7 @@ function TableInner<T extends object>(
               );
             })}
           </tbody>
-        </table>
+        </BaseReactTable>
       </div>
       {(enableVirtualScroll || enableColumnsVirtualScroll) && (
         <p
@@ -396,7 +395,7 @@ function ReactTable<T extends object>(props: ReactTableProps<T>) {
       const header = containerRef.current.querySelectorAll('thead');
       const rowsCount = Math.ceil(
         (Math.ceil(height) - Math.ceil(header[0].clientHeight)) /
-          approxItemHeight,
+        approxItemHeight,
       );
       const columnsCount = Math.ceil(Math.ceil(width) / approxColumnWidth);
 

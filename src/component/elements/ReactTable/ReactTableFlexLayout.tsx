@@ -3,7 +3,7 @@
 import type { CSSProperties } from 'react';
 import { useTable, useSortBy, useFlexLayout } from 'react-table';
 
-import { ReactTableStyle } from './Style.js';
+import { BaseReactTable } from './BaseReactTable.js';
 
 interface ReactTableFlexLayoutProps {
   data: any;
@@ -29,9 +29,8 @@ function ReactTableFlexLayout({
     );
 
   return (
-    <table
+    <BaseReactTable
       {...getTableProps()}
-      css={ReactTableStyle}
       style={{ height: '100%', ...style }}
     >
       <thead>
@@ -89,7 +88,7 @@ function ReactTableFlexLayout({
           );
         })}
       </tbody>
-    </table>
+    </BaseReactTable>
   );
 }
 
