@@ -6,10 +6,7 @@ import type {
   AssignmentsData,
   Axis,
 } from '../../../assignment/AssignmentsContext.js';
-import {
-  removeAssignmentCssStyle,
-  RemoveAssignmentsButton,
-} from '../../../elements/RemoveAssignmentsButton.js';
+import { AssignmentsCell } from '../../../elements/AssignmentsCell.js';
 import type { ZoneData } from '../hooks/useMapZones.js';
 
 export interface SignalAssignmentsColumnProps {
@@ -46,19 +43,17 @@ function SignalAssignmentsColumn({
       : {};
 
   return (
-    <td
+    <AssignmentsCell
       {...onHover}
       {...{ onClick: (e) => onClick(e, assignment, axis) }}
       style={{ padding: '0', ...tdCss }}
-      css={!isAssignmentActive && removeAssignmentCssStyle}
+      hideRemoveAssignmentButton={!assignment.isActive}
+      onRemove={(e) => onUnlink(e, false, axis)}
     >
       {(diaIDs?.length > 0 || isAssignmentActive) && (
-        <>
-          <span>{diaIDs?.length || 0}</span>
-          <RemoveAssignmentsButton onClick={(e) => onUnlink(e, false, axis)} />
-        </>
+        <span>{diaIDs?.length || 0}</span>
       )}
-    </td>
+    </AssignmentsCell>
   );
 }
 

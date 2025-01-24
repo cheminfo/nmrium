@@ -6,9 +6,10 @@ import type {
   Axis,
 } from '../../../assignment/AssignmentsContext.js';
 import {
+  AssignmentsCell,
   removeAssignmentCssStyle,
   RemoveAssignmentsButton,
-} from '../../../elements/RemoveAssignmentsButton.js';
+} from '../../../elements/AssignmentsCell.js';
 import type { ZoneData } from '../hooks/useMapZones.js';
 
 function getStyle(flag: boolean, isCompletelyAssigned: boolean) {
@@ -62,21 +63,21 @@ function ZoneAssignmentColumn({
   }
 
   return (
-    <td
+    <AssignmentsCell
       {...rowSpanTags}
       {...onHover}
       {...{ onClick: (e) => onClick(e, assignment, axis) }}
-      css={!isAssignmentActive && removeAssignmentCssStyle}
+      hideRemoveAssignmentButton={!assignment.isActive}
+      onRemove={(e) => onUnlink(e, true, axis)}
     >
       {(totalNumberOfAtoms > 0 || isAssignmentActive) && (
         <>
           {totalNumberOfAtoms} {' ( '}
           <span style={getStyle(flag, false)}>{diaIDs?.length || 0}</span>
           {' ) '}
-          <RemoveAssignmentsButton onClick={(e) => onUnlink(e, true, axis)} />
         </>
       )}
-    </td>
+    </AssignmentsCell>
   );
 }
 

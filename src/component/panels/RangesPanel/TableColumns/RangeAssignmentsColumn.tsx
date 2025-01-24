@@ -1,13 +1,8 @@
-/** @jsxImportSource @emotion/react */
-
 import type { CSSProperties } from 'react';
 import { memo } from 'react';
 
 import type { AssignmentsData } from '../../../assignment/AssignmentsContext.js';
-import {
-  removeAssignmentCssStyle,
-  RemoveAssignmentsButton,
-} from '../../../elements/RemoveAssignmentsButton.js';
+import { AssignmentsCell } from '../../../elements/AssignmentsCell.js';
 import { HighlightEventSource } from '../../../highlight/index.js';
 import type { RangeColumnProps } from '../RangesTableRow.js';
 
@@ -69,7 +64,7 @@ function RangeAssignmentsColumn({
   }
 
   return (
-    <td
+    <AssignmentsCell
       {...rowSpanTags}
       style={{
         ...columnStyle,
@@ -77,7 +72,8 @@ function RangeAssignmentsColumn({
       }}
       {...onHover}
       {...{ onClick: (e) => onLink?.(e, assignment) }}
-      css={!assignment.isActive && removeAssignmentCssStyle}
+      hideRemoveAssignmentButton={!assignment.isActive}
+      onRemove={(e) => onUnlink?.(e, true)}
     >
       {(totalNumberOfAtoms > 0 || assignment.isActive) && (
         <>
@@ -86,10 +82,9 @@ function RangeAssignmentsColumn({
             {diaIDs?.length || 0}
           </span>
           {' ) '}
-          <RemoveAssignmentsButton onClick={(e) => onUnlink?.(e, true)} />
         </>
       )}
-    </td>
+    </AssignmentsCell>
   );
 }
 
