@@ -29,10 +29,7 @@ function ReactTableFlexLayout({
     );
 
   return (
-    <BaseReactTable
-      {...getTableProps()}
-      style={{ height: '100%', ...style }}
-    >
+    <BaseReactTable {...getTableProps()} style={{ height: '100%', ...style }}>
       <thead>
         {headerGroups.map((headerGroup) => {
           const { key: headerGroupKey, ...restHeaderGroupProps } =
