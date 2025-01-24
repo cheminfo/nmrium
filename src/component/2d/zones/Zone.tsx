@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import type { Zone as ZoneType } from 'nmr-processing';
 import { useEffect, useState } from 'react';
@@ -14,25 +12,6 @@ import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZo
 import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 
 import Signal from './Signal.js';
-
-const stylesOnHover = css`
-  user-select: none;
-
-  .delete-button {
-    visibility: hidden;
-  }
-`;
-
-const stylesHighlighted = css`
-  .integral-area {
-    fill: #ff6f0057;
-  }
-
-  .delete-button {
-    visibility: visible;
-    cursor: pointer;
-  }
-`;
 
 const GroupContainer = styled.g`
   .target {
@@ -71,13 +50,10 @@ function Zone({ zoneData }: ZoneProps) {
     setReduceOpacity(!checkZoneKind(zoneData));
   }, [zoneData]);
 
+  const isActive = highlightZone.isActive || assignmentZone.isActive;
+
   return (
     <g
-      css={
-        highlightZone.isActive || assignmentZone.isActive
-          ? stylesHighlighted
-          : stylesOnHover
-      }
       key={id}
       onMouseEnter={() => {
         assignmentZone.show();
@@ -110,7 +86,7 @@ function Zone({ zoneData }: ZoneProps) {
             width={scaleX(x1) - scaleX(x2)}
             height={scaleY(y2) - scaleY(y1)}
             className="integral-area"
-            fill="#0000000f"
+            fill={isActive ? '#ff6f0057' : '#0000000f'}
             stroke={reduceOpacity ? '#343a40' : 'darkgreen'}
             strokeWidth={reduceOpacity ? '0' : '1'}
           />
