@@ -1,5 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import { useCallback } from 'react';
 
 import { usePreferences } from '../../context/PreferencesContext.js';
@@ -8,24 +7,10 @@ import { ResizerWithScale } from '../../elements/ResizerWithScale.js';
 import { useHighlight } from '../../highlight/index.js';
 import { useResizerStatus } from '../../hooks/useResizerStatus.js';
 
-const styles = {
-  hover: css`
-    .delete-button {
-      visibility: hidden;
-    }
-  `,
-  Highlighted: css`
-    .range-area {
-      height: 100%;
-      fill: #ff6f0057;
-    }
-
-    .delete-button {
-      visibility: visible;
-      cursor: pointer;
-    }
-  `,
-};
+const Rect = styled.rect<{ isActive: boolean }>`
+  height: ${({ isActive }) => (isActive ? '100%' : '6px')};
+  fill: ${({ isActive }) => (isActive ? '#ff6f0057' : 'green')};
+`;
 
 interface AnalysisRangeProps {
   columnKey: string;
@@ -73,17 +58,12 @@ function AnalysisRange({
         disabled={!isResizingActive}
       >
         {({ x1, x2 }, isActive) => (
-          <g
-            transform={`translate(0,25)`}
-            css={
-              highlight.isActive || isActive ? styles.Highlighted : styles.hover
-            }
-          >
-            <rect
+          <g transform={`translate(0,25)`}>
+            <Rect
+              isActive={highlight.isActive || isActive}
               x="0"
               width={x2 - x1}
               height="6"
-              className="range-area"
               fill="green"
             />
             <text
