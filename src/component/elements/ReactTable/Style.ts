@@ -10,4 +10,3 @@ export const tableInputStyle: InputStyle = {
     borderWidth: 0,
   },
 };
-

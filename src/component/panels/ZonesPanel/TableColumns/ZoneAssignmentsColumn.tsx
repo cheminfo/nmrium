@@ -5,11 +5,7 @@ import type {
   AssignmentsData,
   Axis,
 } from '../../../assignment/AssignmentsContext.js';
-import {
-  AssignmentsCell,
-  removeAssignmentCssStyle,
-  RemoveAssignmentsButton,
-} from '../../../elements/AssignmentsCell.js';
+import { AssignmentsCell } from '../../../elements/AssignmentsCell.js';
 import type { ZoneData } from '../hooks/useMapZones.js';
 
 function getStyle(flag: boolean, isCompletelyAssigned: boolean) {

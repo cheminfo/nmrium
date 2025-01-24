@@ -11,6 +11,14 @@ export const BaseReactTable = styled.table`
     display: contents;
   }
 
+  th,
+  td {
+    margin: 0;
+    padding: 0.15rem 0.4rem;
+    border-bottom: 1px solid #dedede;
+    border-right: 1px solid #dedede;
+  }
+
   tr {
     :last-child {
       td {
@@ -24,12 +32,5 @@ export const BaseReactTable = styled.table`
     background-color: white;
     z-index: 0;
     top: 0;
-  }
-  th,
-  td {
-    margin: 0;
-    padding: 0.15rem 0.4rem;
-    border-bottom: 1px solid #dedede;
-    border-right: 1px solid #dedede;
   }
 `;

@@ -76,8 +76,8 @@ export interface TableContextMenuProps {
 }
 interface ReactTableProps<T extends object = any>
   extends TableContextMenuProps,
-  ClickEvent,
-  SortEvent {
+    ClickEvent,
+    SortEvent {
   data: T[];
   columns: Array<Column<T>>;
   highlightedSource?: HighlightEventSource;
@@ -395,7 +395,7 @@ function ReactTable<T extends object>(props: ReactTableProps<T>) {
       const header = containerRef.current.querySelectorAll('thead');
       const rowsCount = Math.ceil(
         (Math.ceil(height) - Math.ceil(header[0].clientHeight)) /
-        approxItemHeight,
+          approxItemHeight,
       );
       const columnsCount = Math.ceil(Math.ceil(width) / approxColumnWidth);
 
