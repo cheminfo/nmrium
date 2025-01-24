@@ -1,5 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import { Molecule } from 'openchemlib/full';
 import { useCallback, useEffect, useState } from 'react';
 import { FaCheck, FaRegCopy } from 'react-icons/fa';
@@ -26,30 +25,31 @@ function checkStatus(response) {
   return response;
 }
 
-const mainContainer = css`
+const BodyContainer = styled.div`
   display: flex;
   flex-direction: column;
   max-height: 100%;
   overflow: hidden;
 `;
 
-const nmrContainer = css`
-  height: 50%;
+const NMRContainer = styled.div<{ isVisible: boolean }>`
+  height: ${({ isVisible }) => (isVisible ? '50%' : 'calc(100% - 25px)')};
 `;
 
-const bottomContainer = css`
+const BottomContainer = styled.div<{ isVisible: boolean }>`
   display: flex;
-  height: 50%;
+  height: ${({ isVisible }) => (isVisible ? '50%' : '0%')};
+  visibility: ${({ isVisible }) => (isVisible ? 'visible' : 'hidden')};
 `;
 
-const bottomRightContainer = css`
+const BottomRightContainer = styled.div`
   width: 50%;
   display: flex;
   height: 100%;
   flex-direction: column;
 `;
 
-const mfCss = css`
+const MFContainer = styled.div`
   height: 20%;
   display: flex;
   align-items: center;
@@ -58,7 +58,7 @@ const mfCss = css`
   border: 1px dashed gray;
 `;
 
-const resultContainer = css`
+const ResultContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -66,7 +66,7 @@ const resultContainer = css`
   position: relative;
 `;
 
-const copyButton = css`
+const InnerCopyButton = styled.button`
   position: absolute;
   top: 10px;
   left: 10px;
@@ -86,13 +86,13 @@ const copyButton = css`
   }
 `;
 
-const structureEditor = css`
+const StructureEditorContainer = styled.div`
   background-color: white;
   flex: 1;
   overflow: auto;
 `;
 
-const showButton = css`
+const ToggleButton = styled.button`
   outline: none;
   border: none;
   border-top: 0.55px solid #c1c1c1;
@@ -108,7 +108,7 @@ const showButton = css`
   }
 `;
 
-const titleCss = css`
+const Title = styled.p`
   text-transform: none;
   margin: 0;
   padding: 5px;
@@ -122,7 +122,7 @@ const titleCss = css`
   }
 `;
 
-const resultCss = css`
+const Result = styled.div`
   width: 50%;
   height: 50%;
   display: flex;
@@ -132,7 +132,7 @@ const resultCss = css`
   font-weight: bold;
 `;
 
-const styles = css`
+const Container = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -164,9 +164,9 @@ const CopyButton = ({ result }) => {
 
   return (
     <>
-      <button type="button" css={copyButton} onClick={saveToClipboardHandler}>
+      <InnerCopyButton type="button" onClick={saveToClipboardHandler}>
         {isCopied ? <FaCheck /> : <FaRegCopy />}
-      </button>
+      </InnerCopyButton>
       <ClipboardFallbackModal
         mode={shouldFallback}
         onDismiss={cleanShouldFallback}
@@ -228,52 +228,42 @@ export default function Exam(props) {
   }, []);
 
   return (
-    <div css={styles}>
-      <p css={titleCss}>
+    <Container>
+      <Title>
         <strong>Exercises: </strong>Determine the unknown structure for the
         compound having the following NMR spectrum
         <p>{title}</p>
-      </p>
-      <div css={mainContainer}>
-        <div
-          css={nmrContainer}
-          style={{ height: answerAreaVisible ? '50%' : 'calc(100% - 25px)' }}
-        >
+      </Title>
+      <BodyContainer>
+        <NMRContainer isVisible={answerAreaVisible}>
           <NMRium data={data} workspace="exercise" />
-        </div>
-        <button css={showButton} type="button" onClick={showAnswerAreaHandler}>
+        </NMRContainer>
+        <ToggleButton type="button" onClick={showAnswerAreaHandler}>
           {!answerAreaVisible ? 'Show answer area' : 'Hide answer area '}
-        </button>
-        <div
-          css={bottomContainer}
-          style={
-            answerAreaVisible
-              ? { height: '50%' }
-              : { height: '0%', visibility: 'hidden' }
-          }
-        >
-          <div css={structureEditor}>
+        </ToggleButton>
+        <BottomContainer isVisible={answerAreaVisible}>
+          <StructureEditorContainer>
             <StructureEditor
               svgMenu
               fragment={false}
               onChange={checkAnswer}
               initialMolfile={data?.answer?.currentAnswer}
             />
-          </div>
-          <div css={bottomRightContainer}>
-            <div css={mfCss}>
+          </StructureEditorContainer>
+          <BottomRightContainer>
+            <MFContainer>
               <MF
                 style={{ color: 'navy', fontSize: 30 }}
                 mf={data?.answer?.mf}
               />
-            </div>
-            <div css={resultContainer}>
+            </MFContainer>
+            <ResultContainer>
               <CopyButton result={result} />
-              <div css={resultCss}>{result}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+              <Result>{result}</Result>
+            </ResultContainer>
+          </BottomRightContainer>
+        </BottomContainer>
+      </BodyContainer>
+    </Container>
   );
 }

@@ -1,7 +1,7 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import { Molecule } from 'openchemlib/full';
 import { useCallback, useEffect, useState } from 'react';
+import type { CSSProperties } from 'react';
 import { MF } from 'react-mf';
 import { StructureEditor } from 'react-ocl/full';
 
@@ -24,7 +24,7 @@ function checkStatus(response) {
   return response;
 }
 
-const titleCss = css`
+const Title = styled.p`
   text-transform: none;
   margin: 0;
   padding: 5px;
@@ -38,26 +38,26 @@ const titleCss = css`
   }
 `;
 
-const mainContainer = css`
+const MainContainer = styled.div`
   display: flex;
   flex-direction: column;
   max-height: 100%;
   overflow: hidden;
 `;
 
-const bottomContainer = css`
+const BottomContainer = styled.div`
   display: flex;
   height: 50%;
 `;
 
-const bottomRightContainer = css`
+const BottomRightContainer = styled.div`
   width: 50%;
   display: flex;
   height: 100%;
   flex-direction: column;
 `;
 
-const mfCss = css`
+const MFContainer = styled.div`
   height: 20%;
   display: flex;
   align-items: center;
@@ -66,7 +66,7 @@ const mfCss = css`
   border: 1px dashed gray;
 `;
 
-const resultContainer = css`
+const ResultContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -74,13 +74,28 @@ const resultContainer = css`
   position: relative;
 `;
 
-const structureEditorCss = css`
+const InnerResultContainer = styled.div<
+  Pick<CSSProperties, 'backgroundColor' | 'color'>
+>`
+  flex-direction: column;
+  padding: 10px;
+  margin-left: 30px;
+  background-color: ${({ backgroundColor }) => backgroundColor};
+  color: ${({ color }) => color};
+  width: 80%;
+  height: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const StructureEditorContainer = styled.div`
   background-color: white;
   flex: 1;
   overflow: auto;
 `;
 
-const showButtonCss = css`
+const ToggleButton = styled.button`
   outline: none;
   border: none;
   border-top: 0.55px solid #c1c1c1;
@@ -96,7 +111,7 @@ const showButtonCss = css`
   }
 `;
 
-const styles = css`
+const Container = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -171,64 +186,52 @@ export default function Exercise(props) {
   }, []);
 
   return (
-    <div css={styles}>
-      <p css={titleCss}>
+    <Container>
+      <Title>
         <strong>Exercises: </strong>Determine the unknown structure for the
         compound having the following NMR spectrum
         <p>{title}</p>
-      </p>
-      <div css={mainContainer}>
+      </Title>
+      <MainContainer>
         <div
           style={{ height: answerAreaVisible ? '50%' : 'calc(100% - 25px)' }}
         >
           <NMRium data={data} workspace="exercise" />
         </div>
-        <button
-          css={showButtonCss}
-          type="button"
-          onClick={showAnswerAreaHandler}
-        >
+        <ToggleButton type="button" onClick={showAnswerAreaHandler}>
           {!answerAreaVisible ? 'Show answer area' : 'Hide answer area '}
-        </button>
+        </ToggleButton>
 
-        <div
-          css={bottomContainer}
+        <BottomContainer
           style={
             answerAreaVisible
               ? { height: '50%' }
               : { height: '0%', visibility: 'hidden' }
           }
         >
-          <div css={structureEditorCss}>
+          <StructureEditorContainer>
             <StructureEditor
               svgMenu
               fragment={false}
               onChange={checkAnswer}
               initialMolfile={data?.answer?.currentAnswer}
             />
-          </div>
-          <div css={bottomRightContainer}>
-            <div css={mfCss}>
+          </StructureEditorContainer>
+          <BottomRightContainer>
+            <MFContainer>
               {data?.answer?.mf && (
                 <MF
                   style={{ color: 'navy', fontSize: 30 }}
                   mf={data.answer.mf}
                 />
               )}
-            </div>
-            <div css={resultContainer}>
-              <div
-                style={{
-                  ...styles,
-                  backgroundColor:
-                    resultFlag == null ? 'white' : resultFlag ? 'green' : 'red',
-                  color: resultFlag == null ? 'black' : 'white',
-                  width: '80%',
-                  height: '80%',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
+            </MFContainer>
+            <ResultContainer>
+              <InnerResultContainer
+                backgroundColor={
+                  resultFlag == null ? 'white' : resultFlag ? 'green' : 'red'
+                }
+                color={resultFlag == null ? 'black' : 'white'}
               >
                 {resultFlag == null ? (
                   <p>Result</p>
@@ -237,11 +240,11 @@ export default function Exercise(props) {
                 ) : (
                   <p>Wrong Molecule !!</p>
                 )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+              </InnerResultContainer>
+            </ResultContainer>
+          </BottomRightContainer>
+        </BottomContainer>
+      </MainContainer>
+    </Container>
   );
 }
