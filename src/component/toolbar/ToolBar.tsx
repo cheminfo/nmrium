@@ -14,7 +14,6 @@ import {
   SvgNmrRealImag,
   SvgNmrZeroFilling,
 } from 'cheminfo-font';
-import type { NMRiumToolBarPreferences } from 'nmr-load-save';
 import { useCallback } from 'react';
 import {
   FaDiceFour,
@@ -24,7 +23,7 @@ import {
   FaFileImport,
   FaSearchPlus,
 } from 'react-icons/fa';
-import { PiKnifeBold } from 'react-icons/pi';
+import { PiKnifeBold, PiSelectionPlusDuotone } from 'react-icons/pi';
 import type { ToolbarItemProps, TooltipItem } from 'react-science/ui';
 import { Toolbar, TooltipHelpContent } from 'react-science/ui';
 
@@ -51,10 +50,11 @@ import SaveAsModal from '../modal/SaveAsModal.js';
 import { MetaImportationModal } from '../modal/metaImportation/MetaImportationModal.js';
 
 import { options } from './ToolTypes.js';
+import type { Tool } from './ToolTypes.js';
 import { EXPORT_MENU, IMPORT_MENU } from './toolbarMenu.js';
 
 interface BaseToolItem extends Pick<ToolbarItemProps, 'icon'> {
-  id: keyof NMRiumToolBarPreferences;
+  id: Tool;
   checkOptions?: CheckOptions;
   condition?: boolean;
 }
@@ -469,6 +469,11 @@ export default function ToolBar() {
         ),
       condition: ftCounter > 0 || fidCounter > 0,
       onClick: alignSpectraVerticallyHandler,
+    },
+    {
+      id: 'inset',
+      tooltip: options.inset.label,
+      icon: <PiSelectionPlusDuotone />,
     },
   ];
   return (

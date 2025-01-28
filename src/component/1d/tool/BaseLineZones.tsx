@@ -6,6 +6,7 @@ import { useScaleChecked } from '../../context/ScaleContext.js';
 import { ResizerWithScale } from '../../elements/ResizerWithScale.js';
 import { useHighlight } from '../../highlight/index.js';
 import { useResizerStatus } from '../../hooks/useResizerStatus.js';
+import { useIsInset } from '../inset/InsetProvider.js';
 
 function BaseLineZones() {
   const {
@@ -14,6 +15,9 @@ function BaseLineZones() {
       data: { baselineCorrection },
     },
   } = useChartData();
+  const isInset = useIsInset();
+
+  if (isInset) return null;
 
   const baseLineZones = baselineCorrection.zones;
 

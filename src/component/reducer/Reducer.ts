@@ -10,6 +10,7 @@ import type { Reducer } from 'react';
 
 import type { StateMoleculeExtended } from '../../data/molecules/Molecule.js';
 import type { UsedColors } from '../../types/UsedColors.js';
+import type { Insets } from '../1d/inset/SpectraInsets.js';
 import type { Action } from '../context/DispatchContext.js';
 import { DefaultTolerance } from '../panels/SummaryPanel/CorrelationTable/Constants.js';
 import type { Tool } from '../toolbar/ToolTypes.js';
@@ -20,6 +21,7 @@ import * as DatabaseActions from './actions/DatabaseActions.js';
 import * as DimensionsActions from './actions/DimensionsActions.js';
 import * as DomainActions from './actions/DomainActions.js';
 import * as FiltersActions from './actions/FiltersActions.js';
+import * as InsetActions from './actions/InsetActions.js';
 import * as IntegralsActions from './actions/IntegralsActions.js';
 import * as LoadActions from './actions/LoadActions.js';
 import * as MoleculeActions from './actions/MoleculeActions.js';
@@ -179,6 +181,7 @@ export const getInitialState = (): State => ({
     },
   },
   usedColors: { '1d': [], '2d': [] },
+  insets: {},
 });
 
 export const initialState = getInitialState();
@@ -373,6 +376,7 @@ export interface State {
   usedColors: UsedColors;
 
   errorAction?: any; // should be an Error
+  insets: Insets;
 }
 
 export function initState(state: State): State {
@@ -762,6 +766,42 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
 
       case 'SET_AUTOMATIC_ASSIGNMENTS':
         return AssignmentsActions.handleSetAutomaticAssignments(draft, action);
+      case 'ADD_INSET':
+        return InsetActions.handleAddInset(draft, action);
+      case 'DELETE_INSET': {
+        return InsetActions.handleDeleteInset(draft, action);
+      }
+      case 'CHANGE_INSET_BOUNDING': {
+        return InsetActions.handleChangeInsetBounding(draft, action);
+      }
+      case 'MOVE_INSET': {
+        return InsetActions.handleMoveInset(draft, action);
+      }
+      case 'BRUSH_END_INSET': {
+        return InsetActions.handleInsetBrushEnd(draft, action);
+      }
+      case 'SET_INSET_ZOOM': {
+        return InsetActions.handleInsetZoom(draft, action);
+      }
+      case 'FULL_INSET_ZOOM_OUT': {
+        return InsetActions.handleInsetZoomOut(draft, action);
+      }
+      case 'TOGGLE_INSET_RANGES_VIEW_PROPERTY': {
+        return InsetActions.handleToggleInsetRangesViewProperty(draft, action);
+      }
+      case 'TOGGLE_INSET_INTEGRALS_VIEW_PROPERTY': {
+        return InsetActions.handleToggleInsetIntegralsViewProperty(
+          draft,
+          action,
+        );
+      }
+      case 'TOGGLE_INSET_PEAKS_VIEW_PROPERTY': {
+        return InsetActions.handleToggleInsetPeaksViewProperty(draft, action);
+      }
+      case 'TOGGLE_INSET_PEAKS_DISPLAYING_MODE': {
+        return InsetActions.handleToggleInsetDisplayingPeaksMode(draft, action);
+      }
+
       case 'SECRET_THROW_ERROR': {
         throw new Error('Error thrown in main reducer');
       }

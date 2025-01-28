@@ -3,17 +3,19 @@ import type { Draft } from 'immer';
 import type { Layout } from '../../2d/utilities/DimensionLayout.js';
 import type { State } from '../Reducer.js';
 
-interface HistoryItem {
+export interface HistoryItem {
   xDomain: number[];
   yDomain: number[];
 }
 
 export type ZoomHistory = Record<string, HistoryItem[]>;
-interface ZoomHistoryManager {
+interface BaseZoomHistoryManager {
   historyStack: HistoryItem[];
   push: (value: HistoryItem) => void;
   pop: () => HistoryItem;
   getLast: () => HistoryItem;
+}
+interface ZoomHistoryManager extends BaseZoomHistoryManager {
   clear: () => void;
 }
 

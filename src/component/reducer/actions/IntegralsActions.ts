@@ -34,10 +34,13 @@ type AddIntegralAction = ActionType<
   'ADD_INTEGRAL',
   { startX: number; endX: number }
 >;
-type DeleteIntegralAction = ActionType<'DELETE_INTEGRAL', { id?: string }>;
+type DeleteIntegralAction = ActionType<
+  'DELETE_INTEGRAL',
+  { id?: string; spectrumKey?: string }
+>;
 type ChangeIntegralAction = ActionType<
   'CHANGE_INTEGRAL' | 'RESIZE_INTEGRAL',
-  { integral: Integral }
+  { integral: Integral; spectrumKey?: string }
 >;
 type ChangeIntegralRelativeValueAction = ActionType<
   'CHANGE_INTEGRAL_RELATIVE',
@@ -140,23 +143,19 @@ function handleDeleteIntegral(
   draft: Draft<State>,
   action: DeleteIntegralAction,
 ) {
-  const activeSpectrum = getActiveSpectrum(draft);
-  if (activeSpectrum) {
-    const state = original(draft) as State;
-    const { index } = activeSpectrum;
-    const { id: integralID } = action?.payload || {};
+  const { id: integralID, spectrumKey } = action?.payload || {};
+  const datum = getSpectrum(draft, spectrumKey);
 
-    const datum = draft.data[index] as Spectrum1D;
+  if (!datum) return;
 
-    if (!integralID) {
-      datum.integrals.values = [];
-    } else {
-      const peakIndex = (
-        state.data[index] as Spectrum1D
-      ).integrals.values.findIndex((p) => p.id === integralID);
-      datum.integrals.values.splice(peakIndex, 1);
-      updateIntegralsRelativeValues(datum);
-    }
+  if (!integralID) {
+    datum.integrals.values = [];
+  } else {
+    const peakIndex = datum.integrals.values.findIndex(
+      (p) => p.id === integralID,
+    );
+    datum.integrals.values.splice(peakIndex, 1);
+    updateIntegralsRelativeValues(datum);
   }
 }
 
@@ -164,33 +163,32 @@ function handleChangeIntegral(
   draft: Draft<State>,
   action: ChangeIntegralAction,
 ) {
-  const activeSpectrum = getActiveSpectrum(draft);
   const state = original(draft) as State;
-  const { integral } = action.payload;
+  const { integral, spectrumKey } = action.payload;
 
-  if (activeSpectrum?.id) {
-    const { index } = activeSpectrum;
+  const originalDatum = getSpectrum(state, spectrumKey);
+  const datum = getSpectrum(draft, spectrumKey);
 
-    const originalDatum = state.data[index] as Spectrum1D;
-    const datum = draft.data[index] as Spectrum1D;
+  if (!datum) {
+    return;
+  }
 
-    const { x, re } = originalDatum.data;
-    const integralIndex = originalDatum.integrals.values.findIndex(
-      (i) => i.id === integral.id,
-    );
+  const { x, re } = originalDatum.data;
+  const integralIndex = originalDatum.integrals.values.findIndex(
+    (i) => i.id === integral.id,
+  );
 
-    if (integralIndex !== -1) {
-      datum.integrals.values[integralIndex] = {
-        ...integral,
-        originalFrom: integral.from,
-        originalTo: integral.to,
-        absolute: xyIntegration(
-          { x, y: re },
-          { from: integral.from, to: integral.to },
-        ),
-      };
-      updateIntegralsRelativeValues(datum);
-    }
+  if (integralIndex !== -1) {
+    datum.integrals.values[integralIndex] = {
+      ...integral,
+      originalFrom: integral.from,
+      originalTo: integral.to,
+      absolute: xyIntegration(
+        { x, y: re },
+        { from: integral.from, to: integral.to },
+      ),
+    };
+    updateIntegralsRelativeValues(datum);
   }
 }
 

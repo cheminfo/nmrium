@@ -11,6 +11,7 @@ import { useSetActiveSpectrumAction } from '../hooks/useSetActiveSpectrumAction.
 import { useVerticalAlign } from '../hooks/useVerticalAlign.js';
 
 import Line from './Line.js';
+import { useInsetOptions } from './inset/InsetProvider.js';
 import { SPECTRA_BOTTOM_MARGIN } from './utilities/scale.js';
 
 const BOX_SIZE = 10;
@@ -23,12 +24,24 @@ const Rect = styled.rect`
   }
 `;
 
-function LinesSeries() {
+function useSpectra() {
   const { xDomains, data } = useChartData();
-  const activeSpectra = useActiveSpectra();
-  const spectra = (data?.filter(
+
+  const inset = useInsetOptions();
+
+  if (inset) {
+    return data?.filter((d) => isSpectrum1D(d) && d.id === inset.spectrumKey);
+  }
+
+  return data?.filter(
     (d) => isSpectrum1D(d) && d.display.isVisible && xDomains[d.id],
-  ) || []) as Spectrum1D[];
+  );
+}
+
+function LinesSeries() {
+  const activeSpectra = useActiveSpectra();
+  const spectra = useSpectra() as Spectrum1D[];
+  const { id: insetKey = 'primary' } = useInsetOptions() || {};
 
   return (
     <g className="spectra">
@@ -39,7 +52,10 @@ function LinesSeries() {
         </g>
       ))}
       {activeSpectra?.map((activeSpectrum) => (
-        <use key={activeSpectrum.id} href={`#${activeSpectrum.id}`} />
+        <use
+          key={activeSpectrum.id}
+          href={`#${activeSpectrum.id}-${insetKey}`}
+        />
       ))}
     </g>
   );

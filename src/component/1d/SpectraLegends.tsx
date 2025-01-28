@@ -18,6 +18,8 @@ import { useActiveSpectra } from '../hooks/useActiveSpectra.js';
 import { usePanelPreferences } from '../hooks/usePanelPreferences.js';
 import { convertPathArrayToString } from '../utility/convertPathArrayToString.js';
 
+import { useIsInset } from './inset/InsetProvider.js';
+
 const styles: Record<'text' | 'colorIndicator', CSSProperties> = {
   text: {
     fontSize: '12px',
@@ -125,6 +127,7 @@ function SpectraLegends() {
     },
     xDomains,
   } = useChartData();
+  const isInset = useIsInset();
 
   const { legendsFields } = usePanelPreferences(
     'multipleSpectraAnalysis',
@@ -136,7 +139,7 @@ function SpectraLegends() {
     selectedSpectra.map((spectrum) => spectrum.id),
   );
 
-  if (!showLegend) return null;
+  if (!showLegend || isInset) return null;
 
   const spectra = data.filter(
     (spectrum) =>

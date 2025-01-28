@@ -1,11 +1,10 @@
 import lodashGet from 'lodash/get.js';
-import type { NMRiumToolBarPreferences } from 'nmr-load-save';
 import type { Info1D, Info2D } from 'nmr-processing';
 import { useCallback } from 'react';
 
 import { useChartData } from '../context/ChartContext.js';
 import { usePreferences } from '../context/PreferencesContext.js';
-import type { ToolOptionItem } from '../toolbar/ToolTypes.js';
+import type { Tool, ToolOptionItem } from '../toolbar/ToolTypes.js';
 import { options } from '../toolbar/ToolTypes.js';
 
 import useCheckExperimentalFeature from './useCheckExperimentalFeature.js';
@@ -20,7 +19,7 @@ export interface CheckOptions {
 }
 
 export function useCheckToolsVisibility(): (
-  toolKey: keyof NMRiumToolBarPreferences,
+  toolKey: Tool,
   checkOptions?: CheckOptions,
 ) => boolean {
   const { displayerMode } = useChartData();
@@ -29,10 +28,7 @@ export function useCheckToolsVisibility(): (
   const isExperimentalFeatureActivated = useCheckExperimentalFeature();
 
   return useCallback(
-    (
-      toolKey: keyof NMRiumToolBarPreferences,
-      checkOptions: CheckOptions = {},
-    ) => {
+    (toolKey: Tool, checkOptions: CheckOptions = {}) => {
       const {
         checkMode = true,
         checkSpectrumType = true,

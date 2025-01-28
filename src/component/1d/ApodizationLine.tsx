@@ -16,6 +16,7 @@ import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce.js';
 import type { ApodizationOptions } from '../panels/filtersPanel/Filters/hooks/useApodization.js';
 import { PathBuilder } from '../utility/PathBuilder.js';
 
+import { useIsInset } from './inset/InsetProvider.js';
 import { getYScale } from './utilities/scale.js';
 
 const emptyData = { data: {}, info: {} };
@@ -36,6 +37,8 @@ export function ApodizationLine() {
   const {
     toolOptions: { selectedTool },
   } = useChartData();
+  const isInset = useIsInset();
+
   const activeSpectrum = useActiveSpectrum();
   const { scaleX } = useScaleChecked();
   const spectrum = useSpectrum({ emptyData }) as Spectrum1D;
@@ -44,7 +47,11 @@ export function ApodizationLine() {
   const { sharedFilterOptions: externalApodizationOptions } =
     useFilterSyncOptions<ApodizationOptions>();
 
-  if (!activeSpectrum?.id || selectedTool !== Filters1D.apodization.name) {
+  if (
+    !activeSpectrum?.id ||
+    selectedTool !== Filters1D.apodization.name ||
+    isInset
+  ) {
     return null;
   }
 

@@ -6,7 +6,7 @@ import { getActiveSpectrum } from './getActiveSpectrum.js';
 
 export function getSpectrum(state: Draft<State>);
 export function getSpectrum(state: Draft<State>, index: number);
-export function getSpectrum(state: Draft<State>, id: string);
+export function getSpectrum(state: Draft<State>, id?: string);
 
 export function getSpectrum(state: Draft<State>, value?: number | string) {
   const activeSpectrum = getActiveSpectrum(state);

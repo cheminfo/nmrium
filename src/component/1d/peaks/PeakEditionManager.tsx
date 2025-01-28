@@ -15,6 +15,7 @@ import { useDispatch } from '../../context/DispatchContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';
 import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.js';
+import { useIsInset } from '../inset/InsetProvider.js';
 
 const validationSchema = Yup.object({
   value: Yup.number().required(),
@@ -196,6 +197,8 @@ function PeakEditionField({ value, onClose }: PeakFieldProps) {
 export function PeakEditionListener(
   props: PeakEditionListenerProps & { children: ReactNode },
 ) {
+  const isInset = useIsInset();
+
   const {
     children,
     x,
@@ -208,6 +211,9 @@ export function PeakEditionListener(
     id,
   } = props;
   const { onEdit, id: editingPeakId } = usePeaksEditionManager();
+
+  if (isInset) return children;
+
   return (
     <g
       onClick={(e) =>

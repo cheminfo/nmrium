@@ -69,8 +69,15 @@ interface PeakAnnotationsSpreadModeProps
 }
 
 function PeakAnnotationsSpreadMode(props: PeakAnnotationsSpreadModeProps) {
-  const { peaks, peaksSource, spectrumColor, peakFormat, margin, height } =
-    props;
+  const {
+    peaks,
+    peaksSource,
+    spectrumColor,
+    peakFormat,
+    margin,
+    height,
+    spectrumKey,
+  } = props;
   const {
     ref,
     height: boxSizeHeight = 0,
@@ -162,6 +169,7 @@ function PeakAnnotationsSpreadMode(props: PeakAnnotationsSpreadModeProps) {
                           y,
                         }}
                         peaksSource={peaksSource}
+                        spectrumKey={spectrumKey}
                       />
                     );
                   })}
@@ -185,6 +193,7 @@ interface PeakAnnotationProps {
   peakEditionFieldPosition: { x: number; y: number };
   peaksSource: PeaksSource;
   parentKeys: string[];
+  spectrumKey: string;
 }
 function PeakAnnotation(props: PeakAnnotationProps) {
   const {
@@ -197,10 +206,14 @@ function PeakAnnotation(props: PeakAnnotationProps) {
     peakEditionFieldPosition,
     peaksSource,
     parentKeys,
+    spectrumKey,
   } = props;
   const highlight = useHighlight([id], {
     type: getHighlightSource(peaksSource),
-    extra: { id: getHighlightExtraId(peaksSource, id, parentKeys) },
+    extra: {
+      id: getHighlightExtraId(peaksSource, id, parentKeys),
+      spectrumID: spectrumKey,
+    },
   });
   return (
     <g

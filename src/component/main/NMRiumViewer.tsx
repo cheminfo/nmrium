@@ -2,7 +2,8 @@ import type { CSSProperties, RefObject } from 'react';
 import { useDeferredValue, useEffect } from 'react';
 
 import { Viewer1D } from '../1d/Viewer1D.js';
-import FloatMoleculeStructures from '../1d-2d/components/FloatMoleculeStructures/index.js';
+import { SpectraInsets } from '../1d/inset/SpectraInsets.js';
+import { FloatMolecules } from '../1d-2d/components/FloatMoleculeStructures/FloatMolecules.js';
 import { SVGRootContainer } from '../1d-2d/components/SVGRootContainer.js';
 import Viewer2D from '../2d/Viewer2D.js';
 import { useChartData } from '../context/ChartContext.js';
@@ -36,7 +37,12 @@ export function NMRiumViewer(props: NMRiumViewerProps) {
   if (isExportingProcessStart) {
     return (
       <SVGRootContainer enableBoxBorder={displayerMode === '2D'}>
-        <FloatMoleculeStructures />
+        <g className="float-molecules">
+          <FloatMolecules />
+        </g>
+        <g className="spectra-insets">
+          <SpectraInsets />
+        </g>
         <Viewer emptyText={emptyText} renderSvgContentOnly />
       </SVGRootContainer>
     );
@@ -55,7 +61,8 @@ export function NMRiumViewer(props: NMRiumViewerProps) {
         ...style,
       }}
     >
-      <FloatMoleculeStructures />
+      <FloatMolecules />
+      <SpectraInsets />
       <Viewer emptyText={emptyText} />
     </div>
   );

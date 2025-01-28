@@ -1,5 +1,6 @@
 import type { IntegralsViewState } from 'nmr-load-save';
 
+import { useInsetOptions } from '../1d/inset/InsetProvider.js';
 import { useChartData } from '../context/ChartContext.js';
 
 import { useActiveSpectrum } from './useActiveSpectrum.js';
@@ -14,6 +15,12 @@ export function useActiveSpectrumIntegralsViewState() {
   const {
     view: { integrals },
   } = useChartData();
+
+  const inset = useInsetOptions();
+
+  if (inset) {
+    return inset.view.integrals;
+  }
 
   if (
     activeSpectrum?.id &&
