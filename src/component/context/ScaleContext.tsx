@@ -1,7 +1,13 @@
 import type { ScaleLinear } from 'd3';
 import { createContext, useCallback, useContext, useMemo } from 'react';
 
-import { getXScale, getYScale } from '../1d/utilities/scale.js';
+import { useIsInset } from '../1d/inset/InsetProvider.js';
+import {
+  getInsetXScale,
+  getInsetYScale,
+  getXScale,
+  getYScale,
+} from '../1d/utilities/scale.js';
 import { useVerticalAlign } from '../hooks/useVerticalAlign.js';
 
 import { useChartData } from './ChartContext.js';
@@ -45,34 +51,49 @@ export function ScaleProvider({ children }) {
     useChartData();
   const verticalAlign = useVerticalAlign();
 
+  const isInset = useIsInset();
+
   const scaleX = useCallback<ScaleLinearNumberFunction>(
     (spectrumId = null) => {
+      if (isInset) {
+        return getInsetXScale({
+          width,
+          xDomain,
+          margin,
+          mode,
+        });
+      }
+
       return getXScale({ width, margin, xDomains, xDomain, mode }, spectrumId);
     },
-    [margin, mode, width, xDomain, xDomains],
+    [isInset, margin, mode, width, xDomain, xDomains],
   );
 
   const scaleY = useCallback<ScaleLinearNumberFunction>(
     (spectrumId = null) => {
+      if (isInset) {
+        return getInsetYScale({ height, yDomain, margin });
+      }
+
       return getYScale(
         { height, margin, yDomains, yDomain, verticalAlign },
         spectrumId,
       );
     },
-    [height, margin, verticalAlign, yDomain, yDomains],
+    [height, isInset, margin, verticalAlign, yDomain, yDomains],
   );
 
   const scaleState = useMemo(() => {
     let shiftY = 0;
 
-    if (verticalAlign === 'stack') {
+    if (verticalAlign === 'stack' && !isInset) {
       shiftY = height / (Object.keys(yDomains).length + 2);
     } else {
       shiftY = 0;
     }
 
     return { scaleX, scaleY, shiftY };
-  }, [verticalAlign, scaleX, scaleY, height, yDomains]);
+  }, [verticalAlign, isInset, scaleX, scaleY, height, yDomains]);
 
   return (
     <ScaleContext.Provider value={scaleState}>{children}</ScaleContext.Provider>

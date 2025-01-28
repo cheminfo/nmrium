@@ -6,6 +6,8 @@ import { useChartData } from '../context/ChartContext.js';
 import { useScale } from '../context/ScaleContext.js';
 import { AxisGroup } from '../elements/AxisGroup.js';
 
+import { useInsetOptions } from './inset/InsetProvider.js';
+
 const GridGroup = styled.g`
   user-select: none;
 
@@ -33,6 +35,7 @@ export function XAxis1D(props: XAxisProps) {
   const { show = true, showGrid = false, label: labelProp } = props;
   const { xDomain, height, width, margin, mode } = useChartData();
   const { scaleX } = useScale();
+  const isInset = useInsetOptions();
 
   const refAxis = useRef<SVGGElement>(null);
   const refGrid = useRef<SVGGElement>(null);
@@ -72,12 +75,20 @@ export function XAxis1D(props: XAxisProps) {
           transform={`translate(0,${height - margin.bottom})`}
           ref={refAxis}
         >
-          <text fill="#000" x={width - 10} y="30" dy="0.70em" textAnchor="end">
-            {label}
-          </text>
+          {!isInset && (
+            <text
+              fill="#000"
+              x={width - 10}
+              y="30"
+              dy="0.70em"
+              textAnchor="end"
+            >
+              {label}
+            </text>
+          )}
         </AxisGroup>
       )}
-      {showGrid && (
+      {showGrid && !isInset && (
         <GridGroup
           data-no-export="true"
           className="grid"

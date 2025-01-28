@@ -1,15 +1,19 @@
 import type { ReactNode } from 'react';
 
+import { useInsetOptions } from '../../1d/inset/InsetProvider.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { usePreferences } from '../../context/PreferencesContext.js';
 
 interface SVGRootContainerProps {
   children: ReactNode;
   enableBoxBorder?: boolean;
+  id?: string;
+  x?: string | number;
+  y?: string | number;
 }
 
 export function SVGRootContainer(props: SVGRootContainerProps) {
-  const { children, enableBoxBorder = false } = props;
+  const { children, enableBoxBorder = false, id = 'nmrSVG', x, y } = props;
 
   const {
     current: {
@@ -17,13 +21,16 @@ export function SVGRootContainer(props: SVGRootContainerProps) {
     },
   } = usePreferences();
   const { width, height, margin, displayerKey } = useChartData();
+  const { id: insetKey = 'primary' } = useInsetOptions() || {};
 
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
 
   return (
     <svg
-      id="nmrSVG"
+      id={id}
+      x={x}
+      y={y}
       width={width}
       height={height}
       viewBox={`0 0 ${width} ${height}`}
@@ -34,7 +41,7 @@ export function SVGRootContainer(props: SVGRootContainerProps) {
       }}
     >
       <defs>
-        <clipPath id={`${displayerKey}clip-chart`}>
+        <clipPath id={`${displayerKey}clip-chart-${insetKey}`}>
           <rect
             width={innerWidth}
             height={innerHeight}

@@ -6,6 +6,7 @@ import type { DatabaseActions } from '../reducer/actions/DatabaseActions.js';
 import type { DimensionsActions } from '../reducer/actions/DimensionsActions.js';
 import type { DomainActions } from '../reducer/actions/DomainActions.js';
 import type { FiltersActions } from '../reducer/actions/FiltersActions.js';
+import type { InsetsActions } from '../reducer/actions/InsetActions.js';
 import type { IntegralsActions } from '../reducer/actions/IntegralsActions.js';
 import type { LoadActions } from '../reducer/actions/LoadActions.js';
 import type { MoleculeActions } from '../reducer/actions/MoleculeActions.js';
@@ -34,7 +35,8 @@ export type Action =
   | FiltersActions
   | CorrelationsActions
   | ActionType<'INITIALIZE_NMRIUM'>
-  | ActionType<'SECRET_THROW_ERROR', { randomNumber: number }>;
+  | ActionType<'SECRET_THROW_ERROR', { randomNumber: number }>
+  | InsetsActions;
 // // eslint-disable-next-line @typescript-eslint/ban-types
 // | { type: string & {}; payload?: Object };
 

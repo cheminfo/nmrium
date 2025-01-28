@@ -8,7 +8,7 @@ import type { Peak, PeaksAnnotationsProps, PeaksSource } from './Peaks.js';
 import { getHighlightExtraId, getHighlightSource } from './Peaks.js';
 
 function PeakAnnotations(props: PeaksAnnotationsProps) {
-  const { peaks, peaksSource, spectrumId, peakFormat } = props;
+  const { peaks, peaksSource, spectrumKey, peakFormat } = props;
   const activeSpectrum = useActiveSpectrum();
   const { shiftY } = useScaleChecked();
 
@@ -18,7 +18,7 @@ function PeakAnnotations(props: PeaksAnnotationsProps) {
         {peaks.map((peak) => (
           <PeakAnnotation
             key={peak.id}
-            spectrumId={spectrumId}
+            spectrumKey={spectrumKey}
             peak={peak}
             color="#730000"
             peaksSource={peaksSource}
@@ -32,7 +32,7 @@ function PeakAnnotations(props: PeaksAnnotationsProps) {
 
 interface PeakAnnotationProps {
   peak: Peak;
-  spectrumId: string;
+  spectrumKey: string;
   color: string;
   peaksSource: PeaksSource;
   format: string;
@@ -40,7 +40,7 @@ interface PeakAnnotationProps {
 
 export function PeakAnnotation({
   peak,
-  spectrumId,
+  spectrumKey,
   color,
   peaksSource,
   format,
@@ -49,12 +49,15 @@ export function PeakAnnotation({
   const sign = Math.sign(y);
   const highlight = useHighlight([id], {
     type: getHighlightSource(peaksSource),
-    extra: { id: getHighlightExtraId(peaksSource, id, parentKeys) },
+    extra: {
+      id: getHighlightExtraId(peaksSource, id, parentKeys),
+      spectrumID: spectrumKey,
+    },
   });
   const { scaleX, scaleY } = useScaleChecked();
 
   const sx = scaleX()(x);
-  const sy = scaleY(spectrumId)(y) - 5;
+  const sy = scaleY(spectrumKey)(y) - 5;
 
   return (
     <g

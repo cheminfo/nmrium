@@ -38,7 +38,13 @@ type SetYDomainAction = ActionType<
   'SET_Y_DOMAIN',
   { yDomain: [number, number] }
 >;
-type MoveXAxisAction = ActionType<'MOVE', { shiftX: number; shiftY: number }>;
+
+export interface MoveOptions {
+  shiftX: number;
+  shiftY: number;
+}
+
+type MoveAction = ActionType<'MOVE', MoveOptions>;
 
 function extentArray<T extends Numeric>(iterable: Iterable<T>) {
   const [min = 0, max = 0] = extent(iterable);
@@ -58,7 +64,7 @@ export type DomainActions =
   | SetXDomainAction
   | SetYDomainAction
   | SetAxisDomainAction
-  | MoveXAxisAction;
+  | MoveAction;
 
 function getActiveData(draft: Draft<State>): Spectrum1D[] {
   let data = draft.data.filter(
@@ -350,12 +356,21 @@ function handleSetAxisDomain(draft: Draft<State>, action: SetAxisDomainAction) {
   }
 }
 
-function handleMoveOverXAxis(draft: Draft<State>, action: MoveXAxisAction) {
-  const { shiftX, shiftY } = action.payload;
-  const [x1, x2] = draft.xDomain;
-  const [y1, y2] = draft.yDomain;
-  const [x1Origin, x2Origin] = draft.originDomain.xDomain;
-  const [y1Origin, y2Origin] = draft.originDomain.yDomain;
+interface Domain {
+  xDomain: number[];
+  yDomain: number[];
+}
+
+function moveOverAxis(
+  options: MoveOptions,
+  currentDomain: Domain,
+  originDomain: Domain,
+) {
+  const { shiftX, shiftY } = options;
+  const [x1, x2] = currentDomain.xDomain;
+  const [y1, y2] = currentDomain.yDomain;
+  const [x1Origin, x2Origin] = originDomain.xDomain;
+  const [y1Origin, y2Origin] = originDomain.yDomain;
   let x1Domain = x1 - shiftX;
   let x2Domain = x2 - shiftX;
   let y1Domain = y1 - shiftY;
@@ -377,9 +392,19 @@ function handleMoveOverXAxis(draft: Draft<State>, action: MoveXAxisAction) {
     y2Domain = y2Origin;
     y1Domain = y1;
   }
+  return { xDomain: [x1Domain, x2Domain], yDomain: [y1Domain, y2Domain] };
+}
 
-  draft.xDomain = [x1Domain, x2Domain];
-  draft.yDomain = [y1Domain, y2Domain];
+function handleMoveOverXAxis(draft: Draft<State>, action: MoveAction) {
+  const originXDomain = draft.originDomain.xDomain;
+  const originYDomain = draft.originDomain.yDomain;
+  const { xDomain, yDomain } = moveOverAxis(
+    action.payload,
+    { xDomain: draft.xDomain, yDomain: draft.yDomain },
+    { xDomain: originXDomain, yDomain: originYDomain },
+  );
+  draft.xDomain = xDomain;
+  draft.yDomain = yDomain;
 }
 
 export {
@@ -391,4 +416,5 @@ export {
   handleSetYDomain,
   handleMoveOverXAxis,
   handleSetAxisDomain,
+  moveOverAxis,
 };

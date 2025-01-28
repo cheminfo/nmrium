@@ -23,9 +23,7 @@ interface FloatMoleculeStructuresProps {
   displayerMode: DisplayerMode;
 }
 
-export function FloatMoleculeStructuresInner(
-  props: FloatMoleculeStructuresProps,
-) {
+function FloatMoleculesInner(props: FloatMoleculeStructuresProps) {
   const { zones, ranges, moleculesView, molecules, activeTab, displayerMode } =
     props;
 
@@ -33,36 +31,34 @@ export function FloatMoleculeStructuresInner(
 
   if (floatingMolecules.length === 0) return null;
 
-  return (
-    <>
-      {floatingMolecules
-        .filter(([, view]) => view.floating.visible)
-        .map(([id, moleculeView], index) => {
-          const molecule = molecules.find((m) => m.id === id);
-          assert(molecule !== undefined, 'molecule should be defined');
-          return (
-            <DraggableStructure
-              key={id}
-              {...{
-                zones,
-                ranges,
-                activeTab,
-                displayerMode,
-                moleculeView,
-                molecule,
-                index,
-              }}
-            />
-          );
-        })}
-    </>
+  const visibleMolecules = floatingMolecules.filter(
+    ([, view]) => view.floating.visible,
   );
+
+  return visibleMolecules.map(([id, moleculeView], index) => {
+    const molecule = molecules.find((m) => m.id === id);
+    assert(molecule !== undefined, 'molecule should be defined');
+    return (
+      <DraggableStructure
+        key={id}
+        {...{
+          zones,
+          ranges,
+          activeTab,
+          displayerMode,
+          moleculeView,
+          molecule,
+          index,
+        }}
+      />
+    );
+  });
 }
 
-const MemoizedFloatMoleculeStructures = memo(FloatMoleculeStructuresInner);
+const MemoizedFloatMolecules = memo(FloatMoleculesInner);
 const emptyData = { ranges: {}, zones: {} };
 
-export default function FloatMoleculeStructures() {
+export function FloatMolecules() {
   const {
     molecules,
     displayerMode,
@@ -77,7 +73,7 @@ export default function FloatMoleculeStructures() {
   const zones: Zones = (data as Spectrum2D)?.zones || {};
 
   return (
-    <MemoizedFloatMoleculeStructures
+    <MemoizedFloatMolecules
       {...{
         moleculesView,
         molecules,

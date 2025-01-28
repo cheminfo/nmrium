@@ -43,7 +43,7 @@ export interface BasePeaksProps {
 export interface PeaksAnnotationsProps extends BasePeaksProps {
   peaks: Peak[];
   spectrumColor: string;
-  spectrumId: string;
+  spectrumKey: string;
 }
 
 export function getHighlightSource(peaksSource: PeaksSource) {
@@ -131,7 +131,7 @@ function InnerPeaks(props: InnerPeaksProps) {
       <PeakAnnotationsSpreadMode
         peaksSource={peaksSource}
         peaks={peaks}
-        spectrumId={spectrum.id}
+        spectrumKey={spectrum.id}
         spectrumColor={spectrum.display.color}
         peakFormat={peakFormat}
         displayerKey={displayerKey}
@@ -145,7 +145,7 @@ function InnerPeaks(props: InnerPeaksProps) {
     <PeakAnnotations
       peaksSource={peaksSource}
       peaks={peaks}
-      spectrumId={spectrum.id}
+      spectrumKey={spectrum.id}
       spectrumColor={spectrum.display.color}
       peakFormat={peakFormat}
       displayerKey={displayerKey}

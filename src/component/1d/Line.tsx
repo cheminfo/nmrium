@@ -7,6 +7,8 @@ import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce.js';
 import { PathBuilder } from '../utility/PathBuilder.js';
 import { parseColor } from '../utility/parseColor.js';
 
+import { useInsetOptions } from './inset/InsetProvider.js';
+
 interface LineProps {
   data?: {
     x: Float64Array;
@@ -23,6 +25,7 @@ function Line({ data, id, display, index }: LineProps) {
   const { scaleX, scaleY, shiftY } = useScaleChecked();
   const xyReduce = useXYReduce(XYReducerDomainAxis.XAxis);
   const { opacity } = useActiveSpectrumStyleOptions(id);
+  const { id: insetKey = 'primary' } = useInsetOptions() || {};
 
   const paths = useMemo(() => {
     const _scaleX = scaleX();
@@ -47,14 +50,20 @@ function Line({ data, id, display, index }: LineProps) {
     display?.color || 'black',
   );
 
+  let pathOpacity = opacity === 1 ? strokeOpacity : opacity;
+
+  if (insetKey !== 'primary') {
+    pathOpacity = 1;
+  }
+
   return (
     <path
-      id={id}
+      id={`${id}-${insetKey}`}
       className="line"
       data-testid="spectrum-line"
       stroke={stroke}
       fill="none"
-      strokeOpacity={opacity === 1 ? strokeOpacity : opacity}
+      strokeOpacity={pathOpacity}
       d={paths}
       transform={`translate(0,-${shiftY * index})`}
     />

@@ -9,6 +9,7 @@ import { HighlightEventSource, useHighlight } from '../../highlight/index.js';
 import { useResizerStatus } from '../../hooks/useResizerStatus.js';
 
 import { IntegralIndicator } from './IntegralIndicator.js';
+import useSpectrum from '../../hooks/useSpectrum.js';
 
 const Group = styled.g<{ isActive: boolean }>`
   rect {
@@ -30,12 +31,14 @@ function IntegralResizable({
   integralFormat,
 }: IntegralResizableProps) {
   const { height, margin } = useChartData();
+  const spectrum = useSpectrum();
+
   const { scaleX } = useScaleChecked();
   const dispatch = useDispatch();
   const { id, integral, to, from } = integralData;
   const highlight = useHighlight([id], {
     type: HighlightEventSource.INTEGRAL,
-    extra: { id },
+    extra: { id, spectrumID: spectrum.id },
   });
 
   function handleOnStopResizing(position) {
@@ -47,6 +50,7 @@ function IntegralResizable({
           from: scaleX().invert(position.x2),
           to: scaleX().invert(position.x1),
         },
+        spectrumKey: spectrum.id,
       },
     });
   }

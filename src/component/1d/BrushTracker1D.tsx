@@ -29,6 +29,7 @@ import type { Tool } from '../toolbar/ToolTypes.js';
 import { options } from '../toolbar/ToolTypes.js';
 import Events from '../utility/Events.js';
 
+import { useInsetOptions } from './inset/InsetProvider.js';
 import { getXScale } from './utilities/scale.js';
 
 export function BrushTracker1D({ children }) {
@@ -54,6 +55,7 @@ export function BrushTracker1D({ children }) {
 
   const { getModifiersKey, primaryKeyIdentifier } = useMapKeyModifiers();
   const activeSpectrum = useActiveSpectrum();
+  const inset = useInsetOptions();
 
   const [isOpenAnalysisModal, openAnalysisModal, closeAnalysisModal] =
     useOnOff(false);
@@ -71,6 +73,24 @@ export function BrushTracker1D({ children }) {
       const shiftX = scaleX.invert(endXInPixel) - brushStartRef.current;
 
       dispatch({ type: 'MOVE', payload: { shiftX, shiftY: 0 } });
+    }
+  }
+  function handleInsetBrush(brushData) {
+    const { startX: startXInPixel, endX: endXInPixel, mouseButton } = brushData;
+
+    if (mouseButton === 'secondary') {
+      const scaleX = getXScale(state);
+      if (!brushStartRef.current) {
+        brushStartRef.current = scaleX.invert(startXInPixel);
+      }
+      const shiftX = scaleX.invert(endXInPixel) - brushStartRef.current;
+
+      if (!inset) return;
+
+      dispatch({
+        type: 'MOVE_INSET',
+        payload: { insetKey: inset.id, shiftX, shiftY: 0 },
+      });
     }
   }
 
@@ -185,6 +205,16 @@ export function BrushTracker1D({ children }) {
                 break;
               }
 
+              case options.inset.id:
+                dispatch({
+                  type: 'ADD_INSET',
+                  payload: {
+                    startX: brushData.startX,
+                    endX: brushData.endX,
+                  },
+                });
+                break;
+
               default:
                 executeDefaultAction = true;
                 break;
@@ -239,6 +269,23 @@ export function BrushTracker1D({ children }) {
       openAnalysisModal,
     ],
   );
+  const handleInsetBrushEnd = useCallback<OnBrush>(
+    (brushData) => {
+      //reset the brush start
+      brushStartRef.current = null;
+
+      if (!inset || brushData.mouseButton !== 'main') {
+        return;
+      }
+
+      const { startX, endX } = brushData;
+      dispatch({
+        type: 'BRUSH_END_INSET',
+        payload: { insetKey: inset.id, startX, endX },
+      });
+    },
+    [inset, dispatch],
+  );
 
   const handleOnDoubleClick = useCallback(() => {
     dispatch({
@@ -246,6 +293,17 @@ export function BrushTracker1D({ children }) {
       payload: { zoomType: ZOOM_TYPES.STEP_HORIZONTAL },
     });
   }, [dispatch]);
+
+  const handleInsetOnDoubleClick = useCallback(() => {
+    if (!inset) {
+      return;
+    }
+
+    dispatch({
+      type: 'FULL_INSET_ZOOM_OUT',
+      payload: { zoomType: ZOOM_TYPES.STEP_HORIZONTAL, insetKey: inset.id },
+    });
+  }, [dispatch, inset]);
 
   const handleZoom = useCallback<OnZoom>(
     (options) => {
@@ -272,6 +330,16 @@ export function BrushTracker1D({ children }) {
       showBoxPlot,
       showStocsy,
     ],
+  );
+  const handleInsetZoom = useCallback<OnZoom>(
+    (options) => {
+      if (!inset) return;
+      dispatch({
+        type: 'SET_INSET_ZOOM',
+        payload: { options, insetKey: inset.id },
+      });
+    },
+    [dispatch, inset],
   );
 
   const mouseClick = useCallback<OnClick>(
@@ -356,6 +424,26 @@ export function BrushTracker1D({ children }) {
       spectrum,
     ],
   );
+
+  if (inset) {
+    return (
+      <BrushTracker
+        onBrush={handleInsetBrush}
+        onBrushEnd={handleInsetBrushEnd}
+        onDoubleClick={handleInsetOnDoubleClick}
+        onZoom={handleInsetZoom}
+        style={{
+          width: '100%',
+          height: '100%',
+          margin: 'auto',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        {children}
+      </BrushTracker>
+    );
+  }
 
   return (
     <>

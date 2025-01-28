@@ -15,6 +15,8 @@ import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
 import { useFormatNumberByNucleus } from '../hooks/useFormatNumberByNucleus.js';
 import useSpectrum from '../hooks/useSpectrum.js';
 
+import { useInsetOptions } from './inset/InsetProvider.js';
+
 const FlexInfoItem = styled(InfoItem)`
   align-items: center;
 `;
@@ -52,6 +54,11 @@ function FooterBannerInner({
   const { scaleX } = useScaleChecked();
 
   const format = useFormatNumberByNucleus(activeTab);
+  const isInset = useInsetOptions();
+
+  if (isInset) {
+    return null;
+  }
 
   if (
     !position ||

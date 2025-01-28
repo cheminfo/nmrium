@@ -23,11 +23,15 @@ import { getClosePeak } from '../../utility/getClosePeak.js';
 import type { State } from '../Reducer.js';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
 import getRange from '../helper/getRange.js';
+import { getSpectrum } from '../helper/getSpectrum.js';
 import type { ActionType } from '../types/ActionType.js';
 
 type AddPeakAction = ActionType<'ADD_PEAK', { x: number }>;
 type AddPeaksAction = ActionType<'ADD_PEAKS', { startX: number; endX: number }>;
-type DeletePeakAction = ActionType<'DELETE_PEAK', { id?: string }>;
+type DeletePeakAction = ActionType<
+  'DELETE_PEAK',
+  { id?: string; spectrumKey?: string }
+>;
 type OptimizePeaksAction = ActionType<'OPTIMIZE_PEAKS', { peaks: Peak1D[] }>;
 type AutoPeaksPickingAction = ActionType<
   'AUTO_PEAK_PICKING',
@@ -140,21 +144,16 @@ function handleAddPeaks(draft: Draft<State>, action: AddPeaksAction) {
 
 //action
 function handleDeletePeak(draft: Draft<State>, action: DeletePeakAction) {
-  const activeSpectrum = getActiveSpectrum(draft);
-  const peakId = action?.payload?.id;
+  const { id: peakId, spectrumKey } = action.payload;
+  const spectrum = getSpectrum(draft, spectrumKey);
 
-  if (activeSpectrum) {
-    const { index } = activeSpectrum;
-    const state = original(draft) as State;
+  if (!spectrum) return;
 
-    if (!peakId) {
-      (draft.data[index] as Spectrum1D).peaks.values = [];
-    } else {
-      const peakIndex = (
-        state.data[index] as Spectrum1D
-      ).peaks.values.findIndex((p) => p.id === peakId);
-      (draft.data[index] as Spectrum1D).peaks.values.splice(peakIndex, 1);
-    }
+  if (!peakId) {
+    spectrum.peaks.values = [];
+  } else {
+    const peakIndex = spectrum.peaks.values.findIndex((p) => p.id === peakId);
+    spectrum.peaks.values.splice(peakIndex, 1);
   }
 }
 

@@ -57,6 +57,7 @@ type DeleteRangeAction = ActionType<
   {
     resetSelectTool?: boolean;
     id?: string;
+    spectrumKey?: string;
     assignmentData: AssignmentContext;
   }
 >;
@@ -102,6 +103,7 @@ type ResizeRangeAction = ActionType<
   'RESIZE_RANGE',
   {
     range: Range;
+    spectrumKey: string;
   }
 >;
 type ChangeRangeSumAction = ActionType<
@@ -139,7 +141,10 @@ type ToggleRangesViewAction = ActionType<
   }
 >;
 
-type DeleteRangePeakAction = ActionType<'DELETE_RANGE_PEAK', { id: string }>;
+type DeleteRangePeakAction = ActionType<
+  'DELETE_RANGE_PEAK',
+  { id: string; spectrumKey: string }
+>;
 type ChangeRangeAssignmentLabelAction = ActionType<
   'CHANGE_RANGE_ASSIGNMENT_LABEL',
   { rangeID: string; value: string }
@@ -168,12 +173,14 @@ export type RangesActions =
       | 'TOGGLE_RANGES_PEAKS_DISPLAYING_MODE'
     >;
 
-function getRangeIndex(draft: Draft<State>, spectrumIndex, rangeID) {
+function getRangeByIndex(draft: Draft<State>, spectrumIndex, rangeID) {
   return (draft.data[spectrumIndex] as Spectrum1D).ranges.values.findIndex(
     (range) => range.id === rangeID,
   );
 }
-
+function getRange(spectrum: Spectrum1D, rangeID: string) {
+  return spectrum.ranges.values.findIndex((range) => range.id === rangeID);
+}
 //action
 function handleAutoRangesDetection(
   draft: Draft<State>,
@@ -262,24 +269,31 @@ function handleAutoSpectraRangesDetection(draft: Draft<State>) {
 
 //action
 function handleDeleteRange(draft: Draft<State>, action: DeleteRangeAction) {
-  const activeSpectrum = getActiveSpectrum(draft);
-  if (activeSpectrum?.id) {
-    const { index } = activeSpectrum;
-    const { id, assignmentData, resetSelectTool = false } = action.payload;
-    const datum = draft.data[index] as Spectrum1D;
-    if (id) {
-      const rangeIndex = getRangeIndex(draft, index, id);
-      unlinkInAssignmentData(assignmentData, [datum.ranges.values[rangeIndex]]);
-      datum.ranges.values.splice(rangeIndex, 1);
-    } else {
-      unlinkInAssignmentData(assignmentData, datum.ranges.values);
-      datum.ranges.values = [];
-    }
-    updateRangesRelativeValues(datum);
-    handleUpdateCorrelations(draft);
-    if (resetSelectTool) {
-      resetSelectedTool(draft);
-    }
+  const {
+    id,
+    assignmentData,
+    resetSelectTool = false,
+    spectrumKey,
+  } = action.payload;
+
+  const datum = getSpectrum(draft, spectrumKey);
+
+  if (!datum) {
+    return;
+  }
+
+  if (id) {
+    const rangeIndex = getRange(datum, id);
+    unlinkInAssignmentData(assignmentData, [datum.ranges.values[rangeIndex]]);
+    datum.ranges.values.splice(rangeIndex, 1);
+  } else {
+    unlinkInAssignmentData(assignmentData, datum.ranges.values);
+    datum.ranges.values = [];
+  }
+  updateRangesRelativeValues(datum);
+  handleUpdateCorrelations(draft);
+  if (resetSelectTool) {
+    resetSelectedTool(draft);
   }
 }
 
@@ -295,7 +309,7 @@ function handleChangeRangeSignalKind(
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const { range, kind } = action.payload;
-    const rangeIndex = getRangeIndex(state, index, range.id);
+    const rangeIndex = getRangeByIndex(state, index, range.id);
     const _range = (draft.data[index] as Spectrum1D).ranges.values[rangeIndex];
     if (_range?.signals) {
       _range.signals[range.tableMetaInfo.signalIndex].kind = kind;
@@ -331,7 +345,7 @@ function handleSaveEditedRange(
     // for now: clear all assignments for this range because signals or levels to store might have changed
     unlinkInAssignmentData(assignmentData, [_editedRowData]);
 
-    const rangeIndex = getRangeIndex(state, index, _editedRowData.id);
+    const rangeIndex = getRangeByIndex(state, index, _editedRowData.id);
 
     if (_editedRowData.id === 'new') {
       _editedRowData.id = v4();
@@ -392,7 +406,7 @@ function unlinkRange(draft: Draft<State>, data: UnlinkRangeProps) {
 
     // remove assignments in global state
     if (rangeData) {
-      const rangeIndex = getRangeIndex(draft, index, rangeData.id);
+      const rangeIndex = getRangeByIndex(draft, index, rangeData.id);
       const range = cloneDeep(
         (draft.data[index] as Spectrum1D).ranges.values[rangeIndex],
       );
@@ -437,7 +451,7 @@ function handleSetDiaIDRange(draft: Draft<State>, action: SetDiaIDRangeAction) {
     const { index } = activeSpectrum;
     const { range: rangeData, diaIDs, signalIndex, nbAtoms } = action.payload;
     const getNbAtoms = (input, current = 0) => input + current;
-    const rangeIndex = getRangeIndex(draft, index, rangeData.id);
+    const rangeIndex = getRangeByIndex(draft, index, rangeData.id);
     const _range = (draft.data[index] as Spectrum1D).ranges.values[rangeIndex];
     if (signalIndex === undefined) {
       _range.diaIDs = diaIDs;
@@ -455,10 +469,11 @@ function handleSetDiaIDRange(draft: Draft<State>, action: SetDiaIDRangeAction) {
 
 //action
 function handleResizeRange(draft: Draft<State>, action: ResizeRangeAction) {
-  const spectrum = getSpectrum(draft);
+  const { range, spectrumKey } = action.payload;
+
+  const spectrum = getSpectrum(draft, spectrumKey);
 
   if (!spectrum) return;
-  const { range } = action.payload;
 
   if (!range && !isSpectrum1D(spectrum)) return;
 
@@ -632,17 +647,15 @@ function handleDeleteRangePeak(
   draft: Draft<State>,
   action: DeleteRangePeakAction,
 ) {
-  const { id } = action.payload;
+  const { id, spectrumKey } = action.payload;
   const [rangeKey, signalKey, peakKey] = id.split(',');
+  const spectrum = getSpectrum(draft, spectrumKey);
+  if (!spectrum) return;
 
-  const activeSpectrum = getActiveSpectrum(draft);
-  if (activeSpectrum?.id) {
-    const datum = draft.data[activeSpectrum?.index] as Spectrum1D;
-    const range = datum.ranges.values.find((range) => range.id === rangeKey);
-    const signal = range?.signals.find((singla) => singla.id === signalKey);
-    if (signal) {
-      signal.peaks = signal.peaks?.filter((peak) => peak.id !== peakKey);
-    }
+  const range = spectrum.ranges.values.find((range) => range.id === rangeKey);
+  const signal = range?.signals.find((singla) => singla.id === signalKey);
+  if (signal) {
+    signal.peaks = signal.peaks?.filter((peak) => peak.id !== peakKey);
   }
 }
 

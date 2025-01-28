@@ -88,12 +88,13 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
       const { type, extra } = sourceData;
       switch (type) {
         case HighlightEventSource.INTEGRAL: {
-          const { id } = extra || {};
+          const { id, spectrumID } = extra || {};
           if (id) {
             dispatch({
               type: 'DELETE_INTEGRAL',
               payload: {
                 id,
+                spectrumKey: spectrumID,
               },
             });
             // remove keys from the highlighted list after delete
@@ -102,12 +103,13 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
           break;
         }
         case HighlightEventSource.PEAK: {
-          const { id } = extra || {};
+          const { id, spectrumID } = extra || {};
           if (id) {
             dispatch({
               type: 'DELETE_PEAK',
               payload: {
                 id,
+                spectrumKey: spectrumID,
               },
             });
             // remove keys from the highlighted list after delete
@@ -117,12 +119,13 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
           break;
         }
         case HighlightEventSource.RANGE_PEAK: {
-          const { id } = extra || {};
+          const { id, spectrumID } = extra || {};
           if (id) {
             dispatch({
               type: 'DELETE_RANGE_PEAK',
               payload: {
                 id,
+                spectrumKey: spectrumID,
               },
             });
             // remove keys from the highlighted list after delete
@@ -132,13 +135,14 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
           break;
         }
         case HighlightEventSource.RANGE: {
-          const { id } = extra || {};
+          const { id, spectrumID } = extra || {};
           if (id) {
             dispatch({
               type: 'DELETE_RANGE',
               payload: {
                 id,
                 assignmentData,
+                spectrumKey: spectrumID,
               },
             });
             // remove keys from the highlighted list after delete

@@ -15,11 +15,13 @@ export function useChartData() {
 
   if (!viewportSize) return data;
 
-  const { width, height } = viewportSize;
-
+  const { width, height, margin, xDomain, yDomain } = viewportSize;
   const updatedData = produce(data, (draft) => {
     draft.width = width;
     draft.height = height;
+    draft.margin = margin ?? draft.margin;
+    draft.xDomain = xDomain ?? draft.xDomain;
+    draft.yDomain = yDomain ?? draft.yDomain;
   });
 
   return updatedData;

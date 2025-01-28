@@ -9,14 +9,46 @@ import type {
   SpectraDirection,
   VerticalAlignment,
 } from '../../reducer/Reducer.js';
+import { useIsInset } from '../inset/InsetProvider.js';
 
-interface ScaleXOptions {
+export const SPECTRA_BOTTOM_MARGIN = 40;
+
+interface ScaleInsetXOptions {
   width: number;
   margin: Margin;
-  xDomains: Domains;
   xDomain: number[];
   mode: SpectraDirection;
 }
+interface ScaleXOptions extends ScaleInsetXOptions {
+  xDomains: Domains;
+}
+
+interface InsetYScaleOptions {
+  height: number;
+  margin: Pick<Margin, 'top' | 'bottom'>;
+  yDomain: number[];
+}
+
+interface ScaleYOptions extends InsetYScaleOptions {
+  yDomains: Domains;
+  verticalAlign: VerticalAlignment;
+}
+
+function getInsetXScale(options: ScaleInsetXOptions) {
+  const { width, margin, xDomain, mode } = options;
+  const range =
+    mode === 'RTL'
+      ? [width - margin.right, margin.left]
+      : [margin.left, width - margin.right];
+  return scaleLinear(xDomain, range);
+}
+
+function getInsetYScale(options: InsetYScaleOptions) {
+  const { height, margin, yDomain } = options;
+  const innerHeight = height - margin.bottom - SPECTRA_BOTTOM_MARGIN;
+  return scaleLinear(yDomain, [innerHeight, margin.top]);
+}
+
 function getXScale(
   options: ScaleXOptions,
   spectrumId: number | null | string = null,
@@ -28,16 +60,6 @@ function getXScale(
       : [margin.left, width - margin.right];
   return scaleLinear(spectrumId ? xDomains[spectrumId] : xDomain, range);
 }
-
-interface ScaleYOptions {
-  height: number;
-  margin: Pick<Margin, 'top' | 'bottom'>;
-  yDomains: Domains;
-  yDomain: number[];
-  verticalAlign: VerticalAlignment;
-}
-
-export const SPECTRA_BOTTOM_MARGIN = 40;
 
 function getYScale(
   options: ScaleYOptions,
@@ -100,23 +122,36 @@ function reScaleY(scale: number, { domain, height, margin }) {
 
 function useScaleX() {
   const { margin, mode, width, xDomain, xDomains } = useChartData();
+  const isInset = useIsInset();
+
   return useCallback(
-    (spectrumId = null) =>
-      getXScale({ margin, mode, width, xDomain, xDomains }, spectrumId),
-    [margin, mode, width, xDomain, xDomains],
+    (spectrumId = null) => {
+      if (isInset) {
+        return getInsetXScale({ margin, mode, width, xDomain });
+      }
+
+      return getXScale({ margin, mode, width, xDomain, xDomains }, spectrumId);
+    },
+    [isInset, margin, mode, width, xDomain, xDomains],
   );
 }
 function useScaleY() {
   const { margin, height, yDomain, yDomains } = useChartData();
   const verticalAlign = useVerticalAlign();
+  const isInset = useIsInset();
 
   return useCallback(
-    (spectrumId = null) =>
-      getYScale(
+    (spectrumId = null) => {
+      if (isInset) {
+        return getInsetYScale({ margin, height, yDomain });
+      }
+
+      return getYScale(
         { margin, height, verticalAlign, yDomain, yDomains },
         spectrumId,
-      ),
-    [margin, height, verticalAlign, yDomain, yDomains],
+      );
+    },
+    [isInset, margin, height, verticalAlign, yDomain, yDomains],
   );
 }
 
@@ -128,4 +163,6 @@ export {
   getIntegralYScale,
   reScaleY,
   getYScaleWithRation,
+  getInsetXScale,
+  getInsetYScale,
 };

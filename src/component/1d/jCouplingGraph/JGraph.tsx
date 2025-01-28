@@ -9,6 +9,7 @@ import { useChartData } from '../../context/ChartContext.js';
 import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
+import { useIsInset } from '../inset/InsetProvider.js';
 
 import { JGraphContextProvider } from './JGraphContext.js';
 import { JGraphVerticalAxis } from './JGraphVerticalAxis.js';
@@ -46,6 +47,7 @@ export default function JGraph() {
 
   const { showJGraph } = useActiveSpectrumRangesViewState();
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
+  const isInset = useIsInset();
 
   const graphHeight = height / 4;
 
@@ -75,7 +77,7 @@ export default function JGraph() {
     return { scaleY, height: graphHeight, maxValue };
   }, [graphHeight, scaleY, maxValue]);
 
-  if (!showJGraph || !spectrum?.display?.isVisible) return null;
+  if (!showJGraph || !spectrum?.display?.isVisible || isInset) return null;
 
   return (
     <JGraphContextProvider value={JGraphState}>

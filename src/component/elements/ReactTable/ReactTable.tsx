@@ -27,6 +27,7 @@ import useResizeObserver from 'use-resize-observer';
 import type { HighlightEventSource } from '../../highlight/index.js';
 import type { BaseContextMenuProps } from '../ContextMenuBluePrint.js';
 
+import { BaseReactTable } from './BaseReactTable.js';
 import { EmptyDataRow } from './Elements/EmptyDataRow.js';
 import ReactTableHeader from './Elements/ReactTableHeader.js';
 import type { ClickEvent } from './Elements/ReactTableRow.js';
@@ -37,7 +38,6 @@ import {
 } from './utility/ReactTableContext.js';
 import type { RowSpanHeaders } from './utility/useRowSpan.js';
 import useRowSpan, { prepareRowSpan } from './utility/useRowSpan.js';
-import { BaseReactTable } from './BaseReactTable.js';
 
 interface ExtraColumn<T extends object = any> {
   enableRowSpan?: boolean;

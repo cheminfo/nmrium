@@ -33,6 +33,7 @@ const allowTools = new Set([
   options.exclusionZones.id,
   options.databaseRangesSelection.id,
   options.matrixGenerationExclusionZones.id,
+  options.inset.id,
 ]);
 
 function CrossLinePointer() {

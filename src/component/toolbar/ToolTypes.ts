@@ -29,7 +29,8 @@ export type Tool =
   | 'equalizer'
   | 'generalSelector'
   | 'databaseRangesSelection'
-  | 'matrixGenerationExclusionZones';
+  | 'matrixGenerationExclusionZones'
+  | 'inset';
 
 type RecordOptions = Record<Tool, ToolOptionItem>;
 
@@ -68,6 +69,20 @@ export const options: RecordOptions = {
       },
     ],
     isToggle: true,
+  },
+  inset: {
+    id: 'inset',
+    label: 'Inset Tool',
+    hasOptionPanel: false,
+    isFilter: false,
+    mode: '1D',
+    spectraOptions: [
+      {
+        active: true,
+      },
+    ],
+    isToggle: true,
+    isExperimental: true,
   },
   zonePicking: {
     id: 'zonePicking',

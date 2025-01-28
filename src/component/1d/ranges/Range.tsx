@@ -27,6 +27,7 @@ import { useHighlightColor } from '../../hooks/useHighlightColor.js';
 import { useResizerStatus } from '../../hooks/useResizerStatus.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import { EditRangeModal } from '../../modal/editRange/EditRangeModal.js';
+import { useIsInset } from '../inset/InsetProvider.js';
 import { IntegralIndicator } from '../integral/IntegralIndicator.js';
 import { useScaleX } from '../utilities/scale.js';
 
@@ -62,6 +63,9 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
     diaIDs: rangeDiaIDs,
     assignment,
   } = range;
+  const isInset = useIsInset();
+  const spectrum = useSpectrum();
+
   const highlightColor = useHighlightColor();
   const assignmentData = useAssignmentData();
   const assignmentRange = useAssignment(id);
@@ -72,13 +76,15 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
         signals.map((_signal) => _signal.id),
       ),
     ),
-    { type: HighlightEventSource.RANGE, extra: { id } },
+    {
+      type: HighlightEventSource.RANGE,
+      extra: { id, spectrumID: spectrum.id },
+    },
   );
 
   const scaleX = useScaleX();
   const dispatch = useDispatch();
   const { logger } = useLogger();
-  const spectrum = useSpectrum();
   const { showIntegralsValues } = useActiveSpectrumRangesViewState();
 
   const { isDialogOpen } = useDialogData();
@@ -98,6 +104,7 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
       type: 'RESIZE_RANGE',
       payload: {
         range: newRange,
+        spectrumKey: spectrum.id,
       },
     });
   }
@@ -192,6 +199,7 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
         {...(assignmentRange.isActive && { isOpen: true })}
         buttons={actionsButtons}
         space={2}
+        disabled={isInset}
       >
         <ResizerWithScale
           from={from}

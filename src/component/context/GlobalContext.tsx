@@ -1,5 +1,7 @@
 import { createContext, useContext } from 'react';
 
+import { useInsetViewerRootRef } from '../1d/inset/InsetViewerRoot.js';
+
 export const GlobalContext = createContext<{
   rootRef: HTMLDivElement | null;
   elementsWrapperRef: HTMLDivElement | null;
@@ -9,5 +11,11 @@ export const GlobalContext = createContext<{
 export const GlobalProvider = GlobalContext.Provider;
 
 export function useGlobal() {
-  return useContext(GlobalContext);
+  const insetViewerRootRef = useInsetViewerRootRef();
+  const context = useContext(GlobalContext);
+
+  if (!insetViewerRootRef) return context;
+
+  const { viewerRef, ...otherRef } = context;
+  return { viewerRef: insetViewerRootRef || viewerRef, ...otherRef };
 }
