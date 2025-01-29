@@ -25,12 +25,14 @@ export default function zoomHistoryManager(
   if (!zoomHistory[nucleus] && !Array.isArray(zoomHistory[nucleus])) {
     zoomHistory[nucleus] = [];
   }
+  const history = zoomHistory[nucleus];
 
-  const push = preparePush(zoomHistory[nucleus]);
-  const pop = preparePop(zoomHistory[nucleus], baseZoom);
-  const getLast = prepareGetLast(zoomHistory[nucleus]);
+  const push = preparePush(history);
+  const pop = preparePop(history, baseZoom);
+  const getLast = prepareGetLast(history);
   const clear = () => (zoomHistory[nucleus] = []);
-  return { historyStack: zoomHistory[nucleus], push, pop, getLast, clear };
+
+  return { historyStack: history, push, pop, getLast, clear };
 }
 
 function preparePush(historyStack) {
@@ -39,16 +41,18 @@ function preparePush(historyStack) {
   };
 }
 
-function preparePop(historyStack, baseZoom?: HistoryItem) {
-  return () => {
-    const val = historyStack.pop();
+export function popZoomHistory(historyStack, baseZoom?: HistoryItem) {
+  const val = historyStack.pop();
 
-    if (val && historyStack.length === 0) {
-      return baseZoom || null;
-    }
+  if (val && historyStack.length === 0) {
+    return baseZoom || null;
+  }
 
-    return val ? historyStack.at(-1) : null;
-  };
+  return val ? historyStack.at(-1) : null;
+}
+
+export function preparePop(historyStack, baseZoom?: HistoryItem) {
+  return () => popZoomHistory(historyStack, baseZoom);
 }
 
 function prepareGetLast(historyStack) {
