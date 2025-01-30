@@ -91,8 +91,12 @@ export function DraggableStructure(props: DraggableStructureProps) {
   if (!viewerRef) return null;
 
   if (isExportProcessStart) {
-    const { width, height } = moleculeView.floating.bounding;
-    return <DraggableMolecule {...{ width, height }} {...props} />;
+    const { width, height, x, y } = moleculeView.floating.bounding;
+    return (
+      <g transform={`translate(${x} ${y})`}>
+        <DraggableMolecule {...{ width, height }} {...props} />
+      </g>
+    );
   }
 
   return (
