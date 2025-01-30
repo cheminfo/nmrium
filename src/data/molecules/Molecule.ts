@@ -25,10 +25,10 @@ export interface MoleculeBoundingRect {
 
 export const DRAGGABLE_STRUCTURE_INITIAL_BOUNDING_REACT: MoleculeBoundingRect =
   {
-    x: 100,
-    y: 50,
-    width: 190,
-    height: 200,
+    x: 10,
+    y: 10,
+    width: 130,
+    height: 120,
   };
 
 export type MoleculesView = Record<string, MoleculeView>;

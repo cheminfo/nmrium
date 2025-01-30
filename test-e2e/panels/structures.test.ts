@@ -419,15 +419,14 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
   });
   await test.step('Close float molecule', async () => {
     // Close float molecule draggable structure.
-    await nmrium.page.click(
-      '_react=DraggableStructure >> _react=ButtonDanger',
-      { force: true },
-    );
+    const structureLocator = nmrium.page.locator('_react=DraggableStructure');
+    await structureLocator.hover();
+    await nmrium.page
+      .locator('_react=ActionButton[tooltipProps.content *= "Hide molecule" i]')
+      .click();
     // Check floated molecule.
     await expect(nmrium.page.locator('#molSVG')).toBeHidden();
-    await expect(
-      nmrium.page.locator('_react=DraggableStructure '),
-    ).toBeHidden();
+    await expect(structureLocator).toBeHidden();
     // Check float molecule btn is off.
     await expect(
       nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
@@ -665,8 +664,10 @@ test('check callbacks count on changing structures', async ({ page }) => {
     await expect(viewCount).toContainText(String(initialViewCount + 1));
   });
   await test.step('change float position molecule', async () => {
+    const structureLocator = nmrium.page.locator('_react=DraggableStructure');
+    await structureLocator.hover();
     await nmrium.page
-      .locator('_react=DraggableStructure >> _react=ButtonAction')
+      .locator('_react=ActionButton[tooltipProps.content *= "Move molecule" i]')
       .dragTo(nmrium.page.locator('_react=XAxis1D >> nth=1'), { force: true });
     await expect(dataCount).toContainText(String(initialDataCount + 1));
     await expect(viewCount).toContainText(String(initialViewCount + 2));
