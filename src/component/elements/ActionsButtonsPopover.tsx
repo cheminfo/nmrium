@@ -20,22 +20,31 @@ const Container = styled.div<Pick<CSSProperties, 'flexDirection' | 'gap'>>`
     padding: 5px;
   }
 `;
-
+interface ActionButtonProps
+  extends Pick<
+    ButtonProps,
+    | 'icon'
+    | 'onClick'
+    | 'intent'
+    | 'disabled'
+    | 'onPointerDown'
+    | 'style'
+    | 'className'
+  > {
+  title?: string;
+  visible?: boolean;
+  css?: Interpolation<Theme>;
+}
 export interface ActionsButtonsPopoverProps
   extends Omit<PopoverProps, 'interactionKind' | 'content'> {
-  buttons: Array<
-    Pick<
-      ButtonProps,
-      'icon' | 'onClick' | 'intent' | 'disabled' | 'onPointerDown' | 'style'
-    > & {
-      title?: string;
-      visible?: boolean;
-      css?: Interpolation<Theme>;
-    }
-  >;
+  buttons: ActionButtonProps[];
   contentStyle?: CSSProperties;
   direction?: 'column' | 'row';
   space?: number;
+}
+
+function ActionButton(props: ButtonProps) {
+  return <Button {...props} />;
 }
 
 export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
@@ -60,7 +69,7 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
           {buttons
             .filter((button) => button?.visible !== false)
             .map(({ title, visible, ...otherProps }, index) => (
-              <Button
+              <ActionButton
                 key={title || index}
                 tooltipProps={{ content: title || '', compact: true }}
                 {...otherProps}

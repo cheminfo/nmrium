@@ -19,6 +19,7 @@ import { DRAGGABLE_STRUCTURE_INITIAL_BOUNDING_REACT } from '../../../data/molecu
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager.js';
 import { generateColor } from '../../../data/utilities/generateColor.js';
 import type { AssignmentContext } from '../../assignment/AssignmentsContext.js';
+import { convertPixelToPercent } from '../../hooks/useSVGUnitConverter.js';
 import type { State } from '../Reducer.js';
 import { MARGIN } from '../core/Constants.js';
 import type { ActionType } from '../types/ActionType.js';
@@ -346,7 +347,10 @@ function getFloatingMoleculeInitialPosition(id: string, draft: Draft<State>) {
   }
   const x = ((index + 1) % columns) * (width / columns) + left;
   const y = Math.floor(moleculeKeys.length / columns) * (height / rows) + top;
-  return { x, y };
+  return {
+    x: convertPixelToPercent(x, displayerWidth),
+    y: convertPixelToPercent(y, displayerHeight),
+  };
 }
 
 function floatMoleculeOverSpectrum(
