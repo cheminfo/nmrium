@@ -20,26 +20,41 @@ const Container = styled.div<Pick<CSSProperties, 'flexDirection' | 'gap'>>`
     padding: 5px;
   }
 `;
-interface ActionButtonProps
-  extends Pick<
-    ButtonProps,
-    | 'icon'
-    | 'onClick'
-    | 'intent'
-    | 'disabled'
-    | 'onPointerDown'
-    | 'style'
-    | 'className'
-  > {
+
+const HorizontalSeparator = styled.div`
+  border-left: 1px solid #dedede;
+  margin: auto 5px;
+  width: 1px;
+  height: 10px;
+`;
+const VerticalSeparator = styled.div`
+  border-top: 1px solid #dedede;
+  margin: 5px auto;
+  width: 10px;
+  height: 1px;
+`;
+
+interface PopoverButtonProps extends ButtonProps {
   title?: string;
   visible?: boolean;
   css?: Interpolation<Theme>;
 }
+
+type ActionButtonProps = PopoverButtonProps | { elementType: 'separator' };
+
+function isSeparator(
+  element: ActionButtonProps,
+): element is { elementType: 'separator' } {
+  return 'elementType' in element && element.elementType === 'separator';
+}
+
+type Direction = 'column' | 'row';
+
 export interface ActionsButtonsPopoverProps
   extends Omit<PopoverProps, 'interactionKind' | 'content'> {
   buttons: ActionButtonProps[];
   contentStyle?: CSSProperties;
-  direction?: 'column' | 'row';
+  direction?: Direction;
   space?: number;
 }
 
@@ -57,6 +72,10 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
     ...otherProps
   } = props;
 
+  const visibleButtons = buttons.filter(
+    (button) => isSeparator(button) || button?.visible !== false,
+  );
+
   return (
     <Popover
       minimal
@@ -66,15 +85,7 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
       enforceFocus={false}
       content={
         <Container style={contentStyle} flexDirection={direction} gap={space}>
-          {buttons
-            .filter((button) => button?.visible !== false)
-            .map(({ title, visible, ...otherProps }, index) => (
-              <ActionButton
-                key={title || index}
-                tooltipProps={{ content: title || '', compact: true }}
-                {...otherProps}
-              />
-            ))}
+          <ActionButtons buttons={visibleButtons} direction={direction} />
         </Container>
       }
       {...otherProps}
@@ -82,4 +93,35 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
       {children}
     </Popover>
   );
+}
+interface ActionButtonsProps {
+  buttons: ActionButtonProps[];
+  direction: Direction;
+}
+
+function ActionButtons(props: ActionButtonsProps) {
+  const { buttons, direction } = props;
+
+  return buttons.map((button, index) => {
+    if (isSeparator(button)) {
+      if (direction === 'row') {
+        // eslint-disable-next-line react/no-array-index-key
+        return <HorizontalSeparator key={index} />;
+      }
+
+      // eslint-disable-next-line react/no-array-index-key
+      return <VerticalSeparator key={index} />;
+    }
+
+    const { title, visible, ...otherProps } = button;
+
+    return (
+      <ActionButton
+        // eslint-disable-next-line react/no-array-index-key
+        key={index}
+        tooltipProps={{ content: title || '', compact: true }}
+        {...otherProps}
+      />
+    );
+  });
 }
