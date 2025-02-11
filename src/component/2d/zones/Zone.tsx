@@ -29,6 +29,8 @@ interface ZoneProps {
   zoneData: ZoneType;
 }
 
+const buttonSize = 16;
+
 function Zone({ zoneData }: ZoneProps) {
   const { x, y, id, signals, assignment } = zoneData;
   const { setData } = useShareData<{ id: string }>();
@@ -51,6 +53,8 @@ function Zone({ zoneData }: ZoneProps) {
   }, [zoneData]);
 
   const isActive = highlightZone.isActive || assignmentZone.isActive;
+  const zoneWidth = scaleX(x1) - scaleX(x2);
+  const zoneHeight = scaleY(y2) - scaleY(y1);
 
   return (
     <g
@@ -65,12 +69,20 @@ function Zone({ zoneData }: ZoneProps) {
       }}
     >
       {showZones && (
-        <GroupContainer transform={`translate(${scaleX(x2)},${scaleY(y1)})`}>
+        <GroupContainer
+          transform={`translate(${scaleX(x2)},${scaleY(y1)})`}
+          pointer-events="all"
+        >
           <g
             data-no-export="true"
-            transform="translate(-16 -16)"
+            transform={`translate(-${buttonSize} -${buttonSize})`}
             className="target"
           >
+            <rect
+              width={zoneWidth + buttonSize * 2}
+              height={zoneHeight + buttonSize * 2}
+              fill="transparent"
+            />
             {!assignment && (
               <SVGButton
                 renderIcon={(props) => <PiTextTBold {...props} />}
@@ -83,8 +95,8 @@ function Zone({ zoneData }: ZoneProps) {
           </g>
           <rect
             x="0"
-            width={scaleX(x1) - scaleX(x2)}
-            height={scaleY(y2) - scaleY(y1)}
+            width={zoneWidth}
+            height={zoneHeight}
             className="integral-area"
             fill={isActive ? '#ff6f0057' : '#0000000f'}
             stroke={reduceOpacity ? '#343a40' : 'darkgreen'}
