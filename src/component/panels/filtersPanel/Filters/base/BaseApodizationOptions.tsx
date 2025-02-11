@@ -257,7 +257,7 @@ function OptionsSection(options: OptionsSectionProps) {
 
   function handleToggleApply(event) {
     const checked = event.target.checked;
-    setValue(`options.${algorithm}.apply`, checked);
+    setValue(`options.${algorithm}.apply`, checked, { shouldDirty: true });
     onChange();
   }
 
