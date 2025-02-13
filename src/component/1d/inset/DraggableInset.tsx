@@ -304,7 +304,10 @@ function useActionButtons(insetKey: string, view: InsetView) {
     },
     {
       icon: <SvgNmrPeaksTopLabels />,
-      title: `${view.peaks.displayingMode === 'spread' ? 'Single' : 'Spread'} mode`,
+      title:
+        view.peaks.displayingMode === 'spread'
+          ? 'Top of the peak'
+          : 'Top of the spectrum',
       onClick: () => handleToggleInsetsDisplayingPeaksMode('peaks'),
       active: view.peaks.displayingMode === 'spread',
     },
@@ -338,7 +341,10 @@ function useActionButtons(insetKey: string, view: InsetView) {
     },
     {
       icon: <SvgNmrPeaksTopLabels />,
-      title: `${view.ranges.displayingMode === 'spread' ? 'Single' : 'Spread'} mode`,
+      title:
+        view.ranges.displayingMode === 'spread'
+          ? 'Top of the peak'
+          : 'Top of the spectrum',
       onClick: () => handleToggleInsetsDisplayingPeaksMode('ranges'),
       active: view.ranges.displayingMode === 'spread',
     },
