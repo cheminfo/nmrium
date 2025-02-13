@@ -306,7 +306,10 @@ function RangesHeader({
           {
             disabled: !hasRanges,
             icon: <SvgNmrPeaksTopLabels />,
-            tooltip: `${displayingMode === 'spread' ? 'Single' : 'Spread'} mode`,
+            tooltip:
+              displayingMode === 'spread'
+                ? 'Top of the peak'
+                : 'Top of the spectrum',
             onClick: toggleDisplayingMode,
             active: displayingMode === 'spread',
           },
