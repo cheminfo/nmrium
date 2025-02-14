@@ -2,7 +2,7 @@ import { EventEmitter } from 'eventemitter3';
 import { useEffect } from 'react';
 
 import type {
-  BrushTrackerContext,
+  BrushTrackerData,
   ClickOptions,
 } from '../EventsTrackers/BrushTracker.js';
 
@@ -20,7 +20,7 @@ Object.freeze(Emitter);
 export type EventEmitterClickOptions = ClickOptions & { xPPM: number };
 
 interface UseEventOptions {
-  onBrushEnd?: (options: BrushTrackerContext & { range: number[] }) => void;
+  onBrushEnd?: (options: BrushTrackerData & { range: number[] }) => void;
   onClick?: (options: EventEmitterClickOptions) => void;
 }
 

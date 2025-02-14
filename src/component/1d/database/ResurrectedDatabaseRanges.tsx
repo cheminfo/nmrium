@@ -22,7 +22,7 @@ function ResurrectedDatabaseRanges() {
 
   const { info } = useSpectrum(emptyData) as Spectrum1D;
   const { highlight } = useHighlightData();
-  const { scaleX } = useScaleChecked();
+  const { scaleX, spectraBottomMargin } = useScaleChecked();
   const { color, marginBottom } = usePanelPreferences('database');
 
   if (highlight.sourceData?.type !== HighlightEventSource.DATABASE) {
@@ -62,6 +62,7 @@ function ResurrectedDatabaseRanges() {
     verticalAlign,
     yDomain,
     yDomains,
+    spectraBottomMargin,
   });
 
   const finalScaleX = scaleX();

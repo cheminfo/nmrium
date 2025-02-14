@@ -3,6 +3,7 @@ import { xyReduce } from 'ml-spectra-processing';
 
 import { getIntegralYScale } from '../1d/utilities/scale.js';
 import { useChartData } from '../context/ChartContext.js';
+import { useScaleChecked } from '../context/ScaleContext.js';
 import { PathBuilder } from '../utility/PathBuilder.js';
 
 import { useXScale } from './useXScale.js';
@@ -12,11 +13,13 @@ function useIntegralYDomain(
   scaleRatio = 1,
 ): ScaleLinear<number, number, number> {
   const { height, margin } = useChartData();
+  const { spectraBottomMargin } = useScaleChecked();
   return getIntegralYScale({
     height,
     margin,
     yDomain: [0, max],
     scaleRatio,
+    spectraBottomMargin,
   });
 }
 

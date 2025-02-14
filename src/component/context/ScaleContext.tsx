@@ -8,6 +8,7 @@ import {
   getXScale,
   getYScale,
 } from '../1d/utilities/scale.js';
+import { useSpectraBottomMargin } from '../hooks/useSpectraBottomMargin.js';
 import { useVerticalAlign } from '../hooks/useVerticalAlign.js';
 
 import { useChartData } from './ChartContext.js';
@@ -20,11 +21,13 @@ interface ScaleState {
   scaleX: ScaleLinearNumberFunction | null;
   scaleY: ScaleLinearNumberFunction | null;
   shiftY: number;
+  spectraBottomMargin: number;
 }
 const scaleInitialState: ScaleState = {
   scaleX: null,
   scaleY: null,
   shiftY: 0,
+  spectraBottomMargin: 10,
 };
 
 export const ScaleContext = createContext<ScaleState>(scaleInitialState);
@@ -50,6 +53,7 @@ export function ScaleProvider({ children }) {
   const { mode, width, height, margin, xDomain, xDomains, yDomain, yDomains } =
     useChartData();
   const verticalAlign = useVerticalAlign();
+  const spectraBottomMargin = useSpectraBottomMargin();
 
   const isInset = useIsInset();
 
@@ -72,15 +76,30 @@ export function ScaleProvider({ children }) {
   const scaleY = useCallback<ScaleLinearNumberFunction>(
     (spectrumId = null) => {
       if (isInset) {
-        return getInsetYScale({ height, yDomain, margin });
+        return getInsetYScale({ height, yDomain, margin, spectraBottomMargin });
       }
 
       return getYScale(
-        { height, margin, yDomains, yDomain, verticalAlign },
+        {
+          height,
+          margin,
+          yDomains,
+          yDomain,
+          verticalAlign,
+          spectraBottomMargin,
+        },
         spectrumId,
       );
     },
-    [height, isInset, margin, verticalAlign, yDomain, yDomains],
+    [
+      spectraBottomMargin,
+      height,
+      isInset,
+      margin,
+      verticalAlign,
+      yDomain,
+      yDomains,
+    ],
   );
 
   const scaleState = useMemo(() => {
@@ -92,8 +111,16 @@ export function ScaleProvider({ children }) {
       shiftY = 0;
     }
 
-    return { scaleX, scaleY, shiftY };
-  }, [verticalAlign, isInset, scaleX, scaleY, height, yDomains]);
+    return { scaleX, scaleY, shiftY, spectraBottomMargin };
+  }, [
+    verticalAlign,
+    isInset,
+    scaleX,
+    scaleY,
+    height,
+    yDomains,
+    spectraBottomMargin,
+  ]);
 
   return (
     <ScaleContext.Provider value={scaleState}>{children}</ScaleContext.Provider>

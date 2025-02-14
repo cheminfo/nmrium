@@ -7,7 +7,7 @@ import {
 } from '../../data/data1d/Spectrum1D/index.js';
 import { cutRange } from '../../data/data1d/Spectrum1D/ranges/createRange.js';
 import type {
-  BrushTrackerContext,
+  BrushTrackerData,
   OnBrush,
   OnClick,
   OnZoom,
@@ -18,7 +18,7 @@ import { useDispatch } from '../context/DispatchContext.js';
 import { useMapKeyModifiers } from '../context/KeyModifierContext.js';
 import { useLogger } from '../context/LoggerContext.js';
 import { usePreferences } from '../context/PreferencesContext.js';
-import { useScale } from '../context/ScaleContext.js';
+import { useScaleChecked } from '../context/ScaleContext.js';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
 import { usePanelPreferences } from '../hooks/usePanelPreferences.js';
 import useSpectrum from '../hooks/useSpectrum.js';
@@ -30,7 +30,28 @@ import { options } from '../toolbar/ToolTypes.js';
 import Events from '../utility/Events.js';
 
 import { useInsetOptions } from './inset/InsetProvider.js';
-import { getXScale } from './utilities/scale.js';
+
+function usePixelToPPMConverter() {
+  const { scaleX, scaleY } = useScaleChecked();
+
+  return useCallback(
+    (
+      brushData: Pick<BrushTrackerData, 'startX' | 'endX' | 'startY' | 'endY'>,
+    ) => {
+      const startX = scaleX().invert(brushData.startX);
+      const endX = scaleX().invert(brushData.endX);
+      const startY = scaleY().invert(brushData.startY);
+      const endY = scaleY().invert(brushData.endY);
+      return {
+        startX,
+        endX,
+        startY,
+        endY,
+      };
+    },
+    [scaleX, scaleY],
+  );
+}
 
 export function BrushTracker1D({ children }) {
   const state = useChartData();
@@ -51,7 +72,8 @@ export function BrushTracker1D({ children }) {
     activeTab,
   );
   const { logger } = useLogger();
-  const scaleState = useScale();
+  const scaleState = useScaleChecked();
+  const convertToPPM = usePixelToPPMConverter();
 
   const { getModifiersKey, primaryKeyIdentifier } = useMapKeyModifiers();
   const activeSpectrum = useActiveSpectrum();
@@ -60,30 +82,31 @@ export function BrushTracker1D({ children }) {
   const [isOpenAnalysisModal, openAnalysisModal, closeAnalysisModal] =
     useOnOff(false);
 
-  const [brushData, setBrushData] = useState<BrushTrackerContext | null>(null);
+  const [brushData, setBrushData] = useState<BrushTrackerData | null>(null);
 
   function handleBrush(brushData) {
-    const { startX: startXInPixel, endX: endXInPixel, mouseButton } = brushData;
+    const { mouseButton } = brushData;
+    const brushDataInPPM = convertToPPM(brushData);
 
     if (mouseButton === 'secondary') {
-      const scaleX = getXScale(state);
       if (!brushStartRef.current) {
-        brushStartRef.current = scaleX.invert(startXInPixel);
+        brushStartRef.current = brushDataInPPM.startX;
       }
-      const shiftX = scaleX.invert(endXInPixel) - brushStartRef.current;
+
+      const shiftX = brushDataInPPM.endX - brushStartRef.current;
 
       dispatch({ type: 'MOVE', payload: { shiftX, shiftY: 0 } });
     }
   }
   function handleInsetBrush(brushData) {
-    const { startX: startXInPixel, endX: endXInPixel, mouseButton } = brushData;
+    const { mouseButton } = brushData;
+    const brushDataInPPM = convertToPPM(brushData);
 
     if (mouseButton === 'secondary') {
-      const scaleX = getXScale(state);
       if (!brushStartRef.current) {
-        brushStartRef.current = scaleX.invert(startXInPixel);
+        brushStartRef.current = brushDataInPPM.startX;
       }
-      const shiftX = scaleX.invert(endXInPixel) - brushStartRef.current;
+      const shiftX = brushDataInPPM.endX - brushStartRef.current;
 
       if (!inset) return;
 
@@ -99,6 +122,7 @@ export function BrushTracker1D({ children }) {
       //reset the brush start
       brushStartRef.current = null;
       setBrushData(brushData);
+      const brushDataInPPM = convertToPPM(brushData);
 
       const keyModifiers = getModifiersKey(brushData as unknown as MouseEvent);
 
@@ -109,14 +133,9 @@ export function BrushTracker1D({ children }) {
 
       if (brushData.mouseButton === 'main') {
         const propagateEvent = () => {
-          if (!scaleState.scaleX || !scaleState.scaleY) return;
-
-          const { startX, endX } = brushData;
-          const startXPPM = scaleState.scaleX().invert(startX);
-          const endXPPM = scaleState.scaleX().invert(endX);
           Events.emit('brushEnd', {
             ...brushData,
-            range: [startXPPM, endXPPM].sort((a, b) => a - b),
+            range: [brushDataInPPM.startX, brushDataInPPM.endX],
           });
         };
 
@@ -154,19 +173,14 @@ export function BrushTracker1D({ children }) {
                 break;
               }
               case options.multipleSpectraAnalysis.id:
-                if (scaleState.scaleX) {
-                  const { startX, endX } = brushData;
-                  const start = scaleState.scaleX().invert(startX);
-                  const end = scaleState.scaleX().invert(endX);
-                  dispatchPreferences({
-                    type: 'ANALYZE_SPECTRA',
-                    payload: {
-                      start,
-                      end,
-                      nucleus: activeTab,
-                    },
-                  });
-                }
+                dispatchPreferences({
+                  type: 'ANALYZE_SPECTRA',
+                  payload: {
+                    start: brushData.startX,
+                    end: brushData.endX,
+                    nucleus: activeTab,
+                  },
+                });
                 break;
 
               case options.peakPicking.id:
@@ -248,7 +262,7 @@ export function BrushTracker1D({ children }) {
 
         if (executeDefaultAction && selectedTool != null) {
           if (enableDefaultBrush) {
-            dispatch({ type: 'BRUSH_END', payload: brushData });
+            dispatch({ type: 'BRUSH_END', payload: brushDataInPPM });
           }
 
           propagateEvent();
@@ -259,7 +273,6 @@ export function BrushTracker1D({ children }) {
       getModifiersKey,
       state,
       selectedTool,
-      scaleState,
       primaryKeyIdentifier,
       dispatch,
       spectrum,
@@ -267,10 +280,13 @@ export function BrushTracker1D({ children }) {
       dispatchPreferences,
       activeTab,
       openAnalysisModal,
+      convertToPPM,
     ],
   );
   const handleInsetBrushEnd = useCallback<OnBrush>(
     (brushData) => {
+      const brushDataInPPM = convertToPPM(brushData);
+
       //reset the brush start
       brushStartRef.current = null;
 
@@ -278,13 +294,16 @@ export function BrushTracker1D({ children }) {
         return;
       }
 
-      const { startX, endX } = brushData;
       dispatch({
         type: 'BRUSH_END_INSET',
-        payload: { insetKey: inset.id, startX, endX },
+        payload: {
+          insetKey: inset.id,
+          startX: brushDataInPPM.startX,
+          endX: brushDataInPPM.endX,
+        },
       });
     },
-    [inset, dispatch],
+    [convertToPPM, inset, dispatch],
   );
 
   const handleOnDoubleClick = useCallback(() => {

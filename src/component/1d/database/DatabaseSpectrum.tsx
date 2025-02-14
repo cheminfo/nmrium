@@ -21,7 +21,7 @@ function DatabaseSpectrum() {
   const [path, setPath] = useState<string>();
   const [isLoading, setLoading] = useState<boolean>(false);
   const { highlight } = useHighlightData();
-  const { scaleX } = useScaleChecked();
+  const { scaleX, spectraBottomMargin } = useScaleChecked();
   const toaster = useToaster();
   const { color, marginBottom } = usePanelPreferences('database');
   const { jcampURL: jcampRelativeURL = '', baseURL } =
@@ -39,8 +39,9 @@ function DatabaseSpectrum() {
           top: margin.top,
         },
         scaleRatio: 1,
+        spectraBottomMargin,
       }),
-    [height, margin, marginBottom],
+    [height, margin, marginBottom, spectraBottomMargin],
   );
 
   const loadSpectrum = useRef(

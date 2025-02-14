@@ -22,6 +22,7 @@ import { getYScale } from './utilities/scale.js';
 const emptyData = { data: {}, info: {} };
 
 function useWindowYScale() {
+  const { spectraBottomMargin } = useScaleChecked();
   const { height, margin, yDomains } = useChartData();
   const verticalAlign = useVerticalAlign();
   return getYScale({
@@ -30,6 +31,7 @@ function useWindowYScale() {
     verticalAlign,
     yDomain: [0, 1],
     yDomains,
+    spectraBottomMargin,
   });
 }
 
