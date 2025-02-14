@@ -113,12 +113,14 @@ export function InnerStocsy({ scaleRatio, chemicalShift }) {
 
 function useYScale(scaleRatio: number, yDomain: number[]) {
   const { margin, height } = useChartData();
+  const { spectraBottomMargin } = useScaleChecked();
 
   return getYScaleWithRation({
     height,
     yDomain,
     scaleRatio,
     margin,
+    spectraBottomMargin,
   });
 }
 

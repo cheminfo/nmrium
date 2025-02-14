@@ -14,7 +14,7 @@ import {
 import type { ActionType } from '../reducer/types/ActionType.js';
 
 type Step = 'initial' | 'start' | 'end' | 'brushing';
-export interface BrushTrackerContext {
+export interface BrushTrackerData {
   step: Step;
   startX: number;
   endX: number;
@@ -31,7 +31,7 @@ const MouseButtons: Record<number, MouseButton> = {
   0: 'main',
   2: 'secondary',
 } as const;
-interface BrushTrackerState extends BrushTrackerContext {
+interface BrushTrackerState extends BrushTrackerData {
   step: Step;
   startX: number;
   endX: number;
@@ -64,7 +64,7 @@ function stopPageScrolling(event) {
   event.preventDefault();
 }
 
-export const BrushContext = createContext<BrushTrackerContext>(initialState);
+export const BrushContext = createContext<BrushTrackerData>(initialState);
 
 export function useBrushTracker() {
   if (!BrushContext) {
@@ -87,7 +87,7 @@ export type ZoomOptions = Pick<
 > &
   Position;
 export type OnZoom = (options: ZoomOptions) => void;
-export type OnBrush = (state: BrushTrackerContext) => void;
+export type OnBrush = (state: BrushTrackerData) => void;
 
 interface BrushTrackerProps {
   children: ReactNode;

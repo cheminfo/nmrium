@@ -12,7 +12,6 @@ import { useVerticalAlign } from '../hooks/useVerticalAlign.js';
 
 import Line from './Line.js';
 import { useInsetOptions } from './inset/InsetProvider.js';
-import { SPECTRA_BOTTOM_MARGIN } from './utilities/scale.js';
 
 const BOX_SIZE = 10;
 
@@ -75,10 +74,10 @@ function HeadlightRectStackMode(props: HeadlightRectStackModeProps) {
     height,
     toolOptions: { selectedTool },
   } = useChartData();
-  const { shiftY } = useScaleChecked();
+  const { shiftY, spectraBottomMargin } = useScaleChecked();
   const verticalAlign = useVerticalAlign();
   const innerWidth = width - margin.left - margin.right;
-  const innerHeight = height - margin.bottom - SPECTRA_BOTTOM_MARGIN;
+  const innerHeight = height - margin.bottom - spectraBottomMargin;
   const { setActiveSpectrum } = useSetActiveSpectrumAction();
 
   if (

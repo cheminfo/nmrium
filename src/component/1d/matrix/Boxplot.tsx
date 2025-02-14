@@ -44,12 +44,14 @@ interface UsePathAreaPoints {
 
 function useYScale(scaleRatio: number, yDomain) {
   const { margin, height } = useChartData();
+  const { spectraBottomMargin } = useScaleChecked();
 
   return getYScaleWithRation({
     height,
     yDomain,
     scaleRatio,
     margin,
+    spectraBottomMargin,
   });
 }
 

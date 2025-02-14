@@ -240,21 +240,15 @@ function getXScale(
 }
 
 function handleInsetBrushEnd(draft: Draft<State>, action: BrushEndInsetAction) {
-  const { insetKey, startX: inputStartX, endX: inputEndX } = action.payload;
-  const { width: baseSize } = draft;
+  const { insetKey, ...options } = action.payload;
   const inset = getInset(draft, insetKey);
-
   if (!inset) return;
 
-  const { mode } = draft;
+  const startX = Math.min(options.startX, options.endX);
+  const endX = Math.max(options.startX, options.endX);
 
-  const xScale = getXScale(inset, { baseSize, mode });
-
-  const startX = xScale.invert(inputStartX);
-  const endX = xScale.invert(inputEndX);
-  const xDomain = startX > endX ? [endX, startX] : [startX, endX];
-  inset.xDomain = xDomain;
-  inset.zoomHistory.push({ xDomain, yDomain: inset.yDomain });
+  inset.xDomain = [startX, endX];
+  inset.zoomHistory.push({ xDomain: [startX, endX], yDomain: inset.yDomain });
 }
 
 interface ZoomWithScroll1DOptions {

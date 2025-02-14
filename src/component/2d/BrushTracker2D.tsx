@@ -1,6 +1,7 @@
 import { useCallback, useRef } from 'react';
 
 import type {
+  BrushTrackerData,
   OnBrush,
   OnClick,
   OnDoubleClick,
@@ -16,7 +17,30 @@ import {
   get2DDimensionLayout,
   getLayoutID,
 } from './utilities/DimensionLayout.js';
-import { get2DXScale, get2DYScale } from './utilities/scale.js';
+import { useScale2DX, useScale2DY } from './utilities/scale.js';
+
+function usePixelToPPMConverter() {
+  const scaleX = useScale2DX();
+  const scaleY = useScale2DY();
+
+  return useCallback(
+    (
+      brushData: Pick<BrushTrackerData, 'startX' | 'endX' | 'startY' | 'endY'>,
+    ) => {
+      const startX = scaleX.invert(brushData.startX);
+      const endX = scaleX.invert(brushData.endX);
+      const startY = scaleY.invert(brushData.startY);
+      const endY = scaleY.invert(brushData.endY);
+      return {
+        startX,
+        endX,
+        startY,
+        endY,
+      };
+    },
+    [scaleX, scaleY],
+  );
+}
 
 export function BrushTracker2D({ children }) {
   const state = useChartData();
@@ -28,27 +52,18 @@ export function BrushTracker2D({ children }) {
   const brushStartRef = useRef<{ x: number; y: number } | null>(null);
   const { getModifiersKey, primaryKeyIdentifier } = useMapKeyModifiers();
   const DIMENSION = get2DDimensionLayout(state);
+  const convertToPPM = usePixelToPPMConverter();
 
   function handleBrush(brushData) {
-    const {
-      startX: startXInPixel,
-      endX: endXInPixel,
-      startY: startYInPixel,
-      endY: endYInPixel,
-      mouseButton,
-    } = brushData;
+    const { startX, endX, startY, endY } = convertToPPM(brushData);
 
-    if (mouseButton === 'secondary') {
-      const scaleX = get2DXScale(state);
-      const scaleY = get2DYScale(state);
+    if (brushData.mouseButton === 'secondary') {
       if (!brushStartRef.current) {
-        const x = scaleX.invert(startXInPixel);
-        const y = scaleY.invert(startYInPixel);
-        brushStartRef.current = { x, y };
+        brushStartRef.current = { x: startX, y: startY };
       }
       const { x, y } = brushStartRef.current;
-      const shiftX = scaleX.invert(endXInPixel) - x;
-      const shiftY = scaleY.invert(endYInPixel) - y;
+      const shiftX = endX - x;
+      const shiftY = endY - y;
 
       dispatch({ type: 'MOVE', payload: { shiftX, shiftY } });
     }
@@ -56,6 +71,8 @@ export function BrushTracker2D({ children }) {
 
   const handleBrushEnd = useCallback<OnBrush>(
     (brushData) => {
+      const brushDataInPPM = convertToPPM(brushData);
+
       //reset the brush start
       brushStartRef.current = null;
 
@@ -100,7 +117,7 @@ export function BrushTracker2D({ children }) {
             return dispatch({
               type: 'BRUSH_END',
               payload: {
-                ...brushData,
+                ...brushDataInPPM,
                 trackID: getLayoutID(DIMENSION, brushData),
               },
             });
@@ -108,7 +125,14 @@ export function BrushTracker2D({ children }) {
         }
       }
     },
-    [getModifiersKey, DIMENSION, selectedTool, primaryKeyIdentifier, dispatch],
+    [
+      convertToPPM,
+      getModifiersKey,
+      DIMENSION,
+      selectedTool,
+      primaryKeyIdentifier,
+      dispatch,
+    ],
   );
 
   const handleOnDoubleClick: OnDoubleClick = useCallback(

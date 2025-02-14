@@ -5,7 +5,7 @@ import type { Spectrum, Spectrum1D, Spectrum2D } from 'nmr-load-save';
 import type { BaselineCorrectionZone } from 'nmr-processing';
 
 import { contoursManager } from '../../../data/data2d/Spectrum2D/contours.js';
-import { getXScale, getYScale } from '../../1d/utilities/scale.js';
+import { getXScale } from '../../1d/utilities/scale.js';
 import type { Layout } from '../../2d/utilities/DimensionLayout.js';
 import { LAYOUT } from '../../2d/utilities/DimensionLayout.js';
 import { get2DXScale, get2DYScale } from '../../2d/utilities/scale.js';
@@ -278,32 +278,18 @@ function handleToggleRealImaginaryVisibility(draft: Draft<State>) {
 }
 
 function handleBrushEnd(draft: Draft<State>, action: BrushEndAction) {
-  const is2D = draft.displayerMode === '2D';
+  const options = action.payload;
 
-  const { height, margin, yDomain, yDomains, width, xDomains, xDomain, mode } =
-    draft;
+  const startX = Math.min(options.startX, options.endX);
+  const endX = Math.max(options.startX, options.endX);
+  const startY = Math.min(options.startY, options.endY);
+  const endY = Math.max(options.startY, options.endY);
 
-  const xScale = getXScale({ width, xDomains, xDomain, mode, margin });
-  const verticalAlign = getVerticalAlign(draft);
-  const yScale = is2D
-    ? get2DYScale(draft)
-    : getYScale({ height, margin, yDomain, yDomains, verticalAlign });
-
-  const {
-    startX: _startX,
-    endX: _endX,
-    startY: _startY,
-    endY: _endY,
-    trackID,
-  } = action.payload;
-
-  const startX = xScale.invert(_startX);
-  const endX = xScale.invert(_endX);
-  const startY = yScale.invert(_startY);
-  const endY = yScale.invert(_endY);
-  const domainX = startX > endX ? [endX, startX] : [startX, endX];
-  const domainY = startY > endY ? [endY, startY] : [startY, endY];
-  addToBrushHistory(draft, { trackID, xDomain: domainX, yDomain: domainY });
+  addToBrushHistory(draft, {
+    trackID: options.trackID,
+    xDomain: [startX, endX],
+    yDomain: [startY, endY],
+  });
 }
 
 interface ZoomWithScroll1DOptions {
