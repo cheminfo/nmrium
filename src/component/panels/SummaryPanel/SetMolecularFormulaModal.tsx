@@ -112,7 +112,7 @@ function ManualFormula(props) {
   }
 
   const { handleSubmit, control } = useForm({
-    defaultValues: { mf: correlations?.options?.mf },
+    defaultValues: { mf: correlations?.options?.mf ?? '' },
     resolver: yupResolver(validationSchema),
   });
 

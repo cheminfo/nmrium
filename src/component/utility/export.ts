@@ -352,7 +352,6 @@ async function copyBlobToClipboard(canvas: OffscreenCanvas) {
     navigator.userAgent,
   );
   if (typeof ClipboardItem !== 'undefined') {
-    // eslint-disable-next-line @typescript-eslint/use-unknown-in-catch-callback-variable
     await writeImageToClipboard(pngBlob, isSafari).catch(reportError);
   } else {
     const screenCanvas = transferToCanvas(canvas);

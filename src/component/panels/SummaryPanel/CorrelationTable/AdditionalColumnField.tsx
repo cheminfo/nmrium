@@ -42,7 +42,7 @@ function AdditionalColumnField({
   const highlightIDsCommonLinks = useMemo(() => {
     return commonLinks.flatMap((link: Link) => {
       const ids: string[] = [];
-      if (link.pseudo === false) {
+      if (!link.pseudo) {
         ids.push(link.signal.id, buildID(link.signal.id, 'Crosshair'));
         const _id = findRangeOrZoneID(
           spectraData,

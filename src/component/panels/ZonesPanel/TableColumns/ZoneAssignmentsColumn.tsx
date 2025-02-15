@@ -61,6 +61,8 @@ function ZoneAssignmentColumn({
   return (
     <AssignmentsCell
       {...rowSpanTags}
+      // TODO: Fix this misused spread operator.
+      // eslint-disable-next-line @typescript-eslint/no-misused-spread
       {...onHover}
       {...{ onClick: (e) => onClick(e, assignment, axis) }}
       hideRemoveAssignmentButton={!assignment.isActive}
