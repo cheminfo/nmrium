@@ -73,7 +73,7 @@ function MoveLink({
       }> = [];
       for (const correlation of correlations) {
         if (
-          correlation.pseudo === false &&
+          !correlation.pseudo &&
           correlation.atomType === link.atomType[dim]
         ) {
           selectionData.push({

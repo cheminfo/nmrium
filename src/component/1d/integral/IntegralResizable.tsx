@@ -7,9 +7,9 @@ import { useScaleChecked } from '../../context/ScaleContext.js';
 import { ResizerWithScale } from '../../elements/ResizerWithScale.js';
 import { HighlightEventSource, useHighlight } from '../../highlight/index.js';
 import { useResizerStatus } from '../../hooks/useResizerStatus.js';
+import useSpectrum from '../../hooks/useSpectrum.js';
 
 import { IntegralIndicator } from './IntegralIndicator.js';
-import useSpectrum from '../../hooks/useSpectrum.js';
 
 const Group = styled.g<{ isActive: boolean }>`
   rect {

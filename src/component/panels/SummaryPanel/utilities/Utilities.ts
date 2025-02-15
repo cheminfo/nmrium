@@ -476,7 +476,7 @@ function isInView(
   displayerMode: DisplayerMode,
   correlation: Correlation,
 ): boolean {
-  if (correlation.pseudo === true) {
+  if (correlation.pseudo) {
     return false;
   }
 

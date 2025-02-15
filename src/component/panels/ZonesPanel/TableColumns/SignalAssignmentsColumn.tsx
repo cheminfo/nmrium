@@ -44,6 +44,8 @@ function SignalAssignmentsColumn({
 
   return (
     <AssignmentsCell
+      // TODO: Fix this misused spread operator.
+      // eslint-disable-next-line @typescript-eslint/no-misused-spread
       {...onHover}
       {...{ onClick: (e) => onClick(e, assignment, axis) }}
       style={{ padding: '0', ...tdCss }}

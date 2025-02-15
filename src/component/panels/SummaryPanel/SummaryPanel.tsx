@@ -104,7 +104,9 @@ function SummaryPanel() {
     molecularFormula: false,
   });
 
-  const [additionalColumnData, setAdditionalColumnData] = useState([]);
+  const [additionalColumnData, setAdditionalColumnData] = useState<
+    Correlation[]
+  >([]);
   const [
     selectedAdditionalColumnsAtomType,
     setSelectedAdditionalColumnsAtomType,
@@ -114,7 +116,7 @@ function SummaryPanel() {
 
   const filteredCorrelationsData = useMemo(() => {
     const isInView = (correlation: Correlation): boolean => {
-      if (correlation.pseudo === true) {
+      if (correlation.pseudo) {
         return false;
       }
       const atomTypesInView = activeTab
@@ -446,7 +448,7 @@ function SummaryPanel() {
         action === 'unmove' ||
         action === 'setPathLength'
       ) {
-        if (link && link.pseudo === false) {
+        if (link && !link.pseudo) {
           if (action === 'remove') {
             deleteSignalHandler(link);
           } else if (action === 'setPathLength') {
