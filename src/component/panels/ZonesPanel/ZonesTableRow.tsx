@@ -3,14 +3,9 @@
 import lodashGet from 'lodash/get.js';
 import type { Zones2DNucleusPreferences } from 'nmr-load-save';
 import type { CSSProperties, MouseEvent } from 'react';
-import { useCallback, useMemo } from 'react';
 
-import { buildID } from '../../../data/utilities/Concatenation.js';
-import type {
-  AssignmentsData,
-  Axis,
-} from '../../assignment/AssignmentsContext.js';
 import { useAssignment } from '../../assignment/AssignmentsContext.js';
+import type { Axis } from '../../assignment/AssignmentsContext.js';
 import { ContextMenu } from '../../elements/ContextMenuBluePrint.js';
 import type { TableContextMenuProps } from '../../elements/ReactTable/ReactTable.js';
 import { useHighlight } from '../../highlight/index.js';
@@ -26,6 +21,16 @@ import type { ZoneData } from './hooks/useMapZones.js';
 const HighlightedRowStyle: CSSProperties = { backgroundColor: '#ff6f0057' };
 
 const ConstantlyHighlightedRowStyle = { backgroundColor: '#f5f5dc' };
+
+export type OnHover = Pick<
+  React.HTMLAttributes<HTMLTableCellElement>,
+  'onMouseEnter' | 'onMouseLeave'
+>;
+
+export interface AssignmentsColumnProps {
+  rowData: ZoneData;
+  onUnlink: (event: any, flag: boolean, axis: Axis) => void;
+}
 
 interface ZonesTableRowProps extends TableContextMenuProps {
   rowData: ZoneData;
@@ -49,27 +54,9 @@ function ZonesTableRow({
 }: ZonesTableRowProps) {
   const assignmentZone = useAssignment(rowData.id);
   const highlightZone = useHighlight([assignmentZone.id]);
-  const highlightZoneX = useHighlight(
-    [buildID(assignmentZone.id, 'X')].concat(assignmentZone.assigned?.x || []),
-  );
-
-  const highlightZoneY = useHighlight(
-    [buildID(assignmentZone.id, 'Y')].concat(assignmentZone.assigned?.y || []),
-  );
 
   const assignmentSignal = useAssignment(rowData.tableMetaInfo.id);
-  const highlightSignalX = useHighlight(
-    [buildID(assignmentSignal.id, 'X')].concat(
-      assignmentSignal.assigned?.x || [],
-      buildID(assignmentSignal.id, 'Crosshair'),
-    ),
-  );
-  const highlightSignalY = useHighlight(
-    [buildID(assignmentSignal.id, 'Y')].concat(
-      assignmentSignal.assigned?.y || [],
-      buildID(assignmentSignal.id, 'Crosshair'),
-    ),
-  );
+
   const {
     showSerialNumber,
     showAssignment,
@@ -80,107 +67,47 @@ function ZonesTableRow({
     showAssignmentLabel,
   } = usePanelPreferences('zones', nucleus) as Zones2DNucleusPreferences;
 
-  const rowSpanTags = useMemo(() => {
-    return {
-      rowSpan: rowData.tableMetaInfo.rowSpan,
-      style: lodashGet(rowData, 'tableMetaInfo.hide', false)
-        ? { display: 'none' }
-        : null,
-    };
-  }, [rowData]);
+  const rowSpanTags = {
+    rowSpan: rowData.tableMetaInfo.rowSpan,
+    style: lodashGet(rowData, 'tableMetaInfo.hide', false)
+      ? { display: 'none' }
+      : null,
+  };
 
-  const unlinkHandler = useCallback(
-    (event: MouseEvent, isOnZoneLevel: boolean, axis: Axis) => {
-      // event handling here in case of unlink button clicked
-      if (event) {
-        event.stopPropagation();
-      }
-      onUnlink(rowData, isOnZoneLevel, rowData.tableMetaInfo.signalIndex, axis);
-      if (axis === 'x') {
-        if (isOnZoneLevel !== undefined) {
-          if (isOnZoneLevel) {
-            assignmentZone.removeAll('x');
-          } else {
-            assignmentSignal.removeAll('x');
-          }
-        }
-      } else if (axis === 'y') {
-        if (isOnZoneLevel !== undefined) {
-          if (isOnZoneLevel) {
-            assignmentZone.removeAll('y');
-          } else {
-            assignmentSignal.removeAll('y');
-          }
-        }
-      } else {
-        assignmentZone.removeAll('x');
-        assignmentSignal.removeAll('x');
-        assignmentZone.removeAll('y');
-        assignmentSignal.removeAll('y');
-      }
-    },
-    [assignmentSignal, assignmentZone, onUnlink, rowData],
-  );
-
-  const clickHandler = useCallback(
-    (event: MouseEvent, assignment: AssignmentsData, axis: Axis) => {
+  function unlinkHandler(
+    event: MouseEvent,
+    isOnZoneLevel: boolean,
+    axis: Axis,
+  ) {
+    // event handling here in case of unlink button clicked
+    if (event) {
       event.stopPropagation();
-      assignment.setActive(axis);
-    },
-    [],
-  );
+    }
 
-  const onHoverZoneX = useMemo(() => {
-    return {
-      onMouseEnter: () => {
-        assignmentZone.show('x');
-        highlightZoneX.show();
-      },
-      onMouseLeave: () => {
-        assignmentZone.hide();
-        highlightZoneX.hide();
-      },
-    };
-  }, [assignmentZone, highlightZoneX]);
-
-  const onHoverZoneY = useMemo(() => {
-    return {
-      onMouseEnter: () => {
-        assignmentZone.show('y');
-        highlightZoneY.show();
-      },
-      onMouseLeave: () => {
-        assignmentZone.hide();
-        highlightZoneY.hide();
-      },
-    };
-  }, [assignmentZone, highlightZoneY]);
-
-  const onHoverSignalX = useMemo(() => {
-    return {
-      onMouseEnter: () => {
-        assignmentSignal.show('x');
-        highlightSignalX.show();
-      },
-      onMouseLeave: () => {
-        assignmentSignal.hide();
-        highlightSignalX.hide();
-      },
-    };
-  }, [assignmentSignal, highlightSignalX]);
-
-  const onHoverSignalY = useMemo(() => {
-    return {
-      onMouseEnter: () => {
-        assignmentSignal.show('y');
-        highlightSignalY.show();
-      },
-      onMouseLeave: () => {
-        assignmentSignal.hide();
-        highlightSignalY.hide();
-      },
-    };
-  }, [assignmentSignal, highlightSignalY]);
+    onUnlink(rowData, isOnZoneLevel, rowData.tableMetaInfo.signalIndex, axis);
+    if (axis === 'x') {
+      if (isOnZoneLevel !== undefined) {
+        if (isOnZoneLevel) {
+          assignmentZone.removeAll('x');
+        } else {
+          assignmentSignal.removeAll('x');
+        }
+      }
+    } else if (axis === 'y') {
+      if (isOnZoneLevel !== undefined) {
+        if (isOnZoneLevel) {
+          assignmentZone.removeAll('y');
+        } else {
+          assignmentSignal.removeAll('y');
+        }
+      }
+    } else {
+      assignmentZone.removeAll('x');
+      assignmentSignal.removeAll('x');
+      assignmentZone.removeAll('y');
+      assignmentSignal.removeAll('y');
+    }
+  }
 
   return (
     <ContextMenu
@@ -198,34 +125,17 @@ function ZonesTableRow({
     >
       {showSerialNumber && <td {...(rowSpanTags as any)}>{rowIndex + 1}</td>}
       {showAssignmentLabel && <ZoneAssignmentLabelColumn rowData={rowData} />}
-      <SignalDeltaColumn
-        rowData={rowData}
-        onHoverSignalX={onHoverSignalX}
-        onHoverSignalY={onHoverSignalY}
-        nucleus={nucleus}
-      />
+      <SignalDeltaColumn rowData={rowData} nucleus={nucleus} />
       {showAssignment && (
         <>
           <SignalAssignmentsColumns
             rowData={rowData}
-            assignmentSignal={assignmentSignal}
-            onHoverSignalX={onHoverSignalX}
-            onHoverSignalY={onHoverSignalY}
-            onClick={clickHandler}
             onUnlink={unlinkHandler}
-            highlightSignalX={highlightSignalX}
-            highlightSignalY={highlightSignalY}
           />
           <ZoneAssignmentsColumns
             rowData={rowData}
-            assignmentZone={assignmentZone}
-            onHoverZoneX={onHoverZoneX}
-            onHoverZoneY={onHoverZoneY}
             rowSpanTags={rowSpanTags}
-            onClick={clickHandler}
             onUnlink={unlinkHandler}
-            highlightZoneX={highlightZoneX}
-            highlightZoneY={highlightZoneY}
           />
         </>
       )}

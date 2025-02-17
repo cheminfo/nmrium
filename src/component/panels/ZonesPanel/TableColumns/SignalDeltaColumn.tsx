@@ -7,19 +7,14 @@ import { usePanelPreferences } from '../../../hooks/usePanelPreferences.js';
 import { formatNumber } from '../../../utility/formatNumber.js';
 import type { ZoneData } from '../hooks/useMapZones.js';
 
+import { useSignalHighlight } from './SignalAssignmentsColumns.js';
+
 interface SignalDeltaColumnProps {
   rowData: ZoneData;
-  onHoverSignalX: any;
-  onHoverSignalY: any;
   nucleus: string;
 }
 
-function SignalDeltaColumn({
-  rowData,
-  onHoverSignalX,
-  onHoverSignalY,
-  nucleus,
-}: SignalDeltaColumnProps) {
+function SignalDeltaColumn({ rowData, nucleus }: SignalDeltaColumnProps) {
   const dispatch = useDispatch();
   const nuclei = nucleus.split(',');
   const { deltaPPM: deltaX } = usePanelPreferences(
@@ -30,6 +25,8 @@ function SignalDeltaColumn({
     'zones',
     nuclei[1],
   ) as Zones1DNucleusPreferences;
+  const { handleOnMouseEnter, handleOnMouseLeave } =
+    useSignalHighlight(rowData);
 
   const signalDeltaX = lodashGet(rowData, 'tableMetaInfo.signal.x.delta', null);
   const signalDeltaY = lodashGet(rowData, 'tableMetaInfo.signal.y.delta', null);
@@ -60,7 +57,10 @@ function SignalDeltaColumn({
   return (
     <>
       {deltaX.show && (
-        <td {...onHoverSignalX}>
+        <td
+          onMouseEnter={() => handleOnMouseEnter('x')}
+          onMouseLeave={() => handleOnMouseLeave('x')}
+        >
           {signalDeltaX !== null ? (
             <EditableColumn
               value={formatNumber(signalDeltaX, deltaX.format)}
@@ -75,7 +75,10 @@ function SignalDeltaColumn({
         </td>
       )}
       {deltaY.show && (
-        <td {...onHoverSignalY}>
+        <td
+          onMouseEnter={() => handleOnMouseEnter('y')}
+          onMouseLeave={() => handleOnMouseLeave('y')}
+        >
           {signalDeltaY !== null ? (
             <EditableColumn
               value={formatNumber(signalDeltaY, deltaY.format)}
