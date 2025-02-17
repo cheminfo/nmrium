@@ -2,54 +2,52 @@
 
 import type { CSSProperties } from 'react';
 
-import type {
-  AssignmentsData,
-  Axis,
-} from '../../../assignment/AssignmentsContext.js';
+import type { Axis } from '../../../assignment/AssignmentsContext.js';
 import { AssignmentsCell } from '../../../elements/AssignmentsCell.js';
-import type { ZoneData } from '../hooks/useMapZones.js';
+import type { AssignmentsColumnProps } from '../ZonesTableRow.js';
 
-export interface SignalAssignmentsColumnProps {
-  rowData: ZoneData;
-  assignment: AssignmentsData;
-  highlight: {
-    isActive: any;
-  };
-  onHover: () => void;
-  onClick: (event: any, assignment: AssignmentsData, axis: Axis) => void;
-  onUnlink: (event: any, flag: boolean, axis: Axis) => void;
+import { useSignalHighlight } from './SignalAssignmentsColumns.js';
+
+export interface SignalAssignmentsColumnProps extends AssignmentsColumnProps {
   axis: Axis;
 }
 
 function SignalAssignmentsColumn({
   rowData,
-  assignment,
-  highlight,
-  onHover,
-  onClick,
   onUnlink,
   axis,
 }: SignalAssignmentsColumnProps) {
+  const {
+    signalAssignment,
+    handleOnMouseEnter,
+    handleOnMouseLeave,
+    isHighlighted,
+  } = useSignalHighlight(rowData);
+
   const diaIDs = rowData?.tableMetaInfo?.signal?.[axis]?.diaIDs || [];
   const isAssignmentActive =
-    assignment.isActive && assignment.activated?.axis === axis;
+    signalAssignment.isActive && signalAssignment.activated?.axis === axis;
 
   const tdCss: CSSProperties =
-    assignment.isActive || highlight.isActive
+    signalAssignment.isActive || isHighlighted(axis)
       ? {
           color: 'red',
           fontWeight: 'bold',
         }
       : {};
 
+  function handleClick(event: React.MouseEvent<HTMLTableCellElement>) {
+    event.stopPropagation();
+    signalAssignment.setActive(axis);
+  }
+
   return (
     <AssignmentsCell
-      // TODO: Fix this misused spread operator.
-      // eslint-disable-next-line @typescript-eslint/no-misused-spread
-      {...onHover}
-      {...{ onClick: (e) => onClick(e, assignment, axis) }}
+      onMouseEnter={() => handleOnMouseEnter(axis)}
+      onMouseLeave={() => handleOnMouseLeave(axis)}
+      onClick={handleClick}
       style={{ padding: '0', ...tdCss }}
-      hideRemoveAssignmentButton={!assignment.isActive}
+      hideRemoveAssignmentButton={!signalAssignment.isActive}
       onRemove={(e) => onUnlink(e, false, axis)}
     >
       {(diaIDs?.length > 0 || isAssignmentActive) && (
