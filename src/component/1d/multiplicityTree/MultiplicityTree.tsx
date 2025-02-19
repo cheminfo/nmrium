@@ -96,8 +96,8 @@ function Tree(props: TreeProps) {
     type: HighlightEventSource.SIGNAL,
   });
 
-  let widthRatio = 0;
-  let treeWidth = 0;
+  let widthRatio: number;
+  let treeWidth: number;
 
   if (nodes?.length > 1) {
     treeWidth = scaleX()(min) - scaleX()(max);
@@ -212,7 +212,7 @@ function Tree(props: TreeProps) {
       </g>
       <g className="multiplicity-tree-ration-labels">
         {!isMassive &&
-          otherNodes.map((node) => {
+          otherNodes.map((node, index) => {
             const { x, level, ratio } = node;
             const x1 = scaleX()(x);
 
@@ -222,7 +222,7 @@ function Tree(props: TreeProps) {
 
             return (
               <text
-                key={JSON.stringify(node)}
+                key={index}
                 x={x1}
                 y={startY + y}
                 textAnchor="middle"
@@ -238,10 +238,7 @@ function Tree(props: TreeProps) {
       <AssignmentActionsButtons
         className="signal-target"
         isActive={
-          !!(
-            assignment.isActive ||
-            (Array.isArray(diaIDs) && diaIDs.length > 0)
-          )
+          assignment.isActive || (Array.isArray(diaIDs) && diaIDs.length > 0)
         }
         y={startY - 16}
         x={headX - 30}
@@ -254,7 +251,7 @@ function Tree(props: TreeProps) {
 }
 
 function useTreePaths(
-  otherNodes,
+  otherNodes: TreeNodes['nodes'],
   options: {
     tailLength: number;
     levelLength: number;
