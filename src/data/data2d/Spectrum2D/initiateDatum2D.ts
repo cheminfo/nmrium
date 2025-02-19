@@ -1,4 +1,3 @@
-import { v4 } from '@lukeed/uuid';
 import type { Spectrum2D, SpectrumTwoDimensionsColor } from 'nmr-load-save';
 import { Filters2DManager } from 'nmr-processing';
 
@@ -26,7 +25,7 @@ export function initiateDatum2D(
   const { usedColors, colors } = options;
   const datum: any = { ...spectrum };
 
-  datum.id = spectrum.id || v4();
+  datum.id = spectrum.id || crypto.randomUUID();
 
   datum.display = {
     isPositiveVisible: true,

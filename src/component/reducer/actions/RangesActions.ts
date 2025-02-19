@@ -1,4 +1,3 @@
-import { v4 } from '@lukeed/uuid';
 import type { Draft } from 'immer';
 import { original } from 'immer';
 import cloneDeep from 'lodash/cloneDeep.js';
@@ -348,7 +347,7 @@ function handleSaveEditedRange(
     const rangeIndex = getRangeByIndex(state, index, _editedRowData.id);
 
     if (_editedRowData.id === 'new') {
-      _editedRowData.id = v4();
+      _editedRowData.id = crypto.randomUUID();
     }
 
     (draft.data[index] as Spectrum1D).ranges.values.splice(

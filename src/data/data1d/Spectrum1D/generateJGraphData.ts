@@ -1,4 +1,3 @@
-import { v4 } from '@lukeed/uuid';
 import type { Jcoupling, Range, Signal1D } from 'nmr-processing';
 
 /**
@@ -70,7 +69,7 @@ function getCouplings(ranges: Range[]): Coupling[] {
 function initLink(coupling: Coupling): CouplingLink {
   const { delta } = coupling;
   return {
-    id: v4(),
+    id: crypto.randomUUID(),
     from: delta,
     to: delta,
     couplings: [coupling],

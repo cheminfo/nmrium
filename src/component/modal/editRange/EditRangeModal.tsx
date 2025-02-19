@@ -2,7 +2,6 @@
 import { Button, DialogFooter } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { v4 } from '@lukeed/uuid';
 import type { Spectrum1D } from 'nmr-load-save';
 import type { Jcoupling, Range, Signal1D } from 'nmr-processing';
 import { splitPatterns, translateMultiplet } from 'nmr-processing';
@@ -108,7 +107,7 @@ function InnerEditRangeModal(props: InnerEditRangeModalProps) {
     (signals) => {
       return signals.map((signal) => {
         return {
-          id: v4(),
+          id: crypto.randomUUID(),
           ...signal,
           multiplicity: signal.js
             .map((_coupling) => translateMultiplet(_coupling.multiplicity))

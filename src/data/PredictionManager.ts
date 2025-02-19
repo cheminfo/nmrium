@@ -1,4 +1,3 @@
-import { v4 } from '@lukeed/uuid';
 import type { Logger } from 'cheminfo-types';
 import { xMinMaxValues } from 'ml-spectra-processing';
 import type { Spectrum } from 'nmr-load-save';
@@ -296,7 +295,7 @@ function mapZones(zones: Array<Partial<Zone>>) {
     const newSignals = signals.map((signal: Signal2D) => {
       const { x, y, id, ...resSignal } = signal;
       return {
-        id: id || v4(),
+        id: id || crypto.randomUUID(),
         kind: 'signal',
         x: { ...x, originalDelta: x.delta || 0 },
         y: { ...y, originalDelta: y.delta || 0 },
@@ -304,7 +303,7 @@ function mapZones(zones: Array<Partial<Zone>>) {
       };
     });
     return {
-      id: v4(),
+      id: crypto.randomUUID(),
       ...resZone,
       signals: newSignals,
       kind: DATUM_KIND.signal,

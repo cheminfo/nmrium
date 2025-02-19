@@ -1,4 +1,3 @@
-import { v4 } from '@lukeed/uuid';
 import type { DatabaseNMREntry, Jcoupling } from 'nmr-processing';
 import { carbonImpurities, protonImpurities } from 'nmr-processing';
 import OCL from 'openchemlib/full';
@@ -155,7 +154,7 @@ function prepareMoleculesDB(array: DatabaseNMREntry[]) {
 function prepareDataBase(array: DatabaseNMREntry[]) {
   return array.map((item) => {
     item.ranges = item.ranges.map((range) => ({
-      id: v4(),
+      id: crypto.randomUUID(),
       ...range,
     }));
     return item;
@@ -179,7 +178,7 @@ export function prepareData(data: DatabaseNMREntry[]): PrepareDataResult[] {
       } as PrepareDataResult);
     } else {
       for (const range of ranges) {
-        ids.push(range.id || v4());
+        ids.push(range.id || crypto.randomUUID());
         const { signals = [], ...restRangKeys } = range;
         for (const signal of signals) {
           const { js = [], ...restSignalKeys } = signal;

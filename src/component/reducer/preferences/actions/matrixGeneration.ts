@@ -1,4 +1,3 @@
-import { v4 } from '@lukeed/uuid';
 import type { Draft } from 'immer';
 import type { MatrixGenerationOptions } from 'nmr-load-save';
 import type { MatrixOptions } from 'nmr-processing';
@@ -98,7 +97,7 @@ function addExclusionZone(
   if (!matrixGeneration) return;
 
   const exclusionZone = {
-    id: v4(),
+    id: crypto.randomUUID(),
     ...zone,
   };
   matrixGeneration.matrixOptions.exclusionsZones.push(exclusionZone);

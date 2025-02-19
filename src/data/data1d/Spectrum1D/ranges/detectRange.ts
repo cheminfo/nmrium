@@ -1,4 +1,3 @@
-import { v4 } from '@lukeed/uuid';
 import { xyIntegration, xyMaxYPoint, xyMinYPoint } from 'ml-spectra-processing';
 import type { Spectrum1D } from 'nmr-load-save';
 import { getShiftX } from 'nmr-processing';
@@ -24,7 +23,7 @@ export function detectRange(
   const shiftX = getShiftX(spectrum);
 
   return {
-    id: v4(),
+    id: crypto.randomUUID(),
     originalFrom: from - shiftX,
     originalTo: to - shiftX,
     from,

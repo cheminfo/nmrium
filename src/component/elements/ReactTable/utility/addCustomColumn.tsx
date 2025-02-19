@@ -1,4 +1,3 @@
-import { v4 } from '@lukeed/uuid';
 import type { CSSProperties, MouseEvent, ReactNode } from 'react';
 
 import type { Column } from '../ReactTable.js';
@@ -58,7 +57,7 @@ export function createActionColumn<T extends object>(
       textAlign: 'center',
       ...style,
     },
-    id: v4(),
+    id: crypto.randomUUID(),
     Cell: ({ row }) => (
       <button
         type="button"

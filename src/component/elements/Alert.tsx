@@ -1,7 +1,6 @@
 import type { ButtonProps } from '@blueprintjs/core';
 import { Button, Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import { v4 } from '@lukeed/uuid';
 import type { ReactNode } from 'react';
 import { createContext, useContext, useMemo, useState } from 'react';
 
@@ -82,7 +81,7 @@ export function AlertProvider({ children }: { children: ReactNode }) {
 
   const alertState = useMemo(() => {
     function showAlert(config: AlertConfig) {
-      const id = v4();
+      const id = crypto.randomUUID();
       setAlerts((prevAlerts) => [...prevAlerts, { id, ...config }]);
     }
 

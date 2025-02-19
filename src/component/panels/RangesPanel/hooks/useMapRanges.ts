@@ -1,4 +1,3 @@
-import { v4 } from '@lukeed/uuid';
 import type { Range } from 'nmr-processing';
 import { useMemo } from 'react';
 
@@ -14,7 +13,7 @@ function useMapRanges(data) {
     for (const [i, range] of data.entries()) {
       if (!range?.signals || range?.signals?.length === 0) {
         rangesData.push({
-          rowKey: v4(),
+          rowKey: crypto.randomUUID(),
           ...range,
           tableMetaInfo: {
             ...range.tableMetaInfo,
@@ -49,7 +48,7 @@ function useMapRanges(data) {
           }
 
           rangesData.push({
-            rowKey: v4(),
+            rowKey: crypto.randomUUID(),
             ...range,
             tableMetaInfo: {
               ...range.tableMetaInfo,

@@ -1,4 +1,3 @@
-import { v4 } from '@lukeed/uuid';
 import { scaleLinear, zoomIdentity } from 'd3';
 import type { Draft } from 'immer';
 import type {
@@ -134,7 +133,7 @@ function handleAddInset(draft: Draft<State>, action: AddInsetAction) {
   const x = Math.min(startX, endX);
 
   const inset: Inset = {
-    id: v4(),
+    id: crypto.randomUUID(),
     spectrumKey,
     bounding: {
       x: convertPixelToPercent(x, baseWidth),
