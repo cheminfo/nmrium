@@ -1,4 +1,3 @@
-import { v4 } from '@lukeed/uuid';
 import type { Draft } from 'immer';
 import { original } from 'immer';
 import { xyIntegration } from 'ml-spectra-processing';
@@ -107,7 +106,7 @@ function addIntegral(datum: Spectrum1D, options: AddIntegralOptions) {
   const shiftX = getShiftX(datum);
   const integration = xyIntegration({ x, y: re }, { from, to });
   const integral = {
-    id: v4(),
+    id: crypto.randomUUID(),
     originalFrom: from - shiftX,
     originalTo: to - shiftX,
     from,

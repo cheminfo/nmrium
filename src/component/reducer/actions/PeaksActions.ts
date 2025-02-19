@@ -1,4 +1,3 @@
-import { v4 } from '@lukeed/uuid';
 import type { Draft } from 'immer';
 import { original } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
@@ -88,7 +87,7 @@ function handleAddPeak(draft: Draft<State>, action: AddPeakAction) {
 
     if (candidatePeak) {
       const peak: Peak1D = {
-        id: v4(),
+        id: crypto.randomUUID(),
         originalX: candidatePeak.x - shiftX,
         x: candidatePeak.x,
         y: candidatePeak.y,
@@ -125,7 +124,7 @@ function handleAddPeaks(draft: Draft<State>, action: AddPeaksAction) {
       const shiftX = getShiftX(draft.data[index] as Spectrum1D);
       if (peak && !datumOriginal.peaks.values.some((p) => p.x === peak.x)) {
         const newPeak: Peak1D = {
-          id: v4(),
+          id: crypto.randomUUID(),
           originalX: peak.x - shiftX,
           x: peak.x,
           y: peak.y,

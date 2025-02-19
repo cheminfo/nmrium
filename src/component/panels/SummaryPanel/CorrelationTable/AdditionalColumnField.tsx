@@ -1,4 +1,3 @@
-import { v4 } from '@lukeed/uuid';
 import type { Correlation, Link } from 'nmr-correlation';
 import { buildLink } from 'nmr-correlation';
 import { useCallback, useMemo } from 'react';
@@ -93,11 +92,11 @@ function AdditionalColumnField({
       if (action === 'add') {
         const commonPseudoLink = buildLink({
           experimentType: 'hsqc',
-          experimentID: v4(),
+          experimentID: crypto.randomUUID(),
           atomType: [columnCorrelation.atomType, rowCorrelation.atomType],
-          id: v4(),
+          id: crypto.randomUUID(),
           pseudo: true,
-          signal: { id: v4(), sign: 0 }, // pseudo signal
+          signal: { id: crypto.randomUUID(), sign: 0 }, // pseudo signal
         });
         _correlationDim1 = cloneCorrelationAndEditLink(
           columnCorrelation,

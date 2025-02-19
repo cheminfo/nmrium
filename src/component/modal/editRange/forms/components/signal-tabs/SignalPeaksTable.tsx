@@ -1,5 +1,4 @@
 import { Button, Classes } from '@blueprintjs/core';
-import { v4 } from '@lukeed/uuid';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import type { Spectrum1D } from 'nmr-load-save';
 import type { Peak1D } from 'nmr-processing';
@@ -102,7 +101,7 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
       const xIndex = xFindClosestIndex(xArray, delta, { sorted: false });
 
       const peak: Peak1D = {
-        id: v4(),
+        id: crypto.randomUUID(),
         x: delta,
         y: xIndex !== -1 ? re[xIndex] : 0,
         originalX: delta - shiftX,

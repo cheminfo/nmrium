@@ -1,4 +1,3 @@
-import { v4 } from '@lukeed/uuid';
 import type { Spectrum1D, SpectrumOneDimensionColor } from 'nmr-load-save';
 import { Filters1DManager } from 'nmr-processing';
 
@@ -27,7 +26,7 @@ export function initiateDatum1D(
 
   const { integrals, ranges, ...restSpectrum } = spectrum;
   const spectrumObj: Spectrum1D = { ...restSpectrum };
-  spectrumObj.id = spectrum.id || v4();
+  spectrumObj.id = spectrum.id || crypto.randomUUID();
 
   spectrumObj.display = {
     isVisible: true,

@@ -1,4 +1,3 @@
-import { v4 } from '@lukeed/uuid';
 import type { WebSource as Source } from 'filelist-utils';
 import type { Draft } from 'immer';
 import { produce, original } from 'immer';
@@ -380,7 +379,7 @@ export interface State {
 }
 
 export function initState(state: State): State {
-  const displayerKey = v4();
+  const displayerKey = crypto.randomUUID();
   const correlations = buildCorrelationData([], {
     tolerance: DefaultTolerance,
   });

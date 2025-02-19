@@ -1,5 +1,3 @@
-import { v4 } from '@lukeed/uuid';
-
 interface ResolveGroupIntersectionProps {
   maxIteration?: number;
   groupMargin?: number;
@@ -119,7 +117,13 @@ export function resolve<T>(
     const groupEndX = groupWidth / 2 + groupMidX;
     resolvedGroups.push({
       group,
-      meta: { groupMidX, groupStartX, groupEndX, groupWidth, id: v4() },
+      meta: {
+        groupMidX,
+        groupStartX,
+        groupEndX,
+        groupWidth,
+        id: crypto.randomUUID(),
+      },
     });
   }
 

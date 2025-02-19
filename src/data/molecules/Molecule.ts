@@ -1,4 +1,3 @@
-import { v4 } from '@lukeed/uuid';
 import { Molecule as OCLMolecule } from 'openchemlib/full';
 
 import getAtomsFromMF from '../utilities/getAtomsFromMF.js';
@@ -51,7 +50,7 @@ export interface MoleculeView {
 export function initMolecule(
   options: Partial<StateMolecule> = {},
 ): StateMoleculeExtended {
-  const id = options.id || v4();
+  const id = options.id || crypto.randomUUID();
   const label = options.label || 'p#';
   const molfile = options.molfile || '';
 

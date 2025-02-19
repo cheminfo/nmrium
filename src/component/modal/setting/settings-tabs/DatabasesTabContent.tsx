@@ -1,6 +1,5 @@
 import { Checkbox, Classes, Radio } from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import { v4 } from '@lukeed/uuid';
 import type { CustomWorkspaces, Database } from 'nmr-load-save';
 import { useCallback, useMemo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
@@ -46,7 +45,7 @@ function DatabasesTabContent({
     (data: readonly any[], index = 0) => {
       let databases: any[] = [];
       const emptyField = {
-        key: v4(),
+        key: crypto.randomUUID(),
         label: '',
         url: '',
         enabled: true,

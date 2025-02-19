@@ -1,4 +1,3 @@
-import { v4 } from '@lukeed/uuid';
 import { zoomIdentity } from 'd3';
 import type { Draft } from 'immer';
 import type { Spectrum, Spectrum1D, Spectrum2D } from 'nmr-load-save';
@@ -230,7 +229,7 @@ function handleAddBaseLineZone(
   }
   const zones = draft.toolOptions.data.baselineCorrection.zones;
   zones.push({
-    id: v4(),
+    id: crypto.randomUUID(),
     from: zone[0],
     to: zone[1],
   });

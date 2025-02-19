@@ -1,4 +1,3 @@
-import { v4 } from '@lukeed/uuid';
 import type { NmrData1D, NmrData2DFt } from 'cheminfo-types';
 import type { Draft } from 'immer';
 import { current } from 'immer';
@@ -543,7 +542,7 @@ function beforeRollback(draft: Draft<State>, filterKey) {
           phaseOptions.scaleRatio = 1;
           phaseOptions.spectra = spectra.map((spectrum) => ({
             ...spectrum,
-            id: spectrum?.id || v4(),
+            id: spectrum?.id || crypto.randomUUID(),
           }));
 
           const datum = getProjection(
@@ -1216,14 +1215,14 @@ function handleAddPhaseCorrectionTrace(
     if (addTracesToBothDirections) {
       for (const direction of Object.keys(traces)) {
         traces[direction].spectra.push({
-          id: v4(),
+          id: crypto.randomUUID(),
           x: xPPM,
           y: yPPM,
         });
       }
     } else {
       activeTraces.spectra.push({
-        id: v4(),
+        id: crypto.randomUUID(),
         x: xPPM,
         y: yPPM,
       });
@@ -1637,7 +1636,7 @@ function handleAddExclusionZone(
         name: 'exclusionZones',
         value: [
           {
-            id: v4(),
+            id: crypto.randomUUID(),
             from: range[0],
             to: range[1],
           },

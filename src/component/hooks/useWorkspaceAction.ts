@@ -1,4 +1,3 @@
-import { v4 } from '@lukeed/uuid';
 import lodashMerge from 'lodash/merge.js';
 import type { Workspace } from 'nmr-load-save';
 
@@ -45,7 +44,7 @@ export function useWorkspaceAction() {
         source: 'user',
       },
     );
-    const workspaceKey = v4();
+    const workspaceKey = crypto.randomUUID();
     const localData = readSettings() || { workspaces: {} };
     const settings = {
       ...localData,
