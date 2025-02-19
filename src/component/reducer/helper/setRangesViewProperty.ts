@@ -9,33 +9,47 @@ import { getActiveSpectrum } from './getActiveSpectrum.js';
 export function setRangesViewProperty<T extends keyof RangesViewState>(
   draft: Draft<State>,
   key: T,
-  value: (value: RangesViewState[T]) => RangesViewState[T],
+  options: {
+    spectrumKey?: string;
+    value: (value: RangesViewState[T]) => RangesViewState[T];
+  },
 ): void;
 export function setRangesViewProperty<T extends keyof RangesViewState>(
   draft: Draft<State>,
   key: T,
-  value: RangesViewState[T],
+  options: {
+    spectrumKey?: string;
+    value: RangesViewState[T];
+  },
 ): void;
 
 export function setRangesViewProperty<T extends keyof RangesViewState>(
   draft: Draft<State>,
   key: T,
-  value:
-    | ((value: RangesViewState[T]) => RangesViewState[T])
-    | RangesViewState[T],
+  options: {
+    spectrumKey?: string;
+    value:
+      | ((value: RangesViewState[T]) => RangesViewState[T])
+      | RangesViewState[T];
+  },
 ) {
   const rangesView = draft.view.ranges;
+  const { value, spectrumKey: externalSpectrumKey } = options;
 
-  const activeSpectrum = getActiveSpectrum(draft);
+  let spectrumKey = externalSpectrumKey;
 
-  if (!activeSpectrum?.id) return;
+  if (!spectrumKey) {
+    const activeSpectrum = getActiveSpectrum(draft);
 
-  const id = activeSpectrum.id;
+    if (!activeSpectrum?.id) return;
 
-  initializeRangeViewObject(draft, id);
+    spectrumKey = activeSpectrum.id;
+  }
 
-  rangesView[id][key] =
-    typeof value === 'function' ? value(rangesView[id][key]) : value;
+  initializeRangeViewObject(draft, spectrumKey);
+
+  rangesView[spectrumKey][key] =
+    typeof value === 'function' ? value(rangesView[spectrumKey][key]) : value;
 }
 
 export function initializeRangeViewObject(
