@@ -1,4 +1,3 @@
-import lodashGet from 'lodash/get.js';
 import type { Zones1DNucleusPreferences } from 'nmr-load-save';
 
 import { useDispatch } from '../../../context/DispatchContext.js';
@@ -28,9 +27,13 @@ function SignalDeltaColumn({ rowData, nucleus }: SignalDeltaColumnProps) {
   const { handleOnMouseEnter, handleOnMouseLeave } =
     useSignalHighlight(rowData);
 
-  const signalDeltaX = lodashGet(rowData, 'tableMetaInfo.signal.x.delta', null);
-  const signalDeltaY = lodashGet(rowData, 'tableMetaInfo.signal.y.delta', null);
-  const id = lodashGet(rowData, 'tableMetaInfo.signal.id', undefined);
+  // TODO: fix type of tableMetaInfo.
+  // @ts-expect-error Type is wrong.
+  const signalDeltaX = rowData.tableMetaInfo.signal.x.delta ?? null;
+  // @ts-expect-error Type is wrong.
+  const signalDeltaY = rowData.tableMetaInfo.signal.y.delta ?? null;
+  // @ts-expect-error Type is wrong.
+  const id = rowData.tableMetaInfo.signal.id;
 
   function saveXHandler(event) {
     const value = Number(event.target.value);

@@ -1,4 +1,3 @@
-import lodashGet from 'lodash/get.js';
 import type { Info1D, Info2D } from 'nmr-processing';
 import { useCallback } from 'react';
 
@@ -37,11 +36,9 @@ export function useCheckToolsVisibility(): (
 
       const { spectraOptions, mode, isExperimental } = options[toolKey];
 
-      const flag = lodashGet(
-        preferences.current,
-        `display.toolBarButtons.${toolKey}`,
-        false,
-      );
+      // TODO: make sure preferences are not a lie and remove the optional chaining.
+      const flag =
+        preferences?.current?.display?.toolBarButtons?.[toolKey] ?? false;
 
       const modeFlag =
         !checkMode || (checkMode && (!mode || displayerMode === mode));

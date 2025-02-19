@@ -1,7 +1,7 @@
 import type { SerializedStyles } from '@emotion/react';
+import dlv from 'dlv';
 import fileSaver from 'file-saver';
 import JSZip from 'jszip';
-import lodashGet from 'lodash/get.js';
 import type { JpathTableColumn, SpectraTableColumn } from 'nmr-load-save';
 
 /**
@@ -74,7 +74,7 @@ function exportAsMatrix(
     for (const col of spectraColumns) {
       if (col.visible && 'jpath' in col) {
         const jpath = (col as JpathTableColumn)?.jpath;
-        cellsValues.push(lodashGet(spectrum, jpath, `null`));
+        cellsValues.push(dlv(spectrum, jpath, `null`));
       }
     }
     for (const value of re) {

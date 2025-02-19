@@ -1,4 +1,3 @@
-import lodashGet from 'lodash/get.js';
 import type { CSSProperties, MouseEvent } from 'react';
 import { memo } from 'react';
 
@@ -25,7 +24,8 @@ function SignalAssignmentsColumn({
   onLink,
   onUnlink,
 }: SignalAssignmentsColumnProps) {
-  const diaIDs = lodashGet(row, 'tableMetaInfo.signal.diaIDs', []);
+  // TODO: make sure row is not a lie and remove the optional chaining.
+  const diaIDs = row?.tableMetaInfo?.signal?.diaIDs ?? [];
 
   const tdCss: CSSProperties =
     assignment.isActive || highlight.isActive

@@ -1,4 +1,4 @@
-import lodashGet from 'lodash/get.js';
+import dlv from 'dlv';
 import type { Spectrum } from 'nmr-load-save';
 
 interface RenderAsHTMLProps {
@@ -16,7 +16,7 @@ function formatValueAsHTML(value) {
 export function RenderAsHTML(props: RenderAsHTMLProps) {
   const { data, jpath } = props;
 
-  const value = lodashGet(data, jpath);
+  const value = dlv(data, jpath);
 
   if (!value) {
     return null;

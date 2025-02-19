@@ -1,4 +1,4 @@
-import lodashGet from 'lodash/get.js';
+import dlv from 'dlv';
 import type { Spectrum } from 'nmr-load-save';
 import type { ParseResult } from 'papaparse';
 
@@ -28,7 +28,7 @@ function linkMetaWithSpectra(options: {
   } = parseMetaFileResult;
 
   if (!autolink) {
-    if (target && !lodashGet(spectra[0], target)) {
+    if (target && !dlv(spectra[0], target)) {
       throw new TargetPathError(target);
     }
 
@@ -39,7 +39,7 @@ function linkMetaWithSpectra(options: {
 
   if (autolink) {
     for (const sourceField of fields) {
-      if (lodashGet(spectra[0], sourceField, null)) {
+      if (dlv(spectra[0], sourceField, null)) {
         source = sourceField;
         target = sourceField;
         break;
@@ -53,7 +53,7 @@ function linkMetaWithSpectra(options: {
 
   if (source && target) {
     for (const spectrum of spectra) {
-      const value = lodashGet(spectrum, target);
+      const value = dlv(spectrum, target);
 
       if (['string', 'number'].includes(typeof value)) {
         const val = prepareKey(value);

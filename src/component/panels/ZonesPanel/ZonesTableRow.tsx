@@ -1,4 +1,3 @@
-import lodashGet from 'lodash/get.js';
 import type { Zones2DNucleusPreferences } from 'nmr-load-save';
 import type { CSSProperties, MouseEvent } from 'react';
 
@@ -67,9 +66,9 @@ function ZonesTableRow({
 
   const rowSpanTags = {
     rowSpan: rowData.tableMetaInfo.rowSpan,
-    style: lodashGet(rowData, 'tableMetaInfo.hide', false)
-      ? { display: 'none' }
-      : null,
+    // TODO: fix type of tableMetaInfo.
+    // @ts-expect-error Type is wrong.
+    style: rowData.tableMetaInfo.hide ? { display: 'none' } : null,
   };
 
   function unlinkHandler(
@@ -115,7 +114,9 @@ function ZonesTableRow({
       style={
         highlightZone.isActive || assignmentZone.isActive
           ? (HighlightedRowStyle as any)
-          : lodashGet(rowData, 'tableMetaInfo.isConstantlyHighlighted', false)
+          : // TODO: fix type of tableMetaInfo.
+            // @ts-expect-error Type is wrong.
+            rowData.tableMetaInfo.isConstantlyHighlighted
             ? ConstantlyHighlightedRowStyle
             : null
       }

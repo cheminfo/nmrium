@@ -1,6 +1,6 @@
 import type { ButtonProps } from '@blueprintjs/core';
 import { css } from '@emotion/react';
-import lodashGet from 'lodash/get.js';
+import dlv from 'dlv';
 import type {
   JpathTableColumn,
   Spectrum,
@@ -20,8 +20,8 @@ import { useSortSpectra } from '../../context/SortSpectraContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import { Input2 } from '../../elements/Input2.js';
 import Label from '../../elements/Label.js';
-import { ToolbarPopoverItem } from '../../elements/ToolbarPopoverItem.js';
 import type { ToolbarPopoverMenuItem } from '../../elements/ToolbarPopoverItem.js';
+import { ToolbarPopoverItem } from '../../elements/ToolbarPopoverItem.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus.js';
 import { copyPNGToClipboard } from '../../utility/export.js';
@@ -110,17 +110,13 @@ export function getPlotDataAsString(
       for (const col of spectraPanelPreferences.columns) {
         if (col.visible && 'jpath' in col) {
           const jpath = (col as JpathTableColumn)?.jpath;
-          const value = lodashGet(spectrum, jpath, `null`);
+          const value = dlv(spectrum, jpath, `null`);
           cellsValues.push(value);
         }
       }
 
-      const x = xData
-        ? xData[spectrum.id]
-        : lodashGet(spectrum, xPathKeys, index);
-      const y = yData
-        ? yData[spectrum.id]
-        : lodashGet(spectrum, yPathKeys, index);
+      const x = xData ? xData[spectrum.id] : dlv(spectrum, xPathKeys, index);
+      const y = yData ? yData[spectrum.id] : dlv(spectrum, yPathKeys, index);
 
       cellsValues.push(x, y);
 
@@ -165,12 +161,8 @@ function usePlotData(
     plotOption,
   );
   return spectra.map((spectrum, index) => {
-    const x = xData
-      ? xData[spectrum.id]
-      : lodashGet(spectrum, xPathKeys, index);
-    const y = yData
-      ? yData[spectrum.id]
-      : lodashGet(spectrum, yPathKeys, index);
+    const x = xData ? xData[spectrum.id] : dlv(spectrum, xPathKeys, index);
+    const y = yData ? yData[spectrum.id] : dlv(spectrum, yPathKeys, index);
     return {
       x,
       y,

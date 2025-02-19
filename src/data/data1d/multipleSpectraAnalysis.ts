@@ -1,4 +1,4 @@
-import lodashGet from 'lodash/get.js';
+import dlv from 'dlv';
 import type {
   AnalysisColumnsValuesKeys,
   AnalysisOptions,
@@ -304,7 +304,7 @@ export function getDataAsString(
       for (const col of spectraPanelPreferences.columns) {
         if (col.visible && 'jpath' in col) {
           const jpath = (col as JpathTableColumn)?.jpath;
-          const value = lodashGet(spectrum, jpath, `null`);
+          const value = dlv(spectrum, jpath, `null`);
           cellsValues.push(value);
         }
       }

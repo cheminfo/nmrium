@@ -1,4 +1,4 @@
-import lodashGet from 'lodash/get.js';
+import dlv from 'dlv';
 import type { Spectrum } from 'nmr-load-save';
 import type { ReactNode } from 'react';
 import {
@@ -81,7 +81,7 @@ function sortSpectraByPath(
     ) {
       sortedSpectra.push({
         spectrum,
-        sortValue: lodashGet(spectrum, path),
+        sortValue: dlv(spectrum, path),
       });
       originIndexes.push(index);
     }
@@ -115,7 +115,7 @@ function sortSpectraByReferences(
     if (spectraReferenceMap.size > 0 && spectraReferenceMap.has(spectrum.id)) {
       sortedSpectra.push({
         spectrum,
-        sortValue: lodashGet(spectraReferenceMap.get(spectrum.id), path),
+        sortValue: dlv(spectraReferenceMap.get(spectrum.id), path),
       });
       originIndexes.push(index);
     }

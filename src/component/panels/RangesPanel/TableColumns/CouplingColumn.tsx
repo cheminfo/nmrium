@@ -1,12 +1,15 @@
-import lodashGet from 'lodash/get.js';
-
 import { formatNumber } from '../../../utility/formatNumber.js';
 import type { BaseRangeColumnProps, OnHoverEvent } from '../RangesTableRow.js';
 
 type CouplingColumnProps = BaseRangeColumnProps & OnHoverEvent;
 
-function CouplingColumn({ row, onHover, format }: CouplingColumnProps) {
-  const result = lodashGet(row, 'tableMetaInfo.signal.js');
+export default function CouplingColumn({
+  row,
+  onHover,
+  format,
+}: CouplingColumnProps) {
+  // TODO: make sure row is not a lie and remove the optional chaining.
+  const result = row?.tableMetaInfo?.signal?.js;
   return (
     <td {...onHover}>
       {result
@@ -19,5 +22,3 @@ function CouplingColumn({ row, onHover, format }: CouplingColumnProps) {
     </td>
   );
 }
-
-export default CouplingColumn;

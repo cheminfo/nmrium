@@ -1,7 +1,7 @@
 import type { NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
+import dlv from 'dlv';
 import type { Draft } from 'immer';
 import { original } from 'immer';
-import lodashGet from 'lodash/get.js';
 import type {
   Color2D,
   Display1D,
@@ -596,7 +596,7 @@ function handleToggleSpectraLegend(draft: Draft<State>) {
 function groupSpectraByClass(spectra: Spectrum[], jpath: string | string[]) {
   const spectraByClass: Record<string, Spectrum[]> = {};
   for (const spectrum of spectra) {
-    const key = String(lodashGet(spectrum, jpath, ''))
+    const key = String(dlv(spectrum, jpath, ''))
       .toLowerCase()
       .trim()
       .replace(/\r?\n|\r/, '');

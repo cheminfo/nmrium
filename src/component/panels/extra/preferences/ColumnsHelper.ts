@@ -1,5 +1,3 @@
-import lodashGet from 'lodash/get.js';
-
 import { formatNumber } from '../../../utility/formatNumber.js';
 
 export default class ColumnsHelper {
@@ -12,13 +10,11 @@ export default class ColumnsHelper {
   }
 
   public checkPreferences(preferencesToCheck, key) {
-    const val = !!(
+    return (
       preferencesToCheck === undefined ||
       Object.keys(preferencesToCheck).length === 0 ||
       (preferencesToCheck && preferencesToCheck[key] === true)
     );
-
-    return val;
   }
 
   public setCustomColumn(array, index, columnLabel, cellHandler) {
@@ -69,8 +65,4 @@ export default class ColumnsHelper {
       });
     }
   }
-}
-
-export function isColumnVisible(preferences, key) {
-  return lodashGet(preferences, key, false);
 }

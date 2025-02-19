@@ -1,4 +1,3 @@
-import lodashGet from 'lodash/get.js';
 import type { Spectrum1D } from 'nmr-load-save';
 import type { Jcoupling, Range } from 'nmr-processing';
 
@@ -25,7 +24,8 @@ export interface TreeNodes {
 }
 
 export function generateTreeNodes(range: Range, spectrumData: Spectrum1D) {
-  const frequency = lodashGet(spectrumData, 'info.originFrequency');
+  // TODO: make sure spectrumData is not a lie and remove the optional chaining.
+  const frequency = spectrumData?.info?.originFrequency;
 
   const result: TreeNodes[] = [];
   let nodes: TreeNode[] = [];

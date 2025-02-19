@@ -1,4 +1,3 @@
-import lodashGet from 'lodash/get.js';
 import type { PanelPreferencesType } from 'nmr-load-save';
 import { useCallback } from 'react';
 
@@ -26,11 +25,8 @@ export function useGetPanelOptions(): (
         };
       }
 
-      return lodashGet(
-        preferences.current,
-        `display.panels.${item.id}`,
-        defaultValue,
-      );
+      // TODO: make sure preferences are not a lie and remove the optional chaining.
+      return preferences?.current?.display?.panels?.[item.id] ?? defaultValue;
     },
     [preferences],
   );

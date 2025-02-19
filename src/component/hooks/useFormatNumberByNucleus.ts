@@ -1,4 +1,3 @@
-import lodashGet from 'lodash/get.js';
 import { useMemo } from 'react';
 
 import { usePreferences } from '../context/PreferencesContext.js';
@@ -11,11 +10,14 @@ export type ReturnFunction = (
   suffix?: string,
 ) => string;
 
+const defaultNuclei = [];
+
 export function useFormatNumberByNucleus(nucleus?: string[]): ReturnFunction[];
 export function useFormatNumberByNucleus(nucleus?: string): ReturnFunction;
 export function useFormatNumberByNucleus(nucleus?: string | string[]) {
   const preferences = usePreferences();
-  const nucleiPreferences = lodashGet(preferences.current, `nuclei`, []);
+  // TODO: make sure preferences are not a lie and remove the optional chaining.
+  const nucleiPreferences = preferences?.current?.nuclei ?? defaultNuclei;
 
   return useMemo(() => {
     function formatFun(n: string) {

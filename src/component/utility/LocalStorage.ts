@@ -1,4 +1,4 @@
-import lodashGet from 'lodash/get.js';
+import dlv from 'dlv';
 import lodashSet from 'lodash/set.js';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -24,10 +24,7 @@ export function useStateWithLocalStorage(localStorageKey, key?: string) {
   );
 
   return useMemo(() => {
-    return [
-      key ? lodashGet(JSON.parse(value), key, {}) : JSON.parse(value),
-      setData,
-    ];
+    return [key ? dlv(JSON.parse(value), key, {}) : JSON.parse(value), setData];
   }, [key, setData, value]);
 }
 
@@ -45,5 +42,5 @@ export function removeData(localStorageKey) {
 }
 
 export function getValue(object, keyPath, defaultValue: any = null) {
-  return lodashGet(object, keyPath, defaultValue);
+  return dlv(object, keyPath, defaultValue);
 }

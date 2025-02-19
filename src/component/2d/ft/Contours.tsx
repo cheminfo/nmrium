@@ -1,5 +1,4 @@
 import debounce from 'lodash/debounce.js';
-import get from 'lodash/get.js';
 import type { Spectrum2D } from 'nmr-load-save';
 import { memo, useMemo, useRef } from 'react';
 
@@ -93,7 +92,8 @@ function ContoursPaths({
   const opacity =
     activeSpectrum === null || spectrumID === activeSpectrum.id
       ? '1'
-      : get(preferences.current, 'general.dimmedSpectraOpacity', 0.1);
+      : // TODO: make sure preferences are not a lie and remove the optional chaining.
+        (preferences?.current?.general?.dimmedSpectraOpacity ?? 0.1);
 
   return (
     <path

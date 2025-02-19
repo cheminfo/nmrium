@@ -1,4 +1,3 @@
-import get from 'lodash/get.js';
 import { useMemo } from 'react';
 
 import { usePreferences } from '../context/PreferencesContext.js';
@@ -26,10 +25,11 @@ export default function useActiveSpectrumStyleOptions(
       false;
 
     const isActive =
-      !!(activeSpectra?.length === 0 || index !== -1) || isNoneSelected;
+      activeSpectra?.length === 0 || index !== -1 || isNoneSelected;
     const opacity = isActive
       ? 1
-      : get(preferences.current, 'general.dimmedSpectraOpacity', 0.1);
+      : // TODO: make sure preferences are not a lie and remove the optional chaining.
+        (preferences?.current?.general?.dimmedSpectraOpacity ?? 0.1);
     return { isActive, opacity };
   }, [activeSpectra, id, preferences]);
 }
