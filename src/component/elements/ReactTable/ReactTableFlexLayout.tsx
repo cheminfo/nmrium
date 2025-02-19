@@ -1,7 +1,5 @@
-/** @jsxImportSource @emotion/react */
-
 import type { CSSProperties } from 'react';
-import { useTable, useSortBy, useFlexLayout } from 'react-table';
+import { useFlexLayout, useSortBy, useTable } from 'react-table';
 
 import { BaseReactTable } from './BaseReactTable.js';
 

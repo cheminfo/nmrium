@@ -1,10 +1,9 @@
-/** @jsxImportSource @emotion/react */
 import { SvgNmrAssignment2 } from 'cheminfo-font';
 import { FaBolt } from 'react-icons/fa';
 
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import { useChartData } from '../../context/ChartContext.js';
-import { tablePanelStyle } from '../extra/BasicPanelStyle.js';
+import { TablePanel } from '../extra/BasicPanelStyle.js';
 import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
 import { SpectraAutomaticPickingButton } from '../header/SpectraAutomaticPickingButton.js';
 
@@ -26,7 +25,7 @@ function AutomaticAssignment() {
   const enabled = useCheckEnableAutomaticAssignments();
 
   return (
-    <div css={tablePanelStyle}>
+    <TablePanel>
       <DefaultPanelHeader
         leftButtons={[
           {
@@ -49,7 +48,7 @@ function AutomaticAssignment() {
       <div className="inner-container">
         <AutomaticAssignmentTable data={assignments} />
       </div>
-    </div>
+    </TablePanel>
   );
 }
 

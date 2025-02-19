@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 import type { Database, NmriumState, Spectrum1D } from 'nmr-load-save';
 import { readFromWebSource, serializeNmriumState } from 'nmr-load-save';
 import type { DatabaseNMREntry } from 'nmr-processing';
@@ -31,7 +29,7 @@ import Events from '../../utility/Events.js';
 import { exportAsJSON } from '../../utility/export.js';
 import nucleusToString from '../../utility/nucleusToString.js';
 import { PanelNoData } from '../PanelNoData.js';
-import { tablePanelStyle } from '../extra/BasicPanelStyle.js';
+import { TablePanel } from '../extra/BasicPanelStyle.js';
 import type { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
 import PreferencesHeader from '../header/PreferencesHeader.js';
 
@@ -362,20 +360,7 @@ function DatabasePanelInner({
   };
 
   return (
-    <div
-      css={[
-        tablePanelStyle,
-        isFlipped &&
-          css`
-            .table-container {
-              table,
-              th {
-                position: relative !important;
-              }
-            }
-          `,
-      ]}
-    >
+    <TablePanel isFlipped={isFlipped}>
       {!isFlipped && (
         <>
           <DatabaseSearchOptions
@@ -430,7 +415,7 @@ function DatabasePanelInner({
           <DatabasePreferences ref={settingRef} />
         )}
       </div>
-    </div>
+    </TablePanel>
   );
 }
 

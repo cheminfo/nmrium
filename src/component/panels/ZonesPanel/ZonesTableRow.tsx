@@ -1,11 +1,9 @@
-/** @jsxImportSource @emotion/react */
-
 import lodashGet from 'lodash/get.js';
 import type { Zones2DNucleusPreferences } from 'nmr-load-save';
 import type { CSSProperties, MouseEvent } from 'react';
 
-import { useAssignment } from '../../assignment/AssignmentsContext.js';
 import type { Axis } from '../../assignment/AssignmentsContext.js';
+import { useAssignment } from '../../assignment/AssignmentsContext.js';
 import { ContextMenu } from '../../elements/ContextMenuBluePrint.js';
 import type { TableContextMenuProps } from '../../elements/ReactTable/ReactTable.js';
 import { useHighlight } from '../../highlight/index.js';

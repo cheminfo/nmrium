@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 import { SvgNmrFt, SvgNmrPeaks, SvgNmrPeaksTopLabels } from 'cheminfo-font';
 import type { PeaksViewState, Spectrum1D } from 'nmr-load-save';
 import type { Info1D, Peak1D, Peaks } from 'nmr-processing';
@@ -18,7 +16,7 @@ import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus.j
 import useSpectrum from '../../hooks/useSpectrum.js';
 import { booleanToString } from '../../utility/booleanToString.js';
 import type { FilterType } from '../../utility/filterType.js';
-import { tablePanelStyle } from '../extra/BasicPanelStyle.js';
+import { TablePanel } from '../extra/BasicPanelStyle.js';
 import type { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
 import type { ToolbarItemProps } from '../header/DefaultPanelHeader.js';
 import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
@@ -182,20 +180,7 @@ function PeaksPanelInner({
     );
   }
   return (
-    <div
-      css={[
-        tablePanelStyle,
-        isFlipped &&
-          css`
-            .table-container {
-              table,
-              th {
-                position: relative !important;
-              }
-            }
-          `,
-      ]}
-    >
+    <TablePanel isFlipped={isFlipped}>
       {!isFlipped && (
         <DefaultPanelHeader
           total={total}
@@ -223,7 +208,7 @@ function PeaksPanelInner({
           <PeaksPreferences ref={settingRef} />
         )}
       </div>
-    </div>
+    </TablePanel>
   );
 }
 

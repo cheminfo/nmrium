@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 import { SvgNmrOverlay } from 'cheminfo-font';
 import type { Spectrum1D } from 'nmr-load-save';
 import { memo, useCallback, useRef, useState } from 'react';
@@ -20,7 +18,7 @@ import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import type { DisplayerMode } from '../../reducer/Reducer.js';
 import { booleanToString } from '../../utility/booleanToString.js';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus.js';
-import { tablePanelStyle } from '../extra/BasicPanelStyle.js';
+import { TablePanel } from '../extra/BasicPanelStyle.js';
 import type { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
 import type { ToolbarItemProps } from '../header/DefaultPanelHeader.js';
 import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
@@ -126,17 +124,7 @@ function MultipleSpectraAnalysisPanelInner({
   }
 
   return (
-    <div
-      css={[
-        tablePanelStyle,
-        isFlipped &&
-          css`
-            .table-container th {
-              position: relative;
-            }
-          `,
-      ]}
-    >
+    <TablePanel isFlipped={isFlipped}>
       {!isFlipped && (
         <DefaultPanelHeader
           deleteToolTip="Delete All Peaks"
@@ -182,7 +170,7 @@ function MultipleSpectraAnalysisPanelInner({
         text={text}
         label="Spectra Analysis"
       />
-    </div>
+    </TablePanel>
   );
 }
 

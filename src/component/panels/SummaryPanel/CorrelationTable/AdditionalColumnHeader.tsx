@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { getCorrelationDelta, getLinkDim } from 'nmr-correlation';
 import { useCallback, useMemo } from 'react';
 

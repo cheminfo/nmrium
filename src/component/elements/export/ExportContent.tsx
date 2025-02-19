@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import type { ExportSettings } from 'nmr-load-save';
 import type { ReactNode } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';

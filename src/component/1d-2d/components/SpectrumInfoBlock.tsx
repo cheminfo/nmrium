@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import lodashGet from 'lodash/get.js';
 import type { Spectrum } from 'nmr-load-save';
 import type { CSSProperties } from 'react';

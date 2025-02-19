@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 import lodashGet from 'lodash/get.js';
 import type { WorkSpacePanelPreferences } from 'nmr-load-save';
 import type { Info1D } from 'nmr-processing';
@@ -32,13 +30,13 @@ import SignalDeltaColumn from './TableColumns/SignalDeltaColumn.js';
 import SignalDeltaHzColumn from './TableColumns/SignalDeltaHzColumn.js';
 import type { RangeData } from './hooks/useMapRanges.js';
 
-const HighlightedRowStyle = css`
-  background-color: #ff6f0057;
-`;
+const HighlightedRowStyle = {
+  backgroundColor: '#ff6f0057',
+};
 
-const ConstantlyHighlightedRowStyle = css`
-  background-color: #f5f5dc;
-`;
+const ConstantlyHighlightedRowStyle = {
+  backgroundColor: '#f5f5dc',
+};
 
 interface RangesTableRowProps extends TableContextMenuProps {
   rowData: any;
@@ -182,12 +180,12 @@ function RangesTableRow({
     };
   }, [assignmentSignal, highlightSignal]);
 
-  const trCss = useMemo(() => {
+  const trStyle = useMemo(() => {
     return highlightRange.isActive || assignmentRange.isActive
       ? HighlightedRowStyle
       : lodashGet(rowData, 'tableMetaInfo.isConstantlyHighlighted', false)
         ? ConstantlyHighlightedRowStyle
-        : null;
+        : undefined;
   }, [assignmentRange.isActive, highlightRange.isActive, rowData]);
 
   return (
@@ -195,7 +193,7 @@ function RangesTableRow({
       options={contextMenu}
       onSelect={(selected) => onContextMenuSelect?.(selected, rowData)}
       as="tr"
-      css={trCss}
+      style={trStyle}
     >
       {preferences.showSerialNumber && (
         <td {...rowSpanTags} {...onHoverRange}>

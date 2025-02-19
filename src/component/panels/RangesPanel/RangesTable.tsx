@@ -1,5 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import type { WorkSpacePanelPreferences } from 'nmr-load-save';
 import type { Info1D } from 'nmr-processing';
 import { FaLink } from 'react-icons/fa';
@@ -14,7 +13,7 @@ import { NoDataForFid } from '../extra/placeholder/NoDataForFid.js';
 import RangesTableRow from './RangesTableRow.js';
 import useMapRanges from './hooks/useMapRanges.js';
 
-const tableStyle = css`
+const Table = styled.table`
   border-spacing: 0;
   border: 1px solid #dedede;
   width: 100%;
@@ -97,7 +96,7 @@ function RangesTable({
   return (
     <>
       <EditRangeDialog />
-      <table css={tableStyle}>
+      <Table>
         <thead>
           <tr>
             {preferences.showSerialNumber && <th>#</th>}
@@ -160,7 +159,7 @@ function RangesTable({
             );
           })}
         </tbody>
-      </table>
+      </Table>
     </>
   );
 }

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { xFindClosestIndex } from 'ml-spectra-processing';

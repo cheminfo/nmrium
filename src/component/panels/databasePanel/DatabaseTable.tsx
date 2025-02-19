@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Classes } from '@blueprintjs/core';
 import lodashGet from 'lodash/get.js';
 import type { CSSProperties } from 'react';

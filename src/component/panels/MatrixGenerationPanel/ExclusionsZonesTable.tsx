@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Button, Classes } from '@blueprintjs/core';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { FaRegTrashAlt } from 'react-icons/fa';

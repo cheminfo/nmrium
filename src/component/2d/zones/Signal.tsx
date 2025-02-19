@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-
 import type { Signal2D } from 'nmr-processing';
 import { useCallback, useEffect, useState } from 'react';
 

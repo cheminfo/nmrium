@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Tab, Tabs } from '@blueprintjs/core';
 import type { Range } from 'nmr-processing';
 import {

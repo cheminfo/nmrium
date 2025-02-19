@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 import type { NmrData1D } from 'cheminfo-types';
 import { xGetFromToIndex } from 'ml-spectra-processing';
 import type { Spectrum1D, WorkSpacePanelPreferences } from 'nmr-load-save';
@@ -17,7 +15,7 @@ import { useToaster } from '../../context/ToasterContext.js';
 import type { BaseContextMenuProps } from '../../elements/ContextMenuBluePrint.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
-import { tablePanelStyle } from '../extra/BasicPanelStyle.js';
+import { TablePanel } from '../extra/BasicPanelStyle.js';
 import PreferencesHeader from '../header/PreferencesHeader.js';
 
 import RangesHeader from './RangesHeader.js';
@@ -153,17 +151,7 @@ function RangesTablePanelInner({
   }, []);
 
   return (
-    <div
-      css={[
-        tablePanelStyle,
-        isFlipped &&
-          css`
-            th {
-              position: relative;
-            }
-          `,
-      ]}
-    >
+    <TablePanel isFlipped={isFlipped}>
       {!isFlipped && (
         <RangesHeader
           {...{
@@ -209,7 +197,7 @@ function RangesTablePanelInner({
         text={text}
         label="Range"
       />
-    </div>
+    </TablePanel>
   );
 }
 

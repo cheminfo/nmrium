@@ -1,16 +1,15 @@
-/** @jsxImportSource @emotion/react */
 import type { HTMLInputProps, NumericInputProps } from '@blueprintjs/core';
 import { Classes, NumericInput } from '@blueprintjs/core';
 import debounce from 'lodash/debounce.js';
+import type { ForwardedRef } from 'react';
 import {
+  forwardRef,
+  isValidElement,
   useEffect,
   useMemo,
-  useState,
-  isValidElement,
-  forwardRef,
   useRef,
+  useState,
 } from 'react';
-import type { ForwardedRef } from 'react';
 
 import useCombinedRefs from '../hooks/useCombinedRefs.js';
 
