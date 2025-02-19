@@ -413,11 +413,9 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
       if (altKey && activeSpectra?.length === 1) {
         switch (selectedTool) {
           case 'rangePicking': {
-            setRangesViewProperty(
-              draft,
-              'integralsScaleRatio',
-              (scale) => scale * scaleRatio,
-            );
+            setRangesViewProperty(draft, 'integralsScaleRatio', {
+              value: (scale) => scale * scaleRatio,
+            });
             break;
           }
           case 'integral': {

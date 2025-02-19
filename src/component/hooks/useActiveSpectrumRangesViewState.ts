@@ -15,19 +15,9 @@ export const defaultRangesViewState: RangesViewState = {
   integralsScaleRatio: 1,
   showAssignmentsLabels: false,
   showPublicationString: false,
-  publicationStringBounding: {
-    x: 0,
-    y: 0,
-    width: 400,
-    height: 0,
-  },
   showRanges: false,
-  rangesBounding: {
-    x: 0,
-    y: 0,
-    width: 200,
-    height: 150,
-  },
+  publicationStringBounding: { x: 0, y: 0, width: 400, height: 0 },
+  rangesBounding: { x: 0, y: 0, width: 200, height: 150 },
 };
 
 export function useActiveSpectrumRangesViewState() {
