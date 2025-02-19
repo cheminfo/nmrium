@@ -85,6 +85,7 @@ function RangesHeader({
     showPeaks,
     displayingMode,
     showAssignmentsLabels,
+    showPublicationString,
   } = useActiveSpectrumRangesViewState();
 
   function changeRangesSumHandler(options) {
@@ -154,6 +155,12 @@ function RangesHeader({
     dispatch({
       type: 'TOGGLE_RANGES_VIEW_PROPERTY',
       payload: { key: 'showAssignmentsLabels' },
+    });
+  }
+  function handleShowPublicationString() {
+    dispatch({
+      type: 'TOGGLE_RANGES_VIEW_PROPERTY',
+      payload: { key: 'showPublicationString' },
     });
   }
 
@@ -319,6 +326,13 @@ function RangesHeader({
             tooltip: `${booleanToString(!showAssignmentsLabels)} assignments labels`,
             onClick: handleShowAssignmentsLabel,
             active: showAssignmentsLabels,
+          },
+          {
+            disabled: !hasRanges,
+            icon: <FaCopy />,
+            tooltip: `${booleanToString(!showPublicationString)} publication string`,
+            onClick: handleShowPublicationString,
+            active: showPublicationString,
           },
         ]}
       />

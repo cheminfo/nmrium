@@ -3,7 +3,12 @@ import type { Draft } from 'immer';
 import { original } from 'immer';
 import cloneDeep from 'lodash/cloneDeep.js';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import type { RangesViewState, Spectrum, Spectrum1D } from 'nmr-load-save';
+import type {
+  BoundingBox,
+  RangesViewState,
+  Spectrum,
+  Spectrum1D,
+} from 'nmr-load-save';
 import type { Signal1D, Range } from 'nmr-processing';
 import { Filters1DManager } from 'nmr-processing';
 
@@ -138,6 +143,7 @@ type ToggleRangesViewAction = ActionType<
   {
     key: keyof FilterType<RangesViewState, boolean>;
     value?: boolean;
+    spectrumKey?: string;
   }
 >;
 
@@ -149,6 +155,12 @@ type ChangeRangeAssignmentLabelAction = ActionType<
   'CHANGE_RANGE_ASSIGNMENT_LABEL',
   { rangeID: string; value: string }
 >;
+
+type ChangeFloatingPublicationStringBoundingAction = ActionType<
+  'CHANGE_FLOATING_PUBLICATION_STRING_BOUNDING',
+  { spectrumKey: string; bounding: Partial<BoundingBox> }
+>;
+
 export type RangesActions =
   | AutoRangesDetectionAction
   | DeleteRangeAction
@@ -167,6 +179,7 @@ export type RangesActions =
   | ToggleRangesViewAction
   | DeleteRangePeakAction
   | ChangeRangeAssignmentLabelAction
+  | ChangeFloatingPublicationStringBoundingAction
   | ActionType<
       | 'AUTO_RANGES_SPECTRA_PICKING'
       | 'CHANGE_RANGES_SUM_FLAG'
@@ -603,12 +616,16 @@ function handleUpdateRange(draft: Draft<State>, action: UpdateRangAction) {
 function toggleRangesViewProperty(
   draft: Draft<State>,
   key: keyof FilterType<RangesViewState, boolean>,
-  value?: boolean,
+  options: {
+    spectrumKey?: string;
+    value?: boolean;
+  },
 ) {
+  const { value, spectrumKey } = options;
   if (typeof value === 'boolean') {
-    setRangesViewProperty(draft, key, value);
+    setRangesViewProperty(draft, key, { value, spectrumKey });
   } else {
-    setRangesViewProperty(draft, key, (flag) => !flag);
+    setRangesViewProperty(draft, key, { value: (flag) => !flag, spectrumKey });
   }
 }
 
@@ -617,8 +634,8 @@ function handleToggleRangesViewProperty(
   draft: Draft<State>,
   action: ToggleRangesViewAction,
 ) {
-  const { key, value } = action.payload;
-  toggleRangesViewProperty(draft, key, value);
+  const { key, value, spectrumKey } = action.payload;
+  toggleRangesViewProperty(draft, key, { spectrumKey, value });
 }
 
 function handleCutRange(draft: Draft<State>, action: CutRangAction) {
@@ -689,6 +706,22 @@ function handleChangeRangeAssignmentLabel(
   }
 }
 
+function handleChangeFloatingPublicationStringBounding(
+  draft: Draft<State>,
+  action: ChangeFloatingPublicationStringBoundingAction,
+) {
+  const { spectrumKey, bounding } = action.payload;
+
+  initializeRangeViewObject(draft, spectrumKey);
+
+  const rangesView = draft.view.ranges[spectrumKey];
+
+  rangesView.publicationStringBounding = {
+    ...rangesView.publicationStringBounding,
+    ...bounding,
+  };
+}
+
 export {
   handleCutRange,
   handleAutoRangesDetection,
@@ -712,4 +745,5 @@ export {
   handleChangePeaksDisplayingMode,
   handleDeleteRangePeak,
   handleChangeRangeAssignmentLabel,
+  handleChangeFloatingPublicationStringBounding,
 };

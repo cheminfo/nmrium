@@ -719,6 +719,11 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return RangesActions.handleDeleteRangePeak(draft, action);
       case 'CHANGE_RANGE_ASSIGNMENT_LABEL':
         return RangesActions.handleChangeRangeAssignmentLabel(draft, action);
+      case 'CHANGE_FLOATING_PUBLICATION_STRING_BOUNDING':
+        return RangesActions.handleChangeFloatingPublicationStringBounding(
+          draft,
+          action,
+        );
 
       case 'SET_KEY_PREFERENCES':
         return PreferencesActions.handleSetKeyPreferences(draft, action);

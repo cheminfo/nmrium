@@ -1,6 +1,7 @@
 import type { CSSProperties, RefObject } from 'react';
 import { useDeferredValue, useEffect } from 'react';
 
+import { FloatPublicationString } from '../1d/FloatPublicationString.js';
 import { Viewer1D } from '../1d/Viewer1D.js';
 import { SpectraInsets } from '../1d/inset/SpectraInsets.js';
 import { FloatMolecules } from '../1d-2d/components/FloatMoleculeStructures/FloatMolecules.js';
@@ -37,6 +38,7 @@ export function NMRiumViewer(props: NMRiumViewerProps) {
   if (isExportingProcessStart) {
     return (
       <SVGRootContainer enableBoxBorder={displayerMode === '2D'}>
+        <FloatPublicationString />
         <g className="float-molecules">
           <FloatMolecules />
         </g>
@@ -63,6 +65,7 @@ export function NMRiumViewer(props: NMRiumViewerProps) {
     >
       <FloatMolecules />
       <SpectraInsets />
+      <FloatPublicationString />
       <Viewer emptyText={emptyText} />
     </div>
   );
