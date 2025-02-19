@@ -1,4 +1,4 @@
-import lodashGet from 'lodash/get.js';
+import dlv from 'dlv';
 import type { Info1D, Peak1D } from 'nmr-processing';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { FaEdit, FaRegTrashAlt } from 'react-icons/fa';
@@ -190,7 +190,7 @@ function PeaksTable({ activeTab, data, info }: PeaksTableProps) {
     const columns: Array<ControlCustomColumn<PeakRecord>> = [];
     for (const col of COLUMNS) {
       const { showWhen, ...colParams } = col;
-      if (lodashGet(peaksPreferences, showWhen)) {
+      if (dlv(peaksPreferences, showWhen)) {
         addCustomColumn(columns, colParams);
       }
     }

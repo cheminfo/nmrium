@@ -5,7 +5,6 @@ import type { Info1D, Ranges } from 'nmr-processing';
 import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { FaCopy } from 'react-icons/fa';
 
-import type { StateMoleculeExtended } from '../../../data/molecules/Molecule.js';
 import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents.js';
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks.js';
 import { useAssignmentData } from '../../assignment/AssignmentsContext.js';
@@ -30,25 +29,21 @@ const rangesContextMenuOptions: BaseContextMenuProps['options'] = [
 ];
 
 interface RangesTablePanelInnerProps {
-  id: string;
   ranges: Ranges;
   data: NmrData1D;
   info: Info1D;
   xDomain: number[];
   activeTab: string;
-  molecules: StateMoleculeExtended[];
   preferences: WorkSpacePanelPreferences['ranges'];
 }
 
 function RangesTablePanelInner({
-  id,
   ranges,
   data,
   info,
   xDomain,
   preferences,
   activeTab,
-  molecules,
 }: RangesTablePanelInnerProps) {
   const [isFilterActive, setFilterIsActive] = useState(false);
   const assignmentData = useAssignmentData();
@@ -70,7 +65,7 @@ function RangesTablePanelInner({
       );
     };
 
-    const getFilteredRanges = (ranges) => {
+    const getFilteredRanges = (ranges: Ranges['values']) => {
       return ranges.filter((range) => isInView(range.from, range.to));
     };
 
@@ -90,19 +85,15 @@ function RangesTablePanelInner({
     return [];
   }, [isFilterActive, ranges.values, xDomain]);
 
-  const unlinkRangeHandler = useCallback(
-    (rangeData, signalIndex = -1) => {
-      dispatch({
-        type: 'UNLINK_RANGE',
-        payload: {
-          range: rangeData,
-          assignmentData,
-          signalIndex,
-        },
-      });
-    },
-    [assignmentData, dispatch],
-  );
+  const unlinkRangeHandler = useCallback(() => {
+    dispatch({
+      type: 'UNLINK_RANGE',
+      payload: {
+        assignmentData,
+        signalIndex: -1,
+      },
+    });
+  }, [assignmentData, dispatch]);
 
   const { rawWriteWithType, shouldFallback, cleanShouldFallback, text } =
     useClipboard();
@@ -154,14 +145,10 @@ function RangesTablePanelInner({
     <TablePanel isFlipped={isFlipped}>
       {!isFlipped && (
         <RangesHeader
-          {...{
-            id,
-            ranges,
-            info,
-            activeTab,
-            molecules,
-            isFilterActive,
-          }}
+          ranges={ranges}
+          info={info}
+          activeTab={activeTab}
+          isFilterActive={isFilterActive}
           onUnlink={unlinkRangeHandler}
           onFilterActivated={filterHandler}
           onSettingClick={settingsPanelHandler}
@@ -206,14 +193,13 @@ const MemoizedRangesTablePanel = memo(RangesTablePanelInner);
 const emptyData = { ranges: {}, data: {}, info: {} };
 
 export default function RangesPanel() {
-  const { ranges, data, info, id } = useSpectrum(emptyData) as Spectrum1D;
+  const { ranges, data, info } = useSpectrum(emptyData) as Spectrum1D;
   const {
     displayerKey,
     xDomain,
     view: {
       spectra: { activeTab },
     },
-    molecules,
     toolOptions: { selectedTool },
   } = useChartData();
 
@@ -222,7 +208,6 @@ export default function RangesPanel() {
   return (
     <MemoizedRangesTablePanel
       {...{
-        id,
         ranges,
         data,
         info,
@@ -231,7 +216,6 @@ export default function RangesPanel() {
         preferences: rangesPreferences,
         xDomain,
         activeTab,
-        molecules,
       }}
     />
   );

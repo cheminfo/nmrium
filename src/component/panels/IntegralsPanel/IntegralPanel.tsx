@@ -1,5 +1,4 @@
 import { SvgNmrIntegrate } from 'cheminfo-font';
-import lodashGet from 'lodash/get.js';
 import type { Spectrum1D } from 'nmr-load-save';
 import type { Info1D, Integrals } from 'nmr-processing';
 import { memo, useCallback, useMemo, useRef, useState } from 'react';
@@ -70,9 +69,8 @@ function IntegralPanelInner({
     [dispatch],
   );
 
-  const currentSum = useMemo(() => {
-    return lodashGet(integrals, 'options.sum', null);
-  }, [integrals]);
+  // TODO: make sure currentSum is not a lie and remove the optional chaining.
+  const currentSum = integrals?.options?.sum ?? null;
 
   const settingsPanelHandler = useCallback(() => {
     setFlipStatus(!isFlipped);

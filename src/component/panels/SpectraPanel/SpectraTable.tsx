@@ -1,5 +1,5 @@
+import dlv from 'dlv';
 import fileSaver from 'file-saver';
-import lodashGet from 'lodash/get.js';
 import type {
   ActiveSpectrum,
   JpathTableColumn,
@@ -445,7 +445,7 @@ function pathToString(path: string[]) {
 }
 
 function getValue(row, path) {
-  const value = lodashGet(row, path, '');
+  const value = dlv(row, path, '');
   const pathString = pathToString(path);
 
   if (

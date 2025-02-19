@@ -1,5 +1,5 @@
 import { Classes } from '@blueprintjs/core';
-import lodashGet from 'lodash/get.js';
+import dlv from 'dlv';
 import type { CSSProperties } from 'react';
 import { memo, useMemo } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
@@ -219,7 +219,7 @@ function DatabaseTable({
     const columns = [...initialColumns];
     for (const col of databaseTableColumns(databasePreferences)) {
       const { showWhen, ...colParams } = col;
-      if (lodashGet(databasePreferences, showWhen, false)) {
+      if (dlv(databasePreferences, showWhen, false)) {
         addCustomColumn(columns, colParams);
       }
     }

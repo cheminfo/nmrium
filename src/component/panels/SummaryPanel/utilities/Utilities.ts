@@ -1,6 +1,6 @@
 import type { FromTo } from 'cheminfo-types';
+import dlv from 'dlv';
 import lodashCloneDeep from 'lodash/cloneDeep.js';
-import lodashGet from 'lodash/get.js';
 import type { Correlation, Link } from 'nmr-correlation';
 import {
   addLink,
@@ -26,18 +26,14 @@ function getAtomType(nucleus: string): string {
 }
 
 function getLabelColor(correlationData, correlation) {
-  const error = lodashGet(
-    correlationData,
-    `state.${correlation.atomType}.error`,
-    null,
-  );
+  const error = correlationData?.state?.[correlation.atomType]?.error ?? null;
 
   if (error) {
     for (const { key, color } of ErrorColors) {
       if (
         key !== 'incomplete' && // do not consider this for a single atom type
         (key === 'notAttached' || key === 'ambiguousAttachment') &&
-        lodashGet(error, key, []).some(
+        dlv(error, key, []).some(
           (index) => correlationData.values[index].id === correlation.id,
         )
       ) {

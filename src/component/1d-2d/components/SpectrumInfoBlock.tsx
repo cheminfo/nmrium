@@ -1,4 +1,4 @@
-import lodashGet from 'lodash/get.js';
+import dlv from 'dlv';
 import type { Spectrum } from 'nmr-load-save';
 import type { CSSProperties } from 'react';
 import { useState } from 'react';
@@ -42,7 +42,7 @@ function getInfoValue(
   field: { jpath: string[]; format: string },
 ) {
   const { jpath, format } = field;
-  const value = lodashGet(spectrum, jpath, '');
+  const value = dlv(spectrum, jpath, '');
 
   switch (typeof value) {
     case 'number':

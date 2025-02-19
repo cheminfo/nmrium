@@ -4,8 +4,8 @@ import {
   SvgNmrPeaksTopLabels,
 } from 'cheminfo-font';
 import fileSaver from 'file-saver';
-import lodashGet from 'lodash/get.js';
 import type { RangesViewState } from 'nmr-load-save';
+import type { Info1D, Ranges } from 'nmr-processing';
 import { rangesToACS, rangesToTSV } from 'nmr-processing';
 import { useState } from 'react';
 import {
@@ -58,22 +58,35 @@ const EXPORT_MENU: ExportItem[] = [
   },
 ] as const;
 
-function RangesHeader({
-  ranges,
-  info,
-  onUnlink,
-  onFilterActivated,
-  onSettingClick,
-  isFilterActive,
-  filterCounter,
-  activeTab,
-}) {
+interface RangesHeaderProps {
+  ranges: Ranges;
+  info: Info1D;
+  activeTab: string;
+  isFilterActive: boolean;
+  onUnlink: () => void;
+  onFilterActivated: () => void;
+  onSettingClick: () => void;
+  filterCounter: number;
+}
+
+function RangesHeader(props: RangesHeaderProps) {
+  const {
+    ranges,
+    info,
+    activeTab,
+    isFilterActive,
+    onUnlink,
+    onFilterActivated,
+    onSettingClick,
+    filterCounter,
+  } = props;
   const dispatch = useDispatch();
   const alert = useAlert();
   const toaster = useToaster();
   const assignmentData = useAssignmentData();
 
-  const currentSum = lodashGet(ranges, 'options.sum', null);
+  // TODO: make sure ranges are not a lie and remove the optional chaining.
+  const currentSum = ranges?.options?.sum ?? null;
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
   const [acs, setACS] = useState<string>();
 

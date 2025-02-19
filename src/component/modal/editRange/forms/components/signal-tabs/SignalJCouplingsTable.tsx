@@ -1,5 +1,5 @@
 import { Button, Callout, Classes } from '@blueprintjs/core';
-import lodashGet from 'lodash/get.js';
+import dlv from 'dlv';
 import type { Jcoupling, Peak1D } from 'nmr-processing';
 import { translateMultiplet } from 'nmr-processing';
 import type { CSSProperties } from 'react';
@@ -46,7 +46,7 @@ function getJCouplingKey(
 }
 
 function getCouplingMinErrorMessage(errors, index) {
-  return lodashGet(errors, `signals.${index}.js.root.message`);
+  return dlv(errors, `signals.${index}.js.root.message`);
 }
 
 export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {

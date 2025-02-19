@@ -1,8 +1,7 @@
-import lodashGet from 'lodash/get.js';
 import type { WorkSpacePanelPreferences } from 'nmr-load-save';
 import type { Info1D } from 'nmr-processing';
-import type { MouseEvent, CSSProperties } from 'react';
-import { useMemo, useCallback } from 'react';
+import type { CSSProperties, MouseEvent } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import type { AssignmentsData } from '../../assignment/AssignmentsContext.js';
 import {
@@ -104,9 +103,7 @@ function RangesTableRow({
   const rowSpanTags: any = useMemo(() => {
     return {
       rowSpan: rowData.tableMetaInfo.rowSpan,
-      style: lodashGet(rowData.tableMetaInfo, 'hide', false)
-        ? { display: 'none' }
-        : undefined,
+      style: rowData.tableMetaInfo.hide ? { display: 'none' } : undefined,
     };
   }, [rowData.tableMetaInfo]);
 
@@ -122,10 +119,7 @@ function RangesTableRow({
           onUnlink(rowData);
           assignmentRange.removeAll('x');
         } else {
-          onUnlink(
-            rowData,
-            lodashGet(rowData, 'tableMetaInfo.signalIndex', undefined),
-          );
+          onUnlink(rowData, rowData.tableMetaInfo.signalIndex);
           assignmentSignal.removeAll('x');
         }
       }
@@ -183,7 +177,7 @@ function RangesTableRow({
   const trStyle = useMemo(() => {
     return highlightRange.isActive || assignmentRange.isActive
       ? HighlightedRowStyle
-      : lodashGet(rowData, 'tableMetaInfo.isConstantlyHighlighted', false)
+      : rowData.tableMetaInfo.isConstantlyHighlighted
         ? ConstantlyHighlightedRowStyle
         : undefined;
   }, [assignmentRange.isActive, highlightRange.isActive, rowData]);
@@ -262,9 +256,7 @@ function RangesTableRow({
       )}
       {preferences.showMultiplicity && (
         <td {...onHoverSignal}>
-          {!rowData?.tableMetaInfo?.signal
-            ? 'm'
-            : lodashGet(rowData, 'tableMetaInfo.signal.multiplicity', '')}
+          {rowData.tableMetaInfo.signal?.multiplicity ?? 'm'}
         </td>
       )}
 

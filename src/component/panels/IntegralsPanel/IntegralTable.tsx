@@ -1,10 +1,10 @@
-import lodashGet from 'lodash/get.js';
+import dlv from 'dlv';
 import type { Info1D, Integral } from 'nmr-processing';
+import { checkIntegralKind } from 'nmr-processing';
 import { memo, useCallback, useMemo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
 import { SIGNAL_KINDS } from '../../../data/constants/signalsKinds.js';
-import { checkIntegralKind } from '../../../data/data1d/Spectrum1D/index.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { EditableColumn } from '../../elements/EditableColumn.js';
 import { EmptyText } from '../../elements/EmptyText.js';
@@ -167,7 +167,7 @@ function IntegralTable({ activeTab, data, info }: IntegralTableProps) {
     const columns: Array<CustomColumn<Integral>> = [];
     for (const col of COLUMNS) {
       const { showWhen, ...colParams } = col;
-      if (lodashGet(integralsPreferences, showWhen)) {
+      if (dlv(integralsPreferences, showWhen)) {
         addCustomColumn(columns, colParams);
       }
     }

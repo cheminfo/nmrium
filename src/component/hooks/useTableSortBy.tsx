@@ -1,4 +1,4 @@
-import lodashGet from 'lodash/get.js';
+import dlv from 'dlv';
 import { useCallback, useMemo, useState } from 'react';
 
 export enum SortType {
@@ -19,13 +19,9 @@ export default function useTableSortBy(items, config = null) {
     if (sortConfig !== null) {
       sortableItems.sort((a, b) => {
         if (sortConfig.direction === SortType.ASCENDING) {
-          return (
-            lodashGet(a, sortConfig.key, 0) - lodashGet(b, sortConfig.key, 0)
-          );
+          return dlv(a, sortConfig.key, 0) - dlv(b, sortConfig.key, 0);
         } else if (sortConfig.direction === SortType.DESCENDING) {
-          return (
-            lodashGet(b, sortConfig.key, 0) - lodashGet(a, sortConfig.key, 0)
-          );
+          return dlv(b, sortConfig.key, 0) - dlv(a, sortConfig.key, 0);
         }
         return 0;
       });

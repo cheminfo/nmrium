@@ -1,4 +1,4 @@
-import lodashGet from 'lodash/get.js';
+import dlv from 'dlv';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import type {
   JpathLegendField,
@@ -9,7 +9,7 @@ import type {
 } from 'nmr-load-save';
 import type { CSSProperties } from 'react';
 
-import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY.js';
+import { get1DDataXY } from '../../data/data1d/Spectrum1D/index.js';
 import { useMouseTracker } from '../EventsTrackers/MouseTracker.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useScale } from '../context/ScaleContext.js';
@@ -99,7 +99,7 @@ function InnerSpectraLegends({
                   );
                 default: {
                   const jpath = (field as JpathLegendField).jpath;
-                  const value = lodashGet(spectrum, jpath, '');
+                  const value = dlv(spectrum, jpath, '');
                   return (
                     <text
                       alignmentBaseline="middle"

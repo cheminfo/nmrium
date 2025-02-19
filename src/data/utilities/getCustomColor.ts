@@ -1,4 +1,4 @@
-import lodashGet from 'lodash/get.js';
+import dlv from 'dlv';
 import type {
   Color2D,
   Spectrum1D,
@@ -12,7 +12,7 @@ type ReturnColor<ColorType> = ColorType extends SpectrumOneDimensionColor
   : Color2D;
 
 function getValue(spectrum: Spectrum1D | Spectrum2D, jpath: string[]) {
-  const value = lodashGet(spectrum, jpath);
+  const value = dlv(spectrum, jpath);
 
   if (typeof value === 'string') {
     return value;

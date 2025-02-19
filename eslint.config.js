@@ -41,7 +41,7 @@ export default [
         {
           name: 'lodash',
           message:
-            "Use a deep import instead, like for example 'lodash/get.js'",
+            "Use a deep import instead, like for example 'lodash/merge.js'",
         },
         {
           name: '@simbathesailor/use-what-changed',

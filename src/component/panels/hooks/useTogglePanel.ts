@@ -1,4 +1,3 @@
-import lodashGet from 'lodash/get.js';
 import type { NMRiumPanelPreferences } from 'nmr-load-save';
 
 import { usePreferences } from '../../context/PreferencesContext.js';
@@ -9,7 +8,8 @@ export function useTogglePanel() {
   const { setPanelOpenState } = usePanelOpenState();
 
   function togglePanel(id: keyof NMRiumPanelPreferences) {
-    const flag = lodashGet(current, `display.panels.${id}.display`);
+    // TODO: make sure current is not a lie and remove the optional chaining.
+    const flag = current?.display?.panels?.[id]?.display;
     if (typeof flag === 'boolean') {
       setPanelOpenState(id, !flag);
     }
