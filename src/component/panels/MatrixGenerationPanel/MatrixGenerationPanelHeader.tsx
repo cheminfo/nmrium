@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-
 import { SvgNmrExportAsMatrix } from 'cheminfo-font';
 import { IoAnalytics } from 'react-icons/io5';
 import { TbBrandGoogleAnalytics } from 'react-icons/tb';

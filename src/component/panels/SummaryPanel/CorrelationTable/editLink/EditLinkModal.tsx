@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { DialogBody, Tab, Tabs } from '@blueprintjs/core';
 import type { Correlation, Link } from 'nmr-correlation';
 import { getLinkDim } from 'nmr-correlation';

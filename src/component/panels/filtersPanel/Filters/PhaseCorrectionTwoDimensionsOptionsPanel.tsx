@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Select } from '@blueprintjs/select';
 import type { CSSProperties } from 'react';
 import { FaRulerHorizontal, FaRulerVertical } from 'react-icons/fa';

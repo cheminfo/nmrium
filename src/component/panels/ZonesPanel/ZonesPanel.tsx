@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 import type { Spectrum2D } from 'nmr-load-save';
 import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { FaUnlink } from 'react-icons/fa';
@@ -12,7 +10,7 @@ import { useAlert } from '../../elements/Alert.js';
 import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import { booleanToString } from '../../utility/booleanToString.js';
-import { tablePanelStyle } from '../extra/BasicPanelStyle.js';
+import { TablePanel } from '../extra/BasicPanelStyle.js';
 import type { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
 import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
 import PreferencesHeader from '../header/PreferencesHeader.js';
@@ -180,17 +178,7 @@ function ZonesPanelInner({
   const total = zones?.values?.length || 0;
   const hasZones = zones?.values && zones.values.length > 0;
   return (
-    <div
-      css={[
-        tablePanelStyle,
-        isFlipped &&
-          css`
-            th {
-              position: relative;
-            }
-          `,
-      ]}
-    >
+    <TablePanel isFlipped={isFlipped}>
       {!isFlipped && (
         <DefaultPanelHeader
           total={total}
@@ -257,7 +245,7 @@ function ZonesPanelInner({
           <ZonesPreferences ref={settingRef} />
         )}
       </div>
-    </div>
+    </TablePanel>
   );
 }
 

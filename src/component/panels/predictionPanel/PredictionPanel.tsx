@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import type OCL from 'openchemlib/full';
 import type { CSSProperties } from 'react';
 import { useEffect, useRef, useState } from 'react';
@@ -18,7 +17,7 @@ import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import { useMoleculeEditor } from '../../modal/MoleculeStructureEditorModal.js';
 import MoleculeHeader from '../MoleculesPanel/MoleculeHeader.js';
 import MoleculePanelHeader from '../MoleculesPanel/MoleculePanelHeader.js';
-import { tablePanelStyle } from '../extra/BasicPanelStyle.js';
+import { TablePanel } from '../extra/BasicPanelStyle.js';
 import type { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
 import PreferencesHeader from '../header/PreferencesHeader.js';
 
@@ -140,7 +139,7 @@ export default function PredictionPanel() {
   );
 
   return (
-    <div css={tablePanelStyle}>
+    <TablePanel isFlipped={isFlipped}>
       {isFlipped && (
         <>
           <PreferencesHeader
@@ -251,6 +250,6 @@ export default function PredictionPanel() {
         </>
       )}
       {modal}
-    </div>
+    </TablePanel>
   );
 }

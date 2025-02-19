@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
@@ -9,7 +7,7 @@ import { defaultSimulationOptions } from '../../../data/data1d/spectrumSimulatio
 import { useDispatch } from '../../context/DispatchContext.js';
 import Button from '../../elements/Button.js';
 import AboutSpectrumSimulationModal from '../../modal/AboutSpectrumSimulationModal.js';
-import { tablePanelStyle } from '../extra/BasicPanelStyle.js';
+import { TablePanel } from '../extra/BasicPanelStyle.js';
 import type { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
 import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
 import PreferencesHeader from '../header/PreferencesHeader.js';
@@ -119,20 +117,7 @@ export default function SpectrumSimulation() {
 
   return (
     <FormProvider {...methods}>
-      <div
-        css={[
-          tablePanelStyle,
-          isFlipped &&
-            css`
-              .table-container {
-                table,
-                th {
-                  position: relative !important;
-                }
-              }
-            `,
-        ]}
-      >
+      <TablePanel isFlipped={isFlipped}>
         {!isFlipped && (
           <DefaultPanelHeader
             onSettingClick={settingsPanelHandler}
@@ -179,7 +164,7 @@ export default function SpectrumSimulation() {
             />
           )}
         </div>
-      </div>
+      </TablePanel>
     </FormProvider>
   );
 }

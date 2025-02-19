@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SvgNmrMultipleAnalysis } from 'cheminfo-font';
@@ -24,7 +23,7 @@ import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus.js';
 import useToolsFunctions from '../../hooks/useToolsFunctions.js';
 import { getMatrixGenerationDefaultOptions } from '../../reducer/preferences/panelsPreferencesDefaultValues.js';
 import { options } from '../../toolbar/ToolTypes.js';
-import { tablePanelStyle } from '../extra/BasicPanelStyle.js';
+import { TablePanel } from '../extra/BasicPanelStyle.js';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer.js';
 
 import { ExclusionsZonesTable } from './ExclusionsZonesTable.js';
@@ -193,7 +192,7 @@ function InnerMatrixGenerationPanel() {
   }, [nucleusMatrixOptions.matrixOptions, originDomain.xDomain, reset]);
 
   return (
-    <div css={tablePanelStyle}>
+    <TablePanel>
       <MatrixGenerationPanelHeader
         showStocsy={showStocsy}
         showBoxPlot={showBoxPlot}
@@ -280,7 +279,7 @@ function InnerMatrixGenerationPanel() {
           </PreferencesContainer>
         </div>
       </FormProvider>
-    </div>
+    </TablePanel>
   );
 }
 

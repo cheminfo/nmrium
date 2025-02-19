@@ -1,6 +1,5 @@
-/** @jsxImportSource @emotion/react */
-
-import { css, Global } from '@emotion/react';
+import { Global, css } from '@emotion/react';
+import styled from '@emotion/styled';
 import type { PrintPageOptions } from 'nmr-load-save';
 import type { ForwardedRef, MouseEvent, ReactNode, RefObject } from 'react';
 import { useCallback } from 'react';
@@ -25,7 +24,7 @@ import { StateError } from './StateError.js';
 
 import type { NMRiumProps, NMRiumRefAPI } from './index.js';
 
-const containerStyles = css`
+const NMRiumContainer = styled.div`
   background-color: white;
   width: 100%;
   display: block;
@@ -117,10 +116,9 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
           }
         `}
       />
-      <div
+      <NMRiumContainer
         className="nmrium-container"
         ref={rootRef}
-        css={containerStyles}
         onContextMenu={preventContextMenuHandler}
         style={{ height: '100%', width: '100%' }}
       >
@@ -177,7 +175,7 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
             <NMRiumViewer emptyText={emptyText} viewerRef={viewerRef} />
           </ExportManagerController>
         </FilterSyncOptionsProvider>
-      </div>
+      </NMRiumContainer>
     </>
   );
 }

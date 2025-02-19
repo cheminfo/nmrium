@@ -1,6 +1,6 @@
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 
-export const tablePanelStyle = css`
+export const TablePanel = styled.div<{ isFlipped?: boolean }>`
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -17,5 +17,14 @@ export const tablePanelStyle = css`
     height: 100%;
     display: block;
     background-color: white;
+
+    ${(props) =>
+      props.isFlipped &&
+      `
+        table,
+        th {
+          position: relative !important;
+        }
+      `}
   }
 `;

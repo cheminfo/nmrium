@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-
 import type {
   DialogProps,
   HTMLDivProps,

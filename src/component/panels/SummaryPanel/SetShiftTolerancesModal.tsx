@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
 import { yupResolver } from '@hookform/resolvers/yup';
 import type { Tolerance } from 'nmr-correlation';

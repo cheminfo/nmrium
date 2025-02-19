@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Tab, Tabs } from '@blueprintjs/core';
 import { useFormContext, useWatch } from 'react-hook-form';
 

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Button, DialogFooter } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';

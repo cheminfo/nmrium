@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-
 import type { CSSProperties } from 'react';
 
 import type { Axis } from '../../../assignment/AssignmentsContext.js';

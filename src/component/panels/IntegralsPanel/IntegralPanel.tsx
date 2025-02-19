@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 import { SvgNmrIntegrate } from 'cheminfo-font';
 import lodashGet from 'lodash/get.js';
 import type { Spectrum1D } from 'nmr-load-save';
@@ -14,7 +12,7 @@ import { useActiveSpectrumIntegralsViewState } from '../../hooks/useActiveSpectr
 import useSpectrum from '../../hooks/useSpectrum.js';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal.js';
 import { booleanToString } from '../../utility/booleanToString.js';
-import { tablePanelStyle } from '../extra/BasicPanelStyle.js';
+import { TablePanel } from '../extra/BasicPanelStyle.js';
 import type { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
 import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
 import PreferencesHeader from '../header/PreferencesHeader.js';
@@ -125,17 +123,7 @@ function IntegralPanelInner({
   const total = integrals?.values?.length || 0;
 
   return (
-    <div
-      css={[
-        tablePanelStyle,
-        isFlipped &&
-          css`
-            th {
-              position: relative;
-            }
-          `,
-      ]}
-    >
+    <TablePanel isFlipped={isFlipped}>
       {!isFlipped && (
         <DefaultPanelHeader
           total={total}
@@ -190,7 +178,7 @@ function IntegralPanelInner({
           <IntegralsPreferences ref={settingRef} />
         )}
       </div>
-    </div>
+    </TablePanel>
   );
 }
 

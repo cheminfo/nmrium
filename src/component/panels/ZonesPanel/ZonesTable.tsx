@@ -1,5 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import type {
   Zones1DNucleusPreferences,
   Zones2DNucleusPreferences,
@@ -18,7 +17,7 @@ import { NoDataForFid } from '../extra/placeholder/NoDataForFid.js';
 import ZonesTableRow from './ZonesTableRow.js';
 import { useMapZones } from './hooks/useMapZones.js';
 
-const tableStyle = css`
+const Table = styled.table`
   border-spacing: 0;
   border: 1px solid #dedede;
   width: 100%;
@@ -127,7 +126,7 @@ function ZonesTable({ tableData, onUnlink, nucleus, info }: ZonesTableProps) {
   return (
     <div>
       <ZoneEditionDialog />
-      <table css={tableStyle}>
+      <Table>
         <thead>
           <tr>
             {showSerialNumber && <th rowSpan={2}>#</th>}
@@ -190,7 +189,7 @@ function ZonesTable({ tableData, onUnlink, nucleus, info }: ZonesTableProps) {
             />
           ))}
         </tbody>
-      </table>
+      </Table>
     </div>
   );
 }

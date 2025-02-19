@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Button, Classes } from '@blueprintjs/core';
 import type { ReactNode } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';

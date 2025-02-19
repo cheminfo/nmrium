@@ -1,10 +1,9 @@
-/** @jsxImportSource @emotion/react */
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import type { AlertButton } from '../../elements/Alert.js';
 import { useAlert } from '../../elements/Alert.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
-import { tablePanelStyle } from '../extra/BasicPanelStyle.js';
+import { TablePanel } from '../extra/BasicPanelStyle.js';
 import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
 
 import { FiltersSectionsPanel } from './Filters/FiltersSectionsPanel.js';
@@ -38,7 +37,7 @@ export default function FiltersPanel() {
   }
 
   return (
-    <div css={tablePanelStyle}>
+    <TablePanel>
       <DefaultPanelHeader
         deleteToolTip="Delete all filters"
         onDelete={handleDeleteFilter}
@@ -48,6 +47,6 @@ export default function FiltersPanel() {
       <div className="inner-container">
         <FiltersSectionsPanel />
       </div>
-    </div>
+    </TablePanel>
   );
 }
