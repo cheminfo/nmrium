@@ -7,4 +7,5 @@ export const StyledDialogBody = styled(DialogBody)<
 >`
   padding: ${({ padding = '15px' }) => padding};
   background-color: ${({ backgroundColor = 'white' }) => backgroundColor};
+  margin: 0;
 `;
