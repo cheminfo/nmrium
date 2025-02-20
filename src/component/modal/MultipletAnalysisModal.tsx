@@ -143,12 +143,7 @@ function InnerMultipleAnalysis(props: InnerMultipleAnalysisProps) {
         re: re.slice(fromIndex, toIndex),
         im: im?.slice(fromIndex, toIndex),
       };
-      // console.log(
-      //   'hola',
-      //   JSON.stringify(analysesProps, (key, value) =>
-      //     ArrayBuffer.isView(value) ? Array.from(value as any) : value,
-      //   ),
-      // );
+
       try {
         const result = xreimMultipletAnalysis(analysesProps, {
           autoPhase: false,
