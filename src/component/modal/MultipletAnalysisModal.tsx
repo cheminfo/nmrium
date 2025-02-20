@@ -1,8 +1,8 @@
 import { Dialog } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { xGetFromToIndex, xyToXYObject } from 'ml-spectra-processing';
-import { analyseMultiplet } from 'multiplet-analysis';
 import type { ActiveSpectrum } from 'nmr-load-save';
+import { xreimMultipletAnalysis } from 'nmr-processing';
 import { useEffect, useState } from 'react';
 import { Axis, LineSeries, Plot } from 'react-plot';
 
@@ -11,41 +11,29 @@ import { useChartData } from '../context/ChartContext.js';
 import { useScaleChecked } from '../context/ScaleContext.js';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 
-const DialogBody = styled(StyledDialogBody)`
-  button:focus {
-    outline: none;
+const Container = styled.div`
+  padding: 10px;
+  max-height: 500px;
+  overflow-y: auto;
+`;
+
+const Row = styled.div`
+  outline: none;
+  display: flex;
+  flex-direction: row;
+  margin: 0;
+
+  &:nth-child(odd) {
+    background: #fafafa;
   }
+`;
 
-  .header {
-    color: #464646;
-    font-size: 15px;
-    height: 20px;
-  }
-
-  .container {
-    padding: 10px;
-    max-height: 500px;
-    overflow-y: auto;
-
-    .row {
-      outline: none;
-      display: flex !important;
-      flex-direction: row;
-      margin: 0;
-
-      .multiplicity {
-        flex: 2;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0 20px;
-      }
-    }
-
-    .row:nth-child(odd) {
-      background: #fafafa;
-    }
-  }
+const Multiplicity = styled.div`
+  flex: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
 `;
 
 const LoaderContainer = styled.div`
@@ -98,11 +86,11 @@ export default function MultipletAnalysisModal({
   return (
     <Dialog
       isOpen={isOpen}
+      style={{ width: 'auto' }}
       onClose={() => onClose()}
       title="Analyse multiplet"
-      style={{ width: 900, height: 400 }}
     >
-      <DialogBody>
+      <StyledDialogBody>
         <InnerMultipleAnalysis
           {...{
             activeSpectrum,
@@ -110,7 +98,7 @@ export default function MultipletAnalysisModal({
             endX,
           }}
         />
-      </DialogBody>
+      </StyledDialogBody>
     </Dialog>
   );
 }
@@ -138,7 +126,7 @@ function InnerMultipleAnalysis(props: InnerMultipleAnalysisProps) {
       }
 
       const {
-        data: { x, re },
+        data: { x, re, im },
         info,
       } = spectrum;
 
@@ -149,21 +137,30 @@ function InnerMultipleAnalysis(props: InnerMultipleAnalysisProps) {
         from,
         to,
       });
+
       const analysesProps = {
         x: x.slice(fromIndex, toIndex),
-        y: re.slice(fromIndex, toIndex),
+        re: re.slice(fromIndex, toIndex),
+        im: im?.slice(fromIndex, toIndex),
       };
+
       try {
-        const result = analyseMultiplet(analysesProps, {
-          frequency: info.originFrequency,
-          minimalResolution: 0.1,
-          maxTestedJ: 17,
-          takeBestPartMultiplet: true,
-          correctVerticalOffset: true,
-          symmetrizeEachStep: true,
-          decreasingJvalues: true,
-          makeShortCutForSpeed: true,
-          debug: true,
+        const result = xreimMultipletAnalysis(analysesProps, {
+          autoPhase: false,
+          analyzer: {
+            frequency: info.originFrequency,
+            minimalResolution: 0.1,
+            critFoundJ: 0.75,
+            maxTestedJ: 17,
+            minTestedJ: 1,
+            checkSymmetryFirst: false,
+            takeBestPartMultiplet: true,
+            correctVerticalOffset: true,
+            symmetrizeEachStep: false,
+            decreasingJvalues: true,
+            makeShortCutForSpeed: true,
+            debug: true,
+          },
         });
         setCalcFinished(true);
         setAnalysisData(result);
@@ -189,71 +186,73 @@ function InnerMultipleAnalysis(props: InnerMultipleAnalysisProps) {
   }
 
   return (
-    <div className="container">
+    <Container>
       {analysisData?.debug?.steps.map((d, index) => {
         return (
           // eslint-disable-next-line react/no-array-index-key
-          <div key={index} className="row">
-            <Plot
-              width={400}
-              height={200}
-              svgStyle={{ overflow: 'visible' }}
-              seriesViewportStyle={{ stroke: 'black' }}
-            >
-              <LineSeries data={xyToXYObject(d.multiplet)} />
-              <Axis
-                id="y"
-                position="left"
-                tickPosition="inner"
-                displayPrimaryGridLines
-                hiddenTicks
-                paddingStart={0.1}
-                paddingEnd={0.1}
-              />
-              <Axis
-                id="x"
-                position="bottom"
-                tickPosition="inner"
-                displayPrimaryGridLines
-              />
-            </Plot>
-            <div className="multiplicity">
-              <p>
-                {analysisData.js[index]
-                  ? `${analysisData.js[index]?.multiplicity}: ${analysisData.js[
-                      index
-                    ]?.coupling.toFixed(3)} Hz`
-                  : ''}
-              </p>
+          <Row key={index}>
+            <div>
+              <Plot
+                width={400}
+                height={200}
+                svgStyle={{ overflow: 'visible' }}
+                seriesViewportStyle={{ stroke: 'black' }}
+              >
+                <LineSeries data={xyToXYObject(d.multiplet)} />
+                <Axis
+                  id="y"
+                  position="left"
+                  tickPosition="inner"
+                  displayPrimaryGridLines
+                  hiddenTicks
+                  paddingStart={0.1}
+                  paddingEnd={0.1}
+                />
+                <Axis
+                  id="x"
+                  position="bottom"
+                  tickPosition="inner"
+                  displayPrimaryGridLines
+                />
+              </Plot>
             </div>
-            <Plot
-              width={400}
-              height={200}
-              seriesViewportStyle={{ stroke: 'black' }}
-            >
-              <LineSeries
-                data={xyToXYObject(d.errorFunction)}
-                lineStyle={{ strokeWidth: 1 }}
-              />
-              <Axis
-                id="y"
-                position="left"
-                tickPosition="inner"
-                displayPrimaryGridLines
-                hiddenTicks
-                paddingStart={0.1}
-                paddingEnd={0.1}
-              />
-              <Axis
-                id="x"
-                position="bottom"
-                tickPosition="inner"
-                displayPrimaryGridLines
-              />
-            </Plot>
-          </div>
+            <Multiplicity>
+              {analysisData.js[index]
+                ? `${analysisData.js[index]?.multiplicity}: ${analysisData.js[
+                    index
+                  ]?.coupling.toFixed(3)} Hz`
+                : ''}
+            </Multiplicity>
+            <div>
+              <Plot
+                width={400}
+                height={200}
+                seriesViewportStyle={{ stroke: 'black' }}
+              >
+                <LineSeries
+                  data={xyToXYObject(d.errorFunction)}
+                  lineStyle={{ strokeWidth: 1 }}
+                />
+                <Axis
+                  id="y"
+                  position="left"
+                  tickPosition="inner"
+                  displayPrimaryGridLines
+                  hiddenTicks
+                  paddingStart={0.1}
+                  paddingEnd={0.1}
+                />
+                <Axis
+                  id="x"
+                  position="bottom"
+                  tickPosition="inner"
+                  displayPrimaryGridLines
+                />
+              </Plot>
+            </div>
+          </Row>
         );
       })}
-    </div>
+    </Container>
   );
 }
