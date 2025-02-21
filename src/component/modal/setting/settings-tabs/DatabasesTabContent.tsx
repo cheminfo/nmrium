@@ -16,7 +16,11 @@ import { getPreferencesByWorkspace } from '../../../reducer/preferences/utilitie
 import { isGoogleDocument } from '../../../utility/isGoogleDocument.js';
 import { Section } from '../GeneralSettings.js';
 
-const StyledButton = styled(Button)<{ marginHorizontal: number }>`
+const StyledButton = styled(Button, {
+  shouldForwardProp(propName) {
+    return propName !== 'marginHorizontal';
+  },
+})<{ marginHorizontal: number }>`
   margin: 0 ${({ marginHorizontal }) => marginHorizontal}px;
 `;
 

@@ -358,14 +358,9 @@ function InnerPrintOptionsModal(props: InnerPrintOptionsModalProps) {
             name="layout"
             control={control}
             render={({ field }) => {
-              const { value, onChange, ...otherFieldProps } = field;
+              const { value, ref, ...otherFieldProps } = field;
               return (
-                <RadioGroup
-                  inline
-                  onChange={onChange}
-                  selectedValue={value}
-                  {...otherFieldProps}
-                >
+                <RadioGroup inline selectedValue={value} {...otherFieldProps}>
                   <Radio label="Portrait" value="portrait" />
                   <Radio label="Landscape" value="landscape" />
                 </RadioGroup>
