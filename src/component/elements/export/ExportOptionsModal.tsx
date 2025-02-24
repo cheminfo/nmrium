@@ -196,11 +196,10 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
                 name="layout"
                 control={control}
                 render={({ field }) => {
-                  const { value, onChange, ...otherFieldProps } = field;
+                  const { value, ref, ...otherFieldProps } = field;
                   return (
                     <RadioGroup
                       inline
-                      onChange={onChange}
                       selectedValue={value}
                       {...otherFieldProps}
                     >

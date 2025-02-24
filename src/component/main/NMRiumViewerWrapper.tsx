@@ -45,17 +45,14 @@ export function NMRiumViewerWrapper(props: NMRiumViewerWrapperProps) {
     return <NMRiumViewer emptyText={emptyText} viewerRef={viewerRef} />;
   }
 
-  const closed: number | boolean = general?.hidePanelOnLoad
-    ? true
-    : verticalSplitterCloseThreshold;
-
   return (
     <SplitPane
       size={verticalSplitterPosition}
       direction="horizontal"
       controlledSide="end"
-      closed={closed}
-      onResize={resizeHandler}
+      defaultOpen={!general?.hidePanelOnLoad}
+      closeThreshold={verticalSplitterCloseThreshold}
+      onSizeChange={resizeHandler}
     >
       <NMRiumViewer emptyText={emptyText} viewerRef={viewerRef} />
       <Panels />

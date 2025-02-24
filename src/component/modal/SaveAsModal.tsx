@@ -102,14 +102,9 @@ function InnerSaveAsModal(props: InnerSaveAsModalProps) {
             name="include.dataType"
             control={control}
             render={({ field }) => {
-              const { value, onChange, ...otherFieldProps } = field;
+              const { value, ref, ...otherFieldProps } = field;
               return (
-                <RadioGroup
-                  inline
-                  onChange={onChange}
-                  selectedValue={value}
-                  {...otherFieldProps}
-                >
+                <RadioGroup inline selectedValue={value} {...otherFieldProps}>
                   <Radio label="Raw data" value={DataExportOptions.ROW_DATA} />
                   <Radio
                     label="Data source"

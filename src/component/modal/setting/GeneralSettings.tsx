@@ -68,7 +68,11 @@ const StyledTabs = styled(Tabs)`
   }
 `;
 
-const StyledButton = styled(Button)<{ marginHorizontal: number }>`
+const StyledButton = styled(Button, {
+  shouldForwardProp(propName) {
+    return propName !== 'marginHorizontal';
+  },
+})<{ marginHorizontal: number }>`
   margin: 0 ${(props) => props.marginHorizontal}px;
 `;
 
