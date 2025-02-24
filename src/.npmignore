@@ -1,0 +1,3 @@
+.npmignore
+__tests__
+/demo
