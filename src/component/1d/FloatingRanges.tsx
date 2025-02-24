@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import type { BoundingBox } from 'nmr-load-save';
 import { checkMultiplicity } from 'nmr-processing';
 import type { Ranges } from 'nmr-processing';
 import { memo, useEffect, useState } from 'react';
