@@ -99,6 +99,7 @@ function RangesHeader(props: RangesHeaderProps) {
     displayingMode,
     showAssignmentsLabels,
     showPublicationString,
+    showRanges,
   } = useActiveSpectrumRangesViewState();
 
   function changeRangesSumHandler(options) {
@@ -174,6 +175,12 @@ function RangesHeader(props: RangesHeaderProps) {
     dispatch({
       type: 'TOGGLE_RANGES_VIEW_PROPERTY',
       payload: { key: 'showPublicationString' },
+    });
+  }
+  function handleShowRanges() {
+    dispatch({
+      type: 'TOGGLE_RANGES_VIEW_PROPERTY',
+      payload: { key: 'showRanges' },
     });
   }
 
@@ -346,6 +353,13 @@ function RangesHeader(props: RangesHeaderProps) {
             tooltip: `${booleanToString(!showPublicationString)} publication string`,
             onClick: handleShowPublicationString,
             active: showPublicationString,
+          },
+          {
+            disabled: !hasRanges,
+            icon: <SvgNmrPeaksTopLabels />,
+            tooltip: `${booleanToString(!showRanges)} ranges`,
+            onClick: handleShowRanges,
+            active: showRanges,
           },
         ]}
       />
