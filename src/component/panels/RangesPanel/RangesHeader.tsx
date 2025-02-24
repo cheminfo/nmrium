@@ -28,6 +28,7 @@ import { useAlert } from '../../elements/Alert.js';
 import type { ToolbarPopoverMenuItem } from '../../elements/ToolbarPopoverItem.js';
 import { ToolbarPopoverItem } from '../../elements/ToolbarPopoverItem.js';
 import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
+import useCheckExperimentalFeature from '../../hooks/useCheckExperimentalFeature.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import CopyClipboardModal from '../../modal/CopyClipboardModal.js';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal.js';
@@ -84,6 +85,7 @@ function RangesHeader(props: RangesHeaderProps) {
   const alert = useAlert();
   const toaster = useToaster();
   const assignmentData = useAssignmentData();
+  const isExperimentalFeature = useCheckExperimentalFeature();
 
   // TODO: make sure ranges are not a lie and remove the optional chaining.
   const currentSum = ranges?.options?.sum ?? null;
@@ -241,6 +243,114 @@ function RangesHeader(props: RangesHeaderProps) {
 
   const hasRanges = Array.isArray(ranges?.values) && ranges.values.length > 0;
   const total = ranges?.values?.length || 0;
+
+  const lefButtons = [
+    {
+      component: (
+        <ToolbarPopoverItem<ExportData>
+          disabled={!hasRanges}
+          icon={<FaFileExport />}
+          tooltip="Export as"
+          options={EXPORT_MENU}
+          onClick={exportHandler}
+        />
+      ),
+    },
+    {
+      component: (
+        <ChangeSumModal
+          onSave={changeRangesSumHandler}
+          sumType="ranges"
+          currentSum={currentSum}
+          sumOptions={ranges?.options}
+        />
+      ),
+    },
+    {
+      icon: <ImLink />,
+      tooltip: 'Fixed integration sum',
+      onClick: changeSumConstantFlagHandler,
+      active: ranges?.options?.isSumConstant,
+    },
+    {
+      disabled: !hasRanges,
+      icon: <FaUnlink />,
+      tooltip: 'Remove all assignments',
+      onClick: handleOnRemoveAssignments,
+    },
+    {
+      disabled: !hasRanges,
+      icon: <FaSitemap />,
+      tooltip: `${booleanToString(!showMultiplicityTrees)} multiplicity trees in spectrum`,
+      onClick: handleSetShowMultiplicityTrees,
+      active: showMultiplicityTrees,
+    },
+    {
+      disabled: !hasRanges,
+      icon: <FaChartBar />,
+      tooltip: `${booleanToString(!showJGraph)} J Graph`,
+      onClick: handleShowJGraph,
+      active: showJGraph,
+    },
+    {
+      disabled: !hasRanges,
+      icon: <SvgNmrIntegrate />,
+      tooltip: `${booleanToString(!showIntegrals)} integrals`,
+      onClick: handleShowIntegrals,
+      active: showIntegrals,
+    },
+    {
+      disabled: !hasRanges,
+      icon: <SvgNmrIntegrate />,
+      tooltip: `${booleanToString(!showIntegralsValues)} integrals values`,
+      onClick: handleShowIntegralsValues,
+      active: showIntegralsValues,
+    },
+
+    {
+      id: 'ranges-toggle-peaks',
+      disabled: !hasRanges,
+      icon: <SvgNmrPeaks />,
+      tooltip: `${booleanToString(!showPeaks)} peaks`,
+      onClick: () => toggleViewProperty('showPeaks'),
+      active: showPeaks,
+    },
+    {
+      disabled: !hasRanges,
+      icon: <SvgNmrPeaksTopLabels />,
+      tooltip:
+        displayingMode === 'spread' ? 'Top of the peak' : 'Top of the spectrum',
+      onClick: toggleDisplayingMode,
+      active: displayingMode === 'spread',
+    },
+    {
+      disabled: !hasRanges,
+      icon: <LuMessageSquareText />,
+      tooltip: `${booleanToString(!showAssignmentsLabels)} assignments labels`,
+      onClick: handleShowAssignmentsLabel,
+      active: showAssignmentsLabels,
+    },
+  ];
+
+  if (isExperimentalFeature) {
+    lefButtons.push(
+      {
+        disabled: !hasRanges,
+        icon: <FaCopy />,
+        tooltip: `${booleanToString(!showPublicationString)} publication string`,
+        onClick: handleShowPublicationString,
+        active: showPublicationString,
+      },
+      {
+        disabled: !hasRanges,
+        icon: <SvgNmrPeaksTopLabels />,
+        tooltip: `${booleanToString(!showRanges)} ranges`,
+        onClick: handleShowRanges,
+        active: showRanges,
+      },
+    );
+  }
+
   return (
     <div>
       <CopyClipboardModal
@@ -259,109 +369,7 @@ function RangesHeader(props: RangesHeaderProps) {
           isFilterActive ? 'Show all ranges' : 'Hide ranges out of view'
         }
         onSettingClick={onSettingClick}
-        leftButtons={[
-          {
-            component: (
-              <ToolbarPopoverItem<ExportData>
-                disabled={!hasRanges}
-                icon={<FaFileExport />}
-                tooltip="Export as"
-                options={EXPORT_MENU}
-                onClick={exportHandler}
-              />
-            ),
-          },
-          {
-            component: (
-              <ChangeSumModal
-                onSave={changeRangesSumHandler}
-                sumType="ranges"
-                currentSum={currentSum}
-                sumOptions={ranges?.options}
-              />
-            ),
-          },
-          {
-            icon: <ImLink />,
-            tooltip: 'Fixed integration sum',
-            onClick: changeSumConstantFlagHandler,
-            active: ranges?.options?.isSumConstant,
-          },
-          {
-            disabled: !hasRanges,
-            icon: <FaUnlink />,
-            tooltip: 'Remove all assignments',
-            onClick: handleOnRemoveAssignments,
-          },
-          {
-            disabled: !hasRanges,
-            icon: <FaSitemap />,
-            tooltip: `${booleanToString(!showMultiplicityTrees)} multiplicity trees in spectrum`,
-            onClick: handleSetShowMultiplicityTrees,
-            active: showMultiplicityTrees,
-          },
-          {
-            disabled: !hasRanges,
-            icon: <FaChartBar />,
-            tooltip: `${booleanToString(!showJGraph)} J Graph`,
-            onClick: handleShowJGraph,
-            active: showJGraph,
-          },
-          {
-            disabled: !hasRanges,
-            icon: <SvgNmrIntegrate />,
-            tooltip: `${booleanToString(!showIntegrals)} integrals`,
-            onClick: handleShowIntegrals,
-            active: showIntegrals,
-          },
-          {
-            disabled: !hasRanges,
-            icon: <SvgNmrIntegrate />,
-            tooltip: `${booleanToString(!showIntegralsValues)} integrals values`,
-            onClick: handleShowIntegralsValues,
-            active: showIntegralsValues,
-          },
-
-          {
-            id: 'ranges-toggle-peaks',
-            disabled: !hasRanges,
-            icon: <SvgNmrPeaks />,
-            tooltip: `${booleanToString(!showPeaks)} peaks`,
-            onClick: () => toggleViewProperty('showPeaks'),
-            active: showPeaks,
-          },
-          {
-            disabled: !hasRanges,
-            icon: <SvgNmrPeaksTopLabels />,
-            tooltip:
-              displayingMode === 'spread'
-                ? 'Top of the peak'
-                : 'Top of the spectrum',
-            onClick: toggleDisplayingMode,
-            active: displayingMode === 'spread',
-          },
-          {
-            disabled: !hasRanges,
-            icon: <LuMessageSquareText />,
-            tooltip: `${booleanToString(!showAssignmentsLabels)} assignments labels`,
-            onClick: handleShowAssignmentsLabel,
-            active: showAssignmentsLabels,
-          },
-          {
-            disabled: !hasRanges,
-            icon: <FaCopy />,
-            tooltip: `${booleanToString(!showPublicationString)} publication string`,
-            onClick: handleShowPublicationString,
-            active: showPublicationString,
-          },
-          {
-            disabled: !hasRanges,
-            icon: <SvgNmrPeaksTopLabels />,
-            tooltip: `${booleanToString(!showRanges)} ranges`,
-            onClick: handleShowRanges,
-            active: showRanges,
-          },
-        ]}
+        leftButtons={lefButtons}
       />
 
       <ClipboardFallbackModal
