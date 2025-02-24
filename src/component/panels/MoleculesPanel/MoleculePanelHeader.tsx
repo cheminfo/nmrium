@@ -101,9 +101,9 @@ export default function MoleculePanelHeader({
   const moleculeKey = molecules?.[currentIndex]?.id;
   const saveAsSVGHandler = useCallback(() => {
     if (!rootRef) return;
-    exportAsSVG('molFile', {
+    exportAsSVG(`molSVG${currentIndex}`, {
       rootElement: rootRef,
-      fileName: `molSVG${currentIndex} `,
+      fileName: 'molFile',
     });
   }, [rootRef, currentIndex]);
 
