@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import type { BoundingBox } from 'nmr-load-save';
 import { rangesToACS } from 'nmr-processing';
 import { useEffect, useState } from 'react';
 import { BsArrowsMove } from 'react-icons/bs';
