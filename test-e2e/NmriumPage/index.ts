@@ -1,5 +1,3 @@
-import { readFileSync } from 'node:fs';
-
 import type { Page } from '@playwright/test';
 import { expect } from '@playwright/test';
 
@@ -157,44 +155,17 @@ export default class NmriumPage {
   }
 
   public async dropFile(file: string | string[]) {
-    const filename: string[] = [];
+    const filenames: string[] = [];
 
     if (typeof file === 'string') {
-      filename.push(file);
+      filenames.push(file);
     } else {
-      filename.push(...file);
+      filenames.push(...file);
     }
 
-    const bufferData = filename.map((f) => {
-      const data = `data:application/octet-stream;base64,${readFileSync(
-        `test-e2e/data/${f}`,
-      ).toString('base64')}`;
-      return data;
-    });
-
-    const dataTransfer = await this.page.evaluateHandle(
-      async ({ bufferData, filename }) => {
-        const dt = new DataTransfer();
-
-        await Promise.all(
-          bufferData.map(async (buffer, i) => {
-            const blobData = await fetch(buffer).then((res) => res.blob());
-            const file = new File([blobData], filename[i]);
-            dt.items.add(file);
-          }),
-        );
-
-        return dt;
-      },
-      {
-        bufferData,
-        filename,
-      },
-    );
-
-    await this.page.dispatchEvent('_react=DropZone', 'drop', {
-      dataTransfer,
-    });
+    await this.page
+      .locator('_react=DropZone >> input[type=file]')
+      .setInputFiles(filenames.map((f) => `test-e2e/data/${f}`));
   }
 
   async saveWorkspaceModal(name: string) {
