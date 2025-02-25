@@ -8,6 +8,7 @@ import { EmptyText } from '../../elements/EmptyText.js';
 import type { TableContextMenuProps } from '../../elements/ReactTable/ReactTable.js';
 import useTableSortBy from '../../hooks/useTableSortBy.js';
 import { EditRangeModal } from '../../modal/editRange/EditRangeModal.js';
+import { extractChemicalElement } from '../../utility/extractChemicalElement.js';
 import { NoDataForFid } from '../extra/placeholder/NoDataForFid.js';
 
 import RangesTableRow from './RangesTableRow.js';
@@ -76,7 +77,7 @@ function RangesTable({
   preferences,
   info,
 }: RangesTableProps) {
-  const element = activeTab?.replace(/\d/g, '');
+  const element = extractChemicalElement(activeTab);
   const { items: sortedData, isSortedDesc, onSort } = useTableSortBy(tableData);
   const data = useMapRanges(sortedData);
 
