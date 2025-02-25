@@ -176,8 +176,8 @@ export function BrushTracker1D({ children }) {
                 dispatchPreferences({
                   type: 'ANALYZE_SPECTRA',
                   payload: {
-                    start: brushData.startX,
-                    end: brushData.endX,
+                    start: brushDataInPPM.startX,
+                    end: brushDataInPPM.endX,
                     nucleus: activeTab,
                   },
                 });
