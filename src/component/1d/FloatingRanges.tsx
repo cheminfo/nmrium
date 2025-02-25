@@ -20,6 +20,7 @@ import { usePanelPreferences } from '../hooks/usePanelPreferences.js';
 import { useSVGUnitConverter } from '../hooks/useSVGUnitConverter.js';
 import useSpectraByActiveNucleus from '../hooks/useSpectraPerNucleus.js';
 import { useCheckExportStatus } from '../hooks/useViewportSize.js';
+import { extractChemicalElement } from '../utility/extractChemicalElement.js';
 import { formatNumber } from '../utility/formatNumber.js';
 
 const ReactRnd = styled(Rnd)`
@@ -46,44 +47,6 @@ interface RangeItem {
   integration: string;
   coupling: string;
 }
-
-const columns: Array<SVGTableColumn<RangeItem>> = [
-  {
-    accessorKey: 'delta',
-    header: 'δ (ppm)',
-    width: 100,
-    rowSpanGroupKey: 'id',
-    headerTextProps: { fontWeight: 'bold' },
-    cellBoxProps: { stroke: '#dedede', fill: 'white', fillOpacity: 0.8 },
-    headerBoxProps: { stroke: '#dedede', fill: '#E5E8EB' },
-  },
-  {
-    accessorKey: 'integration',
-    header: 'Rel. H',
-    width: 60,
-    rowSpanGroupKey: 'id',
-    headerTextProps: { fontWeight: 'bold' },
-    cellBoxProps: { stroke: '#dedede', fill: 'white', fillOpacity: 0.8 },
-    headerBoxProps: { stroke: '#dedede', fill: '#E5E8EB' },
-  },
-  {
-    accessorKey: 'multiplicity',
-    header: 'Mult.',
-    width: 60,
-    rowSpanGroupKey: 'id',
-    headerTextProps: { fontWeight: 'bold' },
-    cellBoxProps: { stroke: '#dedede', fill: 'white', fillOpacity: 0.8 },
-    headerBoxProps: { stroke: '#dedede', fill: '#E5E8EB' },
-  },
-  {
-    accessorKey: 'coupling',
-    header: 'J (Hz)',
-    width: 120,
-    headerTextProps: { fontWeight: 'bold' },
-    cellBoxProps: { stroke: '#dedede', fill: 'white', fillOpacity: 0.8 },
-    headerBoxProps: { stroke: '#dedede', fill: '#E5E8EB' },
-  },
-];
 
 function useMapRanges(ranges: Ranges['values']) {
   const output: RangeItem[] = [];
@@ -143,9 +106,54 @@ function useMapRanges(ranges: Ranges['values']) {
 }
 function InnerSVGRangesTable(props: RangesTableProps) {
   const { ranges } = props;
+  const {
+    view: {
+      spectra: { activeTab },
+    },
+  } = useChartData();
   const data = useMapRanges(ranges);
 
   if (!data) return null;
+
+  const element = extractChemicalElement(activeTab);
+
+  const columns: Array<SVGTableColumn<RangeItem>> = [
+    {
+      accessorKey: 'delta',
+      header: 'δ (ppm)',
+      width: 100,
+      rowSpanGroupKey: 'id',
+      headerTextProps: { fontWeight: 'bold' },
+      cellBoxProps: { stroke: '#dedede', fill: 'white', fillOpacity: 0.8 },
+      headerBoxProps: { stroke: '#dedede', fill: '#E5E8EB' },
+    },
+    {
+      accessorKey: 'integration',
+      header: `Rel. ${element}`,
+      width: 60,
+      rowSpanGroupKey: 'id',
+      headerTextProps: { fontWeight: 'bold' },
+      cellBoxProps: { stroke: '#dedede', fill: 'white', fillOpacity: 0.8 },
+      headerBoxProps: { stroke: '#dedede', fill: '#E5E8EB' },
+    },
+    {
+      accessorKey: 'multiplicity',
+      header: 'Mult.',
+      width: 60,
+      rowSpanGroupKey: 'id',
+      headerTextProps: { fontWeight: 'bold' },
+      cellBoxProps: { stroke: '#dedede', fill: 'white', fillOpacity: 0.8 },
+      headerBoxProps: { stroke: '#dedede', fill: '#E5E8EB' },
+    },
+    {
+      accessorKey: 'coupling',
+      header: 'J (Hz)',
+      width: 120,
+      headerTextProps: { fontWeight: 'bold' },
+      cellBoxProps: { stroke: '#dedede', fill: 'white', fillOpacity: 0.8 },
+      headerBoxProps: { stroke: '#dedede', fill: '#E5E8EB' },
+    },
+  ];
 
   return <SVGTable<RangeItem> data={data} columns={columns} />;
 }
