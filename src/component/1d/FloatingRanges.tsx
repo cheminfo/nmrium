@@ -260,14 +260,14 @@ function DraggableRanges(props: DraggablePublicationStringProps) {
       icon: <BsArrowsMove />,
 
       intent: 'none',
-      title: 'Move inset',
+      title: 'Move ranges table',
       style: { cursor: 'move' },
       className: 'handle',
     },
     {
       icon: <FaTimes />,
       intent: 'danger',
-      title: 'Remove inset',
+      title: 'Hide ranges table',
       onClick: handleRemove,
     },
   ];

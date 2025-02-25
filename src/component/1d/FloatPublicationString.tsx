@@ -229,14 +229,14 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
       icon: <BsArrowsMove />,
 
       intent: 'none',
-      title: 'Move inset',
+      title: 'Move publication string',
       style: { cursor: 'move' },
       className: 'handle',
     },
     {
       icon: <FaTimes />,
       intent: 'danger',
-      title: 'Remove inset',
+      title: 'Hide publication string',
       onClick: handleRemove,
     },
   ];
