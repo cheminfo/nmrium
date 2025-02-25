@@ -110,13 +110,21 @@ export function getPlotDataAsString(
       for (const col of spectraPanelPreferences.columns) {
         if (col.visible && 'jpath' in col) {
           const jpath = (col as JpathTableColumn)?.jpath;
-          const value = dlv(spectrum, jpath, `null`);
+          const value = jpath ? dlv(spectrum, jpath, 'null') : 'null';
           cellsValues.push(value);
         }
       }
 
-      const x = xData ? xData[spectrum.id] : dlv(spectrum, xPathKeys, index);
-      const y = yData ? yData[spectrum.id] : dlv(spectrum, yPathKeys, index);
+      const x = xData
+        ? xData[spectrum.id]
+        : xPathKeys
+          ? dlv(spectrum, xPathKeys, index)
+          : index;
+      const y = yData
+        ? yData[spectrum.id]
+        : yPathKeys
+          ? dlv(spectrum, yPathKeys, index)
+          : index;
 
       cellsValues.push(x, y);
 
@@ -161,8 +169,16 @@ function usePlotData(
     plotOption,
   );
   return spectra.map((spectrum, index) => {
-    const x = xData ? xData[spectrum.id] : dlv(spectrum, xPathKeys, index);
-    const y = yData ? yData[spectrum.id] : dlv(spectrum, yPathKeys, index);
+    const x = xData
+      ? xData[spectrum.id]
+      : xPathKeys
+        ? dlv(spectrum, xPathKeys, index)
+        : index;
+    const y = yData
+      ? yData[spectrum.id]
+      : yPathKeys
+        ? dlv(spectrum, yPathKeys, index)
+        : index;
     return {
       x,
       y,
