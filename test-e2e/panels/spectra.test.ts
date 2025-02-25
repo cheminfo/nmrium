@@ -441,10 +441,7 @@ test('Export source from 1H spectrum', async ({ page }) => {
 test('Export source from imported spectrum', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Drag and drop spectrum', async () => {
-    await nmrium.page.setInputFiles(
-      '_react=DropZone >> input[type=file]',
-      'test-e2e/data/ethylbenzene-1h.jdx',
-    );
+    await nmrium.dropFile('ethylbenzene-1h.jdx');
   });
   await test.step('Open Save as window ', async () => {
     await nmrium.clickTool('exportAs');

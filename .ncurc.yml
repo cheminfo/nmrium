@@ -1,7 +1,5 @@
 dep: 'prod,dev'
 reject:
-  # https://github.com/react-dropzone/react-dropzone/issues/1259#issuecomment-2395085954
-  - react-dropzone
   # Types are deeply broken between this package and nmrium
   - nmr-correlation
   # Version 5.1.0 has a bug: https://github.com/facebook/react/issues/31687
