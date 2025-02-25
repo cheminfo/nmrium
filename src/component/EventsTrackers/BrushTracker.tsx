@@ -1,5 +1,3 @@
-import lodashDebounce from 'lodash/debounce.js';
-import lodashMap from 'lodash/map.js';
 import type { CSSProperties, ReactNode, Reducer } from 'react';
 import {
   createContext,
@@ -8,7 +6,6 @@ import {
   useEffect,
   useReducer,
   useRef,
-  useState,
 } from 'react';
 
 import type { ActionType } from '../reducer/types/ActionType.js';
@@ -115,8 +112,8 @@ export function BrushTracker({
   const [state, dispatch] = useReducer<
     Reducer<BrushTrackerState, BrushTrackerAction>
   >(reducer, initialState);
-  const [mouseDownTime, setMouseDownTime] = useState<number>(0);
-  const debounceClickEventsRef = useRef<any[]>([]);
+  const clickCountRef = useRef(0);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastPointRef = useRef<number>(0);
 
   const pointerDownHandler = useCallback(
@@ -139,8 +136,6 @@ export function BrushTracker({
             boundingRect: event.currentTarget.getBoundingClientRect(),
           },
         });
-
-        setMouseDownTime(event.timeStamp);
       }
 
       function moveCallback(event: PointerEvent) {
@@ -174,34 +169,32 @@ export function BrushTracker({
 
   const clickHandler = useCallback(
     (e: React.MouseEvent) => {
-      const timeStamp = e.timeStamp;
       const boundingRect = e.currentTarget.getBoundingClientRect();
       const x = e.clientX - boundingRect.x;
       const y = e.clientY - boundingRect.y;
 
-      const callback = lodashDebounce(() => {
-        if (
-          timeStamp - mouseDownTime <= 150 &&
-          debounceClickEventsRef.current.length === 1
-        ) {
-          onClick({ ...e, x, y });
-        }
-        debounceClickEventsRef.current = [];
-      }, 200);
-
-      debounceClickEventsRef.current.push(callback);
-
-      callback();
-
-      if (debounceClickEventsRef.current.length > 1) {
-        lodashMap(debounceClickEventsRef.current, (debounce) =>
-          debounce.cancel(),
-        );
-        debounceClickEventsRef.current = [];
-        onDoubleClick({ ...e, x, y });
+      // Clear timeout
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
       }
+
+      // Count clicks the number of
+      clickCountRef.current = (clickCountRef.current || 0) + 1;
+
+      // Set a timeout to distinguish between single and double clicks
+      timeoutRef.current = setTimeout(() => {
+        if (clickCountRef.current === 1) {
+          onClick({ ...e, x, y });
+        } else if (clickCountRef.current === 2) {
+          onDoubleClick({ ...e, x, y });
+        }
+
+        // Reset the click count
+        clickCountRef.current = 0;
+      }, 200);
     },
-    [mouseDownTime, onClick, onDoubleClick],
+    [onClick, onDoubleClick],
   );
 
   const handleMouseWheel = useCallback(
