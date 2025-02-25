@@ -179,8 +179,8 @@ export function BrushTracker({
         timeoutRef.current = null;
       }
 
-      // Count clicks the number of
-      clickCountRef.current = (clickCountRef.current || 0) + 1;
+      // Count clicks
+      clickCountRef.current += 1;
 
       // Set a timeout to distinguish between single and double clicks
       timeoutRef.current = setTimeout(() => {
