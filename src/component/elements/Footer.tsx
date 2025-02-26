@@ -16,7 +16,11 @@ const FooterContainer = styled.div`
 `;
 
 interface InfoContainerProps {
+  /** Whether to auto-hide the element based on threshold (default: `false`) */
   autoHide?: boolean;
+  /** Hide threshold in pixel (default: `600`) */
+  hideThreshold?: number;
+  /** The  display property (default: `'inline-block'`) */
   display?: CSSProperties['display'];
 }
 
@@ -24,20 +28,32 @@ const InfoContainer = styled.div<InfoContainerProps>`
   margin: 0 10px;
   display: ${({ display = 'inline-block' }) => display};
 
-  @container (max-width:600px) {
+  @container (max-width:${({ hideThreshold = 600 }) => hideThreshold}px) {
     display: ${({ autoHide = false, display = 'inline-block' }) =>
-      autoHide ? 'none' : display} !important;
+      autoHide ? 'none' : display};
   }
 `;
 
 interface InfoItemProps extends InfoContainerProps {
   children: ReactNode;
+  className?: string;
 }
 
 function InfoItem(props: InfoItemProps) {
-  const { children, autoHide = false, display = 'inline-block' } = props;
+  const {
+    children,
+    autoHide = false,
+    display = 'inline-block',
+    className,
+    hideThreshold,
+  } = props;
   return (
-    <InfoContainer autoHide={autoHide} display={display}>
+    <InfoContainer
+      autoHide={autoHide}
+      display={display}
+      className={className}
+      hideThreshold={hideThreshold}
+    >
       {children}
     </InfoContainer>
   );
@@ -54,6 +70,7 @@ InfoItem.Label = styled(Span)`
 
 InfoItem.Value = styled(Span)`
   font-size: 14px;
+  display: inline-block;
 `;
 
 InfoItem.Unit = styled(Span)`

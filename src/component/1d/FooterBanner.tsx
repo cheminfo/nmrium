@@ -20,11 +20,15 @@ import { useInsetOptions } from './inset/InsetProvider.js';
 const FlexInfoItem = styled(InfoItem)`
   align-items: center;
 `;
+const InfoBlock = styled(InfoItem)`
+  white-space: nowrap;
+`;
+
 const Separator = styled.div`
   border-left: 2px solid gray;
-  margin: 0 20px;
+  margin: 0 10px;
   width: 1px;
-  height: 100%;
+  height: 10px;
 `;
 
 interface FooterBannerInnerProps {
@@ -92,7 +96,7 @@ function FooterBannerInner({
   return (
     <FooterContainer>
       <BsCursor />
-      <div>
+      <InfoBlock>
         <InfoItem.Label> 𝛅: </InfoItem.Label>
         <InfoItem.Value>{format(scaleX().invert(position.x))}</InfoItem.Value>
         <InfoItem.Unit>ppm</InfoItem.Unit>
@@ -114,10 +118,10 @@ function FooterBannerInner({
             </InfoItem>
           </>
         )}
-      </div>
+      </InfoBlock>
 
       {isBrushing && (
-        <FlexInfoItem autoHide>
+        <FlexInfoItem autoHide display="flex">
           <InfoItem.Label> Δppm: </InfoItem.Label>
           <InfoItem.Value>
             {(scaleX().invert(startX) - scaleX().invert(endX)).toPrecision(6)}
@@ -126,9 +130,9 @@ function FooterBannerInner({
       )}
 
       {activeSpectrum && (
-        <FlexInfoItem autoHide>
+        <FlexInfoItem autoHide display="flex" hideThreshold={750}>
           {spectrum?.info?.originFrequency && isBrushing && (
-            <div>
+            <InfoBlock>
               <InfoItem.Label> ΔHz: </InfoItem.Label>
               <InfoItem.Value>
                 {(
@@ -136,10 +140,10 @@ function FooterBannerInner({
                   spectrum?.info?.originFrequency
                 ).toPrecision(5)}
               </InfoItem.Value>
-            </div>
+            </InfoBlock>
           )}
           {isBrushing && (
-            <div>
+            <InfoBlock>
               <InfoItem.Label> ratio :</InfoItem.Label>
               <InfoItem.Value>
                 {(
@@ -148,21 +152,21 @@ function FooterBannerInner({
                 ).toFixed(2)}
                 %
               </InfoItem.Value>
-            </div>
+            </InfoBlock>
           )}
         </FlexInfoItem>
       )}
 
       {activeSpectrum && (
-        <FlexInfoItem>
+        <FlexInfoItem display="flex" autoHide hideThreshold={550}>
           <Separator />
           <IoPulseSharp />
-          <div>
+          <InfoBlock>
             <InfoItem.Label>Intensity: </InfoItem.Label>
             <InfoItem.Value style={{ minWidth: 80 }}>
               {format(getYValue(position.x))}
             </InfoItem.Value>
-          </div>
+          </InfoBlock>
         </FlexInfoItem>
       )}
     </FooterContainer>
