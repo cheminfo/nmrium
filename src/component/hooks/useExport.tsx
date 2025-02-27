@@ -19,11 +19,6 @@ interface SaveOptions {
   pretty: boolean;
 }
 
-interface ExportSizeOptions {
-  width: number;
-  height: number;
-}
-
 export function useExport() {
   const toaster = useToaster();
   const state = useChartData();
@@ -88,10 +83,7 @@ export function useExportViewPort() {
   const toaster = useToaster();
   const state = useChartData();
 
-  function copyPNGToClipboardHandler(
-    targetElement: HTMLElement,
-    options: Partial<ExportSizeOptions>,
-  ) {
+  function copyPNGToClipboardHandler(targetElement: HTMLElement) {
     return new Promise<void>((resolve) => {
       if (state.data.length === 0 || !targetElement) {
         return;
@@ -104,7 +96,6 @@ export function useExportViewPort() {
       setTimeout(async () => {
         await copyPNGToClipboard('nmrSVG', {
           rootElement: targetElement,
-          ...options,
         });
         toaster.show({
           message: 'Image copied to clipboard',
@@ -116,10 +107,7 @@ export function useExportViewPort() {
     });
   }
 
-  function saveAsSVGHandler(
-    targetElement: HTMLElement,
-    options: Partial<ExportSizeOptions>,
-  ) {
+  function saveAsSVGHandler(targetElement: HTMLElement) {
     return new Promise<void>((resolve) => {
       if (state.data.length === 0 || !targetElement) {
         return;
@@ -133,7 +121,6 @@ export function useExportViewPort() {
         exportAsSVG('nmrSVG', {
           rootElement: targetElement,
           fileName,
-          ...options,
         });
         hideLoading();
         resolve();
@@ -141,10 +128,7 @@ export function useExportViewPort() {
     });
   }
 
-  function saveAsPNGHandler(
-    targetElement: HTMLElement,
-    options: Partial<ExportSizeOptions>,
-  ) {
+  function saveAsPNGHandler(targetElement: HTMLElement) {
     return new Promise<void>((resolve) => {
       if (state.data.length === 0 || !targetElement) {
         return;
@@ -158,7 +142,6 @@ export function useExportViewPort() {
         void exportAsPng('nmrSVG', {
           rootElement: targetElement,
           fileName,
-          ...options,
         });
         hideLoading();
         resolve();
