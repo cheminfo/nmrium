@@ -20,7 +20,7 @@ export interface BaseExportProps {
 interface RenderSizeOption {
   width: number;
   minWidth?: number;
-  rescale?: boolean;
+  preserveAspectRatio?: boolean;
 }
 interface BaseExportFrameProps {
   children: ReactNode;
@@ -128,23 +128,29 @@ export function InnerPrintFrame(props: InnerExportFrameProps) {
     }
   }, [load]);
 
-  let widthInPixel = Math.round(width);
-  let heightInPixel = Math.round(height);
+  const exportWidthInPixel = Math.round(width);
+  const exportHeightInPixel = Math.round(height);
 
   const {
     width: baseRenderWidth,
-    rescale = true,
+    preserveAspectRatio = true,
     minWidth = 0,
   } = renderOptions;
 
-  if (rescale) {
-    const renderWidth = Math.max(baseRenderWidth, minWidth);
-    widthInPixel = Math.round(renderWidth);
-    heightInPixel = Math.round((height / width) * renderWidth);
-  }
+  const renderWidth = Math.round(Math.max(baseRenderWidth, minWidth));
+
+  const widthInPixel = preserveAspectRatio ? renderWidth : exportWidthInPixel;
+  const heightInPixel = preserveAspectRatio
+    ? Math.round((height / width) * renderWidth)
+    : exportHeightInPixel;
 
   return (
-    <ExportSettingsProvider width={widthInPixel} height={heightInPixel}>
+    <ExportSettingsProvider
+      width={widthInPixel}
+      height={heightInPixel}
+      exportWidth={exportWidthInPixel}
+      exportHeight={exportHeightInPixel}
+    >
       <iframe
         ref={frameRef}
         style={{

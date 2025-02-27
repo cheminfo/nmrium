@@ -101,11 +101,14 @@ function exportAsMol(data, fileName = 'mol') {
  * export the vitalization result as SVG, if you need to remove some content during exportation process enclose the the content with <!-- export-remove --> ${content} <!-- export-remove -->
  */
 
-interface ExportAsSVGOptions {
-  fileName?: string;
-  rootElement: HTMLElement;
+interface ExportDimensions {
   width?: number;
   height?: number;
+}
+
+interface ExportAsSVGOptions extends ExportDimensions {
+  fileName?: string;
+  rootElement: HTMLElement;
   dpi?: number;
 }
 
@@ -256,26 +259,14 @@ async function exportAsPng(
   targetElementID: string,
   options: ExportAsPNGOptions,
 ) {
-  const {
-    rootElement,
-    fileName = 'experiment',
-    width: externalWidth,
-    height: externalHeight,
-  } = options;
-  const {
-    blob,
-    width: originWidth,
-    height: originHeight,
-  } = getBlob(targetElementID, { rootElement });
+  const { rootElement, fileName = 'experiment' } = options;
+  const { blob, width, height } = getBlob(targetElementID, { rootElement });
 
-  const width = externalWidth ?? originWidth;
-  const height = externalHeight ?? originHeight;
-  const scaleFactor = externalWidth ? externalWidth / originWidth : 1;
   try {
     const { canvas } = await createCanvas(blob, {
       width,
       height,
-      scaleFactor,
+      scaleFactor: 1,
     });
 
     const pngBlob = await canvas.convertToBlob({ type: 'image/png' });
@@ -364,42 +355,38 @@ async function copyBlobToClipboard(canvas: OffscreenCanvas) {
   }
 }
 
-interface CopyPNGToClipboardOptions {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function getDimensions(
+  source: Required<ExportDimensions>,
+  target?: ExportDimensions,
+) {
+  const width = target?.width ?? source.width;
+  const height = target?.height ?? source.height;
+  const scale = width ? width / source.width : 1;
+  return { width, height, scale };
+}
+
+interface CopyPNGToClipboardOptions extends ExportDimensions {
   css?: SerializedStyles;
   dpi?: number;
   rootElement: HTMLElement;
-  width?: number;
-  height?: number;
 }
 
 async function copyPNGToClipboard(
   targetElementID: string,
   options: CopyPNGToClipboardOptions,
 ) {
-  const {
-    rootElement,
-    css,
-    width: externalWidth,
-    height: externalHeight,
-  } = options;
-  const {
-    blob,
-    width: originWidth,
-    height: originHeight,
-  } = getBlob(targetElementID, {
+  const { rootElement, css } = options;
+  const { blob, width, height } = getBlob(targetElementID, {
     rootElement,
     css,
   });
-
-  const width = externalWidth ?? originWidth;
-  const height = externalHeight ?? originHeight;
-  const scaleFactor = externalWidth ? externalWidth / originWidth : 1;
 
   try {
     const { canvas } = await createCanvas(blob, {
       width,
       height,
-      scaleFactor,
+      scaleFactor: 1,
     });
     await copyBlobToClipboard(canvas);
   } catch (error) {
@@ -425,23 +412,28 @@ interface GetBlobOptions {
   css?: SerializedStyles;
 }
 
+function parseDimension(value: string | null) {
+  return Number(value?.replace('px', '') || 0);
+}
+
 function getBlob(targetElementID: string, options: GetBlobOptions): BlobObject {
   const { rootElement, css } = options;
   const _svg: any = (rootElement.getRootNode() as Document)
     .querySelector(`#${targetElementID}`)
     ?.cloneNode(true);
 
-  const width = Number(_svg?.getAttribute('width').replace('px', ''));
-  const height = Number(_svg?.getAttribute('height').replace('px', ''));
+  const width = parseDimension(_svg?.getAttribute('width'));
+  const height = parseDimension(_svg?.getAttribute('height'));
+  const viewBox = _svg?.getAttribute('viewBox') || `0 0 ${width} ${height}`;
 
   for (const element of _svg.querySelectorAll('[data-no-export="true"]')) {
     element.remove();
   }
 
-  const head = `<svg class="nmr-svg"  viewBox='0 0 ${width} ${height}' width="${width}"  height="${height}"  version="1.1" xmlns="http://www.w3.org/2000/svg">`;
-  const style = `<style>
-  ${css?.styles}
-  </style>`;
+  const head = `<svg class="nmr-svg"  viewBox="${viewBox}" width="${width}"  height="${height}"  version="1.1" xmlns="http://www.w3.org/2000/svg">`;
+  const style = `
+      <style>${css?.styles || ''}</style>
+`;
   const svg = `${head + style + _svg.innerHTML}</svg>`;
 
   const blob = new Blob([svg], { type: 'image/svg+xml' });

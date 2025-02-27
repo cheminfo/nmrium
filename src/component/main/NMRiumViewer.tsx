@@ -15,6 +15,7 @@ import {
 } from '../hooks/useViewportSize.js';
 
 import type { NMRiumProps } from './NMRium.js';
+import { useExportSettings } from '../elements/export/ExportSettingsProvider.js';
 
 interface NMRiumViewerProps {
   viewerRef: RefObject<HTMLDivElement>;
@@ -31,14 +32,21 @@ export function NMRiumViewer(props: NMRiumViewerProps) {
   const { emptyText, viewerRef, onRender, style = {} } = props;
   const viewPort = useViewportSize();
   const { displayerMode } = useChartData();
+  const exportSettings = useExportSettings();
 
   useOnRender(onRender);
 
   const isExportingProcessStart = useCheckExportStatus();
 
-  if (isExportingProcessStart) {
+  if (isExportingProcessStart && exportSettings) {
+    const { width, height, exportHeight, exportWidth } = exportSettings;
     return (
-      <SVGRootContainer enableBoxBorder={displayerMode === '2D'}>
+      <SVGRootContainer
+        enableBoxBorder={displayerMode === '2D'}
+        width={exportWidth}
+        height={exportHeight}
+        viewBox={`0 0 ${width} ${height}`}
+      >
         <Viewer emptyText={emptyText} renderSvgContentOnly />
         <g className="floating-ranges">
           <FloatingRanges />

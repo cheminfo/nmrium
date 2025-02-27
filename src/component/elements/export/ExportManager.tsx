@@ -14,7 +14,6 @@ import { useExportViewPort } from '../../hooks/useExport.js';
 import { useWorkspaceExportSettings } from '../../hooks/useWorkspaceExportSettings.js';
 
 import { ExportContent } from './ExportContent.js';
-import { getSizeInPixel } from './utilities/getSizeInPixel.js';
 
 export type ExportFormat = 'png' | 'svg';
 export type ExportDestination = 'file' | 'clipboard';
@@ -101,15 +100,13 @@ export function ExportManagerController(props: ExportManagerControllerProps) {
     const { format, destination = 'file' } = exportOptions;
     let exportKey: keyof ExportPreferences = format;
 
-    const sizeInPixel = getSizeInPixel(options);
-
     if (destination === 'file') {
       switch (format) {
         case 'png':
-          await saveAsPNGHandler(targetElement, sizeInPixel);
+          await saveAsPNGHandler(targetElement);
           break;
         case 'svg':
-          await saveAsSVGHandler(targetElement, sizeInPixel);
+          await saveAsSVGHandler(targetElement);
           break;
 
         default:
@@ -125,7 +122,7 @@ export function ExportManagerController(props: ExportManagerControllerProps) {
       exportKey = 'clipboard';
       switch (format) {
         case 'png':
-          await copyPNGToClipboardHandler(targetElement, sizeInPixel);
+          await copyPNGToClipboardHandler(targetElement);
           break;
         default:
           // eslint-disable-next-line no-console
@@ -162,7 +159,7 @@ export function ExportManagerController(props: ExportManagerControllerProps) {
       exportOptions={settings}
       defaultExportOptions={settings}
       confirmButtonText={destination === 'clipboard' ? 'Copy' : 'Save'}
-      renderOptions={{ minWidth: 800, width, rescale: format !== 'svg' }}
+      renderOptions={{ minWidth: 800, width }}
     >
       {children}
     </ExportContent>

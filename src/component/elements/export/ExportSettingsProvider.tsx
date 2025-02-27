@@ -4,11 +4,12 @@ import { createContext, useContext, useMemo } from 'react';
 export interface ExportSettingsContextProps {
   width: number;
   height: number;
+  exportWidth?: number;
+  exportHeight?: number;
 }
 
-const ExportSettingsContext = createContext<ExportSettingsContextProps | null>(
-  null,
-);
+const ExportSettingsContext =
+  createContext<Required<ExportSettingsContextProps> | null>(null);
 
 export function useExportSettings() {
   return useContext(ExportSettingsContext);
@@ -19,14 +20,16 @@ interface ExportSettingsProviderProps extends ExportSettingsContextProps {
 }
 
 export function ExportSettingsProvider(props: ExportSettingsProviderProps) {
-  const { children, width, height } = props;
+  const { children, width, height, exportWidth, exportHeight } = props;
 
   const state = useMemo(() => {
     return {
       width,
       height,
+      exportWidth: exportWidth ?? width,
+      exportHeight: exportHeight ?? height,
     };
-  }, [height, width]);
+  }, [exportHeight, exportWidth, height, width]);
 
   return (
     <ExportSettingsContext.Provider value={state}>
