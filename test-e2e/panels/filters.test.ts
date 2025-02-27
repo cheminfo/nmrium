@@ -133,7 +133,7 @@ test('process 1d FID 13c spectrum', async ({ page }) => {
     await baselineCorrectionFilter(nmrium);
   });
   await test.step('Check horizontal scale domain', async () => {
-    await nmrium.assertXScaleDomain(0, 200);
+    await nmrium.assertOneDimensionXScaleDomain(0, 200);
   });
   await test.step('Check filters panel', async () => {
     await expect(

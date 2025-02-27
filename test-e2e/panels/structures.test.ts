@@ -667,8 +667,13 @@ test('check callbacks count on changing structures', async ({ page }) => {
     const structureLocator = nmrium.page.locator('_react=DraggableStructure');
     await structureLocator.hover();
     await nmrium.page
-      .locator('_react=ActionButton[tooltipProps.content *= "Move molecule" i]')
-      .dragTo(nmrium.page.locator('_react=XAxis1D >> nth=1'), { force: true });
+      .locator(
+        '_react=ActionButton[tooltipProps.content *= "Move molecule" i] >> nth=0',
+      )
+      .dragTo(
+        nmrium.page.locator('_react=XAxis1D >> _react=Tickets >> nth=1'),
+        { force: true },
+      );
     await expect(dataCount).toContainText(String(initialDataCount + 1));
     await expect(viewCount).toContainText(String(initialViewCount + 2));
   });

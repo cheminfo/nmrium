@@ -1,101 +1,54 @@
-import styled from '@emotion/styled';
-import * as d3 from 'd3';
-import { useEffect, useRef } from 'react';
+import { useMemo, useRef } from 'react';
+import { useLinearPrimaryTicks } from 'react-d3-utils';
 
 import { useChartData } from '../context/ChartContext.js';
-import { useScale } from '../context/ScaleContext.js';
-import { AxisGroup } from '../elements/AxisGroup.js';
+import { useScaleChecked } from '../context/ScaleContext.js';
+import { D3Axis } from '../elements/D3Axis.js';
+import { useCheckExportStatus } from '../hooks/useViewportSize.js';
 
 import { useInsetOptions } from './inset/InsetProvider.js';
 
-const GridGroup = styled.g`
-  user-select: none;
-
-  line {
-    stroke: rgb(104 104 104);
-    stroke-opacity: 0.2;
-    shape-rendering: crispedges;
-    stroke-dasharray: 3;
-    stroke-width: 1;
-    user-select: none;
-  }
-
-  path {
-    stroke-width: 0;
-  }
-`;
-
 interface XAxisProps {
-  show?: boolean;
-  showGrid?: boolean;
   label?: string;
 }
 
 export function XAxis1D(props: XAxisProps) {
-  const { show = true, showGrid = false, label: labelProp } = props;
-  const { xDomain, height, width, margin, mode } = useChartData();
-  const { scaleX } = useScale();
+  const { label: labelProp } = props;
+  const { height, width, margin, mode } = useChartData();
+  const { scaleX } = useScaleChecked();
   const isInset = useInsetOptions();
-
-  const refAxis = useRef<SVGGElement>(null);
-  const refGrid = useRef<SVGGElement>(null);
+  const isExportingProcessStart = useCheckExportStatus();
 
   const label = labelProp || (mode === 'RTL' ? 'δ [ppm]' : 'time [s]');
 
-  useEffect(() => {
-    if (!show || !scaleX) return;
+  const refAxis = useRef<SVGGElement>(null);
 
-    const xAxis = d3
-      .axisBottom(scaleX().domain(xDomain))
-      .ticks(8)
-      .tickFormat(d3.format('0'));
+  const scale = useMemo(() => scaleX(null), [scaleX]);
+  const { ticks, scale: ticksScale } = useLinearPrimaryTicks(
+    scale,
+    'horizontal',
+    refAxis,
+  );
 
-    const grid = d3
-      .axisBottom(scaleX().domain(xDomain))
-      .ticks(50)
-      .tickSize(-(height - margin.top - margin.bottom))
-      .tickFormat(() => '');
-
-    // @ts-expect-error This line of code is actually well typed ...
-    d3.select(refAxis.current).call(xAxis);
-
-    // @ts-expect-error This line of code is actually well typed ...
-    d3.select(refGrid.current).call(grid);
-  }, [height, margin.bottom, margin.top, scaleX, show, xDomain]);
-
-  if (!width || !height || !scaleX) {
+  if (!width || !height) {
     return null;
   }
 
   return (
-    <>
-      {show && (
-        <AxisGroup
-          className="x"
-          transform={`translate(0,${height - margin.bottom})`}
-          ref={refAxis}
-        >
-          {!isInset && (
-            <text
-              fill="#000"
-              x={width - 10}
-              y="30"
-              dy="0.70em"
-              textAnchor="end"
-            >
-              {label}
-            </text>
-          )}
-        </AxisGroup>
+    <D3Axis
+      ref={refAxis}
+      transform={`translate(0,${height - margin.bottom})`}
+      scale={ticksScale}
+      axisPosition="bottom"
+      gridSize={height - margin.top - margin.bottom}
+      ticks={ticks}
+      showGrid={!isExportingProcessStart}
+    >
+      {!isInset && (
+        <text fill="#000" x={width - 10} y="30" dy="0.70em" textAnchor="end">
+          {label}
+        </text>
       )}
-      {showGrid && !isInset && (
-        <GridGroup
-          data-no-export="true"
-          className="grid"
-          ref={refGrid}
-          transform={`translate(0,${height - margin.bottom})`}
-        />
-      )}
-    </>
+    </D3Axis>
   );
 }

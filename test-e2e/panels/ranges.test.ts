@@ -413,12 +413,13 @@ test('2D spectra reference change', async ({ page }) => {
     await nmrium.page.click('li >> text=Cytisine');
     await nmrium.page.click('li >> text=HSQC cytisine + 1D spectra');
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
-    await expect(nmrium.page.locator('.x')).toContainText(
-      xAxisDefault.join(''),
-    );
-    await expect(nmrium.page.locator('.y')).toContainText(
-      yAxisDefault.join(''),
-    );
+
+    await expect(
+      nmrium.page.locator('_react=XAxis >> _react=Tickets  >> text'),
+    ).toContainText(xAxisDefault.map(String));
+    await expect(
+      nmrium.page.locator('_react=YAxis >> _react=Tickets >> text'),
+    ).toContainText(yAxisDefault.map(String));
   });
 
   await test.step('Auto zone picking', async () => {
@@ -491,9 +492,13 @@ test('2D spectra reference change', async ({ page }) => {
 
     const xShift = 997;
     const yShift = 1960;
-    const newXAxis = xAxisDefault.map((n) => n + xShift);
-    const newYAxis = yAxisDefault.map((n) => n + yShift);
-    await expect(nmrium.page.locator('.x')).toContainText(newXAxis.join(''));
-    await expect(nmrium.page.locator('.y')).toContainText(newYAxis.join(''));
+    const newXAxis = xAxisDefault.map((n) => String(n + xShift));
+    const newYAxis = yAxisDefault.map((n) => String(n + yShift));
+    await expect(
+      nmrium.page.locator('_react=XAxis >> _react=Tickets >> text'),
+    ).toContainText(newXAxis);
+    await expect(
+      nmrium.page.locator('_react=YAxis >> _react=Tickets >> text'),
+    ).toContainText(newYAxis);
   });
 });
