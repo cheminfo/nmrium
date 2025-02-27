@@ -73,8 +73,8 @@ export default class NmriumPage {
     );
   }
 
-  public async assertXScaleDomain(min: number, max: number) {
-    const xTicks = this.page.locator('.x >> .tick');
+  public async assertOneDimensionXScaleDomain(min: number, max: number) {
+    const xTicks = this.page.locator('_react=XAxis1D >> _react=Tickets');
     const firstTick = xTicks.first();
     const lastTick = xTicks.last();
     await expect(firstTick).toHaveText(min.toString());

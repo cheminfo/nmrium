@@ -47,7 +47,7 @@ export function SVGContent1D() {
       </ClipPathContainer>
 
       <g className="container" style={{ pointerEvents: 'none' }}>
-        <XAxis1D showGrid />
+        <XAxis1D />
       </g>
     </g>
   );
