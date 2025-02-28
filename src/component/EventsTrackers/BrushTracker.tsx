@@ -28,16 +28,25 @@ const MouseButtons: Record<number, MouseButton> = {
   0: 'main',
   2: 'secondary',
 } as const;
-interface BrushTrackerState extends BrushTrackerData {
-  step: Step;
+
+export interface BrushCoordination {
   startX: number;
   endX: number;
   startY: number;
   endY: number;
+}
+export interface BrushScreenCoordination {
   startScreenX: number;
   startScreenY: number;
   startClientX: number;
   startClientY: number;
+}
+
+interface BrushTrackerState
+  extends BrushTrackerData,
+    BrushCoordination,
+    BrushScreenCoordination {
+  step: Step;
   boundingRect: DOMRect | null;
 }
 
@@ -348,4 +357,45 @@ function reducer(
     default:
       return state;
   }
+}
+
+export function detectBrushing(
+  coordination: BrushCoordination,
+  width: number,
+  height: number,
+  threshold = 0.03,
+) {
+  const { startX, endX, startY, endY } = coordination;
+  const xDiff = Math.abs(endX - startX);
+  const yDiff = Math.abs(endY - startY);
+  const xThreshold = width * threshold;
+  const yThreshold = height * threshold;
+  const scaleY = (endY - startY) / height;
+  const scaleX = (endX - startX) / width;
+
+  if (xDiff >= xThreshold && yDiff < yThreshold) {
+    return {
+      type: 'x',
+      startX,
+      endX,
+      startY: 0,
+      endY: height,
+      scaleX,
+      scaleY: 1,
+    };
+  }
+
+  if (yDiff >= yThreshold && xDiff < xThreshold) {
+    return {
+      type: 'y',
+      startX: 0,
+      endX: width,
+      startY,
+      endY,
+      scaleX: 1,
+      scaleY,
+    };
+  }
+
+  return { type: 'xy', startX, startY, endX, endY, scaleX, scaleY };
 }
