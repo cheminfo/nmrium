@@ -57,9 +57,9 @@
     "nmr-correlation": "2.3.3"
   },
   "dependencies": {
-    "@blueprintjs/core": "^5.17.0",
-    "@blueprintjs/icons": "^5.19.0",
-    "@blueprintjs/select": "^5.3.12",
+    "@blueprintjs/core": "^5.17.1",
+    "@blueprintjs/icons": "^5.19.1",
+    "@blueprintjs/select": "^5.3.13",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@hookform/resolvers": "^4.1.2",
