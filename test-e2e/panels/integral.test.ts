@@ -80,6 +80,10 @@ test('Should Integrals Add/resize/delete', async ({ page }) => {
     // Test add two integrals
     await addIntegral(nmrium, 50, 70, 0);
     await addIntegral(nmrium, 110, 130, 1);
+
+    await expect(
+      nmrium.page.locator('_react=IntegralsSeries >> _react=Integration'),
+    ).toHaveCount(2);
   });
 
   await test.step('Resize one of the integrals ', async () => {
