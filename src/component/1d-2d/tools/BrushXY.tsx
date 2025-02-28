@@ -1,6 +1,9 @@
 import type { CSSProperties } from 'react';
 
-import { useBrushTracker } from '../../EventsTrackers/BrushTracker.js';
+import {
+  detectBrushing,
+  useBrushTracker,
+} from '../../EventsTrackers/BrushTracker.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { options } from '../../toolbar/ToolTypes.js';
 
@@ -76,10 +79,11 @@ export default function BrushXY({
     width,
     height,
     toolOptions: { selectedTool },
+    margin,
   } = useChartData();
   const brushTracker = useBrushTracker();
-  const { step, mouseButton } = brushTracker;
-  let { startX, endX, startY, endY } = brushTracker;
+  const { step, mouseButton, startY } = brushTracker;
+  let { startX, endX, endY } = brushTracker;
   if (
     !allowTools.has(selectedTool) ||
     step !== 'brushing' ||
@@ -99,8 +103,8 @@ export default function BrushXY({
     return null;
   }
 
-  const finalWidth = widthProps || width;
-  const finalHeight = heightProps || height;
+  const finalWidth = widthProps || width - margin.left - margin.right;
+  const finalHeight = heightProps || height - margin.top - margin.bottom;
 
   endX =
     dimensionBorder.endX && endX > dimensionBorder.endX
@@ -114,25 +118,29 @@ export default function BrushXY({
       : dimensionBorder.startY && endY < dimensionBorder.startY
         ? dimensionBorder.startY
         : endY;
+  const brush = detectBrushing(
+    { startX, startY, endX, endY },
+    finalWidth,
+    finalHeight,
+  );
 
   const scaleX =
     brushType === BRUSH_TYPE.X || brushType === BRUSH_TYPE.XY
-      ? (endX - startX) / finalWidth
+      ? brush.scaleX
       : 1;
   startX =
     brushType === BRUSH_TYPE.X || brushType === BRUSH_TYPE.XY ? startX : 0;
 
   const scaleY =
     brushType === BRUSH_TYPE.Y || brushType === BRUSH_TYPE.XY
-      ? (endY - startY) / finalHeight
+      ? brush.scaleY
       : 1;
-  startY =
-    brushType === BRUSH_TYPE.Y || brushType === BRUSH_TYPE.XY ? startY : 0;
+
   return (
     <div
       style={{
         ...styles.container,
-        transform: `translate(${startX}px, ${startY}px) scale(${scaleX},${scaleY})`,
+        transform: `translate(${brush.startX || margin.left}px, ${brush.startY || margin.left}px) scale(${scaleX},${scaleY})`,
         willChange: 'transform',
       }}
     >
