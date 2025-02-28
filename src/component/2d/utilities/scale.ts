@@ -1,5 +1,6 @@
 import type { NmrData2D } from 'cheminfo-types';
 import { scaleLinear } from 'd3';
+import { useMemo } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';
 import type { Margin, SpectraDirection } from '../../reducer/Reducer.js';
@@ -25,7 +26,10 @@ function get2DXScale(options: Scale2DXOptions, reverse?: boolean) {
 
 function useScale2DX(reverse?: boolean) {
   const { width, margin, xDomain, mode } = useChartData();
-  return get2DXScale({ width, margin, xDomain, mode }, reverse);
+  return useMemo(
+    () => get2DXScale({ width, margin, xDomain, mode }, reverse),
+    [margin, mode, reverse, width, xDomain],
+  );
 }
 
 interface Scale2DYOptions {
@@ -46,7 +50,10 @@ function get2DYScale(options: Scale2DYOptions, reverse = false) {
 
 function useScale2DY(reverse?: boolean) {
   const { height, margin, yDomain } = useChartData();
-  return get2DYScale({ height, margin, yDomain }, reverse);
+  return useMemo(
+    () => get2DYScale({ height, margin, yDomain }, reverse),
+    [height, margin, reverse, yDomain],
+  );
 }
 
 interface TopLayout {
