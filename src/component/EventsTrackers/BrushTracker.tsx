@@ -115,6 +115,7 @@ export function BrushTracker({
   const clickCountRef = useRef(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastPointRef = useRef<number>(0);
+  const isDraggingRef = useRef(false);
 
   const pointerDownHandler = useCallback(
     (event: React.PointerEvent) => {
@@ -139,7 +140,8 @@ export function BrushTracker({
       }
 
       function moveCallback(event: PointerEvent) {
-        // event.preventDefault();
+        isDraggingRef.current = true; // set flag to true to skip click event if the user dragged the mouse
+
         dispatch({
           type: 'MOVE',
           payload: {
@@ -169,6 +171,12 @@ export function BrushTracker({
 
   const clickHandler = useCallback(
     (e: React.MouseEvent) => {
+      if (isDraggingRef.current) {
+        return; // Skip click event if the user dragged the mouse
+      }
+
+      isDraggingRef.current = false;
+
       const boundingRect = e.currentTarget.getBoundingClientRect();
       const x = e.clientX - boundingRect.x;
       const y = e.clientY - boundingRect.y;
