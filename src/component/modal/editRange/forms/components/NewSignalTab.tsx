@@ -27,7 +27,7 @@ const styles: Record<
   infoText: {
     padding: '10px 0',
     fontSize: '13px',
-    textAlign: 'left',
+    textAlign: 'start',
   },
 };
 

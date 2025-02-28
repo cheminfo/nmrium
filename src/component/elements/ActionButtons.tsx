@@ -36,7 +36,7 @@ export default function ActionButtons(props: ActionButtonsProps) {
         {doneLabel}
       </Button>
       <Button
-        outlined
+        variant="outlined"
         intent="danger"
         onClick={onCancel}
         style={

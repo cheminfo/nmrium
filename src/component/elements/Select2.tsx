@@ -115,7 +115,7 @@ function InnerSelect2<T extends Record<string, any> = SelectDefaultItem>(
         fill={fill}
         text={selectedText}
         {...selectedButtonProps}
-        rightIcon="double-caret-vertical"
+        endIcon="double-caret-vertical"
         intent={intent}
       />
     </Select>

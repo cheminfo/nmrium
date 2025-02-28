@@ -15,7 +15,7 @@ const inputStyle: InputStyle = {
   input: {
     width: '100%',
     fontSize: '1.1em',
-    textAlign: 'left',
+    textAlign: 'start',
     backgroundColor: 'transparent',
   },
   inputWrapper: {
@@ -123,9 +123,9 @@ export function SpectraColumnsManager({
           return (
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <Button
-                small
+                size="small"
                 intent="success"
-                outlined
+                variant="outlined"
                 tooltipProps={{ content: '', disabled: true }}
                 onClick={() => onAdd(nucleus, row.index + 1)}
               >
@@ -133,8 +133,8 @@ export function SpectraColumnsManager({
               </Button>
               {!record?.name && (
                 <Button
-                  small
-                  outlined
+                  size="small"
+                  variant="outlined"
                   intent="danger"
                   tooltipProps={{ content: '', disabled: true }}
                   onClick={() => onDelete(nucleus, row.index)}

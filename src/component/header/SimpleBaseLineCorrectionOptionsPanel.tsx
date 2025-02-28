@@ -56,7 +56,7 @@ function BaseLineCorrectionInnerPanel(
           }}
           {...defaultAlgorithmSelectProps}
         >
-          <Button text={algorithm?.label} rightIcon="double-caret-vertical" />
+          <Button text={algorithm?.label} endIcon="double-caret-vertical" />
         </Select>
       </Label>
 

@@ -176,8 +176,8 @@ function SpectraColorsFields(props: SpectraColorsProps) {
         return (
           <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
             <Button
-              small
-              outlined
+              size="small"
+              variant="outlined"
               intent="success"
               tooltipProps={{ content: '', disabled: true }}
               onClick={() => onAdd(data, row.index + 1, baseObjectPath)}
@@ -186,8 +186,8 @@ function SpectraColorsFields(props: SpectraColorsProps) {
             </Button>
             {!record?.name && (
               <Button
-                small
-                outlined
+                size="small"
+                variant="outlined"
                 intent="danger"
                 tooltipProps={{ content: '', disabled: true }}
                 onClick={() => onDelete(data, row.index, baseObjectPath)}
@@ -276,8 +276,8 @@ function FieldsBlockHeader({ onAdd, text }) {
       <p style={{ flex: 1 }}>{text}</p>
 
       <Button
-        small
-        outlined
+        size="small"
+        variant="outlined"
         intent="success"
         tooltipProps={{ content: '', disabled: true }}
         onClick={onAdd}

@@ -156,9 +156,9 @@ function DatabasesTabContent({
               }}
             >
               <Button
-                small
+                size="small"
                 intent="success"
-                outlined
+                variant="outlined"
                 tooltipProps={{ content: '', disabled: true }}
                 onClick={() => addHandler(data, index + 1)}
               >
@@ -166,8 +166,8 @@ function DatabasesTabContent({
               </Button>
               <StyledButton
                 marginHorizontal={3}
-                small
-                outlined
+                size="small"
+                variant="outlined"
                 intent="danger"
                 tooltipProps={{ content: '', disabled: true }}
                 onClick={() => deleteHandler(data, index)}
@@ -177,8 +177,8 @@ function DatabasesTabContent({
 
               {isGoogleDocument(record.url) && (
                 <Button
-                  small
-                  outlined
+                  size="small"
+                  variant="outlined"
                   intent="primary"
                   onClick={() => window.open(record.url, '_blank')}
                   tooltipProps={{ content: 'Open document', compact: true }}
@@ -239,8 +239,8 @@ function DataBaseHeader({ onReset, onAdd, text }) {
       <p style={{ flex: 1 }}>{text}</p>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <Button
-          small
-          minimal
+          size="small"
+          variant="minimal"
           intent="danger"
           tooltipProps={{ content: '', disabled: true }}
           onClick={onReset}
@@ -249,8 +249,8 @@ function DataBaseHeader({ onReset, onAdd, text }) {
         </Button>
 
         <Button
-          small
-          outlined
+          size="small"
+          variant="outlined"
           intent="success"
           tooltipProps={{ content: '', disabled: true }}
           onClick={onAdd}

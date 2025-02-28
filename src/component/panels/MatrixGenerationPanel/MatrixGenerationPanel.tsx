@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SvgNmrMultipleAnalysis } from 'cheminfo-font';
-import { Filters1D } from 'nmr-processing';
 import type { MatrixOptions } from 'nmr-processing';
+import { Filters1D } from 'nmr-processing';
 import { useCallback, useEffect, useRef } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Button, Toolbar } from 'react-science/ui';
@@ -290,7 +290,7 @@ function FiltersPanelGroupHeader({ text, onAdd }) {
       style={{ display: 'flex', padding: '5px 0px' }}
     >
       <p style={{ flex: 1, ...GroupPanelStyle.header }}>{text}</p>
-      <Button intent="success" outlined small onClick={onAdd}>
+      <Button intent="success" variant="outlined" size="small" onClick={onAdd}>
         Add Filter
       </Button>
     </div>

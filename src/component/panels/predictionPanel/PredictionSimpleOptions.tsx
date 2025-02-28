@@ -78,14 +78,14 @@ function PredictionSimpleOptions() {
           control={control}
           name="frequency"
           items={FREQUENCIES}
-          selectedButtonProps={{ minimal: true, small: true }}
+          selectedButtonProps={{ variant: 'minimal', size: 'small' }}
         />
       </Label>
       <Label title="Line width" style={labelStyle}>
         <NumberInput2Controller
           control={control}
           name="1d.lineWidth"
-          small
+          size="small"
           controllerProps={{ rules: { required: true, min: 1 } }}
           min={1}
           stepSize={1}

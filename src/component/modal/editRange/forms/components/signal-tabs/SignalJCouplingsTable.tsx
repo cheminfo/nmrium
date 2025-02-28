@@ -172,7 +172,7 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
                 }
               }}
               fill
-              selectedButtonProps={{ small: true, minimal: true }}
+              selectedButtonProps={{ size: 'small', variant: 'minimal' }}
             />
           );
         },
@@ -206,8 +206,8 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
             <div style={{ display: 'flex', justifyContent: 'space-around' }}>
               {!record?.name && (
                 <Button
-                  small
-                  outlined
+                  size="small"
+                  variant="outlined"
                   intent="danger"
                   onClick={() => deleteHandler(data, row.index)}
                 >
@@ -231,7 +231,7 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       {minErrorMessage && (
-        <Callout intent="danger" icon="error" style={{ textAlign: 'left' }}>
+        <Callout intent="danger" icon="error" style={{ textAlign: 'start' }}>
           {minErrorMessage}
         </Callout>
       )}

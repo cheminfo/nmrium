@@ -130,9 +130,9 @@ function InfoBlockTabContent() {
           return (
             <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
               <Button
-                small
+                size="small"
                 intent="success"
-                outlined
+                variant="outlined"
                 tooltipProps={{ content: '', disabled: true }}
                 onClick={() => addHandler(data, row.index + 1)}
               >
@@ -140,8 +140,8 @@ function InfoBlockTabContent() {
               </Button>
               {!record?.name && (
                 <Button
-                  small
-                  outlined
+                  size="small"
+                  variant="outlined"
                   intent="danger"
                   tooltipProps={{ content: '', disabled: true }}
                   onClick={() => deleteHandler(data, row.index)}
@@ -201,8 +201,8 @@ function FieldsBlockHeader({ onAdd, text }) {
       <p style={{ flex: 1 }}>{text}</p>
 
       <Button
-        outlined
-        small
+        variant="outlined"
+        size="small"
         intent="success"
         tooltipProps={{ content: '', disabled: true }}
         onClick={onAdd}

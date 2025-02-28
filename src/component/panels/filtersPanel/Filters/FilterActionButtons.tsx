@@ -26,19 +26,19 @@ export function FilterActionButtons(props: FilterActionButtonsProps) {
   return (
     <Container>
       <Button
-        outlined
+        variant="outlined"
         intent="success"
         onClick={onConfirm}
-        small
+        size="small"
         disabled={disabledConfirm}
       >
         Apply
       </Button>
       <Button
-        minimal
+        variant="minimal"
         intent="danger"
         onClick={onCancel}
-        small
+        size="small"
         disabled={disabledCancel}
       >
         Cancel

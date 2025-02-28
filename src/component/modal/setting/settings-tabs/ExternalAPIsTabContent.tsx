@@ -116,17 +116,17 @@ export function ExternalAPIsTabContent() {
           return (
             <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
               <Button
-                small
+                size="small"
                 intent="success"
-                outlined
+                variant="outlined"
                 onClick={() => addHandler(data, row.index + 1)}
               >
                 <FaPlus className={Classes.ICON} />
               </Button>
               {!record?.name && (
                 <Button
-                  small
-                  outlined
+                  size="small"
+                  variant="outlined"
                   intent="danger"
                   onClick={() => deleteHandler(data, row.index)}
                 >
@@ -171,8 +171,8 @@ function Header({ onAdd, text }) {
       <p style={{ flex: 1 }}>{text}</p>
 
       <Button
-        outlined
-        small
+        variant="outlined"
+        size="small"
         intent="success"
         tooltipProps={{ content: '', disabled: true }}
         onClick={onAdd}

@@ -66,7 +66,7 @@ function ActionsColumn({
             onItemSelect={({ value }) => changeSignalKindHandler(value)}
             items={SIGNAL_KINDS}
             selectedItemValue={rowData.tableMetaInfo.signal.kind}
-            selectedButtonProps={{ minimal: true, small: true }}
+            selectedButtonProps={{ variant: 'minimal', size: 'small' }}
             fill
           />
         </td>

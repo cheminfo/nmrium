@@ -453,5 +453,12 @@ function SortButton(props: SortButtonProps) {
       default:
     }
   }
-  return <Button disabled={!value} icon={icon} outlined onClick={onClick} />;
+  return (
+    <Button
+      disabled={!value}
+      icon={icon}
+      variant="outlined"
+      onClick={onClick}
+    />
+  );
 }

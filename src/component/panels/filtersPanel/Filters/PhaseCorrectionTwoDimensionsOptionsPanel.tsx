@@ -130,8 +130,8 @@ export default function PhaseCorrectionTwoDimensionsOptionsPanel(
             >
               <Button
                 text={phaseCorrectionSelectItem?.label}
-                rightIcon="double-caret-vertical"
-                outlined
+                endIcon="double-caret-vertical"
+                variant="outlined"
               />
             </Select>
           </Label>

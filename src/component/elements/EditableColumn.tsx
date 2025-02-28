@@ -198,7 +198,7 @@ function EditFiled(props: EditFiledProps) {
 
   const rightElement = (
     <Button
-      minimal
+      variant="minimal"
       icon="cross"
       onMouseDown={handleMousedown}
       onClick={() => onCancel()}
@@ -218,7 +218,7 @@ function EditFiled(props: EditFiledProps) {
         }
         onKeyDown={handleKeydown}
         onMouseDown={handleMousedown}
-        small
+        size="small"
         fill
         buttonPosition="none"
         stepSize={1}
@@ -237,7 +237,7 @@ function EditFiled(props: EditFiledProps) {
       onChange={(value) => handleChange(value)}
       onKeyDown={handleKeydown}
       onMouseDown={handleMousedown}
-      small
+      size="small"
       rightElement={rightElement}
     />
   );

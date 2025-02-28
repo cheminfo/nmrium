@@ -9,13 +9,13 @@ import { FloatMolecules } from '../1d-2d/components/FloatMoleculeStructures/Floa
 import { SVGRootContainer } from '../1d-2d/components/SVGRootContainer.js';
 import Viewer2D from '../2d/Viewer2D.js';
 import { useChartData } from '../context/ChartContext.js';
+import { useExportSettings } from '../elements/export/index.js';
 import {
   useCheckExportStatus,
   useViewportSize,
 } from '../hooks/useViewportSize.js';
 
 import type { NMRiumProps } from './NMRium.js';
-import { useExportSettings } from '../elements/export/ExportSettingsProvider.js';
 
 interface NMRiumViewerProps {
   viewerRef: RefObject<HTMLDivElement>;

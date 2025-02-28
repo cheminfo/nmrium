@@ -99,16 +99,16 @@ function LegendsPreferences() {
           return (
             <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
               <Button
-                small
+                size="small"
                 intent="success"
-                outlined
+                variant="outlined"
                 onClick={() => addHandler(data, row.index + 1)}
               >
                 <FaPlus className={Classes.ICON} />
               </Button>
               <Button
-                small
-                outlined
+                size="small"
+                variant="outlined"
                 intent="danger"
                 onClick={() => deleteHandler(data, row.index)}
                 disabled={record?.name}

@@ -189,7 +189,7 @@ export function ExportOptions(props: ExportOptionsProps) {
               <div style={{ padding: '0px 5px' }}>
                 <Button
                   icon="link"
-                  minimal
+                  variant="minimal"
                   active={isAspectRatioEnabled}
                   onClick={() => {
                     enableAspectRatio((prevFlag) => !prevFlag);

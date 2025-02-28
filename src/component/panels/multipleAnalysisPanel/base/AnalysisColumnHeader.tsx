@@ -99,7 +99,7 @@ function AnalysisColumnHeader({
               onItemSelect={({ value }) => {
                 onColumnFilter(value);
               }}
-              selectedButtonProps={{ small: true, minimal: true }}
+              selectedButtonProps={{ size: 'small', variant: 'minimal' }}
             />
           </div>
         )}

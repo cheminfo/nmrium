@@ -36,7 +36,7 @@ export function SimplePhaseCorrectionOptionsPanel() {
         >
           <Button
             text={phaseCorrectionTypeItem?.label}
-            rightIcon="double-caret-vertical"
+            endIcon="double-caret-vertical"
           />
         </Select>
       </div>

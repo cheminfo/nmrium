@@ -180,7 +180,7 @@ function FiltersPanelGroupHeader({ index }) {
         fill
         itemTextKey="label"
         itemValueKey="name"
-        selectedButtonProps={{ small: true }}
+        selectedButtonProps={{ size: 'small' }}
         popoverProps={{ matchTargetWidth: true }}
         filterable
       />
@@ -194,16 +194,16 @@ function FiltersPanelGroupHeader({ index }) {
         }}
       >
         <Button
-          small
+          size="small"
           intent="success"
-          outlined
+          variant="outlined"
           onClick={() => handleAdd(index + 1)}
         >
           <FaPlus className={Classes.ICON} />
         </Button>
         <Button
-          small
-          outlined
+          size="small"
+          variant="outlined"
           intent="danger"
           onClick={() => handleDelete(index)}
         >
