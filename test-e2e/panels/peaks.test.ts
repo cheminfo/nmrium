@@ -19,7 +19,7 @@ async function addPeaks(nmrium: NmriumPage) {
     endX: 115,
     shift: true,
   });
-  await peaksAnnotationLocator.waitFor({ state: 'visible' });
+
   await expect(peaksAnnotationLocator).toHaveCount(1);
 
   // Add peak by clicking above it.
