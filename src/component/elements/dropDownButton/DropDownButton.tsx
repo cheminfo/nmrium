@@ -1,4 +1,4 @@
-import { Popover, Button } from '@blueprintjs/core';
+import { Button, Popover } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import type { CSSProperties, ReactNode } from 'react';
 import { useEffect, useState } from 'react';
@@ -85,7 +85,7 @@ function DropDownButton<T extends DropDownListItem>(
     >
       <PopoverButton
         style={{ boxShadow: 'none', ...style }}
-        rightIcon="chevron-down"
+        endIcon="chevron-down"
         onClick={() => setOpen((flag) => !flag)}
       >
         {!item ? <FaEllipsisH /> : formatSelectedValue(item)}

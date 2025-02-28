@@ -161,8 +161,8 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
           return (
             <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
               <Button
-                small
-                outlined
+                size="small"
+                variant="outlined"
                 intent="success"
                 tooltipProps={{ content: '', disabled: true }}
                 onClick={(e) => {
@@ -173,8 +173,8 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
                 <FaPlus className={Classes.ICON} />
               </Button>
               <Button
-                small
-                outlined
+                size="small"
+                variant="outlined"
                 intent="danger"
                 tooltipProps={{ content: '', disabled: true }}
                 onClick={(e) => {
@@ -200,8 +200,8 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
           <div style={{ padding: '5px 0', display: 'flex' }}>
             <Button
               intent="success"
-              small
-              outlined
+              size="small"
+              variant="outlined"
               onClick={() => addHandler(values)}
               tooltipProps={{ content: '', disabled: true }}
             >

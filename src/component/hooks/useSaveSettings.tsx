@@ -41,7 +41,7 @@ function WorkspaceAddForm(props) {
           borderRadius: '5px',
         }}
         autoFocus
-        large
+        size="large"
         onKeyDown={(event) => {
           if (keyDownCheck(event)) {
             onEnter();

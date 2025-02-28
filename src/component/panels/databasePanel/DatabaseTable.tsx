@@ -198,8 +198,8 @@ function DatabaseTable({
 
               {databasePreferences?.allowSaveAsNMRium && (
                 <Button
-                  small
-                  outlined
+                  size="small"
+                  variant="outlined"
                   tooltipProps={{ content: '', disabled: true }}
                   onClick={() => onSave(row.original)}
                   disabled={!jcampURL}
@@ -251,9 +251,9 @@ export function ToggleBtn(props: ToggleBtnProps) {
 
   return (
     <Button
-      small
+      size="small"
       intent={isAdded ? 'danger' : 'success'}
-      outlined
+      variant="outlined"
       tooltipProps={{ content: '', disabled: true }}
       onClick={() => {
         if (isAdded) {

@@ -84,8 +84,8 @@ export default function PhaseCorrectionOptionsPanel(
             >
               <Button
                 text={phaseCorrectionTypeItem?.label}
-                rightIcon="double-caret-vertical"
-                outlined
+                endIcon="double-caret-vertical"
+                variant="outlined"
               />
             </Select>
           </Label>

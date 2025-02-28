@@ -24,7 +24,10 @@ interface UseInputProps extends Omit<ValueProps, 'name'> {
   ref: ForwardedRef<HTMLInputElement>;
 }
 export interface NumberInput2Props
-  extends Omit<HTMLInputProps & NumericInputProps, 'value' | 'onValueChange'>,
+  extends Omit<
+      Omit<HTMLInputProps, 'size'> & NumericInputProps,
+      'value' | 'onValueChange'
+    >,
     ValueProps {
   format?: () => (element: string) => number | string;
 }

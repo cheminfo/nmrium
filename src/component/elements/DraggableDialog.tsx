@@ -224,7 +224,7 @@ function CloseButton(
       aria-label="Close"
       className={Classes.DIALOG_CLOSE_BUTTON}
       icon={<SmallCross size={IconSize.STANDARD} />}
-      minimal
+      variant="minimal"
       onClick={onClose}
     />
   );

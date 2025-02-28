@@ -41,14 +41,14 @@ export default function SpectrumSimulationSimpleOptions({
           items={SPIN_SYSTEMS}
           onItemSelect={({ value }) => onSpinSystemChange(value)}
           selectedItemValue={spinSystem}
-          selectedButtonProps={{ minimal: true, small: true }}
+          selectedButtonProps={{ variant: 'minimal', size: 'small' }}
         />
       </Label>
       <Label title="Frequency" style={labelStyle}>
         <Select2Controller
           control={control}
           items={FREQUENCIES}
-          selectedButtonProps={{ minimal: true, small: true }}
+          selectedButtonProps={{ variant: 'minimal', size: 'small' }}
           name="options.frequency"
         />
       </Label>
@@ -56,7 +56,7 @@ export default function SpectrumSimulationSimpleOptions({
         <NumberInput2Controller
           control={control}
           name="options.lineWidth"
-          small
+          size="small"
           controllerProps={{ rules: { required: true, min: 0.1 } }}
           min={0.1}
           stepSize={0.1}

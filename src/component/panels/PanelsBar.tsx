@@ -67,7 +67,7 @@ export function PanelsBar({ itemHeight = 44 }) {
   if (items.length === 0 || general?.hidePanelsBar) return null;
 
   return (
-    <PanelsBarContainer vertical large minimal ref={ref}>
+    <PanelsBarContainer vertical size="large" variant="minimal" ref={ref}>
       {visibleItems.map((item) => {
         const panelOptions = getPanelPreferences(item);
         return (

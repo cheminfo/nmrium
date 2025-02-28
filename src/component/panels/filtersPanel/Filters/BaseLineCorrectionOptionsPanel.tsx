@@ -101,8 +101,8 @@ export default function BaseLineCorrectionOptionsPanel(
             >
               <Button
                 text={algorithm?.label}
-                rightIcon="double-caret-vertical"
-                outlined
+                endIcon="double-caret-vertical"
+                variant="outlined"
               />
             </Select>
           </Label>

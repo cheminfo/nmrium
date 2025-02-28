@@ -80,16 +80,16 @@ export function AnalysisTablePreferences() {
           return (
             <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
               <Button
-                small
+                size="small"
                 intent="success"
-                outlined
+                variant="outlined"
                 onClick={() => addNewColumn(row.index + 1, data)}
               >
                 <FaPlus className={Classes.ICON} />
               </Button>
               <Button
-                small
-                outlined
+                size="small"
+                variant="outlined"
                 intent="danger"
                 onClick={() => handleDelete(row.index, data)}
               >

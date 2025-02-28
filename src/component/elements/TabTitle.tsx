@@ -30,7 +30,7 @@ export function TabTitle(props: TabTitleProps) {
           intent="danger"
           className="tab-close-btn"
           onClick={handleOnDelete}
-          small
+          size="small"
         />
       }
     >

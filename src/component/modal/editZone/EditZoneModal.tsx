@@ -78,7 +78,7 @@ export function EditZoneModal(props: DialogProps<ZoneData>) {
           icon={
             <FaSearchPlus title="Set to default view on range in spectrum" />
           }
-          minimal
+          variant="minimal"
           onClick={() => zoomToZone(zone)}
         />
       }

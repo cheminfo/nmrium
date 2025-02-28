@@ -128,7 +128,7 @@ function FilterElements(props: FilterElementsProps) {
           tooltipProps={{
             content: 'Edit filter',
           }}
-          minimal
+          variant="minimal"
           onClick={onFilterRestore}
           icon="annotation"
         />
@@ -136,7 +136,7 @@ function FilterElements(props: FilterElementsProps) {
       <IconButton
         intent="danger"
         tooltipProps={{ content: 'Delete filter' }}
-        minimal
+        variant="minimal"
         onClick={() => {
           handleDeleteFilter();
         }}

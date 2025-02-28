@@ -10,7 +10,7 @@ const styles: Record<'container' | 'infoText' | 'errorText', CSSProperties> = {
     padding: '10px',
     margin: '10px 0',
     fontSize: '14px',
-    textAlign: 'left',
+    textAlign: 'start',
     color: 'white',
     backgroundColor: '#5f5f5f',
     borderRadius: '5px',

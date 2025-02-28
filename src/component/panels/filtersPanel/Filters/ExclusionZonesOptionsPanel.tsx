@@ -117,8 +117,8 @@ export default function ExclusionZonesOptionsPanel(
         Cell: ({ row }) => {
           return (
             <Button
-              small
-              outlined
+              size="small"
+              variant="outlined"
               intent="danger"
               onClick={() => handleDelete(row.index)}
             >

@@ -43,7 +43,7 @@ export function SimplePhaseCorrectionTwoDimensionsPanel() {
         >
           <Button
             text={phaseCorrectionSelectItem?.label}
-            rightIcon="double-caret-vertical"
+            endIcon="double-caret-vertical"
           />
         </Select>
       </div>

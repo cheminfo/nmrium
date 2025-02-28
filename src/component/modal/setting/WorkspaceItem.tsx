@@ -14,7 +14,7 @@ const styles: Record<
   },
   workspaceName: {
     flex: '1',
-    textAlign: 'left',
+    textAlign: 'start',
     fontSize: '12px',
     padding: '0.5rem',
   },
@@ -93,10 +93,10 @@ function WorkspaceItem({ item, onSave, onDelete }: WorkspaceItemProps) {
           )}
           {item.source === 'user' && onDelete && (
             <Button
-              minimal
+              variant="minimal"
               intent="danger"
               onClick={deleteHandler}
-              small
+              size="small"
               icon="cross"
             />
           )}

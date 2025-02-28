@@ -193,8 +193,8 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
             <div style={{ display: 'flex', justifyContent: 'space-around' }}>
               {!record?.name && (
                 <Button
-                  small
-                  outlined
+                  size="small"
+                  variant="outlined"
                   intent="danger"
                   onClick={() => deleteHandler(data, row.index)}
                 >
