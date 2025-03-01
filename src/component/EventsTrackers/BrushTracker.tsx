@@ -117,8 +117,41 @@ export function BrushTracker({
   const lastPointRef = useRef<number>(0);
   const isDraggingRef = useRef(false);
 
+  const clickHandler = useCallback(
+    (event: React.MouseEvent, targetElement: Element) => {
+      const boundingRect = targetElement.getBoundingClientRect();
+      const x = event.clientX - boundingRect.x;
+      const y = event.clientY - boundingRect.y;
+
+      // Clear timeout
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+
+      // Count clicks
+      clickCountRef.current += 1;
+
+      // Set a timeout to distinguish between single and double clicks
+      timeoutRef.current = setTimeout(() => {
+        if (clickCountRef.current === 1) {
+          onClick({ ...event, x, y });
+        } else if (clickCountRef.current === 2) {
+          onDoubleClick({ ...event, x, y });
+        }
+
+        // Reset the click count
+        clickCountRef.current = 0;
+      }, 200);
+    },
+    [onClick, onDoubleClick],
+  );
+
   const pointerDownHandler = useCallback(
     (event: React.PointerEvent) => {
+      const targetElement = event.currentTarget;
+      isDraggingRef.current = false; // Reset dragging flag
+
       //check that the right or left mouse button pressed
       if ([0, 2].includes(event.button)) {
         if (noPropagation) {
@@ -154,9 +187,17 @@ export function BrushTracker({
       }
 
       function upCallback() {
-        dispatch({
-          type: 'UP',
-        });
+        if (isDraggingRef.current) {
+          dispatch({
+            type: 'UP',
+          });
+        } else {
+          dispatch({
+            type: 'DONE',
+          });
+          clickHandler(event, targetElement);
+        }
+
         globalThis.removeEventListener('pointermove', moveCallback);
         globalThis.removeEventListener('pointerup', upCallback);
       }
@@ -166,43 +207,7 @@ export function BrushTracker({
 
       return false;
     },
-    [noPropagation],
-  );
-
-  const clickHandler = useCallback(
-    (e: React.MouseEvent) => {
-      if (isDraggingRef.current) {
-        return; // Skip click event if the user dragged the mouse
-      }
-
-      isDraggingRef.current = false;
-
-      const boundingRect = e.currentTarget.getBoundingClientRect();
-      const x = e.clientX - boundingRect.x;
-      const y = e.clientY - boundingRect.y;
-
-      // Clear timeout
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
-      }
-
-      // Count clicks
-      clickCountRef.current += 1;
-
-      // Set a timeout to distinguish between single and double clicks
-      timeoutRef.current = setTimeout(() => {
-        if (clickCountRef.current === 1) {
-          onClick({ ...e, x, y });
-        } else if (clickCountRef.current === 2) {
-          onDoubleClick({ ...e, x, y });
-        }
-
-        // Reset the click count
-        clickCountRef.current = 0;
-      }, 200);
-    },
-    [onClick, onDoubleClick],
+    [clickHandler, noPropagation],
   );
 
   const handleMouseWheel = useCallback(
@@ -242,7 +247,6 @@ export function BrushTracker({
         className={className}
         style={{ ...style, touchAction: 'none' }}
         onPointerDown={pointerDownHandler}
-        onClick={clickHandler}
         onWheel={handleMouseWheel}
         onMouseEnter={() => {
           // disable page scrolling once the mouse over the Displayer
@@ -338,13 +342,9 @@ function reducer(
       }
       return state;
     case 'DONE':
-      if (state.step === 'end') {
-        return {
-          ...state,
-          step: 'initial',
-        };
-      }
-      return state;
+      return {
+        ...initialState,
+      };
     default:
       return state;
   }
