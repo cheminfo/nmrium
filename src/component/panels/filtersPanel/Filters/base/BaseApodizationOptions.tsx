@@ -5,6 +5,7 @@ import { FormProvider, useFormContext } from 'react-hook-form';
 import * as Yup from 'yup';
 
 import Label from '../../../../elements/Label.js';
+import type { LabelStyle } from '../../../../elements/Label.js';
 import { NumberInput2Controller } from '../../../../elements/NumberInput2Controller.js';
 import { ReadOnly } from '../../../../elements/ReadOnly.js';
 import { Sections } from '../../../../elements/Sections.js';
@@ -13,7 +14,20 @@ import { HeaderContainer, StickyHeader } from '../InnerFilterHeader.js';
 import { useApodization } from '../hooks/useApodization.js';
 import type { ApodizationFilterEntry } from '../hooks/useApodization.js';
 import type { BaseFilterOptionsPanelProps } from '../index.js';
-import { formLabelStyle } from '../index.js';
+
+const fieldStyle: LabelStyle = {
+  label: {
+    flex: 6,
+  },
+  wrapper: {
+    flex: 6,
+    minWidth: 75,
+  },
+  container: {
+    marginBottom: '5px',
+    overflow: 'hidden',
+  },
+};
 
 const advanceValidationSchema = Yup.object().shape({
   options: Yup.object().shape({
@@ -115,9 +129,15 @@ function ExponentialSectionOptionsSection(options: SectionOptions) {
       algorithmTitle="Exponential"
       onChange={onChange}
     >
-      <Label title="Line broadening:" shortTitle="LB:" style={formLabelStyle}>
+      <Label
+        title="Line broadening:"
+        shortTitle="LB:"
+        style={fieldStyle}
+        widthThreshold={210}
+      >
         <NumberInput2Controller
           control={control}
+          fill
           name={`${basedPath}.lineBroadening`}
           debounceTime={250}
           stepSize={0.1}
@@ -140,9 +160,15 @@ function GaussianOptionSection(options: SectionOptions) {
       algorithmTitle="Gaussian"
       onChange={onChange}
     >
-      <Label title="Line broadening:" shortTitle="LB:" style={formLabelStyle}>
+      <Label
+        title="Line broadening:"
+        shortTitle="LB:"
+        style={fieldStyle}
+        widthThreshold={210}
+      >
         <NumberInput2Controller
           control={control}
+          fill
           name={`${basedPath}.lineBroadening`}
           debounceTime={250}
           stepSize={0.1}
@@ -154,10 +180,12 @@ function GaussianOptionSection(options: SectionOptions) {
       <Label
         title="Line broadening center [0 - 1]:"
         shortTitle="LB center:"
-        style={formLabelStyle}
+        style={fieldStyle}
+        widthThreshold={210}
       >
         <NumberInput2Controller
           control={control}
+          fill
           name={`${basedPath}.lineBroadeningCenter`}
           debounceTime={250}
           min={0}
@@ -182,9 +210,10 @@ function SineBellOptionSection(options: SectionOptions) {
       algorithmTitle="Sine Bell"
       onChange={onChange}
     >
-      <Label title="Offset:" style={formLabelStyle}>
+      <Label title="Offset:" style={fieldStyle}>
         <NumberInput2Controller
           control={control}
+          fill
           name={`${basedPath}.offset`}
           debounceTime={250}
           stepSize={0.1}
@@ -207,9 +236,10 @@ function SineSquareOptionSection(options: SectionOptions) {
       algorithmTitle="Sine Square"
       onChange={onChange}
     >
-      <Label title="Offset:" style={formLabelStyle}>
+      <Label title="Offset:" style={fieldStyle}>
         <NumberInput2Controller
           control={control}
+          fill
           name={`${basedPath}.offset`}
           debounceTime={250}
           stepSize={0.1}
@@ -228,9 +258,15 @@ function TrafOptionSection(options: SectionOptions) {
 
   return (
     <OptionsSection algorithm="traf" algorithmTitle="Traf" onChange={onChange}>
-      <Label title="lineBroadening:" shortTitle="LB:" style={formLabelStyle}>
+      <Label
+        title="lineBroadening:"
+        shortTitle="LB:"
+        style={fieldStyle}
+        widthThreshold={210}
+      >
         <NumberInput2Controller
           control={control}
+          fill
           name={`${basedPath}.lineBroadening`}
           debounceTime={250}
           stepSize={0.1}

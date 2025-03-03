@@ -2,6 +2,8 @@ import styled from '@emotion/styled';
 import type { CSSProperties, LabelHTMLAttributes, ReactNode } from 'react';
 
 import Button from './Button.js';
+import { ContainerQueryWrapper } from './ContainerQueryWrapper.js';
+import type { ContainerQueryWrapperProps } from './ContainerQueryWrapper.js';
 
 const ShortTitle = styled.span`
   display: none;
@@ -13,9 +15,10 @@ export interface LabelStyle {
   container?: CSSProperties;
 }
 interface LabelProps
-  extends Omit<LabelHTMLAttributes<HTMLLabelElement>, 'style'> {
+  extends Omit<LabelHTMLAttributes<HTMLLabelElement>, 'style'>,
+    Partial<ContainerQueryWrapperProps> {
   title: string;
-  renderTitle?: (title: string) => ReactNode;
+  renderTitle?: (title: string, className?: string) => ReactNode;
   shortTitle?: string;
   children: ReactNode;
   className?: string;
@@ -25,6 +28,37 @@ interface LabelProps
 
 export default function Label(props: LabelProps) {
   const {
+    narrowClassName = 'small-label',
+    wideClassName = 'large-label',
+    widthThreshold,
+    ...otherProps
+  } = props;
+
+  if (typeof widthThreshold === 'number') {
+    return (
+      <ContainerQueryWrapper
+        widthThreshold={widthThreshold}
+        wideClassName={wideClassName}
+        narrowClassName={narrowClassName}
+      >
+        <InnerLabel
+          {...otherProps}
+          wideClassName={wideClassName}
+          narrowClassName={narrowClassName}
+        />
+      </ContainerQueryWrapper>
+    );
+  }
+  return (
+    <InnerLabel
+      {...otherProps}
+      wideClassName={wideClassName}
+      narrowClassName={narrowClassName}
+    />
+  );
+}
+export function InnerLabel(props: LabelProps) {
+  const {
     title,
     shortTitle,
     className = '',
@@ -32,8 +66,11 @@ export default function Label(props: LabelProps) {
     style,
     description,
     renderTitle,
+    wideClassName,
+    narrowClassName,
     ...otherProps
   } = props;
+
   return (
     <label
       style={{ display: 'flex', alignItems: 'center', ...style?.container }}
@@ -51,12 +88,12 @@ export default function Label(props: LabelProps) {
         {...otherProps}
       >
         {renderTitle ? (
-          renderTitle(title)
+          renderTitle(title, wideClassName)
         ) : (
-          <span className={shortTitle ? 'large-label' : ''}>{title}</span>
+          <span className={shortTitle ? wideClassName : ''}>{title}</span>
         )}
         {shortTitle && (
-          <ShortTitle className="small-label">{shortTitle}</ShortTitle>
+          <ShortTitle className={narrowClassName}>{shortTitle}</ShortTitle>
         )}
         {description && (
           <Button.Info
