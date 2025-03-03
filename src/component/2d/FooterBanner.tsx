@@ -53,11 +53,11 @@ function FooterBanner({ layout, data1D }) {
     }
     if (selectedTool !== options.slicing.id) {
       switch (trackID) {
-        case LAYOUT.TOP_1D:
-        case LAYOUT.CENTER_2D: {
+        case LAYOUT.top:
+        case LAYOUT.main: {
           return get2DXScale({ width, margin, xDomain, mode });
         }
-        case LAYOUT.LEFT_1D: {
+        case LAYOUT.left: {
           return get2DYScale({ height, margin, yDomain });
         }
         default:
@@ -83,15 +83,15 @@ function FooterBanner({ layout, data1D }) {
     }
     if (selectedTool !== options.slicing.id) {
       switch (trackID) {
-        case LAYOUT.CENTER_2D: {
+        case LAYOUT.main: {
           return get2DYScale({ height, margin, yDomain });
         }
-        case LAYOUT.TOP_1D: {
+        case LAYOUT.top: {
           return data1D[0]
             ? get1DYScale(yDomains[data1D[0].id], margin.top)
             : null;
         }
-        case LAYOUT.LEFT_1D: {
+        case LAYOUT.left: {
           return data1D[1]
             ? get1DYScale(yDomains[data1D[1].id], margin.left)
             : null;
@@ -116,9 +116,9 @@ function FooterBanner({ layout, data1D }) {
   }
   const getRealYValue = (coordinate) => {
     let index: number | null = null;
-    if (trackID === LAYOUT.TOP_1D) {
+    if (trackID === LAYOUT.top) {
       index = 0;
-    } else if (trackID === LAYOUT.LEFT_1D) {
+    } else if (trackID === LAYOUT.left) {
       index = 1;
     }
     if (index != null && scaleX != null && data1D[index]) {
@@ -132,11 +132,11 @@ function FooterBanner({ layout, data1D }) {
   const getXValue = (x: number | null = null) => {
     if (scaleX != null) {
       switch (trackID) {
-        case LAYOUT.CENTER_2D:
-        case LAYOUT.TOP_1D: {
+        case LAYOUT.main:
+        case LAYOUT.top: {
           return scaleX.invert(x || position.x);
         }
-        case LAYOUT.LEFT_1D: {
+        case LAYOUT.left: {
           return scaleX.invert(x || position.y);
         }
         default:
@@ -149,11 +149,11 @@ function FooterBanner({ layout, data1D }) {
   const getYValue = () => {
     if (scaleY != null) {
       switch (trackID) {
-        case LAYOUT.CENTER_2D:
-        case LAYOUT.TOP_1D: {
+        case LAYOUT.main:
+        case LAYOUT.top: {
           return scaleY.invert(position.y);
         }
-        case LAYOUT.LEFT_1D: {
+        case LAYOUT.left: {
           return scaleY.invert(position.x);
         }
         default:
@@ -165,13 +165,13 @@ function FooterBanner({ layout, data1D }) {
 
   const getRation = () => {
     switch (trackID) {
-      case LAYOUT.TOP_1D: {
+      case LAYOUT.top: {
         return (
           (getRealYValue(startX) / (getRealYValue(endX) || Number.MIN_VALUE)) *
           100
         ).toFixed(2);
       }
-      case LAYOUT.LEFT_1D: {
+      case LAYOUT.left: {
         return (
           (getRealYValue(startY) / (getRealYValue(endY) || Number.MIN_VALUE)) *
           100
@@ -184,10 +184,10 @@ function FooterBanner({ layout, data1D }) {
 
   const getDeltaX = () => {
     switch (trackID) {
-      case LAYOUT.TOP_1D: {
+      case LAYOUT.top: {
         return (getXValue(startX) - getXValue(endX)).toPrecision(6);
       }
-      case LAYOUT.LEFT_1D: {
+      case LAYOUT.left: {
         return (getXValue(startY) - getXValue(endY)).toPrecision(6);
       }
       default:
@@ -196,7 +196,7 @@ function FooterBanner({ layout, data1D }) {
   };
 
   const getLabel = (label2d, label1d, nucleus) => {
-    return trackID === LAYOUT.CENTER_2D ? (
+    return trackID === LAYOUT.main ? (
       <Fragment>
         {label2d} ( <MF mf={nucleus} /> )
       </Fragment>
@@ -208,7 +208,7 @@ function FooterBanner({ layout, data1D }) {
   const getZValue = () => {
     const spectrum = spectra[activeSpectrum.index];
 
-    if (trackID === LAYOUT.CENTER_2D && isSpectrum2D(spectrum)) {
+    if (trackID === LAYOUT.main && isSpectrum2D(spectrum)) {
       const { data } = spectrum;
       const { maxX, maxY, minX, minY, z } = isFid2DData(data)
         ? data.re

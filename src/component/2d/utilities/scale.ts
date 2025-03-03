@@ -60,10 +60,10 @@ function get1DYScale(yDomain: number[], height: number, margin = 10) {
 function use1DTraceYScale(
   SpectrumId: string,
   height: number,
-  verticalMargin: number,
+  leftMargin: number,
 ) {
   const { yDomains } = useChartData();
-  return get1DYScale(yDomains[SpectrumId], height, verticalMargin);
+  return get1DYScale(yDomains[SpectrumId], height, leftMargin);
 }
 
 interface SliceYScaleOptions {

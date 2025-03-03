@@ -52,11 +52,11 @@ function XYLabelPointer({ layout, data1D }) {
     }
 
     switch (trackID) {
-      case LAYOUT.TOP_1D:
-      case LAYOUT.CENTER_2D: {
+      case LAYOUT.top:
+      case LAYOUT.main: {
         return scale2DX;
       }
-      case LAYOUT.LEFT_1D: {
+      case LAYOUT.left: {
         return scale2DY;
       }
       default:
@@ -69,15 +69,15 @@ function XYLabelPointer({ layout, data1D }) {
       return scale2DY;
     }
     switch (trackID) {
-      case LAYOUT.CENTER_2D: {
+      case LAYOUT.main: {
         return scale2DY;
       }
-      case LAYOUT.TOP_1D: {
+      case LAYOUT.top: {
         return data1D[0]
           ? get1DYScale(yDomains[data1D[0].id], margin.top)
           : null;
       }
-      case LAYOUT.LEFT_1D: {
+      case LAYOUT.left: {
         return data1D[1]
           ? get1DYScale(yDomains[data1D[1].id], margin.left)
           : null;
@@ -108,11 +108,11 @@ function XYLabelPointer({ layout, data1D }) {
 
   const getXValue = (x = null) => {
     switch (trackID) {
-      case LAYOUT.CENTER_2D:
-      case LAYOUT.TOP_1D: {
+      case LAYOUT.main:
+      case LAYOUT.top: {
         return scaleX?.invert(x || position.x);
       }
-      case LAYOUT.LEFT_1D: {
+      case LAYOUT.left: {
         return scaleX?.invert(x || position.y);
       }
       default:
@@ -122,11 +122,11 @@ function XYLabelPointer({ layout, data1D }) {
 
   const getYValue = () => {
     switch (trackID) {
-      case LAYOUT.CENTER_2D:
-      case LAYOUT.TOP_1D: {
+      case LAYOUT.main:
+      case LAYOUT.top: {
         return scaleY?.invert(position.y);
       }
-      case LAYOUT.LEFT_1D: {
+      case LAYOUT.left: {
         return scaleY?.invert(position.x);
       }
       default:

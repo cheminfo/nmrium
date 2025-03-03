@@ -1,6 +1,6 @@
 import type { Draft } from 'immer';
 
-import type { Layout } from '../../2d/utilities/DimensionLayout.js';
+import type { BrushAxis } from '../../EventsTrackers/BrushTracker.js';
 import type { State } from '../Reducer.js';
 
 export interface HistoryItem {
@@ -66,25 +66,25 @@ function prepareGetLast(historyStack) {
 
 export function addToBrushHistory(
   draft: Draft<State>,
-  options: { trackID?: Layout | null; xDomain: number[]; yDomain: number[] },
+  options: { axis?: BrushAxis | null; xDomain: number[]; yDomain: number[] },
 ) {
   const { displayerMode } = draft;
-  const { trackID, xDomain, yDomain } = options;
+  const { axis, xDomain, yDomain } = options;
   const brushHistory = zoomHistoryManager(
     draft.zoom.history,
 
     draft.view.spectra.activeTab,
   );
   if (displayerMode === '2D') {
-    switch (trackID) {
-      case 'CENTER_2D':
+    switch (axis) {
+      case 'XY':
         draft.xDomain = xDomain;
         draft.yDomain = yDomain;
         break;
-      case 'TOP_1D':
+      case 'X':
         draft.xDomain = xDomain;
         break;
-      case 'LEFT_1D':
+      case 'Y':
         draft.yDomain = yDomain;
         break;
       default:

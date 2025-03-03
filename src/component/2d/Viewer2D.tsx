@@ -3,7 +3,7 @@ import { ResponsiveChart } from 'react-d3-utils';
 
 import { SVGRootContainer } from '../1d-2d/components/SVGRootContainer.js';
 import { ViewerResponsiveWrapper } from '../1d-2d/components/ViewerResponsiveWrapper.js';
-import BrushXY, { BRUSH_TYPE } from '../1d-2d/tools/BrushXY.js';
+import BrushXY from '../1d-2d/tools/BrushXY.js';
 import CrossLinePointer from '../1d-2d/tools/CrossLinePointer.js';
 import { MouseTracker } from '../EventsTrackers/MouseTracker.js';
 import { useChartData } from '../context/ChartContext.js';
@@ -64,23 +64,22 @@ function Viewer2D(props: Viewer2DProps) {
                 <CrossLinePointer />
                 <XYLabelPointer data1D={spectrumData} layout={DIMENSION} />
 
-                <BrushXY
-                  brushType={BRUSH_TYPE.XY}
-                  dimensionBorder={DIMENSION.CENTER_2D}
-                />
+                <BrushXY axis="XY" dimensionBorder={DIMENSION.MAIN} />
                 <>
                   {spectrumData[0] && (
                     <BrushXY
-                      brushType={BRUSH_TYPE.X}
-                      dimensionBorder={DIMENSION.TOP_1D}
+                      axis="X"
+                      dimensionBorder={DIMENSION.TOP}
                       height={margin.top}
+                      margin={{ ...margin, top: 0, bottom: 0 }}
                     />
                   )}
                   {spectrumData[1] && (
                     <BrushXY
-                      brushType={BRUSH_TYPE.Y}
-                      dimensionBorder={DIMENSION.LEFT_1D}
+                      axis="Y"
+                      dimensionBorder={DIMENSION.LEFT}
                       width={margin.left}
+                      margin={{ ...margin, left: 0, right: 0 }}
                     />
                   )}
                 </>

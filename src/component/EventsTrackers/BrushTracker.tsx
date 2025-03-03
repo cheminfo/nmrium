@@ -11,6 +11,8 @@ import {
 import type { ActionType } from '../reducer/types/ActionType.js';
 
 type Step = 'initial' | 'start' | 'end' | 'brushing';
+
+export type BrushAxis = 'X' | 'Y' | 'XY';
 export interface BrushTrackerData {
   step: Step;
   startX: number;
@@ -35,7 +37,7 @@ export interface BrushCoordination {
   startY: number;
   endY: number;
 }
-export interface BrushScreenCoordination {
+interface BrushScreenCoordination {
   startScreenX: number;
   startScreenY: number;
   startClientX: number;
@@ -359,12 +361,18 @@ function reducer(
   }
 }
 
+interface DetectBrushingResult extends BrushCoordination {
+  type: BrushAxis;
+  scaleX: number;
+  scaleY: number;
+}
+
 export function detectBrushing(
   coordination: BrushCoordination,
   width: number,
   height: number,
   threshold = 0.03,
-) {
+): DetectBrushingResult {
   const { startX, endX, startY, endY } = coordination;
   const xDiff = Math.abs(endX - startX);
   const yDiff = Math.abs(endY - startY);
@@ -375,7 +383,7 @@ export function detectBrushing(
 
   if (xDiff >= xThreshold && yDiff < yThreshold) {
     return {
-      type: 'x',
+      type: 'X',
       startX,
       endX,
       startY: 0,
@@ -387,7 +395,7 @@ export function detectBrushing(
 
   if (yDiff >= yThreshold && xDiff < xThreshold) {
     return {
-      type: 'y',
+      type: 'Y',
       startX: 0,
       endX: width,
       startY,
@@ -397,5 +405,5 @@ export function detectBrushing(
     };
   }
 
-  return { type: 'xy', startX, startY, endX, endY, scaleX, scaleY };
+  return { type: 'XY', startX, startY, endX, endY, scaleX, scaleY };
 }

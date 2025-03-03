@@ -1,10 +1,12 @@
+import type { BrushCoordination } from '../../EventsTrackers/BrushTracker.js';
+
 const LAYOUT = {
-  TOP_1D: 'TOP_1D',
-  LEFT_1D: 'LEFT_1D',
-  CENTER_2D: 'CENTER_2D',
+  main: 'MAIN',
+  top: 'TOP',
+  left: 'LEFT',
 } as const;
 
-type Layout = keyof typeof LAYOUT;
+type Layout = (typeof LAYOUT)[keyof typeof LAYOUT];
 
 interface MarginProps {
   top: number;
@@ -21,21 +23,21 @@ function get2DDimensionLayout({
   width: number;
   height: number;
   margin: MarginProps;
-}) {
+}): Record<Layout, BrushCoordination> {
   return {
-    CENTER_2D: {
+    MAIN: {
       startX: margin.left,
       startY: margin.top,
       endX: width - margin.right,
       endY: height - margin.bottom,
     },
-    TOP_1D: {
+    TOP: {
       startX: margin.left,
       startY: 0,
       endX: width - margin.right,
       endY: margin.top,
     },
-    LEFT_1D: {
+    LEFT: {
       startX: 0,
       startY: margin.top,
       endX: margin.left,
