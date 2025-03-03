@@ -1,4 +1,3 @@
-import styled from '@emotion/styled';
 import { memo, useMemo } from 'react';
 import {
   FaFilm,
@@ -15,6 +14,7 @@ import {
   useWorkspacesList,
 } from '../context/PreferencesContext.js';
 import Button from '../elements/Button.js';
+import { ContainerQueryWrapper } from '../elements/ContainerQueryWrapper.js';
 import { HeaderContainer } from '../elements/HeaderContainer.js';
 import type { LabelStyle } from '../elements/Label.js';
 import type { DropDownListItem } from '../elements/dropDownButton/DropDownButton.js';
@@ -53,32 +53,6 @@ export const headerLabelStyle: LabelStyle = {
     alignItems: 'center',
   },
 };
-
-const Container = styled.div`
-  container-type: inline-size;
-  z-index: 1;
-
-  @container (max-width:1200px) {
-    .small-label {
-      display: block;
-    }
-
-    .large-label {
-      display: none !important;
-    }
-  }
-
-  @container (min-width:1200px) {
-    .small-label {
-      display: none;
-    }
-
-    .large-label {
-      display: block;
-    }
-  }
-`;
-
 interface HeaderInnerProps {
   selectedOptionPanel: string | null;
   height: number;
@@ -143,7 +117,11 @@ function HeaderInner(props: HeaderInnerProps) {
   }
 
   return (
-    <Container>
+    <ContainerQueryWrapper
+      widthThreshold={1200}
+      narrowClassName="small-label"
+      wideClassName="large-label"
+    >
       <HeaderContainer
         style={{ leftStyle: { flex: 1 }, containerStyle: { padding: '2px' } }}
       >
@@ -212,7 +190,7 @@ function HeaderInner(props: HeaderInnerProps) {
           </div>
         </HeaderWrapper>
       </HeaderContainer>
-    </Container>
+    </ContainerQueryWrapper>
   );
 }
 
