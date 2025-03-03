@@ -60,12 +60,14 @@ export interface BaseFilterOptionsPanelProps<T> {
 
 export const formLabelStyle: LabelStyle = {
   label: {
-    flex: 5,
+    flex: 6,
   },
   wrapper: {
-    flex: 7,
+    flex: 6,
+    minWidth: 75,
   },
   container: {
     marginBottom: '5px',
+    overflow: 'hidden',
   },
 };

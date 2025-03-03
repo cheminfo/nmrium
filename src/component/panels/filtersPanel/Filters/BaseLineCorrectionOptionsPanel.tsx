@@ -97,6 +97,7 @@ export default function BaseLineCorrectionOptionsPanel(
                   submitHandler();
                 }, 0);
               }}
+              fill
               {...defaultAlgorithmSelectProps}
             >
               <Button
@@ -119,6 +120,7 @@ export default function BaseLineCorrectionOptionsPanel(
                   onValueChange={() => {
                     submitHandler();
                   }}
+                  fill
                 />
               </Label>
               <Label title="Tolerance:" style={formLabelStyle}>
@@ -133,6 +135,7 @@ export default function BaseLineCorrectionOptionsPanel(
                   onValueChange={() => {
                     submitHandler();
                   }}
+                  fill
                 />
               </Label>
             </>
@@ -154,6 +157,7 @@ export default function BaseLineCorrectionOptionsPanel(
                   onValueChange={() => {
                     submitHandler();
                   }}
+                  fill
                 />
               </Label>
             )}
