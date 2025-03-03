@@ -4,7 +4,9 @@ import {
   detectBrushing,
   useBrushTracker,
 } from '../../EventsTrackers/BrushTracker.js';
+import type { BrushAxis } from '../../EventsTrackers/BrushTracker.js';
 import { useChartData } from '../../context/ChartContext.js';
+import type { Margin } from '../../reducer/Reducer.js';
 import { options } from '../../toolbar/ToolTypes.js';
 
 const styles: Record<'container', CSSProperties> = {
@@ -41,12 +43,6 @@ const allowTools = new Set([
   options.inset.id,
 ]);
 
-export const BRUSH_TYPE = {
-  X: 1,
-  Y: 2,
-  XY: 3,
-};
-
 const defaultDimensionBorder: {
   startX: number;
   startY: number;
@@ -58,7 +54,7 @@ const defaultDimensionBorder: {
 };
 
 interface BrushXYProps {
-  brushType: number;
+  axis: BrushAxis;
   dimensionBorder?: {
     startX: number;
     startY: number;
@@ -67,23 +63,27 @@ interface BrushXYProps {
   };
   width?: number;
   height?: number;
+  margin?: Margin;
 }
 
-export default function BrushXY({
-  brushType = BRUSH_TYPE.XY,
-  dimensionBorder = defaultDimensionBorder,
-  width: widthProps,
-  height: heightProps,
-}: BrushXYProps) {
+export default function BrushXY(props: BrushXYProps) {
+  const {
+    axis = 'XY',
+    dimensionBorder = defaultDimensionBorder,
+    width: widthProps,
+    height: heightProps,
+    margin: externalMargin,
+  } = props;
   const {
     width,
     height,
     toolOptions: { selectedTool },
-    margin,
+    margin: innerMargin,
   } = useChartData();
+  const margin = externalMargin ?? innerMargin;
   const brushTracker = useBrushTracker();
-  const { step, mouseButton, startY } = brushTracker;
-  let { startX, endX, endY } = brushTracker;
+  const { step, mouseButton } = brushTracker;
+  let { startX, endX, startY, endY } = brushTracker;
   if (
     !allowTools.has(selectedTool) ||
     step !== 'brushing' ||
@@ -124,23 +124,17 @@ export default function BrushXY({
     finalHeight,
   );
 
-  const scaleX =
-    brushType === BRUSH_TYPE.X || brushType === BRUSH_TYPE.XY
-      ? brush.scaleX
-      : 1;
-  startX =
-    brushType === BRUSH_TYPE.X || brushType === BRUSH_TYPE.XY ? startX : 0;
+  const scaleX = axis === 'X' || axis === 'XY' ? brush.scaleX : 1;
+  const scaleY = axis === 'Y' || axis === 'XY' ? brush.scaleY : 1;
 
-  const scaleY =
-    brushType === BRUSH_TYPE.Y || brushType === BRUSH_TYPE.XY
-      ? brush.scaleY
-      : 1;
+  startX = axis === 'Y' ? margin.left : brush.startX || margin.left;
+  startY = axis === 'X' ? margin.top : brush.startY || margin.top;
 
   return (
     <div
       style={{
         ...styles.container,
-        transform: `translate(${brush.startX || margin.left}px, ${brush.startY || margin.left}px) scale(${scaleX},${scaleY})`,
+        transform: `translate(${startX}px, ${startY}px) scale(${scaleX},${scaleY})`,
         willChange: 'transform',
       }}
     >

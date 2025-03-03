@@ -8,7 +8,10 @@ import { getXScale } from '../../1d/utilities/scale.js';
 import type { Layout } from '../../2d/utilities/DimensionLayout.js';
 import { LAYOUT } from '../../2d/utilities/DimensionLayout.js';
 import { get2DXScale, get2DYScale } from '../../2d/utilities/scale.js';
-import type { ZoomOptions } from '../../EventsTrackers/BrushTracker.js';
+import type {
+  BrushAxis,
+  ZoomOptions,
+} from '../../EventsTrackers/BrushTracker.js';
 import type { Tool } from '../../toolbar/ToolTypes.js';
 import { options as Tools } from '../../toolbar/ToolTypes.js';
 import groupByInfoKey from '../../utility/GroupByInfoKey.js';
@@ -47,7 +50,7 @@ interface BrushBoundary {
   startY: number;
   endX: number;
   endY: number;
-  trackID?: Layout | null;
+  axis?: BrushAxis | null;
 }
 interface ResetToolOptions {
   resetToDefaultTool?: boolean;
@@ -285,7 +288,7 @@ function handleBrushEnd(draft: Draft<State>, action: BrushEndAction) {
   const endY = Math.max(options.startY, options.endY);
 
   addToBrushHistory(draft, {
-    trackID: options.trackID,
+    axis: options.axis,
     xDomain: [startX, endX],
     yDomain: [startY, endY],
   });
@@ -368,7 +371,7 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
 
   switch (displayerMode) {
     case '2D': {
-      if (trackID === 'CENTER_2D') {
+      if (trackID === 'MAIN') {
         // change the vertical scale for traces in 2D phase correction
         if (selectedTool === 'phaseCorrectionTwoDimensions') {
           const { activeTraces } = getTwoDimensionPhaseCorrectionOptions(draft);
@@ -387,7 +390,7 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
       } else {
         // change the vertical scale of 1D traces
         const index =
-          trackID === LAYOUT.TOP_1D ? 0 : trackID === LAYOUT.LEFT_1D ? 1 : null;
+          trackID === LAYOUT.top ? 0 : trackID === LAYOUT.left ? 1 : null;
         if (index !== null) {
           const id = getSpectrumID(draft, index);
           if (id) {
