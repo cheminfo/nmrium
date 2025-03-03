@@ -96,6 +96,7 @@ export default function ShiftOptionsPanel(
         <Label title="Shift:" style={formLabelStyle}>
           <NumberInput2Controller
             control={control}
+            fill
             name="shift"
             min={0}
             stepSize={1}

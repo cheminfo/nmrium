@@ -1,5 +1,6 @@
 import { Button } from '@blueprintjs/core';
 import { Select } from '@blueprintjs/select';
+import styled from '@emotion/styled';
 import type { CSSProperties } from 'react';
 
 import type { ExtractFilterEntry } from '../../../../data/types/common/ExtractFilterEntry.js';
@@ -19,6 +20,7 @@ import type { BaseFilterOptionsPanelProps } from './index.js';
 
 const inputRangeStyle: CSSProperties = {
   padding: '5px 10px',
+  flex: 8,
 };
 
 const formLabelStyle: LabelStyle = {
@@ -33,6 +35,11 @@ const formLabelStyle: LabelStyle = {
     marginBottom: '5px',
   },
 };
+
+const NumberInputContainer = styled.div`
+  flex: 4;
+  min-width: 75px;
+`;
 
 export default function PhaseCorrectionOptionsPanel(
   props: BaseFilterOptionsPanelProps<ExtractFilterEntry<'phaseCorrection'>>,
@@ -91,34 +98,41 @@ export default function PhaseCorrectionOptionsPanel(
           </Label>
           {phaseCorrectionTypeItem?.value === 'manual' && (
             <>
-              <Label title="PH0:" style={formLabelStyle}>
-                <NumberInput2
-                  name="ph0"
-                  onValueChange={handleInput}
-                  value={value.ph0}
-                  debounceTime={250}
-                  style={{ width: '100px' }}
-                />
+              <Label title="PH0:" style={formLabelStyle} widthThreshold={400}>
+                <NumberInputContainer>
+                  <NumberInput2
+                    name="ph0"
+                    onValueChange={handleInput}
+                    value={value.ph0}
+                    debounceTime={250}
+                    fill
+                  />
+                </NumberInputContainer>
                 <InputRange
                   ref={ph0Ref}
                   name="ph0"
                   label="Change PH0 (click and drag)"
+                  shortLabel="Ph0"
                   onChange={handleRangeChange}
                   style={inputRangeStyle}
                 />
               </Label>
-              <Label title="PH1:" style={formLabelStyle}>
-                <NumberInput2
-                  name="ph1"
-                  onValueChange={handleInput}
-                  value={value.ph1}
-                  debounceTime={250}
-                  style={{ width: '100px' }}
-                />
+              <Label title="PH1:" style={formLabelStyle} widthThreshold={400}>
+                <NumberInputContainer>
+                  <NumberInput2
+                    name="ph1"
+                    onValueChange={handleInput}
+                    value={value.ph1}
+                    debounceTime={250}
+                    fill
+                  />
+                </NumberInputContainer>
+
                 <InputRange
                   ref={ph1Ref}
                   name="ph1"
                   label="Change PH1 (click and drag)"
+                  shortLabel="Ph1"
                   onChange={handleRangeChange}
                   style={inputRangeStyle}
                 />
