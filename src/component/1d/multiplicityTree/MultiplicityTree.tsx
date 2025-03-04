@@ -5,10 +5,7 @@ import type { Range } from 'nmr-processing';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import type { AssignmentsData } from '../../assignment/AssignmentsContext.js';
-import {
-  useAssignment,
-  useAssignmentData,
-} from '../../assignment/AssignmentsContext.js';
+import { useAssignment } from '../../assignment/AssignmentsContext.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';
@@ -89,7 +86,6 @@ function Tree(props: TreeProps) {
   const { width } = useChartData();
   const { scaleX } = useScaleChecked();
   const dispatch = useDispatch();
-  const assignmentData = useAssignmentData();
 
   const assignment = useAssignment(signalKey);
   const highlight = useHighlight(extractID(assignment), {
@@ -140,8 +136,7 @@ function Tree(props: TreeProps) {
     dispatch({
       type: 'UNLINK_RANGE',
       payload: {
-        range,
-        assignmentData,
+        rangeKey: range.id,
         signalIndex,
       },
     });

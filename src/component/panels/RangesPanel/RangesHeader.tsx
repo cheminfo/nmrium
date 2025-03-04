@@ -21,7 +21,6 @@ import { LuMessageSquareText } from 'react-icons/lu';
 
 import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents.js';
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks.js';
-import { useAssignmentData } from '../../assignment/AssignmentsContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import { useAlert } from '../../elements/Alert.js';
@@ -84,7 +83,6 @@ function RangesHeader(props: RangesHeaderProps) {
   const dispatch = useDispatch();
   const alert = useAlert();
   const toaster = useToaster();
-  const assignmentData = useAssignmentData();
   const isExperimentalFeature = useCheckExperimentalFeature();
 
   // TODO: make sure ranges are not a lie and remove the optional chaining.
@@ -131,7 +129,7 @@ function RangesHeader(props: RangesHeaderProps) {
           onClick: () => {
             dispatch({
               type: 'DELETE_RANGE',
-              payload: { assignmentData },
+              payload: {},
             });
           },
           intent: 'danger',

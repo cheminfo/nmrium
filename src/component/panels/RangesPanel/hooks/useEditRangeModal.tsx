@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from 'react';
 
-import { useAssignmentData } from '../../../assignment/AssignmentsContext.js';
 import { useDispatch } from '../../../context/DispatchContext.js';
 
 import type { RangeData } from './useMapRanges.js';
@@ -13,7 +12,6 @@ function getZoomRange(range: RangeData): [number, number] {
 
 export default function useEditRangeModal() {
   const dispatch = useDispatch();
-  const assignmentData = useAssignmentData();
 
   const zoomRange = useCallback(
     (range: RangeData) => {
@@ -38,12 +36,11 @@ export default function useEditRangeModal() {
         type: 'DELETE_RANGE',
         payload: {
           id,
-          assignmentData,
           resetSelectTool,
         },
       });
     },
-    [assignmentData, dispatch],
+    [dispatch],
   );
 
   const changeRangeSignalKind = useCallback(
@@ -67,14 +64,13 @@ export default function useEditRangeModal() {
         type: 'SAVE_EDITED_RANGE',
         payload: {
           range: editedRange,
-          assignmentData,
         },
       });
       // if (automaticCloseModal) {
       //   modal.close();
       // }
     },
-    [assignmentData, dispatch],
+    [dispatch],
   );
 
   const reset = useCallback(

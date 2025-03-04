@@ -144,15 +144,12 @@ function handleSetMolecule(draft: Draft<State>, action: SetMoleculeAction) {
   setMolecule(draft, action.payload);
 }
 
-function removeAssignments(
-  draft: Draft<State>,
-  assignmentData: AssignmentContext,
-) {
+function removeAssignments(draft: Draft<State>) {
   if (draft.displayerMode === '1D') {
-    unlinkRange(draft, { assignmentData });
+    unlinkRange(draft);
   }
   if (draft.displayerMode === '2D') {
-    unlinkZone(draft, { assignmentData });
+    unlinkZone(draft, {});
   }
 }
 
@@ -161,9 +158,9 @@ function handleDeleteMolecule(
   draft: Draft<State>,
   action: DeleteMoleculeAction,
 ) {
-  const { id, assignmentData } = action.payload;
+  const { id } = action.payload;
   // remove Assignments links of the active spectrum
-  removeAssignments(draft, assignmentData);
+  removeAssignments(draft);
 
   const moleculeIndex = draft.molecules.findIndex(
     (molecule) => molecule.id === id,

@@ -77,35 +77,3 @@ export function unlink(
   }
   return zone;
 }
-
-export function unlinkInAssignmentData(
-  assignmentData,
-  zones: Array<Partial<Zone>>,
-  axis?: string,
-): void {
-  const ids = zones.flatMap((zone) => {
-    if (zone.id) {
-      return zone.id;
-    }
-    if (zone.signals) {
-      return zone.signals.map((signal) => signal.id);
-    }
-    return [];
-  });
-
-  if (axis) {
-    assignmentData.dispatch({
-      type: 'REMOVE',
-      payload: { ids, axis },
-    });
-  } else {
-    assignmentData.dispatch({
-      type: 'REMOVE',
-      payload: { ids, axis: 'x' },
-    });
-    assignmentData.dispatch({
-      type: 'REMOVE',
-      payload: { ids, axis: 'y' },
-    });
-  }
-}

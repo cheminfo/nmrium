@@ -33,12 +33,13 @@ export function setNbAtoms(range: Range, signalIndex?: number): void {
   }
 }
 
-export function resetDiaIDs(range: Range): void {
+export function resetDiaIDs(range: Range) {
   const deletedKeys = ['diaIDs', 'nbAtoms'];
   range = omit(range, deletedKeys) as Range;
   range.signals = range.signals.map((signal) => {
     return omit(signal, deletedKeys) as Signal1D;
   });
+  return range;
 }
 
 /**
@@ -60,7 +61,7 @@ export function unlink(range: Range, options: UnlinkOptions = {}): Range {
 
   switch (unlinkType) {
     case 'both':
-      resetDiaIDs(range);
+      range = resetDiaIDs(range);
       break;
     case 'range':
       range = omit(range, keys) as Range;
@@ -95,24 +96,4 @@ export function checkSignalKinds(range, kinds) {
   return !range.signals.some(
     (_signal) => _signal.kind === undefined || !kinds.includes(_signal.kind),
   );
-}
-
-export function unlinkInAssignmentData(
-  assignmentData,
-  ranges: Array<Partial<Range>>,
-) {
-  const ids = ranges.flatMap((range) => {
-    if (range.id) {
-      return range.id;
-    }
-    if (range.signals) {
-      return range.signals.map((signal) => signal.id);
-    }
-    return [];
-  });
-
-  assignmentData.dispatch({
-    type: 'REMOVE',
-    payload: { ids, axis: 'x' },
-  });
 }

@@ -7,7 +7,6 @@ import { FaCopy } from 'react-icons/fa';
 
 import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents.js';
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks.js';
-import { useAssignmentData } from '../../assignment/AssignmentsContext.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
@@ -46,7 +45,6 @@ function RangesTablePanelInner({
   activeTab,
 }: RangesTablePanelInnerProps) {
   const [isFilterActive, setFilterIsActive] = useState(false);
-  const assignmentData = useAssignmentData();
 
   const dispatch = useDispatch();
   const toaster = useToaster();
@@ -89,11 +87,10 @@ function RangesTablePanelInner({
     dispatch({
       type: 'UNLINK_RANGE',
       payload: {
-        assignmentData,
         signalIndex: -1,
       },
     });
-  }, [assignmentData, dispatch]);
+  }, [dispatch]);
 
   const { rawWriteWithType, shouldFallback, cleanShouldFallback, text } =
     useClipboard();
@@ -167,7 +164,6 @@ function RangesTablePanelInner({
             <RangesTable
               activeTab={activeTab}
               tableData={rangesData}
-              onUnlink={unlinkRangeHandler}
               contextMenu={rangesContextMenuOptions}
               onContextMenuSelect={contextMenuSelectHandler}
               preferences={preferences}

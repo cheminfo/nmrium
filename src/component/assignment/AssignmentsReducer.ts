@@ -1,5 +1,3 @@
-import type { NmrData1D, NmrData2D } from 'cheminfo-types';
-
 import type { ActionType } from '../reducer/types/ActionType.js';
 
 import type {
@@ -7,15 +5,10 @@ import type {
   AssignmentState,
   Axis,
 } from './AssignmentsContext.js';
-import initAssignment from './actions/initAssignment.js';
 import removeAssignments from './actions/removeAssignment.js';
 import setActiveAssignment from './actions/setActiveAssignment.js';
 import toggleAssignment from './actions/toggleAssignment.js';
 
-export type InitiateAction = ActionType<
-  'INITIATE_ASSIGNMENTS',
-  { spectra: Array<NmrData1D | NmrData2D> }
->;
 export type ToggleAction = ActionType<
   'TOGGLE',
   { atomIDs: string[]; id: string; dimension: AssignmentDimension }
@@ -35,7 +28,6 @@ export type SetActiveAction = ActionType<
 export type ShowAction = ActionType<'SHOW', { id: string; axis?: Axis }>;
 
 export type AssignmentsActions =
-  | InitiateAction
   | ToggleAction
   | AddAction
   | RemoveAction
@@ -48,9 +40,6 @@ export default function assignmentReducer(
   action: AssignmentsActions,
 ): AssignmentState {
   switch (action.type) {
-    case 'INITIATE_ASSIGNMENTS': {
-      return initAssignment(action);
-    }
     case 'REMOVE': {
       const { axis, ids, atomID } = action.payload;
       return removeAssignments(state, { axis, ids, atomID });

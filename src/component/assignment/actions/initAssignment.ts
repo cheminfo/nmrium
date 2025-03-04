@@ -5,12 +5,11 @@ import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import type { AssignmentState, Axis } from '../AssignmentsContext.js';
 import { assignmentState } from '../AssignmentsContext.js';
 
-export default function initAssignment(action) {
+export default function initAssignment(spectra: Spectrum[]) {
   const newState = {
     ...assignmentState,
   };
 
-  const spectra = (action.payload.spectra || []) as Spectrum[];
   for (const spectrum of spectra) {
     if (isSpectrum1D(spectrum)) {
       setRangesAssignments(newState, spectrum.ranges);
@@ -18,7 +17,8 @@ export default function initAssignment(action) {
       setZonesAssignments(newState, spectrum.zones);
     }
   }
-  return newState;
+
+  return newState.assignments;
 }
 
 function setRangesAssignments(state: AssignmentState, ranges: Ranges) {
