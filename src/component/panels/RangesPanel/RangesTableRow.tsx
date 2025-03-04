@@ -9,6 +9,7 @@ import {
   useAssignmentData,
 } from '../../assignment/AssignmentsContext.js';
 import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment.js';
+import { useDispatch } from '../../context/DispatchContext.js';
 import { ContextMenu } from '../../elements/ContextMenuBluePrint.js';
 import type { TableContextMenuProps } from '../../elements/ReactTable/ReactTable.js';
 import {
@@ -39,7 +40,6 @@ const ConstantlyHighlightedRowStyle = {
 
 interface RangesTableRowProps extends TableContextMenuProps {
   rowData: any;
-  onUnlink: (a: any, b?: any) => void;
   preferences: WorkSpacePanelPreferences['ranges'];
   info: Info1D;
 }
@@ -69,12 +69,12 @@ export type RangeColumnProps = BaseRangeColumnProps &
 
 function RangesTableRow({
   rowData,
-  onUnlink,
   onContextMenuSelect,
   contextMenu = [],
   preferences,
   info,
 }: RangesTableRowProps) {
+  const dispatch = useDispatch();
   const assignmentData = useAssignmentData();
   const assignmentRange = useAssignment(rowData.id);
   const highlightRange = useHighlight(
@@ -115,16 +115,20 @@ function RangesTableRow({
       }
 
       if (isOnRangeLevel !== undefined) {
-        if (isOnRangeLevel) {
-          onUnlink(rowData);
-          assignmentRange.removeAll('x');
-        } else {
-          onUnlink(rowData, rowData.tableMetaInfo.signalIndex);
-          assignmentSignal.removeAll('x');
-        }
+        const { id: rangeKey, tableMetaInfo } = rowData;
+
+        const signalIndex = isOnRangeLevel ? -1 : tableMetaInfo.signalIndex;
+
+        dispatch({
+          type: 'UNLINK_RANGE',
+          payload: {
+            rangeKey,
+            signalIndex,
+          },
+        });
       }
     },
-    [assignmentRange, assignmentSignal, onUnlink, rowData],
+    [dispatch, rowData],
   );
 
   const linkHandler = useCallback(

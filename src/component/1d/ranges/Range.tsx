@@ -129,8 +129,7 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
     dispatch({
       type: 'UNLINK_RANGE',
       payload: {
-        range,
-        assignmentData,
+        rangeKey: range.id,
         signalIndex,
       },
     });

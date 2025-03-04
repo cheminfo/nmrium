@@ -59,7 +59,6 @@ const Table = styled.table`
   }
 `;
 interface RangesTableProps extends TableContextMenuProps {
-  onUnlink: (a: any, b?: any) => void;
   preferences: WorkSpacePanelPreferences['ranges'];
   tableData: any;
   activeTab: string;
@@ -70,7 +69,6 @@ const EditRangeDialog = withDialog(EditRangeModal, { force: true });
 
 function RangesTable({
   tableData,
-  onUnlink,
   contextMenu = [],
   onContextMenuSelect,
   activeTab,
@@ -151,7 +149,6 @@ function RangesTable({
               <RangesTableRow
                 key={range.rowKey}
                 rowData={range}
-                onUnlink={onUnlink}
                 preferences={preferences}
                 info={info}
                 contextMenu={contextMenu}

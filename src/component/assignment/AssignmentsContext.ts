@@ -63,7 +63,6 @@ export function useAssignment(key: number | string): AssignmentsData {
     data: { activated, highlighted, assignments },
     dispatch,
   } = useAssignmentData();
-
   if (!['string', 'number'].includes(typeof key)) {
     throw new Error(`assignment key must be a non-empty string or number`);
   }

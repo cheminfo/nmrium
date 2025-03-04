@@ -31,11 +31,7 @@ import {
   isSpectrum1D,
 } from '../../../data/data1d/Spectrum1D/index.js';
 import type { ChangeRangeRelativeValueProps } from '../../../data/data1d/Spectrum1D/ranges/changeRangeRelativeValue.js';
-import {
-  unlink,
-  unlinkInAssignmentData,
-} from '../../../data/utilities/RangeUtilities.js';
-import type { AssignmentContext } from '../../assignment/AssignmentsContext.js';
+import { unlink } from '../../../data/utilities/RangeUtilities.js';
 import type { RangeData } from '../../panels/RangesPanel/hooks/useMapRanges.js';
 import type { FilterType } from '../../utility/filterType.js';
 import type { State } from '../Reducer.js';
@@ -62,7 +58,6 @@ type DeleteRangeAction = ActionType<
     resetSelectTool?: boolean;
     id?: string;
     spectrumKey?: string;
-    assignmentData: AssignmentContext;
   }
 >;
 
@@ -78,7 +73,6 @@ type SaveEditedRangeAction = ActionType<
   'SAVE_EDITED_RANGE',
   {
     range: RangeData;
-    assignmentData: AssignmentContext;
   }
 >;
 
@@ -86,14 +80,12 @@ interface DeleteSignalProps {
   spectrum: Spectrum;
   range: Range;
   signal: Signal1D;
-  assignmentData: AssignmentContext;
 }
 type DeleteSignalAction = ActionType<'DELETE_1D_SIGNAL', DeleteSignalProps>;
 
 interface UnlinkRangeProps {
-  range?: Range;
+  rangeKey?: string;
   signalIndex?: number;
-  assignmentData: AssignmentContext;
 }
 type UnlinkRangeAction = ActionType<'UNLINK_RANGE', UnlinkRangeProps>;
 type SetDiaIDRangeAction = ActionType<
@@ -288,12 +280,7 @@ function handleAutoSpectraRangesDetection(draft: Draft<State>) {
 
 //action
 function handleDeleteRange(draft: Draft<State>, action: DeleteRangeAction) {
-  const {
-    id,
-    assignmentData,
-    resetSelectTool = false,
-    spectrumKey,
-  } = action.payload;
+  const { id, resetSelectTool = false, spectrumKey } = action.payload;
 
   const datum = getSpectrum(draft, spectrumKey);
 
@@ -303,10 +290,8 @@ function handleDeleteRange(draft: Draft<State>, action: DeleteRangeAction) {
 
   if (id) {
     const rangeIndex = getRange(datum, id);
-    unlinkInAssignmentData(assignmentData, [datum.ranges.values[rangeIndex]]);
     datum.ranges.values.splice(rangeIndex, 1);
   } else {
-    unlinkInAssignmentData(assignmentData, datum.ranges.values);
     datum.ranges.values = [];
   }
   updateRangesRelativeValues(datum);
@@ -352,7 +337,7 @@ function handleSaveEditedRange(
 
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
-    const { range, assignmentData } = action.payload;
+    const { range } = action.payload;
 
     // remove assignments in global state
 
@@ -362,8 +347,6 @@ function handleSaveEditedRange(
     delete _editedRowData.rowKey;
     // remove assignments in assignment hook data
     // for now: clear all assignments for this range because signals or levels to store might have changed
-    unlinkInAssignmentData(assignmentData, [_editedRowData]);
-
     const rangeIndex = getRangeByIndex(state, index, _editedRowData.id);
 
     if (_editedRowData.id === 'new') {
@@ -382,7 +365,7 @@ function handleSaveEditedRange(
 }
 
 function deleteSignal1D(draft: Draft<State>, props: DeleteSignalProps) {
-  const { spectrum, range, signal, assignmentData } = props;
+  const { spectrum, range, signal } = props;
 
   const datum1D = draft.data.find(
     (datum) => datum.id === spectrum.id,
@@ -399,13 +382,10 @@ function deleteSignal1D(draft: Draft<State>, props: DeleteSignalProps) {
     signalIndex,
   });
 
-  unlinkInAssignmentData(assignmentData, [{ signals: [signal] }]);
-
   _range.signals.splice(signalIndex, 1);
   datum1D.ranges.values[rangeIndex] = _range;
   // if no signals are existing in a range anymore then delete this range
   if (_range.signals.length === 0) {
-    unlinkInAssignmentData(assignmentData, [_range]);
     datum1D.ranges.values.splice(rangeIndex, 1);
   }
 
@@ -417,44 +397,30 @@ function handleDeleteSignal(draft: Draft<State>, action: DeleteSignalAction) {
   deleteSignal1D(draft, action.payload);
 }
 
-function unlinkRange(draft: Draft<State>, data: UnlinkRangeProps) {
+function unlinkRange(draft: Draft<State>, options?: UnlinkRangeProps) {
   const activeSpectrum = getActiveSpectrum(draft);
-  if (activeSpectrum?.id) {
-    const { index } = activeSpectrum;
-    const { assignmentData, range: rangeData, signalIndex = -1 } = data;
 
-    // remove assignments in global state
-    if (rangeData) {
-      const rangeIndex = getRangeByIndex(draft, index, rangeData.id);
-      const range = cloneDeep(
-        (draft.data[index] as Spectrum1D).ranges.values[rangeIndex],
-      );
+  if (!activeSpectrum) return null;
+  const { index } = activeSpectrum;
+  const spectrum = draft.data[index];
 
-      let newRange: any = {};
-      let id = rangeData.id;
-      if (rangeData && signalIndex === -1) {
-        newRange = unlink(range, { unlinkType: 'range' });
-      } else {
-        newRange = unlink(range, { unlinkType: 'signal', signalIndex });
-        id = rangeData.signals[signalIndex].id;
-      }
-      // remove assignments in assignment hook data
-      unlinkInAssignmentData(assignmentData, [
-        {
-          id,
-        },
-      ]);
-      (draft.data[index] as Spectrum1D).ranges.values[rangeIndex] = newRange;
-    } else {
-      const ranges = (draft.data[index] as Spectrum1D).ranges.values.map(
-        (range) => {
-          return unlink(range);
-        },
-      );
-      (draft.data[index] as Spectrum1D).ranges.values = ranges;
+  if (!isSpectrum1D(spectrum)) return;
 
-      unlinkInAssignmentData(assignmentData, ranges);
-    }
+  const { rangeKey, signalIndex = -1 } = options || {};
+  const ranges = spectrum.ranges.values;
+
+  if (rangeKey) {
+    const rangeIndex = getRangeByIndex(draft, index, rangeKey);
+    const unlinkType = signalIndex === -1 ? 'range' : 'signal';
+    ranges[rangeIndex] = unlink(ranges[rangeIndex], {
+      unlinkType,
+      signalIndex,
+    });
+  } else {
+    const newRanges = ranges.map((range) => {
+      return unlink(range);
+    });
+    spectrum.ranges.values = newRanges;
   }
 }
 

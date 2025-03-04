@@ -378,7 +378,6 @@ function SummaryPanel() {
               spectrum,
               range,
               signal,
-              assignmentData,
             },
           });
         }
@@ -398,13 +397,12 @@ function SummaryPanel() {
               spectrum,
               zone,
               signal,
-              assignmentData,
             },
           });
         }
       }
     },
-    [assignmentData, dispatch, spectraData],
+    [dispatch, spectraData],
   );
 
   const changeSignalPathLengthHandler = useCallback(

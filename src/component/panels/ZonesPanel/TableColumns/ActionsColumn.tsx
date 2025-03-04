@@ -1,7 +1,6 @@
 import { FaEdit, FaRegTrashAlt, FaSearchPlus } from 'react-icons/fa';
 
 import { SIGNAL_KINDS } from '../../../../data/constants/signalsKinds.js';
-import { useAssignmentData } from '../../../assignment/AssignmentsContext.js';
 import { useDispatch } from '../../../context/DispatchContext.js';
 import { useDialog } from '../../../elements/DialogManager.js';
 import { Select2 } from '../../../elements/Select2.js';
@@ -27,7 +26,6 @@ function ActionsColumn({
   showZoomAction,
 }: ActionsColumnProps) {
   const dispatch = useDispatch();
-  const assignmentData = useAssignmentData();
   const showActions = showDeleteAction || showEditAction || showZoomAction;
 
   function changeSignalKindHandler(kind) {
@@ -45,7 +43,6 @@ function ActionsColumn({
       type: 'DELETE_2D_ZONE',
       payload: {
         id: rowData.id,
-        assignmentData,
       },
     });
   }

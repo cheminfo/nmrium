@@ -18,15 +18,9 @@ import {
   isSpectrum2D,
 } from '../../../data/data2d/Spectrum2D/index.js';
 import type { DetectionZonesOptions } from '../../../data/data2d/Spectrum2D/zones/getDetectionZones.js';
-import {
-  unlink,
-  unlinkInAssignmentData,
-} from '../../../data/utilities/ZoneUtilities.js';
+import { unlink } from '../../../data/utilities/ZoneUtilities.js';
 import { isNumber } from '../../../data/utilities/isNumber.js';
-import type {
-  AssignmentContext,
-  Axis,
-} from '../../assignment/AssignmentsContext.js';
+import type { Axis } from '../../assignment/AssignmentsContext.js';
 import { defaultZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState.js';
 import type { ZoneData } from '../../panels/ZonesPanel/hooks/useMapZones.js';
 import type { FilterType } from '../../utility/filterType.js';
@@ -43,7 +37,6 @@ interface DeleteSignal2DProps {
   spectrum: Spectrum;
   zone: Zone;
   signal: Signal2D;
-  assignmentData: AssignmentContext;
 }
 
 type ChangeZonesFactorAction = ActionType<
@@ -65,10 +58,7 @@ type ChangeZoneSignalKindAction = ActionType<
   'CHANGE_ZONE_SIGNAL_KIND',
   { zoneData: ZoneData; kind: string }
 >;
-type DeleteZoneAction = ActionType<
-  'DELETE_2D_ZONE',
-  { id?: string; assignmentData: AssignmentContext }
->;
+type DeleteZoneAction = ActionType<'DELETE_2D_ZONE', { id?: string }>;
 type DeleteSignal2DAction = ActionType<'DELETE_2D_SIGNAL', DeleteSignal2DProps>;
 type SetSignalPathLengthAction = ActionType<
   'SET_2D_SIGNAL_PATH_LENGTH',
@@ -96,8 +86,7 @@ type SaveEditedZoneAction = ActionType<
 >;
 
 interface UnlinkZoneProps {
-  zone?: ZoneData;
-  assignmentData: AssignmentContext;
+  zoneKey?: string;
   isOnZoneLevel?: boolean;
   signalIndex?: number;
   axis?: Axis;
@@ -293,19 +282,11 @@ function handleDeleteZone(draft: Draft<State>, action: DeleteZoneAction) {
 
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
-    const { id, assignmentData } = action.payload;
+    const { id } = action.payload;
     if (id) {
-      const zone = (draft.data[index] as Spectrum2D).zones.values.find(
-        (zone) => zone.id === id,
-      );
-      unlinkInAssignmentData(assignmentData, [zone || {}]);
       const zoneIndex = getZoneIndex(state, index, id);
       (draft.data[index] as Spectrum2D).zones.values.splice(zoneIndex, 1);
     } else {
-      unlinkInAssignmentData(
-        assignmentData,
-        (draft.data[index] as Spectrum2D).zones.values,
-      );
       (draft.data[index] as Spectrum2D).zones.values = [];
     }
     handleUpdateCorrelations(draft);
@@ -313,7 +294,7 @@ function handleDeleteZone(draft: Draft<State>, action: DeleteZoneAction) {
 }
 
 function deleteSignal2D(draft: Draft<State>, options: DeleteSignal2DProps) {
-  const { spectrum, zone, signal, assignmentData } = options;
+  const { spectrum, zone, signal } = options;
 
   if (spectrum && zone) {
     const datum2D = draft.data.find(
@@ -328,13 +309,11 @@ function deleteSignal2D(draft: Draft<State>, options: DeleteSignal2DProps) {
     // remove assignments for the signal in zone object and global state
 
     const _zone = unlink(lodashCloneDeep(zone), false, signalIndex, undefined);
-    unlinkInAssignmentData(assignmentData, [{ signals: [signal] }], undefined);
 
     _zone.signals.splice(signalIndex, 1);
     datum2D.zones.values[zoneIndex] = _zone;
     // if no signals are existing in a zone anymore then delete this zone
     if (_zone.signals.length === 0) {
-      unlinkInAssignmentData(assignmentData, [_zone]);
       datum2D.zones.values.splice(zoneIndex, 1);
     }
 
@@ -380,42 +359,25 @@ function unlinkZone(draft: Draft<State>, props: UnlinkZoneProps) {
 
   const activeSpectrum = getActiveSpectrum(state);
 
-  if (activeSpectrum?.id) {
-    const { index } = activeSpectrum;
-    const {
-      zone: zoneData,
-      assignmentData,
-      isOnZoneLevel,
-      signalIndex = -1,
-      axis,
-    } = props;
+  if (!activeSpectrum) return;
+  const { index } = activeSpectrum;
+  const spectrum = draft.data[index];
 
-    if (zoneData) {
-      // remove assignments in global state
+  if (!isSpectrum2D(spectrum)) return;
 
-      const zoneIndex = getZoneIndex(state, index, zoneData.id);
+  const { zoneKey, isOnZoneLevel, signalIndex = -1, axis } = props;
+  const zones = spectrum.zones.values;
 
-      const zone = lodashCloneDeep(
-        (draft.data[index] as Spectrum2D).zones.values[zoneIndex],
-      );
-      const _zoneData = unlink(zone, isOnZoneLevel, signalIndex, axis);
-
-      unlinkInAssignmentData(
-        assignmentData,
-        [{ id: zoneData.signals[signalIndex].id }],
-        axis,
-      );
-      (draft.data[index] as Spectrum2D).zones.values[zoneIndex] = _zoneData;
-    } else {
-      const zones = (draft.data[index] as Spectrum2D).zones.values.map(
-        (zone) => {
-          return unlink(zone);
-        },
-      );
-      (draft.data[index] as Spectrum2D).zones.values = zones;
-
-      unlinkInAssignmentData(assignmentData, zones);
-    }
+  if (zoneKey) {
+    // remove assignments in global state
+    const zoneIndex = getZoneIndex(state, index, zoneKey);
+    const zone = zones[zoneIndex];
+    zones[zoneIndex] = unlink(zone, isOnZoneLevel, signalIndex, axis);
+  } else {
+    const newZones = zones.map((zone) => {
+      return unlink(zone);
+    });
+    spectrum.zones.values = newZones;
   }
 }
 //action
