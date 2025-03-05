@@ -31,7 +31,7 @@ export const algorithms: AlgorithmItem[] = [
     value: 'absolute',
   },
 ];
-const emptyData = { datum: {}, filter: null };
+const emptyData = { data: { x: [], re: [] } };
 
 export function usePhaseCorrection(
   filter: ExtractFilterEntry<'phaseCorrection'> | null,
