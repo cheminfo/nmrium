@@ -88,7 +88,7 @@ function Tree(props: TreeProps) {
   const dispatch = useDispatch();
 
   const assignment = useAssignment(signalKey);
-  const highlight = useHighlight(extractID(assignment), {
+  const highlight = useHighlight(extractID(signalKey, assignment), {
     type: HighlightEventSource.SIGNAL,
   });
 
@@ -129,7 +129,7 @@ function Tree(props: TreeProps) {
   if (!multiplicity) return null;
 
   function assignHandler() {
-    assignment.setActive('x');
+    assignment.activate('x');
   }
 
   function unAssignHandler() {
@@ -141,8 +141,8 @@ function Tree(props: TreeProps) {
       },
     });
   }
-
-  const isHighlighted = highlight.isActive || assignment.isActive;
+  const isAssignmentActive = assignment.isActive;
+  const isHighlighted = highlight.isActive || isAssignmentActive;
   const padding = boxPadding * widthRatio;
   const x = scaleX()(max) - padding;
   const y = startY - headTextMargin - multiplicityTextSize - padding;
@@ -152,14 +152,14 @@ function Tree(props: TreeProps) {
 
   return (
     <Group
-      isActive={assignment.isActive}
+      isActive={isAssignmentActive}
       isHighlighted={isHighlighted}
       onMouseEnter={() => {
-        assignment.show('x');
+        assignment.highlight('x');
         highlight.show();
       }}
       onMouseLeave={() => {
-        assignment.hide();
+        assignment.clearHighlight();
         highlight.hide();
       }}
       pointerEvents="bounding-box"
@@ -233,7 +233,7 @@ function Tree(props: TreeProps) {
       <AssignmentActionsButtons
         className="signal-target"
         isActive={
-          assignment.isActive || (Array.isArray(diaIDs) && diaIDs.length > 0)
+          isAssignmentActive || (Array.isArray(diaIDs) && diaIDs.length > 0)
         }
         y={startY - 16}
         x={headX - 30}
@@ -298,6 +298,6 @@ function getMaxY(spectrum: Spectrum1D, options: { from: number; to: number }) {
   return max;
 }
 
-function extractID(assignment: AssignmentsData) {
-  return [assignment.id].concat(assignment.assigned?.x || []);
+function extractID(id: string, assignment: AssignmentsData) {
+  return [id].concat(assignment.assignedDiaIds?.x || []);
 }

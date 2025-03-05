@@ -23,11 +23,12 @@ function SignalAssignmentsColumn({
   } = useSignalHighlight(rowData);
 
   const diaIDs = rowData?.tableMetaInfo?.signal?.[axis]?.diaIDs || [];
+  const isSignalAssignmentActivate = signalAssignment.isActive;
   const isAssignmentActive =
-    signalAssignment.isActive && signalAssignment.activated?.axis === axis;
+    isSignalAssignmentActivate && signalAssignment.activated?.axis === axis;
 
   const tdCss: CSSProperties =
-    signalAssignment.isActive || isHighlighted(axis)
+    isSignalAssignmentActivate || isHighlighted(axis)
       ? {
           color: 'red',
           fontWeight: 'bold',
@@ -36,7 +37,7 @@ function SignalAssignmentsColumn({
 
   function handleClick(event: React.MouseEvent<HTMLTableCellElement>) {
     event.stopPropagation();
-    signalAssignment.setActive(axis);
+    signalAssignment.activate(axis);
   }
 
   return (
@@ -45,7 +46,7 @@ function SignalAssignmentsColumn({
       onMouseLeave={() => handleOnMouseLeave(axis)}
       onClick={handleClick}
       style={{ padding: '0', ...tdCss }}
-      hideRemoveAssignmentButton={!signalAssignment.isActive}
+      hideRemoveAssignmentButton={!diaIDs || diaIDs.length === 0}
       onRemove={(e) => onUnlink(e, false, axis)}
     >
       {(diaIDs?.length > 0 || isAssignmentActive) && (

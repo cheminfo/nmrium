@@ -11,7 +11,7 @@ import { isRangeAssigned } from '../../../data/data1d/Spectrum1D/isRangeAssigned
 import { checkRangeKind } from '../../../data/utilities/RangeUtilities.js';
 import {
   useAssignment,
-  useAssignmentData,
+  useAssignmentContext,
 } from '../../assignment/AssignmentsContext.js';
 import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment.js';
 import { useDispatch } from '../../context/DispatchContext.js';
@@ -67,10 +67,10 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
   const spectrum = useSpectrum();
 
   const highlightColor = useHighlightColor();
-  const assignmentData = useAssignmentData();
+  const assignmentData = useAssignmentContext();
   const assignmentRange = useAssignment(id);
   const highlightRange = useHighlight(
-    [assignmentRange.id].concat(assignmentRange.assigned?.x || []).concat(
+    [id].concat(assignmentRange.assignedDiaIds?.x || []).concat(
       filterForIDsWithAssignment(
         assignmentData,
         signals.map((_signal) => _signal.id),
@@ -110,18 +110,18 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
   }
 
   function mouseEnterHandler() {
-    assignmentRange.show('x');
+    assignmentRange.highlight('x');
     highlightRange.show();
   }
 
   function mouseLeaveHandler() {
-    assignmentRange.hide();
+    assignmentRange.clearHighlight();
     highlightRange.hide();
   }
 
   function assignHandler() {
     if (!isBlockedByEditing) {
-      assignmentRange.setActive('x');
+      assignmentRange.activate('x');
     }
   }
 
@@ -134,18 +134,16 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
       },
     });
   }
-
+  const isAssignmentActive = assignmentRange.isActive;
   const isNotSignal = !checkRangeKind(range);
   const isHighlighted =
-    isBlockedByEditing || highlightRange.isActive || assignmentRange.isActive;
+    isBlockedByEditing || highlightRange.isActive || isAssignmentActive;
 
   const isAssigned = isRangeAssigned(range);
   const isResizingActive = useResizerStatus('rangePicking');
   const { setData: addNewAssignmentLabel } = useShareData();
 
-  const isAssignmentActive = !!(assignmentRange.isActive || rangeDiaIDs);
-
-  function removeAssignemntlabel() {
+  function removeAssignmentLabel() {
     dispatch({
       type: 'CHANGE_RANGE_ASSIGNMENT_LABEL',
       payload: {
@@ -167,7 +165,7 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
       onClick: () => unAssignHandler(),
       intent: 'danger',
       title: 'Unassign range',
-      visible: isAssignmentActive,
+      visible: !!(isAssignmentActive || rangeDiaIDs),
     },
     {
       icon: <PiTextTBold />,
@@ -178,7 +176,7 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
     },
     {
       icon: <PiTextTSlashBold />,
-      onClick: removeAssignemntlabel,
+      onClick: removeAssignmentLabel,
       intent: 'danger',
       title: 'Remove assignment label',
       visible: !!assignment,
@@ -191,11 +189,11 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
       key={id}
       onMouseEnter={mouseEnterHandler}
       onMouseLeave={mouseLeaveHandler}
-      isActive={assignmentRange.isActive}
+      isActive={isAssignmentActive}
     >
       <ActionsButtonsPopover
         targetTagName="g"
-        {...(assignmentRange.isActive && { isOpen: true })}
+        {...(isAssignmentActive && { isOpen: true })}
         buttons={actionsButtons}
         space={2}
         disabled={isInset}

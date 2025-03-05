@@ -49,8 +49,9 @@ function ZonesTableRow({
   rowIndex,
   nucleus,
 }: ZonesTableRowProps) {
-  const assignmentZone = useAssignment(rowData.id);
-  const highlightZone = useHighlight([assignmentZone.id]);
+  const zoneKey = rowData.id;
+  const assignmentZone = useAssignment(zoneKey);
+  const highlightZone = useHighlight([zoneKey]);
 
   const {
     showSerialNumber,

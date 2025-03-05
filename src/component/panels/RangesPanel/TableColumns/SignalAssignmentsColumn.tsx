@@ -44,7 +44,7 @@ function SignalAssignmentsColumn({
       {...onHover}
       onClick={assignHandler}
       style={{ padding: '0', ...tdCss }}
-      hideRemoveAssignmentButton={!assignment.isActive}
+      hideRemoveAssignmentButton={!diaIDs || diaIDs.length === 0}
       onRemove={(e) => onUnlink?.(e, false)}
     >
       {(diaIDs?.length > 0 || assignment.isActive) && (

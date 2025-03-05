@@ -18,7 +18,6 @@ import type {
 import { DRAGGABLE_STRUCTURE_INITIAL_BOUNDING_REACT } from '../../../data/molecules/Molecule.js';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager.js';
 import { generateColor } from '../../../data/utilities/generateColor.js';
-import type { AssignmentContext } from '../../assignment/AssignmentsContext.js';
 import { convertPixelToPercent } from '../../hooks/useSVGUnitConverter.js';
 import type { State } from '../Reducer.js';
 import { MARGIN } from '../core/Constants.js';
@@ -44,10 +43,7 @@ type SetMoleculeAction = ActionType<
     mappings?: ReturnType<TopicMolecule['getDiaIDsMapping']>;
   }
 >;
-type DeleteMoleculeAction = ActionType<
-  'DELETE_MOLECULE',
-  { id: string; assignmentData: AssignmentContext }
->;
+type DeleteMoleculeAction = ActionType<'DELETE_MOLECULE', { id: string }>;
 type PredictSpectraFromMoleculeAction = ActionType<
   'PREDICT_SPECTRA',
   {

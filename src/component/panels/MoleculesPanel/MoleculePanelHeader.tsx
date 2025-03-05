@@ -20,7 +20,6 @@ import type {
 import { getMolecules } from '../../../data/molecules/MoleculeManager.js';
 import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents.js';
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks.js';
-import { useAssignmentData } from '../../assignment/AssignmentsContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useGlobal } from '../../context/GlobalContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
@@ -97,7 +96,6 @@ export default function MoleculePanelHeader({
   const { rootRef } = useGlobal();
   const toaster = useToaster();
   const dispatch = useDispatch();
-  const assignmentData = useAssignmentData();
   const moleculeKey = molecules?.[currentIndex]?.id;
   const saveAsSVGHandler = useCallback(() => {
     if (!rootRef) return;
@@ -196,16 +194,10 @@ export default function MoleculePanelHeader({
       onMoleculeIndexChange?.(0);
       dispatch({
         type: 'DELETE_MOLECULE',
-        payload: { id: molecules[currentIndex].id, assignmentData },
+        payload: { id: molecules[currentIndex].id },
       });
     }
-  }, [
-    molecules,
-    currentIndex,
-    onMoleculeIndexChange,
-    dispatch,
-    assignmentData,
-  ]);
+  }, [molecules, currentIndex, onMoleculeIndexChange, dispatch]);
 
   function floatMoleculeHandler() {
     dispatch({

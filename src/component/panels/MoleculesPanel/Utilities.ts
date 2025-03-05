@@ -94,7 +94,7 @@ export function getHighlightsOnHover(
 ) {
   // set all IDs to highlight when hovering over an atom from assignment data
   let highlights: string[] = [];
-  const assignmentsByKey = assignments.data.assignments;
+  const assignmentsByKey = assignments.data;
 
   for (const key in assignmentsByKey) {
     const assignments = assignmentsByKey[key];
@@ -118,8 +118,8 @@ export function getHighlightsOnHover(
 }
 
 export function getCurrentDiaIDsToHighlight(assignmentData: AssignmentContext) {
-  const { highlighted, assignments } = assignmentData.data;
-  const assignment = highlighted ? assignments[highlighted.id] : null;
+  const { highlighted, data } = assignmentData;
+  const assignment = highlighted ? data[highlighted.id] : null;
   const axisHover = highlighted ? highlighted.axis : null;
 
   if (axisHover && assignment?.[axisHover]) {

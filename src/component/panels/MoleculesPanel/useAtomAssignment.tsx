@@ -1,14 +1,11 @@
 import type { Range, Ranges, Zone, Zones } from 'nmr-processing';
 import type { DiaIDAndInfo } from 'openchemlib-utils';
 import type { MouseEvent } from 'react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 
 import { ConcatenationString } from '../../../data/utilities/Concatenation.js';
 import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated.js';
-import {
-  useAssignment,
-  useAssignmentData,
-} from '../../assignment/AssignmentsContext.js';
+import { useAssignmentContext } from '../../assignment/AssignmentsContext.js';
 import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
@@ -43,40 +40,11 @@ export default function useAtomAssignment({
   const toaster = useToaster();
   const dispatch = useDispatch();
   const highlightData = useHighlightData();
-  const assignments = useAssignmentData();
-
-  const activeAssignment = useAssignment(
-    assignments.data.activated
-      ? assignments.data.activated.id
-      : ConcatenationString, // dummy value
-  );
-  const [onAtomHoverHighlights, setOnAtomHoverHighlights] = useState<string[]>(
-    [],
-  );
-  const [onAtomHoverAction, setOnAtomHoverAction] = useState<
-    'show' | 'hide' | null
-  >(null);
-
-  useEffect(() => {
-    if (onAtomHoverAction) {
-      if (onAtomHoverAction === 'show') {
-        highlightData.dispatch({
-          type: 'SHOW',
-          payload: {
-            convertedHighlights: onAtomHoverHighlights,
-            sourceData: { type: HighlightEventSource.ATOM },
-          },
-        });
-      } else if (onAtomHoverAction === 'hide') {
-        highlightData.dispatch({
-          type: 'HIDE',
-          payload: { convertedHighlights: onAtomHoverHighlights },
-        });
-        setOnAtomHoverHighlights([]);
-      }
-      setOnAtomHoverAction(null);
-    }
-  }, [onAtomHoverAction, onAtomHoverHighlights, highlightData]);
+  const highlightedIdDsRef = useRef<string[]>([]);
+  const assignments = useAssignmentContext();
+  const activatedKey = assignments.activated
+    ? assignments.activated.id
+    : ConcatenationString; // dummy value
 
   const data = useMemo(() => {
     if (zones || ranges) {
@@ -94,7 +62,7 @@ export default function useAtomAssignment({
       x: [],
       y: [],
     };
-    const assignment = assignments.data.assignments;
+    const assignment = assignments.data;
     for (const id in assignment) {
       if (assignment[id].x) {
         assignedDiaID.x.push(...assignment[id].x);
@@ -116,7 +84,7 @@ export default function useAtomAssignment({
   const currentDiaIDsToHighlight = useMemo(() => {
     const highlights = highlightData.highlight.highlighted
       .filter((highlightID) => {
-        return assignments.data.assignments[highlightID];
+        return assignments.data[highlightID];
       })
       .flatMap((highlightID) => {
         const { datum } = findDatumAndSignalIndex(data, highlightID);
@@ -152,18 +120,16 @@ export default function useAtomAssignment({
 
   const handleOnClickAtom = useCallback(
     (diaIDAndInfo: DiaIDAndInfo | undefined, event: MouseEvent) => {
-      if (!checkModifierKeyActivated(event) && activeAssignment.activated) {
-        const { axis, id } = activeAssignment.activated;
+      if (!checkModifierKeyActivated(event) && assignments.activated) {
+        const { axis, id } = assignments.activated;
         if (id && axis) {
           const atomInformation = extractFromAtom(diaIDAndInfo, nucleus, axis);
           if (atomInformation.nbAtoms > 0) {
             // save assignment in assignment hook
-            const dimension = displayerMode === '1D' ? '1D' : '2D';
-            activeAssignment.toggle(atomInformation.oclIDs, dimension);
             // save assignment (diaIDs) in range/zone data
             const { datum, signalIndex } = findDatumAndSignalIndex(
               data,
-              activeAssignment.id,
+              assignments.activated.id,
             );
             if (datum) {
               // determine the level of setting the diaIDs array (range vs. signal level) and save there
@@ -215,7 +181,7 @@ export default function useAtomAssignment({
                 });
               }
             }
-            activeAssignment.setActive(axis);
+            assignments.activate({ id: activatedKey, axis });
           } else {
             toaster.show({
               message:
@@ -226,7 +192,8 @@ export default function useAtomAssignment({
       }
     },
     [
-      activeAssignment,
+      activatedKey,
+      assignments,
       data,
       dispatch,
       displayerMode,
@@ -244,15 +211,24 @@ export default function useAtomAssignment({
       if (oclIDs.length > 0) {
         // set all IDs to highlight when hovering over an atom from assignment data
         const highlights = getHighlightsOnHover(assignments, oclIDs, data);
-        setOnAtomHoverHighlights(highlights);
-        setOnAtomHoverAction('show');
+        highlightedIdDsRef.current = highlights;
+        highlightData.dispatch({
+          type: 'SHOW',
+          payload: {
+            convertedHighlights: highlights,
+            sourceData: { type: HighlightEventSource.ATOM },
+          },
+        });
       } else {
-        // on leave the atom
-        setOnAtomHoverAction('hide');
+        highlightData.dispatch({
+          type: 'HIDE',
+          payload: { convertedHighlights: highlightedIdDsRef.current },
+        });
+        highlightedIdDsRef.current = [];
       }
       // }
     },
-    [assignments, data, nucleus],
+    [assignments, data, highlightData, nucleus],
   );
 
   return {

@@ -2,7 +2,7 @@ import type { ForwardedRef } from 'react';
 import { useEffect, useReducer, useRef } from 'react';
 import { useFullscreen } from 'react-science/ui';
 
-import { AssignmentProvider } from '../assignment/index.js';
+import { AssignmentProvider } from '../assignment/AssignmentProvider.js';
 import { GlobalProvider } from '../context/GlobalContext.js';
 import { KeyModifiersProvider } from '../context/KeyModifierContext.js';
 import { LoggerProvider } from '../context/LoggerContext.js';

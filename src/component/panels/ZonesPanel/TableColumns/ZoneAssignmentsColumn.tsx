@@ -7,27 +7,29 @@ import type { AssignmentsColumnProps } from '../ZonesTableRow.js';
 import type { ZoneData } from '../hooks/useMapZones.js';
 
 export function useZoneHighlight(rowData: ZoneData) {
-  const zoneAssignment = useAssignment(rowData.id);
+  const id = rowData.id;
+  const zoneAssignment = useAssignment(id);
+  const assignedDiaIds = zoneAssignment.assignedDiaIds;
 
   const highlightZoneX = useHighlight(
-    [buildID(zoneAssignment.id, 'X')].concat(zoneAssignment.assigned?.x || []),
+    [buildID(id, 'X')].concat(assignedDiaIds?.x || []),
   );
 
   const highlightZoneY = useHighlight(
-    [buildID(zoneAssignment.id, 'Y')].concat(zoneAssignment.assigned?.y || []),
+    [buildID(id, 'Y')].concat(assignedDiaIds?.y || []),
   );
 
   function handleOnMouseEnter(axis: Axis) {
     if (axis === 'x') {
-      zoneAssignment.show('x');
+      zoneAssignment.highlight('x');
       highlightZoneX.show();
     } else {
-      zoneAssignment.show('y');
+      zoneAssignment.highlight('y');
       highlightZoneY.show();
     }
   }
   function handleOnMouseLeave(axis: Axis) {
-    zoneAssignment.hide();
+    zoneAssignment.clearHighlight();
 
     if (axis === 'x') {
       highlightZoneX.hide();
@@ -81,7 +83,8 @@ function ZoneAssignmentColumn({
     zoneAssignment.isActive && zoneAssignment.activated?.axis === axis;
   const flag =
     isAssignmentActive ||
-    (zoneAssignment.isOver && zoneAssignment.highlighted?.axis === axis) ||
+    (zoneAssignment.isHighlighted &&
+      zoneAssignment.highlighted?.axis === axis) ||
     isHighlighted(axis);
 
   let totalNumberOfAtoms = rowData?.[axis]?.nbAtoms || 0;
@@ -91,7 +94,7 @@ function ZoneAssignmentColumn({
 
   function handleClick(event: React.MouseEvent<HTMLTableCellElement>) {
     event.stopPropagation();
-    zoneAssignment.setActive(axis);
+    zoneAssignment.activate(axis);
   }
 
   return (
@@ -100,7 +103,7 @@ function ZoneAssignmentColumn({
       onMouseEnter={() => handleOnMouseEnter(axis)}
       onMouseLeave={() => handleOnMouseLeave(axis)}
       onClick={handleClick}
-      hideRemoveAssignmentButton={!zoneAssignment.isActive}
+      hideRemoveAssignmentButton={!diaIDs || diaIDs.length === 0}
       onRemove={(e) => onUnlink(e, true, axis)}
     >
       {(totalNumberOfAtoms > 0 || isAssignmentActive) && (
