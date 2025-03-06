@@ -3,7 +3,7 @@ import { ResponsiveChart } from 'react-d3-utils';
 
 import { SVGRootContainer } from '../1d-2d/components/SVGRootContainer.js';
 import { ViewerResponsiveWrapper } from '../1d-2d/components/ViewerResponsiveWrapper.js';
-import BrushXY, { BRUSH_TYPE } from '../1d-2d/tools/BrushXY.js';
+import BrushXY from '../1d-2d/tools/BrushXY.js';
 import CrossLinePointer from '../1d-2d/tools/CrossLinePointer.js';
 import { MouseTracker } from '../EventsTrackers/MouseTracker.js';
 import { useChartData } from '../context/ChartContext.js';
@@ -47,7 +47,7 @@ function InnerViewer1D(props: InnerViewer1DProps) {
                   }}
                 >
                   <CrossLinePointer />
-                  <BrushXY brushType={BRUSH_TYPE.X} />
+                  <BrushXY axis="X" />
                   <XLabelPointer />
                   <PeakPointer />
                   <FooterBanner />

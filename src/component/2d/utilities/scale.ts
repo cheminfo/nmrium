@@ -69,18 +69,18 @@ interface LeftLayout {
 }
 
 function get1DXScale(props: TopLayout | LeftLayout, layout: Layout) {
-  if (!['TOP_1D', 'LEFT_1D'].includes(layout)) {
+  if (!['TOP', 'LEFT'].includes(layout)) {
     throw new Error(
-      `layout is required and must be ${LAYOUT.TOP_1D} or ${LAYOUT.LEFT_1D}  `,
+      `layout is required and must be ${LAYOUT.top} or ${LAYOUT.left}  `,
     );
   }
 
   switch (layout) {
-    case LAYOUT.TOP_1D: {
+    case LAYOUT.top: {
       const { width, margin, xDomain } = props as TopLayout;
       return scaleLinear(xDomain, [width - margin.right, margin.left]);
     }
-    case LAYOUT.LEFT_1D: {
+    case LAYOUT.left: {
       const { height, margin, yDomain } = props as LeftLayout;
       return scaleLinear(yDomain, [height - margin.bottom, margin.top]);
     }
@@ -96,10 +96,10 @@ function get1DYScale(yDomain: number[], height: number, margin = 10) {
 function use1DTraceYScale(
   SpectrumId: string,
   height: number,
-  verticalMargin: number,
+  leftMargin: number,
 ) {
   const { yDomains } = useChartData();
-  return get1DYScale(yDomains[SpectrumId], height, verticalMargin);
+  return get1DYScale(yDomains[SpectrumId], height, leftMargin);
 }
 
 interface SliceYScaleOptions {
