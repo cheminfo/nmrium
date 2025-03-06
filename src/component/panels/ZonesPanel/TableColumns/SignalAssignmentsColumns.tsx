@@ -16,12 +16,14 @@ export function useSignalHighlight(rowData: ZoneData) {
       signalAssignment.assignedDiaIds?.x || [],
       buildID(signalKey, 'Crosshair'),
     ),
+    { type: 'SIGNAL' },
   );
   const highlightSignalY = useHighlight(
     [buildID(signalKey, 'Y')].concat(
       signalAssignment.assignedDiaIds?.y || [],
       buildID(signalKey, 'Crosshair'),
     ),
+    { type: 'SIGNAL' },
   );
 
   function handleOnMouseEnter(axis: Axis) {

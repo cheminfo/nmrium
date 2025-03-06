@@ -1,42 +1,85 @@
-import type { Range, Ranges, Zone, Zones } from 'nmr-processing';
+import type { Spectrum, Spectrum1D, Spectrum2D } from '@zakodium/nmrium-core';
 import type { DiaIDAndInfo } from 'openchemlib-utils';
 import type { MouseEvent } from 'react';
-import { useCallback, useMemo, useRef } from 'react';
+import { useMemo, useRef } from 'react';
 
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
 import { ConcatenationString } from '../../../data/utilities/Concatenation.js';
 import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated.js';
 import { useAssignmentContext } from '../../assignment/AssignmentsContext.js';
-import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment.js';
+import type { Assignments, Axis } from '../../assignment/AssignmentsContext.js';
+import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import {
   HighlightEventSource,
   useHighlightData,
 } from '../../highlight/index.js';
-import type { DisplayerMode } from '../../reducer/Reducer.js';
+import type { HighlightEventSourceType } from '../../highlight/index.js';
+import useSpectrum from '../../hooks/useSpectrum.js';
 
 import type { AtomData } from './Utilities.js';
 import {
   extractFromAtom,
-  findDatumAndSignalIndex,
+  getAssignIds,
   getCurrentDiaIDsToHighlight,
   getHighlightsOnHover,
-  toggleDiaIDs,
+  getUniqueDiaIDs,
 } from './Utilities.js';
 
-interface UseAtomAssignmentProps {
-  displayerMode: DisplayerMode;
-  activeTab: string;
-  zones: Zones;
-  ranges: Ranges;
+function flattenAssignedDiaIDs(assignments: Assignments) {
+  const assignedDiaIDs: string[] = [];
+  for (const id in assignments) {
+    const { x = [], y = [] } = assignments[id];
+    assignedDiaIDs.push(...x, ...y);
+  }
+  return assignedDiaIDs;
 }
 
-export default function useAtomAssignment({
-  displayerMode,
-  activeTab: nucleus,
-  zones,
-  ranges,
-}: UseAtomAssignmentProps) {
+function isValidHighlightEventSource(type: HighlightEventSourceType) {
+  return (
+    type === HighlightEventSource.ZONE ||
+    type === HighlightEventSource.RANGE ||
+    type === HighlightEventSource.ATOM ||
+    type === HighlightEventSource.SIGNAL
+  );
+}
+
+function getSignalsDiaIDs(
+  spectrum: Spectrum,
+  assignments: Assignments,
+  highlightID: string,
+) {
+  // we are on range/zone level only, so add the belonging signal IDs to highlight too
+
+  const assignIds = getAssignIds(spectrum, highlightID);
+
+  if (!assignIds) return [];
+
+  const [{ index }] = assignIds;
+  if (isSpectrum1D(spectrum)) {
+    const signals = spectrum.ranges.values[index].signals;
+    return signals
+      .filter((signal) => signal.id in assignments)
+      .flatMap((signal) => signal?.diaIDs || []);
+  }
+
+  const signals = spectrum.zones.values[index].signals;
+  return signals
+    .filter((signal) => signal.id in assignments)
+    .flatMap((signal) => [
+      ...(signal.x?.diaIDs || []),
+      ...(signal.y?.diaIDs || []),
+    ]);
+}
+
+export default function useAtomAssignment() {
+  const {
+    view: {
+      spectra: { activeTab: nucleus },
+    },
+  } = useChartData();
+  const spectrum = useSpectrum();
   const toaster = useToaster();
   const dispatch = useDispatch();
   const highlightData = useHighlightData();
@@ -46,190 +89,146 @@ export default function useAtomAssignment({
     ? assignments.activated.id
     : ConcatenationString; // dummy value
 
-  const data = useMemo(() => {
-    if (zones || ranges) {
-      if (displayerMode === '1D' && ranges?.values) {
-        return ranges.values;
-      } else if (displayerMode === '2D' && zones?.values) {
-        return zones.values;
-      }
-    }
-    return [];
-  }, [displayerMode, ranges, zones]);
-
-  const assignedDiaIDs = useMemo(() => {
-    const assignedDiaID: { x: string[]; y: string[] } = {
-      x: [],
-      y: [],
-    };
-    const assignment = assignments.data;
-    for (const id in assignment) {
-      if (assignment[id].x) {
-        assignedDiaID.x.push(...assignment[id].x);
-      }
-      if (assignment[id].y) {
-        assignedDiaID.y.push(...assignment[id].y);
-      }
-    }
-    // with its structure it's prepared for showing assigned IDs per axis
-    return assignedDiaID;
-  }, [assignments.data]);
-
   // used for atom highlighting for now, until we would like to highlight atoms per axis separately
   const assignedDiaIDsMerged = useMemo(
-    () => assignedDiaIDs.x.concat(assignedDiaIDs.y),
-    [assignedDiaIDs.x, assignedDiaIDs.y],
+    () => flattenAssignedDiaIDs(assignments.data),
+    [assignments],
   );
 
   const currentDiaIDsToHighlight = useMemo(() => {
-    const highlights = highlightData.highlight.highlighted
-      .filter((highlightID) => {
-        return assignments.data[highlightID];
-      })
-      .flatMap((highlightID) => {
-        const { datum } = findDatumAndSignalIndex(data, highlightID);
-        const type = highlightData.highlight.sourceData?.type;
-        if (
-          datum &&
-          (type === HighlightEventSource.ZONE ||
-            type === HighlightEventSource.RANGE ||
-            type === HighlightEventSource.ATOM)
-        ) {
-          // we are on range/zone level only, so add the belonging signal IDs to highlight too
-          return datum.signals.flatMap((signal) =>
-            filterForIDsWithAssignment(assignments, [signal.id]).length > 0
-              ? signal.diaIDs
-              : [],
-          );
-        }
-        return [];
-      });
+    const { highlighted, sourceData } = highlightData.highlight;
+    const type = sourceData?.type;
+
+    if (!type || !isValidHighlightEventSource(type)) return [];
+
+    const highlightedAssignmentsIDs = highlighted.filter((highlightID) => {
+      return assignments.data[highlightID];
+    });
+
+    const highlights = highlightedAssignmentsIDs.flatMap((highlightID) =>
+      getSignalsDiaIDs(spectrum, assignments.data, highlightID),
+    );
+
     return getCurrentDiaIDsToHighlight(assignments).concat(highlights);
-  }, [
-    assignments,
-    data,
-    highlightData.highlight.highlighted,
-    highlightData.highlight.sourceData?.type,
-  ]);
+  }, [assignments, highlightData.highlight, spectrum]);
 
-  const toggleAssignment = useCallback((diaID, atomInformation: AtomData) => {
-    // a previous version of the code prevented to assign many time the same atom
-    // see revision cc13abc18f77b6787b923e3c4edaef51750d9e90
-    return toggleDiaIDs(diaID, atomInformation);
-  }, []);
+  function assign1DAtom(spectrum: Spectrum1D, key: string, atom: AtomData) {
+    const assignKeys = getAssignIds(spectrum, key);
 
-  const handleOnClickAtom = useCallback(
-    (diaIDAndInfo: DiaIDAndInfo | undefined, event: MouseEvent) => {
-      if (!checkModifierKeyActivated(event) && assignments.activated) {
-        const { axis, id } = assignments.activated;
-        if (id && axis) {
-          const atomInformation = extractFromAtom(diaIDAndInfo, nucleus, axis);
-          if (atomInformation.nbAtoms > 0) {
-            // save assignment in assignment hook
-            // save assignment (diaIDs) in range/zone data
-            const { datum, signalIndex } = findDatumAndSignalIndex(
-              data,
-              assignments.activated.id,
-            );
-            if (datum) {
-              // determine the level of setting the diaIDs array (range vs. signal level) and save there
-              // let nbAtoms = 0;
-              // on range/zone level
+    if (!assignKeys) return;
+    const [{ index: rangeIndex }] = assignKeys;
+    const range = spectrum.ranges.values[rangeIndex];
 
-              if (displayerMode === '1D') {
-                const range = datum as Range;
-                let _diaIDs: string[] = [];
-                if (signalIndex === undefined) {
-                  _diaIDs = range?.diaIDs || [];
-                } else {
-                  _diaIDs = range?.signals[signalIndex]?.diaIDs || [];
-                }
-                const { diaIDs, nbAtoms } = toggleAssignment(
-                  _diaIDs,
-                  atomInformation,
-                );
-                dispatch({
-                  type: 'SET_DIAID_RANGE',
-                  payload: {
-                    nbAtoms,
-                    range,
-                    diaIDs,
-                    signalIndex,
-                  },
-                });
-              } else {
-                const zone = datum as Zone;
-                let _diaIDs: string[] = [];
-                if (signalIndex === undefined) {
-                  _diaIDs = zone[axis]?.diaIDs || [];
-                } else {
-                  _diaIDs = zone?.signals[signalIndex][axis]?.diaIDs || [];
-                }
-                const { diaIDs, nbAtoms } = toggleAssignment(
-                  _diaIDs,
-                  atomInformation,
-                );
-                dispatch({
-                  type: 'SET_ZONE_DIAID',
-                  payload: {
-                    nbAtoms,
-                    zone,
-                    diaIDs,
-                    axis,
-                    signalIndex,
-                  },
-                });
-              }
-            }
-            assignments.activate({ id: activatedKey, axis });
-          } else {
-            toaster.show({
-              message:
-                'Not assigned! Different atom type or no attached hydrogens found!',
-            });
-          }
-        }
-      }
-    },
-    [
-      activatedKey,
-      assignments,
-      data,
-      dispatch,
-      displayerMode,
-      nucleus,
-      toaster,
-      toggleAssignment,
-    ],
-  );
+    let diaIDs: string[] = [];
 
-  const handleOnAtomHover = useCallback(
-    (diaIDAndInfo: DiaIDAndInfo | undefined) => {
-      const { oclIDs } = extractFromAtom(diaIDAndInfo, nucleus);
+    if (assignKeys?.length === 1) {
+      diaIDs = range?.diaIDs || [];
+    } else {
+      const [, { index: signalIndex }] = assignKeys;
+      diaIDs = range?.signals[signalIndex]?.diaIDs || [];
+    }
+    const uniqueDiaIDs = getUniqueDiaIDs(diaIDs, atom);
 
-      // on enter the atom
-      if (oclIDs.length > 0) {
-        // set all IDs to highlight when hovering over an atom from assignment data
-        const highlights = getHighlightsOnHover(assignments, oclIDs, data);
-        highlightedIdDsRef.current = highlights;
-        highlightData.dispatch({
-          type: 'SHOW',
-          payload: {
-            convertedHighlights: highlights,
-            sourceData: { type: HighlightEventSource.ATOM },
-          },
-        });
-      } else {
-        highlightData.dispatch({
-          type: 'HIDE',
-          payload: { convertedHighlights: highlightedIdDsRef.current },
-        });
-        highlightedIdDsRef.current = [];
-      }
-      // }
-    },
-    [assignments, data, highlightData, nucleus],
-  );
+    dispatch({
+      type: 'ASSIGN_RANGE',
+      payload: {
+        nbAtoms: uniqueDiaIDs.nbAtoms,
+        diaIDs: uniqueDiaIDs.diaIDs,
+        keys: assignKeys,
+      },
+    });
+  }
+  function assign2DAtom(
+    spectrum: Spectrum2D,
+    key: string,
+    atom: AtomData,
+    axis: Axis,
+  ) {
+    const assignKeys = getAssignIds(spectrum, key);
+
+    if (!assignKeys) return;
+    const [{ index: zoneIndex }] = assignKeys;
+    const zone = spectrum.zones.values[zoneIndex];
+
+    let diaIDs: string[] = [];
+
+    if (assignKeys?.length === 1) {
+      diaIDs = zone[axis]?.diaIDs || [];
+    } else {
+      const [, { index: signalIndex }] = assignKeys;
+      diaIDs = zone?.signals[signalIndex][axis]?.diaIDs || [];
+    }
+
+    const uniqueDiaIDs = getUniqueDiaIDs(diaIDs, atom);
+    dispatch({
+      type: 'ASSIGN_ZONE',
+      payload: {
+        keys: assignKeys,
+        nbAtoms: uniqueDiaIDs.nbAtoms,
+        diaIDs: uniqueDiaIDs.diaIDs,
+        axis,
+      },
+    });
+  }
+
+  function handleOnClickAtom(
+    diaIDAndInfo: DiaIDAndInfo | undefined,
+    event: MouseEvent,
+  ) {
+    if (checkModifierKeyActivated(event) || !assignments.activated) return;
+
+    const { axis, id } = assignments.activated;
+
+    if (!id || !axis) {
+      return;
+    }
+
+    const atomInformation = extractFromAtom(diaIDAndInfo, nucleus, axis);
+
+    if (atomInformation.nbAtoms === 0) {
+      return toaster.show({
+        message:
+          'Not assigned! Different atom type or no attached hydrogens found!',
+      });
+    }
+
+    // save assignment in assignment hook
+    // save assignment (diaIDs) in range/zone data
+
+    // determine the level of setting the diaIDs array (range vs. signal level) and save there
+    // let nbAtoms = 0;
+    // on range/zone level
+    if (isSpectrum1D(spectrum)) {
+      assign1DAtom(spectrum, assignments.activated.id, atomInformation);
+    } else {
+      assign2DAtom(spectrum, assignments.activated.id, atomInformation, axis);
+    }
+    assignments.activate({ id: activatedKey, axis });
+  }
+
+  function handleOnAtomHover(diaIDAndInfo: DiaIDAndInfo | undefined) {
+    const { oclIDs } = extractFromAtom(diaIDAndInfo, nucleus);
+
+    // on enter the atom
+    if (oclIDs.length > 0) {
+      // set all IDs to highlight when hovering over an atom from assignment data
+      const highlights = getHighlightsOnHover(assignments, oclIDs, spectrum);
+      highlightedIdDsRef.current = highlights;
+      highlightData.dispatch({
+        type: 'SHOW',
+        payload: {
+          convertedHighlights: highlights,
+          sourceData: { type: HighlightEventSource.ATOM },
+        },
+      });
+    } else {
+      highlightData.dispatch({
+        type: 'HIDE',
+        payload: { convertedHighlights: highlightedIdDsRef.current },
+      });
+      highlightedIdDsRef.current = [];
+    }
+  }
 
   return {
     handleOnAtomHover,

@@ -32,7 +32,7 @@ const highLightStyle: CSSProperties = {
   backgroundColor: '#ff6f0091',
 };
 
-type HighlightEventSourceType = keyof typeof HighlightEventSource;
+export type HighlightEventSourceType = keyof typeof HighlightEventSource;
 
 interface SourceData {
   type: HighlightEventSourceType;

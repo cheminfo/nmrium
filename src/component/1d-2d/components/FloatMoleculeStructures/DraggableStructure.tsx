@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import type { Ranges, Zones } from 'nmr-processing';
 import { useEffect, useState } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 import { BsArrowsMove } from 'react-icons/bs';
@@ -21,7 +20,6 @@ import { useSVGUnitConverter } from '../../../hooks/useSVGUnitConverter.js';
 import { useCheckExportStatus } from '../../../hooks/useViewportSize.js';
 import { useMoleculeEditor } from '../../../modal/MoleculeStructureEditorModal.js';
 import useAtomAssignment from '../../../panels/MoleculesPanel/useAtomAssignment.js';
-import type { DisplayerMode } from '../../../reducer/Reducer.js';
 
 interface DraggableMoleculeProps extends DraggableStructureProps {
   width: number;
@@ -30,10 +28,6 @@ interface DraggableMoleculeProps extends DraggableStructureProps {
 
 interface DraggableStructureProps {
   moleculeView: MoleculeView;
-  zones: Zones;
-  ranges: Ranges;
-  activeTab: string;
-  displayerMode: DisplayerMode;
   index?: number;
   molecule: StateMoleculeExtended;
 }
@@ -192,23 +186,13 @@ export function DraggableStructure(props: DraggableStructureProps) {
 }
 
 function DraggableMolecule(props: DraggableMoleculeProps) {
-  const {
-    zones,
-    ranges,
-    activeTab,
-    displayerMode,
-    molecule,
-    index,
-    moleculeView,
-    width,
-    height,
-  } = props;
+  const { molecule, index, moleculeView, width, height } = props;
   const {
     currentDiaIDsToHighlight,
     handleOnAtomHover,
     handleOnClickAtom,
     assignedDiaIDsMerged,
-  } = useAtomAssignment({ zones, ranges, activeTab, displayerMode });
+  } = useAtomAssignment();
   const highlightColor = useHighlightColor();
   const dispatch = useDispatch();
 
