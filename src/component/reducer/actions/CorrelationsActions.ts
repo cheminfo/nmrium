@@ -18,7 +18,6 @@ import {
   findSpectrum,
   findZone,
 } from '../../../data/utilities/FindUtilities.js';
-import type { AssignmentContext } from '../../assignment/AssignmentsContext.js';
 import type { State } from '../Reducer.js';
 import type { ActionType } from '../types/ActionType.js';
 
@@ -47,7 +46,7 @@ type SetCorrelationsAction = ActionType<
 >;
 type DeleteCorrelationAction = ActionType<
   'DELETE_CORRELATION',
-  { correlation: Correlation; assignmentData: AssignmentContext }
+  { correlation: Correlation }
 >;
 
 export type CorrelationsActions =
@@ -140,7 +139,7 @@ function handleDeleteCorrelation(
   draft: Draft<State>,
   action: DeleteCorrelationAction,
 ) {
-  const { correlation, assignmentData } = action.payload;
+  const { correlation } = action.payload;
   // delete all signals linked to the correlation
   for (const link of correlation.links) {
     const spectrum = findSpectrum(draft.data, link.experimentID, false);
@@ -153,7 +152,6 @@ function handleDeleteCorrelation(
             spectrum,
             range,
             signal,
-            assignmentData,
           });
         }
       } else if (spectrum.info.dimension === 2) {
@@ -164,7 +162,6 @@ function handleDeleteCorrelation(
             spectrum,
             zone,
             signal,
-            assignmentData,
           });
         }
       }

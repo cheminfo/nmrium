@@ -36,9 +36,9 @@ function Zone({ zoneData }: ZoneProps) {
   const { setData } = useShareData<{ id: string }>();
   const assignmentZone = useAssignment(id);
   const { showZones } = useActiveSpectrumZonesViewState();
-  const highlightZone = useHighlight([assignmentZone.id], {
+  const highlightZone = useHighlight([id], {
     type: HighlightEventSource.ZONE,
-    extra: { id: assignmentZone.id },
+    extra: { id },
   });
   const scaleX = useScale2DX();
   const scaleY = useScale2DY();
@@ -60,11 +60,11 @@ function Zone({ zoneData }: ZoneProps) {
     <g
       key={id}
       onMouseEnter={() => {
-        assignmentZone.show();
+        assignmentZone.highlight();
         highlightZone.show();
       }}
       onMouseLeave={() => {
-        assignmentZone.hide();
+        assignmentZone.clearHighlight();
         highlightZone.hide();
       }}
     >

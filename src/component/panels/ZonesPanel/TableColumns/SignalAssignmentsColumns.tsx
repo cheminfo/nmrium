@@ -8,32 +8,33 @@ import type { ZoneData } from '../hooks/useMapZones.js';
 import SignalAssignmentsColumn from './SignalAssignmentsColumn.js';
 
 export function useSignalHighlight(rowData: ZoneData) {
-  const signalAssignment = useAssignment(rowData.tableMetaInfo.id);
+  const signalKey = String(rowData.tableMetaInfo.id);
+  const signalAssignment = useAssignment(signalKey);
 
   const highlightSignalX = useHighlight(
-    [buildID(signalAssignment.id, 'X')].concat(
-      signalAssignment.assigned?.x || [],
-      buildID(signalAssignment.id, 'Crosshair'),
+    [buildID(signalKey, 'X')].concat(
+      signalAssignment.assignedDiaIds?.x || [],
+      buildID(signalKey, 'Crosshair'),
     ),
   );
   const highlightSignalY = useHighlight(
-    [buildID(signalAssignment.id, 'Y')].concat(
-      signalAssignment.assigned?.y || [],
-      buildID(signalAssignment.id, 'Crosshair'),
+    [buildID(signalKey, 'Y')].concat(
+      signalAssignment.assignedDiaIds?.y || [],
+      buildID(signalKey, 'Crosshair'),
     ),
   );
 
   function handleOnMouseEnter(axis: Axis) {
     if (axis === 'x') {
-      signalAssignment.show('x');
+      signalAssignment.highlight('x');
       highlightSignalX.show();
     } else {
-      signalAssignment.show('y');
+      signalAssignment.highlight('y');
       highlightSignalY.show();
     }
   }
   function handleOnMouseLeave(axis: Axis) {
-    signalAssignment.hide();
+    signalAssignment.clearHighlight();
 
     if (axis === 'x') {
       highlightSignalX.hide();

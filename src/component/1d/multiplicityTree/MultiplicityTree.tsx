@@ -5,10 +5,7 @@ import type { Range } from 'nmr-processing';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import type { AssignmentsData } from '../../assignment/AssignmentsContext.js';
-import {
-  useAssignment,
-  useAssignmentData,
-} from '../../assignment/AssignmentsContext.js';
+import { useAssignment } from '../../assignment/AssignmentsContext.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';
@@ -89,10 +86,9 @@ function Tree(props: TreeProps) {
   const { width } = useChartData();
   const { scaleX } = useScaleChecked();
   const dispatch = useDispatch();
-  const assignmentData = useAssignmentData();
 
   const assignment = useAssignment(signalKey);
-  const highlight = useHighlight(extractID(assignment), {
+  const highlight = useHighlight(extractID(signalKey, assignment), {
     type: HighlightEventSource.SIGNAL,
   });
 
@@ -133,21 +129,20 @@ function Tree(props: TreeProps) {
   if (!multiplicity) return null;
 
   function assignHandler() {
-    assignment.setActive('x');
+    assignment.activate('x');
   }
 
   function unAssignHandler() {
     dispatch({
       type: 'UNLINK_RANGE',
       payload: {
-        range,
-        assignmentData,
+        rangeKey: range.id,
         signalIndex,
       },
     });
   }
-
-  const isHighlighted = highlight.isActive || assignment.isActive;
+  const isAssignmentActive = assignment.isActive;
+  const isHighlighted = highlight.isActive || isAssignmentActive;
   const padding = boxPadding * widthRatio;
   const x = scaleX()(max) - padding;
   const y = startY - headTextMargin - multiplicityTextSize - padding;
@@ -157,14 +152,14 @@ function Tree(props: TreeProps) {
 
   return (
     <Group
-      isActive={assignment.isActive}
+      isActive={isAssignmentActive}
       isHighlighted={isHighlighted}
       onMouseEnter={() => {
-        assignment.show('x');
+        assignment.highlight('x');
         highlight.show();
       }}
       onMouseLeave={() => {
-        assignment.hide();
+        assignment.clearHighlight();
         highlight.hide();
       }}
       pointerEvents="bounding-box"
@@ -238,7 +233,7 @@ function Tree(props: TreeProps) {
       <AssignmentActionsButtons
         className="signal-target"
         isActive={
-          assignment.isActive || (Array.isArray(diaIDs) && diaIDs.length > 0)
+          isAssignmentActive || (Array.isArray(diaIDs) && diaIDs.length > 0)
         }
         y={startY - 16}
         x={headX - 30}
@@ -303,6 +298,6 @@ function getMaxY(spectrum: Spectrum1D, options: { from: number; to: number }) {
   return max;
 }
 
-function extractID(assignment: AssignmentsData) {
-  return [assignment.id].concat(assignment.assigned?.x || []);
+function extractID(id: string, assignment: AssignmentsData) {
+  return [id].concat(assignment.assignedDiaIds?.x || []);
 }

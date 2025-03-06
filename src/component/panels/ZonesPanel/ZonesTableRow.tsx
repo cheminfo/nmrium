@@ -49,10 +49,9 @@ function ZonesTableRow({
   rowIndex,
   nucleus,
 }: ZonesTableRowProps) {
-  const assignmentZone = useAssignment(rowData.id);
-  const highlightZone = useHighlight([assignmentZone.id]);
-
-  const assignmentSignal = useAssignment(rowData.tableMetaInfo.id);
+  const zoneKey = rowData.id;
+  const assignmentZone = useAssignment(zoneKey);
+  const highlightZone = useHighlight([zoneKey]);
 
   const {
     showSerialNumber,
@@ -82,28 +81,6 @@ function ZonesTableRow({
     }
 
     onUnlink(rowData, isOnZoneLevel, rowData.tableMetaInfo.signalIndex, axis);
-    if (axis === 'x') {
-      if (isOnZoneLevel !== undefined) {
-        if (isOnZoneLevel) {
-          assignmentZone.removeAll('x');
-        } else {
-          assignmentSignal.removeAll('x');
-        }
-      }
-    } else if (axis === 'y') {
-      if (isOnZoneLevel !== undefined) {
-        if (isOnZoneLevel) {
-          assignmentZone.removeAll('y');
-        } else {
-          assignmentSignal.removeAll('y');
-        }
-      }
-    } else {
-      assignmentZone.removeAll('x');
-      assignmentSignal.removeAll('x');
-      assignmentZone.removeAll('y');
-      assignmentSignal.removeAll('y');
-    }
   }
 
   return (

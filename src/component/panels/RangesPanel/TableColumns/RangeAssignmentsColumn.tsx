@@ -49,10 +49,9 @@ function RangeAssignmentsColumn({
   highlightData,
 }: RangAssignmentColumnProps) {
   const diaIDs = row.diaIDs || [];
-
   const flag =
     assignment.isActive ||
-    assignment.isOver ||
+    assignment.isHighlighted ||
     (highlight.isActive &&
       highlightData.highlight.sourceData?.type !== HighlightEventSource.SIGNAL);
 
@@ -72,7 +71,7 @@ function RangeAssignmentsColumn({
       }}
       {...onHover}
       {...{ onClick: (e) => onLink?.(e, assignment) }}
-      hideRemoveAssignmentButton={!assignment.isActive}
+      hideRemoveAssignmentButton={!diaIDs || diaIDs.length === 0}
       onRemove={(e) => onUnlink?.(e, true)}
     >
       {(totalNumberOfAtoms > 0 || assignment.isActive) && (

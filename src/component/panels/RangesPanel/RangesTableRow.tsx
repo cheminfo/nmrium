@@ -6,9 +6,10 @@ import { useCallback, useMemo } from 'react';
 import type { AssignmentsData } from '../../assignment/AssignmentsContext.js';
 import {
   useAssignment,
-  useAssignmentData,
+  useAssignmentContext,
 } from '../../assignment/AssignmentsContext.js';
 import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment.js';
+import { useDispatch } from '../../context/DispatchContext.js';
 import { ContextMenu } from '../../elements/ContextMenuBluePrint.js';
 import type { TableContextMenuProps } from '../../elements/ReactTable/ReactTable.js';
 import {
@@ -39,7 +40,6 @@ const ConstantlyHighlightedRowStyle = {
 
 interface RangesTableRowProps extends TableContextMenuProps {
   rowData: any;
-  onUnlink: (a: any, b?: any) => void;
   preferences: WorkSpacePanelPreferences['ranges'];
   info: Info1D;
 }
@@ -69,16 +69,17 @@ export type RangeColumnProps = BaseRangeColumnProps &
 
 function RangesTableRow({
   rowData,
-  onUnlink,
   onContextMenuSelect,
   contextMenu = [],
   preferences,
   info,
 }: RangesTableRowProps) {
-  const assignmentData = useAssignmentData();
-  const assignmentRange = useAssignment(rowData.id);
+  const dispatch = useDispatch();
+  const assignmentData = useAssignmentContext();
+  const rangeKey = rowData.id;
+  const assignmentRange = useAssignment(rangeKey);
   const highlightRange = useHighlight(
-    [assignmentRange.id].concat(assignmentRange.assigned?.x || []).concat(
+    [rangeKey].concat(assignmentRange.assignedDiaIds?.x || []).concat(
       filterForIDsWithAssignment(
         assignmentData,
         rowData.signals.map((_signal) => _signal.id),
@@ -87,14 +88,15 @@ function RangesTableRow({
     { type: HighlightEventSource.RANGE },
   );
   const highlightRangeAssignmentsColumn = useHighlight(
-    assignmentRange.assigned?.x || [],
+    assignmentRange.assignedDiaIds?.x || [],
     { type: HighlightEventSource.RANGE },
   );
-  const assignmentSignal = useAssignment(rowData?.tableMetaInfo?.id || '');
+  const signalKey = rowData?.tableMetaInfo?.id || '';
+  const assignmentSignal = useAssignment(signalKey);
 
   const highlightSignal = useHighlight(
-    assignmentSignal?.id
-      ? [assignmentSignal.id].concat(assignmentSignal.assigned?.x || [])
+    signalKey
+      ? [signalKey].concat(assignmentSignal.assignedDiaIds?.x || [])
       : [],
     { type: HighlightEventSource.SIGNAL },
   );
@@ -115,22 +117,26 @@ function RangesTableRow({
       }
 
       if (isOnRangeLevel !== undefined) {
-        if (isOnRangeLevel) {
-          onUnlink(rowData);
-          assignmentRange.removeAll('x');
-        } else {
-          onUnlink(rowData, rowData.tableMetaInfo.signalIndex);
-          assignmentSignal.removeAll('x');
-        }
+        const { id: rangeKey, tableMetaInfo } = rowData;
+
+        const signalIndex = isOnRangeLevel ? -1 : tableMetaInfo.signalIndex;
+
+        dispatch({
+          type: 'UNLINK_RANGE',
+          payload: {
+            rangeKey,
+            signalIndex,
+          },
+        });
       }
     },
-    [assignmentRange, assignmentSignal, onUnlink, rowData],
+    [dispatch, rowData],
   );
 
   const linkHandler = useCallback(
     (e: MouseEvent, assignment: AssignmentsData) => {
       e.stopPropagation();
-      assignment.setActive('x');
+      assignment.activate('x');
     },
     [],
   );
@@ -138,11 +144,11 @@ function RangesTableRow({
   const onHoverRange = useMemo(() => {
     return {
       onMouseEnter: () => {
-        assignmentRange.show('x');
+        assignmentRange.highlight('x');
         highlightRange.show();
       },
       onMouseLeave: () => {
-        assignmentRange.hide();
+        assignmentRange.clearHighlight();
         highlightRange.hide();
       },
     };
@@ -151,11 +157,11 @@ function RangesTableRow({
   const onHoverRangeAssignmentsColumn = useMemo(() => {
     return {
       onMouseEnter: () => {
-        assignmentRange.show('x');
+        assignmentRange.highlight('x');
         highlightRangeAssignmentsColumn.show();
       },
       onMouseLeave: () => {
-        assignmentRange.hide();
+        assignmentRange.clearHighlight();
         highlightRangeAssignmentsColumn.hide();
       },
     };
@@ -164,11 +170,11 @@ function RangesTableRow({
   const onHoverSignal = useMemo(() => {
     return {
       onMouseEnter: () => {
-        assignmentSignal.show('x');
+        assignmentSignal.highlight('x');
         highlightSignal.show();
       },
       onMouseLeave: () => {
-        assignmentSignal.hide();
+        assignmentSignal.clearHighlight();
         highlightSignal.hide();
       },
     };
@@ -180,7 +186,11 @@ function RangesTableRow({
       : rowData.tableMetaInfo.isConstantlyHighlighted
         ? ConstantlyHighlightedRowStyle
         : undefined;
-  }, [assignmentRange.isActive, highlightRange.isActive, rowData]);
+  }, [
+    assignmentRange.isActive,
+    highlightRange.isActive,
+    rowData.tableMetaInfo.isConstantlyHighlighted,
+  ]);
 
   return (
     <ContextMenu

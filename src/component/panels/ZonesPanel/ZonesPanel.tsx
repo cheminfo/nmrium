@@ -3,7 +3,6 @@ import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { FaUnlink } from 'react-icons/fa';
 import { LuMessageSquareText } from 'react-icons/lu';
 
-import { useAssignmentData } from '../../assignment/AssignmentsContext.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useAlert } from '../../elements/Alert.js';
@@ -30,9 +29,6 @@ function ZonesPanelInner({
   showAssignmentsLabels,
 }) {
   const [filterIsActive, setFilterIsActive] = useState(false);
-
-  const assignmentData = useAssignmentData();
-
   const dispatch = useDispatch();
   const alert = useAlert();
   const [isFlipped, setFlipStatus] = useState(false);
@@ -93,15 +89,14 @@ function ZonesPanelInner({
       dispatch({
         type: 'UNLINK_ZONE',
         payload: {
-          zone: zoneData,
-          assignmentData,
+          zoneKey: zoneData.id,
           isOnZoneLevel,
           signalIndex,
           axis,
         },
       });
     },
-    [assignmentData, dispatch],
+    [dispatch],
   );
 
   const removeAssignments = useCallback(() => {
@@ -129,14 +124,14 @@ function ZonesPanelInner({
         {
           text: 'Yes',
           onClick: () => {
-            dispatch({ type: 'DELETE_2D_ZONE', payload: { assignmentData } });
+            dispatch({ type: 'DELETE_2D_ZONE', payload: {} });
           },
           intent: 'danger',
         },
         { text: 'No' },
       ],
     });
-  }, [assignmentData, dispatch, alert]);
+  }, [dispatch, alert]);
 
   const settingsPanelHandler = useCallback(() => {
     setFlipStatus(!isFlipped);

@@ -18,7 +18,6 @@ import type {
 import { DRAGGABLE_STRUCTURE_INITIAL_BOUNDING_REACT } from '../../../data/molecules/Molecule.js';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager.js';
 import { generateColor } from '../../../data/utilities/generateColor.js';
-import type { AssignmentContext } from '../../assignment/AssignmentsContext.js';
 import { convertPixelToPercent } from '../../hooks/useSVGUnitConverter.js';
 import type { State } from '../Reducer.js';
 import { MARGIN } from '../core/Constants.js';
@@ -44,10 +43,7 @@ type SetMoleculeAction = ActionType<
     mappings?: ReturnType<TopicMolecule['getDiaIDsMapping']>;
   }
 >;
-type DeleteMoleculeAction = ActionType<
-  'DELETE_MOLECULE',
-  { id: string; assignmentData: AssignmentContext }
->;
+type DeleteMoleculeAction = ActionType<'DELETE_MOLECULE', { id: string }>;
 type PredictSpectraFromMoleculeAction = ActionType<
   'PREDICT_SPECTRA',
   {
@@ -144,15 +140,12 @@ function handleSetMolecule(draft: Draft<State>, action: SetMoleculeAction) {
   setMolecule(draft, action.payload);
 }
 
-function removeAssignments(
-  draft: Draft<State>,
-  assignmentData: AssignmentContext,
-) {
+function removeAssignments(draft: Draft<State>) {
   if (draft.displayerMode === '1D') {
-    unlinkRange(draft, { assignmentData });
+    unlinkRange(draft);
   }
   if (draft.displayerMode === '2D') {
-    unlinkZone(draft, { assignmentData });
+    unlinkZone(draft, {});
   }
 }
 
@@ -161,9 +154,9 @@ function handleDeleteMolecule(
   draft: Draft<State>,
   action: DeleteMoleculeAction,
 ) {
-  const { id, assignmentData } = action.payload;
+  const { id } = action.payload;
   // remove Assignments links of the active spectrum
-  removeAssignments(draft, assignmentData);
+  removeAssignments(draft);
 
   const moleculeIndex = draft.molecules.findIndex(
     (molecule) => molecule.id === id,

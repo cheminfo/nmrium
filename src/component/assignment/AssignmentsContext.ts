@@ -1,53 +1,80 @@
-import { createContext, useCallback, useContext, useMemo } from 'react';
-
-import type { AssignmentsActions } from './AssignmentsReducer.js';
+import { createContext, useContext } from 'react';
 
 export type Axis = 'x' | 'y';
+/**
+ * An object that associates each axis direction with a list of assigned diaIDs
+ * depending on the assignment dimension (1D or 2D).
+ *
+ * - For **1D** assignments, only the `x` axis is used.
+ * - For **2D** assignments, both the `x` and `y` axes are used.
+ *
+ * - The key (`Axis`) represents the **axis** (`'x'` or `'y'`).
+ * - The value (`string[]`) contains the **assigned diaIDs** for that axis.
+ */
 export type Assignment = Record<Axis, string[]>;
+/**
+ * An object that associates each unique ID to their corresponding axis assignments.
+ *
+ * - The key (`string`) represents a **range ID, signal ID, or zone ID**.
+ * - The value (`Assignment`) contains the assigned values mapped to axes.
+ */
 export type Assignments = Record<string, Assignment>;
 
 export type AssignmentDimension = '1D' | '2D';
-export interface AssignmentAction {
+export interface AssignmentItem {
   id: string;
   axis: Axis | null;
 }
-export interface AssignmentState {
-  assignments: Assignments;
-  activated: AssignmentAction | null;
-  highlighted: AssignmentAction | null;
-}
-export interface AssignmentContext {
-  data: AssignmentState;
-  dispatch: (action: AssignmentsActions) => void;
-}
 
-export interface AssignmentsData
-  extends Pick<AssignmentState, 'activated' | 'highlighted'> {
+export interface HighlightAssignmentOptions {
   id: string;
-  isActive: boolean;
-  isOver: boolean;
-  assigned: Partial<Record<Axis, string[]>>;
-  removeAll: (axis: Axis) => void;
-  toggle: (atomIDs: string[], dimension: AssignmentDimension) => void;
-  setActive: (axis: Axis) => void;
-  show: (axis?: Axis) => void;
-  hide: () => void;
+  axis?: Axis;
+}
+export interface ActivateAssignmentOptions {
+  id: string;
+  axis: Axis;
 }
 
-export const assignmentState: AssignmentState = {
-  assignments: {},
+export const assignmentStatus: AssignmentStatus = {
   activated: null,
   highlighted: null,
 };
 
-export const assignmentContext = createContext<AssignmentContext>({
-  data: assignmentState,
-  dispatch: () => null,
-});
+export interface AssignmentStatus {
+  activated: AssignmentItem | null;
+  highlighted: AssignmentItem | null;
+}
+export interface AssignmentContext extends AssignmentStatus {
+  data: Assignments;
+  activate: (options: ActivateAssignmentOptions) => void;
+  highlight: (options: HighlightAssignmentOptions) => void;
+  clearHighlight: () => void;
+}
+
+export interface AssignmentsData extends AssignmentStatus {
+  isActive: boolean;
+  isHighlighted: boolean;
+  /**
+   * An object that associates each axis direction ('x' or 'y') with a list of assigned diaIDs for a specific ID,
+   * depending on the assignment dimension (1D or 2D).
+   *
+   * - For **1D** assignments, only the `x` axis is used.
+   * - For **2D** assignments, both the `x` and `y` axes are used.
+   *
+   * - The key (`Axis`) represents the **axis direction** (`'x'` or `'y'`).
+   * - The value (`string[]`) is an array containing the **DiaIDs** assigned to that axis for the specific ID.
+   */
+  assignedDiaIds: Partial<Record<Axis, string[]>>;
+  activate: (axis: Axis) => void;
+  highlight: (axis?: Axis) => void;
+  clearHighlight: () => void;
+}
+
+export const assignmentContext = createContext<AssignmentContext | null>(null);
 
 export const AssignmentProvider = assignmentContext.Provider;
 
-export function useAssignmentData() {
+export function useAssignmentContext() {
   const context = useContext(assignmentContext);
 
   if (!context) {
@@ -58,113 +85,46 @@ export function useAssignmentData() {
 }
 
 // key can be signal id,range id or zone id
-export function useAssignment(key: number | string): AssignmentsData {
-  const {
-    data: { activated, highlighted, assignments },
-    dispatch,
-  } = useAssignmentData();
+export function useAssignment(id: string): AssignmentsData {
+  const { data, activated, highlighted, activate, highlight, clearHighlight } =
+    useAssignmentContext();
 
-  if (!['string', 'number'].includes(typeof key)) {
-    throw new Error(`assignment key must be a non-empty string or number`);
-  }
+  const isActive = activated?.id === id;
+  const isHighlighted = highlighted?.id === id;
+  const assignedDiaIds = data?.[id] || {};
 
-  const id = String(key);
-
-  const isActive = useMemo(() => {
-    return activated?.id === id;
-  }, [activated?.id, id]);
-  const isOver = useMemo(() => {
-    return highlighted?.id === id;
-  }, [highlighted?.id, id]);
-
-  const assigned = useMemo(() => {
-    if (!(id in assignments)) {
-      return {};
+  function activateAssignment(axis: Axis) {
+    if (id) {
+      activate({
+        id,
+        axis,
+      });
+      return true;
     }
 
-    return assignments[id];
-  }, [assignments, id]);
+    return false;
+  }
 
-  const removeAll = useCallback(
-    (axis: Axis) => {
-      if (id) {
-        dispatch({
-          type: 'REMOVE',
-          payload: { ids: [id], axis },
-        });
-        return true;
-      }
-      return false;
-    },
-    [dispatch, id],
-  );
+  function highlightAssignment(axis?: Axis) {
+    if (id) {
+      highlight({
+        id,
+        axis,
+      });
 
-  const toggle = useCallback(
-    (atomIDs: string[], dimension: AssignmentDimension) => {
-      if (id) {
-        dispatch({
-          type: 'TOGGLE',
-          payload: { atomIDs, id, dimension },
-        });
-        return true;
-      }
-      return false;
-    },
-    [dispatch, id],
-  );
-
-  const setActive = useCallback(
-    (axis: Axis) => {
-      if (id) {
-        dispatch({
-          type: 'SET_ACTIVE',
-          payload: {
-            id,
-            axis,
-          },
-        });
-        return true;
-      }
-
-      return false;
-    },
-    [dispatch, id],
-  );
-
-  const show = useCallback(
-    (axis?: Axis) => {
-      if (id) {
-        dispatch({
-          type: 'SHOW',
-          payload: {
-            id,
-            axis,
-          },
-        });
-
-        return true;
-      }
-      return false;
-    },
-    [dispatch, id],
-  );
-  const hide = useCallback(() => {
-    dispatch({
-      type: 'HIDE',
-    });
-  }, [dispatch]);
+      return true;
+    }
+    return false;
+  }
 
   return {
-    id,
-    activated,
     isActive,
-    isOver,
+    isHighlighted,
+    assignedDiaIds,
+    activated,
     highlighted,
-    assigned,
-    removeAll,
-    toggle,
-    setActive,
-    show,
-    hide,
+    activate: activateAssignment,
+    highlight: highlightAssignment,
+    clearHighlight,
   };
 }

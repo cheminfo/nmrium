@@ -17,7 +17,6 @@ import {
   findSpectrum,
   findZone,
 } from '../../../data/utilities/FindUtilities.js';
-import { useAssignmentData } from '../../assignment/AssignmentsContext.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { withDialog } from '../../elements/DialogManager.js';
@@ -98,7 +97,6 @@ function SummaryPanel() {
   } = useChartData();
 
   const dispatch = useDispatch();
-  const assignmentData = useAssignmentData();
   const { dialog, openDialog, closeDialog } = useDialogToggle({
     shiftToleranceModal: false,
     molecularFormula: false,
@@ -351,11 +349,10 @@ function SummaryPanel() {
         type: 'DELETE_CORRELATION',
         payload: {
           correlation,
-          assignmentData,
         },
       });
     },
-    [assignmentData, dispatch],
+    [dispatch],
   );
 
   const deleteSignalHandler = useCallback(
@@ -378,7 +375,6 @@ function SummaryPanel() {
               spectrum,
               range,
               signal,
-              assignmentData,
             },
           });
         }
@@ -398,13 +394,12 @@ function SummaryPanel() {
               spectrum,
               zone,
               signal,
-              assignmentData,
             },
           });
         }
       }
     },
-    [assignmentData, dispatch, spectraData],
+    [dispatch, spectraData],
   );
 
   const changeSignalPathLengthHandler = useCallback(

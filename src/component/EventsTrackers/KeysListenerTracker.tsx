@@ -3,7 +3,6 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useOnOff } from 'react-science/ui';
 
 import checkModifierKeyActivated from '../../data/utilities/checkModifierKeyActivated.js';
-import { useAssignmentData } from '../assignment/AssignmentsContext.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useDispatch } from '../context/DispatchContext.js';
 import { useLoader } from '../context/LoaderContext.js';
@@ -78,7 +77,6 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
     };
   }, [mainDivRef]);
 
-  const assignmentData = useAssignmentData();
   const allow1DTool = useMemo(() => {
     return displayerMode === '1D' && data && data.length > 0;
   }, [data, displayerMode]);
@@ -141,7 +139,6 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
               type: 'DELETE_RANGE',
               payload: {
                 id,
-                assignmentData,
                 spectrumKey: spectrumID,
               },
             });
@@ -157,7 +154,6 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
               type: 'DELETE_2D_ZONE',
               payload: {
                 id,
-                assignmentData,
               },
             });
             // remove keys from the highlighted list after delete
@@ -284,15 +280,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
           break;
       }
     },
-    [
-      dispatch,
-      remove,
-      assignmentData,
-      alert,
-      toaster,
-      dispatchPreferences,
-      activeTab,
-    ],
+    [dispatch, remove, alert, toaster, dispatchPreferences, activeTab],
   );
 
   const keysPreferencesListenerHandler = useCallback(
