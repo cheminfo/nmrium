@@ -13,10 +13,16 @@ function useZoneHighlight(rowData: ZoneData) {
 
   const highlightZoneX = useHighlight(
     [buildID(id, 'X')].concat(assignedDiaIds?.x || []),
+    {
+      type: 'ZONE',
+    },
   );
 
   const highlightZoneY = useHighlight(
     [buildID(id, 'Y')].concat(assignedDiaIds?.y || []),
+    {
+      type: 'ZONE',
+    },
   );
 
   function handleOnMouseEnter(axis: Axis) {
