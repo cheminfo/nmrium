@@ -1,8 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import type { SerializedStyles } from '@emotion/react';
 import { css } from '@emotion/react';
-import type { Spectrum1D, Spectrum2D } from 'nmr-load-save';
-import type { Ranges, Zones } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 import { memo, useEffect, useState } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
@@ -16,9 +14,7 @@ import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { NextPrev } from '../../elements/NextPrev.js';
 import { useHighlightColor } from '../../hooks/useHighlightColor.js';
-import useSpectrum from '../../hooks/useSpectrum.js';
 import { useMoleculeEditor } from '../../modal/MoleculeStructureEditorModal.js';
-import type { DisplayerMode } from '../../reducer/Reducer.js';
 
 import MoleculeHeader from './MoleculeHeader.js';
 import MoleculePanelHeader from './MoleculePanelHeader.js';
@@ -58,23 +54,12 @@ const styles: Record<
 };
 
 interface MoleculePanelInnerProps {
-  zones: Zones;
-  ranges: Ranges;
   molecules: StateMoleculeExtended[];
   moleculesView: MoleculesView;
-  activeTab: string;
-  displayerMode: DisplayerMode;
 }
 
 function MoleculePanelInner(props: MoleculePanelInnerProps) {
-  const {
-    zones,
-    ranges,
-    molecules: moleculesProp,
-    moleculesView,
-    activeTab,
-    displayerMode,
-  } = props;
+  const { molecules: moleculesProp, moleculesView } = props;
   const [currentIndex, setCurrentIndex] = useState(0);
   const [molecules, setMolecules] = useState<StateMoleculeExtended[]>([]);
 
@@ -87,7 +72,7 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
     handleOnAtomHover,
     handleOnClickAtom,
     assignedDiaIDsMerged,
-  } = useAtomAssignment({ zones, ranges, activeTab, displayerMode });
+  } = useAtomAssignment();
 
   useEffect(() => {
     if (moleculesProp) {
@@ -203,7 +188,6 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
 }
 
 const MemoizedMoleculePanel = memo(MoleculePanelInner);
-const emptyData = { ranges: {}, zones: {} };
 
 export default function MoleculePanel() {
   const {
@@ -215,10 +199,6 @@ export default function MoleculePanel() {
     displayerMode,
   } = useChartData();
 
-  const data = useSpectrum(emptyData);
-  const ranges: Ranges = (data as Spectrum1D)?.ranges || {};
-  const zones: Zones = (data as Spectrum2D)?.zones || {};
-
   return (
     <MemoizedMoleculePanel
       {...{
@@ -226,8 +206,6 @@ export default function MoleculePanel() {
         moleculesView,
         displayerMode,
         activeTab,
-        ranges,
-        zones,
       }}
     />
   );

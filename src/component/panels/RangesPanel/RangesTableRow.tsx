@@ -8,7 +8,7 @@ import {
   useAssignment,
   useAssignmentContext,
 } from '../../assignment/AssignmentsContext.js';
-import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment.js';
+import { filterAssignedIDs } from '../../assignment/utilities/filterAssignedIDs.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { ContextMenu } from '../../elements/ContextMenuBluePrint.js';
 import type { TableContextMenuProps } from '../../elements/ReactTable/ReactTable.js';
@@ -80,8 +80,8 @@ function RangesTableRow({
   const assignmentRange = useAssignment(rangeKey);
   const highlightRange = useHighlight(
     [rangeKey].concat(assignmentRange.assignedDiaIds?.x || []).concat(
-      filterForIDsWithAssignment(
-        assignmentData,
+      filterAssignedIDs(
+        assignmentData.data,
         rowData.signals.map((_signal) => _signal.id),
       ),
     ),
