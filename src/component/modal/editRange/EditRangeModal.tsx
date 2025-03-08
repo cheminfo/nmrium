@@ -246,12 +246,14 @@ function mapData(range: Range, options: MapDataOptions) {
     for (const multiplicity of splitPatterns(signal.multiplicity)) {
       const js = { ...signal.js[counterJ] };
 
-      if (hasCouplingConstant(multiplicity) && signal?.js.length > 0) {
+      if (hasCouplingConstant(multiplicity.value) && signal?.js.length > 0) {
         const coupling = Number(formatNumber(js.coupling, couplingFormat));
         js.coupling = coupling;
         counterJ++;
       }
-      js.multiplicity = translateMultiplet(js.multiplicity || multiplicity);
+      js.multiplicity = translateMultiplet(
+        js.multiplicity || multiplicity.value,
+      );
       couplings.push(js);
     }
 
