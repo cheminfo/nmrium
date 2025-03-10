@@ -2,6 +2,8 @@ import styled from '@emotion/styled';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import type { Spectrum1D } from 'nmr-load-save';
 import type { Range } from 'nmr-processing';
+import { useRef } from 'react';
+import { LuLink, LuUnlink } from 'react-icons/lu';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import type { AssignmentsData } from '../../assignment/AssignmentsContext.js';
@@ -9,9 +11,11 @@ import { useAssignment } from '../../assignment/AssignmentsContext.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';
+import { ActionsButtonsPopover } from '../../elements/ActionsButtonsPopover.js';
+import type { ActionsButtonsPopoverProps } from '../../elements/ActionsButtonsPopover.js';
 import { HighlightEventSource, useHighlight } from '../../highlight/index.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
-import { AssignmentActionsButtons } from '../ranges/AssignmentActionsButtons.js';
+import { useIsInset } from '../inset/InsetProvider.js';
 
 import type { TreeNodes } from './generateTreeNodes.js';
 import { generateTreeNodes } from './generateTreeNodes.js';
@@ -20,16 +24,6 @@ const Group = styled.g<{ isActive: boolean; isHighlighted: boolean }>`
   cursor: default;
   opacity: ${({ isHighlighted }) => (isHighlighted ? '1' : '0.6')};
   stroke-width: ${({ isHighlighted }) => (isHighlighted ? '1.5' : '1')}px;
-
-  .signal-target {
-    visibility: ${({ isActive }) => (isActive ? 'visible' : 'hidden')};
-  }
-
-  &:hover {
-    .signal-target {
-      visibility: visible;
-    }
-  }
 `;
 
 interface MultiplicityTreeProps {
@@ -86,6 +80,8 @@ function Tree(props: TreeProps) {
   const { width } = useChartData();
   const { scaleX } = useScaleChecked();
   const dispatch = useDispatch();
+  const isInset = useIsInset();
+  const isAssignBtnTrigged = useRef(false);
 
   const assignment = useAssignment(signalKey);
   const highlight = useHighlight(extractID(signalKey, assignment), {
@@ -130,6 +126,7 @@ function Tree(props: TreeProps) {
 
   function assignHandler() {
     assignment.activate('x');
+    isAssignBtnTrigged.current = true;
   }
 
   function unAssignHandler() {
@@ -141,6 +138,7 @@ function Tree(props: TreeProps) {
       },
     });
   }
+  const hasDiaIDs = Array.isArray(diaIDs) && diaIDs.length > 0;
   const isAssignmentActive = assignment.isActive;
   const isHighlighted = highlight.isActive || isAssignmentActive;
   const padding = boxPadding * widthRatio;
@@ -150,98 +148,116 @@ function Tree(props: TreeProps) {
   const boxHeight =
     treeHeight + headTextMargin + multiplicityTextSize + padding * 2;
 
+  const actionsButtons: ActionsButtonsPopoverProps['buttons'] = [
+    {
+      icon: <LuLink />,
+      onClick: assignHandler,
+      intent: 'success',
+      title: 'Assign range',
+    },
+    {
+      icon: <LuUnlink />,
+      onClick: () => unAssignHandler(),
+      intent: 'danger',
+      title: 'Unassign range',
+      visible: !!(isAssignmentActive || hasDiaIDs),
+    },
+  ];
+
+  const isOpen = isAssignBtnTrigged.current ? isAssignmentActive : undefined;
+
   return (
-    <Group
-      isActive={isAssignmentActive}
-      isHighlighted={isHighlighted}
-      onMouseEnter={() => {
-        assignment.highlight('x');
-        highlight.show();
+    <ActionsButtonsPopover
+      targetTagName="g"
+      isOpen={isOpen}
+      buttons={actionsButtons}
+      space={2}
+      disabled={isInset}
+      onClosed={() => {
+        isAssignBtnTrigged.current = false;
       }}
-      onMouseLeave={() => {
-        assignment.clearHighlight();
-        highlight.hide();
-      }}
-      pointerEvents="bounding-box"
     >
-      <rect
-        x={x}
-        y={y}
-        width={boxWidth}
-        height={boxHeight}
-        fill={isHighlighted ? '#ff6f0057' : 'transparent'}
-        data-no-export="true"
-      />
-      <g className="multiplicity-tree-head">
-        <text
-          x={headX}
-          y={startY - headTextMargin}
-          textAnchor="middle"
-          fontSize={multiplicityTextSize}
-          fill="black"
-        >
-          {multiplicity}
-        </text>
-        <line
-          x1={headX}
-          x2={headX}
-          y1={startY}
-          y2={startY + tailLength}
-          stroke={treeLevelsColors[0]}
+      <Group
+        isActive={isAssignmentActive}
+        isHighlighted={isHighlighted}
+        onMouseEnter={() => {
+          assignment.highlight('x');
+          highlight.show();
+        }}
+        onMouseLeave={() => {
+          assignment.clearHighlight();
+          highlight.hide();
+        }}
+        pointerEvents="bounding-box"
+      >
+        <rect
+          x={x}
+          y={y}
+          width={boxWidth}
+          height={boxHeight}
+          fill={isHighlighted ? '#ff6f0057' : 'transparent'}
+          data-no-export="true"
         />
-      </g>
-      <g className="multiplicity-tree-lines">
-        {paths.map((path, level) => {
-          const levelColor = isMassive
-            ? 'blue'
-            : treeLevelsColors[level % treeLevelsColors.length];
-          return (
-            <path
-              key={path.join(`%${level}`)}
-              d={path.join(' ')}
-              fill="none"
-              stroke={levelColor}
-            />
-          );
-        })}
-      </g>
-      <g className="multiplicity-tree-ration-labels">
-        {!isMassive &&
-          otherNodes.map((node, index) => {
-            const { x, level, ratio } = node;
-            const x1 = scaleX()(x);
-
-            const y = levelLength * level + tailLength + tailLength / 2;
-            const levelColor =
-              treeLevelsColors[level % treeLevelsColors.length];
-
+        <g className="multiplicity-tree-head">
+          <text
+            x={headX}
+            y={startY - headTextMargin}
+            textAnchor="middle"
+            fontSize={multiplicityTextSize}
+            fill="black"
+          >
+            {multiplicity}
+          </text>
+          <line
+            x1={headX}
+            x2={headX}
+            y1={startY}
+            y2={startY + tailLength}
+            stroke={treeLevelsColors[0]}
+          />
+        </g>
+        <g className="multiplicity-tree-lines">
+          {paths.map((path, level) => {
+            const levelColor = isMassive
+              ? 'blue'
+              : treeLevelsColors[level % treeLevelsColors.length];
             return (
-              <text
-                key={index}
-                x={x1}
-                y={startY + y}
-                textAnchor="middle"
-                alignmentBaseline="middle"
-                fontSize={rationTextSize}
-                fill={levelColor}
-              >
-                {ratio}
-              </text>
+              <path
+                key={path.join(`%${level}`)}
+                d={path.join(' ')}
+                fill="none"
+                stroke={levelColor}
+              />
             );
           })}
-      </g>
-      <AssignmentActionsButtons
-        className="signal-target"
-        isActive={
-          isAssignmentActive || (Array.isArray(diaIDs) && diaIDs.length > 0)
-        }
-        y={startY - 16}
-        x={headX - 30}
-        onAssign={assignHandler}
-        onUnAssign={unAssignHandler}
-        borderRadius={16}
-      />
-    </Group>
+        </g>
+        <g className="multiplicity-tree-ration-labels">
+          {!isMassive &&
+            otherNodes.map((node, index) => {
+              const { x, level, ratio } = node;
+              const x1 = scaleX()(x);
+
+              const y = levelLength * level + tailLength + tailLength / 2;
+              const levelColor =
+                treeLevelsColors[level % treeLevelsColors.length];
+
+              return (
+                <text
+                  key={index}
+                  x={x1}
+                  y={startY + y}
+                  textAnchor="middle"
+                  alignmentBaseline="middle"
+                  fontSize={rationTextSize}
+                  fill={levelColor}
+                >
+                  {ratio}
+                </text>
+              );
+            })}
+        </g>
+      </Group>
+    </ActionsButtonsPopover>
   );
 }
 
