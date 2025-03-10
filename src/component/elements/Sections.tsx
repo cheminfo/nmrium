@@ -10,13 +10,13 @@ import type {
 import { createContext, useContext, useMemo } from 'react';
 
 interface SelectionsContextState {
-  overflow: boolean;
+  isOverflow: boolean;
   renderActiveSectionContentOnly: boolean;
   matchContentHeight: boolean;
 }
 
 const selectionState: SelectionsContextState = {
-  overflow: false,
+  isOverflow: false,
   renderActiveSectionContentOnly: false,
   matchContentHeight: false,
 };
@@ -34,19 +34,19 @@ export function useSections() {
 
 interface ActiveProps {
   isOpen: boolean;
-  overflow?: boolean;
+  isOverflow?: boolean;
 }
 
 const Container = styled.div<{
-  overflow: boolean;
+  isOverflow: boolean;
   matchContentHeight: boolean;
 }>(
-  ({ overflow, matchContentHeight }) => `
+  ({ isOverflow, matchContentHeight }) => `
   width: 100%;
   height: ${matchContentHeight ? 'auto' : '100%'};
   display: flex;
   flex-direction: column;
-  overflow: ${overflow ? 'auto' : 'hidden'};
+  overflow: ${isOverflow ? 'auto' : 'hidden'};
   border: 1px solid #ddd;
 `,
 );
@@ -54,15 +54,19 @@ const Container = styled.div<{
 const SectionWrapper = styled.div<
   ActiveProps & { matchContentHeight: boolean }
 >(
-  ({ isOpen, overflow, matchContentHeight }) => `
+  ({ isOpen, isOverflow, matchContentHeight }) => `
   display: flex;
   flex-direction: column;
   flex:none;
-  flex: ${isOpen && !matchContentHeight ? (overflow ? '1' : overflow ? '1' : '1 1 1px') : 'none'};
+  flex: ${isOpen && !matchContentHeight ? (isOverflow ? '1' : isOverflow ? '1' : '1 1 1px') : 'none'};
 `,
 );
 
-const Active = styled(Tag)<ActiveProps>(
+const Active = styled(Tag, {
+  shouldForwardProp: (propName) => {
+    return propName !== 'isOpen';
+  },
+})<ActiveProps>(
   ({ isOpen }) => `
 background-color: ${isOpen ? '#4CAF50' : '#ccc'};
 color: ${isOpen ? 'white' : 'black'};
@@ -86,17 +90,21 @@ const Title = styled.div`
   font-weight: 500;
 `;
 
-const OpenIcon = styled(Icon)<ActiveProps>`
+const OpenIcon = styled(Icon, {
+  shouldForwardProp: (propName) => {
+    return propName !== 'isOpen';
+  },
+})<ActiveProps>`
   transform: ${({ isOpen }) => (isOpen ? 'rotate(90deg)' : 'rotate(0deg)')};
   transition: transform 0.3s ease;
   margin-left: 10px;
 `;
 
 const ContentWrapper = styled.div<ActiveProps>(
-  ({ isOpen, overflow }) => `
+  ({ isOpen, isOverflow }) => `
   background-color: white;
   display: ${isOpen ? 'flex' : 'none'};
-  flex: ${isOpen ? (overflow ? '1' : '1 1 1px') : 'none'};
+  flex: ${isOpen ? (isOverflow ? '1' : '1 1 1px') : 'none'};
   max-height: 100%;
   flex-direction:column;
 `,
@@ -140,8 +148,8 @@ const InnerHeader = styled.div`
 interface BaseSectionProps {
   title: string;
   serial?: number;
-  rightElement?: ReactNode | ((isOpen) => ReactNode);
-  leftElement?: ReactNode | ((isOpen) => ReactNode);
+  rightElement?: ReactNode | ((isOpen: boolean) => ReactNode);
+  leftElement?: ReactNode | ((isOpen: boolean) => ReactNode);
   headerStyle?: CSSProperties;
   arrowProps?: { style?: CSSProperties; hide?: boolean };
 }
@@ -156,7 +164,7 @@ interface SectionItemProps extends BaseSectionProps {
 
 interface SectionProps {
   children?: ReactNode;
-  overflow?: boolean;
+  isOverflow?: boolean;
   renderActiveSectionContentOnly?: boolean;
   matchContentHeight?: boolean;
 }
@@ -164,17 +172,20 @@ interface SectionProps {
 export function Sections(props: SectionProps) {
   const {
     children,
-    overflow = false,
+    isOverflow = false,
     renderActiveSectionContentOnly = false,
     matchContentHeight = false,
   } = props;
 
   const state = useMemo(() => {
-    return { overflow, renderActiveSectionContentOnly, matchContentHeight };
-  }, [overflow, renderActiveSectionContentOnly, matchContentHeight]);
+    return { isOverflow, renderActiveSectionContentOnly, matchContentHeight };
+  }, [isOverflow, renderActiveSectionContentOnly, matchContentHeight]);
   return (
     <SectionsContext.Provider value={state}>
-      <Container overflow={overflow} matchContentHeight={matchContentHeight}>
+      <Container
+        isOverflow={isOverflow}
+        matchContentHeight={matchContentHeight}
+      >
         {children}
       </Container>
     </SectionsContext.Provider>
@@ -207,12 +218,12 @@ function SectionItem(props: SectionItemProps) {
     arrowProps = { hide: false, style: {} },
   } = props;
 
-  const { overflow, matchContentHeight } = useSections();
+  const { isOverflow, matchContentHeight } = useSections();
 
   return (
     <SectionWrapper
       isOpen={isOpen}
-      overflow={overflow}
+      isOverflow={isOverflow}
       matchContentHeight={matchContentHeight}
     >
       <MainSectionHeader
@@ -237,7 +248,7 @@ interface WrapperProps {
 }
 
 function Wrapper(props: WrapperProps) {
-  const { overflow, renderActiveSectionContentOnly } = useSections();
+  const { isOverflow, renderActiveSectionContentOnly } = useSections();
 
   const { children, isOpen } = props;
 
@@ -246,7 +257,7 @@ function Wrapper(props: WrapperProps) {
   }
 
   return (
-    <ContentWrapper isOpen={isOpen} overflow={overflow}>
+    <ContentWrapper isOpen={isOpen} isOverflow={isOverflow}>
       {typeof children === 'function' ? children({ isOpen }) : children}
     </ContentWrapper>
   );
