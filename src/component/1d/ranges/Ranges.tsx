@@ -13,14 +13,12 @@ import Range from './Range.js';
 interface RangesInnerProps {
   selectedTool: string;
   ranges: RangesProps;
-  showMultiplicityTrees: boolean;
   relativeFormat: string;
 }
 
 function RangesInner({
   ranges,
   selectedTool,
-  showMultiplicityTrees,
   relativeFormat,
 }: RangesInnerProps) {
   return (
@@ -31,7 +29,6 @@ function RangesInner({
             key={range.id}
             range={range}
             selectedTool={selectedTool}
-            showMultiplicityTrees={showMultiplicityTrees}
             relativeFormat={relativeFormat}
           />
         ))}
@@ -52,8 +49,7 @@ export default function Ranges() {
     },
     toolOptions: { selectedTool },
   } = useChartData();
-  const { showMultiplicityTrees, showIntegrals } =
-    useActiveSpectrumRangesViewState();
+  const { showIntegrals } = useActiveSpectrumRangesViewState();
   const spectrum = useSpectrum(emptyData) as Spectrum1D;
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
 
@@ -69,7 +65,6 @@ export default function Ranges() {
     <MemoizedRanges
       ranges={spectrum.ranges}
       {...{
-        showMultiplicityTrees,
         showIntegrals,
         selectedTool,
         displayerKey,

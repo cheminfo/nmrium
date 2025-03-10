@@ -1,5 +1,5 @@
-import styled from '@emotion/styled';
 import type { Range as RangeType } from 'nmr-processing';
+import { useRef } from 'react';
 import { LuLink, LuUnlink } from 'react-icons/lu';
 import { PiTextTBold, PiTextTSlashBold } from 'react-icons/pi';
 
@@ -34,20 +34,7 @@ import { useScaleX } from '../utilities/scale.js';
 import { AssignmentLabel } from './AssignmentLabel.js';
 import { Atoms } from './Atoms.js';
 
-const Group = styled.g<{ isActive: boolean }>`
-  .target {
-    visibility: ${({ isActive }) => (isActive ? 'visible' : 'hidden')};
-  }
-
-  &:hover {
-    .target {
-      visibility: visible;
-    }
-  }
-`;
-
 interface RangeProps {
-  showMultiplicityTrees: boolean;
   selectedTool: string;
   range: RangeType;
   relativeFormat: string;
@@ -65,6 +52,7 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
   } = range;
   const isInset = useIsInset();
   const spectrum = useSpectrum();
+  const isAssignBtnTrigged = useRef(false);
 
   const highlightColor = useHighlightColor();
   const assignmentData = useAssignmentContext();
@@ -121,6 +109,7 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
 
   function assignHandler() {
     if (!isBlockedByEditing) {
+      isAssignBtnTrigged.current = true;
       assignmentRange.activate('x');
     }
   }
@@ -182,21 +171,26 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
       visible: !!assignment,
     },
   ];
+
+  const isOpen = isAssignBtnTrigged.current ? isAssignmentActive : undefined;
+
   return (
-    <Group
-      data-testid="range"
-      style={{ outline: 'none' }}
-      key={id}
-      onMouseEnter={mouseEnterHandler}
-      onMouseLeave={mouseLeaveHandler}
-      isActive={isAssignmentActive}
+    <ActionsButtonsPopover
+      targetTagName="g"
+      isOpen={isOpen}
+      buttons={actionsButtons}
+      space={2}
+      disabled={isInset}
+      onClosed={() => {
+        isAssignBtnTrigged.current = false;
+      }}
     >
-      <ActionsButtonsPopover
-        targetTagName="g"
-        {...(isAssignmentActive && { isOpen: true })}
-        buttons={actionsButtons}
-        space={2}
-        disabled={isInset}
+      <g
+        data-testid="range"
+        style={{ outline: 'none' }}
+        key={id}
+        onMouseEnter={mouseEnterHandler}
+        onMouseLeave={mouseLeaveHandler}
       >
         <ResizerWithScale
           from={from}
@@ -239,8 +233,8 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
             );
           }}
         </ResizerWithScale>
-      </ActionsButtonsPopover>
-    </Group>
+      </g>
+    </ActionsButtonsPopover>
   );
 }
 
