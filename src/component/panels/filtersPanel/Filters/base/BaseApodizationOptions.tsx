@@ -85,7 +85,11 @@ export function BaseApodizationOptions(
           </StickyHeader>
         )}
         <Sections.Body>
-          <Sections overflow renderActiveSectionContentOnly matchContentHeight>
+          <Sections
+            isOverflow
+            renderActiveSectionContentOnly
+            matchContentHeight
+          >
             <ExponentialSectionOptionsSection
               onChange={() => submitHandler()}
             />
