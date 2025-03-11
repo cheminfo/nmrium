@@ -5,16 +5,8 @@ interface RangeOptions {
   endX: number;
 }
 
-export function orderRange(start, end) {
-  const range: [number, number] = [0, 0];
-  if (start > end) {
-    range[0] = end;
-    range[1] = start;
-  } else {
-    range[0] = start;
-    range[1] = end;
-  }
-  return range;
+export function sortRange(start: number, end: number): [number, number] {
+  return start > end ? [end, start] : [start, end];
 }
 
 export default function getRange(
@@ -26,5 +18,5 @@ export default function getRange(
 
   const start = scaleX.invert(startX);
   const end = scaleX.invert(endX);
-  return orderRange(start, end);
+  return sortRange(start, end);
 }

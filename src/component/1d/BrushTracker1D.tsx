@@ -24,7 +24,7 @@ import { usePanelPreferences } from '../hooks/usePanelPreferences.js';
 import useSpectrum from '../hooks/useSpectrum.js';
 import MultipletAnalysisModal from '../modal/MultipletAnalysisModal.js';
 import { ZOOM_TYPES } from '../reducer/helper/Zoom1DManager.js';
-import getRange from '../reducer/helper/getRange.js';
+import { sortRange } from '../reducer/helper/getRange.js';
 import type { Tool } from '../toolbar/ToolTypes.js';
 import { options } from '../toolbar/ToolTypes.js';
 import Events from '../utility/Events.js';
@@ -126,16 +126,13 @@ export function BrushTracker1D({ children }) {
 
       const keyModifiers = getModifiersKey(brushData as unknown as MouseEvent);
 
-      const selectRange = getRange(state, {
-        startX: brushData.startX,
-        endX: brushData.endX,
-      });
+      const selectRange = sortRange(brushDataInPPM.startX, brushDataInPPM.endX);
 
       if (brushData.mouseButton === 'main') {
         const propagateEvent = () => {
           Events.emit('brushEnd', {
             ...brushData,
-            range: [brushDataInPPM.startX, brushDataInPPM.endX],
+            range: selectRange,
           });
         };
 
@@ -172,17 +169,17 @@ export function BrushTracker1D({ children }) {
 
                 break;
               }
-              case options.multipleSpectraAnalysis.id:
+              case options.multipleSpectraAnalysis.id: {
                 dispatchPreferences({
                   type: 'ANALYZE_SPECTRA',
                   payload: {
-                    start: brushDataInPPM.startX,
-                    end: brushDataInPPM.endX,
+                    start: brushData.startX,
+                    end: brushData.endX,
                     nucleus: activeTab,
                   },
                 });
                 break;
-
+              }
               case options.peakPicking.id:
                 dispatch({
                   type: 'ADD_PEAKS',
@@ -271,7 +268,6 @@ export function BrushTracker1D({ children }) {
     },
     [
       getModifiersKey,
-      state,
       selectedTool,
       primaryKeyIdentifier,
       dispatch,
