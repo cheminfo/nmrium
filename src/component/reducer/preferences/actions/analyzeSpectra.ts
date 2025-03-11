@@ -1,7 +1,7 @@
 import type { Draft } from 'immer';
 
 import * as MultipleAnalysis from '../../../../data/data1d/multipleSpectraAnalysis.js';
-import { orderRange } from '../../helper/getRange.js';
+import { sortRange } from '../../helper/getRange.js';
 import { getMultipleSpectraAnalysisDefaultValues } from '../panelsPreferencesDefaultValues.js';
 import type {
   AnalyzeSpectraAction,
@@ -25,7 +25,7 @@ export function analyzeSpectra(
       getMultipleSpectraAnalysisDefaultValues(nucleus);
   }
 
-  const [from, to] = orderRange(start, end);
+  const [from, to] = sortRange(start, end);
 
   MultipleAnalysis.analyzeSpectra(panels.multipleSpectraAnalysis, {
     from,
