@@ -133,10 +133,12 @@ function DatabasePanelInner({
   );
 
   useEffect(() => {
+    if (!databaseInstance.current) return;
+
     const { solvent, searchKeywords } = keywords;
-    setTimeout(() => {
+    const runner = async () => {
       if (databaseInstance.current) {
-        const hideLoading = toaster.showLoading({
+        const hideLoading = await toaster.showAsyncLoading({
           message: 'Preparing of the Result',
         });
         if (solvent === '-1' && !searchKeywords) {
@@ -149,7 +151,9 @@ function DatabasePanelInner({
         }
         hideLoading();
       }
-    }, 0);
+    };
+
+    void runner();
   }, [idCode, keywords, search, toaster]);
 
   useEffect(() => {
@@ -177,20 +181,22 @@ function DatabasePanelInner({
   }, [format, selectedTool]);
 
   useEffect(() => {
-    setTimeout(() => {
-      if (databaseInstance.current) {
-        const hideLoading = toaster.showLoading({
-          message: 'Loading the database',
-        });
+    if (!databaseInstance.current) return;
 
-        databaseInstance.current = initiateDatabase(
-          databaseDataRef.current,
-          nucleus,
-        );
-        hideLoading();
-        setKeywords({ ...emptyKeywords });
-      }
-    }, 0);
+    const runner = async () => {
+      const hideLoading = await toaster.showAsyncLoading({
+        message: 'Loading the database',
+      });
+
+      databaseInstance.current = initiateDatabase(
+        databaseDataRef.current,
+        nucleus,
+      );
+      hideLoading();
+      setKeywords({ ...emptyKeywords });
+    };
+
+    void runner();
   }, [nucleus, toaster]);
 
   const handleChangeDatabase = useCallback(
@@ -201,7 +207,7 @@ function DatabasePanelInner({
         if (database?.url) {
           const { url, label } = database;
 
-          const hideLoading = toaster.showLoading({
+          const hideLoading = await toaster.showAsyncLoading({
             message: `load ${label} database`,
           });
 
@@ -227,7 +233,7 @@ function DatabasePanelInner({
             ?.value as DatabaseNMREntry[];
         }
 
-        const hideLoading = toaster.showLoading({
+        const hideLoading = await toaster.showAsyncLoading({
           message: 'Loading the database',
         });
 
