@@ -3,9 +3,11 @@ import { useCallback } from 'react';
 import type { ExportOptions } from '../../data/SpectraManager.js';
 import { toJSON } from '../../data/SpectraManager.js';
 import { useChartData } from '../context/ChartContext.js';
+import { useLogger } from '../context/LoggerContext.js';
 import { usePreferences } from '../context/PreferencesContext.js';
 import { useToaster } from '../context/ToasterContext.js';
 import {
+  browserNotSupportedErrorToast,
   copyPNGToClipboard,
   exportAsJSON,
   exportAsPng,
@@ -82,9 +84,10 @@ export function useExport() {
 export function useExportViewPort() {
   const toaster = useToaster();
   const state = useChartData();
+  const loggerContext = useLogger();
 
   function copyPNGToClipboardHandler(targetElement: HTMLElement) {
-    return new Promise<void>((resolve) => {
+    return new Promise<void>((resolve, reject) => {
       if (state.data.length === 0 || !targetElement) {
         return;
       }
@@ -94,15 +97,23 @@ export function useExportViewPort() {
       });
 
       setTimeout(async () => {
-        await copyPNGToClipboard('nmrSVG', {
-          rootElement: targetElement,
-        });
-        toaster.show({
-          message: 'Image copied to clipboard',
-          intent: 'success',
-        });
-        hideLoading();
-        resolve();
+        try {
+          await copyPNGToClipboard('nmrSVG', {
+            rootElement: targetElement,
+          });
+          toaster.show({
+            message: 'Image copied to clipboard',
+            intent: 'success',
+          });
+          resolve();
+        } catch (error: unknown) {
+          loggerContext.logger.error(error as Error);
+          reject(error as Error);
+
+          toaster.show(browserNotSupportedErrorToast);
+        } finally {
+          hideLoading();
+        }
       }, 0);
     });
   }
@@ -129,7 +140,7 @@ export function useExportViewPort() {
   }
 
   function saveAsPNGHandler(targetElement: HTMLElement) {
-    return new Promise<void>((resolve) => {
+    return new Promise<void>((resolve, reject) => {
       if (state.data.length === 0 || !targetElement) {
         return;
       }
@@ -138,13 +149,20 @@ export function useExportViewPort() {
         message: 'Exporting as PNG process in progress',
       });
       void setTimeout(async () => {
-        const fileName = state.data[0]?.info?.name;
-        void exportAsPng('nmrSVG', {
-          rootElement: targetElement,
-          fileName,
-        });
-        hideLoading();
-        resolve();
+        try {
+          const fileName = state.data[0]?.info?.name;
+          await exportAsPng('nmrSVG', {
+            rootElement: targetElement,
+            fileName,
+          });
+          resolve();
+        } catch (error: unknown) {
+          loggerContext.logger.error(error as Error);
+          reject(error as Error);
+          toaster.show(browserNotSupportedErrorToast);
+        } finally {
+          hideLoading();
+        }
       }, 0);
     });
   }
