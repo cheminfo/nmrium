@@ -1,8 +1,15 @@
+import type { ToastProps } from '@blueprintjs/core';
 import type { SerializedStyles } from '@emotion/react';
 import dlv from 'dlv';
 import fileSaver from 'file-saver';
 import JSZip from 'jszip';
 import type { JpathTableColumn, SpectraTableColumn } from 'nmr-load-save';
+
+export const browserNotSupportedErrorToast: ToastProps = {
+  message:
+    'Your browser does not support this feature, please use the latest version of Google Chrome or Firefox',
+  intent: 'danger',
+};
 
 /**
  * export the experiments result in JSON format
@@ -262,19 +269,14 @@ async function exportAsPng(
   const { rootElement, fileName = 'experiment' } = options;
   const { blob, width, height } = getBlob(targetElementID, { rootElement });
 
-  try {
-    const { canvas } = await createCanvas(blob, {
-      width,
-      height,
-      scaleFactor: 1,
-    });
+  const { canvas } = await createCanvas(blob, {
+    width,
+    height,
+    scaleFactor: 1,
+  });
 
-    const pngBlob = await canvas.convertToBlob({ type: 'image/png' });
-    fileSaver.saveAs(pngBlob, `${fileName}.png`);
-  } catch (error) {
-    // TODO: handle error.
-    reportError(error);
-  }
+  const pngBlob = await canvas.convertToBlob({ type: 'image/png' });
+  fileSaver.saveAs(pngBlob, `${fileName}.png`);
 }
 
 function createImageFromBlob(blob: Blob): Promise<HTMLImageElement> {
@@ -382,23 +384,12 @@ async function copyPNGToClipboard(
     css,
   });
 
-  try {
-    const { canvas } = await createCanvas(blob, {
-      width,
-      height,
-      scaleFactor: 1,
-    });
-    await copyBlobToClipboard(canvas);
-  } catch (error) {
-    if (error instanceof ReferenceError) {
-      // eslint-disable-next-line no-alert
-      globalThis.alert(
-        'Your browser does not support this feature, please use Google Chrome or Firefox',
-      );
-    }
-    // TODO: handle error.
-    reportError(error);
-  }
+  const { canvas } = await createCanvas(blob, {
+    width,
+    height,
+    scaleFactor: 1,
+  });
+  await copyBlobToClipboard(canvas);
 }
 
 export interface BlobObject {

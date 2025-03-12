@@ -16,6 +16,7 @@ import type { SpectraAnalysisData } from '../../../data/data1d/multipleSpectraAn
 import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents.js';
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks.js';
 import { useChartData } from '../../context/ChartContext.js';
+import { useLogger } from '../../context/LoggerContext.js';
 import { useSortSpectra } from '../../context/SortSpectraContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import { Input2 } from '../../elements/Input2.js';
@@ -24,7 +25,10 @@ import type { ToolbarPopoverMenuItem } from '../../elements/ToolbarPopoverItem.j
 import { ToolbarPopoverItem } from '../../elements/ToolbarPopoverItem.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus.js';
-import { copyPNGToClipboard } from '../../utility/export.js';
+import {
+  browserNotSupportedErrorToast,
+  copyPNGToClipboard,
+} from '../../utility/export.js';
 import { getSpectraObjectPaths } from '../../utility/getSpectraObjectPaths.js';
 
 const MOL_EXPORT_MENU: ToolbarPopoverMenuItem[] = [
@@ -214,6 +218,7 @@ export default function AnalysisChart(props: PlotChartPros) {
   const spectraPreferences = usePanelPreferences('spectra', activeTab);
   const { sort } = useSortSpectra();
   const spectra = useSpectraByActiveNucleus();
+  const loggerContext = useLogger();
 
   const chartParentRef = useRef<HTMLDivElement>(null);
   const [plotOptions, setPlotOptions] = useState<PlotAxisOptions>({
@@ -243,13 +248,18 @@ export default function AnalysisChart(props: PlotChartPros) {
     setPlotOptions((prevOptions) => ({ ...prevOptions, [name]: value }));
   }
 
-  function handleCopyChart() {
-    if (chartParentRef.current) {
-      void copyPNGToClipboard(svgId, {
+  async function handleCopyChart() {
+    if (!chartParentRef.current) return;
+
+    try {
+      await copyPNGToClipboard(svgId, {
         rootElement: chartParentRef.current,
         css: css({ text: { fill: 'black' } }),
       });
       toaster.show({ message: 'Chart copied to clipboard', intent: 'success' });
+    } catch (error: unknown) {
+      loggerContext.logger.error(error as Error);
+      toaster.show(browserNotSupportedErrorToast);
     }
   }
 
@@ -279,7 +289,7 @@ export default function AnalysisChart(props: PlotChartPros) {
   function exportHandler(selected) {
     switch (selected?.id) {
       case 'copyChart': {
-        handleCopyChart();
+        void handleCopyChart();
         break;
       }
       case 'copyData': {

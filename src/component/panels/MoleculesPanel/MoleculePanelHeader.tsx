@@ -22,12 +22,17 @@ import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardCompon
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useGlobal } from '../../context/GlobalContext.js';
+import { useLogger } from '../../context/LoggerContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import type { ToolbarPopoverMenuItem } from '../../elements/ToolbarPopoverItem.js';
 import { ToolbarPopoverItem } from '../../elements/ToolbarPopoverItem.js';
 import AboutPredictionModal from '../../modal/AboutPredictionModal.js';
 import PredictSpectraModal from '../../modal/PredictSpectraModal.js';
-import { copyPNGToClipboard, exportAsSVG } from '../../utility/export.js';
+import {
+  browserNotSupportedErrorToast,
+  copyPNGToClipboard,
+  exportAsSVG,
+} from '../../utility/export.js';
 
 const styles: Record<'atomLabel', CSSProperties> = {
   atomLabel: {
@@ -96,6 +101,8 @@ export default function MoleculePanelHeader({
   const { rootRef } = useGlobal();
   const toaster = useToaster();
   const dispatch = useDispatch();
+  const loggerContext = useLogger();
+
   const moleculeKey = molecules?.[currentIndex]?.id;
   const saveAsSVGHandler = useCallback(() => {
     if (!rootRef) return;
@@ -107,12 +114,20 @@ export default function MoleculePanelHeader({
 
   const saveAsPNGHandler = useCallback(async () => {
     if (!rootRef) return;
-    await copyPNGToClipboard(`molSVG${currentIndex}`, { rootElement: rootRef });
-    toaster.show({
-      message: 'MOL copied as PNG to clipboard',
-      intent: 'success',
-    });
-  }, [rootRef, currentIndex, toaster]);
+
+    try {
+      await copyPNGToClipboard(`molSVG${currentIndex}`, {
+        rootElement: rootRef,
+      });
+      toaster.show({
+        message: 'MOL copied as PNG to clipboard',
+        intent: 'success',
+      });
+    } catch (error: unknown) {
+      loggerContext.logger.error(error as Error);
+      toaster.show(browserNotSupportedErrorToast);
+    }
+  }, [rootRef, currentIndex, toaster, loggerContext.logger]);
 
   const {
     rawWriteWithType,
