@@ -22,7 +22,6 @@ import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardCompon
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useGlobal } from '../../context/GlobalContext.js';
-import { useLogger } from '../../context/LoggerContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import type { ToolbarPopoverMenuItem } from '../../elements/ToolbarPopoverItem.js';
 import { ToolbarPopoverItem } from '../../elements/ToolbarPopoverItem.js';
@@ -101,7 +100,6 @@ export default function MoleculePanelHeader({
   const { rootRef } = useGlobal();
   const toaster = useToaster();
   const dispatch = useDispatch();
-  const loggerContext = useLogger();
 
   const moleculeKey = molecules?.[currentIndex]?.id;
   const saveAsSVGHandler = useCallback(() => {
@@ -123,11 +121,10 @@ export default function MoleculePanelHeader({
         message: 'MOL copied as PNG to clipboard',
         intent: 'success',
       });
-    } catch (error: unknown) {
-      loggerContext.logger.error(error as Error);
+    } catch {
       toaster.show(browserNotSupportedErrorToast);
     }
-  }, [rootRef, currentIndex, toaster, loggerContext.logger]);
+  }, [rootRef, currentIndex, toaster]);
 
   const {
     rawWriteWithType,

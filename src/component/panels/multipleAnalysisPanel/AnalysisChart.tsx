@@ -16,7 +16,6 @@ import type { SpectraAnalysisData } from '../../../data/data1d/multipleSpectraAn
 import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents.js';
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks.js';
 import { useChartData } from '../../context/ChartContext.js';
-import { useLogger } from '../../context/LoggerContext.js';
 import { useSortSpectra } from '../../context/SortSpectraContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import { Input2 } from '../../elements/Input2.js';
@@ -218,7 +217,6 @@ export default function AnalysisChart(props: PlotChartPros) {
   const spectraPreferences = usePanelPreferences('spectra', activeTab);
   const { sort } = useSortSpectra();
   const spectra = useSpectraByActiveNucleus();
-  const loggerContext = useLogger();
 
   const chartParentRef = useRef<HTMLDivElement>(null);
   const [plotOptions, setPlotOptions] = useState<PlotAxisOptions>({
@@ -257,8 +255,7 @@ export default function AnalysisChart(props: PlotChartPros) {
         css: css({ text: { fill: 'black' } }),
       });
       toaster.show({ message: 'Chart copied to clipboard', intent: 'success' });
-    } catch (error: unknown) {
-      loggerContext.logger.error(error as Error);
+    } catch {
       toaster.show(browserNotSupportedErrorToast);
     }
   }

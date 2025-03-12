@@ -3,7 +3,6 @@ import { useCallback } from 'react';
 import type { ExportOptions } from '../../data/SpectraManager.js';
 import { toJSON } from '../../data/SpectraManager.js';
 import { useChartData } from '../context/ChartContext.js';
-import { useLogger } from '../context/LoggerContext.js';
 import { usePreferences } from '../context/PreferencesContext.js';
 import { useToaster } from '../context/ToasterContext.js';
 import {
@@ -84,7 +83,6 @@ export function useExport() {
 export function useExportViewPort() {
   const toaster = useToaster();
   const state = useChartData();
-  const loggerContext = useLogger();
 
   function copyPNGToClipboardHandler(targetElement: HTMLElement) {
     return new Promise<void>((resolve, reject) => {
@@ -107,10 +105,8 @@ export function useExportViewPort() {
           });
           resolve();
         } catch (error: unknown) {
-          loggerContext.logger.error(error as Error);
-          reject(error as Error);
-
           toaster.show(browserNotSupportedErrorToast);
+          reject(error as Error);
         } finally {
           hideLoading();
         }
@@ -157,9 +153,8 @@ export function useExportViewPort() {
           });
           resolve();
         } catch (error: unknown) {
-          loggerContext.logger.error(error as Error);
-          reject(error as Error);
           toaster.show(browserNotSupportedErrorToast);
+          reject(error as Error);
         } finally {
           hideLoading();
         }
