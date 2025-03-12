@@ -17,7 +17,10 @@ import { ExportContent } from './ExportContent.js';
 
 export type ExportFormat = 'png' | 'svg';
 export type ExportDestination = 'file' | 'clipboard';
-
+type ExportHandlers = Record<
+  ExportDestination,
+  Partial<Record<ExportFormat, (targetElement: HTMLElement) => Promise<void>>>
+>;
 interface ExportOptions {
   format: ExportFormat;
   destination?: ExportDestination;
@@ -89,55 +92,44 @@ export function ExportManagerController(props: ExportManagerControllerProps) {
     triggerExport(null);
   }
 
-  async function handleExport(
-    targetElement: HTMLElement,
-    options: ExportSettings,
-  ) {
+  function handleExport(targetElement: HTMLElement, options: ExportSettings) {
     if (!exportOptions) {
       return null;
     }
 
     const { format, destination = 'file' } = exportOptions;
-    let exportKey: keyof ExportPreferences = format;
 
-    if (destination === 'file') {
-      switch (format) {
-        case 'png':
-          await saveAsPNGHandler(targetElement);
-          break;
-        case 'svg':
-          await saveAsSVGHandler(targetElement);
-          break;
+    const handlers: ExportHandlers = {
+      file: {
+        png: saveAsPNGHandler,
+        svg: saveAsSVGHandler,
+      },
+      clipboard: {
+        png: copyPNGToClipboardHandler,
+      },
+    };
 
-        default:
-          // eslint-disable-next-line no-console
-          console.error(
-            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-            `Unsupported format '${format}' for destination 'file'.`,
-          );
-          break;
+    const runExport = async () => {
+      const handler = handlers[destination]?.[format];
+      if (handler) {
+        await handler(targetElement);
+      } else {
+        // eslint-disable-next-line no-console
+        console.error(
+          `Unsupported format '${format}' for destination '${destination}'.`,
+        );
       }
-    }
-    if (destination === 'clipboard') {
-      exportKey = 'clipboard';
-      switch (format) {
-        case 'png':
-          await copyPNGToClipboardHandler(targetElement);
-          break;
-        default:
-          // eslint-disable-next-line no-console
-          console.error(
-            `Unsupported format '${format}' for destination 'clipboard'.`,
-          );
-          break;
-      }
-    }
-    handleCloseExportOptionsDialog();
-    dispatch({
-      type: 'CHANGE_EXPORT_SETTINGS',
-      payload: { key: exportKey, options },
-    });
+
+      handleCloseExportOptionsDialog();
+      dispatch({
+        type: 'CHANGE_EXPORT_SETTINGS',
+        payload: { key: format, options },
+      });
+    };
+
+    void runExport();
   }
+
   const { width } = useChartData();
 
   if (!exportOptions) return null;
