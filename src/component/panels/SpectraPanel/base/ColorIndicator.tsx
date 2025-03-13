@@ -1,14 +1,5 @@
 import type { Display1D, Display2D } from 'nmr-load-save';
-import type { CSSProperties } from 'react';
-import { memo } from 'react';
 
-const buttonStyle: CSSProperties = {
-  backgroundColor: 'transparent',
-  border: 'none',
-  width: '20px',
-  height: '20px',
-  margin: 'auto',
-};
 interface ColorIndicator1DProps {
   display: Display1D;
 }
@@ -42,23 +33,16 @@ function ColorIndicator2D({ display }: ColorIndicator2DProps) {
 }
 
 interface ColorIndicatorProps {
-  onClick: (e: any) => void;
   display: Display1D | Display2D;
   dimension: number;
 }
 
-function ColorIndicator(props: ColorIndicatorProps) {
-  const { onClick = () => null, display, dimension } = props;
+export function ColorIndicator(props: ColorIndicatorProps) {
+  const { display, dimension } = props;
 
-  return (
-    <button style={buttonStyle} type="button" onClick={onClick}>
-      {dimension === 2 ? (
-        <ColorIndicator2D display={display as Display2D} />
-      ) : (
-        <ColorIndicator1D display={display as Display1D} />
-      )}
-    </button>
-  );
+  if (dimension === 2) {
+    return <ColorIndicator2D display={display as Display2D} />;
+  }
+
+  return <ColorIndicator1D display={display as Display1D} />;
 }
-
-export default memo(ColorIndicator);

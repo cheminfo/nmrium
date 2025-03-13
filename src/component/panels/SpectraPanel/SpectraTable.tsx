@@ -29,11 +29,11 @@ import ReactTable from '../../elements/ReactTable/ReactTable.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import ExportAsJcampModal from '../../modal/ExportAsJcampModal.js';
 
-import ColorIndicator from './base/ColorIndicator.js';
 import { RenderAsHTML } from './base/RenderAsHTML.js';
 import type { OnChangeVisibilityEvent } from './base/ShowHideSpectrumButton.js';
 import ShowHideSpectrumButton from './base/ShowHideSpectrumButton.js';
 import { SpectrumName } from './base/SpectrumName.js';
+import { SpectrumSetting } from './base/setting/SpectrumSetting.js';
 
 function getActiveSpectraAsObject(activeSpectra: ActiveSpectrum[] | null) {
   const result = {};
@@ -56,7 +56,6 @@ const columnStyle: CSSProperties = {
 interface SpectraTableProps extends OnChangeVisibilityEvent {
   data: any;
   activeSpectra: ActiveSpectrum[] | null;
-  onOpenSettingModal: (event: Event, data: Spectrum) => void;
   onChangeActiveSpectrum: (event: Event, data: Spectrum) => void;
   nucleus: string;
 }
@@ -149,7 +148,6 @@ export function SpectraTable(props: SpectraTableProps) {
     data,
     activeSpectra,
     onChangeVisibility,
-    onOpenSettingModal,
     onChangeActiveSpectrum,
     nucleus,
   } = props;
@@ -201,16 +199,16 @@ export function SpectraTable(props: SpectraTableProps) {
           }
 
           return (
-            <ColorIndicator
+            <SpectrumSetting
+              data={row.original}
               display={display}
               dimension={dimension}
-              onClick={(event) => onOpenSettingModal(event, row.original)}
             />
           );
         },
       },
     }),
-    [onChangeVisibility, onOpenSettingModal],
+    [onChangeVisibility],
   );
 
   const selectContextMenuHandler = useCallback(

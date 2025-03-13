@@ -11,7 +11,7 @@ interface Spectrum1DSettingProps {
   onSubmit: (values: any) => void;
 }
 
-function Spectrum1DSetting({
+export function Spectrum1DSetting({
   data: SpectrumData,
   onSubmit,
 }: Spectrum1DSettingProps) {
@@ -45,5 +45,3 @@ function Spectrum1DSetting({
     </div>
   );
 }
-
-export default Spectrum1DSetting;

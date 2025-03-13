@@ -213,7 +213,9 @@ test('2d spectrum', async ({ page }) => {
     ).toBeVisible();
     // Close color picker
     await nmrium.viewer.locator.click({ force: true });
-    await expect(nmrium.page.locator('_react=ColorPicker')).toBeHidden();
+    await expect(
+      nmrium.page.locator('_react=SpectrumSettingContent'),
+    ).toBeHidden();
   });
   await test.step('Check hide spectra', async () => {
     // Hide positive spectrum
