@@ -40,7 +40,7 @@ const Container = styled.div<{ color: CSSProperties['backgroundColor'] }>`
     background-color: ${(props) => props.color} !important;
   }
 `;
-function Spectrum2DSetting({
+export function Spectrum2DSetting({
   data: SpectrumData,
   onSubmit,
 }: Spectrum2DSettingProps) {
@@ -154,5 +154,3 @@ function Settings(props: SettingsProps) {
     </>
   );
 }
-
-export default Spectrum2DSetting;

@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import type { ActiveSpectrum, Spectrum } from 'nmr-load-save';
-import { memo, useCallback, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
@@ -11,7 +11,6 @@ import { useSetActiveSpectrumAction } from '../../hooks/useSetActiveSpectrumActi
 import groupByInfoKey from '../../utility/GroupByInfoKey.js';
 
 import { SpectraTable } from './SpectraTable.js';
-import SpectrumSetting from './base/setting/SpectrumSetting.js';
 
 const Container = styled.div`
   height: calc(100% - 25px);
@@ -31,12 +30,6 @@ function SpectraTabsInner({
   activeSpectra,
   activeTab,
 }: SpectraTabsInnerProps) {
-  const [selectedSpectrumData, setSelectedSpectrum] = useState(null);
-  const [settingModalPosition, setSettingModalPosition] = useState<{
-    x: number;
-    y: number;
-  } | null>(null);
-  const [isSettingModalDisplayed, setIsSettingModalDisplayed] = useState(false);
   const dispatch = useDispatch();
 
   const spectraGroupByNucleus = useMemo(() => {
@@ -49,16 +42,6 @@ function SpectraTabsInner({
   function onTabChangeHandler(tab) {
     dispatch({ type: 'SET_ACTIVE_TAB', payload: { tab: tab.tabid } });
   }
-
-  const openSettingHandler = useCallback((event, selectedSpectrum) => {
-    event.stopPropagation();
-    setSettingModalPosition({
-      x: event.nativeEvent.clientX,
-      y: event.nativeEvent.clientY,
-    });
-    setSelectedSpectrum(selectedSpectrum);
-    setIsSettingModalDisplayed(true);
-  }, []);
 
   const handleChangeVisibility = useCallback(
     (d, key) => {
@@ -77,9 +60,9 @@ function SpectraTabsInner({
     setActiveSpectrum(e, spectrum.id);
   }
 
-  function mouseLeaveHandler() {
-    setIsSettingModalDisplayed(false);
-  }
+  // function mouseLeaveHandler() {
+  //   setIsSettingModalDisplayed(false);
+  // }
 
   return (
     <Container>
@@ -98,19 +81,10 @@ function SpectraTabsInner({
                 activeSpectra={activeSpectra?.[nucleus] || null}
                 onChangeVisibility={handleChangeVisibility}
                 onChangeActiveSpectrum={handleChangeActiveSpectrum}
-                onOpenSettingModal={openSettingHandler}
               />
             </Tab>
           ))}
       </Tabs>
-
-      {isSettingModalDisplayed ? (
-        <SpectrumSetting
-          onClose={mouseLeaveHandler}
-          data={selectedSpectrumData}
-          position={settingModalPosition}
-        />
-      ) : null}
     </Container>
   );
 }
