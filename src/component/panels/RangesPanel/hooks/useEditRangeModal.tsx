@@ -45,15 +45,14 @@ export default function useEditRangeModal() {
 
   const changeRangeSignalKind = useCallback(
     (kind, range: RangeData) => {
-      if (!range) {
-        dispatch({
-          type: 'CHANGE_RANGE_SIGNAL_KIND',
-          payload: {
-            range,
-            kind,
-          },
-        });
-      }
+      if (!range) return;
+      dispatch({
+        type: 'CHANGE_RANGE_SIGNAL_KIND',
+        payload: {
+          range,
+          kind,
+        },
+      });
     },
     [dispatch],
   );
