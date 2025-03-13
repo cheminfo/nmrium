@@ -6,8 +6,7 @@ import {
 import fileSaver from 'file-saver';
 import type { RangesViewState } from 'nmr-load-save';
 import type { Info1D, Ranges } from 'nmr-processing';
-import { rangesToACS, rangesToTSV } from 'nmr-processing';
-import { useState } from 'react';
+import { rangesToTSV } from 'nmr-processing';
 import {
   FaChartBar,
   FaCopy,
@@ -28,8 +27,8 @@ import type { ToolbarPopoverMenuItem } from '../../elements/ToolbarPopoverItem.j
 import { ToolbarPopoverItem } from '../../elements/ToolbarPopoverItem.js';
 import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
 import useCheckExperimentalFeature from '../../hooks/useCheckExperimentalFeature.js';
-import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
-import CopyClipboardModal from '../../modal/CopyClipboardModal.js';
+import { useDialogToggle } from '../../hooks/useDialogToggle.js';
+import { PublicationStringModal } from '../../modal/PublicationStringModal.js';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal.js';
 import { booleanToString } from '../../utility/booleanToString.js';
 import type { FilterType } from '../../utility/filterType.js';
@@ -61,7 +60,6 @@ const EXPORT_MENU: ExportItem[] = [
 interface RangesHeaderProps {
   ranges: Ranges;
   info: Info1D;
-  activeTab: string;
   isFilterActive: boolean;
   onUnlink: () => void;
   onFilterActivated: () => void;
@@ -73,7 +71,6 @@ function RangesHeader(props: RangesHeaderProps) {
   const {
     ranges,
     info,
-    activeTab,
     isFilterActive,
     onUnlink,
     onFilterActivated,
@@ -84,11 +81,12 @@ function RangesHeader(props: RangesHeaderProps) {
   const alert = useAlert();
   const toaster = useToaster();
   const isExperimentalFeature = useCheckExperimentalFeature();
+  const { openDialog, dialog, closeDialog } = useDialogToggle({
+    publicationStringModal: false,
+  });
 
   // TODO: make sure ranges are not a lie and remove the optional chaining.
   const currentSum = ranges?.options?.sum ?? null;
-  const rangesPreferences = usePanelPreferences('ranges', activeTab);
-  const [acs, setACS] = useState<string>();
 
   const {
     showMultiplicityTrees,
@@ -193,20 +191,6 @@ function RangesHeader(props: RangesHeaderProps) {
     );
   }
 
-  function saveAsHTMLHandler() {
-    if (Array.isArray(ranges?.values) && ranges.values.length > 0) {
-      const { originFrequency: observedFrequency, nucleus } = info;
-
-      const result = rangesToACS(ranges.values, {
-        nucleus, // '19f'
-        deltaFormat: rangesPreferences.deltaPPM.format,
-        couplingFormat: rangesPreferences.coupling.format,
-        observedFrequency, //400
-      });
-      setACS(result);
-    }
-  }
-
   function changeSumConstantFlagHandler() {
     dispatch({
       type: 'CHANGE_RANGES_SUM_FLAG',
@@ -229,7 +213,7 @@ function RangesHeader(props: RangesHeaderProps) {
   function exportHandler(data?: ExportData) {
     switch (data?.id) {
       case 'publicationString':
-        saveAsHTMLHandler();
+        openDialog('publicationStringModal');
         break;
       case 'rangesToTSV':
         handleRangesToTSV();
@@ -351,11 +335,10 @@ function RangesHeader(props: RangesHeaderProps) {
 
   return (
     <div>
-      <CopyClipboardModal
-        text={acs}
-        title="Publication string"
+      <PublicationStringModal
+        isOpen={dialog.publicationStringModal}
         onCopyClick={saveToClipboardHandler}
-        onClose={() => setACS('')}
+        onClose={closeDialog}
       />
       <DefaultPanelHeader
         total={total}

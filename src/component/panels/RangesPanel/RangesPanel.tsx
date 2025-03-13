@@ -144,7 +144,6 @@ function RangesTablePanelInner({
         <RangesHeader
           ranges={ranges}
           info={info}
-          activeTab={activeTab}
           isFilterActive={isFilterActive}
           onUnlink={unlinkRangeHandler}
           onFilterActivated={filterHandler}
