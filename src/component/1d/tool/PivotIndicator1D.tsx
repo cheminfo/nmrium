@@ -10,7 +10,7 @@ const styles: CSSProperties = {
   position: 'absolute',
   top: '0px',
   left: '0px',
-  width: 1,
+  width: '2px',
 };
 
 export function PivotIndicator1D() {
@@ -41,7 +41,7 @@ function Indicator(props: IndicatorProps) {
     <div
       style={{
         ...styles,
-        transform: `translate(${x}px, 0px)`,
+        transform: `translateX(${x}px) translateX(-50%)`,
         height,
         backgroundColor: indicatorColor,
       }}

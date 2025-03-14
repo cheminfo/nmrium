@@ -23,17 +23,17 @@ function getStyle(
   if (direction === 'horizontal') {
     return {
       ...base,
-      width: '1px',
+      width: '2px',
       height: '100%',
-      transform: `translateX(${translate}px)`,
+      transform: `translateX(${translate}px) translateX(-50%)`,
     };
   }
 
   return {
     ...base,
     width: '100%',
-    height: '1px',
-    transform: `translateY(${translate}px)`,
+    height: '2px',
+    transform: `translateY(${translate}px) translateY(-50%)`,
   };
 }
 

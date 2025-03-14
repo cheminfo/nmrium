@@ -10,7 +10,7 @@ const styles: CSSProperties = {
   position: 'absolute',
   top: '0px',
   left: '0px',
-  height: 1,
+  height: '2px',
 };
 
 function BaseLine() {
@@ -34,7 +34,7 @@ function BaseLine() {
     <div
       style={{
         ...styles,
-        transform: `translate(${left}px, ${scaleY()(0)}px)`,
+        transform: `translate(${left}px, ${scaleY()(0)}px) translateY(-50%)`,
         width: innerWidth,
         backgroundColor: indicatorColor,
       }}
