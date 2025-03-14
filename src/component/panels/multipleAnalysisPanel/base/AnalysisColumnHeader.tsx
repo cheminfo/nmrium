@@ -20,7 +20,6 @@ const styles: Record<
   container: {
     position: 'relative',
     padding: '0.15rem 0.4rem',
-    height: '100%',
   },
   deleteButton: {
     position: 'absolute',
