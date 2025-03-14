@@ -16,7 +16,7 @@ import ReactTable from '../../../elements/ReactTable/ReactTable.js';
 import type { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
 import { convertPathArrayToString } from '../../../utility/convertPathArrayToString.js';
 import { getSpectraObjectPaths } from '../../../utility/getSpectraObjectPaths.js';
-import { Section } from '../GeneralSettings.js';
+import { Section, settingLabelStyle } from '../GeneralSettings.js';
 
 const colorInputStyle: CSSProperties = {
   minWidth: '80px',
@@ -81,11 +81,19 @@ function SpectraColorsTabContent() {
 
   return (
     <div>
-      <Label title="Highlight color ">
+      <Label title="Assignment highlight color " style={settingLabelStyle}>
         <div style={colorInputStyle}>
           <ColorPickerDropdownController
             control={control}
             name="spectraColors.highlightColor"
+          />
+        </div>
+      </Label>
+      <Label title="Indicator line color " style={settingLabelStyle}>
+        <div style={colorInputStyle}>
+          <ColorPickerDropdownController
+            control={control}
+            name="spectraColors.indicatorLineColor"
           />
         </div>
       </Label>

@@ -21,6 +21,7 @@ import {
 import { useToaster } from '../../context/ToasterContext.js';
 import ActionButtons from '../../elements/ActionButtons.js';
 import Label from '../../elements/Label.js';
+import type { LabelStyle } from '../../elements/Label.js';
 import { StyledDialogBody } from '../../elements/StyledDialogBody.js';
 import type { DropDownListItem } from '../../elements/dropDownButton/DropDownButton.js';
 import DropDownButton from '../../elements/dropDownButton/DropDownButton.js';
@@ -68,6 +69,13 @@ const StyledTabs = styled(Tabs)`
   }
 `;
 
+export const settingLabelStyle: LabelStyle = {
+  container: {
+    padding: '5px',
+    borderBottom: '1px solid #f7f7f7',
+    justifyContent: 'space-between',
+  },
+};
 const StyledButton = styled(Button, {
   shouldForwardProp(propName) {
     return propName !== 'marginHorizontal';

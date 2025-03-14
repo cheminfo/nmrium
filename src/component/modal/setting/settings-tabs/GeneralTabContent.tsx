@@ -3,17 +3,11 @@ import { Controller, useFormContext } from 'react-hook-form';
 
 import { LOGGER_LEVELS } from '../../../context/LoggerContext.js';
 import { GroupPane } from '../../../elements/GroupPane.js';
-import type { LabelStyle } from '../../../elements/Label.js';
 import Label from '../../../elements/Label.js';
 import { NumberInput2Controller } from '../../../elements/NumberInput2Controller.js';
 import { Select2 } from '../../../elements/Select2.js';
 import type { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
-
-const labelStyle: LabelStyle = {
-  label: { flex: 6 },
-  wrapper: { flex: 6 },
-  container: { paddingBottom: '5px' },
-};
+import { settingLabelStyle } from '../GeneralSettings.js';
 
 interface SelectItem {
   label: string;
@@ -50,7 +44,10 @@ function GeneralTabContent() {
   return (
     <>
       <GroupPane text="General">
-        <Label title="Opacity of dimmed spectra [0 - 1]" style={labelStyle}>
+        <Label
+          title="Opacity of dimmed spectra [0 - 1]"
+          style={settingLabelStyle}
+        >
           <NumberInput2Controller
             control={control}
             name="general.dimmedSpectraOpacity"
@@ -60,12 +57,12 @@ function GeneralTabContent() {
             style={{ width: 60 }}
           />
         </Label>
-        <Label title="Invert actions" style={labelStyle}>
+        <Label title="Invert actions" style={settingLabelStyle}>
           <Checkbox style={{ margin: 0 }} {...register(`general.invert`)} />
         </Label>
       </GroupPane>
       <GroupPane text="Experimental features">
-        <Label title="Enable experimental features" style={labelStyle}>
+        <Label title="Enable experimental features" style={settingLabelStyle}>
           <Checkbox
             style={{ margin: 0 }}
             {...register(`display.general.experimentalFeatures.display`)}
@@ -73,7 +70,7 @@ function GeneralTabContent() {
         </Label>
       </GroupPane>
       <GroupPane text="Rendering">
-        <Label title="Spectra rendering" style={labelStyle}>
+        <Label title="Spectra rendering" style={settingLabelStyle}>
           <Controller
             control={control}
             name="general.spectraRendering"
@@ -94,7 +91,7 @@ function GeneralTabContent() {
         </Label>
       </GroupPane>
       <GroupPane text="Logging settings">
-        <Label title="Level" style={labelStyle}>
+        <Label title="Level" style={settingLabelStyle}>
           <Controller
             control={control}
             name="general.loggingLevel"
@@ -113,7 +110,7 @@ function GeneralTabContent() {
             }}
           />
         </Label>
-        <Label title="Popup logging level" style={labelStyle}>
+        <Label title="Popup logging level" style={settingLabelStyle}>
           <Controller
             control={control}
             name="general.popupLoggingLevel"
@@ -133,7 +130,7 @@ function GeneralTabContent() {
         </Label>
       </GroupPane>
       <GroupPane text="Peaks label">
-        <Label title="Margin top" style={labelStyle}>
+        <Label title="Margin top" style={settingLabelStyle}>
           <NumberInput2Controller
             control={control}
             name="peaksLabel.marginTop"
