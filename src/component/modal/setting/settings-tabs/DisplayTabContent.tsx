@@ -9,6 +9,7 @@ import ReactTable from '../../../elements/ReactTable/ReactTable.js';
 import type { CustomColumn } from '../../../elements/ReactTable/utility/addCustomColumn.js';
 import { Select2 } from '../../../elements/Select2.js';
 import type { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
+import { settingLabelStyle } from '../GeneralSettings.js';
 
 const basePath = 'display.panels';
 interface ListItem {
@@ -188,10 +189,7 @@ function DisplayTabContent() {
 
   return (
     <div style={{ width: '100%', overflow: 'hidden' }}>
-      <Label
-        title="Hide panels bar "
-        style={{ wrapper: { padding: '10px 0' } }}
-      >
+      <Label title="Hide panels bar " style={settingLabelStyle}>
         <Checkbox
           style={{ margin: 0 }}
           {...register('display.general.hidePanelsBar')}

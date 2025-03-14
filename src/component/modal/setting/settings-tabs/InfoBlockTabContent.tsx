@@ -14,7 +14,7 @@ import ReactTable from '../../../elements/ReactTable/ReactTable.js';
 import type { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
 import { convertPathArrayToString } from '../../../utility/convertPathArrayToString.js';
 import { getSpectraObjectPaths } from '../../../utility/getSpectraObjectPaths.js';
-import { Section } from '../GeneralSettings.js';
+import { Section, settingLabelStyle } from '../GeneralSettings.js';
 
 function getKeyPath<T extends keyof InfoBlockField>(
   index: number,
@@ -159,10 +159,7 @@ function InfoBlockTabContent() {
 
   return (
     <div>
-      <Label
-        title="Display spectrum info block"
-        style={{ wrapper: { padding: '10px 0' } }}
-      >
+      <Label title="Display spectrum info block" style={settingLabelStyle}>
         <Checkbox style={{ margin: 0 }} {...register('infoBlock.visible')} />
       </Label>
 

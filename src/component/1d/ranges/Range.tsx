@@ -14,6 +14,7 @@ import {
   useAssignmentContext,
 } from '../../assignment/AssignmentsContext.js';
 import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment.js';
+import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useLogger } from '../../context/LoggerContext.js';
 import { useShareData } from '../../context/ShareDataContext.js';
@@ -53,6 +54,7 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
   const isInset = useIsInset();
   const spectrum = useSpectrum();
   const isAssignBtnTrigged = useRef(false);
+  const { margin } = useChartData();
 
   const highlightColor = useHighlightColor();
   const assignmentData = useAssignmentContext();
@@ -204,6 +206,7 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
               <g>
                 {isAssigned && !isHighlighted && !isActive && (
                   <rect
+                    y={margin.top}
                     width={width}
                     height="10px"
                     fill={highlightColor}

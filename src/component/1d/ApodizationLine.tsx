@@ -10,6 +10,7 @@ import { useChartData } from '../context/ChartContext.js';
 import { useFilterSyncOptions } from '../context/FilterSyncOptionsContext.js';
 import { useScaleChecked } from '../context/ScaleContext.js';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
+import { useIndicatorLineColor } from '../hooks/useIndicatorLineColor.js';
 import useSpectrum from '../hooks/useSpectrum.js';
 import { useVerticalAlign } from '../hooks/useVerticalAlign.js';
 import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce.js';
@@ -48,7 +49,7 @@ export function ApodizationLine() {
   const scaleY = useWindowYScale();
   const { sharedFilterOptions: externalApodizationOptions } =
     useFilterSyncOptions<ApodizationOptions>();
-
+  const indicatorColor = useIndicatorLineColor();
   if (
     !activeSpectrum?.id ||
     selectedTool !== Filters1D.apodization.name ||
@@ -90,7 +91,7 @@ export function ApodizationLine() {
   return (
     <path
       data-testid="apodization-line"
-      stroke="green"
+      stroke={indicatorColor}
       fill="none"
       strokeWidth="2"
       d={paths()}

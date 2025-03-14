@@ -269,6 +269,7 @@ const customWorkspaces: CustomWorkspaces = {
     },
     spectraColors: {
       highlightColor: '#ffd70080',
+      indicatorLineColor: '#ED7014',
       oneDimension: [],
       twoDimensions: [
         {
