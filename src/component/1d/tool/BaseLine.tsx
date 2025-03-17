@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';
+import { useIndicatorLineColor } from '../../hooks/useIndicatorLineColor.js';
 import { options } from '../../toolbar/ToolTypes.js';
 
 const styles: CSSProperties = {
@@ -9,8 +10,7 @@ const styles: CSSProperties = {
   position: 'absolute',
   top: '0px',
   left: '0px',
-  height: 1,
-  backgroundColor: 'yellow',
+  height: '2px',
 };
 
 function BaseLine() {
@@ -20,6 +20,8 @@ function BaseLine() {
     toolOptions: { selectedTool },
   } = useChartData();
   const { scaleY } = useScaleChecked();
+  const indicatorColor = useIndicatorLineColor();
+
   const innerWidth = width - left - right;
   if (
     ![options.phaseCorrection.id, options.baselineCorrection.id].includes(
@@ -32,8 +34,9 @@ function BaseLine() {
     <div
       style={{
         ...styles,
-        transform: `translate(${left}px, ${scaleY()(0)}px)`,
+        transform: `translate(${left}px, ${scaleY()(0)}px) translateY(-50%)`,
         width: innerWidth,
+        backgroundColor: indicatorColor,
       }}
     />
   );

@@ -11,6 +11,7 @@ import Label from '../../../elements/Label.js';
 import ReactTable from '../../../elements/ReactTable/ReactTable.js';
 import type { CustomColumn } from '../../../elements/ReactTable/utility/addCustomColumn.js';
 import type { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
+import { settingLabelStyle } from '../GeneralSettings.js';
 
 function OnLoadProcessingTabContent() {
   const { register, watch } = useFormContext<WorkspacePreferences>();
@@ -19,10 +20,7 @@ function OnLoadProcessingTabContent() {
     watch('display.general.experimentalFeatures.display') || false;
   return (
     <div>
-      <Label
-        title="Enable auto processing on load"
-        style={{ wrapper: { padding: '10px 0' } }}
-      >
+      <Label title="Enable auto processing on load" style={settingLabelStyle}>
         <Checkbox
           style={{ margin: 0 }}
           {...register('onLoadProcessing.autoProcessing')}

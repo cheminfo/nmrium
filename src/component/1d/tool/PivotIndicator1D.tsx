@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';
+import { useIndicatorLineColor } from '../../hooks/useIndicatorLineColor.js';
 import { options } from '../../toolbar/ToolTypes.js';
 
 const styles: CSSProperties = {
@@ -9,8 +10,7 @@ const styles: CSSProperties = {
   position: 'absolute',
   top: '0px',
   left: '0px',
-  width: 1,
-  backgroundColor: 'yellow',
+  width: '2px',
 };
 
 export function PivotIndicator1D() {
@@ -34,13 +34,16 @@ interface IndicatorProps {
 }
 
 function Indicator(props: IndicatorProps) {
+  const indicatorColor = useIndicatorLineColor();
+
   const { x, height } = props;
   return (
     <div
       style={{
         ...styles,
-        transform: `translate(${x}px, 0px)`,
+        transform: `translateX(${x}px) translateX(-50%)`,
         height,
+        backgroundColor: indicatorColor,
       }}
     />
   );

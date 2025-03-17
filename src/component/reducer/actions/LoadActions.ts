@@ -97,6 +97,7 @@ function setData(draft: Draft<State>, input: InputProps) {
       oneDimension: [],
       twoDimensions: [],
       highlightColor: '#ffd70080',
+      indicatorLineColor: '#2FFF0085',
     },
   } = input || {
     nmriumState: { data: { spectra: [], molecules: [], correlations: {} } },
