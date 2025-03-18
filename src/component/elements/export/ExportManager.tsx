@@ -112,7 +112,11 @@ export function ExportManagerController(props: ExportManagerControllerProps) {
     const runExport = async () => {
       const handler = handlers[destination]?.[format];
       if (handler) {
-        await handler(targetElement);
+        try {
+          await handler(targetElement);
+        } catch {
+          handleCloseExportOptionsDialog();
+        }
       } else {
         // eslint-disable-next-line no-console
         console.error(
@@ -126,7 +130,6 @@ export function ExportManagerController(props: ExportManagerControllerProps) {
         payload: { key: format, options },
       });
     };
-
     void runExport();
   }
 
