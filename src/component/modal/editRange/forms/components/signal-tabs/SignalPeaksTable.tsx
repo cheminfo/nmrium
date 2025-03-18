@@ -135,7 +135,7 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
     (delta, index: number) => {
       const xIndex = xFindClosestIndex(xArray, delta, { sorted: false });
 
-      setValue(`signals[${signalIndex}].peaks.${index}.y`, re[xIndex]);
+      setValue(`signals.${signalIndex}.peaks.${index}.y`, re[xIndex]);
     },
     [re, setValue, signalIndex, xArray],
   );
@@ -162,6 +162,7 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
               style={{ backgroundColor: 'transparent' }}
               fill
               buttonPosition="none"
+              debounceTime={250}
             />
           );
         },

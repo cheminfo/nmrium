@@ -1,7 +1,6 @@
 import { Button, Callout, Classes } from '@blueprintjs/core';
 import dlv from 'dlv';
 import type { Jcoupling, Peak1D } from 'nmr-processing';
-import { translateMultiplet } from 'nmr-processing';
 import type { CSSProperties } from 'react';
 import { useCallback, useMemo, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
@@ -113,7 +112,7 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
   const addHandler = useCallback(
     (data: Peak1D[]) => {
       const coupling = {
-        multiplicity: translateMultiplet('m'),
+        multiplicity: 'm',
         coupling: '',
       };
       setValue(`signals[${signalIndex}].js`, [...data, coupling]);
@@ -154,14 +153,16 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
               control={control}
               name={getJCouplingKey(signalIndex, row.index, 'multiplicity')}
               items={multiplets}
-              itemValueKey="label"
-              onItemSelect={({ label }) => {
+              itemTextKey="label"
+              itemValueKey="value"
+              onItemSelect={({ value }) => {
                 const name = getJCouplingKey(
                   signalIndex,
                   row.index,
                   'coupling',
                 );
-                if (!hasCouplingConstant(label)) {
+
+                if (!hasCouplingConstant(value)) {
                   setValue(name, '');
                 } else {
                   requestAnimationFrame(() => {

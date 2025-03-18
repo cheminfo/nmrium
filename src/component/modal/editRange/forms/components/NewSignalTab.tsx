@@ -1,6 +1,5 @@
 import { Button } from '@blueprintjs/core';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { translateMultiplet } from 'nmr-processing';
 import type { CSSProperties } from 'react';
 import { useEffect } from 'react';
 import { useForm, useFormContext, useWatch } from 'react-hook-form';
@@ -52,7 +51,7 @@ export function NewSignalTab(props: NewSignalTabProps) {
       multiplicity: 'm',
       kind: 'signal',
       delta: val.delta,
-      js: [{ multiplicity: translateMultiplet('m'), coupling: '' }],
+      js: [{ multiplicity: 'm', coupling: '' }],
     };
     const _signals = signals.slice().concat(newSignal);
 
