@@ -12,6 +12,7 @@ import { FaDiceFour } from 'react-icons/fa';
 import type { AccordionItemProps } from 'react-science/ui';
 
 import type { DisplayerMode } from '../reducer/Reducer.js';
+import type { Tool } from '../toolbar/ToolTypes.js';
 
 import AutomaticAssignment from './AutomaticAssignment/AutomaticAssignment.js';
 import IntegralPanel from './IntegralsPanel/IntegralPanel.js';
@@ -39,120 +40,112 @@ export interface AccordionItem
   icon: IconName | ReactElement;
 }
 
-export const accordionItems: AccordionItem[] = [
-  {
-    id: 'spectraPanel',
+export const accordions: Record<
+  keyof NMRiumPanelPreferences,
+  Omit<AccordionItem, 'id'>
+> = {
+  spectraPanel: {
     title: 'Spectra',
     component: <SpectrumListPanel />,
     mode: null,
     icon: 'list-columns',
   },
-  {
-    id: 'informationPanel',
+  informationPanel: {
     title: 'Information',
     component: <InformationPanel />,
     style: { overflow: 'hidden' },
     mode: null,
     icon: 'info-sign',
   },
-  {
-    id: 'peaksPanel',
+  peaksPanel: {
     title: 'Peaks',
     component: <PeaksPanel />,
     mode: '1D',
     icon: <SvgNmrPeakPicking />,
   },
-  {
-    id: 'processingsPanel',
+  processingsPanel: {
     title: 'Processings',
     component: <FilterPanel />,
     mode: null,
     icon: 'series-derived',
   },
-  {
-    id: 'integralsPanel',
+  integralsPanel: {
     title: 'Integrals',
     component: <IntegralPanel />,
     mode: '1D',
     icon: <SvgNmrIntegrate />,
   },
-  {
-    id: 'rangesPanel',
+  rangesPanel: {
     title: 'Ranges / Multiplet analysis',
     component: <RangesPanel />,
     mode: '1D',
     icon: <SvgNmrRangePicking />,
   },
-  {
-    id: 'multipleSpectraAnalysisPanel',
+  multipleSpectraAnalysisPanel: {
     title: 'Multiple spectra analysis',
     component: <MultipleSpectraAnalysisPanel />,
     mode: null,
     icon: <SvgNmrMultipleAnalysis />,
   },
-  {
-    id: 'matrixGenerationPanel',
+  matrixGenerationPanel: {
     title: 'Matrix generation',
     component: <MatrixGenerationPanel />,
     mode: '1D',
     icon: 'derive-column',
   },
-  {
-    id: 'zonesPanel',
+  zonesPanel: {
     title: 'Zones',
     component: <ZonesPanel />,
     mode: '2D',
     icon: <FaDiceFour />,
   },
-  {
-    id: 'summaryPanel',
+  summaryPanel: {
     title: 'Summary',
     component: <SummaryPanel />,
     mode: null,
     icon: 'document',
   },
-  {
-    id: 'structuresPanel',
+  structuresPanel: {
     title: 'Chemical structures',
     component: <MoleculePanel />,
     mode: null,
     icon: 'hexagon',
   },
-  {
-    id: 'databasePanel',
+  databasePanel: {
     title: 'Databases',
     component: <DatabasePanel />,
     mode: null,
     icon: 'database',
   },
-  {
-    id: 'automaticAssignmentPanel',
+  automaticAssignmentPanel: {
     title: 'Automatic assignment',
     component: <AutomaticAssignment />,
     mode: null,
     icon: <SvgNmrAssignment2 />,
   },
-  {
-    id: 'predictionPanel',
+  predictionPanel: {
     title: 'Prediction',
     component: <PredictionPane />,
     mode: null,
     icon: 'new-grid-item',
   },
-  {
-    id: 'simulationPanel',
+  simulationPanel: {
     title: 'Spectrum simulation',
     component: <SpectrumSimulation />,
     mode: '1D',
     icon: 'lab-test',
   },
-];
+};
 
-export const TOOLS_PANELS_ACCORDION: Record<string, string> = {
-  null: 'Spectra',
-  peakPicking: 'Peaks',
-  integral: 'Integrals',
-  rangePicking: 'Ranges / Multiplet analysis',
-  zonePicking: 'Zones',
-  multipleSpectraAnalysis: 'Multiple Spectra Analysis',
+export const accordionItems: AccordionItem[] = Object.entries(accordions).map(
+  ([id, item]) => ({ id: id as keyof NMRiumPanelPreferences, ...item }),
+);
+
+export const TOOLS_PANELS_ACCORDION: Partial<Record<Tool, string>> = {
+  zoom: accordions.spectraPanel.title,
+  peakPicking: accordions.peaksPanel.title,
+  integral: accordions.integralsPanel.title,
+  rangePicking: accordions.rangesPanel.title,
+  zonePicking: accordions.zonesPanel.title,
+  multipleSpectraAnalysis: accordions.multipleSpectraAnalysisPanel.title,
 };
