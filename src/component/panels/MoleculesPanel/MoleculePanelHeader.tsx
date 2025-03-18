@@ -121,8 +121,12 @@ export default function MoleculePanelHeader({
         message: 'MOL copied as PNG to clipboard',
         intent: 'success',
       });
-    } catch {
-      toaster.show(browserNotSupportedErrorToast);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toaster.show({ intent: 'danger', message: error.message });
+      } else {
+        toaster.show(browserNotSupportedErrorToast);
+      }
     }
   }, [rootRef, currentIndex, toaster]);
 

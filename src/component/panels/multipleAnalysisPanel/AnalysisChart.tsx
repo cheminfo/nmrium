@@ -255,8 +255,12 @@ export default function AnalysisChart(props: PlotChartPros) {
         css: css({ text: { fill: 'black' } }),
       });
       toaster.show({ message: 'Chart copied to clipboard', intent: 'success' });
-    } catch {
-      toaster.show(browserNotSupportedErrorToast);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toaster.show({ intent: 'danger', message: error.message });
+      } else {
+        toaster.show(browserNotSupportedErrorToast);
+      }
     }
   }
 

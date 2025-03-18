@@ -335,17 +335,26 @@ async function resolveBlob(b: Blob): Promise<Blob> {
 
 async function writeImageToClipboard(image: Blob, isSafari = false) {
   await navigator.clipboard.write([
-    new ClipboardItem({ [image.type]: isSafari ? resolveBlob(image) : image }),
+    new ClipboardItem({
+      [image.type]: isSafari ? resolveBlob(image) : image,
+    }),
   ]);
 }
 async function copyBlobToClipboard(canvas: OffscreenCanvas) {
+  // Check if the document is focused, If it is not focused, throw an error to inform the user.
+  if (!document.hasFocus()) {
+    throw new Error(
+      'Copy failed because the browser is not focused. Please click the window to focus and try again.',
+    );
+  }
+
   const pngBlob = await canvas.convertToBlob({ type: 'image/png' });
   if (!pngBlob) return;
   const isSafari = /^(?<safari>(?!chrome|android).)*safari/i.test(
     navigator.userAgent,
   );
   if (typeof ClipboardItem !== 'undefined') {
-    await writeImageToClipboard(pngBlob, isSafari).catch(reportError);
+    await writeImageToClipboard(pngBlob, isSafari);
   } else {
     const screenCanvas = transferToCanvas(canvas);
     if (!screenCanvas) {
@@ -389,7 +398,7 @@ async function copyPNGToClipboard(
     height,
     scaleFactor: 1,
   });
-  await copyBlobToClipboard(canvas);
+  return copyBlobToClipboard(canvas);
 }
 
 export interface BlobObject {

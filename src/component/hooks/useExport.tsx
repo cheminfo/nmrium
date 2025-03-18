@@ -105,8 +105,14 @@ export function useExportViewPort() {
           });
           resolve();
         } catch (error: unknown) {
-          toaster.show(browserNotSupportedErrorToast);
-          reject(error as Error);
+          if (error instanceof Error) {
+            toaster.show({ intent: 'danger', message: error.message });
+            reject(error);
+          } else {
+            toaster.show(browserNotSupportedErrorToast);
+            // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+            reject(error);
+          }
         } finally {
           hideLoading();
         }
@@ -153,8 +159,14 @@ export function useExportViewPort() {
           });
           resolve();
         } catch (error: unknown) {
-          toaster.show(browserNotSupportedErrorToast);
-          reject(error as Error);
+          if (error instanceof Error) {
+            toaster.show({ intent: 'danger', message: error.message });
+            reject(error);
+          } else {
+            toaster.show(browserNotSupportedErrorToast);
+            // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+            reject(error);
+          }
         } finally {
           hideLoading();
         }
