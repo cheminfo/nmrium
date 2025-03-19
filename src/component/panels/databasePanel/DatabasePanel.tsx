@@ -4,7 +4,7 @@ import type { DatabaseNMREntry } from 'nmr-processing';
 import { mapRanges } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useAccordionContext, useOnOff } from 'react-science/ui';
+import { useOnOff } from 'react-science/ui';
 
 import { getSum } from '../../../data/data1d/Spectrum1D/SumManager.js';
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
@@ -84,7 +84,6 @@ function DatabasePanelInner({
 }: DatabaseInnerProps) {
   const dispatch = useDispatch();
   const toaster = useToaster();
-  const { item } = useAccordionContext('Databases');
 
   const format = useFormatNumberByNucleus(nucleus);
   const [isFlipped, setFlipStatus] = useState(false);
@@ -251,10 +250,10 @@ function DatabasePanelInner({
   );
 
   useEffect(() => {
-    if (item?.isOpen && defaultDatabase && !databaseInstance.current) {
+    if (defaultDatabase && !databaseInstance.current) {
       handleChangeDatabase(defaultDatabase);
     }
-  }, [databases, defaultDatabase, handleChangeDatabase, item?.isOpen, nucleus]);
+  }, [databases, defaultDatabase, handleChangeDatabase, nucleus]);
 
   const tableData = useMemo(() => {
     return prepareData(result.data);

@@ -3,7 +3,7 @@ import type { CSSProperties } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 import { StructureEditor } from 'react-ocl/full';
-import { useAccordionContext } from 'react-science/ui';
+import { useAccordionControls } from 'react-science/ui';
 
 import { predictSpectra } from '../../../data/PredictionManager.js';
 import type { StateMoleculeExtended } from '../../../data/molecules/Molecule.js';
@@ -47,10 +47,7 @@ export default function PredictionPanel() {
   const [molfile, setMolfile] = useState<string | null>(null);
   const [isFlipped, setFlipStatus] = useState(false);
   const settingRef = useRef<SettingsRef | null>(null);
-  const {
-    item: spectraPanelState,
-    utils: { toggle: openSpectraPanel },
-  } = useAccordionContext('Spectra');
+  const { open: openAccordionPanel } = useAccordionControls();
   const predictionPreferences = usePanelPreferences('prediction');
   const { modal, openMoleculeEditor } = useMoleculeEditor(true);
   const refreshSlider = useRef<boolean>(false);
@@ -109,9 +106,7 @@ export default function PredictionPanel() {
               action,
             },
           });
-          if (!spectraPanelState?.isOpen) {
-            openSpectraPanel();
-          }
+          openAccordionPanel('spectraPanel');
         } catch (error: any) {
           toaster.show({ message: error.message, intent: 'danger' });
         } finally {

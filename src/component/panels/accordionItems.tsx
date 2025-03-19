@@ -38,6 +38,7 @@ export interface AccordionItem
   mode: DisplayerMode | null;
   isExperimental?: boolean;
   icon: IconName | ReactElement;
+  openWithTool?: Tool;
 }
 
 export const accordions: Record<
@@ -49,6 +50,7 @@ export const accordions: Record<
     component: <SpectrumListPanel />,
     mode: null,
     icon: 'list-columns',
+    openWithTool: 'zoom',
   },
   informationPanel: {
     title: 'Information',
@@ -62,6 +64,7 @@ export const accordions: Record<
     component: <PeaksPanel />,
     mode: '1D',
     icon: <SvgNmrPeakPicking />,
+    openWithTool: 'peakPicking',
   },
   processingsPanel: {
     title: 'Processings',
@@ -74,18 +77,21 @@ export const accordions: Record<
     component: <IntegralPanel />,
     mode: '1D',
     icon: <SvgNmrIntegrate />,
+    openWithTool: 'integral',
   },
   rangesPanel: {
     title: 'Ranges / Multiplet analysis',
     component: <RangesPanel />,
     mode: '1D',
     icon: <SvgNmrRangePicking />,
+    openWithTool: 'rangePicking',
   },
   multipleSpectraAnalysisPanel: {
     title: 'Multiple spectra analysis',
     component: <MultipleSpectraAnalysisPanel />,
     mode: null,
     icon: <SvgNmrMultipleAnalysis />,
+    openWithTool: 'multipleSpectraAnalysis',
   },
   matrixGenerationPanel: {
     title: 'Matrix generation',
@@ -98,6 +104,7 @@ export const accordions: Record<
     component: <ZonesPanel />,
     mode: '2D',
     icon: <FaDiceFour />,
+    openWithTool: 'zonePicking',
   },
   summaryPanel: {
     title: 'Summary',
@@ -141,11 +148,18 @@ export const accordionItems: AccordionItem[] = Object.entries(accordions).map(
   ([id, item]) => ({ id: id as keyof NMRiumPanelPreferences, ...item }),
 );
 
-export const TOOLS_PANELS_ACCORDION: Partial<Record<Tool, string>> = {
-  zoom: accordions.spectraPanel.title,
-  peakPicking: accordions.peaksPanel.title,
-  integral: accordions.integralsPanel.title,
-  rangePicking: accordions.rangesPanel.title,
-  zonePicking: accordions.zonesPanel.title,
-  multipleSpectraAnalysis: accordions.multipleSpectraAnalysisPanel.title,
-};
+function mapToolsToPanels(
+  accordions: Record<keyof NMRiumPanelPreferences, Omit<AccordionItem, 'id'>>,
+): Record<string, keyof NMRiumPanelPreferences> {
+  const toolToPanelMap: Record<string, keyof NMRiumPanelPreferences> = {};
+
+  for (const key in accordions) {
+    const { openWithTool } = accordions[key];
+    if (openWithTool) {
+      toolToPanelMap[openWithTool] = key as keyof NMRiumPanelPreferences;
+    }
+  }
+
+  return toolToPanelMap;
+}
+export const toolPanelLookup = mapToolsToPanels(accordions);

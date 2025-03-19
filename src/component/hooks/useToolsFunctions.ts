@@ -1,20 +1,20 @@
 import lodashDebounce from 'lodash/debounce.js';
 import lodashMap from 'lodash/map.js';
 import { useCallback, useRef, useState } from 'react';
-import { useToggleAccordion } from 'react-science/ui';
+import { useAccordionControls } from 'react-science/ui';
 
 import { useChartData } from '../context/ChartContext.js';
 import { useDispatch } from '../context/DispatchContext.js';
 import { usePreferences } from '../context/PreferencesContext.js';
 import { useToaster } from '../context/ToasterContext.js';
-import { TOOLS_PANELS_ACCORDION } from '../panels/accordionItems.js';
+import { toolPanelLookup } from '../panels/accordionItems.js';
 import { options } from '../toolbar/ToolTypes.js';
 
 export default function useToolsFunctions() {
   const dispatch = useDispatch();
   const toaster = useToaster();
 
-  const { open: openPanel } = useToggleAccordion();
+  const { open: openAccordionPanel } = useAccordionControls();
   const [isRealSpectrumShown, setIsRealSpectrumShown] = useState(false);
 
   const debounceClickEventsRef = useRef<{ clicks: any[] }>({ clicks: [] });
@@ -49,9 +49,11 @@ export default function useToolsFunctions() {
 
       if (options[selectedTool].isFilter) {
         //Open the Processing accordion if the select tool is a filter
-        openPanel('Processings');
-      } else if (Object.keys(TOOLS_PANELS_ACCORDION).includes(selectedTool)) {
-        openPanel(TOOLS_PANELS_ACCORDION[selectedTool]);
+        openAccordionPanel('processingsPanel');
+      }
+
+      if (toolPanelLookup?.[selectedTool]) {
+        openAccordionPanel(toolPanelLookup[selectedTool]);
       }
 
       dispatch({
@@ -59,7 +61,7 @@ export default function useToolsFunctions() {
         payload: { selectedTool: selectedTool || options.zoom.id },
       });
     },
-    [dispatch, invert, openPanel, previousSelectedTool, toaster],
+    [dispatch, invert, openAccordionPanel, previousSelectedTool, toaster],
   );
 
   const handleFullZoomOut = useCallback(() => {
