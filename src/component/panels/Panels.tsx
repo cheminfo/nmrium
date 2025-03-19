@@ -84,10 +84,12 @@ function PanelsInner() {
             const { title, component, id } = item;
             return (
               <Accordion.Item
+                unmountChildren
+                id={id}
                 key={title}
                 title={title}
-                defaultOpened={isOpened(item) || panelOpenState[id]}
-                toolbar={
+                defaultOpen={isOpened(item) || panelOpenState[id]}
+                renderToolbar={() => (
                   <RightButtons
                     id={id}
                     onEdit={(event) => {
@@ -95,7 +97,7 @@ function PanelsInner() {
                       openDialog('informationModal');
                     }}
                   />
-                }
+                )}
               >
                 {component}
               </Accordion.Item>
