@@ -1,5 +1,6 @@
 import lodashDebounce from 'lodash/debounce.js';
 import lodashMap from 'lodash/map.js';
+import type { NMRiumPanelPreferences } from 'nmr-load-save';
 import { useCallback, useRef, useState } from 'react';
 import { useAccordionControls } from 'react-science/ui';
 
@@ -46,14 +47,13 @@ export default function useToolsFunctions() {
           message: `Press ${!invert ? 'Shift +' : ''} Left Mouse button to select zone`,
         });
       }
+      const panelKey: keyof NMRiumPanelPreferences = options[selectedTool]
+        .isFilter
+        ? 'processingsPanel'
+        : toolPanelLookup?.[selectedTool];
 
-      if (options[selectedTool].isFilter) {
-        //Open the Processing accordion if the select tool is a filter
-        openAccordionPanel('processingsPanel');
-      }
-
-      if (toolPanelLookup?.[selectedTool]) {
-        openAccordionPanel(toolPanelLookup[selectedTool]);
+      if (panelKey) {
+        openAccordionPanel(panelKey);
       }
 
       dispatch({
