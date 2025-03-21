@@ -2,9 +2,9 @@ import { Button, DialogFooter } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
 import type { Spectrum1D } from 'nmr-load-save';
+import { splitPatterns } from 'nmr-processing';
 import type { Jcoupling, Range, Signal1D } from 'nmr-processing';
-import { splitPatterns, translateMultiplet } from 'nmr-processing';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { FaSearchPlus } from 'react-icons/fa';
 
@@ -16,11 +16,11 @@ import { StyledDialogBody } from '../../elements/StyledDialogBody.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import useEditRangeModal from '../../panels/RangesPanel/hooks/useEditRangeModal.js';
-import { hasCouplingConstant } from '../../panels/extra/utilities/MultiplicityUtilities.js';
 import { formatNumber } from '../../utility/formatNumber.js';
 
 import SignalsContent from './forms/components/SignalsContent.js';
 import editRangeFormValidation from './forms/validation/EditRangeValidation.js';
+import { mapSignals } from './utils/mapSignals.js';
 
 const DialogBody = styled(StyledDialogBody)`
   .tabs .tab-list {
@@ -37,11 +37,6 @@ interface InnerEditRangeModalProps extends EditRangeModalProps {
   onRest: (originalRange: Range) => void;
   onZoom: (value: any) => void;
 }
-
-// interface Coupling {
-//   multiplicity: any;
-//   coupling: string | number;
-// }
 
 export function EditRangeModal(props: DialogProps<string>) {
   const { reset, saveEditRange, zoomRange } = useEditRangeModal();
@@ -89,50 +84,19 @@ function InnerEditRangeModal(props: InnerEditRangeModalProps) {
     onRest(originalRangeRef.current);
   }
 
-  const getCouplings = useCallback(
-    (couplings) =>
-      couplings
-        .filter((coupling) => coupling.coupling !== '')
-        .map((coupling) => {
-          return {
-            ...coupling,
-            multiplicity: translateMultiplet(coupling.multiplicity),
-          };
-        }),
-    [],
-  );
-
-  const getSignals = useCallback(
-    (signals) => {
-      return signals.map((signal) => {
-        return {
-          id: crypto.randomUUID(),
-          ...signal,
-          multiplicity: signal.js
-            .map((_coupling) => translateMultiplet(_coupling.multiplicity))
-            .join(''),
-          js: getCouplings(signal?.js || []),
-        };
-      });
-    },
-    [getCouplings],
-  );
-
   const handleSave = useCallback(
     (formValues) => {
       void (async () => {
         const _range = { ...range };
-        _range.signals = getSignals(formValues.signals);
+        _range.signals = mapSignals(formValues.signals);
         await onSave(_range);
       })();
     },
-    [getSignals, onSave, range],
+    [onSave, range],
   );
 
   const methods = useForm({
-    defaultValues: mapData(range, {
-      couplingFormat: rangesPreferences.coupling.format,
-    }),
+    defaultValues: range,
     resolver: yupResolver(editRangeFormValidation) as any,
   });
 
@@ -140,9 +104,7 @@ function InnerEditRangeModal(props: InnerEditRangeModalProps) {
 
   useEffect(() => {
     isDirtyRef.current = false;
-    methods.reset(
-      mapData(range, { couplingFormat: rangesPreferences.coupling.format }),
-    );
+    methods.reset(range);
   }, [methods, range, rangesPreferences.coupling.format]);
 
   useEffect(() => {
@@ -150,18 +112,19 @@ function InnerEditRangeModal(props: InnerEditRangeModalProps) {
       const isValid = await editRangeFormValidation.isValid(values);
       if (!isValid) return;
       if (isDirtyRef.current) {
-        const signals = getSignals(values.signals);
+        const { signals: baseSignals, ...otherSignalsProps } = values;
+        const signals = mapSignals(baseSignals as Signal1D[]);
 
         dispatch({
           type: 'UPDATE_RANGE',
-          payload: { range: { ...values, signals } as Range },
+          payload: { range: { ...otherSignalsProps, signals } as Range },
         });
       }
 
       isDirtyRef.current = true;
     });
     return () => unsubscribe();
-  }, [dispatch, getSignals, methods, methods.watch]);
+  }, [dispatch, methods, methods.watch]);
 
   if (!rangesPreferences || !range) {
     return;
@@ -217,47 +180,38 @@ function useRange(rangeId: string) {
     ranges: { values: [] },
   }) as Spectrum1D;
 
-  const index = ranges.values.findIndex(
-    (rangeRecord) => rangeRecord.id === rangeId,
-  );
-  return ranges.values[index];
+  return useMemo(() => {
+    const index = ranges.values.findIndex(
+      (rangeRecord) => rangeRecord.id === rangeId,
+    );
+    return structuredClone(appendCouplings(ranges.values[index]));
+  }, [rangeId, ranges.values]);
 }
 
-interface MapDataOptions {
-  couplingFormat: string;
-}
-
-function mapData(range: Range, options: MapDataOptions) {
-  const { couplingFormat } = options;
-
+function appendCouplings(range: Range) {
   const signals: Signal1D[] = [];
 
   for (const signal of range?.signals || []) {
-    let counterJ = 0;
-    const couplings: Array<
-      Partial<Pick<Jcoupling, 'coupling' | 'multiplicity'>>
-    > = [];
+    const js: Jcoupling[] = [];
 
-    if (!signal.multiplicity) {
+    if (
+      !signal.multiplicity ||
+      (signal.multiplicity.length === 1 &&
+        !['s', 'm'].includes(signal.multiplicity))
+    ) {
       signals.push(signal);
       continue;
     }
 
     for (const multiplicity of splitPatterns(signal.multiplicity)) {
-      const js = { ...signal.js[counterJ] };
-
-      if (hasCouplingConstant(multiplicity.value) && signal?.js.length > 0) {
-        const coupling = Number(formatNumber(js.coupling, couplingFormat));
-        js.coupling = coupling;
-        counterJ++;
-      }
-      js.multiplicity = translateMultiplet(
-        js.multiplicity || multiplicity.value,
-      );
-      couplings.push(js);
+      js.push({
+        multiplicity: multiplicity.value,
+        coupling: '',
+      } as unknown as Jcoupling);
     }
 
-    signals.push({ ...signal, js: couplings as Jcoupling[] });
+    signals.push({ ...signal, js });
   }
-  return { ...range, activeTab: '0', signals };
+
+  return { ...range, signals };
 }

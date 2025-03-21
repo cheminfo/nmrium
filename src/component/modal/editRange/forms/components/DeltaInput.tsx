@@ -1,4 +1,3 @@
-import { translateMultiplet } from 'nmr-processing';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { NumberInput2Controller } from '../../../../elements/NumberInput2Controller.js';
@@ -71,11 +70,7 @@ export function DeltaInput({ signal, index }: DeltaInputProps) {
           setFocusSource('delta');
         }}
       />
-      <span>
-        {signal.js
-          .map((_coupling) => translateMultiplet(_coupling.multiplicity))
-          .join('')}
-      </span>
+      <span>{signal.js.map(({ multiplicity }) => multiplicity).join('')}</span>
     </div>
   );
 }
