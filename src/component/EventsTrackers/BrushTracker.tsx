@@ -11,6 +11,14 @@ import {
 import type { ActionType } from '../reducer/types/ActionType.js';
 
 type Step = 'initial' | 'start' | 'end' | 'brushing';
+
+export const BRUSH_AXIS = {
+  x: 'X',
+  y: 'Y',
+  xy: 'XY',
+} as const;
+
+export type BrushAxis = (typeof BRUSH_AXIS)[keyof typeof BRUSH_AXIS];
 export interface BrushTrackerData {
   step: Step;
   startX: number;
@@ -28,16 +36,25 @@ const MouseButtons: Record<number, MouseButton> = {
   0: 'main',
   2: 'secondary',
 } as const;
-interface BrushTrackerState extends BrushTrackerData {
-  step: Step;
+
+export interface BrushCoordination {
   startX: number;
   endX: number;
   startY: number;
   endY: number;
+}
+export interface BrushScreenCoordination {
   startScreenX: number;
   startScreenY: number;
   startClientX: number;
   startClientY: number;
+}
+
+interface BrushTrackerState
+  extends BrushTrackerData,
+    BrushCoordination,
+    BrushScreenCoordination {
+  step: Step;
   boundingRect: DOMRect | null;
 }
 
@@ -348,4 +365,51 @@ function reducer(
     default:
       return state;
   }
+}
+
+interface DetectBrushingResult extends BrushCoordination {
+  type: BrushAxis;
+  scaleX: number;
+  scaleY: number;
+}
+
+export function detectBrushing(
+  coordination: BrushCoordination,
+  width: number,
+  height: number,
+  threshold = 0.03,
+): DetectBrushingResult {
+  const { startX, endX, startY, endY } = coordination;
+  const xDiff = Math.abs(endX - startX);
+  const yDiff = Math.abs(endY - startY);
+  const xThreshold = width * threshold;
+  const yThreshold = height * threshold;
+  const scaleY = (endY - startY) / height;
+  const scaleX = (endX - startX) / width;
+
+  if (xDiff >= xThreshold && yDiff < yThreshold) {
+    return {
+      type: 'X',
+      startX,
+      endX,
+      startY: 0,
+      endY: height,
+      scaleX,
+      scaleY: 1,
+    };
+  }
+
+  if (yDiff >= yThreshold && xDiff < xThreshold) {
+    return {
+      type: 'Y',
+      startX: 0,
+      endX: width,
+      startY,
+      endY,
+      scaleX: 1,
+      scaleY,
+    };
+  }
+
+  return { type: 'XY', startX, startY, endX, endY, scaleX, scaleY };
 }
