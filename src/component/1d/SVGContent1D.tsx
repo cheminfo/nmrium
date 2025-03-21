@@ -32,7 +32,6 @@ export function SVGContent1D() {
         <Ranges />
         <Peaks peaksSource="ranges" />
         <MultiplicityTrees />
-        <JGraph />
         <MultiAnalysisRanges />
         <BaseLineZones />
         <ExclusionZonesAnnotations />
@@ -45,6 +44,7 @@ export function SVGContent1D() {
 
         <SimilarityTree />
       </ClipPathContainer>
+      <JGraph />
 
       <g className="container" style={{ pointerEvents: 'none' }}>
         <XAxis1D />
