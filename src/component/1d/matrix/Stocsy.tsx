@@ -46,7 +46,7 @@ function useStocsy(chemicalShift: number): StocsyData | null {
     const { color, y } = matrixToStocsy(matrixY, cIndex);
     const yDomain = extent(y) as number[];
     return {
-      color,
+      color: color as string[],
       y,
       yDomain,
       x,
