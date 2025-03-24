@@ -6,20 +6,6 @@ import type { NMRiumWorkspace } from '../../component/main/index.js';
 import { NMRium } from '../../component/main/index.js';
 import type { PageConfig } from '../layouts/Main.js';
 
-export async function loadData(file) {
-  const response = await fetch(file);
-  checkStatus(response);
-  const data = await response.json();
-  return data;
-}
-
-function checkStatus(response) {
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status} - ${response.statusText}`);
-  }
-  return response;
-}
-
 export interface BaseViewProps {
   title?: string;
   workspace?: NMRiumWorkspace;

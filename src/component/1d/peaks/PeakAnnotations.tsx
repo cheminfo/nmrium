@@ -38,7 +38,7 @@ interface PeakAnnotationProps {
   format: string;
 }
 
-export function PeakAnnotation({
+function PeakAnnotation({
   peak,
   spectrumKey,
   color,

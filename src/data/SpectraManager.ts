@@ -21,7 +21,7 @@ export enum DataExportOptions {
   NO_DATA = 'NO_DATA',
 }
 
-export type DataExportOptionsType = keyof typeof DataExportOptions;
+type DataExportOptionsType = keyof typeof DataExportOptions;
 
 type ExportTarget = 'nmrium' | 'onChange';
 

@@ -144,7 +144,7 @@ function flattenFields(
   return properties;
 }
 
-export type MatrixProperties = Record<string /*filed name*/, Properties>;
+type MatrixProperties = Record<string /*filed name*/, Properties>;
 
 export interface MatrixFilter {
   name: FilterXYType['name'] /*filter name*/;

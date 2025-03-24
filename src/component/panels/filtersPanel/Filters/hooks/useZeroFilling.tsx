@@ -11,7 +11,7 @@ import { useDispatch } from '../../../../context/DispatchContext.js';
 import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsContext.js';
 import useTempSpectrum from '../../../../hooks/useTempSpectrum.js';
 
-export type ZeroFillingOptions = BaseZeroFillingOptions & {
+type ZeroFillingOptions = BaseZeroFillingOptions & {
   livePreview: boolean;
 };
 
@@ -31,7 +31,7 @@ function getZeroFillingSize(length: number) {
   return 2 ** Math.round(Math.log2(length * 2));
 }
 
-export function useZeroFillingDefaultSize() {
+function useZeroFillingDefaultSize() {
   const spectrum = useTempSpectrum();
 
   if (!spectrum) return 0;
@@ -52,7 +52,7 @@ export type ZeroFillingEntry =
   | ExtractFilterEntry<'zeroFillingDimension1'>
   | ExtractFilterEntry<'zeroFillingDimension2'>;
 
-export const useDispatchZeroFilling = (filter: ZeroFillingEntry | null) => {
+const useDispatchZeroFilling = (filter: ZeroFillingEntry | null) => {
   const dispatch = useDispatch();
 
   const defaultNbPoints = useZeroFillingDefaultSize();

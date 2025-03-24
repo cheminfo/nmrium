@@ -234,7 +234,7 @@ type ElementProps<E = unknown> = E extends ElementType
   ? ComponentPropsWithoutRef<E>
   : never;
 
-export interface InnerButtonProps<E extends ElementType = 'button'>
+interface InnerButtonProps<E extends ElementType = 'button'>
   extends Partial<ButtonStyle> {
   toolTip?: string;
   tooltipOrientation?: TooltipOrientation;
@@ -243,9 +243,8 @@ export interface InnerButtonProps<E extends ElementType = 'button'>
   as?: E;
   disabled?: boolean;
 }
-export type ButtonProps<E extends ElementType = 'button'> =
-  InnerButtonProps<E> &
-    Omit<ElementProps<E>, 'color' | 'style' | 'disabled' | 'fill'>;
+type ButtonProps<E extends ElementType = 'button'> = InnerButtonProps<E> &
+  Omit<ElementProps<E>, 'color' | 'style' | 'disabled' | 'fill'>;
 
 function Button<E extends ElementType = 'button'>(props: ButtonProps<E>) {
   const { theme = 'light', ...buttonProps } = props;

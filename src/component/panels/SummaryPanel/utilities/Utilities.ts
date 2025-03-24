@@ -577,8 +577,6 @@ function isInView(
 }
 
 export {
-  buildNewLink1D,
-  buildNewLink2D,
   cloneCorrelationAndEditLink,
   convertValuesString,
   findSignalMatch1D,

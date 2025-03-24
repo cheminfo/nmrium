@@ -23,7 +23,7 @@ const selectionState: SelectionsContextState = {
 
 const SectionsContext = createContext<SelectionsContextState>(selectionState);
 
-export function useSections() {
+function useSections() {
   const context = useContext(SectionsContext);
 
   if (!context) {

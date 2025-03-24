@@ -23,29 +23,6 @@ function isRandomColorGeneration(
   return 'random' in options;
 }
 
-export const COLORS: readonly string[] = [
-  '#C10020',
-  '#007D34',
-  '#803E75',
-  '#FF6800',
-  '#B32851',
-  '#7F180D',
-  '#232C16',
-  '#A6BDD7',
-  '#CEA262',
-  '#817066',
-  '#FF8E00',
-  '#F6768E',
-  '#00538A',
-  '#FF7A5C',
-  '#53377A',
-  '#FFB300',
-  '#F4C800',
-  '#93AA00',
-  '#593315',
-  '#F13A13',
-] as const;
-
 export function get1DColor(
   spectrum,
   options: ColorOptions | RandomColorOptions,

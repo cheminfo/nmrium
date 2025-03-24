@@ -1,6 +1,6 @@
 import type { FromTo } from 'cheminfo-types';
 
-export type DefaultPathLengthsInterface = Record<string, FromTo>;
+type DefaultPathLengthsInterface = Record<string, FromTo>;
 
 const DefaultPathLengths: DefaultPathLengthsInterface = {
   hmbc: { from: 2, to: 3 },

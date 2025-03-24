@@ -2,8 +2,8 @@ import styled from '@emotion/styled';
 import type { CSSProperties, LabelHTMLAttributes, ReactNode } from 'react';
 
 import Button from './Button.js';
-import { ContainerQueryWrapper } from './ContainerQueryWrapper.js';
 import type { ContainerQueryWrapperProps } from './ContainerQueryWrapper.js';
+import { ContainerQueryWrapper } from './ContainerQueryWrapper.js';
 
 const ShortTitle = styled.span`
   display: none;
@@ -57,7 +57,8 @@ export default function Label(props: LabelProps) {
     />
   );
 }
-export function InnerLabel(props: LabelProps) {
+
+function InnerLabel(props: LabelProps) {
   const {
     title,
     shortTitle,

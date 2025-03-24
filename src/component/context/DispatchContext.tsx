@@ -40,9 +40,9 @@ export type Action =
 // // eslint-disable-next-line @typescript-eslint/ban-types
 // | { type: string & {}; payload?: Object };
 
-export type Dispatch = (action: Action) => void;
+type Dispatch = (action: Action) => void;
 
-export const dispatchContext = createContext<Dispatch>(() => null);
+const dispatchContext = createContext<Dispatch>(() => null);
 
 export const DispatchProvider = dispatchContext.Provider;
 

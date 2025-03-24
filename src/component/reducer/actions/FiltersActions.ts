@@ -276,7 +276,7 @@ function getFilterUpdateDomainRules(
   return filterDomainUpdateRules || defaultRule;
 }
 
-export interface RollbackSpectrumByFilterOptions {
+interface RollbackSpectrumByFilterOptions {
   applyFilter?: boolean;
   reset?: boolean;
   searchBy?: 'id' | 'name';

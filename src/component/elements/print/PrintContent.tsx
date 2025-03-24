@@ -119,7 +119,7 @@ export function PrintContent(props: PrintFrameProps) {
   );
 }
 
-export function InnerPrintFrame(props: InnerPrintFrameProps) {
+function InnerPrintFrame(props: InnerPrintFrameProps) {
   const {
     children,
     onAfterPrint,

@@ -24,7 +24,6 @@ interface WheelOptions {
   contourOptions: ContourOptions;
 }
 
-type ContoursLevels = Record<string, Level>;
 const DEFAULT_CONTOURS_OPTIONS: ContourOptions = {
   positive: {
     contourLevels: [15, 100],
@@ -257,4 +256,4 @@ export {
   getDefaultContoursLevel,
   DEFAULT_CONTOURS_OPTIONS,
 };
-export type { ContoursLevels, ReturnContoursManager, Level, LevelSign };
+export type { LevelSign };

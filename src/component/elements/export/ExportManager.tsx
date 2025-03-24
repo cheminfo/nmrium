@@ -15,8 +15,8 @@ import { useWorkspaceExportSettings } from '../../hooks/useWorkspaceExportSettin
 
 import { ExportContent } from './ExportContent.js';
 
-export type ExportFormat = 'png' | 'svg';
-export type ExportDestination = 'file' | 'clipboard';
+type ExportFormat = 'png' | 'svg';
+type ExportDestination = 'file' | 'clipboard';
 type ExportHandlers = Record<
   ExportDestination,
   Partial<Record<ExportFormat, (targetElement: HTMLElement) => Promise<void>>>

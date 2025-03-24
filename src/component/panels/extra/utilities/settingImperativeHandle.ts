@@ -6,7 +6,7 @@ export interface SettingsRef {
   saveSetting: () => Promise<boolean>;
 }
 
-export function saveSetting(
+function saveSetting(
   handleSubmit: UseFormReturn['handleSubmit'],
   handleSuccess: (data: any) => void,
 ): Promise<boolean> {

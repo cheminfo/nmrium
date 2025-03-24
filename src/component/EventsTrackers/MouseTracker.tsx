@@ -6,7 +6,7 @@ interface MouseTrackerData {
   y: number;
 }
 
-export const MouseContext = createContext<MouseTrackerData | null>(null);
+const MouseContext = createContext<MouseTrackerData | null>(null);
 const MouseProvider = MouseContext.Provider;
 
 export function useMouseTracker() {

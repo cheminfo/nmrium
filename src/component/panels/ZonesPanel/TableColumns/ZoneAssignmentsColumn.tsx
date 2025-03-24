@@ -6,7 +6,7 @@ import { useHighlight } from '../../../highlight/index.js';
 import type { AssignmentsColumnProps } from '../ZonesTableRow.js';
 import type { ZoneData } from '../hooks/useMapZones.js';
 
-export function useZoneHighlight(rowData: ZoneData) {
+function useZoneHighlight(rowData: ZoneData) {
   const id = rowData.id;
   const zoneAssignment = useAssignment(id);
   const assignedDiaIds = zoneAssignment.assignedDiaIds;
@@ -61,7 +61,7 @@ function getStyle(flag: boolean, isCompletelyAssigned: boolean) {
   }
 }
 
-export interface ZoneAssignmentColumnProps extends AssignmentsColumnProps {
+interface ZoneAssignmentColumnProps extends AssignmentsColumnProps {
   axis: Axis;
   rowSpanTags: any;
 }

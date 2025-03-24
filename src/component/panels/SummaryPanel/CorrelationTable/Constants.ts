@@ -8,29 +8,6 @@ const ErrorColors: Array<{ key: string; color: string }> = [
 
 const Errors = ErrorColors.map((errorColor) => errorColor.key);
 
-const Hybridizations: Array<{ key: string; label: string; value: string }> = [
-  {
-    key: '-',
-    label: '',
-    value: '',
-  },
-  {
-    key: 'sp',
-    label: 'sp',
-    value: 'SP',
-  },
-  {
-    key: 'sp2',
-    label: 'sp2',
-    value: 'SP2',
-  },
-  {
-    key: 'sp3',
-    label: 'sp3',
-    value: 'SP3',
-  },
-];
-
 const DefaultTolerance = {
   C: 0.25,
   H: 0.02,
@@ -40,4 +17,4 @@ const DefaultTolerance = {
   P: 0.25,
 };
 
-export { DefaultTolerance, Errors, ErrorColors, Hybridizations };
+export { DefaultTolerance, Errors, ErrorColors };

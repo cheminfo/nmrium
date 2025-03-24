@@ -137,7 +137,7 @@ export function Boxplot() {
 
   return <InnerBoxplot scaleRatio={scaleRatio} />;
 }
-export function InnerBoxplot(props: InnerBoxplotProps) {
+function InnerBoxplot(props: InnerBoxplotProps) {
   const { scaleRatio } = props;
   const data = useBoxPlot();
 

@@ -39,7 +39,7 @@ export type Select2Props<T extends Record<string, any> = SelectDefaultItem> =
       selectedButtonProps?: Omit<ButtonProps, 'text'>;
     } & Pick<ButtonProps, 'intent'>;
 
-export function getDefaultSelectedItem<
+function getDefaultSelectedItem<
   T extends Record<string, any> = SelectDefaultItem,
 >(items: T[], itemValueKey?: keyof T, value?: any) {
   return items.find((item) => itemValueKey && item[itemValueKey] === value);

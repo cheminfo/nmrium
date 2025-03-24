@@ -1,7 +1,17 @@
 import { COLORS } from '../../../../data/utilities/generateColor.js';
 import { useChartData } from '../../../context/ChartContext.js';
+import type {
+  PhaseCorrectionTraceData,
+  TraceDirection,
+} from '../../../reducer/Reducer.js';
 
-export function useActivePhaseTraces() {
+interface UseActivePhaseTracesReturn extends PhaseCorrectionTraceData {
+  activeTraceDirection: TraceDirection;
+  color: string;
+  addTracesToBothDirections: boolean;
+}
+
+export function useActivePhaseTraces(): UseActivePhaseTracesReturn {
   const {
     toolOptions: {
       data: {

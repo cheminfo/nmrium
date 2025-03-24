@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { createContext, useContext, useMemo } from 'react';
 
-export interface PrintPagContextProps {
+interface PrintPagContextProps {
   width: number;
   height: number;
 }

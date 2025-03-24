@@ -30,6 +30,7 @@ import { changeInformationBlockPosition } from './actions/changeInformationBlock
 import { changePeaksLabelPosition } from './actions/changePeaksLabelPosition.js';
 import { changePrintPageSettings } from './actions/changePrintPageSettings.js';
 import { initPreferences } from './actions/initPreferences.js';
+import type { MatrixGenerationActions } from './actions/matrixGeneration.js';
 import {
   addExclusionZone,
   changeMatrixGenerationScale,
@@ -38,7 +39,6 @@ import {
   setMatrixGenerationOptions,
   toggleMatrixGenerationViewProperty,
 } from './actions/matrixGeneration.js';
-import type { MatrixGenerationActions } from './actions/matrixGeneration.js';
 import { removeWorkspace } from './actions/removeWorkspace.js';
 import { setActiveWorkspace } from './actions/setActiveWorkspace.js';
 import { setPanelsPreferences } from './actions/setPanelsPreferences.js';
@@ -171,42 +171,8 @@ type PreferencesActions =
   | ChangePeaksLabelPositionAction
   | TogglePanelAction;
 
-export const WORKSPACES: Array<{
-  key: NMRiumWorkspace;
-  label: string;
-}> = [
-  {
-    key: 'default',
-    label: Workspaces.default.label,
-  },
-  {
-    key: 'process1D',
-    label: Workspaces.process1D.label,
-  },
-  {
-    key: 'exercise',
-    label: Workspaces.exercise.label,
-  },
-  {
-    key: 'prediction',
-    label: Workspaces.prediction.label,
-  },
-  {
-    key: 'assignment',
-    label: Workspaces.assignment.label,
-  },
-  {
-    key: 'embedded',
-    label: Workspaces.embedded.label,
-  },
-  {
-    key: 'simulation',
-    label: Workspaces.simulation.label,
-  },
-];
-
 export type WorkspaceWithSource = Workspace & { source: WorkSpaceSource };
-export type WorkspacesWithSource =
+type WorkspacesWithSource =
   | Record<NMRiumWorkspace, WorkspaceWithSource>
   | Record<string, WorkspaceWithSource>;
 

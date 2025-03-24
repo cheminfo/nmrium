@@ -15,7 +15,7 @@ export function writeText(data: string): Promise<void> {
   return import('clipboard-polyfill').then((c) => c.writeText(data));
 }
 
-export interface ClipboardItemInterface {
+interface ClipboardItemInterface {
   readonly presentationStyle?: PresentationStyle;
   readonly lastModified?: number;
   readonly delayed?: boolean;

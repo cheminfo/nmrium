@@ -1,6 +1,6 @@
 import type { Layout, PageSizeName } from 'nmr-load-save';
 
-export interface PageSize {
+interface PageSize {
   name: PageSizeName;
   portrait: {
     width: number;

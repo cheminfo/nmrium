@@ -6,7 +6,7 @@ import {
   getPascal,
 } from '../../panels/extra/utilities/MultiplicityUtilities.js';
 
-export interface TreeNode {
+interface TreeNode {
   x: number;
   parentX?: number;
   level: number;

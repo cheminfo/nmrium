@@ -89,7 +89,7 @@ export function Stocsy() {
   return <InnerStocsy scaleRatio={scaleRatio} chemicalShift={chemicalShift} />;
 }
 
-export function InnerStocsy({ scaleRatio, chemicalShift }) {
+function InnerStocsy({ scaleRatio, chemicalShift }) {
   const stocsyData = useStocsy(chemicalShift);
   const data = useSliceStocsyData(stocsyData);
 

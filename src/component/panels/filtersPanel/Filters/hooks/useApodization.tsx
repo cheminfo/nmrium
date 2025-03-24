@@ -33,7 +33,7 @@ const initialValues: ApodizationOptions = {
   livePreview: true,
 };
 
-export interface UseSharedApodizationOptions {
+interface UseSharedApodizationOptions {
   validationSchema?: Yup.ObjectSchema<any>;
   applyFilterOnload?: boolean;
 }

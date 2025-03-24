@@ -18,10 +18,3 @@ export function getActiveSpectraAsObject(
 
   return activeSpectraObject;
 }
-
-export function isActiveSpectrum(
-  activeSpectra: Record<string, number> | null,
-  id: string,
-) {
-  return !!(activeSpectra && id in activeSpectra);
-}

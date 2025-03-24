@@ -6,7 +6,7 @@ import { Input2Controller } from './Input2Controller.js';
 import type { LabelStyle } from './Label.js';
 import Label from './Label.js';
 
-export const formatFieldInputStyle: CSSProperties = {
+const formatFieldInputStyle: CSSProperties = {
   textAlign: 'center',
 };
 

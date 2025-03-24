@@ -37,10 +37,6 @@ export function storeData(localStorageKey, value) {
   localStorage.setItem(localStorageKey, value);
 }
 
-export function removeData(localStorageKey) {
-  localStorage.removeItem(localStorageKey);
-}
-
 export function getValue(object, keyPath, defaultValue: any = null) {
   return dlv(object, keyPath, defaultValue);
 }

@@ -17,7 +17,7 @@ const Emitter = {
 
 Object.freeze(Emitter);
 
-export type EventEmitterClickOptions = ClickOptions & { xPPM: number };
+type EventEmitterClickOptions = ClickOptions & { xPPM: number };
 
 interface UseEventOptions {
   onBrushEnd?: (options: BrushTrackerData & { range: number[] }) => void;

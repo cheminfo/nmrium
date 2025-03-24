@@ -9,17 +9,12 @@ export { createRange } from './ranges/createRange.js';
 export { resizeRange } from './ranges/resizeRange.js';
 export { changeRangeRelativeValue } from './ranges/changeRangeRelativeValue.js';
 export { changeRangeSignal } from './ranges/changeRangeSignal.js';
-export { checkRangeKind } from './ranges/checkRangeKind.js';
 export { detectRange } from './ranges/detectRange.js';
 export { detectRanges } from './ranges/detectRanges.js';
-export {
-  resurrectSpectrumFromRanges,
-  resurrectSpectrumFromSignals,
-} from './ranges/resurrectSpectrum.js';
+export { resurrectSpectrumFromRanges } from './ranges/resurrectSpectrum.js';
 export {
   mapRanges,
   getShiftX,
-  checkIntegralKind,
   updateRangesRelativeValues,
   updateIntegralsRelativeValues,
 } from 'nmr-processing';

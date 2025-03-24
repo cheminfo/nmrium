@@ -1,7 +1,7 @@
 import dlv from 'dlv';
 import { useCallback, useMemo, useState } from 'react';
 
-export enum SortType {
+enum SortType {
   ASCENDING = 'asc',
   DESCENDING = 'desc',
   ORIGINAL = 'original',

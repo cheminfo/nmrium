@@ -143,22 +143,21 @@ export function usePanelPreferences<T extends Panel>(
   }, [current, nucleus, panelKey]);
 }
 
-export type UsePanelPreferencesByNucleiResult<T extends Panel> =
-  T extends 'spectra'
-    ? PanelsPreferences['spectra']
-    : T extends 'peaks'
-      ? PanelsPreferences['peaks']
-      : T extends 'integrals'
-        ? PanelsPreferences['integrals']
-        : T extends 'zones'
-          ? PanelsPreferences['zones']
-          : T extends 'ranges'
-            ? PanelsPreferences['ranges']
-            : T extends 'multipleSpectraAnalysis'
-              ? PanelsPreferences['multipleSpectraAnalysis']
-              : T extends 'matrixGeneration'
-                ? PanelsPreferences['matrixGeneration']
-                : void;
+type UsePanelPreferencesByNucleiResult<T extends Panel> = T extends 'spectra'
+  ? PanelsPreferences['spectra']
+  : T extends 'peaks'
+    ? PanelsPreferences['peaks']
+    : T extends 'integrals'
+      ? PanelsPreferences['integrals']
+      : T extends 'zones'
+        ? PanelsPreferences['zones']
+        : T extends 'ranges'
+          ? PanelsPreferences['ranges']
+          : T extends 'multipleSpectraAnalysis'
+            ? PanelsPreferences['multipleSpectraAnalysis']
+            : T extends 'matrixGeneration'
+              ? PanelsPreferences['matrixGeneration']
+              : void;
 
 export function usePanelPreferencesByNuclei<T extends Panel>(
   panelKey: T,

@@ -104,7 +104,7 @@ export function ExportContent(props: ExportFrameProps) {
   );
 }
 
-export function InnerPrintFrame(props: InnerExportFrameProps) {
+function InnerPrintFrame(props: InnerExportFrameProps) {
   const { children, exportOptions, onExportReady, renderOptions } = props;
   const { width, height } = getSizeInPixel(exportOptions);
 

@@ -30,7 +30,7 @@ const scaleInitialState: ScaleState = {
   spectraBottomMargin: 10,
 };
 
-export const ScaleContext = createContext<ScaleState>(scaleInitialState);
+const ScaleContext = createContext<ScaleState>(scaleInitialState);
 
 export function useScale() {
   return useContext(ScaleContext);

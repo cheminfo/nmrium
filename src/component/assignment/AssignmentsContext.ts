@@ -11,7 +11,7 @@ export type Axis = 'x' | 'y';
  * - The key (`Axis`) represents the **axis** (`'x'` or `'y'`).
  * - The value (`string[]`) contains the **assigned diaIDs** for that axis.
  */
-export type Assignment = Record<Axis, string[]>;
+type Assignment = Record<Axis, string[]>;
 /**
  * An object that associates each unique ID to their corresponding axis assignments.
  *
@@ -20,8 +20,7 @@ export type Assignment = Record<Axis, string[]>;
  */
 export type Assignments = Record<string, Assignment>;
 
-export type AssignmentDimension = '1D' | '2D';
-export interface AssignmentItem {
+interface AssignmentItem {
   id: string;
   axis: Axis | null;
 }
@@ -71,8 +70,6 @@ export interface AssignmentsData extends AssignmentStatus {
 }
 
 export const assignmentContext = createContext<AssignmentContext | null>(null);
-
-export const AssignmentProvider = assignmentContext.Provider;
 
 export function useAssignmentContext() {
   const context = useContext(assignmentContext);

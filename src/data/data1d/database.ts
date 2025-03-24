@@ -4,12 +4,12 @@ import OCL from 'openchemlib/full';
 import { MoleculesDB } from 'openchemlib-utils';
 import { filter } from 'smart-array-filter';
 
-export interface DataBaseSignal {
+interface DataBaseSignal {
   assignment: string;
   delta: number;
 }
 
-export interface DataBaseBasic {
+interface DataBaseBasic {
   spectrumID: string;
   index: number;
   names: string[];
@@ -20,7 +20,7 @@ export interface DataBaseBasic {
     coordinates: string;
   };
 }
-export interface DataBaseRange {
+interface DataBaseRange {
   from: number;
   to: number;
   signals: DataBaseSignal[];

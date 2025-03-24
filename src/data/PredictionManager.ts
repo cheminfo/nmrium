@@ -28,8 +28,8 @@ import {
 import { initiateDatum2D } from './data2d/Spectrum2D/index.js';
 import { adjustAlpha } from './utilities/generateColor.js';
 
-export type Experiment = 'proton' | 'carbon' | 'cosy' | 'hsqc' | 'hmbc';
-export type SpectraPredictionOptions = Record<Experiment, boolean>;
+type Experiment = 'proton' | 'carbon' | 'cosy' | 'hsqc' | 'hmbc';
+type SpectraPredictionOptions = Record<Experiment, boolean>;
 export type PredictedSpectraResult = Partial<
   Record<Experiment, PredictionBase1D | PredictionBase2D>
 >;

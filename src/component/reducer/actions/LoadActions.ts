@@ -275,4 +275,4 @@ function handleLoadDropFiles(draft: Draft<State>, action: LoadDropFilesAction) {
   }
 }
 
-export { handleSetIsLoading, initSpectra, handleInitiate, handleLoadDropFiles };
+export { handleSetIsLoading, handleInitiate, handleLoadDropFiles };

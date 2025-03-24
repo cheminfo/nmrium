@@ -24,12 +24,6 @@ interface InsetPagContextProps extends BaseInsetPagContextProps {
 
 const InsetContext = createContext<InsetPagContextProps | null>(null);
 
-export function isInsetNotNull(
-  inset: InsetPagContextProps | null,
-): inset is InsetPagContextProps {
-  return !!inset;
-}
-
 export function useInsetOptions() {
   return useContext(InsetContext);
 }
