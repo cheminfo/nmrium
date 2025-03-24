@@ -43,10 +43,6 @@ export default [
           message:
             "Use a deep import instead, like for example 'lodash/merge.js'",
         },
-        {
-          name: '@simbathesailor/use-what-changed',
-          message: 'Remove use-what-changed before committing the code',
-        },
         { name: 'openchemlib', message: "Use 'openchemlib/full'" },
         { name: 'react-ocl', message: "Use 'react-ocl/full" },
       ],
