@@ -35,7 +35,7 @@
     "start": "npm run dev",
     "stylelint": "stylelint \"**/*.{css,tsx}\"",
     "stylelint-fix": "npm run stylelint -- --fix",
-    "test": "npm run test-only && npm run eslint && npm run prettier && npm run check-types && npm run stylelint && npm run build-no-minify && npm run test-e2e",
+    "test": "npm run test-only && npm run eslint && npm run prettier && npm run check-types && npm run stylelint && npm run knip && npm run build-no-minify && npm run test-e2e",
     "test-only": "vitest run --coverage",
     "test-e2e": "playwright test --project chromium",
     "test-e2e-server": "serve -l tcp://localhost:3000 build"

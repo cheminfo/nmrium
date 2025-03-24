@@ -6,6 +6,7 @@
     "src/demo",
     "src/index.tsx",
     "test-e2e",
+    "knip.config.ts",
     "vite.config.ts"
   ]
 }
