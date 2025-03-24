@@ -6,7 +6,7 @@ import type { ReactElement, ReactNode } from 'react';
 import { forwardRef, memo } from 'react';
 import type { ErrorBoundaryPropsWithComponent } from 'react-error-boundary';
 import { ErrorBoundary } from 'react-error-boundary';
-import { FullScreenProvider, RootLayout } from 'react-science/ui';
+import { RootLayout } from 'react-science/ui';
 
 import ErrorOverlay from './ErrorOverlay.js';
 import { InnerNMRium } from './InnerNMRium.js';
@@ -44,11 +44,7 @@ const NMRiumBase = forwardRef<NMRiumRefAPI, NMRiumProps>(function NMRium(
     </ErrorBoundary>
   );
 
-  return (
-    <FullScreenProvider>
-      <RootLayout style={{ width: '100%' }}>{children}</RootLayout>
-    </FullScreenProvider>
-  );
+  return <RootLayout style={{ width: '100%' }}>{children}</RootLayout>;
 });
 
 export const NMRium = memo(NMRiumBase);
