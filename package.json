@@ -96,7 +96,7 @@
     "nmredata": "^0.9.11",
     "numeral": "^2.0.6",
     "openchemlib": "^8.19.0",
-    "openchemlib-utils": "^6.6.0",
+    "openchemlib-utils": "^6.7.0",
     "papaparse": "^5.5.2",
     "react-d3-utils": "^3.0.0",
     "react-dropzone": "^14.3.8",
