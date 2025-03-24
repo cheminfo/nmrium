@@ -33,7 +33,7 @@ interface MultiplicityTreeProps {
 const treeLevelsColors: string[] = ['red', 'green', 'blue', 'magenta'];
 const marginBottom = 20;
 const headTextMargin = 5;
-const tailLengthScale = 60;
+const tailLength = 20;
 const boxPadding = 20;
 
 export default function MultiplicityTree(props: MultiplicityTreeProps) {
@@ -99,7 +99,6 @@ function Tree(props: TreeProps) {
     widthRatio = (scaleX()(from) - scaleX()(to)) / width;
   }
 
-  const tailLength = widthRatio * tailLengthScale;
   const rationTextSize = widthRatio * 30;
   let multiplicityTextSize = rationTextSize;
 
@@ -203,7 +202,7 @@ function Tree(props: TreeProps) {
             x={headX}
             y={startY - headTextMargin}
             textAnchor="middle"
-            fontSize={multiplicityTextSize}
+            fontSize="12px"
             fill="black"
           >
             {multiplicity}
