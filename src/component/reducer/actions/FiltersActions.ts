@@ -671,7 +671,11 @@ function handleShiftSpectrumAlongXAxis(
 
   if (isOneDimensionShift(options) && isSpectrum1D(datum)) {
     const { shift } = options;
-
+    rollbackSpectrumByFilter(draft, {
+      key: 'shiftX',
+      searchBy: 'name',
+      applyFilter: false,
+    });
     Filters1DManager.applyFilters(datum, [
       { name: 'shiftX', value: { shift } },
     ]);
@@ -683,6 +687,11 @@ function handleShiftSpectrumAlongXAxis(
     const { shiftX, shiftY } = options;
 
     if (shiftX) {
+      rollbackSpectrumByFilter(draft, {
+        key: 'shift2DX',
+        searchBy: 'name',
+        applyFilter: false,
+      });
       Filters2DManager.applyFilters(datum, [
         { name: 'shift2DX', value: { shift: shiftX } },
       ]);
@@ -690,6 +699,11 @@ function handleShiftSpectrumAlongXAxis(
     }
 
     if (shiftY) {
+      rollbackSpectrumByFilter(draft, {
+        key: 'shift2DY',
+        searchBy: 'name',
+        applyFilter: false,
+      });
       Filters2DManager.applyFilters(datum, [
         { name: 'shift2DY', value: { shift: shiftY } },
       ]);

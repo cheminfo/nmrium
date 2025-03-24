@@ -547,6 +547,11 @@ function handleAlignSpectraHandler(
         !datum.info?.isFid
       ) {
         const shift = getReferenceShift(datum, { ...action.payload });
+        rollbackSpectrumByFilter(draft, {
+          key: 'shiftX',
+          searchBy: 'name',
+          applyFilter: false,
+        });
         Filters1DManager.applyFilters(datum as Spectrum1D, [
           {
             name: 'shiftX',
