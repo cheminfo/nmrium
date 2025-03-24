@@ -1,12 +1,7 @@
 {
   "compilerOptions": {
-    "lib": [
-      "DOM",
-      "ES2022"
-    ],
-    "types": [
-      "vite/client"
-    ],
+    "lib": ["DOM", "ES2022"],
+    "types": ["vite/client"],
     "target": "ES2022",
     "outDir": "lib",
     "jsx": "react-jsx",
@@ -27,10 +22,8 @@
     "playwright.config.ts",
     "src",
     "test-e2e",
+    "knip.config.ts",
     "vite.config.ts"
   ],
-  "exclude": [
-    "node_modules",
-    "lib"
-  ]
+  "exclude": ["node_modules", "lib"]
 }
