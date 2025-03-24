@@ -20,11 +20,9 @@ export function changeRangeSignal(
     const signalIndex = spectrum.ranges.values[rangeIndex].signals.findIndex(
       (signal) => signal.id === signalID,
     );
-    shiftValue =
-      newSignalValue -
-      spectrum.ranges.values[rangeIndex].signals[signalIndex].delta;
-    spectrum.ranges.values[rangeIndex].signals[signalIndex].delta =
-      newSignalValue;
+    const signal = spectrum.ranges.values[rangeIndex].signals[signalIndex];
+    shiftValue = newSignalValue - signal.delta;
+    signal.delta = newSignalValue;
   }
   return shiftValue;
 }

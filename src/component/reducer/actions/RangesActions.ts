@@ -45,6 +45,7 @@ import type { ActionType } from '../types/ActionType.js';
 
 import { handleUpdateCorrelations } from './CorrelationsActions.js';
 import { setDomain } from './DomainActions.js';
+import { rollbackSpectrumByFilter } from './FiltersActions.js';
 import { toggleDisplayingPeaks } from './PeaksActions.js';
 import { resetSelectedTool } from './ToolsActions.js';
 
@@ -550,6 +551,11 @@ function handleChangeRangeSignalValue(
       rangeID,
       signalID,
       newSignalValue: value,
+    });
+    rollbackSpectrumByFilter(draft, {
+      key: 'shiftX',
+      searchBy: 'name',
+      applyFilter: false,
     });
     Filters1DManager.applyFilters(draft.data[index], [
       { name: 'shiftX', value: { shift } },
