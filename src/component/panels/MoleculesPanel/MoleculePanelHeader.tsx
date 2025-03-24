@@ -10,7 +10,7 @@ import {
   FaPlus,
   FaRegTrashAlt,
 } from 'react-icons/fa';
-import { FaMaximize } from 'react-icons/fa6';
+import { FaMaximize, FaMinimize } from 'react-icons/fa6';
 import { IoOpenOutline } from 'react-icons/io5';
 import { PanelHeader, Toolbar } from 'react-science/ui';
 
@@ -233,14 +233,15 @@ export default function MoleculePanelHeader({
 
   const topicMolecule = useTopicMolecule();
 
-  function expandMoleculeHydrogens() {
+  function expandMoleculeHydrogens(expand?: boolean) {
     const molecule = molecules[currentIndex];
 
     if (!molecule) return;
 
     const { id, label } = molecule;
-    const moleculeWithH = topicMolecule[id].moleculeWithH;
-    const molfile = moleculeWithH.toMolfileV3();
+    const molfile = expand
+      ? topicMolecule[id].toMolfileWithH({ version: 3 })
+      : topicMolecule[id].toMolfileWithoutH({ version: 3 });
     dispatch({ type: 'SET_MOLECULE', payload: { id, label, molfile } });
   }
 
@@ -309,7 +310,13 @@ export default function MoleculePanelHeader({
         <Toolbar.Item
           tooltip="Expand all hydrogens"
           icon={<FaMaximize />}
-          onClick={expandMoleculeHydrogens}
+          onClick={() => expandMoleculeHydrogens(true)}
+          disabled={!hasMolecules}
+        />
+        <Toolbar.Item
+          tooltip="Collapse all hydrogens"
+          icon={<FaMinimize />}
+          onClick={() => expandMoleculeHydrogens(false)}
           disabled={!hasMolecules}
         />
       </Toolbar>
