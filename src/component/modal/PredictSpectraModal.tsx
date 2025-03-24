@@ -53,7 +53,7 @@ interface PredictSpectraModalProps {
   molecule: StateMoleculeExtended;
 }
 
-export function PredictSpectraModal({
+export default function PredictSpectraModal({
   onClose = () => null,
   molecule,
 }: PredictSpectraModalProps) {
@@ -181,5 +181,3 @@ export function PredictSpectraModal({
     </>
   );
 }
-
-export default PredictSpectraModal;

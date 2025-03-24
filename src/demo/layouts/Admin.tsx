@@ -21,7 +21,7 @@ interface DashboardProps {
   baseURL?: string;
 }
 
-export function Dashboard(props: DashboardProps) {
+export default function Dashboard(props: DashboardProps) {
   const { routes = [], baseURL } = props;
   const routesList = useMemo(() => mapTreeToFlatArray(routes), [routes]);
   const [menuIsClosed, setMenuIsClosed] = useState(false);
@@ -105,5 +105,3 @@ function RenderView(props) {
     />
   );
 }
-
-export default Dashboard;
