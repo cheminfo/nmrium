@@ -349,7 +349,7 @@ function TableInner<T extends object>(
   );
 }
 
-export interface VirtualBoundary {
+interface VirtualBoundary {
   start: number;
   end: number;
 }

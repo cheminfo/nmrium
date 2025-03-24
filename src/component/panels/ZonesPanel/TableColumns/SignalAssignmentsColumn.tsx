@@ -6,7 +6,7 @@ import type { AssignmentsColumnProps } from '../ZonesTableRow.js';
 
 import { useSignalHighlight } from './SignalAssignmentsColumns.js';
 
-export interface SignalAssignmentsColumnProps extends AssignmentsColumnProps {
+interface SignalAssignmentsColumnProps extends AssignmentsColumnProps {
   axis: Axis;
 }
 

@@ -13,7 +13,7 @@ import { initiateZones } from './zones/initiateZones.js';
 
 const defaultMinMax = { z: [], minX: 0, minY: 0, maxX: 0, maxY: 0 };
 
-export interface InitiateDatum2DOptions {
+interface InitiateDatum2DOptions {
   usedColors?: UsedColors;
   colors?: SpectrumTwoDimensionsColor[];
 }

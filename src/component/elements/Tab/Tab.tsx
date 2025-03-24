@@ -22,11 +22,11 @@ export interface TabEvents {
   onClick?: (tab: Required<BaseTab>) => void;
 }
 
-export interface BaseTab {
+interface BaseTab {
   tabid: string;
   title?: string;
 }
-export interface BasicTabProps extends BaseTab {
+interface BasicTabProps extends BaseTab {
   isActive?: boolean;
 }
 export interface TabProps extends BasicTabProps, TabEvents {

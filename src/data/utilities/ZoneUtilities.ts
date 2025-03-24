@@ -2,16 +2,7 @@ import type { Zone } from 'nmr-processing';
 
 import { DATUM_KIND } from '../constants/signalsKinds.js';
 
-export function getDiaIDs(zone: Zone, axis: string): string[] {
-  return ([] as string[]).concat(
-    zone[axis].diaIDs || [],
-    zone.signals
-      ? zone.signals.flatMap((signal) => signal[axis].diaIDs || [])
-      : [],
-  );
-}
-
-export function getNbAtoms(zone: Zone, axis: string) {
+function getNbAtoms(zone: Zone, axis: string) {
   let sum = 0;
   if (zone.signals) {
     for (const signal of zone.signals) {
@@ -21,14 +12,14 @@ export function getNbAtoms(zone: Zone, axis: string) {
   return sum;
 }
 
-export function setNbAtoms(zone: Zone, axis: string): void {
+function setNbAtoms(zone: Zone, axis: string): void {
   zone[axis].nbAtoms = getNbAtoms(zone, axis);
   if (zone[axis].nbAtoms === 0) {
     delete zone[axis].nbAtoms;
   }
 }
 
-export function resetDiaIDs(zone: Zone, axis: string) {
+function resetDiaIDs(zone: Zone, axis: string) {
   delete zone[axis].diaIDs;
   delete zone[axis].nbAtoms;
   for (const signal of zone.signals) {
@@ -40,12 +31,6 @@ export function resetDiaIDs(zone: Zone, axis: string) {
 
 export function checkZoneKind(zone: Zone): boolean {
   return zone.kind === DATUM_KIND.signal;
-}
-
-export function checkSignalKinds(zone: Zone, kinds: string[]): boolean {
-  return !zone.signals.some(
-    (_signal) => _signal.kind === undefined || !kinds.includes(_signal.kind),
-  );
 }
 
 export function unlink(

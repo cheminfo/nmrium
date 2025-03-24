@@ -94,20 +94,6 @@ function exportAsMatrix(
   fileSaver.saveAs(blob, `${fileName}.tsv`);
 }
 
-function exportAsNMRE(data, fileName = 'experiment') {
-  data.generateAsync({ type: 'blob' }).then((content) => {
-    fileSaver.saveAs(content, `${fileName}.nmredata`);
-  });
-}
-
-function exportAsMol(data, fileName = 'mol') {
-  const blob = new Blob([data], { type: 'text/plain' });
-  fileSaver.saveAs(blob, `${fileName}.mol`);
-}
-/**
- * export the vitalization result as SVG, if you need to remove some content during exportation process enclose the the content with <!-- export-remove --> ${content} <!-- export-remove -->
- */
-
 interface ExportDimensions {
   width?: number;
   height?: number;
@@ -444,10 +430,8 @@ function getBlob(targetElementID: string, options: GetBlobOptions): BlobObject {
 export {
   exportAsSVG,
   exportAsJSON,
-  exportAsNMRE,
   exportAsPng,
   copyPNGToClipboard,
-  exportAsMol,
   exportAsMatrix,
   getBlob,
 };

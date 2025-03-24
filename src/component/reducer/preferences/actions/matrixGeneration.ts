@@ -139,23 +139,6 @@ function toggleMatrixGenerationViewProperty(
   matrixGeneration[key] = !matrixGeneration[key];
 }
 
-function resetDefaultViewMatrixGenerationOptions(
-  draft: Draft<PreferencesState>,
-  action: ToggleMatrixGenerationViewAction,
-) {
-  const { nucleus } = action.payload;
-
-  const matrixGeneration = initMatrixGeneration(draft, nucleus);
-  const currentOptions = getMatrixGenerationPanelOptions(draft, nucleus);
-  const { matrixOptions: defaultMatrixOptions, ...viewOptions } =
-    getMatrixGenerationDefaultOptions();
-
-  if (currentOptions) {
-    const { matrixOptions } = currentOptions;
-    matrixGeneration[nucleus] = { matrixOptions, ...viewOptions };
-  }
-}
-
 function changeMatrixGenerationScale(
   draft: Draft<PreferencesState>,
   action: ChangeMatrixGenerationScaleAction,
@@ -190,5 +173,4 @@ export {
   toggleMatrixGenerationViewProperty,
   changeMatrixGenerationScale,
   changeMatrixGenerationStocsyChemicalShift,
-  resetDefaultViewMatrixGenerationOptions,
 };

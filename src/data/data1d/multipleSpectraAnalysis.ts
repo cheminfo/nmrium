@@ -22,27 +22,16 @@ import generateChar from '../utilities/generateChar.js';
 
 import { detectRange, isSpectrum1D } from './Spectrum1D/index.js';
 
-export type ColumnType = keyof typeof ANALYSIS_COLUMN_TYPES;
-
-export interface AnalysisRow extends RangeDetectionResult {
+interface AnalysisRow extends RangeDetectionResult {
   SID: string;
   colKey?: string;
   value?: number;
 }
 
-export interface SpectraAnalysisInnerData {
-  options: AnalysisOptions;
-  values: Record<string /** spectrum key */, AnalysisRow>;
-}
 export interface SpectraAnalysisData {
   options: AnalysisOptions;
   values: AnalysisRow[];
 }
-
-export type SpectraAnalysis = Record<
-  string /** where the key is the nucleus*/,
-  SpectraAnalysisInnerData
->;
 
 function addColumnKey(
   spectraAnalysis: PanelsPreferences['multipleSpectraAnalysis'],
@@ -58,22 +47,7 @@ function addColumnKey(
   return key;
 }
 
-export function getColumns(
-  spectraAnalysis: PanelsPreferences['multipleSpectraAnalysis'],
-  nucleus: string,
-) {
-  return spectraAnalysis[nucleus].analysisOptions.columns;
-}
-
-export function getValue(
-  colKey: string,
-  columns: SpectraAnalysisColumns,
-  data,
-) {
-  return data[columns[colKey].valueKey];
-}
-
-export function getSpectraAnalysis(
+function getSpectraAnalysis(
   spectra: Spectrum[],
   options,
 ): { values: AnalysisRow[]; sum: number } {

@@ -5,7 +5,7 @@ export function isSpectrum2D(spectrum: Spectrum): spectrum is Spectrum2D {
   return spectrum && spectrum.info.dimension === 2;
 }
 
-export function isFt2DData(data: NmrData2D): data is NmrData2DFt {
+function isFt2DData(data: NmrData2D): data is NmrData2DFt {
   return 'rr' in data;
 }
 

@@ -28,12 +28,12 @@ interface SpreadNMRPeak1D extends NMRPeak1DWithParentKeys {
 }
 
 export type Peak = Required<SpreadPeak1D | SpreadNMRPeak1D>;
-export type PeaksMode = 'spread' | 'single';
+type PeaksMode = 'spread' | 'single';
 export type PeaksSource = 'peaks' | 'ranges';
 
 type FilterPeaksBy = `Source[${PeaksSource}]_Mode[${PeaksMode}]`;
 
-export interface BasePeaksProps {
+interface BasePeaksProps {
   peaksSource: PeaksSource;
   displayerKey: string;
   xDomain: number[];

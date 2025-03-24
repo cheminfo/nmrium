@@ -47,7 +47,7 @@ export interface InputStyle {
   inputWrapper?: CSSProperties;
 }
 
-export interface InputProps
+interface InputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'style'> {
   style?: InputStyle;
   autoSelect?: boolean;

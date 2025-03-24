@@ -1,6 +1,6 @@
 import { MultiplicityPatterns } from 'nmr-processing';
 
-export interface MultipletDefinition {
+interface MultipletDefinition {
   label: string;
   value: string;
   multiplicity: number | null;

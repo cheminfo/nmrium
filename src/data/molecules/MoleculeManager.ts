@@ -76,7 +76,7 @@ export function extractLabelsNumbers(
   return values;
 }
 
-export function getLabelNumber(reserveNumbers: number[]): number {
+function getLabelNumber(reserveNumbers: number[]): number {
   for (let i = 1; i < Number.MAX_VALUE; i++) {
     if (reserveNumbers.includes(i)) {
       continue;

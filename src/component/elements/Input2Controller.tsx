@@ -6,7 +6,7 @@ import { Controller } from 'react-hook-form';
 import type { Input2Props } from './Input2.js';
 import { Input2 } from './Input2.js';
 
-export interface InputMapValueFunctions {
+interface InputMapValueFunctions {
   mapOnChangeValue?: (value: string) => any;
   mapValue?: (value: any) => string;
 }

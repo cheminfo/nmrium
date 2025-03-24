@@ -19,11 +19,6 @@ const HighlightedRowStyle: CSSProperties = { backgroundColor: '#ff6f0057' };
 
 const ConstantlyHighlightedRowStyle = { backgroundColor: '#f5f5dc' };
 
-export type OnHover = Pick<
-  React.HTMLAttributes<HTMLTableCellElement>,
-  'onMouseEnter' | 'onMouseLeave'
->;
-
 export interface AssignmentsColumnProps {
   rowData: ZoneData;
   onUnlink: (event: any, flag: boolean, axis: Axis) => void;

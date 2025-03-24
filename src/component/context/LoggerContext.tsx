@@ -15,7 +15,7 @@ import { LogsHistoryModal } from '../modal/LogsHistoryModal.js';
 
 import { usePreferences } from './PreferencesContext.js';
 
-export const LoggerContext = createContext<{
+const LoggerContext = createContext<{
   logger: FifoLogger;
   logsHistory: LogEntry[];
   markAsRead: () => void;

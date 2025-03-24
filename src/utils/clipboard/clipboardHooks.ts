@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import {
   newClipboardItem,
@@ -9,63 +9,7 @@ import {
 } from './clipboard.js';
 import type { ClipboardMode } from './types.js';
 
-type PN = PermissionName | 'clipboard-read' | 'clipboard-write';
-
-export interface UsePermissionReturn {
-  state: PermissionState | undefined;
-  isGranted: boolean;
-}
-
-export function useNavigatorPermission(
-  now: boolean,
-  permissionName: PN,
-  onGranted?: () => void,
-  onError = reportError,
-): UsePermissionReturn {
-  const [state, setState] = useState<PermissionState | undefined>();
-
-  useEffect(() => {
-    if (!now) return;
-
-    let canceled = false;
-
-    let status: PermissionStatus;
-    function onPermissionChange() {
-      if (canceled) return;
-      setState(status.state);
-
-      if (status.state === 'granted') {
-        onGranted?.();
-      }
-    }
-
-    void navigator.permissions
-      .query({ name: permissionName as PermissionName })
-      .then((pStatus) => {
-        if (canceled) return;
-        status = pStatus;
-
-        setState(status.state);
-        status.addEventListener('change', onPermissionChange);
-      })
-      .catch((error: unknown) => {
-        if (canceled) return;
-
-        onError(error);
-      });
-
-    return () => {
-      canceled = true;
-      if (status) {
-        status.removeEventListener('change', onPermissionChange);
-      }
-    };
-  }, [now, permissionName, onGranted, onError]);
-
-  return { state, isGranted: state === 'granted' };
-}
-
-export interface UseClipboardReturn {
+interface UseClipboardReturn {
   /**
    * polyfill native api (stable)
    */

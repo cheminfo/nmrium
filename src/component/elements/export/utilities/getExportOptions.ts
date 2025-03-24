@@ -8,15 +8,7 @@ import { getPageDimension } from '../../print/pageSize.js';
 
 type ReturnExportOptions = Omit<AdvanceExportSettings, 'mode'>;
 
-export const INITIAL_EXPORT_OPTIONS: ExportSettings = {
-  mode: 'advance',
-  dpi: 300,
-  width: 21,
-  height: 14.8,
-  unit: 'cm',
-  useDefaultSettings: false,
-};
-export const INITIAL_ADVANCE_EXPORT_OPTIONS: ExportSettings = {
+const INITIAL_ADVANCE_EXPORT_OPTIONS: ExportSettings = {
   mode: 'advance',
   dpi: 300,
   width: 21,
@@ -32,7 +24,7 @@ export const INITIAL_BASIC_EXPORT_OPTIONS: ExportSettings = {
   useDefaultSettings: false,
 };
 
-export function isBasicOptions(
+function isBasicOptions(
   options: ExportSettings,
 ): options is BasicExportSettings {
   const { mode } = options;

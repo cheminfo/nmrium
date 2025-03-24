@@ -5,7 +5,7 @@ import { useViewportSize } from '../hooks/useViewportSize.js';
 import type { State } from '../reducer/Reducer.js';
 import { initialState } from '../reducer/Reducer.js';
 
-export const ChartContext = createContext<State>(initialState);
+const ChartContext = createContext<State>(initialState);
 export const ChartDataProvider = ChartContext.Provider;
 
 export function useChartData() {

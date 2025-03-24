@@ -28,14 +28,14 @@ const Actions = styled.div`
   justify-content: flex-end;
 `;
 
-export interface CFBP {
+interface CFBP {
   mode: ClipboardMode | undefined;
   label?: string;
 
   onDismiss: () => void;
 }
 
-export interface ClipboardFallbackProps
+interface ClipboardFallbackProps
   extends CFBP,
     Partial<Omit<ClipboardFallbackReadProps, 'mode' | 'label' | 'onDismiss'>>,
     Partial<
@@ -88,7 +88,7 @@ function assertWriteTextProps(
  *
  * @param props
  */
-export function ClipboardFallback(props: ClipboardFallbackProps) {
+function ClipboardFallback(props: ClipboardFallbackProps) {
   switch (props.mode) {
     case 'read':
       assertReadProps(props);

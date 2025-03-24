@@ -76,7 +76,7 @@ function prepareAnalysisData(
 
 type PlotOptions = PlotAxisOptions & { paths: Record<string, string[]> };
 
-export function getPlotDataAsString(
+function getPlotDataAsString(
   spectraAnalysis: SpectraAnalysisData,
   options: {
     plotOptions: PlotOptions;

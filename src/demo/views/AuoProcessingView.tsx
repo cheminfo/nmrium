@@ -6,20 +6,6 @@ import type { BaseViewProps } from './BaseView.js';
 import BaseView from './BaseView.js';
 import { Loading } from './Loading.js';
 
-export async function loadData(file) {
-  const response = await fetch(file);
-  checkStatus(response);
-  const data = await response.json();
-  return data;
-}
-
-function checkStatus(response) {
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status} - ${response.statusText}`);
-  }
-  return response;
-}
-
 interface ExternalLoadViewProps extends Omit<BaseViewProps, 'data'> {
   file: string;
   baseURL: string;
@@ -43,6 +29,7 @@ async function loadSpectrumFromURL(url) {
   });
   return nmriumState;
 }
+
 export default function ExternalLoadView(props: ExternalLoadViewProps) {
   const [data, setData] = useState();
 

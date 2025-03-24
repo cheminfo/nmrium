@@ -20,10 +20,4 @@ function formatNumber(
   return formattedValue;
 }
 
-function getNumberOfDecimals(value: number | string) {
-  value = String(value).trim();
-  const lastIndex = value.lastIndexOf('.');
-  return lastIndex > 0 ? value.slice(lastIndex).split('').length - 1 : 0;
-}
-
-export { formatNumber, getNumberOfDecimals };
+export { formatNumber };

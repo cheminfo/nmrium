@@ -1,9 +1,7 @@
-import { scaleLinear, zoomIdentity } from 'd3';
+import { scaleLinear } from 'd3';
 import { useCallback } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';
-import { useSpectraBottomMargin } from '../../hooks/useSpectraBottomMargin.js';
-import { useVerticalAlign } from '../../hooks/useVerticalAlign.js';
 import type {
   Domains,
   Margin,
@@ -118,17 +116,6 @@ function getYScaleWithRation(options: IntegralYScaleOptions) {
   );
 }
 
-function reScaleY(scale: number, { domain, height, margin }) {
-  const _scale = scaleLinear(domain, [height - margin.bottom, margin.top]);
-
-  const t = zoomIdentity
-    .translate(0, _scale(0))
-    .scale(scale)
-    .translate(0, -_scale(0));
-
-  return t.rescaleY(_scale).domain();
-}
-
 function useScaleX() {
   const { margin, mode, width, xDomain, xDomains } = useChartData();
   const isInset = useIsInset();
@@ -144,49 +131,12 @@ function useScaleX() {
     [isInset, margin, mode, width, xDomain, xDomains],
   );
 }
-function useScaleY() {
-  const { margin, height, yDomain, yDomains } = useChartData();
-  const verticalAlign = useVerticalAlign();
-  const isInset = useIsInset();
-  const spectraBottomMargin = useSpectraBottomMargin();
-
-  return useCallback(
-    (spectrumId = null) => {
-      if (isInset) {
-        return getInsetYScale({ margin, height, yDomain, spectraBottomMargin });
-      }
-
-      return getYScale(
-        {
-          margin,
-          height,
-          verticalAlign,
-          yDomain,
-          yDomains,
-          spectraBottomMargin,
-        },
-        spectrumId,
-      );
-    },
-    [
-      isInset,
-      margin,
-      height,
-      verticalAlign,
-      yDomain,
-      yDomains,
-      spectraBottomMargin,
-    ],
-  );
-}
 
 export {
   useScaleX,
-  useScaleY,
   getXScale,
   getYScale,
   getIntegralYScale,
-  reScaleY,
   getYScaleWithRation,
   getInsetXScale,
   getInsetYScale,

@@ -6,7 +6,7 @@ import type {
 import { Menu, MenuItem, showContextMenu, Tooltip } from '@blueprintjs/core';
 import type { ComponentProps, ElementType, MouseEvent, ReactNode } from 'react';
 
-export type ContextMenuCheck = boolean | ((data: any) => boolean);
+type ContextMenuCheck = boolean | ((data: any) => boolean);
 export interface ContextMenuItem extends Omit<MenuItemProps, 'disabled'> {
   data?: object;
   tooltip?: TooltipProps;
@@ -23,7 +23,7 @@ export interface BaseContextMenuProps {
   onSelect: (data?: object) => void;
 }
 
-export interface ContextMenuProps<E>
+interface ContextMenuProps<E>
   extends BaseContextMenuProps,
     Omit<BluePrintContextMenuProps, 'onSelect' | 'content' | 'children'> {
   as?: E;

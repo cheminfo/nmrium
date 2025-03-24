@@ -43,7 +43,7 @@ function preparePush(historyStack) {
   };
 }
 
-export function popZoomHistory(historyStack, baseZoom?: HistoryItem) {
+function popZoomHistory(historyStack, baseZoom?: HistoryItem) {
   const val = historyStack.pop();
 
   if (val && historyStack.length === 0) {

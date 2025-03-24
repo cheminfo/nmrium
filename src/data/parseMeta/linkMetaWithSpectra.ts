@@ -96,12 +96,6 @@ function linkMetaWithSpectra(options: {
   return { matches, compareResult };
 }
 
-class AutomaticPathsMatchesError extends Error {
-  constructor() {
-    super('No matching Field');
-    this.name = 'AutomaticPathsMatchesError';
-  }
-}
 class TargetPathError extends Error {
   constructor(fieldPath) {
     super(`Target field path [ ${fieldPath} ] is not exists`);
@@ -115,10 +109,4 @@ class SourcePathError extends Error {
   }
 }
 
-export {
-  linkMetaWithSpectra,
-  AutomaticPathsMatchesError,
-  TargetPathError,
-  SourcePathError,
-};
-export type { CompareResultItem, CompareResult };
+export { linkMetaWithSpectra, TargetPathError };

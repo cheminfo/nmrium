@@ -70,7 +70,7 @@ interface ExportOptionsProps {
   exportAs: keyof ExportPreferences;
 }
 
-export function ExportOptions(props: ExportOptionsProps) {
+function ExportOptions(props: ExportOptionsProps) {
   const { exportAs } = props;
   const path: `export.${keyof ExportPreferences}` = `export.${exportAs}`;
   const {

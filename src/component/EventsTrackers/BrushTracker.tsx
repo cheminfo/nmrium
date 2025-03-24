@@ -61,7 +61,7 @@ function stopPageScrolling(event) {
   event.preventDefault();
 }
 
-export const BrushContext = createContext<BrushTrackerData>(initialState);
+const BrushContext = createContext<BrushTrackerData>(initialState);
 
 export function useBrushTracker() {
   if (!BrushContext) {
@@ -70,7 +70,7 @@ export function useBrushTracker() {
   return useContext(BrushContext);
 }
 
-export interface Position {
+interface Position {
   x: number;
   y: number;
 }

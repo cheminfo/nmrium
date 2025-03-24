@@ -40,7 +40,7 @@ import DatabaseTable from './DatabaseTable.js';
 
 export type Databases = Array<LocalDatabase | Database>;
 
-export interface DatabaseInnerProps {
+interface DatabaseInnerProps {
   nucleus: string;
   selectedTool: string;
   databases: Databases;

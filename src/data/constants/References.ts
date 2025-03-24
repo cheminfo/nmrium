@@ -5,7 +5,7 @@ interface ReferenceInfo {
   delta: number;
 }
 
-export type OneHReferences = 'tms' | 'tsp' | 'glucose';
+type OneHReferences = 'tms' | 'tsp' | 'glucose';
 
 export const REFERENCES:
   | Record<'1H', Record<OneHReferences, ReferenceInfo>>
@@ -33,7 +33,7 @@ export const REFERENCES:
   '13C': {},
 };
 
-export interface GetRangeOptions {
+interface GetRangeOptions {
   nucleus?: string;
   reference?: string;
 }

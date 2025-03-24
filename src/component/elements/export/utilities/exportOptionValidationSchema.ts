@@ -51,7 +51,7 @@ function testSize(value: number, unit: Unit, dpi: number) {
 //   useDefaultSettings: Yup.boolean().required(),
 // });
 
-export const advanceExportOptionValidationSchema = Yup.object().shape({
+const advanceExportOptionValidationSchema = Yup.object().shape({
   mode: Yup.string().oneOf(['basic', 'advance']).required(),
   width: Yup.number()
     .required()
@@ -84,7 +84,7 @@ export const advanceExportOptionValidationSchema = Yup.object().shape({
   useDefaultSettings: Yup.boolean().required(),
 });
 
-export const basicExportOptionValidationSchema = Yup.object().shape({
+const basicExportOptionValidationSchema = Yup.object().shape({
   mode: Yup.string().oneOf(['basic', 'advance']).required(),
   size: Yup.mixed<PageSizeName>()
     .oneOf(pageSizesKeys, 'Size is invalid')

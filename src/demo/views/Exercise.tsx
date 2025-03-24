@@ -119,7 +119,7 @@ const Container = styled.div`
   margin-left: 30px;
 `;
 
-export interface ExerciceData extends NMRiumData {
+interface ExerciceData extends NMRiumData {
   answer: {
     idCode: string;
     currentAnswer: string;

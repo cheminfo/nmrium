@@ -223,7 +223,7 @@ interface Boundary {
   height: number;
 }
 
-export function AssignmentLabel(props: AssignmentLabelProps) {
+function AssignmentLabel(props: AssignmentLabelProps) {
   const { zone } = props;
   const { id, x, y, assignment } = zone;
   const dispatch = useDispatch();

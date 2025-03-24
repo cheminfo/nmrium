@@ -84,7 +84,7 @@ const leftStyles = css`
   }
 `;
 
-export enum PositionsEnum {
+enum PositionsEnum {
   TOP = 'TOP',
   LEFT = 'LEFT',
 }

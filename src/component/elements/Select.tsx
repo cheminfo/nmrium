@@ -28,7 +28,7 @@ const BaseSelect = styled.select<{ width: number | string | undefined }>`
   }
 `;
 
-export interface SelectProps
+interface SelectProps
   extends Omit<
     React.SelectHTMLAttributes<HTMLSelectElement>,
     'style' | 'onChange'

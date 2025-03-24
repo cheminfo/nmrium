@@ -11,7 +11,8 @@ export interface CalibrateOptions {
   nbPeaks: number;
   targetX: number;
 }
-export interface GetReferenceShiftOptions extends CalibrateOptions {
+
+interface GetReferenceShiftOptions extends CalibrateOptions {
   reference?: string;
 }
 

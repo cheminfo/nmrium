@@ -32,7 +32,7 @@ const defaultKeyModifiersState: KeyModifiersState = {
   modifiersKey: null,
 };
 
-export const KeyModifierContext = createContext<KeyModifiersState>(
+const KeyModifierContext = createContext<KeyModifiersState>(
   defaultKeyModifiersState,
 );
 
@@ -57,7 +57,7 @@ export function getModifiers(event: KeyboardEvent | MouseEvent) {
   return { ctrlKey, shiftKey, altKey };
 }
 
-export function toModifiersKey(keyModifiers: KeyModifiers): ModifiersKey {
+function toModifiersKey(keyModifiers: KeyModifiers): ModifiersKey {
   const { shiftKey, altKey, ctrlKey } = keyModifiers;
   return `shift[${shiftKey ? 'true' : 'false'}]_ctrl[${ctrlKey ? 'true' : 'false'}]_alt[${altKey ? 'true' : 'false'}]`;
 }

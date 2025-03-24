@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { usePreferences } from '../context/PreferencesContext.js';
 import { formatNumber } from '../utility/formatNumber.js';
 
-export type ReturnFunction = (
+type ReturnFunction = (
   value?: number | string,
   formatKey?: 'ppmFormat' | 'hzFormat' | (string & {}),
   prefix?: string,

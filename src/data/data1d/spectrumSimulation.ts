@@ -1,6 +1,6 @@
 import { simulate1D } from 'nmr-processing';
 
-export type SpinSystemData = Array<Array<number | null>>;
+type SpinSystemData = Array<Array<number | null>>;
 
 export interface SpectrumSimulationOptions {
   data: SpinSystemData;

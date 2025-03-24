@@ -5,7 +5,7 @@ import { Toolbar, useOnOff } from 'react-science/ui';
 import type { ChangeSumModalContentsProps } from './ChangeSumModalContents.js';
 import { ChangeSumModalContents } from './ChangeSumModalContents.js';
 
-export interface ChangeSumModalProps
+interface ChangeSumModalProps
   extends Omit<ChangeSumModalContentsProps, 'onClose'> {
   currentSum: number | null;
   sumType: string;

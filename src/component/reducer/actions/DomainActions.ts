@@ -1,6 +1,6 @@
 import type { NmrData2DFt } from 'cheminfo-types';
-import { extent } from 'd3';
 import type { Numeric } from 'd3';
+import { extent } from 'd3';
 import type { Draft } from 'immer';
 import type {
   NucleiPreferences,
@@ -408,7 +408,6 @@ function handleMoveOverXAxis(draft: Draft<State>, action: MoveAction) {
 }
 
 export {
-  getDomain,
   get2DDomain,
   setDomain,
   setMode,

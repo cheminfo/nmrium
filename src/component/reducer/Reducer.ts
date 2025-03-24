@@ -1,6 +1,6 @@
 import type { WebSource as Source } from 'filelist-utils';
 import type { Draft } from 'immer';
-import { produce, original } from 'immer';
+import { original, produce } from 'immer';
 import type { CorrelationData } from 'nmr-correlation';
 import { buildCorrelationData } from 'nmr-correlation';
 import type { Spectrum, ViewState } from 'nmr-load-save';
@@ -34,7 +34,7 @@ import type { ZoomHistory } from './helper/ZoomHistoryManager.js';
 
 export type DisplayerMode = '1D' | '2D';
 
-export interface Pivot {
+interface Pivot {
   value: number;
   index: number;
 }
@@ -67,13 +67,6 @@ export interface TwoDimensionPhaseCorrection {
   traces: Record<TraceDirection, PhaseCorrectionTraceData>;
   activeTraceDirection: TraceDirection;
   addTracesToBothDirections: boolean;
-}
-
-export interface MatrixGenerationOptions {
-  showBoxPlot: boolean;
-  showStocsy: boolean;
-  scaleRatio: number;
-  chemicalShift: number | null;
 }
 
 export const getDefaultTwoDimensionsPhaseCorrectionTraceOptions =

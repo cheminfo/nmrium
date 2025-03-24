@@ -12,7 +12,7 @@ import { initiateIntegrals } from './integrals/initiateIntegrals.js';
 import { initiatePeaks } from './peaks/initiatePeaks.js';
 import { initiateRanges } from './ranges/initiateRanges.js';
 
-export interface InitiateDatum1DOptions {
+interface InitiateDatum1DOptions {
   usedColors?: UsedColors;
   molecules?: StateMoleculeExtended[];
   colors?: SpectrumOneDimensionColor[];
