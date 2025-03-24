@@ -33,8 +33,9 @@ interface MultiplicityTreeProps {
 const treeLevelsColors: string[] = ['red', 'green', 'blue', 'magenta'];
 const marginBottom = 20;
 const headTextMargin = 5;
-const tailLengthScale = 60;
+const tailLength = 10;
 const boxPadding = 20;
+const headerTextSize = 12;
 
 export default function MultiplicityTree(props: MultiplicityTreeProps) {
   const { range } = props;
@@ -99,13 +100,7 @@ function Tree(props: TreeProps) {
     widthRatio = (scaleX()(from) - scaleX()(to)) / width;
   }
 
-  const tailLength = widthRatio * tailLengthScale;
-  const rationTextSize = widthRatio * 30;
-  let multiplicityTextSize = rationTextSize;
-
-  if (multiplicityTextSize < 10) {
-    multiplicityTextSize = 10;
-  }
+  const isRationLabelsVisible = widthRatio > 0.1;
 
   const isMassive = ['m', 's'].includes(multiplicity);
   const levelLength = isMassive ? tailLength : tailLength * 2;
@@ -143,10 +138,9 @@ function Tree(props: TreeProps) {
   const isHighlighted = highlight.isActive || isAssignmentActive;
   const padding = boxPadding * widthRatio;
   const x = scaleX()(max) - padding;
-  const y = startY - headTextMargin - multiplicityTextSize - padding;
+  const y = startY - headTextMargin - headerTextSize - padding;
   const boxWidth = treeWidth + padding * 2;
-  const boxHeight =
-    treeHeight + headTextMargin + multiplicityTextSize + padding * 2;
+  const boxHeight = treeHeight + headTextMargin + headerTextSize + padding * 2;
 
   const actionsButtons: ActionsButtonsPopoverProps['buttons'] = [
     {
@@ -203,7 +197,7 @@ function Tree(props: TreeProps) {
             x={headX}
             y={startY - headTextMargin}
             textAnchor="middle"
-            fontSize={multiplicityTextSize}
+            fontSize={headerTextSize}
             fill="black"
           >
             {multiplicity}
@@ -233,6 +227,7 @@ function Tree(props: TreeProps) {
         </g>
         <g className="multiplicity-tree-ration-labels">
           {!isMassive &&
+            isRationLabelsVisible &&
             otherNodes.map((node, index) => {
               const { x, level, ratio } = node;
               const x1 = scaleX()(x);
@@ -248,7 +243,7 @@ function Tree(props: TreeProps) {
                   y={startY + y}
                   textAnchor="middle"
                   alignmentBaseline="middle"
-                  fontSize={rationTextSize}
+                  fontSize="10px"
                   fill={levelColor}
                 >
                   {ratio}
