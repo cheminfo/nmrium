@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.62.0](https://github.com/cheminfo/nmrium/compare/v0.61.0...v0.62.0) (2025-03-25)
+
+
+### Features
+
+* collapse molecule all hydrogens ([f825f1e](https://github.com/cheminfo/nmrium/commit/f825f1e00b387e90a6d689eecdccf5f858637f27))
+* expand molecule all hydrogens ([8bbba04](https://github.com/cheminfo/nmrium/commit/8bbba04598919b706c454894307e9a1f4fe9cf6f))
+* improve 2d zoom with horizontal, vertical, and bidirectional ([2734993](https://github.com/cheminfo/nmrium/commit/27349938e13e6fbdb535b67bc5b798077e11cd69))
+* improve brushing ([5912783](https://github.com/cheminfo/nmrium/commit/59127834b4254c7e06d74dbfc88c5c742ccb8c51))
+
+
+### Bug Fixes
+
+* append couplings when edit range ([#3442](https://github.com/cheminfo/nmrium/issues/3442)) ([e7652ff](https://github.com/cheminfo/nmrium/commit/e7652ff93fecea8323fa97395f2b7f48bcd5fcf1))
+
 ## [0.61.0](https://github.com/cheminfo/nmrium/compare/v0.60.0...v0.61.0) (2025-03-24)
 
 
