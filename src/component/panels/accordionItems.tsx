@@ -67,7 +67,7 @@ const accordions: Record<
     openWithTool: 'peakPicking',
   },
   processingsPanel: {
-    title: 'Processings',
+    title: 'Processing',
     component: <FilterPanel />,
     mode: null,
     icon: 'series-derived',

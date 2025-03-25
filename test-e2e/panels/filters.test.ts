@@ -115,7 +115,7 @@ async function checkPeakNumber(nmrium: NmriumPage, number: number) {
 test('process 1d FID 13c spectrum', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await open13CFidSpectrum(nmrium);
-  await nmrium.clickPanel('Processings');
+  await nmrium.clickPanel('Processing');
 
   await test.step('Apply Apodization filter', async () => {
     await apodizationFilter(nmrium);
@@ -147,7 +147,7 @@ test('process 1d FID 13c spectrum', async ({ page }) => {
 test('process 13c spectrum with shortcuts', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await open13CFidSpectrum(nmrium);
-  await nmrium.clickPanel('Processings');
+  await nmrium.clickPanel('Processing');
 
   await test.step('Apply Apodization filter', async () => {
     await apodizationFilter(nmrium, { keyboard: true });
@@ -195,7 +195,7 @@ test('Processed spectra filters', async ({ page }) => {
   });
   await test.step('Check filters panel', async () => {
     //Open peaks panel
-    await nmrium.clickPanel('Processings');
+    await nmrium.clickPanel('Processing');
 
     const filters = nmrium.page.locator(
       '_react=FiltersSectionsPanel >> _react=SectionItem',

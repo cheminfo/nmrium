@@ -64,7 +64,7 @@ const LIST: ListItem[] = [
     name: 'structuresPanel',
   },
   {
-    label: 'Processings panel',
+    label: 'Processing panel',
     name: 'processingsPanel',
   },
   {

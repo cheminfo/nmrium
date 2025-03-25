@@ -403,7 +403,7 @@ function WorkSpaceActionsButtons(props) {
         variant="outlined"
         intent="success"
         onClick={handlePastWorkspaceAction}
-        tooltipProps={{ content: 'Past workspace preferences', compact: true }}
+        tooltipProps={{ content: 'Paste workspace preferences', compact: true }}
       >
         <FaPaste className={Classes.ICON} />
       </Button>
