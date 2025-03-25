@@ -20,7 +20,7 @@ import { formatNumber } from '../../utility/formatNumber.js';
 
 import SignalsContent from './forms/components/SignalsContent.js';
 import editRangeFormValidation from './forms/validation/EditRangeValidation.js';
-import { mapSignals } from './utils/mapSignals.js';
+import { mapRange } from './utils/mapRange.js';
 
 const DialogBody = styled(StyledDialogBody)`
   .tabs .tab-list {
@@ -81,15 +81,14 @@ function InnerEditRangeModal(props: InnerEditRangeModalProps) {
         selectedTool: 'zoom',
       },
     });
-    onRest(originalRangeRef.current);
+    onRest(mapRange(originalRangeRef.current));
   }
 
   const handleSave = useCallback(
     (formValues) => {
       void (async () => {
-        const _range = { ...range };
-        _range.signals = mapSignals(formValues.signals);
-        await onSave(_range);
+        const { signals } = formValues;
+        await onSave(mapRange({ ...range, signals }));
       })();
     },
     [onSave, range],
@@ -112,12 +111,11 @@ function InnerEditRangeModal(props: InnerEditRangeModalProps) {
       const isValid = await editRangeFormValidation.isValid(values);
       if (!isValid) return;
       if (isDirtyRef.current) {
-        const { signals: baseSignals, ...otherSignalsProps } = values;
-        const signals = mapSignals(baseSignals as Signal1D[]);
+        const range = mapRange(values as Range);
 
         dispatch({
           type: 'UPDATE_RANGE',
-          payload: { range: { ...otherSignalsProps, signals } as Range },
+          payload: { range },
         });
       }
 
@@ -184,7 +182,7 @@ function useRange(rangeId: string) {
     const index = ranges.values.findIndex(
       (rangeRecord) => rangeRecord.id === rangeId,
     );
-    return structuredClone(appendCouplings(ranges.values[index]));
+    return appendCouplings(ranges.values[index]);
   }, [rangeId, ranges.values]);
 }
 
@@ -193,12 +191,7 @@ function appendCouplings(range: Range) {
 
   for (const signal of range?.signals || []) {
     const js: Jcoupling[] = [];
-
-    if (
-      !signal.multiplicity ||
-      (signal.multiplicity.length === 1 &&
-        !['s', 'm'].includes(signal.multiplicity))
-    ) {
+    if (!signal.multiplicity || !['s', 'm'].includes(signal.multiplicity)) {
       signals.push(signal);
       continue;
     }

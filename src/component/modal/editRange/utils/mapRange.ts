@@ -1,12 +1,12 @@
-import type { Signal1D } from 'nmr-processing';
+import type { Range } from 'nmr-processing';
 
 import { couplingsToMultiplicity } from './couplingsToMultiplicity.js';
 import { mapCouplings } from './mapCouplings.js';
 
-export function mapSignals(signals?: Signal1D[]) {
-  if (!Array.isArray(signals)) return [];
+export function mapRange(range: Range) {
+  if (!Array.isArray(range.signals)) return range;
 
-  return signals.map((signal) => {
+  const signals = range.signals.map((signal) => {
     const {
       id,
       js: couplings = [],
@@ -24,4 +24,5 @@ export function mapSignals(signals?: Signal1D[]) {
       peaks: peaks?.map((peak) => ({ ...peak })) || [],
     };
   });
+  return { ...range, signals };
 }
