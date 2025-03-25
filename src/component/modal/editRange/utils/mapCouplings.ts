@@ -7,5 +7,5 @@ export function mapCouplings(couplings: Jcoupling[]) {
     .filter(
       ({ multiplicity }) => multiplicity && hasCouplingConstant(multiplicity),
     )
-    .map((multiplicity) => multiplicity);
+    .map((coupling) => structuredClone(coupling));
 }
