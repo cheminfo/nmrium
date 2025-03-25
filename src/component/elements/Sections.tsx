@@ -116,6 +116,8 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
   padding: 10px;
+  position: relative;
+  z-index: 0;
 `;
 const ElementsContainer = styled.div`
   display: flex;
