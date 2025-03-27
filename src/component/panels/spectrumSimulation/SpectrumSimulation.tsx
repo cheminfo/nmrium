@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import * as Yup from 'yup';
 
 import type { SpectrumSimulationOptions } from '../../../data/data1d/spectrumSimulation.js';
 import { defaultSimulationOptions } from '../../../data/data1d/spectrumSimulation.js';
@@ -15,22 +14,7 @@ import PreferencesHeader from '../header/PreferencesHeader.js';
 import SpectrumSimulationPreferences from './SpectrumSimulationPreferences.js';
 import SpectrumSimulationSimpleOptions from './SpectrumSimulationSimpleOptions.js';
 import { SpinSystemTable } from './SpinSystemTable.js';
-
-const validationSchema = Yup.object({
-  data: Yup.array().of(
-    Yup.array().of(
-      Yup.lazy((value) => {
-        if (value === null) {
-          return Yup.mixed().nullable();
-        }
-
-        return Yup.string()
-          .matches(/^-?\d+(\.\d+)?$/, 'Invalid number format')
-          .required();
-      }),
-    ),
-  ),
-});
+import { simulationValidationSchema } from './simulationValidation.js';
 
 function getSpinSystemData(spinSystem: string) {
   const rows: Array<Array<number | null>> = [];
@@ -107,9 +91,8 @@ export default function SpectrumSimulation() {
 
   useEffect(() => {
     const { unsubscribe } = watch(async (values) => {
-      const isValid = await validationSchema.isValid(values);
+      const isValid = await simulationValidationSchema.isValid(values);
       if (!isValid) return;
-
       void simulateHandler(values as any);
     });
     return () => unsubscribe();
