@@ -411,9 +411,9 @@ function handleChangeActiveSpectrum(
    */
 
   if (toolOptions.data.activeFilterID) {
-    const previousActiveSpectrum = spectra?.length === 1 ? spectra[0] : null;
     rollbackSpectrumByFilter(draft, {
-      activeSpectrum: previousActiveSpectrum,
+      targetSpectrum:
+        spectra?.length === 1 ? { index: spectra[0].index } : undefined,
       reset: true,
     });
   } else if (refreshDomain) {

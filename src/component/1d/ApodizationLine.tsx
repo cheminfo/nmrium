@@ -12,6 +12,7 @@ import { useScaleChecked } from '../context/ScaleContext.js';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
 import { useIndicatorLineColor } from '../hooks/useIndicatorLineColor.js';
 import useSpectrum from '../hooks/useSpectrum.js';
+import useTempSpectrum from '../hooks/useTempSpectrum.js';
 import { useVerticalAlign } from '../hooks/useVerticalAlign.js';
 import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce.js';
 import type { ApodizationOptions } from '../panels/filtersPanel/Filters/hooks/useApodization.js';
@@ -19,8 +20,6 @@ import { PathBuilder } from '../utility/PathBuilder.js';
 
 import { useIsInset } from './inset/InsetProvider.js';
 import { getYScale } from './utilities/scale.js';
-
-const emptyData = { data: {}, info: {} };
 
 function useWindowYScale() {
   const { spectraBottomMargin } = useScaleChecked();
@@ -43,14 +42,17 @@ export function ApodizationLine() {
   const isInset = useIsInset();
 
   const activeSpectrum = useActiveSpectrum();
-  const { scaleX } = useScaleChecked();
-  const spectrum = useSpectrum({ emptyData }) as Spectrum1D;
+  const tempSpectrum = useTempSpectrum() as Spectrum1D;
+  const processedSpectrum = useSpectrum() as Spectrum1D;
+
   const xyReduce = useXYReduce(XYReducerDomainAxis.XAxis);
   const scaleY = useWindowYScale();
+  const { scaleX } = useScaleChecked();
   const { sharedFilterOptions: externalApodizationOptions } =
     useFilterSyncOptions<ApodizationOptions>();
   const indicatorColor = useIndicatorLineColor();
   if (
+    !processedSpectrum ||
     !activeSpectrum?.id ||
     selectedTool !== Filters1D.apodization.name ||
     isInset
@@ -60,7 +62,8 @@ export function ApodizationLine() {
 
   const paths = () => {
     const pathBuilder = new PathBuilder();
-    const { re, x } = spectrum.data;
+    const { x } = processedSpectrum.data;
+    const { re } = tempSpectrum.data;
 
     const apodizationOptions = merge(
       default1DApodization,
