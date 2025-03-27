@@ -14,6 +14,7 @@ import { useApodization } from '../hooks/useApodization.js';
 import type { ApodizationFilterEntry } from '../hooks/useApodization.js';
 import { formLabelStyle } from '../index.js';
 import type { BaseFilterOptionsPanelProps } from '../index.js';
+import { useDispatch } from '../../../../context/DispatchContext.js';
 
 const advanceValidationSchema = Yup.object().shape({
   options: Yup.object().shape({
@@ -27,6 +28,7 @@ const advanceValidationSchema = Yup.object().shape({
       .notRequired(),
   }),
   livePreview: Yup.boolean().required(),
+  tempRollback: Yup.boolean(),
 });
 
 export function BaseApodizationOptions(
@@ -38,7 +40,7 @@ export function BaseApodizationOptions(
     useApodization(filter, {
       validationSchema: advanceValidationSchema,
     });
-
+  const dispatch = useDispatch();
   const {
     handleSubmit,
     register,
@@ -56,6 +58,8 @@ export function BaseApodizationOptions(
 
   const { onChange: onLivePreviewFieldChange, ...livePreviewFieldOptions } =
     register('livePreview');
+  const { onChange: onProcessedFieldChange, ...processedFieldOptions } =
+    register('tempRollback');
 
   const disabledAction = filter.value && !isDirty;
 
@@ -76,6 +80,33 @@ export function BaseApodizationOptions(
                 }}
                 label="Live preview"
               />
+
+              {filter.name === 'apodization' && (
+                <Switch
+                  style={{ margin: 0, marginLeft: '5px' }}
+                  innerLabelChecked="On"
+                  innerLabel="Off"
+                  {...(!filter.value
+                    ? { disabled: true, checked: false }
+                    : processedFieldOptions)}
+                  onChange={(event) => {
+                    void onProcessedFieldChange(event);
+
+                    if (!filter.id) return null;
+
+                    dispatch({
+                      type: 'SET_FILTER_SNAPSHOT',
+                      payload: {
+                        filter: { id: filter.id, name: filter.name },
+                        tempRollback: event.target.checked,
+                        triggerSource: 'processedToggle',
+                      },
+                    });
+                    submitHandler();
+                  }}
+                  label="Processed"
+                />
+              )}
               <FilterActionButtons
                 onConfirm={handleConfirm}
                 onCancel={handleCancel}

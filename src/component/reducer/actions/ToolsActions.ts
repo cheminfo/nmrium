@@ -58,6 +58,7 @@ interface ResetToolOptions {
   resetFiltersOptionPanel?: boolean;
   reset?: boolean;
   toolId?: string;
+  tempRollback?: boolean;
 }
 
 interface SetActiveTabOptions {
@@ -124,6 +125,7 @@ function resetTool(draft: Draft<State>, options: ResetToolOptions = {}) {
     defaultToolId = 'zoom',
     reset,
     toolId,
+    tempRollback,
   } = options;
   // reset temp range
   if (resetFiltersOptionPanel) {
@@ -133,10 +135,10 @@ function resetTool(draft: Draft<State>, options: ResetToolOptions = {}) {
     draft.toolOptions.selectedTool = defaultToolId;
   }
 
-  let rollOptions: RollbackSpectrumOptions = { reset: true };
+  let rollOptions: RollbackSpectrumOptions = { reset: true, tempRollback };
 
   if (toolId && Tools?.[toolId]?.isFilter) {
-    rollOptions = { filterKey: toolId, reset };
+    rollOptions = { filterKey: toolId, reset, tempRollback };
   }
 
   rollbackSpectrum(draft, rollOptions);
@@ -157,18 +159,24 @@ function resetSelectedTool(draft: Draft<State>) {
 interface ActivateToolOptions {
   toolId: Tool;
   reset?: boolean;
+  tempRollback?: boolean;
 }
 
 //utility
 function activateTool(draft: Draft<State>, options: ActivateToolOptions) {
-  const { toolId, reset = false } = options;
+  const { toolId, reset = false, tempRollback } = options;
 
   if (draft?.data.length === 0) {
     return;
   }
 
   if (!toolId || toolId !== draft.toolOptions.selectedTool || reset) {
-    resetTool(draft, { resetToDefaultTool: false, toolId, reset });
+    resetTool(draft, {
+      resetToDefaultTool: false,
+      toolId,
+      reset,
+      tempRollback,
+    });
   }
 
   if (!toolId || reset) {
