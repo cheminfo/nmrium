@@ -1,4 +1,5 @@
 import { Tag } from '@blueprintjs/core';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { forwardRef } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
@@ -11,6 +12,8 @@ import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js
 import { Select2Controller } from '../../elements/Select2Controller.js';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer.js';
 import { useSettingImperativeHandle } from '../extra/utilities/settingImperativeHandle.js';
+
+import { simulationValidationSchema } from './simulationValidation.js';
 
 const SIMULATION_NUMBER_OF_POINTS = generateNumbersPowerOfX(12, 19);
 
@@ -27,9 +30,12 @@ function SpectrumSimulationPreferences(
   { onSave }: SpectrumSimulationPreferencesProps,
   ref,
 ) {
-  const options = useWatch<SpectrumSimulationOptions>();
+  const options = useWatch() as Required<SpectrumSimulationOptions>;
 
-  const { handleSubmit, control } = useForm({ defaultValues: options });
+  const { handleSubmit, control } = useForm({
+    defaultValues: options,
+    resolver: yupResolver(simulationValidationSchema),
+  });
   useSettingImperativeHandle(ref, handleSubmit, onSave);
 
   return (
