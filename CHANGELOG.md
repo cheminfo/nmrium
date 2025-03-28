@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.62.1](https://github.com/cheminfo/nmrium/compare/v0.62.0...v0.62.1) (2025-03-28)
+
+
+### Bug Fixes
+
+* validate simulation options ([1b7b04a](https://github.com/cheminfo/nmrium/commit/1b7b04a40d7d9deb7e95a60b007f9e9631f6a35f))
+
 ## [0.62.0](https://github.com/cheminfo/nmrium/compare/v0.61.0...v0.62.0) (2025-03-25)
 
 
