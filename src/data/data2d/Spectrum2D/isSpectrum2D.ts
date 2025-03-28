@@ -5,6 +5,9 @@ export function isSpectrum2D(spectrum: Spectrum): spectrum is Spectrum2D {
   return spectrum && spectrum.info.dimension === 2;
 }
 
+function isQuadrantsData(data: NmrData2D): data is NmrData2DFt {
+  return 'rr' in data && 'ri' in data && 'ir' in data && 'ii' in data;
+}
 function isFt2DData(data: NmrData2D): data is NmrData2DFt {
   return 'rr' in data;
 }
@@ -23,4 +26,9 @@ export function isFt2DSpectrum(
   spectrum: Spectrum,
 ): spectrum is Spectrum2D & { data: NmrData2DFt } {
   return isSpectrum2D(spectrum) && isFt2DData(spectrum.data);
+}
+export function isQuadrants2DSpectrum(
+  spectrum: Spectrum,
+): spectrum is Spectrum2D & { data: NmrData2DFt } {
+  return isSpectrum2D(spectrum) && isQuadrantsData(spectrum.data);
 }

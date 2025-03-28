@@ -27,6 +27,7 @@ import { PiKnifeBold, PiSelectionPlusDuotone } from 'react-icons/pi';
 import type { ToolbarItemProps, TooltipItem } from 'react-science/ui';
 import { Toolbar, TooltipHelpContent } from 'react-science/ui';
 
+import { isQuadrants2DSpectrum } from '../../data/data2d/Spectrum2D/isSpectrum2D.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useDispatch } from '../context/DispatchContext.js';
 import { useLoader } from '../context/LoaderContext.js';
@@ -41,6 +42,7 @@ import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility.js';
 import useDatumWithSpectraStatistics from '../hooks/useDatumWithSpectraStatistics.js';
 import { useDialogToggle } from '../hooks/useDialogToggle.js';
 import { useExport } from '../hooks/useExport.js';
+import useSpectrum from '../hooks/useSpectrum.js';
 import useToolsFunctions from '../hooks/useToolsFunctions.js';
 import { useVerticalAlign } from '../hooks/useVerticalAlign.js';
 import ExportAsJcampModal from '../modal/ExportAsJcampModal.js';
@@ -53,7 +55,7 @@ import { options } from './ToolTypes.js';
 import type { Tool } from './ToolTypes.js';
 import { EXPORT_MENU, IMPORT_MENU } from './toolbarMenu.js';
 
-interface BaseToolItem extends Pick<ToolbarItemProps, 'icon'> {
+interface BaseToolItem extends Pick<ToolbarItemProps, 'icon' | 'disabled'> {
   id: Tool;
   checkOptions?: CheckOptions;
   condition?: boolean;
@@ -97,6 +99,7 @@ export default function ToolBar() {
   } = useChartData();
   const isButtonVisible = useCheckToolsVisibility();
   const dispatch = useDispatch();
+  const spectrum = useSpectrum();
 
   const {
     isRealSpectrumShown,
@@ -367,6 +370,7 @@ export default function ToolBar() {
         description: 'To phase the spectrum after the FFT.',
       },
       icon: <SvgNmrPhaseCorrection />,
+      disabled: !isQuadrants2DSpectrum(spectrum),
     },
     {
       id: 'baselineCorrection',
@@ -494,7 +498,7 @@ export default function ToolBar() {
       <SaveAsModal isOpen={dialog.saveAs} onCloseDialog={closeDialog} />
       <Toolbar vertical>
         {toolItems.map((item) => {
-          const { id, icon, tooltip, checkOptions, condition } = item;
+          const { id, icon, tooltip, checkOptions, disabled, condition } = item;
           const show =
             isButtonVisible(id, checkOptions) &&
             (condition === undefined || condition);
@@ -521,6 +525,7 @@ export default function ToolBar() {
                 active={selectedTool === id}
                 icon={icon}
                 onClick={onClick}
+                disabled={disabled}
               />
             );
           }
@@ -544,6 +549,7 @@ export default function ToolBar() {
               id={id}
               active={selectedTool === id}
               icon={icon}
+              disabled={disabled}
             />
           );
         })}
