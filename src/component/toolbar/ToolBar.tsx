@@ -214,6 +214,7 @@ export default function ToolBar() {
       id: 'zoom',
       tooltip: {
         title: options.zoom.label,
+        shortcuts: ['Esc'],
         subTitles: [
           { title: 'Vertical', shortcuts: ['Scroll wheel'] },
           { title: 'Horizontal', shortcuts: ['⇧', 'Scroll wheel'] },
