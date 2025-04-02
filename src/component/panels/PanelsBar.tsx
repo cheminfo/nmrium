@@ -14,7 +14,6 @@ import { useTogglePanel } from './hooks/useTogglePanel.js';
 
 const PanelsBarContainer = styled(ButtonGroup)`
   flex-wrap: nowrap;
-  overflow: hidden;
   height: 100%;
   gap: 4px;
   padding: 4px;
