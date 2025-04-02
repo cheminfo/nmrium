@@ -19,7 +19,6 @@ const PanelsBarContainer = styled(ButtonGroup)`
   padding: 4px;
   border-left: 1px solid ${Colors.LIGHT_GRAY4};
   background-color: ${Colors.WHITE};
-  overflow: hidden;
 `;
 
 function useHiddenItemsMenu(

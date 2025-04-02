@@ -57,7 +57,7 @@ async function resizeIntegral(nmrium: NmriumPage) {
     '_react=IntegralsSeries >> _react=Integration >> nth=0 >> rect >> nth=0',
   );
   const { width } = (await container.boundingBox()) as BoundingBox;
-  expect(width).toBe(40);
+  expect(width).toBe(41);
 }
 
 async function deleteIntegral(nmrium: NmriumPage) {
