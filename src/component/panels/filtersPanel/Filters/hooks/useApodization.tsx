@@ -24,13 +24,15 @@ const simpleValidationSchema = Yup.object().shape({
 });
 
 export interface ApodizationOptions {
-  livePreview: boolean;
   options: Apodization1DOptions;
+  livePreview: boolean;
+  tempRollback: boolean;
 }
 
 const initialValues: ApodizationOptions = {
   options: structuredClone(default1DApodization),
   livePreview: true,
+  tempRollback: false,
 };
 
 interface UseSharedApodizationOptions {
@@ -45,27 +47,33 @@ export type ApodizationFilterEntry =
 
 function useDispatchApodization(filter: ApodizationFilterEntry | null) {
   const dispatch = useDispatch();
+  const isNewFilter = !filter?.value;
   const dispatchChange = useCallback(
     (values: ApodizationOptions) => {
+      const filterOptions = { ...values };
+      if (isNewFilter) {
+        filterOptions.tempRollback = false;
+      }
+
       switch (filter?.name) {
         case 'apodization':
           dispatch({
             type: 'CALCULATE_APODIZATION_FILTER',
-            payload: { ...values },
+            payload: filterOptions,
           });
 
           break;
         case 'apodizationDimension1':
           dispatch({
             type: 'CALCULATE_APODIZATION_DIMENSION_ONE_FILTER',
-            payload: { ...values },
+            payload: filterOptions,
           });
 
           break;
         case 'apodizationDimension2':
           dispatch({
             type: 'CALCULATE_APODIZATION_DIMENSION_TWO_FILTER',
-            payload: { ...values },
+            payload: filterOptions,
           });
 
           break;
@@ -74,7 +82,7 @@ function useDispatchApodization(filter: ApodizationFilterEntry | null) {
           break;
       }
     },
-    [dispatch, filter?.name],
+    [dispatch, filter?.name, isNewFilter],
   );
 
   const dispatchApply = useCallback(

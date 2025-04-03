@@ -197,7 +197,10 @@ function FiltersInner(props: FiltersInnerProps) {
       message: 'Filter snapshot process in progress',
     });
     setTimeout(() => {
-      dispatch({ type: 'SET_FILTER_SNAPSHOT', payload: filter });
+      dispatch({
+        type: 'SET_FILTER_SNAPSHOT',
+        payload: { filter, tempRollback: false },
+      });
       hideLoading();
     }, 0);
   }

@@ -1,4 +1,5 @@
 import merge from 'lodash/merge.js';
+import { xyReduce } from 'ml-spectra-processing';
 import type { Spectrum1D } from 'nmr-load-save';
 import {
   Filters1D,
@@ -12,15 +13,13 @@ import { useScaleChecked } from '../context/ScaleContext.js';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
 import { useIndicatorLineColor } from '../hooks/useIndicatorLineColor.js';
 import useSpectrum from '../hooks/useSpectrum.js';
+import useTempSpectrum from '../hooks/useTempSpectrum.js';
 import { useVerticalAlign } from '../hooks/useVerticalAlign.js';
-import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce.js';
 import type { ApodizationOptions } from '../panels/filtersPanel/Filters/hooks/useApodization.js';
 import { PathBuilder } from '../utility/PathBuilder.js';
 
 import { useIsInset } from './inset/InsetProvider.js';
-import { getYScale } from './utilities/scale.js';
-
-const emptyData = { data: {}, info: {} };
+import { getXScale, getYScale } from './utilities/scale.js';
 
 function useWindowYScale() {
   const { spectraBottomMargin } = useScaleChecked();
@@ -35,22 +34,43 @@ function useWindowYScale() {
     spectraBottomMargin,
   });
 }
+function useWindowXScale() {
+  const { width, margin } = useChartData();
+  const spectrum = useTempSpectrum() as Spectrum1D;
+
+  if (!spectrum) return;
+
+  const {
+    data: { x },
+  } = spectrum;
+  return getXScale({
+    width,
+    margin,
+    xDomain: [x[0], x.at(-1) as number],
+    xDomains: {},
+    mode: 'LTR',
+  });
+}
 
 export function ApodizationLine() {
   const {
     toolOptions: { selectedTool },
+    width,
   } = useChartData();
   const isInset = useIsInset();
 
   const activeSpectrum = useActiveSpectrum();
-  const { scaleX } = useScaleChecked();
-  const spectrum = useSpectrum({ emptyData }) as Spectrum1D;
-  const xyReduce = useXYReduce(XYReducerDomainAxis.XAxis);
+  const tempSpectrum = useTempSpectrum() as Spectrum1D;
+  const processedSpectrum = useSpectrum() as Spectrum1D;
+
   const scaleY = useWindowYScale();
+  const windowScaleX = useWindowXScale();
+  const { scaleX: baseScaleX } = useScaleChecked();
   const { sharedFilterOptions: externalApodizationOptions } =
     useFilterSyncOptions<ApodizationOptions>();
   const indicatorColor = useIndicatorLineColor();
   if (
+    !processedSpectrum ||
     !activeSpectrum?.id ||
     selectedTool !== Filters1D.apodization.name ||
     isInset
@@ -58,35 +78,40 @@ export function ApodizationLine() {
     return null;
   }
 
-  const paths = () => {
-    const pathBuilder = new PathBuilder();
-    const { re, x } = spectrum.data;
+  let scaleX = baseScaleX();
 
-    const apodizationOptions = merge(
-      default1DApodization,
-      externalApodizationOptions?.options,
+  if (processedSpectrum.info.isFt && windowScaleX) {
+    scaleX = windowScaleX;
+  }
+
+  const pathBuilder = new PathBuilder();
+  const { re, x } = tempSpectrum.data;
+
+  const apodizationOptions = merge(
+    default1DApodization,
+    externalApodizationOptions?.options,
+  );
+  const length = re.length;
+  const from = x.at(-1) as number;
+  const to = x[0];
+  const dw = (from - to) / (length - 1);
+
+  const y = createApodizationWindowData({
+    windowOptions: { dw, length },
+    shapes: apodizationOptions,
+  });
+
+  if (x && y) {
+    const pathPoints = xyReduce(
+      { x, y },
+      { from, to, nbPoints: width * 4, optimize: true },
     );
-    const length = re.length;
-    const dw = (x[length - 1] - x[0]) / (length - 1);
 
-    const y = createApodizationWindowData({
-      windowOptions: { dw, length },
-      shapes: apodizationOptions,
-    });
-
-    if (x && y) {
-      const pathPoints = xyReduce({ x, y });
-
-      pathBuilder.moveTo(scaleX()(pathPoints.x[0]), scaleY(pathPoints.y[0]));
-      for (let i = 1; i < pathPoints.x.length; i++) {
-        pathBuilder.lineTo(scaleX()(pathPoints.x[i]), scaleY(pathPoints.y[i]));
-      }
-
-      return pathBuilder.toString();
-    } else {
-      return '';
+    pathBuilder.moveTo(scaleX(pathPoints.x[0]), scaleY(pathPoints.y[0]));
+    for (let i = 1; i < pathPoints.x.length; i++) {
+      pathBuilder.lineTo(scaleX(pathPoints.x[i]), scaleY(pathPoints.y[i]));
     }
-  };
+  }
 
   return (
     <path
@@ -94,7 +119,7 @@ export function ApodizationLine() {
       stroke={indicatorColor}
       fill="none"
       strokeWidth="2"
-      d={paths()}
+      d={pathBuilder.toString()}
     />
   );
 }
