@@ -32,7 +32,7 @@ export interface ApodizationOptions {
 const initialValues: ApodizationOptions = {
   options: structuredClone(default1DApodization),
   livePreview: true,
-  tempRollback: true,
+  tempRollback: false,
 };
 
 interface UseSharedApodizationOptions {

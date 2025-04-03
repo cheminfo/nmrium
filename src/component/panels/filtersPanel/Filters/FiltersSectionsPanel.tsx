@@ -199,7 +199,7 @@ function FiltersInner(props: FiltersInnerProps) {
     setTimeout(() => {
       dispatch({
         type: 'SET_FILTER_SNAPSHOT',
-        payload: { filter, tempRollback: filter.name === 'apodization' },
+        payload: { filter, tempRollback: false },
       });
       hideLoading();
     }, 0);
