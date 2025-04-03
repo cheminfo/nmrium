@@ -486,6 +486,11 @@ function rollbackSpectrumByFilter(
       draft.data[index] = spectrum;
 
       currentIsFid = isFid1DSpectrum(spectrum) || isFid2DSpectrum(spectrum);
+
+      // Update the X and Y domains when switching from FT to FID spectrum,
+      if (!previousIsFid && currentIsFid) {
+        updateDomainOptions = { updateXDomain: true, updateYDomain: true };
+      }
     }
 
     // re-implement all filters and rest all view property that related to filters
