@@ -19,6 +19,7 @@ import type { ActionType } from '../types/ActionType.js';
 
 import { setDomain } from './DomainActions.js';
 import { addMolecule } from './MoleculeActions.js';
+import { changeSpectrumVerticalAlignment } from './PreferencesActions.js';
 
 interface BaseResurrectSpectrum {
   databaseEntry: DatabaseNMREntry;
@@ -117,6 +118,8 @@ function handleResurrectSpectrum(
   setDomain(draft, { isYDomainShared: false });
   //rescale the vertical zoom
   setZoom(draft, { scale: 0.8, spectrumID: resurrectedSpectrum.id });
+
+  changeSpectrumVerticalAlignment(draft, { verticalAlign: 'stack' });
 
   //keep the last horizontal zoom
   const zoomHistory = zoomHistoryManager(
