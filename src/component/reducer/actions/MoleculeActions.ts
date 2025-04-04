@@ -30,6 +30,7 @@ import { deepReplaceDiaIDs } from './utilities/deepReplaceDiaIDs.js';
 
 interface AddMoleculeProps {
   molfile: string;
+  id?: string;
   floatMoleculeOnSave?: boolean;
 }
 type AddMoleculeAction = ActionType<'ADD_MOLECULE', AddMoleculeProps>;
@@ -78,9 +79,9 @@ export type MoleculeActions =
   | ChangeMoleculeLabelAction;
 
 function addMolecule(draft: Draft<State>, props: AddMoleculeProps) {
-  const { molfile, floatMoleculeOnSave } = props;
+  const { molfile, id, floatMoleculeOnSave } = props;
   const isEmpty = draft.molecules.length === 0;
-  MoleculeManager.addMolfile(draft.molecules, molfile);
+  MoleculeManager.addMolfile(draft.molecules, molfile, id);
 
   /**
    *  if it's the first creation of a molecule after the molecules list was empty,
@@ -409,6 +410,7 @@ function handleChangeMoleculeLabel(
 }
 
 export {
+  addMolecule,
   handleAddMolecule,
   handleAddMolecules,
   handleSetMolecule,

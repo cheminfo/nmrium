@@ -28,6 +28,7 @@ export function fromJSON(
 export function addMolfile(
   molecules: StateMoleculeExtended[],
   molfile: string,
+  id?: string,
 ) {
   const reservedNumbers = extractLabelsNumbers(molecules);
 
@@ -38,6 +39,7 @@ export function addMolfile(
     initMolecule({
       molfile: molecule.toMolfileV3(),
       label: `P${getLabelNumber(reservedNumbers)}`,
+      id,
     }),
   );
 }
