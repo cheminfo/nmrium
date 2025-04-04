@@ -18,9 +18,11 @@ import { getSpectrum } from '../helper/getSpectrum.js';
 import type { ActionType } from '../types/ActionType.js';
 
 import { setDomain } from './DomainActions.js';
+import { addMolecule } from './MoleculeActions.js';
 
 interface BaseResurrectSpectrum {
   databaseEntry: DatabaseNMREntry;
+  molfile?: string;
 }
 interface ResurrectSpectrumFromJCAMP extends BaseResurrectSpectrum {
   source: 'jcamp';
@@ -50,7 +52,7 @@ function handleResurrectSpectrum(
   const {
     spectra: { activeTab: nucleus },
   } = draft.view;
-  const { databaseEntry, source } = action.payload;
+  const { databaseEntry, source, molfile } = action.payload;
   const {
     ranges,
     signals,
@@ -125,6 +127,10 @@ function handleResurrectSpectrum(
   if (zoomValue) {
     draft.xDomain = zoomValue.xDomain;
     draft.yDomain = zoomValue.yDomain;
+  }
+
+  if (molfile) {
+    addMolecule(draft, { molfile, id: spectrumID });
   }
 }
 
