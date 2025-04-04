@@ -84,8 +84,8 @@ export function DatabaseSearchOptions(props: DatabaseSearchOptionsProps) {
     <>
       <PanelHeader
         onClickSettings={() => onSettingClick()}
-        current={total || 0}
-        total={result.data.length}
+        current={result.data.length}
+        total={total || 0}
       >
         <div
           style={{
