@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.63.0](https://github.com/cheminfo/nmrium/compare/v0.62.1...v0.63.0) (2025-04-04)
+
+
+### Features
+
+* hide 2D phase correction for non-quadrant spectra ([b6d7c46](https://github.com/cheminfo/nmrium/commit/b6d7c461a54ddbd30060d44e1f5a02cf5cdc4b34))
+* processed apodization ([#3447](https://github.com/cheminfo/nmrium/issues/3447)) ([3fbbfdc](https://github.com/cheminfo/nmrium/commit/3fbbfdc3e3ce994ed30032951654ad35faec270c))
+
 ## [0.62.1](https://github.com/cheminfo/nmrium/compare/v0.62.0...v0.62.1) (2025-04-02)
 
 
