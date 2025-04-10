@@ -176,6 +176,10 @@ const databaseDefaultValues: PanelsPreferences['database'] = {
   color: '#C0B000',
   marginBottom: 30,
   allowSaveAsNMRium: false,
+  structureSize: {
+    minWidth: 0,
+    minHeight: 100,
+  },
 };
 const getMultipleSpectraAnalysisDefaultValues = (
   nucleus?: string,
