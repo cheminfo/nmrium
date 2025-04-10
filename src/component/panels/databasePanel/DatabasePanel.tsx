@@ -2,7 +2,7 @@ import type { Database, NmriumState, Spectrum1D } from 'nmr-load-save';
 import { readFromWebSource, serializeNmriumState } from 'nmr-load-save';
 import type { DatabaseNMREntry } from 'nmr-processing';
 import { mapRanges } from 'nmr-processing';
-import OCL from 'openchemlib/full';
+import { Molecule as OCLMolecule } from 'openchemlib/full';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useOnOff } from 'react-science/ui';
 
@@ -39,6 +39,22 @@ import { DatabaseStructureSearchModal } from './DatabaseStructureSearchModal.js'
 import DatabaseTable from './DatabaseTable.js';
 
 export type Databases = Array<LocalDatabase | Database>;
+
+function getMolfile(options: {
+  oclid?: { idCode?: string; coordinates?: string };
+  smiles?: string;
+}) {
+  const { oclid, smiles } = options;
+
+  if (oclid?.idCode && oclid?.coordinates) {
+    const { idCode, coordinates } = oclid;
+    return OCLMolecule.fromIDCode(idCode, coordinates).toMolfileV3();
+  }
+
+  if (smiles) {
+    return OCLMolecule.fromSmiles(smiles).toMolfileV3();
+  }
+}
 
 interface DatabaseInnerProps {
   nucleus: string;
@@ -261,14 +277,23 @@ function DatabasePanelInner({
 
   const resurrectHandler = useCallback(
     (rowData) => {
-      const { index, baseURL, jcampURL: jcampRelativeURL } = rowData;
+      const {
+        index,
+        baseURL,
+        jcampURL: jcampRelativeURL,
+        oclid,
+        smiles,
+      } = rowData;
+      const molfile = getMolfile({ oclid, smiles });
       const databaseEntry = result.data[index];
+
       if (jcampRelativeURL) {
         const url = new URL(jcampRelativeURL, baseURL);
         setTimeout(async () => {
           const hideLoading = toaster.showLoading({
             message: `load jcamp in progress...`,
           });
+
           try {
             const { data } = await readFromWebSource({
               entries: [{ baseURL: url.origin, relativePath: url.pathname }],
@@ -277,7 +302,7 @@ function DatabasePanelInner({
             if (spectrum && isSpectrum1D(spectrum)) {
               dispatch({
                 type: 'RESURRECTING_SPECTRUM',
-                payload: { source: 'jcamp', databaseEntry, spectrum },
+                payload: { source: 'jcamp', databaseEntry, spectrum, molfile },
               });
             }
           } catch {
@@ -289,7 +314,7 @@ function DatabasePanelInner({
       } else {
         dispatch({
           type: 'RESURRECTING_SPECTRUM',
-          payload: { source: 'rangesOrSignals', databaseEntry },
+          payload: { source: 'rangesOrSignals', databaseEntry, molfile },
         });
       }
     },
@@ -333,6 +358,12 @@ function DatabasePanelInner({
         payload: {
           ids: [id],
           domainOptions: { isYDomainShared: false, updateYDomain: false },
+        },
+      });
+      dispatch({
+        type: 'DELETE_MOLECULE',
+        payload: {
+          id,
         },
       });
     },
@@ -479,12 +510,12 @@ async function saveJcampAsJson(rowData, filteredData) {
     });
 
   let molfile = '';
-  let molecule: OCL.Molecule | null = null;
+  let molecule: OCLMolecule | null = null;
   if (ocl?.idCode) {
-    molecule = OCL.Molecule.fromIDCode(ocl.idCode);
+    molecule = OCLMolecule.fromIDCode(ocl.idCode);
     molfile = molecule.toMolfileV3();
   } else if (smiles) {
-    molecule = OCL.Molecule.fromSmiles(smiles);
+    molecule = OCLMolecule.fromSmiles(smiles);
     molfile = molecule.toMolfileV3();
   }
 

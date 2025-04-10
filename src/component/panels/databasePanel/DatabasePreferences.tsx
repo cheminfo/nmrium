@@ -55,6 +55,22 @@ function DatabasePreferences(props, ref) {
             controllerProps={{ rules: { min: 0, required: true } }}
           />
         </Label>
+        <Label title="Structure min width:" style={fieldLabelStyle}>
+          <NumberInput2Controller
+            control={control}
+            name="structureSize.minWidth"
+            min={0}
+            controllerProps={{ rules: { min: 0, required: true } }}
+          />
+        </Label>
+        <Label title="Structure min height:" style={fieldLabelStyle}>
+          <NumberInput2Controller
+            control={control}
+            name="structureSize.minHeight"
+            min={0}
+            controllerProps={{ rules: { min: 0, required: true } }}
+          />
+        </Label>
       </PreferencesGroup>
       <PreferencesGroup header="Table Preferences">
         <FormatField
