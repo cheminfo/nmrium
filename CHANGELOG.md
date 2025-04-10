@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.63.0](https://github.com/cheminfo/nmrium/compare/v0.62.1...v0.63.0) (2025-04-10)
+
+
+### Features
+
+* control structure size (default minHeight: 100px) ([e56ef9a](https://github.com/cheminfo/nmrium/commit/e56ef9abeffc7c76e9747727570aab0342bdf775))
+* control structure size (default minHeight: 100px) ([d434888](https://github.com/cheminfo/nmrium/commit/d434888b55f717d50b259b5489d4a9d61af514f7))
+* hide 2D phase correction for non-quadrant spectra ([b6d7c46](https://github.com/cheminfo/nmrium/commit/b6d7c461a54ddbd30060d44e1f5a02cf5cdc4b34))
+* improve database panel ([#3455](https://github.com/cheminfo/nmrium/issues/3455)) ([#3461](https://github.com/cheminfo/nmrium/issues/3461)) ([e56ef9a](https://github.com/cheminfo/nmrium/commit/e56ef9abeffc7c76e9747727570aab0342bdf775))
+* processed apodization ([#3447](https://github.com/cheminfo/nmrium/issues/3447)) ([3fbbfdc](https://github.com/cheminfo/nmrium/commit/3fbbfdc3e3ce994ed30032951654ad35faec270c))
+
 ## [0.62.1](https://github.com/cheminfo/nmrium/compare/v0.62.0...v0.62.1) (2025-04-02)
 
 
