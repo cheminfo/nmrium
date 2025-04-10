@@ -131,8 +131,10 @@ const databaseTableColumns = (
     Cell({ row }) {
       const { idCode, coordinates } = row.original?.ocl || {};
       const smiles = row.original?.smiles;
+      const { minWidth = 0, minHeight = 0 } =
+        databasePreferences?.structureSize || {};
       return (
-        <ResponsiveChart minWidth={50} minHeight={23}>
+        <ResponsiveChart minWidth={minWidth} minHeight={minHeight}>
           {({ width, height }) => {
             if (idCode && coordinates) {
               return (
