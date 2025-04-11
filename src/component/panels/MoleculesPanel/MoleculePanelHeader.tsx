@@ -246,12 +246,12 @@ export default function MoleculePanelHeader({
   }
 
   const hasMolecules = molecules && molecules.length > 0;
-
+  const showCounter = hasMolecules && renderSource !== 'predictionPanel';
   return (
     <PanelHeader
       onClickSettings={onClickPreferences}
-      current={molecules && molecules.length > 0 ? currentIndex + 1 : undefined}
-      total={molecules && molecules.length > 0 ? molecules.length : undefined}
+      current={showCounter ? currentIndex + 1 : undefined}
+      total={showCounter ? molecules.length : undefined}
     >
       <Toolbar>
         {renderSource === 'predictionPanel' && <AboutPredictionModal />}
