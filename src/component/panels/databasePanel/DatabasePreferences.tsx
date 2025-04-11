@@ -1,3 +1,4 @@
+import { Tag } from '@blueprintjs/core';
 import { forwardRef, useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -61,6 +62,7 @@ function DatabasePreferences(props, ref) {
             name="structureSize.minWidth"
             min={0}
             controllerProps={{ rules: { min: 0, required: true } }}
+            rightElement={<Tag>px</Tag>}
           />
         </Label>
         <Label title="Structure min height:" style={fieldLabelStyle}>
@@ -69,6 +71,7 @@ function DatabasePreferences(props, ref) {
             name="structureSize.minHeight"
             min={0}
             controllerProps={{ rules: { min: 0, required: true } }}
+            rightElement={<Tag>px</Tag>}
           />
         </Label>
       </PreferencesGroup>
