@@ -54,7 +54,12 @@ function resurrectSpectrumFromRanges(
           isFt: true,
           name,
         },
-        ranges: { values: ranges, options: { sum: 100 } },
+        ranges: {
+          values: ranges,
+          options: {
+            sum: 100,
+          },
+        },
       },
       { usedColors },
     );
@@ -86,6 +91,17 @@ function resurrectSpectrumFromSignals(
       from,
       to,
     });
+
+    let totalIntegration = 0;
+    for (const signal of signals) {
+      const { nbAtoms, atoms = [] } = signal;
+      if ('nbAtoms' in signal) {
+        totalIntegration += Number(nbAtoms);
+      } else if ('atoms' in signal) {
+        totalIntegration += atoms.length;
+      }
+    }
+
     const datum = initiateDatum1D(
       {
         id: spectrumID,
@@ -101,7 +117,7 @@ function resurrectSpectrumFromSignals(
         },
         ranges: {
           values: signalsToRanges(signalsJoin(signals)),
-          options: { sum: 100 },
+          options: { sum: totalIntegration },
         },
       },
       { usedColors },
