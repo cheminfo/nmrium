@@ -1,6 +1,11 @@
 import type { Spectrum1D } from 'nmr-load-save';
 import type { Info1D, NMRRange, NMRSignal1D } from 'nmr-processing';
-import { rangesToXY, signalsToXY } from 'nmr-processing';
+import {
+  rangesToXY,
+  signalsJoin,
+  signalsToRanges,
+  signalsToXY,
+} from 'nmr-processing';
 
 import type { UsedColors } from '../../../../types/UsedColors.js';
 import { initiateDatum1D } from '../initiateDatum1D.js';
@@ -94,7 +99,10 @@ function resurrectSpectrumFromSignals(
           isFt: true,
           name,
         },
-        ranges: { values: signals, options: { sum: 100 } },
+        ranges: {
+          values: signalsToRanges(signalsJoin(signals)),
+          options: { sum: 100 },
+        },
       },
       { usedColors },
     );
