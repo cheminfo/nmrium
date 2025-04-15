@@ -23,6 +23,7 @@ import {
 } from './utilities/DimensionLayout.js';
 import type { Layout } from './utilities/DimensionLayout.js';
 import { useScale2DX, useScale2DY } from './utilities/scale.js';
+import { usePreferences } from '../context/PreferencesContext.js';
 
 function usePixelToPPMConverter() {
   const scaleX = useScale2DX();
@@ -60,7 +61,11 @@ export function BrushTracker2D({ children }) {
   const { getModifiersKey, primaryKeyIdentifier } = useMapKeyModifiers();
   const DIMENSION = get2DDimensionLayout(state);
   const convertToPPM = usePixelToPPMConverter();
-
+  const {
+    current: {
+      general: { invertScroll },
+    },
+  } = usePreferences();
   function handleBrush(brushData) {
     const { startX, endX, startY, endY } = convertToPPM(brushData);
 
@@ -176,9 +181,15 @@ export function BrushTracker2D({ children }) {
       const isTraceZoomActive =
         selectedTool === 'phaseCorrectionTwoDimensions' && !shiftKey;
       if (isZoomWithScroll || isMouseOver1DTrace || isTraceZoomActive) {
-        dispatch({ type: 'SET_ZOOM', payload: { options, trackID } });
+        dispatch({
+          type: 'SET_ZOOM',
+          payload: { options: { ...options, invertScroll }, trackID },
+        });
       } else {
-        dispatch({ type: 'SET_2D_LEVEL', payload: { options } });
+        dispatch({
+          type: 'SET_2D_LEVEL',
+          payload: { options: { ...options, invertScroll } },
+        });
       }
     }
   };

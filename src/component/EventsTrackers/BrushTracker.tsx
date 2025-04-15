@@ -93,7 +93,7 @@ export type ZoomOptions = Pick<
   React.WheelEvent,
   'deltaY' | 'shiftKey' | 'deltaMode' | 'altKey'
 > &
-  Position;
+  Position & { invertScroll?: boolean };
 export type OnZoom = (options: ZoomOptions) => void;
 export type OnBrush = (state: BrushTrackerData) => void;
 

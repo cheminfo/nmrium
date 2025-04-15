@@ -60,6 +60,12 @@ function GeneralTabContent() {
         <Label title="Invert actions" style={settingLabelStyle}>
           <Checkbox style={{ margin: 0 }} {...register(`general.invert`)} />
         </Label>
+        <Label title="Invert scroll" style={settingLabelStyle}>
+          <Checkbox
+            style={{ margin: 0 }}
+            {...register(`general.invertScroll`)}
+          />
+        </Label>
       </GroupPane>
       <GroupPane text="Experimental features">
         <Label title="Enable experimental features" style={settingLabelStyle}>

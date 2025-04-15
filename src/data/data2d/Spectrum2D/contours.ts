@@ -19,8 +19,12 @@ interface ContourOptions {
   positive: ContourItem;
   negative: ContourItem;
 }
-interface WheelOptions {
+
+interface BaseWheelOptions {
   altKey: boolean;
+  invertScroll?: boolean;
+}
+interface WheelOptions extends BaseWheelOptions {
   contourOptions: ContourOptions;
 }
 
@@ -38,7 +42,7 @@ type LevelSign = keyof Level;
 
 const LEVEL_SIGNS: Readonly<[LevelSign, LevelSign]> = ['positive', 'negative'];
 interface ReturnContoursManager {
-  wheel: (value: number, shift: boolean) => Level;
+  wheel: (value: number, options: BaseWheelOptions) => Level;
   getLevel: () => Level;
   checkLevel: () => Level;
 }
@@ -76,17 +80,18 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
 function contoursManager(spectrum: Spectrum2D): ReturnContoursManager {
   const contourOptions = { ...spectrum.display.contourOptions };
 
-  const wheel = (value, altKey) =>
-    prepareWheel(value, { altKey, contourOptions });
+  const wheel = (value, options) =>
+    prepareWheel(value, { ...options, contourOptions });
   const getLevel = () => contourOptions;
   const checkLevel = () => prepareCheckLevel(contourOptions);
   return { wheel, getLevel, checkLevel };
 }
 
 function prepareWheel(value: number, options: WheelOptions) {
-  const { altKey, contourOptions } = options;
+  const { altKey, contourOptions, invertScroll = false } = options;
 
   const sign = Math.sign(value);
+  const direction = invertScroll ? -sign : sign;
 
   const { positive, negative } = contourOptions;
   const {
@@ -98,28 +103,28 @@ function prepareWheel(value: number, options: WheelOptions) {
 
   if (altKey) {
     if (
-      (minPositiveLevel === 0 && sign === -1) ||
+      (minPositiveLevel === 0 && direction === -1) ||
       (minPositiveLevel >= maxPositiveLevel - positive.numberOfLayers &&
-        sign === 1)
+        direction === 1)
     ) {
       return contourOptions;
     }
-    contourOptions.positive.contourLevels[0] += sign * 2;
+    contourOptions.positive.contourLevels[0] += direction * 2;
   } else {
     if (
-      (minPositiveLevel > 0 && sign === -1) ||
+      (minPositiveLevel > 0 && direction === -1) ||
       (minPositiveLevel <= maxPositiveLevel - positive.numberOfLayers &&
-        sign === 1)
+        direction === 1)
     ) {
-      contourOptions.positive.contourLevels[0] += sign * 2;
+      contourOptions.positive.contourLevels[0] += direction * 2;
     }
 
     if (
-      (minNegativeLevel > 0 && sign === -1) ||
+      (minNegativeLevel > 0 && direction === -1) ||
       (minNegativeLevel <= maxNegativeLevel - negative.numberOfLayers &&
-        sign === 1)
+        direction === 1)
     ) {
-      contourOptions.negative.contourLevels[0] += sign * 2;
+      contourOptions.negative.contourLevels[0] += direction * 2;
     }
   }
   return contourOptions;

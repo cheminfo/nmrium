@@ -328,8 +328,7 @@ function zoomWithScroll(
     scaleX = get2DXScale(draft);
     scaleY = get2DYScale(draft);
   }
-
-  const scaleRatio = toScaleRatio(zoomOptions, { invert: true });
+  const scaleRatio = toScaleRatio(zoomOptions);
 
   if (direction === 'Both' || direction === 'Horizontal') {
     const { x } = zoomOptions;
@@ -675,7 +674,7 @@ function handleSetActiveTab(draft: Draft<State>, action: SetActiveTabAction) {
 }
 
 function levelChangeHandler(draft: Draft<State>, action: LevelChangeAction) {
-  const { deltaY, altKey } = action.payload.options;
+  const { deltaY, altKey, invertScroll } = action.payload.options;
   const {
     data,
     view: {
@@ -698,7 +697,7 @@ function levelChangeHandler(draft: Draft<State>, action: LevelChangeAction) {
   try {
     for (const spectrum of spectra as Spectrum2D[]) {
       const zoom = contoursManager(spectrum);
-      zoom.wheel(deltaY, altKey);
+      zoom.wheel(deltaY, { altKey, invertScroll });
     }
   } catch (error) {
     // TODO: handle error.

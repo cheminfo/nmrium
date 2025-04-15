@@ -111,6 +111,7 @@ const customWorkspaces: CustomWorkspaces = {
       loggingLevel: 'info',
       invert: false,
       popupLoggingLevel: 'info',
+      invertScroll: false,
     },
     nuclei: [
       {
