@@ -66,7 +66,13 @@ export function BrushTracker1D({ children }) {
   const brushStartRef = useRef<number | null>(null);
   const spectrum = useSpectrum();
   const dispatch = useDispatch();
-  const { dispatch: dispatchPreferences } = usePreferences();
+  const {
+    dispatch: dispatchPreferences,
+    current: {
+      general: { invertScroll },
+    },
+  } = usePreferences();
+
   const { showBoxPlot, showStocsy } = usePanelPreferences(
     'matrixGeneration',
     activeTab,
@@ -334,13 +340,17 @@ export function BrushTracker1D({ children }) {
           payload: { nucleus: activeTab, zoomOptions: options },
         });
       } else {
-        dispatch({ type: 'SET_ZOOM', payload: { options } });
+        dispatch({
+          type: 'SET_ZOOM',
+          payload: { options: { ...options, invertScroll } },
+        });
       }
     },
     [
       activeTab,
       dispatch,
       dispatchPreferences,
+      invertScroll,
       selectedTool,
       showBoxPlot,
       showStocsy,

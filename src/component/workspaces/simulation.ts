@@ -10,6 +10,7 @@ export const simulation: InnerWorkspace = {
     loggingLevel: 'info',
     popupLoggingLevel: 'error',
     invert: false,
+    invertScroll: false,
   },
   display: {
     general: {

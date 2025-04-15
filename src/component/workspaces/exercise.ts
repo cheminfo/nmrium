@@ -36,6 +36,7 @@ export const exercise: InnerWorkspace = {
     loggingLevel: 'info',
     popupLoggingLevel: 'error',
     invert: true,
+    invertScroll: false,
   },
   nuclei: [],
   panels: {

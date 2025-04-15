@@ -262,7 +262,7 @@ function zoomWithScroll(draft: Draft<State>, options: ZoomWithScroll1DOptions) {
   const { originDomain, mode } = draft;
   const scaleX = getXScale(inset, { baseSize, mode });
 
-  const scaleRatio = toScaleRatio(zoomOptions, { invert: true });
+  const scaleRatio = toScaleRatio(zoomOptions);
 
   const { x } = zoomOptions;
   const domain = zoomIdentity

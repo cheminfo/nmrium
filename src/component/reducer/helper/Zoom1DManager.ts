@@ -19,11 +19,12 @@ function toScaleRatio(
   options: ZoomOptions,
   zoomOptions: ScaleRationOptions = {},
 ) {
-  const { factor = 1, invert = false } = zoomOptions;
+  const { invertScroll = false } = options;
+  const { factor = 1 } = zoomOptions;
 
   const deltaY =
     Math.abs(options.deltaY) < 100 ? options.deltaY * 100 : options.deltaY;
-  const delta = deltaY * (invert ? -0.001 : 0.001) * factor;
+  const delta = deltaY * (invertScroll ? -0.001 : 0.001) * factor;
   const ratio = delta < 0 ? -1 / (delta - 1) : 1 + delta;
 
   return ratio;
@@ -31,7 +32,6 @@ function toScaleRatio(
 
 interface ScaleRationOptions {
   factor?: number;
-  invert?: boolean;
 }
 function wheelZoom(
   options: ZoomOptions,

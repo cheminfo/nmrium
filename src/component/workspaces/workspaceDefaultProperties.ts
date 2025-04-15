@@ -70,6 +70,7 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
     loggingLevel: 'info',
     popupLoggingLevel: 'error',
     invert: false,
+    invertScroll: false,
   },
   nuclei: [
     { nucleus: '1H', ppmFormat: '0.00', hzFormat: '0.00' },
