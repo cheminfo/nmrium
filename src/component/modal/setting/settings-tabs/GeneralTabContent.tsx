@@ -1,4 +1,4 @@
-import { Checkbox, Tag } from '@blueprintjs/core';
+import { Switch, Tag } from '@blueprintjs/core';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import { LOGGER_LEVELS } from '../../../context/LoggerContext.js';
@@ -58,18 +58,15 @@ function GeneralTabContent() {
           />
         </Label>
         <Label title="Invert actions" style={settingLabelStyle}>
-          <Checkbox style={{ margin: 0 }} {...register(`general.invert`)} />
+          <Switch style={{ margin: 0 }} {...register(`general.invert`)} />
         </Label>
         <Label title="Invert scroll" style={settingLabelStyle}>
-          <Checkbox
-            style={{ margin: 0 }}
-            {...register(`general.invertScroll`)}
-          />
+          <Switch style={{ margin: 0 }} {...register(`general.invertScroll`)} />
         </Label>
       </GroupPane>
       <GroupPane text="Experimental features">
         <Label title="Enable experimental features" style={settingLabelStyle}>
-          <Checkbox
+          <Switch
             style={{ margin: 0 }}
             {...register(`display.general.experimentalFeatures.display`)}
           />
