@@ -1,4 +1,4 @@
-import { Checkbox, Classes } from '@blueprintjs/core';
+import { Checkbox, Classes, Switch } from '@blueprintjs/core';
 import type { InfoBlockField } from 'nmr-load-save';
 import { useCallback, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -160,7 +160,7 @@ function InfoBlockTabContent() {
   return (
     <div>
       <Label title="Display spectrum info block" style={settingLabelStyle}>
-        <Checkbox style={{ margin: 0 }} {...register('infoBlock.visible')} />
+        <Switch style={{ margin: 0 }} {...register('infoBlock.visible')} />
       </Label>
 
       <GroupPane

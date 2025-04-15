@@ -1,4 +1,4 @@
-import { Checkbox } from '@blueprintjs/core';
+import { Checkbox, Switch } from '@blueprintjs/core';
 import type { NMRiumPanelPreferences } from 'nmr-load-save';
 import { useCallback, useMemo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
@@ -190,7 +190,7 @@ function DisplayTabContent() {
   return (
     <div style={{ width: '100%', overflow: 'hidden' }}>
       <Label title="Hide panels bar " style={settingLabelStyle}>
-        <Checkbox
+        <Switch
           style={{ margin: 0 }}
           {...register('display.general.hidePanelsBar')}
         />

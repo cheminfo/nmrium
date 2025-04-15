@@ -1,4 +1,4 @@
-import { Checkbox, Tab, Tabs } from '@blueprintjs/core';
+import { Checkbox, Switch, Tab, Tabs } from '@blueprintjs/core';
 import type {
   AutoProcessingFilterEntry,
   WorkspacePreferences,
@@ -21,10 +21,10 @@ function OnLoadProcessingTabContent() {
   return (
     <div>
       <Label title="Enable auto processing on load" style={settingLabelStyle}>
-        <Checkbox
+        <Switch
           style={{ margin: 0 }}
-          {...register('onLoadProcessing.autoProcessing')}
           defaultChecked={false}
+          {...register('onLoadProcessing.autoProcessing')}
         />
       </Label>
       {isExperimentalFeatures && <AutoProcessingFilters />}
@@ -76,6 +76,7 @@ function FiltersTable({ data, nucleus }) {
     {
       index: 2,
       Header: 'Enable',
+      style: { textAlign: 'center' },
       Cell: ({ row }) => (
         <Checkbox
           style={{ margin: 0 }}
