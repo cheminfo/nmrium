@@ -78,7 +78,7 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
 
   const methods = useForm<ExportSettings>({
     defaultValues,
-    resolver: yupResolver(exportOptionValidationSchema) as any,
+    resolver: yupResolver(exportOptionValidationSchema as any),
   });
   const {
     handleSubmit,
