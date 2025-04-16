@@ -41,11 +41,13 @@ const preferencesSchema = Yup.object({
     }),
     resortSpectra: Yup.boolean(),
   }),
-  legendsFields: Yup.array().of(
-    Yup.object({
-      jpath: Yup.array().of(Yup.string()).min(1),
-    }),
-  ),
+  legendsFields: Yup.array()
+    .of(
+      Yup.object({
+        jpath: Yup.array().of(Yup.string()).min(1),
+      }),
+    )
+    .required(),
 });
 
 interface MultipleSpectraAnalysisPreferencesProps {

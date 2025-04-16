@@ -102,7 +102,7 @@ function PredictionOptionsPanel(props: PredictionOptionsPanelProps, ref) {
   const { options, onSave, hideName = false } = props;
   const { handleSubmit, control } = useForm({
     defaultValues: options,
-    resolver: yupResolver(getPredictionFormValidation(!hideName)),
+    resolver: yupResolver(getPredictionFormValidation(!hideName) as any),
   });
   useSettingImperativeHandle(ref, handleSubmit, onSave);
 
