@@ -148,8 +148,8 @@ function changeMatrixGenerationScale(
   const matrixGeneration = getMatrixGenerationPanelOptions(draft, nucleus);
 
   if (!matrixGeneration) return;
-
-  const scaleRatio = toScaleRatio(zoomOptions);
+  const { deltaY, invertScroll } = zoomOptions;
+  const scaleRatio = toScaleRatio({ delta: deltaY, invertScroll });
 
   matrixGeneration.scaleRatio *= scaleRatio;
 }
