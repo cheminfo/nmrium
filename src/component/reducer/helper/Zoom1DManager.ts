@@ -16,15 +16,15 @@ export const ZOOM_TYPES = {
 export type ZoomType = keyof typeof ZOOM_TYPES;
 
 function toScaleRatio(
-  options: ZoomOptions,
+  options: { invertScroll?: boolean; delta: number },
   zoomOptions: ScaleRationOptions = {},
 ) {
   const { invertScroll = false } = options;
   const { factor = 1 } = zoomOptions;
 
-  const deltaY =
-    Math.abs(options.deltaY) < 100 ? options.deltaY * 100 : options.deltaY;
-  const delta = deltaY * (invertScroll ? -0.001 : 0.001) * factor;
+  const normalizeDelta =
+    Math.abs(options.delta) < 100 ? options.delta * 100 : options.delta;
+  const delta = normalizeDelta * (invertScroll ? -0.001 : 0.001) * factor;
   const ratio = delta < 0 ? -1 / (delta - 1) : 1 + delta;
 
   return ratio;
@@ -38,7 +38,8 @@ function wheelZoom(
   domain: number[],
   scaleOptions: ScaleRationOptions = {},
 ): number[] {
-  const ratio = toScaleRatio(options, scaleOptions);
+  const { deltaY, invertScroll } = options;
+  const ratio = toScaleRatio({ delta: deltaY, invertScroll }, scaleOptions);
   const [min, max] = domain;
   return [min * ratio, max * ratio];
 }

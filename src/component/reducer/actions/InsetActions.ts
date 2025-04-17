@@ -261,8 +261,9 @@ function zoomWithScroll(draft: Draft<State>, options: ZoomWithScroll1DOptions) {
 
   const { originDomain, mode } = draft;
   const scaleX = getXScale(inset, { baseSize, mode });
+  const { invertScroll, deltaX, deltaY } = zoomOptions;
 
-  const scaleRatio = toScaleRatio(zoomOptions);
+  const scaleRatio = toScaleRatio({ delta: deltaY || deltaX, invertScroll });
 
   const { x } = zoomOptions;
   const domain = zoomIdentity
@@ -280,7 +281,7 @@ function handleInsetZoom(draft: Draft<State>, action: ZoomInsetAction) {
   const {
     toolOptions: { selectedTool },
   } = draft;
-  const { altKey, shiftKey } = options;
+  const { altKey, shiftKey, deltaX, deltaY, invertScroll } = options;
   const inset = getInset(draft, insetKey);
 
   if (!inset) return;
@@ -294,7 +295,7 @@ function handleInsetZoom(draft: Draft<State>, action: ZoomInsetAction) {
   if (altKey) {
     // rescale the integral in ranges and integrals
     const { view } = inset;
-    const scaleRatio = toScaleRatio(options);
+    const scaleRatio = toScaleRatio({ delta: deltaY | deltaX, invertScroll });
 
     if (selectedTool === 'rangePicking') {
       view.ranges.integralsScaleRatio *= scaleRatio;

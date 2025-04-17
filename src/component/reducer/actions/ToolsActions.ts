@@ -318,6 +318,7 @@ function zoomWithScroll(
   options: ZoomWithScroll1DOptions | ZoomWithScroll2DOptions,
 ) {
   const { zoomOptions, direction = 'Horizontal', dimension } = options;
+  const { x, deltaX, invertScroll } = zoomOptions;
 
   let scaleX;
   let scaleY;
@@ -328,10 +329,9 @@ function zoomWithScroll(
     scaleX = get2DXScale(draft);
     scaleY = get2DYScale(draft);
   }
-  const scaleRatio = toScaleRatio(zoomOptions);
+  const scaleRatio = toScaleRatio({ delta: deltaX, invertScroll });
 
   if (direction === 'Both' || direction === 'Horizontal') {
-    const { x } = zoomOptions;
     const domain = zoomIdentity
       .translate(x, 0)
       .scale(scaleRatio)
@@ -373,8 +373,10 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
     yDomains,
     toolOptions: { selectedTool },
   } = draft;
-  const scaleRatio = toScaleRatio(options);
-  const { altKey, shiftKey } = options;
+  const { altKey, shiftKey, invertScroll, deltaY, isBidirectionalZoom } =
+    options;
+
+  const scaleRatio = toScaleRatio({ delta: deltaY, invertScroll });
 
   switch (displayerMode) {
     case '2D': {
@@ -387,7 +389,7 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
         }
 
         //zoom in/out in 2d
-        if (shiftKey) {
+        if (shiftKey || isBidirectionalZoom) {
           zoomWithScroll(draft, {
             zoomOptions: options,
             dimension: '2D',
@@ -414,9 +416,11 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
       const activeSpectra = getActiveSpectra(draft);
 
       // Horizontal zoom in/out 1d spectra by mouse wheel
-      if (shiftKey) {
+      if (shiftKey || isBidirectionalZoom) {
         zoomWithScroll(draft, { zoomOptions: options, dimension: '1D' });
-        return;
+        if (!isBidirectionalZoom) {
+          return;
+        }
       }
 
       // rescale the integral in ranges and integrals
