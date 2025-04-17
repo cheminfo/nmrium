@@ -21,6 +21,8 @@ export function useSpectrumWithDataSource(
   const inset = useInsetOptions();
 
   return useMemo<Spectrum>(() => {
+    if (!dataSource) return defaultValue;
+
     if (inset) {
       return getSpectrum(dataSource, inset.spectrumKey, defaultValue);
     }
