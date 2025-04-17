@@ -13,7 +13,7 @@ import {
   useAssignment,
   useAssignmentContext,
 } from '../../assignment/AssignmentsContext.js';
-import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment.js';
+import { filterAssignedIDs } from '../../assignment/utilities/filterAssignedIDs.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useLogger } from '../../context/LoggerContext.js';
@@ -61,8 +61,8 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
   const assignmentRange = useAssignment(id);
   const highlightRange = useHighlight(
     [id].concat(assignmentRange.assignedDiaIds?.x || []).concat(
-      filterForIDsWithAssignment(
-        assignmentData,
+      filterAssignedIDs(
+        assignmentData.data,
         signals.map((_signal) => _signal.id),
       ),
     ),

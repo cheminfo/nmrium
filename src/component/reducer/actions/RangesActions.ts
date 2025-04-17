@@ -48,6 +48,7 @@ import { setDomain } from './DomainActions.js';
 import { rollbackSpectrumByFilter } from './FiltersActions.js';
 import { toggleDisplayingPeaks } from './PeaksActions.js';
 import { resetSelectedTool } from './ToolsActions.js';
+import type { TargetAssignKeys } from '../../panels/MoleculesPanel/Utilities.js';
 
 type AutoRangesDetectionAction = ActionType<
   'AUTO_RANGES_DETECTION',
@@ -89,12 +90,12 @@ interface UnlinkRangeProps {
   signalIndex?: number;
 }
 type UnlinkRangeAction = ActionType<'UNLINK_RANGE', UnlinkRangeProps>;
-type SetDiaIDRangeAction = ActionType<
-  'SET_DIAID_RANGE',
+
+type AssignRangeAction = ActionType<
+  'ASSIGN_RANGE',
   {
-    range: Range;
-    signalIndex: number;
-  } & Pick<Range, 'diaIDs' | 'nbAtoms'>
+    keys: TargetAssignKeys;
+  } & Required<Pick<Range, 'diaIDs' | 'nbAtoms'>>
 >;
 type ResizeRangeAction = ActionType<
   'RESIZE_RANGE',
@@ -167,7 +168,7 @@ export type RangesActions =
   | SaveEditedRangeAction
   | DeleteSignalAction
   | UnlinkRangeAction
-  | SetDiaIDRangeAction
+  | AssignRangeAction
   | ResizeRangeAction
   | ChangeRangeSumAction
   | AddRangeAction
@@ -431,26 +432,39 @@ function handleUnlinkRange(draft: Draft<State>, action: UnlinkRangeAction) {
 }
 
 //action
-function handleSetDiaIDRange(draft: Draft<State>, action: SetDiaIDRangeAction) {
+function handleAssignRange(draft: Draft<State>, action: AssignRangeAction) {
   const activeSpectrum = getActiveSpectrum(draft);
-  if (activeSpectrum?.id) {
-    const { index } = activeSpectrum;
-    const { range: rangeData, diaIDs, signalIndex, nbAtoms } = action.payload;
-    const getNbAtoms = (input, current = 0) => input + current;
-    const rangeIndex = getRangeByIndex(draft, index, rangeData.id);
-    const _range = (draft.data[index] as Spectrum1D).ranges.values[rangeIndex];
-    if (signalIndex === undefined) {
-      _range.diaIDs = diaIDs;
-      _range.nbAtoms = getNbAtoms(nbAtoms, _range.nbAtoms);
-    } else {
-      _range.signals[signalIndex].diaIDs = diaIDs;
-      _range.signals[signalIndex].nbAtoms = getNbAtoms(
-        nbAtoms,
-        _range.signals[signalIndex].nbAtoms,
-      );
-    }
-    // _range.nbAtoms = getNbAtoms(_range);
+  if (!activeSpectrum?.id) return;
+  const { index } = activeSpectrum;
+  const spectrum = draft.data[index];
+
+  if (!isSpectrum1D(spectrum)) return;
+
+  const { keys, diaIDs, nbAtoms } = action.payload;
+
+  if (keys.length === 1) {
+    const [{ index }] = keys;
+    const range = spectrum.ranges.values[index];
+
+    if (!range) return;
+
+    range.diaIDs = diaIDs;
+    range.nbAtoms = nbAtoms + (range.nbAtoms || 0);
+  } else {
+    const [{ index: rangeIndex }, { index: signalIndex }] = keys;
+    const range = spectrum.ranges.values[rangeIndex];
+
+    if (!range) return;
+
+    const signal = range.signals[signalIndex];
+
+    if (!signal) return;
+
+    signal.diaIDs = diaIDs;
+    signal.nbAtoms = nbAtoms + (signal.nbAtoms || 0);
   }
+
+  // _range.nbAtoms = getNbAtoms(_range);
 }
 
 //action
@@ -715,7 +729,7 @@ export {
   handleSaveEditedRange,
   handleUnlinkRange,
   unlinkRange,
-  handleSetDiaIDRange,
+  handleAssignRange,
   handleChangeRangesSumFlag,
   handleUpdateRange,
   handleAutoSpectraRangesDetection,
