@@ -1,8 +1,9 @@
-import type OCL from 'openchemlib/full';
+import { Molecule } from 'openchemlib';
 import type { CSSProperties } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
-import { StructureEditor } from 'react-ocl/full';
+import { CanvasMoleculeEditor } from 'react-ocl';
+import type { CanvasEditorOnChangeMolecule } from 'react-ocl';
 import { useAccordionControls } from 'react-science/ui';
 
 import { predictSpectra } from '../../../data/PredictionManager.js';
@@ -65,7 +66,8 @@ export default function PredictionPanel() {
     }
   }, [molecules]);
 
-  function changeHandler(molfile, molecule: OCL.Molecule) {
+  function changeHandler(event: CanvasEditorOnChangeMolecule) {
+    const molecule = Molecule.fromIDCode(event.getIdcode());
     const atoms = molecule.getAllAtoms();
     if (atoms === 0) {
       setMolfile(null);
@@ -198,10 +200,10 @@ export default function PredictionPanel() {
                                 }}
                               >
                                 {molIndex === currentIndex && (
-                                  <StructureEditor
+                                  <CanvasMoleculeEditor
                                     width={width}
-                                    initialMolfile={mol.molfile}
-                                    svgMenu
+                                    inputFormat="molfile"
+                                    inputValue={mol.molfile}
                                     fragment={false}
                                     onChange={changeHandler}
                                   />
@@ -211,11 +213,11 @@ export default function PredictionPanel() {
                           ),
                         )
                       ) : (
-                        <StructureEditor
-                          initialMolfile={molfile || ''}
+                        <CanvasMoleculeEditor
+                          inputFormat="molfile"
+                          inputValue={molfile || ''}
                           width={width}
                           height={height}
-                          svgMenu
                           fragment={false}
                           onChange={changeHandler}
                         />

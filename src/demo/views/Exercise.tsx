@@ -1,9 +1,9 @@
 import styled from '@emotion/styled';
-import { Molecule } from 'openchemlib/full';
+import { Molecule } from 'openchemlib';
 import { useCallback, useEffect, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { MF } from 'react-mf';
-import { StructureEditor } from 'react-ocl/full';
+import { CanvasMoleculeEditor } from 'react-ocl';
 
 import type { NMRiumData } from '../../component/main/index.js';
 import { NMRium } from '../../component/main/index.js';
@@ -210,11 +210,11 @@ export default function Exercise(props) {
           }
         >
           <StructureEditorContainer>
-            <StructureEditor
-              svgMenu
+            <CanvasMoleculeEditor
+              inputFormat="molfile"
               fragment={false}
               onChange={checkAnswer}
-              initialMolfile={data?.answer?.currentAnswer}
+              inputValue={data?.answer?.currentAnswer}
             />
           </StructureEditorContainer>
           <BottomRightContainer>

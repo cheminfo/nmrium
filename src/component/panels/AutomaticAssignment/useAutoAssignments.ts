@@ -1,7 +1,7 @@
 import type { Spectrum, Spectrum1D, Spectrum2D } from '@zakodium/nmrium-core';
 import type { SpectraData } from 'nmr-processing';
 import { getAssignments as getAssignmentsData } from 'nmr-processing';
-import OCL from 'openchemlib/full';
+import { Molecule } from 'openchemlib';
 import { useRef, useState } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';
@@ -48,7 +48,7 @@ export function useAutoAssignments() {
   function getAssignments() {
     void (async () => {
       const hideLoading = toaster.showLoading({ message: 'Auto Assignments' });
-      const molecule = OCL.Molecule.fromMolfile(molecules[0]?.molfile || '');
+      const molecule = Molecule.fromMolfile(molecules[0]?.molfile || '');
       const spectra = mapSpectra(data) as SpectraData[];
 
       if (!originData.current) {

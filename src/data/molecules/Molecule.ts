@@ -1,4 +1,4 @@
-import { Molecule as OCLMolecule } from 'openchemlib/full';
+import { Molecule as OCLMolecule } from 'openchemlib';
 
 import getAtomsFromMF from '../utilities/getAtomsFromMF.js';
 

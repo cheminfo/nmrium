@@ -1,4 +1,4 @@
-import OCL from 'openchemlib/full';
+import { Molecule } from 'openchemlib';
 import { TopicMolecule } from 'openchemlib-utils';
 import type { ReactNode } from 'react';
 import { createContext, useContext, useEffect, useRef } from 'react';
@@ -30,7 +30,7 @@ export function TopicMoleculeProvider({
   useEffect(() => {
     for (const { id, molfile } of molecules) {
       const topicMolecule = moleculesRef.current?.[id];
-      const molecule = OCL.Molecule.fromMolfile(molfile);
+      const molecule = Molecule.fromMolfile(molfile);
       if (topicMolecule) {
         moleculesRef.current[id] = topicMolecule.fromMolecule(molecule);
       } else {

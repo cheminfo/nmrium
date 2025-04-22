@@ -1,7 +1,7 @@
 import type { Logger } from 'cheminfo-types';
 import type { FifoLogger } from 'fifo-logger';
 import type { Draft } from 'immer';
-import OCL from 'openchemlib/full';
+import { Molecule } from 'openchemlib';
 import type { TopicMolecule } from 'openchemlib-utils';
 import { nbLabileH, getAtoms } from 'openchemlib-utils';
 
@@ -232,7 +232,7 @@ function checkPredictions(
 ) {
   const { spectra } = inputOptions;
   const missing2DPrediction: string[] = [];
-  const molecule = OCL.Molecule.fromMolfile(molfile);
+  const molecule = Molecule.fromMolfile(molfile);
   const { atoms } = getAtoms(molecule);
   for (const [experiment, required] of Object.entries(spectra)) {
     if (!required || predictedSpectra[experiment]) continue;

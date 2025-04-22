@@ -8,7 +8,7 @@ import type {
 import { processJcamp, spectrum1DToJcamp } from '@zakodium/nmrium-core-plugins';
 import fileSaver from 'file-saver';
 import JSZip from 'jszip';
-import OCL from 'openchemlib/full';
+import * as OCL from 'openchemlib';
 
 import type { State } from '../component/reducer/Reducer.js';
 

@@ -6,7 +6,7 @@ import type {
 } from '@zakodium/nmrium-core';
 import type { DatabaseNMREntry } from 'nmr-processing';
 import { mapRanges } from 'nmr-processing';
-import { Molecule as OCLMolecule } from 'openchemlib/full';
+import { Molecule as OCLMolecule } from 'openchemlib';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useOnOff } from 'react-science/ui';
 

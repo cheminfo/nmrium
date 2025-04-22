@@ -1,5 +1,6 @@
 import { Dialog } from '@blueprintjs/core';
-import { StructureEditor } from 'react-ocl/full';
+import { CanvasMoleculeEditor } from 'react-ocl';
+import type { CanvasEditorOnChangeMolecule } from 'react-ocl';
 
 import { StyledDialogBody } from '../../elements/StyledDialogBody.js';
 
@@ -26,11 +27,13 @@ export function DatabaseStructureSearchModal({
       title="Search by structure"
     >
       <StyledDialogBody>
-        <StructureEditor
-          initialIDCode={idCode}
-          svgMenu
+        <CanvasMoleculeEditor
+          inputFormat="idcode"
+          inputValue={idCode}
           fragment
-          onChange={(molFile, molecule, idCode) => onChange(idCode)}
+          onChange={(event: CanvasEditorOnChangeMolecule) =>
+            onChange(event.getIdcode())
+          }
         />
       </StyledDialogBody>
     </Dialog>

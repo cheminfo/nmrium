@@ -17,7 +17,7 @@ import {
   signalsToRanges,
   signalsToXY,
 } from 'nmr-processing';
-import OCL from 'openchemlib/full';
+import { Molecule } from 'openchemlib';
 
 import { DATUM_KIND } from './constants/signalsKinds.js';
 import {
@@ -93,7 +93,7 @@ export async function predictSpectra(
   molfile: string,
   options: any,
 ): Promise<Predicted> {
-  const molecule = OCL.Molecule.fromMolfile(molfile);
+  const molecule = Molecule.fromMolfile(molfile);
   const predictOptions = {};
   for (const key in options) {
     if (!options[key]) continue;

@@ -1,4 +1,4 @@
-import { Molecule as OCLMolecule } from 'openchemlib/full';
+import { Molecule as OCLMolecule } from 'openchemlib';
 import type { CSSProperties, ReactNode } from 'react';
 import { useCallback } from 'react';
 import {

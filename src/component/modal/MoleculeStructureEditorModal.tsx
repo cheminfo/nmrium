@@ -1,9 +1,9 @@
 import { Dialog, DialogFooter } from '@blueprintjs/core';
-import { Molecule } from 'openchemlib/full';
+import { Molecule } from 'openchemlib';
 import { TopicMolecule } from 'openchemlib-utils';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import type { StructureEditorProps } from 'react-ocl/full';
-import { StructureEditor } from 'react-ocl/full';
+import type { CanvasEditorOnChangeMolecule } from 'react-ocl';
+import { CanvasMoleculeEditor } from 'react-ocl';
 import { useOnOff } from 'react-science/ui';
 
 import type { StateMoleculeExtended } from '../../data/molecules/Molecule.js';
@@ -51,12 +51,14 @@ function MoleculeStructureEditorModal(
     }
   }, [initialEnhancedMolfile]);
 
-  const cb = useCallback<Exclude<StructureEditorProps['onChange'], undefined>>(
-    (newMolfile, molecule) => {
+  const cb = useCallback(
+    (event: CanvasEditorOnChangeMolecule) => {
+      const molFile = event.getMolfileV3();
+      const molecule = Molecule.fromMolfile(molFile);
       if (molecule.getAllAtoms() === 0) {
         setMolfile(null);
       } else {
-        setMolfile(newMolfile);
+        setMolfile(molFile);
       }
     },
     [setMolfile],
@@ -106,9 +108,9 @@ function MoleculeStructureEditorModal(
   return (
     <Dialog isOpen={isOpen} onClose={handleClose} style={{ width: 710 }}>
       <StyledDialogBody>
-        <StructureEditor
-          initialMolfile={initialEnhancedMolfile?.molfile}
-          svgMenu
+        <CanvasMoleculeEditor
+          inputFormat="molfile"
+          inputValue={initialEnhancedMolfile?.molfile}
           fragment={false}
           onChange={cb}
         />
