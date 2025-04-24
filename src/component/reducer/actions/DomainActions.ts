@@ -111,7 +111,7 @@ function getDomain(draft: Draft<State>, options: GetDomainOptions = {}) {
       const _extent = extentArray(y);
       const domain = [data.x[0], data.x.at(-1) as number];
 
-      yDomains[id] = [0, _extent[1]];
+      yDomains[id] = _extent;
       xDomains[id] = domain;
       if (
         domainSpectraScope === 'all' ||
@@ -128,7 +128,7 @@ function getDomain(draft: Draft<State>, options: GetDomainOptions = {}) {
 
   return {
     xDomain: xArray?.length > 0 ? extent(xArray) : [],
-    yDomain: yArray?.length > 0 ? [0, extent(yArray)[1]] : [],
+    yDomain: yArray?.length > 0 ? extent(yArray) : [],
     yDomains,
     xDomains,
   };

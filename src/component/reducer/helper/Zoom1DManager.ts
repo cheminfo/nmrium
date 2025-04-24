@@ -70,9 +70,9 @@ function setZoom(
         const t = zoomIdentity
           .translate(0, _scale(scalePoint))
           .scale(scale)
-          .translate(0, -_scale(0));
+          .translate(0, -_scale(scalePoint));
         const newYDomain = t.rescaleY(_scale).domain();
-        return [id, [0, newYDomain[1]]];
+        return [id, newYDomain];
       }),
     );
   } else {
@@ -90,7 +90,7 @@ function setZoom(
 
       draft.yDomains = {
         ...yDomains,
-        [spectrumId]: [0, yDomain[1]],
+        [spectrumId]: yDomain,
       };
     }
   }

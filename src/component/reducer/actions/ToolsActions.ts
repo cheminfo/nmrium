@@ -289,16 +289,11 @@ function handleToggleRealImaginaryVisibility(draft: Draft<State>) {
 
 function handleBrushEnd(draft: Draft<State>, action: BrushEndAction) {
   const options = action.payload;
-  const { displayerMode } = draft;
 
   const startX = Math.min(options.startX, options.endX);
   const endX = Math.max(options.startX, options.endX);
-  let startY = Math.min(options.startY, options.endY);
+  const startY = Math.min(options.startY, options.endY);
   const endY = Math.max(options.startY, options.endY);
-
-  if (displayerMode === '1D') {
-    startY = Math.max(0, startY);
-  }
 
   addToBrushHistory(draft, {
     axis: options.axis,
