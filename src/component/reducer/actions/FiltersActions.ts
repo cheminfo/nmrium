@@ -2,7 +2,6 @@ import type { NmrData1D, NmrData2DFt } from 'cheminfo-types';
 import type { Draft } from 'immer';
 import { current } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import type { Spectrum, Spectrum1D, Spectrum2D } from 'nmr-load-save';
 import {
   getBaselineZonesByDietrich,
   Filters1DManager,
@@ -21,6 +20,7 @@ import type {
   Filter2DOptions,
   Filter1DOptions,
 } from 'nmr-processing';
+import type { Spectrum, Spectrum1D, Spectrum2D } from 'nmrium-core';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import { isFid1DSpectrum } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';

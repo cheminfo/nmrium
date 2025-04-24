@@ -1,6 +1,6 @@
 import { Classes } from '@blueprintjs/core';
-import type { ExternalAPI } from 'nmr-load-save';
-import { EXTERNAL_API_KEYS } from 'nmr-load-save';
+import type { ExternalAPI } from 'nmrium-core';
+import { EXTERNAL_API_KEYS } from 'nmrium-core';
 import { useCallback, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';

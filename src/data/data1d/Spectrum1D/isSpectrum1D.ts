@@ -1,4 +1,4 @@
-import type { Spectrum, Spectrum1D } from 'nmr-load-save';
+import type { Spectrum, Spectrum1D } from 'nmrium-core';
 
 export function isSpectrum1D(spectrum: Spectrum): spectrum is Spectrum1D {
   return spectrum && spectrum.info.dimension === 1;

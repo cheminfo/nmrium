@@ -1,5 +1,5 @@
 import dlv from 'dlv';
-import type { Spectrum } from 'nmr-load-save';
+import type { Spectrum } from 'nmrium-core';
 import type { ParseResult } from 'papaparse';
 
 import { prepareKey } from './prepareKey.js';

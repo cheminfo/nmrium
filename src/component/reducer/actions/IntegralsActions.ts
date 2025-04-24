@@ -1,8 +1,8 @@
 import type { Draft } from 'immer';
 import { original } from 'immer';
 import { xyIntegration } from 'ml-spectra-processing';
-import type { IntegralsViewState, Spectrum1D } from 'nmr-load-save';
 import type { Integral } from 'nmr-processing';
+import type { IntegralsViewState, Spectrum1D } from 'nmrium-core';
 
 import type {
   SetSumOptions,

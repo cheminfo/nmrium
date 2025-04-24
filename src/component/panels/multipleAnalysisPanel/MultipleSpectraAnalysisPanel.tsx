@@ -1,5 +1,5 @@
 import { SvgNmrOverlay } from 'cheminfo-font';
-import type { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from 'nmrium-core';
 import { memo, useCallback, useRef, useState } from 'react';
 import { FaChartBar, FaFileExport } from 'react-icons/fa';
 import { IoPulseOutline } from 'react-icons/io5';

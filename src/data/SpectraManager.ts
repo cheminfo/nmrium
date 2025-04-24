@@ -1,12 +1,13 @@
 import fileSaver from 'file-saver';
 import JSZip from 'jszip';
-import type { Spectrum, StateMolecule, Workspace } from 'nmr-load-save';
-import {
-  CURRENT_EXPORT_VERSION,
-  processJcamp,
-  serializeNmriumState,
-  spectrum1DToJcamp,
-} from 'nmr-load-save';
+import { CURRENT_EXPORT_VERSION } from 'nmrium-core';
+import type {
+  NMRiumCore,
+  Spectrum,
+  StateMolecule,
+  Workspace,
+} from 'nmrium-core';
+import { processJcamp, spectrum1DToJcamp } from 'nmrium-core-plugins';
 import OCL from 'openchemlib/full';
 
 import type { State } from '../component/reducer/Reducer.js';
@@ -64,11 +65,13 @@ export function addJcamp(output, jcamp, options, usedColors) {
 }
 
 /**
- *
+ * @param core
  * @param {object} state
+ * @param preferencesState
+ * @param options
  */
-
 export function toJSON(
+  core: NMRiumCore,
   state: Partial<State>,
   preferencesState: Partial<{
     current: Workspace;
@@ -118,7 +121,7 @@ export function toJSON(
           ? 'noData'
           : 'dataSource';
 
-    return serializeNmriumState(nmriumState, {
+    return core.serializeNmriumState(nmriumState, {
       includeData,
       includeSettings: settings,
       includeView: view,

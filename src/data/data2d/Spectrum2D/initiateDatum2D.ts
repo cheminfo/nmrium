@@ -1,5 +1,5 @@
-import type { Spectrum2D, SpectrumTwoDimensionsColor } from 'nmr-load-save';
 import { Filters2DManager } from 'nmr-processing';
+import type { Spectrum2D, SpectrumTwoDimensionsColor } from 'nmrium-core';
 
 import type { UsedColors } from '../../../types/UsedColors.js';
 import { initiateFilters } from '../../initiateFilters.js';

@@ -6,7 +6,7 @@ import type {
   PredefinedLegendField,
   Spectrum,
   Spectrum1D,
-} from 'nmr-load-save';
+} from 'nmrium-core';
 import type { CSSProperties } from 'react';
 
 import { get1DDataXY } from '../../data/data1d/Spectrum1D/index.js';

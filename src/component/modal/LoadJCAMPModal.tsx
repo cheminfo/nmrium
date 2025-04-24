@@ -1,9 +1,9 @@
 import { Button, Dialog, DialogFooter } from '@blueprintjs/core';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { readFromWebSource } from 'nmr-load-save';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
+import { useCore } from '../context/CoreContext.js';
 import { useDispatch } from '../context/DispatchContext.js';
 import { useToaster } from '../context/ToasterContext.js';
 import { Input2Controller } from '../elements/Input2Controller.js';
@@ -60,13 +60,14 @@ function InnerLoadJCAMPModal({ onCloseDialog }: InnerLoadJCAMPModalProps) {
     resolver: yupResolver(loadFormValidation),
   });
 
+  const core = useCore();
   async function loadJCAMPHandler({ url }) {
     const hidLoading = toaster.showLoading({
       message: 'Load JCAMP from external URL in progress ...',
     });
     const { pathname, origin } = new URL(url);
     try {
-      const nmriumState = await readFromWebSource({
+      const nmriumState = await core.readFromWebSource({
         entries: [{ relativePath: pathname, baseURL: origin }],
       });
 

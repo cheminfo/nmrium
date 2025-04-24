@@ -1,5 +1,5 @@
 import { xGetFromToIndex } from 'ml-spectra-processing';
-import type { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from 'nmrium-core';
 
 import { useChartData } from '../context/ChartContext.js';
 

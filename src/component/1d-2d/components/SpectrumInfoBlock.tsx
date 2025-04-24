@@ -1,5 +1,5 @@
 import dlv from 'dlv';
-import type { Spectrum } from 'nmr-load-save';
+import type { Spectrum } from 'nmrium-core';
 import type { CSSProperties } from 'react';
 import { useState } from 'react';
 import { BsArrowsMove } from 'react-icons/bs';

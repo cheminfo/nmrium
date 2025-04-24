@@ -1,5 +1,5 @@
 import debounce from 'lodash/debounce.js';
-import type { Spectrum2D } from 'nmr-load-save';
+import type { Spectrum2D } from 'nmrium-core';
 import { memo, useMemo, useRef } from 'react';
 
 import type { LevelSign } from '../../../data/data2d/Spectrum2D/contours.js';

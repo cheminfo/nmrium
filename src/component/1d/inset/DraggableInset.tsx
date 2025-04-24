@@ -8,7 +8,7 @@ import type {
   IntegralsViewState,
   PeaksViewState,
   RangesViewState,
-} from 'nmr-load-save';
+} from 'nmrium-core';
 import { useEffect, useState } from 'react';
 import { BsArrowsMove } from 'react-icons/bs';
 import { FaSitemap, FaTimes } from 'react-icons/fa';

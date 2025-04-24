@@ -1,6 +1,6 @@
 import type { Draft } from 'immer';
-import type { MatrixGenerationOptions } from 'nmr-load-save';
 import type { MatrixOptions } from 'nmr-processing';
+import type { MatrixGenerationOptions } from 'nmrium-core';
 
 import type { ZoomOptions } from '../../../EventsTrackers/BrushTracker.js';
 import type { FilterType } from '../../../utility/filterType.js';

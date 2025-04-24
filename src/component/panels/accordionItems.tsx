@@ -6,7 +6,7 @@ import {
   SvgNmrPeakPicking,
   SvgNmrRangePicking,
 } from 'cheminfo-font';
-import type { NMRiumPanelPreferences } from 'nmr-load-save';
+import type { NMRiumPanelPreferences } from 'nmrium-core';
 import type { CSSProperties, ReactElement } from 'react';
 import { FaDiceFour } from 'react-icons/fa';
 import type { AccordionItemProps } from 'react-science/ui';

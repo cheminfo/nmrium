@@ -1,5 +1,5 @@
-import type { ExternalAPIKeyType } from 'nmr-load-save';
-import { EXTERNAL_API_KEYS } from 'nmr-load-save';
+import { EXTERNAL_API_KEYS } from 'nmrium-core';
+import type { ExternalAPIKeyType } from 'nmrium-core';
 import { array, mixed, number, object, string } from 'yup';
 
 import { exportOptionValidationSchema } from '../../elements/export/utilities/exportOptionValidationSchema.js';

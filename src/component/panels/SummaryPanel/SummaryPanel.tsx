@@ -6,7 +6,7 @@ import type {
   Values as CorrelationValues,
 } from 'nmr-correlation';
 import { getLinkDelta, getLinkDim } from 'nmr-correlation';
-import type { Spectrum1D, Spectrum2D } from 'nmr-load-save';
+import type { Spectrum1D, Spectrum2D } from 'nmrium-core';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { FaFlask, FaSlidersH } from 'react-icons/fa';
 

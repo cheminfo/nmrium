@@ -1,4 +1,4 @@
-import type { Spectrum1D, Spectrum2D } from 'nmr-load-save';
+import type { Spectrum1D, Spectrum2D } from 'nmrium-core';
 
 export function convertSpectraArrayToObject<T extends Spectrum1D | Spectrum2D>(
   spectra: T[],

@@ -1,5 +1,5 @@
-import type { Spectrum1D } from 'nmr-load-save';
 import { mapRanges, updateRangesRelativeValues } from 'nmr-processing';
+import type { Spectrum1D } from 'nmrium-core';
 
 import type { SumParams } from '../SumManager.js';
 import { initSumOptions } from '../SumManager.js';

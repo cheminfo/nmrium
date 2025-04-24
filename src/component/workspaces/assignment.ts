@@ -1,4 +1,4 @@
-import type { InnerWorkspace } from 'nmr-load-save';
+import type { InnerWorkspace } from 'nmrium-core';
 
 export const assignment: InnerWorkspace = {
   label: 'NMR spectra assignment',

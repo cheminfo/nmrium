@@ -1,8 +1,8 @@
 import { Button, Classes } from '@blueprintjs/core';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import type { Spectrum1D } from 'nmr-load-save';
 import type { Peak1D } from 'nmr-processing';
 import { getShiftX } from 'nmr-processing';
+import type { Spectrum1D } from 'nmrium-core';
 import type { CSSProperties } from 'react';
 import { useCallback, useMemo, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';

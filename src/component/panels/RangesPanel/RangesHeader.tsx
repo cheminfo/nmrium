@@ -4,9 +4,9 @@ import {
   SvgNmrPeaksTopLabels,
 } from 'cheminfo-font';
 import fileSaver from 'file-saver';
-import type { RangesViewState } from 'nmr-load-save';
 import type { Info1D, Ranges } from 'nmr-processing';
 import { rangesToTSV } from 'nmr-processing';
+import type { RangesViewState } from 'nmrium-core';
 import {
   FaChartBar,
   FaCopy,

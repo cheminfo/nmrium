@@ -10,7 +10,7 @@ import {
   getLinkDim,
   removeLink,
 } from 'nmr-correlation';
-import type { ActiveSpectrum, Spectrum, Spectrum2D } from 'nmr-load-save';
+import type { ActiveSpectrum, Spectrum, Spectrum2D } from 'nmrium-core';
 
 import DefaultPathLengths from '../../../../data/constants/DefaultPathLengths.js';
 import {

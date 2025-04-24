@@ -1,6 +1,6 @@
 import { ButtonGroup, Colors } from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import type { NMRiumPanelPreferences } from 'nmr-load-save';
+import type { NMRiumPanelPreferences } from 'nmrium-core';
 import { ActivityBarItem, Toolbar } from 'react-science/ui';
 import useResizeObserver from 'use-resize-observer';
 

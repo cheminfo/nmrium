@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import type { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from 'nmrium-core';
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';

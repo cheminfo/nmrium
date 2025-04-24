@@ -1,5 +1,5 @@
-import type { Spectrum1D } from 'nmr-load-save';
 import type { Ranges as RangesProps } from 'nmr-processing';
+import type { Spectrum1D } from 'nmrium-core';
 import { memo } from 'react';
 
 import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';

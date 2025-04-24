@@ -1,5 +1,5 @@
-import type { Unit } from 'nmr-load-save';
-import { units as baseUnits } from 'nmr-load-save';
+import { units as baseUnits } from 'nmrium-core';
+import type { Unit } from 'nmrium-core';
 
 import { roundNumber } from '../../utility/roundNumber.js';
 

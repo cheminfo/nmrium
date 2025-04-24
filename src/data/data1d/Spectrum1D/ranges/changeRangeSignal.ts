@@ -1,4 +1,4 @@
-import type { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from 'nmrium-core';
 
 interface RangeSignalOption {
   rangeID: string;

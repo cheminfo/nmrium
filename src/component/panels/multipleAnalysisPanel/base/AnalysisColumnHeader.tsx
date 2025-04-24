@@ -1,7 +1,7 @@
 import {
   ANALYSIS_COLUMN_TYPES,
   ANALYSIS_COLUMN_VALUES_KEYS,
-} from 'nmr-load-save';
+} from 'nmrium-core';
 import type { CSSProperties, MouseEvent } from 'react';
 
 import { Select2 } from '../../../elements/Select2.js';

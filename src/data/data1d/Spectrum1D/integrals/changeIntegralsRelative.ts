@@ -1,5 +1,5 @@
-import type { Spectrum1D } from 'nmr-load-save';
 import type { Integral } from 'nmr-processing';
+import type { Spectrum1D } from 'nmrium-core';
 
 export function changeIntegralsRelative(
   spectrum: Spectrum1D,

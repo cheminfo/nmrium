@@ -1,6 +1,8 @@
 import { fileCollectionFromWebSource } from 'filelist-utils';
-import { read } from 'nmr-load-save';
+import type { NMRiumCore } from 'nmrium-core';
 import { useEffect, useState } from 'react';
+
+import { useCore } from '../../component/context/CoreContext.js';
 
 import type { BaseViewProps } from './BaseView.js';
 import BaseView from './BaseView.js';
@@ -11,7 +13,7 @@ interface ExternalLoadViewProps extends Omit<BaseViewProps, 'data'> {
   baseURL: string;
 }
 
-async function loadSpectrumFromURL(url) {
+async function loadSpectrumFromURL(core: NMRiumCore, url: string) {
   const { pathname: relativePath, origin: baseURL } = new URL(url);
   const source = {
     entries: [
@@ -23,7 +25,7 @@ async function loadSpectrumFromURL(url) {
   };
   const fileCollection = await fileCollectionFromWebSource(source, {});
 
-  const { nmriumState } = await read(fileCollection, {
+  const { nmriumState } = await core.read(fileCollection, {
     experimentalFeatures: true,
     onLoadProcessing: { autoProcessing: true },
   });
@@ -32,14 +34,15 @@ async function loadSpectrumFromURL(url) {
 
 export default function ExternalLoadView(props: ExternalLoadViewProps) {
   const [data, setData] = useState();
+  const core = useCore();
 
   const { file, baseURL, ...otherProps } = props;
 
   useEffect(() => {
-    void loadSpectrumFromURL(file).then((d: any) => {
+    void loadSpectrumFromURL(core, file).then((d: any) => {
       setData(d);
     });
-  }, [baseURL, file]);
+  }, [baseURL, core, file]);
 
   if (!data) {
     return <Loading />;

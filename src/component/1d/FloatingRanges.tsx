@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
-import type { BoundingBox } from 'nmr-load-save';
 import { checkMultiplicity } from 'nmr-processing';
 import type { Ranges } from 'nmr-processing';
+import type { BoundingBox } from 'nmrium-core';
 import { memo, useEffect, useState } from 'react';
 import { BsArrowsMove } from 'react-icons/bs';
 import { FaTimes } from 'react-icons/fa';

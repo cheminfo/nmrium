@@ -1,5 +1,5 @@
-import type { Spectrum } from 'nmr-load-save';
 import type { Ranges, Zones } from 'nmr-processing';
+import type { Spectrum } from 'nmrium-core';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import type { Assignments, Axis } from '../AssignmentsContext.js';

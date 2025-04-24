@@ -1,5 +1,5 @@
 import { Dialog, DialogFooter } from '@blueprintjs/core';
-import type { Spectrum } from 'nmr-load-save';
+import type { Spectrum } from 'nmrium-core';
 import { useRef } from 'react';
 
 import type { DataExportStage } from '../../data/SpectraManager.js';

@@ -1,5 +1,5 @@
 import type { Draft } from 'immer';
-import type { Workspace } from 'nmr-load-save';
+import type { Workspace } from 'nmrium-core';
 
 import type { PreferencesState } from '../preferencesReducer.js';
 

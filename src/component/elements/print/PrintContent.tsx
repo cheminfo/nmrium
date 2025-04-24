@@ -5,7 +5,7 @@ import {
   RadioGroup,
   Tag,
 } from '@blueprintjs/core';
-import type { PageSizeName, PrintPageOptions } from 'nmr-load-save';
+import type { PageSizeName, PrintPageOptions } from 'nmrium-core';
 import type { CSSProperties, ReactNode } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';

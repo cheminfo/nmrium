@@ -1,9 +1,9 @@
 import { fileCollectionFromFileList } from 'filelist-utils';
-import { read as readDropFiles } from 'nmr-load-save';
 import type { ParseResult } from 'papaparse';
 import { useCallback } from 'react';
 
 import { isMetaFile, parseMetaFile } from '../../data/parseMeta/index.js';
+import { useCore } from '../context/CoreContext.js';
 import { useDispatch } from '../context/DispatchContext.js';
 import { useLogger } from '../context/LoggerContext.js';
 import { usePreferences } from '../context/PreferencesContext.js';
@@ -18,6 +18,7 @@ export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
   const toaster = useToaster();
   const { logger } = useLogger();
   const experimentalFeatures = useCheckExperimentalFeature();
+  const core = useCore();
 
   return useCallback(
     (files: File[]) => {
@@ -41,7 +42,7 @@ export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
           }
           const { nmrLoaders: sourceSelector } = preferences.current;
           const { onLoadProcessing, spectraColors } = workspacePreferences;
-          const { nmriumState, containsNmrium } = await readDropFiles(
+          const { nmriumState, containsNmrium } = await core.read(
             fileCollection,
             {
               sourceSelector,
@@ -82,6 +83,7 @@ export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
         });
     },
     [
+      core,
       dispatch,
       dispatchPreferences,
       experimentalFeatures,

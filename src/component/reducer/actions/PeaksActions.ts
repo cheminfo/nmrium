@@ -1,14 +1,14 @@
 import type { Draft } from 'immer';
 import { original } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
+import type { Peak1D, OptionsXYAutoPeaksPicking } from 'nmr-processing';
+import { mapPeaks } from 'nmr-processing';
 import type {
   Spectrum1D,
   PeaksViewState,
   ViewState,
   RangesViewState,
-} from 'nmr-load-save';
-import type { Peak1D, OptionsXYAutoPeaksPicking } from 'nmr-processing';
-import { mapPeaks } from 'nmr-processing';
+} from 'nmrium-core';
 
 import {
   getShiftX,

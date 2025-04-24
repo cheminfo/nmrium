@@ -11,7 +11,7 @@ import type {
   AdvanceExportSettings,
   BasicExportSettings,
   ExportPreferences,
-} from 'nmr-load-save';
+} from 'nmrium-core';
 import { useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 

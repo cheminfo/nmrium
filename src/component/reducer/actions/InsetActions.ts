@@ -4,7 +4,7 @@ import type {
   IntegralsViewState,
   PeaksViewState,
   RangesViewState,
-} from 'nmr-load-save';
+} from 'nmrium-core';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
 import { insetMargin } from '../../1d/inset/InsetProvider.js';

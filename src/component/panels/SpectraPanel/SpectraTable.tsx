@@ -8,7 +8,7 @@ import type {
   SpectraTableColumn,
   Spectrum,
   StateMolecule,
-} from 'nmr-load-save';
+} from 'nmrium-core';
 import type { CSSProperties } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import { FaCopy, FaFileExport, FaRegTrashAlt } from 'react-icons/fa';

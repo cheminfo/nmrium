@@ -1,4 +1,4 @@
-import type { Spectrum } from 'nmr-load-save';
+import type { Spectrum } from 'nmrium-core';
 
 import nucleusToString from './nucleusToString.js';
 

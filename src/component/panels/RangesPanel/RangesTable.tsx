@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
-import type { WorkSpacePanelPreferences } from 'nmr-load-save';
 import type { Info1D } from 'nmr-processing';
+import type { WorkSpacePanelPreferences } from 'nmrium-core';
 import { FaLink } from 'react-icons/fa';
 
 import { withDialog } from '../../elements/DialogManager.js';

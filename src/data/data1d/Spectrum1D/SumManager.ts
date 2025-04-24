@@ -1,7 +1,7 @@
 import type { Draft } from 'immer';
 import { MF } from 'mf-parser';
-import type { Spectrum1D } from 'nmr-load-save';
 import type { Integrals, Ranges, SumOptions } from 'nmr-processing';
+import type { Spectrum1D } from 'nmrium-core';
 
 import type { State } from '../../../component/reducer/Reducer.js';
 import type { StateMoleculeExtended } from '../../molecules/Molecule.js';

@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import type { PanelsPreferences, Workspace } from 'nmr-load-save';
+import type { PanelsPreferences, Workspace } from 'nmrium-core';
 import {
   forwardRef,
   memo,

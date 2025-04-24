@@ -1,7 +1,7 @@
 import { Button, DialogFooter, Tab, Tabs } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
-import type { SumOptions } from 'nmr-load-save';
+import type { SumOptions } from 'nmrium-core';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';

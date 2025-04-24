@@ -1,4 +1,4 @@
-import type { IntegralsViewState } from 'nmr-load-save';
+import type { IntegralsViewState } from 'nmrium-core';
 
 import { useInsetOptions } from '../1d/inset/InsetProvider.js';
 import { useChartData } from '../context/ChartContext.js';

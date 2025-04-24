@@ -5,7 +5,7 @@ import type {
   Spectrum2D,
   SpectrumOneDimensionColor,
   SpectrumTwoDimensionsColor,
-} from 'nmr-load-save';
+} from 'nmrium-core';
 
 type ReturnColor<ColorType> = ColorType extends SpectrumOneDimensionColor
   ? string

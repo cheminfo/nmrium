@@ -1,6 +1,6 @@
 import { SvgNmrIntegrate } from 'cheminfo-font';
-import type { Spectrum1D } from 'nmr-load-save';
 import type { Info1D, Integrals } from 'nmr-processing';
+import type { Spectrum1D } from 'nmrium-core';
 import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { ImLink } from 'react-icons/im';
 

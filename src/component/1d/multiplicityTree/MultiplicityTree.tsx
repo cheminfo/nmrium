@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import type { Spectrum1D } from 'nmr-load-save';
 import type { Range } from 'nmr-processing';
+import type { Spectrum1D } from 'nmrium-core';
 import { useRef } from 'react';
 import { LuLink, LuUnlink } from 'react-icons/lu';
 

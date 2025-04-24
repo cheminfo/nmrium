@@ -1,5 +1,5 @@
 import type { Draft } from 'immer';
-import type { PanelPreferencesType } from 'nmr-load-save';
+import type { PanelPreferencesType } from 'nmrium-core';
 
 import type {
   PreferencesState,

@@ -1,5 +1,5 @@
-import type { Spectrum1D, SpectrumOneDimensionColor } from 'nmr-load-save';
 import { Filters1DManager } from 'nmr-processing';
+import type { Spectrum1D, SpectrumOneDimensionColor } from 'nmrium-core';
 
 import type { UsedColors } from '../../../types/UsedColors.js';
 import { initiateFilters } from '../../initiateFilters.js';

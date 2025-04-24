@@ -1,5 +1,5 @@
-import type { Spectrum2D } from 'nmr-load-save';
 import { xyzAutoZonesPicking } from 'nmr-processing';
+import type { Spectrum2D } from 'nmrium-core';
 
 export interface DetectionZonesOptions {
   selectedZone: {

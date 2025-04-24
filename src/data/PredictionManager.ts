@@ -1,6 +1,5 @@
 import type { Logger } from 'cheminfo-types';
 import { xMinMaxValues } from 'ml-spectra-processing';
-import type { Spectrum } from 'nmr-load-save';
 import type {
   Predicted,
   Prediction1D,
@@ -17,6 +16,7 @@ import {
   signalsToRanges,
   signalsToXY,
 } from 'nmr-processing';
+import type { Spectrum } from 'nmrium-core';
 import OCL from 'openchemlib/full';
 
 import { DATUM_KIND } from './constants/signalsKinds.js';

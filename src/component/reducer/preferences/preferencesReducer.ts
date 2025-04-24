@@ -1,5 +1,6 @@
 import type { Draft } from 'immer';
 import { produce } from 'immer';
+import { CURRENT_EXPORT_VERSION, migrateSettings } from 'nmrium-core';
 import type {
   ExportPreferences,
   ExportSettings,
@@ -7,8 +8,7 @@ import type {
   PrintPageOptions,
   Workspace,
   WorkSpaceSource,
-} from 'nmr-load-save';
-import { CURRENT_EXPORT_VERSION, migrateSettings } from 'nmr-load-save';
+} from 'nmrium-core';
 import type { Reducer } from 'react';
 import type { SplitPaneSize } from 'react-science/ui';
 

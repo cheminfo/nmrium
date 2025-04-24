@@ -1,4 +1,4 @@
-import type { Color2D, SpectrumTwoDimensionsColor } from 'nmr-load-save';
+import type { Color2D, SpectrumTwoDimensionsColor } from 'nmrium-core';
 
 import type { UsedColors } from '../../../types/UsedColors.js';
 import { adjustAlpha, generateColor } from '../../utilities/generateColor.js';

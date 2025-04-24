@@ -1,4 +1,4 @@
-import type { Spectrum2D } from 'nmr-load-save';
+import type { Spectrum2D } from 'nmrium-core';
 import { memo, useRef } from 'react';
 import { useLinearPrimaryTicks } from 'react-d3-utils';
 

@@ -1,4 +1,4 @@
-import type { NMRiumPanelPreferences } from 'nmr-load-save';
+import type { NMRiumPanelPreferences } from 'nmrium-core';
 
 import { usePreferences } from '../../context/PreferencesContext.js';
 import { usePanelOpenState } from '../Panels.js';

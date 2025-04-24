@@ -1,4 +1,4 @@
-import type { RangesViewState } from 'nmr-load-save';
+import type { RangesViewState } from 'nmrium-core';
 
 import { useInsetOptions } from '../1d/inset/InsetProvider.js';
 import { useChartData } from '../context/ChartContext.js';

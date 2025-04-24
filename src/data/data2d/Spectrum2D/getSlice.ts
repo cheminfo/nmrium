@@ -1,6 +1,6 @@
 import type { NmrData1D, NmrData2D } from 'cheminfo-types';
 import { xSequentialFillFromTo } from 'ml-spectra-processing';
-import type { Spectrum1D, Spectrum2D } from 'nmr-load-save';
+import type { Spectrum1D, Spectrum2D } from 'nmrium-core';
 
 import type { TraceDirection } from '../../../component/reducer/Reducer.js';
 import { initiateDatum1D } from '../../data1d/Spectrum1D/index.js';

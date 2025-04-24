@@ -1,4 +1,4 @@
-import type { Zones2DNucleusPreferences } from 'nmr-load-save';
+import type { Zones2DNucleusPreferences } from 'nmrium-core';
 import type { CSSProperties, MouseEvent } from 'react';
 
 import type { Axis } from '../../assignment/AssignmentsContext.js';

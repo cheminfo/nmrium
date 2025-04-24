@@ -1,9 +1,9 @@
 import styled from '@emotion/styled';
+import type { Info2D } from 'nmr-processing';
 import type {
   Zones1DNucleusPreferences,
   Zones2DNucleusPreferences,
-} from 'nmr-load-save';
-import type { Info2D } from 'nmr-processing';
+} from 'nmrium-core';
 import type { ReactNode } from 'react';
 import { FaLink } from 'react-icons/fa';
 

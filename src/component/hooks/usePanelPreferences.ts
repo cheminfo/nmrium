@@ -5,7 +5,7 @@ import type {
   PanelsPreferences,
   Workspace,
   WorkSpacePanelPreferences,
-} from 'nmr-load-save';
+} from 'nmrium-core';
 import { useMemo } from 'react';
 
 import { getDefaultPredictionOptions } from '../../data/PredictionManager.js';

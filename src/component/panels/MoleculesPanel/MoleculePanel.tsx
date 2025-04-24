@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import type { SerializedStyles } from '@emotion/react';
 import { css } from '@emotion/react';
-import type { Spectrum1D, Spectrum2D } from 'nmr-load-save';
 import type { Ranges, Zones } from 'nmr-processing';
+import type { Spectrum1D, Spectrum2D } from 'nmrium-core';
 import OCL from 'openchemlib/full';
 import { memo, useEffect, useState } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';

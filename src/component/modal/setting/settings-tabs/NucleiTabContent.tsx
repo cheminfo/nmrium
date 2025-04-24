@@ -1,5 +1,5 @@
 import { Classes } from '@blueprintjs/core';
-import type { NucleiPreferences } from 'nmr-load-save';
+import type { NucleiPreferences } from 'nmrium-core';
 import { useCallback, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';

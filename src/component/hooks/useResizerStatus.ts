@@ -1,4 +1,4 @@
-import type { NMRiumToolBarPreferences } from 'nmr-load-save';
+import type { NMRiumToolBarPreferences } from 'nmrium-core';
 
 import { useChartData } from '../context/ChartContext.js';
 import { useKeyModifiers } from '../context/KeyModifierContext.js';

@@ -5,7 +5,7 @@ import type {
   JpathTableColumn,
   Spectrum,
   WorkSpacePanelPreferences,
-} from 'nmr-load-save';
+} from 'nmrium-core';
 import { useMemo, useRef, useState } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 import { FaCopy, FaFileExport, FaFileImage } from 'react-icons/fa';

@@ -3,7 +3,7 @@ import type { SerializedStyles } from '@emotion/react';
 import dlv from 'dlv';
 import fileSaver from 'file-saver';
 import JSZip from 'jszip';
-import type { JpathTableColumn, SpectraTableColumn } from 'nmr-load-save';
+import type { JpathTableColumn, SpectraTableColumn } from 'nmrium-core';
 
 export const browserNotSupportedErrorToast: ToastProps = {
   message:

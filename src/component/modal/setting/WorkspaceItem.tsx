@@ -1,4 +1,4 @@
-import type { WorkSpaceSource } from 'nmr-load-save';
+import type { WorkSpaceSource } from 'nmrium-core';
 import type { CSSProperties } from 'react';
 import { useState } from 'react';
 import { Button } from 'react-science/ui';

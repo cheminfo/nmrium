@@ -1,4 +1,4 @@
-import type { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from 'nmrium-core';
 
 import { isFt2DSpectrum } from '../../../data/data2d/Spectrum2D/isSpectrum2D.js';
 import { ClipPathContainer } from '../../1d-2d/components/ClipPathContainer.js';

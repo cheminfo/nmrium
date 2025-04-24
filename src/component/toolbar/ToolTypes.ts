@@ -1,6 +1,6 @@
-import type { NMRiumToolBarPreferences } from 'nmr-load-save';
 import type { Info1D, Info2D } from 'nmr-processing';
 import { Filters1D, Filters2D } from 'nmr-processing';
+import type { NMRiumToolBarPreferences } from 'nmrium-core';
 
 import type { DisplayerMode } from '../reducer/Reducer.js';
 

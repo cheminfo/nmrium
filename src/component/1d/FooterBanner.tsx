@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import type { ActiveSpectrum, Spectrum1D } from 'nmr-load-save';
+import type { ActiveSpectrum, Spectrum1D } from 'nmrium-core';
 import { memo } from 'react';
 import { BsCursor } from 'react-icons/bs';
 import { IoPulseSharp } from 'react-icons/io5';

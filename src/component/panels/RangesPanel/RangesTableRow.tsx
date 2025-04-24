@@ -1,5 +1,5 @@
-import type { WorkSpacePanelPreferences } from 'nmr-load-save';
 import type { Info1D } from 'nmr-processing';
+import type { WorkSpacePanelPreferences } from 'nmrium-core';
 import type { CSSProperties, MouseEvent } from 'react';
 import { useCallback, useMemo } from 'react';
 

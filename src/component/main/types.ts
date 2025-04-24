@@ -4,7 +4,7 @@ import type {
   NmriumState as NMRiumState,
   Spectrum,
   WorkspacePreferences as NMRiumPreferences,
-} from 'nmr-load-save';
+} from 'nmrium-core';
 
 type DeepPartial<T> = {
   [P in keyof T]?: DeepPartial<T[P]>;

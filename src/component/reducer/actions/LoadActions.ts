@@ -9,7 +9,7 @@ import type {
   SpectraColors,
   Spectrum,
   ViewState,
-} from 'nmr-load-save';
+} from 'nmrium-core';
 import type { ParseResult } from 'papaparse';
 
 import { initiateDatum1D } from '../../../data/data1d/Spectrum1D/index.js';

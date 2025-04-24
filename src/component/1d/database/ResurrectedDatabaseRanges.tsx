@@ -1,6 +1,6 @@
 import { extent } from 'd3';
-import type { Spectrum1D } from 'nmr-load-save';
 import { rangesToXY } from 'nmr-processing';
+import type { Spectrum1D } from 'nmrium-core';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';

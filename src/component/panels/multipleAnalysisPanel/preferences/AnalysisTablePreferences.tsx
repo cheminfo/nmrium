@@ -1,5 +1,5 @@
 import { Classes } from '@blueprintjs/core';
-import { ANALYSIS_COLUMN_TYPES } from 'nmr-load-save';
+import { ANALYSIS_COLUMN_TYPES } from 'nmrium-core';
 import { useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';

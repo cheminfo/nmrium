@@ -1,8 +1,10 @@
+import { init } from 'nmrium-core-plugins';
 import type { ForwardedRef } from 'react';
-import { useEffect, useReducer, useRef } from 'react';
+import { useMemo, useEffect, useReducer, useRef } from 'react';
 import { useFullscreen } from 'react-science/ui';
 
 import { AssignmentProvider } from '../assignment/AssignmentProvider.js';
+import { CoreProvider } from '../context/CoreContext.js';
 import { GlobalProvider } from '../context/GlobalContext.js';
 import { KeyModifiersProvider } from '../context/KeyModifierContext.js';
 import { LoggerProvider } from '../context/LoggerContext.js';
@@ -33,21 +35,30 @@ type InnerNMRiumProps = Omit<NMRiumProps, 'onError'> & {
   apiRef: ForwardedRef<NMRiumRefAPI>;
 };
 
-export function InnerNMRium({
-  data: nmriumData,
-  workspace,
-  customWorkspaces,
-  preferences,
-  getSpinner = defaultGetSpinner,
-  onChange,
-  emptyText,
-  apiRef,
-}: InnerNMRiumProps) {
+export function InnerNMRium(props: InnerNMRiumProps) {
+  const {
+    data: nmriumData,
+    workspace,
+    customWorkspaces,
+    preferences,
+    getSpinner = defaultGetSpinner,
+    onChange,
+    emptyText,
+    apiRef,
+    core,
+  } = props;
+
   const rootRef = useRef<HTMLDivElement>(null);
   const elementsWrapperRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<HTMLDivElement>(null);
   const mainDivRef = useRef<HTMLDivElement>(null);
   const { isFullScreen } = useFullscreen();
+
+  const finalCore = useMemo(() => {
+    if (!core) return init();
+
+    return core;
+  }, [core]);
 
   const [preferencesState, dispatchPreferences] = useReducer(
     preferencesReducer,
@@ -79,51 +90,53 @@ export function InnerNMRium({
       style={{ height: '100%', position: 'relative' }}
       translate="no"
     >
-      <ExportManagerProvider>
-        <GlobalProvider
-          value={{
-            rootRef: rootRef.current,
-            elementsWrapperRef: elementsWrapperRef.current,
-            viewerRef: viewerRef.current,
-          }}
-        >
-          <PreferencesProvider value={preferencesState}>
-            <LoggerProvider>
-              <KeyModifiersProvider>
-                <ToasterProvider>
-                  <SortSpectraProvider>
-                    <NMRiumStateProvider
-                      onChange={onChange}
-                      nmriumData={nmriumData}
-                    >
-                      <TopicMoleculeProvider>
-                        <DialogProvider>
-                          <AlertProvider>
-                            <HighlightProvider>
-                              <AssignmentProvider>
-                                <SpinnerProvider value={getSpinner}>
-                                  <InnerNMRiumContents
-                                    emptyText={emptyText}
-                                    mainDivRef={mainDivRef}
-                                    elementsWrapperRef={elementsWrapperRef}
-                                    rootRef={rootRef}
-                                    viewerRef={viewerRef}
-                                    apiRef={apiRef}
-                                  />
-                                </SpinnerProvider>
-                              </AssignmentProvider>
-                            </HighlightProvider>
-                          </AlertProvider>
-                        </DialogProvider>
-                      </TopicMoleculeProvider>
-                    </NMRiumStateProvider>
-                  </SortSpectraProvider>
-                </ToasterProvider>
-              </KeyModifiersProvider>
-            </LoggerProvider>
-          </PreferencesProvider>
-        </GlobalProvider>
-      </ExportManagerProvider>
+      <CoreProvider value={finalCore}>
+        <ExportManagerProvider>
+          <GlobalProvider
+            value={{
+              rootRef: rootRef.current,
+              elementsWrapperRef: elementsWrapperRef.current,
+              viewerRef: viewerRef.current,
+            }}
+          >
+            <PreferencesProvider value={preferencesState}>
+              <LoggerProvider>
+                <KeyModifiersProvider>
+                  <ToasterProvider>
+                    <SortSpectraProvider>
+                      <NMRiumStateProvider
+                        onChange={onChange}
+                        nmriumData={nmriumData}
+                      >
+                        <TopicMoleculeProvider>
+                          <DialogProvider>
+                            <AlertProvider>
+                              <HighlightProvider>
+                                <AssignmentProvider>
+                                  <SpinnerProvider value={getSpinner}>
+                                    <InnerNMRiumContents
+                                      emptyText={emptyText}
+                                      mainDivRef={mainDivRef}
+                                      elementsWrapperRef={elementsWrapperRef}
+                                      rootRef={rootRef}
+                                      viewerRef={viewerRef}
+                                      apiRef={apiRef}
+                                    />
+                                  </SpinnerProvider>
+                                </AssignmentProvider>
+                              </HighlightProvider>
+                            </AlertProvider>
+                          </DialogProvider>
+                        </TopicMoleculeProvider>
+                      </NMRiumStateProvider>
+                    </SortSpectraProvider>
+                  </ToasterProvider>
+                </KeyModifiersProvider>
+              </LoggerProvider>
+            </PreferencesProvider>
+          </GlobalProvider>
+        </ExportManagerProvider>
+      </CoreProvider>
     </div>
   );
 }

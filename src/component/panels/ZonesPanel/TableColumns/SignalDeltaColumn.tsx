@@ -1,4 +1,4 @@
-import type { Zones1DNucleusPreferences } from 'nmr-load-save';
+import type { Zones1DNucleusPreferences } from 'nmrium-core';
 
 import { useDispatch } from '../../../context/DispatchContext.js';
 import { EditableColumn } from '../../../elements/EditableColumn.js';

@@ -2,7 +2,7 @@ import type {
   IntegralsViewState,
   PeaksViewState,
   RangesViewState,
-} from 'nmr-load-save';
+} from 'nmrium-core';
 
 import { useChartData } from '../../context/ChartContext.js';
 import type { HistoryItem } from '../../reducer/helper/ZoomHistoryManager.js';

@@ -1,4 +1,4 @@
-import type { Layout, PageSizeName } from 'nmr-load-save';
+import type { Layout, PageSizeName } from 'nmrium-core';
 
 interface PageSize {
   name: PageSizeName;

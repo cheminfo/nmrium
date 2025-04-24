@@ -1,5 +1,5 @@
-import type { Spectrum1D } from 'nmr-load-save';
 import type { Range } from 'nmr-processing';
+import type { Spectrum1D } from 'nmrium-core';
 
 export interface ChangeRangeRelativeValueProps {
   id: string; // id of the selected range

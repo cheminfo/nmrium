@@ -1,4 +1,4 @@
-import type { Spectrum } from 'nmr-load-save';
+import type { Spectrum } from 'nmrium-core';
 import { useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext.js';

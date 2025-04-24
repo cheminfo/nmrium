@@ -1,5 +1,5 @@
-import type { Spectrum1D, Spectrum2D } from 'nmr-load-save';
 import { Filters1D } from 'nmr-processing';
+import type { Spectrum1D, Spectrum2D } from 'nmrium-core';
 import type { ReactNode } from 'react';
 
 import { getSlice } from '../../../../data/data2d/Spectrum2D/index.js';

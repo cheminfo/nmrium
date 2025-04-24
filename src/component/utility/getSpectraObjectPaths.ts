@@ -1,4 +1,4 @@
-import type { Spectrum } from 'nmr-load-save';
+import type { Spectrum } from 'nmrium-core';
 
 export function getSpectraObjectPaths(
   spectra: Spectrum[],

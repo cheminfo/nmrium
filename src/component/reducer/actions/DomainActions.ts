@@ -7,7 +7,7 @@ import type {
   Spectrum,
   Spectrum1D,
   Spectrum2D,
-} from 'nmr-load-save';
+} from 'nmrium-core';
 
 import { get1DDataXY } from '../../../data/data1d/Spectrum1D/get1DDataXY.js';
 import {

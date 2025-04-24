@@ -7,7 +7,7 @@ import type {
   SpectraPreferences,
   Zones1DNucleusPreferences,
   Zones2DNucleusPreferences,
-} from 'nmr-load-save';
+} from 'nmrium-core';
 
 import { is2DNucleus } from '../../utility/nucleusToString.js';
 
