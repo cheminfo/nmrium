@@ -12,7 +12,10 @@ import type {
   OnClick,
   OnZoom,
 } from '../EventsTrackers/BrushTracker.js';
-import { BrushTracker } from '../EventsTrackers/BrushTracker.js';
+import {
+  BrushTracker,
+  detectBrushing,
+} from '../EventsTrackers/BrushTracker.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useDispatch } from '../context/DispatchContext.js';
 import { useMapKeyModifiers } from '../context/KeyModifierContext.js';
@@ -62,7 +65,10 @@ export function BrushTracker1D({ children }) {
     view: {
       spectra: { activeTab },
     },
+    width,
+    height,
   } = state;
+
   const brushStartRef = useRef<number | null>(null);
   const spectrum = useSpectrum();
   const dispatch = useDispatch();
@@ -265,7 +271,13 @@ export function BrushTracker1D({ children }) {
 
         if (executeDefaultAction && selectedTool != null) {
           if (enableDefaultBrush) {
-            dispatch({ type: 'BRUSH_END', payload: brushDataInPPM });
+            dispatch({
+              type: 'BRUSH_END',
+              payload: {
+                ...brushDataInPPM,
+                axis: detectBrushing(brushData, width, height).type,
+              },
+            });
           }
 
           propagateEvent();
@@ -273,6 +285,7 @@ export function BrushTracker1D({ children }) {
       }
     },
     [
+      convertToPPM,
       getModifiersKey,
       selectedTool,
       primaryKeyIdentifier,
@@ -282,7 +295,8 @@ export function BrushTracker1D({ children }) {
       dispatchPreferences,
       activeTab,
       openAnalysisModal,
-      convertToPPM,
+      width,
+      height,
     ],
   );
   const handleInsetBrushEnd = useCallback<OnBrush>(
@@ -311,7 +325,7 @@ export function BrushTracker1D({ children }) {
   const handleOnDoubleClick = useCallback(() => {
     dispatch({
       type: 'FULL_ZOOM_OUT',
-      payload: { zoomType: ZOOM_TYPES.STEP_HORIZONTAL },
+      payload: { zoomType: ZOOM_TYPES.BIDIRECTIONAL },
     });
   }, [dispatch]);
 
@@ -322,7 +336,7 @@ export function BrushTracker1D({ children }) {
 
     dispatch({
       type: 'FULL_INSET_ZOOM_OUT',
-      payload: { zoomType: ZOOM_TYPES.STEP_HORIZONTAL, insetKey: inset.id },
+      payload: { zoomType: ZOOM_TYPES.BIDIRECTIONAL, insetKey: inset.id },
     });
   }, [dispatch, inset]);
 

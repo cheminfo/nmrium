@@ -69,34 +69,40 @@ export function addToBrushHistory(
   options: { axis?: BrushAxis | null; xDomain: number[]; yDomain: number[] },
 ) {
   const { displayerMode } = draft;
-  const { axis, xDomain, yDomain } = options;
+  const { axis } = options;
+  let { xDomain, yDomain } = options;
+
   const brushHistory = zoomHistoryManager(
     draft.zoom.history,
 
     draft.view.spectra.activeTab,
   );
-  if (displayerMode === '2D') {
-    switch (axis) {
-      case 'XY':
-        draft.xDomain = xDomain;
-        draft.yDomain = yDomain;
-        break;
-      case 'X':
-        draft.xDomain = xDomain;
-        break;
-      case 'Y':
-        draft.yDomain = yDomain;
-        break;
-      default:
-        break;
+  switch (axis) {
+    case 'XY':
+      draft.xDomain = xDomain;
+      draft.yDomain = yDomain;
+      break;
+    case 'X':
+      draft.xDomain = xDomain;
+      yDomain = draft.yDomain;
+      break;
+    case 'Y':
+      draft.yDomain = yDomain;
+      xDomain = draft.xDomain;
+
+      break;
+    default:
+      break;
+  }
+
+  if (displayerMode === '1D' && axis && ['XY', 'Y'].includes(axis)) {
+    const ids = Object.keys(draft.yDomains);
+    for (const id of ids) {
+      draft.yDomains[id] = yDomain;
     }
-    if (brushHistory) {
-      brushHistory.push({ xDomain, yDomain });
-    }
-  } else {
-    draft.xDomain = xDomain;
-    if (brushHistory) {
-      brushHistory.push({ xDomain, yDomain });
-    }
+  }
+
+  if (brushHistory) {
+    brushHistory.push({ xDomain, yDomain });
   }
 }

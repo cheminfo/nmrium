@@ -9,7 +9,7 @@ import { getActiveSpectrum } from './getActiveSpectrum.js';
 export const ZOOM_TYPES = {
   HORIZONTAL: 'HORIZONTAL',
   VERTICAL: 'VERTICAL',
-  STEP_HORIZONTAL: 'STEP_HORIZONTAL',
+  BIDIRECTIONAL: 'BIDIRECTIONAL',
   FULL: 'FULL',
 } as const;
 
@@ -68,16 +68,11 @@ function setZoom(
         const maxPoint = Math.max(Math.abs(max), Math.abs(min));
         const scalePoint = maxPoint === Math.abs(max) ? 0 : min;
         const t = zoomIdentity
-          .translate(
-            0,
-            Math.sign(scalePoint) >= 0
-              ? _scale(scalePoint)
-              : _scale(scalePoint),
-          )
+          .translate(0, _scale(scalePoint))
           .scale(scale)
           .translate(0, -_scale(0));
         const newYDomain = t.rescaleY(_scale).domain();
-        return [id, newYDomain];
+        return [id, [0, newYDomain[1]]];
       }),
     );
   } else {
@@ -95,7 +90,7 @@ function setZoom(
 
       draft.yDomains = {
         ...yDomains,
-        [spectrumId]: yDomain,
+        [spectrumId]: [0, yDomain[1]],
       };
     }
   }

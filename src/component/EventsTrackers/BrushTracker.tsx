@@ -424,7 +424,7 @@ export function detectBrushing(
   coordination: BrushCoordination,
   width: number,
   height: number,
-  threshold = 0.03,
+  threshold = 0.02,
 ): DetectBrushingResult {
   const { startX, endX, startY, endY } = coordination;
   const xDiff = Math.abs(endX - startX);

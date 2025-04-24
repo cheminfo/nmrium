@@ -289,11 +289,16 @@ function handleToggleRealImaginaryVisibility(draft: Draft<State>) {
 
 function handleBrushEnd(draft: Draft<State>, action: BrushEndAction) {
   const options = action.payload;
+  const { displayerMode } = draft;
 
   const startX = Math.min(options.startX, options.endX);
   const endX = Math.max(options.startX, options.endX);
-  const startY = Math.min(options.startY, options.endY);
+  let startY = Math.min(options.startY, options.endY);
   const endY = Math.max(options.startY, options.endY);
+
+  if (displayerMode === '1D') {
+    startY = Math.max(0, startY);
+  }
 
   addToBrushHistory(draft, {
     axis: options.axis,
@@ -450,10 +455,14 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
       const keys = !activeSpectra
         ? Object.keys(yDomains)
         : activeSpectra.map(({ id }) => id);
-      for (const key of keys) {
-        const domain = yDomains[key];
-        yDomains[key] = wheelZoom(options, domain);
-      }
+
+      const yArray = keys.flatMap((key) => {
+        const updatedDomain = wheelZoom(options, yDomains[key]);
+        yDomains[key] = updatedDomain;
+        return updatedDomain;
+      });
+
+      draft.yDomain = [Math.min(...yArray), Math.max(...yArray)];
 
       break;
     }
@@ -483,16 +492,22 @@ function zoomOut(draft: Draft<State>, action: ZoomOutAction) {
         case ZOOM_TYPES.VERTICAL:
           setZoom(draft, { scale: 0.8 });
           break;
-        case ZOOM_TYPES.STEP_HORIZONTAL: {
+        case ZOOM_TYPES.BIDIRECTIONAL: {
           const zoomValue = zoomHistory.pop();
           if (zoomValue) {
             draft.xDomain = zoomValue.xDomain;
+            draft.yDomain = zoomValue.yDomain;
+            const ids = Object.keys(draft.yDomains);
+            for (const id of ids) {
+              draft.yDomains[id] = zoomValue.yDomain;
+            }
           } else {
             draft.xDomain = xDomain;
             setZoom(draft, { scale: 0.8 });
           }
           break;
         }
+
         default: {
           draft.xDomain = xDomain;
           setZoom(draft, { scale: 0.8 });
