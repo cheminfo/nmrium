@@ -419,18 +419,57 @@ interface DetectBrushingResult extends BrushCoordination {
   scaleX: number;
   scaleY: number;
 }
+interface DetectBrushingThreshold {
+  /** Width in pixels */
+  width: number;
+  /** Height in pixels */
+  height: number;
+  /**
+   * Threshold as a percentage of width and height (value between 0 and 1).
+   * @default 0.02
+   */
+  threshold?: number;
+  thresholdFormat: 'relative';
+}
+interface DetectBrushingThresholdSize {
+  /** Width in pixels */
+  width: number;
+  /** Height in pixels */
+  height: number;
+  /**
+   * Threshold size in pixels.
+   * @default 80
+   */
+  thresholdSize?: number;
+  thresholdFormat: 'fixed';
+}
+type DetectBrushingOptions =
+  | DetectBrushingThreshold
+  | DetectBrushingThresholdSize;
 
 export function detectBrushing(
   coordination: BrushCoordination,
-  width: number,
-  height: number,
-  threshold = 0.02,
+  options: DetectBrushingOptions,
 ): DetectBrushingResult {
+  let xThreshold;
+  let yThreshold;
+  const { width, height, thresholdFormat } = options;
   const { startX, endX, startY, endY } = coordination;
   const xDiff = Math.abs(endX - startX);
   const yDiff = Math.abs(endY - startY);
-  const xThreshold = width * threshold;
-  const yThreshold = height * threshold;
+
+  if (thresholdFormat === 'relative') {
+    const { threshold = 0.02 } = options;
+    xThreshold = width * threshold;
+    yThreshold = height * threshold;
+  }
+
+  if (thresholdFormat === 'fixed') {
+    const { thresholdSize = 80 } = options;
+    xThreshold = thresholdSize;
+    yThreshold = thresholdSize;
+  }
+
   const scaleY = (endY - startY) / height;
   const scaleX = (endX - startX) / width;
 

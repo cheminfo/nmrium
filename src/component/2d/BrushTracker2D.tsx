@@ -129,7 +129,11 @@ export function BrushTracker2D({ children }) {
             const trackID = getLayoutID(DIMENSION, brushData);
 
             const axisMap: Record<Layout, BrushAxis> = {
-              MAIN: detectBrushing(brushData, width, height).type,
+              MAIN: detectBrushing(brushData, {
+                width,
+                height,
+                thresholdFormat: 'fixed',
+              }).type,
               LEFT: 'Y',
               TOP: 'X',
             };

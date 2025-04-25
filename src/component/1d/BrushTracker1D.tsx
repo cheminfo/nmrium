@@ -275,7 +275,11 @@ export function BrushTracker1D({ children }) {
               type: 'BRUSH_END',
               payload: {
                 ...brushDataInPPM,
-                axis: detectBrushing(brushData, width, height).type,
+                axis: detectBrushing(brushData, {
+                  width,
+                  height,
+                  thresholdFormat: 'fixed',
+                }).type,
               },
             });
           }

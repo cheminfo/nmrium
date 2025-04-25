@@ -120,8 +120,7 @@ export default function BrushXY(props: BrushXYProps) {
         : endY;
   const brush = detectBrushing(
     { startX, startY, endX, endY },
-    finalWidth,
-    finalHeight,
+    { width: finalWidth, height: finalHeight, thresholdFormat: 'fixed' },
   );
 
   const scaleX = axis === 'X' || axis === 'XY' ? brush.scaleX : 1;
