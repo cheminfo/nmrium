@@ -4,7 +4,10 @@ import {
   detectBrushing,
   useBrushTracker,
 } from '../../EventsTrackers/BrushTracker.js';
-import type { BrushAxis } from '../../EventsTrackers/BrushTracker.js';
+import type {
+  BrushAxis,
+  BrushDetectionThresholdAxis,
+} from '../../EventsTrackers/BrushTracker.js';
 import { useChartData } from '../../context/ChartContext.js';
 import type { Margin } from '../../reducer/Reducer.js';
 import { options } from '../../toolbar/ToolTypes.js';
@@ -55,6 +58,7 @@ const defaultDimensionBorder: {
 
 interface BrushXYProps {
   axis: BrushAxis;
+  thresholdAxis?: BrushDetectionThresholdAxis;
   dimensionBorder?: {
     startX: number;
     startY: number;
@@ -73,6 +77,7 @@ export default function BrushXY(props: BrushXYProps) {
     width: widthProps,
     height: heightProps,
     margin: externalMargin,
+    thresholdAxis = 'both',
   } = props;
   const {
     width,
@@ -120,7 +125,12 @@ export default function BrushXY(props: BrushXYProps) {
         : endY;
   const brush = detectBrushing(
     { startX, startY, endX, endY },
-    { width: finalWidth, height: finalHeight, thresholdFormat: 'fixed' },
+    {
+      width: finalWidth,
+      height: finalHeight,
+      thresholdFormat: 'fixed',
+      thresholdAxis,
+    },
   );
 
   const scaleX = axis === 'X' || axis === 'XY' ? brush.scaleX : 1;

@@ -443,9 +443,12 @@ interface DetectBrushingThresholdSize {
   thresholdSize?: number;
   thresholdFormat: 'fixed';
 }
-type DetectBrushingOptions =
+export type BrushDetectionThresholdAxis = 'both' | 'x' | 'y';
+
+type DetectBrushingOptions = { thresholdAxis?: BrushDetectionThresholdAxis } & (
   | DetectBrushingThreshold
-  | DetectBrushingThresholdSize;
+  | DetectBrushingThresholdSize
+);
 
 export function detectBrushing(
   coordination: BrushCoordination,
@@ -453,7 +456,7 @@ export function detectBrushing(
 ): DetectBrushingResult {
   let xThreshold;
   let yThreshold;
-  const { width, height, thresholdFormat } = options;
+  const { width, height, thresholdFormat, thresholdAxis = 'both' } = options;
   const { startX, endX, startY, endY } = coordination;
   const xDiff = Math.abs(endX - startX);
   const yDiff = Math.abs(endY - startY);
@@ -472,6 +475,36 @@ export function detectBrushing(
 
   const scaleY = (endY - startY) / height;
   const scaleX = (endX - startX) / width;
+  if (thresholdAxis === 'y') {
+    if (yDiff >= yThreshold) {
+      return { type: 'XY', startX, startY, endX, endY, scaleX, scaleY };
+    }
+
+    return {
+      type: 'X',
+      startX,
+      endX,
+      startY: 0,
+      endY: height,
+      scaleX,
+      scaleY: 1,
+    };
+  }
+  if (thresholdAxis === 'x') {
+    if (xDiff >= xThreshold) {
+      return { type: 'XY', startX, startY, endX, endY, scaleX, scaleY };
+    }
+
+    return {
+      type: 'Y',
+      startX: 0,
+      endX: width,
+      startY,
+      endY,
+      scaleX: 1,
+      scaleY,
+    };
+  }
 
   if (xDiff >= xThreshold && yDiff < yThreshold) {
     return {

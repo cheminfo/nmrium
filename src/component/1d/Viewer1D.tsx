@@ -47,7 +47,7 @@ function InnerViewer1D(props: InnerViewer1DProps) {
                   }}
                 >
                   <CrossLinePointer />
-                  <BrushXY axis="XY" />
+                  <BrushXY axis="XY" thresholdAxis="y" />
                   <XLabelPointer />
                   <PeakPointer />
                   <FooterBanner />

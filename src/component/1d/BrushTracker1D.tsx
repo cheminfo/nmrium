@@ -279,6 +279,7 @@ export function BrushTracker1D({ children }) {
                   width,
                   height,
                   thresholdFormat: 'fixed',
+                  thresholdAxis: 'y',
                 }).type,
               },
             });
