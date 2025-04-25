@@ -360,10 +360,15 @@ function handleInsetZoomOut(draft: Draft<State>, action: ZoomOutInsetAction) {
     case ZOOM_TYPES.VERTICAL:
       setZoom(draft, { scale: 0.8, inset });
       break;
-    case ZOOM_TYPES.STEP_HORIZONTAL: {
+    case ZOOM_TYPES.BIDIRECTIONAL: {
       const zoomValue = pop();
       if (zoomValue) {
         inset.xDomain = zoomValue.xDomain;
+        draft.yDomain = zoomValue.yDomain;
+        const ids = Object.keys(draft.yDomains);
+        for (const id of ids) {
+          draft.yDomains[id] = zoomValue.yDomain;
+        }
       } else {
         inset.xDomain = originXDomain;
         setZoom(draft, { scale: 0.8, inset });

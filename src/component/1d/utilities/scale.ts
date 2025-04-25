@@ -83,7 +83,7 @@ function getYScale(
     const maxim = Math.max(Math.abs(max), Math.abs(min));
     domainY = [-maxim, maxim];
   } else {
-    domainY = [0, domainY[1]];
+    domainY = [Math.max(0, domainY[0]), domainY[1]];
   }
 
   const innerHeight = height - margin.bottom - bottomShift;

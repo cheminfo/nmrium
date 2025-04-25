@@ -7,12 +7,16 @@ import {
 } from '../../data/data1d/Spectrum1D/index.js';
 import { cutRange } from '../../data/data1d/Spectrum1D/ranges/createRange.js';
 import type {
+  BaseDetectBrushingOptions,
   BrushTrackerData,
   OnBrush,
   OnClick,
   OnZoom,
 } from '../EventsTrackers/BrushTracker.js';
-import { BrushTracker } from '../EventsTrackers/BrushTracker.js';
+import {
+  BrushTracker,
+  detectBrushing,
+} from '../EventsTrackers/BrushTracker.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useDispatch } from '../context/DispatchContext.js';
 import { useMapKeyModifiers } from '../context/KeyModifierContext.js';
@@ -31,6 +35,11 @@ import Events from '../utility/Events.js';
 
 import { useInsetOptions } from './inset/InsetProvider.js';
 
+const brushDetectionOptions: BaseDetectBrushingOptions = {
+  thresholdFormat: 'fixed',
+  thresholdAxis: 'y',
+  thresholdSize: 50,
+};
 function usePixelToPPMConverter() {
   const { scaleX, scaleY } = useScaleChecked();
 
@@ -62,7 +71,10 @@ export function BrushTracker1D({ children }) {
     view: {
       spectra: { activeTab },
     },
+    width,
+    height,
   } = state;
+
   const brushStartRef = useRef<number | null>(null);
   const spectrum = useSpectrum();
   const dispatch = useDispatch();
@@ -265,7 +277,17 @@ export function BrushTracker1D({ children }) {
 
         if (executeDefaultAction && selectedTool != null) {
           if (enableDefaultBrush) {
-            dispatch({ type: 'BRUSH_END', payload: brushDataInPPM });
+            dispatch({
+              type: 'BRUSH_END',
+              payload: {
+                ...brushDataInPPM,
+                axis: detectBrushing(brushData, {
+                  width,
+                  height,
+                  ...brushDetectionOptions,
+                }).type,
+              },
+            });
           }
 
           propagateEvent();
@@ -273,6 +295,7 @@ export function BrushTracker1D({ children }) {
       }
     },
     [
+      convertToPPM,
       getModifiersKey,
       selectedTool,
       primaryKeyIdentifier,
@@ -282,7 +305,8 @@ export function BrushTracker1D({ children }) {
       dispatchPreferences,
       activeTab,
       openAnalysisModal,
-      convertToPPM,
+      width,
+      height,
     ],
   );
   const handleInsetBrushEnd = useCallback<OnBrush>(
@@ -311,7 +335,7 @@ export function BrushTracker1D({ children }) {
   const handleOnDoubleClick = useCallback(() => {
     dispatch({
       type: 'FULL_ZOOM_OUT',
-      payload: { zoomType: ZOOM_TYPES.STEP_HORIZONTAL },
+      payload: { zoomType: ZOOM_TYPES.BIDIRECTIONAL },
     });
   }, [dispatch]);
 
@@ -322,7 +346,7 @@ export function BrushTracker1D({ children }) {
 
     dispatch({
       type: 'FULL_INSET_ZOOM_OUT',
-      payload: { zoomType: ZOOM_TYPES.STEP_HORIZONTAL, insetKey: inset.id },
+      payload: { zoomType: ZOOM_TYPES.BIDIRECTIONAL, insetKey: inset.id },
     });
   }, [dispatch, inset]);
 
@@ -457,6 +481,7 @@ export function BrushTracker1D({ children }) {
         onBrushEnd={handleInsetBrushEnd}
         onDoubleClick={handleInsetOnDoubleClick}
         onZoom={handleInsetZoom}
+        brushDetectionOptions={brushDetectionOptions}
         style={{
           width: '100%',
           height: '100%',
@@ -478,6 +503,7 @@ export function BrushTracker1D({ children }) {
         onDoubleClick={handleOnDoubleClick}
         onClick={mouseClick}
         onZoom={handleZoom}
+        brushDetectionOptions={brushDetectionOptions}
         style={{
           width: '100%',
           height: '100%',

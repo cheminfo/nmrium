@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react';
 
 import {
   detectBrushing,
+  useBrushDetectionOptions,
   useBrushTracker,
 } from '../../EventsTrackers/BrushTracker.js';
 import type { BrushAxis } from '../../EventsTrackers/BrushTracker.js';
@@ -80,6 +81,7 @@ export default function BrushXY(props: BrushXYProps) {
     toolOptions: { selectedTool },
     margin: innerMargin,
   } = useChartData();
+  const brushDetectionOptions = useBrushDetectionOptions();
   const margin = externalMargin ?? innerMargin;
   const brushTracker = useBrushTracker();
   const { step, mouseButton } = brushTracker;
@@ -120,8 +122,11 @@ export default function BrushXY(props: BrushXYProps) {
         : endY;
   const brush = detectBrushing(
     { startX, startY, endX, endY },
-    finalWidth,
-    finalHeight,
+    {
+      width: finalWidth,
+      height: finalHeight,
+      ...brushDetectionOptions,
+    },
   );
 
   const scaleX = axis === 'X' || axis === 'XY' ? brush.scaleX : 1;

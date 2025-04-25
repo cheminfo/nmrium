@@ -10,6 +10,12 @@ import {
 
 import type { ActionType } from '../reducer/types/ActionType.js';
 
+type AdvanceOmit<T, K extends keyof any> = T extends any ? Omit<T, K> : never;
+
+export type BaseDetectBrushingOptions = AdvanceOmit<
+  DetectBrushingOptions,
+  'width' | 'height'
+>;
 type Step = 'initial' | 'start' | 'end' | 'brushing';
 
 export type BrushAxis = 'X' | 'Y' | 'XY';
@@ -72,7 +78,17 @@ function stopPageScrolling(event) {
   event.preventDefault();
 }
 
+const BrushDetectionOptionsContext = createContext<BaseDetectBrushingOptions>({
+  thresholdFormat: 'fixed',
+});
 const BrushContext = createContext<BrushTrackerData>(initialState);
+
+export function useBrushDetectionOptions() {
+  if (!BrushDetectionOptionsContext) {
+    throw new Error('Brush detection options context was not found');
+  }
+  return useContext(BrushDetectionOptionsContext);
+}
 
 export function useBrushTracker() {
   if (!BrushContext) {
@@ -107,19 +123,23 @@ interface BrushTrackerProps {
   onDoubleClick?: OnClick;
   onClick?: OnClick;
   noPropagation?: boolean;
+  brushDetectionOptions?: BaseDetectBrushingOptions;
 }
 
-export function BrushTracker({
-  children,
-  className,
-  style,
-  onBrushEnd,
-  onBrush,
-  onZoom = () => null,
-  onDoubleClick = () => null,
-  onClick = () => null,
-  noPropagation,
-}: BrushTrackerProps) {
+export function BrushTracker(options: BrushTrackerProps) {
+  const {
+    children,
+    className,
+    style,
+    onBrushEnd,
+    onBrush,
+    onZoom = () => null,
+    onDoubleClick = () => null,
+    onClick = () => null,
+    noPropagation,
+    brushDetectionOptions = { thresholdFormat: 'fixed' },
+  } = options;
+
   const [state, dispatch] = useReducer<
     Reducer<BrushTrackerState, BrushTrackerAction>
   >(reducer, initialState);
@@ -301,31 +321,33 @@ export function BrushTracker({
   }, [onBrush, onBrushEnd, state]);
 
   return (
-    <BrushContext.Provider value={state}>
-      <div
-        onContextMenu={(e) => {
-          if (e.ctrlKey && e.button === 0) {
-            e.preventDefault();
-          }
-        }}
-        className={className}
-        style={{ ...style, touchAction: 'none' }}
-        onPointerDown={pointerDownHandler}
-        onWheel={handleMouseWheel}
-        onMouseEnter={() => {
-          // disable page scrolling once the mouse over the Displayer
-          window.addEventListener('wheel', stopPageScrolling, {
-            passive: false,
-          });
-        }}
-        onMouseLeave={() => {
-          // disable page scrolling once the mouse over the Displayer
-          window.removeEventListener('wheel', stopPageScrolling);
-        }}
-      >
-        {children}
-      </div>
-    </BrushContext.Provider>
+    <BrushDetectionOptionsContext.Provider value={brushDetectionOptions}>
+      <BrushContext.Provider value={state}>
+        <div
+          onContextMenu={(e) => {
+            if (e.ctrlKey && e.button === 0) {
+              e.preventDefault();
+            }
+          }}
+          className={className}
+          style={{ ...style, touchAction: 'none' }}
+          onPointerDown={pointerDownHandler}
+          onWheel={handleMouseWheel}
+          onMouseEnter={() => {
+            // disable page scrolling once the mouse over the Displayer
+            window.addEventListener('wheel', stopPageScrolling, {
+              passive: false,
+            });
+          }}
+          onMouseLeave={() => {
+            // disable page scrolling once the mouse over the Displayer
+            window.removeEventListener('wheel', stopPageScrolling);
+          }}
+        >
+          {children}
+        </div>
+      </BrushContext.Provider>
+    </BrushDetectionOptionsContext.Provider>
   );
 }
 
@@ -419,20 +441,92 @@ interface DetectBrushingResult extends BrushCoordination {
   scaleX: number;
   scaleY: number;
 }
+interface DetectBrushingThreshold {
+  /** Width in pixels */
+  width: number;
+  /** Height in pixels */
+  height: number;
+  /**
+   * Threshold as a percentage of width and height (value between 0 and 1).
+   * @default 0.02
+   */
+  threshold?: number;
+  thresholdFormat: 'relative';
+}
+interface DetectBrushingThresholdSize {
+  /** Width in pixels */
+  width: number;
+  /** Height in pixels */
+  height: number;
+  /**
+   * Threshold size in pixels.
+   * @default 80
+   */
+  thresholdSize?: number;
+  thresholdFormat: 'fixed';
+}
+type BrushDetectionThresholdAxis = 'both' | 'x' | 'y';
+
+type DetectBrushingOptions = { thresholdAxis?: BrushDetectionThresholdAxis } & (
+  | DetectBrushingThreshold
+  | DetectBrushingThresholdSize
+);
 
 export function detectBrushing(
   coordination: BrushCoordination,
-  width: number,
-  height: number,
-  threshold = 0.03,
+  options: DetectBrushingOptions,
 ): DetectBrushingResult {
+  let xThreshold;
+  let yThreshold;
+  const { width, height, thresholdFormat, thresholdAxis = 'both' } = options;
   const { startX, endX, startY, endY } = coordination;
   const xDiff = Math.abs(endX - startX);
   const yDiff = Math.abs(endY - startY);
-  const xThreshold = width * threshold;
-  const yThreshold = height * threshold;
+
+  if (thresholdFormat === 'relative') {
+    const { threshold = 0.02 } = options;
+    xThreshold = width * threshold;
+    yThreshold = height * threshold;
+  }
+
+  if (thresholdFormat === 'fixed') {
+    const { thresholdSize = 80 } = options;
+    xThreshold = thresholdSize;
+    yThreshold = thresholdSize;
+  }
+
   const scaleY = (endY - startY) / height;
   const scaleX = (endX - startX) / width;
+  if (thresholdAxis === 'y') {
+    if (yDiff >= yThreshold) {
+      return { type: 'XY', startX, startY, endX, endY, scaleX, scaleY };
+    }
+
+    return {
+      type: 'X',
+      startX,
+      endX,
+      startY: 0,
+      endY: height,
+      scaleX,
+      scaleY: 1,
+    };
+  }
+  if (thresholdAxis === 'x') {
+    if (xDiff >= xThreshold) {
+      return { type: 'XY', startX, startY, endX, endY, scaleX, scaleY };
+    }
+
+    return {
+      type: 'Y',
+      startX: 0,
+      endX: width,
+      startY,
+      endY,
+      scaleX: 1,
+      scaleY,
+    };
+  }
 
   if (xDiff >= xThreshold && yDiff < yThreshold) {
     return {

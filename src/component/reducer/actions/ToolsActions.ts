@@ -450,10 +450,14 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
       const keys = !activeSpectra
         ? Object.keys(yDomains)
         : activeSpectra.map(({ id }) => id);
-      for (const key of keys) {
-        const domain = yDomains[key];
-        yDomains[key] = wheelZoom(options, domain);
-      }
+
+      const yArray = keys.flatMap((key) => {
+        const updatedDomain = wheelZoom(options, yDomains[key]);
+        yDomains[key] = updatedDomain;
+        return updatedDomain;
+      });
+
+      draft.yDomain = [Math.min(...yArray), Math.max(...yArray)];
 
       break;
     }
@@ -483,16 +487,22 @@ function zoomOut(draft: Draft<State>, action: ZoomOutAction) {
         case ZOOM_TYPES.VERTICAL:
           setZoom(draft, { scale: 0.8 });
           break;
-        case ZOOM_TYPES.STEP_HORIZONTAL: {
+        case ZOOM_TYPES.BIDIRECTIONAL: {
           const zoomValue = zoomHistory.pop();
           if (zoomValue) {
             draft.xDomain = zoomValue.xDomain;
+            draft.yDomain = zoomValue.yDomain;
+            const ids = Object.keys(draft.yDomains);
+            for (const id of ids) {
+              draft.yDomains[id] = zoomValue.yDomain;
+            }
           } else {
             draft.xDomain = xDomain;
             setZoom(draft, { scale: 0.8 });
           }
           break;
         }
+
         default: {
           draft.xDomain = xDomain;
           setZoom(draft, { scale: 0.8 });

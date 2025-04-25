@@ -1,6 +1,7 @@
 import { useCallback, useRef } from 'react';
 
 import type {
+  BaseDetectBrushingOptions,
   BrushAxis,
   BrushTrackerData,
   OnBrush,
@@ -24,6 +25,12 @@ import {
 } from './utilities/DimensionLayout.js';
 import type { Layout } from './utilities/DimensionLayout.js';
 import { useScale2DX, useScale2DY } from './utilities/scale.js';
+
+const brushDetectionOptions: BaseDetectBrushingOptions = {
+  thresholdFormat: 'fixed',
+  thresholdAxis: 'both',
+  thresholdSize: 30,
+};
 
 function usePixelToPPMConverter() {
   const scaleX = useScale2DX();
@@ -129,7 +136,11 @@ export function BrushTracker2D({ children }) {
             const trackID = getLayoutID(DIMENSION, brushData);
 
             const axisMap: Record<Layout, BrushAxis> = {
-              MAIN: detectBrushing(brushData, width, height).type,
+              MAIN: detectBrushing(brushData, {
+                width,
+                height,
+                ...brushDetectionOptions,
+              }).type,
               LEFT: 'Y',
               TOP: 'X',
             };
@@ -228,6 +239,7 @@ export function BrushTracker2D({ children }) {
       onDoubleClick={handleOnDoubleClick}
       onClick={mouseClick}
       onZoom={handleZoom}
+      brushDetectionOptions={brushDetectionOptions}
       style={{
         width: '100%',
         height: '100%',
