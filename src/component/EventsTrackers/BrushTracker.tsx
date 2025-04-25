@@ -10,6 +10,12 @@ import {
 
 import type { ActionType } from '../reducer/types/ActionType.js';
 
+type AdvanceOmit<T, K extends keyof any> = T extends any ? Omit<T, K> : never;
+
+export type BaseDetectBrushingOptions = AdvanceOmit<
+  DetectBrushingOptions,
+  'width' | 'height'
+>;
 type Step = 'initial' | 'start' | 'end' | 'brushing';
 
 export type BrushAxis = 'X' | 'Y' | 'XY';
@@ -72,7 +78,17 @@ function stopPageScrolling(event) {
   event.preventDefault();
 }
 
+const BrushDetectionOptionsContext = createContext<BaseDetectBrushingOptions>({
+  thresholdFormat: 'fixed',
+});
 const BrushContext = createContext<BrushTrackerData>(initialState);
+
+export function useBrushDetectionOptions() {
+  if (!BrushDetectionOptionsContext) {
+    throw new Error('Brush detection options context was not found');
+  }
+  return useContext(BrushDetectionOptionsContext);
+}
 
 export function useBrushTracker() {
   if (!BrushContext) {
@@ -107,19 +123,23 @@ interface BrushTrackerProps {
   onDoubleClick?: OnClick;
   onClick?: OnClick;
   noPropagation?: boolean;
+  brushDetectionOptions?: BaseDetectBrushingOptions;
 }
 
-export function BrushTracker({
-  children,
-  className,
-  style,
-  onBrushEnd,
-  onBrush,
-  onZoom = () => null,
-  onDoubleClick = () => null,
-  onClick = () => null,
-  noPropagation,
-}: BrushTrackerProps) {
+export function BrushTracker(options: BrushTrackerProps) {
+  const {
+    children,
+    className,
+    style,
+    onBrushEnd,
+    onBrush,
+    onZoom = () => null,
+    onDoubleClick = () => null,
+    onClick = () => null,
+    noPropagation,
+    brushDetectionOptions = { thresholdFormat: 'fixed' },
+  } = options;
+
   const [state, dispatch] = useReducer<
     Reducer<BrushTrackerState, BrushTrackerAction>
   >(reducer, initialState);
@@ -301,31 +321,33 @@ export function BrushTracker({
   }, [onBrush, onBrushEnd, state]);
 
   return (
-    <BrushContext.Provider value={state}>
-      <div
-        onContextMenu={(e) => {
-          if (e.ctrlKey && e.button === 0) {
-            e.preventDefault();
-          }
-        }}
-        className={className}
-        style={{ ...style, touchAction: 'none' }}
-        onPointerDown={pointerDownHandler}
-        onWheel={handleMouseWheel}
-        onMouseEnter={() => {
-          // disable page scrolling once the mouse over the Displayer
-          window.addEventListener('wheel', stopPageScrolling, {
-            passive: false,
-          });
-        }}
-        onMouseLeave={() => {
-          // disable page scrolling once the mouse over the Displayer
-          window.removeEventListener('wheel', stopPageScrolling);
-        }}
-      >
-        {children}
-      </div>
-    </BrushContext.Provider>
+    <BrushDetectionOptionsContext.Provider value={brushDetectionOptions}>
+      <BrushContext.Provider value={state}>
+        <div
+          onContextMenu={(e) => {
+            if (e.ctrlKey && e.button === 0) {
+              e.preventDefault();
+            }
+          }}
+          className={className}
+          style={{ ...style, touchAction: 'none' }}
+          onPointerDown={pointerDownHandler}
+          onWheel={handleMouseWheel}
+          onMouseEnter={() => {
+            // disable page scrolling once the mouse over the Displayer
+            window.addEventListener('wheel', stopPageScrolling, {
+              passive: false,
+            });
+          }}
+          onMouseLeave={() => {
+            // disable page scrolling once the mouse over the Displayer
+            window.removeEventListener('wheel', stopPageScrolling);
+          }}
+        >
+          {children}
+        </div>
+      </BrushContext.Provider>
+    </BrushDetectionOptionsContext.Provider>
   );
 }
 
@@ -443,7 +465,7 @@ interface DetectBrushingThresholdSize {
   thresholdSize?: number;
   thresholdFormat: 'fixed';
 }
-export type BrushDetectionThresholdAxis = 'both' | 'x' | 'y';
+type BrushDetectionThresholdAxis = 'both' | 'x' | 'y';
 
 type DetectBrushingOptions = { thresholdAxis?: BrushDetectionThresholdAxis } & (
   | DetectBrushingThreshold

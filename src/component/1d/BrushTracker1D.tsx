@@ -7,6 +7,7 @@ import {
 } from '../../data/data1d/Spectrum1D/index.js';
 import { cutRange } from '../../data/data1d/Spectrum1D/ranges/createRange.js';
 import type {
+  BaseDetectBrushingOptions,
   BrushTrackerData,
   OnBrush,
   OnClick,
@@ -34,6 +35,11 @@ import Events from '../utility/Events.js';
 
 import { useInsetOptions } from './inset/InsetProvider.js';
 
+const brushDetectionOptions: BaseDetectBrushingOptions = {
+  thresholdFormat: 'fixed',
+  thresholdAxis: 'y',
+  thresholdSize: 50,
+};
 function usePixelToPPMConverter() {
   const { scaleX, scaleY } = useScaleChecked();
 
@@ -278,8 +284,7 @@ export function BrushTracker1D({ children }) {
                 axis: detectBrushing(brushData, {
                   width,
                   height,
-                  thresholdFormat: 'fixed',
-                  thresholdAxis: 'y',
+                  ...brushDetectionOptions,
                 }).type,
               },
             });
@@ -476,6 +481,7 @@ export function BrushTracker1D({ children }) {
         onBrushEnd={handleInsetBrushEnd}
         onDoubleClick={handleInsetOnDoubleClick}
         onZoom={handleInsetZoom}
+        brushDetectionOptions={brushDetectionOptions}
         style={{
           width: '100%',
           height: '100%',
@@ -497,6 +503,7 @@ export function BrushTracker1D({ children }) {
         onDoubleClick={handleOnDoubleClick}
         onClick={mouseClick}
         onZoom={handleZoom}
+        brushDetectionOptions={brushDetectionOptions}
         style={{
           width: '100%',
           height: '100%',

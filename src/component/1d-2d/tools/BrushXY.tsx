@@ -2,12 +2,10 @@ import type { CSSProperties } from 'react';
 
 import {
   detectBrushing,
+  useBrushDetectionOptions,
   useBrushTracker,
 } from '../../EventsTrackers/BrushTracker.js';
-import type {
-  BrushAxis,
-  BrushDetectionThresholdAxis,
-} from '../../EventsTrackers/BrushTracker.js';
+import type { BrushAxis } from '../../EventsTrackers/BrushTracker.js';
 import { useChartData } from '../../context/ChartContext.js';
 import type { Margin } from '../../reducer/Reducer.js';
 import { options } from '../../toolbar/ToolTypes.js';
@@ -58,7 +56,6 @@ const defaultDimensionBorder: {
 
 interface BrushXYProps {
   axis: BrushAxis;
-  thresholdAxis?: BrushDetectionThresholdAxis;
   dimensionBorder?: {
     startX: number;
     startY: number;
@@ -77,7 +74,6 @@ export default function BrushXY(props: BrushXYProps) {
     width: widthProps,
     height: heightProps,
     margin: externalMargin,
-    thresholdAxis = 'both',
   } = props;
   const {
     width,
@@ -85,6 +81,7 @@ export default function BrushXY(props: BrushXYProps) {
     toolOptions: { selectedTool },
     margin: innerMargin,
   } = useChartData();
+  const brushDetectionOptions = useBrushDetectionOptions();
   const margin = externalMargin ?? innerMargin;
   const brushTracker = useBrushTracker();
   const { step, mouseButton } = brushTracker;
@@ -128,8 +125,7 @@ export default function BrushXY(props: BrushXYProps) {
     {
       width: finalWidth,
       height: finalHeight,
-      thresholdFormat: 'fixed',
-      thresholdAxis,
+      ...brushDetectionOptions,
     },
   );
 
