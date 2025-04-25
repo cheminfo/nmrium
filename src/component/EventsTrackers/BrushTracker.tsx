@@ -91,9 +91,9 @@ export type OnClick = (element: ClickOptions) => void;
 export type { OnClick as OnDoubleClick };
 export type ZoomOptions = Pick<
   React.WheelEvent,
-  'deltaY' | 'shiftKey' | 'deltaMode' | 'altKey'
+  'deltaY' | 'shiftKey' | 'deltaMode' | 'altKey' | 'deltaX' | 'ctrlKey'
 > &
-  Position & { invertScroll?: boolean };
+  Position & { invertScroll?: boolean; isBidirectionalZoom: boolean };
 export type OnZoom = (options: ZoomOptions) => void;
 export type OnBrush = (state: BrushTrackerData) => void;
 
@@ -127,6 +127,9 @@ export function BrushTracker({
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastPointRef = useRef<number>(0);
   const isDraggingRef = useRef(false);
+  const boundingRectRef = useRef<DOMRect | null>(null);
+  const startPositionRef = useRef<Position>({ x: 0, y: 0 });
+  const lastRef = useRef<Position>({ x: 0, y: 0 });
 
   const clickHandler = useCallback(
     (event: React.MouseEvent, targetElement: Element) => {
@@ -168,33 +171,68 @@ export function BrushTracker({
         if (noPropagation) {
           event.stopPropagation();
         }
-        dispatch({
-          type: 'DOWN',
-          payload: {
-            mouseButton: MouseButtons[event.button],
-            shiftKey: event.shiftKey,
-            altKey: event.altKey,
-            screenX: event.screenX,
-            screenY: event.screenY,
-            clientX: event.clientX,
-            clientY: event.clientY,
-            boundingRect: event.currentTarget.getBoundingClientRect(),
-          },
-        });
+
+        const boundingRect = event.currentTarget.getBoundingClientRect();
+        boundingRectRef.current = boundingRect;
+        startPositionRef.current = {
+          x: event.clientX - boundingRect.x,
+          y: event.clientY - boundingRect.y,
+        };
+
+        if (!event.ctrlKey) {
+          dispatch({
+            type: 'DOWN',
+            payload: {
+              mouseButton: MouseButtons[event.button],
+              shiftKey: event.shiftKey,
+              altKey: event.altKey,
+              screenX: event.screenX,
+              screenY: event.screenY,
+              clientX: event.clientX,
+              clientY: event.clientY,
+              boundingRect,
+            },
+          });
+        }
       }
 
       function moveCallback(event: PointerEvent) {
         isDraggingRef.current = true; // set flag to true to skip click event if the user dragged the mouse
+        const { clientX, clientY, shiftKey, altKey, ctrlKey } = event;
 
-        dispatch({
-          type: 'MOVE',
-          payload: {
-            screenX: event.screenX,
-            screenY: event.screenY,
-            clientX: event.clientX,
-            clientY: event.clientY,
-          },
-        });
+        if (event.ctrlKey) {
+          if (boundingRectRef.current) {
+            const boundingRect = boundingRectRef.current;
+            const x = clientX - boundingRect.x;
+            const y = clientY - boundingRect.y;
+
+            const deltaX = clientX - boundingRect.x - lastRef.current.x;
+            const deltaY = clientY - boundingRect.y - lastRef.current.y;
+
+            lastRef.current = { x, y };
+            onZoom({
+              deltaY,
+              deltaX,
+              shiftKey,
+              altKey,
+              x: startPositionRef.current.x,
+              y: startPositionRef.current.y,
+              ctrlKey,
+              deltaMode: 0,
+              isBidirectionalZoom: true,
+            });
+          }
+        } else {
+          dispatch({
+            type: 'MOVE',
+            payload: {
+              screenX: event.screenX,
+              screenY: event.screenY,
+              clientX: event.clientX,
+              clientY: event.clientY,
+            },
+          });
+        }
       }
 
       function upCallback() {
@@ -218,7 +256,7 @@ export function BrushTracker({
 
       return false;
     },
-    [clickHandler, noPropagation],
+    [clickHandler, noPropagation, onZoom],
   );
 
   const handleMouseWheel = useCallback(
@@ -227,8 +265,18 @@ export function BrushTracker({
       const x = event.clientX - boundingRect.x;
       const y = event.clientY - boundingRect.y;
 
-      const { deltaY, deltaX, shiftKey, altKey, deltaMode } = event;
-      onZoom({ deltaY: deltaY || deltaX, shiftKey, altKey, deltaMode, x, y });
+      const { deltaY, deltaX, shiftKey, altKey, ctrlKey, deltaMode } = event;
+      onZoom({
+        deltaY,
+        deltaX,
+        shiftKey,
+        altKey,
+        ctrlKey,
+        deltaMode,
+        x,
+        y,
+        isBidirectionalZoom: false,
+      });
     },
     [onZoom],
   );
@@ -255,6 +303,11 @@ export function BrushTracker({
   return (
     <BrushContext.Provider value={state}>
       <div
+        onContextMenu={(e) => {
+          if (e.ctrlKey && e.button === 0) {
+            e.preventDefault();
+          }
+        }}
         className={className}
         style={{ ...style, touchAction: 'none' }}
         onPointerDown={pointerDownHandler}

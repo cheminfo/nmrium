@@ -15,6 +15,7 @@ import {
 import { useChartData } from '../context/ChartContext.js';
 import { useDispatch } from '../context/DispatchContext.js';
 import { useMapKeyModifiers } from '../context/KeyModifierContext.js';
+import { usePreferences } from '../context/PreferencesContext.js';
 import { options } from '../toolbar/ToolTypes.js';
 
 import {
@@ -23,7 +24,6 @@ import {
 } from './utilities/DimensionLayout.js';
 import type { Layout } from './utilities/DimensionLayout.js';
 import { useScale2DX, useScale2DY } from './utilities/scale.js';
-import { usePreferences } from '../context/PreferencesContext.js';
 
 function usePixelToPPMConverter() {
   const scaleX = useScale2DX();

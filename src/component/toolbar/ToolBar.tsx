@@ -221,8 +221,10 @@ export default function ToolBar() {
         subTitles: [
           { title: 'Vertical', shortcuts: ['Scroll wheel'] },
           { title: 'Horizontal', shortcuts: ['⇧', 'Scroll wheel'] },
+          { title: 'Horizontal and Vertical', shortcuts: ['CTRL', 'drag'] },
           { title: 'Pan', shortcuts: ['Right button'] },
         ],
+        style: { minWidth: '300px' },
       },
       icon: <FaSearchPlus />,
     },
