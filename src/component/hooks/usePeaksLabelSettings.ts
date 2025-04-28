@@ -1,4 +1,4 @@
-import type { PeaksLabel } from 'nmrium-core';
+import type { PeaksLabel } from '@zakodium/nmrium-core';
 
 import { usePreferences } from '../context/PreferencesContext.js';
 

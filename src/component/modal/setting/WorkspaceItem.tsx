@@ -1,4 +1,4 @@
-import type { WorkSpaceSource } from 'nmrium-core';
+import type { WorkSpaceSource } from '@zakodium/nmrium-core';
 import type { CSSProperties } from 'react';
 import { useState } from 'react';
 import { Button } from 'react-science/ui';

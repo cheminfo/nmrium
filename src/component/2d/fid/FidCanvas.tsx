@@ -1,6 +1,6 @@
+import type { Spectrum2D } from '@zakodium/nmrium-core';
 import type { NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
 import { matrixZPivotRescale } from 'ml-spectra-processing';
-import type { Spectrum2D } from 'nmrium-core';
 import { useEffect, useMemo, useRef } from 'react';
 
 import { isFid2DSpectrum } from '../../../data/data2d/Spectrum2D/isSpectrum2D.js';

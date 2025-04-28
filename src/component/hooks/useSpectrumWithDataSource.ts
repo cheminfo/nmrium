@@ -1,4 +1,4 @@
-import type { Spectrum } from 'nmrium-core';
+import type { Spectrum } from '@zakodium/nmrium-core';
 import { useMemo } from 'react';
 
 import { useInsetOptions } from '../1d/inset/InsetProvider.js';

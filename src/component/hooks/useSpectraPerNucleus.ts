@@ -1,4 +1,4 @@
-import type { Spectrum } from 'nmrium-core';
+import type { Spectrum } from '@zakodium/nmrium-core';
 import { useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext.js';

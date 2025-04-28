@@ -1,4 +1,4 @@
-import type { Spectrum } from 'nmrium-core';
+import type { Spectrum } from '@zakodium/nmrium-core';
 
 export function getSpectraObjectPaths(
   spectra: Spectrum[],

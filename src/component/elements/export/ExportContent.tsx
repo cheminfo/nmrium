@@ -1,4 +1,4 @@
-import type { ExportSettings } from 'nmrium-core';
+import type { ExportSettings } from '@zakodium/nmrium-core';
 import type { ReactNode } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';

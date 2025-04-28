@@ -1,6 +1,6 @@
+import type { PeaksViewState, Spectrum1D } from '@zakodium/nmrium-core';
 import { SvgNmrFt, SvgNmrPeaks, SvgNmrPeaksTopLabels } from 'cheminfo-font';
 import type { Info1D, Peak1D, Peaks } from 'nmr-processing';
-import type { PeaksViewState, Spectrum1D } from 'nmrium-core';
 import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { FaThinkPeaks } from 'react-icons/fa';
 

@@ -1,4 +1,4 @@
-import type { Spectrum1D, Spectrum2D } from 'nmrium-core';
+import type { Spectrum1D, Spectrum2D } from '@zakodium/nmrium-core';
 
 export function convertSpectraArrayToObject<T extends Spectrum1D | Spectrum2D>(
   spectra: T[],

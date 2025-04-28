@@ -1,10 +1,10 @@
+import type { Spectrum, ViewState } from '@zakodium/nmrium-core';
 import type { WebSource as Source } from 'filelist-utils';
 import type { Draft } from 'immer';
 import { original, produce } from 'immer';
 import type { CorrelationData } from 'nmr-correlation';
 import { buildCorrelationData } from 'nmr-correlation';
 import type { BaselineCorrectionZone } from 'nmr-processing';
-import type { Spectrum, ViewState } from 'nmrium-core';
 import type { Reducer } from 'react';
 
 import type { StateMoleculeExtended } from '../../data/molecules/Molecule.js';

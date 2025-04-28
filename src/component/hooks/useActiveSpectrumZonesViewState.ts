@@ -1,4 +1,4 @@
-import type { ZonesViewState } from 'nmrium-core';
+import type { ZonesViewState } from '@zakodium/nmrium-core';
 
 import { useChartData } from '../context/ChartContext.js';
 

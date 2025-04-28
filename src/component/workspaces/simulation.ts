@@ -1,4 +1,4 @@
-import type { InnerWorkspace } from 'nmrium-core';
+import type { InnerWorkspace } from '@zakodium/nmrium-core';
 
 export const simulation: InnerWorkspace = {
   label: 'Simulation',

@@ -1,6 +1,6 @@
 import { Checkbox, Classes, Radio } from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import type { CustomWorkspaces, Database } from 'nmrium-core';
+import type { CustomWorkspaces, Database } from '@zakodium/nmrium-core';
 import { useCallback, useMemo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { FaLink, FaPlus, FaRegTrashAlt } from 'react-icons/fa';

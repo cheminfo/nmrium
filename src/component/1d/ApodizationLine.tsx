@@ -1,3 +1,4 @@
+import type { Spectrum1D } from '@zakodium/nmrium-core';
 import merge from 'lodash/merge.js';
 import { xyReduce } from 'ml-spectra-processing';
 import {
@@ -5,7 +6,6 @@ import {
   createApodizationWindowData,
   default1DApodization,
 } from 'nmr-processing';
-import type { Spectrum1D } from 'nmrium-core';
 
 import { useChartData } from '../context/ChartContext.js';
 import { useFilterSyncOptions } from '../context/FilterSyncOptionsContext.js';

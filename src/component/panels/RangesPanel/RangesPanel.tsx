@@ -1,7 +1,10 @@
+import type {
+  Spectrum1D,
+  WorkSpacePanelPreferences,
+} from '@zakodium/nmrium-core';
 import type { NmrData1D } from 'cheminfo-types';
 import { xGetFromToIndex } from 'ml-spectra-processing';
 import type { Info1D, Ranges } from 'nmr-processing';
-import type { Spectrum1D, WorkSpacePanelPreferences } from 'nmrium-core';
 import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { FaCopy } from 'react-icons/fa';
 

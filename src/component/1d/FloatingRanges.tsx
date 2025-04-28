@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
+import type { BoundingBox } from '@zakodium/nmrium-core';
 import { checkMultiplicity } from 'nmr-processing';
 import type { Ranges } from 'nmr-processing';
-import type { BoundingBox } from 'nmrium-core';
 import { memo, useEffect, useState } from 'react';
 import { BsArrowsMove } from 'react-icons/bs';
 import { FaTimes } from 'react-icons/fa';
@@ -234,7 +234,7 @@ function DraggableRanges(props: DraggablePublicationStringProps) {
       output.height = height;
     }
 
-    return output as BoundingBox;
+    return output;
   }
   function convertToPercent(bounding: Partial<BoundingBox>) {
     const { x, y, height, width } = bounding;

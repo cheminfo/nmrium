@@ -1,13 +1,13 @@
-import type { NmrData2DFt } from 'cheminfo-types';
-import type { Numeric } from 'd3';
-import { extent } from 'd3';
-import type { Draft } from 'immer';
 import type {
   NucleiPreferences,
   Spectrum,
   Spectrum1D,
   Spectrum2D,
-} from 'nmrium-core';
+} from '@zakodium/nmrium-core';
+import type { NmrData2DFt } from 'cheminfo-types';
+import type { Numeric } from 'd3';
+import { extent } from 'd3';
+import type { Draft } from 'immer';
 
 import { get1DDataXY } from '../../../data/data1d/Spectrum1D/get1DDataXY.js';
 import {

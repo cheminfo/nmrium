@@ -1,6 +1,6 @@
+import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { xyIntegration, xyMaxYPoint, xyMinYPoint } from 'ml-spectra-processing';
 import { getShiftX } from 'nmr-processing';
-import type { Spectrum1D } from 'nmrium-core';
 
 import type { RangeDetectionResult } from '../../../types/data1d/index.js';
 

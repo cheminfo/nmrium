@@ -1,5 +1,5 @@
+import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { xyIntegral, xyMaxY } from 'ml-spectra-processing';
-import type { Spectrum1D } from 'nmrium-core';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';

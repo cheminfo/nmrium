@@ -1,5 +1,5 @@
+import type { IntegralsViewState } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
-import type { IntegralsViewState } from 'nmrium-core';
 
 import { defaultIntegralsViewState } from '../../hooks/useActiveSpectrumIntegralsViewState.js';
 import type { State } from '../Reducer.js';

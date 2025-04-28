@@ -1,12 +1,12 @@
-import dlv from 'dlv';
-import { xFindClosestIndex } from 'ml-spectra-processing';
 import type {
   JpathLegendField,
   LegendField,
   PredefinedLegendField,
   Spectrum,
   Spectrum1D,
-} from 'nmrium-core';
+} from '@zakodium/nmrium-core';
+import dlv from 'dlv';
+import { xFindClosestIndex } from 'ml-spectra-processing';
 import type { CSSProperties } from 'react';
 
 import { get1DDataXY } from '../../data/data1d/Spectrum1D/index.js';

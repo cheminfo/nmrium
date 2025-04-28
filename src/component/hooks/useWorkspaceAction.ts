@@ -1,5 +1,5 @@
+import type { Workspace } from '@zakodium/nmrium-core';
 import lodashMerge from 'lodash/merge.js';
-import type { Workspace } from 'nmrium-core';
 
 import { usePreferences } from '../context/PreferencesContext.js';
 import type { Settings } from '../reducer/preferences/preferencesReducer.js';

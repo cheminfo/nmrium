@@ -1,6 +1,6 @@
+import type { Spectrum1D, Spectrum2D } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
 import type { Range, Zone, SpectraData1D, SpectraData2D } from 'nmr-processing';
-import type { Spectrum1D, Spectrum2D } from 'nmrium-core';
 
 import type { State } from '../Reducer.js';
 import type { ActionType } from '../types/ActionType.js';

@@ -1,4 +1,4 @@
-import type { Spectrum1D } from 'nmrium-core';
+import type { Spectrum1D } from '@zakodium/nmrium-core';
 
 interface RangeSignalOption {
   rangeID: string;

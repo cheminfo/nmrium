@@ -1,4 +1,4 @@
-import type { Display1D, Display2D, Spectrum } from 'nmrium-core';
+import type { Display1D, Display2D, Spectrum } from '@zakodium/nmrium-core';
 import type { CSSProperties } from 'react';
 import { FaEye } from 'react-icons/fa';
 

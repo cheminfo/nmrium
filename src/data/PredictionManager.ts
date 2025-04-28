@@ -1,3 +1,4 @@
+import type { Spectrum } from '@zakodium/nmrium-core';
 import type { Logger } from 'cheminfo-types';
 import { xMinMaxValues } from 'ml-spectra-processing';
 import type {
@@ -16,7 +17,6 @@ import {
   signalsToRanges,
   signalsToXY,
 } from 'nmr-processing';
-import type { Spectrum } from 'nmrium-core';
 import OCL from 'openchemlib/full';
 
 import { DATUM_KIND } from './constants/signalsKinds.js';

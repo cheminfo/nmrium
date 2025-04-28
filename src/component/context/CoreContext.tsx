@@ -1,4 +1,4 @@
-import type { NMRiumCore } from 'nmrium-core';
+import type { NMRiumCore } from '@zakodium/nmrium-core';
 import { createContext, useContext } from 'react';
 
 const CoreContext = createContext<NMRiumCore | null>(null);

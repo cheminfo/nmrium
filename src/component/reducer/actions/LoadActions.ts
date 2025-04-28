@@ -1,15 +1,15 @@
+import type {
+  NmriumState,
+  SpectraColors,
+  Spectrum,
+  ViewState,
+} from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
 import { produce } from 'immer';
 import lodashMerge from 'lodash/merge.js';
 import lodashMergeWith from 'lodash/mergeWith.js';
 import type { CorrelationData } from 'nmr-correlation';
 import { buildCorrelationData } from 'nmr-correlation';
-import type {
-  NmriumState,
-  SpectraColors,
-  Spectrum,
-  ViewState,
-} from 'nmrium-core';
 import type { ParseResult } from 'papaparse';
 
 import { initiateDatum1D } from '../../../data/data1d/Spectrum1D/index.js';

@@ -1,5 +1,3 @@
-import dlv from 'dlv';
-import fileSaver from 'file-saver';
 import type {
   ActiveSpectrum,
   JpathTableColumn,
@@ -8,7 +6,9 @@ import type {
   SpectraTableColumn,
   Spectrum,
   StateMolecule,
-} from 'nmrium-core';
+} from '@zakodium/nmrium-core';
+import dlv from 'dlv';
+import fileSaver from 'file-saver';
 import type { CSSProperties } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import { FaCopy, FaFileExport, FaRegTrashAlt } from 'react-icons/fa';

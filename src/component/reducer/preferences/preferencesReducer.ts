@@ -1,6 +1,4 @@
-import type { Draft } from 'immer';
-import { produce } from 'immer';
-import { CURRENT_EXPORT_VERSION, migrateSettings } from 'nmrium-core';
+import { CURRENT_EXPORT_VERSION, migrateSettings } from '@zakodium/nmrium-core';
 import type {
   ExportPreferences,
   ExportSettings,
@@ -8,7 +6,9 @@ import type {
   PrintPageOptions,
   Workspace,
   WorkSpaceSource,
-} from 'nmrium-core';
+} from '@zakodium/nmrium-core';
+import type { Draft } from 'immer';
+import { produce } from 'immer';
 import type { Reducer } from 'react';
 import type { SplitPaneSize } from 'react-science/ui';
 

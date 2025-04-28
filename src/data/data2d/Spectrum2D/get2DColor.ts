@@ -1,4 +1,7 @@
-import type { Color2D, SpectrumTwoDimensionsColor } from 'nmrium-core';
+import type {
+  Color2D,
+  SpectrumTwoDimensionsColor,
+} from '@zakodium/nmrium-core';
 
 import type { UsedColors } from '../../../types/UsedColors.js';
 import { adjustAlpha, generateColor } from '../../utilities/generateColor.js';
@@ -57,7 +60,7 @@ export function get2DColor(
     usedColors['2d'].push(color.positiveColor);
   }
 
-  return color as Color2D;
+  return color;
 }
 
 type ExperimentType = 'cosy' | 'roesy' | 'noesy' | 'tocsy' | 'hsqc' | 'hmbc';

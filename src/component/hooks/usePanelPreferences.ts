@@ -1,11 +1,11 @@
-import has from 'lodash/has.js';
 import type {
   MatrixGenerationOptions,
   MultipleSpectraAnalysisPreferences,
   PanelsPreferences,
   Workspace,
   WorkSpacePanelPreferences,
-} from 'nmrium-core';
+} from '@zakodium/nmrium-core';
+import has from 'lodash/has.js';
 import { useMemo } from 'react';
 
 import { getDefaultPredictionOptions } from '../../data/PredictionManager.js';

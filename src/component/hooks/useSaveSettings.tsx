@@ -1,7 +1,7 @@
 import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
-import type { Workspace } from 'nmrium-core';
+import type { Workspace } from '@zakodium/nmrium-core';
 import { useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useOnOff } from 'react-science/ui';

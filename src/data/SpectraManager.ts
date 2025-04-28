@@ -1,13 +1,13 @@
-import fileSaver from 'file-saver';
-import JSZip from 'jszip';
-import { CURRENT_EXPORT_VERSION } from 'nmrium-core';
+import { CURRENT_EXPORT_VERSION } from '@zakodium/nmrium-core';
 import type {
   NMRiumCore,
   Spectrum,
   StateMolecule,
   Workspace,
-} from 'nmrium-core';
-import { processJcamp, spectrum1DToJcamp } from 'nmrium-core-plugins';
+} from '@zakodium/nmrium-core';
+import { processJcamp, spectrum1DToJcamp } from '@zakodium/nmrium-core-plugins';
+import fileSaver from 'file-saver';
+import JSZip from 'jszip';
 import OCL from 'openchemlib/full';
 
 import type { State } from '../component/reducer/Reducer.js';

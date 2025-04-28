@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import type { Spectrum1D, Spectrum2D } from '@zakodium/nmrium-core';
 import type {
   Correlation,
   Link,
@@ -6,7 +7,6 @@ import type {
   Values as CorrelationValues,
 } from 'nmr-correlation';
 import { getLinkDelta, getLinkDim } from 'nmr-correlation';
-import type { Spectrum1D, Spectrum2D } from 'nmrium-core';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { FaFlask, FaSlidersH } from 'react-icons/fa';
 

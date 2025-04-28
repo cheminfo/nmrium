@@ -1,9 +1,12 @@
 import type { ToastProps } from '@blueprintjs/core';
 import type { SerializedStyles } from '@emotion/react';
+import type {
+  JpathTableColumn,
+  SpectraTableColumn,
+} from '@zakodium/nmrium-core';
 import dlv from 'dlv';
 import fileSaver from 'file-saver';
 import JSZip from 'jszip';
-import type { JpathTableColumn, SpectraTableColumn } from 'nmrium-core';
 
 export const browserNotSupportedErrorToast: ToastProps = {
   message:

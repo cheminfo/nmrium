@@ -2,7 +2,7 @@ import type {
   CustomWorkspaces,
   WorkspacePreferences as NMRiumPreferences,
   NMRiumCore,
-} from 'nmrium-core';
+} from '@zakodium/nmrium-core';
 import type { ReactElement, ReactNode } from 'react';
 import { forwardRef, memo } from 'react';
 import type { ErrorBoundaryPropsWithComponent } from 'react-error-boundary';

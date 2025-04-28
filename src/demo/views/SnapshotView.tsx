@@ -1,4 +1,4 @@
-import type { CustomWorkspaces } from 'nmrium-core';
+import type { CustomWorkspaces } from '@zakodium/nmrium-core';
 
 import View from './View.js';
 

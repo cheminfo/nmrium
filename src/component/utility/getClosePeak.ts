@@ -1,4 +1,4 @@
-import type { Spectrum1D } from 'nmrium-core';
+import type { Spectrum1D } from '@zakodium/nmrium-core';
 
 import { get1DDataXY } from '../../data/data1d/Spectrum1D/index.js';
 

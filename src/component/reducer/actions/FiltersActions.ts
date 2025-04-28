@@ -1,3 +1,4 @@
+import type { Spectrum, Spectrum1D, Spectrum2D } from '@zakodium/nmrium-core';
 import type { NmrData1D, NmrData2DFt } from 'cheminfo-types';
 import type { Draft } from 'immer';
 import { current } from 'immer';
@@ -20,7 +21,6 @@ import type {
   Filter2DOptions,
   Filter1DOptions,
 } from 'nmr-processing';
-import type { Spectrum, Spectrum1D, Spectrum2D } from 'nmrium-core';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import { isFid1DSpectrum } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
@@ -1592,12 +1592,10 @@ function deleteFilter(datum: Spectrum, id?: string) {
   if (!id) {
     datum.filters = filters.filter((filter) =>
       nonRemovableFilters.has(filter.name),
-    ) as typeof filters;
+    );
   } else {
     removedFilter = datum.filters.find((filter) => filter.id === id);
-    datum.filters = filters.filter(
-      (filter) => filter.id !== id,
-    ) as typeof filters;
+    datum.filters = filters.filter((filter) => filter.id !== id);
   }
 
   // do not reprocess the filters when the deleted filter is inactive

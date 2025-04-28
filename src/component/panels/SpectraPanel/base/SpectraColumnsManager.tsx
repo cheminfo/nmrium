@@ -1,5 +1,5 @@
 import { Checkbox, Classes } from '@blueprintjs/core';
-import type { SpectraTableColumn } from 'nmrium-core';
+import type { SpectraTableColumn } from '@zakodium/nmrium-core';
 import { useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';

@@ -1,6 +1,6 @@
 import { Popover } from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import type { Display1D, Display2D } from 'nmrium-core';
+import type { Display1D, Display2D } from '@zakodium/nmrium-core';
 
 import { useDispatch } from '../../../../context/DispatchContext.js';
 import { ColorIndicator } from '../ColorIndicator.js';

@@ -1,5 +1,5 @@
 import { Checkbox, Classes, Switch } from '@blueprintjs/core';
-import type { InfoBlockField } from 'nmrium-core';
+import type { InfoBlockField } from '@zakodium/nmrium-core';
 import { useCallback, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';

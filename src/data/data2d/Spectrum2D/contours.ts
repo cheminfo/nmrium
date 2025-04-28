@@ -1,7 +1,7 @@
+import type { Spectrum2D } from '@zakodium/nmrium-core';
 import type { NmrData2DFt } from 'cheminfo-types';
 import { Conrec } from 'ml-conrec';
 import { xMaxAbsoluteValue } from 'ml-spectra-processing';
-import type { Spectrum2D } from 'nmrium-core';
 
 import { calculateSanPlot } from '../../utilities/calculateSanPlot.js';
 

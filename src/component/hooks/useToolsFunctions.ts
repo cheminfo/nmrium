@@ -1,6 +1,6 @@
+import type { NMRiumPanelPreferences } from '@zakodium/nmrium-core';
 import lodashDebounce from 'lodash/debounce.js';
 import lodashMap from 'lodash/map.js';
-import type { NMRiumPanelPreferences } from 'nmrium-core';
 import { useCallback, useRef, useState } from 'react';
 import { useAccordionControls } from 'react-science/ui';
 

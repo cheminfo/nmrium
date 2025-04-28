@@ -1,7 +1,7 @@
+import type { Spectrum1D } from '@zakodium/nmrium-core';
 import merge from 'lodash/merge.js';
 import type { Peaks } from 'nmr-processing';
 import { mapPeaks } from 'nmr-processing';
-import type { Spectrum1D } from 'nmrium-core';
 
 export function initiatePeaks(
   inputSpectrum: Partial<Spectrum1D>,

@@ -1,6 +1,6 @@
+import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { extent } from 'd3';
 import throttle from 'lodash/throttle.js';
-import type { Spectrum1D } from 'nmrium-core';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';

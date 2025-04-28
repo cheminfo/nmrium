@@ -2,7 +2,7 @@ import { Checkbox, Switch, Tab, Tabs } from '@blueprintjs/core';
 import type {
   AutoProcessingFilterEntry,
   WorkspacePreferences,
-} from 'nmrium-core';
+} from '@zakodium/nmrium-core';
 import { useFormContext } from 'react-hook-form';
 
 import { getFilterLabel } from '../../../../data/getFilterLabel.js';

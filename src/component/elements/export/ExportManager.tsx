@@ -1,4 +1,4 @@
-import type { ExportPreferences, ExportSettings } from 'nmrium-core';
+import type { ExportPreferences, ExportSettings } from '@zakodium/nmrium-core';
 import type { ReactNode, RefObject } from 'react';
 import {
   createContext,

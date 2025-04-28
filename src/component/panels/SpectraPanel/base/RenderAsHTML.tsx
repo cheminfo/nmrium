@@ -1,5 +1,5 @@
+import type { Spectrum } from '@zakodium/nmrium-core';
 import dlv from 'dlv';
-import type { Spectrum } from 'nmrium-core';
 
 interface RenderAsHTMLProps {
   data: Spectrum;

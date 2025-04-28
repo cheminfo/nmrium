@@ -1,4 +1,4 @@
-import type { CustomWorkspaces, NMRiumCore } from 'nmrium-core';
+import type { CustomWorkspaces, NMRiumCore } from '@zakodium/nmrium-core';
 import { useCallback, useEffect, useState } from 'react';
 import { ObjectInspector } from 'react-inspector';
 

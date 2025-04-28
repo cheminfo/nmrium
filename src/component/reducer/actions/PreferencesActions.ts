@@ -1,5 +1,5 @@
+import type { Spectrum1D } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
-import type { Spectrum1D } from 'nmrium-core';
 
 import groupByInfoKey from '../../utility/GroupByInfoKey.js';
 import nucleusToString from '../../utility/nucleusToString.js';

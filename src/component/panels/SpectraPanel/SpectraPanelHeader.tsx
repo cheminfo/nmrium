@@ -1,5 +1,9 @@
+import type {
+  ActiveSpectrum,
+  Spectrum,
+  Spectrum2D,
+} from '@zakodium/nmrium-core';
 import { SvgNmrResetScale, SvgNmrSameTop } from 'cheminfo-font';
-import type { ActiveSpectrum, Spectrum, Spectrum2D } from 'nmrium-core';
 import { memo, useCallback } from 'react';
 import { FaCreativeCommonsSamplingPlus } from 'react-icons/fa';
 import { IoColorPaletteOutline } from 'react-icons/io5';

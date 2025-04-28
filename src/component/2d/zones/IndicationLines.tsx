@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import type { Spectrum1D } from 'nmrium-core';
+import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { useEffect, useState } from 'react';
 
 import { SIGNAL_INCLUDED_KINDS } from '../../../data/constants/signalsKinds.js';

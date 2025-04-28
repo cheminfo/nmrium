@@ -1,4 +1,4 @@
-import type { Spectrum } from 'nmrium-core';
+import type { Spectrum } from '@zakodium/nmrium-core';
 
 import nucleusToString from './nucleusToString.js';
 

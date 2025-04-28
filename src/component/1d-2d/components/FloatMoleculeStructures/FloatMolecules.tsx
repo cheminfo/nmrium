@@ -1,5 +1,5 @@
+import type { Spectrum1D, Spectrum2D } from '@zakodium/nmrium-core';
 import type { Ranges, Zones } from 'nmr-processing';
-import type { Spectrum1D, Spectrum2D } from 'nmrium-core';
 import { memo } from 'react';
 
 import type {

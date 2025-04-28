@@ -1,5 +1,5 @@
+import type { NMRiumCore } from '@zakodium/nmrium-core';
 import { fileCollectionFromWebSource } from 'filelist-utils';
-import type { NMRiumCore } from 'nmrium-core';
 import { useEffect, useState } from 'react';
 
 import { useCore } from '../../component/context/CoreContext.js';

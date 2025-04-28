@@ -1,9 +1,3 @@
-import type { NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
-import dlv from 'dlv';
-import type { Draft } from 'immer';
-import { original } from 'immer';
-import type { NMRRange } from 'nmr-processing';
-import { Filters1DManager } from 'nmr-processing';
 import type {
   Color2D,
   Display1D,
@@ -12,7 +6,13 @@ import type {
   Spectrum,
   Spectrum1D,
   Spectrum2D,
-} from 'nmrium-core';
+} from '@zakodium/nmrium-core';
+import type { NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
+import dlv from 'dlv';
+import type { Draft } from 'immer';
+import { original } from 'immer';
+import type { NMRRange } from 'nmr-processing';
+import { Filters1DManager } from 'nmr-processing';
 
 import {
   get1DColor,

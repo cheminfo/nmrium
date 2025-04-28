@@ -1,4 +1,4 @@
-import type { Layout, PageSizeName } from 'nmrium-core';
+import type { Layout, PageSizeName } from '@zakodium/nmrium-core';
 
 interface PageSize {
   name: PageSizeName;

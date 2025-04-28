@@ -1,5 +1,5 @@
+import type { Spectrum, Spectrum2D } from '@zakodium/nmrium-core';
 import type { NmrData2D, NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
-import type { Spectrum, Spectrum2D } from 'nmrium-core';
 
 export function isSpectrum2D(spectrum: Spectrum): spectrum is Spectrum2D {
   return spectrum && spectrum.info.dimension === 2;

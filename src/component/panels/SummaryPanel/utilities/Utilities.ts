@@ -1,3 +1,8 @@
+import type {
+  ActiveSpectrum,
+  Spectrum,
+  Spectrum2D,
+} from '@zakodium/nmrium-core';
 import type { FromTo } from 'cheminfo-types';
 import dlv from 'dlv';
 import lodashCloneDeep from 'lodash/cloneDeep.js';
@@ -10,7 +15,6 @@ import {
   getLinkDim,
   removeLink,
 } from 'nmr-correlation';
-import type { ActiveSpectrum, Spectrum, Spectrum2D } from 'nmrium-core';
 
 import DefaultPathLengths from '../../../../data/constants/DefaultPathLengths.js';
 import {

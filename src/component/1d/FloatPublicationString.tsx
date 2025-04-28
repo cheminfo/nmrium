@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
+import type { BoundingBox } from '@zakodium/nmrium-core';
 import { rangesToACS } from 'nmr-processing';
-import type { BoundingBox } from 'nmrium-core';
 import { useEffect, useState } from 'react';
 import { BsArrowsMove } from 'react-icons/bs';
 import { FaTimes } from 'react-icons/fa';
@@ -195,7 +195,7 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
       output.height = height;
     }
 
-    return output as BoundingBox;
+    return output;
   }
   function convertToPercent(bounding: Partial<BoundingBox>) {
     const { x, y, height, width } = bounding;

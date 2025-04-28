@@ -1,5 +1,5 @@
+import type { NmriumState } from '@zakodium/nmrium-core';
 import { produce } from 'immer';
-import type { NmriumState } from 'nmrium-core';
 import type { ReactNode } from 'react';
 import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
 

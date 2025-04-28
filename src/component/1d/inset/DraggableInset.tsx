@@ -1,14 +1,14 @@
 import styled from '@emotion/styled';
+import type {
+  IntegralsViewState,
+  PeaksViewState,
+  RangesViewState,
+} from '@zakodium/nmrium-core';
 import {
   SvgNmrIntegrate,
   SvgNmrPeaks,
   SvgNmrPeaksTopLabels,
 } from 'cheminfo-font';
-import type {
-  IntegralsViewState,
-  PeaksViewState,
-  RangesViewState,
-} from 'nmrium-core';
 import { useEffect, useState } from 'react';
 import { BsArrowsMove } from 'react-icons/bs';
 import { FaSitemap, FaTimes } from 'react-icons/fa';

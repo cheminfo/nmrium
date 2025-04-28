@@ -1,4 +1,4 @@
-import type { ExportSettings } from 'nmrium-core';
+import type { ExportSettings } from '@zakodium/nmrium-core';
 
 import { convertToPixels } from '../units.js';
 

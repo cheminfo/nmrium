@@ -7,7 +7,7 @@ import type {
   SpectraPreferences,
   Zones1DNucleusPreferences,
   Zones2DNucleusPreferences,
-} from 'nmrium-core';
+} from '@zakodium/nmrium-core';
 
 import { is2DNucleus } from '../../utility/nucleusToString.js';
 

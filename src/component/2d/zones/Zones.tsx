@@ -1,5 +1,5 @@
+import type { Display2D, Spectrum2D } from '@zakodium/nmrium-core';
 import type { Zones as ZonesType } from 'nmr-processing';
-import type { Display2D, Spectrum2D } from 'nmrium-core';
 import { memo } from 'react';
 
 import useSpectrum from '../../hooks/useSpectrum.js';

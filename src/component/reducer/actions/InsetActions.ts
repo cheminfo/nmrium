@@ -1,10 +1,10 @@
-import { scaleLinear, zoomIdentity } from 'd3';
-import type { Draft } from 'immer';
 import type {
   IntegralsViewState,
   PeaksViewState,
   RangesViewState,
-} from 'nmrium-core';
+} from '@zakodium/nmrium-core';
+import { scaleLinear, zoomIdentity } from 'd3';
+import type { Draft } from 'immer';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
 import { insetMargin } from '../../1d/inset/InsetProvider.js';

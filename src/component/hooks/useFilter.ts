@@ -1,5 +1,5 @@
+import type { Spectrum1D, Spectrum2D } from '@zakodium/nmrium-core';
 import type { Filter1DEntry, Filter2DEntry } from 'nmr-processing';
-import type { Spectrum1D, Spectrum2D } from 'nmrium-core';
 import { useMemo } from 'react';
 
 import type { ExtractFilterEntry } from '../../data/types/common/ExtractFilterEntry.js';

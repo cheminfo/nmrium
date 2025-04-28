@@ -1,5 +1,5 @@
+import type { Spectrum2D } from '@zakodium/nmrium-core';
 import type { NmrData1D } from 'cheminfo-types';
-import type { Spectrum2D } from 'nmrium-core';
 
 import { useChartData } from '../../context/ChartContext.js';
 import useSpectrum from '../../hooks/useSpectrum.js';

@@ -1,10 +1,10 @@
-import type { WebSource } from 'filelist-utils';
-import type { CorrelationData } from 'nmr-correlation';
 import type {
   NmriumState as NMRiumState,
   Spectrum,
   WorkspacePreferences as NMRiumPreferences,
-} from 'nmrium-core';
+} from '@zakodium/nmrium-core';
+import type { WebSource } from 'filelist-utils';
+import type { CorrelationData } from 'nmr-correlation';
 
 type DeepPartial<T> = {
   [P in keyof T]?: DeepPartial<T[P]>;

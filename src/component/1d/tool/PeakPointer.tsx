@@ -1,4 +1,4 @@
-import type { Spectrum1D } from 'nmrium-core';
+import type { Spectrum1D } from '@zakodium/nmrium-core';
 
 import { useBrushTracker } from '../../EventsTrackers/BrushTracker.js';
 import { useMouseTracker } from '../../EventsTrackers/MouseTracker.js';
