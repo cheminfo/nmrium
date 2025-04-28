@@ -1,4 +1,4 @@
-import { init } from '@zakodium/nmrium-core-plugins';
+import init from '@zakodium/nmrium-core-plugins';
 import type { ForwardedRef } from 'react';
 import { useMemo, useEffect, useReducer, useRef } from 'react';
 import { useFullscreen } from 'react-science/ui';
