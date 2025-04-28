@@ -7,11 +7,7 @@ import {
   SegmentedControl,
   Tag,
 } from '@blueprintjs/core';
-import type {
-  AdvanceExportSettings,
-  BasicExportSettings,
-  ExportPreferences,
-} from '@zakodium/nmrium-core';
+import type { ExportPreferences } from '@zakodium/nmrium-core';
 import { useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
