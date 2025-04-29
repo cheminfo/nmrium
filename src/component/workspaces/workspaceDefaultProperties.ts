@@ -1,4 +1,4 @@
-import type { WorkspacePreferences } from 'nmr-load-save';
+import type { WorkspacePreferences } from '@zakodium/nmrium-core';
 import { Filters1D } from 'nmr-processing';
 
 import { color2D } from '../../data/data2d/Spectrum2D/get2DColor.js';

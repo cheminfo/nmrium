@@ -2,7 +2,7 @@ import type {
   AdvanceExportSettings,
   BasicExportSettings,
   ExportSettings,
-} from 'nmr-load-save';
+} from '@zakodium/nmrium-core';
 
 import { getPageDimension } from '../../print/pageSize.js';
 
