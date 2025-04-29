@@ -40,7 +40,8 @@ export function get2DColor(
   ) {
     const isRandom = isRandomColorGeneration(options) && options.random;
     const customColor =
-      getCustomColor(spectrum, colors) || color2D?.[spectrum.info.experiment];
+      getCustomColor(spectrum, colors) ||
+      ((color2D?.[spectrum.info.experiment] as Color2D | undefined) ?? null);
 
     if (customColor && !isRandom) {
       color = customColor;
@@ -60,7 +61,10 @@ export function get2DColor(
     usedColors['2d'].push(color.positiveColor);
   }
 
-  return color;
+  return {
+    positiveColor: color.positiveColor ?? '',
+    negativeColor: color.negativeColor ?? '',
+  };
 }
 
 type ExperimentType = 'cosy' | 'roesy' | 'noesy' | 'tocsy' | 'hsqc' | 'hmbc';

@@ -182,7 +182,7 @@ function DraggableRanges(props: DraggablePublicationStringProps) {
   function handleResize(
     internalBounding: Pick<BoundingBox, 'height' | 'width'>,
   ) {
-    const { width, height } = convertToPixel(externalBounding);
+    const { width = 0, height = 0 } = convertToPixel(externalBounding);
     internalBounding.width += width;
     internalBounding.height += height;
     setBounding((prevBounding) => ({
