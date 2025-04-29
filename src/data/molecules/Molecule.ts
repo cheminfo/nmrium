@@ -1,4 +1,4 @@
-import { Molecule as OCLMolecule } from 'openchemlib';
+import { Molecule } from 'openchemlib';
 
 import getAtomsFromMF from '../utilities/getAtomsFromMF.js';
 
@@ -54,7 +54,7 @@ export function initMolecule(
   const label = options.label || 'p#';
   const molfile = options.molfile || '';
 
-  const mol = OCLMolecule.fromMolfile(molfile);
+  const mol = Molecule.fromMolfile(molfile);
   const mfInfo = mol.getMolecularFormula();
 
   return {

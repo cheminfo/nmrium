@@ -1,4 +1,4 @@
-import { Molecule as OCLMolecule } from 'openchemlib';
+import { Molecule } from 'openchemlib';
 import type { CSSProperties, ReactNode } from 'react';
 import { useCallback } from 'react';
 import {
@@ -162,7 +162,7 @@ export default function MoleculePanelHeader({
             break;
           case 'molfileV2': {
             saveAsMolHandler(
-              OCLMolecule.fromMolfile(molecule.molfile).toMolfile(),
+              Molecule.fromMolfile(molecule.molfile).toMolfile(),
             );
 
             break;
