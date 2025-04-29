@@ -1,10 +1,10 @@
+import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { extent } from 'd3';
 import throttle from 'lodash/throttle.js';
-import type { Spectrum1D } from 'nmr-load-save';
-import { readFromWebSource } from 'nmr-load-save';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';
+import { useCore } from '../../context/CoreContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import {
@@ -44,12 +44,13 @@ function DatabaseSpectrum() {
     [height, margin, marginBottom, spectraBottomMargin],
   );
 
+  const core = useCore();
   const loadSpectrum = useRef(
     throttle(async (baseURL: string | undefined, jcampRelativeURL: string) => {
       try {
         setLoading(true);
         const url = new URL(jcampRelativeURL, baseURL);
-        const { data } = await readFromWebSource({
+        const { data } = await core.readFromWebSource({
           entries: [{ relativePath: url.pathname, baseURL: url.origin }],
         });
         setLoading(false);

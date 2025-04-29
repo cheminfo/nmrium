@@ -1,8 +1,8 @@
+import type { Spectrum, Spectrum1D, Spectrum2D } from '@zakodium/nmrium-core';
 import type { NmrData1D, NmrData2DFt } from 'cheminfo-types';
 import type { Draft } from 'immer';
 import { current } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import type { Spectrum, Spectrum1D, Spectrum2D } from 'nmr-load-save';
 import {
   getBaselineZonesByDietrich,
   Filters1DManager,
@@ -1592,12 +1592,12 @@ function deleteFilter(datum: Spectrum, id?: string) {
   if (!id) {
     datum.filters = filters.filter((filter) =>
       nonRemovableFilters.has(filter.name),
-    ) as typeof filters;
+    ) as Filter1DEntry[] | Filter2DEntry[];
   } else {
     removedFilter = datum.filters.find((filter) => filter.id === id);
-    datum.filters = filters.filter(
-      (filter) => filter.id !== id,
-    ) as typeof filters;
+    datum.filters = filters.filter((filter) => filter.id !== id) as
+      | Filter1DEntry[]
+      | Filter2DEntry[];
   }
 
   // do not reprocess the filters when the deleted filter is inactive

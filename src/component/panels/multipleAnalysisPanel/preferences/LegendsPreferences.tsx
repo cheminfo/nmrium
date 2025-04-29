@@ -1,5 +1,5 @@
 import { Button, Classes } from '@blueprintjs/core';
-import type { LegendField, PredefinedLegendField } from 'nmr-load-save';
+import type { LegendField, PredefinedLegendField } from '@zakodium/nmrium-core';
 import { useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';

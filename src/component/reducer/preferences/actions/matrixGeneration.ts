@@ -1,5 +1,5 @@
+import type { MatrixGenerationOptions } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
-import type { MatrixGenerationOptions } from 'nmr-load-save';
 import type { MatrixOptions } from 'nmr-processing';
 
 import type { ZoomOptions } from '../../../EventsTrackers/BrushTracker.js';

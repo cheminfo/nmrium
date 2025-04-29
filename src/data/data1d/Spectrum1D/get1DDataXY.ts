@@ -4,7 +4,7 @@
  * @property {number[]} y - The Y points series
  */
 
-import type { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from '@zakodium/nmrium-core';
 
 /**
  *

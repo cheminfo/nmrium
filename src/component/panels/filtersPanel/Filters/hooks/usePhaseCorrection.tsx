@@ -1,4 +1,4 @@
-import type { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelect } from 'react-science/ui';
 

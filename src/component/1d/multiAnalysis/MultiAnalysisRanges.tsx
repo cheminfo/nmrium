@@ -1,5 +1,5 @@
-import type { SpectraAnalysisColumns } from 'nmr-load-save';
-import { ANALYSIS_COLUMN_TYPES } from 'nmr-load-save';
+import type { SpectraAnalysisColumns } from '@zakodium/nmrium-core';
+import { ANALYSIS_COLUMN_TYPES } from '@zakodium/nmrium-core';
 import { memo } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';

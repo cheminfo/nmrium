@@ -1,4 +1,4 @@
-import type { Spectrum2D } from 'nmr-load-save';
+import type { Spectrum2D } from '@zakodium/nmrium-core';
 
 import { getSlice } from '../../data/data2d/Spectrum2D/index.js';
 import { useMouseTracker } from '../EventsTrackers/MouseTracker.js';

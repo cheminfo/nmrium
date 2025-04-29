@@ -1,5 +1,5 @@
 import { Checkbox, Switch } from '@blueprintjs/core';
-import type { NMRiumPanelPreferences } from 'nmr-load-save';
+import type { NMRiumPanelPreferences } from '@zakodium/nmrium-core';
 import { useCallback, useMemo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 

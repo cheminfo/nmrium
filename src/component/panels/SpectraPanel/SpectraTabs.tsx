@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import type { ActiveSpectrum, Spectrum } from 'nmr-load-save';
+import type { ActiveSpectrum, Spectrum } from '@zakodium/nmrium-core';
 import { memo, useCallback, useMemo } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';

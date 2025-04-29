@@ -1,4 +1,4 @@
-import type { PeaksLabel } from 'nmr-load-save';
+import type { PeaksLabel } from '@zakodium/nmrium-core';
 
 import { usePreferences } from '../context/PreferencesContext.js';
 

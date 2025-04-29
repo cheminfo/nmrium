@@ -1,4 +1,7 @@
-import type { Spectrum2D, SpectrumTwoDimensionsColor } from 'nmr-load-save';
+import type {
+  Spectrum2D,
+  SpectrumTwoDimensionsColor,
+} from '@zakodium/nmrium-core';
 import { Filters2DManager } from 'nmr-processing';
 
 import type { UsedColors } from '../../../types/UsedColors.js';

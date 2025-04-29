@@ -1,4 +1,4 @@
-import type { NMRiumPanelPreferences } from 'nmr-load-save';
+import type { NMRiumPanelPreferences } from '@zakodium/nmrium-core';
 import { createContext, memo, useContext, useMemo, useState } from 'react';
 import { FaRegEdit } from 'react-icons/fa';
 import type { ToolbarItemProps } from 'react-science/ui';

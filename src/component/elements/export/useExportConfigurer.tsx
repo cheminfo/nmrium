@@ -1,4 +1,4 @@
-import type { ExportSettings } from 'nmr-load-save';
+import type { ExportSettings } from '@zakodium/nmrium-core';
 import { useDeferredValue, useRef, useState } from 'react';
 
 import { roundNumber } from '../../utility/roundNumber.js';

@@ -1,6 +1,6 @@
+import type { Spectrum1D } from '@zakodium/nmrium-core';
 import type { Logger } from 'cheminfo-types';
 import { xyIntegration } from 'ml-spectra-processing';
-import type { Spectrum1D } from 'nmr-load-save';
 import type { Range, Signal1D } from 'nmr-processing';
 import { mapRanges } from 'nmr-processing';
 

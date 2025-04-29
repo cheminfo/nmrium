@@ -1,4 +1,4 @@
-import type { Spectrum2D } from 'nmr-load-save';
+import type { Spectrum2D } from '@zakodium/nmrium-core';
 import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { FaUnlink } from 'react-icons/fa';
 import { LuMessageSquareText } from 'react-icons/lu';

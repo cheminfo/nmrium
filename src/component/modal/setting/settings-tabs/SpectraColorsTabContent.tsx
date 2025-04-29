@@ -1,5 +1,5 @@
 import { Classes } from '@blueprintjs/core';
-import type { SpectraColors } from 'nmr-load-save';
+import type { SpectraColors } from '@zakodium/nmrium-core';
 import type { CSSProperties } from 'react';
 import { useCallback, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';

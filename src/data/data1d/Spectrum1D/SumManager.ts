@@ -1,6 +1,6 @@
+import type { Spectrum1D } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
 import { MF } from 'mf-parser';
-import type { Spectrum1D } from 'nmr-load-save';
 import type { Integrals, Ranges, SumOptions } from 'nmr-processing';
 
 import type { State } from '../../../component/reducer/Reducer.js';

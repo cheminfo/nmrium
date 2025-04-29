@@ -1,4 +1,4 @@
-import type { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from '@zakodium/nmrium-core';
 
 import { useScale } from '../../context/ScaleContext.js';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.js';

@@ -1,5 +1,5 @@
+import type { Spectrum1D } from '@zakodium/nmrium-core';
 import merge from 'lodash/merge.js';
-import type { Spectrum1D } from 'nmr-load-save';
 import type { Integrals } from 'nmr-processing';
 import { mapIntegrals } from 'nmr-processing';
 

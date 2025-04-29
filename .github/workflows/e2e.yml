@@ -23,6 +23,8 @@ jobs:
       - name: Install Playwright
         run: npx playwright install --with-deps
       - name: Build test application
+        env:
+          NODE_OPTIONS: --max-old-space-size=3072
         run: npm run build-no-minify
       - name: Run E2E tests on ${{ matrix.project }}
         run: npx playwright test --project ${{ matrix.project }}

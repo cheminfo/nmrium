@@ -1,5 +1,5 @@
+import type { PanelPreferencesType } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
-import type { PanelPreferencesType } from 'nmr-load-save';
 
 import type {
   PreferencesState,

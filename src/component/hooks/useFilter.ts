@@ -1,4 +1,4 @@
-import type { Spectrum1D, Spectrum2D } from 'nmr-load-save';
+import type { Spectrum1D, Spectrum2D } from '@zakodium/nmrium-core';
 import type { Filter1DEntry, Filter2DEntry } from 'nmr-processing';
 import { useMemo } from 'react';
 

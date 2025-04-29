@@ -1,4 +1,4 @@
-import type { Display1D, Display2D } from 'nmr-load-save';
+import type { Display1D, Display2D } from '@zakodium/nmrium-core';
 
 interface ColorIndicator1DProps {
   display: Display1D;

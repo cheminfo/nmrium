@@ -1,5 +1,5 @@
 import { Checkbox } from '@blueprintjs/core';
-import type { NMRiumToolBarPreferences } from 'nmr-load-save';
+import type { NMRiumToolBarPreferences } from '@zakodium/nmrium-core';
 import { useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 

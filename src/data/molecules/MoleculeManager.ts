@@ -1,4 +1,4 @@
-import { readSDF, readSMILES } from 'nmr-load-save';
+import { readSDF, readSMILES } from '@zakodium/nmrium-core-plugins';
 import { Molecule as OCLMolecule } from 'openchemlib/full';
 
 import type { StateMolecule, StateMoleculeExtended } from './Molecule.js';

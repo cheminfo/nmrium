@@ -1,6 +1,6 @@
+import type { Spectrum1D } from '@zakodium/nmrium-core';
 import merge from 'lodash/merge.js';
 import { xyReduce } from 'ml-spectra-processing';
-import type { Spectrum1D } from 'nmr-load-save';
 import {
   Filters1D,
   createApodizationWindowData,

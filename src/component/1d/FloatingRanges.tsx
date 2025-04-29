@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import type { BoundingBox } from 'nmr-load-save';
+import type { BoundingBox } from '@zakodium/nmrium-core';
 import { checkMultiplicity } from 'nmr-processing';
 import type { Ranges } from 'nmr-processing';
 import { memo, useEffect, useState } from 'react';
@@ -182,7 +182,7 @@ function DraggableRanges(props: DraggablePublicationStringProps) {
   function handleResize(
     internalBounding: Pick<BoundingBox, 'height' | 'width'>,
   ) {
-    const { width, height } = convertToPixel(externalBounding);
+    const { width = 0, height = 0 } = convertToPixel(externalBounding);
     internalBounding.width += width;
     internalBounding.height += height;
     setBounding((prevBounding) => ({
@@ -234,7 +234,7 @@ function DraggableRanges(props: DraggablePublicationStringProps) {
       output.height = height;
     }
 
-    return output as BoundingBox;
+    return output;
   }
   function convertToPercent(bounding: Partial<BoundingBox>) {
     const { x, y, height, width } = bounding;

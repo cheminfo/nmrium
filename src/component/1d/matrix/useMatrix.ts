@@ -1,5 +1,5 @@
+import type { Spectrum } from '@zakodium/nmrium-core';
 import type { NumberArray } from 'cheminfo-types';
-import type { Spectrum } from 'nmr-load-save';
 import { useMemo } from 'react';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';

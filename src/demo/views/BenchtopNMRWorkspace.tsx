@@ -1,4 +1,4 @@
-import type { CustomWorkspaces } from 'nmr-load-save';
+import type { CustomWorkspaces } from '@zakodium/nmrium-core';
 
 import View from './View.js';
 

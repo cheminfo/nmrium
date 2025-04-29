@@ -1,4 +1,4 @@
-import type { CustomWorkspaces } from 'nmr-load-save';
+import type { CustomWorkspaces } from '@zakodium/nmrium-core';
 import { useCallback, useState } from 'react';
 import { ObjectInspector } from 'react-inspector';
 

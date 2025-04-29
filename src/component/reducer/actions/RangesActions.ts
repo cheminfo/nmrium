@@ -1,13 +1,13 @@
-import type { Draft } from 'immer';
-import { original } from 'immer';
-import cloneDeep from 'lodash/cloneDeep.js';
-import { xFindClosestIndex } from 'ml-spectra-processing';
 import type {
   BoundingBox,
   RangesViewState,
   Spectrum,
   Spectrum1D,
-} from 'nmr-load-save';
+} from '@zakodium/nmrium-core';
+import type { Draft } from 'immer';
+import { original } from 'immer';
+import cloneDeep from 'lodash/cloneDeep.js';
+import { xFindClosestIndex } from 'ml-spectra-processing';
 import type { Signal1D, Range } from 'nmr-processing';
 import { Filters1DManager } from 'nmr-processing';
 

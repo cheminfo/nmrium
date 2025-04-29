@@ -1,10 +1,9 @@
-import type { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from '@zakodium/nmrium-core';
 import type { Ranges as RangesProps } from 'nmr-processing';
 import { memo } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { ShareDataProvider } from '../../context/ShareDataContext.js';
-import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 
@@ -43,13 +42,11 @@ const emptyData = { ranges: {}, info: {}, display: {} };
 
 export default function Ranges() {
   const {
-    displayerKey,
     view: {
       spectra: { activeTab },
     },
     toolOptions: { selectedTool },
   } = useChartData();
-  const { showIntegrals } = useActiveSpectrumRangesViewState();
   const spectrum = useSpectrum(emptyData) as Spectrum1D;
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
 
@@ -64,12 +61,8 @@ export default function Ranges() {
   return (
     <MemoizedRanges
       ranges={spectrum.ranges}
-      {...{
-        showIntegrals,
-        selectedTool,
-        displayerKey,
-        relativeFormat: rangesPreferences.relative.format,
-      }}
+      selectedTool={selectedTool}
+      relativeFormat={rangesPreferences.relative.format}
     />
   );
 }

@@ -1,4 +1,4 @@
-import type { SpectrumOneDimensionColor } from 'nmr-load-save';
+import type { SpectrumOneDimensionColor } from '@zakodium/nmrium-core';
 
 import type { UsedColors } from '../../../types/UsedColors.js';
 import { generateColor } from '../../utilities/generateColor.js';

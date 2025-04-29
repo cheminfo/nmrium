@@ -1,7 +1,8 @@
 import type {
   CustomWorkspaces,
   WorkspacePreferences as NMRiumPreferences,
-} from 'nmr-load-save';
+  NMRiumCore,
+} from '@zakodium/nmrium-core';
 import type { ReactElement, ReactNode } from 'react';
 import { forwardRef, memo } from 'react';
 import type { ErrorBoundaryPropsWithComponent } from 'react-error-boundary';
@@ -26,6 +27,7 @@ export interface NMRiumProps {
    * Returns a custom spinner that will be rendered while loading data.
    */
   getSpinner?: () => ReactElement;
+  core?: NMRiumCore;
 }
 
 const NMRiumBase = forwardRef<NMRiumRefAPI, NMRiumProps>(function NMRium(

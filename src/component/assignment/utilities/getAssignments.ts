@@ -1,4 +1,4 @@
-import type { Spectrum } from 'nmr-load-save';
+import type { Spectrum } from '@zakodium/nmrium-core';
 import type { Ranges, Zones } from 'nmr-processing';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';

@@ -1,11 +1,11 @@
 import type { ButtonProps } from '@blueprintjs/core';
 import { css } from '@emotion/react';
-import dlv from 'dlv';
 import type {
   JpathTableColumn,
   Spectrum,
   WorkSpacePanelPreferences,
-} from 'nmr-load-save';
+} from '@zakodium/nmrium-core';
+import dlv from 'dlv';
 import { useMemo, useRef, useState } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 import { FaCopy, FaFileExport, FaFileImage } from 'react-icons/fa';

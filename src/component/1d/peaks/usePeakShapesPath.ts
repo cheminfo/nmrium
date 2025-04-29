@@ -1,5 +1,5 @@
+import type { Spectrum1D } from '@zakodium/nmrium-core';
 import type { DataXY } from 'cheminfo-types';
-import type { Spectrum1D } from 'nmr-load-save';
 import type { Peak1D } from 'nmr-processing';
 import { peaksToXY, peakToXY } from 'nmr-processing';
 

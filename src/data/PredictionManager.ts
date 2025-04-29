@@ -1,6 +1,6 @@
+import type { Spectrum } from '@zakodium/nmrium-core';
 import type { Logger } from 'cheminfo-types';
 import { xMinMaxValues } from 'ml-spectra-processing';
-import type { Spectrum } from 'nmr-load-save';
 import type {
   Predicted,
   Prediction1D,

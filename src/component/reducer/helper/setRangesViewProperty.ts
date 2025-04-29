@@ -1,5 +1,5 @@
+import type { RangesViewState } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
-import type { RangesViewState } from 'nmr-load-save';
 
 import { defaultRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
 import type { State } from '../Reducer.js';

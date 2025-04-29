@@ -1,6 +1,6 @@
 import { Global, css } from '@emotion/react';
 import styled from '@emotion/styled';
-import type { PrintPageOptions } from 'nmr-load-save';
+import type { PrintPageOptions } from '@zakodium/nmrium-core';
 import type { ForwardedRef, MouseEvent, ReactNode, RefObject } from 'react';
 import { useCallback } from 'react';
 import { useFullscreen } from 'react-science/ui';

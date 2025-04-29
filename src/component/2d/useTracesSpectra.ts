@@ -1,4 +1,4 @@
-import type { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext.js';

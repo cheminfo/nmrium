@@ -1,6 +1,6 @@
+import type { Spectrum2D } from '@zakodium/nmrium-core';
 import type { NmrData2DFt } from 'cheminfo-types';
 import debounce from 'lodash/debounce.js';
-import type { Spectrum2D } from 'nmr-load-save';
 import type { Filter2DEntry } from 'nmr-processing';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelect } from 'react-science/ui';

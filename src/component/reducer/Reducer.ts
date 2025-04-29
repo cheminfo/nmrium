@@ -1,9 +1,9 @@
+import type { Spectrum, ViewState } from '@zakodium/nmrium-core';
 import type { WebSource as Source } from 'filelist-utils';
 import type { Draft } from 'immer';
 import { original, produce } from 'immer';
 import type { CorrelationData } from 'nmr-correlation';
 import { buildCorrelationData } from 'nmr-correlation';
-import type { Spectrum, ViewState } from 'nmr-load-save';
 import type { BaselineCorrectionZone } from 'nmr-processing';
 import type { Reducer } from 'react';
 

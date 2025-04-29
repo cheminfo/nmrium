@@ -1,4 +1,4 @@
-import type { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from '@zakodium/nmrium-core';
 import type { CSSProperties } from 'react';
 
 import { useBrushTracker } from '../../EventsTrackers/BrushTracker.js';

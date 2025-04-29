@@ -1,4 +1,4 @@
-import type { InnerWorkspace } from 'nmr-load-save';
+import type { InnerWorkspace } from '@zakodium/nmrium-core';
 
 export const basic: InnerWorkspace = {
   label: 'Simple NMR analysis',

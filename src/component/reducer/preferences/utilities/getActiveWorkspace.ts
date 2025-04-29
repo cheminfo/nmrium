@@ -1,5 +1,5 @@
+import type { Workspace } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
-import type { Workspace } from 'nmr-load-save';
 
 import type { PreferencesState } from '../preferencesReducer.js';
 

@@ -1,11 +1,11 @@
-import dlv from 'dlv';
 import type {
   Color2D,
   Spectrum1D,
   Spectrum2D,
   SpectrumOneDimensionColor,
   SpectrumTwoDimensionsColor,
-} from 'nmr-load-save';
+} from '@zakodium/nmrium-core';
+import dlv from 'dlv';
 
 type ReturnColor<ColorType> = ColorType extends SpectrumOneDimensionColor
   ? string

@@ -1,11 +1,11 @@
+import type { NmriumState } from '@zakodium/nmrium-core';
 import { produce } from 'immer';
-import type { NmriumState } from 'nmr-load-save';
-import { readNMRiumObject } from 'nmr-load-save';
 import type { ReactNode } from 'react';
 import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
 
 import { toJSON } from '../../data/SpectraManager.js';
 import { ChartDataProvider } from '../context/ChartContext.js';
+import { useCore } from '../context/CoreContext.js';
 import { DispatchProvider } from '../context/DispatchContext.js';
 import { useLogger } from '../context/LoggerContext.js';
 import { usePreferences } from '../context/PreferencesContext.js';
@@ -32,6 +32,7 @@ const defaultData: NMRiumData = {
 export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
   const { children, onChange, nmriumData = defaultData } = props;
 
+  const core = useCore();
   const { logger } = useLogger();
   const preferencesState = usePreferences();
   const { dispatch: dispatchPreferences } = preferencesState;
@@ -69,12 +70,14 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
   useEffect(() => {
     const { workspace, workspaces = {} } = preferencesState;
     stateRef.current = toJSON(
+      core,
       { data: spectraData, molecules, correlations, source, view, actionType },
       { current: workspaces[workspace.current] },
       { serialize: false, exportTarget: 'onChange' },
     );
   }, [
     actionType,
+    core,
     correlations,
     molecules,
     preferencesState,
@@ -106,7 +109,8 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
       payload: { isLoading: true },
     });
     if (nmriumData) {
-      void readNMRiumObject(nmriumData)
+      void core
+        .readNMRiumObject(nmriumData)
         .then((nmriumState) => {
           if (nmriumState?.settings) {
             dispatchPreferences({
@@ -129,7 +133,7 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
           reportError(error);
         });
     }
-  }, [nmriumData, dispatch, dispatchPreferences]);
+  }, [nmriumData, dispatch, dispatchPreferences, core]);
   const { sortOptions } = useSortSpectra();
 
   const spectra = useMemo(() => {

@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import type { MultipleSpectraAnalysisPreferences as MultipleSpectraAnalysisPreferencesInterface } from 'nmr-load-save';
-import { ANALYSIS_COLUMN_TYPES } from 'nmr-load-save';
+import { ANALYSIS_COLUMN_TYPES } from '@zakodium/nmrium-core';
+import type { MultipleSpectraAnalysisPreferences as MultipleSpectraAnalysisPreferencesInterface } from '@zakodium/nmrium-core';
 import { forwardRef } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as Yup from 'yup';

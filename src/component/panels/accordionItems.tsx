@@ -1,4 +1,5 @@
 import type { IconName } from '@blueprintjs/icons';
+import type { NMRiumPanelPreferences } from '@zakodium/nmrium-core';
 import {
   SvgNmrAssignment2,
   SvgNmrIntegrate,
@@ -6,7 +7,6 @@ import {
   SvgNmrPeakPicking,
   SvgNmrRangePicking,
 } from 'cheminfo-font';
-import type { NMRiumPanelPreferences } from 'nmr-load-save';
 import type { CSSProperties, ReactElement } from 'react';
 import { FaDiceFour } from 'react-icons/fa';
 import type { AccordionItemProps } from 'react-science/ui';

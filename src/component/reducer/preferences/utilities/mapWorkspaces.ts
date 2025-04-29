@@ -1,5 +1,5 @@
+import type { Workspace, WorkSpaceSource } from '@zakodium/nmrium-core';
 import lodashMerge from 'lodash/merge.js';
-import type { Workspace, WorkSpaceSource } from 'nmr-load-save';
 
 import { workspaceDefaultProperties } from '../../../workspaces/workspaceDefaultProperties.js';
 

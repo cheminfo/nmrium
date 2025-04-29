@@ -1,4 +1,7 @@
-import type { Color2D, SpectrumTwoDimensionsColor } from 'nmr-load-save';
+import type {
+  Color2D,
+  SpectrumTwoDimensionsColor,
+} from '@zakodium/nmrium-core';
 
 import type { UsedColors } from '../../../types/UsedColors.js';
 import { adjustAlpha, generateColor } from '../../utilities/generateColor.js';
@@ -37,7 +40,8 @@ export function get2DColor(
   ) {
     const isRandom = isRandomColorGeneration(options) && options.random;
     const customColor =
-      getCustomColor(spectrum, colors) || color2D?.[spectrum.info.experiment];
+      getCustomColor(spectrum, colors) ||
+      ((color2D?.[spectrum.info.experiment] as Color2D | undefined) ?? null);
 
     if (customColor && !isRandom) {
       color = customColor;
@@ -57,7 +61,10 @@ export function get2DColor(
     usedColors['2d'].push(color.positiveColor);
   }
 
-  return color as Color2D;
+  return {
+    positiveColor: color.positiveColor ?? '',
+    negativeColor: color.negativeColor ?? '',
+  };
 }
 
 type ExperimentType = 'cosy' | 'roesy' | 'noesy' | 'tocsy' | 'hsqc' | 'hmbc';

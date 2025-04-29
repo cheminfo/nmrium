@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import type { WorkSpacePanelPreferences } from 'nmr-load-save';
+import type { WorkSpacePanelPreferences } from '@zakodium/nmrium-core';
 import type { Info1D } from 'nmr-processing';
 import { FaLink } from 'react-icons/fa';
 

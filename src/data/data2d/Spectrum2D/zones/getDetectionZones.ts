@@ -1,4 +1,4 @@
-import type { Spectrum2D } from 'nmr-load-save';
+import type { Spectrum2D } from '@zakodium/nmrium-core';
 import { xyzAutoZonesPicking } from 'nmr-processing';
 
 export interface DetectionZonesOptions {

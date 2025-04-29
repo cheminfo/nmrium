@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import type { ExportOptions } from '../../data/SpectraManager.js';
 import { toJSON } from '../../data/SpectraManager.js';
 import { useChartData } from '../context/ChartContext.js';
+import { useCore } from '../context/CoreContext.js';
 import { usePreferences } from '../context/PreferencesContext.js';
 import { useToaster } from '../context/ToasterContext.js';
 import {
@@ -24,6 +25,7 @@ export function useExport() {
   const toaster = useToaster();
   const state = useChartData();
   const preferencesState = usePreferences();
+  const core = useCore();
 
   const saveAsJSONHandler = useCallback(
     (spaceIndent = 0, isCompressed = true) => {
@@ -34,7 +36,7 @@ export function useExport() {
       try {
         void (async () => {
           const fileName = state.data[0]?.info?.name;
-          const exportedData = toJSON(state, preferencesState, {
+          const exportedData = toJSON(core, state, preferencesState, {
             exportTarget: 'nmrium',
             view: true,
           });
@@ -46,7 +48,7 @@ export function useExport() {
         reportError(error);
       }
     },
-    [preferencesState, state, toaster],
+    [core, preferencesState, state, toaster],
   );
 
   const saveHandler = useCallback(
@@ -58,7 +60,7 @@ export function useExport() {
         });
         setTimeout(() => {
           void (async () => {
-            const exportedData = toJSON(state, preferencesState, {
+            const exportedData = toJSON(core, state, preferencesState, {
               ...include,
               exportTarget: 'nmrium',
             });
@@ -71,7 +73,7 @@ export function useExport() {
 
       void handler();
     },
-    [preferencesState, state, toaster],
+    [core, preferencesState, state, toaster],
   );
 
   return {

@@ -1,4 +1,4 @@
-import type { NMRiumToolBarPreferences } from 'nmr-load-save';
+import type { NMRiumToolBarPreferences } from '@zakodium/nmrium-core';
 import type { Info1D, Info2D } from 'nmr-processing';
 import { Filters1D, Filters2D } from 'nmr-processing';
 

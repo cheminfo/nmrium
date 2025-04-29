@@ -1,9 +1,13 @@
+import type {
+  Spectrum,
+  Spectrum2D,
+  ZonesViewState,
+} from '@zakodium/nmrium-core';
 import type { FromTo, NmrData2DFt } from 'cheminfo-types';
 import type { Draft } from 'immer';
 import { original } from 'immer';
 import lodashCloneDeep from 'lodash/cloneDeep.js';
 import { setPathLength } from 'nmr-correlation';
-import type { Spectrum, Spectrum2D, ZonesViewState } from 'nmr-load-save';
 import type { Filter2DEntry, Signal2D, Zone } from 'nmr-processing';
 import { Filters2DManager } from 'nmr-processing';
 

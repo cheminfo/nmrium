@@ -1,4 +1,4 @@
-import type { PeaksViewState } from 'nmr-load-save';
+import type { PeaksViewState } from '@zakodium/nmrium-core';
 
 import { useInsetOptions } from '../1d/inset/InsetProvider.js';
 import { useChartData } from '../context/ChartContext.js';

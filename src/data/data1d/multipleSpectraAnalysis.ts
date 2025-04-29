@@ -1,4 +1,7 @@
-import dlv from 'dlv';
+import {
+  ANALYSIS_COLUMN_TYPES,
+  ANALYSIS_COLUMN_VALUES_KEYS,
+} from '@zakodium/nmrium-core';
 import type {
   AnalysisColumnsValuesKeys,
   AnalysisOptions,
@@ -10,11 +13,8 @@ import type {
   Spectrum,
   Spectrum1D,
   WorkSpacePanelPreferences,
-} from 'nmr-load-save';
-import {
-  ANALYSIS_COLUMN_TYPES,
-  ANALYSIS_COLUMN_VALUES_KEYS,
-} from 'nmr-load-save';
+} from '@zakodium/nmrium-core';
+import dlv from 'dlv';
 
 import type { RangeDetectionResult } from '../types/data1d/index.js';
 import { convertSpectraArrayToObject } from '../utilities/convertSpectraListToObject.js';

@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import { FormProvider, useFormContext } from 'react-hook-form';
 import * as Yup from 'yup';
 
+import { useDispatch } from '../../../../context/DispatchContext.js';
 import Label from '../../../../elements/Label.js';
 import { NumberInput2Controller } from '../../../../elements/NumberInput2Controller.js';
 import { ReadOnly } from '../../../../elements/ReadOnly.js';
@@ -14,7 +15,6 @@ import { useApodization } from '../hooks/useApodization.js';
 import type { ApodizationFilterEntry } from '../hooks/useApodization.js';
 import { formLabelStyle } from '../index.js';
 import type { BaseFilterOptionsPanelProps } from '../index.js';
-import { useDispatch } from '../../../../context/DispatchContext.js';
 
 const advanceValidationSchema = Yup.object().shape({
   options: Yup.object().shape({

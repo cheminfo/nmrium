@@ -1,7 +1,7 @@
 import { Dialog } from '@blueprintjs/core';
 import styled from '@emotion/styled';
+import type { ActiveSpectrum } from '@zakodium/nmrium-core';
 import { xGetFromToIndex, xyToXYObject } from 'ml-spectra-processing';
-import type { ActiveSpectrum } from 'nmr-load-save';
 import { xreimMultipletAnalysis } from 'nmr-processing';
 import { useEffect, useState } from 'react';
 import { Axis, LineSeries, Plot } from 'react-plot';

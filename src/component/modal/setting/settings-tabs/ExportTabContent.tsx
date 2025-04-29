@@ -7,11 +7,7 @@ import {
   SegmentedControl,
   Tag,
 } from '@blueprintjs/core';
-import type {
-  AdvanceExportSettings,
-  BasicExportSettings,
-  ExportPreferences,
-} from 'nmr-load-save';
+import type { ExportPreferences } from '@zakodium/nmrium-core';
 import { useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
@@ -83,12 +79,10 @@ function ExportOptions(props: ExportOptionsProps) {
   const defaultValue = getValues(path);
   const currentOptions = watch(path) || defaultValue;
 
-  const {
-    dpi = 0,
-    unit,
-    mode: originalMode,
-    layout,
-  } = currentOptions as AdvanceExportSettings & BasicExportSettings;
+  const { dpi = 0, mode: originalMode } = currentOptions;
+  const layout = 'layout' in currentOptions ? currentOptions.layout : undefined;
+  const unit = 'unit' in currentOptions ? currentOptions.unit : undefined;
+
   const [mode, setMode] = useState<Mode>(originalMode);
 
   const {

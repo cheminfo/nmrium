@@ -1,4 +1,4 @@
-import type { Display2D, Spectrum2D } from 'nmr-load-save';
+import type { Display2D, Spectrum2D } from '@zakodium/nmrium-core';
 import type { Zones as ZonesType } from 'nmr-processing';
 import { memo } from 'react';
 

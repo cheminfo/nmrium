@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import type { SerializedStyles } from '@emotion/react';
 import { css } from '@emotion/react';
-import type { Spectrum1D, Spectrum2D } from 'nmr-load-save';
+import type { Spectrum1D, Spectrum2D } from '@zakodium/nmrium-core';
 import type { Ranges, Zones } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 import { memo, useEffect, useState } from 'react';

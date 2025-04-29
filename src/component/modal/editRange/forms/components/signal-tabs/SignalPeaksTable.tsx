@@ -1,6 +1,6 @@
 import { Button, Classes } from '@blueprintjs/core';
+import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import type { Spectrum1D } from 'nmr-load-save';
 import type { Peak1D } from 'nmr-processing';
 import { getShiftX } from 'nmr-processing';
 import type { CSSProperties } from 'react';

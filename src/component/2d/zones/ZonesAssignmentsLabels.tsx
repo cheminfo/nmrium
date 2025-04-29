@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import type { Spectrum2D } from 'nmr-load-save';
+import type { Spectrum2D } from '@zakodium/nmrium-core';
 import type { Zone, Zones as ZonesType } from 'nmr-processing';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { PiTextTSlash } from 'react-icons/pi';

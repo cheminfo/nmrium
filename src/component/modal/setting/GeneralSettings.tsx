@@ -1,7 +1,7 @@
 import { Classes, Dialog, DialogFooter, Tab, Tabs } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
-import type { Workspace } from 'nmr-load-save';
+import type { Workspace } from '@zakodium/nmrium-core';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import {
   FormProvider,

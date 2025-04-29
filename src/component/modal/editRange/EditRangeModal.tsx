@@ -1,7 +1,7 @@
 import { Button, DialogFooter } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
-import type { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { splitPatterns } from 'nmr-processing';
 import type { Jcoupling, Range, Signal1D } from 'nmr-processing';
 import { useCallback, useEffect, useMemo, useRef } from 'react';

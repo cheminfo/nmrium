@@ -1,5 +1,5 @@
+import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { xyIntegral, xyMaxY } from 'ml-spectra-processing';
-import type { Spectrum1D } from 'nmr-load-save';
 import type { Integral as IntegralType } from 'nmr-processing';
 
 import { useChartData } from '../../context/ChartContext.js';

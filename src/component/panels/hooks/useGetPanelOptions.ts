@@ -1,4 +1,4 @@
-import type { PanelPreferencesType } from 'nmr-load-save';
+import type { PanelPreferencesType } from '@zakodium/nmrium-core';
 import { useCallback } from 'react';
 
 import { usePreferences } from '../../context/PreferencesContext.js';

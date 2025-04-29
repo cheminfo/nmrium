@@ -1,4 +1,4 @@
-import type { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from '@zakodium/nmrium-core';
 import type { NMRPeak1D, Peak1D, Range } from 'nmr-processing';
 import { memo, useMemo } from 'react';
 

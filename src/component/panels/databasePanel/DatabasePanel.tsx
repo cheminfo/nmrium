@@ -1,5 +1,9 @@
-import type { Database, NmriumState, Spectrum1D } from 'nmr-load-save';
-import { readFromWebSource, serializeNmriumState } from 'nmr-load-save';
+import type {
+  Database,
+  NMRiumCore,
+  NmriumState,
+  Spectrum1D,
+} from '@zakodium/nmrium-core';
 import type { DatabaseNMREntry } from 'nmr-processing';
 import { mapRanges } from 'nmr-processing';
 import { Molecule as OCLMolecule } from 'openchemlib/full';
@@ -18,6 +22,7 @@ import {
   prepareData,
 } from '../../../data/data1d/database.js';
 import { useChartData } from '../../context/ChartContext.js';
+import { useCore } from '../../context/CoreContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { usePreferences } from '../../context/PreferencesContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
@@ -275,6 +280,7 @@ function DatabasePanelInner({
     return prepareData(result.data);
   }, [result.data]);
 
+  const core = useCore();
   const resurrectHandler = useCallback(
     (rowData) => {
       const {
@@ -295,7 +301,7 @@ function DatabasePanelInner({
           });
 
           try {
-            const { data } = await readFromWebSource({
+            const { data } = await core.readFromWebSource({
               entries: [{ baseURL: url.origin, relativePath: url.pathname }],
             });
             const spectrum = data?.spectra?.[0] || null;
@@ -318,7 +324,7 @@ function DatabasePanelInner({
         });
       }
     },
-    [dispatch, result.data, toaster],
+    [core, dispatch, result.data, toaster],
   );
   const saveHandler = useCallback(
     (row) => {
@@ -329,7 +335,7 @@ function DatabasePanelInner({
           });
 
           try {
-            await saveJcampAsJson(row, result);
+            await saveJcampAsJson(core, row, result);
             hideLoading();
           } catch {
             toaster.show({
@@ -344,7 +350,7 @@ function DatabasePanelInner({
         toaster.show({ message: 'No jcamp file to save', intent: 'danger' });
       }
     },
-    [result, toaster],
+    [core, result, toaster],
   );
   const removeHandler = useCallback(
     (row) => {
@@ -500,12 +506,12 @@ function mapSolventsToSelect(solvents: string[]) {
   return result;
 }
 
-async function saveJcampAsJson(rowData, filteredData) {
+async function saveJcampAsJson(core: NMRiumCore, rowData, filteredData) {
   const { index, baseURL, jcampURL, names, ocl = {}, smiles } = rowData;
   const { ranges } = filteredData.data[index];
   const url = new URL(jcampURL, baseURL);
   const { data: { spectra, source } = { source: {}, spectra: [] }, version } =
-    await readFromWebSource({
+    await core.readFromWebSource({
       entries: [{ baseURL: url.origin, relativePath: url.pathname }],
     });
 
@@ -541,7 +547,7 @@ async function saveJcampAsJson(rowData, filteredData) {
     }
   }
 
-  const exportedData = serializeNmriumState(
+  const exportedData = core.serializeNmriumState(
     {
       version,
       data: {

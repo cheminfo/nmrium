@@ -1,5 +1,5 @@
+import type { Spectrum } from '@zakodium/nmrium-core';
 import { SvgNmr2D, SvgNmrFid, SvgNmrFt } from 'cheminfo-font';
-import type { Spectrum } from 'nmr-load-save';
 import type { CSSProperties } from 'react';
 
 interface SpectrumNameProps {

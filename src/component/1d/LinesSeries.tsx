@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import type { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from '@zakodium/nmrium-core';
 
 import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY.js';
 import { isSpectrum1D } from '../../data/data1d/Spectrum1D/isSpectrum1D.js';

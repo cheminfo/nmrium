@@ -1,5 +1,5 @@
+import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { scaleLinear } from 'd3';
-import type { Spectrum1D } from 'nmr-load-save';
 import type { Signal1D } from 'nmr-processing';
 import { memo, useMemo } from 'react';
 
