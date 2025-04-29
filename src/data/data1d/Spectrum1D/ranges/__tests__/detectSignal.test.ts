@@ -30,7 +30,6 @@ describe('lineBroadening', () => {
     )[0];
     expect(result?.multiplicity).toBe('t');
     expect(result?.delta).toBeCloseTo(1, 3);
-    // @ts-expect-error Coupling exists.
     expect(result?.js[0].coupling).toBeCloseTo(7.2, 2);
   });
 });
