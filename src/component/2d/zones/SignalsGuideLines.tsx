@@ -1,9 +1,10 @@
 import styled from '@emotion/styled';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 
-import { SIGNAL_INCLUDED_KINDS } from '../../../data/constants/signalsKinds.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useTracesSpectra } from '../useTracesSpectra.js';
+import { extractSpectrumSignals } from '../utilities/extractSpectrumSignals.js';
+import type { BaseSignal } from '../utilities/extractSpectrumSignals.js';
 import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 
 const IndicatorLine = styled.line`
@@ -23,39 +24,13 @@ interface IndicationLinesProps extends SignalsGuideLinesProps {
 const labelSize = 12;
 const padding = 2;
 
-interface BaseSignal {
-  assignment?: string;
-  delta: number;
-  id: string;
-}
-
 interface ProcessedSignal extends BaseSignal {
   labelWidth: number;
   deltaInPixel: number;
 }
 
-function getSignals(spectrum: Spectrum1D) {
-  const result: BaseSignal[] = [];
-
-  for (const range of spectrum.ranges.values) {
-    const { assignment, signals = [] } = range;
-    for (const signal of signals) {
-      const { id, delta, kind } = signal;
-      if (SIGNAL_INCLUDED_KINDS.includes(kind as string)) {
-        result.push({
-          assignment,
-          delta,
-          id,
-        });
-      }
-    }
-  }
-
-  return result;
-}
-
 function useSignalsOverlap(axis: IndicationLinesAxis, spectrum: Spectrum1D) {
-  const signals = getSignals(spectrum);
+  const signals = extractSpectrumSignals(spectrum);
   const scaleX = useScale2DX();
   const scaleY = useScale2DY();
 

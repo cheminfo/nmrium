@@ -5,6 +5,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { PiTextTSlash } from 'react-icons/pi';
 
 import { FieldEdition } from '../../1d-2d/FieldEdition.js';
+import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useGlobal } from '../../context/GlobalContext.js';
 import { useShareData } from '../../context/ShareDataContext.js';
@@ -15,6 +16,10 @@ import useDraggable from '../../elements/draggable/useDraggable.js';
 import { useHighlight } from '../../highlight/index.js';
 import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
+import { getTracesSpectra } from '../useTracesSpectra.js';
+import type { GetTracesSpectraOptions } from '../useTracesSpectra.js';
+import { extractSpectrumSignals } from '../utilities/extractSpectrumSignals.js';
+import type { BaseSignal } from '../utilities/extractSpectrumSignals.js';
 import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 
 interface ZonesInnerProps {
@@ -223,9 +228,81 @@ interface Boundary {
   height: number;
 }
 
+interface GetDefaultAssignmentOptions extends GetTracesSpectraOptions {
+  zone: Zone;
+}
+
+function findClosestAssignment(signals: BaseSignal[], target: number) {
+  if (signals.length === 0) return '';
+  let closest = signals[0];
+  let minDiff = Math.abs(closest.delta - target);
+
+  for (let i = 1; i < signals.length; i++) {
+    const { delta } = signals[i];
+    const diff = Math.abs(delta - target);
+    if (diff < minDiff) {
+      closest = signals[i];
+      minDiff = diff;
+    }
+  }
+
+  return closest.assignment || '';
+}
+
+function getAssignmentLabel(
+  spectrum,
+  options: { from: number; to: number; center: number },
+) {
+  if (!spectrum) return null;
+  const { center, from, to } = options;
+  const signalList = extractSpectrumSignals(spectrum, { from, to }).sort(
+    (a, b) => a.delta - b.delta,
+  );
+  return findClosestAssignment(signalList, center);
+}
+
+function getDefaultAssignmentLabel(options: GetDefaultAssignmentOptions) {
+  const { zone, activeSpectra, nuclei, spectra } = options;
+  const { signals, x, y } = zone;
+  if (signals.length === 0) return '';
+
+  const [topSpectrum, leftSpectrum] = getTracesSpectra({
+    activeSpectra,
+    nuclei,
+    spectra,
+  });
+
+  const centerX = x.from + x.to / 2;
+  const centerY = y.from + y.to / 2;
+
+  const xLabel = getAssignmentLabel(topSpectrum, {
+    from: x.from,
+    to: x.to,
+    center: centerX,
+  });
+  const yLabel = getAssignmentLabel(leftSpectrum, {
+    from: y.from,
+    to: y.to,
+    center: centerY,
+  });
+
+  if (nuclei[0] === nuclei[1] && xLabel === yLabel) {
+    return xLabel || '';
+  }
+
+  return [xLabel, yLabel].filter(Boolean).join(',');
+}
+
 function AssignmentLabel(props: AssignmentLabelProps) {
   const { zone } = props;
-  const { id, x, y, assignment } = zone;
+  const {
+    data: spectra,
+    view: {
+      spectra: { activeTab, activeSpectra },
+    },
+  } = useChartData();
+  const { id, x, y } = zone;
+  let { assignment } = zone;
   const dispatch = useDispatch();
   const { isActive } = useHighlight([zone.id]);
   const { assignmentsLabelsCoordinates } = useActiveSpectrumZonesViewState();
@@ -343,6 +420,16 @@ function AssignmentLabel(props: AssignmentLabelProps) {
   }
 
   const { width, height } = labelBoundary;
+
+  if (!assignment && activeSpectra) {
+    const nuclei = activeTab.split(',');
+    assignment = getDefaultAssignmentLabel({
+      zone,
+      spectra,
+      nuclei,
+      activeSpectra,
+    });
+  }
 
   return (
     <GroupContainer isMoveActive={isMoveActive}>
