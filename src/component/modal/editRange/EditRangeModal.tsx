@@ -4,7 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { splitPatterns } from 'nmr-processing';
 import type { Jcoupling, Range, Signal1D } from 'nmr-processing';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { FaSearchPlus } from 'react-icons/fa';
 
@@ -16,6 +16,7 @@ import { StyledDialogBody } from '../../elements/StyledDialogBody.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import useEditRangeModal from '../../panels/RangesPanel/hooks/useEditRangeModal.js';
+import { useWatchForm } from '../../useWatchForm.js';
 import { formatNumber } from '../../utility/formatNumber.js';
 
 import SignalsContent from './forms/components/SignalsContent.js';
@@ -99,30 +100,20 @@ function InnerEditRangeModal(props: InnerEditRangeModalProps) {
     resolver: yupResolver(editRangeFormValidation) as any,
   });
 
-  const isDirtyRef = useRef<boolean>(true);
-
-  useEffect(() => {
-    isDirtyRef.current = false;
-    methods.reset(range);
-  }, [methods, range, rangesPreferences.coupling.format]);
-
-  useEffect(() => {
-    const { unsubscribe } = methods.watch(async (values) => {
+  useWatchForm({
+    reset: methods.reset,
+    initialValues: range,
+    control: methods.control,
+    onChange: async (values) => {
       const isValid = await editRangeFormValidation.isValid(values);
       if (!isValid) return;
-      if (isDirtyRef.current) {
-        const range = mapRange(values as Range);
-
-        dispatch({
-          type: 'UPDATE_RANGE',
-          payload: { range },
-        });
-      }
-
-      isDirtyRef.current = true;
-    });
-    return () => unsubscribe();
-  }, [dispatch, methods, methods.watch]);
+      const range = mapRange(values as Range);
+      dispatch({
+        type: 'UPDATE_RANGE',
+        payload: { range },
+      });
+    },
+  });
 
   if (!rangesPreferences || !range) {
     return;
