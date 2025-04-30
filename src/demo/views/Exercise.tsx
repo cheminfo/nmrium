@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { Molecule } from 'openchemlib';
-import { useCallback, useEffect, useState } from 'react';
 import type { CSSProperties } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { MF } from 'react-mf';
 import { CanvasMoleculeEditor } from 'react-ocl';
 
@@ -137,7 +137,7 @@ export default function Exercise(props) {
     (response) => {
       if (!data?.answer) return;
 
-      const MolResponse = Molecule.fromMolfile(response);
+      const MolResponse = Molecule.fromMolfile(response.getMolfileV3());
       const idCodeResponse = MolResponse.getIDCode();
       answers[data.answer.idCode] = idCodeResponse;
 
@@ -215,6 +215,8 @@ export default function Exercise(props) {
               fragment={false}
               onChange={checkAnswer}
               inputValue={data?.answer?.currentAnswer}
+              width={675}
+              height={450}
             />
           </StructureEditorContainer>
           <BottomRightContainer>

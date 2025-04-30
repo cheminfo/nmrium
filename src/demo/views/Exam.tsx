@@ -187,7 +187,7 @@ export default function Exam(props) {
   const checkAnswer = useCallback(
     (response) => {
       if (data.answer) {
-        const MolResponse = Molecule.fromMolfile(response);
+        const MolResponse = Molecule.fromMolfile(response.getMolfileV3());
         const idCodeResponse = MolResponse.getIDCode();
         answers[data.answer.idCode] = idCodeResponse;
         localStorage.setItem('nmrium-exams', JSON.stringify(answers));
@@ -248,6 +248,8 @@ export default function Exam(props) {
               fragment={false}
               onChange={checkAnswer}
               inputValue={data?.answer?.currentAnswer}
+              width={675}
+              height={450}
             />
           </StructureEditorContainer>
           <BottomRightContainer>

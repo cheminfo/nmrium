@@ -113,6 +113,8 @@ function MoleculeStructureEditorModal(
           inputValue={initialEnhancedMolfile?.molfile}
           fragment={false}
           onChange={cb}
+          width={675}
+          height={450}
         />
       </StyledDialogBody>
       <DialogFooter>

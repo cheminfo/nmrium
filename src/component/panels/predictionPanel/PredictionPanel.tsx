@@ -2,8 +2,8 @@ import { Molecule } from 'openchemlib';
 import type { CSSProperties } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
-import { CanvasMoleculeEditor } from 'react-ocl';
 import type { CanvasEditorOnChangeMolecule } from 'react-ocl';
+import { CanvasMoleculeEditor } from 'react-ocl';
 import { useAccordionControls } from 'react-science/ui';
 
 import { predictSpectra } from '../../../data/PredictionManager.js';
@@ -67,7 +67,8 @@ export default function PredictionPanel() {
   }, [molecules]);
 
   function changeHandler(event: CanvasEditorOnChangeMolecule) {
-    const molecule = Molecule.fromIDCode(event.getIdcode());
+    const molfile = event.getMolfileV3();
+    const molecule = Molecule.fromMolfile(molfile);
     const atoms = molecule.getAllAtoms();
     if (atoms === 0) {
       setMolfile(null);

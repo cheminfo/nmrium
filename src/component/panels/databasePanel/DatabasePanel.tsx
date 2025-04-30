@@ -420,12 +420,13 @@ function DatabasePanelInner({
             onDatabaseChange={handleChangeDatabase}
             onRemoveAll={removeAllHandler}
           />
-          <DatabaseStructureSearchModal
-            isOpen={isOpenSearchByStructure}
-            onClose={closeSearchByStructure}
-            onChange={searchByStructureHandler}
-            idCode={idCode}
-          />
+          {isOpenSearchByStructure && (
+            <DatabaseStructureSearchModal
+              onClose={closeSearchByStructure}
+              onChange={searchByStructureHandler}
+              initialIdCode={idCode}
+            />
+          )}
         </>
       )}
       {isFlipped && (
