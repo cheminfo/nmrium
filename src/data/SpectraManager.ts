@@ -1,14 +1,17 @@
-import { CURRENT_EXPORT_VERSION } from '@zakodium/nmrium-core';
 import type {
   NMRiumCore,
   Spectrum,
   StateMolecule,
   Workspace,
 } from '@zakodium/nmrium-core';
-import { processJcamp, spectrum1DToJcamp } from '@zakodium/nmrium-core-plugins';
+import { CURRENT_EXPORT_VERSION } from '@zakodium/nmrium-core';
+import {
+  processJCAMPDX,
+  spectrum1DToJCAMPDX,
+} from '@zakodium/nmrium-core-plugins';
 import fileSaver from 'file-saver';
 import JSZip from 'jszip';
-import OCL from 'openchemlib/full';
+import * as OCL from 'openchemlib';
 
 import type { State } from '../component/reducer/Reducer.js';
 
@@ -46,7 +49,7 @@ function getData(datum, usedColors) {
 export function addJcamp(output, jcamp, options, usedColors) {
   options = options || {};
   const name = options?.info?.name;
-  const { spectra: spectraIn } = processJcamp(jcamp, {
+  const { spectra: spectraIn } = processJCAMPDX(jcamp, {
     name,
     converter: {
       keepRecordsRegExp: /.*/,
@@ -161,7 +164,7 @@ export function exportAsJcamp(
   const onlyReal =
     dataExportStage === 'processedReal' || dataExportStage === 'originalFtReal';
 
-  jcamp = spectrum1DToJcamp(exportedSpectrum, {
+  jcamp = spectrum1DToJCAMPDX(exportedSpectrum, {
     onlyReal,
   });
 
@@ -191,7 +194,7 @@ export async function exportForCT(options: ExportForCTOptions) {
     throw new Error('Molecule file is required. Please add a molecule');
   }
 
-  const jcamp = spectrum1DToJcamp(spectrum, {
+  const jcamp = spectrum1DToJCAMPDX(spectrum, {
     onlyReal: true,
   });
 

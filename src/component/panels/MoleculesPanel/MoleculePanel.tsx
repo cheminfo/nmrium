@@ -3,7 +3,6 @@ import type { SerializedStyles } from '@emotion/react';
 import { css } from '@emotion/react';
 import type { Spectrum1D, Spectrum2D } from '@zakodium/nmrium-core';
 import type { Ranges, Zones } from 'nmr-processing';
-import OCL from 'openchemlib/full';
 import { memo, useEffect, useState } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 import OCLnmr from 'react-ocl-nmr';
@@ -152,7 +151,6 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
                           }}
                         >
                           <OCLnmr
-                            OCL={OCL}
                             id={`molSVG${index}`}
                             width={width}
                             height={height - 60}

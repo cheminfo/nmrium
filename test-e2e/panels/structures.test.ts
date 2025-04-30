@@ -5,6 +5,7 @@ import NmriumPage from '../NmriumPage/index.js';
 
 test('should draw structure and display it with MF', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
+
   // Open the "Structures" panel.
   await nmrium.clickPanel('Chemical structures');
 
@@ -12,34 +13,25 @@ test('should draw structure and display it with MF', async ({ page }) => {
     // The SVG container should not be rendered when there are no molecules.
     await expect(nmrium.page.locator('.mol-svg-container ')).toBeHidden();
   });
+
   await test.step('Add ring molecule', async () => {
     // Click on the "Add Molecule" button.
     await nmrium.clickToolByTitle('Add molecule');
-    await nmrium.page
-      .locator('div[role="dialog"]')
-      .waitFor({ state: 'visible' });
 
-    // Select the "ring" tool.
-    await nmrium.page.click('canvas >> nth=0', {
-      position: {
-        x: 35,
-        y: 200,
-      },
-    });
+    // Select the aromatic ring tool.
+    await nmrium.moleculeEditor.clickTool('aromaticRing');
     // Draw the ring.
-    await nmrium.page.click('canvas >> nth=1', {
-      position: {
-        x: 50,
-        y: 50,
-      },
-    });
+    await nmrium.moleculeEditor.clickDrawArea({ x: 50, y: 50 });
+
     // Save the molecule.
     await nmrium.page.click('button >> text=Save');
+
+    await nmrium.page
+      .locator('div[role="dialog"]')
+      .waitFor({ state: 'hidden' });
   });
 
-  await nmrium.page.locator('div[role="dialog"]').waitFor({ state: 'hidden' });
-
-  await test.step('Check the visibly of the aromatic ring molecule', async () => {
+  await test.step('Check the visibly of the benzene molecule', async () => {
     // The molecule SVG rendering should now be visible in the panel.
     await expect(
       nmrium.page.locator('.mol-svg-container #molSVG0'),
@@ -60,24 +52,12 @@ test('should draw structure and display it with MF', async ({ page }) => {
   await test.step('Add a second molecule and check the visibility', async () => {
     // Click on the "Add Molecule" button.
     await nmrium.clickToolByTitle('Add molecule');
-    await nmrium.page
-      .locator('div[role="dialog"]')
-      .waitFor({ state: 'visible' });
 
-    // Select the "aromatic ring" tool.
-    await nmrium.page.click('canvas >> nth=0', {
-      position: {
-        x: 35,
-        y: 180,
-      },
-    });
-    // Draw the aromatic ring.
-    await nmrium.page.click('canvas >> nth=1', {
-      position: {
-        x: 50,
-        y: 50,
-      },
-    });
+    // Select the hexane tool.
+    await nmrium.moleculeEditor.clickTool('hexane');
+    // Draw the ring.
+    await nmrium.moleculeEditor.clickDrawArea({ x: 50, y: 50 });
+
     // Save the molecule.
     await nmrium.page.click('button >> text=Save');
     await nmrium.page
@@ -100,6 +80,7 @@ test('should draw structure and display it with MF', async ({ page }) => {
     // The number of molecules should now be visible in the panel.
     await expect(nmrium.page.locator('text=2 / 2')).toBeVisible();
   });
+
   await test.step('Switch between molecules', async () => {
     // Start with the second molecule.
     await expect(nmrium.page.locator('text=2 / 2')).toBeVisible();
@@ -149,27 +130,19 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
       nmrium.page.locator('_react=MoleculePanel >> text=1 / 1'),
     ).toBeVisible();
   });
-  await test.step('Add ring molecule and check the visibility', async () => {
+
+  await test.step('Add benzene molecule and check the visibility', async () => {
     // Click on the "Add Molecule" button.
     await nmrium.clickToolByTitle('Add molecule');
-    await nmrium.page
-      .locator('div[role="dialog"]')
-      .waitFor({ state: 'visible' });
 
-    // Select the "ring" tool.
-    await nmrium.page.click('canvas >> nth=0', {
-      position: {
-        x: 35,
-        y: 200,
-      },
+    // Select the aromatic ring tool.
+    await nmrium.moleculeEditor.clickTool('aromaticRing');
+    // Draw the benzene.
+    await nmrium.moleculeEditor.clickDrawArea({
+      x: 50,
+      y: 50,
     });
-    // Draw the ring.
-    await nmrium.page.click('canvas >> nth=1', {
-      position: {
-        x: 50,
-        y: 50,
-      },
-    });
+
     // Save the molecule.
     await nmrium.page.click('button >> text=Save');
     await nmrium.page
@@ -198,23 +171,15 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
   await test.step('Add a third molecule and check the visibility', async () => {
     // Click on the "Add Molecule" button.
     await nmrium.clickToolByTitle('Add molecule');
-    await nmrium.page
-      .locator('div[role="dialog"]')
-      .waitFor({ state: 'visible' });
-    // Select the "aromatic ring" tool.
-    await nmrium.page.click('canvas >> nth=0', {
-      position: {
-        x: 35,
-        y: 180,
-      },
+
+    // Select the hexane tool.
+    await nmrium.moleculeEditor.clickTool('hexane');
+    // Draw the ring.
+    await nmrium.moleculeEditor.clickDrawArea({
+      x: 50,
+      y: 50,
     });
-    // Draw the aromatic ring.
-    await nmrium.page.click('canvas >> nth=1', {
-      position: {
-        x: 50,
-        y: 50,
-      },
-    });
+
     // Save the molecule.
     await nmrium.page.click('button >> text=Save');
     await nmrium.page
@@ -239,6 +204,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
       nmrium.page.locator('_react=MoleculePanel >> text=3 / 3'),
     ).toBeVisible();
   });
+
   await test.step('Switch between molecules', async () => {
     // Start with the third molecule.
     await expect(
@@ -302,6 +268,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     // Check selected molecule formula.
     await expect(nmrium.page.locator('text=C6H6 - 78.11')).toBeVisible();
   });
+
   await test.step('Check molecules in integrals', async () => {
     await nmrium.clickPanel('Integrals');
     await nmrium.page.click(
@@ -351,14 +318,12 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
       'div[role="dialog"] >> button:has(svg[data-icon="small-cross"])',
     );
   });
+
   await test.step('Check molecules in ranges', async () => {
     await nmrium.clickPanel('Ranges / Multiplet analysis');
     await nmrium.page.click(
       '_react=ToolbarItem[tooltip *= "Change ranges sum" i]',
     );
-    await nmrium.page
-      .locator('div[role="dialog"]')
-      .waitFor({ state: 'visible' });
     await expect(
       nmrium.page.locator('div[role="dialog"] >> #molSVG0'),
     ).toBeVisible();
@@ -403,6 +368,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
       'div[role="dialog"] >> button:has(svg[data-icon="small-cross"])',
     );
   });
+
   await test.step('Check float molecule', async () => {
     // Check float molecule btn is off.
     await expect(
@@ -417,6 +383,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
       nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
     ).toBeVisible();
   });
+
   await test.step('Close float molecule', async () => {
     // Close float molecule draggable structure.
     const structureLocator = nmrium.page.locator('_react=DraggableStructure');
@@ -440,6 +407,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
       nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
     ).toBeVisible();
   });
+
   if (browserName !== 'webkit') {
     await test.step('Check copy as molfile V3 or V2 and paste', async () => {
       await clickExportMenuOption(nmrium, 'text=Copy as molfile V3');
@@ -609,20 +577,14 @@ test('check callbacks count on changing structures', async ({ page }) => {
     // Click on the "Add Molecule" button.
     await nmrium.clickToolByTitle('Add molecule');
 
-    // Select the "aromatic ring" tool.
-    await nmrium.page.click('canvas >> nth=0', {
-      position: {
-        x: 35,
-        y: 180,
-      },
+    // Select the hexane tool.
+    await nmrium.moleculeEditor.clickTool('hexane');
+    // Draw the ring.
+    await nmrium.moleculeEditor.clickDrawArea({
+      x: 50,
+      y: 50,
     });
-    // Draw the aromatic ring.
-    await nmrium.page.click('canvas >> nth=1', {
-      position: {
-        x: 50,
-        y: 50,
-      },
-    });
+
     // Save the molecule.
     await nmrium.page.click('button >> text=Save');
 
@@ -646,6 +608,7 @@ test('check callbacks count on changing structures', async ({ page }) => {
       nmrium.page.locator('_react=MoleculePanel >> text=2 / 2'),
     ).toBeVisible();
   });
+
   await test.step('Check float molecule', async () => {
     // Check float molecule btn is off.
     await expect(
@@ -663,6 +626,7 @@ test('check callbacks count on changing structures', async ({ page }) => {
     await expect(dataCount).toContainText(String(initialDataCount + 1));
     await expect(viewCount).toContainText(String(initialViewCount + 1));
   });
+
   await test.step('change float position molecule', async () => {
     const structureLocator = nmrium.page.locator('_react=DraggableStructure');
     await structureLocator.hover();

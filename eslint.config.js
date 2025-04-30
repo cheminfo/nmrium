@@ -47,10 +47,7 @@ export default [
         {
           name: '@simbathesailor/use-what-changed',
           message: 'Remove use-what-changed before committing the code',
-        },
-        { name: 'openchemlib', message: "Use 'openchemlib/full'" },
-        { name: 'react-ocl', message: "Use 'react-ocl/full" },
-      ],
+        }],
       'react/no-unknown-property': ['error', { ignore: ['css'] }],
       'react/forbid-dom-props': [
         'error',

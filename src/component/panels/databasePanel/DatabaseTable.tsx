@@ -4,7 +4,7 @@ import type { CSSProperties } from 'react';
 import { memo, useMemo } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 import { FaDownload, FaMinus, FaPlus } from 'react-icons/fa';
-import { IdcodeSvgRenderer, SmilesSvgRenderer } from 'react-ocl/full';
+import { IdcodeSvgRenderer, SmilesSvgRenderer } from 'react-ocl';
 import { Button } from 'react-science/ui';
 
 import type { PrepareDataResult } from '../../../data/data1d/database.js';

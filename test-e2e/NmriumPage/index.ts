@@ -1,6 +1,7 @@
 import type { Page } from '@playwright/test';
 import { expect } from '@playwright/test';
 
+import { NmriumPageMoleculeEditor } from './NmriumPageMoleculeEditor.js';
 import { NmriumPageViewer } from './NmriumPageViewer.js';
 
 type ClickOptions = Parameters<Page['click']>[1];
@@ -14,10 +15,12 @@ interface ToolLocatorOptions {
 export default class NmriumPage {
   public readonly page: Page;
   public readonly viewer: NmriumPageViewer;
+  public readonly moleculeEditor: NmriumPageMoleculeEditor;
 
   public constructor(page: Page) {
     this.page = page;
     this.viewer = new NmriumPageViewer(page);
+    this.moleculeEditor = new NmriumPageMoleculeEditor(page);
   }
 
   public static async create(page: Page): Promise<NmriumPage> {

@@ -6,7 +6,7 @@ import type {
 } from '@zakodium/nmrium-core';
 import type { DatabaseNMREntry } from 'nmr-processing';
 import { mapRanges } from 'nmr-processing';
-import { Molecule as OCLMolecule } from 'openchemlib/full';
+import { Molecule } from 'openchemlib';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useOnOff } from 'react-science/ui';
 
@@ -53,11 +53,11 @@ function getMolfile(options: {
 
   if (oclid?.idCode && oclid?.coordinates) {
     const { idCode, coordinates } = oclid;
-    return OCLMolecule.fromIDCode(idCode, coordinates).toMolfileV3();
+    return Molecule.fromIDCode(idCode, coordinates).toMolfileV3();
   }
 
   if (smiles) {
-    return OCLMolecule.fromSmiles(smiles).toMolfileV3();
+    return Molecule.fromSmiles(smiles).toMolfileV3();
   }
 }
 
@@ -420,12 +420,13 @@ function DatabasePanelInner({
             onDatabaseChange={handleChangeDatabase}
             onRemoveAll={removeAllHandler}
           />
-          <DatabaseStructureSearchModal
-            isOpen={isOpenSearchByStructure}
-            onClose={closeSearchByStructure}
-            onChange={searchByStructureHandler}
-            idCode={idCode}
-          />
+          {isOpenSearchByStructure && (
+            <DatabaseStructureSearchModal
+              onClose={closeSearchByStructure}
+              onChange={searchByStructureHandler}
+              initialIdCode={idCode}
+            />
+          )}
         </>
       )}
       {isFlipped && (
@@ -516,12 +517,12 @@ async function saveJcampAsJson(core: NMRiumCore, rowData, filteredData) {
     });
 
   let molfile = '';
-  let molecule: OCLMolecule | null = null;
+  let molecule: Molecule | null = null;
   if (ocl?.idCode) {
-    molecule = OCLMolecule.fromIDCode(ocl.idCode);
+    molecule = Molecule.fromIDCode(ocl.idCode);
     molfile = molecule.toMolfileV3();
   } else if (smiles) {
-    molecule = OCLMolecule.fromSmiles(smiles);
+    molecule = Molecule.fromSmiles(smiles);
     molfile = molecule.toMolfileV3();
   }
 

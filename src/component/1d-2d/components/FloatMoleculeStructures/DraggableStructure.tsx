@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 import type { Ranges, Zones } from 'nmr-processing';
-import OCL from 'openchemlib/full';
 import { useEffect, useState } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 import { BsArrowsMove } from 'react-icons/bs';
@@ -215,7 +214,6 @@ function DraggableMolecule(props: DraggableMoleculeProps) {
 
   return (
     <OCLnmr
-      OCL={OCL}
       id={`molSVG${index || ''}`}
       height={height}
       width={width}

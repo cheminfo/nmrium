@@ -1,6 +1,6 @@
 import type { DatabaseNMREntry, Jcoupling } from 'nmr-processing';
 import { carbonImpurities, protonImpurities } from 'nmr-processing';
-import OCL from 'openchemlib/full';
+import * as OCL from 'openchemlib';
 import { MoleculesDB } from 'openchemlib-utils';
 import { filter } from 'smart-array-filter';
 

@@ -1,9 +1,9 @@
 import styled from '@emotion/styled';
-import { Molecule } from 'openchemlib/full';
-import { useCallback, useEffect, useState } from 'react';
+import { Molecule } from 'openchemlib';
 import type { CSSProperties } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { MF } from 'react-mf';
-import { StructureEditor } from 'react-ocl/full';
+import { CanvasMoleculeEditor } from 'react-ocl';
 
 import type { NMRiumData } from '../../component/main/index.js';
 import { NMRium } from '../../component/main/index.js';
@@ -137,7 +137,7 @@ export default function Exercise(props) {
     (response) => {
       if (!data?.answer) return;
 
-      const MolResponse = Molecule.fromMolfile(response);
+      const MolResponse = Molecule.fromMolfile(response.getMolfileV3());
       const idCodeResponse = MolResponse.getIDCode();
       answers[data.answer.idCode] = idCodeResponse;
 
@@ -210,11 +210,13 @@ export default function Exercise(props) {
           }
         >
           <StructureEditorContainer>
-            <StructureEditor
-              svgMenu
+            <CanvasMoleculeEditor
+              inputFormat="molfile"
               fragment={false}
               onChange={checkAnswer}
-              initialMolfile={data?.answer?.currentAnswer}
+              inputValue={data?.answer?.currentAnswer}
+              width={675}
+              height={450}
             />
           </StructureEditorContainer>
           <BottomRightContainer>

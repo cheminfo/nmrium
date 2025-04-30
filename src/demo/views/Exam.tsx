@@ -1,9 +1,9 @@
 import styled from '@emotion/styled';
-import { Molecule } from 'openchemlib/full';
+import { Molecule } from 'openchemlib';
 import { useCallback, useEffect, useState } from 'react';
 import { FaCheck, FaRegCopy } from 'react-icons/fa';
 import { MF } from 'react-mf';
-import { StructureEditor } from 'react-ocl/full';
+import { CanvasMoleculeEditor } from 'react-ocl';
 
 import { NMRium } from '../../component/main/index.js';
 import { ClipboardFallbackModal } from '../../utils/clipboard/clipboardComponents.js';
@@ -187,7 +187,7 @@ export default function Exam(props) {
   const checkAnswer = useCallback(
     (response) => {
       if (data.answer) {
-        const MolResponse = Molecule.fromMolfile(response);
+        const MolResponse = Molecule.fromMolfile(response.getMolfileV3());
         const idCodeResponse = MolResponse.getIDCode();
         answers[data.answer.idCode] = idCodeResponse;
         localStorage.setItem('nmrium-exams', JSON.stringify(answers));
@@ -243,11 +243,13 @@ export default function Exam(props) {
         </ToggleButton>
         <BottomContainer isVisible={answerAreaVisible}>
           <StructureEditorContainer>
-            <StructureEditor
-              svgMenu
+            <CanvasMoleculeEditor
+              inputFormat="molfile"
               fragment={false}
               onChange={checkAnswer}
-              initialMolfile={data?.answer?.currentAnswer}
+              inputValue={data?.answer?.currentAnswer}
+              width={675}
+              height={450}
             />
           </StructureEditorContainer>
           <BottomRightContainer>

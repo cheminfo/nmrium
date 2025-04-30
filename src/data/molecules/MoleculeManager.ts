@@ -1,5 +1,5 @@
 import { readSDF, readSMILES } from '@zakodium/nmrium-core-plugins';
-import { Molecule as OCLMolecule } from 'openchemlib/full';
+import { Molecule } from 'openchemlib';
 
 import type { StateMolecule, StateMoleculeExtended } from './Molecule.js';
 import { initMolecule } from './Molecule.js';
@@ -12,7 +12,7 @@ export function fromJSON(
 
   const molecules: StateMoleculeExtended[] = [];
   for (const mol of mols) {
-    const molecule = OCLMolecule.fromMolfile(mol.molfile);
+    const molecule = Molecule.fromMolfile(mol.molfile);
     molecules.push(
       initMolecule({
         molfile: molecule.toMolfileV3(),
@@ -34,7 +34,7 @@ export function addMolfile(
 
   // try to parse molfile
   // this will throw if the molecule can not be parsed !
-  const molecule = OCLMolecule.fromMolfile(molfile);
+  const molecule = Molecule.fromMolfile(molfile);
   molecules.push(
     initMolecule({
       molfile: molecule.toMolfileV3(),
@@ -51,7 +51,7 @@ export function setMolfile(
   const { molfile, id, label } = currentMolecule;
   // try to parse molfile
   // this will throw if the molecule can not be parsed !
-  const molecule = OCLMolecule.fromMolfile(molfile);
+  const molecule = Molecule.fromMolfile(molfile);
   const _mol = initMolecule({
     molfile: molecule.toMolfileV3(),
     id,

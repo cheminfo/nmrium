@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { useCallback, useEffect, useState } from 'react';
 import { MF } from 'react-mf';
-import { MolfileSvgRenderer } from 'react-ocl/full';
+import { MolfileSvgRenderer } from 'react-ocl';
 
 import type { StateMoleculeExtended } from '../../data/molecules/Molecule.js';
 
