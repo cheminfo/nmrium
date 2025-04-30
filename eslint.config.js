@@ -11,6 +11,7 @@ export default [
       'lib-cjs',
       'node_modules',
       'playwright-report',
+      'test-results',
       'public',
     ],
   },
