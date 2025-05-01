@@ -60,7 +60,7 @@ function BaseLineCorrectionInnerPanel(
         </Select>
       </Label>
 
-      {algorithm && algorithm?.value === 'airpls' && (
+      {algorithm?.value === 'airpls' && (
         <div style={{ display: 'flex' }}>
           <Label title="Max iterations:" style={headerLabelStyle}>
             <NumberInput2Controller
@@ -93,26 +93,25 @@ function BaseLineCorrectionInnerPanel(
         </div>
       )}
 
-      {algorithm &&
-        ['autoPolynomial', 'polynomial'].includes(algorithm?.value) && (
-          <Label
-            title="Degree [1 - 6]:"
-            shortTitle="Degree:"
-            style={headerLabelStyle}
-          >
-            <NumberInput2Controller
-              control={control}
-              name="degree"
-              min={1}
-              max={6}
-              style={{ width: '60px' }}
-              debounceTime={250}
-              onValueChange={() => {
-                submitHandler();
-              }}
-            />
-          </Label>
-        )}
+      {algorithm?.value === 'polynomial' && (
+        <Label
+          title="Degree [1 - 6]:"
+          shortTitle="Degree:"
+          style={headerLabelStyle}
+        >
+          <NumberInput2Controller
+            control={control}
+            name="degree"
+            min={1}
+            max={6}
+            style={{ width: '60px' }}
+            debounceTime={250}
+            onValueChange={() => {
+              submitHandler();
+            }}
+          />
+        </Label>
+      )}
 
       <Label title="Live preview" style={headerLabelStyle}>
         <Checkbox

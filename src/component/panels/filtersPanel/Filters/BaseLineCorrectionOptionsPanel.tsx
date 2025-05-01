@@ -108,7 +108,7 @@ export default function BaseLineCorrectionOptionsPanel(
             </Select>
           </Label>
 
-          {algorithm && algorithm?.value === 'airpls' && (
+          {algorithm?.value === 'airpls' && (
             <>
               <Label title="Max iterations:" style={formLabelStyle}>
                 <NumberInput2Controller
@@ -141,26 +141,25 @@ export default function BaseLineCorrectionOptionsPanel(
             </>
           )}
 
-          {algorithm &&
-            ['autoPolynomial', 'polynomial'].includes(algorithm?.value) && (
-              <Label
-                title="Degree [1 - 6]:"
-                shortTitle="Degree:"
-                style={formLabelStyle}
-              >
-                <NumberInput2Controller
-                  control={control}
-                  name="degree"
-                  min={1}
-                  max={6}
-                  debounceTime={250}
-                  onValueChange={() => {
-                    submitHandler();
-                  }}
-                  fill
-                />
-              </Label>
-            )}
+          {algorithm?.value === 'polynomial' && (
+            <Label
+              title="Degree [1 - 6]:"
+              shortTitle="Degree:"
+              style={formLabelStyle}
+            >
+              <NumberInput2Controller
+                control={control}
+                name="degree"
+                min={1}
+                max={6}
+                debounceTime={250}
+                onValueChange={() => {
+                  submitHandler();
+                }}
+                fill
+              />
+            </Label>
+          )}
         </div>
       </Sections.Body>
     </ReadOnly>
