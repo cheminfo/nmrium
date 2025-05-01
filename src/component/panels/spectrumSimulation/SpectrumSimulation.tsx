@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import type { SpectrumSimulationOptions } from '../../../data/data1d/spectrumSimulation.js';
@@ -6,6 +6,7 @@ import { defaultSimulationOptions } from '../../../data/data1d/spectrumSimulatio
 import { useDispatch } from '../../context/DispatchContext.js';
 import Button from '../../elements/Button.js';
 import AboutSpectrumSimulationModal from '../../modal/AboutSpectrumSimulationModal.js';
+import { useWatchForm } from '../../useWatchForm.js';
 import { TablePanel } from '../extra/BasicPanelStyle.js';
 import type { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
 import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
@@ -68,7 +69,7 @@ export default function SpectrumSimulation() {
     },
     mode: 'onChange',
   });
-  const { reset, watch, handleSubmit } = methods;
+  const { reset, handleSubmit, control } = methods;
 
   const simulateHandler = useCallback(
     async (values: SpectrumSimulationOptions, keepSpectrum = false) => {
@@ -89,14 +90,14 @@ export default function SpectrumSimulation() {
     reset(values);
   }
 
-  useEffect(() => {
-    const { unsubscribe } = watch(async (values) => {
+  useWatchForm({
+    control,
+    onChange: async (values) => {
       const isValid = await simulationValidationSchema.isValid(values);
       if (!isValid) return;
       void simulateHandler(values as any);
-    });
-    return () => unsubscribe();
-  }, [simulateHandler, watch]);
+    },
+  });
 
   return (
     <FormProvider {...methods}>
