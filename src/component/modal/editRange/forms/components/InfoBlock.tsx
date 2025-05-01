@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
-import { useWatch } from 'react-hook-form';
+
+import { useTabsController } from '../../../../elements/TabsProvider.js';
 
 const styles: Record<'container' | 'infoText' | 'errorText', CSSProperties> = {
   container: {
@@ -36,7 +37,8 @@ const InfoText = (props: { value: string; type?: 'info' | 'error' }) => {
 };
 
 export function InfoBlock() {
-  const { signalIndex } = useWatch();
+  const { selectedTabId: signalIndex } = useTabsController();
+
   return (
     <div
       style={{

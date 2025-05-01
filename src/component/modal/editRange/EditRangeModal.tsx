@@ -13,6 +13,7 @@ import { useDispatch } from '../../context/DispatchContext.js';
 import type { DialogProps } from '../../elements/DialogManager.js';
 import { DraggableDialog } from '../../elements/DraggableDialog.js';
 import { StyledDialogBody } from '../../elements/StyledDialogBody.js';
+import { TabsProvider } from '../../elements/TabsProvider.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import useEditRangeModal from '../../panels/RangesPanel/hooks/useEditRangeModal.js';
@@ -125,42 +126,44 @@ function InnerEditRangeModal(props: InnerEditRangeModalProps) {
   )} ppm to ${formatNumber(range?.to, rangesPreferences.to.format)} ppm`;
 
   return (
-    <FormProvider {...methods}>
-      <DraggableDialog
-        hasBackdrop={false}
-        canOutsideClickClose={false}
-        style={{ width: 700 }}
-        title={title}
-        isOpen
-        headerLeftElement={
-          <Button
-            intent="success"
-            style={{ marginRight: '5px', borderRadius: '5px' }}
-            icon={
-              <FaSearchPlus title="Set to default view on range in spectrum" />
-            }
-            variant="minimal"
-            onClick={handleOnZoom}
-          />
-        }
-        onClose={handleOnClose}
-        placement="top-right"
-      >
-        <DialogBody>
-          <SignalsContent range={range} />
-        </DialogBody>
-        <DialogFooter>
-          <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
+    <TabsProvider defaultSelectedTabId={0}>
+      <FormProvider {...methods}>
+        <DraggableDialog
+          hasBackdrop={false}
+          canOutsideClickClose={false}
+          style={{ width: 700 }}
+          title={title}
+          isOpen
+          headerLeftElement={
             <Button
               intent="success"
-              onClick={() => methods.handleSubmit(handleSave)()}
-            >
-              Save and Exit
-            </Button>
-          </div>
-        </DialogFooter>
-      </DraggableDialog>
-    </FormProvider>
+              style={{ marginRight: '5px', borderRadius: '5px' }}
+              icon={
+                <FaSearchPlus title="Set to default view on range in spectrum" />
+              }
+              variant="minimal"
+              onClick={handleOnZoom}
+            />
+          }
+          onClose={handleOnClose}
+          placement="top-right"
+        >
+          <DialogBody>
+            <SignalsContent range={range} />
+          </DialogBody>
+          <DialogFooter>
+            <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
+              <Button
+                intent="success"
+                onClick={() => methods.handleSubmit(handleSave)()}
+              >
+                Save and Exit
+              </Button>
+            </div>
+          </DialogFooter>
+        </DraggableDialog>
+      </FormProvider>
+    </TabsProvider>
   );
 }
 

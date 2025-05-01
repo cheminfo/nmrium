@@ -12,6 +12,7 @@ import { Toolbar } from 'react-science/ui';
 import { NumberInput2Controller } from '../../../../../elements/NumberInput2Controller.js';
 import type { Column } from '../../../../../elements/ReactTable/ReactTable.js';
 import ReactTable from '../../../../../elements/ReactTable/ReactTable.js';
+import { useTabsController } from '../../../../../elements/TabsProvider.js';
 import useSpectrum from '../../../../../hooks/useSpectrum.js';
 import { useEvent } from '../../../../../utility/Events.js';
 import { useEventFocusInput } from '../SignalsContent.js';
@@ -44,7 +45,9 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
   const { focusSource, setFocusSource } = useEventFocusInput();
 
   const { setValue, control, setFocus } = useFormContext();
-  const { signals, signalIndex } = useWatch();
+  const { signals } = useWatch();
+  const { selectedTabId: signalIndex = 0 } = useTabsController<number>();
+
   const signal = signals?.[signalIndex] || {};
   const delta = signal?.delta || 0;
   const spectrum = useSpectrum() as Spectrum1D;
