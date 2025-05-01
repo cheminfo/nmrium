@@ -58,7 +58,6 @@ export function getBaselineData(
         },
       };
     }
-    case 'autoPolynomial':
     case 'polynomial': {
       const validation = Yup.object().shape({
         algorithm: Yup.string().required(),
