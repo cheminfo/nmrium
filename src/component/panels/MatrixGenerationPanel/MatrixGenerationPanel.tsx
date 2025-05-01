@@ -3,7 +3,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { SvgNmrMultipleAnalysis } from 'cheminfo-font';
 import type { MatrixOptions } from 'nmr-processing';
 import { Filters1D } from 'nmr-processing';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Button, Toolbar } from 'react-science/ui';
 import * as yup from 'yup';
@@ -23,6 +23,7 @@ import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus.js';
 import useToolsFunctions from '../../hooks/useToolsFunctions.js';
 import { getMatrixGenerationDefaultOptions } from '../../reducer/preferences/panelsPreferencesDefaultValues.js';
 import { options } from '../../toolbar/ToolTypes.js';
+import { useWatchForm } from '../../useWatchForm.js';
 import { TablePanel } from '../extra/BasicPanelStyle.js';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer.js';
 
@@ -168,28 +169,19 @@ function InnerMatrixGenerationPanel() {
     defaultValues: matrixOptions,
     resolver: yupResolver(schema),
   });
-  const { handleSubmit, reset, control, watch } = methods;
-  const isDirtyRef = useRef<boolean>(true);
+  const { handleSubmit, reset, control } = methods;
 
-  useEffect(() => {
-    const { unsubscribe } = watch((options) => {
-      if (isDirtyRef.current) {
-        handleOnChange(options);
-      }
-      isDirtyRef.current = true;
-    });
-    return () => unsubscribe();
-  }, [handleOnChange, watch]);
-
-  useEffect(() => {
-    isDirtyRef.current = false;
-    reset(
-      getMatrixOptions(nucleusMatrixOptions.matrixOptions, {
-        from: originDomain.xDomain[0],
-        to: originDomain.xDomain[1],
-      }),
-    );
-  }, [nucleusMatrixOptions.matrixOptions, originDomain.xDomain, reset]);
+  useWatchForm({
+    reset,
+    initialValues: getMatrixOptions(nucleusMatrixOptions.matrixOptions, {
+      from: originDomain.xDomain[0],
+      to: originDomain.xDomain[1],
+    }),
+    control,
+    onChange: (values) => {
+      handleOnChange(values);
+    },
+  });
 
   return (
     <TablePanel>
