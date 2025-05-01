@@ -2,7 +2,7 @@ import { Tag } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
 import lodashMerge from 'lodash/merge.js';
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
@@ -17,6 +17,7 @@ import Label from '../../elements/Label.js';
 import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
 import { Select2Controller } from '../../elements/Select2Controller.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
+import { useWatchForm } from '../../useWatchForm.js';
 
 const Container = styled.div`
   display: flex;
@@ -53,24 +54,22 @@ function PredictionSimpleOptions() {
     [dispatch],
   );
 
-  const { watch, reset, control } = useForm({
+  const { reset, control } = useForm({
     defaultValues: predictionPreferences,
     resolver: yupResolver(predictionFormValidation),
   });
 
-  useEffect(() => {
-    reset(predictionPreferences, { keepValues: true });
-  }, [predictionPreferences, reset]);
-
-  useEffect(() => {
-    const { unsubscribe } = watch(async (values) => {
+  useWatchForm({
+    reset,
+    initialValues: predictionPreferences,
+    control,
+    onChange: async (values) => {
       const isValid = await predictionFormValidation.isValid(values);
       if (!isValid) return;
 
       optionsChangeHandler(values);
-    });
-    return () => unsubscribe();
-  }, [optionsChangeHandler, watch]);
+    },
+  });
 
   return (
     <ContainerQueryWrapper
