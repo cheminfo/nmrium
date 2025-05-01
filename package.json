@@ -90,7 +90,7 @@
     "nmr-processing": "^18.0.1",
     "numeral": "^2.0.6",
     "openchemlib": "^9.1.0",
-    "openchemlib-utils": "^8.1.0",
+    "openchemlib-utils": "^8.1.1",
     "papaparse": "^5.5.2",
     "react-d3-utils": "^3.0.0",
     "react-dropzone": "^14.3.8",
@@ -110,9 +110,9 @@
     "yup": "^1.6.1"
   },
   "devDependencies": {
-    "@babel/plugin-transform-modules-commonjs": "^7.26.3",
-    "@babel/preset-react": "^7.26.3",
-    "@babel/preset-typescript": "^7.27.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.27.1",
+    "@babel/preset-react": "^7.27.1",
+    "@babel/preset-typescript": "^7.27.1",
     "@playwright/test": "^1.52.0",
     "@simbathesailor/use-what-changed": "^2.0.0",
     "@types/d3": "^7.4.3",
@@ -130,7 +130,7 @@
     "eslint": "^9.25.1",
     "eslint-config-cheminfo-react": "^16.0.0",
     "eslint-config-cheminfo-typescript": "^18.0.0",
-    "knip": "^5.51.0",
+    "knip": "^5.52.0",
     "modern-normalize": "^3.0.1",
     "postcss-styled-syntax": "^0.7.1",
     "prettier": "^3.5.3",
@@ -144,7 +144,7 @@
     "stylelint": "^16.19.1",
     "stylelint-config-standard": "^38.0.0",
     "typescript": "^5.8.3",
-    "vite": "^6.3.3",
+    "vite": "^6.3.4",
     "vitest": "^3.1.2"
   }
 }
