@@ -5,7 +5,6 @@ import {
   memo,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -13,6 +12,7 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { FaPlus } from 'react-icons/fa';
 
 import { TabTitle } from '../../../../elements/TabTitle.js';
+import { useTabsController } from '../../../../elements/TabsProvider.js';
 
 import { DeltaInput } from './DeltaInput.js';
 import { InfoBlock } from './InfoBlock.js';
@@ -57,26 +57,17 @@ function FocusInputProvider({ children }) {
 
 function SignalsContent({ range }: SignalsFormProps) {
   const { setValue } = useFormContext();
-  const { signals, signalIndex } = useWatch();
-
-  const tapClickHandler = useCallback(
-    (id) => {
-      setValue('signalIndex', id);
-    },
-    [setValue],
-  );
+  const { selectedTabId: signalIndex, selectTab } = useTabsController<number>();
+  const { signals } = useWatch();
 
   const handleDeleteSignal = useCallback(
     (index) => {
       const _signals = signals.filter((_signal, i) => i !== index);
       setValue('signals', _signals);
+      selectTab(signals.length - 2 || 0);
     },
-    [setValue, signals],
+    [selectTab, setValue, signals],
   );
-
-  useEffect(() => {
-    setValue('signalIndex', signals.length > 0 ? signals.length - 1 : -1);
-  }, [setValue, signals.length]);
 
   const signalFormTabs = useMemo(() => {
     const signalTabs: any[] =
@@ -121,7 +112,7 @@ function SignalsContent({ range }: SignalsFormProps) {
         <Tabs
           renderActiveTabPanelOnly
           selectedTabId={signalIndex}
-          onChange={(id) => tapClickHandler(id)}
+          onChange={selectTab}
           animate={false}
         >
           {signalFormTabs}

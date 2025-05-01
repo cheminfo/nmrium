@@ -13,6 +13,7 @@ import { NumberInput2Controller } from '../../../../../elements/NumberInput2Cont
 import type { Column } from '../../../../../elements/ReactTable/ReactTable.js';
 import ReactTable from '../../../../../elements/ReactTable/ReactTable.js';
 import { Select2Controller } from '../../../../../elements/Select2Controller.js';
+import { useTabsController } from '../../../../../elements/TabsProvider.js';
 import useSpectrum from '../../../../../hooks/useSpectrum.js';
 import { hasCouplingConstant } from '../../../../../panels/extra/utilities/MultiplicityUtilities.js';
 import { useEvent } from '../../../../../utility/Events.js';
@@ -58,7 +59,8 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
     formState: { errors },
   } = useFormContext();
   const signals = useWatch({ name: 'signals' });
-  const signalIndex = useWatch({ name: 'signalIndex' });
+  const { selectedTabId: signalIndex = 0 } = useTabsController<number>();
+
   const signal = signals?.[signalIndex] || {};
 
   const lastSelectedCouplingIndexRef = useRef<number | null>(null);

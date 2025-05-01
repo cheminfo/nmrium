@@ -1,6 +1,7 @@
-import { useFormContext, useWatch } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 
 import { NumberInput2Controller } from '../../../../elements/NumberInput2Controller.js';
+import { useTabsController } from '../../../../elements/TabsProvider.js';
 import { useEvent } from '../../../../utility/Events.js';
 
 import { useEventFocusInput } from './SignalsContent.js';
@@ -21,7 +22,7 @@ export function DeltaInput({ signal, index }: DeltaInputProps) {
     setValue,
   } = useFormContext();
   const isNotValid = hasError(errors, index);
-  const { signalIndex } = useWatch();
+  const { selectedTabId: signalIndex } = useTabsController();
   const { focusSource, setFocusSource } = useEventFocusInput();
 
   useEvent({

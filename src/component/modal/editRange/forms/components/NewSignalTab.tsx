@@ -7,6 +7,7 @@ import * as Yup from 'yup';
 
 import { useChartData } from '../../../../context/ChartContext.js';
 import { NumberInput2Controller } from '../../../../elements/NumberInput2Controller.js';
+import { useTabsController } from '../../../../elements/TabsProvider.js';
 import { usePanelPreferences } from '../../../../hooks/usePanelPreferences.js';
 import { useEvent } from '../../../../utility/Events.js';
 import { formatNumber } from '../../../../utility/formatNumber.js';
@@ -37,7 +38,8 @@ interface NewSignalTabProps {
 export function NewSignalTab(props: NewSignalTabProps) {
   const { range } = props;
   const { setValue } = useFormContext();
-  const { signals, signalIndex } = useWatch();
+  const { selectedTabId: signalIndex, selectTab } = useTabsController();
+  const { signals } = useWatch();
 
   const {
     view: {
@@ -56,7 +58,7 @@ export function NewSignalTab(props: NewSignalTabProps) {
     const _signals = signals.slice().concat(newSignal);
 
     setValue('signals', _signals);
-    setValue('signalIndex', String(_signals.length - 1));
+    selectTab(_signals.length - 1);
   }
   const { handleSubmit, reset, control, setFocus } = useForm({
     defaultValues: {
