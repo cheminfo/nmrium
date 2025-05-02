@@ -89,7 +89,7 @@
     "nmr-correlation": "2.3.3",
     "nmr-processing": "^18.0.1",
     "numeral": "^2.0.6",
-    "openchemlib": "^9.1.0",
+    "openchemlib": "^9.1.1",
     "openchemlib-utils": "^8.1.1",
     "papaparse": "^5.5.2",
     "react-d3-utils": "^3.0.0",
