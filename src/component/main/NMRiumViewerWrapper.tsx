@@ -3,7 +3,7 @@ import type { SplitPaneSize } from 'react-science/ui';
 import { SplitPane } from 'react-science/ui';
 
 import { usePreferences } from '../context/PreferencesContext.js';
-import { Panels } from '../panels/Panels.js';
+import { Panels, usePanelOpenState } from '../panels/Panels.js';
 import { useAccordionItems } from '../panels/hooks/useAccordionItems.js';
 import { useGetPanelOptions } from '../panels/hooks/useGetPanelOptions.js';
 
@@ -19,6 +19,8 @@ export function NMRiumViewerWrapper(props: NMRiumViewerWrapperProps) {
   const { emptyText, viewerRef } = props;
   const { current, dispatch } = usePreferences();
   const getPanelPreferences = useGetPanelOptions();
+  const { closeSplitPane, openSplitPane, isSplitPaneOpen } =
+    usePanelOpenState();
 
   const {
     general: { verticalSplitterPosition, verticalSplitterCloseThreshold },
@@ -50,9 +52,11 @@ export function NMRiumViewerWrapper(props: NMRiumViewerWrapperProps) {
       size={verticalSplitterPosition}
       direction="horizontal"
       controlledSide="end"
+      open={isSplitPaneOpen}
       defaultOpen={!general?.hidePanelOnLoad}
       closeThreshold={verticalSplitterCloseThreshold}
       onSizeChange={resizeHandler}
+      onOpenChange={(isOpen) => (isOpen ? openSplitPane() : closeSplitPane())}
     >
       <NMRiumViewer emptyText={emptyText} viewerRef={viewerRef} />
       <Panels />
