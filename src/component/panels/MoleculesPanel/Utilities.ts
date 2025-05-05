@@ -1,10 +1,30 @@
+import type { Spectrum } from '@zakodium/nmrium-core';
 import type { Range, Zone } from 'nmr-processing';
 import type { DiaIDAndInfo } from 'openchemlib-utils';
 
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
 import type {
   AssignmentContext,
   Axis,
 } from '../../assignment/AssignmentsContext.js';
+
+interface TargetAssignment {
+  key: string;
+  index: number;
+}
+
+interface RangeTargetAssignKey extends TargetAssignment {
+  target: 'range';
+}
+interface ZoneTargetAssignKey extends TargetAssignment {
+  target: 'zone';
+}
+interface SignalTargetAssignKey extends TargetAssignment {
+  target: 'signal';
+}
+export type TargetAssignKeys =
+  | [RangeTargetAssignKey | ZoneTargetAssignKey]
+  | [RangeTargetAssignKey | ZoneTargetAssignKey, SignalTargetAssignKey];
 
 export interface AtomData {
   oclIDs: string[];
@@ -69,30 +89,43 @@ export function extractFromAtom(
   return { oclIDs: [], nbAtoms: 0 };
 }
 
-export function findDatumAndSignalIndex(data: Array<Range | Zone>, id: string) {
-  // if datum could be found then the id is on range/zone level
-  let datum = data.find((_datum) => _datum.id === id);
-  let signalIndex;
-  if (!datum) {
-    // figure out the datum via id
-    for (const record of data) {
-      signalIndex = record.signals.findIndex((signal) => signal.id === id);
-      if (signalIndex >= 0) {
-        datum = record;
-        break;
-      }
+function getRangesOrZones(spectrum: Spectrum): Array<Range | Zone> {
+  return spectrum[isSpectrum1D(spectrum) ? 'ranges' : 'zones'].values;
+}
+
+export function getAssignIds(
+  spectrum: Spectrum,
+  id: string,
+): TargetAssignKeys | null {
+  const data = getRangesOrZones(spectrum);
+  const target = isSpectrum1D(spectrum) ? 'range' : 'zone';
+
+  for (let i = 0; i < data.length; i++) {
+    const datum = data[i];
+
+    if (datum.id === id) {
+      return [{ target, index: i, key: datum.id }];
+    }
+
+    const signalIndex = datum.signals.findIndex((signal) => signal.id === id);
+    if (signalIndex !== -1) {
+      const { id } = datum.signals[signalIndex];
+      return [
+        { target, index: i, key: datum.id },
+        { target: 'signal', index: signalIndex, key: id },
+      ];
     }
   }
 
-  return { datum, signalIndex };
+  return null;
 }
 
 export function getHighlightsOnHover(
   assignments: AssignmentContext,
   oclIDs,
-  data,
+  spectrum,
 ) {
-  // set all IDs to highlight when hovering over an atom from assignment data
+  // set all IDs to highlight when hovering over an atom from AssignKey data
   let highlights: string[] = [];
   const assignmentsByKey = assignments.data;
 
@@ -102,13 +135,10 @@ export function getHighlightsOnHover(
     for (const axis in assignments) {
       if (assignments[axis]?.some((oclKey) => oclIDs.includes(oclKey))) {
         highlights = highlights.concat(assignments[axis]);
-        const { datum, signalIndex } = findDatumAndSignalIndex(data, key);
-
-        if (datum) {
-          highlights.push(datum.id);
-          if (signalIndex !== undefined) {
-            highlights.push(datum.signals[signalIndex].id);
-          }
+        const assignIds = getAssignIds(spectrum, key);
+        if (assignIds) {
+          const ids = assignIds.map<string>((item) => item.key);
+          highlights.push(...ids);
         }
       }
     }
@@ -128,18 +158,22 @@ export function getCurrentDiaIDsToHighlight(assignmentData: AssignmentContext) {
     return (assignment?.x || []).concat(assignment?.y || []);
   }
 }
-
-export function toggleDiaIDs(diaIDs: string[], atomInformation: AtomData) {
-  let _diaIDs: string[] = diaIDs ? diaIDs.slice() : [];
+/** */
+export function getUniqueDiaIDs(diaIDs: string[], atomInformation: AtomData) {
+  // a previous version of the code prevented to assign many time the same atom
+  // see revision cc13abc18f77b6787b923e3c4edaef51750d9e90
   const { nbAtoms, oclIDs } = atomInformation;
+
+  const diaIDSet = new Set(diaIDs);
   let tempNbAtoms: number = nbAtoms;
+
   for (const oclID of oclIDs) {
-    if (_diaIDs.includes(oclID)) {
+    if (diaIDSet.has(oclID)) {
       tempNbAtoms *= -1;
-      _diaIDs = _diaIDs.filter((_id) => _id !== oclID);
+      diaIDSet.delete(oclID);
     } else {
-      _diaIDs.push(oclID);
+      diaIDSet.add(oclID);
     }
   }
-  return { diaIDs: _diaIDs, nbAtoms: tempNbAtoms };
+  return { diaIDs: Array.from(diaIDSet), nbAtoms: tempNbAtoms };
 }

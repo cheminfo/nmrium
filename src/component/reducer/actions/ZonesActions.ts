@@ -23,9 +23,9 @@ import {
 } from '../../../data/data2d/Spectrum2D/index.js';
 import type { DetectionZonesOptions } from '../../../data/data2d/Spectrum2D/zones/getDetectionZones.js';
 import { unlink } from '../../../data/utilities/ZoneUtilities.js';
-import { isNumber } from '../../../data/utilities/isNumber.js';
 import type { Axis } from '../../assignment/AssignmentsContext.js';
 import { defaultZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState.js';
+import type { TargetAssignKeys } from '../../panels/MoleculesPanel/Utilities.js';
 import type { ZoneData } from '../../panels/ZonesPanel/hooks/useMapZones.js';
 import type { FilterType } from '../../utility/filterType.js';
 import type { State } from '../Reducer.js';
@@ -74,13 +74,12 @@ type SetSignalPathLengthAction = ActionType<
   }
 >;
 
-type SetZoneDiaIDAction = ActionType<
-  'SET_ZONE_DIAID',
+type AssignZoneAction = ActionType<
+  'ASSIGN_ZONE',
   {
-    zone: Zone;
+    keys: TargetAssignKeys;
     axis?: Axis;
-    signalIndex?: number;
-  } & Pick<Zone['x'], 'diaIDs' | 'nbAtoms'>
+  } & Required<Pick<Zone['x'], 'diaIDs' | 'nbAtoms'>>
 >;
 type SaveEditedZoneAction = ActionType<
   'SAVE_EDITED_ZONE',
@@ -123,7 +122,7 @@ export type ZonesActions =
   | DeleteZoneAction
   | DeleteSignal2DAction
   | SetSignalPathLengthAction
-  | SetZoneDiaIDAction
+  | AssignZoneAction
   | SaveEditedZoneAction
   | UnlinkZoneAction
   | ToggleZonesViewAction
@@ -390,26 +389,32 @@ function handleUnlinkZone(draft: Draft<State>, action: UnlinkZoneAction) {
 }
 
 //action
-function handleSetDiaIDZone(draft: Draft<State>, action: SetZoneDiaIDAction) {
+function handleAssignZone(draft: Draft<State>, action: AssignZoneAction) {
   const state = original(draft) as State;
 
   const activeSpectrum = getActiveSpectrum(state);
-  const { zone: zoneData, diaIDs, axis, signalIndex, nbAtoms } = action.payload;
+  const { keys, diaIDs, axis, nbAtoms } = action.payload;
 
-  if (activeSpectrum?.id && axis) {
-    const { index } = activeSpectrum;
-    const getNbAtoms = (input, current = 0) => input + current;
-    const zoneIndex = getZoneIndex(state, index, zoneData.id);
-    const zone = (draft.data[index] as Spectrum2D).zones.values[zoneIndex];
-    if (!isNumber(signalIndex)) {
-      const zoneByAxis = zone[axis];
-      zoneByAxis.diaIDs = diaIDs;
-      zoneByAxis.nbAtoms = getNbAtoms(nbAtoms, zoneByAxis.nbAtoms);
-    } else {
-      const signalByAxis = zone.signals[signalIndex][axis];
-      signalByAxis.diaIDs = diaIDs;
-      signalByAxis.nbAtoms = getNbAtoms(nbAtoms, signalByAxis.nbAtoms);
-    }
+  if (!activeSpectrum || !axis) return;
+
+  const { index } = activeSpectrum;
+  const spectrum = draft.data[index];
+
+  if (!isSpectrum2D(spectrum)) return;
+
+  const [{ index: zoneIndex }] = keys;
+
+  const zone = spectrum.zones.values[zoneIndex];
+  if (keys.length === 1) {
+    const zoneByAxis = zone[axis];
+    zoneByAxis.diaIDs = diaIDs;
+    zoneByAxis.nbAtoms = nbAtoms + (zoneByAxis?.nbAtoms || 0);
+  } else {
+    const [, { index: signalIndex }] = keys;
+
+    const signalByAxis = zone.signals[signalIndex][axis];
+    signalByAxis.diaIDs = diaIDs;
+    signalByAxis.nbAtoms = nbAtoms + (signalByAxis?.nbAtoms || 0);
   }
 }
 
@@ -536,7 +541,7 @@ export {
   handleUnlinkZone,
   unlinkZone,
   handleSaveEditedZone,
-  handleSetDiaIDZone,
+  handleAssignZone,
   handleSetSignalPathLength,
   handleChangeZonesFactor,
   handleAutoSpectraZonesDetection,

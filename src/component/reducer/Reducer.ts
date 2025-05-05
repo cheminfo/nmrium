@@ -695,8 +695,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return RangesActions.handleSaveEditedRange(draft, action);
       case 'UNLINK_RANGE':
         return RangesActions.handleUnlinkRange(draft, action);
-      case 'SET_DIAID_RANGE':
-        return RangesActions.handleSetDiaIDRange(draft, action);
+      case 'ASSIGN_RANGE':
+        return RangesActions.handleAssignRange(draft, action);
       case 'UPDATE_RANGE':
         return RangesActions.handleUpdateRange(draft, action);
       case 'TOGGLE_RANGES_VIEW_PROPERTY':
@@ -740,8 +740,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return ZonesActions.handleChangeZoneSignalKind(draft, action);
       case 'UNLINK_ZONE':
         return ZonesActions.handleUnlinkZone(draft, action);
-      case 'SET_ZONE_DIAID':
-        return ZonesActions.handleSetDiaIDZone(draft, action);
+      case 'ASSIGN_ZONE':
+        return ZonesActions.handleAssignZone(draft, action);
       case 'AUTO_ZONES_SPECTRA_PICKING':
         return ZonesActions.handleAutoSpectraZonesDetection(draft);
       case 'TOGGLE_ZONES_VIEW_PROPERTY':
