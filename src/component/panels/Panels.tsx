@@ -1,9 +1,11 @@
+import styled from '@emotion/styled';
 import type { NMRiumPanelPreferences } from '@zakodium/nmrium-core';
 import { createContext, memo, useContext, useMemo, useState } from 'react';
 import { FaRegEdit } from 'react-icons/fa';
 import type { ToolbarItemProps } from 'react-science/ui';
 import { Accordion, Toolbar } from 'react-science/ui';
 
+import { usePreferences } from '../context/PreferencesContext.js';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
 import { useDialogToggle } from '../hooks/useDialogToggle.js';
 
@@ -13,10 +15,19 @@ import { useGetPanelOptions } from './hooks/useGetPanelOptions.js';
 import { useTogglePanel } from './hooks/useTogglePanel.js';
 import { InformationEditionModal } from './informationPanel/InformationEditionModal.js';
 
+const Container = styled.div`
+  width: 100%;
+  height: 100%;
+  flex: 1 1 0%;
+`;
+
 type PanelOpenState = Partial<Record<keyof NMRiumPanelPreferences, boolean>>;
 interface PanelStateContext {
   setPanelOpenState: (id: keyof NMRiumPanelPreferences, value: boolean) => void;
   panelOpenState: PanelOpenState;
+  openSplitPane: () => void;
+  closeSplitPane: () => void;
+  isSplitPaneOpen: boolean;
 }
 
 const AccordionContext = createContext<PanelStateContext | null>(null);
@@ -32,20 +43,45 @@ export function usePanelOpenState() {
 }
 
 export function PanelOpenProviderProvider({ children }) {
+  const { current } = usePreferences();
+
+  const {
+    display: { general = {} },
+  } = current;
+
   const [panelOpenState, toggleAccordionItem] = useState<PanelOpenState>({});
+  // TODO: make sure to move this state to the workspace once the refactoring of nmrium-core is finished.
+  const [isSplitPaneOpen, setIsSplitPaneOpen] = useState(
+    !general?.hidePanelOnLoad,
+  );
 
   const state = useMemo(() => {
     function setPanelOpenState(
       id: keyof NMRiumPanelPreferences,
       value: boolean,
     ) {
-      toggleAccordionItem((prev) => ({
-        ...prev,
-        [id]: value,
-      }));
+      toggleAccordionItem((prev) => {
+        return {
+          ...prev,
+          [id]: value,
+        };
+      });
     }
-    return { setPanelOpenState, panelOpenState };
-  }, [panelOpenState]);
+
+    function openSplitPane() {
+      setIsSplitPaneOpen(true);
+    }
+    function closeSplitPane() {
+      setIsSplitPaneOpen(false);
+    }
+    return {
+      setPanelOpenState,
+      panelOpenState,
+      openSplitPane,
+      closeSplitPane,
+      isSplitPaneOpen,
+    };
+  }, [isSplitPaneOpen, panelOpenState]);
 
   return (
     <AccordionContext.Provider value={state}>
@@ -71,40 +107,42 @@ function PanelsInner() {
     return panelOptions?.display;
   }
 
+  const displayedPanels = items.filter((item) => {
+    return isVisible(item);
+  });
+
   return (
-    <div style={{ width: '100%', height: '100%', flex: '1 1 0%' }}>
+    <Container>
       <InformationEditionModal
         isOpen={dialog.informationModal}
         onCloseDialog={closeDialog}
       />
       <Accordion>
-        {items
-          .filter((item) => isVisible(item))
-          .map((item) => {
-            const { title, component, id } = item;
-            return (
-              <Accordion.Item
-                unmountChildren
-                id={id}
-                key={title}
-                title={title}
-                defaultOpen={isOpened(item) || panelOpenState[id]}
-                renderToolbar={() => (
-                  <RightButtons
-                    id={id}
-                    onEdit={(event) => {
-                      event.stopPropagation();
-                      openDialog('informationModal');
-                    }}
-                  />
-                )}
-              >
-                {component}
-              </Accordion.Item>
-            );
-          })}
+        {displayedPanels.map((item) => {
+          const { title, component, id } = item;
+          return (
+            <Accordion.Item
+              unmountChildren
+              id={id}
+              key={title}
+              title={title}
+              defaultOpen={isOpened(item) || panelOpenState[id]}
+              renderToolbar={() => (
+                <RightButtons
+                  id={id}
+                  onEdit={(event) => {
+                    event.stopPropagation();
+                    openDialog('informationModal');
+                  }}
+                />
+              )}
+            >
+              {component}
+            </Accordion.Item>
+          );
+        })}
       </Accordion>
-    </div>
+    </Container>
   );
 }
 
