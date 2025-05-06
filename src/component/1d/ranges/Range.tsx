@@ -41,6 +41,8 @@ interface RangeProps {
   relativeFormat: string;
 }
 
+const minWidth = 10;
+
 function Range({ range, selectedTool, relativeFormat }: RangeProps) {
   const {
     id,
@@ -201,13 +203,21 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
           disabled={!isResizingActive}
         >
           {({ x1, x2 }, isActive) => {
-            const width = x2 - x1;
+            const rangeWidth = x2 - x1;
+            let offsetX = 0;
+            let highlightRectWidth = rangeWidth;
+
+            if (rangeWidth < minWidth) {
+              offsetX = Math.abs(rangeWidth - minWidth) / 2;
+              highlightRectWidth = minWidth;
+            }
+
             return (
               <g>
                 {isAssigned && !isHighlighted && !isActive && (
                   <rect
                     y={margin.top}
-                    width={width}
+                    width={rangeWidth}
                     height="10px"
                     fill={highlightColor}
                     data-no-export="true"
@@ -215,20 +225,21 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
                 )}
 
                 <rect
-                  width={width}
+                  x={-offsetX}
+                  width={highlightRectWidth}
                   height="100%"
                   fill={isHighlighted || isActive ? '#ff6f0057' : 'transparent'}
                   data-no-export="true"
                 />
 
-                <AssignmentLabel range={range} width={width} />
-                <Atoms range={range} x={width / 2} />
+                <AssignmentLabel range={range} width={rangeWidth} />
+                <Atoms range={range} x={rangeWidth / 2} />
 
                 {showIntegralsValues && (
                   <IntegralIndicator
                     value={integration}
                     format={relativeFormat}
-                    width={width}
+                    width={rangeWidth}
                     opacity={isNotSignal ? 0.5 : 1}
                   />
                 )}
