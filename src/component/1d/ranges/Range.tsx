@@ -38,12 +38,15 @@ import { Atoms } from './Atoms.js';
 interface RangeProps {
   selectedTool: string;
   range: RangeType;
+  assignmentLabelStackIndex: number;
   relativeFormat: string;
 }
 
 const minWidth = 10;
 
-function Range({ range, selectedTool, relativeFormat }: RangeProps) {
+function Range(options: RangeProps) {
+  const { range, selectedTool, relativeFormat, assignmentLabelStackIndex } =
+    options;
   const {
     id,
     integration,
@@ -232,7 +235,11 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
                   data-no-export="true"
                 />
 
-                <AssignmentLabel range={range} width={rangeWidth} />
+                <AssignmentLabel
+                  stackIndex={assignmentLabelStackIndex}
+                  range={range}
+                  width={rangeWidth}
+                />
                 <Atoms range={range} x={rangeWidth / 2} />
 
                 {showIntegralsValues && (
