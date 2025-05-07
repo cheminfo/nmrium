@@ -1,18 +1,58 @@
 import type { Spectrum1D } from '@zakodium/nmrium-core';
-import type { Ranges as RangesProps } from 'nmr-processing';
+import type { Ranges as RangesType, Range as RangeType } from 'nmr-processing';
 import { memo } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';
+import { useScaleChecked } from '../../context/ScaleContext.js';
 import { ShareDataProvider } from '../../context/ShareDataContext.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
+import { stackOverlappingLabelsMap } from '../../utility/stackOverlappingLabels.js';
 
 import Range from './Range.js';
 
 interface RangesInnerProps {
   selectedTool: string;
-  ranges: RangesProps;
+  ranges: RangesType;
   relativeFormat: string;
+}
+
+const labelSize = 14;
+
+type ProcessedRange = RangeType & {
+  labelWidth: number;
+  startPosition: number;
+};
+
+function useStackRangesAssignmentsLabels(ranges: RangeType[]) {
+  const { scaleX } = useScaleChecked();
+
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d');
+
+  if (!context || ranges.length === 0) return null;
+
+  context.font = `${labelSize}px Arial`;
+
+  const processedRanges: ProcessedRange[] = ranges
+    .map((range) => {
+      const { from, assignment = '' } = range;
+      const { width: labelWidth } = context.measureText(assignment);
+
+      return {
+        ...range,
+        labelWidth,
+        startPosition: scaleX()(from),
+      };
+    }, [])
+    .sort((a, b) => b.from - a.from);
+
+  return stackOverlappingLabelsMap(processedRanges, {
+    startPositionKey: 'startPosition',
+    labelWidthKey: 'labelWidth',
+    padding: 0,
+    idKey: 'id',
+  });
 }
 
 function RangesInner({
@@ -20,15 +60,22 @@ function RangesInner({
   selectedTool,
   relativeFormat,
 }: RangesInnerProps) {
+  const assignmentLabelsStackIndexes = useStackRangesAssignmentsLabels(
+    ranges.values,
+  );
+
   return (
     <ShareDataProvider>
       <g>
-        {ranges?.values?.map((range) => (
+        {ranges.values.map((range) => (
           <Range
             key={range.id}
             range={range}
             selectedTool={selectedTool}
             relativeFormat={relativeFormat}
+            assignmentLabelStackIndex={
+              assignmentLabelsStackIndexes?.[range.id] || 0
+            }
           />
         ))}
       </g>

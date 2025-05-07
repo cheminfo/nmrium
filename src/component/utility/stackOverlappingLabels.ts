@@ -5,14 +5,13 @@ interface StackOverlappingLabelsOptions<T> {
   labelWidthKey: keyof FilterType<T, number>;
   padding?: number;
 }
-export type StackOverlappingLabelsMapReturnType = Record<
-  string | number,
-  number
->;
-export type StackOverlappingLabelsArrayItemReturnType<T> = T & {
+
+type StackOverlappingLabelsMapReturnType = Record<string | number, number>;
+
+type StackOverlappingLabelsArrayItemReturnType<T> = T & {
   stackIndex: number;
 };
-export type StackOverlappingLabelsArrayReturnType<T> = Array<
+type StackOverlappingLabelsArrayReturnType<T> = Array<
   StackOverlappingLabelsArrayItemReturnType<T>
 >;
 

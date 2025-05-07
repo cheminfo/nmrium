@@ -12,10 +12,11 @@ const marginTop = 15;
 interface AssignmentLabelProps {
   range: Range;
   width: number;
+  stackIndex: number;
 }
 
 export function AssignmentLabel(props: AssignmentLabelProps) {
-  const { range, width } = props;
+  const { range, width, stackIndex } = props;
   const { id, assignment } = range;
   const { showAssignmentsLabels } = useActiveSpectrumRangesViewState();
   const dispatch = useDispatch();
@@ -38,9 +39,10 @@ export function AssignmentLabel(props: AssignmentLabelProps) {
       },
     });
   }
-
+  const baseYOffset = margin?.top + marginTop;
+  const yOffset = baseYOffset + stackIndex * 12;
   return (
-    <g transform={`translate(${width / 2} ${margin?.top + marginTop})`}>
+    <g transform={`translate(${width / 2} ${yOffset})`}>
       <FieldEdition
         onChange={handleChange}
         inputType="text"
@@ -59,6 +61,7 @@ export function AssignmentLabel(props: AssignmentLabelProps) {
           fill="black"
           style={{ cursor: 'hand' }}
           width={width}
+          fontSize={12}
         >
           {assignment}
         </text>
