@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 
 import { useChartData } from '../../context/ChartContext.js';
+import { stackOverlappingLabelsArray } from '../../utility/stackOverlappingLabels.js';
 import { useTracesSpectra } from '../useTracesSpectra.js';
 import { extractSpectrumSignals } from '../utilities/extractSpectrumSignals.js';
 import type { BaseSignal } from '../utilities/extractSpectrumSignals.js';
@@ -56,39 +57,10 @@ function useSignalsOverlap(axis: IndicationLinesAxis, spectrum: Spectrum1D) {
     })
     .sort((a, b) => (isOverXAxis ? b.delta - a.delta : a.delta - b.delta));
 
-  const groups: any[][] = [];
-  let currentGroup: any[] = [];
-  let lastInPixel = 0;
-
-  for (const signal of processedSignals) {
-    const deltaInPixel = signal.deltaInPixel;
-
-    if (deltaInPixel < lastInPixel) {
-      currentGroup.push(signal);
-    } else {
-      if (currentGroup.length > 0) {
-        groups.push(currentGroup);
-      }
-      currentGroup = [signal];
-    }
-    lastInPixel = deltaInPixel + signal.labelWidth + padding;
-  }
-
-  if (currentGroup.length > 0) {
-    groups.push(currentGroup); // Push the last group after the loop
-  }
-  return groups.flatMap((group) => {
-    let i = 0;
-    return group.map((item) => {
-      const stackIndex = i;
-      if (item.assignment) {
-        i++;
-      }
-      return {
-        ...item,
-        stackIndex,
-      };
-    });
+  return stackOverlappingLabelsArray(processedSignals, {
+    startPositionKey: 'deltaInPixel',
+    labelWidthKey: 'labelWidth',
+    padding,
   });
 }
 
