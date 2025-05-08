@@ -22,13 +22,13 @@ export function SVGContent2D({ spectra }: Chart2DProps) {
       <FTContainer spectra={spectra} />
       <FidContainer />
       <ClipPathContainer>
+        <SignalsGuideLines />
         <ShareDataProvider>
           <Zones />
           <ZonesAssignmentsLabels />
         </ShareDataProvider>
       </ClipPathContainer>
 
-      <SignalsGuideLines />
       <SpectrumInfoBlock />
 
       <g className="container" style={{ pointerEvents: 'none' }}>
