@@ -6,6 +6,7 @@ export interface BaseSignal {
   assignment?: string;
   delta: number;
   id: string;
+  rangeId: string;
 }
 
 interface ExtractSpectrumSignalsOptions {
@@ -39,7 +40,7 @@ export function extractSpectrumSignals(
 
     if (!isInRange) continue;
 
-    const { assignment, signals = [] } = range;
+    const { assignment, signals = [], id: rangeId } = range;
     let index = 0;
     for (const signal of signals) {
       const { id, delta, kind } = signal;
@@ -48,6 +49,7 @@ export function extractSpectrumSignals(
           assignment: index === 0 ? assignment : '',
           delta,
           id,
+          rangeId,
         });
         index++;
       }

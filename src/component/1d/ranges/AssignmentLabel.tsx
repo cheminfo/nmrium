@@ -35,7 +35,7 @@ export function AssignmentLabel(props: AssignmentLabelProps) {
       type: 'CHANGE_RANGE_ASSIGNMENT_LABEL',
       payload: {
         value,
-        rangeID: id,
+        rangeId: id,
       },
     });
   }

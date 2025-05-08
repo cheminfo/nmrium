@@ -18,7 +18,7 @@ export function RangeAssignmentColumn({
       type: 'CHANGE_RANGE_ASSIGNMENT_LABEL',
       payload: {
         value: event.target.value,
-        rangeID: row.id,
+        rangeId: row.id,
       },
     });
   }

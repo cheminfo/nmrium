@@ -146,7 +146,7 @@ type DeleteRangePeakAction = ActionType<
 >;
 type ChangeRangeAssignmentLabelAction = ActionType<
   'CHANGE_RANGE_ASSIGNMENT_LABEL',
-  { rangeID: string; value: string }
+  { rangeId: string; value: string; spectrumId?: string }
 >;
 
 type ChangeRangesViewFloatingBoxBoundingAction = ActionType<
@@ -672,29 +672,22 @@ function handleChangeRangeAssignmentLabel(
   draft: Draft<State>,
   action: ChangeRangeAssignmentLabelAction,
 ) {
-  const { rangeID, value } = action.payload;
-  const activeSpectrum = getActiveSpectrum(draft);
+  const { rangeId, value, spectrumId } = action.payload;
+  const spectrum = getSpectrum(draft, spectrumId);
 
-  if (activeSpectrum?.id) {
-    const { index } = activeSpectrum;
-    const spectrum = draft.data[index];
+  if (!spectrum || !isSpectrum1D(spectrum)) return;
 
-    if (!isSpectrum1D(spectrum)) {
-      return;
-    }
+  initializeRangeViewObject(draft, spectrum.id);
 
-    initializeRangeViewObject(draft, activeSpectrum.id);
+  const rangesView = draft.view.ranges[spectrum.id];
 
-    const rangesView = draft.view.ranges[spectrum.id];
+  if (!rangesView.showAssignmentsLabels) {
+    rangesView.showAssignmentsLabels = true;
+  }
 
-    if (!rangesView.showAssignmentsLabels) {
-      rangesView.showAssignmentsLabels = true;
-    }
-
-    const range = spectrum.ranges.values.find((range) => range.id === rangeID);
-    if (range) {
-      range.assignment = value;
-    }
+  const range = spectrum.ranges.values.find((range) => range.id === rangeId);
+  if (range) {
+    range.assignment = value;
   }
 }
 
