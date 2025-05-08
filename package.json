@@ -110,9 +110,6 @@
     "yup": "^1.6.1"
   },
   "devDependencies": {
-    "@babel/plugin-transform-modules-commonjs": "^7.27.1",
-    "@babel/preset-react": "^7.27.1",
-    "@babel/preset-typescript": "^7.27.1",
     "@playwright/test": "^1.52.0",
     "@simbathesailor/use-what-changed": "^2.0.0",
     "@types/d3": "^7.4.3",
