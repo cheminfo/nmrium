@@ -5,6 +5,7 @@ import { memo } from 'react';
 import { useChartData } from '../../context/ChartContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';
 import { ShareDataProvider } from '../../context/ShareDataContext.js';
+import { useCanvasContext } from '../../hooks/useCanvasContext.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import { stackOverlappingLabelsMap } from '../../utility/stackOverlappingLabels.js';
@@ -27,12 +28,9 @@ type ProcessedRange = RangeType & {
 function useStackRangesAssignmentsLabels(ranges: RangeType[]) {
   const { scaleX } = useScaleChecked();
 
-  const canvas = document.createElement('canvas');
-  const context = canvas.getContext('2d');
+  const context = useCanvasContext(labelSize);
 
   if (!context || ranges.length === 0) return null;
-
-  context.font = `${labelSize}px Arial`;
 
   const processedRanges: ProcessedRange[] = ranges
     .map((range) => {

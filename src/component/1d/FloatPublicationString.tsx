@@ -16,6 +16,7 @@ import { usePanelPreferences } from '../hooks/usePanelPreferences.js';
 import { useSVGUnitConverter } from '../hooks/useSVGUnitConverter.js';
 import useSpectraByActiveNucleus from '../hooks/useSpectraPerNucleus.js';
 import { useCheckExportStatus } from '../hooks/useViewportSize.js';
+import { useCanvasContext } from '../hooks/useCanvasContext.js';
 
 const ReactRnd = styled(Rnd)`
   border: 1px solid transparent;
@@ -30,16 +31,13 @@ const ReactRnd = styled(Rnd)`
   }
 `;
 
-function calculateWorldWidth(word, fontSize, fontFamily = 'Arial') {
-  const canvas = document.createElement('canvas');
-  const context = canvas.getContext('2d');
+function calculateWorldWidth(context, word) {
   if (!context) return 0;
-
-  context.font = `${fontSize}px ${fontFamily}`;
   return Math.round(context.measureText(word).width);
 }
 
-function wrapSVGText({ text, width, fontSize }) {
+function useWrapSVGText({ text, width, fontSize }) {
+  const context = useCanvasContext(fontSize);
   const formattedText = text
     .replaceAll(/<sup>(?<n>.*?)<\/sup>/g, '++$1++ ')
     .replaceAll(/<i>(?<j>.*?)<\/i>/g, '**$1**');
@@ -50,11 +48,11 @@ function wrapSVGText({ text, width, fontSize }) {
   let line: string[] = [];
   let lineWidth = 0;
 
-  const spaceWidth = calculateWorldWidth(' ', fontSize);
+  const spaceWidth = calculateWorldWidth(context, ' ');
   const words = formattedText.split(' ');
 
   for (const word of words) {
-    const wordWidth = calculateWorldWidth(word, fontSize);
+    const wordWidth = calculateWorldWidth(context, word);
     if (lineWidth + wordWidth > width) {
       lines.push(line);
       line = [word];
@@ -79,7 +77,8 @@ interface PublicationTextProps {
 function PublicationText(props: PublicationTextProps) {
   const { fontSize = 12, padding = 10, width, text } = props;
   const boxWidth = width - padding * 2;
-  const { lineHeight, lines } = wrapSVGText({
+
+  const { lineHeight, lines } = useWrapSVGText({
     width: boxWidth,
     fontSize,
     text,
