@@ -261,6 +261,13 @@ function generated1DSpectrum(params: {
     nbPoints,
     lineWidth,
   });
+
+  const first = x[0] ?? 0;
+  const last = x.at(-1) ?? 0;
+  const getFreqOffset = (freq) => {
+    return (first + last) * freq * 0.5;
+  };
+
   const datum = initiateDatum1D(
     {
       data: { x, im: null, re: y },
@@ -271,7 +278,12 @@ function generated1DSpectrum(params: {
         nucleus,
         originFrequency: frequency,
         baseFrequency: frequency,
+        frequencyOffset: Array.isArray(frequency)
+          ? frequency.map(getFreqOffset)
+          : getFreqOffset(frequency),
+
         pulseSequence: 'prediction',
+        spectralWidth: Math.abs(first - last),
         solvent: '',
         experiment,
         isFt: true,
