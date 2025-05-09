@@ -4,6 +4,7 @@ import SpectrumInfoBlock from '../1d-2d/components/SpectrumInfoBlock.js';
 import { ApodizationLine } from './ApodizationLine.js';
 import ExclusionZonesAnnotations from './ExclusionZonesAnnotations.js';
 import LinesSeries from './LinesSeries.js';
+import { PredictionErrorsNotations } from './PredictionErrorsNotations.js';
 import SimilarityTree from './SimilarityTree.js';
 import SpectraTracker from './SpectraLegends.js';
 import { XAxis1D } from './XAxis1D.js';
@@ -45,6 +46,7 @@ export function SVGContent1D() {
         <SimilarityTree />
       </ClipPathContainer>
       <JGraph />
+      <PredictionErrorsNotations />
 
       <g className="container" style={{ pointerEvents: 'none' }}>
         <XAxis1D />
