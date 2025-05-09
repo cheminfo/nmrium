@@ -1,5 +1,50 @@
 # Changelog
 
+## [0.63.0](https://github.com/cheminfo/nmrium/compare/v0.62.1...v0.63.0) (2025-05-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* It was exported by `nmr-load-save`, `@zakodium/nmrium-core` do not export this method. It is callable from instantiated core only.
+
+### Features
+
+* add support for inverted scroll behavior ([f2ef939](https://github.com/cheminfo/nmrium/commit/f2ef939da097f74b0431b4772a9bdb872bee56a8))
+* assign 1D labels from 2D spectra ([45f931a](https://github.com/cheminfo/nmrium/commit/45f931ab135a815dfa1e0df4d8db1d56ab9ce407))
+* assignments guidelines over the first and second dimensions ([f0821a3](https://github.com/cheminfo/nmrium/commit/f0821a3f5f12f61296569784bb4723981e52c246))
+* bidirectional 1D zoom ([#3472](https://github.com/cheminfo/nmrium/issues/3472)) ([339c67d](https://github.com/cheminfo/nmrium/commit/339c67d5f5e362358de6aa8e315174373504eaf7))
+* control structure size (default minHeight: 100px) ([e56ef9a](https://github.com/cheminfo/nmrium/commit/e56ef9abeffc7c76e9747727570aab0342bdf775))
+* control structure size (default minHeight: 100px) ([d434888](https://github.com/cheminfo/nmrium/commit/d434888b55f717d50b259b5489d4a9d61af514f7))
+* hide 2D phase correction for non-quadrant spectra ([b6d7c46](https://github.com/cheminfo/nmrium/commit/b6d7c461a54ddbd30060d44e1f5a02cf5cdc4b34))
+* horizontal and vertical zoom with CTRL + drag ([#3469](https://github.com/cheminfo/nmrium/issues/3469)) ([f0e99b2](https://github.com/cheminfo/nmrium/commit/f0e99b22d05b0d3af6674feeb60361a2f01ea7bf))
+* improve database panel ([#3455](https://github.com/cheminfo/nmrium/issues/3455)) ([#3461](https://github.com/cheminfo/nmrium/issues/3461)) ([e56ef9a](https://github.com/cheminfo/nmrium/commit/e56ef9abeffc7c76e9747727570aab0342bdf775))
+* minimum width for overlay highlight range ([d4872e7](https://github.com/cheminfo/nmrium/commit/d4872e7043037cd83cae1dc93598e92d8909118e))
+* processed apodization ([#3447](https://github.com/cheminfo/nmrium/issues/3447)) ([3fbbfdc](https://github.com/cheminfo/nmrium/commit/3fbbfdc3e3ce994ed30032951654ad35faec270c))
+* reopen the collapsed panels area when toggling the panel from the panels bar ([3cf40ff](https://github.com/cheminfo/nmrium/commit/3cf40ffd91f3b2871d90ff543fc7b09ce6a53c5d))
+* stack range assignment labels to avoid overlap ([b7fe786](https://github.com/cheminfo/nmrium/commit/b7fe7868cd310a60016319c692e87587f443f98c))
+* suggest default assignment label for 2D assignment based on closest signal to center ([fce426a](https://github.com/cheminfo/nmrium/commit/fce426a9cebc265c7b6cea470dba7bcc461bc818))
+* update OpenChemLib to v9 ([#3471](https://github.com/cheminfo/nmrium/issues/3471)) ([1e7d403](https://github.com/cheminfo/nmrium/commit/1e7d4032bf3156f3f73317c2b784b84493c0ebc6))
+
+
+### Bug Fixes
+
+* correct search range ([fce426a](https://github.com/cheminfo/nmrium/commit/fce426a9cebc265c7b6cea470dba7bcc461bc818))
+* ensure assignment labels are unique across Cosy F1 and F2 dimensions ([45f931a](https://github.com/cheminfo/nmrium/commit/45f931ab135a815dfa1e0df4d8db1d56ab9ce407))
+* ensure data is not empty before looking for a spectrum ([0cff982](https://github.com/cheminfo/nmrium/commit/0cff9820a4bb519a95f792ccfa9e85afc5e93b51))
+* find the signal closest to the center of the zone ([fce426a](https://github.com/cheminfo/nmrium/commit/fce426a9cebc265c7b6cea470dba7bcc461bc818))
+* fix: ensure only the first signal has the assignment label ([fce426a](https://github.com/cheminfo/nmrium/commit/fce426a9cebc265c7b6cea470dba7bcc461bc818))
+* **jcamp1Dexport:** add frequencyOffset and spectralWidth info  ([#3504](https://github.com/cheminfo/nmrium/issues/3504)) ([8fccd4e](https://github.com/cheminfo/nmrium/commit/8fccd4e57c087494a1f3e48827a40c2484ba8c8d))
+* update OpenChemLib to v9.1.1 ([#3492](https://github.com/cheminfo/nmrium/issues/3492)) ([736babb](https://github.com/cheminfo/nmrium/commit/736babb34391dcdc68f23f7a27d700298193229a))
+* useWatch hook to watch matrix generation changes ([aa97dda](https://github.com/cheminfo/nmrium/commit/aa97dda3051cdef0b772423acc378a64632e620b))
+* useWatch hook to watch prediction form changes ([3549c9b](https://github.com/cheminfo/nmrium/commit/3549c9ba925950e706e4dee40e9bf89592b9fe85)), closes [#3485](https://github.com/cheminfo/nmrium/issues/3485)
+* useWatch hook to watch range editing form change ([f62aa1c](https://github.com/cheminfo/nmrium/commit/f62aa1ca8dcf7982d7812c1598b7383f512878cd)), closes [#3486](https://github.com/cheminfo/nmrium/issues/3486)
+* useWatch hook to watch simulation form changes ([2292592](https://github.com/cheminfo/nmrium/commit/229259218e7170c53e0eaa23737fc5e613286dd0))
+
+
+### Code Refactoring
+
+* replace `nmr-load-save` deps by `nmrium-core` and `nmrium-core-plugins` ([#3473](https://github.com/cheminfo/nmrium/issues/3473)) ([af1503d](https://github.com/cheminfo/nmrium/commit/af1503dca49a3b24123276069140019f77f85639))
+
 ## [0.62.1](https://github.com/cheminfo/nmrium/compare/v0.62.0...v0.62.1) (2025-04-02)
 
 
