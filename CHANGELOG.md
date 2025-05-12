@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.63.1](https://github.com/cheminfo/nmrium/compare/v0.63.0...v0.63.1) (2025-05-12)
+
+
+### Bug Fixes
+
+* apply inline style on assignment guide lines when export as svg ([a3968c2](https://github.com/cheminfo/nmrium/commit/a3968c254485c73a92b0e10e5f6c38f8993de102))
+* generate ranges from signals instead to directly use it as range ([#3465](https://github.com/cheminfo/nmrium/issues/3465)) ([74a685e](https://github.com/cheminfo/nmrium/commit/74a685ed0859ba31fb5ac07645cdeb5ce0382a59))
+* prediction panel usability ([#3511](https://github.com/cheminfo/nmrium/issues/3511)) ([9c182f6](https://github.com/cheminfo/nmrium/commit/9c182f6e4570048c1944e2959d0a6a9aa9c40884))
+
 ## [0.63.0](https://github.com/cheminfo/nmrium/compare/v0.62.1...v0.63.0) (2025-05-09)
 
 
