@@ -37,7 +37,7 @@ type RecordOptions = Record<Tool, ToolOptionItem>;
 export const options: RecordOptions = {
   zoom: {
     id: 'zoom',
-    label: 'Zoom in',
+    label: 'Zoom in / out',
     hasOptionPanel: false,
     isFilter: false,
     isToggle: true,
