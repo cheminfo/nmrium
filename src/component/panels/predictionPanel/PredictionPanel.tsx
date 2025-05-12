@@ -25,14 +25,11 @@ import PreferencesHeader from '../header/PreferencesHeader.js';
 import PredictionPreferences from './PredictionPreferences.js';
 import PredictionSimpleOptions from './PredictionSimpleOptions.js';
 
-const styles: Record<'flexColumnContainer' | 'slider', CSSProperties> = {
+const styles: Record<'flexColumnContainer', CSSProperties> = {
   flexColumnContainer: {
     display: 'flex',
     flexDirection: 'column',
     flex: 1,
-  },
-  slider: {
-    overflow: 'hidden auto',
   },
 };
 
@@ -52,6 +49,8 @@ export default function PredictionPanel() {
   const predictionPreferences = usePanelPreferences('prediction');
   const { modal, openMoleculeEditor } = useMoleculeEditor(true);
   const refreshSlider = useRef<boolean>(false);
+
+  const [initialMolfile] = useState(molfile ?? '');
 
   useEffect(() => {
     if (
@@ -166,7 +165,7 @@ export default function PredictionPanel() {
           </MoleculePanelHeader>
 
           <div style={styles.flexColumnContainer}>
-            <div style={{ flex: 1 }}>
+            <div style={{ flex: 1, minHeight: 400 }}>
               <ResponsiveChart>
                 {({ height, width }) => {
                   return (
@@ -196,7 +195,6 @@ export default function PredictionPanel() {
                               />
                               <div
                                 style={{
-                                  ...styles.slider,
                                   height: height - 31,
                                 }}
                               >
@@ -216,7 +214,7 @@ export default function PredictionPanel() {
                       ) : (
                         <CanvasMoleculeEditor
                           inputFormat="molfile"
-                          inputValue={molfile || ''}
+                          inputValue={initialMolfile}
                           width={width}
                           height={height}
                           fragment={false}
