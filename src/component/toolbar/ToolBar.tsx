@@ -21,9 +21,9 @@ import {
   FaExpand,
   FaFileExport,
   FaFileImport,
-  FaSearchPlus,
 } from 'react-icons/fa';
 import { PiKnifeBold, PiSelectionPlusDuotone } from 'react-icons/pi';
+import { TbZoom } from 'react-icons/tb';
 import type { ToolbarItemProps, TooltipItem } from 'react-science/ui';
 import { Toolbar, TooltipHelpContent } from 'react-science/ui';
 
@@ -226,7 +226,7 @@ export default function ToolBar() {
         ],
         style: { minWidth: '300px' },
       },
-      icon: <FaSearchPlus />,
+      icon: <TbZoom strokeWidth={3} />,
     },
     {
       id: 'zoomOut',
