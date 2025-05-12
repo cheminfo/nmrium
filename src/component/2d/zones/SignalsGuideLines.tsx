@@ -19,11 +19,6 @@ import { extractSpectrumSignals } from '../utilities/extractSpectrumSignals.js';
 import type { BaseSignal } from '../utilities/extractSpectrumSignals.js';
 import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 
-const IndicatorLine = styled.line`
-  stroke: lightgrey;
-  opacity: 0.7;
-`;
-
 const Rect = styled.rect`
   fill: transparent;
 
@@ -187,12 +182,13 @@ function IndicationLine(props: IndicationLineProps) {
       position={isOverXAxis ? 'right-top' : 'top-left'}
     >
       <g transform={`translate(${x},${y})`}>
-        <IndicatorLine x1={0} x2={x2} y1={0} y2={y2} />
+        <line stroke="lightgrey" x1={0} x2={x2} y1={0} y2={y2} />
         <Rect
           x={-rectXOffset}
           y={-rectYOffset}
           width={rectWidth}
           height={rectHeight}
+          data-no-export="true"
         />
         <AssignmentLabel
           x={labelX}
