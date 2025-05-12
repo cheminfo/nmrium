@@ -1,6 +1,11 @@
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import type { Info1D, NMRRange, NMRSignal1D } from 'nmr-processing';
-import { rangesToXY, signalsToXY } from 'nmr-processing';
+import {
+  rangesToXY,
+  signalsJoin,
+  signalsToRanges,
+  signalsToXY,
+} from 'nmr-processing';
 
 import type { UsedColors } from '../../../../types/UsedColors.js';
 import { initiateDatum1D } from '../initiateDatum1D.js';
@@ -49,7 +54,12 @@ function resurrectSpectrumFromRanges(
           isFt: true,
           name,
         },
-        ranges: { values: ranges, options: { sum: 100 } },
+        ranges: {
+          values: ranges,
+          options: {
+            sum: 100,
+          },
+        },
       },
       { usedColors },
     );
@@ -81,6 +91,17 @@ function resurrectSpectrumFromSignals(
       from,
       to,
     });
+
+    let totalIntegration = 0;
+    for (const signal of signals) {
+      const { nbAtoms, atoms } = signal;
+      if (nbAtoms !== undefined) {
+        totalIntegration += Number(nbAtoms);
+      } else if (atoms !== undefined) {
+        totalIntegration += atoms.length;
+      }
+    }
+
     const datum = initiateDatum1D(
       {
         id: spectrumID,
@@ -94,7 +115,10 @@ function resurrectSpectrumFromSignals(
           isFt: true,
           name,
         },
-        ranges: { values: signals, options: { sum: 100 } },
+        ranges: {
+          values: signalsToRanges(signalsJoin(signals)),
+          options: { sum: totalIntegration },
+        },
       },
       { usedColors },
     );
