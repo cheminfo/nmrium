@@ -5,7 +5,6 @@ import { usePanelOpenState } from '../Panels.js';
 
 export function useTogglePanel() {
   const { dispatch, current } = usePreferences();
-  const { setPanelOpenState } = usePanelOpenState();
   const { isSplitPaneOpen, openSplitPane } = usePanelOpenState();
 
   function togglePanel(id: keyof NMRiumPanelPreferences) {
@@ -15,8 +14,10 @@ export function useTogglePanel() {
     openSplitPane();
 
     if ((!isSplitPaneOpen && !flag) || isSplitPaneOpen) {
-      setPanelOpenState(id, !flag);
-      dispatch({ type: 'TOGGLE_PANEL', payload: { id } });
+      dispatch({
+        type: 'TOGGLE_PANEL',
+        payload: { id, options: { display: undefined, open: !flag } },
+      });
     }
   }
 

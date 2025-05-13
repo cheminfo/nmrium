@@ -20,11 +20,7 @@ const Container = styled.div`
   height: 100%;
   flex: 1 1 0%;
 `;
-
-type PanelOpenState = Partial<Record<keyof NMRiumPanelPreferences, boolean>>;
 interface PanelStateContext {
-  setPanelOpenState: (id: keyof NMRiumPanelPreferences, value: boolean) => void;
-  panelOpenState: PanelOpenState;
   openSplitPane: () => void;
   closeSplitPane: () => void;
   isSplitPaneOpen: boolean;
@@ -48,26 +44,12 @@ export function PanelOpenProviderProvider({ children }) {
   const {
     display: { general = {} },
   } = current;
-
-  const [panelOpenState, toggleAccordionItem] = useState<PanelOpenState>({});
   // TODO: make sure to move this state to the workspace once the refactoring of nmrium-core is finished.
   const [isSplitPaneOpen, setIsSplitPaneOpen] = useState(
     !general?.hidePanelOnLoad,
   );
 
   const state = useMemo(() => {
-    function setPanelOpenState(
-      id: keyof NMRiumPanelPreferences,
-      value: boolean,
-    ) {
-      toggleAccordionItem((prev) => {
-        return {
-          ...prev,
-          [id]: value,
-        };
-      });
-    }
-
     function openSplitPane() {
       setIsSplitPaneOpen(true);
     }
@@ -75,13 +57,11 @@ export function PanelOpenProviderProvider({ children }) {
       setIsSplitPaneOpen(false);
     }
     return {
-      setPanelOpenState,
-      panelOpenState,
       openSplitPane,
       closeSplitPane,
       isSplitPaneOpen,
     };
-  }, [isSplitPaneOpen, panelOpenState]);
+  }, [isSplitPaneOpen]);
 
   return (
     <AccordionContext.Provider value={state}>
@@ -92,16 +72,14 @@ export function PanelOpenProviderProvider({ children }) {
 
 function PanelsInner() {
   const getPanelPreferences = useGetPanelOptions();
-  const { panelOpenState } = usePanelOpenState();
   const { dialog, openDialog, closeDialog } = useDialogToggle({
     informationModal: false,
   });
-
+  const { dispatch } = usePreferences();
   const items = useAccordionItems();
   function isOpened(item: AccordionItem) {
-    const { id } = item;
     const panelOptions = getPanelPreferences(item);
-    return panelOptions?.open || panelOpenState[id];
+    return panelOptions?.open;
   }
   function isVisible(item: AccordionItem) {
     const panelOptions = getPanelPreferences(item);
@@ -128,6 +106,12 @@ function PanelsInner() {
               key={title}
               title={title}
               open={isOpened(item)}
+              onOpenChange={(isOpened) => {
+                dispatch({
+                  type: 'TOGGLE_PANEL',
+                  payload: { id, options: { open: isOpened } },
+                });
+              }}
               renderToolbar={() => (
                 <RightButtons
                   id={id}
