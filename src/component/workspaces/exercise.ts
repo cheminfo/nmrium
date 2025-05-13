@@ -29,7 +29,7 @@ export const exercise: InnerWorkspace = {
     },
   },
   general: {
-    dimmedSpectraOpacity: 0.1,
+    dimmedSpectraOpacity: 0.4,
     verticalSplitterPosition: '440px',
     verticalSplitterCloseThreshold: 600,
     spectraRendering: 'auto',

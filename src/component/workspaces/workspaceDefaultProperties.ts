@@ -63,7 +63,7 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
   },
 
   general: {
-    dimmedSpectraOpacity: 0.1,
+    dimmedSpectraOpacity: 0.4,
     verticalSplitterPosition: '560px',
     verticalSplitterCloseThreshold: 600,
     spectraRendering: 'auto',
