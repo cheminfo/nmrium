@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.63.2](https://github.com/cheminfo/nmrium/compare/v0.63.1...v0.63.2) (2025-05-13)
+
+
+### Bug Fixes
+
+* check if a spectrum is selected before fetching assigned IDs ([242682d](https://github.com/cheminfo/nmrium/commit/242682d7bee25fa945b476122705e1832ad2ee69))
+
 ## [0.63.1](https://github.com/cheminfo/nmrium/compare/v0.63.0...v0.63.1) (2025-05-12)
 
 
