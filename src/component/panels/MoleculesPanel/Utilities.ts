@@ -97,6 +97,8 @@ export function getAssignIds(
   spectrum: Spectrum,
   id: string,
 ): TargetAssignKeys | null {
+  if (!spectrum) return null;
+
   const data = getRangesOrZones(spectrum);
   const target = isSpectrum1D(spectrum) ? 'range' : 'zone';
 
