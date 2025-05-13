@@ -19,7 +19,7 @@ export const prediction: InnerWorkspace = {
       hideWorkspaces: true,
     },
     panels: {
-      spectraPanel: { display: true, visible: true },
+      spectraPanel: { display: true, visible: true, open: false },
       rangesPanel: { display: true, visible: true },
       zonesPanel: { display: true, visible: true },
       predictionPanel: { display: true, visible: true, open: true },

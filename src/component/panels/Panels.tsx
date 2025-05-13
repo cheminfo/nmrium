@@ -99,8 +99,9 @@ function PanelsInner() {
 
   const items = useAccordionItems();
   function isOpened(item: AccordionItem) {
+    const { id } = item;
     const panelOptions = getPanelPreferences(item);
-    return panelOptions?.open;
+    return panelOptions?.open || panelOpenState[id];
   }
   function isVisible(item: AccordionItem) {
     const panelOptions = getPanelPreferences(item);
@@ -126,7 +127,7 @@ function PanelsInner() {
               id={id}
               key={title}
               title={title}
-              defaultOpen={isOpened(item) || panelOpenState[id]}
+              open={isOpened(item)}
               renderToolbar={() => (
                 <RightButtons
                   id={id}
