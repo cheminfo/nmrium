@@ -3,6 +3,7 @@ import type {
   ExportPreferences,
   ExportSettings,
   MultipleSpectraAnalysisPreferences,
+  PanelPreferencesType,
   PrintPageOptions,
   Workspace,
   WorkSpaceSource,
@@ -48,6 +49,7 @@ import { setWorkspace } from './actions/setWorkspace.js';
 import { toggleInformationBlock } from './actions/toggleInformationBlock.js';
 import { togglePanel } from './actions/togglePanel.js';
 import { mapWorkspaces } from './utilities/mapWorkspaces.js';
+import type { FilterType } from '../../utility/filterType.js';
 
 const LOCAL_STORAGE_SETTINGS_KEY = 'nmr-general-settings';
 
@@ -148,7 +150,15 @@ export type ChangePeaksLabelPositionAction = ActionType<
   }
 >;
 
-export type TogglePanelAction = ActionType<'TOGGLE_PANEL', { id: string }>;
+export type TogglePanelAction = ActionType<
+  'TOGGLE_PANEL',
+  {
+    id: string;
+    options: Partial<
+      Record<keyof FilterType<Required<PanelPreferencesType>, boolean>, boolean>
+    >;
+  }
+>;
 
 type PreferencesActions =
   | InitPreferencesAction

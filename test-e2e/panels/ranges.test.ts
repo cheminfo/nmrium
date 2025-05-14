@@ -197,9 +197,6 @@ test('Multiplicity should be visible', async ({ page }) => {
     // Return to 1D spectra
     await nmrium.page.click('_react=SpectraTabs >> _react=Tab[tabid="1H"]');
 
-    //open ranges panel
-    await nmrium.clickPanel('Ranges / Multiplet analysis');
-
     // Check that MultiplicityTree btn still on
     await expect(
       nmrium.getToolbarLocatorByTitle('Hide multiplicity trees in spectrum', {
