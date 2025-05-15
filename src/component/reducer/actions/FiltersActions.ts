@@ -496,16 +496,24 @@ function rollbackSpectrumByFilter(
     // re-implement all filters and rest all view property that related to filters
     if (reset) {
       if (filterIndex !== -1 && spectrum.filters.length > 0) {
+        // A filter exists, reset the domain based on the filters from the current filter index to the last one
         updateDomainOptions = getFilterDomain(spectrum, {
           startIndex: filterIndex,
           lastIndex: spectrum.filters.length - 1,
         });
       } else if (toolData.activeFilterID) {
+        // No filter exists yet, but there is an active one in this case reset both x and y domain
+
         updateDomainOptions = { updateXDomain: true, updateYDomain: true };
+      } else if (searchBy === 'name' && key) {
+        // No filter exists yet and no active filter, reset the x and y domain based on the current filter domain rules
+        const { updateXDomain, updateYDomain } =
+          getFilterUpdateDomainRules(key);
+        updateDomainOptions = { updateXDomain, updateYDomain };
       } else {
+        //otherwise do not reset the domain
         updateDomainOptions = { updateXDomain: false, updateYDomain: false };
       }
-
       toolData.activeFilterID = null;
       draft.tempData = null;
 
