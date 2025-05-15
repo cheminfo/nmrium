@@ -8,6 +8,7 @@ import type { AssignmentsData } from '../assignment/AssignmentsContext.js';
 import { useScaleChecked } from '../context/ScaleContext.js';
 import { HighlightEventSource, useHighlight } from '../highlight/index.js';
 import useSpectrum from '../hooks/useSpectrum.js';
+import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature.js';
 
 const boxHeight = 10;
 const boxPadding = 4;
@@ -110,6 +111,7 @@ export function PredictionErrorsNotations() {
 
 function PredictionError(props: SignalStatistics) {
   const { statistics, metadata, id } = props;
+  const isExperimental = useCheckExperimentalFeature();
   const assignment = useAssignment(id);
   const highlight = useHighlight(extractID(id, assignment), {
     type: HighlightEventSource.SIGNAL,
@@ -149,7 +151,11 @@ function PredictionError(props: SignalStatistics) {
     <Popover
       targetTagName="g"
       interactionKind="hover"
-      content={<InfoBlock hose={hose} sphere={sphere} nb={nb} />}
+      content={
+        isExperimental ? (
+          <InfoBlock hose={hose} sphere={sphere} nb={nb} />
+        ) : undefined
+      }
     >
       <g
         onMouseEnter={() => {
