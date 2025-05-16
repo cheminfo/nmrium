@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.64.0](https://github.com/cheminfo/nmrium/compare/v0.63.2...v0.64.0) (2025-05-16)
+
+
+### Features
+
+* display prediction errors ([cc3a473](https://github.com/cheminfo/nmrium/commit/cc3a473cd1659dd46b7ca9906c9c2f131603c96b))
+
+
+### Bug Fixes
+
+* move Accordion component to controlled component ([#3520](https://github.com/cheminfo/nmrium/issues/3520)) ([e3921ee](https://github.com/cheminfo/nmrium/commit/e3921eea1839a4409fd5352044099beed8b415eb))
+* reset domain when filter is cancelled ([bb327c1](https://github.com/cheminfo/nmrium/commit/bb327c1d14c323c0c989c4eedb5ed3c9c6c2aec4))
+
 ## [0.63.2](https://github.com/cheminfo/nmrium/compare/v0.63.1...v0.63.2) (2025-05-13)
 
 
