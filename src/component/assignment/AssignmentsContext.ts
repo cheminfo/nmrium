@@ -32,6 +32,7 @@ export interface HighlightAssignmentOptions {
 export interface ActivateAssignmentOptions {
   id: string;
   axis: Axis;
+  spectrumId?: string;
 }
 
 export const assignmentStatus: AssignmentStatus = {
@@ -40,7 +41,7 @@ export const assignmentStatus: AssignmentStatus = {
 };
 
 export interface AssignmentStatus {
-  activated: AssignmentItem | null;
+  activated: (AssignmentItem & { spectrumId?: string }) | null;
   highlighted: AssignmentItem | null;
 }
 export interface AssignmentContext extends AssignmentStatus {
@@ -82,7 +83,10 @@ export function useAssignmentContext() {
 }
 
 // key can be signal id,range id or zone id
-export function useAssignment(id: string): AssignmentsData {
+export function useAssignment(
+  id: string,
+  spectrumId?: string,
+): AssignmentsData {
   const { data, activated, highlighted, activate, highlight, clearHighlight } =
     useAssignmentContext();
 
@@ -93,6 +97,7 @@ export function useAssignment(id: string): AssignmentsData {
   function activateAssignment(axis: Axis) {
     if (id) {
       activate({
+        spectrumId,
         id,
         axis,
       });

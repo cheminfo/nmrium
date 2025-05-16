@@ -1,8 +1,16 @@
 import styled from '@emotion/styled';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
+import type { Range } from 'nmr-processing';
+import { useRef } from 'react';
+import { LuLink, LuUnlink } from 'react-icons/lu';
 import { PiTextTBold, PiTextTSlashBold } from 'react-icons/pi';
 
 import { FieldEdition } from '../../1d-2d/FieldEdition.js';
+import {
+  useAssignment,
+  useAssignmentContext,
+} from '../../assignment/AssignmentsContext.js';
+import { filterAssignedIDs } from '../../assignment/utilities/filterAssignedIDs.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import {
@@ -11,16 +19,17 @@ import {
 } from '../../context/ShareDataContext.js';
 import { ActionsButtonsPopover } from '../../elements/ActionsButtonsPopover.js';
 import type { ActionsButtonsPopoverProps } from '../../elements/ActionsButtonsPopover.js';
+import { HighlightEventSource, useHighlight } from '../../highlight/index.js';
 import { useCanvasContext } from '../../hooks/useCanvasContext.js';
 import { useTriggerNewAssignmentLabel } from '../../hooks/useTriggerNewAssignmentLabel.js';
 import { stackOverlappingLabelsArray } from '../../utility/stackOverlappingLabels.js';
 import { useTracesSpectra } from '../useTracesSpectra.js';
 import { extractSpectrumSignals } from '../utilities/extractSpectrumSignals.js';
-import type { BaseSignal } from '../utilities/extractSpectrumSignals.js';
+import type { ExtractedSignal } from '../utilities/extractSpectrumSignals.js';
 import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 
-const Rect = styled.rect`
-  fill: transparent;
+const Rect = styled.rect<{ isActive: boolean }>`
+  fill: ${({ isActive }) => (isActive ? '#ff6f0057' : 'transparent')};
 
   &:hover {
     fill: #ff6f0057;
@@ -42,13 +51,18 @@ interface IndicationLinesProps extends SignalsGuideLinesProps {
 const labelSize = 12;
 const padding = 2;
 
-interface ProcessedSignal extends BaseSignal {
+interface ExtraExtractProperties {
+  range: Range;
+}
+interface ProcessedSignal extends ExtractedSignal<ExtraExtractProperties> {
   labelWidth: number;
   deltaInPixel: number;
 }
 
 function useSignalsOverlap(axis: IndicationLinesAxis, spectrum: Spectrum1D) {
-  const signals = extractSpectrumSignals(spectrum);
+  const signals = extractSpectrumSignals<ExtraExtractProperties>(spectrum, {
+    include: (range) => ({ range }),
+  });
   const scaleX = useScale2DX();
   const scaleY = useScale2DY();
   const context = useCanvasContext(labelSize);
@@ -87,13 +101,14 @@ function IndicationLines(props: IndicationLinesProps) {
   return (
     <g>
       {normalizedSignals.map(
-        ({ deltaInPixel, stackIndex, assignment, id, rangeId }) => {
+        ({ deltaInPixel, stackIndex, assignment, id, range }) => {
           return (
             <IndicationLine
               key={`${axis}[${id}]`}
-              {...{ deltaInPixel, stackIndex, assignment, id, rangeId }}
+              {...{ deltaInPixel, stackIndex, assignment, id }}
               axis={axis}
               spectrumId={spectrum.id}
+              range={range}
             />
           );
         },
@@ -102,11 +117,10 @@ function IndicationLines(props: IndicationLinesProps) {
   );
 }
 
-interface IndicationLineProps {
+interface IndicationLineProps extends ExtraExtractProperties {
   deltaInPixel: number;
   stackIndex: number;
   assignment?: string;
-  rangeId: string;
   spectrumId: string;
   axis: IndicationLinesAxis;
 }
@@ -121,12 +135,45 @@ function getAxisRangeId(options: GetAxisRangeIdOptions) {
   return `${axis}[${rangeId}]`;
 }
 
+interface UseRangeAssignmentOptions {
+  rangeId: string;
+  signalsIds: string[];
+  spectrumId: string;
+}
+
+function useRangeAssignment(options: UseRangeAssignmentOptions) {
+  const { rangeId, signalsIds, spectrumId } = options;
+
+  const assignmentData = useAssignmentContext();
+  const assignmentContext = useAssignment(rangeId, spectrumId);
+  const highlightId = [rangeId]
+    .concat(assignmentContext.assignedDiaIds?.x || [])
+    .concat(filterAssignedIDs(assignmentData.data, signalsIds));
+
+  const highlightContext = useHighlight(highlightId, {
+    type: HighlightEventSource.RANGE,
+    extra: { id: rangeId, spectrumID: spectrumId },
+  });
+  return { highlightContext, assignmentContext };
+}
+
 function IndicationLine(props: IndicationLineProps) {
-  const { deltaInPixel, stackIndex, assignment, rangeId, axis, spectrumId } =
+  const isAssignBtnTrigged = useRef(false);
+  const { deltaInPixel, stackIndex, assignment, axis, spectrumId, range } =
     props;
+  const { id: rangeId, diaIDs = [], signals } = range;
+  const signalsIds = signals.map(({ id }) => id);
   const { margin, width, height } = useChartData();
   const { setData: addNewAssignmentLabel } = useShareData();
   const dispatch = useDispatch();
+  const { assignmentContext, highlightContext } = useRangeAssignment({
+    rangeId,
+    spectrumId,
+    signalsIds,
+  });
+  const hasDiaIDs = diaIDs.length > 0;
+  const isAssignmentActive = assignmentContext.isActive;
+  const isHighlighted = highlightContext.isActive || isAssignmentActive;
 
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
@@ -157,7 +204,45 @@ function IndicationLine(props: IndicationLineProps) {
     });
   }
 
+  function mouseEnterHandler() {
+    assignmentContext.highlight('x');
+    highlightContext.show();
+  }
+
+  function mouseLeaveHandler() {
+    assignmentContext.clearHighlight();
+    highlightContext.hide();
+  }
+
+  function assignHandler() {
+    isAssignBtnTrigged.current = true;
+    assignmentContext.activate('x');
+  }
+
+  function unAssignHandler() {
+    dispatch({
+      type: 'UNLINK_RANGE',
+      payload: {
+        rangeKey: rangeId,
+        spectrumId,
+      },
+    });
+  }
+
   const actionsButtons: ActionsButtonsPopoverProps['buttons'] = [
+    {
+      icon: <LuLink />,
+      onClick: assignHandler,
+      intent: 'success',
+      title: 'Assign range',
+    },
+    {
+      icon: <LuUnlink />,
+      onClick: () => unAssignHandler(),
+      intent: 'danger',
+      title: 'Unassign range',
+      visible: !!(isAssignmentActive || hasDiaIDs),
+    },
     {
       icon: <PiTextTBold />,
       onClick: () => addNewAssignmentLabel(getAxisRangeId({ axis, rangeId })),
@@ -174,14 +259,24 @@ function IndicationLine(props: IndicationLineProps) {
     },
   ];
 
+  const isOpen = isAssignBtnTrigged.current ? isAssignmentActive : undefined;
+
   return (
     <ActionsButtonsPopover
+      isOpen={isOpen}
       targetTagName="g"
       buttons={actionsButtons}
       space={2}
       position={isOverXAxis ? 'right-top' : 'top-left'}
+      onClosed={() => {
+        isAssignBtnTrigged.current = false;
+      }}
     >
-      <g transform={`translate(${x},${y})`}>
+      <g
+        transform={`translate(${x},${y})`}
+        onMouseEnter={mouseEnterHandler}
+        onMouseLeave={mouseLeaveHandler}
+      >
         <line stroke="lightgrey" x1={0} x2={x2} y1={0} y2={y2} />
         <Rect
           x={-rectXOffset}
@@ -189,6 +284,7 @@ function IndicationLine(props: IndicationLineProps) {
           width={rectWidth}
           height={rectHeight}
           data-no-export="true"
+          isActive={isHighlighted}
         />
         <AssignmentLabel
           x={labelX}

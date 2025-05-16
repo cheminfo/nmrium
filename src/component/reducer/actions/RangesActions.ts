@@ -87,6 +87,7 @@ type DeleteSignalAction = ActionType<'DELETE_1D_SIGNAL', DeleteSignalProps>;
 
 interface UnlinkRangeProps {
   rangeKey?: string;
+  spectrumId?: string; // If not specified, the currently active spectrum will be used by default.
   signalIndex?: number;
 }
 type UnlinkRangeAction = ActionType<'UNLINK_RANGE', UnlinkRangeProps>;
@@ -95,6 +96,7 @@ type AssignRangeAction = ActionType<
   'ASSIGN_RANGE',
   {
     keys: TargetAssignKeys;
+    spectrumId?: string;
   } & Required<Pick<Range, 'diaIDs' | 'nbAtoms'>>
 >;
 type ResizeRangeAction = ActionType<
@@ -191,6 +193,7 @@ function getRangeByIndex(draft: Draft<State>, spectrumIndex, rangeID) {
     (range) => range.id === rangeID,
   );
 }
+
 function getRange(spectrum: Spectrum1D, rangeID: string) {
   return spectrum.ranges.values.findIndex((range) => range.id === rangeID);
 }
@@ -399,12 +402,9 @@ function handleDeleteSignal(draft: Draft<State>, action: DeleteSignalAction) {
   deleteSignal1D(draft, action.payload);
 }
 
-function unlinkRange(draft: Draft<State>, options?: UnlinkRangeProps) {
-  const activeSpectrum = getActiveSpectrum(draft);
-
-  if (!activeSpectrum) return null;
-  const { index } = activeSpectrum;
-  const spectrum = draft.data[index];
+function unlinkRange(draft: Draft<State>, options: UnlinkRangeProps = {}) {
+  const { spectrumId } = options;
+  const spectrum = getSpectrum(draft, spectrumId);
 
   if (!isSpectrum1D(spectrum)) return;
 
@@ -412,7 +412,7 @@ function unlinkRange(draft: Draft<State>, options?: UnlinkRangeProps) {
   const ranges = spectrum.ranges.values;
 
   if (rangeKey) {
-    const rangeIndex = getRangeByIndex(draft, index, rangeKey);
+    const rangeIndex = getRange(spectrum, rangeKey);
     const unlinkType = signalIndex === -1 ? 'range' : 'signal';
     ranges[rangeIndex] = unlink(ranges[rangeIndex], {
       unlinkType,
@@ -433,14 +433,11 @@ function handleUnlinkRange(draft: Draft<State>, action: UnlinkRangeAction) {
 
 //action
 function handleAssignRange(draft: Draft<State>, action: AssignRangeAction) {
-  const activeSpectrum = getActiveSpectrum(draft);
-  if (!activeSpectrum?.id) return;
-  const { index } = activeSpectrum;
-  const spectrum = draft.data[index];
+  const { keys, diaIDs, nbAtoms, spectrumId } = action.payload;
 
-  if (!isSpectrum1D(spectrum)) return;
+  const spectrum = getSpectrum(draft, spectrumId);
 
-  const { keys, diaIDs, nbAtoms } = action.payload;
+  if (!spectrum || !isSpectrum1D(spectrum)) return;
 
   if (keys.length === 1) {
     const [{ index }] = keys;
