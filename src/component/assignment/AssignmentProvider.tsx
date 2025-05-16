@@ -24,10 +24,11 @@ export function AssignmentProvider(props: AssignmentProviderProps) {
 
   const memoState = useMemo<AssignmentContext>(() => {
     const activate = (options: ActivateAssignmentOptions) => {
+      const { id, axis, spectrumId } = options;
       setState((prevState) => ({
         ...prevState,
         activated: !prevState.activated
-          ? { id: options.id, axis: options.axis || null }
+          ? { id, axis: axis || null, spectrumId }
           : null,
       }));
     };

@@ -75,6 +75,7 @@ function getSignalsDiaIDs(
 
 export default function useAtomAssignment() {
   const {
+    data: spectra,
     view: {
       spectra: { activeTab: nucleus },
     },
@@ -85,8 +86,10 @@ export default function useAtomAssignment() {
   const highlightData = useHighlightData();
   const highlightedIdDsRef = useRef<string[]>([]);
   const assignments = useAssignmentContext();
-  const activatedKey = assignments.activated
-    ? assignments.activated.id
+  const { activated: activatedAssignment } = assignments;
+
+  const activatedKey = activatedAssignment
+    ? activatedAssignment.id
     : ConcatenationString; // dummy value
 
   // used for atom highlighting for now, until we would like to highlight atoms per axis separately
@@ -117,7 +120,11 @@ export default function useAtomAssignment() {
 
     if (!assignKeys) return;
     const [{ index: rangeIndex }] = assignKeys;
-    const range = spectrum.ranges.values[rangeIndex];
+    const {
+      id: spectrumId,
+      ranges: { values },
+    } = spectrum;
+    const range = values[rangeIndex];
 
     let diaIDs: string[] = [];
 
@@ -135,6 +142,7 @@ export default function useAtomAssignment() {
         nbAtoms: uniqueDiaIDs.nbAtoms,
         diaIDs: uniqueDiaIDs.diaIDs,
         keys: assignKeys,
+        spectrumId,
       },
     });
   }
@@ -175,9 +183,9 @@ export default function useAtomAssignment() {
     diaIDAndInfo: DiaIDAndInfo | undefined,
     event: MouseEvent,
   ) {
-    if (checkModifierKeyActivated(event) || !assignments.activated) return;
+    if (checkModifierKeyActivated(event) || !activatedAssignment) return;
 
-    const { axis, id } = assignments.activated;
+    const { axis, id } = activatedAssignment;
 
     if (!id || !axis) {
       return;
@@ -198,10 +206,23 @@ export default function useAtomAssignment() {
     // determine the level of setting the diaIDs array (range vs. signal level) and save there
     // let nbAtoms = 0;
     // on range/zone level
-    if (isSpectrum1D(spectrum)) {
-      assign1DAtom(spectrum, assignments.activated.id, atomInformation);
+    const currentSpectrum = activatedAssignment.spectrumId
+      ? spectra.find(
+          (spectrum) => spectrum.id === activatedAssignment.spectrumId,
+        )
+      : spectrum;
+
+    if (!currentSpectrum) return;
+
+    if (isSpectrum1D(currentSpectrum)) {
+      assign1DAtom(currentSpectrum, activatedAssignment.id, atomInformation);
     } else {
-      assign2DAtom(spectrum, assignments.activated.id, atomInformation, axis);
+      assign2DAtom(
+        currentSpectrum,
+        activatedAssignment.id,
+        atomInformation,
+        axis,
+      );
     }
     assignments.activate({ id: activatedKey, axis });
   }
