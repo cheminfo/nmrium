@@ -1,4 +1,5 @@
 import type { Spectrum1D } from '@zakodium/nmrium-core';
+import type { Range } from 'nmr-processing';
 
 import { SIGNAL_INCLUDED_KINDS } from '../../../data/constants/signalsKinds.js';
 
@@ -6,19 +7,21 @@ export interface BaseSignal {
   assignment?: string;
   delta: number;
   id: string;
-  rangeId: string;
 }
 
-interface ExtractSpectrumSignalsOptions {
+export type ExtractedSignal<T> = BaseSignal & T;
+
+interface ExtractSpectrumSignalsOptions<T> {
   from?: number;
   to?: number;
+  include?: (range: Range) => T;
 }
-export function extractSpectrumSignals(
+export function extractSpectrumSignals<T extends object = object>(
   spectrum: Spectrum1D,
-  options: ExtractSpectrumSignalsOptions = {},
+  options: ExtractSpectrumSignalsOptions<T> = {},
 ) {
-  const result: BaseSignal[] = [];
-  const { from, to } = options;
+  const result: Array<ExtractedSignal<T>> = [];
+  const { from, to, include } = options;
 
   const ranges = spectrum?.ranges?.values;
   if (!Array.isArray(ranges) || ranges?.length === 0) {
@@ -40,7 +43,7 @@ export function extractSpectrumSignals(
 
     if (!isInRange) continue;
 
-    const { assignment, signals = [], id: rangeId } = range;
+    const { assignment, signals = [] } = range;
     let index = 0;
     for (const signal of signals) {
       const { id, delta, kind } = signal;
@@ -49,8 +52,8 @@ export function extractSpectrumSignals(
           assignment: index === 0 ? assignment : '',
           delta,
           id,
-          rangeId,
-        });
+          ...include?.(range),
+        } as ExtractedSignal<T>);
         index++;
       }
     }
