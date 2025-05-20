@@ -262,6 +262,14 @@ function FiltersInner(props: FiltersInnerProps) {
     openSection(null);
   }
 
+  function handleReorderFilters(sourceId, targetId) {
+    if (!sourceId || !targetId) {
+      return;
+    }
+
+    dispatch({ type: 'REORDER_FILTERS', payload: { sourceId, targetId } });
+  }
+
   return (
     <Sections isOverflow renderActiveSectionContentOnly>
       {filtersList.map((filter, index) => {
@@ -272,6 +280,7 @@ function FiltersInner(props: FiltersInnerProps) {
           <Sections.Item
             key={id}
             id={name}
+            onReorder={handleReorderFilters}
             title={error || getFilterLabel(name)}
             serial={index + 1}
             onClick={(id) => {

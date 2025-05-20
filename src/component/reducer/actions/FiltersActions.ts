@@ -213,6 +213,10 @@ type DeletePhaseCorrectionTrace = ActionType<
   'DELETE_PHASE_CORRECTION_TRACE',
   { id: string }
 >;
+type ReorderFiltersAction = ActionType<
+  'REORDER_FILTERS',
+  { sourceId: string; targetId: string }
+>;
 
 type SetOneDimensionPhaseCorrectionPivotPoint = ActionType<
   'SET_ONE_DIMENSION_PIVOT_POINT',
@@ -254,6 +258,7 @@ export type FiltersActions =
   | SetOneDimensionPhaseCorrectionPivotPoint
   | SetTwoDimensionPhaseCorrectionPivotPoint
   | ManualTwoDimensionsPhaseCorrectionFilterAction
+  | ReorderFiltersAction
   | ActionType<
       | 'APPLY_FFT_FILTER'
       | 'APPLY_FFT_DIMENSION_1_FILTER'
@@ -2005,6 +2010,34 @@ function handleApplyAutoPhaseCorrectionTwoDimensionsFilter(
   updateView(draft, phaseCorrectionTwoDimensions.domainUpdateRules);
 }
 
+function handleReorderFilters(
+  draft: Draft<State>,
+  action: ReorderFiltersAction,
+) {
+  const { sourceId, targetId } = action.payload;
+  const spectrum = getSpectrum(draft);
+
+  if (!spectrum) {
+    return;
+  }
+
+  const filters = spectrum.filters;
+
+  const sourceIndex = filters.findIndex((filter) => filter.name === sourceId);
+  const targetIndex = filters.findIndex((filter) => filter.name === targetId);
+
+  if (sourceIndex === -1 || targetIndex === -1) return;
+
+  const sourceFilter = filters[sourceIndex];
+  filters.splice(sourceIndex, 1);
+  filters.splice(targetIndex, 0, sourceFilter);
+  if (isSpectrum1D(spectrum)) {
+    Filters1DManager.reapplyFilters(spectrum);
+  } else {
+    Filters2DManager.reapplyFilters(spectrum);
+  }
+}
+
 export {
   handleShiftSpectrumAlongXAxis,
   handleApplyZeroFillingFilter,
@@ -2048,4 +2081,5 @@ export {
   handleToggleAddTracesToBothDirections,
   handleApplyAutoPhaseCorrectionTwoDimensionsFilter,
   handleApplyExclusionZone,
+  handleReorderFilters,
 };
