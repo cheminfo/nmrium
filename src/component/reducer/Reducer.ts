@@ -574,6 +574,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return FiltersActions.handleApplyAutoPhaseCorrectionTwoDimensionsFilter(
           draft,
         );
+      case 'REORDER_FILTERS':
+        return FiltersActions.handleReorderFilters(draft, action);
       case 'CHANGE_SPECTRUM_VISIBILITY':
         return SpectraActions.handleChangeSpectrumVisibilityById(draft, action);
       case 'CHANGE_SPECTRA_VISIBILITY_BY_NUCLEUS':
