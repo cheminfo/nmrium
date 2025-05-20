@@ -1,3 +1,8 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+import {
+  draggable,
+  dropTargetForElements,
+} from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { Icon, Tag } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import type {
@@ -7,7 +12,14 @@ import type {
   MouseEvent,
   ReactNode,
 } from 'react';
-import { createContext, useContext, useMemo } from 'react';
+import {
+  createContext,
+  useContext,
+  useMemo,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 interface SelectionsContextState {
   isOverflow: boolean;
@@ -162,6 +174,10 @@ interface SectionItemProps extends BaseSectionProps {
   children?: ReactNode | ((options: { isOpen?: boolean }) => ReactNode);
   isOpen: boolean;
   sticky?: boolean;
+  onReorder?: (
+    sourceId: string | undefined,
+    targetId: string | undefined,
+  ) => void;
 }
 
 interface SectionProps {
@@ -218,29 +234,62 @@ function SectionItem(props: SectionItemProps) {
     isOpen,
     sticky = false,
     arrowProps = { hide: false, style: {} },
+    onReorder,
   } = props;
 
   const { isOverflow, matchContentHeight } = useSections();
 
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const handleRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!wrapperRef.current || !handleRef.current) return;
+
+    const cleanDrag = draggable({
+      element: wrapperRef.current,
+      dragHandle: handleRef.current,
+      getInitialData: () => ({ id }),
+    });
+
+    return () => {
+      cleanDrag();
+    };
+  }, [id]);
+
   return (
-    <SectionWrapper
-      isOpen={isOpen}
-      isOverflow={isOverflow}
-      matchContentHeight={matchContentHeight}
-    >
-      <MainSectionHeader
-        title={title}
-        isOpen={isOpen}
-        onClick={(event) => onClick?.(id, event)}
-        serial={serial}
-        rightElement={rightElement}
-        leftElement={leftElement}
-        headerStyle={headerStyle}
-        sticky={sticky}
-        arrowProps={arrowProps}
-      />
-      <Wrapper isOpen={isOpen}>{children}</Wrapper>
-    </SectionWrapper>
+    <DroppableSectionWrapper key={id} id={id} onReorder={onReorder}>
+      <div ref={wrapperRef}>
+        <SectionWrapper
+          isOpen={isOpen}
+          isOverflow={isOverflow}
+          matchContentHeight={matchContentHeight}
+        >
+          <MainSectionHeader
+            title={title}
+            isOpen={isOpen}
+            onClick={(event) => onClick?.(id, event)}
+            serial={serial}
+            rightElement={rightElement}
+            dragHandleElement={
+              typeof onReorder === 'function' && (
+                <div
+                  ref={handleRef}
+                  onClick={(e) => e.stopPropagation()}
+                  style={{ cursor: 'grab' }}
+                >
+                  <Icon icon="drag-handle-vertical" />
+                </div>
+              )
+            }
+            leftElement={leftElement}
+            headerStyle={headerStyle}
+            sticky={sticky}
+            arrowProps={arrowProps}
+          />
+          <Wrapper isOpen={isOpen}>{children}</Wrapper>
+        </SectionWrapper>
+      </div>
+    </DroppableSectionWrapper>
   );
 }
 
@@ -270,6 +319,7 @@ interface MainSectionHeaderProps
     BaseSectionProps {
   isOpen: boolean;
   sticky: boolean;
+  dragHandleElement?: ReactNode;
 }
 
 function MainSectionHeader(props: MainSectionHeaderProps) {
@@ -279,6 +329,7 @@ function MainSectionHeader(props: MainSectionHeaderProps) {
     onClick,
     serial,
     rightElement,
+    dragHandleElement,
     leftElement,
     headerStyle = {},
     sticky,
@@ -314,6 +365,7 @@ function MainSectionHeader(props: MainSectionHeaderProps) {
           {typeof rightElement === 'function'
             ? rightElement(isOpen)
             : rightElement}
+          {dragHandleElement}
         </ElementsContainer>
         {!arrowProps?.hide && (
           <OpenIcon
@@ -324,6 +376,41 @@ function MainSectionHeader(props: MainSectionHeaderProps) {
         )}
       </ElementsContainer>
     </Header>
+  );
+}
+
+interface DroppableProps extends Pick<SectionItemProps, 'id' | 'onReorder'> {
+  children: ReactNode;
+}
+
+function DroppableSectionWrapper({ id, onReorder, children }: DroppableProps) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [isOver, setIsOver] = useState(false);
+
+  useEffect(() => {
+    if (!ref.current) return;
+
+    return dropTargetForElements({
+      element: ref.current,
+      canDrop: ({ source }) => source.data?.id !== id,
+      onDrop: ({ source }) => {
+        const sourceId = source.data?.id as string;
+        setIsOver(false);
+        onReorder?.(sourceId, id);
+      },
+      onDragEnter: () => setIsOver(true),
+      onDragLeave: () => setIsOver(false),
+    });
+  }, [id, onReorder]);
+
+  return (
+    <div
+      ref={ref}
+      data-drop-id={id}
+      style={{ ...(isOver && { opacity: 0.1 }) }}
+    >
+      {children}
+    </div>
   );
 }
 

@@ -50,7 +50,9 @@ const NMRiumContainer = styled.div`
     cursor: default;
   }
 
-  * {
+  span,
+  p,
+  text {
     -webkit-user-drag: none;
     -moz-user-drag: none;
     -o-user-drag: none;
