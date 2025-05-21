@@ -26,7 +26,6 @@ import { useAlert } from '../../elements/Alert.js';
 import type { ToolbarPopoverMenuItem } from '../../elements/ToolbarPopoverItem.js';
 import { ToolbarPopoverItem } from '../../elements/ToolbarPopoverItem.js';
 import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
-import useCheckExperimentalFeature from '../../hooks/useCheckExperimentalFeature.js';
 import { useDialogToggle } from '../../hooks/useDialogToggle.js';
 import { PublicationStringModal } from '../../modal/PublicationStringModal.js';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal.js';
@@ -80,7 +79,6 @@ function RangesHeader(props: RangesHeaderProps) {
   const dispatch = useDispatch();
   const alert = useAlert();
   const toaster = useToaster();
-  const isExperimentalFeature = useCheckExperimentalFeature();
   const { openDialog, dialog, closeDialog } = useDialogToggle({
     publicationStringModal: false,
   });
@@ -312,26 +310,21 @@ function RangesHeader(props: RangesHeaderProps) {
       onClick: handleShowAssignmentsLabel,
       active: showAssignmentsLabels,
     },
+    {
+      disabled: !hasRanges,
+      icon: <FaCopy />,
+      tooltip: `${booleanToString(!showPublicationString)} publication string`,
+      onClick: handleShowPublicationString,
+      active: showPublicationString,
+    },
+    {
+      disabled: !hasRanges,
+      icon: <SvgNmrPeaksTopLabels />,
+      tooltip: `${booleanToString(!showRanges)} ranges`,
+      onClick: handleShowRanges,
+      active: showRanges,
+    },
   ];
-
-  if (isExperimentalFeature) {
-    lefButtons.push(
-      {
-        disabled: !hasRanges,
-        icon: <FaCopy />,
-        tooltip: `${booleanToString(!showPublicationString)} publication string`,
-        onClick: handleShowPublicationString,
-        active: showPublicationString,
-      },
-      {
-        disabled: !hasRanges,
-        icon: <SvgNmrPeaksTopLabels />,
-        tooltip: `${booleanToString(!showRanges)} ranges`,
-        onClick: handleShowRanges,
-        active: showRanges,
-      },
-    );
-  }
 
   return (
     <div>
