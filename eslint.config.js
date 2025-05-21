@@ -3,6 +3,7 @@ import ts from 'eslint-config-cheminfo-typescript/base';
 import unicorn from 'eslint-config-cheminfo-typescript/unicorn';
 
 export default [
+
   {
     ignores: [
       'build',
@@ -18,6 +19,12 @@ export default [
   ...ts,
   ...unicorn,
   ...react,
+  {
+    files: ["**/pdnd.cts"],
+    rules: {
+      "import/no-extraneous-dependencies": "off",
+    },
+  },
   {
     files: ['**/*.{ts,tsx,cts,mts}'],
     rules: {

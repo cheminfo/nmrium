@@ -1,8 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import {
-  draggable,
-  dropTargetForElements,
-} from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { Icon, Tag } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import type {
@@ -20,6 +15,8 @@ import {
   useRef,
   useState,
 } from 'react';
+
+import { draggable, dropTargetForElements } from './pdnd.cjs';
 
 interface SelectionsContextState {
   isOverflow: boolean;
