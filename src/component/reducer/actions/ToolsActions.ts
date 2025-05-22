@@ -470,11 +470,10 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
 function zoomOut(draft: Draft<State>, action: ZoomOutAction) {
   if (draft?.data.length > 0) {
     const { zoomType, trackID } = action?.payload || {};
-    const { xDomain, yDomain } = draft.originDomain;
+    const { xDomain } = draft.originDomain;
     const zoomHistory = zoomHistoryManager(
       draft.zoom.history,
       draft.view.spectra.activeTab,
-      { xDomain, yDomain },
     );
 
     if (draft.displayerMode === '1D') {

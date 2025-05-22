@@ -12,6 +12,7 @@ export type ZoomHistory = Record<string, HistoryItem[]>;
 interface BaseZoomHistoryManager {
   historyStack: HistoryItem[];
   push: (value: HistoryItem) => void;
+  setBase: (value: HistoryItem) => void;
   pop: () => HistoryItem;
   getLast: () => HistoryItem;
 }
@@ -22,19 +23,19 @@ interface ZoomHistoryManager extends BaseZoomHistoryManager {
 export default function zoomHistoryManager(
   zoomHistory: ZoomHistory,
   nucleus: string,
-  baseZoom?: HistoryItem,
 ): ZoomHistoryManager {
   if (!zoomHistory[nucleus] && !Array.isArray(zoomHistory[nucleus])) {
     zoomHistory[nucleus] = [];
   }
   const history = zoomHistory[nucleus];
 
+  const setBase = prepareSetBase(history);
   const push = preparePush(history);
-  const pop = preparePop(history, baseZoom);
+  const pop = preparePop(history);
   const getLast = prepareGetLast(history);
   const clear = () => (zoomHistory[nucleus] = []);
 
-  return { historyStack: history, push, pop, getLast, clear };
+  return { historyStack: history, push, pop, getLast, clear, setBase };
 }
 
 function preparePush(historyStack) {
@@ -43,18 +44,26 @@ function preparePush(historyStack) {
   };
 }
 
-function popZoomHistory(historyStack, baseZoom?: HistoryItem) {
+function prepareSetBase(historyStack) {
+  return (val: HistoryItem) => {
+    if (historyStack.length === 0) {
+      historyStack[0] = val;
+    }
+  };
+}
+
+function popZoomHistory(historyStack) {
   const val = historyStack.pop();
 
-  if (val && historyStack.length === 0) {
-    return baseZoom || null;
+  if (historyStack.length === 0) {
+    return null;
   }
 
   return val ? historyStack.at(-1) : null;
 }
 
-export function preparePop(historyStack, baseZoom?: HistoryItem) {
-  return () => popZoomHistory(historyStack, baseZoom);
+export function preparePop(historyStack) {
+  return () => popZoomHistory(historyStack);
 }
 
 function prepareGetLast(historyStack) {
@@ -74,9 +83,11 @@ export function addToBrushHistory(
 
   const brushHistory = zoomHistoryManager(
     draft.zoom.history,
-
     draft.view.spectra.activeTab,
   );
+
+  brushHistory.setBase({ xDomain: draft.xDomain, yDomain: draft.yDomain });
+
   switch (axis) {
     case 'XY':
       draft.xDomain = xDomain;
