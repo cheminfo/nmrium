@@ -147,9 +147,9 @@ export function exportAsJcamp(
   if (!isSpectrum1D(spectrum)) {
     throw new Error('convert 2D spectrum to JCAMP is not supported');
   }
-  const { originalData, originalInfo, ...otherSpectrum } = spectrum;
+  const { originalData, originalInfo, meta, ...otherSpectrum } = spectrum;
 
-  const exportedSpectrum: Spectrum = { ...otherSpectrum };
+  const exportedSpectrum: Spectrum = { ...otherSpectrum, meta: {} };
 
   if (!['processedReal', 'processedRealImaginary'].includes(dataExportStage)) {
     if (!originalData || !originalInfo) {
