@@ -344,12 +344,8 @@ function handleInsetZoomOut(draft: Draft<State>, action: ZoomOutInsetAction) {
 
   if (!inset) return;
   const originXDomain = draft.originDomain.xDomains[inset.spectrumKey];
-  const originYDomain = draft.originDomain.yDomains[inset.spectrumKey];
 
-  const pop = preparePop(inset.zoomHistory, {
-    xDomain: originXDomain,
-    yDomain: originYDomain,
-  });
+  const pop = preparePop(inset.zoomHistory);
 
   switch (zoomType) {
     case ZOOM_TYPES.HORIZONTAL: {
