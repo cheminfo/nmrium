@@ -3,7 +3,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { SvgNmrMultipleAnalysis } from 'cheminfo-font';
 import type { MatrixOptions } from 'nmr-processing';
 import { Filters1D } from 'nmr-processing';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Button, Toolbar } from 'react-science/ui';
 import * as yup from 'yup';
@@ -171,12 +171,18 @@ function InnerMatrixGenerationPanel() {
   });
   const { handleSubmit, reset, control } = methods;
 
+  const memoizedInitialValues = useMemo(
+    () =>
+      getMatrixOptions(nucleusMatrixOptions.matrixOptions, {
+        from: originDomain.xDomain[0],
+        to: originDomain.xDomain[1],
+      }),
+    [nucleusMatrixOptions.matrixOptions, originDomain.xDomain],
+  );
+
   useWatchForm({
     reset,
-    initialValues: getMatrixOptions(nucleusMatrixOptions.matrixOptions, {
-      from: originDomain.xDomain[0],
-      to: originDomain.xDomain[1],
-    }),
+    initialValues: memoizedInitialValues,
     control,
     onChange: (values) => {
       handleOnChange(values);
