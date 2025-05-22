@@ -1933,7 +1933,7 @@ function handleCalculateManualTwoDimensionPhaseCorrection(
   if (!isSpectrum2D(datum) || !spectrum) {
     return;
   }
-
+  datum.data = spectrum.data;
   const filterOptions = getTwoDimensionsPhaseCorrectionOptions(draft);
 
   phaseCorrectionTwoDimensions.apply(datum, filterOptions);
