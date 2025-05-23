@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.64.0](https://github.com/cheminfo/nmrium/compare/v0.63.2...v0.64.0) (2025-05-23)
+
+
+### Features
+
+* add basic reorder feature to sections component ([1da85c1](https://github.com/cheminfo/nmrium/commit/1da85c160e645447d3927a9826671556fba4e318))
+* assign 1d from 2d ([6409e59](https://github.com/cheminfo/nmrium/commit/6409e590c4e28cf69812a3158161ecc6ea8cbf75))
+* display prediction errors ([cc3a473](https://github.com/cheminfo/nmrium/commit/cc3a473cd1659dd46b7ca9906c9c2f131603c96b))
+* reorder filters ([284c1dc](https://github.com/cheminfo/nmrium/commit/284c1dcb32beefcf79a24e29441ba4b3a009f4b5))
+
+
+### Bug Fixes
+
+* 2d phase correction and spectrum rollback ([502b621](https://github.com/cheminfo/nmrium/commit/502b621dfe7d480a582b1d74113fa4257a402611))
+* move Accordion component to controlled component ([#3520](https://github.com/cheminfo/nmrium/issues/3520)) ([e3921ee](https://github.com/cheminfo/nmrium/commit/e3921eea1839a4409fd5352044099beed8b415eb))
+* prevent unnecessary re-renders ([ccae049](https://github.com/cheminfo/nmrium/commit/ccae049011dcff7154e64d394d04c8579c1ced28))
+* reset domain when filter is cancelled ([bb327c1](https://github.com/cheminfo/nmrium/commit/bb327c1d14c323c0c989c4eedb5ed3c9c6c2aec4))
+* zoom history manager should take into account the base zoom ([23f0de5](https://github.com/cheminfo/nmrium/commit/23f0de5d3ad17b789d32cc0d892dbe8bbe381e39))
+
 ## [0.63.2](https://github.com/cheminfo/nmrium/compare/v0.63.1...v0.63.2) (2025-05-13)
 
 
