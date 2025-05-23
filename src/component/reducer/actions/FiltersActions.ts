@@ -471,14 +471,12 @@ function rollbackSpectrumByFilter(
       reapplyFilters(spectrum, filters);
 
       draft.tempData = current(draft).data.slice();
-      draft.tempData[index] = spectrum;
+      draft.tempData[index] = structuredClone(spectrum);
 
       // apply the current Filters
       if (applyFilter) {
         executeFilter(spectrum, spectrum.filters[filterIndex]);
       }
-
-      spectrum = structuredClone(spectrum);
 
       if (tempRollback) {
         reapplyFilters(spectrum);
@@ -1927,7 +1925,7 @@ function handleCalculateManualTwoDimensionPhaseCorrection(
   }
 
   const { index } = activeSpectrum;
-  const spectrum = draft.tempData[index];
+  const spectrum = structuredClone(current(draft).tempData[index]);
   const datum = draft.data[index];
 
   if (!isSpectrum2D(datum) || !spectrum) {
@@ -1936,7 +1934,8 @@ function handleCalculateManualTwoDimensionPhaseCorrection(
 
   const filterOptions = getTwoDimensionsPhaseCorrectionOptions(draft);
 
-  phaseCorrectionTwoDimensions.apply(datum, filterOptions);
+  phaseCorrectionTwoDimensions.apply(spectrum, filterOptions);
+  draft.data[index].data = spectrum.data;
 }
 
 function getTwoDimensionsPhaseCorrectionOptions(draft: Draft<State>) {

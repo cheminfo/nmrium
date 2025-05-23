@@ -136,25 +136,23 @@ export function usePhaseCorrectionTwoDimensions(filter: Filter2DEntry | null) {
   );
 
   const handleInputValueChange = useCallback(
-    (e) => {
-      const { name, value } = e.target;
-      if (e.target) {
-        const newValue = {
-          ...valueRef.current,
-          [activeTraceDirection]: {
-            ...valueRef.current[activeTraceDirection],
-            [name]: Number(value),
-          },
-        };
+    (valueAsNumber, valueAsString, inputElement) => {
+      const { name } = inputElement;
+      const newValue = {
+        ...valueRef.current,
+        [activeTraceDirection]: {
+          ...valueRef.current[activeTraceDirection],
+          [name]: valueAsNumber,
+        },
+      };
 
-        if (String(value).trim() !== '-') {
-          calcPhaseCorrectionHandler(newValue, name, 'input');
-        }
-        updateInputRangeInitialValue(newValue);
-        valueRef.current = newValue;
-        setValue(valueRef.current);
-        syncFilterOptions(valueRef.current);
+      if (valueAsString.trim() !== '-') {
+        calcPhaseCorrectionHandler(newValue, name, 'input');
       }
+      updateInputRangeInitialValue(newValue);
+      valueRef.current = newValue;
+      setValue(valueRef.current);
+      syncFilterOptions(valueRef.current);
     },
     [
       activeTraceDirection,
