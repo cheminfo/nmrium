@@ -51,6 +51,8 @@ interface ReturnContoursManager {
 function getMinAbsPeakZ(quadrantData, observedFrequencies): number | undefined {
   console.log(quadrantData);
   const signals = xyzAutoSignalsPicking(quadrantData, {
+    thresholdFactor: 1,
+    maxPercentCutOff: 0.02,
     realTopDetection: false,
     observedFrequencies,
   });
@@ -67,7 +69,7 @@ function getMinAbsPeakZ(quadrantData, observedFrequencies): number | undefined {
       }
     }
   }
-  return minPeakZ;
+  return minPeakZ * 0.01;
 }
 
 function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
@@ -86,15 +88,13 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
     Math.abs(quadrantData.maxZ),
   );
 
-  // Use xyzAutoSignalsPicking to get peaks/signals
-  const minAbsPeak = getMinAbsPeakZ(quadrantData, originFrequency);
   const minAllowed = 3 * xMaxAbsoluteValue([positive, negative]);
+  const minAbsPeakBase = getMinAbsPeakZ(quadrantData, originFrequency);
 
   const minLevel =
-    typeof minAbsPeak !== 'number' || isNaN(minAbsPeak)
+    typeof minAbsPeakBase !== 'number' || isNaN(minAbsPeakBase)
       ? minAllowed
-      : Math.max(minAbsPeak, minAllowed);
-
+      : Math.max(minAbsPeakBase, minAllowed);
   const minContourLevel = calculateValueOfLevel(minLevel, max, true);
 
   const defaultLevel: ContourOptions = {
