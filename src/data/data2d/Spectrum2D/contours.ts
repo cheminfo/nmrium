@@ -4,7 +4,6 @@ import { Conrec } from 'ml-conrec';
 import { xMaxAbsoluteValue } from 'ml-spectra-processing';
 
 import { calculateSanPlot } from '../../utilities/calculateSanPlot.js';
-import { xyzAutoSignalsPicking } from 'nmr-processing';
 
 interface Level {
   positive: ContourItem;
@@ -48,38 +47,13 @@ interface ReturnContoursManager {
   checkLevel: () => Level;
 }
 
-function getMinAbsPeakZ(quadrantData, observedFrequencies): number | undefined {
-  console.log(quadrantData);
-  const signals = xyzAutoSignalsPicking(quadrantData, {
-    thresholdFactor: 1,
-    maxPercentCutOff: 0.02,
-    realTopDetection: false,
-    observedFrequencies,
-  });
-  if (!signals || signals.length < 1) return;
-
-  let minPeakZ = Number.MAX_SAFE_INTEGER;
-  for (const signal of signals) {
-    if (signal.peaks && signal.peaks.length > 0) {
-      for (const peak of signal.peaks) {
-        const absZ = Math.abs(peak.z);
-        if (absZ < minPeakZ) {
-          minPeakZ = absZ;
-        }
-      }
-    }
-  }
-  return minPeakZ * 0.01;
-}
-
 function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
   const { data, info } = spectrum;
 
   const quadrantData = data[quadrant];
 
   //@ts-expect-error will be included in nexts versions
-  const { noise = calculateSanPlot('2D', quadrantData), originFrequency } =
-    info;
+  const { noise = calculateSanPlot('2D', quadrantData) } = info;
 
   const { positive, negative } = noise;
 
@@ -88,13 +62,10 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
     Math.abs(quadrantData.maxZ),
   );
 
+  const minAbsPeakBase = 0.005 * max;
   const minAllowed = 3 * xMaxAbsoluteValue([positive, negative]);
-  const minAbsPeakBase = getMinAbsPeakZ(quadrantData, originFrequency);
 
-  const minLevel =
-    typeof minAbsPeakBase !== 'number' || isNaN(minAbsPeakBase)
-      ? minAllowed
-      : Math.max(minAbsPeakBase, minAllowed);
+  const minLevel = Math.max(minAbsPeakBase, minAllowed);
   const minContourLevel = calculateValueOfLevel(minLevel, max, true);
 
   const defaultLevel: ContourOptions = {
