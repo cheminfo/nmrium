@@ -88,17 +88,18 @@ interface MoleculePanelHeaderProps {
   children?: ReactNode;
 }
 
-export default function MoleculePanelHeader({
-  currentIndex,
-  molecules,
-  moleculesView,
-  onMoleculeIndexChange,
-  onOpenMoleculeEditor,
-  renderSource = 'moleculePanel',
-  onClickPreferences,
-  onClickPastMolecule,
-  children,
-}: MoleculePanelHeaderProps) {
+export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
+  const {
+    currentIndex,
+    molecules,
+    moleculesView,
+    onMoleculeIndexChange,
+    onOpenMoleculeEditor,
+    renderSource = 'moleculePanel',
+    onClickPreferences,
+    onClickPastMolecule,
+    children,
+  } = props;
   const { rootRef } = useGlobal();
   const toaster = useToaster();
   const dispatch = useDispatch();
@@ -256,27 +257,26 @@ export default function MoleculePanelHeader({
       <Toolbar>
         {renderSource === 'predictionPanel' && <AboutPredictionModal />}
         {renderSource === 'moleculePanel' && (
-          <>
-            <ToolbarPopoverItem
-              options={MOL_EXPORT_MENU}
-              onClick={exportHandler}
-              disabled={!hasMolecules}
-              tooltip="Export As"
-              icon={<FaFileExport />}
-              id="molecule-export-as"
-            />
-
-            <Toolbar.Item
-              tooltip="Paste molfile"
-              icon={<FaPaste />}
-              onClick={handlePasteMolfileAction}
-            />
-            <Toolbar.Item
-              tooltip="Add molecule"
-              icon={<FaPlus />}
-              onClick={onOpenMoleculeEditor}
-            />
-          </>
+          <ToolbarPopoverItem
+            options={MOL_EXPORT_MENU}
+            onClick={exportHandler}
+            disabled={!hasMolecules}
+            tooltip="Export As"
+            icon={<FaFileExport />}
+            id="molecule-export-as"
+          />
+        )}
+        <Toolbar.Item
+          tooltip="Paste molfile"
+          icon={<FaPaste />}
+          onClick={handlePasteMolfileAction}
+        />
+        {renderSource === 'moleculePanel' && (
+          <Toolbar.Item
+            tooltip="Add molecule"
+            icon={<FaPlus />}
+            onClick={onOpenMoleculeEditor}
+          />
         )}
 
         {renderSource === 'moleculePanel' && (
