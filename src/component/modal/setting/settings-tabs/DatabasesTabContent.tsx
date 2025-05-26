@@ -128,14 +128,23 @@ function DatabasesTabContent({
             control={control}
             name="databases.defaultDatabase"
             render={({ field }) => {
-              const { onChange, value } = field;
+              const { value, name } = field;
+              const databaseKey = row.original.key;
+
               return (
-                <Radio
-                  value={row.original.key}
-                  style={{ margin: 0 }}
-                  checked={value === row.original.key}
-                  onChange={onChange}
-                />
+                <div
+                  key={value}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    setValue(name, databaseKey === value ? '' : databaseKey);
+                  }}
+                >
+                  <Radio
+                    value={databaseKey}
+                    style={{ margin: 0 }}
+                    checked={value === databaseKey}
+                  />
+                </div>
               );
             }}
           />
@@ -191,7 +200,7 @@ function DatabasesTabContent({
         },
       },
     ],
-    [addHandler, control, deleteHandler, register],
+    [addHandler, control, deleteHandler, register, setValue],
   );
 
   function resetHandler() {
