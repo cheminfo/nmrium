@@ -1,4 +1,4 @@
-import { Checkbox, Classes, Radio } from '@blueprintjs/core';
+import { Checkbox, Classes } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import type { CustomWorkspaces, Database } from '@zakodium/nmrium-core';
 import { useCallback, useMemo } from 'react';
@@ -132,19 +132,15 @@ function DatabasesTabContent({
               const databaseKey = row.original.key;
 
               return (
-                <div
-                  key={value}
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => {
+                <Checkbox
+                  name={name}
+                  value={databaseKey}
+                  style={{ margin: 0 }}
+                  checked={value === databaseKey}
+                  onChange={() => {
                     setValue(name, databaseKey === value ? '' : databaseKey);
                   }}
-                >
-                  <Radio
-                    value={databaseKey}
-                    style={{ margin: 0 }}
-                    checked={value === databaseKey}
-                  />
-                </div>
+                />
               );
             }}
           />
