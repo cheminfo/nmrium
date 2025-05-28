@@ -21,6 +21,40 @@ interface InitiateDatum2DOptions {
   colors?: SpectrumTwoDimensionsColor[];
 }
 
+function initiateDisplay(spectrum: any, options: InitiateDatum2DOptions) {
+  return {
+    isPositiveVisible: true,
+    isNegativeVisible: true,
+    isVisible: true,
+    dimension: 2,
+    ...spectrum.display,
+    ...get2DColor(spectrum, options),
+  };
+}
+
+function initiateInfo(spectrum: any) {
+  return {
+    nucleus: ['1H', '1H'],
+    isFt: true,
+    isFid: false,
+    isComplex: false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
+    dimension: 2,
+    ...spectrum.info,
+  };
+}
+function initiateContoursLevels(spectrum: any) {
+  const {
+    display: { contourOptions },
+    data,
+  } = spectrum;
+
+  if (contourOptions) return contourOptions;
+
+  if ('rr' in data) return getDefaultContoursLevel(spectrum);
+
+  return DEFAULT_CONTOURS_OPTIONS;
+}
+
 export function initiateDatum2D(
   spectrum: any,
   options: InitiateDatum2DOptions = {},
@@ -30,27 +64,9 @@ export function initiateDatum2D(
 
   datum.id = spectrum.id || crypto.randomUUID();
 
-  datum.display = {
-    isPositiveVisible: true,
-    isNegativeVisible: true,
-    isVisible: true,
-    contourOptions:
-      'rr' in spectrum.data
-        ? getDefaultContoursLevel(spectrum)
-        : DEFAULT_CONTOURS_OPTIONS,
-    dimension: 2,
-    ...spectrum.display,
-    ...get2DColor(spectrum, { usedColors, colors }),
-  };
+  datum.display = initiateDisplay(spectrum, { usedColors, colors });
 
-  datum.info = {
-    nucleus: ['1H', '1H'],
-    isFt: true,
-    isFid: false,
-    isComplex: false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
-    dimension: 2,
-    ...spectrum.info,
-  };
+  datum.info = initiateInfo(spectrum);
 
   datum.originalInfo = datum.info;
 
@@ -66,6 +82,8 @@ export function initiateDatum2D(
 
   //reapply filters after load the original data
   Filters2DManager.reapplyFilters(datum);
+
+  datum.display.contourOptions = initiateContoursLevels(datum);
 
   return datum;
 }

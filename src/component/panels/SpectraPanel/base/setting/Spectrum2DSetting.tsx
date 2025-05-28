@@ -1,3 +1,4 @@
+import type { RangeSliderProps } from '@blueprintjs/core';
 import { RangeSlider } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import debounce from 'lodash/debounce.js';
@@ -28,6 +29,14 @@ const StyledRangeSlider = styled(RangeSlider)<{
     background-color: ${(props) => props.progressColor};
   }
 `;
+type ContoursRangeSliderProps = RangeSliderProps & {
+  progressColor: React.CSSProperties['backgroundColor'];
+  name?: string;
+};
+function ContoursRangeSlider(props: ContoursRangeSliderProps) {
+  return <StyledRangeSlider {...props} />;
+}
+
 interface Spectrum2DSettingProps {
   data: any;
   onSubmit: (values: any) => void;
@@ -113,7 +122,8 @@ function Settings(props: SettingsProps) {
             const { value, onChange } = field;
 
             return (
-              <StyledRangeSlider
+              <ContoursRangeSlider
+                name={sign}
                 min={0}
                 max={100}
                 stepSize={1}
