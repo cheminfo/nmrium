@@ -26,7 +26,10 @@ import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import { isFid1DSpectrum } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
 import { getProjection } from '../../../data/data2d/Spectrum2D/getMissingProjection.js';
 import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.js';
-import { isFid2DSpectrum } from '../../../data/data2d/Spectrum2D/isSpectrum2D.js';
+import {
+  isFid2DSpectrum,
+  isFt2DSpectrum,
+} from '../../../data/data2d/Spectrum2D/isSpectrum2D.js';
 import type { ExclusionZone } from '../../../data/types/data1d/ExclusionZone.js';
 import { getXScale } from '../../1d/utilities/scale.js';
 import { get2DXScale, get2DYScale } from '../../2d/utilities/scale.js';
@@ -56,6 +59,7 @@ import type { ActionType } from '../types/ActionType.js';
 import { get2DDomain, setDomain, setMode } from './DomainActions.js';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions.js';
 import { activateTool, resetSelectedTool } from './ToolsActions.js';
+import { getDefaultContoursLevel } from '../../../data/data2d/Spectrum2D/contours.js';
 
 const {
   fft,
@@ -1235,7 +1239,16 @@ function handleApplyFFTFilter(draft: Draft<State>) {
   draft.toolOptions.selectedTool = 'zoom';
 }
 
-function handleApplyFFtDimension1Filter(draft: Draft<State>) {
+function applyFFTTwoDimensionFilter(
+  draft: Draft<State>,
+  {
+    filterName,
+    domainUpdateRules,
+  }: {
+    filterName: 'fftDimension1' | 'fftDimension2';
+    domainUpdateRules: FilterDomainUpdateRules;
+  },
+) {
   const activeSpectrum = getActiveSpectrum(draft);
 
   if (!activeSpectrum) {
@@ -1245,17 +1258,24 @@ function handleApplyFFtDimension1Filter(draft: Draft<State>) {
   const { index } = activeSpectrum;
   const activeFilterIndex = getActiveFilterIndex(draft);
 
-  //apply filter into the spectrum
-  Filters2DManager.applyFilters(
-    activeFilterIndex !== -1 ? draft.tempData[index] : draft.data[index],
-    [{ name: 'fftDimension1', value: {} }],
-  );
+  const targetSpectrum =
+    activeFilterIndex !== -1 ? draft.tempData[index] : draft.data[index];
+
+  Filters2DManager.applyFilters(targetSpectrum, [
+    { name: filterName, value: {} },
+  ]);
 
   if (activeFilterIndex !== -1) {
     draft.data[index] = draft.tempData[index];
   }
 
-  updateView(draft, fftDimension1.domainUpdateRules);
+  const spectrum = draft.data[index];
+
+  if (isFt2DSpectrum(spectrum)) {
+    spectrum.display.contourOptions = getDefaultContoursLevel(spectrum);
+  }
+
+  updateView(draft, domainUpdateRules);
 
   //clear zoom history
   draft.zoom.history[draft.view.spectra.activeTab] = [];
@@ -1264,33 +1284,18 @@ function handleApplyFFtDimension1Filter(draft: Draft<State>) {
   draft.toolOptions.selectedTool = 'zoom';
 }
 
+function handleApplyFFtDimension1Filter(draft: Draft<State>) {
+  applyFFTTwoDimensionFilter(draft, {
+    filterName: 'fftDimension1',
+    domainUpdateRules: fftDimension1.domainUpdateRules,
+  });
+}
+
 function handleApplyFFtDimension2Filter(draft: Draft<State>) {
-  const activeSpectrum = getActiveSpectrum(draft);
-
-  if (!activeSpectrum) {
-    return;
-  }
-
-  const { index } = activeSpectrum;
-  const activeFilterIndex = getActiveFilterIndex(draft);
-
-  //apply filter into the spectrum
-  Filters2DManager.applyFilters(
-    activeFilterIndex !== -1 ? draft.tempData[index] : draft.data[index],
-    [{ name: 'fftDimension2', value: {} }],
-  );
-
-  if (activeFilterIndex !== -1) {
-    draft.data[index] = draft.tempData[index];
-  }
-
-  updateView(draft, fftDimension2.domainUpdateRules);
-
-  //clear zoom history
-  draft.zoom.history[draft.view.spectra.activeTab] = [];
-
-  draft.toolOptions.selectedOptionPanel = null;
-  draft.toolOptions.selectedTool = 'zoom';
+  applyFFTTwoDimensionFilter(draft, {
+    filterName: 'fftDimension2',
+    domainUpdateRules: fftDimension2.domainUpdateRules,
+  });
 }
 
 //action

@@ -3,10 +3,7 @@ import debounce from 'lodash/debounce.js';
 import { memo, useMemo, useRef } from 'react';
 
 import type { LevelSign } from '../../../data/data2d/Spectrum2D/contours.js';
-import {
-  drawContours,
-  getDefaultContoursLevel,
-} from '../../../data/data2d/Spectrum2D/contours.js';
+import { drawContours } from '../../../data/data2d/Spectrum2D/contours.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { usePreferences } from '../../context/PreferencesContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
@@ -52,16 +49,11 @@ function usePath(
   return pathBuilder.toString();
 }
 
-const useContoursLevel = (
-  spectrum: Spectrum2D,
-  sign: LevelSign,
-  quadrant = 'rr',
-) => {
+const useContoursLevel = (spectrum: Spectrum2D, sign: LevelSign) => {
   const {
     display: { contourOptions },
   } = spectrum;
-  const level = contourOptions[sign];
-  return level ?? getDefaultContoursLevel(spectrum, quadrant)[sign];
+  return contourOptions?.[sign];
 };
 
 function ContoursPaths({
