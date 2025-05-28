@@ -161,7 +161,7 @@ test('2d spectrum', async ({ page }) => {
     ).toBeVisible();
     await expect(
       nmrium.page.locator('_react=ContoursPaths[sign="negative"]'),
-    ).toBeVisible();
+    ).toBeHidden();
     await expect(nmrium.page.getByTestId('spectrum-line')).toHaveCount(2);
   });
   await test.step('Change 1H,1H spectrum color', async () => {
@@ -181,10 +181,21 @@ test('2d spectrum', async ({ page }) => {
       nmrium.page.locator(
         '_react=ContoursPaths[sign="negative"][color="blue"]',
       ),
-    ).toBeVisible();
+    ).toBeHidden();
 
     // Open Change color modal
     await nmrium.page.click('_react=ColorIndicator');
+
+    //Change contours levels
+    const slider = page.locator('_react=ContoursRangeSlider[name="negative"]');
+    await slider.hover();
+    await slider
+      .locator('[class*="-slider-label"]', { hasText: /^0$/ })
+      .click();
+
+    await nmrium.page.click(
+      '_react=ColorPicker >> _react=SketchPresetColors >> nth=0 >> div >> nth=0',
+    );
 
     // Change colors
     await nmrium.page.click(
