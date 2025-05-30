@@ -58,7 +58,7 @@
     "nmr-correlation": "2.3.3"
   },
   "dependencies": {
-    "@atlaskit/pragmatic-drag-and-drop": "^1.6.1",
+    "@atlaskit/pragmatic-drag-and-drop": "~1.6.1",
     "@blueprintjs/core": "^5.19.0",
     "@blueprintjs/icons": "^5.22.0",
     "@blueprintjs/select": "^5.3.20",
