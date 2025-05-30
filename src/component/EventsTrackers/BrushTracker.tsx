@@ -498,10 +498,9 @@ export function detectBrushing(
   const scaleY = (endY - startY) / height;
   const scaleX = (endX - startX) / width;
   if (thresholdAxis === 'y') {
-    if (yDiff >= yThreshold) {
+    if (yDiff >= yThreshold && yThreshold > 0) {
       return { type: 'XY', startX, startY, endX, endY, scaleX, scaleY };
     }
-
     return {
       type: 'X',
       startX,
@@ -513,7 +512,7 @@ export function detectBrushing(
     };
   }
   if (thresholdAxis === 'x') {
-    if (xDiff >= xThreshold) {
+    if (xDiff >= xThreshold && xThreshold > 0) {
       return { type: 'XY', startX, startY, endX, endY, scaleX, scaleY };
     }
 

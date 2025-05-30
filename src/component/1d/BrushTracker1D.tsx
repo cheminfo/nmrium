@@ -26,6 +26,7 @@ import { useScaleChecked } from '../context/ScaleContext.js';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
 import { usePanelPreferences } from '../hooks/usePanelPreferences.js';
 import useSpectrum from '../hooks/useSpectrum.js';
+import { useVerticalAlign } from '../hooks/useVerticalAlign.js';
 import MultipletAnalysisModal from '../modal/MultipletAnalysisModal.js';
 import { ZOOM_TYPES } from '../reducer/helper/Zoom1DManager.js';
 import { sortRange } from '../reducer/helper/getRange.js';
@@ -77,6 +78,7 @@ export function BrushTracker1D({ children }) {
 
   const brushStartRef = useRef<number | null>(null);
   const spectrum = useSpectrum();
+  const align = useVerticalAlign();
   const dispatch = useDispatch();
   const {
     dispatch: dispatchPreferences,
@@ -285,6 +287,7 @@ export function BrushTracker1D({ children }) {
                   width,
                   height,
                   ...brushDetectionOptions,
+                  ...(align === 'stack' && { thresholdSize: 0 }),
                 }).type,
               },
             });
@@ -307,6 +310,7 @@ export function BrushTracker1D({ children }) {
       openAnalysisModal,
       width,
       height,
+      align,
     ],
   );
   const handleInsetBrushEnd = useCallback<OnBrush>(
@@ -503,7 +507,10 @@ export function BrushTracker1D({ children }) {
         onDoubleClick={handleOnDoubleClick}
         onClick={mouseClick}
         onZoom={handleZoom}
-        brushDetectionOptions={brushDetectionOptions}
+        brushDetectionOptions={{
+          ...brushDetectionOptions,
+          ...(align === 'stack' && { thresholdSize: 0 }),
+        }}
         style={{
           width: '100%',
           height: '100%',
