@@ -243,16 +243,19 @@ function setDomain(draft: Draft<State>, options?: SetDomainOptions) {
       draft.xDomain = domain.xDomain;
       draft.xDomains = domain.xDomains;
     }
-    // draft.originDomain = domain;
 
     if (updateYDomain) {
       draft.yDomain = domain.yDomain;
-      if (draft.displayerMode === '1D' && isYDomainShared) {
-        draft.yDomains = Object.fromEntries(
-          Object.keys(domain.yDomains).map((key) => {
-            return [key, domain.yDomain];
-          }),
-        );
+      if (draft.displayerMode === '1D') {
+        if (isYDomainShared) {
+          draft.yDomains = Object.fromEntries(
+            Object.keys(domain.yDomains).map((key) => {
+              return [key, domain.yDomain];
+            }),
+          );
+        } else {
+          draft.yDomains = rescaleToSameTop(domain.yDomains);
+        }
       } else {
         draft.yDomains = domain.yDomains;
       }
@@ -405,6 +408,23 @@ function handleMoveOverXAxis(draft: Draft<State>, action: MoveAction) {
   );
   draft.xDomain = xDomain;
   draft.yDomain = yDomain;
+}
+
+function rescaleToSameTop(yDomains: Record<string, number[]>, scale = 0.8) {
+  const newYDomains = {};
+  const vScale = 1 / scale;
+  for (const spectrumId of Object.keys(yDomains)) {
+    const [min, max] = yDomains[spectrumId];
+
+    const pivot = Math.abs(min) > Math.abs(max) ? min : 0;
+    const distMin = min - pivot;
+    const distMax = max - pivot;
+    const newMin = distMin * vScale;
+    const newMax = distMax * vScale;
+
+    newYDomains[spectrumId] = [newMin, newMax];
+  }
+  return newYDomains;
 }
 
 export {
