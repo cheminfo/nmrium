@@ -80,6 +80,7 @@ export const FREQUENCIES: Array<{ value: number; label: string }> = [
   { value: 90, label: '90 MHz' },
   { value: 100, label: '100 MHz' },
   { value: 200, label: '200 MHz' },
+  { value: 250, label: '250 MHz' },
   { value: 300, label: '300 MHz' },
   { value: 400, label: '400 MHz' },
   { value: 500, label: '500 MHz' },
