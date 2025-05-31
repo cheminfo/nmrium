@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.64.0](https://github.com/cheminfo/nmrium/compare/v0.63.2...v0.64.0) (2025-05-31)
+
+
+### Features
+
+* add basic reorder feature to sections component ([1da85c1](https://github.com/cheminfo/nmrium/commit/1da85c160e645447d3927a9826671556fba4e318))
+* assign 1d from 2d ([6409e59](https://github.com/cheminfo/nmrium/commit/6409e590c4e28cf69812a3158161ecc6ea8cbf75))
+* display prediction errors ([cc3a473](https://github.com/cheminfo/nmrium/commit/cc3a473cd1659dd46b7ca9906c9c2f131603c96b))
+* past molfile/SMILES in prediction panel ([4bf7af7](https://github.com/cheminfo/nmrium/commit/4bf7af7b4e22e1e29568e8ca83679da3d1016c50))
+* reorder filters ([284c1dc](https://github.com/cheminfo/nmrium/commit/284c1dcb32beefcf79a24e29441ba4b3a009f4b5))
+
+
+### Bug Fixes
+
+* 2d phase correction and spectrum rollback ([502b621](https://github.com/cheminfo/nmrium/commit/502b621dfe7d480a582b1d74113fa4257a402611))
+* allow 250MHz simulation ([087a0c4](https://github.com/cheminfo/nmrium/commit/087a0c4a4226618db2319d9aef7ebd37b7086e6e))
+* move Accordion component to controlled component ([#3520](https://github.com/cheminfo/nmrium/issues/3520)) ([e3921ee](https://github.com/cheminfo/nmrium/commit/e3921eea1839a4409fd5352044099beed8b415eb))
+* new approach for determining the default contour levels in 2D ([#3542](https://github.com/cheminfo/nmrium/issues/3542)) ([3761276](https://github.com/cheminfo/nmrium/commit/37612765cde46e61da91c1f7d670b29759e16d86))
+* prevent combined zoom in stack mode ([#3553](https://github.com/cheminfo/nmrium/issues/3553)) ([2c1f15c](https://github.com/cheminfo/nmrium/commit/2c1f15c61eb84130a4fa0d33e2fac77b133ef47e))
+* prevent unnecessary re-renders ([ccae049](https://github.com/cheminfo/nmrium/commit/ccae049011dcff7154e64d394d04c8579c1ced28))
+* reset domain when filter is cancelled ([bb327c1](https://github.com/cheminfo/nmrium/commit/bb327c1d14c323c0c989c4eedb5ed3c9c6c2aec4))
+* toggle default open database ([#3547](https://github.com/cheminfo/nmrium/issues/3547)) ([d68495b](https://github.com/cheminfo/nmrium/commit/d68495bb033a8acf8df0443a33f7facafc97043c))
+* use 'getBBox' function for layout in SVG ([#3559](https://github.com/cheminfo/nmrium/issues/3559)) ([547cc3e](https://github.com/cheminfo/nmrium/commit/547cc3ec9a051a70848fe463298dd47a8f04de5a))
+* zoom history manager should take into account the base zoom ([23f0de5](https://github.com/cheminfo/nmrium/commit/23f0de5d3ad17b789d32cc0d892dbe8bbe381e39))
+
 ## [0.63.2](https://github.com/cheminfo/nmrium/compare/v0.63.1...v0.63.2) (2025-05-13)
 
 
