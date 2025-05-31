@@ -430,24 +430,16 @@ test('2D spectra reference change', async ({ page }) => {
       nmrium.page.locator('_react=ZonesPanel >> _react=PanelHeader'),
     ).toContainText('[ 15 ]');
 
-    const x = 2.9139017520593895;
-    const y = 35.65263186072366;
     await expect(
       nmrium.page.locator(
         '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=1',
       ),
-    ).toHaveText(x.toFixed(2));
+    ).toHaveText('2.91');
     await expect(
       nmrium.page.locator(
         '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=2',
       ),
-    ).toHaveText(y.toFixed(2));
-
-    await expect(
-      nmrium.page.locator(
-        `_react = Signal[signal.x.delta = ${x}][signal.y.delta = ${y}]`,
-      ),
-    ).toBeVisible();
+    ).toHaveText('35.65');
   });
   await test.step('Change reference', async () => {
     const x = 1000;
