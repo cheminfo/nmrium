@@ -8,7 +8,7 @@ interface SVGGroupProps extends SVGAttributes<SVGElement> {
 }
 
 export function SVGGroup(props: SVGGroupProps) {
-  const elementsRefs = useRef<SVGElement[]>([]);
+  const elementsRefs = useRef<SVGGraphicsElement[]>([]);
   const { children, direction = 'row', space = 0, ...resProps } = props;
 
   useLayoutEffect(() => {
@@ -21,7 +21,7 @@ export function SVGGroup(props: SVGGroupProps) {
 
     for (const element of elements) {
       if (element) {
-        const boundary = element.getBoundingClientRect();
+        const boundary = element.getBBox();
         if (direction === 'row') {
           element.setAttribute('transform', `translate(${shift} 0)`);
           shift += boundary.width + space;
