@@ -1,5 +1,13 @@
 import * as Yup from 'yup';
 
+const numberOrNull = Yup.mixed()
+  .nullable()
+  .test(
+    'isNumberOrNull',
+    'Must be a number or null',
+    (value) => value === null || typeof value === 'number',
+  );
+
 export const simulationValidationSchema = Yup.object({
   options: Yup.object({
     frequency: Yup.number().required(),
@@ -18,17 +26,5 @@ export const simulationValidationSchema = Yup.object({
     nbPoints: Yup.number().required(),
     lineWidth: Yup.number().required().moreThan(0),
   }),
-  data: Yup.array()
-    .of(
-      Yup.array().of(
-        Yup.lazy((value) => {
-          if (value === null) {
-            return Yup.mixed().nullable();
-          }
-
-          return Yup.number().required();
-        }),
-      ),
-    )
-    .required(),
+  data: Yup.array().of(Yup.array().of(numberOrNull)).required(),
 });
