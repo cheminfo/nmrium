@@ -58,8 +58,6 @@ const labelStyle: LabelStyle = {
 
 export const DEFAULT_MATRIX_FILTERS: MatrixFilter[] = getMatrixFilters();
 
-const DEFAULT_MATRIX_OPTIONS = getMatrixGenerationDefaultOptions();
-
 function getMatrixOptions(
   options: MatrixOptions,
   range: { from: number; to: number },
@@ -68,8 +66,9 @@ function getMatrixOptions(
     range: { from, to },
     ...other
   } = options;
+  const { matrixOptions } = getMatrixGenerationDefaultOptions();
   return {
-    ...DEFAULT_MATRIX_OPTIONS.matrixOptions,
+    ...matrixOptions,
     range: {
       from: from === to ? range.from : from,
       to: from === to ? range.to : to,
@@ -124,13 +123,20 @@ function InnerMatrixGenerationPanel() {
     activeTab,
   );
 
-  const matrixOptions = getMatrixOptions(nucleusMatrixOptions.matrixOptions, {
-    from: originDomain.xDomain[0],
-    to: originDomain.xDomain[1],
-  });
+  const matrixOptions = useMemo(
+    () =>
+      getMatrixOptions(nucleusMatrixOptions.matrixOptions, {
+        from: originDomain.xDomain[0],
+        to: originDomain.xDomain[1],
+      }),
+    [nucleusMatrixOptions.matrixOptions, originDomain.xDomain],
+  );
 
   function handleSave(options) {
-    dispatch({ type: 'APPLY_SIGNAL_PROCESSING_FILTER', payload: { options } });
+    dispatch({
+      type: 'APPLY_SIGNAL_PROCESSING_FILTER',
+      payload: { options: structuredClone(options) },
+    });
   }
 
   const handleOnChange = useCallback(
@@ -164,25 +170,16 @@ function InnerMatrixGenerationPanel() {
   }
 
   const { showStocsy, showBoxPlot } =
-    nucleusMatrixOptions || DEFAULT_MATRIX_OPTIONS;
+    nucleusMatrixOptions || getMatrixGenerationDefaultOptions();
   const methods = useForm({
     defaultValues: matrixOptions,
     resolver: yupResolver(schema),
   });
   const { handleSubmit, reset, control } = methods;
 
-  const memoizedInitialValues = useMemo(
-    () =>
-      getMatrixOptions(nucleusMatrixOptions.matrixOptions, {
-        from: originDomain.xDomain[0],
-        to: originDomain.xDomain[1],
-      }),
-    [nucleusMatrixOptions.matrixOptions, originDomain.xDomain],
-  );
-
   useWatchForm({
     reset,
-    initialValues: memoizedInitialValues,
+    initialValues: matrixOptions,
     control,
     onChange: (values) => {
       handleOnChange(values);
