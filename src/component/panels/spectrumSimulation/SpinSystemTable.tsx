@@ -37,7 +37,7 @@ export function SpinSystemTable(props: SpinSystemTableProps) {
             control={control}
             name={`data.${row.index}.0`}
             fill
-            controllerProps={{ rules: { required: true } }}
+            debounceTime={500}
           />
         ),
       },
@@ -58,7 +58,7 @@ export function SpinSystemTable(props: SpinSystemTableProps) {
                 control={control}
                 name={`data.${row.index}.${columnIndex}`}
                 fill
-                controllerProps={{ rules: { required: true } }}
+                debounceTime={500}
               />
             );
           }
