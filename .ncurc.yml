@@ -7,6 +7,3 @@ reject:
   - react-dom
   - '@types/react'
   - '@types/react-dom'
-  # @atlaskit/analytics-next-stable-react-context
-  # The latest version strictly requires React ^16.8.0, while our project uses React 18.
-  - '@atlaskit/pragmatic-drag-and-drop'
