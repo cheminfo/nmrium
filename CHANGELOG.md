@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.65.0](https://github.com/cheminfo/nmrium/compare/v0.64.0...v0.65.0) (2025-06-05)
+
+
+### Features
+
+* remove related insets when a spectrum is deleted ([87b20fd](https://github.com/cheminfo/nmrium/commit/87b20fd522314760a60ba618f6624fe2bf0299d0)), closes [#3552](https://github.com/cheminfo/nmrium/issues/3552)
+
+
+### Bug Fixes
+
+* align 1D spectra to the same top when loading ([#3556](https://github.com/cheminfo/nmrium/issues/3556)) ([7cd1237](https://github.com/cheminfo/nmrium/commit/7cd123708e62d2e4a4d7dabd31d1c5d32b4067fa))
+* clone matrix options before dispatch ([#3570](https://github.com/cheminfo/nmrium/issues/3570)) ([7dcc0ef](https://github.com/cheminfo/nmrium/commit/7dcc0effec7a0c024261432b15a906b4ee299112))
+* validate simulation form correctly and debounce value change ([c227474](https://github.com/cheminfo/nmrium/commit/c227474a0d5a8371816c27c084015f0e46fa6256)), closes [#3555](https://github.com/cheminfo/nmrium/issues/3555) [#3554](https://github.com/cheminfo/nmrium/issues/3554)
+
 ## [0.64.0](https://github.com/cheminfo/nmrium/compare/v0.63.2...v0.64.0) (2025-05-31)
 
 
