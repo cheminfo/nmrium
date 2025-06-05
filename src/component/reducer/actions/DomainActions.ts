@@ -25,6 +25,7 @@ import { addToBrushHistory } from '../helper/ZoomHistoryManager.js';
 import { getActiveSpectra } from '../helper/getActiveSpectra.js';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
 import type { ActionType } from '../types/ActionType.js';
+import { rescaleToSameTop } from '../helper/Zoom1DManager.js';
 
 type SetAxisDomainAction = ActionType<
   'SET_AXIS_DOMAIN',
@@ -408,23 +409,6 @@ function handleMoveOverXAxis(draft: Draft<State>, action: MoveAction) {
   );
   draft.xDomain = xDomain;
   draft.yDomain = yDomain;
-}
-
-function rescaleToSameTop(yDomains: Record<string, number[]>, scale = 0.8) {
-  const newYDomains = {};
-  const vScale = 1 / scale;
-  for (const spectrumId of Object.keys(yDomains)) {
-    const [min, max] = yDomains[spectrumId];
-
-    const pivot = Math.abs(min) > Math.abs(max) ? min : 0;
-    const distMin = min - pivot;
-    const distMax = max - pivot;
-    const newMin = distMin * vScale;
-    const newMax = distMax * vScale;
-
-    newYDomains[spectrumId] = [newMin, newMax];
-  }
-  return newYDomains;
 }
 
 export {
