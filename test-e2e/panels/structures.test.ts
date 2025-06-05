@@ -411,9 +411,9 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
   if (browserName !== 'webkit') {
     await test.step('Check copy as molfile V3 or V2 and paste', async () => {
       await clickExportMenuOption(nmrium, 'text=Copy as molfile V3');
-      await nmrium.clickToolByTitle('Paste molfile');
+      await nmrium.clickToolByTitle('Paste SMILES or molfile');
       await clickExportMenuOption(nmrium, 'text=Copy as molfile V2');
-      await nmrium.clickToolByTitle('Paste molfile');
+      await nmrium.clickToolByTitle('Paste SMILES or molfile');
 
       await expect(
         nmrium.page.locator('_react=MoleculePanel >> text=5 / 5'),
