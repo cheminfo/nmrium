@@ -329,7 +329,10 @@ function zoomWithScroll(
     scaleX = get2DXScale(draft);
     scaleY = get2DYScale(draft);
   }
-  const scaleRatio = toScaleRatio({ delta: deltaX, invertScroll });
+  const scaleRatio = toScaleRatio({
+    delta: deltaX,
+    invertScroll: !invertScroll,
+  });
 
   if (direction === 'Both' || direction === 'Horizontal') {
     const domain = zoomIdentity
