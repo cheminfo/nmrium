@@ -267,7 +267,7 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
           />
         )}
         <Toolbar.Item
-          tooltip="Paste molfile"
+          tooltip="Paste SMILES or molfile"
           icon={<FaPaste />}
           onClick={handlePasteMolfileAction}
         />
