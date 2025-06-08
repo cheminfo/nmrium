@@ -50,13 +50,14 @@ const NMRiumContainer = styled.div`
     cursor: default;
   }
 
-  span,
-  p,
-  text {
-    -webkit-user-drag: none;
-    -moz-user-drag: none;
-    -o-user-drag: none;
+  /* Prevent text selection everywhere */
+  * {
     user-select: none;
+  }
+
+  /* (Safari) Prevent dragging for non-draggable elements everywhere expect element with draggable attribute */
+  *:not([draggable='true']) {
+    -webkit-user-drag: none;
   }
 
   .actions-buttons-popover {
