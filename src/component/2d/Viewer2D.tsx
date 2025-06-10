@@ -64,7 +64,12 @@ function Viewer2D(props: Viewer2DProps) {
                 <CrossLinePointer />
                 <XYLabelPointer data1D={spectrumData} layout={DIMENSION} />
 
-                <BrushXY axis="XY" dimensionBorder={DIMENSION.MAIN} />
+                <BrushXY
+                  axis="XY"
+                  dimensionBorder={DIMENSION.MAIN}
+                  enableHorizontalGuideline
+                  enableVerticalGuideline
+                />
                 <>
                   {spectrumData[0] && (
                     <BrushXY
