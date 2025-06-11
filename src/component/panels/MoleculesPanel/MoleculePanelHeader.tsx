@@ -49,6 +49,13 @@ const styles: Record<'atomLabel', CSSProperties> = {
 const MOL_EXPORT_MENU: ToolbarPopoverMenuItem[] = [
   {
     icon: <FaCopy />,
+    text: 'Copy as smiles',
+    data: {
+      id: 'smiles',
+    },
+  },
+  {
+    icon: <FaCopy />,
     text: 'Copy as molfile V3',
     data: {
       id: 'molfileV3',
@@ -141,11 +148,11 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
     text,
   } = useClipboard();
 
-  const saveAsMolHandler = useCallback(
-    (molfile) => {
-      void rawWriteWithType(molfile).then(() => {
+  const copyHandler = useCallback(
+    (value, title) => {
+      void rawWriteWithType(value).then(() => {
         toaster.show({
-          message: 'MOLFile copied to clipboard',
+          message: `${title} copied to clipboard`,
           intent: 'success',
         });
       });
@@ -155,16 +162,20 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
 
   const exportHandler = useCallback(
     (selected) => {
-      const molecule = molecules?.[currentIndex];
+      const m = molecules?.[currentIndex];
+      const molecule = Molecule.fromMolfile(m.molfile);
+
       if (molecule) {
         switch (selected?.id) {
+          case 'smiles':
+            copyHandler(molecule.toSmiles(), 'Smiles');
+
+            break;
           case 'molfileV3':
-            saveAsMolHandler(molecule.molfile);
+            copyHandler(m.molfile, 'MOLFile');
             break;
           case 'molfileV2': {
-            saveAsMolHandler(
-              Molecule.fromMolfile(molecule.molfile).toMolfile(),
-            );
+            copyHandler(molecule.toMolfile(), 'MOLFile');
 
             break;
           }
@@ -179,13 +190,7 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
         }
       }
     },
-    [
-      currentIndex,
-      molecules,
-      saveAsMolHandler,
-      saveAsPNGHandler,
-      saveAsSVGHandler,
-    ],
+    [molecules, currentIndex, copyHandler, saveAsPNGHandler, saveAsSVGHandler],
   );
 
   function handlePasteMolfileAction() {
