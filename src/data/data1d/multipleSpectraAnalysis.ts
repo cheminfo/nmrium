@@ -234,9 +234,16 @@ function calculate(
     }
   }
 
-  const params = variables.map((key) =>
-    data[key] ? data[key][columns[key].valueKey] : null,
-  );
+  const params = variables.map((key) => {
+    if (data[key]) {
+      const { valueKey, type, formula: columnFormula } = columns[key];
+      if (type === 'FORMULA') {
+        return calculate(columns, data, columnFormula);
+      }
+      return data[key][valueKey];
+    }
+    return null;
+  });
 
   let result;
   try {
