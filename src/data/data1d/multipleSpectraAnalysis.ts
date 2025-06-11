@@ -218,7 +218,12 @@ function calculate(
   data: AnalysisRow,
   formula = '',
 ) {
-  const array = formula.split(/[%()*+/-]/);
+  const cleanFormula = formula
+    .replaceAll(/Math\.\w+\(/g, '') // Remove Math.<function name>(
+    .replaceAll(')', '') // Remove closing parentheses )
+    .replaceAll(/\s+/g, ''); // Remove spaces
+
+  const array = cleanFormula.split(/[%()*+/,-]/);
 
   const variables: string[] = [];
 
@@ -236,7 +241,10 @@ function calculate(
   let result;
   try {
     // eslint-disable-next-line no-new-func
-    result = new Function(...variables, `return ${formula}`)(...params);
+    result = new Function('Math', ...variables, `return ${formula}`)(
+      Math,
+      ...params,
+    );
   } catch {
     result = new Error(`Invalid Formula ( ${formula} ) `);
   }
