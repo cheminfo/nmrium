@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
 import type { CSSProperties, ReactElement } from 'react';
 import { Children } from 'react';
+import { useResizeObserver } from 'react-d3-utils';
 import { FaAngleLeft } from 'react-icons/fa';
-import useResizeObserver from 'use-resize-observer';
 
 type Direction = 'right' | 'left';
 
@@ -97,11 +97,7 @@ export function NextPrev(props: NextPrevProps) {
     onChange = () => null,
     style = {},
   } = props;
-  const {
-    ref,
-    width = 0,
-    // @ts-expect-error Module is not published correctly.
-  } = useResizeObserver();
+  const [ref, { width } = { width: 0 }] = useResizeObserver();
   const slidersCount = Children.count(children);
   const lastIndex = slidersCount > 0 ? slidersCount - 1 : 0;
   const activeIndex = Math.min(index, lastIndex);

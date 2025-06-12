@@ -3,12 +3,12 @@ import styled from '@emotion/styled';
 import { IdcodeSvgRenderer } from 'react-ocl';
 
 import { isSpectrum1D } from '../../data/data1d/Spectrum1D/isSpectrum1D.js';
-import { useAssignment } from '../assignment/AssignmentsContext.js';
 import type { AssignmentsData } from '../assignment/AssignmentsContext.js';
+import { useAssignment } from '../assignment/AssignmentsContext.js';
 import { useScaleChecked } from '../context/ScaleContext.js';
 import { HighlightEventSource, useHighlight } from '../highlight/index.js';
-import useSpectrum from '../hooks/useSpectrum.js';
 import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature.js';
+import useSpectrum from '../hooks/useSpectrum.js';
 
 const boxHeight = 10;
 const boxPadding = 4;

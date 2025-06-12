@@ -1,6 +1,6 @@
 import { memo, useState } from 'react';
+import { useResizeObserver } from 'react-d3-utils';
 import { BsArrowsMove } from 'react-icons/bs';
-import useResizeObserver from 'use-resize-observer';
 
 import { useGlobal } from '../../context/GlobalContext.js';
 import { usePreferences } from '../../context/PreferencesContext.js';
@@ -78,11 +78,7 @@ function PeakAnnotationsSpreadMode(props: PeakAnnotationsSpreadModeProps) {
     height,
     spectrumKey,
   } = props;
-  const {
-    ref,
-    height: boxSizeHeight = 0,
-    // @ts-expect-error Module is not published correctly.
-  } = useResizeObserver();
+  const [ref, { height: boxSizeHeight } = { height: 0 }] = useResizeObserver();
   const { marginTop, isDragActive, onPointerDown } = usePeaksPosition();
 
   const actionsButtons: ActionsButtonsPopoverProps['buttons'] = [

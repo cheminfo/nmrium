@@ -1,8 +1,8 @@
 import { ButtonGroup, Colors } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import type { NMRiumPanelPreferences } from '@zakodium/nmrium-core';
+import { useResizeObserver } from 'react-d3-utils';
 import { ActivityBarItem, Toolbar } from 'react-science/ui';
-import useResizeObserver from 'use-resize-observer';
 
 import { usePreferences } from '../context/PreferencesContext.js';
 import type { ToolbarPopoverMenuItem } from '../elements/ToolbarPopoverItem.js';
@@ -47,11 +47,7 @@ export function PanelsBar({ itemHeight = 44 }) {
   const {
     display: { general = {} },
   } = current;
-  const {
-    ref,
-    height,
-    // @ts-expect-error Module is not published correctly.
-  } = useResizeObserver();
+  const [ref, { height } = { height: 0 }] = useResizeObserver();
   const getPanelPreferences = useGetPanelOptions();
 
   const sliceIndex = Math.floor((height - itemHeight) / itemHeight);

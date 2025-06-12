@@ -10,13 +10,13 @@ import { isSpectrum1D } from '../../data/data1d/Spectrum1D/isSpectrum1D.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useDispatch } from '../context/DispatchContext.js';
 import { useGlobal } from '../context/GlobalContext.js';
-import { ActionsButtonsPopover } from '../elements/ActionsButtonsPopover.js';
 import type { ActionsButtonsPopoverProps } from '../elements/ActionsButtonsPopover.js';
+import { ActionsButtonsPopover } from '../elements/ActionsButtonsPopover.js';
+import { useCanvasContext } from '../hooks/useCanvasContext.js';
 import { usePanelPreferences } from '../hooks/usePanelPreferences.js';
 import { useSVGUnitConverter } from '../hooks/useSVGUnitConverter.js';
 import useSpectraByActiveNucleus from '../hooks/useSpectraPerNucleus.js';
 import { useCheckExportStatus } from '../hooks/useViewportSize.js';
-import { useCanvasContext } from '../hooks/useCanvasContext.js';
 
 const ReactRnd = styled(Rnd)`
   border: 1px solid transparent;

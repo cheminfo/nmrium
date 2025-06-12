@@ -3,27 +3,28 @@ import type { NmrData1D, NmrData2DFt } from 'cheminfo-types';
 import type { Draft } from 'immer';
 import { current } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import {
-  getBaselineZonesByDietrich,
-  Filters1DManager,
-  Filters2DManager,
-  Filters1D,
-  Filters2D,
-} from 'nmr-processing';
 import type {
+  Apodization1DOptions,
   BaselineCorrectionOptions,
   Filter1D,
-  Apodization1DOptions,
   Filter1DEntry,
-  FilterDomainUpdateRules,
-  MatrixOptions,
+  Filter1DOptions,
   Filter2DEntry,
   Filter2DOptions,
-  Filter1DOptions,
+  FilterDomainUpdateRules,
+  MatrixOptions,
+} from 'nmr-processing';
+import {
+  Filters1D,
+  Filters1DManager,
+  Filters2D,
+  Filters2DManager,
+  getBaselineZonesByDietrich,
 } from 'nmr-processing';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import { isFid1DSpectrum } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
+import { getDefaultContoursLevel } from '../../../data/data2d/Spectrum2D/contours.js';
 import { getProjection } from '../../../data/data2d/Spectrum2D/getMissingProjection.js';
 import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.js';
 import {
@@ -59,7 +60,6 @@ import type { ActionType } from '../types/ActionType.js';
 import { get2DDomain, setDomain, setMode } from './DomainActions.js';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions.js';
 import { activateTool, resetSelectedTool } from './ToolsActions.js';
-import { getDefaultContoursLevel } from '../../../data/data2d/Spectrum2D/contours.js';
 
 const {
   fft,
