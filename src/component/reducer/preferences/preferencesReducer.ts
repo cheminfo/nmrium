@@ -1,4 +1,3 @@
-import { CURRENT_EXPORT_VERSION, migrateSettings } from '@zakodium/nmrium-core';
 import type {
   ExportPreferences,
   ExportSettings,
@@ -8,6 +7,7 @@ import type {
   Workspace,
   WorkSpaceSource,
 } from '@zakodium/nmrium-core';
+import { CURRENT_EXPORT_VERSION, migrateSettings } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
 import { produce } from 'immer';
 import type { Reducer } from 'react';
@@ -15,6 +15,7 @@ import type { SplitPaneSize } from 'react-science/ui';
 
 import type { NMRiumPreferences, NMRiumWorkspace } from '../../main/index.js';
 import { getLocalStorage, storeData } from '../../utility/LocalStorage.js';
+import type { FilterType } from '../../utility/filterType.js';
 import Workspaces from '../../workspaces/index.js';
 import type { ActionType } from '../types/ActionType.js';
 
@@ -49,7 +50,6 @@ import { setWorkspace } from './actions/setWorkspace.js';
 import { toggleInformationBlock } from './actions/toggleInformationBlock.js';
 import { togglePanel } from './actions/togglePanel.js';
 import { mapWorkspaces } from './utilities/mapWorkspaces.js';
-import type { FilterType } from '../../utility/filterType.js';
 
 const LOCAL_STORAGE_SETTINGS_KEY = 'nmr-general-settings';
 

@@ -8,7 +8,7 @@ import type { Draft } from 'immer';
 import { original } from 'immer';
 import cloneDeep from 'lodash/cloneDeep.js';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import type { Signal1D, Range } from 'nmr-processing';
+import type { Range, Signal1D } from 'nmr-processing';
 import { Filters1DManager } from 'nmr-processing';
 
 import {
@@ -24,14 +24,15 @@ import {
   setSumOptions,
 } from '../../../data/data1d/Spectrum1D/SumManager.js';
 import {
+  changeRangeRelativeValue,
   changeRangeSignal,
   detectRanges,
-  updateRangesRelativeValues,
-  changeRangeRelativeValue,
   isSpectrum1D,
+  updateRangesRelativeValues,
 } from '../../../data/data1d/Spectrum1D/index.js';
 import type { ChangeRangeRelativeValueProps } from '../../../data/data1d/Spectrum1D/ranges/changeRangeRelativeValue.js';
 import { unlink } from '../../../data/utilities/RangeUtilities.js';
+import type { TargetAssignKeys } from '../../panels/MoleculesPanel/Utilities.js';
 import type { RangeData } from '../../panels/RangesPanel/hooks/useMapRanges.js';
 import type { FilterType } from '../../utility/filterType.js';
 import type { State } from '../Reducer.js';
@@ -48,7 +49,6 @@ import { setDomain } from './DomainActions.js';
 import { rollbackSpectrumByFilter } from './FiltersActions.js';
 import { toggleDisplayingPeaks } from './PeaksActions.js';
 import { resetSelectedTool } from './ToolsActions.js';
-import type { TargetAssignKeys } from '../../panels/MoleculesPanel/Utilities.js';
 
 type AutoRangesDetectionAction = ActionType<
   'AUTO_RANGES_DETECTION',

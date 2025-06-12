@@ -12,6 +12,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import { useResizeObserver } from 'react-d3-utils';
 import type {
   CellProps,
   Column as ReactColumn,
@@ -22,7 +23,6 @@ import type {
   UseTableOptions,
 } from 'react-table';
 import { useSortBy, useTable } from 'react-table';
-import useResizeObserver from 'use-resize-observer';
 
 import type { HighlightEventSource } from '../../highlight/index.js';
 import type { BaseContextMenuProps } from '../ContextMenuBluePrint.js';
@@ -371,12 +371,8 @@ function ReactTable<T extends object>(props: ReactTableProps<T>) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const visibleRowsCountRef = useRef<number>(0);
   const visibleColumnsCountRef = useRef<number>(0);
-  const {
-    ref: mRef,
-    width = 0,
-    height = 0,
-    // @ts-expect-error Module is not published correctly.
-  } = useResizeObserver();
+  const [mRef, { width, height } = { width: 0, height: 0 }] =
+    useResizeObserver();
 
   const [tableVirtualBoundary, setTableVirtualBoundary] =
     useState<TableVirtualBoundary>({

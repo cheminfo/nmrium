@@ -2,9 +2,9 @@ import type { Spectrum } from '@zakodium/nmrium-core';
 import dlv from 'dlv';
 import type { CSSProperties } from 'react';
 import { useState } from 'react';
+import { useResizeObserver } from 'react-d3-utils';
 import { BsArrowsMove } from 'react-icons/bs';
 import { FaTimes } from 'react-icons/fa';
-import useResizeObserver from 'use-resize-observer';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { useGlobal } from '../../context/GlobalContext.js';
@@ -93,12 +93,10 @@ function SpectrumInfoBlock() {
       : infoFields?.length - (infoFields?.length % 2)
         ? 2
         : 1) || 0);
-  const {
+  const [
     ref,
-    width: boxWidth = 0,
-    height: boxHeight = 0,
-    // @ts-expect-error Module is not published correctly.
-  } = useResizeObserver();
+    { width: boxWidth, height: boxHeight } = { width: 0, height: 0 },
+  ] = useResizeObserver();
   const { onPointerDown } = useDraggable({
     position: coordinate,
     onChange: (dragEvent) => {
