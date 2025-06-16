@@ -28,7 +28,7 @@
           },
           {
             "name": "apodization",
-            "label": "Apodization",
+            "label": "Apodization / Window functions",
             "value": {
               "lineBroadening": 1,
               "gaussBroadening": 0,

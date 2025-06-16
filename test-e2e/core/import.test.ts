@@ -61,7 +61,9 @@ test('should load and migrate .nmrium data from version 2 to version 3', async (
   await nmrium.clickPanel('Processing');
 
   await expect(
-    nmrium.page.locator('_react=FiltersSectionsPanel >> text=Apodization'),
+    nmrium.page.locator(
+      '_react=FiltersSectionsPanel >> text=Apodization / Window functions',
+    ),
   ).toBeVisible();
 });
 test('should load .nmrium data from version 3', async ({ page }) => {
