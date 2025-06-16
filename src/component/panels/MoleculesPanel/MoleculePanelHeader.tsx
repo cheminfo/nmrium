@@ -49,7 +49,7 @@ const styles: Record<'atomLabel', CSSProperties> = {
 const MOL_EXPORT_MENU: ToolbarPopoverMenuItem[] = [
   {
     icon: <FaCopy />,
-    text: 'Copy as smiles',
+    text: 'Copy as SMILES',
     data: {
       id: 'smiles',
     },
@@ -168,7 +168,7 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
       if (molecule) {
         switch (selected?.id) {
           case 'smiles':
-            copyHandler(molecule.toSmiles(), 'Smiles');
+            copyHandler(molecule.toSmiles(), 'SMILES');
 
             break;
           case 'molfileV3':

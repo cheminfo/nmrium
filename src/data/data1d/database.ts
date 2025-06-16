@@ -144,7 +144,7 @@ function prepareMoleculesDB(array: DatabaseNMREntry[]) {
         moleculesDB.pushEntry(molecule, entry);
       } catch {
         // eslint-disable-next-line no-console
-        console.error(`Could not parse smiles: ${entry.smiles}`);
+        console.error(`Could not parse SMILES: ${entry.smiles}`);
       }
     }
   }
