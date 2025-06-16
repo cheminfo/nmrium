@@ -64,15 +64,15 @@ const LIST: ListItem[] = [
     name: 'slicing',
   },
   {
-    label: 'Apodization',
+    label: 'Apodization / Window functions',
     name: 'apodization',
   },
   {
-    label: 'Apodization dimension one',
+    label: 'Apodization / Window functions dimension one',
     name: 'apodizationDimension1',
   },
   {
-    label: 'Apodization dimension two',
+    label: 'Apodization / Window functions dimension two',
     name: 'apodizationDimension2',
   },
   {

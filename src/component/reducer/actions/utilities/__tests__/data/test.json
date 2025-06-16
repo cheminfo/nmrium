@@ -26,7 +26,9 @@
         },
         "signals": [],
         "sourceSelector": {
-          "files": ["data/ethylbenzene/1h.jdx"]
+          "files": [
+            "data/ethylbenzene/1h.jdx"
+          ]
         },
         "integrals": {
           "values": [
@@ -89,7 +91,9 @@
                   "multiplicity": "t",
                   "delta": 1.1906055043725645,
                   "originalDelta": 1.1906055043725645,
-                  "diaIDs": ["did@`@fTf[Waj@@bJ@_iB@bUP"],
+                  "diaIDs": [
+                    "did@`@fTf[Waj@@bJ@_iB@bUP"
+                  ],
                   "nbAtoms": 2
                 },
                 {
@@ -108,7 +112,9 @@
                   "multiplicity": "s",
                   "delta": 1.1960617189419018,
                   "originalDelta": 1.1960617189419018,
-                  "diaIDs": ["did@`@fTeYWaj@@@GzP`HeT"],
+                  "diaIDs": [
+                    "did@`@fTeYWaj@@@GzP`HeT"
+                  ],
                   "nbAtoms": 3
                 }
               ],
@@ -172,7 +178,9 @@
               "kind": "signal",
               "originalFrom": 2.564935075686039,
               "originalTo": 2.6426973992857508,
-              "diaIDs": ["did@`@fTfYUn`HH@GzP`HeT"],
+              "diaIDs": [
+                "did@`@fTfYUn`HH@GzP`HeT"
+              ],
               "nbAtoms": 2
             },
             {
@@ -203,7 +211,9 @@
               "kind": "signal",
               "originalFrom": 3.4227496976299325,
               "originalTo": 3.4321590173493584,
-              "diaIDs": ["did@`@f\\bbRaih@J@A~dHBIU@"],
+              "diaIDs": [
+                "did@`@f\\bbRaih@J@A~dHBIU@"
+              ],
               "nbAtoms": 2
             },
             {
@@ -367,7 +377,9 @@
               "kind": "signal",
               "originalFrom": 7.1566564582699606,
               "originalTo": 7.221476423271458,
-              "diaIDs": ["did@`@fTfUvf`@h@GzP`HeT"],
+              "diaIDs": [
+                "did@`@fTfUvf`@h@GzP`HeT"
+              ],
               "nbAtoms": 1
             },
             {
@@ -514,7 +526,9 @@
               "id": "wFcDJ2hQ",
               "experimentType": "1d",
               "experimentID": "0abwvynpah97",
-              "atomType": ["H"],
+              "atomType": [
+                "H"
+              ],
               "signal": {
                 "kind": "signal",
                 "id": "91b17dc2-9c00-4bde-9443-32dc66489fe0",
@@ -560,7 +574,9 @@
               "id": "PTbCpu4h",
               "experimentType": "1d",
               "experimentID": "0abwvynpah97",
-              "atomType": ["H"],
+              "atomType": [
+                "H"
+              ],
               "signal": {
                 "kind": "signal",
                 "id": "b17dc29c-006b-4e54-8332-dc66489fe072",
@@ -602,7 +618,9 @@
               "id": "0a83Mb2I",
               "experimentType": "1d",
               "experimentID": "0abwvynpah97",
-              "atomType": ["H"],
+              "atomType": [
+                "H"
+              ],
               "signal": {
                 "kind": "signal",
                 "id": "c29c006b-de54-4332-9c66-489fe0727ff8",
@@ -670,7 +688,9 @@
               "id": "tqKL2bib",
               "experimentType": "1d",
               "experimentID": "0abwvynpah97",
-              "atomType": ["H"],
+              "atomType": [
+                "H"
+              ],
               "signal": {
                 "kind": "signal",
                 "id": "006bde54-4332-4c66-889f-e0727ff8f78d",
@@ -712,7 +732,9 @@
               "id": "se100KyI",
               "experimentType": "1d",
               "experimentID": "0abwvynpah97",
-              "atomType": ["H"],
+              "atomType": [
+                "H"
+              ],
               "signal": {
                 "kind": "signal",
                 "id": "de544332-dc66-489f-a072-7ff8f78da67e",
@@ -887,7 +909,9 @@
               "id": "DAUnfa2q",
               "experimentType": "1d",
               "experimentID": "0abwvynpah97",
-              "atomType": ["H"],
+              "atomType": [
+                "H"
+              ],
               "signal": {
                 "kind": "signal",
                 "id": "4332dc66-489f-4072-bff8-f78da67ea8d4",
@@ -1017,7 +1041,13 @@
         "H": {
           "current": 0,
           "error": {
-            "notAttached": [0, 1, 2, 3, 4]
+            "notAttached": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
           }
         }
       }
@@ -1189,25 +1219,37 @@
       "fields": [
         {
           "label": "name",
-          "jpath": ["info", "name"],
+          "jpath": [
+            "info",
+            "name"
+          ],
           "visible": true,
           "format": ""
         },
         {
           "label": "Number of scans",
-          "jpath": ["info", "numberOfScans"],
+          "jpath": [
+            "info",
+            "numberOfScans"
+          ],
           "visible": true,
           "format": "0"
         },
         {
           "label": "Pulse sequence",
-          "jpath": ["info", "pulseSequence"],
+          "jpath": [
+            "info",
+            "pulseSequence"
+          ],
           "visible": true,
           "format": ""
         },
         {
           "label": "Frequency",
-          "jpath": ["info", "originFrequency"],
+          "jpath": [
+            "info",
+            "originFrequency"
+          ],
           "visible": true,
           "format": "0"
         }
@@ -1225,7 +1267,7 @@
           },
           {
             "name": "apodization",
-            "label": "Apodization",
+            "label": "Apodization / Window functions",
             "value": {},
             "flag": false
           },
@@ -1257,7 +1299,7 @@
           },
           {
             "name": "apodization",
-            "label": "Apodization",
+            "label": "Apodization / Window functions",
             "value": {},
             "flag": true
           },

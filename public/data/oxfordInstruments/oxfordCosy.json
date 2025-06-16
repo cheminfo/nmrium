@@ -31,7 +31,7 @@
           {
             "id": "0b030fa5-6552-4484-b1b9-e9087a3ec927",
             "name": "apodizationDimension1",
-            "label": "Apodization on Dimension 1",
+            "label": "Apodization / Window functions on Dimension 1",
             "value": {
               "compose": {
                 "shapes": [
@@ -83,7 +83,7 @@
           {
             "id": "6552a484-b1b9-4908-ba3e-c9277962857d",
             "name": "apodizationDimension2",
-            "label": "Apodization on Dimension 2",
+            "label": "Apodization / Window functions on Dimension 2",
             "value": {
               "compose": {
                 "shapes": [
@@ -168,7 +168,7 @@
           },
           {
             "name": "apodization",
-            "label": "Apodization",
+            "label": "Apodization / Window functions",
             "value": {
               "lineBroadening": 1,
               "gaussBroadening": 0,
