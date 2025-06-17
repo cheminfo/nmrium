@@ -137,6 +137,7 @@ export function BaseApodizationOptions(
 
 interface SectionOptions {
   onChange: () => void;
+  setFocus?: boolean;
 }
 
 function ExponentialSectionOptionsSection(options: SectionOptions) {
@@ -149,6 +150,7 @@ function ExponentialSectionOptionsSection(options: SectionOptions) {
       algorithm="exponential"
       algorithmTitle="Exponential"
       onChange={onChange}
+      autoFocus
     >
       <Label
         title="Line broadening:"
@@ -304,10 +306,17 @@ interface OptionsSectionProps extends SectionOptions {
   algorithm: keyof Apodization1DOptions;
   algorithmTitle: string;
   children: ReactNode;
+  autoFocus?: boolean;
 }
 
 function OptionsSection(options: OptionsSectionProps) {
-  const { onChange, algorithm, algorithmTitle, children } = options;
+  const {
+    onChange,
+    algorithm,
+    algorithmTitle,
+    children,
+    autoFocus = false,
+  } = options;
 
   const { setValue, watch } = useFormContext();
   const isApplyChecked = watch(`options.${algorithm}.apply`) || false;
@@ -330,6 +339,7 @@ function OptionsSection(options: OptionsSectionProps) {
           innerLabel="Off"
           checked={isApplyChecked}
           onChange={handleToggleApply}
+          autoFocus={autoFocus}
         />
       }
       headerStyle={{ backgroundColor: 'white' }}
