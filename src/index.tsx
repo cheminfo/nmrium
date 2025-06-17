@@ -1,3 +1,4 @@
+import { FocusStyleManager } from '@blueprintjs/core';
 import { createRoot } from 'react-dom/client';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 
@@ -13,6 +14,8 @@ import '@blueprintjs/icons/lib/css/blueprint-icons.css';
 import '@blueprintjs/select/lib/css/blueprint-select.css';
 
 import './demo/index.css';
+
+FocusStyleManager.alwaysShowFocus();
 
 const rootElement = document.querySelector('#root');
 if (!rootElement) {
