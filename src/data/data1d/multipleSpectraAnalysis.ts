@@ -179,11 +179,7 @@ export function generateAnalyzeSpectra(
                 SID,
                 id,
                 colKey: key,
-                value: calculate(
-                  columns,
-                  data[spectra[0]],
-                  columns[key].formula,
-                ),
+                value: calculate(key, columns, data[spectra[0]]),
               },
             ];
           }
@@ -214,32 +210,43 @@ export function deleteSpectraAnalysis(
 }
 
 function calculate(
+  columnKey: string,
   columns: SpectraAnalysisColumns,
   data: AnalysisRow,
-  formula = '',
+  visited = new Set<string>(),
 ) {
-  const array = formula.split(/[%()*+/-]/);
-
-  const variables: string[] = [];
-
-  for (const col of array) {
-    const column = col.trim();
-    if (columns[column]) {
-      variables.push(column);
-    }
+  if (visited.has(columnKey)) {
+    return 0;
   }
+  visited.add(columnKey);
 
-  const params = variables.map((key) =>
-    data[key] ? data[key][columns[key].valueKey] : null,
-  );
+  const { formula = '' } = columns[columnKey];
+  const variables: string[] = Object.keys(columns);
+
+  const params = variables.map((key) => {
+    const column = columns[key];
+    if (!column || !data[key]) return null;
+
+    const { valueKey, type } = column;
+
+    if (type === 'FORMULA') {
+      return calculate(key, columns, data, new Set(visited));
+    }
+
+    return data[key][valueKey];
+  });
 
   let result;
   try {
     // eslint-disable-next-line no-new-func
-    result = new Function(...variables, `return ${formula}`)(...params);
+    result = new Function('Math', ...variables, `return ${formula}`)(
+      Math,
+      ...params,
+    );
   } catch {
-    result = new Error(`Invalid Formula ( ${formula} ) `);
+    result = new Error(`Invalid Formula ( ${formula} )`);
   }
+
   return result;
 }
 
