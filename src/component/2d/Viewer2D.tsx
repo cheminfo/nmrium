@@ -64,12 +64,6 @@ function Viewer2D(props: Viewer2DProps) {
                 <CrossLinePointer />
                 <XYLabelPointer data1D={spectrumData} layout={DIMENSION} />
 
-                <BrushXY
-                  axis="XY"
-                  dimensionBorder={DIMENSION.MAIN}
-                  enableHorizontalGuideline
-                  enableVerticalGuideline
-                />
                 <>
                   {spectrumData[0] && (
                     <BrushXY
@@ -88,6 +82,12 @@ function Viewer2D(props: Viewer2DProps) {
                     />
                   )}
                 </>
+                <BrushXY
+                  axis="XY"
+                  dimensionBorder={DIMENSION.MAIN}
+                  enableHorizontalGuideline
+                  enableVerticalGuideline
+                />
                 <PivotIndicator />
                 <FooterBanner data1D={spectrumData} layout={DIMENSION} />
                 <SVGRootContainer enableBoxBorder>

@@ -12,11 +12,12 @@ import {
 import type { BrushAxis } from '../../EventsTrackers/BrushTracker.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';
+import { ArrowBox } from '../../elements/ArrowBox.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import type { Margin } from '../../reducer/Reducer.js';
 import { options } from '../../toolbar/ToolTypes.js';
 
-const Label = styled.span`
+const LabelWrapper = styled.span`
   position: absolute;
   top: 0;
   left: 0;
@@ -259,6 +260,7 @@ export default function BrushXY(props: BrushXYProps) {
         position: 'absolute',
         top: 0,
         left: 0,
+        zIndex: '10',
       }}
     >
       {/* Y Brush Lines */}
@@ -306,13 +308,21 @@ export default function BrushXY(props: BrushXYProps) {
             </>
           )}
           {/* Range distance */}
-          <Label
+          <LabelWrapper
             style={{
-              transform: `translate(${centerX}px, ${y1}px) translate(-${brush.type === 'X' ? '50' : '100'}%,-100%)  `,
+              transform: `translate(${brush.type === 'X' ? centerX : startX}px, ${y1}px) translate(-${brush.type === 'X' ? '50' : '100'}%,-50%)  `,
             }}
           >
-            <DistanceValue start={startX} end={endX} axis="x" />
-          </Label>
+            <ArrowBox
+              position="right"
+              size={brush.type === 'X' ? 0 : 5}
+              borderColor="#f5f5f5"
+              borderWidth={1}
+              color="rgba(255,255,255,0.9)"
+            >
+              <DistanceValue start={startX} end={endX} axis="x" />
+            </ArrowBox>
+          </LabelWrapper>
         </>
       )}
       {/* Vertical guideline */}
@@ -343,14 +353,22 @@ export default function BrushXY(props: BrushXYProps) {
           )}
           {/* Range distance */}
 
-          <Label
+          <LabelWrapper
             style={{
               transformOrigin: 'top left',
-              transform: `translate(${x1}px, ${centerY}px) rotate(-90deg) translate(${brush.type === 'Y' ? '-50%' : '14px'}, 0%)  `,
+              transform: `translate(${x1}px, ${brush.type === 'Y' ? centerY : startY}px) rotate(-90deg) translate(${brush.type === 'Y' ? '-50%' : '0'}, -50%)  `,
             }}
           >
-            <DistanceValue start={startY} end={endY} axis="y" />
-          </Label>
+            <ArrowBox
+              position="left"
+              size={brush.type === 'Y' ? 0 : 5}
+              borderColor="#f5f5f5"
+              borderWidth={1}
+              color="rgba(255,255,255,0.9)"
+            >
+              <DistanceValue start={startY} end={endY} axis="y" />
+            </ArrowBox>
+          </LabelWrapper>
         </>
       )}
     </div>
