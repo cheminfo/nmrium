@@ -179,11 +179,7 @@ export function generateAnalyzeSpectra(
                 SID,
                 id,
                 colKey: key,
-                value: calculate(
-                  columns,
-                  data[spectra[0]],
-                  columns[key].formula,
-                ),
+                value: calculate(key, columns, data[spectra[0]]),
               },
             ];
           }
@@ -214,35 +210,30 @@ export function deleteSpectraAnalysis(
 }
 
 function calculate(
+  columnKey: string,
   columns: SpectraAnalysisColumns,
   data: AnalysisRow,
-  formula = '',
+  visited = new Set<string>(),
 ) {
-  const cleanFormula = formula
-    .replaceAll(/Math\.\w+\(/g, '') // Remove Math.<function name>(
-    .replaceAll(')', '') // Remove closing parentheses )
-    .replaceAll(/\s+/g, ''); // Remove spaces
-
-  const array = cleanFormula.split(/[%()*+/,-]/);
-
-  const variables: string[] = [];
-
-  for (const col of array) {
-    const column = col.trim();
-    if (columns[column]) {
-      variables.push(column);
-    }
+  if (visited.has(columnKey)) {
+    return 0;
   }
+  visited.add(columnKey);
+
+  const { formula = '' } = columns[columnKey];
+  const variables: string[] = Object.keys(columns);
 
   const params = variables.map((key) => {
-    if (data[key]) {
-      const { valueKey, type, formula: columnFormula } = columns[key];
-      if (type === 'FORMULA') {
-        return calculate(columns, data, columnFormula);
-      }
-      return data[key][valueKey];
+    const column = columns[key];
+    if (!column || !data[key]) return null;
+
+    const { valueKey, type } = column;
+
+    if (type === 'FORMULA') {
+      return calculate(key, columns, data, new Set(visited));
     }
-    return null;
+
+    return data[key][valueKey];
   });
 
   let result;
@@ -253,8 +244,9 @@ function calculate(
       ...params,
     );
   } catch {
-    result = new Error(`Invalid Formula ( ${formula} ) `);
+    result = new Error(`Invalid Formula ( ${formula} )`);
   }
+
   return result;
 }
 
