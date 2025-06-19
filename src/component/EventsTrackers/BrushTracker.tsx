@@ -198,6 +198,7 @@ export function BrushTracker(options: BrushTrackerProps) {
           x: event.clientX - boundingRect.x,
           y: event.clientY - boundingRect.y,
         };
+        lastRef.current = { x: 0, y: 0 };
 
         if (!event.ctrlKey) {
           dispatch({
@@ -223,24 +224,27 @@ export function BrushTracker(options: BrushTrackerProps) {
         if (event.ctrlKey) {
           if (boundingRectRef.current) {
             const boundingRect = boundingRectRef.current;
+
             const x = clientX - boundingRect.x;
             const y = clientY - boundingRect.y;
 
-            const deltaX = clientX - boundingRect.x - lastRef.current.x;
-            const deltaY = clientY - boundingRect.y - lastRef.current.y;
+            if (lastRef.current.x > 0 && lastRef.current.y > 0) {
+              const deltaX = x - lastRef.current.x;
+              const deltaY = y - lastRef.current.y;
 
+              onZoom({
+                deltaY,
+                deltaX,
+                shiftKey,
+                altKey,
+                x: startPositionRef.current.x,
+                y: startPositionRef.current.y,
+                ctrlKey,
+                deltaMode: 0,
+                isBidirectionalZoom: true,
+              });
+            }
             lastRef.current = { x, y };
-            onZoom({
-              deltaY,
-              deltaX,
-              shiftKey,
-              altKey,
-              x: startPositionRef.current.x,
-              y: startPositionRef.current.y,
-              ctrlKey,
-              deltaMode: 0,
-              isBidirectionalZoom: true,
-            });
           }
         } else {
           dispatch({
