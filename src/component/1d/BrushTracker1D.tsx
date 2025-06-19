@@ -336,23 +336,35 @@ export function BrushTracker1D({ children }) {
     [convertToPPM, inset, dispatch],
   );
 
-  const handleOnDoubleClick = useCallback(() => {
-    dispatch({
-      type: 'FULL_ZOOM_OUT',
-      payload: { zoomType: ZOOM_TYPES.BIDIRECTIONAL },
-    });
-  }, [dispatch]);
+  const handleOnDoubleClick = useCallback(
+    (event) => {
+      const keyModifiers = getModifiersKey(event as unknown as MouseEvent);
+      if (primaryKeyIdentifier === keyModifiers) return;
 
-  const handleInsetOnDoubleClick = useCallback(() => {
-    if (!inset) {
-      return;
-    }
+      dispatch({
+        type: 'FULL_ZOOM_OUT',
+        payload: { zoomType: ZOOM_TYPES.BIDIRECTIONAL },
+      });
+    },
+    [dispatch, getModifiersKey, primaryKeyIdentifier],
+  );
 
-    dispatch({
-      type: 'FULL_INSET_ZOOM_OUT',
-      payload: { zoomType: ZOOM_TYPES.BIDIRECTIONAL, insetKey: inset.id },
-    });
-  }, [dispatch, inset]);
+  const handleInsetOnDoubleClick = useCallback(
+    (event) => {
+      const keyModifiers = getModifiersKey(event as unknown as MouseEvent);
+      if (primaryKeyIdentifier === keyModifiers) return;
+
+      if (!inset) {
+        return;
+      }
+
+      dispatch({
+        type: 'FULL_INSET_ZOOM_OUT',
+        payload: { zoomType: ZOOM_TYPES.BIDIRECTIONAL, insetKey: inset.id },
+      });
+    },
+    [dispatch, getModifiersKey, inset, primaryKeyIdentifier],
+  );
 
   const handleZoom = useCallback<OnZoom>(
     (options) => {

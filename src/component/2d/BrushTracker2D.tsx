@@ -171,14 +171,18 @@ export function BrushTracker2D({ children }) {
   );
 
   const handleOnDoubleClick: OnDoubleClick = useCallback(
-    (e) => {
-      const { x: startX, y: startY } = e;
+    (event) => {
+      const keyModifiers = getModifiersKey(event as unknown as MouseEvent);
+
+      if (keyModifiers === primaryKeyIdentifier) return;
+
+      const { x: startX, y: startY } = event;
       const trackID = getLayoutID(DIMENSION, { startX, startY });
       if (trackID) {
         dispatch({ type: 'FULL_ZOOM_OUT', payload: { trackID } });
       }
     },
-    [DIMENSION, dispatch],
+    [DIMENSION, dispatch, getModifiersKey, primaryKeyIdentifier],
   );
 
   const handleZoom: OnZoom = (options) => {
@@ -208,6 +212,7 @@ export function BrushTracker2D({ children }) {
   const mouseClick: OnClick = useCallback(
     (event) => {
       const { x, y, shiftKey } = event;
+
       if (shiftKey) {
         switch (selectedTool) {
           case 'phaseCorrectionTwoDimensions':

@@ -126,6 +126,13 @@ interface BrushTrackerProps {
   brushDetectionOptions?: BaseDetectBrushingOptions;
 }
 
+function getMouseXY(event: React.MouseEvent) {
+  const boundingRect = event.currentTarget.getBoundingClientRect();
+  const x = event.clientX - boundingRect.x;
+  const y = event.clientY - boundingRect.y;
+  return { x, y };
+}
+
 export function BrushTracker(options: BrushTrackerProps) {
   const {
     children,
@@ -143,47 +150,30 @@ export function BrushTracker(options: BrushTrackerProps) {
   const [state, dispatch] = useReducer<
     Reducer<BrushTrackerState, BrushTrackerAction>
   >(reducer, initialState);
-  const clickCountRef = useRef(0);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   const lastPointRef = useRef<number>(0);
   const isDraggingRef = useRef(false);
   const boundingRectRef = useRef<DOMRect | null>(null);
   const startPositionRef = useRef<Position>({ x: 0, y: 0 });
   const lastRef = useRef<Position>({ x: 0, y: 0 });
 
-  const clickHandler = useCallback(
-    (event: React.MouseEvent, targetElement: Element) => {
-      const boundingRect = targetElement.getBoundingClientRect();
-      const x = event.clientX - boundingRect.x;
-      const y = event.clientY - boundingRect.y;
+  function handleClick(event: React.MouseEvent) {
+    if (isDraggingRef.current) return;
 
-      // Clear timeout
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
-      }
+    const { x, y } = getMouseXY(event);
+    onClick({ ...event, x, y });
+  }
 
-      // Count clicks
-      clickCountRef.current += 1;
+  function handleDoubleClick(event: React.MouseEvent) {
+    if (isDraggingRef.current) return;
 
-      // Set a timeout to distinguish between single and double clicks
-      timeoutRef.current = setTimeout(() => {
-        if (clickCountRef.current === 1) {
-          onClick({ ...event, x, y });
-        } else if (clickCountRef.current === 2) {
-          onDoubleClick({ ...event, x, y });
-        }
-
-        // Reset the click count
-        clickCountRef.current = 0;
-      }, 200);
-    },
-    [onClick, onDoubleClick],
-  );
+    const { x, y } = getMouseXY(event);
+    onDoubleClick({ ...event, x, y });
+  }
 
   const pointerDownHandler = useCallback(
     (event: React.PointerEvent) => {
-      const targetElement = event.currentTarget;
+      // const targetElement = event.currentTarget;
       isDraggingRef.current = false; // Reset dragging flag
 
       //check that the right or left mouse button pressed
@@ -264,11 +254,6 @@ export function BrushTracker(options: BrushTrackerProps) {
           dispatch({
             type: 'UP',
           });
-        } else {
-          dispatch({
-            type: 'DONE',
-          });
-          clickHandler(event, targetElement);
         }
 
         globalThis.removeEventListener('pointermove', moveCallback);
@@ -280,7 +265,7 @@ export function BrushTracker(options: BrushTrackerProps) {
 
       return false;
     },
-    [clickHandler, noPropagation, onZoom],
+    [noPropagation, onZoom],
   );
 
   const handleMouseWheel = useCallback(
@@ -328,6 +313,8 @@ export function BrushTracker(options: BrushTrackerProps) {
     <BrushDetectionOptionsContext.Provider value={brushDetectionOptions}>
       <BrushContext.Provider value={state}>
         <div
+          onClick={handleClick}
+          onDoubleClick={handleDoubleClick}
           onContextMenu={(e) => {
             if (e.ctrlKey && e.button === 0) {
               e.preventDefault();
