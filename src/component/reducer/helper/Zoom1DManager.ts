@@ -1,4 +1,3 @@
-import { scaleLinear, zoomIdentity } from 'd3';
 import type { Draft } from 'immer';
 
 import type { ZoomOptions } from '../../EventsTrackers/BrushTracker.js';
@@ -44,6 +43,19 @@ function wheelZoom(
   return [min * ratio, max * ratio];
 }
 
+function mapSharedDomain(draft: Draft<State>) {
+  const {
+    originDomain: { yDomain },
+  } = draft;
+
+  const targetDomain = {};
+
+  for (const spectrumKey of Object.keys(draft.yDomains)) {
+    targetDomain[spectrumKey] = yDomain;
+  }
+  return targetDomain;
+}
+
 function setZoom(
   draft: Draft<State>,
   options: {
@@ -51,49 +63,63 @@ function setZoom(
     spectrumID?: string;
   } = {},
 ) {
-  const { height, margin, originDomain, yDomains } = draft;
+  const { originDomain, yDomains } = draft;
   const activeSpectrum = getActiveSpectrum(draft);
   const { scale = 1, spectrumID = null } = options;
 
-  if (activeSpectrum === null && spectrumID === null) {
-    const { shareYDomain, yDomain, yDomains } = originDomain;
+  const rescaleAllSpectra = activeSpectrum === null && spectrumID === null;
 
-    draft.yDomains = Object.fromEntries(
-      Object.keys(yDomains).map((id) => {
-        const _scale = scaleLinear(shareYDomain ? yDomain : yDomains[id], [
-          height - margin.bottom,
-          margin.top,
-        ]);
-        const [min, max] = shareYDomain ? yDomain : yDomains[id];
-        const maxPoint = Math.max(Math.abs(max), Math.abs(min));
-        const scalePoint = maxPoint === Math.abs(max) ? 0 : min;
-        const t = zoomIdentity
-          .translate(0, _scale(scalePoint))
-          .scale(scale)
-          .translate(0, -_scale(scalePoint));
-        const newYDomain = t.rescaleY(_scale).domain();
-        return [id, newYDomain];
-      }),
-    );
-  } else {
-    const spectrumId = spectrumID || activeSpectrum?.id;
-    if (spectrumId) {
-      const _scale = scaleLinear(originDomain.yDomains[spectrumId], [
-        height - margin.bottom,
-        margin.top,
-      ]);
-      const t = zoomIdentity
-        .translate(0, _scale(0))
-        .scale(scale)
-        .translate(0, -_scale(0));
-      const yDomain = t.rescaleY(_scale).domain();
-
-      draft.yDomains = {
-        ...yDomains,
-        [spectrumId]: yDomain,
-      };
-    }
+  if (rescaleAllSpectra) {
+    const { shareYDomain, yDomains } = originDomain;
+    const targetDomain = shareYDomain ? mapSharedDomain(draft) : yDomains;
+    draft.yDomains = rescaleToSameTop(targetDomain, {
+      scale,
+      useZeroAsPivot: shareYDomain,
+    });
+    return;
   }
+
+  const spectrumId = spectrumID || activeSpectrum?.id;
+
+  if (!spectrumId) return;
+
+  const yDomain = rescaleDomain(originDomain.yDomains[spectrumId], { scale });
+
+  draft.yDomains = {
+    ...yDomains,
+    [spectrumId]: yDomain,
+  };
 }
 
-export { setZoom, wheelZoom, toScaleRatio };
+interface RescaleOptions {
+  scale?: number;
+  useZeroAsPivot?: boolean;
+}
+
+function rescaleDomain(domain: number[], options: RescaleOptions = {}) {
+  const { scale: externalScale = 0.8, useZeroAsPivot = false } = options;
+  const scale = 1 / externalScale;
+
+  const [min, max] = domain;
+
+  const pivot = Math.abs(max) > Math.abs(min) || useZeroAsPivot ? 0 : min;
+  const distMin = min - pivot;
+  const distMax = max - pivot;
+  const newMin = distMin * scale;
+  const newMax = distMax * scale;
+
+  return [newMin, newMax];
+}
+
+function rescaleToSameTop(
+  yDomains: Record<string, number[]>,
+  options: RescaleOptions = {},
+) {
+  const newYDomains = {};
+  for (const spectrumId of Object.keys(yDomains)) {
+    newYDomains[spectrumId] = rescaleDomain(yDomains[spectrumId], options);
+  }
+  return newYDomains;
+}
+
+export { setZoom, wheelZoom, toScaleRatio, rescaleToSameTop };
