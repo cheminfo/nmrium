@@ -1,6 +1,6 @@
 import lodashSet from 'lodash/set.js';
 import type { FilterXYType } from 'ml-signal-processing';
-import filterXY from 'ml-signal-processing/FilterXYSchema.js';
+import filterXY from 'ml-signal-processing/FilterXYSchema.json' with { type: 'json' };
 
 interface BaseField {
   key: string;

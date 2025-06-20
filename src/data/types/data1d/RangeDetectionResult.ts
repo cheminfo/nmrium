@@ -1,4 +1,4 @@
-import type { Range } from 'nmr-processing';
+import type { Range } from '@zakodium/nmr-types';
 
 export interface RangeDetectionResult
   extends Omit<Range, 'integration' | 'kind' | 'signals'> {

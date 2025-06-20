@@ -1,5 +1,5 @@
+import type { Range } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
-import type { Range } from 'nmr-processing';
 
 export interface ChangeRangeRelativeValueProps {
   id: string; // id of the selected range

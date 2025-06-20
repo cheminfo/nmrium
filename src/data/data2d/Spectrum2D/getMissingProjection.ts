@@ -1,6 +1,6 @@
+import type { Info1D, Info2D } from '@zakodium/nmr-types';
 import type { NmrData2DFt } from 'cheminfo-types';
 import { xSequentialFillFromTo } from 'ml-spectra-processing';
-import type { Info1D, Info2D } from 'nmr-processing';
 
 import type { UsedColors } from '../../../types/UsedColors.js';
 import { initiateDatum1D } from '../../data1d/Spectrum1D/index.js';
@@ -8,7 +8,6 @@ import { initiateDatum1D } from '../../data1d/Spectrum1D/index.js';
 /**
  * calculate the missing projection
  */
-
 export function getProjection(datum: NmrData2DFt['rr'], index: number) {
   const from = index === 0 ? datum.minX : datum.minY;
   const to = index === 0 ? datum.maxX : datum.maxY;

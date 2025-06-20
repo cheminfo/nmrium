@@ -1,7 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import type { Apodization1DOptions } from '@zakodium/nmr-types';
 import lodashMerge from 'lodash/merge.js';
 import { default1DApodization } from 'nmr-processing';
-import type { Apodization1DOptions } from 'nmr-processing';
 import { useCallback, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';

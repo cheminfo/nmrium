@@ -1,6 +1,6 @@
+import type { Integral as IntegralType } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { xyIntegral, xyMaxY } from 'ml-spectra-processing';
-import type { Integral as IntegralType } from 'nmr-processing';
 
 import { useChartData } from '../../context/ChartContext.js';
 import useSpectrum from '../../hooks/useSpectrum.js';

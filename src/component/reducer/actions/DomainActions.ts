@@ -21,11 +21,11 @@ import {
 } from '../../../data/data2d/Spectrum2D/isSpectrum2D.js';
 import nucleusToString from '../../utility/nucleusToString.js';
 import type { State } from '../Reducer.js';
+import { rescaleToSameTop } from '../helper/Zoom1DManager.js';
 import { addToBrushHistory } from '../helper/ZoomHistoryManager.js';
 import { getActiveSpectra } from '../helper/getActiveSpectra.js';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
 import type { ActionType } from '../types/ActionType.js';
-import { rescaleToSameTop } from '../helper/Zoom1DManager.js';
 
 type SetAxisDomainAction = ActionType<
   'SET_AXIS_DOMAIN',

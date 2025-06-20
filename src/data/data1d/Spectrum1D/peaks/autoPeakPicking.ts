@@ -1,6 +1,6 @@
+import type { Peak1D } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import median from 'ml-array-median';
-import type { Peak1D } from 'nmr-processing';
 import { mapPeaks, xyAutoPeaksPicking } from 'nmr-processing';
 
 export function autoPeakPicking(spectrum: Spectrum1D, options) {

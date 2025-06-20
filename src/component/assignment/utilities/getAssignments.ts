@@ -1,5 +1,5 @@
+import type { Ranges, Zones } from '@zakodium/nmr-types';
 import type { Spectrum } from '@zakodium/nmrium-core';
-import type { Ranges, Zones } from 'nmr-processing';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import type { Assignments, Axis } from '../AssignmentsContext.js';

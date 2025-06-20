@@ -1,4 +1,4 @@
-import type { Zone } from 'nmr-processing';
+import type { Zone } from '@zakodium/nmr-types';
 import { mapZones } from 'nmr-processing';
 
 import type { DetectionZonesOptions } from './getDetectionZones.js';

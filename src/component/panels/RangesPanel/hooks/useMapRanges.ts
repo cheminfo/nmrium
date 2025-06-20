@@ -1,4 +1,4 @@
-import type { Range } from 'nmr-processing';
+import type { Range } from '@zakodium/nmr-types';
 import { useMemo } from 'react';
 
 export interface RangeData extends Range {

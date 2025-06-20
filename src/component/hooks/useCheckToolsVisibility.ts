@@ -1,4 +1,4 @@
-import type { Info1D, Info2D } from 'nmr-processing';
+import type { Info1D, Info2D } from '@zakodium/nmr-types';
 import { useCallback } from 'react';
 
 import { useChartData } from '../context/ChartContext.js';

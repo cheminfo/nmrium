@@ -1,5 +1,5 @@
+import type { Info1D, Peak1D } from '@zakodium/nmr-types';
 import dlv from 'dlv';
-import type { Info1D, Peak1D } from 'nmr-processing';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { FaEdit, FaRegTrashAlt } from 'react-icons/fa';
 

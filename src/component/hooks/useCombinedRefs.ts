@@ -1,8 +1,8 @@
-import type { LegacyRef, MutableRefObject } from 'react';
+import type { ForwardedRef, MutableRefObject, RefCallback } from 'react';
 import { useEffect, useRef } from 'react';
 
-export default function useCombinedRefs(
-  refs: Array<MutableRefObject<any> | LegacyRef<any>>,
+export default function useCombinedRefs<T>(
+  refs: Array<RefCallback<T> | MutableRefObject<T> | ForwardedRef<T>>,
 ) {
   const targetRef = useRef<any>();
 
@@ -12,7 +12,9 @@ export default function useCombinedRefs(
       if (typeof ref === 'function') {
         ref(targetRef.current);
       } else {
-        (ref as MutableRefObject<any>).current = targetRef.current;
+        // Mutating a ref.
+        // eslint-disable-next-line react-hooks/react-compiler
+        ref.current = targetRef.current;
       }
     }
   }, [refs]);

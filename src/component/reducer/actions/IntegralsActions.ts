@@ -1,8 +1,8 @@
+import type { Integral } from '@zakodium/nmr-types';
 import type { IntegralsViewState, Spectrum1D } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
 import { original } from 'immer';
 import { xyIntegration } from 'ml-spectra-processing';
-import type { Integral } from 'nmr-processing';
 
 import type {
   SetSumOptions,
@@ -13,9 +13,9 @@ import {
   setSumOptions,
 } from '../../../data/data1d/Spectrum1D/SumManager.js';
 import {
-  updateIntegralsRelativeValues,
   changeIntegralsRelative,
   getShiftX,
+  updateIntegralsRelativeValues,
 } from '../../../data/data1d/Spectrum1D/index.js';
 import type { FilterType } from '../../utility/filterType.js';
 import type { State } from '../Reducer.js';

@@ -1,6 +1,6 @@
+import type { Peak1D } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import type { Peak1D } from 'nmr-processing';
 import { mapPeaks, xyPeaksOptimization } from 'nmr-processing';
 
 interface OptimizePeaksOptions {

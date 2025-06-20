@@ -1,6 +1,7 @@
+import type { Info1D } from '@zakodium/nmr-types';
 import type { Spectrum, Spectrum1D } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
-import type { DatabaseNMREntry, Info1D } from 'nmr-processing';
+import type { DatabaseNMREntry } from 'nmr-processing';
 
 import {
   get1DColor,

@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
+import type { Range } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import type { Range } from 'nmr-processing';
 import { useRef } from 'react';
 import { LuLink, LuUnlink } from 'react-icons/lu';
 
@@ -11,8 +11,8 @@ import { useAssignment } from '../../assignment/AssignmentsContext.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';
-import { ActionsButtonsPopover } from '../../elements/ActionsButtonsPopover.js';
 import type { ActionsButtonsPopoverProps } from '../../elements/ActionsButtonsPopover.js';
+import { ActionsButtonsPopover } from '../../elements/ActionsButtonsPopover.js';
 import { HighlightEventSource, useHighlight } from '../../highlight/index.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import { useIsInset } from '../inset/InsetProvider.js';

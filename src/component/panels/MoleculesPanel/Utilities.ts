@@ -1,5 +1,5 @@
+import type { Range, Zone } from '@zakodium/nmr-types';
 import type { Spectrum } from '@zakodium/nmrium-core';
-import type { Range, Zone } from 'nmr-processing';
 import type { DiaIDAndInfo } from 'openchemlib-utils';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';

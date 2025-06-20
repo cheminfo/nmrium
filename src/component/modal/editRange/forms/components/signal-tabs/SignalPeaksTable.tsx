@@ -1,7 +1,7 @@
 import { Button, Classes } from '@blueprintjs/core';
+import type { Peak1D } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import type { Peak1D } from 'nmr-processing';
 import { getShiftX } from 'nmr-processing';
 import type { CSSProperties } from 'react';
 import { useCallback, useMemo, useRef } from 'react';

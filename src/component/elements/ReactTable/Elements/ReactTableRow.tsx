@@ -2,7 +2,7 @@
 
 import type { CSSObject, SerializedStyles } from '@emotion/react';
 import { css } from '@emotion/react';
-import { useMemo, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 
 import {
   HighlightEventSource,
@@ -83,6 +83,8 @@ function ReactTableRow(props: ReactTableRowProps) {
     return () => {
       highlight.hide();
     };
+    // TODO: avoid this hack.
+    // eslint-disable-next-line react-hooks/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

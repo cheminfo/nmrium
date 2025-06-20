@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import type { Integral } from 'nmr-processing';
+import type { Integral } from '@zakodium/nmr-types';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';

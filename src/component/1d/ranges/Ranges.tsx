@@ -1,5 +1,8 @@
+import type {
+  Range as RangeType,
+  Ranges as RangesType,
+} from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
-import type { Ranges as RangesType, Range as RangeType } from 'nmr-processing';
 import { memo } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';

@@ -1,21 +1,21 @@
 import styled from '@emotion/styled';
+import type { Ranges } from '@zakodium/nmr-types';
 import type { BoundingBox } from '@zakodium/nmrium-core';
 import { checkMultiplicity } from 'nmr-processing';
-import type { Ranges } from 'nmr-processing';
 import { memo, useEffect, useState } from 'react';
 import { BsArrowsMove } from 'react-icons/bs';
 import { FaTimes } from 'react-icons/fa';
 import { Rnd } from 'react-rnd';
 
-import { isSpectrum1D } from '../../data/data1d/Spectrum1D/isSpectrum1D.js';
+import { isSpectrum1D } from '../../data/data1d/Spectrum1D/index.js';
 import { checkRangeKind } from '../../data/utilities/RangeUtilities.js';
-import { SVGTable } from '../SVGTable.js';
 import type { SVGTableColumn } from '../SVGTable.js';
+import { SVGTable } from '../SVGTable.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useDispatch } from '../context/DispatchContext.js';
 import { useGlobal } from '../context/GlobalContext.js';
-import { ActionsButtonsPopover } from '../elements/ActionsButtonsPopover.js';
 import type { ActionsButtonsPopoverProps } from '../elements/ActionsButtonsPopover.js';
+import { ActionsButtonsPopover } from '../elements/ActionsButtonsPopover.js';
 import { usePanelPreferences } from '../hooks/usePanelPreferences.js';
 import { useSVGUnitConverter } from '../hooks/useSVGUnitConverter.js';
 import useSpectraByActiveNucleus from '../hooks/useSpectraPerNucleus.js';

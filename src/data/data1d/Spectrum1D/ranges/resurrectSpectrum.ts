@@ -1,5 +1,5 @@
+import type { Info1D, NMRRange, NMRSignal1D } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
-import type { Info1D, NMRRange, NMRSignal1D } from 'nmr-processing';
 import {
   rangesToXY,
   signalsJoin,

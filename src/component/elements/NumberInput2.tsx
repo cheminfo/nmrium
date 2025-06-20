@@ -42,7 +42,7 @@ function useNumberInput(props: UseInputProps) {
     checkValue,
   } = props;
   const [internalValue, setValue] = useState<number | string>();
-  const localRef = useRef<HTMLInputElement>();
+  const localRef = useRef<HTMLInputElement>(null);
   const innerRef = useCombinedRefs([ref, localRef]);
   const value = debounceTime ? internalValue : externalValue;
   const [isDebounced, setDebouncedStatus] = useState<boolean>(false);

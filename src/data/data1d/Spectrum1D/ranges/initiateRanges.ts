@@ -1,6 +1,6 @@
+import type { Ranges } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import merge from 'lodash/merge.js';
-import type { Ranges } from 'nmr-processing';
 import { mapRanges } from 'nmr-processing';
 
 export function initiateRanges(

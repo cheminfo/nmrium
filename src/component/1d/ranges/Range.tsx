@@ -1,4 +1,4 @@
-import type { Range as RangeType } from 'nmr-processing';
+import type { Range as RangeType } from '@zakodium/nmr-types';
 import { useRef } from 'react';
 import { LuLink, LuUnlink } from 'react-icons/lu';
 import { PiTextTBold, PiTextTSlashBold } from 'react-icons/pi';

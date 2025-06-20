@@ -1,4 +1,4 @@
-import type { Range } from 'nmr-processing';
+import type { Range } from '@zakodium/nmr-types';
 import { useRef } from 'react';
 
 import { FieldEdition } from '../../1d-2d/FieldEdition.js';

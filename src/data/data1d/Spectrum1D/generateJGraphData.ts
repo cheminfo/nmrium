@@ -1,4 +1,4 @@
-import type { Jcoupling, Range, Signal1D } from 'nmr-processing';
+import type { Jcoupling, Range, Signal1D } from '@zakodium/nmr-types';
 
 /**
  * Links object that use coupling as key and value is an array of objects {id:signal id ,x:signal delta,y:coupling}

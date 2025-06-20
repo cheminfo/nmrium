@@ -1,4 +1,4 @@
-import type { Zone } from 'nmr-processing';
+import type { Zone } from '@zakodium/nmr-types';
 
 import { DATUM_KIND } from '../constants/signalsKinds.js';
 

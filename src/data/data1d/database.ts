@@ -1,4 +1,5 @@
-import type { DatabaseNMREntry, Jcoupling } from 'nmr-processing';
+import type { Jcoupling } from '@zakodium/nmr-types';
+import type { DatabaseNMREntry } from 'nmr-processing';
 import { carbonImpurities, protonImpurities } from 'nmr-processing';
 import * as OCL from 'openchemlib';
 import { MoleculesDB } from 'openchemlib-utils';

@@ -1,5 +1,5 @@
+import type { Range, Signal1D } from '@zakodium/nmr-types';
 import omit from 'lodash/omit.js';
-import type { Range, Signal1D } from 'nmr-processing';
 
 import { DATUM_KIND } from '../constants/signalsKinds.js';
 

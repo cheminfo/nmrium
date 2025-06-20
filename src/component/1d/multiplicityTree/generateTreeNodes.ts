@@ -1,5 +1,5 @@
+import type { Jcoupling, Range } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
-import type { Jcoupling, Range } from 'nmr-processing';
 
 import {
   getMultiplicityNumber,

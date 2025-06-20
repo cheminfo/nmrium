@@ -4,12 +4,12 @@ import { Suggest } from '@blueprintjs/select';
 import debounce from 'lodash/debounce.js';
 import type { ForwardedRef } from 'react';
 import {
-  useEffect,
-  useRef,
-  useMemo,
-  useState,
-  isValidElement,
   forwardRef,
+  isValidElement,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
 } from 'react';
 
 import useCombinedRefs from '../hooks/useCombinedRefs.js';
@@ -47,7 +47,7 @@ function useInput(props: UseInputProps) {
   } = props;
   const [internalValue, setValue] = useState<string>();
   const value = debounceTime ? internalValue : externalValue;
-  const localRef = useRef<HTMLInputElement>();
+  const localRef = useRef<HTMLInputElement>(null);
   const innerRef = useCombinedRefs([ref, localRef]);
   const [isDebounced, setDebouncedStatus] = useState<boolean>(false);
 

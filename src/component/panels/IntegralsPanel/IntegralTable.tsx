@@ -1,5 +1,5 @@
+import type { Info1D, Integral } from '@zakodium/nmr-types';
 import dlv from 'dlv';
-import type { Info1D, Integral } from 'nmr-processing';
 import { checkIntegralKind } from 'nmr-processing';
 import { memo, useCallback, useMemo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';

@@ -1,7 +1,7 @@
 import { Button, DialogFooter } from '@blueprintjs/core';
 import { yupResolver } from '@hookform/resolvers/yup';
+import type { Signal2D } from '@zakodium/nmr-types';
 import type { FromTo } from 'cheminfo-types';
-import type { Signal2D } from 'nmr-processing';
 import { FormProvider, useForm } from 'react-hook-form';
 import { FaSearchPlus } from 'react-icons/fa';
 import * as Yup from 'yup';

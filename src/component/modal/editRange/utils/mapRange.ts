@@ -1,4 +1,4 @@
-import type { Range } from 'nmr-processing';
+import type { Range } from '@zakodium/nmr-types';
 
 import { couplingsToMultiplicity } from './couplingsToMultiplicity.js';
 import { mapCouplings } from './mapCouplings.js';

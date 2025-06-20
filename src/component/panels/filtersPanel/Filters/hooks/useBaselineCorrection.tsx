@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import type { BaselineCorrectionOptions } from 'nmr-processing';
+import type { BaselineCorrectionOptions } from '@zakodium/nmr-types';
 import { useCallback, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelect } from 'react-science/ui';

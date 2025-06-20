@@ -1,4 +1,4 @@
-import type { Range } from 'nmr-processing';
+import type { Range } from '@zakodium/nmr-types';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { useTopicMolecule } from '../../context/TopicMoleculeContext.js';
