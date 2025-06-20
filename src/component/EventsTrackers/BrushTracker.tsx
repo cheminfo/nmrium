@@ -349,10 +349,23 @@ export function BrushTracker(options: BrushTrackerProps) {
     }
   }, [onBrush, onBrushEnd, state]);
 
+  function handleStopBrush(event: React.KeyboardEvent) {
+    const isEscapePressed = event.key === 'Escape';
+    const isBrushing = state.step === 'brushing';
+    if (!isEscapePressed || !isBrushing) return;
+
+    event.stopPropagation();
+
+    dispatch({
+      type: 'DONE',
+    });
+  }
+
   return (
     <BrushDetectionOptionsContext.Provider value={brushDetectionOptions}>
       <BrushContext.Provider value={state}>
         <div
+          tabIndex={0}
           onClick={handleClick}
           onDoubleClick={handleDoubleClick}
           onContextMenu={(e) => {
@@ -364,6 +377,7 @@ export function BrushTracker(options: BrushTrackerProps) {
           style={{ ...style, touchAction: 'none' }}
           onPointerDown={pointerDownHandler}
           onWheel={handleMouseWheel}
+          onKeyDown={handleStopBrush}
           onMouseEnter={() => {
             // disable page scrolling once the mouse over the Displayer
             window.addEventListener('wheel', stopPageScrolling, {
