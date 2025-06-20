@@ -1,12 +1,12 @@
-import type { Range } from 'nmr-processing';
-import type { MouseEvent, CSSProperties } from 'react';
+import type { Range } from '@zakodium/nmr-types';
+import type { CSSProperties, MouseEvent } from 'react';
 import {
   createContext,
-  useReducer,
-  useMemo,
-  useContext,
   useCallback,
+  useContext,
   useEffect,
+  useMemo,
+  useReducer,
 } from 'react';
 
 import type { ExclusionZone } from '../../data/types/data1d/ExclusionZone.js';

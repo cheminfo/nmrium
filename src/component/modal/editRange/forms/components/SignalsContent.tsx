@@ -1,5 +1,5 @@
 import { Tab, Tabs } from '@blueprintjs/core';
-import type { Range } from 'nmr-processing';
+import type { Range } from '@zakodium/nmr-types';
 import {
   createContext,
   memo,

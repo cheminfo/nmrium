@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
+import type { Range } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
-import type { Range } from 'nmr-processing';
 import { useRef } from 'react';
 import { LuLink, LuUnlink } from 'react-icons/lu';
 import { PiTextTBold, PiTextTSlashBold } from 'react-icons/pi';
@@ -17,15 +17,15 @@ import {
   ShareDataProvider,
   useShareData,
 } from '../../context/ShareDataContext.js';
-import { ActionsButtonsPopover } from '../../elements/ActionsButtonsPopover.js';
 import type { ActionsButtonsPopoverProps } from '../../elements/ActionsButtonsPopover.js';
+import { ActionsButtonsPopover } from '../../elements/ActionsButtonsPopover.js';
 import { HighlightEventSource, useHighlight } from '../../highlight/index.js';
 import { useCanvasContext } from '../../hooks/useCanvasContext.js';
 import { useTriggerNewAssignmentLabel } from '../../hooks/useTriggerNewAssignmentLabel.js';
 import { stackOverlappingLabelsArray } from '../../utility/stackOverlappingLabels.js';
 import { useTracesSpectra } from '../useTracesSpectra.js';
-import { extractSpectrumSignals } from '../utilities/extractSpectrumSignals.js';
 import type { ExtractedSignal } from '../utilities/extractSpectrumSignals.js';
+import { extractSpectrumSignals } from '../utilities/extractSpectrumSignals.js';
 import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 
 const Rect = styled.rect<{ isActive: boolean }>`

@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import type { ReactElement } from 'react';
-import { isValidElement, useMemo, Children, memo } from 'react';
+import { Children, isValidElement, memo, useMemo } from 'react';
 
 import type { TabEvents, TabProps } from './Tab.js';
 import Tab from './Tab.js';
@@ -114,6 +114,8 @@ function Tabs({
     const { tabid } = child.props;
 
     if (tabid === activeTab) {
+      // TODO: avoid this by not implementing a custom tabs component.
+      // eslint-disable-next-line react-hooks/react-compiler
       contentChild = child.props.children;
     }
 

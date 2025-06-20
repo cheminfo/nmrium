@@ -1,4 +1,4 @@
-import type { Signal1D } from 'nmr-processing';
+import type { Signal1D } from '@zakodium/nmr-types';
 
 import { useScaleChecked } from '../../context/ScaleContext.js';
 

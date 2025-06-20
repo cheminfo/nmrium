@@ -1,5 +1,5 @@
+import type { NMRPeak1D, Peak1D, Range } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
-import type { NMRPeak1D, Peak1D, Range } from 'nmr-processing';
 import { memo, useMemo } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';

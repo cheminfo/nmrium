@@ -1,4 +1,4 @@
-import type { Info1D } from 'nmr-processing';
+import type { Info1D } from '@zakodium/nmr-types';
 import { checkMultiplicity } from 'nmr-processing';
 
 import { formatNumber } from '../../../utility/formatNumber.js';

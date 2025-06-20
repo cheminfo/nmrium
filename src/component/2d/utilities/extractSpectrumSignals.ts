@@ -1,5 +1,5 @@
+import type { Range } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
-import type { Range } from 'nmr-processing';
 
 import { SIGNAL_INCLUDED_KINDS } from '../../../data/constants/signalsKinds.js';
 

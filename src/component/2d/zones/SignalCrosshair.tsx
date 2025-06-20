@@ -1,4 +1,4 @@
-import type { Signal2D } from 'nmr-processing';
+import type { Signal2D } from '@zakodium/nmr-types';
 import { useMemo } from 'react';
 
 import { buildID } from '../../../data/utilities/Concatenation.js';

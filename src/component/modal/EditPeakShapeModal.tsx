@@ -1,6 +1,6 @@
 import { Dialog, DialogFooter } from '@blueprintjs/core';
 import { yupResolver } from '@hookform/resolvers/yup';
-import type { Peak1D } from 'nmr-processing';
+import type { Peak1D } from '@zakodium/nmr-types';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
@@ -18,7 +18,12 @@ import { formatNumber } from '../utility/formatNumber.js';
 
 type Shape = NonNullable<Peak1D['shape']>;
 
-type Kind = 'gaussian' | 'lorentzian' | 'pseudoVoigt' | 'generalizedLorentzian';
+type Kind =
+  | 'gaussian'
+  | 'lorentzian'
+  | 'pseudoVoigt'
+  | 'generalizedLorentzian'
+  | 'lorentzianDispersive';
 
 function getKindDefaultValues(kind: Kind) {
   return {

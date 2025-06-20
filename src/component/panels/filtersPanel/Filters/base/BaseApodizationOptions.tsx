@@ -1,5 +1,5 @@
 import { Switch } from '@blueprintjs/core';
-import type { Apodization1DOptions } from 'nmr-processing';
+import type { Apodization1DOptions } from '@zakodium/nmr-types';
 import type { ReactNode } from 'react';
 import { FormProvider, useFormContext } from 'react-hook-form';
 import * as Yup from 'yup';
@@ -11,10 +11,10 @@ import { ReadOnly } from '../../../../elements/ReadOnly.js';
 import { Sections } from '../../../../elements/Sections.js';
 import { FilterActionButtons } from '../FilterActionButtons.js';
 import { HeaderContainer, StickyHeader } from '../InnerFilterHeader.js';
-import { useApodization } from '../hooks/useApodization.js';
 import type { ApodizationFilterEntry } from '../hooks/useApodization.js';
-import { formLabelStyle } from '../index.js';
+import { useApodization } from '../hooks/useApodization.js';
 import type { BaseFilterOptionsPanelProps } from '../index.js';
+import { formLabelStyle } from '../index.js';
 
 const advanceValidationSchema = Yup.object().shape({
   options: Yup.object().shape({

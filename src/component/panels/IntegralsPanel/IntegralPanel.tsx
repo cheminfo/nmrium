@@ -1,6 +1,6 @@
+import type { Info1D, Integrals } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { SvgNmrIntegrate } from 'cheminfo-font';
-import type { Info1D, Integrals } from 'nmr-processing';
 import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { ImLink } from 'react-icons/im';
 

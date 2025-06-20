@@ -1,3 +1,4 @@
+import type { Info1D, Ranges } from '@zakodium/nmr-types';
 import type { RangesViewState } from '@zakodium/nmrium-core';
 import {
   SvgNmrIntegrate,
@@ -5,7 +6,6 @@ import {
   SvgNmrPeaksTopLabels,
 } from 'cheminfo-font';
 import fileSaver from 'file-saver';
-import type { Info1D, Ranges } from 'nmr-processing';
 import { rangesToTSV } from 'nmr-processing';
 import {
   FaChartBar,

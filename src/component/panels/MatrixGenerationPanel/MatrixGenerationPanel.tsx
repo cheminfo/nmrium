@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
+import type { MatrixOptions } from '@zakodium/nmr-types';
 import { SvgNmrMultipleAnalysis } from 'cheminfo-font';
-import type { MatrixOptions } from 'nmr-processing';
 import { Filters1D } from 'nmr-processing';
 import { useCallback, useMemo } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -59,9 +59,9 @@ const labelStyle: LabelStyle = {
 export const DEFAULT_MATRIX_FILTERS: MatrixFilter[] = getMatrixFilters();
 
 function getMatrixOptions(
-  options: MatrixOptions,
+  options: MatrixOptions<object>,
   range: { from: number; to: number },
-): MatrixOptions {
+): MatrixOptions<object> {
   const {
     range: { from, to },
     ...other
@@ -82,7 +82,7 @@ export const GroupPanelStyle: GroupPaneStyle = {
   header: { color: 'black', fontWeight: 'bolder' },
 };
 
-export function useHasSignalProcessingFilter(): MatrixOptions | null {
+export function useHasSignalProcessingFilter(): MatrixOptions<object> | null {
   const spectra = useSpectraByActiveNucleus();
 
   if (!spectra) return null;
@@ -333,7 +333,7 @@ function ExclusionZonesGroupHeaderContent() {
 interface FooterActionsButtonsProps {
   onClickApply: () => void;
   onClickRemove: () => void;
-  matrixOptions: MatrixOptions;
+  matrixOptions: MatrixOptions<object>;
 }
 
 function FooterActionsButtons(props: FooterActionsButtonsProps) {

@@ -134,8 +134,6 @@ export function SVGTable<T>(props: SVGTableProps<T>) {
 
   const { width, columns } = mapColumns(externalColumns);
 
-  let yOffset = rowHeight;
-
   const tableOptions = useMemo(() => {
     return { rowHeight };
   }, [rowHeight]);
@@ -172,11 +170,11 @@ export function SVGTable<T>(props: SVGTableProps<T>) {
         })}
 
         {data.map((row, rowIndex) => {
-          const currentY = yOffset;
-          yOffset += rowHeight;
-
           return (
-            <g key={rowIndex} transform={`translate(0, ${currentY})`}>
+            <g
+              key={rowIndex}
+              transform={`translate(0, ${rowHeight * (rowIndex + 1)})`}
+            >
               {columns.map((col) => {
                 const {
                   cellBoxProps,

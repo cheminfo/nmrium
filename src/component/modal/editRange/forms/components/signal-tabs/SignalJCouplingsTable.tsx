@@ -1,6 +1,6 @@
 import { Button, Callout, Classes } from '@blueprintjs/core';
+import type { Jcoupling, Peak1D } from '@zakodium/nmr-types';
 import dlv from 'dlv';
-import type { Jcoupling, Peak1D } from 'nmr-processing';
 import type { CSSProperties } from 'react';
 import { useCallback, useMemo, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';

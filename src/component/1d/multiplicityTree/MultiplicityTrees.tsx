@@ -1,5 +1,5 @@
+import type { Ranges as RangesProps } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
-import type { Ranges as RangesProps } from 'nmr-processing';
 import { memo } from 'react';
 
 import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';

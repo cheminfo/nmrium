@@ -1,4 +1,4 @@
-import type { BaselineCorrectionZone } from 'nmr-processing';
+import type { BaselineCorrectionZone } from '@zakodium/nmr-types';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';

@@ -1,4 +1,4 @@
-import type { Jcoupling } from 'nmr-processing';
+import type { Jcoupling } from '@zakodium/nmr-types';
 
 import { hasCouplingConstant } from '../../../panels/extra/utilities/MultiplicityUtilities.js';
 

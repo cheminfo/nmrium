@@ -1,9 +1,9 @@
 import { Button, DialogFooter } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
+import type { Jcoupling, Range, Signal1D } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { splitPatterns } from 'nmr-processing';
-import type { Jcoupling, Range, Signal1D } from 'nmr-processing';
 import { useCallback, useMemo, useRef } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { FaSearchPlus } from 'react-icons/fa';

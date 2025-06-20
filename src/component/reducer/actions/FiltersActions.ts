@@ -1,19 +1,18 @@
+import type {
+  Apodization1DOptions,
+  BaselineCorrectionOptions,
+  Filter1DEntry,
+  Filter1DOptions,
+  Filter2DEntry,
+  Filter2DOptions,
+  MatrixOptions,
+} from '@zakodium/nmr-types';
 import type { Spectrum, Spectrum1D, Spectrum2D } from '@zakodium/nmrium-core';
 import type { NmrData1D, NmrData2DFt } from 'cheminfo-types';
 import type { Draft } from 'immer';
 import { current } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import type {
-  Apodization1DOptions,
-  BaselineCorrectionOptions,
-  Filter1D,
-  Filter1DEntry,
-  Filter1DOptions,
-  Filter2DEntry,
-  Filter2DOptions,
-  FilterDomainUpdateRules,
-  MatrixOptions,
-} from 'nmr-processing';
+import type { Filter1D, FilterDomainUpdateRules } from 'nmr-processing';
 import {
   Filters1D,
   Filters1DManager,
@@ -203,7 +202,7 @@ type DeleteExclusionZoneAction = ActionType<
 >;
 type ApplySignalProcessingAction = ActionType<
   'APPLY_SIGNAL_PROCESSING_FILTER',
-  { options: MatrixOptions }
+  { options: MatrixOptions<object> }
 >;
 type AddPhaseCorrectionTraceAction = ActionType<
   'ADD_PHASE_CORRECTION_TRACE',
@@ -1721,7 +1720,7 @@ function handleSignalProcessingFilter(
       [
         {
           name: 'signalProcessing',
-          value: value as Required<MatrixOptions>,
+          value,
         },
       ],
       { forceReapply: true },

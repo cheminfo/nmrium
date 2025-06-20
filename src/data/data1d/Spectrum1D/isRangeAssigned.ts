@@ -1,4 +1,4 @@
-import type { Range, Signal1D } from 'nmr-processing';
+import type { Range, Signal1D } from '@zakodium/nmr-types';
 
 function isAssigned(object: Range | Signal1D) {
   return (

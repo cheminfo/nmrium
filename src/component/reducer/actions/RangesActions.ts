@@ -1,3 +1,4 @@
+import type { Range, Signal1D } from '@zakodium/nmr-types';
 import type {
   BoundingBox,
   RangesViewState,
@@ -8,7 +9,6 @@ import type { Draft } from 'immer';
 import { original } from 'immer';
 import cloneDeep from 'lodash/cloneDeep.js';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import type { Range, Signal1D } from 'nmr-processing';
 import { Filters1DManager } from 'nmr-processing';
 
 import {

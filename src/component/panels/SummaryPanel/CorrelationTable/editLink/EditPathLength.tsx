@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
+import type { Signal2D } from '@zakodium/nmr-types';
 import type { FromTo } from 'cheminfo-types';
-import type { Signal2D } from 'nmr-processing';
 import { useCallback, useEffect, useState } from 'react';
 
 import DefaultPathLengths from '../../../../../data/constants/DefaultPathLengths.js';

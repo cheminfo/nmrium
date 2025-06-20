@@ -1,11 +1,11 @@
 import debounce from 'lodash/debounce.js';
 import type {
+  ChangeEvent,
   CSSProperties,
   ForwardedRef,
   ReactElement,
-  ChangeEvent,
 } from 'react';
-import { useEffect, useRef, forwardRef, useMemo, useState } from 'react';
+import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 
 import useCombinedRefs from '../hooks/useCombinedRefs.js';
 
@@ -87,7 +87,7 @@ const Input = forwardRef(
     const [internalValue, setInternalValue] =
       useState<React.InputHTMLAttributes<HTMLInputElement>['value']>();
     const value = debounceTime ? internalValue : externalValue;
-    const localRef = useRef<HTMLInputElement>();
+    const localRef = useRef<HTMLInputElement>(null);
     const combinedRef = useCombinedRefs([ref, localRef]);
     const [isDebounced, setDebouncedStatus] = useState<boolean>(false);
 

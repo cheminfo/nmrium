@@ -1,3 +1,4 @@
+import type { Filter2DEntry, Signal2D, Zone } from '@zakodium/nmr-types';
 import type {
   Spectrum,
   Spectrum2D,
@@ -8,7 +9,6 @@ import type { Draft } from 'immer';
 import { original } from 'immer';
 import lodashCloneDeep from 'lodash/cloneDeep.js';
 import { setPathLength } from 'nmr-correlation';
-import type { Filter2DEntry, Signal2D, Zone } from 'nmr-processing';
 import { Filters2DManager } from 'nmr-processing';
 
 import {

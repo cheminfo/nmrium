@@ -1,12 +1,12 @@
-import type { Zone as ZoneType } from 'nmr-processing';
+import type { Zone as ZoneType } from '@zakodium/nmr-types';
 import { useEffect, useState } from 'react';
 import { PiTextTBold } from 'react-icons/pi';
 
 import { checkZoneKind } from '../../../data/utilities/ZoneUtilities.js';
 import { useAssignment } from '../../assignment/AssignmentsContext.js';
 import { useShareData } from '../../context/ShareDataContext.js';
-import { ActionsButtonsPopover } from '../../elements/ActionsButtonsPopover.js';
 import type { ActionsButtonsPopoverProps } from '../../elements/ActionsButtonsPopover.js';
+import { ActionsButtonsPopover } from '../../elements/ActionsButtonsPopover.js';
 import { HighlightEventSource, useHighlight } from '../../highlight/index.js';
 import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState.js';
 import { useScale2DX, useScale2DY } from '../utilities/scale.js';

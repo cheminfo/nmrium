@@ -1,5 +1,5 @@
 import debounce from 'lodash/debounce.js';
-import { useCallback, useEffect, useReducer, useState } from 'react';
+import { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import { ObjectInspector } from 'react-inspector';
 import { DropZone } from 'react-science/ui';
 
@@ -35,13 +35,13 @@ function Inspector(data: any) {
     const result = searchDeep(data, key);
     seData(key ? result : data);
   }, [data, key]);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const handleSearch = useCallback(
-    debounce((e) => {
-      const key = e.target.value;
-      setKey(key);
-    }, 500),
-    [data],
+  const handleSearch = useMemo(
+    () =>
+      debounce((e) => {
+        const key = e.target.value;
+        setKey(key);
+      }, 500),
+    [],
   );
 
   return (

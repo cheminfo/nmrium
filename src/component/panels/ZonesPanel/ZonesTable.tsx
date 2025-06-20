@@ -1,9 +1,9 @@
 import styled from '@emotion/styled';
+import type { Info2D } from '@zakodium/nmr-types';
 import type {
   Zones1DNucleusPreferences,
   Zones2DNucleusPreferences,
 } from '@zakodium/nmrium-core';
-import type { Info2D } from 'nmr-processing';
 import type { ReactNode } from 'react';
 import { FaLink } from 'react-icons/fa';
 

@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
+import type { Zone, Zones as ZonesType } from '@zakodium/nmr-types';
 import type { Spectrum2D } from '@zakodium/nmrium-core';
-import type { Zone, Zones as ZonesType } from 'nmr-processing';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { PiTextTSlash } from 'react-icons/pi';
 
@@ -16,10 +16,10 @@ import useDraggable from '../../elements/draggable/useDraggable.js';
 import { useHighlight } from '../../highlight/index.js';
 import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
-import { getTracesSpectra } from '../useTracesSpectra.js';
 import type { GetTracesSpectraOptions } from '../useTracesSpectra.js';
-import { extractSpectrumSignals } from '../utilities/extractSpectrumSignals.js';
+import { getTracesSpectra } from '../useTracesSpectra.js';
 import type { BaseSignal } from '../utilities/extractSpectrumSignals.js';
+import { extractSpectrumSignals } from '../utilities/extractSpectrumSignals.js';
 import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 
 interface ZonesInnerProps {

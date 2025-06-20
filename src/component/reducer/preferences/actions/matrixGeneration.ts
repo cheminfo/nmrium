@@ -1,6 +1,6 @@
+import type { MatrixOptions } from '@zakodium/nmr-types';
 import type { MatrixGenerationOptions } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
-import type { MatrixOptions } from 'nmr-processing';
 
 import type { ZoomOptions } from '../../../EventsTrackers/BrushTracker.js';
 import type { FilterType } from '../../../utility/filterType.js';
@@ -12,7 +12,7 @@ import { getActiveWorkspace } from '../utilities/getActiveWorkspace.js';
 
 type setMatrixGenerationOptionsAction = ActionType<
   'SET_MATRIX_GENERATION_OPTIONS',
-  { nucleus: string; options: MatrixOptions }
+  { nucleus: string; options: MatrixOptions<object> }
 >;
 type addMatrixGenerationExclusionZoneAction = ActionType<
   'ADD_MATRIX_GENERATION_EXCLUSION_ZONE',

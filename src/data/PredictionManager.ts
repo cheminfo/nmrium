@@ -1,3 +1,4 @@
+import type { Signal2D, Zone } from '@zakodium/nmr-types';
 import type { Spectrum } from '@zakodium/nmrium-core';
 import type { Logger } from 'cheminfo-types';
 import { xMinMaxValues } from 'ml-spectra-processing';
@@ -7,8 +8,6 @@ import type {
   Prediction2D,
   PredictionBase1D,
   PredictionBase2D,
-  Signal2D,
-  Zone,
 } from 'nmr-processing';
 import {
   getFrequency,

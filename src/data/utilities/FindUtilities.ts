@@ -1,5 +1,5 @@
+import type { Range, Signal1D, Signal2D, Zone } from '@zakodium/nmr-types';
 import type { Spectrum, Spectrum1D, Spectrum2D } from '@zakodium/nmrium-core';
-import type { Range, Signal1D, Signal2D, Zone } from 'nmr-processing';
 
 function findSpectrum(
   spectraData: Spectrum[],

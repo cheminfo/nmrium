@@ -1,5 +1,5 @@
+import type { Integral } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
-import type { Integral } from 'nmr-processing';
 
 export function changeIntegralsRelative(
   spectrum: Spectrum1D,
