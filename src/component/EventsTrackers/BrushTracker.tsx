@@ -124,10 +124,13 @@ interface BrushTrackerProps {
   onClick?: OnClick;
   noPropagation?: boolean;
   brushDetectionOptions?: BaseDetectBrushingOptions;
+  clickTriggerMode?: 'native' | 'debounced';
 }
 
-function getMouseXY(event: React.MouseEvent) {
-  const boundingRect = event.currentTarget.getBoundingClientRect();
+function getMouseXY(event: React.MouseEvent, currentTarget?: Element) {
+  const boundingRect = (
+    currentTarget ?? event.currentTarget
+  ).getBoundingClientRect();
   const x = event.clientX - boundingRect.x;
   const y = event.clientY - boundingRect.y;
   return { x, y };
@@ -145,27 +148,56 @@ export function BrushTracker(options: BrushTrackerProps) {
     onClick = () => null,
     noPropagation,
     brushDetectionOptions = { thresholdFormat: 'fixed' },
+    clickTriggerMode = 'native',
   } = options;
 
   const [state, dispatch] = useReducer<
     Reducer<BrushTrackerState, BrushTrackerAction>
   >(reducer, initialState);
-
+  const clickCountRef = useRef(0);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastPointRef = useRef<number>(0);
   const isDraggingRef = useRef(false);
   const boundingRectRef = useRef<DOMRect | null>(null);
   const startPositionRef = useRef<Position>({ x: 0, y: 0 });
   const lastRef = useRef<Position>({ x: 0, y: 0 });
 
-  function handleClick(event: React.MouseEvent) {
-    if (isDraggingRef.current) return;
+  const handleClickWithDebounce = useCallback(
+    (event: React.MouseEvent, currentTarget: Element) => {
+      const { x, y } = getMouseXY(event, currentTarget);
 
+      // Clear timeout
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+
+      // Count clicks
+      clickCountRef.current += 1;
+
+      // Set a timeout to distinguish between single and double clicks
+      timeoutRef.current = setTimeout(() => {
+        if (clickCountRef.current === 1) {
+          onClick({ ...event, x, y });
+        } else if (clickCountRef.current === 2) {
+          onDoubleClick({ ...event, x, y });
+        }
+
+        // Reset the click count
+        clickCountRef.current = 0;
+      }, 200);
+    },
+    [onClick, onDoubleClick],
+  );
+
+  function handleClick(event: React.MouseEvent) {
+    if (isDraggingRef.current || clickTriggerMode !== 'native') return;
     const { x, y } = getMouseXY(event);
     onClick({ ...event, x, y });
   }
 
   function handleDoubleClick(event: React.MouseEvent) {
-    if (isDraggingRef.current) return;
+    if (isDraggingRef.current || clickTriggerMode !== 'native') return;
 
     const { x, y } = getMouseXY(event);
     onDoubleClick({ ...event, x, y });
@@ -173,7 +205,8 @@ export function BrushTracker(options: BrushTrackerProps) {
 
   const pointerDownHandler = useCallback(
     (event: React.PointerEvent) => {
-      // const targetElement = event.currentTarget;
+      event.persist();
+      const currentTarget = event.currentTarget;
       isDraggingRef.current = false; // Reset dragging flag
 
       //check that the right or left mouse button pressed
@@ -250,6 +283,13 @@ export function BrushTracker(options: BrushTrackerProps) {
           dispatch({
             type: 'UP',
           });
+        } else {
+          dispatch({
+            type: 'DONE',
+          });
+          if (clickTriggerMode === 'debounced') {
+            handleClickWithDebounce(event, currentTarget);
+          }
         }
 
         globalThis.removeEventListener('pointermove', moveCallback);
@@ -261,7 +301,7 @@ export function BrushTracker(options: BrushTrackerProps) {
 
       return false;
     },
-    [noPropagation, onZoom],
+    [clickTriggerMode, handleClickWithDebounce, noPropagation, onZoom],
   );
 
   const handleMouseWheel = useCallback(

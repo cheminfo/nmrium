@@ -26,6 +26,8 @@ import {
 import type { Layout } from './utilities/DimensionLayout.js';
 import { useScale2DX, useScale2DY } from './utilities/scale.js';
 
+const clickDebounceTools = new Set([options.phaseCorrectionTwoDimensions.id]);
+
 const brushDetectionOptions: BaseDetectBrushingOptions = {
   thresholdFormat: 'fixed',
   thresholdAxis: 'both',
@@ -62,7 +64,7 @@ export function BrushTracker2D({ children }) {
     width,
     height,
   } = state;
-
+  const isClickDebounced = clickDebounceTools.has(selectedTool);
   const dispatch = useDispatch();
   const brushStartRef = useRef<{ x: number; y: number } | null>(null);
   const { getModifiersKey, primaryKeyIdentifier } = useMapKeyModifiers();
@@ -174,7 +176,7 @@ export function BrushTracker2D({ children }) {
     (event) => {
       const keyModifiers = getModifiersKey(event as unknown as MouseEvent);
 
-      if (keyModifiers === primaryKeyIdentifier) return;
+      if (primaryKeyIdentifier === keyModifiers && !isClickDebounced) return;
 
       const { x: startX, y: startY } = event;
       const trackID = getLayoutID(DIMENSION, { startX, startY });
@@ -182,7 +184,13 @@ export function BrushTracker2D({ children }) {
         dispatch({ type: 'FULL_ZOOM_OUT', payload: { trackID } });
       }
     },
-    [DIMENSION, dispatch, getModifiersKey, primaryKeyIdentifier],
+    [
+      DIMENSION,
+      dispatch,
+      getModifiersKey,
+      isClickDebounced,
+      primaryKeyIdentifier,
+    ],
   );
 
   const handleZoom: OnZoom = (options) => {
@@ -239,6 +247,7 @@ export function BrushTracker2D({ children }) {
 
   return (
     <BrushTracker
+      clickTriggerMode={isClickDebounced ? 'debounced' : 'native'}
       onBrush={handleBrush}
       onBrushEnd={handleBrushEnd}
       onDoubleClick={handleOnDoubleClick}
