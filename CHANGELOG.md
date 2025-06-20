@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.65.0](https://github.com/cheminfo/nmrium/compare/v0.64.0...v0.65.0) (2025-06-20)
+
+
+### Features
+
+* add 'clickTriggerMode' to support native or debounced click handling ([c7f6ef6](https://github.com/cheminfo/nmrium/commit/c7f6ef623c05729cff534c32ad58a3adab1c0cd8))
+* cancel brushing on 'Escape' key press ([cedbfad](https://github.com/cheminfo/nmrium/commit/cedbfad395614b22901311302caad67c54612255))
+* copy as smiles ([906c12d](https://github.com/cheminfo/nmrium/commit/906c12d1f11141d7f4c94e0e8fc4d11eb5060568))
+* improve brush selection ([#3588](https://github.com/cheminfo/nmrium/issues/3588)) ([bc2faec](https://github.com/cheminfo/nmrium/commit/bc2faeca80605513d003136572fc07d959053f45))
+* improve multiple spectra analysis formula calculation  ([#3590](https://github.com/cheminfo/nmrium/issues/3590)) ([b740969](https://github.com/cheminfo/nmrium/commit/b7409694758e04c6af2b49ac1fe40ff45443f13f))
+* remove related insets when a spectrum is deleted ([87b20fd](https://github.com/cheminfo/nmrium/commit/87b20fd522314760a60ba618f6624fe2bf0299d0)), closes [#3552](https://github.com/cheminfo/nmrium/issues/3552)
+
+
+### Bug Fixes
+
+* align 1D spectra to the same top when loading ([#3556](https://github.com/cheminfo/nmrium/issues/3556)) ([7cd1237](https://github.com/cheminfo/nmrium/commit/7cd123708e62d2e4a4d7dabd31d1c5d32b4067fa))
+* avoid large delta on first CTRL + bidirectional zoom ([7a9196d](https://github.com/cheminfo/nmrium/commit/7a9196d19ac2df796814f9535697f19005d40661))
+* clone matrix options before dispatch ([#3570](https://github.com/cheminfo/nmrium/issues/3570)) ([7dcc0ef](https://github.com/cheminfo/nmrium/commit/7dcc0effec7a0c024261432b15a906b4ee299112))
+* validate simulation form correctly and debounce value change ([c227474](https://github.com/cheminfo/nmrium/commit/c227474a0d5a8371816c27c084015f0e46fa6256)), closes [#3555](https://github.com/cheminfo/nmrium/issues/3555) [#3554](https://github.com/cheminfo/nmrium/issues/3554)
+
 ## [0.64.0](https://github.com/cheminfo/nmrium/compare/v0.63.2...v0.64.0) (2025-05-31)
 
 
