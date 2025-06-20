@@ -36,6 +36,8 @@ import Events from '../utility/Events.js';
 
 import { useInsetOptions } from './inset/InsetProvider.js';
 
+const clickDebounceTools = new Set([options.phaseCorrection.id]);
+
 const brushDetectionOptions: BaseDetectBrushingOptions = {
   thresholdFormat: 'fixed',
   thresholdAxis: 'y',
@@ -75,7 +77,7 @@ export function BrushTracker1D({ children }) {
     width,
     height,
   } = state;
-
+  const isClickDebounced = clickDebounceTools.has(selectedTool);
   const brushStartRef = useRef<number | null>(null);
   const spectrum = useSpectrum();
   const align = useVerticalAlign();
@@ -339,14 +341,14 @@ export function BrushTracker1D({ children }) {
   const handleOnDoubleClick = useCallback(
     (event) => {
       const keyModifiers = getModifiersKey(event as unknown as MouseEvent);
-      if (primaryKeyIdentifier === keyModifiers) return;
+      if (primaryKeyIdentifier === keyModifiers && !isClickDebounced) return;
 
       dispatch({
         type: 'FULL_ZOOM_OUT',
         payload: { zoomType: ZOOM_TYPES.BIDIRECTIONAL },
       });
     },
-    [dispatch, getModifiersKey, primaryKeyIdentifier],
+    [dispatch, getModifiersKey, isClickDebounced, primaryKeyIdentifier],
   );
 
   const handleInsetOnDoubleClick = useCallback(
@@ -514,6 +516,7 @@ export function BrushTracker1D({ children }) {
   return (
     <>
       <BrushTracker
+        clickTriggerMode={isClickDebounced ? 'debounced' : 'native'}
         onBrush={handleBrush}
         onBrushEnd={handleBrushEnd}
         onDoubleClick={handleOnDoubleClick}
