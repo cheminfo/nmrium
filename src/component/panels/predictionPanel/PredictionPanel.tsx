@@ -1,5 +1,5 @@
+import styled from '@emotion/styled';
 import { Molecule } from 'openchemlib';
-import type { CSSProperties } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 import type { CanvasEditorOnChangeMolecule } from 'react-ocl';
@@ -25,13 +25,16 @@ import PreferencesHeader from '../header/PreferencesHeader.js';
 import PredictionPreferences from './PredictionPreferences.js';
 import PredictionSimpleOptions from './PredictionSimpleOptions.js';
 
-const styles: Record<'flexColumnContainer', CSSProperties> = {
-  flexColumnContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    flex: 1,
-  },
-};
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+`;
+
+const Overflow = styled.div<{ height: number }>`
+  overflow: hidden auto;
+  height: ${({ height }) => height}px;
+`;
 
 export default function PredictionPanel() {
   const {
@@ -164,69 +167,66 @@ export default function PredictionPanel() {
             <PredictionSimpleOptions />
           </MoleculePanelHeader>
 
-          <div style={styles.flexColumnContainer}>
-            <div style={{ flex: 1, minHeight: 400 }}>
-              <ResponsiveChart>
-                {({ height, width }) => {
-                  return (
-                    <NextPrev
-                      onChange={(slideIndex) => {
-                        setCurrentIndex(slideIndex);
-                        setMolfile(molecules[slideIndex].molfile);
-                      }}
-                      index={currentIndex}
-                      style={{
-                        arrowContainer: {
-                          top: '40px',
-                          padding: '0 10px 0 55px',
-                        },
-                      }}
-                    >
-                      {molecules && molecules.length > 0 ? (
-                        molecules.map(
-                          (mol: StateMoleculeExtended, molIndex) => (
-                            <div
-                              key={mol.id}
-                              style={styles.flexColumnContainer}
-                            >
-                              <MoleculeHeader
-                                currentMolecule={mol}
-                                molecules={molecules}
+          <Container>
+            <ResponsiveChart minHeight={400}>
+              {({ height, width }) => {
+                return (
+                  <NextPrev
+                    onChange={(slideIndex) => {
+                      setCurrentIndex(slideIndex);
+                      setMolfile(molecules[slideIndex].molfile);
+                    }}
+                    index={currentIndex}
+                    style={{
+                      arrowContainer: {
+                        top: '40px',
+                        padding: '0 10px 0 55px',
+                      },
+                    }}
+                  >
+                    {molecules && molecules.length > 0 ? (
+                      molecules.map((mol: StateMoleculeExtended, molIndex) => (
+                        <div key={mol.id}>
+                          <MoleculeHeader
+                            currentMolecule={mol}
+                            molecules={molecules}
+                          />
+                          <Overflow height={height}>
+                            {molIndex === currentIndex && (
+                              <CanvasMoleculeEditor
+                                width={width}
+                                inputFormat="molfile"
+                                inputValue={mol.molfile}
+                                fragment={false}
+                                onChange={changeHandler}
+                                height="80%"
                               />
-                              <div
-                                style={{
-                                  height: height - 31,
-                                }}
-                              >
-                                {molIndex === currentIndex && (
-                                  <CanvasMoleculeEditor
-                                    width={width}
-                                    inputFormat="molfile"
-                                    inputValue={mol.molfile}
-                                    fragment={false}
-                                    onChange={changeHandler}
-                                  />
-                                )}
-                              </div>
-                            </div>
-                          ),
-                        )
-                      ) : (
+                            )}
+                          </Overflow>
+                        </div>
+                      ))
+                    ) : (
+                      <Overflow height={height}>
                         <CanvasMoleculeEditor
                           inputFormat="molfile"
                           inputValue={initialMolfile}
                           width={width}
-                          height={height}
                           fragment={false}
                           onChange={changeHandler}
                         />
-                      )}
-                    </NextPrev>
-                  );
-                }}
-              </ResponsiveChart>
-            </div>
-            <div style={{ display: 'flex', padding: '5px' }}>
+                      </Overflow>
+                    )}
+                  </NextPrev>
+                );
+              }}
+            </ResponsiveChart>
+            <div
+              style={{
+                display: 'flex',
+                padding: '5px',
+                justifyContent: 'flex-end',
+              }}
+            >
               <Button.Done
                 onClick={() => predictHandler('save')}
                 disabled={!molfile}
@@ -242,7 +242,7 @@ export default function PredictionPanel() {
                 </Button.Action>
               )}
             </div>
-          </div>
+          </Container>
         </>
       )}
       {modal}
