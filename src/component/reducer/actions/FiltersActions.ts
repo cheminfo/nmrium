@@ -1038,35 +1038,40 @@ function handleCalculateApodizationFilter(
   const { livePreview, options, tempRollback } = action.payload;
 
   if (livePreview) {
-    const {
-      data: { x, re, im },
-      info,
-    } = draft.tempData[index];
-
     const datum = draft.data[index];
 
     if (!isSpectrum1D(datum)) {
       return;
     }
+    const spectrum: Spectrum1D = structuredClone(
+      current(draft).tempData[index],
+    );
 
     if (!tempRollback) {
-      const _data = { data: { x, re, im }, info } as Spectrum1D;
-
-      apodization.apply(_data, options);
-      const { im: newIm, re: newRe } = _data.data;
-
-      datum.data.im = newIm;
-      datum.data.re = newRe;
+      apodization.apply(spectrum, options);
     } else {
-      const spectrum = structuredClone(current(draft).tempData[index]);
-      Filters1DManager.applyFilters(spectrum, [
-        {
-          name: 'apodization',
-          value: action.payload.options,
-        },
-      ]);
-      draft.data[index] = spectrum;
+      for (const filter of datum.filters) {
+        const { name, value } = filter;
+
+        delete filter.error;
+
+        if (!filter.enabled) {
+          continue;
+        }
+
+        try {
+          const filterOptions = name === 'apodization' ? options : value;
+          Filters1D[name].apply(spectrum, filterOptions as any);
+        } catch (error: any) {
+          filter.error = error.message;
+        }
+      }
     }
+
+    const { im: newIm, re: newRe } = spectrum.data;
+
+    datum.data.im = newIm;
+    datum.data.re = newRe;
   } else {
     disableLivePreview(draft, apodization.name);
   }
