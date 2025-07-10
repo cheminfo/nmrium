@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.65.1](https://github.com/cheminfo/nmrium/compare/v0.65.0...v0.65.1) (2025-07-10)
+
+
+### Bug Fixes
+
+* live update filters in processed mode when editing apodization ([1267b4f](https://github.com/cheminfo/nmrium/commit/1267b4fda27042616e32a23e44d24723443604fc)), closes [#3586](https://github.com/cheminfo/nmrium/issues/3586)
+
 ## [0.65.0](https://github.com/cheminfo/nmrium/compare/v0.64.0...v0.65.0) (2025-06-20)
 
 
