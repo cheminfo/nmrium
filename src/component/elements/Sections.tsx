@@ -118,7 +118,6 @@ const SectionWrapper = styled.div<
   flex-direction: column;
   flex:none;
   flex: ${isOpen && !matchContentHeight ? (isOverflow ? '1' : isOverflow ? '1' : '1 1 1px') : 'none'};
-  border-bottom:1px transparent solid;
 `,
 );
 
@@ -528,14 +527,14 @@ function DroppableSectionWrapper(props: DroppableProps) {
   useEffect(() => {
     if (typeof onReorder !== 'function') return;
 
-    if (!ref.current) return;
+    const element = ref.current;
+
+    if (!element) return;
 
     return dropTargetForElements({
-      element: ref.current,
-      canDrop: ({ source }) => source.data?.id !== id,
+      element,
       onDrop: ({ location, source }) => {
         const { index: startIndex } = source.data;
-
         const target = location.current.dropTargets[0];
         if (!target) {
           return;

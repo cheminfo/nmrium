@@ -262,12 +262,11 @@ function FiltersInner(props: FiltersInnerProps) {
     openSection(null);
   }
 
-  function handleReorderFilters(sourceId, targetId) {
-    if (!sourceId || !targetId) {
-      return;
-    }
-
-    dispatch({ type: 'REORDER_FILTERS', payload: { sourceId, targetId } });
+  function handleReorderFilters(sourceIndex, targetIndex) {
+    dispatch({
+      type: 'REORDER_FILTERS',
+      payload: { sourceIndex, targetIndex },
+    });
   }
 
   return (
@@ -278,8 +277,10 @@ function FiltersInner(props: FiltersInnerProps) {
         const enableEdit = activeFilterID === id || filter.value === null;
         return (
           <Sections.Item
+            index={index}
             key={id}
             id={name}
+            dragLabel={getFilterLabel(name)}
             onReorder={handleReorderFilters}
             title={error || getFilterLabel(name)}
             serial={index + 1}
