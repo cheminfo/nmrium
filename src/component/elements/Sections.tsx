@@ -1,4 +1,7 @@
-import { Icon, Tag } from '@blueprintjs/core';
+import type { ElementDropTargetEventBasePayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types/adapter/element-adapter.js';
+import type { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types.js';
+import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
+import { Icon, Tag, Colors } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import type {
   CSSProperties,
@@ -15,8 +18,55 @@ import {
   useRef,
   useState,
 } from 'react';
+import { createPortal } from 'react-dom';
 
-import { draggable, dropTargetForElements } from './pdnd.cjs';
+import { assert } from '../utility/assert.js';
+
+import {
+  attachClosestEdge,
+  combine,
+  draggable,
+  dropTargetForElements,
+  extractClosestEdge,
+  getReorderDestinationIndex,
+  pointerOutsideOfPreview,
+  setCustomNativeDragPreview,
+} from './pdnd.cjs';
+
+interface DropIndicatorProps {
+  edge: Edge;
+}
+
+const DropIndicator = styled.div<DropIndicatorProps>`
+  position: absolute;
+  z-index: 3;
+  background-color: ${Colors.BLUE3};
+  height: 2px;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  ${(props) => props.edge === 'top' && 'top: -1px;'}
+  ${(props) => props.edge === 'bottom' && 'bottom: -1px;'}
+`;
+
+const Preview = styled.div`
+  padding-block: 4px;
+  padding-inline: 8px;
+  border-radius: 4px;
+  background-color: #f4f5f7;
+  max-width: 360px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+type DraggableState =
+  | { type: 'idle' }
+  | { type: 'preview'; container: HTMLElement }
+  | { type: 'dragging' };
+
+const idleState: DraggableState = { type: 'idle' };
+const draggingState: DraggableState = { type: 'dragging' };
 
 interface SelectionsContextState {
   isOverflow: boolean;
@@ -68,6 +118,7 @@ const SectionWrapper = styled.div<
   flex-direction: column;
   flex:none;
   flex: ${isOpen && !matchContentHeight ? (isOverflow ? '1' : isOverflow ? '1' : '1 1 1px') : 'none'};
+  border-bottom:1px transparent solid;
 `,
 );
 
@@ -167,14 +218,13 @@ interface BaseSectionProps {
 
 interface SectionItemProps extends BaseSectionProps {
   id?: string;
+  index?: number;
   onClick?: (id, event?: MouseEvent<HTMLDivElement>) => void;
   children?: ReactNode | ((options: { isOpen?: boolean }) => ReactNode);
   isOpen: boolean;
   sticky?: boolean;
-  onReorder?: (
-    sourceId: string | undefined,
-    targetId: string | undefined,
-  ) => void;
+  onReorder?: (sourceId: number, targetId: number) => void;
+  dragLabel?: string;
 }
 
 interface SectionProps {
@@ -220,6 +270,7 @@ function SectionBody(props: HTMLAttributes<HTMLDivElement>) {
 
 function SectionItem(props: SectionItemProps) {
   const {
+    dragLabel = props.title,
     id = props.title,
     title,
     onClick,
@@ -232,30 +283,116 @@ function SectionItem(props: SectionItemProps) {
     sticky = false,
     arrowProps = { hide: false, style: {} },
     onReorder,
+    index,
   } = props;
 
   const { isOverflow, matchContentHeight } = useSections();
 
   const wrapperRef = useRef<HTMLDivElement>(null);
   const handleRef = useRef<HTMLDivElement>(null);
+  const [state, setState] = useState<DraggableState>(idleState);
+  const [closestEdge, setClosestEdge] = useState<Edge | null>(null);
+  const isReorderActive = typeof onReorder === 'function';
 
   useEffect(() => {
-    if (!wrapperRef.current || !handleRef.current) return;
+    const dragHandle = handleRef.current;
+    const element = wrapperRef.current;
+    if (!element || !dragHandle || !isReorderActive) return;
 
-    const cleanDrag = draggable({
-      element: wrapperRef.current,
-      dragHandle: handleRef.current,
-      getInitialData: () => ({ id }),
-    });
+    const data = { id, index };
+
+    function canDrop({ source }: { source: ElementDragPayload }): boolean {
+      return source.data.id !== id;
+    }
+
+    function dragHandler({ source, self }: ElementDropTargetEventBasePayload) {
+      const isSource = source.element === dragHandle;
+      if (isSource) {
+        // eslint-disable-next-line react-you-might-not-need-an-effect/you-might-not-need-an-effect
+        setClosestEdge(null);
+        return;
+      }
+
+      const closestEdge = extractClosestEdge(self.data);
+
+      const sourceIndex = source.data.index as number;
+      assert(typeof sourceIndex === 'number', 'index is not defined');
+      const isItemBeforeSource = index === sourceIndex - 1;
+      const isItemAfterSource = index === sourceIndex + 1;
+
+      const isDropIndicatorHidden =
+        (isItemBeforeSource && closestEdge === 'bottom') ||
+        (isItemAfterSource && closestEdge === 'top');
+
+      setClosestEdge(isDropIndicatorHidden ? null : closestEdge);
+    }
+
+    const cleanDrag = combine(
+      draggable({
+        element,
+        dragHandle,
+        getInitialData: () => data,
+        onGenerateDragPreview({ nativeSetDragImage }) {
+          setCustomNativeDragPreview({
+            nativeSetDragImage,
+            getOffset: pointerOutsideOfPreview({
+              x: '8px',
+              y: '8px',
+            }),
+            render({ container }) {
+              setState({ type: 'preview', container });
+
+              return () => setState(draggingState);
+            },
+          });
+        },
+        onDragStart() {
+          setState(draggingState);
+        },
+        onDrop() {
+          setState(idleState);
+        },
+      }),
+      dropTargetForElements({
+        element,
+        canDrop,
+        getIsSticky: () => false,
+        getData({ input }) {
+          return attachClosestEdge(data, {
+            element,
+            input,
+            allowedEdges: ['top', 'bottom'],
+          });
+        },
+        onDrag: dragHandler,
+
+        onDragLeave() {
+          setClosestEdge(null);
+        },
+        onDrop() {
+          setClosestEdge(null);
+        },
+      }),
+    );
 
     return () => {
       cleanDrag();
     };
-  }, [id]);
-
+  }, [id, index, isReorderActive]);
   return (
-    <DroppableSectionWrapper key={id} id={id} onReorder={onReorder}>
-      <div ref={wrapperRef}>
+    <DroppableSectionWrapper
+      key={id}
+      id={id}
+      onReorder={onReorder}
+      index={index}
+    >
+      <div
+        style={{
+          position: 'relative',
+          opacity: state && state.type === 'dragging' ? 0.3 : 1,
+        }}
+        ref={wrapperRef}
+      >
         <SectionWrapper
           isOpen={isOpen}
           isOverflow={isOverflow}
@@ -284,7 +421,10 @@ function SectionItem(props: SectionItemProps) {
             arrowProps={arrowProps}
           />
           <Wrapper isOpen={isOpen}>{children}</Wrapper>
+          {closestEdge && <DropIndicator edge={closestEdge} />}
         </SectionWrapper>
+        {state.type === 'preview' &&
+          createPortal(<Preview>{dragLabel}</Preview>, state.container)}
       </div>
     </DroppableSectionWrapper>
   );
@@ -376,36 +516,60 @@ function MainSectionHeader(props: MainSectionHeaderProps) {
   );
 }
 
-interface DroppableProps extends Pick<SectionItemProps, 'id' | 'onReorder'> {
+interface DroppableProps
+  extends Pick<SectionItemProps, 'id' | 'onReorder' | 'index'> {
   children: ReactNode;
 }
 
-function DroppableSectionWrapper({ id, onReorder, children }: DroppableProps) {
+function DroppableSectionWrapper(props: DroppableProps) {
+  const { id, onReorder, index: indexOfTarget, children } = props;
   const ref = useRef<HTMLDivElement>(null);
-  const [isOver, setIsOver] = useState(false);
 
   useEffect(() => {
+    if (typeof onReorder !== 'function') return;
+
     if (!ref.current) return;
 
     return dropTargetForElements({
       element: ref.current,
       canDrop: ({ source }) => source.data?.id !== id,
-      onDrop: ({ source }) => {
-        const sourceId = source.data?.id as string;
-        setIsOver(false);
-        onReorder?.(sourceId, id);
+      onDrop: ({ location, source }) => {
+        const { index: startIndex } = source.data;
+
+        const target = location.current.dropTargets[0];
+        if (!target) {
+          return;
+        }
+
+        if (
+          typeof startIndex !== 'number' ||
+          typeof indexOfTarget !== 'number'
+        ) {
+          return;
+        }
+
+        const targetData = target.data;
+        const closestEdgeOfTarget = extractClosestEdge(targetData);
+
+        const finishIndex = getReorderDestinationIndex({
+          startIndex,
+          closestEdgeOfTarget,
+          indexOfTarget,
+          axis: 'vertical',
+        });
+
+        if (finishIndex === startIndex) {
+          // If there would be no change, we skip the update
+          return;
+        }
+
+        onReorder?.(startIndex, finishIndex);
       },
-      onDragEnter: () => setIsOver(true),
-      onDragLeave: () => setIsOver(false),
     });
-  }, [id, onReorder]);
+  }, [id, indexOfTarget, onReorder]);
 
   return (
-    <div
-      ref={ref}
-      data-drop-id={id}
-      style={{ ...(isOver && { opacity: 0.1 }) }}
-    >
+    <div ref={ref} data-drop-id={id}>
       {children}
     </div>
   );

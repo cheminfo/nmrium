@@ -218,7 +218,7 @@ type DeletePhaseCorrectionTrace = ActionType<
 >;
 type ReorderFiltersAction = ActionType<
   'REORDER_FILTERS',
-  { sourceId: string; targetId: string }
+  { sourceIndex: number; targetIndex: number }
 >;
 
 type SetOneDimensionPhaseCorrectionPivotPoint = ActionType<
@@ -2022,7 +2022,7 @@ function handleReorderFilters(
   draft: Draft<State>,
   action: ReorderFiltersAction,
 ) {
-  const { sourceId, targetId } = action.payload;
+  const { sourceIndex, targetIndex } = action.payload;
   const spectrum = getSpectrum(draft);
 
   if (!spectrum) {
@@ -2030,9 +2030,6 @@ function handleReorderFilters(
   }
 
   const filters = spectrum.filters;
-
-  const sourceIndex = filters.findIndex((filter) => filter.name === sourceId);
-  const targetIndex = filters.findIndex((filter) => filter.name === targetId);
 
   if (sourceIndex === -1 || targetIndex === -1) return;
 
