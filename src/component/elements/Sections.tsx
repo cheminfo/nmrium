@@ -1,7 +1,7 @@
 import type { ElementDropTargetEventBasePayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types/adapter/element-adapter.js';
 import type { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types.js';
 import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
-import { Icon, Tag, Colors } from '@blueprintjs/core';
+import { Colors, Icon, Tag } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import type {
   CSSProperties,
@@ -307,7 +307,7 @@ function SectionItem(props: SectionItemProps) {
     function dragHandler({ source, self }: ElementDropTargetEventBasePayload) {
       const isSource = source.element === dragHandle;
       if (isSource) {
-        // eslint-disable-next-line react-you-might-not-need-an-effect/you-might-not-need-an-effect
+        // eslint-disable-next-line react-you-might-not-need-an-effect/no-chain-state-updates
         setClosestEdge(null);
         return;
       }
