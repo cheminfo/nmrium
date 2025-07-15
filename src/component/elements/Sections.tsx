@@ -10,8 +10,8 @@ import type {
 import {
   createContext,
   useContext,
-  useMemo,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';

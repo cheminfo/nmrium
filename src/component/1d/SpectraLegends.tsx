@@ -2,8 +2,8 @@ import type {
   JpathLegendField,
   LegendField,
   PredefinedLegendField,
-  Spectrum,
   Spectrum1D,
+  Spectrum,
 } from '@zakodium/nmrium-core';
 import dlv from 'dlv';
 import { xFindClosestIndex } from 'ml-spectra-processing';

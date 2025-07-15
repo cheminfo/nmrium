@@ -1,8 +1,8 @@
 import type { MenuItemProps } from '@blueprintjs/core';
 import { Menu, MenuItem } from '@blueprintjs/core';
 import type {
-  ToolbarPopoverItemProps,
   ToolbarItemProps,
+  ToolbarPopoverItemProps,
 } from 'react-science/ui';
 import { Toolbar } from 'react-science/ui';
 

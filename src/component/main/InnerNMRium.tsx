@@ -1,6 +1,6 @@
 import init from '@zakodium/nmrium-core-plugins';
 import type { ForwardedRef } from 'react';
-import { useMemo, useEffect, useReducer, useRef } from 'react';
+import { useEffect, useMemo, useReducer, useRef } from 'react';
 import { useFullscreen } from 'react-science/ui';
 
 import { AssignmentProvider } from '../assignment/AssignmentProvider.js';
@@ -17,8 +17,8 @@ import { DialogProvider } from '../elements/DialogManager.js';
 import { ExportManagerProvider } from '../elements/export/ExportManager.js';
 import { HighlightProvider } from '../highlight/index.js';
 import {
-  defaultGetSpinner,
   SpinnerProvider,
+  defaultGetSpinner,
 } from '../loader/SpinnerContext.js';
 import preferencesReducer, {
   initPreferencesState,

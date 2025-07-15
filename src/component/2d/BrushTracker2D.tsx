@@ -19,11 +19,11 @@ import { useMapKeyModifiers } from '../context/KeyModifierContext.js';
 import { usePreferences } from '../context/PreferencesContext.js';
 import { options } from '../toolbar/ToolTypes.js';
 
+import type { Layout } from './utilities/DimensionLayout.js';
 import {
   get2DDimensionLayout,
   getLayoutID,
 } from './utilities/DimensionLayout.js';
-import type { Layout } from './utilities/DimensionLayout.js';
 import { useScale2DX, useScale2DY } from './utilities/scale.js';
 
 const clickDebounceTools = new Set([options.phaseCorrectionTwoDimensions.id]);

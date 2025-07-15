@@ -14,9 +14,9 @@ import useToolsFunctions from '../../hooks/useToolsFunctions.js';
 import { options } from '../../toolbar/ToolTypes.js';
 
 import type {
-  Databases,
-  DatabaseSearchKeywords,
   DataBaseSearchResultEntry,
+  DatabaseSearchKeywords,
+  Databases,
 } from './DatabasePanel.js';
 
 interface DatabaseSearchOptionsProps {

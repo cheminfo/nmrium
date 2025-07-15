@@ -153,6 +153,6 @@ function handleApplyKeyPreferences(
 
 export {
   changeSpectrumVerticalAlignment,
-  handleSetKeyPreferences,
   handleApplyKeyPreferences,
+  handleSetKeyPreferences,
 };

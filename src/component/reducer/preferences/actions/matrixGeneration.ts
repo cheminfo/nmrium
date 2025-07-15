@@ -168,9 +168,9 @@ function changeMatrixGenerationStocsyChemicalShift(
 
 export {
   addExclusionZone,
+  changeMatrixGenerationScale,
+  changeMatrixGenerationStocsyChemicalShift,
   deleteExclusionZone,
   setMatrixGenerationOptions,
   toggleMatrixGenerationViewProperty,
-  changeMatrixGenerationScale,
-  changeMatrixGenerationStocsyChemicalShift,
 };

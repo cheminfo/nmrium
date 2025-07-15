@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 
 import { usePreferences } from '../../context/PreferencesContext.js';
 import { ColorPickerDropdownController } from '../../elements/ColorPickerDropdownController.js';
-import { fieldLabelStyle, FormatField } from '../../elements/FormatField.js';
+import { FormatField, fieldLabelStyle } from '../../elements/FormatField.js';
 import Label from '../../elements/Label.js';
 import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';

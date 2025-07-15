@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 
 import { produce } from 'immer';
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { deepReplaceDiaIDs } from '../deepReplaceDiaIDs.js';
 

@@ -1,7 +1,7 @@
 import type { Peak1D } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import type { DataXY } from 'cheminfo-types';
-import { peaksToXY, peakToXY } from 'nmr-processing';
+import { peakToXY, peaksToXY } from 'nmr-processing';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';

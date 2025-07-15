@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
 import type { ReactNode } from 'react';
+import { useEffect } from 'react';
 
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useViewportSize } from '../../hooks/useViewportSize.js';

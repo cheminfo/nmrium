@@ -1,6 +1,6 @@
 import { FocusStyleManager } from '@blueprintjs/core';
 import { createRoot } from 'react-dom/client';
-import { HashRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Route, Routes } from 'react-router-dom';
 
 import Main from './demo/layouts/Main.js';
 import TestHighlight from './demo/test/TestHighlight.js';

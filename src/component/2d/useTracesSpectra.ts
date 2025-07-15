@@ -1,7 +1,7 @@
 import type {
   ActiveSpectrum,
-  Spectrum,
   Spectrum1D,
+  Spectrum,
 } from '@zakodium/nmrium-core';
 import { useMemo } from 'react';
 

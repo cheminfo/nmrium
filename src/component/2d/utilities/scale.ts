@@ -100,11 +100,11 @@ function getSliceYScale(
 }
 
 export {
-  get2DXScale,
-  getSliceYScale,
-  get2DYScale,
   get1DYScale,
+  get2DXScale,
+  get2DYScale,
+  getSliceYScale,
+  use1DTraceYScale,
   useScale2DX,
   useScale2DY,
-  use1DTraceYScale,
 };

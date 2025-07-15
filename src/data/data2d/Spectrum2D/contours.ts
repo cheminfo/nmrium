@@ -260,9 +260,9 @@ function calculateValueOfLevel(level: number, max: number, invert = false) {
 }
 
 export {
-  drawContours,
-  contoursManager,
-  getDefaultContoursLevel,
   DEFAULT_CONTOURS_OPTIONS,
+  contoursManager,
+  drawContours,
+  getDefaultContoursLevel,
 };
 export type { LevelSign };

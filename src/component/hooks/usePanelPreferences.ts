@@ -2,8 +2,8 @@ import type {
   MatrixGenerationOptions,
   MultipleSpectraAnalysisPreferences,
   PanelsPreferences,
-  Workspace,
   WorkSpacePanelPreferences,
+  Workspace,
 } from '@zakodium/nmrium-core';
 import has from 'lodash/has.js';
 import { useMemo } from 'react';
@@ -11,14 +11,14 @@ import { useMemo } from 'react';
 import { getDefaultPredictionOptions } from '../../data/PredictionManager.js';
 import { usePreferences } from '../context/PreferencesContext.js';
 import {
-  getIntegralDefaultValues,
-  getPeaksDefaultValues,
-  getZoneDefaultValues,
-  getRangeDefaultValues,
   databaseDefaultValues,
-  getMultipleSpectraAnalysisDefaultValues,
-  getSpectraDefaultValues,
+  getIntegralDefaultValues,
   getMatrixGenerationDefaultValues,
+  getMultipleSpectraAnalysisDefaultValues,
+  getPeaksDefaultValues,
+  getRangeDefaultValues,
+  getSpectraDefaultValues,
+  getZoneDefaultValues,
 } from '../reducer/preferences/panelsPreferencesDefaultValues.js';
 import { getValue } from '../utility/LocalStorage.js';
 

@@ -15,7 +15,7 @@ import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
 import { useFormatNumberByNucleus } from '../hooks/useFormatNumberByNucleus.js';
 import { options } from '../toolbar/ToolTypes.js';
 
-import { getLayoutID, LAYOUT } from './utilities/DimensionLayout.js';
+import { LAYOUT, getLayoutID } from './utilities/DimensionLayout.js';
 import { get1DYScale, get2DXScale, get2DYScale } from './utilities/scale.js';
 
 function FooterBanner({ layout, data1D }) {

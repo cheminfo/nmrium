@@ -122,4 +122,4 @@ function rescaleToSameTop(
   return newYDomains;
 }
 
-export { setZoom, wheelZoom, toScaleRatio, rescaleToSameTop };
+export { rescaleToSameTop, setZoom, toScaleRatio, wheelZoom };

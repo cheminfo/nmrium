@@ -9,11 +9,11 @@ import { DropZone } from 'react-science/ui';
 import * as Yup from 'yup';
 
 import {
+  TargetPathError,
   isMetaFile,
   linkMetaWithSpectra,
   mapErrors,
   parseMetaFile,
-  TargetPathError,
 } from '../../../data/parseMeta/index.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';

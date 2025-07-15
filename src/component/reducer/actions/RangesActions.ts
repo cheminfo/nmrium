@@ -2,8 +2,8 @@ import type { Range, Signal1D } from '@zakodium/nmr-types';
 import type {
   BoundingBox,
   RangesViewState,
-  Spectrum,
   Spectrum1D,
+  Spectrum,
 } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
 import { original } from 'immer';
@@ -705,27 +705,27 @@ function handleChangeRangesViewFloatingBoxBounding(
 }
 
 export {
-  handleCutRange,
-  handleAutoRangesDetection,
-  handleDeleteRange,
   deleteSignal1D,
-  handleDeleteSignal,
-  handleChangeRangeSum,
   handleAddRange,
-  handleResizeRange,
-  handleChangeRangeRelativeValue,
-  handleChangeRangeSignalValue,
-  handleChangeRangeSignalKind,
-  handleSaveEditedRange,
-  handleUnlinkRange,
-  unlinkRange,
   handleAssignRange,
-  handleChangeRangesSumFlag,
-  handleUpdateRange,
+  handleAutoRangesDetection,
   handleAutoSpectraRangesDetection,
-  handleToggleRangesViewProperty,
   handleChangePeaksDisplayingMode,
-  handleDeleteRangePeak,
   handleChangeRangeAssignmentLabel,
+  handleChangeRangeRelativeValue,
+  handleChangeRangeSignalKind,
+  handleChangeRangeSignalValue,
+  handleChangeRangeSum,
+  handleChangeRangesSumFlag,
   handleChangeRangesViewFloatingBoxBounding,
+  handleCutRange,
+  handleDeleteRange,
+  handleDeleteRangePeak,
+  handleDeleteSignal,
+  handleResizeRange,
+  handleSaveEditedRange,
+  handleToggleRangesViewProperty,
+  handleUnlinkRange,
+  handleUpdateRange,
+  unlinkRange,
 };

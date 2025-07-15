@@ -1,4 +1,4 @@
-import type { Spectrum, Spectrum1D, Spectrum2D } from '@zakodium/nmrium-core';
+import type { Spectrum1D, Spectrum2D, Spectrum } from '@zakodium/nmrium-core';
 import type { DiaIDAndInfo } from 'openchemlib-utils';
 import type { MouseEvent } from 'react';
 import { useMemo, useRef } from 'react';
@@ -6,16 +6,16 @@ import { useMemo, useRef } from 'react';
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
 import { ConcatenationString } from '../../../data/utilities/Concatenation.js';
 import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated.js';
-import { useAssignmentContext } from '../../assignment/AssignmentsContext.js';
 import type { Assignments, Axis } from '../../assignment/AssignmentsContext.js';
+import { useAssignmentContext } from '../../assignment/AssignmentsContext.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
+import type { HighlightEventSourceType } from '../../highlight/index.js';
 import {
   HighlightEventSource,
   useHighlightData,
 } from '../../highlight/index.js';
-import type { HighlightEventSourceType } from '../../highlight/index.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 
 import type { AtomData } from './Utilities.js';

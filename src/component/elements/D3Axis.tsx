@@ -1,5 +1,5 @@
-import { forwardRef } from 'react';
 import type { SVGAttributes } from 'react';
+import { forwardRef } from 'react';
 import type { UseLinearPrimaryTicksResult } from 'react-d3-utils';
 
 type AxisPosition = 'top' | 'bottom' | 'left' | 'right';

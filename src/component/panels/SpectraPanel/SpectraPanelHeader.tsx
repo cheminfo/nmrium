@@ -1,7 +1,7 @@
 import type {
   ActiveSpectrum,
-  Spectrum,
   Spectrum2D,
+  Spectrum,
 } from '@zakodium/nmrium-core';
 import { SvgNmrResetScale, SvgNmrSameTop } from 'cheminfo-font';
 import { memo, useCallback } from 'react';

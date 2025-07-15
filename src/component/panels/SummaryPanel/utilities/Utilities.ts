@@ -1,7 +1,7 @@
 import type {
   ActiveSpectrum,
-  Spectrum,
   Spectrum2D,
+  Spectrum,
 } from '@zakodium/nmrium-core';
 import type { FromTo } from 'cheminfo-types';
 import dlv from 'dlv';

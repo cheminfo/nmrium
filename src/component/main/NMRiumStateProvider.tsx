@@ -12,8 +12,8 @@ import { usePreferences } from '../context/PreferencesContext.js';
 import { sortSpectra, useSortSpectra } from '../context/SortSpectraContext.js';
 import checkActionType from '../reducer/IgnoreActions.js';
 import {
-  initialState,
   initState,
+  initialState,
   spectrumReducer,
 } from '../reducer/Reducer.js';
 

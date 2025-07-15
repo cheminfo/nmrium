@@ -4,8 +4,8 @@ import type {
   MultipleSpectraAnalysisPreferences,
   PanelPreferencesType,
   PrintPageOptions,
-  Workspace,
   WorkSpaceSource,
+  Workspace,
 } from '@zakodium/nmrium-core';
 import { CURRENT_EXPORT_VERSION, migrateSettings } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';

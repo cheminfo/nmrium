@@ -1,7 +1,3 @@
-import {
-  ANALYSIS_COLUMN_TYPES,
-  ANALYSIS_COLUMN_VALUES_KEYS,
-} from '@zakodium/nmrium-core';
 import type {
   AnalysisColumnsValuesKeys,
   AnalysisOptions,
@@ -10,9 +6,13 @@ import type {
   PanelsPreferences,
   SpectraAnalysisColumn,
   SpectraAnalysisColumns,
-  Spectrum,
   Spectrum1D,
+  Spectrum,
   WorkSpacePanelPreferences,
+} from '@zakodium/nmrium-core';
+import {
+  ANALYSIS_COLUMN_TYPES,
+  ANALYSIS_COLUMN_VALUES_KEYS,
 } from '@zakodium/nmrium-core';
 import dlv from 'dlv';
 

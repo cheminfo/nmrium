@@ -3,11 +3,11 @@ import { Checkbox } from '@blueprintjs/core';
 import ActionButtons from '../../elements/ActionButtons.js';
 import Label from '../../elements/Label.js';
 import { Select2Controller } from '../../elements/Select2Controller.js';
+import type { ZeroFillingEntry } from '../../panels/filtersPanel/Filters/hooks/useZeroFilling.js';
 import {
   getZeroFillingNbPoints,
   useZeroFilling,
 } from '../../panels/filtersPanel/Filters/hooks/useZeroFilling.js';
-import type { ZeroFillingEntry } from '../../panels/filtersPanel/Filters/hooks/useZeroFilling.js';
 import { headerLabelStyle } from '../Header.js';
 import { HeaderWrapper } from '../HeaderWrapper.js';
 

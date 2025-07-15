@@ -3,7 +3,7 @@ import type { FifoLogger } from 'fifo-logger';
 import type { Draft } from 'immer';
 import { Molecule } from 'openchemlib';
 import type { TopicMolecule } from 'openchemlib-utils';
-import { nbLabileH, getAtoms } from 'openchemlib-utils';
+import { getAtoms, nbLabileH } from 'openchemlib-utils';
 
 import type {
   PredictedSpectraResult,
@@ -413,11 +413,11 @@ export {
   addMolecule,
   handleAddMolecule,
   handleAddMolecules,
-  handleSetMolecule,
-  handleDeleteMolecule,
-  handlePredictSpectraFromMolecule,
-  handleFloatMoleculeOverSpectrum,
-  handleToggleMoleculeAtomsNumbers,
   handleChangeFloatMoleculePosition,
   handleChangeMoleculeLabel,
+  handleDeleteMolecule,
+  handleFloatMoleculeOverSpectrum,
+  handlePredictSpectraFromMolecule,
+  handleSetMolecule,
+  handleToggleMoleculeAtomsNumbers,
 };

@@ -6,7 +6,7 @@ import { useMouseTracker } from '../../EventsTrackers/MouseTracker.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.js';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus.js';
-import { getLayoutID, LAYOUT } from '../utilities/DimensionLayout.js';
+import { LAYOUT, getLayoutID } from '../utilities/DimensionLayout.js';
 import { get1DYScale, useScale2DX, useScale2DY } from '../utilities/scale.js';
 
 const style: CSSProperties = {
