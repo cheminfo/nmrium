@@ -76,7 +76,7 @@ const TransformController = styled.div<{
 
 const Content = styled.div<{ width: number }>`
   width: ${(props) => props.width}px;
-  height: 100%;
+  flex: 1;
 `;
 
 const transition = 0.45;

@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { Molecule } from 'openchemlib';
-import { useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 import type { CanvasEditorOnChangeMolecule } from 'react-ocl';
 import { CanvasMoleculeEditor } from 'react-ocl';
@@ -29,11 +29,25 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
+  min-height: 0;
 `;
 
 const Overflow = styled.div<{ height: number }>`
   overflow: hidden auto;
   height: ${({ height }) => height}px;
+`;
+
+const StickyFooter = styled.div`
+  flex-shrink: 0;
+  padding: 5px;
+  display: flex;
+  justify-content: flex-end;
+  background-color: #fff;
+  border-top: 1px solid #ccc;
+  z-index: 2;
+`;
+const Content = styled.div`
+  flex: 1;
 `;
 
 export default function PredictionPanel() {
@@ -168,65 +182,66 @@ export default function PredictionPanel() {
           </MoleculePanelHeader>
 
           <Container>
-            <ResponsiveChart minHeight={400}>
-              {({ height, width }) => {
-                return (
-                  <NextPrev
-                    onChange={(slideIndex) => {
-                      setCurrentIndex(slideIndex);
-                      setMolfile(molecules[slideIndex].molfile);
-                    }}
-                    index={currentIndex}
-                    style={{
-                      arrowContainer: {
-                        top: '40px',
-                        padding: '0 10px 0 55px',
-                      },
-                    }}
-                  >
-                    {molecules && molecules.length > 0 ? (
-                      molecules.map((mol: StateMoleculeExtended, molIndex) => (
-                        <div key={mol.id}>
-                          <MoleculeHeader
-                            currentMolecule={mol}
-                            molecules={molecules}
-                          />
-                          <Overflow height={height}>
-                            {molIndex === currentIndex && (
-                              <CanvasMoleculeEditor
-                                width={width}
-                                inputFormat="molfile"
-                                inputValue={mol.molfile}
-                                fragment={false}
-                                onChange={changeHandler}
-                                height="80%"
+            <Content>
+              <ResponsiveChart>
+                {({ height, width }) => {
+                  return (
+                    <NextPrev
+                      onChange={(slideIndex) => {
+                        setCurrentIndex(slideIndex);
+                        setMolfile(molecules[slideIndex].molfile);
+                      }}
+                      index={currentIndex}
+                      style={{
+                        arrowContainer: {
+                          top: '40px',
+                          padding: '0 10px 0 55px',
+                        },
+                      }}
+                    >
+                      {molecules && molecules.length > 0 ? (
+                        molecules.map(
+                          (mol: StateMoleculeExtended, molIndex) => (
+                            <Fragment key={mol.id}>
+                              <MoleculeHeader
+                                currentMolecule={mol}
+                                molecules={molecules}
                               />
-                            )}
-                          </Overflow>
-                        </div>
-                      ))
-                    ) : (
-                      <Overflow height={height}>
-                        <CanvasMoleculeEditor
-                          inputFormat="molfile"
-                          inputValue={initialMolfile}
-                          width={width}
-                          fragment={false}
-                          onChange={changeHandler}
-                        />
-                      </Overflow>
-                    )}
-                  </NextPrev>
-                );
-              }}
-            </ResponsiveChart>
-            <div
-              style={{
-                display: 'flex',
-                padding: '5px',
-                justifyContent: 'flex-end',
-              }}
-            >
+
+                              {molIndex === currentIndex && (
+                                <Overflow height={height}>
+                                  <CanvasMoleculeEditor
+                                    width={width}
+                                    inputFormat="molfile"
+                                    inputValue={mol.molfile}
+                                    fragment={false}
+                                    onChange={changeHandler}
+                                    height={400}
+                                  />
+                                </Overflow>
+                              )}
+                            </Fragment>
+                          ),
+                        )
+                      ) : (
+                        <Overflow height={height}>
+                          <CanvasMoleculeEditor
+                            inputFormat="molfile"
+                            inputValue={initialMolfile}
+                            width={width}
+                            fragment={false}
+                            onChange={changeHandler}
+                            height={400}
+                          />
+                        </Overflow>
+                      )}
+                    </NextPrev>
+                  );
+                }}
+              </ResponsiveChart>
+            </Content>
+
+            <StickyFooter>
               <Button.Done
                 onClick={() => predictHandler('save')}
                 disabled={!molfile}
@@ -241,7 +256,7 @@ export default function PredictionPanel() {
                   Add prediction
                 </Button.Action>
               )}
-            </div>
+            </StickyFooter>
           </Container>
         </>
       )}
