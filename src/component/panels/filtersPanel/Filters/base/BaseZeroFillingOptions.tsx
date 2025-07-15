@@ -7,11 +7,11 @@ import { Sections } from '../../../../elements/Sections.js';
 import { Select2Controller } from '../../../../elements/Select2Controller.js';
 import { FilterActionButtons } from '../FilterActionButtons.js';
 import { StickyHeader } from '../InnerFilterHeader.js';
+import type { ZeroFillingEntry } from '../hooks/useZeroFilling.js';
 import {
   getZeroFillingNbPoints,
   useZeroFilling,
 } from '../hooks/useZeroFilling.js';
-import type { ZeroFillingEntry } from '../hooks/useZeroFilling.js';
 import type { BaseFilterOptionsPanelProps } from '../index.js';
 
 export function BaseZeroFillingOptions(

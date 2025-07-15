@@ -1,5 +1,5 @@
 import type { BaselineCorrectionZone } from '@zakodium/nmr-types';
-import type { Spectrum, Spectrum1D, Spectrum2D } from '@zakodium/nmrium-core';
+import type { Spectrum1D, Spectrum2D, Spectrum } from '@zakodium/nmrium-core';
 import { zoomIdentity } from 'd3';
 import type { Draft } from 'immer';
 
@@ -20,10 +20,10 @@ import type { State } from '../Reducer.js';
 import { MARGIN } from '../core/Constants.js';
 import type { ZoomType } from '../helper/Zoom1DManager.js';
 import {
+  ZOOM_TYPES,
   setZoom,
   toScaleRatio,
   wheelZoom,
-  ZOOM_TYPES,
 } from '../helper/Zoom1DManager.js';
 import zoomHistoryManager, {
   addToBrushHistory,
@@ -732,24 +732,24 @@ function resetSpectraScale(draft: Draft<State>) {
 }
 
 export {
-  handleResetSelectedTool,
-  resetSelectedTool,
-  setSelectedTool,
   activateTool,
-  setSpectraVerticalAlign,
-  handleChangeSpectrumDisplayMode,
   handleAddBaseLineZone,
-  handleDeleteBaseLineZone,
-  handleResizeBaseLineZone,
-  handleToggleRealImaginaryVisibility,
   handleBrushEnd,
-  handleZoom,
-  zoomOut,
+  handleChangeSpectrumDisplayMode,
+  handleDeleteBaseLineZone,
+  handleResetSelectedTool,
+  handleResizeBaseLineZone,
   handleSetActiveTab,
+  handleToggleRealImaginaryVisibility,
+  handleZoom,
   levelChangeHandler,
-  setActiveTab,
-  setTab,
-  setSpectraSameTopHandler,
+  resetSelectedTool,
   resetSpectraScale,
+  setActiveTab,
   setMargin,
+  setSelectedTool,
+  setSpectraSameTopHandler,
+  setSpectraVerticalAlign,
+  setTab,
+  zoomOut,
 };

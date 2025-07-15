@@ -1,4 +1,4 @@
-import type { Spectrum, Spectrum1D, Spectrum2D } from '@zakodium/nmrium-core';
+import type { Spectrum1D, Spectrum2D, Spectrum } from '@zakodium/nmrium-core';
 import type { SpectraData } from 'nmr-processing';
 import { getAssignments as getAssignmentsData } from 'nmr-processing';
 import { Molecule } from 'openchemlib';

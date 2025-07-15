@@ -431,10 +431,10 @@ function getBlob(targetElementID: string, options: GetBlobOptions): BlobObject {
 }
 
 export {
-  exportAsSVG,
-  exportAsJSON,
-  exportAsPng,
   copyPNGToClipboard,
+  exportAsJSON,
   exportAsMatrix,
+  exportAsPng,
+  exportAsSVG,
   getBlob,
 };

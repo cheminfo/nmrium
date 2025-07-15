@@ -1,8 +1,8 @@
 import type {
   NucleiPreferences,
-  Spectrum,
   Spectrum1D,
   Spectrum2D,
+  Spectrum,
 } from '@zakodium/nmrium-core';
 import type { NmrData2DFt } from 'cheminfo-types';
 import type { Numeric } from 'd3';
@@ -413,11 +413,11 @@ function handleMoveOverXAxis(draft: Draft<State>, action: MoveAction) {
 
 export {
   get2DDomain,
-  setDomain,
-  setMode,
-  handleSetXDomain,
-  handleSetYDomain,
   handleMoveOverXAxis,
   handleSetAxisDomain,
+  handleSetXDomain,
+  handleSetYDomain,
   moveOverAxis,
+  setDomain,
+  setMode,
 };

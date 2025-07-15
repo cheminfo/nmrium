@@ -6,8 +6,8 @@ import { useChartData } from '../context/ChartContext.js';
 import type {
   ActivateAssignmentOptions,
   AssignmentContext,
-  HighlightAssignmentOptions,
   AssignmentStatus,
+  HighlightAssignmentOptions,
 } from './AssignmentsContext.js';
 import { assignmentContext, assignmentStatus } from './AssignmentsContext.js';
 import { getAssignments } from './utilities/getAssignments.js';

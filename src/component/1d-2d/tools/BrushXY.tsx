@@ -4,12 +4,12 @@ import type { CSSProperties } from 'react';
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
 import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/isSpectrum2D.js';
 import { useScale2DX } from '../../2d/utilities/scale.js';
+import type { BrushAxis } from '../../EventsTrackers/BrushTracker.js';
 import {
   detectBrushing,
   useBrushDetectionOptions,
   useBrushTracker,
 } from '../../EventsTrackers/BrushTracker.js';
-import type { BrushAxis } from '../../EventsTrackers/BrushTracker.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';
 import { ArrowBox } from '../../elements/ArrowBox.js';

@@ -13,9 +13,9 @@ export { detectRange } from './ranges/detectRange.js';
 export { detectRanges } from './ranges/detectRanges.js';
 export { resurrectSpectrumFromRanges } from './ranges/resurrectSpectrum.js';
 export {
-  mapRanges,
   getShiftX,
-  updateRangesRelativeValues,
+  mapRanges,
   updateIntegralsRelativeValues,
+  updateRangesRelativeValues,
 } from 'nmr-processing';
 export { get1DColor } from './get1DColor.js';

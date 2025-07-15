@@ -77,4 +77,4 @@ InfoItem.Unit = styled(Span)`
   font-size: 10px;
 `;
 
-export { InfoItem, FooterContainer };
+export { FooterContainer, InfoItem };

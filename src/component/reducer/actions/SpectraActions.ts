@@ -4,9 +4,9 @@ import type {
   Display1D,
   Display2D,
   SpectraColors,
-  Spectrum,
   Spectrum1D,
   Spectrum2D,
+  Spectrum,
 } from '@zakodium/nmrium-core';
 import type { NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
 import dlv from 'dlv';
@@ -757,18 +757,18 @@ function handleUpdateSpectrumMeta(
 }
 
 export {
-  handleChangeSpectrumVisibilityById,
-  handleChangeSpectraVisibilityByNucleus,
-  handleChangeActiveSpectrum,
-  handleChangeSpectrumSetting,
-  handleDeleteSpectra,
   handleAddMissingProjectionHandler,
   handleAlignSpectraHandler,
+  handleChangeActiveSpectrum,
+  handleChangeSpectraVisibilityByNucleus,
+  handleChangeSpectrumSetting,
+  handleChangeSpectrumVisibilityById,
+  handleDeleteSpectra,
   handleGenerateSpectrumFromPublicationStringHandler,
   handleImportSpectraMetaInfo,
-  handleToggleSpectraLegend,
   handleRecolorSpectraBasedOnDistinctValue,
   handleSimulateSpectrum,
-  setSpectraMetaInfo,
+  handleToggleSpectraLegend,
   handleUpdateSpectrumMeta,
+  setSpectraMetaInfo,
 };

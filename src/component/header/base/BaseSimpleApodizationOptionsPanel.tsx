@@ -4,8 +4,8 @@ import { useToaster } from '../../context/ToasterContext.js';
 import ActionButtons from '../../elements/ActionButtons.js';
 import Label from '../../elements/Label.js';
 import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
-import { useApodization } from '../../panels/filtersPanel/Filters/hooks/useApodization.js';
 import type { ApodizationFilterEntry } from '../../panels/filtersPanel/Filters/hooks/useApodization.js';
+import { useApodization } from '../../panels/filtersPanel/Filters/hooks/useApodization.js';
 import { headerLabelStyle } from '../Header.js';
 import { HeaderWrapper } from '../HeaderWrapper.js';
 

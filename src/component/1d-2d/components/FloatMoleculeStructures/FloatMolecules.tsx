@@ -3,8 +3,8 @@ import type { Spectrum1D, Spectrum2D } from '@zakodium/nmrium-core';
 import { memo } from 'react';
 
 import type {
-  MoleculesView,
   MoleculeView,
+  MoleculesView,
   StateMoleculeExtended,
 } from '../../../../data/molecules/Molecule.js';
 import { useChartData } from '../../../context/ChartContext.js';

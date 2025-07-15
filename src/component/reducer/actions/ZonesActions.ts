@@ -1,7 +1,7 @@
 import type { Filter2DEntry, Signal2D, Zone } from '@zakodium/nmr-types';
 import type {
-  Spectrum,
   Spectrum2D,
+  Spectrum,
   ZonesViewState,
 } from '@zakodium/nmrium-core';
 import type { FromTo, NmrData2DFt } from 'cheminfo-types';
@@ -531,21 +531,21 @@ function handleSetZoneAssignmentLabelCoordination(
 }
 
 export {
-  handleAdd2dZone,
-  handleAutoZonesDetection,
-  handleDeleteSignal,
   deleteSignal2D,
-  handleDeleteZone,
+  handleAdd2dZone,
+  handleAssignZone,
+  handleAutoSpectraZonesDetection,
+  handleAutoZonesDetection,
+  handleChangeZoneAssignmentLabel,
   handleChangeZoneSignalDelta,
   handleChangeZoneSignalKind,
+  handleChangeZonesFactor,
+  handleDeleteSignal,
+  handleDeleteZone,
+  handleSaveEditedZone,
+  handleSetSignalPathLength,
+  handleSetZoneAssignmentLabelCoordination,
+  handleToggleZonesViewProperty,
   handleUnlinkZone,
   unlinkZone,
-  handleSaveEditedZone,
-  handleAssignZone,
-  handleSetSignalPathLength,
-  handleChangeZonesFactor,
-  handleAutoSpectraZonesDetection,
-  handleToggleZonesViewProperty,
-  handleChangeZoneAssignmentLabel,
-  handleSetZoneAssignmentLabelCoordination,
 };

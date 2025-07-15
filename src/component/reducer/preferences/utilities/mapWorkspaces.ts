@@ -1,4 +1,4 @@
-import type { Workspace, WorkSpaceSource } from '@zakodium/nmrium-core';
+import type { WorkSpaceSource, Workspace } from '@zakodium/nmrium-core';
 import lodashMerge from 'lodash/merge.js';
 
 import { workspaceDefaultProperties } from '../../../workspaces/workspaceDefaultProperties.js';

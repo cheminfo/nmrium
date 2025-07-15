@@ -109,4 +109,4 @@ class SourcePathError extends Error {
   }
 }
 
-export { linkMetaWithSpectra, TargetPathError };
+export { TargetPathError, linkMetaWithSpectra };

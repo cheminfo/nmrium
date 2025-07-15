@@ -222,13 +222,13 @@ const getMatrixGenerationDefaultValues = (
 };
 
 export {
-  getSpectraDefaultValues,
-  getPeaksDefaultValues,
-  getIntegralDefaultValues,
-  getRangeDefaultValues,
-  getZoneDefaultValues,
   databaseDefaultValues,
-  getMultipleSpectraAnalysisDefaultValues,
+  getIntegralDefaultValues,
   getMatrixGenerationDefaultOptions,
   getMatrixGenerationDefaultValues,
+  getMultipleSpectraAnalysisDefaultValues,
+  getPeaksDefaultValues,
+  getRangeDefaultValues,
+  getSpectraDefaultValues,
+  getZoneDefaultValues,
 };

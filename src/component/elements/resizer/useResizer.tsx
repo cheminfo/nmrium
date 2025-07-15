@@ -3,7 +3,7 @@ import { useRef } from 'react';
 import type { Draggable } from '../draggable/useDraggable.js';
 import useDraggable from '../draggable/useDraggable.js';
 
-import type { ResizerProps, Position } from './SVGResizer.js';
+import type { Position, ResizerProps } from './SVGResizer.js';
 
 interface UseResizer {
   right: Draggable;

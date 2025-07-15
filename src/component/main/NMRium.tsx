@@ -1,7 +1,7 @@
 import type {
   CustomWorkspaces,
-  WorkspacePreferences as NMRiumPreferences,
   NMRiumCore,
+  WorkspacePreferences as NMRiumPreferences,
 } from '@zakodium/nmrium-core';
 import type { ReactElement, ReactNode } from 'react';
 import { forwardRef, memo } from 'react';

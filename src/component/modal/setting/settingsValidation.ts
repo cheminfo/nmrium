@@ -1,5 +1,5 @@
-import { EXTERNAL_API_KEYS } from '@zakodium/nmrium-core';
 import type { ExternalAPIKeyType } from '@zakodium/nmrium-core';
+import { EXTERNAL_API_KEYS } from '@zakodium/nmrium-core';
 import { array, mixed, number, object, string } from 'yup';
 
 import { exportOptionValidationSchema } from '../../elements/export/utilities/exportOptionValidationSchema.js';

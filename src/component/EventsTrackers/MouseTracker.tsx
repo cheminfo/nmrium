@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react';
-import { createContext, useCallback, useState, useContext } from 'react';
+import { createContext, useCallback, useContext, useState } from 'react';
 
 interface MouseTrackerData {
   x: number;

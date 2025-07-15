@@ -17,4 +17,4 @@ const DefaultTolerance = {
   P: 0.25,
 };
 
-export { DefaultTolerance, Errors, ErrorColors };
+export { DefaultTolerance, ErrorColors, Errors };

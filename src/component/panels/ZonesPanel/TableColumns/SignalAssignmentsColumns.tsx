@@ -1,6 +1,6 @@
 import { buildID } from '../../../../data/utilities/Concatenation.js';
-import { useAssignment } from '../../../assignment/AssignmentsContext.js';
 import type { Axis } from '../../../assignment/AssignmentsContext.js';
+import { useAssignment } from '../../../assignment/AssignmentsContext.js';
 import { useHighlight } from '../../../highlight/index.js';
 import type { AssignmentsColumnProps } from '../ZonesTableRow.js';
 import type { ZoneData } from '../hooks/useMapZones.js';

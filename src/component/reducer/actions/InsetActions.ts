@@ -24,19 +24,19 @@ import {
 } from '../../hooks/useSVGUnitConverter.js';
 import type { FilterType } from '../../utility/filterType.js';
 import type { SpectraDirection, State } from '../Reducer.js';
+import type { ZoomType } from '../helper/Zoom1DManager.js';
 import {
+  ZOOM_TYPES,
   toScaleRatio,
   wheelZoom,
-  ZOOM_TYPES,
 } from '../helper/Zoom1DManager.js';
-import type { ZoomType } from '../helper/Zoom1DManager.js';
 import { preparePop } from '../helper/ZoomHistoryManager.js';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
 import getRange from '../helper/getRange.js';
 import type { ActionType } from '../types/ActionType.js';
 
-import { moveOverAxis } from './DomainActions.js';
 import type { MoveOptions } from './DomainActions.js';
+import { moveOverAxis } from './DomainActions.js';
 
 interface BrushInsetBoundary {
   startX: number;
@@ -438,14 +438,14 @@ function handleToggleInsetDisplayingPeaksMode(
 
 export {
   handleAddInset,
-  handleDeleteInset,
   handleChangeInsetBounding,
-  handleMoveInset,
+  handleDeleteInset,
   handleInsetBrushEnd,
   handleInsetZoom,
   handleInsetZoomOut,
-  handleToggleInsetRangesViewProperty,
+  handleMoveInset,
+  handleToggleInsetDisplayingPeaksMode,
   handleToggleInsetIntegralsViewProperty,
   handleToggleInsetPeaksViewProperty,
-  handleToggleInsetDisplayingPeaksMode,
+  handleToggleInsetRangesViewProperty,
 };

@@ -246,12 +246,12 @@ function handleToggleIntegralsViewProperty(
 }
 
 export {
-  handleCutIntegral,
-  handleChangeIntegralSum,
   handleAddIntegral,
-  handleDeleteIntegral,
   handleChangeIntegral,
+  handleChangeIntegralSum,
   handleChangeIntegralsRelativeValue,
   handleChangeIntegralsSumFlag,
+  handleCutIntegral,
+  handleDeleteIntegral,
   handleToggleIntegralsViewProperty,
 };

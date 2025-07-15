@@ -1,26 +1,12 @@
 {
+  "extends": "@zakodium/tsconfig/jsx",
   "compilerOptions": {
-    "lib": [
-      "DOM",
-      "ES2022"
-    ],
-    "types": [
-      "vite/client"
-    ],
-    "target": "ES2022",
+    "types": ["vite/client"],
     "outDir": "lib",
-    "jsx": "react-jsx",
-    "module": "NodeNext",
-    "strict": true,
     "noImplicitAny": false,
-    "skipLibCheck": true,
-    "resolveJsonModule": true,
-    "forceConsistentCasingInFileNames": true,
-    "allowJs": false,
-    "isolatedModules": true,
-    "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true
+    "noUncheckedIndexedAccess": false,
+    "noImplicitReturns": false,
+    "verbatimModuleSyntax": false
   },
   "include": [
     "playwright.config.ts",
@@ -28,9 +14,5 @@
     "test-e2e",
     "knip.config.ts",
     "vite.config.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "lib"
   ]
 }

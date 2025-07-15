@@ -9,8 +9,8 @@ import {
   H6,
   Icon,
   IconSize,
-  mergeRefs,
   Overlay2,
+  mergeRefs,
 } from '@blueprintjs/core';
 import { SmallCross } from '@blueprintjs/icons';
 import { Global } from '@emotion/react';

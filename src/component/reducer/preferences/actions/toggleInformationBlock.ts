@@ -1,8 +1,8 @@
 import type { Draft } from 'immer';
 
 import type {
-  ToggleInformationBlock,
   PreferencesState,
+  ToggleInformationBlock,
 } from '../preferencesReducer.js';
 import { getActiveWorkspace } from '../utilities/getActiveWorkspace.js';
 

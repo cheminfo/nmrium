@@ -20,8 +20,8 @@ import {
 } from '../../context/PreferencesContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import ActionButtons from '../../elements/ActionButtons.js';
-import Label from '../../elements/Label.js';
 import type { LabelStyle } from '../../elements/Label.js';
+import Label from '../../elements/Label.js';
 import { StyledDialogBody } from '../../elements/StyledDialogBody.js';
 import type { DropDownListItem } from '../../elements/dropDownButton/DropDownButton.js';
 import DropDownButton from '../../elements/dropDownButton/DropDownButton.js';

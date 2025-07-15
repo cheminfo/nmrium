@@ -1,7 +1,7 @@
 import debounce from 'lodash/debounce.js';
 import type {
-  ChangeEvent,
   CSSProperties,
+  ChangeEvent,
   ForwardedRef,
   ReactElement,
 } from 'react';

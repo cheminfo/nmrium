@@ -3,7 +3,7 @@ import type {
   MenuItemProps,
   TooltipProps,
 } from '@blueprintjs/core';
-import { Menu, MenuItem, showContextMenu, Tooltip } from '@blueprintjs/core';
+import { Menu, MenuItem, Tooltip, showContextMenu } from '@blueprintjs/core';
 import type { ComponentProps, ElementType, MouseEvent, ReactNode } from 'react';
 
 type ContextMenuCheck = boolean | ((data: any) => boolean);

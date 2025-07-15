@@ -3,10 +3,10 @@ import type { Draft } from 'immer';
 import { original } from 'immer';
 import lodashCloneDeep from 'lodash/cloneDeep.js';
 import type {
-  Tolerance,
-  Options as CorrelationOptions,
   Correlation,
+  Options as CorrelationOptions,
   Spectrum,
+  Tolerance,
   Values as CorrelationValues,
 } from 'nmr-correlation';
 import { buildCorrelationData, setCorrelation } from 'nmr-correlation';

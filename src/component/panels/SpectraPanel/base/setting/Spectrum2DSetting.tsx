@@ -2,8 +2,8 @@ import type { RangeSliderProps } from '@blueprintjs/core';
 import { RangeSlider } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import debounce from 'lodash/debounce.js';
-import { useMemo } from 'react';
 import type { CSSProperties } from 'react';
+import { useMemo } from 'react';
 import {
   Controller,
   FormProvider,

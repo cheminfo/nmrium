@@ -277,4 +277,4 @@ function handleLoadDropFiles(draft: Draft<State>, action: LoadDropFilesAction) {
   }
 }
 
-export { handleSetIsLoading, handleInitiate, handleLoadDropFiles };
+export { handleInitiate, handleLoadDropFiles, handleSetIsLoading };

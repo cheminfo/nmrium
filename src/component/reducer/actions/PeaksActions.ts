@@ -298,11 +298,11 @@ function handleChangePeaksDisplayingMode(draft: Draft<State>) {
 export {
   handleAddPeak,
   handleAddPeaks,
-  handleDeletePeak,
   handleAutoPeakPicking,
-  handleOptimizePeaks,
   handleChangePeakShape,
-  handleTogglePeaksViewProperty,
   handleChangePeaksDisplayingMode,
+  handleDeletePeak,
+  handleOptimizePeaks,
+  handleTogglePeaksViewProperty,
   toggleDisplayingPeaks,
 };

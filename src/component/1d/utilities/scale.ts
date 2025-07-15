@@ -133,11 +133,11 @@ function useScaleX() {
 }
 
 export {
-  useScaleX,
-  getXScale,
-  getYScale,
-  getIntegralYScale,
-  getYScaleWithRation,
   getInsetXScale,
   getInsetYScale,
+  getIntegralYScale,
+  getXScale,
+  getYScale,
+  getYScaleWithRation,
+  useScaleX,
 };
