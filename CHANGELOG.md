@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.65.2](https://github.com/cheminfo/nmrium/compare/v0.65.1...v0.65.2) (2025-07-15)
+
+
+### Bug Fixes
+
+* don't display publication string when there are no ranges ([2774b3b](https://github.com/cheminfo/nmrium/commit/2774b3b0501f09d692b32670cc60aecb02921019))
+* prediction panel structure editor scrolls on overflow ([5c8a937](https://github.com/cheminfo/nmrium/commit/5c8a937286f6ca1109bdd66d042b2745e0cbc9b6))
+
 ## [0.65.1](https://github.com/cheminfo/nmrium/compare/v0.65.0...v0.65.1) (2025-07-10)
 
 
