@@ -38,6 +38,7 @@ function calculateWorldWidth(context, word) {
 
 function useWrapSVGText({ text, width, fontSize }) {
   const context = useCanvasContext(fontSize);
+
   const formattedText = text
     .replaceAll(/<sup>(?<n>.*?)<\/sup>/g, '++$1++ ')
     .replaceAll(/<i>(?<j>.*?)<\/i>/g, '**$1**');
@@ -83,6 +84,7 @@ function PublicationText(props: PublicationTextProps) {
     fontSize,
     text,
   });
+
   return (
     <g transform={`translate(${padding} ${padding})`}>
       {lines.map((line, lineIndex) => (
@@ -239,7 +241,7 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
       onClick: handleRemove,
     },
   ];
-  if (!viewerRef) return null;
+  if (!viewerRef || !value) return null;
 
   const { width, height, x: xInPercent, y: yInPercent } = bounding;
 
