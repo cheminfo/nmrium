@@ -61,25 +61,7 @@ https://www.nmrium.org/teaching#?toc=https://cheminfo.github.io/nmr-dataset2/toc
 
 Also you can do some 2D NMR exercises ;)
 
-https://www.nmrium.org/teaching#?toc=https://cheminfo.github.io/nmr-dataset1/data/2d.json
-
-https://dev.nmrium.org?sampleURL=https%3A//cheminfo.github.io/nmr-dataset1/data/2d.json
-
-You can do some 1D NMR tests/ exams ;)
-
-https://dev.nmrium.org?sampleURL=https%3A//cheminfo.github.io/nmr-dataset2/exam.json
-
-If you have jcamps accessible from an URL and that your server allow cross-origin you can directly open your file in the demo application:
-
-https://dev.nmrium.org?sampleURL=https%3A//cheminfo.github.io/nmr-dataset2/100-86-7/1h.dx
-
-Link loading the default samples test cases
-
-https://dev.nmrium.org/?sampleURL=samples.json
-
-You can debug Data and onDataChange callback ;)
-
-https://dev.nmrium.org/#/test
+https://www.nmrium.org/teaching#?toc=https%3A%2F%2Fcheminfo.github.io%2Fnmr-dataset-nils%2Ftoc_01_simple.json
 
 ### Install and test locally
 
