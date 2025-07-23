@@ -3,7 +3,7 @@ import type {
   Spectrum,
   WorkspacePreferences as NMRiumPreferences,
 } from '@zakodium/nmrium-core';
-import type { WebSource } from 'filelist-utils';
+import type { Source } from 'file-collection';
 import type { CorrelationData } from 'nmr-correlation';
 
 type DeepPartial<T> = {
@@ -11,7 +11,7 @@ type DeepPartial<T> = {
 };
 
 interface NMRiumData {
-  source?: WebSource;
+  source?: Source;
   molecules?: NMRiumMolecules;
   spectra: Array<DeepPartial<Spectrum>>;
   correlations?: CorrelationData;

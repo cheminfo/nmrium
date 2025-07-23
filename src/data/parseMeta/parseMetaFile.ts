@@ -1,9 +1,9 @@
-import type { FileCollectionItem } from 'filelist-utils';
+import type { FileItem } from 'file-collection';
 import type { ParseResult } from 'papaparse';
 import papa from 'papaparse';
 
 export async function parseMetaFile(
-  file: FileCollectionItem | File,
+  file: FileItem | File,
 ): Promise<ParseResult<any>> {
   const data = file instanceof File ? file : await file.text();
   return new Promise((complete, error) => {
