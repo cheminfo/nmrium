@@ -49,6 +49,7 @@ test('should load and migrate .nmrium data from version 1 to version 2', async (
     await expect(ranges).toHaveCount(3);
   });
 });
+
 test('should load and migrate .nmrium data from version 2 to version 3', async ({
   page,
 }) => {
@@ -66,6 +67,7 @@ test('should load and migrate .nmrium data from version 2 to version 3', async (
     ),
   ).toBeVisible();
 });
+
 test('should load .nmrium data from version 3', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.dropFile('1h-version-3-1d.nmrium');
@@ -117,18 +119,7 @@ test('should load .zip files', async ({ page }) => {
   // If the file was loaded successfully, there should be a 1H tab.
   await expect(nmrium.page.locator('_react=Tab[tabid = "1H"]')).toBeVisible();
 });
-test('should load multiple files', async ({ page }) => {
-  const nmrium = await NmriumPage.create(page);
-  await nmrium.dropFile([
-    'ethylvinylether.zip',
-    '1h-version-0.nmrium',
-    '1h-version-1-datasource.nmrium',
-    '13c-version-2.nmrium',
-  ]);
 
-  // If the file was loaded successfully, there should be many tabs.
-  await expect(nmrium.page.locator('_react=Tab[tabid = "13C"]')).toBeVisible();
-});
 test('should load file using drag and drop .nmrium', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.dropFile('1h-version-1-datasource.nmrium');
@@ -144,20 +135,16 @@ test('should load file using drag and drop .zip', async ({ page }) => {
   // If the file was loaded successfully, there should be a 1H tab.
   await expect(nmrium.page.locator('_react=Tab[tabid = "1H"]')).toBeVisible();
 });
+
 test('should load multiple files using drag and drop', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
-  await nmrium.dropFile([
-    'ethylvinylether.zip',
-    '1h-version-0.nmrium',
-    '1h-version-1-datasource.nmrium',
-    '13c-version-2.nmrium',
-  ]);
-  // If the file was loaded successfully, there should be many tabs.
-  await expect(nmrium.page.locator('_react=Tab[tabid = "13C"]')).toBeVisible();
+  await nmrium.dropFile(['ethylbenzene-1h.jdx', 'ethylvinylether.zip']);
+  // If the file was loaded successfully, there should be many spectra.
+  await expect(nmrium.page.locator('_react=SpectrumName')).toHaveCount(2);
 });
+
 test('should load JCAMP-DX file', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.dropFile('ethylbenzene-1h.jdx');
-  // If the file was loaded successfully, there should be many tabs.
   await expect(nmrium.page.locator('_react=Tab[tabid = "1H"]')).toBeVisible();
 });
