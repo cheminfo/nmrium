@@ -251,7 +251,14 @@ function FiltersInner(props: FiltersInnerProps) {
   const filtersList = [...filters];
 
   if (newFilter) {
-    filtersList.push(newFilter);
+    const activeFilterIndex = filters.findIndex(
+      (filter) => filter.id === activeFilterID,
+    );
+    if (activeFilterIndex === -1) {
+      filtersList.push(newFilter);
+    } else {
+      filtersList.splice(activeFilterIndex + 1, 0, newFilter);
+    }
   }
 
   if (filtersList?.length === 0) {
