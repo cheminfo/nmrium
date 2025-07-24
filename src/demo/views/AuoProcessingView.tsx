@@ -1,5 +1,5 @@
 import type { NMRiumCore } from '@zakodium/nmrium-core';
-import { fileCollectionFromWebSource } from 'filelist-utils';
+import { FileCollection } from 'file-collection';
 import { useEffect, useState } from 'react';
 
 import { useCore } from '../../component/context/CoreContext.js';
@@ -23,7 +23,7 @@ async function loadSpectrumFromURL(core: NMRiumCore, url: string) {
     ],
     baseURL,
   };
-  const fileCollection = await fileCollectionFromWebSource(source, {});
+  const fileCollection = await new FileCollection().appendSource(source);
 
   const { nmriumState } = await core.read(fileCollection, {
     experimentalFeatures: true,

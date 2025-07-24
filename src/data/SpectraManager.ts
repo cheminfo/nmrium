@@ -9,8 +9,8 @@ import {
   processJCAMPDX,
   spectrum1DToJCAMPDX,
 } from '@zakodium/nmrium-core-plugins';
+import { BlobWriter, TextReader, ZipWriter } from '@zip.js/zip.js';
 import fileSaver from 'file-saver';
-import JSZip from 'jszip';
 import * as OCL from 'openchemlib';
 
 import type { State } from '../component/reducer/Reducer.js';
@@ -202,24 +202,17 @@ export async function exportForCT(options: ExportForCTOptions) {
     throw new Error('Failed to convert the 1D spectrum to JCAMP');
   }
   const name = spectrum.info.name;
-  const zip = new JSZip();
+  const zip = new ZipWriter(new BlobWriter());
 
   //add jcamp file
-  zip.file(`${name}.dx`, jcamp);
+  await zip.add(`${name}.dx`, new TextReader(jcamp));
   //add mol file
   const { molfile } = molecules[0];
   const molecule = OCL.Molecule.fromMolfile(molfile);
   const molFileName = molecule.getMolecularFormula().formula;
 
-  zip.file(`${molFileName}.mol`, molecule.toMolfile());
+  await zip.add(`${molFileName}.mol`, new TextReader(molecule.toMolfile()));
 
-  const blob = await zip.generateAsync({
-    type: 'blob',
-    compression: 'DEFLATE',
-    compressionOptions: {
-      level: 9,
-    },
-  });
-
+  const blob = await zip.close();
   fileSaver.saveAs(blob, name);
 }

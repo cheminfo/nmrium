@@ -1,6 +1,6 @@
-import type { FileCollectionItem } from 'filelist-utils';
+import type { FileItem } from 'file-collection';
 
-export function isMetaFile(file: File | FileCollectionItem) {
+export function isMetaFile(file: File | FileItem) {
   if (file instanceof File) {
     return ['text/csv', 'text/tsv', 'text/plain'].includes(file?.type);
   }

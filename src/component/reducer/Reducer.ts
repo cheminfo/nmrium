@@ -1,6 +1,6 @@
 import type { BaselineCorrectionZone } from '@zakodium/nmr-types';
 import type { Spectrum, ViewState } from '@zakodium/nmrium-core';
-import type { WebSource as Source } from 'filelist-utils';
+import type { Source } from 'file-collection';
 import type { Draft } from 'immer';
 import { original, produce } from 'immer';
 import type { CorrelationData } from 'nmr-correlation';

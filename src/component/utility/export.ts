@@ -4,9 +4,9 @@ import type {
   JpathTableColumn,
   SpectraTableColumn,
 } from '@zakodium/nmrium-core';
+import { BlobWriter, TextReader, ZipWriter } from '@zip.js/zip.js';
 import dlv from 'dlv';
 import fileSaver from 'file-saver';
-import JSZip from 'jszip';
 
 export const browserNotSupportedErrorToast: ToastProps = {
   message:
@@ -38,15 +38,9 @@ async function exportAsJSON(
     fileSaver.saveAs(blob, `${fileName}.nmrium`);
   } else {
     try {
-      const zip = new JSZip();
-      zip.file(`${fileName}.nmrium`, fileData);
-      const blob = await zip.generateAsync({
-        type: 'blob',
-        compression: 'DEFLATE',
-        compressionOptions: {
-          level: 9,
-        },
-      });
+      const zip = new ZipWriter(new BlobWriter());
+      await zip.add(`${fileName}.nmrium`, new TextReader(fileData));
+      const blob = await zip.close();
       fileSaver.saveAs(blob, `${fileName}.nmrium`);
     } catch (error) {
       // TODO: handle error.
