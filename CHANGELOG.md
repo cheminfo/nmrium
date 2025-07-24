@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.0.0](https://github.com/cheminfo/nmrium/compare/v0.65.2...v1.0.0) (2025-07-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* `file-collection` is now used to manage data sources
+
+### Code Refactoring
+
+* remove `filelist-utils` and `jszip` for better alternatives ([#3615](https://github.com/cheminfo/nmrium/issues/3615)) ([c110206](https://github.com/cheminfo/nmrium/commit/c110206d74446e0697ba67e3cba3a83f69cf765c))
+
 ## [0.65.2](https://github.com/cheminfo/nmrium/compare/v0.65.1...v0.65.2) (2025-07-15)
 
 
