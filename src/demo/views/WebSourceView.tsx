@@ -1,13 +1,15 @@
-import type { CustomWorkspaces, NMRiumCore } from '@zakodium/nmrium-core';
+import type { CustomWorkspaces } from '@zakodium/nmrium-core';
+import init from '@zakodium/nmrium-core-plugins';
 import { useCallback, useEffect, useState } from 'react';
 import { ObjectInspector } from 'react-inspector';
 
-import { useCore } from '../../component/context/CoreContext.js';
 import type { NMRiumWorkspace } from '../../component/main/index.js';
 import { NMRium } from '../../component/main/index.js';
 import type { PageConfig } from '../layouts/Main.js';
 
-async function loadFromURL(core: NMRiumCore, url: string) {
+const core = init();
+
+async function loadFromURL(url: string) {
   const { pathname: relativePath, origin: baseURL } = new URL(url);
   return core.readFromWebSource({ entries: [{ relativePath, baseURL }] });
 }
@@ -36,12 +38,11 @@ export default function WebSourceView(props: WebSourceViewProps) {
   const [callbackData, setCallbackData] = useState<any[]>([]);
   const [isCallbackVisible, showCallback] = useState(false);
 
-  const core = useCore();
   useEffect(() => {
-    void loadFromURL(core, file).then((d) => {
+    void loadFromURL(file).then((d) => {
       setData(d as any);
     });
-  }, [baseURL, core, file, props]);
+  }, [baseURL, file, props]);
 
   const changeHandler = useCallback((logData) => {
     setCallbackData((prevLogs) => {
