@@ -60,8 +60,7 @@ core.registerPlugin({
   version: 1,
   migrations: [],
   ui: {
-    // eslint-disable-next-line camelcase
-    topbar_right: DemoTopBarRight,
+    'topbar.right': DemoTopBarRight,
   },
 });
 
