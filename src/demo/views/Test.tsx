@@ -5,7 +5,7 @@ import { DropZone } from 'react-science/ui';
 
 import { NMRium } from '../../component/main/index.js';
 
-import { loadData } from './View.js';
+import { loadData } from './View.helpers.js';
 
 function searchDeep(obj, searchKey) {
   const result: any = [];

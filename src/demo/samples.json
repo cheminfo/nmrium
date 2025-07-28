@@ -345,5 +345,15 @@
       "width": "1000px",
       "height": "600px"
     }
+  },
+  {
+    "groupName": "Plugin UI",
+    "children": [
+      {
+        "title": "TopBar Plugin",
+        "file": "./data/cytisine/1H.json",
+        "view": "PluginUITopBar"
+      }
+    ]
   }
 ]

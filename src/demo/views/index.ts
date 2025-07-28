@@ -16,4 +16,5 @@ export const possibleViews = {
   TwoInstances: memo(lazy(() => import('./TwoInstances.js'))),
   View: memo(lazy(() => import('./View.js'))),
   WebSourceView: memo(lazy(() => import('./WebSourceView.js'))),
+  PluginUITopBar: memo(lazy(() => import('./PluginUITopBar.js'))),
 };
