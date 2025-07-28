@@ -82,7 +82,6 @@ export const options: RecordOptions = {
       },
     ],
     isToggle: true,
-    isExperimental: true,
   },
   zonePicking: {
     id: 'zonePicking',
