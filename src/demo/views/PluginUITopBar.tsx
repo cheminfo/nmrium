@@ -54,15 +54,16 @@ function DemoTopBarRight() {
   );
 }
 
-const core = init();
-core.registerPlugin({
-  id: 'demo-plugin-topbar',
-  version: 1,
-  migrations: [],
-  ui: {
-    'topbar.right': DemoTopBarRight,
+const core = init([
+  {
+    id: 'demo-plugin-topbar',
+    version: 1,
+    migrations: [],
+    ui: {
+      'topbar.right': DemoTopBarRight,
+    },
   },
-});
+]);
 
 const possibleIcons = Object.values(IconNames);
 export default function PluginUITopBar(props: ViewProps) {

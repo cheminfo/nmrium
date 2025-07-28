@@ -149,7 +149,7 @@ function HeaderInner(props: HeaderInnerProps) {
           }}
         >
           <PluginTopBarRight>
-            {renderCoreSlot(core, 'topbar_right')}
+            {renderCoreSlot(core, 'topbar.right')}
           </PluginTopBarRight>
 
           {!hideWorkspaces && (
