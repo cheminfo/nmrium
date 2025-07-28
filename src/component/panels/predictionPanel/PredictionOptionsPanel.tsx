@@ -18,7 +18,7 @@ import { Select2Controller } from '../../elements/Select2Controller.js';
 import { useSettingImperativeHandle } from '../extra/utilities/settingImperativeHandle.js';
 
 const NUMBER_OF_POINTS_1D = generateNumbersPowerOfX(12, 19);
-const NUMBER_OF_POINTS_2D = generateNumbersPowerOfX(10, 10, {
+const NUMBER_OF_POINTS_2D = generateNumbersPowerOfX(6, 12, {
   format: String,
 });
 
