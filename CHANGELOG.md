@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.1.0](https://github.com/cheminfo/nmrium/compare/v1.0.0...v1.1.0) (2025-07-29)
+
+
+### Features
+
+* extend 2D prediction points range starting from 64 up to 4096 ([70f737f](https://github.com/cheminfo/nmrium/commit/70f737fa75e5c3435f5485db65862f9bcabe345c))
+* move 2D processing from experimental to stable feature ([5df91f3](https://github.com/cheminfo/nmrium/commit/5df91f340b29c4a0b68870f6da2626c5584d2594))
+* move inset tool from experimental to stable feature ([cf421fe](https://github.com/cheminfo/nmrium/commit/cf421fe86e69f936a46132a6a11e17904d1b444e))
+* **plugin:** support `topbar.right` plugin ui slot ([#3621](https://github.com/cheminfo/nmrium/issues/3621)) ([c353b3f](https://github.com/cheminfo/nmrium/commit/c353b3fdf44c3bddcc8e8bbc29fe1c3abb8de03d))
+
 ## [1.0.0](https://github.com/cheminfo/nmrium/compare/v0.65.2...v1.0.0) (2025-07-24)
 
 
