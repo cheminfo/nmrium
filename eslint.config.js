@@ -3,7 +3,6 @@ import ts from 'eslint-config-cheminfo-typescript/base';
 import unicorn from 'eslint-config-cheminfo-typescript/unicorn';
 
 export default [
-
   {
     ignores: [
       'build',
@@ -14,15 +13,16 @@ export default [
       'playwright-report',
       'test-results',
       'public',
+      '.yalc',
     ],
   },
   ...ts,
   ...unicorn,
   ...react,
   {
-    files: ["**/pdnd.cts"],
+    files: ['**/pdnd.cts'],
     rules: {
-      "import/no-extraneous-dependencies": "off",
+      'import/no-extraneous-dependencies': 'off',
     },
   },
   {
@@ -54,7 +54,8 @@ export default [
         {
           name: '@simbathesailor/use-what-changed',
           message: 'Remove use-what-changed before committing the code',
-        }],
+        },
+      ],
       'react/no-unknown-property': ['error', { ignore: ['css'] }],
       'react/forbid-dom-props': [
         'error',

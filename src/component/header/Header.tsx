@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import { memo, useMemo } from 'react';
 import {
   FaFilm,
@@ -9,6 +10,7 @@ import { Toolbar, useFullscreen } from 'react-science/ui';
 
 import { docsBaseUrl } from '../../constants.js';
 import { useChartData } from '../context/ChartContext.js';
+import { useCore } from '../context/CoreContext.js';
 import {
   usePreferences,
   useWorkspacesList,
@@ -26,6 +28,7 @@ import AboutUsModal from '../modal/aboutUs/AboutUsModal.js';
 import GeneralSettingsModal from '../modal/setting/GeneralSettings.js';
 import WorkspaceItem from '../modal/setting/WorkspaceItem.js';
 import { options } from '../toolbar/ToolTypes.js';
+import { renderCoreSlot } from '../utility/renderCoreSlot.js';
 
 import { AutoPeakPickingOptionPanel } from './AutoPeakPickingOptionPanel.js';
 import { HeaderWrapper } from './HeaderWrapper.js';
@@ -60,6 +63,7 @@ interface HeaderInnerProps {
 
 function HeaderInner(props: HeaderInnerProps) {
   const { selectedOptionPanel, height } = props;
+  const core = useCore();
 
   const {
     current: {
@@ -144,6 +148,10 @@ function HeaderInner(props: HeaderInnerProps) {
             alignItems: 'center',
           }}
         >
+          <PluginTopBarRight>
+            {renderCoreSlot(core, 'topbar.right')}
+          </PluginTopBarRight>
+
           {!hideWorkspaces && (
             <DropDownButton
               data={workspacesList}
@@ -242,3 +250,10 @@ export function Header() {
     />
   );
 }
+
+const PluginTopBarRight = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-right: 5px;
+`;
