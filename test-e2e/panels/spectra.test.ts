@@ -39,16 +39,16 @@ test('Check if the color picker is visible after click on the ColorIndicator', a
 test('Should Zoom', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
+  const pathLocator = nmrium.page.getByTestId('spectrum-line');
 
-  const previousPath = (await nmrium.page
-    .getByTestId('spectrum-line')
-    .getAttribute('d')) as string;
+  const previousPath = (await pathLocator.getAttribute('d')) as string;
 
   await nmrium.viewer.drawRectangle({ axis: 'x', startX: 100, endX: 200 });
 
-  const path = (await nmrium.page
-    .getByTestId('spectrum-line')
-    .getAttribute('d')) as string;
+  // wait for path to change
+  await expect(pathLocator).not.toHaveAttribute('d', previousPath);
+
+  const path = (await pathLocator.getAttribute('d')) as string;
 
   expect(path.length).toBeGreaterThan(1000);
   expect(path).not.toContain('NaN');
