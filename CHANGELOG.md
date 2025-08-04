@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/cheminfo/nmrium/compare/v1.1.0...v1.2.0) (2025-08-04)
+
+
+### Features
+
+* support filter insertion after spectrum rollback ([1dd1f9e](https://github.com/cheminfo/nmrium/commit/1dd1f9e26c26baf59b9a12647390e4e2f5daafe6))
+
 ## [1.1.0](https://github.com/cheminfo/nmrium/compare/v1.0.0...v1.1.0) (2025-07-29)
 
 
