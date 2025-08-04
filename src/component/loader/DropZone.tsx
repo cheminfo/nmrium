@@ -12,28 +12,28 @@ import { MetaImportationModal } from '../modal/metaImportation/MetaImportationMo
 import { useLoadFiles } from './useLoadFiles.js';
 
 const DropContainer = styled.div`
-  height: 100%;
-  background-color: #b5b5b599;
   position: absolute;
-  display: flex;
-  justify-content: center;
   align-items: center;
+  background-color: #b5b5b599;
+  display: flex;
   flex-flow: column;
+  height: 100%;
+  justify-content: center;
   z-index: 8;
 
   svg {
-    stroke-width: 0;
-    font-size: 3rem !important;
     fill: white;
+    font-size: 3rem !important;
+    stroke-width: 0;
   }
 `;
 
 const DropText = styled.p`
-  color: white;
   background-color: rgb(104 104 104);
-  padding: 1.5%;
   border-radius: 30px;
+  color: white;
   margin: 0;
+  padding: 1.5%;
 `;
 
 const Container = styled.div`

@@ -29,8 +29,8 @@ const CustomDialogBody = styled(StyledDialogBody)`
   }
 
   span.title {
-    font-weight: bold;
     color: #ea580c;
+    font-weight: bold;
   }
 
   span.content {
@@ -54,9 +54,9 @@ const CustomDialogBody = styled(StyledDialogBody)`
 `;
 
 const InfoBlock = styled.div`
+  align-items: center;
   display: flex;
   flex-direction: column;
-  align-items: center;
 `;
 const Container = styled.div`
   padding: 20px;
@@ -64,9 +64,9 @@ const Container = styled.div`
 
 const Separator = styled.span`
   border-bottom: 1px solid gray;
-  width: 15px;
   height: 1px;
   margin: 10px 0;
+  width: 15px;
 `;
 
 function AboutUsModal() {

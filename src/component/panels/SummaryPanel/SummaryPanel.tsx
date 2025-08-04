@@ -52,8 +52,8 @@ export type OnEditCorrelationCallback = (
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  text-align: center;
   height: 100%;
+  text-align: center;
   width: 100%;
 `;
 
@@ -63,19 +63,19 @@ const InnerHeader = styled.div`
   justify-content: center;
 `;
 const OverviewContainer = styled.div`
-  width: 100%;
-  display: flex;
   align-items: center;
+  display: flex;
   margin-left: 10px;
+  width: 100%;
 `;
 
 const SelectionContainer = styled.div`
-  width: 100%;
-  display: flex;
   align-items: center;
+  display: flex;
   justify-content: flex-end;
   margin-right: 2px;
   white-space: nowrap;
+  width: 100%;
 `;
 
 const SelectionLabel = styled.label`

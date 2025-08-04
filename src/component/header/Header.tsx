@@ -252,8 +252,8 @@ export function Header() {
 }
 
 const PluginTopBarRight = styled.div`
-  display: flex;
   align-items: center;
+  display: flex;
   gap: 5px;
   margin-right: 5px;
 `;

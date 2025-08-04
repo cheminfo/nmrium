@@ -13,12 +13,12 @@ import { useGetPanelOptions } from './hooks/useGetPanelOptions.js';
 import { useTogglePanel } from './hooks/useTogglePanel.js';
 
 const PanelsBarContainer = styled(ButtonGroup)`
-  flex-wrap: nowrap;
-  height: 100%;
-  gap: 4px;
-  padding: 4px;
-  border-left: 1px solid ${Colors.LIGHT_GRAY4};
   background-color: ${Colors.WHITE};
+  border-left: 1px solid ${Colors.LIGHT_GRAY4};
+  flex-wrap: nowrap;
+  gap: 4px;
+  height: 100%;
+  padding: 4px;
 `;
 
 function useHiddenItemsMenu(

@@ -22,8 +22,8 @@ const Container = styled.section`
   height: 100%;
 
   & > h1 {
-    font-weight: 700;
     font-size: 1.5em;
+    font-weight: 700;
     line-height: 1.4em;
     padding: 0.75em;
   }

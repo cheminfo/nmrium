@@ -6,8 +6,8 @@ export const StickyHeader = styled(Sections.Header)`
   position: sticky;
   top: 40px;
   background-color: white;
-  z-index: 1;
   box-shadow: rgb(0 0 0 / 16%) 0 1px 4px;
+  z-index: 1;
 `;
 
 export const HeaderContainer = styled.div`

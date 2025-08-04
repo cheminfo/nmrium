@@ -36,8 +36,8 @@ const Table = styled.table`
 `;
 
 const TableHeader = styled.th`
-  padding: 5px;
   font-weight: 600;
+  padding: 5px;
 `;
 
 const TableCell = styled.td`

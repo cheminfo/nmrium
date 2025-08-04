@@ -5,10 +5,10 @@ import type { ReactNode } from 'react';
 import { createContext, useContext, useMemo, useState } from 'react';
 
 const Message = styled.p`
-  font-weight: bold;
-  font-size: 14px;
-  text-align: center;
   color: #af0000;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
 `;
 
 const Footer = styled(DialogFooter)`

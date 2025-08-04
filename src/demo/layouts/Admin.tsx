@@ -9,11 +9,11 @@ import { possibleViews } from '../views/index.js';
 
 const Container = styled.div<{ isMenuClosed: boolean }>`
   position: relative;
+  background-color: #ebecf1;
   float: right;
   height: 100%;
-  background-color: #ebecf1;
-  width: ${({ isMenuClosed }) => (isMenuClosed ? '98%' : 'calc(100% - 260px)')};
   margin-left: ${({ isMenuClosed }) => (isMenuClosed ? '20px' : '0px')};
+  width: ${({ isMenuClosed }) => (isMenuClosed ? '98%' : 'calc(100% - 260px)')};
 `;
 
 interface DashboardProps {

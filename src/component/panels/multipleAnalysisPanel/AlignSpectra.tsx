@@ -86,11 +86,11 @@ function getList(nucleus) {
 }
 
 const Container = styled.div`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   max-height: 100%;
   padding: 10px 0 5px 20px;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
 
   .body {
     overflow: auto;
@@ -98,9 +98,9 @@ const Container = styled.div`
   }
 
   .header {
-    padding: 5px 0;
     font-size: 15px;
     font-weight: bold;
+    padding: 5px 0;
   }
 
   .footer {

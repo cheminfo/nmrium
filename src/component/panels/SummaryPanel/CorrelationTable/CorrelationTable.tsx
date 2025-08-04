@@ -8,32 +8,32 @@ import AdditionalColumnHeader from './AdditionalColumnHeader.js';
 import CorrelationTableRow from './CorrelationTableRow.js';
 
 const Container = styled.div`
-  overflow: auto;
-  height: 100%;
   display: block;
+  height: 100%;
+  overflow: auto;
 
   table {
-    border-spacing: 0;
     border: 1px solid #dedede;
-    width: 100%;
+    border-spacing: 0;
     font-size: 12px;
     height: 100%;
+    width: 100%;
   }
 
   th {
     position: sticky;
-    background-color: white;
     top: 0;
+    background-color: white;
   }
 
   th,
   td {
-    white-space: nowrap;
-    text-align: center;
-    margin: 0;
-    padding: 0.4rem;
     border-bottom: 1px solid #dedede;
     border-right: 1px solid #dedede;
+    margin: 0;
+    padding: 0.4rem;
+    text-align: center;
+    white-space: nowrap;
 
     :last-child {
       border-right: 0;

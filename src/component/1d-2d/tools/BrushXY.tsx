@@ -21,10 +21,10 @@ const LabelWrapper = styled.span`
   position: absolute;
   top: 0;
   left: 0;
-  transform-origin: center;
-  font-size: 12px;
-  will-change: transform;
   color: black;
+  font-size: 12px;
+  transform-origin: center;
+  will-change: transform;
 `;
 
 const baseStyles: CSSProperties = {

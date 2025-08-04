@@ -119,32 +119,32 @@ function getFillStyle(props: ButtonStyle) {
   switch (fill) {
     case 'solid': {
       return css`
-        border-color: transparent;
         background-color: ${backgroundColor.base};
+        border-color: transparent;
         color: ${color.hover};
       `;
     }
     case 'outline': {
       return css`
-        border-style: solid;
-        border-color: ${backgroundColor.base};
         background-color: transparent;
+        border-color: ${backgroundColor.base};
+        border-style: solid;
         color: ${color.base};
       `;
     }
 
     case 'clear': {
       return css`
-        border-color: transparent;
         background-color: transparent;
+        border-color: transparent;
         color: ${color.base};
       `;
     }
     default:
       return css`
         background-color: ${backgroundColor.base};
-        color: ${color.base};
         border-color: ${borderColor};
+        color: ${color.base};
       `;
   }
 }
@@ -160,10 +160,10 @@ const styles: Style = {
     } = props;
 
     const basic = css`
+      align-items: center;
+      border-width: 1px;
       display: flex;
       flex-direction: row;
-      border-width: 1px;
-      align-items: center;
 
       &:hover + .content {
         display: flex;

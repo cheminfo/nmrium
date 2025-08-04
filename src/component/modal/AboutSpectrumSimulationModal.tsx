@@ -15,8 +15,8 @@ const DialogBody = styled(StyledDialogBody)`
 
   p,
   li {
-    user-select: text;
     font-size: 1.1em;
+    user-select: text;
   }
 
   a {
@@ -30,8 +30,8 @@ const DialogBody = styled(StyledDialogBody)`
 
   .header span {
     color: #464646;
-    font-size: 15px;
     flex: 1;
+    font-size: 15px;
     user-select: none;
   }
 

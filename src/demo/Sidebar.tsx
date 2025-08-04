@@ -13,25 +13,25 @@ interface MenuStatus {
 }
 
 const SideBarContainer = styled.div<MenuStatus>`
-  background: #2ca8ff;
   position: fixed;
   top: 0;
-  height: 100%;
   bottom: 0;
   left: 0;
-  z-index: 19;
+  background: #2ca8ff;
+  height: 100%;
   width: ${({ isMenuClosed }) => (isMenuClosed ? '3%' : '260px')};
+  z-index: 19;
 `;
 
 const MenuButton = styled.button`
-  margin: 2px 4px;
-  z-index: 7;
-  font-size: 18px;
   background-color: transparent;
   border: none !important;
+  font-size: 18px;
   height: 30px;
-  width: 30px;
+  margin: 2px 4px;
   padding: 1px 6px;
+  width: 30px;
+  z-index: 7;
 
   & svg {
     fill: white;
@@ -53,11 +53,11 @@ const MenuButton = styled.button`
 `;
 
 const SideBarHeader = styled.div`
+  align-items: center;
+  border-bottom: 1px solid #eee;
   display: flex;
   justify-content: space-between;
-  align-items: center;
   z-index: 4;
-  border-bottom: 1px solid #eee;
 `;
 
 const TitleContainer = styled.div<MenuStatus>`
@@ -66,28 +66,28 @@ const TitleContainer = styled.div<MenuStatus>`
 `;
 
 const Title = styled.a`
-  text-transform: uppercase;
-  padding: 0.5rem 0;
-  display: block;
-  white-space: nowrap;
-  font-size: 1em;
   color: #fff;
-  text-decoration: none;
+  display: block;
+  font-size: 1em;
   font-weight: 400;
   line-height: 30px;
-  overflow: hidden;
   opacity: 1;
+  overflow: hidden;
+  padding: 0.5rem 0;
+  text-decoration: none;
+  text-transform: uppercase;
   transform: translateZ(0);
+  white-space: nowrap;
 `;
 
 const SideBarWrapper = styled.div<MenuStatus>`
   position: relative;
+  display: ${({ isMenuClosed }) => (isMenuClosed ? 'none' : 'block')};
   height: calc(100vh - 75px);
   overflow: hidden auto;
+  padding-bottom: 100px;
   width: 260px;
   z-index: 4;
-  padding-bottom: 100px;
-  display: ${({ isMenuClosed }) => (isMenuClosed ? 'none' : 'block')};
 `;
 
 function Sidebar(props) {

@@ -16,10 +16,10 @@ import { usePanelPreferences } from '../hooks/usePanelPreferences.js';
 import useSpectrum from '../hooks/useSpectrum.js';
 
 const Body = styled.div`
+  border: 1px solid #e9e9e9;
+  min-height: 180px;
   padding: 5px;
   width: 100%;
-  min-height: 180px;
-  border: 1px solid #e9e9e9;
 `;
 
 const labelStyle: LabelStyle = {

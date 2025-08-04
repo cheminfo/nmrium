@@ -1,12 +1,12 @@
 import styled from '@emotion/styled';
 
 const LoadingContainer = styled.div`
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
   background-color: #f4f4f4;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  justify-content: center;
 
   #title {
     padding: 20px 0;
@@ -17,12 +17,12 @@ const LoadingContainer = styled.div`
   }
 
   #loader {
-    border: 1px solid #f3f3f3;
-    border-top: 3px solid #c25a00;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
     animation: spin 0.6s linear infinite;
+    border: 1px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 3px solid #c25a00;
+    height: 50px;
+    width: 50px;
   }
 
   @keyframes spin {

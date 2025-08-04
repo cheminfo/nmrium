@@ -21,9 +21,9 @@ import { useWatchForm } from '../../useWatchForm.js';
 
 const Container = styled.div`
   display: flex;
-  justify-content: flex-end;
   flex: 1;
   height: 100%;
+  justify-content: flex-end;
 `;
 
 const predictionFormValidation = Yup.object().shape({

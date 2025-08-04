@@ -15,22 +15,22 @@ interface ArrowProps {
 const ArrowButton = styled.div<{
   direction: Direction;
 }>`
-  display: inline-flex;
-  height: 40px;
-  width: 40px;
-  justify-content: center;
+  align-items: center;
+  background-color: #f7f7f7;
+  border: none;
   border-radius: 50%;
   cursor: pointer;
-  align-items: center;
-  border: none;
-  transition: transform ease-in 0.1s;
-  background-color: #f7f7f7;
+  display: inline-flex;
+  height: 40px;
+  justify-content: center;
   pointer-events: auto;
+  transition: transform ease-in 0.1s;
+  width: 40px;
 
   &:hover {
-    transform: scale(1.1);
     background-color: #607d8b !important;
     color: white;
+    transform: scale(1.1);
   }
 
   img {
@@ -56,27 +56,27 @@ function Arrow({ direction, onClick, style = {} }: ArrowProps) {
 
 const Container = styled.div`
   position: relative;
+  display: block;
   height: 100%;
-  width: 100%;
   margin: 0 auto;
   overflow: hidden;
-  display: block;
+  width: 100%;
 `;
 const TransformController = styled.div<{
   translation: number;
   slidersWidth: number;
 }>(
-  ({ translation, slidersWidth }) => `transform: translateX(-${translation}px);
-  transition: transform ease-out ${transition}s;
-  height: 100%;
-  width: ${slidersWidth}px;
+  ({ translation, slidersWidth }) => `
   display: flex;
+  height: 100%;transform: translateX(-${translation}px);
+  transition: transform ease-out ${transition}s;
+  width: ${slidersWidth}px;
 `,
 );
 
 const Content = styled.div<{ width: number }>`
-  width: ${(props) => props.width}px;
   flex: 1;
+  width: ${(props) => props.width}px;
 `;
 
 const transition = 0.45;

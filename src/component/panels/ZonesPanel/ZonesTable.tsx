@@ -18,10 +18,10 @@ import ZonesTableRow from './ZonesTableRow.js';
 import { useMapZones } from './hooks/useMapZones.js';
 
 const Table = styled.table`
-  border-spacing: 0;
   border: 1px solid #dedede;
-  width: 100%;
+  border-spacing: 0;
   font-size: 12px;
+  width: 100%;
 
   .react-contextmenu-wrapper {
     display: contents;
@@ -35,12 +35,12 @@ const Table = styled.table`
 
   th,
   td {
-    white-space: nowrap;
-    text-align: center;
-    margin: 0;
-    padding: 0.1rem 0.4rem;
     border-bottom: 1px solid #dedede;
     border-right: 1px solid #dedede;
+    margin: 0;
+    padding: 0.1rem 0.4rem;
+    text-align: center;
+    white-space: nowrap;
 
     :last-child {
       border-right: 0;

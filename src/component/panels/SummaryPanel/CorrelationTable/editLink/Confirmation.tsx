@@ -11,17 +11,17 @@ const Container = styled.div`
   }
 
   button {
-    flex: 2;
-    padding: 5px;
+    background-color: gray;
     border: 1px solid gray;
     border-radius: 5px;
+    color: white;
+    display: block;
+    flex: 2;
     height: 30px;
     margin: 0 auto;
     margin-top: 15px;
-    display: block;
+    padding: 5px;
     width: 90px;
-    color: white;
-    background-color: gray;
   }
 
   button:focus {
