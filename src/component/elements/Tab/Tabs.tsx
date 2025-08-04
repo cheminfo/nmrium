@@ -7,16 +7,16 @@ import type { TabEvents, TabProps } from './Tab.js';
 import Tab from './Tab.js';
 
 const topStyles = css`
-  height: 100%;
-  width: 100%;
   display: flex;
   flex-direction: column;
+  height: 100%;
+  width: 100%;
 
   .tab-list {
     border-bottom: 1px solid #ccc;
-    padding-left: 0;
-    margin: 0;
     display: inline-flex;
+    margin: 0;
+    padding-left: 0;
   }
 
   .tab-list li:first-of-type {
@@ -52,8 +52,8 @@ const leftStyles = css`
 
   .tab-list {
     border-right: 1px solid #ccc;
-    padding-left: 0;
     margin: 0;
+    padding-left: 0;
   }
 
   .tab-list li:hover {

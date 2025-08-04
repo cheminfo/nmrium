@@ -43,42 +43,42 @@ const BottomContainer = styled.div<{ isVisible: boolean }>`
 `;
 
 const BottomRightContainer = styled.div`
-  width: 50%;
   display: flex;
-  height: 100%;
   flex-direction: column;
+  height: 100%;
+  width: 50%;
 `;
 
 const MFContainer = styled.div`
-  height: 20%;
-  display: flex;
   align-items: center;
-  justify-content: center;
   background-color: white;
   border: 1px dashed gray;
+  display: flex;
+  height: 20%;
+  justify-content: center;
 `;
 
 const ResultContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 80%;
   position: relative;
+  align-items: center;
+  display: flex;
+  height: 80%;
+  justify-content: center;
 `;
 
 const InnerCopyButton = styled.button`
   position: absolute;
   top: 10px;
   left: 10px;
-  width: 50px;
-  height: 40px;
-  outline: none;
-  border: none;
+  align-items: center;
   background-color: white;
+  border: none;
   border-radius: 10px;
   display: flex;
+  height: 40px;
   justify-content: center;
-  align-items: center;
+  outline: none;
+  width: 50px;
 
   &:hover {
     background-color: green;
@@ -93,28 +93,28 @@ const StructureEditorContainer = styled.div`
 `;
 
 const ToggleButton = styled.button`
-  outline: none;
   border: none;
-  border-top: 0.55px solid #c1c1c1;
   border-bottom: 0.55px solid #c1c1c1;
+  border-top: 0.55px solid #c1c1c1;
   color: #00b707;
-  font-weight: bold;
   font-size: 12px;
+  font-weight: bold;
+  outline: none;
   padding: 5px;
 
   &:hover {
-    color: white !important;
     background-color: #00b707;
+    color: white !important;
   }
 `;
 
 const Title = styled.p`
-  text-transform: none;
+  background-color: white;
+  color: #3e3e3e;
+  font-size: 14px;
   margin: 0;
   padding: 5px;
-  background-color: white;
-  font-size: 14px;
-  color: #3e3e3e;
+  text-transform: none;
 
   p {
     font-size: 10px;
@@ -123,21 +123,21 @@ const Title = styled.p`
 `;
 
 const Result = styled.div`
-  width: 50%;
-  height: 50%;
-  display: flex;
   align-items: center;
-  justify-content: center;
+  display: flex;
   font-size: 16px;
   font-weight: bold;
+  height: 50%;
+  justify-content: center;
+  width: 50%;
 `;
 
 const Container = styled.div`
-  height: 100%;
   display: flex;
   flex-direction: column;
-  padding: 10px;
+  height: 100%;
   margin-left: 30px;
+  padding: 10px;
 `;
 
 const CopyButton = ({ result }) => {

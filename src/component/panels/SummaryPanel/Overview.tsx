@@ -6,10 +6,10 @@ import { ErrorColors, Errors } from './CorrelationTable/Constants.js';
 
 const Container = styled.div`
   display: flex;
-  width: 100%;
   font-size: 15px;
   font-weight: 300;
   white-space: nowrap;
+  width: 100%;
 
   span {
     margin-left: 8px;

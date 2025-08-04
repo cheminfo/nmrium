@@ -3,15 +3,15 @@ import type { CSSProperties } from 'react';
 import { FaRegEyeSlash } from 'react-icons/fa';
 
 const EmptyContainer = styled.div`
+  color: #6a6a6a;
   display: flex;
   justify-content: center;
-  color: #6a6a6a;
   padding: 1.5rem 0;
 `;
 
 const Icon = styled(FaRegEyeSlash)`
-  margin: 0 10px;
   font-size: 1.1rem;
+  margin: 0 10px;
 `;
 const Text = styled.span`
   font-size: 0.8rem;

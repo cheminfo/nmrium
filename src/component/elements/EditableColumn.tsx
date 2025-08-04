@@ -18,9 +18,9 @@ interface OverflowProps {
 
 const Text = styled.span<OverflowProps>`
   display: table-cell;
+  height: 100%;
   vertical-align: middle;
   width: 100%;
-  height: 100%;
   ${({ textOverflowEllipses }) =>
     textOverflowEllipses &&
     `
@@ -31,9 +31,9 @@ const Text = styled.span<OverflowProps>`
 `;
 const Container = styled.span<OverflowProps>`
   display: table;
-  width: 100%;
-  min-height: 22px;
   height: 100%;
+  min-height: 22px;
+  width: 100%;
   ${({ textOverflowEllipses }) =>
     textOverflowEllipses &&
     `

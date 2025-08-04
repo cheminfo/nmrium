@@ -31,9 +31,9 @@ const InfoHeader = styled.div`
 `;
 
 const BaseText = styled.span`
-  text-align: center;
   flex: 1;
   font-size: 12px;
+  text-align: center;
 `;
 
 const Text = styled(BaseText)`

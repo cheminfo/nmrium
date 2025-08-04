@@ -26,9 +26,9 @@ import type { NMRiumProps, NMRiumRefAPI } from './index.js';
 
 const NMRiumContainer = styled.div`
   background-color: white;
-  width: 100%;
   display: block;
   height: 100%;
+  width: 100%;
 
   div:focus {
     outline: none !important;
@@ -62,8 +62,8 @@ const NMRiumContainer = styled.div`
 
   .actions-buttons-popover {
     background: transparent;
-    padding: 5px;
     box-shadow: none;
+    padding: 5px;
   }
 `;
 
@@ -105,9 +105,9 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
       <Global
         styles={css`
           .actions-buttons-popover {
+            background-color: white;
             border-radius: 10px;
             padding: 5px;
-            background-color: white;
           }
 
           .popover-tab {

@@ -44,9 +44,9 @@ type SaveInput =
     };
 
 const ManualContainer = styled.div`
-  padding: 30px 5px;
   display: flex;
   justify-content: center;
+  padding: 30px 5px;
 `;
 
 interface SumOption {

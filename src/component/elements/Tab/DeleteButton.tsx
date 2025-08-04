@@ -3,15 +3,15 @@ import type { CSSProperties } from 'react';
 import { FaTimes } from 'react-icons/fa';
 
 const BaseButton = styled.button`
-  border-radius: 50%;
-  width: 16px;
-  height: 16px;
+  align-items: center;
   background-color: transparent;
   border: none;
-  padding: 0;
+  border-radius: 50%;
   display: flex;
-  align-items: center;
+  height: 16px;
   justify-content: center;
+  padding: 0;
+  width: 16px;
 
   .icon {
     color: #252525;

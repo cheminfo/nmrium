@@ -26,15 +26,15 @@ const DialogBody = styled(StyledDialogBody)`
 
   .warning {
     color: #c40000;
-    font-weight: bold;
     font-size: 13px;
-    text-align: justify;
+    font-weight: bold;
     margin-top: 30px;
+    text-align: justify;
   }
 
   .warning-container {
-    margin-top: 5px;
     display: flex;
+    margin-top: 5px;
 
     input {
       margin: 5px 5px 5px 0;
@@ -42,8 +42,8 @@ const DialogBody = styled(StyledDialogBody)`
   }
 
   .header {
-    padding: 0;
     margin: 0 30%;
+    padding: 0;
     width: 40%;
   }
 `;

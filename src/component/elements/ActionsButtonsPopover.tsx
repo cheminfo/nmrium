@@ -14,24 +14,24 @@ const Container = styled.div<Pick<CSSProperties, 'flexDirection' | 'gap'>>`
   button,
   a[role='button'] {
     border-radius: 50%;
-    min-width: 16px;
-    min-height: 16px;
     font-size: 10px;
+    min-height: 16px;
+    min-width: 16px;
     padding: 5px;
   }
 `;
 
 const HorizontalSeparator = styled.div`
   border-left: 1px solid #dedede;
+  height: 10px;
   margin: auto 5px;
   width: 1px;
-  height: 10px;
 `;
 const VerticalSeparator = styled.div`
   border-top: 1px solid #dedede;
+  height: 1px;
   margin: 5px auto;
   width: 10px;
-  height: 1px;
 `;
 
 interface PopoverButtonProps extends ButtonProps {

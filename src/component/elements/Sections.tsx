@@ -39,25 +39,25 @@ interface DropIndicatorProps {
 
 const DropIndicator = styled.div<DropIndicatorProps>`
   position: absolute;
-  z-index: 3;
+  right: 0;
+  left: 0;
   background-color: ${Colors.BLUE3};
   height: 2px;
-  left: 0;
-  right: 0;
   pointer-events: none;
+  z-index: 3;
   ${(props) => props.edge === 'top' && 'top: -1px;'}
   ${(props) => props.edge === 'bottom' && 'bottom: -1px;'}
 `;
 
 const Preview = styled.div`
+  background-color: #f4f5f7;
+  border-radius: 4px;
+  max-width: 360px;
+  overflow: hidden;
   padding-block: 4px;
   padding-inline: 8px;
-  border-radius: 4px;
-  background-color: #f4f5f7;
-  max-width: 360px;
-  white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 type DraggableState =
@@ -101,12 +101,12 @@ const Container = styled.div<{
   matchContentHeight: boolean;
 }>(
   ({ isOverflow, matchContentHeight }) => `
-  width: 100%;
-  height: ${matchContentHeight ? 'auto' : '100%'};
+  border: 1px solid #ddd;
   display: flex;
   flex-direction: column;
+  height: ${matchContentHeight ? 'auto' : '100%'};
   overflow: ${isOverflow ? 'auto' : 'hidden'};
-  border: 1px solid #ddd;
+  width: 100%;
 `,
 );
 
@@ -115,9 +115,9 @@ const SectionWrapper = styled.div<
 >(
   ({ isOpen, isOverflow, matchContentHeight }) => `
   display: flex;
-  flex-direction: column;
   flex:none;
   flex: ${isOpen && !matchContentHeight ? (isOverflow ? '1' : isOverflow ? '1' : '1 1 1px') : 'none'};
+  flex-direction: column;
 `,
 );
 
@@ -129,24 +129,24 @@ const Active = styled(Tag, {
   ({ isOpen }) => `
 background-color: ${isOpen ? '#4CAF50' : '#ccc'};
 color: ${isOpen ? 'white' : 'black'};
-margin-right: 10px;
 flex-shrink: 0;
+margin-right: 10px;
 `,
 );
 
 const TitleContainer = styled.div`
-  display: flex;
   align-items: center;
-  min-width: 0;
+  display: flex;
   flex-grow: 1;
+  min-width: 0;
 `;
 
 const Title = styled.div`
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   flex-grow: 1;
   font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const OpenIcon = styled(Icon, {
@@ -154,9 +154,9 @@ const OpenIcon = styled(Icon, {
     return propName !== 'isOpen';
   },
 })<ActiveProps>`
+  margin-left: 10px;
   transform: ${({ isOpen }) => (isOpen ? 'rotate(90deg)' : 'rotate(0deg)')};
   transition: transform 0.3s ease;
-  margin-left: 10px;
 `;
 
 const ContentWrapper = styled.div<ActiveProps>(
@@ -164,31 +164,31 @@ const ContentWrapper = styled.div<ActiveProps>(
   background-color: white;
   display: ${isOpen ? 'flex' : 'none'};
   flex: ${isOpen ? (isOverflow ? '1' : '1 1 1px') : 'none'};
-  max-height: 100%;
   flex-direction:column;
+  max-height: 100%;
 `,
 );
 const Content = styled.div`
-  height: 100%;
-  width: 100%;
-  overflow: auto;
+  position: relative;
   display: flex;
   flex-direction: column;
+  height: 100%;
+  overflow: auto;
   padding: 10px;
-  position: relative;
+  width: 100%;
   z-index: 0;
 `;
 const ElementsContainer = styled.div`
-  display: flex;
   align-items: center;
+  display: flex;
 `;
 
 const Header = styled.div`
-  display: flex;
   align-items: center;
+  background-color: #f5f5f5;
+  display: flex;
   justify-content: space-between;
   padding: 5px 10px;
-  background-color: #f5f5f5;
 
   &:hover {
     background-color: #e0e0e0;
@@ -200,10 +200,10 @@ const Header = styled.div`
 `;
 
 const InnerHeader = styled.div`
-  padding: 5px;
   background-color: white;
   border-bottom: 1px solid #ddd;
   border-top: 1px solid #ddd;
+  padding: 5px;
 `;
 
 interface BaseSectionProps {

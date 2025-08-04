@@ -30,19 +30,19 @@ const Container = styled.div`
 `;
 
 const Overflow = styled.div<{ height: number }>`
-  overflow: hidden auto;
   height: ${({ height }) => height}px;
+  overflow: hidden auto;
 `;
 
 const StickyFooter = styled.div`
-  flex-shrink: 0;
-  padding: 5px;
-  display: flex;
-  justify-content: flex-end;
-  z-index: 2;
   position: absolute;
-  bottom: 0;
   right: 10px;
+  bottom: 0;
+  display: flex;
+  flex-shrink: 0;
+  justify-content: flex-end;
+  padding: 5px;
+  z-index: 2;
 `;
 
 export default function PredictionPanel() {

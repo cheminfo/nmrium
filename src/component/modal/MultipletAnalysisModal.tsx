@@ -12,16 +12,16 @@ import { useScaleChecked } from '../context/ScaleContext.js';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 
 const Container = styled.div`
-  padding: 10px;
   max-height: 500px;
   overflow-y: auto;
+  padding: 10px;
 `;
 
 const Row = styled.div`
-  outline: none;
   display: flex;
   flex-direction: row;
   margin: 0;
+  outline: none;
 
   &:nth-child(odd) {
     background: #fafafa;
@@ -29,29 +29,29 @@ const Row = styled.div`
 `;
 
 const Multiplicity = styled.div`
-  flex: 2;
-  display: flex;
   align-items: center;
+  display: flex;
+  flex: 2;
   justify-content: center;
   padding: 0 20px;
 `;
 
 const LoaderContainer = styled.div`
-  display: flex;
   align-items: center;
-  justify-content: center;
+  display: flex;
   flex-direction: column;
+  justify-content: center;
   user-select: none;
 
   svg {
-    animation-name: spin-animation;
-    animation-iteration-count: infinite;
-    animation-fill-mode: forwards;
     animation-direction: inherit;
-    animation-timing-function: linear;
     animation-duration: 1s;
-    width: 100px;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-name: spin-animation;
+    animation-timing-function: linear;
     height: 100px;
+    width: 100px;
   }
 
   @keyframes spin-animation {

@@ -22,8 +22,8 @@ const ReactRnd = styled(Rnd)`
   border: 1px solid transparent;
 
   &:hover {
-    border: 1px solid #ebecf1;
     background-color: white;
+    border: 1px solid #ebecf1;
 
     button {
       visibility: visible;

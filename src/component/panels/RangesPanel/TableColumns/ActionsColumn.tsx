@@ -14,8 +14,8 @@ import type {
 import useEditRangeModal from '../hooks/useEditRangeModal.js';
 
 const ActionsCell = styled.td`
-  width: 66px;
   padding: 0 !important;
+  width: 66px;
 
   button {
     background-color: transparent;

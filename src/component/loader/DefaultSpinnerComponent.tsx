@@ -1,25 +1,25 @@
 import styled from '@emotion/styled';
 
 const Container = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgb(255 255 255 / 25%);
-  height: 100%;
-  flex-direction: column;
-  user-select: none;
   position: absolute;
+  align-items: center;
+  background-color: rgb(255 255 255 / 25%);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+  user-select: none;
   width: 100%;
 
   svg {
-    animation-name: spin-animation;
-    animation-iteration-count: infinite;
-    animation-fill-mode: forwards;
     animation-direction: inherit;
-    animation-timing-function: linear;
     animation-duration: 1s;
-    width: 100px;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-name: spin-animation;
+    animation-timing-function: linear;
     height: 100px;
+    width: 100px;
   }
 
   @keyframes spin-animation {

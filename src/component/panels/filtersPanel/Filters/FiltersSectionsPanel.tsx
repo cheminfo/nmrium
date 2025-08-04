@@ -28,8 +28,8 @@ export const nonRemovableFilters = new Set<BaseFilterEntry['name']>([
 ]);
 
 const IconButton = styled(Button)`
-  padding: 2px;
   font-size: 16px;
+  padding: 2px;
 `;
 
 const Filters = {

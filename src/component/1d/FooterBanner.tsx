@@ -26,9 +26,9 @@ const InfoBlock = styled(InfoItem)`
 
 const Separator = styled.div`
   border-left: 2px solid gray;
+  height: 10px;
   margin: 0 10px;
   width: 1px;
-  height: 10px;
 `;
 
 interface FooterBannerInnerProps {

@@ -14,27 +14,27 @@ const Container = styled.div`
   flex-grow: 1;
 `;
 const SelectionContainer = styled.div`
-  width: 450px;
   display: block;
   margin: 0 auto;
+  width: 450px;
 `;
 const Title = styled.p`
   padding: 0 10px;
-  width: 100%;
   text-align: center;
+  width: 100%;
 `;
 
 const SumValue = styled.p`
   margin-top: 15px;
   padding: 0 10px;
-  width: 100%;
   text-align: center;
+  width: 100%;
 `;
 const EmptyText = styled.p<{ color: CSSProperties['color'] }>`
-  width: 100%;
+  color: ${({ color }) => color};
   padding: 20%;
   text-align: center;
-  color: ${({ color }) => color};
+  width: 100%;
 `;
 
 export default function SelectMolecule<

@@ -6,10 +6,10 @@ import { useCallback, useState } from 'react';
 import Select from '../../../../elements/Select.js';
 
 const Container = styled.div`
-  width: 100%;
   height: 100%;
   margin-top: 10px;
   text-align: center;
+  width: 100%;
 
   p {
     font-size: 14px;
@@ -17,22 +17,22 @@ const Container = styled.div`
 
   .selection-container {
     margin-top: 10px;
-    width: 100%;
     text-align: center;
+    width: 100%;
   }
 
   button {
-    flex: 2;
-    padding: 5px;
+    background-color: gray;
     border: 1px solid gray;
     border-radius: 5px;
+    color: white;
+    display: block;
+    flex: 2;
     height: 30px;
     margin: 0 auto;
     margin-top: 15px;
-    display: block;
+    padding: 5px;
     width: 60px;
-    color: white;
-    background-color: gray;
   }
 `;
 

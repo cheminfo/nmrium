@@ -2,17 +2,17 @@ import styled from '@emotion/styled';
 import type { CSSProperties, ReactNode } from 'react';
 
 const FooterContainer = styled.div`
-  display: flex;
+  position: absolute;
+  bottom: 0;
   align-items: center;
-  user-select: none;
   background-color: #f7f7f7;
+  color: #8d0018;
+  container-type: inline-size;
+  display: flex;
   height: 30px;
   padding: 6px;
-  color: #8d0018;
-  position: absolute;
+  user-select: none;
   width: 100%;
-  bottom: 0;
-  container-type: inline-size;
 `;
 
 interface InfoContainerProps {
@@ -25,8 +25,8 @@ interface InfoContainerProps {
 }
 
 const InfoContainer = styled.div<InfoContainerProps>`
-  margin: 0 10px;
   display: ${({ display = 'inline-block' }) => display};
+  margin: 0 10px;
 
   @container (max-width:${({ hideThreshold = 600 }) => hideThreshold}px) {
     display: ${({ autoHide = false, display = 'inline-block' }) =>
@@ -64,13 +64,13 @@ const Span = styled.span`
 `;
 
 InfoItem.Label = styled(Span)`
-  font-size: 12px;
   color: #4d4d4d;
+  font-size: 12px;
 `;
 
 InfoItem.Value = styled(Span)`
-  font-size: 14px;
   display: inline-block;
+  font-size: 14px;
 `;
 
 InfoItem.Unit = styled(Span)`

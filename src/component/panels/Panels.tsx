@@ -16,9 +16,9 @@ import { useTogglePanel } from './hooks/useTogglePanel.js';
 import { InformationEditionModal } from './informationPanel/InformationEditionModal.js';
 
 const Container = styled.div`
-  width: 100%;
-  height: 100%;
   flex: 1 1 0%;
+  height: 100%;
+  width: 100%;
 `;
 interface PanelStateContext {
   openSplitPane: () => void;

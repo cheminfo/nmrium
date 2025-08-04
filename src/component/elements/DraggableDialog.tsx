@@ -19,12 +19,12 @@ import type { ReactNode, RefObject } from 'react';
 import { useLayoutEffect, useRef } from 'react';
 
 const Container = styled.div`
-  min-height: 100%;
-  pointer-events: none;
-  user-select: none;
   position: absolute;
   top: 0;
   left: 0;
+  min-height: 100%;
+  pointer-events: none;
+  user-select: none;
   width: 100%;
 `;
 

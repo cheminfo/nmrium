@@ -5,9 +5,9 @@ import { useChartData } from '../context/ChartContext.js';
 import { useScale2DX, useScale2DY } from './utilities/scale.js';
 
 const SignalLine = styled.line`
+  opacity: 0.5;
   stroke: green;
   stroke-width: 2;
-  opacity: 0.5;
 `;
 
 interface SignalDeltaLineProps {

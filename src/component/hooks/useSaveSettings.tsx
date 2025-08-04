@@ -125,8 +125,8 @@ const DialogContent = styled(DialogBody)`
 `;
 
 const Title = styled.p`
-  padding: 0 30px;
-  font-weight: bold;
-  text-align: left;
   font-size: 1em;
+  font-weight: bold;
+  padding: 0 30px;
+  text-align: left;
 `;

@@ -8,8 +8,8 @@ import { useHighlight } from '../../highlight/index.js';
 import { useResizerStatus } from '../../hooks/useResizerStatus.js';
 
 const Rect = styled.rect<{ isActive: boolean }>`
-  height: ${({ isActive }) => (isActive ? '100%' : '6px')};
   fill: ${({ isActive }) => (isActive ? '#ff6f0057' : 'green')};
+  height: ${({ isActive }) => (isActive ? '100%' : '6px')};
 `;
 
 interface AnalysisRangeProps {

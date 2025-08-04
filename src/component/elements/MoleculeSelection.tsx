@@ -8,55 +8,55 @@ import type { StateMoleculeExtended } from '../../data/molecules/Molecule.js';
 import { NextPrev } from './NextPrev.js';
 
 const BarContainer = styled.div`
+  border-bottom: 0.55px solid rgb(240 240 240);
+  border-top: 0.55px solid rgb(240 240 240);
   display: flex;
   flex-direction: row;
-  border-top: 0.55px solid rgb(240 240 240);
-  border-bottom: 0.55px solid rgb(240 240 240);
   padding: 0 5px;
 
   p {
+    line-height: 22px;
     margin: 0;
+    padding: 0 10px;
     text-align: right;
     width: 100%;
-    line-height: 22px;
-    padding: 0 10px;
   }
 `;
 
 const MoleculeContainer = styled.div`
-  width: 100%;
   position: relative;
+  width: 100%;
 
   button {
-    flex: 2;
-    padding: 5px;
+    background-color: gray;
     border: 1px solid gray;
     border-radius: 5px;
+    color: white;
+    display: block;
+    flex: 2;
     height: 36px;
     margin: 0 auto;
     margin-top: 15px;
-    display: block;
+    padding: 5px;
     width: 20%;
-    color: white;
-    background-color: gray;
   }
 `;
 
 const SliderContent = styled.div`
-  height: 180px;
-  width: 100%;
-  padding: 0;
-  display: flex;
-  justify-content: center;
   align-items: center;
+  display: flex;
   flex-direction: column;
+  height: 180px;
+  justify-content: center;
+  padding: 0;
+  width: 100%;
 
   p {
-    width: 100%;
-    margin: 0 auto;
-    display: block;
     position: relative;
+    display: block;
+    margin: 0 auto;
     text-align: center;
+    width: 100%;
   }
 
   svg polygon {

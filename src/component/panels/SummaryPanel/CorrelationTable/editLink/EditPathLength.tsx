@@ -9,38 +9,38 @@ import Input from '../../../../elements/Input.js';
 import Label from '../../../../elements/Label.js';
 
 const Container = styled.div`
-  width: 100%;
   height: 100%;
   margin-top: 10px;
   text-align: center;
+  width: 100%;
 
   button {
-    flex: 2;
-    padding: 5px;
+    background-color: gray;
     border: 1px solid gray;
     border-radius: 5px;
+    color: white;
+    display: block;
+    flex: 2;
     height: 30px;
     margin: 0 auto;
     margin-top: 15px;
-    display: block;
+    padding: 5px;
     width: 60px;
-    color: white;
-    background-color: gray;
   }
 `;
 
 const InputContainer = styled.div`
-  width: 100%;
-  margin-top: 5px;
-  text-align: center;
+  align-items: center;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
+  margin-top: 5px;
+  text-align: center;
+  width: 100%;
 `;
 const WarningText = styled.span`
-  margin-top: 5px;
   color: red;
+  margin-top: 5px;
 `;
 
 interface InputProps {

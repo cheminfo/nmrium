@@ -1,9 +1,9 @@
 @media print {
   .demo-main-container,
   .demo-main-container > div {
-    width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
+    width: 100% !important;
   }
 
   .demo-side-bar,
@@ -23,8 +23,8 @@
 }
 
 .rc-menu-item:hover {
-  color: #fff;
   background-color: #37adff;
+  color: #fff;
   font-weight: bold;
   transform: translate(2px);
   transition: transform 0.1s ease-in-out;
@@ -37,8 +37,8 @@
 .rc-menu-submenu.rc-menu-submenu-active,
 .rc-menu-submenu.rc-menu-submenu-selected,
 .rc-menu:first-of-type .rc-menu-item.rc-menu-item-selected {
-  color: black;
   background-color: white;
+  color: black;
 }
 
 .rc-menu-submenu > .rc-menu {

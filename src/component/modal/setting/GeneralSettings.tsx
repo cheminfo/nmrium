@@ -46,11 +46,11 @@ import ToolsTabContent from './settings-tabs/ToolsTabContent.js';
 import { validation } from './settingsValidation.js';
 
 export const Section = styled.div`
+  border-bottom: 0.55px solid #f9f9f9;
+  color: #2ca8ff;
   display: flex;
   font-size: 13px;
-  color: #2ca8ff;
   margin-bottom: 10px;
-  border-bottom: 0.55px solid #f9f9f9;
   padding: 6px 2px;
 `;
 
@@ -62,10 +62,10 @@ const StyledTabs = styled(Tabs)`
   }
 
   div[role='tabpanel'] {
-    width: 100%;
-    padding: 0.8rem;
-    overflow: auto;
     max-height: 100%;
+    overflow: auto;
+    padding: 0.8rem;
+    width: 100%;
   }
 `;
 

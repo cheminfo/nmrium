@@ -17,25 +17,25 @@ const fadeIn = keyframes`
 
 const Overlay = styled.div`
   position: absolute;
-  left: 0;
   top: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
+  left: 0;
   align-items: center;
-  justify-content: center;
   cursor: not-allowed;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  width: 100%;
 `;
 
 const MessageContainer = styled.div<{ show: boolean }>`
-  background-color: white;
-  padding: 16px;
-  border-radius: 5px;
   align-items: center;
+  animation: ${fadeIn} 0.3s ease;
+  background-color: white;
+  border-radius: 5px;
   box-shadow: 0 2px 10px rgb(0 0 0 / 10%);
   display: ${({ show }) => (show ? 'flex' : 'none')};
-  animation: ${fadeIn} 0.3s ease;
   gap: 8px;
+  padding: 16px;
 `;
 
 interface ReadOnlyProps

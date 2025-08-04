@@ -36,13 +36,13 @@ const ReactRnd = styled(Rnd)`
   border: 1px solid transparent;
 
   .content {
-    width: 100%;
     height: 100%;
+    width: 100%;
   }
 
   &:hover {
-    border: 1px solid #ebecf1;
     background-color: white;
+    border: 1px solid #ebecf1;
   }
 `;
 
