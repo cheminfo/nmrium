@@ -709,7 +709,7 @@ function handleSimulateSpectrum(
       (s) => s.id === draft.view.currentSimulatedSpectrumKey,
     );
   }
-  const { frequency, to, from } = options;
+  const { frequency, to, from, nbPoints } = options;
 
   const info = {
     originFrequency: frequency,
@@ -731,6 +731,7 @@ function handleSimulateSpectrum(
         info: {
           isFt: true,
           nucleus: '1H',
+          nbPoints,
           ...info,
         },
       },
