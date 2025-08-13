@@ -32,9 +32,8 @@ export function useExport() {
       const hideLoading = toaster.showLoading({
         message: 'Exporting as NMRium process in progress',
       });
-
-      try {
-        void (async () => {
+      setTimeout(async () => {
+        try {
           const fileName = state.data[0]?.info?.name;
           const exportedData = toJSON(core, state, preferencesState, {
             exportTarget: 'nmrium',
@@ -42,11 +41,16 @@ export function useExport() {
           });
 
           await exportAsJSON(exportedData, fileName, spaceIndent, isCompressed);
+        } catch (error) {
+          toaster.show({
+            intent: 'danger',
+            message: `Export failed due to an unexpected error: ${(error as Error)?.message || 'Unknown error'}`,
+          });
+          reportError(error);
+        } finally {
           hideLoading();
-        })();
-      } catch (error) {
-        reportError(error);
-      }
+        }
+      }, 0);
     },
     [core, preferencesState, state, toaster],
   );
@@ -58,16 +62,23 @@ export function useExport() {
         const hideLoading = toaster.showLoading({
           message: `Exporting as ${name}.nmrium process in progress`,
         });
-        setTimeout(() => {
-          void (async () => {
+        setTimeout(async () => {
+          try {
             const exportedData = toJSON(core, state, preferencesState, {
               ...include,
               exportTarget: 'nmrium',
             });
             const spaceIndent = pretty ? 2 : 0;
             await exportAsJSON(exportedData, name, spaceIndent, compressed);
+          } catch (error) {
+            toaster.show({
+              intent: 'danger',
+              message: `Export failed due to an unexpected error: ${(error as Error)?.message || 'Unknown error'}`,
+            });
+            reportError(error);
+          } finally {
             hideLoading();
-          })();
+          }
         }, 0);
       }
 
