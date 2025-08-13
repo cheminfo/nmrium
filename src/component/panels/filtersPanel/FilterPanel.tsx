@@ -3,6 +3,7 @@ import { useToaster } from '../../context/ToasterContext.js';
 import type { AlertButton } from '../../elements/Alert.js';
 import { useAlert } from '../../elements/Alert.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
+import CreateAutoProcessingPipelineModal from '../../modal/CreateAutoProcessingPipelineModal.tsx';
 import { TablePanel } from '../extra/BasicPanelStyle.js';
 import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
 
@@ -43,7 +44,9 @@ export default function FiltersPanel() {
         onDelete={handleDeleteFilter}
         total={filters?.length}
         hideCounter
+        rightButtons={[{ component: <CreateAutoProcessingPipelineModal /> }]}
       />
+
       <div className="inner-container">
         <FiltersSectionsPanel />
       </div>
