@@ -96,7 +96,7 @@ function resurrectSpectrumFromSignals(
     for (const signal of signals) {
       const { nbAtoms, atoms } = signal;
       if (nbAtoms !== undefined) {
-        totalIntegration += Number(nbAtoms);
+        totalIntegration += nbAtoms;
       } else if (atoms !== undefined) {
         totalIntegration += atoms.length;
       }

@@ -274,6 +274,7 @@ function SummaryPanel() {
               (correlation) =>
                 correlation.atomType === _selectedAdditionalColumnsAtomType,
             )
+            // eslint-disable-next-line unicorn/no-array-reverse
             .reverse()
         : [],
     );

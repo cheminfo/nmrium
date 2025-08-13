@@ -76,7 +76,7 @@ function useMapRanges(ranges: Ranges['values']) {
         const { multiplicity, delta, js = [] } = signal;
         const coupling = js
           .map((jsItem) =>
-            !Number.isNaN(Number(jsItem.coupling))
+            !Number.isNaN(jsItem.coupling)
               ? formatNumber(jsItem.coupling, preferences.coupling.format)
               : '',
           )

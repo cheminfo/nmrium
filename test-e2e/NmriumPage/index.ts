@@ -7,7 +7,6 @@ import { NmriumPageViewer } from './NmriumPageViewer.js';
 type ClickOptions = Parameters<Page['click']>[1];
 
 interface ToolLocatorOptions {
-  prefixSelectors?: string[];
   active?: boolean;
   caseSensitive?: boolean;
 }
@@ -59,21 +58,15 @@ export default class NmriumPage {
     title: string,
     options: ToolLocatorOptions = {},
   ) {
-    const { prefixSelectors = [], active, caseSensitive = false } = options;
+    const { active, caseSensitive = false } = options;
     const selectors: string[] = [
       `_react=ToolbarItem[tooltip="${title}" ${caseSensitive ? '' : 'i'}]`,
     ];
-    const parentsSelectors: string[] = [''];
-    for (const s of prefixSelectors.reverse()) {
-      parentsSelectors.unshift(s);
-    }
 
     if (active !== undefined) {
       selectors.push(`[active=${active}]`);
     }
-    return this.page.locator(
-      `${parentsSelectors.join(' >> ') + selectors.join('')} >> nth=0`,
-    );
+    return this.page.locator(`${selectors.join('')} >> nth=0`);
   }
 
   public async assertOneDimensionXScaleDomain(min: number, max: number) {
@@ -85,14 +78,15 @@ export default class NmriumPage {
   }
 
   public async getNumberOfDistinctColors() {
-    const Lines = this.page.getByTestId('spectrum-line').locator('_react=Line');
-    // get all lines from locator
-    const lines = await Lines.all();
-    // get all colors from lines
+    const linesLocator = this.page
+      .getByTestId('spectrum-line')
+      .locator('_react=Line');
+    // Get all lines from the locator.
+    const lines = await linesLocator.all();
+    // Get all colours from lines.
     const colors = await Promise.all(
       lines.map(async (line) => {
-        const color = await line.getAttribute('stroke');
-        return color;
+        return line.getAttribute('stroke');
       }),
     );
     // remove duplicates

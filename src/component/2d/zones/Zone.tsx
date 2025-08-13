@@ -84,7 +84,8 @@ function Zone({ zoneData }: ZoneProps) {
           </g>
         )}
         {signals.map((_signal, i) => (
-          <Signal key={String(id + i)} signal={_signal} />
+          // eslint-disable-next-line react/no-array-index-key
+          <Signal key={id + i} signal={_signal} />
         ))}
       </g>
     </ActionsButtonsPopover>

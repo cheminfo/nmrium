@@ -241,7 +241,7 @@ function IndicationLine(props: IndicationLineProps) {
       onClick: () => unAssignHandler(),
       intent: 'danger',
       title: 'Unassign range',
-      visible: !!(isAssignmentActive || hasDiaIDs),
+      visible: isAssignmentActive || hasDiaIDs,
     },
     {
       icon: <PiTextTBold />,
