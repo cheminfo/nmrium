@@ -21,7 +21,7 @@ import { useCheckExportStatus } from '../hooks/useViewportSize.js';
 const ReactRnd = styled(Rnd)`
   border: 1px solid transparent;
 
-  &:hover {
+  :hover {
     background-color: white;
     border: 1px solid #ebecf1;
 

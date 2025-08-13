@@ -17,11 +17,11 @@ const MenuItem = styled.li`
   text-align: center;
   white-space: nowrap;
 
-  &:last-of-type {
+  :last-of-type {
     border-bottom: none;
   }
 
-  &:hover {
+  :hover {
     background-color: #f6f6f6;
   }
 `;

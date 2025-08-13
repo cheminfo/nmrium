@@ -16,7 +16,7 @@ interface ExclusionZoneProps {
 }
 
 const Rect = styled.rect`
-  &:hover {
+  :hover {
     fill: #ff6f0057 !important;
   }
 `;

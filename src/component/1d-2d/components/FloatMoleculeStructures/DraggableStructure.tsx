@@ -40,7 +40,7 @@ const ReactRnd = styled(Rnd)`
     width: 100%;
   }
 
-  &:hover {
+  :hover {
     background-color: white;
     border: 1px solid #ebecf1;
   }

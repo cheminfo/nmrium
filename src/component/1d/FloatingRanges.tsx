@@ -26,7 +26,7 @@ import { formatNumber } from '../utility/formatNumber.js';
 const ReactRnd = styled(Rnd)`
   border: 1px solid transparent;
 
-  &:hover {
+  :hover {
     background-color: white;
     border: 1px solid #ebecf1;
 

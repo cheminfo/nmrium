@@ -23,7 +23,7 @@ const Row = styled.div`
   margin: 0;
   outline: none;
 
-  &:nth-child(odd) {
+  :nth-child(odd) {
     background: #fafafa;
   }
 `;

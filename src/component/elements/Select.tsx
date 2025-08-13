@@ -18,12 +18,12 @@ const BaseSelect = styled.select<{ width: number | string | undefined }>`
   padding: 0 5px;
   width: ${({ width }) => (width ? Number(width) - 5 : 115)}px;
 
-  &:focus,
+  :focus,
   input:focus {
     outline: none;
   }
 
-  &:required:invalid {
+  :required:invalid {
     color: #666;
   }
 `;

@@ -23,7 +23,7 @@ const style: Record<'anchor' | 'innerContainer', CSSProperties> = {
 };
 
 const Group = styled.g`
-  &:hover {
+  :hover {
     rect:last-child {
       fill: red !important;
     }

@@ -27,7 +27,7 @@ const ArrowButton = styled.div<{
   transition: transform ease-in 0.1s;
   width: 40px;
 
-  &:hover {
+  :hover {
     background-color: #607d8b !important;
     color: white;
     transform: scale(1.1);

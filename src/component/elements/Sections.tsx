@@ -190,11 +190,11 @@ const Header = styled.div`
   justify-content: space-between;
   padding: 5px 10px;
 
-  &:hover {
+  :hover {
     background-color: #e0e0e0;
   }
 
-  &:active {
+  :active {
     background-color: #d0d0d0;
   }
 `;
