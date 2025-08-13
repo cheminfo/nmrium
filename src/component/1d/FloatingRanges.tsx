@@ -26,7 +26,7 @@ import { formatNumber } from '../utility/formatNumber.js';
 const ReactRnd = styled(Rnd)`
   border: 1px solid transparent;
 
-  &:hover {
+  :hover {
     background-color: white;
     border: 1px solid #ebecf1;
 
@@ -76,7 +76,7 @@ function useMapRanges(ranges: Ranges['values']) {
         const { multiplicity, delta, js = [] } = signal;
         const coupling = js
           .map((jsItem) =>
-            !Number.isNaN(Number(jsItem.coupling))
+            !Number.isNaN(jsItem.coupling)
               ? formatNumber(jsItem.coupling, preferences.coupling.format)
               : '',
           )

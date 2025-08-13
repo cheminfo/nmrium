@@ -214,7 +214,7 @@ const GroupContainer = styled.g<{ isMoveActive: boolean }>(
   visibility: hidden;
 }
 
-&:hover {
+:hover {
   .target {
     visibility: visible;
   }

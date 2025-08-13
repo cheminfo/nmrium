@@ -16,7 +16,7 @@ const boxPadding = 4;
 const Rect = styled.rect<{ isHighlighted: boolean }>`
   fill: ${({ isHighlighted }) => (isHighlighted ? '#ff6f0057' : 'transparent')};
 
-  &:hover {
+  :hover {
     fill: #ff6f0057;
   }
 `;

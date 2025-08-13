@@ -11,7 +11,7 @@ const AssignmentTableCell = styled.td<AssignmentTableCellProps>`
     visibility: hidden;
   }
 
-  &:hover {
+  :hover {
     sup {
       visibility: ${({ hideRemoveAssignmentButton }) =>
         hideRemoveAssignmentButton ? 'hidden' : 'visible'};

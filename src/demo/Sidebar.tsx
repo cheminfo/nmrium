@@ -33,20 +33,20 @@ const MenuButton = styled.button`
   width: 30px;
   z-index: 7;
 
-  & svg {
+  svg {
     fill: white;
   }
 
-  &:focus {
+  :focus {
     outline: none;
   }
 
-  &:active {
+  :active {
     background-color: rgb(0 0 0 / 50%);
     border-radius: 50%;
   }
 
-  &:hover {
+  :hover {
     background-color: rgb(0 0 0 / 20%);
     border-radius: 50%;
   }

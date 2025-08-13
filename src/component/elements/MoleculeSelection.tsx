@@ -95,7 +95,7 @@ export default function MoleculeSelection(props: MoleculeSelectionProps) {
         <p>
           {molecules &&
             molecules.length > 0 &&
-            `${+(currentIndex + 1)} / ${molecules.length}`}{' '}
+            `${currentIndex + 1} / ${molecules.length}`}{' '}
         </p>
       </BarContainer>
       <MoleculeContainer>

@@ -165,15 +165,15 @@ const styles: Style = {
       display: flex;
       flex-direction: row;
 
-      &:hover + .content {
+      :hover + .content {
         display: flex;
       }
     `;
 
     const fillStyle = getFillStyle(props);
     const basicDisabledStyle = css`
-      &:disabled,
-      &.disabled {
+      :disabled,
+      .disabled {
         opacity: 0.25;
       }
     `;

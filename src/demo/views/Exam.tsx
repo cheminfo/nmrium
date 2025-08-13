@@ -80,7 +80,7 @@ const InnerCopyButton = styled.button`
   outline: none;
   width: 50px;
 
-  &:hover {
+  :hover {
     background-color: green;
     color: white;
   }
@@ -102,7 +102,7 @@ const ToggleButton = styled.button`
   outline: none;
   padding: 5px;
 
-  &:hover {
+  :hover {
     background-color: #00b707;
     color: white !important;
   }

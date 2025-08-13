@@ -24,7 +24,7 @@ function checkStatus(response) {
   return response;
 }
 
-const Title = styled.p`
+const Title = styled.div`
   background-color: white;
   color: #3e3e3e;
   font-size: 14px;
@@ -105,7 +105,7 @@ const ToggleButton = styled.button`
   outline: none;
   padding: 5px;
 
-  &:hover {
+  :hover {
     background-color: #00b707;
     color: white !important;
   }
@@ -189,7 +189,7 @@ export default function Exercise(props) {
     <Container>
       <Title>
         <strong>Exercises: </strong>Determine the unknown structure for the
-        compound having the following NMR spectrum
+        compound having the following NMR spectrum.
         <p>{title}</p>
       </Title>
       <MainContainer>

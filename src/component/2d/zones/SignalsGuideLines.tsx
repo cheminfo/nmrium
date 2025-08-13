@@ -31,7 +31,7 @@ import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 const Rect = styled.rect<{ isActive: boolean }>`
   fill: ${({ isActive }) => (isActive ? '#ff6f0057' : 'transparent')};
 
-  &:hover {
+  :hover {
     fill: #ff6f0057;
   }
 `;
@@ -241,7 +241,7 @@ function IndicationLine(props: IndicationLineProps) {
       onClick: () => unAssignHandler(),
       intent: 'danger',
       title: 'Unassign range',
-      visible: !!(isAssignmentActive || hasDiaIDs),
+      visible: isAssignmentActive || hasDiaIDs,
     },
     {
       icon: <PiTextTBold />,

@@ -18,7 +18,7 @@ const BOX_SIZE = 10;
 const Rect = styled.rect`
   fill: transparent;
 
-  &:hover {
+  :hover {
     fill: #ff6f0057;
   }
 `;

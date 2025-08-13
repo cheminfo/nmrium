@@ -75,7 +75,8 @@ function Signal({ signal }: SignalProps) {
         {showPeaks &&
           signal?.peaks?.map((peak, i) => (
             <circle
-              key={String(signal.id + i)}
+              // eslint-disable-next-line react/no-array-index-key
+              key={signal.id + i}
               cx={scaleX(peak.x)}
               cy={scaleY(peak.y)}
               r={2}

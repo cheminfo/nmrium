@@ -50,9 +50,11 @@ export function generateColor(options: Options) {
     return resetColors[0] + percentToHex(opacity);
   } else {
     const lum = -0.25;
-    let hex = String(
-      `#${Math.random().toString(16).slice(2, 8).toUpperCase()}`,
-    ).replaceAll(/[^\da-f]/gi, '');
+    let hex =
+      `#${Math.random().toString(16).slice(2, 8).toUpperCase()}`.replaceAll(
+        /[^\da-f]/gi,
+        '',
+      );
     if (hex.length < 6) {
       hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
     }

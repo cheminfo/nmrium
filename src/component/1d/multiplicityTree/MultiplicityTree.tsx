@@ -154,7 +154,7 @@ function Tree(props: TreeProps) {
       onClick: () => unAssignHandler(),
       intent: 'danger',
       title: 'Unassign range',
-      visible: !!(isAssignmentActive || hasDiaIDs),
+      visible: isAssignmentActive || hasDiaIDs,
     },
   ];
 

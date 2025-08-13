@@ -11,7 +11,7 @@ import type { ClipboardMode } from './types.js';
 const ClipboardForm = styled.form`
   padding: 0.5rem;
 
-  & > label {
+  > label {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;

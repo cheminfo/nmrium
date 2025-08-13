@@ -21,7 +21,7 @@ const Container = styled.section`
   flex-direction: column;
   height: 100%;
 
-  & > h1 {
+  h1 {
     font-size: 1.5em;
     font-weight: 700;
     line-height: 1.4em;
