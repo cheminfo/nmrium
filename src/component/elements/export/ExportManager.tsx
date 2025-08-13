@@ -10,6 +10,7 @@ import {
 
 import { useChartData } from '../../context/ChartContext.js';
 import { usePreferences } from '../../context/PreferencesContext.js';
+import { useToaster } from '../../context/ToasterContext.tsx';
 import { useExportViewPort } from '../../hooks/useExport.js';
 import { useWorkspaceExportSettings } from '../../hooks/useWorkspaceExportSettings.js';
 
@@ -67,11 +68,13 @@ interface ExportManagerControllerProps {
 
 export function ExportManagerController(props: ExportManagerControllerProps) {
   const { children } = props;
-
+  const { data, width } = useChartData();
+  const hasDataToExport = data.length > 0;
   const [exportOptions, triggerExport] = useState<ExportOptions | null>(null);
   const exportRef = useExportManagerAPI();
   const workspaceExportSettings = useWorkspaceExportSettings();
   const { dispatch } = usePreferences();
+  const toaster = useToaster();
   useImperativeHandle(
     exportRef,
     () => ({
@@ -94,6 +97,15 @@ export function ExportManagerController(props: ExportManagerControllerProps) {
 
   function handleExport(targetElement: HTMLElement, options: ExportSettings) {
     if (!exportOptions) {
+      return null;
+    }
+
+    if (!hasDataToExport) {
+      handleCloseExportOptionsDialog();
+      toaster.show({
+        intent: 'danger',
+        message: 'No spectra available for export',
+      });
       return null;
     }
 
@@ -132,8 +144,6 @@ export function ExportManagerController(props: ExportManagerControllerProps) {
     };
     void runExport();
   }
-
-  const { width } = useChartData();
 
   if (!exportOptions) return null;
 
