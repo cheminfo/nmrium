@@ -16,6 +16,7 @@ import type { AlertButton } from '../../../elements/Alert.js';
 import { useAlert } from '../../../elements/Alert.js';
 import { EmptyText } from '../../../elements/EmptyText.js';
 import { Sections } from '../../../elements/Sections.js';
+import { useActiveSpectrum } from '../../../hooks/useActiveSpectrum.ts';
 import useSpectraByActiveNucleus from '../../../hooks/useSpectraPerNucleus.js';
 import useSpectrum from '../../../hooks/useSpectrum.js';
 import { getDefaultFilterOptions } from '../../../utility/getDefaultFilterOptions.js';
@@ -176,6 +177,7 @@ function FiltersInner(props: FiltersInnerProps) {
   const dispatch = useDispatch();
   const toaster = useToaster();
   const selectedFilterIndex = useRef<number>();
+  const activeSpectrum = useActiveSpectrum();
 
   function toggleSection(sectionKey) {
     openSection(selectedSection === sectionKey ? '' : sectionKey);
@@ -250,7 +252,7 @@ function FiltersInner(props: FiltersInnerProps) {
 
   const filtersList = [...filters];
 
-  if (newFilter) {
+  if (newFilter && activeSpectrum) {
     const activeFilterIndex = filters.findIndex(
       (filter) => filter.id === activeFilterID,
     );
