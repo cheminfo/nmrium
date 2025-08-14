@@ -7,7 +7,7 @@ import type { FilterEntry } from '../../data/types/common/FilterEntry.js';
 
 import useSpectrum from './useSpectrum.js';
 
-const emptyData = { filters: {} };
+const emptyData = { filters: [] };
 type FilterReturnType<T> = T extends Filter1DEntry['name']
   ? ExtractFilterEntry<T>
   : T extends Filter2DEntry['name']
@@ -20,12 +20,10 @@ export function useFilter<T extends FilterEntry['name']>(
   const { filters } = useSpectrum(emptyData) as Spectrum1D | Spectrum2D;
 
   return useMemo(() => {
+    if (!filters?.length) return null;
+
     const filter = filters.find((filter) => filter.name === filterID);
 
-    if (filter) {
-      return filter as FilterReturnType<T>;
-    }
-
-    return null;
+    return (filter as FilterReturnType<T>) ?? null;
   }, [filterID, filters]);
 }
