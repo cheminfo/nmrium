@@ -10,7 +10,8 @@ import type {
   PredictionBase2D,
 } from 'nmr-processing';
 import {
-  getFrequency,
+  calculateRelativeFrequency,
+  getRelativeFrequency,
   predict,
   signals2DToZ,
   signalsToRanges,
@@ -254,7 +255,10 @@ function generated1DSpectrum(params: {
     frequency: freq,
   } = options;
   const SpectrumName = generateName(name, { frequency: freq, experiment });
-  const frequency = calculateFrequency(nucleus, freq);
+  const frequency = getRelativeFrequency(nucleus, {
+    frequency: freq,
+    nucleus,
+  });
   const { x, y } = signalsToXY(signals, {
     ...options['1d'][nucleus],
     frequency,
@@ -294,7 +298,7 @@ function generated1DSpectrum(params: {
     {},
   );
   datum.ranges.values = mapRanges(
-    signalsToRanges(joinedSignals, { frequency: frequency as number }),
+    signalsToRanges(joinedSignals, { frequency }),
     datum,
   );
   updateIntegralsRelativeValues(datum);
@@ -335,7 +339,7 @@ function generated2DSpectrum(params: {
   const yOption = options['1d'][nuclei[1]];
 
   const width = get2DWidth(nuclei);
-  const frequency = calculateFrequency(nuclei, options.frequency);
+  const frequency = calculateRelativeFrequency(nuclei, options.frequency);
 
   const minMaxContent = signals2DToZ(signals, {
     from: { x: xOption.from, y: yOption.from },
@@ -397,24 +401,5 @@ function getSpectralWidth(experiment: string, options: PredictionOptions) {
     }
     default:
       return [];
-  }
-}
-
-function calculateFrequency(
-  nucleus: string | string[],
-  frequency: number,
-): number | number[] {
-  if (typeof nucleus === 'string') {
-    return getFrequency(nucleus, { nucleus: '1H', frequency });
-  } else if (nucleus[0] === nucleus[1]) {
-    return [frequency, frequency];
-  } else {
-    return [
-      frequency,
-      getFrequency(nucleus[1], {
-        nucleus: nucleus[0],
-        frequency,
-      }),
-    ];
   }
 }
