@@ -1,4 +1,5 @@
 import type {
+  AirplsOptions,
   Apodization1DOptions,
   BaselineCorrectionOptions,
   Filter1DEntry,
@@ -6,6 +7,7 @@ import type {
   Filter2DEntry,
   Filter2DOptions,
   MatrixOptions,
+  PolynomialOptions,
 } from '@zakodium/nmr-types';
 import type { Spectrum1D, Spectrum2D, Spectrum } from '@zakodium/nmrium-core';
 import type { NmrData1D, NmrData2DFt } from 'cheminfo-types';
@@ -582,6 +584,12 @@ function rollbackSpectrum(
   afterRollback(draft, filterKey);
 }
 
+function hasBaselineZones(
+  filterOptions,
+): filterOptions is PolynomialOptions | AirplsOptions {
+  return 'zones' in filterOptions;
+}
+
 function getTwoDimensionFilterOptions(
   draft: Draft<State>,
 ): TwoDimensionPhaseCorrection['traces'] | null {
@@ -698,17 +706,20 @@ function beforeRollback(draft: Draft<State>, filterKey) {
         const baselineCorrectionFilter = datum.filters.find(
           (filter) => filter.name === Filters1D.baselineCorrection.name,
         );
+
+        const filterOptions = baselineCorrectionFilter?.value;
+
         if (
-          !baselineCorrectionFilter ||
-          (baselineCorrectionFilter &&
-            baselineCorrectionFilter.value.zones?.length === 0)
+          filterOptions &&
+          hasBaselineZones(filterOptions) &&
+          filterOptions.zones.length > 0
         ) {
-          draft.toolOptions.data.baselineCorrection.zones =
-            getBaselineZonesByDietrich(datum.data as NmrData1D);
-        } else {
-          draft.toolOptions.data.baselineCorrection.zones =
-            baselineCorrectionFilter.value.zones;
+          draft.toolOptions.data.baselineCorrection.zones = filterOptions.zones;
+          return;
         }
+
+        draft.toolOptions.data.baselineCorrection.zones =
+          getBaselineZonesByDietrich(datum.data as NmrData1D);
       }
       break;
     }
