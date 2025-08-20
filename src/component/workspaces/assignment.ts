@@ -29,6 +29,7 @@ export const assignment: InnerWorkspace = {
       phaseCorrection: true,
       baselineCorrection: true,
       autoRangeAndZonePicking: true,
+      inset: true,
     },
   },
 };

@@ -32,6 +32,7 @@ export const process1D: InnerWorkspace = {
       autoRangeAndZonePicking: true,
       fftDimension1: true,
       fftDimension2: true,
+      inset: true,
     },
   },
 };
