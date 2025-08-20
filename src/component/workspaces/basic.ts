@@ -35,6 +35,7 @@ export const basic: InnerWorkspace = {
       autoRangeAndZonePicking: true,
       fftDimension1: true,
       fftDimension2: true,
+      inset: true,
     },
   },
 };

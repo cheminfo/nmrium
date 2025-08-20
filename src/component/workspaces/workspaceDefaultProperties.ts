@@ -59,6 +59,7 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
       autoRangeAndZonePicking: false,
       fftDimension1: false,
       fftDimension2: false,
+      inset: false,
     },
   },
 

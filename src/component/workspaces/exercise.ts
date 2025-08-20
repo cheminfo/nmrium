@@ -26,6 +26,7 @@ export const exercise: InnerWorkspace = {
       spectraStackAlignments: true,
       fftDimension1: true,
       fftDimension2: true,
+      inset: true,
     },
   },
   general: {
