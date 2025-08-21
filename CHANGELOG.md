@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.2.0](https://github.com/cheminfo/nmrium/compare/v1.1.0...v1.2.0) (2025-08-21)
+
+
+### Features
+
+* support filter insertion after spectrum rollback ([1dd1f9e](https://github.com/cheminfo/nmrium/commit/1dd1f9e26c26baf59b9a12647390e4e2f5daafe6))
+
+
+### Bug Fixes
+
+* display feedback message when JSON export fails ([a5261af](https://github.com/cheminfo/nmrium/commit/a5261af9f895027e827fe13b69de9d6ae18db756))
+* exports mapping and update dependencies ([#3634](https://github.com/cheminfo/nmrium/issues/3634)) ([2a20938](https://github.com/cheminfo/nmrium/commit/2a2093830d1bfab1ebcb2cec53820ff92bba32c2))
+* handle jcamp filtering correctly during NMRium file load ([5ddd5af](https://github.com/cheminfo/nmrium/commit/5ddd5af3916aad9f367299d7ccb2fdf60a7bea44))
+* improve useFilter hook to safely handle empty filters ([a4b7cb8](https://github.com/cheminfo/nmrium/commit/a4b7cb87ad56370b83134a956c3164a928d37b13))
+* show 'No spectra available for export' message when no exportable spectra is present ([dbf20ee](https://github.com/cheminfo/nmrium/commit/dbf20ee64e4ebba64a68741be1f9770a5f6b6dd1))
+
 ## [1.1.0](https://github.com/cheminfo/nmrium/compare/v1.0.0...v1.1.0) (2025-07-29)
 
 
