@@ -73,6 +73,7 @@ export default function ExclusionZonesOptionsPanel(
       setValue(
         'zones',
         getValues('zones').filter((_, i) => i !== index),
+        { shouldDirty: true },
       );
     },
     [getValues, setValue],
