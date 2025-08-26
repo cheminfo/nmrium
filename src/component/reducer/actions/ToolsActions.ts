@@ -148,10 +148,11 @@ function handleResetSelectedTool(draft: Draft<State>) {
   resetSelectedTool(draft);
 }
 function resetSelectedTool(draft: Draft<State>) {
-  if (
-    draft.toolOptions.selectedTool &&
-    Tools[draft.toolOptions.selectedTool].isFilter
-  ) {
+  const {
+    selectedTool,
+    data: { activeFilterID },
+  } = draft.toolOptions;
+  if ((selectedTool && Tools[selectedTool].isFilter) || activeFilterID) {
     resetTool(draft, { reset: true, toolId: draft.toolOptions.selectedTool });
   }
 }

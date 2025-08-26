@@ -446,9 +446,13 @@ function rollbackSpectrumByFilter(
     const filterIndex = spectrum.filters.findIndex((f) => f[searchBy] === key);
     if (filterIndex === -1 || reset) {
       if (draft.tempData) {
-        const activeFilterIndex = toolData.activeFilterID
-          ? spectrum.filters.findIndex((f) => f.id === toolData.activeFilterID)
-          : spectrum.filters.length - 1;
+        const activeFilterIndex =
+          !reset && toolData.activeFilterID
+            ? spectrum.filters.findIndex(
+                (f) => f.id === toolData.activeFilterID,
+              )
+            : spectrum.filters.length;
+
         const filters = spectrum.filters.slice(0, activeFilterIndex);
         reapplyFilters(spectrum, filters);
       }
@@ -793,6 +797,8 @@ function handleShiftSpectrumAlongXAxis(
     return;
   }
 
+  const activeFilterIndex = getActiveFilterIndex(draft);
+
   //apply filter into the spectrum
   const options = action.payload;
 
@@ -808,9 +814,14 @@ function handleShiftSpectrumAlongXAxis(
       applyFilter: false,
     });
 
-    Filters1DManager.applyFilters(draft.data[index] as Spectrum1D, [
-      { name: 'shiftX', value: { shift } },
-    ]);
+    Filters1DManager.applyFilters(
+      draft.data[index] as Spectrum1D,
+      [{ name: 'shiftX', value: { shift } }],
+      {
+        filterIndex: activeFilterIndex,
+        forceReapply: activeFilterIndex !== -1,
+      },
+    );
 
     updateView(draft, shiftX.domainUpdateRules);
   }
@@ -824,9 +835,14 @@ function handleShiftSpectrumAlongXAxis(
         searchBy: 'name',
         applyFilter: false,
       });
-      Filters2DManager.applyFilters(draft.data[index] as Spectrum2D, [
-        { name: 'shift2DX', value: { shift: shiftX } },
-      ]);
+      Filters2DManager.applyFilters(
+        draft.data[index] as Spectrum2D,
+        [{ name: 'shift2DX', value: { shift: shiftX } }],
+        {
+          filterIndex: activeFilterIndex,
+          forceReapply: activeFilterIndex !== -1,
+        },
+      );
       updateView(draft, shift2DX.domainUpdateRules);
     }
 
@@ -836,9 +852,14 @@ function handleShiftSpectrumAlongXAxis(
         searchBy: 'name',
         applyFilter: false,
       });
-      Filters2DManager.applyFilters(draft.data[index] as Spectrum2D, [
-        { name: 'shift2DY', value: { shift: shiftY } },
-      ]);
+      Filters2DManager.applyFilters(
+        draft.data[index] as Spectrum2D,
+        [{ name: 'shift2DY', value: { shift: shiftY } }],
+        {
+          filterIndex: activeFilterIndex,
+          forceReapply: activeFilterIndex !== -1,
+        },
+      );
 
       updateView(draft, shift2DY.domainUpdateRules);
     }
