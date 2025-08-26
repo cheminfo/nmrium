@@ -27,6 +27,15 @@ export const nonRemovableFilters = new Set<BaseFilterEntry['name']>([
   'digitalFilter',
   'digitalFilter2D',
 ]);
+const readOnlyFilters = new Set<BaseFilterEntry['name']>([
+  'digitalFilter',
+  'shiftX',
+  'exclusionZones',
+  'fft',
+  'digitalFilter2D',
+  'fftDimension1',
+  'fftDimension2',
+]);
 
 const IconButton = styled(Button)`
   font-size: 16px;
@@ -121,9 +130,14 @@ function FilterElements(props: FilterElementsProps) {
     });
   }
 
+  const isEditable =
+    !hideFilterRestoreButton &&
+    activeFilterID !== id &&
+    !readOnlyFilters.has(name);
+
   return (
     <>
-      {!hideFilterRestoreButton && activeFilterID !== id && (
+      {isEditable && (
         <IconButton
           intent="success"
           tooltipProps={{
@@ -244,11 +258,20 @@ function FiltersInner(props: FiltersInnerProps) {
         return null;
       });
     }
+  }, [filters, selectedTool]);
 
+  useEffect(() => {
     if (Filters?.[selectedTool]) {
       openSection(selectedTool);
+      return;
     }
-  }, [filters, selectedTool]);
+
+    const filter = filters.find((filter) => filter.id === activeFilterID);
+
+    if (filter) {
+      openSection(filter.name);
+    }
+  }, [activeFilterID, filters, selectedTool]);
 
   const filtersList = [...filters];
 
