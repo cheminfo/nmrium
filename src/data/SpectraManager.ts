@@ -214,5 +214,5 @@ export async function exportForCT(options: ExportForCTOptions) {
   await zip.add(`${molFileName}.mol`, new TextReader(molecule.toMolfile()));
 
   const blob = await zip.close();
-  fileSaver.saveAs(blob, name);
+  fileSaver.saveAs(blob, `${name}.zip`);
 }
