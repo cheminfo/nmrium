@@ -86,6 +86,7 @@ export function BaseApodizationOptions(
                   style={{ margin: 0, marginLeft: '5px' }}
                   innerLabelChecked="On"
                   innerLabel="Off"
+                  defaultChecked={false}
                   {...(!filter.value
                     ? { disabled: true, checked: false }
                     : processedFieldOptions)}

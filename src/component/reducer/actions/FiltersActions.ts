@@ -1100,7 +1100,11 @@ function handleCalculateApodizationFilter(
     if (!tempRollback) {
       apodization.apply(spectrum, options);
     } else {
-      for (const filter of datum.filters) {
+      const index = datum.filters.findIndex(
+        (filter) => filter.name === 'apodization',
+      );
+
+      for (const filter of datum.filters.slice(index)) {
         const { name, value } = filter;
 
         delete filter.error;
