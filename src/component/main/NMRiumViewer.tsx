@@ -10,6 +10,7 @@ import { SVGRootContainer } from '../1d-2d/components/SVGRootContainer.js';
 import Viewer2D from '../2d/Viewer2D.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useExportSettings } from '../elements/export/index.js';
+import { usePrintPage } from '../elements/print/PrintProvider.tsx';
 import {
   useCheckExportStatus,
   useViewportSize,
@@ -33,13 +34,26 @@ export function NMRiumViewer(props: NMRiumViewerProps) {
   const viewPort = useViewportSize();
   const { displayerMode } = useChartData();
   const exportSettings = useExportSettings();
+  const printSettings = usePrintPage();
 
   useOnRender(onRender);
 
   const isExportingProcessStart = useCheckExportStatus();
 
-  if (isExportingProcessStart && exportSettings) {
-    const { width, height, exportHeight, exportWidth } = exportSettings;
+  if (isExportingProcessStart && (exportSettings || printSettings)) {
+    if (!exportSettings && !printSettings) {
+      return <text>Print/export settings are missing.</text>;
+    }
+
+    const { width, height } = exportSettings || printSettings || {};
+    let exportHeight = height;
+    let exportWidth = width;
+
+    if (exportSettings) {
+      exportHeight = exportSettings.exportHeight;
+      exportWidth = exportSettings.exportWidth;
+    }
+
     return (
       <SVGRootContainer
         enableBoxBorder={displayerMode === '2D'}
