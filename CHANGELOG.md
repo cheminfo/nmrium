@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.1](https://github.com/cheminfo/nmrium/compare/v1.2.0...v1.2.1) (2025-08-27)
+
+
+### Bug Fixes
+
+* add '.zip' extension when exporting CT files ([b334685](https://github.com/cheminfo/nmrium/commit/b33468568ce2679759cb0af070f4e89971a13bdb))
+* correctly show fully processed live preview for apodization filter ([08651f6](https://github.com/cheminfo/nmrium/commit/08651f6709ab6df290f71e590c33dace9ecb16b8))
+* disable editing of read-only filters ([4808d0d](https://github.com/cheminfo/nmrium/commit/4808d0d6b7fdf3324331ebacf32de7d5e53b4144))
+* make printing use the same handling logic as export ([0545c33](https://github.com/cheminfo/nmrium/commit/0545c33cd48fe4c907b658683089d5eb2e627da3))
+* mark exclusion zones data as dirty to allow changes to be applied ([52bfafc](https://github.com/cheminfo/nmrium/commit/52bfafc6f974ecf18b34e98b8873e2b1b0f4daaa))
+* rollback to full processed spectrum when cancelling filter edit ([3499ea3](https://github.com/cheminfo/nmrium/commit/3499ea32a31f492305098b5ac46d1dc995636559)), closes [#3654](https://github.com/cheminfo/nmrium/issues/3654)
+
 ## [1.2.0](https://github.com/cheminfo/nmrium/compare/v1.1.0...v1.2.0) (2025-08-21)
 
 
