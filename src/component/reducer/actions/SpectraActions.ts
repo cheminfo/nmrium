@@ -399,11 +399,11 @@ function handleChangeActiveSpectrum(
    * not refresh the y domain if the next and previous selected spectra have Ft or we do not have previous or next active spectra
    */
   const refreshDomain =
-    previousActiveSpectraHasFT === undefined ||
-    (previousActiveSpectraHasFT !== newActiveSpectraHasFT &&
-      spectra &&
-      spectra?.length > 0 &&
-      spectraIds?.length > 0);
+    (previousActiveSpectraHasFT === undefined ||
+      previousActiveSpectraHasFT !== newActiveSpectraHasFT) &&
+    spectra &&
+    spectra?.length > 0 &&
+    spectraIds?.length > 0;
 
   /**
    * if the active spectrum not is FID then do not refresh the domain and the mode when the first time you activate spectrum
