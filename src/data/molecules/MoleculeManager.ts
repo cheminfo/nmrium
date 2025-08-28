@@ -4,6 +4,7 @@ import { Molecule } from 'openchemlib';
 import type { StateMolecule, StateMoleculeExtended } from './Molecule.js';
 import { initMolecule } from './Molecule.js';
 
+//TODO: Move molecule initialization to nmrium-core and log an error if the molecule cannot be parsed.
 export function fromJSON(
   mols: StateMolecule[],
   reservedMolecules: StateMolecule[] = [],
@@ -13,6 +14,13 @@ export function fromJSON(
   const molecules: StateMoleculeExtended[] = [];
   for (const mol of mols) {
     const molecule = Molecule.fromMolfile(mol.molfile);
+
+    const atomCount = molecule.getAllAtoms();
+
+    if (atomCount === 0) {
+      continue;
+    }
+
     molecules.push(
       initMolecule({
         molfile: molecule.toMolfileV3(),
