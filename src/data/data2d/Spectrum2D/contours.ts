@@ -1,6 +1,7 @@
 import type { Spectrum2D } from '@zakodium/nmrium-core';
 import type { NmrData2DFt } from 'cheminfo-types';
 import { Conrec } from 'ml-conrec';
+import { BasicContour } from 'ml-conrec/lib/BasicContourDrawer';
 import { xMaxAbsoluteValue } from 'ml-spectra-processing';
 
 import { calculateSanPlot } from '../../utilities/calculateSanPlot.js';
@@ -182,12 +183,18 @@ function range(from: number, to: number, step: number) {
   return result;
 }
 
+interface DrawContoursOptions {
+  negative?: boolean;
+  quadrant?: 'rr' | 'ri' | 'ir' | 'ii';
+  cache: Map<number, BasicContour[]>;
+}
+
 function drawContours(
-  level: ContourItem,
   spectrum: Spectrum2D,
-  negative = false,
-  quadrant = 'rr',
+  level: ContourItem,
+  options: DrawContoursOptions,
 ) {
+  const { negative = false, quadrant = 'rr', cache } = options;
   const { contourLevels, numberOfLayers } = level;
 
   return getContours({
@@ -195,6 +202,7 @@ function drawContours(
     boundary: contourLevels,
     nbLevels: numberOfLayers,
     data: spectrum.data[quadrant],
+    cache,
   });
 }
 
@@ -204,6 +212,7 @@ interface ContoursCalcOptions {
   timeout?: number;
   nbLevels: number;
   data: NmrData2DFt['rr'];
+  cache: Map<number, BasicContour[]>;
 }
 
 function getContours(options: ContoursCalcOptions) {
@@ -213,34 +222,33 @@ function getContours(options: ContoursCalcOptions) {
     timeout = 2000,
     nbLevels,
     data,
+    cache,
   } = options;
-  const xs = getRange(data.minX, data.maxX, data.z[0].length);
-  const ys = getRange(data.minY, data.maxY, data.z.length);
-  const conrec = new Conrec(data.z, { xs, ys, swapAxes: false });
-  const max = Math.max(Math.abs(data.minZ), Math.abs(data.maxZ));
-  const minLevel = calculateValueOfLevel(boundary[0], max);
-  const maxLevel = calculateValueOfLevel(boundary[1], max);
+
+  const range = calculateRange(boundary, data, nbLevels, negative);
+
+  if (isZeroRange(range)) {
+    return createEmptyResult(range);
+  }
 
   const diffRange = boundary[1] - boundary[0];
 
-  let _range = getRange(minLevel, maxLevel, Math.min(nbLevels, diffRange), 2);
-  if (negative) {
-    _range = _range.map((value) => -value);
-  }
-
-  if (_range.every((r) => r === 0)) {
-    const emptyLine: number[] = [];
+  if (cache.has(diffRange)) {
     return {
-      contours: _range.map((r) => ({ zValue: r, lines: emptyLine })),
+      contours: cache.get(diffRange) ?? [],
       timeout: false,
     };
   }
 
-  return conrec.drawContour({
+  const conrec = initializeConrec(data);
+  const result = conrec.drawContour({
     contourDrawer: 'basic',
-    levels: Array.from(_range),
+    levels: range,
     timeout,
   });
+  cache.set(diffRange, result.contours);
+
+  return result;
 }
 
 /**
@@ -257,6 +265,38 @@ function calculateValueOfLevel(level: number, max: number, invert = false) {
   }
 
   return (max * (2 ** (level / 10) - 1)) / (2 ** 10 - 1);
+}
+
+function calculateRange(
+  boundary: [number, number],
+  data: ContoursCalcOptions['data'],
+  nbLevels: number,
+  negative: boolean,
+): number[] {
+  const max = Math.max(Math.abs(data.minZ), Math.abs(data.maxZ));
+  const minLevel = calculateValueOfLevel(boundary[0], max);
+  const maxLevel = calculateValueOfLevel(boundary[1], max);
+  const diffRange = boundary[1] - boundary[0];
+
+  const range = getRange(minLevel, maxLevel, Math.min(nbLevels, diffRange), 2);
+  return negative ? range.map((value) => -value) : range;
+}
+
+function isZeroRange(range: number[]): boolean {
+  return range.every((r) => r === 0);
+}
+
+function createEmptyResult(range: number[]) {
+  return {
+    contours: range.map((r) => ({ zValue: r, lines: [] })),
+    timeout: false,
+  };
+}
+
+function initializeConrec(data: ContoursCalcOptions['data']): Conrec {
+  const xs = getRange(data.minX, data.maxX, data.z[0].length);
+  const ys = getRange(data.minY, data.maxY, data.z.length);
+  return new Conrec(data.z, { xs, ys, swapAxes: false });
 }
 
 export {
