@@ -215,6 +215,7 @@ function DraggableMolecule(props: DraggableMoleculeProps) {
           ? currentDiaIDsToHighlight
           : assignedDiaIDsMerged
       }
+      atomHighlightStrategy="prefer-editor-props"
       setHoverAtom={handleOnAtomHover}
       setMolfile={(molfile) => {
         dispatch({
