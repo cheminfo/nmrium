@@ -157,6 +157,7 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
                                 ? currentDiaIDsToHighlight
                                 : assignedDiaIDsMerged
                             }
+                            atomHighlightStrategy="prefer-editor-props"
                             setHoverAtom={handleOnAtomHover}
                             showAtomNumber={
                               moleculesView?.[mol.id]?.showAtomNumber || false

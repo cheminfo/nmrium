@@ -185,6 +185,7 @@ export default function useAtomAssignment() {
   ) {
     if (checkModifierKeyActivated(event) || !activatedAssignment) return;
 
+    event.preventDefault(); // prevent floating form custom label edit
     const { axis, id } = activatedAssignment;
 
     if (!id || !axis) {
