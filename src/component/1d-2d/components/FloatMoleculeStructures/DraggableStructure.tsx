@@ -49,6 +49,7 @@ const ReactRnd = styled(Rnd)`
 export function DraggableStructure(props: DraggableStructureProps) {
   const { molecule, moleculeView } = props;
   const { viewerRef } = useGlobal();
+
   const isExportProcessStart = useCheckExportStatus();
   const dispatch = useDispatch();
   const { modal, openMoleculeEditor } = useMoleculeEditor();
@@ -78,6 +79,7 @@ export function DraggableStructure(props: DraggableStructureProps) {
       bounding.width += width;
       bounding.height += height;
     }
+
     dispatch({
       type: 'CHANGE_FLOAT_MOLECULE_POSITION',
       payload: { id: molecule.id, bounding: bounding as MoleculeBoundingRect },
@@ -137,7 +139,7 @@ export function DraggableStructure(props: DraggableStructureProps) {
       minHeight={100}
       dragHandleClassName="handle"
       enableUserSelectHack={false}
-      bounds={viewerRef}
+      bounds={`#${viewerRef.id}`}
       style={{ zIndex: 1 }}
       className="draggable-molecule"
       onDragStart={() => setIsMoveActive(true)}
