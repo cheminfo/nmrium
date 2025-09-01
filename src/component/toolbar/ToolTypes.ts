@@ -382,7 +382,8 @@ export const options: RecordOptions = {
     spectraOptions: [
       {
         info: [
-          { key: 'isFid', value: true },
+          { key: 'isFtDimensionOne', value: true },
+          { key: 'isFt', value: false },
           { key: 'isComplex', value: true },
         ],
         active: true,
