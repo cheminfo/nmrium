@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.3.0](https://github.com/cheminfo/nmrium/compare/v1.2.1...v1.3.0) (2025-09-02)
+
+
+### Features
+
+* **slot:** support `topbar.about_us.modal` slot with fallback ([#3676](https://github.com/cheminfo/nmrium/issues/3676)) ([80562a3](https://github.com/cheminfo/nmrium/commit/80562a3f7b239dfe00c6fb0088bbdba90bbdca09))
+* support custom label edition on atom ([#3668](https://github.com/cheminfo/nmrium/issues/3668)) ([04e5ff7](https://github.com/cheminfo/nmrium/commit/04e5ff7cf15afbdf73faf280ec81d2871c4965a0))
+
+
+### Bug Fixes
+
+* add missing 'nbPoints' property to simulated spectrum ([#3630](https://github.com/cheminfo/nmrium/issues/3630)) ([60c6686](https://github.com/cheminfo/nmrium/commit/60c6686c426d921b94218cc1e8df91740a68d0f5))
+* display FFT second dimension after applying first dimension ([74f1947](https://github.com/cheminfo/nmrium/commit/74f194769855b5c9e8eb11fa7f642aad1853a0cb))
+* prevent adding molecule when molfile is corrupted ([33508e2](https://github.com/cheminfo/nmrium/commit/33508e273ca4e11e9374da4d6d6eb83eb4333a36))
+* prevent domain refresh when selecting Ft spectra ([b22e25c](https://github.com/cheminfo/nmrium/commit/b22e25c47f99cdcacb9c4f854d569015b8e7af0e))
+* support exporting floating molecules as SVG ([a647599](https://github.com/cheminfo/nmrium/commit/a647599aa7cd3ede59f1881b73bee77cba7f162a))
+* use selector for ReactRnd bounds ([ac0f511](https://github.com/cheminfo/nmrium/commit/ac0f51113f4755b1446fb062cd05fb6f18a5911a)), closes [#3669](https://github.com/cheminfo/nmrium/issues/3669)
+
 ## [1.2.1](https://github.com/cheminfo/nmrium/compare/v1.2.0...v1.2.1) (2025-08-27)
 
 
