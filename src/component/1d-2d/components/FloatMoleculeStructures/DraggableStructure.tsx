@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 import { BsArrowsMove } from 'react-icons/bs';
 import { FaTimes } from 'react-icons/fa';
+import type { MolfileSvgRendererProps } from 'react-ocl';
+import { MolfileSvgRenderer } from 'react-ocl';
 import OCLnmr from 'react-ocl-nmr';
 import { Rnd } from 'react-rnd';
 
@@ -24,6 +26,7 @@ import useAtomAssignment from '../../../panels/MoleculesPanel/useAtomAssignment.
 interface DraggableMoleculeProps extends DraggableStructureProps {
   width: number;
   height: number;
+  renderAsSVG?: boolean;
 }
 
 interface DraggableStructureProps {
@@ -126,7 +129,7 @@ export function DraggableStructure(props: DraggableStructureProps) {
   if (isExportProcessStart) {
     return (
       <g transform={`translate(${x} ${y})`}>
-        <DraggableMolecule {...{ width, height }} {...props} />
+        <DraggableMolecule renderAsSVG {...{ width, height }} {...props} />
       </g>
     );
   }
@@ -188,7 +191,14 @@ export function DraggableStructure(props: DraggableStructureProps) {
 }
 
 function DraggableMolecule(props: DraggableMoleculeProps) {
-  const { molecule, index, moleculeView, width, height } = props;
+  const {
+    molecule,
+    index,
+    moleculeView,
+    width,
+    height,
+    renderAsSVG = false,
+  } = props;
   const {
     currentDiaIDsToHighlight,
     handleOnAtomHover,
@@ -198,20 +208,29 @@ function DraggableMolecule(props: DraggableMoleculeProps) {
   const highlightColor = useHighlightColor();
   const dispatch = useDispatch();
 
+  const atomHighlightColor =
+    currentDiaIDsToHighlight?.length > 0 ? '#ff000080' : highlightColor;
+  const baseProps: MolfileSvgRendererProps = {
+    id: `molSVG${index || ''}`,
+    height,
+    width,
+    label: molecule.label,
+    labelFontSize: 15,
+    labelColor: 'rgb(0,0,0)',
+    molfile: molecule.molfile,
+    atomHighlightColor,
+    atomHighlightOpacity: 1,
+    showAtomNumber: moleculeView.showAtomNumber,
+  };
+
+  if (renderAsSVG) {
+    return <MolfileSvgRenderer {...baseProps} />;
+  }
+
   return (
     <OCLnmr
-      id={`molSVG${index || ''}`}
-      height={height}
-      width={width}
-      label={molecule.label}
-      labelFontSize={15}
-      labelColor="rgb(0,0,0)"
-      molfile={molecule.molfile}
+      {...baseProps}
       setSelectedAtom={handleOnClickAtom}
-      atomHighlightColor={
-        currentDiaIDsToHighlight?.length > 0 ? '#ff000080' : highlightColor
-      }
-      atomHighlightOpacity={1}
       highlights={
         currentDiaIDsToHighlight?.length > 0
           ? currentDiaIDsToHighlight
@@ -229,7 +248,6 @@ function DraggableMolecule(props: DraggableMoleculeProps) {
           },
         });
       }}
-      showAtomNumber={moleculeView.showAtomNumber}
     />
   );
 }
