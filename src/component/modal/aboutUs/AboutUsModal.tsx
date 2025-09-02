@@ -4,8 +4,10 @@ import { SvgLogoNmrium } from 'cheminfo-font';
 import { Toolbar, useOnOff } from 'react-science/ui';
 
 import versionInfo from '../../../versionInfo.js';
+import { useCore } from '../../context/CoreContext.js';
 import Logo from '../../elements/Logo.js';
 import { StyledDialogBody } from '../../elements/StyledDialogBody.js';
+import { renderCoreSlot } from '../../utility/renderCoreSlot.js';
 
 import AboutUsZakodium from './AboutUsZakodium.js';
 
@@ -69,8 +71,60 @@ const Separator = styled.span`
   width: 15px;
 `;
 
+const modalContentFallback = (
+  <>
+    <InfoBlock>
+      <Logo width={160} height={50} />
+      Version <VersionInfo />
+      <Separator />
+      <a
+        href="https://github.com/cheminfo/nmrium"
+        target="_blank"
+        rel="noreferrer"
+      >
+        GitHub ( https://github.com/cheminfo/nmrium )
+      </a>
+    </InfoBlock>
+    <InfoBlock>
+      <Separator />
+    </InfoBlock>
+    <span className="content">
+      This project is developed by Zakodium Sàrl (Switzerland), the University
+      of Cologne (Germany), Johannes Gutenberg University Mainz (Germany) and
+      Universidad del Valle (Colombia).
+    </span>
+    <InfoBlock>
+      <Separator />
+      <span className="title">Funding is provided by</span>
+      <Separator />
+    </InfoBlock>
+    <div className="content">
+      <ul>
+        <li>
+          IDNMR grant, which part of the Scientific Library Services and
+          Information Systems (LIS) initiative of the DFG.
+        </li>
+        <li>
+          <AboutUsZakodium />
+        </li>
+        <li>Universidad del Valle (Cali, Colombia).</li>
+        <li>
+          This project has received funding from the European Union’s Horizon
+          2020 research and innovation programme under grant agreement No
+          957189. The project is part of BATTERY 2030+, the large-scale European
+          research initiative for inventing the sustainable batteries of the
+          future.
+        </li>
+      </ul>
+    </div>
+    <Separator />
+  </>
+);
+
 function AboutUsModal() {
   const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
+  const core = useCore();
+
   return (
     <>
       <Toolbar.Item
@@ -91,47 +145,11 @@ function AboutUsModal() {
       >
         <CustomDialogBody>
           <Container>
-            <InfoBlock>
-              <Logo width={160} height={50} />
-              Version <VersionInfo />
-              <Separator />
-              <a href="https://git.nmrium.org" target="_blank" rel="noreferrer">
-                GitHub ( https://git.nmrium.org )
-              </a>
-            </InfoBlock>
-            <InfoBlock>
-              <Separator />
-            </InfoBlock>
-            <span className="content">
-              This project is developed by Zakodium Sàrl (Switzerland), the
-              University of Cologne (Germany), Johannes Gutenberg University
-              Mainz (Germany) and Universidad del Valle (Colombia).
-            </span>
-            <InfoBlock>
-              <Separator />
-              <span className="title">Funding is provided by</span>
-              <Separator />
-            </InfoBlock>
-            <div className="content">
-              <ul>
-                <li>
-                  IDNMR grant, which part of the Scientific Library Services and
-                  Information Systems (LIS) initiative of the DFG.
-                </li>
-                <li>
-                  <AboutUsZakodium />
-                </li>
-                <li>Universidad del Valle (Cali, Colombia).</li>
-                <li>
-                  This project has received funding from the European Union’s
-                  Horizon 2020 research and innovation programme under grant
-                  agreement No 957189. The project is part of BATTERY 2030+, the
-                  large-scale European research initiative for inventing the
-                  sustainable batteries of the future.
-                </li>
-              </ul>
-            </div>
-            <Separator />
+            {renderCoreSlot(
+              core,
+              'topbar.about_us.modal',
+              modalContentFallback,
+            )}
           </Container>
         </CustomDialogBody>
       </Dialog>
