@@ -94,7 +94,7 @@ function InnerSaveAsModal(props: InnerSaveAsModalProps) {
         <Label style={labelStyle} title="Include view">
           <Checkbox style={{ margin: 0 }} {...register(`include.view`)} />
         </Label>
-        <Label style={labelStyle} title="Include settings">
+        <Label style={labelStyle} title="Include workspace">
           <Checkbox style={{ margin: 0 }} {...register(`include.settings`)} />
         </Label>
         <Label style={labelStyle} title="Include data">
