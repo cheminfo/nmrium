@@ -158,10 +158,17 @@ function DisplayTabContent() {
             name={`${basePath}.${row.original.name}`}
             render={({ field }) => {
               const { value: state } = field;
-              const { visible = false, display = false } = state || {};
+              const {
+                visible = false,
+                display = false,
+                open = false,
+              } = state || {};
               let value: PanelStatus = 'hidden';
+              const isActive = visible && display;
 
-              if (visible && display) {
+              if (isActive && open) {
+                value = 'open';
+              } else if (isActive) {
                 value = 'active';
               } else if (visible) {
                 value = 'available';
