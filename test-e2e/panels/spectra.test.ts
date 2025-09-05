@@ -370,7 +370,7 @@ test('Export source from 1H spectrum', async ({ page }) => {
   });
   await test.step('Open Save as window ', async () => {
     await nmrium.clickTool('exportAs');
-    await nmrium.page.click('_react=ToolbarPopoverItem  >> text=Save data as');
+    await nmrium.page.click('_react=ToolbarPopoverItem  >> text=Save as');
   });
   await test.step('Check include data options', async () => {
     const fields = nmrium.page.locator(
@@ -408,7 +408,7 @@ test('Export source from 1H spectrum', async ({ page }) => {
   await test.step('Check export DATA SOURCE', async () => {
     const downloadPromise = nmrium.page.waitForEvent('download');
     await nmrium.clickTool('exportAs');
-    await nmrium.page.click('_react=ToolbarPopoverItem  >> text=Save data as');
+    await nmrium.page.click('_react=ToolbarPopoverItem  >> text=Save as');
 
     await nmrium.page.click('_react=SaveAsModal >> text="Data source" ');
 
@@ -432,7 +432,7 @@ test('Export source from 1H spectrum', async ({ page }) => {
   await test.step('Check export NO Data', async () => {
     const downloadPromise = nmrium.page.waitForEvent('download');
     await nmrium.clickTool('exportAs');
-    await nmrium.page.click('_react=ToolbarPopoverItem >> text=Save data as');
+    await nmrium.page.click('_react=ToolbarPopoverItem >> text=Save as');
     await nmrium.page.click('_react=SaveAsModal >> text="No data" ');
     await nmrium.page.click('_react=SaveAsModal >> button >> text=Save');
     const download = await downloadPromise;
@@ -458,7 +458,7 @@ test('Export source from imported spectrum', async ({ page }) => {
   });
   await test.step('Open Save as window ', async () => {
     await nmrium.clickTool('exportAs');
-    await nmrium.page.click('_react=ToolbarPopoverItem  >> text=Save data as');
+    await nmrium.page.click('_react=ToolbarPopoverItem  >> text=Save as');
   });
   await test.step('Check include data options', async () => {
     const fields = nmrium.page.locator(
@@ -495,7 +495,7 @@ test('Export source from imported spectrum', async ({ page }) => {
   await test.step('Check export NO Data', async () => {
     const downloadPromise = nmrium.page.waitForEvent('download');
     await nmrium.clickTool('exportAs');
-    await nmrium.page.click('_react=ToolbarPopoverItem >> text=Save data as');
+    await nmrium.page.click('_react=ToolbarPopoverItem >> text=Save as');
     await nmrium.page.click('_react=SaveAsModal >> text="No data"');
     await nmrium.page.click('_react=SaveAsModal >> button >> text=Save');
     const download = await downloadPromise;

@@ -41,6 +41,20 @@ const IMPORT_MENU: ToolbarPopoverMenuItem[] = [
 
 const EXPORT_MENU: ToolbarPopoverMenuItem[] = [
   {
+    icon: <FaFileDownload />,
+    text: 'Save data (Press Ctrl+s)',
+    data: {
+      id: 'json',
+    },
+  },
+  {
+    icon: <FaFileDownload />,
+    text: 'Save as (Press Ctrl+Shift+s)',
+    data: {
+      id: 'advance_save',
+    },
+  },
+  {
     icon: <FaDownload />,
     text: 'Export as SVG',
     data: {
@@ -55,31 +69,17 @@ const EXPORT_MENU: ToolbarPopoverMenuItem[] = [
     },
   },
   {
-    icon: <FaFileDownload />,
-    text: 'Save data (Press Ctrl+s)',
-    data: {
-      id: 'json',
-    },
-  },
-  {
-    icon: <FaFileDownload />,
-    text: 'Save data as (Press Ctrl+Shift+s)',
-    data: {
-      id: 'advance_save',
-    },
-  },
-  {
-    icon: <FaFileDownload />,
-    text: 'Save NMRE data',
-    data: {
-      id: 'nmre',
-    },
-  },
-  {
     icon: <FaCopy />,
     text: 'Copy image to clipboard (Press Ctrl+c)',
     data: {
       id: 'copy',
+    },
+  },
+  {
+    icon: <FaFileDownload />,
+    text: 'Export as NMReData',
+    data: {
+      id: 'nmre',
     },
   },
 ];
