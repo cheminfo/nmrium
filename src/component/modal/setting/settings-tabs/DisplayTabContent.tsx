@@ -1,4 +1,4 @@
-import { Checkbox, Switch } from '@blueprintjs/core';
+import { Switch } from '@blueprintjs/core';
 import type { NMRiumPanelPreferences } from '@zakodium/nmrium-core';
 import { useCallback, useMemo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
@@ -18,7 +18,7 @@ interface ListItem {
   hideOpenOption?: boolean;
 }
 
-type PanelStatus = 'hidden' | 'available' | 'active';
+type PanelStatus = 'hidden' | 'available' | 'active' | 'open';
 interface PanelStatusItem {
   label: string;
   value: PanelStatus;
@@ -32,6 +32,10 @@ const PANEL_STATUS: PanelStatusItem[] = [
   {
     label: 'Available',
     value: 'available',
+  },
+  {
+    label: 'Open',
+    value: 'open',
   },
   {
     label: 'Active',
@@ -108,6 +112,7 @@ function DisplayTabContent() {
     (panelName: keyof NMRiumPanelPreferences, status: PanelStatus) => {
       let visible = false;
       let display = false;
+      let open = false;
 
       if (status === 'available') {
         visible = true;
@@ -117,7 +122,13 @@ function DisplayTabContent() {
         visible = true;
         display = true;
       }
+      if (status === 'open') {
+        visible = true;
+        display = true;
+        open = true;
+      }
 
+      setValue(`${basePath}.${panelName}.open`, open);
       setValue(`${basePath}.${panelName}.display`, display);
       setValue(`${basePath}.${panelName}.visible`, visible);
     },
@@ -172,19 +183,8 @@ function DisplayTabContent() {
           />
         ),
       },
-      {
-        index: 4,
-        Header: 'Open on load',
-        style: { textAlign: 'center' },
-        Cell: ({ row }) => (
-          <Checkbox
-            style={{ margin: 0 }}
-            {...register(`${basePath}.${row.original.name}.open`)}
-          />
-        ),
-      },
     ],
-    [control, onChange, register],
+    [control, onChange],
   );
 
   return (
