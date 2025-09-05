@@ -142,7 +142,9 @@ function MultipleSpectraAnalysisPreferences(
 
 function columnSchema(columns) {
   return Yup.object().shape({
-    tempKey: Yup.string().required(),
+    tempKey: Yup.string()
+      .required()
+      .matches(/^[a-zA-Z][a-zA-Z0-9_]*$/, 'Invalid column label'),
     formula: Yup.string().test(
       'required',
       'Please enter formula field',
