@@ -2,6 +2,7 @@ import { Classes, Dialog, DialogFooter, Tab, Tabs } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
 import type { Workspace } from '@zakodium/nmrium-core';
+import dlv from 'dlv';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import {
   FormProvider,
@@ -330,6 +331,13 @@ function WorkSpaceActionsButtons(props) {
   const toaster = useToaster();
   const { reset } = useFormContext<WorkspaceWithSource>();
   const values = useWatch();
+
+  const isExperimentalFeatures = dlv(
+    values,
+    'display.general.experimentalFeatures.display',
+    false,
+  );
+
   const {
     originalWorkspaces,
     workspace: { current: workspaceName },
@@ -391,23 +399,32 @@ function WorkSpaceActionsButtons(props) {
       >
         <FaBolt className={Classes.ICON} />
       </Button>
-      <StyledButton
-        variant="outlined"
-        onClick={handleCopyWorkspace}
-        tooltipProps={{ content: 'Copy workspace preferences', compact: true }}
-        marginHorizontal={5}
-      >
-        <FaRegCopy className={Classes.ICON} />
-      </StyledButton>
-      <Button
-        variant="outlined"
-        intent="success"
-        onClick={handlePastWorkspaceAction}
-        tooltipProps={{ content: 'Paste workspace preferences', compact: true }}
-      >
-        <FaPaste className={Classes.ICON} />
-      </Button>
-
+      {isExperimentalFeatures && (
+        <>
+          <StyledButton
+            variant="outlined"
+            onClick={handleCopyWorkspace}
+            tooltipProps={{
+              content: 'Copy workspace preferences',
+              compact: true,
+            }}
+            marginHorizontal={5}
+          >
+            <FaRegCopy className={Classes.ICON} />
+          </StyledButton>
+          <Button
+            variant="outlined"
+            intent="success"
+            onClick={handlePastWorkspaceAction}
+            tooltipProps={{
+              content: 'Paste workspace preferences',
+              compact: true,
+            }}
+          >
+            <FaPaste className={Classes.ICON} />
+          </Button>
+        </>
+      )}
       <ClipboardFallbackModal
         mode={shouldFallback}
         onDismiss={cleanShouldFallback}
