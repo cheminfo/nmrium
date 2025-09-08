@@ -42,14 +42,22 @@ const IMPORT_MENU: ToolbarPopoverMenuItem[] = [
 const EXPORT_MENU: ToolbarPopoverMenuItem[] = [
   {
     icon: <FaFileDownload />,
-    text: 'Save data (Press Ctrl+s)',
+    text: 'Save data',
+    tooltip: {
+      title: 'Save data',
+      shortcuts: ['CTRL', 's'],
+    },
     data: {
       id: 'json',
     },
   },
   {
     icon: <FaFileDownload />,
-    text: 'Save as (Press Ctrl+Shift+s)',
+    text: 'Save as',
+    tooltip: {
+      title: 'Save as',
+      shortcuts: ['CTRL', '⇧', 's'],
+    },
     data: {
       id: 'advance_save',
     },
