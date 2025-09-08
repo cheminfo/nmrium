@@ -1,13 +1,17 @@
 import type { MenuItemProps } from '@blueprintjs/core';
-import { Menu, MenuItem } from '@blueprintjs/core';
+import { Menu, MenuItem, Tooltip } from '@blueprintjs/core';
 import type {
   ToolbarItemProps,
   ToolbarPopoverItemProps,
+  TooltipItem,
 } from 'react-science/ui';
-import { Toolbar } from 'react-science/ui';
+import { Toolbar, TooltipHelpContent } from 'react-science/ui';
 
-export interface ToolbarPopoverMenuItem<T = object> extends MenuItemProps {
+export interface ToolbarPopoverMenuItem<T = object>
+  extends MenuItemProps,
+    Pick<ToolbarItemProps, 'tooltipProps'> {
   data?: T;
+  tooltip?: string | TooltipItem;
 }
 
 interface CustomToolbarPopoverItemProps<T = object>
@@ -44,13 +48,42 @@ export function ToolbarPopoverItem<T = object>(
       content={
         <Menu>
           {options.map((option) => {
-            const { data, text, ...otherOptions } = option;
+            const {
+              data,
+              text,
+              tooltip = '',
+              tooltipProps,
+              disabled = !option.tooltip,
+              ...otherOptions
+            } = option;
             return (
-              <MenuItem
-                text={text}
+              <Tooltip
                 key={JSON.stringify({ data, text })}
-                {...otherOptions}
-                onClick={() => onClick(data)}
+                disabled={disabled}
+                content={
+                  typeof tooltip === 'string' ? (
+                    tooltip
+                  ) : (
+                    <TooltipHelpContent {...tooltip} />
+                  )
+                }
+                {...(!tooltip
+                  ? undefined
+                  : {
+                      compact: true,
+                      minimal: true,
+                      interactionKind: 'hover',
+                      placement: 'right',
+                      ...tooltipProps,
+                    })}
+                renderTarget={({ isOpen, ...props }) => (
+                  <MenuItem
+                    text={text}
+                    {...otherOptions}
+                    {...props}
+                    onClick={() => onClick(data)}
+                  />
+                )}
               />
             );
           })}
