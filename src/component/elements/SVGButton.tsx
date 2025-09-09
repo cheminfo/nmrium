@@ -26,6 +26,8 @@ export function SVGButton(props: IconButtonProps) {
     tooltipProps,
     ...otherProps
   } = props;
+
+  const btnSize = size + padding;
   return (
     <Tooltip
       content={title}
@@ -35,18 +37,18 @@ export function SVGButton(props: IconButtonProps) {
       {...tooltipProps}
     >
       <svg
-        width={size}
-        height={size}
-        viewBox={`0 0 ${size} ${size}`}
+        width={btnSize}
+        height={btnSize}
+        viewBox={`0 0 ${btnSize} ${btnSize}`}
         {...otherProps}
       >
         <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={size / 2}
+          cx={btnSize / 2}
+          cy={btnSize / 2}
+          r={btnSize / 2}
           fill={backgroundColor}
         />
-        <g transform={`translate(${padding / 2} ${padding / 2})`}>
+        <g transform={`translate(${padding} ${padding})`}>
           {typeof renderIcon === 'function' ? (
             renderIcon({ size: size - padding, color })
           ) : (
