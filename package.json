@@ -60,7 +60,7 @@
     "nmr-correlation": "2.3.3"
   },
   "dependencies": {
-    "@atlaskit/pragmatic-drag-and-drop": "^1.7.5",
+    "@atlaskit/pragmatic-drag-and-drop": "^1.7.7",
     "@atlaskit/pragmatic-drag-and-drop-hitbox": "^1.1.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
@@ -68,7 +68,7 @@
     "@zakodium/nmr-types": "^0.1.1",
     "@zakodium/nmrium-core": "^0.1.7",
     "@zakodium/nmrium-core-plugins": "^0.1.10",
-    "@zip.js/zip.js": "^2.7.73",
+    "@zip.js/zip.js": "^2.8.1",
     "cheminfo-font": "^1.13.1",
     "cheminfo-types": "^1.8.1",
     "clipboard-polyfill": "^4.1.1",
@@ -111,9 +111,9 @@
     "yup": "^1.7.0"
   },
   "devDependencies": {
-    "@blueprintjs/core": "^6.2.1",
+    "@blueprintjs/core": "^6.3.1",
     "@blueprintjs/icons": "^6.1.0",
-    "@blueprintjs/select": "^6.0.3",
+    "@blueprintjs/select": "^6.0.5",
     "@playwright/test": "^1.55.0",
     "@simbathesailor/use-what-changed": "^2.0.0",
     "@types/d3": "^7.4.3",
@@ -129,7 +129,7 @@
     "@zakodium/tsconfig": "^1.0.2",
     "cross-env": "^10.0.0",
     "cspell": "^9.2.1",
-    "eslint": "^9.34.0",
+    "eslint": "^9.35.0",
     "eslint-config-cheminfo-react": "^17.0.1",
     "eslint-config-cheminfo-typescript": "^19.0.0",
     "knip": "^5.63.1",
@@ -142,11 +142,11 @@
     "react-router-dom": "^7.8.2",
     "rimraf": "^6.0.1",
     "rollup-plugin-analyzer": "^4.0.0",
-    "serve": "^14.2.4",
-    "stylelint": "^16.23.1",
+    "serve": "^14.2.5",
+    "stylelint": "^16.24.0",
     "stylelint-config-standard": "^39.0.0",
     "typescript": "^5.9.2",
-    "vite": "^7.1.4",
+    "vite": "^7.1.5",
     "vitest": "^3.2.4"
   },
   "volta": {
