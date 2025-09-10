@@ -4,6 +4,7 @@ import type {
   Spectrum,
   ViewState,
 } from '@zakodium/nmrium-core';
+import type { FileCollection } from 'file-collection';
 import type { Draft } from 'immer';
 import { produce } from 'immer';
 import lodashMerge from 'lodash/merge.js';
@@ -37,6 +38,7 @@ interface InputProps extends InitiateProps {
   parseMetaFileResult?: ParseResult<any> | null;
   resetSourceObject?: boolean;
   spectraColors?: SpectraColors;
+  fileCollection?: FileCollection;
 }
 
 type SetIsLoadingAction = ActionType<
@@ -48,7 +50,7 @@ type SetIsLoadingAction = ActionType<
 type LoadDropFilesAction = ActionType<'LOAD_DROP_FILES', InputProps>;
 type InitiateAction = ActionType<'INITIATE', InitiateProps>;
 
-export type LoadActions =
+export type LoadAction =
   | SetIsLoadingAction
   | LoadDropFilesAction
   | InitiateAction;
@@ -89,23 +91,25 @@ function setCorrelation(draft: Draft<State>, correlations: CorrelationData) {
   }
 }
 
-function setData(draft: Draft<State>, input: InputProps) {
+function setData(draft: Draft<State>, input: InputProps | InitiateProps) {
+  const { data, view } = input.nmriumState || {
+    data: { spectra: [], molecules: [], correlations: {} },
+  };
+
+  const parseMetaFileResult =
+    'parseMetaFileResult' in input ? input.parseMetaFileResult || null : null;
+
   const {
-    nmriumState: { data, view },
-    parseMetaFileResult = null,
     spectraColors = {
       oneDimension: [],
       twoDimensions: [],
       highlightColor: '#ffd70080',
       indicatorLineColor: '#2FFF0085',
     },
-  } = input || {
-    nmriumState: { data: { spectra: [], molecules: [], correlations: {} } },
-    multipleAnalysis: {},
-  };
+  } = 'spectraColors' in input ? input : { spectraColors: undefined };
 
   const {
-    source,
+    sources,
     spectra = [],
     molecules = [],
     correlations = {},
@@ -116,27 +120,42 @@ function setData(draft: Draft<State>, input: InputProps) {
     draft.view = lodashMerge(defaultViewState, view);
   }
 
-  if (source) {
-    draft.source = lodashMergeWith(
-      draft.source,
-      source,
-      (objValue, srcValue) => {
-        if (Array.isArray(objValue)) {
-          return objValue.concat(srcValue);
-        }
-      },
-    );
+  if (sources && sources.length > 0) {
+    for (const source of Object.keys(sources)) {
+      if (draft.sources[source]) {
+        draft.sources[source] = lodashMergeWith(
+          draft.sources[source],
+          source,
+          (objValue, srcValue) => {
+            if (Array.isArray(objValue)) {
+              return objValue.concat(srcValue);
+            }
+          },
+        );
+      } else {
+        draft.sources[source] = sources[source];
+      }
+    }
   }
   draft.molecules = draft.molecules.concat(
     MoleculeManager.fromJSON(molecules, draft.molecules),
   );
+
+  const fileCollectionId = crypto.randomUUID();
+  const fileCollection =
+    'fileCollection' in input ? input.fileCollection : undefined;
   draft.data = draft.data.concat(
     initSpectra(spectra, {
       usedColors: draft.usedColors,
       molecules: draft.molecules,
       spectraColors,
+      fileCollectionId,
     }),
   );
+  if (fileCollection) {
+    draft.fileCollections ??= {};
+    draft.fileCollections[fileCollectionId] = fileCollection;
+  }
   setCorrelation(draft, correlations);
 
   if (parseMetaFileResult) {
@@ -155,6 +174,7 @@ function initSpectra(
     usedColors: UsedColors;
     molecules: StateMoleculeExtended[];
     spectraColors: SpectraColors;
+    fileCollectionId: string | undefined;
   },
 ) {
   const spectra: any = [];
@@ -269,12 +289,18 @@ function handleLoadDropFiles(draft: Draft<State>, action: LoadDropFilesAction) {
 
     // set source undefined when dragging and dropping a spectra file to prevent export spectra with the data source.
     if (resetSourceObject && spectra?.length > 0) {
-      draft.source = undefined;
+      draft.sources = {};
     }
 
     draft.actionType = type;
     draft.isLoading = false;
   }
 }
+
+export const LoadActions = {
+  handleInitiate,
+  handleLoadDropFiles,
+  handleSetIsLoading,
+} as const;
 
 export { handleInitiate, handleLoadDropFiles, handleSetIsLoading };

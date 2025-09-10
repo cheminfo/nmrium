@@ -52,7 +52,7 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
   );
 
   const {
-    source,
+    sources,
     data: spectraData,
     molecules,
     correlations,
@@ -71,7 +71,7 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
     const { workspace, workspaces = {} } = preferencesState;
     stateRef.current = toJSON(
       core,
-      { data: spectraData, molecules, correlations, source, view, actionType },
+      { data: spectraData, molecules, correlations, sources, view, actionType },
       { current: workspaces[workspace.current] },
       { serialize: false, exportTarget: 'onChange' },
     );
@@ -81,7 +81,7 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
     correlations,
     molecules,
     preferencesState,
-    source,
+    sources,
     spectraData,
     view,
   ]);
@@ -91,7 +91,7 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
     if (checkActionType(actionType)) {
       handleChange.current?.(stateRef.current as NmriumState, 'data');
     }
-  }, [actionType, correlations, molecules, source, spectraData]);
+  }, [actionType, correlations, molecules, sources, spectraData]);
 
   useEffect(() => {
     // trigger onChange callback if view object changed

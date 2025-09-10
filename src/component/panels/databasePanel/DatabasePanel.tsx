@@ -511,7 +511,7 @@ async function saveJcampAsJson(core: NMRiumCore, rowData, filteredData) {
   const { index, baseURL, jcampURL, names, ocl = {}, smiles } = rowData;
   const { ranges } = filteredData.data[index];
   const url = new URL(jcampURL, baseURL);
-  const { data: { spectra, source } = { source: {}, spectra: [] }, version } =
+  const { data: { spectra, sources } = { sources: [], spectra: [] }, version } =
     await core.readFromWebSource({
       entries: [{ baseURL: url.origin, relativePath: url.pathname }],
     });
@@ -552,7 +552,7 @@ async function saveJcampAsJson(core: NMRiumCore, rowData, filteredData) {
     {
       version,
       data: {
-        source,
+        sources,
         spectra: spectraData,
         ...(molfile && { molecules: [{ molfile }] }),
       },

@@ -56,7 +56,7 @@ function SaveAsModal(props: SaveAsModalProps) {
 }
 function InnerSaveAsModal(props: InnerSaveAsModalProps) {
   const { onCloseDialog } = props;
-  const { source, data } = useChartData();
+  const { sources, data } = useChartData();
   const { saveHandler } = useExport();
 
   const fileName = data[0]?.info?.name;
@@ -109,7 +109,7 @@ function InnerSaveAsModal(props: InnerSaveAsModalProps) {
                   <Radio
                     label="Data source"
                     value={DataExportOptions.DATA_SOURCE}
-                    disabled={!source}
+                    disabled={Object.keys(sources).length === 0}
                   />
                   <Radio label="No data" value={DataExportOptions.NO_DATA} />
                 </RadioGroup>

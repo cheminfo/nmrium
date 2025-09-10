@@ -82,7 +82,7 @@ export function toJSON(
   options: ExportOptions = {},
 ) {
   const {
-    source,
+    sources,
     data = [],
     molecules: mols = [],
     correlations = {},
@@ -105,7 +105,7 @@ export function toJSON(
     version: CURRENT_EXPORT_VERSION,
     data: {
       ...(exportTarget === 'onChange' ? { actionType } : {}),
-      source,
+      sources,
       spectra: data,
       molecules,
       correlations,

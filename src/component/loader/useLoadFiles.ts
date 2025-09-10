@@ -12,9 +12,9 @@ import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature.js
 
 export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
   const dispatch = useDispatch();
-  const { dispatch: dispatchPreferences, current: workspacePreferences } =
-    usePreferences();
   const preferences = usePreferences();
+  const { dispatch: dispatchPreferences, current: workspacePreferences } =
+    preferences;
   const toaster = useToaster();
   const { logger } = useLogger();
   const experimentalFeatures = useCheckExperimentalFeature();
@@ -70,6 +70,7 @@ export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
               containsNmrium,
               parseMetaFileResult,
               spectraColors,
+              fileCollection,
             },
           });
         }

@@ -8,7 +8,7 @@ import type { DomainActions } from '../reducer/actions/DomainActions.js';
 import type { FiltersActions } from '../reducer/actions/FiltersActions.js';
 import type { InsetsActions } from '../reducer/actions/InsetActions.js';
 import type { IntegralsActions } from '../reducer/actions/IntegralsActions.js';
-import type { LoadActions } from '../reducer/actions/LoadActions.js';
+import type { LoadAction } from '../reducer/actions/LoadAction.js';
 import type { MoleculeActions } from '../reducer/actions/MoleculeActions.js';
 import type { PeaksActions } from '../reducer/actions/PeaksActions.js';
 import type { PreferencesActions } from '../reducer/actions/PreferencesActions.js';
@@ -21,7 +21,7 @@ import type { ActionType } from '../reducer/types/ActionType.js';
 export type Action =
   | ToolsActions
   | SpectrumActions
-  | LoadActions
+  | LoadAction
   | IntegralsActions
   | RangesActions
   | DatabaseActions
