@@ -28,6 +28,7 @@ export function autoPeakPicking(spectrum: Spectrum1D, options) {
     {
       frequency,
       direction,
+      sensitivity: 90,
       shape: { kind: 'lorentzian' },
       noiseLevel: noise * noiseFactor,
       minMaxRatio, // Threshold to determine if a given peak should be considered as a noise

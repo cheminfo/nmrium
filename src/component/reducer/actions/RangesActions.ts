@@ -227,12 +227,15 @@ function handleAutoRangesDetection(
     const detectionOptions: any = {
       rangePicking: {
         integrationSum: 100,
-        compile: true,
-        frequencyCluster: 16,
+        compile: nucleus !== '13C',
+        frequencyCluster: nucleus === '13C' ? 0 : 16,
         clean: 0.3,
         keepPeaks: true,
+        joinOverlapRanges: nucleus !== '13C',
       },
       peakPicking: {
+        smoothY: false,
+        sensitivity: 90,
         broadWidth: 0.05,
         thresholdFactor: 8,
         minMaxRatio,
