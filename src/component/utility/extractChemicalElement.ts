@@ -1,3 +1,3 @@
 export function extractChemicalElement(isotope: string) {
-  return isotope?.replace(/\d/g, '');
+  return isotope?.replaceAll(/\d/g, '');
 }

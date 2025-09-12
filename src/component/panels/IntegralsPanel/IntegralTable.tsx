@@ -106,7 +106,7 @@ function IntegralTable({ activeTab, data, info }: IntegralTableProps) {
         index: 5,
         id: 'relative',
         Header: () => {
-          const n = activeTab?.replace(/\d/g, '');
+          const n = activeTab?.replaceAll(/\d/g, '');
           return <span>{`Relative ${n}`}</span>;
         },
         accessor: 'integral',
@@ -172,7 +172,8 @@ function IntegralTable({ activeTab, data, info }: IntegralTableProps) {
       }
     }
 
-    return columns.sort((object1, object2) => object1.index - object2.index);
+    columns.sort((object1, object2) => object1.index - object2.index);
+    return columns;
   }, [COLUMNS, integralsPreferences]);
 
   if (info?.isFid) {

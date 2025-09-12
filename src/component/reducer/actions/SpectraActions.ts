@@ -33,8 +33,8 @@ import {
   adjustAlpha,
   generateColor,
 } from '../../../data/utilities/generateColor.js';
-import groupByInfoKey from '../../utility/GroupByInfoKey.js';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus.js';
+import groupByInfoKey from '../../utility/groupByInfoKey.js';
 import type { State } from '../Reducer.js';
 import { setZoom } from '../helper/Zoom1DManager.js';
 import { getActiveSpectra } from '../helper/getActiveSpectra.js';

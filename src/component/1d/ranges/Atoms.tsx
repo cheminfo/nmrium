@@ -36,7 +36,11 @@ function useAtoms(range: Range) {
       }
     }
     if (atoms.length > 0) {
-      atomsList.push({ id, atoms: [...new Set(atoms.sort((a, b) => a - b))] });
+      atoms.sort((a, b) => a - b);
+      atomsList.push({
+        id,
+        atoms: Array.from(new Set(atoms)),
+      });
     }
   }
 

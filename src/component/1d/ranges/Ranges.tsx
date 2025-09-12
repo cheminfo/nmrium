@@ -35,18 +35,17 @@ function useStackRangesAssignmentsLabels(ranges: RangeType[]) {
 
   if (!context || ranges.length === 0) return null;
 
-  const processedRanges: ProcessedRange[] = ranges
-    .map((range) => {
-      const { from, assignment = '' } = range;
-      const { width: labelWidth } = context.measureText(assignment);
+  const processedRanges: ProcessedRange[] = ranges.map((range) => {
+    const { from, assignment = '' } = range;
+    const { width: labelWidth } = context.measureText(assignment);
 
-      return {
-        ...range,
-        labelWidth,
-        startPosition: scaleX()(from),
-      };
-    }, [])
-    .sort((a, b) => b.from - a.from);
+    return {
+      ...range,
+      labelWidth,
+      startPosition: scaleX()(from),
+    };
+  });
+  processedRanges.sort((a, b) => b.from - a.from);
 
   return stackOverlappingLabelsMap(processedRanges, {
     startPositionKey: 'startPosition',

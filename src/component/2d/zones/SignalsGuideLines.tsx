@@ -71,19 +71,20 @@ function useSignalsOverlap(axis: IndicationLinesAxis, spectrum: Spectrum1D) {
 
   const isOverXAxis = axis === 'x';
 
-  const processedSignals: ProcessedSignal[] = signals
-    .map((signal) => {
-      const { delta } = signal;
-      const text = signal.assignment ?? '';
-      const { width: labelWidth } = context.measureText(text);
+  const processedSignals: ProcessedSignal[] = signals.map((signal) => {
+    const { delta } = signal;
+    const text = signal.assignment ?? '';
+    const { width: labelWidth } = context.measureText(text);
 
-      return {
-        ...signal,
-        labelWidth,
-        deltaInPixel: isOverXAxis ? scaleX(delta) : scaleY(delta),
-      };
-    })
-    .sort((a, b) => (isOverXAxis ? b.delta - a.delta : a.delta - b.delta));
+    return {
+      ...signal,
+      labelWidth,
+      deltaInPixel: isOverXAxis ? scaleX(delta) : scaleY(delta),
+    };
+  });
+  processedSignals.sort((a, b) =>
+    isOverXAxis ? b.delta - a.delta : a.delta - b.delta,
+  );
 
   return stackOverlappingLabelsArray(processedSignals, {
     startPositionKey: 'deltaInPixel',

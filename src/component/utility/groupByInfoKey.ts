@@ -8,7 +8,7 @@ function getNucleusSum(input: string) {
   return output;
 }
 
-export default function GroupByInfoKey(key: string) {
+export default function groupByInfoKey(key: string) {
   return (array, orderByNucleus = false) => {
     const unorderedGroup = {};
     for (const obj of array) {
@@ -19,11 +19,11 @@ export default function GroupByInfoKey(key: string) {
     if (!orderByNucleus) {
       return unorderedGroup;
     } else {
-      return Object.fromEntries(
-        Object.keys(unorderedGroup)
-          .sort((a, b) => getNucleusSum(a) - getNucleusSum(b))
-          .map((key) => [key, unorderedGroup[key]]),
+      const newGroup = Object.entries(unorderedGroup);
+      newGroup.sort(
+        ([keyA], [keyB]) => getNucleusSum(keyA) - getNucleusSum(keyB),
       );
+      return Object.fromEntries(newGroup);
     }
   };
 }
