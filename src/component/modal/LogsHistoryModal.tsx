@@ -129,7 +129,7 @@ export function LogsHistoryModal(props: LogsHistoryModalProps) {
     [lastReadLogId],
   );
 
-  const sortedLogs = logsHistory.slice().sort((a, b) => b.time - a.time);
+  const sortedLogs = logsHistory.toSorted((a, b) => b.time - a.time);
   return (
     <>
       {!autoOpen && (

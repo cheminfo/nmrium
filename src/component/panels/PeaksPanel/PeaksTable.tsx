@@ -195,7 +195,8 @@ function PeaksTable({ activeTab, data, info }: PeaksTableProps) {
       }
     }
 
-    return columns.sort((object1, object2) => object1.index - object2.index);
+    columns.sort((object1, object2) => object1.index - object2.index);
+    return columns;
   }, [COLUMNS, peaksPreferences]);
 
   if (info?.isFid) {

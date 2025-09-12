@@ -90,7 +90,7 @@ export default class NmriumPage {
       }),
     );
     // remove duplicates
-    const distinctColors = [...new Set(colors)];
+    const distinctColors = Array.from(new Set(colors));
     return distinctColors.length;
   }
 

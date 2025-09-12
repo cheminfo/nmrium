@@ -77,9 +77,8 @@ function initLink(coupling: Coupling): CouplingLink {
 }
 
 function createLinks(ranges: Range[], jGraphTolerance = 0) {
-  const couplings = getCouplings(ranges).sort(
-    (a, b) => a.coupling - b.coupling,
-  );
+  const couplings = getCouplings(ranges);
+  couplings.sort((a, b) => a.coupling - b.coupling);
 
   if (!couplings || couplings.length === 0) return [];
 

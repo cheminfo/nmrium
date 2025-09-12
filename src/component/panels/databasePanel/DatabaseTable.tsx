@@ -226,7 +226,8 @@ function DatabaseTable({
       }
     }
 
-    return columns.sort((object1, object2) => object1.index - object2.index);
+    columns.sort((object1, object2) => object1.index - object2.index);
+    return columns;
   }, [databasePreferences, initialColumns]);
   return (
     <ReactTable

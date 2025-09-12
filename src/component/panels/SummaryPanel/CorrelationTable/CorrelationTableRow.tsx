@@ -151,18 +151,14 @@ function CorrelationTableRow({
   const isInView = useInView({ correlation });
 
   const tableDataProps = useMemo(() => {
-    const title = [
-      ...new Set(
-        correlation.link
-          .map((link) => {
-            if (link.pseudo === false) {
-              return link.experimentType.toUpperCase();
-            }
-            return undefined;
-          })
-          .sort(),
-      ),
-    ].join('/');
+    const correlationLinks = correlation.link.map((link) => {
+      if (link.pseudo === false) {
+        return link.experimentType.toUpperCase();
+      }
+      return undefined;
+    });
+    correlationLinks.sort();
+    const title = Array.from(new Set(correlationLinks)).join('/');
 
     return {
       style: {

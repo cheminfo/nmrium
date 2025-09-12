@@ -92,20 +92,20 @@ function PeaksPanelInner({
         ? peaks.values.filter((peak) => isInRange(peak.x, { from, to }))
         : peaks.values;
 
-      return _peaks
-        .map((peak) => {
-          const { x, y, width, ...peakProperties } = peak;
-          const value = Number(format(x));
-          return {
-            ...peakProperties,
-            x,
-            xHz: info?.originFrequency && value * info.originFrequency,
-            y,
-            width,
-            isConstantlyHighlighted: isInRange(value, { from, to }),
-          };
-        })
-        .sort((prev, next) => prev.x - next.x);
+      const mappedPeaks = _peaks.map((peak) => {
+        const { x, y, width, ...peakProperties } = peak;
+        const value = Number(format(x));
+        return {
+          ...peakProperties,
+          x,
+          xHz: info?.originFrequency && value * info.originFrequency,
+          y,
+          width,
+          isConstantlyHighlighted: isInRange(value, { from, to }),
+        };
+      });
+      mappedPeaks.sort((prev, next) => prev.x - next.x);
+      return mappedPeaks;
     }
 
     return [];
