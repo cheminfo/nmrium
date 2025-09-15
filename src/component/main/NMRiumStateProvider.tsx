@@ -111,7 +111,8 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
     if (nmriumData) {
       void core
         .readNMRiumObject(nmriumData)
-        .then((nmriumState) => {
+        .then((result) => {
+          const [nmriumState, fileCollections] = result;
           if (nmriumState?.settings) {
             dispatchPreferences({
               type: 'SET_WORKSPACE',
@@ -121,7 +122,10 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
               },
             });
           }
-          dispatch({ type: 'INITIATE', payload: { nmriumState } });
+          dispatch({
+            type: 'INITIATE',
+            payload: { nmriumState, fileCollections },
+          });
         })
         .catch((error: unknown) => {
           dispatch({ type: 'SET_LOADING_FLAG', payload: { isLoading: false } });

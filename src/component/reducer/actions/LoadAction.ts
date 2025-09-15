@@ -48,7 +48,12 @@ type SetIsLoadingAction = ActionType<
   }
 >;
 type LoadDropFilesAction = ActionType<'LOAD_DROP_FILES', InputProps>;
-type InitiateAction = ActionType<'INITIATE', InitiateProps>;
+type InitiateAction = ActionType<
+  'INITIATE',
+  InitiateProps & {
+    fileCollections: Map<string, FileCollection>;
+  }
+>;
 
 export type LoadAction =
   | SetIsLoadingAction
@@ -230,6 +235,16 @@ function initData(
   const {
     nmriumState: { data, view },
   } = action.payload;
+
+  if ('fileCollections' in action.payload) {
+    const fileCollections = action.payload.fileCollections;
+    if (fileCollections.size > 0) {
+      draft.fileCollections ??= {};
+    }
+    for (const [id, fc] of fileCollections) {
+      draft.fileCollections[id] = fc;
+    }
+  }
 
   const viewState = view as ViewState;
   if (data?.spectra?.length || forceInitialize) {
