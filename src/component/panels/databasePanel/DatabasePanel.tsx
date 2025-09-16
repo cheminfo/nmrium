@@ -31,7 +31,7 @@ import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus.j
 import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus.js';
 import { options } from '../../toolbar/ToolTypes.js';
 import Events from '../../utility/Events.js';
-import { exportAsJSON } from '../../utility/export.js';
+import { exportAsJsonBlob, saveAs } from '../../utility/export.js';
 import nucleusToString from '../../utility/nucleusToString.js';
 import { PanelNoData } from '../PanelNoData.js';
 import { TablePanel } from '../extra/BasicPanelStyle.js';
@@ -561,5 +561,7 @@ async function saveJcampAsJson(core: NMRiumCore, rowData, filteredData) {
     { includeData: 'dataSource' },
   );
 
-  await exportAsJSON(exportedData, names?.[0], 1);
+  const filename = names?.[0];
+  const blob = await exportAsJsonBlob(exportedData, filename, 1);
+  saveAs(blob, filename);
 }

@@ -8,10 +8,12 @@ import { usePreferences } from '../context/PreferencesContext.js';
 import { useToaster } from '../context/ToasterContext.js';
 import {
   browserNotSupportedErrorToast,
+  buildSelfContainedFile,
   copyPNGToClipboard,
-  exportAsJSON,
+  exportAsJsonBlob,
   exportAsPng,
   exportAsSVG,
+  saveAs,
 } from '../utility/export.js';
 
 interface SaveOptions {
@@ -40,7 +42,13 @@ export function useExport() {
             view: true,
           });
 
-          await exportAsJSON(exportedData, fileName, spaceIndent, isCompressed);
+          const blob = await exportAsJsonBlob(
+            exportedData,
+            fileName,
+            spaceIndent,
+            isCompressed,
+          );
+          saveAs(blob, fileName);
         } catch (error) {
           toaster.show({
             intent: 'danger',
@@ -69,7 +77,23 @@ export function useExport() {
               exportTarget: 'nmrium',
             });
             const spaceIndent = pretty ? 2 : 0;
-            await exportAsJSON(exportedData, name, spaceIndent, compressed);
+            const blob = await exportAsJsonBlob(
+              exportedData,
+              name,
+              spaceIndent,
+              compressed && !include.dataType?.startsWith('SELF_CONTAINED'),
+            );
+
+            if (!include.dataType?.startsWith('SELF_CONTAINED')) {
+              return saveAs(blob, name);
+            }
+
+            const archive = await buildSelfContainedFile();
+            saveAs(
+              new Blob([archive], { type: 'application/zip' }),
+              name,
+              '.nmrium.zip',
+            );
           } catch (error) {
             toaster.show({
               intent: 'danger',

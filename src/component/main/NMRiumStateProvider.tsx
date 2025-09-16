@@ -71,10 +71,18 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
     const { workspace, workspaces = {} } = preferencesState;
     stateRef.current = toJSON(
       core,
-      { data: spectraData, molecules, correlations, sources, view, actionType },
+      {
+        data: spectraData,
+        molecules,
+        correlations,
+        sources,
+        view,
+        actionType,
+        fileCollections: {},
+      },
       { current: workspaces[workspace.current] },
       { serialize: false, exportTarget: 'onChange' },
-    );
+    ) as NmriumState;
   }, [
     actionType,
     core,

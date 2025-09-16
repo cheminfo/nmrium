@@ -1,5 +1,8 @@
 import type {
+  IncludeData,
   NMRiumCore,
+  NmriumState,
+  SerializedNmriumState,
   Spectrum,
   StateMolecule,
   Workspace,
@@ -20,9 +23,45 @@ import { initiateDatum2D } from './data2d/Spectrum2D/index.js';
 import * as Molecule from './molecules/Molecule.js';
 
 export enum DataExportOptions {
+  /**
+   * Export the data as it is in the state, including all the raw data arrays.
+   */
   ROW_DATA = 'ROW_DATA',
+
+  /**
+   * Export the data as it is in the state, excluding all the raw data arrays.
+   * They are replaced by empty arrays.
+   * When the nmrium file will be imported, the data will be fetched from the original source.
+   *
+   * @see State.sources
+   */
   DATA_SOURCE = 'DATA_SOURCE',
+
+  /**
+   * Export only metadata, without any data.
+   */
   NO_DATA = 'NO_DATA',
+
+  /**
+   * Export the state with all the data included, and without any external references.
+   * The final file will be a zip, containing all the data, including the original files.
+   * External data source will also be embedded in the archive.
+   *
+   * @experimental
+   */
+  SELF_CONTAINED = 'SELF_CONTAINED',
+
+  /**
+   * Export the state with data included and with external references.
+   * Original files will be included in the final archive.
+   * External data source will not be embedded in the archive.
+   *
+   * When the nmrium file will be imported,
+   * the data will be fetched from the original source and merged with data embed in the archive.
+   *
+   * @experimental
+   */
+  SELF_CONTAINED_EXTERNAL_DATASOURCE = 'SELF_CONTAINED_EXTERNAL_DATASOURCE',
 }
 
 type DataExportOptionsType = keyof typeof DataExportOptions;
@@ -33,6 +72,7 @@ export interface ExportOptions {
   dataType?: DataExportOptionsType;
   view?: boolean;
   settings?: boolean;
+  /** @default true */
   serialize?: boolean;
   exportTarget?: ExportTarget;
 }
@@ -72,15 +112,27 @@ export function addJcamp(output, jcamp, options, usedColors) {
  * @param {object} state
  * @param preferencesState
  * @param options
+ *
+ * @returns a state serialized or not depending on the options.
+ * If serialize options is true it returns SerializedNmriumState else NmriumState
  */
 export function toJSON(
   core: NMRiumCore,
-  state: Partial<State>,
-  preferencesState: Partial<{
+  state: Pick<
+    State,
+    | 'data'
+    | 'sources'
+    | 'molecules'
+    | 'correlations'
+    | 'actionType'
+    | 'view'
+    | 'fileCollections'
+  >,
+  preferencesState: {
     current: Workspace;
-  }>,
+  },
   options: ExportOptions = {},
-) {
+): NmriumState | SerializedNmriumState {
   const {
     sources,
     data = [],
@@ -101,34 +153,50 @@ export function toJSON(
     Molecule.toJSON(mol),
   );
 
-  const nmriumState: any = {
+  const nmriumState: NmriumState = {
     version: CURRENT_EXPORT_VERSION,
     data: {
       ...(exportTarget === 'onChange' ? { actionType } : {}),
-      sources,
+      sources: Object.entries(sources ?? {}).map(([id, source]) => ({
+        ...source,
+        id,
+      })),
       spectra: data,
       molecules,
       correlations,
     },
     view: state.view,
     settings: preferencesState.current,
+    plugins: core.serializePlugins(),
   };
 
   if (!serialize) {
     return nmriumState;
   } else {
-    const includeData =
-      dataType === 'ROW_DATA'
-        ? 'rawData'
-        : dataType === 'NO_DATA'
-          ? 'noData'
-          : 'dataSource';
+    const includeData = dataTypeToIncludeData(dataType);
 
     return core.serializeNmriumState(nmriumState, {
       includeData,
       includeSettings: settings,
       includeView: view,
     });
+  }
+}
+
+function dataTypeToIncludeData(dataType: DataExportOptionsType): IncludeData {
+  switch (dataType) {
+    case 'ROW_DATA':
+      return 'rawData';
+    case 'NO_DATA':
+      return 'noData';
+    case 'DATA_SOURCE':
+      return 'dataSource';
+    case 'SELF_CONTAINED':
+      return 'selfContained';
+    case 'SELF_CONTAINED_EXTERNAL_DATASOURCE':
+      return 'selfContainedExternalDatasource';
+    default:
+      throw new Error(`Unknown dataType ${dataType as string}`);
   }
 }
 
