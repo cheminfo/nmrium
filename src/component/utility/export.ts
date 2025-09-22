@@ -9,6 +9,9 @@ import dlv from 'dlv';
 import { FileCollection } from 'file-collection';
 import fileSaver from 'file-saver';
 
+import type { ExportOptions } from '../../data/SpectraManager.js';
+import type { State } from '../reducer/Reducer.js';
+
 export const browserNotSupportedErrorToast: ToastProps = {
   message:
     'Your browser does not support this feature, please use the latest version of Google Chrome or Firefox',
@@ -51,16 +54,73 @@ export function saveAs(
   fileSaver.saveAs(blob, `${fileName}${extension}`);
 }
 
-export function buildSelfContainedFile() {
-  const fileBuilder = new FileCollection();
+export async function buildSelfContainedFile(
+  state: State,
+  serializedState: Blob,
+  options: ExportOptions,
+) {
+  const builder = new FileCollection({ unzip: { zipExtensions: [] } });
 
-  // TODO merge file collections from state as-is or toZip
-  // TODO add serialized state as state.json
-  // TODO add sdf files (molecules)
+  const spectra = new Map(
+    state.data.map((spectrum) => [spectrum.fileCollectionId, spectrum]),
+  );
+
+  const promises: Array<Promise<unknown>> = [];
+  for (const fcKey in state.fileCollections) {
+    const fc = state.fileCollections[fcKey];
+
+    if (fc.files.length === 1) {
+      const file = fc.files[0];
+      promises.push(
+        builder.appendExtendedSource({ ...file, uuid: file.sourceUUID }),
+      );
+      continue;
+    }
+
+    promises.push(
+      fc.toZip().then((buffer) => {
+        const blob = new Blob([buffer], { type: 'application/zip' });
+        const spectrum = spectra.get(fcKey);
+        const name = spectrum?.info.name ?? fcKey;
+
+        return builder.appendExtendedSource(
+          {
+            uuid: fcKey,
+            name,
+            relativePath: `${name}.zip`,
+            size: blob.size,
+            text: () => blob.text(),
+            stream: () => blob.stream(),
+            arrayBuffer: () => blob.arrayBuffer(),
+          },
+          { unzip: { zipExtensions: [] } },
+        );
+      }),
+    );
+  }
+
+  await Promise.all(promises);
+
   // NB: need relationships between spectra and files embed in archive
   // NB: need relationships between molecules and files embed in archive
 
-  return fileBuilder.toIum();
+  return builder.toIum({
+    includeData: options.dataType === 'SELF_CONTAINED',
+    *getExtraFiles() {
+      yield {
+        relativePath: 'state.json',
+        data: serializedState,
+      };
+
+      // TODO transform to sdf files with relationships to spectra and file
+      for (const molecule of state.molecules) {
+        yield {
+          relativePath: `${molecule.label}.mol`,
+          data: molecule.molfile,
+        };
+      }
+    },
+  });
 }
 
 function exportAsMatrix(

@@ -236,13 +236,15 @@ function initData(
     nmriumState: { data, view },
   } = action.payload;
 
-  if ('fileCollections' in action.payload) {
-    const fileCollections = action.payload.fileCollections;
-    if (fileCollections.size > 0) {
-      draft.fileCollections ??= {};
-    }
-    for (const [id, fc] of fileCollections) {
-      draft.fileCollections[id] = fc;
+  function updateFileCollections(draft: Draft<State>) {
+    if ('fileCollections' in action.payload) {
+      const fileCollections = action.payload.fileCollections;
+      if (fileCollections.size > 0) {
+        draft.fileCollections ??= {};
+      }
+      for (const [id, fc] of fileCollections) {
+        draft.fileCollections[id] = fc;
+      }
     }
   }
 
@@ -250,6 +252,7 @@ function initData(
   if (data?.spectra?.length || forceInitialize) {
     const state = getInitialState();
     return produce(state, (initialDraft) => {
+      updateFileCollections(initialDraft);
       setData(initialDraft, action.payload);
       setActiveTab(initialDraft, {
         tab: viewState?.spectra?.activeTab || '',
@@ -262,6 +265,7 @@ function initData(
       initialDraft.actionType = action.type;
     });
   } else {
+    updateFileCollections(draft);
     if (view) {
       const defaultViewState = getDefaultViewState();
       draft.view = lodashMerge(defaultViewState, view);

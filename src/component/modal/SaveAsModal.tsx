@@ -112,6 +112,14 @@ function InnerSaveAsModal(props: InnerSaveAsModalProps) {
                     disabled={Object.keys(sources).length === 0}
                   />
                   <Radio label="No data" value={DataExportOptions.NO_DATA} />
+                  <Radio
+                    label="Full data (external data embed, experimental)"
+                    value={DataExportOptions.SELF_CONTAINED}
+                  />
+                  <Radio
+                    label="Full data (external data linked, experimental)"
+                    value={DataExportOptions.SELF_CONTAINED_EXTERNAL_DATASOURCE}
+                  />
                 </RadioGroup>
               );
             }}

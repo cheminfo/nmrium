@@ -88,9 +88,13 @@ export function useExport() {
               return saveAs(blob, name);
             }
 
-            const archive = await buildSelfContainedFile();
+            const archive = await buildSelfContainedFile(
+              state,
+              blob,
+              options.include,
+            );
             saveAs(
-              new Blob([archive], { type: 'application/zip' }),
+              new Blob([archive], { type: 'application/nmrium' }),
               name,
               '.nmrium.zip',
             );
