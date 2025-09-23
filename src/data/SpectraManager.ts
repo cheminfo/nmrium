@@ -19,18 +19,12 @@ import { initiateDatum1D, isSpectrum1D } from './data1d/Spectrum1D/index.js';
 import { initiateDatum2D } from './data2d/Spectrum2D/index.js';
 import * as Molecule from './molecules/Molecule.js';
 
-export enum DataExportOptions {
-  ROW_DATA = 'ROW_DATA',
-  DATA_SOURCE = 'DATA_SOURCE',
-  NO_DATA = 'NO_DATA',
-}
-
-type DataExportOptionsType = keyof typeof DataExportOptions;
+type DataExportOptions = 'ROW_DATA' | 'DATA_SOURCE' | 'NO_DATA';
 
 type ExportTarget = 'nmrium' | 'onChange';
 
 export interface ExportOptions {
-  dataType?: DataExportOptionsType;
+  dataType?: DataExportOptions;
   view?: boolean;
   settings?: boolean;
   serialize?: boolean;

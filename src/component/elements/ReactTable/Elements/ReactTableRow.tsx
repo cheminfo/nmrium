@@ -4,10 +4,8 @@ import type { CSSObject, SerializedStyles } from '@emotion/react';
 import { css } from '@emotion/react';
 import { useCallback, useEffect, useMemo } from 'react';
 
-import {
-  HighlightEventSource,
-  useHighlight,
-} from '../../../highlight/index.js';
+import type { HighlightEventSource } from '../../../highlight/index.js';
+import { useHighlight } from '../../../highlight/index.js';
 import { ContextMenu } from '../../ContextMenuBluePrint.js';
 import type { BaseRowStyle, TableContextMenuProps } from '../ReactTable.js';
 
@@ -62,7 +60,7 @@ function getIDs(row: any): string[] {
 function ReactTableRow(props: ReactTableRowProps) {
   const {
     row,
-    highlightedSource = HighlightEventSource.UNKNOWN,
+    highlightedSource = 'UNKNOWN',
     onContextMenuSelect,
     contextMenu = [],
     onClick,

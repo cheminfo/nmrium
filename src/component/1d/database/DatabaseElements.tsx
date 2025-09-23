@@ -1,7 +1,4 @@
-import {
-  HighlightEventSource,
-  useHighlightData,
-} from '../../highlight/index.js';
+import { useHighlightData } from '../../highlight/index.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 
 import DatabaseSpectrum from './DatabaseSpectrum.js';
@@ -11,7 +8,7 @@ function DatabaseElements() {
   const { highlight } = useHighlightData();
   const { previewJcamp } = usePanelPreferences('database');
   const { jcampURL } = highlight?.sourceData?.extra || {};
-  if (highlight.sourceData?.type !== HighlightEventSource.DATABASE) {
+  if (highlight.sourceData?.type !== 'DATABASE') {
     return null;
   }
 

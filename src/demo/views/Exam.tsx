@@ -191,7 +191,7 @@ export default function Exam(props) {
         const idCodeResponse = MolResponse.getIDCode();
         answers[data.answer.idCode] = idCodeResponse;
         localStorage.setItem('nmrium-exams', JSON.stringify(answers));
-        setResult(MolResponse.toSmiles());
+        setResult(MolResponse.toIsomericSmiles());
       }
     },
     [data],

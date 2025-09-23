@@ -13,7 +13,7 @@ import { useDispatch } from '../../context/DispatchContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';
 import type { ActionsButtonsPopoverProps } from '../../elements/ActionsButtonsPopover.js';
 import { ActionsButtonsPopover } from '../../elements/ActionsButtonsPopover.js';
-import { HighlightEventSource, useHighlight } from '../../highlight/index.js';
+import { useHighlight } from '../../highlight/index.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import { useIsInset } from '../inset/InsetProvider.js';
 
@@ -86,7 +86,7 @@ function Tree(props: TreeProps) {
 
   const assignment = useAssignment(signalKey);
   const highlight = useHighlight(extractID(signalKey, assignment), {
-    type: HighlightEventSource.SIGNAL,
+    type: 'SIGNAL',
   });
 
   let widthRatio: number;

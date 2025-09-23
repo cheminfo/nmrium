@@ -5,7 +5,7 @@ import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';
 import { ResizerWithScale } from '../../elements/ResizerWithScale.js';
-import { HighlightEventSource, useHighlight } from '../../highlight/index.js';
+import { useHighlight } from '../../highlight/index.js';
 import { useResizerStatus } from '../../hooks/useResizerStatus.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 
@@ -37,7 +37,7 @@ function IntegralResizable({
   const dispatch = useDispatch();
   const { id, integral, to, from } = integralData;
   const highlight = useHighlight([id], {
-    type: HighlightEventSource.INTEGRAL,
+    type: 'INTEGRAL',
     extra: { id, spectrumID: spectrum.id },
   });
 

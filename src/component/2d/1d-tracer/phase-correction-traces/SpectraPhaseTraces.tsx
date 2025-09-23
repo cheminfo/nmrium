@@ -1,10 +1,7 @@
 import styled from '@emotion/styled';
 
 import { useChartData } from '../../../context/ChartContext.js';
-import {
-  HighlightEventSource,
-  useHighlight,
-} from '../../../highlight/index.js';
+import { useHighlight } from '../../../highlight/index.js';
 import type {
   SpectrumTrace,
   TraceDirection,
@@ -52,7 +49,7 @@ function PhaseTrace(props: SpectrumTraceProps) {
     direction,
   } = props;
   const highlight = useHighlight([id], {
-    type: HighlightEventSource.PHASE_CORRECTION_TRACE,
+    type: 'PHASE_CORRECTION_TRACE',
     extra: { id },
   });
 

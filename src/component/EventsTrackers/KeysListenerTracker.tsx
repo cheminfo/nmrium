@@ -11,7 +11,7 @@ import { useToaster } from '../context/ToasterContext.js';
 import type { AlertButton } from '../elements/Alert.js';
 import { useAlert } from '../elements/Alert.js';
 import { useExportManagerAPI } from '../elements/export/ExportManager.js';
-import { HighlightEventSource, useHighlightData } from '../highlight/index.js';
+import { useHighlightData } from '../highlight/index.js';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility.js';
 import { useExport } from '../hooks/useExport.js';
 import useToolsFunctions from '../hooks/useToolsFunctions.js';
@@ -85,7 +85,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
     async (sourceData) => {
       const { type, extra } = sourceData;
       switch (type) {
-        case HighlightEventSource.INTEGRAL: {
+        case 'INTEGRAL': {
           const { id, spectrumID } = extra || {};
           if (id) {
             dispatch({
@@ -100,7 +100,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
           }
           break;
         }
-        case HighlightEventSource.PEAK: {
+        case 'PEAK': {
           const { id, spectrumID } = extra || {};
           if (id) {
             dispatch({
@@ -116,7 +116,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
 
           break;
         }
-        case HighlightEventSource.RANGE_PEAK: {
+        case 'RANGE_PEAK': {
           const { id, spectrumID } = extra || {};
           if (id) {
             dispatch({
@@ -132,7 +132,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
 
           break;
         }
-        case HighlightEventSource.RANGE: {
+        case 'RANGE': {
           const { id, spectrumID } = extra || {};
           if (id) {
             dispatch({
@@ -147,7 +147,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
           }
           break;
         }
-        case HighlightEventSource.ZONE: {
+        case 'ZONE': {
           const { id } = extra || {};
           if (id) {
             dispatch({
@@ -161,7 +161,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
           }
           break;
         }
-        case HighlightEventSource.EXCLUSION_ZONE: {
+        case 'EXCLUSION_ZONE': {
           const { zone, spectrumID } = extra || {};
 
           const buttons: AlertButton[] = [
@@ -209,7 +209,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
           });
           break;
         }
-        case HighlightEventSource.MATRIX_GENERATION_EXCLUSION_ZONE: {
+        case 'MATRIX_GENERATION_EXCLUSION_ZONE': {
           const { zone } = extra || {};
 
           const buttons: AlertButton[] = [
@@ -242,7 +242,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
 
           break;
         }
-        case HighlightEventSource.MULTIPLE_ANALYSIS_ZONE: {
+        case 'MULTIPLE_ANALYSIS_ZONE': {
           const { colKey } = extra || {};
           if (colKey) {
             dispatchPreferences({
@@ -254,7 +254,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
           }
           break;
         }
-        case HighlightEventSource.BASELINE_ZONE: {
+        case 'BASELINE_ZONE': {
           const { id } = extra || {};
           if (id) {
             dispatch({ type: 'DELETE_BASE_LINE_ZONE', payload: { id } });
@@ -263,7 +263,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
           }
           break;
         }
-        case HighlightEventSource.PHASE_CORRECTION_TRACE: {
+        case 'PHASE_CORRECTION_TRACE': {
           const { id } = extra || {};
           if (id) {
             dispatch({

@@ -1,11 +1,7 @@
 import dlv from 'dlv';
 import { useCallback, useMemo, useState } from 'react';
 
-enum SortType {
-  ASCENDING = 'asc',
-  DESCENDING = 'desc',
-  ORIGINAL = 'original',
-}
+type SortType = 'ASCENDING' | 'DESCENDING' | 'ORIGINAL';
 
 interface SortConfig {
   key: string;
@@ -18,9 +14,9 @@ export default function useTableSortBy(items, config = null) {
     const sortableItems = items.slice();
     if (sortConfig !== null) {
       sortableItems.sort((a, b) => {
-        if (sortConfig.direction === SortType.ASCENDING) {
+        if (sortConfig.direction === 'ASCENDING') {
           return dlv(a, sortConfig.key, 0) - dlv(b, sortConfig.key, 0);
-        } else if (sortConfig.direction === SortType.DESCENDING) {
+        } else if (sortConfig.direction === 'DESCENDING') {
           return dlv(b, sortConfig.key, 0) - dlv(a, sortConfig.key, 0);
         }
         return 0;
@@ -32,20 +28,17 @@ export default function useTableSortBy(items, config = null) {
   const sortHandler = useCallback(
     (event) => {
       const key = event.currentTarget?.id;
-      let direction = SortType.ASCENDING;
+      let direction: SortType = 'ASCENDING';
       if (key && sortConfig && sortConfig.key === key) {
         switch (sortConfig.direction) {
-          case SortType.ASCENDING:
-            direction = SortType.DESCENDING;
-
+          case 'ASCENDING':
+            direction = 'DESCENDING';
             break;
-          case SortType.DESCENDING:
-            direction = SortType.ORIGINAL;
-
+          case 'DESCENDING':
+            direction = 'ORIGINAL';
             break;
           default:
-            direction = SortType.ASCENDING;
-
+            direction = 'ASCENDING';
             break;
         }
       }
@@ -62,10 +55,10 @@ export default function useTableSortBy(items, config = null) {
         return defaultContent;
       }
       switch (sortConfig.direction) {
-        case SortType.DESCENDING:
+        case 'DESCENDING':
           return { flag: true, content: ' ▼' };
 
-        case SortType.ASCENDING:
+        case 'ASCENDING':
           return { flag: false, content: ' ▲' };
 
         default:

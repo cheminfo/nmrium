@@ -5,14 +5,7 @@ import type { State } from '../Reducer.js';
 
 import { getActiveSpectrum } from './getActiveSpectrum.js';
 
-export const ZOOM_TYPES = {
-  HORIZONTAL: 'HORIZONTAL',
-  VERTICAL: 'VERTICAL',
-  BIDIRECTIONAL: 'BIDIRECTIONAL',
-  FULL: 'FULL',
-} as const;
-
-export type ZoomType = keyof typeof ZOOM_TYPES;
+export type ZoomType = 'HORIZONTAL' | 'VERTICAL' | 'BIDIRECTIONAL' | 'FULL';
 
 function toScaleRatio(
   options: { invertScroll?: boolean; delta: number },

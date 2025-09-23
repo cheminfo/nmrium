@@ -84,15 +84,12 @@ const leftStyles = css`
   }
 `;
 
-enum PositionsEnum {
-  TOP = 'TOP',
-  LEFT = 'LEFT',
-}
+type TabPosition = 'TOP' | 'LEFT';
 
 interface TabsProps extends TabEvents {
   children: Array<ReactElement<TabProps> | boolean>;
   activeTab: string;
-  position?: PositionsEnum;
+  position?: TabPosition;
 }
 
 function Tabs({
@@ -131,9 +128,9 @@ function Tabs({
 
   const styles = useMemo(() => {
     switch (position) {
-      case PositionsEnum.TOP:
+      case 'TOP':
         return topStyles;
-      case PositionsEnum.LEFT:
+      case 'LEFT':
         return leftStyles;
       default:
         return topStyles;

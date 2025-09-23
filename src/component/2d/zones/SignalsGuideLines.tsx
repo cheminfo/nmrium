@@ -19,7 +19,7 @@ import {
 } from '../../context/ShareDataContext.js';
 import type { ActionsButtonsPopoverProps } from '../../elements/ActionsButtonsPopover.js';
 import { ActionsButtonsPopover } from '../../elements/ActionsButtonsPopover.js';
-import { HighlightEventSource, useHighlight } from '../../highlight/index.js';
+import { useHighlight } from '../../highlight/index.js';
 import { useCanvasContext } from '../../hooks/useCanvasContext.js';
 import { useTriggerNewAssignmentLabel } from '../../hooks/useTriggerNewAssignmentLabel.js';
 import { stackOverlappingLabelsArray } from '../../utility/stackOverlappingLabels.js';
@@ -152,7 +152,7 @@ function useRangeAssignment(options: UseRangeAssignmentOptions) {
     .concat(filterAssignedIDs(assignmentData.data, signalsIds));
 
   const highlightContext = useHighlight(highlightId, {
-    type: HighlightEventSource.RANGE,
+    type: 'RANGE',
     extra: { id: rangeId, spectrumID: spectrumId },
   });
   return { highlightContext, assignmentContext };
