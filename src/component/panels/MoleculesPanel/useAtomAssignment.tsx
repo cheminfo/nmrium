@@ -11,11 +11,8 @@ import { useAssignmentContext } from '../../assignment/AssignmentsContext.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
-import type { HighlightEventSourceType } from '../../highlight/index.js';
-import {
-  HighlightEventSource,
-  useHighlightData,
-} from '../../highlight/index.js';
+import type { HighlightEventSource } from '../../highlight/index.js';
+import { useHighlightData } from '../../highlight/index.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 
 import type { AtomData } from './Utilities.js';
@@ -36,12 +33,9 @@ function flattenAssignedDiaIDs(assignments: Assignments) {
   return assignedDiaIDs;
 }
 
-function isValidHighlightEventSource(type: HighlightEventSourceType) {
+function isValidHighlightEventSource(type: HighlightEventSource) {
   return (
-    type === HighlightEventSource.ZONE ||
-    type === HighlightEventSource.RANGE ||
-    type === HighlightEventSource.ATOM ||
-    type === HighlightEventSource.SIGNAL
+    type === 'ZONE' || type === 'RANGE' || type === 'ATOM' || type === 'SIGNAL'
   );
 }
 
@@ -240,7 +234,7 @@ export default function useAtomAssignment() {
         type: 'SHOW',
         payload: {
           convertedHighlights: highlights,
-          sourceData: { type: HighlightEventSource.ATOM },
+          sourceData: { type: 'ATOM' },
         },
       });
     } else {

@@ -2,7 +2,7 @@ import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { memo } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';
-import useXYReduce, { XYReducerDomainAxis } from '../../hooks/useXYReduce.js';
+import useXYReduce from '../../hooks/useXYReduce.js';
 import { PathBuilder } from '../../utility/PathBuilder.js';
 import { use1DTraceYScale, useScale2DY } from '../utilities/scale.js';
 
@@ -20,7 +20,7 @@ function usePath(spectrum: Spectrum1D, options: UsePathOptions) {
   const { width, horizontalMargin = 10 } = options;
   const scaleX = useScale2DY();
   const scaleY = use1DTraceYScale(spectrum.id, width, horizontalMargin);
-  const xyReduce = useXYReduce(XYReducerDomainAxis.YAxis);
+  const xyReduce = useXYReduce('YAxis');
 
   const { x, re: y } = spectrum.data;
   const pathPoints = xyReduce({ x, y });

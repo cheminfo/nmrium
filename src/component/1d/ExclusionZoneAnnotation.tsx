@@ -4,7 +4,7 @@ import { memo } from 'react';
 
 import type { ExclusionZone } from '../../data/types/data1d/ExclusionZone.js';
 import { useScaleChecked } from '../context/ScaleContext.js';
-import { HighlightEventSource, useHighlight } from '../highlight/index.js';
+import { useHighlight } from '../highlight/index.js';
 import useActiveSpectrumStyleOptions from '../hooks/useActiveSpectrumStyleOptions.js';
 
 interface ExclusionZoneProps {
@@ -31,8 +31,8 @@ function ExclusionZoneAnnotation({
   const { scaleX, scaleY } = useScaleChecked();
   const type =
     filterId === Filters1D.signalProcessing.name
-      ? HighlightEventSource.MATRIX_GENERATION_EXCLUSION_ZONE
-      : HighlightEventSource.EXCLUSION_ZONE;
+      ? 'MATRIX_GENERATION_EXCLUSION_ZONE'
+      : 'EXCLUSION_ZONE';
   const highlight = useHighlight([], {
     type,
     extra: { zone, spectrumID },

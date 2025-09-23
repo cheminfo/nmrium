@@ -19,12 +19,7 @@ import groupByInfoKey from '../../utility/groupByInfoKey.js';
 import type { State } from '../Reducer.js';
 import { MARGIN } from '../core/Constants.js';
 import type { ZoomType } from '../helper/Zoom1DManager.js';
-import {
-  ZOOM_TYPES,
-  setZoom,
-  toScaleRatio,
-  wheelZoom,
-} from '../helper/Zoom1DManager.js';
+import { setZoom, toScaleRatio, wheelZoom } from '../helper/Zoom1DManager.js';
 import zoomHistoryManager, {
   addToBrushHistory,
 } from '../helper/ZoomHistoryManager.js';
@@ -479,15 +474,15 @@ function zoomOut(draft: Draft<State>, action: ZoomOutAction) {
 
     if (draft.displayerMode === '1D') {
       switch (zoomType) {
-        case ZOOM_TYPES.HORIZONTAL: {
+        case 'HORIZONTAL': {
           draft.xDomain = xDomain;
           zoomHistory.clear();
           break;
         }
-        case ZOOM_TYPES.VERTICAL:
+        case 'VERTICAL':
           setZoom(draft, { scale: 0.8 });
           break;
-        case ZOOM_TYPES.BIDIRECTIONAL: {
+        case 'BIDIRECTIONAL': {
           const zoomValue = zoomHistory.pop();
           if (zoomValue) {
             draft.xDomain = zoomValue.xDomain;

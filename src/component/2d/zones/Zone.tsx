@@ -7,7 +7,7 @@ import { useAssignment } from '../../assignment/AssignmentsContext.js';
 import { useShareData } from '../../context/ShareDataContext.js';
 import type { ActionsButtonsPopoverProps } from '../../elements/ActionsButtonsPopover.js';
 import { ActionsButtonsPopover } from '../../elements/ActionsButtonsPopover.js';
-import { HighlightEventSource, useHighlight } from '../../highlight/index.js';
+import { useHighlight } from '../../highlight/index.js';
 import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState.js';
 import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 
@@ -24,7 +24,7 @@ function Zone({ zoneData }: ZoneProps) {
   const assignmentZone = useAssignment(id);
   const { showZones } = useActiveSpectrumZonesViewState();
   const highlightZone = useHighlight([id], {
-    type: HighlightEventSource.ZONE,
+    type: 'ZONE',
     extra: { id },
   });
   const scaleX = useScale2DX();

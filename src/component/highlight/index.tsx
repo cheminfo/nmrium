@@ -11,31 +11,28 @@ import {
 
 import type { ExclusionZone } from '../../data/types/data1d/ExclusionZone.js';
 
-export enum HighlightEventSource {
-  PEAK = 'PEAK',
-  INTEGRAL = 'INTEGRAL',
-  SIGNAL = 'SIGNAL',
-  RANGE = 'RANGE',
-  RANGE_PEAK = 'RANGE_PEAK',
-  ZONE = 'ZONE',
-  BASELINE_ZONE = 'BASELINE_ZONE',
-  EXCLUSION_ZONE = 'EXCLUSION_ZONE',
-  MATRIX_GENERATION_EXCLUSION_ZONE = 'MATRIX_GENERATION_EXCLUSION_ZONE',
-  MULTIPLE_ANALYSIS_ZONE = 'MULTIPLE_ANALYSIS_ZONE',
-  DATABASE = 'DATABASE',
-  ATOM = 'ATOM',
-  PHASE_CORRECTION_TRACE = 'PHASE_CORRECTION_TRACE',
-  UNKNOWN = 'UNKNOWN',
-}
+export type HighlightEventSource =
+  | 'PEAK'
+  | 'INTEGRAL'
+  | 'SIGNAL'
+  | 'RANGE'
+  | 'RANGE_PEAK'
+  | 'ZONE'
+  | 'BASELINE_ZONE'
+  | 'EXCLUSION_ZONE'
+  | 'MATRIX_GENERATION_EXCLUSION_ZONE'
+  | 'MULTIPLE_ANALYSIS_ZONE'
+  | 'DATABASE'
+  | 'ATOM'
+  | 'PHASE_CORRECTION_TRACE'
+  | 'UNKNOWN';
 
 const highLightStyle: CSSProperties = {
   backgroundColor: '#ff6f0091',
 };
 
-export type HighlightEventSourceType = keyof typeof HighlightEventSource;
-
 interface SourceData {
-  type: HighlightEventSourceType;
+  type: HighlightEventSource;
   extra?: {
     zone?: ExclusionZone;
     spectrumID?: string;
@@ -92,8 +89,7 @@ function highlightReducer(
   switch (action.type) {
     case 'SHOW': {
       const { convertedHighlights = [], sourceData } = action.payload || {};
-      const { type = HighlightEventSource.UNKNOWN, extra = null } =
-        sourceData || {};
+      const { type = 'UNKNOWN', extra = null } = sourceData || {};
 
       const newState: HighlightState = {
         ...state,

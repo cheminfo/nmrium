@@ -4,23 +4,17 @@ import { useCallback } from 'react';
 
 import { useChartData } from '../context/ChartContext.js';
 
-export enum XYReducerDomainAxis {
-  XAxis = 'XAxis',
-  YAxis = 'YAxis',
-}
-
-type XYReducerDomainAxisType = keyof typeof XYReducerDomainAxis;
+type XYReducerDomainAxis = 'XAxis' | 'YAxis';
 
 export default function useXYReduce(
-  domainAxis: XYReducerDomainAxisType,
+  domainAxis: XYReducerDomainAxis,
 ): (data: { x: Float64Array; y: Float64Array }) => DataXY {
   const { width, xDomain, yDomain } = useChartData();
 
   return useCallback(
     (data: { x: Float64Array; y: Float64Array }) => {
       const { x, y } = data;
-      const [from, to] =
-        domainAxis === XYReducerDomainAxis.XAxis ? xDomain : yDomain;
+      const [from, to] = domainAxis === 'XAxis' ? xDomain : yDomain;
       return xyReduce(
         { x, y },
         { from, to, nbPoints: width * 4, optimize: true },

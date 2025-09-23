@@ -168,7 +168,7 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
       if (molecule) {
         switch (selected?.id) {
           case 'smiles':
-            copyHandler(molecule.toSmiles(), 'SMILES');
+            copyHandler(molecule.toIsomericSmiles(), 'SMILES');
 
             break;
           case 'molfileV3':

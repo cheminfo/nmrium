@@ -3,7 +3,6 @@ import { memo } from 'react';
 
 import type { AssignmentsData } from '../../../assignment/AssignmentsContext.js';
 import { AssignmentsCell } from '../../../elements/AssignmentsCell.js';
-import { HighlightEventSource } from '../../../highlight/index.js';
 import type { RangeColumnProps } from '../RangesTableRow.js';
 
 const columnStyle: CSSProperties = {
@@ -53,7 +52,7 @@ function RangeAssignmentsColumn({
     assignment.isActive ||
     assignment.isHighlighted ||
     (highlight.isActive &&
-      highlightData.highlight.sourceData?.type !== HighlightEventSource.SIGNAL);
+      highlightData.highlight.sourceData?.type !== 'SIGNAL');
 
   const isCompletelyAssigned = Math.round(row.integration) === row?.nbAtoms;
 
