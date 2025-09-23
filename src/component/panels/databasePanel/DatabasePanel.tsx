@@ -398,7 +398,9 @@ function DatabasePanelInner({
     });
   }, [dispatch, spectra]);
   const searchByStructureHandler = (idCodeValue: string) => {
-    setIdCode(idCodeValue);
+    const molecule = Molecule.fromIDCode(idCodeValue);
+    const atoms = molecule.getAllAtoms();
+    setIdCode(atoms > 0 ? idCodeValue : '');
   };
 
   return (
