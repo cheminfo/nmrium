@@ -192,11 +192,8 @@ function SpectrumInfoBlock() {
       direction="row"
       space={2}
       {...(isMoveActive && { isOpen: true })}
-      modifiers={{
-        offset: {
-          data: { x, y },
-        },
-      }}
+      x={x}
+      y={y}
     >
       <g className="spectra-info-block" transform={`translate(${x} ${y})`}>
         <rect

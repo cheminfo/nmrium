@@ -120,11 +120,7 @@ function PeakAnnotationsSpreadMode(props: PeakAnnotationsSpreadModeProps) {
       position="top"
       direction="row"
       {...(isDragActive && { isOpen: true })}
-      modifiers={{
-        offset: {
-          data: { x: 0, y },
-        },
-      }}
+      y={y}
     >
       <g className="peaks">
         <g

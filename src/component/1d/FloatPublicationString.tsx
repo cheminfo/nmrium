@@ -292,11 +292,8 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
         targetProps={{ style: { width: '100%', height: '100%' } }}
         space={2}
         {...(isMoveActive && { isOpen: true })}
-        modifiers={{
-          offset: {
-            data: { x, y },
-          },
-        }}
+        x={x}
+        y={y}
       >
         <svg width={width} height={'auto'} xmlns="http://www.w3.org/2000/svg">
           <PublicationText text={value} width={width} />
