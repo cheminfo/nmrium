@@ -167,11 +167,8 @@ export function DraggableStructure(props: DraggableStructureProps) {
         targetProps={{ style: { width: '100%', height: '100%' } }}
         space={2}
         {...(isMoveActive && { isOpen: true })}
-        modifiers={{
-          offset: {
-            data: { x, y },
-          },
-        }}
+        x={x}
+        y={y}
       >
         <div
           className="content"
