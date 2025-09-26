@@ -8,7 +8,6 @@ import { usePreferences } from '../context/PreferencesContext.js';
 import { useToaster } from '../context/ToasterContext.js';
 import {
   browserNotSupportedErrorToast,
-  buildSelfContainedFile,
   copyPNGToClipboard,
   exportAsJsonBlob,
   exportAsPng,
@@ -88,13 +87,15 @@ export function useExport() {
               return saveAs(blob, name);
             }
 
-            const archive = await buildSelfContainedFile(
-              state,
-              blob,
-              options.include,
-            );
+            const archive = await core.serializeNmriumArchive({
+              molecules: state.molecules,
+              spectra: state.data,
+              fileCollections: state.fileCollections,
+              includeData: options.include.dataType === 'SELF_CONTAINED',
+              serializedState: blob,
+            });
             saveAs(
-              new Blob([archive], { type: 'application/nmrium' }),
+              new Blob([archive], { type: 'application/nmrium+zip' }),
               name,
               '.nmrium.zip',
             );
