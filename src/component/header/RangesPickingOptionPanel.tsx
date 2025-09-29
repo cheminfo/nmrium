@@ -26,7 +26,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const initialValues: AutoRangesOptions = {
-  minMaxRatio: 0.05,
+  minMaxRatio: 0.01,
   lookNegative: false,
 };
 
