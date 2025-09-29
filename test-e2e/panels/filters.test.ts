@@ -85,12 +85,14 @@ async function addPeaks(
     await nmrium.clickTool('peakPicking');
   }
 
-  if (ratio !== 0.1) {
-    await nmrium.page.fill(
-      '.toolOptionsPanel >> [name="minMaxRatio"]',
-      ratio.toString(),
-    );
-  }
+  await nmrium.page.fill(
+    '_react=Header >> [name="minMaxRatio"]',
+    ratio.toString(),
+  );
+
+  await nmrium.page
+    .locator('_react=Header >> [name="minMaxRatio"].debounce-end')
+    .waitFor({ state: 'visible' });
   await nmrium.page.click('_react=Header >> button >> text=Apply');
 
   await expect(

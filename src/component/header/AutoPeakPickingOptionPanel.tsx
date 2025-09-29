@@ -51,7 +51,7 @@ const validationSchema = Yup.object().shape({
 
 const INIT_VALUES: AutoPeakPickingOptions = {
   maxNumberOfPeaks: 50,
-  minMaxRatio: 0.1,
+  minMaxRatio: 0.01,
   noiseFactor: 3,
   direction: 'positive',
 };
@@ -124,6 +124,7 @@ export function AutoPeakPickingOptionPanel() {
           majorStepSize={0.01}
           minorStepSize={0.01}
           style={{ width: '60px' }}
+          debounceTime={500}
         />
       </Label>
       <Button
