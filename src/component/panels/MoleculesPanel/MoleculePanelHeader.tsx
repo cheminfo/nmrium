@@ -193,14 +193,20 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
     [molecules, currentIndex, copyHandler, saveAsPNGHandler, saveAsSVGHandler],
   );
 
-  function handlePasteMolfileAction() {
+  function handlePasteMoleculeAction() {
     onClickPastMolecule?.();
-    void readText().then(handlePasteMolfile);
+    void readText().then(handlePasteMolecule);
   }
-  async function handlePasteMolfile(molfile: string | undefined) {
-    if (!molfile) return;
+
+  /**
+   * The moleecule pasted could be SMILES, molfile or SDF
+   * @param text - text from clipboard
+   * @returns
+   */
+  async function handlePasteMolecule(text: string | undefined) {
+    if (!text) return;
     try {
-      const molecules = getMolecules(molfile);
+      const molecules = getMolecules(text);
       dispatch({ type: 'ADD_MOLECULES', payload: { molecules } });
     } catch {
       toaster.show({
@@ -296,7 +302,7 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
         <Toolbar.Item
           tooltip="Paste SMILES or molfile"
           icon={<FaPaste />}
-          onClick={handlePasteMolfileAction}
+          onClick={handlePasteMoleculeAction}
         />
         {renderSource === 'moleculePanel' && (
           <Toolbar.Item
@@ -350,7 +356,7 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
       <ClipboardFallbackModal
         mode={shouldFallback}
         onDismiss={cleanShouldFallback}
-        onReadText={handlePasteMolfile}
+        onReadText={handlePasteMolecule}
         text={text}
         label="Molfile"
       />
