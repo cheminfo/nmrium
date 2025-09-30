@@ -253,6 +253,28 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
 
   const hasMolecules = molecules && molecules.length > 0;
   const showCounter = hasMolecules && renderSource !== 'predictionPanel';
+
+  const moreMenu: ToolbarPopoverMenuItem[] = [
+    {
+      icon: <FaMaximize />,
+      text: 'Expand all hydrogens',
+      data: {
+        id: 'expandAllHydrogens',
+      },
+      disabled: !hasMolecules,
+      onClick: () => expandMoleculeHydrogens(true),
+    },
+    {
+      icon: <FaMinimize />,
+      text: 'Collapse all hydrogens',
+      data: {
+        id: 'collapseAllHydrogens',
+      },
+      disabled: !hasMolecules,
+      onClick: () => expandMoleculeHydrogens(false),
+    },
+  ];
+
   return (
     <PanelHeader
       onClickSettings={onClickPreferences}
@@ -312,17 +334,14 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
           active={moleculesView?.[moleculeKey]?.showAtomNumber || false}
           disabled={!hasMolecules}
         />
-        <Toolbar.Item
-          tooltip="Expand all hydrogens"
-          icon={<FaMaximize />}
-          onClick={() => expandMoleculeHydrogens(true)}
-          disabled={!hasMolecules}
-        />
-        <Toolbar.Item
-          tooltip="Collapse all hydrogens"
-          icon={<FaMinimize />}
-          onClick={() => expandMoleculeHydrogens(false)}
-          disabled={!hasMolecules}
+
+        <ToolbarPopoverItem
+          options={moreMenu}
+          tooltip="More"
+          tooltipProps={{
+            minimal: true,
+          }}
+          icon="more"
         />
       </Toolbar>
 
