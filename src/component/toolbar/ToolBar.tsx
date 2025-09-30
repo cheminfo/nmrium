@@ -80,7 +80,7 @@ function useExportList() {
   const isExperimentalFeature = useCheckExperimentalFeature();
   const spectrum = useActiveSpectrum();
   const exportMenu = isExperimentalFeature
-    ? EXPORT_MENU
+    ? [...EXPORT_MENU]
     : EXPORT_MENU.filter((item) => item.id !== 'nmre');
 
   if (spectrum) {
@@ -133,7 +133,7 @@ export default function ToolBar() {
   const { fidCounter, ftCounter } = useDatumWithSpectraStatistics();
 
   const importMenu = isExperimentalFeature
-    ? IMPORT_MENU
+    ? [...IMPORT_MENU]
     : IMPORT_MENU.filter((item) => item.id !== 'importPublicationString');
 
   const exportMenu = useExportList();
