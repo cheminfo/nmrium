@@ -98,6 +98,12 @@ function getLabelNumber(reserveNumbers: number[]): number {
   return 1;
 }
 
+/**
+ * We will extract the molecule(s) from the text.
+ * Because a molfile is actually a SDF we can just call 'readSDF' method
+ * @param text - text containing one or several molecules in SMILES, molfile or SDF format
+ * @returns
+ */
 export function getMolecules(text: string) {
   // parse SDF
   if (/v[23]000/i.test(text)) {
