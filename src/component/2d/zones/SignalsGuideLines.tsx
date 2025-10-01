@@ -206,7 +206,7 @@ function IndicationLine(props: IndicationLineProps) {
   }
 
   function mouseEnterHandler() {
-    assignmentContext.highlight('x');
+    assignmentContext.highlight(axis);
     highlightContext.show();
   }
 
@@ -217,7 +217,7 @@ function IndicationLine(props: IndicationLineProps) {
 
   function assignHandler() {
     isAssignBtnTrigged.current = true;
-    assignmentContext.activate('x');
+    assignmentContext.activate(axis);
   }
 
   function unAssignHandler() {
