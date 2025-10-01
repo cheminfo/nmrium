@@ -185,7 +185,6 @@ export default function useAtomAssignment() {
     if (!id || !axis) {
       return;
     }
-
     const atomInformation = extractFromAtom(diaIDAndInfo, nucleus, axis);
 
     if (atomInformation.nbAtoms === 0) {
