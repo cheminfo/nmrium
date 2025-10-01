@@ -45,6 +45,7 @@ export function ToolbarPopoverItem<T = object>(
     <Toolbar.PopoverItem
       disabled={disabled}
       {...otherPopoverItemProps}
+      autoFocus={false}
       content={
         <Menu>
           {options.map((option) => {
