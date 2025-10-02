@@ -1,18 +1,20 @@
-/* eslint-disable react/no-danger */
 import { Button, Dialog, DialogFooter } from '@blueprintjs/core';
 import styled from '@emotion/styled';
+import { yupResolver } from '@hookform/resolvers/yup';
+import type { RangesToACSOptions } from 'nmr-processing';
 import { rangesToACS } from 'nmr-processing';
-import { useState } from 'react';
+import { useForm, useWatch } from 'react-hook-form';
 import { FaCopy } from 'react-icons/fa';
+import * as Yup from 'yup';
 
 import { isSpectrum1D } from '../../data/data1d/Spectrum1D/isSpectrum1D.js';
-import { useChartData } from '../context/ChartContext.js';
+import { CheckController } from '../elements/CheckController.tsx';
 import { EmptyText } from '../elements/EmptyText.js';
+import { Input2Controller } from '../elements/Input2Controller.tsx';
 import type { LabelStyle } from '../elements/Label.js';
 import Label from '../elements/Label.js';
-import { Select2 } from '../elements/Select2.js';
+import { Select2Controller } from '../elements/Select2Controller.tsx';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
-import { usePanelPreferences } from '../hooks/usePanelPreferences.js';
 import useSpectrum from '../hooks/useSpectrum.js';
 
 const Body = styled.div`
@@ -25,7 +27,7 @@ const Body = styled.div`
 const labelStyle: LabelStyle = {
   label: {
     color: '#232323',
-    width: '100px',
+    width: '150px',
   },
   wrapper: {
     display: 'flex',
@@ -39,10 +41,38 @@ interface SelectItem<T> {
   value: T;
 }
 
-type ExportType = 'all' | 'signal';
-type ExportFormatType = 'IMJA' | 'IMJ';
+type ExportScope = 'all' | 'signal';
+type ExportFormatType = 'IMJA' | 'IMJ' | 'D';
 
-const exportOptions: Array<SelectItem<ExportType>> = [
+interface ExportACSOptions
+  extends Required<
+    Pick<
+      RangesToACSOptions,
+      'ascending' | 'format' | 'couplingFormat' | 'deltaFormat'
+    >
+  > {
+  scope: ExportScope;
+}
+
+const defaultOptions: ExportACSOptions = {
+  scope: 'signal',
+  ascending: true,
+  format: 'IMJA',
+  couplingFormat: '0.00',
+  deltaFormat: '0.00',
+};
+
+const validationSchema = Yup.object().shape({
+  scope: Yup.string()
+    .oneOf(['all', 'signal'] as ExportScope[])
+    .required(),
+  ascending: Yup.boolean().required(),
+  format: Yup.string().required(),
+  couplingFormat: Yup.string().required(),
+  deltaFormat: Yup.string().required(),
+});
+
+const exportOptions: Array<SelectItem<ExportScope>> = [
   {
     label: 'Export all',
     value: 'all',
@@ -54,11 +84,15 @@ const exportOptions: Array<SelectItem<ExportType>> = [
 ];
 const exportFormats: Array<SelectItem<ExportFormatType>> = [
   {
-    label: 'Intensity, Multiplicity, Couplings, Assignment',
+    label: 'Delta',
+    value: 'D',
+  },
+  {
+    label: 'Delta, Intensity, Multiplicity, Couplings, Assignment',
     value: 'IMJA',
   },
   {
-    label: 'Intensity, Multiplicity, Couplings',
+    label: 'Delta, Intensity, Multiplicity, Couplings',
     value: 'IMJ',
   },
 ];
@@ -82,26 +116,17 @@ export function PublicationStringModal(props: PublicationStringModalProps) {
 
 function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
   const { onClose, onCopyClick } = props;
-  const {
-    view: {
-      spectra: { activeTab },
-    },
-  } = useChartData();
-  const { deltaPPM, coupling } = usePanelPreferences('ranges', activeTab);
   const spectrum = useSpectrum();
 
-  const [exportType, setExportType] = useState<ExportType>('signal');
-  const [exportFormat, setExportFormat] = useState<ExportFormatType>('IMJA');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { control, handleSubmit } = useForm<ExportACSOptions>({
+    defaultValues: defaultOptions,
+    resolver: yupResolver(validationSchema),
+  });
+
+  const options = useWatch({ control });
 
   if (!spectrum || !isSpectrum1D(spectrum)) return null;
-
-  function handleChangeExportOptions(item) {
-    setExportType(item.value);
-  }
-
-  function handleChangeExportFormat(item) {
-    setExportFormat(item.value);
-  }
 
   const {
     info,
@@ -110,8 +135,10 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
 
   const { originFrequency: observedFrequency, nucleus } = info;
 
+  const { scope, format, couplingFormat, ...otherOptions } = options;
+
   const ranges =
-    exportType === 'all'
+    scope === 'all'
       ? values
       : values.filter((range) =>
           range.signals?.some((signal) => signal.kind === 'signal'),
@@ -119,10 +146,9 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
 
   const value = rangesToACS(ranges, {
     nucleus,
-    deltaFormat: deltaPPM.format,
-    couplingFormat: coupling.format,
     observedFrequency,
-    format: exportFormat,
+    ...otherOptions,
+    ...(format !== 'D' ? { format, couplingFormat } : { format: '' }),
   });
 
   return (
@@ -134,18 +160,27 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
     >
       <StyledDialogBody>
         <Label title="Export filter" style={labelStyle}>
-          <Select2
-            defaultSelectedItem={exportOptions[1]}
-            onItemSelect={handleChangeExportOptions}
+          <Select2Controller
+            control={control}
+            name="scope"
             items={exportOptions}
           />
         </Label>
         <Label title="Export format" style={labelStyle}>
-          <Select2
-            defaultSelectedItem={exportFormats[0]}
-            onItemSelect={handleChangeExportFormat}
+          <Select2Controller
+            control={control}
+            name="format"
             items={exportFormats}
           />
+        </Label>
+        <Label title="Ascending order" style={labelStyle}>
+          <CheckController control={control} name="ascending" />
+        </Label>
+        <Label title="Delta format" style={labelStyle}>
+          <Input2Controller name={`deltaFormat`} control={control} />
+        </Label>
+        <Label title="Couplings format" style={labelStyle}>
+          <Input2Controller name={`couplingFormat`} control={control} />
         </Label>
 
         <Body>
