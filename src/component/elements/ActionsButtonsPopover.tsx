@@ -63,8 +63,10 @@ export interface ActionsButtonsPopoverProps
   offsetX?: number;
   offsetY?: number;
   offsetYMode?: 'fixed' | 'cursor';
+  offsetXMode?: 'fixed' | 'cursor';
   x?: number;
   y?: number;
+  autoFlip?: boolean;
 }
 
 function ActionButton(props: ButtonProps) {
@@ -80,30 +82,37 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
     space,
     direction = 'column',
     contentStyle = {},
-    offsetX = 0,
+    offsetX: externalOffsetX = 0,
     offsetY: externalOffsetY = 0,
     x,
     y,
     offsetYMode = 'fixed',
+    offsetXMode = 'fixed',
+    autoFlip = true,
     ...otherProps
   } = props;
 
-  const [cursorY, setCursorY] = useState(0);
+  const [cursor, setCursor] = useState({ x: 0, y: 0 });
   const Wrapper = targetTagName as any;
 
   const visibleButtons = buttons.filter(
     (button) => isSeparator(button) || button?.visible !== false,
   );
 
-  const offsetY = offsetYMode === 'fixed' ? externalOffsetY : cursorY;
+  const offsetY = offsetYMode === 'fixed' ? externalOffsetY : cursor.y;
+  const offsetX = offsetXMode === 'fixed' ? externalOffsetX : cursor.x;
 
   function handleMouseEnter(event) {
-    const { clientY, target } = event;
-    if (!target || offsetYMode !== 'cursor') return;
-    const targetElementRect = (target as HTMLElement)?.getBoundingClientRect();
-    const y = clientY - targetElementRect.y;
-    setCursorY(y);
+    const { clientX, clientY, currentTarget } = event;
+    if (!(currentTarget instanceof Element)) return;
+    const rect = currentTarget.getBoundingClientRect();
+
+    setCursor((prev) => ({
+      x: offsetXMode === 'cursor' ? clientX - rect.left : prev.x,
+      y: offsetYMode === 'cursor' ? clientY - rect.top : prev.y,
+    }));
   }
+
   return (
     <Popover
       minimal
@@ -133,6 +142,8 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
               direction === 'column' ? [offsetY, offsetX] : [offsetX, offsetY],
           },
         },
+
+        flip: { enabled: autoFlip },
       }}
       content={
         <Container style={contentStyle} flexDirection={direction} gap={space}>

@@ -116,11 +116,12 @@ function PeakAnnotationsSpreadMode(props: PeakAnnotationsSpreadModeProps) {
     <ActionsButtonsPopover
       targetTagName="g"
       buttons={actionsButtons}
-      positioningStrategy="fixed"
-      position="top"
       direction="row"
       {...(isDragActive && { isOpen: true })}
       y={y}
+      offsetY={-20}
+      offsetXMode="cursor"
+      autoFlip={false}
     >
       <g className="peaks">
         <g
