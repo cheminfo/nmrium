@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.4.0](https://github.com/cheminfo/nmrium/compare/v1.3.0...v1.4.0) (2025-10-02)
+
+
+### Features
+
+* CT exports with alias atoms ([e777d01](https://github.com/cheminfo/nmrium/commit/e777d017d90fae940d96f8b385aacf1cd7c15a96))
+* position the ranges assignment popup near the cursor ([fcd2015](https://github.com/cheminfo/nmrium/commit/fcd2015712e9232e338896c54064cdc791e6c099))
+
+
+### Bug Fixes
+
+* clear structure query should reset hexagon icon state ([e916fec](https://github.com/cheminfo/nmrium/commit/e916fec3a6db0db7a9aefb80e1e1bf5a6a255e5b))
+* correctly assign both x and y axes in 2D ([76fdc89](https://github.com/cheminfo/nmrium/commit/76fdc89131c980f18fbb904642e9934a5ca5eb7a))
+* correctly position zone assignment popup ([ce43d72](https://github.com/cheminfo/nmrium/commit/ce43d723835eac5d2e661c2ea5ba656452626423))
+* debounce and set peak picking minMaxRatio default to 0.01 ([1a454e5](https://github.com/cheminfo/nmrium/commit/1a454e5ffb144e92c1ded8f4cd188e113551f2e1))
+* prevent duplicate entries in export and import menus ([a9ddcfc](https://github.com/cheminfo/nmrium/commit/a9ddcfc6e652e605e1d4c5e3e93a596b8d25688b)), closes [#3715](https://github.com/cheminfo/nmrium/issues/3715)
+
 ## [1.3.0](https://github.com/cheminfo/nmrium/compare/v1.2.1...v1.3.0) (2025-09-02)
 
 
