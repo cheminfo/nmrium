@@ -109,7 +109,8 @@ function MultipleSpectraAnalysisTable({
         });
       }
     }
-    return columns.sort((object1, object2) => object1.index - object2.index);
+    columns.sort((object1, object2) => object1.index - object2.index);
+    return columns;
   }, [
     activeTab,
     dispatchPreferences,

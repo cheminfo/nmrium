@@ -1,13 +1,17 @@
 import type { MenuItemProps } from '@blueprintjs/core';
-import { Menu, MenuItem } from '@blueprintjs/core';
+import { Menu, MenuItem, Tooltip } from '@blueprintjs/core';
 import type {
   ToolbarItemProps,
   ToolbarPopoverItemProps,
+  TooltipItem,
 } from 'react-science/ui';
-import { Toolbar } from 'react-science/ui';
+import { Toolbar, TooltipHelpContent } from 'react-science/ui';
 
-export interface ToolbarPopoverMenuItem<T = object> extends MenuItemProps {
+export interface ToolbarPopoverMenuItem<T = object>
+  extends MenuItemProps,
+    Pick<ToolbarItemProps, 'tooltipProps'> {
   data?: T;
+  tooltip?: string | TooltipItem;
 }
 
 interface CustomToolbarPopoverItemProps<T = object>
@@ -18,7 +22,7 @@ interface CustomToolbarPopoverItemProps<T = object>
     > {
   itemProps?: Omit<ToolbarItemProps, 'onClick' | 'disabled'>;
   options: Array<ToolbarPopoverMenuItem<T>>;
-  onClick: (data?: T) => void;
+  onClick?: (data?: T) => void;
 }
 
 export function ToolbarPopoverItem<T = object>(
@@ -41,16 +45,47 @@ export function ToolbarPopoverItem<T = object>(
     <Toolbar.PopoverItem
       disabled={disabled}
       {...otherPopoverItemProps}
+      autoFocus={false}
       content={
         <Menu>
           {options.map((option) => {
-            const { data, text, ...otherOptions } = option;
+            const {
+              data,
+              text,
+              tooltip = '',
+              tooltipProps,
+              disabled,
+              ...otherOptions
+            } = option;
             return (
-              <MenuItem
-                text={text}
+              <Tooltip
                 key={JSON.stringify({ data, text })}
-                {...otherOptions}
-                onClick={() => onClick(data)}
+                disabled={disabled ?? !option.tooltip}
+                content={
+                  typeof tooltip === 'string' ? (
+                    tooltip
+                  ) : (
+                    <TooltipHelpContent {...tooltip} />
+                  )
+                }
+                {...(!tooltip
+                  ? undefined
+                  : {
+                      compact: true,
+                      minimal: true,
+                      interactionKind: 'hover',
+                      placement: 'right',
+                      ...tooltipProps,
+                    })}
+                renderTarget={({ isOpen, ...props }) => (
+                  <MenuItem
+                    disabled={disabled}
+                    text={text}
+                    onClick={() => onClick?.(data)}
+                    {...otherOptions}
+                    {...props}
+                  />
+                )}
               />
             );
           })}

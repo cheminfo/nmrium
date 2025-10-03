@@ -168,7 +168,7 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
       if (molecule) {
         switch (selected?.id) {
           case 'smiles':
-            copyHandler(molecule.toSmiles(), 'SMILES');
+            copyHandler(molecule.toIsomericSmiles(), 'SMILES');
 
             break;
           case 'molfileV3':
@@ -193,14 +193,20 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
     [molecules, currentIndex, copyHandler, saveAsPNGHandler, saveAsSVGHandler],
   );
 
-  function handlePasteMolfileAction() {
+  function handlePasteMoleculeAction() {
     onClickPastMolecule?.();
-    void readText().then(handlePasteMolfile);
+    void readText().then(handlePasteMolecule);
   }
-  async function handlePasteMolfile(molfile: string | undefined) {
-    if (!molfile) return;
+
+  /**
+   * The moleecule pasted could be SMILES, molfile or SDF
+   * @param text - text from clipboard
+   * @returns
+   */
+  async function handlePasteMolecule(text: string | undefined) {
+    if (!text) return;
     try {
-      const molecules = getMolecules(molfile);
+      const molecules = getMolecules(text);
       dispatch({ type: 'ADD_MOLECULES', payload: { molecules } });
     } catch {
       toaster.show({
@@ -253,6 +259,28 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
 
   const hasMolecules = molecules && molecules.length > 0;
   const showCounter = hasMolecules && renderSource !== 'predictionPanel';
+
+  const moreMenu: ToolbarPopoverMenuItem[] = [
+    {
+      icon: <FaMaximize />,
+      text: 'Expand all hydrogens',
+      data: {
+        id: 'expandAllHydrogens',
+      },
+      disabled: !hasMolecules,
+      onClick: () => expandMoleculeHydrogens(true),
+    },
+    {
+      icon: <FaMinimize />,
+      text: 'Collapse all hydrogens',
+      data: {
+        id: 'collapseAllHydrogens',
+      },
+      disabled: !hasMolecules,
+      onClick: () => expandMoleculeHydrogens(false),
+    },
+  ];
+
   return (
     <PanelHeader
       onClickSettings={onClickPreferences}
@@ -274,7 +302,7 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
         <Toolbar.Item
           tooltip="Paste SMILES or molfile"
           icon={<FaPaste />}
-          onClick={handlePasteMolfileAction}
+          onClick={handlePasteMoleculeAction}
         />
         {renderSource === 'moleculePanel' && (
           <Toolbar.Item
@@ -312,17 +340,14 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
           active={moleculesView?.[moleculeKey]?.showAtomNumber || false}
           disabled={!hasMolecules}
         />
-        <Toolbar.Item
-          tooltip="Expand all hydrogens"
-          icon={<FaMaximize />}
-          onClick={() => expandMoleculeHydrogens(true)}
-          disabled={!hasMolecules}
-        />
-        <Toolbar.Item
-          tooltip="Collapse all hydrogens"
-          icon={<FaMinimize />}
-          onClick={() => expandMoleculeHydrogens(false)}
-          disabled={!hasMolecules}
+
+        <ToolbarPopoverItem
+          options={moreMenu}
+          tooltip="More"
+          tooltipProps={{
+            minimal: true,
+          }}
+          icon="more"
         />
       </Toolbar>
 
@@ -331,7 +356,7 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
       <ClipboardFallbackModal
         mode={shouldFallback}
         onDismiss={cleanShouldFallback}
-        onReadText={handlePasteMolfile}
+        onReadText={handlePasteMolecule}
         text={text}
         label="Molfile"
       />

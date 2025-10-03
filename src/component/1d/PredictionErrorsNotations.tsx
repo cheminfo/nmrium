@@ -6,7 +6,7 @@ import { isSpectrum1D } from '../../data/data1d/Spectrum1D/isSpectrum1D.js';
 import type { AssignmentsData } from '../assignment/AssignmentsContext.js';
 import { useAssignment } from '../assignment/AssignmentsContext.js';
 import { useScaleChecked } from '../context/ScaleContext.js';
-import { HighlightEventSource, useHighlight } from '../highlight/index.js';
+import { useHighlight } from '../highlight/index.js';
 import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature.js';
 import useSpectrum from '../hooks/useSpectrum.js';
 
@@ -114,7 +114,7 @@ function PredictionError(props: SignalStatistics) {
   const isExperimental = useCheckExperimentalFeature();
   const assignment = useAssignment(id);
   const highlight = useHighlight(extractID(id, assignment), {
-    type: HighlightEventSource.SIGNAL,
+    type: 'SIGNAL',
   });
 
   const isAssignmentActive = assignment.isActive;

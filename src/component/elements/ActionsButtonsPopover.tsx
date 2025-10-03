@@ -3,6 +3,7 @@ import { Popover } from '@blueprintjs/core';
 import type { Interpolation, Theme } from '@emotion/react';
 import styled from '@emotion/styled';
 import type { CSSProperties } from 'react';
+import { useState } from 'react';
 import type { ButtonProps } from 'react-science/ui';
 import { Button } from 'react-science/ui';
 
@@ -51,11 +52,21 @@ function isSeparator(
 type Direction = 'column' | 'row';
 
 export interface ActionsButtonsPopoverProps
-  extends Omit<PopoverProps, 'interactionKind' | 'content'> {
+  extends Omit<
+    PopoverProps,
+    'interactionKind' | 'content' | 'modifiers' | 'renderTarget'
+  > {
   buttons: ActionButtonProps[];
   contentStyle?: CSSProperties;
   direction?: Direction;
   space?: number;
+  offsetX?: number;
+  offsetY?: number;
+  offsetYMode?: 'fixed' | 'cursor';
+  offsetXMode?: 'fixed' | 'cursor';
+  x?: number;
+  y?: number;
+  autoFlip?: boolean;
 }
 
 function ActionButton(props: ButtonProps) {
@@ -64,17 +75,43 @@ function ActionButton(props: ButtonProps) {
 
 export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
   const {
+    targetTagName = 'div',
+    targetProps,
     buttons,
     children,
     space,
     direction = 'column',
     contentStyle = {},
+    offsetX: externalOffsetX = 0,
+    offsetY: externalOffsetY = 0,
+    x,
+    y,
+    offsetYMode = 'fixed',
+    offsetXMode = 'fixed',
+    autoFlip = true,
     ...otherProps
   } = props;
+
+  const [cursor, setCursor] = useState({ x: 0, y: 0 });
+  const Wrapper = targetTagName as any;
 
   const visibleButtons = buttons.filter(
     (button) => isSeparator(button) || button?.visible !== false,
   );
+
+  const offsetY = offsetYMode === 'fixed' ? externalOffsetY : cursor.y;
+  const offsetX = offsetXMode === 'fixed' ? externalOffsetX : cursor.x;
+
+  function handleMouseEnter(event) {
+    const { clientX, clientY, currentTarget } = event;
+    if (!(currentTarget instanceof Element)) return;
+    const rect = currentTarget.getBoundingClientRect();
+
+    setCursor((prev) => ({
+      x: offsetXMode === 'cursor' ? clientX - rect.left : prev.x,
+      y: offsetYMode === 'cursor' ? clientY - rect.top : prev.y,
+    }));
+  }
 
   return (
     <Popover
@@ -83,15 +120,38 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
       popoverClassName="actions-buttons-popover"
       interactionKind="hover"
       enforceFocus={false}
+      onOpening={handleMouseEnter}
+      renderTarget={({ onMouseEnter, ...otherProps }) => (
+        <Wrapper
+          {...targetProps}
+          {...otherProps}
+          onMouseEnter={(event) => {
+            handleMouseEnter(event);
+            onMouseEnter?.(event);
+          }}
+        >
+          {children}
+        </Wrapper>
+      )}
+      modifiers={{
+        offset: {
+          enabled: true,
+          data: { x, y },
+          options: {
+            offset:
+              direction === 'column' ? [offsetY, offsetX] : [offsetX, offsetY],
+          },
+        },
+
+        flip: { enabled: autoFlip },
+      }}
       content={
         <Container style={contentStyle} flexDirection={direction} gap={space}>
           <ActionButtons buttons={visibleButtons} direction={direction} />
         </Container>
       }
       {...otherProps}
-    >
-      {children}
-    </Popover>
+    />
   );
 }
 interface ActionButtonsProps {

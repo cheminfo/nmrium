@@ -28,7 +28,6 @@ import { usePanelPreferences } from '../hooks/usePanelPreferences.js';
 import useSpectrum from '../hooks/useSpectrum.js';
 import { useVerticalAlign } from '../hooks/useVerticalAlign.js';
 import MultipletAnalysisModal from '../modal/MultipletAnalysisModal.js';
-import { ZOOM_TYPES } from '../reducer/helper/Zoom1DManager.js';
 import { sortRange } from '../reducer/helper/getRange.js';
 import type { Tool } from '../toolbar/ToolTypes.js';
 import { options } from '../toolbar/ToolTypes.js';
@@ -345,7 +344,7 @@ export function BrushTracker1D({ children }) {
 
       dispatch({
         type: 'FULL_ZOOM_OUT',
-        payload: { zoomType: ZOOM_TYPES.BIDIRECTIONAL },
+        payload: { zoomType: 'BIDIRECTIONAL' },
       });
     },
     [dispatch, getModifiersKey, isClickDebounced, primaryKeyIdentifier],
@@ -362,7 +361,7 @@ export function BrushTracker1D({ children }) {
 
       dispatch({
         type: 'FULL_INSET_ZOOM_OUT',
-        payload: { zoomType: ZOOM_TYPES.BIDIRECTIONAL, insetKey: inset.id },
+        payload: { zoomType: 'BIDIRECTIONAL', insetKey: inset.id },
       });
     },
     [dispatch, getModifiersKey, inset, primaryKeyIdentifier],

@@ -330,11 +330,8 @@ function DraggableRanges(props: DraggablePublicationStringProps) {
         targetProps={{ style: { width: '100%', height: '100%' } }}
         space={2}
         {...(isMoveActive && { isOpen: true })}
-        modifiers={{
-          offset: {
-            data: { x, y },
-          },
-        }}
+        x={x}
+        y={y}
       >
         <SVGRangesTable ranges={ranges} />
       </ActionsButtonsPopover>

@@ -8,7 +8,7 @@ import IsotopesViewer from '../../elements/IsotopesViewer.js';
 import Tab from '../../elements/Tab/Tab.js';
 import Tabs from '../../elements/Tab/Tabs.js';
 import { useSetActiveSpectrumAction } from '../../hooks/useSetActiveSpectrumAction.js';
-import groupByInfoKey from '../../utility/GroupByInfoKey.js';
+import groupByInfoKey from '../../utility/groupByInfoKey.js';
 
 import { SpectraTable } from './SpectraTable.js';
 

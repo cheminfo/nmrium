@@ -7,6 +7,7 @@ import {
 } from '@blueprintjs/core';
 import { Controller, useForm } from 'react-hook-form';
 
+import type { ExportOptions } from '../../data/SpectraManager.js';
 import { DataExportOptions } from '../../data/SpectraManager.js';
 import { useChartData } from '../context/ChartContext.js';
 import ActionButtons from '../elements/ActionButtons.js';
@@ -21,10 +22,10 @@ const INITIAL_VALUE = {
   compressed: false,
   pretty: false,
   include: {
-    dataType: DataExportOptions.ROW_DATA,
+    dataType: DataExportOptions.NO_DATA,
     view: false,
     settings: false,
-  },
+  } satisfies ExportOptions,
 };
 
 export const labelStyle: LabelStyle = {
@@ -94,7 +95,7 @@ function InnerSaveAsModal(props: InnerSaveAsModalProps) {
         <Label style={labelStyle} title="Include view">
           <Checkbox style={{ margin: 0 }} {...register(`include.view`)} />
         </Label>
-        <Label style={labelStyle} title="Include settings">
+        <Label style={labelStyle} title="Include workspace">
           <Checkbox style={{ margin: 0 }} {...register(`include.settings`)} />
         </Label>
         <Label style={labelStyle} title="Include data">

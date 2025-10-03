@@ -15,6 +15,7 @@ import {
 import { BlobWriter, TextReader, ZipWriter } from '@zip.js/zip.js';
 import fileSaver from 'file-saver';
 import * as OCL from 'openchemlib';
+import { toMolfile } from 'openchemlib-utils';
 
 import type { State } from '../component/reducer/Reducer.js';
 
@@ -22,11 +23,11 @@ import { initiateDatum1D, isSpectrum1D } from './data1d/Spectrum1D/index.js';
 import { initiateDatum2D } from './data2d/Spectrum2D/index.js';
 import * as Molecule from './molecules/Molecule.js';
 
-export enum DataExportOptions {
+export const DataExportOptions = {
   /**
    * Export the data as it is in the state, including all the raw data arrays.
    */
-  ROW_DATA = 'ROW_DATA',
+  ROW_DATA: 'ROW_DATA',
 
   /**
    * Export the data as it is in the state, excluding all the raw data arrays.
@@ -35,12 +36,12 @@ export enum DataExportOptions {
    *
    * @see State.sources
    */
-  DATA_SOURCE = 'DATA_SOURCE',
+  DATA_SOURCE: 'DATA_SOURCE',
 
   /**
    * Export only metadata, without any data.
    */
-  NO_DATA = 'NO_DATA',
+  NO_DATA: 'NO_DATA',
 
   /**
    * Export the state with all the data included, and without any external references.
@@ -49,7 +50,7 @@ export enum DataExportOptions {
    *
    * @experimental
    */
-  SELF_CONTAINED = 'SELF_CONTAINED',
+  SELF_CONTAINED: 'SELF_CONTAINED',
 
   /**
    * Export the state with data included and with external references.
@@ -61,15 +62,17 @@ export enum DataExportOptions {
    *
    * @experimental
    */
-  SELF_CONTAINED_EXTERNAL_DATASOURCE = 'SELF_CONTAINED_EXTERNAL_DATASOURCE',
-}
+  SELF_CONTAINED_EXTERNAL_DATASOURCE: 'SELF_CONTAINED_EXTERNAL_DATASOURCE',
+} as const;
 
-type DataExportOptionsType = keyof typeof DataExportOptions;
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export type DataExportOptions =
+  (typeof DataExportOptions)[keyof typeof DataExportOptions];
 
 type ExportTarget = 'nmrium' | 'onChange';
 
 export interface ExportOptions {
-  dataType?: DataExportOptionsType;
+  dataType?: DataExportOptions;
   view?: boolean;
   settings?: boolean;
   /** @default true */
@@ -183,7 +186,7 @@ export function toJSON(
   }
 }
 
-function dataTypeToIncludeData(dataType: DataExportOptionsType): IncludeData {
+function dataTypeToIncludeData(dataType: DataExportOptions): IncludeData {
   switch (dataType) {
     case 'ROW_DATA':
       return 'rawData';
@@ -278,8 +281,12 @@ export async function exportForCT(options: ExportForCTOptions) {
   const { molfile } = molecules[0];
   const molecule = OCL.Molecule.fromMolfile(molfile);
   const molFileName = molecule.getMolecularFormula().formula;
+  const ctMolfile = toMolfile(molecule, {
+    includeCustomAtomLabelsAsALines: true,
+    customLabelPosition: 'normal',
+  });
 
-  await zip.add(`${molFileName}.mol`, new TextReader(molecule.toMolfile()));
+  await zip.add(`${molFileName}.mol`, new TextReader(ctMolfile));
 
   const blob = await zip.close();
   fileSaver.saveAs(blob, `${name}.zip`);

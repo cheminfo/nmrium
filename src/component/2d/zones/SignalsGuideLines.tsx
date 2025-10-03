@@ -19,7 +19,7 @@ import {
 } from '../../context/ShareDataContext.js';
 import type { ActionsButtonsPopoverProps } from '../../elements/ActionsButtonsPopover.js';
 import { ActionsButtonsPopover } from '../../elements/ActionsButtonsPopover.js';
-import { HighlightEventSource, useHighlight } from '../../highlight/index.js';
+import { useHighlight } from '../../highlight/index.js';
 import { useCanvasContext } from '../../hooks/useCanvasContext.js';
 import { useTriggerNewAssignmentLabel } from '../../hooks/useTriggerNewAssignmentLabel.js';
 import { stackOverlappingLabelsArray } from '../../utility/stackOverlappingLabels.js';
@@ -71,19 +71,20 @@ function useSignalsOverlap(axis: IndicationLinesAxis, spectrum: Spectrum1D) {
 
   const isOverXAxis = axis === 'x';
 
-  const processedSignals: ProcessedSignal[] = signals
-    .map((signal) => {
-      const { delta } = signal;
-      const text = signal.assignment ?? '';
-      const { width: labelWidth } = context.measureText(text);
+  const processedSignals: ProcessedSignal[] = signals.map((signal) => {
+    const { delta } = signal;
+    const text = signal.assignment ?? '';
+    const { width: labelWidth } = context.measureText(text);
 
-      return {
-        ...signal,
-        labelWidth,
-        deltaInPixel: isOverXAxis ? scaleX(delta) : scaleY(delta),
-      };
-    })
-    .sort((a, b) => (isOverXAxis ? b.delta - a.delta : a.delta - b.delta));
+    return {
+      ...signal,
+      labelWidth,
+      deltaInPixel: isOverXAxis ? scaleX(delta) : scaleY(delta),
+    };
+  });
+  processedSignals.sort((a, b) =>
+    isOverXAxis ? b.delta - a.delta : a.delta - b.delta,
+  );
 
   return stackOverlappingLabelsArray(processedSignals, {
     startPositionKey: 'deltaInPixel',
@@ -151,7 +152,7 @@ function useRangeAssignment(options: UseRangeAssignmentOptions) {
     .concat(filterAssignedIDs(assignmentData.data, signalsIds));
 
   const highlightContext = useHighlight(highlightId, {
-    type: HighlightEventSource.RANGE,
+    type: 'RANGE',
     extra: { id: rangeId, spectrumID: spectrumId },
   });
   return { highlightContext, assignmentContext };
@@ -205,7 +206,7 @@ function IndicationLine(props: IndicationLineProps) {
   }
 
   function mouseEnterHandler() {
-    assignmentContext.highlight('x');
+    assignmentContext.highlight(axis);
     highlightContext.show();
   }
 
@@ -216,7 +217,7 @@ function IndicationLine(props: IndicationLineProps) {
 
   function assignHandler() {
     isAssignBtnTrigged.current = true;
-    assignmentContext.activate('x');
+    assignmentContext.activate(axis);
   }
 
   function unAssignHandler() {

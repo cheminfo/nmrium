@@ -12,11 +12,7 @@ import { filterAssignedIDs } from '../../assignment/utilities/filterAssignedIDs.
 import { useDispatch } from '../../context/DispatchContext.js';
 import { ContextMenu } from '../../elements/ContextMenuBluePrint.js';
 import type { TableContextMenuProps } from '../../elements/ReactTable/ReactTable.js';
-import {
-  HighlightEventSource,
-  useHighlight,
-  useHighlightData,
-} from '../../highlight/index.js';
+import { useHighlight, useHighlightData } from '../../highlight/index.js';
 
 import AbsoluteColumn from './TableColumns/AbsoluteColumn.js';
 import ActionsColumn from './TableColumns/ActionsColumn.js';
@@ -85,11 +81,11 @@ function RangesTableRow({
         rowData.signals.map((_signal) => _signal.id),
       ),
     ),
-    { type: HighlightEventSource.RANGE },
+    { type: 'RANGE' },
   );
   const highlightRangeAssignmentsColumn = useHighlight(
     assignmentRange.assignedDiaIds?.x || [],
-    { type: HighlightEventSource.RANGE },
+    { type: 'RANGE' },
   );
   const signalKey = rowData?.tableMetaInfo?.id || '';
   const assignmentSignal = useAssignment(signalKey);
@@ -98,7 +94,7 @@ function RangesTableRow({
     signalKey
       ? [signalKey].concat(assignmentSignal.assignedDiaIds?.x || [])
       : [],
-    { type: HighlightEventSource.SIGNAL },
+    { type: 'SIGNAL' },
   );
   const highlightData = useHighlightData();
 

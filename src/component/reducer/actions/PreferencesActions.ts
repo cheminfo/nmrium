@@ -1,7 +1,7 @@
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
 
-import groupByInfoKey from '../../utility/GroupByInfoKey.js';
+import groupByInfoKey from '../../utility/groupByInfoKey.js';
 import nucleusToString from '../../utility/nucleusToString.js';
 import type { State, VerticalAlignment } from '../Reducer.js';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';

@@ -17,7 +17,7 @@ const styles = {
   SVGPadding: 1,
 };
 
-const LookWidth = 10;
+const LOOK_WIDTH = 10;
 
 function PeakPointer() {
   const {
@@ -50,16 +50,17 @@ function PeakPointer() {
 
   if (spectrumIndex === -1) return null;
 
-  const [from, to] = [
-    scaleX().invert(position.x - LookWidth),
-    scaleX().invert(position.x + LookWidth),
-  ].sort((a, b) => {
+  const fromTo = [
+    scaleX().invert(position.x - LOOK_WIDTH),
+    scaleX().invert(position.x + LOOK_WIDTH),
+  ];
+  fromTo.sort((a, b) => {
     return a - b;
   });
 
   const closePeak = getClosePeak(spectra[spectrumIndex] as Spectrum1D, {
-    from,
-    to,
+    from: fromTo[0],
+    to: fromTo[1],
   });
   if (!closePeak) return null;
 
