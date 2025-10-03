@@ -6,7 +6,11 @@ import type {
 } from '@zakodium/nmrium-core';
 import { BlobWriter, TextReader, ZipWriter } from '@zip.js/zip.js';
 import dlv from 'dlv';
+import { FileCollection } from 'file-collection';
 import fileSaver from 'file-saver';
+
+import type { ExportOptions } from '../../data/SpectraManager.js';
+import type { State } from '../reducer/Reducer.js';
 
 export const browserNotSupportedErrorToast: ToastProps = {
   message:
@@ -21,7 +25,7 @@ export const browserNotSupportedErrorToast: ToastProps = {
  * @param spaceIndent
  * @param isCompressed
  */
-async function exportAsJSON(
+async function exportAsJsonBlob(
   data,
   fileName = 'experiment',
   spaceIndent = 0,
@@ -34,19 +38,20 @@ async function exportAsJSON(
     spaceIndent,
   );
   if (!isCompressed) {
-    const blob = new Blob([fileData], { type: 'text/plain' });
-    fileSaver.saveAs(blob, `${fileName}.nmrium`);
+    return new Blob([fileData], { type: 'text/plain' });
   } else {
-    try {
-      const zip = new ZipWriter(new BlobWriter());
-      await zip.add(`${fileName}.nmrium`, new TextReader(fileData));
-      const blob = await zip.close();
-      fileSaver.saveAs(blob, `${fileName}.nmrium`);
-    } catch (error) {
-      // TODO: handle error.
-      reportError(error);
-    }
+    const zip = new ZipWriter(new BlobWriter());
+    await zip.add(`${fileName}.nmrium`, new TextReader(fileData));
+    return await zip.close();
   }
+}
+
+export function saveAs(
+  blob: Blob,
+  fileName = 'experiment',
+  extension = '.nmrium',
+) {
+  fileSaver.saveAs(blob, `${fileName}${extension}`);
 }
 
 function exportAsMatrix(
@@ -426,7 +431,7 @@ function getBlob(targetElementID: string, options: GetBlobOptions): BlobObject {
 
 export {
   copyPNGToClipboard,
-  exportAsJSON,
+  exportAsJsonBlob,
   exportAsMatrix,
   exportAsPng,
   exportAsSVG,

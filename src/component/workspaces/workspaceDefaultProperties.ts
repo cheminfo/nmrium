@@ -4,6 +4,14 @@ import { Filters1D } from 'nmr-processing';
 import { color2D } from '../../data/data2d/Spectrum2D/get2DColor.js';
 
 export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
+  acsExportOptions: {
+    signalKind: 'all',
+    ascending: false,
+    format: 'IMJA',
+    deltaFormat: '0,0',
+    couplingFormat: '0.0',
+  },
+
   display: {
     general: {
       hideGeneralSettings: false,
