@@ -35,12 +35,13 @@ export default function autoRangesDetection(
   };
 
   const rangesOptions = {
-    frequency: originFrequency,
     nucleus,
-    compile: nucleus !== '13C',
-    frequencyCluster: nucleus === '13C' ? 0 : 13,
-    keepPeaks: true,
     clean: 0.3,
+    keepPeaks: true,
+    compile: nucleus === '1H',
+    frequency: originFrequency,
+    joinOverlapRanges: nucleus === '1H',
+    frequencyCluster: nucleus === '1H' ? 13 : 0,
     ...rangePicking,
   };
 

@@ -227,11 +227,11 @@ function handleAutoRangesDetection(
     const detectionOptions: any = {
       rangePicking: {
         integrationSum: 100,
-        compile: nucleus !== '13C',
-        frequencyCluster: nucleus === '13C' ? 0 : 16,
+        compile: nucleus === '1H',
+        frequencyCluster: nucleus === '1H' ? 16 : 0,
         clean: 0.3,
         keepPeaks: true,
-        joinOverlapRanges: nucleus !== '13C',
+        joinOverlapRanges: nucleus === '1H',
       },
       peakPicking: {
         smoothY: false,
@@ -256,15 +256,9 @@ function handleAutoRangesDetection(
 //action
 function handleAutoSpectraRangesDetection(draft: Draft<State>) {
   const peakPicking = {
+    sensitivity: 90,
     thresholdFactor: 8,
     minMaxRatio: 0.05,
-  };
-  const rangePicking = {
-    integrationSum: 100,
-    compile: true,
-    frequencyCluster: 16,
-    clean: 0.3,
-    keepPeaks: true,
   };
   const {
     data,
@@ -273,6 +267,14 @@ function handleAutoSpectraRangesDetection(draft: Draft<State>) {
     },
     molecules,
   } = draft;
+  const rangePicking = {
+    integrationSum: 100,
+    compile: nucleus === '1H',
+    frequencyCluster: nucleus === '1H' ? 16 : 0,
+    clean: 0.3,
+    keepPeaks: true,
+    joinOverlapRanges: nucleus === '1H',
+  };
   for (const datum of data) {
     if (datum.info.dimension === 1) {
       detectRanges(datum as Spectrum1D, {
