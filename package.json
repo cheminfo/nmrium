@@ -5,6 +5,7 @@
   "license": "MIT",
   "type": "module",
   "exports": {
+    "nmrium-internal": "./src/component/main/index.ts",
     ".": "./lib/component/main/index.js"
   },
   "files": [
