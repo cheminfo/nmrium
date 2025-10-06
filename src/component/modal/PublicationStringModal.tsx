@@ -46,11 +46,11 @@ type ExportFormatType = 'IMJA' | 'IMJ' | 'D';
 
 // TODO expose ACSExportOptions type from nmrium-core
 type ExportACSOptions = Workspace['acsExportOptions'];
-type ExportScope = ExportACSOptions['signalKind'];
+type ExportSignalKind = ExportACSOptions['signalKind'];
 
 const validationSchema = Yup.object().shape({
-  SignalKinds: Yup.string()
-    .oneOf(['all', 'signal'] as ExportScope[])
+  signalKind: Yup.string()
+    .oneOf(['all', 'signal'] as ExportSignalKind[])
     .required(),
   ascending: Yup.boolean().required(),
   format: Yup.string().required(),
@@ -58,7 +58,7 @@ const validationSchema = Yup.object().shape({
   deltaFormat: Yup.string().required(),
 });
 
-const exportOptions: Array<SelectItem<ExportScope>> = [
+const exportOptions: Array<SelectItem<ExportSignalKind>> = [
   {
     label: 'Export all',
     value: 'all',
@@ -107,7 +107,7 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
 
   const { control } = useForm<ExportACSOptions>({
     defaultValues: current.acsExportOptions,
-    resolver: yupResolver(validationSchema) as any,
+    resolver: yupResolver(validationSchema),
   });
 
   const options = useWatch({ control });
