@@ -12,6 +12,7 @@ import { useDispatch } from '../context/DispatchContext.js';
 import { useGlobal } from '../context/GlobalContext.js';
 import type { ActionsButtonsPopoverProps } from '../elements/ActionsButtonsPopover.js';
 import { ActionsButtonsPopover } from '../elements/ActionsButtonsPopover.js';
+import { useActiveNucleusTab } from '../hooks/useActiveNucleusTab.ts';
 import { useCanvasContext } from '../hooks/useCanvasContext.js';
 import { usePanelPreferences } from '../hooks/usePanelPreferences.js';
 import { useSVGUnitConverter } from '../hooks/useSVGUnitConverter.js';
@@ -305,11 +306,7 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
 
 function usePublicationString() {
   const spectra = useSpectraByActiveNucleus();
-  const {
-    view: {
-      spectra: { activeTab },
-    },
-  } = useChartData();
+  const activeTab = useActiveNucleusTab();
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
 
   const output: Record<string, string> = {};
