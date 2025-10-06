@@ -1,6 +1,7 @@
 {
   "extends": "@zakodium/tsconfig/jsx",
   "compilerOptions": {
+    "customConditions": ["nmrium-internal"],
     "types": ["vite/client"],
     "outDir": "lib",
     "noImplicitAny": false,
