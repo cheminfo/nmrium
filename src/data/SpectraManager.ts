@@ -27,7 +27,7 @@ export const DataExportOptions = {
   /**
    * Export the data as it is in the state, including all the raw data arrays.
    */
-  ROW_DATA: 'ROW_DATA',
+  RAW_DATA: 'RAW_DATA',
 
   /**
    * Export the data as it is in the state, excluding all the raw data arrays.
@@ -58,7 +58,7 @@ export const DataExportOptions = {
    * External data source will not be embedded in the archive.
    *
    * When the nmrium file will be imported,
-   * the data will be fetched from the original source and merged with data embed in the archive.
+   * the data will be fetched from the original source and merged with data embedded in the archive.
    *
    * @experimental
    */
@@ -145,7 +145,7 @@ export function toJSON(
   } = state;
 
   const {
-    dataType = 'ROW_DATA',
+    dataType = 'RAW_DATA',
     view = false,
     settings = false,
     serialize = true,
@@ -188,7 +188,7 @@ export function toJSON(
 
 function dataTypeToIncludeData(dataType: DataExportOptions): IncludeData {
   switch (dataType) {
-    case 'ROW_DATA':
+    case 'RAW_DATA':
       return 'rawData';
     case 'NO_DATA':
       return 'noData';
