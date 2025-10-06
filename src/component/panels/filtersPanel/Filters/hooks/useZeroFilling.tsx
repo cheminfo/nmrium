@@ -141,7 +141,7 @@ export const useZeroFilling = (
       },
     });
 
-  function syncWatch(sharedFilterOptions) {
+  function syncWatch(sharedFilterOptions: any) {
     reset({ ...getValues(), ...sharedFilterOptions });
   }
 
@@ -149,7 +149,7 @@ export const useZeroFilling = (
     useSyncedFilterOptions(syncWatch);
 
   const onChange = useCallback(
-    (values) => {
+    (values: any) => {
       const { livePreview } = values;
 
       if (livePreview || previousPreviewRef !== livePreview) {
@@ -160,7 +160,7 @@ export const useZeroFilling = (
   );
 
   function handleApplyFilter(
-    values,
+    values: any,
     triggerSource: 'apply' | 'onChange' = 'apply',
   ) {
     const { livePreview } = values;

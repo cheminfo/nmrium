@@ -32,12 +32,19 @@ const ReactRnd = styled(Rnd)`
   }
 `;
 
-function calculateWorldWidth(context, word) {
+function calculateWorldWidth(context: any, word: any) {
   if (!context) return 0;
   return Math.round(context.measureText(word).width);
 }
 
-function useWrapSVGText({ text, width, fontSize }) {
+interface UseWrapSVGTextParams {
+  text: string;
+  width: number;
+  fontSize: number;
+}
+
+function useWrapSVGText(params: UseWrapSVGTextParams) {
+  const { text, width, fontSize } = params;
   const context = useCanvasContext(fontSize);
 
   const formattedText = text

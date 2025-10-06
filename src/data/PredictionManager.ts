@@ -8,6 +8,7 @@ import type {
   Prediction2D,
   PredictionBase1D,
   PredictionBase2D,
+  PredictionOptionsByExperiment,
 } from 'nmr-processing';
 import {
   calculateRelativeFrequency,
@@ -28,7 +29,7 @@ import {
 import { initiateDatum2D } from './data2d/Spectrum2D/index.js';
 import { adjustAlpha } from './utilities/generateColor.js';
 
-type Experiment = 'proton' | 'carbon' | 'cosy' | 'hsqc' | 'hmbc';
+export type Experiment = 'proton' | 'carbon' | 'cosy' | 'hsqc' | 'hmbc';
 type SpectraPredictionOptions = Record<Experiment, boolean>;
 export type PredictedSpectraResult = Partial<
   Record<Experiment, PredictionBase1D | PredictionBase2D>
@@ -38,6 +39,8 @@ export interface PredictionOptions {
   name: string;
   frequency: number;
   '1d': {
+    // Should we allow generic nuclei here?
+    // If so, those options should be in a separate property so that they can be Record<string, { from: number; to: number }>
     '1H': { from: number; to: number };
     '13C': { from: number; to: number };
     nbPoints: number;
@@ -95,7 +98,7 @@ export async function predictSpectra(
   options: any,
 ): Promise<Predicted> {
   const molecule = Molecule.fromMolfile(molfile);
-  const predictOptions = {};
+  const predictOptions: Record<string, PredictionOptionsByExperiment> = {};
   for (const key in options) {
     if (!options[key]) continue;
     const experiment = key === 'proton' ? 'H' : key === 'carbon' ? 'C' : key;
@@ -124,8 +127,8 @@ export function generateSpectra(
   checkFromTo(predictedSpectra, options, logger);
   const spectra: Spectrum[] = [];
   for (const experiment in predictedSpectra) {
-    if (options.spectra[experiment]) {
-      const spectrum = predictedSpectra[experiment];
+    if (options.spectra[experiment as Experiment]) {
+      const spectrum = predictedSpectra[experiment as Experiment];
       switch (experiment) {
         case 'proton':
         case 'carbon': {
@@ -163,7 +166,7 @@ function checkFromTo(
   inputOptions: PredictionOptions,
   logger: Logger,
 ) {
-  const setFromTo = (inputOptions, nucleus, fromTo) => {
+  const setFromTo = (inputOptions: any, nucleus: any, fromTo: any) => {
     inputOptions['1d'][nucleus].to = fromTo.to;
     inputOptions['1d'][nucleus].from = fromTo.from;
     if (fromTo.signalsOutOfRange) {
@@ -174,14 +177,15 @@ function checkFromTo(
   const { autoExtendRange, spectra } = inputOptions;
   const signalsOutOfRange: Record<string, boolean> = {};
 
-  for (const experiment in predictedSpectra) {
+  for (const exp in predictedSpectra) {
+    const experiment = exp as Experiment;
     if (!spectra[experiment]) continue;
-    if (predictedSpectra[experiment].signals.length === 0) continue;
+    if (predictedSpectra[experiment]?.signals.length === 0) continue;
 
     if (['carbon', 'proton'].includes(experiment)) {
       const spectrum = predictedSpectra[experiment] as Prediction1D;
       const { signals, nucleus } = spectrum;
-      const { from, to } = inputOptions['1d'][nucleus];
+      const { from, to } = (inputOptions['1d'] as any)[nucleus];
       const fromTo = getNewFromTo({
         deltas: signals.map((s) => s.delta),
         from,
@@ -194,7 +198,7 @@ function checkFromTo(
       const { signals, nuclei } = predictedSpectra[experiment] as Prediction2D;
       for (const nucleus of nuclei) {
         const axis = nucleus === '1H' ? 'x' : 'y';
-        const { from, to } = inputOptions['1d'][nucleus];
+        const { from, to } = (inputOptions['1d'] as any)[nucleus];
         const fromTo = getNewFromTo({
           deltas: signals.map((s) => s[axis].delta),
           from,
@@ -208,7 +212,7 @@ function checkFromTo(
   }
   for (const nucleus of ['1H', '13C']) {
     if (signalsOutOfRange[nucleus]) {
-      const { from, to } = inputOptions['1d'][nucleus];
+      const { from, to } = (inputOptions['1d'] as any)[nucleus];
       if (autoExtendRange) {
         logger.info(
           `There are ${nucleus} signals out of the range, it was extended to ${from}-${to}.`,
@@ -260,7 +264,7 @@ function generated1DSpectrum(params: {
     nucleus,
   });
   const { x, y } = signalsToXY(signals, {
-    ...options['1d'][nucleus],
+    ...(options['1d'] as any)[nucleus],
     frequency,
     nbPoints,
     lineWidth,
@@ -268,7 +272,7 @@ function generated1DSpectrum(params: {
 
   const first = x[0] ?? 0;
   const last = x.at(-1) ?? 0;
-  const getFreqOffset = (freq) => {
+  const getFreqOffset = (freq: any) => {
     return (first + last) * freq * 0.5;
   };
 
@@ -335,8 +339,8 @@ function generated2DSpectrum(params: {
 }) {
   const { spectrum, options, experiment, color } = params;
   const { signals, zones, nuclei } = spectrum;
-  const xOption = options['1d'][nuclei[0]];
-  const yOption = options['1d'][nuclei[1]];
+  const xOption = (options['1d'] as any)[nuclei[0]];
+  const yOption = (options['1d'] as any)[nuclei[1]];
 
   const width = get2DWidth(nuclei);
   const frequency = calculateRelativeFrequency(nuclei, options.frequency);

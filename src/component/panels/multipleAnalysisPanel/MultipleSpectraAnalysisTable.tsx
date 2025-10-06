@@ -1,4 +1,5 @@
 import { Fragment, useMemo } from 'react';
+import type { CellProps, Row } from 'react-table';
 
 import type { SpectraAnalysisData } from '../../../data/data1d/multipleSpectraAnalysis.js';
 import { usePreferences } from '../../context/PreferencesContext.js';
@@ -20,6 +21,8 @@ interface MultipleSpectraAnalysisTableProps {
   resortSpectra: boolean;
 }
 
+type ValueType = SpectraAnalysisData['values'][number];
+
 function MultipleSpectraAnalysisTable({
   data,
   activeTab,
@@ -38,7 +41,7 @@ function MultipleSpectraAnalysisTable({
   }, [data]);
 
   const tableColumns = useMemo(() => {
-    function handleChangeColumnValueKey(columnKey, valueKey) {
+    function handleChangeColumnValueKey(columnKey: any, valueKey: any) {
       dispatchPreferences({
         type: 'CHANGE_ANALYSIS_COLUMN_VALUE_KEY',
         payload: {
@@ -48,7 +51,7 @@ function MultipleSpectraAnalysisTable({
         },
       });
     }
-    function handleDeleteColumn(columnKey) {
+    function handleDeleteColumn(columnKey: any) {
       dispatchPreferences({
         type: 'DELETE_ANALYSIS_COLUMN',
         payload: {
@@ -58,7 +61,7 @@ function MultipleSpectraAnalysisTable({
       });
     }
 
-    const columns: Array<CustomColumn<any>> = [
+    const columns: Array<CustomColumn<ValueType>> = [
       {
         Header: '#',
         index: 0,
@@ -66,8 +69,8 @@ function MultipleSpectraAnalysisTable({
       },
     ];
 
-    function cellHandler(row, columnKey, valueKey) {
-      const value = row.original[columnKey][valueKey];
+    function cellHandler(row: Row<ValueType>, columnKey: string) {
+      const value = row.original[columnKey].value;
       return (
         <AnalysisCell
           value={value}
@@ -77,7 +80,7 @@ function MultipleSpectraAnalysisTable({
       );
     }
 
-    function headerHandler(columnData, columnKey) {
+    function headerHandler(columnData: any, columnKey: any) {
       return (
         <AnalysisColumnHeader
           onDelete={() => handleDeleteColumn(columnKey)}
@@ -98,13 +101,16 @@ function MultipleSpectraAnalysisTable({
     if (panelPreferences?.analysisOptions?.columns) {
       const analysisColumns = panelPreferences?.analysisOptions?.columns;
       for (const columnKey in analysisColumns) {
-        const { valueKey, index: columnIndex } = analysisColumns[columnKey];
-        addCustomColumn(columns, {
+        const { index: columnIndex } = analysisColumns[columnKey];
+        addCustomColumn<ValueType>(columns, {
           index: columnIndex + 1,
           Header: () => headerHandler(analysisColumns[columnKey], columnKey),
           id: columnKey,
-          accessor: (row) => row[columnKey][valueKey],
-          Cell: ({ row }) => cellHandler(row, columnKey, valueKey),
+          accessor: (row) => {
+            return row[columnKey].value;
+          },
+          Cell: (cell: CellProps<ValueType>) =>
+            cellHandler(cell.row, columnKey),
           style: { padding: 0 },
         });
       }
@@ -125,7 +131,7 @@ function MultipleSpectraAnalysisTable({
       if (isTableSorted) {
         sort({
           sortType: 'sortByReferenceIndexes',
-          sortByReferences: data.map((analysisData) => {
+          sortByReferences: data.map((analysisData: any) => {
             const key = Object.keys(analysisData)[0];
             const id = analysisData[key].SID;
             return { id };

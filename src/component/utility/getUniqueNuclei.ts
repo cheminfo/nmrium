@@ -1,5 +1,5 @@
 export function getUniqueNuclei(nuclei: string[]) {
-  const uniqueNuclei = {};
+  const uniqueNuclei: Record<string, boolean> = {};
 
   for (const nucleus of nuclei) {
     const _nuclei = nucleus.split(',');

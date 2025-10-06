@@ -149,7 +149,7 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
   } = useClipboard();
 
   const copyHandler = useCallback(
-    (value, title) => {
+    (value: any, title: any) => {
       void rawWriteWithType(value).then(() => {
         toaster.show({
           message: `${title} copied to clipboard`,
@@ -161,7 +161,7 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
   );
 
   const exportHandler = useCallback(
-    (selected) => {
+    (selected: any) => {
       const m = molecules?.[currentIndex];
       const molecule = Molecule.fromMolfile(m.molfile);
 

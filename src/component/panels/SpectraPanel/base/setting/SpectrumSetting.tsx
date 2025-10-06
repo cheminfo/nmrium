@@ -26,7 +26,7 @@ export function SpectrumSetting({
   const dispatch = useDispatch();
   const { id, info } = data;
 
-  function submitHandler(values) {
+  function submitHandler(values: any) {
     dispatch({
       type: 'CHANGE_SPECTRUM_SETTING',
       payload: { id, display: values },

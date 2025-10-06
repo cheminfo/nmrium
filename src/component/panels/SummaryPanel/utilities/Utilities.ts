@@ -29,7 +29,7 @@ function getAtomType(nucleus: string): string {
   return nucleus.split(/\d+/)[1];
 }
 
-function getLabelColor(correlationData, correlation) {
+function getLabelColor(correlationData: any, correlation: any) {
   const error = correlationData?.state?.[correlation.atomType]?.error ?? null;
 
   if (error) {
@@ -38,7 +38,7 @@ function getLabelColor(correlationData, correlation) {
         key !== 'incomplete' && // do not consider this for a single atom type
         (key === 'notAttached' || key === 'ambiguousAttachment') &&
         dlv(error, key, []).some(
-          (index) => correlationData.values[index].id === correlation.id,
+          (index: any) => correlationData.values[index].id === correlation.id,
         )
       ) {
         return color;
@@ -141,7 +141,7 @@ function getAbbreviation(link: Link): string {
   return abbreviation;
 }
 
-function buildNewLink1D(link) {
+function buildNewLink1D(link: any) {
   return buildLink({
     ...link,
     edited: {
@@ -409,7 +409,7 @@ function cloneCorrelationAndSetPathLength(
   const linkDim = getLinkDim(editedLink);
   if (linkDim === 2) {
     const editedLinkID = editedLink.id.split('_')[axis === 'x' ? 0 : 1];
-    const _link = _correlation.link.find((link) => link.id === editedLinkID);
+    const _link = _correlation.link.find((link: any) => link.id === editedLinkID);
     if (_link) {
       const newPathLength: FromTo = editedLink.signal.j?.pathLength;
       // remove (previous) pathLength if it is same as default
@@ -482,7 +482,7 @@ function isInView(
 
   if (
     activeSpectrum === null ||
-    !correlation.link.some((link) => link.experimentID === activeSpectrum.id)
+    !correlation.link.some((link: any) => link.experimentID === activeSpectrum.id)
   ) {
     return false;
   }
@@ -496,7 +496,7 @@ function isInView(
   const yDomain1 = yDomain[1] * factor;
 
   if (displayerMode === '1D') {
-    const firstLink1D = correlation.link.find((link) => getLinkDim(link) === 1);
+    const firstLink1D = correlation.link.find((link: any) => getLinkDim(link) === 1);
     if (!firstLink1D) {
       return false;
     }
@@ -516,7 +516,7 @@ function isInView(
     }
     // try to find a link which contains the belonging 2D signal in the spectra in view
     if (
-      correlation.link.some((link) => {
+      correlation.link.some((link: any) => {
         const spectrum = findSpectrum(
           spectraData,
           link.experimentID,
@@ -531,7 +531,7 @@ function isInView(
     if (!atomTypesInView.includes(correlation.atomType)) {
       return false;
     }
-    const firstLink2D = correlation.link.find((link) => getLinkDim(link) === 2);
+    const firstLink2D = correlation.link.find((link: any) => getLinkDim(link) === 2);
     if (!firstLink2D) {
       return false;
     }
@@ -556,7 +556,7 @@ function isInView(
     }
     // try to find a link which contains the belonging 2D signal in the spectra in view
     else if (
-      correlation.link.some((link) => {
+      correlation.link.some((link: any) => {
         const spectrum = findSpectrum(
           spectraData,
           link.experimentID,

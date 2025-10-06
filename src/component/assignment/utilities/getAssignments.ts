@@ -56,7 +56,7 @@ function setZonesAssignments(assignments: Assignments, zones: Zones) {
 
 function setAssignment(
   assignments: Assignments,
-  id,
+  id: any,
   axis: Axis,
   diaID: string,
 ) {

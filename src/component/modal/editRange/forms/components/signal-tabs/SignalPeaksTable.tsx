@@ -1,5 +1,5 @@
 import { Button, Classes } from '@blueprintjs/core';
-import type { Peak1D } from '@zakodium/nmr-types';
+import type { NMRPeak1D, Peak1D, Signal1D } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { getShiftX } from 'nmr-processing';
@@ -8,6 +8,7 @@ import { useCallback, useMemo, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Toolbar } from 'react-science/ui';
+import type { CellProps } from 'react-table';
 
 import { NumberInput2Controller } from '../../../../../elements/NumberInput2Controller.js';
 import type { Column } from '../../../../../elements/ReactTable/ReactTable.js';
@@ -31,7 +32,7 @@ interface SignalPeaksTableProps {
   index: number;
 }
 
-function getPeakKey(signalIndex: number, peakIndex, key?: keyof Peak1D) {
+function getPeakKey(signalIndex: number, peakIndex: any, key?: keyof Peak1D) {
   const path = `signals[${signalIndex}].peaks.${peakIndex}`;
 
   if (!key) {
@@ -48,7 +49,7 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
   const { signals } = useWatch();
   const { selectedTabId: signalIndex = 0 } = useTabsController<number>();
 
-  const signal = signals?.[signalIndex] || {};
+  const signal: Signal1D | undefined = signals?.[signalIndex] || {};
   const delta = signal?.delta || 0;
   const spectrum = useSpectrum() as Spectrum1D;
   const {
@@ -100,10 +101,10 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
   });
 
   const addHandler = useCallback(
-    (data: Peak1D[]) => {
+    (data: NMRPeak1D[]) => {
       const xIndex = xFindClosestIndex(xArray, delta, { sorted: false });
 
-      const peak: Peak1D = {
+      const peak: NMRPeak1D = {
         id: crypto.randomUUID(),
         x: delta,
         y: xIndex !== -1 ? re[xIndex] : 0,
@@ -118,8 +119,10 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
   );
 
   const deleteHandler = useCallback(
-    (data, index: number) => {
-      const peaks = data.filter((_, columnIndex) => columnIndex !== index);
+    (data: any, index: number) => {
+      const peaks = data.filter(
+        (_: any, columnIndex: any) => columnIndex !== index,
+      );
 
       setValue(`signals[${signalIndex}].peaks`, peaks);
       if (lastSelectedPeakIndexRef.current === index) {
@@ -135,7 +138,7 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
   }
 
   const changeDeltaHandler = useCallback(
-    (delta, index: number) => {
+    (delta: any, index: number) => {
       const xIndex = xFindClosestIndex(xArray, delta, { sorted: false });
 
       setValue(`signals.${signalIndex}.peaks.${index}.y`, re[xIndex]);
@@ -143,17 +146,17 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
     [re, setValue, signalIndex, xArray],
   );
 
-  const COLUMNS: Column[] = useMemo(
+  const COLUMNS = useMemo<Array<Column<NMRPeak1D>>>(
     () => [
       {
         Header: '#',
         style: { width: '25px', ...styles.column },
-        accessor: (_, index) => index + 1,
+        accessor: (_: any, index) => index + 1,
       },
       {
         Header: 'delta',
         style: { padding: 0, ...styles.column },
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<NMRPeak1D>) => {
           return (
             <NumberInput2Controller
               control={control}
@@ -173,7 +176,7 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
       {
         Header: 'Intensity',
         style: { padding: 0, ...styles.column },
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<NMRPeak1D>) => {
           return (
             <NumberInput2Controller
               control={control}
@@ -191,7 +194,7 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
         Header: '',
         style: { width: '70px', ...styles.column },
         id: 'action-button',
-        Cell: ({ data, row }) => {
+        Cell: ({ data, row }: CellProps<NMRPeak1D>) => {
           const record: any = row.original;
           return (
             <div style={{ display: 'flex', justifyContent: 'space-around' }}>
@@ -213,7 +216,7 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
     [changeDeltaHandler, control, deleteHandler, signalIndex],
   );
 
-  function selectRowHandler(index) {
+  function selectRowHandler(index: any) {
     setFocusSource('peak');
     lastSelectedPeakIndexRef.current = index;
     setFocus(`signals.${signalIndex}.peaks.${index}.x`, { shouldSelect: true });

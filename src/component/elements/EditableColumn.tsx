@@ -53,7 +53,7 @@ function extractNumber(val: string | number, type: string) {
   return val;
 }
 
-function handleMousedown(event) {
+function handleMousedown(event: any) {
   event.stopPropagation();
 }
 

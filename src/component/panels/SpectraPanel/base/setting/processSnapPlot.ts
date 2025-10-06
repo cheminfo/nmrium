@@ -18,12 +18,12 @@ export function processSnapPlot<T extends '1D' | '2D'>(
       result[i] = { x: x[i], y: y[i] };
     }
     sanPlot[plotKey] = result;
-    lines[plotKey] = getLine(sanResult[plotKey], result, { yLogBase });
+    lines[plotKey] = getLine((sanResult as any)[plotKey], result, { yLogBase });
   }
   return { sanPlot, lines };
 }
 
-function getLine(value, data, options) {
+function getLine(value: any, data: any, options: any) {
   const { log10, abs } = Math;
   const { yLogBase } = options;
   const first = data.at(0)?.x ?? 0;

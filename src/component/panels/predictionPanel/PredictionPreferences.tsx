@@ -7,13 +7,13 @@ import type { SettingsRef } from '../extra/utilities/settingImperativeHandle.js'
 
 import PredictionOptionsPanel from './PredictionOptionsPanel.js';
 
-function PredictionPreferences(props, ref: any) {
+function PredictionPreferences(props: any, ref: any) {
   const formRef = useRef<SettingsRef | null>(null);
   const preferences = usePreferences();
   const predictionPreferences = usePanelPreferences('prediction');
 
   const saveHandler = useCallback(
-    (values) => {
+    (values: any) => {
       preferences.dispatch({
         type: 'SET_PANELS_PREFERENCES',
         payload: { key: 'prediction', value: values },

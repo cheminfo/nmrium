@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import { useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
+import type { CellProps } from 'react-table';
 
 import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
 import type { Column } from '../../elements/ReactTable/ReactTable.js';
@@ -17,13 +18,15 @@ interface SpinSystemTableProps {
   spinSystem: string;
 }
 
+type SpinSystemElement = Array<number | null>;
+
 export function SpinSystemTable(props: SpinSystemTableProps) {
   const { spinSystem } = props;
   const { control } = useFormContext();
   const data = useWatch({ name: 'data' });
 
   const tableColumns = useMemo(() => {
-    const columns: Array<Column<Array<number | null>>> = [
+    const columns: Array<Column<SpinSystemElement>> = [
       {
         id: 'rowLabel',
         Header: '',
@@ -32,7 +35,7 @@ export function SpinSystemTable(props: SpinSystemTableProps) {
       {
         Header: 'Delta',
         style: cellStyle,
-        Cell: ({ row }) => (
+        Cell: ({ row }: CellProps<SpinSystemElement>) => (
           <NumberInput2Controller
             control={control}
             name={`data.${row.index}.0`}
@@ -50,7 +53,7 @@ export function SpinSystemTable(props: SpinSystemTableProps) {
         id: label,
         index: i,
         style: cellStyle,
-        Cell: function cellRender({ row }) {
+        Cell: function cellRender({ row }: CellProps<SpinSystemElement>) {
           const val = row.original?.[columnIndex] ?? null;
           if (val !== null) {
             return (

@@ -66,7 +66,7 @@ const preferences2DFields: NucleusPreferenceField[] = [
   },
 ];
 
-function ZonesPreferences(props, ref) {
+function ZonesPreferences(props: any, ref: any) {
   const preferences = usePreferences();
   const nucleus = useNucleus();
   const nuclei = useMemo(
@@ -77,7 +77,7 @@ function ZonesPreferences(props, ref) {
   const zonesPreferences = usePanelPreferencesByNuclei('zones', nuclei);
 
   const saveHandler = useCallback(
-    (values) => {
+    (values: any) => {
       preferences.dispatch({
         type: 'SET_PANELS_PREFERENCES',
         payload: {

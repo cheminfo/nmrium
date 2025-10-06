@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { NMRium } from '../../component/main/index.js';
 
-export default function SingleView(props) {
+export default function SingleView(props: any) {
   const [data, setData] = useState<
     { spectra: Array<{ source: { jcampURL: string } }> } | undefined
   >();

@@ -22,13 +22,13 @@ const PanelsBarContainer = styled(ButtonGroup)`
 `;
 
 function useHiddenItemsMenu(
-  items,
-  sliceIndex,
+  items: any,
+  sliceIndex: any,
 ): Array<ToolbarPopoverMenuItem<{ id: keyof NMRiumPanelPreferences }>> {
   const getPanelPreferences = useGetPanelOptions();
   const hiddenItems = items.slice(sliceIndex);
 
-  return hiddenItems.map((item) => {
+  return hiddenItems.map((item: any) => {
     const panelOptions = getPanelPreferences(item);
     return {
       icon: item.icon,

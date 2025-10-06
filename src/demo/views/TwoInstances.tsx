@@ -37,7 +37,7 @@ const data2 = {
   ],
 };
 
-export default function TwoInstances(props) {
+export default function TwoInstances(props: any) {
   const { path } = props;
 
   return (

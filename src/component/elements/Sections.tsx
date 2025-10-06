@@ -218,7 +218,7 @@ interface BaseSectionProps {
 interface SectionItemProps extends BaseSectionProps {
   id?: string;
   index?: number;
-  onClick?: (id, event?: MouseEvent<HTMLDivElement>) => void;
+  onClick?: (id: any, event?: MouseEvent<HTMLDivElement>) => void;
   children?: ReactNode | ((options: { isOpen?: boolean }) => ReactNode);
   isOpen: boolean;
   sticky?: boolean;

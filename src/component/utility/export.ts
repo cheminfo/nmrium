@@ -22,14 +22,14 @@ export const browserNotSupportedErrorToast: ToastProps = {
  * @param isCompressed
  */
 async function exportAsJSON(
-  data,
+  data: any,
   fileName = 'experiment',
   spaceIndent = 0,
   isCompressed = false,
 ) {
   const fileData = JSON.stringify(
     data,
-    (key, value) =>
+    (key, value: any) =>
       ArrayBuffer.isView(value) ? Array.from(value as any) : value,
     spaceIndent,
   );
@@ -50,7 +50,7 @@ async function exportAsJSON(
 }
 
 function exportAsMatrix(
-  data,
+  data: any,
   spectraColumns: SpectraTableColumn[],
   fileName = 'experiment',
 ) {
@@ -294,7 +294,7 @@ function transferToCanvas(offscreenCanvas: OffscreenCanvas) {
 // hack way to copy the image to the clipboard
 // TODO: remove when Firefox widely supports ClipboardItem
 // https://caniuse.com/mdn-api_clipboarditem
-function copyDataURLClipboardFireFox(image) {
+function copyDataURLClipboardFireFox(image: any) {
   const img = document.createElement('img');
   img.src = image;
 

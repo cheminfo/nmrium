@@ -68,7 +68,7 @@ function prepareAnalysisData(
   if (valueKey) {
     for (const record of analysisData.values) {
       const data = record?.[columnKey];
-      spectraAnalysis[data.SID] = data[valueKey];
+      spectraAnalysis[data.SID] = data?.value;
     }
   }
   return spectraAnalysis;
@@ -287,7 +287,7 @@ export default function AnalysisChart(props: PlotChartPros) {
     );
   }
 
-  function exportHandler(selected) {
+  function exportHandler(selected: any) {
     switch (selected?.id) {
       case 'copyChart': {
         void handleCopyChart();
@@ -316,7 +316,7 @@ export default function AnalysisChart(props: PlotChartPros) {
         sortByReferences = Object.keys(analysisData.xData).map(
           (spectrumKey) => ({
             id: spectrumKey,
-            value: analysisData.xData[spectrumKey],
+            value: (analysisData.xData as any)[spectrumKey],
           }),
         );
       } else {
@@ -331,7 +331,7 @@ export default function AnalysisChart(props: PlotChartPros) {
         sortByReferences = Object.keys(analysisData.yData).map(
           (spectrumKey) => ({
             id: spectrumKey,
-            value: analysisData.yData[spectrumKey],
+            value: (analysisData.yData as any)[spectrumKey],
           }),
         );
       } else {
@@ -342,10 +342,11 @@ export default function AnalysisChart(props: PlotChartPros) {
 
     sort({
       sortType: sortByReferences ? 'sortByReference' : 'sortByPath',
-      path,
+      // TODO: when axis is not y, path is not defined but is required.
+      path: path as any,
       sortByReferences,
       activeSort,
-    });
+    } as any);
   }
 
   return (

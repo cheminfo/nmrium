@@ -6,9 +6,11 @@ import { ResponsiveChart } from 'react-d3-utils';
 import { FaDownload, FaMinus, FaPlus } from 'react-icons/fa';
 import { IdcodeSvgRenderer, SmilesSvgRenderer } from 'react-ocl';
 import { Button } from 'react-science/ui';
+import type { CellProps } from 'react-table';
 
 import type { PrepareDataResult } from '../../../data/data1d/database.js';
 import { ColumnWrapper } from '../../elements/ColumnWrapper.js';
+import type { Column } from '../../elements/ReactTable/ReactTable.js';
 import ReactTable from '../../elements/ReactTable/ReactTable.js';
 import type { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn.js';
 import addCustomColumn from '../../elements/ReactTable/utility/addCustomColumn.js';
@@ -33,7 +35,7 @@ const overFlowStyle: CSSProperties = {
 };
 
 const databaseTableColumns = (
-  databasePreferences,
+  databasePreferences: any,
 ): Array<CustomColumn<PrepareDataResult> & { showWhen: string }> => [
   {
     showWhen: 'showNames',
@@ -68,7 +70,7 @@ const databaseTableColumns = (
     index: 3,
     Header: 'δ (ppm)',
     accessor: 'delta',
-    Cell: ({ row }) =>
+    Cell: ({ row }: CellProps<PrepareDataResult>) =>
       row.original.delta
         ? formatNumber(row.original.delta, databasePreferences.delta.format)
         : '',
@@ -127,7 +129,7 @@ const databaseTableColumns = (
     accessor: 'index',
     style: { height: 0 },
     enableRowSpan: true,
-    Cell({ row }) {
+    Cell({ row }: CellProps<PrepareDataResult>) {
       const { idCode, coordinates } = row.original?.ocl || {};
       const smiles = row.original?.smiles;
       const { minWidth = 0, minHeight = 0 } =
@@ -162,6 +164,8 @@ const databaseTableColumns = (
   },
 ];
 
+type ColumnDef = Column<PrepareDataResult> & { index: number };
+
 function DatabaseTable({
   data,
   onAdd,
@@ -171,7 +175,7 @@ function DatabaseTable({
 }: DatabaseTableProps) {
   const databasePreferences = usePanelPreferences('database');
 
-  const initialColumns = useMemo(
+  const initialColumns = useMemo<ColumnDef[]>(
     () => [
       {
         index: 10,
@@ -185,7 +189,9 @@ function DatabaseTable({
         },
         accessor: 'index',
         enableRowSpan: true,
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<PrepareDataResult>) => {
+          // TODO: Fix types or remove code.
+          // @ts-expect-error jcampURL is not defined in PrepareDataResult.
           const { jcampURL } = row.original;
           return (
             <ColumnWrapper
@@ -216,8 +222,8 @@ function DatabaseTable({
     [databasePreferences?.allowSaveAsNMRium, onAdd, onRemove, onSave],
   );
 
-  const tableColumns = useMemo(() => {
-    const columns = [...initialColumns];
+  const tableColumns = useMemo<ColumnDef[]>(() => {
+    const columns = initialColumns.slice();
     for (const col of databaseTableColumns(databasePreferences)) {
       const { showWhen, ...colParams } = col;
       if (dlv(databasePreferences, showWhen, false)) {

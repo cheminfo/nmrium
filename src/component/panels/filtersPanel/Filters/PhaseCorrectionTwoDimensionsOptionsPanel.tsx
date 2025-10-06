@@ -65,12 +65,12 @@ export default function PhaseCorrectionTwoDimensionsOptionsPanel(
     value,
   } = usePhaseCorrectionTwoDimensions(filter);
 
-  function handleConfirm(event) {
+  function handleConfirm(event: any) {
     handleApplyFilter();
     onConfirm?.(event);
   }
 
-  function handleCancel(event) {
+  function handleCancel(event: any) {
     handleCancelFilter();
     onCancel?.(event);
   }

@@ -34,7 +34,8 @@ export default function Dashboard(props: DashboardProps) {
   if (routesList.length > 0) {
     const route = routesList[0];
     const viewName = route.view || 'View';
-    const RenderedView = possibleViews[viewName];
+    // @ts-expect-error We bypass type checking here anyway
+    const RenderedView: any = possibleViews[viewName];
     rootRoute = (
       <Route
         path="/"
@@ -66,7 +67,7 @@ export default function Dashboard(props: DashboardProps) {
         {/*<StrictMode>*/}
         <Suspense fallback={<div>Loading...</div>}>
           <Routes>
-            {routesList.map((prop) => {
+            {routesList.map((prop: any) => {
               return (
                 <Route
                   path={`/SamplesDashboard/:id/${
@@ -87,10 +88,11 @@ export default function Dashboard(props: DashboardProps) {
   );
 }
 
-function RenderView(props) {
+function RenderView(props: any) {
   const { prop, baseURL } = props;
   const viewName = prop.view || 'View';
-  const RenderedView = possibleViews[viewName];
+  // @ts-expect-error We bypass type checking here anyway
+  const RenderedView: any = possibleViews[viewName];
   const { search = '' } = useLocation();
   const qs = new URLSearchParams(search);
 

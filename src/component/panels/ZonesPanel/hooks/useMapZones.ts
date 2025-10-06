@@ -7,6 +7,7 @@ export interface ZoneData extends Zone {
     signalIndex: number;
     rowSpan: any;
     signal: {
+      // TODO: provide additional properties here (id, x, y, peaks...)
       kind: any;
     };
     experiment: string;
@@ -14,7 +15,7 @@ export interface ZoneData extends Zone {
 }
 
 export function useMapZones(
-  data,
+  data: any,
   info: { experiment: string; nuclei: string[] },
 ): ZoneData[] {
   return useMemo(() => {

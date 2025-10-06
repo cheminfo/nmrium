@@ -86,7 +86,7 @@ function Range(options: RangeProps) {
 
   const isBlockedByEditing = selectedTool && isDialogOpen(EditRangeModal);
 
-  function handleOnStopResizing(position) {
+  function handleOnStopResizing(position: any) {
     if (!spectrum || !isSpectrum1D(spectrum)) return;
     const from = scaleX().invert(position.x2);
     const to = scaleX().invert(position.x1);

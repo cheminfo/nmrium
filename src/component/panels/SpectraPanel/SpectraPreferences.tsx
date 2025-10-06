@@ -1,5 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import type { PanelsPreferences, Workspace } from '@zakodium/nmrium-core';
+import type { Ref } from 'react';
 import {
   forwardRef,
   memo,
@@ -36,15 +37,15 @@ const groupPaneStyle: GroupPaneStyle = {
   },
 };
 
-function validationColumns(obj) {
-  const validationObject = {};
+function validationColumns(obj: any) {
+  const validationObject: Record<string, Yup.AnyObjectSchema> = {};
   for (const key of Object.keys(obj.nuclei)) {
     validationObject[key] = Yup.object({
       columns: Yup.array().of(
         Yup.object().shape(
           {
             jpath: Yup.array().when('jpath', {
-              is: (jpath) => {
+              is: (jpath: any) => {
                 return jpath !== undefined;
               },
               // eslint-disable-next-line unicorn/no-thenable
@@ -66,7 +67,7 @@ const spectraPreferencesValidation: any = Yup.lazy(
     }),
 );
 
-function SpectraPreferences(props, ref: any) {
+function SpectraPreferences(props: object, ref: Ref<any>) {
   const {
     data,
     view: {
@@ -93,7 +94,7 @@ function SpectraPreferences(props, ref: any) {
   );
 
   const saveHandler = useCallback(
-    (values) => {
+    (values: any) => {
       preferences.dispatch({
         type: 'SET_PANELS_PREFERENCES',
         payload: {
@@ -118,7 +119,7 @@ function SpectraPreferences(props, ref: any) {
   );
 
   const handleAdd = useCallback(
-    (nucleus, index) => {
+    (nucleus: string, index: number) => {
       const data: PanelsPreferences['spectra'] = getValues();
       let columns = data.nuclei[nucleus]?.columns || [];
 
@@ -137,7 +138,7 @@ function SpectraPreferences(props, ref: any) {
         nuclei: {
           ...data.nuclei,
           [nucleus]: {
-            ...data[nucleus],
+            ...data.nuclei[nucleus],
             columns,
           },
         },
@@ -147,7 +148,7 @@ function SpectraPreferences(props, ref: any) {
   );
 
   const handleDelete = useCallback(
-    (nucleus, index) => {
+    (nucleus: any, index: any) => {
       const data: PanelsPreferences['spectra'] = getValues();
       const columns = data.nuclei[nucleus]?.columns.filter(
         (_, columnIndex) => columnIndex !== index,
@@ -157,7 +158,7 @@ function SpectraPreferences(props, ref: any) {
         nuclei: {
           ...data.nuclei,
           [nucleus]: {
-            ...data[nucleus],
+            ...data.nuclei[nucleus],
             columns,
           },
         },
@@ -166,8 +167,8 @@ function SpectraPreferences(props, ref: any) {
     [getValues, reset],
   );
   const mapOnChangeValueHandler = useCallback(
-    (key) => {
-      const path = paths?.[key];
+    (key: any) => {
+      const path = (paths as any)[key];
       if (path) {
         return path;
       }

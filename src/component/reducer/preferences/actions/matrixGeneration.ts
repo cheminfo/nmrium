@@ -103,7 +103,7 @@ function addExclusionZone(
   matrixGeneration.matrixOptions.exclusionsZones.push(exclusionZone);
 }
 
-function deleteExclusionZone(draft: Draft<PreferencesState>, action) {
+function deleteExclusionZone(draft: Draft<PreferencesState>, action: any) {
   const { zone, nucleus } = action.payload;
   const matrixGeneration = getMatrixGenerationPanelOptions(draft, nucleus);
 
@@ -115,7 +115,7 @@ function deleteExclusionZone(draft: Draft<PreferencesState>, action) {
   );
 }
 
-function setMatrixGenerationOptions(draft: Draft<PreferencesState>, action) {
+function setMatrixGenerationOptions(draft: Draft<PreferencesState>, action: any) {
   const { options, nucleus } = action.payload;
   const matrixGeneration = getMatrixGenerationPanelOptions(draft, nucleus);
 

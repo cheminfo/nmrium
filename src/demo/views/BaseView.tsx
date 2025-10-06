@@ -26,7 +26,7 @@ export default function BaseView(props: BaseViewProps) {
   const [callbackData, setCallbackData] = useState<any[]>([]);
   const [isCallbackVisible, showCallback] = useState(false);
 
-  const changeHandler = useCallback((logData) => {
+  const changeHandler = useCallback((logData: any) => {
     setCallbackData((prevLogs) => {
       return prevLogs.concat({
         datetime: new Date().toLocaleTimeString(),
@@ -159,7 +159,7 @@ export default function BaseView(props: BaseViewProps) {
                   height: 'calc(100% - 30px)',
                 }}
               >
-                {callbackData.map((log, index) => (
+                {callbackData.map((log: any, index) => (
                   <div
                     key={`${index + log.datetime}`}
                     style={{ margin: '5px 0' }}

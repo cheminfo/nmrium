@@ -23,12 +23,12 @@ import type { ToolbarItemProps } from '../header/DefaultPanelHeader.js';
 import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
 import { SpectraAutomaticPickingButton } from '../header/SpectraAutomaticPickingButton.js';
 
-function getMissingProjection(spectraData, activeTab) {
+function getMissingProjection(spectraData: any, activeTab: any) {
   let nucleus = activeTab.split(',');
   nucleus = nucleus[0] === nucleus[1] ? [nucleus[0]] : nucleus;
   const missingNucleus: string[] = [];
   for (const n of nucleus) {
-    const hasSpectra = spectraData.some((d) => d.info.nucleus === n);
+    const hasSpectra = spectraData.some((d: any) => d.info.nucleus === n);
     if (!hasSpectra) {
       missingNucleus.push(n);
     }

@@ -173,7 +173,7 @@ const customWorkspaces: CustomWorkspaces = {
   },
 };
 
-export default function CustomWorkspace(props) {
+export default function CustomWorkspace(props: any) {
   return (
     <View {...props} workspace="metabo" customWorkspaces={customWorkspaces} />
   );

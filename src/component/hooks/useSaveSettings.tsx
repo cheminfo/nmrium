@@ -26,7 +26,7 @@ function keyDownCheck(event: React.KeyboardEvent<HTMLInputElement>) {
   }
 }
 
-function WorkspaceAddForm(props) {
+function WorkspaceAddForm(props: any) {
   const { className, message, control, onEnter } = props;
 
   return (

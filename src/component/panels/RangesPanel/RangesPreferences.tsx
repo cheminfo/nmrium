@@ -106,13 +106,13 @@ const formatFields: NucleusPreferenceField[] = [
   },
 ];
 
-function RangesPreferences(props, ref) {
+function RangesPreferences(props: any, ref: any) {
   const preferences = usePreferences();
   const nucleus = useNucleus();
   const nuclei = useMemo(() => getUniqueNuclei(nucleus), [nucleus]);
   const preferencesByNuclei = usePanelPreferencesByNuclei('ranges', nuclei);
 
-  function saveHandler(values) {
+  function saveHandler(values: any) {
     preferences.dispatch({
       type: 'SET_PANELS_PREFERENCES',
       payload: { key: 'ranges', value: values },

@@ -34,7 +34,7 @@ function AnalysisRange({
   const { dispatch } = usePreferences();
 
   const resizeEndHandler = useCallback(
-    (resized) => {
+    (resized: any) => {
       const { x1, x2 } = resized;
       const start = scaleX().invert(x2);
       const end = scaleX().invert(x1);

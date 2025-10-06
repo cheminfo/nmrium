@@ -39,22 +39,21 @@ import {
 import type { RowSpanHeaders } from './utility/useRowSpan.js';
 import useRowSpan, { prepareRowSpan } from './utility/useRowSpan.js';
 
-interface ExtraColumn<T extends object = any> {
+interface ExtraColumn<T extends object> {
   enableRowSpan?: boolean;
   style?: CSSProperties;
   Cell?: (cell: CellProps<T>) => ReactElement | string;
 }
 
-export type Column<T extends object = any> = ReactColumn<T> &
+export type Column<T extends object = object> = ReactColumn<T> &
   ExtraColumn<T> &
   UseSortByColumnOptions<T>;
 
-type TableInstanceWithHooks<T extends object = any> = TableInstance<T> & {
+type TableInstanceWithHooks<T extends object> = TableInstance<T> & {
   rowSpanHeaders: RowSpanHeaders;
 } & UseSortByInstanceProps<T>;
 
-type TableOptions<T extends object = any> = UseTableOptions<T> &
-  UseSortByOptions<T>;
+type TableOptions<T extends object> = UseTableOptions<T> & UseSortByOptions<T>;
 
 interface SortEvent {
   onSortEnd?: (data: any, isTableSorted?: boolean) => void;
@@ -74,7 +73,7 @@ export interface TableContextMenuProps {
   ) => void;
   contextMenu?: BaseContextMenuProps['options'];
 }
-interface ReactTableProps<T extends object = any>
+interface ReactTableProps<T extends object>
   extends TableContextMenuProps,
     ClickEvent,
     SortEvent {
@@ -83,7 +82,7 @@ interface ReactTableProps<T extends object = any>
   highlightedSource?: HighlightEventSource;
   approxItemHeight?: number;
   approxColumnWidth?: number;
-  groupKey?: string;
+  groupKey?: keyof T;
   indexKey?: string;
   enableVirtualScroll?: boolean;
   enableColumnsVirtualScroll?: boolean;
@@ -103,7 +102,7 @@ interface ReactTableInnerProps<T extends object> extends ReactTableProps<T> {
 const styles = {
   table: (
     enableVirtualScroll: boolean,
-    enableColumnsVirtualScroll,
+    enableColumnsVirtualScroll: any,
   ): CSSProperties => {
     const style: CSSProperties = { tableLayout: 'auto' };
 
@@ -202,12 +201,12 @@ function TableInner<T extends object>(
 
   const { sortBy } = state as any;
 
-  function clickHandler(event, row) {
+  function clickHandler(event: any, row: any) {
     setRowIndex(row.index);
     onClick?.(event, row);
   }
 
-  function scrollHandler(e) {
+  function scrollHandler(e: any) {
     if (enableVirtualScroll) {
       onScroll?.(e);
     }
@@ -244,7 +243,8 @@ function TableInner<T extends object>(
     ? rows.slice(virtualBoundary.rows.start, end)
     : rows;
 
-  const index = rowsData.at(-1)?.original[indexKey] || rowsData.at(-1)?.index;
+  const lastRow = rowsData.at(-1);
+  const index = (lastRow?.original as any)?.[indexKey] || lastRow?.index;
   const total = totalCount ? totalCount : data.length;
 
   const startColumn = columns[virtualBoundary.columns.start]?.Header;

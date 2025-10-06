@@ -145,7 +145,7 @@ function highlightReducer(
   }
 }
 
-export function HighlightProvider(props) {
+export function HighlightProvider(props: any) {
   const [highlight, dispatch] = useReducer(
     highlightReducer,
     emptyState.highlight,

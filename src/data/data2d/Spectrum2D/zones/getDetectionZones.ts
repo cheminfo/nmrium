@@ -45,7 +45,7 @@ export function getDetectionZones(
   });
 }
 
-function autoZonesDetection(data, options) {
+function autoZonesDetection(data: any, options: any) {
   const {
     clean,
     tolerances,
@@ -72,7 +72,7 @@ function autoZonesDetection(data, options) {
   return zones;
 }
 
-function getSubMatrix(datum, selectedZone) {
+function getSubMatrix(datum: any, selectedZone: any) {
   const { fromX, toX, fromY, toY } = selectedZone;
   const data = datum.data.rr;
   const xStep = (data.maxX - data.minX) / (data.z[0].length - 1);

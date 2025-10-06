@@ -1,6 +1,7 @@
 import type { ButtonProps } from '@blueprintjs/core';
 import { Filters1D, Filters2D } from 'nmr-processing';
 
+import type { FilterEntry } from '../../../../data/types/common/FilterEntry.js';
 import type { LabelStyle } from '../../../elements/Label.js';
 
 import ApodizationDimensionOneOptionsPanel from './ApodizationDimensionOneOptionsPanel.js';
@@ -34,7 +35,8 @@ const {
   zeroFillingDimension2,
 } = Filters2D;
 
-export const filterOptionPanels = {
+// TODO: need a generic type for the OptionsPanel components
+export const filterOptionPanels: Partial<Record<FilterEntry['name'], any>> = {
   [apodization.name]: ApodizationOptionsPanel,
   [apodizationDimension1.name]: ApodizationDimensionOneOptionsPanel,
   [apodizationDimension2.name]: ApodizationDimensionTwoOptionsPanel,

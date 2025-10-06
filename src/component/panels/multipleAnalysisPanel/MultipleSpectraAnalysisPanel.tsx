@@ -51,7 +51,7 @@ function MultipleSpectraAnalysisPanelInner({
     preferences as any,
     spectra,
     activeTab,
-  ) as any;
+  );
 
   const settingRef = useRef<SettingsRef | null>(null);
   const toaster = useToaster();

@@ -114,7 +114,7 @@ function InnerExportAsJcampModal(props: Required<InnerExportAsJCAMPProps>) {
     }
   }
 
-  function handleChangeExportDataType(item) {
+  function handleChangeExportDataType(item: any) {
     exportDataAsRef.current = item.value;
   }
 

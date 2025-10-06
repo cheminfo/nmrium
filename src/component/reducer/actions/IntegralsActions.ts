@@ -15,6 +15,7 @@ import {
 import {
   changeIntegralsRelative,
   getShiftX,
+  isSpectrum1D,
   updateIntegralsRelativeValues,
 } from '../../../data/data1d/Spectrum1D/index.js';
 import type { FilterType } from '../../utility/filterType.js';
@@ -145,13 +146,13 @@ function handleDeleteIntegral(
   const { id: integralID, spectrumKey } = action?.payload || {};
   const datum = getSpectrum(draft, spectrumKey);
 
-  if (!datum) return;
+  if (!isSpectrum1D(datum)) return;
 
   if (!integralID) {
     datum.integrals.values = [];
   } else {
     const peakIndex = datum.integrals.values.findIndex(
-      (p) => p.id === integralID,
+      (p: any) => p.id === integralID,
     );
     datum.integrals.values.splice(peakIndex, 1);
     updateIntegralsRelativeValues(datum);
@@ -168,13 +169,13 @@ function handleChangeIntegral(
   const originalDatum = getSpectrum(state, spectrumKey);
   const datum = getSpectrum(draft, spectrumKey);
 
-  if (!datum) {
+  if (!isSpectrum1D(datum) || !isSpectrum1D(originalDatum)) {
     return;
   }
 
   const { x, re } = originalDatum.data;
   const integralIndex = originalDatum.integrals.values.findIndex(
-    (i) => i.id === integral.id,
+    (i: any) => i.id === integral.id,
   );
 
   if (integralIndex !== -1) {
@@ -203,7 +204,7 @@ function handleChangeIntegralsRelativeValue(
   }
 }
 
-function handleChangeIntegralsSumFlag(draft) {
+function handleChangeIntegralsSumFlag(draft: any) {
   const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
     const { index } = activeSpectrum;

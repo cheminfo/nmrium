@@ -99,7 +99,7 @@ function RangesTablePanelInner({
     useClipboard();
 
   const saveJSONToClipboardHandler = useCallback(
-    async (value) => {
+    async (value: any) => {
       if (data.x && data.re) {
         const { x, re } = data;
         const { from, to } = value;
@@ -122,7 +122,7 @@ function RangesTablePanelInner({
   );
 
   const contextMenuSelectHandler = useCallback(
-    (option, data) => {
+    (option: any, data: any) => {
       void saveJSONToClipboardHandler(data);
     },
     [saveJSONToClipboardHandler],

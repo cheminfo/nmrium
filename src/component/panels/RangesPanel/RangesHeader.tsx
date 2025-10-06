@@ -98,7 +98,7 @@ function RangesHeader(props: RangesHeaderProps) {
     showRanges,
   } = useActiveSpectrumRangesViewState();
 
-  function changeRangesSumHandler(options) {
+  function changeRangesSumHandler(options: any) {
     dispatch({ type: 'CHANGE_RANGE_SUM', payload: { options } });
   }
 

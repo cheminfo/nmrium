@@ -93,10 +93,10 @@ export function ChangeSumModalContents(props: ChangeSumModalContentsProps) {
     }
   }, [panels?.structuresPanel, reset, sumOptions]);
 
-  function onTabChangeHandler(tabKey) {
+  function onTabChangeHandler(tabKey: any) {
     setActiveOption(tabKey);
   }
-  function saveHandler(values) {
+  function saveHandler(values: any) {
     switch (setOption) {
       case 'auto': {
         const {

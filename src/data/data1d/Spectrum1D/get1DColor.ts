@@ -24,10 +24,14 @@ function isRandomColorGeneration(
 }
 
 export function get1DColor(
-  spectrum,
+  spectrum: any,
   options: ColorOptions | RandomColorOptions,
 ) {
-  const { regenerate = false, usedColors = {}, colors } = options;
+  const {
+    regenerate = false,
+    usedColors = {} as Partial<UsedColors>,
+    colors,
+  } = options;
   let color = 'black';
 
   if (!spectrum?.display?.color || regenerate) {
@@ -37,7 +41,7 @@ export function get1DColor(
     if (customColor && !isRandom) {
       color = customColor;
     } else {
-      color = generateColor({ usedColors: usedColors?.['1d'] || [] });
+      color = generateColor({ usedColors: usedColors['1d'] || [] });
     }
   } else {
     color = spectrum.display.color;

@@ -8,11 +8,12 @@ import type {
   StateMolecule,
 } from '@zakodium/nmrium-core';
 import dlv from 'dlv';
-import fileSaver from 'file-saver';
+import { saveAs } from 'file-saver';
 import type { CSSProperties } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import { FaCopy, FaFileExport, FaRegTrashAlt } from 'react-icons/fa';
 import { IoColorPaletteOutline } from 'react-icons/io5';
+import type { CellProps } from 'react-table';
 
 import { exportForCT } from '../../../data/SpectraManager.js';
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
@@ -35,12 +36,12 @@ import ShowHideSpectrumButton from './base/ShowHideSpectrumButton.js';
 import { SpectrumName } from './base/SpectrumName.js';
 import { SpectrumSetting } from './base/setting/SpectrumSetting.js';
 
-function getActiveSpectraAsObject(activeSpectra: ActiveSpectrum[] | null) {
-  const result = {};
+function getActiveSpectraSet(activeSpectra: ActiveSpectrum[] | null) {
+  const result = new Set<string>();
   if (activeSpectra) {
     for (const activeSpectrum of activeSpectra) {
       if (activeSpectrum?.selected) {
-        result[activeSpectrum.id] = true;
+        result.add(activeSpectrum.id);
       }
     }
   }
@@ -154,7 +155,7 @@ export function SpectraTable(props: SpectraTableProps) {
   const toaster = useToaster();
   const dispatch = useDispatch();
   const spectraPreferences = usePanelPreferences('spectra', nucleus);
-  const activeSpectraObj = getActiveSpectraAsObject(activeSpectra);
+  const activeSpectraSet = getActiveSpectraSet(activeSpectra);
   const [exportedSpectrum, setExportedSpectrum] = useState<Spectrum | null>();
   const { rawWriteWithType, shouldFallback, cleanShouldFallback, text } =
     useClipboard();
@@ -173,7 +174,7 @@ export function SpectraTable(props: SpectraTableProps) {
           maxWidth: '55px',
           height: '24px',
         },
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<Spectrum>) => {
           return (
             <ShowHideSpectrumButton
               data={row.original}
@@ -189,7 +190,7 @@ export function SpectraTable(props: SpectraTableProps) {
           maxWidth: '30px',
           height: '24px',
         },
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<Spectrum>) => {
           const {
             display,
             info: { dimension, isFid },
@@ -212,7 +213,7 @@ export function SpectraTable(props: SpectraTableProps) {
   );
 
   const selectContextMenuHandler = useCallback(
-    async (option, spectrum) => {
+    async (option: any, spectrum: any) => {
       const { id } = option;
       switch (id) {
         case SpectraContextMenuOptionsKeys.CopyToClipboard: {
@@ -221,7 +222,7 @@ export function SpectraTable(props: SpectraTableProps) {
             await rawWriteWithType(
               JSON.stringify(
                 { data, info },
-                (_, value) =>
+                (_, value: any) =>
                   ArrayBuffer.isView(value) ? Array.from(value as any) : value,
                 2,
               ),
@@ -249,7 +250,7 @@ export function SpectraTable(props: SpectraTableProps) {
         case SpectraContextMenuOptionsKeys.ExportAsText: {
           const data = convertSpectrumToText(spectrum);
           const blob = new Blob([data], { type: 'text/plain' });
-          fileSaver.saveAs(blob, `${spectrum.info.name}.tsv`);
+          saveAs(blob, `${spectrum.info.name}.tsv`);
           break;
         }
         case SpectraContextMenuOptionsKeys.CopyAsText: {
@@ -284,8 +285,8 @@ export function SpectraTable(props: SpectraTableProps) {
     [dispatch, molecules, rawWriteWithType, toaster],
   );
 
-  function handleActiveRow(row) {
-    return activeSpectraObj?.[row?.original.id] || false;
+  function handleActiveRow(row: any) {
+    return activeSpectraSet.has(row?.original.id) || false;
   }
 
   const tableColumns = useMemo(() => {
@@ -312,13 +313,13 @@ export function SpectraTable(props: SpectraTableProps) {
           if (visibleColumns.length > 3) {
             style = { ...columnStyle, width: '50%' };
           }
-          cellRender = ({ row }) => {
+          cellRender = ({ row }: CellProps<Spectrum>) => {
             return <SpectrumName data={row.original} />;
           };
         }
 
         if (pathString === 'info.solvent') {
-          cellRender = ({ row }) => {
+          cellRender = ({ row }: CellProps<Spectrum>) => {
             return <RenderAsHTML data={row.original} jpath={pathString} />;
           };
         }
@@ -338,7 +339,7 @@ export function SpectraTable(props: SpectraTableProps) {
     return columns;
   }, [COLUMNS, spectraPreferences.columns]);
 
-  function handleSortEnd(data, isTabledSorted) {
+  function handleSortEnd(data: any, isTabledSorted: any) {
     if (isTabledSorted) {
       sort({ sortType: 'sortByReferenceIndexes', sortByReferences: data });
     } else {
@@ -346,9 +347,9 @@ export function SpectraTable(props: SpectraTableProps) {
     }
   }
 
-  function handleRowStyle(data) {
+  function handleRowStyle(data: any) {
     return {
-      base: activeSpectraObj?.[data?.original.id] ? { opacity: 0.2 } : {},
+      base: activeSpectraSet.has(data?.original.id) ? { opacity: 0.2 } : {},
       activated: { opacity: 1 },
     };
   }
@@ -442,7 +443,7 @@ function pathToString(path: string[]) {
   return Array.isArray(path) ? path.join('.') : '';
 }
 
-function getValue(row, path) {
+function getValue(row: any, path: any) {
   const value = dlv(row, path, '');
   const pathString = pathToString(path);
 

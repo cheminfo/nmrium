@@ -4,6 +4,7 @@ import { useCallback, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
+import type { CellProps } from 'react-table';
 
 import { GroupPane } from '../../../elements/GroupPane.js';
 import { Input2Controller } from '../../../elements/Input2Controller.js';
@@ -20,7 +21,7 @@ function getKeyPath<T extends keyof NucleiPreferences>(
   return `nuclei.${index}.${key}`;
 }
 
-function NucleiTabContent() {
+export default function NucleiTabContent() {
   const { control, setValue, watch } = useFormContext<WorkspaceWithSource>();
 
   const fields: NucleiPreferences[] = watch('nuclei') || [];
@@ -44,14 +45,16 @@ function NucleiTabContent() {
   );
 
   const deleteHandler = useCallback(
-    (data, index: number) => {
-      const _fields = data.filter((_, columnIndex) => columnIndex !== index);
+    (data: any, index: number) => {
+      const _fields = data.filter(
+        (_: any, columnIndex: any) => columnIndex !== index,
+      );
       setValue('nuclei', _fields);
     },
     [setValue],
   );
 
-  const COLUMNS: Column[] = useMemo(
+  const COLUMNS = useMemo<Array<Column<NucleiPreferences>>>(
     () => [
       {
         Header: '#',
@@ -61,7 +64,7 @@ function NucleiTabContent() {
       {
         Header: 'Nucleus',
         style: { padding: 0 },
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<NucleiPreferences>) => {
           const name = getKeyPath(row.index, 'nucleus');
           return (
             <Input2Controller
@@ -76,7 +79,7 @@ function NucleiTabContent() {
       {
         Header: 'δ (ppm)',
         style: { padding: 0 },
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<NucleiPreferences>) => {
           const name = getKeyPath(row.index, 'ppmFormat');
           return (
             <Input2Controller
@@ -91,7 +94,7 @@ function NucleiTabContent() {
       {
         Header: 'Coupling (Hz)',
         style: { padding: 0 },
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<NucleiPreferences>) => {
           const name = getKeyPath(row.index, 'hzFormat');
 
           return (
@@ -107,7 +110,7 @@ function NucleiTabContent() {
       {
         Header: 'Axis from',
         style: { padding: 0 },
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<NucleiPreferences>) => {
           const name = getKeyPath(row.index, 'axisFrom');
           return (
             <NumberInput2Controller
@@ -123,7 +126,7 @@ function NucleiTabContent() {
       {
         Header: 'Axis to',
         style: { padding: 0 },
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<NucleiPreferences>) => {
           const name = getKeyPath(row.index, 'axisTo');
 
           return (
@@ -142,7 +145,7 @@ function NucleiTabContent() {
         Header: '',
         style: { width: '60px' },
         id: 'op-buttons',
-        Cell: ({ data, row }) => {
+        Cell: ({ data, row }: CellProps<NucleiPreferences>) => {
           return (
             <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
               <Button
@@ -202,7 +205,13 @@ function NucleiTabContent() {
   );
 }
 
-function FieldsBlockHeader({ onAdd, text }) {
+interface FieldsBlockHeaderProps {
+  onAdd: () => void;
+  text: string;
+}
+
+function FieldsBlockHeader(props: FieldsBlockHeaderProps) {
+  const { onAdd, text } = props;
   return (
     <Section>
       <p style={{ flex: 1 }}>{text}</p>
@@ -219,5 +228,3 @@ function FieldsBlockHeader({ onAdd, text }) {
     </Section>
   );
 }
-
-export default NucleiTabContent;

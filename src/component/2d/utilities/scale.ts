@@ -1,6 +1,7 @@
 import type { NmrData2D } from 'cheminfo-types';
 import { scaleLinear } from 'd3-scale';
 import { useMemo } from 'react';
+import { assert } from 'react-science/ui';
 
 import { useChartData } from '../../context/ChartContext.js';
 import type { Margin, SpectraDirection } from '../../reducer/Reducer.js';
@@ -71,16 +72,19 @@ interface SliceYScaleOptions {
   scaleRatio?: number;
 }
 
-function getMax(data: NmrData2D) {
+function getMax(data: NmrData2D): number {
   let max;
 
-  for (const key in data) {
-    const { minZ, maxZ } = data[key];
+  for (const { minZ, maxZ } of Object.values(data)) {
     const innerMax = Math.max(Math.abs(minZ), Math.max(maxZ));
     if (max === undefined || max > innerMax) {
       max = innerMax;
     }
   }
+
+  // This must be true because 2D data has at least one mandatory property.
+  assert(typeof max === 'number');
+
   return max;
 }
 

@@ -2,6 +2,7 @@ import { Switch } from '@blueprintjs/core';
 import type { NMRiumPanelPreferences } from '@zakodium/nmrium-core';
 import { useCallback, useMemo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
+import type { CellProps } from 'react-table';
 
 import { GroupPane } from '../../../elements/GroupPane.js';
 import Label from '../../../elements/Label.js';
@@ -152,7 +153,7 @@ function DisplayTabContent() {
         index: 3,
         Header: 'Status',
         style: { textAlign: 'center' },
-        Cell: ({ row }) => (
+        Cell: ({ row }: CellProps<ListItem>) => (
           <Controller
             control={control}
             name={`${basePath}.${row.original.name}`}

@@ -1,5 +1,5 @@
 import { Button, Dialog, DialogFooter, TextArea } from '@blueprintjs/core';
-import type { LogEntry } from 'fifo-logger';
+import type { ChangeEvent, LogEntry } from 'fifo-logger';
 import { FifoLogger } from 'fifo-logger';
 import debounce from 'lodash/debounce.js';
 import { resurrect } from 'nmr-processing';
@@ -22,7 +22,7 @@ interface ImportPublicationStringModalProps
   isOpen: boolean;
 }
 
-function handleRowStyle(data) {
+function handleRowStyle(data: any) {
   const level = (data?.original as LogEntry).level;
   let backgroundColor = 'lightgreen';
   if (level > 40) {
@@ -81,7 +81,7 @@ function InnerImportPublicationStringModal(
   } = useForm({ defaultValues: INITIAL_VALUES, mode: 'onChange' });
 
   useEffect(() => {
-    function handleLogs({ detail: { logs } }) {
+    function handleLogs({ detail: { logs } }: ChangeEvent) {
       setLogs(logs.slice());
     }
     const loggerInstance = loggerRef.current;
@@ -94,13 +94,17 @@ function InnerImportPublicationStringModal(
 
   const debounceChanges = useMemo(
     () =>
-      debounce((value) => {
+      debounce((value: any) => {
         resurrect(value, { logger: loggerRef.current });
       }, 250),
     [],
   );
 
-  function publicationStringHandler({ publicationText }) {
+  function publicationStringHandler({
+    publicationText,
+  }: {
+    publicationText: string;
+  }) {
     void (async () => {
       const hideLoading = toaster.showLoading({
         message: 'Generate spectrum from publication string in progress',
@@ -124,7 +128,7 @@ function InnerImportPublicationStringModal(
     })();
   }
 
-  function handleOnChange(value) {
+  function handleOnChange(value: any) {
     loggerRef.current.clear();
 
     if (!value) {

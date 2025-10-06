@@ -21,7 +21,7 @@ export function optimizePeaks(
   const ToIndex = xFindClosestIndex(x, to);
 
   // create deleted peaks object where the key is the id of the peaks that we need to remove
-  const ids = {};
+  const ids: Record<string, Peak1D> = {};
   for (const peak of peaks) {
     ids[peak.id] = peak;
   }

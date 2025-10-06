@@ -38,7 +38,7 @@ export function useWorkspacesList() {
   const { workspaces } = usePreferences();
   return useMemo(() => {
     return Object.keys(workspaces).map((key) => {
-      const { visible, source } = workspaces[key] as WorkspaceWithSource;
+      const { visible, source } = workspaces[key];
       return {
         key,
         ...workspaces[key],

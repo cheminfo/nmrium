@@ -36,7 +36,7 @@ export function FiltersOptions() {
     return null;
   }
 
-  return filters.map((filter, index) => {
+  return filters.map((filter: any, index) => {
     return (
       <GroupPane
         // eslint-disable-next-line react/no-array-index-key
@@ -133,17 +133,17 @@ function mapSelectList(array: string[]) {
   return array.map((val) => ({ value: val, label: normalCase(val) }));
 }
 
-function FiltersPanelGroupHeader({ index }) {
+function FiltersPanelGroupHeader({ index }: { index: number }) {
   const { setValue } = useFormContext();
   const filters = useWatch({ name: 'filters' });
 
-  function handleSelectFilter(value, index) {
+  function handleSelectFilter(value: any, index: number) {
     const clonedFilters = filters.slice();
     clonedFilters.splice(index, 1, value);
     setValue('filters', clonedFilters);
   }
 
-  function handleAdd(index) {
+  function handleAdd(index: number) {
     if (filters) {
       setValue('filters', [
         ...filters.slice(0, index),
@@ -152,10 +152,10 @@ function FiltersPanelGroupHeader({ index }) {
       ]);
     }
   }
-  function handleDelete(index) {
+  function handleDelete(index: number) {
     setValue(
       'filters',
-      filters.filter((_, i) => i !== index),
+      filters.filter((_: any, i: number) => i !== index),
     );
   }
   return (
@@ -226,7 +226,7 @@ function FieldInfo(props: { children: ReactNode; description: string }) {
   );
 }
 
-function LevelLabel({ field, children }) {
+function LevelLabel({ field, children }: any) {
   const { name, level } = field;
 
   return (

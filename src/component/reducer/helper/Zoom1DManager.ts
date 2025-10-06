@@ -41,7 +41,7 @@ function mapSharedDomain(draft: Draft<State>) {
     originDomain: { yDomain },
   } = draft;
 
-  const targetDomain = {};
+  const targetDomain: Record<string, number[]> = {};
 
   for (const spectrumKey of Object.keys(draft.yDomains)) {
     targetDomain[spectrumKey] = yDomain;
@@ -108,7 +108,7 @@ function rescaleToSameTop(
   yDomains: Record<string, number[]>,
   options: RescaleOptions = {},
 ) {
-  const newYDomains = {};
+  const newYDomains: Record<string, number[]> = {};
   for (const spectrumId of Object.keys(yDomains)) {
     newYDomains[spectrumId] = rescaleDomain(yDomains[spectrumId], options);
   }

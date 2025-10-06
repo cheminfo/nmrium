@@ -1,9 +1,11 @@
 import styled from '@emotion/styled';
-import type { Correlation } from 'nmr-correlation';
+import type { Spectrum } from '@zakodium/nmrium-core';
+import type { Correlation, CorrelationData } from 'nmr-correlation';
 import { useMemo } from 'react';
 
 import { getLabelColor } from '../utilities/Utilities.js';
 
+import type { AdditionalColumnHeaderProps } from './AdditionalColumnHeader.js';
 import AdditionalColumnHeader from './AdditionalColumnHeader.js';
 import CorrelationTableRow from './CorrelationTableRow.js';
 
@@ -58,16 +60,35 @@ const Container = styled.div`
   }
 `;
 
-function CorrelationTable({
-  correlationsData,
-  filteredCorrelationsData,
-  additionalColumnData,
-  editEquivalencesSaveHandler,
-  onSaveEditNumericValues,
-  onEditCorrelationTableCellHandler,
-  showProtonsAsRows,
-  spectraData,
-}) {
+export interface CorrelationTableProps {
+  correlationsData: CorrelationData;
+  filteredCorrelationsData: any;
+  additionalColumnData: Correlation[];
+  editEquivalencesSaveHandler: (
+    correlation: Correlation,
+    value: number,
+  ) => void;
+  onSaveEditNumericValues: (params: {
+    correlation: Correlation;
+    values: number[];
+    key: 'hybridization' | 'protonsCount';
+  }) => void;
+  onEditCorrelationTableCellHandler: AdditionalColumnHeaderProps['onEdit'];
+  showProtonsAsRows: boolean;
+  spectraData: Spectrum[];
+}
+
+export default function CorrelationTable(props: CorrelationTableProps) {
+  const {
+    correlationsData,
+    filteredCorrelationsData,
+    additionalColumnData,
+    editEquivalencesSaveHandler,
+    onSaveEditNumericValues,
+    onEditCorrelationTableCellHandler,
+    showProtonsAsRows,
+    spectraData,
+  } = props;
   const rows = useMemo(() => {
     if (!filteredCorrelationsData) {
       return [];
@@ -147,5 +168,3 @@ function CorrelationTable({
     </Container>
   );
 }
-
-export default CorrelationTable;

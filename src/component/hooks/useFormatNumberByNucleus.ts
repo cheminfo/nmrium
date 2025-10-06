@@ -1,3 +1,4 @@
+import type { NucleiPreferences } from '@zakodium/nmrium-core';
 import { useMemo } from 'react';
 
 import { usePreferences } from '../context/PreferencesContext.js';
@@ -10,7 +11,7 @@ type ReturnFunction = (
   suffix?: string,
 ) => string;
 
-const defaultNuclei = [];
+const defaultNuclei: NucleiPreferences[] = [];
 
 export function useFormatNumberByNucleus(nucleus?: string[]): ReturnFunction[];
 export function useFormatNumberByNucleus(nucleus?: string): ReturnFunction;
@@ -21,7 +22,7 @@ export function useFormatNumberByNucleus(nucleus?: string | string[]) {
 
   return useMemo(() => {
     function formatFun(n: string) {
-      const preferences = nucleiPreferences?.find(
+      const preferences = nucleiPreferences.find(
         ({ nucleus }) => nucleus.toLowerCase() === n.toLowerCase(),
       ) || {
         ppmFormat: '0.0',
@@ -29,7 +30,7 @@ export function useFormatNumberByNucleus(nucleus?: string | string[]) {
       };
       return (
         value: any,
-        formatKey = 'ppmFormat',
+        formatKey: 'ppmFormat' | 'hzFormat' = 'ppmFormat',
         prefix = '',
         suffix = '',
       ) => {

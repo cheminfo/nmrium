@@ -111,7 +111,7 @@ export default function ToolBar() {
   } = useToolsFunctions();
 
   const handleChange = useCallback(
-    (selectedOption) => {
+    (selectedOption: any) => {
       handleChangeOption(selectedOption);
     },
     [handleChangeOption],
@@ -165,7 +165,7 @@ export default function ToolBar() {
 
   const exportViewportAPI = useExportManagerAPI();
 
-  function importHandler(data) {
+  function importHandler(data: any) {
     switch (data?.id) {
       case 'importFile':
         openLoader();
@@ -183,7 +183,7 @@ export default function ToolBar() {
     }
   }
 
-  function exportHandler(data) {
+  function exportHandler(data: any) {
     switch (data?.id) {
       case 'svg':
         exportViewportAPI.current?.export({ format: 'svg' });

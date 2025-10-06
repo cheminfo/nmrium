@@ -32,7 +32,7 @@ export interface ExportOptions {
   exportTarget?: ExportTarget;
 }
 
-function getData(datum, usedColors) {
+function getData(datum: any, usedColors: any) {
   const dimension = datum.info.dimension;
   if (dimension === 1) {
     return initiateDatum1D(datum, { usedColors });
@@ -41,7 +41,7 @@ function getData(datum, usedColors) {
   }
 }
 
-export function addJcamp(output, jcamp, options, usedColors) {
+export function addJcamp(output: any, jcamp: any, options: any, usedColors: any) {
   options = options || {};
   const name = options?.info?.name;
   const { spectra: spectraIn } = processJCAMPDX(jcamp, {

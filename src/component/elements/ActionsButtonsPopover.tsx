@@ -102,7 +102,7 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
   const offsetY = offsetYMode === 'fixed' ? externalOffsetY : cursor.y;
   const offsetX = offsetXMode === 'fixed' ? externalOffsetX : cursor.x;
 
-  function handleMouseEnter(event) {
+  function handleMouseEnter(event: any) {
     const { clientX, clientY, currentTarget } = event;
     if (!(currentTarget instanceof Element)) return;
     const rect = currentTarget.getBoundingClientRect();
@@ -125,7 +125,7 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
         <Wrapper
           {...targetProps}
           {...otherProps}
-          onMouseEnter={(event) => {
+          onMouseEnter={(event: any) => {
             handleMouseEnter(event);
             onMouseEnter?.(event);
           }}

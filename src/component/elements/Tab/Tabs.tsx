@@ -99,7 +99,7 @@ function Tabs({
   onDelete = () => null,
   activeTab,
 }: TabsProps) {
-  function handleClickTab(tab) {
+  function handleClickTab(tab: any) {
     const { title, tabid } = tab;
     onClick?.({ title, tabid });
   }

@@ -6,6 +6,7 @@ import type { TopicMolecule } from 'openchemlib-utils';
 import { getAtoms, nbLabileH } from 'openchemlib-utils';
 
 import type {
+  Experiment,
   PredictedSpectraResult,
   PredictionOptions,
 } from '../../../data/PredictionManager.js';
@@ -234,7 +235,8 @@ function checkPredictions(
   const missing2DPrediction: string[] = [];
   const molecule = Molecule.fromMolfile(molfile);
   const { atoms } = getAtoms(molecule);
-  for (const [experiment, required] of Object.entries(spectra)) {
+  for (const entry of Object.entries(spectra)) {
+    const [experiment, required] = entry as [Experiment, boolean];
     if (!required || predictedSpectra[experiment]) continue;
     let message = '';
     switch (experiment) {

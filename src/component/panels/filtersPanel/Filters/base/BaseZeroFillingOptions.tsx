@@ -27,12 +27,12 @@ export function BaseZeroFillingOptions(
     formState: { isDirty },
   } = useZeroFilling(filter);
 
-  function handleConfirm(event) {
+  function handleConfirm(event: any) {
     submitHandler();
     onConfirm?.(event);
   }
 
-  function handleCancel(event) {
+  function handleCancel(event: any) {
     handleCancelFilter();
     onCancel?.(event);
   }

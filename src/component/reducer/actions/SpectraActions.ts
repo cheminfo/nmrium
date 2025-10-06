@@ -175,7 +175,7 @@ function checkIsVisible2D(datum: Spectrum2D): boolean {
   return true;
 }
 
-function setVisible(datum, flag) {
+function setVisible(datum: any, flag: any) {
   if (datum.info.dimension === 2) {
     (datum as Spectrum2D).display.isPositiveVisible = flag;
     (datum as Spectrum2D).display.isNegativeVisible = flag;
@@ -237,8 +237,8 @@ function handleChangeSpectrumVisibilityById(
   const { xDomain, data } = draft;
 
   const spectrum = data.find((d) => d.id === id);
-  if (spectrum) {
-    spectrum.display[key] = !spectrum.display[key];
+  if (isSpectrum2D(spectrum)) {
+    spectrum.display[key] = !(spectrum as any).display[key];
 
     if (spectrum.info.dimension === 2) {
       spectrum.display.isVisible = checkIsVisible2D(spectrum as Spectrum2D);
@@ -480,7 +480,7 @@ function handleDeleteSpectra(draft: Draft<State>, action: DeleteSpectraAction) {
   //TODO refactor the view state, https://github.com/cheminfo/nmrium/issues/3169
   //update keys preferences
 
-  const spectraRemovedIDs = {};
+  const spectraRemovedIDs: Record<string, true> = {};
 
   for (const { id } of deleteSpectraIDs) {
     spectraRemovedIDs[id] = true;
@@ -505,7 +505,7 @@ function handleDeleteSpectra(draft: Draft<State>, action: DeleteSpectraAction) {
 
 //action
 function handleAddMissingProjectionHandler(
-  draft,
+  draft: any,
   action: AddMissingProjectionAction,
 ) {
   const state = original(draft);

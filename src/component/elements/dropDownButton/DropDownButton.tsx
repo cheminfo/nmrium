@@ -10,15 +10,11 @@ const PopoverButton = styled(Button)`
   border: 0.55px solid lightgray;
   border-radius: 5px;
 `;
+
 export interface DropDownListItem {
   key: string;
   label: string;
-}
-
-export interface ItemProps {
-  itemKey?: string;
-  labelKey?: string;
-  visibleKey?: string;
+  visible?: boolean;
 }
 
 export interface DropDownListProps<T> {
@@ -26,7 +22,7 @@ export interface DropDownListProps<T> {
   renderItem?: ((item: DropDownListItem) => ReactNode) | null;
 }
 
-interface DropDownButtonProps<T> extends DropDownListProps<T>, ItemProps {
+interface DropDownButtonProps<T> extends DropDownListProps<T> {
   selectedKey?: string;
   onSelect?: (item: DropDownListItem) => void;
   formatSelectedValue?: (Item: DropDownListItem) => string;
@@ -44,9 +40,6 @@ function DropDownButton<T extends DropDownListItem>(
     formatSelectedValue = (item) => item.label,
     renderItem = null,
     style = {},
-    itemKey = 'key',
-    labelKey = 'label',
-    visibleKey = 'visible',
     className = '',
   } = props;
   const [open, setOpen] = useState(false);
@@ -54,12 +47,12 @@ function DropDownButton<T extends DropDownListItem>(
 
   useEffect(() => {
     if (selectedKey) {
-      const item = data.find((i) => i[itemKey] === selectedKey) || null;
+      const item = data.find((i) => i.key === selectedKey) || null;
       setItem(item);
     }
-  }, [selectedKey, data, itemKey]);
+  }, [selectedKey, data]);
 
-  function selectHandler(index) {
+  function selectHandler(index: any) {
     setOpen(false);
     setItem(data[index]);
     onSelect?.(data[index]);
@@ -77,9 +70,6 @@ function DropDownButton<T extends DropDownListItem>(
           data={data}
           onSelect={selectHandler}
           renderItem={renderItem}
-          itemKey={itemKey}
-          labelKey={labelKey}
-          visibleKey={visibleKey}
         />
       }
     >

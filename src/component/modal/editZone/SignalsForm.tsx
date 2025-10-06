@@ -14,19 +14,19 @@ export function SignalsForm() {
   } = useFormContext();
   const { signals = [], activeTab, experimentType } = useWatch();
 
-  function handleTapChange(tabID) {
+  function handleTapChange(tabID: any) {
     setValue('activeTab', tabID);
   }
 
-  function handleDeleteSignal(index) {
-    const filteredSignals = signals.filter((_signal, i) => i !== index);
+  function handleDeleteSignal(index: any) {
+    const filteredSignals = signals.filter((_signal: any, i: any) => i !== index);
     setValue('signals', filteredSignals);
   }
 
   return (
     <div>
       <Tabs selectedTabId={activeTab} onChange={handleTapChange}>
-        {signals.map((signal, index) => {
+        {signals.map((signal: any, index: any) => {
           return (
             <Tab
               // eslint-disable-next-line react/no-array-index-key

@@ -1,3 +1,4 @@
+import type { ComponentType, PropsWithChildren } from 'react';
 import { createContext, useContext, useMemo, useState } from 'react';
 
 interface DialogItem {
@@ -7,7 +8,7 @@ interface DialogItem {
 
 type DialogStates = Record<string, DialogItem>;
 
-type ComponentIdentifier = string | React.ComponentType<any>;
+type ComponentIdentifier = string | ComponentType<any>;
 
 export interface DialogProps<T> {
   dialogData: T;
@@ -45,7 +46,7 @@ function getDialogIdentifier(componentIdentifier: ComponentIdentifier): string {
   }
 }
 
-export function DialogProvider({ children }) {
+export function DialogProvider({ children }: Required<PropsWithChildren>) {
   const [dialogStates, setDialog] = useState<DialogStates>({});
 
   const state = useMemo(() => {

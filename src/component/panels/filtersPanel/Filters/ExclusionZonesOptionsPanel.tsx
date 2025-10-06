@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
+import type { CellProps } from 'react-table';
 import * as Yup from 'yup';
 
 import type { ExtractFilterEntry } from '../../../../data/types/common/ExtractFilterEntry.js';
@@ -69,7 +70,7 @@ export default function ExclusionZonesOptionsPanel(
   }, [filter.value, reset]);
 
   const handleDelete = useCallback(
-    (index) => {
+    (index: any) => {
       setValue(
         'zones',
         getValues('zones').filter((_, i) => i !== index),
@@ -79,7 +80,7 @@ export default function ExclusionZonesOptionsPanel(
     [getValues, setValue],
   );
 
-  const exclusionsZonesColumns: Array<Column<ExclusionZone>> = useMemo(
+  const exclusionsZonesColumns = useMemo<Array<Column<ExclusionZone>>>(
     () => [
       {
         Header: '#',
@@ -88,7 +89,7 @@ export default function ExclusionZonesOptionsPanel(
       },
       {
         Header: 'from',
-        Cell: ({ row }) => (
+        Cell: ({ row }: CellProps<ExclusionZone>) => (
           <NumberInput2Controller
             control={control}
             name={`zones.${row.index}.from`}
@@ -100,7 +101,7 @@ export default function ExclusionZonesOptionsPanel(
       },
       {
         Header: 'To',
-        Cell: ({ row }) => (
+        Cell: ({ row }: CellProps<ExclusionZone>) => (
           <NumberInput2Controller
             control={control}
             name={`zones.${row.index}.to`}
@@ -115,7 +116,7 @@ export default function ExclusionZonesOptionsPanel(
         Header: '',
         style: { width: '30px' },
         id: 'actions',
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<ExclusionZone>) => {
           return (
             <Button
               size="small"
@@ -132,19 +133,19 @@ export default function ExclusionZonesOptionsPanel(
     [control, handleDelete],
   );
 
-  function handleApplyFilter(values) {
+  function handleApplyFilter(values: any) {
     dispatch({
       type: 'APPLY_EXCLUSION_ZONE',
       payload: values,
     });
   }
 
-  function handleConfirm(event) {
+  function handleConfirm(event: any) {
     void handleSubmit(handleApplyFilter)();
     onConfirm?.(event);
   }
 
-  function handleCancel(event) {
+  function handleCancel(event: any) {
     dispatch({
       type: 'RESET_SELECTED_TOOL',
     });

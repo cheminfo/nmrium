@@ -44,7 +44,7 @@ export default function useEditRangeModal() {
   );
 
   const changeRangeSignalKind = useCallback(
-    (kind, range: RangeData) => {
+    (kind: any, range: RangeData) => {
       if (!range) return;
       dispatch({
         type: 'CHANGE_RANGE_SIGNAL_KIND',
@@ -58,7 +58,7 @@ export default function useEditRangeModal() {
   );
 
   const saveEditRange = useCallback(
-    (editedRange) => {
+    (editedRange: any) => {
       dispatch({
         type: 'SAVE_EDITED_RANGE',
         payload: {
@@ -73,7 +73,7 @@ export default function useEditRangeModal() {
   );
 
   const reset = useCallback(
-    (originalRange) => {
+    (originalRange: any) => {
       saveEditRange(originalRange);
       // modal.close();
     },

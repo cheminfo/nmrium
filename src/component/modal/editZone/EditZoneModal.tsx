@@ -41,7 +41,7 @@ export function EditZoneModal(props: DialogProps<ZoneData>) {
   const { dialogData: zone, onCloseDialog } = props;
   const { saveZone, zoomToZone } = useZoneActions();
 
-  function handleSave(values) {
+  function handleSave(values: any) {
     void (async () => {
       const zoneData = {
         ...zone,
@@ -101,7 +101,7 @@ export function EditZoneModal(props: DialogProps<ZoneData>) {
   );
 }
 
-function mapSignalsBeforeSave(signals, experiment) {
+function mapSignalsBeforeSave(signals: any, experiment: any) {
   const outputSignals: Signal2D[] = [];
 
   for (const signal of signals) {

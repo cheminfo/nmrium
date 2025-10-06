@@ -60,14 +60,14 @@ const formatFields: NucleusPreferenceField[] = [
   },
 ];
 
-function IntegralsPreferences(props, ref) {
+function IntegralsPreferences(props: any, ref: any) {
   const preferences = usePreferences();
   const nucleus = useNucleus();
   const nuclei = useMemo(() => getUniqueNuclei(nucleus), [nucleus]);
   const preferencesByNuclei = usePanelPreferencesByNuclei('integrals', nuclei);
 
   const saveHandler = useCallback(
-    (values) => {
+    (values: any) => {
       preferences.dispatch({
         type: 'SET_PANELS_PREFERENCES',
         payload: { key: 'integrals', value: values },

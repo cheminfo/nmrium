@@ -1,4 +1,5 @@
 import type { CSSProperties, MouseEvent, ReactNode } from 'react';
+import type { CellProps } from 'react-table';
 
 import type { Column } from '../ReactTable.js';
 
@@ -8,7 +9,7 @@ export type ControlCustomColumn<T extends object> = CustomColumn<T> & {
 };
 
 export default function addCustomColumn<T extends object>(
-  array,
+  array: any,
   options: CustomColumn<T>,
 ) {
   const {
@@ -58,13 +59,13 @@ export function createActionColumn<T extends object>(
       ...style,
     },
     id: crypto.randomUUID(),
-    Cell: ({ row }) => (
+    Cell: (cell: CellProps<T>) => (
       <button
         type="button"
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
-          onClick(row, e);
+          onClick(cell.row, e);
         }}
       >
         {icon}
