@@ -3,7 +3,8 @@ import type {
   PeaksViewState,
   RangesViewState,
 } from '@zakodium/nmrium-core';
-import { scaleLinear, zoomIdentity } from 'd3';
+import { scaleLinear } from 'd3-scale';
+import { zoomIdentity } from 'd3-zoom';
 import type { Draft } from 'immer';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';

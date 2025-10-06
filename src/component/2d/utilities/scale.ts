@@ -1,5 +1,5 @@
 import type { NmrData2D } from 'cheminfo-types';
-import { scaleLinear } from 'd3';
+import { scaleLinear } from 'd3-scale';
 import { useMemo } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';

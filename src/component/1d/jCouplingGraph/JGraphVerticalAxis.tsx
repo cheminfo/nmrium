@@ -1,4 +1,4 @@
-import type { ScaleLinear } from 'd3';
+import type { ScaleLinear } from 'd3-scale';
 import { useRef } from 'react';
 import { useLinearPrimaryTicks } from 'react-d3-utils';
 
