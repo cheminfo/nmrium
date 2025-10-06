@@ -2,10 +2,11 @@ import { FaEye, FaEyeSlash, FaMinus, FaPlus } from 'react-icons/fa';
 import { GrRadialSelected } from 'react-icons/gr';
 import { TooltipHelpContent } from 'react-science/ui';
 
-import { useChartData } from '../context/ChartContext.js';
 import { useDispatch } from '../context/DispatchContext.js';
 import type { ToolbarItemProps } from '../panels/header/DefaultPanelHeader.js';
 import type { SpectraSelectedMode } from '../reducer/actions/SpectraActions.js';
+
+import { useActiveNucleusTab } from './useActiveNucleusTab.ts';
 
 interface ToggleSpectraVisibility {
   enableShowAll: boolean;
@@ -26,12 +27,7 @@ export function useToggleSpectraVisibility(
     enableShowSelected = true,
   } = props;
   const dispatch = useDispatch();
-  const {
-    view: {
-      spectra: { activeTab },
-    },
-  } = useChartData();
-
+  const activeTab = useActiveNucleusTab();
   function showSpectraHandler(mode: SpectraSelectedMode) {
     dispatch({
       type: 'CHANGE_SPECTRA_VISIBILITY_BY_NUCLEUS',

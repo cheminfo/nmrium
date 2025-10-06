@@ -5,6 +5,7 @@ import { useMemo } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';
+import { useActiveNucleusTab } from '../../hooks/useActiveNucleusTab.ts';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import { PathBuilder } from '../../utility/PathBuilder.js';
 import { getYScaleWithRation } from '../utilities/scale.js';
@@ -74,11 +75,7 @@ function useSliceStocsyData(options?: StocsyData | null) {
 }
 
 export function Stocsy() {
-  const {
-    view: {
-      spectra: { activeTab },
-    },
-  } = useChartData();
+  const activeTab = useActiveNucleusTab();
   const options = usePanelPreferences('matrixGeneration', activeTab);
 
   if (!options) return;

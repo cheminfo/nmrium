@@ -1,4 +1,5 @@
 import type {
+  ACSExportOptions,
   ExportPreferences,
   ExportSettings,
   MultipleSpectraAnalysisPreferences,
@@ -27,6 +28,7 @@ import {
   setSpectraAnalysisPanelsPreferences,
 } from './actions/analyzeSpectra.js';
 import { applyGeneralPreferences } from './actions/applyGeneralPreferences.js';
+import { changeExportAcsSettings } from './actions/changeExportAcsSettings.ts';
 import { changeExportSettings } from './actions/changeExportSettings.js';
 import { changeInformationBlockPosition } from './actions/changeInformationBlockPosition.js';
 import { changePeaksLabelPosition } from './actions/changePeaksLabelPosition.js';
@@ -143,6 +145,11 @@ export type ChangeExportSettingsAction = ActionType<
     options: ExportSettings;
   }
 >;
+
+export type ChangeExportACSSettingsAction = ActionType<
+  'CHANGE_EXPORT_ACS_SETTINGS',
+  { options: ACSExportOptions; nucleus: string }
+>;
 export type ChangePeaksLabelPositionAction = ActionType<
   'CHANGE_PEAKS_LABEL_POSITION',
   {
@@ -179,7 +186,8 @@ type PreferencesActions =
   | ChangePrintPageSettingsAction
   | ChangeExportSettingsAction
   | ChangePeaksLabelPositionAction
-  | TogglePanelAction;
+  | TogglePanelAction
+  | ChangeExportACSSettingsAction;
 
 export type WorkspaceWithSource = Workspace & { source: WorkSpaceSource };
 type WorkspacesWithSource =
@@ -304,6 +312,8 @@ function innerPreferencesReducer(
       return changePeaksLabelPosition(draft, action);
     case 'TOGGLE_PANEL':
       return togglePanel(draft, action);
+    case 'CHANGE_EXPORT_ACS_SETTINGS':
+      return changeExportAcsSettings(draft, action);
 
     default:
       return draft;

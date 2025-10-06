@@ -255,4 +255,20 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
   peaksLabel: {
     marginTop: 0,
   },
+  acsExportSettings: {
+    '13C': {
+      signalKind: 'signal',
+      ascending: true,
+      format: 'D',
+      couplingFormat: '0.0',
+      deltaFormat: '0.0',
+    },
+    '1H': {
+      signalKind: 'signal',
+      ascending: true,
+      format: 'IMJA',
+      couplingFormat: '0.00',
+      deltaFormat: '0.00',
+    },
+  },
 };
