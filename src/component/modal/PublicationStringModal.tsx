@@ -1,13 +1,14 @@
 import { Button, Dialog, DialogFooter } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
-import type { RangesToACSOptions } from 'nmr-processing';
+import type { Workspace } from '@zakodium/nmrium-core';
 import { rangesToACS } from 'nmr-processing';
 import { useForm, useWatch } from 'react-hook-form';
 import { FaCopy } from 'react-icons/fa';
 import * as Yup from 'yup';
 
 import { isSpectrum1D } from '../../data/data1d/Spectrum1D/isSpectrum1D.js';
+import { usePreferences } from '../context/PreferencesContext.tsx';
 import { CheckController } from '../elements/CheckController.tsx';
 import { EmptyText } from '../elements/EmptyText.js';
 import { Input2Controller } from '../elements/Input2Controller.tsx';
@@ -41,29 +42,14 @@ interface SelectItem<T> {
   value: T;
 }
 
-type ExportScope = 'all' | 'signal';
 type ExportFormatType = 'IMJA' | 'IMJ' | 'D';
 
-interface ExportACSOptions
-  extends Required<
-    Pick<
-      RangesToACSOptions,
-      'ascending' | 'format' | 'couplingFormat' | 'deltaFormat'
-    >
-  > {
-  scope: ExportScope;
-}
-
-const defaultOptions: ExportACSOptions = {
-  scope: 'signal',
-  ascending: true,
-  format: 'IMJA',
-  couplingFormat: '0.00',
-  deltaFormat: '0.00',
-};
+// TODO expose ACSExportOptions type from nmrium-core
+type ExportACSOptions = Workspace['acsExportOptions'];
+type ExportScope = ExportACSOptions['signalKind'];
 
 const validationSchema = Yup.object().shape({
-  scope: Yup.string()
+  SignalKinds: Yup.string()
     .oneOf(['all', 'signal'] as ExportScope[])
     .required(),
   ascending: Yup.boolean().required(),
@@ -117,11 +103,11 @@ export function PublicationStringModal(props: PublicationStringModalProps) {
 function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
   const { onClose, onCopyClick } = props;
   const spectrum = useSpectrum();
+  const { dispatch, current } = usePreferences();
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { control, handleSubmit } = useForm<ExportACSOptions>({
-    defaultValues: defaultOptions,
-    resolver: yupResolver(validationSchema),
+  const { control } = useForm<ExportACSOptions>({
+    defaultValues: current.acsExportOptions,
+    resolver: yupResolver(validationSchema) as any,
   });
 
   const options = useWatch({ control });
@@ -135,10 +121,10 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
 
   const { originFrequency: observedFrequency, nucleus } = info;
 
-  const { scope, format, couplingFormat, ...otherOptions } = options;
+  const { signalKind, format, couplingFormat, ...otherOptions } = options;
 
   const ranges =
-    scope === 'all'
+    signalKind === 'all'
       ? values
       : values.filter((range) =>
           range.signals?.some((signal) => signal.kind === 'signal'),
@@ -151,6 +137,15 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
     ...(format !== 'D' ? { format, couplingFormat } : { format: '' }),
   });
 
+  function handleCopy() {
+    dispatch({
+      type: 'CHANGE_EXPORT_ACS_SETTINGS',
+      payload: { options: options as ExportACSOptions },
+    });
+    onCopyClick(value);
+    onClose();
+  }
+
   return (
     <Dialog
       isOpen
@@ -162,7 +157,7 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
         <Label title="Export filter" style={labelStyle}>
           <Select2Controller
             control={control}
-            name="scope"
+            name="signalKind"
             items={exportOptions}
           />
         </Label>
@@ -187,16 +182,13 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
           {!value ? (
             <EmptyText text="No publication string" />
           ) : (
+            // eslint-disable-next-line react/no-danger
             <div dangerouslySetInnerHTML={{ __html: value }} />
           )}
         </Body>
       </StyledDialogBody>
       <DialogFooter>
-        <Button
-          onClick={() => onCopyClick(value)}
-          intent="success"
-          icon={<FaCopy />}
-        />
+        <Button onClick={handleCopy} intent="success" icon={<FaCopy />} />
       </DialogFooter>
     </Dialog>
   );
