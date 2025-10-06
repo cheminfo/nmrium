@@ -25,7 +25,7 @@ jobs:
       - name: Build test application
         env:
           NODE_OPTIONS: --max-old-space-size=3072
-        run: npm run build-no-minify
+        run: node --run build-no-minify
       - name: Run E2E tests on ${{ matrix.project }}
         run: npx playwright test --project ${{ matrix.project }}
         continue-on-error: ${{ matrix.project == 'webkit' }}
