@@ -1,7 +1,7 @@
 import { Button, Dialog, DialogFooter } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
-import type { Workspace } from '@zakodium/nmrium-core';
+import type { ACSExportOptions } from '@zakodium/nmrium-core';
 import { rangesToACS } from 'nmr-processing';
 import { useForm, useWatch } from 'react-hook-form';
 import { FaCopy } from 'react-icons/fa';
@@ -16,6 +16,7 @@ import type { LabelStyle } from '../elements/Label.js';
 import Label from '../elements/Label.js';
 import { Select2Controller } from '../elements/Select2Controller.tsx';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
+import { useActiveNucleusTab } from '../hooks/useActiveNucleusTab.ts';
 import useSpectrum from '../hooks/useSpectrum.js';
 
 const Body = styled.div`
@@ -44,9 +45,7 @@ interface SelectItem<T> {
 
 type ExportFormatType = 'IMJA' | 'IMJ' | 'D';
 
-// TODO expose ACSExportOptions type from nmrium-core
-type ExportACSOptions = Workspace['acsExportOptions'];
-type ExportSignalKind = ExportACSOptions['signalKind'];
+type ExportSignalKind = ACSExportOptions['signalKind'];
 
 const validationSchema = Yup.object().shape({
   signalKind: Yup.string()
@@ -100,13 +99,27 @@ export function PublicationStringModal(props: PublicationStringModalProps) {
   return <InnerPublicationStringModal {...otherProps} />;
 }
 
+const defaultOptions = {
+  signalKind: 'signal',
+  ascending: true,
+  format: 'IMJA',
+  couplingFormat: '0.00',
+  deltaFormat: '0.00',
+};
+
+function useACSSettings() {
+  const nucleus = useActiveNucleusTab();
+  const { current } = usePreferences();
+  return current.acsExportSettings[nucleus] || defaultOptions;
+}
+
 function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
   const { onClose, onCopyClick } = props;
   const spectrum = useSpectrum();
-  const { dispatch, current } = usePreferences();
-
-  const { control } = useForm<ExportACSOptions>({
-    defaultValues: current.acsExportOptions,
+  const { dispatch } = usePreferences();
+  const currentACSOptions = useACSSettings();
+  const { control } = useForm<ACSExportOptions>({
+    defaultValues: currentACSOptions,
     resolver: yupResolver(validationSchema),
   });
 
@@ -140,7 +153,7 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
   function handleCopy() {
     dispatch({
       type: 'CHANGE_EXPORT_ACS_SETTINGS',
-      payload: { options: options as ExportACSOptions },
+      payload: { options: options as ACSExportOptions, nucleus },
     });
     onCopyClick(value);
     onClose();

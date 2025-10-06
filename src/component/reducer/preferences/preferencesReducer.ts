@@ -1,4 +1,5 @@
 import type {
+  ACSExportOptions,
   ExportPreferences,
   ExportSettings,
   MultipleSpectraAnalysisPreferences,
@@ -145,12 +146,9 @@ export type ChangeExportSettingsAction = ActionType<
   }
 >;
 
-// TODO export ACSExportOptions from nmrium-core
-type ACSExportOptions = Workspace['acsExportOptions'];
-
 export type ChangeExportACSSettingsAction = ActionType<
   'CHANGE_EXPORT_ACS_SETTINGS',
-  { options: ACSExportOptions }
+  { options: ACSExportOptions; nucleus: string }
 >;
 export type ChangePeaksLabelPositionAction = ActionType<
   'CHANGE_PEAKS_LABEL_POSITION',
