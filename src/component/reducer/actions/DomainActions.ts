@@ -5,8 +5,8 @@ import type {
   Spectrum,
 } from '@zakodium/nmrium-core';
 import type { NmrData2DFt } from 'cheminfo-types';
-import type { Numeric } from 'd3';
-import { extent } from 'd3';
+import type { Numeric } from 'd3-array';
+import { extent } from 'd3-array';
 import type { Draft } from 'immer';
 
 import { get1DDataXY } from '../../../data/data1d/Spectrum1D/get1DDataXY.js';

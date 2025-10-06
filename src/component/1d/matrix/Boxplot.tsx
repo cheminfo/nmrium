@@ -1,5 +1,5 @@
 import type { NumberArray } from 'cheminfo-types';
-import { extent } from 'd3';
+import { extent } from 'd3-array';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { matrixToBoxPlot } from 'nmr-processing';
 import type { CSSProperties } from 'react';

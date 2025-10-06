@@ -1,4 +1,4 @@
-import type { ScaleLinear } from 'd3';
+import type { ScaleLinear } from 'd3-scale';
 import { createContext, useCallback, useContext, useMemo } from 'react';
 
 import { useIsInset } from '../1d/inset/InsetProvider.js';

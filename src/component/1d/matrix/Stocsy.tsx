@@ -1,4 +1,4 @@
-import { extent } from 'd3';
+import { extent } from 'd3-array';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { matrixToStocsy } from 'nmr-processing';
 import { useMemo } from 'react';

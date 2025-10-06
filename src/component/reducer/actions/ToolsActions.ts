@@ -1,6 +1,6 @@
 import type { BaselineCorrectionZone } from '@zakodium/nmr-types';
 import type { Spectrum1D, Spectrum2D, Spectrum } from '@zakodium/nmrium-core';
-import { zoomIdentity } from 'd3';
+import { zoomIdentity } from 'd3-zoom';
 import type { Draft } from 'immer';
 
 import { contoursManager } from '../../../data/data2d/Spectrum2D/contours.js';
