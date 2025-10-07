@@ -31,7 +31,7 @@ import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus.j
 import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus.js';
 import { options } from '../../toolbar/ToolTypes.js';
 import Events from '../../utility/Events.js';
-import { exportAsJSON } from '../../utility/export.js';
+import { exportAsJsonBlob, saveAs } from '../../utility/export.js';
 import nucleusToString from '../../utility/nucleusToString.js';
 import { PanelNoData } from '../PanelNoData.js';
 import { TablePanel } from '../extra/BasicPanelStyle.js';
@@ -301,7 +301,7 @@ function DatabasePanelInner({
           });
 
           try {
-            const { data } = await core.readFromWebSource({
+            const [{ data }] = await core.readFromWebSource({
               entries: [{ baseURL: url.origin, relativePath: url.pathname }],
             });
             const spectrum = data?.spectra?.[0] || null;
@@ -513,10 +513,11 @@ async function saveJcampAsJson(core: NMRiumCore, rowData, filteredData) {
   const { index, baseURL, jcampURL, names, ocl = {}, smiles } = rowData;
   const { ranges } = filteredData.data[index];
   const url = new URL(jcampURL, baseURL);
-  const { data: { spectra, source } = { source: {}, spectra: [] }, version } =
-    await core.readFromWebSource({
-      entries: [{ baseURL: url.origin, relativePath: url.pathname }],
-    });
+  const [
+    { data: { spectra, sources } = { sources: [], spectra: [] }, version },
+  ] = await core.readFromWebSource({
+    entries: [{ baseURL: url.origin, relativePath: url.pathname }],
+  });
 
   let molfile = '';
   let molecule: Molecule | null = null;
@@ -554,7 +555,7 @@ async function saveJcampAsJson(core: NMRiumCore, rowData, filteredData) {
     {
       version,
       data: {
-        source,
+        sources,
         spectra: spectraData,
         ...(molfile && { molecules: [{ molfile }] }),
       },
@@ -562,5 +563,7 @@ async function saveJcampAsJson(core: NMRiumCore, rowData, filteredData) {
     { includeData: 'dataSource' },
   );
 
-  await exportAsJSON(exportedData, names?.[0], 1);
+  const filename = names?.[0];
+  const blob = await exportAsJsonBlob(exportedData, filename, 1);
+  saveAs(blob, filename);
 }
