@@ -8,7 +8,7 @@ const defaultPeakPickingOptions = {
   realTopDetection: true,
   maxCriteria: true,
   smoothY: true,
-  sensitivity: 90,
+  sensitivity: 100,
   broadWidth: 0.25,
   broadRatio: 0.0025,
   integrationSum: 100,
