@@ -5,9 +5,9 @@ import { useEffect } from 'react';
 import { useForm, useFormContext, useWatch } from 'react-hook-form';
 import * as Yup from 'yup';
 
-import { useChartData } from '../../../../context/ChartContext.js';
 import { NumberInput2Controller } from '../../../../elements/NumberInput2Controller.js';
 import { useTabsController } from '../../../../elements/TabsProvider.js';
+import { useActiveNucleusTab } from '../../../../hooks/useActiveNucleusTab.ts';
 import { usePanelPreferences } from '../../../../hooks/usePanelPreferences.js';
 import { useEvent } from '../../../../utility/Events.js';
 import { formatNumber } from '../../../../utility/formatNumber.js';
@@ -40,12 +40,7 @@ export function NewSignalTab(props: NewSignalTabProps) {
   const { setValue } = useFormContext();
   const { selectedTabId: signalIndex, selectTab } = useTabsController();
   const { signals } = useWatch();
-
-  const {
-    view: {
-      spectra: { activeTab },
-    },
-  } = useChartData();
+  const activeTab = useActiveNucleusTab();
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
 
   function saveHandler(val) {

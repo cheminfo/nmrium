@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 
 import { useScaleChecked } from '../context/ScaleContext.js';
 import useActiveSpectrumStyleOptions from '../hooks/useActiveSpectrumStyleOptions.js';
-import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce.js';
+import useXYReduce from '../hooks/useXYReduce.js';
 import { PathBuilder } from '../utility/PathBuilder.js';
 import { parseColor } from '../utility/parseColor.js';
 
@@ -23,7 +23,7 @@ interface LineProps {
 
 function Line({ data, id, display, index }: LineProps) {
   const { scaleX, scaleY, shiftY } = useScaleChecked();
-  const xyReduce = useXYReduce(XYReducerDomainAxis.XAxis);
+  const xyReduce = useXYReduce('XAxis');
   const { opacity } = useActiveSpectrumStyleOptions(id);
   const { id: insetKey = 'primary' } = useInsetOptions() || {};
 

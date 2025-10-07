@@ -1,5 +1,5 @@
 import type { Spectrum1D } from '@zakodium/nmrium-core';
-import { extent } from 'd3';
+import { extent } from 'd3-array';
 import throttle from 'lodash/throttle.js';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
@@ -7,10 +7,7 @@ import { useChartData } from '../../context/ChartContext.js';
 import { useCore } from '../../context/CoreContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
-import {
-  HighlightEventSource,
-  useHighlightData,
-} from '../../highlight/index.js';
+import { useHighlightData } from '../../highlight/index.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import { spinnerContext } from '../../loader/SpinnerContext.js';
 import { PathBuilder } from '../../utility/PathBuilder.js';
@@ -79,7 +76,7 @@ function DatabaseSpectrum() {
     void loadSpectrum.current(baseURL, jcampRelativeURL);
   }, [baseURL, jcampRelativeURL, loadSpectrum]);
 
-  if (highlight.sourceData?.type !== HighlightEventSource.DATABASE) {
+  if (highlight.sourceData?.type !== 'DATABASE') {
     return null;
   }
 

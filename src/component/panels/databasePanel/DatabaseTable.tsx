@@ -12,7 +12,6 @@ import { ColumnWrapper } from '../../elements/ColumnWrapper.js';
 import ReactTable from '../../elements/ReactTable/ReactTable.js';
 import type { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn.js';
 import addCustomColumn from '../../elements/ReactTable/utility/addCustomColumn.js';
-import { HighlightEventSource } from '../../highlight/index.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus.js';
 import { formatNumber } from '../../utility/formatNumber.js';
@@ -226,13 +225,14 @@ function DatabaseTable({
       }
     }
 
-    return columns.sort((object1, object2) => object1.index - object2.index);
+    columns.sort((object1, object2) => object1.index - object2.index);
+    return columns;
   }, [databasePreferences, initialColumns]);
   return (
     <ReactTable
       data={data}
       columns={tableColumns}
-      highlightedSource={HighlightEventSource.DATABASE}
+      highlightedSource="DATABASE"
       groupKey="index"
       approxItemHeight={23}
       enableVirtualScroll

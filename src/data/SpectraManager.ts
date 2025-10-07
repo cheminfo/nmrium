@@ -12,6 +12,7 @@ import {
 import { BlobWriter, TextReader, ZipWriter } from '@zip.js/zip.js';
 import fileSaver from 'file-saver';
 import * as OCL from 'openchemlib';
+import { toMolfile } from 'openchemlib-utils';
 
 import type { State } from '../component/reducer/Reducer.js';
 
@@ -19,18 +20,12 @@ import { initiateDatum1D, isSpectrum1D } from './data1d/Spectrum1D/index.js';
 import { initiateDatum2D } from './data2d/Spectrum2D/index.js';
 import * as Molecule from './molecules/Molecule.js';
 
-export enum DataExportOptions {
-  ROW_DATA = 'ROW_DATA',
-  DATA_SOURCE = 'DATA_SOURCE',
-  NO_DATA = 'NO_DATA',
-}
-
-type DataExportOptionsType = keyof typeof DataExportOptions;
+type DataExportOptions = 'ROW_DATA' | 'DATA_SOURCE' | 'NO_DATA';
 
 type ExportTarget = 'nmrium' | 'onChange';
 
 export interface ExportOptions {
-  dataType?: DataExportOptionsType;
+  dataType?: DataExportOptions;
   view?: boolean;
   settings?: boolean;
   serialize?: boolean;
@@ -210,8 +205,12 @@ export async function exportForCT(options: ExportForCTOptions) {
   const { molfile } = molecules[0];
   const molecule = OCL.Molecule.fromMolfile(molfile);
   const molFileName = molecule.getMolecularFormula().formula;
+  const ctMolfile = toMolfile(molecule, {
+    includeCustomAtomLabelsAsALines: true,
+    customLabelPosition: 'normal',
+  });
 
-  await zip.add(`${molFileName}.mol`, new TextReader(molecule.toMolfile()));
+  await zip.add(`${molFileName}.mol`, new TextReader(ctMolfile));
 
   const blob = await zip.close();
   fileSaver.saveAs(blob, `${name}.zip`);

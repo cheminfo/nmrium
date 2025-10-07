@@ -7,7 +7,7 @@ import {
 } from '@blueprintjs/core';
 import { Controller, useForm } from 'react-hook-form';
 
-import { DataExportOptions } from '../../data/SpectraManager.js';
+import type { ExportOptions } from '../../data/SpectraManager.js';
 import { useChartData } from '../context/ChartContext.js';
 import ActionButtons from '../elements/ActionButtons.js';
 import { Input2Controller } from '../elements/Input2Controller.js';
@@ -21,10 +21,10 @@ const INITIAL_VALUE = {
   compressed: false,
   pretty: false,
   include: {
-    dataType: DataExportOptions.ROW_DATA,
+    dataType: 'ROW_DATA',
     view: false,
     settings: false,
-  },
+  } satisfies ExportOptions,
 };
 
 export const labelStyle: LabelStyle = {
@@ -105,13 +105,13 @@ function InnerSaveAsModal(props: InnerSaveAsModalProps) {
               const { value, ref, ...otherFieldProps } = field;
               return (
                 <RadioGroup inline selectedValue={value} {...otherFieldProps}>
-                  <Radio label="Raw data" value={DataExportOptions.ROW_DATA} />
+                  <Radio label="Raw data" value="ROW_DATA" />
                   <Radio
                     label="Data source"
-                    value={DataExportOptions.DATA_SOURCE}
+                    value="DATA_SOURCE"
                     disabled={!source}
                   />
-                  <Radio label="No data" value={DataExportOptions.NO_DATA} />
+                  <Radio label="No data" value="NO_DATA" />
                 </RadioGroup>
               );
             }}

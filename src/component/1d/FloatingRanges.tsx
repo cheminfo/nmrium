@@ -16,6 +16,7 @@ import { useDispatch } from '../context/DispatchContext.js';
 import { useGlobal } from '../context/GlobalContext.js';
 import type { ActionsButtonsPopoverProps } from '../elements/ActionsButtonsPopover.js';
 import { ActionsButtonsPopover } from '../elements/ActionsButtonsPopover.js';
+import { useActiveNucleusTab } from '../hooks/useActiveNucleusTab.ts';
 import { usePanelPreferences } from '../hooks/usePanelPreferences.js';
 import { useSVGUnitConverter } from '../hooks/useSVGUnitConverter.js';
 import useSpectraByActiveNucleus from '../hooks/useSpectraPerNucleus.js';
@@ -50,11 +51,7 @@ interface RangeItem {
 
 function useMapRanges(ranges: Ranges['values']) {
   const output: RangeItem[] = [];
-  const {
-    view: {
-      spectra: { activeTab },
-    },
-  } = useChartData();
+  const activeTab = useActiveNucleusTab();
   const preferences = usePanelPreferences('ranges', activeTab);
   for (const range of ranges) {
     const { id, from, to, integration, signals = [] } = range;
@@ -330,11 +327,8 @@ function DraggableRanges(props: DraggablePublicationStringProps) {
         targetProps={{ style: { width: '100%', height: '100%' } }}
         space={2}
         {...(isMoveActive && { isOpen: true })}
-        modifiers={{
-          offset: {
-            data: { x, y },
-          },
-        }}
+        x={x}
+        y={y}
       >
         <SVGRangesTable ranges={ranges} />
       </ActionsButtonsPopover>

@@ -1,18 +1,22 @@
-/* eslint-disable react/no-danger */
 import { Button, Dialog, DialogFooter } from '@blueprintjs/core';
 import styled from '@emotion/styled';
+import { yupResolver } from '@hookform/resolvers/yup';
+import type { ACSExportOptions } from '@zakodium/nmrium-core';
 import { rangesToACS } from 'nmr-processing';
-import { useState } from 'react';
+import { useForm, useWatch } from 'react-hook-form';
 import { FaCopy } from 'react-icons/fa';
+import * as Yup from 'yup';
 
 import { isSpectrum1D } from '../../data/data1d/Spectrum1D/isSpectrum1D.js';
-import { useChartData } from '../context/ChartContext.js';
+import { usePreferences } from '../context/PreferencesContext.tsx';
+import { CheckController } from '../elements/CheckController.tsx';
 import { EmptyText } from '../elements/EmptyText.js';
+import { Input2Controller } from '../elements/Input2Controller.tsx';
 import type { LabelStyle } from '../elements/Label.js';
 import Label from '../elements/Label.js';
-import { Select2 } from '../elements/Select2.js';
+import { Select2Controller } from '../elements/Select2Controller.tsx';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
-import { usePanelPreferences } from '../hooks/usePanelPreferences.js';
+import { useActiveNucleusTab } from '../hooks/useActiveNucleusTab.ts';
 import useSpectrum from '../hooks/useSpectrum.js';
 
 const Body = styled.div`
@@ -25,7 +29,7 @@ const Body = styled.div`
 const labelStyle: LabelStyle = {
   label: {
     color: '#232323',
-    width: '100px',
+    width: '150px',
   },
   wrapper: {
     display: 'flex',
@@ -39,10 +43,21 @@ interface SelectItem<T> {
   value: T;
 }
 
-type ExportType = 'all' | 'signal';
-type ExportFormatType = 'IMJA' | 'IMJ';
+type ExportFormatType = 'IMJA' | 'IMJ' | 'D';
 
-const exportOptions: Array<SelectItem<ExportType>> = [
+type ExportSignalKind = ACSExportOptions['signalKind'];
+
+const validationSchema = Yup.object().shape({
+  signalKind: Yup.string()
+    .oneOf(['all', 'signal'] as ExportSignalKind[])
+    .required(),
+  ascending: Yup.boolean().required(),
+  format: Yup.string().required(),
+  couplingFormat: Yup.string().required(),
+  deltaFormat: Yup.string().required(),
+});
+
+const exportOptions: Array<SelectItem<ExportSignalKind>> = [
   {
     label: 'Export all',
     value: 'all',
@@ -54,11 +69,15 @@ const exportOptions: Array<SelectItem<ExportType>> = [
 ];
 const exportFormats: Array<SelectItem<ExportFormatType>> = [
   {
-    label: 'Intensity, Multiplicity, Couplings, Assignment',
+    label: 'Delta',
+    value: 'D',
+  },
+  {
+    label: 'Delta, Intensity, Multiplicity, Couplings, Assignment',
     value: 'IMJA',
   },
   {
-    label: 'Intensity, Multiplicity, Couplings',
+    label: 'Delta, Intensity, Multiplicity, Couplings',
     value: 'IMJ',
   },
 ];
@@ -80,28 +99,33 @@ export function PublicationStringModal(props: PublicationStringModalProps) {
   return <InnerPublicationStringModal {...otherProps} />;
 }
 
+const defaultOptions = {
+  signalKind: 'signal',
+  ascending: true,
+  format: 'IMJA',
+  couplingFormat: '0.00',
+  deltaFormat: '0.00',
+};
+
+function useACSSettings() {
+  const nucleus = useActiveNucleusTab();
+  const { current } = usePreferences();
+  return current.acsExportSettings[nucleus] || defaultOptions;
+}
+
 function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
   const { onClose, onCopyClick } = props;
-  const {
-    view: {
-      spectra: { activeTab },
-    },
-  } = useChartData();
-  const { deltaPPM, coupling } = usePanelPreferences('ranges', activeTab);
   const spectrum = useSpectrum();
+  const { dispatch } = usePreferences();
+  const currentACSOptions = useACSSettings();
+  const { control } = useForm<ACSExportOptions>({
+    defaultValues: currentACSOptions,
+    resolver: yupResolver(validationSchema),
+  });
 
-  const [exportType, setExportType] = useState<ExportType>('signal');
-  const [exportFormat, setExportFormat] = useState<ExportFormatType>('IMJA');
+  const options = useWatch({ control });
 
   if (!spectrum || !isSpectrum1D(spectrum)) return null;
-
-  function handleChangeExportOptions(item) {
-    setExportType(item.value);
-  }
-
-  function handleChangeExportFormat(item) {
-    setExportFormat(item.value);
-  }
 
   const {
     info,
@@ -110,8 +134,10 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
 
   const { originFrequency: observedFrequency, nucleus } = info;
 
+  const { signalKind, format, couplingFormat, ...otherOptions } = options;
+
   const ranges =
-    exportType === 'all'
+    signalKind === 'all'
       ? values
       : values.filter((range) =>
           range.signals?.some((signal) => signal.kind === 'signal'),
@@ -119,11 +145,19 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
 
   const value = rangesToACS(ranges, {
     nucleus,
-    deltaFormat: deltaPPM.format,
-    couplingFormat: coupling.format,
     observedFrequency,
-    format: exportFormat,
+    ...otherOptions,
+    ...(format !== 'D' ? { format, couplingFormat } : { format: '' }),
   });
+
+  function handleCopy() {
+    dispatch({
+      type: 'CHANGE_EXPORT_ACS_SETTINGS',
+      payload: { options: options as ACSExportOptions, nucleus },
+    });
+    onCopyClick(value);
+    onClose();
+  }
 
   return (
     <Dialog
@@ -134,34 +168,40 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
     >
       <StyledDialogBody>
         <Label title="Export filter" style={labelStyle}>
-          <Select2
-            defaultSelectedItem={exportOptions[1]}
-            onItemSelect={handleChangeExportOptions}
+          <Select2Controller
+            control={control}
+            name="signalKind"
             items={exportOptions}
           />
         </Label>
         <Label title="Export format" style={labelStyle}>
-          <Select2
-            defaultSelectedItem={exportFormats[0]}
-            onItemSelect={handleChangeExportFormat}
+          <Select2Controller
+            control={control}
+            name="format"
             items={exportFormats}
           />
+        </Label>
+        <Label title="Ascending order" style={labelStyle}>
+          <CheckController control={control} name="ascending" />
+        </Label>
+        <Label title="Delta format" style={labelStyle}>
+          <Input2Controller name={`deltaFormat`} control={control} />
+        </Label>
+        <Label title="Couplings format" style={labelStyle}>
+          <Input2Controller name={`couplingFormat`} control={control} />
         </Label>
 
         <Body>
           {!value ? (
             <EmptyText text="No publication string" />
           ) : (
+            // eslint-disable-next-line react/no-danger
             <div dangerouslySetInnerHTML={{ __html: value }} />
           )}
         </Body>
       </StyledDialogBody>
       <DialogFooter>
-        <Button
-          onClick={() => onCopyClick(value)}
-          intent="success"
-          icon={<FaCopy />}
-        />
+        <Button onClick={handleCopy} intent="success" icon={<FaCopy />} />
       </DialogFooter>
     </Dialog>
   );

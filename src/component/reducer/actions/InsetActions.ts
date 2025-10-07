@@ -3,7 +3,8 @@ import type {
   PeaksViewState,
   RangesViewState,
 } from '@zakodium/nmrium-core';
-import { scaleLinear, zoomIdentity } from 'd3';
+import { scaleLinear } from 'd3-scale';
+import { zoomIdentity } from 'd3-zoom';
 import type { Draft } from 'immer';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
@@ -25,11 +26,7 @@ import {
 import type { FilterType } from '../../utility/filterType.js';
 import type { SpectraDirection, State } from '../Reducer.js';
 import type { ZoomType } from '../helper/Zoom1DManager.js';
-import {
-  ZOOM_TYPES,
-  toScaleRatio,
-  wheelZoom,
-} from '../helper/Zoom1DManager.js';
+import { toScaleRatio, wheelZoom } from '../helper/Zoom1DManager.js';
 import { preparePop } from '../helper/ZoomHistoryManager.js';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
 import getRange from '../helper/getRange.js';
@@ -348,15 +345,15 @@ function handleInsetZoomOut(draft: Draft<State>, action: ZoomOutInsetAction) {
   const pop = preparePop(inset.zoomHistory);
 
   switch (zoomType) {
-    case ZOOM_TYPES.HORIZONTAL: {
+    case 'HORIZONTAL': {
       inset.xDomain = originXDomain;
       inset.zoomHistory = [];
       break;
     }
-    case ZOOM_TYPES.VERTICAL:
+    case 'VERTICAL':
       setZoom(draft, { scale: 0.8, inset });
       break;
-    case ZOOM_TYPES.BIDIRECTIONAL: {
+    case 'BIDIRECTIONAL': {
       const zoomValue = pop();
       if (zoomValue) {
         inset.xDomain = zoomValue.xDomain;

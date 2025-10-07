@@ -22,7 +22,7 @@ import type { ActionsButtonsPopoverProps } from '../../elements/ActionsButtonsPo
 import { ActionsButtonsPopover } from '../../elements/ActionsButtonsPopover.js';
 import { useDialogData } from '../../elements/DialogManager.js';
 import { ResizerWithScale } from '../../elements/ResizerWithScale.js';
-import { HighlightEventSource, useHighlight } from '../../highlight/index.js';
+import { useHighlight } from '../../highlight/index.js';
 import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
 import { useHighlightColor } from '../../hooks/useHighlightColor.js';
 import { useResizerStatus } from '../../hooks/useResizerStatus.js';
@@ -72,7 +72,7 @@ function Range(options: RangeProps) {
       ),
     ),
     {
-      type: HighlightEventSource.RANGE,
+      type: 'RANGE',
       extra: { id, spectrumID: spectrum.id },
     },
   );
@@ -191,6 +191,7 @@ function Range(options: RangeProps) {
       onClosed={() => {
         isAssignBtnTrigged.current = false;
       }}
+      offsetYMode="cursor"
     >
       <g
         data-testid="range"

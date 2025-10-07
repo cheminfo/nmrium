@@ -83,9 +83,10 @@ function xyCalibrate(
     y: data.y.slice(fromIndex, toIndex) as number[],
   };
 
-  const peaks = gsd(sliceddata, gsdOptions)
-    .sort((a, b) => b.y - a.y)
-    .slice(0, nbPeaks);
+  const allPeaks = gsd(sliceddata, gsdOptions);
+  allPeaks.sort((a, b) => b.y - a.y);
+
+  const peaks = allPeaks.slice(0, nbPeaks);
 
   if (peaks.length === 0) return 0;
 

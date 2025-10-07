@@ -6,6 +6,7 @@ import { useResizeObserver } from 'react-d3-utils';
 import { BsArrowsMove } from 'react-icons/bs';
 import { FaTimes } from 'react-icons/fa';
 
+import { useIsInset } from '../../1d/inset/InsetProvider.tsx';
 import { useChartData } from '../../context/ChartContext.js';
 import { useGlobal } from '../../context/GlobalContext.js';
 import { usePreferences } from '../../context/PreferencesContext.js';
@@ -74,6 +75,7 @@ function SpectrumInfoBlock() {
   const coordinate = useInfoPosition(margin);
   const { dispatch } = usePreferences();
   const [isMoveActive, setIsMoveActive] = useState(false);
+  const isInset = useIsInset();
 
   const [currentPosition, setCurrentPosition] = useState<{
     x: number;
@@ -134,7 +136,7 @@ function SpectrumInfoBlock() {
     parentElement: viewerRef,
   });
 
-  if (!visible || !spectrum) return null;
+  if (!visible || !spectrum || isInset) return null;
 
   const bothSidePadding = boxPadding * 2;
   const shift = dragShiftY / 2;
@@ -192,11 +194,8 @@ function SpectrumInfoBlock() {
       direction="row"
       space={2}
       {...(isMoveActive && { isOpen: true })}
-      modifiers={{
-        offset: {
-          data: { x, y },
-        },
-      }}
+      x={x}
+      y={y}
     >
       <g className="spectra-info-block" transform={`translate(${x} ${y})`}>
         <rect

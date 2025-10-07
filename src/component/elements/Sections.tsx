@@ -307,7 +307,6 @@ function SectionItem(props: SectionItemProps) {
     function dragHandler({ source, self }: ElementDropTargetEventBasePayload) {
       const isSource = source.element === dragHandle;
       if (isSource) {
-        // eslint-disable-next-line react-you-might-not-need-an-effect/no-chain-state-updates
         setClosestEdge(null);
         return;
       }

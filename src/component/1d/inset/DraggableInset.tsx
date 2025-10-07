@@ -15,12 +15,14 @@ import { FaSitemap, FaTimes } from 'react-icons/fa';
 import { LuMessageSquareText } from 'react-icons/lu';
 import { Rnd } from 'react-rnd';
 
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.ts';
 import { SVGRootContainer } from '../../1d-2d/components/SVGRootContainer.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useGlobal } from '../../context/GlobalContext.js';
 import type { ActionsButtonsPopoverProps } from '../../elements/ActionsButtonsPopover.js';
 import { ActionsButtonsPopover } from '../../elements/ActionsButtonsPopover.js';
 import { useSVGUnitConverter } from '../../hooks/useSVGUnitConverter.js';
+import useSpectrum from '../../hooks/useSpectrum.ts';
 import { useCheckExportStatus } from '../../hooks/useViewportSize.js';
 import { booleanToString } from '../../utility/booleanToString.js';
 import type { FilterType } from '../../utility/filterType.js';
@@ -213,11 +215,8 @@ export function DraggableInset(props: Inset) {
         targetProps={{ style: { width: '100%', height: '100%' } }}
         space={2}
         {...(isMoveActive && { isOpen: true })}
-        modifiers={{
-          offset: {
-            data: { x, y },
-          },
-        }}
+        x={x}
+        y={y}
       >
         <InsetViewerRoot>
           <InsetProvider
@@ -237,8 +236,105 @@ export function DraggableInset(props: Inset) {
   );
 }
 
+type PeaksAction = 'peaks/showPeaks' | 'peaks/displayingMode';
+type RangesAction =
+  | 'ranges/showPeaks'
+  | 'ranges/displayingMode'
+  | 'ranges/showMultiplicityTrees'
+  | 'ranges/showIntegrals'
+  | 'ranges/showIntegralsValues'
+  | 'ranges/showAssignmentsLabels';
+type IntegralsAction = 'integrals/showIntegrals';
+
+type Actions = PeaksAction | RangesAction | IntegralsAction;
+
+function createPeaksActionsButtons(
+  view: InsetView,
+  onClick: (id: PeaksAction) => void,
+) {
+  return [
+    {
+      icon: <SvgNmrPeaks />,
+      title: `${booleanToString(!view.peaks.showPeaks)} peaks`,
+      onClick: () => onClick('peaks/showPeaks'),
+      active: view.peaks.showPeaks,
+    },
+    {
+      icon: <SvgNmrPeaksTopLabels />,
+      title:
+        view.peaks.displayingMode === 'spread'
+          ? 'Top of the peak'
+          : 'Top of the spectrum',
+      onClick: () => onClick('peaks/displayingMode'),
+      active: view.peaks.displayingMode === 'spread',
+    },
+  ];
+}
+function createIntegralsActionsButtons(
+  view: InsetView,
+  onClick: (id: IntegralsAction) => void,
+) {
+  return [
+    {
+      icon: <SvgNmrIntegrate />,
+      title: `${booleanToString(!view.integrals.showIntegralsValues)} integrals values`,
+      onClick: () => onClick('integrals/showIntegrals'),
+      active: view.integrals.showIntegralsValues,
+    },
+  ];
+}
+function createRangesActionsButtons(
+  view: InsetView,
+  onClick: (id: RangesAction) => void,
+) {
+  return [
+    {
+      icon: <FaSitemap />,
+      title: `${booleanToString(!view.ranges.showMultiplicityTrees)} multiplicity trees in spectrum`,
+      onClick: () => onClick('ranges/showMultiplicityTrees'),
+      active: view.ranges.showMultiplicityTrees,
+    },
+    {
+      icon: <SvgNmrIntegrate />,
+      title: `${booleanToString(!view.ranges.showIntegrals)} integrals`,
+      onClick: () => onClick('ranges/showIntegrals'),
+      active: view.ranges.showIntegrals,
+    },
+    {
+      icon: <SvgNmrIntegrate />,
+      title: `${booleanToString(!view.ranges.showIntegralsValues)} integrals values`,
+      onClick: () => onClick('ranges/showIntegralsValues'),
+      active: view.ranges.showIntegralsValues,
+    },
+
+    {
+      id: 'ranges/showPeaks',
+      icon: <SvgNmrPeaks />,
+      title: `${booleanToString(!view.ranges.showPeaks)} peaks`,
+      onClick: () => onClick('ranges/showPeaks'),
+      active: view.ranges.showPeaks,
+    },
+    {
+      icon: <SvgNmrPeaksTopLabels />,
+      title:
+        view.ranges.displayingMode === 'spread'
+          ? 'Top of the peak'
+          : 'Top of the spectrum',
+      onClick: () => onClick('ranges/displayingMode'),
+      active: view.ranges.displayingMode === 'spread',
+    },
+    {
+      icon: <LuMessageSquareText />,
+      title: `${booleanToString(!view.ranges.showAssignmentsLabels)} assignments labels`,
+      onClick: () => onClick('ranges/showAssignmentsLabels'),
+      active: view.ranges.showAssignmentsLabels,
+    },
+  ];
+}
+
 function useActionButtons(insetKey: string, view: InsetView) {
   const dispatch = useDispatch();
+  const spectrum = useSpectrum();
 
   function handleRemove() {
     dispatch({
@@ -279,10 +375,9 @@ function useActionButtons(insetKey: string, view: InsetView) {
     });
   }
 
-  const actionsButtons: ActionsButtonsPopoverProps['buttons'] = [
+  let actionsButtons: ActionsButtonsPopoverProps['buttons'] = [
     {
       icon: <BsArrowsMove />,
-
       intent: 'none',
       title: 'Move inset',
       style: { cursor: 'move' },
@@ -294,74 +389,62 @@ function useActionButtons(insetKey: string, view: InsetView) {
       title: 'Remove inset',
       onClick: handleRemove,
     },
-    { elementType: 'separator' },
-
-    {
-      icon: <SvgNmrPeaks />,
-      title: `${booleanToString(!view.peaks.showPeaks)} peaks`,
-      onClick: () => handleTogglePeaksViewProperty('showPeaks'),
-      active: view.peaks.showPeaks,
-    },
-    {
-      icon: <SvgNmrPeaksTopLabels />,
-      title:
-        view.peaks.displayingMode === 'spread'
-          ? 'Top of the peak'
-          : 'Top of the spectrum',
-      onClick: () => handleToggleInsetsDisplayingPeaksMode('peaks'),
-      active: view.peaks.displayingMode === 'spread',
-    },
-    { elementType: 'separator' },
-
-    {
-      icon: <FaSitemap />,
-      title: `${booleanToString(!view.ranges.showMultiplicityTrees)} multiplicity trees in spectrum`,
-      onClick: () => handleToggleRangesViewProperty('showMultiplicityTrees'),
-      active: view.ranges.showMultiplicityTrees,
-    },
-    {
-      icon: <SvgNmrIntegrate />,
-      title: `${booleanToString(!view.ranges.showIntegrals)} integrals`,
-      onClick: () => handleToggleRangesViewProperty('showIntegrals'),
-      active: view.ranges.showIntegrals,
-    },
-    {
-      icon: <SvgNmrIntegrate />,
-      title: `${booleanToString(!view.ranges.showIntegralsValues)} integrals values`,
-      onClick: () => handleToggleRangesViewProperty('showIntegralsValues'),
-      active: view.ranges.showIntegralsValues,
-    },
-
-    {
-      id: 'ranges-toggle-peaks',
-      icon: <SvgNmrPeaks />,
-      title: `${booleanToString(!view.ranges.showPeaks)} peaks`,
-      onClick: () => handleToggleRangesViewProperty('showPeaks'),
-      active: view.ranges.showPeaks,
-    },
-    {
-      icon: <SvgNmrPeaksTopLabels />,
-      title:
-        view.ranges.displayingMode === 'spread'
-          ? 'Top of the peak'
-          : 'Top of the spectrum',
-      onClick: () => handleToggleInsetsDisplayingPeaksMode('ranges'),
-      active: view.ranges.displayingMode === 'spread',
-    },
-    {
-      icon: <LuMessageSquareText />,
-      title: `${booleanToString(!view.ranges.showAssignmentsLabels)} assignments labels`,
-      onClick: () => handleToggleRangesViewProperty('showAssignmentsLabels'),
-      active: view.ranges.showAssignmentsLabels,
-    },
-    { elementType: 'separator' },
-    {
-      icon: <SvgNmrIntegrate />,
-      title: `${booleanToString(!view.integrals.showIntegralsValues)} integrals values`,
-      onClick: () => handleToggleIntegralsViewProperty('showIntegralsValues'),
-      active: view.integrals.showIntegralsValues,
-    },
   ];
+
+  if (!isSpectrum1D(spectrum)) {
+    return actionsButtons;
+  }
+
+  const hasRanges = spectrum.ranges.values.length > 0;
+  const hasIntegrals = spectrum.integrals.values.length > 0;
+  const hasPeaks = spectrum.peaks.values.length > 0;
+
+  const handlers: Record<Actions, () => void> = {
+    'peaks/showPeaks': () => handleTogglePeaksViewProperty('showPeaks'),
+    'peaks/displayingMode': () =>
+      handleToggleInsetsDisplayingPeaksMode('peaks'),
+    'ranges/showMultiplicityTrees': () =>
+      handleToggleRangesViewProperty('showMultiplicityTrees'),
+    'ranges/showIntegrals': () =>
+      handleToggleRangesViewProperty('showIntegrals'),
+    'ranges/showIntegralsValues': () =>
+      handleToggleRangesViewProperty('showIntegralsValues'),
+    'ranges/showPeaks': () => handleToggleRangesViewProperty('showPeaks'),
+    'ranges/displayingMode': () =>
+      handleToggleInsetsDisplayingPeaksMode('ranges'),
+    'ranges/showAssignmentsLabels': () =>
+      handleToggleRangesViewProperty('showAssignmentsLabels'),
+    'integrals/showIntegrals': () =>
+      handleToggleIntegralsViewProperty('showIntegralsValues'),
+  };
+
+  function handleClick(id: Actions) {
+    handlers[id]?.();
+  }
+
+  if (hasPeaks) {
+    actionsButtons = [
+      ...actionsButtons,
+      { elementType: 'separator' },
+      ...createPeaksActionsButtons(view, handleClick),
+    ];
+  }
+
+  if (hasRanges) {
+    actionsButtons = [
+      ...actionsButtons,
+      { elementType: 'separator' },
+      ...createRangesActionsButtons(view, handleClick),
+    ];
+  }
+
+  if (hasIntegrals) {
+    actionsButtons = [
+      ...actionsButtons,
+      { elementType: 'separator' },
+      ...createIntegralsActionsButtons(view, handleClick),
+    ];
+  }
 
   return actionsButtons;
 }

@@ -1,6 +1,6 @@
-import type { Range, Signal1D } from '@zakodium/nmr-types';
+import type { Range } from '@zakodium/nmr-types';
 
-function isAssigned(object: Range | Signal1D) {
+export function isAssigned(object: { nbAtoms?: number; diaIDs?: string[] }) {
   return (
     (object?.nbAtoms && object.nbAtoms > 0) ||
     (object?.diaIDs && object.diaIDs.length > 0)

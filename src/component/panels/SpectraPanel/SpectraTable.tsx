@@ -67,14 +67,14 @@ const options: ContextMenuItem[] = [
   },
 ];
 
-enum SpectraContextMenuOptionsKeys {
-  CopyToClipboard = 'CopyToClipboard',
-  Delete = 'Delete',
-  ExportAsJcamp = 'ExportAsJcamp',
-  ExportAsText = 'ExportAsText',
-  CopyAsText = 'CopyAsText',
-  ExportForCT = 'ExportForCT',
-}
+const SpectraContextMenuOptionsKeys = {
+  CopyToClipboard: 'CopyToClipboard',
+  Delete: 'Delete',
+  ExportAsJcamp: 'ExportAsJcamp',
+  ExportAsText: 'ExportAsText',
+  CopyAsText: 'CopyAsText',
+  ExportForCT: 'ExportForCT',
+} as const;
 
 const Spectra2DContextMenuOptions: ContextMenuItem[] = [
   {

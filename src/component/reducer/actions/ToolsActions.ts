@@ -1,6 +1,6 @@
 import type { BaselineCorrectionZone } from '@zakodium/nmr-types';
 import type { Spectrum1D, Spectrum2D, Spectrum } from '@zakodium/nmrium-core';
-import { zoomIdentity } from 'd3';
+import { zoomIdentity } from 'd3-zoom';
 import type { Draft } from 'immer';
 
 import { contoursManager } from '../../../data/data2d/Spectrum2D/contours.js';
@@ -14,17 +14,12 @@ import type {
 } from '../../EventsTrackers/BrushTracker.js';
 import type { Tool } from '../../toolbar/ToolTypes.js';
 import { options as Tools } from '../../toolbar/ToolTypes.js';
-import groupByInfoKey from '../../utility/GroupByInfoKey.js';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus.js';
+import groupByInfoKey from '../../utility/groupByInfoKey.js';
 import type { State } from '../Reducer.js';
 import { MARGIN } from '../core/Constants.js';
 import type { ZoomType } from '../helper/Zoom1DManager.js';
-import {
-  ZOOM_TYPES,
-  setZoom,
-  toScaleRatio,
-  wheelZoom,
-} from '../helper/Zoom1DManager.js';
+import { setZoom, toScaleRatio, wheelZoom } from '../helper/Zoom1DManager.js';
 import zoomHistoryManager, {
   addToBrushHistory,
 } from '../helper/ZoomHistoryManager.js';
@@ -479,15 +474,15 @@ function zoomOut(draft: Draft<State>, action: ZoomOutAction) {
 
     if (draft.displayerMode === '1D') {
       switch (zoomType) {
-        case ZOOM_TYPES.HORIZONTAL: {
+        case 'HORIZONTAL': {
           draft.xDomain = xDomain;
           zoomHistory.clear();
           break;
         }
-        case ZOOM_TYPES.VERTICAL:
+        case 'VERTICAL':
           setZoom(draft, { scale: 0.8 });
           break;
-        case ZOOM_TYPES.BIDIRECTIONAL: {
+        case 'BIDIRECTIONAL': {
           const zoomValue = zoomHistory.pop();
           if (zoomValue) {
             draft.xDomain = zoomValue.xDomain;
@@ -582,9 +577,8 @@ function setTabActiveSpectrum(draft: Draft<State>, dataGroupByTab) {
   const tabs2D: any[] = [];
   const tabActiveSpectrum = {};
 
-  const tabkeys = Object.keys(dataGroupByTab).sort((a, b) =>
-    a.split(',').length > b.split(',').length ? -1 : 1,
-  );
+  const tabkeys = Object.keys(dataGroupByTab);
+  tabkeys.sort((a, b) => (a.split(',').length > b.split(',').length ? -1 : 1));
   for (const tabKey of tabkeys) {
     const data = dataGroupByTab[tabKey];
     const nucleusLength = tabKey.split(',').length;
@@ -628,7 +622,8 @@ function setTabActiveSpectrum(draft: Draft<State>, dataGroupByTab) {
 
 //utility
 function setTab(draft: Draft<State>, dataGroupByTab, tab, refresh = false) {
-  const groupByTab = Object.keys(dataGroupByTab).sort((a, b) =>
+  const groupByTab = Object.keys(dataGroupByTab);
+  groupByTab.sort((a, b) =>
     a.split(',').length > b.split(',').length ? -1 : 1,
   );
 

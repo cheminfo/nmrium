@@ -22,7 +22,7 @@ interface CustomToolbarPopoverItemProps<T = object>
     > {
   itemProps?: Omit<ToolbarItemProps, 'onClick' | 'disabled'>;
   options: Array<ToolbarPopoverMenuItem<T>>;
-  onClick: (data?: T) => void;
+  onClick?: (data?: T) => void;
 }
 
 export function ToolbarPopoverItem<T = object>(
@@ -45,6 +45,7 @@ export function ToolbarPopoverItem<T = object>(
     <Toolbar.PopoverItem
       disabled={disabled}
       {...otherPopoverItemProps}
+      autoFocus={false}
       content={
         <Menu>
           {options.map((option) => {
@@ -53,13 +54,13 @@ export function ToolbarPopoverItem<T = object>(
               text,
               tooltip = '',
               tooltipProps,
-              disabled = !option.tooltip,
+              disabled,
               ...otherOptions
             } = option;
             return (
               <Tooltip
                 key={JSON.stringify({ data, text })}
-                disabled={disabled}
+                disabled={disabled ?? !option.tooltip}
                 content={
                   typeof tooltip === 'string' ? (
                     tooltip
@@ -78,10 +79,11 @@ export function ToolbarPopoverItem<T = object>(
                     })}
                 renderTarget={({ isOpen, ...props }) => (
                   <MenuItem
+                    disabled={disabled}
                     text={text}
+                    onClick={() => onClick?.(data)}
                     {...otherOptions}
                     {...props}
-                    onClick={() => onClick(data)}
                   />
                 )}
               />

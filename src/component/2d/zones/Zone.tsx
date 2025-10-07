@@ -7,11 +7,12 @@ import { useAssignment } from '../../assignment/AssignmentsContext.js';
 import { useShareData } from '../../context/ShareDataContext.js';
 import type { ActionsButtonsPopoverProps } from '../../elements/ActionsButtonsPopover.js';
 import { ActionsButtonsPopover } from '../../elements/ActionsButtonsPopover.js';
-import { HighlightEventSource, useHighlight } from '../../highlight/index.js';
+import { useHighlight } from '../../highlight/index.js';
 import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState.js';
 import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 
 import Signal from './Signal.js';
+import { SignalCrosshair } from './SignalCrosshair.tsx';
 
 interface ZoneProps {
   zoneData: ZoneType;
@@ -24,7 +25,7 @@ function Zone({ zoneData }: ZoneProps) {
   const assignmentZone = useAssignment(id);
   const { showZones } = useActiveSpectrumZonesViewState();
   const highlightZone = useHighlight([id], {
-    type: HighlightEventSource.ZONE,
+    type: 'ZONE',
     extra: { id },
   });
   const scaleX = useScale2DX();
@@ -54,21 +55,25 @@ function Zone({ zoneData }: ZoneProps) {
   ];
 
   return (
-    <ActionsButtonsPopover
-      buttons={actionButtons}
-      targetTagName="g"
-      {...(assignment && { isOpen: false })}
+    <g
+      key={id}
+      onMouseEnter={() => {
+        assignmentZone.highlight();
+        highlightZone.show();
+      }}
+      onMouseLeave={() => {
+        assignmentZone.clearHighlight();
+        highlightZone.hide();
+      }}
     >
-      <g
-        key={id}
-        onMouseEnter={() => {
-          assignmentZone.highlight();
-          highlightZone.show();
-        }}
-        onMouseLeave={() => {
-          assignmentZone.clearHighlight();
-          highlightZone.hide();
-        }}
+      {signals.map((signal) => (
+        <SignalCrosshair key={signal.id} signal={signal} />
+      ))}
+
+      <ActionsButtonsPopover
+        buttons={actionButtons}
+        targetTagName="g"
+        {...(assignment && { isOpen: false })}
       >
         {showZones && (
           <g transform={`translate(${scaleX(x2)},${scaleY(y1)})`}>
@@ -87,8 +92,8 @@ function Zone({ zoneData }: ZoneProps) {
           // eslint-disable-next-line react/no-array-index-key
           <Signal key={id + i} signal={_signal} />
         ))}
-      </g>
-    </ActionsButtonsPopover>
+      </ActionsButtonsPopover>
+    </g>
   );
 }
 
