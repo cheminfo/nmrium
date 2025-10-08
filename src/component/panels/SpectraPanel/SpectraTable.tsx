@@ -8,7 +8,7 @@ import type {
   StateMolecule,
 } from '@zakodium/nmrium-core';
 import dlv from 'dlv';
-import { saveAs } from 'file-saver';
+import saveAs from 'file-saver';
 import type { CSSProperties } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import { FaCopy, FaFileExport, FaRegTrashAlt } from 'react-icons/fa';

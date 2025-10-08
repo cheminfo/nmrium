@@ -5,7 +5,7 @@ import {
   SvgNmrPeaks,
   SvgNmrPeaksTopLabels,
 } from 'cheminfo-font';
-import { saveAs } from 'file-saver';
+import saveAs from 'file-saver';
 import { rangesToTSV } from 'nmr-processing';
 import {
   FaChartBar,

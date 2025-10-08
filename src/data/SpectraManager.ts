@@ -10,7 +10,7 @@ import {
   spectrum1DToJCAMPDX,
 } from '@zakodium/nmrium-core-plugins';
 import { BlobWriter, TextReader, ZipWriter } from '@zip.js/zip.js';
-import { saveAs } from 'file-saver';
+import saveAs from 'file-saver';
 import * as OCL from 'openchemlib';
 
 import type { State } from '../component/reducer/Reducer.js';

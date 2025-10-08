@@ -6,7 +6,7 @@ import type {
 } from '@zakodium/nmrium-core';
 import { BlobWriter, TextReader, ZipWriter } from '@zip.js/zip.js';
 import dlv from 'dlv';
-import { saveAs } from 'file-saver';
+import saveAs from 'file-saver';
 
 export const browserNotSupportedErrorToast: ToastProps = {
   message:
