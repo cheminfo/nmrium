@@ -177,7 +177,7 @@ function DatabasePanelInner({
   }, [idCode, keywords, search, toaster]);
 
   useEffect(() => {
-    function handle(event) {
+    function handle(event: any) {
       if (selectedTool === options.databaseRangesSelection.id) {
         setKeywords((prevState) => {
           const oldKeywords = prevState.searchKeywords
@@ -220,7 +220,7 @@ function DatabasePanelInner({
   }, [nucleus, toaster]);
 
   const handleChangeDatabase = useCallback(
-    (databaseKey) => {
+    (databaseKey: any) => {
       const database = databases.find((item) => item.key === databaseKey);
 
       setTimeout(async () => {
@@ -234,8 +234,8 @@ function DatabasePanelInner({
           try {
             databaseDataRef.current = await fetch(url)
               .then((response) => response.json())
-              .then((databaseRecords) =>
-                databaseRecords.map((record) => ({
+              .then((databaseRecords: any) =>
+                databaseRecords.map((record: any) => ({
                   ...record,
                   baseURL: url,
                 })),
@@ -282,7 +282,7 @@ function DatabasePanelInner({
 
   const core = useCore();
   const resurrectHandler = useCallback(
-    (rowData) => {
+    (rowData: any) => {
       const {
         index,
         baseURL,
@@ -327,7 +327,7 @@ function DatabasePanelInner({
     [core, dispatch, result.data, toaster],
   );
   const saveHandler = useCallback(
-    (row) => {
+    (row: any) => {
       if (row?.jcampURL) {
         setTimeout(async () => {
           const hideLoading = toaster.showLoading({
@@ -353,7 +353,7 @@ function DatabasePanelInner({
     [core, result, toaster],
   );
   const removeHandler = useCallback(
-    (row) => {
+    (row: any) => {
       const { spectrumID: id } = row;
       if (!id) {
         return;
@@ -509,7 +509,11 @@ function mapSolventsToSelect(solvents: string[]) {
   return result;
 }
 
-async function saveJcampAsJson(core: NMRiumCore, rowData, filteredData) {
+async function saveJcampAsJson(
+  core: NMRiumCore,
+  rowData: any,
+  filteredData: any,
+) {
   const { index, baseURL, jcampURL, names, ocl = {}, smiles } = rowData;
   const { ranges } = filteredData.data[index];
   const url = new URL(jcampURL, baseURL);

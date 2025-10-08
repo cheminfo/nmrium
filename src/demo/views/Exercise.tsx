@@ -10,14 +10,14 @@ import { NMRium } from '../../component/main/index.js';
 
 const answers = JSON.parse(localStorage.getItem('nmrium-exercises') || '{}');
 
-async function loadData(file) {
+async function loadData(file: any) {
   const response = await fetch(file);
   checkStatus(response);
   const data = await response.json();
   return data;
 }
 
-function checkStatus(response) {
+function checkStatus(response: any) {
   if (!response.ok) {
     throw new Error(`HTTP ${response.status} - ${response.statusText}`);
   }
@@ -127,14 +127,14 @@ interface ExerciceData extends NMRiumData {
   };
 }
 
-export default function Exercise(props) {
+export default function Exercise(props: any) {
   const [data, setData] = useState<ExerciceData | undefined>();
   const [resultFlag, setResultFlag] = useState<boolean | null>(null);
   const [answerAreaVisible, showAnswerArea] = useState(false);
   const { file, title, baseURL } = props;
 
   const checkAnswer = useCallback(
-    (response) => {
+    (response: any) => {
       if (!data?.answer) return;
 
       const MolResponse = Molecule.fromMolfile(response.getMolfileV3());
@@ -152,7 +152,7 @@ export default function Exercise(props) {
 
     let canceled = false;
     loadData(file)
-      .then((d) => {
+      .then((d: any) => {
         if (canceled) return;
 
         const _d = JSON.parse(JSON.stringify(d).replaceAll(/\.\/+?/g, baseURL));

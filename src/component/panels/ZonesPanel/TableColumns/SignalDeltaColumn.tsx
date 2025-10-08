@@ -35,7 +35,7 @@ function SignalDeltaColumn({ rowData, nucleus }: SignalDeltaColumnProps) {
   // @ts-expect-error Type is wrong.
   const id = rowData.tableMetaInfo.signal.id;
 
-  function saveXHandler(event) {
+  function saveXHandler(event: any) {
     const value = Number(event.target.value);
     dispatch({
       type: 'CHANGE_ZONE_SIGNAL_VALUE',
@@ -46,7 +46,7 @@ function SignalDeltaColumn({ rowData, nucleus }: SignalDeltaColumnProps) {
     });
   }
 
-  function saveYHandler(event) {
+  function saveYHandler(event: any) {
     const value = Number(event.target.value);
     dispatch({
       type: 'CHANGE_ZONE_SIGNAL_VALUE',

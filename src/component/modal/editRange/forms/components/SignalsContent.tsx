@@ -1,5 +1,6 @@
 import { Tab, Tabs } from '@blueprintjs/core';
 import type { Range } from '@zakodium/nmr-types';
+import type { PropsWithChildren } from 'react';
 import {
   createContext,
   memo,
@@ -41,7 +42,7 @@ export function useEventFocusInput() {
   return context;
 }
 
-function FocusInputProvider({ children }) {
+function FocusInputProvider({ children }: Required<PropsWithChildren>) {
   const [focusSource, setFocusSource] = useState<FocusSource>(null);
 
   const state = useMemo(() => {
@@ -61,8 +62,8 @@ function SignalsContent({ range }: SignalsFormProps) {
   const { signals } = useWatch();
 
   const handleDeleteSignal = useCallback(
-    (index) => {
-      const _signals = signals.filter((_signal, i) => i !== index);
+    (index: any) => {
+      const _signals = signals.filter((_signal: any, i: any) => i !== index);
       setValue('signals', _signals);
       selectTab(signals.length - 2 || 0);
     },
@@ -72,7 +73,7 @@ function SignalsContent({ range }: SignalsFormProps) {
   const signalFormTabs = useMemo(() => {
     const signalTabs: any[] =
       signals.length > 0
-        ? signals.map((signal, i) => (
+        ? signals.map((signal: any, i: any) => (
             <Tab
               // eslint-disable-next-line react/no-array-index-key
               key={`signalForm${i}`}

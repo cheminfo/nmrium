@@ -4,7 +4,7 @@ export function getSpectraObjectPaths(
   spectra: Spectrum[],
   keys: Array<keyof Spectrum> = ['display', 'meta', 'info', 'customInfo'],
 ) {
-  const paths = {};
+  const paths: Record<string, string[]> = {};
 
   for (const spectrum of spectra) {
     for (const key of keys) {

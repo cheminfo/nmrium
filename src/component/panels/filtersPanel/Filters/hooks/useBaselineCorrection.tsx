@@ -35,7 +35,7 @@ function findAlgorithmItem(algorithmName: string) {
 }
 
 export function getBaselineData(
-  algorithm,
+  algorithm: any,
   filterValues?: BaselineCorrectionOptions | null,
 ) {
   const { algorithm: baseAlgorithm, ...other } = filterValues || {};
@@ -111,7 +111,7 @@ export function useBaselineCorrection(
     resolver: resolver as any,
   });
 
-  function syncWatch(sharedFilterOptions) {
+  function syncWatch(sharedFilterOptions: any) {
     const { algorithm } = sharedFilterOptions;
     const algorithmItem = findAlgorithmItem(algorithm);
     if (algorithmItem) {
@@ -124,7 +124,7 @@ export function useBaselineCorrection(
     useSyncedFilterOptions(syncWatch);
 
   const onChange = useCallback(
-    (values) => {
+    (values: any) => {
       const { livePreview, ...options } = values;
 
       if (livePreview || previousPreviewRef !== livePreview) {
@@ -141,7 +141,7 @@ export function useBaselineCorrection(
   );
 
   const handleApplyFilter = (
-    values,
+    values: any,
     triggerSource: 'apply' | 'onChange' = 'apply',
   ) => {
     const { livePreview, ...options } = values;

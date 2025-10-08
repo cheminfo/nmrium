@@ -52,7 +52,7 @@ export interface SelectDefaultItem {
 
 function InnerSelect2<T extends Record<string, any> = SelectDefaultItem>(
   props: Select2Props<T>,
-  ref,
+  ref: any,
 ) {
   const {
     items,

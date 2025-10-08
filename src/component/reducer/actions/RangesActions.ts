@@ -188,7 +188,11 @@ export type RangesActions =
       | 'TOGGLE_RANGES_PEAKS_DISPLAYING_MODE'
     >;
 
-function getRangeByIndex(draft: Draft<State>, spectrumIndex, rangeID) {
+function getRangeByIndex(
+  draft: Draft<State>,
+  spectrumIndex: any,
+  rangeID: any,
+) {
   return (draft.data[spectrumIndex] as Spectrum1D).ranges.values.findIndex(
     (range) => range.id === rangeID,
   );
@@ -289,7 +293,7 @@ function handleDeleteRange(draft: Draft<State>, action: DeleteRangeAction) {
 
   const datum = getSpectrum(draft, spectrumKey);
 
-  if (!datum) {
+  if (!datum || !isSpectrum1D(datum)) {
     return;
   }
 
@@ -472,9 +476,9 @@ function handleResizeRange(draft: Draft<State>, action: ResizeRangeAction) {
 
   if (!spectrum) return;
 
-  if (!range && !isSpectrum1D(spectrum)) return;
+  if (!range || !isSpectrum1D(spectrum)) return;
 
-  const index = spectrum.ranges.values.findIndex((i) => i.id === range.id);
+  const index = spectrum.ranges.values.findIndex((i: any) => i.id === range.id);
 
   spectrum.ranges.values[index] = range;
   updateRangesRelativeValues(spectrum);
@@ -536,7 +540,7 @@ function handleAddRange(draft: Draft<State>, action: AddRangeAction) {
 
 //action
 function handleChangeRangeRelativeValue(
-  draft,
+  draft: any,
   action: ChangeRangeRelativeValueAction,
 ) {
   const data = action.payload;
@@ -549,7 +553,7 @@ function handleChangeRangeRelativeValue(
 
 //action
 function handleChangeRangeSignalValue(
-  draft,
+  draft: any,
   action: ChangeRangeSignalValueAction,
 ) {
   const { rangeID, signalID, value } = action.payload;
@@ -658,10 +662,12 @@ function handleDeleteRangePeak(
   const spectrum = getSpectrum(draft, spectrumKey);
   if (!spectrum) return;
 
-  const range = spectrum.ranges.values.find((range) => range.id === rangeKey);
-  const signal = range?.signals.find((singla) => singla.id === signalKey);
+  const range = (spectrum as any).ranges.values.find(
+    (range: any) => range.id === rangeKey,
+  );
+  const signal = range?.signals.find((singla: any) => singla.id === signalKey);
   if (signal) {
-    signal.peaks = signal.peaks?.filter((peak) => peak.id !== peakKey);
+    signal.peaks = signal.peaks?.filter((peak: any) => peak.id !== peakKey);
   }
 }
 

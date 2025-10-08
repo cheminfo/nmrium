@@ -101,7 +101,7 @@ function ExportOptions(props: ExportOptionsProps) {
     sizesList = getSizesList(layout);
   }
 
-  function handleChangeMode(mode) {
+  function handleChangeMode(mode: any) {
     const options = defaultValue;
     setMode(mode);
     if (options.mode === mode) {

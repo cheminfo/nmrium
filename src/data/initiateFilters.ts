@@ -1,8 +1,4 @@
-import type { Filter1D, Filter2D } from 'nmr-processing';
-
-export function initiateFilters(
-  inputFilters: Filter1D[] | Filter2D[] | undefined,
-) {
+export function initiateFilters(inputFilters: any): any {
   if (!inputFilters || !Array.isArray(inputFilters)) return [];
 
   return inputFilters.map((filter) => ({

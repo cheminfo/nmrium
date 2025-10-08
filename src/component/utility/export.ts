@@ -6,7 +6,7 @@ import type {
 } from '@zakodium/nmrium-core';
 import { BlobWriter, TextReader, ZipWriter } from '@zip.js/zip.js';
 import dlv from 'dlv';
-import fileSaver from 'file-saver';
+import saveAs from 'file-saver';
 
 export const browserNotSupportedErrorToast: ToastProps = {
   message:
@@ -22,26 +22,26 @@ export const browserNotSupportedErrorToast: ToastProps = {
  * @param isCompressed
  */
 async function exportAsJSON(
-  data,
+  data: any,
   fileName = 'experiment',
   spaceIndent = 0,
   isCompressed = false,
 ) {
   const fileData = JSON.stringify(
     data,
-    (key, value) =>
+    (key, value: any) =>
       ArrayBuffer.isView(value) ? Array.from(value as any) : value,
     spaceIndent,
   );
   if (!isCompressed) {
     const blob = new Blob([fileData], { type: 'text/plain' });
-    fileSaver.saveAs(blob, `${fileName}.nmrium`);
+    saveAs(blob, `${fileName}.nmrium`);
   } else {
     try {
       const zip = new ZipWriter(new BlobWriter());
       await zip.add(`${fileName}.nmrium`, new TextReader(fileData));
       const blob = await zip.close();
-      fileSaver.saveAs(blob, `${fileName}.nmrium`);
+      saveAs(blob, `${fileName}.nmrium`);
     } catch (error) {
       // TODO: handle error.
       reportError(error);
@@ -50,7 +50,7 @@ async function exportAsJSON(
 }
 
 function exportAsMatrix(
-  data,
+  data: any,
   spectraColumns: SpectraTableColumn[],
   fileName = 'experiment',
 ) {
@@ -88,7 +88,7 @@ function exportAsMatrix(
   }
 
   const blob = new Blob([matrix], { type: 'text/tab-separated-values' });
-  fileSaver.saveAs(blob, `${fileName}.tsv`);
+  saveAs(blob, `${fileName}.tsv`);
 }
 
 interface ExportDimensions {
@@ -105,7 +105,7 @@ interface ExportAsSVGOptions extends ExportDimensions {
 function exportAsSVG(targetElementID: string, options: ExportAsSVGOptions) {
   const { fileName, rootElement } = options;
   const { blob } = getBlob(targetElementID, { rootElement });
-  fileSaver.saveAs(blob, `${fileName}.svg`);
+  saveAs(blob, `${fileName}.svg`);
 }
 
 interface ExportAsPNGOptions {
@@ -259,7 +259,7 @@ async function exportAsPng(
   });
 
   const pngBlob = await canvas.convertToBlob({ type: 'image/png' });
-  fileSaver.saveAs(pngBlob, `${fileName}.png`);
+  saveAs(pngBlob, `${fileName}.png`);
 }
 
 function createImageFromBlob(blob: Blob): Promise<HTMLImageElement> {
@@ -294,7 +294,7 @@ function transferToCanvas(offscreenCanvas: OffscreenCanvas) {
 // hack way to copy the image to the clipboard
 // TODO: remove when Firefox widely supports ClipboardItem
 // https://caniuse.com/mdn-api_clipboarditem
-function copyDataURLClipboardFireFox(image) {
+function copyDataURLClipboardFireFox(image: any) {
   const img = document.createElement('img');
   img.src = image;
 

@@ -7,6 +7,7 @@ import {
   useReducer,
   useRef,
 } from 'react';
+import { assert } from 'react-science/ui';
 
 import type { ActionType } from '../reducer/types/ActionType.js';
 
@@ -74,7 +75,7 @@ const initialState: BrushTrackerState = {
   boundingRect: null,
 };
 
-function stopPageScrolling(event) {
+function stopPageScrolling(event: any) {
   event.preventDefault();
 }
 
@@ -525,8 +526,6 @@ export function detectBrushing(
   coordination: BrushCoordination,
   options: DetectBrushingOptions,
 ): DetectBrushingResult {
-  let xThreshold;
-  let yThreshold;
   const { width, height, thresholdFormat, thresholdAxis = 'both' } = options;
   const { startX: x1, endX: x2, startY: y1, endY: y2 } = coordination;
   const startX = Math.min(x1, x2);
@@ -539,13 +538,14 @@ export function detectBrushing(
   const xDiff = Math.abs(endX - startX);
   const yDiff = Math.abs(endY - startY);
 
+  let xThreshold: number;
+  let yThreshold: number;
   if (thresholdFormat === 'relative') {
     const { threshold = 0.02 } = options;
     xThreshold = width * threshold;
     yThreshold = height * threshold;
-  }
-
-  if (thresholdFormat === 'fixed') {
+  } else {
+    assert(thresholdFormat === 'fixed');
     const { thresholdSize = 80 } = options;
     xThreshold = thresholdSize;
     yThreshold = thresholdSize;

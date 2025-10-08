@@ -55,7 +55,7 @@ export function usePhaseCorrection(
       itemTextKey: 'label',
     });
 
-  function syncWatch(sharedFilterOptions) {
+  function syncWatch(sharedFilterOptions: any) {
     updateInputRangeInitialValue(sharedFilterOptions);
     setValue(sharedFilterOptions);
   }
@@ -108,7 +108,7 @@ export function usePhaseCorrection(
   }
 
   const calcPhaseCorrectionHandler = useCallback(
-    (newValues, filedName) => {
+    (newValues: any, filedName: any) => {
       if (filedName === 'ph1' && data.re) {
         const diff0 = newValues.ph0 - valueRef.current.ph0;
         const diff1 = newValues.ph1 - valueRef.current.ph1;
@@ -123,14 +123,14 @@ export function usePhaseCorrection(
     [data.re, dispatch, pivot?.index],
   );
 
-  const updateInputRangeInitialValue = useCallback((value) => {
+  const updateInputRangeInitialValue = useCallback((value: any) => {
     // update InputRange initial value
     ph0Ref.current?.setValue(value.ph0);
     ph1Ref.current?.setValue(value.ph1);
   }, []);
 
   const handleInput = useCallback(
-    (valueAsNumber, valueAsString, element) => {
+    (valueAsNumber: any, valueAsString: any, element: any) => {
       const { name } = element;
 
       if (Number.isNaN(valueAsNumber)) return;
@@ -152,7 +152,7 @@ export function usePhaseCorrection(
   );
 
   const handleRangeChange = useCallback(
-    (e) => {
+    (e: any) => {
       const newValue = { ...valueRef.current, [e.name]: e.value };
       calcPhaseCorrectionHandler(newValue, e.name);
       updateInputRangeInitialValue(newValue);

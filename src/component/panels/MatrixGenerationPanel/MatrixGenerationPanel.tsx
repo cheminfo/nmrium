@@ -3,6 +3,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import type { MatrixOptions } from '@zakodium/nmr-types';
 import { SvgNmrMultipleAnalysis } from 'cheminfo-font';
 import { Filters1D } from 'nmr-processing';
+import type { ReactNode } from 'react';
 import { useCallback, useMemo } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Button, Toolbar } from 'react-science/ui';
@@ -132,7 +133,7 @@ function InnerMatrixGenerationPanel() {
     [nucleusMatrixOptions.matrixOptions, originDomain.xDomain],
   );
 
-  function handleSave(options) {
+  function handleSave(options: any) {
     dispatch({
       type: 'APPLY_SIGNAL_PROCESSING_FILTER',
       payload: { options: structuredClone(options) },
@@ -140,7 +141,7 @@ function InnerMatrixGenerationPanel() {
   }
 
   const handleOnChange = useCallback(
-    (options) => {
+    (options: any) => {
       dispatchPreferences({
         type: 'SET_MATRIX_GENERATION_OPTIONS',
         payload: { options, nucleus: activeTab },
@@ -278,7 +279,13 @@ function InnerMatrixGenerationPanel() {
   );
 }
 
-function FiltersPanelGroupHeader({ text, onAdd }) {
+interface FiltersPanelGroupHeaderProps {
+  text: string;
+  onAdd: () => void;
+}
+
+function FiltersPanelGroupHeader(props: FiltersPanelGroupHeaderProps) {
+  const { text, onAdd } = props;
   return (
     <div
       className="section-header"
@@ -292,7 +299,13 @@ function FiltersPanelGroupHeader({ text, onAdd }) {
   );
 }
 
-function CustomGroupHeader({ text, children }) {
+interface CustomGroupHeaderProps {
+  text: string;
+  children?: ReactNode;
+}
+
+function CustomGroupHeader(props: CustomGroupHeaderProps) {
+  const { text, children } = props;
   return (
     <div
       className="section-header"

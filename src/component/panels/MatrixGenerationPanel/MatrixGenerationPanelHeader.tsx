@@ -93,7 +93,12 @@ function ExportAsMatrixTooltip() {
     />
   );
 }
-function StocsyTooltip({ showStocsy }) {
+
+interface StocsyTooltipProps {
+  showStocsy: boolean;
+}
+
+function StocsyTooltip({ showStocsy }: StocsyTooltipProps) {
   return (
     <TooltipHelpContent
       title={`${booleanToString(!showStocsy)} STOCSY`}
@@ -107,7 +112,11 @@ function StocsyTooltip({ showStocsy }) {
   );
 }
 
-function BoxPlotTooltip({ showBoxPlot }) {
+interface BoxPlotTooltipProps {
+  showBoxPlot: boolean;
+}
+
+function BoxPlotTooltip({ showBoxPlot }: BoxPlotTooltipProps) {
   return (
     <TooltipHelpContent
       title={`${booleanToString(!showBoxPlot)} box plot`}

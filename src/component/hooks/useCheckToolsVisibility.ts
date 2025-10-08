@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 
 import { useChartData } from '../context/ChartContext.js';
 import { usePreferences } from '../context/PreferencesContext.js';
-import type { Tool, ToolOptionItem } from '../toolbar/ToolTypes.js';
+import type { MainTool, ToolOptionItem } from '../toolbar/ToolTypes.js';
 import { options } from '../toolbar/ToolTypes.js';
 
 import useCheckExperimentalFeature from './useCheckExperimentalFeature.js';
@@ -18,7 +18,7 @@ export interface CheckOptions {
 }
 
 export function useCheckToolsVisibility(): (
-  toolKey: Tool,
+  toolKey: MainTool,
   checkOptions?: CheckOptions,
 ) => boolean {
   const { displayerMode } = useChartData();
@@ -27,7 +27,7 @@ export function useCheckToolsVisibility(): (
   const isExperimentalFeatureActivated = useCheckExperimentalFeature();
 
   return useCallback(
-    (toolKey: Tool, checkOptions: CheckOptions = {}) => {
+    (toolKey: MainTool, checkOptions: CheckOptions = {}) => {
       const {
         checkMode = true,
         checkSpectrumType = true,
@@ -96,7 +96,10 @@ function checkSpectrum(
 
 function checkInfo(checkParameters: SpectrumInfo, data: SpectrumInfo) {
   for (const key in checkParameters) {
-    if (checkParameters[key] !== data[key]) {
+    if (
+      checkParameters[key as keyof SpectrumInfo] !==
+      data[key as keyof SpectrumInfo]
+    ) {
       return false;
     }
   }

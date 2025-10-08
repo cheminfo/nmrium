@@ -12,6 +12,7 @@ import { useDispatch } from '../context/DispatchContext.js';
 import { useGlobal } from '../context/GlobalContext.js';
 import type { ActionsButtonsPopoverProps } from '../elements/ActionsButtonsPopover.js';
 import { ActionsButtonsPopover } from '../elements/ActionsButtonsPopover.js';
+import { useActiveNucleusTab } from '../hooks/useActiveNucleusTab.ts';
 import { useCanvasContext } from '../hooks/useCanvasContext.js';
 import { usePanelPreferences } from '../hooks/usePanelPreferences.js';
 import { useSVGUnitConverter } from '../hooks/useSVGUnitConverter.js';
@@ -31,12 +32,19 @@ const ReactRnd = styled(Rnd)`
   }
 `;
 
-function calculateWorldWidth(context, word) {
+function calculateWorldWidth(context: any, word: any) {
   if (!context) return 0;
   return Math.round(context.measureText(word).width);
 }
 
-function useWrapSVGText({ text, width, fontSize }) {
+interface UseWrapSVGTextParams {
+  text: string;
+  width: number;
+  fontSize: number;
+}
+
+function useWrapSVGText(params: UseWrapSVGTextParams) {
+  const { text, width, fontSize } = params;
   const context = useCanvasContext(fontSize);
 
   const formattedText = text
@@ -305,11 +313,7 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
 
 function usePublicationString() {
   const spectra = useSpectraByActiveNucleus();
-  const {
-    view: {
-      spectra: { activeTab },
-    },
-  } = useChartData();
+  const activeTab = useActiveNucleusTab();
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
 
   const output: Record<string, string> = {};

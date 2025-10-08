@@ -5,6 +5,7 @@ import { useCallback, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
+import type { CellProps } from 'react-table';
 
 import { GroupPane } from '../../../elements/GroupPane.js';
 import { Input2Controller } from '../../../elements/Input2Controller.js';
@@ -45,23 +46,25 @@ export function ExternalAPIsTabContent() {
   );
 
   const deleteHandler = useCallback(
-    (data, index: number) => {
-      const _fields = data.filter((_, columnIndex) => columnIndex !== index);
+    (data: any, index: number) => {
+      const _fields = data.filter(
+        (_: any, columnIndex: any) => columnIndex !== index,
+      );
       setValue('externalAPIs', _fields);
     },
     [setValue],
   );
 
-  const COLUMNS: Column[] = useMemo(
+  const COLUMNS = useMemo<Array<Column<ExternalAPI>>>(
     () => [
       {
         Header: '#',
         style: { width: '25px', textAlign: 'center' },
-        accessor: (_, index) => index + 1,
+        accessor: (_: any, index) => index + 1,
       },
       {
         Header: 'Service',
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<ExternalAPI>) => {
           const name = getKeyPath(row.index, 'key');
           return (
             <Select2Controller<
@@ -81,7 +84,7 @@ export function ExternalAPIsTabContent() {
       },
       {
         Header: 'Server link',
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<ExternalAPI>) => {
           const name = getKeyPath(row.index, 'serverLink');
           return (
             <Input2Controller
@@ -95,7 +98,7 @@ export function ExternalAPIsTabContent() {
       },
       {
         Header: 'API key',
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<ExternalAPI>) => {
           const name = getKeyPath(row.index, 'APIKey');
           return (
             <Input2Controller
@@ -111,7 +114,7 @@ export function ExternalAPIsTabContent() {
         Header: '',
         style: { width: '60px' },
         id: 'op-buttons',
-        Cell: ({ data, row }) => {
+        Cell: ({ data, row }: CellProps<ExternalAPI>) => {
           const record: any = row.original;
           return (
             <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
@@ -165,7 +168,13 @@ export function ExternalAPIsTabContent() {
   );
 }
 
-function Header({ onAdd, text }) {
+interface HeaderProps {
+  onAdd: () => void;
+  text: string;
+}
+
+function Header(props: HeaderProps) {
+  const { onAdd, text } = props;
   return (
     <Section>
       <p style={{ flex: 1 }}>{text}</p>

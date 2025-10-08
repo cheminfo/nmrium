@@ -7,7 +7,7 @@ export interface RangeData extends Range {
 }
 //TODO need to refactor the ranges table
 
-function useMapRanges(data) {
+function useMapRanges(data: any) {
   return useMemo(() => {
     const rangesData: RangeData[] = [];
     for (const [i, range] of data.entries()) {

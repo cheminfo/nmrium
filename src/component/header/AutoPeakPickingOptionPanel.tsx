@@ -70,7 +70,7 @@ export function AutoPeakPickingOptionPanel() {
     mode: 'onChange',
   });
 
-  function handlePeakPicking(values) {
+  function handlePeakPicking(values: any) {
     if (pointsNumber > MIN_AREA_POINTS) {
       dispatch({
         type: 'AUTO_PEAK_PICKING',

@@ -78,14 +78,14 @@ const formatFields: NucleusPreferenceField[] = [
   },
 ];
 
-function PeaksPreferences(props, ref: any) {
+function PeaksPreferences(props: any, ref: any) {
   const preferences = usePreferences();
   const nucleus = useNucleus();
   const nuclei = useMemo(() => getUniqueNuclei(nucleus), [nucleus]);
   const preferencesByNuclei = usePanelPreferencesByNuclei('peaks', nuclei);
 
   const saveHandler = useCallback(
-    (values) => {
+    (values: any) => {
       preferences.dispatch({
         type: 'SET_PANELS_PREFERENCES',
         payload: { key: 'peaks', value: values },

@@ -23,7 +23,7 @@ export function TabsProvider<T extends TabId>(props: TabsProviderProps<T>) {
 
   const tabState = useMemo(() => {
     return {
-      selectTab: (tabId) => tabId !== undefined && setSelectedTabId(tabId),
+      selectTab: (tabId: any) => tabId !== undefined && setSelectedTabId(tabId),
       selectedTabId,
     };
   }, [selectedTabId]);

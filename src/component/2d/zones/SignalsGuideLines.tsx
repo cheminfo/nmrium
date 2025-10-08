@@ -5,6 +5,7 @@ import { useRef } from 'react';
 import { LuLink, LuUnlink } from 'react-icons/lu';
 import { PiTextTBold, PiTextTSlashBold } from 'react-icons/pi';
 
+import { isAssigned } from '../../../data/data1d/Spectrum1D/isRangeAssigned.ts';
 import { FieldEdition } from '../../1d-2d/FieldEdition.js';
 import {
   useAssignment,
@@ -21,6 +22,7 @@ import type { ActionsButtonsPopoverProps } from '../../elements/ActionsButtonsPo
 import { ActionsButtonsPopover } from '../../elements/ActionsButtonsPopover.js';
 import { useHighlight } from '../../highlight/index.js';
 import { useCanvasContext } from '../../hooks/useCanvasContext.js';
+import { useHighlightColor } from '../../hooks/useHighlightColor.ts';
 import { useTriggerNewAssignmentLabel } from '../../hooks/useTriggerNewAssignmentLabel.js';
 import { stackOverlappingLabelsArray } from '../../utility/stackOverlappingLabels.js';
 import { useTracesSpectra } from '../useTracesSpectra.js';
@@ -102,11 +104,19 @@ function IndicationLines(props: IndicationLinesProps) {
   return (
     <g>
       {normalizedSignals.map(
-        ({ deltaInPixel, stackIndex, assignment, id, range }) => {
+        ({
+          deltaInPixel,
+          stackIndex,
+          assignment,
+          id,
+          diaIDs,
+          nbAtoms,
+          range,
+        }) => {
           return (
             <IndicationLine
               key={`${axis}[${id}]`}
-              {...{ deltaInPixel, stackIndex, assignment, id }}
+              {...{ deltaInPixel, stackIndex, assignment, diaIDs, nbAtoms, id }}
               axis={axis}
               spectrumId={spectrum.id}
               range={range}
@@ -124,6 +134,8 @@ interface IndicationLineProps extends ExtraExtractProperties {
   assignment?: string;
   spectrumId: string;
   axis: IndicationLinesAxis;
+  diaIDs?: string[];
+  nbAtoms?: number;
 }
 
 interface GetAxisRangeIdOptions {
@@ -158,11 +170,33 @@ function useRangeAssignment(options: UseRangeAssignmentOptions) {
   return { highlightContext, assignmentContext };
 }
 
+function isSignalAssigned(
+  options: Pick<IndicationLineProps, 'range' | 'nbAtoms' | 'diaIDs'>,
+) {
+  const { range, ...otherProps } = options;
+  if (isAssigned(range)) {
+    return true;
+  }
+
+  return isAssigned(otherProps);
+}
+
 function IndicationLine(props: IndicationLineProps) {
   const isAssignBtnTrigged = useRef(false);
-  const { deltaInPixel, stackIndex, assignment, axis, spectrumId, range } =
-    props;
-  const { id: rangeId, diaIDs = [], signals } = range;
+  const {
+    deltaInPixel,
+    stackIndex,
+    assignment,
+    axis,
+    spectrumId,
+    range,
+    diaIDs,
+    nbAtoms,
+  } = props;
+  const { id: rangeId, diaIDs: rangeDiaIDs = [], signals } = range;
+  const highlightColor = useHighlightColor();
+  const isAssigned = isSignalAssigned({ range, diaIDs, nbAtoms });
+
   const signalsIds = signals.map(({ id }) => id);
   const { margin, width, height } = useChartData();
   const { setData: addNewAssignmentLabel } = useShareData();
@@ -172,7 +206,7 @@ function IndicationLine(props: IndicationLineProps) {
     spectrumId,
     signalsIds,
   });
-  const hasDiaIDs = diaIDs.length > 0;
+  const hasDiaIDs = rangeDiaIDs.length > 0;
   const isAssignmentActive = assignmentContext.isActive;
   const isHighlighted = highlightContext.isActive || isAssignmentActive;
 
@@ -278,7 +312,13 @@ function IndicationLine(props: IndicationLineProps) {
         onMouseEnter={mouseEnterHandler}
         onMouseLeave={mouseLeaveHandler}
       >
-        <line stroke="lightgrey" x1={0} x2={x2} y1={0} y2={y2} />
+        <line
+          stroke={isAssigned ? highlightColor : 'lightgrey'}
+          x1={0}
+          x2={x2}
+          y1={0}
+          y2={y2}
+        />
         <Rect
           x={-rectXOffset}
           y={-rectYOffset}

@@ -38,12 +38,12 @@ export default function BaseLineCorrectionOptionsPanel(
     getValues,
   } = useBaselineCorrection(filter);
 
-  function handleConfirm(event) {
+  function handleConfirm(event: any) {
     void handleSubmit((values) => handleApplyFilter(values))();
     onConfirm?.(event);
   }
 
-  function handleCancel(event) {
+  function handleCancel(event: any) {
     handleCancelFilter();
     onCancel?.(event);
   }

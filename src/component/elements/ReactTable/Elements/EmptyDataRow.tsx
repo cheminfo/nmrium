@@ -1,6 +1,6 @@
 import { FaRegEyeSlash } from 'react-icons/fa';
 
-export function EmptyDataRow(props) {
+export function EmptyDataRow(props: any) {
   const { columns, text } = props;
   return (
     <tr>

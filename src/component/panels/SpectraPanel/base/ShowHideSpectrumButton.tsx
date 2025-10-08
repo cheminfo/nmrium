@@ -19,7 +19,7 @@ interface ShowHideSpectrumButtonProps extends OnChangeVisibilityEvent {
   data: Spectrum;
 }
 
-function getStyle(display, key: VisibleKey) {
+function getStyle(display: any, key: VisibleKey) {
   return display[key]
     ? {
         opacity: 1,

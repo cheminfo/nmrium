@@ -4,7 +4,7 @@ import cloneDeep from 'lodash/cloneDeep.js';
 import type { PreferencesState } from '../preferencesReducer.js';
 import { getActiveWorkspace } from '../utilities/getActiveWorkspace.js';
 
-export function setPreferences(draft: Draft<PreferencesState>, action) {
+export function setPreferences(draft: Draft<PreferencesState>, action: any) {
   const currentWorkspacePreferences = getActiveWorkspace(draft);
 
   if (action.payload) {

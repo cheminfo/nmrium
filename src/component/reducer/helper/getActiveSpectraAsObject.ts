@@ -11,7 +11,7 @@ export function getActiveSpectraAsObject(
 
   if (!activeSpectra || activeSpectra?.length === 0) return null;
 
-  const activeSpectraObject = {};
+  const activeSpectraObject: Record<string, number> = {};
   for (const activeSpectrum of activeSpectra) {
     activeSpectraObject[activeSpectrum.id] = activeSpectrum.index;
   }

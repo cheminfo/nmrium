@@ -38,7 +38,7 @@ const styles: Record<'input' | 'inputWrapper' | 'clearButton', CSSProperties> =
     },
   };
 
-function mapValue(value) {
+function mapValue(value: any) {
   return typeof value === 'number' && value === 0 ? value : value || '';
 }
 
@@ -93,7 +93,7 @@ const Input = forwardRef(
 
     const debounceOnChange = useMemo(
       () =>
-        debounce((e) => {
+        debounce((e: any) => {
           onChange?.(e);
           setDebouncedStatus(true);
         }, debounceTime),

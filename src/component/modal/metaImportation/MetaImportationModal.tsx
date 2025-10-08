@@ -164,11 +164,11 @@ function InnerMetaImportationModal({
 
   const columns = useMemo(() => {
     const fields = parseResult?.meta.fields || [];
-    const columns: Column[] = [
-      { Header: '#', accessor: (_, index) => index + 1 },
+    const columns: Array<Column<any>> = [
+      { Header: '#', accessor: (_: any, index) => index + 1 },
     ];
 
-    function getRowValue(val) {
+    function getRowValue(val: any) {
       if (typeof val === 'string') return val;
 
       return val;
@@ -178,7 +178,7 @@ function InnerMetaImportationModal({
       if (fieldName) {
         columns.push({
           Header: fieldName,
-          accessor: (row) => getRowValue(row[fieldName]),
+          accessor: (row: any) => getRowValue(row[fieldName]),
           style: styles.column,
         });
       }
@@ -186,7 +186,7 @@ function InnerMetaImportationModal({
     return columns;
   }, [parseResult?.meta.fields]);
 
-  function handleLinkSpectra(fields) {
+  function handleLinkSpectra(fields: any) {
     const { source, target } = fields;
     if (data && parseResult) {
       try {
@@ -217,7 +217,7 @@ function InnerMetaImportationModal({
     }
   }
 
-  function handleActiveRow(data) {
+  function handleActiveRow(data: any) {
     const record = compareResults[data.index] || null;
     if (
       record?.isDuplicated ||
@@ -229,7 +229,7 @@ function InnerMetaImportationModal({
     return false;
   }
 
-  function handleRowStyle(data) {
+  function handleRowStyle(data: any) {
     const record = compareResults[data.index] || null;
     if (
       record?.isDuplicated ||

@@ -1,5 +1,6 @@
 import { SvgNmrAssignment } from 'cheminfo-font';
 import { memo, useCallback, useMemo } from 'react';
+import type { CellProps } from 'react-table';
 
 import { useDispatch } from '../../context/DispatchContext.js';
 import ReactTable from '../../elements/ReactTable/ReactTable.js';
@@ -15,7 +16,7 @@ function AutomaticAssignmentTable({ data }: AutomaticAssignmentTableProps) {
   const dispatch = useDispatch();
 
   const assignHandler = useCallback(
-    (e, row) => {
+    (e: any, row: any) => {
       e.preventDefault();
       e.stopPropagation();
 
@@ -27,7 +28,7 @@ function AutomaticAssignmentTable({ data }: AutomaticAssignmentTableProps) {
     [dispatch],
   );
 
-  const COLUMNS: Array<CustomColumn<AutoAssignmentsData>> = useMemo(
+  const COLUMNS = useMemo<Array<CustomColumn<AutoAssignmentsData>>>(
     () => [
       {
         index: 1,
@@ -49,7 +50,7 @@ function AutomaticAssignmentTable({ data }: AutomaticAssignmentTableProps) {
           minWidth: '24px',
         },
         id: 'assign-button',
-        Cell: ({ row }) => (
+        Cell: ({ row }: CellProps<AutoAssignmentsData>) => (
           <button
             type="button"
             className="assign-button"

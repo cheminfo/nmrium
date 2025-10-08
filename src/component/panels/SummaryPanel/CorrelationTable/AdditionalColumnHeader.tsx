@@ -1,3 +1,10 @@
+import type { Spectrum } from '@zakodium/nmrium-core';
+import type {
+  Correlation,
+  CorrelationData,
+  Link,
+  Options as CorrelationOptions,
+} from 'nmr-correlation';
 import { getCorrelationDelta, getLinkDim } from 'nmr-correlation';
 import { useCallback, useMemo } from 'react';
 
@@ -14,12 +21,21 @@ import useInView from '../utilities/useInView.js';
 import type { EditLinkDialogData } from './editLink/EditLinkModal.js';
 import { EditLinkModal } from './editLink/EditLinkModal.js';
 
-function AdditionalColumnHeader({
-  spectraData,
-  correlationsData,
-  correlation,
-  onEdit,
-}) {
+export interface AdditionalColumnHeaderProps {
+  spectraData: Spectrum[];
+  correlationsData: CorrelationData;
+  correlation: Correlation;
+  onEdit: (
+    editedCorrelations: Correlation[],
+    action: string,
+    link?: Link,
+    options?: CorrelationOptions,
+  ) => void;
+}
+
+function AdditionalColumnHeader(props: AdditionalColumnHeaderProps) {
+  const { spectraData, correlationsData, correlation, onEdit } = props;
+
   const alert = useAlert();
 
   const { openDialog } = useDialog();
@@ -27,7 +43,7 @@ function AdditionalColumnHeader({
     if (correlation.pseudo === true) {
       return [];
     }
-    return correlation.link.flatMap((link) => {
+    return correlation.link.flatMap((link: any) => {
       const ids: string[] = [];
       if (link.pseudo === false) {
         ids.push(link.signal.id, buildID(link.signal.id, 'Crosshair_X'));
@@ -47,14 +63,14 @@ function AdditionalColumnHeader({
   const highlightAdditionalColumn = useHighlight(highlightIDsAdditionalColumn);
 
   const mouseEnterHandler = useCallback(
-    (event) => {
+    (event: any) => {
       event.currentTarget.focus();
       highlightAdditionalColumn.show();
     },
     [highlightAdditionalColumn],
   );
   const mouseLeaveHandler = useCallback(
-    (event) => {
+    (event: any) => {
       event.currentTarget.blur();
       highlightAdditionalColumn.hide();
     },
@@ -64,7 +80,7 @@ function AdditionalColumnHeader({
   const isInView = useInView({ correlation });
 
   const tableHeaderProps = useMemo(() => {
-    const correlationLinks = correlation.link.map((link) => {
+    const correlationLinks = correlation.link.map((link: any) => {
       if (link.pseudo === false) {
         return link.experimentType.toUpperCase();
       }
@@ -163,7 +179,7 @@ function AdditionalColumnHeader({
     highlightAdditionalColumn.hide();
   }
 
-  function contextMenuHandler(selectedItem) {
+  function contextMenuHandler(selectedItem: any) {
     const { action, data } = selectedItem;
     switch (action) {
       case 'removeAll': {
@@ -183,7 +199,7 @@ function AdditionalColumnHeader({
 
   return (
     <ContextMenu
-      onSelect={(selected) => contextMenuHandler(selected)}
+      onSelect={(selected: any) => contextMenuHandler(selected)}
       options={contextMenu}
       as="th"
       {...thProps}

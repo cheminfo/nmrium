@@ -7,30 +7,30 @@ interface ReferenceInfo {
 
 type OneHReferences = 'tms' | 'tsp' | 'glucose';
 
-export const REFERENCES:
-  | Record<'1H', Record<OneHReferences, ReferenceInfo>>
-  | Record<'13C', any> = {
-  '1H': {
-    tms: {
-      from: -0.1,
-      to: 0.1,
-      nbPeaks: 1,
-      delta: 0,
-    },
-    tsp: {
-      from: -0.1,
-      to: 0.1,
-      nbPeaks: 1,
-      delta: 0,
-    },
-    glucose: {
-      from: 5.18,
-      to: 5.28,
-      nbPeaks: 2,
-      delta: 5.23,
-    },
+const references1H: Record<OneHReferences, ReferenceInfo> = {
+  tms: {
+    from: -0.1,
+    to: 0.1,
+    nbPeaks: 1,
+    delta: 0,
   },
-  '13C': {},
+  tsp: {
+    from: -0.1,
+    to: 0.1,
+    nbPeaks: 1,
+    delta: 0,
+  },
+  glucose: {
+    from: 5.18,
+    to: 5.28,
+    nbPeaks: 2,
+    delta: 5.23,
+  },
+};
+
+export const REFERENCES = {
+  '1H': references1H,
+  '13C': {} as any,
 };
 
 interface GetRangeOptions {
@@ -41,11 +41,12 @@ interface GetRangeOptions {
 export function getRange(options: GetRangeOptions = {}): ReferenceInfo {
   const { nucleus = '1H', reference = 'tms' } = options;
 
-  if (!REFERENCES[nucleus]) {
+  const nucleusReferences = (REFERENCES as any)[nucleus];
+  if (!nucleusReferences) {
     throw new Error(`Nucleus not found: ${nucleus}`);
   }
 
-  const info = REFERENCES[nucleus][reference.toLowerCase()];
+  const info = nucleusReferences[reference.toLowerCase()];
 
   if (!info) {
     throw new Error(`Reference not found: ${reference}`);

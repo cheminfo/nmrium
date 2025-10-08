@@ -38,7 +38,7 @@ export default function MoleculeHeader(props: MoleculeHeaderProps) {
   const dispatch = useDispatch();
 
   const validateLabel = useCallback(
-    (value) => {
+    (value: any) => {
       const reservedNumbers = extractLabelsNumbers(molecules);
       const number = extractNumber(value);
       return value && !reservedNumbers.includes(Number(number));
@@ -46,7 +46,7 @@ export default function MoleculeHeader(props: MoleculeHeaderProps) {
     [molecules],
   );
   const saveLabelHandler = useCallback(
-    (id: string, event) => {
+    (id: string, event: any) => {
       const label = event.target.value as string;
       dispatch({ type: 'CHANGE_MOLECULE_LABEL', payload: { label, id } });
     },

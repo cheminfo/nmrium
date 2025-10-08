@@ -82,7 +82,7 @@ export default function MoleculeSelection(props: MoleculeSelectionProps) {
   }, [index, molecules]);
 
   const onChangeHandler = useCallback(
-    (slideIndex) => {
+    (slideIndex: any) => {
       setCurrentIndex(slideIndex);
       onChange(slideIndex);
     },

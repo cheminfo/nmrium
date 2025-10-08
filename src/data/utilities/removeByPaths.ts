@@ -10,7 +10,7 @@ export function removeByPaths(
   }
 }
 
-function remove(obj: any, path: string, key: string | null, value) {
+function remove(obj: any, path: string, key: string | null, value: any) {
   const pathParts = path.split('.');
 
   let current = obj;
@@ -31,7 +31,7 @@ function remove(obj: any, path: string, key: string | null, value) {
 
   if (Array.isArray(target)) {
     if (target.length > 0 && typeof target[0] === 'object' && key) {
-      current[finalKey] = target.filter((item) => item[key] !== value);
+      current[finalKey] = target.filter((item: any) => item[key] !== value);
     }
   } else if (typeof target === 'object' && target !== null) {
     // eslint-disable-next-line unicorn/no-lonely-if

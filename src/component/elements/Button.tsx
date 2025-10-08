@@ -284,7 +284,7 @@ function Button<E extends ElementType = 'button'>(props: ButtonProps<E>) {
         onClick={
           Wrapper === 'button' || (Wrapper === 'div' && !disabled)
             ? onClick
-            : (e) => e.stopPropagation()
+            : (e: any) => e.stopPropagation()
         }
         css={[
           styles.button({

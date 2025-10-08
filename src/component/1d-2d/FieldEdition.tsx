@@ -34,7 +34,7 @@ const validationSchema = (inputType: 'number' | 'text') =>
     value: (inputType === 'number' ? Yup.number() : Yup.string()).required(),
   });
 
-function stopPropagation(e) {
+function stopPropagation(e: any) {
   e.stopPropagation();
 }
 
@@ -50,7 +50,11 @@ export function FieldEdition(props: FieldEditionsProps) {
   const { value, inputType = 'text', onChange, children, PopoverProps } = props;
   const [isOpen, setIsOpen] = useState(false);
 
-  function handleChange({ value: newValue }) {
+  function handleChange({
+    value: newValue,
+  }: {
+    value: FieldEditionsProps['value'];
+  }) {
     onChange(newValue);
     setIsOpen(false);
   }

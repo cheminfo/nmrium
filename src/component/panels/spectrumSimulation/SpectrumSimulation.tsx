@@ -56,7 +56,7 @@ export default function SpectrumSimulation() {
     }
   }, []);
 
-  function spinSystemChangeHandler(system) {
+  function spinSystemChangeHandler(system: any) {
     spinSystemRef.current = system;
     reset({ ...defaultSimulationOptions, data: getSpinSystemData(system) });
     setSpinSystem(system);
@@ -85,7 +85,7 @@ export default function SpectrumSimulation() {
     void handleSubmit((values) => simulateHandler(values, true))();
   }
 
-  function saveSettingsHandler(values) {
+  function saveSettingsHandler(values: any) {
     void simulateHandler(values);
     reset(values);
   }

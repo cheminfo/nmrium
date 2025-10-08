@@ -1,3 +1,4 @@
+import type { Spectrum1D } from '@zakodium/nmrium-core';
 import type { CSSProperties } from 'react';
 import { useMemo } from 'react';
 
@@ -6,6 +7,7 @@ import { useMouseTracker } from '../../EventsTrackers/MouseTracker.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.js';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus.js';
+import type { Get2DDimensionLayoutReturn } from '../utilities/DimensionLayout.js';
 import { LAYOUT, getLayoutID } from '../utilities/DimensionLayout.js';
 import { get1DYScale, useScale2DX, useScale2DY } from '../utilities/scale.js';
 
@@ -20,7 +22,13 @@ const style: CSSProperties = {
   zIndex: 10,
 };
 
-function XYLabelPointer({ layout, data1D }) {
+interface XYLabelPointerProps {
+  layout: Get2DDimensionLayoutReturn;
+  data1D: Spectrum1D[];
+}
+
+export default function XYLabelPointer(props: XYLabelPointerProps) {
+  const { layout, data1D } = props;
   const position = useMouseTracker();
   const { step } = useBrushTracker();
   const {
@@ -47,7 +55,7 @@ function XYLabelPointer({ layout, data1D }) {
   const scale2DY = useScale2DY();
 
   const scaleX = useMemo(() => {
-    if (!activeSpectrum || !data1D || data1D.length === 0) {
+    if (!activeSpectrum || data1D.length === 0) {
       return scale2DX;
     }
 
@@ -65,7 +73,7 @@ function XYLabelPointer({ layout, data1D }) {
   }, [activeSpectrum, data1D, scale2DX, scale2DY, trackID]);
 
   const scaleY = useMemo(() => {
-    if (!activeSpectrum || !data1D || data1D.length === 0) {
+    if (!activeSpectrum || data1D.length === 0) {
       return scale2DY;
     }
     switch (trackID) {
@@ -147,5 +155,3 @@ function XYLabelPointer({ layout, data1D }) {
     </div>
   );
 }
-
-export default XYLabelPointer;

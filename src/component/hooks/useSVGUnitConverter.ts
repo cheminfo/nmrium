@@ -1,6 +1,6 @@
 import { useChartData } from '../context/ChartContext.js';
 
-function truncate(value, numberOfDigits = 0) {
+function truncate(value: any, numberOfDigits = 0) {
   const power = 10 ** numberOfDigits;
   return Math.trunc(value * power) / power;
 }

@@ -18,12 +18,12 @@ const sortIconStyle: CSSProperties = {
 function ReactTableHeader({ headerGroups, onClick }: ReactTableHeaderProps) {
   return (
     <thead>
-      {headerGroups.map((headerGroup) => {
+      {headerGroups.map((headerGroup: any) => {
         const { key: headerGroupKey, ...restHeaderGroupProps } =
           headerGroup.getHeaderGroupProps();
         return (
           <tr key={headerGroupKey} {...restHeaderGroupProps}>
-            {headerGroup.headers.map((column) => (
+            {headerGroup.headers.map((column: any) => (
               <HeaderCell
                 key={column.getHeaderProps(column.getSortByToggleProps()).key}
                 column={column}

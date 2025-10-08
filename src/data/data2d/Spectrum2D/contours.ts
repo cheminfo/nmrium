@@ -50,6 +50,7 @@ interface ReturnContoursManager {
 function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
   const { data, info } = spectrum;
 
+  // @ts-expect-error type of NmrData2D should have a discriminator field to separate fid and ft
   const quadrantData = data[quadrant];
 
   //@ts-expect-error will be included in nexts versions
@@ -84,7 +85,7 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
 function contoursManager(spectrum: Spectrum2D): ReturnContoursManager {
   const contourOptions = { ...spectrum.display.contourOptions };
 
-  const wheel = (value, options) =>
+  const wheel = (value: any, options: any) =>
     prepareWheel(value, { ...options, contourOptions });
   const getLevel = () => contourOptions;
   const checkLevel = () => prepareCheckLevel(contourOptions);
@@ -194,6 +195,7 @@ function drawContours(
     negative,
     boundary: contourLevels,
     nbLevels: numberOfLayers,
+    // @ts-expect-error type of NmrData2D should have a discriminator field to separate fid and ft
     data: spectrum.data[quadrant],
   });
 }

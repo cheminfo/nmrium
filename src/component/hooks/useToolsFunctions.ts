@@ -28,7 +28,7 @@ export default function useToolsFunctions() {
     toolOptions: { selectedTool: previousSelectedTool },
   } = useChartData();
   const handleChangeOption = useCallback(
-    (selectedTool) => {
+    (selectedTool: keyof typeof options) => {
       //avoid reselecting the tool if it's already selected
       if (selectedTool === previousSelectedTool) {
         return;
@@ -79,7 +79,7 @@ export default function useToolsFunctions() {
     callback();
 
     if (debounceClickEventsRef.current.clicks.length > 1) {
-      lodashMap(debounceClickEventsRef.current.clicks, (debounce) =>
+      lodashMap(debounceClickEventsRef.current.clicks, (debounce: any) =>
         debounce.cancel(),
       );
       debounceClickEventsRef.current.clicks = [];

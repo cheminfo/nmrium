@@ -50,6 +50,6 @@ export function unlink(range: Range, options: UnlinkOptions = {}): Range {
   return range;
 }
 
-export function checkRangeKind(range) {
+export function checkRangeKind(range: any) {
   return range.kind === DATUM_KIND.signal;
 }

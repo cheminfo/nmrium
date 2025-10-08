@@ -10,7 +10,7 @@ export function sortRange(start: number, end: number): [number, number] {
 }
 
 export default function getRange(
-  draft,
+  draft: any,
   options: RangeOptions,
 ): [number, number] {
   const { startX, endX } = options;

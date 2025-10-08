@@ -12,7 +12,7 @@ export const defaultZonesViewState: ZonesViewState = {
   assignmentsLabelsCoordinates: {},
 };
 
-export function useActiveSpectrumZonesViewState() {
+export function useActiveSpectrumZonesViewState(): ZonesViewState {
   const activeSpectrum = useActiveSpectrum();
   const {
     view: { zones },

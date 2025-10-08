@@ -1,11 +1,12 @@
 import { Button, Callout, Classes } from '@blueprintjs/core';
-import type { Jcoupling, Peak1D } from '@zakodium/nmr-types';
+import type { Jcoupling, Signal1D } from '@zakodium/nmr-types';
 import dlv from 'dlv';
 import type { CSSProperties } from 'react';
 import { useCallback, useMemo, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Toolbar } from 'react-science/ui';
+import type { CellProps } from 'react-table';
 
 import { multiplets } from '../../../../../../data/constants/Multiplets.js';
 import { isSpectrum1D } from '../../../../../../data/data1d/Spectrum1D/index.js';
@@ -39,13 +40,13 @@ interface SignalJCouplingsTableProps {
 
 function getJCouplingKey(
   signalIndex: number,
-  jIndex,
+  jIndex: any,
   jCouplingKey: keyof Jcoupling,
 ) {
   return `signals[${signalIndex}].js.${jIndex}.${jCouplingKey}`;
 }
 
-function getCouplingMinErrorMessage(errors, index) {
+function getCouplingMinErrorMessage(errors: any, index: any) {
   return dlv(errors, `signals.${index}.js.root.message`);
 }
 
@@ -61,7 +62,7 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
   const signals = useWatch({ name: 'signals' });
   const { selectedTabId: signalIndex = 0 } = useTabsController<number>();
 
-  const signal = signals?.[signalIndex] || {};
+  const signal: Signal1D | undefined = signals?.[signalIndex] || {};
 
   const lastSelectedCouplingIndexRef = useRef<number | null>(null);
   const spectrum = useSpectrum();
@@ -112,7 +113,7 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
   });
 
   const addHandler = useCallback(
-    (data: Peak1D[]) => {
+    (data: Jcoupling[]) => {
       const coupling = {
         multiplicity: 'm',
         coupling: '',
@@ -124,8 +125,10 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
   );
 
   const deleteHandler = useCallback(
-    (data, index: number) => {
-      const jCouplings = data.filter((_, columnIndex) => columnIndex !== index);
+    (data: any, index: number) => {
+      const jCouplings = data.filter(
+        (_: any, columnIndex: any) => columnIndex !== index,
+      );
 
       setValue(`signals[${signalIndex}].js`, jCouplings);
       if (lastSelectedCouplingIndexRef.current === index) {
@@ -139,17 +142,17 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
     setValue(`signals[${signalIndex}].js`, []);
     lastSelectedCouplingIndexRef.current = null;
   }
-  const COLUMNS: Column[] = useMemo(
+  const COLUMNS = useMemo<Array<Column<Jcoupling>>>(
     () => [
       {
         Header: '#',
         style: { width: '25px', ...styles.column },
-        accessor: (_, index) => index + 1,
+        accessor: (_: any, index) => index + 1,
       },
       {
         Header: 'Multiplicity',
         style: { padding: 0, ...styles.column },
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<Jcoupling>) => {
           return (
             <Select2Controller
               control={control}
@@ -183,13 +186,13 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
       {
         Header: 'J (Hz)',
         style: { padding: 0, ...styles.column },
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<Jcoupling>) => {
           return (
             <NumberInput2Controller
               control={control}
               name={getJCouplingKey(signalIndex, row.index, 'coupling')}
               placeholder="J (Hz)"
-              disabled={!hasCouplingConstant(row.original?.multiplicity)}
+              disabled={!hasCouplingConstant(row.original?.multiplicity ?? '')}
               fill
               noShadowBox
               style={{ backgroundColor: 'transparent' }}
@@ -203,7 +206,7 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
         Header: '',
         style: { width: '70px', ...styles.column },
         id: 'action-button',
-        Cell: ({ data, row }) => {
+        Cell: ({ data, row }: CellProps<Jcoupling>) => {
           const record: any = row.original;
           return (
             <div style={{ display: 'flex', justifyContent: 'space-around' }}>
@@ -225,7 +228,7 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
     [control, deleteHandler, setFocus, setValue, signalIndex],
   );
 
-  function selectRowHandler(index) {
+  function selectRowHandler(index: any) {
     setFocusSource('coupling');
     lastSelectedCouplingIndexRef.current = index;
   }

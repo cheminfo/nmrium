@@ -116,7 +116,7 @@ function HeaderInner(props: HeaderInnerProps) {
     setActiveWorkspace(option.key);
   }
 
-  function renderItem(item) {
+  function renderItem(item: any) {
     return <WorkspaceItem item={item} />;
   }
 

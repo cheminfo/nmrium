@@ -4,6 +4,8 @@ import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { SIGNAL_INCLUDED_KINDS } from '../../../data/constants/signalsKinds.js';
 
 export interface BaseSignal {
+  nbAtoms?: number;
+  diaIDs?: string[];
   assignment?: string;
   delta: number;
   id: string;
