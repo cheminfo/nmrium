@@ -124,6 +124,7 @@ function setData(draft: Draft<State>, input: InputProps) {
         if (Array.isArray(objValue)) {
           return objValue.concat(srcValue);
         }
+        return undefined;
       },
     );
   }
@@ -233,6 +234,7 @@ function initData(
     }
     draft.actionType = action.type;
     draft.isLoading = false;
+    return undefined;
   }
 }
 
@@ -274,6 +276,7 @@ function handleLoadDropFiles(draft: Draft<State>, action: LoadDropFilesAction) {
 
     draft.actionType = type;
     draft.isLoading = false;
+    return undefined;
   }
 }
 

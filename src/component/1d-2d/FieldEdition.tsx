@@ -38,14 +38,6 @@ function stopPropagation(e: any) {
   e.stopPropagation();
 }
 
-function keyDownCheck(event: React.KeyboardEvent<HTMLInputElement>) {
-  if (event.key === 'Enter') {
-    return true;
-  } else if (event.key === 'Escape') {
-    return false;
-  }
-}
-
 export function FieldEdition(props: FieldEditionsProps) {
   const { value, inputType = 'text', onChange, children, PopoverProps } = props;
   const [isOpen, setIsOpen] = useState(false);
@@ -84,7 +76,7 @@ function Field(props: FieldProps) {
   });
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
-    if (keyDownCheck(event)) {
+    if (event.key === 'Enter') {
       void handleSubmit(onChange)();
     }
   }

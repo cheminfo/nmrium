@@ -31,19 +31,17 @@ function getZeroFillingSize(length: number) {
   return 2 ** Math.round(Math.log2(length * 2));
 }
 
-function useZeroFillingDefaultSize() {
+function useZeroFillingDefaultSize(): number {
   const spectrum = useTempSpectrum();
-
-  if (!spectrum) return 0;
 
   if (isSpectrum1D(spectrum)) {
     return getZeroFillingSize(spectrum.data.x.length);
-  }
-
-  if (isSpectrum2D(spectrum)) {
+  } else if (isSpectrum2D(spectrum)) {
     const data = (spectrum.data as NmrData2DFid).re;
     const nbPoints = getZeroFillingSize(data.z[0].length);
     return Math.min(4096, nbPoints);
+  } else {
+    return 0;
   }
 }
 

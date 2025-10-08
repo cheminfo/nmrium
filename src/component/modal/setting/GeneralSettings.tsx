@@ -351,7 +351,7 @@ function WorkSpaceActionsButtons(props: any) {
     reset(workSpaceDisplayPreferences);
   }
 
-  function handlePastWorkspace(text: string | undefined) {
+  function handlePasteWorkspace(text: string | undefined) {
     if (!text) return;
 
     try {
@@ -365,7 +365,7 @@ function WorkSpaceActionsButtons(props: any) {
   }
 
   function handlePastWorkspaceAction() {
-    void readText().then(handlePastWorkspace);
+    void readText().then(handlePasteWorkspace);
   }
 
   function handleCopyWorkspace() {
@@ -428,7 +428,7 @@ function WorkSpaceActionsButtons(props: any) {
       <ClipboardFallbackModal
         mode={shouldFallback}
         onDismiss={cleanShouldFallback}
-        onReadText={handlePastWorkspace}
+        onReadText={handlePasteWorkspace}
         text={text}
         label="Workspace"
       />
@@ -453,7 +453,8 @@ function DialogActionButtons(props: BasseGeneralModalProps) {
 
   function applyPreferencesHandler() {
     if (!isValid) {
-      return handleSubmit(submitHandler)();
+      void handleSubmit(submitHandler)();
+      return;
     }
 
     dispatch({

@@ -12,6 +12,7 @@ import {
 import { BlobWriter, TextReader, ZipWriter } from '@zip.js/zip.js';
 import saveAs from 'file-saver';
 import * as OCL from 'openchemlib';
+import { assert } from 'react-science/ui';
 
 import type { State } from '../component/reducer/Reducer.js';
 
@@ -35,7 +36,8 @@ function getData(datum: any, usedColors: any) {
   const dimension = datum.info.dimension;
   if (dimension === 1) {
     return initiateDatum1D(datum, { usedColors });
-  } else if (dimension === 2) {
+  } else {
+    assert(dimension === 2);
     return initiateDatum2D(datum, { usedColors });
   }
 }

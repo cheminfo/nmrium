@@ -83,52 +83,28 @@ const transition = 0.45;
 
 interface NextPrevProps {
   children: ReactElement | ReactElement[];
-  loop?: boolean;
   index: number;
   onChange: (element: number) => void;
   style?: { arrowContainer?: CSSProperties };
 }
 
 export function NextPrev(props: NextPrevProps) {
-  const {
-    children,
-    loop = false,
-    index = 0,
-    onChange = () => null,
-    style = {},
-  } = props;
+  const { children, index = 0, onChange = () => null, style = {} } = props;
   const [ref, { width } = { width: 0 }] = useResizeObserver();
   const slidersCount = Children.count(children);
   const lastIndex = slidersCount > 0 ? slidersCount - 1 : 0;
   const activeIndex = Math.min(index, lastIndex);
 
   function nextHandler() {
-    if (index === lastIndex) {
-      onChange(index);
-
-      if (loop) {
-        return 0;
-      } else {
-        return index;
-      }
+    if (index < lastIndex) {
+      onChange(index + 1);
     }
-
-    const nextIndex = index + 1;
-    onChange(nextIndex);
   }
 
   function prevHandler() {
-    if (index === 0) {
-      onChange(index);
-      if (loop) {
-        return 0;
-      } else {
-        return index;
-      }
+    if (index > 0) {
+      onChange(index - 1);
     }
-    const prevIndex = index - 1;
-
-    onChange(prevIndex);
   }
 
   if (!width && slidersCount === 0) return null;

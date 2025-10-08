@@ -159,12 +159,12 @@ function changeMatrixGenerationScale(
 function changeMatrixGenerationStocsyChemicalShift(
   draft: Draft<PreferencesState>,
   action: ChangeMatrixGenerationStocsyChemicalShiftAction,
-) {
+): void {
   const { chemicalShift, nucleus } = action.payload;
 
   const matrixGeneration = getMatrixGenerationPanelOptions(draft, nucleus);
 
-  if (!matrixGeneration) return null;
+  if (!matrixGeneration) return;
 
   matrixGeneration.chemicalShift = chemicalShift;
 }
