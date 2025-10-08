@@ -22,17 +22,31 @@ import AdditionalColumnField from './AdditionalColumnField.js';
 import type { EditLinkDialogData } from './editLink/EditLinkModal.js';
 import { EditLinkModal } from './editLink/EditLinkModal.js';
 
-function CorrelationTableRow({
-  additionalColumnData,
-  correlations,
-  correlation,
-  styleRow,
-  styleLabel,
-  onSaveEditEquivalences,
-  onSaveEditNumericValues,
-  onEditCorrelationTableCellHandler,
-  spectraData,
-}) {
+interface CorrelationTableRowProps {
+  additionalColumnData: any;
+  correlations: any;
+  correlation: any;
+  styleRow: any;
+  styleLabel: any;
+  onSaveEditEquivalences: any;
+  onSaveEditNumericValues: any;
+  onEditCorrelationTableCellHandler: any;
+  spectraData: any;
+}
+
+function CorrelationTableRow(props: CorrelationTableRowProps) {
+  const {
+    additionalColumnData,
+    correlations,
+    correlation,
+    styleRow,
+    styleLabel,
+    onSaveEditEquivalences,
+    onSaveEditNumericValues,
+    onEditCorrelationTableCellHandler,
+    spectraData,
+  } = props;
+
   const { openDialog } = useDialog();
   const alert = useAlert();
 
@@ -41,7 +55,7 @@ function CorrelationTableRow({
       return [];
     }
 
-    return correlation.link.flatMap((link) => {
+    return correlation.link.flatMap((link: any) => {
       const ids: string[] = [];
       if (link.pseudo === false) {
         ids.push(link.signal.id, buildID(link.signal.id, 'Crosshair_Y'));
@@ -61,14 +75,14 @@ function CorrelationTableRow({
   const highlightRow = useHighlight(highlightIDsRow);
 
   const onSaveEquivalencesHandler = useCallback(
-    (e) => {
+    (e: any) => {
       onSaveEditEquivalences(correlation, e.target.value);
     },
     [correlation, onSaveEditEquivalences],
   );
 
   const onSaveEditNumericValuesHandler = useCallback(
-    (e, key: 'protonsCount' | 'hybridization') => {
+    (e: any, key: 'protonsCount' | 'hybridization') => {
       onSaveEditNumericValues({
         correlation,
         values: convertValuesString(e.target.value, key),
@@ -79,7 +93,7 @@ function CorrelationTableRow({
   );
 
   const additionalColumnFields = useMemo(() => {
-    return additionalColumnData.map((_correlation) => {
+    return additionalColumnData.map((_correlation: any) => {
       const commonLinks: Link[] = [];
       for (const link of correlation.link) {
         for (const _link of _correlation.link) {
@@ -134,14 +148,14 @@ function CorrelationTableRow({
   }, [correlation]);
 
   const mouseEnterHandler = useCallback(
-    (event) => {
+    (event: any) => {
       event.currentTarget.focus();
       highlightRow.show();
     },
     [highlightRow],
   );
   const mouseLeaveHandler = useCallback(
-    (event) => {
+    (event: any) => {
       event.currentTarget.blur();
       highlightRow.hide();
     },
@@ -151,7 +165,7 @@ function CorrelationTableRow({
   const isInView = useInView({ correlation });
 
   const tableDataProps = useMemo(() => {
-    const correlationLinks = correlation.link.map((link) => {
+    const correlationLinks = correlation.link.map((link: any) => {
       if (link.pseudo === false) {
         return link.experimentType.toUpperCase();
       }
@@ -242,7 +256,7 @@ function CorrelationTableRow({
     return contextMenus;
   }, [correlation]);
 
-  function contextMenuHandler(selectedItem) {
+  function contextMenuHandler(selectedItem: any) {
     const { action, data } = selectedItem;
     switch (action) {
       case 'delete': {
@@ -318,7 +332,7 @@ function CorrelationTableRow({
           <EditableColumn
             type="text"
             value={correlation.hybridization
-              .map((hybrid) => `sp${hybrid}`)
+              .map((hybrid: any) => `sp${hybrid}`)
               .join(',')}
             style={correlation.edited.hybridization ? { color: 'blue' } : {}}
             onSave={(e) => onSaveEditNumericValuesHandler(e, 'hybridization')}

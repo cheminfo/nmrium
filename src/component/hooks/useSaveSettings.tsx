@@ -2,6 +2,7 @@ import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
 import type { Workspace } from '@zakodium/nmrium-core';
+import type { KeyboardEvent } from 'react';
 import { useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useOnOff } from 'react-science/ui';
@@ -18,7 +19,7 @@ const schema = Yup.object().shape({
   workspaceName: Yup.string().required(),
 });
 
-function keyDownCheck(event: React.KeyboardEvent<HTMLInputElement>) {
+function keyDownCheck(event: KeyboardEvent<HTMLInputElement>) {
   if (event.key === 'Enter') {
     return true;
   } else if (event.key === 'Escape') {
@@ -26,7 +27,7 @@ function keyDownCheck(event: React.KeyboardEvent<HTMLInputElement>) {
   }
 }
 
-function WorkspaceAddForm(props) {
+function WorkspaceAddForm(props: any) {
   const { className, message, control, onEnter } = props;
 
   return (
@@ -62,7 +63,7 @@ export function useSaveSettings() {
     resolver: yupResolver(schema),
   });
   const { saveWorkspace, addNewWorkspace } = useWorkspaceAction();
-  function handleAddNewWorkspace({ workspaceName }) {
+  function handleAddNewWorkspace({ workspaceName }: { workspaceName: string }) {
     addNewWorkspace(workspaceName, settingsRef.current);
 
     closeDialog();

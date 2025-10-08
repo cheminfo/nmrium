@@ -14,7 +14,7 @@ function SignalDeltaColumn({
   const dispatch = useDispatch();
   const signal = row?.tableMetaInfo?.signal;
 
-  function saveHandler(event) {
+  function saveHandler(event: any) {
     dispatch({
       type: 'CHANGE_RANGE_SIGNAL_VALUE',
       payload: {

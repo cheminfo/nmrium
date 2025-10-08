@@ -11,7 +11,7 @@ interface TabTitleProps {
 export function TabTitle(props: TabTitleProps) {
   const { onDelete, children } = props;
 
-  function handleOnDelete(event) {
+  function handleOnDelete(event: any) {
     event.stopPropagation();
     onDelete?.(event);
   }

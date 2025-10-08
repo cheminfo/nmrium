@@ -4,7 +4,7 @@ import {
   translateMultiplet,
 } from 'nmr-processing';
 
-function getMultiplicityNumber(string) {
+function getMultiplicityNumber(string: any) {
   const multiplet = findMultiplet(string);
   return multiplet ? multiplet.multiplicity : null;
 }
@@ -17,7 +17,7 @@ function hasCouplingConstant(multiplet: string) {
   return checkMultiplicity(multiplet, ['m', 's']);
 }
 
-function getPascal(n, spin) {
+function getPascal(n: any, spin: any) {
   if (n === undefined || n === 0 || spin === undefined) return [1];
   const mult = 2 * spin + 1;
   let previousLine: any[] = [];

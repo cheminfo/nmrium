@@ -51,14 +51,14 @@ function InputRange(props: InputRangeProps, ref: any) {
   const valueRef = useRef(value);
 
   useImperativeHandle(ref, () => ({
-    setValue: (value) => {
+    setValue: (value: any) => {
       valueRef.current = value;
     },
   }));
 
   const mouseDownCallback = useCallback(
-    (event) => {
-      function mouseMoveCallback(event) {
+    (event: any) => {
+      function mouseMoveCallback(event: any) {
         const diff = event.clientX - previousPosition.current;
         previousPosition.current = event.clientX;
         if (event.buttons === 1) {

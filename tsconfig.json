@@ -3,7 +3,6 @@
   "compilerOptions": {
     "types": ["vite/client"],
     "outDir": "lib",
-    "noImplicitAny": false,
     "noUncheckedIndexedAccess": false,
     "noImplicitReturns": false,
     "verbatimModuleSyntax": false

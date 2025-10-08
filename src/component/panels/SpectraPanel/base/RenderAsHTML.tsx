@@ -6,7 +6,7 @@ interface RenderAsHTMLProps {
   jpath: string | string[];
 }
 
-function formatValueAsHTML(value) {
+function formatValueAsHTML(value: any) {
   if (value) {
     value = value.replaceAll(/(?<value>\d+)/g, '<sub>$<value></sub>');
   }

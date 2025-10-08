@@ -187,7 +187,7 @@ function InnerMultipleAnalysis(props: InnerMultipleAnalysisProps) {
 
   return (
     <Container>
-      {analysisData?.debug?.steps.map((d, index) => {
+      {analysisData?.debug?.steps.map((d: any, index: any) => {
         return (
           // eslint-disable-next-line react/no-array-index-key
           <Row key={index}>

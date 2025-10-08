@@ -112,7 +112,7 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
     sizesList = getSizesList(layout);
   }
 
-  function handleChangeMode(mode) {
+  function handleChangeMode(mode: any) {
     const options = defaultValues;
     setMode(mode);
     if (options.mode === mode) {
@@ -133,7 +133,7 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
       }, 0);
     };
 
-    const handleKeyDown = (event) => {
+    const handleKeyDown = (event: any) => {
       if (event.key === 'Enter') {
         void handleSubmit(onExportOptionsChange)();
       }

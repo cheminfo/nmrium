@@ -29,13 +29,23 @@ function getLinkText(link: Link) {
   return `${getAbbreviation(link)} (${deltaX} , ${deltaY}) ${movedLabel}`;
 }
 
-function AdditionalColumnField({
-  rowCorrelation,
-  columnCorrelation,
-  commonLinks,
-  spectraData,
-  onEdit,
-}) {
+interface AdditionalColumnFieldProps {
+  rowCorrelation: any;
+  columnCorrelation: any;
+  commonLinks: any;
+  spectraData: any;
+  onEdit: any;
+}
+
+function AdditionalColumnField(props: AdditionalColumnFieldProps) {
+  const {
+    rowCorrelation,
+    columnCorrelation,
+    commonLinks,
+    spectraData,
+    onEdit,
+  } = props;
+
   const { openDialog } = useDialog();
 
   const highlightIDsCommonLinks = useMemo(() => {
@@ -59,21 +69,21 @@ function AdditionalColumnField({
   const highlightCommonLinks = useHighlight(highlightIDsCommonLinks);
 
   const mouseEnterHandler = useCallback(
-    (event) => {
+    (event: any) => {
       event.currentTarget.focus();
       highlightCommonLinks.show();
     },
     [highlightCommonLinks],
   );
   const mouseLeaveHandler = useCallback(
-    (event) => {
+    (event: any) => {
       event.currentTarget.blur();
       highlightCommonLinks.hide();
     },
     [highlightCommonLinks],
   );
 
-  function contextMenuHandler(data) {
+  function contextMenuHandler(data: any) {
     highlightCommonLinks.hide();
     openDialog<EditLinkDialogData>(EditLinkModal, data);
   }
@@ -81,7 +91,7 @@ function AdditionalColumnField({
   const handleEditPseudoHSQC = useCallback(
     (action: 'add' | 'remove', link?: Link) => {
       const pseudoLinkCountHSQC = rowCorrelation.link.filter(
-        (_link) =>
+        (_link: any) =>
           (_link.experimentType === 'hsqc' ||
             _link.experimentType === 'hmqc') &&
           _link.pseudo === true,
@@ -143,7 +153,7 @@ function AdditionalColumnField({
 
   const contextMenu = useMemo(() => {
     // allow the edition of correlations
-    const commonLinksMenu = commonLinks.flatMap((commonLink) => {
+    const commonLinksMenu = commonLinks.flatMap((commonLink: any) => {
       if (commonLink.pseudo !== false) {
         return [];
       }
@@ -162,7 +172,7 @@ function AdditionalColumnField({
     });
     // allow addition or removal of a pseudo HSQC link between pseudo heavy atom and proton
     const commonPseudoLinkHSQC = commonLinks.find(
-      (commonLink) =>
+      (commonLink: any) =>
         commonLink.pseudo === true && commonLink.experimentType === 'hsqc',
     );
     if (rowCorrelation.pseudo === true) {
@@ -184,7 +194,7 @@ function AdditionalColumnField({
 
   const contentLabel = useMemo(
     () =>
-      commonLinks.map((commonLink, i) => (
+      commonLinks.map((commonLink: any, i: any) => (
         <label key={commonLink.id}>
           <label
             style={{
@@ -226,14 +236,14 @@ function AdditionalColumnField({
   );
 }
 
-function getTitle(commonLinks) {
+function getTitle(commonLinks: any) {
   if (commonLinks?.length === 0) {
     return '';
   }
 
   return [
     ...new Set(
-      commonLinks?.link?.map((link) => {
+      commonLinks?.link?.map((link: any) => {
         return link.experimentType.toUpperCase();
       }),
     ),

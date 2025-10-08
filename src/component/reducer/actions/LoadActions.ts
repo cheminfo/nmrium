@@ -58,7 +58,7 @@ function convertHybridizationStringValuesInCorrelations(
 ): CorrelationData {
   return {
     ...correlations,
-    values: correlations.values.map((correlation) => {
+    values: correlations.values.map((correlation: any) => {
       if (typeof correlation.hybridization === 'string') {
         const values: number[] = [];
         if (correlation.hybridization.length > 0) {
@@ -120,7 +120,7 @@ function setData(draft: Draft<State>, input: InputProps) {
     draft.source = lodashMergeWith(
       draft.source,
       source,
-      (objValue, srcValue) => {
+      (objValue: any, srcValue: any) => {
         if (Array.isArray(objValue)) {
           return objValue.concat(srcValue);
         }

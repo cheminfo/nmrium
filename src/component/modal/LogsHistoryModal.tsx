@@ -5,6 +5,7 @@ import { FaRegTrashAlt } from 'react-icons/fa';
 import { IoBugOutline } from 'react-icons/io5';
 import { ObjectInspector } from 'react-inspector';
 import { useOnOff } from 'react-science/ui';
+import type { CellProps } from 'react-table';
 
 import { useLogger } from '../context/LoggerContext.js';
 import Button from '../elements/Button.js';
@@ -19,7 +20,7 @@ const logsDataFormat = new Intl.DateTimeFormat('default', {
   second: 'numeric',
 });
 
-function handleRowStyle(data) {
+function handleRowStyle(data: any) {
   const level = (data?.original as LogEntry).level;
   let backgroundColor = 'lightgreen';
   if (level > 40) {
@@ -75,12 +76,12 @@ export function LogsHistoryModal(props: LogsHistoryModalProps) {
     lastReadLogId,
   );
 
-  const COLUMNS: Array<Column<LogEntry>> = useMemo(
+  const COLUMNS = useMemo<Array<Column<LogEntry>>>(
     () => [
       {
         Header: '#',
         accessor: (_, index) => index + 1,
-        Cell: ({ row }) => (
+        Cell: ({ row }: CellProps<LogEntry>) => (
           <span>
             {row.original.id > lastReadLogId && (
               <div
@@ -116,7 +117,7 @@ export function LogsHistoryModal(props: LogsHistoryModalProps) {
 
       {
         Header: 'Error',
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<LogEntry>) => {
           const { error } = row.original;
           return (
             <ColumnWrapper>

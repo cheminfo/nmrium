@@ -158,7 +158,7 @@ const MemoizedPeaksPanel = memo(InnerPeaks);
 
 const emptyData = { peaks: {}, ranges: {}, info: {}, display: {} };
 
-export default function Peaks(props) {
+export default function Peaks(props: any) {
   const { peaksSource } = props;
   const {
     view: {

@@ -46,12 +46,12 @@ export function BaseApodizationOptions(
     register,
     formState: { isDirty },
   } = formMethods;
-  function handleConfirm(event) {
+  function handleConfirm(event: any) {
     void handleSubmit((values) => handleApplyFilter(values))();
     onConfirm?.(event);
   }
 
-  function handleCancel(event) {
+  function handleCancel(event: any) {
     handleCancelFilter();
     onCancel?.(event);
   }
@@ -322,7 +322,7 @@ function OptionsSection(options: OptionsSectionProps) {
   const { setValue, watch } = useFormContext();
   const isApplyChecked = watch(`options.${algorithm}.apply`) || false;
 
-  function handleToggleApply(event) {
+  function handleToggleApply(event: any) {
     const checked = event.target.checked;
     setValue(`options.${algorithm}.apply`, checked, { shouldDirty: true });
     onChange();

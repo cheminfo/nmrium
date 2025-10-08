@@ -1,4 +1,4 @@
-import type { ExportSettings } from '@zakodium/nmrium-core';
+import type { ExportSettings, Unit } from '@zakodium/nmrium-core';
 import { useDeferredValue, useRef, useState } from 'react';
 
 import { roundNumber } from '../../utility/roundNumber.js';
@@ -29,7 +29,7 @@ export function useExportConfigurer(options: ExportSettings) {
     return value;
   }
 
-  function changeDPI(value) {
+  function changeDPI(value: any) {
     const { width, height, dpi } = refSize.current;
     const convertedWidth =
       convertToPixels(width, unit, 1, { precision: 2 }) * value;
@@ -41,7 +41,7 @@ export function useExportConfigurer(options: ExportSettings) {
     };
   }
 
-  function changeUnit({ unit }) {
+  function changeUnit({ unit }: { unit: Unit }) {
     const w = convert(width, previousUnit, unit, dpi, { precision: 2 });
     const h = convert(height, previousUnit, unit, dpi, { precision: 2 });
 

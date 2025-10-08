@@ -5,6 +5,7 @@ import { useCallback, useMemo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { FaLink, FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
+import type { CellProps } from 'react-table';
 
 import { GroupPane } from '../../../elements/GroupPane.js';
 import { Input2Controller } from '../../../elements/Input2Controller.js';
@@ -65,14 +66,16 @@ function DatabasesTabContent({
   );
 
   const deleteHandler = useCallback(
-    (data, index: number) => {
-      const databases = data.filter((_, columnIndex) => columnIndex !== index);
+    (data: any, index: number) => {
+      const databases = data.filter(
+        (_: any, columnIndex: any) => columnIndex !== index,
+      );
       setValue('databases.data', databases);
     },
     [setValue],
   );
 
-  const COLUMNS: Column[] = useMemo(
+  const COLUMNS = useMemo<Array<Column<Database>>>(
     () => [
       {
         Header: '#',
@@ -82,7 +85,7 @@ function DatabasesTabContent({
       {
         Header: 'Label',
         style: { minWidth: '150px' },
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<Database>) => {
           const name = getKeyPath(row.index, 'label');
           return (
             <Input2Controller
@@ -97,7 +100,7 @@ function DatabasesTabContent({
       {
         Header: 'URL',
         style: { width: '100%' },
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<Database>) => {
           const name = getKeyPath(row.index, 'url');
           return (
             <Input2Controller
@@ -113,7 +116,7 @@ function DatabasesTabContent({
         Header: 'Enabled',
         style: { width: '30px', textAlign: 'center' },
 
-        Cell: ({ row }) => (
+        Cell: ({ row }: CellProps<Database>) => (
           <Checkbox
             style={{ margin: 0 }}
             {...register(getKeyPath(row.index, 'enabled'))}
@@ -123,7 +126,7 @@ function DatabasesTabContent({
       {
         Header: 'Auto Load',
         style: { width: '30px', textAlign: 'center' },
-        Cell: ({ row }) => (
+        Cell: ({ row }: CellProps<Database>) => (
           <Controller
             control={control}
             name="databases.defaultDatabase"
@@ -150,7 +153,7 @@ function DatabasesTabContent({
         Header: '',
         style: { maxWidth: '100px', width: '85px' },
         id: 'op-buttons',
-        Cell: ({ data, row }) => {
+        Cell: ({ data, row }: CellProps<Database>) => {
           const { index, original: record } = row;
           return (
             <div
@@ -238,7 +241,14 @@ function DatabasesTabContent({
   );
 }
 
-function DataBaseHeader({ onReset, onAdd, text }) {
+interface DataBaseHeaderProps {
+  onReset: () => void;
+  onAdd: () => void;
+  text: string;
+}
+
+function DataBaseHeader(props: DataBaseHeaderProps) {
+  const { onReset, onAdd, text } = props;
   return (
     <Section>
       <p style={{ flex: 1 }}>{text}</p>

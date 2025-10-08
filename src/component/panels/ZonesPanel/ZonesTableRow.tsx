@@ -81,7 +81,7 @@ function ZonesTableRow({
   return (
     <ContextMenu
       options={contextMenu}
-      onSelect={(selected) => onContextMenuSelect?.(selected, rowData)}
+      onSelect={(selected: any) => onContextMenuSelect?.(selected, rowData)}
       as="tr"
       style={
         highlightZone.isActive || assignmentZone.isActive

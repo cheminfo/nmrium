@@ -388,7 +388,7 @@ function toggleViewProperty<T extends keyof InsetView>(
   if (!inset) return;
 
   const [baseKey, toggleProperty] = key.split('.');
-  const target = inset.view[baseKey];
+  const target = (inset.view as any)[baseKey];
   if (typeof value === 'boolean') {
     target[toggleProperty] = value;
   } else {

@@ -1,6 +1,7 @@
 import { Button, Classes } from '@blueprintjs/core';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { FaRegTrashAlt } from 'react-icons/fa';
+import type { CellProps } from 'react-table';
 
 import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
 import type { Column } from '../../elements/ReactTable/ReactTable.js';
@@ -13,22 +14,22 @@ export function ExclusionsZonesTable() {
     return null;
   }
 
-  function handleDelete(index) {
+  function handleDelete(index: any) {
     setValue(
       'exclusionsZones',
-      exclusionsZones.filter((_, i) => i !== index),
+      exclusionsZones.filter((_: any, i: any) => i !== index),
     );
   }
 
-  const exclusionsZonesColumns: Column[] = [
+  const exclusionsZonesColumns: Array<Column<any>> = [
     {
       Header: '#',
       style: { width: '50px' },
-      accessor: (_, index) => index + 1,
+      accessor: (_: any, index) => index + 1,
     },
     {
       Header: 'from',
-      Cell: ({ row }) => (
+      Cell: ({ row }: CellProps<any>) => (
         <NumberInput2Controller
           control={control}
           name={`exclusionsZones.${row.index}.from`}
@@ -40,7 +41,7 @@ export function ExclusionsZonesTable() {
     },
     {
       Header: 'To',
-      Cell: ({ row }) => (
+      Cell: ({ row }: CellProps<any>) => (
         <NumberInput2Controller
           name={`exclusionsZones.${row.index}.to`}
           fill
@@ -54,7 +55,7 @@ export function ExclusionsZonesTable() {
       Header: '',
       style: { width: '70px' },
       id: 'actions',
-      Cell: ({ row }) => {
+      Cell: ({ row }: CellProps<any>) => {
         return (
           <Button
             size="small"

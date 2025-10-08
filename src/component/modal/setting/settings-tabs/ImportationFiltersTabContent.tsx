@@ -1,6 +1,7 @@
 import { Checkbox } from '@blueprintjs/core';
 import { useMemo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
+import type { CellProps } from 'react-table';
 
 import type { Keys } from '../../../../data/types/common/Keys.js';
 import { GroupPane } from '../../../elements/GroupPane.js';
@@ -78,7 +79,7 @@ const BRUKER_LIST: ListItem[] = [
 function ImportationFiltersTabContent() {
   const { register, control } = useFormContext<WorkspaceWithSource>();
 
-  const COLUMNS: Array<Column<ListItem>> = useMemo(
+  const COLUMNS = useMemo<Array<Column<ListItem>>>(
     () => [
       {
         Header: '#',
@@ -93,7 +94,7 @@ function ImportationFiltersTabContent() {
       {
         Header: ' ',
         style: { textAlign: 'center' },
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<ListItem>) => {
           const fieldType = row.original.fieldType;
           const name = row.original.name;
           switch (fieldType) {

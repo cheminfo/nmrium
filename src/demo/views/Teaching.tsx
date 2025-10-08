@@ -2,27 +2,27 @@ import { useEffect, useState } from 'react';
 
 import { NMRium } from '../../component/main/index.js';
 
-async function loadData(file) {
+async function loadData(file: any) {
   const response = await fetch(file);
   checkStatus(response);
   const data = await response.json();
   return data;
 }
 
-function checkStatus(response) {
+function checkStatus(response: any) {
   if (!response.ok) {
     throw new Error(`HTTP ${response.status} - ${response.statusText}`);
   }
   return response;
 }
 
-export default function Teaching(props) {
+export default function Teaching(props: any) {
   const [data, setData] = useState<any>();
   const { file, title, baseURL } = props;
 
   useEffect(() => {
     if (file) {
-      void loadData(file).then((d) => {
+      void loadData(file).then((d: any) => {
         const _d = JSON.parse(JSON.stringify(d).replaceAll(/\.\/+?/g, baseURL));
         setData(_d);
       });

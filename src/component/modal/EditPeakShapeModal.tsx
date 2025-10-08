@@ -103,7 +103,7 @@ function InnerEditPeakShapeModal(props: Required<EditPeakShapeModalProps>) {
     resolver: yupResolver(validation(kind)) as any,
   });
 
-  function changePeakShapeHandler(values) {
+  function changePeakShapeHandler(values: any) {
     dispatch({
       type: 'CHANGE_PEAK_SHAPE',
       payload: {
@@ -116,7 +116,7 @@ function InnerEditPeakShapeModal(props: Required<EditPeakShapeModalProps>) {
     onCloseDialog();
   }
 
-  function handleChangeKind({ value }) {
+  function handleChangeKind({ value }: { value: Kind }) {
     reset(getValues(peak, value));
     setKind(value);
   }

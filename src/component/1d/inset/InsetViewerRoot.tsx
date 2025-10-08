@@ -1,3 +1,4 @@
+import type { PropsWithChildren } from 'react';
 import { createContext, useContext, useRef } from 'react';
 
 const InsetViewRefContext = createContext<HTMLDivElement | null>(null);
@@ -6,7 +7,7 @@ export function useInsetViewerRootRef() {
   return useContext(InsetViewRefContext);
 }
 
-export function InsetViewerRoot({ children }) {
+export function InsetViewerRoot({ children }: Required<PropsWithChildren>) {
   const insetRootRef = useRef<HTMLDivElement | null>(null);
 
   return (

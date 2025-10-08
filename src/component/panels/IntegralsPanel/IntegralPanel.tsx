@@ -63,7 +63,7 @@ function IntegralPanelInner({
   }, [alert, yesHandler]);
 
   const changeIntegralSumHandler = useCallback(
-    (options) => {
+    (options: any) => {
       dispatch({ type: 'CHANGE_INTEGRAL_SUM', payload: { options } });
     },
     [dispatch],
@@ -92,7 +92,7 @@ function IntegralPanelInner({
   }, [dispatch]);
 
   const filteredData = useMemo(() => {
-    function isInRange(from, to) {
+    function isInRange(from: any, to: any) {
       const factor = 10000;
       to = to * factor;
       from = from * factor;

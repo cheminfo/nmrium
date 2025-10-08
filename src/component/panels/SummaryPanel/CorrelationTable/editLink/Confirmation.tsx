@@ -39,7 +39,7 @@ function EditLinkConfirmation({
   onConfirm,
 }: EditLinkConfirmationProps) {
   const handleOnConfirm = useCallback(
-    (e) => {
+    (e: any) => {
       e.preventDefault();
       e.stopPropagation();
 

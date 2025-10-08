@@ -69,7 +69,7 @@ export function useSyncedFilterOptions(
   }, [updateFilterOptions]);
 
   const syncFilterOptions = useCallback(
-    (options) => {
+    (options: any) => {
       isSyncOptionsDirty.current = false;
       updateFilterOptions(options);
     },
@@ -91,7 +91,7 @@ export function FilterSyncOptionsProvider({
   const state = useMemo(() => {
     return {
       sharedFilterOptions,
-      updateFilterOptions: (options) =>
+      updateFilterOptions: (options: any) =>
         updateFilterOptions(structuredClone(options)),
     };
   }, [sharedFilterOptions]);

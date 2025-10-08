@@ -40,7 +40,7 @@ export default function SimilarityTree() {
 
   const paths: string[] = [];
   for (const { level, center, parentCenter, parentLevel } of data) {
-    if (parentCenter === undefined) continue;
+    if (parentCenter === undefined || parentLevel === undefined) continue;
     const startX = scaleX()(parentCenter);
     const startY = scaleY(parentLevel);
     const midY = startY + treeHeadLength / 2;
@@ -97,7 +97,7 @@ function mapTreeToArray(
   level: number,
   parentCenter = null,
   parentLevel = -1,
-) {
+): TreeItem[] {
   if (!node) return [];
 
   const { center, sum } = node;

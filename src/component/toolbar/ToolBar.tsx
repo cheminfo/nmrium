@@ -51,12 +51,12 @@ import { LoadJCAMPModal } from '../modal/LoadJCAMPModal.js';
 import SaveAsModal from '../modal/SaveAsModal.js';
 import { MetaImportationModal } from '../modal/metaImportation/MetaImportationModal.js';
 
-import type { Tool } from './ToolTypes.js';
+import type { MainTool } from './ToolTypes.js';
 import { options } from './ToolTypes.js';
 import { EXPORT_MENU, IMPORT_MENU } from './toolbarMenu.js';
 
 interface BaseToolItem extends Pick<ToolbarItemProps, 'icon' | 'disabled'> {
-  id: Tool;
+  id: MainTool;
   checkOptions?: CheckOptions;
   isVisible?: boolean;
 }
@@ -111,7 +111,7 @@ export default function ToolBar() {
   } = useToolsFunctions();
 
   const handleChange = useCallback(
-    (selectedOption) => {
+    (selectedOption: any) => {
       handleChangeOption(selectedOption);
     },
     [handleChangeOption],
@@ -165,7 +165,7 @@ export default function ToolBar() {
 
   const exportViewportAPI = useExportManagerAPI();
 
-  function importHandler(data) {
+  function importHandler(data: any) {
     switch (data?.id) {
       case 'importFile':
         openLoader();
@@ -183,7 +183,7 @@ export default function ToolBar() {
     }
   }
 
-  function exportHandler(data) {
+  function exportHandler(data: any) {
     switch (data?.id) {
       case 'svg':
         exportViewportAPI.current?.export({ format: 'svg' });

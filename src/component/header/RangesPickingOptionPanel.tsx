@@ -45,7 +45,7 @@ function RangesPickingOptionPanel() {
   const pointsNumber = useCheckPointsNumberInWindowArea();
   const toaster = useToaster();
 
-  function handleRangesPicking(values) {
+  function handleRangesPicking(values: any) {
     if (pointsNumber > MIN_AREA_POINTS) {
       dispatch({
         type: 'AUTO_RANGES_DETECTION',

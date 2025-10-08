@@ -14,6 +14,7 @@ import { mapPeaks } from 'nmr-processing';
 import {
   autoPeakPicking,
   getShiftX,
+  isSpectrum1D,
   optimizePeaks,
 } from '../../../data/data1d/Spectrum1D/index.js';
 import { defaultPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState.js';
@@ -147,12 +148,14 @@ function handleDeletePeak(draft: Draft<State>, action: DeletePeakAction) {
   const { id: peakId, spectrumKey } = action.payload;
   const spectrum = getSpectrum(draft, spectrumKey);
 
-  if (!spectrum) return;
+  if (!isSpectrum1D(spectrum)) return;
 
   if (!peakId) {
     spectrum.peaks.values = [];
   } else {
-    const peakIndex = spectrum.peaks.values.findIndex((p) => p.id === peakId);
+    const peakIndex = spectrum.peaks.values.findIndex(
+      (p: any) => p.id === peakId,
+    );
     spectrum.peaks.values.splice(peakIndex, 1);
   }
 }

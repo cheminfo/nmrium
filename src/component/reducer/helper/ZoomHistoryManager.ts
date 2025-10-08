@@ -38,13 +38,13 @@ export default function zoomHistoryManager(
   return { historyStack: history, push, pop, getLast, clear, setBase };
 }
 
-function preparePush(historyStack) {
+function preparePush(historyStack: any) {
   return (val: HistoryItem) => {
     historyStack.push(val);
   };
 }
 
-function prepareSetBase(historyStack) {
+function prepareSetBase(historyStack: any) {
   return (val: HistoryItem) => {
     if (historyStack.length === 0) {
       historyStack[0] = val;
@@ -52,7 +52,7 @@ function prepareSetBase(historyStack) {
   };
 }
 
-function popZoomHistory(historyStack) {
+function popZoomHistory(historyStack: any) {
   const val = historyStack.pop();
 
   if (historyStack.length === 0) {
@@ -62,11 +62,11 @@ function popZoomHistory(historyStack) {
   return val ? historyStack.at(-1) : null;
 }
 
-export function preparePop(historyStack) {
+export function preparePop(historyStack: any) {
   return () => popZoomHistory(historyStack);
 }
 
-function prepareGetLast(historyStack) {
+function prepareGetLast(historyStack: any) {
   return () => {
     if (historyStack.length === 0) return null;
     return historyStack.at(-1);

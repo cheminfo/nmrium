@@ -147,7 +147,7 @@ export const useApodization = (
 
   const { handleSubmit, reset, getValues } = formMethods;
 
-  function syncWatch(sharedFilterOptions) {
+  function syncWatch(sharedFilterOptions: any) {
     reset(lodashMerge(getValues(), sharedFilterOptions));
   }
 

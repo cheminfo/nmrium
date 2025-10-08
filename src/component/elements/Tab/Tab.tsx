@@ -5,7 +5,7 @@ import type { CSSProperties, ReactNode } from 'react';
 
 import DeleteButton from './DeleteButton.js';
 
-const styles = (styles) => css`
+const styles = (styles: any) => css`
   position: relative;
 
   .delete {
@@ -57,11 +57,11 @@ export default function Tab({
     classNames.push('tab-list-active');
   }
 
-  function clickHandler(e) {
+  function clickHandler(e: any) {
     onClick({ ...e, title, tabid });
   }
 
-  function deleteHandler(e) {
+  function deleteHandler(e: any) {
     // stop propagation here to not have set it
     // as active tab too (via tab click event triggering)
     e.stopPropagation();

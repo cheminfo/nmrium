@@ -2,7 +2,7 @@ import type { InputGroupProps } from '@blueprintjs/core';
 import { Classes, MenuItem } from '@blueprintjs/core';
 import { Suggest } from '@blueprintjs/select';
 import debounce from 'lodash/debounce.js';
-import type { ForwardedRef } from 'react';
+import type { ChangeEvent, ForwardedRef } from 'react';
 import {
   forwardRef,
   isValidElement,
@@ -23,10 +23,7 @@ interface BaseInputProps {
   debounceTime?: number;
   autoSelect?: boolean;
   checkValue?: (element?: number | string) => boolean;
-  onChange?: (
-    value: string,
-    event?: React.ChangeEvent<HTMLInputElement>,
-  ) => void;
+  onChange?: (value: string, event?: ChangeEvent<HTMLInputElement>) => void;
 }
 
 export interface Input2Props<FilterItem extends string = string>
@@ -53,7 +50,7 @@ function useInput(props: UseInputProps) {
 
   const debounceOnChange = useMemo(
     () =>
-      debounce((val: string, event?: React.ChangeEvent<HTMLInputElement>) => {
+      debounce((val: string, event?: ChangeEvent<HTMLInputElement>) => {
         onChange?.(val, event);
         setDebouncedStatus(true);
       }, debounceTime),
@@ -72,10 +69,7 @@ function useInput(props: UseInputProps) {
     }
   }, [autoSelect, innerRef]);
 
-  function handleChange(
-    val: string,
-    event?: React.ChangeEvent<HTMLInputElement>,
-  ) {
+  function handleChange(val: string, event?: ChangeEvent<HTMLInputElement>) {
     if (!event) return;
 
     event?.stopPropagation();
@@ -102,7 +96,7 @@ function useInput(props: UseInputProps) {
   };
 }
 
-function getIcon(leftIcon) {
+function getIcon(leftIcon: any) {
   if (isValidElement(leftIcon)) {
     return <span className={Classes.ICON}>{leftIcon}</span>;
   }
@@ -121,7 +115,7 @@ function getClasses(isDebounced: boolean) {
 
 function InnerInput<FilterItem extends string = string>(
   props: Input2Props<FilterItem>,
-  ref,
+  ref: any,
 ) {
   const {
     debounceTime = 0,
@@ -146,14 +140,14 @@ function InnerInput<FilterItem extends string = string>(
     checkValue,
   });
 
-  function handleItemSelect(item: FilterItem, event) {
+  function handleItemSelect(item: FilterItem, event: any) {
     const val = getFilterValue(item);
     setValue(val);
     event = { ...event, target: { ...event.target, name } };
     onChange?.(val, event);
   }
 
-  function renderItem(item: FilterItem, { handleClick, modifiers }) {
+  function renderItem(item: FilterItem, { handleClick, modifiers }: any) {
     const { active, matchesPredicate } = modifiers;
     if (!matchesPredicate) {
       return null;

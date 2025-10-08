@@ -84,7 +84,7 @@ export default function PredictSpectraModal({
 
   const { logger } = useLogger();
   const submitHandler = useCallback(
-    (values) => {
+    (values: any) => {
       void (async () => {
         if (molecule) {
           const { molfile } = molecule;

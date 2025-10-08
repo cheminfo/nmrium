@@ -11,14 +11,14 @@ import { useClipboard } from '../../utils/clipboard/clipboardHooks.js';
 
 const answers = JSON.parse(localStorage.getItem('nmrium-exams') || '{}');
 
-async function loadData(file) {
+async function loadData(file: any) {
   const response = await fetch(file);
   checkStatus(response);
   const data = await response.json();
   return data;
 }
 
-function checkStatus(response) {
+function checkStatus(response: any) {
   if (!response.ok) {
     throw new Error(`HTTP ${response.status} - ${response.statusText}`);
   }
@@ -140,7 +140,7 @@ const Container = styled.div`
   padding: 10px;
 `;
 
-const CopyButton = ({ result }) => {
+const CopyButton = ({ result }: { result: string }) => {
   const [isCopied, setCopyFlag] = useState(false);
   const { rawWriteWithType, shouldFallback, cleanShouldFallback, text } =
     useClipboard();
@@ -177,15 +177,15 @@ const CopyButton = ({ result }) => {
   );
 };
 
-export default function Exam(props) {
+export default function Exam(props: any) {
   const [data, setData] = useState<any>();
-  const [result, setResult] = useState<string | null>(null);
+  const [result, setResult] = useState('');
   const [answerAreaVisible, showAnswerArea] = useState(false);
 
   const { file, title, baseURL } = props;
 
   const checkAnswer = useCallback(
-    (response) => {
+    (response: any) => {
       if (data.answer) {
         const MolResponse = Molecule.fromMolfile(response.getMolfileV3());
         const idCodeResponse = MolResponse.getIDCode();
@@ -199,7 +199,7 @@ export default function Exam(props) {
 
   useEffect(() => {
     if (file) {
-      void loadData(file).then((d) => {
+      void loadData(file).then((d: any) => {
         const _d = JSON.parse(JSON.stringify(d).replaceAll(/\.\/+?/g, baseURL));
 
         if (_d?.molecules?.[0]?.molfile) {

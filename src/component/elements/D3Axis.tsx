@@ -99,7 +99,7 @@ function Tickets(props: TicketsProps) {
   });
 }
 
-function getLinePosition(position, axisPosition, gridSize) {
+function getLinePosition(position: any, axisPosition: any, gridSize: any) {
   if (['top', 'bottom'].includes(axisPosition)) {
     return {
       x1: position,

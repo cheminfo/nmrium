@@ -65,7 +65,7 @@ function linkMetaWithSpectra(options: {
       }
     }
 
-    const sourceValues = {};
+    const sourceValues: Record<string, number[]> = {};
     let index = 0;
     for (const metaRow of data) {
       const sourceValue = prepareKey(metaRow[source]);
@@ -97,13 +97,13 @@ function linkMetaWithSpectra(options: {
 }
 
 class TargetPathError extends Error {
-  constructor(fieldPath) {
+  constructor(fieldPath: any) {
     super(`Target field path [ ${fieldPath} ] is not exists`);
     this.name = 'TargetPathError';
   }
 }
 class SourcePathError extends Error {
-  constructor(fieldPath) {
+  constructor(fieldPath: any) {
     super(`Source field path [ ${fieldPath} ] is not exists`);
     this.name = 'AutomaticPathsMatchesError';
   }

@@ -3,6 +3,7 @@ import type { LegendField, PredefinedLegendField } from '@zakodium/nmrium-core';
 import { useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
+import type { CellProps } from 'react-table';
 
 import { useChartData } from '../../../context/ChartContext.js';
 import { CheckController } from '../../../elements/CheckController.js';
@@ -40,14 +41,16 @@ function LegendsPreferences() {
   );
 
   const deleteHandler = useCallback(
-    (data, index: number) => {
-      const _fields = data.filter((_, columnIndex) => columnIndex !== index);
+    (data: any, index: number) => {
+      const _fields = data.filter(
+        (_: any, columnIndex: any) => columnIndex !== index,
+      );
       setValue('legendsFields', _fields);
     },
     [setValue],
   );
 
-  const COLUMNS: Array<Column<LegendField>> = useMemo(
+  const COLUMNS = useMemo<Array<Column<LegendField>>>(
     () => [
       {
         Header: '#',
@@ -56,7 +59,7 @@ function LegendsPreferences() {
       },
       {
         Header: 'Field',
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<LegendField>) => {
           const predefinedColumn = row.original as PredefinedLegendField;
           if (predefinedColumn?.name) {
             return (
@@ -71,7 +74,7 @@ function LegendsPreferences() {
               control={control}
               name={`legendsFields.${row.index}.jpath`}
               filterItems={datalist}
-              mapOnChangeValue={(key) => paths?.[key] || null}
+              mapOnChangeValue={(key) => (paths as any)[key] || null}
               mapValue={convertPathArrayToString}
               style={{ backgroundColor: 'transparent' }}
               noShadowBox
@@ -82,7 +85,7 @@ function LegendsPreferences() {
       {
         Header: 'Visible',
         style: { width: '30px', textAlign: 'center' },
-        Cell: ({ row }) => (
+        Cell: ({ row }: CellProps<LegendField>) => (
           <CheckController
             control={control}
             style={{ margin: 0 }}
@@ -94,7 +97,7 @@ function LegendsPreferences() {
         Header: '',
         style: { width: '70px' },
         id: 'operation-button',
-        Cell: ({ data, row }) => {
+        Cell: ({ data, row }: CellProps<LegendField>) => {
           const record: any = row.original;
           return (
             <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>

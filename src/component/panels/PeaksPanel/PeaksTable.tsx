@@ -2,6 +2,7 @@ import type { Info1D, Peak1D } from '@zakodium/nmr-types';
 import dlv from 'dlv';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { FaEdit, FaRegTrashAlt } from 'react-icons/fa';
+import type { CellProps } from 'react-table';
 
 import { useDispatch } from '../../context/DispatchContext.js';
 import { EditableColumn } from '../../elements/EditableColumn.js';
@@ -24,7 +25,7 @@ interface PeaksTableProps {
   info: Info1D;
 }
 
-function handleActiveRow(row) {
+function handleActiveRow(row: any) {
   return row.original.isConstantlyHighlighted;
 }
 
@@ -34,7 +35,7 @@ function PeaksTable({ activeTab, data, info }: PeaksTableProps) {
   const [peak, setEditedPeak] = useState<Peak1D | undefined>();
 
   const deletePeakHandler = useCallback(
-    (row) => {
+    (row: any) => {
       const params = row.original;
       dispatch({
         type: 'DELETE_PEAK',
@@ -43,19 +44,19 @@ function PeaksTable({ activeTab, data, info }: PeaksTableProps) {
     },
     [dispatch],
   );
-  const editPeakHandler = useCallback((row) => {
+  const editPeakHandler = useCallback((row: any) => {
     setEditedPeak(row.original);
   }, []);
 
   const saveDeltaPPMRefsHandler = useCallback(
-    (event, row) => {
+    (event: any, row: any) => {
       const shift =
         Number.parseFloat(event.target.value) - Number.parseFloat(row.x);
       dispatch({ type: 'SHIFT_SPECTRUM', payload: { shift } });
     },
     [dispatch],
   );
-  const COLUMNS: Array<ControlCustomColumn<PeakRecord>> = useMemo(
+  const COLUMNS = useMemo<Array<ControlCustomColumn<PeakRecord>>>(
     () => [
       {
         showWhen: 'showSerialNumber',
@@ -69,7 +70,7 @@ function PeaksTable({ activeTab, data, info }: PeaksTableProps) {
         index: 3,
         Header: 'δ (ppm)',
         accessor: 'x',
-        Cell: ({ row }) => (
+        Cell: ({ row }: CellProps<PeakRecord>) => (
           <EditableColumn
             value={formatNumber(
               row.original.x,
@@ -86,7 +87,7 @@ function PeaksTable({ activeTab, data, info }: PeaksTableProps) {
         index: 4,
         Header: 'δ (Hz)',
         accessor: 'xHz',
-        Cell: ({ row }) =>
+        Cell: ({ row }: CellProps<PeakRecord>) =>
           formatNumber(row.original.xHz, peaksPreferences.deltaHz.format),
       },
       {
@@ -95,7 +96,7 @@ function PeaksTable({ activeTab, data, info }: PeaksTableProps) {
         Header: 'Intensity',
         style: { maxWidth: '80px' },
         accessor: 'y',
-        Cell: ({ row }) =>
+        Cell: ({ row }: CellProps<PeakRecord>) =>
           formatNumber(row.original.y, peaksPreferences.intensity.format),
       },
       {
@@ -103,7 +104,7 @@ function PeaksTable({ activeTab, data, info }: PeaksTableProps) {
         index: 6,
         Header: 'Width (Hz)',
         accessor: 'width',
-        Cell: ({ row }) =>
+        Cell: ({ row }: CellProps<PeakRecord>) =>
           formatNumber(row.original.width, peaksPreferences.peakWidth.format),
       },
       {
@@ -117,7 +118,7 @@ function PeaksTable({ activeTab, data, info }: PeaksTableProps) {
         index: 8,
         Header: 'fwhm',
         accessor: (row) => row?.shape?.fwhm || '',
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<PeakRecord>) => {
           const fwhm = row.original?.shape?.fwhm;
           if (fwhm) {
             return formatNumber(fwhm, peaksPreferences.fwhm.format);
@@ -131,7 +132,7 @@ function PeaksTable({ activeTab, data, info }: PeaksTableProps) {
         Header: 'mu',
         accessor: (row) =>
           (row?.shape?.kind === 'pseudoVoigt' && row?.shape?.mu) || '',
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<PeakRecord>) => {
           const mu =
             row.original?.shape?.kind === 'pseudoVoigt' &&
             row.original?.shape?.mu;
@@ -148,7 +149,7 @@ function PeaksTable({ activeTab, data, info }: PeaksTableProps) {
         accessor: (row) =>
           (row?.shape?.kind === 'generalizedLorentzian' && row?.shape?.gamma) ||
           '',
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<PeakRecord>) => {
           const gamma =
             row.original?.shape?.kind === 'generalizedLorentzian' &&
             row.original?.shape?.gamma;

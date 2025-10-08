@@ -2,7 +2,7 @@ import type { Draft } from 'immer';
 import type { TopicMolecule } from 'openchemlib-utils';
 
 export function deepReplaceDiaIDs(
-  data: Draft<object>,
+  data: Draft<any>,
   mappings: ReturnType<TopicMolecule['getDiaIDsMapping']>,
 ) {
   for (const key in data) {

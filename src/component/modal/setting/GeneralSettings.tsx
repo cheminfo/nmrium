@@ -86,13 +86,13 @@ const StyledButton = styled(Button, {
 `;
 
 function isRestButtonDisable(
-  currentWorkspaceSetting,
-  workspaceName,
-  customWorkspaces,
+  currentWorkspaceSetting: any,
+  workspaceName: any,
+  customWorkspaces: any,
 ) {
   if (
-    !PredefinedWorkspaces[workspaceName] &&
-    !customWorkspaces[workspaceName]
+    !(workspaceName in PredefinedWorkspaces) &&
+    !(workspaceName in customWorkspaces)
   ) {
     return true;
   } else {
@@ -167,11 +167,11 @@ function InnerGeneralSettingsModal(props: InnerGeneralSettingsModalProps) {
     ]);
   }, [baseWorkspaces]);
 
-  function addWorkSpaceHandler(name) {
+  function addWorkSpaceHandler(name: any) {
     addNewWorkspace(name, getValues());
   }
 
-  function deleteWorkSpaceHandler(key) {
+  function deleteWorkSpaceHandler(key: any) {
     removeWorkspace(key);
   }
 
@@ -180,7 +180,7 @@ function InnerGeneralSettingsModal(props: InnerGeneralSettingsModalProps) {
     reset(workspaces[option.key]);
   }
 
-  function renderItem(item) {
+  function renderItem(item: any) {
     return (
       <WorkspaceItem
         item={item}
@@ -191,7 +191,7 @@ function InnerGeneralSettingsModal(props: InnerGeneralSettingsModalProps) {
   }
 
   const setWorkspaceSetting = useCallback(
-    (inputWorkspace) => {
+    (inputWorkspace: any) => {
       const parseWorkspaceName = Object.keys(inputWorkspace)[0];
       if (preferences.workspace.current === parseWorkspaceName) {
         reset(inputWorkspace[parseWorkspaceName]);
@@ -245,7 +245,7 @@ function InnerGeneralSettingsModal(props: InnerGeneralSettingsModalProps) {
               />
             </Label>
             <WorkSpaceActionsButtons
-              onPast={(workspaceSettings) =>
+              onPast={(workspaceSettings: any) =>
                 setWorkspaceSetting(workspaceSettings)
               }
             />
@@ -320,7 +320,7 @@ function InnerGeneralSettingsModal(props: InnerGeneralSettingsModalProps) {
   );
 }
 
-function WorkSpaceActionsButtons(props) {
+function WorkSpaceActionsButtons(props: any) {
   const {
     readText,
     rawWriteWithType,
@@ -446,7 +446,7 @@ function DialogActionButtons(props: BasseGeneralModalProps) {
 
   const values = useWatch();
 
-  function submitHandler(values) {
+  function submitHandler(values: any) {
     onSave(values);
     onCloseDialog?.();
   }
