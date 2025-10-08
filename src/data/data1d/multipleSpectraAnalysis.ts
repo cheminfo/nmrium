@@ -156,7 +156,7 @@ export function generateAnalyzeSpectra(
   nucleus: string,
 ): SpectraAnalysisData {
   const data: Record<string, ColumnsData> = {};
-  const { sum, columns, code } = multipleSpectraAnalysis.analysisOptions;
+  const { sum, columns } = multipleSpectraAnalysis.analysisOptions;
 
   for (const columnKey in columns) {
     const { from, to } = columns[columnKey];
@@ -214,8 +214,11 @@ export function generateAnalyzeSpectra(
     }),
   );
 
-  // TODO: fix the options value?
-  return { values: Object.values(newData), options: { columns, code } };
+  return {
+    values: Object.values(newData),
+    // The function is not changing the options, so there is no reason to return them with it.
+    options: multipleSpectraAnalysis.analysisOptions,
+  };
 }
 
 export function deleteSpectraAnalysis(
