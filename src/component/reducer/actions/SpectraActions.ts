@@ -13,6 +13,7 @@ import dlv from 'dlv';
 import type { Draft } from 'immer';
 import { original } from 'immer';
 import { Filters1DManager } from 'nmr-processing';
+import { assert } from 'react-science/ui';
 
 import {
   get1DColor,
@@ -238,11 +239,14 @@ function handleChangeSpectrumVisibilityById(
 
   const spectrum = data.find((d) => d.id === id);
   if (isSpectrum2D(spectrum)) {
+    assert(key === 'isPositiveVisible' || key === 'isNegativeVisible');
     spectrum.display[key] = !(spectrum as any).display[key];
-
-    if (spectrum.info.dimension === 2) {
-      spectrum.display.isVisible = checkIsVisible2D(spectrum as Spectrum2D);
-    }
+    spectrum.display.isVisible = checkIsVisible2D(spectrum);
+  } else if (isSpectrum1D(spectrum)) {
+    assert(key === 'isVisible');
+    spectrum.display[key] = !(spectrum as any).display[key];
+  } else {
+    throw new Error('Unreachable: spectrum in neither 1D nor 2D');
   }
 
   if (xDomain?.length === 0) {
