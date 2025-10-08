@@ -1,5 +1,6 @@
 // https://fettblog.eu/typescript-react-generic-forward-refs/
 import type { PropsWithoutRef, ReactElement, Ref, RefAttributes } from 'react';
+import { forwardRef } from 'react';
 
 export function forwardRefWithGeneric<T, P = unknown>(
   render: (props: P, ref: Ref<T>) => ReactElement | null,
