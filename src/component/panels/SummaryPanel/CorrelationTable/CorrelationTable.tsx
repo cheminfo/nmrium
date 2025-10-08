@@ -60,7 +60,7 @@ const Container = styled.div`
   }
 `;
 
-export interface CorrelationTableProps {
+interface CorrelationTableProps {
   correlationsData: CorrelationData;
   filteredCorrelationsData: any;
   additionalColumnData: Correlation[];

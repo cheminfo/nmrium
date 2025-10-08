@@ -76,7 +76,8 @@ type InitPreferencesAction = ActionType<
     dispatch: any;
   }
 >;
-export type SetPreferencesAction =
+
+type SetPreferencesAction =
   | ActionType<'SET_PREFERENCES', Partial<Workspace>>
   | ActionType<'SET_PREFERENCES'>;
 
