@@ -51,12 +51,12 @@ import { LoadJCAMPModal } from '../modal/LoadJCAMPModal.js';
 import SaveAsModal from '../modal/SaveAsModal.js';
 import { MetaImportationModal } from '../modal/metaImportation/MetaImportationModal.js';
 
-import type { Tool } from './ToolTypes.js';
+import type { MainTool } from './ToolTypes.js';
 import { options } from './ToolTypes.js';
 import { EXPORT_MENU, IMPORT_MENU } from './toolbarMenu.js';
 
 interface BaseToolItem extends Pick<ToolbarItemProps, 'icon' | 'disabled'> {
-  id: Tool;
+  id: MainTool;
   checkOptions?: CheckOptions;
   isVisible?: boolean;
 }

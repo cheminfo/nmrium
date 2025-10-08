@@ -1,5 +1,4 @@
 import { Checkbox } from '@blueprintjs/core';
-import type { NMRiumToolBarPreferences } from '@zakodium/nmrium-core';
 import { useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 import type { CellProps } from 'react-table';
@@ -7,13 +6,14 @@ import type { CellProps } from 'react-table';
 import ReactTable from '../../../elements/ReactTable/ReactTable.js';
 import type { CustomColumn } from '../../../elements/ReactTable/utility/addCustomColumn.js';
 import type { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
+import type { MainTool } from '../../../toolbar/ToolTypes.js';
 
 interface ListItem {
   label: string;
-  name: keyof NMRiumToolBarPreferences;
+  name: MainTool;
 }
 
-type ToolPathType = `display.toolBarButtons.${keyof NMRiumToolBarPreferences}`;
+type ToolPathType = `display.toolBarButtons.${MainTool}`;
 
 const LIST: ListItem[] = [
   {

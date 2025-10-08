@@ -23,14 +23,16 @@ export interface ToolOptionItem {
   isExperimental?: true;
 }
 
-export type Tool =
-  | keyof NMRiumToolBarPreferences
-  | 'HMove'
-  | 'equalizer'
-  | 'generalSelector'
+export type MainTool = keyof NMRiumToolBarPreferences;
+
+/**
+ * Tools that are selectable in panels, not in the main toolbar.
+ */
+export type PanelTool =
   | 'databaseRangesSelection'
-  | 'matrixGenerationExclusionZones'
-  | 'inset';
+  | 'matrixGenerationExclusionZones';
+
+export type Tool = MainTool | PanelTool;
 
 type RecordOptions = Record<Tool, ToolOptionItem>;
 
@@ -103,34 +105,6 @@ export const options: RecordOptions = {
     hasOptionPanel: false,
     isFilter: false,
     mode: '2D',
-    spectraOptions: [
-      {
-        info: [{ key: 'isFt', value: true }],
-        active: true,
-      },
-    ],
-    isToggle: true,
-  },
-  HMove: {
-    id: 'HMove',
-    label: 'Move spectrum horizontally',
-    hasOptionPanel: false,
-    isFilter: false,
-    mode: '1D',
-    spectraOptions: [
-      {
-        info: [{ key: 'isFt', value: true }],
-        active: true,
-      },
-    ],
-    isToggle: true,
-  },
-  equalizer: {
-    id: 'equalizer',
-    label: 'Equalizer tool',
-    hasOptionPanel: false,
-    isFilter: false,
-    mode: '1D',
     spectraOptions: [
       {
         info: [{ key: 'isFt', value: true }],
@@ -244,20 +218,6 @@ export const options: RecordOptions = {
     label: Filters1D.baselineCorrection.label,
     hasOptionPanel: true,
     isFilter: true,
-    mode: '1D',
-    spectraOptions: [
-      {
-        info: [{ key: 'isFt', value: true }],
-        active: true,
-      },
-    ],
-    isToggle: true,
-  },
-  generalSelector: {
-    id: 'generalSelector',
-    label: 'range general selector',
-    hasOptionPanel: false,
-    isFilter: false,
     mode: '1D',
     spectraOptions: [
       {

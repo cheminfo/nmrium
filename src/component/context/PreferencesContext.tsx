@@ -34,14 +34,19 @@ export function usePreferences(): PreferencesContextData {
   }, [workspaces, workspace, context]);
 }
 
-export function useWorkspacesList() {
+type ExtendedWorkspace = WorkspaceWithSource & {
+  key: string;
+  visible: boolean;
+};
+
+export function useWorkspacesList(): ExtendedWorkspace[] {
   const { workspaces } = usePreferences();
   return useMemo(() => {
-    return Object.keys(workspaces).map((key) => {
-      const { visible, source } = workspaces[key];
+    return Object.entries(workspaces).map(([key, workspace]) => {
+      const { visible, source } = workspace;
       return {
+        ...workspace,
         key,
-        ...workspaces[key],
         visible: !(source === 'predefined' && !visible),
       };
     });
