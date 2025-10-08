@@ -12,7 +12,6 @@ import {
 import { BlobWriter, TextReader, ZipWriter } from '@zip.js/zip.js';
 import { saveAs } from 'file-saver';
 import * as OCL from 'openchemlib';
-import { toMolfile } from 'openchemlib-utils';
 
 import type { State } from '../component/reducer/Reducer.js';
 
@@ -210,7 +209,7 @@ export async function exportForCT(options: ExportForCTOptions) {
   const { molfile } = molecules[0];
   const molecule = OCL.Molecule.fromMolfile(molfile);
   const molFileName = molecule.getMolecularFormula().formula;
-  const ctMolfile = toMolfile(molecule, {
+  const ctMolfile = molecule.toMolfile({
     includeCustomAtomLabelsAsALines: true,
     customLabelPosition: 'normal',
   });
