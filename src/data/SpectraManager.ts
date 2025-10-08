@@ -10,7 +10,7 @@ import {
   spectrum1DToJCAMPDX,
 } from '@zakodium/nmrium-core-plugins';
 import { BlobWriter, TextReader, ZipWriter } from '@zip.js/zip.js';
-import fileSaver from 'file-saver';
+import { saveAs } from 'file-saver';
 import * as OCL from 'openchemlib';
 import { toMolfile } from 'openchemlib-utils';
 
@@ -41,7 +41,12 @@ function getData(datum: any, usedColors: any) {
   }
 }
 
-export function addJcamp(output: any, jcamp: any, options: any, usedColors: any) {
+export function addJcamp(
+  output: any,
+  jcamp: any,
+  options: any,
+  usedColors: any,
+) {
   options = options || {};
   const name = options?.info?.name;
   const { spectra: spectraIn } = processJCAMPDX(jcamp, {
@@ -168,7 +173,7 @@ export function exportAsJcamp(
   }
 
   const blob = new Blob([jcamp], { type: 'text/plain' });
-  fileSaver.saveAs(blob, `${spectrum.info.name}.jdx`);
+  saveAs(blob, `${spectrum.info.name}.jdx`);
 }
 
 interface ExportForCTOptions {
@@ -213,5 +218,5 @@ export async function exportForCT(options: ExportForCTOptions) {
   await zip.add(`${molFileName}.mol`, new TextReader(ctMolfile));
 
   const blob = await zip.close();
-  fileSaver.saveAs(blob, `${name}.zip`);
+  saveAs(blob, `${name}.zip`);
 }

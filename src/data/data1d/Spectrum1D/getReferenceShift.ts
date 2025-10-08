@@ -27,7 +27,10 @@ interface GetReferenceShiftOptions extends CalibrateOptions {
  * @param {number} [options.targetX]
  * @param {string} [options.reference]
  */
-export function getReferenceShift(datum1D: any, options: GetReferenceShiftOptions) {
+export function getReferenceShift(
+  datum1D: any,
+  options: GetReferenceShiftOptions,
+) {
   const { reference } = options;
   let { from, to, nbPeaks, targetX } = options;
   if (reference) {

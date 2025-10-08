@@ -20,7 +20,12 @@ function buildMenu(array: any[] = []) {
   return menu;
 }
 
-function getMenu(key: any, array: any[] = [], nodes: any[] = [], parentIndex = 0) {
+function getMenu(
+  key: any,
+  array: any[] = [],
+  nodes: any[] = [],
+  parentIndex = 0,
+) {
   const _nodes = nodes;
   const children: any[] = [];
 

@@ -18,7 +18,9 @@ import { getDetectionZones } from './getDetectionZones.js';
  */
 export function detectZonesManual(datum: any, options: DetectionZonesOptions) {
   const { spectralWidth, originFrequency } = datum.info;
-  options.tolerances = spectralWidth.map((sw: any, i: any) => sw * originFrequency[i]);
+  options.tolerances = spectralWidth.map(
+    (sw: any, i: any) => sw * originFrequency[i],
+  );
   const zones = getDetectionZones(datum, options);
   let { fromX, fromY, toX, toY } = options.selectedZone;
   if (fromX > toX) [fromX, toX] = [toX, fromX];

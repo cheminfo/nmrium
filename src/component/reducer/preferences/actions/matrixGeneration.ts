@@ -115,7 +115,10 @@ function deleteExclusionZone(draft: Draft<PreferencesState>, action: any) {
   );
 }
 
-function setMatrixGenerationOptions(draft: Draft<PreferencesState>, action: any) {
+function setMatrixGenerationOptions(
+  draft: Draft<PreferencesState>,
+  action: any,
+) {
   const { options, nucleus } = action.payload;
   const matrixGeneration = getMatrixGenerationPanelOptions(draft, nucleus);
 

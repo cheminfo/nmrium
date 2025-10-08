@@ -56,7 +56,11 @@ function useYScale(scaleRatio: number, yDomain: any) {
   });
 }
 
-function usePath(pathPoints: UsePathLinePoints, scaleRatio: number, yDomain: any) {
+function usePath(
+  pathPoints: UsePathLinePoints,
+  scaleRatio: number,
+  yDomain: any,
+) {
   const { scaleX } = useScaleChecked();
   const scaleY = useYScale(scaleRatio, yDomain);
 

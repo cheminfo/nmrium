@@ -228,7 +228,9 @@ function SummaryPanel() {
 
     if (correlationsData) {
       const _values = filterIsActive
-        ? correlationsData.values.filter((correlation: any) => isInView(correlation))
+        ? correlationsData.values.filter((correlation: any) =>
+            isInView(correlation),
+          )
         : correlationsData.values;
 
       return { ...correlationsData, values: _values };

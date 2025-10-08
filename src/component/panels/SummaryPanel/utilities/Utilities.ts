@@ -409,7 +409,9 @@ function cloneCorrelationAndSetPathLength(
   const linkDim = getLinkDim(editedLink);
   if (linkDim === 2) {
     const editedLinkID = editedLink.id.split('_')[axis === 'x' ? 0 : 1];
-    const _link = _correlation.link.find((link: any) => link.id === editedLinkID);
+    const _link = _correlation.link.find(
+      (link: any) => link.id === editedLinkID,
+    );
     if (_link) {
       const newPathLength: FromTo = editedLink.signal.j?.pathLength;
       // remove (previous) pathLength if it is same as default
@@ -482,7 +484,9 @@ function isInView(
 
   if (
     activeSpectrum === null ||
-    !correlation.link.some((link: any) => link.experimentID === activeSpectrum.id)
+    !correlation.link.some(
+      (link: any) => link.experimentID === activeSpectrum.id,
+    )
   ) {
     return false;
   }
@@ -496,7 +500,9 @@ function isInView(
   const yDomain1 = yDomain[1] * factor;
 
   if (displayerMode === '1D') {
-    const firstLink1D = correlation.link.find((link: any) => getLinkDim(link) === 1);
+    const firstLink1D = correlation.link.find(
+      (link: any) => getLinkDim(link) === 1,
+    );
     if (!firstLink1D) {
       return false;
     }
@@ -531,7 +537,9 @@ function isInView(
     if (!atomTypesInView.includes(correlation.atomType)) {
       return false;
     }
-    const firstLink2D = correlation.link.find((link: any) => getLinkDim(link) === 2);
+    const firstLink2D = correlation.link.find(
+      (link: any) => getLinkDim(link) === 2,
+    );
     if (!firstLink2D) {
       return false;
     }
