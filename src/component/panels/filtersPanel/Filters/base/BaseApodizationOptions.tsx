@@ -93,7 +93,7 @@ export function BaseApodizationOptions(
                   onChange={(event) => {
                     void onProcessedFieldChange(event);
 
-                    if (!filter.id) return null;
+                    if (!filter.id) return;
 
                     dispatch({
                       type: 'SET_FILTER_SNAPSHOT',

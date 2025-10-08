@@ -163,11 +163,11 @@ interface SortItem {
   sortValue: string | number | boolean | null | undefined;
 }
 
-function sortArray(data: SortItem[], sortDirection?: SortDirection) {
+function sortArray(data: SortItem[], sortDirection?: SortDirection): void {
   const direction = sortDirection === 'asc' ? 1 : -1;
 
   if (!sortDirection) {
-    return data;
+    return;
   }
 
   data.sort((a, b) => {

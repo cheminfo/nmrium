@@ -3,9 +3,7 @@
   "compilerOptions": {
     "types": ["vite/client"],
     "outDir": "lib",
-    "noUncheckedIndexedAccess": false,
-    "noImplicitReturns": false,
-    "verbatimModuleSyntax": false
+    "noUncheckedIndexedAccess": false
   },
   "include": [
     "playwright.config.ts",

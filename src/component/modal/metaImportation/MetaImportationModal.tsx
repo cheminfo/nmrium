@@ -240,6 +240,7 @@ function InnerMetaImportationModal({
     } else if (record) {
       return rowColors.match;
     }
+    return undefined;
   }
 
   function handleImport() {

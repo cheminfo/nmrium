@@ -67,6 +67,7 @@ function resurrectSpectrumFromRanges(
     return datum;
   } catch (error) {
     reportError(error);
+    return undefined;
   }
 }
 
@@ -126,6 +127,7 @@ function resurrectSpectrumFromSignals(
     return datum;
   } catch (error) {
     reportError(error);
+    return undefined;
   }
 }
 

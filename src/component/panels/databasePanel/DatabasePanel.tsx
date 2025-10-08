@@ -59,6 +59,8 @@ function getMolfile(options: {
   if (smiles) {
     return Molecule.fromSmiles(smiles).toMolfileV3();
   }
+
+  return undefined;
 }
 
 interface DatabaseInnerProps {

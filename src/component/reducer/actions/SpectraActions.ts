@@ -749,14 +749,14 @@ function handleSimulateSpectrum(
 function handleUpdateSpectrumMeta(
   draft: Draft<State>,
   action: UpdateSpectrumMetaAction,
-) {
+): void {
   const {
     payload: { meta },
   } = action;
 
   const activeSpectrum = getActiveSpectrum(draft);
 
-  if (!activeSpectrum) return null;
+  if (!activeSpectrum) return;
 
   draft.data[activeSpectrum.index].customInfo = meta;
 }
