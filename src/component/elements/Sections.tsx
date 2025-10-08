@@ -20,8 +20,6 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 
-import { assert } from '../utility/assert.js';
-
 import {
   attachClosestEdge,
   combine,
@@ -32,6 +30,7 @@ import {
   pointerOutsideOfPreview,
   setCustomNativeDragPreview,
 } from './pdnd.cjs';
+import { assert } from 'react-science/ui';
 
 interface DropIndicatorProps {
   edge: Edge;
