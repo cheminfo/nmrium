@@ -39,8 +39,6 @@ export interface PredictionOptions {
   name: string;
   frequency: number;
   '1d': {
-    // Should we allow generic nuclei here?
-    // If so, those options should be in a separate property so that they can be Record<string, { from: number; to: number }>
     '1H': { from: number; to: number };
     '13C': { from: number; to: number };
     nbPoints: number;
