@@ -18,7 +18,7 @@ import {
   optimizePeaks,
 } from '../../../data/data1d/Spectrum1D/index.js';
 import { defaultPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState.js';
-import { defaultRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
+import { getDefaultRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
 import type { FilterType } from '../../utility/filterType.js';
 import { getClosePeak } from '../../utility/getClosePeak.js';
 import type { State } from '../Reducer.js';
@@ -264,6 +264,11 @@ function toggleDisplayingPeaks(
   draft: Draft<State>,
   key: keyof Pick<ViewState, 'peaks' | 'ranges'>,
 ) {
+  const {
+    view: {
+      spectra: { activeTab: nucleus },
+    },
+  } = draft;
   const activeSpectrum = getActiveSpectrum(draft);
 
   if (activeSpectrum?.id) {
@@ -281,7 +286,7 @@ function toggleDisplayingPeaks(
 
           break;
         case 'ranges':
-          defaultsViewOptions = { ...defaultRangesViewState };
+          defaultsViewOptions = getDefaultRangesViewState(nucleus);
           break;
         default:
           break;

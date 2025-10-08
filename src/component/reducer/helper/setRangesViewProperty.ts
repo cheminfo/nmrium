@@ -1,7 +1,7 @@
 import type { RangesViewState } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
 
-import { defaultRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
+import { getDefaultRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
 import type { State } from '../Reducer.js';
 
 import { getActiveSpectrum } from './getActiveSpectrum.js';
@@ -56,10 +56,13 @@ export function initializeRangeViewObject(
   draft: Draft<State>,
   spectrumID: string,
 ) {
-  const rangesView = draft.view.ranges;
+  const {
+    ranges,
+    spectra: { activeTab: nucleus },
+  } = draft.view;
 
-  if (spectrumID in rangesView) return;
+  if (spectrumID in ranges) return;
 
-  const defaultRangesView = { ...defaultRangesViewState };
-  rangesView[spectrumID] = defaultRangesView;
+  const defaultRangesView = getDefaultRangesViewState(nucleus);
+  ranges[spectrumID] = defaultRangesView;
 }
