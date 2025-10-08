@@ -28,9 +28,7 @@ export type MainTool = keyof NMRiumToolBarPreferences;
 /**
  * Tools that are selectable in panels, not in the main toolbar.
  */
-export type PanelTool =
-  | 'databaseRangesSelection'
-  | 'matrixGenerationExclusionZones';
+type PanelTool = 'databaseRangesSelection' | 'matrixGenerationExclusionZones';
 
 export type Tool = MainTool | PanelTool;
 
