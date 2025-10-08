@@ -7,7 +7,7 @@ import type { DisplayerMode } from '../reducer/Reducer.js';
 type InfoKey = keyof Info1D | keyof Info2D;
 
 export interface ToolOptionItem {
-  id: string;
+  id: Tool;
   label: string;
   mode?: DisplayerMode;
   spectraOptions?: Array<

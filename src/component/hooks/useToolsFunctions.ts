@@ -28,7 +28,7 @@ export default function useToolsFunctions() {
     toolOptions: { selectedTool: previousSelectedTool },
   } = useChartData();
   const handleChangeOption = useCallback(
-    (selectedTool: any) => {
+    (selectedTool: keyof typeof options) => {
       //avoid reselecting the tool if it's already selected
       if (selectedTool === previousSelectedTool) {
         return;

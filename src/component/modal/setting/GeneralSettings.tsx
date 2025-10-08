@@ -91,8 +91,8 @@ function isRestButtonDisable(
   customWorkspaces: any,
 ) {
   if (
-    !PredefinedWorkspaces[workspaceName] &&
-    !customWorkspaces[workspaceName]
+    !(workspaceName in PredefinedWorkspaces) &&
+    !(workspaceName in customWorkspaces)
   ) {
     return true;
   } else {

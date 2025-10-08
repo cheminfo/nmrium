@@ -96,7 +96,10 @@ function checkSpectrum(
 
 function checkInfo(checkParameters: SpectrumInfo, data: SpectrumInfo) {
   for (const key in checkParameters) {
-    if (checkParameters[key] !== data[key]) {
+    if (
+      checkParameters[key as keyof SpectrumInfo] !==
+      data[key as keyof SpectrumInfo]
+    ) {
       return false;
     }
   }

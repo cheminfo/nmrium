@@ -2,6 +2,7 @@ import { Checkbox } from '@blueprintjs/core';
 import type { NMRiumToolBarPreferences } from '@zakodium/nmrium-core';
 import { useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
+import type { CellProps } from 'react-table';
 
 import ReactTable from '../../../elements/ReactTable/ReactTable.js';
 import type { CustomColumn } from '../../../elements/ReactTable/utility/addCustomColumn.js';
@@ -113,10 +114,10 @@ const LIST: ListItem[] = [
   },
 ];
 
-function ToolsTabContent() {
+export default function ToolsTabContent() {
   const { register } = useFormContext<WorkspaceWithSource>();
 
-  const COLUMNS: Array<CustomColumn<ListItem>> = useMemo(
+  const COLUMNS = useMemo<Array<CustomColumn<ListItem>>>(
     () => [
       {
         index: 1,
@@ -133,7 +134,7 @@ function ToolsTabContent() {
         index: 2,
         Header: 'Active',
         style: { textAlign: 'center' },
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<ListItem>) => {
           const name: ToolPathType = `display.toolBarButtons.${row.original.name}`;
 
           return (
@@ -162,5 +163,3 @@ function ToolsTabContent() {
     </div>
   );
 }
-
-export default ToolsTabContent;

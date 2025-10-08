@@ -16,7 +16,7 @@ import { useZoneActions } from '../../panels/ZonesPanel/hooks/useZoneActions.js'
 import { SignalsForm } from './SignalsForm.js';
 import { isDefaultPathLength } from './validation/isDefaultPathLength.js';
 
-interface FormData {
+export interface FormData {
   activeTab: string;
   signals: Signal2D[];
 }

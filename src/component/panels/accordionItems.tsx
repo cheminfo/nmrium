@@ -153,8 +153,7 @@ function mapToolsToPanels(
 ): Record<string, keyof NMRiumPanelPreferences> {
   const toolToPanelMap: Record<string, keyof NMRiumPanelPreferences> = {};
 
-  for (const key in accordions) {
-    const { openWithTool } = accordions[key];
+  for (const [key, { openWithTool }] of Object.entries(accordions)) {
     if (openWithTool) {
       toolToPanelMap[openWithTool] = key as keyof NMRiumPanelPreferences;
     }
