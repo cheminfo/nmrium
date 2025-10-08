@@ -15,9 +15,8 @@
     "src"
   ],
   "scripts": {
-    "build": "vite build --outDir build",
-    "cspell": "cspell lint \"**/*.tsx\"",
-    "postbuild": "rm build/data/cytisine/2d/HMBC_Cytisin_RI+FT.dx && rm build/data/cytisine/2d/HSQC_Cytisin_RI+FT.dx",
+    "build": "vite build --outDir build && node --run build-clean",
+    "build-clean": "rm build/data/cytisine/2d/HMBC_Cytisin_RI+FT.dx && rm build/data/cytisine/2d/HSQC_Cytisin_RI+FT.dx",
     "build-cloudflare": "node --run set-version-sha && node --run build-with-profiling && node --run copy-samples-toc",
     "build-no-minify": "cross-env NO_MINIFY=true node --run build",
     "build-with-profiling": "cross-env WITH_PROFILING=true NO_MINIFY=true node --run build",
@@ -25,6 +24,7 @@
     "compile": "tsc --project tsconfig.build.json",
     "copy-samples-toc": "cp src/demo/samples.json build/",
     "clean-lib": "rimraf lib",
+    "cspell": "cspell lint \"**/*.tsx\"",
     "dev": "vite --host localhost --port 3000 --open",
     "eslint": "eslint . --cache",
     "eslint-fix": "node --run eslint -- --fix",
