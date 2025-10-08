@@ -2,7 +2,6 @@ import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
 import type { Workspace } from '@zakodium/nmrium-core';
-import type { KeyboardEvent } from 'react';
 import { useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useOnOff } from 'react-science/ui';
@@ -18,14 +17,6 @@ import { useWorkspaceAction } from './useWorkspaceAction.js';
 const schema = Yup.object().shape({
   workspaceName: Yup.string().required(),
 });
-
-function keyDownCheck(event: KeyboardEvent<HTMLInputElement>) {
-  if (event.key === 'Enter') {
-    return true;
-  } else if (event.key === 'Escape') {
-    return false;
-  }
-}
 
 function WorkspaceAddForm(props: any) {
   const { className, message, control, onEnter } = props;
@@ -44,7 +35,7 @@ function WorkspaceAddForm(props: any) {
         autoFocus
         size="large"
         onKeyDown={(event) => {
-          if (keyDownCheck(event)) {
+          if (event.key === 'Enter') {
             onEnter();
           }
         }}

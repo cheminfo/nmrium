@@ -167,6 +167,8 @@ function PeakEditionField({ value, onClose }: PeakFieldProps) {
     } else if (event.key === 'Escape') {
       onClose();
       return false;
+    } else {
+      return false;
     }
   }
   function handleOnSubmit({ value: newValue }: FieldValues) {

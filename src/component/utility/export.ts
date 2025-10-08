@@ -323,7 +323,7 @@ async function writeImageToClipboard(image: Blob, isSafari = false) {
     }),
   ]);
 }
-async function copyBlobToClipboard(canvas: OffscreenCanvas) {
+async function copyBlobToClipboard(canvas: OffscreenCanvas): Promise<void> {
   // Check if the document is focused, If it is not focused, throw an error to inform the user.
   if (!document.hasFocus()) {
     throw new Error(
@@ -341,7 +341,7 @@ async function copyBlobToClipboard(canvas: OffscreenCanvas) {
   } else {
     const screenCanvas = transferToCanvas(canvas);
     if (!screenCanvas) {
-      return null;
+      return;
     }
     const png = screenCanvas.toDataURL('image/png', 1);
     copyDataURLClipboardFireFox(png);
@@ -381,7 +381,8 @@ async function copyPNGToClipboard(
     height,
     scaleFactor: 1,
   });
-  return copyBlobToClipboard(canvas);
+
+  await copyBlobToClipboard(canvas);
 }
 
 export interface BlobObject {

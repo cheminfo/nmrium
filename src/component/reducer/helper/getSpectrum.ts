@@ -34,4 +34,6 @@ export function getSpectrum(
   if (typeof value === 'string') {
     return state.data.find((spectrum) => spectrum.id === value);
   }
+
+  return undefined;
 }
