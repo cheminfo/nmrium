@@ -14,9 +14,8 @@ import AboutUsZakodium from './AboutUsZakodium.js';
 const FallbackDialogContents = styled.div`
   display: flex;
   flex-direction: column;
-  user-select: none;
-
   padding: 20px;
+  user-select: none;
 
   button:focus {
     outline: none;
