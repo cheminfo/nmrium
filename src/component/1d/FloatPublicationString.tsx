@@ -13,10 +13,10 @@ import { useGlobal } from '../context/GlobalContext.js';
 import type { ActionsButtonsPopoverProps } from '../elements/ActionsButtonsPopover.js';
 import { ActionsButtonsPopover } from '../elements/ActionsButtonsPopover.js';
 import { useActiveNucleusTab } from '../hooks/useActiveNucleusTab.ts';
-import { useCanvasContext } from '../hooks/useCanvasContext.js';
 import { usePanelPreferences } from '../hooks/usePanelPreferences.js';
 import { useSVGUnitConverter } from '../hooks/useSVGUnitConverter.js';
 import useSpectraByActiveNucleus from '../hooks/useSpectraPerNucleus.js';
+import { useTextMetrics } from '../hooks/useTextMetrics.ts';
 import { useCheckExportStatus } from '../hooks/useViewportSize.js';
 
 const ReactRnd = styled(Rnd)`
@@ -32,11 +32,6 @@ const ReactRnd = styled(Rnd)`
   }
 `;
 
-function calculateWorldWidth(context: any, word: any) {
-  if (!context) return 0;
-  return Math.round(context.measureText(word).width);
-}
-
 interface UseWrapSVGTextParams {
   text: string;
   width: number;
@@ -45,7 +40,7 @@ interface UseWrapSVGTextParams {
 
 function useWrapSVGText(params: UseWrapSVGTextParams) {
   const { text, width, fontSize } = params;
-  const context = useCanvasContext(fontSize);
+  const { getTextWidth } = useTextMetrics(fontSize);
 
   const formattedText = text
     .replaceAll(/<sup>(?<n>.*?)<\/sup>/g, '++$1++ ')
@@ -57,11 +52,11 @@ function useWrapSVGText(params: UseWrapSVGTextParams) {
   let line: string[] = [];
   let lineWidth = 0;
 
-  const spaceWidth = calculateWorldWidth(context, ' ');
+  const spaceWidth = getTextWidth(' ');
   const words = formattedText.split(' ');
 
   for (const word of words) {
-    const wordWidth = calculateWorldWidth(context, word);
+    const wordWidth = getTextWidth(word);
     if (lineWidth + wordWidth > width) {
       lines.push(line);
       line = [word];

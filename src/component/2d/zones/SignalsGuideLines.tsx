@@ -21,8 +21,8 @@ import {
 import type { ActionsButtonsPopoverProps } from '../../elements/ActionsButtonsPopover.js';
 import { ActionsButtonsPopover } from '../../elements/ActionsButtonsPopover.js';
 import { useHighlight } from '../../highlight/index.js';
-import { useCanvasContext } from '../../hooks/useCanvasContext.js';
 import { useHighlightColor } from '../../hooks/useHighlightColor.ts';
+import { useTextMetrics } from '../../hooks/useTextMetrics.ts';
 import { useTriggerNewAssignmentLabel } from '../../hooks/useTriggerNewAssignmentLabel.js';
 import { stackOverlappingLabelsArray } from '../../utility/stackOverlappingLabels.js';
 import { useTracesSpectra } from '../useTracesSpectra.js';
@@ -67,16 +67,16 @@ function useSignalsOverlap(axis: IndicationLinesAxis, spectrum: Spectrum1D) {
   });
   const scaleX = useScale2DX();
   const scaleY = useScale2DY();
-  const context = useCanvasContext(labelSize);
+  const { getTextWidth } = useTextMetrics(labelSize);
 
-  if (!signals || !context) return null;
+  if (!signals) return null;
 
   const isOverXAxis = axis === 'x';
 
   const processedSignals: ProcessedSignal[] = signals.map((signal) => {
     const { delta } = signal;
     const text = signal.assignment ?? '';
-    const { width: labelWidth } = context.measureText(text);
+    const labelWidth = getTextWidth(text);
 
     return {
       ...signal,
