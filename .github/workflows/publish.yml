@@ -27,7 +27,7 @@ jobs:
           mv src/demo/empty.json src/demo/samples.json
           newPackage=$(jq 'setpath(["homepage"]; ".")' package.json)
           echo $newPackage > package.json
-          npm run build
+          node --run build
       - name: Remove spectra
         run: |
           rm -rf build/data

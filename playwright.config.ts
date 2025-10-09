@@ -1,4 +1,4 @@
-import type { ViewportSize} from '@playwright/test';
+import type { ViewportSize } from '@playwright/test';
 import { defineConfig, devices } from '@playwright/test';
 
 const viewportOverride: ViewportSize = {
@@ -28,8 +28,8 @@ export default defineConfig({
   },
   webServer: {
     command: process.env.CI
-      ? 'npm run test-e2e-server'
-      : 'npm run dev -- --no-open',
+      ? 'node --run test-e2e-server'
+      : 'node --run dev -- --no-open',
     port: 3000,
     reuseExistingServer: true,
   },
