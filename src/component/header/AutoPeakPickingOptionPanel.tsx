@@ -51,7 +51,7 @@ const validationSchema = Yup.object().shape({
 
 const INIT_VALUES: AutoPeakPickingOptions = {
   maxNumberOfPeaks: 50,
-  minMaxRatio: 0.01,
+  minMaxRatio: 0.05,
   noiseFactor: 3,
   direction: 'positive',
 };

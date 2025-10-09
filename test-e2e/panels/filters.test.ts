@@ -74,10 +74,7 @@ async function baselineCorrectionFilter(
   ).toBeVisible();
 }
 
-async function addPeaks(
-  nmrium: NmriumPage,
-  { keyboard = false, ratio = 0.1 } = {},
-) {
+async function addPeaks(nmrium: NmriumPage, { keyboard = false } = {}) {
   if (keyboard) {
     await nmrium.viewer.moveMouse();
     await nmrium.page.keyboard.press('KeyP');
@@ -85,14 +82,6 @@ async function addPeaks(
     await nmrium.clickTool('peakPicking');
   }
 
-  await nmrium.page.fill(
-    '_react=Header >> [name="minMaxRatio"]',
-    ratio.toString(),
-  );
-
-  await nmrium.page
-    .locator('_react=Header >> [name="minMaxRatio"].debounce-end')
-    .waitFor({ state: 'visible' });
   await nmrium.page.click('_react=Header >> button >> text=Apply');
 
   await expect(
@@ -169,14 +158,8 @@ test('process 13c spectrum with shortcuts', async ({ page }) => {
   await test.step('Apply baseline correction filter', async () => {
     await baselineCorrectionFilter(nmrium, { keyboard: true });
   });
-  await test.step('Add default peaks', async () => {
+  await test.step('Add peaks with default min-max ratio', async () => {
     await addPeaks(nmrium, { keyboard: true });
-  });
-  await test.step('Check peaks table', async () => {
-    await checkPeakNumber(nmrium, 14);
-  });
-  await test.step('Add peaks with 0.05 ratio', async () => {
-    await addPeaks(nmrium, { keyboard: true, ratio: 0.05 });
   });
   await test.step('Check peaks table', async () => {
     await checkPeakNumber(nmrium, 16);

@@ -137,8 +137,8 @@ test('Automatic ranges detection should work', async ({ page }) => {
   );
 
   const rangesData = [
-    { s: '1.77', r: '1.11' },
-    { s: '1.92 - 1.97', r: '2.04' },
+    { s: '1.77', r: '0.88' },
+    { s: '1.95', r: '1.99' },
   ];
 
   const testPromises: Array<Promise<void>> = [];
