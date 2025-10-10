@@ -5,6 +5,7 @@ import { useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
+import type { CellProps } from 'react-table';
 import { array, object, string } from 'yup';
 
 import { useDispatch } from '../../context/DispatchContext.js';
@@ -91,7 +92,7 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
   });
 
   const addHandler = useCallback(
-    (data, index = 0) => {
+    (data: any, index = 0) => {
       const meta = { key: '', value: '' };
       reset({
         metaInfo: [...data.slice(0, index), meta, ...data.slice(index)],
@@ -101,16 +102,18 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
   );
 
   const deleteHandler = useCallback(
-    (data, index: number) => {
-      const meta = data.filter((_, columnIndex) => columnIndex !== index);
+    (data: any, index: number) => {
+      const meta = data.filter(
+        (_: any, columnIndex: any) => columnIndex !== index,
+      );
       reset({ metaInfo: meta });
     },
     [reset],
   );
 
-  function saveHandler(values) {
+  function saveHandler(values: any) {
     const { metaInfo } = values;
-    const meta = {};
+    const meta: Record<string, string> = {};
 
     for (const { key, value } of metaInfo) {
       meta[key] = value;
@@ -120,7 +123,7 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
     onCloseDialog();
   }
 
-  const COLUMNS: Array<Column<MetaInfoItem>> = useMemo(
+  const COLUMNS = useMemo<Array<Column<MetaInfoItem>>>(
     () => [
       {
         Header: '#',
@@ -130,7 +133,7 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
       {
         Header: 'Key',
         style: { padding: 0 },
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<MetaInfoItem>) => {
           return (
             <Input2Controller
               control={control}
@@ -143,7 +146,7 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
       {
         Header: 'Value',
         style: { padding: 0 },
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<MetaInfoItem>) => {
           return (
             <Input2Controller
               control={control}
@@ -157,7 +160,7 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
         Header: '',
         style: { width: '60px' },
         id: 'action-button',
-        Cell: ({ data, row }) => {
+        Cell: ({ data, row }: CellProps<MetaInfoItem>) => {
           return (
             <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
               <Button

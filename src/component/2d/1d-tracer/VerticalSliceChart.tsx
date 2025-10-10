@@ -19,7 +19,7 @@ interface usePathOptions extends BaseProps {
   width?: number;
 }
 
-function usePath(data, props: usePathOptions) {
+function usePath(data: any, props: usePathOptions) {
   const { reverse, width = 100, horizontalMargin = 10 } = props;
   const { mode } = useChartData();
   const scaleX = useScale2DY(reverse);

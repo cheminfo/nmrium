@@ -1,19 +1,21 @@
 import { useState } from 'react';
 
-export function useDialogToggle<T = Record<string, boolean>>(initState: T) {
+export function useDialogToggle<T extends Record<string, boolean>>(
+  initState: T,
+) {
   const [dialog, setDialogState] = useState<T>(initState);
 
   function openDialog(id: keyof T) {
-    const newState = { ...dialog, [id]: true };
-    setDialogState(newState);
+    setDialogState((currentState) => ({ ...currentState, [id]: true }));
   }
 
   function closeDialog() {
-    const newState = {} as T;
-    for (const id in dialog) {
-      newState[id as string] = false;
-    }
-    setDialogState(newState);
+    setDialogState(
+      (currentState) =>
+        Object.fromEntries(
+          Object.entries(currentState).map(([key]) => [key as keyof T, false]),
+        ) as T,
+    );
   }
 
   return { dialog, closeDialog, openDialog };

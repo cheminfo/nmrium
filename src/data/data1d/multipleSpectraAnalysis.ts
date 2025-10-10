@@ -30,7 +30,7 @@ interface AnalysisRow extends RangeDetectionResult {
 
 export interface SpectraAnalysisData {
   options: AnalysisOptions;
-  values: AnalysisRow[];
+  values: Array<Record<string, AnalyzeSpectraCalculateResult>>;
 }
 
 function addColumnKey(
@@ -49,7 +49,7 @@ function addColumnKey(
 
 function getSpectraAnalysis(
   spectra: Spectrum[],
-  options,
+  options: any,
 ): { values: AnalysisRow[]; sum: number } {
   const { from, to, nucleus } = options;
   const result: { values: AnalysisRow[]; sum: number } = {
@@ -117,7 +117,7 @@ export function changeColumnValueKey(
 
 export function analyzeSpectra(
   spectraAnalysis: PanelsPreferences['multipleSpectraAnalysis'],
-  options,
+  options: any,
 ) {
   const { from, to, nucleus, columnKey = null } = options;
   init(spectraAnalysis, nucleus);
@@ -135,13 +135,28 @@ export function analyzeSpectra(
   );
 }
 
+interface ColumnData {
+  colKey: string;
+  analysisRow: AnalysisRow;
+  relative: number;
+}
+
+type ColumnsData = Record<string, ColumnData>;
+
+interface AnalyzeSpectraCalculateResult {
+  SID: string;
+  id: string;
+  colKey: string;
+  value: number;
+}
+
 export function generateAnalyzeSpectra(
   multipleSpectraAnalysis: MultipleSpectraAnalysisPreferences,
   spectra: Spectrum1D[],
   nucleus: string,
-) {
-  const data: any = {};
-  const { sum, columns, code } = multipleSpectraAnalysis.analysisOptions;
+): SpectraAnalysisData {
+  const data: Record<string, ColumnsData> = {};
+  const { sum, columns } = multipleSpectraAnalysis.analysisOptions;
 
   for (const columnKey in columns) {
     const { from, to } = columns[columnKey];
@@ -154,43 +169,56 @@ export function generateAnalyzeSpectra(
 
     for (const spectrum of result) {
       const factor = spectraSum > 0 ? sum / spectraSum : 0;
-
-      data[spectrum.SID] = {
-        ...data[spectrum.SID],
-        [columnKey]: {
-          colKey: columnKey,
-          ...spectrum,
-          relative: Math.abs(spectrum.absolute) * factor,
-        },
+      const item: ColumnData = {
+        colKey: columnKey,
+        analysisRow: spectrum,
+        relative: Math.abs(spectrum.absolute) * factor,
       };
+      if (!data[spectrum.SID]) {
+        data[spectrum.SID] = {
+          [columnKey]: item,
+        };
+      } else {
+        data[spectrum.SID][columnKey] = item;
+      }
     }
   }
 
-  const newData = Object.fromEntries(
-    Object.entries(data).map((spectra: any) => {
+  const newData: Record<
+    string,
+    Record<string, AnalyzeSpectraCalculateResult>
+  > = Object.fromEntries(
+    Object.entries(data).map(([entryKey, entryValue]) => {
       const result = Object.fromEntries(
         Object.keys(columns).map((key) => {
           const isFormula = columns[key].type === ANALYSIS_COLUMN_TYPES.FORMULA;
+          const valueKey = columns[key].valueKey;
+          const { SID, id } = entryValue[key].analysisRow;
           if (isFormula) {
-            const { SID, id } = spectra[1][key];
             return [
               key,
               {
                 SID,
                 id,
                 colKey: key,
-                value: calculate(key, columns, data[spectra[0]]),
+                value: calculate(key, columns, data[entryKey]),
               },
-            ];
+            ] as const;
           }
-          return [key, { ...spectra[1][key], colKey: key }];
+
+          const value = (entryValue[key].analysisRow as any)[valueKey];
+          return [key, { id, SID, colKey: key, value }] as const;
         }),
       );
-      return [spectra[0], result];
+      return [entryKey, result];
     }),
   );
 
-  return { values: Object.values(newData), options: { columns, code } };
+  return {
+    values: Object.values(newData),
+    // The function is not changing the options, so there is no reason to return them with it.
+    options: multipleSpectraAnalysis.analysisOptions,
+  };
 }
 
 export function deleteSpectraAnalysis(
@@ -212,15 +240,15 @@ export function deleteSpectraAnalysis(
 function calculate(
   columnKey: string,
   columns: SpectraAnalysisColumns,
-  data: AnalysisRow,
+  data: ColumnsData,
   visited = new Set<string>(),
-) {
+): number {
   if (visited.has(columnKey)) {
     return 0;
   }
   visited.add(columnKey);
 
-  const { formula = '' } = columns[columnKey];
+  const { formula } = columns[columnKey];
   const variables: string[] = Object.keys(columns);
 
   const params = variables.map((key) => {
@@ -233,7 +261,7 @@ function calculate(
       return calculate(key, columns, data, new Set(visited));
     }
 
-    return data[key][valueKey];
+    return (data[key].analysisRow as any)[valueKey];
   });
 
   let result;
@@ -277,7 +305,7 @@ export function getDataAsString(
 
     let result = `${columnsLabels.join('\t')}\n`;
 
-    for (const spectrumAnalysis of Object.values(values)) {
+    for (const spectrumAnalysis of values) {
       const spectrum = spectraData[spectrumAnalysis[letters[0]].SID];
       const cellsValues: string[] = [];
 
@@ -292,8 +320,8 @@ export function getDataAsString(
 
       // listed the spectra analysis cell values
       for (const letter of letters) {
-        const value = spectrumAnalysis[letter][columns[letter].valueKey];
-        cellsValues.push(value);
+        const value = spectrumAnalysis[letter].value;
+        cellsValues.push(String(value));
       }
       result += `${cellsValues.join('\t')}\n`;
     }

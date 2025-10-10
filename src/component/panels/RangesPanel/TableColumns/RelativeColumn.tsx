@@ -16,7 +16,7 @@ function RelativeColumn({
   const formattedValue = formatNumber(row.integration, format);
   const integralVal = flag ? formattedValue : `[ ${formattedValue} ]`;
 
-  function saveHandler(event) {
+  function saveHandler(event: any) {
     dispatch({
       type: 'CHANGE_RANGE_RELATIVE',
       payload: {

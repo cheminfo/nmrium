@@ -110,7 +110,7 @@ function ReactTableRow(props: ReactTableRowProps) {
       {...otherKeyProps}
       {...highlight.onHover}
     >
-      {row.cells.map((cell) => {
+      {row.cells.map((cell: any) => {
         const {
           column: { style },
           isRowSpanned,

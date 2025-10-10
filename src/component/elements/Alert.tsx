@@ -106,7 +106,7 @@ interface AlertsProps {
 function Alerts(props: AlertsProps) {
   const { alerts, onHide } = props;
 
-  function optionsHandler(e: React.MouseEvent, options) {
+  function optionsHandler(e: React.MouseEvent, options: any) {
     const { onClick = () => null, preventClose = false, id } = options;
     onClick(e);
     e.stopPropagation();

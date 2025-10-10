@@ -1,3 +1,4 @@
+import type { Signal1D } from '@zakodium/nmr-types';
 import { useFormContext } from 'react-hook-form';
 
 import { NumberInput2Controller } from '../../../../elements/NumberInput2Controller.js';
@@ -7,11 +8,11 @@ import { useEvent } from '../../../../utility/Events.js';
 import { useEventFocusInput } from './SignalsContent.js';
 
 interface DeltaInputProps {
-  signal: any;
+  signal: Signal1D;
   index: number;
 }
 
-function hasError(errors, i) {
+function hasError(errors: any, i: any) {
   return !!errors?.signals?.[i];
 }
 

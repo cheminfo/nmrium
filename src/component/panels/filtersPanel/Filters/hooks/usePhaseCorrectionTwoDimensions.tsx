@@ -51,7 +51,7 @@ export function usePhaseCorrectionTwoDimensions(filter: Filter2DEntry | null) {
 
   const { data } = useSpectrum(emptyData) as Spectrum2D;
   const debounceCalculation = useRef(
-    debounce((options) => {
+    debounce((options: any) => {
       dispatch({
         type: 'CALCULATE_TOW_DIMENSIONS_MANUAL_PHASE_CORRECTION_FILTER',
         payload: { ...options, applyOn2D: true },
@@ -59,7 +59,7 @@ export function usePhaseCorrectionTwoDimensions(filter: Filter2DEntry | null) {
     }, 250),
   );
 
-  function syncWatch(sharedFilterOptions) {
+  function syncWatch(sharedFilterOptions: any) {
     updateInputRangeInitialValue(sharedFilterOptions);
     setValue(sharedFilterOptions);
   }
@@ -81,8 +81,8 @@ export function usePhaseCorrectionTwoDimensions(filter: Filter2DEntry | null) {
       const phaseOptions: PhaseOptions = defaultPhaseOptions;
 
       for (const direction of Object.keys(value)) {
-        const { ph0, ph1 } = value[direction];
-        phaseOptions[direction] = { ph0, ph1 };
+        const { ph0, ph1 } = (value as any)[direction];
+        (phaseOptions as any)[direction] = { ph0, ph1 };
       }
 
       setValue(phaseOptions);
@@ -99,7 +99,7 @@ export function usePhaseCorrectionTwoDimensions(filter: Filter2DEntry | null) {
   }, [activeTraceDirection]);
 
   const calcPhaseCorrectionHandler = useCallback(
-    (inputValue, filedName, source: 'input' | 'inputRange') => {
+    (inputValue: any, filedName: any, source: 'input' | 'inputRange') => {
       const newValue = inputValue[activeTraceDirection];
       if (filedName === 'ph1' && data && pivot) {
         const datum = (data as NmrData2DFt).rr;
@@ -126,7 +126,7 @@ export function usePhaseCorrectionTwoDimensions(filter: Filter2DEntry | null) {
   );
 
   const updateInputRangeInitialValue = useCallback(
-    (value) => {
+    (value: any) => {
       // update InputRange initial value
       const { ph0, ph1 } = value[activeTraceDirection];
       ph0Ref.current?.setValue(ph0);
@@ -136,7 +136,7 @@ export function usePhaseCorrectionTwoDimensions(filter: Filter2DEntry | null) {
   );
 
   const handleInputValueChange = useCallback(
-    (valueAsNumber, valueAsString, inputElement) => {
+    (valueAsNumber: any, valueAsString: any, inputElement: any) => {
       const { name } = inputElement;
       const newValue = {
         ...valueRef.current,
@@ -163,7 +163,7 @@ export function usePhaseCorrectionTwoDimensions(filter: Filter2DEntry | null) {
   );
 
   const handleRangeChange = useCallback(
-    (e) => {
+    (e: any) => {
       const newValue = {
         ...valueRef.current,
         [activeTraceDirection]: {

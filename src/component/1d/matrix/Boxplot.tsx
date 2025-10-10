@@ -43,7 +43,7 @@ interface UsePathAreaPoints {
   y2: NumberArray;
 }
 
-function useYScale(scaleRatio: number, yDomain) {
+function useYScale(scaleRatio: number, yDomain: any) {
   const { margin, height } = useChartData();
   const { spectraBottomMargin } = useScaleChecked();
 
@@ -56,7 +56,11 @@ function useYScale(scaleRatio: number, yDomain) {
   });
 }
 
-function usePath(pathPoints: UsePathLinePoints, scaleRatio: number, yDomain) {
+function usePath(
+  pathPoints: UsePathLinePoints,
+  scaleRatio: number,
+  yDomain: any,
+) {
   const { scaleX } = useScaleChecked();
   const scaleY = useYScale(scaleRatio, yDomain);
 
@@ -74,7 +78,7 @@ function usePath(pathPoints: UsePathLinePoints, scaleRatio: number, yDomain) {
 function useAreaPath(
   pathPoints: UsePathAreaPoints,
   scaleRatio: number,
-  yDomain,
+  yDomain: any,
 ) {
   const { scaleX } = useScaleChecked();
   const scaleY = useYScale(scaleRatio, yDomain);

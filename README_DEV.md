@@ -67,7 +67,7 @@ The test file's name should end with `.test.{js,jsx,ts,tsx}`.
 
 For example, tests for the file located in `src/data/data1d/autoPeakPicking.js` should be written in `src/data/data1d/__tests__/autoPeakPicking.test.js`.
 
-You can run all unit tests with `npm run test-only`.
+You can run all unit tests with `node --run test-only`.
 
 ### End-to-end tests
 
@@ -76,9 +76,9 @@ End-to-end (e2e) tests are written in the [`test-e2e` directory](https://github.
 We use [Playwright](https://playwright.dev/docs/intro/) to write and run the tests
 in real browsers.
 
-You can run all e2e tests with `npm run test-e2e`.
-Note that to test your latest changes, the dev server should be running (`npm run dev`).
-Otherwise, the last unminified production build from `npm run build-no-minify` will be used.
+You can run all e2e tests with `node --run test-e2e`.
+Note that to test your latest changes, the dev server should be running (`node --run dev`).
+Otherwise, the last unminified production build from `node --run build-no-minify` will be used.
 
 ## Useful links
 

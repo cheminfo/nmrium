@@ -11,7 +11,7 @@ export function ZoneAssignmentLabelColumn({
 }: ZoneAssignmentLabelColumnProps) {
   const dispatch = useDispatch();
 
-  function saveHandler(event) {
+  function saveHandler(event: any) {
     dispatch({
       type: 'CHANGE_ZONE_ASSIGNMENT_LABEL',
       payload: {

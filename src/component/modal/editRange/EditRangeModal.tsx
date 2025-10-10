@@ -50,7 +50,7 @@ export function EditRangeModal(props: DialogProps<string>) {
         onCloseDialog();
         reset(range);
       }}
-      onSave={(range) => {
+      onSave={(range: any) => {
         onCloseDialog();
         saveEditRange(range);
       }}
@@ -84,7 +84,7 @@ function InnerEditRangeModal(props: InnerEditRangeModalProps) {
   }
 
   const handleSave = useCallback(
-    (formValues) => {
+    (formValues: any) => {
       void (async () => {
         const { signals } = formValues;
         await onSave(mapRange({ ...range, signals }));

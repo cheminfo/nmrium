@@ -8,12 +8,17 @@ function getNucleusSum(input: string) {
   return output;
 }
 
-export default function groupByInfoKey(key: string) {
-  return (array, orderByNucleus = false) => {
-    const unorderedGroup = {};
+// TODO: this function is only used with nucleus as key and does not need to be generic
+export default function groupByInfoKey<
+  U extends string,
+  T extends { info: Record<U, string | string[]> },
+>(key: U) {
+  return (array: T[], orderByNucleus = false) => {
+    const unorderedGroup: Record<string, T[]> = {};
     for (const obj of array) {
       const value = obj.info[key];
-      unorderedGroup[value] = (unorderedGroup[value] || []).concat(obj);
+      const groupKey = typeof value === 'string' ? value : value.join(',');
+      unorderedGroup[groupKey] = (unorderedGroup[groupKey] || []).concat(obj);
     }
 
     if (!orderByNucleus) {

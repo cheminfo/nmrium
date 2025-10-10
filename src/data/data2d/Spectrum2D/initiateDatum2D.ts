@@ -88,7 +88,7 @@ export function initiateDatum2D(
   return datum;
 }
 
-function getData(datum, options) {
+function getData(datum: any, options: any) {
   if (datum.info.isFid) {
     const { re = defaultMinMax, im = defaultMinMax } = options.data;
     return { re, im };

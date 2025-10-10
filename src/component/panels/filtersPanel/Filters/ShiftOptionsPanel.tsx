@@ -36,7 +36,7 @@ export default function ShiftOptionsPanel(
     });
   }
 
-  function handleApplyFilter(values) {
+  function handleApplyFilter(values: any) {
     const { shift } = values;
     switch (filter.name) {
       case 'shiftX': {
@@ -68,12 +68,12 @@ export default function ShiftOptionsPanel(
     }
   }
 
-  function handleConfirm(event) {
+  function handleConfirm(event: any) {
     void handleSubmit(handleApplyFilter)();
     onConfirm?.(event);
   }
 
-  function handleCancel(event) {
+  function handleCancel(event: any) {
     handleCancelFilter();
     onCancel?.(event);
   }

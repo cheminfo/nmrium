@@ -2,7 +2,7 @@ import type { Zone } from '@zakodium/nmr-types';
 
 import { DATUM_KIND } from '../constants/signalsKinds.js';
 
-function getNbAtoms(zone: Zone, axis: string) {
+function getNbAtoms(zone: Zone, axis: 'x' | 'y') {
   let sum = 0;
   if (zone.signals) {
     for (const signal of zone.signals) {
@@ -12,14 +12,14 @@ function getNbAtoms(zone: Zone, axis: string) {
   return sum;
 }
 
-function setNbAtoms(zone: Zone, axis: string): void {
+function setNbAtoms(zone: Zone, axis: 'x' | 'y'): void {
   zone[axis].nbAtoms = getNbAtoms(zone, axis);
   if (zone[axis].nbAtoms === 0) {
     delete zone[axis].nbAtoms;
   }
 }
 
-function resetDiaIDs(zone: Zone, axis: string) {
+function resetDiaIDs(zone: Zone, axis: 'x' | 'y') {
   delete zone[axis].diaIDs;
   delete zone[axis].nbAtoms;
   for (const signal of zone.signals) {
@@ -37,7 +37,7 @@ export function unlink(
   zone: Zone,
   isOnZoneLevel?: boolean,
   signalIndex?: number,
-  axis?: string,
+  axis?: 'x' | 'y',
 ): Zone {
   if (isOnZoneLevel !== undefined && axis !== undefined) {
     if (isOnZoneLevel) {
@@ -55,7 +55,7 @@ export function unlink(
     resetDiaIDs(zone, axis);
     setNbAtoms(zone, axis);
   } else {
-    for (const key of ['x', 'y']) {
+    for (const key of ['x', 'y'] as const) {
       resetDiaIDs(zone, key);
       setNbAtoms(zone, key);
     }

@@ -13,7 +13,7 @@ export function RangeAssignmentColumn({
 }: RangeAssignmentColumnProps) {
   const dispatch = useDispatch();
 
-  function saveHandler(event) {
+  function saveHandler(event: any) {
     dispatch({
       type: 'CHANGE_RANGE_ASSIGNMENT_LABEL',
       payload: {

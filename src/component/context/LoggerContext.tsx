@@ -1,4 +1,4 @@
-import type { LogEntry } from 'fifo-logger';
+import type { ChangeEvent, LogEntry } from 'fifo-logger';
 import { FifoLogger } from 'fifo-logger';
 import type { ReactNode } from 'react';
 import {
@@ -59,7 +59,7 @@ export function LoggerProvider({ children }: LoggerProviderProps) {
   const loggerRef = useRef<FifoLogger>(new FifoLogger());
 
   useEffect(() => {
-    function handleLogger({ detail: { logs } }) {
+    function handleLogger({ detail: { logs } }: ChangeEvent) {
       const log = logs.at(-1);
       if (
         log &&

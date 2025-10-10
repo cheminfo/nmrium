@@ -27,10 +27,14 @@ function isRandomColorGeneration(
 }
 
 export function get2DColor(
-  spectrum,
+  spectrum: any,
   options: ColorOptions | RandomColorOptions,
 ): Color2D {
-  const { regenerate = false, usedColors = {}, colors } = options;
+  const {
+    regenerate = false,
+    usedColors = {} as Partial<UsedColors>,
+    colors,
+  } = options;
 
   let color: Partial<Color2D> = {};
   if (
@@ -41,7 +45,7 @@ export function get2DColor(
     const isRandom = isRandomColorGeneration(options) && options.random;
     const customColor =
       getCustomColor(spectrum, colors) ||
-      ((color2D?.[spectrum.info.experiment] as Color2D | undefined) ?? null);
+      ((color2D as any)?.[spectrum.info.experiment] ?? null);
 
     if (customColor && !isRandom) {
       color = customColor;
@@ -57,7 +61,7 @@ export function get2DColor(
       spectrum?.display || {};
     color = { positiveColor, negativeColor };
   }
-  if (usedColors['2d']) {
+  if (usedColors['2d'] && color.positiveColor) {
     usedColors['2d'].push(color.positiveColor);
   }
 

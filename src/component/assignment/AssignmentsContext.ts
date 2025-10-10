@@ -72,6 +72,8 @@ export interface AssignmentsData extends AssignmentStatus {
 
 export const assignmentContext = createContext<AssignmentContext | null>(null);
 
+export const assignmentAxes: Axis[] = ['x', 'y'];
+
 export function useAssignmentContext() {
   const context = useContext(assignmentContext);
 

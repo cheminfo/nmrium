@@ -84,7 +84,7 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
     }
   }, [molecules.length, moleculesProp]);
 
-  function handleReplaceMolecule(molecule, molfile) {
+  function handleReplaceMolecule(molecule: any, molfile: any) {
     const { id, label } = molecule;
     dispatch({
       type: 'SET_MOLECULE',
@@ -92,7 +92,7 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
     });
   }
 
-  function moleculeIndexHandler(index) {
+  function moleculeIndexHandler(index: any) {
     setCurrentIndex(index);
   }
 

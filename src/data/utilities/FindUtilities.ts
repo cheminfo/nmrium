@@ -26,6 +26,7 @@ function findSignal1D(
       return range.signals[signalIndex];
     }
   }
+  return undefined;
 }
 
 function findSignal2D(
@@ -40,6 +41,7 @@ function findSignal2D(
       return zone.signals[signalIndex];
     }
   }
+  return undefined;
 }
 
 function findRange(spectrum: Spectrum1D, signalID: string): Range | undefined {
@@ -51,6 +53,7 @@ function findRange(spectrum: Spectrum1D, signalID: string): Range | undefined {
       return range;
     }
   }
+  return undefined;
 }
 
 function findZone(spectrum: Spectrum2D, signalID: string): Zone | undefined {
@@ -62,6 +65,7 @@ function findZone(spectrum: Spectrum2D, signalID: string): Zone | undefined {
       return zone;
     }
   }
+  return undefined;
 }
 
 function findRangeOrZoneID(
@@ -80,6 +84,7 @@ function findRangeOrZoneID(
       if (zone) return zone.id;
     }
   }
+  return undefined;
 }
 
 export {

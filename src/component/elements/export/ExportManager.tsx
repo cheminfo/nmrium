@@ -95,9 +95,12 @@ export function ExportManagerController(props: ExportManagerControllerProps) {
     triggerExport(null);
   }
 
-  function handleExport(targetElement: HTMLElement, options: ExportSettings) {
+  function handleExport(
+    targetElement: HTMLElement,
+    options: ExportSettings,
+  ): void {
     if (!exportOptions) {
-      return null;
+      return;
     }
 
     if (!hasDataToExport) {
@@ -106,7 +109,7 @@ export function ExportManagerController(props: ExportManagerControllerProps) {
         intent: 'danger',
         message: 'No spectra available for export',
       });
-      return null;
+      return;
     }
 
     const { format, destination = 'file' } = exportOptions;

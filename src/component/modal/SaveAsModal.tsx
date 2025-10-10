@@ -61,7 +61,7 @@ function InnerSaveAsModal(props: InnerSaveAsModalProps) {
 
   const fileName = data[0]?.info?.name;
 
-  function submitHandler(values) {
+  function submitHandler(values: any) {
     saveHandler(values);
     onCloseDialog?.();
   }

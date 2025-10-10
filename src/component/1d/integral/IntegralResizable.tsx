@@ -41,7 +41,7 @@ function IntegralResizable({
     extra: { id, spectrumID: spectrum.id },
   });
 
-  function handleOnStopResizing(position) {
+  function handleOnStopResizing(position: any) {
     dispatch({
       type: 'RESIZE_INTEGRAL',
       payload: {

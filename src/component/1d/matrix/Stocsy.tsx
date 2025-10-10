@@ -35,7 +35,7 @@ interface StocsyData {
   yDomain: number[];
 }
 
-function useStocsy(chemicalShift: number): StocsyData | null {
+function useStocsy(chemicalShift: number | null): StocsyData | null {
   const matrix = useMatrix();
 
   return useMemo(() => {
@@ -86,7 +86,13 @@ export function Stocsy() {
   return <InnerStocsy scaleRatio={scaleRatio} chemicalShift={chemicalShift} />;
 }
 
-function InnerStocsy({ scaleRatio, chemicalShift }) {
+interface InnerStocsyProps {
+  scaleRatio: number;
+  chemicalShift: number | null;
+}
+
+function InnerStocsy(props: InnerStocsyProps) {
+  const { scaleRatio, chemicalShift } = props;
   const stocsyData = useStocsy(chemicalShift);
   const data = useSliceStocsyData(stocsyData);
 

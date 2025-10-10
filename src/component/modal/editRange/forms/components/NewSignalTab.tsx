@@ -43,7 +43,7 @@ export function NewSignalTab(props: NewSignalTabProps) {
   const activeTab = useActiveNucleusTab();
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
 
-  function saveHandler(val) {
+  function saveHandler(val: any) {
     const newSignal = {
       multiplicity: 'm',
       kind: 'signal',
@@ -119,7 +119,7 @@ export function NewSignalTab(props: NewSignalTabProps) {
   );
 }
 
-function getSignalValidationSchema(range) {
+function getSignalValidationSchema(range: any) {
   return Yup.object().shape({
     delta: Yup.number()
       .test(`test-range`, '', function testNewSignalDelta(value) {

@@ -331,7 +331,7 @@ const INITIAL_VALUE: PrintPagOptions = {
 function InnerPrintOptionsModal(props: InnerPrintOptionsModalProps) {
   const { onCloseDialog, onPrint, defaultPrintPageOptions } = props;
 
-  function submitHandler(values) {
+  function submitHandler(values: any) {
     onPrint(values);
     onCloseDialog?.();
   }

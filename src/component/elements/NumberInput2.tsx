@@ -101,7 +101,7 @@ function useNumberInput(props: UseInputProps) {
   };
 }
 
-function getIcon(leftIcon) {
+function getIcon(leftIcon: any) {
   if (isValidElement(leftIcon)) {
     return <span className={Classes.ICON}>{leftIcon}</span>;
   }
@@ -118,7 +118,7 @@ function getClasses(isDebounced: boolean) {
   return classes.join(' ');
 }
 
-function InnerNumberInput(props: NumberInput2Props, ref) {
+function InnerNumberInput(props: NumberInput2Props, ref: any) {
   const {
     debounceTime = 0,
     onValueChange,

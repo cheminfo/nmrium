@@ -31,7 +31,7 @@ function getMultipleSpectraAnalysisData(
 
 const preferencesSchema = Yup.object({
   analysisOptions: Yup.object({
-    columns: Yup.lazy((data) => {
+    columns: Yup.lazy((data: any) => {
       return Yup.array()
         .of(columnSchema(data))
         .test('Unique', 'must be unique column name', function check(nuclei) {
@@ -69,7 +69,7 @@ function MultipleSpectraAnalysisPreferences(
   const columns = getMultipleSpectraAnalysisData(panelPreferences);
   const isExperimental = useCheckExperimentalFeature();
 
-  function saveHandler(values) {
+  function saveHandler(values: any) {
     onAfterSave?.(true);
     preferences.dispatch({
       type: 'SET_SPECTRA_ANALYSIS_PREFERENCES',
@@ -140,7 +140,7 @@ function MultipleSpectraAnalysisPreferences(
   );
 }
 
-function columnSchema(columns) {
+function columnSchema(columns: any) {
   return Yup.object().shape({
     tempKey: Yup.string()
       .required()

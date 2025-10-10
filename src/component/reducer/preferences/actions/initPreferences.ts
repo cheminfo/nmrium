@@ -13,7 +13,7 @@ function getWorkspace(
   return draft.workspaces[workspace] ? workspace : 'default';
 }
 
-export function initPreferences(draft: Draft<PreferencesState>, action) {
+export function initPreferences(draft: Draft<PreferencesState>, action: any) {
   if (action.payload) {
     const {
       dispatch,
@@ -27,11 +27,11 @@ export function initPreferences(draft: Draft<PreferencesState>, action) {
     draft.workspaces = {
       ...draft.workspaces,
       ...customWorkspaces,
-    };
+    } as any;
     draft.originalWorkspaces = {
       ...draft.originalWorkspaces,
       ...customWorkspaces,
-    };
+    } as any;
 
     /**
      *  we have the following priorities

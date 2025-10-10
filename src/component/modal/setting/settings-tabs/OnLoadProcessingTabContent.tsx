@@ -4,6 +4,7 @@ import type {
   WorkspacePreferences,
 } from '@zakodium/nmrium-core';
 import { useFormContext } from 'react-hook-form';
+import type { CellProps } from 'react-table';
 
 import { getFilterLabel } from '../../../../data/getFilterLabel.js';
 import IsotopesViewer from '../../../elements/IsotopesViewer.js';
@@ -39,7 +40,10 @@ function AutoProcessingFilters() {
     id: nucleus,
     title: <IsotopesViewer value={nucleus} />,
     content: (
-      <FiltersTable data={autoProcessingFilters[nucleus]} nucleus={nucleus} />
+      <FiltersTable
+        data={autoProcessingFilters[nucleus] as AutoProcessingFilterEntry[]}
+        nucleus={nucleus}
+      />
     ),
   }));
   return (
@@ -58,7 +62,13 @@ function AutoProcessingFilters() {
   );
 }
 
-function FiltersTable({ data, nucleus }) {
+interface FiltersTableProps {
+  data: AutoProcessingFilterEntry[];
+  nucleus: string;
+}
+
+function FiltersTable(props: FiltersTableProps) {
+  const { data, nucleus } = props;
   const { register } = useFormContext();
 
   const COLUMNS: Array<CustomColumn<AutoProcessingFilterEntry>> = [
@@ -77,7 +87,7 @@ function FiltersTable({ data, nucleus }) {
       index: 2,
       Header: 'Enable',
       style: { textAlign: 'center' },
-      Cell: ({ row }) => (
+      Cell: ({ row }: CellProps<AutoProcessingFilterEntry>) => (
         <Checkbox
           style={{ margin: 0 }}
           {...register(

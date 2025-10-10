@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
+import type { CellProps } from 'react-table';
 
 import type { InputStyle } from '../../../elements/Input.js';
 import { Input2Controller } from '../../../elements/Input2Controller.js';
@@ -50,7 +51,7 @@ export function SpectraColumnsManager({
 }: SpectraColumnsManagerProps) {
   const { control, getValues, register } = useFormContext();
 
-  const COLUMNS: Array<Column<SpectraTableColumn>> = useMemo(
+  const COLUMNS = useMemo<Array<Column<SpectraTableColumn>>>(
     () => [
       {
         Header: '#',
@@ -60,7 +61,7 @@ export function SpectraColumnsManager({
       {
         Header: 'Label',
         style: { padding: 0 },
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<SpectraTableColumn>) => {
           const name = getObjectKey(nucleus, row.index, 'label');
           return (
             <Input2Controller
@@ -75,7 +76,7 @@ export function SpectraColumnsManager({
       {
         Header: 'Column',
         style: { padding: 0 },
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<SpectraTableColumn>) => {
           const column: any = row.original;
 
           if (column?.name) {
@@ -107,7 +108,7 @@ export function SpectraColumnsManager({
       {
         Header: 'Visible',
         style: { width: '30px', textAlign: 'center' },
-        Cell: ({ row }) => (
+        Cell: ({ row }: CellProps<SpectraTableColumn>) => (
           <Checkbox
             style={{ margin: 0 }}
             {...register(getObjectKey(nucleus, row.index, 'visible'))}
@@ -118,7 +119,7 @@ export function SpectraColumnsManager({
         Header: '',
         style: { width: '65px' },
         id: 'op-buttons',
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<SpectraTableColumn>) => {
           const record: any = row.original;
           return (
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>

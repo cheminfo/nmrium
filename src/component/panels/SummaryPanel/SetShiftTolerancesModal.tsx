@@ -3,6 +3,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import type { Tolerance } from 'nmr-correlation';
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
+import type { CellProps } from 'react-table';
 import * as Yup from 'yup';
 
 import { useChartData } from '../../context/ChartContext.js';
@@ -70,7 +71,7 @@ function InnerSetShiftToleranceModal(props: InnerSetShiftToleranceModalProps) {
     mode: 'onChange',
   });
 
-  function onSaveHandler(data) {
+  function onSaveHandler(data: any) {
     const tolerance: Tolerance = {};
     for (const { atom, value } of data.tolerances) {
       tolerance[atom] = value;
@@ -99,10 +100,10 @@ function InnerSetShiftToleranceModal(props: InnerSetShiftToleranceModalProps) {
       {
         Header: 'Value',
         style: { padding: 0 },
-        Cell: ({ row }) => {
+        Cell: (cell: CellProps<ToleranceItem>) => {
           return (
             <NumberInput2Controller
-              name={`tolerances.${row.index}.value`}
+              name={`tolerances.${cell.row.index}.value`}
               control={control}
               fill
             />

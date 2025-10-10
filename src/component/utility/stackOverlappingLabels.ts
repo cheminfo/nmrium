@@ -23,7 +23,7 @@ export function stackOverlappingLabelsArray<T extends Record<string, any>>(
 
   return groups.flatMap((group) => {
     let i = 0;
-    return group.map((item) => {
+    return group.map((item: any) => {
       const stackIndex = i;
       if (item.assignment) {
         i++;

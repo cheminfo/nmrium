@@ -51,10 +51,10 @@ export function ContextMenu<E extends ElementType = 'div'>(
     const content = (
       <Menu>
         {options
-          .filter(({ visible = true }) =>
+          .filter(({ visible = true }: any) =>
             typeof visible === 'function' ? visible(data) : visible,
           )
-          .map(({ tooltip = {}, ...options }) => {
+          .map(({ tooltip = {}, ...options }: any) => {
             const { disabled = false, visible, ...otherOptions } = options;
 
             const isDisabled =

@@ -48,19 +48,19 @@ interface WorkspaceItemProps {
 function WorkspaceItem({ item, onSave, onDelete }: WorkspaceItemProps) {
   const [name, setName] = useState<string>('');
   // Add new workspace
-  function addHandler(e) {
+  function addHandler(e: any) {
     e.stopPropagation();
     setName('');
     onSave?.(name);
   }
 
   // bubble onDelete
-  function deleteHandler(e) {
+  function deleteHandler(e: any) {
     e.stopPropagation();
     onDelete?.(item.key);
   }
 
-  function onTextChange(e) {
+  function onTextChange(e: any) {
     setName(e.target.value);
   }
 

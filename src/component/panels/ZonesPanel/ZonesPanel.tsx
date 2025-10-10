@@ -1,4 +1,4 @@
-import type { Spectrum2D } from '@zakodium/nmrium-core';
+import type { Spectrum2D, ZonesViewState } from '@zakodium/nmrium-core';
 import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { FaUnlink } from 'react-icons/fa';
 import { LuMessageSquareText } from 'react-icons/lu';
@@ -17,17 +17,29 @@ import PreferencesHeader from '../header/PreferencesHeader.js';
 import ZonesPreferences from './ZonesPreferences.js';
 import ZonesTable from './ZonesTable.js';
 
-function ZonesPanelInner({
-  zones,
-  activeTab,
-  xDomain,
-  yDomain,
-  info,
-  showZones,
-  showSignals,
-  showPeaks,
-  showAssignmentsLabels,
-}) {
+interface MemoizedZonesPanelProps extends ZonesViewState {
+  xDomain: number[];
+  yDomain: number[];
+  activeTab: string;
+  zones: Spectrum2D['zones'];
+  info: Spectrum2D['info'];
+}
+
+const MemoizedZonesPanel = memo(function ZonesPanelInner(
+  props: MemoizedZonesPanelProps,
+) {
+  const {
+    zones,
+    activeTab,
+    xDomain,
+    yDomain,
+    info,
+    showZones,
+    showSignals,
+    showPeaks,
+    showAssignmentsLabels,
+  } = props;
+
   const [filterIsActive, setFilterIsActive] = useState(false);
   const dispatch = useDispatch();
   const alert = useAlert();
@@ -35,7 +47,7 @@ function ZonesPanelInner({
   const settingRef = useRef<SettingsRef | null>(null);
 
   const tableData = useMemo(() => {
-    const isInView = (xFrom, xTo, yFrom, yTo) => {
+    const isInView = (xFrom: any, xTo: any, yFrom: any, yTo: any) => {
       const factor = 10000;
       xFrom = xFrom * factor;
       xTo = xTo * factor;
@@ -49,8 +61,8 @@ function ZonesPanelInner({
       );
     };
 
-    const getFilteredZones = (zones) => {
-      return zones.filter((zone) => {
+    const getFilteredZones = (zones: any) => {
+      return zones.filter((zone: any) => {
         return isInView(zone.x.from, zone.x.to, zone.y.from, zone.y.to);
       });
     };
@@ -59,7 +71,7 @@ function ZonesPanelInner({
         ? getFilteredZones(zones.values)
         : zones.values;
 
-      return _zones.map((zone) => {
+      return _zones.map((zone: any) => {
         return {
           ...zone,
           tableMetaInfo: {
@@ -81,7 +93,7 @@ function ZonesPanelInner({
 
   const unlinkZoneHandler = useCallback(
     (
-      zoneData?,
+      zoneData?: any,
       isOnZoneLevel = undefined,
       signalIndex = -1,
       axis = undefined,
@@ -242,15 +254,12 @@ function ZonesPanelInner({
       </div>
     </TablePanel>
   );
-}
-
-const MemoizedZonesPanel = memo(ZonesPanelInner);
+});
 
 const emptyData = { zones: {}, info: {} };
 
 export default function ZonesPanel() {
   const {
-    displayerKey,
     xDomain,
     yDomain,
     view: {
@@ -265,7 +274,6 @@ export default function ZonesPanel() {
         xDomain,
         yDomain,
         activeTab,
-        displayerKey,
         zones,
         info,
         ...zoneProps,

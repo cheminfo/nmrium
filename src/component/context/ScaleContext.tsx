@@ -1,4 +1,5 @@
 import type { ScaleLinear } from 'd3-scale';
+import type { PropsWithChildren } from 'react';
 import { createContext, useCallback, useContext, useMemo } from 'react';
 
 import { useIsInset } from '../1d/inset/InsetProvider.js';
@@ -49,7 +50,7 @@ export function useScaleChecked(): CheckedScaleState {
   return scale as CheckedScaleState;
 }
 
-export function ScaleProvider({ children }) {
+export function ScaleProvider({ children }: Required<PropsWithChildren>) {
   const { mode, width, height, margin, xDomain, xDomains, yDomain, yDomains } =
     useChartData();
   const verticalAlign = useVerticalAlign();

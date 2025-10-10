@@ -1,8 +1,8 @@
 import type { IconName, TooltipProps } from '@blueprintjs/core';
 import { Icon, Tooltip } from '@blueprintjs/core';
-import type { CSSProperties, ReactNode } from 'react';
+import type { CSSProperties, ReactNode, SVGAttributes } from 'react';
 
-interface IconButtonProps extends React.SVGAttributes<SVGElement> {
+interface IconButtonProps extends SVGAttributes<SVGElement> {
   size?: number;
   padding?: number;
   icon?: IconName;

@@ -10,9 +10,9 @@ import {
   spectrum1DToJCAMPDX,
 } from '@zakodium/nmrium-core-plugins';
 import { BlobWriter, TextReader, ZipWriter } from '@zip.js/zip.js';
-import fileSaver from 'file-saver';
+import saveAs from 'file-saver';
 import * as OCL from 'openchemlib';
-import { toMolfile } from 'openchemlib-utils';
+import { assert } from 'react-science/ui';
 
 import type { State } from '../component/reducer/Reducer.js';
 
@@ -32,16 +32,22 @@ export interface ExportOptions {
   exportTarget?: ExportTarget;
 }
 
-function getData(datum, usedColors) {
+function getData(datum: any, usedColors: any) {
   const dimension = datum.info.dimension;
   if (dimension === 1) {
     return initiateDatum1D(datum, { usedColors });
-  } else if (dimension === 2) {
+  } else {
+    assert(dimension === 2);
     return initiateDatum2D(datum, { usedColors });
   }
 }
 
-export function addJcamp(output, jcamp, options, usedColors) {
+export function addJcamp(
+  output: any,
+  jcamp: any,
+  options: any,
+  usedColors: any,
+) {
   options = options || {};
   const name = options?.info?.name;
   const { spectra: spectraIn } = processJCAMPDX(jcamp, {
@@ -168,7 +174,7 @@ export function exportAsJcamp(
   }
 
   const blob = new Blob([jcamp], { type: 'text/plain' });
-  fileSaver.saveAs(blob, `${spectrum.info.name}.jdx`);
+  saveAs(blob, `${spectrum.info.name}.jdx`);
 }
 
 interface ExportForCTOptions {
@@ -205,7 +211,7 @@ export async function exportForCT(options: ExportForCTOptions) {
   const { molfile } = molecules[0];
   const molecule = OCL.Molecule.fromMolfile(molfile);
   const molFileName = molecule.getMolecularFormula().formula;
-  const ctMolfile = toMolfile(molecule, {
+  const ctMolfile = molecule.toMolfile({
     includeCustomAtomLabelsAsALines: true,
     customLabelPosition: 'normal',
   });
@@ -213,5 +219,5 @@ export async function exportForCT(options: ExportForCTOptions) {
   await zip.add(`${molFileName}.mol`, new TextReader(ctMolfile));
 
   const blob = await zip.close();
-  fileSaver.saveAs(blob, `${name}.zip`);
+  saveAs(blob, `${name}.zip`);
 }

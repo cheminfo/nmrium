@@ -1,3 +1,4 @@
+import type { PropsWithChildren } from 'react';
 import { useCallback, useRef } from 'react';
 
 import type {
@@ -57,7 +58,7 @@ function usePixelToPPMConverter() {
   );
 }
 
-export function BrushTracker2D({ children }) {
+export function BrushTracker2D({ children }: Required<PropsWithChildren>) {
   const state = useChartData();
   const {
     toolOptions: { selectedTool },
@@ -75,7 +76,7 @@ export function BrushTracker2D({ children }) {
       general: { invertScroll },
     },
   } = usePreferences();
-  function handleBrush(brushData) {
+  function handleBrush(brushData: any) {
     const { startX, endX, startY, endY } = convertToPPM(brushData);
 
     if (brushData.mouseButton === 'secondary') {

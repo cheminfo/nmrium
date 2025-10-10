@@ -2,7 +2,9 @@
 // Given how `@atlaskit/pragmatic-drag-and-drop` publishes ESM in a non-native way,
 // we have to trick TS into using the CJS build so that our build is compatible
 // with native ESM.
-// We cannot use `verbatimModuleSyntax` ts config option with this pattern.
+// This file is not compatible with the `verbatimModuleSyntax` TS option.
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 export {
   draggable,
   dropTargetForElements,

@@ -393,7 +393,7 @@ test('Export source from 1H spectrum', async ({ page }) => {
     expect(stream).not.toBeNull();
     const data: any = await new Promise((resolve) => {
       const chunks: any[] = [];
-      stream?.on('data', (chunk) => chunks.push(chunk));
+      stream?.on('data', (chunk: any) => chunks.push(chunk));
       stream?.on('end', () => {
         const buffer = Buffer.concat(chunks);
         const { data } = JSON.parse(buffer.toString());
@@ -418,7 +418,7 @@ test('Export source from 1H spectrum', async ({ page }) => {
     expect(stream).not.toBeNull();
     const data: any = await new Promise((resolve) => {
       const chunks: any[] = [];
-      stream?.on('data', (chunk) => chunks.push(chunk));
+      stream?.on('data', (chunk: any) => chunks.push(chunk));
       stream?.on('end', () => {
         const buffer = Buffer.concat(chunks);
         const { data } = JSON.parse(buffer.toString());
@@ -440,7 +440,7 @@ test('Export source from 1H spectrum', async ({ page }) => {
     expect(stream).not.toBeNull();
     const data: any = await new Promise((resolve) => {
       const chunks: any[] = [];
-      stream?.on('data', (chunk) => chunks.push(chunk));
+      stream?.on('data', (chunk: any) => chunks.push(chunk));
       stream?.on('end', () => {
         const buffer = Buffer.concat(chunks);
         const { data } = JSON.parse(buffer.toString());
@@ -480,7 +480,7 @@ test('Export source from imported spectrum', async ({ page }) => {
     expect(stream).not.toBeNull();
     const data: any = await new Promise((resolve) => {
       const chunks: any[] = [];
-      stream?.on('data', (chunk) => chunks.push(chunk));
+      stream?.on('data', (chunk: any) => chunks.push(chunk));
       stream?.on('end', () => {
         const buffer = Buffer.concat(chunks);
         const { data } = JSON.parse(buffer.toString());
@@ -503,7 +503,7 @@ test('Export source from imported spectrum', async ({ page }) => {
     expect(stream).not.toBeNull();
     const data: any = await new Promise((resolve) => {
       const chunks: any[] = [];
-      stream?.on('data', (chunk) => chunks.push(chunk));
+      stream?.on('data', (chunk: any) => chunks.push(chunk));
       stream?.on('end', () => {
         const buffer = Buffer.concat(chunks);
         const { data } = JSON.parse(buffer.toString());

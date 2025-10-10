@@ -3,13 +3,13 @@ interface ResolveGroupIntersectionProps {
   groupMargin?: number;
 }
 
-interface GroupDataProps {
+interface GroupDataProps<T> {
   threshold?: number;
-  key: string;
+  key: keyof T;
 }
 
-interface ResolveIntersectionProps
-  extends GroupDataProps,
+interface ResolveIntersectionProps<T>
+  extends GroupDataProps<T>,
     ResolveGroupIntersectionProps {
   width?: number;
   margin?: number;
@@ -28,21 +28,21 @@ interface ResolveData<T> {
   meta: GroupMeta;
 }
 
-function groupData<T>(data: T[], options: Required<GroupDataProps>) {
+function groupData<T>(data: T[], options: Required<GroupDataProps<T>>) {
   const { threshold, key } = options;
 
   const groups: T[][] = [];
-  let lastRefValue: number = data[0][key];
+  let lastRefValue = data[0][key] as number;
   let groupIndex = 0;
   for (const datum of data) {
-    if (datum[key] - lastRefValue <= threshold) {
+    if ((datum[key] as number) - lastRefValue <= threshold) {
       if (!groups[groupIndex]) {
         groups.push([datum]);
       } else {
         groups[groupIndex].push(datum);
       }
     } else {
-      lastRefValue = datum[key];
+      lastRefValue = datum[key] as number;
       groupIndex++;
       groups.push([datum]);
     }
@@ -52,7 +52,7 @@ function groupData<T>(data: T[], options: Required<GroupDataProps>) {
 }
 
 function resolveGroupsIntersection(
-  groups,
+  groups: any,
   options: ResolveGroupIntersectionProps,
 ) {
   const { maxIteration = 3, groupMargin = 0 } = options;
@@ -90,7 +90,7 @@ function resolveGroupsIntersection(
 
 export function resolve<T>(
   data: T[],
-  options: ResolveIntersectionProps,
+  options: ResolveIntersectionProps<T>,
 ): Array<ResolveData<T>> {
   const {
     width = 10,
@@ -110,7 +110,7 @@ export function resolve<T>(
     const groupWidth = group.length * width + (group.length - 1) * margin;
     let sum = 0;
     for (const groupDatum of group) {
-      sum += groupDatum[key];
+      sum += groupDatum[key] as number;
     }
     const groupMidX = sum / group.length;
     const groupStartX = groupMidX - groupWidth / 2 + width / 2;

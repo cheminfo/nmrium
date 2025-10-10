@@ -4,7 +4,7 @@ export default function getAtomsFromMF(mf: string): Record<string, number> {
   if (!mfCheck.test(mf)) {
     throw new Error(`MF can not be parsed: ${mf}`);
   }
-  const atoms = {};
+  const atoms: Record<string, number> = {};
   const parts = mf.matchAll(/(?<atom>[A-Z][a-z]?)(?<number>\d*)/g);
   for (const part of parts) {
     const { atom, number } = part.groups as { atom: string; number: string };

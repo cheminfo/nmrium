@@ -19,8 +19,7 @@ import {
   useState,
 } from 'react';
 import { createPortal } from 'react-dom';
-
-import { assert } from '../utility/assert.js';
+import { assert } from 'react-science/ui';
 
 import {
   attachClosestEdge,
@@ -218,7 +217,7 @@ interface BaseSectionProps {
 interface SectionItemProps extends BaseSectionProps {
   id?: string;
   index?: number;
-  onClick?: (id, event?: MouseEvent<HTMLDivElement>) => void;
+  onClick?: (id: any, event?: MouseEvent<HTMLDivElement>) => void;
   children?: ReactNode | ((options: { isOpen?: boolean }) => ReactNode);
   isOpen: boolean;
   sticky?: boolean;

@@ -48,10 +48,10 @@ function MultipleSpectraAnalysisPanelInner({
   const preferences = usePanelPreferences('multipleSpectraAnalysis', activeTab);
   const [showAnalysisChart, toggleAnalysisChart] = useToggle(false);
   const spectraAnalysis = generateAnalyzeSpectra(
-    preferences as any,
+    preferences,
     spectra,
     activeTab,
-  ) as any;
+  );
 
   const settingRef = useRef<SettingsRef | null>(null);
   const toaster = useToaster();

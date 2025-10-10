@@ -1,8 +1,9 @@
+import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { Fragment, useMemo } from 'react';
 import { MF } from 'react-mf';
 
-import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY.js';
+import { get1DDataXY } from '../../data/data1d/Spectrum1D/index.js';
 import {
   isFid2DData,
   isSpectrum2D,
@@ -15,10 +16,17 @@ import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
 import { useFormatNumberByNucleus } from '../hooks/useFormatNumberByNucleus.js';
 import { options } from '../toolbar/ToolTypes.js';
 
+import type { Get2DDimensionLayoutReturn } from './utilities/DimensionLayout.js';
 import { LAYOUT, getLayoutID } from './utilities/DimensionLayout.js';
 import { get1DYScale, get2DXScale, get2DYScale } from './utilities/scale.js';
 
-function FooterBanner({ layout, data1D }) {
+interface FooterBannerProps {
+  layout: Get2DDimensionLayoutReturn;
+  data1D: Spectrum1D[];
+}
+
+export default function FooterBanner(props: FooterBannerProps) {
+  const { layout, data1D } = props;
   const position = useMouseTracker();
   const { startX, endX, startY, endY, step, mouseButton } = useBrushTracker();
   const {
@@ -114,7 +122,7 @@ function FooterBanner({ layout, data1D }) {
   ) {
     return <FooterContainer />;
   }
-  const getRealYValue = (coordinate) => {
+  const getRealYValue = (coordinate: any) => {
     let index: number | null = null;
     if (trackID === LAYOUT.top) {
       index = 0;
@@ -195,7 +203,7 @@ function FooterBanner({ layout, data1D }) {
     }
   };
 
-  const getLabel = (label2d, label1d, nucleus) => {
+  const getLabel = (label2d: any, label1d: any, nucleus: any) => {
     return trackID === LAYOUT.main ? (
       <Fragment>
         {label2d} ( <MF mf={nucleus} /> )
@@ -262,5 +270,3 @@ function FooterBanner({ layout, data1D }) {
     </FooterContainer>
   );
 }
-
-export default FooterBanner;

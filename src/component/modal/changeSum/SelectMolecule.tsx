@@ -81,7 +81,7 @@ export default function SelectMolecule<
   }, [molecules, setValue, value]);
 
   const onChangeMoleculeSelectionHandler = useCallback(
-    (index) => {
+    (index: any) => {
       setValue(index);
     },
     [setValue],
