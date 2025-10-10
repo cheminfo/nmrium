@@ -12,6 +12,7 @@ describe('test peakPicking', () => {
   it('check baseline', () => {
     const datum = initiateDatum1D({ data, info: { originFrequency: 150 } });
     const peaks = autoPeakPicking(datum, {
+      sensitivity: 100,
       maxNumberOfPeaks: 20,
       minMaxRatio: 0.1,
     });
