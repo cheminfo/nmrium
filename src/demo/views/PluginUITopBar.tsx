@@ -59,6 +59,7 @@ const core = init([
     id: 'demo-plugin-topbar',
     version: 1,
     migrations: [],
+    shouldSerialize: false,
     ui: {
       'topbar.right': DemoTopBarRight,
     },
