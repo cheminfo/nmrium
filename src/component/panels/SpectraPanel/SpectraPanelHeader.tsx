@@ -119,7 +119,7 @@ function SpectraPanelHeaderInner({
   const hasActiveSpectra = activeSpectra && activeSpectra?.length > 0;
   const spectraLengthPerTab = getSpectraByNucleus(activeTab, data)?.length;
   const { getToggleVisibilityButtons } = useToggleSpectraVisibility(
-    spectraLengthPerTab < 5
+    spectraLengthPerTab < 3
       ? {
           enableHideSelected: false,
           enableShowSelected: false,
