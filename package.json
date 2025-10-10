@@ -139,7 +139,7 @@
     "cross-env": "^10.1.0",
     "cspell": "^9.2.1",
     "eslint": "^9.37.0",
-    "eslint-config-cheminfo-react": "^18.0.0",
+    "eslint-config-cheminfo-react": "^18.0.1",
     "eslint-config-cheminfo-typescript": "^20.0.0",
     "knip": "^5.64.3",
     "modern-normalize": "^3.0.1",

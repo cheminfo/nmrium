@@ -162,6 +162,8 @@ function InnerMultipleAnalysis(props: InnerMultipleAnalysisProps) {
             debug: true,
           },
         });
+        // TODO: refactor to not use an effect
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setCalcFinished(true);
         setAnalysisData(result);
       } catch (error) {
