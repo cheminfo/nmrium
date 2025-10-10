@@ -108,6 +108,8 @@ export const EditableColumn = forwardRef(function EditableColumn(
   const mouseClickCallback = useCallback((e: MouseEvent) => {
     if (!(e.target as HTMLInputElement).classList.contains('editable-column')) {
       enableEdit(false);
+      // TODO: refactor this
+      // eslint-disable-next-line react-hooks/immutability
       globalThis.removeEventListener('mousedown', mouseClickCallback);
     }
   }, []);

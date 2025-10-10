@@ -112,7 +112,7 @@ function Tabs({
 
     if (tabid === activeTab) {
       // TODO: avoid this by not implementing a custom tabs component.
-      // eslint-disable-next-line react-hooks/react-compiler
+      // eslint-disable-next-line react-hooks/immutability
       contentChild = child.props.children;
     }
 

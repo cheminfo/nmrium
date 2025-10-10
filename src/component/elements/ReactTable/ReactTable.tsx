@@ -192,11 +192,8 @@ function TableInner<T extends object>(
       data,
       autoResetSortBy: false,
     } as TableOptions<T>,
-    // Will be fixed by migrating to tanstack table.
-    /* eslint-disable react-hooks/react-compiler */
     useSortBy,
     useRowSpan,
-    /* eslint-enable react-hooks/react-compiler */
   ) as TableInstanceWithHooks<T>;
 
   const { sortBy } = state as any;

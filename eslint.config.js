@@ -44,6 +44,8 @@ export default [
       '@typescript-eslint/no-misused-promises': 'off',
       '@typescript-eslint/restrict-plus-operands': 'off',
       'react/no-unstable-nested-components': 'off',
+      'react-hooks/refs': 'off',
+      'react-hooks/set-state-in-effect': 'off',
       'no-restricted-imports': [
         'error',
         {

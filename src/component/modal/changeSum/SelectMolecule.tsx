@@ -76,6 +76,8 @@ export default function SelectMolecule<
       const index = value
         ? molecules.findIndex((molecule) => molecule.id === value.id)
         : -1;
+      // TODO: refactor to not use an effect
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setValue(index !== -1 ? index : 0);
     }
   }, [molecules, setValue, value]);

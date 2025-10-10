@@ -112,6 +112,8 @@ const Main = () => {
       const extension = getFileExtension(sampleURL).toLowerCase();
       switch (extension) {
         case 'json': {
+          // TODO: refactor this
+          // eslint-disable-next-line react-hooks/set-state-in-effect
           setDashBoardType('multi');
           void loadData(sampleURL).then((remoteRoutes: any) => {
             if (remoteRoutes) {

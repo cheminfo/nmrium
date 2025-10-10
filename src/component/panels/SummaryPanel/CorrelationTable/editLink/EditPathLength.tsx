@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import type { Signal2D } from '@zakodium/nmr-types';
 import type { FromTo } from 'cheminfo-types';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import DefaultPathLengths from '../../../../../data/constants/DefaultPathLengths.js';
 import Button from '../../../../elements/Button.js';
@@ -60,7 +60,8 @@ function EditPathLength({ signal, experimentType, onEdit }: InputProps) {
       ? (signal.j.pathLength as FromTo).to
       : DefaultPathLengths[experimentType]?.to || 0,
   );
-  const [isError, setIsError] = useState<boolean>(false);
+
+  const isError = from <= 0 || from > to;
 
   const handleOnEdit = useCallback(() => {
     const pathLength: FromTo = {
@@ -77,10 +78,6 @@ function EditPathLength({ signal, experimentType, onEdit }: InputProps) {
 
     onEdit(editedSignal);
   }, [to, from, onEdit, signal]);
-
-  useEffect(() => {
-    setIsError(from <= 0 || from > to);
-  }, [to, from]);
 
   return (
     <Container>
