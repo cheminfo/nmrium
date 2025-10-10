@@ -6,11 +6,14 @@ import { useChartData } from '../context/ChartContext.js';
 import { useActiveSpectrum } from './useActiveSpectrum.js';
 
 export function getDefaultRangesViewState(nucleus: string): RangesViewState {
+  const isProton = nucleus === '1H';
+  const isCarbon = nucleus === '13C';
+
   return {
-    showPeaks: false,
+    showPeaks: isCarbon,
     showMultiplicityTrees: false,
     showIntegrals: false,
-    showIntegralsValues: nucleus === '1H',
+    showIntegralsValues: isProton,
     showJGraph: false,
     displayingMode: 'spread',
     integralsScaleRatio: 1,
