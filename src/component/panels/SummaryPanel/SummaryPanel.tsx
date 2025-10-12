@@ -7,7 +7,7 @@ import type {
   Values as CorrelationValues,
 } from 'nmr-correlation';
 import { getLinkDelta, getLinkDim } from 'nmr-correlation';
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 import { FaFlask, FaSlidersH } from 'react-icons/fa';
 
 import {
@@ -102,9 +102,6 @@ function SummaryPanel() {
     molecularFormula: false,
   });
 
-  const [additionalColumnData, setAdditionalColumnData] = useState<
-    Correlation[]
-  >([]);
   const [
     selectedAdditionalColumnsAtomType,
     setSelectedAdditionalColumnsAtomType,
@@ -265,21 +262,18 @@ function SummaryPanel() {
     });
   }, [correlationsData]);
 
-  useEffect(() => {
+  const additionalColumnData = useMemo<Correlation[]>(() => {
     const _selectedAdditionalColumnsAtomType =
       selectedAdditionalColumnsAtomType.split('-')[0];
-
-    setAdditionalColumnData(
-      filteredCorrelationsData
-        ? filteredCorrelationsData.values
-            .filter(
-              (correlation: any) =>
-                correlation.atomType === _selectedAdditionalColumnsAtomType,
-            )
-            // eslint-disable-next-line unicorn/no-array-reverse
-            .reverse()
-        : [],
+    if (!filteredCorrelationsData) {
+      return [];
+    }
+    const result = filteredCorrelationsData.values.filter(
+      (correlation: any) =>
+        correlation.atomType === _selectedAdditionalColumnsAtomType,
     );
+    result.reverse();
+    return result;
   }, [filteredCorrelationsData, selectedAdditionalColumnsAtomType]);
 
   const editEquivalencesSaveHandler = useCallback(

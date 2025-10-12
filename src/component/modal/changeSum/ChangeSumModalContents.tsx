@@ -80,6 +80,8 @@ export function ChangeSumModalContents(props: ChangeSumModalContentsProps) {
 
   useEffect(() => {
     if (sumOptions?.sumAuto && panels?.structuresPanel?.display) {
+      // TODO: refactor to not use an effect
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setActiveOption('auto');
       const { mf, moleculeId: id } = sumOptions;
       reset({

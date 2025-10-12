@@ -13,7 +13,7 @@ export default function useCombinedRefs<T>(
         ref(targetRef.current);
       } else {
         // Mutating a ref.
-        // eslint-disable-next-line react-hooks/react-compiler
+        // eslint-disable-next-line react-hooks/immutability
         ref.current = targetRef.current;
       }
     }
