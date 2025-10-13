@@ -20,12 +20,6 @@ export default [
   ...unicorn,
   ...react,
   {
-    files: ['**/pdnd.cts'],
-    rules: {
-      'import/no-extraneous-dependencies': 'off',
-    },
-  },
-  {
     files: ['**/*.{ts,tsx,cts,mts}'],
     rules: {
       '@typescript-eslint/consistent-type-imports': 'error',
