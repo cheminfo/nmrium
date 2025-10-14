@@ -74,7 +74,10 @@ function FilterElements(props: FilterElementsProps) {
   const { id, name, enabled } = filter;
   const label = getFilterLabel(name);
 
-  function handleFilterCheck(id, event: React.ChangeEvent<HTMLInputElement>) {
+  function handleFilterCheck(
+    id: any,
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) {
     const enabled = event.target.checked;
     const hideLoading = toaster.showLoading({
       message: `${enabled ? 'Enable' : 'Disable'} filter in progress`,
@@ -193,11 +196,11 @@ function FiltersInner(props: FiltersInnerProps) {
   const selectedFilterIndex = useRef<number>();
   const activeSpectrum = useActiveSpectrum();
 
-  function toggleSection(sectionKey) {
+  function toggleSection(sectionKey: any) {
     openSection(selectedSection === sectionKey ? '' : sectionKey);
   }
 
-  function filterSnapShotHandler(filter, index) {
+  function filterSnapShotHandler(filter: any, index: any) {
     selectedFilterIndex.current =
       selectedFilterIndex.current && index === selectedFilterIndex.current
         ? null
@@ -221,7 +224,7 @@ function FiltersInner(props: FiltersInnerProps) {
     }, 0);
   }
 
-  function getStyle(filter, index) {
+  function getStyle(filter: any, index: any) {
     const { id, error } = filter;
 
     if (error) {
@@ -247,8 +250,10 @@ function FiltersInner(props: FiltersInnerProps) {
       (filter) => filter.name === selectedTool,
     );
 
-    if (!isFilterExists && Filters?.[selectedTool]) {
-      const { name } = Filters[selectedTool];
+    // TODO: The types of selectedTool and Filters are completely incompatible
+    // I think we need a propper mapping between the two
+    if (!isFilterExists && (Filters as any)?.[selectedTool]) {
+      const { name } = (Filters as any)[selectedTool];
       setNewFilter(getDefaultFilterOptions(name));
     } else {
       setNewFilter((previousNewFilter) => {
@@ -261,7 +266,7 @@ function FiltersInner(props: FiltersInnerProps) {
   }, [filters, selectedTool]);
 
   useEffect(() => {
-    if (Filters?.[selectedTool]) {
+    if ((Filters as any)?.[selectedTool]) {
       openSection(selectedTool);
       return;
     }
@@ -294,7 +299,7 @@ function FiltersInner(props: FiltersInnerProps) {
     openSection(null);
   }
 
-  function handleReorderFilters(sourceIndex, targetIndex) {
+  function handleReorderFilters(sourceIndex: any, targetIndex: any) {
     dispatch({
       type: 'REORDER_FILTERS',
       payload: { sourceIndex, targetIndex },
@@ -305,7 +310,7 @@ function FiltersInner(props: FiltersInnerProps) {
     <Sections isOverflow renderActiveSectionContentOnly>
       {filtersList.map((filter, index) => {
         const { id, name, error, value } = filter;
-        const FilterOptionsPanel = filterOptionPanels[filter.name];
+        const FilterOptionsPanel = filterOptionPanels[name];
         const enableEdit = activeFilterID === id || filter.value === null;
         return (
           <Sections.Item
@@ -316,7 +321,7 @@ function FiltersInner(props: FiltersInnerProps) {
             onReorder={handleReorderFilters}
             title={error || getFilterLabel(name)}
             serial={index + 1}
-            onClick={(id) => {
+            onClick={(id: any) => {
               toggleSection(id);
             }}
             isOpen={name === selectedSection}

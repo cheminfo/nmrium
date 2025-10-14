@@ -113,7 +113,7 @@ function handleSetKeyPreferences(
     };
   }
 }
-function setSpectraDisplayPreferences(draft: Draft<State>, preferences) {
+function setSpectraDisplayPreferences(draft: Draft<State>, preferences: any) {
   for (const [index, datum] of draft.data.entries()) {
     if (nucleusToString(datum.info.nucleus) === preferences.activeTab) {
       draft.data[index].display = {

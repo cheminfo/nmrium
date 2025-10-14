@@ -18,7 +18,7 @@ export function setWorkspace(
       draft.workspaces[workspaceKey] = getPreferencesByWorkspace(
         workspaceKey,
         draft.originalWorkspaces,
-      );
+      ) as any;
     }
     draft.workspace.current = workspaceKey;
   } else if (action.payload.workspaceSource === 'nmriumFile') {

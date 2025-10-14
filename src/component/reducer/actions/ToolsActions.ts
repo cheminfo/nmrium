@@ -1,6 +1,6 @@
 import type { BaselineCorrectionZone } from '@zakodium/nmr-types';
 import type { Spectrum1D, Spectrum2D, Spectrum } from '@zakodium/nmrium-core';
-import { zoomIdentity } from 'd3';
+import { zoomIdentity } from 'd3-zoom';
 import type { Draft } from 'immer';
 
 import { contoursManager } from '../../../data/data2d/Spectrum2D/contours.js';
@@ -52,7 +52,7 @@ interface ResetToolOptions {
   defaultToolId?: Tool;
   resetFiltersOptionPanel?: boolean;
   reset?: boolean;
-  toolId?: string;
+  toolId?: Tool;
   tempRollback?: boolean;
 }
 
@@ -193,7 +193,7 @@ function setSelectedTool(draft: Draft<State>, action: SetSelectedToolAction) {
   activateTool(draft, { toolId: selectedTool });
 }
 //utility
-function getSpectrumID(draft: Draft<State>, index): string | null {
+function getSpectrumID(draft: Draft<State>, index: any): string | null {
   const { activeSpectra, activeTab } = draft.view.spectra;
 
   const spectra = activeSpectra[activeTab.split(',')[index]];
@@ -228,12 +228,7 @@ function handleAddBaseLineZone(
   const start = scaleX.invert(startX);
   const end = scaleX.invert(endX);
 
-  let zone: any = [];
-  if (start > end) {
-    zone = [end, start];
-  } else {
-    zone = [start, end];
-  }
+  const zone = start > end ? [end, start] : [start, end];
   const zones = draft.toolOptions.data.baselineCorrection.zones;
   zones.push({
     id: crypto.randomUUID(),
@@ -316,18 +311,10 @@ function zoomWithScroll(
   const { zoomOptions, direction = 'Horizontal', dimension } = options;
   const { x, deltaX, invertScroll } = zoomOptions;
 
-  let scaleX;
-  let scaleY;
-
-  if (dimension === '1D') {
-    scaleX = getXScale(draft);
-  } else {
-    scaleX = get2DXScale(draft);
-    scaleY = get2DYScale(draft);
-  }
   const scaleRatio = toScaleRatio({ delta: deltaX, invertScroll });
 
   if (direction === 'Both' || direction === 'Horizontal') {
+    const scaleX = dimension === '1D' ? getXScale(draft) : get2DXScale(draft);
     const domain = zoomIdentity
       .translate(x, 0)
       .scale(scaleRatio)
@@ -346,6 +333,7 @@ function zoomWithScroll(
     dimension === '2D' &&
     (direction === 'Both' || direction === 'Vertical')
   ) {
+    const scaleY = get2DYScale(draft);
     const { y } = zoomOptions;
     const domain = zoomIdentity
       .translate(y, 0)
@@ -523,7 +511,7 @@ function zoomOut(draft: Draft<State>, action: ZoomOutAction) {
 }
 
 //utility
-function hasAcceptedSpectrum(draft: Draft<State>, index) {
+function hasAcceptedSpectrum(draft: Draft<State>, index: any) {
   const { activeTab, activeSpectra } = draft.view.spectra;
   const nuclei = activeTab.split(',');
   const spectra = activeSpectra[nuclei[index]];
@@ -565,7 +553,7 @@ function setMargin(draft: Draft<State>) {
 }
 
 //utility
-function setDisplayerMode(draft: Draft<State>, data) {
+function setDisplayerMode(draft: Draft<State>, data: any) {
   draft.displayerMode =
     data && (data as Spectrum[]).some((d) => d.info.dimension === 2)
       ? '2D'
@@ -573,9 +561,12 @@ function setDisplayerMode(draft: Draft<State>, data) {
 }
 
 //utility
-function setTabActiveSpectrum(draft: Draft<State>, dataGroupByTab) {
+function setTabActiveSpectrum(draft: Draft<State>, dataGroupByTab: any) {
   const tabs2D: any[] = [];
-  const tabActiveSpectrum = {};
+  const tabActiveSpectrum: Record<
+    string,
+    Array<{ id: string; index: number; selected: boolean }> | null
+  > = {};
 
   const tabkeys = Object.keys(dataGroupByTab);
   tabkeys.sort((a, b) => (a.split(',').length > b.split(',').length ? -1 : 1));
@@ -593,7 +584,7 @@ function setTabActiveSpectrum(draft: Draft<State>, dataGroupByTab) {
       const tabSpectra = dataGroupByTab[tabKey];
       const tabSpectraLength = tabSpectra.length;
       if (tabSpectraLength >= 2) {
-        const FTSpectra = tabSpectra.filter((d) => !d.info.isFid);
+        const FTSpectra = tabSpectra.filter((d: any) => !d.info.isFid);
         if (FTSpectra.length > 0) {
           const selected =
             nucleusLength === 2 ||
@@ -621,7 +612,12 @@ function setTabActiveSpectrum(draft: Draft<State>, dataGroupByTab) {
 }
 
 //utility
-function setTab(draft: Draft<State>, dataGroupByTab, tab, refresh = false) {
+function setTab(
+  draft: Draft<State>,
+  dataGroupByTab: any,
+  tab: any,
+  refresh = false,
+) {
   const groupByTab = Object.keys(dataGroupByTab);
   groupByTab.sort((a, b) =>
     a.split(',').length > b.split(',').length ? -1 : 1,
@@ -692,7 +688,7 @@ function levelChangeHandler(draft: Draft<State>, action: LevelChangeAction) {
   } = draft;
   const activeSpectra = getActiveSpectra(draft) || [];
 
-  const activeSpectraObj = {};
+  const activeSpectraObj: Record<string, true> = {};
   for (const activeSpectrum of activeSpectra) {
     activeSpectraObj[activeSpectrum.id] = true;
   }

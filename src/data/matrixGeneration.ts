@@ -56,7 +56,7 @@ export function normalCase(str: string) {
   return result.charAt(0).toUpperCase() + result.slice(1);
 }
 
-function isLeave(fieldOptions) {
+function isLeave(fieldOptions: any) {
   if (['number', 'boolean', 'string'].includes(fieldOptions.type)) {
     return true;
   }

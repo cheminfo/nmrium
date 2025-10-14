@@ -1,10 +1,11 @@
-import { extent } from 'd3';
+import { extent } from 'd3-array';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { matrixToStocsy } from 'nmr-processing';
 import { useMemo } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';
+import { useActiveNucleusTab } from '../../hooks/useActiveNucleusTab.ts';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import { PathBuilder } from '../../utility/PathBuilder.js';
 import { getYScaleWithRation } from '../utilities/scale.js';
@@ -34,7 +35,7 @@ interface StocsyData {
   yDomain: number[];
 }
 
-function useStocsy(chemicalShift: number): StocsyData | null {
+function useStocsy(chemicalShift: number | null): StocsyData | null {
   const matrix = useMatrix();
 
   return useMemo(() => {
@@ -74,11 +75,7 @@ function useSliceStocsyData(options?: StocsyData | null) {
 }
 
 export function Stocsy() {
-  const {
-    view: {
-      spectra: { activeTab },
-    },
-  } = useChartData();
+  const activeTab = useActiveNucleusTab();
   const options = usePanelPreferences('matrixGeneration', activeTab);
 
   if (!options) return;
@@ -89,7 +86,13 @@ export function Stocsy() {
   return <InnerStocsy scaleRatio={scaleRatio} chemicalShift={chemicalShift} />;
 }
 
-function InnerStocsy({ scaleRatio, chemicalShift }) {
+interface InnerStocsyProps {
+  scaleRatio: number;
+  chemicalShift: number | null;
+}
+
+function InnerStocsy(props: InnerStocsyProps) {
+  const { scaleRatio, chemicalShift } = props;
   const stocsyData = useStocsy(chemicalShift);
   const data = useSliceStocsyData(stocsyData);
 

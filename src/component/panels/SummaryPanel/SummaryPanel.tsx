@@ -7,7 +7,7 @@ import type {
   Values as CorrelationValues,
 } from 'nmr-correlation';
 import { getLinkDelta, getLinkDim } from 'nmr-correlation';
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 import { FaFlask, FaSlidersH } from 'react-icons/fa';
 
 import {
@@ -102,9 +102,6 @@ function SummaryPanel() {
     molecularFormula: false,
   });
 
-  const [additionalColumnData, setAdditionalColumnData] = useState<
-    Correlation[]
-  >([]);
   const [
     selectedAdditionalColumnsAtomType,
     setSelectedAdditionalColumnsAtomType,
@@ -202,7 +199,7 @@ function SummaryPanel() {
         }
         // try to find a link which contains the belonging 2D signal in the spectra in view
         else if (
-          correlation.link.some((link) => {
+          correlation.link.some((link: any) => {
             const spectrum = findSpectrum(
               spectraData,
               link.experimentID,
@@ -228,7 +225,9 @@ function SummaryPanel() {
 
     if (correlationsData) {
       const _values = filterIsActive
-        ? correlationsData.values.filter((correlation) => isInView(correlation))
+        ? correlationsData.values.filter((correlation: any) =>
+            isInView(correlation),
+          )
         : correlationsData.values;
 
       return { ...correlationsData, values: _values };
@@ -247,9 +246,9 @@ function SummaryPanel() {
     const columnTypes = ['H', 'H-H'].concat(
       correlationsData
         ? correlationsData.values
-            .map((correlation) => correlation.atomType)
+            .map((correlation: any) => correlation.atomType)
             .filter(
-              (atomType, i, array) =>
+              (atomType: any, i: any, array: any) =>
                 atomType !== 'H' && array.indexOf(atomType) === i,
             )
         : [],
@@ -263,21 +262,18 @@ function SummaryPanel() {
     });
   }, [correlationsData]);
 
-  useEffect(() => {
+  const additionalColumnData = useMemo<Correlation[]>(() => {
     const _selectedAdditionalColumnsAtomType =
       selectedAdditionalColumnsAtomType.split('-')[0];
-
-    setAdditionalColumnData(
-      filteredCorrelationsData
-        ? filteredCorrelationsData.values
-            .filter(
-              (correlation) =>
-                correlation.atomType === _selectedAdditionalColumnsAtomType,
-            )
-            // eslint-disable-next-line unicorn/no-array-reverse
-            .reverse()
-        : [],
+    if (!filteredCorrelationsData) {
+      return [];
+    }
+    const result = filteredCorrelationsData.values.filter(
+      (correlation: any) =>
+        correlation.atomType === _selectedAdditionalColumnsAtomType,
     );
+    result.reverse();
+    return result;
   }, [filteredCorrelationsData, selectedAdditionalColumnsAtomType]);
 
   const editEquivalencesSaveHandler = useCallback(

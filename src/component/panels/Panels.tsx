@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import type { NMRiumPanelPreferences } from '@zakodium/nmrium-core';
+import type { PropsWithChildren } from 'react';
 import { createContext, memo, useContext, useMemo, useState } from 'react';
 import { FaRegEdit } from 'react-icons/fa';
 import type { ToolbarItemProps } from 'react-science/ui';
@@ -38,7 +39,9 @@ export function usePanelOpenState() {
   return context;
 }
 
-export function PanelOpenProviderProvider({ children }) {
+export function PanelOpenProviderProvider({
+  children,
+}: Required<PropsWithChildren>) {
   const { current } = usePreferences();
 
   const {
@@ -138,7 +141,7 @@ function RightButtons(props: {
   const { onEdit, id } = props;
   const activeSpectrum = useActiveSpectrum();
   const toggle = useTogglePanel();
-  function handleClosePanel(event) {
+  function handleClosePanel(event: any) {
     event?.stopPropagation();
     toggle(id);
   }

@@ -316,7 +316,7 @@ const customWorkspaces: CustomWorkspaces = {
   },
 };
 
-export default function BenchtopNMRWorkspace(props) {
+export default function BenchtopNMRWorkspace(props: any) {
   return (
     <View {...props} workspace="benchtop" customWorkspaces={customWorkspaces} />
   );

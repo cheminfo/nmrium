@@ -1,8 +1,11 @@
 import type {
+  ACSExportOptions,
   ExportPreferences,
   ExportSettings,
   MultipleSpectraAnalysisPreferences,
+  NMRiumPanelPreferences,
   PanelPreferencesType,
+  PanelsPreferences,
   PrintPageOptions,
   WorkSpaceSource,
   Workspace,
@@ -15,7 +18,6 @@ import type { SplitPaneSize } from 'react-science/ui';
 
 import type { NMRiumPreferences, NMRiumWorkspace } from '../../main/index.js';
 import { getLocalStorage, storeData } from '../../utility/LocalStorage.js';
-import type { FilterType } from '../../utility/filterType.js';
 import Workspaces from '../../workspaces/index.js';
 import type { ActionType } from '../types/ActionType.js';
 
@@ -27,6 +29,7 @@ import {
   setSpectraAnalysisPanelsPreferences,
 } from './actions/analyzeSpectra.js';
 import { applyGeneralPreferences } from './actions/applyGeneralPreferences.js';
+import { changeExportAcsSettings } from './actions/changeExportAcsSettings.ts';
 import { changeExportSettings } from './actions/changeExportSettings.js';
 import { changeInformationBlockPosition } from './actions/changeInformationBlockPosition.js';
 import { changePeaksLabelPosition } from './actions/changePeaksLabelPosition.js';
@@ -61,7 +64,7 @@ export const WORKSPACES_KEYS = {
 export interface Settings {
   version: number;
   workspaces: Record<string, WorkspaceWithSource>;
-  currentWorkspace;
+  currentWorkspace: any;
 }
 
 type InitPreferencesAction = ActionType<
@@ -73,12 +76,14 @@ type InitPreferencesAction = ActionType<
     dispatch: any;
   }
 >;
+
 type SetPreferencesAction =
   | ActionType<'SET_PREFERENCES', Partial<Workspace>>
   | ActionType<'SET_PREFERENCES'>;
-type SetPanelsPreferencesAction = ActionType<
+
+export type SetPanelsPreferencesAction = ActionType<
   'SET_PANELS_PREFERENCES',
-  { key: string; value: any }
+  { key: keyof PanelsPreferences; value: any }
 >;
 
 export type SetWorkspaceAction = ActionType<
@@ -143,6 +148,11 @@ export type ChangeExportSettingsAction = ActionType<
     options: ExportSettings;
   }
 >;
+
+export type ChangeExportACSSettingsAction = ActionType<
+  'CHANGE_EXPORT_ACS_SETTINGS',
+  { options: ACSExportOptions; nucleus: string }
+>;
 export type ChangePeaksLabelPositionAction = ActionType<
   'CHANGE_PEAKS_LABEL_POSITION',
   {
@@ -153,10 +163,8 @@ export type ChangePeaksLabelPositionAction = ActionType<
 export type TogglePanelAction = ActionType<
   'TOGGLE_PANEL',
   {
-    id: string;
-    options: Partial<
-      Record<keyof FilterType<Required<PanelPreferencesType>, boolean>, boolean>
-    >;
+    id: keyof NMRiumPanelPreferences;
+    options: Partial<PanelPreferencesType>;
   }
 >;
 
@@ -179,15 +187,15 @@ type PreferencesActions =
   | ChangePrintPageSettingsAction
   | ChangeExportSettingsAction
   | ChangePeaksLabelPositionAction
-  | TogglePanelAction;
+  | TogglePanelAction
+  | ChangeExportACSSettingsAction;
 
 export type WorkspaceWithSource = Workspace & { source: WorkSpaceSource };
-type WorkspacesWithSource =
-  | Record<NMRiumWorkspace, WorkspaceWithSource>
-  | Record<string, WorkspaceWithSource>;
+type WorkspacesWithSource = Record<string, WorkspaceWithSource>;
 
 export interface PreferencesState {
   version: number;
+  // TODO: A lot of places set this to Required<WorkspacePreferences>, which is a subset of this type
   workspaces: WorkspacesWithSource;
   originalWorkspaces: WorkspacesWithSource;
   dispatch: (action?: PreferencesActions) => void;
@@ -240,8 +248,8 @@ export function initPreferencesState(
 
   return {
     ...state,
-    originalWorkspaces: { ...predefinedWorkspaces, ...localWorkspaces },
-    workspaces: { ...predefinedWorkspaces, ...localWorkspaces },
+    originalWorkspaces: { ...predefinedWorkspaces, ...localWorkspaces } as any,
+    workspaces: { ...predefinedWorkspaces, ...localWorkspaces } as any,
     workspace: {
       current: settings?.currentWorkspace || 'default',
       base: null,
@@ -304,6 +312,8 @@ function innerPreferencesReducer(
       return changePeaksLabelPosition(draft, action);
     case 'TOGGLE_PANEL':
       return togglePanel(draft, action);
+    case 'CHANGE_EXPORT_ACS_SETTINGS':
+      return changeExportAcsSettings(draft, action);
 
     default:
       return draft;

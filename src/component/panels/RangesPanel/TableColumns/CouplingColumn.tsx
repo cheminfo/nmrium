@@ -13,7 +13,7 @@ export default function CouplingColumn({
   return (
     <td {...onHover}>
       {result
-        ?.map((coupling) =>
+        ?.map((coupling: any) =>
           !Number.isNaN(Number(coupling.coupling))
             ? formatNumber(coupling.coupling, format)
             : '',

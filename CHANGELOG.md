@@ -1,5 +1,42 @@
 # Changelog
 
+## [1.5.0](https://github.com/cheminfo/nmrium/compare/v1.4.0...v1.5.0) (2025-10-12)
+
+
+### Features
+
+* hide labels of overlapping peaks ([402c832](https://github.com/cheminfo/nmrium/commit/402c832688c94b539b8c5055d160a4ab648954c1))
+* improve peaks overlap detection ([402c832](https://github.com/cheminfo/nmrium/commit/402c832688c94b539b8c5055d160a4ab648954c1))
+* show integrals by default only for 1H spectra ([ab4a1d3](https://github.com/cheminfo/nmrium/commit/ab4a1d3602209c8fbdb6da726347db7a710b98e6)), closes [#3739](https://github.com/cheminfo/nmrium/issues/3739)
+* show peaks by default only for carbon spectra ([d6e7617](https://github.com/cheminfo/nmrium/commit/d6e7617fdba2ff34b3eab3ce311cf741f6f6370e))
+
+
+### Bug Fixes
+
+* correctly assign and highlight homoNuclear nuclei ([5ccecde](https://github.com/cheminfo/nmrium/commit/5ccecde3ab31b2a59e9fcbf9dba277b92d0c9baf)), closes [#3738](https://github.com/cheminfo/nmrium/issues/3738)
+
+## [1.4.0](https://github.com/cheminfo/nmrium/compare/v1.3.0...v1.4.0) (2025-10-09)
+
+
+### Features
+
+* add yellow highlight to assigned 2D signals ([c39c27b](https://github.com/cheminfo/nmrium/commit/c39c27bd55d5498f6c7046665d4a475ad08d511e)), closes [#3718](https://github.com/cheminfo/nmrium/issues/3718)
+* CT exports with alias atoms ([e777d01](https://github.com/cheminfo/nmrium/commit/e777d017d90fae940d96f8b385aacf1cd7c15a96))
+* improve export publication string options ([#3677](https://github.com/cheminfo/nmrium/issues/3677)) ([8f134c5](https://github.com/cheminfo/nmrium/commit/8f134c58e793a46221a76e7351c2ec0055ebb93b))
+* position the ranges assignment popup near the cursor ([fcd2015](https://github.com/cheminfo/nmrium/commit/fcd2015712e9232e338896c54064cdc791e6c099))
+
+
+### Bug Fixes
+
+* clear structure query should reset hexagon icon state ([e916fec](https://github.com/cheminfo/nmrium/commit/e916fec3a6db0db7a9aefb80e1e1bf5a6a255e5b))
+* correctly assign both x and y axes in 2D ([76fdc89](https://github.com/cheminfo/nmrium/commit/76fdc89131c980f18fbb904642e9934a5ca5eb7a))
+* correctly position zone assignment popup ([ce43d72](https://github.com/cheminfo/nmrium/commit/ce43d723835eac5d2e661c2ea5ba656452626423))
+* debounce and set peak picking minMaxRatio default to 0.01 ([1a454e5](https://github.com/cheminfo/nmrium/commit/1a454e5ffb144e92c1ded8f4cd188e113551f2e1))
+* only render dialog contents styles with fallback ([#3746](https://github.com/cheminfo/nmrium/issues/3746)) ([df969c6](https://github.com/cheminfo/nmrium/commit/df969c608c3671c3978e5ad820692d16a63dd2e0))
+* prevent duplicate entries in export and import menus ([a9ddcfc](https://github.com/cheminfo/nmrium/commit/a9ddcfc6e652e605e1d4c5e3e93a596b8d25688b)), closes [#3715](https://github.com/cheminfo/nmrium/issues/3715)
+* recalculate ranges integrations when sum changes ([97a1387](https://github.com/cheminfo/nmrium/commit/97a1387ac281af9c995ebbff135d7e034f9f5ab7))
+* revert auto peak-picking threshold to 0.05 ([#3747](https://github.com/cheminfo/nmrium/issues/3747)) ([3aca81e](https://github.com/cheminfo/nmrium/commit/3aca81edda93df64bec36b50d25e989a05d5c52f))
+
 ## [1.3.0](https://github.com/cheminfo/nmrium/compare/v1.2.1...v1.3.0) (2025-09-02)
 
 

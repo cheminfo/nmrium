@@ -56,12 +56,12 @@ export function DatabaseSearchOptions(props: DatabaseSearchOptionsProps) {
     toolOptions: { selectedTool },
   } = useChartData();
   const dispatch = useDispatch();
-  function enableFilterHandler(flag) {
+  function enableFilterHandler(flag: any) {
     const tool = !flag ? options.zoom.id : options.databaseRangesSelection.id;
     handleChangeOption(tool);
   }
 
-  function handleSearch(input) {
+  function handleSearch(input: any) {
     if (typeof input === 'string' || input === -1) {
       const solvent = String(input);
       onKeywordsChange({ solvent });

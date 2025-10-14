@@ -1,14 +1,25 @@
+import type { Spectrum } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
 
 import type { State } from '../Reducer.js';
 
 import { getActiveSpectrum } from './getActiveSpectrum.js';
 
-export function getSpectrum(state: Draft<State>);
-export function getSpectrum(state: Draft<State>, index: number);
-export function getSpectrum(state: Draft<State>, id?: string);
+type GetSpectrumReturn = Spectrum | undefined;
 
-export function getSpectrum(state: Draft<State>, value?: number | string) {
+export function getSpectrum(state: Draft<State>): GetSpectrumReturn;
+export function getSpectrum(
+  state: Draft<State>,
+  index: number,
+): GetSpectrumReturn;
+export function getSpectrum(
+  state: Draft<State>,
+  id?: string,
+): GetSpectrumReturn;
+export function getSpectrum(
+  state: Draft<State>,
+  value?: number | string,
+): GetSpectrumReturn {
   const activeSpectrum = getActiveSpectrum(state);
 
   if (value === undefined && activeSpectrum?.id) {
@@ -23,4 +34,6 @@ export function getSpectrum(state: Draft<State>, value?: number | string) {
   if (typeof value === 'string') {
     return state.data.find((spectrum) => spectrum.id === value);
   }
+
+  return undefined;
 }

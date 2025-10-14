@@ -1,5 +1,5 @@
 import type { NumberArray } from 'cheminfo-types';
-import { extent } from 'd3';
+import { extent } from 'd3-array';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { matrixToBoxPlot } from 'nmr-processing';
 import type { CSSProperties } from 'react';
@@ -7,6 +7,7 @@ import { useMemo } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';
+import { useActiveNucleusTab } from '../../hooks/useActiveNucleusTab.ts';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import { PathBuilder } from '../../utility/PathBuilder.js';
 import { getYScaleWithRation } from '../utilities/scale.js';
@@ -42,7 +43,7 @@ interface UsePathAreaPoints {
   y2: NumberArray;
 }
 
-function useYScale(scaleRatio: number, yDomain) {
+function useYScale(scaleRatio: number, yDomain: any) {
   const { margin, height } = useChartData();
   const { spectraBottomMargin } = useScaleChecked();
 
@@ -55,7 +56,11 @@ function useYScale(scaleRatio: number, yDomain) {
   });
 }
 
-function usePath(pathPoints: UsePathLinePoints, scaleRatio: number, yDomain) {
+function usePath(
+  pathPoints: UsePathLinePoints,
+  scaleRatio: number,
+  yDomain: any,
+) {
   const { scaleX } = useScaleChecked();
   const scaleY = useYScale(scaleRatio, yDomain);
 
@@ -73,7 +78,7 @@ function usePath(pathPoints: UsePathLinePoints, scaleRatio: number, yDomain) {
 function useAreaPath(
   pathPoints: UsePathAreaPoints,
   scaleRatio: number,
-  yDomain,
+  yDomain: any,
 ) {
   const { scaleX } = useScaleChecked();
   const scaleY = useYScale(scaleRatio, yDomain);
@@ -123,11 +128,7 @@ function useBoxPlot() {
 }
 
 export function Boxplot() {
-  const {
-    view: {
-      spectra: { activeTab },
-    },
-  } = useChartData();
+  const activeTab = useActiveNucleusTab();
   const options = usePanelPreferences('matrixGeneration', activeTab);
 
   if (!options) return;

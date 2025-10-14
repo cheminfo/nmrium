@@ -7,7 +7,7 @@ export interface ZoneBoundary {
   endY: number;
 }
 
-export default function get2DRange(draft, options: ZoneBoundary) {
+export default function get2DRange(draft: any, options: ZoneBoundary) {
   const { startX, startY, endX, endY } = options;
   const scaleX = get2DXScale(draft);
   const scaleY = get2DYScale(draft);

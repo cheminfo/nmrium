@@ -1,5 +1,5 @@
 import type { Spectrum1D } from '@zakodium/nmrium-core';
-import { extent } from 'd3';
+import { extent } from 'd3-array';
 import { rangesToXY } from 'nmr-processing';
 
 import { useChartData } from '../../context/ChartContext.js';

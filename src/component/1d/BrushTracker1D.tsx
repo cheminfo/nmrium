@@ -1,3 +1,4 @@
+import type { PropsWithChildren } from 'react';
 import { useCallback, useRef, useState } from 'react';
 import { useOnOff } from 'react-science/ui';
 
@@ -64,7 +65,7 @@ function usePixelToPPMConverter() {
   );
 }
 
-export function BrushTracker1D({ children }) {
+export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
   const state = useChartData();
 
   const {
@@ -105,7 +106,7 @@ export function BrushTracker1D({ children }) {
 
   const [brushData, setBrushData] = useState<BrushTrackerData | null>(null);
 
-  function handleBrush(brushData) {
+  function handleBrush(brushData: any) {
     const { mouseButton } = brushData;
     const brushDataInPPM = convertToPPM(brushData);
 
@@ -119,7 +120,7 @@ export function BrushTracker1D({ children }) {
       dispatch({ type: 'MOVE', payload: { shiftX, shiftY: 0 } });
     }
   }
-  function handleInsetBrush(brushData) {
+  function handleInsetBrush(brushData: any) {
     const { mouseButton } = brushData;
     const brushDataInPPM = convertToPPM(brushData);
 
@@ -338,7 +339,7 @@ export function BrushTracker1D({ children }) {
   );
 
   const handleOnDoubleClick = useCallback(
-    (event) => {
+    (event: any) => {
       const keyModifiers = getModifiersKey(event as unknown as MouseEvent);
       if (primaryKeyIdentifier === keyModifiers && !isClickDebounced) return;
 
@@ -351,7 +352,7 @@ export function BrushTracker1D({ children }) {
   );
 
   const handleInsetOnDoubleClick = useCallback(
-    (event) => {
+    (event: any) => {
       const keyModifiers = getModifiersKey(event as unknown as MouseEvent);
       if (primaryKeyIdentifier === keyModifiers) return;
 

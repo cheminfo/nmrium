@@ -1,6 +1,6 @@
 import type { Signal1D } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
-import { scaleLinear } from 'd3';
+import { scaleLinear } from 'd3-scale';
 import { memo, useMemo } from 'react';
 
 import type { CouplingLink } from '../../../data/data1d/Spectrum1D/generateJGraphData.js';

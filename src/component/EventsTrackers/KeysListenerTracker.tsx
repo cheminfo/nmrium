@@ -82,7 +82,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
   }, [data, displayerMode]);
 
   const deleteHandler = useCallback(
-    async (sourceData) => {
+    async (sourceData: any) => {
       const { type, extra } = sourceData;
       switch (type) {
         case 'INTEGRAL': {
@@ -284,7 +284,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
   );
 
   const keysPreferencesListenerHandler = useCallback(
-    (e, num) => {
+    (e: any, num: any) => {
       if (data && data.length > 0 && num >= 1 && num <= 9) {
         if (e.shiftKey) {
           dispatch({
@@ -322,7 +322,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
   );
 
   const toolsListenerHandler = useCallback(
-    (e) => {
+    (e: any) => {
       try {
         if (!e.shiftKey && !e.metaKey && !e.ctrlKey) {
           switch (e.key) {
@@ -488,7 +488,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
   );
 
   const handleOnKeyDown = useCallback(
-    (e) => {
+    (e: any) => {
       if (!ignoreElement(e) && mouseIsOverDisplayer.current) {
         const num = Number(e.code.slice(-1)) || 0;
         if (num > 0) {

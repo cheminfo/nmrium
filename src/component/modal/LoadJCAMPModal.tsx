@@ -61,7 +61,7 @@ function InnerLoadJCAMPModal({ onCloseDialog }: InnerLoadJCAMPModalProps) {
   });
 
   const core = useCore();
-  async function loadJCAMPHandler({ url }) {
+  async function loadJCAMPHandler({ url }: { url: string }) {
     const hidLoading = toaster.showLoading({
       message: 'Load JCAMP from external URL in progress ...',
     });

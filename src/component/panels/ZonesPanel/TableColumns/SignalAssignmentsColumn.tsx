@@ -21,8 +21,7 @@ function SignalAssignmentsColumn({
     handleOnMouseLeave,
     isHighlighted,
   } = useSignalHighlight(rowData);
-
-  const diaIDs = rowData?.tableMetaInfo?.signal?.[axis]?.diaIDs || [];
+  const diaIDs = (rowData?.tableMetaInfo?.signal as any)?.[axis]?.diaIDs || [];
   const isSignalAssignmentActivate = signalAssignment.isActive;
   const isAssignmentActive =
     isSignalAssignmentActivate && signalAssignment.activated?.axis === axis;

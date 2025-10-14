@@ -1,4 +1,4 @@
-import { scaleLinear } from 'd3';
+import { scaleLinear } from 'd3-scale';
 import { useCallback } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';

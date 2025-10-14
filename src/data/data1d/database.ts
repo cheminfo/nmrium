@@ -100,10 +100,10 @@ function processSearchByStructure(
 
   // todo: idCode may be null and the current version of search requires a string or molecule. `|| ''` will become useless in next release of openchemlib-util
   const result = moleculesDB.search(idCode || '');
-  return result.map((entry) => entry.data);
+  return result.map((entry: any) => entry.data);
 }
 
-function prepareGetSolvents(data) {
+function prepareGetSolvents(data: any) {
   const result: string[] = [];
   const map = new Map();
   for (const item of data) {

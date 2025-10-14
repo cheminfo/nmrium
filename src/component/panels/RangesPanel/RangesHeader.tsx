@@ -5,7 +5,7 @@ import {
   SvgNmrPeaks,
   SvgNmrPeaksTopLabels,
 } from 'cheminfo-font';
-import fileSaver from 'file-saver';
+import saveAs from 'file-saver';
 import { rangesToTSV } from 'nmr-processing';
 import {
   FaChartBar,
@@ -98,7 +98,7 @@ function RangesHeader(props: RangesHeaderProps) {
     showRanges,
   } = useActiveSpectrumRangesViewState();
 
-  function changeRangesSumHandler(options) {
+  function changeRangesSumHandler(options: any) {
     dispatch({ type: 'CHANGE_RANGE_SUM', payload: { options } });
   }
 
@@ -205,7 +205,7 @@ function RangesHeader(props: RangesHeaderProps) {
   function handleRangesToTSV() {
     const tsv = rangesToTSV(ranges.values);
     const blob = new Blob([tsv], { type: 'text/plain' });
-    fileSaver.saveAs(blob, `${info.name}.tsv`);
+    saveAs(blob, `${info.name}.tsv`);
   }
 
   function exportHandler(data?: ExportData) {

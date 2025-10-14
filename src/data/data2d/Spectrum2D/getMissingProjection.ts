@@ -57,7 +57,7 @@ export function getMissingProjection(
   return initiateDatum1D({ info, data }, { usedColors });
 }
 
-function getInfo(info, index) {
+function getInfo(info: any, index: any) {
   const newInfo: any = {};
   for (const key in info) {
     newInfo[key] = Array.isArray(info[key]) ? info[key][index] : info[key];

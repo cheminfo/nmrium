@@ -26,7 +26,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const initialValues: AutoRangesOptions = {
-  minMaxRatio: 0.01,
+  minMaxRatio: 0.05,
   lookNegative: false,
 };
 
@@ -45,7 +45,7 @@ function RangesPickingOptionPanel() {
   const pointsNumber = useCheckPointsNumberInWindowArea();
   const toaster = useToaster();
 
-  function handleRangesPicking(values) {
+  function handleRangesPicking(values: any) {
     if (pointsNumber > MIN_AREA_POINTS) {
       dispatch({
         type: 'AUTO_RANGES_DETECTION',

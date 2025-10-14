@@ -44,7 +44,7 @@ function PredictionSimpleOptions() {
   const predictionPreferences = usePanelPreferences('prediction');
 
   const optionsChangeHandler = useCallback(
-    (values) => {
+    (values: any) => {
       const value = lodashMerge({}, getDefaultPredictionOptions(), values);
       dispatch({
         type: 'SET_PANELS_PREFERENCES',

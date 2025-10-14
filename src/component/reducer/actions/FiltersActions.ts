@@ -285,8 +285,8 @@ function getFilterUpdateDomainRules(
   defaultRule: FilterDomainUpdateRules = DEFAULT_FILTER_DOMAIN_UPDATE_RULES,
 ) {
   const filterDomainUpdateRules =
-    Filters1D?.[filterName]?.domainUpdateRules ??
-    Filters2D?.[filterName]?.domainUpdateRules;
+    Filters1D[filterName as keyof typeof Filters1D]?.domainUpdateRules ??
+    Filters2D[filterName as keyof typeof Filters2D]?.domainUpdateRules;
 
   return filterDomainUpdateRules || defaultRule;
 }
@@ -409,11 +409,12 @@ function executeFilter(
   spectrum: Spectrum,
   filter: Filter1DOptions | Filter2DOptions,
 ) {
-  const { name, value } = filter;
   if (isSpectrum1D(spectrum)) {
-    Filters1D[name].apply(spectrum, value);
+    const filter1D = filter as Filter1DOptions;
+    Filters1D[filter1D.name].apply(spectrum, filter1D.value as any);
   } else {
-    Filters2D[name].apply(spectrum, value);
+    const filter2D = filter as Filter2DOptions;
+    Filters2D[filter2D.name].apply(spectrum, filter2D.value as any);
   }
 }
 
@@ -589,7 +590,7 @@ function rollbackSpectrum(
 }
 
 function hasBaselineZones(
-  filterOptions,
+  filterOptions: any,
 ): filterOptions is PolynomialOptions | AirplsOptions {
   return 'zones' in filterOptions;
 }
@@ -598,24 +599,25 @@ function getTwoDimensionFilterOptions(
   draft: Draft<State>,
 ): TwoDimensionPhaseCorrection['traces'] | null {
   const spectrum = getSpectrum(draft);
-  const phaseCorrectionFilter = spectrum.filters.find(
-    (filter) => filter.name === Tools.phaseCorrectionTwoDimensions.id,
-  );
 
-  if (!isSpectrum2D(spectrum)) {
+  if (!spectrum || !isSpectrum2D(spectrum)) {
     return null;
   }
+
+  const phaseCorrectionFilter = spectrum.filters.find(
+    (filter: any) => filter.name === Tools.phaseCorrectionTwoDimensions.id,
+  );
 
   const { value } = phaseCorrectionFilter || {};
   let filterOptions = getDefaultTwoDimensionsPhaseCorrectionTraceOptions();
   if (value) {
-    filterOptions = value;
+    filterOptions = value as any;
   }
 
   return filterOptions;
 }
 
-function beforeRollback(draft: Draft<State>, filterKey) {
+function beforeRollback(draft: Draft<State>, filterKey: any) {
   const activeSpectrum = getActiveSpectrum(draft);
 
   switch (filterKey) {
@@ -665,13 +667,18 @@ function beforeRollback(draft: Draft<State>, filterKey) {
         for (const direction in filterOptions) {
           const phaseOptions = draft.toolOptions.data
             .twoDimensionPhaseCorrection.traces[
-            direction
+            direction as TraceDirection
           ] as PhaseCorrectionTraceData;
-          const { ph0, ph1, pivot, spectra = [] } = filterOptions[direction];
+          const {
+            ph0,
+            ph1,
+            pivot,
+            spectra = [],
+          } = filterOptions[direction as TraceDirection];
           phaseOptions.ph0 = ph0;
           phaseOptions.ph1 = ph1;
           phaseOptions.scaleRatio = 1;
-          phaseOptions.spectra = spectra.map((spectrum) => ({
+          phaseOptions.spectra = spectra.map((spectrum: any) => ({
             ...spectrum,
             id: spectrum?.id || crypto.randomUUID(),
           }));
@@ -732,7 +739,7 @@ function beforeRollback(draft: Draft<State>, filterKey) {
       break;
   }
 }
-function afterRollback(draft: Draft<State>, filterKey) {
+function afterRollback(draft: Draft<State>, filterKey: any) {
   switch (filterKey) {
     //specify the filters here
     default:
@@ -1439,8 +1446,8 @@ function handleAddPhaseCorrectionTrace(
     const xPPM = scale2dX.invert(x);
     const yPPM = scale2dY.invert(y);
     if (addTracesToBothDirections) {
-      for (const direction of Object.keys(traces)) {
-        traces[direction].spectra.push({
+      for (const trace of Object.values(traces)) {
+        trace.spectra.push({
           id: crypto.randomUUID(),
           x: xPPM,
           y: yPPM,
@@ -1788,7 +1795,7 @@ function handleSetFilterSnapshotHandler(
   }
 
   const reset = draft.toolOptions.data.activeFilterID === id;
-  if (Tools?.[filterKey]?.isFilter) {
+  if (Tools[filterKey as Tool]?.isFilter) {
     activateTool(draft, { toolId: filterKey as Tool, reset, tempRollback });
   } else {
     draft.toolOptions.selectedOptionPanel = null;
@@ -2047,12 +2054,12 @@ function getTwoDimensionsPhaseCorrectionOptions(draft: Draft<State>) {
   const filterOptions =
     draft.toolOptions.data.twoDimensionPhaseCorrection.traces;
 
-  const result = {};
+  const result: any = {};
   for (const direction in filterOptions) {
     const { ph0, ph1, pivot, spectra } = filterOptions[
-      direction
+      direction as TraceDirection
     ] as PhaseCorrectionTraceData;
-    result[direction] = {
+    result[direction as TraceDirection] = {
       ph0,
       ph1,
       pivot: pivot?.value,
@@ -2141,7 +2148,7 @@ function handleReorderFilters(
 
   const sourceFilter = filters[sourceIndex];
   filters.splice(sourceIndex, 1);
-  filters.splice(targetIndex, 0, sourceFilter);
+  filters.splice(targetIndex, 0, sourceFilter as any);
   if (isSpectrum1D(spectrum)) {
     Filters1DManager.reapplyFilters(spectrum);
   } else {

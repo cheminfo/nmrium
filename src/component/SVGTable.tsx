@@ -84,7 +84,6 @@ function mapRowsSpan<T>(data: T[], columns: Array<InternalColumns<T>>) {
 
   for (const col of columns) {
     if (!col.rowSpanGroupKey) continue; // Skip columns without row spanning
-
     let lastValue: string | null = null;
     let lastRowIndex = 0;
     let lastGroupKey: string | null = null;
@@ -93,8 +92,9 @@ function mapRowsSpan<T>(data: T[], columns: Array<InternalColumns<T>>) {
       const row = data[rowIndex];
       const groupKey = String(row?.[col.rowSpanGroupKey] || '');
       const key = col._columnOptions.key;
+
       const value = isAccessorKeyColumn(col)
-        ? row[col.accessorKey]
+        ? (row as any)[col.accessorKey]
         : col.accessorFun(row);
 
       if (
@@ -232,7 +232,7 @@ function ValueColumn<T>(props: ValueColumnProps<T>) {
   const column = otherProps.column;
   let value: number | string = '';
   if (isAccessorKeyColumn(column)) {
-    value = row[column.accessorKey];
+    value = (row as any)[column.accessorKey];
   } else {
     value = column.accessorFun(row);
   }

@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import type { ReactNode } from 'react';
+import type { KeyboardEvent, PropsWithChildren, ReactNode } from 'react';
 import {
   createContext,
   useCallback,
@@ -60,11 +60,11 @@ function usePeaksEditionManager() {
   return context;
 }
 
-function stopPropagation(e) {
+function stopPropagation(e: any) {
   e.stopPropagation();
 }
 
-export function PeakEditionProvider({ children }) {
+export function PeakEditionProvider({ children }: Required<PropsWithChildren>) {
   const { scaleX, scaleY } = useScaleChecked();
   const { width } = useChartData();
   const spectrum = useActiveSpectrum();
@@ -150,22 +150,28 @@ interface PeakFieldProps {
   onClose: () => void;
 }
 
+interface FieldValues {
+  value: number;
+}
+
 function PeakEditionField({ value, onClose }: PeakFieldProps) {
   const dispatch = useDispatch();
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit } = useForm<FieldValues>({
     defaultValues: { value },
     resolver: yupResolver(validationSchema),
   });
 
-  function keyDownCheck(event: React.KeyboardEvent<HTMLInputElement>) {
+  function keyDownCheck(event: KeyboardEvent<HTMLInputElement>) {
     if (event.key === 'Enter') {
       return true;
     } else if (event.key === 'Escape') {
       onClose();
       return false;
+    } else {
+      return false;
     }
   }
-  function handleOnSubmit({ value: newValue }) {
+  function handleOnSubmit({ value: newValue }: FieldValues) {
     if (value) {
       const shift = newValue - value;
       dispatch({ type: 'SHIFT_SPECTRUM', payload: { shift } });

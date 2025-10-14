@@ -28,7 +28,7 @@ interface SpectrumSimulationPreferencesProps {
 }
 function SpectrumSimulationPreferences(
   { onSave }: SpectrumSimulationPreferencesProps,
-  ref,
+  ref: any,
 ) {
   const options = useWatch() as Required<SpectrumSimulationOptions>;
 

@@ -26,14 +26,14 @@ export const browserNotSupportedErrorToast: ToastProps = {
  * @param isCompressed
  */
 async function exportAsJsonBlob(
-  data,
+  data: any,
   fileName = 'experiment',
   spaceIndent = 0,
   isCompressed = false,
 ) {
   const fileData = JSON.stringify(
     data,
-    (key, value) =>
+    (key, value: any) =>
       ArrayBuffer.isView(value) ? Array.from(value as any) : value,
     spaceIndent,
   );
@@ -55,7 +55,7 @@ export function saveAs(
 }
 
 function exportAsMatrix(
-  data,
+  data: any,
   spectraColumns: SpectraTableColumn[],
   fileName = 'experiment',
 ) {
@@ -93,7 +93,7 @@ function exportAsMatrix(
   }
 
   const blob = new Blob([matrix], { type: 'text/tab-separated-values' });
-  fileSaver.saveAs(blob, `${fileName}.tsv`);
+  saveAs(blob, `${fileName}.tsv`);
 }
 
 interface ExportDimensions {
@@ -110,7 +110,7 @@ interface ExportAsSVGOptions extends ExportDimensions {
 function exportAsSVG(targetElementID: string, options: ExportAsSVGOptions) {
   const { fileName, rootElement } = options;
   const { blob } = getBlob(targetElementID, { rootElement });
-  fileSaver.saveAs(blob, `${fileName}.svg`);
+  saveAs(blob, `${fileName}.svg`);
 }
 
 interface ExportAsPNGOptions {
@@ -264,7 +264,7 @@ async function exportAsPng(
   });
 
   const pngBlob = await canvas.convertToBlob({ type: 'image/png' });
-  fileSaver.saveAs(pngBlob, `${fileName}.png`);
+  saveAs(pngBlob, `${fileName}.png`);
 }
 
 function createImageFromBlob(blob: Blob): Promise<HTMLImageElement> {
@@ -299,7 +299,7 @@ function transferToCanvas(offscreenCanvas: OffscreenCanvas) {
 // hack way to copy the image to the clipboard
 // TODO: remove when Firefox widely supports ClipboardItem
 // https://caniuse.com/mdn-api_clipboarditem
-function copyDataURLClipboardFireFox(image) {
+function copyDataURLClipboardFireFox(image: any) {
   const img = document.createElement('img');
   img.src = image;
 
@@ -328,7 +328,7 @@ async function writeImageToClipboard(image: Blob, isSafari = false) {
     }),
   ]);
 }
-async function copyBlobToClipboard(canvas: OffscreenCanvas) {
+async function copyBlobToClipboard(canvas: OffscreenCanvas): Promise<void> {
   // Check if the document is focused, If it is not focused, throw an error to inform the user.
   if (!document.hasFocus()) {
     throw new Error(
@@ -346,7 +346,7 @@ async function copyBlobToClipboard(canvas: OffscreenCanvas) {
   } else {
     const screenCanvas = transferToCanvas(canvas);
     if (!screenCanvas) {
-      return null;
+      return;
     }
     const png = screenCanvas.toDataURL('image/png', 1);
     copyDataURLClipboardFireFox(png);
@@ -386,7 +386,8 @@ async function copyPNGToClipboard(
     height,
     scaleFactor: 1,
   });
-  return copyBlobToClipboard(canvas);
+
+  await copyBlobToClipboard(canvas);
 }
 
 export interface BlobObject {

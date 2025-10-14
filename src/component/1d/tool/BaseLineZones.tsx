@@ -44,7 +44,7 @@ function BaseLineZone(props: BaselineCorrectionZone) {
   const { scaleX } = useScaleChecked();
   const dispatch = useDispatch();
 
-  function handleOnStopResizing(position) {
+  function handleOnStopResizing(position: any) {
     dispatch({
       type: 'RESIZE_BASE_LINE_ZONE',
       payload: {

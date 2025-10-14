@@ -3,11 +3,11 @@ import type { SpectraData } from 'nmr-processing';
 import { getAssignments as getAssignmentsData } from 'nmr-processing';
 import { Molecule } from 'openchemlib';
 import { useRef, useState } from 'react';
+import { assert } from 'react-science/ui';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
-import { assert } from '../../utility/assert.js';
 
 export interface AutoAssignmentsData {
   score: number;

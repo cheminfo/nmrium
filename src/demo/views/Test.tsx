@@ -7,9 +7,9 @@ import { NMRium } from '../../component/main/index.js';
 
 import { loadData } from './View.helpers.js';
 
-function searchDeep(obj, searchKey) {
+function searchDeep(obj: any, searchKey: any) {
   const result: any = [];
-  function objectHelper(obj) {
+  function objectHelper(obj: any) {
     for (const key in obj) {
       if (searchKey === key) {
         result.push({ [key]: obj[key] });
@@ -29,15 +29,17 @@ function searchDeep(obj, searchKey) {
 }
 
 function Inspector(data: any) {
-  const [filteredData, seData] = useState<any>();
   const [key, setKey] = useState<string>('');
-  useEffect(() => {
-    const result = searchDeep(data, key);
-    seData(key ? result : data);
+  const filteredData = useMemo(() => {
+    if (key) {
+      return searchDeep(data, key);
+    } else {
+      return data;
+    }
   }, [data, key]);
   const handleSearch = useMemo(
     () =>
-      debounce((e) => {
+      debounce((e: any) => {
         const key = e.target.value;
         setKey(key);
       }, 500),
@@ -59,20 +61,26 @@ function Inspector(data: any) {
   );
 }
 
-export default function Test(props) {
+export default function Test(props: any) {
   const { file, title, baseURL, workspace } = props;
   const [data, setData] = useState<any>();
-  const [viewCount, incrementViewCount] = useReducer((a) => a + 1, 0);
-  const [dataCount, incrementDataCount] = useReducer((a) => a + 1, 0);
-  const [settingsCount, incrementSettingsCount] = useReducer((a) => a + 1, 0);
+  const [viewCount, incrementViewCount] = useReducer((a: any) => a + 1, 0);
+  const [dataCount, incrementDataCount] = useReducer((a: any) => a + 1, 0);
+  const [settingsCount, incrementSettingsCount] = useReducer(
+    (a: any) => a + 1,
+    0,
+  );
+
+  if (!file && data !== undefined) {
+    setData(undefined);
+  }
+
   useEffect(() => {
     if (file) {
-      void loadData(file).then((d) => {
+      void loadData(file).then((d: any) => {
         const _d = JSON.parse(JSON.stringify(d).replaceAll(/\.\/+?/g, baseURL));
         setData(_d);
       });
-    } else {
-      setData(undefined);
     }
   }, [baseURL, file, props]);
   const [viewCallBack, setViewCallBack] = useState<any>({});
@@ -93,36 +101,39 @@ export default function Test(props) {
     })();
   }, []);
 
-  const changeHandler = useCallback(({ data, view, settings }, source) => {
-    switch (source) {
-      case 'view': {
-        incrementViewCount();
-        setViewCallBack({ activate: true, data: view });
-        setTimeout(() => {
-          setViewCallBack(({ data }) => ({ data, activate: false }));
-        }, 500);
-        break;
+  const changeHandler = useCallback(
+    ({ data, view, settings }: any, source: any) => {
+      switch (source) {
+        case 'view': {
+          incrementViewCount();
+          setViewCallBack({ activate: true, data: view });
+          setTimeout(() => {
+            setViewCallBack(({ data }: any) => ({ data, activate: false }));
+          }, 500);
+          break;
+        }
+        case 'data': {
+          incrementDataCount();
+          setDataCallBack({ activate: true, data });
+          setTimeout(() => {
+            setDataCallBack(({ data }: any) => ({ data, activate: false }));
+          }, 500);
+          break;
+        }
+        case 'settings': {
+          incrementSettingsCount();
+          setSettingsCallBack({ activate: true, data: settings });
+          setTimeout(() => {
+            setSettingsCallBack(({ data }: any) => ({ data, activate: false }));
+          }, 500);
+          break;
+        }
+        default:
+          break;
       }
-      case 'data': {
-        incrementDataCount();
-        setDataCallBack({ activate: true, data });
-        setTimeout(() => {
-          setDataCallBack(({ data }) => ({ data, activate: false }));
-        }, 500);
-        break;
-      }
-      case 'settings': {
-        incrementSettingsCount();
-        setSettingsCallBack({ activate: true, data: settings });
-        setTimeout(() => {
-          setSettingsCallBack(({ data }) => ({ data, activate: false }));
-        }, 500);
-        break;
-      }
-      default:
-        break;
-    }
-  }, []);
+    },
+    [],
+  );
 
   return (
     <div

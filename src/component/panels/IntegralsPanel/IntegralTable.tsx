@@ -3,6 +3,7 @@ import dlv from 'dlv';
 import { checkIntegralKind } from 'nmr-processing';
 import { memo, useCallback, useMemo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
+import type { CellProps } from 'react-table';
 
 import { SIGNAL_KINDS } from '../../../data/constants/signalsKinds.js';
 import { useDispatch } from '../../context/DispatchContext.js';
@@ -32,7 +33,7 @@ function IntegralTable({ activeTab, data, info }: IntegralTableProps) {
   const dispatch = useDispatch();
 
   const deleteIntegralHandler = useCallback(
-    (row) => {
+    (row: any) => {
       const { id } = row.original;
       dispatch({
         type: 'DELETE_INTEGRAL',
@@ -45,7 +46,7 @@ function IntegralTable({ activeTab, data, info }: IntegralTableProps) {
   );
 
   const changeIntegralDataHandler = useCallback(
-    (value, row) => {
+    (value: any, row: any) => {
       const integral = { ...row.original, kind: value };
       dispatch({
         type: 'CHANGE_INTEGRAL',
@@ -56,7 +57,7 @@ function IntegralTable({ activeTab, data, info }: IntegralTableProps) {
   );
 
   const saveRelativeHandler = useCallback(
-    (event, row) => {
+    (event: any, row: any) => {
       dispatch({
         type: 'CHANGE_INTEGRAL_RELATIVE',
         payload: { value: event.target.value, id: row.id },
@@ -66,11 +67,13 @@ function IntegralTable({ activeTab, data, info }: IntegralTableProps) {
   );
   const integralsPreferences = usePanelPreferences('integrals', activeTab);
 
-  const COLUMNS: Array<
-    CustomColumn<Integral> & {
-      showWhen: string;
-    }
-  > = useMemo(
+  const COLUMNS = useMemo<
+    Array<
+      CustomColumn<Integral> & {
+        showWhen: string;
+      }
+    >
+  >(
     () => [
       {
         showWhen: 'showSerialNumber',
@@ -110,7 +113,7 @@ function IntegralTable({ activeTab, data, info }: IntegralTableProps) {
           return <span>{`Relative ${n}`}</span>;
         },
         accessor: 'integral',
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<Integral>) => {
           const value = formatNumber(
             row.original.integral || 0,
             integralsPreferences.relative.format,
@@ -120,7 +123,7 @@ function IntegralTable({ activeTab, data, info }: IntegralTableProps) {
 
           return (
             <EditableColumn
-              key={`${integral}`}
+              key={integral}
               value={integral}
               onSave={(event) => saveRelativeHandler(event, row.original)}
               type="number"
@@ -136,7 +139,7 @@ function IntegralTable({ activeTab, data, info }: IntegralTableProps) {
         resizable: true,
         accessor: 'kind',
         showWhen: 'showKind',
-        Cell: ({ row }) => (
+        Cell: ({ row }: CellProps<Integral>) => (
           <Select
             onChange={(value) => changeIntegralDataHandler(value, row)}
             items={SIGNAL_KINDS}

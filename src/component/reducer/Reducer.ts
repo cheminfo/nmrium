@@ -71,21 +71,22 @@ export interface TwoDimensionPhaseCorrection {
 
 export const getDefaultTwoDimensionsPhaseCorrectionTraceOptions =
   (): TwoDimensionPhaseCorrection['traces'] => {
-    const directions: [TraceDirection, TraceDirection] = [
-      'horizontal',
-      'vertical',
-    ];
-    const result = {};
-    for (const direction of directions) {
-      result[direction] = {
+    return {
+      horizontal: {
         ph0: 0,
         ph1: 0,
         pivot: null,
         spectra: [],
         scaleRatio: 1,
-      };
-    }
-    return result as TwoDimensionPhaseCorrection['traces'];
+      },
+      vertical: {
+        ph0: 0,
+        ph1: 0,
+        pivot: null,
+        spectra: [],
+        scaleRatio: 1,
+      },
+    };
   };
 
 export function getDefaultViewState(): ViewState {
@@ -828,9 +829,9 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
 export const spectrumReducer: Reducer<State, Action> =
   produce(innerSpectrumReducer);
 
-function getDebugState(draft) {
+function getDebugState(draft: any) {
   const state = original(draft);
-  const string = JSON.stringify(state, (key, value) => {
+  const string = JSON.stringify(state, (key, value: any) => {
     if (ArrayBuffer.isView(value)) {
       return Array.from(value as any).slice(0, 20);
     }

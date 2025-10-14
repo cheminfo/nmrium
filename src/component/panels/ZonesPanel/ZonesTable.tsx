@@ -179,7 +179,7 @@ function ZonesTable({ tableData, onUnlink, nucleus, info }: ZonesTableProps) {
           </tr>
         </thead>
         <tbody>
-          {sortedData.map((rowData, index) => (
+          {sortedData.map((rowData: any, index: any) => (
             <ZonesTableRow
               rowIndex={index}
               key={`${rowData.tableMetaInfo.id}`}

@@ -28,7 +28,7 @@ function ActionsColumn({
   const dispatch = useDispatch();
   const showActions = showDeleteAction || showEditAction || showZoomAction;
 
-  function changeSignalKindHandler(kind) {
+  function changeSignalKindHandler(kind: any) {
     dispatch({
       type: 'CHANGE_ZONE_SIGNAL_KIND',
       payload: {

@@ -11,9 +11,10 @@ import { renderCoreSlot } from '../../utility/renderCoreSlot.js';
 
 import AboutUsZakodium from './AboutUsZakodium.js';
 
-const CustomDialogBody = styled(StyledDialogBody)`
+const FallbackDialogContents = styled.div`
   display: flex;
   flex-direction: column;
+  padding: 20px;
   user-select: none;
 
   button:focus {
@@ -41,10 +42,6 @@ const CustomDialogBody = styled(StyledDialogBody)`
     text-align: left;
   }
 
-  img {
-    width: 100px;
-  }
-
   a {
     color: #969696;
   }
@@ -60,9 +57,6 @@ const InfoBlock = styled.div`
   display: flex;
   flex-direction: column;
 `;
-const Container = styled.div`
-  padding: 20px;
-`;
 
 const Separator = styled.span`
   border-bottom: 1px solid gray;
@@ -72,7 +66,7 @@ const Separator = styled.span`
 `;
 
 const modalContentFallback = (
-  <>
+  <FallbackDialogContents>
     <InfoBlock>
       <Logo width={160} height={50} />
       Version <VersionInfo />
@@ -117,8 +111,7 @@ const modalContentFallback = (
         </li>
       </ul>
     </div>
-    <Separator />
-  </>
+  </FallbackDialogContents>
 );
 
 function AboutUsModal() {
@@ -143,15 +136,9 @@ function AboutUsModal() {
         }}
         title="About NMRium"
       >
-        <CustomDialogBody>
-          <Container>
-            {renderCoreSlot(
-              core,
-              'topbar.about_us.modal',
-              modalContentFallback,
-            )}
-          </Container>
-        </CustomDialogBody>
+        <StyledDialogBody>
+          {renderCoreSlot(core, 'topbar.about_us.modal', modalContentFallback)}
+        </StyledDialogBody>
       </Dialog>
     </>
   );
@@ -162,7 +149,7 @@ export default AboutUsModal;
 function VersionInfo() {
   const { version } = versionInfo;
   if (version === 'HEAD') {
-    return <>HEAD</>;
+    return 'HEAD';
   } else if (version.startsWith('git-')) {
     return (
       <a

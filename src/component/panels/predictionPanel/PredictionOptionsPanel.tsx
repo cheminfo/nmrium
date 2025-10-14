@@ -98,7 +98,7 @@ interface PredictionOptionsPanelProps {
   onSave: (values: any) => void;
 }
 
-function PredictionOptionsPanel(props: PredictionOptionsPanelProps, ref) {
+function PredictionOptionsPanel(props: PredictionOptionsPanelProps, ref: any) {
   const { options, onSave, hideName = false } = props;
   const { handleSubmit, control } = useForm({
     defaultValues: options,

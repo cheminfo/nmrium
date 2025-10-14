@@ -1,15 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { NMRium } from '../../component/main/index.js';
 
-export default function SingleView(props) {
+export default function SingleView(props: any) {
+  const { path } = props;
+
   const [data, setData] = useState<
     { spectra: Array<{ source: { jcampURL: string } }> } | undefined
   >();
-  const { path } = props;
 
-  useEffect(() => {
-    const _data = {
+  const [previousPath, setPreviousPath] = useState<string>();
+  if (previousPath !== path) {
+    setPreviousPath(path);
+    setData({
       spectra: [
         {
           source: {
@@ -17,14 +20,8 @@ export default function SingleView(props) {
           },
         },
       ],
-    };
-
-    if (_data) {
-      setData(_data);
-    } else {
-      setData(undefined);
-    }
-  }, [path, props]);
+    });
+  }
 
   return (
     <div

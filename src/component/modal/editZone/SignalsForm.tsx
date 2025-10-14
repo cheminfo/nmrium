@@ -1,4 +1,5 @@
 import { Tab, Tabs } from '@blueprintjs/core';
+import type { Signal2D } from '@zakodium/nmr-types';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import DefaultPathLengths from '../../../data/constants/DefaultPathLengths.js';
@@ -7,20 +8,28 @@ import Label from '../../elements/Label.js';
 import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
 import { TabTitle } from '../../elements/TabTitle.js';
 
+import type { FormData } from './EditZoneModal.js';
+
 export function SignalsForm() {
   const {
     setValue,
     formState: { errors },
-  } = useFormContext();
-  const { signals = [], activeTab, experimentType } = useWatch();
+  } = useFormContext<FormData>();
+  const {
+    signals = [],
+    activeTab,
+    // TODO: there seems to be a bug here
+    // @ts-expect-error experimentType is not part of the EditZoneModal form values.
+    experimentType,
+  } = useWatch<FormData>();
 
-  function handleTapChange(tabID) {
+  function handleTapChange(tabID: string) {
     setValue('activeTab', tabID);
   }
 
-  function handleDeleteSignal(index) {
+  function handleDeleteSignal(index: number) {
     const filteredSignals = signals.filter((_signal, i) => i !== index);
-    setValue('signals', filteredSignals);
+    setValue('signals', filteredSignals as Signal2D[]);
   }
 
   return (
@@ -38,7 +47,7 @@ export function SignalsForm() {
               }
             >
               <TabTitle onDelete={() => handleDeleteSignal(index)}>
-                <Title signal={signal} />
+                <Title signal={signal as Signal2D} />
               </TabTitle>
             </Tab>
           );
@@ -89,14 +98,22 @@ function SignalTab(props: SignalTabProps) {
   );
 }
 
-function Title({ signal }) {
+interface TitleProps {
+  signal: Signal2D;
+}
+
+function Title({ signal }: TitleProps) {
   const { x, y } = signal;
 
+  // TODO: figure out where nucleus comes from and fix types.
   return (
     <>
-      𝛅
+      {'𝛅'}
+      {/* @ts-expect-error nucleus is not part of the Signal2D type. */}
       <IsotopesViewer value={x.nucleus} style={{ display: 'inline-block' }} />:
-      {x.delta.toFixed(2)} , 𝛅
+      {x.delta.toFixed(2)}
+      {' , 𝛅'}
+      {/* @ts-expect-error nucleus is not part of the Signal2D type. */}
       <IsotopesViewer value={y.nucleus} style={{ display: 'inline-block' }} />:
       {y.delta.toFixed(2)}
     </>

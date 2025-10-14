@@ -73,11 +73,11 @@ function checkOptions(options: CalibrateOptions) {
   return returnedOptions;
 }
 
-function getList(nucleus) {
-  if (!REFERENCES?.[nucleus]) {
+function getList(nucleus: any) {
+  if (!(REFERENCES as any)?.[nucleus]) {
     return [];
   }
-  const list = Object.entries(REFERENCES[nucleus]).map((item) => ({
+  const list = Object.entries((REFERENCES as any)[nucleus]).map((item) => ({
     value: item[0],
     label: item[0],
   }));
@@ -120,7 +120,7 @@ function AlignSpectra({ onClose = () => null, nucleus }: AlignSpectraProps) {
     },
   );
 
-  function submitHandler(inputOptions) {
+  function submitHandler(inputOptions: any) {
     const options = checkOptions(inputOptions);
     reset(options);
     try {
@@ -147,9 +147,9 @@ function AlignSpectra({ onClose = () => null, nucleus }: AlignSpectraProps) {
     },
   });
 
-  function optionChangeHandler({ value: key }) {
+  function optionChangeHandler({ value: key }: { value: string }) {
     const { delta: targetX = 0, ...otherOptions } =
-      REFERENCES?.[nucleus]?.[key] || {};
+      (REFERENCES as any)?.[nucleus]?.[key] || {};
     const value = {
       ...DEFAULT_OPTIONS,
       targetX,

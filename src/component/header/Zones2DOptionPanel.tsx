@@ -28,14 +28,14 @@ const initialValues: ZoneDetectionOptions = {
 function Zones2DOptionPanel() {
   const dispatch = useDispatch();
 
-  function handleZonesPicking(values) {
+  function handleZonesPicking(values: any) {
     dispatch({
       type: 'AUTO_ZONES_DETECTION',
       payload: values,
     });
   }
 
-  function handleChangeNoiseFactory(values) {
+  function handleChangeNoiseFactory(values: any) {
     dispatch({ type: 'CHANGE_ZONES_NOISE_FACTOR', payload: values });
   }
 

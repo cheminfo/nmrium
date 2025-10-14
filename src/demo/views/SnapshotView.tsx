@@ -499,7 +499,7 @@ const customWorkspaces: CustomWorkspaces = {
   },
 };
 
-export default function SnapshotView(props) {
+export default function SnapshotView(props: any) {
   return (
     <View
       {...props}

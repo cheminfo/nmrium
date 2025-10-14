@@ -78,7 +78,7 @@ function RangesTableRow({
     [rangeKey].concat(assignmentRange.assignedDiaIds?.x || []).concat(
       filterAssignedIDs(
         assignmentData.data,
-        rowData.signals.map((_signal) => _signal.id),
+        rowData.signals.map((_signal: any) => _signal.id),
       ),
     ),
     { type: 'RANGE' },
@@ -191,7 +191,7 @@ function RangesTableRow({
   return (
     <ContextMenu
       options={contextMenu}
-      onSelect={(selected) => onContextMenuSelect?.(selected, rowData)}
+      onSelect={(selected: any) => onContextMenuSelect?.(selected, rowData)}
       as="tr"
       style={trStyle}
     >

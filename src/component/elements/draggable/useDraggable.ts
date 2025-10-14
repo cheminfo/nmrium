@@ -1,3 +1,4 @@
+import type { PointerEvent } from 'react';
 import { useRef } from 'react';
 
 export interface Position {
@@ -20,9 +21,7 @@ interface UseDraggable {
 }
 
 export interface Draggable {
-  onPointerDown: (
-    event: React.PointerEvent<HTMLDivElement | SVGElement>,
-  ) => void;
+  onPointerDown: (event: PointerEvent<HTMLElement | SVGElement>) => void;
 }
 type Action = 'start' | 'move' | 'end' | null;
 
@@ -38,10 +37,10 @@ export default function useDraggable(props: UseDraggable): Draggable {
   const isActive = useRef<boolean>(false);
   const positionRef = useRef<Position>({ x, y });
 
-  function onPointerDown(e: React.PointerEvent<HTMLDivElement | SVGElement>) {
+  function onPointerDown(e: PointerEvent<HTMLElement | SVGElement>) {
     e.stopPropagation();
     isActive.current = true;
-    const eventTarget = e.currentTarget as HTMLElement;
+    const eventTarget = e.currentTarget;
     positionRef.current = { x, y };
 
     const classes =
@@ -50,10 +49,10 @@ export default function useDraggable(props: UseDraggable): Draggable {
       (dragHandleClassName && classes.includes(dragHandleClassName)) ||
       !dragHandleClassName
     ) {
-      const _parentElement = parentElement || eventTarget?.parentElement;
+      const _parentElement = parentElement || eventTarget.parentElement;
       if (_parentElement) {
         const parentBounding = _parentElement.getBoundingClientRect();
-        const currentBounding = eventTarget?.getBoundingClientRect();
+        const currentBounding = eventTarget.getBoundingClientRect();
         const startPosition: Position = {
           x: parentBounding.x + (!fromEdge ? e.clientX - currentBounding.x : 0),
           y: parentBounding.y + (!fromEdge ? e.clientY - currentBounding.y : 0),
@@ -69,7 +68,7 @@ export default function useDraggable(props: UseDraggable): Draggable {
       globalThis.addEventListener('pointerup', upCallback);
     }
 
-    function upCallback(e: PointerEvent) {
+    function upCallback(e: globalThis.PointerEvent) {
       e.stopPropagation();
       if (isActive.current) {
         onChange({
@@ -86,7 +85,8 @@ export default function useDraggable(props: UseDraggable): Draggable {
       globalThis.removeEventListener('pointermove', moveCallback);
       globalThis.removeEventListener('pointerup', upCallback);
     }
-    function moveCallback(e: PointerEvent) {
+
+    function moveCallback(e: globalThis.PointerEvent) {
       e.stopPropagation();
 
       if (isActive.current) {

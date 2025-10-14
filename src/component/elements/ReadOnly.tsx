@@ -56,7 +56,7 @@ export function ReadOnly(props: ReadOnlyProps) {
   } = props;
   const [showMessage, setShowMessage] = useState(false);
 
-  function handleOverlayClick(event) {
+  function handleOverlayClick(event: any) {
     onClick?.(event);
     setShowMessage(true);
     setTimeout(() => setShowMessage(false), messageDisplayDuration);

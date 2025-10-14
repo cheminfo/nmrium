@@ -41,7 +41,7 @@ interface TargetBoundary {
   y2: number;
 }
 
-function getDistance(x1, y1, x2, y2) {
+function getDistance(x1: any, y1: any, x2: any, y2: any) {
   const deltaX = x2 - x1;
   const deltaY = y2 - y1;
   return Math.hypot(deltaX, deltaY);
@@ -250,7 +250,7 @@ function findClosestAssignment(signals: BaseSignal[], target: number) {
 }
 
 function getAssignmentLabel(
-  spectrum,
+  spectrum: any,
   options: { from: number; to: number; center: number },
 ) {
   if (!spectrum) return null;
@@ -519,5 +519,5 @@ export default function ZonesAssignmentsLabels() {
     return null;
   }
 
-  return <ZonesAssignmentsLabelsInner {...{ zones }} />;
+  return <ZonesAssignmentsLabelsInner zones={zones} />;
 }

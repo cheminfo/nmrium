@@ -57,12 +57,12 @@ export default function PhaseCorrectionOptionsPanel(
     ph1Ref,
   } = usePhaseCorrection(filter);
 
-  function handleConfirm(event) {
+  function handleConfirm(event: any) {
     handleApplyFilter();
     onConfirm?.(event);
   }
 
-  function handleCancel(event) {
+  function handleCancel(event: any) {
     handleCancelFilter();
     onCancel?.(event);
   }

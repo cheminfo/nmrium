@@ -65,7 +65,7 @@ function convertHybridizationStringValuesInCorrelations(
 ): CorrelationData {
   return {
     ...correlations,
-    values: correlations.values.map((correlation) => {
+    values: correlations.values.map((correlation: any) => {
       if (typeof correlation.hybridization === 'string') {
         const values: number[] = [];
         if (correlation.hybridization.length > 0) {
@@ -131,10 +131,11 @@ function setData(draft: Draft<State>, input: InputProps | InitiateProps) {
         draft.sources[source] = lodashMergeWith(
           draft.sources[source],
           source,
-          (objValue, srcValue) => {
+          (objValue: any, srcValue: any) => {
             if (Array.isArray(objValue)) {
               return objValue.concat(srcValue);
             }
+            return undefined;
           },
         );
       } else {
@@ -272,6 +273,7 @@ function initData(
     }
     draft.actionType = action.type;
     draft.isLoading = false;
+    return undefined;
   }
 }
 
@@ -313,6 +315,7 @@ function handleLoadDropFiles(draft: Draft<State>, action: LoadDropFilesAction) {
 
     draft.actionType = type;
     draft.isLoading = false;
+    return undefined;
   }
 }
 

@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { assert } from 'react-science/ui';
 
 import { useChartData } from '../context/ChartContext.js';
 
@@ -16,7 +17,8 @@ interface SignalDeltaLineProps {
   show: boolean;
 }
 
-function SignalDeltaLine({ delta, axis, show }: SignalDeltaLineProps) {
+function SignalDeltaLine(props: SignalDeltaLineProps) {
+  const { delta, axis, show } = props;
   const { xDomain, yDomain } = useChartData();
   const scaleX = useScale2DX();
   const scaleY = useScale2DY();
@@ -33,9 +35,8 @@ function SignalDeltaLine({ delta, axis, show }: SignalDeltaLineProps) {
         y2={scaleY(yDomain[1])}
       />
     );
-  }
-
-  if (axis === 'Y') {
+  } else {
+    assert(axis === 'Y');
     return (
       <SignalLine
         key={`signalLine_${delta}_Y`}

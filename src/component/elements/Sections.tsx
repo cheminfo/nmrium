@@ -3,6 +3,16 @@ import type { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/
 import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
 import { Colors, Icon, Tag } from '@blueprintjs/core';
 import styled from '@emotion/styled';
+import {
+  attachClosestEdge,
+  combine,
+  draggable,
+  dropTargetForElements,
+  extractClosestEdge,
+  getReorderDestinationIndex,
+  pointerOutsideOfPreview,
+  setCustomNativeDragPreview,
+} from '@zakodium/pdnd-esm';
 import type {
   CSSProperties,
   HTMLAttributes,
@@ -19,19 +29,7 @@ import {
   useState,
 } from 'react';
 import { createPortal } from 'react-dom';
-
-import { assert } from '../utility/assert.js';
-
-import {
-  attachClosestEdge,
-  combine,
-  draggable,
-  dropTargetForElements,
-  extractClosestEdge,
-  getReorderDestinationIndex,
-  pointerOutsideOfPreview,
-  setCustomNativeDragPreview,
-} from './pdnd.cjs';
+import { assert } from 'react-science/ui';
 
 interface DropIndicatorProps {
   edge: Edge;
@@ -218,7 +216,7 @@ interface BaseSectionProps {
 interface SectionItemProps extends BaseSectionProps {
   id?: string;
   index?: number;
-  onClick?: (id, event?: MouseEvent<HTMLDivElement>) => void;
+  onClick?: (id: any, event?: MouseEvent<HTMLDivElement>) => void;
   children?: ReactNode | ((options: { isOpen?: boolean }) => ReactNode);
   isOpen: boolean;
   sticky?: boolean;

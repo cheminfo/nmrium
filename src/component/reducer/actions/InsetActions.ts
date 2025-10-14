@@ -3,7 +3,8 @@ import type {
   PeaksViewState,
   RangesViewState,
 } from '@zakodium/nmrium-core';
-import { scaleLinear, zoomIdentity } from 'd3';
+import { scaleLinear } from 'd3-scale';
+import { zoomIdentity } from 'd3-zoom';
 import type { Draft } from 'immer';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
@@ -17,7 +18,7 @@ import { getInsetXScale } from '../../1d/utilities/scale.js';
 import type { ZoomOptions } from '../../EventsTrackers/BrushTracker.js';
 import { defaultIntegralsViewState } from '../../hooks/useActiveSpectrumIntegralsViewState.js';
 import { defaultPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState.js';
-import { defaultRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
+import { getDefaultRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
 import {
   convertPercentToPixel,
   convertPixelToPercent,
@@ -115,7 +116,7 @@ function handleAddInset(draft: Draft<State>, action: AddInsetAction) {
   const {
     yDomain,
     view: {
-      spectra: { activeTab },
+      spectra: { activeTab: nucleus },
     },
     width: baseWidth,
     height: baseHeight,
@@ -141,16 +142,16 @@ function handleAddInset(draft: Draft<State>, action: AddInsetAction) {
     yDomain,
     zoomHistory: [{ xDomain, yDomain }],
     view: {
-      ranges: { ...defaultRangesViewState },
+      ranges: getDefaultRangesViewState(nucleus),
       peaks: { ...defaultPeaksViewState },
       integrals: { ...defaultIntegralsViewState },
     },
   };
 
-  if (draft.insets?.[activeTab]) {
-    draft.insets[activeTab].push(inset);
+  if (draft.insets?.[nucleus]) {
+    draft.insets[nucleus].push(inset);
   } else {
-    draft.insets[activeTab] = [inset];
+    draft.insets[nucleus] = [inset];
   }
 }
 function handleDeleteInset(draft: Draft<State>, action: DeleteInsetAction) {
@@ -387,7 +388,7 @@ function toggleViewProperty<T extends keyof InsetView>(
   if (!inset) return;
 
   const [baseKey, toggleProperty] = key.split('.');
-  const target = inset.view[baseKey];
+  const target = (inset.view as any)[baseKey];
   if (typeof value === 'boolean') {
     target[toggleProperty] = value;
   } else {

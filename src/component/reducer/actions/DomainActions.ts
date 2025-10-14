@@ -5,11 +5,10 @@ import type {
   Spectrum,
 } from '@zakodium/nmrium-core';
 import type { NmrData2DFt } from 'cheminfo-types';
-import type { Numeric } from 'd3';
-import { extent } from 'd3';
+import { extent } from 'd3-array';
 import type { Draft } from 'immer';
 
-import { get1DDataXY } from '../../../data/data1d/Spectrum1D/get1DDataXY.js';
+import { get1DDataXY } from '../../../data/data1d/Spectrum1D/index.js';
 import {
   isFid1DSpectrum,
   isFt1DSpectrum,
@@ -27,18 +26,14 @@ import { getActiveSpectra } from '../helper/getActiveSpectra.js';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
 import type { ActionType } from '../types/ActionType.js';
 
+type NumberExtent = [number, number];
+
 type SetAxisDomainAction = ActionType<
   'SET_AXIS_DOMAIN',
   { nucleiPreferences: NucleiPreferences[] }
 >;
-type SetXDomainAction = ActionType<
-  'SET_X_DOMAIN',
-  { xDomain: [number, number] }
->;
-type SetYDomainAction = ActionType<
-  'SET_Y_DOMAIN',
-  { yDomain: [number, number] }
->;
+type SetXDomainAction = ActionType<'SET_X_DOMAIN', { xDomain: NumberExtent }>;
+type SetYDomainAction = ActionType<'SET_Y_DOMAIN', { yDomain: NumberExtent }>;
 
 export interface MoveOptions {
   shiftX: number;
@@ -47,7 +42,7 @@ export interface MoveOptions {
 
 type MoveAction = ActionType<'MOVE', MoveOptions>;
 
-function extentArray<T extends Numeric>(iterable: Iterable<T>) {
+function extentArray(iterable: Iterable<number>): NumberExtent {
   const [min = 0, max = 0] = extent(iterable);
   return [min, max];
 }
@@ -73,7 +68,6 @@ function getActiveData(draft: Draft<State>): Spectrum1D[] {
       nucleusToString(datum.info.nucleus) === draft.view.spectra.activeTab &&
       datum.info.dimension === 1,
   );
-  // todo: refactor this
 
   const activeSpectrum = getActiveSpectrum(draft);
 
@@ -96,12 +90,23 @@ interface GetDomainOptions {
   domainSpectraScope?: 'visible' | 'all';
 }
 
-function getDomain(draft: Draft<State>, options: GetDomainOptions = {}) {
+interface GetDomainReturn {
+  // TODO: [] should not be an option.
+  xDomain: NumberExtent | [];
+  yDomain: NumberExtent | [];
+  xDomains: Record<string, NumberExtent>;
+  yDomains: Record<string, NumberExtent>;
+}
+
+function getDomain(
+  draft: Draft<State>,
+  options: GetDomainOptions = {},
+): GetDomainReturn {
   const { domainSpectraScope = 'visible' } = options;
   let xArray: number[] = [];
   let yArray: number[] = [];
-  const yDomains: Record<string, number[]> = {};
-  const xDomains: Record<string, number[]> = {};
+  const yDomains: Record<string, NumberExtent> = {};
+  const xDomains: Record<string, NumberExtent> = {};
 
   const data = getActiveData(draft);
   try {
@@ -110,7 +115,7 @@ function getDomain(draft: Draft<State>, options: GetDomainOptions = {}) {
       const { y } = get1DDataXY(d);
 
       const _extent = extentArray(y);
-      const domain = [data.x[0], data.x.at(-1) as number];
+      const domain: NumberExtent = [data.x[0], data.x.at(-1) as number];
 
       yDomains[id] = _extent;
       xDomains[id] = domain;
@@ -128,8 +133,8 @@ function getDomain(draft: Draft<State>, options: GetDomainOptions = {}) {
   }
 
   return {
-    xDomain: xArray?.length > 0 ? extent(xArray) : [],
-    yDomain: yArray?.length > 0 ? extent(yArray) : [],
+    xDomain: xArray?.length > 0 ? extentArray(xArray) : [],
+    yDomain: yArray?.length > 0 ? extentArray(yArray) : [],
     yDomains,
     xDomains,
   };
@@ -200,10 +205,8 @@ function get2DDomain(state: State) {
   try {
     for (const d of filteredData) {
       const { x, re } = d.data;
-      const domain = [x[0], x.at(-1) as number];
-      xDomains[d.id] = domain;
-      const _extent = extentArray(re);
-      yDomains[d.id] = _extent;
+      xDomains[d.id] = [x[0], x.at(-1) as number];
+      yDomains[d.id] = extentArray(re);
     }
   } catch (error) {
     // TODO: handle error.
@@ -231,14 +234,12 @@ function setDomain(draft: Draft<State>, options?: SetDomainOptions) {
     updateXDomain = true,
     domainSpectraScope,
   } = options || {};
-  let domain;
 
   if (draft.view.spectra.activeTab) {
-    if (draft.displayerMode === '1D') {
-      domain = getDomain(draft, { domainSpectraScope });
-    } else {
-      domain = get2DDomain(draft);
-    }
+    const domain =
+      draft.displayerMode === '1D'
+        ? getDomain(draft, { domainSpectraScope })
+        : get2DDomain(draft);
 
     if (updateXDomain) {
       draft.xDomain = domain.xDomain;
@@ -288,7 +289,7 @@ function setMode(draft: Draft<State>) {
     draft.mode = spectrum && isFid1DSpectrum(spectrum) ? 'LTR' : 'RTL';
   } else {
     const activeSpectra = getActiveSpectra(draft);
-    let hasFt = false;
+    let hasFt: boolean;
     if (Array.isArray(activeSpectra) && activeSpectra?.length > 0) {
       hasFt = activeSpectra.some((spectrum) =>
         isFt2DSpectrum(data[spectrum.index]),
@@ -369,7 +370,7 @@ function moveOverAxis(
   options: MoveOptions,
   currentDomain: Domain,
   originDomain: Domain,
-) {
+): { xDomain: NumberExtent; yDomain: NumberExtent } {
   const { shiftX, shiftY } = options;
   const [x1, x2] = currentDomain.xDomain;
   const [y1, y2] = currentDomain.yDomain;
@@ -396,19 +397,26 @@ function moveOverAxis(
     y2Domain = y2Origin;
     y1Domain = y1;
   }
-  return { xDomain: [x1Domain, x2Domain], yDomain: [y1Domain, y2Domain] };
+  return {
+    xDomain: [x1Domain, x2Domain],
+    yDomain: [y1Domain, y2Domain],
+  };
 }
 
 function handleMoveOverXAxis(draft: Draft<State>, action: MoveAction) {
-  const originXDomain = draft.originDomain.xDomain;
-  const originYDomain = draft.originDomain.yDomain;
+  // TODO: State should contain real extents, not number[].
+  const originXDomain = draft.originDomain.xDomain as NumberExtent;
+  const originYDomain = draft.originDomain.yDomain as NumberExtent;
   const { xDomain, yDomain } = moveOverAxis(
     action.payload,
-    { xDomain: draft.xDomain, yDomain: draft.yDomain },
+    {
+      xDomain: draft.xDomain as NumberExtent,
+      yDomain: draft.yDomain as NumberExtent,
+    },
     { xDomain: originXDomain, yDomain: originYDomain },
   );
-  draft.xDomain = xDomain;
-  draft.yDomain = yDomain;
+  draft.xDomain = xDomain as number[];
+  draft.yDomain = yDomain as number[];
 }
 
 export {

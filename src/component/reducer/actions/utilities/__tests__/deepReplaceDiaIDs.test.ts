@@ -41,7 +41,7 @@ describe('deepReplaceDiaIDs', () => {
     const mappings = {
       'did@`@fTeYWaj@@@GzP`HeT': 'Hello World',
     };
-    const newData = produce(data, (draft) => {
+    const newData = produce(data, (draft: any) => {
       deepReplaceDiaIDs(draft, mappings);
     });
     const lines = JSON.stringify(newData, undefined, 2).split('\n');

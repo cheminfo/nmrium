@@ -12,10 +12,11 @@ import { useDispatch } from '../context/DispatchContext.js';
 import { useGlobal } from '../context/GlobalContext.js';
 import type { ActionsButtonsPopoverProps } from '../elements/ActionsButtonsPopover.js';
 import { ActionsButtonsPopover } from '../elements/ActionsButtonsPopover.js';
-import { useCanvasContext } from '../hooks/useCanvasContext.js';
+import { useActiveNucleusTab } from '../hooks/useActiveNucleusTab.ts';
 import { usePanelPreferences } from '../hooks/usePanelPreferences.js';
 import { useSVGUnitConverter } from '../hooks/useSVGUnitConverter.js';
 import useSpectraByActiveNucleus from '../hooks/useSpectraPerNucleus.js';
+import { useTextMetrics } from '../hooks/useTextMetrics.ts';
 import { useCheckExportStatus } from '../hooks/useViewportSize.js';
 
 const ReactRnd = styled(Rnd)`
@@ -31,13 +32,15 @@ const ReactRnd = styled(Rnd)`
   }
 `;
 
-function calculateWorldWidth(context, word) {
-  if (!context) return 0;
-  return Math.round(context.measureText(word).width);
+interface UseWrapSVGTextParams {
+  text: string;
+  width: number;
+  fontSize: number;
 }
 
-function useWrapSVGText({ text, width, fontSize }) {
-  const context = useCanvasContext(fontSize);
+function useWrapSVGText(params: UseWrapSVGTextParams) {
+  const { text, width, fontSize } = params;
+  const { getTextWidth } = useTextMetrics(fontSize);
 
   const formattedText = text
     .replaceAll(/<sup>(?<n>.*?)<\/sup>/g, '++$1++ ')
@@ -49,11 +52,11 @@ function useWrapSVGText({ text, width, fontSize }) {
   let line: string[] = [];
   let lineWidth = 0;
 
-  const spaceWidth = calculateWorldWidth(context, ' ');
+  const spaceWidth = getTextWidth(' ');
   const words = formattedText.split(' ');
 
   for (const word of words) {
-    const wordWidth = calculateWorldWidth(context, word);
+    const wordWidth = getTextWidth(word);
     if (lineWidth + wordWidth > width) {
       lines.push(line);
       line = [word];
@@ -305,11 +308,7 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
 
 function usePublicationString() {
   const spectra = useSpectraByActiveNucleus();
-  const {
-    view: {
-      spectra: { activeTab },
-    },
-  } = useChartData();
+  const activeTab = useActiveNucleusTab();
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
 
   const output: Record<string, string> = {};

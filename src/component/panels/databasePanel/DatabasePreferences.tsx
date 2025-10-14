@@ -12,12 +12,12 @@ import { PreferencesContainer } from '../extra/preferences/PreferencesContainer.
 import { PreferencesGroup } from '../extra/preferences/PreferencesGroup.js';
 import { useSettingImperativeHandle } from '../extra/utilities/settingImperativeHandle.js';
 
-function DatabasePreferences(props, ref) {
+function DatabasePreferences(props: any, ref: any) {
   const preferences = usePreferences();
   const databasePreferences = usePanelPreferences('database');
 
   const saveHandler = useCallback(
-    (values) => {
+    (values: any) => {
       preferences.dispatch({
         type: 'SET_PANELS_PREFERENCES',
         payload: { key: 'database', value: values },

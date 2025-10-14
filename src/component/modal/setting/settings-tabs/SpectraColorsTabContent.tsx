@@ -5,6 +5,7 @@ import { useCallback, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
+import type { CellProps } from 'react-table';
 
 import { useChartData } from '../../../context/ChartContext.js';
 import { ColorPickerDropdownController } from '../../../elements/ColorPickerDropdownController.js';
@@ -72,8 +73,10 @@ function SpectraColorsTabContent() {
   );
 
   const deleteHandler = useCallback(
-    (data, index: number, key: SpectraColorsKeys) => {
-      const _fields = data.filter((_, columnIndex) => columnIndex !== index);
+    (data: any, index: number, key: SpectraColorsKeys) => {
+      const _fields = data.filter(
+        (_: any, columnIndex: any) => columnIndex !== index,
+      );
       setValue(getObjectKey(key), _fields);
     },
     [setValue],
@@ -139,12 +142,12 @@ function SpectraColorsFields(props: SpectraColorsProps) {
       {
         Header: '#',
         style: { width: '25px', textAlign: 'center' },
-        accessor: (_, index) => index + 1,
+        accessor: (_: any, index) => index + 1,
       },
       {
         Header: 'Field',
-        Cell: ({ row }) => {
-          const name = getKeyPath(baseObjectPath, row.index, 'jpath');
+        Cell: (cell: CellProps<object>) => {
+          const name = getKeyPath(baseObjectPath, cell.row.index, 'jpath');
           return (
             <Input2Controller
               control={control}
@@ -160,7 +163,7 @@ function SpectraColorsFields(props: SpectraColorsProps) {
       },
       {
         Header: 'Value',
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<object>) => {
           const name = getKeyPath(baseObjectPath, row.index, 'value');
 
           return (
@@ -179,7 +182,7 @@ function SpectraColorsFields(props: SpectraColorsProps) {
       Header: '',
       style: { width: '60px' },
       id: 'operation-button',
-      Cell: ({ data, row }) => {
+      Cell: ({ data, row }: CellProps<object>) => {
         const record: any = row.original;
         return (
           <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
@@ -212,8 +215,8 @@ function SpectraColorsFields(props: SpectraColorsProps) {
       const colorField = {
         Header: 'Color',
         style: colorInputStyle,
-        Cell: ({ row }) => {
-          const name = getKeyPath(baseObjectPath, row.index, 'color');
+        Cell: (cell: CellProps<object>) => {
+          const name = getKeyPath(baseObjectPath, cell.row.index, 'color');
           return (
             <ColorPickerDropdownController control={control} name={name} />
           );
@@ -227,7 +230,7 @@ function SpectraColorsFields(props: SpectraColorsProps) {
       {
         Header: 'Positive color',
         style: colorInputStyle,
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<object>) => {
           const name = getKeyPath(baseObjectPath, row.index, 'positiveColor');
           return (
             <ColorPickerDropdownController control={control} name={name} />
@@ -237,7 +240,7 @@ function SpectraColorsFields(props: SpectraColorsProps) {
       {
         Header: 'Negative color',
         style: colorInputStyle,
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<object>) => {
           const name = getKeyPath(baseObjectPath, row.index, 'negativeColor');
           return (
             <ColorPickerDropdownController control={control} name={name} />
@@ -278,7 +281,13 @@ function SpectraColorsFields(props: SpectraColorsProps) {
   );
 }
 
-function FieldsBlockHeader({ onAdd, text }) {
+function FieldsBlockHeader({
+  onAdd,
+  text,
+}: {
+  onAdd: () => void;
+  text: string;
+}) {
   return (
     <Section>
       <p style={{ flex: 1 }}>{text}</p>

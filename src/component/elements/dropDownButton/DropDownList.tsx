@@ -1,10 +1,6 @@
 import styled from '@emotion/styled';
 
-import type {
-  DropDownListItem,
-  DropDownListProps,
-  ItemProps,
-} from './DropDownButton.js';
+import type { DropDownListItem, DropDownListProps } from './DropDownButton.js';
 
 const Menu = styled.ul`
   list-style-type: none;
@@ -31,9 +27,7 @@ const Text = styled.span`
   padding: 5px 20px;
 `;
 
-interface InnerDropDownListProps<T>
-  extends DropDownListProps<T>,
-    Required<ItemProps> {
+interface InnerDropDownListProps<T> extends DropDownListProps<T> {
   onSelect: (index: number) => void;
 }
 
@@ -41,27 +35,23 @@ function DropDownList({
   data = [],
   onSelect,
   renderItem = null,
-  itemKey,
-  labelKey,
-  visibleKey,
 }: InnerDropDownListProps<DropDownListItem>) {
   return (
     <div>
       <Menu>
         {data.map((item, index) => (
           <MenuItem
-            key={item[itemKey]}
+            key={item.key}
             onClick={(e) => {
               e.stopPropagation();
               onSelect(index);
             }}
             style={{
-              display:
-                !(visibleKey in item) || item[visibleKey] ? 'block' : 'none',
+              display: !('visible' in item) || item.visible ? 'block' : 'none',
               cursor: 'pointer',
             }}
           >
-            {renderItem?.(item) || <Text>{item[labelKey]}</Text>}
+            {renderItem?.(item) || <Text>{item.label}</Text>}
           </MenuItem>
         ))}
       </Menu>

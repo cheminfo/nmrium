@@ -64,5 +64,6 @@ export function createRange(
   } catch (error) {
     reportError(error);
     logger?.error('Could not calculate the multiplicity');
+    return undefined;
   }
 }

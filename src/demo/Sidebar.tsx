@@ -90,7 +90,7 @@ const SideBarWrapper = styled.div<MenuStatus>`
   z-index: 4;
 `;
 
-function Sidebar(props) {
+function Sidebar(props: any) {
   const navigate = useNavigate();
   const routes = useMemo(() => {
     return buildMenu(props.routes);
@@ -111,7 +111,7 @@ function Sidebar(props) {
       <SideBarWrapper isMenuClosed={menuIsClosed}>
         {/* @ts-expect-error menu typings are wrong */}
         <Menu
-          onClick={(e) => {
+          onClick={(e: any) => {
             // TODO: use non-deprecated API of rc-menu
             const itemProps = e.item.props;
             void navigate({

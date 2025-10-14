@@ -86,7 +86,7 @@ function Settings(props: SettingsProps) {
 
   const debounceOnSubmit = useMemo(
     () =>
-      debounce((onSubmit) => {
+      debounce((onSubmit: any) => {
         void handleSubmit(onSubmit)();
       }, 250),
     [handleSubmit],

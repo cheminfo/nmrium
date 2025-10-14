@@ -31,19 +31,17 @@ function getZeroFillingSize(length: number) {
   return 2 ** Math.round(Math.log2(length * 2));
 }
 
-function useZeroFillingDefaultSize() {
+function useZeroFillingDefaultSize(): number {
   const spectrum = useTempSpectrum();
-
-  if (!spectrum) return 0;
 
   if (isSpectrum1D(spectrum)) {
     return getZeroFillingSize(spectrum.data.x.length);
-  }
-
-  if (isSpectrum2D(spectrum)) {
+  } else if (isSpectrum2D(spectrum)) {
     const data = (spectrum.data as NmrData2DFid).re;
     const nbPoints = getZeroFillingSize(data.z[0].length);
     return Math.min(4096, nbPoints);
+  } else {
+    return 0;
   }
 }
 
@@ -141,7 +139,7 @@ export const useZeroFilling = (
       },
     });
 
-  function syncWatch(sharedFilterOptions) {
+  function syncWatch(sharedFilterOptions: any) {
     reset({ ...getValues(), ...sharedFilterOptions });
   }
 
@@ -149,7 +147,7 @@ export const useZeroFilling = (
     useSyncedFilterOptions(syncWatch);
 
   const onChange = useCallback(
-    (values) => {
+    (values: any) => {
       const { livePreview } = values;
 
       if (livePreview || previousPreviewRef !== livePreview) {
@@ -160,7 +158,7 @@ export const useZeroFilling = (
   );
 
   function handleApplyFilter(
-    values,
+    values: any,
     triggerSource: 'apply' | 'onChange' = 'apply',
   ) {
     const { livePreview } = values;

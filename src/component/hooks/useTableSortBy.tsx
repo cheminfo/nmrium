@@ -8,12 +8,12 @@ interface SortConfig {
   direction: SortType;
 }
 
-export default function useTableSortBy(items, config = null) {
+export default function useTableSortBy(items: any, config = null) {
   const [sortConfig, setSortConfig] = useState<SortConfig | null>(config);
   const sortedItems = useMemo(() => {
     const sortableItems = items.slice();
     if (sortConfig !== null) {
-      sortableItems.sort((a, b) => {
+      sortableItems.sort((a: any, b: any) => {
         if (sortConfig.direction === 'ASCENDING') {
           return dlv(a, sortConfig.key, 0) - dlv(b, sortConfig.key, 0);
         } else if (sortConfig.direction === 'DESCENDING') {
@@ -26,7 +26,7 @@ export default function useTableSortBy(items, config = null) {
   }, [items, sortConfig]);
 
   const sortHandler = useCallback(
-    (event) => {
+    (event: any) => {
       const key = event.currentTarget?.id;
       let direction: SortType = 'ASCENDING';
       if (key && sortConfig && sortConfig.key === key) {
@@ -48,7 +48,7 @@ export default function useTableSortBy(items, config = null) {
   );
 
   const isSortedDesc = useCallback(
-    (columnName): { flag: boolean | null; content: string } => {
+    (columnName: any): { flag: boolean | null; content: string } => {
       const defaultContent = { flag: null, content: ' ' };
 
       if (!sortConfig || sortConfig.key !== columnName) {

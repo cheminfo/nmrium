@@ -33,18 +33,17 @@ function SpectraTabsInner({
   const dispatch = useDispatch();
 
   const spectraGroupByNucleus = useMemo(() => {
-    if (!spectra) return [];
     const groupByNucleus = groupByInfoKey('nucleus');
     return groupByNucleus(spectra, true);
   }, [spectra]);
   const { setActiveSpectrum } = useSetActiveSpectrumAction();
 
-  function onTabChangeHandler(tab) {
+  function onTabChangeHandler(tab: any) {
     dispatch({ type: 'SET_ACTIVE_TAB', payload: { tab: tab.tabid } });
   }
 
   const handleChangeVisibility = useCallback(
-    (d, key) => {
+    (d: any, key: any) => {
       dispatch({
         type: 'CHANGE_SPECTRUM_VISIBILITY',
         payload: {
@@ -56,7 +55,7 @@ function SpectraTabsInner({
     [dispatch],
   );
 
-  function handleChangeActiveSpectrum(e, spectrum) {
+  function handleChangeActiveSpectrum(e: any, spectrum: any) {
     setActiveSpectrum(e, spectrum.id);
   }
 

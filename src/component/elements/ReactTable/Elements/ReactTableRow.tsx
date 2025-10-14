@@ -82,7 +82,6 @@ function ReactTableRow(props: ReactTableRowProps) {
       highlight.hide();
     };
     // TODO: avoid this hack.
-    // eslint-disable-next-line react-hooks/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -110,7 +109,7 @@ function ReactTableRow(props: ReactTableRowProps) {
       {...otherKeyProps}
       {...highlight.onHover}
     >
-      {row.cells.map((cell) => {
+      {row.cells.map((cell: any) => {
         const {
           column: { style },
           isRowSpanned,

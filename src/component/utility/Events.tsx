@@ -9,10 +9,10 @@ import type {
 const eventEmitter = new EventEmitter();
 
 const Emitter = {
-  on: (event, fn) => eventEmitter.on(event, fn),
-  once: (event, fn) => eventEmitter.once(event, fn),
-  off: (event, fn) => eventEmitter.off(event, fn),
-  emit: (event, payload) => eventEmitter.emit(event, payload),
+  on: (event: any, fn: any) => eventEmitter.on(event, fn),
+  once: (event: any, fn: any) => eventEmitter.once(event, fn),
+  off: (event: any, fn: any) => eventEmitter.off(event, fn),
+  emit: (event: any, payload: any) => eventEmitter.emit(event, payload),
 };
 
 Object.freeze(Emitter);
@@ -28,7 +28,7 @@ export function useEvent(options: UseEventOptions) {
   const { onBrushEnd, onClick } = options;
 
   useEffect(() => {
-    function handle(event) {
+    function handle(event: any) {
       onBrushEnd?.(event);
     }
 
@@ -40,7 +40,7 @@ export function useEvent(options: UseEventOptions) {
   }, [onBrushEnd]);
 
   useEffect(() => {
-    function handle(event) {
+    function handle(event: any) {
       onClick?.(event);
     }
 

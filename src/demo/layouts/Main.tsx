@@ -58,7 +58,7 @@ const styles: Record<
   },
 };
 
-async function loadData(url) {
+async function loadData(url: any) {
   const response = await fetch(url);
   try {
     checkStatus(response);
@@ -70,7 +70,7 @@ async function loadData(url) {
   }
 }
 
-function checkStatus(response) {
+function checkStatus(response: any) {
   if (!response.ok) {
     throw new Error(`HTTP ${response.status} - ${response.statusText}`);
   }
@@ -112,8 +112,10 @@ const Main = () => {
       const extension = getFileExtension(sampleURL).toLowerCase();
       switch (extension) {
         case 'json': {
+          // TODO: refactor this
+          // eslint-disable-next-line react-hooks/set-state-in-effect
           setDashBoardType('multi');
-          void loadData(sampleURL).then((remoteRoutes) => {
+          void loadData(sampleURL).then((remoteRoutes: any) => {
             if (remoteRoutes) {
               const baseURL = sampleURL.replaceAll(
                 /^(?<url>.*[/\\])?(?<filename>.*?\.[^.]*?|)$/g,

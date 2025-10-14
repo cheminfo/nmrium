@@ -55,14 +55,6 @@ export function usePhaseCorrection(
       itemTextKey: 'label',
     });
 
-  function syncWatch(sharedFilterOptions) {
-    updateInputRangeInitialValue(sharedFilterOptions);
-    setValue(sharedFilterOptions);
-  }
-
-  const { syncFilterOptions, clearSyncFilterOptions } =
-    useSyncedFilterOptions(syncWatch);
-
   useEffect(() => {
     if (filter && phaseCorrectionTypeItem?.value === 'manual') {
       const { ph0 = 0, ph1 = 0 } = filter?.value || {};
@@ -78,6 +70,20 @@ export function usePhaseCorrection(
       ph1Ref.current?.setValue(valueRef.current?.ph1 || 0);
     }
   }, [filter, phaseCorrectionTypeItem]);
+
+  const updateInputRangeInitialValue = useCallback((value: any) => {
+    // update InputRange initial value
+    ph0Ref.current?.setValue(value.ph0);
+    ph1Ref.current?.setValue(value.ph1);
+  }, []);
+
+  function syncWatch(sharedFilterOptions: any) {
+    updateInputRangeInitialValue(sharedFilterOptions);
+    setValue(sharedFilterOptions);
+  }
+
+  const { syncFilterOptions, clearSyncFilterOptions } =
+    useSyncedFilterOptions(syncWatch);
 
   function handleApplyFilter() {
     switch (phaseCorrectionTypeItem?.value) {
@@ -108,7 +114,7 @@ export function usePhaseCorrection(
   }
 
   const calcPhaseCorrectionHandler = useCallback(
-    (newValues, filedName) => {
+    (newValues: any, filedName: any) => {
       if (filedName === 'ph1' && data.re) {
         const diff0 = newValues.ph0 - valueRef.current.ph0;
         const diff1 = newValues.ph1 - valueRef.current.ph1;
@@ -123,14 +129,8 @@ export function usePhaseCorrection(
     [data.re, dispatch, pivot?.index],
   );
 
-  const updateInputRangeInitialValue = useCallback((value) => {
-    // update InputRange initial value
-    ph0Ref.current?.setValue(value.ph0);
-    ph1Ref.current?.setValue(value.ph1);
-  }, []);
-
   const handleInput = useCallback(
-    (valueAsNumber, valueAsString, element) => {
+    (valueAsNumber: any, valueAsString: any, element: any) => {
       const { name } = element;
 
       if (Number.isNaN(valueAsNumber)) return;
@@ -152,7 +152,7 @@ export function usePhaseCorrection(
   );
 
   const handleRangeChange = useCallback(
-    (e) => {
+    (e: any) => {
       const newValue = { ...valueRef.current, [e.name]: e.value };
       calcPhaseCorrectionHandler(newValue, e.name);
       updateInputRangeInitialValue(newValue);

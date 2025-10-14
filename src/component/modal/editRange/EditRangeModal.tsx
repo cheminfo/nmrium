@@ -8,12 +8,12 @@ import { useCallback, useMemo, useRef } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { FaSearchPlus } from 'react-icons/fa';
 
-import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import type { DialogProps } from '../../elements/DialogManager.js';
 import { DraggableDialog } from '../../elements/DraggableDialog.js';
 import { StyledDialogBody } from '../../elements/StyledDialogBody.js';
 import { TabsProvider } from '../../elements/TabsProvider.js';
+import { useActiveNucleusTab } from '../../hooks/useActiveNucleusTab.ts';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import useEditRangeModal from '../../panels/RangesPanel/hooks/useEditRangeModal.js';
@@ -50,7 +50,7 @@ export function EditRangeModal(props: DialogProps<string>) {
         onCloseDialog();
         reset(range);
       }}
-      onSave={(range) => {
+      onSave={(range: any) => {
         onCloseDialog();
         saveEditRange(range);
       }}
@@ -62,11 +62,8 @@ export function EditRangeModal(props: DialogProps<string>) {
 
 function InnerEditRangeModal(props: InnerEditRangeModalProps) {
   const { onSave, onZoom, onRest, rangeID } = props;
-  const {
-    view: {
-      spectra: { activeTab },
-    },
-  } = useChartData();
+  const activeTab = useActiveNucleusTab();
+
   const dispatch = useDispatch();
   const range = useRange(rangeID);
   const originalRangeRef = useRef(range);
@@ -87,7 +84,7 @@ function InnerEditRangeModal(props: InnerEditRangeModalProps) {
   }
 
   const handleSave = useCallback(
-    (formValues) => {
+    (formValues: any) => {
       void (async () => {
         const { signals } = formValues;
         await onSave(mapRange({ ...range, signals }));

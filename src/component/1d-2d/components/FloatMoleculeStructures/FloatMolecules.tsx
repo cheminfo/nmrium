@@ -1,6 +1,7 @@
 import type { Ranges, Zones } from '@zakodium/nmr-types';
 import type { Spectrum1D, Spectrum2D } from '@zakodium/nmrium-core';
 import { memo } from 'react';
+import { assert } from 'react-science/ui';
 
 import type {
   MoleculeView,
@@ -10,7 +11,6 @@ import type {
 import { useChartData } from '../../../context/ChartContext.js';
 import useSpectrum from '../../../hooks/useSpectrum.js';
 import type { DisplayerMode } from '../../../reducer/Reducer.js';
-import { assert } from '../../../utility/assert.js';
 
 import { DraggableStructure } from './DraggableStructure.js';
 

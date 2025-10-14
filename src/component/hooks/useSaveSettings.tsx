@@ -18,15 +18,7 @@ const schema = Yup.object().shape({
   workspaceName: Yup.string().required(),
 });
 
-function keyDownCheck(event: React.KeyboardEvent<HTMLInputElement>) {
-  if (event.key === 'Enter') {
-    return true;
-  } else if (event.key === 'Escape') {
-    return false;
-  }
-}
-
-function WorkspaceAddForm(props) {
+function WorkspaceAddForm(props: any) {
   const { className, message, control, onEnter } = props;
 
   return (
@@ -43,7 +35,7 @@ function WorkspaceAddForm(props) {
         autoFocus
         size="large"
         onKeyDown={(event) => {
-          if (keyDownCheck(event)) {
+          if (event.key === 'Enter') {
             onEnter();
           }
         }}
@@ -62,7 +54,7 @@ export function useSaveSettings() {
     resolver: yupResolver(schema),
   });
   const { saveWorkspace, addNewWorkspace } = useWorkspaceAction();
-  function handleAddNewWorkspace({ workspaceName }) {
+  function handleAddNewWorkspace({ workspaceName }: { workspaceName: string }) {
     addNewWorkspace(workspaceName, settingsRef.current);
 
     closeDialog();

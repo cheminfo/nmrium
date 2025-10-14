@@ -7,6 +7,7 @@ import type {
   AssignmentContext,
   Axis,
 } from '../../assignment/AssignmentsContext.js';
+import { assignmentAxes } from '../../assignment/AssignmentsContext.js';
 
 interface TargetAssignment {
   key: string;
@@ -90,7 +91,11 @@ export function extractFromAtom(
 }
 
 function getRangesOrZones(spectrum: Spectrum): Array<Range | Zone> {
-  return spectrum[isSpectrum1D(spectrum) ? 'ranges' : 'zones'].values;
+  if (isSpectrum1D(spectrum)) {
+    return spectrum.ranges.values;
+  } else {
+    return spectrum.zones.values;
+  }
 }
 
 export function getAssignIds(
@@ -124,8 +129,8 @@ export function getAssignIds(
 
 export function getHighlightsOnHover(
   assignments: AssignmentContext,
-  oclIDs,
-  spectrum,
+  oclIDs: any,
+  spectrum: any,
 ) {
   // set all IDs to highlight when hovering over an atom from AssignKey data
   let highlights: string[] = [];
@@ -134,8 +139,8 @@ export function getHighlightsOnHover(
   for (const key in assignmentsByKey) {
     const assignments = assignmentsByKey[key];
 
-    for (const axis in assignments) {
-      if (assignments[axis]?.some((oclKey) => oclIDs.includes(oclKey))) {
+    for (const axis of assignmentAxes) {
+      if (assignments[axis]?.some((oclKey: any) => oclIDs.includes(oclKey))) {
         highlights = highlights.concat(assignments[axis]);
         const assignIds = getAssignIds(spectrum, key);
         if (assignIds) {

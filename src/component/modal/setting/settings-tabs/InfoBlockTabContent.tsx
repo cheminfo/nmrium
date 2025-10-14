@@ -4,6 +4,7 @@ import { useCallback, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
+import type { CellProps } from 'react-table';
 
 import { useChartData } from '../../../context/ChartContext.js';
 import { GroupPane } from '../../../elements/GroupPane.js';
@@ -52,14 +53,16 @@ function InfoBlockTabContent() {
   );
 
   const deleteHandler = useCallback(
-    (data, index: number) => {
-      const _fields = data.filter((_, columnIndex) => columnIndex !== index);
+    (data: any, index: number) => {
+      const _fields = data.filter(
+        (_: any, columnIndex: any) => columnIndex !== index,
+      );
       setValue('infoBlock.fields', _fields);
     },
     [setValue],
   );
 
-  const COLUMNS: Column[] = useMemo(
+  const COLUMNS = useMemo<Array<Column<InfoBlockField>>>(
     () => [
       {
         Header: '#',
@@ -68,7 +71,7 @@ function InfoBlockTabContent() {
       },
       {
         Header: 'Label',
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<InfoBlockField>) => {
           const name = getKeyPath(row.index, 'label');
           return (
             <Input2Controller
@@ -82,7 +85,7 @@ function InfoBlockTabContent() {
       },
       {
         Header: 'Field',
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<InfoBlockField>) => {
           const name = getKeyPath(row.index, 'jpath');
           return (
             <Input2Controller
@@ -91,7 +94,9 @@ function InfoBlockTabContent() {
               noShadowBox
               style={{ backgroundColor: 'transparent' }}
               filterItems={datalist}
-              mapOnChangeValue={(value) => paths?.[value.trim()] || value}
+              mapOnChangeValue={(value) =>
+                (paths as any)?.[value.trim()] || value
+              }
               mapValue={convertPathArrayToString}
             />
           );
@@ -99,7 +104,7 @@ function InfoBlockTabContent() {
       },
       {
         Header: 'Format',
-        Cell: ({ row }) => {
+        Cell: ({ row }: CellProps<InfoBlockField>) => {
           const name = getKeyPath(row.index, 'format');
           return (
             <Input2Controller
@@ -114,7 +119,7 @@ function InfoBlockTabContent() {
       {
         Header: 'Visible',
         style: { width: '30px', textAlign: 'center' },
-        Cell: ({ row }) => (
+        Cell: ({ row }: CellProps<InfoBlockField>) => (
           <Checkbox
             style={{ margin: 0 }}
             {...register(getKeyPath(row.index, 'visible'))}
@@ -125,7 +130,7 @@ function InfoBlockTabContent() {
         Header: '',
         style: { width: '60px' },
         id: 'add-button',
-        Cell: ({ data, row }) => {
+        Cell: ({ data, row }: CellProps<InfoBlockField>) => {
           const record: any = row.original;
           return (
             <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
@@ -192,7 +197,13 @@ function InfoBlockTabContent() {
   );
 }
 
-function FieldsBlockHeader({ onAdd, text }) {
+interface FieldsBlockHeaderProps {
+  onAdd: () => void;
+  text: string;
+}
+
+function FieldsBlockHeader(props: FieldsBlockHeaderProps) {
+  const { onAdd, text } = props;
   return (
     <Section>
       <p style={{ flex: 1 }}>{text}</p>
