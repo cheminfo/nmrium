@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.6.0](https://github.com/cheminfo/nmrium/compare/v1.5.0...v1.6.0) (2025-10-14)
+
+
+### Features
+
+* carbon solvent labelling ([#3693](https://github.com/cheminfo/nmrium/issues/3693)) ([720722b](https://github.com/cheminfo/nmrium/commit/720722bedbf7d4a79aee2a8499b2615991a5bc85))
+
+
+### Bug Fixes
+
+* use package wrapper for native ESM support in pdnd ([#3756](https://github.com/cheminfo/nmrium/issues/3756)) ([de0fabf](https://github.com/cheminfo/nmrium/commit/de0fabf845814f428ffe3885ca7470315297fa85))
+
 ## [1.5.0](https://github.com/cheminfo/nmrium/compare/v1.4.0...v1.5.0) (2025-10-12)
 
 
