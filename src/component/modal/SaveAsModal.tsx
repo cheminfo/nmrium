@@ -116,19 +116,24 @@ function InnerSaveAsModal(props: InnerSaveAsModalProps) {
                     disabled={Object.keys(sources).length === 0}
                   />
                   <Radio label="No data" value={DataExportOptions.NO_DATA} />
+
+                  {/*
+                   * Radio group works with Children.map.
+                   * So Radio must be direct children of RadioGroup.
+                   */}
                   {experimentalFlagEnabled && (
-                    <>
-                      <Radio
-                        label="Full data (external data embed, experimental)"
-                        value={DataExportOptions.SELF_CONTAINED}
-                      />
-                      <Radio
-                        label="Full data (external data linked, experimental)"
-                        value={
-                          DataExportOptions.SELF_CONTAINED_EXTERNAL_DATASOURCE
-                        }
-                      />
-                    </>
+                    <Radio
+                      label="Full data (external data embed, experimental)"
+                      value={DataExportOptions.SELF_CONTAINED}
+                    />
+                  )}
+                  {experimentalFlagEnabled && (
+                    <Radio
+                      label="Full data (external data linked, experimental)"
+                      value={
+                        DataExportOptions.SELF_CONTAINED_EXTERNAL_DATASOURCE
+                      }
+                    />
                   )}
                 </RadioGroup>
               );
