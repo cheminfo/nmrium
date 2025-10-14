@@ -126,10 +126,10 @@ function setData(draft: Draft<State>, input: InputProps | InitiateProps) {
   }
 
   if (sources && sources.length > 0) {
-    for (const source of Object.keys(sources)) {
-      if (draft.sources[source]) {
-        draft.sources[source] = lodashMergeWith(
-          draft.sources[source],
+    for (const source of sources) {
+      if (draft.sources[source.id]) {
+        draft.sources[source.id] = lodashMergeWith(
+          draft.sources[source.id],
           source,
           (objValue: any, srcValue: any) => {
             if (Array.isArray(objValue)) {
@@ -139,7 +139,7 @@ function setData(draft: Draft<State>, input: InputProps | InitiateProps) {
           },
         );
       } else {
-        draft.sources[source] = sources[source];
+        draft.sources[source.id] = source;
       }
     }
   }
