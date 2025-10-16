@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.1](https://github.com/cheminfo/nmrium/compare/v1.6.0...v1.6.1) (2025-10-16)
+
+
+### Bug Fixes
+
+* only suppress solvent for 13C ([#3766](https://github.com/cheminfo/nmrium/issues/3766)) ([38dda06](https://github.com/cheminfo/nmrium/commit/38dda065b3ecf6cc2aa6cfb809b1a59845495da4))
+
 ## [1.6.0](https://github.com/cheminfo/nmrium/compare/v1.5.0...v1.6.0) (2025-10-14)
 
 
