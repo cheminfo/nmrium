@@ -9,8 +9,8 @@ import type {
   Zones2DNucleusPreferences,
 } from '@zakodium/nmrium-core';
 
-import { is2DNucleus } from '../../utility/nucleusToString.js';
 import { isProton } from '../../../data/utilities/isProton.ts';
+import { is2DNucleus } from '../../utility/nucleusToString.js';
 
 function getPreferences<T>(data: T, nucleus?: string) {
   return { nuclei: { ...(nucleus ? { [nucleus]: data } : {}) } };

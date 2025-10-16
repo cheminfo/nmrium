@@ -1,6 +1,7 @@
 import type { Range } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { xyAutoRangesPicking } from 'nmr-processing';
+
 import { isProton } from '../../../utilities/isProton.ts';
 
 const defaultPeakPickingOptions = {
@@ -38,7 +39,7 @@ export default function autoRangesDetection(
   const isProtonic = isProton(nucleus);
   const rangesOptions = {
     nucleus,
-    clean: 0.3,
+    clean: 0.5,
     keepPeaks: true,
     compile: isProtonic,
     frequency: originFrequency,

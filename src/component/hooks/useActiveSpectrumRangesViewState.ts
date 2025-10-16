@@ -1,10 +1,10 @@
 import type { RangesViewState } from '@zakodium/nmrium-core';
 
+import { isProton } from '../../data/utilities/isProton.ts';
 import { useInsetOptions } from '../1d/inset/InsetProvider.js';
 import { useChartData } from '../context/ChartContext.js';
 
 import { useActiveSpectrum } from './useActiveSpectrum.js';
-import { isProton } from '../../data/utilities/isProton.ts';
 
 export function getDefaultRangesViewState(nucleus: string): RangesViewState {
   const isCarbon = nucleus === '13C';

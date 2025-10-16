@@ -230,7 +230,7 @@ function handleAutoRangesDetection(
         integrationSum: 100,
         compile: isProtonic,
         frequencyCluster: isProtonic ? 16 : 0,
-        clean: 0.3,
+        clean: 0.5,
         keepPeaks: true,
         joinOverlapRanges: isProtonic,
       },
@@ -271,7 +271,7 @@ function handleAutoSpectraRangesDetection(draft: Draft<State>) {
         integrationSum: 100,
         compile: isProtonic,
         frequencyCluster: isProtonic ? 16 : 0,
-        clean: 0.3,
+        clean: 0.5,
         keepPeaks: true,
         joinOverlapRanges: isProtonic,
       };
