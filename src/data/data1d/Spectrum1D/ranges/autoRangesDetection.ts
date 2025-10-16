@@ -56,7 +56,7 @@ export default function autoRangesDetection(
   const ranges = xyAutoRangesPicking(
     { x, y: re },
     {
-      impurities: { solvent },
+      impurities: nucleus === '13C' ? { solvent } : undefined,
       peakPicking: peakPickingOptions,
       ranges: rangesOptions,
     },
