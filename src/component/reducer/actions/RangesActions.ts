@@ -49,6 +49,7 @@ import { setDomain } from './DomainActions.js';
 import { rollbackSpectrumByFilter } from './FiltersActions.js';
 import { toggleDisplayingPeaks } from './PeaksActions.js';
 import { resetSelectedTool } from './ToolsActions.js';
+import { isProton } from '../../../data/utilities/isProton.ts';
 
 type AutoRangesDetectionAction = ActionType<
   'AUTO_RANGES_DETECTION',
@@ -206,14 +207,7 @@ function handleAutoRangesDetection(
   draft: Draft<State>,
   action: AutoRangesDetectionAction,
 ) {
-  const {
-    data,
-    xDomain,
-    molecules,
-    view: {
-      spectra: { activeTab: nucleus },
-    },
-  } = draft;
+  const { data, xDomain, molecules } = draft;
 
   const activeSpectrum = getActiveSpectrum(draft);
 
@@ -228,14 +222,17 @@ function handleAutoRangesDetection(
     // minMaxRatio default 0.05, lookNegative default false,
     const { minMaxRatio, lookNegative } = action.payload;
 
+    const nucleus = datum.info.nucleus as string;
+    const isProtonic = isProton(nucleus);
+
     const detectionOptions: any = {
       rangePicking: {
         integrationSum: 100,
-        compile: nucleus === '1H',
-        frequencyCluster: nucleus === '1H' ? 16 : 0,
+        compile: isProtonic,
+        frequencyCluster: isProtonic ? 16 : 0,
         clean: 0.3,
         keepPeaks: true,
-        joinOverlapRanges: nucleus === '1H',
+        joinOverlapRanges: isProtonic,
       },
       peakPicking: {
         smoothY: false,
@@ -269,13 +266,14 @@ function handleAutoSpectraRangesDetection(draft: Draft<State>) {
   for (const datum of data) {
     if (datum.info.dimension === 1) {
       const nucleus = datum.info.nucleus as string;
+      const isProtonic = isProton(nucleus);
       const rangePicking = {
         integrationSum: 100,
-        compile: nucleus === '1H',
-        frequencyCluster: nucleus === '1H' ? 16 : 0,
+        compile: isProtonic,
+        frequencyCluster: isProtonic ? 16 : 0,
         clean: 0.3,
         keepPeaks: true,
-        joinOverlapRanges: nucleus === '1H',
+        joinOverlapRanges: isProtonic,
       };
       detectRanges(datum as Spectrum1D, {
         peakPicking,

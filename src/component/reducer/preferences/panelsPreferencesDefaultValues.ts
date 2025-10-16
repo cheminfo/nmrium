@@ -10,6 +10,7 @@ import type {
 } from '@zakodium/nmrium-core';
 
 import { is2DNucleus } from '../../utility/nucleusToString.js';
+import { isProton } from '../../../data/utilities/isProton.ts';
 
 function getPreferences<T>(data: T, nucleus?: string) {
   return { nuclei: { ...(nucleus ? { [nucleus]: data } : {}) } };
@@ -130,7 +131,7 @@ const getRangeDefaultValues = (
     deltaPPM: { show: true, format: '0.00' },
     deltaHz: { show: false, format: '0.00' },
     coupling: { show: true, format: '0.00' },
-    jGraphTolerance: nucleus === '1H' ? 0.2 : nucleus === '13C' ? 2 : 0, //J Graph tolerance for: 1H: 0.2Hz 13C: 2Hz
+    jGraphTolerance: isProton(nucleus || '') ? 0.2 : nucleus === '13C' ? 2 : 0, //J Graph tolerance for: 1H: 0.2Hz 13C: 2Hz
     showKind: true,
     showMultiplicity: true,
     showAssignment: true,
