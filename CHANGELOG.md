@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.2](https://github.com/cheminfo/nmrium/compare/v1.6.1...v1.6.2) (2025-10-17)
+
+
+### Bug Fixes
+
+* remove explicit URL validations ([0321238](https://github.com/cheminfo/nmrium/commit/0321238806ad2e807a8f83c282345d7c6a10d5cb))
+
 ## [1.6.1](https://github.com/cheminfo/nmrium/compare/v1.6.0...v1.6.1) (2025-10-16)
 
 
