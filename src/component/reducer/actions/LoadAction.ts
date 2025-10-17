@@ -144,7 +144,7 @@ function setData(draft: Draft<State>, input: InputProps | InitiateProps) {
     }
   }
 
-  const fileCollectionId = crypto.randomUUID();
+  const fileCollectionId = sources?.at(-1)?.id || crypto.randomUUID();
   const fileCollection =
     'fileCollection' in input ? input.fileCollection : undefined;
 

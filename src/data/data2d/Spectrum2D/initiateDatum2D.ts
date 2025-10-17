@@ -64,7 +64,7 @@ export function initiateDatum2D(
   const datum: any = { ...spectrum };
 
   datum.id = spectrum.id || crypto.randomUUID();
-  datum.fileCollectionId = fileCollectionId;
+  datum.fileCollectionId = spectrum.fileCollectionId || fileCollectionId;
 
   datum.display = initiateDisplay(spectrum, { usedColors, colors });
 

@@ -31,7 +31,7 @@ export function initiateDatum1D(
   const { integrals, ranges, ...restSpectrum } = spectrum;
   const spectrumObj: Spectrum1D = { ...restSpectrum };
   spectrumObj.id = spectrum.id || crypto.randomUUID();
-  spectrumObj.fileCollectionId = fileCollectionId;
+  spectrumObj.fileCollectionId = spectrum.fileCollectionId || fileCollectionId;
 
   spectrumObj.display = {
     isVisible: true,
