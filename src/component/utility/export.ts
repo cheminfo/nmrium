@@ -6,11 +6,7 @@ import type {
 } from '@zakodium/nmrium-core';
 import { BlobWriter, TextReader, ZipWriter } from '@zip.js/zip.js';
 import dlv from 'dlv';
-import { FileCollection } from 'file-collection';
 import fileSaver from 'file-saver';
-
-import type { ExportOptions } from '../../data/SpectraManager.js';
-import type { State } from '../reducer/Reducer.js';
 
 export const browserNotSupportedErrorToast: ToastProps = {
   message:
@@ -51,7 +47,7 @@ export function saveAs(
   fileName = 'experiment',
   extension = '.nmrium',
 ) {
-  fileSaver.saveAs(blob, `${fileName}${extension}`);
+  fileSaver(blob, `${fileName}${extension}`);
 }
 
 function exportAsMatrix(
