@@ -12,14 +12,14 @@ function useZoneHighlight(rowData: ZoneData) {
   const assignedDiaIds = zoneAssignment.assignedDiaIds;
 
   const highlightZoneX = useHighlight(
-    [buildID(id, 'X')].concat(assignedDiaIds?.x || []),
+    [buildID(id, 'X')].concat(assignedDiaIds.x ?? []),
     {
       type: 'ZONE',
     },
   );
 
   const highlightZoneY = useHighlight(
-    [buildID(id, 'Y')].concat(assignedDiaIds?.y || []),
+    [buildID(id, 'Y')].concat(assignedDiaIds.y ?? []),
     {
       type: 'ZONE',
     },
@@ -44,7 +44,7 @@ function useZoneHighlight(rowData: ZoneData) {
     }
   }
   function isHighlighted(axis: Axis) {
-    return axis === 'x' ? highlightZoneX.isActive : highlightZoneY?.isActive;
+    return axis === 'x' ? highlightZoneX.isActive : highlightZoneY.isActive;
   }
 
   return {
@@ -84,7 +84,7 @@ function ZoneAssignmentColumn({
     handleOnMouseLeave,
     isHighlighted,
   } = useZoneHighlight(rowData);
-  const diaIDs = rowData?.[axis].diaIDs || []; // diaIds at the level of zone
+  const diaIDs = rowData[axis].diaIDs ?? []; // diaIds at the level of zone
   const isAssignmentActive =
     zoneAssignment.isActive && zoneAssignment.activated?.axis === axis;
   const flag =
@@ -93,9 +93,9 @@ function ZoneAssignmentColumn({
       zoneAssignment.highlighted?.axis === axis) ||
     isHighlighted(axis);
 
-  let totalNumberOfAtoms = rowData?.[axis]?.nbAtoms || 0;
-  for (const signal of rowData?.signals || []) {
-    totalNumberOfAtoms += signal?.[axis]?.nbAtoms || 0;
+  let totalNumberOfAtoms = rowData[axis].nbAtoms ?? 0;
+  for (const signal of rowData.signals) {
+    totalNumberOfAtoms += signal[axis].nbAtoms ?? 0;
   }
 
   function handleClick(event: React.MouseEvent<HTMLTableCellElement>) {
@@ -109,13 +109,13 @@ function ZoneAssignmentColumn({
       onMouseEnter={() => handleOnMouseEnter(axis)}
       onMouseLeave={() => handleOnMouseLeave(axis)}
       onClick={handleClick}
-      hideRemoveAssignmentButton={!diaIDs || diaIDs.length === 0}
+      hideRemoveAssignmentButton={diaIDs.length === 0}
       onRemove={(e) => onUnlink(e, true, axis)}
     >
       {(totalNumberOfAtoms > 0 || isAssignmentActive) && (
         <>
           {totalNumberOfAtoms} {' ( '}
-          <span style={getStyle(flag, false)}>{diaIDs?.length || 0}</span>
+          <span style={getStyle(flag, false)}>{diaIDs.length}</span>
           {' ) '}
         </>
       )}

@@ -56,7 +56,7 @@ export default function FooterBanner(props: FooterBannerProps) {
   const [formatX, formatY] = useFormatNumberByNucleus(nuclei);
 
   const scaleX = useMemo(() => {
-    if (!data1D || data1D.length === 0) {
+    if (data1D.length === 0) {
       return get2DXScale({ width, margin, xDomain, mode });
     }
     if (selectedTool !== options.slicing.id) {
@@ -86,7 +86,7 @@ export default function FooterBanner(props: FooterBannerProps) {
   ]);
 
   const scaleY = useMemo(() => {
-    if (!data1D || data1D.length === 0) {
+    if (data1D.length === 0) {
       return get2DYScale({ height, margin, yDomain });
     }
     if (selectedTool !== options.slicing.id) {

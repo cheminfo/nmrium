@@ -29,7 +29,8 @@ interface IntegralTableProps
   info: Info1D;
 }
 
-function IntegralTable({ activeTab, data, info }: IntegralTableProps) {
+function IntegralTable(props: IntegralTableProps) {
+  const { activeTab, data, info } = props;
   const dispatch = useDispatch();
 
   const deleteIntegralHandler = useCallback(
@@ -179,11 +180,11 @@ function IntegralTable({ activeTab, data, info }: IntegralTableProps) {
     return columns;
   }, [COLUMNS, integralsPreferences]);
 
-  if (info?.isFid) {
+  if (info.isFid) {
     return <NoDataForFid />;
   }
 
-  if (!data || data.length === 0) {
+  if (data.length === 0) {
     return <EmptyText text="No data" />;
   }
 
