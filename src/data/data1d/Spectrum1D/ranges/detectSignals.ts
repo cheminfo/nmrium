@@ -41,7 +41,7 @@ export default function detectSignals(
         compile: true,
         frequencyCluster,
         keepPeaks: true,
-        clean: 0.3,
+        clean: 0.5,
       },
     });
     return ranges

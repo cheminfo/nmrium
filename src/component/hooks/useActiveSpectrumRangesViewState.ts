@@ -1,19 +1,19 @@
 import type { RangesViewState } from '@zakodium/nmrium-core';
 
+import { isProton } from '../../data/utilities/isProton.ts';
 import { useInsetOptions } from '../1d/inset/InsetProvider.js';
 import { useChartData } from '../context/ChartContext.js';
 
 import { useActiveSpectrum } from './useActiveSpectrum.js';
 
 export function getDefaultRangesViewState(nucleus: string): RangesViewState {
-  const isProton = nucleus === '1H';
   const isCarbon = nucleus === '13C';
 
   return {
     showPeaks: isCarbon,
     showMultiplicityTrees: false,
     showIntegrals: false,
-    showIntegralsValues: isProton,
+    showIntegralsValues: isProton(nucleus),
     showJGraph: false,
     displayingMode: 'spread',
     integralsScaleRatio: 1,

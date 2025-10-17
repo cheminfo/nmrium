@@ -1,6 +1,7 @@
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { mapRanges, updateRangesRelativeValues } from 'nmr-processing';
 
+import { isProton } from '../../../utilities/isProton.ts';
 import type { SumParams } from '../SumManager.js';
 import { initSumOptions } from '../SumManager.js';
 
@@ -32,11 +33,17 @@ export function detectRanges(
 ) {
   const { molecules, nucleus, ...detectOptions } = options;
   detectOptions.impurities = { solvent: spectrum.info.solvent || '' };
-  const ranges = autoRangesDetection(spectrum, detectOptions);
+
   spectrum.ranges.options = initSumOptions(spectrum.ranges.options, {
     molecules,
     nucleus,
   });
+
+  if (isProton(nucleus)) {
+    detectOptions.rangePicking.integrationSum = spectrum.ranges.options.sum;
+  }
+
+  const ranges = autoRangesDetection(spectrum, detectOptions);
   spectrum.ranges.values = spectrum.ranges.values.concat(
     mapRanges(ranges, spectrum),
   );
