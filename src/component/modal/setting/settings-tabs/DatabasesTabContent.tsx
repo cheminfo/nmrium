@@ -37,7 +37,7 @@ interface DatabasesTabContentProps {
   originalWorkspaces: CustomWorkspaces;
 }
 
-function DatabasesTabContent({
+export default function DatabasesTabContent({
   currentWorkspace,
   originalWorkspaces,
 }: DatabasesTabContentProps) {
@@ -276,5 +276,3 @@ function DataBaseHeader(props: DataBaseHeaderProps) {
     </Section>
   );
 }
-
-export default DatabasesTabContent;
