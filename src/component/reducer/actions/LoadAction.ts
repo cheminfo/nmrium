@@ -143,13 +143,15 @@ function setData(draft: Draft<State>, input: InputProps | InitiateProps) {
       }
     }
   }
-  draft.molecules = draft.molecules.concat(
-    MoleculeManager.fromJSON(molecules, draft.molecules),
-  );
 
   const fileCollectionId = crypto.randomUUID();
   const fileCollection =
     'fileCollection' in input ? input.fileCollection : undefined;
+
+  draft.molecules = draft.molecules.concat(
+    MoleculeManager.fromJSON(molecules, fileCollectionId, draft.molecules),
+  );
+
   draft.data = draft.data.concat(
     initSpectra(spectra, {
       usedColors: draft.usedColors,
@@ -184,7 +186,7 @@ function initSpectra(
   },
 ) {
   const spectra: any = [];
-  const { usedColors, molecules, spectraColors } = options;
+  const { usedColors, molecules, spectraColors, fileCollectionId } = options;
   for (const spectrum of inputSpectra) {
     const { info } = spectrum;
     if (info.dimension === 1) {
@@ -193,13 +195,14 @@ function initSpectra(
           usedColors,
           molecules,
           colors: spectraColors.oneDimension,
+          fileCollectionId,
         }),
       );
     } else if (info.dimension === 2) {
       spectra.push(
         initiateDatum2D(
           { ...spectrum },
-          { usedColors, colors: spectraColors.twoDimensions },
+          { usedColors, colors: spectraColors.twoDimensions, fileCollectionId },
         ),
       );
     }

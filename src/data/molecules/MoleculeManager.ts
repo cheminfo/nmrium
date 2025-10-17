@@ -1,12 +1,14 @@
+import type { StateMolecule } from '@zakodium/nmrium-core';
 import { readSDF, readSMILES } from '@zakodium/nmrium-core-plugins';
 import { Molecule } from 'openchemlib';
 
-import type { StateMolecule, StateMoleculeExtended } from './Molecule.js';
+import type { StateMoleculeExtended } from './Molecule.js';
 import { initMolecule } from './Molecule.js';
 
 //TODO: Move molecule initialization to nmrium-core and log an error if the molecule cannot be parsed.
 export function fromJSON(
   mols: StateMolecule[],
+  fileCollectionId: string | undefined,
   reservedMolecules: StateMolecule[] = [],
 ) {
   const reservedNumbers = extractLabelsNumbers(reservedMolecules.concat(mols));
@@ -23,6 +25,8 @@ export function fromJSON(
 
     molecules.push(
       initMolecule({
+        ...mol,
+        fileCollectionId,
         molfile: molecule.toMolfileV3(),
         label: mol.label || `P${getLabelNumber(reservedNumbers)}`,
         id: mol.id,
