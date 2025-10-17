@@ -4,6 +4,7 @@ import type {
   Spectrum,
   ViewState,
 } from '@zakodium/nmrium-core';
+import type { FileCollection } from 'file-collection';
 import type { Draft } from 'immer';
 import { produce } from 'immer';
 import lodashMerge from 'lodash/merge.js';
@@ -37,6 +38,7 @@ interface InputProps extends InitiateProps {
   parseMetaFileResult?: ParseResult<any> | null;
   resetSourceObject?: boolean;
   spectraColors?: SpectraColors;
+  fileCollection?: FileCollection;
 }
 
 type SetIsLoadingAction = ActionType<
@@ -46,9 +48,14 @@ type SetIsLoadingAction = ActionType<
   }
 >;
 type LoadDropFilesAction = ActionType<'LOAD_DROP_FILES', InputProps>;
-type InitiateAction = ActionType<'INITIATE', InitiateProps>;
+type InitiateAction = ActionType<
+  'INITIATE',
+  InitiateProps & {
+    fileCollections: Map<string, FileCollection>;
+  }
+>;
 
-export type LoadActions =
+export type LoadAction =
   | SetIsLoadingAction
   | LoadDropFilesAction
   | InitiateAction;
@@ -89,23 +96,25 @@ function setCorrelation(draft: Draft<State>, correlations: CorrelationData) {
   }
 }
 
-function setData(draft: Draft<State>, input: InputProps) {
+function setData(draft: Draft<State>, input: InputProps | InitiateProps) {
+  const { data, view } = input.nmriumState || {
+    data: { spectra: [], molecules: [], correlations: {} },
+  };
+
+  const parseMetaFileResult =
+    'parseMetaFileResult' in input ? input.parseMetaFileResult || null : null;
+
   const {
-    nmriumState: { data, view },
-    parseMetaFileResult = null,
     spectraColors = {
       oneDimension: [],
       twoDimensions: [],
       highlightColor: '#ffd70080',
       indicatorLineColor: '#2FFF0085',
     },
-  } = input || {
-    nmriumState: { data: { spectra: [], molecules: [], correlations: {} } },
-    multipleAnalysis: {},
-  };
+  } = 'spectraColors' in input ? input : { spectraColors: undefined };
 
   const {
-    source,
+    sources,
     spectra = [],
     molecules = [],
     correlations = {},
@@ -116,28 +125,45 @@ function setData(draft: Draft<State>, input: InputProps) {
     draft.view = lodashMerge(defaultViewState, view);
   }
 
-  if (source) {
-    draft.source = lodashMergeWith(
-      draft.source,
-      source,
-      (objValue: any, srcValue: any) => {
-        if (Array.isArray(objValue)) {
-          return objValue.concat(srcValue);
-        }
-        return undefined;
-      },
-    );
+  if (sources && sources.length > 0) {
+    for (const source of sources) {
+      if (draft.sources[source.id]) {
+        draft.sources[source.id] = lodashMergeWith(
+          draft.sources[source.id],
+          source,
+          (objValue: any, srcValue: any) => {
+            if (Array.isArray(objValue)) {
+              return objValue.concat(srcValue);
+            }
+            return undefined;
+          },
+        );
+      } else {
+        draft.sources[source.id] = source;
+      }
+    }
   }
+
+  const fileCollectionId = sources?.at(-1)?.id || crypto.randomUUID();
+  const fileCollection =
+    'fileCollection' in input ? input.fileCollection : undefined;
+
   draft.molecules = draft.molecules.concat(
-    MoleculeManager.fromJSON(molecules, draft.molecules),
+    MoleculeManager.fromJSON(molecules, fileCollectionId, draft.molecules),
   );
+
   draft.data = draft.data.concat(
     initSpectra(spectra, {
       usedColors: draft.usedColors,
       molecules: draft.molecules,
       spectraColors,
+      fileCollectionId,
     }),
   );
+  if (fileCollection) {
+    draft.fileCollections ??= {};
+    draft.fileCollections[fileCollectionId] = fileCollection;
+  }
   setCorrelation(draft, correlations);
 
   if (parseMetaFileResult) {
@@ -156,10 +182,11 @@ function initSpectra(
     usedColors: UsedColors;
     molecules: StateMoleculeExtended[];
     spectraColors: SpectraColors;
+    fileCollectionId: string | undefined;
   },
 ) {
   const spectra: any = [];
-  const { usedColors, molecules, spectraColors } = options;
+  const { usedColors, molecules, spectraColors, fileCollectionId } = options;
   for (const spectrum of inputSpectra) {
     const { info } = spectrum;
     if (info.dimension === 1) {
@@ -168,13 +195,14 @@ function initSpectra(
           usedColors,
           molecules,
           colors: spectraColors.oneDimension,
+          fileCollectionId,
         }),
       );
     } else if (info.dimension === 2) {
       spectra.push(
         initiateDatum2D(
           { ...spectrum },
-          { usedColors, colors: spectraColors.twoDimensions },
+          { usedColors, colors: spectraColors.twoDimensions, fileCollectionId },
         ),
       );
     }
@@ -212,10 +240,23 @@ function initData(
     nmriumState: { data, view },
   } = action.payload;
 
+  function updateFileCollections(draft: Draft<State>) {
+    if ('fileCollections' in action.payload) {
+      const fileCollections = action.payload.fileCollections;
+      if (fileCollections.size > 0) {
+        draft.fileCollections ??= {};
+      }
+      for (const [id, fc] of fileCollections) {
+        draft.fileCollections[id] = fc;
+      }
+    }
+  }
+
   const viewState = view as ViewState;
   if (data?.spectra?.length || forceInitialize) {
     const state = getInitialState();
     return produce(state, (initialDraft) => {
+      updateFileCollections(initialDraft);
       setData(initialDraft, action.payload);
       setActiveTab(initialDraft, {
         tab: viewState?.spectra?.activeTab || '',
@@ -228,6 +269,7 @@ function initData(
       initialDraft.actionType = action.type;
     });
   } else {
+    updateFileCollections(draft);
     if (view) {
       const defaultViewState = getDefaultViewState();
       draft.view = lodashMerge(defaultViewState, view);
@@ -271,7 +313,7 @@ function handleLoadDropFiles(draft: Draft<State>, action: LoadDropFilesAction) {
 
     // set source undefined when dragging and dropping a spectra file to prevent export spectra with the data source.
     if (resetSourceObject && spectra?.length > 0) {
-      draft.source = undefined;
+      draft.sources = {};
     }
 
     draft.actionType = type;
@@ -279,5 +321,11 @@ function handleLoadDropFiles(draft: Draft<State>, action: LoadDropFilesAction) {
     return undefined;
   }
 }
+
+export const LoadActions = {
+  handleInitiate,
+  handleLoadDropFiles,
+  handleSetIsLoading,
+} as const;
 
 export { handleInitiate, handleLoadDropFiles, handleSetIsLoading };
