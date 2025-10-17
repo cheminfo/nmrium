@@ -23,8 +23,6 @@ function MultipleAnalysisCodeEditor({ data }: MultipleAnalysisCodeEditorProps) {
   useEffect(() => {
     const evalResult = evaluate(code, data);
     if (evalResult instanceof Error) {
-      // TODO: change this to not use an effect.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setResult(evalResult.message);
     } else {
       setValue('code', code);

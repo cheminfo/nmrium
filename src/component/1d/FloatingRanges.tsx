@@ -158,13 +158,13 @@ function InnerSVGRangesTable(props: RangesTableProps) {
 const SVGRangesTable = memo(InnerSVGRangesTable);
 
 interface DraggablePublicationStringProps {
-  ranges: Ranges['values'];
+  ranges: Ranges['values'] | undefined;
   bonding: BoundingBox;
   spectrumKey: string;
 }
 
 function DraggableRanges(props: DraggablePublicationStringProps) {
-  const { ranges, bonding: externalBounding, spectrumKey } = props;
+  const { ranges = [], bonding: externalBounding, spectrumKey } = props;
   const dispatch = useDispatch();
   const { viewerRef } = useGlobal();
   const [bounding, setBounding] = useState<BoundingBox>(externalBounding);
@@ -276,7 +276,7 @@ function DraggableRanges(props: DraggablePublicationStringProps) {
       onClick: handleRemove,
     },
   ];
-  if (!viewerRef || !ranges || ranges.length === 0) return null;
+  if (!viewerRef || ranges.length === 0) return null;
 
   const { x: xInPercent, y: yInPercent } = bounding;
 

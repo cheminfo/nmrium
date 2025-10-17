@@ -385,7 +385,7 @@ function SectionItem(props: SectionItemProps) {
       <div
         style={{
           position: 'relative',
-          opacity: state && state.type === 'dragging' ? 0.3 : 1,
+          opacity: state.type === 'dragging' ? 0.3 : 1,
         }}
         ref={wrapperRef}
       >

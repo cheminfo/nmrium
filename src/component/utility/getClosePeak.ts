@@ -22,7 +22,7 @@ export function getClosePeak(
   const minIndex = datum.x.findIndex((number) => number >= from);
 
   const yDataRange = datum.y.slice(minIndex, maxIndex);
-  if (!yDataRange || yDataRange.length === 0) return null;
+  if (yDataRange.length === 0) return null;
 
   const y = maxAbsoluteValue(yDataRange);
   const xIndex = minIndex + yDataRange.indexOf(y);
