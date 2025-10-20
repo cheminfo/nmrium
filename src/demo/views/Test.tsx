@@ -29,11 +29,13 @@ function searchDeep(obj: any, searchKey: any) {
 }
 
 function Inspector(data: any) {
-  const [filteredData, seData] = useState<any>();
   const [key, setKey] = useState<string>('');
-  useEffect(() => {
-    const result = searchDeep(data, key);
-    seData(key ? result : data);
+  const filteredData = useMemo(() => {
+    if (key) {
+      return searchDeep(data, key);
+    } else {
+      return data;
+    }
   }, [data, key]);
   const handleSearch = useMemo(
     () =>
@@ -68,14 +70,17 @@ export default function Test(props: any) {
     (a: any) => a + 1,
     0,
   );
+
+  if (!file && data !== undefined) {
+    setData(undefined);
+  }
+
   useEffect(() => {
     if (file) {
       void loadData(file).then((d: any) => {
         const _d = JSON.parse(JSON.stringify(d).replaceAll(/\.\/+?/g, baseURL));
         setData(_d);
       });
-    } else {
-      setData(undefined);
     }
   }, [baseURL, file, props]);
   const [viewCallBack, setViewCallBack] = useState<any>({});

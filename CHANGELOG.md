@@ -1,5 +1,39 @@
 # Changelog
 
+## [1.6.1](https://github.com/cheminfo/nmrium/compare/v1.6.0...v1.6.1) (2025-10-16)
+
+
+### Bug Fixes
+
+* only suppress solvent for 13C ([#3766](https://github.com/cheminfo/nmrium/issues/3766)) ([38dda06](https://github.com/cheminfo/nmrium/commit/38dda065b3ecf6cc2aa6cfb809b1a59845495da4))
+
+## [1.6.0](https://github.com/cheminfo/nmrium/compare/v1.5.0...v1.6.0) (2025-10-14)
+
+
+### Features
+
+* carbon solvent labelling ([#3693](https://github.com/cheminfo/nmrium/issues/3693)) ([720722b](https://github.com/cheminfo/nmrium/commit/720722bedbf7d4a79aee2a8499b2615991a5bc85))
+
+
+### Bug Fixes
+
+* use package wrapper for native ESM support in pdnd ([#3756](https://github.com/cheminfo/nmrium/issues/3756)) ([de0fabf](https://github.com/cheminfo/nmrium/commit/de0fabf845814f428ffe3885ca7470315297fa85))
+
+## [1.5.0](https://github.com/cheminfo/nmrium/compare/v1.4.0...v1.5.0) (2025-10-12)
+
+
+### Features
+
+* hide labels of overlapping peaks ([402c832](https://github.com/cheminfo/nmrium/commit/402c832688c94b539b8c5055d160a4ab648954c1))
+* improve peaks overlap detection ([402c832](https://github.com/cheminfo/nmrium/commit/402c832688c94b539b8c5055d160a4ab648954c1))
+* show integrals by default only for 1H spectra ([ab4a1d3](https://github.com/cheminfo/nmrium/commit/ab4a1d3602209c8fbdb6da726347db7a710b98e6)), closes [#3739](https://github.com/cheminfo/nmrium/issues/3739)
+* show peaks by default only for carbon spectra ([d6e7617](https://github.com/cheminfo/nmrium/commit/d6e7617fdba2ff34b3eab3ce311cf741f6f6370e))
+
+
+### Bug Fixes
+
+* correctly assign and highlight homoNuclear nuclei ([5ccecde](https://github.com/cheminfo/nmrium/commit/5ccecde3ab31b2a59e9fcbf9dba277b92d0c9baf)), closes [#3738](https://github.com/cheminfo/nmrium/issues/3738)
+
 ## [1.4.0](https://github.com/cheminfo/nmrium/compare/v1.3.0...v1.4.0) (2025-10-09)
 
 

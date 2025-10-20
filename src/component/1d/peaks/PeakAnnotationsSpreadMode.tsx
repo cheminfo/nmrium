@@ -95,7 +95,7 @@ function PeakAnnotationsSpreadMode(props: PeakAnnotationsSpreadModeProps) {
   ];
 
   const mapPeaks = resolve(peaks, {
-    key: 'scaleX',
+    key: 'xInPixel',
     width: notationWidth,
     margin: notationMargin,
     groupMargin: 10,
@@ -144,9 +144,9 @@ function PeakAnnotationsSpreadMode(props: PeakAnnotationsSpreadModeProps) {
                   transform={`translate(${group.meta.groupStartX},0)`}
                 >
                   {group.group.map((item, index) => {
-                    const { id, x: value, scaleX, parentKeys } = item;
+                    const { id, x: value, xInPixel, parentKeys } = item;
                     const startX = index * (notationWidth + notationMargin);
-                    const x = scaleX - group.meta.groupStartX;
+                    const x = xInPixel - group.meta.groupStartX;
                     return (
                       <PeakAnnotation
                         key={id}

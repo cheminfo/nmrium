@@ -139,7 +139,9 @@ interface ClipboardFallbackReadProps extends CFBP {
 }
 function ClipboardFallbackRead(props: ClipboardFallbackReadProps) {
   const onFileRef = useRef(props.onRead);
-  onFileRef.current = props.onRead;
+  useEffect(() => {
+    onFileRef.current = props.onRead;
+  });
 
   const onSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -178,9 +180,12 @@ interface ClipboardFallbackReadTextProps extends CFBP {
   onReadText: (text: string) => void;
   mode: 'readText';
 }
+
 function ClipboardFallbackReadText(props: ClipboardFallbackReadTextProps) {
   const onTextRef = useRef(props.onReadText);
-  onTextRef.current = props.onReadText;
+  useEffect(() => {
+    onTextRef.current = props.onReadText;
+  });
 
   const onSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -219,9 +224,12 @@ interface ClipboardFallbackWriteProps extends CFBP {
   file: File;
   mode: 'write';
 }
+
 function ClipboardFallbackWrite(props: ClipboardFallbackWriteProps) {
   const onDismissRef = useRef(props.onDismiss);
-  onDismissRef.current = props.onDismiss;
+  useEffect(() => {
+    onDismissRef.current = props.onDismiss;
+  });
 
   const onSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -259,13 +267,15 @@ interface ClipboardFallbackWriteTextProps extends CFBP {
   text: string;
   mode: 'writeText';
 }
+
 function ClipboardFallbackWriteText(props: ClipboardFallbackWriteTextProps) {
   const onDismissRef = useRef(props.onDismiss);
-  onDismissRef.current = props.onDismiss;
+  useEffect(() => {
+    onDismissRef.current = props.onDismiss;
+  });
 
   const onSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     onDismissRef.current();
   }, []);
 

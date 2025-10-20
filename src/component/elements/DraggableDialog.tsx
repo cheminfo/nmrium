@@ -129,8 +129,6 @@ function InnerDraggableDialog(props: InnerDraggableDialogProps) {
         parentContainerRect,
       });
 
-      // Mutating a ref.
-      // eslint-disable-next-line react-hooks/react-compiler
       innerDialogRef.current.style.transform = `translate(${transformX}px, ${transformY}px)`;
     };
 

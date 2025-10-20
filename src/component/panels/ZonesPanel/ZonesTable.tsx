@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import type { Info2D } from '@zakodium/nmr-types';
+import type { Info2D, Zone } from '@zakodium/nmr-types';
 import type {
   Zones1DNucleusPreferences,
   Zones2DNucleusPreferences,
@@ -70,14 +70,12 @@ const Table = styled.table`
   }
 `;
 
+export interface ZonesTableDataElement extends Zone {
+  tableMetaInfo: { isConstantlyHighlighted: boolean };
+}
+
 interface ZonesTableProps {
-  tableData: Array<{
-    signals: any[];
-    tableMetaInfo: any;
-    rowIndex: number;
-    signalIndex: number;
-    id: number;
-  }>;
+  tableData: ZonesTableDataElement[];
   onUnlink: (
     zoneData: any,
     isOnZoneLevel: any,
@@ -89,7 +87,8 @@ interface ZonesTableProps {
 }
 const ZoneEditionDialog = withDialog(EditZoneModal, { force: true });
 
-function ZonesTable({ tableData, onUnlink, nucleus, info }: ZonesTableProps) {
+function ZonesTable(props: ZonesTableProps) {
+  const { tableData, onUnlink, nucleus, info } = props;
   const { experiment, isFid } = info;
 
   const nuclei = nucleus.split(',');
@@ -119,7 +118,7 @@ function ZonesTable({ tableData, onUnlink, nucleus, info }: ZonesTableProps) {
     return <NoDataForFid />;
   }
 
-  if (!tableData || tableData.length === 0) {
+  if (data.length === 0) {
     return <EmptyText text="No data" />;
   }
 

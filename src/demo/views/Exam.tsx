@@ -184,6 +184,10 @@ export default function Exam(props: any) {
 
   const { file, title, baseURL } = props;
 
+  if (!file && data !== undefined) {
+    setData(undefined);
+  }
+
   const checkAnswer = useCallback(
     (response: any) => {
       if (data.answer) {
@@ -218,8 +222,6 @@ export default function Exam(props: any) {
           setData(_d);
         }
       });
-    } else {
-      setData({});
     }
   }, [baseURL, file, props]);
 

@@ -3,6 +3,16 @@ import type { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/
 import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
 import { Colors, Icon, Tag } from '@blueprintjs/core';
 import styled from '@emotion/styled';
+import {
+  attachClosestEdge,
+  combine,
+  draggable,
+  dropTargetForElements,
+  extractClosestEdge,
+  getReorderDestinationIndex,
+  pointerOutsideOfPreview,
+  setCustomNativeDragPreview,
+} from '@zakodium/pdnd-esm';
 import type {
   CSSProperties,
   HTMLAttributes,
@@ -20,17 +30,6 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 import { assert } from 'react-science/ui';
-
-import {
-  attachClosestEdge,
-  combine,
-  draggable,
-  dropTargetForElements,
-  extractClosestEdge,
-  getReorderDestinationIndex,
-  pointerOutsideOfPreview,
-  setCustomNativeDragPreview,
-} from './pdnd.cjs';
 
 interface DropIndicatorProps {
   edge: Edge;
@@ -386,7 +385,7 @@ function SectionItem(props: SectionItemProps) {
       <div
         style={{
           position: 'relative',
-          opacity: state && state.type === 'dragging' ? 0.3 : 1,
+          opacity: state.type === 'dragging' ? 0.3 : 1,
         }}
         ref={wrapperRef}
       >

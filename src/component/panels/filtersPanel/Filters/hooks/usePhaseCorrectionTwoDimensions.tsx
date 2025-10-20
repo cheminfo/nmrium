@@ -59,14 +59,6 @@ export function usePhaseCorrectionTwoDimensions(filter: Filter2DEntry | null) {
     }, 250),
   );
 
-  function syncWatch(sharedFilterOptions: any) {
-    updateInputRangeInitialValue(sharedFilterOptions);
-    setValue(sharedFilterOptions);
-  }
-
-  const { syncFilterOptions, clearSyncFilterOptions } =
-    useSyncedFilterOptions(syncWatch);
-
   const {
     value: phaseCorrectionSelectItem,
     ...defaultPhaseCorrectionSelectProps
@@ -134,6 +126,14 @@ export function usePhaseCorrectionTwoDimensions(filter: Filter2DEntry | null) {
     },
     [activeTraceDirection],
   );
+
+  function syncWatch(sharedFilterOptions: any) {
+    updateInputRangeInitialValue(sharedFilterOptions);
+    setValue(sharedFilterOptions);
+  }
+
+  const { syncFilterOptions, clearSyncFilterOptions } =
+    useSyncedFilterOptions(syncWatch);
 
   const handleInputValueChange = useCallback(
     (valueAsNumber: any, valueAsString: any, inputElement: any) => {

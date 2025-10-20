@@ -21,9 +21,11 @@ import {
 import type { ActionsButtonsPopoverProps } from '../../elements/ActionsButtonsPopover.js';
 import { ActionsButtonsPopover } from '../../elements/ActionsButtonsPopover.js';
 import { useHighlight } from '../../highlight/index.js';
-import { useCanvasContext } from '../../hooks/useCanvasContext.js';
+import { useActiveNucleusTab } from '../../hooks/useActiveNucleusTab.ts';
 import { useHighlightColor } from '../../hooks/useHighlightColor.ts';
+import { useTextMetrics } from '../../hooks/useTextMetrics.ts';
 import { useTriggerNewAssignmentLabel } from '../../hooks/useTriggerNewAssignmentLabel.js';
+import { isHomoNuclear } from '../../utility/isHomoNuclear.ts';
 import { stackOverlappingLabelsArray } from '../../utility/stackOverlappingLabels.js';
 import { useTracesSpectra } from '../useTracesSpectra.js';
 import type { ExtractedSignal } from '../utilities/extractSpectrumSignals.js';
@@ -67,16 +69,16 @@ function useSignalsOverlap(axis: IndicationLinesAxis, spectrum: Spectrum1D) {
   });
   const scaleX = useScale2DX();
   const scaleY = useScale2DY();
-  const context = useCanvasContext(labelSize);
+  const { getTextWidth } = useTextMetrics(labelSize);
 
-  if (!signals || !context) return null;
+  if (!signals) return null;
 
   const isOverXAxis = axis === 'x';
 
   const processedSignals: ProcessedSignal[] = signals.map((signal) => {
     const { delta } = signal;
     const text = signal.assignment ?? '';
-    const { width: labelWidth } = context.measureText(text);
+    const labelWidth = getTextWidth(text);
 
     return {
       ...signal,
@@ -200,6 +202,9 @@ function IndicationLine(props: IndicationLineProps) {
   const signalsIds = signals.map(({ id }) => id);
   const { margin, width, height } = useChartData();
   const { setData: addNewAssignmentLabel } = useShareData();
+  const nuclei = useActiveNucleusTab();
+  const isHomoNuclei = isHomoNuclear(nuclei);
+
   const dispatch = useDispatch();
   const { assignmentContext, highlightContext } = useRangeAssignment({
     rangeId,
@@ -240,7 +245,7 @@ function IndicationLine(props: IndicationLineProps) {
   }
 
   function mouseEnterHandler() {
-    assignmentContext.highlight(axis);
+    assignmentContext.highlight(isHomoNuclei ? 'x' : axis);
     highlightContext.show();
   }
 
@@ -251,7 +256,7 @@ function IndicationLine(props: IndicationLineProps) {
 
   function assignHandler() {
     isAssignBtnTrigged.current = true;
-    assignmentContext.activate(axis);
+    assignmentContext.activate(isHomoNuclei ? 'x' : axis);
   }
 
   function unAssignHandler() {

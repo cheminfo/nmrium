@@ -55,14 +55,6 @@ export function usePhaseCorrection(
       itemTextKey: 'label',
     });
 
-  function syncWatch(sharedFilterOptions: any) {
-    updateInputRangeInitialValue(sharedFilterOptions);
-    setValue(sharedFilterOptions);
-  }
-
-  const { syncFilterOptions, clearSyncFilterOptions } =
-    useSyncedFilterOptions(syncWatch);
-
   useEffect(() => {
     if (filter && phaseCorrectionTypeItem?.value === 'manual') {
       const { ph0 = 0, ph1 = 0 } = filter?.value || {};
@@ -78,6 +70,20 @@ export function usePhaseCorrection(
       ph1Ref.current?.setValue(valueRef.current?.ph1 || 0);
     }
   }, [filter, phaseCorrectionTypeItem]);
+
+  const updateInputRangeInitialValue = useCallback((value: any) => {
+    // update InputRange initial value
+    ph0Ref.current?.setValue(value.ph0);
+    ph1Ref.current?.setValue(value.ph1);
+  }, []);
+
+  function syncWatch(sharedFilterOptions: any) {
+    updateInputRangeInitialValue(sharedFilterOptions);
+    setValue(sharedFilterOptions);
+  }
+
+  const { syncFilterOptions, clearSyncFilterOptions } =
+    useSyncedFilterOptions(syncWatch);
 
   function handleApplyFilter() {
     switch (phaseCorrectionTypeItem?.value) {
@@ -122,12 +128,6 @@ export function usePhaseCorrection(
     },
     [data.re, dispatch, pivot?.index],
   );
-
-  const updateInputRangeInitialValue = useCallback((value: any) => {
-    // update InputRange initial value
-    ph0Ref.current?.setValue(value.ph0);
-    ph1Ref.current?.setValue(value.ph1);
-  }, []);
 
   const handleInput = useCallback(
     (valueAsNumber: any, valueAsString: any, element: any) => {

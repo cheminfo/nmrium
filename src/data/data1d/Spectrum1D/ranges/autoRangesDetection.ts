@@ -8,6 +8,7 @@ const defaultPeakPickingOptions = {
   realTopDetection: true,
   maxCriteria: true,
   smoothY: true,
+  sensitivity: 100,
   broadWidth: 0.25,
   broadRatio: 0.0025,
   integrationSum: 100,
@@ -23,7 +24,7 @@ export default function autoRangesDetection(
 
   let { re, x } = spectrum.data;
 
-  const { originFrequency, nucleus } = spectrum.info;
+  const { originFrequency, nucleus, solvent } = spectrum.info;
 
   const { windowFromIndex, windowToIndex, peakPicking, rangePicking } = options;
 
@@ -34,12 +35,13 @@ export default function autoRangesDetection(
   };
 
   const rangesOptions = {
-    frequency: originFrequency,
     nucleus,
-    compile: true,
-    frequencyCluster: 13,
-    keepPeaks: true,
     clean: 0.3,
+    keepPeaks: true,
+    compile: nucleus === '1H',
+    frequency: originFrequency,
+    joinOverlapRanges: nucleus === '1H',
+    frequencyCluster: nucleus === '1H' ? 13 : 0,
     ...rangePicking,
   };
 
@@ -54,6 +56,7 @@ export default function autoRangesDetection(
   const ranges = xyAutoRangesPicking(
     { x, y: re },
     {
+      impurities: nucleus === '13C' ? { solvent } : undefined,
       peakPicking: peakPickingOptions,
       ranges: rangesOptions,
     },

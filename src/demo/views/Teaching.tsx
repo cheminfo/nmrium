@@ -20,14 +20,16 @@ export default function Teaching(props: any) {
   const [data, setData] = useState<any>();
   const { file, title, baseURL } = props;
 
+  if (!file && data !== undefined) {
+    setData(undefined);
+  }
+
   useEffect(() => {
     if (file) {
       void loadData(file).then((d: any) => {
         const _d = JSON.parse(JSON.stringify(d).replaceAll(/\.\/+?/g, baseURL));
         setData(_d);
       });
-    } else {
-      setData({});
     }
   }, [baseURL, file, props]);
 

@@ -3,12 +3,12 @@ import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { memo, useMemo } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';
+import { useScaleChecked } from '../../context/ScaleContext.tsx';
 import { useActiveSpectrumPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState.js';
 import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import type { Margin } from '../../reducer/Reducer.js';
-import { useScaleX } from '../utilities/scale.js';
 
 import PeakAnnotations from './PeakAnnotations.js';
 import PeakAnnotationsSpreadMode from './PeakAnnotationsSpreadMode.js';
@@ -21,17 +21,17 @@ interface NMRPeak1DWithParentKeys extends NMRPeak1D {
 }
 
 interface SpreadPeak1D extends Peak1DWithParentKeys {
-  scaleX: number;
+  xInPixel: number;
+  yInPixel: number;
 }
 interface SpreadNMRPeak1D extends NMRPeak1DWithParentKeys {
-  scaleX: number;
+  xInPixel: number;
+  yInPixel: number;
 }
 
 export type Peak = Required<SpreadPeak1D | SpreadNMRPeak1D>;
 type PeaksMode = 'spread' | 'single';
 export type PeaksSource = 'peaks' | 'ranges';
-
-type FilterPeaksBy = `Source[${PeaksSource}]_Mode[${PeaksMode}]`;
 
 interface BasePeaksProps {
   peaksSource: PeaksSource;
@@ -70,36 +70,45 @@ function flatRangesPeaks(ranges: Range[]) {
   return results;
 }
 
-function mapPeaks(peaks: Peak[], scale: (value: number) => number) {
+function mapPeaks(
+  peaks: Peak[],
+  options: {
+    scaleX: (value: number) => number;
+    scaleY: (value: number) => number;
+  },
+) {
+  const { scaleX, scaleY } = options;
   const mappedPeaks = peaks.map((peak) => ({
     ...peak,
-    scaleX: scale(peak.x),
+    xInPixel: scaleX(peak.x),
+    yInPixel: scaleY(peak.y),
   }));
-  mappedPeaks.sort((p1, p2) => p2.x - p1.x);
   return mappedPeaks;
 }
 
-function useMapPeaks(spectrum: Spectrum1D, filterBy: FilterPeaksBy) {
-  const scaleX = useScaleX();
+function sortPeaks(peaks: Peak[]) {
+  return peaks.toSorted((a, b) => b.x - a.x);
+}
+
+function useMapPeaks(spectrum: Spectrum1D, peaksSource: PeaksSource) {
+  const { scaleX, scaleY } = useScaleChecked();
   return useMemo(() => {
-    switch (filterBy) {
-      case 'Source[peaks]_Mode[single]':
-        return spectrum.peaks.values;
-      case 'Source[peaks]_Mode[spread]':
-        return mapPeaks(spectrum.peaks.values as Peak[], (val) =>
-          scaleX()(val),
-        );
-      case 'Source[ranges]_Mode[single]':
-        return flatRangesPeaks(spectrum.ranges.values);
-      case 'Source[ranges]_Mode[spread]':
-        return mapPeaks(
-          flatRangesPeaks(spectrum.ranges.values) as Peak[],
-          (val) => scaleX()(val),
-        );
-      default:
-        return [];
+    let sourcePeaks: Peak[] = [];
+    if (peaksSource === 'peaks') {
+      sourcePeaks = spectrum.peaks.values as Peak[];
     }
-  }, [scaleX, spectrum, filterBy]);
+
+    if (peaksSource === 'ranges') {
+      sourcePeaks = flatRangesPeaks(spectrum.ranges.values) as Peak[];
+    }
+
+    const sortedPeaks = sortPeaks(sourcePeaks);
+
+    return mapPeaks(sortedPeaks, {
+      scaleX: (val) => scaleX()(val),
+      scaleY: (val) => scaleY()(val),
+    });
+  }, [peaksSource, spectrum, scaleX, scaleY]);
 }
 
 interface InnerPeaksProps extends BasePeaksProps {
@@ -121,10 +130,7 @@ function InnerPeaks(props: InnerPeaksProps) {
     peakFormat,
   } = props;
 
-  const peaks = useMapPeaks(
-    spectrum,
-    `Source[${peaksSource}]_Mode[${mode}]`,
-  ) as Peak[];
+  const peaks = useMapPeaks(spectrum, peaksSource);
 
   if (mode === 'spread') {
     return (

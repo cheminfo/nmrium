@@ -8,9 +8,9 @@ import { memo } from 'react';
 import { useChartData } from '../../context/ChartContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';
 import { ShareDataProvider } from '../../context/ShareDataContext.js';
-import { useCanvasContext } from '../../hooks/useCanvasContext.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
+import { useTextMetrics } from '../../hooks/useTextMetrics.ts';
 import { stackOverlappingLabelsMap } from '../../utility/stackOverlappingLabels.js';
 
 import Range from './Range.js';
@@ -31,13 +31,13 @@ type ProcessedRange = RangeType & {
 function useStackRangesAssignmentsLabels(ranges: RangeType[]) {
   const { scaleX } = useScaleChecked();
 
-  const context = useCanvasContext(labelSize);
+  const { getTextWidth } = useTextMetrics(labelSize);
 
-  if (!context || ranges.length === 0) return null;
+  if (ranges.length === 0) return null;
 
   const processedRanges: ProcessedRange[] = ranges.map((range) => {
     const { from, assignment = '' } = range;
-    const { width: labelWidth } = context.measureText(assignment);
+    const labelWidth = getTextWidth(assignment);
 
     return {
       ...range,
