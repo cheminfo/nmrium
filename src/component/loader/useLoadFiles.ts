@@ -50,9 +50,10 @@ export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
           experimentalFeatures,
         };
 
-        let fileCollection: FileCollection;
+        let fileCollection: FileCollection | undefined;
+        let fileCollections: Map<string, FileCollection> | undefined;
         if (files.length === 1 && files[0].name.endsWith('.nmrium.zip')) {
-          [nmriumState, fileCollection] = await core.readNMRiumArchive(
+          [nmriumState, fileCollections] = await core.readNMRiumArchive(
             files[0].stream(),
             parsingOptions,
           );
@@ -106,6 +107,7 @@ export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
             parseMetaFileResult,
             spectraColors,
             fileCollection,
+            fileCollections,
           },
         });
       }

@@ -31,6 +31,7 @@ import { setActiveTab } from './ToolsActions.js';
 //TODO use viewState type instead of any { view?: ViewState }
 interface InitiateProps {
   nmriumState: Partial<NmriumState>;
+  fileCollections?: Map<string, FileCollection>;
 }
 interface InputProps extends InitiateProps {
   containsNmrium?: boolean;
@@ -48,12 +49,7 @@ type SetIsLoadingAction = ActionType<
   }
 >;
 type LoadDropFilesAction = ActionType<'LOAD_DROP_FILES', InputProps>;
-type InitiateAction = ActionType<
-  'INITIATE',
-  InitiateProps & {
-    fileCollections: Map<string, FileCollection>;
-  }
->;
+type InitiateAction = ActionType<'INITIATE', InitiateProps>;
 
 export type LoadAction =
   | SetIsLoadingAction
@@ -144,7 +140,12 @@ function setData(draft: Draft<State>, input: InputProps | InitiateProps) {
     }
   }
 
-  const fileCollectionId = sources?.at(-1)?.id || crypto.randomUUID();
+  updateFileCollections(draft, input);
+
+  const fileCollectionId =
+    'fileCollection' in input
+      ? sources?.at(-1)?.id || crypto.randomUUID()
+      : undefined;
   const fileCollection =
     'fileCollection' in input ? input.fileCollection : undefined;
 
@@ -160,7 +161,7 @@ function setData(draft: Draft<State>, input: InputProps | InitiateProps) {
       fileCollectionId,
     }),
   );
-  if (fileCollection) {
+  if (fileCollection && fileCollectionId) {
     draft.fileCollections ??= {};
     draft.fileCollections[fileCollectionId] = fileCollection;
   }
@@ -227,6 +228,21 @@ function setPreferences(draft: Draft<State>, data: ViewState) {
   }
 }
 
+function updateFileCollections(
+  draft: Draft<State>,
+  payload: Pick<InitiateProps, 'fileCollections'>,
+) {
+  const fileCollections = payload.fileCollections;
+  if (!fileCollections) return;
+
+  if (fileCollections.size > 0) {
+    draft.fileCollections ??= {};
+  }
+  for (const [id, fc] of fileCollections) {
+    draft.fileCollections[id] = fc;
+  }
+}
+
 function initData(
   draft: Draft<State>,
   action: LoadDropFilesAction | InitiateAction,
@@ -240,23 +256,10 @@ function initData(
     nmriumState: { data, view },
   } = action.payload;
 
-  function updateFileCollections(draft: Draft<State>) {
-    if ('fileCollections' in action.payload) {
-      const fileCollections = action.payload.fileCollections;
-      if (fileCollections.size > 0) {
-        draft.fileCollections ??= {};
-      }
-      for (const [id, fc] of fileCollections) {
-        draft.fileCollections[id] = fc;
-      }
-    }
-  }
-
   const viewState = view as ViewState;
   if (data?.spectra?.length || forceInitialize) {
     const state = getInitialState();
     return produce(state, (initialDraft) => {
-      updateFileCollections(initialDraft);
       setData(initialDraft, action.payload);
       setActiveTab(initialDraft, {
         tab: viewState?.spectra?.activeTab || '',
@@ -269,7 +272,7 @@ function initData(
       initialDraft.actionType = action.type;
     });
   } else {
-    updateFileCollections(draft);
+    updateFileCollections(draft, action.payload);
     if (view) {
       const defaultViewState = getDefaultViewState();
       draft.view = lodashMerge(defaultViewState, view);

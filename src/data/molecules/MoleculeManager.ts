@@ -23,15 +23,17 @@ export function fromJSON(
       continue;
     }
 
-    molecules.push(
-      initMolecule({
-        ...mol,
-        fileCollectionId,
-        molfile: molecule.toMolfileV3(),
-        label: mol.label || `P${getLabelNumber(reservedNumbers)}`,
-        id: mol.id,
-      }),
-    );
+    const moleculeOverride = {
+      ...mol,
+      molfile: molecule.toMolfileV3(),
+      label: mol.label || `P${getLabelNumber(reservedNumbers)}`,
+      id: mol.id,
+    };
+    if (fileCollectionId) {
+      moleculeOverride.fileCollectionId = fileCollectionId;
+    }
+
+    molecules.push(initMolecule(moleculeOverride));
   }
 
   return molecules;
