@@ -32,6 +32,7 @@ import {
 } from '../../../data/data1d/Spectrum1D/index.js';
 import type { ChangeRangeRelativeValueProps } from '../../../data/data1d/Spectrum1D/ranges/changeRangeRelativeValue.js';
 import { unlink } from '../../../data/utilities/RangeUtilities.js';
+import { isProton } from '../../../data/utilities/isProton.ts';
 import type { TargetAssignKeys } from '../../panels/MoleculesPanel/Utilities.js';
 import type { RangeData } from '../../panels/RangesPanel/hooks/useMapRanges.js';
 import type { FilterType } from '../../utility/filterType.js';
@@ -49,7 +50,6 @@ import { setDomain } from './DomainActions.js';
 import { rollbackSpectrumByFilter } from './FiltersActions.js';
 import { toggleDisplayingPeaks } from './PeaksActions.js';
 import { resetSelectedTool } from './ToolsActions.js';
-import { isProton } from '../../../data/utilities/isProton.ts';
 
 type AutoRangesDetectionAction = ActionType<
   'AUTO_RANGES_DETECTION',
@@ -222,7 +222,7 @@ function handleAutoRangesDetection(
     // minMaxRatio default 0.05, lookNegative default false,
     const { minMaxRatio, lookNegative } = action.payload;
 
-    const nucleus = datum.info.nucleus as string;
+    const nucleus = datum.info.nucleus;
     const isProtonic = isProton(nucleus);
 
     const detectionOptions: any = {
