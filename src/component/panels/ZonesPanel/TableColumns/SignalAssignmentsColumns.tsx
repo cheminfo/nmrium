@@ -8,7 +8,7 @@ import type { ZoneData } from '../hooks/useMapZones.js';
 import SignalAssignmentsColumn from './SignalAssignmentsColumn.js';
 
 export function useSignalHighlight(rowData: ZoneData) {
-  const signalKey = String(rowData.tableMetaInfo.id);
+  const signalKey = rowData.tableMetaInfo.id;
   const signalAssignment = useAssignment(signalKey);
 
   const highlightSignalX = useHighlight(

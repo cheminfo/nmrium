@@ -75,8 +75,6 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
 
   useEffect(() => {
     if (moleculesProp) {
-      // TODO: refactor to not use an effect
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setMolecules((prevMolecules) => {
         if (moleculesProp.length > prevMolecules.length) {
           setCurrentIndex(molecules.length);

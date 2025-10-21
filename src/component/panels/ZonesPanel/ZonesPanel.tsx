@@ -1,3 +1,4 @@
+import type { Zone } from '@zakodium/nmr-types';
 import type { Spectrum2D, ZonesViewState } from '@zakodium/nmrium-core';
 import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { FaUnlink } from 'react-icons/fa';
@@ -15,6 +16,7 @@ import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
 import PreferencesHeader from '../header/PreferencesHeader.js';
 
 import ZonesPreferences from './ZonesPreferences.js';
+import type { ZonesTableDataElement } from './ZonesTable.js';
 import ZonesTable from './ZonesTable.js';
 
 interface MemoizedZonesPanelProps extends ZonesViewState {
@@ -46,8 +48,13 @@ const MemoizedZonesPanel = memo(function ZonesPanelInner(
   const [isFlipped, setFlipStatus] = useState(false);
   const settingRef = useRef<SettingsRef | null>(null);
 
-  const tableData = useMemo(() => {
-    const isInView = (xFrom: any, xTo: any, yFrom: any, yTo: any) => {
+  const tableData = useMemo<ZonesTableDataElement[]>(() => {
+    const isInView = (
+      xFrom: number,
+      xTo: number,
+      yFrom: number,
+      yTo: number,
+    ) => {
       const factor = 10000;
       xFrom = xFrom * factor;
       xTo = xTo * factor;
@@ -61,8 +68,8 @@ const MemoizedZonesPanel = memo(function ZonesPanelInner(
       );
     };
 
-    const getFilteredZones = (zones: any) => {
-      return zones.filter((zone: any) => {
+    const getFilteredZones = (zones: Zone[]) => {
+      return zones.filter((zone) => {
         return isInView(zone.x.from, zone.x.to, zone.y.from, zone.y.to);
       });
     };
@@ -71,7 +78,7 @@ const MemoizedZonesPanel = memo(function ZonesPanelInner(
         ? getFilteredZones(zones.values)
         : zones.values;
 
-      return _zones.map((zone: any) => {
+      return _zones.map((zone): ZonesTableDataElement => {
         return {
           ...zone,
           tableMetaInfo: {
@@ -84,6 +91,8 @@ const MemoizedZonesPanel = memo(function ZonesPanelInner(
           },
         };
       });
+    } else {
+      return [];
     }
   }, [zones, filterIsActive, xDomain, yDomain]);
 
@@ -93,6 +102,7 @@ const MemoizedZonesPanel = memo(function ZonesPanelInner(
 
   const unlinkZoneHandler = useCallback(
     (
+      // TODO: this must be a bug, `zoneData.id` will fail with `undefined`.
       zoneData?: any,
       isOnZoneLevel = undefined,
       signalIndex = -1,

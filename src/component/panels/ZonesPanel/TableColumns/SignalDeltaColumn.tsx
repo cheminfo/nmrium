@@ -27,12 +27,8 @@ function SignalDeltaColumn({ rowData, nucleus }: SignalDeltaColumnProps) {
   const { handleOnMouseEnter, handleOnMouseLeave } =
     useSignalHighlight(rowData);
 
-  // TODO: fix type of tableMetaInfo.
-  // @ts-expect-error Type is wrong.
   const signalDeltaX = rowData.tableMetaInfo.signal.x.delta ?? null;
-  // @ts-expect-error Type is wrong.
   const signalDeltaY = rowData.tableMetaInfo.signal.y.delta ?? null;
-  // @ts-expect-error Type is wrong.
   const id = rowData.tableMetaInfo.signal.id;
 
   function saveXHandler(event: any) {

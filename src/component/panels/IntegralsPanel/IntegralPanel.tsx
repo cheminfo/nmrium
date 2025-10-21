@@ -26,12 +26,8 @@ export interface IntegralPanelInnerProps {
   xDomain: number[];
 }
 
-function IntegralPanelInner({
-  integrals,
-  info,
-  activeTab,
-  xDomain,
-}: IntegralPanelInnerProps) {
+function IntegralPanelInner(props: IntegralPanelInnerProps) {
+  const { integrals, info, activeTab, xDomain } = props;
   const [filterIsActive, setFilterIsActive] = useState(false);
 
   const dispatch = useDispatch();

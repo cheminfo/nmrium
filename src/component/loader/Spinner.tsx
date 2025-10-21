@@ -33,7 +33,7 @@ function Spinner({ isLoading = true, emptyText = undefined }: SpinnerProps) {
     <Fragment>
       {isLoading && getSpinner()}
       {checkEmpty && !isLoading && (
-        <NoData isEmpty={data && data.length === 0} emptyText={emptyText} />
+        <NoData isEmpty={data.length === 0} emptyText={emptyText} />
       )}
     </Fragment>
   );

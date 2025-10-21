@@ -1,36 +1,37 @@
-import type { Zone } from '@zakodium/nmr-types';
+import type { Signal2D, Zone } from '@zakodium/nmr-types';
 import { useMemo } from 'react';
+
+import type { ZonesTableDataElement } from '../ZonesTable.js';
 
 export interface ZoneData extends Zone {
   tableMetaInfo: {
-    id: number;
+    id: string;
     signalIndex: number;
-    rowSpan: any;
-    signal: {
-      // TODO: provide additional properties here (id, x, y, peaks...)
-      kind: any;
-    };
+    rowSpan: number | null;
+    signal: Signal2D;
+    hide: boolean;
     experiment: string;
   };
 }
 
 export function useMapZones(
-  data: any,
+  data: ZonesTableDataElement[],
   info: { experiment: string; nuclei: string[] },
 ): ZoneData[] {
   return useMemo(() => {
     const zonesData: ZoneData[] = [];
     if (!data) return [];
 
-    for (const [i, zone] of data.entries()) {
+    for (const zone of data) {
       if (zone.signals.length === 1) {
         zonesData.push({
           ...zone,
           tableMetaInfo: {
             ...zone.tableMetaInfo,
             signal: zone.signals[0],
-            rowIndex: i,
             signalIndex: 0,
+            rowSpan: null,
+            hide: false,
             id: zone.signals[0].id,
             ...info,
           },
@@ -55,7 +56,6 @@ export function useMapZones(
               signal,
               rowSpan,
               hide,
-              rowIndex: i,
               signalIndex: j,
               id: signal.id,
               experiment: info.experiment,
