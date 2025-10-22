@@ -1,7 +1,6 @@
 import type { Range } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
-
-import { SIGNAL_INCLUDED_KINDS } from '../../../data/constants/signalsKinds.js';
+import { signalKindsToInclude } from 'nmr-processing';
 
 export interface BaseSignal {
   nbAtoms?: number;
@@ -49,7 +48,7 @@ export function extractSpectrumSignals<T extends object = object>(
     let index = 0;
     for (const signal of signals) {
       const { id, delta, kind } = signal;
-      if (SIGNAL_INCLUDED_KINDS.includes(kind as string)) {
+      if (kind && signalKindsToInclude.has(kind)) {
         result.push({
           assignment: index === 0 ? assignment : '',
           delta,

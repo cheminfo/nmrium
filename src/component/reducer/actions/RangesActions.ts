@@ -1,4 +1,4 @@
-import type { Range, Signal1D } from '@zakodium/nmr-types';
+import type { Range, Signal1D, SignalKind } from '@zakodium/nmr-types';
 import type {
   BoundingBox,
   RangesViewState,
@@ -9,12 +9,8 @@ import type { Draft } from 'immer';
 import { original } from 'immer';
 import cloneDeep from 'lodash/cloneDeep.js';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import { Filters1DManager } from 'nmr-processing';
+import { Filters1DManager, signalKindsToInclude } from 'nmr-processing';
 
-import {
-  DATUM_KIND,
-  SIGNAL_INCLUDED_KINDS,
-} from '../../../data/constants/signalsKinds.js';
 import type {
   SetSumOptions,
   SumParams,
@@ -67,7 +63,7 @@ type DeleteRangeAction = ActionType<
 type ChangeRangeSignalKindAction = ActionType<
   'CHANGE_RANGE_SIGNAL_KIND',
   {
-    kind: string;
+    kind: SignalKind;
     range: RangeData;
   }
 >;
@@ -326,9 +322,7 @@ function handleChangeRangeSignalKind(
     const _range = (draft.data[index] as Spectrum1D).ranges.values[rangeIndex];
     if (_range?.signals) {
       _range.signals[range.tableMetaInfo.signalIndex].kind = kind;
-      _range.kind = SIGNAL_INCLUDED_KINDS.includes(kind)
-        ? DATUM_KIND.signal
-        : DATUM_KIND.mixed;
+      _range.kind = signalKindsToInclude.has(kind) ? 'signal' : 'mixed';
       updateRangesRelativeValues(draft.data[index] as Spectrum1D);
       handleUpdateCorrelations(draft);
     }

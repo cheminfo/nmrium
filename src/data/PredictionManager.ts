@@ -1,8 +1,9 @@
-import type { Signal2D, Zone } from '@zakodium/nmr-types';
+import type { Peak2D, Signal2D, Zone } from '@zakodium/nmr-types';
 import type { Spectrum } from '@zakodium/nmrium-core';
 import type { Logger } from 'cheminfo-types';
 import { xMinMaxValues } from 'ml-spectra-processing';
 import type {
+  NMRZone,
   Predicted,
   Prediction1D,
   Prediction2D,
@@ -20,7 +21,6 @@ import {
 } from 'nmr-processing';
 import { Molecule } from 'openchemlib';
 
-import { DATUM_KIND } from './constants/signalsKinds.js';
 import {
   initiateDatum1D,
   mapRanges,
@@ -143,7 +143,7 @@ export function generateSpectra(
         case 'hsqc':
         case 'hmbc': {
           const datum = generated2DSpectrum({
-            spectrum,
+            spectrum: spectrum as PredictionBase2D,
             options,
             experiment,
             color,
@@ -307,16 +307,22 @@ function generated1DSpectrum(params: {
   return datum;
 }
 
-function mapZones(zones: Array<Partial<Zone>>) {
-  return zones.map((zone: any) => {
+function mapZones(zones: NMRZone[]): Zone[] {
+  return zones.map((zone): Zone => {
     const { signals, ...resZone } = zone;
-    const newSignals = signals.map((signal: Signal2D) => {
-      const { x, y, id, ...resSignal } = signal;
+    const newSignals = signals.map((signal): Signal2D => {
+      const { x, y, id, peaks, ...resSignal } = signal;
       return {
         id: id || crypto.randomUUID(),
         kind: 'signal',
         x: { ...x, originalDelta: x.delta || 0 },
         y: { ...y, originalDelta: y.delta || 0 },
+        peaks: peaks?.map(
+          (peak): Peak2D => ({
+            ...peak,
+            id: peak.id || crypto.randomUUID(),
+          }),
+        ),
         ...resSignal,
       };
     });
@@ -324,14 +330,14 @@ function mapZones(zones: Array<Partial<Zone>>) {
       id: crypto.randomUUID(),
       ...resZone,
       signals: newSignals,
-      kind: DATUM_KIND.signal,
+      kind: 'signal',
     };
   });
 }
 
 function generated2DSpectrum(params: {
   options: PredictionOptions;
-  spectrum: any;
+  spectrum: PredictionBase2D;
   experiment: string;
   color: string;
 }) {
