@@ -11,5 +11,6 @@ export function isRangeAssigned(range: Range) {
   if (isAssigned(range)) {
     return true;
   }
+
   return range?.signals.some((signal) => isAssigned(signal));
 }

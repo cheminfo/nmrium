@@ -21,11 +21,9 @@ import {
 import type { ActionsButtonsPopoverProps } from '../../elements/ActionsButtonsPopover.js';
 import { ActionsButtonsPopover } from '../../elements/ActionsButtonsPopover.js';
 import { useHighlight } from '../../highlight/index.js';
-import { useActiveNucleusTab } from '../../hooks/useActiveNucleusTab.ts';
 import { useHighlightColor } from '../../hooks/useHighlightColor.ts';
 import { useTextMetrics } from '../../hooks/useTextMetrics.ts';
 import { useTriggerNewAssignmentLabel } from '../../hooks/useTriggerNewAssignmentLabel.js';
-import { isHomoNuclear } from '../../utility/isHomoNuclear.ts';
 import { stackOverlappingLabelsArray } from '../../utility/stackOverlappingLabels.js';
 import { useTracesSpectra } from '../useTracesSpectra.js';
 import type { ExtractedSignal } from '../utilities/extractSpectrumSignals.js';
@@ -138,6 +136,7 @@ interface IndicationLineProps extends ExtraExtractProperties {
   axis: IndicationLinesAxis;
   diaIDs?: string[];
   nbAtoms?: number;
+  id: string;
 }
 
 interface GetAxisRangeIdOptions {
@@ -154,6 +153,7 @@ interface UseRangeAssignmentOptions {
   rangeId: string;
   signalsIds: string[];
   spectrumId: string;
+  signalId: string;
 }
 
 function useRangeAssignment(options: UseRangeAssignmentOptions) {
@@ -169,10 +169,11 @@ function useRangeAssignment(options: UseRangeAssignmentOptions) {
     type: 'RANGE',
     extra: { id: rangeId, spectrumID: spectrumId },
   });
+
   return { highlightContext, assignmentContext };
 }
 
-function isSignalAssigned(
+function isRangeSignalAssigned(
   options: Pick<IndicationLineProps, 'range' | 'nbAtoms' | 'diaIDs'>,
 ) {
   const { range, ...otherProps } = options;
@@ -194,23 +195,24 @@ function IndicationLine(props: IndicationLineProps) {
     range,
     diaIDs,
     nbAtoms,
+    id: signalId,
   } = props;
   const { id: rangeId, diaIDs: rangeDiaIDs = [], signals } = range;
   const highlightColor = useHighlightColor();
-  const isAssigned = isSignalAssigned({ range, diaIDs, nbAtoms });
+  const isSignalAssigned = isRangeSignalAssigned({ range, diaIDs, nbAtoms });
 
   const signalsIds = signals.map(({ id }) => id);
   const { margin, width, height } = useChartData();
   const { setData: addNewAssignmentLabel } = useShareData();
-  const nuclei = useActiveNucleusTab();
-  const isHomoNuclei = isHomoNuclear(nuclei);
 
   const dispatch = useDispatch();
   const { assignmentContext, highlightContext } = useRangeAssignment({
     rangeId,
     spectrumId,
     signalsIds,
+    signalId,
   });
+
   const hasDiaIDs = rangeDiaIDs.length > 0;
   const isAssignmentActive = assignmentContext.isActive;
   const isHighlighted = highlightContext.isActive || isAssignmentActive;
@@ -245,7 +247,7 @@ function IndicationLine(props: IndicationLineProps) {
   }
 
   function mouseEnterHandler() {
-    assignmentContext.highlight(isHomoNuclei ? 'x' : axis);
+    assignmentContext.highlight('x');
     highlightContext.show();
   }
 
@@ -256,7 +258,7 @@ function IndicationLine(props: IndicationLineProps) {
 
   function assignHandler() {
     isAssignBtnTrigged.current = true;
-    assignmentContext.activate(isHomoNuclei ? 'x' : axis);
+    assignmentContext.activate('x');
   }
 
   function unAssignHandler() {
@@ -318,7 +320,7 @@ function IndicationLine(props: IndicationLineProps) {
         onMouseLeave={mouseLeaveHandler}
       >
         <line
-          stroke={isAssigned ? highlightColor : 'lightgrey'}
+          stroke={isSignalAssigned ? highlightColor : 'lightgrey'}
           x1={0}
           x2={x2}
           y1={0}
