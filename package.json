@@ -98,7 +98,7 @@
     "nmr-processing": "^19.4.1",
     "numeral": "^2.0.6",
     "openchemlib": "^9.12.1",
-    "openchemlib-utils": "^8.6.0",
+    "openchemlib-utils": "^8.7.0",
     "papaparse": "^5.5.3",
     "react-d3-utils": "^3.1.2",
     "react-dropzone": "^14.3.8",
