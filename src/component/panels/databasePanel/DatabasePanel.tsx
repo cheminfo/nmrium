@@ -46,13 +46,13 @@ import DatabaseTable from './DatabaseTable.js';
 export type Databases = Array<LocalDatabase | Database>;
 
 function getMolfile(options: {
-  oclid?: { idCode?: string; coordinates?: string };
+  ocl?: { idCode?: string; coordinates?: string };
   smiles?: string;
 }) {
-  const { oclid, smiles } = options;
+  const { ocl, smiles } = options;
 
-  if (oclid?.idCode && oclid?.coordinates) {
-    const { idCode, coordinates } = oclid;
+  if (ocl?.idCode && ocl?.coordinates) {
+    const { idCode, coordinates } = ocl;
     return Molecule.fromIDCode(idCode, coordinates).toMolfileV3();
   }
 
@@ -289,10 +289,10 @@ function DatabasePanelInner({
         index,
         baseURL,
         jcampURL: jcampRelativeURL,
-        oclid,
+        ocl,
         smiles,
       } = rowData;
-      const molfile = getMolfile({ oclid, smiles });
+      const molfile = getMolfile({ ocl, smiles });
       const databaseEntry = result.data[index];
 
       if (jcampRelativeURL) {
