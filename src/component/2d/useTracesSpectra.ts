@@ -44,6 +44,9 @@ export function useTracesSpectra() {
 
   return useMemo(() => {
     const nuclei = activeTab.split(',');
+
+    if (nuclei.length !== 2) return [];
+
     return getTracesSpectra({ nuclei, spectra, activeSpectra });
   }, [activeTab, spectra, activeSpectra]);
 }
