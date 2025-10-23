@@ -322,7 +322,9 @@ function handleChangeRangeSignalKind(
     const _range = (draft.data[index] as Spectrum1D).ranges.values[rangeIndex];
     if (_range?.signals) {
       _range.signals[range.tableMetaInfo.signalIndex].kind = kind;
-      _range.kind = signalKindsToInclude.has(kind) ? 'signal' : 'mixed';
+      _range.kind = signalKindsToInclude.has(kind)
+        ? 'signal'
+        : ('mixed' as any);
       updateRangesRelativeValues(draft.data[index] as Spectrum1D);
       handleUpdateCorrelations(draft);
     }

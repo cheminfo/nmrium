@@ -311,10 +311,11 @@ function mapZones(zones: NMRZone[]): Zone[] {
   return zones.map((zone): Zone => {
     const { signals, ...resZone } = zone;
     const newSignals = signals.map((signal): Signal2D => {
-      const { x, y, id, peaks, ...resSignal } = signal;
+      const { x, y, id, peaks, kind, ...resSignal } = signal;
       return {
+        ...resSignal,
         id: id || crypto.randomUUID(),
-        kind: 'signal',
+        kind: kind || 'signal',
         x: { ...x, originalDelta: x.delta || 0 },
         y: { ...y, originalDelta: y.delta || 0 },
         peaks: peaks?.map(
@@ -323,12 +324,11 @@ function mapZones(zones: NMRZone[]): Zone[] {
             id: peak.id || crypto.randomUUID(),
           }),
         ),
-        ...resSignal,
       };
     });
     return {
-      id: crypto.randomUUID(),
       ...resZone,
+      id: crypto.randomUUID(),
       signals: newSignals,
       kind: 'signal',
     };

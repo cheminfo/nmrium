@@ -271,7 +271,7 @@ function handleChangeZoneSignalKind(
     const zoneIndex = getZoneIndex(state, index, zoneData.id);
     const _zone = (draft.data[index] as Spectrum2D).zones.values[zoneIndex];
     _zone.signals[zoneData.tableMetaInfo.signalIndex].kind = kind;
-    _zone.kind = signalKindsToInclude.has(kind) ? 'signal' : 'mixed';
+    _zone.kind = signalKindsToInclude.has(kind) ? 'signal' : ('mixed' as any);
     handleUpdateCorrelations(draft);
   }
 }
