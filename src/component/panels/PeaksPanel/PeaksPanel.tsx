@@ -38,13 +38,8 @@ export interface PeakRecord extends Peak1D {
   isConstantlyHighlighted: boolean;
 }
 
-function PeaksPanelInner({
-  peaks,
-  info,
-  xDomain,
-  activeTab,
-  peaksViewState,
-}: PeaksPanelInnerProps) {
+function PeaksPanelInner(props: PeaksPanelInnerProps) {
+  const { peaks, info, xDomain, activeTab, peaksViewState } = props;
   const [filterIsActive, setFilterIsActive] = useState(false);
   const [isFlipped, setFlipStatus] = useState(false);
   const format = useFormatNumberByNucleus(info.nucleus);
@@ -86,29 +81,25 @@ function PeaksPanelInner({
   }, [filterIsActive]);
 
   const filteredPeaks = useMemo<PeakRecord[]>(() => {
-    if (peaks?.values) {
-      const [from, to] = xDomain;
-      const _peaks = filterIsActive
-        ? peaks.values.filter((peak) => isInRange(peak.x, { from, to }))
-        : peaks.values;
+    const [from, to] = xDomain;
+    const _peaks = filterIsActive
+      ? peaks.values.filter((peak) => isInRange(peak.x, { from, to }))
+      : peaks.values;
 
-      const mappedPeaks = _peaks.map((peak) => {
-        const { x, y, width, ...peakProperties } = peak;
-        const value = Number(format(x));
-        return {
-          ...peakProperties,
-          x,
-          xHz: info?.originFrequency && value * info.originFrequency,
-          y,
-          width,
-          isConstantlyHighlighted: isInRange(value, { from, to }),
-        };
-      });
-      mappedPeaks.sort((prev, next) => prev.x - next.x);
-      return mappedPeaks;
-    }
-
-    return [];
+    const mappedPeaks = _peaks.map((peak) => {
+      const { x, y, width, ...peakProperties } = peak;
+      const value = Number(format(x));
+      return {
+        ...peakProperties,
+        x,
+        xHz: info.originFrequency && value * info.originFrequency,
+        y,
+        width,
+        isConstantlyHighlighted: isInRange(value, { from, to }),
+      };
+    });
+    mappedPeaks.sort((prev, next) => prev.x - next.x);
+    return mappedPeaks;
   }, [filterIsActive, format, info, peaks, xDomain]);
 
   const optimizePeaksHandler = () => {
@@ -132,9 +123,8 @@ function PeaksPanelInner({
   function toggleDisplayingMode() {
     dispatch({ type: 'TOGGLE_PEAKS_DISPLAYING_MODE' });
   }
-  const total = peaks?.values?.length || 0;
-
-  const disabled = !peaks?.values || peaks.values.length === 0;
+  const total = peaks.values.length;
+  const disabled = total === 0;
   const { showPeaks, displayingMode, showPeaksShapes, showPeaksSum } =
     peaksViewState;
 
@@ -184,7 +174,7 @@ function PeaksPanelInner({
       {!isFlipped && (
         <DefaultPanelHeader
           total={total}
-          counter={filteredPeaks?.length}
+          counter={filteredPeaks.length}
           onDelete={handleDeleteAll}
           deleteToolTip="Delete All Peaks"
           onFilter={handleOnFilter}
@@ -214,7 +204,7 @@ function PeaksPanelInner({
 
 const MemoizedPeaksPanel = memo(PeaksPanelInner);
 
-const emptyData = { peaks: null, info: {} };
+const emptyData = { peaks: { values: [] }, info: {} };
 
 export default function PeaksPanel() {
   const {

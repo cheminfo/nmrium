@@ -28,6 +28,7 @@ import {
 } from '../../../data/data1d/Spectrum1D/index.js';
 import type { ChangeRangeRelativeValueProps } from '../../../data/data1d/Spectrum1D/ranges/changeRangeRelativeValue.js';
 import { unlink } from '../../../data/utilities/RangeUtilities.js';
+import { isProton } from '../../../data/utilities/isProton.ts';
 import type { TargetAssignKeys } from '../../panels/MoleculesPanel/Utilities.js';
 import type { RangeData } from '../../panels/RangesPanel/hooks/useMapRanges.js';
 import type { FilterType } from '../../utility/filterType.js';
@@ -202,14 +203,7 @@ function handleAutoRangesDetection(
   draft: Draft<State>,
   action: AutoRangesDetectionAction,
 ) {
-  const {
-    data,
-    xDomain,
-    molecules,
-    view: {
-      spectra: { activeTab: nucleus },
-    },
-  } = draft;
+  const { data, xDomain, molecules } = draft;
 
   const activeSpectrum = getActiveSpectrum(draft);
 
@@ -224,15 +218,21 @@ function handleAutoRangesDetection(
     // minMaxRatio default 0.05, lookNegative default false,
     const { minMaxRatio, lookNegative } = action.payload;
 
+    const nucleus = datum.info.nucleus;
+    const isProtonic = isProton(nucleus);
+
     const detectionOptions: any = {
       rangePicking: {
         integrationSum: 100,
-        compile: true,
-        frequencyCluster: 16,
-        clean: 0.3,
+        compile: isProtonic,
+        frequencyCluster: isProtonic ? 16 : 0,
+        clean: 0.5,
         keepPeaks: true,
+        joinOverlapRanges: isProtonic,
       },
       peakPicking: {
+        smoothY: false,
+        sensitivity: 100,
         broadWidth: 0.05,
         thresholdFactor: 8,
         minMaxRatio,
@@ -253,25 +253,24 @@ function handleAutoRangesDetection(
 //action
 function handleAutoSpectraRangesDetection(draft: Draft<State>) {
   const peakPicking = {
+    sensitivity: 100,
     thresholdFactor: 8,
     minMaxRatio: 0.05,
   };
-  const rangePicking = {
-    integrationSum: 100,
-    compile: true,
-    frequencyCluster: 16,
-    clean: 0.3,
-    keepPeaks: true,
-  };
-  const {
-    data,
-    view: {
-      spectra: { activeTab: nucleus },
-    },
-    molecules,
-  } = draft;
+  const { data, molecules } = draft;
+
   for (const datum of data) {
     if (datum.info.dimension === 1) {
+      const nucleus = datum.info.nucleus as string;
+      const isProtonic = isProton(nucleus);
+      const rangePicking = {
+        integrationSum: 100,
+        compile: isProtonic,
+        frequencyCluster: isProtonic ? 16 : 0,
+        clean: 0.5,
+        keepPeaks: true,
+        joinOverlapRanges: isProtonic,
+      };
       detectRanges(datum as Spectrum1D, {
         peakPicking,
         rangePicking,

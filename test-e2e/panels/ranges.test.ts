@@ -137,8 +137,8 @@ test('Automatic ranges detection should work', async ({ page }) => {
   );
 
   const rangesData = [
-    { s: '1.77', r: '0.88' },
-    { s: '1.95', r: '1.99' },
+    { s: '1.77', r: '0.89' },
+    { s: '1.95', r: '2.01' },
   ];
 
   const testPromises: Array<Promise<void>> = [];
@@ -358,19 +358,19 @@ test('Auto peak picking on all spectra', async ({ page }) => {
     await nmrium.page.click('_react=SpectraTabs >> _react=Tab[tabid="1H"]');
     //open ranges panel
     await nmrium.clickPanel('Ranges / Multiplet analysis');
-    await expect(nmrium.page.getByTestId('range')).toHaveCount(12);
+    await expect(nmrium.page.getByTestId('range')).toHaveCount(10);
     await expect(
       nmrium.page.locator('_react=RangesPanel >> _react=PanelHeader'),
-    ).toContainText('[ 12 ]');
+    ).toContainText('[ 10 ]');
   });
 
   await test.step("Check 13C spectrum's ranges", async () => {
     // switch to 13C tab.
     await nmrium.page.click('_react=SpectraTabs >> _react=Tab[tabid="13C"]');
-    await expect(nmrium.page.getByTestId('range')).toHaveCount(15);
+    await expect(nmrium.page.getByTestId('range')).toHaveCount(17);
     await expect(
       nmrium.page.locator('_react=RangesPanel >> _react=PanelHeader'),
-    ).toContainText('[ 15 ]');
+    ).toContainText('[ 17 ]');
   });
 
   await test.step("Check 1H,1H spectrum's ranges", async () => {

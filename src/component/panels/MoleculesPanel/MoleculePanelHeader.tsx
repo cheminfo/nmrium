@@ -164,7 +164,6 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
     (selected: any) => {
       const m = molecules?.[currentIndex];
       const molecule = Molecule.fromMolfile(m.molfile);
-
       if (molecule) {
         switch (selected?.id) {
           case 'smiles':
@@ -175,8 +174,10 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
             copyHandler(m.molfile, 'MOLFile');
             break;
           case 'molfileV2': {
-            copyHandler(molecule.toMolfile(), 'MOLFile');
-
+            copyHandler(
+              molecule.toMolfile({ customLabelPosition: 'normal' }),
+              'MOLFile',
+            );
             break;
           }
           case 'png':

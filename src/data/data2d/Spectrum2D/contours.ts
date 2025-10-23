@@ -56,8 +56,7 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
   //@ts-expect-error will be included in nexts versions
   const { noise = calculateSanPlot('2D', quadrantData) } = info;
 
-  const { positive, negative } = noise;
-
+  const { positive = 0, negative = 0 } = noise;
   const max = Math.max(
     Math.abs(quadrantData.minZ),
     Math.abs(quadrantData.maxZ),
@@ -220,9 +219,9 @@ function getContours(options: ContoursCalcOptions) {
   const ys = getRange(data.minY, data.maxY, data.z.length);
   const conrec = new Conrec(data.z, { xs, ys, swapAxes: false });
   const max = Math.max(Math.abs(data.minZ), Math.abs(data.maxZ));
+
   const minLevel = calculateValueOfLevel(boundary[0], max);
   const maxLevel = calculateValueOfLevel(boundary[1], max);
-
   const diffRange = boundary[1] - boundary[0];
 
   let _range = getRange(minLevel, maxLevel, Math.min(nbLevels, diffRange), 2);

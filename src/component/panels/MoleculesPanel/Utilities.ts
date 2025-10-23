@@ -129,8 +129,8 @@ export function getAssignIds(
 
 export function getHighlightsOnHover(
   assignments: AssignmentContext,
-  oclIDs: any,
-  spectrum: any,
+  oclIDs: string[],
+  spectra: Spectrum[],
 ) {
   // set all IDs to highlight when hovering over an atom from AssignKey data
   let highlights: string[] = [];
@@ -138,12 +138,15 @@ export function getHighlightsOnHover(
 
   for (const key in assignmentsByKey) {
     const assignments = assignmentsByKey[key];
-
     for (const axis of assignmentAxes) {
       if (assignments[axis]?.some((oclKey: any) => oclIDs.includes(oclKey))) {
         highlights = highlights.concat(assignments[axis]);
-        const assignIds = getAssignIds(spectrum, key);
-        if (assignIds) {
+        for (const spectrum of spectra) {
+          const assignIds = getAssignIds(spectrum, key);
+          if (!assignIds) {
+            continue;
+          }
+
           const ids = assignIds.map<string>((item) => item.key);
           highlights.push(...ids);
         }
@@ -158,7 +161,6 @@ export function getCurrentDiaIDsToHighlight(assignmentData: AssignmentContext) {
   const { highlighted, data } = assignmentData;
   const assignment = highlighted ? data[highlighted.id] : null;
   const axisHover = highlighted ? highlighted.axis : null;
-
   if (axisHover && assignment?.[axisHover]) {
     return assignment[axisHover];
   } else {
