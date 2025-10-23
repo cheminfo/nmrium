@@ -28,6 +28,7 @@ import {
 } from './data1d/Spectrum1D/index.js';
 import { initiateDatum2D } from './data2d/Spectrum2D/index.js';
 import { adjustAlpha } from './utilities/generateColor.js';
+import { isProton } from './utilities/isProton.ts';
 
 export type Experiment = 'proton' | 'carbon' | 'cosy' | 'hsqc' | 'hmbc';
 type SpectraPredictionOptions = Record<Experiment, boolean>;
@@ -195,7 +196,7 @@ function checkFromTo(
     } else {
       const { signals, nuclei } = predictedSpectra[experiment] as Prediction2D;
       for (const nucleus of nuclei) {
-        const axis = nucleus === '1H' ? 'x' : 'y';
+        const axis = isProton(nucleus) ? 'x' : 'y';
         const { from, to } = (inputOptions['1d'] as any)[nucleus];
         const fromTo = getNewFromTo({
           deltas: signals.map((s) => s[axis].delta),
@@ -234,7 +235,7 @@ function getNewFromTo(params: {
   const { min, max } = xMinMaxValues(deltas);
   const signalsOutOfRange = from > min || to < max;
   if (autoExtendRange && signalsOutOfRange) {
-    const spread = nucleus === '1H' ? 0.2 : 2;
+    const spread = isProton(nucleus) ? 0.2 : 2;
     if (from > min) from = min - spread;
     if (to < max) to = max + spread;
   }

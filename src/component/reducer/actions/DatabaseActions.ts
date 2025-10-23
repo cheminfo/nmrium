@@ -59,6 +59,7 @@ function handleResurrectSpectrum(
     ranges,
     signals,
     solvent,
+    meta = {},
     names = [],
     id: spectrumID,
   } = databaseEntry;
@@ -113,6 +114,8 @@ function handleResurrectSpectrum(
   }
 
   if (!resurrectedSpectrum) return;
+
+  resurrectedSpectrum.customInfo = meta;
 
   draft.data.push(resurrectedSpectrum);
 

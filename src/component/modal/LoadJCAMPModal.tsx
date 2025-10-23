@@ -15,7 +15,6 @@ const allowedExtensions = new Set(['dx', 'jdx', 'jcamp']);
 
 const loadFormValidation = Yup.object({
   url: Yup.string()
-    .url()
     .required()
     .test(
       'file type',

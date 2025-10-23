@@ -29,7 +29,8 @@ function handleActiveRow(row: any) {
   return row.original.isConstantlyHighlighted;
 }
 
-function PeaksTable({ activeTab, data, info }: PeaksTableProps) {
+function PeaksTable(props: PeaksTableProps) {
+  const { activeTab, data, info } = props;
   const dispatch = useDispatch();
   const peaksPreferences = usePanelPreferences('peaks', activeTab);
   const [peak, setEditedPeak] = useState<Peak1D | undefined>();
@@ -204,7 +205,7 @@ function PeaksTable({ activeTab, data, info }: PeaksTableProps) {
     return <NoDataForFid />;
   }
 
-  if (!data || data.length === 0) {
+  if (data.length === 0) {
     return <EmptyText text="No data" />;
   }
 

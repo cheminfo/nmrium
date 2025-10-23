@@ -14,6 +14,7 @@ import { useScaleChecked } from '../../context/ScaleContext.js';
 import type { ActionsButtonsPopoverProps } from '../../elements/ActionsButtonsPopover.js';
 import { ActionsButtonsPopover } from '../../elements/ActionsButtonsPopover.js';
 import { useHighlight } from '../../highlight/index.js';
+import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.ts';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import { useIsInset } from '../inset/InsetProvider.js';
 
@@ -79,11 +80,11 @@ function Tree(props: TreeProps) {
   } = props;
   const { from, to } = range;
   const { width } = useChartData();
-  const { scaleX } = useScaleChecked();
+  const { scaleX, shiftY } = useScaleChecked();
   const dispatch = useDispatch();
   const isInset = useIsInset();
   const isAssignBtnTrigged = useRef(false);
-
+  const activeSpectrum = useActiveSpectrum();
   const assignment = useAssignment(signalKey);
   const highlight = useHighlight(extractID(signalKey, assignment), {
     type: 'SIGNAL',
@@ -172,6 +173,7 @@ function Tree(props: TreeProps) {
       }}
     >
       <Group
+        transform={`translate(0,-${(activeSpectrum?.index || 0) * shiftY})`}
         isActive={isAssignmentActive}
         isHighlighted={isHighlighted}
         onMouseEnter={() => {

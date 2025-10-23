@@ -56,7 +56,7 @@ function findSignalMatch1D(
   xDomain0: number,
   xDomain1: number,
 ) {
-  if (spectrum && spectrum.info.dimension === 2) {
+  if (spectrum.info.dimension === 2) {
     const signal = findSignal2D(spectrum, link.signal.id);
     if (signal) {
       const otherAxis = link.axis === 'x' ? 'y' : 'x';
@@ -78,7 +78,7 @@ function findSignalMatch2D(
   yDomain0: number,
   yDomain1: number,
 ): boolean {
-  if (spectrum && spectrum.info.dimension === 2) {
+  if (spectrum.info.dimension === 2) {
     const signal = findSignal2D(spectrum, link.signal.id);
     if (signal?.x.delta && signal?.y.delta) {
       return (

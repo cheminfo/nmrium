@@ -2,6 +2,8 @@ import type { Range } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { xyAutoRangesPicking } from 'nmr-processing';
 
+import { isProton } from '../../../utilities/isProton.ts';
+
 const defaultPeakPickingOptions = {
   minMaxRatio: 1,
   shape: { kind: 'lorentzian' },
@@ -34,14 +36,15 @@ export default function autoRangesDetection(
     frequency: originFrequency,
   };
 
+  const isProtonic = isProton(nucleus);
   const rangesOptions = {
     nucleus,
-    clean: 0.3,
+    clean: 0.5,
     keepPeaks: true,
-    compile: nucleus === '1H',
+    compile: isProtonic,
     frequency: originFrequency,
-    joinOverlapRanges: nucleus === '1H',
-    frequencyCluster: nucleus === '1H' ? 13 : 0,
+    joinOverlapRanges: isProtonic,
+    frequencyCluster: isProtonic ? 13 : 0,
     ...rangePicking,
   };
 
@@ -56,7 +59,7 @@ export default function autoRangesDetection(
   const ranges = xyAutoRangesPicking(
     { x, y: re },
     {
-      impurities: { solvent },
+      impurities: nucleus === '13C' ? { solvent } : undefined,
       peakPicking: peakPickingOptions,
       ranges: rangesOptions,
     },

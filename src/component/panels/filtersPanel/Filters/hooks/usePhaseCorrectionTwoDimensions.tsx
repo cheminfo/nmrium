@@ -77,8 +77,6 @@ export function usePhaseCorrectionTwoDimensions(filter: Filter2DEntry | null) {
         (phaseOptions as any)[direction] = { ph0, ph1 };
       }
 
-      // TODO: change this to not use an effect
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setValue(phaseOptions);
       valueRef.current = phaseOptions;
     }

@@ -22,7 +22,7 @@ const databasesValidation = object().shape({
   data: array().of(
     object().shape({
       label: string().trim().required('Label is a required field'),
-      url: string().trim().url().required('URL is a required field'),
+      url: string().trim().required('URL is a required field'),
     }),
   ),
 });
@@ -58,7 +58,7 @@ const externalAPIsValidation = array()
       key: mixed<ExternalAPIKeyType>()
         .oneOf(EXTERNAL_API_KEYS.map(({ key }) => key))
         .required(),
-      serverLink: string().url().required(),
+      serverLink: string().required(),
       APIKey: string().required(),
     }),
   )

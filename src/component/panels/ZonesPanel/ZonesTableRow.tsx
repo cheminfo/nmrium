@@ -60,8 +60,6 @@ function ZonesTableRow({
 
   const rowSpanTags = {
     rowSpan: rowData.tableMetaInfo.rowSpan,
-    // TODO: fix type of tableMetaInfo.
-    // @ts-expect-error Type is wrong.
     style: rowData.tableMetaInfo.hide ? { display: 'none' } : null,
   };
 

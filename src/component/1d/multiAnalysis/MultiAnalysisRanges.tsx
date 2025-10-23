@@ -20,7 +20,7 @@ function MultiAnalysisRangesInner({
     (key) => columns[key].type !== ANALYSIS_COLUMN_TYPES.FORMULA,
   );
 
-  if (!ranges || ranges.length === 0) {
+  if (ranges.length === 0) {
     return null;
   }
 

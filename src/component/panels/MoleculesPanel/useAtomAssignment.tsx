@@ -6,6 +6,7 @@ import { useMemo, useRef } from 'react';
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
 import { ConcatenationString } from '../../../data/utilities/Concatenation.js';
 import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated.js';
+import { useTracesSpectra } from '../../2d/useTracesSpectra.ts';
 import type { Assignments, Axis } from '../../assignment/AssignmentsContext.js';
 import { useAssignmentContext } from '../../assignment/AssignmentsContext.js';
 import { useChartData } from '../../context/ChartContext.js';
@@ -75,6 +76,8 @@ export default function useAtomAssignment() {
     },
   } = useChartData();
   const spectrum = useSpectrum();
+  const tracesSpectra = useTracesSpectra();
+
   const toaster = useToaster();
   const dispatch = useDispatch();
   const highlightData = useHighlightData();
@@ -94,20 +97,25 @@ export default function useAtomAssignment() {
 
   const currentDiaIDsToHighlight = useMemo(() => {
     const { highlighted, sourceData } = highlightData.highlight;
-    const type = sourceData?.type;
+    const { type, extra } = sourceData || {};
+    const { spectrumID } = extra || {};
+    const currentSpectrum = spectrumID
+      ? tracesSpectra.find((s) => s.id === spectrumID)
+      : spectrum;
 
-    if (!type || !isValidHighlightEventSource(type)) return [];
+    if (!type || !isValidHighlightEventSource(type) || !currentSpectrum) {
+      return [];
+    }
 
     const highlightedAssignmentsIDs = highlighted.filter((highlightID) => {
       return assignments.data[highlightID];
     });
 
     const highlights = highlightedAssignmentsIDs.flatMap((highlightID) =>
-      getSignalsDiaIDs(spectrum, assignments.data, highlightID),
+      getSignalsDiaIDs(currentSpectrum, assignments.data, highlightID),
     );
-
     return getCurrentDiaIDsToHighlight(assignments).concat(highlights);
-  }, [assignments, highlightData.highlight, spectrum]);
+  }, [assignments, highlightData.highlight, spectrum, tracesSpectra]);
 
   function assign1DAtom(spectrum: Spectrum1D, key: string, atom: AtomData) {
     const assignKeys = getAssignIds(spectrum, key);
@@ -223,11 +231,13 @@ export default function useAtomAssignment() {
 
   function handleOnAtomHover(diaIDAndInfo: DiaIDAndInfo | undefined) {
     const { oclIDs } = extractFromAtom(diaIDAndInfo, nucleus);
-
     // on enter the atom
     if (oclIDs.length > 0) {
       // set all IDs to highlight when hovering over an atom from assignment data
-      const highlights = getHighlightsOnHover(assignments, oclIDs, spectrum);
+      const highlights = getHighlightsOnHover(assignments, oclIDs, [
+        spectrum,
+        ...tracesSpectra,
+      ]);
       highlightedIdDsRef.current = highlights;
       highlightData.dispatch({
         type: 'SHOW',
