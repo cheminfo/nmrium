@@ -130,6 +130,7 @@ function InnerSaveAsModal(props: InnerSaveAsModalProps) {
                   {experimentalFlagEnabled && (
                     <Radio
                       label="Full data (external data linked, experimental)"
+                      disabled={Object.keys(sources).length === 0}
                       value={
                         DataExportOptions.SELF_CONTAINED_EXTERNAL_DATASOURCE
                       }

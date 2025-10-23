@@ -66,6 +66,9 @@ export function useExport() {
     (options: SaveOptions) => {
       async function handler() {
         const { name, pretty, compressed, include } = options;
+        const exportArchive =
+          include.dataType?.startsWith('SELF_CONTAINED') ?? false;
+
         const hideLoading = toaster.showLoading({
           message: `Exporting as ${name}.nmrium process in progress`,
         });
@@ -75,15 +78,15 @@ export function useExport() {
               ...include,
               exportTarget: 'nmrium',
             });
-            const spaceIndent = pretty ? 2 : 0;
+            const spaceIndent = pretty || exportArchive ? 2 : 0;
             const blob = await exportAsJsonBlob(
               exportedData,
               name,
               spaceIndent,
-              compressed && !include.dataType?.startsWith('SELF_CONTAINED'),
+              compressed && !exportArchive,
             );
 
-            if (!include.dataType?.startsWith('SELF_CONTAINED')) {
+            if (!exportArchive) {
               return saveAs(blob, name);
             }
 
