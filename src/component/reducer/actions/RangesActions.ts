@@ -9,7 +9,7 @@ import type { Draft } from 'immer';
 import { original } from 'immer';
 import cloneDeep from 'lodash/cloneDeep.js';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import { Filters1DManager, signalKindsToInclude } from 'nmr-processing';
+import { Filters1DManager } from 'nmr-processing';
 
 import type {
   SetSumOptions,
@@ -321,9 +321,7 @@ function handleChangeRangeSignalKind(
     const _range = (draft.data[index] as Spectrum1D).ranges.values[rangeIndex];
     if (_range?.signals) {
       _range.signals[range.tableMetaInfo.signalIndex].kind = kind;
-      _range.kind = signalKindsToInclude.has(kind)
-        ? 'signal'
-        : ('mixed' as any);
+      _range.kind = kind;
       updateRangesRelativeValues(draft.data[index] as Spectrum1D);
       handleUpdateCorrelations(draft);
     }

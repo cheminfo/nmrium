@@ -14,7 +14,7 @@ import type { Draft } from 'immer';
 import { original } from 'immer';
 import lodashCloneDeep from 'lodash/cloneDeep.js';
 import { setPathLength } from 'nmr-correlation';
-import { Filters2DManager, signalKindsToInclude } from 'nmr-processing';
+import { Filters2DManager } from 'nmr-processing';
 
 import {
   changeZoneSignal,
@@ -271,7 +271,7 @@ function handleChangeZoneSignalKind(
     const zoneIndex = getZoneIndex(state, index, zoneData.id);
     const _zone = (draft.data[index] as Spectrum2D).zones.values[zoneIndex];
     _zone.signals[zoneData.tableMetaInfo.signalIndex].kind = kind;
-    _zone.kind = signalKindsToInclude.has(kind) ? 'signal' : ('mixed' as any);
+    _zone.kind = kind;
     handleUpdateCorrelations(draft);
   }
 }

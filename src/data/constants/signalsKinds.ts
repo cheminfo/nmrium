@@ -6,6 +6,6 @@ interface SignalKindItem {
   label: string;
 }
 
-export const SIGNAL_KINDS: SignalKindItem[] = Object.values(
+export const SIGNAL_KINDS: SignalKindItem[] = Object.entries(
   signalKindLabelMapping,
 ).map(([kind, label]) => ({ value: kind as SignalKind, label }));
