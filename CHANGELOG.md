@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.7.0](https://github.com/cheminfo/nmrium/compare/v1.6.1...v1.7.0) (2025-10-24)
+
+
+### Features
+
+* copy DB meta information to customInfo ([2fafb02](https://github.com/cheminfo/nmrium/commit/2fafb029c88b00963331fb9b6ab01a7b582f5bb1))
+
+
+### Bug Fixes
+
+* assign traces in 2d ([#3777](https://github.com/cheminfo/nmrium/issues/3777)) ([5fdb708](https://github.com/cheminfo/nmrium/commit/5fdb708bfec09112160dde751b00729e9d67394c))
+* auto ranges picking pass the number of protons as integrationsum if the molecule exists. ([a842b08](https://github.com/cheminfo/nmrium/commit/a842b083fb536dc4114c14381187b4cb7f5b12b1))
+* **auto-processing:** correct handling of sine bell (SSB) parameter in Bruker format ([#3750](https://github.com/cheminfo/nmrium/issues/3750)) ([2657985](https://github.com/cheminfo/nmrium/commit/2657985ae436932b5d8e6e82daa68ccd2b52310e))
+* correctly position multiplicity tree in stack mode ([6d21b89](https://github.com/cheminfo/nmrium/commit/6d21b8907e8e422d4ae14dd5ed58fd3a33a60ab4)), closes [#3779](https://github.com/cheminfo/nmrium/issues/3779)
+* property of structures in DB is ocl and not oclid ([084bbae](https://github.com/cheminfo/nmrium/commit/084bbaeddadcabc4c55380487009199e5d8c1fa8))
+* remove explicit URL validations ([0321238](https://github.com/cheminfo/nmrium/commit/0321238806ad2e807a8f83c282345d7c6a10d5cb))
+* rollback spectrum before reapplying shift in 2D ([25cf896](https://github.com/cheminfo/nmrium/commit/25cf896652555e295e4c490f2c20343646f338a2)), closes [#3785](https://github.com/cheminfo/nmrium/issues/3785)
+
 ## [1.6.1](https://github.com/cheminfo/nmrium/compare/v1.6.0...v1.6.1) (2025-10-16)
 
 
