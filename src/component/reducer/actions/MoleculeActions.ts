@@ -1,3 +1,4 @@
+import type { StateMolecule } from '@zakodium/nmrium-core';
 import type { Logger } from 'cheminfo-types';
 import type { FifoLogger } from 'fifo-logger';
 import type { Draft } from 'immer';
@@ -12,10 +13,7 @@ import type {
 } from '../../../data/PredictionManager.js';
 import { generateSpectra } from '../../../data/PredictionManager.js';
 import { changeSpectraRelativeSum } from '../../../data/data1d/Spectrum1D/SumManager.js';
-import type {
-  MoleculeBoundingRect,
-  StateMolecule,
-} from '../../../data/molecules/Molecule.js';
+import type { MoleculeBoundingRect } from '../../../data/molecules/Molecule.js';
 import { DRAGGABLE_STRUCTURE_INITIAL_BOUNDING_REACT } from '../../../data/molecules/Molecule.js';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager.js';
 import { generateColor } from '../../../data/utilities/generateColor.js';
@@ -41,9 +39,10 @@ type AddMoleculesAction = ActionType<
 >;
 type SetMoleculeAction = ActionType<
   'SET_MOLECULE',
-  Required<StateMolecule> & {
-    mappings?: ReturnType<TopicMolecule['getDiaIDsMapping']>;
-  }
+  Required<Pick<StateMolecule, 'id' | 'molfile' | 'label'>> &
+    Omit<StateMolecule, 'id' | 'molfile' | 'label'> & {
+      mappings?: ReturnType<TopicMolecule['getDiaIDsMapping']>;
+    }
 >;
 type DeleteMoleculeAction = ActionType<'DELETE_MOLECULE', { id: string }>;
 type PredictSpectraFromMoleculeAction = ActionType<
@@ -209,7 +208,7 @@ function handlePredictSpectraFromMolecule(
     });
     id = moleculeObj?.id;
   } else {
-    setMolecule(draft, molecule as Required<StateMolecule>);
+    setMolecule(draft, { id: crypto.randomUUID(), label: '', ...molecule });
   }
 
   if (id) {

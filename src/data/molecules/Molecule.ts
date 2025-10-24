@@ -1,13 +1,11 @@
+import type { StateMolecule } from '@zakodium/nmrium-core';
 import { Molecule } from 'openchemlib';
 
 import getAtomsFromMF from '../utilities/getAtomsFromMF.js';
 
-export interface StateMolecule {
-  id?: string;
-  molfile: string;
-  label?: string;
-}
-export interface StateMoleculeExtended extends Required<StateMolecule> {
+export interface StateMoleculeExtended
+  extends Required<Pick<StateMolecule, 'id' | 'molfile' | 'label'>>,
+    Omit<StateMolecule, 'id' | 'molfile' | 'label'> {
   mf: string;
   em: number;
   mw: number;
@@ -61,6 +59,9 @@ export function initMolecule(
     id,
     molfile,
     label,
+    sourceSelector: options.sourceSelector,
+    sourceId: options.sourceId,
+    fileCollectionId: options.fileCollectionId,
     mf: mfInfo.formula,
     em: mfInfo.absoluteWeight,
     mw: mfInfo.relativeWeight,
@@ -70,10 +71,15 @@ export function initMolecule(
 }
 
 export function toJSON(molecule: StateMoleculeExtended): StateMolecule {
-  const { molfile, label, id } = molecule;
+  const { molfile, label, id, fileCollectionId, sourceSelector, sourceId } =
+    molecule;
+
   return {
     molfile,
     label,
     id,
+    fileCollectionId,
+    sourceSelector,
+    sourceId,
   };
 }
