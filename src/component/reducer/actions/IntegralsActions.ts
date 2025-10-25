@@ -106,7 +106,7 @@ function addIntegral(datum: Spectrum1D, options: AddIntegralOptions) {
 
   const shiftX = getShiftX(datum);
   const integration = xyIntegration({ x, y: re }, { from, to });
-  const integral = {
+  const integral: Integral = {
     id: crypto.randomUUID(),
     originalFrom: from - shiftX,
     originalTo: to - shiftX,

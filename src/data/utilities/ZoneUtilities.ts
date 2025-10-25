@@ -1,7 +1,5 @@
 import type { Zone } from '@zakodium/nmr-types';
 
-import { DATUM_KIND } from '../constants/signalsKinds.js';
-
 function getNbAtoms(zone: Zone, axis: 'x' | 'y') {
   let sum = 0;
   if (zone.signals) {
@@ -30,7 +28,7 @@ function resetDiaIDs(zone: Zone, axis: 'x' | 'y') {
 }
 
 export function checkZoneKind(zone: Zone): boolean {
-  return zone.kind === DATUM_KIND.signal;
+  return zone.kind === 'signal';
 }
 
 export function unlink(

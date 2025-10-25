@@ -1,8 +1,6 @@
 import type { Range, Signal1D } from '@zakodium/nmr-types';
 import omit from 'lodash/omit.js';
 
-import { DATUM_KIND } from '../constants/signalsKinds.js';
-
 function resetDiaIDs(range: Range) {
   const deletedKeys = ['diaIDs', 'nbAtoms'];
   range = omit(range, deletedKeys) as Range;
@@ -50,6 +48,6 @@ export function unlink(range: Range, options: UnlinkOptions = {}): Range {
   return range;
 }
 
-export function checkRangeKind(range: any) {
-  return range.kind === DATUM_KIND.signal;
+export function checkRangeKind(range: Range) {
+  return range.kind === 'signal';
 }

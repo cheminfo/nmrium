@@ -67,14 +67,16 @@ interface RangesTableProps extends TableContextMenuProps {
 
 const EditRangeDialog = withDialog(EditRangeModal, { force: true });
 
-function RangesTable({
-  tableData,
-  contextMenu = [],
-  onContextMenuSelect,
-  activeTab,
-  preferences,
-  info,
-}: RangesTableProps) {
+function RangesTable(props: RangesTableProps) {
+  const {
+    tableData,
+    contextMenu = [],
+    onContextMenuSelect,
+    activeTab,
+    preferences,
+    info,
+  } = props;
+
   const element = extractChemicalElement(activeTab);
   const { items: sortedData, isSortedDesc, onSort } = useTableSortBy(tableData);
   const data = useMapRanges(sortedData);
