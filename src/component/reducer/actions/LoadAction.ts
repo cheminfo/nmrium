@@ -330,5 +330,3 @@ export const LoadActions = {
   handleLoadDropFiles,
   handleSetIsLoading,
 } as const;
-
-export { handleInitiate, handleLoadDropFiles, handleSetIsLoading };

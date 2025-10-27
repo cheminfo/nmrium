@@ -10,7 +10,6 @@ import { Controller, useForm } from 'react-hook-form';
 import type { ExportOptions } from '../../data/SpectraManager.js';
 import { DataExportOptions } from '../../data/SpectraManager.js';
 import { useChartData } from '../context/ChartContext.js';
-import { usePreferences } from '../context/PreferencesContext.js';
 import ActionButtons from '../elements/ActionButtons.js';
 import { Input2Controller } from '../elements/Input2Controller.js';
 import type { LabelStyle } from '../elements/Label.js';
