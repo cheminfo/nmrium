@@ -363,7 +363,7 @@ test('show/hide spectrum', async ({ page }) => {
   });
 });
 
-test('Export source from 1H spectrum', async ({ page }) => {
+test('Export sources from 1H spectrum', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Load 1H spectrum', async () => {
     await nmrium.open1D();
@@ -402,7 +402,7 @@ test('Export source from 1H spectrum', async ({ page }) => {
     });
     expect(data).not.toBeUndefined();
     // TODO: Save raw data should not have source property
-    expect(data.source).toBeUndefined();
+    expect(data.sources).toBeUndefined();
     expect(data.spectra[0].data).not.toBeUndefined();
   });
   await test.step('Check export DATA SOURCE', async () => {
@@ -426,7 +426,8 @@ test('Export source from 1H spectrum', async ({ page }) => {
       });
     });
     expect(data).not.toBeUndefined();
-    expect(data.source).not.toBeUndefined();
+    expect(data.sources).not.toBeUndefined();
+    expect(Object.keys(data.sources).length).not.toBe(0);
     expect(data.spectra[0].data).toBeUndefined();
   });
   await test.step('Check export NO Data', async () => {
@@ -451,7 +452,7 @@ test('Export source from 1H spectrum', async ({ page }) => {
   });
 });
 
-test('Export source from imported spectrum', async ({ page }) => {
+test('Export sources from imported spectrum', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Drag and drop spectrum', async () => {
     await nmrium.dropFile('ethylbenzene-1h.jdx');
@@ -489,7 +490,7 @@ test('Export source from imported spectrum', async ({ page }) => {
     });
     // TODO: Save raw data should not have source property
     expect(data).not.toBeUndefined();
-    expect(data.source).toBeUndefined();
+    expect(data.sources).toBeUndefined();
     expect(data.spectra[0].data).not.toBeUndefined();
   });
   await test.step('Check export NO Data', async () => {
