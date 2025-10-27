@@ -52,7 +52,7 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
   );
 
   const {
-    source,
+    sources,
     data: spectraData,
     molecules,
     correlations,
@@ -71,17 +71,25 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
     const { workspace, workspaces = {} } = preferencesState;
     stateRef.current = toJSON(
       core,
-      { data: spectraData, molecules, correlations, source, view, actionType },
+      {
+        data: spectraData,
+        molecules,
+        correlations,
+        sources,
+        view,
+        actionType,
+        fileCollections: {},
+      },
       { current: workspaces[workspace.current] },
       { serialize: false, exportTarget: 'onChange' },
-    );
+    ) as NmriumState;
   }, [
     actionType,
     core,
     correlations,
     molecules,
     preferencesState,
-    source,
+    sources,
     spectraData,
     view,
   ]);
@@ -91,7 +99,7 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
     if (checkActionType(actionType)) {
       handleChange.current?.(stateRef.current as NmriumState, 'data');
     }
-  }, [actionType, correlations, molecules, source, spectraData]);
+  }, [actionType, correlations, molecules, sources, spectraData]);
 
   useEffect(() => {
     // trigger onChange callback if view object changed
@@ -111,7 +119,8 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
     if (nmriumData) {
       void core
         .readNMRiumObject(nmriumData)
-        .then((nmriumState) => {
+        .then((result) => {
+          const [nmriumState, fileCollections] = result;
           if (nmriumState?.settings) {
             dispatchPreferences({
               type: 'SET_WORKSPACE',
@@ -121,7 +130,10 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
               },
             });
           }
-          dispatch({ type: 'INITIATE', payload: { nmriumState } });
+          dispatch({
+            type: 'INITIATE',
+            payload: { nmriumState, fileCollections },
+          });
         })
         .catch((error: unknown) => {
           dispatch({ type: 'SET_LOADING_FLAG', payload: { isLoading: false } });

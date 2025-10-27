@@ -37,6 +37,7 @@ import type { ActionType } from '../types/ActionType.js';
 
 import { handleUpdateCorrelations } from './CorrelationsActions.js';
 import { setDomain } from './DomainActions.js';
+import { rollbackSpectrumByFilter } from './FiltersActions.ts';
 
 interface DeleteSignal2DProps {
   spectrum: Spectrum;
@@ -240,6 +241,14 @@ function handleChangeZoneSignalDelta(
         name: 'shift2DY',
         value: { shift: yShift },
         enabled: true,
+      });
+    }
+
+    for (const filter of filters) {
+      rollbackSpectrumByFilter(draft, {
+        key: filter.name,
+        searchBy: 'name',
+        applyFilter: false,
       });
     }
 

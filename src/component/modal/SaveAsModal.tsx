@@ -8,12 +8,14 @@ import {
 import { Controller, useForm } from 'react-hook-form';
 
 import type { ExportOptions } from '../../data/SpectraManager.js';
+import { DataExportOptions } from '../../data/SpectraManager.js';
 import { useChartData } from '../context/ChartContext.js';
 import ActionButtons from '../elements/ActionButtons.js';
 import { Input2Controller } from '../elements/Input2Controller.js';
 import type { LabelStyle } from '../elements/Label.js';
 import Label from '../elements/Label.js';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
+import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature.js';
 import { useExport } from '../hooks/useExport.js';
 
 const INITIAL_VALUE = {
@@ -21,7 +23,7 @@ const INITIAL_VALUE = {
   compressed: false,
   pretty: false,
   include: {
-    dataType: 'ROW_DATA',
+    dataType: DataExportOptions.RAW_DATA,
     view: false,
     settings: false,
   } satisfies ExportOptions,
@@ -56,8 +58,9 @@ function SaveAsModal(props: SaveAsModalProps) {
 }
 function InnerSaveAsModal(props: InnerSaveAsModalProps) {
   const { onCloseDialog } = props;
-  const { source, data } = useChartData();
+  const { sources, data } = useChartData();
   const { saveHandler } = useExport();
+  const experimentalFlagEnabled = useCheckExperimentalFeature();
 
   const fileName = data[0]?.info?.name;
 
@@ -105,13 +108,33 @@ function InnerSaveAsModal(props: InnerSaveAsModalProps) {
               const { value, ref, ...otherFieldProps } = field;
               return (
                 <RadioGroup inline selectedValue={value} {...otherFieldProps}>
-                  <Radio label="Raw data" value="ROW_DATA" />
+                  <Radio label="Raw data" value={DataExportOptions.RAW_DATA} />
                   <Radio
                     label="Data source"
-                    value="DATA_SOURCE"
-                    disabled={!source}
+                    value={DataExportOptions.DATA_SOURCE}
+                    disabled={Object.keys(sources).length === 0}
                   />
-                  <Radio label="No data" value="NO_DATA" />
+                  <Radio label="No data" value={DataExportOptions.NO_DATA} />
+
+                  {/*
+                   * Radio group works with Children.map.
+                   * So Radio must be direct children of RadioGroup.
+                   */}
+                  {experimentalFlagEnabled && (
+                    <Radio
+                      label="Full data (external data embed, experimental)"
+                      value={DataExportOptions.SELF_CONTAINED}
+                    />
+                  )}
+                  {experimentalFlagEnabled && (
+                    <Radio
+                      label="Full data (external data linked, experimental)"
+                      disabled={Object.keys(sources).length === 0}
+                      value={
+                        DataExportOptions.SELF_CONTAINED_EXTERNAL_DATASOURCE
+                      }
+                    />
+                  )}
                 </RadioGroup>
               );
             }}
