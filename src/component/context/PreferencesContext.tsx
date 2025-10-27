@@ -1,20 +1,23 @@
+import type { Dispatch } from 'react';
 import { createContext, useContext, useMemo } from 'react';
 
 import type {
+  PreferencesActions,
   PreferencesState,
   WorkspaceWithSource,
 } from '../reducer/preferences/preferencesReducer.js';
-import { preferencesInitialState } from '../reducer/preferences/preferencesReducer.js';
 import { isReadOnlyWorkspace } from '../reducer/preferences/utilities/isReadOnlyWorkspace.js';
 
-interface PreferencesContextData extends PreferencesState {
+export interface PreferencesStateContext extends PreferencesState {
+  dispatch: Dispatch<PreferencesActions>;
+}
+
+interface PreferencesContextData extends PreferencesStateContext {
   isCurrentWorkspaceReadOnly: boolean;
   current: WorkspaceWithSource;
 }
 
-const PreferencesContext = createContext<PreferencesState>(
-  preferencesInitialState,
-);
+const PreferencesContext = createContext<PreferencesStateContext | null>(null);
 export const PreferencesProvider = PreferencesContext.Provider;
 
 export function usePreferences(): PreferencesContextData {
