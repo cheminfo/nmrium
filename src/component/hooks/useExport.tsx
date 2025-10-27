@@ -9,9 +9,10 @@ import { useToaster } from '../context/ToasterContext.js';
 import {
   browserNotSupportedErrorToast,
   copyPNGToClipboard,
-  exportAsJSON,
+  exportAsJsonBlob,
   exportAsPng,
   exportAsSVG,
+  saveAs,
 } from '../utility/export.js';
 
 interface SaveOptions {
@@ -40,7 +41,13 @@ export function useExport() {
             view: true,
           });
 
-          await exportAsJSON(exportedData, fileName, spaceIndent, isCompressed);
+          const blob = await exportAsJsonBlob(
+            exportedData,
+            fileName,
+            spaceIndent,
+            isCompressed,
+          );
+          saveAs(blob, fileName);
         } catch (error) {
           toaster.show({
             intent: 'danger',
@@ -59,6 +66,9 @@ export function useExport() {
     (options: SaveOptions) => {
       async function handler() {
         const { name, pretty, compressed, include } = options;
+        const exportArchive =
+          include.dataType?.startsWith('SELF_CONTAINED') ?? false;
+
         const hideLoading = toaster.showLoading({
           message: `Exporting as ${name}.nmrium process in progress`,
         });
@@ -68,8 +78,30 @@ export function useExport() {
               ...include,
               exportTarget: 'nmrium',
             });
-            const spaceIndent = pretty ? 2 : 0;
-            await exportAsJSON(exportedData, name, spaceIndent, compressed);
+            const spaceIndent = pretty || exportArchive ? 2 : 0;
+            const blob = await exportAsJsonBlob(
+              exportedData,
+              name,
+              spaceIndent,
+              compressed && !exportArchive,
+            );
+
+            if (!exportArchive) {
+              return saveAs(blob, name);
+            }
+
+            const archive = await core.serializeNmriumArchive({
+              molecules: state.molecules,
+              spectra: state.data,
+              fileCollections: state.fileCollections,
+              includeData: options.include.dataType === 'SELF_CONTAINED',
+              serializedState: blob,
+            });
+            saveAs(
+              new Blob([archive], { type: 'application/nmrium+zip' }),
+              name,
+              '.nmrium.zip',
+            );
           } catch (error) {
             toaster.show({
               intent: 'danger',

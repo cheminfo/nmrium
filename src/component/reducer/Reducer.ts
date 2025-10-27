@@ -1,6 +1,6 @@
 import type { BaselineCorrectionZone } from '@zakodium/nmr-types';
 import type { Spectrum, ViewState } from '@zakodium/nmrium-core';
-import type { Source } from 'file-collection';
+import type { FileCollection, Source } from 'file-collection';
 import type { Draft } from 'immer';
 import { original, produce } from 'immer';
 import type { CorrelationData } from 'nmr-correlation';
@@ -22,7 +22,7 @@ import * as DomainActions from './actions/DomainActions.js';
 import * as FiltersActions from './actions/FiltersActions.js';
 import * as InsetActions from './actions/InsetActions.js';
 import * as IntegralsActions from './actions/IntegralsActions.js';
-import * as LoadActions from './actions/LoadActions.js';
+import { LoadActions } from './actions/LoadAction.js';
 import * as MoleculeActions from './actions/MoleculeActions.js';
 import * as PeaksActions from './actions/PeaksActions.js';
 import * as PreferencesActions from './actions/PreferencesActions.js';
@@ -113,6 +113,8 @@ export function getDefaultViewState(): ViewState {
 }
 export const getInitialState = (): State => ({
   actionType: 'INITIALIZE_NMRIUM',
+  sources: {},
+  fileCollections: {},
   data: [],
   tempData: null,
   xDomain: [],
@@ -187,10 +189,19 @@ export interface State {
    *  base on the action type we can decide to trigger or not the callback function (onDataChange)
    */
   actionType: Action['type'];
+
   /**
    * web source of data
+   * Record key is identifier of the source (stored in spectra)
    */
-  source?: Source;
+  sources: Record<string, Source>;
+
+  /**
+   * File collections of the loaded files
+   * Record key is identifier of the fileCollection (stored in spectra)
+   */
+  fileCollections: Record<string, FileCollection>;
+
   /**
    * spectra list (1d and 2d)
    */
