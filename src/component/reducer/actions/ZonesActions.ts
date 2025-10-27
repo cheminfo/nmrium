@@ -1,4 +1,9 @@
-import type { Filter2DEntry, Signal2D, Zone } from '@zakodium/nmr-types';
+import type {
+  Filter2DEntry,
+  Signal2D,
+  SignalKind,
+  Zone,
+} from '@zakodium/nmr-types';
 import type {
   Spectrum2D,
   Spectrum,
@@ -11,10 +16,6 @@ import lodashCloneDeep from 'lodash/cloneDeep.js';
 import { setPathLength } from 'nmr-correlation';
 import { Filters2DManager } from 'nmr-processing';
 
-import {
-  DATUM_KIND,
-  SIGNAL_INCLUDED_KINDS,
-} from '../../../data/constants/signalsKinds.js';
 import {
   changeZoneSignal,
   detectZones,
@@ -61,7 +62,7 @@ type ChangeZoneSignalDeltaAction = ActionType<
 >;
 type ChangeZoneSignalKindAction = ActionType<
   'CHANGE_ZONE_SIGNAL_KIND',
-  { zoneData: ZoneData; kind: string }
+  { zoneData: ZoneData; kind: SignalKind }
 >;
 type DeleteZoneAction = ActionType<'DELETE_2D_ZONE', { id?: string }>;
 type DeleteSignal2DAction = ActionType<'DELETE_2D_SIGNAL', DeleteSignal2DProps>;
@@ -279,9 +280,7 @@ function handleChangeZoneSignalKind(
     const zoneIndex = getZoneIndex(state, index, zoneData.id);
     const _zone = (draft.data[index] as Spectrum2D).zones.values[zoneIndex];
     _zone.signals[zoneData.tableMetaInfo.signalIndex].kind = kind;
-    _zone.kind = SIGNAL_INCLUDED_KINDS.includes(kind)
-      ? DATUM_KIND.signal
-      : DATUM_KIND.mixed;
+    _zone.kind = kind;
     handleUpdateCorrelations(draft);
   }
 }

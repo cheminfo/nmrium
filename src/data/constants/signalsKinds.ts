@@ -1,26 +1,11 @@
-import { stringCapitalize } from '../../utils/stringCapitalize.js';
-import type { SignalKind } from '../types/common/SignalKind.js';
-
-const KINDS: SignalKind[] = [
-  'undefined',
-  'signal',
-  'reference',
-  'solvent',
-  'standard',
-  'p1',
-  'p2',
-  'p3',
-];
+import type { SignalKind } from '@zakodium/nmr-types';
+import { signalKindLabelMapping } from 'nmr-processing';
 
 interface SignalKindItem {
   value: SignalKind;
   label: string;
 }
 
-export const SIGNAL_KINDS: SignalKindItem[] = KINDS.map((key) => ({
-  value: key,
-  label: stringCapitalize(key),
-}));
-
-export const SIGNAL_INCLUDED_KINDS: SignalKind[] = ['signal'];
-export const DATUM_KIND = { signal: 'signal', mixed: 'mixed' } as const;
+export const SIGNAL_KINDS: SignalKindItem[] = Object.entries(
+  signalKindLabelMapping,
+).map(([kind, label]) => ({ value: kind as SignalKind, label }));
