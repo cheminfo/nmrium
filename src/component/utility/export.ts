@@ -53,7 +53,7 @@ export function saveAs(
 function exportAsMatrix(
   data: any,
   spectraColumns: SpectraTableColumn[],
-  fileName = 'experiment',
+  fileName?: string,
 ) {
   //columns labels
   const columnsLabels: string[] = [];
@@ -89,7 +89,7 @@ function exportAsMatrix(
   }
 
   const blob = new Blob([matrix], { type: 'text/tab-separated-values' });
-  saveAs(blob, `${fileName}.tsv`);
+  saveAs(blob, fileName, '.tsv');
 }
 
 interface ExportDimensions {
@@ -106,7 +106,7 @@ interface ExportAsSVGOptions extends ExportDimensions {
 function exportAsSVG(targetElementID: string, options: ExportAsSVGOptions) {
   const { fileName, rootElement } = options;
   const { blob } = getBlob(targetElementID, { rootElement });
-  saveAs(blob, `${fileName}.svg`);
+  saveAs(blob, fileName, '.svg');
 }
 
 interface ExportAsPNGOptions {
@@ -250,7 +250,7 @@ async function exportAsPng(
   targetElementID: string,
   options: ExportAsPNGOptions,
 ) {
-  const { rootElement, fileName = 'experiment' } = options;
+  const { rootElement, fileName } = options;
   const { blob, width, height } = getBlob(targetElementID, { rootElement });
 
   const { canvas } = await createCanvas(blob, {
@@ -260,7 +260,7 @@ async function exportAsPng(
   });
 
   const pngBlob = await canvas.convertToBlob({ type: 'image/png' });
-  saveAs(pngBlob, `${fileName}.png`);
+  saveAs(pngBlob, fileName, '.png');
 }
 
 function createImageFromBlob(blob: Blob): Promise<HTMLImageElement> {
