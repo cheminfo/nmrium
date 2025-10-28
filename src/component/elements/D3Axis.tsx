@@ -181,8 +181,6 @@ export const D3Axis = forwardRef<SVGGElement | null, D3AxisProps>(
         {...otherProps}
       >
         <g className="axis">
-          {children}
-
           <BaseLine
             axisPosition={axisPosition}
             scale={scale}
@@ -194,6 +192,7 @@ export const D3Axis = forwardRef<SVGGElement | null, D3AxisProps>(
             scale={scale}
             tickLength={tickLength}
           />
+          {children}
         </g>
         {showGrid && (
           <g className="grid">
