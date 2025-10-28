@@ -16,7 +16,6 @@ function getWorkspace(
 export function initPreferences(draft: Draft<PreferencesState>, action: any) {
   if (action.payload) {
     const {
-      dispatch,
       workspace,
       customWorkspaces: cw,
       preferences,
@@ -77,7 +76,5 @@ export function initPreferences(draft: Draft<PreferencesState>, action: any) {
         ),
       };
     }
-
-    draft.dispatch = dispatch;
   }
 }

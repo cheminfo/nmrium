@@ -55,8 +55,7 @@ export function LoggerProvider({ children }: LoggerProviderProps) {
   const [logsHistory, setLogsHistory] = useState<LogEntry[]>([]);
   const [isLogHistoryOpened, openLogHistory] = useState(false);
   const popupLoggingLevelRef = useRef<LogEntry['levelLabel']>();
-
-  const loggerRef = useRef<FifoLogger>(new FifoLogger());
+  const [logger] = useState(() => new FifoLogger());
 
   useEffect(() => {
     function handleLogger({ detail: { logs } }: ChangeEvent) {
@@ -74,20 +73,18 @@ export function LoggerProvider({ children }: LoggerProviderProps) {
       }
       setLogsHistory(logs.slice());
     }
-    const loggerInstance = loggerRef.current;
 
-    loggerInstance.addEventListener('change', handleLogger);
-
+    logger.addEventListener('change', handleLogger);
     return () => {
-      loggerInstance.removeEventListener('change', handleLogger);
+      logger.removeEventListener('change', handleLogger);
     };
-  }, []);
+  }, [logger]);
 
   useEffect(() => {
     if (loggingLevel) {
-      loggerRef.current.setLevel(loggingLevel);
+      logger.setLevel(loggingLevel);
     }
-  }, [loggingLevel]);
+  }, [logger, loggingLevel]);
 
   const markAsRead = useCallback(() => {
     if (logsHistory.length > 0) {
@@ -98,12 +95,12 @@ export function LoggerProvider({ children }: LoggerProviderProps) {
 
   const loggerState = useMemo(() => {
     return {
-      logger: loggerRef.current,
+      logger,
       logsHistory,
       markAsRead,
       lastReadLogId,
     };
-  }, [lastReadLogId, logsHistory, markAsRead]);
+  }, [logger, lastReadLogId, logsHistory, markAsRead]);
 
   useEffect(() => {
     popupLoggingLevelRef.current = popupLoggingLevel;

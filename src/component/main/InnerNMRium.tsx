@@ -8,6 +8,7 @@ import { CoreProvider } from '../context/CoreContext.js';
 import { GlobalProvider } from '../context/GlobalContext.js';
 import { KeyModifiersProvider } from '../context/KeyModifierContext.js';
 import { LoggerProvider } from '../context/LoggerContext.js';
+import type { PreferencesStateContext } from '../context/PreferencesContext.js';
 import { PreferencesProvider } from '../context/PreferencesContext.js';
 import { SortSpectraProvider } from '../context/SortSpectraContext.js';
 import { ToasterProvider } from '../context/ToasterContext.js';
@@ -66,6 +67,10 @@ export function InnerNMRium(props: InnerNMRiumProps) {
     initPreferencesState,
   );
 
+  const preferencesProviderValue = useMemo<PreferencesStateContext>(() => {
+    return { ...preferencesState, dispatch: dispatchPreferences };
+  }, [preferencesState]);
+
   useEffect(() => {
     rootRef.current?.focus();
   }, [isFullScreen]);
@@ -79,7 +84,6 @@ export function InnerNMRium(props: InnerNMRiumProps) {
         workspace,
         customWorkspaces,
         currentWorkspace: settings?.currentWorkspace,
-        dispatch: dispatchPreferences,
       },
     });
   }, [customWorkspaces, preferences, workspace]);
@@ -99,7 +103,7 @@ export function InnerNMRium(props: InnerNMRiumProps) {
               viewerRef: viewerRef.current,
             }}
           >
-            <PreferencesProvider value={preferencesState}>
+            <PreferencesProvider value={preferencesProviderValue}>
               <LoggerProvider>
                 <KeyModifiersProvider>
                   <ToasterProvider>

@@ -1,5 +1,6 @@
 import type {
   ACSExportOptions,
+  CustomWorkspaces,
   ExportPreferences,
   ExportSettings,
   MultipleSpectraAnalysisPreferences,
@@ -70,10 +71,11 @@ export interface Settings {
 type InitPreferencesAction = ActionType<
   'INIT_PREFERENCES',
   {
-    display: NMRiumPreferences;
-    workspace: NMRiumWorkspace;
-    customWorkspaces: Record<string, Workspace>;
-    dispatch: any;
+    preferences: NMRiumPreferences | undefined;
+    display?: NMRiumPreferences;
+    workspace: NMRiumWorkspace | undefined;
+    customWorkspaces: CustomWorkspaces | undefined;
+    currentWorkspace: Settings['currentWorkspace'] | undefined;
   }
 >;
 
@@ -168,7 +170,7 @@ export type TogglePanelAction = ActionType<
   }
 >;
 
-type PreferencesActions =
+export type PreferencesActions =
   | InitPreferencesAction
   | SetPreferencesAction
   | SetPanelsPreferencesAction
@@ -198,7 +200,6 @@ export interface PreferencesState {
   // TODO: A lot of places set this to Required<WorkspacePreferences>, which is a subset of this type
   workspaces: WorkspacesWithSource;
   originalWorkspaces: WorkspacesWithSource;
-  dispatch: (action?: PreferencesActions) => void;
   workspace: {
     current: NMRiumWorkspace;
     base: NMRiumWorkspace | null;
@@ -209,7 +210,6 @@ export const preferencesInitialState: PreferencesState = {
   version: CURRENT_EXPORT_VERSION,
   workspaces: {},
   originalWorkspaces: {},
-  dispatch: () => null,
   workspace: {
     current: 'default',
     base: null,
@@ -319,8 +319,7 @@ function innerPreferencesReducer(
       return draft;
   }
 }
-const preferencesReducer: Reducer<PreferencesState, any> = produce(
-  innerPreferencesReducer,
-);
+const preferencesReducer: Reducer<PreferencesState, PreferencesActions> =
+  produce(innerPreferencesReducer);
 
 export default preferencesReducer;
