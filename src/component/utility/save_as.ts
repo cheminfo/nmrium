@@ -3,7 +3,7 @@ import fileSaver from 'file-saver';
 
 type Extension = `.${string}`;
 
-export interface SaveAsOptions {
+interface SaveAsOptions {
   blob: Blob;
   name: string;
   extension: Extension;
