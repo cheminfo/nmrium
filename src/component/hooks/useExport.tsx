@@ -12,8 +12,8 @@ import {
   exportAsJsonBlob,
   exportAsPng,
   exportAsSVG,
-  saveAs,
 } from '../utility/export.js';
+import { saveAs } from '../utility/save_as.ts';
 
 interface SaveOptions {
   include: ExportOptions;
@@ -35,7 +35,7 @@ export function useExport() {
       });
       setTimeout(async () => {
         try {
-          const fileName = state.data[0]?.info?.name;
+          const name = state.data[0]?.info?.name;
           const exportedData = toJSON(core, state, preferencesState, {
             exportTarget: 'nmrium',
             view: true,
@@ -43,11 +43,11 @@ export function useExport() {
 
           const blob = await exportAsJsonBlob(
             exportedData,
-            fileName,
+            name,
             spaceIndent,
             isCompressed,
           );
-          saveAs(blob, fileName);
+          saveAs({ blob, name, extension: '.nmrium' });
         } catch (error) {
           toaster.show({
             intent: 'danger',
@@ -87,7 +87,7 @@ export function useExport() {
             );
 
             if (!exportArchive) {
-              return saveAs(blob, name);
+              return saveAs({ blob, name, extension: '.nmrium' });
             }
 
             const archive = await core.serializeNmriumArchive({
@@ -97,11 +97,10 @@ export function useExport() {
               includeData: options.include.dataType === 'SELF_CONTAINED',
               serializedState: blob,
             });
-            saveAs(
-              new Blob([archive], { type: 'application/nmrium+zip' }),
-              name,
-              '.nmrium.zip',
-            );
+            const zipBlob = new Blob([archive], {
+              type: 'application/nmrium+zip',
+            });
+            saveAs({ blob: zipBlob, name, extension: '.nmrium.zip' });
           } catch (error) {
             toaster.show({
               intent: 'danger',

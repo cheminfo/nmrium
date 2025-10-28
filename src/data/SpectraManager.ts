@@ -13,11 +13,11 @@ import {
   spectrum1DToJCAMPDX,
 } from '@zakodium/nmrium-core-plugins';
 import { BlobWriter, TextReader, ZipWriter } from '@zip.js/zip.js';
-import saveAs from 'file-saver';
 import * as OCL from 'openchemlib';
 import { assert } from 'react-science/ui';
 
 import type { State } from '../component/reducer/Reducer.js';
+import { saveAs } from '../component/utility/save_as.ts';
 
 import { initiateDatum1D, isSpectrum1D } from './data1d/Spectrum1D/index.js';
 import { initiateDatum2D } from './data2d/Spectrum2D/index.js';
@@ -250,7 +250,7 @@ export function exportAsJcamp(
   }
 
   const blob = new Blob([jcamp], { type: 'text/plain' });
-  saveAs(blob, `${spectrum.info.name}.jdx`);
+  saveAs({ blob, name: spectrum.info.name, extension: '.jdx' });
 }
 
 interface ExportForCTOptions {
@@ -295,5 +295,5 @@ export async function exportForCT(options: ExportForCTOptions) {
   await zip.add(`${molFileName}.mol`, new TextReader(ctMolfile));
 
   const blob = await zip.close();
-  saveAs(blob, `${name}.zip`);
+  saveAs({ blob, name, extension: '.zip' });
 }

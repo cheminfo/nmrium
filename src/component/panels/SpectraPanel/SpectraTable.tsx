@@ -8,7 +8,6 @@ import type {
   StateMolecule,
 } from '@zakodium/nmrium-core';
 import dlv from 'dlv';
-import saveAs from 'file-saver';
 import type { CSSProperties } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import { FaCopy, FaFileExport, FaRegTrashAlt } from 'react-icons/fa';
@@ -29,6 +28,7 @@ import type { Column } from '../../elements/ReactTable/ReactTable.js';
 import ReactTable from '../../elements/ReactTable/ReactTable.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import ExportAsJcampModal from '../../modal/ExportAsJcampModal.js';
+import { saveAs } from '../../utility/save_as.ts';
 
 import { RenderAsHTML } from './base/RenderAsHTML.js';
 import type { OnChangeVisibilityEvent } from './base/ShowHideSpectrumButton.js';
@@ -250,7 +250,7 @@ export function SpectraTable(props: SpectraTableProps) {
         case SpectraContextMenuOptionsKeys.ExportAsText: {
           const data = convertSpectrumToText(spectrum);
           const blob = new Blob([data], { type: 'text/plain' });
-          saveAs(blob, `${spectrum.info.name}.tsv`);
+          saveAs({ blob, name: spectrum.info.name, extension: '.tsv' });
           break;
         }
         case SpectraContextMenuOptionsKeys.CopyAsText: {

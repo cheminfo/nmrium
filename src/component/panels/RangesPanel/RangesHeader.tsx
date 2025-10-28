@@ -5,7 +5,6 @@ import {
   SvgNmrPeaks,
   SvgNmrPeaksTopLabels,
 } from 'cheminfo-font';
-import saveAs from 'file-saver';
 import { rangesToTSV } from 'nmr-processing';
 import {
   FaChartBar,
@@ -31,6 +30,7 @@ import { PublicationStringModal } from '../../modal/PublicationStringModal.js';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal.js';
 import { booleanToString } from '../../utility/booleanToString.js';
 import type { FilterType } from '../../utility/filterType.js';
+import { saveAs } from '../../utility/save_as.ts';
 import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
 
 type ExportRangesType = 'publicationString' | 'rangesToTSV';
@@ -205,7 +205,7 @@ function RangesHeader(props: RangesHeaderProps) {
   function handleRangesToTSV() {
     const tsv = rangesToTSV(ranges.values);
     const blob = new Blob([tsv], { type: 'text/plain' });
-    saveAs(blob, `${info.name}.tsv`);
+    saveAs({ blob, name: info.name, extension: '.tsv' });
   }
 
   function exportHandler(data?: ExportData) {
