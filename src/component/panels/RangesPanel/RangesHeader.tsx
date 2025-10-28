@@ -205,7 +205,8 @@ function RangesHeader(props: RangesHeaderProps) {
   function handleRangesToTSV() {
     const tsv = rangesToTSV(ranges.values);
     const blob = new Blob([tsv], { type: 'text/plain' });
-    saveAs({ blob, name: info.name, extension: '.tsv' });
+    const name = info.name || 'experiment';
+    saveAs({ blob, name, extension: '.tsv' });
   }
 
   function exportHandler(data?: ExportData) {

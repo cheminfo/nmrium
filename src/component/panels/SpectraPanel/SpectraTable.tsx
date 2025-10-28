@@ -250,7 +250,8 @@ export function SpectraTable(props: SpectraTableProps) {
         case SpectraContextMenuOptionsKeys.ExportAsText: {
           const data = convertSpectrumToText(spectrum);
           const blob = new Blob([data], { type: 'text/plain' });
-          saveAs({ blob, name: spectrum.info.name, extension: '.tsv' });
+          const name = spectrum?.info?.name || 'experiment';
+          saveAs({ blob, name, extension: '.tsv' });
           break;
         }
         case SpectraContextMenuOptionsKeys.CopyAsText: {

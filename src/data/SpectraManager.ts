@@ -250,7 +250,8 @@ export function exportAsJcamp(
   }
 
   const blob = new Blob([jcamp], { type: 'text/plain' });
-  saveAs({ blob, name: spectrum.info.name, extension: '.jdx' });
+  const name = spectrum.info.name || 'experiment';
+  saveAs({ blob, name, extension: '.jdx' });
 }
 
 interface ExportForCTOptions {
@@ -278,7 +279,7 @@ export async function exportForCT(options: ExportForCTOptions) {
   if (!jcamp) {
     throw new Error('Failed to convert the 1D spectrum to JCAMP');
   }
-  const name = spectrum.info.name;
+  const name = spectrum.info.name || 'experiment';
   const zip = new ZipWriter(new BlobWriter());
 
   //add jcamp file

@@ -46,7 +46,7 @@ async function exportAsJsonBlob(
 function exportAsMatrix(
   data: any,
   spectraColumns: SpectraTableColumn[],
-  name = 'experiment',
+  name: string,
 ) {
   //columns labels
   const columnsLabels: string[] = [];

@@ -35,7 +35,7 @@ export function useExport() {
       });
       setTimeout(async () => {
         try {
-          const name = state.data[0]?.info?.name;
+          const name = state.data[0]?.info?.name || 'experiment';
           const exportedData = toJSON(core, state, preferencesState, {
             exportTarget: 'nmrium',
             view: true,
@@ -65,7 +65,8 @@ export function useExport() {
   const saveHandler = useCallback(
     (options: SaveOptions) => {
       async function handler() {
-        const { name, pretty, compressed, include } = options;
+        const { pretty, compressed, include } = options;
+        const name = options.name || 'experiment';
         const exportArchive =
           include.dataType?.startsWith('SELF_CONTAINED') ?? false;
 

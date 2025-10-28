@@ -570,7 +570,7 @@ async function saveJcampAsJson(
     { includeData: 'dataSource' },
   );
 
-  const name = names?.[0];
+  const name = names?.[0] || 'experiment';
   const blob = await exportAsJsonBlob(exportedData, name, 2);
   saveAs({ blob, name, extension: '.nmrium' });
 }
