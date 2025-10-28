@@ -51,6 +51,11 @@ export default [
           name: '@simbathesailor/use-what-changed',
           message: 'Remove use-what-changed before committing the code',
         },
+        {
+          name: 'file-saver',
+          message:
+            'Use our internal utility at `src/component/utility/save_as.ts`',
+        },
       ],
       'react/no-unknown-property': ['error', { ignore: ['css'] }],
       'react/forbid-dom-props': [

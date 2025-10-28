@@ -6,7 +6,8 @@ import type {
 } from '@zakodium/nmrium-core';
 import { BlobWriter, TextReader, ZipWriter } from '@zip.js/zip.js';
 import dlv from 'dlv';
-import fileSaver from 'file-saver';
+
+import { saveAs } from './save_as.ts';
 
 export const browserNotSupportedErrorToast: ToastProps = {
   message:
@@ -42,18 +43,10 @@ async function exportAsJsonBlob(
   }
 }
 
-export function saveAs(
-  blob: Blob,
-  fileName = 'experiment',
-  extension = '.nmrium',
-) {
-  fileSaver(blob, `${fileName}${extension}`);
-}
-
 function exportAsMatrix(
   data: any,
   spectraColumns: SpectraTableColumn[],
-  fileName = 'experiment',
+  name: string,
 ) {
   //columns labels
   const columnsLabels: string[] = [];
@@ -89,7 +82,7 @@ function exportAsMatrix(
   }
 
   const blob = new Blob([matrix], { type: 'text/tab-separated-values' });
-  saveAs(blob, `${fileName}.tsv`);
+  saveAs({ blob, name, extension: '.tsv' });
 }
 
 interface ExportDimensions {
@@ -104,9 +97,10 @@ interface ExportAsSVGOptions extends ExportDimensions {
 }
 
 function exportAsSVG(targetElementID: string, options: ExportAsSVGOptions) {
-  const { fileName, rootElement } = options;
+  const { fileName: name = 'experiment', rootElement } = options;
   const { blob } = getBlob(targetElementID, { rootElement });
-  saveAs(blob, `${fileName}.svg`);
+
+  saveAs({ blob, name, extension: '.svg' });
 }
 
 interface ExportAsPNGOptions {
@@ -250,7 +244,7 @@ async function exportAsPng(
   targetElementID: string,
   options: ExportAsPNGOptions,
 ) {
-  const { rootElement, fileName = 'experiment' } = options;
+  const { rootElement, fileName: name = 'experiment' } = options;
   const { blob, width, height } = getBlob(targetElementID, { rootElement });
 
   const { canvas } = await createCanvas(blob, {
@@ -260,7 +254,7 @@ async function exportAsPng(
   });
 
   const pngBlob = await canvas.convertToBlob({ type: 'image/png' });
-  saveAs(pngBlob, `${fileName}.png`);
+  saveAs({ blob: pngBlob, name, extension: '.png' });
 }
 
 function createImageFromBlob(blob: Blob): Promise<HTMLImageElement> {

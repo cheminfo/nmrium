@@ -31,8 +31,9 @@ import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus.j
 import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus.js';
 import { options } from '../../toolbar/ToolTypes.js';
 import Events from '../../utility/Events.js';
-import { exportAsJsonBlob, saveAs } from '../../utility/export.js';
+import { exportAsJsonBlob } from '../../utility/export.js';
 import nucleusToString from '../../utility/nucleusToString.js';
+import { saveAs } from '../../utility/save_as.ts';
 import { PanelNoData } from '../PanelNoData.js';
 import { TablePanel } from '../extra/BasicPanelStyle.js';
 import type { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
@@ -569,7 +570,7 @@ async function saveJcampAsJson(
     { includeData: 'dataSource' },
   );
 
-  const filename = names?.[0];
-  const blob = await exportAsJsonBlob(exportedData, filename, 1);
-  saveAs(blob, filename);
+  const name = names?.[0] || 'experiment';
+  const blob = await exportAsJsonBlob(exportedData, name, 2);
+  saveAs({ blob, name, extension: '.nmrium' });
 }
