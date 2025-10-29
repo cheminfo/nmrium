@@ -218,6 +218,7 @@ function DraggableMolecule(props: DraggableMoleculeProps) {
     atomHighlightColor,
     atomHighlightOpacity: 1,
     showAtomNumber: moleculeView.showAtomNumber,
+    noCarbonLabelWithCustomLabel: true,
   };
 
   if (renderAsSVG) {
