@@ -48,6 +48,16 @@ export function unlink(range: Range, options: UnlinkOptions = {}): Range {
   return range;
 }
 
-export function checkRangeKind(range: Range) {
-  return range.kind === 'signal';
+export function getOpacityBasedOnSignalKind(input: Range | Signal1D) {
+  const isSignal =
+    'signals' in input ? isSignalRange(input) : isSignalKind(input);
+  return isSignal ? 1 : 0.3;
+}
+
+function isSignalKind(signal: Signal1D) {
+  return signal.kind === 'signal';
+}
+
+export function isSignalRange(range: Range) {
+  return range.signals.every(isSignalKind);
 }

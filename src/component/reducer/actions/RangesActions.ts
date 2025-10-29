@@ -321,7 +321,6 @@ function handleChangeRangeSignalKind(
     const _range = (draft.data[index] as Spectrum1D).ranges.values[rangeIndex];
     if (_range?.signals) {
       _range.signals[range.tableMetaInfo.signalIndex].kind = kind;
-      _range.kind = kind;
       updateRangesRelativeValues(draft.data[index] as Spectrum1D);
       handleUpdateCorrelations(draft);
     }
