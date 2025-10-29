@@ -8,7 +8,7 @@ import { FaTimes } from 'react-icons/fa';
 import { Rnd } from 'react-rnd';
 
 import { isSpectrum1D } from '../../data/data1d/Spectrum1D/index.js';
-import { checkRangeKind } from '../../data/utilities/RangeUtilities.js';
+import { isSignalRange } from '../../data/utilities/RangeUtilities.js';
 import type { SVGTableColumn } from '../SVGTable.js';
 import { SVGTable } from '../SVGTable.js';
 import { useChartData } from '../context/ChartContext.js';
@@ -55,7 +55,7 @@ function useMapRanges(ranges: Ranges['values']) {
   const preferences = usePanelPreferences('ranges', activeTab);
   for (const range of ranges) {
     const { id, from, to, integration, signals = [] } = range;
-    const relativeFlag = checkRangeKind(range);
+    const relativeFlag = isSignalRange(range);
     const formattedValue = formatNumber(
       integration,
       preferences.relative.format,

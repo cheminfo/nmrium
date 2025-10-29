@@ -1,6 +1,7 @@
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { xyIntegral, xyMaxY } from 'ml-spectra-processing';
 
+import { getOpacityBasedOnSignalKind } from '../../../data/utilities/RangeUtilities.ts';
 import { useChartData } from '../../context/ChartContext.js';
 import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
 import useIntegralPath from '../../hooks/useIntegralPath.js';
@@ -13,6 +14,7 @@ interface IntegralData {
   id: string;
   from: number;
   to: number;
+  opacity: number;
 }
 
 interface IntegralProps extends IntegralData {
@@ -20,7 +22,7 @@ interface IntegralProps extends IntegralData {
 }
 
 function Integral(props: IntegralProps) {
-  const { x, y, max, from, to } = props;
+  const { x, y, max, from, to, opacity } = props;
   const { integralsScaleRatio } = useActiveSpectrumRangesViewState();
   const path = useIntegralPath({
     x,
@@ -37,6 +39,7 @@ function Integral(props: IntegralProps) {
       stroke="black"
       strokeWidth="1"
       fill="none"
+      opacity={opacity}
       d={path}
     />
   );
@@ -90,6 +93,7 @@ function useIntegrals() {
   } = spectrum;
   for (const range of ranges?.values || []) {
     const { from, to, id } = range;
+    const opacity = getOpacityBasedOnSignalKind(range);
     const integral = xyIntegral(
       { x, y: re },
       {
@@ -98,7 +102,7 @@ function useIntegrals() {
         reverse: true,
       },
     );
-    values.push({ ...integral, id } as IntegralData);
+    values.push({ ...integral, id, opacity } as IntegralData);
     const value = xyMaxY(integral);
     if (value > max) max = value;
   }
