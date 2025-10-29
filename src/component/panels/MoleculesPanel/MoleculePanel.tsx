@@ -162,6 +162,7 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
                             showAtomNumber={
                               moleculesView?.[mol.id]?.showAtomNumber || false
                             }
+                            noCarbonLabelWithCustomLabel={true}
                           />
                         </div>
                       </div>
