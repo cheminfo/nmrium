@@ -4,6 +4,7 @@ import type { MouseEvent } from 'react';
 import { useMemo, useRef } from 'react';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
+import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/isSpectrum2D.ts';
 import { ConcatenationString } from '../../../data/utilities/Concatenation.js';
 import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated.js';
 import { useTracesSpectra } from '../../2d/useTracesSpectra.ts';
@@ -99,9 +100,17 @@ export default function useAtomAssignment() {
     const { highlighted, sourceData } = highlightData.highlight;
     const { type, extra } = sourceData || {};
     const { spectrumID } = extra || {};
-    const currentSpectrum = spectrumID
-      ? tracesSpectra.find((s) => s.id === spectrumID)
-      : spectrum;
+
+    let currentSpectrum = spectrum;
+
+    if (isSpectrum2D(spectrum) && spectrumID) {
+      const traceSpectrum = tracesSpectra.find(
+        (traceSpectrum) => traceSpectrum.id === spectrumID,
+      );
+      if (traceSpectrum) {
+        currentSpectrum = traceSpectrum;
+      }
+    }
 
     if (!type || !isValidHighlightEventSource(type) || !currentSpectrum) {
       return [];
