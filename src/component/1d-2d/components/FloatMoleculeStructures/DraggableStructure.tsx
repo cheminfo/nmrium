@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 import { BsArrowsMove } from 'react-icons/bs';
 import { FaTimes } from 'react-icons/fa';
+import { MdFormatColorText } from 'react-icons/md';
 import type { MolfileSvgRendererProps } from 'react-ocl';
 import { MolfileSvgRenderer } from 'react-ocl';
 import OCLnmr from 'react-ocl-nmr';
@@ -22,11 +23,13 @@ import { useSVGUnitConverter } from '../../../hooks/useSVGUnitConverter.js';
 import { useCheckExportStatus } from '../../../hooks/useViewportSize.js';
 import { useMoleculeEditor } from '../../../modal/MoleculeStructureEditorModal.js';
 import useAtomAssignment from '../../../panels/MoleculesPanel/useAtomAssignment.js';
+import { booleanToString } from '../../../utility/booleanToString.ts';
 
 interface DraggableMoleculeProps extends DraggableStructureProps {
   width: number;
   height: number;
   renderAsSVG?: boolean;
+  isMoleculeLabelVisible: boolean;
 }
 
 interface DraggableStructureProps {
@@ -61,6 +64,7 @@ export function DraggableStructure(props: DraggableStructureProps) {
     moleculeView.floating.bounding,
   );
   const [isMoveActive, setIsMoveActive] = useState(false);
+  const [isMoleculeLabelVisible, setIsMoleculeLabelVisible] = useState(false);
 
   useEffect(() => {
     setBounding({ ...moleculeView.floating.bounding });
@@ -119,6 +123,15 @@ export function DraggableStructure(props: DraggableStructureProps) {
       title: 'Hide molecule',
       onClick: floatMoleculeHandler,
     },
+    {
+      elementType: 'separator',
+    },
+    {
+      icon: <MdFormatColorText />,
+      title: `${booleanToString(!isMoleculeLabelVisible)} molecule label`,
+      onClick: () => setIsMoleculeLabelVisible((flag) => !flag),
+      active: isMoleculeLabelVisible,
+    },
   ];
 
   const { x: xInPercent, y: yInPercent, width, height } = bounding;
@@ -129,7 +142,11 @@ export function DraggableStructure(props: DraggableStructureProps) {
   if (isExportProcessStart) {
     return (
       <g transform={`translate(${x} ${y})`}>
-        <DraggableMolecule renderAsSVG {...{ width, height }} {...props} />
+        <DraggableMolecule
+          renderAsSVG
+          {...{ width, height, isMoleculeLabelVisible }}
+          {...props}
+        />
       </g>
     );
   }
@@ -176,7 +193,12 @@ export function DraggableStructure(props: DraggableStructureProps) {
         >
           <ResponsiveChart>
             {({ width, height }) => {
-              return <DraggableMolecule {...{ width, height }} {...props} />;
+              return (
+                <DraggableMolecule
+                  {...{ width, height, isMoleculeLabelVisible }}
+                  {...props}
+                />
+              );
             }}
           </ResponsiveChart>
         </div>
@@ -195,6 +217,7 @@ function DraggableMolecule(props: DraggableMoleculeProps) {
     width,
     height,
     renderAsSVG = false,
+    isMoleculeLabelVisible,
   } = props;
   const {
     currentDiaIDsToHighlight,
@@ -211,7 +234,7 @@ function DraggableMolecule(props: DraggableMoleculeProps) {
     id: `molSVG${index || ''}`,
     height,
     width,
-    label: molecule.label,
+    label: isMoleculeLabelVisible ? molecule.label : '',
     labelFontSize: 15,
     labelColor: 'rgb(0,0,0)',
     molfile: molecule.molfile,
