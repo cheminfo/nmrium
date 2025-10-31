@@ -1,5 +1,31 @@
 # Changelog
 
+## [1.7.0](https://github.com/cheminfo/nmrium/compare/v1.6.1...v1.7.0) (2025-10-31)
+
+
+### Features
+
+* add more signal kinds ([#3782](https://github.com/cheminfo/nmrium/issues/3782)) ([f282586](https://github.com/cheminfo/nmrium/commit/f2825863e07b0ac0e6f0392e44ba214f7fe3eede))
+* copy DB meta information to customInfo ([2fafb02](https://github.com/cheminfo/nmrium/commit/2fafb029c88b00963331fb9b6ab01a7b582f5bb1))
+* dim non-signal elements (peaks and integrals) ([502f854](https://github.com/cheminfo/nmrium/commit/502f854fa3295d5bd57206da042ea9ebd8108462)), closes [#3795](https://github.com/cheminfo/nmrium/issues/3795)
+* display 2D Y-axis unit label ([6b9286c](https://github.com/cheminfo/nmrium/commit/6b9286c540dcd2dfe50ecc094b53ca5d7cbdf472)), closes [#3712](https://github.com/cheminfo/nmrium/issues/3712)
+* hide C if custom labels and atom is a carbon ([466a5f1](https://github.com/cheminfo/nmrium/commit/466a5f1da75137adcd335dec72d507d89d3eeb0b))
+* support experimental nmrium archive file format ([#3733](https://github.com/cheminfo/nmrium/issues/3733)) ([2c33f81](https://github.com/cheminfo/nmrium/commit/2c33f81e5f0f4880c65691e5e3d00d5cd22492d3))
+
+
+### Bug Fixes
+
+* assign traces in 2d ([#3777](https://github.com/cheminfo/nmrium/issues/3777)) ([5fdb708](https://github.com/cheminfo/nmrium/commit/5fdb708bfec09112160dde751b00729e9d67394c))
+* auto ranges picking pass the number of protons as integrationsum if the molecule exists. ([a842b08](https://github.com/cheminfo/nmrium/commit/a842b083fb536dc4114c14381187b4cb7f5b12b1))
+* **auto-processing:** correct handling of sine bell (SSB) parameter in Bruker format ([#3750](https://github.com/cheminfo/nmrium/issues/3750)) ([2657985](https://github.com/cheminfo/nmrium/commit/2657985ae436932b5d8e6e82daa68ccd2b52310e))
+* correct highlighting of assigned 1D ranges ([576f30d](https://github.com/cheminfo/nmrium/commit/576f30da88c03913151e53a03568b90db76d78a5)), closes [#3788](https://github.com/cheminfo/nmrium/issues/3788)
+* correctly position multiplicity tree in stack mode ([6d21b89](https://github.com/cheminfo/nmrium/commit/6d21b8907e8e422d4ae14dd5ed58fd3a33a60ab4)), closes [#3779](https://github.com/cheminfo/nmrium/issues/3779)
+* multiple call to `readNMRiumObject` into `NMRiumStateProvider` ([#3790](https://github.com/cheminfo/nmrium/issues/3790)) ([e8823b8](https://github.com/cheminfo/nmrium/commit/e8823b8236857e5ac7c72164f633aa556dbdabc5))
+* property of structures in DB is ocl and not oclid ([084bbae](https://github.com/cheminfo/nmrium/commit/084bbaeddadcabc4c55380487009199e5d8c1fa8))
+* put correct extension for `.tsv`, `.svg` and `.png` ([#3793](https://github.com/cheminfo/nmrium/issues/3793)) ([b03dd45](https://github.com/cheminfo/nmrium/commit/b03dd453864bc1bdca8c0767d5a356d7358ddd0e))
+* remove explicit URL validations ([0321238](https://github.com/cheminfo/nmrium/commit/0321238806ad2e807a8f83c282345d7c6a10d5cb))
+* rollback spectrum before reapplying shift in 2D ([25cf896](https://github.com/cheminfo/nmrium/commit/25cf896652555e295e4c490f2c20343646f338a2)), closes [#3785](https://github.com/cheminfo/nmrium/issues/3785)
+
 ## [1.6.1](https://github.com/cheminfo/nmrium/compare/v1.6.0...v1.6.1) (2025-10-16)
 
 
