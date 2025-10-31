@@ -2,6 +2,7 @@ import type { NMRPeak1D, Peak1D, Range } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { memo, useMemo } from 'react';
 
+import { getOpacityBasedOnSignalKind } from '../../../data/utilities/RangeUtilities.ts';
 import { useChartData } from '../../context/ChartContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.tsx';
 import { useActiveSpectrumPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState.js';
@@ -18,6 +19,7 @@ interface Peak1DWithParentKeys extends Peak1D {
 }
 interface NMRPeak1DWithParentKeys extends NMRPeak1D {
   parentKeys?: string[];
+  opacity: number;
 }
 
 interface SpreadPeak1D extends Peak1DWithParentKeys {
@@ -29,7 +31,9 @@ interface SpreadNMRPeak1D extends NMRPeak1DWithParentKeys {
   yInPixel: number;
 }
 
-export type Peak = Required<SpreadPeak1D | SpreadNMRPeak1D>;
+export type Peak = Required<SpreadPeak1D | SpreadNMRPeak1D> & {
+  opacity: number;
+};
 type PeaksMode = 'spread' | 'single';
 export type PeaksSource = 'peaks' | 'ranges';
 
@@ -61,9 +65,11 @@ export function getHighlightExtraId(
 function flatRangesPeaks(ranges: Range[]) {
   const results: NMRPeak1DWithParentKeys[] = [];
   for (const { signals = [], id: rangeID } of ranges) {
-    for (const { peaks = [], id: signalID } of signals) {
+    for (const signal of signals) {
+      const { peaks = [], id: signalID } = signal;
+      const opacity = getOpacityBasedOnSignalKind(signal);
       for (const peak of peaks) {
-        results.push({ ...peak, parentKeys: [rangeID, signalID] });
+        results.push({ ...peak, parentKeys: [rangeID, signalID], opacity });
       }
     }
   }

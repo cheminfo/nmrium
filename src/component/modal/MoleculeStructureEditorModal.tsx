@@ -75,6 +75,7 @@ function MoleculeStructureEditorModal(
         const editedMolecule = Molecule.fromMolfile(molfile);
         const mappings =
           initialEnhancedMolfile.topicMolecule.getDiaIDsMapping(editedMolecule);
+
         dispatch({
           type: 'SET_MOLECULE',
           payload: {

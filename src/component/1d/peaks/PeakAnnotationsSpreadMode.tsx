@@ -144,7 +144,13 @@ function PeakAnnotationsSpreadMode(props: PeakAnnotationsSpreadModeProps) {
                   transform={`translate(${group.meta.groupStartX},0)`}
                 >
                   {group.group.map((item, index) => {
-                    const { id, x: value, xInPixel, parentKeys } = item;
+                    const {
+                      id,
+                      x: value,
+                      xInPixel,
+                      parentKeys,
+                      opacity,
+                    } = item;
                     const startX = index * (notationWidth + notationMargin);
                     const x = xInPixel - group.meta.groupStartX;
                     return (
@@ -163,6 +169,7 @@ function PeakAnnotationsSpreadMode(props: PeakAnnotationsSpreadModeProps) {
                         }}
                         peaksSource={peaksSource}
                         spectrumKey={spectrumKey}
+                        opacity={opacity}
                       />
                     );
                   })}
@@ -181,6 +188,7 @@ interface PeakAnnotationProps {
   x: number;
   format: string;
   color: string;
+  opacity: number;
   id: string;
   value: number;
   peakEditionFieldPosition: { x: number; y: number };
@@ -200,6 +208,7 @@ function PeakAnnotation(props: PeakAnnotationProps) {
     peaksSource,
     parentKeys,
     spectrumKey,
+    opacity,
   } = props;
   const highlight = useHighlight([id], {
     type: getHighlightSource(peaksSource),
@@ -212,6 +221,7 @@ function PeakAnnotation(props: PeakAnnotationProps) {
     <g
       onMouseEnter={() => highlight.show()}
       onMouseLeave={() => highlight.hide()}
+      opacity={opacity}
     >
       <PeakEditionListener {...{ ...peakEditionFieldPosition, id, value }}>
         <text

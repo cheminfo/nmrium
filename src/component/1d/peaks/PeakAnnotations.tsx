@@ -166,7 +166,7 @@ function PeakAnnotation({
   format,
   isOverlap = false,
 }: PeakAnnotationProps) {
-  const { id, parentKeys, x, y } = peak;
+  const { id, parentKeys, x, y, opacity } = peak;
   const sign = Math.sign(y);
   const highlight = useHighlight([id], {
     type: getHighlightSource(peaksSource),
@@ -188,6 +188,7 @@ function PeakAnnotation({
       transform={`translate(${sx}, ${sy})`}
       onMouseEnter={() => highlight.show()}
       onMouseLeave={() => highlight.hide()}
+      opacity={opacity}
     >
       <line
         x1="0"

@@ -1,4 +1,4 @@
-import { checkRangeKind } from '../../../../data/utilities/RangeUtilities.js';
+import { isSignalRange } from '../../../../data/utilities/RangeUtilities.js';
 import { useDispatch } from '../../../context/DispatchContext.js';
 import { EditableColumn } from '../../../elements/EditableColumn.js';
 import { formatNumber } from '../../../utility/formatNumber.js';
@@ -12,7 +12,7 @@ function RelativeColumn({
 }: RangeColumnProps) {
   const dispatch = useDispatch();
 
-  const flag = checkRangeKind(row);
+  const flag = isSignalRange(row);
   const formattedValue = formatNumber(row.integration, format);
   const integralVal = flag ? formattedValue : `[ ${formattedValue} ]`;
 

@@ -8,7 +8,7 @@ import {
   resizeRange,
 } from '../../../data/data1d/Spectrum1D/index.js';
 import { isRangeAssigned } from '../../../data/data1d/Spectrum1D/isRangeAssigned.js';
-import { checkRangeKind } from '../../../data/utilities/RangeUtilities.js';
+import { getOpacityBasedOnSignalKind } from '../../../data/utilities/RangeUtilities.js';
 import {
   useAssignment,
   useAssignmentContext,
@@ -131,7 +131,8 @@ function Range(options: RangeProps) {
     });
   }
   const isAssignmentActive = assignmentRange.isActive;
-  const isNotSignal = !checkRangeKind(range);
+  const opacity = getOpacityBasedOnSignalKind(range);
+
   const isHighlighted =
     isBlockedByEditing || highlightRange.isActive || isAssignmentActive;
 
@@ -248,7 +249,7 @@ function Range(options: RangeProps) {
                     value={integration}
                     format={relativeFormat}
                     width={rangeWidth}
-                    opacity={isNotSignal ? 0.5 : 1}
+                    opacity={opacity}
                   />
                 )}
               </g>
