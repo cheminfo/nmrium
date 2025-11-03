@@ -12,6 +12,7 @@ import {
 } from 'react-icons/fa';
 import { FaMaximize, FaMinimize } from 'react-icons/fa6';
 import { IoOpenOutline } from 'react-icons/io5';
+import { MdOutlineLabelOff } from 'react-icons/md';
 import { PanelHeader, Toolbar } from 'react-science/ui';
 
 import type {
@@ -258,27 +259,44 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
     dispatch({ type: 'SET_MOLECULE', payload: { id, label, molfile } });
   }
 
+  function clearCustomAtomLabels() {
+    const currentMolecule = molecules[currentIndex];
+
+    if (!currentMolecule) return;
+    const { id, label, molfile } = currentMolecule;
+
+    const molecule = Molecule.fromMolfile(molfile);
+
+    for (let atom = 0; atom < molecule.getAllAtoms(); atom++) {
+      molecule.setAtomCustomLabel(atom, null);
+    }
+
+    dispatch({
+      type: 'SET_MOLECULE',
+      payload: { id, label, molfile: molecule.toMolfileV3() },
+    });
+  }
+
   const hasMolecules = molecules && molecules.length > 0;
   const showCounter = hasMolecules && renderSource !== 'predictionPanel';
-
   const moreMenu: ToolbarPopoverMenuItem[] = [
     {
       icon: <FaMaximize />,
       text: 'Expand all hydrogens',
-      data: {
-        id: 'expandAllHydrogens',
-      },
       disabled: !hasMolecules,
       onClick: () => expandMoleculeHydrogens(true),
     },
     {
       icon: <FaMinimize />,
       text: 'Collapse all hydrogens',
-      data: {
-        id: 'collapseAllHydrogens',
-      },
       disabled: !hasMolecules,
       onClick: () => expandMoleculeHydrogens(false),
+    },
+    {
+      icon: <MdOutlineLabelOff />,
+      text: 'Clear custom atom labels',
+      disabled: !hasMolecules,
+      onClick: () => clearCustomAtomLabels(),
     },
   ];
 
