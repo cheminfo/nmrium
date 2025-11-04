@@ -32,9 +32,9 @@ async function apodizationFilter(
   await nmrium.page.click('_react=Header >> button >> text=Apply');
 
   await expect(
-    nmrium.page.locator(
-      '_react=FiltersSectionsPanel >> text=Apodization / Window functions',
-    ),
+    nmrium.page
+      .locator('_react=FiltersSectionsPanel')
+      .getByText('Apodization / Window functions', { exact: true }),
   ).toBeVisible();
 }
 
