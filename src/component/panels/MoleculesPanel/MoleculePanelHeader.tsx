@@ -356,7 +356,7 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
           tooltip="Show atom number"
           icon={<p style={styles.atomLabel}>#</p>}
           onClick={showAtomNumbersHandler}
-          active={moleculesView?.[moleculeKey]?.showAtomNumber || false}
+          active={moleculesView?.[moleculeKey]?.atomAnnotation === "atom-numbers"}
           disabled={!hasMolecules}
         />
 

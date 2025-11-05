@@ -57,7 +57,7 @@ export function Atoms(props: AtomsProps) {
     view: { molecules },
   } = useChartData();
   const atomsList = useAtoms(range).filter(
-    (atomsList) => molecules?.[atomsList.id]?.showAtomNumber,
+    (atomsList) => molecules?.[atomsList.id]?.atomAnnotation === "atom-numbers",
   );
 
   return (

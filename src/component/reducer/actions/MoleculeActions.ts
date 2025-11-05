@@ -40,9 +40,9 @@ type AddMoleculesAction = ActionType<
 type SetMoleculeAction = ActionType<
   'SET_MOLECULE',
   Required<Pick<StateMolecule, 'id' | 'molfile' | 'label'>> &
-    Omit<StateMolecule, 'id' | 'molfile' | 'label'> & {
-      mappings?: ReturnType<TopicMolecule['getDiaIDsMapping']>;
-    }
+  Omit<StateMolecule, 'id' | 'molfile' | 'label'> & {
+    mappings?: ReturnType<TopicMolecule['getDiaIDsMapping']>;
+  }
 >;
 type DeleteMoleculeAction = ActionType<'DELETE_MOLECULE', { id: string }>;
 type PredictSpectraFromMoleculeAction = ActionType<
@@ -247,9 +247,8 @@ function checkPredictions(
         break;
       }
       case 'carbon': {
-        message = `${experiment} was not predicted. ${
-          !('C' in atoms) ? 'No carbons found in the molecule' : ''
-        }`;
+        message = `${experiment} was not predicted. ${!('C' in atoms) ? 'No carbons found in the molecule' : ''
+          }`;
         break;
       }
       case 'cosy':
@@ -272,10 +271,9 @@ function checkPredictions(
   }
   if (missing2DPrediction.length > 0) {
     logger.warn(
-      `Carbon or proton prediction are missing, so ${
-        missing2DPrediction.length > 1
-          ? missing2DPrediction.join(' and ')
-          : missing2DPrediction[0]
+      `Carbon or proton prediction are missing, so ${missing2DPrediction.length > 1
+        ? missing2DPrediction.join(' and ')
+        : missing2DPrediction[0]
       } can not be simulated`,
     );
   }
@@ -310,7 +308,8 @@ function initMoleculeViewProperties(id: string, draft: Draft<State>) {
           ...position,
         },
       },
-      showAtomNumber: false,
+      atomAnnotation: "none",
+      showLabel: false
     };
   }
 }
@@ -380,7 +379,7 @@ function handleToggleMoleculeAtomsNumbers(
   initMoleculeViewProperties(id, draft);
   const molecule = getMoleculeViewObject(id, draft);
   if (molecule) {
-    molecule.showAtomNumber = !molecule.showAtomNumber;
+    molecule.atomAnnotation = molecule.atomAnnotation === "atom-numbers" ? 'none' : "atom-numbers";
   }
 }
 

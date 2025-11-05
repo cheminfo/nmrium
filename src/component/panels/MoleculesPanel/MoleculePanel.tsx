@@ -146,22 +146,21 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
                             setSelectedAtom={handleOnClickAtom}
                             atomHighlightColor={
                               currentDiaIDsToHighlight &&
-                              currentDiaIDsToHighlight.length > 0
+                                currentDiaIDsToHighlight.length > 0
                                 ? '#ff000080'
                                 : highlightColor
                             }
                             atomHighlightOpacity={1}
                             highlights={
                               currentDiaIDsToHighlight &&
-                              currentDiaIDsToHighlight.length > 0
+                                currentDiaIDsToHighlight.length > 0
                                 ? currentDiaIDsToHighlight
                                 : assignedDiaIDsMerged
                             }
                             atomHighlightStrategy="prefer-editor-props"
                             setHoverAtom={handleOnAtomHover}
                             showAtomNumber={
-                              moleculesView?.[mol.id]?.showAtomNumber || false
-                            }
+                              moleculesView?.[mol.id]?.atomAnnotation === "atom-numbers"}
                             noCarbonLabelWithCustomLabel
                           />
                         </div>

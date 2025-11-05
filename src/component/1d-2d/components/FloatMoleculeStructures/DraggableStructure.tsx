@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import type { MoleculeView } from '@zakodium/nmrium-core';
 import { useEffect, useState } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 import { BsArrowsMove } from 'react-icons/bs';
@@ -11,7 +12,6 @@ import { Rnd } from 'react-rnd';
 
 import type {
   MoleculeBoundingRect,
-  MoleculeView,
   StateMoleculeExtended,
 } from '../../../../data/molecules/Molecule.js';
 import { useDispatch } from '../../../context/DispatchContext.js';
@@ -236,12 +236,12 @@ function DraggableMolecule(props: DraggableMoleculeProps) {
     width,
     label: isMoleculeLabelVisible ? molecule.label : '',
     labelFontSize: 15,
-    labelColor: 'rgb(0,0,0)',
+    labelColor: 'rgba(138, 59, 59, 1)',
     molfile: molecule.molfile,
     atomHighlightColor,
     atomHighlightOpacity: 1,
-    showAtomNumber: moleculeView.showAtomNumber,
-    noCarbonLabelWithCustomLabel: true,
+    showAtomNumber: moleculeView.atomAnnotation === "atom-numbers",
+    showMapping: moleculeView.atomAnnotation === "custom-labels"
   };
 
   if (renderAsSVG) {

@@ -1,11 +1,11 @@
-import type { StateMolecule } from '@zakodium/nmrium-core';
+import type { MoleculeView, StateMolecule } from '@zakodium/nmrium-core';
 import { Molecule } from 'openchemlib';
 
 import getAtomsFromMF from '../utilities/getAtomsFromMF.js';
 
 export interface StateMoleculeExtended
   extends Required<Pick<StateMolecule, 'id' | 'molfile' | 'label'>>,
-    Omit<StateMolecule, 'id' | 'molfile' | 'label'> {
+  Omit<StateMolecule, 'id' | 'molfile' | 'label'> {
   mf: string;
   em: number;
   mw: number;
@@ -21,30 +21,15 @@ export interface MoleculeBoundingRect {
 }
 
 export const DRAGGABLE_STRUCTURE_INITIAL_BOUNDING_REACT: MoleculeBoundingRect =
-  {
-    x: 10,
-    y: 10,
-    width: 130,
-    height: 120,
-  };
+{
+  x: 10,
+  y: 10,
+  width: 130,
+  height: 120,
+};
 
 export type MoleculesView = Record<string, MoleculeView>;
-export interface MoleculeView {
-  floating: {
-    /**
-     * If the floating molecule is shown.
-     */
-    visible: boolean;
-    /**
-     * Floating molecule position.
-     */
-    bounding: MoleculeBoundingRect;
-  };
-  /**
-   * Show/Hide atoms numbers on the molecule.
-   */
-  showAtomNumber: boolean;
-}
+
 export function initMolecule(
   options: Partial<StateMolecule> = {},
 ): StateMoleculeExtended {
