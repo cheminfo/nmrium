@@ -1,5 +1,5 @@
 import { Molecule } from 'openchemlib';
-import type { CSSProperties, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { useCallback } from 'react';
 import {
   FaCopy,
@@ -36,16 +36,7 @@ import {
   exportAsSVG,
 } from '../../utility/export.js';
 
-const styles: Record<'atomLabel', CSSProperties> = {
-  atomLabel: {
-    width: '14px',
-    height: '14px',
-    padding: 0,
-    margin: 0,
-    textAlign: 'center',
-    lineHeight: 1,
-  },
-};
+import { MoleculeAnnotationSelect } from './MoleculeAnnotationSelect.tsx';
 
 const MOL_EXPORT_MENU: ToolbarPopoverMenuItem[] = [
   {
@@ -238,13 +229,6 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
     });
   }
 
-  function showAtomNumbersHandler() {
-    dispatch({
-      type: 'TOGGLE_MOLECULE_ATOM_NUMBER',
-      payload: { id: moleculeKey },
-    });
-  }
-
   const topicMolecule = useTopicMolecule();
 
   function expandMoleculeHydrogens(expand?: boolean) {
@@ -342,6 +326,11 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
             {hasMolecules && (
               <PredictSpectraModal molecule={molecules[currentIndex]} />
             )}
+
+            <MoleculeAnnotationSelect
+              moleculeKey={molecules[currentIndex].id}
+              atomAnnotation={moleculesView?.[moleculeKey]?.atomAnnotation}
+            />
           </>
         )}
 
@@ -350,13 +339,6 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
           icon={<IoOpenOutline />}
           onClick={floatMoleculeHandler}
           active={moleculesView?.[moleculeKey]?.floating.visible || false}
-          disabled={!hasMolecules}
-        />
-        <Toolbar.Item
-          tooltip="Show atom number"
-          icon={<p style={styles.atomLabel}>#</p>}
-          onClick={showAtomNumbersHandler}
-          active={moleculesView?.[moleculeKey]?.atomAnnotation === "atom-numbers"}
           disabled={!hasMolecules}
         />
 

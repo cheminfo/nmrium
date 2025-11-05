@@ -3,8 +3,8 @@ import type { MoleculeView } from '@zakodium/nmrium-core';
 import { useEffect, useState } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 import { BsArrowsMove } from 'react-icons/bs';
-import { FaTimes } from 'react-icons/fa';
-import { MdFormatColorText } from 'react-icons/md';
+import { FaRegBookmark, FaTimes } from 'react-icons/fa';
+import { MdFormatColorText, MdNumbers } from 'react-icons/md';
 import type { MolfileSvgRendererProps } from 'react-ocl';
 import { MolfileSvgRenderer } from 'react-ocl';
 import OCLnmr from 'react-ocl-nmr';
@@ -100,6 +100,19 @@ export function DraggableStructure(props: DraggableStructureProps) {
     }));
   }
 
+  function handleChangeAtomAnnotation(
+    inputAtomAnnotation: MoleculeView['atomAnnotation'],
+  ) {
+    const atomAnnotation =
+      moleculeView.atomAnnotation === inputAtomAnnotation
+        ? 'none'
+        : inputAtomAnnotation;
+    dispatch({
+      type: 'CHANGE_MOLECULE_ANNOTATION',
+      payload: { id: molecule.id, atomAnnotation },
+    });
+  }
+
   function convertPositionToPercent({
     x,
     y,
@@ -108,6 +121,10 @@ export function DraggableStructure(props: DraggableStructureProps) {
   }
 
   if (!viewerRef) return null;
+
+  const isAnnotationCustomLabels =
+    moleculeView.atomAnnotation === 'custom-labels';
+  const isAnnotationAtomNumber = moleculeView.atomAnnotation === 'atom-numbers';
 
   const actionsButtons: ActionsButtonsPopoverProps['buttons'] = [
     {
@@ -132,8 +149,22 @@ export function DraggableStructure(props: DraggableStructureProps) {
       onClick: () => setIsMoleculeLabelVisible((flag) => !flag),
       active: isMoleculeLabelVisible,
     },
+    {
+      elementType: 'separator',
+    },
+    {
+      icon: <MdNumbers />,
+      title: `${booleanToString(!isAnnotationAtomNumber)} atom number`,
+      onClick: () => handleChangeAtomAnnotation('atom-numbers'),
+      active: isAnnotationAtomNumber,
+    },
+    {
+      icon: <FaRegBookmark />,
+      title: `${booleanToString(!isAnnotationCustomLabels)} custom labels`,
+      onClick: () => handleChangeAtomAnnotation('custom-labels'),
+      active: isAnnotationCustomLabels,
+    },
   ];
-
   const { x: xInPercent, y: yInPercent, width, height } = bounding;
 
   const x = percentToPixel(xInPercent, 'x');
@@ -240,8 +271,8 @@ function DraggableMolecule(props: DraggableMoleculeProps) {
     molfile: molecule.molfile,
     atomHighlightColor,
     atomHighlightOpacity: 1,
-    showAtomNumber: moleculeView.atomAnnotation === "atom-numbers",
-    showMapping: moleculeView.atomAnnotation === "custom-labels"
+    showAtomNumber: moleculeView.atomAnnotation === 'atom-numbers',
+    showMapping: moleculeView.atomAnnotation === 'custom-labels',
   };
 
   if (renderAsSVG) {

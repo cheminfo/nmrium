@@ -119,53 +119,58 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
                   index={currentIndex}
                 >
                   {molecules && molecules.length > 0 ? (
-                    molecules.map((mol: StateMoleculeExtended, index) => (
-                      <div key={mol.id} css={styles.items}>
-                        <MoleculeHeader
-                          currentMolecule={mol}
-                          molecules={molecules}
-                        />
-
-                        <div
-                          css={styles.slider}
-                          className="mol-svg-container"
-                          onDoubleClick={() => openMoleculeEditor(mol)}
-                          style={{
-                            backgroundColor:
-                              (index + 1) % 2 !== 0 ? '#fafafa' : 'white',
-                          }}
-                        >
-                          <OCLnmr
-                            id={`molSVG${index}`}
-                            width={width}
-                            height={height - 60}
-                            molfile={mol.molfile || ''}
-                            setMolfile={(molfile) =>
-                              handleReplaceMolecule(mol, molfile)
-                            }
-                            setSelectedAtom={handleOnClickAtom}
-                            atomHighlightColor={
-                              currentDiaIDsToHighlight &&
-                                currentDiaIDsToHighlight.length > 0
-                                ? '#ff000080'
-                                : highlightColor
-                            }
-                            atomHighlightOpacity={1}
-                            highlights={
-                              currentDiaIDsToHighlight &&
-                                currentDiaIDsToHighlight.length > 0
-                                ? currentDiaIDsToHighlight
-                                : assignedDiaIDsMerged
-                            }
-                            atomHighlightStrategy="prefer-editor-props"
-                            setHoverAtom={handleOnAtomHover}
-                            showAtomNumber={
-                              moleculesView?.[mol.id]?.atomAnnotation === "atom-numbers"}
-                            noCarbonLabelWithCustomLabel
+                    molecules.map((mol: StateMoleculeExtended, index) => {
+                      const { atomAnnotation } = moleculesView?.[mol.id] || {};
+                      return (
+                        <div key={mol.id} css={styles.items}>
+                          <MoleculeHeader
+                            currentMolecule={mol}
+                            molecules={molecules}
                           />
+
+                          <div
+                            css={styles.slider}
+                            className="mol-svg-container"
+                            onDoubleClick={() => openMoleculeEditor(mol)}
+                            style={{
+                              backgroundColor:
+                                (index + 1) % 2 !== 0 ? '#fafafa' : 'white',
+                            }}
+                          >
+                            <OCLnmr
+                              id={`molSVG${index}`}
+                              width={width}
+                              height={height - 60}
+                              molfile={mol.molfile || ''}
+                              setMolfile={(molfile) =>
+                                handleReplaceMolecule(mol, molfile)
+                              }
+                              setSelectedAtom={handleOnClickAtom}
+                              atomHighlightColor={
+                                currentDiaIDsToHighlight &&
+                                currentDiaIDsToHighlight.length > 0
+                                  ? '#ff000080'
+                                  : highlightColor
+                              }
+                              atomHighlightOpacity={1}
+                              highlights={
+                                currentDiaIDsToHighlight &&
+                                currentDiaIDsToHighlight.length > 0
+                                  ? currentDiaIDsToHighlight
+                                  : assignedDiaIDsMerged
+                              }
+                              atomHighlightStrategy="prefer-editor-props"
+                              setHoverAtom={handleOnAtomHover}
+                              showAtomNumber={atomAnnotation === 'atom-numbers'}
+                              noCarbonLabelWithCustomLabel
+                              noAtomCustomLabels={
+                                atomAnnotation !== 'custom-labels'
+                              }
+                            />
+                          </div>
                         </div>
-                      </div>
-                    ))
+                      );
+                    })
                   ) : (
                     <div
                       css={styles.slider}

@@ -1,4 +1,4 @@
-import type { StateMolecule } from '@zakodium/nmrium-core';
+import type { MoleculeView, StateMolecule } from '@zakodium/nmrium-core';
 import type { Logger } from 'cheminfo-types';
 import type { FifoLogger } from 'fifo-logger';
 import type { Draft } from 'immer';
@@ -40,9 +40,9 @@ type AddMoleculesAction = ActionType<
 type SetMoleculeAction = ActionType<
   'SET_MOLECULE',
   Required<Pick<StateMolecule, 'id' | 'molfile' | 'label'>> &
-  Omit<StateMolecule, 'id' | 'molfile' | 'label'> & {
-    mappings?: ReturnType<TopicMolecule['getDiaIDsMapping']>;
-  }
+    Omit<StateMolecule, 'id' | 'molfile' | 'label'> & {
+      mappings?: ReturnType<TopicMolecule['getDiaIDsMapping']>;
+    }
 >;
 type DeleteMoleculeAction = ActionType<'DELETE_MOLECULE', { id: string }>;
 type PredictSpectraFromMoleculeAction = ActionType<
@@ -56,8 +56,18 @@ type PredictSpectraFromMoleculeAction = ActionType<
   }
 >;
 type ToggleMoleculeViewObjectAction = ActionType<
-  'FLOAT_MOLECULE_OVER_SPECTRUM' | 'TOGGLE_MOLECULE_ATOM_NUMBER',
+  'FLOAT_MOLECULE_OVER_SPECTRUM',
   { id: string }
+>;
+
+interface ChangeMoleculeAnnotationOptions
+  extends Pick<MoleculeView, 'atomAnnotation'> {
+  id: string;
+}
+
+type ChangeMoleculeAnnotationAction = ActionType<
+  'CHANGE_MOLECULE_ANNOTATION',
+  ChangeMoleculeAnnotationOptions
 >;
 type ChangeFloatMoleculePositionAction = ActionType<
   'CHANGE_FLOAT_MOLECULE_POSITION',
@@ -76,7 +86,8 @@ export type MoleculeActions =
   | PredictSpectraFromMoleculeAction
   | ToggleMoleculeViewObjectAction
   | ChangeFloatMoleculePositionAction
-  | ChangeMoleculeLabelAction;
+  | ChangeMoleculeLabelAction
+  | ChangeMoleculeAnnotationAction;
 
 function addMolecule(draft: Draft<State>, props: AddMoleculeProps) {
   const { molfile, id, floatMoleculeOnSave } = props;
@@ -247,8 +258,9 @@ function checkPredictions(
         break;
       }
       case 'carbon': {
-        message = `${experiment} was not predicted. ${!('C' in atoms) ? 'No carbons found in the molecule' : ''
-          }`;
+        message = `${experiment} was not predicted. ${
+          !('C' in atoms) ? 'No carbons found in the molecule' : ''
+        }`;
         break;
       }
       case 'cosy':
@@ -271,9 +283,10 @@ function checkPredictions(
   }
   if (missing2DPrediction.length > 0) {
     logger.warn(
-      `Carbon or proton prediction are missing, so ${missing2DPrediction.length > 1
-        ? missing2DPrediction.join(' and ')
-        : missing2DPrediction[0]
+      `Carbon or proton prediction are missing, so ${
+        missing2DPrediction.length > 1
+          ? missing2DPrediction.join(' and ')
+          : missing2DPrediction[0]
       } can not be simulated`,
     );
   }
@@ -308,8 +321,8 @@ function initMoleculeViewProperties(id: string, draft: Draft<State>) {
           ...position,
         },
       },
-      atomAnnotation: "none",
-      showLabel: false
+      atomAnnotation: 'none',
+      showLabel: false,
     };
   }
 }
@@ -370,17 +383,17 @@ function handleFloatMoleculeOverSpectrum(
 }
 
 //action
-function handleToggleMoleculeAtomsNumbers(
+function handleChangeMoleculeAnnotation(
   draft: Draft<State>,
-  action: ToggleMoleculeViewObjectAction,
+  action: ChangeMoleculeAnnotationAction,
 ) {
-  const { id } = action.payload;
+  const { id, atomAnnotation } = action.payload;
 
   initMoleculeViewProperties(id, draft);
   const molecule = getMoleculeViewObject(id, draft);
-  if (molecule) {
-    molecule.atomAnnotation = molecule.atomAnnotation === "atom-numbers" ? 'none' : "atom-numbers";
-  }
+  if (!molecule) return;
+
+  molecule.atomAnnotation = atomAnnotation;
 }
 
 //action
@@ -414,10 +427,10 @@ export {
   handleAddMolecule,
   handleAddMolecules,
   handleChangeFloatMoleculePosition,
+  handleChangeMoleculeAnnotation,
   handleChangeMoleculeLabel,
   handleDeleteMolecule,
   handleFloatMoleculeOverSpectrum,
   handlePredictSpectraFromMolecule,
   handleSetMolecule,
-  handleToggleMoleculeAtomsNumbers,
 };
