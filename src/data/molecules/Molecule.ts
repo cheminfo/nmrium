@@ -59,9 +59,7 @@ export function initMolecule(
     id,
     molfile,
     label,
-    sourceSelector: options.sourceSelector,
-    sourceId: options.sourceId,
-    fileCollectionId: options.fileCollectionId,
+    selector: options.selector,
     mf: mfInfo.formula,
     em: mfInfo.absoluteWeight,
     mw: mfInfo.relativeWeight,
@@ -71,15 +69,12 @@ export function initMolecule(
 }
 
 export function toJSON(molecule: StateMoleculeExtended): StateMolecule {
-  const { molfile, label, id, fileCollectionId, sourceSelector, sourceId } =
-    molecule;
+  const { molfile, label, id, selector } = molecule;
 
   return {
     molfile,
     label,
     id,
-    fileCollectionId,
-    sourceSelector,
-    sourceId,
+    selector,
   };
 }

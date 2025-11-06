@@ -66,13 +66,19 @@ function InnerLoadJCAMPModal({ onCloseDialog }: InnerLoadJCAMPModalProps) {
     });
     const { pathname, origin } = new URL(url);
     try {
-      const [nmriumState, fileCollection] = await core.readFromWebSource({
-        entries: [{ relativePath: pathname, baseURL: origin }],
-      });
+      const [nmriumState, fileCollection, selectorRoot] =
+        await core.readFromWebSource({
+          entries: [{ relativePath: pathname, baseURL: origin }],
+        });
 
       dispatch({
         type: 'LOAD_DROP_FILES',
-        payload: { nmriumState, resetSourceObject: false, fileCollection },
+        payload: {
+          nmriumState,
+          resetSourceObject: false,
+          fileCollection,
+          selectorRoot,
+        },
       });
     } catch {
       toaster.show({ message: `Failed to load ${url}`, intent: 'danger' });

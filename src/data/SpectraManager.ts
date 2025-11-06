@@ -129,13 +129,7 @@ export function toJSON(
   core: NMRiumCore,
   state: Pick<
     State,
-    | 'data'
-    | 'sources'
-    | 'molecules'
-    | 'correlations'
-    | 'actionType'
-    | 'view'
-    | 'fileCollections'
+    'data' | 'sources' | 'molecules' | 'correlations' | 'actionType' | 'view'
   >,
   preferencesState: {
     current: Workspace;

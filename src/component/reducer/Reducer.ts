@@ -1,6 +1,7 @@
 import type { BaselineCorrectionZone } from '@zakodium/nmr-types';
 import type { Spectrum, ViewState } from '@zakodium/nmrium-core';
-import type { FileCollection, Source } from 'file-collection';
+import type { Source } from 'file-collection';
+import { FileCollection } from 'file-collection';
 import type { Draft } from 'immer';
 import { original, produce } from 'immer';
 import type { CorrelationData } from 'nmr-correlation';
@@ -114,7 +115,7 @@ export function getDefaultViewState(): ViewState {
 export const getInitialState = (): State => ({
   actionType: 'INITIALIZE_NMRIUM',
   sources: {},
-  fileCollections: {},
+  aggregator: new FileCollection(),
   data: [],
   tempData: null,
   xDomain: [],
@@ -192,15 +193,20 @@ export interface State {
 
   /**
    * web source of data
-   * Record key is identifier of the source (stored in spectra)
+   * Record key is an identifier of the source (stored in spectra)
+   *
+   * Is needed until we remove the support of the old nmrium format
    */
   sources: Record<string, Source>;
 
   /**
-   * File collections of the loaded files
-   * Record key is identifier of the fileCollection (stored in spectra)
+   * Aggregation of file collections used to load the data
+   * - external data sources (web-source, import jdx from url, ...)
+   * - multiples files open / drag and drop
+   *
+   * Each of them is separated in an uuid folder
    */
-  fileCollections: Record<string, FileCollection>;
+  aggregator: FileCollection;
 
   /**
    * spectra list (1d and 2d)

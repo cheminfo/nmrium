@@ -94,7 +94,7 @@ export function useExport() {
             const archive = await core.serializeNmriumArchive({
               molecules: state.molecules,
               spectra: state.data,
-              fileCollections: state.fileCollections,
+              aggregator: state.aggregator,
               includeData: options.include.dataType === 'SELF_CONTAINED',
               serializedState: blob,
             });

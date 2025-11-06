@@ -19,19 +19,17 @@ interface InitiateDatum1DOptions {
   usedColors?: UsedColors;
   molecules?: StateMoleculeExtended[];
   colors?: SpectrumOneDimensionColor[];
-  fileCollectionId?: string | undefined;
 }
 
 export function initiateDatum1D(
   spectrum: any,
   options: InitiateDatum1DOptions = {},
 ): Spectrum1D {
-  const { usedColors, colors, molecules = [], fileCollectionId } = options;
+  const { usedColors, colors, molecules = [] } = options;
 
   const { integrals, ranges, ...restSpectrum } = spectrum;
   const spectrumObj: Spectrum1D = { ...restSpectrum };
   spectrumObj.id = spectrum.id || crypto.randomUUID();
-  spectrumObj.fileCollectionId = spectrum.fileCollectionId || fileCollectionId;
 
   spectrumObj.display = {
     isVisible: true,
