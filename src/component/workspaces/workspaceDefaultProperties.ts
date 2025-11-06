@@ -278,9 +278,9 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
   },
   defaultMoleculeSettings: {
     showLabel: false,
-    atomAnnotation: 'none',
+    atomAnnotation: 'custom-labels',
     floating: {
-      visible: false,
+      visible: true,
       bounding: {
         x: 10,
         y: 10,
