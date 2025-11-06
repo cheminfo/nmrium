@@ -147,9 +147,7 @@ function setData(draft: Draft<State>, input: InputProps | InitiateProps) {
       draft.aggregator = input.aggregator;
     } else {
       draft.aggregator = FileCollection.fromCollection(draft.aggregator);
-      draft.aggregator.appendFileCollection(input.aggregator, '', {
-        mergeStrategy: 'ignore-similar',
-      });
+      draft.aggregator.appendFileCollection(input.aggregator, '');
     }
   }
 
@@ -163,7 +161,6 @@ function setData(draft: Draft<State>, input: InputProps | InitiateProps) {
     draft.aggregator.appendFileCollection(
       input.fileCollection,
       input.selectorRoot,
-      { mergeStrategy: 'ignore-similar' },
     );
   }
 
@@ -270,9 +267,7 @@ function initData(
   } else {
     if (action.payload.aggregator) {
       draft.aggregator = FileCollection.fromCollection(draft.aggregator);
-      draft.aggregator.appendFileCollection(action.payload.aggregator, '', {
-        mergeStrategy: 'ignore-similar',
-      });
+      draft.aggregator.appendFileCollection(action.payload.aggregator, '');
     }
     if (view) {
       const defaultViewState = getDefaultViewState();
