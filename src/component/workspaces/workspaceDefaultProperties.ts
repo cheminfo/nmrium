@@ -284,8 +284,8 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
       bounding: {
         x: 10,
         y: 10,
-        width: 90,
-        height: 100,
+        width: 130,
+        height: 120,
       },
     },
   },

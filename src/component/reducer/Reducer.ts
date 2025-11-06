@@ -673,6 +673,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return MoleculeActions.handleChangeMoleculeAnnotation(draft, action);
       case 'CHANGE_FLOAT_MOLECULE_POSITION':
         return MoleculeActions.handleChangeFloatMoleculePosition(draft, action);
+      case 'TOGGLE_MOLECULE_LABEL':
+        return MoleculeActions.handleToggleMoleculeLabel(draft, action);
 
       case 'SET_CORRELATIONS_MF':
         return CorrelationsActions.handleSetMF(draft, action);

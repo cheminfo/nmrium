@@ -8,11 +8,12 @@ import {
   FaFileImage,
   FaPaste,
   FaPlus,
+  FaRegBookmark,
   FaRegTrashAlt,
 } from 'react-icons/fa';
 import { FaMaximize, FaMinimize } from 'react-icons/fa6';
 import { IoOpenOutline } from 'react-icons/io5';
-import { MdOutlineLabelOff } from 'react-icons/md';
+import { MdNumbers, MdOutlineLabelOff } from 'react-icons/md';
 import { PanelHeader, Toolbar } from 'react-science/ui';
 
 import type {
@@ -30,13 +31,13 @@ import type { ToolbarPopoverMenuItem } from '../../elements/ToolbarPopoverItem.j
 import { ToolbarPopoverItem } from '../../elements/ToolbarPopoverItem.js';
 import AboutPredictionModal from '../../modal/AboutPredictionModal.js';
 import PredictSpectraModal from '../../modal/PredictSpectraModal.js';
+import { booleanToString } from '../../utility/booleanToString.ts';
 import {
   browserNotSupportedErrorToast,
   copyPNGToClipboard,
   exportAsSVG,
 } from '../../utility/export.js';
-
-import { MoleculeAnnotationSelect } from './MoleculeAnnotationSelect.tsx';
+import { useMoleculeAnnotationCore } from '../hooks/useMoleculeAnnotationCore.ts';
 
 const MOL_EXPORT_MENU: ToolbarPopoverMenuItem[] = [
   {
@@ -284,6 +285,8 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
     },
   ];
 
+  const { handleChangeAtomAnnotation, isAnnotation } =
+    useMoleculeAnnotationCore(moleculeKey, moleculesView[moleculeKey]);
   return (
     <PanelHeader
       onClickSettings={onClickPreferences}
@@ -327,9 +330,19 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
               <PredictSpectraModal molecule={molecules[currentIndex]} />
             )}
 
-            <MoleculeAnnotationSelect
-              moleculeKey={molecules[currentIndex].id}
-              atomAnnotation={moleculesView?.[moleculeKey]?.atomAnnotation}
+            <Toolbar.Item
+              tooltip={`${booleanToString(!isAnnotation('atom-numbers'))} atom number`}
+              icon={<MdNumbers />}
+              onClick={() => handleChangeAtomAnnotation('atom-numbers')}
+              active={isAnnotation('atom-numbers')}
+              disabled={!hasMolecules}
+            />
+            <Toolbar.Item
+              tooltip={`${booleanToString(!isAnnotation('custom-labels'))} custom labels`}
+              icon={<FaRegBookmark />}
+              onClick={() => handleChangeAtomAnnotation('custom-labels')}
+              active={isAnnotation('custom-labels')}
+              disabled={!hasMolecules}
             />
           </>
         )}

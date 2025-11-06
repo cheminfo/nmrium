@@ -23,13 +23,13 @@ import { useSVGUnitConverter } from '../../../hooks/useSVGUnitConverter.js';
 import { useCheckExportStatus } from '../../../hooks/useViewportSize.js';
 import { useMoleculeEditor } from '../../../modal/MoleculeStructureEditorModal.js';
 import useAtomAssignment from '../../../panels/MoleculesPanel/useAtomAssignment.js';
+import { useMoleculeAnnotationCore } from '../../../panels/hooks/useMoleculeAnnotationCore.ts';
 import { booleanToString } from '../../../utility/booleanToString.ts';
 
 interface DraggableMoleculeProps extends DraggableStructureProps {
   width: number;
   height: number;
   renderAsSVG?: boolean;
-  isMoleculeLabelVisible: boolean;
 }
 
 interface DraggableStructureProps {
@@ -64,7 +64,6 @@ export function DraggableStructure(props: DraggableStructureProps) {
     moleculeView.floating.bounding,
   );
   const [isMoveActive, setIsMoveActive] = useState(false);
-  const [isMoleculeLabelVisible, setIsMoleculeLabelVisible] = useState(false);
 
   useEffect(() => {
     setBounding({ ...moleculeView.floating.bounding });
@@ -100,19 +99,6 @@ export function DraggableStructure(props: DraggableStructureProps) {
     }));
   }
 
-  function handleChangeAtomAnnotation(
-    inputAtomAnnotation: MoleculeView['atomAnnotation'],
-  ) {
-    const atomAnnotation =
-      moleculeView.atomAnnotation === inputAtomAnnotation
-        ? 'none'
-        : inputAtomAnnotation;
-    dispatch({
-      type: 'CHANGE_MOLECULE_ANNOTATION',
-      payload: { id: molecule.id, atomAnnotation },
-    });
-  }
-
   function convertPositionToPercent({
     x,
     y,
@@ -120,11 +106,13 @@ export function DraggableStructure(props: DraggableStructureProps) {
     return { x: pixelToPercent(x, 'x'), y: pixelToPercent(y, 'y') };
   }
 
-  if (!viewerRef) return null;
+  const {
+    handleChangeAtomAnnotation,
+    isAnnotation,
+    handleToggleMoleculeLabel,
+  } = useMoleculeAnnotationCore(molecule.id, moleculeView);
 
-  const isAnnotationCustomLabels =
-    moleculeView.atomAnnotation === 'custom-labels';
-  const isAnnotationAtomNumber = moleculeView.atomAnnotation === 'atom-numbers';
+  if (!viewerRef) return null;
 
   const actionsButtons: ActionsButtonsPopoverProps['buttons'] = [
     {
@@ -145,24 +133,24 @@ export function DraggableStructure(props: DraggableStructureProps) {
     },
     {
       icon: <MdFormatColorText />,
-      title: `${booleanToString(!isMoleculeLabelVisible)} molecule label`,
-      onClick: () => setIsMoleculeLabelVisible((flag) => !flag),
-      active: isMoleculeLabelVisible,
+      title: `${booleanToString(!moleculeView.showLabel)} molecule label`,
+      onClick: handleToggleMoleculeLabel,
+      active: moleculeView.showLabel,
     },
     {
       elementType: 'separator',
     },
     {
       icon: <MdNumbers />,
-      title: `${booleanToString(!isAnnotationAtomNumber)} atom number`,
+      title: `${booleanToString(!isAnnotation('atom-numbers'))} atom number`,
       onClick: () => handleChangeAtomAnnotation('atom-numbers'),
-      active: isAnnotationAtomNumber,
+      active: isAnnotation('atom-numbers'),
     },
     {
       icon: <FaRegBookmark />,
-      title: `${booleanToString(!isAnnotationCustomLabels)} custom labels`,
+      title: `${booleanToString(!isAnnotation('custom-labels'))} custom labels`,
       onClick: () => handleChangeAtomAnnotation('custom-labels'),
-      active: isAnnotationCustomLabels,
+      active: isAnnotation('custom-labels'),
     },
   ];
   const { x: xInPercent, y: yInPercent, width, height } = bounding;
@@ -173,11 +161,7 @@ export function DraggableStructure(props: DraggableStructureProps) {
   if (isExportProcessStart) {
     return (
       <g transform={`translate(${x} ${y})`}>
-        <DraggableMolecule
-          renderAsSVG
-          {...{ width, height, isMoleculeLabelVisible }}
-          {...props}
-        />
+        <DraggableMolecule renderAsSVG {...{ width, height }} {...props} />
       </g>
     );
   }
@@ -224,12 +208,7 @@ export function DraggableStructure(props: DraggableStructureProps) {
         >
           <ResponsiveChart>
             {({ width, height }) => {
-              return (
-                <DraggableMolecule
-                  {...{ width, height, isMoleculeLabelVisible }}
-                  {...props}
-                />
-              );
+              return <DraggableMolecule {...{ width, height }} {...props} />;
             }}
           </ResponsiveChart>
         </div>
@@ -248,7 +227,6 @@ function DraggableMolecule(props: DraggableMoleculeProps) {
     width,
     height,
     renderAsSVG = false,
-    isMoleculeLabelVisible,
   } = props;
   const {
     currentDiaIDsToHighlight,
@@ -265,7 +243,7 @@ function DraggableMolecule(props: DraggableMoleculeProps) {
     id: `molSVG${index || ''}`,
     height,
     width,
-    label: isMoleculeLabelVisible ? molecule.label : '',
+    label: moleculeView.showLabel ? molecule.label : '',
     labelFontSize: 15,
     labelColor: 'rgba(138, 59, 59, 1)',
     molfile: molecule.molfile,
