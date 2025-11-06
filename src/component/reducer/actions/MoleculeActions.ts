@@ -386,22 +386,6 @@ function getFloatingMoleculeInitialPosition(id: string, draft: Draft<State>) {
   };
 }
 
-function floatMoleculeOverSpectrum(
-  draft: Draft<State>,
-  moleculeId: string,
-  options: {
-    defaultMoleculeSettings?: MoleculeView;
-    isMoleculeFloating?: boolean;
-  } = {},
-) {
-  const { defaultMoleculeSettings, isMoleculeFloating } = options;
-  initMoleculeViewProperties(draft, {
-    id: moleculeId,
-    defaultMoleculeSettings,
-    isMoleculeFloating,
-  });
-}
-
 //action
 function handleFloatMoleculeOverSpectrum(
   draft: Draft<State>,
@@ -409,7 +393,11 @@ function handleFloatMoleculeOverSpectrum(
 ) {
   const { id } = action.payload;
 
-  floatMoleculeOverSpectrum(draft, id);
+  initMoleculeViewProperties(draft, {
+    id,
+  });
+  const view = getMoleculeViewObject(id, draft);
+  view.floating.visible = !view.floating.visible;
 }
 
 //action
