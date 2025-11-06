@@ -122,7 +122,7 @@ export function MoleculeOptionsPanel(props: MoleculeOptionsPanelProps) {
             header: styles.groupHeader,
           }}
         >
-          <Label title="Show molecule over spectrum" style={labelStyle}>
+          <Label title="Floating molecule" style={labelStyle}>
             <CheckController control={control} name="floating.visible" />
           </Label>
           <Label title="X (%)" style={labelStyle}>
