@@ -1,21 +1,19 @@
-import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
+import { Button, Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { revalidateLogic } from '@tanstack/react-form';
 import type { Workspace } from '@zakodium/nmrium-core';
 import { useRef } from 'react';
-import { useForm } from 'react-hook-form';
-import { useOnOff } from 'react-science/ui';
-import * as Yup from 'yup';
+import { useForm as useReactScienceForm, useOnOff } from 'react-science/ui';
+import { z } from 'zod/v4';
 
 import { usePreferences } from '../context/PreferencesContext.js';
 import { useToaster } from '../context/ToasterContext.js';
-import ActionButtons from '../elements/ActionButtons.js';
 import { Input2Controller } from '../elements/Input2Controller.js';
 
 import { useWorkspaceAction } from './useWorkspaceAction.js';
 
-const schema = Yup.object().shape({
-  workspaceName: Yup.string().required(),
+const schema = z.object({
+  workspaceName: z.string({ error: 'Workspace name is required' }),
 });
 
 function WorkspaceAddForm(props: any) {
@@ -49,10 +47,7 @@ export function useSaveSettings() {
   const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
   const settingsRef = useRef<Workspace>();
   const { current } = usePreferences();
-  const { handleSubmit, control, reset } = useForm({
-    defaultValues: { workspaceName: '' },
-    resolver: yupResolver(schema),
-  });
+
   const { saveWorkspace, addNewWorkspace } = useWorkspaceAction();
   function handleAddNewWorkspace({ workspaceName }: { workspaceName: string }) {
     addNewWorkspace(workspaceName, settingsRef.current);
@@ -64,10 +59,19 @@ export function useSaveSettings() {
     });
   }
 
+  const form = useReactScienceForm({
+    defaultValues: { workspaceName: '' },
+    validationLogic: revalidateLogic({ modeAfterSubmission: 'change' }),
+    validators: { onDynamic: schema },
+    onSubmit: ({ value }) => {
+      console.log(value.workspaceName);
+    },
+  });
+
   function saveSettings(values?: Partial<Workspace>) {
     settingsRef.current = values as Workspace;
     if (current.source !== 'user') {
-      reset({ workspaceName: '' });
+      // reset({ workspaceName: '' });
       openDialog();
     } else {
       saveWorkspace(values);
@@ -75,36 +79,62 @@ export function useSaveSettings() {
       closeDialog();
     }
   }
+
   return {
     saveSettings,
     SaveSettingsModal: () => {
       return (
         <Dialog
+          style={{ width: '60%' }}
           onClose={closeDialog}
           isOpen={isOpenDialog}
           title="Save workspace"
           role="dialog"
         >
-          <DialogContent>
-            <Title>
-              Please enter a new user workspace name in order to save your
-              changes locally
-            </Title>
-            <WorkspaceAddForm
-              onEnter={() => {
-                void handleSubmit(handleAddNewWorkspace)();
-              }}
-              control={control}
-            />
-          </DialogContent>
-          <DialogFooter>
-            <ActionButtons
-              style={{ flexDirection: 'row-reverse', margin: 0 }}
-              onCancel={closeDialog}
-              doneLabel="Save workspace"
-              onDone={() => void handleSubmit(handleAddNewWorkspace)()}
-            />
-          </DialogFooter>
+          <form
+            noValidate
+            onSubmit={(event) => {
+              event.preventDefault();
+              void form.handleSubmit();
+            }}
+          >
+            <DialogContent>
+              <form.AppField name="workspaceName">
+                {(field) => (
+                  <field.Input
+                    layout="inline"
+                    label="New Workspace name"
+                    placeholder="Enter workspace name"
+                    required
+                  />
+                )}
+              </form.AppField>
+            </DialogContent>
+
+            <DialogFooter>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row-reverse',
+                  margin: 0,
+                }}
+              >
+                <div style={{ marginLeft: 10 }}>
+                  <form.AppForm>
+                    <form.SubmitButton>Save workspace</form.SubmitButton>
+                  </form.AppForm>
+                </div>
+
+                <Button
+                  variant="outlined"
+                  intent="danger"
+                  onClick={closeDialog}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </DialogFooter>
+          </form>
         </Dialog>
       );
     },
