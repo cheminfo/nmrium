@@ -3,6 +3,7 @@ import type {
   CustomWorkspaces,
   ExportPreferences,
   ExportSettings,
+  MoleculeView,
   MultipleSpectraAnalysisPreferences,
   NMRiumPanelPreferences,
   PanelPreferencesType,
@@ -30,6 +31,7 @@ import {
   setSpectraAnalysisPanelsPreferences,
 } from './actions/analyzeSpectra.js';
 import { applyGeneralPreferences } from './actions/applyGeneralPreferences.js';
+import { changeDefaultMoleculeSettings } from './actions/changeDefaultMoleculeSettings.ts';
 import { changeExportAcsSettings } from './actions/changeExportAcsSettings.ts';
 import { changeExportSettings } from './actions/changeExportSettings.js';
 import { changeInformationBlockPosition } from './actions/changeInformationBlockPosition.js';
@@ -170,6 +172,11 @@ export type TogglePanelAction = ActionType<
   }
 >;
 
+export type ChangeDefaultMoleculeSettingsAction = ActionType<
+  'CHANGE_DEFAULT_MOLECULE_SETTINGS',
+  MoleculeView
+>;
+
 export type PreferencesActions =
   | InitPreferencesAction
   | SetPreferencesAction
@@ -190,7 +197,8 @@ export type PreferencesActions =
   | ChangeExportSettingsAction
   | ChangePeaksLabelPositionAction
   | TogglePanelAction
-  | ChangeExportACSSettingsAction;
+  | ChangeExportACSSettingsAction
+  | ChangeDefaultMoleculeSettingsAction;
 
 export type WorkspaceWithSource = Workspace & { source: WorkSpaceSource };
 type WorkspacesWithSource = Record<string, WorkspaceWithSource>;
@@ -314,6 +322,8 @@ function innerPreferencesReducer(
       return togglePanel(draft, action);
     case 'CHANGE_EXPORT_ACS_SETTINGS':
       return changeExportAcsSettings(draft, action);
+    case 'CHANGE_DEFAULT_MOLECULE_SETTINGS':
+      return changeDefaultMoleculeSettings(draft, action);
 
     default:
       return draft;
