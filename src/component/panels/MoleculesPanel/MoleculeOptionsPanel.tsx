@@ -13,8 +13,14 @@ import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js
 import { Select2Controller } from '../../elements/Select2Controller.js';
 import PreferencesHeader from '../header/PreferencesHeader.tsx';
 
-import { atomAnnotations } from './MoleculeAnnotationSelect.tsx';
-
+const atomAnnotations: Array<{
+  value: MoleculeView['atomAnnotation'];
+  label: string;
+}> = [
+  { value: 'none', label: 'None' },
+  { value: 'atom-numbers', label: 'Atoms number' },
+  { value: 'custom-labels', label: 'Custom labels' },
+];
 const Container = styled.div`
   display: flex;
   flex-direction: column;
