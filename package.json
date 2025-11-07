@@ -135,7 +135,7 @@
     "@types/react-dom": "^18.3.1",
     "@types/react-table": "^7.7.20",
     "@vitejs/plugin-react": "^5.1.0",
-    "@vitest/coverage-v8": "^4.0.5",
+    "@vitest/coverage-v8": "^4.0.7",
     "@zakodium/tsconfig": "^1.0.2",
     "cross-env": "^10.1.0",
     "cspell": "^9.2.2",
@@ -158,7 +158,7 @@
     "stylelint-config-standard": "^39.0.1",
     "typescript": "~5.9.3",
     "vite": "^7.1.12",
-    "vitest": "^4.0.5"
+    "vitest": "^4.0.7"
   },
   "volta": {
     "node": "24.11.0"
