@@ -61,6 +61,10 @@ const LIST: ListItem[] = [
     name: 'rangePicking',
   },
   {
+    label: 'Inset',
+    name: 'inset',
+  },
+  {
     label: 'Slicing',
     name: 'slicing',
   },
@@ -93,8 +97,20 @@ const LIST: ListItem[] = [
     name: 'fft',
   },
   {
+    label: 'Fourier transform dimension one',
+    name: 'fftDimension1',
+  },
+  {
+    label: 'Fourier transform dimension two',
+    name: 'fftDimension2',
+  },
+  {
     label: 'Phase correction',
     name: 'phaseCorrection',
+  },
+  {
+    label: 'Two-Dimensional phase correction',
+    name: 'phaseCorrectionTwoDimensions',
   },
   {
     label: 'Baseline correction',

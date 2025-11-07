@@ -60,6 +60,11 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
       fftDimension1: false,
       fftDimension2: false,
       inset: false,
+      apodizationDimension1: false,
+      apodizationDimension2: false,
+      zeroFillingDimension1: false,
+      zeroFillingDimension2: false,
+      phaseCorrectionTwoDimensions: false,
     },
   },
 

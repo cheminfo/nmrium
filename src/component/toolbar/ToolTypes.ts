@@ -357,6 +357,7 @@ export const options: RecordOptions = {
     mode: '2D',
     spectraOptions: [
       {
+        info: [{ key: 'isFt', value: true }],
         active: true,
       },
     ],
