@@ -8,39 +8,12 @@ import { z } from 'zod/v4';
 
 import { usePreferences } from '../context/PreferencesContext.js';
 import { useToaster } from '../context/ToasterContext.js';
-import { Input2Controller } from '../elements/Input2Controller.js';
 
 import { useWorkspaceAction } from './useWorkspaceAction.js';
 
 const schema = z.object({
   workspaceName: z.string({ error: 'Workspace name is required' }),
 });
-
-function WorkspaceAddForm(props: any) {
-  const { className, message, control, onEnter } = props;
-
-  return (
-    <div className={className}>
-      <p style={{ paddingBottom: '10px' }}>{message}</p>
-      <Input2Controller
-        control={control}
-        name="workspaceName"
-        placeholder="Enter workspace Name"
-        style={{
-          width: '90%',
-          borderRadius: '5px',
-        }}
-        autoFocus
-        size="large"
-        onKeyDown={(event) => {
-          if (event.key === 'Enter') {
-            onEnter();
-          }
-        }}
-      />
-    </div>
-  );
-}
 
 export function useSaveSettings() {
   const toaster = useToaster();
@@ -49,33 +22,30 @@ export function useSaveSettings() {
   const { current } = usePreferences();
 
   const { saveWorkspace, addNewWorkspace } = useWorkspaceAction();
-  function handleAddNewWorkspace({ workspaceName }: { workspaceName: string }) {
-    addNewWorkspace(workspaceName, settingsRef.current);
-
-    closeDialog();
-    toaster.show({
-      message: 'Preferences saved successfully',
-      intent: 'success',
-    });
-  }
 
   const form = useReactScienceForm({
     defaultValues: { workspaceName: '' },
     validationLogic: revalidateLogic({ modeAfterSubmission: 'change' }),
     validators: { onDynamic: schema },
     onSubmit: ({ value }) => {
-      console.log(value.workspaceName);
+      const { workspaceName } = value;
+      addNewWorkspace(workspaceName, settingsRef.current);
+      closeDialog();
+
+      toaster.show({
+        message: 'Preferences saved successfully',
+        intent: 'success',
+      });
     },
   });
 
   function saveSettings(values?: Partial<Workspace>) {
     settingsRef.current = values as Workspace;
     if (current.source !== 'user') {
-      // reset({ workspaceName: '' });
+      form.reset();
       openDialog();
     } else {
       saveWorkspace(values);
-
       closeDialog();
     }
   }
@@ -105,6 +75,7 @@ export function useSaveSettings() {
                     layout="inline"
                     label="New Workspace name"
                     placeholder="Enter workspace name"
+                    helpText="Please enter a new user workspace name in order to save your changes locally"
                     required
                   />
                 )}
@@ -144,11 +115,4 @@ export function useSaveSettings() {
 const DialogContent = styled(DialogBody)`
   background-color: white;
   text-align: center;
-`;
-
-const Title = styled.p`
-  font-size: 1em;
-  font-weight: bold;
-  padding: 0 30px;
-  text-align: left;
 `;
