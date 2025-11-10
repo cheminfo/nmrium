@@ -31,6 +31,7 @@ const ignoreActions = new Set<Partial<Action['type']>>([
   'TOGGLE_SPECTRA_LEGEND',
   'CHANGE_MOLECULE_ANNOTATION',
   'SET_2D_LEVEL',
+  'TOGGLE_MOLECULE_LABEL',
 ]);
 
 function checkActionType(type: Action['type']): boolean {
