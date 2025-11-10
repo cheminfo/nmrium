@@ -276,4 +276,17 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
       deltaFormat: '0.00',
     },
   },
+  defaultMoleculeSettings: {
+    showLabel: false,
+    atomAnnotation: 'custom-labels',
+    floating: {
+      visible: true,
+      bounding: {
+        x: 10,
+        y: 10,
+        width: 130,
+        height: 120,
+      },
+    },
+  },
 };

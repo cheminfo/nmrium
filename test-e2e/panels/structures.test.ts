@@ -370,18 +370,18 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
   });
 
   await test.step('Check float molecule', async () => {
-    // Check float molecule btn is off.
-    await expect(
-      nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
-    ).toBeHidden();
-    // Click on float molecule button.
-    await nmrium.clickToolByTitle('Float molecule');
-    // Check floated molecule.
-    await expect(nmrium.page.locator('#molSVG')).toBeVisible();
     // Check float molecule btn is on.
     await expect(
       nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
     ).toBeVisible();
+    // Click on float molecule button to hide it.
+    await nmrium.clickToolByTitle('Float molecule');
+    // Check floated molecule.
+    await expect(nmrium.page.locator('#molSVG')).toBeVisible();
+    // Check float molecule btn is off.
+    await expect(
+      nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
+    ).toBeHidden();
   });
 
   await test.step('Close float molecule', async () => {
@@ -589,7 +589,7 @@ test('check callbacks count on changing structures', async ({ page }) => {
     await nmrium.page.click('button >> text=Save');
 
     await expect(dataCount).toContainText(String(initialDataCount + 1));
-    await expect(viewCount).toContainText(String(initialViewCount));
+    await expect(viewCount).toContainText(String(initialViewCount + 1));
     // Check the visibility.
 
     // The molecule SVG rendering should now be visible in the panel.
@@ -613,15 +613,9 @@ test('check callbacks count on changing structures', async ({ page }) => {
     // Check float molecule btn is off.
     await expect(
       nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
-    ).toBeHidden();
-    // Click on float molecule button.
-    await nmrium.clickToolByTitle('Float molecule');
+    ).toBeVisible();
     // Check floated molecule.
     await expect(nmrium.page.locator('#molSVG')).toBeVisible();
-    // Check float molecule btn is on.
-    await expect(
-      nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
-    ).toBeVisible();
 
     await expect(dataCount).toContainText(String(initialDataCount + 1));
     await expect(viewCount).toContainText(String(initialViewCount + 1));

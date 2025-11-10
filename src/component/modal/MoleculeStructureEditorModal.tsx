@@ -8,6 +8,7 @@ import { useOnOff } from 'react-science/ui';
 
 import type { StateMoleculeExtended } from '../../data/molecules/Molecule.js';
 import { useDispatch } from '../context/DispatchContext.js';
+import { usePreferences } from '../context/PreferencesContext.tsx';
 import ActionButtons from '../elements/ActionButtons.js';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 
@@ -24,9 +25,13 @@ function MoleculeStructureEditorModal(
   const {
     onClose = () => null,
     selectedMolecule,
-    floatMoleculeOnSave = false,
+    floatMoleculeOnSave,
     isOpen = false,
   } = props;
+
+  const {
+    current: { defaultMoleculeSettings },
+  } = usePreferences();
 
   const initialMolfile = selectedMolecule?.molfile;
   const initialEnhancedMolfile = useMemo(() => {
@@ -92,6 +97,7 @@ function MoleculeStructureEditorModal(
           payload: {
             molfile,
             floatMoleculeOnSave,
+            defaultMoleculeSettings,
           },
         });
         onClose('new');
@@ -102,8 +108,9 @@ function MoleculeStructureEditorModal(
     selectedMolecule,
     initialEnhancedMolfile,
     dispatch,
-    floatMoleculeOnSave,
     onClose,
+    floatMoleculeOnSave,
+    defaultMoleculeSettings,
   ]);
 
   return (
@@ -132,7 +139,7 @@ function MoleculeStructureEditorModal(
   );
 }
 
-export function useMoleculeEditor(floatMoleculeOnSave = false) {
+export function useMoleculeEditor(floatMoleculeOnSave?: boolean) {
   const [isOpen, openModal, closeModal] = useOnOff(false);
   const [molecule, setMolecule] = useState<StateMoleculeExtended | undefined>();
   const modal = (

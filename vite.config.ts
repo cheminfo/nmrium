@@ -1,6 +1,10 @@
+import fs from 'node:fs';
+import path from 'node:path';
+
 import react from '@vitejs/plugin-react';
 import analyze from 'rollup-plugin-analyzer';
 import type { AliasOptions } from 'vite';
+import { defaultClientConditions } from 'vite';
 import { defineConfig } from 'vitest/config';
 
 // https://vitejs.dev/config/
@@ -12,6 +16,8 @@ export default () => {
       { find: 'scheduler/tracing', replacement: 'scheduler/tracing-profiling' },
     ];
   }
+
+  const isMonorepo = checkMonorepo();
 
   return defineConfig({
     base: './',
@@ -42,6 +48,9 @@ export default () => {
     },
     plugins: [react()],
     resolve: {
+      conditions: isMonorepo
+        ? ['nmrium-internal', ...defaultClientConditions]
+        : undefined,
       alias: resolveAliases,
     },
     test: {
@@ -49,3 +58,10 @@ export default () => {
     },
   });
 };
+
+function checkMonorepo() {
+  const monorepoPkg = path.join(import.meta.dirname, '..', 'package.json');
+  if (!fs.existsSync(monorepoPkg)) return false;
+  const pkg = JSON.parse(fs.readFileSync(monorepoPkg, 'utf8'));
+  return pkg.name === '@zakodium/nmrium-monorepo';
+}

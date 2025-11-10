@@ -1,4 +1,4 @@
-import type { StateMolecule } from '@zakodium/nmrium-core';
+import type { MoleculeView, StateMolecule } from '@zakodium/nmrium-core';
 import type { Logger } from 'cheminfo-types';
 import type { FifoLogger } from 'fifo-logger';
 import type { Draft } from 'immer';
@@ -31,6 +31,7 @@ interface AddMoleculeProps {
   molfile: string;
   id?: string;
   floatMoleculeOnSave?: boolean;
+  defaultMoleculeSettings?: MoleculeView;
 }
 type AddMoleculeAction = ActionType<'ADD_MOLECULE', AddMoleculeProps>;
 type AddMoleculesAction = ActionType<
@@ -56,8 +57,22 @@ type PredictSpectraFromMoleculeAction = ActionType<
   }
 >;
 type ToggleMoleculeViewObjectAction = ActionType<
-  'FLOAT_MOLECULE_OVER_SPECTRUM' | 'TOGGLE_MOLECULE_ATOM_NUMBER',
+  'FLOAT_MOLECULE_OVER_SPECTRUM',
   { id: string }
+>;
+type ToggleMoleculeLabelAction = ActionType<
+  'TOGGLE_MOLECULE_LABEL',
+  { id: string }
+>;
+
+interface ChangeMoleculeAnnotationOptions
+  extends Pick<MoleculeView, 'atomAnnotation'> {
+  id: string;
+}
+
+type ChangeMoleculeAnnotationAction = ActionType<
+  'CHANGE_MOLECULE_ANNOTATION',
+  ChangeMoleculeAnnotationOptions
 >;
 type ChangeFloatMoleculePositionAction = ActionType<
   'CHANGE_FLOAT_MOLECULE_POSITION',
@@ -76,10 +91,12 @@ export type MoleculeActions =
   | PredictSpectraFromMoleculeAction
   | ToggleMoleculeViewObjectAction
   | ChangeFloatMoleculePositionAction
-  | ChangeMoleculeLabelAction;
+  | ChangeMoleculeLabelAction
+  | ChangeMoleculeAnnotationAction
+  | ToggleMoleculeLabelAction;
 
 function addMolecule(draft: Draft<State>, props: AddMoleculeProps) {
-  const { molfile, id, floatMoleculeOnSave } = props;
+  const { molfile, id, floatMoleculeOnSave, defaultMoleculeSettings } = props;
   const isEmpty = draft.molecules.length === 0;
   MoleculeManager.addMolfile(draft.molecules, molfile, id);
 
@@ -94,8 +111,12 @@ function addMolecule(draft: Draft<State>, props: AddMoleculeProps) {
   }
 
   const lastAddedMolecule = draft.molecules.at(-1);
-  if (floatMoleculeOnSave && lastAddedMolecule) {
-    floatMoleculeOverSpectrum(draft, lastAddedMolecule.id, true);
+  if (lastAddedMolecule) {
+    initMoleculeViewProperties(draft, {
+      id: lastAddedMolecule.id,
+      defaultMoleculeSettings,
+      isMoleculeFloating: floatMoleculeOnSave,
+    });
   }
 
   return lastAddedMolecule;
@@ -298,19 +319,36 @@ function setPredictedSpectraReference(
   draft.view.predictions[moleculeId] = spectraIds;
 }
 
-function initMoleculeViewProperties(id: string, draft: Draft<State>) {
+function initMoleculeViewProperties(
+  draft: Draft<State>,
+  options: {
+    id: string;
+    defaultMoleculeSettings?: MoleculeView;
+    isMoleculeFloating?: boolean;
+  },
+) {
+  const { id, isMoleculeFloating, defaultMoleculeSettings } = options;
+  const { floating, ...otherDefaultOptions } = defaultMoleculeSettings || {};
+  const {
+    bounding = DRAGGABLE_STRUCTURE_INITIAL_BOUNDING_REACT,
+    visible = false,
+    ...other
+  } = floating || {};
   // check if the molecule is exists in the view object otherwise add it with the default value
   if (!draft.view.molecules[id]) {
     const position = getFloatingMoleculeInitialPosition(id, draft);
     draft.view.molecules[id] = {
+      atomAnnotation: 'none',
+      showLabel: false,
+      ...otherDefaultOptions,
       floating: {
-        visible: false,
+        visible: isMoleculeFloating ?? visible,
+        ...other,
         bounding: {
-          ...DRAGGABLE_STRUCTURE_INITIAL_BOUNDING_REACT,
+          ...bounding,
           ...position,
         },
       },
-      showAtomNumber: false,
     };
   }
 }
@@ -348,18 +386,6 @@ function getFloatingMoleculeInitialPosition(id: string, draft: Draft<State>) {
   };
 }
 
-function floatMoleculeOverSpectrum(
-  draft: Draft<State>,
-  moleculeId: string,
-  value?: boolean,
-) {
-  initMoleculeViewProperties(moleculeId, draft);
-  const molecule = getMoleculeViewObject(moleculeId, draft);
-  if (molecule) {
-    molecule.floating.visible = value ?? !molecule.floating.visible;
-  }
-}
-
 //action
 function handleFloatMoleculeOverSpectrum(
   draft: Draft<State>,
@@ -367,21 +393,25 @@ function handleFloatMoleculeOverSpectrum(
 ) {
   const { id } = action.payload;
 
-  floatMoleculeOverSpectrum(draft, id);
+  initMoleculeViewProperties(draft, {
+    id,
+  });
+  const view = getMoleculeViewObject(id, draft);
+  view.floating.visible = !view.floating.visible;
 }
 
 //action
-function handleToggleMoleculeAtomsNumbers(
+function handleChangeMoleculeAnnotation(
   draft: Draft<State>,
-  action: ToggleMoleculeViewObjectAction,
+  action: ChangeMoleculeAnnotationAction,
 ) {
-  const { id } = action.payload;
+  const { id, atomAnnotation } = action.payload;
 
-  initMoleculeViewProperties(id, draft);
+  initMoleculeViewProperties(draft, { id });
   const molecule = getMoleculeViewObject(id, draft);
-  if (molecule) {
-    molecule.showAtomNumber = !molecule.showAtomNumber;
-  }
+  if (!molecule) return;
+
+  molecule.atomAnnotation = atomAnnotation;
 }
 
 //action
@@ -391,11 +421,11 @@ function handleChangeFloatMoleculePosition(
 ) {
   const { id, bounding } = action.payload;
   const molecule = getMoleculeViewObject(id, draft);
-  if (molecule) {
-    molecule.floating.bounding = { ...molecule.floating.bounding, ...bounding };
-  } else {
+  if (!molecule) {
     throw new Error(`Molecule ${id} does not exist`);
   }
+
+  molecule.floating.bounding = { ...molecule.floating.bounding, ...bounding };
 }
 
 //action
@@ -409,16 +439,30 @@ function handleChangeMoleculeLabel(
   );
   draft.molecules[moleculeIndex].label = label;
 }
+//action
+function handleToggleMoleculeLabel(
+  draft: Draft<State>,
+  action: ToggleMoleculeLabelAction,
+) {
+  const { id } = action.payload;
+  const molecule = getMoleculeViewObject(id, draft);
+  if (!molecule) {
+    throw new Error(`Molecule ${id} does not exist`);
+  }
+
+  molecule.showLabel = !molecule.showLabel;
+}
 
 export {
   addMolecule,
   handleAddMolecule,
   handleAddMolecules,
   handleChangeFloatMoleculePosition,
+  handleChangeMoleculeAnnotation,
   handleChangeMoleculeLabel,
   handleDeleteMolecule,
   handleFloatMoleculeOverSpectrum,
   handlePredictSpectraFromMolecule,
   handleSetMolecule,
-  handleToggleMoleculeAtomsNumbers,
+  handleToggleMoleculeLabel,
 };
