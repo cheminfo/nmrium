@@ -1,4 +1,5 @@
 import type { Range } from '@zakodium/nmr-types';
+import type { MoleculesView } from '@zakodium/nmrium-core';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { useTopicMolecule } from '../../context/TopicMoleculeContext.js';
@@ -19,24 +20,48 @@ function getDiaIds(range: Range) {
   return ids;
 }
 
-function useAtoms(range: Range) {
+function useAtoms(range: Range, moleculesView: MoleculesView) {
   const topicMolecule = useTopicMolecule();
   const diaIDs = getDiaIds(range);
-  const atomsList: Array<{ id: string; atoms: number[] }> = [];
+  const atomsList: Array<{ id: string; atoms: Array<string | number> }> = [];
 
   for (const [id, topicMoleculeObject] of Object.entries(topicMolecule)) {
-    const atoms: number[] = [];
+    const atoms: Array<string | number> = [];
     const diaIDsObject = topicMoleculeObject.getDiaIDsObject();
-    if (diaIDsObject) {
-      for (const id of diaIDs) {
-        const existingAtoms = diaIDsObject[id]?.existingAtoms;
-        if (existingAtoms?.length > 0) {
-          atoms.push(...existingAtoms);
-        }
+
+    if (!diaIDsObject || !(id in moleculesView)) continue;
+
+    const { atomAnnotation } = moleculesView[id];
+    for (const id of diaIDs) {
+      if (!(id in diaIDsObject)) continue;
+
+      const {
+        existingAtoms = [],
+        customLabels = [],
+        heavyAtomsCustomLabels = [],
+      } = diaIDsObject[id];
+
+      if (atomAnnotation === 'atom-numbers') {
+        atoms.push(...existingAtoms);
+      }
+
+      if (atomAnnotation === 'custom-labels') {
+        const labels =
+          customLabels.length > 0 ? customLabels : heavyAtomsCustomLabels;
+        atoms.push(...labels);
       }
     }
+
     if (atoms.length > 0) {
-      atoms.sort((a, b) => a - b);
+      atoms.sort((a, b) => {
+        if (typeof a === 'number' && typeof b === 'number') {
+          return a - b;
+        }
+        if (typeof a === 'string' && typeof b === 'string') {
+          return a.localeCompare(b);
+        }
+        return 0;
+      });
       atomsList.push({
         id,
         atoms: Array.from(new Set(atoms)),
@@ -56,9 +81,7 @@ export function Atoms(props: AtomsProps) {
   const {
     view: { molecules },
   } = useChartData();
-  const atomsList = useAtoms(range).filter(
-    (atomsList) => molecules?.[atomsList.id]?.showAtomNumber,
-  );
+  const atomsList = useAtoms(range, molecules);
 
   return (
     <SVGGroup

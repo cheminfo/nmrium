@@ -1,10 +1,13 @@
 import type { Ranges, Zones } from '@zakodium/nmr-types';
-import type { Spectrum1D, Spectrum2D } from '@zakodium/nmrium-core';
+import type {
+  MoleculeView,
+  Spectrum1D,
+  Spectrum2D,
+} from '@zakodium/nmrium-core';
 import { memo } from 'react';
 import { assert } from 'react-science/ui';
 
 import type {
-  MoleculeView,
   MoleculesView,
   StateMoleculeExtended,
 } from '../../../../data/molecules/Molecule.js';

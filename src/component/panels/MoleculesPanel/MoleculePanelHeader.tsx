@@ -1,5 +1,5 @@
 import { Molecule } from 'openchemlib';
-import type { CSSProperties, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { useCallback } from 'react';
 import {
   FaCopy,
@@ -8,11 +8,12 @@ import {
   FaFileImage,
   FaPaste,
   FaPlus,
+  FaRegBookmark,
   FaRegTrashAlt,
 } from 'react-icons/fa';
 import { FaMaximize, FaMinimize } from 'react-icons/fa6';
 import { IoOpenOutline } from 'react-icons/io5';
-import { MdOutlineLabelOff } from 'react-icons/md';
+import { MdNumbers, MdOutlineLabelOff } from 'react-icons/md';
 import { PanelHeader, Toolbar } from 'react-science/ui';
 
 import type {
@@ -30,22 +31,13 @@ import type { ToolbarPopoverMenuItem } from '../../elements/ToolbarPopoverItem.j
 import { ToolbarPopoverItem } from '../../elements/ToolbarPopoverItem.js';
 import AboutPredictionModal from '../../modal/AboutPredictionModal.js';
 import PredictSpectraModal from '../../modal/PredictSpectraModal.js';
+import { booleanToString } from '../../utility/booleanToString.ts';
 import {
   browserNotSupportedErrorToast,
   copyPNGToClipboard,
   exportAsSVG,
 } from '../../utility/export.js';
-
-const styles: Record<'atomLabel', CSSProperties> = {
-  atomLabel: {
-    width: '14px',
-    height: '14px',
-    padding: 0,
-    margin: 0,
-    textAlign: 'center',
-    lineHeight: 1,
-  },
-};
+import { useMoleculeAnnotationCore } from '../hooks/useMoleculeAnnotationCore.ts';
 
 const MOL_EXPORT_MENU: ToolbarPopoverMenuItem[] = [
   {
@@ -238,13 +230,6 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
     });
   }
 
-  function showAtomNumbersHandler() {
-    dispatch({
-      type: 'TOGGLE_MOLECULE_ATOM_NUMBER',
-      payload: { id: moleculeKey },
-    });
-  }
-
   const topicMolecule = useTopicMolecule();
 
   function expandMoleculeHydrogens(expand?: boolean) {
@@ -300,6 +285,8 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
     },
   ];
 
+  const { handleChangeAtomAnnotation, isAnnotation } =
+    useMoleculeAnnotationCore(moleculeKey, moleculesView[moleculeKey]);
   return (
     <PanelHeader
       onClickSettings={onClickPreferences}
@@ -342,6 +329,21 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
             {hasMolecules && (
               <PredictSpectraModal molecule={molecules[currentIndex]} />
             )}
+
+            <Toolbar.Item
+              tooltip={`${booleanToString(!isAnnotation('atom-numbers'))} atom number`}
+              icon={<MdNumbers />}
+              onClick={() => handleChangeAtomAnnotation('atom-numbers')}
+              active={isAnnotation('atom-numbers')}
+              disabled={!hasMolecules}
+            />
+            <Toolbar.Item
+              tooltip={`${booleanToString(!isAnnotation('custom-labels'))} custom labels`}
+              icon={<FaRegBookmark />}
+              onClick={() => handleChangeAtomAnnotation('custom-labels')}
+              active={isAnnotation('custom-labels')}
+              disabled={!hasMolecules}
+            />
           </>
         )}
 
@@ -350,13 +352,6 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
           icon={<IoOpenOutline />}
           onClick={floatMoleculeHandler}
           active={moleculesView?.[moleculeKey]?.floating.visible || false}
-          disabled={!hasMolecules}
-        />
-        <Toolbar.Item
-          tooltip="Show atom number"
-          icon={<p style={styles.atomLabel}>#</p>}
-          onClick={showAtomNumbersHandler}
-          active={moleculesView?.[moleculeKey]?.showAtomNumber || false}
           disabled={!hasMolecules}
         />
 

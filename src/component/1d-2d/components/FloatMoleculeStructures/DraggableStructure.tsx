@@ -1,8 +1,10 @@
 import styled from '@emotion/styled';
+import type { MoleculeView } from '@zakodium/nmrium-core';
 import { useEffect, useState } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 import { BsArrowsMove } from 'react-icons/bs';
-import { FaTimes } from 'react-icons/fa';
+import { FaRegBookmark, FaTimes } from 'react-icons/fa';
+import { MdFormatColorText, MdNumbers } from 'react-icons/md';
 import type { MolfileSvgRendererProps } from 'react-ocl';
 import { MolfileSvgRenderer } from 'react-ocl';
 import OCLnmr from 'react-ocl-nmr';
@@ -10,7 +12,6 @@ import { Rnd } from 'react-rnd';
 
 import type {
   MoleculeBoundingRect,
-  MoleculeView,
   StateMoleculeExtended,
 } from '../../../../data/molecules/Molecule.js';
 import { useDispatch } from '../../../context/DispatchContext.js';
@@ -22,6 +23,8 @@ import { useSVGUnitConverter } from '../../../hooks/useSVGUnitConverter.js';
 import { useCheckExportStatus } from '../../../hooks/useViewportSize.js';
 import { useMoleculeEditor } from '../../../modal/MoleculeStructureEditorModal.js';
 import useAtomAssignment from '../../../panels/MoleculesPanel/useAtomAssignment.js';
+import { useMoleculeAnnotationCore } from '../../../panels/hooks/useMoleculeAnnotationCore.ts';
+import { booleanToString } from '../../../utility/booleanToString.ts';
 
 interface DraggableMoleculeProps extends DraggableStructureProps {
   width: number;
@@ -103,6 +106,12 @@ export function DraggableStructure(props: DraggableStructureProps) {
     return { x: pixelToPercent(x, 'x'), y: pixelToPercent(y, 'y') };
   }
 
+  const {
+    handleChangeAtomAnnotation,
+    isAnnotation,
+    handleToggleMoleculeLabel,
+  } = useMoleculeAnnotationCore(molecule.id, moleculeView);
+
   if (!viewerRef) return null;
 
   const actionsButtons: ActionsButtonsPopoverProps['buttons'] = [
@@ -119,8 +128,31 @@ export function DraggableStructure(props: DraggableStructureProps) {
       title: 'Hide molecule',
       onClick: floatMoleculeHandler,
     },
+    {
+      elementType: 'separator',
+    },
+    {
+      icon: <MdFormatColorText />,
+      title: `${booleanToString(!moleculeView.showLabel)} molecule label`,
+      onClick: handleToggleMoleculeLabel,
+      active: moleculeView.showLabel,
+    },
+    {
+      elementType: 'separator',
+    },
+    {
+      icon: <MdNumbers />,
+      title: `${booleanToString(!isAnnotation('atom-numbers'))} atom number`,
+      onClick: () => handleChangeAtomAnnotation('atom-numbers'),
+      active: isAnnotation('atom-numbers'),
+    },
+    {
+      icon: <FaRegBookmark />,
+      title: `${booleanToString(!isAnnotation('custom-labels'))} custom labels`,
+      onClick: () => handleChangeAtomAnnotation('custom-labels'),
+      active: isAnnotation('custom-labels'),
+    },
   ];
-
   const { x: xInPercent, y: yInPercent, width, height } = bounding;
 
   const x = percentToPixel(xInPercent, 'x');
@@ -211,14 +243,14 @@ function DraggableMolecule(props: DraggableMoleculeProps) {
     id: `molSVG${index || ''}`,
     height,
     width,
-    label: molecule.label,
+    label: moleculeView.showLabel ? molecule.label : '',
     labelFontSize: 15,
-    labelColor: 'rgb(0,0,0)',
+    labelColor: 'rgba(138, 59, 59, 1)',
     molfile: molecule.molfile,
     atomHighlightColor,
     atomHighlightOpacity: 1,
-    showAtomNumber: moleculeView.showAtomNumber,
-    noCarbonLabelWithCustomLabel: true,
+    showAtomNumber: moleculeView.atomAnnotation === 'atom-numbers',
+    noAtomCustomLabels: moleculeView.atomAnnotation === 'custom-labels',
   };
 
   if (renderAsSVG) {
