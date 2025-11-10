@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
-import type { MoleculeView } from '@zakodium/nmrium-core';
+import type { BoundingBox, MoleculeView } from '@zakodium/nmrium-core';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
