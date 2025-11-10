@@ -40,7 +40,7 @@ const boundingBoxSchema: Yup.ObjectSchema<BoundingBox> = Yup.object({
   y: Yup.number().required(),
 }).defined();
 
-export const moleculeViewSchema: Yup.ObjectSchema<MoleculeView> = Yup.object({
+const moleculeViewSchema: Yup.ObjectSchema<MoleculeView> = Yup.object({
   floating: Yup.object({
     visible: Yup.boolean().required(),
     bounding: boundingBoxSchema.required(),
