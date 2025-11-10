@@ -95,7 +95,7 @@
     "ml-spectra-processing": "^14.18.0",
     "ml-tree-similarity": "^2.2.0",
     "nmr-correlation": "2.3.3",
-    "nmr-processing": "^20.0.0",
+    "nmr-processing": "^21.0.1",
     "numeral": "^2.0.6",
     "openchemlib": "^9.12.1",
     "openchemlib-utils": "^8.7.0",
