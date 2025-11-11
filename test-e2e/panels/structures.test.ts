@@ -444,7 +444,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     // Delete molecule.
     await nmrium.clickToolByTitle('Delete molecule');
     // Check deleted Floated molecule.
-    await expect(nmrium.page.locator('#molSVG')).toBeHidden();
+    await expect(nmrium.page.locator('#molSVG')).toHaveCount(1);
     // Check selected molecule.
 
     if (browserName !== 'webkit') {
