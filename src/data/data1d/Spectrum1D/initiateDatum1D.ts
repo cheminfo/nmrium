@@ -29,23 +29,23 @@ export function initiateDatum1D(
   const { usedColors, colors, molecules = [], fileCollectionId } = options;
 
   const { integrals, ranges, ...restSpectrum } = spectrum;
-  const spectrumObj: Spectrum1D = { ...restSpectrum };
-  spectrumObj.id = spectrum.id || crypto.randomUUID();
-  spectrumObj.fileCollectionId = spectrum.fileCollectionId || fileCollectionId;
-
-  spectrumObj.display = {
-    isVisible: true,
-    isRealSpectrumVisible: true,
-    ...spectrum.display,
-    ...get1DColor(spectrum, { usedColors, colors }),
-  };
-
-  spectrumObj.info = {
-    nucleus: '1H', // 1H, 13C, 19F, ...
-    isFid: false,
-    isComplex: false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
-    dimension: 1,
-    ...spectrum.info,
+  const spectrumObj: Spectrum1D = {
+    ...restSpectrum,
+    id: spectrum.id || crypto.randomUUID(),
+    fileCollectionId: spectrum.fileCollectionId || fileCollectionId,
+    display: {
+      isVisible: true,
+      isRealSpectrumVisible: true,
+      ...spectrum.display,
+      ...get1DColor(spectrum, { usedColors, colors }),
+    },
+    info: {
+      nucleus: '1H', // 1H, 13C, 19F, ...
+      isFid: false,
+      isComplex: false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
+      dimension: 1,
+      ...spectrum.info,
+    },
   };
 
   spectrumObj.originalInfo = spectrumObj.info;
