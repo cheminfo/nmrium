@@ -36,7 +36,10 @@ interface AddMoleculeProps {
 type AddMoleculeAction = ActionType<'ADD_MOLECULE', AddMoleculeProps>;
 type AddMoleculesAction = ActionType<
   'ADD_MOLECULES',
-  { molecules: StateMolecule[] }
+  {
+    molecules: StateMolecule[];
+    defaultMoleculeSettings?: MoleculeView;
+  }
 >;
 type SetMoleculeAction = ActionType<
   'SET_MOLECULE',
@@ -127,10 +130,10 @@ function handleAddMolecule(draft: Draft<State>, action: AddMoleculeAction) {
   addMolecule(draft, action.payload);
 }
 function handleAddMolecules(draft: Draft<State>, action: AddMoleculesAction) {
-  const molecules = action.payload.molecules;
+  const { molecules, defaultMoleculeSettings } = action.payload;
 
   for (const { molfile } of molecules) {
-    addMolecule(draft, { molfile });
+    addMolecule(draft, { molfile, defaultMoleculeSettings });
   }
 }
 
@@ -465,4 +468,5 @@ export {
   handlePredictSpectraFromMolecule,
   handleSetMolecule,
   handleToggleMoleculeLabel,
+  initMoleculeViewProperties,
 };
