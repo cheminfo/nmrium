@@ -25,6 +25,7 @@ import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardCompon
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useGlobal } from '../../context/GlobalContext.js';
+import { usePreferences } from '../../context/PreferencesContext.tsx';
 import { useToaster } from '../../context/ToasterContext.js';
 import { useTopicMolecule } from '../../context/TopicMoleculeContext.js';
 import type { ToolbarPopoverMenuItem } from '../../elements/ToolbarPopoverItem.js';
@@ -103,7 +104,9 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
   const { rootRef } = useGlobal();
   const toaster = useToaster();
   const dispatch = useDispatch();
-
+  const {
+    current: { defaultMoleculeSettings },
+  } = usePreferences();
   const moleculeKey = molecules?.[currentIndex]?.id;
   const saveAsSVGHandler = useCallback(() => {
     if (!rootRef) return;
@@ -201,7 +204,10 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
     if (!text) return;
     try {
       const molecules = getMolecules(text);
-      dispatch({ type: 'ADD_MOLECULES', payload: { molecules } });
+      dispatch({
+        type: 'ADD_MOLECULES',
+        payload: { molecules, defaultMoleculeSettings },
+      });
     } catch {
       toaster.show({
         intent: 'danger',
