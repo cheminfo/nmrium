@@ -61,14 +61,13 @@ export function initiateDatum2D(
   options: InitiateDatum2DOptions = {},
 ): Spectrum2D {
   const { usedColors, colors, fileCollectionId } = options;
-  const datum: any = { ...spectrum };
-
-  datum.id = spectrum.id || crypto.randomUUID();
-  datum.fileCollectionId = spectrum.fileCollectionId || fileCollectionId;
-
-  datum.display = initiateDisplay(spectrum, { usedColors, colors });
-
-  datum.info = initiateInfo(spectrum);
+  const datum: any = {
+    ...spectrum,
+    id: spectrum.id || crypto.randomUUID(),
+    fileCollectionId: spectrum.fileCollectionId || fileCollectionId,
+    display: initiateDisplay(spectrum, { usedColors, colors }),
+    info: initiateInfo(spectrum),
+  };
 
   datum.originalInfo = datum.info;
 
