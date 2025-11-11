@@ -1,5 +1,7 @@
 import type { Locator, Page } from '@playwright/test';
 
+import type { BoundingBox } from '../playwright_types.ts';
+
 interface MoveMouseOptions {
   x?: number;
   y?: number;
