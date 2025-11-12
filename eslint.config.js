@@ -8,7 +8,7 @@ export default [
       'build',
       'coverage',
       'lib',
-      'lib-cjs',
+      'lib-internal',
       'node_modules',
       'playwright-report',
       'test-results',

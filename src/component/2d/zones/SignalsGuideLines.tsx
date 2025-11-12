@@ -258,7 +258,7 @@ function IndicationLine(props: IndicationLineProps) {
 
   function assignHandler() {
     isAssignBtnTrigged.current = true;
-    assignmentContext.activate('x');
+    assignmentContext.activate(axis);
   }
 
   function unAssignHandler() {

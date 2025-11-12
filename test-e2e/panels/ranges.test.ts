@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 import NmriumPage from '../NmriumPage/index.js';
+import type { BoundingBox } from '../playwright_types.ts';
 
 async function addRange(
   nmrium: NmriumPage,

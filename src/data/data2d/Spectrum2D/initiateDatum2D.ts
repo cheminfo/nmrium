@@ -60,13 +60,12 @@ export function initiateDatum2D(
   options: InitiateDatum2DOptions = {},
 ): Spectrum2D {
   const { usedColors, colors } = options;
-  const datum: any = { ...spectrum };
-
-  datum.id = spectrum.id || crypto.randomUUID();
-
-  datum.display = initiateDisplay(spectrum, { usedColors, colors });
-
-  datum.info = initiateInfo(spectrum);
+  const datum: any = {
+    ...spectrum,
+    id: spectrum.id || crypto.randomUUID(),
+    display: initiateDisplay(spectrum, { usedColors, colors }),
+    info: initiateInfo(spectrum),
+  };
 
   datum.originalInfo = datum.info;
 

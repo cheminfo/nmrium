@@ -40,7 +40,8 @@ export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
         let nmriumState: Partial<NmriumState>;
         let containsNmrium: boolean;
         let parseMetaFileResult: ParseResult<any> | null = null;
-        const { onLoadProcessing, spectraColors } = workspacePreferences;
+        const { onLoadProcessing, spectraColors, defaultMoleculeSettings } =
+          workspacePreferences;
         const { nmrLoaders: selector } = preferences.current;
 
         const parsingOptions: Partial<ParsingOptions> = {
@@ -118,6 +119,7 @@ export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
             fileCollection,
             selectorRoot,
             resetSourceObject,
+            defaultMoleculeSettings,
           },
         });
       }

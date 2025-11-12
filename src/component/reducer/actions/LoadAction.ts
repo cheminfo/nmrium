@@ -1,4 +1,5 @@
 import type {
+  MoleculeView,
   NmriumState,
   SpectraColors,
   Spectrum,
@@ -24,6 +25,7 @@ import type { State } from '../Reducer.js';
 import { getDefaultViewState, getInitialState } from '../Reducer.js';
 import type { ActionType } from '../types/ActionType.js';
 
+import { initMoleculeViewProperties } from './MoleculeActions.ts';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions.js';
 import { setSpectraMetaInfo } from './SpectraActions.js';
 import { setActiveTab } from './ToolsActions.js';
@@ -42,6 +44,7 @@ interface InputProps extends Omit<InitiateProps, 'aggregator'> {
   fileCollection?: FileCollection;
   selectorRoot?: string;
   aggregator?: FileCollection;
+  defaultMoleculeSettings?: MoleculeView;
 }
 
 type SetIsLoadingAction = ActionType<
@@ -94,6 +97,12 @@ function setCorrelation(draft: Draft<State>, correlations: CorrelationData) {
   }
 }
 
+function isDataSourceDropFiles(
+  input: InputProps | InitiateProps,
+): input is InputProps {
+  return 'containsNmrium' in input;
+}
+
 function setData(draft: Draft<State>, input: InputProps | InitiateProps) {
   const { data, view } = input.nmriumState || {
     data: { spectra: [], molecules: [], correlations: {} },
@@ -120,6 +129,7 @@ function setData(draft: Draft<State>, input: InputProps | InitiateProps) {
 
   if (view) {
     const defaultViewState = getDefaultViewState();
+
     draft.view = lodashMerge(defaultViewState, view);
   }
 
@@ -164,9 +174,19 @@ function setData(draft: Draft<State>, input: InputProps | InitiateProps) {
     );
   }
 
-  draft.molecules = draft.molecules.concat(
-    MoleculeManager.fromJSON(molecules, draft.molecules),
+  const newMolecules = MoleculeManager.fromJSON(
+    molecules,
+    draft.molecules,
   );
+
+  draft.molecules = draft.molecules.concat(newMolecules);
+
+  if (isDataSourceDropFiles(input) && !input?.containsNmrium) {
+    const { defaultMoleculeSettings } = input;
+    for (const { id } of newMolecules) {
+      initMoleculeViewProperties(draft, { id, defaultMoleculeSettings });
+    }
+  }
 
   draft.data = draft.data.concat(
     initSpectra(spectra, {

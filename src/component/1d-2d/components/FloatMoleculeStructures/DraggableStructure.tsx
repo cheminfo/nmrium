@@ -250,7 +250,7 @@ function DraggableMolecule(props: DraggableMoleculeProps) {
     atomHighlightColor,
     atomHighlightOpacity: 1,
     showAtomNumber: moleculeView.atomAnnotation === 'atom-numbers',
-    noAtomCustomLabels: moleculeView.atomAnnotation === 'custom-labels',
+    noAtomCustomLabels: moleculeView.atomAnnotation !== 'custom-labels',
   };
 
   if (renderAsSVG) {
