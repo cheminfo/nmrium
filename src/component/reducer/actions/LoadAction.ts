@@ -174,10 +174,7 @@ function setData(draft: Draft<State>, input: InputProps | InitiateProps) {
     );
   }
 
-  const newMolecules = MoleculeManager.fromJSON(
-    molecules,
-    draft.molecules,
-  );
+  const newMolecules = MoleculeManager.fromJSON(molecules, draft.molecules);
 
   draft.molecules = draft.molecules.concat(newMolecules);
 
