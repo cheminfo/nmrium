@@ -5,9 +5,6 @@ import { ResponsiveChart } from 'react-d3-utils';
 import { BsArrowsMove } from 'react-icons/bs';
 import { FaRegBookmark, FaTimes } from 'react-icons/fa';
 import { MdFormatColorText, MdNumbers } from 'react-icons/md';
-import type { MolfileSvgRendererProps } from 'react-ocl';
-import { MolfileSvgRenderer } from 'react-ocl';
-import OCLnmr from 'react-ocl-nmr';
 import { Rnd } from 'react-rnd';
 
 import type {
@@ -18,19 +15,12 @@ import { useDispatch } from '../../../context/DispatchContext.js';
 import { useGlobal } from '../../../context/GlobalContext.js';
 import type { ActionsButtonsPopoverProps } from '../../../elements/ActionsButtonsPopover.js';
 import { ActionsButtonsPopover } from '../../../elements/ActionsButtonsPopover.js';
-import { useHighlightColor } from '../../../hooks/useHighlightColor.js';
+import { OCLnmrWrapper } from '../../../elements/OCLnmrWrapper.tsx';
 import { useSVGUnitConverter } from '../../../hooks/useSVGUnitConverter.js';
 import { useCheckExportStatus } from '../../../hooks/useViewportSize.js';
 import { useMoleculeEditor } from '../../../modal/MoleculeStructureEditorModal.js';
-import useAtomAssignment from '../../../panels/MoleculesPanel/useAtomAssignment.js';
 import { useMoleculeAnnotationCore } from '../../../panels/hooks/useMoleculeAnnotationCore.ts';
 import { booleanToString } from '../../../utility/booleanToString.ts';
-
-interface DraggableMoleculeProps extends DraggableStructureProps {
-  width: number;
-  height: number;
-  renderAsSVG?: boolean;
-}
 
 interface DraggableStructureProps {
   moleculeView: MoleculeView;
@@ -161,7 +151,7 @@ export function DraggableStructure(props: DraggableStructureProps) {
   if (isExportProcessStart) {
     return (
       <g transform={`translate(${x} ${y})`}>
-        <DraggableMolecule renderAsSVG {...{ width, height }} {...props} />
+        <OCLnmrWrapper renderAsSVG {...{ width, height }} {...props} />
       </g>
     );
   }
@@ -208,7 +198,7 @@ export function DraggableStructure(props: DraggableStructureProps) {
         >
           <ResponsiveChart>
             {({ width, height }) => {
-              return <DraggableMolecule {...{ width, height }} {...props} />;
+              return <OCLnmrWrapper {...{ width, height }} {...props} />;
             }}
           </ResponsiveChart>
         </div>
@@ -216,68 +206,5 @@ export function DraggableStructure(props: DraggableStructureProps) {
 
       {modal}
     </ReactRnd>
-  );
-}
-
-function DraggableMolecule(props: DraggableMoleculeProps) {
-  const {
-    molecule,
-    index,
-    moleculeView,
-    width,
-    height,
-    renderAsSVG = false,
-  } = props;
-  const {
-    currentDiaIDsToHighlight,
-    handleOnAtomHover,
-    handleOnClickAtom,
-    assignedDiaIDsMerged,
-  } = useAtomAssignment();
-  const highlightColor = useHighlightColor();
-  const dispatch = useDispatch();
-
-  const atomHighlightColor =
-    currentDiaIDsToHighlight?.length > 0 ? '#ff000080' : highlightColor;
-  const baseProps: MolfileSvgRendererProps = {
-    id: `molSVG${index || ''}`,
-    height,
-    width,
-    label: moleculeView.showLabel ? molecule.label : '',
-    labelFontSize: 15,
-    labelColor: 'rgba(138, 59, 59, 1)',
-    molfile: molecule.molfile,
-    atomHighlightColor,
-    atomHighlightOpacity: 1,
-    showAtomNumber: moleculeView.atomAnnotation === 'atom-numbers',
-    noAtomCustomLabels: moleculeView.atomAnnotation !== 'custom-labels',
-  };
-
-  if (renderAsSVG) {
-    return <MolfileSvgRenderer {...baseProps} />;
-  }
-
-  return (
-    <OCLnmr
-      {...baseProps}
-      setSelectedAtom={handleOnClickAtom}
-      highlights={
-        currentDiaIDsToHighlight?.length > 0
-          ? currentDiaIDsToHighlight
-          : assignedDiaIDsMerged
-      }
-      atomHighlightStrategy="prefer-editor-props"
-      setHoverAtom={handleOnAtomHover}
-      setMolfile={(molfile) => {
-        dispatch({
-          type: 'SET_MOLECULE',
-          payload: {
-            molfile,
-            id: molecule.id,
-            label: molecule.label,
-          },
-        });
-      }}
-    />
   );
 }
