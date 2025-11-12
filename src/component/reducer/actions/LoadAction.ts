@@ -5,7 +5,7 @@ import type {
   Spectrum,
   ViewState,
 } from '@zakodium/nmrium-core';
-import type { FileCollection } from 'file-collection';
+import { FileCollection } from 'file-collection';
 import type { Draft } from 'immer';
 import { produce } from 'immer';
 import lodashMerge from 'lodash/merge.js';
@@ -33,15 +33,17 @@ import { setActiveTab } from './ToolsActions.js';
 //TODO use viewState type instead of any { view?: ViewState }
 interface InitiateProps {
   nmriumState: Partial<NmriumState>;
-  fileCollections?: Map<string, FileCollection>;
+  aggregator: FileCollection;
 }
-interface InputProps extends InitiateProps {
+interface InputProps extends Omit<InitiateProps, 'aggregator'> {
   containsNmrium?: boolean;
   usedColors?: UsedColors;
   parseMetaFileResult?: ParseResult<any> | null;
   resetSourceObject?: boolean;
   spectraColors?: SpectraColors;
   fileCollection?: FileCollection;
+  selectorRoot?: string;
+  aggregator?: FileCollection;
   defaultMoleculeSettings?: MoleculeView;
 }
 
@@ -150,20 +152,29 @@ function setData(draft: Draft<State>, input: InputProps | InitiateProps) {
     }
   }
 
-  updateFileCollections(draft, input);
+  if (input.aggregator) {
+    if ('forceInitialize' in input && input.forceInitialize) {
+      draft.aggregator = input.aggregator;
+    } else {
+      draft.aggregator = FileCollection.fromCollection(draft.aggregator);
+      draft.aggregator.appendFileCollection(input.aggregator, '');
+    }
+  }
 
-  const fileCollectionId =
-    'fileCollection' in input
-      ? sources?.at(-1)?.id || crypto.randomUUID()
-      : undefined;
-  const fileCollection =
-    'fileCollection' in input ? input.fileCollection : undefined;
+  if (
+    'fileCollection' in input &&
+    input.fileCollection &&
+    'selectorRoot' in input &&
+    input.selectorRoot
+  ) {
+    draft.aggregator = FileCollection.fromCollection(draft.aggregator);
+    draft.aggregator.appendFileCollection(
+      input.fileCollection,
+      input.selectorRoot,
+    );
+  }
 
-  const newMolecules = MoleculeManager.fromJSON(
-    molecules,
-    fileCollectionId,
-    draft.molecules,
-  );
+  const newMolecules = MoleculeManager.fromJSON(molecules, draft.molecules);
 
   draft.molecules = draft.molecules.concat(newMolecules);
 
@@ -179,13 +190,8 @@ function setData(draft: Draft<State>, input: InputProps | InitiateProps) {
       usedColors: draft.usedColors,
       molecules: draft.molecules,
       spectraColors,
-      fileCollectionId,
     }),
   );
-  if (fileCollection && fileCollectionId) {
-    draft.fileCollections ??= {};
-    draft.fileCollections[fileCollectionId] = fileCollection;
-  }
   setCorrelation(draft, correlations);
 
   if (parseMetaFileResult) {
@@ -204,11 +210,10 @@ function initSpectra(
     usedColors: UsedColors;
     molecules: StateMoleculeExtended[];
     spectraColors: SpectraColors;
-    fileCollectionId: string | undefined;
   },
 ) {
   const spectra: any = [];
-  const { usedColors, molecules, spectraColors, fileCollectionId } = options;
+  const { usedColors, molecules, spectraColors } = options;
   for (const spectrum of inputSpectra) {
     const { info } = spectrum;
     if (info.dimension === 1) {
@@ -217,14 +222,13 @@ function initSpectra(
           usedColors,
           molecules,
           colors: spectraColors.oneDimension,
-          fileCollectionId,
         }),
       );
     } else if (info.dimension === 2) {
       spectra.push(
         initiateDatum2D(
           { ...spectrum },
-          { usedColors, colors: spectraColors.twoDimensions, fileCollectionId },
+          { usedColors, colors: spectraColors.twoDimensions },
         ),
       );
     }
@@ -246,21 +250,6 @@ function setPreferences(draft: Draft<State>, data: ViewState) {
     });
   } else {
     changeSpectrumVerticalAlignment(draft, { verticalAlign: 'auto-check' });
-  }
-}
-
-function updateFileCollections(
-  draft: Draft<State>,
-  payload: Pick<InitiateProps, 'fileCollections'>,
-) {
-  const fileCollections = payload.fileCollections;
-  if (!fileCollections) return;
-
-  if (fileCollections.size > 0) {
-    draft.fileCollections ??= {};
-  }
-  for (const [id, fc] of fileCollections) {
-    draft.fileCollections[id] = fc;
   }
 }
 
@@ -293,7 +282,10 @@ function initData(
       initialDraft.actionType = action.type;
     });
   } else {
-    updateFileCollections(draft, action.payload);
+    if (action.payload.aggregator) {
+      draft.aggregator = FileCollection.fromCollection(draft.aggregator);
+      draft.aggregator.appendFileCollection(action.payload.aggregator, '');
+    }
     if (view) {
       const defaultViewState = getDefaultViewState();
       draft.view = lodashMerge(defaultViewState, view);

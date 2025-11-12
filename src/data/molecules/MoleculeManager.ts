@@ -8,7 +8,6 @@ import { initMolecule } from './Molecule.js';
 //TODO: Move molecule initialization to nmrium-core and log an error if the molecule cannot be parsed.
 export function fromJSON(
   mols: StateMolecule[],
-  fileCollectionId: string | undefined,
   reservedMolecules: StateMolecule[] = [],
 ) {
   const reservedNumbers = extractLabelsNumbers(reservedMolecules.concat(mols));
@@ -29,9 +28,6 @@ export function fromJSON(
       label: mol.label || `P${getLabelNumber(reservedNumbers)}`,
       id: mol.id,
     };
-    if (fileCollectionId) {
-      moleculeOverride.fileCollectionId = fileCollectionId;
-    }
 
     molecules.push(initMolecule(moleculeOverride));
   }

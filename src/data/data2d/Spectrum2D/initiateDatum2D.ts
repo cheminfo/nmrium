@@ -19,7 +19,6 @@ const defaultMinMax = { z: [], minX: 0, minY: 0, maxX: 0, maxY: 0 };
 interface InitiateDatum2DOptions {
   usedColors?: UsedColors;
   colors?: SpectrumTwoDimensionsColor[];
-  fileCollectionId?: string;
 }
 
 function initiateDisplay(spectrum: any, options: InitiateDatum2DOptions) {
@@ -60,11 +59,10 @@ export function initiateDatum2D(
   spectrum: any,
   options: InitiateDatum2DOptions = {},
 ): Spectrum2D {
-  const { usedColors, colors, fileCollectionId } = options;
+  const { usedColors, colors } = options;
   const datum: any = {
     ...spectrum,
     id: spectrum.id || crypto.randomUUID(),
-    fileCollectionId: spectrum.fileCollectionId || fileCollectionId,
     display: initiateDisplay(spectrum, { usedColors, colors }),
     info: initiateInfo(spectrum),
   };

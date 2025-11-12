@@ -78,7 +78,6 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
         sources,
         view,
         actionType,
-        fileCollections: {},
       },
       { current: workspaces[workspace.current] },
       { serialize: false, exportTarget: 'onChange' },
@@ -120,7 +119,7 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
       void core
         .readNMRiumObject(nmriumData)
         .then((result) => {
-          const [nmriumState, fileCollections] = result;
+          const [nmriumState, aggregator] = result;
           if (nmriumState?.settings) {
             dispatchPreferences({
               type: 'SET_WORKSPACE',
@@ -132,7 +131,7 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
           }
           dispatch({
             type: 'INITIATE',
-            payload: { nmriumState, fileCollections },
+            payload: { nmriumState, aggregator },
           });
         })
         .catch((error: unknown) => {
