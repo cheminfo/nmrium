@@ -25,7 +25,7 @@ yarn-error.log*
 
 storybook-static
 lib
-lib-cjs
+lib-internal
 
 pnpm-lock.yaml
 
