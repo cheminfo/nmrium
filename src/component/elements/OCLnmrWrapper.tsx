@@ -7,9 +7,8 @@ import OCLnmr from 'react-ocl-nmr';
 import type { StateMoleculeExtended } from '../../data/molecules/Molecule.ts';
 import { useDispatch } from '../context/DispatchContext.tsx';
 import { useHighlightColor } from '../hooks/useHighlightColor.ts';
-import useAtomAssignment, {
-  useExtractAtomAssignmentLabel,
-} from '../panels/MoleculesPanel/useAtomAssignment.tsx';
+import useAtomAssignment from '../panels/MoleculesPanel/hooks/useAtomAssignment.tsx';
+import { useExtractAtomAssignmentLabel } from '../panels/MoleculesPanel/hooks/useExtractAtomAssignmentLabel.ts';
 
 interface OCLnmrWrapperProps extends Pick<OCLnmrProps, 'width' | 'height'> {
   moleculeView: MoleculeView;

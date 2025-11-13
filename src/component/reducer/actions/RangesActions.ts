@@ -29,7 +29,7 @@ import {
 import type { ChangeRangeRelativeValueProps } from '../../../data/data1d/Spectrum1D/ranges/changeRangeRelativeValue.js';
 import { unlink } from '../../../data/utilities/RangeUtilities.js';
 import { isProton } from '../../../data/utilities/isProton.ts';
-import type { TargetAssignKeys } from '../../panels/MoleculesPanel/Utilities.js';
+import type { TargetAssignKeys } from '../../panels/MoleculesPanel/utilities/getAssignIds.ts';
 import type { RangeData } from '../../panels/RangesPanel/hooks/useMapRanges.js';
 import type { FilterType } from '../../utility/filterType.js';
 import type { State } from '../Reducer.js';

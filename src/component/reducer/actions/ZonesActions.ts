@@ -26,7 +26,7 @@ import type { DetectionZonesOptions } from '../../../data/data2d/Spectrum2D/zone
 import { unlink } from '../../../data/utilities/ZoneUtilities.js';
 import type { Axis } from '../../assignment/AssignmentsContext.js';
 import { defaultZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState.js';
-import type { TargetAssignKeys } from '../../panels/MoleculesPanel/Utilities.js';
+import type { TargetAssignKeys } from '../../panels/MoleculesPanel/utilities/getAssignIds.ts';
 import type { ZoneData } from '../../panels/ZonesPanel/hooks/useMapZones.js';
 import type { FilterType } from '../../utility/filterType.js';
 import type { State } from '../Reducer.js';

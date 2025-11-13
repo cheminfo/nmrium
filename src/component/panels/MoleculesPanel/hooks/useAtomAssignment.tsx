@@ -1,32 +1,32 @@
 import type { Spectrum1D, Spectrum2D, Spectrum } from '@zakodium/nmrium-core';
-import { Molecule } from 'openchemlib';
 import type { DiaIDAndInfo } from 'openchemlib-utils';
 import type { MouseEvent } from 'react';
 import { useMemo, useRef } from 'react';
 
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
-import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/isSpectrum2D.ts';
-import { ConcatenationString } from '../../../data/utilities/Concatenation.js';
-import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated.js';
-import { useTracesSpectra } from '../../2d/useTracesSpectra.ts';
-import type { Assignments, Axis } from '../../assignment/AssignmentsContext.js';
-import { useAssignmentContext } from '../../assignment/AssignmentsContext.js';
-import { useChartData } from '../../context/ChartContext.js';
-import { useDispatch } from '../../context/DispatchContext.js';
-import { useToaster } from '../../context/ToasterContext.js';
-import { useTopicMolecule } from '../../context/TopicMoleculeContext.tsx';
-import type { HighlightEventSource } from '../../highlight/index.js';
-import { useHighlightData } from '../../highlight/index.js';
-import useSpectrum from '../../hooks/useSpectrum.js';
+import { isSpectrum1D } from '../../../../data/data1d/Spectrum1D/isSpectrum1D.ts';
+import { isSpectrum2D } from '../../../../data/data2d/Spectrum2D/isSpectrum2D.ts';
+import { ConcatenationString } from '../../../../data/utilities/Concatenation.ts';
+import checkModifierKeyActivated from '../../../../data/utilities/checkModifierKeyActivated.ts';
+import { useTracesSpectra } from '../../../2d/useTracesSpectra.ts';
+import type {
+  Assignments,
+  Axis,
+} from '../../../assignment/AssignmentsContext.ts';
+import { useAssignmentContext } from '../../../assignment/AssignmentsContext.ts';
+import { useChartData } from '../../../context/ChartContext.tsx';
+import { useDispatch } from '../../../context/DispatchContext.tsx';
+import { useToaster } from '../../../context/ToasterContext.tsx';
+import type { HighlightEventSource } from '../../../highlight/index.tsx';
+import { useHighlightData } from '../../../highlight/index.tsx';
+import useSpectrum from '../../../hooks/useSpectrum.ts';
+import type { AtomData } from '../utilities/AtomData.ts';
+import { extractFromAtom } from '../utilities/extractFromAtom.ts';
+import { getAssignIds } from '../utilities/getAssignIds.ts';
+import { getCurrentDiaIDsToHighlight } from '../utilities/getCurrentDiaIDsToHighlight.ts';
+import { getHighlightsOnHover } from '../utilities/getHighlightsOnHover.ts';
+import { getUniqueDiaIDs } from '../utilities/getUniqueDiaIDs.ts';
 
-import type { AtomData } from './Utilities.js';
-import {
-  extractFromAtom,
-  getAssignIds,
-  getCurrentDiaIDsToHighlight,
-  getHighlightsOnHover,
-  getUniqueDiaIDs,
-} from './Utilities.js';
+import { useExtractAtomAssignmentLabel } from './useExtractAtomAssignmentLabel.ts';
 
 function flattenAssignedDiaIDs(assignments: Assignments) {
   const assignedDiaIDs: string[] = [];
@@ -69,75 +69,6 @@ function getSignalsDiaIDs(
       ...(signal.x?.diaIDs || []),
       ...(signal.y?.diaIDs || []),
     ]);
-}
-
-export function useExtractAtomAssignmentLabel() {
-  const topicMolecule = useTopicMolecule();
-  const lastHoverAtomIdRef = useRef<DiaIDAndInfo>();
-
-  function getLastHoverAtom() {
-    return lastHoverAtomIdRef.current;
-  }
-
-  function getTopicAtom(moleculeId: string, oclId: string, molfile?: string) {
-    const baseMolecule = topicMolecule?.[moleculeId];
-
-    if (!baseMolecule) return;
-
-    const molecule = molfile
-      ? baseMolecule.fromMolecule(Molecule.fromMolfile(molfile))
-      : baseMolecule;
-
-    const groupedDiaIdsMapping = molecule.getGroupedDiastereotopicAtomIDs();
-    if (!Array.isArray(groupedDiaIdsMapping)) return;
-
-    return groupedDiaIdsMapping.find((obj: any) => obj.oclID === oclId);
-  }
-
-  function getTopicAtomByHover(moleculeId: string, molfile?: string) {
-    if (!lastHoverAtomIdRef.current) return;
-
-    return getTopicAtom(moleculeId, lastHoverAtomIdRef.current.idCode, molfile);
-  }
-
-  function onAtomHover(atom: DiaIDAndInfo | undefined) {
-    lastHoverAtomIdRef.current = atom;
-  }
-
-  function getAssignmentLabelById(
-    moleculeId: string,
-    oclID: string,
-    molfile?: string,
-  ) {
-    const atomData = getTopicAtom(moleculeId, oclID, molfile);
-    if (!atomData) return;
-
-    const { customLabels = [], heavyAtomsCustomLabels = [] } = atomData;
-    const labels =
-      customLabels.length > 0 ? customLabels : heavyAtomsCustomLabels;
-
-    const uniqueLabels = [
-      ...new Set(labels.map((l: string) => l.trim()).filter(Boolean)),
-    ];
-    return uniqueLabels.join(',');
-  }
-
-  function getAssignmentLabelByHover(moleculeId: string, molfile?: string) {
-    const diaId = lastHoverAtomIdRef.current?.idCode;
-    if (!diaId) return;
-    return {
-      assignment: getAssignmentLabelById(moleculeId, diaId, molfile),
-      previousAssignment: getAssignmentLabelById(moleculeId, diaId),
-    };
-  }
-
-  return {
-    getAssignmentLabelByHover,
-    getAssignmentLabelById,
-    onAtomHover,
-    getLastHoverAtom,
-    getTopicAtomByHover,
-  };
 }
 
 export default function useAtomAssignment() {
