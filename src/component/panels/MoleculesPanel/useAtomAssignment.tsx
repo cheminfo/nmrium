@@ -1,4 +1,5 @@
 import type { Spectrum1D, Spectrum2D, Spectrum } from '@zakodium/nmrium-core';
+import { Molecule } from 'openchemlib';
 import type { DiaIDAndInfo } from 'openchemlib-utils';
 import type { MouseEvent } from 'react';
 import { useMemo, useRef } from 'react';
@@ -13,6 +14,7 @@ import { useAssignmentContext } from '../../assignment/AssignmentsContext.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
+import { useTopicMolecule } from '../../context/TopicMoleculeContext.tsx';
 import type { HighlightEventSource } from '../../highlight/index.js';
 import { useHighlightData } from '../../highlight/index.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
@@ -69,6 +71,75 @@ function getSignalsDiaIDs(
     ]);
 }
 
+export function useExtractAtomAssignmentLabel() {
+  const topicMolecule = useTopicMolecule();
+  const lastHoverAtomIdRef = useRef<DiaIDAndInfo>();
+
+  function getLastHoverAtom() {
+    return lastHoverAtomIdRef.current;
+  }
+
+  function getTopicAtom(moleculeId: string, oclId: string, molfile?: string) {
+    const baseMolecule = topicMolecule?.[moleculeId];
+
+    if (!baseMolecule) return;
+
+    const molecule = molfile
+      ? baseMolecule.fromMolecule(Molecule.fromMolfile(molfile))
+      : baseMolecule;
+
+    const groupedDiaIdsMapping = molecule.getGroupedDiastereotopicAtomIDs();
+    if (!Array.isArray(groupedDiaIdsMapping)) return;
+
+    return groupedDiaIdsMapping.find((obj: any) => obj.oclID === oclId);
+  }
+
+  function getTopicAtomByHover(moleculeId: string, molfile?: string) {
+    if (!lastHoverAtomIdRef.current) return;
+
+    return getTopicAtom(moleculeId, lastHoverAtomIdRef.current.idCode, molfile);
+  }
+
+  function onAtomHover(atom: DiaIDAndInfo | undefined) {
+    lastHoverAtomIdRef.current = atom;
+  }
+
+  function getAssignmentLabelById(
+    moleculeId: string,
+    oclID: string,
+    molfile?: string,
+  ) {
+    const atomData = getTopicAtom(moleculeId, oclID, molfile);
+    if (!atomData) return;
+
+    const { customLabels = [], heavyAtomsCustomLabels = [] } = atomData;
+    const labels =
+      customLabels.length > 0 ? customLabels : heavyAtomsCustomLabels;
+
+    const uniqueLabels = [
+      ...new Set(labels.map((l: string) => l.trim()).filter(Boolean)),
+    ];
+    return uniqueLabels.join(',');
+  }
+
+  function getAssignmentLabelByHover(moleculeId: string, molfile?: string) {
+    const diaId = lastHoverAtomIdRef.current?.idCode;
+    if (!diaId) return;
+    return {
+      assignment: getAssignmentLabelById(moleculeId, diaId, molfile),
+      previousAssignment: getAssignmentLabelById(moleculeId, diaId),
+    };
+  }
+
+  return {
+    getAssignmentLabelByHover,
+    getAssignmentLabelById,
+    onAtomHover,
+    getLastHoverAtom,
+    getTopicAtomByHover,
+  };
+}
+
 export default function useAtomAssignment() {
   const {
     data: spectra,
@@ -84,6 +155,7 @@ export default function useAtomAssignment() {
   const highlightData = useHighlightData();
   const highlightedIdDsRef = useRef<string[]>([]);
   const assignments = useAssignmentContext();
+  const { getAssignmentLabelById } = useExtractAtomAssignmentLabel();
   const { activated: activatedAssignment } = assignments;
 
   const activatedKey = activatedAssignment
@@ -126,8 +198,16 @@ export default function useAtomAssignment() {
     return getCurrentDiaIDsToHighlight(assignments).concat(highlights);
   }, [assignments, highlightData.highlight, spectrum, tracesSpectra]);
 
-  function assign1DAtom(spectrum: Spectrum1D, key: string, atom: AtomData) {
-    const assignKeys = getAssignIds(spectrum, key);
+  interface Assign1DOptions {
+    spectrum: Spectrum1D;
+    assignId: string;
+    atom: AtomData;
+    assignmentLabel?: string;
+  }
+
+  function assign1DAtom(options: Assign1DOptions) {
+    const { spectrum, assignId, atom, assignmentLabel } = options;
+    const assignKeys = getAssignIds(spectrum, assignId);
 
     if (!assignKeys) return;
     const [{ index: rangeIndex }] = assignKeys;
@@ -154,6 +234,7 @@ export default function useAtomAssignment() {
         diaIDs: uniqueDiaIDs.diaIDs,
         keys: assignKeys,
         spectrumId,
+        assignment: assignmentLabel || '',
       },
     });
   }
@@ -193,6 +274,7 @@ export default function useAtomAssignment() {
   function handleOnClickAtom(
     diaIDAndInfo: DiaIDAndInfo | undefined,
     event: MouseEvent,
+    moleculeId: string,
   ) {
     if (checkModifierKeyActivated(event) || !activatedAssignment) return;
 
@@ -202,6 +284,10 @@ export default function useAtomAssignment() {
     if (!id || !axis) {
       return;
     }
+
+    const assignmentLabel = diaIDAndInfo?.idCode
+      ? getAssignmentLabelById(moleculeId, diaIDAndInfo.idCode)
+      : '';
     const atomInformation = extractFromAtom(diaIDAndInfo, nucleus, axis);
 
     if (atomInformation.nbAtoms === 0) {
@@ -226,7 +312,12 @@ export default function useAtomAssignment() {
     if (!currentSpectrum) return;
 
     if (isSpectrum1D(currentSpectrum)) {
-      assign1DAtom(currentSpectrum, activatedAssignment.id, atomInformation);
+      assign1DAtom({
+        spectrum: currentSpectrum,
+        assignId: activatedAssignment.id,
+        atom: atomInformation,
+        assignmentLabel,
+      });
     } else {
       assign2DAtom(
         currentSpectrum,

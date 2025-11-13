@@ -78,15 +78,18 @@ export function OCLnmrWrapper(props: OCLnmrWrapperProps) {
         }
       }}
       setMolfile={(molfile) => {
-        const diaIds = getLastHoverAtom();
-        const assignmentLabel = getAssignmentLabelByHover(molecule.id);
-        if (diaIds) {
+        const diaObject = getLastHoverAtom();
+        const assignmentObj = getAssignmentLabelByHover(molecule.id, molfile);
+
+        if (assignmentObj && diaObject) {
           dispatch({
-            type: 'SET_MOLECULE',
+            type: 'CHANGE_ASSIGNMENT_LABEL_BY_DIAIDS',
             payload: {
-              molfile,
-              id: molecule.id,
-              label: molecule.label,
+              diaIDs: [diaObject.idCode].concat(
+                diaObject.attachedHydrogensIDCodes,
+              ),
+              assignment: assignmentObj.assignment,
+              previousAssignment: assignmentObj.previousAssignment,
             },
           });
         }

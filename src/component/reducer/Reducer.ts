@@ -732,6 +732,11 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
           draft,
           action,
         );
+      case 'CHANGE_ASSIGNMENT_LABEL_BY_DIAIDS':
+        return RangesActions.handleChangeRangesAssignmentLabelsByDiaIds(
+          draft,
+          action,
+        );
 
       case 'SET_KEY_PREFERENCES':
         return PreferencesActions.handleSetKeyPreferences(draft, action);
