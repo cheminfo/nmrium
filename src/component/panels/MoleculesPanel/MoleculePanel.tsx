@@ -10,12 +10,12 @@ import type {
 } from '../../../data/molecules/Molecule.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { NextPrev } from '../../elements/NextPrev.js';
-import { OCLnmrWrapper } from '../../elements/OCLnmrWrapper.tsx';
 import { useMoleculeEditor } from '../../modal/MoleculeStructureEditorModal.js';
 
 import MoleculeHeader from './MoleculeHeader.js';
 import { MoleculeOptionsPanel } from './MoleculeOptionsPanel.tsx';
 import MoleculePanelHeader from './MoleculePanelHeader.js';
+import { MoleculeStructure } from './MoleculeStructure.tsx';
 
 const styles: Record<
   'panel' | 'innerPanel' | 'molecule' | 'slider' | 'items',
@@ -131,7 +131,8 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
                                   (index + 1) % 2 !== 0 ? '#fafafa' : 'white',
                               }}
                             >
-                              <OCLnmrWrapper
+                              <MoleculeStructure
+                                index={index}
                                 width={width}
                                 height={height - 60}
                                 molecule={mol}

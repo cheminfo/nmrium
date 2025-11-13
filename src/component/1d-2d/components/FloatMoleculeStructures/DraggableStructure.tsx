@@ -15,10 +15,10 @@ import { useDispatch } from '../../../context/DispatchContext.js';
 import { useGlobal } from '../../../context/GlobalContext.js';
 import type { ActionsButtonsPopoverProps } from '../../../elements/ActionsButtonsPopover.js';
 import { ActionsButtonsPopover } from '../../../elements/ActionsButtonsPopover.js';
-import { OCLnmrWrapper } from '../../../elements/OCLnmrWrapper.tsx';
 import { useSVGUnitConverter } from '../../../hooks/useSVGUnitConverter.js';
 import { useCheckExportStatus } from '../../../hooks/useViewportSize.js';
 import { useMoleculeEditor } from '../../../modal/MoleculeStructureEditorModal.js';
+import { MoleculeStructure } from '../../../panels/MoleculesPanel/MoleculeStructure.tsx';
 import { useMoleculeAnnotationCore } from '../../../panels/hooks/useMoleculeAnnotationCore.ts';
 import { booleanToString } from '../../../utility/booleanToString.ts';
 
@@ -151,7 +151,7 @@ export function DraggableStructure(props: DraggableStructureProps) {
   if (isExportProcessStart) {
     return (
       <g transform={`translate(${x} ${y})`}>
-        <OCLnmrWrapper renderAsSVG {...{ width, height }} {...props} />
+        <MoleculeStructure renderAsSVG {...{ width, height }} {...props} />
       </g>
     );
   }
@@ -198,7 +198,7 @@ export function DraggableStructure(props: DraggableStructureProps) {
         >
           <ResponsiveChart>
             {({ width, height }) => {
-              return <OCLnmrWrapper {...{ width, height }} {...props} />;
+              return <MoleculeStructure {...{ width, height }} {...props} />;
             }}
           </ResponsiveChart>
         </div>

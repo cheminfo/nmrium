@@ -4,20 +4,22 @@ import { MolfileSvgRenderer } from 'react-ocl';
 import type { OCLnmrProps } from 'react-ocl-nmr';
 import OCLnmr from 'react-ocl-nmr';
 
-import type { StateMoleculeExtended } from '../../data/molecules/Molecule.ts';
-import { useDispatch } from '../context/DispatchContext.tsx';
-import { useHighlightColor } from '../hooks/useHighlightColor.ts';
-import useAtomAssignment from '../panels/MoleculesPanel/hooks/useAtomAssignment.tsx';
-import { useExtractAtomAssignmentLabel } from '../panels/MoleculesPanel/hooks/useExtractAtomAssignmentLabel.ts';
+import type { StateMoleculeExtended } from '../../../data/molecules/Molecule.ts';
+import { useDispatch } from '../../context/DispatchContext.tsx';
+import { useHighlightColor } from '../../hooks/useHighlightColor.ts';
 
-interface OCLnmrWrapperProps extends Pick<OCLnmrProps, 'width' | 'height'> {
+import useAtomAssignment from './hooks/useAtomAssignment.tsx';
+import { useExtractAtomAssignmentLabel } from './hooks/useExtractAtomAssignmentLabel.ts';
+
+interface MoleculeStructureProps extends Pick<OCLnmrProps, 'width' | 'height'> {
   moleculeView: MoleculeView;
   renderAsSVG?: boolean;
   molecule: StateMoleculeExtended;
   showMoleculeLabel?: boolean;
+  index?: number;
 }
 
-export function OCLnmrWrapper(props: OCLnmrWrapperProps) {
+export function MoleculeStructure(props: MoleculeStructureProps) {
   const {
     molecule,
     moleculeView,
@@ -25,6 +27,7 @@ export function OCLnmrWrapper(props: OCLnmrWrapperProps) {
     height,
     renderAsSVG = false,
     showMoleculeLabel,
+    index = 0,
   } = props;
   const {
     currentDiaIDsToHighlight,
@@ -40,7 +43,6 @@ export function OCLnmrWrapper(props: OCLnmrWrapperProps) {
   const atomHighlightColor =
     currentDiaIDsToHighlight?.length > 0 ? '#ff000080' : highlightColor;
   const baseProps: MolfileSvgRendererProps = {
-    id: molecule.id,
     height,
     width,
     label: (showMoleculeLabel ?? moleculeView.showLabel) ? molecule.label : '',
@@ -60,6 +62,7 @@ export function OCLnmrWrapper(props: OCLnmrWrapperProps) {
 
   return (
     <OCLnmr
+      id={`molSVG${index}`}
       {...baseProps}
       setSelectedAtom={(atom, event) =>
         handleOnClickAtom(atom, event, molecule.id)
