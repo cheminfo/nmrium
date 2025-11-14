@@ -29,7 +29,7 @@ import {
 import type { ChangeRangeRelativeValueProps } from '../../../data/data1d/Spectrum1D/ranges/changeRangeRelativeValue.js';
 import { unlink } from '../../../data/utilities/RangeUtilities.js';
 import { isProton } from '../../../data/utilities/isProton.ts';
-import type { TargetAssignKeys } from '../../panels/MoleculesPanel/Utilities.js';
+import type { TargetAssignKeys } from '../../panels/MoleculesPanel/utilities/getAssignIds.ts';
 import type { RangeData } from '../../panels/RangesPanel/hooks/useMapRanges.js';
 import type { FilterType } from '../../utility/filterType.js';
 import type { State } from '../Reducer.js';
@@ -94,7 +94,15 @@ type AssignRangeAction = ActionType<
   {
     keys: TargetAssignKeys;
     spectrumId?: string;
-  } & Required<Pick<Range, 'diaIDs' | 'nbAtoms'>>
+  } & Required<Pick<Range, 'diaIDs' | 'nbAtoms' | 'assignment'>>
+>;
+type ChangeRangesAssignmentsLabelsByDiaIdsAction = ActionType<
+  'CHANGE_ASSIGNMENT_LABEL_BY_DIAIDS',
+  {
+    diaIDs: string[];
+    assignment?: string;
+    previousAssignment?: string;
+  }
 >;
 type ResizeRangeAction = ActionType<
   'RESIZE_RANGE',
@@ -179,6 +187,7 @@ export type RangesActions =
   | DeleteRangePeakAction
   | ChangeRangeAssignmentLabelAction
   | ChangeRangesViewFloatingBoxBoundingAction
+  | ChangeRangesAssignmentsLabelsByDiaIdsAction
   | ActionType<
       | 'AUTO_RANGES_SPECTRA_PICKING'
       | 'CHANGE_RANGES_SUM_FLAG'
@@ -429,7 +438,7 @@ function handleUnlinkRange(draft: Draft<State>, action: UnlinkRangeAction) {
 
 //action
 function handleAssignRange(draft: Draft<State>, action: AssignRangeAction) {
-  const { keys, diaIDs, nbAtoms, spectrumId } = action.payload;
+  const { keys, diaIDs, nbAtoms, spectrumId, assignment } = action.payload;
 
   const spectrum = getSpectrum(draft, spectrumId);
 
@@ -443,6 +452,10 @@ function handleAssignRange(draft: Draft<State>, action: AssignRangeAction) {
 
     range.diaIDs = diaIDs;
     range.nbAtoms = nbAtoms + (range.nbAtoms || 0);
+
+    if (assignment && !range.assignment) {
+      range.assignment = assignment;
+    }
   } else {
     const [{ index: rangeIndex }, { index: signalIndex }] = keys;
     const range = spectrum.ranges.values[rangeIndex];
@@ -456,10 +469,41 @@ function handleAssignRange(draft: Draft<State>, action: AssignRangeAction) {
     signal.diaIDs = diaIDs;
     signal.nbAtoms = nbAtoms + (signal.nbAtoms || 0);
   }
-
-  // _range.nbAtoms = getNbAtoms(_range);
 }
+//action
+function handleChangeRangesAssignmentLabelsByDiaIds(
+  draft: Draft<State>,
+  action: ChangeRangesAssignmentsLabelsByDiaIdsAction,
+) {
+  const { diaIDs, assignment, previousAssignment } = action.payload;
 
+  const uniqueDiaIds = new Set(diaIDs);
+
+  const spectrum = getSpectrum(draft);
+
+  if (!spectrum || !isSpectrum1D(spectrum)) return;
+
+  const {
+    ranges: { values },
+  } = spectrum;
+
+  for (const range of values) {
+    const { diaIDs: rangeDiaIDs = [], signals = [] } = range;
+
+    const matchesRange = rangeDiaIDs.some((id) => uniqueDiaIds.has(id));
+    const matchesSignals = signals.some((s) =>
+      s.diaIDs?.some((id) => uniqueDiaIds.has(id)),
+    );
+
+    if (
+      ((!range.assignment || previousAssignment === range.assignment) &&
+        matchesRange) ||
+      matchesSignals
+    ) {
+      range.assignment = assignment;
+    }
+  }
+}
 //action
 function handleResizeRange(draft: Draft<State>, action: ResizeRangeAction) {
   const { range, spectrumKey } = action.payload;
@@ -714,6 +758,7 @@ export {
   handleChangeRangeSignalKind,
   handleChangeRangeSignalValue,
   handleChangeRangeSum,
+  handleChangeRangesAssignmentLabelsByDiaIds,
   handleChangeRangesSumFlag,
   handleChangeRangesViewFloatingBoxBounding,
   handleCutRange,

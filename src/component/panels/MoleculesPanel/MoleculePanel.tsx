@@ -3,22 +3,19 @@ import type { SerializedStyles } from '@emotion/react';
 import { css } from '@emotion/react';
 import { memo, useCallback, useEffect, useState } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
-import OCLnmr from 'react-ocl-nmr';
 
 import type {
   MoleculesView,
   StateMoleculeExtended,
 } from '../../../data/molecules/Molecule.js';
 import { useChartData } from '../../context/ChartContext.js';
-import { useDispatch } from '../../context/DispatchContext.js';
 import { NextPrev } from '../../elements/NextPrev.js';
-import { useHighlightColor } from '../../hooks/useHighlightColor.js';
 import { useMoleculeEditor } from '../../modal/MoleculeStructureEditorModal.js';
 
 import MoleculeHeader from './MoleculeHeader.js';
 import { MoleculeOptionsPanel } from './MoleculeOptionsPanel.tsx';
 import MoleculePanelHeader from './MoleculePanelHeader.js';
-import useAtomAssignment from './useAtomAssignment.js';
+import { MoleculeStructure } from './MoleculeStructure.tsx';
 
 const styles: Record<
   'panel' | 'innerPanel' | 'molecule' | 'slider' | 'items',
@@ -64,19 +61,11 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
   const [molecules, setMolecules] = useState<StateMoleculeExtended[]>([]);
   const [isFlipped, setFlipStatus] = useState(false);
 
-  const dispatch = useDispatch();
   const { modal, openMoleculeEditor } = useMoleculeEditor();
-  const highlightColor = useHighlightColor();
-
-  const {
-    currentDiaIDsToHighlight,
-    handleOnAtomHover,
-    handleOnClickAtom,
-    assignedDiaIDsMerged,
-  } = useAtomAssignment();
 
   useEffect(() => {
     if (moleculesProp) {
+      // eslint-disable-next-line react-you-might-not-need-an-effect/no-derived-state
       setMolecules((prevMolecules) => {
         if (moleculesProp.length > prevMolecules.length) {
           setCurrentIndex(molecules.length);
@@ -85,14 +74,6 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
       });
     }
   }, [molecules.length, moleculesProp]);
-
-  function handleReplaceMolecule(molecule: any, molfile: any) {
-    const { id, label } = molecule;
-    dispatch({
-      type: 'SET_MOLECULE',
-      payload: { molfile, id, label },
-    });
-  }
 
   function moleculeIndexHandler(index: any) {
     setCurrentIndex(index);
@@ -134,8 +115,6 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
                   >
                     {molecules && molecules.length > 0 ? (
                       molecules.map((mol: StateMoleculeExtended, index) => {
-                        const { atomAnnotation } =
-                          moleculesView?.[mol.id] || {};
                         return (
                           <div key={mol.id} css={styles.items}>
                             <MoleculeHeader
@@ -152,37 +131,12 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
                                   (index + 1) % 2 !== 0 ? '#fafafa' : 'white',
                               }}
                             >
-                              <OCLnmr
-                                id={`molSVG${index}`}
+                              <MoleculeStructure
+                                index={index}
                                 width={width}
                                 height={height - 60}
-                                molfile={mol.molfile || ''}
-                                setMolfile={(molfile) =>
-                                  handleReplaceMolecule(mol, molfile)
-                                }
-                                setSelectedAtom={handleOnClickAtom}
-                                atomHighlightColor={
-                                  currentDiaIDsToHighlight &&
-                                  currentDiaIDsToHighlight.length > 0
-                                    ? '#ff000080'
-                                    : highlightColor
-                                }
-                                atomHighlightOpacity={1}
-                                highlights={
-                                  currentDiaIDsToHighlight &&
-                                  currentDiaIDsToHighlight.length > 0
-                                    ? currentDiaIDsToHighlight
-                                    : assignedDiaIDsMerged
-                                }
-                                atomHighlightStrategy="prefer-editor-props"
-                                setHoverAtom={handleOnAtomHover}
-                                showAtomNumber={
-                                  atomAnnotation === 'atom-numbers'
-                                }
-                                noCarbonLabelWithCustomLabel
-                                noAtomCustomLabels={
-                                  atomAnnotation !== 'custom-labels'
-                                }
+                                molecule={mol}
+                                moleculeView={moleculesView?.[mol.id] || {}}
                               />
                             </div>
                           </div>
