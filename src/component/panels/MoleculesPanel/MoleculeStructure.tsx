@@ -1,4 +1,5 @@
 import type { MoleculeView } from '@zakodium/nmrium-core';
+import { useRef } from 'react';
 import type { MolfileSvgRendererProps } from 'react-ocl';
 import { MolfileSvgRenderer } from 'react-ocl';
 import type { OCLnmrProps } from 'react-ocl-nmr';
@@ -39,6 +40,8 @@ export function MoleculeStructure(props: MoleculeStructureProps) {
   const dispatch = useDispatch();
   const { onAtomHover, getAssignmentLabelByHover, getLastHoverAtom } =
     useExtractAtomAssignmentLabel();
+  //TODO Temporary workaround to prevent other focused elements from being triggered by the space key
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const atomHighlightColor =
     currentDiaIDsToHighlight?.length > 0 ? '#ff000080' : highlightColor;
@@ -61,50 +64,54 @@ export function MoleculeStructure(props: MoleculeStructureProps) {
   }
 
   return (
-    <OCLnmr
-      id={`molSVG${index}`}
-      {...baseProps}
-      setSelectedAtom={(atom, event) =>
-        handleOnClickAtom(atom, event, molecule.id)
-      }
-      highlights={
-        currentDiaIDsToHighlight?.length > 0
-          ? currentDiaIDsToHighlight
-          : assignedDiaIDsMerged
-      }
-      atomHighlightStrategy="prefer-editor-props"
-      setHoverAtom={(atom) => {
-        handleOnAtomHover(atom);
-        if (atom) {
-          onAtomHover(atom);
+    <div tabIndex={0} ref={containerRef}>
+      <OCLnmr
+        id={`molSVG${index}`}
+        {...baseProps}
+        setSelectedAtom={(atom, event) =>
+          handleOnClickAtom(atom, event, molecule.id)
         }
-      }}
-      setMolfile={(molfile) => {
-        const diaObject = getLastHoverAtom();
-        const assignmentObj = getAssignmentLabelByHover(molecule.id, molfile);
+        highlights={
+          currentDiaIDsToHighlight?.length > 0
+            ? currentDiaIDsToHighlight
+            : assignedDiaIDsMerged
+        }
+        atomHighlightStrategy="prefer-editor-props"
+        setHoverAtom={(atom) => {
+          //TODO Temporary workaround to prevent other focused elements from being triggered by the space key
+          containerRef.current?.focus();
+          handleOnAtomHover(atom);
+          if (atom) {
+            onAtomHover(atom);
+          }
+        }}
+        setMolfile={(molfile) => {
+          const diaObject = getLastHoverAtom();
+          const assignmentObj = getAssignmentLabelByHover(molecule.id, molfile);
 
-        if (assignmentObj && diaObject) {
+          if (assignmentObj && diaObject) {
+            dispatch({
+              type: 'CHANGE_ASSIGNMENT_LABEL_BY_DIAIDS',
+              payload: {
+                diaIDs: [diaObject.idCode].concat(
+                  diaObject.attachedHydrogensIDCodes,
+                ),
+                assignment: assignmentObj.assignment,
+                previousAssignment: assignmentObj.previousAssignment,
+              },
+            });
+          }
+
           dispatch({
-            type: 'CHANGE_ASSIGNMENT_LABEL_BY_DIAIDS',
+            type: 'SET_MOLECULE',
             payload: {
-              diaIDs: [diaObject.idCode].concat(
-                diaObject.attachedHydrogensIDCodes,
-              ),
-              assignment: assignmentObj.assignment,
-              previousAssignment: assignmentObj.previousAssignment,
+              molfile,
+              id: molecule.id,
+              label: molecule.label,
             },
           });
-        }
-
-        dispatch({
-          type: 'SET_MOLECULE',
-          payload: {
-            molfile,
-            id: molecule.id,
-            label: molecule.label,
-          },
-        });
-      }}
-    />
+        }}
+      />
+    </div>
   );
 }
