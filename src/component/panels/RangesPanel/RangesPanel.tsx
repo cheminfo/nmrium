@@ -88,7 +88,7 @@ function RangesTablePanelInner({
 
   const unlinkRangeHandler = useCallback(() => {
     dispatch({
-      type: 'UNLINK_RANGE',
+      type: 'UNASSIGN_1D_SIGNAL',
       payload: {
         signalIndex: -1,
       },

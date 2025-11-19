@@ -132,14 +132,9 @@ function RangesTable(props: RangesTableProps) {
             {preferences.coupling.show && <th>J (Hz)</th>}
 
             {preferences.showAssignment && (
-              <>
-                <th title="Assign multiplets">
-                  <FaLink style={{ fontSize: 10, margin: 'auto' }} />
-                </th>
-                <th title="Assign ranges" style={{ minWidth: '50px' }}>
-                  Σ
-                </th>
-              </>
+              <th title="Assign multiplets">
+                <FaLink style={{ fontSize: 10, margin: 'auto' }} />
+              </th>
             )}
             {preferences.showKind && <th>Kind</th>}
             {showActions && <th>{''}</th>}

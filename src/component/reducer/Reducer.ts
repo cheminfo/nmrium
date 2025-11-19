@@ -715,10 +715,10 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return RangesActions.handleChangeRangeSignalKind(draft, action);
       case 'SAVE_EDITED_RANGE':
         return RangesActions.handleSaveEditedRange(draft, action);
-      case 'UNLINK_RANGE':
-        return RangesActions.handleUnlinkRange(draft, action);
-      case 'ASSIGN_RANGE':
-        return RangesActions.handleAssignRange(draft, action);
+      case 'UNASSIGN_1D_SIGNAL':
+        return RangesActions.handleUnAssign1DSignal(draft, action);
+      case 'ASSIGN_1D_SIGNAL':
+        return RangesActions.handleAssign1DSignal(draft, action);
       case 'UPDATE_RANGE':
         return RangesActions.handleUpdateRange(draft, action);
       case 'TOGGLE_RANGES_VIEW_PROPERTY':
@@ -731,8 +731,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return RangesActions.handleChangePeaksDisplayingMode(draft);
       case 'DELETE_RANGE_PEAK':
         return RangesActions.handleDeleteRangePeak(draft, action);
-      case 'CHANGE_RANGE_ASSIGNMENT_LABEL':
-        return RangesActions.handleChangeRangeAssignmentLabel(draft, action);
+      case 'CHANGE_1D_SIGNAL_ASSIGNMENT_LABEL':
+        return RangesActions.handleChange1DSignalAssignmentLabel(draft, action);
       case 'CHANGE_RANGES_VIEW_FLOATING_BOX_BOUNDING':
         return RangesActions.handleChangeRangesViewFloatingBoxBounding(
           draft,

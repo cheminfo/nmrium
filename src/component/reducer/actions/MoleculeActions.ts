@@ -22,7 +22,7 @@ import type { State } from '../Reducer.js';
 import { MARGIN } from '../core/Constants.js';
 import type { ActionType } from '../types/ActionType.js';
 
-import { unlinkRange } from './RangesActions.js';
+import { clearSignalAssignment } from './RangesActions.js';
 import { setActiveTab } from './ToolsActions.js';
 import { unlinkZone } from './ZonesActions.js';
 import { deepReplaceDiaIDs } from './utilities/deepReplaceDiaIDs.js';
@@ -44,9 +44,9 @@ type AddMoleculesAction = ActionType<
 type SetMoleculeAction = ActionType<
   'SET_MOLECULE',
   Required<Pick<StateMolecule, 'id' | 'molfile' | 'label'>> &
-    Omit<StateMolecule, 'id' | 'molfile' | 'label'> & {
-      mappings?: ReturnType<TopicMolecule['getDiaIDsMapping']>;
-    }
+  Omit<StateMolecule, 'id' | 'molfile' | 'label'> & {
+    mappings?: ReturnType<TopicMolecule['getDiaIDsMapping']>;
+  }
 >;
 type DeleteMoleculeAction = ActionType<'DELETE_MOLECULE', { id: string }>;
 type PredictSpectraFromMoleculeAction = ActionType<
@@ -167,7 +167,7 @@ function handleSetMolecule(draft: Draft<State>, action: SetMoleculeAction) {
 
 function removeAssignments(draft: Draft<State>) {
   if (draft.displayerMode === '1D') {
-    unlinkRange(draft);
+    clearSignalAssignment(draft);
   }
   if (draft.displayerMode === '2D') {
     unlinkZone(draft, {});
@@ -271,9 +271,8 @@ function checkPredictions(
         break;
       }
       case 'carbon': {
-        message = `${experiment} was not predicted. ${
-          !('C' in atoms) ? 'No carbons found in the molecule' : ''
-        }`;
+        message = `${experiment} was not predicted. ${!('C' in atoms) ? 'No carbons found in the molecule' : ''
+          }`;
         break;
       }
       case 'cosy':
@@ -296,10 +295,9 @@ function checkPredictions(
   }
   if (missing2DPrediction.length > 0) {
     logger.warn(
-      `Carbon or proton prediction are missing, so ${
-        missing2DPrediction.length > 1
-          ? missing2DPrediction.join(' and ')
-          : missing2DPrediction[0]
+      `Carbon or proton prediction are missing, so ${missing2DPrediction.length > 1
+        ? missing2DPrediction.join(' and ')
+        : missing2DPrediction[0]
       } can not be simulated`,
     );
   }

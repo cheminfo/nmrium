@@ -12,15 +12,14 @@ import { filterAssignedIDs } from '../../assignment/utilities/filterAssignedIDs.
 import { useDispatch } from '../../context/DispatchContext.js';
 import { ContextMenu } from '../../elements/ContextMenuBluePrint.js';
 import type { TableContextMenuProps } from '../../elements/ReactTable/ReactTable.js';
-import { useHighlight, useHighlightData } from '../../highlight/index.js';
+import { useHighlight } from '../../highlight/index.js';
 
 import AbsoluteColumn from './TableColumns/AbsoluteColumn.js';
 import ActionsColumn from './TableColumns/ActionsColumn.js';
 import CouplingColumn from './TableColumns/CouplingColumn.js';
-import { RangeAssignmentColumn } from './TableColumns/RangeAssignmentColumn.js';
-import RangeAssignmentsColumn from './TableColumns/RangeAssignmentsColumn.js';
 import RangeColumn from './TableColumns/RangeColumn.js';
 import RelativeColumn from './TableColumns/RelativeColumn.js';
+import { SignalAssignmentColumn } from './TableColumns/SignalAssignmentColumn.tsx';
 import SignalAssignmentsColumn from './TableColumns/SignalAssignmentsColumn.js';
 import SignalDeltaColumn from './TableColumns/SignalDeltaColumn.js';
 import SignalDeltaHzColumn from './TableColumns/SignalDeltaHzColumn.js';
@@ -83,10 +82,6 @@ function RangesTableRow({
     ),
     { type: 'RANGE' },
   );
-  const highlightRangeAssignmentsColumn = useHighlight(
-    assignmentRange.assignedDiaIds?.x || [],
-    { type: 'RANGE' },
-  );
   const signalKey = rowData?.tableMetaInfo?.id || '';
   const assignmentSignal = useAssignment(signalKey);
 
@@ -96,8 +91,6 @@ function RangesTableRow({
       : [],
     { type: 'SIGNAL' },
   );
-  const highlightData = useHighlightData();
-
   const rowSpanTags: any = useMemo(() => {
     return {
       rowSpan: rowData.tableMetaInfo.rowSpan,
@@ -118,7 +111,7 @@ function RangesTableRow({
         const signalIndex = isOnRangeLevel ? -1 : tableMetaInfo.signalIndex;
 
         dispatch({
-          type: 'UNLINK_RANGE',
+          type: 'UNASSIGN_1D_SIGNAL',
           payload: {
             rangeKey,
             signalIndex,
@@ -149,19 +142,6 @@ function RangesTableRow({
       },
     };
   }, [assignmentRange, highlightRange]);
-
-  const onHoverRangeAssignmentsColumn = useMemo(() => {
-    return {
-      onMouseEnter: () => {
-        assignmentRange.highlight('x');
-        highlightRangeAssignmentsColumn.show();
-      },
-      onMouseLeave: () => {
-        assignmentRange.clearHighlight();
-        highlightRangeAssignmentsColumn.hide();
-      },
-    };
-  }, [assignmentRange, highlightRangeAssignmentsColumn]);
 
   const onHoverSignal = useMemo(() => {
     return {
@@ -201,10 +181,11 @@ function RangesTableRow({
         </td>
       )}
       {preferences.showAssignmentLabel && (
-        <RangeAssignmentColumn
+
+        <SignalAssignmentColumn
           row={rowData}
-          onHover={onHoverRange}
-          rowSpanTags={rowSpanTags}
+          highlight={highlightSignal}
+          onHover={onHoverSignal}
         />
       )}
 
@@ -274,27 +255,14 @@ function RangesTableRow({
         />
       )}
       {preferences.showAssignment && (
-        <>
-          <SignalAssignmentsColumn
-            row={rowData}
-            assignment={assignmentSignal}
-            highlight={highlightSignal}
-            onHover={onHoverSignal}
-            onLink={linkHandler}
-            onUnlink={unlinkHandler}
-          />
-
-          <RangeAssignmentsColumn
-            row={rowData}
-            assignment={assignmentRange}
-            highlight={highlightRangeAssignmentsColumn}
-            onHover={onHoverRangeAssignmentsColumn}
-            onLink={linkHandler}
-            onUnlink={unlinkHandler}
-            rowSpanTags={rowSpanTags}
-            highlightData={highlightData}
-          />
-        </>
+        <SignalAssignmentsColumn
+          row={rowData}
+          assignment={assignmentSignal}
+          highlight={highlightSignal}
+          onHover={onHoverSignal}
+          onLink={linkHandler}
+          onUnlink={unlinkHandler}
+        />
       )}
       <ActionsColumn
         row={rowData}

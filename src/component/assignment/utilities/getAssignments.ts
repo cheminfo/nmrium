@@ -20,8 +20,7 @@ export function getAssignments(spectra: Spectrum[]) {
 
 function setRangesAssignments(assignments: Assignments, ranges: Ranges) {
   const diaIDRecords: Array<{ id: string; diaIDs: string[] }> = [];
-  for (const { id, diaIDs, signals } of ranges.values) {
-    diaIDRecords.push({ id, diaIDs: diaIDs || [] });
+  for (const { signals } of ranges.values) {
     for (const signal of signals) {
       diaIDRecords.push({ id: signal.id, diaIDs: signal.diaIDs || [] });
     }
