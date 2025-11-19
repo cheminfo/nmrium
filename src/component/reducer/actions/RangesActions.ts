@@ -82,19 +82,19 @@ interface DeleteSignalProps {
 }
 type DeleteSignalAction = ActionType<'DELETE_1D_SIGNAL', DeleteSignalProps>;
 
-interface UnlinkRangeProps {
+interface UnAssign1DSignalOptions {
   rangeKey?: string;
   spectrumId?: string; // If not specified, the currently active spectrum will be used by default.
   signalIndex?: number;
 }
-type UnlinkRangeAction = ActionType<'UNLINK_RANGE', UnlinkRangeProps>;
+type UnAssign1DSignalAction = ActionType<'UNASSIGN_1D_SIGNAL', UnAssign1DSignalOptions>;
 
-type AssignRangeAction = ActionType<
-  'ASSIGN_RANGE',
+type Assign1DSignalAction = ActionType<
+  'ASSIGN_1D_SIGNAL',
   {
     keys: TargetAssignKeys;
     spectrumId?: string;
-  } & Required<Pick<Range, 'diaIDs' | 'nbAtoms' | 'assignment'>>
+  } & Required<Pick<Signal1D, 'diaIDs' | 'nbAtoms' | 'assignment'>>
 >;
 type ChangeRangesAssignmentsLabelsByDiaIdsAction = ActionType<
   'CHANGE_ASSIGNMENT_LABEL_BY_DIAIDS',
@@ -130,7 +130,7 @@ type ChangeRangeRelativeValueAction = ActionType<
 >;
 type ChangeRangeSignalValueAction = ActionType<
   'CHANGE_RANGE_SIGNAL_VALUE',
-  { rangeID: string; signalID: string; value: number }
+  { rangeId: string; signalId: string; value: number }
 >;
 type UpdateRangAction = ActionType<'UPDATE_RANGE', { range: Range }>;
 type CutRangAction = ActionType<
@@ -151,9 +151,9 @@ type DeleteRangePeakAction = ActionType<
   'DELETE_RANGE_PEAK',
   { id: string; spectrumKey: string }
 >;
-type ChangeRangeAssignmentLabelAction = ActionType<
-  'CHANGE_RANGE_ASSIGNMENT_LABEL',
-  { rangeId: string; value: string; spectrumId?: string }
+type Change1DSignalAssignmentLabelAction = ActionType<
+  'CHANGE_1D_SIGNAL_ASSIGNMENT_LABEL',
+  { rangeId: string, signalId?: string; value: string; spectrumId?: string }
 >;
 
 type ChangeRangesViewFloatingBoxBoundingAction = ActionType<
@@ -174,8 +174,8 @@ export type RangesActions =
   | ChangeRangeSignalKindAction
   | SaveEditedRangeAction
   | DeleteSignalAction
-  | UnlinkRangeAction
-  | AssignRangeAction
+  | UnAssign1DSignalAction
+  | Assign1DSignalAction
   | ResizeRangeAction
   | ChangeRangeSumAction
   | AddRangeAction
@@ -185,27 +185,27 @@ export type RangesActions =
   | CutRangAction
   | ToggleRangesViewAction
   | DeleteRangePeakAction
-  | ChangeRangeAssignmentLabelAction
+  | Change1DSignalAssignmentLabelAction
   | ChangeRangesViewFloatingBoxBoundingAction
   | ChangeRangesAssignmentsLabelsByDiaIdsAction
   | ActionType<
-      | 'AUTO_RANGES_SPECTRA_PICKING'
-      | 'CHANGE_RANGES_SUM_FLAG'
-      | 'TOGGLE_RANGES_PEAKS_DISPLAYING_MODE'
-    >;
+    | 'AUTO_RANGES_SPECTRA_PICKING'
+    | 'CHANGE_RANGES_SUM_FLAG'
+    | 'TOGGLE_RANGES_PEAKS_DISPLAYING_MODE'
+  >;
 
 function getRangeByIndex(
   draft: Draft<State>,
   spectrumIndex: any,
-  rangeID: any,
+  rangeId: any,
 ) {
   return (draft.data[spectrumIndex] as Spectrum1D).ranges.values.findIndex(
-    (range) => range.id === rangeID,
+    (range) => range.id === rangeId,
   );
 }
 
-function getRange(spectrum: Spectrum1D, rangeID: string) {
-  return spectrum.ranges.values.findIndex((range) => range.id === rangeID);
+function getRange(spectrum: Spectrum1D, rangeId: string) {
+  return spectrum.ranges.values.findIndex((range) => range.id === rangeId);
 }
 //action
 function handleAutoRangesDetection(
@@ -407,7 +407,7 @@ function handleDeleteSignal(draft: Draft<State>, action: DeleteSignalAction) {
   deleteSignal1D(draft, action.payload);
 }
 
-function unlinkRange(draft: Draft<State>, options: UnlinkRangeProps = {}) {
+function clearSignalAssignment(draft: Draft<State>, options: UnAssign1DSignalOptions = {}) {
   const { spectrumId } = options;
   const spectrum = getSpectrum(draft, spectrumId);
 
@@ -432,43 +432,36 @@ function unlinkRange(draft: Draft<State>, options: UnlinkRangeProps = {}) {
 }
 
 //action
-function handleUnlinkRange(draft: Draft<State>, action: UnlinkRangeAction) {
-  unlinkRange(draft, action.payload);
+function handleUnAssign1DSignal(draft: Draft<State>, action: UnAssign1DSignalAction) {
+  clearSignalAssignment(draft, action.payload);
 }
 
 //action
-function handleAssignRange(draft: Draft<State>, action: AssignRangeAction) {
+function handleAssign1DSignal(draft: Draft<State>, action: Assign1DSignalAction) {
   const { keys, diaIDs, nbAtoms, spectrumId, assignment } = action.payload;
 
   const spectrum = getSpectrum(draft, spectrumId);
 
-  if (!spectrum || !isSpectrum1D(spectrum)) return;
+  //TODO: Refactor TargetAssignKeys after completing the 2D assignment and remove keys.length !== 2 condition
+  if (!spectrum || !isSpectrum1D(spectrum) || keys.length !== 2) return;
 
-  if (keys.length === 1) {
-    const [{ index }] = keys;
-    const range = spectrum.ranges.values[index];
+  if (keys.length !== 2) return;
+  const [{ index: rangeIndex }, { index: signalIndex }] = keys;
+  const range = spectrum.ranges.values[rangeIndex];
 
-    if (!range) return;
+  if (!range) return;
 
-    range.diaIDs = diaIDs;
-    range.nbAtoms = nbAtoms + (range.nbAtoms || 0);
+  const signal = range.signals[signalIndex];
 
-    if (assignment && !range.assignment) {
-      range.assignment = assignment;
-    }
-  } else {
-    const [{ index: rangeIndex }, { index: signalIndex }] = keys;
-    const range = spectrum.ranges.values[rangeIndex];
+  if (!signal) return;
 
-    if (!range) return;
-
-    const signal = range.signals[signalIndex];
-
-    if (!signal) return;
-
-    signal.diaIDs = diaIDs;
-    signal.nbAtoms = nbAtoms + (signal.nbAtoms || 0);
+  if (assignment && !signal.assignment) {
+    signal.assignment = assignment;
   }
+
+  signal.diaIDs = diaIDs;
+  signal.nbAtoms = nbAtoms + (signal.nbAtoms || 0);
+
 }
 //action
 function handleChangeRangesAssignmentLabelsByDiaIds(
@@ -488,20 +481,14 @@ function handleChangeRangesAssignmentLabelsByDiaIds(
   } = spectrum;
 
   for (const range of values) {
-    const { diaIDs: rangeDiaIDs = [], signals = [] } = range;
+    const { signals = [] } = range;
 
-    const matchesRange = rangeDiaIDs.some((id) => uniqueDiaIds.has(id));
-    const matchesSignals = signals.some((s) =>
-      s.diaIDs?.some((id) => uniqueDiaIds.has(id)),
-    );
-
-    if (
-      ((!range.assignment || previousAssignment === range.assignment) &&
-        matchesRange) ||
-      matchesSignals
-    ) {
-      range.assignment = assignment;
+    for (const signal of signals) {
+      if (previousAssignment === signal.assignment && uniqueDiaIds.has(signal.id)) {
+        signal.assignment = assignment;
+      }
     }
+
   }
 }
 //action
@@ -592,15 +579,15 @@ function handleChangeRangeSignalValue(
   draft: any,
   action: ChangeRangeSignalValueAction,
 ) {
-  const { rangeID, signalID, value } = action.payload;
+  const { rangeId, signalId, value } = action.payload;
   const activeSpectrum = getActiveSpectrum(draft);
 
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
 
     const shift = changeRangeSignal(draft.data[index], {
-      rangeID,
-      signalID,
+      rangeId,
+      signalId,
       newSignalValue: value,
     });
     rollbackSpectrumByFilter(draft, {
@@ -707,11 +694,11 @@ function handleDeleteRangePeak(
   }
 }
 
-function handleChangeRangeAssignmentLabel(
+function handleChange1DSignalAssignmentLabel(
   draft: Draft<State>,
-  action: ChangeRangeAssignmentLabelAction,
+  action: Change1DSignalAssignmentLabelAction,
 ) {
-  const { rangeId, value, spectrumId } = action.payload;
+  const { rangeId, signalId, value, spectrumId } = action.payload;
   const spectrum = getSpectrum(draft, spectrumId);
 
   if (!spectrum || !isSpectrum1D(spectrum)) return;
@@ -725,9 +712,17 @@ function handleChangeRangeAssignmentLabel(
   }
 
   const range = spectrum.ranges.values.find((range) => range.id === rangeId);
-  if (range) {
-    range.assignment = value;
-  }
+  if (!range) return;
+
+  const signal = signalId
+    ? range.signals.find(s => s.id === signalId)
+    : range.signals[0];
+
+
+  if (!signal) return;
+
+  signal.assignment = value;
+
 }
 
 function handleChangeRangesViewFloatingBoxBounding(
@@ -747,13 +742,14 @@ function handleChangeRangesViewFloatingBoxBounding(
 }
 
 export {
+  clearSignalAssignment,
   deleteSignal1D,
   handleAddRange,
-  handleAssignRange,
+  handleAssign1DSignal,
   handleAutoRangesDetection,
   handleAutoSpectraRangesDetection,
+  handleChange1DSignalAssignmentLabel,
   handleChangePeaksDisplayingMode,
-  handleChangeRangeAssignmentLabel,
   handleChangeRangeRelativeValue,
   handleChangeRangeSignalKind,
   handleChangeRangeSignalValue,
@@ -768,6 +764,6 @@ export {
   handleResizeRange,
   handleSaveEditedRange,
   handleToggleRangesViewProperty,
-  handleUnlinkRange,
+  handleUnAssign1DSignal,
   handleUpdateRange,
 };

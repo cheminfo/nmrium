@@ -1,7 +1,5 @@
 import type { Range as RangeType } from '@zakodium/nmr-types';
 import { useRef } from 'react';
-import { LuLink, LuUnlink } from 'react-icons/lu';
-import { PiTextTBold, PiTextTSlashBold } from 'react-icons/pi';
 
 import {
   isSpectrum1D,
@@ -17,8 +15,6 @@ import { filterAssignedIDs } from '../../assignment/utilities/filterAssignedIDs.
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useLogger } from '../../context/LoggerContext.js';
-import { useShareData } from '../../context/ShareDataContext.js';
-import type { ActionsButtonsPopoverProps } from '../../elements/ActionsButtonsPopover.js';
 import { ActionsButtonsPopover } from '../../elements/ActionsButtonsPopover.js';
 import { useDialogData } from '../../elements/DialogManager.js';
 import { ResizerWithScale } from '../../elements/ResizerWithScale.js';
@@ -28,44 +24,46 @@ import { useHighlightColor } from '../../hooks/useHighlightColor.js';
 import { useResizerStatus } from '../../hooks/useResizerStatus.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import { EditRangeModal } from '../../modal/editRange/EditRangeModal.js';
+import type { StackOverlappingLabelsMapReturnType } from '../../utility/stackOverlappingLabels.ts';
 import { useIsInset } from '../inset/InsetProvider.js';
 import { IntegralIndicator } from '../integral/IntegralIndicator.js';
 import { useScaleX } from '../utilities/scale.js';
 
-import { AssignmentLabel } from './AssignmentLabel.js';
+import { AssignmentLabel } from './AssignmentLabel.tsx';
 import { Atoms } from './Atoms.js';
+import { useAssignmentsPopoverActionsButtons } from './useAssignmentsPopoverActionsButtons.tsx';
+
 
 interface RangeProps {
   selectedTool: string;
   range: RangeType;
-  assignmentLabelStackIndex: number;
   relativeFormat: string;
+  signalsStackIndexes: StackOverlappingLabelsMapReturnType
 }
 
 const minWidth = 10;
 
 function Range(options: RangeProps) {
-  const { range, selectedTool, relativeFormat, assignmentLabelStackIndex } =
+  const { range, selectedTool, relativeFormat, signalsStackIndexes } =
     options;
   const {
     id,
     integration,
     signals,
     from,
-    to,
-    diaIDs: rangeDiaIDs,
-    assignment,
+    to
   } = range;
   const isInset = useIsInset();
   const spectrum = useSpectrum();
   const isAssignBtnTrigged = useRef(false);
   const { margin } = useChartData();
+  const signal = signals?.[0];
 
   const highlightColor = useHighlightColor();
   const assignmentData = useAssignmentContext();
-  const assignmentRange = useAssignment(id);
+  const signalAssignment = useAssignment(signal.id);
   const highlightRange = useHighlight(
-    [id].concat(assignmentRange.assignedDiaIds?.x || []).concat(
+    [id].concat(signalAssignment.assignedDiaIds?.x || []).concat(
       filterAssignedIDs(
         assignmentData.data,
         signals.map((_signal) => _signal.id),
@@ -105,80 +103,54 @@ function Range(options: RangeProps) {
   }
 
   function mouseEnterHandler() {
-    assignmentRange.highlight('x');
+    signalAssignment.highlight('x');
     highlightRange.show();
   }
 
   function mouseLeaveHandler() {
-    assignmentRange.clearHighlight();
+    signalAssignment.clearHighlight();
     highlightRange.hide();
   }
 
   function assignHandler() {
     if (!isBlockedByEditing) {
       isAssignBtnTrigged.current = true;
-      assignmentRange.activate('x');
+      signalAssignment.activate('x');
     }
   }
 
-  function unAssignHandler(signalIndex = -1) {
+  function unAssignHandler() {
     dispatch({
-      type: 'UNLINK_RANGE',
+      type: 'UNASSIGN_1D_SIGNAL',
       payload: {
         rangeKey: range.id,
-        signalIndex,
+        signalIndex: 0,
       },
     });
   }
-  const isAssignmentActive = assignmentRange.isActive;
+  const isAssignmentActive = signalAssignment.isActive;
   const opacity = getOpacityBasedOnSignalKind(range);
 
   const isHighlighted =
     isBlockedByEditing || highlightRange.isActive || isAssignmentActive;
 
-  const isAssigned = isRangeAssigned(range);
+  const isSignalAssigned = isRangeAssigned(range);
   const isResizingActive = useResizerStatus('rangePicking');
-  const { setData: addNewAssignmentLabel } = useShareData();
+  const hasOnlyOneSignal = signals.length === 1;
+  const isAssigned = hasOnlyOneSignal && signal.diaIDs ? signal.diaIDs.length > 0 : false
 
-  function removeAssignmentLabel() {
-    dispatch({
-      type: 'CHANGE_RANGE_ASSIGNMENT_LABEL',
-      payload: {
-        value: '',
-        rangeId: id,
-      },
-    });
-  }
 
-  const actionsButtons: ActionsButtonsPopoverProps['buttons'] = [
-    {
-      icon: <LuLink />,
-      onClick: assignHandler,
-      intent: 'success',
-      title: 'Assign range',
-    },
-    {
-      icon: <LuUnlink />,
-      onClick: () => unAssignHandler(),
-      intent: 'danger',
-      title: 'Unassign range',
-      visible: !!(isAssignmentActive || rangeDiaIDs),
-    },
-    {
-      icon: <PiTextTBold />,
-      onClick: () => addNewAssignmentLabel(range.id),
-      intent: 'success',
-      title: 'Add assignment label',
-      visible: !assignment,
-    },
-    {
-      icon: <PiTextTSlashBold />,
-      onClick: removeAssignmentLabel,
-      intent: 'danger',
-      title: 'Remove assignment label',
-      visible: !!assignment,
-    },
-  ];
+  const actionsButtons = useAssignmentsPopoverActionsButtons({
+    isToggleMultiplicityTreeButtonVisible: !hasOnlyOneSignal,
+    isAssignButtonVisible: hasOnlyOneSignal,
+    isUnAssignButtonVisible: isAssignmentActive || isSignalAssigned,
+    isAssignLabelButtonVisible: hasOnlyOneSignal && !signal.assignment,
+    isUnAssignLabelButtonVisible: hasOnlyOneSignal && !!signal.assignment,
+    onAssign: assignHandler,
+    onUnAssign: unAssignHandler,
+    rangeId: range.id
+  })
+
 
   const isOpen = isAssignBtnTrigged.current ? isAssignmentActive : undefined;
 
@@ -236,12 +208,16 @@ function Range(options: RangeProps) {
                   fill={isHighlighted || isActive ? '#ff6f0057' : 'transparent'}
                   data-no-export="true"
                 />
+                {range.signals.map((signal) => (
+                  <AssignmentLabel
+                    key={signal.id}
+                    stackIndex={signalsStackIndexes?.[signal.id] || 0}
+                    range={range}
+                    width={rangeWidth} signal={signal} />
 
-                <AssignmentLabel
-                  stackIndex={assignmentLabelStackIndex}
-                  range={range}
-                  width={rangeWidth}
-                />
+                ))}
+
+
                 <Atoms range={range} x={rangeWidth / 2} />
 
                 {showIntegralsValues && (

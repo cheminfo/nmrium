@@ -19,8 +19,8 @@ function SignalDeltaColumn({
       type: 'CHANGE_RANGE_SIGNAL_VALUE',
       payload: {
         value: event.target.value,
-        rangeID: row.id,
-        signalID: signal.id,
+        rangeId: row.id,
+        signalId: signal.id,
       },
     });
   }

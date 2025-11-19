@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import type { Range } from '@zakodium/nmr-types';
+import type { Range, Signal1D } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { useRef } from 'react';
 import { LuLink, LuUnlink } from 'react-icons/lu';
@@ -29,6 +29,7 @@ import { useTracesSpectra } from '../useTracesSpectra.js';
 import type { ExtractedSignal } from '../utilities/extractSpectrumSignals.js';
 import { extractSpectrumSignals } from '../utilities/extractSpectrumSignals.js';
 import { useScale2DX, useScale2DY } from '../utilities/scale.js';
+
 
 const Rect = styled.rect<{ isActive: boolean }>`
   fill: ${({ isActive }) => (isActive ? '#ff6f0057' : 'transparent')};
@@ -157,10 +158,10 @@ interface UseRangeAssignmentOptions {
 }
 
 function useRangeAssignment(options: UseRangeAssignmentOptions) {
-  const { rangeId, signalsIds, spectrumId } = options;
+  const { rangeId, signalsIds, spectrumId, signalId } = options;
 
   const assignmentData = useAssignmentContext();
-  const assignmentContext = useAssignment(rangeId, spectrumId);
+  const assignmentContext = useAssignment(signalId, spectrumId);
   const highlightId = [rangeId]
     .concat(assignmentContext.assignedDiaIds?.x || [])
     .concat(filterAssignedIDs(assignmentData.data, signalsIds));
@@ -184,6 +185,12 @@ function isRangeSignalAssigned(
   return isAssigned(otherProps);
 }
 
+
+function hasDiaIds(signals: Signal1D[]) {
+
+  return signals.some((signal) => Array.isArray(signal?.diaIDs) && signal.diaIDs.length > 0);
+}
+
 function IndicationLine(props: IndicationLineProps) {
   const isAssignBtnTrigged = useRef(false);
   const {
@@ -197,7 +204,7 @@ function IndicationLine(props: IndicationLineProps) {
     nbAtoms,
     id: signalId,
   } = props;
-  const { id: rangeId, diaIDs: rangeDiaIDs = [], signals } = range;
+  const { id: rangeId, signals } = range;
   const highlightColor = useHighlightColor();
   const isSignalAssigned = isRangeSignalAssigned({ range, diaIDs, nbAtoms });
 
@@ -213,7 +220,7 @@ function IndicationLine(props: IndicationLineProps) {
     signalId,
   });
 
-  const hasDiaIDs = rangeDiaIDs.length > 0;
+  const hasDiaIDs = hasDiaIds(signals);
   const isAssignmentActive = assignmentContext.isActive;
   const isHighlighted = highlightContext.isActive || isAssignmentActive;
 
@@ -237,11 +244,12 @@ function IndicationLine(props: IndicationLineProps) {
 
   function removeAssignmentLabel() {
     dispatch({
-      type: 'CHANGE_RANGE_ASSIGNMENT_LABEL',
+      type: 'CHANGE_1D_SIGNAL_ASSIGNMENT_LABEL',
       payload: {
         value: '',
         rangeId,
         spectrumId,
+        signalId
       },
     });
   }
@@ -263,7 +271,7 @@ function IndicationLine(props: IndicationLineProps) {
 
   function unAssignHandler() {
     dispatch({
-      type: 'UNLINK_RANGE',
+      type: 'UNASSIGN_1D_SIGNAL',
       payload: {
         rangeKey: rangeId,
         spectrumId,
@@ -341,6 +349,7 @@ function IndicationLine(props: IndicationLineProps) {
           axis={axis}
           rangeId={rangeId}
           spectrumId={spectrumId}
+          signalId={signalId}
         />
       </g>
     </ActionsButtonsPopover>
@@ -353,11 +362,12 @@ interface AssignmentLabelProps {
   x: number;
   y: number;
   rangeId: string;
+  signalId: string;
   spectrumId: string;
 }
 
 function AssignmentLabel(props: AssignmentLabelProps) {
-  const { axis, assignment, x, y, rangeId, spectrumId } = props;
+  const { axis, assignment, x, y, rangeId, signalId, spectrumId } = props;
   const { isNewAssignment, dismissNewLabel } = useTriggerNewAssignmentLabel(
     getAxisRangeId({ axis, rangeId }),
   );
@@ -366,11 +376,12 @@ function AssignmentLabel(props: AssignmentLabelProps) {
   function handleChange(value: string) {
     dismissNewLabel();
     dispatch({
-      type: 'CHANGE_RANGE_ASSIGNMENT_LABEL',
+      type: 'CHANGE_1D_SIGNAL_ASSIGNMENT_LABEL',
       payload: {
         value,
         rangeId,
         spectrumId,
+        signalId
       },
     });
   }

@@ -1,4 +1,4 @@
-import type { Range } from '@zakodium/nmr-types';
+import type { Range, Signal1D } from '@zakodium/nmr-types';
 import { useRef } from 'react';
 
 import { FieldEdition } from '../../1d-2d/FieldEdition.js';
@@ -11,20 +11,22 @@ const marginTop = 15;
 
 interface AssignmentLabelProps {
   range: Range;
+  signal: Signal1D;
   width: number;
   stackIndex: number;
 }
 
 export function AssignmentLabel(props: AssignmentLabelProps) {
-  const { range, width, stackIndex } = props;
-  const { id, assignment } = range;
+  const { range, width, stackIndex, signal } = props;
+  const { id, } = range;
+  const { assignment } = signal;
   const { showAssignmentsLabels } = useActiveSpectrumRangesViewState();
   const dispatch = useDispatch();
   const textRef = useRef<SVGTextElement>(null);
   const { margin } = useChartData();
   const { isNewAssignment, dismissNewLabel } = useTriggerNewAssignmentLabel(id);
 
-  if ((!range.assignment || !showAssignmentsLabels) && !isNewAssignment) {
+  if ((!assignment || !showAssignmentsLabels) && !isNewAssignment) {
     return null;
   }
 
@@ -32,10 +34,11 @@ export function AssignmentLabel(props: AssignmentLabelProps) {
     dismissNewLabel();
 
     dispatch({
-      type: 'CHANGE_RANGE_ASSIGNMENT_LABEL',
+      type: 'CHANGE_1D_SIGNAL_ASSIGNMENT_LABEL',
       payload: {
         value,
         rangeId: id,
+        signalId: signal.id
       },
     });
   }
