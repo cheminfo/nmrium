@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.8.0](https://github.com/cheminfo/nmrium/compare/v1.7.0...v1.8.0) (2025-11-19)
+
+
+### Features
+
+* adapt to flat nmrium archive structure ([#3811](https://github.com/cheminfo/nmrium/issues/3811)) ([fb978cd](https://github.com/cheminfo/nmrium/commit/fb978cd83a0f9299f13737cfcf4eb0427d5b46e7))
+* assign range assignment label from atom custom label ([#3820](https://github.com/cheminfo/nmrium/issues/3820)) ([13c5554](https://github.com/cheminfo/nmrium/commit/13c55540fa33c2677d627eba83b9d3d43198aea9))
+* clear molecule custom atom labels ([940d434](https://github.com/cheminfo/nmrium/commit/940d434429c1620875958c9733c73286051bc0d4))
+* improve molecule view options ([#3800](https://github.com/cheminfo/nmrium/issues/3800)) ([444ec94](https://github.com/cheminfo/nmrium/commit/444ec94d25f453179431d3064788c6bc8ce114b4))
+
+
+### Bug Fixes
+
+* add missing 1D and 2D tools to general and workspace settings ([87adaa5](https://github.com/cheminfo/nmrium/commit/87adaa549fd7642492e017605e3336bfd7d7b89d))
+* assign heavy atoms correctly ([7b522b3](https://github.com/cheminfo/nmrium/commit/7b522b31d2748a0db951e67f68eef37ebd13ae49))
+* improve peak picking in ranges ([d6f35ef](https://github.com/cheminfo/nmrium/commit/d6f35efad86a94df56084085719505807e5be1be))
+* prevent 'space' key from triggering other focused elements   ([#3830](https://github.com/cheminfo/nmrium/issues/3830)) ([0281885](https://github.com/cheminfo/nmrium/commit/028188504f8b251331f2afc83280d698048e6784))
+* show/hide customs label over floating molecule ([5a299e2](https://github.com/cheminfo/nmrium/commit/5a299e24683670f37078d197e214715f18762b14))
+
 ## [1.7.0](https://github.com/cheminfo/nmrium/compare/v1.6.1...v1.7.0) (2025-10-31)
 
 
