@@ -87,7 +87,7 @@ export function detectSignalsByMultipletAnalysis(
       analyzer: {
         frequency,
         minimalResolution: 0.1,
-        maxTestedJ: 17,
+        maxTestedJ: 25,
         checkSymmetryFirst: true,
         takeBestPartMultiplet: true,
         correctVerticalOffset: true,
