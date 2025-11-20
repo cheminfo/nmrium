@@ -151,6 +151,7 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
             <Input2Controller
               control={control}
               name={`metaInfo.${row.index}.value`}
+              mapValue={String}
               noShadowBox
             />
           );
@@ -196,6 +197,7 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
   );
 
   const values = watch('metaInfo');
+
   return (
     <>
       <StyledDialogBody>

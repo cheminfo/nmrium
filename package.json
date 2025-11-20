@@ -84,6 +84,7 @@
     "fifo-logger": "^2.0.1",
     "file-collection": "^6.2.1",
     "file-saver": "^2.0.5",
+    "get-jpaths": "^1.1.0",
     "immer": "^10.2.0",
     "lodash": "^4.17.21",
     "mf-parser": "^3.6.0",

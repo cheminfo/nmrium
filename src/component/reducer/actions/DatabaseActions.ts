@@ -1,5 +1,6 @@
 import type { Info1D } from '@zakodium/nmr-types';
 import type { Spectrum1D, Spectrum } from '@zakodium/nmrium-core';
+import { getJPathsAsObject } from 'get-jpaths';
 import type { Draft } from 'immer';
 import type { DatabaseNMREntry } from 'nmr-processing';
 
@@ -68,6 +69,7 @@ function handleResurrectSpectrum(
 
   if (source === 'jcamp') {
     const { spectrum } = action.payload;
+
     resurrectedSpectrum = {
       ...spectrum,
       id: spectrumID,
@@ -114,8 +116,9 @@ function handleResurrectSpectrum(
   }
 
   if (!resurrectedSpectrum) return;
-
-  resurrectedSpectrum.customInfo = meta;
+  resurrectedSpectrum.customInfo = getJPathsAsObject(meta, {
+    maxDepth: 5,
+  });
 
   draft.data.push(resurrectedSpectrum);
 
