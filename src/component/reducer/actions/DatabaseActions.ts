@@ -116,9 +116,21 @@ function handleResurrectSpectrum(
   }
 
   if (!resurrectedSpectrum) return;
-  resurrectedSpectrum.customInfo = getJPathsAsObject(meta, {
+
+  const flattenedDataBaseEntryInfo = getJPathsAsObject(databaseEntry, {
+    maxArrayElements: 5,
+    maxDepth: 2,
+    includeJPathRegexps: [/^(smiles|names|meta)\./],
+  });
+
+  const flattenedMeta = getJPathsAsObject(meta, {
     maxDepth: 5,
   });
+
+  resurrectedSpectrum.customInfo = {
+    ...flattenedMeta,
+    ...flattenedDataBaseEntryInfo,
+  };
 
   draft.data.push(resurrectedSpectrum);
 
