@@ -13,8 +13,6 @@ async function addRange(
     axis: 'x',
     startX,
     endX,
-    shift: true,
-
   });
   await expect(nmrium.page.getByTestId(`range`)).toHaveCount(count);
 }

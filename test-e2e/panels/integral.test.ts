@@ -13,7 +13,6 @@ async function addIntegral(
     axis: 'x',
     startX,
     endX,
-    shift: true,
   });
 
   // Should have integral with at least 1000 points

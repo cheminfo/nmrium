@@ -122,7 +122,6 @@ export default class NmriumPage {
     //check change the pivot point for 1D
     await this.viewer.locator.click({
       position: { x: 100, y: 200 },
-      modifiers: ['Shift'],
     });
     const pivotIndicatorLocator = this.viewer.locator.locator(
       '_react=PivotIndicator1D >> _react=Indicator[x=100]',

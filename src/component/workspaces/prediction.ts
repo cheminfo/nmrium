@@ -9,8 +9,8 @@ export const prediction: InnerWorkspace = {
     spectraRendering: 'auto',
     loggingLevel: 'info',
     popupLoggingLevel: 'error',
-    invert: false,
     invertScroll: false,
+    invert: true,
   },
   display: {
     general: {
