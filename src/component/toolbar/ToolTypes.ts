@@ -227,7 +227,7 @@ export const options: RecordOptions = {
   },
   multipleSpectraAnalysis: {
     id: 'multipleSpectraAnalysis',
-    label: 'Multiple spectra analysis',
+    label: 'Multiple spectra integration',
     hasOptionPanel: false,
     isFilter: false,
     mode: '1D',

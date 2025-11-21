@@ -121,7 +121,7 @@ const LIST: ListItem[] = [
     name: 'exclusionZones',
   },
   {
-    label: 'Multiple spectra analysis',
+    label: 'Multiple spectra integration',
     name: 'multipleSpectraAnalysis',
   },
   {

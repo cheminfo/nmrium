@@ -360,6 +360,12 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
 
               break;
             }
+            case 'm': {
+              if (isToolVisible('multipleSpectraAnalysis')) {
+                handleChangeOption(options.multipleSpectraAnalysis.id);
+              }
+              break;
+            }
             case 't': {
               if (isToolVisible('fft')) {
                 dispatch({

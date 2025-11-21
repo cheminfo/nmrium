@@ -144,6 +144,7 @@ const databaseTableColumns = (
                   width={width}
                   idcode={idCode}
                   coordinates={coordinates}
+                  noAtomCustomLabels
                 />
               );
             } else if (smiles) {
@@ -152,6 +153,7 @@ const databaseTableColumns = (
                   height={height}
                   width={width}
                   smiles={smiles}
+                  noAtomCustomLabels
                 />
               );
             } else {
