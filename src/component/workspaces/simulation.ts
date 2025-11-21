@@ -9,7 +9,7 @@ export const simulation: InnerWorkspace = {
     spectraRendering: 'auto',
     loggingLevel: 'info',
     popupLoggingLevel: 'error',
-    invert: false,
+    invert: true,
     invertScroll: false,
   },
   display: {

@@ -17,7 +17,6 @@ async function addPeaks(nmrium: NmriumPage) {
     axis: 'x',
     startX: 75,
     endX: 115,
-    shift: true,
   });
 
   await expect(peaksAnnotationLocator).toHaveCount(1);
@@ -26,7 +25,6 @@ async function addPeaks(nmrium: NmriumPage) {
   await nmrium.viewer.moveMouse({ x: 210, y: 200 });
   await nmrium.viewer.locator.click({
     position: { x: 210, y: 200 },
-    modifiers: ['Shift'],
   });
 
   await expect(peaksAnnotationLocator).toHaveCount(2);

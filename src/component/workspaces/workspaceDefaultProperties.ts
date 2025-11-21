@@ -75,7 +75,7 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
     spectraRendering: 'auto',
     loggingLevel: 'info',
     popupLoggingLevel: 'error',
-    invert: false,
+    invert: true,
     invertScroll: false,
   },
   nuclei: [
