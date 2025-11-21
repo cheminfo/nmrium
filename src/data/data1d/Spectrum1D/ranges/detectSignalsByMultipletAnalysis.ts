@@ -19,6 +19,7 @@ export function detectSignalsByMultipletAnalysis(
   };
   const from = data.x[fromIndex];
   const to = data.x[toIndex];
+  const widthHz = (to - from) * frequency;
 
   const peaks = xyAutoPeaksPicking(data, {
     from,
@@ -87,7 +88,7 @@ export function detectSignalsByMultipletAnalysis(
       analyzer: {
         frequency,
         minimalResolution: 0.1,
-        maxTestedJ: 25,
+        maxTestedJ: widthHz,
         checkSymmetryFirst: true,
         takeBestPartMultiplet: true,
         correctVerticalOffset: true,
