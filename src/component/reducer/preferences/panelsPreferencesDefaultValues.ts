@@ -138,7 +138,7 @@ const getRangeDefaultValues = (
     showDeleteAction: true,
     showZoomAction: true,
     showEditAction: true,
-    showAssignmentLabel: false,
+    showAssignmentLabel: true,
     isSumConstant: true,
   };
 

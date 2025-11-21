@@ -14,13 +14,14 @@ async function addRange(
     startX,
     endX,
     shift: true,
+
   });
   await expect(nmrium.page.getByTestId(`range`)).toHaveCount(count);
 }
 
 async function shiftSignal(nmrium: NmriumPage) {
   const signalColumnLocator = nmrium.page.locator(
-    '_react=RangesTable >> .editable-column-input >> nth=0 ',
+    '_react=RangesTable >> .editable-column-input >> nth=1 ',
   );
 
   await signalColumnLocator.dblclick();
