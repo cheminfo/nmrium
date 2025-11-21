@@ -1,7 +1,7 @@
 {
   "name": "nmrium",
   "description": "React component to display and process nuclear magnetic resonance (NMR) spectra.",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "license": "MIT",
   "type": "module",
   "exports": {
