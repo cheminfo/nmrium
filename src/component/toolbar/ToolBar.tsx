@@ -296,7 +296,12 @@ export default function ToolBar() {
     },
     {
       id: 'multipleSpectraAnalysis',
-      tooltip: options.multipleSpectraAnalysis.label,
+      tooltip: {
+        title: options.multipleSpectraAnalysis.label,
+        shortcuts: ['m'],
+        description:
+          'Integrate multiple spectra at once and adjust integration zones by dragging their edges.',
+      },
       icon: <SvgNmrMultipleAnalysis />,
       checkOptions: { checkSpectrumType: false },
       isVisible: ftCounter > 0,
