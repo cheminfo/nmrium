@@ -1,6 +1,5 @@
 import type { Info1D } from '@zakodium/nmr-types';
 import type { Spectrum1D, Spectrum } from '@zakodium/nmrium-core';
-import { getJPathsAsObject } from 'get-jpaths';
 import type { Draft } from 'immer';
 import type { DatabaseNMREntry } from 'nmr-processing';
 
@@ -13,6 +12,7 @@ import {
   resurrectSpectrumFromRanges,
   resurrectSpectrumFromSignals,
 } from '../../../data/data1d/Spectrum1D/ranges/resurrectSpectrum.js';
+import { filterDatabaseInfoEntry } from '../../utility/filterDatabaseInfoEntry.ts';
 import type { State } from '../Reducer.js';
 import { setZoom } from '../helper/Zoom1DManager.js';
 import zoomHistoryManager from '../helper/ZoomHistoryManager.js';
@@ -60,7 +60,6 @@ function handleResurrectSpectrum(
     ranges,
     signals,
     solvent,
-    meta = {},
     names = [],
     id: spectrumID,
   } = databaseEntry;
@@ -117,20 +116,8 @@ function handleResurrectSpectrum(
 
   if (!resurrectedSpectrum) return;
 
-  const flattenedDataBaseEntryInfo = getJPathsAsObject(databaseEntry, {
-    maxArrayElements: 5,
-    maxDepth: 2,
-    includeJPathRegexps: [/^(smiles|names|meta)\./],
-  });
-
-  const flattenedMeta = getJPathsAsObject(meta, {
-    maxDepth: 5,
-  });
-
-  resurrectedSpectrum.customInfo = {
-    ...flattenedMeta,
-    ...flattenedDataBaseEntryInfo,
-  };
+  const filterDatabaseEntryInfo = filterDatabaseInfoEntry(databaseEntry);
+  resurrectedSpectrum.customInfo = filterDatabaseEntryInfo;
 
   draft.data.push(resurrectedSpectrum);
 
