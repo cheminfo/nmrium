@@ -33,10 +33,6 @@ export function getAssignIds(
   for (let i = 0; i < data.length; i++) {
     const datum = data[i];
 
-    if (datum.id === id) {
-      return [{ target, index: i, key: datum.id }];
-    }
-
     const signalIndex = datum.signals.findIndex((signal) => signal.id === id);
     if (signalIndex !== -1) {
       const { id } = datum.signals[signalIndex];
