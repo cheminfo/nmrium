@@ -43,6 +43,8 @@ export function useTracesSpectra() {
   } = useChartData();
 
   return useMemo(() => {
+    if (!activeTab) return [];
+
     const nuclei = activeTab.split(',');
 
     if (nuclei.length !== 2) return [];
