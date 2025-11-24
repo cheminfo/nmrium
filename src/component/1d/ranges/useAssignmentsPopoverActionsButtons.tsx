@@ -56,14 +56,14 @@ export function useAssignmentsPopoverActionsButtons(options: UseAssignmentsPopov
             icon: <LuLink />,
             onClick: onAssign,
             intent: 'success',
-            title: 'Assign range',
+            title: 'Assign multiplet',
             visible: isAssignButtonVisible
         },
         {
             icon: <LuUnlink />,
             onClick: onUnAssign,
             intent: 'danger',
-            title: 'Unassign range',
+            title: 'Unassign multiplet',
             visible: isUnAssignButtonVisible
         },
         {
