@@ -380,7 +380,7 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
         onDismiss={cleanShouldFallback}
         onReadText={handlePasteMolecule}
         text={text}
-        label="Enter here a molfile or smiles"
+        label="Enter here a molfile or SMILES"
       />
     </PanelHeader>
   );
