@@ -115,20 +115,20 @@ export function useClipboard(): UseClipboardReturn {
 
   const clipboardAPI = useMemo(
     () => ({
-      async read(): Promise<ClipboardItems | undefined> {
+      async read(): Promise<ClipboardItems> {
         try {
           return await read();
-        } catch {
+        } catch (error) {
           setShouldFallback('read');
-          return undefined;
+          throw new Error('Failed to read from clipboard', { cause: error });
         }
       },
-      async readText(): Promise<string | undefined> {
+      async readText(): Promise<string> {
         try {
           return await readText();
-        } catch {
+        } catch (error) {
           setShouldFallback('readText');
-          return undefined;
+          throw new Error('Failed to read from clipboard', { cause: error });
         }
       },
       async write(data: ClipboardItems): Promise<void> {
