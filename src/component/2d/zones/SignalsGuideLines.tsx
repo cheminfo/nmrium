@@ -178,10 +178,6 @@ function isRangeSignalAssigned(
   options: Pick<IndicationLineProps, 'range' | 'nbAtoms' | 'diaIDs'>,
 ) {
   const { range, ...otherProps } = options;
-  if (isAssigned(range)) {
-    return true;
-  }
-
   return isAssigned(otherProps);
 }
 
