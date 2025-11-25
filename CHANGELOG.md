@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.9.0](https://github.com/cheminfo/nmrium/compare/v1.8.0...v1.9.0) (2025-11-25)
+
+
+### Features
+
+* add more custom info for resurrected spectrum from database ([b291c7b](https://github.com/cheminfo/nmrium/commit/b291c7bc0ef2f6cad2bde2dc8dd5d04a7fbd8b72)), closes [#3827](https://github.com/cheminfo/nmrium/issues/3827)
+* display the information related to a database entry ([376033a](https://github.com/cheminfo/nmrium/commit/376033a475579b378fe629649e82952d3d0445e5)), closes [#3828](https://github.com/cheminfo/nmrium/issues/3828)
+* flatten custom info object when resurrecting spectrum from the database ([01b9ee2](https://github.com/cheminfo/nmrium/commit/01b9ee2b9f8cf5761be5f8d8ebfdf2f9ce8bebf8)), closes [#3826](https://github.com/cheminfo/nmrium/issues/3826)
+* improve multiple spectra integration tooltip ([1cc2752](https://github.com/cheminfo/nmrium/commit/1cc2752fede35976857cc79950e8404da2c1812c)), closes [#3840](https://github.com/cheminfo/nmrium/issues/3840)
+
+
+### Bug Fixes
+
+* increase the J max value for multiplet analysis ([#3837](https://github.com/cheminfo/nmrium/issues/3837)) ([abc8cb4](https://github.com/cheminfo/nmrium/commit/abc8cb4b75d895968d7796db905ae7112ccf5c7f))
+* return empty array when active spectra nuclei are not defined ([a919e45](https://github.com/cheminfo/nmrium/commit/a919e45546cbc9047a3edb43781f7489e884e22f))
+* validate parse smiles/molfile ([#3850](https://github.com/cheminfo/nmrium/issues/3850)) ([479de38](https://github.com/cheminfo/nmrium/commit/479de38d8ec9cdbd3a63a44675e866dbd3394a8a))
+
 ## [1.8.0](https://github.com/cheminfo/nmrium/compare/v1.7.0...v1.8.0) (2025-11-19)
 
 
