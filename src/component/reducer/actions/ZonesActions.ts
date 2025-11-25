@@ -555,5 +555,4 @@ export {
   handleSetZoneAssignmentLabelCoordination,
   handleToggleZonesViewProperty,
   handleUnlinkZone,
-  unlinkZone,
 };

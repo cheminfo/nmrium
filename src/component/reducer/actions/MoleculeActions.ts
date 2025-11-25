@@ -13,6 +13,7 @@ import type {
 } from '../../../data/PredictionManager.js';
 import { generateSpectra } from '../../../data/PredictionManager.js';
 import { changeSpectraRelativeSum } from '../../../data/data1d/Spectrum1D/SumManager.js';
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.ts';
 import type { MoleculeBoundingRect } from '../../../data/molecules/Molecule.js';
 import { DRAGGABLE_STRUCTURE_INITIAL_BOUNDING_REACT } from '../../../data/molecules/Molecule.js';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager.js';
@@ -22,9 +23,7 @@ import type { State } from '../Reducer.js';
 import { MARGIN } from '../core/Constants.js';
 import type { ActionType } from '../types/ActionType.js';
 
-import { unlinkRange } from './RangesActions.js';
 import { setActiveTab } from './ToolsActions.js';
-import { unlinkZone } from './ZonesActions.js';
 import { deepReplaceDiaIDs } from './utilities/deepReplaceDiaIDs.js';
 
 interface AddMoleculeProps {
@@ -48,7 +47,10 @@ type SetMoleculeAction = ActionType<
       mappings?: ReturnType<TopicMolecule['getDiaIDsMapping']>;
     }
 >;
-type DeleteMoleculeAction = ActionType<'DELETE_MOLECULE', { id: string }>;
+type DeleteMoleculeAction = ActionType<
+  'DELETE_MOLECULE',
+  { id: string; diaIDs?: string[] }
+>;
 type PredictSpectraFromMoleculeAction = ActionType<
   'PREDICT_SPECTRA',
   {
@@ -165,12 +167,42 @@ function handleSetMolecule(draft: Draft<State>, action: SetMoleculeAction) {
   setMolecule(draft, action.payload);
 }
 
-function removeAssignments(draft: Draft<State>) {
-  if (draft.displayerMode === '1D') {
-    unlinkRange(draft);
+function clearDiaIDs(
+  obj: Partial<{ diaIDs?: string[]; nbAtoms?: number }>,
+  atoms: Set<string>,
+) {
+  if (obj?.diaIDs?.some((id: string) => atoms.has(id))) {
+    delete obj.diaIDs;
+    delete obj.nbAtoms;
   }
-  if (draft.displayerMode === '2D') {
-    unlinkZone(draft, {});
+}
+
+function clearAssignments(draft: Draft<State>, diaIDs: string[]) {
+  const diaIDsSet = new Set(diaIDs);
+
+  for (const spectrum of draft.data) {
+    if (isSpectrum1D(spectrum)) {
+      const ranges = spectrum.ranges.values;
+      for (const range of ranges) {
+        const { signals = [] } = range;
+        clearDiaIDs(range, diaIDsSet);
+        for (const signal of signals) {
+          clearDiaIDs(signal, diaIDsSet);
+        }
+      }
+    } else {
+      const zones = spectrum.zones.values;
+      for (const zone of zones) {
+        const { signals = [] } = zone;
+        clearDiaIDs(zone.x, diaIDsSet);
+        clearDiaIDs(zone.y, diaIDsSet);
+
+        for (const signal of signals) {
+          clearDiaIDs(signal.x, diaIDsSet);
+          clearDiaIDs(signal.y, diaIDsSet);
+        }
+      }
+    }
   }
 }
 
@@ -179,13 +211,16 @@ function handleDeleteMolecule(
   draft: Draft<State>,
   action: DeleteMoleculeAction,
 ) {
-  const { id } = action.payload;
-  // remove Assignments links of the active spectrum
-  removeAssignments(draft);
+  const { id, diaIDs } = action.payload;
 
   const moleculeIndex = draft.molecules.findIndex(
     (molecule) => molecule.id === id,
   );
+
+  if (diaIDs) {
+    clearAssignments(draft, diaIDs);
+  }
+
   draft.molecules.splice(moleculeIndex, 1);
 
   // delete the molecule view object for this id
