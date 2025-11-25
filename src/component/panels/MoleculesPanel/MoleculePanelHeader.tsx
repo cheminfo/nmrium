@@ -20,7 +20,10 @@ import type {
   MoleculesView,
   StateMoleculeExtended,
 } from '../../../data/molecules/Molecule.js';
-import { getMolecules } from '../../../data/molecules/MoleculeManager.js';
+import {
+  getMolecules,
+  parseErrorMessage,
+} from '../../../data/molecules/MoleculeManager.js';
 import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents.js';
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks.js';
 import { useDispatch } from '../../context/DispatchContext.js';
@@ -200,19 +203,18 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
    * @param text - text from clipboard
    * @returns
    */
-  async function handlePasteMolecule(text: string | undefined) {
-    if (!text) return;
+
+  async function handlePasteMolecule(text?: string) {
     try {
       const molecules = getMolecules(text);
       dispatch({
         type: 'ADD_MOLECULES',
         payload: { molecules, defaultMoleculeSettings },
       });
-    } catch {
+    } catch (error: any) {
       toaster.show({
         intent: 'danger',
-        message:
-          'Failed to parse SMILES or molfile. Please paste a valid format',
+        message: error?.message || parseErrorMessage,
       });
     } finally {
       cleanShouldFallback();
@@ -378,7 +380,7 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
         onDismiss={cleanShouldFallback}
         onReadText={handlePasteMolecule}
         text={text}
-        label="Molfile"
+        label="Enter here a molfile or SMILES"
       />
     </PanelHeader>
   );
