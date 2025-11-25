@@ -351,7 +351,7 @@ function WorkSpaceActionsButtons(props: any) {
     reset(workSpaceDisplayPreferences);
   }
 
-  function handlePasteWorkspace(text: string | undefined) {
+  function handlePasteWorkspace(text: string | null) {
     if (!text) return;
 
     try {

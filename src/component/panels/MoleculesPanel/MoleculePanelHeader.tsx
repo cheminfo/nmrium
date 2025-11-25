@@ -88,7 +88,7 @@ interface MoleculePanelHeaderProps {
   onOpenMoleculeEditor: () => void;
   renderSource?: 'moleculePanel' | 'predictionPanel';
   onClickPreferences?: () => void;
-  onClickPastMolecule?: () => void;
+  onClickPasteMolecule?: () => void;
   children?: ReactNode;
 }
 
@@ -101,7 +101,7 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
     onOpenMoleculeEditor,
     renderSource = 'moleculePanel',
     onClickPreferences,
-    onClickPastMolecule,
+    onClickPasteMolecule,
     children,
   } = props;
   const { rootRef } = useGlobal();
@@ -194,7 +194,7 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
   );
 
   function handlePasteMoleculeAction() {
-    onClickPastMolecule?.();
+    onClickPasteMolecule?.();
     void readText().then(handlePasteMolecule);
   }
 
@@ -204,7 +204,8 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
    * @returns
    */
 
-  async function handlePasteMolecule(text?: string) {
+  async function handlePasteMolecule(text: string | null) {
+    if (!text) return;
     try {
       const molecules = getMolecules(text);
       dispatch({
