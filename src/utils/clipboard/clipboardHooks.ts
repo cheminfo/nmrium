@@ -16,11 +16,11 @@ interface UseClipboardReturn {
   /**
    * Fallback on 'read' mode
    */
-  read: () => Promise<ClipboardItems | undefined>;
+  read: () => Promise<ClipboardItems | null>;
   /**
    * Fallback on 'readText' mode
    */
-  readText: () => Promise<string | undefined>;
+  readText: () => Promise<string | null>;
   /**
    * Fallback on 'write' mode with blobs (get blob for each first type for each item) state
    */
@@ -115,20 +115,26 @@ export function useClipboard(): UseClipboardReturn {
 
   const clipboardAPI = useMemo(
     () => ({
-      async read(): Promise<ClipboardItems> {
+      /**
+       * Attempt to read clipboard items. Sets the fallback and returns `null` if the attempt failed.
+       */
+      async read(): Promise<ClipboardItems | null> {
         try {
           return await read();
-        } catch (error) {
+        } catch {
           setShouldFallback('read');
-          throw new Error('Failed to read from clipboard', { cause: error });
+          return null;
         }
       },
-      async readText(): Promise<string> {
+      /**
+       * Attempt to read text from the clipboard. Sets the fallback and returns `null` if the attempt failed.
+       */
+      async readText(): Promise<string | null> {
         try {
           return await readText();
-        } catch (error) {
+        } catch {
           setShouldFallback('readText');
-          throw new Error('Failed to read from clipboard', { cause: error });
+          return null;
         }
       },
       async write(data: ClipboardItems): Promise<void> {
