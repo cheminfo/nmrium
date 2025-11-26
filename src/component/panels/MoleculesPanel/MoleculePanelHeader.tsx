@@ -230,7 +230,7 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
     onMoleculeIndexChange?.(0);
     dispatch({
       type: 'DELETE_MOLECULE',
-      payload: { id, diaIDs: topicMolecule[id].diaIDs },
+      payload: { id, diaIDs: topicMolecule[id].diaIDsAndInfo },
     });
   }, [molecules, currentIndex, topicMolecule, onMoleculeIndexChange, dispatch]);
 
