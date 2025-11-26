@@ -3,7 +3,7 @@ import type { Logger } from 'cheminfo-types';
 import type { FifoLogger } from 'fifo-logger';
 import type { Draft } from 'immer';
 import { Molecule } from 'openchemlib';
-import type { TopicMolecule } from 'openchemlib-utils';
+import type { DiaIDAndInfo, TopicMolecule } from 'openchemlib-utils';
 import { getAtoms, nbLabileH } from 'openchemlib-utils';
 
 import type {
@@ -13,18 +13,19 @@ import type {
 } from '../../../data/PredictionManager.js';
 import { generateSpectra } from '../../../data/PredictionManager.js';
 import { changeSpectraRelativeSum } from '../../../data/data1d/Spectrum1D/SumManager.js';
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.ts';
 import type { MoleculeBoundingRect } from '../../../data/molecules/Molecule.js';
 import { DRAGGABLE_STRUCTURE_INITIAL_BOUNDING_REACT } from '../../../data/molecules/Molecule.js';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager.js';
 import { generateColor } from '../../../data/utilities/generateColor.js';
 import { convertPixelToPercent } from '../../hooks/useSVGUnitConverter.js';
+import { extractFromAtom } from '../../panels/MoleculesPanel/utilities/extractFromAtom.ts';
+import nucleusToString from '../../utility/nucleusToString.ts';
 import type { State } from '../Reducer.js';
 import { MARGIN } from '../core/Constants.js';
 import type { ActionType } from '../types/ActionType.js';
 
-import { unlinkRange } from './RangesActions.js';
 import { setActiveTab } from './ToolsActions.js';
-import { unlinkZone } from './ZonesActions.js';
 import { deepReplaceDiaIDs } from './utilities/deepReplaceDiaIDs.js';
 
 interface AddMoleculeProps {
@@ -48,7 +49,10 @@ type SetMoleculeAction = ActionType<
       mappings?: ReturnType<TopicMolecule['getDiaIDsMapping']>;
     }
 >;
-type DeleteMoleculeAction = ActionType<'DELETE_MOLECULE', { id: string }>;
+type DeleteMoleculeAction = ActionType<
+  'DELETE_MOLECULE',
+  { id: string; diaIDs?: DiaIDAndInfo[] }
+>;
 type PredictSpectraFromMoleculeAction = ActionType<
   'PREDICT_SPECTRA',
   {
@@ -165,12 +169,84 @@ function handleSetMolecule(draft: Draft<State>, action: SetMoleculeAction) {
   setMolecule(draft, action.payload);
 }
 
-function removeAssignments(draft: Draft<State>) {
-  if (draft.displayerMode === '1D') {
-    unlinkRange(draft);
+function clearDiaIDs(
+  obj: Partial<{ diaIDs?: string[]; nbAtoms?: number }>,
+  options: {
+    diaIDsObj: Record<string, DiaIDAndInfo>;
+    nucleus: string[] | string;
+  },
+) {
+  const { diaIDsObj, nucleus } = options;
+  if (!obj.diaIDs?.some((id) => id in diaIDsObj)) {
+    return;
   }
-  if (draft.displayerMode === '2D') {
-    unlinkZone(draft, {});
+
+  const nucleusValue = nucleusToString(nucleus);
+  let updatedDiaIDs = [...obj.diaIDs];
+  let updatedNbAtoms = obj.nbAtoms || 0;
+
+  for (const id of obj.diaIDs) {
+    const atomInfo = diaIDsObj[id];
+    if (!atomInfo) continue;
+
+    const { nbAtoms: removedCount, oclIDs } = extractFromAtom(
+      atomInfo,
+      nucleusValue,
+    );
+    const removalSet = new Set(oclIDs);
+
+    updatedDiaIDs = updatedDiaIDs.filter(
+      (candidate) => !removalSet.has(candidate),
+    );
+    updatedNbAtoms -= removedCount;
+  }
+
+  if (updatedDiaIDs.length > 0) {
+    obj.diaIDs = updatedDiaIDs;
+  } else {
+    delete obj.diaIDs;
+  }
+
+  if (updatedNbAtoms > 0) {
+    obj.nbAtoms = updatedNbAtoms;
+  } else {
+    delete obj.nbAtoms;
+  }
+}
+
+function clearAssignments(draft: Draft<State>, diaIDs: DiaIDAndInfo[]) {
+  const diaIDsObj: Record<string, DiaIDAndInfo> = {};
+  for (const diaItem of diaIDs) {
+    diaIDsObj[diaItem.idCode] = diaItem;
+  }
+
+  for (const spectrum of draft.data) {
+    const {
+      info: { nucleus },
+    } = spectrum;
+
+    if (isSpectrum1D(spectrum)) {
+      const ranges = spectrum.ranges.values;
+      for (const range of ranges) {
+        const { signals = [] } = range;
+        clearDiaIDs(range, { diaIDsObj, nucleus });
+        for (const signal of signals) {
+          clearDiaIDs(signal, { diaIDsObj, nucleus });
+        }
+      }
+    } else {
+      const zones = spectrum.zones.values;
+      for (const zone of zones) {
+        const { signals = [] } = zone;
+        clearDiaIDs(zone.x, { diaIDsObj, nucleus });
+        clearDiaIDs(zone.y, { diaIDsObj, nucleus });
+
+        for (const signal of signals) {
+          clearDiaIDs(signal.x, { diaIDsObj, nucleus });
+          clearDiaIDs(signal.y, { diaIDsObj, nucleus });
+        }
+      }
+    }
   }
 }
 
@@ -179,13 +255,16 @@ function handleDeleteMolecule(
   draft: Draft<State>,
   action: DeleteMoleculeAction,
 ) {
-  const { id } = action.payload;
-  // remove Assignments links of the active spectrum
-  removeAssignments(draft);
+  const { id, diaIDs } = action.payload;
 
   const moleculeIndex = draft.molecules.findIndex(
     (molecule) => molecule.id === id,
   );
+
+  if (diaIDs) {
+    clearAssignments(draft, diaIDs);
+  }
+
   draft.molecules.splice(moleculeIndex, 1);
 
   // delete the molecule view object for this id

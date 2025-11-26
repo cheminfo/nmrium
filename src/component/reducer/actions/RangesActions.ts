@@ -770,5 +770,4 @@ export {
   handleToggleRangesViewProperty,
   handleUnlinkRange,
   handleUpdateRange,
-  unlinkRange,
 };

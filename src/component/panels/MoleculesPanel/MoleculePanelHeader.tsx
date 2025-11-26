@@ -118,6 +118,7 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
       fileName: 'molFile',
     });
   }, [rootRef, currentIndex]);
+  const topicMolecule = useTopicMolecule();
 
   const saveAsPNGHandler = useCallback(async () => {
     if (!rootRef) return;
@@ -223,14 +224,18 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
   }
 
   const handleDelete = useCallback(() => {
-    if (molecules[currentIndex]?.id) {
-      onMoleculeIndexChange?.(0);
-      dispatch({
-        type: 'DELETE_MOLECULE',
-        payload: { id: molecules[currentIndex].id },
-      });
+    const id = molecules[currentIndex]?.id;
+
+    if (!id) {
+      return;
     }
-  }, [molecules, currentIndex, onMoleculeIndexChange, dispatch]);
+
+    onMoleculeIndexChange?.(0);
+    dispatch({
+      type: 'DELETE_MOLECULE',
+      payload: { id, diaIDs: topicMolecule[id].diaIDsAndInfo },
+    });
+  }, [molecules, currentIndex, topicMolecule, onMoleculeIndexChange, dispatch]);
 
   function floatMoleculeHandler() {
     dispatch({
@@ -238,8 +243,6 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
       payload: { id: moleculeKey },
     });
   }
-
-  const topicMolecule = useTopicMolecule();
 
   function expandMoleculeHydrogens(expand?: boolean) {
     const molecule = molecules[currentIndex];
