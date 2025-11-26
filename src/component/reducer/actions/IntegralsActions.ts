@@ -215,7 +215,10 @@ function handleChangeIntegralsSumFlag(draft: any) {
 
 function handleCutIntegral(draft: Draft<State>, action: CutIntegralAction) {
   const { cutValue } = action.payload;
-  const spectrum = getSpectrum(draft) as Spectrum1D;
+  const spectrum = getSpectrum(draft);
+
+  if (!isSpectrum1D(spectrum)) return;
+
   const integrals = spectrum.integrals.values;
 
   for (let i = 0; i < integrals.length; i++) {
