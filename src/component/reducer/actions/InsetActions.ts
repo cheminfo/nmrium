@@ -7,7 +7,7 @@ import { scaleLinear } from 'd3-scale';
 import { zoomIdentity } from 'd3-zoom';
 import type { Draft } from 'immer';
 
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.ts';
 import { insetMargin } from '../../1d/inset/InsetProvider.js';
 import type {
   Inset,
@@ -28,8 +28,8 @@ import type { SpectraDirection, State } from '../Reducer.js';
 import type { ZoomType } from '../helper/Zoom1DManager.js';
 import { toScaleRatio, wheelZoom } from '../helper/Zoom1DManager.js';
 import { preparePop } from '../helper/ZoomHistoryManager.js';
-import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
 import getRange from '../helper/getRange.js';
+import { getSpectrum } from '../helper/getSpectrum.ts';
 import type { ActionType } from '../types/ActionType.js';
 
 import type { MoveOptions } from './DomainActions.js';
@@ -104,14 +104,10 @@ export type InsetsActions =
   | ToggleInsetDisplayingPeaksModeAction;
 
 function handleAddInset(draft: Draft<State>, action: AddInsetAction) {
-  const activeSpectrum = getActiveSpectrum(draft);
+  const { startX, endX } = action.payload;
 
-  if (!activeSpectrum) return;
-
-  const { index } = activeSpectrum;
-  const datum = draft.data[index];
-
-  if (!isSpectrum1D(datum)) return;
+  const spectrum = getSpectrum(draft);
+  if (!isSpectrum1D(spectrum)) return;
 
   const {
     yDomain,
@@ -121,9 +117,8 @@ function handleAddInset(draft: Draft<State>, action: AddInsetAction) {
     width: baseWidth,
     height: baseHeight,
   } = draft;
-  const { id: spectrumKey } = datum;
+  const { id: spectrumKey } = spectrum;
 
-  const { startX, endX } = action.payload;
   const xDomain = getRange(draft, { startX, endX });
 
   const width = Math.max(100, Math.abs(startX - endX));
@@ -154,22 +149,17 @@ function handleAddInset(draft: Draft<State>, action: AddInsetAction) {
     draft.insets[nucleus] = [inset];
   }
 }
+
 function handleDeleteInset(draft: Draft<State>, action: DeleteInsetAction) {
-  const activeSpectrum = getActiveSpectrum(draft);
+  const { insetKey } = action.payload;
 
-  if (!activeSpectrum) return;
-
-  const { index } = activeSpectrum;
-  const datum = draft.data[index];
-
-  if (!isSpectrum1D(datum)) return;
   const {
     view: {
       spectra: { activeTab },
     },
   } = draft;
 
-  const { insetKey } = action.payload;
+  if (!activeTab) return;
 
   draft.insets[activeTab] = draft.insets[activeTab].filter(
     (inset) => inset.id !== insetKey,

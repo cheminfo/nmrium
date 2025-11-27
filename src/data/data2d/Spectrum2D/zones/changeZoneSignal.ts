@@ -4,11 +4,9 @@ import { isNumber } from '../../../utilities/isNumber.js';
 
 /**
  *
- * @param {number} zoneID
- * @param {object} signal
- * @param {number} signal.x
- * @param {number} signal.y
- * @param {string} signal.id
+ * @param spectrum
+ * @param zoneID
+ * @param signal
  */
 export function changeZoneSignal(
   spectrum: Spectrum2D,

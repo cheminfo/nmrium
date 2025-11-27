@@ -1,12 +1,10 @@
-import type { Range, Signal1D, SignalKind } from '@zakodium/nmr-types';
+import type { Range, SignalKind } from '@zakodium/nmr-types';
 import type {
   BoundingBox,
   RangesViewState,
   Spectrum1D,
-  Spectrum,
 } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
-import { original } from 'immer';
 import cloneDeep from 'lodash/cloneDeep.js';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { Filters1DManager } from 'nmr-processing';
@@ -27,13 +25,13 @@ import {
   updateRangesRelativeValues,
 } from '../../../data/data1d/Spectrum1D/index.js';
 import type { ChangeRangeRelativeValueProps } from '../../../data/data1d/Spectrum1D/ranges/changeRangeRelativeValue.js';
+import type { DetectRangesOptions } from '../../../data/data1d/Spectrum1D/ranges/detectRanges.ts';
 import { unlink } from '../../../data/utilities/RangeUtilities.js';
 import { isProton } from '../../../data/utilities/isProton.ts';
 import type { TargetAssignKeys } from '../../panels/MoleculesPanel/utilities/getAssignIds.ts';
 import type { RangeData } from '../../panels/RangesPanel/hooks/useMapRanges.js';
 import type { FilterType } from '../../utility/filterType.js';
 import type { State } from '../Reducer.js';
-import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
 import { getSpectrum } from '../helper/getSpectrum.js';
 import {
   initializeRangeViewObject,
@@ -76,9 +74,9 @@ type SaveEditedRangeAction = ActionType<
 >;
 
 interface DeleteSignalProps {
-  spectrum: Spectrum;
+  spectrumId: string;
   range: Range;
-  signal: Signal1D;
+  signalId: string;
 }
 type DeleteSignalAction = ActionType<'DELETE_1D_SIGNAL', DeleteSignalProps>;
 
@@ -194,17 +192,7 @@ export type RangesActions =
       | 'TOGGLE_RANGES_PEAKS_DISPLAYING_MODE'
     >;
 
-function getRangeByIndex(
-  draft: Draft<State>,
-  spectrumIndex: any,
-  rangeID: any,
-) {
-  return (draft.data[spectrumIndex] as Spectrum1D).ranges.values.findIndex(
-    (range) => range.id === rangeID,
-  );
-}
-
-function getRange(spectrum: Spectrum1D, rangeID: string) {
+function getRangeIndex(spectrum: Spectrum1D, rangeID: string) {
   return spectrum.ranges.values.findIndex((range) => range.id === rangeID);
 }
 //action
@@ -212,25 +200,22 @@ function handleAutoRangesDetection(
   draft: Draft<State>,
   action: AutoRangesDetectionAction,
 ) {
-  const { data, xDomain, molecules } = draft;
+  const { xDomain, molecules } = draft;
 
-  const activeSpectrum = getActiveSpectrum(draft);
+  const spectrum = getSpectrum(draft);
 
-  if (activeSpectrum?.id) {
-    const { index } = activeSpectrum;
-    const datum = data[index] as Spectrum1D;
-
+  if (isSpectrum1D(spectrum)) {
     const [from, to] = xDomain;
-    const windowFromIndex = xFindClosestIndex(datum.data.x, from);
-    const windowToIndex = xFindClosestIndex(datum.data.x, to);
+    const windowFromIndex = xFindClosestIndex(spectrum.data.x, from);
+    const windowToIndex = xFindClosestIndex(spectrum.data.x, to);
 
     // minMaxRatio default 0.05, lookNegative default false,
     const { minMaxRatio, lookNegative } = action.payload;
 
-    const nucleus = datum.info.nucleus;
+    const nucleus = spectrum.info.nucleus;
     const isProtonic = isProton(nucleus);
 
-    const detectionOptions: any = {
+    const detectionOptions: DetectRangesOptions = {
       rangePicking: {
         integrationSum: 100,
         compile: isProtonic,
@@ -248,7 +233,7 @@ function handleAutoRangesDetection(
         direction: lookNegative ? 'both' : 'positive',
       },
     };
-    detectRanges(datum, {
+    detectRanges(spectrum, {
       ...detectionOptions,
       windowFromIndex,
       windowToIndex,
@@ -261,16 +246,16 @@ function handleAutoRangesDetection(
 
 //action
 function handleAutoSpectraRangesDetection(draft: Draft<State>) {
-  const peakPicking = {
+  const peakPicking: DetectRangesOptions['peakPicking'] = {
     sensitivity: 100,
     thresholdFactor: 8,
     minMaxRatio: 0.05,
   };
   const { data, molecules } = draft;
 
-  for (const datum of data) {
-    if (datum.info.dimension === 1) {
-      const nucleus = datum.info.nucleus as string;
+  for (const spectrum of data) {
+    if (isSpectrum1D(spectrum)) {
+      const nucleus = spectrum.info.nucleus;
       const isProtonic = isProton(nucleus);
       const rangePicking = {
         integrationSum: 100,
@@ -280,7 +265,7 @@ function handleAutoSpectraRangesDetection(draft: Draft<State>) {
         keepPeaks: true,
         joinOverlapRanges: isProtonic,
       };
-      detectRanges(datum as Spectrum1D, {
+      detectRanges(spectrum, {
         peakPicking,
         rangePicking,
         molecules,
@@ -302,7 +287,7 @@ function handleDeleteRange(draft: Draft<State>, action: DeleteRangeAction) {
   }
 
   if (id) {
-    const rangeIndex = getRange(datum, id);
+    const rangeIndex = getRangeIndex(datum, id);
     datum.ranges.values.splice(rangeIndex, 1);
   } else {
     datum.ranges.values = [];
@@ -319,20 +304,17 @@ function handleChangeRangeSignalKind(
   draft: Draft<State>,
   action: ChangeRangeSignalKindAction,
 ) {
-  const state = original(draft) as State;
+  const { range, kind } = action.payload;
 
-  const activeSpectrum = getActiveSpectrum(state);
+  const spectrum = getSpectrum(draft);
+  if (!isSpectrum1D(spectrum)) return;
 
-  if (activeSpectrum?.id) {
-    const { index } = activeSpectrum;
-    const { range, kind } = action.payload;
-    const rangeIndex = getRangeByIndex(state, index, range.id);
-    const _range = (draft.data[index] as Spectrum1D).ranges.values[rangeIndex];
-    if (_range?.signals) {
-      _range.signals[range.tableMetaInfo.signalIndex].kind = kind;
-      updateRangesRelativeValues(draft.data[index] as Spectrum1D);
-      handleUpdateCorrelations(draft);
-    }
+  const rangeIndex = getRangeIndex(spectrum, range.id);
+  const _range = spectrum.ranges.values[rangeIndex];
+  if (_range?.signals) {
+    _range.signals[range.tableMetaInfo.signalIndex].kind = kind;
+    updateRangesRelativeValues(spectrum);
+    handleUpdateCorrelations(draft);
   }
 }
 
@@ -341,62 +323,51 @@ function handleSaveEditedRange(
   draft: Draft<State>,
   action: SaveEditedRangeAction,
 ) {
-  const state = original(draft) as State;
+  const { range } = action.payload;
 
-  const activeSpectrum = getActiveSpectrum(state);
+  const spectrum = getSpectrum(draft);
+  if (!isSpectrum1D(spectrum)) return;
 
-  if (activeSpectrum?.id) {
-    const { index } = activeSpectrum;
-    const { range } = action.payload;
+  // remove assignments in global state
+  const _editedRowData: any = unlink(range);
 
-    // remove assignments in global state
+  delete _editedRowData.tableMetaInfo;
+  delete _editedRowData.rowKey;
+  // remove assignments in assignment hook data
+  // for now: clear all assignments for this range because signals or levels to store might have changed
+  const rangeIndex = getRangeIndex(spectrum, _editedRowData.id);
 
-    const _editedRowData: any = unlink(range);
-
-    delete _editedRowData.tableMetaInfo;
-    delete _editedRowData.rowKey;
-    // remove assignments in assignment hook data
-    // for now: clear all assignments for this range because signals or levels to store might have changed
-    const rangeIndex = getRangeByIndex(state, index, _editedRowData.id);
-
-    if (_editedRowData.id === 'new') {
-      _editedRowData.id = crypto.randomUUID();
-    }
-
-    (draft.data[index] as Spectrum1D).ranges.values.splice(
-      rangeIndex,
-      1,
-      _editedRowData,
-    );
-    updateRangesRelativeValues(draft.data[index] as Spectrum1D);
-    handleUpdateCorrelations(draft);
-    resetSelectedTool(draft);
+  if (_editedRowData.id === 'new') {
+    _editedRowData.id = crypto.randomUUID();
   }
+
+  spectrum.ranges.values.splice(rangeIndex, 1, _editedRowData);
+  updateRangesRelativeValues(spectrum);
+  handleUpdateCorrelations(draft);
+  resetSelectedTool(draft);
 }
 
 function deleteSignal1D(draft: Draft<State>, props: DeleteSignalProps) {
-  const { spectrum, range, signal } = props;
+  const { spectrumId, range, signalId } = props;
 
-  const datum1D = draft.data.find(
-    (datum) => datum.id === spectrum.id,
-  ) as Spectrum1D;
-  const rangeIndex = datum1D.ranges.values.findIndex(
-    (_range) => _range.id === range.id,
-  );
+  const spectrum = getSpectrum(draft, spectrumId);
+  if (!isSpectrum1D(spectrum)) return;
+
+  const rangeIndex = getRangeIndex(spectrum, range.id);
   const signalIndex = range.signals.findIndex(
-    (_signal) => _signal.id === signal.id,
+    (_signal) => _signal.id === signalId,
   );
-  // remove assignments for the signal range object in global state
+  // Remove assignments for the signal range object in the global state.
   const _range = unlink(cloneDeep(range), {
     unlinkType: 'signal',
     signalIndex,
   });
 
   _range.signals.splice(signalIndex, 1);
-  datum1D.ranges.values[rangeIndex] = _range;
-  // if no signals are existing in a range anymore then delete this range
+  spectrum.ranges.values[rangeIndex] = _range;
+  // If no signals are existing in a range any more, then delete this range.
   if (_range.signals.length === 0) {
-    datum1D.ranges.values.splice(rangeIndex, 1);
+    spectrum.ranges.values.splice(rangeIndex, 1);
   }
 
   handleUpdateCorrelations(draft);
@@ -408,16 +379,14 @@ function handleDeleteSignal(draft: Draft<State>, action: DeleteSignalAction) {
 }
 
 function unlinkRange(draft: Draft<State>, options: UnlinkRangeProps = {}) {
-  const { spectrumId } = options;
-  const spectrum = getSpectrum(draft, spectrumId);
+  const { spectrumId, rangeKey, signalIndex = -1 } = options;
 
+  const spectrum = getSpectrum(draft, spectrumId);
   if (!isSpectrum1D(spectrum)) return;
 
-  const { rangeKey, signalIndex = -1 } = options || {};
   const ranges = spectrum.ranges.values;
-
   if (rangeKey) {
-    const rangeIndex = getRange(spectrum, rangeKey);
+    const rangeIndex = getRangeIndex(spectrum, rangeKey);
     const unlinkType = signalIndex === -1 ? 'range' : 'signal';
     ranges[rangeIndex] = unlink(ranges[rangeIndex], {
       unlinkType,
@@ -441,8 +410,7 @@ function handleAssignRange(draft: Draft<State>, action: AssignRangeAction) {
   const { keys, diaIDs, nbAtoms, spectrumId, assignment } = action.payload;
 
   const spectrum = getSpectrum(draft, spectrumId);
-
-  if (!spectrum || !isSpectrum1D(spectrum)) return;
+  if (!isSpectrum1D(spectrum)) return;
 
   if (keys.length === 1) {
     const [{ index }] = keys;
@@ -477,12 +445,10 @@ function handleChangeRangesAssignmentLabelsByDiaIds(
 ) {
   const { diaIDs, assignment, previousAssignment } = action.payload;
 
-  const uniqueDiaIds = new Set(diaIDs);
-
   const spectrum = getSpectrum(draft);
+  if (!isSpectrum1D(spectrum)) return;
 
-  if (!spectrum || !isSpectrum1D(spectrum)) return;
-
+  const uniqueDiaIds = new Set(diaIDs);
   const {
     ranges: { values },
   } = spectrum;
@@ -509,12 +475,11 @@ function handleResizeRange(draft: Draft<State>, action: ResizeRangeAction) {
   const { range, spectrumKey } = action.payload;
 
   const spectrum = getSpectrum(draft, spectrumKey);
+  if (!isSpectrum1D(spectrum)) return;
 
-  if (!spectrum) return;
-
-  if (!range || !isSpectrum1D(spectrum)) return;
-
-  const index = spectrum.ranges.values.findIndex((i: any) => i.id === range.id);
+  const index = spectrum.ranges.values.findIndex(
+    (_range) => _range.id === range.id,
+  );
 
   spectrum.ranges.values[index] = range;
   updateRangesRelativeValues(spectrum);
@@ -526,20 +491,12 @@ function handleChangeRangeSum(
   action: ChangeRangeSumAction,
 ) {
   const { options } = action.payload;
-  const {
-    data,
-    view: {
-      spectra: { activeTab: nucleus },
-    },
-  } = draft;
 
-  const activeSpectrum = getActiveSpectrum(draft);
-  if (activeSpectrum?.id) {
-    const { index } = activeSpectrum;
-    const datum = data[index] as Spectrum1D;
-    setSumOptions(datum.ranges, { options, nucleus });
-    updateRangesRelativeValues(datum, true);
-  }
+  const spectrum = getSpectrum(draft);
+  if (!isSpectrum1D(spectrum)) return;
+
+  setSumOptions(spectrum.ranges, { options, nucleus: spectrum.info.nucleus });
+  updateRangesRelativeValues(spectrum, true);
 }
 
 function initiateRangeSumOptions(datum: Spectrum1D, options: SumParams) {
@@ -553,93 +510,80 @@ function initiateRangeSumOptions(datum: Spectrum1D, options: SumParams) {
 //action
 function handleAddRange(draft: Draft<State>, action: AddRangeAction) {
   const { range } = action.payload;
-  const {
-    data,
-    view: {
-      spectra: { activeTab: nucleus },
-    },
+
+  const spectrum = getSpectrum(draft);
+  if (!isSpectrum1D(spectrum)) return;
+
+  const { molecules } = draft;
+  spectrum.ranges.values.push(range);
+  initiateRangeSumOptions(spectrum, {
+    nucleus: spectrum.info.nucleus,
     molecules,
-  } = draft;
-  const activeSpectrum = getActiveSpectrum(draft);
-  if (activeSpectrum?.id) {
-    const { index } = activeSpectrum;
-    const datum = data[index] as Spectrum1D;
-    datum.ranges.values.push(range);
-    initiateRangeSumOptions(datum, {
-      nucleus,
-      molecules,
-    });
-    updateRangesRelativeValues(datum);
-    handleUpdateCorrelations(draft);
-  }
+  });
+
+  updateRangesRelativeValues(spectrum);
+  handleUpdateCorrelations(draft);
 }
 
 //action
 function handleChangeRangeRelativeValue(
-  draft: any,
+  draft: Draft<State>,
   action: ChangeRangeRelativeValueAction,
 ) {
-  const data = action.payload;
-  const activeSpectrum = getActiveSpectrum(draft);
-  if (activeSpectrum?.id) {
-    const { index } = activeSpectrum;
-    changeRangeRelativeValue(draft.data[index], data);
-  }
+  const spectrum = getSpectrum(draft);
+  if (!isSpectrum1D(spectrum)) return;
+
+  changeRangeRelativeValue(spectrum, action.payload);
 }
 
 //action
 function handleChangeRangeSignalValue(
-  draft: any,
+  draft: Draft<State>,
   action: ChangeRangeSignalValueAction,
 ) {
   const { rangeID, signalID, value } = action.payload;
-  const activeSpectrum = getActiveSpectrum(draft);
 
-  if (activeSpectrum?.id) {
-    const { index } = activeSpectrum;
+  const spectrum = getSpectrum(draft);
+  if (!isSpectrum1D(spectrum)) return;
 
-    const shift = changeRangeSignal(draft.data[index], {
-      rangeID,
-      signalID,
-      newSignalValue: value,
-    });
-    rollbackSpectrumByFilter(draft, {
-      key: 'shiftX',
-      searchBy: 'name',
-      applyFilter: false,
-    });
-    Filters1DManager.applyFilters(draft.data[index], [
-      { name: 'shiftX', value: { shift } },
-    ]);
+  const shift = changeRangeSignal(spectrum, {
+    rangeID,
+    signalID,
+    newSignalValue: value,
+  });
+  rollbackSpectrumByFilter(draft, {
+    key: 'shiftX',
+    searchBy: 'name',
+    applyFilter: false,
+  });
+  Filters1DManager.applyFilters(spectrum, [
+    { name: 'shiftX', value: { shift } },
+  ]);
 
-    handleUpdateCorrelations(draft);
-    setDomain(draft);
-  }
+  handleUpdateCorrelations(draft);
+  setDomain(draft);
 }
 
 //action
 function handleChangeRangesSumFlag(draft: Draft<State>) {
-  const activeSpectrum = getActiveSpectrum(draft);
+  const spectrum = getSpectrum(draft);
+  if (!isSpectrum1D(spectrum)) return;
 
-  if (activeSpectrum?.id) {
-    const { index } = activeSpectrum;
-    const options = (draft.data[index] as Spectrum1D).ranges.options;
-    options.isSumConstant = !options.isSumConstant;
-  }
+  const options = spectrum.ranges.options;
+  options.isSumConstant = !options.isSumConstant;
 }
 
 //action
 function handleUpdateRange(draft: Draft<State>, action: UpdateRangAction) {
   const { range } = action.payload;
 
-  const activeSpectrum = getActiveSpectrum(draft);
-  if (activeSpectrum?.id && range.id) {
-    const datum = draft.data[activeSpectrum?.index] as Spectrum1D;
-    const index = datum.ranges.values.findIndex(
-      (_range) => _range.id === range.id,
-    );
-    datum.ranges.values[index] = range;
-  }
+  const spectrum = getSpectrum(draft);
+  if (!isSpectrum1D(spectrum)) return;
+
+  const index = spectrum.ranges.values.findIndex(
+    (_range) => _range.id === range.id,
+  );
+  spectrum.ranges.values[index] = range;
 }
 
 function toggleRangesViewProperty(
@@ -669,7 +613,10 @@ function handleToggleRangesViewProperty(
 
 function handleCutRange(draft: Draft<State>, action: CutRangAction) {
   const { ranges: cutRanges } = action.payload;
-  const spectrum = getSpectrum(draft) as Spectrum1D;
+
+  const spectrum = getSpectrum(draft);
+  if (!isSpectrum1D(spectrum)) return;
+
   const ranges = spectrum.ranges.values;
 
   for (let i = 0; i < ranges.length; i++) {
@@ -694,16 +641,15 @@ function handleDeleteRangePeak(
   action: DeleteRangePeakAction,
 ) {
   const { id, spectrumKey } = action.payload;
-  const [rangeKey, signalKey, peakKey] = id.split(',');
-  const spectrum = getSpectrum(draft, spectrumKey);
-  if (!spectrum) return;
 
-  const range = (spectrum as any).ranges.values.find(
-    (range: any) => range.id === rangeKey,
-  );
-  const signal = range?.signals.find((singla: any) => singla.id === signalKey);
+  const spectrum = getSpectrum(draft, spectrumKey);
+  if (!isSpectrum1D(spectrum)) return;
+
+  const [rangeKey, signalKey, peakKey] = id.split(',');
+  const range = spectrum.ranges.values.find((range) => range.id === rangeKey);
+  const signal = range?.signals.find((signal) => signal.id === signalKey);
   if (signal) {
-    signal.peaks = signal.peaks?.filter((peak: any) => peak.id !== peakKey);
+    signal.peaks = signal.peaks?.filter((peak) => peak.id !== peakKey);
   }
 }
 
@@ -712,14 +658,13 @@ function handleChangeRangeAssignmentLabel(
   action: ChangeRangeAssignmentLabelAction,
 ) {
   const { rangeId, value, spectrumId } = action.payload;
-  const spectrum = getSpectrum(draft, spectrumId);
 
-  if (!spectrum || !isSpectrum1D(spectrum)) return;
+  const spectrum = getSpectrum(draft, spectrumId);
+  if (!isSpectrum1D(spectrum)) return;
 
   initializeRangeViewObject(draft, spectrum.id);
 
   const rangesView = draft.view.ranges[spectrum.id];
-
   if (!rangesView.showAssignmentsLabels) {
     rangesView.showAssignmentsLabels = true;
   }

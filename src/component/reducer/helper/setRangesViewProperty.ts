@@ -41,7 +41,7 @@ export function setRangesViewProperty<T extends keyof RangesViewState>(
   if (!spectrumKey) {
     const activeSpectrum = getActiveSpectrum(draft);
 
-    if (!activeSpectrum?.id) return;
+    if (!activeSpectrum) return;
 
     spectrumKey = activeSpectrum.id;
   }

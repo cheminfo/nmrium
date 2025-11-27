@@ -60,7 +60,7 @@ export function initiateDatum2D(
   options: InitiateDatum2DOptions = {},
 ): Spectrum2D {
   const { usedColors, colors } = options;
-  const datum: any = {
+  const datum: Spectrum2D = {
     ...spectrum,
     id: spectrum.id || crypto.randomUUID(),
     display: initiateDisplay(spectrum, { usedColors, colors }),
@@ -77,7 +77,7 @@ export function initiateDatum2D(
   datum.originalData = datum.data;
   datum.filters = initiateFilters(spectrum?.filters);
 
-  datum.zones = initiateZones(spectrum, datum as Spectrum2D);
+  datum.zones = initiateZones(spectrum, datum);
 
   //reapply filters after load the original data
   Filters2DManager.reapplyFilters(datum);

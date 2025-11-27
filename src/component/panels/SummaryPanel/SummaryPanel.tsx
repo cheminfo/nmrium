@@ -369,9 +369,9 @@ function SummaryPanel() {
           dispatch({
             type: 'DELETE_1D_SIGNAL',
             payload: {
-              spectrum,
+              spectrumId: spectrum.id,
               range,
-              signal,
+              signalId: signal.id,
             },
           });
         }
@@ -388,9 +388,9 @@ function SummaryPanel() {
           dispatch({
             type: 'DELETE_2D_SIGNAL',
             payload: {
-              spectrum,
+              spectrumId: spectrum.id,
               zone,
-              signal,
+              signalId: signal.id,
             },
           });
         }
@@ -414,9 +414,9 @@ function SummaryPanel() {
           dispatch({
             type: 'SET_2D_SIGNAL_PATH_LENGTH',
             payload: {
-              spectrum,
+              spectrumId: spectrum.id,
               zone,
-              signal,
+              signalId: signal.id,
               pathLength: link.signal.j?.pathLength,
             },
           });

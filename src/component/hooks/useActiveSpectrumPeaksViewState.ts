@@ -24,12 +24,8 @@ export function useActiveSpectrumPeaksViewState() {
     return inset.view.peaks;
   }
 
-  if (
-    activeSpectrum?.id &&
-    activeSpectrum?.selected &&
-    peaks[activeSpectrum?.id]
-  ) {
-    return peaks[activeSpectrum?.id];
+  if (activeSpectrum?.selected && peaks[activeSpectrum.id]) {
+    return peaks[activeSpectrum.id];
   } else {
     return defaultPeaksViewState;
   }

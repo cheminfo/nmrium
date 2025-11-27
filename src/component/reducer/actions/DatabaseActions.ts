@@ -88,7 +88,7 @@ function handleResurrectSpectrum(
     let options: { from?: number; to?: number } = {};
     let info: Partial<Info1D> = { solvent, name: names[0], nucleus };
 
-    if (activeSpectrum && isSpectrum1D(activeSpectrum)) {
+    if (isSpectrum1D(activeSpectrum)) {
       const {
         data: { x },
         info: spectrumInfo,

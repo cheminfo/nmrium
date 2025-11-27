@@ -22,12 +22,8 @@ export function useActiveSpectrumIntegralsViewState() {
     return inset.view.integrals;
   }
 
-  if (
-    activeSpectrum?.id &&
-    activeSpectrum?.selected &&
-    integrals[activeSpectrum?.id]
-  ) {
-    return integrals[activeSpectrum?.id];
+  if (activeSpectrum?.selected && integrals[activeSpectrum.id]) {
+    return integrals[activeSpectrum.id];
   } else {
     return defaultIntegralsViewState;
   }

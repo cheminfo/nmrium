@@ -27,7 +27,7 @@ export function useSpectrumWithDataSource(
       return getSpectrum(dataSource, inset.spectrumKey, defaultValue);
     }
 
-    if (dataSource && activeSpectrum?.id && activeSpectrum?.selected) {
+    if (dataSource && activeSpectrum?.selected) {
       return getSpectrum(dataSource, activeSpectrum.id, defaultValue);
     }
 

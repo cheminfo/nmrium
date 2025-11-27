@@ -1,6 +1,7 @@
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
 
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.ts';
 import groupByInfoKey from '../../utility/groupByInfoKey.js';
 import nucleusToString from '../../utility/nucleusToString.js';
 import type { State, VerticalAlignment } from '../Reducer.js';
@@ -31,9 +32,9 @@ function changeSpectrumVerticalAlignment(
   if (draft.data && draft.data.length > 0) {
     let dataPerNucleus: Spectrum1D[] = [];
     if (['auto-check', 'stack'].includes(options.verticalAlign || '')) {
-      dataPerNucleus = (draft.data as Spectrum1D[]).filter(
-        (datum) => datum.info.nucleus === nucleus && datum.info.dimension === 1,
-      );
+      dataPerNucleus = draft.data.filter(
+        (datum) => datum.info.nucleus === nucleus && isSpectrum1D(datum),
+      ) as Spectrum1D[];
     }
     if (nucleus) {
       if (verticalAlign === 'auto-check') {

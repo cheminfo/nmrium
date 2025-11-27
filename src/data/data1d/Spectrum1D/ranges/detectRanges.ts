@@ -5,23 +5,14 @@ import { isProton } from '../../../utilities/isProton.ts';
 import type { SumParams } from '../SumManager.js';
 import { initSumOptions } from '../SumManager.js';
 
-import autoRangesDetection from './autoRangesDetection.js';
+import type { AutoRangesDetectionOptions } from './autoRangesDetection.js';
+import { autoRangesDetection } from './autoRangesDetection.js';
 
-interface DetectRangesOptions {
+export interface DetectRangesOptions {
   windowFromIndex?: number;
   windowToIndex?: number;
-  rangePicking: {
-    integrationSum?: number; // default 100
-    compile?: boolean; //default true
-    frequencyCluster?: number; // default 16
-    clean?: number; // default 0.3
-    keepPeaks?: boolean; //default true
-  };
-  peakPicking: {
-    thresholdFactor?: number; // default 8
-    minMaxRatio?: number; // default 0.1
-    direction?: 'negative' | 'positive' | 'both'; //default positive
-  };
+  rangePicking: Exclude<AutoRangesDetectionOptions['rangePicking'], undefined>;
+  peakPicking: Exclude<AutoRangesDetectionOptions['peakPicking'], undefined>;
   impurities?: {
     solvent: string;
   };
