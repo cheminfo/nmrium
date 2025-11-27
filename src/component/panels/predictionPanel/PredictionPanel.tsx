@@ -53,6 +53,7 @@ export default function PredictionPanel() {
   const dispatch = useDispatch();
   const toaster = useToaster();
   const { logger } = useLogger();
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [molfile, setMolfile] = useState<string | null>(null);
   const [isFlipped, setFlipStatus] = useState(false);
@@ -60,21 +61,28 @@ export default function PredictionPanel() {
   const { open: openAccordionPanel } = useAccordionControls();
   const predictionPreferences = usePanelPreferences('prediction');
   const { modal, openMoleculeEditor } = useMoleculeEditor(true);
-  const refreshSlider = useRef<boolean>(false);
+  const refreshSlider = useRef<boolean>(true);
 
   const [initialMolfile] = useState(molfile ?? '');
 
   useEffect(() => {
     if (
-      Array.isArray(molecules) &&
-      molecules.length > 0 &&
-      refreshSlider.current
+      !Array.isArray(molecules) ||
+      molecules.length === 0 ||
+      !refreshSlider.current
     ) {
-      const newIndex = molecules.length - 1;
-      setCurrentIndex(newIndex);
-      setMolfile(molecules[newIndex].molfile);
-      refreshSlider.current = false;
+      return;
     }
+
+    const lastIndex = molecules.length - 1;
+    const lastMolfile = molecules[lastIndex]?.molfile ?? null;
+
+    if (!lastMolfile) return;
+
+    setCurrentIndex(lastIndex);
+    setMolfile(lastMolfile);
+
+    refreshSlider.current = false;
   }, [molecules]);
 
   function changeHandler(event: CanvasEditorOnChangeMolecule) {
