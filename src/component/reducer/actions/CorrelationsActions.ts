@@ -1,4 +1,3 @@
-import type { Spectrum1D, Spectrum2D } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
 import { original } from 'immer';
 import lodashCloneDeep from 'lodash/cloneDeep.js';
@@ -11,6 +10,8 @@ import type {
 } from 'nmr-correlation';
 import { buildCorrelationData, setCorrelation } from 'nmr-correlation';
 
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.ts';
+import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.ts';
 import {
   findRange,
   findSignal1D,
@@ -143,27 +144,25 @@ function handleDeleteCorrelation(
   // delete all signals linked to the correlation
   for (const link of correlation.links) {
     const spectrum = findSpectrum(draft.data, link.experimentID, false);
-    if (spectrum) {
-      if (spectrum.info.dimension === 1) {
-        const range = findRange(spectrum as Spectrum1D, link.signal.id);
-        const signal = findSignal1D(spectrum as Spectrum1D, link.signal.id);
-        if (range && signal) {
-          deleteSignal1D(draft, {
-            spectrum,
-            range,
-            signal,
-          });
-        }
-      } else if (spectrum.info.dimension === 2) {
-        const zone = findZone(spectrum as Spectrum2D, link.signal.id);
-        const signal = findSignal2D(spectrum as Spectrum2D, link.signal.id);
-        if (zone && signal) {
-          deleteSignal2D(draft, {
-            spectrum,
-            zone,
-            signal,
-          });
-        }
+    if (isSpectrum1D(spectrum)) {
+      const range = findRange(spectrum, link.signal.id);
+      const signal = findSignal1D(spectrum, link.signal.id);
+      if (range && signal) {
+        deleteSignal1D(draft, {
+          spectrumId: spectrum.id,
+          range,
+          signalId: signal.id,
+        });
+      }
+    } else if (isSpectrum2D(spectrum)) {
+      const zone = findZone(spectrum, link.signal.id);
+      const signal = findSignal2D(spectrum, link.signal.id);
+      if (zone && signal) {
+        deleteSignal2D(draft, {
+          spectrumId: spectrum.id,
+          zone,
+          signalId: signal.id,
+        });
       }
     }
   }

@@ -17,11 +17,11 @@ export default function useActiveSpectrumStyleOptions(
 
   return useMemo(() => {
     const index = activeSpectra?.findIndex(
-      (activeSpectrum) => activeSpectrum?.selected && activeSpectrum.id === id,
+      (activeSpectrum) => activeSpectrum.selected && activeSpectrum.id === id,
     );
     let isNoneSelected = false;
     isNoneSelected =
-      activeSpectra?.every((activeSpectrum) => !activeSpectrum?.selected) ||
+      activeSpectra?.every((activeSpectrum) => !activeSpectrum.selected) ||
       false;
 
     const isActive =

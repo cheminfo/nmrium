@@ -71,7 +71,7 @@ export function ApodizationLine() {
   const indicatorColor = useIndicatorLineColor();
   if (
     !processedSpectrum ||
-    !activeSpectrum?.id ||
+    !activeSpectrum ||
     selectedTool !== Filters1D.apodization.name ||
     isInset
   ) {

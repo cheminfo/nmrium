@@ -28,7 +28,7 @@ export function setIntegralsViewProperty<T extends keyof IntegralsViewState>(
 
   const activeSpectrum = getActiveSpectrum(draft);
 
-  if (!activeSpectrum?.id) return;
+  if (!activeSpectrum) return;
 
   const id = activeSpectrum.id;
 
