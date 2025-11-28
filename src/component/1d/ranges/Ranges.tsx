@@ -39,8 +39,7 @@ function useStackRangesAssignmentsLabels(ranges: RangeType[]) {
   const processedRanges: ProcessedRange[] = [];
 
   for (const range of ranges) {
-
-    const { from, signals, } = range;
+    const { from, signals } = range;
 
     const startPosition = scaleX()(from);
     for (const signal of signals) {
@@ -52,12 +51,12 @@ function useStackRangesAssignmentsLabels(ranges: RangeType[]) {
         labelWidth,
         startPosition,
         signalId: id,
-        assignment
-      })
+        assignment,
+      });
     }
   }
 
-  processedRanges.sort((a, b) => (b.startPosition - a.startPosition));
+  processedRanges.sort((a, b) => b.startPosition - a.startPosition);
   return stackOverlappingLabelsMap(processedRanges, {
     startPositionKey: 'startPosition',
     labelWidthKey: 'labelWidth',
@@ -88,8 +87,6 @@ function RangesInner({
     </g>
   );
 }
-
-
 
 const MemoizedRanges = memo(RangesInner);
 

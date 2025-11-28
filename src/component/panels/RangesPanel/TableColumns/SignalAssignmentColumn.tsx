@@ -3,8 +3,7 @@ import { EditableColumn } from '../../../elements/EditableColumn.tsx';
 import type { BaseRangeColumnProps, OnHoverEvent } from '../RangesTableRow.tsx';
 
 interface SignalAssignmentColumnProps
-  extends Omit<BaseRangeColumnProps, 'format'>,
-  OnHoverEvent {
+  extends Omit<BaseRangeColumnProps, 'format'>, OnHoverEvent {
   highlight: {
     isActive: boolean;
   };
@@ -29,7 +28,7 @@ export function SignalAssignmentColumn({
   }
 
   return (
-    <td  {...onHover}>
+    <td {...onHover}>
       <EditableColumn
         value={signal?.assignment || ''}
         onSave={saveHandler}

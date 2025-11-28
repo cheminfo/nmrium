@@ -75,7 +75,15 @@ function Tree(props: TreeProps) {
     signalIndex,
     range,
     startY: originStartY,
-    treeNodes: { multiplicity = '', nodes, min, max, signalKey, diaIDs, assignment: assignmentLabel },
+    treeNodes: {
+      multiplicity = '',
+      nodes,
+      min,
+      max,
+      signalKey,
+      diaIDs,
+      assignment: assignmentLabel,
+    },
   } = props;
   const { from, to } = range;
   const { width } = useChartData();
@@ -120,15 +128,14 @@ function Tree(props: TreeProps) {
   const hasDiaIDs = Array.isArray(diaIDs) && diaIDs.length > 0;
   const isAssignmentActive = assignment.isActive;
 
-
   const actionsButtons = useAssignmentsPopoverActionsButtons({
     isUnAssignButtonVisible: isAssignmentActive || hasDiaIDs,
     isAssignLabelButtonVisible: !assignmentLabel,
     isUnAssignLabelButtonVisible: !!assignmentLabel,
     onAssign: assignHandler,
     onUnAssign: unAssignHandler,
-    rangeId: range.id
-  })
+    rangeId: range.id,
+  });
 
   if (!multiplicity) return null;
 
@@ -146,8 +153,6 @@ function Tree(props: TreeProps) {
       },
     });
   }
-
-
 
   const isHighlighted = highlight.isActive || isAssignmentActive;
   const padding = boxPadding * widthRatio;

@@ -72,11 +72,9 @@ function ActionButton(props: ButtonProps) {
   return <Button {...props} />;
 }
 
-
 function filterButtons(buttons: ActionButtonProps[]) {
   const visibleButtons: ActionButtonProps[] = [];
   let disablePopover = true;
-
 
   for (const button of buttons) {
     const isSeparatorComponent = isSeparator(button);
@@ -89,8 +87,7 @@ function filterButtons(buttons: ActionButtonProps[]) {
     }
   }
 
-  return { visibleButtons, disablePopover }
-
+  return { visibleButtons, disablePopover };
 }
 
 export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {

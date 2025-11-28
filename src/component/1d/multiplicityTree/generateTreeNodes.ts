@@ -79,7 +79,14 @@ export function generateTreeNodes(range: Range, spectrumData: Spectrum1D) {
   for (const signal of signals || []) {
     nodes = [];
 
-    const { multiplicity, js, delta, id: signalKey, diaIDs, assignment } = signal;
+    const {
+      multiplicity,
+      js,
+      delta,
+      id: signalKey,
+      diaIDs,
+      assignment,
+    } = signal;
     const minMax = { min: delta, max: delta };
 
     nodes.push({

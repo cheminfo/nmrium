@@ -6,7 +6,10 @@ interface StackOverlappingLabelsOptions<T> {
   padding?: number;
 }
 
-export type StackOverlappingLabelsMapReturnType = Record<string | number, number>;
+export type StackOverlappingLabelsMapReturnType = Record<
+  string | number,
+  number
+>;
 
 type StackOverlappingLabelsArrayItemReturnType<T> = T & {
   stackIndex: number;
@@ -42,7 +45,6 @@ export function stackOverlappingLabelsMap<T extends Record<string, any>>(
 ): StackOverlappingLabelsMapReturnType {
   const { idKey } = options;
   const groups = stackOverlappingLabels(items, options);
-  console.log(groups)
 
   const stackMap: StackOverlappingLabelsMapReturnType = {};
   for (const group of groups) {

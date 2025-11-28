@@ -18,7 +18,7 @@ interface AssignmentLabelProps {
 
 export function AssignmentLabel(props: AssignmentLabelProps) {
   const { range, width, stackIndex, signal } = props;
-  const { id, } = range;
+  const { id } = range;
   const { assignment } = signal;
   const { showAssignmentsLabels } = useActiveSpectrumRangesViewState();
   const dispatch = useDispatch();
@@ -38,7 +38,7 @@ export function AssignmentLabel(props: AssignmentLabelProps) {
       payload: {
         value,
         rangeId: id,
-        signalId: signal.id
+        signalId: signal.id,
       },
     });
   }

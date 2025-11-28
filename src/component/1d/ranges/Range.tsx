@@ -33,26 +33,18 @@ import { AssignmentLabel } from './AssignmentLabel.tsx';
 import { Atoms } from './Atoms.js';
 import { useAssignmentsPopoverActionsButtons } from './useAssignmentsPopoverActionsButtons.tsx';
 
-
 interface RangeProps {
   selectedTool: string;
   range: RangeType;
   relativeFormat: string;
-  signalsStackIndexes: StackOverlappingLabelsMapReturnType
+  signalsStackIndexes: StackOverlappingLabelsMapReturnType;
 }
 
 const minWidth = 10;
 
 function Range(options: RangeProps) {
-  const { range, selectedTool, relativeFormat, signalsStackIndexes } =
-    options;
-  const {
-    id,
-    integration,
-    signals,
-    from,
-    to
-  } = range;
+  const { range, selectedTool, relativeFormat, signalsStackIndexes } = options;
+  const { id, integration, signals, from, to } = range;
   const isInset = useIsInset();
   const spectrum = useSpectrum();
   const isAssignBtnTrigged = useRef(false);
@@ -137,8 +129,8 @@ function Range(options: RangeProps) {
   const isSignalAssigned = isRangeAssigned(range);
   const isResizingActive = useResizerStatus('rangePicking');
   const hasOnlyOneSignal = signals.length === 1;
-  const isAssigned = hasOnlyOneSignal && signal.diaIDs ? signal.diaIDs.length > 0 : false
-
+  const isAssigned =
+    hasOnlyOneSignal && signal.diaIDs ? signal.diaIDs.length > 0 : false;
 
   const actionsButtons = useAssignmentsPopoverActionsButtons({
     isToggleMultiplicityTreeButtonVisible: !hasOnlyOneSignal,
@@ -148,9 +140,8 @@ function Range(options: RangeProps) {
     isUnAssignLabelButtonVisible: hasOnlyOneSignal && !!signal.assignment,
     onAssign: assignHandler,
     onUnAssign: unAssignHandler,
-    rangeId: range.id
-  })
-
+    rangeId: range.id,
+  });
 
   const isOpen = isAssignBtnTrigged.current ? isAssignmentActive : undefined;
 
@@ -213,10 +204,10 @@ function Range(options: RangeProps) {
                     key={signal.id}
                     stackIndex={signalsStackIndexes?.[signal.id] || 0}
                     range={range}
-                    width={rangeWidth} signal={signal} />
-
+                    width={rangeWidth}
+                    signal={signal}
+                  />
                 ))}
-
 
                 <Atoms range={range} x={rangeWidth / 2} />
 

@@ -30,7 +30,6 @@ import type { ExtractedSignal } from '../utilities/extractSpectrumSignals.js';
 import { extractSpectrumSignals } from '../utilities/extractSpectrumSignals.js';
 import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 
-
 const Rect = styled.rect<{ isActive: boolean }>`
   fill: ${({ isActive }) => (isActive ? '#ff6f0057' : 'transparent')};
 
@@ -181,10 +180,10 @@ function isRangeSignalAssigned(
   return isAssigned(otherProps);
 }
 
-
 function hasDiaIds(signals: Signal1D[]) {
-
-  return signals.some((signal) => Array.isArray(signal?.diaIDs) && signal.diaIDs.length > 0);
+  return signals.some(
+    (signal) => Array.isArray(signal?.diaIDs) && signal.diaIDs.length > 0,
+  );
 }
 
 function IndicationLine(props: IndicationLineProps) {
@@ -245,7 +244,7 @@ function IndicationLine(props: IndicationLineProps) {
         value: '',
         rangeId,
         spectrumId,
-        signalId
+        signalId,
       },
     });
   }
@@ -377,7 +376,7 @@ function AssignmentLabel(props: AssignmentLabelProps) {
         value,
         rangeId,
         spectrumId,
-        signalId
+        signalId,
       },
     });
   }

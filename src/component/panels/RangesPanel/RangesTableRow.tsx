@@ -181,7 +181,6 @@ function RangesTableRow({
         </td>
       )}
       {preferences.showAssignmentLabel && (
-
         <SignalAssignmentColumn
           row={rowData}
           highlight={highlightSignal}

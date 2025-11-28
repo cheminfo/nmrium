@@ -1,4 +1,4 @@
-import type { Range, SignalKind } from '@zakodium/nmr-types';
+import type { Range, Signal1D, SignalKind } from '@zakodium/nmr-types';
 import type {
   BoundingBox,
   RangesViewState,
@@ -85,7 +85,10 @@ interface UnAssign1DSignalOptions {
   spectrumId?: string; // If not specified, the currently active spectrum will be used by default.
   signalIndex?: number;
 }
-type UnAssign1DSignalAction = ActionType<'UNASSIGN_1D_SIGNAL', UnAssign1DSignalOptions>;
+type UnAssign1DSignalAction = ActionType<
+  'UNASSIGN_1D_SIGNAL',
+  UnAssign1DSignalOptions
+>;
 
 type Assign1DSignalAction = ActionType<
   'ASSIGN_1D_SIGNAL',
@@ -151,7 +154,7 @@ type DeleteRangePeakAction = ActionType<
 >;
 type Change1DSignalAssignmentLabelAction = ActionType<
   'CHANGE_1D_SIGNAL_ASSIGNMENT_LABEL',
-  { rangeId: string, signalId?: string; value: string; spectrumId?: string }
+  { rangeId: string; signalId?: string; value: string; spectrumId?: string }
 >;
 
 type ChangeRangesViewFloatingBoxBoundingAction = ActionType<
@@ -187,10 +190,10 @@ export type RangesActions =
   | ChangeRangesViewFloatingBoxBoundingAction
   | ChangeRangesAssignmentsLabelsByDiaIdsAction
   | ActionType<
-    | 'AUTO_RANGES_SPECTRA_PICKING'
-    | 'CHANGE_RANGES_SUM_FLAG'
-    | 'TOGGLE_RANGES_PEAKS_DISPLAYING_MODE'
-  >;
+      | 'AUTO_RANGES_SPECTRA_PICKING'
+      | 'CHANGE_RANGES_SUM_FLAG'
+      | 'TOGGLE_RANGES_PEAKS_DISPLAYING_MODE'
+    >;
 
 function getRangeIndex(spectrum: Spectrum1D, rangeId: string) {
   return spectrum.ranges.values.findIndex((range) => range.id === rangeId);
@@ -379,7 +382,10 @@ function handleDeleteSignal(draft: Draft<State>, action: DeleteSignalAction) {
   deleteSignal1D(draft, action.payload);
 }
 
-function clearSignalAssignment(draft: Draft<State>, options: UnAssign1DSignalOptions = {}) {
+function clearSignalAssignment(
+  draft: Draft<State>,
+  options: UnAssign1DSignalOptions = {},
+) {
   const { spectrumId, rangeKey, signalIndex = -1 } = options;
 
   const spectrum = getSpectrum(draft, spectrumId);
@@ -402,12 +408,18 @@ function clearSignalAssignment(draft: Draft<State>, options: UnAssign1DSignalOpt
 }
 
 //action
-function handleUnAssign1DSignal(draft: Draft<State>, action: UnAssign1DSignalAction) {
+function handleUnAssign1DSignal(
+  draft: Draft<State>,
+  action: UnAssign1DSignalAction,
+) {
   clearSignalAssignment(draft, action.payload);
 }
 
 //action
-function handleAssign1DSignal(draft: Draft<State>, action: Assign1DSignalAction) {
+function handleAssign1DSignal(
+  draft: Draft<State>,
+  action: Assign1DSignalAction,
+) {
   const { keys, diaIDs, nbAtoms, spectrumId, assignment } = action.payload;
 
   const spectrum = getSpectrum(draft, spectrumId);
@@ -431,7 +443,6 @@ function handleAssign1DSignal(draft: Draft<State>, action: Assign1DSignalAction)
 
   signal.diaIDs = diaIDs;
   signal.nbAtoms = nbAtoms + (signal.nbAtoms || 0);
-
 }
 //action
 function handleChangeRangesAssignmentLabelsByDiaIds(
@@ -452,11 +463,13 @@ function handleChangeRangesAssignmentLabelsByDiaIds(
     const { signals = [] } = range;
 
     for (const signal of signals) {
-      if (previousAssignment === signal.assignment && uniqueDiaIds.has(signal.id)) {
+      if (
+        previousAssignment === signal.assignment &&
+        uniqueDiaIds.has(signal.id)
+      ) {
         signal.assignment = assignment;
       }
     }
-
   }
 }
 //action
@@ -662,14 +675,12 @@ function handleChange1DSignalAssignmentLabel(
   if (!range) return;
 
   const signal = signalId
-    ? range.signals.find(s => s.id === signalId)
+    ? range.signals.find((s) => s.id === signalId)
     : range.signals[0];
-
 
   if (!signal) return;
 
   signal.assignment = value;
-
 }
 
 function handleChangeRangesViewFloatingBoxBounding(

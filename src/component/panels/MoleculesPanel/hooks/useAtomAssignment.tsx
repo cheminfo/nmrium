@@ -187,7 +187,6 @@ export default function useAtomAssignment() {
     const [, { index: signalIndex }] = assignKeys;
     diaIDs = zone?.signals[signalIndex][axis]?.diaIDs || [];
 
-
     const uniqueDiaIDs = getUniqueDiaIDs(diaIDs, atom);
     dispatch({
       type: 'ASSIGN_ZONE',
@@ -234,8 +233,8 @@ export default function useAtomAssignment() {
     // on range/zone level
     const currentSpectrum = activatedAssignment.spectrumId
       ? spectra.find(
-        (spectrum) => spectrum.id === activatedAssignment.spectrumId,
-      )
+          (spectrum) => spectrum.id === activatedAssignment.spectrumId,
+        )
       : spectrum;
 
     if (!currentSpectrum) return;

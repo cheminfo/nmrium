@@ -10,7 +10,7 @@ const fontSize = 12;
 const marginTop = 45;
 
 function getDiaIds(range: Range) {
-  const {  signals } = range;
+  const { signals } = range;
   const ids = [];
   for (const signal of signals) {
     if (signal?.diaIDs) {
