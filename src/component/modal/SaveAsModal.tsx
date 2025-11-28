@@ -5,6 +5,7 @@ import {
   Radio,
   RadioGroup,
 } from '@blueprintjs/core';
+import { useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
 import type { ExportOptions } from '../../data/SpectraManager.js';
@@ -58,7 +59,7 @@ function SaveAsModal(props: SaveAsModalProps) {
 }
 function InnerSaveAsModal(props: InnerSaveAsModalProps) {
   const { onCloseDialog } = props;
-  const { sources, data } = useChartData();
+  const { sources, data, aggregator } = useChartData();
   const { saveHandler } = useExport();
   const experimentalFlagEnabled = useCheckExperimentalFeature();
 
@@ -72,6 +73,11 @@ function InnerSaveAsModal(props: InnerSaveAsModalProps) {
   const { handleSubmit, control, register } = useForm({
     defaultValues: { ...INITIAL_VALUE, name: fileName },
   });
+
+  const containsLinkedFiles = useMemo(() => {
+    return aggregator.sources.some((s) => !s.baseURL?.startsWith('ium:'));
+  }, [aggregator]);
+
   return (
     <Dialog
       isOpen
@@ -129,7 +135,7 @@ function InnerSaveAsModal(props: InnerSaveAsModalProps) {
                   {experimentalFlagEnabled && (
                     <Radio
                       label="Full data (external data linked, experimental)"
-                      disabled={Object.keys(sources).length === 0}
+                      disabled={!containsLinkedFiles}
                       value={
                         DataExportOptions.SELF_CONTAINED_EXTERNAL_DATASOURCE
                       }

@@ -1,6 +1,9 @@
 import type { Range, Signal1D, Signal2D, Zone } from '@zakodium/nmr-types';
 import type { Spectrum1D, Spectrum2D, Spectrum } from '@zakodium/nmrium-core';
 
+import { isSpectrum1D } from '../data1d/Spectrum1D/index.ts';
+import { isSpectrum2D } from '../data2d/Spectrum2D/index.ts';
+
 function findSpectrum(
   spectraData: Spectrum[],
   spectrumID: string,
@@ -75,14 +78,12 @@ function findRangeOrZoneID(
   checkIsVisible: boolean,
 ) {
   const spectrum = findSpectrum(spectraData, experimentID, checkIsVisible);
-  if (spectrum) {
-    if (spectrum.info.dimension === 1) {
-      const range = findRange(spectrum as Spectrum1D, signalID);
-      if (range) return range.id;
-    } else if (spectrum.info.dimension === 2) {
-      const zone = findZone(spectrum as Spectrum2D, signalID);
-      if (zone) return zone.id;
-    }
+  if (isSpectrum1D(spectrum)) {
+    const range = findRange(spectrum, signalID);
+    if (range) return range.id;
+  } else if (isSpectrum2D(spectrum)) {
+    const zone = findZone(spectrum, signalID);
+    if (zone) return zone.id;
   }
   return undefined;
 }

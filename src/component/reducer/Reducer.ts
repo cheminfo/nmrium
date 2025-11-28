@@ -1,6 +1,7 @@
 import type { BaselineCorrectionZone } from '@zakodium/nmr-types';
 import type { Spectrum, ViewState } from '@zakodium/nmrium-core';
-import type { FileCollection, Source } from 'file-collection';
+import type { Source } from 'file-collection';
+import { FileCollection } from 'file-collection';
 import type { Draft } from 'immer';
 import { original, produce } from 'immer';
 import type { CorrelationData } from 'nmr-correlation';
@@ -114,7 +115,7 @@ export function getDefaultViewState(): ViewState {
 export const getInitialState = (): State => ({
   actionType: 'INITIALIZE_NMRIUM',
   sources: {},
-  fileCollections: {},
+  aggregator: new FileCollection(),
   data: [],
   tempData: null,
   xDomain: [],
@@ -192,15 +193,20 @@ export interface State {
 
   /**
    * web source of data
-   * Record key is identifier of the source (stored in spectra)
+   * Record key is an identifier of the source (stored in spectra)
+   *
+   * Is needed until we remove the support of the old nmrium format
    */
   sources: Record<string, Source>;
 
   /**
-   * File collections of the loaded files
-   * Record key is identifier of the fileCollection (stored in spectra)
+   * Aggregation of file collections used to load the data
+   * - external data sources (web-source, import jdx from url, ...)
+   * - multiples files open / drag and drop
+   *
+   * Each of them is separated in an uuid folder
    */
-  fileCollections: Record<string, FileCollection>;
+  aggregator: FileCollection;
 
   /**
    * spectra list (1d and 2d)
@@ -669,10 +675,12 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return MoleculeActions.handlePredictSpectraFromMolecule(draft, action);
       case 'FLOAT_MOLECULE_OVER_SPECTRUM':
         return MoleculeActions.handleFloatMoleculeOverSpectrum(draft, action);
-      case 'TOGGLE_MOLECULE_ATOM_NUMBER':
-        return MoleculeActions.handleToggleMoleculeAtomsNumbers(draft, action);
+      case 'CHANGE_MOLECULE_ANNOTATION':
+        return MoleculeActions.handleChangeMoleculeAnnotation(draft, action);
       case 'CHANGE_FLOAT_MOLECULE_POSITION':
         return MoleculeActions.handleChangeFloatMoleculePosition(draft, action);
+      case 'TOGGLE_MOLECULE_LABEL':
+        return MoleculeActions.handleToggleMoleculeLabel(draft, action);
 
       case 'SET_CORRELATIONS_MF':
         return CorrelationsActions.handleSetMF(draft, action);
@@ -727,6 +735,11 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return RangesActions.handleChangeRangeAssignmentLabel(draft, action);
       case 'CHANGE_RANGES_VIEW_FLOATING_BOX_BOUNDING':
         return RangesActions.handleChangeRangesViewFloatingBoxBounding(
+          draft,
+          action,
+        );
+      case 'CHANGE_ASSIGNMENT_LABEL_BY_DIAIDS':
+        return RangesActions.handleChangeRangesAssignmentLabelsByDiaIds(
           draft,
           action,
         );
@@ -829,7 +842,7 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
 export const spectrumReducer: Reducer<State, Action> =
   produce(innerSpectrumReducer);
 
-function getDebugState(draft: any) {
+function getDebugState(draft: Draft<State>) {
   const state = original(draft);
   const string = JSON.stringify(state, (key, value: any) => {
     if (ArrayBuffer.isView(value)) {
@@ -841,7 +854,7 @@ function getDebugState(draft: any) {
     return value;
   });
   if (string.length > 800000) {
-    // fallback, better to have something as a string t han nothing
+    // fallback, better to have something as a string than nothing
     return string.slice(0, 800000);
   }
   return JSON.parse(string);

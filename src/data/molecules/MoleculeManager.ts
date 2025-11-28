@@ -8,7 +8,6 @@ import { initMolecule } from './Molecule.js';
 //TODO: Move molecule initialization to nmrium-core and log an error if the molecule cannot be parsed.
 export function fromJSON(
   mols: StateMolecule[],
-  fileCollectionId: string | undefined,
   reservedMolecules: StateMolecule[] = [],
 ) {
   const reservedNumbers = extractLabelsNumbers(reservedMolecules.concat(mols));
@@ -29,9 +28,6 @@ export function fromJSON(
       label: mol.label || `P${getLabelNumber(reservedNumbers)}`,
       id: mol.id,
     };
-    if (fileCollectionId) {
-      moleculeOverride.fileCollectionId = fileCollectionId;
-    }
 
     molecules.push(initMolecule(moleculeOverride));
   }
@@ -104,16 +100,52 @@ function getLabelNumber(reserveNumbers: number[]): number {
   return 1;
 }
 
+export const parseErrorMessage =
+  'Failed to parse SMILES or molfile. Please paste a valid format';
+
+function validateMolecules(molecules: StateMolecule[]) {
+  if (!molecules?.length) {
+    throw new Error(parseErrorMessage);
+  }
+
+  const failedIndexes: number[] = [];
+  for (let i = 0; i < molecules.length; i++) {
+    const { molfile } = molecules[i];
+    const molecule = Molecule.fromMolfile(molfile);
+    const atomCount = molecule.getAllAtoms();
+
+    if (atomCount === 0) {
+      failedIndexes.push(i);
+    }
+  }
+
+  if (failedIndexes.length > 0) {
+    throw new Error(
+      `Error parsing molecule at position(s):[${failedIndexes.join(', ')}]. ${parseErrorMessage}`,
+    );
+  }
+}
+
 /**
  * We will extract the molecule(s) from the text.
  * Because a molfile is actually a SDF we can just call 'readSDF' method
  * @param text - text containing one or several molecules in SMILES, molfile or SDF format
  * @returns
  */
-export function getMolecules(text: string) {
-  // parse SDF
-  if (/v[23]000/i.test(text)) {
-    return readSDF(text);
+export function getMolecules(text?: string) {
+  if (!text?.trim()) {
+    throw new Error(parseErrorMessage);
   }
-  return readSMILES(text);
+
+  // parse SDF
+  let molecules = [];
+  const parse = /v[23]000/i.test(text) ? readSDF : readSMILES;
+  try {
+    molecules = parse(text);
+  } catch (error) {
+    throw new Error(parseErrorMessage, { cause: error });
+  }
+
+  validateMolecules(molecules);
+  return molecules;
 }

@@ -50,7 +50,8 @@ interface HeaderElement {
 }
 
 interface DraggableDialogProps
-  extends Omit<DialogProps, 'hasBackdrop'>,
+  extends
+    Omit<DialogProps, 'hasBackdrop'>,
     Pick<OverlayProps, 'hasBackdrop'>,
     HeaderElement {
   placement?: DialogPlacement;

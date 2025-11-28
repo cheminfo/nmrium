@@ -18,7 +18,8 @@ type SecondaryGridElementProps = PrimaryGridElementProps & {
 };
 
 interface D3AxisProps
-  extends BaseD3AxisProps,
+  extends
+    BaseD3AxisProps,
     Pick<SVGAttributes<SVGGElement>, 'transform' | 'children' | 'className'>,
     UseLinearPrimaryTicksResult {
   gridSize?: number;
@@ -29,8 +30,7 @@ interface D3AxisProps
 
 interface TicketsProps extends UseLinearPrimaryTicksResult, BaseD3AxisProps {}
 interface BaseLineProps
-  extends Pick<UseLinearPrimaryTicksResult, 'scale'>,
-    BaseD3AxisProps {}
+  extends Pick<UseLinearPrimaryTicksResult, 'scale'>, BaseD3AxisProps {}
 
 interface GridProps<T> extends UseLinearPrimaryTicksResult {
   axisPosition: AxisPosition;

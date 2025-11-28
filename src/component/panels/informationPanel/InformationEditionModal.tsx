@@ -50,8 +50,10 @@ interface InformationEditionModalProps {
   isOpen: boolean;
 }
 
-interface InnerInformationPanelProps
-  extends Omit<InformationEditionModalProps, 'isOpen'> {
+interface InnerInformationPanelProps extends Omit<
+  InformationEditionModalProps,
+  'isOpen'
+> {
   metaInfo: MetaInfoItem[];
 }
 
@@ -151,6 +153,7 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
             <Input2Controller
               control={control}
               name={`metaInfo.${row.index}.value`}
+              mapValue={String}
               noShadowBox
             />
           );
@@ -196,6 +199,7 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
   );
 
   const values = watch('metaInfo');
+
   return (
     <>
       <StyledDialogBody>

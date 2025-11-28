@@ -40,12 +40,8 @@ export function useActiveSpectrumRangesViewState() {
     return inset.view.ranges;
   }
 
-  if (
-    activeSpectrum?.id &&
-    activeSpectrum?.selected &&
-    ranges[activeSpectrum?.id]
-  ) {
-    return ranges[activeSpectrum?.id];
+  if (activeSpectrum?.selected && ranges[activeSpectrum.id]) {
+    return ranges[activeSpectrum.id];
   } else {
     return getDefaultRangesViewState(nucleus);
   }

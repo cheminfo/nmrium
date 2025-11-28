@@ -3,6 +3,17 @@ import { expect, test } from '@playwright/test';
 
 import NmriumPage from '../NmriumPage/index.js';
 
+async function checkMoleculeStructureIsExists(
+  nmrium: NmriumPage,
+  index: number,
+) {
+  const locator = nmrium.page.locator(
+    `_react=MoleculePanel >> _react=MoleculeStructure >> nth=${index} >> svg`,
+  );
+  await expect(locator).toHaveAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  await expect(locator).toBeVisible();
+}
+
 test('should draw structure and display it with MF', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
 
@@ -33,12 +44,7 @@ test('should draw structure and display it with MF', async ({ page }) => {
 
   await test.step('Check the visibly of the benzene molecule', async () => {
     // The molecule SVG rendering should now be visible in the panel.
-    await expect(
-      nmrium.page.locator('.mol-svg-container #molSVG0'),
-    ).toHaveAttribute('xmlns', 'http://www.w3.org/2000/svg');
-    await expect(
-      nmrium.page.locator('.mol-svg-container #molSVG0'),
-    ).toBeVisible();
+    await checkMoleculeStructureIsExists(nmrium, 0);
 
     // The molecular formula should now be visible in the panel.
     await expect(nmrium.page.locator('text=C6H6 - 78.11')).toBeVisible();
@@ -67,12 +73,7 @@ test('should draw structure and display it with MF', async ({ page }) => {
     // Check the visibility.
 
     // The molecule SVG rendering should now be visible in the panel.
-    await expect(
-      nmrium.page.locator('.mol-svg-container #molSVG1'),
-    ).toHaveAttribute('xmlns', 'http://www.w3.org/2000/svg');
-    await expect(
-      nmrium.page.locator('.mol-svg-container #molSVG1'),
-    ).toBeVisible();
+    await checkMoleculeStructureIsExists(nmrium, 1);
 
     // The molecular formula should now be visible in the panel.
     await expect(nmrium.page.locator('text=C6H12 - 84.16')).toBeVisible();
@@ -115,12 +116,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
 
   await test.step('check existing molecule', async () => {
     // The molecule SVG rendering should now be visible in the panel.
-    await expect(
-      nmrium.page.locator('.mol-svg-container #molSVG0'),
-    ).toHaveAttribute('xmlns', 'http://www.w3.org/2000/svg');
-    await expect(
-      nmrium.page.locator('.mol-svg-container #molSVG0'),
-    ).toBeVisible();
+    await checkMoleculeStructureIsExists(nmrium, 0);
 
     // Check the existing molecular formula.
     await expect(nmrium.page.locator('text=C11H14N2O - 190.25')).toBeVisible();
@@ -152,12 +148,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     // Check the visibility.
 
     // The molecule SVG rendering should now be visible in the panel.
-    await expect(
-      nmrium.page.locator('.mol-svg-container #molSVG1'),
-    ).toHaveAttribute('xmlns', 'http://www.w3.org/2000/svg');
-    await expect(
-      nmrium.page.locator('.mol-svg-container #molSVG1'),
-    ).toBeVisible();
+    await checkMoleculeStructureIsExists(nmrium, 1);
 
     // Check the molecular formula.
     await expect(nmrium.page.locator('text=C6H6 - 78.11')).toBeVisible();
@@ -189,13 +180,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     // Check the visibility.
 
     // The molecule SVG rendering should now be visible in the panel.
-    await expect(
-      nmrium.page.locator('.mol-svg-container #molSVG2'),
-    ).toHaveAttribute('xmlns', 'http://www.w3.org/2000/svg');
-    await expect(
-      nmrium.page.locator('.mol-svg-container #molSVG2'),
-    ).toBeVisible();
-
+    await checkMoleculeStructureIsExists(nmrium, 2);
     // Check the molecular formula.
     await expect(nmrium.page.locator('text=C6H12 - 84.16')).toBeVisible();
 
@@ -370,18 +355,22 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
   });
 
   await test.step('Check float molecule', async () => {
-    // Check float molecule btn is off.
-    await expect(
-      nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
-    ).toBeHidden();
-    // Click on float molecule button.
-    await nmrium.clickToolByTitle('Float molecule');
-    // Check floated molecule.
-    await expect(nmrium.page.locator('#molSVG')).toBeVisible();
     // Check float molecule btn is on.
     await expect(
       nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
     ).toBeVisible();
+    // Click on float molecule button to hide it.
+    await nmrium.clickToolByTitle('Float molecule');
+    // Check floated molecule.
+    await expect(
+      nmrium.page.locator(
+        '_react=DraggableStructure >> _react=MoleculeStructure >> nth=0',
+      ),
+    ).toBeVisible();
+    // Check float molecule btn is off.
+    await expect(
+      nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
+    ).toBeHidden();
   });
 
   await test.step('Close float molecule', async () => {
@@ -392,7 +381,11 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
       .locator('_react=ActionButton[tooltipProps.content *= "Hide molecule" i]')
       .click();
     // Check floated molecule.
-    await expect(nmrium.page.locator('#molSVG')).toBeHidden();
+    await expect(
+      nmrium.page.locator(
+        '_react=DraggableStructure >> _react=MoleculeStructure >> nth=0',
+      ),
+    ).toBeHidden();
     await expect(structureLocator).toBeHidden();
     // Check float molecule btn is off.
     await expect(
@@ -401,7 +394,11 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     // Click on float molecule button.
     await nmrium.clickToolByTitle('Float molecule');
     // Check floated molecule.
-    await expect(nmrium.page.locator('#molSVG')).toBeVisible();
+    await expect(
+      nmrium.page.locator(
+        '_react=DraggableStructure >> _react=MoleculeStructure >> nth=0',
+      ),
+    ).toBeVisible();
     // Check float molecule btn is on.
     await expect(
       nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
@@ -422,9 +419,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
         nmrium.page.locator('text=C6H6 - 78.11 >> nth=1'),
       ).toBeVisible();
       await expect(nmrium.page.locator('text=C6H6 - 78.11')).toHaveCount(3);
-      await expect(
-        nmrium.page.locator('.mol-svg-container #molSVG3'),
-      ).toBeVisible();
+      await checkMoleculeStructureIsExists(nmrium, 3);
     });
     await test.step('Delete the copy', async () => {
       // Delete molecule.
@@ -434,7 +429,11 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
       // Check deleted molecule.
       await expect(nmrium.page.locator('text=C6H6 - 78.11')).toHaveCount(2);
       // Check floated molecule.
-      await expect(nmrium.page.locator('#molSVG')).toBeVisible();
+      await expect(
+        nmrium.page.locator(
+          '_react=DraggableStructure >> _react=MoleculeStructure >> nth=0',
+        ),
+      ).toBeVisible();
     });
     // Go to the next molecule.
     await nmrium.page.click('_react=Arrow[direction="right"]');
@@ -444,7 +443,11 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     // Delete molecule.
     await nmrium.clickToolByTitle('Delete molecule');
     // Check deleted Floated molecule.
-    await expect(nmrium.page.locator('#molSVG')).toBeHidden();
+    await expect(
+      nmrium.page.locator(
+        '_react=DraggableStructure >> _react=MoleculeStructure',
+      ),
+    ).toHaveCount(1);
     // Check selected molecule.
 
     if (browserName !== 'webkit') {
@@ -458,9 +461,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     }
 
     await expect(nmrium.page.locator('text=C11H14N2O - 190.25')).toBeVisible();
-    await expect(
-      nmrium.page.locator('.mol-svg-container #molSVG0'),
-    ).toBeVisible();
+    await checkMoleculeStructureIsExists(nmrium, 0);
   });
 
   await test.step('Delete molecule', async () => {
@@ -479,9 +480,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     }
 
     await expect(nmrium.page.locator('text=C6H12 - 84.16')).toBeVisible();
-    await expect(
-      nmrium.page.locator('.mol-svg-container #molSVG1'),
-    ).toBeVisible();
+    await checkMoleculeStructureIsExists(nmrium, 1);
 
     // Delete molecule.
     await nmrium.clickToolByTitle('Delete molecule');
@@ -498,9 +497,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     }
 
     await expect(nmrium.page.locator('text=C11H14N2O - 190.25')).toBeVisible();
-    await expect(
-      nmrium.page.locator('.mol-svg-container #molSVG0'),
-    ).toBeVisible();
+    await checkMoleculeStructureIsExists(nmrium, 0);
   });
 
   await test.step('Empty panel', async () => {
@@ -557,12 +554,7 @@ test('check callbacks count on changing structures', async ({ page }) => {
     // Open the "Structures" panel.
     await nmrium.clickPanel('Chemical structures');
     // The molecule SVG rendering should now be visible in the panel.
-    await expect(
-      nmrium.page.locator('.mol-svg-container #molSVG0'),
-    ).toHaveAttribute('xmlns', 'http://www.w3.org/2000/svg');
-    await expect(
-      nmrium.page.locator('.mol-svg-container #molSVG0'),
-    ).toBeVisible();
+    await checkMoleculeStructureIsExists(nmrium, 0);
 
     // The molecular formula should now be visible in the panel.
     await expect(nmrium.page.locator('text=C11H14N2O - 190.25')).toBeVisible();
@@ -589,16 +581,11 @@ test('check callbacks count on changing structures', async ({ page }) => {
     await nmrium.page.click('button >> text=Save');
 
     await expect(dataCount).toContainText(String(initialDataCount + 1));
-    await expect(viewCount).toContainText(String(initialViewCount));
+    await expect(viewCount).toContainText(String(initialViewCount + 1));
     // Check the visibility.
 
     // The molecule SVG rendering should now be visible in the panel.
-    await expect(
-      nmrium.page.locator('.mol-svg-container #molSVG1'),
-    ).toHaveAttribute('xmlns', 'http://www.w3.org/2000/svg');
-    await expect(
-      nmrium.page.locator('.mol-svg-container #molSVG1'),
-    ).toBeVisible();
+    await checkMoleculeStructureIsExists(nmrium, 1);
 
     // The molecular formula should now be visible in the panel.
     await expect(nmrium.page.locator('text=C6H12 - 84.16')).toBeVisible();
@@ -613,14 +600,12 @@ test('check callbacks count on changing structures', async ({ page }) => {
     // Check float molecule btn is off.
     await expect(
       nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
-    ).toBeHidden();
-    // Click on float molecule button.
-    await nmrium.clickToolByTitle('Float molecule');
+    ).toBeVisible();
     // Check floated molecule.
-    await expect(nmrium.page.locator('#molSVG')).toBeVisible();
-    // Check float molecule btn is on.
     await expect(
-      nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
+      nmrium.page.locator(
+        '_react=DraggableStructure >> _react=MoleculeStructure >> nth=0',
+      ),
     ).toBeVisible();
 
     await expect(dataCount).toContainText(String(initialDataCount + 1));

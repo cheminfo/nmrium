@@ -40,7 +40,7 @@ import type { State } from '../Reducer.js';
 import { setZoom } from '../helper/Zoom1DManager.js';
 import { getActiveSpectra } from '../helper/getActiveSpectra.js';
 import { getActiveSpectraAsObject } from '../helper/getActiveSpectraAsObject.js';
-import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
+import { getSpectrum } from '../helper/getSpectrum.ts';
 import { removeSpectrumRelatedObjectsById } from '../helper/removeSpectrumRelatedObjectsById.js';
 import type { ActionType } from '../types/ActionType.js';
 
@@ -176,15 +176,13 @@ function checkIsVisible2D(datum: Spectrum2D): boolean {
   return true;
 }
 
-function setVisible(datum: any, flag: any) {
-  if (datum.info.dimension === 2) {
-    (datum as Spectrum2D).display.isPositiveVisible = flag;
-    (datum as Spectrum2D).display.isNegativeVisible = flag;
-    (datum as Spectrum2D).display.isVisible = checkIsVisible2D(
-      datum as Spectrum2D,
-    );
+function setVisible(datum: Spectrum, flag: boolean) {
+  if (isSpectrum2D(datum)) {
+    datum.display.isPositiveVisible = flag;
+    datum.display.isNegativeVisible = flag;
+    datum.display.isVisible = checkIsVisible2D(datum);
   } else {
-    (datum as Spectrum1D).display.isVisible = flag;
+    datum.display.isVisible = flag;
   }
 }
 
@@ -436,14 +434,14 @@ function handleChangeSpectrumSetting(
   action: ChangeSpectrumSettingAction,
 ) {
   const { id, display } = action.payload;
-  const index = draft.data.findIndex((d) => d.id === id);
-  if (index !== -1) {
-    const spectrum = draft.data[index];
-    spectrum.display = display;
-    if (isSpectrum2D(spectrum)) {
-      const { checkLevel } = contoursManager(spectrum);
-      checkLevel();
-    }
+
+  const spectrum = getSpectrum(draft, id);
+  if (!spectrum) return;
+
+  spectrum.display = display;
+  if (isSpectrum2D(spectrum)) {
+    const { checkLevel } = contoursManager(spectrum);
+    checkLevel();
   }
 }
 
@@ -512,30 +510,28 @@ function handleAddMissingProjectionHandler(
   draft: any,
   action: AddMissingProjectionAction,
 ) {
-  const state = original(draft);
   const { nucleus } = action.payload;
 
-  const activeSpectrum = getActiveSpectrum(draft);
+  const spectrum = getSpectrum(draft);
+  if (!isSpectrum2D(spectrum)) return;
 
-  if (activeSpectrum?.id) {
-    const { index } = activeSpectrum;
-    const Spectrum2D = state.data[index];
-    const { info, data } = Spectrum2D;
-    for (const n of nucleus) {
-      const datum1D = getMissingProjection(
-        info.isFid ? (data as NmrData2DFid).re : (data as NmrData2DFt).rr,
-        n,
-        info,
-        draft.usedColors,
-      );
-      draft.data.push(datum1D);
-    }
-    const groupByNucleus = groupByInfoKey('nucleus');
-    const dataGroupByNucleus = groupByNucleus(draft.data);
-    setTab(draft, dataGroupByNucleus, draft.view.spectra.activeTab, true);
-    setDomain(draft);
-    setMode(draft);
+  const { info, data } = spectrum;
+  for (const n of nucleus) {
+    const datum1D = getMissingProjection(
+      info.isFid
+        ? (original(data) as NmrData2DFid).re
+        : (original(data) as NmrData2DFt).rr,
+      n,
+      info,
+      draft.usedColors,
+    );
+    draft.data.push(datum1D);
   }
+  const groupByNucleus = groupByInfoKey('nucleus');
+  const dataGroupByNucleus = groupByNucleus(draft.data);
+  setTab(draft, dataGroupByNucleus, draft.view.spectra.activeTab, true);
+  setDomain(draft);
+  setMode(draft);
 }
 
 //action
@@ -546,9 +542,9 @@ function handleAlignSpectraHandler(
   if (draft.data && draft.data.length > 0) {
     for (const datum of draft.data) {
       if (
-        datum.info?.dimension === 1 &&
+        isSpectrum1D(datum) &&
         datum.info.nucleus === draft.view.spectra.activeTab &&
-        !datum.info?.isFid
+        !datum.info.isFid
       ) {
         const shift = getReferenceShift(datum, { ...action.payload });
         rollbackSpectrumByFilter(draft, {
@@ -556,7 +552,7 @@ function handleAlignSpectraHandler(
           searchBy: 'name',
           applyFilter: false,
         });
-        Filters1DManager.applyFilters(datum as Spectrum1D, [
+        Filters1DManager.applyFilters(datum, [
           {
             name: 'shiftX',
             value: { shift },
@@ -754,11 +750,10 @@ function handleUpdateSpectrumMeta(
     payload: { meta },
   } = action;
 
-  const activeSpectrum = getActiveSpectrum(draft);
+  const spectrum = getSpectrum(draft);
+  if (!spectrum) return;
 
-  if (!activeSpectrum) return;
-
-  draft.data[activeSpectrum.index].customInfo = meta;
+  spectrum.customInfo = meta;
 }
 
 export {

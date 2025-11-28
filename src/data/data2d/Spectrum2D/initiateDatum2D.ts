@@ -19,7 +19,6 @@ const defaultMinMax = { z: [], minX: 0, minY: 0, maxX: 0, maxY: 0 };
 interface InitiateDatum2DOptions {
   usedColors?: UsedColors;
   colors?: SpectrumTwoDimensionsColor[];
-  fileCollectionId?: string;
 }
 
 function initiateDisplay(spectrum: any, options: InitiateDatum2DOptions) {
@@ -60,15 +59,13 @@ export function initiateDatum2D(
   spectrum: any,
   options: InitiateDatum2DOptions = {},
 ): Spectrum2D {
-  const { usedColors, colors, fileCollectionId } = options;
-  const datum: any = { ...spectrum };
-
-  datum.id = spectrum.id || crypto.randomUUID();
-  datum.fileCollectionId = spectrum.fileCollectionId || fileCollectionId;
-
-  datum.display = initiateDisplay(spectrum, { usedColors, colors });
-
-  datum.info = initiateInfo(spectrum);
+  const { usedColors, colors } = options;
+  const datum: Spectrum2D = {
+    ...spectrum,
+    id: spectrum.id || crypto.randomUUID(),
+    display: initiateDisplay(spectrum, { usedColors, colors }),
+    info: initiateInfo(spectrum),
+  };
 
   datum.originalInfo = datum.info;
 
@@ -80,7 +77,7 @@ export function initiateDatum2D(
   datum.originalData = datum.data;
   datum.filters = initiateFilters(spectrum?.filters);
 
-  datum.zones = initiateZones(spectrum, datum as Spectrum2D);
+  datum.zones = initiateZones(spectrum, datum);
 
   //reapply filters after load the original data
   Filters2DManager.reapplyFilters(datum);

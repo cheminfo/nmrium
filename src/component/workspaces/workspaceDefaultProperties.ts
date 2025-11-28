@@ -75,7 +75,7 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
     spectraRendering: 'auto',
     loggingLevel: 'info',
     popupLoggingLevel: 'error',
-    invert: false,
+    invert: true,
     invertScroll: false,
   },
   nuclei: [
@@ -274,6 +274,19 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
       format: 'IMJA',
       couplingFormat: '0.00',
       deltaFormat: '0.00',
+    },
+  },
+  defaultMoleculeSettings: {
+    showLabel: false,
+    atomAnnotation: 'custom-labels',
+    floating: {
+      visible: true,
+      bounding: {
+        x: 10,
+        y: 10,
+        width: 130,
+        height: 120,
+      },
     },
   },
 };

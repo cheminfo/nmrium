@@ -12,6 +12,7 @@ import {
   resurrectSpectrumFromRanges,
   resurrectSpectrumFromSignals,
 } from '../../../data/data1d/Spectrum1D/ranges/resurrectSpectrum.js';
+import { filterDatabaseInfoEntry } from '../../utility/filterDatabaseInfoEntry.ts';
 import type { State } from '../Reducer.js';
 import { setZoom } from '../helper/Zoom1DManager.js';
 import zoomHistoryManager from '../helper/ZoomHistoryManager.js';
@@ -59,7 +60,6 @@ function handleResurrectSpectrum(
     ranges,
     signals,
     solvent,
-    meta = {},
     names = [],
     id: spectrumID,
   } = databaseEntry;
@@ -68,6 +68,7 @@ function handleResurrectSpectrum(
 
   if (source === 'jcamp') {
     const { spectrum } = action.payload;
+
     resurrectedSpectrum = {
       ...spectrum,
       id: spectrumID,
@@ -87,7 +88,7 @@ function handleResurrectSpectrum(
     let options: { from?: number; to?: number } = {};
     let info: Partial<Info1D> = { solvent, name: names[0], nucleus };
 
-    if (activeSpectrum && isSpectrum1D(activeSpectrum)) {
+    if (isSpectrum1D(activeSpectrum)) {
       const {
         data: { x },
         info: spectrumInfo,
@@ -115,7 +116,8 @@ function handleResurrectSpectrum(
 
   if (!resurrectedSpectrum) return;
 
-  resurrectedSpectrum.customInfo = meta;
+  const filterDatabaseEntryInfo = filterDatabaseInfoEntry(databaseEntry);
+  resurrectedSpectrum.customInfo = filterDatabaseEntryInfo;
 
   draft.data.push(resurrectedSpectrum);
 

@@ -1,23 +1,21 @@
 /** @jsxImportSource @emotion/react */
 import type { SerializedStyles } from '@emotion/react';
 import { css } from '@emotion/react';
-import { memo, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
-import OCLnmr from 'react-ocl-nmr';
 
 import type {
   MoleculesView,
   StateMoleculeExtended,
 } from '../../../data/molecules/Molecule.js';
 import { useChartData } from '../../context/ChartContext.js';
-import { useDispatch } from '../../context/DispatchContext.js';
 import { NextPrev } from '../../elements/NextPrev.js';
-import { useHighlightColor } from '../../hooks/useHighlightColor.js';
 import { useMoleculeEditor } from '../../modal/MoleculeStructureEditorModal.js';
 
 import MoleculeHeader from './MoleculeHeader.js';
+import { MoleculeOptionsPanel } from './MoleculeOptionsPanel.tsx';
 import MoleculePanelHeader from './MoleculePanelHeader.js';
-import useAtomAssignment from './useAtomAssignment.js';
+import { MoleculeStructure } from './MoleculeStructure.tsx';
 
 const styles: Record<
   'panel' | 'innerPanel' | 'molecule' | 'slider' | 'items',
@@ -61,20 +59,13 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
   const { molecules: moleculesProp, moleculesView } = props;
   const [currentIndex, setCurrentIndex] = useState(0);
   const [molecules, setMolecules] = useState<StateMoleculeExtended[]>([]);
+  const [isFlipped, setFlipStatus] = useState(false);
 
-  const dispatch = useDispatch();
   const { modal, openMoleculeEditor } = useMoleculeEditor();
-  const highlightColor = useHighlightColor();
-
-  const {
-    currentDiaIDsToHighlight,
-    handleOnAtomHover,
-    handleOnClickAtom,
-    assignedDiaIDsMerged,
-  } = useAtomAssignment();
 
   useEffect(() => {
     if (moleculesProp) {
+      // eslint-disable-next-line react-you-might-not-need-an-effect/no-derived-state
       setMolecules((prevMolecules) => {
         if (moleculesProp.length > prevMolecules.length) {
           setCurrentIndex(molecules.length);
@@ -84,14 +75,6 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
     }
   }, [molecules.length, moleculesProp]);
 
-  function handleReplaceMolecule(molecule: any, molfile: any) {
-    const { id, label } = molecule;
-    dispatch({
-      type: 'SET_MOLECULE',
-      payload: { molfile, id, label },
-    });
-  }
-
   function moleculeIndexHandler(index: any) {
     setCurrentIndex(index);
   }
@@ -99,89 +82,82 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
   const lastIndex = molecules?.length > 0 ? molecules.length - 1 : 0;
   const activeIndex = Math.min(currentIndex, lastIndex);
 
+  const settingsPanelHandler = useCallback(() => {
+    setFlipStatus(!isFlipped);
+  }, [isFlipped]);
+
+  const onClose = useCallback(() => {
+    setFlipStatus(false);
+  }, []);
+
   return (
     <div css={styles.panel}>
-      <MoleculePanelHeader
-        currentIndex={activeIndex}
-        moleculesView={moleculesView}
-        molecules={molecules}
-        onOpenMoleculeEditor={() => openMoleculeEditor()}
-        onMoleculeIndexChange={moleculeIndexHandler}
-      />
+      {!isFlipped && (
+        <MoleculePanelHeader
+          currentIndex={activeIndex}
+          moleculesView={moleculesView}
+          molecules={molecules}
+          onOpenMoleculeEditor={() => openMoleculeEditor()}
+          onMoleculeIndexChange={moleculeIndexHandler}
+          onClickPreferences={settingsPanelHandler}
+        />
+      )}
+      {isFlipped && <MoleculeOptionsPanel onClose={onClose} />}
+      {!isFlipped && (
+        <div css={styles.innerPanel}>
+          <div css={styles.molecule}>
+            <ResponsiveChart>
+              {({ height, width }) => {
+                return (
+                  <NextPrev
+                    onChange={(slideIndex) => setCurrentIndex(slideIndex)}
+                    index={currentIndex}
+                  >
+                    {molecules && molecules.length > 0 ? (
+                      molecules.map((mol: StateMoleculeExtended, index) => {
+                        return (
+                          <div key={mol.id} css={styles.items}>
+                            <MoleculeHeader
+                              currentMolecule={mol}
+                              molecules={molecules}
+                            />
 
-      <div css={styles.innerPanel}>
-        <div css={styles.molecule}>
-          <ResponsiveChart>
-            {({ height, width }) => {
-              return (
-                <NextPrev
-                  onChange={(slideIndex) => setCurrentIndex(slideIndex)}
-                  index={currentIndex}
-                >
-                  {molecules && molecules.length > 0 ? (
-                    molecules.map((mol: StateMoleculeExtended, index) => (
-                      <div key={mol.id} css={styles.items}>
-                        <MoleculeHeader
-                          currentMolecule={mol}
-                          molecules={molecules}
-                        />
-
-                        <div
-                          css={styles.slider}
-                          className="mol-svg-container"
-                          onDoubleClick={() => openMoleculeEditor(mol)}
-                          style={{
-                            backgroundColor:
-                              (index + 1) % 2 !== 0 ? '#fafafa' : 'white',
-                          }}
-                        >
-                          <OCLnmr
-                            id={`molSVG${index}`}
-                            width={width}
-                            height={height - 60}
-                            molfile={mol.molfile || ''}
-                            setMolfile={(molfile) =>
-                              handleReplaceMolecule(mol, molfile)
-                            }
-                            setSelectedAtom={handleOnClickAtom}
-                            atomHighlightColor={
-                              currentDiaIDsToHighlight &&
-                              currentDiaIDsToHighlight.length > 0
-                                ? '#ff000080'
-                                : highlightColor
-                            }
-                            atomHighlightOpacity={1}
-                            highlights={
-                              currentDiaIDsToHighlight &&
-                              currentDiaIDsToHighlight.length > 0
-                                ? currentDiaIDsToHighlight
-                                : assignedDiaIDsMerged
-                            }
-                            atomHighlightStrategy="prefer-editor-props"
-                            setHoverAtom={handleOnAtomHover}
-                            showAtomNumber={
-                              moleculesView?.[mol.id]?.showAtomNumber || false
-                            }
-                            noCarbonLabelWithCustomLabel
-                          />
-                        </div>
+                            <div
+                              css={styles.slider}
+                              className="mol-svg-container"
+                              onDoubleClick={() => openMoleculeEditor(mol)}
+                              style={{
+                                backgroundColor:
+                                  (index + 1) % 2 !== 0 ? '#fafafa' : 'white',
+                              }}
+                            >
+                              <MoleculeStructure
+                                index={index}
+                                width={width}
+                                height={height - 60}
+                                molecule={mol}
+                                moleculeView={moleculesView?.[mol.id] || {}}
+                              />
+                            </div>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <div
+                        css={styles.slider}
+                        style={{ height: '100%' }}
+                        onClick={() => openMoleculeEditor()}
+                      >
+                        <span>Click to draw molecule</span>
                       </div>
-                    ))
-                  ) : (
-                    <div
-                      css={styles.slider}
-                      style={{ height: '100%' }}
-                      onClick={() => openMoleculeEditor()}
-                    >
-                      <span>Click to draw molecule</span>
-                    </div>
-                  )}
-                </NextPrev>
-              );
-            }}
-          </ResponsiveChart>
+                    )}
+                  </NextPrev>
+                );
+              }}
+            </ResponsiveChart>
+          </div>
         </div>
-      </div>
+      )}
       {modal}
     </div>
   );

@@ -27,8 +27,7 @@ interface RemoveAssignmentsButtonProps {
   onUnlink?: (element: any, b: boolean) => void;
 }
 interface RangAssignmentColumnProps
-  extends Omit<RangeColumnProps, 'format'>,
-    RemoveAssignmentsButtonProps {
+  extends Omit<RangeColumnProps, 'format'>, RemoveAssignmentsButtonProps {
   assignment: AssignmentsData;
   highlight: {
     isActive: boolean;

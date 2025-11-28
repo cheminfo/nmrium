@@ -224,7 +224,6 @@ test('Exclusion zones', async ({ page }) => {
       axis: 'x',
       startX: 100,
       endX: 150,
-      shift: true,
     });
     // check that the filters applied to all spectra
     await expect(
@@ -251,7 +250,6 @@ test('Exclusion zones', async ({ page }) => {
       axis: 'x',
       startX: 200,
       endX: 220,
-      shift: true,
     });
 
     // the number of exclusion zones  should become 14 since the previous count for all spectra is 13

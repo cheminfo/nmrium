@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 import NmriumPage from '../NmriumPage/index.js';
+import type { BoundingBox } from '../playwright_types.ts';
 
 async function addIntegral(
   nmrium: NmriumPage,
@@ -12,7 +13,6 @@ async function addIntegral(
     axis: 'x',
     startX,
     endX,
-    shift: true,
   });
 
   // Should have integral with at least 1000 points

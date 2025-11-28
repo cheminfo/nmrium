@@ -1,10 +1,11 @@
-import type { StateMolecule } from '@zakodium/nmrium-core';
+import type { MoleculeView, StateMolecule } from '@zakodium/nmrium-core';
 import { Molecule } from 'openchemlib';
 
 import getAtomsFromMF from '../utilities/getAtomsFromMF.js';
 
 export interface StateMoleculeExtended
-  extends Required<Pick<StateMolecule, 'id' | 'molfile' | 'label'>>,
+  extends
+    Required<Pick<StateMolecule, 'id' | 'molfile' | 'label'>>,
     Omit<StateMolecule, 'id' | 'molfile' | 'label'> {
   mf: string;
   em: number;
@@ -29,22 +30,7 @@ export const DRAGGABLE_STRUCTURE_INITIAL_BOUNDING_REACT: MoleculeBoundingRect =
   };
 
 export type MoleculesView = Record<string, MoleculeView>;
-export interface MoleculeView {
-  floating: {
-    /**
-     * If the floating molecule is shown.
-     */
-    visible: boolean;
-    /**
-     * Floating molecule position.
-     */
-    bounding: MoleculeBoundingRect;
-  };
-  /**
-   * Show/Hide atoms numbers on the molecule.
-   */
-  showAtomNumber: boolean;
-}
+
 export function initMolecule(
   options: Partial<StateMolecule> = {},
 ): StateMoleculeExtended {
@@ -59,9 +45,7 @@ export function initMolecule(
     id,
     molfile,
     label,
-    sourceSelector: options.sourceSelector,
-    sourceId: options.sourceId,
-    fileCollectionId: options.fileCollectionId,
+    selector: options.selector,
     mf: mfInfo.formula,
     em: mfInfo.absoluteWeight,
     mw: mfInfo.relativeWeight,
@@ -71,15 +55,12 @@ export function initMolecule(
 }
 
 export function toJSON(molecule: StateMoleculeExtended): StateMolecule {
-  const { molfile, label, id, fileCollectionId, sourceSelector, sourceId } =
-    molecule;
+  const { molfile, label, id, selector } = molecule;
 
   return {
     molfile,
     label,
     id,
-    fileCollectionId,
-    sourceSelector,
-    sourceId,
+    selector,
   };
 }

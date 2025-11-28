@@ -40,24 +40,30 @@ export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
         let nmriumState: Partial<NmriumState>;
         let containsNmrium: boolean;
         let parseMetaFileResult: ParseResult<any> | null = null;
-        const { onLoadProcessing, spectraColors } = workspacePreferences;
-        const { nmrLoaders: sourceSelector } = preferences.current;
+        const { onLoadProcessing, spectraColors, defaultMoleculeSettings } =
+          workspacePreferences;
+        const { nmrLoaders: selector } = preferences.current;
 
         const parsingOptions: Partial<ParsingOptions> = {
-          sourceSelector,
+          selector,
           logger: logger.child({ context: 'nmr-processing' }),
           onLoadProcessing,
           experimentalFeatures,
         };
 
+        let aggregator: FileCollection | undefined;
         let fileCollection: FileCollection | undefined;
-        let fileCollections: Map<string, FileCollection> | undefined;
+        let selectorRoot: string | undefined;
+        let resetSourceObject = false;
+
         if (files.length === 1 && files[0].name.endsWith('.nmrium.zip')) {
-          [nmriumState, fileCollections] = await core.readNMRiumArchive(
+          const [state, ium] = await core.readNMRiumArchive(
             files[0].stream(),
             parsingOptions,
           );
+          nmriumState = state;
           containsNmrium = true;
+          aggregator = ium;
         } else {
           for (const file of files) {
             if (file.name.endsWith('.nmrium.zip')) {
@@ -84,10 +90,13 @@ export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
           if (metaFile) {
             parseMetaFileResult = await parseMetaFile(metaFile);
           }
-          ({ nmriumState, containsNmrium } = await core.read(
+          ({ nmriumState, containsNmrium, selectorRoot } = await core.read(
             fileCollection,
             parsingOptions,
           ));
+          if (containsNmrium) {
+            resetSourceObject = true;
+          }
         }
 
         if (nmriumState.settings) {
@@ -106,8 +115,11 @@ export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
             containsNmrium,
             parseMetaFileResult,
             spectraColors,
+            aggregator,
             fileCollection,
-            fileCollections,
+            selectorRoot,
+            resetSourceObject,
+            defaultMoleculeSettings,
           },
         });
       }

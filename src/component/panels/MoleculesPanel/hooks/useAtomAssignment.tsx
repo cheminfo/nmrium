@@ -3,28 +3,30 @@ import type { DiaIDAndInfo } from 'openchemlib-utils';
 import type { MouseEvent } from 'react';
 import { useMemo, useRef } from 'react';
 
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
-import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/isSpectrum2D.ts';
-import { ConcatenationString } from '../../../data/utilities/Concatenation.js';
-import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated.js';
-import { useTracesSpectra } from '../../2d/useTracesSpectra.ts';
-import type { Assignments, Axis } from '../../assignment/AssignmentsContext.js';
-import { useAssignmentContext } from '../../assignment/AssignmentsContext.js';
-import { useChartData } from '../../context/ChartContext.js';
-import { useDispatch } from '../../context/DispatchContext.js';
-import { useToaster } from '../../context/ToasterContext.js';
-import type { HighlightEventSource } from '../../highlight/index.js';
-import { useHighlightData } from '../../highlight/index.js';
-import useSpectrum from '../../hooks/useSpectrum.js';
+import { isSpectrum1D } from '../../../../data/data1d/Spectrum1D/isSpectrum1D.ts';
+import { isSpectrum2D } from '../../../../data/data2d/Spectrum2D/isSpectrum2D.ts';
+import { ConcatenationString } from '../../../../data/utilities/Concatenation.ts';
+import checkModifierKeyActivated from '../../../../data/utilities/checkModifierKeyActivated.ts';
+import { useTracesSpectra } from '../../../2d/useTracesSpectra.ts';
+import type {
+  Assignments,
+  Axis,
+} from '../../../assignment/AssignmentsContext.ts';
+import { useAssignmentContext } from '../../../assignment/AssignmentsContext.ts';
+import { useChartData } from '../../../context/ChartContext.tsx';
+import { useDispatch } from '../../../context/DispatchContext.tsx';
+import { useToaster } from '../../../context/ToasterContext.tsx';
+import type { HighlightEventSource } from '../../../highlight/index.tsx';
+import { useHighlightData } from '../../../highlight/index.tsx';
+import useSpectrum from '../../../hooks/useSpectrum.ts';
+import type { AtomData } from '../utilities/AtomData.ts';
+import { extractFromAtom } from '../utilities/extractFromAtom.ts';
+import { getAssignIds } from '../utilities/getAssignIds.ts';
+import { getCurrentDiaIDsToHighlight } from '../utilities/getCurrentDiaIDsToHighlight.ts';
+import { getHighlightsOnHover } from '../utilities/getHighlightsOnHover.ts';
+import { getUniqueDiaIDs } from '../utilities/getUniqueDiaIDs.ts';
 
-import type { AtomData } from './Utilities.js';
-import {
-  extractFromAtom,
-  getAssignIds,
-  getCurrentDiaIDsToHighlight,
-  getHighlightsOnHover,
-  getUniqueDiaIDs,
-} from './Utilities.js';
+import { useExtractAtomAssignmentLabel } from './useExtractAtomAssignmentLabel.ts';
 
 function flattenAssignedDiaIDs(assignments: Assignments) {
   const assignedDiaIDs: string[] = [];
@@ -84,6 +86,7 @@ export default function useAtomAssignment() {
   const highlightData = useHighlightData();
   const highlightedIdDsRef = useRef<string[]>([]);
   const assignments = useAssignmentContext();
+  const { getAssignmentLabelById } = useExtractAtomAssignmentLabel();
   const { activated: activatedAssignment } = assignments;
 
   const activatedKey = activatedAssignment
@@ -126,8 +129,16 @@ export default function useAtomAssignment() {
     return getCurrentDiaIDsToHighlight(assignments).concat(highlights);
   }, [assignments, highlightData.highlight, spectrum, tracesSpectra]);
 
-  function assign1DAtom(spectrum: Spectrum1D, key: string, atom: AtomData) {
-    const assignKeys = getAssignIds(spectrum, key);
+  interface Assign1DOptions {
+    spectrum: Spectrum1D;
+    assignId: string;
+    atom: AtomData;
+    assignmentLabel?: string;
+  }
+
+  function assign1DAtom(options: Assign1DOptions) {
+    const { spectrum, assignId, atom, assignmentLabel } = options;
+    const assignKeys = getAssignIds(spectrum, assignId);
 
     if (!assignKeys) return;
     const [{ index: rangeIndex }] = assignKeys;
@@ -154,6 +165,7 @@ export default function useAtomAssignment() {
         diaIDs: uniqueDiaIDs.diaIDs,
         keys: assignKeys,
         spectrumId,
+        assignment: assignmentLabel || '',
       },
     });
   }
@@ -193,6 +205,7 @@ export default function useAtomAssignment() {
   function handleOnClickAtom(
     diaIDAndInfo: DiaIDAndInfo | undefined,
     event: MouseEvent,
+    moleculeId: string,
   ) {
     if (checkModifierKeyActivated(event) || !activatedAssignment) return;
 
@@ -202,6 +215,10 @@ export default function useAtomAssignment() {
     if (!id || !axis) {
       return;
     }
+
+    const assignmentLabel = diaIDAndInfo?.idCode
+      ? getAssignmentLabelById(moleculeId, diaIDAndInfo.idCode)
+      : '';
     const atomInformation = extractFromAtom(diaIDAndInfo, nucleus, axis);
 
     if (atomInformation.nbAtoms === 0) {
@@ -226,7 +243,12 @@ export default function useAtomAssignment() {
     if (!currentSpectrum) return;
 
     if (isSpectrum1D(currentSpectrum)) {
-      assign1DAtom(currentSpectrum, activatedAssignment.id, atomInformation);
+      assign1DAtom({
+        spectrum: currentSpectrum,
+        assignId: activatedAssignment.id,
+        atom: atomInformation,
+        assignmentLabel,
+      });
     } else {
       assign2DAtom(
         currentSpectrum,

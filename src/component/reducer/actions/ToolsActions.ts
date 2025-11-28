@@ -3,6 +3,7 @@ import type { Spectrum1D, Spectrum2D, Spectrum } from '@zakodium/nmrium-core';
 import { zoomIdentity } from 'd3-zoom';
 import type { Draft } from 'immer';
 
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.ts';
 import { contoursManager } from '../../../data/data2d/Spectrum2D/contours.js';
 import { getXScale } from '../../1d/utilities/scale.js';
 import type { Layout } from '../../2d/utilities/DimensionLayout.js';
@@ -24,7 +25,7 @@ import zoomHistoryManager, {
   addToBrushHistory,
 } from '../helper/ZoomHistoryManager.js';
 import { getActiveSpectra } from '../helper/getActiveSpectra.js';
-import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
+import { getSpectrum } from '../helper/getSpectrum.ts';
 import { getTwoDimensionPhaseCorrectionOptions } from '../helper/getTwoDimensionPhaseCorrectionOptions.js';
 import { getVerticalAlign } from '../helper/getVerticalAlign.js';
 import { setIntegralsViewProperty } from '../helper/setIntegralsViewProperty.js';
@@ -266,16 +267,13 @@ function handleDeleteBaseLineZone(
 }
 
 function handleToggleRealImaginaryVisibility(draft: Draft<State>) {
-  const activeSpectrum = getActiveSpectrum(draft);
+  const spectrum = getSpectrum(draft);
+  if (!isSpectrum1D(spectrum)) return;
 
-  if (activeSpectrum != null) {
-    const { index } = activeSpectrum;
-    const datum = draft.data[index] as Spectrum1D;
+  spectrum.display.isRealSpectrumVisible =
+    !spectrum.display.isRealSpectrumVisible;
 
-    datum.display.isRealSpectrumVisible = !datum.display.isRealSpectrumVisible;
-
-    setDomain(draft);
-  }
+  setDomain(draft);
 }
 
 function handleBrushEnd(draft: Draft<State>, action: BrushEndAction) {
@@ -519,7 +517,7 @@ function hasAcceptedSpectrum(draft: Draft<State>, index: any) {
   if (spectra?.length === 1) {
     const activeSpectrum = spectra[0];
     return (
-      activeSpectrum?.id &&
+      activeSpectrum &&
       !(draft.data[activeSpectrum.index] as Spectrum1D).info.isFid
     );
   }
@@ -529,9 +527,7 @@ function hasAcceptedSpectrum(draft: Draft<State>, index: any) {
 
 //utility
 function setMargin(draft: Draft<State>) {
-  const activeSpectrum = getActiveSpectrum(draft);
-  const spectrum =
-    (activeSpectrum?.id && draft.data[activeSpectrum.index]) || null;
+  const spectrum = getSpectrum(draft);
 
   if (
     draft.displayerMode === '2D' &&

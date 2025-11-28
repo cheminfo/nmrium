@@ -1,9 +1,10 @@
 import { Classes } from '@blueprintjs/core';
 import dlv from 'dlv';
+import type { DatabaseNMREntry } from 'nmr-processing';
 import type { CSSProperties } from 'react';
 import { memo, useMemo } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
-import { FaDownload, FaMinus, FaPlus } from 'react-icons/fa';
+import { FaDownload, FaInfoCircle, FaMinus, FaPlus } from 'react-icons/fa';
 import { IdcodeSvgRenderer, SmilesSvgRenderer } from 'react-ocl';
 import { Button } from 'react-science/ui';
 import type { CellProps } from 'react-table';
@@ -17,6 +18,8 @@ import addCustomColumn from '../../elements/ReactTable/utility/addCustomColumn.j
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus.js';
 import { formatNumber } from '../../utility/formatNumber.js';
+
+import { DatabaseInfo } from './DatabaseInfo.tsx';
 
 interface ToggleEvent {
   onAdd: (row: any) => void;
@@ -144,6 +147,7 @@ const databaseTableColumns = (
                   width={width}
                   idcode={idCode}
                   coordinates={coordinates}
+                  noAtomCustomLabels
                 />
               );
             } else if (smiles) {
@@ -152,6 +156,7 @@ const databaseTableColumns = (
                   height={height}
                   width={width}
                   smiles={smiles}
+                  noAtomCustomLabels
                 />
               );
             } else {
@@ -177,6 +182,33 @@ function DatabaseTable({
 
   const initialColumns = useMemo<ColumnDef[]>(
     () => [
+      {
+        index: 0,
+        id: 'meta',
+        Header: '',
+        style: {
+          width: '1%',
+          maxWidth: '25px',
+          minWidth: '25px',
+          padding: 0,
+        },
+        Cell: ({ row }: CellProps<PrepareDataResult>) => {
+          return (
+            <Button
+              style={{ padding: 0 }}
+              minimal
+              small
+              icon={<FaInfoCircle />}
+              tooltipProps={{
+                content: (
+                  <DatabaseInfo data={row.original as DatabaseNMREntry} />
+                ),
+              }}
+            />
+          );
+        },
+        enableRowSpan: true,
+      },
       {
         index: 10,
         id: 'add-button',

@@ -90,7 +90,7 @@ export default function Test(props: any) {
     void (async () => {
       try {
         const arrayBuffer = await dropFiles[0].arrayBuffer();
-        const decoder = new TextDecoder('utf8');
+        const decoder = new TextDecoder('utf-8');
         const data = JSON.parse(decoder.decode(arrayBuffer));
         setData(data);
       } catch (error) {

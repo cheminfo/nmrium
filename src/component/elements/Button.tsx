@@ -234,8 +234,9 @@ type ElementProps<E = unknown> = E extends ElementType
   ? ComponentPropsWithoutRef<E>
   : never;
 
-interface InnerButtonProps<E extends ElementType = 'button'>
-  extends Partial<ButtonStyle> {
+interface InnerButtonProps<
+  E extends ElementType = 'button',
+> extends Partial<ButtonStyle> {
   toolTip?: string;
   tooltipOrientation?: TooltipOrientation;
   wrapperClassName?: string;

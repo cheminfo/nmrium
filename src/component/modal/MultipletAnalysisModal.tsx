@@ -151,7 +151,7 @@ function InnerMultipleAnalysis(props: InnerMultipleAnalysisProps) {
             frequency: info.originFrequency,
             minimalResolution: 0.1,
             critFoundJ: 0.75,
-            maxTestedJ: 17,
+            maxTestedJ: 25,
             minTestedJ: 1,
             checkSymmetryFirst: false,
             takeBestPartMultiplet: true,

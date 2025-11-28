@@ -1,10 +1,14 @@
 import type { Range } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
+import type { OptionsXYAutoRangesPicking } from 'nmr-processing';
 import { xyAutoRangesPicking } from 'nmr-processing';
 
 import { isProton } from '../../../utilities/isProton.ts';
 
-const defaultPeakPickingOptions = {
+const defaultPeakPickingOptions: Omit<
+  OptionsXYAutoRangesPicking['peakPicking'],
+  'frequency'
+> = {
   minMaxRatio: 1,
   shape: { kind: 'lorentzian' },
   realTopDetection: true,
@@ -13,14 +17,20 @@ const defaultPeakPickingOptions = {
   sensitivity: 100,
   broadWidth: 0.25,
   broadRatio: 0.0025,
-  integrationSum: 100,
   thresholdFactor: 5,
   sgOptions: { windowSize: 7, polynomial: 3 },
 };
 
-export default function autoRangesDetection(
+export interface AutoRangesDetectionOptions {
+  windowFromIndex?: number;
+  windowToIndex?: number;
+  peakPicking?: Omit<OptionsXYAutoRangesPicking['peakPicking'], 'frequency'>;
+  rangePicking?: OptionsXYAutoRangesPicking['ranges'];
+}
+
+export function autoRangesDetection(
   spectrum: Spectrum1D,
-  options: any = {},
+  options: AutoRangesDetectionOptions = {},
 ): Range[] {
   // we calculate the noise but this could be improved
 
@@ -30,7 +40,7 @@ export default function autoRangesDetection(
 
   const { windowFromIndex, windowToIndex, peakPicking, rangePicking } = options;
 
-  const peakPickingOptions = {
+  const peakPickingOptions: OptionsXYAutoRangesPicking['peakPicking'] = {
     ...defaultPeakPickingOptions,
     ...peakPicking,
     frequency: originFrequency,

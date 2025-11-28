@@ -23,8 +23,10 @@ import type { IntegralPanelInnerProps } from './IntegralPanel.js';
 
 const selectStyle = { width: '100%', border: 'none' };
 
-interface IntegralTableProps
-  extends Pick<IntegralPanelInnerProps, 'activeTab'> {
+interface IntegralTableProps extends Pick<
+  IntegralPanelInnerProps,
+  'activeTab'
+> {
   data: Integral[];
   info: Info1D;
 }
