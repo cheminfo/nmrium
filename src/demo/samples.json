@@ -89,6 +89,10 @@
       {
         "file": "./data/BocAA/BocAA.json",
         "title": "1H BocAA"
+      },
+      {
+        "file": "./data/ibuprofen.json",
+        "title": "Full ibuprofen"
       }
     ]
   },
@@ -151,7 +155,8 @@
       {
         "file": "./data/brukerFolders/cosyAndHsqcFid.json",
         "title": "Bruker Directory 2D FIDs"
-      },{
+      },
+      {
         "file": "./data/brukerFolders/hsqcBrukerFilters.json",
         "title": "Bruker Directory 2D processing"
       },

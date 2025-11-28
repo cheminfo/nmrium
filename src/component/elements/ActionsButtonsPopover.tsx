@@ -72,6 +72,24 @@ function ActionButton(props: ButtonProps) {
   return <Button {...props} />;
 }
 
+function filterButtons(buttons: ActionButtonProps[]) {
+  const visibleButtons: ActionButtonProps[] = [];
+  let disablePopover = true;
+
+  for (const button of buttons) {
+    const isSeparatorComponent = isSeparator(button);
+
+    const show = isSeparatorComponent || button?.visible !== false;
+    if (show) visibleButtons.push(button);
+
+    if (!isSeparatorComponent && button?.visible !== false) {
+      disablePopover = false;
+    }
+  }
+
+  return { visibleButtons, disablePopover };
+}
+
 export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
   const {
     targetTagName = 'div',
@@ -88,15 +106,14 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
     offsetYMode = 'fixed',
     offsetXMode = 'fixed',
     autoFlip = true,
+    disabled,
     ...otherProps
   } = props;
 
   const [cursor, setCursor] = useState({ x: 0, y: 0 });
   const Wrapper = targetTagName as any;
 
-  const visibleButtons = buttons.filter(
-    (button) => isSeparator(button) || button?.visible !== false,
-  );
+  const { visibleButtons, disablePopover } = filterButtons(buttons);
 
   const offsetY = offsetYMode === 'fixed' ? externalOffsetY : cursor.y;
   const offsetX = offsetXMode === 'fixed' ? externalOffsetX : cursor.x;
@@ -120,6 +137,7 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
       interactionKind="hover"
       enforceFocus={false}
       onOpening={handleMouseEnter}
+      disabled={disablePopover || disabled}
       renderTarget={({ onMouseEnter, ...otherProps }) => (
         <Wrapper
           {...targetProps}
