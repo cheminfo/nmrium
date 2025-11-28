@@ -50,8 +50,10 @@ interface InformationEditionModalProps {
   isOpen: boolean;
 }
 
-interface InnerInformationPanelProps
-  extends Omit<InformationEditionModalProps, 'isOpen'> {
+interface InnerInformationPanelProps extends Omit<
+  InformationEditionModalProps,
+  'isOpen'
+> {
   metaInfo: MetaInfoItem[];
 }
 

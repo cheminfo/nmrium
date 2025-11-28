@@ -20,7 +20,6 @@ import {
 } from '../../../data/data1d/Spectrum1D/index.js';
 import type { FilterType } from '../../utility/filterType.js';
 import type { State } from '../Reducer.js';
-import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
 import getRange from '../helper/getRange.js';
 import { getSpectrum } from '../helper/getSpectrum.js';
 import { setIntegralsViewProperty } from '../helper/setIntegralsViewProperty.js';
@@ -70,21 +69,15 @@ function handleChangeIntegralSum(
   action: ChangeIntegralSumAction,
 ) {
   const { options } = action.payload;
-  const {
-    data,
-    view: {
-      spectra: { activeTab: nucleus },
-    },
-  } = draft;
 
-  const activeSpectrum = getActiveSpectrum(draft);
+  const spectrum = getSpectrum(draft);
+  if (!isSpectrum1D(spectrum)) return;
 
-  if (activeSpectrum?.id) {
-    const { index } = activeSpectrum;
-    const datum = data[index] as Spectrum1D;
-    setSumOptions(datum.integrals, { options, nucleus });
-    updateIntegralsRelativeValues(datum, true);
-  }
+  setSumOptions(spectrum.integrals, {
+    options,
+    nucleus: spectrum.info.nucleus,
+  });
+  updateIntegralsRelativeValues(spectrum, true);
 }
 
 interface AddIntegralOptions {
@@ -92,19 +85,19 @@ interface AddIntegralOptions {
   to: number;
 }
 
-function initiateIntegralSumOptions(datum: Spectrum1D, options: SumParams) {
+function initiateIntegralSumOptions(spectrum: Spectrum1D, options: SumParams) {
   const { molecules, nucleus } = options;
-  datum.integrals.options = initSumOptions(datum.integrals.options, {
+  spectrum.integrals.options = initSumOptions(spectrum.integrals.options, {
     molecules,
     nucleus,
   });
 }
 
-function addIntegral(datum: Spectrum1D, options: AddIntegralOptions) {
+function addIntegral(spectrum: Spectrum1D, options: AddIntegralOptions) {
   const { from, to } = options;
-  const { x, re } = datum.data;
+  const { x, re } = spectrum.data;
 
-  const shiftX = getShiftX(datum);
+  const shiftX = getShiftX(spectrum);
   const integration = xyIntegration({ x, y: re }, { from, to });
   const integral: Integral = {
     id: crypto.randomUUID(),
@@ -116,26 +109,24 @@ function addIntegral(datum: Spectrum1D, options: AddIntegralOptions) {
     absolute: integration,
     kind: 'signal',
   };
-  datum.integrals.values.push(integral);
+  spectrum.integrals.values.push(integral);
 }
 
 function handleAddIntegral(draft: Draft<State>, action: AddIntegralAction) {
   const { startX, endX } = action.payload;
   const {
-    data,
     molecules,
     view: {
       spectra: { activeTab: nucleus },
     },
   } = draft;
 
-  const activeSpectrum = getActiveSpectrum(draft);
-  if (activeSpectrum?.id) {
+  const spectrum = getSpectrum(draft);
+  if (isSpectrum1D(spectrum)) {
     const [from, to] = getRange(draft, { startX, endX });
-    const datum = data[activeSpectrum.index] as Spectrum1D;
-    addIntegral(datum, { from, to });
-    initiateIntegralSumOptions(datum, { molecules, nucleus });
-    updateIntegralsRelativeValues(datum);
+    addIntegral(spectrum, { from, to });
+    initiateIntegralSumOptions(spectrum, { molecules, nucleus });
+    updateIntegralsRelativeValues(spectrum);
   }
 }
 
@@ -144,18 +135,18 @@ function handleDeleteIntegral(
   action: DeleteIntegralAction,
 ) {
   const { id: integralID, spectrumKey } = action?.payload || {};
-  const datum = getSpectrum(draft, spectrumKey);
+  const spectrum = getSpectrum(draft, spectrumKey);
 
-  if (!isSpectrum1D(datum)) return;
+  if (!isSpectrum1D(spectrum)) return;
 
   if (!integralID) {
-    datum.integrals.values = [];
+    spectrum.integrals.values = [];
   } else {
-    const peakIndex = datum.integrals.values.findIndex(
+    const peakIndex = spectrum.integrals.values.findIndex(
       (p: any) => p.id === integralID,
     );
-    datum.integrals.values.splice(peakIndex, 1);
-    updateIntegralsRelativeValues(datum);
+    spectrum.integrals.values.splice(peakIndex, 1);
+    updateIntegralsRelativeValues(spectrum);
   }
 }
 
@@ -163,23 +154,20 @@ function handleChangeIntegral(
   draft: Draft<State>,
   action: ChangeIntegralAction,
 ) {
-  const state = original(draft) as State;
   const { integral, spectrumKey } = action.payload;
 
-  const originalDatum = getSpectrum(state, spectrumKey);
-  const datum = getSpectrum(draft, spectrumKey);
+  const spectrum = getSpectrum(draft, spectrumKey);
+  if (!isSpectrum1D(spectrum)) return;
 
-  if (!isSpectrum1D(datum) || !isSpectrum1D(originalDatum)) {
-    return;
-  }
-
-  const { x, re } = originalDatum.data;
-  const integralIndex = originalDatum.integrals.values.findIndex(
-    (i: any) => i.id === integral.id,
+  const integralIndex = spectrum.integrals.values.findIndex(
+    (i) => i.id === integral.id,
   );
 
   if (integralIndex !== -1) {
-    datum.integrals.values[integralIndex] = {
+    const {
+      data: { x, re },
+    } = original(spectrum) as Spectrum1D;
+    spectrum.integrals.values[integralIndex] = {
       ...integral,
       originalFrom: integral.from,
       originalTo: integral.to,
@@ -188,7 +176,7 @@ function handleChangeIntegral(
         { from: integral.from, to: integral.to },
       ),
     };
-    updateIntegralsRelativeValues(datum);
+    updateIntegralsRelativeValues(spectrum);
   }
 }
 
@@ -196,31 +184,29 @@ function handleChangeIntegralsRelativeValue(
   draft: Draft<State>,
   action: ChangeIntegralRelativeValueAction,
 ) {
-  const activeSpectrum = getActiveSpectrum(draft);
   const { id, value } = action.payload;
-  if (activeSpectrum?.id) {
-    const { index } = activeSpectrum;
-    changeIntegralsRelative(draft.data[index] as Spectrum1D, { id, value });
-  }
+
+  const spectrum = getSpectrum(draft);
+  if (!isSpectrum1D(spectrum)) return;
+
+  changeIntegralsRelative(spectrum, { id, value });
 }
 
-function handleChangeIntegralsSumFlag(draft: any) {
-  const activeSpectrum = getActiveSpectrum(draft);
-  if (activeSpectrum) {
-    const { index } = activeSpectrum;
-    const integralOptions = draft.data[index].integrals.options;
-    integralOptions.isSumConstant = !integralOptions.isSumConstant;
-  }
+function handleChangeIntegralsSumFlag(draft: Draft<State>) {
+  const spectrum = getSpectrum(draft);
+  if (!isSpectrum1D(spectrum)) return;
+
+  const integralOptions = spectrum.integrals.options;
+  integralOptions.isSumConstant = !integralOptions.isSumConstant;
 }
 
 function handleCutIntegral(draft: Draft<State>, action: CutIntegralAction) {
   const { cutValue } = action.payload;
-  const spectrum = getSpectrum(draft);
 
+  const spectrum = getSpectrum(draft);
   if (!isSpectrum1D(spectrum)) return;
 
   const integrals = spectrum.integrals.values;
-
   for (let i = 0; i < integrals.length; i++) {
     const { to, from } = integrals[i];
     if (cutValue > from && cutValue < to) {

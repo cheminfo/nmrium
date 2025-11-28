@@ -23,7 +23,8 @@ const CustomFormGroup = styled(FormGroup)<{ isFill?: boolean }>`
 `;
 
 interface Input2ControllerProps<TFieldValues extends FieldValues = FieldValues>
-  extends Omit<Input2Props, 'name'>,
+  extends
+    Omit<Input2Props, 'name'>,
     Pick<ControllerProps<TFieldValues>, 'control' | 'name'>,
     InputMapValueFunctions {
   controllerProps?: Omit<

@@ -842,7 +842,7 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
 export const spectrumReducer: Reducer<State, Action> =
   produce(innerSpectrumReducer);
 
-function getDebugState(draft: any) {
+function getDebugState(draft: Draft<State>) {
   const state = original(draft);
   const string = JSON.stringify(state, (key, value: any) => {
     if (ArrayBuffer.isView(value)) {
@@ -854,7 +854,7 @@ function getDebugState(draft: any) {
     return value;
   });
   if (string.length > 800000) {
-    // fallback, better to have something as a string t han nothing
+    // fallback, better to have something as a string than nothing
     return string.slice(0, 800000);
   }
   return JSON.parse(string);

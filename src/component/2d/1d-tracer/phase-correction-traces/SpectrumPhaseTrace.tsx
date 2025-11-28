@@ -78,7 +78,7 @@ export function SpectrumPhaseTrace(props: SpectrumPhaseTraceProps) {
   const scale2dY = useScale2DY();
 
   const activeSpectrum = useActiveSpectrum();
-  if (!activeSpectrum?.id) {
+  if (!activeSpectrum) {
     return null;
   }
 

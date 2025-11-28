@@ -72,8 +72,10 @@ type ToggleMoleculeLabelAction = ActionType<
   { id: string }
 >;
 
-interface ChangeMoleculeAnnotationOptions
-  extends Pick<MoleculeView, 'atomAnnotation'> {
+interface ChangeMoleculeAnnotationOptions extends Pick<
+  MoleculeView,
+  'atomAnnotation'
+> {
   id: string;
 }
 

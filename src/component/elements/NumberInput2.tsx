@@ -14,7 +14,8 @@ import {
 import useCombinedRefs from '../hooks/useCombinedRefs.js';
 
 interface ValueProps
-  extends Pick<React.InputHTMLAttributes<HTMLInputElement>, 'name' | 'style'>,
+  extends
+    Pick<React.InputHTMLAttributes<HTMLInputElement>, 'name' | 'style'>,
     Pick<NumericInputProps, 'onValueChange' | 'value'> {
   checkValue?: (element?: number) => boolean;
   debounceTime?: number;
@@ -24,7 +25,8 @@ interface UseInputProps extends Omit<ValueProps, 'name'> {
   ref: ForwardedRef<HTMLInputElement>;
 }
 export interface NumberInput2Props
-  extends Omit<
+  extends
+    Omit<
       Omit<HTMLInputProps, 'size'> & NumericInputProps,
       'value' | 'onValueChange'
     >,

@@ -52,9 +52,7 @@ interface BrushScreenCoordination {
 }
 
 interface BrushTrackerState
-  extends BrushTrackerData,
-    BrushCoordination,
-    BrushScreenCoordination {
+  extends BrushTrackerData, BrushCoordination, BrushScreenCoordination {
   step: Step;
   boundingRect: DOMRect | null;
 }

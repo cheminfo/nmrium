@@ -16,7 +16,7 @@ function SlicingView() {
   const scale2dX = useScale2DX();
   const scale2dY = useScale2DY();
 
-  if (!position || !activeSpectrum?.id) {
+  if (!position || !activeSpectrum) {
     return null;
   }
 

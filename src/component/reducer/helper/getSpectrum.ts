@@ -22,7 +22,7 @@ export function getSpectrum(
 ): GetSpectrumReturn {
   const activeSpectrum = getActiveSpectrum(state);
 
-  if (value === undefined && activeSpectrum?.id) {
+  if (value === undefined && activeSpectrum) {
     const index = activeSpectrum.index;
     return state.data[index];
   }

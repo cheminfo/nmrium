@@ -8,7 +8,10 @@ import type { NmrData2DFt } from 'cheminfo-types';
 import { extent } from 'd3-array';
 import type { Draft } from 'immer';
 
-import { get1DDataXY } from '../../../data/data1d/Spectrum1D/index.js';
+import {
+  get1DDataXY,
+  isSpectrum1D,
+} from '../../../data/data1d/Spectrum1D/index.js';
 import {
   isFid1DSpectrum,
   isFt1DSpectrum,
@@ -23,7 +26,7 @@ import type { State } from '../Reducer.js';
 import { rescaleToSameTop } from '../helper/Zoom1DManager.js';
 import { addToBrushHistory } from '../helper/ZoomHistoryManager.js';
 import { getActiveSpectra } from '../helper/getActiveSpectra.js';
-import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
+import { getSpectrum } from '../helper/getSpectrum.ts';
 import type { ActionType } from '../types/ActionType.js';
 
 type NumberExtent = [number, number];
@@ -66,19 +69,13 @@ function getActiveData(draft: Draft<State>): Spectrum1D[] {
   let data = draft.data.filter(
     (datum) =>
       nucleusToString(datum.info.nucleus) === draft.view.spectra.activeTab &&
-      datum.info.dimension === 1,
+      isSpectrum1D(datum),
   );
 
-  const activeSpectrum = getActiveSpectrum(draft);
-
-  if (activeSpectrum?.id) {
-    const activeSpectrumIndex = data.findIndex(
-      (datum) => datum.id === activeSpectrum?.id,
-    );
-    if (activeSpectrumIndex !== -1) {
-      const isFid = isFid1DSpectrum(data[activeSpectrumIndex]);
-      data = data.filter((datum) => datum.info.isFid === isFid);
-    }
+  const spectrum = getSpectrum(draft);
+  if (spectrum) {
+    const isFid = isFid1DSpectrum(spectrum);
+    data = data.filter((datum) => datum.info.isFid === isFid);
   } else {
     data = data.filter((datum) => isFt1DSpectrum(datum));
   }
@@ -153,11 +150,9 @@ function get2DDomain(state: State) {
   } = state;
 
   const nucleus = activeTab.split(',');
-  const activeSpectrum = getActiveSpectrum(state);
-  const spectrum =
-    data.find((datum) => datum.id === activeSpectrum?.id) || null;
+  const spectrum = getSpectrum(state);
 
-  if (spectrum && isSpectrum2D(spectrum)) {
+  if (isSpectrum2D(spectrum)) {
     if (isFid2DData(spectrum.data)) {
       const { minX, maxX, minY, maxY } = spectrum.data.re;
       xArray = [minX, maxX];
@@ -188,6 +183,7 @@ function get2DDomain(state: State) {
       }
     }
   }
+
   const spectraIDs = new Set();
 
   for (const n of nucleus) {
@@ -196,11 +192,9 @@ function get2DDomain(state: State) {
       spectraIDs.add(spectra[0].id);
     }
   }
-  const filteredData = data
-    .filter((d) => spectraIDs.has(d.id) && d.info.dimension === 1)
-    .map((datum) => {
-      return datum as Spectrum1D;
-    });
+  const filteredData = data.filter(
+    (d) => spectraIDs.has(d.id) && isSpectrum1D(d),
+  ) as Spectrum1D[];
 
   try {
     for (const d of filteredData) {

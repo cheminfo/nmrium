@@ -324,15 +324,14 @@ function findSpectrum(
   const spectra = current(draft).data;
   if (target === 'active') {
     const activeSpectrum = getActiveSpectrum(draft);
-
     if (!activeSpectrum) return null;
+
     const { index } = activeSpectrum;
     return { index, spectrum: structuredClone(spectra[index]) };
   }
 
   if (target === 'current') {
     const { spectrum } = options;
-
     if (!spectrum) return null;
 
     const index = spectra.findIndex((datum) => datum.id === spectrum.id);
@@ -342,7 +341,6 @@ function findSpectrum(
   if (target === 'id') {
     const { id } = options;
     const index = spectra.findIndex((spectrum) => spectrum.id === id);
-
     if (index === -1) return null;
 
     return { index, spectrum: structuredClone(spectra[index]) };
@@ -441,8 +439,7 @@ function rollbackSpectrumByFilter(
   let currentIsFid = false;
   const toolData = draft.toolOptions.data;
   if (currentSpectrum) {
-    const { index } = currentSpectrum;
-    let { spectrum } = currentSpectrum;
+    const { index, spectrum } = currentSpectrum;
     previousIsFid = isFid1DSpectrum(spectrum) || isFid2DSpectrum(spectrum);
     const filterIndex = spectrum.filters.findIndex((f) => f[searchBy] === key);
     if (filterIndex === -1 || reset) {
@@ -458,16 +455,13 @@ function rollbackSpectrumByFilter(
         reapplyFilters(spectrum, filters);
       }
 
-      //if the filter is not exists, create a clone of the current data
-      draft.tempData = structuredClone(current(draft).data);
-
-      draft.tempData[index] = spectrum;
-      spectrum = structuredClone(spectrum);
+      // If the filter doest not exist, create a clone of the current data.
+      draft.tempData = current(draft).data.slice();
+      draft.tempData[index] = structuredClone(spectrum);
 
       if (tempRollback) {
         reapplyFilters(spectrum);
       }
-      draft.data[index] = spectrum;
     }
 
     if (filterIndex !== -1 && !reset) {
@@ -477,7 +471,7 @@ function rollbackSpectrumByFilter(
       //set active filter
       toolData.activeFilterID = spectrum.filters?.[filterIndex]?.id || null;
 
-      const filters: any[] = spectrum.filters.slice(0, filterIndex);
+      const filters = spectrum.filters.slice(0, filterIndex);
 
       updateDomainOptions = getFilterDomain(spectrum, {
         startIndex: Math.min(activeFilterIndex, filterIndex),
@@ -501,8 +495,6 @@ function rollbackSpectrumByFilter(
           lastIndex: spectrum.filters.length - 1,
         });
       }
-
-      draft.data[index] = spectrum;
 
       currentIsFid = isFid1DSpectrum(spectrum) || isFid2DSpectrum(spectrum);
 
@@ -750,12 +742,10 @@ function afterRollback(draft: Draft<State>, filterKey: any) {
  * getActiveFilterIndex return active filter index. Otherwise, its returns -1
  */
 function getActiveFilterIndex(draft: Draft<State>) {
-  const activeSpectrum = getActiveSpectrum(draft);
+  const spectrum = getSpectrum(draft);
   const id = draft.toolOptions.data.activeFilterID;
-  if (id && activeSpectrum) {
-    const spectrum = draft.data[activeSpectrum.index];
-    const index = spectrum.filters.findIndex((filter) => filter.id === id);
-    return index;
+  if (id && spectrum) {
+    return spectrum.filters.findIndex((filter) => filter.id === id);
   }
   return -1;
 }
@@ -799,17 +789,14 @@ function handleShiftSpectrumAlongXAxis(
   action: ShiftSpectrumAction,
 ) {
   const activeSpectrum = getActiveSpectrum(draft);
-
-  if (!activeSpectrum) {
-    return;
-  }
+  if (!activeSpectrum) return;
 
   const activeFilterIndex = getActiveFilterIndex(draft);
 
   //apply filter into the spectrum
   const options = action.payload;
 
-  const index = activeSpectrum?.index;
+  const index = activeSpectrum.index;
   const isOneDimensionSpectrum = isSpectrum1D(draft.data[index]);
   const isOneDimensionShiftFilter = isOneDimensionShift(options);
 
@@ -1841,20 +1828,13 @@ function handleApplyExclusionZone(
 ) {
   const { zones } = action.payload;
 
-  const activeSpectrum = getActiveSpectrum(draft);
+  const spectrum = getSpectrum(draft);
+  if (!isSpectrum1D(spectrum)) return;
 
-  if (!activeSpectrum) {
-    return;
-  }
-  const datum = draft.data[activeSpectrum.index];
-
-  if (!isSpectrum1D(datum)) {
-    return;
-  }
   const activeFilterIndex = getActiveFilterIndex(draft);
 
   Filters1DManager.applyFilters(
-    datum,
+    spectrum,
     [
       {
         name: 'exclusionZones',
@@ -1879,8 +1859,8 @@ function handleAddExclusionZone(
   let spectra: Spectrum1D[];
 
   const activeSpectrum = getActiveSpectrum(draft);
-  if (activeSpectrum?.id) {
-    const index = activeSpectrum?.index;
+  if (activeSpectrum) {
+    const index = activeSpectrum.index;
     spectra = [draft.data[index]] as Spectrum1D[];
   } else {
     spectra = getSpectraByNucleus(
@@ -1916,12 +1896,11 @@ function handleDeleteExclusionZone(
 ) {
   const { zone, spectrumId } = action.payload;
 
-  // if spectrum id exists, remove the selected exclusion zone in the spectrum
+  // If spectrum id exists, remove the selected exclusion zone in the spectrum.
   if (spectrumId) {
-    const spectrumIndex = draft.data.findIndex(
-      (spectrum) => spectrum.id === spectrumId,
-    );
-    const spectrum = draft.data[spectrumIndex];
+    const spectrum = getSpectrum(draft, spectrumId);
+    if (!spectrum) return;
+
     const filter = spectrum.filters.find(
       (_filter) => _filter.name === 'exclusionZones',
     );
@@ -1954,20 +1933,13 @@ function handleSetOneDimensionPhaseCorrectionPivotPoint(
   action: SetOneDimensionPhaseCorrectionPivotPoint,
 ) {
   const { value: xValue } = action.payload;
-  const activeSpectrum = getActiveSpectrum(draft);
 
-  if (!activeSpectrum) {
-    return;
-  }
-  const datum = draft.data[activeSpectrum.index];
-
-  if (!isSpectrum1D(datum)) {
-    return;
-  }
+  const spectrum = getSpectrum(draft);
+  if (!isSpectrum1D(spectrum)) return;
 
   const scaleX = getXScale(draft);
   const value = scaleX.invert(xValue);
-  const index = xFindClosestIndex(datum.data.x, value);
+  const index = xFindClosestIndex(spectrum.data.x, value);
   draft.toolOptions.data.pivot = { value, index };
 }
 function handleSetTwoDimensionPhaseCorrectionPivotPoint(

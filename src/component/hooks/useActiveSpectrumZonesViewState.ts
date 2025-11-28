@@ -18,12 +18,8 @@ export function useActiveSpectrumZonesViewState(): ZonesViewState {
     view: { zones },
   } = useChartData();
 
-  if (
-    activeSpectrum?.id &&
-    activeSpectrum?.selected &&
-    zones[activeSpectrum?.id]
-  ) {
-    return zones[activeSpectrum?.id];
+  if (activeSpectrum?.selected && zones[activeSpectrum.id]) {
+    return zones[activeSpectrum.id];
   } else {
     return defaultZonesViewState;
   }

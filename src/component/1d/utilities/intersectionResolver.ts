@@ -9,8 +9,7 @@ interface GroupDataProps<T> {
 }
 
 interface ResolveIntersectionProps<T>
-  extends GroupDataProps<T>,
-    ResolveGroupIntersectionProps {
+  extends GroupDataProps<T>, ResolveGroupIntersectionProps {
   width?: number;
   margin?: number;
 }

@@ -27,8 +27,7 @@ interface BaseInputProps {
 }
 
 export interface Input2Props<FilterItem extends string = string>
-  extends Omit<InputGroupProps, 'onChange' | 'inputRef'>,
-    BaseInputProps {
+  extends Omit<InputGroupProps, 'onChange' | 'inputRef'>, BaseInputProps {
   getFilterValue?: (item: FilterItem) => string;
   filterItems?: FilterItem[];
 }

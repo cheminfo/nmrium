@@ -36,8 +36,7 @@ interface InnerPrintFrameProps {
   printPageOptions?: Partial<PrintPageOptions>;
 }
 interface PrintFrameProps
-  extends InnerPrintFrameProps,
-    Partial<BasePrintProps> {}
+  extends InnerPrintFrameProps, Partial<BasePrintProps> {}
 
 export function PrintContent(props: PrintFrameProps) {
   const [isPageOptionModalOpened, togglePageOptionDialog] =

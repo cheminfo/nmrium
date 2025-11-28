@@ -30,8 +30,10 @@ import MultipleSpectraAnalysisPanel from './multipleAnalysisPanel/MultipleSpectr
 import PredictionPane from './predictionPanel/PredictionPanel.js';
 import SpectrumSimulation from './spectrumSimulation/SpectrumSimulation.js';
 
-export interface AccordionItem
-  extends Omit<AccordionItemProps, 'children' | 'defaultOpened'> {
+export interface AccordionItem extends Omit<
+  AccordionItemProps,
+  'children' | 'defaultOpened'
+> {
   id: keyof NMRiumPanelPreferences;
   component: ReactElement;
   style?: CSSProperties;

@@ -15,7 +15,8 @@ export interface LabelStyle {
   container?: CSSProperties;
 }
 interface LabelProps
-  extends Omit<LabelHTMLAttributes<HTMLLabelElement>, 'style'>,
+  extends
+    Omit<LabelHTMLAttributes<HTMLLabelElement>, 'style'>,
     Partial<ContainerQueryWrapperProps> {
   title: string;
   renderTitle?: (title: string, className?: string) => ReactNode;

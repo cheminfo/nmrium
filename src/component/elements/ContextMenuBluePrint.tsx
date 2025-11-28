@@ -24,7 +24,8 @@ export interface BaseContextMenuProps {
 }
 
 interface ContextMenuProps<E>
-  extends BaseContextMenuProps,
+  extends
+    BaseContextMenuProps,
     Omit<BluePrintContextMenuProps, 'onSelect' | 'content' | 'children'> {
   as?: E;
   children: ReactNode;
