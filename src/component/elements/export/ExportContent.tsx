@@ -34,8 +34,7 @@ interface InnerExportFrameProps extends BaseExportFrameProps {
   exportOptions: ExportSettings;
 }
 interface ExportFrameProps
-  extends BaseExportFrameProps,
-    Partial<BaseExportProps> {
+  extends BaseExportFrameProps, Partial<BaseExportProps> {
   exportOptions?: ExportSettings;
   onExportDialogClose?: () => void;
   confirmButtonText?: string;

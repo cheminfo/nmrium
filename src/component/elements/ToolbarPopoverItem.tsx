@@ -8,14 +8,14 @@ import type {
 import { Toolbar, TooltipHelpContent } from 'react-science/ui';
 
 export interface ToolbarPopoverMenuItem<T = object>
-  extends MenuItemProps,
-    Pick<ToolbarItemProps, 'tooltipProps'> {
+  extends MenuItemProps, Pick<ToolbarItemProps, 'tooltipProps'> {
   data?: T;
   tooltip?: string | TooltipItem;
 }
 
 interface CustomToolbarPopoverItemProps<T = object>
-  extends Omit<ToolbarPopoverItemProps, 'onClick' | 'content' | 'itemProps'>,
+  extends
+    Omit<ToolbarPopoverItemProps, 'onClick' | 'content' | 'itemProps'>,
     Pick<
       ToolbarItemProps,
       'tooltip' | 'icon' | 'tooltipProps' | 'active' | 'id'

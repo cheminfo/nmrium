@@ -93,8 +93,7 @@ interface InnerMetaImportationModalPropsProps {
   file?: File;
   onCloseDialog: () => void;
 }
-interface MetaImportationModalPropsProps
-  extends InnerMetaImportationModalPropsProps {
+interface MetaImportationModalPropsProps extends InnerMetaImportationModalPropsProps {
   isOpen: boolean;
 }
 

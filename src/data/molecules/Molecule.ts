@@ -4,7 +4,8 @@ import { Molecule } from 'openchemlib';
 import getAtomsFromMF from '../utilities/getAtomsFromMF.js';
 
 export interface StateMoleculeExtended
-  extends Required<Pick<StateMolecule, 'id' | 'molfile' | 'label'>>,
+  extends
+    Required<Pick<StateMolecule, 'id' | 'molfile' | 'label'>>,
     Omit<StateMolecule, 'id' | 'molfile' | 'label'> {
   mf: string;
   em: number;

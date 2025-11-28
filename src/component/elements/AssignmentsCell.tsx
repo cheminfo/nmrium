@@ -20,8 +20,7 @@ const AssignmentTableCell = styled.td<AssignmentTableCellProps>`
 `;
 
 interface AssignmentsCellProps
-  extends HTMLAttributes<HTMLTableCellElement>,
-    AssignmentTableCellProps {
+  extends HTMLAttributes<HTMLTableCellElement>, AssignmentTableCellProps {
   onRemove?: HTMLAttributes<HTMLButtonElement>['onClick'];
 }
 

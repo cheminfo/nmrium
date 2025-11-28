@@ -29,8 +29,7 @@ const ActionsCell = styled.td`
 `;
 
 interface ActionsColumnProps
-  extends Omit<BaseRangeColumnProps, 'format'>,
-    RowSpanTags {
+  extends Omit<BaseRangeColumnProps, 'format'>, RowSpanTags {
   onHoverSignal?: OnHoverEvent['onHover'];
   onHoverRange?: OnHoverEvent['onHover'];
   showKind: boolean;

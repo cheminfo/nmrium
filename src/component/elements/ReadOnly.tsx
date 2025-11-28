@@ -38,8 +38,10 @@ const MessageContainer = styled.div<{ show: boolean }>`
   padding: 16px;
 `;
 
-interface ReadOnlyProps
-  extends Pick<React.HTMLAttributes<HTMLDivElement>, 'onClick'> {
+interface ReadOnlyProps extends Pick<
+  React.HTMLAttributes<HTMLDivElement>,
+  'onClick'
+> {
   enabled: boolean;
   children: ReactNode;
   message?: string;

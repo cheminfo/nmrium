@@ -6,8 +6,7 @@ import { AssignmentsCell } from '../../../elements/AssignmentsCell.js';
 import type { BaseRangeColumnProps, OnHoverEvent } from '../RangesTableRow.js';
 
 interface SignalAssignmentsColumnProps
-  extends Omit<BaseRangeColumnProps, 'format'>,
-    OnHoverEvent {
+  extends Omit<BaseRangeColumnProps, 'format'>, OnHoverEvent {
   assignment: AssignmentsData;
   highlight: {
     isActive: boolean;

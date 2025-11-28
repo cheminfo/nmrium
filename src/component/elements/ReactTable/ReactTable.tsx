@@ -74,9 +74,7 @@ export interface TableContextMenuProps {
   contextMenu?: BaseContextMenuProps['options'];
 }
 interface ReactTableProps<T extends object>
-  extends TableContextMenuProps,
-    ClickEvent,
-    SortEvent {
+  extends TableContextMenuProps, ClickEvent, SortEvent {
   data: T[];
   columns: Array<Column<T>>;
   highlightedSource?: HighlightEventSource;

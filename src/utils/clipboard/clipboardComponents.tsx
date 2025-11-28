@@ -36,7 +36,8 @@ interface CFBP {
 }
 
 interface ClipboardFallbackProps
-  extends CFBP,
+  extends
+    CFBP,
     Partial<Omit<ClipboardFallbackReadProps, 'mode' | 'label' | 'onDismiss'>>,
     Partial<
       Omit<ClipboardFallbackReadTextProps, 'mode' | 'label' | 'onDismiss'>

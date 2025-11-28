@@ -51,11 +51,10 @@ function isSeparator(
 
 type Direction = 'column' | 'row';
 
-export interface ActionsButtonsPopoverProps
-  extends Omit<
-    PopoverProps,
-    'interactionKind' | 'content' | 'modifiers' | 'renderTarget'
-  > {
+export interface ActionsButtonsPopoverProps extends Omit<
+  PopoverProps,
+  'interactionKind' | 'content' | 'modifiers' | 'renderTarget'
+> {
   buttons: ActionButtonProps[];
   contentStyle?: CSSProperties;
   direction?: Direction;
