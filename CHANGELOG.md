@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.9.1](https://github.com/cheminfo/nmrium/compare/v1.9.0...v1.9.1) (2025-11-28)
+
+
+### Bug Fixes
+
+* check that a spectrum is selected and it is 1D before the range cut ([b641b4f](https://github.com/cheminfo/nmrium/commit/b641b4faa7ede11d3e99cf2517419ea73b5dd8ff))
+* clear assignments associated with selected molecule atoms ([#3851](https://github.com/cheminfo/nmrium/issues/3851)) ([20fa63b](https://github.com/cheminfo/nmrium/commit/20fa63bad33b78fe4b0ebc74202f7ad6d4d8c3bc))
+* do not emit unhandled rejection in clipboard reads ([#3853](https://github.com/cheminfo/nmrium/issues/3853)) ([1c2151d](https://github.com/cheminfo/nmrium/commit/1c2151d1a319867d9d9bef9a3e13f110c6f402a3))
+* simplify handling of active spectrum, better checks, improve types ([#3862](https://github.com/cheminfo/nmrium/issues/3862)) ([e00b30b](https://github.com/cheminfo/nmrium/commit/e00b30b78b5cfb48283e7c11f85657f6b39c54c0))
+* update the mol locally in prediction panel on load ([#3860](https://github.com/cheminfo/nmrium/issues/3860)) ([4830a0d](https://github.com/cheminfo/nmrium/commit/4830a0d53d40d0de5f0b5b66c62fa6d7966b1eda))
+
 ## [1.9.0](https://github.com/cheminfo/nmrium/compare/v1.8.0...v1.9.0) (2025-11-25)
 
 
