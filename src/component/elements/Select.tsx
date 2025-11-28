@@ -30,8 +30,10 @@ const BaseSelect = styled.select<{ width: number | string | undefined }>`
   }
 `;
 
-interface SelectProps<T extends object>
-  extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'style' | 'onChange'> {
+interface SelectProps<T extends object> extends Omit<
+  SelectHTMLAttributes<HTMLSelectElement>,
+  'style' | 'onChange'
+> {
   onChange?: (element: string) => void;
   items: T[];
   defaultValue?: string | number | undefined;

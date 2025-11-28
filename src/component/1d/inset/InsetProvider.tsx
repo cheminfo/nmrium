@@ -12,8 +12,10 @@ export const insetMargin: Margin = {
   left: 10,
 } as const;
 
-interface BaseInsetPagContextProps
-  extends Pick<Inset, 'xDomain' | 'yDomain' | 'id' | 'spectrumKey' | 'view'> {
+interface BaseInsetPagContextProps extends Pick<
+  Inset,
+  'xDomain' | 'yDomain' | 'id' | 'spectrumKey' | 'view'
+> {
   width: number;
   height: number;
 }

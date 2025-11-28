@@ -448,8 +448,7 @@ function Wrapper(props: WrapperProps) {
 }
 
 interface MainSectionHeaderProps
-  extends Pick<HTMLProps<HTMLDivElement>, 'onClick'>,
-    BaseSectionProps {
+  extends Pick<HTMLProps<HTMLDivElement>, 'onClick'>, BaseSectionProps {
   isOpen: boolean;
   sticky: boolean;
   dragHandleElement?: ReactNode;
@@ -512,8 +511,10 @@ function MainSectionHeader(props: MainSectionHeaderProps) {
   );
 }
 
-interface DroppableProps
-  extends Pick<SectionItemProps, 'id' | 'onReorder' | 'index'> {
+interface DroppableProps extends Pick<
+  SectionItemProps,
+  'id' | 'onReorder' | 'index'
+> {
   children: ReactNode;
 }
 

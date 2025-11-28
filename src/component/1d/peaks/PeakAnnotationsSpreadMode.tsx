@@ -62,8 +62,10 @@ function usePeaksPosition() {
   return { marginTop, isDragActive, onPointerDown };
 }
 
-interface PeakAnnotationsSpreadModeProps
-  extends Omit<PeaksAnnotationsProps, 'xDomain'> {
+interface PeakAnnotationsSpreadModeProps extends Omit<
+  PeaksAnnotationsProps,
+  'xDomain'
+> {
   height: number;
   margin: Margin;
 }

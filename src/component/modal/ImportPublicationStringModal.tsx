@@ -17,8 +17,7 @@ interface InnerImportPublicationStringModalProps {
   onClose: () => void;
 }
 
-interface ImportPublicationStringModalProps
-  extends InnerImportPublicationStringModalProps {
+interface ImportPublicationStringModalProps extends InnerImportPublicationStringModalProps {
   isOpen: boolean;
 }
 

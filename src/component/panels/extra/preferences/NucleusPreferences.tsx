@@ -12,8 +12,8 @@ export type NucleusPreferenceField = Omit<FormatFieldProps, 'control'> & {
 
 interface NucleusPreferencesProps<
   TFieldValues extends FieldValues = FieldValues,
-> extends NucleusGroupProps,
-    Pick<ControllerProps<TFieldValues>, 'control'> {
+>
+  extends NucleusGroupProps, Pick<ControllerProps<TFieldValues>, 'control'> {
   fields: NucleusPreferenceField[];
   nucleusTitle?: string;
 }

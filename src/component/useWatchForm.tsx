@@ -3,7 +3,8 @@ import type { DeepPartial, FieldValues, UseFormReturn } from 'react-hook-form';
 import { useWatch } from 'react-hook-form';
 
 interface UseWatchFormProps<F extends FieldValues = FieldValues>
-  extends Pick<UseFormReturn<F>, 'control'>,
+  extends
+    Pick<UseFormReturn<F>, 'control'>,
     Partial<Pick<UseFormReturn<F>, 'reset'>> {
   initialValues?: F;
   onChange?: (values: DeepPartial<F>) => void;
