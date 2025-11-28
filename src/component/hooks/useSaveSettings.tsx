@@ -12,7 +12,9 @@ import { useToaster } from '../context/ToasterContext.js';
 import { useWorkspaceAction } from './useWorkspaceAction.js';
 
 const schema = z.object({
-  workspaceName: z.string({ error: 'Workspace name is required' }),
+  workspaceName: z
+    .string()
+    .min(1, { error: 'Workspace name is 1 char length minimum' }),
 });
 
 export function useSaveSettings() {
