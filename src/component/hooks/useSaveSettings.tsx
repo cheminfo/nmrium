@@ -57,7 +57,7 @@ export function useSaveSettings() {
     SaveSettingsModal: () => {
       return (
         <Dialog
-          style={{ width: '60%' }}
+          style={{ width: 500 }}
           onClose={closeDialog}
           isOpen={isOpenDialog}
           title="Save workspace"
@@ -94,7 +94,9 @@ export function useSaveSettings() {
               >
                 <div style={{ marginLeft: 10 }}>
                   <form.AppForm>
-                    <form.SubmitButton>Save workspace</form.SubmitButton>
+                    <form.SubmitButton intent="success">
+                      Save workspace
+                    </form.SubmitButton>
                   </form.AppForm>
                 </div>
 
