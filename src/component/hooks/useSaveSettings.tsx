@@ -70,7 +70,7 @@ export function useSaveSettings() {
               void form.handleSubmit();
             }}
           >
-            <DialogContent>
+            <DialogContent style={{ textAlign: 'left' }}>
               <form.AppField name="workspaceName">
                 {(field) => (
                   <field.Input
