@@ -12,7 +12,7 @@ import type {
 import type { Spectrum1D, Spectrum2D, Spectrum } from '@zakodium/nmrium-core';
 import type { NmrData1D, NmrData2DFt } from 'cheminfo-types';
 import type { Draft } from 'immer';
-import { current } from 'immer';
+import { current, isDraft } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import type { Filter1D, FilterDomainUpdateRules } from 'nmr-processing';
 import {
@@ -321,13 +321,13 @@ function findSpectrum(
   options: SpectrumOptions,
 ): { index: number; spectrum: Spectrum } | null {
   const { target } = options;
-  const spectra = current(draft).data;
+  const spectra = draft.data;
   if (target === 'active') {
     const activeSpectrum = getActiveSpectrum(draft);
     if (!activeSpectrum) return null;
 
     const { index } = activeSpectrum;
-    return { index, spectrum: structuredClone(spectra[index]) };
+    return { index, spectrum: spectra[index] };
   }
 
   if (target === 'current') {
@@ -335,7 +335,7 @@ function findSpectrum(
     if (!spectrum) return null;
 
     const index = spectra.findIndex((datum) => datum.id === spectrum.id);
-    return { index, spectrum: structuredClone(spectrum) };
+    return { index, spectrum };
   }
 
   if (target === 'id') {
@@ -343,14 +343,14 @@ function findSpectrum(
     const index = spectra.findIndex((spectrum) => spectrum.id === id);
     if (index === -1) return null;
 
-    return { index, spectrum: structuredClone(spectra[index]) };
+    return { index, spectrum: spectra[index] };
   }
   if (target === 'index') {
     const { index } = options;
     const spectrum = spectra?.[index];
     if (spectrum) return null;
 
-    return { index, spectrum: structuredClone(spectrum) };
+    return { index, spectrum };
   }
 
   return null;
@@ -455,9 +455,11 @@ function rollbackSpectrumByFilter(
         reapplyFilters(spectrum, filters);
       }
 
-      // If the filter doest not exist, create a clone of the current data.
+      // If the filter doesn't exist, create a clone of the current data.
       draft.tempData = current(draft).data.slice();
-      draft.tempData[index] = structuredClone(spectrum);
+      draft.tempData[index] = structuredClone(
+        isDraft(spectrum) ? current(spectrum) : spectrum,
+      );
 
       if (tempRollback) {
         reapplyFilters(spectrum);
@@ -481,7 +483,9 @@ function rollbackSpectrumByFilter(
       reapplyFilters(spectrum, filters);
 
       draft.tempData = current(draft).data.slice();
-      draft.tempData[index] = structuredClone(spectrum);
+      draft.tempData[index] = structuredClone(
+        isDraft(spectrum) ? current(spectrum) : spectrum,
+      );
 
       // apply the current Filters
       if (applyFilter) {
