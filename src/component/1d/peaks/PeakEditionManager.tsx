@@ -124,6 +124,7 @@ export function PeakEditionProvider({ children }: Required<PropsWithChildren>) {
         onContextMenu={() => setPeak(null)}
         style={{ position: 'relative' }}
       >
+        {children}
         {peak && (
           <div
             style={{
@@ -139,7 +140,6 @@ export function PeakEditionProvider({ children }: Required<PropsWithChildren>) {
             />
           </div>
         )}
-        {children}
       </div>
     </PeaksEditionContext.Provider>
   );
