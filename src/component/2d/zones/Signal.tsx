@@ -15,7 +15,7 @@ function Signal({ signal }: SignalProps) {
   const scaleX = useScale2DX();
   const scaleY = useScale2DY();
 
-  const buildIDs = useCallback((id: any) => {
+  const buildIDs = useCallback((id: string) => {
     return [id].concat(buildID(id, 'X'), buildID(id, 'Y'));
   }, []);
   const assignment = useAssignment(signal?.id || '');

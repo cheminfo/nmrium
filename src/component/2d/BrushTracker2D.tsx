@@ -76,7 +76,7 @@ export function BrushTracker2D({ children }: Required<PropsWithChildren>) {
       general: { invertScroll },
     },
   } = usePreferences();
-  function handleBrush(brushData: any) {
+  function handleBrush(brushData: BrushTrackerData) {
     const { startX, endX, startY, endY } = convertToPPM(brushData);
 
     if (brushData.mouseButton === 'secondary') {
@@ -92,7 +92,7 @@ export function BrushTracker2D({ children }: Required<PropsWithChildren>) {
   }
 
   const handleBrushEnd = useCallback<OnBrush>(
-    (brushData) => {
+    (brushData: BrushTrackerData) => {
       const brushDataInPPM = convertToPPM(brushData);
 
       //reset the brush start

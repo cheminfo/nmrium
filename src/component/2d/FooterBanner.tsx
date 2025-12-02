@@ -113,7 +113,7 @@ export default function FooterBanner(props: FooterBannerProps) {
   ) {
     return <FooterContainer />;
   }
-  const getRealYValue = (coordinate: any) => {
+  const getRealYValue = (coordinate: number) => {
     let axis: 'x' | 'y' | null = null;
     if (trackID === LAYOUT.top) {
       axis = 'x';
@@ -178,7 +178,7 @@ export default function FooterBanner(props: FooterBannerProps) {
     return (getXValue(startY) - getXValue(endY)).toPrecision(6);
   };
 
-  const getLabel = (label2d: any, label1d: any, nucleus: any) => {
+  const getLabel = (label2d: string, label1d: string, nucleus: string) => {
     return trackID === LAYOUT.main ? (
       <Fragment>
         {label2d} ( <MF mf={nucleus} /> )
