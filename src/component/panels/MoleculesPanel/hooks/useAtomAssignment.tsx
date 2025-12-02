@@ -107,8 +107,8 @@ export default function useAtomAssignment() {
     let currentSpectrum = spectrum;
 
     if (isSpectrum2D(spectrum) && spectrumID) {
-      const traceSpectrum = tracesSpectra.find(
-        (traceSpectrum) => traceSpectrum.id === spectrumID,
+      const traceSpectrum = Object.values(tracesSpectra).find(
+        (traceSpectrum) => traceSpectrum?.id === spectrumID,
       );
       if (traceSpectrum) {
         currentSpectrum = traceSpectrum;
@@ -267,7 +267,7 @@ export default function useAtomAssignment() {
       // set all IDs to highlight when hovering over an atom from assignment data
       const highlights = getHighlightsOnHover(assignments, oclIDs, [
         spectrum,
-        ...tracesSpectra,
+        ...Object.values(tracesSpectra).filter((spectrum) => spectrum !== null),
       ]);
       highlightedIdDsRef.current = highlights;
       highlightData.dispatch({

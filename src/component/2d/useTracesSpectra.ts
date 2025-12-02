@@ -5,6 +5,7 @@ import type {
 } from '@zakodium/nmrium-core';
 import { useMemo } from 'react';
 
+import { isFt1DSpectrum } from '../../data/data1d/Spectrum1D/isSpectrum1D.ts';
 import { useChartData } from '../context/ChartContext.js';
 
 export interface GetTracesSpectraOptions {
@@ -13,23 +14,31 @@ export interface GetTracesSpectraOptions {
   spectra: Spectrum[];
 }
 
+export type Spectrum1DTraces = Record<'x' | 'y', Spectrum1D | null>;
+
+const defaultEmptyTraces = { x: null, y: null };
+
 export function getTracesSpectra(options: GetTracesSpectraOptions) {
   const { nuclei, activeSpectra, spectra } = options;
 
-  const traces: Spectrum1D[] = [];
+  if (nuclei.length !== 2) return { ...defaultEmptyTraces };
+
+  const traces: Spectrum1DTraces = { ...defaultEmptyTraces };
+  let index = 0;
   for (const nucleus of nuclei) {
     const traceSpectra = activeSpectra[nucleus];
-    if (traceSpectra?.length === 1) {
-      const id = traceSpectra[0].id;
-      const spectrum = spectra.find(
-        (datum) =>
-          datum.id === id && !datum.info.isFid && datum.info.dimension === 1,
-      ) as Spectrum1D;
 
-      if (spectrum) {
-        traces.push(spectrum);
-      }
+    if (traceSpectra?.length !== 1) {
+      index++;
+      continue;
     }
+
+    const id = traceSpectra[0].id;
+    const spectrum = spectra.find((datum) => datum.id === id);
+    const key = index === 0 ? 'x' : 'y';
+    traces[key] = isFt1DSpectrum(spectrum) ? spectrum : null;
+
+    index++;
   }
   return traces;
 }
@@ -43,11 +52,9 @@ export function useTracesSpectra() {
   } = useChartData();
 
   return useMemo(() => {
-    if (!activeTab) return [];
+    if (!activeTab) return { ...defaultEmptyTraces };
 
     const nuclei = activeTab.split(',');
-
-    if (nuclei.length !== 2) return [];
 
     return getTracesSpectra({ nuclei, spectra, activeSpectra });
   }, [activeTab, spectra, activeSpectra]);

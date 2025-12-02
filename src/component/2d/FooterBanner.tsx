@@ -1,4 +1,3 @@
-import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { Fragment, useMemo } from 'react';
 import { MF } from 'react-mf';
@@ -16,13 +15,14 @@ import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
 import { useFormatNumberByNucleus } from '../hooks/useFormatNumberByNucleus.js';
 import { options } from '../toolbar/ToolTypes.js';
 
+import type { Spectrum1DTraces } from './useTracesSpectra.ts';
 import type { Get2DDimensionLayoutReturn } from './utilities/DimensionLayout.js';
 import { LAYOUT, getLayoutID } from './utilities/DimensionLayout.js';
 import { get1DYScale, get2DXScale, get2DYScale } from './utilities/scale.js';
 
 interface FooterBannerProps {
   layout: Get2DDimensionLayoutReturn;
-  data1D: Spectrum1D[];
+  data1D: Spectrum1DTraces;
 }
 
 export default function FooterBanner(props: FooterBannerProps) {
@@ -54,9 +54,10 @@ export default function FooterBanner(props: FooterBannerProps) {
 
   const nuclei = activeTab.split(',');
   const [formatX, formatY] = useFormatNumberByNucleus(nuclei);
+  const hasTraces = data1D.x || data1D.y;
 
   const scaleX = useMemo(() => {
-    if (data1D.length === 0) {
+    if (!hasTraces) {
       return get2DXScale({ width, margin, xDomain, mode });
     }
     if (selectedTool !== options.slicing.id) {
@@ -74,42 +75,52 @@ export default function FooterBanner(props: FooterBannerProps) {
     }
     return null;
   }, [
-    data1D,
+    hasTraces,
+    selectedTool,
+    width,
+    margin,
+    xDomain,
+    mode,
+    trackID,
+    height,
+    yDomain,
+  ]);
+
+  const scaleY = useMemo(() => {
+    if (!hasTraces) {
+      return get2DYScale({ height, margin, yDomain });
+    }
+
+    if (selectedTool === options.slicing.id) {
+      return null;
+    }
+
+    switch (trackID) {
+      case LAYOUT.main: {
+        return get2DYScale({ height, margin, yDomain });
+      }
+      case LAYOUT.top: {
+        return data1D.x ? get1DYScale(yDomains[data1D.x.id], margin.top) : null;
+      }
+      case LAYOUT.left: {
+        return data1D.y
+          ? get1DYScale(yDomains[data1D.y.id], margin.left)
+          : null;
+      }
+      default:
+        return null;
+    }
+  }, [
+    data1D.x,
+    data1D.y,
+    hasTraces,
     height,
     margin,
     selectedTool,
     trackID,
-    width,
-    xDomain,
     yDomain,
-    mode,
+    yDomains,
   ]);
-
-  const scaleY = useMemo(() => {
-    if (data1D.length === 0) {
-      return get2DYScale({ height, margin, yDomain });
-    }
-    if (selectedTool !== options.slicing.id) {
-      switch (trackID) {
-        case LAYOUT.main: {
-          return get2DYScale({ height, margin, yDomain });
-        }
-        case LAYOUT.top: {
-          return data1D[0]
-            ? get1DYScale(yDomains[data1D[0].id], margin.top)
-            : null;
-        }
-        case LAYOUT.left: {
-          return data1D[1]
-            ? get1DYScale(yDomains[data1D[1].id], margin.left)
-            : null;
-        }
-        default:
-          return null;
-      }
-    }
-    return null;
-  }, [data1D, height, margin, selectedTool, trackID, yDomain, yDomains]);
 
   if (
     !activeSpectrum ||
@@ -118,23 +129,26 @@ export default function FooterBanner(props: FooterBannerProps) {
     position.x < 10 ||
     position.x > width - margin.right ||
     position.y > height - margin.bottom ||
-    !data1D
+    !hasTraces
   ) {
     return <FooterContainer />;
   }
   const getRealYValue = (coordinate: any) => {
-    let index: number | null = null;
+    let axis: 'x' | 'y' | null = null;
     if (trackID === LAYOUT.top) {
-      index = 0;
+      axis = 'x';
     } else if (trackID === LAYOUT.left) {
-      index = 1;
+      axis = 'y';
     }
-    if (index != null && scaleX != null && data1D[index]) {
-      const datum = get1DDataXY(data1D[index]);
-      const xIndex = xFindClosestIndex(datum.x, scaleX.invert(coordinate));
-      return datum.y[xIndex];
+    const spectrum = axis && data1D[axis];
+
+    if (!scaleX || !spectrum) {
+      return 1;
     }
-    return 1;
+
+    const datum = get1DDataXY(spectrum);
+    const xIndex = xFindClosestIndex(datum.x, scaleX.invert(coordinate));
+    return datum.y[xIndex];
   };
 
   const getXValue = (x: number | null = null) => {
