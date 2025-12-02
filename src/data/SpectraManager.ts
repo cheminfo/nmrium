@@ -64,8 +64,6 @@ export const DataExportOptions = {
    */
   SELF_CONTAINED_EXTERNAL_DATASOURCE: 'SELF_CONTAINED_EXTERNAL_DATASOURCE',
 } as const;
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export type DataExportOptions =
   (typeof DataExportOptions)[keyof typeof DataExportOptions];
 

@@ -18,7 +18,7 @@ export function initiateZones(
     },
     options.zones,
     {
-      values: mapZones(options?.zones?.values || [], spectrum),
+      values: mapZones(options.zones?.values || [], spectrum),
     },
   );
 }
