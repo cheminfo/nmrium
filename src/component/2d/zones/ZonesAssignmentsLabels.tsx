@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import type { Signal1D, Zone, Zones as ZonesType } from '@zakodium/nmr-types';
-import type { Spectrum2D } from '@zakodium/nmrium-core';
+import type { Spectrum1D, Spectrum2D } from '@zakodium/nmrium-core';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { PiTextTSlash } from 'react-icons/pi';
 
@@ -40,7 +40,7 @@ interface TargetBoundary {
   y2: number;
 }
 
-function getDistance(x1: any, y1: any, x2: any, y2: any) {
+function getDistance(x1: number, y1: number, x2: number, y2: number) {
   const deltaX = x2 - x1;
   const deltaY = y2 - y1;
   return Math.hypot(deltaX, deltaY);
@@ -249,7 +249,7 @@ function findClosestAssignment(signals: Signal1D[], target: number) {
 }
 
 function getAssignmentLabel(
-  spectrum: any,
+  spectrum: Spectrum1D | null,
   options: { from: number; to: number; center: number },
 ) {
   if (!spectrum) return null;
