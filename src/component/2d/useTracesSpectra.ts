@@ -21,7 +21,11 @@ const defaultEmptyTraces = { x: null, y: null };
 export function getTracesSpectra(options: GetTracesSpectraOptions) {
   const { nuclei, activeSpectra, spectra } = options;
 
-  if (nuclei.length !== 2) return { ...defaultEmptyTraces };
+  if (nuclei.length !== 2) {
+    throw new Error(
+      'Invalid function call: this function should only run in a 2D nucleus context.',
+    );
+  }
 
   const traces: Spectrum1DTraces = { ...defaultEmptyTraces };
   let index = 0;
