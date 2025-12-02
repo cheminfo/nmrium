@@ -57,23 +57,15 @@ export default function FooterBanner(props: FooterBannerProps) {
   const hasTraces = data1D.x || data1D.y;
 
   const scaleX = useMemo(() => {
-    if (!hasTraces) {
+    if (selectedTool === options.slicing.id || !trackID) {
+      return null;
+    }
+
+    if (!hasTraces || trackID === 'MAIN' || trackID === 'TOP') {
       return get2DXScale({ width, margin, xDomain, mode });
     }
-    if (selectedTool !== options.slicing.id) {
-      switch (trackID) {
-        case LAYOUT.top:
-        case LAYOUT.main: {
-          return get2DXScale({ width, margin, xDomain, mode });
-        }
-        case LAYOUT.left: {
-          return get2DYScale({ height, margin, yDomain });
-        }
-        default:
-          return null;
-      }
-    }
-    return null;
+
+    return get2DYScale({ height, margin, yDomain });
   }, [
     hasTraces,
     selectedTool,
@@ -87,29 +79,19 @@ export default function FooterBanner(props: FooterBannerProps) {
   ]);
 
   const scaleY = useMemo(() => {
-    if (!hasTraces) {
-      return get2DYScale({ height, margin, yDomain });
-    }
-
-    if (selectedTool === options.slicing.id) {
+    if (selectedTool === options.slicing.id || !trackID) {
       return null;
     }
 
-    switch (trackID) {
-      case LAYOUT.main: {
-        return get2DYScale({ height, margin, yDomain });
-      }
-      case LAYOUT.top: {
-        return data1D.x ? get1DYScale(yDomains[data1D.x.id], margin.top) : null;
-      }
-      case LAYOUT.left: {
-        return data1D.y
-          ? get1DYScale(yDomains[data1D.y.id], margin.left)
-          : null;
-      }
-      default:
-        return null;
+    if (!hasTraces || trackID === 'MAIN') {
+      return get2DYScale({ height, margin, yDomain });
     }
+
+    if (trackID === 'TOP') {
+      return data1D.x ? get1DYScale(yDomains[data1D.x.id], margin.top) : null;
+    }
+
+    return data1D.y ? get1DYScale(yDomains[data1D.y.id], margin.left) : null;
   }, [
     data1D.x,
     data1D.y,
@@ -121,15 +103,13 @@ export default function FooterBanner(props: FooterBannerProps) {
     yDomain,
     yDomains,
   ]);
-
   if (
     !activeSpectrum ||
     !position ||
     position.y < 10 ||
     position.x < 10 ||
     position.x > width - margin.right ||
-    position.y > height - margin.bottom ||
-    !hasTraces
+    position.y > height - margin.bottom
   ) {
     return <FooterContainer />;
   }
@@ -152,69 +132,50 @@ export default function FooterBanner(props: FooterBannerProps) {
   };
 
   const getXValue = (x: number | null = null) => {
-    if (scaleX != null) {
-      switch (trackID) {
-        case LAYOUT.main:
-        case LAYOUT.top: {
-          return scaleX.invert(x || position.x);
-        }
-        case LAYOUT.left: {
-          return scaleX.invert(x || position.y);
-        }
-        default:
-          return 0;
-      }
+    if (!scaleX || !trackID) return 0;
+
+    if (trackID === 'MAIN') {
+      return scaleX.invert(x || position.y);
     }
-    return 0;
+    // return if the trackID = "MAIN" | "TOP"
+    return scaleX.invert(x || position.x);
   };
 
   const getYValue = () => {
-    if (scaleY != null) {
-      switch (trackID) {
-        case LAYOUT.main:
-        case LAYOUT.top: {
-          return scaleY.invert(position.y);
-        }
-        case LAYOUT.left: {
-          return scaleY.invert(position.x);
-        }
-        default:
-          return 0;
-      }
+    if (!scaleY || !trackID) return 0;
+
+    if (trackID === 'LEFT') {
+      return scaleY.invert(position.x);
     }
-    return 0;
+
+    return scaleY.invert(position.y);
   };
 
   const getRation = () => {
-    switch (trackID) {
-      case LAYOUT.top: {
-        return (
-          (getRealYValue(startX) / (getRealYValue(endX) || Number.MIN_VALUE)) *
-          100
-        ).toFixed(2);
-      }
-      case LAYOUT.left: {
-        return (
-          (getRealYValue(startY) / (getRealYValue(endY) || Number.MIN_VALUE)) *
-          100
-        ).toFixed(2);
-      }
-      default:
-        return 0;
+    if (!trackID || trackID === 'MAIN') return 0;
+
+    if (trackID === 'TOP') {
+      return (
+        (getRealYValue(startX) / (getRealYValue(endX) || Number.MIN_VALUE)) *
+        100
+      ).toFixed(2);
     }
+
+    // tracKId = "LEFT"
+    return (
+      (getRealYValue(startY) / (getRealYValue(endY) || Number.MIN_VALUE)) *
+      100
+    ).toFixed(2);
   };
 
   const getDeltaX = () => {
-    switch (trackID) {
-      case LAYOUT.top: {
-        return (getXValue(startX) - getXValue(endX)).toPrecision(6);
-      }
-      case LAYOUT.left: {
-        return (getXValue(startY) - getXValue(endY)).toPrecision(6);
-      }
-      default:
-        return 0;
+    if (!trackID || trackID === 'MAIN') return 0;
+
+    if (trackID === 'TOP') {
+      return (getXValue(startX) - getXValue(endX)).toPrecision(6);
     }
+
+    return (getXValue(startY) - getXValue(endY)).toPrecision(6);
   };
 
   const getLabel = (label2d: any, label1d: any, nucleus: any) => {
