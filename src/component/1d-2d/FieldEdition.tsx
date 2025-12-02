@@ -2,7 +2,7 @@ import type { PopoverProps } from '@blueprintjs/core';
 import { Popover } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
-import type { ReactNode } from 'react';
+import type { MouseEvent, ReactNode } from 'react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
@@ -34,7 +34,7 @@ const validationSchema = (inputType: 'number' | 'text') =>
     value: (inputType === 'number' ? Yup.number() : Yup.string()).required(),
   });
 
-function stopPropagation(e: any) {
+function stopPropagation(e: MouseEvent) {
   e.stopPropagation();
 }
 
