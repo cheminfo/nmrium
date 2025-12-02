@@ -1,4 +1,12 @@
-import type { CSSProperties, ReactNode, Reducer } from 'react';
+import type {
+  CSSProperties,
+  KeyboardEvent,
+  MouseEvent,
+  PointerEvent,
+  ReactNode,
+  Reducer,
+  WheelEvent,
+} from 'react';
 import {
   createContext,
   useCallback,
@@ -9,6 +17,7 @@ import {
 } from 'react';
 import { assert } from 'react-science/ui';
 
+import type { EventModifierKeys } from '../context/KeyModifierContext.tsx';
 import type { ActionType } from '../reducer/types/ActionType.js';
 
 type AdvanceOmit<T, K extends keyof any> = T extends any ? Omit<T, K> : never;
@@ -20,14 +29,12 @@ export type BaseDetectBrushingOptions = AdvanceOmit<
 type Step = 'initial' | 'start' | 'end' | 'brushing';
 
 export type BrushAxis = 'X' | 'Y' | 'XY';
-export interface BrushTrackerData {
+export interface BrushTrackerData extends EventModifierKeys {
   step: Step;
   startX: number;
   endX: number;
   startY: number;
   endY: number;
-  shiftKey: boolean;
-  altKey: boolean;
   mouseButton: MouseButton;
 }
 
@@ -62,6 +69,8 @@ const initialState: BrushTrackerState = {
   mouseButton: 'unknown',
   shiftKey: false,
   altKey: false,
+  ctrlKey: false,
+  metaKey: false,
   startX: 0,
   endX: 0,
   startY: 0,
@@ -101,11 +110,11 @@ interface Position {
   y: number;
 }
 
-export type ClickOptions = React.MouseEvent & Position;
+export type ClickOptions = MouseEvent & Position;
 export type OnClick = (element: ClickOptions) => void;
 export type { OnClick as OnDoubleClick };
 export type ZoomOptions = Pick<
-  React.WheelEvent,
+  WheelEvent,
   'deltaY' | 'shiftKey' | 'deltaMode' | 'altKey' | 'deltaX' | 'ctrlKey'
 > &
   Position & { invertScroll?: boolean; isBidirectionalZoom: boolean };
@@ -126,7 +135,7 @@ interface BrushTrackerProps {
   clickTriggerMode?: 'native' | 'debounced';
 }
 
-function getMouseXY(event: React.MouseEvent, currentTarget?: Element) {
+function getMouseXY(event: MouseEvent, currentTarget?: Element) {
   const boundingRect = (
     currentTarget ?? event.currentTarget
   ).getBoundingClientRect();
@@ -162,7 +171,7 @@ export function BrushTracker(options: BrushTrackerProps) {
   const lastRef = useRef<Position>({ x: 0, y: 0 });
 
   const handleClickWithDebounce = useCallback(
-    (event: React.MouseEvent, currentTarget: Element) => {
+    (event: MouseEvent, currentTarget: Element) => {
       const { x, y } = getMouseXY(event, currentTarget);
 
       // Clear timeout
@@ -189,13 +198,13 @@ export function BrushTracker(options: BrushTrackerProps) {
     [onClick, onDoubleClick],
   );
 
-  function handleClick(event: React.MouseEvent) {
+  function handleClick(event: MouseEvent) {
     if (isDraggingRef.current || clickTriggerMode !== 'native') return;
     const { x, y } = getMouseXY(event);
     onClick({ ...event, x, y });
   }
 
-  function handleDoubleClick(event: React.MouseEvent) {
+  function handleDoubleClick(event: MouseEvent) {
     if (isDraggingRef.current || clickTriggerMode !== 'native') return;
 
     const { x, y } = getMouseXY(event);
@@ -203,7 +212,7 @@ export function BrushTracker(options: BrushTrackerProps) {
   }
 
   const pointerDownHandler = useCallback(
-    (event: React.PointerEvent) => {
+    (event: PointerEvent) => {
       event.persist();
       const currentTarget = event.currentTarget;
       isDraggingRef.current = false; // Reset dragging flag
@@ -239,7 +248,7 @@ export function BrushTracker(options: BrushTrackerProps) {
         }
       }
 
-      function moveCallback(event: PointerEvent) {
+      function moveCallback(event: globalThis.PointerEvent) {
         isDraggingRef.current = true; // set flag to true to skip click event if the user dragged the mouse
         const { clientX, clientY, shiftKey, altKey, ctrlKey } = event;
 
@@ -308,7 +317,7 @@ export function BrushTracker(options: BrushTrackerProps) {
   );
 
   const handleMouseWheel = useCallback(
-    (event: React.WheelEvent) => {
+    (event: WheelEvent) => {
       const boundingRect = event.currentTarget.getBoundingClientRect();
       const x = event.clientX - boundingRect.x;
       const y = event.clientY - boundingRect.y;
@@ -348,7 +357,7 @@ export function BrushTracker(options: BrushTrackerProps) {
     }
   }, [onBrush, onBrushEnd, state]);
 
-  function handleStopBrush(event: React.KeyboardEvent) {
+  function handleStopBrush(event: KeyboardEvent) {
     const isEscapePressed = event.key === 'Escape';
     const isBrushing = state.step === 'brushing';
     if (!isEscapePressed || !isBrushing) return;

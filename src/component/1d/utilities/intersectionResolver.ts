@@ -50,8 +50,8 @@ function groupData<T>(data: T[], options: Required<GroupDataProps<T>>) {
   return groups;
 }
 
-function resolveGroupsIntersection(
-  groups: any,
+function resolveGroupsIntersection<T>(
+  groups: Array<ResolveData<T>>,
   options: ResolveGroupIntersectionProps,
 ) {
   const { maxIteration = 3, groupMargin = 0 } = options;

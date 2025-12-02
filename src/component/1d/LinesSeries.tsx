@@ -94,8 +94,8 @@ function HeadlightRectStackMode(props: HeadlightRectStackModeProps) {
       x={margin.left}
       width={`${innerWidth}px`}
       height={`${BOX_SIZE}px`}
-      onClick={(e) => {
-        setActiveSpectrum(e as unknown as MouseEvent, spectrumID);
+      onClick={(event) => {
+        setActiveSpectrum(event, spectrumID);
       }}
       data-no-export="true"
     />

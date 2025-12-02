@@ -51,10 +51,18 @@ interface KeyModifierProviderProps {
 
 const isMac = globalThis.navigator?.userAgent?.toLowerCase().includes('mac');
 
-export function getModifiers(event: KeyboardEvent | MouseEvent) {
-  const { shiftKey, altKey, metaKey } = event;
-  const ctrlKey = isMac ? metaKey : event.ctrlKey;
-  return { ctrlKey, shiftKey, altKey };
+export type EventModifierKeys = Record<
+  'shiftKey' | 'altKey' | 'metaKey' | 'ctrlKey',
+  boolean
+>;
+
+export function getModifiers(eventKeys: EventModifierKeys) {
+  const { shiftKey, altKey, metaKey, ctrlKey } = eventKeys;
+  return {
+    ctrlKey: isMac ? metaKey : ctrlKey,
+    shiftKey,
+    altKey,
+  };
 }
 
 function toModifiersKey(keyModifiers: KeyModifiers): ModifiersKey {
@@ -62,7 +70,7 @@ function toModifiersKey(keyModifiers: KeyModifiers): ModifiersKey {
   return `shift[${shiftKey ? 'true' : 'false'}]_ctrl[${ctrlKey ? 'true' : 'false'}]_alt[${altKey ? 'true' : 'false'}]`;
 }
 
-function getModifiersKey(event: MouseEvent | KeyboardEvent) {
+function getModifiersKey(event: EventModifierKeys) {
   const keyModifiers = getModifiers(event);
   return toModifiersKey(keyModifiers);
 }

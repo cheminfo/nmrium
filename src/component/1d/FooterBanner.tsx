@@ -74,7 +74,7 @@ function FooterBannerInner({
     return <FooterContainer />;
   }
 
-  function getXIndex(xPosition: any) {
+  function getXIndex(xPosition: number) {
     if (spectrum) {
       const data = get1DDataXY(spectrum);
       return xFindClosestIndex(data.x, scaleX().invert(xPosition));
@@ -82,7 +82,7 @@ function FooterBannerInner({
     return 0;
   }
 
-  function getYValue(xPosition: any) {
+  function getYValue(xPosition: number) {
     if (spectrum) {
       const data = get1DDataXY(spectrum);
       const xIndex = getXIndex(xPosition);

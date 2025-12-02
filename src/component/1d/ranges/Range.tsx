@@ -22,6 +22,7 @@ import type { ActionsButtonsPopoverProps } from '../../elements/ActionsButtonsPo
 import { ActionsButtonsPopover } from '../../elements/ActionsButtonsPopover.js';
 import { useDialogData } from '../../elements/DialogManager.js';
 import { ResizerWithScale } from '../../elements/ResizerWithScale.js';
+import type { Position } from '../../elements/resizer/SVGResizer.tsx';
 import { useHighlight } from '../../highlight/index.js';
 import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
 import { useHighlightColor } from '../../hooks/useHighlightColor.js';
@@ -86,7 +87,7 @@ function Range(options: RangeProps) {
 
   const isBlockedByEditing = selectedTool && isDialogOpen(EditRangeModal);
 
-  function handleOnStopResizing(position: any) {
+  function handleOnStopResizing(position: Position) {
     if (!spectrum || !isSpectrum1D(spectrum)) return;
     const from = scaleX().invert(position.x2);
     const to = scaleX().invert(position.x1);

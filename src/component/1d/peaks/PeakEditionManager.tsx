@@ -1,5 +1,10 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import type { KeyboardEvent, PropsWithChildren, ReactNode } from 'react';
+import type {
+  KeyboardEvent,
+  MouseEvent,
+  PropsWithChildren,
+  ReactNode,
+} from 'react';
 import {
   createContext,
   useCallback,
@@ -60,7 +65,7 @@ function usePeaksEditionManager() {
   return context;
 }
 
-function stopPropagation(e: any) {
+function stopPropagation(e: MouseEvent) {
   e.stopPropagation();
 }
 
