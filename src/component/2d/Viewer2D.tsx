@@ -65,7 +65,7 @@ function Viewer2D(props: Viewer2DProps) {
                 <XYLabelPointer data1D={spectrumData} layout={DIMENSION} />
 
                 <>
-                  {spectrumData[0] && (
+                  {spectrumData.x && (
                     <BrushXY
                       axis="X"
                       dimensionBorder={DIMENSION.TOP}
@@ -73,7 +73,7 @@ function Viewer2D(props: Viewer2DProps) {
                       margin={{ ...margin, top: 0, bottom: 0 }}
                     />
                   )}
-                  {spectrumData[1] && (
+                  {spectrumData.y && (
                     <BrushXY
                       axis="Y"
                       dimensionBorder={DIMENSION.LEFT}
