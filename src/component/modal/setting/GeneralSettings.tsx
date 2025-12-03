@@ -148,6 +148,7 @@ function InnerGeneralSettingsModal(props: InnerGeneralSettingsModalProps) {
     workspaces,
     ...preferences
   } = usePreferences();
+
   const { addNewWorkspace, removeWorkspace, setActiveWorkspace } =
     useWorkspaceAction();
   const baseWorkspaces = useWorkspacesList();
@@ -172,7 +173,11 @@ function InnerGeneralSettingsModal(props: InnerGeneralSettingsModalProps) {
   }
 
   function deleteWorkSpaceHandler(key: any) {
-    removeWorkspace(key);
+    const isActiveWorkspace = removeWorkspace(key);
+    if (!isActiveWorkspace) {
+      return;
+    }
+    reset(workspaces.default);
   }
 
   function ChangeWorkspaceHandler(option: DropDownListItem) {
