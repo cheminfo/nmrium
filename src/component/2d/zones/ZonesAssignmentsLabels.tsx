@@ -264,7 +264,7 @@ function getDefaultAssignmentLabel(options: GetDefaultAssignmentOptions) {
   const { signals, x, y } = zone;
   if (signals.length === 0) return '';
 
-  const [topSpectrum, leftSpectrum] = getTracesSpectra({
+  const { x: topSpectrum, y: leftSpectrum } = getTracesSpectra({
     activeSpectra,
     nuclei,
     spectra,

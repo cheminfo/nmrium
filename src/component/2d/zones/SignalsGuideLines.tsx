@@ -413,12 +413,8 @@ export function SignalsGuideLines() {
 
   return (
     <ShareDataProvider>
-      {spectrumData[0] && (
-        <IndicationLines axis="x" spectrum={spectrumData[0]} />
-      )}
-      {spectrumData[0] && (
-        <IndicationLines axis="y" spectrum={spectrumData[1]} />
-      )}
+      {spectrumData.x && <IndicationLines axis="x" spectrum={spectrumData.x} />}
+      {spectrumData.y && <IndicationLines axis="y" spectrum={spectrumData.y} />}
     </ShareDataProvider>
   );
 }

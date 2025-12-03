@@ -2,7 +2,6 @@ import type { Filter2DEntry, SignalKind, Zone } from '@zakodium/nmr-types';
 import type { Spectrum2D, ZonesViewState } from '@zakodium/nmrium-core';
 import type { FromTo, NmrData2DFt } from 'cheminfo-types';
 import type { Draft } from 'immer';
-import { original } from 'immer';
 import lodashCloneDeep from 'lodash/cloneDeep.js';
 import { setPathLength } from 'nmr-correlation';
 import { Filters2DManager } from 'nmr-processing';
@@ -13,7 +12,6 @@ import {
   detectZonesManual,
   isSpectrum2D,
 } from '../../../data/data2d/Spectrum2D/index.js';
-import type { DetectionZonesOptions } from '../../../data/data2d/Spectrum2D/zones/getDetectionZones.js';
 import { unlink } from '../../../data/utilities/ZoneUtilities.js';
 import type { Axis } from '../../assignment/AssignmentsContext.js';
 import { defaultZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState.js';
@@ -140,11 +138,10 @@ function handleAdd2dZone(draft: Draft<State>, action: Add2dZoneAction) {
 
   const drawnZone = get2DRange(draft, action.payload);
 
-  const zones = detectZonesManual(original(spectrum), {
+  const zones = detectZonesManual(spectrum, {
     selectedZone: drawnZone,
     thresholdFactor: draft.toolOptions.data.zonesNoiseFactor,
     maxPercentCutOff: draft.toolOptions.data.zonesMinMaxRatio,
-    convolutionByFFT: false,
   });
 
   spectrum.zones.values.push(...zones);
@@ -167,12 +164,11 @@ function handleAutoZonesDetection(
 
   const [fromX, toX] = draft.xDomain;
   const [fromY, toY] = draft.yDomain;
-  const detectionOptions: DetectionZonesOptions = {
+  const zones = detectZones(spectrum, {
     selectedZone: { fromX, toX, fromY, toY },
     thresholdFactor,
     maxPercentCutOff,
-  };
-  const zones = detectZones(original(spectrum), detectionOptions);
+  });
   spectrum.zones.values = spectrum.zones.values.concat(zones);
   handleUpdateCorrelations(draft);
 }
@@ -183,13 +179,11 @@ function handleAutoSpectraZonesDetection(draft: Draft<State>) {
     const { info, data } = datum;
     if (isSpectrum2D(datum) && info.isFt) {
       const { minX, maxX, minY, maxY } = (data as NmrData2DFt).rr;
-      const detectionOptions = {
+      const zones = detectZones(datum, {
         selectedZone: { fromX: minX, toX: maxX, fromY: minY, toY: maxY },
         thresholdFactor: 1,
         maxPercentCutOff: 0.03,
-      };
-
-      const zones = detectZones(original(datum), detectionOptions);
+      });
       datum.zones.values = datum.zones.values.concat(zones);
 
       handleUpdateCorrelations(draft);

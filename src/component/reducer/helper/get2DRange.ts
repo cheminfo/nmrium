@@ -1,4 +1,7 @@
+import type { Draft } from 'immer';
+
 import { get2DXScale, get2DYScale } from '../../2d/utilities/scale.js';
+import type { State } from '../Reducer.ts';
 
 export interface ZoneBoundary {
   startX: number;
@@ -7,7 +10,7 @@ export interface ZoneBoundary {
   endY: number;
 }
 
-export default function get2DRange(draft: any, options: ZoneBoundary) {
+export default function get2DRange(draft: Draft<State>, options: ZoneBoundary) {
   const { startX, startY, endX, endY } = options;
   const scaleX = get2DXScale(draft);
   const scaleY = get2DYScale(draft);
