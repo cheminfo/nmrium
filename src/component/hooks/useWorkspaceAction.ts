@@ -64,10 +64,13 @@ export function useWorkspaceAction() {
 
   function removeWorkspace(key: string) {
     const settings = readSettings();
+    let isActiveWorkspace = false;
+
     if (settings) {
       // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete settings.workspaces[key];
       if (key === settings.currentWorkspace) {
+        isActiveWorkspace = true;
         settings.currentWorkspace = 'default';
       }
 
@@ -79,6 +82,8 @@ export function useWorkspaceAction() {
         workspace: key,
       },
     });
+
+    return isActiveWorkspace;
   }
 
   function saveWorkspace(data?: Partial<Workspace>) {
