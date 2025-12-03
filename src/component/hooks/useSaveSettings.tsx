@@ -1,5 +1,4 @@
 import { Button, Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
-import styled from '@emotion/styled';
 import { revalidateLogic } from '@tanstack/react-form';
 import type { Workspace } from '@zakodium/nmrium-core';
 import { useRef } from 'react';
@@ -70,11 +69,12 @@ export function useSaveSettings() {
               void form.handleSubmit();
             }}
           >
-            <DialogContent style={{ textAlign: 'left' }}>
+            <DialogBody style={{ backgroundColor: 'white' }}>
               <form.AppField name="workspaceName">
                 {(field) => (
                   <field.Input
                     layout="inline"
+                    autoFocus
                     label="New Workspace name"
                     placeholder="Enter workspace name"
                     helpText="Please enter a new user workspace name in order to save your changes locally"
@@ -82,7 +82,7 @@ export function useSaveSettings() {
                   />
                 )}
               </form.AppField>
-            </DialogContent>
+            </DialogBody>
 
             <DialogFooter>
               <div
@@ -115,8 +115,3 @@ export function useSaveSettings() {
     },
   };
 }
-
-const DialogContent = styled(DialogBody)`
-  background-color: white;
-  text-align: center;
-`;
