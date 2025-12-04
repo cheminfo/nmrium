@@ -241,7 +241,7 @@ function handleAutoRangesDetection(
       },
       peakPicking: {
         smoothY: false,
-        sensitivity: 100,
+        sensitivity: 90,
         broadWidth: 0.05,
         thresholdFactor: 8,
         minMaxRatio,
@@ -262,7 +262,7 @@ function handleAutoRangesDetection(
 //action
 function handleAutoSpectraRangesDetection(draft: Draft<State>) {
   const peakPicking = {
-    sensitivity: 100,
+    sensitivity: 90,
     thresholdFactor: 8,
     minMaxRatio: 0.05,
   };

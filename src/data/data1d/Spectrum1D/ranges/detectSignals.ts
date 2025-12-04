@@ -31,6 +31,7 @@ export default function detectSignals(
         to,
         from,
         frequency,
+        sensitivity: 90,
         broadRatio: 0.0025,
         smoothY: true,
       },

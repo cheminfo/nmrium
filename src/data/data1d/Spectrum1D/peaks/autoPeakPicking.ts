@@ -9,7 +9,7 @@ export function autoPeakPicking(spectrum: Spectrum1D, options: any) {
     maxNumberOfPeaks,
     noiseFactor,
     direction,
-    sensitivity = 100,
+    sensitivity = 90,
     windowFromIndex,
     windowToIndex,
   } = options;
