@@ -100,65 +100,60 @@ export function BrushTracker2D({ children }: Required<PropsWithChildren>) {
 
       const modifierKey = getModifiersKey(brushData as unknown as MouseEvent);
       let executeDefaultAction = false;
+      const trackID = getLayoutID(DIMENSION, brushData);
 
-      if (brushData.mouseButton === 'main') {
-        const trackID = getLayoutID(DIMENSION, brushData);
-        if (trackID) {
-          switch (modifierKey) {
-            case primaryKeyIdentifier: {
-              switch (selectedTool) {
-                case options.zoom.id: {
-                  executeDefaultAction = true;
-                  break;
-                }
-                case options.zonePicking.id: {
-                  dispatch({ type: 'ADD_2D_ZONE', payload: brushData });
+      if (brushData.mouseButton !== 'main' || !trackID) return;
 
-                  break;
-                }
-                default:
-                  break;
-              }
+      const isPrimaryKeyIdentifier = modifierKey === primaryKeyIdentifier;
 
-              break;
-            }
-            default: {
-              executeDefaultAction = true;
-              break;
-            }
+      if (trackID === 'MAIN' && isPrimaryKeyIdentifier) {
+        switch (selectedTool) {
+          case options.zoom.id: {
+            executeDefaultAction = true;
+            break;
           }
-          const isNotDistanceMeasurementTool =
-            selectedTool !== 'zoom' ||
-            (selectedTool === 'zoom' && !brushData.shiftKey);
+          case options.zonePicking.id: {
+            dispatch({ type: 'ADD_2D_ZONE', payload: brushData });
 
-          if (
-            executeDefaultAction &&
-            selectedTool != null &&
-            isNotDistanceMeasurementTool
-          ) {
-            const trackID = getLayoutID(DIMENSION, brushData);
-
-            const axisMap: Record<Layout, BrushAxis> = {
-              MAIN: detectBrushing(brushData, {
-                width,
-                height,
-                ...brushDetectionOptions,
-              }).type,
-              LEFT: 'Y',
-              TOP: 'X',
-            };
-
-            const axis: BrushAxis | null = trackID && axisMap[trackID];
-
-            return dispatch({
-              type: 'BRUSH_END',
-              payload: {
-                ...brushDataInPPM,
-                axis,
-              },
-            });
+            break;
           }
+          default:
+            break;
         }
+      } else {
+        executeDefaultAction = true;
+      }
+
+      const isNotDistanceMeasurementTool =
+        selectedTool !== 'zoom' ||
+        (selectedTool === 'zoom' && !brushData.shiftKey);
+
+      if (
+        executeDefaultAction &&
+        selectedTool != null &&
+        isNotDistanceMeasurementTool
+      ) {
+        const trackID = getLayoutID(DIMENSION, brushData);
+
+        const axisMap: Record<Layout, BrushAxis> = {
+          MAIN: detectBrushing(brushData, {
+            width,
+            height,
+            ...brushDetectionOptions,
+          }).type,
+          LEFT: 'Y',
+          TOP: 'X',
+        };
+
+        const axis: BrushAxis | null = trackID && axisMap[trackID];
+
+        return dispatch({
+          type: 'BRUSH_END',
+          payload: {
+            ...brushDataInPPM,
+            axis,
+          },
+        });
       }
     },
     [

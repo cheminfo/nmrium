@@ -1,4 +1,3 @@
-import type { Spectrum1D } from '@zakodium/nmrium-core';
 import type { CSSProperties } from 'react';
 import { useMemo } from 'react';
 
@@ -7,6 +6,7 @@ import { useMouseTracker } from '../../EventsTrackers/MouseTracker.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.js';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus.js';
+import type { Spectrum1DTraces } from '../useTracesSpectra.ts';
 import type { Get2DDimensionLayoutReturn } from '../utilities/DimensionLayout.js';
 import { LAYOUT, getLayoutID } from '../utilities/DimensionLayout.js';
 import { get1DYScale, useScale2DX, useScale2DY } from '../utilities/scale.js';
@@ -24,7 +24,7 @@ const style: CSSProperties = {
 
 interface XYLabelPointerProps {
   layout: Get2DDimensionLayoutReturn;
-  data1D: Spectrum1D[];
+  data1D: Spectrum1DTraces;
 }
 
 export default function XYLabelPointer(props: XYLabelPointerProps) {
@@ -53,9 +53,10 @@ export default function XYLabelPointer(props: XYLabelPointerProps) {
   const [formatX, formatY] = useFormatNumberByNucleus(nuclei);
   const scale2DX = useScale2DX();
   const scale2DY = useScale2DY();
+  const hasTraces = data1D.x || data1D.y;
 
   const scaleX = useMemo(() => {
-    if (!activeSpectrum || data1D.length === 0) {
+    if (!activeSpectrum || !hasTraces) {
       return scale2DX;
     }
 
@@ -70,10 +71,10 @@ export default function XYLabelPointer(props: XYLabelPointerProps) {
       default:
         return null;
     }
-  }, [activeSpectrum, data1D, scale2DX, scale2DY, trackID]);
+  }, [activeSpectrum, hasTraces, scale2DX, scale2DY, trackID]);
 
   const scaleY = useMemo(() => {
-    if (!activeSpectrum || data1D.length === 0) {
+    if (!activeSpectrum || !hasTraces) {
       return scale2DY;
     }
     switch (trackID) {
@@ -81,13 +82,11 @@ export default function XYLabelPointer(props: XYLabelPointerProps) {
         return scale2DY;
       }
       case LAYOUT.top: {
-        return data1D[0]
-          ? get1DYScale(yDomains[data1D[0].id], margin.top)
-          : null;
+        return data1D.x ? get1DYScale(yDomains[data1D.x.id], margin.top) : null;
       }
       case LAYOUT.left: {
-        return data1D[1]
-          ? get1DYScale(yDomains[data1D[1].id], margin.left)
+        return data1D.y
+          ? get1DYScale(yDomains[data1D.y.id], margin.left)
           : null;
       }
       default:
@@ -95,7 +94,9 @@ export default function XYLabelPointer(props: XYLabelPointerProps) {
     }
   }, [
     activeSpectrum,
-    data1D,
+    data1D.x,
+    data1D.y,
+    hasTraces,
     margin.left,
     margin.top,
     scale2DY,

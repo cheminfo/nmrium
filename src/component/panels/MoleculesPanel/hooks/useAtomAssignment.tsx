@@ -7,7 +7,7 @@ import { isSpectrum1D } from '../../../../data/data1d/Spectrum1D/isSpectrum1D.ts
 import { isSpectrum2D } from '../../../../data/data2d/Spectrum2D/isSpectrum2D.ts';
 import { ConcatenationString } from '../../../../data/utilities/Concatenation.ts';
 import checkModifierKeyActivated from '../../../../data/utilities/checkModifierKeyActivated.ts';
-import { useTracesSpectra } from '../../../2d/useTracesSpectra.ts';
+import { getTracesSpectra } from '../../../2d/useTracesSpectra.ts';
 import type {
   Assignments,
   Axis,
@@ -71,6 +71,25 @@ function getSignalsDiaIDs(
     ]);
 }
 
+function use1DSpectraTraces() {
+  const {
+    data,
+    view: {
+      spectra: { activeSpectra, activeTab },
+    },
+  } = useChartData();
+
+  return useMemo(() => {
+    const nuclei = activeTab.split(',');
+    try {
+      const traces = getTracesSpectra({ nuclei, spectra: data, activeSpectra });
+      return Object.values(traces).filter((spectrum) => spectrum !== null);
+    } catch {
+      return [];
+    }
+  }, [activeTab, data, activeSpectra]);
+}
+
 export default function useAtomAssignment() {
   const {
     data: spectra,
@@ -79,7 +98,7 @@ export default function useAtomAssignment() {
     },
   } = useChartData();
   const spectrum = useSpectrum();
-  const tracesSpectra = useTracesSpectra();
+  const tracesSpectra = use1DSpectraTraces();
 
   const toaster = useToaster();
   const dispatch = useDispatch();
@@ -108,7 +127,7 @@ export default function useAtomAssignment() {
 
     if (isSpectrum2D(spectrum) && spectrumID) {
       const traceSpectrum = tracesSpectra.find(
-        (traceSpectrum) => traceSpectrum.id === spectrumID,
+        (traceSpectrum) => traceSpectrum?.id === spectrumID,
       );
       if (traceSpectrum) {
         currentSpectrum = traceSpectrum;
