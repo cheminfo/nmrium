@@ -700,7 +700,6 @@ function handleChangeRangesViewFloatingBoxBounding(
 }
 
 export {
-  clearSignalAssignment,
   deleteSignal1D,
   handleAddRange,
   handleAssign1DSignal,
