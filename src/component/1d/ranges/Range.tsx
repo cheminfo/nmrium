@@ -53,7 +53,7 @@ function Range(options: RangeProps) {
 
   const highlightColor = useHighlightColor();
   const assignmentData = useAssignmentContext();
-  const signalAssignment = useAssignment(signal.id);
+  const signalAssignment = useAssignment(signal?.id || '');
   const highlightRange = useHighlight(
     [id].concat(signalAssignment.assignedDiaIds?.x || []).concat(
       filterAssignedIDs(
