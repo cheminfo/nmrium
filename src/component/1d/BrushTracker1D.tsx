@@ -451,6 +451,14 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
               }
               break;
             }
+            case 'multipleSpectraAnalysis': {
+              dispatchPreferences({
+                type: 'CUT_SPECTRA_ANALYSIS',
+                payload: { x: xPPM, nucleus: activeTab },
+              });
+
+              break;
+            }
             case 'phaseCorrection':
               dispatch({
                 type: 'SET_ONE_DIMENSION_PIVOT_POINT',

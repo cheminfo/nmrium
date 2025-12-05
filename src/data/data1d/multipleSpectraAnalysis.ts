@@ -33,6 +33,26 @@ export interface SpectraAnalysisData {
   values: Array<Record<string, AnalyzeSpectraCalculateResult>>;
 }
 
+export function cutAnalysis(
+  spectraAnalysis: PanelsPreferences['multipleSpectraAnalysis'],
+  nucleus: string,
+  x: number,
+) {
+  const cutColumns: Record<string, SpectraAnalysisColumn> = {};
+
+  const analysisOptions = spectraAnalysis[nucleus].analysisOptions;
+  for (const [columnKey, column] of Object.entries(analysisOptions.columns)) {
+    const { to, from } = column;
+    if (x > from && x < to) {
+      cutColumns[columnKey] = { ...column, from: x, to };
+      const newKey = generateChar(analysisOptions.columnIndex).toUpperCase();
+      cutColumns[newKey] = { ...column, from, to: x };
+      analysisOptions.columnIndex++;
+    }
+  }
+  analysisOptions.columns = { ...analysisOptions.columns, ...cutColumns };
+}
+
 function addColumnKey(
   spectraAnalysis: PanelsPreferences['multipleSpectraAnalysis'],
   nucleus: string,

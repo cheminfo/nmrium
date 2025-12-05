@@ -6,6 +6,7 @@ import { getMultipleSpectraAnalysisDefaultValues } from '../panelsPreferencesDef
 import type {
   AnalyzeSpectraAction,
   ChangeAnalysisColumnValueKeyAction,
+  CutSpectraAnalysisAction,
   DeleteAnalysisColumn,
   PreferencesState,
   SetSpectraAnalysisPanelPreferencesAction,
@@ -33,6 +34,21 @@ export function analyzeSpectra(
     nucleus,
     columnKey,
   });
+}
+export function cutSpectraAnalysis(
+  draft: Draft<PreferencesState>,
+  action: CutSpectraAnalysisAction,
+) {
+  const currentWorkspacePreferences = getActiveWorkspace(draft);
+  const panels = currentWorkspacePreferences.panels;
+  const { x, nucleus } = action.payload;
+
+  if (!panels.multipleSpectraAnalysis) {
+    panels.multipleSpectraAnalysis =
+      getMultipleSpectraAnalysisDefaultValues(nucleus);
+  }
+
+  MultipleAnalysis.cutAnalysis(panels.multipleSpectraAnalysis, nucleus, x);
 }
 
 export function changeAnalysisColumnValueKey(
