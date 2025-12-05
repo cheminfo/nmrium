@@ -1,8 +1,8 @@
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 
 interface RangeSignalOption {
-  rangeID: string;
-  signalID: string;
+  rangeId: string;
+  signalId: string;
   newSignalValue: number;
 }
 
@@ -10,15 +10,15 @@ export function changeRangeSignal(
   spectrum: Spectrum1D,
   options: RangeSignalOption,
 ) {
-  const { rangeID, signalID, newSignalValue } = options;
+  const { rangeId, signalId, newSignalValue } = options;
 
   let shiftValue = 0;
   const rangeIndex = spectrum.ranges.values.findIndex(
-    (range) => range.id === rangeID,
+    (range) => range.id === rangeId,
   );
   if (rangeIndex !== -1) {
     const signalIndex = spectrum.ranges.values[rangeIndex].signals.findIndex(
-      (signal) => signal.id === signalID,
+      (signal) => signal.id === signalId,
     );
     const signal = spectrum.ranges.values[rangeIndex].signals[signalIndex];
     shiftValue = newSignalValue - signal.delta;

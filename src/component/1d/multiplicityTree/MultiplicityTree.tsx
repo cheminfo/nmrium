@@ -3,7 +3,6 @@ import type { Range } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { useRef } from 'react';
-import { LuLink, LuUnlink } from 'react-icons/lu';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import type { AssignmentsData } from '../../assignment/AssignmentsContext.js';
@@ -11,12 +10,12 @@ import { useAssignment } from '../../assignment/AssignmentsContext.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';
-import type { ActionsButtonsPopoverProps } from '../../elements/ActionsButtonsPopover.js';
 import { ActionsButtonsPopover } from '../../elements/ActionsButtonsPopover.js';
 import { useHighlight } from '../../highlight/index.js';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.ts';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import { useIsInset } from '../inset/InsetProvider.js';
+import { useAssignmentsPopoverActionsButtons } from '../ranges/useAssignmentsPopoverActionsButtons.tsx';
 
 import type { TreeNodes } from './generateTreeNodes.js';
 import { generateTreeNodes } from './generateTreeNodes.js';
@@ -76,7 +75,15 @@ function Tree(props: TreeProps) {
     signalIndex,
     range,
     startY: originStartY,
-    treeNodes: { multiplicity = '', nodes, min, max, signalKey, diaIDs },
+    treeNodes: {
+      multiplicity = '',
+      nodes,
+      min,
+      max,
+      signalKey,
+      diaIDs,
+      assignment: assignmentLabel,
+    },
   } = props;
   const { from, to } = range;
   const { width } = useChartData();
@@ -118,6 +125,18 @@ function Tree(props: TreeProps) {
     startY,
   });
 
+  const hasDiaIDs = Array.isArray(diaIDs) && diaIDs.length > 0;
+  const isAssignmentActive = assignment.isActive;
+
+  const actionsButtons = useAssignmentsPopoverActionsButtons({
+    isUnAssignButtonVisible: isAssignmentActive || hasDiaIDs,
+    isAssignLabelButtonVisible: !assignmentLabel,
+    isUnAssignLabelButtonVisible: !!assignmentLabel,
+    onAssign: assignHandler,
+    onUnAssign: unAssignHandler,
+    rangeId: range.id,
+  });
+
   if (!multiplicity) return null;
 
   function assignHandler() {
@@ -127,38 +146,20 @@ function Tree(props: TreeProps) {
 
   function unAssignHandler() {
     dispatch({
-      type: 'UNLINK_RANGE',
+      type: 'UNASSIGN_1D_SIGNAL',
       payload: {
         rangeKey: range.id,
         signalIndex,
       },
     });
   }
-  const hasDiaIDs = Array.isArray(diaIDs) && diaIDs.length > 0;
-  const isAssignmentActive = assignment.isActive;
+
   const isHighlighted = highlight.isActive || isAssignmentActive;
   const padding = boxPadding * widthRatio;
   const x = scaleX()(max) - padding;
   const y = startY - headTextMargin - headerTextSize - padding;
   const boxWidth = treeWidth + padding * 2;
   const boxHeight = treeHeight + headTextMargin + headerTextSize + padding * 2;
-
-  const actionsButtons: ActionsButtonsPopoverProps['buttons'] = [
-    {
-      icon: <LuLink />,
-      onClick: assignHandler,
-      intent: 'success',
-      title: 'Assign range',
-    },
-    {
-      icon: <LuUnlink />,
-      onClick: () => unAssignHandler(),
-      intent: 'danger',
-      title: 'Unassign range',
-      visible: isAssignmentActive || hasDiaIDs,
-    },
-  ];
-
   const isOpen = isAssignBtnTrigged.current ? isAssignmentActive : undefined;
 
   return (

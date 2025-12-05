@@ -6,7 +6,10 @@ interface StackOverlappingLabelsOptions<T> {
   padding?: number;
 }
 
-type StackOverlappingLabelsMapReturnType = Record<string | number, number>;
+export type StackOverlappingLabelsMapReturnType = Record<
+  string | number,
+  number
+>;
 
 type StackOverlappingLabelsArrayItemReturnType<T> = T & {
   stackIndex: number;

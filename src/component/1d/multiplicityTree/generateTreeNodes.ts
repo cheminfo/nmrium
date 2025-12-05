@@ -19,6 +19,7 @@ export interface TreeNodes {
   multiplicity?: string;
   nodes: TreeNode[];
   diaIDs?: string[];
+  assignment?: string;
   min: number;
   max: number;
 }
@@ -78,7 +79,14 @@ export function generateTreeNodes(range: Range, spectrumData: Spectrum1D) {
   for (const signal of signals || []) {
     nodes = [];
 
-    const { multiplicity, js, delta, id: signalKey, diaIDs } = signal;
+    const {
+      multiplicity,
+      js,
+      delta,
+      id: signalKey,
+      diaIDs,
+      assignment,
+    } = signal;
     const minMax = { min: delta, max: delta };
 
     nodes.push({
@@ -104,6 +112,7 @@ export function generateTreeNodes(range: Range, spectrumData: Spectrum1D) {
       rangeKey,
       signalKey,
       diaIDs,
+      assignment,
       multiplicity,
       nodes,
       ...minMax,

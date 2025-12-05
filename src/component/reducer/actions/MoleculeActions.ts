@@ -231,7 +231,6 @@ function clearAssignments(draft: Draft<State>, diaIDs: DiaIDAndInfo[]) {
       const ranges = spectrum.ranges.values;
       for (const range of ranges) {
         const { signals = [] } = range;
-        clearDiaIDs(range, { diaIDsObj, nucleus });
         for (const signal of signals) {
           clearDiaIDs(signal, { diaIDsObj, nucleus });
         }

@@ -7,7 +7,6 @@ import { memo } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';
-import { ShareDataProvider } from '../../context/ShareDataContext.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import { useTextMetrics } from '../../hooks/useTextMetrics.ts';
@@ -26,6 +25,8 @@ const labelSize = 14;
 type ProcessedRange = RangeType & {
   labelWidth: number;
   startPosition: number;
+  signalId: string;
+  assignment: string;
 };
 
 function useStackRangesAssignmentsLabels(ranges: RangeType[]) {
@@ -35,23 +36,32 @@ function useStackRangesAssignmentsLabels(ranges: RangeType[]) {
 
   if (ranges.length === 0) return null;
 
-  const processedRanges: ProcessedRange[] = ranges.map((range) => {
-    const { from, assignment = '' } = range;
-    const labelWidth = getTextWidth(assignment);
+  const processedRanges: ProcessedRange[] = [];
 
-    return {
-      ...range,
-      labelWidth,
-      startPosition: scaleX()(from),
-    };
-  });
-  processedRanges.sort((a, b) => b.from - a.from);
+  for (const range of ranges) {
+    const { from, signals } = range;
 
+    const startPosition = scaleX()(from);
+    for (const signal of signals) {
+      const { id, assignment = '' } = signal;
+      const labelWidth = getTextWidth(assignment);
+
+      processedRanges.push({
+        ...range,
+        labelWidth,
+        startPosition,
+        signalId: id,
+        assignment,
+      });
+    }
+  }
+
+  processedRanges.sort((a, b) => b.startPosition - a.startPosition);
   return stackOverlappingLabelsMap(processedRanges, {
     startPositionKey: 'startPosition',
     labelWidthKey: 'labelWidth',
     padding: 0,
-    idKey: 'id',
+    idKey: 'signalId',
   });
 }
 
@@ -63,23 +73,18 @@ function RangesInner({
   const assignmentLabelsStackIndexes = useStackRangesAssignmentsLabels(
     ranges.values,
   );
-
   return (
-    <ShareDataProvider>
-      <g>
-        {ranges.values.map((range) => (
-          <Range
-            key={range.id}
-            range={range}
-            selectedTool={selectedTool}
-            relativeFormat={relativeFormat}
-            assignmentLabelStackIndex={
-              assignmentLabelsStackIndexes?.[range.id] || 0
-            }
-          />
-        ))}
-      </g>
-    </ShareDataProvider>
+    <g>
+      {ranges.values.map((range) => (
+        <Range
+          key={range.id}
+          range={range}
+          selectedTool={selectedTool}
+          relativeFormat={relativeFormat}
+          signalsStackIndexes={assignmentLabelsStackIndexes || {}}
+        />
+      ))}
+    </g>
   );
 }
 
