@@ -62,7 +62,7 @@ async function resizeRange(nmrium: NmriumPage) {
 
   await nmrium.page.mouse.down({ button: 'left' });
 
-  await nmrium.page.mouse.move(x + DragElementWidth / 2 + 20, height / 2, {
+  await nmrium.page.mouse.move(x + DragElementWidth / 2 + 10, height / 2, {
     steps: 15,
   });
   await nmrium.page.mouse.up();
@@ -75,8 +75,8 @@ async function resizeRange(nmrium: NmriumPage) {
 
   const { width } = (await greenArea.boundingBox()) as BoundingBox;
 
-  expect(width).toBeGreaterThan(29);
-  expect(width).toBeLessThanOrEqual(32);
+  expect(width).toBeGreaterThan(19);
+  expect(width).toBeLessThanOrEqual(22);
 }
 
 async function deleteRange(nmrium: NmriumPage) {
@@ -94,9 +94,11 @@ test('Should ranges Add/resize/delete', async ({ page }) => {
   await nmrium.clickTool('rangePicking');
 
   await test.step('Add ranges', async () => {
-    //add two ranges
-    await addRange(nmrium, 160, 170, 1);
-    await addRange(nmrium, 70, 80, 2);
+    // Add two ranges.
+    // The first range should find a signal.
+    await addRange(nmrium, 165, 175, 1);
+    // The second range should be on the noise and find no signal.
+    await addRange(nmrium, 280, 300, 2);
   });
 
   await test.step('Clicking and subsequently releasing the resizing action should not crash or add a new range', async () => {
