@@ -1,4 +1,4 @@
-import type { PropsWithChildren } from 'react';
+import type { MouseEvent, PropsWithChildren } from 'react';
 import { useCallback, useRef, useState } from 'react';
 import { useOnOff } from 'react-science/ui';
 
@@ -106,7 +106,7 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
 
   const [brushData, setBrushData] = useState<BrushTrackerData | null>(null);
 
-  function handleBrush(brushData: any) {
+  function handleBrush(brushData: BrushTrackerData) {
     const { mouseButton } = brushData;
     const brushDataInPPM = convertToPPM(brushData);
 
@@ -120,7 +120,7 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
       dispatch({ type: 'MOVE', payload: { shiftX, shiftY: 0 } });
     }
   }
-  function handleInsetBrush(brushData: any) {
+  function handleInsetBrush(brushData: BrushTrackerData) {
     const { mouseButton } = brushData;
     const brushDataInPPM = convertToPPM(brushData);
 
@@ -140,13 +140,13 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
   }
 
   const handleBrushEnd = useCallback<OnBrush>(
-    (brushData) => {
+    (brushData: BrushTrackerData) => {
       //reset the brush start
       brushStartRef.current = null;
       setBrushData(brushData);
       const brushDataInPPM = convertToPPM(brushData);
 
-      const keyModifiers = getModifiersKey(brushData as unknown as MouseEvent);
+      const keyModifiers = getModifiersKey(brushData);
 
       const selectRange = sortRange(brushDataInPPM.startX, brushDataInPPM.endX);
 
@@ -339,8 +339,8 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
   );
 
   const handleOnDoubleClick = useCallback(
-    (event: any) => {
-      const keyModifiers = getModifiersKey(event as unknown as MouseEvent);
+    (event: MouseEvent) => {
+      const keyModifiers = getModifiersKey(event);
       if (primaryKeyIdentifier === keyModifiers && !isClickDebounced) return;
 
       dispatch({
@@ -352,8 +352,8 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
   );
 
   const handleInsetOnDoubleClick = useCallback(
-    (event: any) => {
-      const keyModifiers = getModifiersKey(event as unknown as MouseEvent);
+    (event: MouseEvent) => {
+      const keyModifiers = getModifiersKey(event);
       if (primaryKeyIdentifier === keyModifiers) return;
 
       if (!inset) {
@@ -420,7 +420,7 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
         xPPM,
       });
 
-      const keyModifiers = getModifiersKey(event as unknown as MouseEvent);
+      const keyModifiers = getModifiersKey(event);
 
       switch (keyModifiers) {
         case primaryKeyIdentifier: {

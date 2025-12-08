@@ -169,16 +169,15 @@ export default function useAtomAssignment() {
 
     let diaIDs: string[] = [];
 
-    if (assignKeys?.length === 1) {
-      diaIDs = range?.diaIDs || [];
-    } else {
-      const [, { index: signalIndex }] = assignKeys;
-      diaIDs = range?.signals[signalIndex]?.diaIDs || [];
-    }
+    //TODO: Refactor TargetAssignKeys after completing the 2D assignment and remove assignKeys.length !== 2 condition
+    if (assignKeys.length !== 2) return;
+    const [, { index: signalIndex }] = assignKeys;
+    diaIDs = range?.signals[signalIndex]?.diaIDs || [];
+
     const uniqueDiaIDs = getUniqueDiaIDs(diaIDs, atom);
 
     dispatch({
-      type: 'ASSIGN_RANGE',
+      type: 'ASSIGN_1D_SIGNAL',
       payload: {
         nbAtoms: uniqueDiaIDs.nbAtoms,
         diaIDs: uniqueDiaIDs.diaIDs,
@@ -202,12 +201,10 @@ export default function useAtomAssignment() {
 
     let diaIDs: string[] = [];
 
-    if (assignKeys?.length === 1) {
-      diaIDs = zone[axis]?.diaIDs || [];
-    } else {
-      const [, { index: signalIndex }] = assignKeys;
-      diaIDs = zone?.signals[signalIndex][axis]?.diaIDs || [];
-    }
+    //TODO: Refactor TargetAssignKeys after completing the 2D assignment and remove assignKeys.length !== 2 condition
+    if (assignKeys.length !== 2) return;
+    const [, { index: signalIndex }] = assignKeys;
+    diaIDs = zone?.signals[signalIndex][axis]?.diaIDs || [];
 
     const uniqueDiaIDs = getUniqueDiaIDs(diaIDs, atom);
     dispatch({

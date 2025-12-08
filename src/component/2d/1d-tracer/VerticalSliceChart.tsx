@@ -19,7 +19,7 @@ interface usePathOptions extends BaseProps {
   width?: number;
 }
 
-function usePath(data: any, props: usePathOptions) {
+function usePath(data: NmrData1D, props: usePathOptions) {
   const { reverse, width = 100, horizontalMargin = 10 } = props;
   const { mode } = useChartData();
   const scaleX = useScale2DY(reverse);
@@ -37,7 +37,7 @@ function usePath(data: any, props: usePathOptions) {
 
   const pathBuilder = new PathBuilder();
 
-  pathBuilder.moveTo(scaleY(y.at(-1)), scaleX(x.at(-1)));
+  pathBuilder.moveTo(scaleY(y.at(-1) as number), scaleX(x.at(-1) as number));
 
   for (let i = x.length - 2; i >= 0; i--) {
     pathBuilder.lineTo(scaleY(y[i]), scaleX(x[i]));

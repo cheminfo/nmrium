@@ -1,12 +1,13 @@
 import { useDispatch } from '../context/DispatchContext.js';
+import type { EventModifierKeys } from '../context/KeyModifierContext.js';
 import { getModifiers } from '../context/KeyModifierContext.js';
 
 export function useSetActiveSpectrumAction() {
   const dispatch = useDispatch();
 
-  function setActiveSpectrum(e: MouseEvent, id: string) {
+  function setActiveSpectrum(event: EventModifierKeys, id: string) {
     setTimeout(() => {
-      const { ctrlKey, shiftKey } = getModifiers(e);
+      const { ctrlKey, shiftKey } = getModifiers(event);
       const modifier = `shift[${shiftKey ? 'true' : 'false'}]_ctrl[${
         ctrlKey ? 'true' : 'false'
       }]`;

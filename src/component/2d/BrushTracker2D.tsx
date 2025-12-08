@@ -76,7 +76,7 @@ export function BrushTracker2D({ children }: Required<PropsWithChildren>) {
       general: { invertScroll },
     },
   } = usePreferences();
-  function handleBrush(brushData: any) {
+  function handleBrush(brushData: BrushTrackerData) {
     const { startX, endX, startY, endY } = convertToPPM(brushData);
 
     if (brushData.mouseButton === 'secondary') {
@@ -92,13 +92,13 @@ export function BrushTracker2D({ children }: Required<PropsWithChildren>) {
   }
 
   const handleBrushEnd = useCallback<OnBrush>(
-    (brushData) => {
+    (brushData: BrushTrackerData) => {
       const brushDataInPPM = convertToPPM(brushData);
 
       //reset the brush start
       brushStartRef.current = null;
 
-      const modifierKey = getModifiersKey(brushData as unknown as MouseEvent);
+      const modifierKey = getModifiersKey(brushData);
       let executeDefaultAction = false;
       const trackID = getLayoutID(DIMENSION, brushData);
 
@@ -170,7 +170,7 @@ export function BrushTracker2D({ children }: Required<PropsWithChildren>) {
 
   const handleOnDoubleClick: OnDoubleClick = useCallback(
     (event) => {
-      const keyModifiers = getModifiersKey(event as unknown as MouseEvent);
+      const keyModifiers = getModifiersKey(event);
 
       if (primaryKeyIdentifier === keyModifiers && !isClickDebounced) return;
 

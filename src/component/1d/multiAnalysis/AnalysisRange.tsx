@@ -4,6 +4,7 @@ import { useCallback } from 'react';
 import { usePreferences } from '../../context/PreferencesContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';
 import { ResizerWithScale } from '../../elements/ResizerWithScale.js';
+import type { Position } from '../../elements/resizer/SVGResizer.tsx';
 import { useHighlight } from '../../highlight/index.js';
 import { useResizerStatus } from '../../hooks/useResizerStatus.js';
 
@@ -34,7 +35,7 @@ function AnalysisRange({
   const { dispatch } = usePreferences();
 
   const resizeEndHandler = useCallback(
-    (resized: any) => {
+    (resized: Position) => {
       const { x1, x2 } = resized;
       const start = scaleX().invert(x2);
       const end = scaleX().invert(x1);

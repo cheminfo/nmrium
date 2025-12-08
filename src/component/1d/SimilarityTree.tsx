@@ -1,3 +1,4 @@
+import type { Tree } from 'ml-tree-similarity';
 import { createTree } from 'ml-tree-similarity';
 import type { CSSProperties } from 'react';
 import { Fragment } from 'react';
@@ -93,9 +94,9 @@ interface TreeItem {
 }
 
 function mapTreeToArray(
-  node: any,
+  node: Tree | null,
   level: number,
-  parentCenter = null,
+  parentCenter: number | null = null,
   parentLevel = -1,
 ): TreeItem[] {
   if (!node) return [];

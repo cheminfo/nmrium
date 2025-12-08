@@ -10,8 +10,8 @@ const fontSize = 12;
 const marginTop = 45;
 
 function getDiaIds(range: Range) {
-  const { diaIDs = [], signals } = range;
-  const ids = diaIDs.slice();
+  const { signals } = range;
+  const ids = [];
   for (const signal of signals) {
     if (signal?.diaIDs) {
       ids.push(...signal.diaIDs);

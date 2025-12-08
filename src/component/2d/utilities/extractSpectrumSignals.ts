@@ -36,14 +36,14 @@ export function extractSpectrumSignals<T extends object = object>(
 
     if (!isInRange) continue;
 
-    const { assignment, signals = [] } = range;
+    const { signals = [] } = range;
     let index = 0;
     for (const signal of signals) {
       const { kind } = signal;
       if (kind && signalKindsToInclude.has(kind)) {
         result.push({
           ...signal,
-          assignment: index === 0 ? assignment : '',
+          assignment: index === 0 ? signal.assignment : '',
           ...include?.(range),
         } as ExtractedSignal<T>);
         index++;
