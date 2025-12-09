@@ -13,7 +13,8 @@ import { useWorkspaceAction } from './useWorkspaceAction.js';
 const schema = z.object({
   workspaceName: z
     .string()
-    .min(1, { error: 'Workspace name is 1 char length minimum' }),
+    .trim()
+    .min(1, { error: 'Workspace name must have at least one character' }),
 });
 
 export function useSaveSettings() {
@@ -87,14 +88,18 @@ export function useSaveSettings() {
             <DialogFooter
               actions={
                 <>
+                  <Button
+                    intent="danger"
+                    variant="outlined"
+                    onClick={() => closeDialog()}
+                  >
+                    Cancel
+                  </Button>
                   <form.AppForm>
                     <form.SubmitButton intent="success">
                       Save workspace
                     </form.SubmitButton>
                   </form.AppForm>
-                  <Button intent="danger" variant="outlined">
-                    Cancel
-                  </Button>
                 </>
               }
             />
