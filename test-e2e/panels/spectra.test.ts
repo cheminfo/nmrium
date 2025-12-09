@@ -29,7 +29,7 @@ test('Check if the color picker is visible after click on the ColorIndicator', a
   const nmrium = await NmriumPage.create(page);
   await nmrium.open2D();
   await nmrium.page.click('_react=SpectraTabs >> _react=Tab[tabid="1H,1H"]');
-  const sketchPicker = nmrium.page.locator('_react=ColorPicker');
+  const sketchPicker = nmrium.page.locator('_react=Saturation');
 
   await expect(sketchPicker).toHaveCount(0);
   await nmrium.page.click('_react=ColorIndicator >> nth=0');
@@ -70,7 +70,7 @@ test('Check change spectrum color, Should be white', async ({ page }) => {
   await nmrium.page.click('_react=ColorIndicator');
 
   // Click on the top-left of the color picker (white)
-  await nmrium.page.click('_react=ColorPicker >> div >> nth=0', {
+  await nmrium.page.click('_react=Saturation', {
     position: { x: 0, y: 0 },
   });
 
@@ -128,7 +128,7 @@ test('2d spectrum', async ({ page }) => {
     await nmrium.page.click('_react=ColorIndicator');
 
     // change the color to #ddb1c9ff
-    await nmrium.page.click('_react=ColorPicker >> div >> nth=0', {
+    await nmrium.page.click('_react=Saturation', {
       position: { x: 40, y: 20 },
     });
 
@@ -145,7 +145,7 @@ test('2d spectrum', async ({ page }) => {
 
     // Close color picker
     await nmrium.viewer.locator.click({ force: true });
-    await expect(nmrium.page.locator('_react=ColorPicker')).toBeHidden();
+    await expect(nmrium.page.locator('_react=Saturation')).toBeHidden();
   });
   await test.step('Change H1,H1 spectrum', async () => {
     await nmrium.page.click('_react=SpectraTabs >> _react=Tab[tabid="1H,1H"]');
@@ -194,15 +194,15 @@ test('2d spectrum', async ({ page }) => {
       .click();
 
     await nmrium.page.click(
-      '_react=ColorPicker >> _react=SketchPresetColors >> nth=0 >> div >> nth=0',
+      '_react=SketchPresetColors >> nth=0 >> div >> nth=0',
     );
 
     // Change colors
     await nmrium.page.click(
-      '_react=ColorPicker >> _react=SketchPresetColors >> nth=0 >> div >> nth=0',
+      '_react=SketchPresetColors >> nth=0 >> div >> nth=0',
     );
     await nmrium.page.click(
-      '_react=ColorPicker >> _react=SketchPresetColors >> nth=1 >> div >> nth=5',
+      '_react=SketchPresetColors >> nth=1 >> div >> nth=5',
     );
 
     // Check that ColorIndicator color changed
