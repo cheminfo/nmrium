@@ -68,6 +68,7 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@hookform/resolvers": "^5.2.2",
+    "@tanstack/react-form": "^1.23.8",
     "@zakodium/nmr-types": "^0.5.0",
     "@zakodium/nmrium-core": "^0.5.0",
     "@zakodium/nmrium-core-plugins": "^0.6.18",
@@ -112,10 +113,11 @@
     "react-ocl-nmr": "^4.1.1",
     "react-plot": "^3.1.2",
     "react-rnd": "^10.5.2",
-    "react-science": "^19.3.1",
+    "react-science": "^19.4.0",
     "react-table": "^7.8.0",
     "smart-array-filter": "^5.0.0",
-    "yup": "^1.7.1"
+    "yup": "^1.7.1",
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@blueprintjs/core": "^6.3.4",
