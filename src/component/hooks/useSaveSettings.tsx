@@ -69,7 +69,7 @@ export function useSaveSettings() {
               void form.handleSubmit();
             }}
           >
-            <DialogBody style={{ backgroundColor: 'white' }}>
+            <DialogBody>
               <form.AppField name="workspaceName">
                 {(field) => (
                   <field.Input
@@ -84,31 +84,20 @@ export function useSaveSettings() {
               </form.AppField>
             </DialogBody>
 
-            <DialogFooter>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row-reverse',
-                  margin: 0,
-                }}
-              >
-                <div style={{ marginLeft: 10 }}>
+            <DialogFooter
+              actions={
+                <>
                   <form.AppForm>
                     <form.SubmitButton intent="success">
                       Save workspace
                     </form.SubmitButton>
                   </form.AppForm>
-                </div>
-
-                <Button
-                  variant="outlined"
-                  intent="danger"
-                  onClick={closeDialog}
-                >
-                  Cancel
-                </Button>
-              </div>
-            </DialogFooter>
+                  <Button intent="danger" variant="outlined">
+                    Cancel
+                  </Button>
+                </>
+              }
+            />
           </form>
         </Dialog>
       );
