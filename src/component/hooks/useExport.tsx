@@ -99,7 +99,7 @@ export function useExport() {
               serializedState: blob,
             });
             const zipBlob = new Blob([archive], {
-              type: 'application/nmrium+zip',
+              type: 'chemical/x-nmrium+zip',
             });
             saveAs({ blob: zipBlob, name, extension: '.nmrium.zip' });
           } catch (error) {
