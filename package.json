@@ -83,7 +83,7 @@
     "dlv": "^1.1.3",
     "eventemitter3": "^5.0.1",
     "fifo-logger": "^2.0.1",
-    "file-collection": "^6.3.0",
+    "file-collection": "^6.5.0",
     "file-saver": "^2.0.5",
     "get-jpaths": "^1.1.0",
     "immer": "^11.0.1",
