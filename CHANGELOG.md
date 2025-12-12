@@ -1,5 +1,32 @@
 # Changelog
 
+## [1.10.0](https://github.com/cheminfo/nmrium/compare/v1.9.0...v1.10.0) (2025-12-11)
+
+
+### Features
+
+* improve ium integration ([#3881](https://github.com/cheminfo/nmrium/issues/3881)) ([42fbc5f](https://github.com/cheminfo/nmrium/commit/42fbc5f6dfa4bea5446557f646ee466dc8b49ee8))
+* improving and simplifying the 1D assignment ([#3835](https://github.com/cheminfo/nmrium/issues/3835)) ([9f724fd](https://github.com/cheminfo/nmrium/commit/9f724fdbe138447b88d8157d7501c2cb5292acd1))
+* migrate form to tanstack & zod ([#3810](https://github.com/cheminfo/nmrium/issues/3810)) ([89bad18](https://github.com/cheminfo/nmrium/commit/89bad1820c1d08ab70411bd8c37a5a84e134d8e6))
+
+
+### Bug Fixes
+
+* check that a spectrum is selected and it is 1D before the range cut ([b641b4f](https://github.com/cheminfo/nmrium/commit/b641b4faa7ede11d3e99cf2517419ea73b5dd8ff))
+* clear assignments associated with selected molecule atoms ([#3851](https://github.com/cheminfo/nmrium/issues/3851)) ([20fa63b](https://github.com/cheminfo/nmrium/commit/20fa63bad33b78fe4b0ebc74202f7ad6d4d8c3bc))
+* correct rendering of 1D traces over the 2D ([#3870](https://github.com/cheminfo/nmrium/issues/3870)) ([a6098c8](https://github.com/cheminfo/nmrium/commit/a6098c8a43b8f8f45790267c31e7b8a955b585b2))
+* do not emit unhandled rejection in clipboard reads ([#3853](https://github.com/cheminfo/nmrium/issues/3853)) ([1c2151d](https://github.com/cheminfo/nmrium/commit/1c2151d1a319867d9d9bef9a3e13f110c6f402a3))
+* filter temp data handling ([ce669ce](https://github.com/cheminfo/nmrium/commit/ce669ceab61d6e5eb53b68270daab83c1489c78a))
+* improve zone detection typings ([#3871](https://github.com/cheminfo/nmrium/issues/3871)) ([a774e68](https://github.com/cheminfo/nmrium/commit/a774e68d4343429b40e21ed6aa5c83e07d0bedbe))
+* keep an even number of rows when the acquisition is incomplete ([#3882](https://github.com/cheminfo/nmrium/issues/3882)) ([e865067](https://github.com/cheminfo/nmrium/commit/e865067245a806dca3e86cd14266822a997752fb))
+* prevent zone tool from activating on 1D traces ([c1d1df9](https://github.com/cheminfo/nmrium/commit/c1d1df9e2811795a189be1ce3e667667ca4c6fdb))
+* remove use of `any` in 1D components and brush tracker ([e25d653](https://github.com/cheminfo/nmrium/commit/e25d653251fce36b7eecf4ec64e9630d298b076e))
+* remove use of `any` in 2D components ([c3f777a](https://github.com/cheminfo/nmrium/commit/c3f777a0b429968fcb2c3d7433b1a870cfec6b73))
+* render peak edition above annotations ([c114785](https://github.com/cheminfo/nmrium/commit/c1147851e1e0f8a8472e655f2e187f483b63a4f6))
+* reset current workspace after removing the active workspace ([9c038f0](https://github.com/cheminfo/nmrium/commit/9c038f09a50f172ba8aa5e8d5dedb9a70c95eb61))
+* simplify handling of active spectrum, better checks, improve types ([#3862](https://github.com/cheminfo/nmrium/issues/3862)) ([e00b30b](https://github.com/cheminfo/nmrium/commit/e00b30b78b5cfb48283e7c11f85657f6b39c54c0))
+* update the mol locally in prediction panel on load ([#3860](https://github.com/cheminfo/nmrium/issues/3860)) ([4830a0d](https://github.com/cheminfo/nmrium/commit/4830a0d53d40d0de5f0b5b66c62fa6d7966b1eda))
+
 ## [1.9.0](https://github.com/cheminfo/nmrium/compare/v1.8.0...v1.9.0) (2025-11-25)
 
 
