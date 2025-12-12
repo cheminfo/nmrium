@@ -56,9 +56,10 @@ export function useTracesSpectra() {
   } = useChartData();
 
   return useMemo(() => {
-    if (!activeTab) return { ...defaultEmptyTraces };
-
-    const nuclei = activeTab.split(',');
+    const nuclei = activeTab?.split(',');
+    if (nuclei?.length !== 2) {
+      return { ...defaultEmptyTraces };
+    }
 
     return getTracesSpectra({ nuclei, spectra, activeSpectra });
   }, [activeTab, spectra, activeSpectra]);
