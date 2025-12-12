@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.1](https://github.com/cheminfo/nmrium/compare/v1.10.0...v1.10.1) (2025-12-12)
+
+
+### Bug Fixes
+
+* display molecule when no active tab ([bc903f7](https://github.com/cheminfo/nmrium/commit/bc903f77a5fbc35b0a52d6fb5c7d48781d62c301))
+
 ## [1.10.0](https://github.com/cheminfo/nmrium/compare/v1.9.0...v1.10.0) (2025-12-11)
 
 
