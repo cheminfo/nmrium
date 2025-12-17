@@ -1,3 +1,4 @@
+import type { NmriumState } from '@zakodium/nmrium-core';
 import { useCallback } from 'react';
 
 import type { ExportOptions } from '../../data/SpectraManager.js';
@@ -75,28 +76,33 @@ export function useExport() {
         });
         setTimeout(async () => {
           try {
-            const exportedData = toJSON(core, state, preferencesState, {
-              ...include,
-              exportTarget: 'nmrium',
-            });
-            const spaceIndent = pretty || exportArchive ? 2 : 0;
-            const blob = await exportAsJsonBlob(
-              exportedData,
-              name,
-              spaceIndent,
-              compressed && !exportArchive,
-            );
-
             if (!exportArchive) {
+              const exportedData = toJSON(core, state, preferencesState, {
+                ...include,
+                serialize: true,
+                exportTarget: 'nmrium',
+              });
+              const spaceIndent = pretty ? 2 : 0;
+              const blob = await exportAsJsonBlob(
+                exportedData,
+                name,
+                spaceIndent,
+                compressed,
+              );
+
               return saveAs({ blob, name, extension: '.nmrium' });
             }
 
+            const nmriumState = toJSON(core, state, preferencesState, {
+              serialize: false,
+              exportTarget: 'nmrium',
+            }) as NmriumState;
             const archive = await core.serializeNmriumArchive({
-              molecules: state.molecules,
-              spectra: state.data,
+              state: nmriumState,
               aggregator: state.aggregator,
               includeData: options.include.dataType === 'SELF_CONTAINED',
-              serializedState: blob,
+              includeSettings: options.include.settings,
+              includeView: options.include.view,
             });
             const zipBlob = new Blob([archive], {
               type: 'chemical/x-nmrium+zip',
