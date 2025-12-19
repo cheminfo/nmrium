@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.0](https://github.com/cheminfo/nmrium/compare/v1.10.1...v1.11.0) (2025-12-19)
+
+
+### Features
+
+* check nmrium archive by header instead extension ([#3888](https://github.com/cheminfo/nmrium/issues/3888)) ([4774219](https://github.com/cheminfo/nmrium/commit/47742190b580ab1a5fd1fbe61c4daffd8d3049fe))
+
 ## [1.10.1](https://github.com/cheminfo/nmrium/compare/v1.10.0...v1.10.1) (2025-12-12)
 
 
