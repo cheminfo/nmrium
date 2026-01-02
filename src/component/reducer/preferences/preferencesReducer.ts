@@ -27,6 +27,7 @@ import { addWorkspace } from './actions/addWorkspace.js';
 import {
   analyzeSpectra,
   changeAnalysisColumnValueKey,
+  cutSpectraAnalysis,
   deleteAnalysisColumn,
   setSpectraAnalysisPanelsPreferences,
 } from './actions/analyzeSpectra.js';
@@ -111,6 +112,12 @@ export type AnalyzeSpectraAction = ActionType<
   'ANALYZE_SPECTRA',
   { start: number; end: number; nucleus: string; columnKey?: string }
 >;
+
+export type CutSpectraAnalysisAction = ActionType<
+  'CUT_SPECTRA_ANALYSIS',
+  { x: number; nucleus: string }
+>;
+
 export type ChangeAnalysisColumnValueKeyAction = ActionType<
   'CHANGE_ANALYSIS_COLUMN_VALUE_KEY',
   { columnKey: string; valueKey: string; nucleus: string }
@@ -198,7 +205,8 @@ export type PreferencesActions =
   | ChangePeaksLabelPositionAction
   | TogglePanelAction
   | ChangeExportACSSettingsAction
-  | ChangeDefaultMoleculeSettingsAction;
+  | ChangeDefaultMoleculeSettingsAction
+  | CutSpectraAnalysisAction;
 
 export type WorkspaceWithSource = Workspace & { source: WorkSpaceSource };
 type WorkspacesWithSource = Record<string, WorkspaceWithSource>;
@@ -294,6 +302,8 @@ function innerPreferencesReducer(
       return deleteAnalysisColumn(draft, action);
     case 'SET_SPECTRA_ANALYSIS_PREFERENCES':
       return setSpectraAnalysisPanelsPreferences(draft, action);
+    case 'CUT_SPECTRA_ANALYSIS':
+      return cutSpectraAnalysis(draft, action);
     case 'SET_MATRIX_GENERATION_OPTIONS':
       return setMatrixGenerationOptions(draft, action);
     case 'ADD_MATRIX_GENERATION_EXCLUSION_ZONE':
