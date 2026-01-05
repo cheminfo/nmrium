@@ -67,17 +67,19 @@ export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
       const parseMetaFileResult = metaFile
         ? await parseMetaFile(metaFile)
         : null;
-      const { nmriumState, containsNmrium, selectorRoot } = await core.read(
-        fileCollection,
-        parsingOptions,
-      );
+      const {
+        nmriumState,
+        containsNmrium,
+        selectorRoot,
+        fileCollection: sanitizedCollection,
+      } = await core.read(fileCollection, parsingOptions);
       const resetSourceObject = containsNmrium;
 
       dispatchPayload({
         nmriumState,
         containsNmrium,
         parseMetaFileResult,
-        fileCollection,
+        fileCollection: sanitizedCollection,
         selectorRoot,
         resetSourceObject,
       });
