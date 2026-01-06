@@ -197,7 +197,13 @@ export function DraggableStructure(props: DraggableStructureProps) {
       >
         <div
           className="content"
-          onDoubleClick={() => openMoleculeEditor(molecule)}
+          onDoubleClick={(e) => {
+            if ((e.target as HTMLElement).closest('form')) {
+              return;
+            }
+
+            openMoleculeEditor(molecule);
+          }}
         >
           <ResponsiveChart>
             {({ width, height }) => {
