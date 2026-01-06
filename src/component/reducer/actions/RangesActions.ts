@@ -465,7 +465,7 @@ function handleChangeRangesAssignmentLabelsByDiaIds(
     for (const signal of signals) {
       if (
         previousAssignment === signal.assignment &&
-        uniqueDiaIds.has(signal.id)
+        signal.diaIDs?.some((id) => uniqueDiaIds.has(id))
       ) {
         signal.assignment = assignment;
       }
