@@ -269,7 +269,6 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
       dragHandleClassName="handle"
       enableUserSelectHack={false}
       bounds={`#${viewerRef.id}`}
-      style={{ zIndex: 1 }}
       onDragStart={() => setIsMoveActive(true)}
       onResize={(e, dir, eRef, size, position) =>
         handleResize({ ...size, ...position })
