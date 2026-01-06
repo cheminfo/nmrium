@@ -91,11 +91,11 @@ export function NMRiumViewer(props: NMRiumViewerProps) {
         ...style,
       }}
     >
+      <Viewer emptyText={emptyText} />
       <FloatingRanges />
       <FloatPublicationString />
-      <FloatMolecules />
       <SpectraInsets />
-      <Viewer emptyText={emptyText} />
+      <FloatMolecules />
     </div>
   );
 }

@@ -40,6 +40,10 @@ const ReactRnd = styled(Rnd)`
     background-color: white;
     border: 1px solid #ebecf1;
   }
+
+  form {
+    z-index: 1;
+  }
 `;
 
 export function DraggableStructure(props: DraggableStructureProps) {
@@ -165,7 +169,6 @@ export function DraggableStructure(props: DraggableStructureProps) {
       dragHandleClassName="handle"
       enableUserSelectHack={false}
       bounds={`#${viewerRef.id}`}
-      style={{ zIndex: 1 }}
       className="draggable-molecule"
       onDragStart={() => setIsMoveActive(true)}
       onResizeStop={(e, dir, eRef, { width, height }) =>
