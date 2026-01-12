@@ -82,6 +82,7 @@ type ChangeActiveSpectrumAction = ActionType<
       | (string & {});
 
     id?: string; // spectrum id
+    sortedSpectra?: Spectrum[];
   }
 >;
 type ChangeSpectrumSettingAction = ActionType<
@@ -292,11 +293,14 @@ function handleChangeActiveSpectrum(
     data,
     toolOptions,
   } = draft;
-  const { modifier, id } = action.payload;
+  const { modifier, id, sortedSpectra } = action.payload;
   const spectra = getActiveSpectra(draft);
 
   //get the spectra that its nucleus match the active tab
-  const spectraPerNucleus = getSpectraByNucleus(activeTab, data);
+  const spectraPerNucleus = getSpectraByNucleus(
+    activeTab,
+    sortedSpectra ?? data,
+  );
 
   //set of the current active spectra
   let spectraIds = spectra?.map((s) => s.id) || [];
