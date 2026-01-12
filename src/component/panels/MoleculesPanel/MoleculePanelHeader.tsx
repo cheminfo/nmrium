@@ -39,44 +39,72 @@ import { booleanToString } from '../../utility/booleanToString.ts';
 import {
   browserNotSupportedErrorToast,
   copyPNGToClipboard,
+  exportAsMolfile,
   exportAsSVG,
 } from '../../utility/export.js';
 import { useMoleculeAnnotationCore } from '../hooks/useMoleculeAnnotationCore.ts';
 
-const MOL_EXPORT_MENU: ToolbarPopoverMenuItem[] = [
+type ExportOperation =
+  | 'CopyAsSmiles'
+  | 'CopyAsMolfileV3'
+  | 'SaveAsMolfileV3'
+  | 'CopyAsMolfileV2'
+  | 'SaveAsMolfileV2'
+  | 'CopyAsPng'
+  | 'SaveAsSvg';
+
+interface ExportDataItem {
+  id: ExportOperation;
+}
+
+const MOL_EXPORT_MENU: Array<ToolbarPopoverMenuItem<ExportDataItem>> = [
   {
     icon: <FaCopy />,
     text: 'Copy as SMILES',
     data: {
-      id: 'smiles',
+      id: 'CopyAsSmiles',
     },
   },
   {
     icon: <FaCopy />,
     text: 'Copy as molfile V3',
     data: {
-      id: 'molfileV3',
+      id: 'CopyAsMolfileV3',
     },
   },
   {
     icon: <FaCopy />,
     text: 'Copy as molfile V2',
     data: {
-      id: 'molfileV2',
+      id: 'CopyAsMolfileV2',
+    },
+  },
+  {
+    icon: <FaDownload />,
+    text: 'Save as molfile V3',
+    data: {
+      id: 'SaveAsMolfileV3',
+    },
+  },
+  {
+    icon: <FaDownload />,
+    text: 'Save as molfile V2',
+    data: {
+      id: 'SaveAsMolfileV2',
     },
   },
   {
     icon: <FaFileImage />,
     text: 'Copy as PNG',
     data: {
-      id: 'png',
+      id: 'CopyAsPng',
     },
   },
   {
     icon: <FaDownload />,
     text: 'Export as SVG',
     data: {
-      id: 'svg',
+      id: 'SaveAsSvg',
     },
   },
 ];
@@ -161,29 +189,39 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
   );
 
   const exportHandler = useCallback(
-    (selected: any) => {
+    (selected?: ExportDataItem) => {
       const m = molecules?.[currentIndex];
       const molecule = Molecule.fromMolfile(m.molfile);
       if (molecule) {
         switch (selected?.id) {
-          case 'smiles':
+          case 'CopyAsSmiles':
             copyHandler(molecule.toIsomericSmiles(), 'SMILES');
 
             break;
-          case 'molfileV3':
+          case 'CopyAsMolfileV3':
             copyHandler(m.molfile, 'MOLFile');
             break;
-          case 'molfileV2': {
+          case 'SaveAsMolfileV3':
+            exportAsMolfile(m.molfile, m.label);
+            break;
+          case 'CopyAsMolfileV2': {
             copyHandler(
               molecule.toMolfile({ customLabelPosition: 'normal' }),
               'MOLFile',
             );
             break;
           }
-          case 'png':
+          case 'SaveAsMolfileV2': {
+            exportAsMolfile(
+              molecule.toMolfile({ customLabelPosition: 'normal' }),
+              m.label,
+            );
+            break;
+          }
+          case 'CopyAsPng':
             void saveAsPNGHandler();
             break;
-          case 'svg':
+          case 'SaveAsSvg':
             saveAsSVGHandler();
             break;
           default:

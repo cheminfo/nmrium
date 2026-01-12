@@ -420,10 +420,16 @@ function getBlob(targetElementID: string, options: GetBlobOptions): BlobObject {
   return { blob, width, height };
 }
 
+function exportAsMolfile(molText: string, fileName: string) {
+  const blob = new Blob([molText], { type: 'text/plain' });
+  saveAs({ blob, name: fileName, extension: '.mol' });
+}
+
 export {
   copyPNGToClipboard,
   exportAsJsonBlob,
   exportAsMatrix,
+  exportAsMolfile,
   exportAsPng,
   exportAsSVG,
   getBlob,
