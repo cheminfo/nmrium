@@ -149,13 +149,13 @@ export function MoleculeAutoLabelsDatabaseModal({
       isOpen
       onClose={() => onClose()}
       style={{ width: '90vw', maxWidth: 1000, height: '80vh' }}
-      title="Auto label database"
+      title="Template database"
     >
       <StyledDialogBody style={{ padding: 0 }}>
         <SearchContainer>
           <SearchInput
             size="large"
-            placeholder="Search for a parameter"
+            placeholder="Search ..."
             value={keywords}
             onChange={({ target }) => {
               if (target.value !== undefined) {

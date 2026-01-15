@@ -71,23 +71,16 @@ const MOL_EXPORT_MENU: Array<ToolbarPopoverMenuItem<ExportDataItem>> = [
   },
   {
     icon: <FaCopy />,
-    text: 'Copy as molfile V3',
-    data: {
-      id: 'CopyAsMolfileV3',
-    },
-  },
-  {
-    icon: <FaCopy />,
     text: 'Copy as molfile V2',
     data: {
       id: 'CopyAsMolfileV2',
     },
   },
   {
-    icon: <FaDownload />,
-    text: 'Save as molfile V3',
+    icon: <FaCopy />,
+    text: 'Copy as molfile V3',
     data: {
-      id: 'SaveAsMolfileV3',
+      id: 'CopyAsMolfileV3',
     },
   },
   {
@@ -95,6 +88,13 @@ const MOL_EXPORT_MENU: Array<ToolbarPopoverMenuItem<ExportDataItem>> = [
     text: 'Save as molfile V2',
     data: {
       id: 'SaveAsMolfileV2',
+    },
+  },
+  {
+    icon: <FaDownload />,
+    text: 'Save as molfile V3',
+    data: {
+      id: 'SaveAsMolfileV3',
     },
   },
   {
@@ -362,7 +362,7 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
     },
     {
       icon: <FaDatabase />,
-      text: 'Display auto-labeling database',
+      text: 'Template database',
       onClick: () => openDialog('autoLabelDatabaseDialog'),
     },
   ];
