@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import { useCallback } from 'react';
 import {
   FaCopy,
+  FaDatabase,
   FaDownload,
   FaFileExport,
   FaFileImage,
@@ -34,7 +35,9 @@ import { useToaster } from '../../context/ToasterContext.js';
 import { useTopicMolecule } from '../../context/TopicMoleculeContext.js';
 import type { ToolbarPopoverMenuItem } from '../../elements/ToolbarPopoverItem.js';
 import { ToolbarPopoverItem } from '../../elements/ToolbarPopoverItem.js';
+import { useDialogToggle } from '../../hooks/useDialogToggle.ts';
 import AboutPredictionModal from '../../modal/AboutPredictionModal.js';
+import { MoleculeAutoLabelsDatabaseModal } from '../../modal/MoleculeAutoLabelsDatabaseModal.tsx';
 import PredictSpectraModal from '../../modal/PredictSpectraModal.js';
 import { booleanToString } from '../../utility/booleanToString.ts';
 import {
@@ -140,6 +143,9 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
     current: { defaultMoleculeSettings },
   } = usePreferences();
   const moleculeKey = molecules?.[currentIndex]?.id;
+  const { dialog, openDialog, closeDialog } = useDialogToggle({
+    autoLabelDatabaseDialog: false,
+  });
   const saveAsSVGHandler = useCallback(() => {
     if (!rootRef) return;
     exportAsSVG(`molSVG${currentIndex}`, {
@@ -354,6 +360,11 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
       disabled: !hasMolecules,
       onClick: () => autoLabels(),
     },
+    {
+      icon: <FaDatabase />,
+      text: 'Display auto-labeling database',
+      onClick: () => openDialog('autoLabelDatabaseDialog'),
+    },
   ];
 
   const { handleChangeAtomAnnotation, isAnnotation } =
@@ -364,6 +375,9 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
       current={showCounter ? currentIndex + 1 : undefined}
       total={showCounter ? molecules.length : undefined}
     >
+      {dialog.autoLabelDatabaseDialog && (
+        <MoleculeAutoLabelsDatabaseModal onClose={closeDialog} />
+      )}
       <Toolbar>
         {renderSource === 'predictionPanel' && <AboutPredictionModal />}
         {renderSource === 'moleculePanel' && (
