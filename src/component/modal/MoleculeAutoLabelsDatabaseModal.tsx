@@ -129,8 +129,8 @@ export function MoleculeAutoLabelsDatabaseModal({
   const [keywords, setSearch] = useState('');
 
   function handleAddMolecule(options: LabelDatabaseItem) {
-    const { idCode, label } = options;
-    const molecule = Molecule.fromIDCode(idCode);
+    const { idCode, coordinates, label } = options;
+    const molecule = Molecule.fromIDCode(idCode, coordinates);
 
     if (molecule.getAllAtoms() <= 0) {
       return;
