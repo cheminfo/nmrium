@@ -1,4 +1,5 @@
 import { Molecule } from 'openchemlib';
+import { autoLabel } from 'openchemlib-utils';
 import type { ReactNode } from 'react';
 import { useCallback } from 'react';
 import {
@@ -13,7 +14,7 @@ import {
 } from 'react-icons/fa';
 import { FaMaximize, FaMinimize } from 'react-icons/fa6';
 import { IoOpenOutline } from 'react-icons/io5';
-import { MdNumbers, MdOutlineLabelOff } from 'react-icons/md';
+import { MdFlashAuto, MdNumbers, MdOutlineLabelOff } from 'react-icons/md';
 import { PanelHeader, Toolbar } from 'react-science/ui';
 
 import type {
@@ -312,6 +313,20 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
     });
   }
 
+  function autoLabels() {
+    const currentMolecule = molecules[currentIndex];
+
+    if (!currentMolecule) return;
+    const { id, label, molfile } = currentMolecule;
+
+    const molecule = Molecule.fromMolfile(molfile);
+    autoLabel(molecule);
+    dispatch({
+      type: 'SET_MOLECULE',
+      payload: { id, label, molfile: molecule.toMolfileV3() },
+    });
+  }
+
   const hasMolecules = molecules && molecules.length > 0;
   const showCounter = hasMolecules && renderSource !== 'predictionPanel';
   const moreMenu: ToolbarPopoverMenuItem[] = [
@@ -332,6 +347,12 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
       text: 'Clear custom atom labels',
       disabled: !hasMolecules,
       onClick: () => clearCustomAtomLabels(),
+    },
+    {
+      icon: <MdFlashAuto />,
+      text: 'Auto label atoms',
+      disabled: !hasMolecules,
+      onClick: () => autoLabels(),
     },
   ];
 
