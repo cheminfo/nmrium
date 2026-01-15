@@ -1,12 +1,23 @@
 import { Dialog, InputGroup } from '@blueprintjs/core';
 import styled from '@emotion/styled';
+import { Molecule } from 'openchemlib';
 import { autoLabelDatabase } from 'openchemlib-utils';
 import { useState } from 'react';
 import { MF } from 'react-mf';
 import { IdcodeSvgRenderer } from 'react-ocl';
+import { Button } from 'react-science/ui';
 import { filter } from 'smart-array-filter';
 
+import { useDispatch } from '../context/DispatchContext.tsx';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
+
+interface LabelDatabaseItem {
+  idCode: string;
+  coordinates: string;
+  mf: string;
+  mw: number;
+  label: string;
+}
 
 const ChemicalGrid = styled.div`
   display: flex;
@@ -17,26 +28,33 @@ const ChemicalGrid = styled.div`
   flex: 1;
 `;
 
+const AddButton = styled(Button)`
+  position: absolute;
+  top: 0;
+  left: 0;
+`;
+
 const ChemicalCard = styled.div`
+  position: relative;
   flex: 0 0 calc((100% - 2.5rem) / 3);
   min-width: 200px;
   border-radius: 8px;
   overflow: hidden;
   background: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 8%);
   transition: all 0.25s ease;
-
+  /* stylelint-disable nesting-selector-no-missing-scoping-root */
   &:hover {
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 8px 24px rgb(0 0 0 / 12%);
     transform: translateY(-2px);
   }
 `;
 
 const CardLabel = styled.div`
   padding: 0.75rem 1rem;
-  background: linear-gradient(180deg, #ffffff 0%, #f0f2f5 40%, #e2e6eb 100%);
+  background: linear-gradient(180deg, #fff 0%, #f0f2f5 40%, #e2e6eb 100%);
   border-bottom: 1px solid #d1d5db;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 80%);
 
   h3 {
     margin: 0;
@@ -46,7 +64,7 @@ const CardLabel = styled.div`
     text-align: center;
     text-transform: capitalize;
     letter-spacing: 0.02em;
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+    text-shadow: 0 1px 0 rgb(255 255 255 / 50%);
   }
 `;
 
@@ -67,10 +85,10 @@ const CardInfo = styled.div`
   background: #fff;
 `;
 
-const MolecularFormula = styled.div`
+const MolecularFormula = styled.div<{ color?: string }>`
   font-size: 0.9rem;
   font-weight: 500;
-  color: #374151;
+  color: ${({ color }) => color ?? '#374151'};
 `;
 
 const SearchContainer = styled.div`
@@ -89,7 +107,7 @@ const SearchInput = styled(InputGroup)`
 
     &:focus {
       background: #fff;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 1px 4px rgb(0 0 0 / 15%);
     }
   }
 `;
@@ -107,7 +125,22 @@ interface MoleculeAutoLabelsDatabaseModalProps {
 export function MoleculeAutoLabelsDatabaseModal({
   onClose = () => null,
 }: MoleculeAutoLabelsDatabaseModalProps) {
+  const dispatch = useDispatch();
   const [keywords, setSearch] = useState('');
+
+  function handleAddMolecule(options: LabelDatabaseItem) {
+    const { idCode, label } = options;
+    const molecule = Molecule.fromIDCode(idCode);
+
+    if (molecule.getAllAtoms() <= 0) {
+      return;
+    }
+
+    dispatch({
+      type: 'ADD_MOLECULE',
+      payload: { molfile: molecule.toMolfileV3(), label },
+    });
+  }
 
   const filteredLabelDatabase = filter(autoLabelDatabase, { keywords });
 
@@ -139,6 +172,22 @@ export function MoleculeAutoLabelsDatabaseModal({
           <ChemicalGrid>
             {filteredLabelDatabase.map((compound) => (
               <ChemicalCard key={compound.label}>
+                <AddButton
+                  size="large"
+                  icon="plus"
+                  minimal
+                  tooltipProps={{
+                    content: (
+                      <MolecularFormula color="white">
+                        <span>Add </span>
+                        <MF mf={compound.mf} /> -
+                        <span> {compound.mw.toFixed(2)}</span>
+                        <span> molecule </span>
+                      </MolecularFormula>
+                    ),
+                  }}
+                  onClick={() => handleAddMolecule(compound)}
+                />
                 <CardLabel>
                   <h3>{compound.label}</h3>
                 </CardLabel>

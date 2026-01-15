@@ -33,6 +33,7 @@ interface AddMoleculeProps {
   id?: string;
   floatMoleculeOnSave?: boolean;
   defaultMoleculeSettings?: MoleculeView;
+  label?: string;
 }
 type AddMoleculeAction = ActionType<'ADD_MOLECULE', AddMoleculeProps>;
 type AddMoleculesAction = ActionType<
@@ -105,9 +106,10 @@ export type MoleculeActions =
   | ToggleMoleculeLabelAction;
 
 function addMolecule(draft: Draft<State>, props: AddMoleculeProps) {
-  const { molfile, id, floatMoleculeOnSave, defaultMoleculeSettings } = props;
+  const { molfile, id, label, floatMoleculeOnSave, defaultMoleculeSettings } =
+    props;
   const isEmpty = draft.molecules.length === 0;
-  MoleculeManager.addMolfile(draft.molecules, molfile, id);
+  MoleculeManager.addMolfile(draft.molecules, molfile, { id, label });
 
   /**
    *  if it's the first creation of a molecule after the molecules list was empty,
