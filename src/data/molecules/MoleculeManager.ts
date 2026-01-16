@@ -35,11 +35,16 @@ export function fromJSON(
   return molecules;
 }
 
+interface AddMolfileOptions {
+  id?: string;
+  label?: string;
+}
 export function addMolfile(
   molecules: StateMoleculeExtended[],
   molfile: string,
-  id?: string,
+  options: AddMolfileOptions,
 ) {
+  const { id, label } = options;
   const reservedNumbers = extractLabelsNumbers(molecules);
 
   // try to parse molfile
@@ -48,7 +53,7 @@ export function addMolfile(
   molecules.push(
     initMolecule({
       molfile: molecule.toMolfileV3(),
-      label: `P${getLabelNumber(reservedNumbers)}`,
+      label: label ?? `P${getLabelNumber(reservedNumbers)}`,
       id,
     }),
   );

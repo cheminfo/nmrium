@@ -1,8 +1,10 @@
 import { Molecule } from 'openchemlib';
+import { autoLabel } from 'openchemlib-utils';
 import type { ReactNode } from 'react';
 import { useCallback } from 'react';
 import {
   FaCopy,
+  FaDatabase,
   FaDownload,
   FaFileExport,
   FaFileImage,
@@ -13,7 +15,7 @@ import {
 } from 'react-icons/fa';
 import { FaMaximize, FaMinimize } from 'react-icons/fa6';
 import { IoOpenOutline } from 'react-icons/io5';
-import { MdNumbers, MdOutlineLabelOff } from 'react-icons/md';
+import { MdFlashAuto, MdNumbers, MdOutlineLabelOff } from 'react-icons/md';
 import { PanelHeader, Toolbar } from 'react-science/ui';
 
 import type {
@@ -33,7 +35,9 @@ import { useToaster } from '../../context/ToasterContext.js';
 import { useTopicMolecule } from '../../context/TopicMoleculeContext.js';
 import type { ToolbarPopoverMenuItem } from '../../elements/ToolbarPopoverItem.js';
 import { ToolbarPopoverItem } from '../../elements/ToolbarPopoverItem.js';
+import { useDialogToggle } from '../../hooks/useDialogToggle.ts';
 import AboutPredictionModal from '../../modal/AboutPredictionModal.js';
+import { MoleculeAutoLabelsDatabaseModal } from '../../modal/MoleculeAutoLabelsDatabaseModal.tsx';
 import PredictSpectraModal from '../../modal/PredictSpectraModal.js';
 import { booleanToString } from '../../utility/booleanToString.ts';
 import {
@@ -67,23 +71,16 @@ const MOL_EXPORT_MENU: Array<ToolbarPopoverMenuItem<ExportDataItem>> = [
   },
   {
     icon: <FaCopy />,
-    text: 'Copy as molfile V3',
-    data: {
-      id: 'CopyAsMolfileV3',
-    },
-  },
-  {
-    icon: <FaCopy />,
     text: 'Copy as molfile V2',
     data: {
       id: 'CopyAsMolfileV2',
     },
   },
   {
-    icon: <FaDownload />,
-    text: 'Save as molfile V3',
+    icon: <FaCopy />,
+    text: 'Copy as molfile V3',
     data: {
-      id: 'SaveAsMolfileV3',
+      id: 'CopyAsMolfileV3',
     },
   },
   {
@@ -91,6 +88,13 @@ const MOL_EXPORT_MENU: Array<ToolbarPopoverMenuItem<ExportDataItem>> = [
     text: 'Save as molfile V2',
     data: {
       id: 'SaveAsMolfileV2',
+    },
+  },
+  {
+    icon: <FaDownload />,
+    text: 'Save as molfile V3',
+    data: {
+      id: 'SaveAsMolfileV3',
     },
   },
   {
@@ -139,6 +143,9 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
     current: { defaultMoleculeSettings },
   } = usePreferences();
   const moleculeKey = molecules?.[currentIndex]?.id;
+  const { dialog, openDialog, closeDialog } = useDialogToggle({
+    autoLabelDatabaseDialog: false,
+  });
   const saveAsSVGHandler = useCallback(() => {
     if (!rootRef) return;
     exportAsSVG(`molSVG${currentIndex}`, {
@@ -312,6 +319,20 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
     });
   }
 
+  function autoLabels() {
+    const currentMolecule = molecules[currentIndex];
+
+    if (!currentMolecule) return;
+    const { id, label, molfile } = currentMolecule;
+
+    const molecule = Molecule.fromMolfile(molfile);
+    autoLabel(molecule);
+    dispatch({
+      type: 'SET_MOLECULE',
+      payload: { id, label, molfile: molecule.toMolfileV3() },
+    });
+  }
+
   const hasMolecules = molecules && molecules.length > 0;
   const showCounter = hasMolecules && renderSource !== 'predictionPanel';
   const moreMenu: ToolbarPopoverMenuItem[] = [
@@ -333,6 +354,23 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
       disabled: !hasMolecules,
       onClick: () => clearCustomAtomLabels(),
     },
+    {
+      icon: <MdFlashAuto />,
+      text: 'Auto label atoms',
+      disabled: !hasMolecules,
+      tooltip: {
+        title: 'Auto label atoms',
+        description:
+          'Atoms are automatically labeled according to a predefined template database',
+        link: 'https://docs.nmrium.org/help/structure-labelling',
+      },
+      onClick: () => autoLabels(),
+    },
+    {
+      icon: <FaDatabase />,
+      text: 'Template database',
+      onClick: () => openDialog('autoLabelDatabaseDialog'),
+    },
   ];
 
   const { handleChangeAtomAnnotation, isAnnotation } =
@@ -343,6 +381,9 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
       current={showCounter ? currentIndex + 1 : undefined}
       total={showCounter ? molecules.length : undefined}
     >
+      {dialog.autoLabelDatabaseDialog && (
+        <MoleculeAutoLabelsDatabaseModal onClose={closeDialog} />
+      )}
       <Toolbar>
         {renderSource === 'predictionPanel' && <AboutPredictionModal />}
         {renderSource === 'moleculePanel' && (
