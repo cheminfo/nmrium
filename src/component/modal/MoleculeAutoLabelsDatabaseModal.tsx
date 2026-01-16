@@ -140,6 +140,8 @@ export function MoleculeAutoLabelsDatabaseModal({
       type: 'ADD_MOLECULE',
       payload: { molfile: molecule.toMolfileV3(), label },
     });
+
+    onClose();
   }
 
   const filteredLabelDatabase = filter(autoLabelDatabase, { keywords });
