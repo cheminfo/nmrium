@@ -358,6 +358,12 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
       icon: <MdFlashAuto />,
       text: 'Auto label atoms',
       disabled: !hasMolecules,
+      tooltip: {
+        title: 'Auto label atoms',
+        description:
+          'Atoms are automatically labeled according to a predefined template database',
+        link: 'https://docs.nmrium.org/help/structure-labelling',
+      },
       onClick: () => autoLabels(),
     },
     {
