@@ -3,7 +3,7 @@ import type { SplitPaneSize } from 'react-science/ui';
 import { SplitPane } from 'react-science/ui';
 
 import { usePreferences } from '../context/PreferencesContext.js';
-import { Panels, usePanelOpenState } from '../panels/Panels.js';
+import { Panels } from '../panels/Panels.js';
 import { useAccordionItems } from '../panels/hooks/useAccordionItems.js';
 import { useGetPanelOptions } from '../panels/hooks/useGetPanelOptions.js';
 
@@ -19,8 +19,6 @@ export function NMRiumViewerWrapper(props: NMRiumViewerWrapperProps) {
   const { emptyText, viewerRef } = props;
   const { current, dispatch } = usePreferences();
   const getPanelPreferences = useGetPanelOptions();
-  const { closeSplitPane, openSplitPane, isSplitPaneOpen } =
-    usePanelOpenState();
 
   const {
     general: { verticalSplitterPosition, verticalSplitterCloseThreshold },
@@ -36,6 +34,14 @@ export function NMRiumViewerWrapper(props: NMRiumViewerWrapperProps) {
       },
     });
   }
+  function handleToggleSplitPanel(isOpen: boolean) {
+    dispatch({
+      type: 'TOGGLE_SPLIT_PANEL',
+      payload: {
+        isOpen,
+      },
+    });
+  }
 
   const displayedPanels = items.filter((item) => {
     const panelOptions = getPanelPreferences(item);
@@ -47,16 +53,18 @@ export function NMRiumViewerWrapper(props: NMRiumViewerWrapperProps) {
     return <NMRiumViewer emptyText={emptyText} viewerRef={viewerRef} />;
   }
 
+  const isOpen = !general?.hidePanelOnLoad;
+
   return (
     <SplitPane
       size={verticalSplitterPosition}
       direction="horizontal"
       controlledSide="end"
-      open={isSplitPaneOpen}
-      defaultOpen={!general?.hidePanelOnLoad}
+      open={isOpen}
+      defaultOpen={isOpen}
       closeThreshold={verticalSplitterCloseThreshold}
       onSizeChange={resizeHandler}
-      onOpenChange={(isOpen) => (isOpen ? openSplitPane() : closeSplitPane())}
+      onOpenChange={(isOpen) => handleToggleSplitPanel(isOpen)}
     >
       <NMRiumViewer emptyText={emptyText} viewerRef={viewerRef} />
       <Panels />

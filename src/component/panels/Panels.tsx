@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 import type { NMRiumPanelPreferences } from '@zakodium/nmrium-core';
-import type { PropsWithChildren } from 'react';
-import { createContext, memo, useContext, useMemo, useState } from 'react';
+import { memo } from 'react';
 import { FaRegEdit } from 'react-icons/fa';
 import type { ToolbarItemProps } from 'react-science/ui';
 import { Accordion, Toolbar } from 'react-science/ui';
@@ -21,57 +20,6 @@ const Container = styled.div`
   height: 100%;
   width: 100%;
 `;
-interface PanelStateContext {
-  openSplitPane: () => void;
-  closeSplitPane: () => void;
-  isSplitPaneOpen: boolean;
-}
-
-const AccordionContext = createContext<PanelStateContext | null>(null);
-
-export function usePanelOpenState() {
-  const context = useContext(AccordionContext);
-
-  if (!context) {
-    throw new Error('Panel open context must be used within PanelOpenProvider');
-  }
-
-  return context;
-}
-
-export function PanelOpenProviderProvider({
-  children,
-}: Required<PropsWithChildren>) {
-  const { current } = usePreferences();
-
-  const {
-    display: { general = {} },
-  } = current;
-  // TODO: make sure to move this state to the workspace once the refactoring of nmrium-core is finished.
-  const [isSplitPaneOpen, setIsSplitPaneOpen] = useState(
-    !general?.hidePanelOnLoad,
-  );
-
-  const state = useMemo(() => {
-    function openSplitPane() {
-      setIsSplitPaneOpen(true);
-    }
-    function closeSplitPane() {
-      setIsSplitPaneOpen(false);
-    }
-    return {
-      openSplitPane,
-      closeSplitPane,
-      isSplitPaneOpen,
-    };
-  }, [isSplitPaneOpen]);
-
-  return (
-    <AccordionContext.Provider value={state}>
-      {children}
-    </AccordionContext.Provider>
-  );
-}
 
 function PanelsInner() {
   const getPanelPreferences = useGetPanelOptions();

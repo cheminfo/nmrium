@@ -55,6 +55,7 @@ import { setPreferences } from './actions/setPreferences.js';
 import { setVerticalSplitterPosition } from './actions/setVerticalSplitterPosition.js';
 import { setWorkspace } from './actions/setWorkspace.js';
 import { toggleInformationBlock } from './actions/toggleInformationBlock.js';
+import { toggleOpenSplitPanel } from './actions/toggleOpenSplitPanel.ts';
 import { togglePanel } from './actions/togglePanel.js';
 import { mapWorkspaces } from './utilities/mapWorkspaces.js';
 
@@ -184,6 +185,13 @@ export type ChangeDefaultMoleculeSettingsAction = ActionType<
   MoleculeView
 >;
 
+export type ToggleSplitPanelAction = ActionType<
+  'TOGGLE_SPLIT_PANEL',
+  {
+    isOpen?: boolean;
+  }
+>;
+
 export type PreferencesActions =
   | InitPreferencesAction
   | SetPreferencesAction
@@ -206,7 +214,8 @@ export type PreferencesActions =
   | TogglePanelAction
   | ChangeExportACSSettingsAction
   | ChangeDefaultMoleculeSettingsAction
-  | CutSpectraAnalysisAction;
+  | CutSpectraAnalysisAction
+  | ToggleSplitPanelAction;
 
 export type WorkspaceWithSource = Workspace & { source: WorkSpaceSource };
 type WorkspacesWithSource = Record<string, WorkspaceWithSource>;
@@ -334,6 +343,8 @@ function innerPreferencesReducer(
       return changeExportAcsSettings(draft, action);
     case 'CHANGE_DEFAULT_MOLECULE_SETTINGS':
       return changeDefaultMoleculeSettings(draft, action);
+    case 'TOGGLE_SPLIT_PANEL':
+      return toggleOpenSplitPanel(draft, action);
 
     default:
       return draft;

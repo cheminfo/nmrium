@@ -13,7 +13,6 @@ import { ExportManagerController } from '../elements/export/ExportManager.js';
 import { PrintContent } from '../elements/print/PrintContent.js';
 import { Header } from '../header/Header.js';
 import DropZone from '../loader/DropZone.js';
-import { PanelOpenProviderProvider } from '../panels/Panels.js';
 import { PanelsBar } from '../panels/PanelsBar.js';
 import ToolBar from '../toolbar/ToolBar.js';
 
@@ -145,14 +144,12 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
               >
                 <KeysListenerTracker mainDivRef={mainDivRef} />
 
-                <PanelOpenProviderProvider>
-                  <ToolBar />
-                  <NMRiumViewerWrapper
-                    viewerRef={viewerRef}
-                    emptyText={emptyText}
-                  />
-                  <PanelsBar />
-                </PanelOpenProviderProvider>
+                <ToolBar />
+                <NMRiumViewerWrapper
+                  viewerRef={viewerRef}
+                  emptyText={emptyText}
+                />
+                <PanelsBar />
                 <div
                   ref={elementsWrapperRef}
                   key={String(isFullScreen)}
