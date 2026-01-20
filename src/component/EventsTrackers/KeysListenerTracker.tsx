@@ -51,7 +51,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
     changeDisplayViewModeHandler,
   } = useToolsFunctions();
 
-  const { saveAsJSONHandler } = useExport();
+  const { defaultSaveAsHandler } = useExport();
   const isToolVisible = useCheckToolsVisibility();
 
   const { highlight, remove } = useHighlightData();
@@ -428,7 +428,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
               break;
             case 's':
               if (isToolVisible('exportAs')) {
-                saveAsJSONHandler();
+                defaultSaveAsHandler();
                 e.preventDefault();
               }
               break;
@@ -488,7 +488,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
       nuclei,
       openLoader,
       openSaveAsDialog,
-      saveAsJSONHandler,
+      defaultSaveAsHandler,
       toaster,
     ],
   );

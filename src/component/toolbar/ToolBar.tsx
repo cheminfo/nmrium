@@ -53,6 +53,7 @@ import { MetaImportationModal } from '../modal/metaImportation/MetaImportationMo
 
 import type { MainTool } from './ToolTypes.js';
 import { options } from './ToolTypes.js';
+import type { ExportMenuItems } from './toolbarMenu.js';
 import { EXPORT_MENU, IMPORT_MENU } from './toolbarMenu.js';
 
 interface BaseToolItem extends Pick<ToolbarItemProps, 'icon' | 'disabled'> {
@@ -161,7 +162,7 @@ export default function ToolBar() {
     });
   }, [dispatch]);
 
-  const { saveAsJSONHandler } = useExport();
+  const { defaultSaveAsHandler } = useExport();
 
   const exportViewportAPI = useExportManagerAPI();
 
@@ -183,16 +184,16 @@ export default function ToolBar() {
     }
   }
 
-  function exportHandler(data: any) {
-    switch (data?.id) {
+  function exportHandler(data: ExportMenuItems[number]['data']) {
+    const id = data?.id;
+
+    switch (id) {
       case 'svg':
-        exportViewportAPI.current?.export({ format: 'svg' });
-        break;
       case 'png':
-        exportViewportAPI.current?.export({ format: 'png' });
+        exportViewportAPI.current?.export({ format: id });
         break;
-      case 'json':
-        saveAsJSONHandler();
+      case 'nmrium_archive':
+        defaultSaveAsHandler();
         break;
       case 'advance_save':
         openDialog('saveAs');
@@ -206,7 +207,6 @@ export default function ToolBar() {
       case 'exportAsJcamp':
         openDialog('exportAsJcamp');
         break;
-
       default:
         break;
     }

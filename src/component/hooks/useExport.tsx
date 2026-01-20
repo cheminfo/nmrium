@@ -10,17 +10,14 @@ import { useToaster } from '../context/ToasterContext.js';
 import {
   browserNotSupportedErrorToast,
   copyPNGToClipboard,
-  exportAsJsonBlob,
   exportAsPng,
   exportAsSVG,
 } from '../utility/export.js';
 import { saveAs } from '../utility/save_as.ts';
 
-interface SaveOptions {
-  include: ExportOptions;
+export interface SaveOptions {
+  include: Pick<ExportOptions, 'dataType' | 'settings' | 'view'>;
   name: string;
-  compressed: boolean;
-  pretty: boolean;
 }
 
 export function useExport() {
@@ -29,70 +26,17 @@ export function useExport() {
   const preferencesState = usePreferences();
   const core = useCore();
 
-  const saveAsJSONHandler = useCallback(
-    (spaceIndent = 0, isCompressed = true) => {
-      const hideLoading = toaster.showLoading({
-        message: 'Exporting as NMRium process in progress',
-      });
-      setTimeout(async () => {
-        try {
-          const name = state.data[0]?.info?.name || 'experiment';
-          const exportedData = toJSON(core, state, preferencesState, {
-            exportTarget: 'nmrium',
-            view: true,
-          });
-
-          const blob = await exportAsJsonBlob(
-            exportedData,
-            name,
-            spaceIndent,
-            isCompressed,
-          );
-          saveAs({ blob, name, extension: '.nmrium' });
-        } catch (error) {
-          toaster.show({
-            intent: 'danger',
-            message: `Export failed due to an unexpected error: ${(error as Error)?.message || 'Unknown error'}`,
-          });
-          reportError(error);
-        } finally {
-          hideLoading();
-        }
-      }, 0);
-    },
-    [core, preferencesState, state, toaster],
-  );
-
   const saveHandler = useCallback(
     (options: SaveOptions) => {
       async function handler() {
-        const { pretty, compressed, include } = options;
         const name = options.name || 'experiment';
-        const exportArchive =
-          include.dataType?.startsWith('SELF_CONTAINED') ?? false;
+        const include = options.include;
 
         const hideLoading = toaster.showLoading({
-          message: `Exporting as ${name}.nmrium process in progress`,
+          message: `Exporting as ${name}.nmrium.zip process in progress`,
         });
         setTimeout(async () => {
           try {
-            if (!exportArchive) {
-              const exportedData = toJSON(core, state, preferencesState, {
-                ...include,
-                serialize: true,
-                exportTarget: 'nmrium',
-              });
-              const spaceIndent = pretty ? 2 : 0;
-              const blob = await exportAsJsonBlob(
-                exportedData,
-                name,
-                spaceIndent,
-                compressed,
-              );
-
-              return saveAs({ blob, name, extension: '.nmrium' });
-            }
-
             const nmriumState = toJSON(core, state, preferencesState, {
               serialize: false,
               exportTarget: 'nmrium',
@@ -100,9 +44,9 @@ export function useExport() {
             const archive = await core.serializeNmriumArchive({
               state: nmriumState,
               aggregator: state.aggregator,
-              includeData: options.include.dataType === 'SELF_CONTAINED',
-              includeSettings: options.include.settings,
-              includeView: options.include.view,
+              includeData: include.dataType === 'SELF_CONTAINED',
+              includeSettings: include.settings,
+              includeView: include.view,
             });
             const zipBlob = new Blob([archive], {
               type: 'chemical/x-nmrium+zip',
@@ -125,8 +69,20 @@ export function useExport() {
     [core, preferencesState, state, toaster],
   );
 
+  const defaultName = state.data[0]?.info?.name || 'experiment';
+  const defaultSaveAsHandler = useCallback(() => {
+    saveHandler({
+      name: defaultName,
+      include: {
+        dataType: 'SELF_CONTAINED',
+        view: true,
+        settings: false,
+      },
+    });
+  }, [saveHandler, defaultName]);
+
   return {
-    saveAsJSONHandler,
+    defaultSaveAsHandler,
     saveHandler,
   };
 }
