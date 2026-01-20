@@ -87,29 +87,29 @@ export default function SelectMolecule<
     [setValue],
   );
 
-  return (
-    <div>
-      {element && molecules && molecules.length > 0 ? (
-        <Container>
-          <Title>Select a molecule as reference!</Title>
+  if (element && molecules && molecules.length > 0) {
+    return (
+      <Container>
+        <Title>Select a molecule as reference!</Title>
 
-          <SelectionContainer>
-            <MoleculeSelection
-              index={currentIndex}
-              molecules={molecules}
-              onChange={onChangeMoleculeSelectionHandler}
-            />
-            <SumValue>
-              New sum for {element} will be {newSum}!
-            </SumValue>
-          </SelectionContainer>
-        </Container>
-      ) : (
-        <EmptyText color={invalid ? 'red' : 'black'}>
-          You have to Select a spectrum and Add a molecule from the Structure
-          panel to select as a reference!
-        </EmptyText>
-      )}
-    </div>
+        <SelectionContainer>
+          <MoleculeSelection
+            index={currentIndex}
+            molecules={molecules}
+            onChange={onChangeMoleculeSelectionHandler}
+          />
+          <SumValue>
+            New sum for {element} will be {newSum}!
+          </SumValue>
+        </SelectionContainer>
+      </Container>
+    );
+  }
+
+  return (
+    <EmptyText color={invalid ? 'red' : 'black'}>
+      You have to Select a spectrum and Add a molecule from the Structure panel
+      to select as a reference!
+    </EmptyText>
   );
 }
