@@ -376,7 +376,7 @@ test('Export sources from 1H spectrum', async ({ page }) => {
     const fields = nmrium.page.locator(
       '_react=SaveAsModal >> input[type="radio"]',
     );
-    await expect(fields).toHaveCount(3);
+    await expect(fields).toHaveCount(2);
 
     const disabledFields = nmrium.page.locator(
       '_react=SaveAsModal >> input[type="radio"][disabled]',
@@ -386,7 +386,9 @@ test('Export sources from 1H spectrum', async ({ page }) => {
   await test.step('Check export Raw Data', async () => {
     const downloadPromise = nmrium.page.waitForEvent('download');
 
-    await nmrium.page.click('_react=SaveAsModal >> text="Raw data" ');
+    await nmrium.page.click(
+      '_react=SaveAsModal >> text="External data embed" ',
+    );
     await nmrium.page.click('_react=SaveAsModal >> button >> text=Save');
     const download = await downloadPromise;
     const stream = await download.createReadStream();
@@ -465,12 +467,15 @@ test('Export sources from imported spectrum', async ({ page }) => {
     const fields = nmrium.page.locator(
       '_react=SaveAsModal >> input[type="radio"]',
     );
-    await expect(fields).toHaveCount(3);
+    await expect(fields).toHaveCount(2);
     const disabledFields = nmrium.page.locator(
       '_react=SaveAsModal >> input[type="radio"][disabled]',
     );
     await expect(disabledFields).toHaveCount(1);
-    await expect(disabledFields).toHaveAttribute('value', 'DATA_SOURCE');
+    await expect(disabledFields).toHaveAttribute(
+      'value',
+      'SELF_CONTAINED_EXTERNAL_DATASOURCE',
+    );
   });
   await test.step('Check export Raw Data', async () => {
     const downloadPromise = nmrium.page.waitForEvent('download');
