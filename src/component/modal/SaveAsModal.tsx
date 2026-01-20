@@ -8,7 +8,6 @@ import {
 import { useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
-import type { ExportOptions } from '../../data/SpectraManager.js';
 import { DataExportOptions } from '../../data/SpectraManager.js';
 import { useChartData } from '../context/ChartContext.js';
 import ActionButtons from '../elements/ActionButtons.js';
@@ -16,18 +15,16 @@ import { Input2Controller } from '../elements/Input2Controller.js';
 import type { LabelStyle } from '../elements/Label.js';
 import Label from '../elements/Label.js';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
-import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature.js';
+import type { SaveOptions } from '../hooks/useExport.js';
 import { useExport } from '../hooks/useExport.js';
 
-const INITIAL_VALUE = {
+const INITIAL_VALUE: SaveOptions = {
   name: '',
-  compressed: false,
-  pretty: false,
   include: {
-    dataType: DataExportOptions.RAW_DATA,
+    dataType: DataExportOptions.SELF_CONTAINED,
     view: false,
     settings: false,
-  } satisfies ExportOptions,
+  },
 };
 
 export const labelStyle: LabelStyle = {
@@ -57,15 +54,14 @@ function SaveAsModal(props: SaveAsModalProps) {
 
   return <InnerSaveAsModal onCloseDialog={onCloseDialog} />;
 }
+
 function InnerSaveAsModal(props: InnerSaveAsModalProps) {
   const { onCloseDialog } = props;
-  const { sources, data, aggregator } = useChartData();
+  const { data, aggregator } = useChartData();
   const { saveHandler } = useExport();
-  const experimentalFlagEnabled = useCheckExperimentalFeature();
-
   const fileName = data[0]?.info?.name;
 
-  function submitHandler(values: any) {
+  function submitHandler(values: SaveOptions) {
     saveHandler(values);
     onCloseDialog?.();
   }
@@ -94,12 +90,6 @@ function InnerSaveAsModal(props: InnerSaveAsModalProps) {
             controllerProps={{ rules: { required: true } }}
           />
         </Label>
-        <Label style={labelStyle} title="Compressed">
-          <Checkbox style={{ margin: 0 }} {...register(`compressed`)} />
-        </Label>
-        <Label style={labelStyle} title="Pretty format">
-          <Checkbox style={{ margin: 0 }} {...register(`pretty`)} />
-        </Label>
         <Label style={labelStyle} title="Include view">
           <Checkbox style={{ margin: 0 }} {...register(`include.view`)} />
         </Label>
@@ -114,33 +104,15 @@ function InnerSaveAsModal(props: InnerSaveAsModalProps) {
               const { value, ref, ...otherFieldProps } = field;
               return (
                 <RadioGroup inline selectedValue={value} {...otherFieldProps}>
-                  <Radio label="Raw data" value={DataExportOptions.RAW_DATA} />
                   <Radio
-                    label="Data source"
-                    value={DataExportOptions.DATA_SOURCE}
-                    disabled={Object.keys(sources).length === 0}
+                    label="External data embed"
+                    value={DataExportOptions.SELF_CONTAINED}
                   />
-                  <Radio label="No data" value={DataExportOptions.NO_DATA} />
-
-                  {/*
-                   * Radio group works with Children.map.
-                   * So Radio must be direct children of RadioGroup.
-                   */}
-                  {experimentalFlagEnabled && (
-                    <Radio
-                      label="Full data (external data embed, experimental)"
-                      value={DataExportOptions.SELF_CONTAINED}
-                    />
-                  )}
-                  {experimentalFlagEnabled && (
-                    <Radio
-                      label="Full data (external data linked, experimental)"
-                      disabled={!containsLinkedFiles}
-                      value={
-                        DataExportOptions.SELF_CONTAINED_EXTERNAL_DATASOURCE
-                      }
-                    />
-                  )}
+                  <Radio
+                    label="External data linked"
+                    disabled={!containsLinkedFiles}
+                    value={DataExportOptions.SELF_CONTAINED_EXTERNAL_DATASOURCE}
+                  />
                 </RadioGroup>
               );
             }}

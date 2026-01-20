@@ -39,7 +39,18 @@ const IMPORT_MENU: ToolbarPopoverMenuItem[] = [
   },
 ] as const;
 
-const EXPORT_MENU: ToolbarPopoverMenuItem[] = [
+type ExportMenuItemsId =
+  | 'nmrium_archive'
+  | 'advance_save'
+  | 'svg'
+  | 'png'
+  | 'copy'
+  | 'nmre'
+  | 'exportAsJcamp';
+export type ExportMenuItems = Array<
+  ToolbarPopoverMenuItem<{ id: ExportMenuItemsId }>
+>;
+const EXPORT_MENU: ExportMenuItems = [
   {
     icon: <FaFileDownload />,
     text: 'Save data',
@@ -48,7 +59,7 @@ const EXPORT_MENU: ToolbarPopoverMenuItem[] = [
       shortcuts: ['CTRL', 's'],
     },
     data: {
-      id: 'json',
+      id: 'nmrium_archive',
     },
   },
   {
