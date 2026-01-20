@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import type { ReactNode } from 'react';
 import type { FallbackProps } from 'react-error-boundary';
 
 const WrongP = styled.p`
@@ -19,12 +20,20 @@ const Details = styled.details`
 `;
 
 export default function ErrorOverlay(props: FallbackProps) {
+  const error = props.error;
+  const message =
+    error && typeof error === 'object' && 'message' in error
+      ? error.message
+      : null;
+  const stack =
+    error && typeof error === 'object' && 'stack' in error ? error.stack : null;
+
   return (
     <div style={{ margin: 25 }}>
       <WrongP>Something went wrong.</WrongP>
       <Details>
-        <p style={{ textDecoration: 'underline' }}>{props.error.message}</p>
-        {props.error.stack}
+        <p style={{ textDecoration: 'underline' }}>{message as ReactNode}</p>
+        {stack as ReactNode}
       </Details>
     </div>
   );

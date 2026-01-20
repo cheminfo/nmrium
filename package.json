@@ -104,7 +104,7 @@
     "papaparse": "^5.5.3",
     "react-d3-utils": "^3.1.2",
     "react-dropzone": "^14.3.8",
-    "react-error-boundary": "^6.0.3",
+    "react-error-boundary": "^6.1.0",
     "react-hook-form": "^7.71.0",
     "react-icons": "^5.5.0",
     "react-inspector": "^9.0.0",
