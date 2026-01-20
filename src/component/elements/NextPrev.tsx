@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 import type { CSSProperties, ReactElement } from 'react';
-import { Children } from 'react';
-import { useResizeObserver } from 'react-d3-utils';
+import { Children, useLayoutEffect, useRef, useState } from 'react';
 import { FaAngleLeft } from 'react-icons/fa';
 
 type Direction = 'right' | 'left';
@@ -90,10 +89,35 @@ interface NextPrevProps {
 
 export function NextPrev(props: NextPrevProps) {
   const { children, index = 0, onChange = () => null, style = {} } = props;
-  const [ref, { width } = { width: 0 }] = useResizeObserver();
   const slidersCount = Children.count(children);
   const lastIndex = slidersCount > 0 ? slidersCount - 1 : 0;
   const activeIndex = Math.min(index, lastIndex);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const [width, setWidth] = useState(0);
+
+  useLayoutEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const newWidth = entry.contentRect.width;
+        if (newWidth > 0) {
+          setWidth(newWidth);
+        }
+      }
+    });
+
+    observer.observe(container);
+
+    const rect = container.getBoundingClientRect();
+    if (rect.width > 0) {
+      setWidth(rect.width);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   function nextHandler() {
     if (index < lastIndex) {
@@ -113,7 +137,7 @@ export function NextPrev(props: NextPrevProps) {
   const slidersWidth = width * slidersCount;
 
   return (
-    <Container ref={ref}>
+    <Container ref={containerRef}>
       <TransformController
         translation={translation}
         slidersWidth={slidersWidth}
