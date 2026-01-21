@@ -40,8 +40,7 @@ function FloatMoleculesInner(props: FloatMoleculeStructuresProps) {
 
   return visibleMolecules.map(([id, moleculeView], index) => {
     const molecule = molecules.find((m) => m.id === id);
-    if (!molecule) return null;
-
+    assert(molecule !== undefined, 'molecule should be defined');
     return (
       <DraggableStructure
         key={id}
