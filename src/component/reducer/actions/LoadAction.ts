@@ -340,6 +340,12 @@ function handleLoadDropFiles(draft: Draft<State>, action: LoadDropFilesAction) {
       draft.sources = {};
     }
 
+    draft.view.molecules = Object.fromEntries(
+      Object.entries(draft.view.molecules).filter(([id]) =>
+        draft.molecules.some((molecule) => molecule.id === id),
+      ),
+    );
+
     draft.actionType = type;
     draft.isLoading = false;
     return undefined;
