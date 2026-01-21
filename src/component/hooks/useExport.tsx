@@ -1,7 +1,6 @@
 import type { NmriumState } from '@zakodium/nmrium-core';
 import { useCallback } from 'react';
 
-import type { ExportOptions } from '../../data/SpectraManager.js';
 import { toJSON } from '../../data/SpectraManager.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useCore } from '../context/CoreContext.js';
@@ -16,7 +15,14 @@ import {
 import { saveAs } from '../utility/save_as.ts';
 
 export interface SaveOptions {
-  include: Pick<ExportOptions, 'dataType' | 'settings' | 'view'>;
+  include: {
+    settings: boolean;
+    view: boolean;
+    dataType:
+      | 'NO_DATA'
+      | 'SELF_CONTAINED'
+      | 'SELF_CONTAINED_EXTERNAL_DATASOURCE';
+  };
   name: string;
 }
 
@@ -44,7 +50,9 @@ export function useExport() {
             const archive = await core.serializeNmriumArchive({
               state: nmriumState,
               aggregator: state.aggregator,
-              includeData: include.dataType === 'SELF_CONTAINED',
+              includeData: include.dataType !== 'NO_DATA',
+              externalData:
+                include.dataType === 'SELF_CONTAINED' ? 'embedded' : 'linked',
               includeSettings: include.settings,
               includeView: include.view,
             });

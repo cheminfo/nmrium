@@ -113,6 +113,7 @@ function InnerSaveAsModal(props: InnerSaveAsModalProps) {
                     disabled={!containsLinkedFiles}
                     value={DataExportOptions.SELF_CONTAINED_EXTERNAL_DATASOURCE}
                   />
+                  <Radio label="No data" value={DataExportOptions.NO_DATA} />
                 </RadioGroup>
               );
             }}
