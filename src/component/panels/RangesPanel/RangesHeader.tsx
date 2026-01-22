@@ -314,14 +314,14 @@ function RangesHeader(props: RangesHeaderProps) {
     {
       disabled: !hasRanges,
       icon: <FaCopy />,
-      tooltip: `${booleanToString(!showPublicationString)} publication string`,
+      tooltip: `${booleanToString(!showPublicationString, { trueLabel: 'Display' })} publication string`,
       onClick: handleShowPublicationString,
       active: showPublicationString,
     },
     {
       disabled: !hasRanges,
       icon: <SvgNmrPeaksTopLabels />,
-      tooltip: `${booleanToString(!showRanges)} ranges`,
+      tooltip: `${booleanToString(!showRanges, { trueLabel: 'Display' })} table`,
       onClick: handleShowRanges,
       active: showRanges,
     },
