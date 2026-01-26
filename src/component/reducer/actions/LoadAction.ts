@@ -129,7 +129,10 @@ function setData(draft: Draft<State>, input: InputProps | InitiateProps) {
 
   if (view) {
     const defaultViewState = getDefaultViewState();
-
+    // TODO: Refactor to find the spectrum index in each call rather than saving it in state.
+    // For now, we will clear the activeSpectra and selectReferences
+    view.spectra.activeSpectra = {};
+    view.spectra.selectReferences = {};
     draft.view = lodashMerge(defaultViewState, view);
   }
 
