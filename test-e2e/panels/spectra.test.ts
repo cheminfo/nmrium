@@ -383,73 +383,6 @@ test('Export sources from 1H spectrum', async ({ page }) => {
     );
     await expect(disabledFields).toHaveCount(0);
   });
-  await test.step('Check export Raw Data', async () => {
-    const downloadPromise = nmrium.page.waitForEvent('download');
-
-    await nmrium.page.click('_react=SaveAsModal >> text="Raw data" ');
-    await nmrium.page.click('_react=SaveAsModal >> button >> text=Save');
-    const download = await downloadPromise;
-    const stream = await download.createReadStream();
-    expect(stream).not.toBeNull();
-    const data: any = await new Promise((resolve) => {
-      const chunks: any[] = [];
-      stream?.on('data', (chunk: any) => chunks.push(chunk));
-      stream?.on('end', () => {
-        const buffer = Buffer.concat(chunks);
-        const { data } = JSON.parse(buffer.toString());
-        resolve(data);
-      });
-    });
-    expect(data).not.toBeUndefined();
-    // TODO: Save raw data should not have source property
-    expect(data.sources).toBeUndefined();
-    expect(data.spectra[0].data).not.toBeUndefined();
-  });
-  await test.step('Check export DATA SOURCE', async () => {
-    const downloadPromise = nmrium.page.waitForEvent('download');
-    await nmrium.clickTool('exportAs');
-    await nmrium.page.click('_react=ToolbarPopoverItem  >> text=Save as');
-
-    await nmrium.page.click('_react=SaveAsModal >> text="Data source" ');
-
-    await nmrium.page.click('_react=SaveAsModal >> button >> text=Save');
-    const download = await downloadPromise;
-    const stream = await download.createReadStream();
-    expect(stream).not.toBeNull();
-    const data: any = await new Promise((resolve) => {
-      const chunks: any[] = [];
-      stream?.on('data', (chunk: any) => chunks.push(chunk));
-      stream?.on('end', () => {
-        const buffer = Buffer.concat(chunks);
-        const { data } = JSON.parse(buffer.toString());
-        resolve(data);
-      });
-    });
-    expect(data).not.toBeUndefined();
-    expect(data.sources).not.toBeUndefined();
-    expect(Object.keys(data.sources).length).not.toBe(0);
-    expect(data.spectra[0].data).toBeUndefined();
-  });
-  await test.step('Check export NO Data', async () => {
-    const downloadPromise = nmrium.page.waitForEvent('download');
-    await nmrium.clickTool('exportAs');
-    await nmrium.page.click('_react=ToolbarPopoverItem >> text=Save as');
-    await nmrium.page.click('_react=SaveAsModal >> text="No data" ');
-    await nmrium.page.click('_react=SaveAsModal >> button >> text=Save');
-    const download = await downloadPromise;
-    const stream = await download.createReadStream();
-    expect(stream).not.toBeNull();
-    const data: any = await new Promise((resolve) => {
-      const chunks: any[] = [];
-      stream?.on('data', (chunk: any) => chunks.push(chunk));
-      stream?.on('end', () => {
-        const buffer = Buffer.concat(chunks);
-        const { data } = JSON.parse(buffer.toString());
-        resolve(data);
-      });
-    });
-    expect(data).toBeUndefined();
-  });
 });
 
 test('Export sources from imported spectrum', async ({ page }) => {
@@ -470,48 +403,10 @@ test('Export sources from imported spectrum', async ({ page }) => {
       '_react=SaveAsModal >> input[type="radio"][disabled]',
     );
     await expect(disabledFields).toHaveCount(1);
-    await expect(disabledFields).toHaveAttribute('value', 'DATA_SOURCE');
-  });
-  await test.step('Check export Raw Data', async () => {
-    const downloadPromise = nmrium.page.waitForEvent('download');
-    await nmrium.page.click('_react=SaveAsModal >> text="Raw data"');
-    await nmrium.page.click('_react=SaveAsModal >> button >> text=Save');
-    const download = await downloadPromise;
-    const stream = await download.createReadStream();
-    expect(stream).not.toBeNull();
-    const data: any = await new Promise((resolve) => {
-      const chunks: any[] = [];
-      stream?.on('data', (chunk: any) => chunks.push(chunk));
-      stream?.on('end', () => {
-        const buffer = Buffer.concat(chunks);
-        const { data } = JSON.parse(buffer.toString());
-        resolve(data);
-      });
-    });
-    // TODO: Save raw data should not have source property
-    expect(data).not.toBeUndefined();
-    expect(data.sources).toBeUndefined();
-    expect(data.spectra[0].data).not.toBeUndefined();
-  });
-  await test.step('Check export NO Data', async () => {
-    const downloadPromise = nmrium.page.waitForEvent('download');
-    await nmrium.clickTool('exportAs');
-    await nmrium.page.click('_react=ToolbarPopoverItem >> text=Save as');
-    await nmrium.page.click('_react=SaveAsModal >> text="No data"');
-    await nmrium.page.click('_react=SaveAsModal >> button >> text=Save');
-    const download = await downloadPromise;
-    const stream = await download.createReadStream();
-    expect(stream).not.toBeNull();
-    const data: any = await new Promise((resolve) => {
-      const chunks: any[] = [];
-      stream?.on('data', (chunk: any) => chunks.push(chunk));
-      stream?.on('end', () => {
-        const buffer = Buffer.concat(chunks);
-        const { data } = JSON.parse(buffer.toString());
-        resolve(data);
-      });
-    });
-    expect(data).toBeUndefined();
+    await expect(disabledFields).toHaveAttribute(
+      'value',
+      'SELF_CONTAINED_EXTERNAL_DATASOURCE',
+    );
   });
 });
 

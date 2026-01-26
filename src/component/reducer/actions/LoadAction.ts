@@ -292,6 +292,11 @@ function initData(
     if (view) {
       const defaultViewState = getDefaultViewState();
       draft.view = lodashMerge(defaultViewState, view);
+      draft.view.molecules = Object.fromEntries(
+        Object.entries(draft.view.molecules).filter(([id]) =>
+          draft.molecules.some((molecule) => molecule.id === id),
+        ),
+      );
     }
     draft.actionType = action.type;
     draft.isLoading = false;
@@ -334,6 +339,12 @@ function handleLoadDropFiles(draft: Draft<State>, action: LoadDropFilesAction) {
     if (resetSourceObject && spectra?.length > 0) {
       draft.sources = {};
     }
+
+    draft.view.molecules = Object.fromEntries(
+      Object.entries(draft.view.molecules).filter(([id]) =>
+        draft.molecules.some((molecule) => molecule.id === id),
+      ),
+    );
 
     draft.actionType = type;
     draft.isLoading = false;
