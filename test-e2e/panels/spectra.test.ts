@@ -376,7 +376,7 @@ test('Export sources from 1H spectrum', async ({ page }) => {
     const fields = nmrium.page.locator(
       '_react=SaveAsModal >> input[type="radio"]',
     );
-    await expect(fields).toHaveCount(2);
+    await expect(fields).toHaveCount(3);
 
     const disabledFields = nmrium.page.locator(
       '_react=SaveAsModal >> input[type="radio"][disabled]',
@@ -398,7 +398,7 @@ test('Export sources from imported spectrum', async ({ page }) => {
     const fields = nmrium.page.locator(
       '_react=SaveAsModal >> input[type="radio"]',
     );
-    await expect(fields).toHaveCount(2);
+    await expect(fields).toHaveCount(3);
     const disabledFields = nmrium.page.locator(
       '_react=SaveAsModal >> input[type="radio"][disabled]',
     );
