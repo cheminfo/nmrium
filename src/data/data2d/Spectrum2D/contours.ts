@@ -154,7 +154,7 @@ function prepareCheckLevel(options: ContourOptions) {
 }
 
 function getRange(min: number, max: number, length: number, exp?: number) {
-  if (exp !== undefined) {
+  if (exp !== undefined && length > 0) {
     const factors = new Float64Array(length + 1);
 
     for (let i = 1; i < length + 1; i++) {
