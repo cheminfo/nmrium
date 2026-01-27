@@ -68,17 +68,24 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
   const minLevel = Math.max(minAbsPeakBase, minAllowed);
   const minContourLevel = Math.min(
     calculateValueOfLevel(minLevel, max, true),
-    90,
+    DEFAULT_CONTOURS_OPTIONS.positive.contourLevels[1] -
+      DEFAULT_CONTOURS_OPTIONS.positive.numberOfLayers,
   );
 
   const defaultLevel: ContourOptions = {
     negative: {
-      numberOfLayers: 10,
-      contourLevels: [minContourLevel, 100],
+      numberOfLayers: DEFAULT_CONTOURS_OPTIONS.negative.numberOfLayers,
+      contourLevels: [
+        minContourLevel,
+        DEFAULT_CONTOURS_OPTIONS.negative.contourLevels[1],
+      ],
     },
     positive: {
-      numberOfLayers: 10,
-      contourLevels: [minContourLevel, 100],
+      numberOfLayers: DEFAULT_CONTOURS_OPTIONS.positive.numberOfLayers,
+      contourLevels: [
+        minContourLevel,
+        DEFAULT_CONTOURS_OPTIONS.positive.contourLevels[1],
+      ],
     },
   };
   return defaultLevel;
