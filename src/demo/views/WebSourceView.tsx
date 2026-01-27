@@ -1,4 +1,4 @@
-import type { CustomWorkspaces } from '@zakodium/nmrium-core';
+import type { CustomWorkspaces, NmriumData } from '@zakodium/nmrium-core';
 import init from '@zakodium/nmrium-core-plugins';
 import { useCallback, useEffect, useState } from 'react';
 import { ObjectInspector } from 'react-inspector';
@@ -24,7 +24,7 @@ interface WebSourceViewProps {
 }
 
 export default function WebSourceView(props: WebSourceViewProps) {
-  const [data, setData] = useState();
+  const [data, setData] = useState<NmriumData>();
 
   const {
     file,
@@ -39,8 +39,8 @@ export default function WebSourceView(props: WebSourceViewProps) {
   const [isCallbackVisible, showCallback] = useState(false);
 
   useEffect(() => {
-    void loadFromURL(file).then((d) => {
-      setData(d as any);
+    void loadFromURL(file).then(([state]) => {
+      return setData(state.data as any);
     });
   }, [baseURL, file, props]);
 
