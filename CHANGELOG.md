@@ -1,5 +1,30 @@
 # Changelog
 
+## [1.11.0](https://github.com/cheminfo/nmrium/compare/v1.10.1...v1.11.0) (2026-01-27)
+
+
+### Features
+
+* add automatic atom labeling ([#3909](https://github.com/cheminfo/nmrium/issues/3909)) ([8970902](https://github.com/cheminfo/nmrium/commit/897090232a5717e45f911ec7d1a75b44f9fdb664)), closes [#3908](https://github.com/cheminfo/nmrium/issues/3908)
+* check nmrium archive by header instead extension ([#3888](https://github.com/cheminfo/nmrium/issues/3888)) ([4774219](https://github.com/cheminfo/nmrium/commit/47742190b580ab1a5fd1fbe61c4daffd8d3049fe))
+* cut spectra analysis ([b46a58a](https://github.com/cheminfo/nmrium/commit/b46a58a7abc5189094289be3d566a66f4d1bea37))
+* save to NMRium Archive v1 format ([#3915](https://github.com/cheminfo/nmrium/issues/3915)) ([eb2cf49](https://github.com/cheminfo/nmrium/commit/eb2cf4954ec42ab71208896bf26c0156fc92a37b))
+* support exporting Molfile V2 and V3 ([c14ea8c](https://github.com/cheminfo/nmrium/commit/c14ea8cb72081af064bc5ffce3feb36ed54f7fad)), closes [#3904](https://github.com/cheminfo/nmrium/issues/3904)
+
+
+### Bug Fixes
+
+* avoid use `.nmrium` as file source ([#3898](https://github.com/cheminfo/nmrium/issues/3898)) ([ab24c70](https://github.com/cheminfo/nmrium/commit/ab24c7009aad4aa08e0ddba8e31e16ceab53debd))
+* do not calculate contours when the length of z is less than 0 ([fdbf3f2](https://github.com/cheminfo/nmrium/commit/fdbf3f26cd5564ae275f0d93bb61b3042b068b09))
+* don't throw on missing molecules ([eb2cf49](https://github.com/cheminfo/nmrium/commit/eb2cf4954ec42ab71208896bf26c0156fc92a37b))
+* ignore molecule modal double-click from label edit form ([0c42085](https://github.com/cheminfo/nmrium/commit/0c4208569e56771864760fb8324e436b1eae12cc)), closes [#3894](https://github.com/cheminfo/nmrium/issues/3894)
+* make spectra selection on sorted spectra order ([ee43689](https://github.com/cheminfo/nmrium/commit/ee4368977fa7d16f89ca9771c48e575eea4741b1)), closes [#3903](https://github.com/cheminfo/nmrium/issues/3903)
+* render structure with correct coordinates ([8970902](https://github.com/cheminfo/nmrium/commit/897090232a5717e45f911ec7d1a75b44f9fdb664))
+* reorder draggable components in DOM and set custom label edit popup z-index to 1 ([38e80f1](https://github.com/cheminfo/nmrium/commit/38e80f1ec71f7488cce5d85f3bfe7befe33b50ba))
+* resolve NextPrev slider width measurement in modals ([9eeab1f](https://github.com/cheminfo/nmrium/commit/9eeab1f394553d1ce8d4f9dfbc6aaa600ba07ae8))
+* set a safe min contour level to avoid crashes ([#3926](https://github.com/cheminfo/nmrium/issues/3926)) ([e1d427f](https://github.com/cheminfo/nmrium/commit/e1d427f1883b5180fe71e8c42c2f34ddde9c3f4c))
+* sync assignment labels ([6703d54](https://github.com/cheminfo/nmrium/commit/6703d5404b2990b9c08744d4034fababb0922ac7))
+
 ## [1.10.1](https://github.com/cheminfo/nmrium/compare/v1.10.0...v1.10.1) (2025-12-12)
 
 
