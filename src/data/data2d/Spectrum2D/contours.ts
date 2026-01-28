@@ -3,6 +3,7 @@ import type { NmrData2DFt } from 'cheminfo-types';
 import { Conrec } from 'ml-conrec';
 import { xMaxAbsoluteValue } from 'ml-spectra-processing';
 
+import type { SpectrumData } from '../../../component/hooks/use2DReducer.tsx';
 import { calculateSanPlot } from '../../utilities/calculateSanPlot.js';
 
 interface Level {
@@ -194,9 +195,8 @@ function range(from: number, to: number, step: number) {
 
 function drawContours(
   level: ContourItem,
-  spectrum: Spectrum2D,
+  spectrum: SpectrumData,
   negative = false,
-  quadrant = 'rr',
 ) {
   const { contourLevels, numberOfLayers } = level;
 
@@ -204,8 +204,7 @@ function drawContours(
     negative,
     boundary: contourLevels,
     nbLevels: numberOfLayers,
-    // @ts-expect-error type of NmrData2D should have a discriminator field to separate fid and ft
-    data: spectrum.data[quadrant],
+    data: spectrum.data,
   });
 }
 
