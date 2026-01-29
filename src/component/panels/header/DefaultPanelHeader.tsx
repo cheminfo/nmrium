@@ -9,6 +9,7 @@ const styles: Record<'leftContainer', CSSProperties> = {
     display: 'flex',
     flexDirection: 'row',
     flex: 1,
+    width: '100%',
   },
 };
 
@@ -74,7 +75,7 @@ function DefaultPanelHeader(props: DefaultPanelHeaderProps) {
       total={hideCounter ? undefined : total}
     >
       <div style={styles.leftContainer}>
-        <Toolbar>
+        <Toolbar overflow="collapse">
           {onDelete && (
             <Toolbar.Item
               id="delete-button"
