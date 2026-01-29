@@ -26,6 +26,7 @@ import Label from '../../elements/Label.js';
 import { StyledDialogBody } from '../../elements/StyledDialogBody.js';
 import type { DropDownListItem } from '../../elements/dropDownButton/DropDownButton.js';
 import DropDownButton from '../../elements/dropDownButton/DropDownButton.js';
+import useCheckExperimentalFeature from '../../hooks/useCheckExperimentalFeature.ts';
 import { useSaveSettings } from '../../hooks/useSaveSettings.js';
 import { useWorkspaceAction } from '../../hooks/useWorkspaceAction.js';
 import type { WorkspaceWithSource } from '../../reducer/preferences/preferencesReducer.js';
@@ -45,7 +46,6 @@ import OnLoadProcessingTabContent from './settings-tabs/OnLoadProcessingTabConte
 import SpectraColorsTabContent from './settings-tabs/SpectraColorsTabContent.js';
 import ToolsTabContent from './settings-tabs/ToolsTabContent.js';
 import { validation } from './settingsValidation.js';
-import useCheckExperimentalFeature from '../../hooks/useCheckExperimentalFeature.ts';
 
 export const Section = styled.div`
   border-bottom: 0.55px solid #f9f9f9;
