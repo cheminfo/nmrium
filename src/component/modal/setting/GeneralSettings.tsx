@@ -30,7 +30,6 @@ import { useSaveSettings } from '../../hooks/useSaveSettings.js';
 import { useWorkspaceAction } from '../../hooks/useWorkspaceAction.js';
 import type { WorkspaceWithSource } from '../../reducer/preferences/preferencesReducer.js';
 import { getPreferencesByWorkspace } from '../../reducer/preferences/utilities/getPreferencesByWorkspace.js';
-import { useStateWithLocalStorage } from '../../utility/LocalStorage.ts';
 import PredefinedWorkspaces from '../../workspaces/index.js';
 
 import WorkspaceItem from './WorkspaceItem.js';
@@ -46,6 +45,7 @@ import OnLoadProcessingTabContent from './settings-tabs/OnLoadProcessingTabConte
 import SpectraColorsTabContent from './settings-tabs/SpectraColorsTabContent.js';
 import ToolsTabContent from './settings-tabs/ToolsTabContent.js';
 import { validation } from './settingsValidation.js';
+import useCheckExperimentalFeature from '../../hooks/useCheckExperimentalFeature.ts';
 
 export const Section = styled.div`
   border-bottom: 0.55px solid #f9f9f9;
@@ -128,9 +128,7 @@ function GeneralSettingsModal(props: GeneralSettingsModalProps) {
   const { saveSettings, SaveSettingsModal } = useSaveSettings();
 
   // Boolean to check if we have to render the new general settings dialog
-  const [generalSettingsDev] = useStateWithLocalStorage(
-    'nmr-general-settings-dev',
-  );
+  const isExperimentalFeatures = useCheckExperimentalFeature();
 
   return (
     <>
@@ -140,7 +138,7 @@ function GeneralSettingsModal(props: GeneralSettingsModalProps) {
         tooltip="General settings"
         icon={<FaWrench />}
       />
-      {generalSettingsDev && (
+      {isExperimentalFeatures && (
         <Toolbar.Item
           id="general-settings"
           onClick={openGeneralSettingsDialog}
