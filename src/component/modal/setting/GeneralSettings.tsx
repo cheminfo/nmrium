@@ -10,7 +10,7 @@ import {
   useFormContext,
   useWatch,
 } from 'react-hook-form';
-import { FaBolt, FaPaste, FaRegCopy, FaWrench } from 'react-icons/fa';
+import { FaBolt, FaCogs, FaPaste, FaRegCopy, FaWrench } from 'react-icons/fa';
 import { Button, Toolbar, useOnOff } from 'react-science/ui';
 
 import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents.js';
@@ -26,6 +26,7 @@ import Label from '../../elements/Label.js';
 import { StyledDialogBody } from '../../elements/StyledDialogBody.js';
 import type { DropDownListItem } from '../../elements/dropDownButton/DropDownButton.js';
 import DropDownButton from '../../elements/dropDownButton/DropDownButton.js';
+import useCheckExperimentalFeature from '../../hooks/useCheckExperimentalFeature.ts';
 import { useSaveSettings } from '../../hooks/useSaveSettings.js';
 import { useWorkspaceAction } from '../../hooks/useWorkspaceAction.js';
 import type { WorkspaceWithSource } from '../../reducer/preferences/preferencesReducer.js';
@@ -116,8 +117,18 @@ interface GeneralSettingsModalProps {
 
 function GeneralSettingsModal(props: GeneralSettingsModalProps) {
   const { ...otherProps } = props;
+
   const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
+  const [
+    isOpenGeneralSettingsDialog,
+    openGeneralSettingsDialog,
+    closeGeneralSettingsDialog,
+  ] = useOnOff(false);
+
   const { saveSettings, SaveSettingsModal } = useSaveSettings();
+
+  // Boolean to check if we have to render the new general settings dialog
+  const isExperimentalFeatures = useCheckExperimentalFeature();
 
   return (
     <>
@@ -127,7 +138,16 @@ function GeneralSettingsModal(props: GeneralSettingsModalProps) {
         tooltip="General settings"
         icon={<FaWrench />}
       />
+      {isExperimentalFeatures && (
+        <Toolbar.Item
+          id="general-settings"
+          onClick={openGeneralSettingsDialog}
+          tooltip="General settings [dev]"
+          icon={<FaCogs />}
+        />
+      )}
       <SaveSettingsModal />
+
       {isOpenDialog && (
         <InnerGeneralSettingsModal
           {...otherProps}
@@ -135,6 +155,13 @@ function GeneralSettingsModal(props: GeneralSettingsModalProps) {
           onSave={saveSettings}
         />
       )}
+
+      <Dialog
+        isOpen={isOpenGeneralSettingsDialog}
+        onClose={closeGeneralSettingsDialog}
+      >
+        <p>Todo: Refactor old general settings to use new forms</p>
+      </Dialog>
     </>
   );
 }
