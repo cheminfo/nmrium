@@ -34,12 +34,10 @@ export function NMRiumViewerWrapper(props: NMRiumViewerWrapperProps) {
       },
     });
   }
-  function handleToggleSplitPanel(isOpen: boolean) {
+  function handleToggleSplitPanel() {
     dispatch({
       type: 'TOGGLE_SPLIT_PANEL',
-      payload: {
-        isOpen,
-      },
+      payload: {},
     });
   }
 
@@ -64,7 +62,7 @@ export function NMRiumViewerWrapper(props: NMRiumViewerWrapperProps) {
       defaultOpen={isOpen}
       closeThreshold={verticalSplitterCloseThreshold}
       onSizeChange={resizeHandler}
-      onOpenChange={(isOpen) => handleToggleSplitPanel(isOpen)}
+      onOpenChange={handleToggleSplitPanel}
     >
       <NMRiumViewer emptyText={emptyText} viewerRef={viewerRef} />
       <Panels />
