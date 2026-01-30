@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.12.0](https://github.com/cheminfo/nmrium/compare/v1.11.0...v1.12.0) (2026-01-30)
+
+
+### Features
+
+* add "n" shortcut and tooltip for inset tool ([a6378a5](https://github.com/cheminfo/nmrium/commit/a6378a5adbac161739825268b8233ef6947bf842))
+* collapse toolbar when panel header overflows ([bdf619e](https://github.com/cheminfo/nmrium/commit/bdf619e97948847a2a4c89d6b75824be9882e934))
+* improve information panel header ([c95d83a](https://github.com/cheminfo/nmrium/commit/c95d83a879f0d48be235387ad4a1848215a57630))
+
+
+### Bug Fixes
+
+* double click to collapse panels ([b02bf61](https://github.com/cheminfo/nmrium/commit/b02bf61cca398cca3b6ac9105bafc2ab861f5fd3))
+* reset activeSpectra and selectReferences state before load ([2f2de1f](https://github.com/cheminfo/nmrium/commit/2f2de1f6c2fe2f135fe8ef4ab6c5f1b5fabc53b2))
+
 ## [1.11.0](https://github.com/cheminfo/nmrium/compare/v1.10.1...v1.11.0) (2026-01-27)
 
 
