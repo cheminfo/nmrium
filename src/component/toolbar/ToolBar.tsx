@@ -484,7 +484,12 @@ export default function ToolBar() {
     },
     {
       id: 'inset',
-      tooltip: options.inset.label,
+      tooltip: {
+        title: options.inset.label,
+        shortcuts: ['n'],
+        description:
+          'Drag a rectangle over the spectrum region to create an inset.',
+      },
       icon: <PiSelectionPlusDuotone />,
     },
   ];

@@ -413,6 +413,12 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
               }
               break;
             }
+            case 'n': {
+              if (isToolVisible('inset')) {
+                handleChangeOption(options.inset.id);
+              }
+              break;
+            }
             default:
           }
         }
