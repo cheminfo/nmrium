@@ -48,7 +48,19 @@ export function GeneralSettings(props: GeneralSettingsProps) {
           reset={form.reset}
           currentValues={form.state.values}
         />
+
         <p>Todo: Refactor old general settings to use new forms</p>
+        <form.AppField name="general.dimmedSpectraOpacity">
+          {(Field) => (
+            <Field.NumericInput
+              layout="inline"
+              label="Opacity of dimmed spectra [0 - 1]"
+              min={0}
+              max={1}
+              stepSize={0.1}
+            />
+          )}
+        </form.AppField>
       </form>
     </Dialog>
   );
