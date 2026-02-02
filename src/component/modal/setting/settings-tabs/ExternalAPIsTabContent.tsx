@@ -13,7 +13,7 @@ import type { Column } from '../../../elements/ReactTable/ReactTable.js';
 import ReactTable from '../../../elements/ReactTable/ReactTable.js';
 import { Select2Controller } from '../../../elements/Select2Controller.js';
 import type { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
-import { Section } from '../GeneralSettings.js';
+import { Section } from '../general_settings.tsx';
 
 function getKeyPath<T extends keyof ExternalAPI>(
   index: number,

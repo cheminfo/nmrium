@@ -5,7 +5,7 @@ import type { z } from 'zod/v4';
 
 import { usePreferences } from '../../../context/PreferencesContext.tsx';
 
-import { GeneralSettingsDialogHeader } from './GeneralSettingsDialogHeader.tsx';
+import { GeneralSettingsDialogHeader } from './general_settings_dialog_header.tsx';
 import { workspaceValidation } from './validation.ts';
 
 interface GeneralSettingsProps {

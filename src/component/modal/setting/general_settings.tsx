@@ -46,7 +46,7 @@ import OnLoadProcessingTabContent from './settings-tabs/OnLoadProcessingTabConte
 import SpectraColorsTabContent from './settings-tabs/SpectraColorsTabContent.js';
 import ToolsTabContent from './settings-tabs/ToolsTabContent.js';
 import { validation } from './settingsValidation.js';
-import { GeneralSettings } from './tanstack-general-settings/GeneralSettings.tsx';
+import { GeneralSettings } from './tanstack_general_settings/general_settings.tsx';
 
 export const Section = styled.div`
   border-bottom: 0.55px solid #f9f9f9;

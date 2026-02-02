@@ -12,7 +12,7 @@ import DropDownButton from '../../../elements/dropDownButton/DropDownButton.tsx'
 import { useWorkspaceAction } from '../../../hooks/useWorkspaceAction.ts';
 import WorkspaceItem from '../WorkspaceItem.tsx';
 
-import { GeneralSettingsDialogHeaderActionsButtons } from './GeneralSettingsDialogHeaderActionsButtons.tsx';
+import { GeneralSettingsDialogHeaderActionsButtons } from './general_settings_dialog_header_actions_buttons.tsx';
 
 interface GeneralSettingsDialogHeaderProps<T> {
   reset: (values?: T) => void;

@@ -25,8 +25,8 @@ import { useSaveSettings } from '../hooks/useSaveSettings.js';
 import { useWorkspaceAction } from '../hooks/useWorkspaceAction.js';
 import { LogsHistoryModal } from '../modal/LogsHistoryModal.js';
 import AboutUsModal from '../modal/aboutUs/AboutUsModal.js';
-import GeneralSettingsModal from '../modal/setting/GeneralSettings.js';
 import WorkspaceItem from '../modal/setting/WorkspaceItem.js';
+import GeneralSettingsModal from '../modal/setting/general_settings.tsx';
 import { options } from '../toolbar/ToolTypes.js';
 import { renderCoreSlot } from '../utility/renderCoreSlot.js';
 
