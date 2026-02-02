@@ -23,8 +23,8 @@ export function GeneralSettings(props: GeneralSettingsProps) {
     validators: { onDynamic: workspaceValidation },
     validationLogic: revalidateLogic({ mode: 'change' }),
     defaultValues: currentWorkspace as GeneralSettingsFormType,
-    onSubmit: ({ value }) => {
-      console.log('submit', value);
+    onSubmit: () => {
+      // TODO: do something
     },
   });
 
