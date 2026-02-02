@@ -36,6 +36,11 @@ export function GeneralSettingsDialogHeader<T>(
     ]);
   }, [baseWorkspaces]);
 
+  function handleChangeWorkspace(option: DropDownListItem) {
+    setActiveWorkspace(option.key);
+    reset(workspaces[option.key] as T);
+  }
+
   function deleteWorkspace(key: string) {
     const isActiveWorkspace = removeWorkspace(key);
 
@@ -67,7 +72,7 @@ export function GeneralSettingsDialogHeader<T>(
           data={workspacesList}
           renderItem={renderItem}
           selectedKey={preferences.workspace.current}
-          onSelect={() => {}}
+          onSelect={handleChangeWorkspace}
         />
       </Label>
     </div>
