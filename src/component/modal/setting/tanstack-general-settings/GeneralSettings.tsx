@@ -46,6 +46,7 @@ export function GeneralSettings(props: GeneralSettingsProps) {
       >
         <GeneralSettingsDialogHeader<GeneralSettingsFormType>
           reset={form.reset}
+          currentValues={form.state.values}
         />
         <p>Todo: Refactor old general settings to use new forms</p>
       </form>

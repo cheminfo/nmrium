@@ -14,12 +14,13 @@ import WorkspaceItem from '../WorkspaceItem.tsx';
 
 interface GeneralSettingsDialogHeaderProps<T> {
   reset: (values?: T) => void;
+  currentValues: T;
 }
 
 export function GeneralSettingsDialogHeader<T>(
   props: GeneralSettingsDialogHeaderProps<T>,
 ) {
-  const { reset } = props;
+  const { reset, currentValues } = props;
 
   const baseWorkspaces = useWorkspacesList();
   const { workspaces, ...preferences } = usePreferences();
@@ -41,7 +42,7 @@ export function GeneralSettingsDialogHeader<T>(
     reset(workspaces[option.key] as T);
   }
 
-  function deleteWorkspace(key: string) {
+  function handleDeleteWorkspace(key: string) {
     const isActiveWorkspace = removeWorkspace(key);
 
     if (!isActiveWorkspace) {
@@ -51,9 +52,17 @@ export function GeneralSettingsDialogHeader<T>(
     reset(workspaces.default as T);
   }
 
+  function handleAddWorkspace(name: string) {
+    addNewWorkspace(name, currentValues as any);
+  }
+
   function renderItem(item: DropDownListItem) {
     return (
-      <WorkspaceItem item={item} onSave={() => {}} onDelete={deleteWorkspace} />
+      <WorkspaceItem
+        item={item}
+        onSave={handleAddWorkspace}
+        onDelete={handleDeleteWorkspace}
+      />
     );
   }
 
