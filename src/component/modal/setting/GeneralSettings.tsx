@@ -46,6 +46,7 @@ import OnLoadProcessingTabContent from './settings-tabs/OnLoadProcessingTabConte
 import SpectraColorsTabContent from './settings-tabs/SpectraColorsTabContent.js';
 import ToolsTabContent from './settings-tabs/ToolsTabContent.js';
 import { validation } from './settingsValidation.js';
+import { GeneralSettings } from './tanstack-general-settings/GeneralSettings.tsx';
 
 export const Section = styled.div`
   border-bottom: 0.55px solid #f9f9f9;
@@ -156,12 +157,11 @@ function GeneralSettingsModal(props: GeneralSettingsModalProps) {
         />
       )}
 
-      <Dialog
+      <GeneralSettings
         isOpen={isOpenGeneralSettingsDialog}
-        onClose={closeGeneralSettingsDialog}
-      >
-        <p>Todo: Refactor old general settings to use new forms</p>
-      </Dialog>
+        open={openGeneralSettingsDialog}
+        close={closeGeneralSettingsDialog}
+      />
     </>
   );
 }
