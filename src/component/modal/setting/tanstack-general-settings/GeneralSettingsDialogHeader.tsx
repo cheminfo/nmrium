@@ -12,12 +12,14 @@ import DropDownButton from '../../../elements/dropDownButton/DropDownButton.tsx'
 import { useWorkspaceAction } from '../../../hooks/useWorkspaceAction.ts';
 import WorkspaceItem from '../WorkspaceItem.tsx';
 
+import { GeneralSettingsDialogHeaderActionsButtons } from './GeneralSettingsDialogHeaderActionsButtons.tsx';
+
 interface GeneralSettingsDialogHeaderProps<T> {
   reset: (values?: T) => void;
   currentValues: T;
 }
 
-export function GeneralSettingsDialogHeader<T>(
+export function GeneralSettingsDialogHeader<T extends object>(
   props: GeneralSettingsDialogHeaderProps<T>,
 ) {
   const { reset, currentValues } = props;
@@ -84,6 +86,11 @@ export function GeneralSettingsDialogHeader<T>(
           onSelect={handleChangeWorkspace}
         />
       </Label>
+
+      <GeneralSettingsDialogHeaderActionsButtons<T>
+        reset={reset}
+        values={currentValues}
+      />
     </div>
   );
 }
