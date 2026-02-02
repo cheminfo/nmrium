@@ -159,7 +159,6 @@ function GeneralSettingsModal(props: GeneralSettingsModalProps) {
 
       <GeneralSettings
         isOpen={isOpenGeneralSettingsDialog}
-        open={openGeneralSettingsDialog}
         close={closeGeneralSettingsDialog}
       />
     </>

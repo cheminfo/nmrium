@@ -84,8 +84,8 @@ function WorkSpaceActionsButtons<T extends object>(
     cleanShouldFallback,
     text,
   } = useClipboard();
-  const toaster = useToaster();
 
+  const toaster = useToaster();
   const isExperimentalFeatures = dlv(
     values,
     'display.general.experimentalFeatures.display',

@@ -10,13 +10,12 @@ import { workspaceValidation } from './validation.ts';
 
 interface GeneralSettingsProps {
   isOpen: boolean;
-  open: () => void;
   close: () => void;
 }
 
 type GeneralSettingsFormType = Partial<z.input<typeof workspaceValidation>>;
 export function GeneralSettings(props: GeneralSettingsProps) {
-  const { isOpen, open, close } = props;
+  const { isOpen, close } = props;
 
   const { current: currentWorkspace } = usePreferences();
 
