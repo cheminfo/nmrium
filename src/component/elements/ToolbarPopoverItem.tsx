@@ -1,5 +1,5 @@
-import type { MenuItemProps } from '@blueprintjs/core';
-import { Menu, MenuItem, Tooltip } from '@blueprintjs/core';
+import type { MenuDividerProps, MenuItemProps } from '@blueprintjs/core';
+import { Menu, MenuDivider, MenuItem, Tooltip } from '@blueprintjs/core';
 import type {
   ToolbarItemProps,
   ToolbarPopoverItemProps,
@@ -9,8 +9,14 @@ import { Toolbar, TooltipHelpContent } from 'react-science/ui';
 
 export interface ToolbarPopoverMenuItem<T = object>
   extends MenuItemProps, Pick<ToolbarItemProps, 'tooltipProps'> {
+  menuItemType?: 'item';
   data?: T;
   tooltip?: string | TooltipItem;
+}
+
+interface ToolbarPopoverMenuDividerProps extends MenuDividerProps {
+  menuItemType: 'divider';
+  key: string;
 }
 
 interface CustomToolbarPopoverItemProps<T = object>
@@ -21,7 +27,7 @@ interface CustomToolbarPopoverItemProps<T = object>
       'tooltip' | 'icon' | 'tooltipProps' | 'active' | 'id'
     > {
   itemProps?: Omit<ToolbarItemProps, 'onClick' | 'disabled'>;
-  options: Array<ToolbarPopoverMenuItem<T>>;
+  options: Array<ToolbarPopoverMenuItem<T> | ToolbarPopoverMenuDividerProps>;
   onClick?: (data?: T) => void;
 }
 
@@ -49,12 +55,19 @@ export function ToolbarPopoverItem<T = object>(
       content={
         <Menu>
           {options.map((option) => {
+            if (option.menuItemType === 'divider') {
+              const { menuItemType, key, children, ...dividerProps } = option;
+
+              return <MenuDivider key={key} {...dividerProps} />;
+            }
+
             const {
               data,
               text,
               tooltip = '',
               tooltipProps,
               disabled,
+              menuItemType,
               ...otherOptions
             } = option;
             return (

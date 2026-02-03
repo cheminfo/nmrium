@@ -1,23 +1,19 @@
 import styled from '@emotion/styled';
 import type { BoundingBox } from '@zakodium/nmrium-core';
-import { rangesToACS } from 'nmr-processing';
 import { useEffect, useState } from 'react';
 import { BsArrowsMove } from 'react-icons/bs';
 import { FaTimes } from 'react-icons/fa';
 import { Rnd } from 'react-rnd';
 
-import { isSpectrum1D } from '../../data/data1d/Spectrum1D/isSpectrum1D.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useDispatch } from '../context/DispatchContext.js';
 import { useGlobal } from '../context/GlobalContext.js';
 import type { ActionsButtonsPopoverProps } from '../elements/ActionsButtonsPopover.js';
 import { ActionsButtonsPopover } from '../elements/ActionsButtonsPopover.js';
-import { useActiveNucleusTab } from '../hooks/useActiveNucleusTab.ts';
-import { usePanelPreferences } from '../hooks/usePanelPreferences.js';
 import { useSVGUnitConverter } from '../hooks/useSVGUnitConverter.js';
-import useSpectraByActiveNucleus from '../hooks/useSpectraPerNucleus.js';
 import { useTextMetrics } from '../hooks/useTextMetrics.ts';
 import { useCheckExportStatus } from '../hooks/useViewportSize.js';
+import { usePublicationStrings } from '../hooks/use_publication_strings.ts';
 
 const ReactRnd = styled(Rnd)`
   border: 1px solid transparent;
@@ -305,40 +301,8 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
   );
 }
 
-function usePublicationString() {
-  const spectra = useSpectraByActiveNucleus();
-  const activeTab = useActiveNucleusTab();
-  const rangesPreferences = usePanelPreferences('ranges', activeTab);
-
-  const output: Record<string, string> = {};
-
-  for (const spectrum of spectra) {
-    if (!isSpectrum1D(spectrum)) {
-      continue;
-    }
-    const { id: spectrumKey, info, ranges } = spectrum;
-
-    if (!Array.isArray(ranges?.values) || ranges.values.length === 0) {
-      continue;
-    }
-
-    const { originFrequency: observedFrequency, nucleus } = info;
-
-    const value = rangesToACS(ranges.values, {
-      nucleus, // '19f'
-      deltaFormat: rangesPreferences.deltaPPM.format,
-      couplingFormat: rangesPreferences.coupling.format,
-      observedFrequency, //400
-    });
-
-    output[spectrumKey] = value;
-  }
-
-  return output;
-}
-
 export function FloatPublicationString() {
-  const publicationString = usePublicationString();
+  const publicationString = usePublicationStrings();
   const {
     view: { ranges },
   } = useChartData();

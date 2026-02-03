@@ -4,7 +4,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import type { ACSExportOptions } from '@zakodium/nmrium-core';
 import { rangesToACS } from 'nmr-processing';
 import { useForm, useWatch } from 'react-hook-form';
-import { FaCopy } from 'react-icons/fa';
 import * as Yup from 'yup';
 
 import { isSpectrum1D } from '../../data/data1d/Spectrum1D/isSpectrum1D.js';
@@ -150,12 +149,15 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
     ...(format !== 'D' ? { format, couplingFormat } : { format: '' }),
   });
 
-  function handleCopy() {
+  function onCopy() {
+    onCopyClick(value);
+  }
+
+  function onSave() {
     dispatch({
       type: 'CHANGE_EXPORT_ACS_SETTINGS',
       payload: { options: options as ACSExportOptions, nucleus },
     });
-    onCopyClick(value);
     onClose();
   }
 
@@ -195,14 +197,27 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
           {!value ? (
             <EmptyText text="No publication string" />
           ) : (
-            // eslint-disable-next-line react/no-danger
-            <div dangerouslySetInnerHTML={{ __html: value }} />
+            <>
+              <CopyPreviewButton onClick={onCopy} icon="duplicate" />
+              {/* eslint-disable-next-line react/no-danger */}
+              <div dangerouslySetInnerHTML={{ __html: value }} />
+            </>
           )}
         </Body>
       </StyledDialogBody>
-      <DialogFooter>
-        <Button onClick={handleCopy} intent="success" icon={<FaCopy />} />
-      </DialogFooter>
+      <DialogFooter
+        actions={
+          <Button onClick={onSave} intent="success">
+            Apply and close
+          </Button>
+        }
+      />
     </Dialog>
   );
 }
+
+const CopyPreviewButton = styled(Button)`
+  float: right;
+  margin-left: 5px;
+  margin-bottom: 5px;
+`;
