@@ -19,7 +19,7 @@ import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus.js';
 import { formatNumber } from '../../utility/formatNumber.js';
 
-import { DatabaseInfo } from './DatabaseInfo.tsx';
+import { DatabaseInfo } from './DatabaseInfo.js';
 
 interface ToggleEvent {
   onAdd: (row: any) => void;

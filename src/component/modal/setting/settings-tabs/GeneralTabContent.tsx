@@ -7,7 +7,7 @@ import Label from '../../../elements/Label.js';
 import { NumberInput2Controller } from '../../../elements/NumberInput2Controller.js';
 import { Select2 } from '../../../elements/Select2.js';
 import type { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
-import { settingLabelStyle } from '../general_settings.tsx';
+import { settingLabelStyle } from '../general_settings.js';
 
 interface SelectItem {
   label: string;

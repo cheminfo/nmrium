@@ -3,10 +3,10 @@ import { revalidateLogic } from '@tanstack/react-form';
 import { useForm } from 'react-science/ui';
 import type { z } from 'zod/v4';
 
-import { usePreferences } from '../../../context/PreferencesContext.tsx';
+import { usePreferences } from '../../../context/PreferencesContext.js';
 
-import { GeneralSettingsDialogHeader } from './general_settings_dialog_header.tsx';
-import { workspaceValidation } from './validation.ts';
+import { GeneralSettingsDialogHeader } from './general_settings_dialog_header.js';
+import { workspaceValidation } from './validation.js';
 
 interface GeneralSettingsProps {
   isOpen: boolean;

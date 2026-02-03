@@ -5,7 +5,7 @@ import { useRef } from 'react';
 import { LuLink, LuUnlink } from 'react-icons/lu';
 import { PiTextTBold, PiTextTSlashBold } from 'react-icons/pi';
 
-import { isAssigned } from '../../../data/data1d/Spectrum1D/isRangeAssigned.ts';
+import { isAssigned } from '../../../data/data1d/Spectrum1D/isRangeAssigned.js';
 import { FieldEdition } from '../../1d-2d/FieldEdition.js';
 import {
   useAssignment,
@@ -21,8 +21,8 @@ import {
 import type { ActionsButtonsPopoverProps } from '../../elements/ActionsButtonsPopover.js';
 import { ActionsButtonsPopover } from '../../elements/ActionsButtonsPopover.js';
 import { useHighlight } from '../../highlight/index.js';
-import { useHighlightColor } from '../../hooks/useHighlightColor.ts';
-import { useTextMetrics } from '../../hooks/useTextMetrics.ts';
+import { useHighlightColor } from '../../hooks/useHighlightColor.js';
+import { useTextMetrics } from '../../hooks/useTextMetrics.js';
 import { useTriggerNewAssignmentLabel } from '../../hooks/useTriggerNewAssignmentLabel.js';
 import { stackOverlappingLabelsArray } from '../../utility/stackOverlappingLabels.js';
 import { useTracesSpectra } from '../useTracesSpectra.js';

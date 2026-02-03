@@ -18,9 +18,9 @@ import { ActionsButtonsPopover } from '../../../elements/ActionsButtonsPopover.j
 import { useSVGUnitConverter } from '../../../hooks/useSVGUnitConverter.js';
 import { useCheckExportStatus } from '../../../hooks/useViewportSize.js';
 import { useMoleculeEditor } from '../../../modal/MoleculeStructureEditorModal.js';
-import { MoleculeStructure } from '../../../panels/MoleculesPanel/MoleculeStructure.tsx';
-import { useMoleculeAnnotationCore } from '../../../panels/hooks/useMoleculeAnnotationCore.ts';
-import { booleanToString } from '../../../utility/booleanToString.ts';
+import { MoleculeStructure } from '../../../panels/MoleculesPanel/MoleculeStructure.js';
+import { useMoleculeAnnotationCore } from '../../../panels/hooks/useMoleculeAnnotationCore.js';
+import { booleanToString } from '../../../utility/booleanToString.js';
 
 interface DraggableStructureProps {
   moleculeView: MoleculeView;

@@ -13,7 +13,7 @@ import type { DialogProps } from '../../elements/DialogManager.js';
 import { DraggableDialog } from '../../elements/DraggableDialog.js';
 import { StyledDialogBody } from '../../elements/StyledDialogBody.js';
 import { TabsProvider } from '../../elements/TabsProvider.js';
-import { useActiveNucleusTab } from '../../hooks/useActiveNucleusTab.ts';
+import { useActiveNucleusTab } from '../../hooks/useActiveNucleusTab.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import useEditRangeModal from '../../panels/RangesPanel/hooks/useEditRangeModal.js';

@@ -32,8 +32,8 @@ import {
   setSpectraAnalysisPanelsPreferences,
 } from './actions/analyzeSpectra.js';
 import { applyGeneralPreferences } from './actions/applyGeneralPreferences.js';
-import { changeDefaultMoleculeSettings } from './actions/changeDefaultMoleculeSettings.ts';
-import { changeExportAcsSettings } from './actions/changeExportAcsSettings.ts';
+import { changeDefaultMoleculeSettings } from './actions/changeDefaultMoleculeSettings.js';
+import { changeExportAcsSettings } from './actions/changeExportAcsSettings.js';
 import { changeExportSettings } from './actions/changeExportSettings.js';
 import { changeInformationBlockPosition } from './actions/changeInformationBlockPosition.js';
 import { changePeaksLabelPosition } from './actions/changePeaksLabelPosition.js';
@@ -55,7 +55,7 @@ import { setPreferences } from './actions/setPreferences.js';
 import { setVerticalSplitterPosition } from './actions/setVerticalSplitterPosition.js';
 import { setWorkspace } from './actions/setWorkspace.js';
 import { toggleInformationBlock } from './actions/toggleInformationBlock.js';
-import { toggleOpenSplitPanel } from './actions/toggleOpenSplitPanel.ts';
+import { toggleOpenSplitPanel } from './actions/toggleOpenSplitPanel.js';
 import { togglePanel } from './actions/togglePanel.js';
 import { mapWorkspaces } from './utilities/mapWorkspaces.js';
 

@@ -28,7 +28,7 @@ import {
 } from './data1d/Spectrum1D/index.js';
 import { initiateDatum2D } from './data2d/Spectrum2D/index.js';
 import { adjustAlpha } from './utilities/generateColor.js';
-import { isProton } from './utilities/isProton.ts';
+import { isProton } from './utilities/isProton.js';
 
 export type Experiment = 'proton' | 'carbon' | 'cosy' | 'hsqc' | 'hmbc';
 type SpectraPredictionOptions = Record<Experiment, boolean>;

@@ -1,7 +1,7 @@
 import { useScaleChecked } from '../../context/ScaleContext.js';
 import { useHighlight } from '../../highlight/index.js';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.js';
-import { useTextMetrics } from '../../hooks/useTextMetrics.ts';
+import { useTextMetrics } from '../../hooks/useTextMetrics.js';
 import { formatNumber } from '../../utility/formatNumber.js';
 
 import { PeakEditionListener } from './PeakEditionManager.js';

@@ -8,7 +8,7 @@ import { IdcodeSvgRenderer } from 'react-ocl';
 import { Button } from 'react-science/ui';
 import { filter } from 'smart-array-filter';
 
-import { useDispatch } from '../context/DispatchContext.tsx';
+import { useDispatch } from '../context/DispatchContext.js';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 
 interface LabelDatabaseItem {

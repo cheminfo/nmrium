@@ -26,7 +26,7 @@ import { useWorkspaceAction } from '../hooks/useWorkspaceAction.js';
 import { LogsHistoryModal } from '../modal/LogsHistoryModal.js';
 import AboutUsModal from '../modal/aboutUs/AboutUsModal.js';
 import WorkspaceItem from '../modal/setting/WorkspaceItem.js';
-import GeneralSettingsModal from '../modal/setting/general_settings.tsx';
+import GeneralSettingsModal from '../modal/setting/general_settings.js';
 import { options } from '../toolbar/ToolTypes.js';
 import { renderCoreSlot } from '../utility/renderCoreSlot.js';
 

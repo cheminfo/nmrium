@@ -2,10 +2,10 @@ import type { Unit } from '@zakodium/nmrium-core';
 import { EXTERNAL_API_KEYS } from '@zakodium/nmrium-core';
 import { z } from 'zod/v4';
 
-import { convertToPixels, units } from '../../../elements/export/units.ts';
-import { pageSizes } from '../../../elements/print/pageSize.ts';
+import { convertToPixels, units } from '../../../elements/export/units.js';
+import { pageSizes } from '../../../elements/print/pageSize.js';
 
-import { checkUniqueByKey, requiredString } from './validation/utils.ts';
+import { checkUniqueByKey, requiredString } from './validation/utils.js';
 
 const nucleiValidation = z
   .array(

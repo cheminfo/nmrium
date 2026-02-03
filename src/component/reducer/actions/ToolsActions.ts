@@ -3,7 +3,7 @@ import type { Spectrum1D, Spectrum2D, Spectrum } from '@zakodium/nmrium-core';
 import { zoomIdentity } from 'd3-zoom';
 import type { Draft } from 'immer';
 
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.ts';
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import { contoursManager } from '../../../data/data2d/Spectrum2D/contours.js';
 import { getXScale } from '../../1d/utilities/scale.js';
 import type { Layout } from '../../2d/utilities/DimensionLayout.js';
@@ -25,7 +25,7 @@ import zoomHistoryManager, {
   addToBrushHistory,
 } from '../helper/ZoomHistoryManager.js';
 import { getActiveSpectra } from '../helper/getActiveSpectra.js';
-import { getSpectrum } from '../helper/getSpectrum.ts';
+import { getSpectrum } from '../helper/getSpectrum.js';
 import { getTwoDimensionPhaseCorrectionOptions } from '../helper/getTwoDimensionPhaseCorrectionOptions.js';
 import { getVerticalAlign } from '../helper/getVerticalAlign.js';
 import { setIntegralsViewProperty } from '../helper/setIntegralsViewProperty.js';

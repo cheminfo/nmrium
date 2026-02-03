@@ -2,7 +2,7 @@ import { Molecule } from 'openchemlib';
 import type { DiaIDAndInfo } from 'openchemlib-utils';
 import { useRef } from 'react';
 
-import { useTopicMolecule } from '../../../context/TopicMoleculeContext.tsx';
+import { useTopicMolecule } from '../../../context/TopicMoleculeContext.js';
 
 export function useExtractAtomAssignmentLabel() {
   const topicMolecule = useTopicMolecule();

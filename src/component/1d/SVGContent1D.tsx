@@ -1,6 +1,6 @@
 import { ClipPathContainer } from '../1d-2d/components/ClipPathContainer.js';
 import SpectrumInfoBlock from '../1d-2d/components/SpectrumInfoBlock.js';
-import { ShareDataProvider } from '../context/ShareDataContext.tsx';
+import { ShareDataProvider } from '../context/ShareDataContext.js';
 
 import { ApodizationLine } from './ApodizationLine.js';
 import ExclusionZonesAnnotations from './ExclusionZonesAnnotations.js';

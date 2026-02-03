@@ -9,7 +9,7 @@ import { useChartData } from '../../context/ChartContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
-import { useTextMetrics } from '../../hooks/useTextMetrics.ts';
+import { useTextMetrics } from '../../hooks/useTextMetrics.js';
 import { stackOverlappingLabelsMap } from '../../utility/stackOverlappingLabels.js';
 
 import Range from './Range.js';

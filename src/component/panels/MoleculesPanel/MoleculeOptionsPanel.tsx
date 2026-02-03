@@ -4,14 +4,14 @@ import type { BoundingBox, MoleculeView } from '@zakodium/nmrium-core';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
-import { usePreferences } from '../../context/PreferencesContext.tsx';
+import { usePreferences } from '../../context/PreferencesContext.js';
 import { CheckController } from '../../elements/CheckController.js';
 import { GroupPane } from '../../elements/GroupPane.js';
 import type { LabelStyle } from '../../elements/Label.js';
 import Label from '../../elements/Label.js';
 import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
 import { Select2Controller } from '../../elements/Select2Controller.js';
-import PreferencesHeader from '../header/PreferencesHeader.tsx';
+import PreferencesHeader from '../header/PreferencesHeader.js';
 
 const atomAnnotations: Array<{
   value: MoleculeView['atomAnnotation'];

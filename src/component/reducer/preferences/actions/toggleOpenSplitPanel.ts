@@ -3,8 +3,8 @@ import type { Draft } from 'immer';
 import type {
   PreferencesState,
   ToggleSplitPanelAction,
-} from '../preferencesReducer.ts';
-import { getActiveWorkspace } from '../utilities/getActiveWorkspace.ts';
+} from '../preferencesReducer.js';
+import { getActiveWorkspace } from '../utilities/getActiveWorkspace.js';
 
 export function toggleOpenSplitPanel(
   draft: Draft<PreferencesState>,

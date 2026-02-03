@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import type { DatabaseNMREntry } from 'nmr-processing';
 
-import { filterDatabaseInfoEntry } from '../../utility/filterDatabaseInfoEntry.ts';
+import { filterDatabaseInfoEntry } from '../../utility/filterDatabaseInfoEntry.js';
 
 const Container = styled.div`
   display: flex;

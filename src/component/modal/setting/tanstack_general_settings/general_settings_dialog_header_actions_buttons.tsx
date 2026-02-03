@@ -6,12 +6,12 @@ import { useCallback, useEffect, useRef } from 'react';
 import { FaBolt, FaPaste, FaRegCopy } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
 
-import { ClipboardFallbackModal } from '../../../../utils/clipboard/clipboardComponents.tsx';
-import { useClipboard } from '../../../../utils/clipboard/clipboardHooks.ts';
-import { usePreferences } from '../../../context/PreferencesContext.tsx';
-import { useToaster } from '../../../context/ToasterContext.tsx';
-import { getPreferencesByWorkspace } from '../../../reducer/preferences/utilities/getPreferencesByWorkspace.ts';
-import PredefinedWorkspaces from '../../../workspaces/index.ts';
+import { ClipboardFallbackModal } from '../../../../utils/clipboard/clipboardComponents.js';
+import { useClipboard } from '../../../../utils/clipboard/clipboardHooks.js';
+import { usePreferences } from '../../../context/PreferencesContext.js';
+import { useToaster } from '../../../context/ToasterContext.js';
+import { getPreferencesByWorkspace } from '../../../reducer/preferences/utilities/getPreferencesByWorkspace.js';
+import PredefinedWorkspaces from '../../../workspaces/index.js';
 
 interface GeneralSettingsDialogHeaderActionsButtonsProps<T> {
   reset: (values: T) => void;

@@ -7,7 +7,7 @@ import type {
 import { BlobWriter, TextReader, ZipWriter } from '@zip.js/zip.js';
 import dlv from 'dlv';
 
-import { saveAs } from './save_as.ts';
+import { saveAs } from './save_as.js';
 
 export const browserNotSupportedErrorToast: ToastProps = {
   message:

@@ -1,4 +1,4 @@
-import type { AtomData } from './AtomData.ts';
+import type { AtomData } from './AtomData.js';
 
 export function getUniqueDiaIDs(diaIDs: string[], atomInformation: AtomData) {
   // a previous version of the code prevented to assign many time the same atom

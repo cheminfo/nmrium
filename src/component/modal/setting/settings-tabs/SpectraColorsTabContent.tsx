@@ -17,7 +17,7 @@ import ReactTable from '../../../elements/ReactTable/ReactTable.js';
 import type { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
 import { convertPathArrayToString } from '../../../utility/convertPathArrayToString.js';
 import { getSpectraObjectPaths } from '../../../utility/getSpectraObjectPaths.js';
-import { Section, settingLabelStyle } from '../general_settings.tsx';
+import { Section, settingLabelStyle } from '../general_settings.js';
 
 const colorInputStyle: CSSProperties = {
   minWidth: '80px',

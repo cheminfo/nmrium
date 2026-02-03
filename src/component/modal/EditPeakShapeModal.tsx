@@ -12,7 +12,7 @@ import Label from '../elements/Label.js';
 import { NumberInput2Controller } from '../elements/NumberInput2Controller.js';
 import { Select2 } from '../elements/Select2.js';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
-import { useActiveNucleusTab } from '../hooks/useActiveNucleusTab.ts';
+import { useActiveNucleusTab } from '../hooks/useActiveNucleusTab.js';
 import { usePanelPreferences } from '../hooks/usePanelPreferences.js';
 import { formatNumber } from '../utility/formatNumber.js';
 

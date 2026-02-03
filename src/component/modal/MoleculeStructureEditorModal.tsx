@@ -8,7 +8,7 @@ import { useOnOff } from 'react-science/ui';
 
 import type { StateMoleculeExtended } from '../../data/molecules/Molecule.js';
 import { useDispatch } from '../context/DispatchContext.js';
-import { usePreferences } from '../context/PreferencesContext.tsx';
+import { usePreferences } from '../context/PreferencesContext.js';
 import ActionButtons from '../elements/ActionButtons.js';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 

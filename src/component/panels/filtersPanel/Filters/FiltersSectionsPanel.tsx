@@ -16,7 +16,7 @@ import type { AlertButton } from '../../../elements/Alert.js';
 import { useAlert } from '../../../elements/Alert.js';
 import { EmptyText } from '../../../elements/EmptyText.js';
 import { Sections } from '../../../elements/Sections.js';
-import { useActiveSpectrum } from '../../../hooks/useActiveSpectrum.ts';
+import { useActiveSpectrum } from '../../../hooks/useActiveSpectrum.js';
 import useSpectraByActiveNucleus from '../../../hooks/useSpectraPerNucleus.js';
 import useSpectrum from '../../../hooks/useSpectrum.js';
 import { getDefaultFilterOptions } from '../../../utility/getDefaultFilterOptions.js';

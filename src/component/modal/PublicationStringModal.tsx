@@ -7,16 +7,16 @@ import { useForm, useWatch } from 'react-hook-form';
 import { FaCopy } from 'react-icons/fa';
 import * as Yup from 'yup';
 
-import { isSpectrum1D } from '../../data/data1d/Spectrum1D/isSpectrum1D.js';
-import { usePreferences } from '../context/PreferencesContext.tsx';
-import { CheckController } from '../elements/CheckController.tsx';
+import { isSpectrum1D } from '../../data/data1d/Spectrum1D/index.js';
+import { usePreferences } from '../context/PreferencesContext.js';
+import { CheckController } from '../elements/CheckController.js';
 import { EmptyText } from '../elements/EmptyText.js';
-import { Input2Controller } from '../elements/Input2Controller.tsx';
+import { Input2Controller } from '../elements/Input2Controller.js';
 import type { LabelStyle } from '../elements/Label.js';
 import Label from '../elements/Label.js';
-import { Select2Controller } from '../elements/Select2Controller.tsx';
+import { Select2Controller } from '../elements/Select2Controller.js';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
-import { useActiveNucleusTab } from '../hooks/useActiveNucleusTab.ts';
+import { useActiveNucleusTab } from '../hooks/useActiveNucleusTab.js';
 import useSpectrum from '../hooks/useSpectrum.js';
 
 const Body = styled.div`

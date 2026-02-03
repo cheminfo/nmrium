@@ -17,7 +17,7 @@ import {
 } from 'react';
 import { assert } from 'react-science/ui';
 
-import type { EventModifierKeys } from '../context/KeyModifierContext.tsx';
+import type { EventModifierKeys } from '../context/KeyModifierContext.js';
 import type { ActionType } from '../reducer/types/ActionType.js';
 
 type AdvanceOmit<T, K extends keyof any> = T extends any ? Omit<T, K> : never;

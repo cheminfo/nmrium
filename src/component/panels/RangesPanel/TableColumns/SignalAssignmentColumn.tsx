@@ -1,6 +1,6 @@
-import { useDispatch } from '../../../context/DispatchContext.tsx';
-import { EditableColumn } from '../../../elements/EditableColumn.tsx';
-import type { BaseRangeColumnProps, OnHoverEvent } from '../RangesTableRow.tsx';
+import { useDispatch } from '../../../context/DispatchContext.js';
+import { EditableColumn } from '../../../elements/EditableColumn.js';
+import type { BaseRangeColumnProps, OnHoverEvent } from '../RangesTableRow.js';
 
 interface SignalAssignmentColumnProps
   extends Omit<BaseRangeColumnProps, 'format'>, OnHoverEvent {

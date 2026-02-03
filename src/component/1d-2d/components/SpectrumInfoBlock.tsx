@@ -6,7 +6,7 @@ import { useResizeObserver } from 'react-d3-utils';
 import { BsArrowsMove } from 'react-icons/bs';
 import { FaTimes } from 'react-icons/fa';
 
-import { useIsInset } from '../../1d/inset/InsetProvider.tsx';
+import { useIsInset } from '../../1d/inset/InsetProvider.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useGlobal } from '../../context/GlobalContext.js';
 import { usePreferences } from '../../context/PreferencesContext.js';

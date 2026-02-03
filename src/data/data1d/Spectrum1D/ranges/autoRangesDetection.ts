@@ -3,7 +3,7 @@ import type { Spectrum1D } from '@zakodium/nmrium-core';
 import type { OptionsXYAutoRangesPicking } from 'nmr-processing';
 import { xyAutoRangesPicking } from 'nmr-processing';
 
-import { isProton } from '../../../utilities/isProton.ts';
+import { isProton } from '../../../utilities/isProton.js';
 
 const defaultPeakPickingOptions: Omit<
   OptionsXYAutoRangesPicking['peakPicking'],

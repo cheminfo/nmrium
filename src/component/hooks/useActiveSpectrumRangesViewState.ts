@@ -1,6 +1,6 @@
 import type { RangesViewState } from '@zakodium/nmrium-core';
 
-import { isProton } from '../../data/utilities/isProton.ts';
+import { isProton } from '../../data/utilities/isProton.js';
 import { useInsetOptions } from '../1d/inset/InsetProvider.js';
 import { useChartData } from '../context/ChartContext.js';
 

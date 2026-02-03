@@ -28,7 +28,7 @@ import type { Column } from '../../elements/ReactTable/ReactTable.js';
 import ReactTable from '../../elements/ReactTable/ReactTable.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import ExportAsJcampModal from '../../modal/ExportAsJcampModal.js';
-import { saveAs } from '../../utility/save_as.ts';
+import { saveAs } from '../../utility/save_as.js';
 
 import { RenderAsHTML } from './base/RenderAsHTML.js';
 import type { OnChangeVisibilityEvent } from './base/ShowHideSpectrumButton.js';

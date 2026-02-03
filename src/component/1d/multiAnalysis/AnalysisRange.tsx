@@ -4,7 +4,7 @@ import { useCallback } from 'react';
 import { usePreferences } from '../../context/PreferencesContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';
 import { ResizerWithScale } from '../../elements/ResizerWithScale.js';
-import type { Position } from '../../elements/resizer/SVGResizer.tsx';
+import type { Position } from '../../elements/resizer/SVGResizer.js';
 import { useHighlight } from '../../highlight/index.js';
 import { useResizerStatus } from '../../hooks/useResizerStatus.js';
 

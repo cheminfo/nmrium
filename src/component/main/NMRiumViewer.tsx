@@ -10,7 +10,7 @@ import { SVGRootContainer } from '../1d-2d/components/SVGRootContainer.js';
 import Viewer2D from '../2d/Viewer2D.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useExportSettings } from '../elements/export/index.js';
-import { usePrintPage } from '../elements/print/PrintProvider.tsx';
+import { usePrintPage } from '../elements/print/index.js';
 import {
   useCheckExportStatus,
   useViewportSize,

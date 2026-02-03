@@ -19,7 +19,7 @@ import ActionsColumn from './TableColumns/ActionsColumn.js';
 import CouplingColumn from './TableColumns/CouplingColumn.js';
 import RangeColumn from './TableColumns/RangeColumn.js';
 import RelativeColumn from './TableColumns/RelativeColumn.js';
-import { SignalAssignmentColumn } from './TableColumns/SignalAssignmentColumn.tsx';
+import { SignalAssignmentColumn } from './TableColumns/SignalAssignmentColumn.js';
 import SignalAssignmentsColumn from './TableColumns/SignalAssignmentsColumn.js';
 import SignalDeltaColumn from './TableColumns/SignalDeltaColumn.js';
 import SignalDeltaHzColumn from './TableColumns/SignalDeltaHzColumn.js';

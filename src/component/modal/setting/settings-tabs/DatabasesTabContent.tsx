@@ -15,7 +15,7 @@ import type { NMRiumWorkspace } from '../../../main/index.js';
 import type { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
 import { getPreferencesByWorkspace } from '../../../reducer/preferences/utilities/getPreferencesByWorkspace.js';
 import { isGoogleDocument } from '../../../utility/isGoogleDocument.js';
-import { Section } from '../general_settings.tsx';
+import { Section } from '../general_settings.js';
 
 const StyledButton = styled(Button, {
   shouldForwardProp(propName) {

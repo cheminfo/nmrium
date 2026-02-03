@@ -5,13 +5,13 @@ import { TbTableShortcut } from 'react-icons/tb';
 import type { InfoPanelData } from 'react-science/ui';
 import { InfoPanel, Toolbar } from 'react-science/ui';
 
-import { usePreferences } from '../../context/PreferencesContext.tsx';
-import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.ts';
-import { useDialogToggle } from '../../hooks/useDialogToggle.ts';
+import { usePreferences } from '../../context/PreferencesContext.js';
+import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.js';
+import { useDialogToggle } from '../../hooks/useDialogToggle.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
-import { booleanToString } from '../../utility/booleanToString.ts';
+import { booleanToString } from '../../utility/booleanToString.js';
 
-import { InformationEditionModal } from './InformationEditionModal.tsx';
+import { InformationEditionModal } from './InformationEditionModal.js';
 
 const emptyData = { info: {}, meta: {} };
 
