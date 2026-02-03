@@ -14,7 +14,7 @@ export interface ToolbarPopoverMenuItem<T = object>
   tooltip?: string | TooltipItem;
 }
 
-interface ToolbarPopoverMenuDividerProps extends MenuDividerProps {
+export interface ToolbarPopoverMenuDivider extends MenuDividerProps {
   menuItemType: 'divider';
   key: string;
 }
@@ -27,7 +27,7 @@ interface CustomToolbarPopoverItemProps<T = object>
       'tooltip' | 'icon' | 'tooltipProps' | 'active' | 'id'
     > {
   itemProps?: Omit<ToolbarItemProps, 'onClick' | 'disabled'>;
-  options: Array<ToolbarPopoverMenuItem<T> | ToolbarPopoverMenuDividerProps>;
+  options: Array<ToolbarPopoverMenuItem<T> | ToolbarPopoverMenuDivider>;
   onClick?: (data?: T) => void;
 }
 

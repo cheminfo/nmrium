@@ -25,7 +25,10 @@ import { useClipboard } from '../../../utils/clipboard/clipboardHooks.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import { useAlert } from '../../elements/Alert.js';
-import type { ToolbarPopoverMenuItem } from '../../elements/ToolbarPopoverItem.js';
+import type {
+  ToolbarPopoverMenuDivider,
+  ToolbarPopoverMenuItem,
+} from '../../elements/ToolbarPopoverItem.js';
 import { ToolbarPopoverItem } from '../../elements/ToolbarPopoverItem.js';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.ts';
 import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
@@ -42,9 +45,16 @@ type ExportRangesType = 'publicationString' | 'rangesToTSV';
 interface ExportData {
   id: ExportRangesType;
 }
-type ExportItem = ToolbarPopoverMenuItem<ExportData>;
+type ExportItem =
+  | ToolbarPopoverMenuItem<ExportData>
+  | ToolbarPopoverMenuDivider;
 
 const EXPORT_MENU: ExportItem[] = [
+  {
+    key: 'export-divider',
+    menuItemType: 'divider',
+    title: 'Export',
+  },
   {
     icon: <FaCopy />,
     text: 'Copy publication string',
@@ -242,7 +252,7 @@ function RangesHeader(props: RangesHeaderProps) {
         <ToolbarPopoverItem<ExportData>
           disabled={!hasRanges}
           icon={<FaFileExport />}
-          tooltip="Export as"
+          tooltip="Export"
           options={EXPORT_MENU}
           onClick={exportHandler}
         />
@@ -385,6 +395,8 @@ function RangesHeader(props: RangesHeaderProps) {
         isOpen={dialog.publicationStringModal}
         onCopyClick={saveToClipboardHandler}
         onClose={closeDialog}
+        isPublicationStringShown={showPublicationString}
+        togglePublicationStringVisibility={handleShowPublicationString}
       />
       <DefaultPanelHeader
         total={total}

@@ -1,8 +1,7 @@
-import { Button, Dialog, DialogFooter } from '@blueprintjs/core';
+import { Button, Checkbox, Dialog, DialogFooter } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
 import type { ACSExportOptions } from '@zakodium/nmrium-core';
-import { rangesToACS } from 'nmr-processing';
 import { useForm, useWatch } from 'react-hook-form';
 import * as Yup from 'yup';
 
@@ -15,8 +14,9 @@ import type { LabelStyle } from '../elements/Label.js';
 import Label from '../elements/Label.js';
 import { Select2Controller } from '../elements/Select2Controller.tsx';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
-import { useActiveNucleusTab } from '../hooks/useActiveNucleusTab.ts';
 import useSpectrum from '../hooks/useSpectrum.js';
+import { useACSSettings } from '../hooks/use_acs_settings.ts';
+import { buildPublicationString } from '../hooks/use_publication_strings.ts';
 
 const Body = styled.div`
   border: 1px solid #e9e9e9;
@@ -84,6 +84,9 @@ const exportFormats: Array<SelectItem<ExportFormatType>> = [
 interface InnerPublicationStringModalProps {
   onClose: () => void;
   onCopyClick: (text: string) => void;
+
+  isPublicationStringShown: boolean;
+  togglePublicationStringVisibility: () => void;
 }
 
 interface PublicationStringModalProps extends InnerPublicationStringModalProps {
@@ -98,22 +101,13 @@ export function PublicationStringModal(props: PublicationStringModalProps) {
   return <InnerPublicationStringModal {...otherProps} />;
 }
 
-const defaultOptions = {
-  signalKind: 'signal',
-  ascending: true,
-  format: 'IMJA',
-  couplingFormat: '0.00',
-  deltaFormat: '0.00',
-};
-
-function useACSSettings() {
-  const nucleus = useActiveNucleusTab();
-  const { current } = usePreferences();
-  return current.acsExportSettings[nucleus] || defaultOptions;
-}
-
 function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
-  const { onClose, onCopyClick } = props;
+  const {
+    onClose,
+    onCopyClick,
+    isPublicationStringShown,
+    togglePublicationStringVisibility,
+  } = props;
   const spectrum = useSpectrum();
   const { dispatch } = usePreferences();
   const currentACSOptions = useACSSettings();
@@ -126,33 +120,16 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
 
   if (!spectrum || !isSpectrum1D(spectrum)) return null;
 
-  const {
-    info,
-    ranges: { values },
-  } = spectrum;
-
-  const { originFrequency: observedFrequency, nucleus } = info;
-
-  const { signalKind, format, couplingFormat, ...otherOptions } = options;
-
-  const ranges =
-    signalKind === 'all'
-      ? values
-      : values.filter((range) =>
-          range.signals?.some((signal) => signal.kind === 'signal'),
-        );
-
-  const value = rangesToACS(ranges, {
-    nucleus,
-    observedFrequency,
-    ...otherOptions,
-    ...(format !== 'D' ? { format, couplingFormat } : { format: '' }),
+  const value = buildPublicationString({
+    spectrum,
+    acs: { ...currentACSOptions, ...options },
   });
 
   function onCopy() {
     onCopyClick(value);
   }
 
+  const nucleus = spectrum.info.nucleus;
   function onSave() {
     dispatch({
       type: 'CHANGE_EXPORT_ACS_SETTINGS',
@@ -211,7 +188,13 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
             Apply and close
           </Button>
         }
-      />
+      >
+        <PublicationStringCheckbox
+          label="Show publication string"
+          checked={isPublicationStringShown}
+          onChange={togglePublicationStringVisibility}
+        />
+      </DialogFooter>
     </Dialog>
   );
 }
@@ -220,4 +203,8 @@ const CopyPreviewButton = styled(Button)`
   float: right;
   margin-left: 5px;
   margin-bottom: 5px;
+`;
+
+const PublicationStringCheckbox = styled(Checkbox)`
+  display: inline-block;
 `;
