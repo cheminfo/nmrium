@@ -1,6 +1,6 @@
 import { Dialog } from '@blueprintjs/core';
 import { revalidateLogic } from '@tanstack/react-form';
-import { useForm } from 'react-science/ui';
+import { Form, useForm } from 'react-science/ui';
 import type { z } from 'zod/v4';
 
 import { usePreferences } from '../../../context/PreferencesContext.js';
@@ -36,7 +36,8 @@ export function GeneralSettings(props: GeneralSettingsProps) {
       title="General settings"
       icon="cog"
     >
-      <form
+      <Form
+        layout="inline"
         noValidate
         onSubmit={(event) => {
           event.preventDefault();
@@ -52,15 +53,14 @@ export function GeneralSettings(props: GeneralSettingsProps) {
         <form.AppField name="general.dimmedSpectraOpacity">
           {(Field) => (
             <Field.NumericInput
-              layout="inline"
               label="Opacity of dimmed spectra [0 - 1]"
               min={0}
               max={1}
-              stepSize={0.1}
+              step={0.1}
             />
           )}
         </form.AppField>
-      </form>
+      </Form>
     </Dialog>
   );
 }
