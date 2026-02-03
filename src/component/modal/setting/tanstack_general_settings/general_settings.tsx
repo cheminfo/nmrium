@@ -4,6 +4,7 @@ import { Form, useForm } from 'react-science/ui';
 import type { z } from 'zod/v4';
 
 import { usePreferences } from '../../../context/PreferencesContext.js';
+import { useSaveSettings } from '../../../hooks/useSaveSettings.tsx';
 
 import { GeneralSettingsDialogHeader } from './general_settings_dialog_header.js';
 import { workspaceValidation } from './validation.js';
@@ -18,13 +19,15 @@ export function GeneralSettings(props: GeneralSettingsProps) {
   const { isOpen, close } = props;
 
   const { current: currentWorkspace } = usePreferences();
+  const { saveSettings } = useSaveSettings();
 
   const form = useForm({
     validators: { onDynamic: workspaceValidation },
     validationLogic: revalidateLogic({ mode: 'change' }),
     defaultValues: currentWorkspace as GeneralSettingsFormType,
-    onSubmit: () => {
-      // TODO: do something
+    onSubmit: (values) => {
+      const parsedValues = workspaceValidation.parse(values);
+      saveSettings(parsedValues);
     },
   });
 
