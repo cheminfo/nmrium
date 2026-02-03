@@ -39,7 +39,7 @@ type ExportSignalKind = ACSExportOptions['signalKind'];
 const validationSchema = z.object({
   signalKind: z.enum(['all', 'signal']),
   ascending: z.boolean(),
-  format: z.enum(['IMJA', 'IMJ', 'D']),
+  format: z.string(),
   couplingFormat: z.string(),
   deltaFormat: z.string(),
   textStyle: svgTextStyleFieldsSchema,
@@ -101,23 +101,16 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
   const { dispatch } = usePreferences();
   const currentACSOptions = useACSSettings();
   const form = useForm({
-    defaultValues: {
-      ...currentACSOptions,
-      textStyle: {
-        fill: '#000000',
-        fontSize: '16',
-        fontStyle: 'normal',
-        fontWeight: 'normal',
-      } as z.input<typeof svgTextStyleFieldsSchema>,
-    },
+    defaultValues: validationSchema.encode(currentACSOptions),
     validators: { onChange: validationSchema },
     onSubmit: ({ value }) => {
       assert(spectrum && isSpectrum1D(spectrum));
       const nucleus = spectrum.info.nucleus;
 
+      const options = validationSchema.parse(value);
       dispatch({
         type: 'CHANGE_EXPORT_ACS_SETTINGS',
-        payload: { options: value, nucleus },
+        payload: { options, nucleus },
       });
       onClose();
     },
@@ -169,9 +162,9 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
 
             <Body>
               <form.Subscribe selector={(s) => s.values}>
-                {(acs) => (
+                {(values) => (
                   <PublicationStringPreview
-                    acs={acs}
+                    values={values}
                     spectrum={spectrum}
                     onCopy={onCopyClick}
                   />
@@ -210,13 +203,14 @@ const PublicationStringCheckbox = styled(Checkbox)`
 
 interface PublicationStringPreviewProps {
   spectrum: Spectrum1D;
-  acs: ACSExportOptions;
+  values: z.input<typeof validationSchema>;
   onCopy: (value: string) => void;
 }
 
 function PublicationStringPreview(props: PublicationStringPreviewProps) {
-  const { spectrum, acs, onCopy } = props;
+  const { spectrum, values, onCopy } = props;
 
+  const acs = validationSchema.parse(values);
   const value = buildPublicationString({ spectrum, acs });
 
   if (!value) return <EmptyText text="No publication string" />;
@@ -224,7 +218,7 @@ function PublicationStringPreview(props: PublicationStringPreviewProps) {
   return (
     <>
       <CopyPreviewButton onClick={() => onCopy(value)} icon="duplicate" />
-      {/*eslint-disable-next-line react/no-danger*/}
+      {/* eslint-disable-next-line react/no-danger */}
       <div dangerouslySetInnerHTML={{ __html: value }} />
     </>
   );

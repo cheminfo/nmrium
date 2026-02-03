@@ -1,7 +1,14 @@
-import type { WorkspacePreferences } from '@zakodium/nmrium-core';
+import type { TextStyle, WorkspacePreferences } from '@zakodium/nmrium-core';
 import { Filters1D } from 'nmr-processing';
 
 import { color2D } from '../../data/data2d/Spectrum2D/get2DColor.js';
+
+const defaultTextStyle: TextStyle = {
+  fill: '#000000',
+  fontSize: 16,
+  fontStyle: 'normal',
+  fontWeight: 'normal',
+};
 
 export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
   display: {
@@ -267,6 +274,7 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
       format: 'D',
       couplingFormat: '0.0',
       deltaFormat: '0.0',
+      textStyle: { ...defaultTextStyle },
     },
     '1H': {
       signalKind: 'signal',
@@ -274,6 +282,7 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
       format: 'IMJA',
       couplingFormat: '0.00',
       deltaFormat: '0.00',
+      textStyle: { ...defaultTextStyle },
     },
   },
   defaultMoleculeSettings: {
