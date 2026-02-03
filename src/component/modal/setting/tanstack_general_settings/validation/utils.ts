@@ -1,3 +1,4 @@
+import type { RefinementCtx } from 'zod/v4';
 import { z } from 'zod/v4';
 
 const requiredFieldMessage = 'This field is required.';
@@ -8,12 +9,16 @@ export function requiredString(message?: string) {
     .min(1, message || requiredFieldMessage);
 }
 
-export function checkUniqueByKey<T>(
-  data: T[] | undefined,
-  checkKey: keyof T,
-  onError: (message: string, path: Array<string | number>) => void,
-  basePath = '',
-) {
+interface CheckUniqueByKeyOptions<T> {
+  data?: T[];
+  checkKey: keyof T;
+  basePath?: string;
+  context: RefinementCtx;
+}
+
+export function checkUniqueByKey<T>(options: CheckUniqueByKeyOptions<T>) {
+  const { data, checkKey, context, basePath = '' } = options;
+
   if (!data) return true;
 
   const matchesFrequencies: Record<
@@ -44,12 +49,13 @@ export function checkUniqueByKey<T>(
     const { value, fieldsIndexes } = matchesFrequencies[key];
     if (value > 1) {
       for (const index of fieldsIndexes) {
-        onError(
-          `${key} must be unique`,
-          basePath
+        context.addIssue({
+          code: 'custom',
+          message: `${key} must be unique`,
+          path: basePath
             ? [basePath, index, String(checkKey)]
             : [index, String(checkKey)],
-        );
+        });
       }
     }
   }

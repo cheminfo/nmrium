@@ -16,12 +16,10 @@ const nucleiValidation = z
     }),
   )
   .superRefine((nuclei, ctx) => {
-    checkUniqueByKey(nuclei, 'nucleus', function onError(message, path) {
-      ctx.addIssue({
-        code: 'custom',
-        message,
-        path,
-      });
+    checkUniqueByKey({
+      data: nuclei,
+      checkKey: 'nucleus',
+      context: ctx,
     });
   });
 
