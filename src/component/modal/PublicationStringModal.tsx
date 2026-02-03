@@ -2,7 +2,13 @@ import { Button, Checkbox, Dialog, DialogFooter } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import type { ACSExportOptions, Spectrum1D } from '@zakodium/nmrium-core';
 import type { FormEvent } from 'react';
-import { Form, assert, useForm } from 'react-science/ui';
+import {
+  FieldGroupSVGTextStyleFields,
+  Form,
+  assert,
+  svgTextStyleFieldsSchema,
+  useForm,
+} from 'react-science/ui';
 import { z } from 'zod';
 
 import { isSpectrum1D } from '../../data/data1d/Spectrum1D/isSpectrum1D.js';
@@ -36,6 +42,7 @@ const validationSchema = z.object({
   format: z.enum(['IMJA', 'IMJ', 'D']),
   couplingFormat: z.string(),
   deltaFormat: z.string(),
+  textStyle: svgTextStyleFieldsSchema,
 });
 
 const exportOptions: Array<SelectItem<ExportSignalKind>> = [
@@ -94,7 +101,15 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
   const { dispatch } = usePreferences();
   const currentACSOptions = useACSSettings();
   const form = useForm({
-    defaultValues: currentACSOptions,
+    defaultValues: {
+      ...currentACSOptions,
+      textStyle: {
+        fill: '#000000',
+        fontSize: '16',
+        fontStyle: 'normal',
+        fontWeight: 'normal',
+      } as z.input<typeof svgTextStyleFieldsSchema>,
+    },
     validators: { onChange: validationSchema },
     onSubmit: ({ value }) => {
       assert(spectrum && isSpectrum1D(spectrum));
@@ -124,28 +139,33 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
         style={{ minWidth: 600 }}
       >
         <Form noValidate onSubmit={onSubmit} layout="inline">
-          <DialogBodyStyled>
-            <form.Section title="Composition">
-              <form.AppField name="signalKind">
-                {(field) => (
-                  <field.Select label="Export filter" items={exportOptions} />
-                )}
-              </form.AppField>
-              <form.AppField name="format">
-                {(field) => (
-                  <field.Select label="Export format" items={exportFormats} />
-                )}
-              </form.AppField>
-              <form.AppField name="ascending">
-                {(field) => <field.Checkbox label="Ascending order" />}
-              </form.AppField>
-              <form.AppField name="deltaFormat">
-                {(field) => <field.Input label="Delta format" />}
-              </form.AppField>
-              <form.AppField name="couplingFormat">
-                {(field) => <field.Input label="Couplings format" />}
-              </form.AppField>
-            </form.Section>
+          <StyledDialogBody>
+            <form.AppField name="signalKind">
+              {(field) => (
+                <field.Select label="Export filter" items={exportOptions} />
+              )}
+            </form.AppField>
+            <form.AppField name="format">
+              {(field) => (
+                <field.Select label="Export format" items={exportFormats} />
+              )}
+            </form.AppField>
+            <form.AppField name="ascending">
+              {(field) => <field.Checkbox label="Ascending order" />}
+            </form.AppField>
+            <form.AppField name="deltaFormat">
+              {(field) => <field.Input label="Delta format" />}
+            </form.AppField>
+            <form.AppField name="couplingFormat">
+              {(field) => <field.Input label="Couplings format" />}
+            </form.AppField>
+
+            <FieldGroupSVGTextStyleFields
+              form={form}
+              fields="textStyle"
+              label="Text style"
+              previewText="Publication string"
+            />
 
             <Body>
               <form.Subscribe selector={(s) => s.values}>
@@ -158,7 +178,7 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
                 )}
               </form.Subscribe>
             </Body>
-          </DialogBodyStyled>
+          </StyledDialogBody>
           <DialogFooter
             actions={
               <form.SubmitButton intent="success">
@@ -177,10 +197,6 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
     </form.AppForm>
   );
 }
-
-const DialogBodyStyled = styled(StyledDialogBody)`
-  margin-top: -15px;
-`;
 
 const CopyPreviewButton = styled(Button)`
   float: right;
