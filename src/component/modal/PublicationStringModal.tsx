@@ -1,18 +1,13 @@
 import { Button, Checkbox, Dialog, DialogFooter } from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import { yupResolver } from '@hookform/resolvers/yup';
-import type { ACSExportOptions } from '@zakodium/nmrium-core';
-import { useForm, useWatch } from 'react-hook-form';
-import * as Yup from 'yup';
+import type { ACSExportOptions, Spectrum1D } from '@zakodium/nmrium-core';
+import type { FormEvent } from 'react';
+import { Form, assert, useForm } from 'react-science/ui';
+import { z } from 'zod';
 
 import { isSpectrum1D } from '../../data/data1d/Spectrum1D/isSpectrum1D.js';
 import { usePreferences } from '../context/PreferencesContext.tsx';
-import { CheckController } from '../elements/CheckController.tsx';
 import { EmptyText } from '../elements/EmptyText.js';
-import { Input2Controller } from '../elements/Input2Controller.tsx';
-import type { LabelStyle } from '../elements/Label.js';
-import Label from '../elements/Label.js';
-import { Select2Controller } from '../elements/Select2Controller.tsx';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 import useSpectrum from '../hooks/useSpectrum.js';
 import { useACSSettings } from '../hooks/use_acs_settings.ts';
@@ -23,19 +18,8 @@ const Body = styled.div`
   min-height: 180px;
   padding: 5px;
   width: 100%;
+  margin-top: 15px;
 `;
-
-const labelStyle: LabelStyle = {
-  label: {
-    color: '#232323',
-    width: '150px',
-  },
-  wrapper: {
-    display: 'flex',
-    justifyContent: 'flex-start',
-  },
-  container: { padding: '5px 0' },
-};
 
 interface SelectItem<T> {
   label: string;
@@ -46,14 +30,12 @@ type ExportFormatType = 'IMJA' | 'IMJ' | 'D';
 
 type ExportSignalKind = ACSExportOptions['signalKind'];
 
-const validationSchema = Yup.object().shape({
-  signalKind: Yup.string()
-    .oneOf(['all', 'signal'] as ExportSignalKind[])
-    .required(),
-  ascending: Yup.boolean().required(),
-  format: Yup.string().required(),
-  couplingFormat: Yup.string().required(),
-  deltaFormat: Yup.string().required(),
+const validationSchema = z.object({
+  signalKind: z.enum(['all', 'signal']),
+  ascending: z.boolean(),
+  format: z.enum(['IMJA', 'IMJ', 'D']),
+  couplingFormat: z.string(),
+  deltaFormat: z.string(),
 });
 
 const exportOptions: Array<SelectItem<ExportSignalKind>> = [
@@ -111,93 +93,94 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
   const spectrum = useSpectrum();
   const { dispatch } = usePreferences();
   const currentACSOptions = useACSSettings();
-  const { control } = useForm<ACSExportOptions>({
+  const form = useForm({
     defaultValues: currentACSOptions,
-    resolver: yupResolver(validationSchema),
-  });
+    validators: { onChange: validationSchema },
+    onSubmit: ({ value }) => {
+      assert(spectrum && isSpectrum1D(spectrum));
+      const nucleus = spectrum.info.nucleus;
 
-  const options = useWatch({ control });
+      dispatch({
+        type: 'CHANGE_EXPORT_ACS_SETTINGS',
+        payload: { options: value, nucleus },
+      });
+      onClose();
+    },
+  });
 
   if (!spectrum || !isSpectrum1D(spectrum)) return null;
 
-  const value = buildPublicationString({
-    spectrum,
-    acs: { ...currentACSOptions, ...options },
-  });
-
-  function onCopy() {
-    onCopyClick(value);
-  }
-
-  const nucleus = spectrum.info.nucleus;
-  function onSave() {
-    dispatch({
-      type: 'CHANGE_EXPORT_ACS_SETTINGS',
-      payload: { options: options as ACSExportOptions, nucleus },
-    });
-    onClose();
+  function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    void form.handleSubmit(event);
   }
 
   return (
-    <Dialog
-      isOpen
-      title="Publication string"
-      onClose={onClose}
-      style={{ minWidth: 600 }}
-    >
-      <StyledDialogBody>
-        <Label title="Export filter" style={labelStyle}>
-          <Select2Controller
-            control={control}
-            name="signalKind"
-            items={exportOptions}
-          />
-        </Label>
-        <Label title="Export format" style={labelStyle}>
-          <Select2Controller
-            control={control}
-            name="format"
-            items={exportFormats}
-          />
-        </Label>
-        <Label title="Ascending order" style={labelStyle}>
-          <CheckController control={control} name="ascending" />
-        </Label>
-        <Label title="Delta format" style={labelStyle}>
-          <Input2Controller name={`deltaFormat`} control={control} />
-        </Label>
-        <Label title="Couplings format" style={labelStyle}>
-          <Input2Controller name={`couplingFormat`} control={control} />
-        </Label>
-
-        <Body>
-          {!value ? (
-            <EmptyText text="No publication string" />
-          ) : (
-            <>
-              <CopyPreviewButton onClick={onCopy} icon="duplicate" />
-              {/* eslint-disable-next-line react/no-danger */}
-              <div dangerouslySetInnerHTML={{ __html: value }} />
-            </>
-          )}
-        </Body>
-      </StyledDialogBody>
-      <DialogFooter
-        actions={
-          <Button onClick={onSave} intent="success">
-            Apply and close
-          </Button>
-        }
+    <form.AppForm>
+      <Dialog
+        isOpen
+        title="Publication string"
+        onClose={onClose}
+        style={{ minWidth: 600 }}
       >
-        <PublicationStringCheckbox
-          label="Show publication string"
-          checked={isPublicationStringShown}
-          onChange={togglePublicationStringVisibility}
-        />
-      </DialogFooter>
-    </Dialog>
+        <Form noValidate onSubmit={onSubmit} layout="inline">
+          <DialogBodyStyled>
+            <form.Section title="Composition">
+              <form.AppField name="signalKind">
+                {(field) => (
+                  <field.Select label="Export filter" items={exportOptions} />
+                )}
+              </form.AppField>
+              <form.AppField name="format">
+                {(field) => (
+                  <field.Select label="Export format" items={exportFormats} />
+                )}
+              </form.AppField>
+              <form.AppField name="ascending">
+                {(field) => <field.Checkbox label="Ascending order" />}
+              </form.AppField>
+              <form.AppField name="deltaFormat">
+                {(field) => <field.Input label="Delta format" />}
+              </form.AppField>
+              <form.AppField name="couplingFormat">
+                {(field) => <field.Input label="Couplings format" />}
+              </form.AppField>
+            </form.Section>
+
+            <Body>
+              <form.Subscribe selector={(s) => s.values}>
+                {(acs) => (
+                  <PublicationStringPreview
+                    acs={acs}
+                    spectrum={spectrum}
+                    onCopy={onCopyClick}
+                  />
+                )}
+              </form.Subscribe>
+            </Body>
+          </DialogBodyStyled>
+          <DialogFooter
+            actions={
+              <form.SubmitButton intent="success">
+                Apply and close
+              </form.SubmitButton>
+            }
+          >
+            <PublicationStringCheckbox
+              label="Show publication string"
+              checked={isPublicationStringShown}
+              onChange={togglePublicationStringVisibility}
+            />
+          </DialogFooter>
+        </Form>
+      </Dialog>
+    </form.AppForm>
   );
 }
+
+const DialogBodyStyled = styled(StyledDialogBody)`
+  margin-top: -15px;
+`;
 
 const CopyPreviewButton = styled(Button)`
   float: right;
@@ -208,3 +191,25 @@ const CopyPreviewButton = styled(Button)`
 const PublicationStringCheckbox = styled(Checkbox)`
   display: inline-block;
 `;
+
+interface PublicationStringPreviewProps {
+  spectrum: Spectrum1D;
+  acs: ACSExportOptions;
+  onCopy: (value: string) => void;
+}
+
+function PublicationStringPreview(props: PublicationStringPreviewProps) {
+  const { spectrum, acs, onCopy } = props;
+
+  const value = buildPublicationString({ spectrum, acs });
+
+  if (!value) return <EmptyText text="No publication string" />;
+
+  return (
+    <>
+      <CopyPreviewButton onClick={() => onCopy(value)} icon="duplicate" />
+      {/*eslint-disable-next-line react/no-danger*/}
+      <div dangerouslySetInnerHTML={{ __html: value }} />
+    </>
+  );
+}
