@@ -1,11 +1,12 @@
-import { Dialog } from '@blueprintjs/core';
+import { Dialog as BPDialog } from '@blueprintjs/core';
+import styled from '@emotion/styled';
 import { revalidateLogic } from '@tanstack/react-form';
 import { Form, useForm } from 'react-science/ui';
 import type { z } from 'zod/v4';
 
 import { usePreferences } from '../../../context/PreferencesContext.js';
-import { useSaveSettings } from '../../../hooks/useSaveSettings.tsx';
 
+import { GeneralSettingsDialogFooter } from './general_settings_dialog_footer.js';
 import { GeneralSettingsDialogHeader } from './general_settings_dialog_header.js';
 import { workspaceValidation } from './validation.js';
 
@@ -14,31 +15,34 @@ interface GeneralSettingsProps {
   close: () => void;
 }
 
-type GeneralSettingsFormType = Partial<z.input<typeof workspaceValidation>>;
+const Dialog = styled(BPDialog)`
+  max-width: 1000px;
+  width: 50vw;
+  min-width: 800px;
+`;
+
+type GeneralSettingsFormType = z.input<typeof workspaceValidation>;
 export function GeneralSettings(props: GeneralSettingsProps) {
   const { isOpen, close } = props;
 
   const { current: currentWorkspace } = usePreferences();
-  const { saveSettings } = useSaveSettings();
 
   const form = useForm({
     validators: { onDynamic: workspaceValidation },
     validationLogic: revalidateLogic({ mode: 'change' }),
-    defaultValues: currentWorkspace as GeneralSettingsFormType,
-    onSubmit: (values) => {
-      const parsedValues = workspaceValidation.parse(values);
-      saveSettings(parsedValues);
+    defaultValues: {
+      general: {
+        dimmedSpectraOpacity: currentWorkspace.general.dimmedSpectraOpacity,
+      },
+    },
+    onSubmit: ({ value }) => {
+      const parsedValues = workspaceValidation.parse(value);
+      console.log(parsedValues);
     },
   });
 
   return (
-    <Dialog
-      isOpen={isOpen}
-      onClose={close}
-      style={{ maxWidth: 1000, width: '50vw', minWidth: 800 }}
-      title="General settings"
-      icon="cog"
-    >
+    <Dialog isOpen={isOpen} onClose={close} title="General settings" icon="cog">
       <Form
         layout="inline"
         noValidate
@@ -63,6 +67,8 @@ export function GeneralSettings(props: GeneralSettingsProps) {
             />
           )}
         </form.AppField>
+
+        <GeneralSettingsDialogFooter form={form} />
       </Form>
     </Dialog>
   );
