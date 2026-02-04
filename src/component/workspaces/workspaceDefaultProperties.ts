@@ -3,12 +3,7 @@ import { Filters1D } from 'nmr-processing';
 
 import { color2D } from '../../data/data2d/Spectrum2D/get2DColor.js';
 
-const defaultTextStyle: TextStyle = {
-  fill: '#000000',
-  fontSize: 16,
-  fontStyle: 'normal',
-  fontWeight: 'normal',
-};
+const defaultTextStyle: TextStyle = {};
 
 export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
   display: {

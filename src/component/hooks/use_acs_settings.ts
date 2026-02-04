@@ -10,12 +10,7 @@ const defaultOptions: ACSExportOptions = {
   format: 'IMJA',
   couplingFormat: '0.00',
   deltaFormat: '0.00',
-  textStyle: {
-    fill: '#000000',
-    fontSize: 16,
-    fontStyle: 'normal',
-    fontWeight: 'normal',
-  },
+  textStyle: {},
 };
 
 export function useACSSettings() {
