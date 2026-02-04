@@ -53,9 +53,6 @@ export default () => {
         : undefined,
       alias: resolveAliases,
     },
-    test: {
-      include: ['./src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-    },
   });
 };
 

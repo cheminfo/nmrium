@@ -11,6 +11,7 @@
     "src",
     "test-e2e",
     "knip.config.ts",
-    "vite.config.ts"
+    "vite.config.ts",
+    "vitest.config.ts"
   ]
 }
