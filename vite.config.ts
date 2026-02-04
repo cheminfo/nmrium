@@ -53,6 +53,16 @@ export default () => {
         : undefined,
       alias: resolveAliases,
     },
+    ssr: {
+      resolve: {
+        conditions: isMonorepo
+          ? ['nmrium-internal', ...defaultClientConditions]
+          : undefined,
+      },
+    },
+    test: {
+      include: ['./src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    },
   });
 };
 
