@@ -86,7 +86,10 @@ interface PublicationTextProps {
 
 function PublicationText(props: PublicationTextProps) {
   const { text, width } = props;
-  const textStyle = { fontSize: props.fontSize ?? 12, ...props.textStyle };
+  const textStyle = {
+    ...props.textStyle,
+    fontSize: props.textStyle.fontSize ?? props.fontSize ?? 12,
+  };
   const { fontSize = textStyle.fontSize, padding = 10 } = props;
   const boxWidth = width - padding * 2;
 

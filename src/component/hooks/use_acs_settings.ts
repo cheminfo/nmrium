@@ -21,7 +21,7 @@ export function useActiveACSSettings() {
 
 export function useACSSettings(nucleus: string | undefined) {
   const { current } = usePreferences();
-  if (!nucleus) return defaultOptions;
+  if (!nucleus) return structuredClone(defaultOptions);
 
-  return current.acsExportSettings[nucleus] || defaultOptions;
+  return current.acsExportSettings[nucleus] || structuredClone(defaultOptions);
 }
