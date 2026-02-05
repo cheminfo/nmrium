@@ -6,11 +6,11 @@ import { assert } from 'react-science/ui';
 import { isSpectrum1D } from '../../data/data1d/Spectrum1D/index.ts';
 
 import useSpectraByActiveNucleus from './useSpectraPerNucleus.ts';
-import { useACSSettings } from './use_acs_settings.ts';
+import { useActiveACSSettings } from './use_acs_settings.ts';
 
 export function usePublicationStrings() {
   const spectra = useSpectraByActiveNucleus();
-  const acs = useACSSettings();
+  const acs = useActiveACSSettings();
 
   const output: Record<string, string> = {};
 

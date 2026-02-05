@@ -13,8 +13,15 @@ const defaultOptions: ACSExportOptions = {
   textStyle: {},
 };
 
-export function useACSSettings() {
+export function useActiveACSSettings() {
   const nucleus = useActiveNucleusTab();
+
+  return useACSSettings(nucleus);
+}
+
+export function useACSSettings(nucleus: string | undefined) {
   const { current } = usePreferences();
+  if (!nucleus) return defaultOptions;
+
   return current.acsExportSettings[nucleus] || defaultOptions;
 }

@@ -16,7 +16,7 @@ import { usePreferences } from '../context/PreferencesContext.tsx';
 import { EmptyText } from '../elements/EmptyText.js';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 import useSpectrum from '../hooks/useSpectrum.js';
-import { useACSSettings } from '../hooks/use_acs_settings.ts';
+import { useActiveACSSettings } from '../hooks/use_acs_settings.ts';
 import { buildPublicationString } from '../hooks/use_publication_strings.ts';
 
 const Body = styled.div`
@@ -99,7 +99,7 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
   } = props;
   const spectrum = useSpectrum();
   const { dispatch } = usePreferences();
-  const currentACSOptions = useACSSettings();
+  const currentACSOptions = useActiveACSSettings();
   const form = useForm({
     defaultValues: validationSchema.encode(currentACSOptions),
     validators: { onChange: validationSchema },

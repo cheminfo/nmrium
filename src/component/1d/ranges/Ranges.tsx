@@ -32,7 +32,7 @@ type ProcessedRange = RangeType & {
 function useStackRangesAssignmentsLabels(ranges: RangeType[]) {
   const { scaleX } = useScaleChecked();
 
-  const { getTextWidth } = useTextMetrics(labelSize);
+  const { getTextWidth } = useTextMetrics({ labelSize });
 
   if (ranges.length === 0) return null;
 

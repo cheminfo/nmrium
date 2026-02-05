@@ -1,10 +1,12 @@
 import styled from '@emotion/styled';
-import type { BoundingBox } from '@zakodium/nmrium-core';
-import { useEffect, useState } from 'react';
+import type { BoundingBox, TextStyle } from '@zakodium/nmrium-core';
+import { useEffect, useMemo, useState } from 'react';
 import { BsArrowsMove } from 'react-icons/bs';
 import { FaTimes } from 'react-icons/fa';
 import { Rnd } from 'react-rnd';
+import { SVGStyledText } from 'react-science/ui';
 
+import { isSpectrum1D } from '../../data/data1d/Spectrum1D/index.ts';
 import { useChartData } from '../context/ChartContext.js';
 import { useDispatch } from '../context/DispatchContext.js';
 import { useGlobal } from '../context/GlobalContext.js';
@@ -13,6 +15,7 @@ import { ActionsButtonsPopover } from '../elements/ActionsButtonsPopover.js';
 import { useSVGUnitConverter } from '../hooks/useSVGUnitConverter.js';
 import { useTextMetrics } from '../hooks/useTextMetrics.ts';
 import { useCheckExportStatus } from '../hooks/useViewportSize.js';
+import { useACSSettings } from '../hooks/use_acs_settings.ts';
 import { usePublicationStrings } from '../hooks/use_publication_strings.ts';
 
 const ReactRnd = styled(Rnd)`
@@ -32,11 +35,17 @@ interface UseWrapSVGTextParams {
   text: string;
   width: number;
   fontSize: number;
+  fontStyle: string | undefined;
+  fontWeight: string | undefined;
 }
 
 function useWrapSVGText(params: UseWrapSVGTextParams) {
-  const { text, width, fontSize } = params;
-  const { getTextWidth } = useTextMetrics(fontSize);
+  const { text, width, fontSize, fontStyle, fontWeight } = params;
+  const { getTextWidth } = useTextMetrics({
+    labelSize: fontSize,
+    labelStyle: fontStyle,
+    labelWeight: fontWeight,
+  });
 
   const formattedText = text
     .replaceAll(/<sup>(?<n>.*?)<\/sup>/g, '++$1++ ')
@@ -69,28 +78,33 @@ function useWrapSVGText(params: UseWrapSVGTextParams) {
 
 interface PublicationTextProps {
   text: string;
+  textStyle: TextStyle;
   fontSize?: number;
   width: number;
   padding?: number;
 }
 
 function PublicationText(props: PublicationTextProps) {
-  const { fontSize = 12, padding = 10, width, text } = props;
+  const { text, width } = props;
+  const textStyle = { fontSize: props.fontSize ?? 12, ...props.textStyle };
+  const { fontSize = textStyle.fontSize, padding = 10 } = props;
   const boxWidth = width - padding * 2;
 
   const { lineHeight, lines } = useWrapSVGText({
     width: boxWidth,
     fontSize,
+    fontStyle: textStyle.fontStyle,
+    fontWeight: textStyle.fontWeight,
     text,
   });
 
   return (
     <g transform={`translate(${padding} ${padding})`}>
       {lines.map((line, lineIndex) => (
-        <text
+        <SVGStyledText
           // eslint-disable-next-line react/no-array-index-key
           key={lineIndex}
-          fontSize={fontSize}
+          {...textStyle}
           fontFamily="Arial"
           y={lineIndex * lineHeight}
           dominantBaseline="hanging"
@@ -115,7 +129,7 @@ function PublicationText(props: PublicationTextProps) {
               return <tspan key={wordIndex}>{word} </tspan>;
             }
           })}
-        </text>
+        </SVGStyledText>
       ))}
     </g>
   );
@@ -125,16 +139,18 @@ interface DraggablePublicationStringProps {
   value: string;
   bonding: BoundingBox;
   spectrumKey: string;
+  nucleus: string | undefined;
 }
 
 function DraggablePublicationString(props: DraggablePublicationStringProps) {
-  const { value, bonding: externalBounding, spectrumKey } = props;
+  const { value, bonding: externalBounding, spectrumKey, nucleus } = props;
   const dispatch = useDispatch();
   const { viewerRef } = useGlobal();
   const [bounding, setBounding] = useState<BoundingBox>(externalBounding);
   const [isMoveActive, setIsMoveActive] = useState(false);
   const { percentToPixel, pixelToPercent } = useSVGUnitConverter();
   const isExportProcessStart = useCheckExportStatus();
+  const acsOptions = useACSSettings(nucleus);
 
   useEffect(() => {
     setBounding({ ...externalBounding });
@@ -250,7 +266,11 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
   if (isExportProcessStart) {
     return (
       <g transform={`translate(${x} ${y})`}>
-        <PublicationText text={value} width={width} />
+        <PublicationText
+          text={value}
+          width={width}
+          textStyle={acsOptions.textStyle}
+        />
       </g>
     );
   }
@@ -294,7 +314,11 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
         y={y}
       >
         <svg width={width} height={'auto'} xmlns="http://www.w3.org/2000/svg">
-          <PublicationText text={value} width={width} />
+          <PublicationText
+            text={value}
+            width={width}
+            textStyle={acsOptions.textStyle}
+          />
         </svg>
       </ActionsButtonsPopover>
     </ReactRnd>
@@ -304,9 +328,21 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
 export function FloatPublicationString() {
   const publicationString = usePublicationStrings();
   const {
+    data: spectra,
     view: { ranges },
   } = useChartData();
-  const options = Object.entries(ranges);
+  const options = useMemo(() => Object.entries(ranges), [ranges]);
+  const spectraToNucleusMap = useMemo(() => {
+    const map = new Map<string, string>();
+
+    for (const spectrum of spectra) {
+      if (!isSpectrum1D(spectrum)) continue;
+      const { nucleus } = spectrum.info;
+      map.set(spectrum.id, nucleus);
+    }
+
+    return map;
+  }, [spectra]);
 
   return options.map(([spectrumKey, viewOptions]) => {
     const { showPublicationString, publicationStringBounding } = viewOptions;
@@ -316,6 +352,7 @@ export function FloatPublicationString() {
       <DraggablePublicationString
         key={spectrumKey}
         spectrumKey={spectrumKey}
+        nucleus={spectraToNucleusMap.get(spectrumKey)}
         bonding={publicationStringBounding}
         value={publicationString[spectrumKey]}
       />
