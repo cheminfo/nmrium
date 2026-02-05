@@ -1,7 +1,8 @@
-import { Button, Checkbox, Dialog, DialogFooter } from '@blueprintjs/core';
+import { Button, Dialog, DialogFooter } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import type { ACSExportOptions, Spectrum1D } from '@zakodium/nmrium-core';
 import type { FormEvent } from 'react';
+import { useMemo } from 'react';
 import {
   FieldGroupSVGTextStyleFields,
   Form,
@@ -37,12 +38,15 @@ type ExportFormatType = 'IMJA' | 'IMJ' | 'D';
 type ExportSignalKind = ACSExportOptions['signalKind'];
 
 const validationSchema = z.object({
-  signalKind: z.enum(['all', 'signal']),
-  ascending: z.boolean(),
-  format: z.string(),
-  couplingFormat: z.string(),
-  deltaFormat: z.string(),
-  textStyle: svgTextStyleFieldsSchema,
+  acs: z.object({
+    signalKind: z.enum(['all', 'signal']),
+    ascending: z.boolean(),
+    format: z.string(),
+    couplingFormat: z.string(),
+    deltaFormat: z.string(),
+    textStyle: svgTextStyleFieldsSchema,
+  }),
+  isPublicationStringShown: z.boolean(),
 });
 
 const exportOptions: Array<SelectItem<ExportSignalKind>> = [
@@ -100,18 +104,37 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
   const spectrum = useSpectrum();
   const { dispatch } = usePreferences();
   const currentACSOptions = useActiveACSSettings();
+
+  const defaultValues = useMemo(() => {
+    const values = validationSchema.encode({
+      acs: currentACSOptions,
+      isPublicationStringShown,
+    });
+
+    if (values.acs.textStyle.fontSize === undefined) {
+      values.acs.textStyle.fontSize = '12';
+    }
+
+    return values;
+  }, [currentACSOptions, isPublicationStringShown]);
   const form = useForm({
-    defaultValues: validationSchema.encode(currentACSOptions),
+    defaultValues,
     validators: { onChange: validationSchema },
     onSubmit: ({ value }) => {
       assert(spectrum && isSpectrum1D(spectrum));
       const nucleus = spectrum.info.nucleus;
 
-      const options = validationSchema.parse(value);
+      const parsedValues = validationSchema.parse(value);
+      if (parsedValues.acs.textStyle.fontSize === 12) {
+        parsedValues.acs.textStyle.fontSize = undefined;
+      }
       dispatch({
         type: 'CHANGE_EXPORT_ACS_SETTINGS',
-        payload: { options, nucleus },
+        payload: { options: parsedValues.acs, nucleus },
       });
+      if (parsedValues.isPublicationStringShown !== isPublicationStringShown) {
+        togglePublicationStringVisibility();
+      }
       onClose();
     },
   });
@@ -133,29 +156,29 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
       >
         <Form noValidate onSubmit={onSubmit} layout="inline">
           <StyledDialogBody>
-            <form.AppField name="signalKind">
+            <form.AppField name="acs.signalKind">
               {(field) => (
                 <field.Select label="Export filter" items={exportOptions} />
               )}
             </form.AppField>
-            <form.AppField name="format">
+            <form.AppField name="acs.format">
               {(field) => (
                 <field.Select label="Export format" items={exportFormats} />
               )}
             </form.AppField>
-            <form.AppField name="ascending">
+            <form.AppField name="acs.ascending">
               {(field) => <field.Checkbox label="Ascending order" />}
             </form.AppField>
-            <form.AppField name="deltaFormat">
+            <form.AppField name="acs.deltaFormat">
               {(field) => <field.Input label="Delta format" />}
             </form.AppField>
-            <form.AppField name="couplingFormat">
+            <form.AppField name="acs.couplingFormat">
               {(field) => <field.Input label="Couplings format" />}
             </form.AppField>
 
             <FieldGroupSVGTextStyleFields
               form={form}
-              fields="textStyle"
+              fields="acs.textStyle"
               label="Text style"
               previewText="Publication string"
             />
@@ -179,11 +202,14 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
               </form.SubmitButton>
             }
           >
-            <PublicationStringCheckbox
-              label="Show publication string"
-              checked={isPublicationStringShown}
-              onChange={togglePublicationStringVisibility}
-            />
+            <form.AppField name="isPublicationStringShown">
+              {(field) => (
+                <field.Checkbox
+                  label="Show publication string"
+                  style={{ display: 'inline-block' }}
+                />
+              )}
+            </form.AppField>
           </DialogFooter>
         </Form>
       </Dialog>
@@ -197,10 +223,6 @@ const CopyPreviewButton = styled(Button)`
   margin-bottom: 5px;
 `;
 
-const PublicationStringCheckbox = styled(Checkbox)`
-  display: inline-block;
-`;
-
 interface PublicationStringPreviewProps {
   spectrum: Spectrum1D;
   values: z.input<typeof validationSchema>;
@@ -210,7 +232,7 @@ interface PublicationStringPreviewProps {
 function PublicationStringPreview(props: PublicationStringPreviewProps) {
   const { spectrum, values, onCopy } = props;
 
-  const acs = validationSchema.parse(values);
+  const { acs } = validationSchema.parse(values);
   const value = buildPublicationString({ spectrum, acs });
 
   if (!value) return <EmptyText text="No publication string" />;
