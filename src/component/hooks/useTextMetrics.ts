@@ -8,14 +8,25 @@ function measureTextWidth(
   return Math.round(context.measureText(text).width);
 }
 
-export function useTextMetrics(labelSize = 12) {
+interface UseTextMetricsOptions {
+  labelSize?: number;
+  labelStyle?: string;
+  labelWeight?: string;
+}
+
+export function useTextMetrics(options: UseTextMetricsOptions = {}) {
+  const {
+    labelSize = 12,
+    labelStyle = 'normal',
+    labelWeight = 'normal',
+  } = options;
   const contextRef = useRef<CanvasRenderingContext2D | null>(null);
 
   if (!contextRef.current) {
     const canvas = document.createElement('canvas');
     contextRef.current = canvas.getContext('2d');
     if (contextRef.current) {
-      contextRef.current.font = `${labelSize}px Arial`;
+      contextRef.current.font = `${labelStyle} ${labelWeight} ${labelSize}px Arial`;
     }
   }
 

@@ -25,7 +25,7 @@ function YAxis(props: YAxisProps) {
   const { width, height, margin } = useChartData();
   const nucleusStr = useActiveNucleusTab();
   const [, unit] = nucleusStr.split(',');
-  const { getTextWidth } = useTextMetrics(10);
+  const { getTextWidth } = useTextMetrics({ labelSize: 10 });
 
   const scaleY = useScale2DY();
 

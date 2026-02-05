@@ -55,7 +55,7 @@ function resolveYOverlaps(
 }
 
 function useDetectPeakOverlaps(peaks: Peak[], format: string) {
-  const { getTextWidth } = useTextMetrics(textSize);
+  const { getTextWidth } = useTextMetrics({ labelSize: textSize });
   const overlapPeaksById: Record<string, boolean> = {};
 
   let cluster: Peak[] = [];

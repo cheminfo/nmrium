@@ -10,22 +10,30 @@ import {
   FaChartBar,
   FaCopy,
   FaDownload,
+  FaEye,
+  FaEyeSlash,
   FaFileExport,
   FaSitemap,
   FaUnlink,
 } from 'react-icons/fa';
 import { ImLink } from 'react-icons/im';
 import { LuMessageSquareText } from 'react-icons/lu';
+import { assert, assertUnreachable } from 'react-science/ui';
 
 import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents.js';
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import { useAlert } from '../../elements/Alert.js';
-import type { ToolbarPopoverMenuItem } from '../../elements/ToolbarPopoverItem.js';
+import type {
+  ToolbarPopoverMenuDivider,
+  ToolbarPopoverMenuItem,
+} from '../../elements/ToolbarPopoverItem.js';
 import { ToolbarPopoverItem } from '../../elements/ToolbarPopoverItem.js';
+import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.ts';
 import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
 import { useDialogToggle } from '../../hooks/useDialogToggle.js';
+import { usePublicationStrings } from '../../hooks/use_publication_strings.ts';
 import { PublicationStringModal } from '../../modal/PublicationStringModal.js';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal.js';
 import { booleanToString } from '../../utility/booleanToString.js';
@@ -37,12 +45,19 @@ type ExportRangesType = 'publicationString' | 'rangesToTSV';
 interface ExportData {
   id: ExportRangesType;
 }
-type ExportItem = ToolbarPopoverMenuItem<ExportData>;
+type ExportItem =
+  | ToolbarPopoverMenuItem<ExportData>
+  | ToolbarPopoverMenuDivider;
 
 const EXPORT_MENU: ExportItem[] = [
   {
+    key: 'export-divider',
+    menuItemType: 'divider',
+    title: 'Export',
+  },
+  {
     icon: <FaCopy />,
-    text: 'Preview publication string',
+    text: 'Copy publication string',
     data: {
       id: 'publicationString',
     },
@@ -209,11 +224,17 @@ function RangesHeader(props: RangesHeaderProps) {
     saveAs({ blob, name, extension: '.tsv' });
   }
 
+  const publicationStrings = usePublicationStrings();
+  const currentSpectra = useActiveSpectrum();
+
   function exportHandler(data?: ExportData) {
     switch (data?.id) {
-      case 'publicationString':
-        openDialog('publicationStringModal');
+      case 'publicationString': {
+        assert(currentSpectra?.id);
+        const publicationString = publicationStrings[currentSpectra?.id];
+        saveToClipboardHandler(publicationString);
         break;
+      }
       case 'rangesToTSV':
         handleRangesToTSV();
         break;
@@ -231,7 +252,7 @@ function RangesHeader(props: RangesHeaderProps) {
         <ToolbarPopoverItem<ExportData>
           disabled={!hasRanges}
           icon={<FaFileExport />}
-          tooltip="Export as"
+          tooltip="Export"
           options={EXPORT_MENU}
           onClick={exportHandler}
         />
@@ -312,11 +333,52 @@ function RangesHeader(props: RangesHeaderProps) {
       active: showAssignmentsLabels,
     },
     {
-      disabled: !hasRanges,
-      icon: <FaCopy />,
-      tooltip: `${booleanToString(!showPublicationString, { trueLabel: 'Display' })} publication string`,
-      onClick: handleShowPublicationString,
-      active: showPublicationString,
+      component: (
+        <ToolbarPopoverItem<{ id: 'toggle' | 'publicationString' }>
+          disabled={!hasRanges}
+          icon={<FaCopy />}
+          tooltip="Publication string"
+          options={[
+            {
+              menuItemType: 'divider',
+              key: 'divider-publication-string',
+              title: 'Publication string',
+            },
+            {
+              icon: 'cog',
+              text: 'Configure',
+              data: {
+                id: 'publicationString',
+              },
+            },
+            {
+              icon: !showPublicationString ? <FaEye /> : <FaEyeSlash />,
+              text: booleanToString(!showPublicationString, {
+                trueLabel: 'Show',
+                falseLabel: 'Hide',
+              }),
+              data: {
+                id: 'toggle',
+              },
+              active: showPublicationString,
+            },
+          ]}
+          onClick={(data) => {
+            assert(data?.id);
+
+            switch (data?.id) {
+              case 'toggle':
+                handleShowPublicationString();
+                break;
+              case 'publicationString':
+                openDialog('publicationStringModal');
+                break;
+              default:
+                assertUnreachable(data?.id);
+            }
+          }}
+        />
+      ),
     },
     {
       disabled: !hasRanges,
@@ -333,6 +395,8 @@ function RangesHeader(props: RangesHeaderProps) {
         isOpen={dialog.publicationStringModal}
         onCopyClick={saveToClipboardHandler}
         onClose={closeDialog}
+        isPublicationStringShown={showPublicationString}
+        togglePublicationStringVisibility={handleShowPublicationString}
       />
       <DefaultPanelHeader
         total={total}
