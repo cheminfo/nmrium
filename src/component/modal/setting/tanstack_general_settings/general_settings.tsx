@@ -6,6 +6,7 @@ import type { z } from 'zod/v4';
 
 import { usePreferences } from '../../../context/PreferencesContext.js';
 
+import { GeneralSettingsDialogBody } from './general_settings_dialog_body.tsx';
 import { GeneralSettingsDialogFooter } from './general_settings_dialog_footer.js';
 import { GeneralSettingsDialogHeader } from './general_settings_dialog_header.js';
 import { workspaceValidation } from './validation.js';
@@ -13,6 +14,7 @@ import { workspaceValidation } from './validation.js';
 interface GeneralSettingsProps {
   isOpen: boolean;
   close: () => void;
+  height?: number;
 }
 
 const Dialog = styled(BPDialog)`
@@ -21,20 +23,22 @@ const Dialog = styled(BPDialog)`
   min-width: 800px;
 `;
 
-type GeneralSettingsFormType = z.input<typeof workspaceValidation>;
+export type GeneralSettingsFormType = z.input<typeof workspaceValidation>;
 export function GeneralSettings(props: GeneralSettingsProps) {
-  const { isOpen, close } = props;
+  const { isOpen, close, height } = props;
 
   const { current: currentWorkspace } = usePreferences();
+
+  const defaultValues: z.input<typeof workspaceValidation> = {
+    general: {
+      dimmedSpectraOpacity: currentWorkspace.general.dimmedSpectraOpacity,
+    },
+  };
 
   const form = useForm({
     validators: { onDynamic: workspaceValidation },
     validationLogic: revalidateLogic({ mode: 'change' }),
-    defaultValues: {
-      general: {
-        dimmedSpectraOpacity: currentWorkspace.general.dimmedSpectraOpacity,
-      },
-    },
+    defaultValues,
     onSubmit: ({ value }) => {
       const parsedValues = workspaceValidation.parse(value);
       console.log(parsedValues);
@@ -56,19 +60,14 @@ export function GeneralSettings(props: GeneralSettingsProps) {
           currentValues={form.state.values}
         />
 
-        <p>Todo: Refactor old general settings to use new forms</p>
-        <form.AppField name="general.dimmedSpectraOpacity">
-          {(Field) => (
-            <Field.NumericInput
-              label="Opacity of dimmed spectra [0 - 1]"
-              min={0}
-              max={1}
-              step={0.1}
-            />
+        <GeneralSettingsDialogBody form={form} height={height} />
+        <GeneralSettingsDialogFooter
+          submitButton={() => (
+            <form.AppForm>
+              <form.SubmitButton>Save</form.SubmitButton>
+            </form.AppForm>
           )}
-        </form.AppField>
-
-        <GeneralSettingsDialogFooter form={form} />
+        />
       </Form>
     </Dialog>
   );

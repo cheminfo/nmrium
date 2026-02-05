@@ -7,3 +7,12 @@ const generalValidation = z.object({
 export const workspaceValidation = z.object({
   general: generalValidation,
 });
+
+// This object is used to define type not real values. Do not use it as values
+export const defaultGeneralSettingsFormValues: z.input<
+  typeof workspaceValidation
+> = {
+  general: {
+    dimmedSpectraOpacity: 0,
+  },
+};
