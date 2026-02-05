@@ -4,7 +4,7 @@ import path from 'node:path';
 import react from '@vitejs/plugin-react';
 import analyze from 'rollup-plugin-analyzer';
 import type { AliasOptions } from 'vite';
-import { defaultClientConditions } from 'vite';
+import { defaultClientConditions, defaultServerConditions } from 'vite';
 import { defineConfig } from 'vitest/config';
 
 // https://vitejs.dev/config/
@@ -56,7 +56,7 @@ export default () => {
     ssr: {
       resolve: {
         conditions: isMonorepo
-          ? ['nmrium-internal', ...defaultClientConditions]
+          ? ['nmrium-internal', ...defaultServerConditions]
           : undefined,
       },
     },
