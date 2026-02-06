@@ -1,4 +1,6 @@
 import { Classes } from '@blueprintjs/core';
+import styled from '@emotion/styled';
+import type { Workspace } from '@zakodium/nmrium-core';
 import { useMemo } from 'react';
 
 import type { ExtendedWorkspace } from '../../../context/PreferencesContext.js';
@@ -14,7 +16,7 @@ import WorkspaceItem from '../WorkspaceItem.js';
 
 import { GeneralSettingsDialogHeaderActionsButtons } from './general_settings_dialog_header_actions_buttons.js';
 
-interface GeneralSettingsDialogHeaderProps<T> {
+interface GeneralSettingsDialogHeaderProps<T extends object> {
   reset: (values?: T) => void;
   currentValues: T;
 }
@@ -55,7 +57,8 @@ export function GeneralSettingsDialogHeader<T extends object>(
   }
 
   function handleAddWorkspace(name: string) {
-    addNewWorkspace(name, currentValues as any);
+    // TODO: change the as when the full form is done.
+    addNewWorkspace(name, currentValues as Workspace);
   }
 
   function renderItem(item: DropDownListItem) {
@@ -69,15 +72,7 @@ export function GeneralSettingsDialogHeader<T extends object>(
   }
 
   return (
-    <div
-      className={Classes.DIALOG_HEADER}
-      style={{
-        cursor: 'default',
-        paddingTop: '10px',
-        boxShadow: 'none',
-        backgroundColor: '#f8f8f8',
-      }}
-    >
+    <DialogHeader className={Classes.DIALOG_HEADER}>
       <Label title="Workspace">
         <DropDownButton<ExtendedWorkspace>
           data={workspacesList}
@@ -91,6 +86,13 @@ export function GeneralSettingsDialogHeader<T extends object>(
         reset={reset}
         values={currentValues}
       />
-    </div>
+    </DialogHeader>
   );
 }
+
+const DialogHeader = styled.div`
+  cursor: default;
+  padding-top: 10px;
+  box-shadow: none;
+  background-color: #f8f8f8;
+`;
