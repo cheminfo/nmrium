@@ -1,7 +1,7 @@
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { mapRanges, updateRangesRelativeValues } from 'nmr-processing';
 
-import { isProton } from '../../../utilities/isProton.ts';
+import { isProton } from '../../../utilities/isProton.js';
 import type { SumParams } from '../SumManager.js';
 import { initSumOptions } from '../SumManager.js';
 

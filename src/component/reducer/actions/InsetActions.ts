@@ -7,7 +7,7 @@ import { scaleLinear } from 'd3-scale';
 import { zoomIdentity } from 'd3-zoom';
 import type { Draft } from 'immer';
 
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.ts';
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import { insetMargin } from '../../1d/inset/InsetProvider.js';
 import type {
   Inset,
@@ -29,7 +29,7 @@ import type { ZoomType } from '../helper/Zoom1DManager.js';
 import { toScaleRatio, wheelZoom } from '../helper/Zoom1DManager.js';
 import { preparePop } from '../helper/ZoomHistoryManager.js';
 import getRange from '../helper/getRange.js';
-import { getSpectrum } from '../helper/getSpectrum.ts';
+import { getSpectrum } from '../helper/getSpectrum.js';
 import type { ActionType } from '../types/ActionType.js';
 
 import type { MoveOptions } from './DomainActions.js';

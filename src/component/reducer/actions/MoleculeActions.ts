@@ -13,14 +13,14 @@ import type {
 } from '../../../data/PredictionManager.js';
 import { generateSpectra } from '../../../data/PredictionManager.js';
 import { changeSpectraRelativeSum } from '../../../data/data1d/Spectrum1D/SumManager.js';
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.ts';
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
 import type { MoleculeBoundingRect } from '../../../data/molecules/Molecule.js';
 import { DRAGGABLE_STRUCTURE_INITIAL_BOUNDING_REACT } from '../../../data/molecules/Molecule.js';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager.js';
 import { generateColor } from '../../../data/utilities/generateColor.js';
 import { convertPixelToPercent } from '../../hooks/useSVGUnitConverter.js';
-import { extractFromAtom } from '../../panels/MoleculesPanel/utilities/extractFromAtom.ts';
-import nucleusToString from '../../utility/nucleusToString.ts';
+import { extractFromAtom } from '../../panels/MoleculesPanel/utilities/extractFromAtom.js';
+import nucleusToString from '../../utility/nucleusToString.js';
 import type { State } from '../Reducer.js';
 import { MARGIN } from '../core/Constants.js';
 import type { ActionType } from '../types/ActionType.js';

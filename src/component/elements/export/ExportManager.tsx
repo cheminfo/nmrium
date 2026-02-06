@@ -10,7 +10,7 @@ import {
 
 import { useChartData } from '../../context/ChartContext.js';
 import { usePreferences } from '../../context/PreferencesContext.js';
-import { useToaster } from '../../context/ToasterContext.tsx';
+import { useToaster } from '../../context/ToasterContext.js';
 import { useExportViewPort } from '../../hooks/useExport.js';
 import { useWorkspaceExportSettings } from '../../hooks/useWorkspaceExportSettings.js';
 

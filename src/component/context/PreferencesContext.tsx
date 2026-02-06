@@ -37,7 +37,7 @@ export function usePreferences(): PreferencesContextData {
   }, [workspaces, workspace, context]);
 }
 
-type ExtendedWorkspace = WorkspaceWithSource & {
+export type ExtendedWorkspace = WorkspaceWithSource & {
   key: string;
   visible: boolean;
 };

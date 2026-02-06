@@ -12,7 +12,7 @@ import {
   exportAsPng,
   exportAsSVG,
 } from '../utility/export.js';
-import { saveAs } from '../utility/save_as.ts';
+import { saveAs } from '../utility/save_as.js';
 
 export interface SaveOptions {
   include: {

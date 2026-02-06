@@ -2,7 +2,7 @@ import type { DiaIDAndInfo } from 'openchemlib-utils';
 
 import type { Axis } from '../../../assignment/AssignmentsContext.js';
 
-import type { AtomData } from './AtomData.ts';
+import type { AtomData } from './AtomData.js';
 
 /**
  * Returns the OCL id(s) and number of atoms of an atom when hovering over

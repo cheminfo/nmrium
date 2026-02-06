@@ -12,7 +12,7 @@ import Label from '../../../elements/Label.js';
 import ReactTable from '../../../elements/ReactTable/ReactTable.js';
 import type { CustomColumn } from '../../../elements/ReactTable/utility/addCustomColumn.js';
 import type { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
-import { settingLabelStyle } from '../GeneralSettings.js';
+import { settingLabelStyle } from '../general_settings.js';
 
 function OnLoadProcessingTabContent() {
   const { register, watch } = useFormContext<WorkspacePreferences>();

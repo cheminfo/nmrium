@@ -6,7 +6,7 @@ import { useDispatch } from '../context/DispatchContext.js';
 import type { ToolbarItemProps } from '../panels/header/DefaultPanelHeader.js';
 import type { SpectraSelectedMode } from '../reducer/actions/SpectraActions.js';
 
-import { useActiveNucleusTab } from './useActiveNucleusTab.ts';
+import { useActiveNucleusTab } from './useActiveNucleusTab.js';
 
 interface ToggleSpectraVisibility {
   enableShowAll: boolean;

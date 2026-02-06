@@ -1,7 +1,7 @@
 import type { Range, Zone } from '@zakodium/nmr-types';
 import type { Spectrum } from '@zakodium/nmrium-core';
 
-import { isSpectrum1D } from '../../../../data/data1d/Spectrum1D/isSpectrum1D.ts';
+import { isSpectrum1D } from '../../../../data/data1d/Spectrum1D/isSpectrum1D.js';
 
 interface TargetAssignment {
   key: string;

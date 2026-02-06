@@ -1,7 +1,7 @@
 import type { Draft } from 'immer';
 
 import { get2DXScale, get2DYScale } from '../../2d/utilities/scale.js';
-import type { State } from '../Reducer.ts';
+import type { State } from '../Reducer.js';
 
 export interface ZoneBoundary {
   startX: number;

@@ -3,8 +3,8 @@ import { useLinearPrimaryTicks } from 'react-d3-utils';
 
 import { useChartData } from '../context/ChartContext.js';
 import { D3Axis } from '../elements/D3Axis.js';
-import { useActiveNucleusTab } from '../hooks/useActiveNucleusTab.ts';
-import { useTextMetrics } from '../hooks/useTextMetrics.ts';
+import { useActiveNucleusTab } from '../hooks/useActiveNucleusTab.js';
+import { useTextMetrics } from '../hooks/useTextMetrics.js';
 
 import { useScale2DY } from './utilities/scale.js';
 

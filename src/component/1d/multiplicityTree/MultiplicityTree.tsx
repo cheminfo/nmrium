@@ -12,10 +12,10 @@ import { useDispatch } from '../../context/DispatchContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';
 import { ActionsButtonsPopover } from '../../elements/ActionsButtonsPopover.js';
 import { useHighlight } from '../../highlight/index.js';
-import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.ts';
+import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import { useIsInset } from '../inset/InsetProvider.js';
-import { useAssignmentsPopoverActionsButtons } from '../ranges/useAssignmentsPopoverActionsButtons.tsx';
+import { useAssignmentsPopoverActionsButtons } from '../ranges/useAssignmentsPopoverActionsButtons.js';
 
 import type { TreeNodes } from './generateTreeNodes.js';
 import { generateTreeNodes } from './generateTreeNodes.js';

@@ -2,11 +2,11 @@ import { FaSitemap } from 'react-icons/fa';
 import { LuLink, LuUnlink } from 'react-icons/lu';
 import { PiTextTBold, PiTextTSlashBold } from 'react-icons/pi';
 
-import { useDispatch } from '../../context/DispatchContext.tsx';
-import { useShareData } from '../../context/ShareDataContext.tsx';
-import type { ActionsButtonsPopoverProps } from '../../elements/ActionsButtonsPopover.tsx';
-import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.ts';
-import { booleanToString } from '../../utility/booleanToString.ts';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { useShareData } from '../../context/ShareDataContext.js';
+import type { ActionsButtonsPopoverProps } from '../../elements/ActionsButtonsPopover.js';
+import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
+import { booleanToString } from '../../utility/booleanToString.js';
 
 interface UseAssignmentsPopoverActionsButtonsOptions {
   isAssignButtonVisible?: boolean;

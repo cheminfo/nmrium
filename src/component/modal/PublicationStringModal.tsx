@@ -12,13 +12,13 @@ import {
 } from 'react-science/ui';
 import { z } from 'zod';
 
-import { isSpectrum1D } from '../../data/data1d/Spectrum1D/isSpectrum1D.js';
-import { usePreferences } from '../context/PreferencesContext.tsx';
+import { isSpectrum1D } from '../../data/data1d/Spectrum1D/index.js';
+import { usePreferences } from '../context/PreferencesContext.js';
 import { EmptyText } from '../elements/EmptyText.js';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 import useSpectrum from '../hooks/useSpectrum.js';
-import { useActiveACSSettings } from '../hooks/use_acs_settings.ts';
-import { buildPublicationString } from '../hooks/use_publication_strings.ts';
+import { useActiveACSSettings } from '../hooks/use_acs_settings.js';
+import { buildPublicationString } from '../hooks/use_publication_strings.js';
 
 const Body = styled.div`
   border: 1px solid #e9e9e9;

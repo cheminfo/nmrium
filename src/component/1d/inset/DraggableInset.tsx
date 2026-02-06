@@ -15,14 +15,14 @@ import { FaSitemap, FaTimes } from 'react-icons/fa';
 import { LuMessageSquareText } from 'react-icons/lu';
 import { Rnd } from 'react-rnd';
 
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.ts';
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
 import { SVGRootContainer } from '../../1d-2d/components/SVGRootContainer.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useGlobal } from '../../context/GlobalContext.js';
 import type { ActionsButtonsPopoverProps } from '../../elements/ActionsButtonsPopover.js';
 import { ActionsButtonsPopover } from '../../elements/ActionsButtonsPopover.js';
 import { useSVGUnitConverter } from '../../hooks/useSVGUnitConverter.js';
-import useSpectrum from '../../hooks/useSpectrum.ts';
+import useSpectrum from '../../hooks/useSpectrum.js';
 import { useCheckExportStatus } from '../../hooks/useViewportSize.js';
 import { booleanToString } from '../../utility/booleanToString.js';
 import type { FilterType } from '../../utility/filterType.js';

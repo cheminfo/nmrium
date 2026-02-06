@@ -12,7 +12,7 @@ import { NumberInput2Controller } from '../../../elements/NumberInput2Controller
 import type { Column } from '../../../elements/ReactTable/ReactTable.js';
 import ReactTable from '../../../elements/ReactTable/ReactTable.js';
 import type { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.js';
-import { Section } from '../GeneralSettings.js';
+import { Section } from '../general_settings.js';
 
 function getKeyPath<T extends keyof NucleiPreferences>(
   index: number,

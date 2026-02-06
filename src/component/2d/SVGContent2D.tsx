@@ -6,7 +6,7 @@ import XAxis from './XAxis.js';
 import YAxis from './YAxis.js';
 import { FidContainer } from './fid/FidContainer.js';
 import { FTContainer } from './ft/FTContainer.js';
-import type { Spectrum1DTraces } from './useTracesSpectra.ts';
+import type { Spectrum1DTraces } from './useTracesSpectra.js';
 import { SignalsGuideLines } from './zones/SignalsGuideLines.js';
 import Zones from './zones/Zones.js';
 import ZonesAssignmentsLabels from './zones/ZonesAssignmentsLabels.js';

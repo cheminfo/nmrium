@@ -30,23 +30,23 @@ import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardCompon
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useGlobal } from '../../context/GlobalContext.js';
-import { usePreferences } from '../../context/PreferencesContext.tsx';
+import { usePreferences } from '../../context/PreferencesContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import { useTopicMolecule } from '../../context/TopicMoleculeContext.js';
 import type { ToolbarPopoverMenuItem } from '../../elements/ToolbarPopoverItem.js';
 import { ToolbarPopoverItem } from '../../elements/ToolbarPopoverItem.js';
-import { useDialogToggle } from '../../hooks/useDialogToggle.ts';
+import { useDialogToggle } from '../../hooks/useDialogToggle.js';
 import AboutPredictionModal from '../../modal/AboutPredictionModal.js';
-import { MoleculeAutoLabelsDatabaseModal } from '../../modal/MoleculeAutoLabelsDatabaseModal.tsx';
+import { MoleculeAutoLabelsDatabaseModal } from '../../modal/MoleculeAutoLabelsDatabaseModal.js';
 import PredictSpectraModal from '../../modal/PredictSpectraModal.js';
-import { booleanToString } from '../../utility/booleanToString.ts';
+import { booleanToString } from '../../utility/booleanToString.js';
 import {
   browserNotSupportedErrorToast,
   copyPNGToClipboard,
   exportAsMolfile,
   exportAsSVG,
 } from '../../utility/export.js';
-import { useMoleculeAnnotationCore } from '../hooks/useMoleculeAnnotationCore.ts';
+import { useMoleculeAnnotationCore } from '../hooks/useMoleculeAnnotationCore.js';
 
 type ExportOperation =
   | 'CopyAsSmiles'

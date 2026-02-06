@@ -12,7 +12,7 @@ import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZo
 import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 
 import Signal from './Signal.js';
-import { SignalCrosshair } from './SignalCrosshair.tsx';
+import { SignalCrosshair } from './SignalCrosshair.js';
 
 interface ZoneProps {
   zoneData: ZoneType;

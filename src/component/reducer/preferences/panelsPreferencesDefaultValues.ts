@@ -9,7 +9,7 @@ import type {
   Zones2DNucleusPreferences,
 } from '@zakodium/nmrium-core';
 
-import { isProton } from '../../../data/utilities/isProton.ts';
+import { isProton } from '../../../data/utilities/isProton.js';
 import { is2DNucleus } from '../../utility/nucleusToString.js';
 
 function getPreferences<T>(data: T, nucleus?: string) {

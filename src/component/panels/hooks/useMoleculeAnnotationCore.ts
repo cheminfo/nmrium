@@ -1,6 +1,6 @@
 import type { MoleculeView } from '@zakodium/nmrium-core';
 
-import { useDispatch } from '../../context/DispatchContext.tsx';
+import { useDispatch } from '../../context/DispatchContext.js';
 
 type Annotation = MoleculeView['atomAnnotation'];
 

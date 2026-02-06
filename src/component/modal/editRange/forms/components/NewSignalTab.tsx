@@ -7,7 +7,7 @@ import * as Yup from 'yup';
 
 import { NumberInput2Controller } from '../../../../elements/NumberInput2Controller.js';
 import { useTabsController } from '../../../../elements/TabsProvider.js';
-import { useActiveNucleusTab } from '../../../../hooks/useActiveNucleusTab.ts';
+import { useActiveNucleusTab } from '../../../../hooks/useActiveNucleusTab.js';
 import { usePanelPreferences } from '../../../../hooks/usePanelPreferences.js';
 import { useEvent } from '../../../../utility/Events.js';
 import { formatNumber } from '../../../../utility/formatNumber.js';

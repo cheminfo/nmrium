@@ -25,10 +25,10 @@ import {
   updateRangesRelativeValues,
 } from '../../../data/data1d/Spectrum1D/index.js';
 import type { ChangeRangeRelativeValueProps } from '../../../data/data1d/Spectrum1D/ranges/changeRangeRelativeValue.js';
-import type { DetectRangesOptions } from '../../../data/data1d/Spectrum1D/ranges/detectRanges.ts';
+import type { DetectRangesOptions } from '../../../data/data1d/Spectrum1D/ranges/detectRanges.js';
 import { unlink } from '../../../data/utilities/RangeUtilities.js';
-import { isProton } from '../../../data/utilities/isProton.ts';
-import type { TargetAssignKeys } from '../../panels/MoleculesPanel/utilities/getAssignIds.ts';
+import { isProton } from '../../../data/utilities/isProton.js';
+import type { TargetAssignKeys } from '../../panels/MoleculesPanel/utilities/getAssignIds.js';
 import type { RangeData } from '../../panels/RangesPanel/hooks/useMapRanges.js';
 import type { FilterType } from '../../utility/filterType.js';
 import type { State } from '../Reducer.js';

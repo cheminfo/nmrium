@@ -3,30 +3,30 @@ import type { DiaIDAndInfo } from 'openchemlib-utils';
 import type { MouseEvent } from 'react';
 import { useMemo, useRef } from 'react';
 
-import { isSpectrum1D } from '../../../../data/data1d/Spectrum1D/isSpectrum1D.ts';
-import { isSpectrum2D } from '../../../../data/data2d/Spectrum2D/isSpectrum2D.ts';
-import { ConcatenationString } from '../../../../data/utilities/Concatenation.ts';
-import checkModifierKeyActivated from '../../../../data/utilities/checkModifierKeyActivated.ts';
-import { useTracesSpectra } from '../../../2d/useTracesSpectra.ts';
+import { isSpectrum1D } from '../../../../data/data1d/Spectrum1D/index.js';
+import { isSpectrum2D } from '../../../../data/data2d/Spectrum2D/index.js';
+import { ConcatenationString } from '../../../../data/utilities/Concatenation.js';
+import checkModifierKeyActivated from '../../../../data/utilities/checkModifierKeyActivated.js';
+import { useTracesSpectra } from '../../../2d/useTracesSpectra.js';
 import type {
   Assignments,
   Axis,
-} from '../../../assignment/AssignmentsContext.ts';
-import { useAssignmentContext } from '../../../assignment/AssignmentsContext.ts';
-import { useChartData } from '../../../context/ChartContext.tsx';
-import { useDispatch } from '../../../context/DispatchContext.tsx';
-import { useToaster } from '../../../context/ToasterContext.tsx';
-import type { HighlightEventSource } from '../../../highlight/index.tsx';
-import { useHighlightData } from '../../../highlight/index.tsx';
-import useSpectrum from '../../../hooks/useSpectrum.ts';
-import type { AtomData } from '../utilities/AtomData.ts';
-import { extractFromAtom } from '../utilities/extractFromAtom.ts';
-import { getAssignIds } from '../utilities/getAssignIds.ts';
-import { getCurrentDiaIDsToHighlight } from '../utilities/getCurrentDiaIDsToHighlight.ts';
-import { getHighlightsOnHover } from '../utilities/getHighlightsOnHover.ts';
-import { getUniqueDiaIDs } from '../utilities/getUniqueDiaIDs.ts';
+} from '../../../assignment/AssignmentsContext.js';
+import { useAssignmentContext } from '../../../assignment/AssignmentsContext.js';
+import { useChartData } from '../../../context/ChartContext.js';
+import { useDispatch } from '../../../context/DispatchContext.js';
+import { useToaster } from '../../../context/ToasterContext.js';
+import type { HighlightEventSource } from '../../../highlight/index.js';
+import { useHighlightData } from '../../../highlight/index.js';
+import useSpectrum from '../../../hooks/useSpectrum.js';
+import type { AtomData } from '../utilities/AtomData.js';
+import { extractFromAtom } from '../utilities/extractFromAtom.js';
+import { getAssignIds } from '../utilities/getAssignIds.js';
+import { getCurrentDiaIDsToHighlight } from '../utilities/getCurrentDiaIDsToHighlight.js';
+import { getHighlightsOnHover } from '../utilities/getHighlightsOnHover.js';
+import { getUniqueDiaIDs } from '../utilities/getUniqueDiaIDs.js';
 
-import { useExtractAtomAssignmentLabel } from './useExtractAtomAssignmentLabel.ts';
+import { useExtractAtomAssignmentLabel } from './useExtractAtomAssignmentLabel.js';
 
 function flattenAssignedDiaIDs(assignments: Assignments) {
   const assignedDiaIDs: string[] = [];
