@@ -230,9 +230,7 @@ function RangesHeader(props: RangesHeaderProps) {
   function exportHandler(data?: ExportData) {
     switch (data?.id) {
       case 'publicationString': {
-        assert(currentSpectra?.id);
-        const publicationString = publicationStrings[currentSpectra?.id];
-        saveToClipboardHandler(publicationString);
+        openDialog('publicationStringModal');
         break;
       }
       case 'rangesToTSV':
@@ -397,6 +395,7 @@ function RangesHeader(props: RangesHeaderProps) {
         onClose={closeDialog}
         isPublicationStringShown={showPublicationString}
         togglePublicationStringVisibility={handleShowPublicationString}
+        copyOnSave
       />
       <DefaultPanelHeader
         total={total}

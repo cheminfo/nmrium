@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogFooter } from '@blueprintjs/core';
+import { Button, Dialog, DialogFooter, Tooltip } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import type { ACSExportOptions, Spectrum1D } from '@zakodium/nmrium-core';
 import type { FormEvent } from 'react';
@@ -51,11 +51,11 @@ const validationSchema = z.object({
 
 const exportOptions: Array<SelectItem<ExportSignalKind>> = [
   {
-    label: 'Export all',
+    label: 'All',
     value: 'all',
   },
   {
-    label: 'Export only signals',
+    label: 'Only signals',
     value: 'signal',
   },
 ];
@@ -80,6 +80,10 @@ interface InnerPublicationStringModalProps {
 
   isPublicationStringShown: boolean;
   togglePublicationStringVisibility: () => void;
+
+  allowTextStyle?: boolean;
+  saveLabel?: string;
+  copyOnSave?: boolean;
 }
 
 interface PublicationStringModalProps extends InnerPublicationStringModalProps {
@@ -100,6 +104,9 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
     onCopyClick,
     isPublicationStringShown,
     togglePublicationStringVisibility,
+    allowTextStyle = false,
+    saveLabel = 'Apply and copy',
+    copyOnSave = false,
   } = props;
   const spectrum = useSpectrum();
   const { dispatch } = usePreferences();
@@ -120,14 +127,19 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
   const form = useForm({
     defaultValues,
     validators: { onChange: validationSchema },
-    onSubmit: ({ value }) => {
+    onSubmit: ({ value, formApi }) => {
       assert(spectrum && isSpectrum1D(spectrum));
       const nucleus = spectrum.info.nucleus;
 
       const parsedValues = validationSchema.parse(value);
-      if (parsedValues.acs.textStyle.fontSize === 12) {
+      if (
+        !formApi.state.fieldMeta['acs.textStyle.fontSize']?.isTouched &&
+        parsedValues.acs.textStyle.fontSize === 12
+      ) {
         parsedValues.acs.textStyle.fontSize = undefined;
       }
+
+      // Apply
       dispatch({
         type: 'CHANGE_EXPORT_ACS_SETTINGS',
         payload: { options: parsedValues.acs, nucleus },
@@ -135,6 +147,17 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
       if (parsedValues.isPublicationStringShown !== isPublicationStringShown) {
         togglePublicationStringVisibility();
       }
+
+      // Copy
+      if (copyOnSave) {
+        const publicationString = buildPublicationString({
+          spectrum,
+          acs: parsedValues.acs,
+        });
+        onCopyClick(publicationString);
+      }
+
+      // Close
       onClose();
     },
   });
@@ -157,14 +180,10 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
         <Form noValidate onSubmit={onSubmit} layout="inline">
           <StyledDialogBody>
             <form.AppField name="acs.signalKind">
-              {(field) => (
-                <field.Select label="Export filter" items={exportOptions} />
-              )}
+              {(field) => <field.Select label="Filter" items={exportOptions} />}
             </form.AppField>
             <form.AppField name="acs.format">
-              {(field) => (
-                <field.Select label="Export format" items={exportFormats} />
-              )}
+              {(field) => <field.Select label="Format" items={exportFormats} />}
             </form.AppField>
             <form.AppField name="acs.ascending">
               {(field) => <field.Checkbox label="Ascending order" />}
@@ -176,12 +195,14 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
               {(field) => <field.Input label="Couplings format" />}
             </form.AppField>
 
-            <FieldGroupSVGTextStyleFields
-              form={form}
-              fields="acs.textStyle"
-              label="Text style"
-              previewText="Publication string"
-            />
+            {allowTextStyle && (
+              <FieldGroupSVGTextStyleFields
+                form={form}
+                fields="acs.textStyle"
+                label="Text style"
+                previewText="Publication string"
+              />
+            )}
 
             <Body>
               <form.Subscribe selector={(s) => s.values}>
@@ -198,7 +219,7 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
           <DialogFooter
             actions={
               <form.SubmitButton intent="success">
-                Apply and close
+                {saveLabel}
               </form.SubmitButton>
             }
           >
@@ -218,7 +239,6 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
 }
 
 const CopyPreviewButton = styled(Button)`
-  float: right;
   margin-left: 5px;
   margin-bottom: 5px;
 `;
@@ -239,7 +259,13 @@ function PublicationStringPreview(props: PublicationStringPreviewProps) {
 
   return (
     <>
-      <CopyPreviewButton onClick={() => onCopy(value)} icon="duplicate" />
+      <Tooltip
+        content="Copy"
+        targetProps={{ style: { float: 'right' } }}
+        placement="top"
+      >
+        <CopyPreviewButton onClick={() => onCopy(value)} icon="duplicate" />
+      </Tooltip>
       {/* eslint-disable-next-line react/no-danger */}
       <div dangerouslySetInnerHTML={{ __html: value }} />
     </>
