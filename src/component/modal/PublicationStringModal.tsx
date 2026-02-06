@@ -3,7 +3,13 @@ import styled from '@emotion/styled';
 import type { ACSExportOptions, Spectrum1D } from '@zakodium/nmrium-core';
 import type { FormEvent } from 'react';
 import { useMemo } from 'react';
-import { assert, FieldGroupSVGTextStyleFields, Form, svgTextStyleFieldsSchema, useForm, } from 'react-science/ui';
+import {
+  assert,
+  FieldGroupSVGTextStyleFields,
+  Form,
+  svgTextStyleFieldsSchema,
+  useForm,
+} from 'react-science/ui';
 import { z } from 'zod';
 
 import { isSpectrum1D } from '../../data/data1d/Spectrum1D/index.js';
