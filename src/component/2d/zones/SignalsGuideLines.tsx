@@ -67,7 +67,7 @@ function useSignalsOverlap(axis: IndicationLinesAxis, spectrum: Spectrum1D) {
   });
   const scaleX = useScale2DX();
   const scaleY = useScale2DY();
-  const { getTextWidth } = useTextMetrics(labelSize);
+  const { getTextWidth } = useTextMetrics({ labelSize });
 
   if (!signals) return null;
 
