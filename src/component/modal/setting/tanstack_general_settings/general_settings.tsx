@@ -5,6 +5,7 @@ import { Form, useForm } from 'react-science/ui';
 import type { z } from 'zod/v4';
 
 import { usePreferences } from '../../../context/PreferencesContext.js';
+import { useSaveSettings } from '../../../hooks/useSaveSettings.tsx';
 
 import { GeneralSettingsDialogBody } from './general_settings_dialog_body.tsx';
 import { GeneralSettingsDialogFooter } from './general_settings_dialog_footer.js';
@@ -28,10 +29,16 @@ export function GeneralSettings(props: GeneralSettingsProps) {
   const { isOpen, close, height } = props;
 
   const { current: currentWorkspace } = usePreferences();
+  const { saveSettings } = useSaveSettings();
 
   const defaultValues: z.input<typeof workspaceValidation> = {
     general: {
       dimmedSpectraOpacity: currentWorkspace.general.dimmedSpectraOpacity,
+      invertScroll: currentWorkspace.general.invertScroll,
+      invertActions: currentWorkspace.general.invert,
+      experimentalFeatures:
+        currentWorkspace.display.general?.experimentalFeatures?.display ||
+        false,
     },
   };
 
@@ -41,7 +48,27 @@ export function GeneralSettings(props: GeneralSettingsProps) {
     defaultValues,
     onSubmit: ({ value }) => {
       const parsedValues = workspaceValidation.parse(value);
-      console.log(parsedValues);
+
+      saveSettings({
+        display: {
+          general: {
+            experimentalFeatures: {
+              display: parsedValues.general.experimentalFeatures,
+              visible: true,
+            },
+          },
+        },
+        general: {
+          invert: parsedValues.general.invertActions,
+          invertScroll: parsedValues.general.invertScroll,
+          dimmedSpectraOpacity: parsedValues.general.dimmedSpectraOpacity,
+          spectraRendering: 'auto',
+          verticalSplitterCloseThreshold: 0,
+          verticalSplitterPosition: '1px',
+          loggingLevel: 'info',
+          popupLoggingLevel: 'info',
+        },
+      });
     },
   });
 
@@ -61,13 +88,7 @@ export function GeneralSettings(props: GeneralSettingsProps) {
         />
 
         <GeneralSettingsDialogBody form={form} height={height} />
-        <GeneralSettingsDialogFooter
-          submitButton={() => (
-            <form.AppForm>
-              <form.SubmitButton>Save</form.SubmitButton>
-            </form.AppForm>
-          )}
-        />
+        <GeneralSettingsDialogFooter form={form} />
       </Form>
     </Dialog>
   );

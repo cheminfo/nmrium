@@ -1,24 +1,25 @@
 import { DialogFooter } from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import type { ReactNode } from 'react';
+import { withForm } from 'react-science/ui';
+
+import { defaultGeneralSettingsFormValues } from './validation.ts';
 
 const Footer = styled.div`
   display: flex;
   justify-content: flex-start;
 `;
 
-interface GeneralSettingsDialogFooterProps {
-  submitButton: () => ReactNode;
-}
-
-export function GeneralSettingsDialogFooter(
-  props: GeneralSettingsDialogFooterProps,
-) {
-  const { submitButton } = props;
-
-  return (
-    <DialogFooter>
-      <Footer>{submitButton()}</Footer>
-    </DialogFooter>
-  );
-}
+export const GeneralSettingsDialogFooter = withForm({
+  defaultValues: defaultGeneralSettingsFormValues,
+  render: ({ form }) => {
+    return (
+      <form.AppForm>
+        <DialogFooter>
+          <Footer>
+            <form.SubmitButton>Save</form.SubmitButton>
+          </Footer>
+        </DialogFooter>
+      </form.AppForm>
+    );
+  },
+});

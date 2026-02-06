@@ -1,7 +1,10 @@
 import { z } from 'zod/v4';
 
 const generalValidation = z.object({
-  dimmedSpectraOpacity: z.number().min(0).max(1),
+  dimmedSpectraOpacity: z.coerce.number().min(0).max(1),
+  invertActions: z.boolean(),
+  invertScroll: z.boolean(),
+  experimentalFeatures: z.boolean(),
 });
 
 export const workspaceValidation = z.object({
@@ -14,5 +17,8 @@ export const defaultGeneralSettingsFormValues: z.input<
 > = {
   general: {
     dimmedSpectraOpacity: 0,
+    invertActions: false,
+    invertScroll: false,
+    experimentalFeatures: false,
   },
 };
