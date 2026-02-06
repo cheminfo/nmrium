@@ -192,6 +192,11 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
   const isExportProcessStart = useCheckExportStatus();
   const acsOptions = useACSSettings(nucleus);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const rndKey = useMemo(() => {
+    // Change ACS options broke the wrapping computation
+    // force refresh vdom when acs options changes solve the issue.
+    return JSON.stringify(acsOptions);
+  }, [acsOptions]);
 
   useEffect(() => {
     setBounding({ ...externalBounding });
@@ -326,7 +331,7 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
   return (
     <>
       <ReactRnd
-        default={{ x, y, width: width || 'auto', height: height || 'auto' }}
+        key={rndKey}
         position={{ x, y }}
         size={{ width: width || 'auto', height: height || 'auto' }}
         minWidth={100}
@@ -334,13 +339,13 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
         dragHandleClassName="handle"
         enableUserSelectHack={false}
         bounds={`#${viewerRef.id}`}
-        onDragStart={() => setIsMoveActive(true)}
         onResize={(e, dir, eRef, size, position) =>
           handleResize({ ...size, ...position })
         }
         onResizeStop={(e, dir, eRef, size, position) =>
           handleChangeInsetBounding({ ...size, ...position })
         }
+        onDragStart={() => setIsMoveActive(true)}
         onDrag={(e, { x, y }) => {
           handleDrag({ x, y });
         }}
