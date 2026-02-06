@@ -289,7 +289,6 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
         buttons={actionButtons}
         fill
         positioningStrategy="fixed"
-        position="top-left"
         direction="row"
         targetProps={{ style: { width: '100%', height: '100%' } }}
         space={2}
