@@ -312,7 +312,7 @@ function IndicationLine(props: IndicationLineProps) {
       targetTagName="g"
       buttons={actionsButtons}
       space={2}
-      position={isOverXAxis ? 'right-top' : 'top-left'}
+      anchorTo={isOverXAxis ? 'cursor-y' : 'cursor-x'}
       onClosed={() => {
         isAssignBtnTrigged.current = false;
       }}
