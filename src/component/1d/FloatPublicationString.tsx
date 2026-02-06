@@ -34,25 +34,27 @@ const ReactRnd = styled(Rnd)`
 
 interface UseWrapSVGTextParams {
   text: string;
+  style: TextStyle;
   width: number;
-  fontSize: number;
-  fontStyle: string | undefined;
-  fontWeight: string | undefined;
 }
 
 function useWrapSVGText(params: UseWrapSVGTextParams) {
-  const { text, width, fontSize, fontStyle, fontWeight } = params;
-  const { getTextWidth } = useTextMetrics({
-    labelSize: fontSize,
-    labelStyle: fontStyle,
-    labelWeight: fontWeight,
+  const { text, width, style } = params;
+
+  const debugCanvas = false;
+  const labelSize = style.fontSize ?? 12;
+  const { getTextWidth, ctx } = useTextMetrics({
+    labelSize,
+    labelStyle: style.fontStyle,
+    labelWeight: style.fontWeight,
+    debugCanvasWidth: debugCanvas ? width : undefined,
   });
 
   const formattedText = text
     .replaceAll(/<sup>(?<n>.*?)<\/sup>/g, '++$1++ ')
     .replaceAll(/<i>(?<j>.*?)<\/i>/g, '**$1**');
 
-  const lineHeight = fontSize * 1.6;
+  const lineHeight = labelSize * 1.6;
 
   const lines: string[][] = [];
   let line: string[] = [];
@@ -74,31 +76,59 @@ function useWrapSVGText(params: UseWrapSVGTextParams) {
   }
   if (line.length > 0) lines.push(line);
 
+  useEffect(() => {
+    if (!debugCanvas) return;
+    if (!ctx) return;
+
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    let y = lineHeight;
+    for (const line of lines) {
+      let x = 0;
+      for (const word of line) {
+        const isSuper = word.startsWith('++') && word.endsWith('++');
+        const isItalic = word.startsWith('**') && word.endsWith('**');
+        const baseLine = ctx.textBaseline;
+
+        let finalWord = `${word} `;
+        if (isSuper) {
+          finalWord = word.replaceAll('++', '');
+
+          ctx.textBaseline = 'bottom';
+        } else if (isItalic) {
+          finalWord = word.replaceAll('**', '');
+        }
+
+        ctx?.fillText(finalWord, x, y);
+        x += getTextWidth(finalWord);
+
+        ctx.textBaseline = baseLine;
+      }
+
+      y += lineHeight;
+    }
+  });
+
   return { lines, lineHeight };
 }
 
 interface PublicationTextProps {
   text: string;
   textStyle: TextStyle;
-  fontSize?: number;
   width: number;
-  padding?: number;
 }
 
 function PublicationText(props: PublicationTextProps) {
   const { text, width } = props;
-  const textStyle = {
-    ...props.textStyle,
-    fontSize: props.textStyle.fontSize ?? props.fontSize ?? 12,
-  };
-  const { fontSize = textStyle.fontSize, padding = 10 } = props;
+  const padding = 10;
   const boxWidth = width - padding * 2;
 
+  const textStyle = {
+    ...props.textStyle,
+    fontSize: props.textStyle.fontSize ?? 12,
+  };
   const { lineHeight, lines } = useWrapSVGText({
     width: boxWidth,
-    fontSize,
-    fontStyle: textStyle.fontStyle,
-    fontWeight: textStyle.fontWeight,
+    style: textStyle,
     text,
   });
 
@@ -116,8 +146,12 @@ function PublicationText(props: PublicationTextProps) {
           {line.map((word, wordIndex) => {
             if (word.startsWith('++') && word.endsWith('++')) {
               return (
-                // eslint-disable-next-line react/no-array-index-key
-                <tspan key={wordIndex} baselineShift="super" fontSize={10}>
+                <tspan
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={wordIndex}
+                  baselineShift="super"
+                  fontSize={Math.floor((5 / 6) * textStyle.fontSize)}
+                >
                   {word.replaceAll('++', '')}
                 </tspan>
               );
@@ -328,7 +362,11 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
           x={x}
           y={y}
         >
-          <svg width={width} height={'auto'} xmlns="http://www.w3.org/2000/svg">
+          <svg
+            width={width || 'auto'}
+            height={height || 'auto'}
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <PublicationText
               text={value}
               width={width}
