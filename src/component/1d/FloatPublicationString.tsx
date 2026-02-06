@@ -6,7 +6,7 @@ import { FaTimes } from 'react-icons/fa';
 import { Rnd } from 'react-rnd';
 import { SVGStyledText } from 'react-science/ui';
 
-import { isSpectrum1D } from '../../data/data1d/Spectrum1D';
+import { isSpectrum1D } from '../../data/data1d/Spectrum1D/index.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useDispatch } from '../context/DispatchContext.js';
 import { useGlobal } from '../context/GlobalContext.js';
