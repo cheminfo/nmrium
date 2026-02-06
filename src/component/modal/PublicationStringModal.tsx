@@ -4,9 +4,9 @@ import type { ACSExportOptions, Spectrum1D } from '@zakodium/nmrium-core';
 import type { FormEvent } from 'react';
 import { useMemo } from 'react';
 import {
-  assert,
   FieldGroupSVGTextStyleFields,
   Form,
+  assert,
   svgTextStyleFieldsSchema,
   useForm,
 } from 'react-science/ui';
