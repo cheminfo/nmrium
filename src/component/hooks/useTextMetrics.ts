@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo } from 'react';
 
 interface UseTextMetricsOptions {
   labelSize?: number;
@@ -20,17 +20,12 @@ export function useTextMetrics(options: UseTextMetricsOptions = {}) {
     debugCanvasWidth,
   } = options;
   const canvas = useCanvas(debugCanvasWidth);
-  const contextRef = useRef<CanvasRenderingContext2D | null>(null);
 
-  if (!contextRef.current) {
-    contextRef.current = canvas.getContext('2d');
-    if (contextRef.current) {
-      contextRef.current.font = `${labelStyle} ${labelWeight} ${labelSize}px Arial`;
-    }
-  }
+  const ctx = canvas.getContext('2d');
+  if (ctx) ctx.font = `${labelStyle} ${labelWeight} ${labelSize}px Arial`;
 
   function getTextWidth(text: string): number {
-    return measureTextWidth(contextRef.current, text);
+    return measureTextWidth(ctx, text);
   }
 
   return {
@@ -38,7 +33,7 @@ export function useTextMetrics(options: UseTextMetricsOptions = {}) {
     /**
      * @deprecated Use only for debug mode
      */
-    ctx: contextRef.current,
+    ctx,
   };
 }
 
