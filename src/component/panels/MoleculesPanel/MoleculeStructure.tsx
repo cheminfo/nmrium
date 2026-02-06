@@ -5,12 +5,12 @@ import { MolfileSvgRenderer } from 'react-ocl';
 import type { OCLnmrProps } from 'react-ocl-nmr';
 import OCLnmr from 'react-ocl-nmr';
 
-import type { StateMoleculeExtended } from '../../../data/molecules/Molecule.ts';
-import { useDispatch } from '../../context/DispatchContext.tsx';
-import { useHighlightColor } from '../../hooks/useHighlightColor.ts';
+import type { StateMoleculeExtended } from '../../../data/molecules/Molecule.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { useHighlightColor } from '../../hooks/useHighlightColor.js';
 
-import useAtomAssignment from './hooks/useAtomAssignment.tsx';
-import { useExtractAtomAssignmentLabel } from './hooks/useExtractAtomAssignmentLabel.ts';
+import useAtomAssignment from './hooks/useAtomAssignment.js';
+import { useExtractAtomAssignmentLabel } from './hooks/useExtractAtomAssignmentLabel.js';
 
 interface MoleculeStructureProps extends Pick<OCLnmrProps, 'width' | 'height'> {
   moleculeView: MoleculeView;

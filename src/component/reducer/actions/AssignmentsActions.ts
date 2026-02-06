@@ -2,10 +2,10 @@ import type { Range, Zone } from '@zakodium/nmr-types';
 import type { Draft } from 'immer';
 import type { SpectraData1D, SpectraData2D } from 'nmr-processing';
 
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.ts';
-import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.ts';
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
+import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.js';
 import type { State } from '../Reducer.js';
-import { getSpectrum } from '../helper/getSpectrum.ts';
+import { getSpectrum } from '../helper/getSpectrum.js';
 import type { ActionType } from '../types/ActionType.js';
 
 type SetAutomaticAssignmentsAction = ActionType<

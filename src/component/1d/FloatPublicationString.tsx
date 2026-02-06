@@ -6,18 +6,18 @@ import { FaEdit, FaTimes } from 'react-icons/fa';
 import { Rnd } from 'react-rnd';
 import { SVGStyledText } from 'react-science/ui';
 
-import { isSpectrum1D } from '../../data/data1d/Spectrum1D/index.ts';
+import { isSpectrum1D } from '../../data/data1d/Spectrum1D/index.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useDispatch } from '../context/DispatchContext.js';
 import { useGlobal } from '../context/GlobalContext.js';
 import type { ActionsButtonsPopoverProps } from '../elements/ActionsButtonsPopover.js';
 import { ActionsButtonsPopover } from '../elements/ActionsButtonsPopover.js';
 import { useSVGUnitConverter } from '../hooks/useSVGUnitConverter.js';
-import { useTextMetrics } from '../hooks/useTextMetrics.ts';
+import { useTextMetrics } from '../hooks/useTextMetrics.js';
 import { useCheckExportStatus } from '../hooks/useViewportSize.js';
-import { useACSSettings } from '../hooks/use_acs_settings.ts';
-import { usePublicationStrings } from '../hooks/use_publication_strings.ts';
-import { PublicationStringModal } from '../modal/PublicationStringModal.tsx';
+import { useACSSettings } from '../hooks/use_acs_settings.js';
+import { usePublicationStrings } from '../hooks/use_publication_strings.js';
+import { PublicationStringModal } from '../modal/PublicationStringModal.js';
 
 const ReactRnd = styled(Rnd)`
   border: 1px solid transparent;

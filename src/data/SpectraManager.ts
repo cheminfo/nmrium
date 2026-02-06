@@ -17,7 +17,7 @@ import * as OCL from 'openchemlib';
 import { assert } from 'react-science/ui';
 
 import type { State } from '../component/reducer/Reducer.js';
-import { saveAs } from '../component/utility/save_as.ts';
+import { saveAs } from '../component/utility/save_as.js';
 
 import { initiateDatum1D, isSpectrum1D } from './data1d/Spectrum1D/index.js';
 import { initiateDatum2D } from './data2d/Spectrum2D/index.js';

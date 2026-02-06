@@ -5,7 +5,7 @@ import type {
 } from '@zakodium/nmrium-core';
 import { useMemo } from 'react';
 
-import { isFt1DSpectrum } from '../../data/data1d/Spectrum1D/isSpectrum1D.ts';
+import { isFt1DSpectrum } from '../../data/data1d/Spectrum1D/isSpectrum1D.js';
 import { useChartData } from '../context/ChartContext.js';
 
 export interface GetTracesSpectraOptions {

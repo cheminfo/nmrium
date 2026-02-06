@@ -15,14 +15,14 @@ import {
 } from 'react-science/ui';
 import { z } from 'zod';
 
-import { isSpectrum1D } from '../../data/data1d/Spectrum1D/isSpectrum1D.js';
+import { isSpectrum1D } from '../../data/data1d/Spectrum1D/index.js';
 import { ClipboardFallbackModal } from '../../utils/clipboard/clipboardComponents.tsx';
 import { useClipboard } from '../../utils/clipboard/clipboardHooks.ts';
-import { usePreferences } from '../context/PreferencesContext.tsx';
+import { usePreferences } from '../context/PreferencesContext.js';
 import { useToaster } from '../context/ToasterContext.tsx';
 import { EmptyText } from '../elements/EmptyText.js';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
-import { buildPublicationString } from '../hooks/use_publication_strings.ts';
+import { buildPublicationString } from '../hooks/use_publication_strings.js';
 
 const Body = styled.div`
   border: 1px solid #e9e9e9;

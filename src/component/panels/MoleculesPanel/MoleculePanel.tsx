@@ -13,9 +13,9 @@ import { NextPrev } from '../../elements/NextPrev.js';
 import { useMoleculeEditor } from '../../modal/MoleculeStructureEditorModal.js';
 
 import MoleculeHeader from './MoleculeHeader.js';
-import { MoleculeOptionsPanel } from './MoleculeOptionsPanel.tsx';
+import { MoleculeOptionsPanel } from './MoleculeOptionsPanel.js';
 import MoleculePanelHeader from './MoleculePanelHeader.js';
-import { MoleculeStructure } from './MoleculeStructure.tsx';
+import { MoleculeStructure } from './MoleculeStructure.js';
 
 const styles: Record<
   'panel' | 'innerPanel' | 'molecule' | 'slider' | 'items',

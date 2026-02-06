@@ -1,4 +1,4 @@
-import type { AssignmentContext } from '../../../assignment/AssignmentsContext.ts';
+import type { AssignmentContext } from '../../../assignment/AssignmentsContext.js';
 
 export function getCurrentDiaIDsToHighlight(assignmentData: AssignmentContext) {
   const { highlighted, data } = assignmentData;

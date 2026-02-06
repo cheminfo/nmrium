@@ -33,7 +33,7 @@ import { options } from '../../toolbar/ToolTypes.js';
 import Events from '../../utility/Events.js';
 import { exportAsJsonBlob } from '../../utility/export.js';
 import nucleusToString from '../../utility/nucleusToString.js';
-import { saveAs } from '../../utility/save_as.ts';
+import { saveAs } from '../../utility/save_as.js';
 import { PanelNoData } from '../PanelNoData.js';
 import { TablePanel } from '../extra/BasicPanelStyle.js';
 import type { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';

@@ -40,7 +40,7 @@ import type { State } from '../Reducer.js';
 import { setZoom } from '../helper/Zoom1DManager.js';
 import { getActiveSpectra } from '../helper/getActiveSpectra.js';
 import { getActiveSpectraAsObject } from '../helper/getActiveSpectraAsObject.js';
-import { getSpectrum } from '../helper/getSpectrum.ts';
+import { getSpectrum } from '../helper/getSpectrum.js';
 import { removeSpectrumRelatedObjectsById } from '../helper/removeSpectrumRelatedObjectsById.js';
 import type { ActionType } from '../types/ActionType.js';
 

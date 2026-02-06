@@ -1,4 +1,4 @@
-import { useChartData } from '../context/ChartContext.tsx';
+import { useChartData } from '../context/ChartContext.js';
 
 export function useActiveNucleusTab() {
   const {

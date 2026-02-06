@@ -12,7 +12,7 @@ import {
   resurrectSpectrumFromRanges,
   resurrectSpectrumFromSignals,
 } from '../../../data/data1d/Spectrum1D/ranges/resurrectSpectrum.js';
-import { filterDatabaseInfoEntry } from '../../utility/filterDatabaseInfoEntry.ts';
+import { filterDatabaseInfoEntry } from '../../utility/filterDatabaseInfoEntry.js';
 import type { State } from '../Reducer.js';
 import { setZoom } from '../helper/Zoom1DManager.js';
 import zoomHistoryManager from '../helper/ZoomHistoryManager.js';

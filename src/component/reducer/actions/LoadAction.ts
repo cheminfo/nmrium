@@ -25,7 +25,7 @@ import type { State } from '../Reducer.js';
 import { getDefaultViewState, getInitialState } from '../Reducer.js';
 import type { ActionType } from '../types/ActionType.js';
 
-import { initMoleculeViewProperties } from './MoleculeActions.ts';
+import { initMoleculeViewProperties } from './MoleculeActions.js';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions.js';
 import { setSpectraMetaInfo } from './SpectraActions.js';
 import { setActiveTab } from './ToolsActions.js';

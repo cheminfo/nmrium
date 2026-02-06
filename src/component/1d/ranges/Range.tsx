@@ -18,21 +18,21 @@ import { useLogger } from '../../context/LoggerContext.js';
 import { ActionsButtonsPopover } from '../../elements/ActionsButtonsPopover.js';
 import { useDialogData } from '../../elements/DialogManager.js';
 import { ResizerWithScale } from '../../elements/ResizerWithScale.js';
-import type { Position } from '../../elements/resizer/SVGResizer.tsx';
+import type { Position } from '../../elements/resizer/SVGResizer.js';
 import { useHighlight } from '../../highlight/index.js';
 import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
 import { useHighlightColor } from '../../hooks/useHighlightColor.js';
 import { useResizerStatus } from '../../hooks/useResizerStatus.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import { EditRangeModal } from '../../modal/editRange/EditRangeModal.js';
-import type { StackOverlappingLabelsMapReturnType } from '../../utility/stackOverlappingLabels.ts';
+import type { StackOverlappingLabelsMapReturnType } from '../../utility/stackOverlappingLabels.js';
 import { useIsInset } from '../inset/InsetProvider.js';
 import { IntegralIndicator } from '../integral/IntegralIndicator.js';
 import { useScaleX } from '../utilities/scale.js';
 
-import { AssignmentLabel } from './AssignmentLabel.tsx';
+import { AssignmentLabel } from './AssignmentLabel.js';
 import { Atoms } from './Atoms.js';
-import { useAssignmentsPopoverActionsButtons } from './useAssignmentsPopoverActionsButtons.tsx';
+import { useAssignmentsPopoverActionsButtons } from './useAssignmentsPopoverActionsButtons.js';
 
 interface RangeProps {
   selectedTool: string;

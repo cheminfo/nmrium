@@ -15,19 +15,19 @@ import {
 import { unlink } from '../../../data/utilities/ZoneUtilities.js';
 import type { Axis } from '../../assignment/AssignmentsContext.js';
 import { defaultZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState.js';
-import type { TargetAssignKeys } from '../../panels/MoleculesPanel/utilities/getAssignIds.ts';
+import type { TargetAssignKeys } from '../../panels/MoleculesPanel/utilities/getAssignIds.js';
 import type { ZoneData } from '../../panels/ZonesPanel/hooks/useMapZones.js';
 import type { FilterType } from '../../utility/filterType.js';
 import type { State } from '../Reducer.js';
 import type { ZoneBoundary } from '../helper/get2DRange.js';
 import get2DRange from '../helper/get2DRange.js';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
-import { getSpectrum } from '../helper/getSpectrum.ts';
+import { getSpectrum } from '../helper/getSpectrum.js';
 import type { ActionType } from '../types/ActionType.js';
 
 import { handleUpdateCorrelations } from './CorrelationsActions.js';
 import { setDomain } from './DomainActions.js';
-import { rollbackSpectrumByFilter } from './FiltersActions.ts';
+import { rollbackSpectrumByFilter } from './FiltersActions.js';
 
 interface DeleteSignal2DProps {
   spectrumId: string;

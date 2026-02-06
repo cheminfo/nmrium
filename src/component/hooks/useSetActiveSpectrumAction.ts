@@ -1,4 +1,4 @@
-import { useChartData } from '../context/ChartContext.tsx';
+import { useChartData } from '../context/ChartContext.js';
 import { useDispatch } from '../context/DispatchContext.js';
 import type { EventModifierKeys } from '../context/KeyModifierContext.js';
 import { getModifiers } from '../context/KeyModifierContext.js';

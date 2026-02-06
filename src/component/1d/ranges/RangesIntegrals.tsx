@@ -1,7 +1,7 @@
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { xyIntegral, xyMaxY } from 'ml-spectra-processing';
 
-import { getOpacityBasedOnSignalKind } from '../../../data/utilities/RangeUtilities.ts';
+import { getOpacityBasedOnSignalKind } from '../../../data/utilities/RangeUtilities.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
 import useIntegralPath from '../../hooks/useIntegralPath.js';

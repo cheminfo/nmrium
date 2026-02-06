@@ -26,7 +26,7 @@ import type { State } from '../Reducer.js';
 import { rescaleToSameTop } from '../helper/Zoom1DManager.js';
 import { addToBrushHistory } from '../helper/ZoomHistoryManager.js';
 import { getActiveSpectra } from '../helper/getActiveSpectra.js';
-import { getSpectrum } from '../helper/getSpectrum.ts';
+import { getSpectrum } from '../helper/getSpectrum.js';
 import type { ActionType } from '../types/ActionType.js';
 
 type NumberExtent = [number, number];

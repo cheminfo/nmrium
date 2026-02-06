@@ -15,7 +15,7 @@ import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
 import { useFormatNumberByNucleus } from '../hooks/useFormatNumberByNucleus.js';
 import { options } from '../toolbar/ToolTypes.js';
 
-import type { Spectrum1DTraces } from './useTracesSpectra.ts';
+import type { Spectrum1DTraces } from './useTracesSpectra.js';
 import type { Get2DDimensionLayoutReturn } from './utilities/DimensionLayout.js';
 import { LAYOUT, getLayoutID } from './utilities/DimensionLayout.js';
 import { get1DYScale, get2DXScale, get2DYScale } from './utilities/scale.js';

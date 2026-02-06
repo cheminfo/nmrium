@@ -10,8 +10,8 @@ import type {
 } from 'nmr-correlation';
 import { buildCorrelationData, setCorrelation } from 'nmr-correlation';
 
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.ts';
-import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.ts';
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
+import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.js';
 import {
   findRange,
   findSignal1D,

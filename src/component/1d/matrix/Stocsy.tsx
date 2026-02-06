@@ -5,7 +5,7 @@ import { useMemo } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';
-import { useActiveNucleusTab } from '../../hooks/useActiveNucleusTab.ts';
+import { useActiveNucleusTab } from '../../hooks/useActiveNucleusTab.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import { PathBuilder } from '../../utility/PathBuilder.js';
 import { getYScaleWithRation } from '../utilities/scale.js';

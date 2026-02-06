@@ -32,7 +32,7 @@ import { PublicationStringModal } from '../../modal/PublicationStringModal.js';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal.js';
 import { booleanToString } from '../../utility/booleanToString.js';
 import type { FilterType } from '../../utility/filterType.js';
-import { saveAs } from '../../utility/save_as.ts';
+import { saveAs } from '../../utility/save_as.js';
 import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
 
 type ExportRangesType = 'publicationString' | 'rangesToTSV';

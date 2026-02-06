@@ -2,9 +2,9 @@ import type { NMRPeak1D, Peak1D, Range } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { memo, useMemo } from 'react';
 
-import { getOpacityBasedOnSignalKind } from '../../../data/utilities/RangeUtilities.ts';
+import { getOpacityBasedOnSignalKind } from '../../../data/utilities/RangeUtilities.js';
 import { useChartData } from '../../context/ChartContext.js';
-import { useScaleChecked } from '../../context/ScaleContext.tsx';
+import { useScaleChecked } from '../../context/ScaleContext.js';
 import { useActiveSpectrumPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState.js';
 import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
