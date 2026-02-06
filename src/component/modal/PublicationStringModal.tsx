@@ -1,8 +1,11 @@
 import { Button, Dialog, DialogFooter, Tooltip } from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import type { ACSExportOptions, Spectrum1D } from '@zakodium/nmrium-core';
+import type {
+  ACSExportOptions,
+  Spectrum1D,
+  Spectrum,
+} from '@zakodium/nmrium-core';
 import type { FormEvent } from 'react';
-import { useMemo } from 'react';
 import {
   FieldGroupSVGTextStyleFields,
   Form,
@@ -13,11 +16,12 @@ import {
 import { z } from 'zod';
 
 import { isSpectrum1D } from '../../data/data1d/Spectrum1D/isSpectrum1D.js';
+import { ClipboardFallbackModal } from '../../utils/clipboard/clipboardComponents.tsx';
+import { useClipboard } from '../../utils/clipboard/clipboardHooks.ts';
 import { usePreferences } from '../context/PreferencesContext.tsx';
+import { useToaster } from '../context/ToasterContext.tsx';
 import { EmptyText } from '../elements/EmptyText.js';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
-import useSpectrum from '../hooks/useSpectrum.js';
-import { useActiveACSSettings } from '../hooks/use_acs_settings.ts';
 import { buildPublicationString } from '../hooks/use_publication_strings.ts';
 
 const Body = styled.div`
@@ -76,10 +80,13 @@ const exportFormats: Array<SelectItem<ExportFormatType>> = [
 
 interface InnerPublicationStringModalProps {
   onClose: () => void;
-  onCopyClick: (text: string) => void;
 
-  isPublicationStringShown: boolean;
-  togglePublicationStringVisibility: () => void;
+  acsExportOptions: ACSExportOptions;
+  spectrum: Spectrum;
+  publicationStringVisibility?: {
+    isShown: boolean;
+    toggle: () => void;
+  };
 
   allowTextStyle?: boolean;
   saveLabel?: string;
@@ -101,29 +108,32 @@ export function PublicationStringModal(props: PublicationStringModalProps) {
 function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
   const {
     onClose,
-    onCopyClick,
-    isPublicationStringShown,
-    togglePublicationStringVisibility,
+    acsExportOptions,
+    spectrum,
+    publicationStringVisibility,
     allowTextStyle = false,
-    saveLabel = 'Apply and copy',
+    saveLabel = 'Apply',
     copyOnSave = false,
   } = props;
-  const spectrum = useSpectrum();
   const { dispatch } = usePreferences();
-  const currentACSOptions = useActiveACSSettings();
 
-  const defaultValues = useMemo(() => {
-    const values = validationSchema.encode({
-      acs: currentACSOptions,
-      isPublicationStringShown,
-    });
+  const toaster = useToaster();
+  const { rawWriteWithType, shouldFallback, text, cleanShouldFallback } =
+    useClipboard();
+  function sendToClipboard(value: string) {
+    void rawWriteWithType(value, 'text/html').then(() =>
+      toaster.show({ message: 'Data copied to clipboard', intent: 'success' }),
+    );
+  }
 
-    if (values.acs.textStyle.fontSize === undefined) {
-      values.acs.textStyle.fontSize = '12';
-    }
+  const defaultValues = validationSchema.encode({
+    acs: acsExportOptions,
+    isPublicationStringShown: publicationStringVisibility?.isShown ?? false,
+  });
+  if (defaultValues.acs.textStyle.fontSize === undefined) {
+    defaultValues.acs.textStyle.fontSize = '12';
+  }
 
-    return values;
-  }, [currentACSOptions, isPublicationStringShown]);
   const form = useForm({
     defaultValues,
     validators: { onChange: validationSchema },
@@ -144,8 +154,12 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
         type: 'CHANGE_EXPORT_ACS_SETTINGS',
         payload: { options: parsedValues.acs, nucleus },
       });
-      if (parsedValues.isPublicationStringShown !== isPublicationStringShown) {
-        togglePublicationStringVisibility();
+      if (
+        publicationStringVisibility &&
+        parsedValues.isPublicationStringShown !==
+          publicationStringVisibility.isShown
+      ) {
+        publicationStringVisibility.toggle();
       }
 
       // Copy
@@ -154,7 +168,7 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
           spectrum,
           acs: parsedValues.acs,
         });
-        onCopyClick(publicationString);
+        sendToClipboard(publicationString);
       }
 
       // Close
@@ -174,10 +188,14 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
       <Dialog
         isOpen
         title="Publication string"
+        icon={
+          <span style={{ paddingRight: '16px' }}>{spectrum.info.nucleus}</span>
+        }
         onClose={onClose}
         style={{ minWidth: 600 }}
       >
         <Form noValidate onSubmit={onSubmit} layout="inline">
+          <HelpForm>This configuration is at the nucleus level.</HelpForm>
           <StyledDialogBody>
             <form.AppField name="acs.signalKind">
               {(field) => <field.Select label="Filter" items={exportOptions} />}
@@ -210,7 +228,7 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
                   <PublicationStringPreview
                     values={values}
                     spectrum={spectrum}
-                    onCopy={onCopyClick}
+                    onCopy={sendToClipboard}
                   />
                 )}
               </form.Subscribe>
@@ -223,17 +241,26 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
               </form.SubmitButton>
             }
           >
-            <form.AppField name="isPublicationStringShown">
-              {(field) => (
-                <field.Checkbox
-                  label="Show publication string"
-                  style={{ display: 'inline-block' }}
-                />
-              )}
-            </form.AppField>
+            {publicationStringVisibility && (
+              <form.AppField name="isPublicationStringShown">
+                {(field) => (
+                  <field.Checkbox
+                    label="Show publication string"
+                    style={{ display: 'inline-block' }}
+                  />
+                )}
+              </form.AppField>
+            )}
           </DialogFooter>
         </Form>
       </Dialog>
+
+      <ClipboardFallbackModal
+        mode={shouldFallback}
+        onDismiss={cleanShouldFallback}
+        text={text}
+        label="Preview publication string"
+      />
     </form.AppForm>
   );
 }
@@ -241,6 +268,10 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
 const CopyPreviewButton = styled(Button)`
   margin-left: 5px;
   margin-bottom: 5px;
+`;
+
+const HelpForm = styled.p`
+  margin: 8px;
 `;
 
 interface PublicationStringPreviewProps {

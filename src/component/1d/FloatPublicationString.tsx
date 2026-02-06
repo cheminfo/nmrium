@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
-import type { BoundingBox, TextStyle } from '@zakodium/nmrium-core';
+import type { BoundingBox, Spectrum, TextStyle } from '@zakodium/nmrium-core';
 import { useEffect, useMemo, useState } from 'react';
 import { BsArrowsMove } from 'react-icons/bs';
-import { FaTimes } from 'react-icons/fa';
+import { FaEdit, FaTimes } from 'react-icons/fa';
 import { Rnd } from 'react-rnd';
 import { SVGStyledText } from 'react-science/ui';
 
@@ -17,6 +17,7 @@ import { useTextMetrics } from '../hooks/useTextMetrics.ts';
 import { useCheckExportStatus } from '../hooks/useViewportSize.js';
 import { useACSSettings } from '../hooks/use_acs_settings.ts';
 import { usePublicationStrings } from '../hooks/use_publication_strings.ts';
+import { PublicationStringModal } from '../modal/PublicationStringModal.tsx';
 
 const ReactRnd = styled(Rnd)`
   border: 1px solid transparent;
@@ -141,12 +142,14 @@ function PublicationText(props: PublicationTextProps) {
 interface DraggablePublicationStringProps {
   value: string;
   bonding: BoundingBox;
-  spectrumKey: string;
-  nucleus: string | undefined;
+  nucleus: string;
+  spectrum: Spectrum;
 }
 
 function DraggablePublicationString(props: DraggablePublicationStringProps) {
-  const { value, bonding: externalBounding, spectrumKey, nucleus } = props;
+  const { value, bonding: externalBounding, nucleus, spectrum } = props;
+  const spectrumKey = spectrum.id;
+
   const dispatch = useDispatch();
   const { viewerRef } = useGlobal();
   const [bounding, setBounding] = useState<BoundingBox>(externalBounding);
@@ -154,6 +157,7 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
   const { percentToPixel, pixelToPercent } = useSVGUnitConverter();
   const isExportProcessStart = useCheckExportStatus();
   const acsOptions = useACSSettings(nucleus);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
     setBounding({ ...externalBounding });
@@ -246,11 +250,18 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
   const actionButtons: ActionsButtonsPopoverProps['buttons'] = [
     {
       icon: <BsArrowsMove />,
-
       intent: 'none',
       title: 'Move publication string',
       style: { cursor: 'move' },
       className: 'handle',
+    },
+    {
+      icon: <FaEdit />,
+      intent: 'primary',
+      title: 'Configure publication string',
+      onClick: () => {
+        setIsDialogOpen(true);
+      },
     },
     {
       icon: <FaTimes />,
@@ -279,52 +290,61 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
   }
 
   return (
-    <ReactRnd
-      default={{ x, y, width: width || 'auto', height: height || 'auto' }}
-      position={{ x, y }}
-      size={{ width: width || 'auto', height: height || 'auto' }}
-      minWidth={100}
-      minHeight={50}
-      dragHandleClassName="handle"
-      enableUserSelectHack={false}
-      bounds={`#${viewerRef.id}`}
-      onDragStart={() => setIsMoveActive(true)}
-      onResize={(e, dir, eRef, size, position) =>
-        handleResize({ ...size, ...position })
-      }
-      onResizeStop={(e, dir, eRef, size, position) =>
-        handleChangeInsetBounding({ ...size, ...position })
-      }
-      onDrag={(e, { x, y }) => {
-        handleDrag({ x, y });
-      }}
-      onDragStop={(e, { x, y }) => {
-        handleChangeInsetBounding({ x, y });
-        setIsMoveActive(false);
-      }}
-      resizeHandleWrapperStyle={{ backgroundColor: 'white' }}
-    >
-      <ActionsButtonsPopover
-        buttons={actionButtons}
-        fill
-        positioningStrategy="fixed"
-        position="top-left"
-        direction="row"
-        targetProps={{ style: { width: '100%', height: '100%' } }}
-        space={2}
-        {...(isMoveActive && { isOpen: true })}
-        x={x}
-        y={y}
+    <>
+      <ReactRnd
+        default={{ x, y, width: width || 'auto', height: height || 'auto' }}
+        position={{ x, y }}
+        size={{ width: width || 'auto', height: height || 'auto' }}
+        minWidth={100}
+        minHeight={50}
+        dragHandleClassName="handle"
+        enableUserSelectHack={false}
+        bounds={`#${viewerRef.id}`}
+        onDragStart={() => setIsMoveActive(true)}
+        onResize={(e, dir, eRef, size, position) =>
+          handleResize({ ...size, ...position })
+        }
+        onResizeStop={(e, dir, eRef, size, position) =>
+          handleChangeInsetBounding({ ...size, ...position })
+        }
+        onDrag={(e, { x, y }) => {
+          handleDrag({ x, y });
+        }}
+        onDragStop={(e, { x, y }) => {
+          handleChangeInsetBounding({ x, y });
+          setIsMoveActive(false);
+        }}
+        resizeHandleWrapperStyle={{ backgroundColor: 'white' }}
       >
-        <svg width={width} height={'auto'} xmlns="http://www.w3.org/2000/svg">
-          <PublicationText
-            text={value}
-            width={width}
-            textStyle={acsOptions.textStyle}
-          />
-        </svg>
-      </ActionsButtonsPopover>
-    </ReactRnd>
+        <ActionsButtonsPopover
+          buttons={actionButtons}
+          fill
+          positioningStrategy="fixed"
+          position="top-left"
+          direction="row"
+          targetProps={{ style: { width: '100%', height: '100%' } }}
+          space={2}
+          {...(isMoveActive && { isOpen: true })}
+          x={x}
+          y={y}
+        >
+          <svg width={width} height={'auto'} xmlns="http://www.w3.org/2000/svg">
+            <PublicationText
+              text={value}
+              width={width}
+              textStyle={acsOptions.textStyle}
+            />
+          </svg>
+        </ActionsButtonsPopover>
+      </ReactRnd>
+      <PublicationStringModal
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        acsExportOptions={acsOptions}
+        spectrum={spectrum}
+        allowTextStyle
+      />
+    </>
   );
 }
 
@@ -334,30 +354,41 @@ export function FloatPublicationString() {
     data: spectra,
     view: { ranges },
   } = useChartData();
-  const options = useMemo(() => Object.entries(ranges), [ranges]);
-  const spectraToNucleusMap = useMemo(() => {
-    const map = new Map<string, string>();
+  const spectraMap = useMemo(() => {
+    const map = new Map<string, Spectrum>();
 
     for (const spectrum of spectra) {
-      if (!isSpectrum1D(spectrum)) continue;
-      const { nucleus } = spectrum.info;
-      map.set(spectrum.id, nucleus);
+      map.set(spectrum.id, spectrum);
     }
 
     return map;
   }, [spectra]);
+  const options = useMemo(() => {
+    return Object.entries(ranges).map(([spectrumKey, viewOptions]) => ({
+      spectrum: spectraMap.get(spectrumKey),
+      viewOptions,
+    }));
+  }, [ranges, spectraMap]);
 
-  return options.map(([spectrumKey, viewOptions]) => {
+  return options.map((options) => {
+    const { viewOptions, spectrum } = options;
+
     const { showPublicationString, publicationStringBounding } = viewOptions;
     if (!showPublicationString) return null;
+    if (!isSpectrum1D(spectrum)) return null;
+
+    const {
+      id,
+      info: { nucleus },
+    } = spectrum;
 
     return (
       <DraggablePublicationString
-        key={spectrumKey}
-        spectrumKey={spectrumKey}
-        nucleus={spectraToNucleusMap.get(spectrumKey)}
+        key={id}
+        spectrum={spectrum}
+        nucleus={nucleus}
         bonding={publicationStringBounding}
-        value={publicationString[spectrumKey]}
+        value={publicationString[id]}
       />
     );
   });
