@@ -32,10 +32,16 @@ export function GeneralSettings(props: GeneralSettingsProps) {
   const { saveSettings } = useSaveSettings();
 
   const defaultValues: z.input<typeof workspaceValidation> = {
+    peaksLabel: {
+      marginTop: currentWorkspace.peaksLabel.marginTop,
+    },
     general: {
       dimmedSpectraOpacity: currentWorkspace.general.dimmedSpectraOpacity,
       invertScroll: currentWorkspace.general.invertScroll,
       invertActions: currentWorkspace.general.invert,
+      spectraRendering: currentWorkspace.general.spectraRendering,
+      popupLoggingLevel: currentWorkspace.general.popupLoggingLevel,
+      loggingLevel: currentWorkspace.general.loggingLevel,
       experimentalFeatures:
         currentWorkspace.display.general?.experimentalFeatures?.display ||
         false,
@@ -58,15 +64,18 @@ export function GeneralSettings(props: GeneralSettingsProps) {
             },
           },
         },
+        peaksLabel: {
+          marginTop: parsedValues.peaksLabel.marginTop,
+        },
         general: {
           invert: parsedValues.general.invertActions,
           invertScroll: parsedValues.general.invertScroll,
           dimmedSpectraOpacity: parsedValues.general.dimmedSpectraOpacity,
-          spectraRendering: 'auto',
+          spectraRendering: parsedValues.general.spectraRendering,
           verticalSplitterCloseThreshold: 0,
           verticalSplitterPosition: '1px',
-          loggingLevel: 'info',
-          popupLoggingLevel: 'info',
+          loggingLevel: parsedValues.general.loggingLevel,
+          popupLoggingLevel: parsedValues.general.popupLoggingLevel,
         },
       });
     },

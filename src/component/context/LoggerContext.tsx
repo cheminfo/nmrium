@@ -35,6 +35,15 @@ interface LoggerProviderProps {
   children: ReactNode;
 }
 
+export type LoggerType =
+  | 'fatal'
+  | 'error'
+  | 'warn'
+  | 'info'
+  | 'debug'
+  | 'trace'
+  | 'silent';
+
 export const LOGGER_LEVELS = {
   fatal: 60,
   error: 50,
