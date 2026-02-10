@@ -156,7 +156,7 @@ function Range(options: RangeProps) {
       onClosed={() => {
         isAssignBtnTrigged.current = false;
       }}
-      offsetYMode="cursor"
+      anchorTo="cursor-y"
     >
       <g
         data-testid="range"

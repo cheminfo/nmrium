@@ -121,8 +121,8 @@ function PeakAnnotationsSpreadMode(props: PeakAnnotationsSpreadModeProps) {
       direction="row"
       {...(isDragActive && { isOpen: true })}
       y={y}
-      offsetY={-20}
-      offsetXMode="cursor"
+      anchorTo="cursor-x"
+      anchorPlacement="start"
       autoFlip={false}
     >
       <g className="peaks">

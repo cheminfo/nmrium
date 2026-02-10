@@ -51,21 +51,30 @@ function isSeparator(
 
 type Direction = 'column' | 'row';
 
-export interface ActionsButtonsPopoverProps extends Omit<
-  PopoverProps,
-  'interactionKind' | 'content' | 'modifiers' | 'renderTarget'
-> {
+type AnchorTo = 'element' | 'cursor-x' | 'cursor-y' | 'cursor';
+
+type AnchorPlacement = 'start' | 'end';
+
+interface Position {
+  x: number;
+  y: number;
+}
+export interface ActionsButtonsPopoverProps
+  extends
+    Omit<
+      PopoverProps,
+      'interactionKind' | 'content' | 'modifiers' | 'renderTarget'
+    >,
+    Partial<Position> {
   buttons: ActionButtonProps[];
   contentStyle?: CSSProperties;
   direction?: Direction;
   space?: number;
   offsetX?: number;
   offsetY?: number;
-  offsetYMode?: 'fixed' | 'cursor';
-  offsetXMode?: 'fixed' | 'cursor';
-  x?: number;
-  y?: number;
+  anchorTo?: AnchorTo;
   autoFlip?: boolean;
+  anchorPlacement?: AnchorPlacement;
 }
 
 function ActionButton(props: ButtonProps) {
@@ -90,6 +99,52 @@ function filterButtons(buttons: ActionButtonProps[]) {
   return { visibleButtons, disablePopover };
 }
 
+interface OffsetOptions {
+  offsetX?: number;
+  offsetY?: number;
+  anchorTo?: AnchorTo;
+  cursorPosition: Position;
+}
+
+function getOffset(options: OffsetOptions): [number, number] {
+  const { anchorTo, cursorPosition, offsetX = 0, offsetY = 0 } = options;
+  const isTrackX = anchorTo === 'cursor-x' || anchorTo === 'cursor';
+  const isTrackY = anchorTo === 'cursor-y' || anchorTo === 'cursor';
+
+  const x = isTrackX ? cursorPosition.x : 0;
+  const y = isTrackY ? cursorPosition.y : 0;
+
+  if (anchorTo === 'cursor-x') {
+    return [x + offsetX, -offsetY];
+  }
+
+  if (anchorTo === 'cursor-y') {
+    return [y + offsetY, offsetX];
+  }
+
+  if (anchorTo === 'cursor') {
+    return [x + offsetX, -(y + offsetY)];
+  }
+
+  return [offsetX, -offsetY];
+}
+
+function getPlacement(
+  anchorTo: AnchorTo,
+  anchorPlacement: AnchorPlacement,
+): PopoverProps['placement'] {
+  switch (anchorTo) {
+    case 'cursor-x':
+      return `${anchorPlacement === 'start' ? 'top' : 'bottom'}-start`;
+    case 'cursor-y':
+      return `${anchorPlacement === 'start' ? 'left' : 'right'}-start`;
+    case 'cursor':
+      return 'top-start';
+    default:
+      return 'top-start';
+  }
+}
+
 export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
   const {
     targetTagName = 'div',
@@ -99,40 +154,42 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
     space,
     direction = 'column',
     contentStyle = {},
-    offsetX: externalOffsetX = 0,
-    offsetY: externalOffsetY = 0,
+    offsetX = 0,
+    offsetY = 0,
     x,
     y,
-    offsetYMode = 'fixed',
-    offsetXMode = 'fixed',
-    autoFlip = true,
+    anchorTo = 'element',
+    autoFlip = false,
     disabled,
+    anchorPlacement = 'end',
     ...otherProps
   } = props;
 
-  const [cursor, setCursor] = useState({ x: 0, y: 0 });
+  const [cursorPosition, setCursorPosition] = useState<Position>({
+    x: 0,
+    y: 0,
+  });
   const Wrapper = targetTagName as any;
 
   const { visibleButtons, disablePopover } = filterButtons(buttons);
-
-  const offsetY = offsetYMode === 'fixed' ? externalOffsetY : cursor.y;
-  const offsetX = offsetXMode === 'fixed' ? externalOffsetX : cursor.x;
 
   function handleMouseEnter(event: any) {
     const { clientX, clientY, currentTarget } = event;
     if (!(currentTarget instanceof Element)) return;
     const rect = currentTarget.getBoundingClientRect();
 
-    setCursor((prev) => ({
-      x: offsetXMode === 'cursor' ? clientX - rect.left : prev.x,
-      y: offsetYMode === 'cursor' ? clientY - rect.top : prev.y,
-    }));
+    setCursorPosition({
+      x: clientX - rect.left,
+      y: clientY - rect.top,
+    });
   }
 
+  const placement = getPlacement(anchorTo, anchorPlacement);
+  const offset = getOffset({ anchorTo, offsetX, offsetY, cursorPosition });
   return (
     <Popover
       minimal
-      position="auto-start"
+      placement={placement}
       popoverClassName="actions-buttons-popover"
       interactionKind="hover"
       enforceFocus={false}
@@ -155,8 +212,7 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
           enabled: true,
           data: { x, y },
           options: {
-            offset:
-              direction === 'column' ? [offsetY, offsetX] : [offsetX, offsetY],
+            offset,
           },
         },
 
