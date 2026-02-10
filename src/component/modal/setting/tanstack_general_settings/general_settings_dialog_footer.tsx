@@ -11,7 +11,9 @@ const Footer = styled.div`
 
 export const GeneralSettingsDialogFooter = withForm({
   props: {
-    onCancel: () => {},
+    onCancel: () => {
+      /* empty */
+    },
   },
   defaultValues: defaultGeneralSettingsFormValues,
   render: ({ form, onCancel }) => {
