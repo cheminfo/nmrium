@@ -97,7 +97,7 @@ export function GeneralSettings(props: GeneralSettingsProps) {
         />
 
         <GeneralSettingsDialogBody form={form} height={height} />
-        <GeneralSettingsDialogFooter form={form} />
+        <GeneralSettingsDialogFooter form={form} onCancel={close} />
       </Form>
     </Dialog>
   );
