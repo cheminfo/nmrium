@@ -1,4 +1,4 @@
-import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
+import { DialogBody, DialogFooter } from '@blueprintjs/core';
 import { yupResolver } from '@hookform/resolvers/yup';
 import type { ParseResult } from 'papaparse';
 import type { CSSProperties } from 'react';
@@ -24,6 +24,7 @@ import Label from '../../elements/Label.js';
 import type { Column } from '../../elements/ReactTable/ReactTable.js';
 import ReactTable from '../../elements/ReactTable/ReactTable.js';
 import { Select2Controller } from '../../elements/Select2Controller.js';
+import { StandardDialog } from '../../elements/StandardDialog.tsx';
 import { convertPathArrayToString } from '../../utility/convertPathArrayToString.js';
 import { getSpectraObjectPaths } from '../../utility/getSpectraObjectPaths.js';
 
@@ -103,14 +104,14 @@ export function MetaImportationModal(props: MetaImportationModalPropsProps) {
   if (!isOpen) return null;
 
   return (
-    <Dialog
+    <StandardDialog
       isOpen
       title="Import meta information"
       style={{ width: 900, height: 600 }}
       onClose={onCloseDialog}
     >
       <InnerMetaImportationModal {...{ onCloseDialog, file }} />
-    </Dialog>
+    </StandardDialog>
   );
 }
 

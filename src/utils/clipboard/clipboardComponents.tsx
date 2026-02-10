@@ -1,9 +1,9 @@
-import { Dialog } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import type { FormEvent } from 'react';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 import Button from '../../component/elements/Button.js';
+import { StandardDialog } from '../../component/elements/StandardDialog.tsx';
 import { StyledDialogBody } from '../../component/elements/StyledDialogBody.js';
 
 import type { ClipboardMode } from './types.js';
@@ -126,11 +126,11 @@ export function ClipboardFallbackModal(props: ClipboardFallbackProps) {
   };
 
   return (
-    <Dialog isOpen onClose={props.onDismiss} title={titles[props.mode]}>
+    <StandardDialog isOpen onClose={props.onDismiss} title={titles[props.mode]}>
       <StyledDialogBody padding="0px">
         <ClipboardFallback {...props} />
       </StyledDialogBody>
-    </Dialog>
+    </StandardDialog>
   );
 }
 

@@ -1,4 +1,4 @@
-import { Classes, Dialog, DialogFooter } from '@blueprintjs/core';
+import { Classes, DialogFooter } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useCallback, useMemo } from 'react';
@@ -12,6 +12,7 @@ import { useDispatch } from '../../context/DispatchContext.js';
 import { Input2Controller } from '../../elements/Input2Controller.js';
 import type { Column } from '../../elements/ReactTable/ReactTable.js';
 import ReactTable from '../../elements/ReactTable/ReactTable.js';
+import { StandardDialog } from '../../elements/StandardDialog.tsx';
 import { StyledDialogBody } from '../../elements/StyledDialogBody.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import { checkUniqueByKey } from '../../utility/checkUniqueByKey.js';
@@ -69,7 +70,7 @@ export function InformationEditionModal(props: InformationEditionModalProps) {
   }));
 
   return (
-    <Dialog
+    <StandardDialog
       isOpen
       title="Edit spectrum meta information"
       onClose={onCloseDialog}
@@ -79,7 +80,7 @@ export function InformationEditionModal(props: InformationEditionModalProps) {
         metaInfo={metaInfo}
         onCloseDialog={onCloseDialog}
       />
-    </Dialog>
+    </StandardDialog>
   );
 }
 

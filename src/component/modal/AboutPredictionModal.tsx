@@ -1,8 +1,8 @@
-import { Dialog } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { FaInfo } from 'react-icons/fa';
 import { Toolbar, useOnOff } from 'react-science/ui';
 
+import { StandardDialog } from '../elements/StandardDialog.tsx';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 
 const DialogBody = styled(StyledDialogBody)`
@@ -47,7 +47,7 @@ function AboutPredictionModal() {
         onClick={openDialog}
         tooltip="About prediction"
       />
-      <Dialog
+      <StandardDialog
         isOpen={isOpenDialog}
         onClose={closeDialog}
         title="About prediction"
@@ -130,7 +130,7 @@ function AboutPredictionModal() {
             </li>
           </ul>
         </DialogBody>
-      </Dialog>
+      </StandardDialog>
     </>
   );
 }

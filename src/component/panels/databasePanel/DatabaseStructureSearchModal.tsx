@@ -1,8 +1,8 @@
-import { Dialog } from '@blueprintjs/core';
 import { useState } from 'react';
 import type { CanvasEditorOnChangeMolecule } from 'react-ocl';
 import { CanvasMoleculeEditor } from 'react-ocl';
 
+import { StandardDialog } from '../../elements/StandardDialog.tsx';
 import { StyledDialogBody } from '../../elements/StyledDialogBody.js';
 
 interface DatabaseStructureSearchModalProps {
@@ -18,7 +18,7 @@ export function DatabaseStructureSearchModal({
 }: DatabaseStructureSearchModalProps) {
   const [idCode] = useState(initialIdCode);
   return (
-    <Dialog
+    <StandardDialog
       isOpen
       onClose={() => {
         onClose?.();
@@ -38,6 +38,6 @@ export function DatabaseStructureSearchModal({
           height={450}
         />
       </StyledDialogBody>
-    </Dialog>
+    </StandardDialog>
   );
 }

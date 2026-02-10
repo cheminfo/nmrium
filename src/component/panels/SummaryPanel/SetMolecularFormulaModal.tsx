@@ -1,4 +1,4 @@
-import { Dialog, DialogBody, Tab, Tabs } from '@blueprintjs/core';
+import { DialogBody, Tab, Tabs } from '@blueprintjs/core';
 import { yupResolver } from '@hookform/resolvers/yup';
 import type { CSSProperties } from 'react';
 import { useState } from 'react';
@@ -11,6 +11,7 @@ import { useDispatch } from '../../context/DispatchContext.js';
 import Button from '../../elements/Button.js';
 import { Input2Controller } from '../../elements/Input2Controller.js';
 import MoleculeSelection from '../../elements/MoleculeSelection.js';
+import { StandardDialog } from '../../elements/StandardDialog.tsx';
 
 function isValidMf(value: string): boolean {
   try {
@@ -80,7 +81,7 @@ function InnerSetMolecularFormulaModal({
   }
 
   return (
-    <Dialog
+    <StandardDialog
       isOpen
       title="Molecular formula"
       style={{ width: 400 }}
@@ -100,7 +101,7 @@ function InnerSetMolecularFormulaModal({
           />
         </Tabs>
       </DialogBody>
-    </Dialog>
+    </StandardDialog>
   );
 }
 
