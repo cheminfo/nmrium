@@ -7,7 +7,8 @@ import { defaultGeneralSettingsFormValues } from './validation.ts';
 
 const Footer = styled.div`
   display: flex;
-  justify-content: flex-start;
+  justify-content: flex-end;
+  gap: 10px;
 `;
 
 export const GeneralSettingsDialogFooter = withForm({
@@ -28,6 +29,9 @@ export const GeneralSettingsDialogFooter = withForm({
             <Button variant="outlined" intent="danger" onClick={onCancel}>
               Cancel
             </Button>
+            <form.SubmitButton intent="success">
+              Apply and Save
+            </form.SubmitButton>
             <form.Subscribe selector={(state) => state.values}>
               {(values) => (
                 <Button intent="primary" onClick={() => onApply(values)}>
@@ -35,9 +39,6 @@ export const GeneralSettingsDialogFooter = withForm({
                 </Button>
               )}
             </form.Subscribe>
-            <form.SubmitButton intent="success">
-              Apply and Save
-            </form.SubmitButton>
           </Footer>
         </DialogFooter>
       </form.AppForm>

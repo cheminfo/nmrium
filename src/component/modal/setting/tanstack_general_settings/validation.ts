@@ -12,28 +12,30 @@ const loggingLevel: LoggerType[] = [
   'silent',
 ];
 
-const generalValidation = z.object({
-  dimmedSpectraOpacity: z.coerce.number().min(0).max(1),
-  invertActions: z.boolean(),
-  invertScroll: z.boolean(),
-  experimentalFeatures: z.boolean(),
-  spectraRendering: z.enum([
-    'auto',
-    'optimizeSpeed',
-    'crispEdges',
-    'geometricPrecision',
-  ]),
-  popupLoggingLevel: z.enum(loggingLevel).optional(),
-  loggingLevel: z.enum(loggingLevel).optional(),
-});
-
-const peaksLabelValidation = z.object({
-  marginTop: z.coerce.number().int().min(0),
-});
-
 export const workspaceValidation = z.object({
-  general: generalValidation,
-  peaksLabel: peaksLabelValidation,
+  peaksLabel: z.object({
+    marginTop: z.coerce.number().int().min(0),
+  }),
+  general: z.object({
+    dimmedSpectraOpacity: z.coerce.number().min(0).max(1),
+    invert: z.boolean(),
+    invertScroll: z.boolean(),
+    spectraRendering: z.enum([
+      'auto',
+      'optimizeSpeed',
+      'crispEdges',
+      'geometricPrecision',
+    ]),
+    popupLoggingLevel: z.enum(loggingLevel).optional(),
+    loggingLevel: z.enum(loggingLevel).optional(),
+  }),
+  display: z.object({
+    general: z.object({
+      experimentalFeatures: z.object({
+        display: z.boolean(),
+      }),
+    }),
+  }),
 });
 
 // This object is used to define type not real values. Do not use it as values
@@ -45,11 +47,17 @@ export const defaultGeneralSettingsFormValues: z.input<
   },
   general: {
     dimmedSpectraOpacity: 0,
-    invertActions: false,
+    invert: false,
     invertScroll: false,
-    experimentalFeatures: false,
     spectraRendering: 'auto',
     loggingLevel: 'info',
     popupLoggingLevel: 'info',
+  },
+  display: {
+    general: {
+      experimentalFeatures: {
+        display: false,
+      },
+    },
   },
 };

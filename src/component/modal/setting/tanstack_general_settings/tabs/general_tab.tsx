@@ -46,7 +46,7 @@ export const GeneralTab = withForm({
               />
             )}
           </form.AppField>
-          <form.AppField name="general.invertActions">
+          <form.AppField name="general.invert">
             {(field) => <field.Switch label="Invert actions" />}
           </form.AppField>
           <form.AppField name="general.invertScroll">
@@ -54,7 +54,7 @@ export const GeneralTab = withForm({
           </form.AppField>
         </form.Section>
         <form.Section title="Experimental features">
-          <form.AppField name="general.experimentalFeatures">
+          <form.AppField name="display.general.experimentalFeatures.display">
             {(field) => <field.Switch label="Enable experimental features" />}
           </form.AppField>
         </form.Section>

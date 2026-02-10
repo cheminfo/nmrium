@@ -1,6 +1,7 @@
 import { Dialog as BPDialog } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { revalidateLogic } from '@tanstack/react-form';
+import type { Workspace } from '@zakodium/nmrium-core';
 import { Form, useForm } from 'react-science/ui';
 import type { z } from 'zod/v4';
 
@@ -31,77 +32,34 @@ export function GeneralSettings(props: GeneralSettingsProps) {
   const { current: currentWorkspace, dispatch } = usePreferences();
   const { saveSettings } = useSaveSettings();
 
-  const defaultValues: GeneralSettingsFormType = {
-    peaksLabel: {
-      marginTop: currentWorkspace.peaksLabel.marginTop,
-    },
-    general: {
-      dimmedSpectraOpacity: currentWorkspace.general.dimmedSpectraOpacity,
-      invertScroll: currentWorkspace.general.invertScroll,
-      invertActions: currentWorkspace.general.invert,
-      spectraRendering: currentWorkspace.general.spectraRendering,
-      popupLoggingLevel: currentWorkspace.general.popupLoggingLevel,
-      loggingLevel: currentWorkspace.general.loggingLevel,
-      experimentalFeatures:
-        currentWorkspace.display.general?.experimentalFeatures?.display ||
-        false,
-    },
-  };
-
   const form = useForm({
-    validators: { onDynamic: workspaceValidation },
+    validators: {
+      onDynamic: workspaceValidation,
+    },
     validationLogic: revalidateLogic({ mode: 'change' }),
-    defaultValues,
+    defaultValues: currentWorkspace as GeneralSettingsFormType,
     onSubmit: ({ value }) => {
-      const parsedValues = workspaceValidation.parse(value);
+      const safeParseResult = workspaceValidation.safeParse(value);
 
-      saveSettings({
-        display: {
-          general: {
-            experimentalFeatures: {
-              display: parsedValues.general.experimentalFeatures,
-              visible: true,
-            },
-          },
-        },
-        peaksLabel: {
-          marginTop: parsedValues.peaksLabel.marginTop,
-        },
-        general: {
-          invert: parsedValues.general.invertActions,
-          invertScroll: parsedValues.general.invertScroll,
-          dimmedSpectraOpacity: parsedValues.general.dimmedSpectraOpacity,
-          spectraRendering: parsedValues.general.spectraRendering,
-          verticalSplitterCloseThreshold: 0,
-          verticalSplitterPosition: '1px',
-          loggingLevel: parsedValues.general.loggingLevel,
-          popupLoggingLevel: parsedValues.general.popupLoggingLevel,
-        },
-      });
+      if (!safeParseResult.success) {
+        throw new Error('Failed to parse workspace validation');
+      }
 
+      saveSettings(value as Partial<Workspace>);
       close();
     },
   });
 
-  // le onsubmit fait saveSettings
-  // - [x] apply and save : saveSettings + close (onCancel)
-  // - [ ] apply : dispatch + close (onCancel)
-  // dispatch({
-  //   type: 'APPLY_General_PREFERENCES',
-  //   payload: {
-  //     data: values as any,
-  //   },
-  // });
-  /*
   function onApply(values: GeneralSettingsFormType) {
     dispatch({
       type: 'APPLY_General_PREFERENCES',
-      payload: {},
+      payload: {
+        data: values as Omit<Workspace, 'label' | 'version'>,
+      },
     });
 
     close();
   }
-  */
 
   return (
     <Dialog isOpen={isOpen} onClose={close} title="General settings" icon="cog">
@@ -113,16 +71,20 @@ export function GeneralSettings(props: GeneralSettingsProps) {
           void form.handleSubmit();
         }}
       >
-        <GeneralSettingsDialogHeader<GeneralSettingsFormType>
-          reset={form.reset}
-          currentValues={form.state.values}
-        />
+        <form.Subscribe selector={(state) => state.values}>
+          {(values) => (
+            <GeneralSettingsDialogHeader
+              reset={form.reset}
+              currentValues={values}
+            />
+          )}
+        </form.Subscribe>
 
         <GeneralSettingsDialogBody form={form} height={height} />
         <GeneralSettingsDialogFooter
           form={form}
           onCancel={close}
-          onApply={() => /* onApply */ {}}
+          onApply={onApply}
         />
       </Form>
     </Dialog>
