@@ -1,6 +1,7 @@
-import { Dialog } from '@blueprintjs/core';
 import { SvgNmrSum } from 'cheminfo-font';
 import { Toolbar, useOnOff } from 'react-science/ui';
+
+import { StandardDialog } from '../../elements/StandardDialog.tsx';
 
 import type { ChangeSumModalContentsProps } from './ChangeSumModalContents.js';
 import { ChangeSumModalContents } from './ChangeSumModalContents.js';
@@ -32,7 +33,7 @@ export default function ChangeSumModal(props: ChangeSumModalProps) {
       />
 
       {isOpenDialog && (
-        <Dialog
+        <StandardDialog
           isOpen
           onClose={closeDialog}
           style={{ width: 500, minHeight: 450 }}
@@ -43,7 +44,7 @@ export default function ChangeSumModal(props: ChangeSumModalProps) {
           }
         >
           <ChangeSumModalContents {...otherProps} onClose={closeDialog} />
-        </Dialog>
+        </StandardDialog>
       )}
     </>
   );

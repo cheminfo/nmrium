@@ -1,4 +1,4 @@
-import { Dialog, DialogFooter } from '@blueprintjs/core';
+import { DialogFooter } from '@blueprintjs/core';
 import { yupResolver } from '@hookform/resolvers/yup';
 import type { Peak1D } from '@zakodium/nmr-types';
 import { useState } from 'react';
@@ -11,6 +11,7 @@ import type { LabelStyle } from '../elements/Label.js';
 import Label from '../elements/Label.js';
 import { NumberInput2Controller } from '../elements/NumberInput2Controller.js';
 import { Select2 } from '../elements/Select2.js';
+import { StandardDialog } from '../elements/StandardDialog.tsx';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 import { useActiveNucleusTab } from '../hooks/useActiveNucleusTab.js';
 import { usePanelPreferences } from '../hooks/usePanelPreferences.js';
@@ -124,7 +125,7 @@ function InnerEditPeakShapeModal(props: Required<EditPeakShapeModalProps>) {
   const valuePPM = formatNumber(peak.x, peaksPreferences.deltaPPM.format);
 
   return (
-    <Dialog
+    <StandardDialog
       isOpen
       style={{ width: 400 }}
       onClose={onCloseDialog}
@@ -169,6 +170,6 @@ function InnerEditPeakShapeModal(props: Required<EditPeakShapeModalProps>) {
           onCancel={() => onCloseDialog?.()}
         />
       </DialogFooter>
-    </Dialog>
+    </StandardDialog>
   );
 }

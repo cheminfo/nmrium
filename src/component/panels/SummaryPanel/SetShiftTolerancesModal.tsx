@@ -1,4 +1,4 @@
-import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
+import { DialogBody, DialogFooter } from '@blueprintjs/core';
 import { yupResolver } from '@hookform/resolvers/yup';
 import type { Tolerance } from 'nmr-correlation';
 import { useMemo } from 'react';
@@ -12,6 +12,7 @@ import Button from '../../elements/Button.js';
 import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
 import type { Column } from '../../elements/ReactTable/ReactTable.js';
 import ReactTable from '../../elements/ReactTable/ReactTable.js';
+import { StandardDialog } from '../../elements/StandardDialog.tsx';
 
 interface ToleranceItem {
   atom: string;
@@ -115,7 +116,7 @@ function InnerSetShiftToleranceModal(props: InnerSetShiftToleranceModalProps) {
   );
 
   return (
-    <Dialog
+    <StandardDialog
       isOpen
       title="Shift tolerances"
       onClose={onClose}
@@ -136,6 +137,6 @@ function InnerSetShiftToleranceModal(props: InnerSetShiftToleranceModalProps) {
           Set shift tolerances
         </Button.Done>
       </DialogFooter>
-    </Dialog>
+    </StandardDialog>
   );
 }

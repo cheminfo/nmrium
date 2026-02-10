@@ -1,10 +1,4 @@
-import {
-  Dialog,
-  DialogFooter,
-  Radio,
-  RadioGroup,
-  Tag,
-} from '@blueprintjs/core';
+import { DialogFooter, Radio, RadioGroup, Tag } from '@blueprintjs/core';
 import type { PageSizeName, PrintPageOptions } from '@zakodium/nmrium-core';
 import type { CSSProperties, ReactNode } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -16,6 +10,7 @@ import type { LabelStyle } from '../Label.js';
 import Label from '../Label.js';
 import { NumberInput2Controller } from '../NumberInput2Controller.js';
 import { Select2Controller } from '../Select2Controller.js';
+import { StandardDialog } from '../StandardDialog.tsx';
 import { StyledDialogBody } from '../StyledDialogBody.js';
 
 import { PrintProvider } from './PrintProvider.js';
@@ -342,7 +337,7 @@ function InnerPrintOptionsModal(props: InnerPrintOptionsModalProps) {
   const layout = watch('layout');
   const sizesList = getSizesList(layout);
   return (
-    <Dialog
+    <StandardDialog
       isOpen
       title="Print options"
       onClose={onCloseDialog}
@@ -387,6 +382,6 @@ function InnerPrintOptionsModal(props: InnerPrintOptionsModalProps) {
           onCancel={() => onCloseDialog?.()}
         />
       </DialogFooter>
-    </Dialog>
+    </StandardDialog>
   );
 }

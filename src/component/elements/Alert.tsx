@@ -1,8 +1,10 @@
 import type { ButtonProps } from '@blueprintjs/core';
-import { Button, Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
+import { Button, DialogBody, DialogFooter } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import type { ReactNode } from 'react';
 import { createContext, useContext, useMemo, useState } from 'react';
+
+import { StandardDialog } from './StandardDialog.tsx';
 
 const Message = styled.p`
   color: #af0000;
@@ -39,7 +41,7 @@ const Body = styled(DialogBody)`
   }
 `;
 
-const Alert = styled(Dialog)`
+const Alert = styled(StandardDialog)`
   border-top: 10px solid rgb(237 0 0);
 `;
 

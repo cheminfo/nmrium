@@ -1,4 +1,4 @@
-import { Classes, Dialog, DialogFooter, Tab, Tabs } from '@blueprintjs/core';
+import { Classes, DialogFooter, Tab, Tabs } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
 import type { Workspace } from '@zakodium/nmrium-core';
@@ -23,6 +23,7 @@ import { useToaster } from '../../context/ToasterContext.js';
 import ActionButtons from '../../elements/ActionButtons.js';
 import type { LabelStyle } from '../../elements/Label.js';
 import Label from '../../elements/Label.js';
+import { StandardDialog } from '../../elements/StandardDialog.tsx';
 import { StyledDialogBody } from '../../elements/StyledDialogBody.js';
 import type { DropDownListItem } from '../../elements/dropDownButton/DropDownButton.js';
 import DropDownButton from '../../elements/dropDownButton/DropDownButton.js';
@@ -251,7 +252,7 @@ function InnerGeneralSettingsModal(props: InnerGeneralSettingsModalProps) {
 
   return (
     <FormProvider {...methods}>
-      <Dialog
+      <StandardDialog
         isOpen
         onClose={onCloseDialog}
         style={{ maxWidth: 1000, width: '50vw', minWidth: 800 }}
@@ -347,7 +348,7 @@ function InnerGeneralSettingsModal(props: InnerGeneralSettingsModalProps) {
         <DialogFooter>
           <DialogActionButtons onCloseDialog={onCloseDialog} onSave={onSave} />
         </DialogFooter>
-      </Dialog>
+      </StandardDialog>
     </FormProvider>
   );
 }

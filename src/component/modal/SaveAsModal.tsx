@@ -1,10 +1,4 @@
-import {
-  Checkbox,
-  Dialog,
-  DialogFooter,
-  Radio,
-  RadioGroup,
-} from '@blueprintjs/core';
+import { Checkbox, DialogFooter, Radio, RadioGroup } from '@blueprintjs/core';
 import { useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
@@ -14,6 +8,7 @@ import ActionButtons from '../elements/ActionButtons.js';
 import { Input2Controller } from '../elements/Input2Controller.js';
 import type { LabelStyle } from '../elements/Label.js';
 import Label from '../elements/Label.js';
+import { StandardDialog } from '../elements/StandardDialog.tsx';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 import type { SaveOptions } from '../hooks/useExport.js';
 import { useExport } from '../hooks/useExport.js';
@@ -75,7 +70,7 @@ function InnerSaveAsModal(props: InnerSaveAsModalProps) {
   }, [aggregator]);
 
   return (
-    <Dialog
+    <StandardDialog
       isOpen
       title="Save as ... "
       onClose={onCloseDialog}
@@ -130,7 +125,7 @@ function InnerSaveAsModal(props: InnerSaveAsModalProps) {
           onCancel={() => onCloseDialog?.()}
         />
       </DialogFooter>
-    </Dialog>
+    </StandardDialog>
   );
 }
 

@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogFooter } from '@blueprintjs/core';
+import { Button, DialogFooter } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import type { ACSExportOptions, Spectrum1D } from '@zakodium/nmrium-core';
 import type { FormEvent } from 'react';
@@ -15,6 +15,7 @@ import { z } from 'zod';
 import { isSpectrum1D } from '../../data/data1d/Spectrum1D/index.js';
 import { usePreferences } from '../context/PreferencesContext.js';
 import { EmptyText } from '../elements/EmptyText.js';
+import { StandardDialog } from '../elements/StandardDialog.tsx';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 import useSpectrum from '../hooks/useSpectrum.js';
 import { useActiveACSSettings } from '../hooks/use_acs_settings.js';
@@ -148,7 +149,7 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
 
   return (
     <form.AppForm>
-      <Dialog
+      <StandardDialog
         isOpen
         title="Publication string"
         onClose={onClose}
@@ -212,7 +213,7 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
             </form.AppField>
           </DialogFooter>
         </Form>
-      </Dialog>
+      </StandardDialog>
     </form.AppForm>
   );
 }
