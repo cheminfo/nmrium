@@ -12,30 +12,36 @@ const loggingLevel: LoggerType[] = [
   'silent',
 ];
 
-export const workspaceValidation = z.object({
-  peaksLabel: z.object({
-    marginTop: z.coerce.number().int().min(0),
-  }),
+const peaksLabelValidation = z.object({
+  marginTop: z.coerce.number().int().min(0),
+});
+
+const generalValidation = z.object({
+  dimmedSpectraOpacity: z.coerce.number().min(0).max(1),
+  invert: z.boolean(),
+  invertScroll: z.boolean(),
+  spectraRendering: z.enum([
+    'auto',
+    'optimizeSpeed',
+    'crispEdges',
+    'geometricPrecision',
+  ]),
+  popupLoggingLevel: z.enum(loggingLevel).optional(),
+  loggingLevel: z.enum(loggingLevel).optional(),
+});
+
+const displayValidation = z.object({
   general: z.object({
-    dimmedSpectraOpacity: z.coerce.number().min(0).max(1),
-    invert: z.boolean(),
-    invertScroll: z.boolean(),
-    spectraRendering: z.enum([
-      'auto',
-      'optimizeSpeed',
-      'crispEdges',
-      'geometricPrecision',
-    ]),
-    popupLoggingLevel: z.enum(loggingLevel).optional(),
-    loggingLevel: z.enum(loggingLevel).optional(),
-  }),
-  display: z.object({
-    general: z.object({
-      experimentalFeatures: z.object({
-        display: z.boolean(),
-      }),
+    experimentalFeatures: z.object({
+      display: z.boolean(),
     }),
   }),
+});
+
+export const workspaceValidation = z.object({
+  peaksLabel: peaksLabelValidation,
+  general: generalValidation,
+  display: displayValidation,
 });
 
 // This object is used to define type not real values. Do not use it as values
