@@ -2,6 +2,7 @@ import { DialogFooter } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { Button, withForm } from 'react-science/ui';
 
+import type { GeneralSettingsFormType } from './general_settings.tsx';
 import { defaultGeneralSettingsFormValues } from './validation.ts';
 
 const Footer = styled.div`
@@ -11,12 +12,15 @@ const Footer = styled.div`
 
 export const GeneralSettingsDialogFooter = withForm({
   props: {
+    onApply: (values: GeneralSettingsFormType) => {
+      /* empty */
+    },
     onCancel: () => {
       /* empty */
     },
   },
   defaultValues: defaultGeneralSettingsFormValues,
-  render: ({ form, onCancel }) => {
+  render: ({ form, onCancel, onApply }) => {
     return (
       <form.AppForm>
         <DialogFooter>
@@ -24,7 +28,16 @@ export const GeneralSettingsDialogFooter = withForm({
             <Button variant="outlined" intent="danger" onClick={onCancel}>
               Cancel
             </Button>
-            <form.SubmitButton>Save</form.SubmitButton>
+            <form.Subscribe selector={(state) => state.values}>
+              {(values) => (
+                <Button intent="primary" onClick={() => onApply(values)}>
+                  Apply
+                </Button>
+              )}
+            </form.Subscribe>
+            <form.SubmitButton intent="success">
+              Apply and Save
+            </form.SubmitButton>
           </Footer>
         </DialogFooter>
       </form.AppForm>

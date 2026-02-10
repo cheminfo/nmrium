@@ -28,10 +28,10 @@ export type GeneralSettingsFormType = z.input<typeof workspaceValidation>;
 export function GeneralSettings(props: GeneralSettingsProps) {
   const { isOpen, close, height } = props;
 
-  const { current: currentWorkspace } = usePreferences();
+  const { current: currentWorkspace, dispatch } = usePreferences();
   const { saveSettings } = useSaveSettings();
 
-  const defaultValues: z.input<typeof workspaceValidation> = {
+  const defaultValues: GeneralSettingsFormType = {
     peaksLabel: {
       marginTop: currentWorkspace.peaksLabel.marginTop,
     },
@@ -78,8 +78,30 @@ export function GeneralSettings(props: GeneralSettingsProps) {
           popupLoggingLevel: parsedValues.general.popupLoggingLevel,
         },
       });
+
+      close();
     },
   });
+
+  // le onsubmit fait saveSettings
+  // - [x] apply and save : saveSettings + close (onCancel)
+  // - [ ] apply : dispatch + close (onCancel)
+  // dispatch({
+  //   type: 'APPLY_General_PREFERENCES',
+  //   payload: {
+  //     data: values as any,
+  //   },
+  // });
+  /*
+  function onApply(values: GeneralSettingsFormType) {
+    dispatch({
+      type: 'APPLY_General_PREFERENCES',
+      payload: {},
+    });
+
+    close();
+  }
+  */
 
   return (
     <Dialog isOpen={isOpen} onClose={close} title="General settings" icon="cog">
@@ -97,7 +119,11 @@ export function GeneralSettings(props: GeneralSettingsProps) {
         />
 
         <GeneralSettingsDialogBody form={form} height={height} />
-        <GeneralSettingsDialogFooter form={form} onCancel={close} />
+        <GeneralSettingsDialogFooter
+          form={form}
+          onCancel={close}
+          onApply={() => /* onApply */ {}}
+        />
       </Form>
     </Dialog>
   );
