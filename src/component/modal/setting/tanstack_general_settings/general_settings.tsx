@@ -1,6 +1,7 @@
 import { Dialog as BPDialog } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { revalidateLogic } from '@tanstack/react-form';
+import type { Workspace } from '@zakodium/nmrium-core';
 import { Form, useForm } from 'react-science/ui';
 import type { z } from 'zod/v4';
 
@@ -28,49 +29,37 @@ export type GeneralSettingsFormType = z.input<typeof workspaceValidation>;
 export function GeneralSettings(props: GeneralSettingsProps) {
   const { isOpen, close, height } = props;
 
-  const { current: currentWorkspace } = usePreferences();
+  const { current: currentWorkspace, dispatch } = usePreferences();
   const { saveSettings } = useSaveSettings();
 
-  const defaultValues: z.input<typeof workspaceValidation> = {
-    general: {
-      dimmedSpectraOpacity: currentWorkspace.general.dimmedSpectraOpacity,
-      invertScroll: currentWorkspace.general.invertScroll,
-      invertActions: currentWorkspace.general.invert,
-      experimentalFeatures:
-        currentWorkspace.display.general?.experimentalFeatures?.display ||
-        false,
-    },
-  };
-
   const form = useForm({
-    validators: { onDynamic: workspaceValidation },
+    validators: {
+      onDynamic: workspaceValidation,
+    },
     validationLogic: revalidateLogic({ mode: 'change' }),
-    defaultValues,
+    defaultValues: currentWorkspace as GeneralSettingsFormType,
     onSubmit: ({ value }) => {
-      const parsedValues = workspaceValidation.parse(value);
+      const safeParseResult = workspaceValidation.safeParse(value);
 
-      saveSettings({
-        display: {
-          general: {
-            experimentalFeatures: {
-              display: parsedValues.general.experimentalFeatures,
-              visible: true,
-            },
-          },
-        },
-        general: {
-          invert: parsedValues.general.invertActions,
-          invertScroll: parsedValues.general.invertScroll,
-          dimmedSpectraOpacity: parsedValues.general.dimmedSpectraOpacity,
-          spectraRendering: 'auto',
-          verticalSplitterCloseThreshold: 0,
-          verticalSplitterPosition: '1px',
-          loggingLevel: 'info',
-          popupLoggingLevel: 'info',
-        },
-      });
+      if (!safeParseResult.success) {
+        throw new Error('Failed to parse workspace validation');
+      }
+
+      saveSettings(value as Partial<Workspace>);
+      close();
     },
   });
+
+  function onApply(values: GeneralSettingsFormType) {
+    dispatch({
+      type: 'APPLY_General_PREFERENCES',
+      payload: {
+        data: values as Omit<Workspace, 'label' | 'version'>,
+      },
+    });
+
+    close();
+  }
 
   return (
     <Dialog isOpen={isOpen} onClose={close} title="General settings" icon="cog">
@@ -82,13 +71,21 @@ export function GeneralSettings(props: GeneralSettingsProps) {
           void form.handleSubmit();
         }}
       >
-        <GeneralSettingsDialogHeader<GeneralSettingsFormType>
-          reset={form.reset}
-          currentValues={form.state.values}
-        />
+        <form.Subscribe selector={(state) => state.values}>
+          {(values) => (
+            <GeneralSettingsDialogHeader
+              reset={form.reset}
+              currentValues={values}
+            />
+          )}
+        </form.Subscribe>
 
         <GeneralSettingsDialogBody form={form} height={height} />
-        <GeneralSettingsDialogFooter form={form} />
+        <GeneralSettingsDialogFooter
+          form={form}
+          onCancel={close}
+          onApply={onApply}
+        />
       </Form>
     </Dialog>
   );
