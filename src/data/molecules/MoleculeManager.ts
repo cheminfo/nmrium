@@ -14,22 +14,23 @@ export function fromJSON(
 
   const molecules: StateMoleculeExtended[] = [];
   for (const mol of mols) {
-    const molecule = Molecule.fromMolfile(mol.molfile);
-
-    const atomCount = molecule.getAllAtoms();
-
-    if (atomCount === 0) {
+    const {
+      molfile,
+      label = `P${getLabelNumber(reservedNumbers)}`,
+      id,
+      ...others
+    } = mol;
+    const moleculeOverride = {
+      ...others,
+      text: molfile,
+      label,
+      id,
+    };
+    try {
+      molecules.push(initMolecule(moleculeOverride));
+    } catch {
       continue;
     }
-
-    const moleculeOverride = {
-      ...mol,
-      molfile: molecule.toMolfileV3(),
-      label: mol.label || `P${getLabelNumber(reservedNumbers)}`,
-      id: mol.id,
-    };
-
-    molecules.push(initMolecule(moleculeOverride));
   }
 
   return molecules;
@@ -49,10 +50,9 @@ export function addMolfile(
 
   // try to parse molfile
   // this will throw if the molecule can not be parsed !
-  const molecule = Molecule.fromMolfile(molfile);
   molecules.push(
     initMolecule({
-      molfile: molecule.toMolfileV3(),
+      text: molfile,
       label: label ?? `P${getLabelNumber(reservedNumbers)}`,
       id,
     }),
@@ -66,9 +66,8 @@ export function setMolfile(
   const { molfile, id, label } = currentMolecule;
   // try to parse molfile
   // this will throw if the molecule can not be parsed !
-  const molecule = Molecule.fromMolfile(molfile);
   const _mol = initMolecule({
-    molfile: molecule.toMolfileV3(),
+    text: molfile,
     id,
     label,
   });
@@ -148,20 +147,6 @@ function parseSDF(text: string) {
   }
 }
 
-function parseMolText(text: string) {
-  let molecule: Molecule | null;
-  try {
-    molecule = Molecule.fromText(text);
-  } catch (error) {
-    throw new Error(parseErrorMessage, { cause: error });
-  }
-
-  if (!molecule) {
-    throw new Error(parseErrorMessage);
-  }
-
-  return [initMolecule({ molecule })];
-}
 export function getMolecules(text?: string) {
   if (!text?.trim()) {
     throw new Error(parseErrorMessage);
@@ -169,5 +154,5 @@ export function getMolecules(text?: string) {
 
   const isSDF = /v[23]000/i.test(text);
 
-  return isSDF ? parseSDF(text) : parseMolText(text);
+  return isSDF ? parseSDF(text) : [initMolecule({ text })];
 }

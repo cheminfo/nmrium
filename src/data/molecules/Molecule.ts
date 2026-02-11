@@ -31,37 +31,24 @@ export const DRAGGABLE_STRUCTURE_INITIAL_BOUNDING_REACT: MoleculeBoundingRect =
 
 export type MoleculesView = Record<string, MoleculeView>;
 
-type MoleculeInput = { molecule: Molecule } | { molfile: string };
-type StateMoleculeOptions = Omit<Partial<StateMolecule>, 'molfile'>;
-type InitializeMoleculeOptions = MoleculeInput & StateMoleculeOptions;
+type InitializeMoleculeOptions = { text: string } & Omit<
+  Partial<StateMolecule>,
+  'molfile'
+>;
 
-function resolveMolecule(options: MoleculeInput) {
-  if ('molecule' in options) {
-    const { molecule } = options;
-    return {
-      molecule,
-      molfile: molecule.toMolfileV3(),
-    };
-  }
-  const { molfile } = options;
-  return {
-    molecule: Molecule.fromMolfile(molfile),
-    molfile,
-  };
-}
-
-export function initMolecule(
-  options: { molecule: Molecule } & StateMoleculeOptions,
-): StateMoleculeExtended;
-export function initMolecule(
-  options: { molfile: string } & StateMoleculeOptions,
-): StateMoleculeExtended;
 export function initMolecule(
   options: InitializeMoleculeOptions,
 ): StateMoleculeExtended {
-  const { id = crypto.randomUUID(), label = 'p#' } = options;
+  const { id = crypto.randomUUID(), label = 'p#', text } = options;
 
-  const { molecule, molfile } = resolveMolecule(options);
+  const molecule = Molecule.fromText(text);
+
+  if (!molecule) {
+    throw new Error(
+      'Failed to parse SMILES or molfile. Please paste a valid format',
+    );
+  }
+  const molfile = molecule.toMolfileV3();
   const mfInfo = molecule.getMolecularFormula();
 
   return {
