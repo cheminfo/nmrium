@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogFooter } from '@blueprintjs/core';
+import { Button, DialogFooter } from '@blueprintjs/core';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
@@ -9,6 +9,7 @@ import { useToaster } from '../context/ToasterContext.js';
 import { Input2Controller } from '../elements/Input2Controller.js';
 import type { LabelStyle } from '../elements/Label.js';
 import Label from '../elements/Label.js';
+import { StandardDialog } from '../elements/StandardDialog.tsx';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 
 const allowedExtensions = new Set(['dx', 'jdx', 'jcamp']);
@@ -89,7 +90,7 @@ function InnerLoadJCAMPModal({ onCloseDialog }: InnerLoadJCAMPModalProps) {
   }
 
   return (
-    <Dialog
+    <StandardDialog
       isOpen
       onClose={onCloseDialog}
       title="Load JCAMP"
@@ -116,6 +117,6 @@ function InnerLoadJCAMPModal({ onCloseDialog }: InnerLoadJCAMPModalProps) {
           </Button>
         </div>
       </DialogFooter>
-    </Dialog>
+    </StandardDialog>
   );
 }

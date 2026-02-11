@@ -1,6 +1,5 @@
 import {
   Button,
-  Dialog,
   DialogFooter,
   Radio,
   RadioGroup,
@@ -22,6 +21,7 @@ import type { LabelStyle } from '../Label.js';
 import Label from '../Label.js';
 import { NumberInput2Controller } from '../NumberInput2Controller.js';
 import { Select2Controller } from '../Select2Controller.js';
+import { StandardDialog } from '../StandardDialog.tsx';
 import { StyledDialogBody } from '../StyledDialogBody.js';
 import type { SizeItem } from '../print/pageSize.js';
 import { getSizesList } from '../print/pageSize.js';
@@ -150,7 +150,7 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
   }, [handleSubmit, mode, onExportOptionsChange, setFocus]);
 
   return (
-    <Dialog
+    <StandardDialog
       isOpen
       title="Export options"
       onClose={onCloseDialog}
@@ -317,6 +317,6 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
           />
         </div>
       </DialogFooter>
-    </Dialog>
+    </StandardDialog>
   );
 }

@@ -1,4 +1,4 @@
-import { Dialog, InputGroup } from '@blueprintjs/core';
+import { InputGroup } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { Molecule } from 'openchemlib';
 import { autoLabelDatabase } from 'openchemlib-utils';
@@ -9,6 +9,7 @@ import { Button } from 'react-science/ui';
 import { filter } from 'smart-array-filter';
 
 import { useDispatch } from '../context/DispatchContext.js';
+import { StandardDialog } from '../elements/StandardDialog.tsx';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 
 interface LabelDatabaseItem {
@@ -147,7 +148,7 @@ export function MoleculeAutoLabelsDatabaseModal({
   const filteredLabelDatabase = filter(autoLabelDatabase, { keywords });
 
   return (
-    <Dialog
+    <StandardDialog
       isOpen
       onClose={() => onClose()}
       style={{ width: '90vw', maxWidth: 1000, height: '80vh' }}
@@ -214,6 +215,6 @@ export function MoleculeAutoLabelsDatabaseModal({
           </ChemicalGrid>
         )}
       </StyledDialogBody>
-    </Dialog>
+    </StandardDialog>
   );
 }

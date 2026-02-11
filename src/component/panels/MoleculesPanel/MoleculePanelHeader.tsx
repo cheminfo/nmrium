@@ -16,7 +16,7 @@ import {
 import { FaMaximize, FaMinimize } from 'react-icons/fa6';
 import { IoOpenOutline } from 'react-icons/io5';
 import { MdFlashAuto, MdNumbers, MdOutlineLabelOff } from 'react-icons/md';
-import { PanelHeader, Toolbar } from 'react-science/ui';
+import { PanelHeader, Toolbar, TooltipHelpContent } from 'react-science/ui';
 
 import type {
   MoleculesView,
@@ -429,7 +429,13 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
               disabled={!hasMolecules}
             />
             <Toolbar.Item
-              tooltip={`${booleanToString(!isAnnotation('custom-labels'))} custom labels`}
+              tooltip={
+                <TooltipHelpContent
+                  title={`${booleanToString(!isAnnotation('custom-labels'), { trueLabel: 'Display' })} custom atom labels`}
+                  description="Custom atom labels can be displayed or hidden on the molecule structure"
+                  link="https://docs.nmrium.org/help/structure-labelling/"
+                />
+              }
               icon={<FaRegBookmark />}
               onClick={() => handleChangeAtomAnnotation('custom-labels')}
               active={isAnnotation('custom-labels')}

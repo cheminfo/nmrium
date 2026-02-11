@@ -1,4 +1,4 @@
-import { Dialog, DialogFooter } from '@blueprintjs/core';
+import { DialogFooter } from '@blueprintjs/core';
 import { Molecule } from 'openchemlib';
 import { TopicMolecule } from 'openchemlib-utils';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -10,6 +10,7 @@ import type { StateMoleculeExtended } from '../../data/molecules/Molecule.js';
 import { useDispatch } from '../context/DispatchContext.js';
 import { usePreferences } from '../context/PreferencesContext.js';
 import ActionButtons from '../elements/ActionButtons.js';
+import { StandardDialog } from '../elements/StandardDialog.tsx';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 
 interface MoleculeStructureEditorModalProps {
@@ -114,7 +115,11 @@ function MoleculeStructureEditorModal(
   ]);
 
   return (
-    <Dialog isOpen={isOpen} onClose={handleClose} style={{ width: 710 }}>
+    <StandardDialog
+      isOpen={isOpen}
+      onClose={handleClose}
+      style={{ width: 710 }}
+    >
       <StyledDialogBody>
         <CanvasMoleculeEditor
           inputFormat="molfile"
@@ -135,7 +140,7 @@ function MoleculeStructureEditorModal(
           }}
         />
       </DialogFooter>
-    </Dialog>
+    </StandardDialog>
   );
 }
 

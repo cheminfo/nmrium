@@ -1,4 +1,4 @@
-import { Dialog, DialogFooter } from '@blueprintjs/core';
+import { DialogFooter } from '@blueprintjs/core';
 import type { Spectrum } from '@zakodium/nmrium-core';
 import { useRef } from 'react';
 
@@ -9,6 +9,7 @@ import ActionButtons from '../elements/ActionButtons.js';
 import type { LabelStyle } from '../elements/Label.js';
 import Label from '../elements/Label.js';
 import { Select2 } from '../elements/Select2.js';
+import { StandardDialog } from '../elements/StandardDialog.tsx';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 import useSpectrum from '../hooks/useSpectrum.js';
 
@@ -119,7 +120,7 @@ function InnerExportAsJcampModal(props: Required<InnerExportAsJCAMPProps>) {
   }
 
   return (
-    <Dialog
+    <StandardDialog
       isOpen
       style={{ width: 400 }}
       onClose={closeDialog}
@@ -144,7 +145,7 @@ function InnerExportAsJcampModal(props: Required<InnerExportAsJCAMPProps>) {
           }}
         />
       </DialogFooter>
-    </Dialog>
+    </StandardDialog>
   );
 }
 

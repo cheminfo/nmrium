@@ -190,7 +190,6 @@ function SpectrumInfoBlock() {
       targetTagName="g"
       buttons={actionsButtons}
       positioningStrategy="fixed"
-      position="top-left"
       direction="row"
       space={2}
       {...(isMoveActive && { isOpen: true })}

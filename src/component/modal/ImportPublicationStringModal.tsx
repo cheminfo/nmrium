@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogFooter, TextArea } from '@blueprintjs/core';
+import { Button, DialogFooter, TextArea } from '@blueprintjs/core';
 import type { ChangeEvent, LogEntry } from 'fifo-logger';
 import { FifoLogger } from 'fifo-logger';
 import debounce from 'lodash/debounce.js';
@@ -11,6 +11,7 @@ import { useToaster } from '../context/ToasterContext.js';
 import { GroupPane } from '../elements/GroupPane.js';
 import type { Column } from '../elements/ReactTable/ReactTable.js';
 import ReactTable from '../elements/ReactTable/ReactTable.js';
+import { StandardDialog } from '../elements/StandardDialog.tsx';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 
 interface InnerImportPublicationStringModalProps {
@@ -141,7 +142,7 @@ function InnerImportPublicationStringModal(
   );
 
   return (
-    <Dialog
+    <StandardDialog
       title="Generate spectrum from publication string"
       isOpen
       onClose={onClose}
@@ -203,6 +204,6 @@ function InnerImportPublicationStringModal(
           </Button>
         </div>
       </DialogFooter>
-    </Dialog>
+    </StandardDialog>
   );
 }

@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
+import { Button, DialogBody, DialogFooter } from '@blueprintjs/core';
 import { revalidateLogic } from '@tanstack/react-form';
 import type { Workspace } from '@zakodium/nmrium-core';
 import { useRef } from 'react';
@@ -7,6 +7,7 @@ import { z } from 'zod/v4';
 
 import { usePreferences } from '../context/PreferencesContext.js';
 import { useToaster } from '../context/ToasterContext.js';
+import { StandardDialog } from '../elements/StandardDialog.tsx';
 
 import { useWorkspaceAction } from './useWorkspaceAction.js';
 
@@ -56,7 +57,7 @@ export function useSaveSettings() {
     saveSettings,
     SaveSettingsModal: () => {
       return (
-        <Dialog
+        <StandardDialog
           style={{ width: 500 }}
           onClose={closeDialog}
           isOpen={isOpenDialog}
@@ -104,7 +105,7 @@ export function useSaveSettings() {
               }
             />
           </form>
-        </Dialog>
+        </StandardDialog>
       );
     },
   };

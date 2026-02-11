@@ -1,4 +1,3 @@
-import { Dialog } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import type { ActiveSpectrum } from '@zakodium/nmrium-core';
 import { xGetFromToIndex, xyToXYObject } from 'ml-spectra-processing';
@@ -9,6 +8,7 @@ import { Axis, LineSeries, Plot } from 'react-plot';
 import { isSpectrum2D } from '../../data/data2d/Spectrum2D/index.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useScaleChecked } from '../context/ScaleContext.js';
+import { StandardDialog } from '../elements/StandardDialog.tsx';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 
 const Container = styled.div`
@@ -84,7 +84,7 @@ export default function MultipletAnalysisModal({
   isOpen,
 }: MultipletAnalysisModalProps) {
   return (
-    <Dialog
+    <StandardDialog
       isOpen={isOpen}
       style={{ width: 'auto' }}
       onClose={() => onClose()}
@@ -99,7 +99,7 @@ export default function MultipletAnalysisModal({
           }}
         />
       </StyledDialogBody>
-    </Dialog>
+    </StandardDialog>
   );
 }
 

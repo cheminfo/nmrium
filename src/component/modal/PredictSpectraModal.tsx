@@ -1,4 +1,4 @@
-import { Checkbox, Dialog, DialogFooter } from '@blueprintjs/core';
+import { Checkbox, DialogFooter } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { SvgNmrFt } from 'cheminfo-font';
 import { useCallback, useMemo, useRef, useState } from 'react';
@@ -14,6 +14,7 @@ import { useDispatch } from '../context/DispatchContext.js';
 import { useLogger } from '../context/LoggerContext.js';
 import { useToaster } from '../context/ToasterContext.js';
 import Button from '../elements/Button.js';
+import { StandardDialog } from '../elements/StandardDialog.tsx';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 import type { SettingsRef } from '../panels/extra/utilities/settingImperativeHandle.js';
 import PredictionPreferences from '../panels/predictionPanel/PredictionOptionsPanel.js';
@@ -144,7 +145,7 @@ export default function PredictSpectraModal({
           onClick={openDialog}
         />
       </Toolbar>
-      <Dialog
+      <StandardDialog
         isOpen={isOpenDialog}
         onClose={() => {
           onClose();
@@ -177,7 +178,7 @@ export default function PredictSpectraModal({
             Predict spectrum
           </Button.Done>
         </DialogFooter>
-      </Dialog>
+      </StandardDialog>
     </>
   );
 }

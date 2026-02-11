@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogFooter, Tooltip } from '@blueprintjs/core';
+import { Button, DialogFooter, Tooltip } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import type {
   ACSExportOptions,
@@ -21,6 +21,7 @@ import { useClipboard } from '../../utils/clipboard/clipboardHooks.ts';
 import { usePreferences } from '../context/PreferencesContext.js';
 import { useToaster } from '../context/ToasterContext.tsx';
 import { EmptyText } from '../elements/EmptyText.js';
+import { StandardDialog } from '../elements/StandardDialog.tsx';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 import { buildPublicationString } from '../hooks/use_publication_strings.js';
 
@@ -185,7 +186,7 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
 
   return (
     <form.AppForm>
-      <Dialog
+      <StandardDialog
         isOpen
         title="Publication string"
         icon={
@@ -253,7 +254,7 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
             )}
           </DialogFooter>
         </Form>
-      </Dialog>
+      </StandardDialog>
 
       <ClipboardFallbackModal
         mode={shouldFallback}

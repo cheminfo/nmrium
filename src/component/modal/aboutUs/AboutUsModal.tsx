@@ -1,4 +1,3 @@
-import { Dialog } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { SvgLogoNmrium } from 'cheminfo-font';
 import { Toolbar, useOnOff } from 'react-science/ui';
@@ -6,6 +5,7 @@ import { Toolbar, useOnOff } from 'react-science/ui';
 import versionInfo from '../../../versionInfo.js';
 import { useCore } from '../../context/CoreContext.js';
 import Logo from '../../elements/Logo.js';
+import { StandardDialog } from '../../elements/StandardDialog.tsx';
 import { StyledDialogBody } from '../../elements/StyledDialogBody.js';
 import { renderCoreSlot } from '../../utility/renderCoreSlot.js';
 
@@ -126,7 +126,7 @@ function AboutUsModal() {
         tooltip="About NMRium"
         icon={<SvgLogoNmrium />}
       />
-      <Dialog
+      <StandardDialog
         isOpen={isOpenDialog}
         onClose={closeDialog}
         style={{
@@ -139,7 +139,7 @@ function AboutUsModal() {
         <StyledDialogBody>
           {renderCoreSlot(core, 'topbar.about_us.modal', modalContentFallback)}
         </StyledDialogBody>
-      </Dialog>
+      </StandardDialog>
     </>
   );
 }

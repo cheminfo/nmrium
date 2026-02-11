@@ -1,4 +1,4 @@
-import { Dialog, DialogFooter } from '@blueprintjs/core';
+import { DialogFooter } from '@blueprintjs/core';
 import type { LogEntry } from 'fifo-logger';
 import { useMemo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
@@ -12,6 +12,7 @@ import Button from '../elements/Button.js';
 import { ColumnWrapper } from '../elements/ColumnWrapper.js';
 import type { Column } from '../elements/ReactTable/ReactTable.js';
 import ReactTable from '../elements/ReactTable/ReactTable.js';
+import { StandardDialog } from '../elements/StandardDialog.tsx';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 
 const logsDataFormat = new Intl.DateTimeFormat('default', {
@@ -161,7 +162,7 @@ export function LogsHistoryModal(props: LogsHistoryModalProps) {
         </Button.BarButton>
       )}
 
-      <Dialog
+      <StandardDialog
         isOpen={isOpenDialog}
         onClose={() => {
           markAsRead();
@@ -187,7 +188,7 @@ export function LogsHistoryModal(props: LogsHistoryModalProps) {
             </div>
           </Button.Danger>
         </DialogFooter>
-      </Dialog>
+      </StandardDialog>
     </>
   );
 }
