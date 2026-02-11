@@ -88,7 +88,7 @@ function WorkSpaceActionsButtons<T extends object>(
   const toaster = useToaster();
   const isExperimentalFeatures = dlv(
     values,
-    'general.experimentalFeatures',
+    'display.general.experimentalFeatures.display',
     false,
   );
 
