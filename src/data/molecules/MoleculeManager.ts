@@ -1,5 +1,5 @@
 import type { StateMolecule } from '@zakodium/nmrium-core';
-import { readSDF, readSMILES } from '@zakodium/nmrium-core-plugins';
+import { readSDF } from '@zakodium/nmrium-core-plugins';
 import { Molecule } from 'openchemlib';
 
 import type { StateMoleculeExtended } from './Molecule.js';
@@ -137,20 +137,37 @@ function validateMolecules(molecules: StateMolecule[]) {
  * @param text - text containing one or several molecules in SMILES, molfile or SDF format
  * @returns
  */
+
+function parseSDF(text: string) {
+  try {
+    const molecules = readSDF(text);
+    validateMolecules(molecules);
+    return molecules;
+  } catch (error) {
+    throw new Error(parseErrorMessage, { cause: error });
+  }
+}
+
+function parseMolText(text: string) {
+  let molecule: Molecule | null;
+  try {
+    molecule = Molecule.fromText(text);
+  } catch (error) {
+    throw new Error(parseErrorMessage, { cause: error });
+  }
+
+  if (!molecule) {
+    throw new Error(parseErrorMessage);
+  }
+
+  return [initMolecule({ molecule })];
+}
 export function getMolecules(text?: string) {
   if (!text?.trim()) {
     throw new Error(parseErrorMessage);
   }
 
-  // parse SDF
-  let molecules = [];
-  const parse = /v[23]000/i.test(text) ? readSDF : readSMILES;
-  try {
-    molecules = parse(text);
-  } catch (error) {
-    throw new Error(parseErrorMessage, { cause: error });
-  }
+  const isSDF = /v[23]000/i.test(text);
 
-  validateMolecules(molecules);
-  return molecules;
+  return isSDF ? parseSDF(text) : parseMolText(text);
 }

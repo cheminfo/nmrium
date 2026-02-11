@@ -31,15 +31,38 @@ export const DRAGGABLE_STRUCTURE_INITIAL_BOUNDING_REACT: MoleculeBoundingRect =
 
 export type MoleculesView = Record<string, MoleculeView>;
 
-export function initMolecule(
-  options: Partial<StateMolecule> = {},
-): StateMoleculeExtended {
-  const id = options.id || crypto.randomUUID();
-  const label = options.label || 'p#';
-  const molfile = options.molfile || '';
+type MoleculeInput = { molecule: Molecule } | { molfile: string };
+type StateMoleculeOptions = Omit<Partial<StateMolecule>, 'molfile'>;
+type InitializeMoleculeOptions = MoleculeInput & StateMoleculeOptions;
 
-  const mol = Molecule.fromMolfile(molfile);
-  const mfInfo = mol.getMolecularFormula();
+function resolveMolecule(options: MoleculeInput) {
+  if ('molecule' in options) {
+    const { molecule } = options;
+    return {
+      molecule,
+      molfile: molecule.toMolfileV3(),
+    };
+  }
+  const { molfile } = options;
+  return {
+    molecule: Molecule.fromMolfile(molfile),
+    molfile,
+  };
+}
+
+export function initMolecule(
+  options: { molecule: Molecule } & StateMoleculeOptions,
+): StateMoleculeExtended;
+export function initMolecule(
+  options: { molfile: string } & StateMoleculeOptions,
+): StateMoleculeExtended;
+export function initMolecule(
+  options: InitializeMoleculeOptions,
+): StateMoleculeExtended {
+  const { id = crypto.randomUUID(), label = 'p#' } = options;
+
+  const { molecule, molfile } = resolveMolecule(options);
+  const mfInfo = molecule.getMolecularFormula();
 
   return {
     id,
@@ -49,7 +72,7 @@ export function initMolecule(
     mf: mfInfo.formula,
     em: mfInfo.absoluteWeight,
     mw: mfInfo.relativeWeight,
-    svg: mol.toSVG(50, 50),
+    svg: molecule.toSVG(50, 50),
     atoms: getAtomsFromMF(mfInfo.formula),
   };
 }
