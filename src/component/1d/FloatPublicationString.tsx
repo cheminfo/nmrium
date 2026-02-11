@@ -365,8 +365,8 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
             width={width || 'auto'}
             height={height || 'auto'}
             xmlns="http://www.w3.org/2000/svg"
-          >
-            <PublicationText
+
+            ><PublicationText
               text={value}
               width={width}
               textStyle={acsOptions.textStyle}
