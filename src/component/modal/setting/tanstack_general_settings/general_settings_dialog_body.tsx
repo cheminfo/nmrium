@@ -4,6 +4,7 @@ import { withForm } from 'react-science/ui';
 
 import { StyledDialogBody } from '../../../elements/StyledDialogBody.tsx';
 
+import { ExportTab } from './tabs/export_tab.tsx';
 import { GeneralTab } from './tabs/general_tab.tsx';
 import { defaultGeneralSettingsFormValues } from './validation.ts';
 
@@ -17,7 +18,7 @@ const Tabs = styled(BPTabs)`
   div[role='tabpanel'] {
     max-height: 100%;
     overflow: auto;
-    padding: 0.8rem;
+    padding: 0 0.8rem 0.8rem;
     width: 100%;
   }
 `;
@@ -41,6 +42,8 @@ export const GeneralSettingsDialogBody = withForm({
               id="general"
               panel={<GeneralTab form={form} />}
             />
+
+            <Tab id="export" title="Export" panel={<ExportTab form={form} />} />
           </Tabs>
         </Div>
       </StyledDialogBody>
