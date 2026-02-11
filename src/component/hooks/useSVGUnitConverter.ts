@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import { useChartData } from '../context/ChartContext.js';
 
 function truncate(value: any, numberOfDigits = 0) {
@@ -15,14 +17,16 @@ export function convertPercentToPixel(value: number, baseValue: number) {
 export function useSVGUnitConverter() {
   const { width, height } = useChartData();
 
-  function pixelToPercent(value: number, axis: 'x' | 'y') {
-    const size = axis === 'x' ? width : height;
-    return convertPixelToPercent(value, size);
-  }
-  function percentToPixel(value: number, axis: 'x' | 'y') {
-    const size = axis === 'x' ? width : height;
-    return convertPercentToPixel(value, size);
-  }
+  return useMemo(() => {
+    function pixelToPercent(value: number, axis: 'x' | 'y') {
+      const size = axis === 'x' ? width : height;
+      return convertPixelToPercent(value, size);
+    }
+    function percentToPixel(value: number, axis: 'x' | 'y') {
+      const size = axis === 'x' ? width : height;
+      return convertPercentToPixel(value, size);
+    }
 
-  return { pixelToPercent, percentToPixel };
+    return { pixelToPercent, percentToPixel };
+  }, [width, height]);
 }

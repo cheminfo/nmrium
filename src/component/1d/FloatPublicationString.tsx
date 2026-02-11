@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import type { BoundingBox, Spectrum, TextStyle } from '@zakodium/nmrium-core';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { BsArrowsMove } from 'react-icons/bs';
 import { FaEdit, FaTimes } from 'react-icons/fa';
 import { Rnd } from 'react-rnd';
@@ -43,6 +43,8 @@ function useWrapSVGText(params: UseWrapSVGTextParams) {
 
   const debugCanvas = false;
   const labelSize = style.fontSize ?? 12;
+  // ctx used only for debug canvas purpose.
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   const { getTextWidth, ctx } = useTextMetrics({
     labelSize,
     labelStyle: style.fontStyle,
@@ -175,55 +177,115 @@ function PublicationText(props: PublicationTextProps) {
 
 interface DraggablePublicationStringProps {
   value: string;
-  bonding: BoundingBox;
+  bounding: BoundingBox;
   nucleus: string;
   spectrum: Spectrum;
 }
 
+function useBoundingBox(externalBoundingPercent: BoundingBox) {
+  const { percentToPixel, pixelToPercent } = useSVGUnitConverter();
+
+  const convertToPixel = useCallback(
+    (bounding: Partial<BoundingBox>) => {
+      const { x, y, height, width } = bounding;
+      const output: Partial<BoundingBox> = {};
+
+      if (typeof x === 'number') {
+        output.x = percentToPixel(x, 'x');
+      }
+      if (typeof y === 'number') {
+        output.y = percentToPixel(y, 'y');
+      }
+      if (typeof width === 'number') {
+        output.width = width;
+      }
+      if (typeof height === 'number') {
+        output.height = height;
+      }
+
+      return output;
+    },
+    [percentToPixel],
+  );
+
+  const convertToPercent = useCallback(
+    (bounding: Partial<BoundingBox>) => {
+      const { x, y, height, width } = bounding;
+      const output: Partial<BoundingBox> = {};
+
+      if (typeof x === 'number') {
+        output.x = pixelToPercent(x, 'x');
+      }
+      if (typeof y === 'number') {
+        output.y = pixelToPercent(y, 'y');
+      }
+      if (typeof width === 'number') {
+        output.width = width;
+      }
+      if (typeof height === 'number') {
+        output.height = height;
+      }
+
+      return output;
+    },
+    [pixelToPercent],
+  );
+
+  const [bounding, setBounding] = useState<BoundingBox>(() => {
+    return convertToPixel(externalBoundingPercent) as BoundingBox;
+  });
+
+  useEffect(() => {
+    setBounding(convertToPixel(externalBoundingPercent) as BoundingBox);
+  }, [convertToPixel, externalBoundingPercent]);
+
+  return {
+    bounding,
+    setBounding,
+    convertToPixel,
+    convertToPercent,
+  };
+}
+
 function DraggablePublicationString(props: DraggablePublicationStringProps) {
-  const { value, bonding: externalBounding, nucleus, spectrum } = props;
+  const {
+    value,
+    bounding: externalBoundingInPercent,
+    nucleus,
+    spectrum,
+  } = props;
   const spectrumKey = spectrum.id;
 
   const dispatch = useDispatch();
   const { viewerRef } = useGlobal();
-  const [bounding, setBounding] = useState<BoundingBox>(externalBounding);
   const [isMoveActive, setIsMoveActive] = useState(false);
-  const { percentToPixel, pixelToPercent } = useSVGUnitConverter();
   const isExportProcessStart = useCheckExportStatus();
   const acsOptions = useACSSettings(nucleus);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  useEffect(() => {
-    setBounding({ ...externalBounding });
-  }, [externalBounding]);
+  const { bounding, setBounding, convertToPercent } = useBoundingBox(
+    externalBoundingInPercent,
+  );
 
-  function handleResize(
-    internalBounding: Pick<BoundingBox, 'height' | 'width'>,
-  ) {
-    const { width = 0, height = 0 } = convertToPixel(externalBounding);
-    internalBounding.width += width;
-    internalBounding.height += height;
+  function handleResize(bounding: Pick<BoundingBox, 'height' | 'width'>) {
+    setBounding((prevBounding) => {
+      return {
+        ...prevBounding,
+        width: bounding.width,
+        height: bounding.height,
+      };
+    });
+  }
+
+  function handleDrag(newPosition: Pick<BoundingBox, 'x' | 'y'>) {
     setBounding((prevBounding) => ({
       ...prevBounding,
-      ...convertToPercent(internalBounding),
+      ...newPosition,
     }));
   }
 
-  function handleDrag(internalBounding: Pick<BoundingBox, 'x' | 'y'>) {
-    setBounding((prevBounding) => ({
-      ...prevBounding,
-      ...convertToPercent(internalBounding),
-    }));
-  }
   function handleChangeInsetBounding(bounding: Partial<BoundingBox>) {
-    if (
-      typeof bounding?.width === 'number' &&
-      typeof bounding?.height === 'number'
-    ) {
-      const { width, height } = externalBounding;
-      bounding.width += width;
-      bounding.height += height;
-    }
+    setBounding((prev) => ({ ...prev, ...bounding }));
 
     dispatch({
       type: 'CHANGE_RANGES_VIEW_FLOATING_BOX_BOUNDING',
@@ -233,45 +295,6 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
         target: 'publicationStringBounding',
       },
     });
-  }
-
-  function convertToPixel(bounding: Partial<BoundingBox>) {
-    const { x, y, height, width } = bounding;
-    const output: Partial<BoundingBox> = {};
-
-    if (x) {
-      output.x = percentToPixel(x, 'x');
-    }
-    if (y) {
-      output.y = percentToPixel(y, 'y');
-    }
-    if (width) {
-      output.width = width;
-    }
-    if (height) {
-      output.height = height;
-    }
-
-    return output;
-  }
-  function convertToPercent(bounding: Partial<BoundingBox>) {
-    const { x, y, height, width } = bounding;
-    const output: Partial<BoundingBox> = {};
-
-    if (x) {
-      output.x = pixelToPercent(x, 'x');
-    }
-    if (y) {
-      output.y = pixelToPercent(y, 'y');
-    }
-    if (width) {
-      output.width = width;
-    }
-    if (height) {
-      output.height = height;
-    }
-
-    return output;
   }
 
   function handleRemove() {
@@ -306,10 +329,7 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
   ];
   if (!viewerRef || !value) return null;
 
-  const { width, height, x: xInPercent, y: yInPercent } = bounding;
-
-  const x = percentToPixel(xInPercent, 'x');
-  const y = percentToPixel(yInPercent, 'y');
+  const { width, height, x = 0, y = 0 } = bounding;
 
   if (isExportProcessStart) {
     return (
@@ -333,18 +353,26 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
         dragHandleClassName="handle"
         enableUserSelectHack={false}
         bounds={`#${viewerRef.id}`}
-        onResize={(e, dir, eRef, size, position) =>
-          handleResize({ ...size, ...position })
-        }
-        onResizeStop={(e, dir, eRef, size, position) =>
-          handleChangeInsetBounding({ ...size, ...position })
-        }
-        onDragStart={() => setIsMoveActive(true)}
-        onDrag={(e, { x, y }) => {
-          handleDrag({ x, y });
+        onResize={(e, dir, eRef, size, position) => {
+          handleResize({
+            ...position,
+            height: eRef.clientHeight,
+            width: eRef.clientWidth,
+          });
         }}
-        onDragStop={(e, { x, y }) => {
-          handleChangeInsetBounding({ x, y });
+        onResizeStop={(e, dir, eRef, size, position) => {
+          handleChangeInsetBounding({
+            ...position,
+            height: eRef.clientHeight,
+            width: eRef.clientWidth,
+          });
+        }}
+        onDragStart={() => setIsMoveActive(true)}
+        onDrag={(e, data) => {
+          handleDrag({ x: data.x, y: data.y });
+        }}
+        onDragStop={(e, data) => {
+          handleChangeInsetBounding({ x: data.x, y: data.y });
           setIsMoveActive(false);
         }}
         resizeHandleWrapperStyle={{ backgroundColor: 'white' }}
@@ -353,7 +381,6 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
           buttons={actionButtons}
           fill
           positioningStrategy="fixed"
-
           direction="row"
           targetProps={{ style: { width: '100%', height: '100%' } }}
           space={2}
@@ -365,8 +392,8 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
             width={width || 'auto'}
             height={height || 'auto'}
             xmlns="http://www.w3.org/2000/svg"
-
-            ><PublicationText
+          >
+            <PublicationText
               text={value}
               width={width}
               textStyle={acsOptions.textStyle}
@@ -424,7 +451,7 @@ export function FloatPublicationString() {
         key={id}
         spectrum={spectrum}
         nucleus={nucleus}
-        bonding={publicationStringBounding}
+        bounding={publicationStringBounding}
         value={publicationString[id]}
       />
     );
