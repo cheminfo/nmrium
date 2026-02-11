@@ -13,6 +13,7 @@ const Footer = styled.div`
 
 export const GeneralSettingsDialogFooter = withForm({
   props: {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onApply: (values: GeneralSettingsFormType) => {
       /* empty */
     },
