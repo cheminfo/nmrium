@@ -61,7 +61,7 @@ const displayValidation = z.object({
  */
 const baseExportSettings = z.object({
   useDefaultSettings: z.boolean(),
-  dpi: z.number(),
+  dpi: z.coerce.number<string>(),
 });
 
 /**
@@ -80,15 +80,15 @@ const basicExportSettings = z.object({
 const advancedExportSettings = z.object({
   mode: z.literal('advance'),
   ...baseExportSettings.shape,
-  width: z.number(),
-  height: z.number(),
+  width: z.coerce.number<string>(),
+  height: z.coerce.number<string>(),
   unit: z.enum(units.map((u) => u.unit)),
 });
 
 /**
  * @see {import("@zakodium/nmrium-core").ExportSettings}
  */
-const exportSettingsValidation = z.discriminatedUnion('mode', [
+export const exportSettingsValidation = z.discriminatedUnion('mode', [
   basicExportSettings,
   advancedExportSettings,
 ]);
@@ -131,5 +131,5 @@ export const defaultGeneralSettingsFormValues: z.input<
       },
     },
   },
-  export: workspaceDefaultProperties.export,
+  export: exportPreferencesValidation.encode(workspaceDefaultProperties.export),
 };

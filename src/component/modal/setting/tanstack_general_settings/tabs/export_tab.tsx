@@ -1,4 +1,14 @@
-import { Radio, RadioGroup, SegmentedControl, Tag } from '@blueprintjs/core';
+import {
+  Checkbox,
+  Radio,
+  RadioGroup,
+  SegmentedControl,
+  Tag,
+} from '@blueprintjs/core';
+import { useStore } from '@tanstack/react-form';
+import type { PageSizeName, Unit } from '@zakodium/nmrium-core';
+import { units } from '@zakodium/nmrium-core';
+import { useMemo } from 'react';
 import {
   FormGroup,
   assert,
@@ -8,10 +18,16 @@ import {
 } from 'react-science/ui';
 
 import { convertToPixels } from '../../../../elements/export/units.ts';
-import { getExportOptions } from '../../../../elements/export/utilities/getExportOptions.ts';
+import { useExportConfigurer } from '../../../../elements/export/useExportConfigurer.tsx';
+import {
+  getExportDefaultOptionsByMode,
+  getExportOptions,
+} from '../../../../elements/export/utilities/getExportOptions.ts';
 import { pageSizes } from '../../../../elements/print/pageSize.ts';
-import { workspaceDefaultProperties } from '../../../../workspaces/workspaceDefaultProperties.ts';
-import { defaultGeneralSettingsFormValues } from '../validation.ts';
+import {
+  defaultGeneralSettingsFormValues,
+  exportSettingsValidation,
+} from '../validation.ts';
 
 export const ExportTab = withForm({
   defaultValues: defaultGeneralSettingsFormValues,
@@ -36,9 +52,42 @@ export const ExportTab = withForm({
 
 type Mode = 'basic' | 'advance';
 type Layout = 'portrait' | 'landscape';
+interface SelectItem<Value extends string> {
+  label: string;
+  value: Value;
+}
+
+const pageSizeItems: Record<Layout, Array<SelectItem<PageSizeName>>> = {
+  portrait: pageSizes.map((item) => ({
+    value: item.name,
+    label: `${item.name} (${item.portrait.width} cm x ${item.portrait.height} cm)`,
+  })),
+  landscape: pageSizes.map((item) => ({
+    value: item.name,
+    label: `${item.name} (${item.landscape.width} cm x ${item.landscape.height} cm)`,
+  })),
+};
+
+const modeItems: Array<SelectItem<Mode>> = [
+  { label: 'Basic', value: 'basic' },
+  { label: 'Advanced', value: 'advance' },
+];
+
+const unitItems: Array<SelectItem<Unit>> = units.map((u) => ({
+  label: u.name,
+  value: u.unit,
+}));
+
 const ExportFields = withFieldGroup({
-  defaultValues: workspaceDefaultProperties.export.png,
+  defaultValues: defaultGeneralSettingsFormValues.export.png,
+  /* eslint-disable react-hooks/rules-of-hooks */
   render: ({ group }) => {
+    const inputValues = useStore(group.store, (s) => s.values);
+    const outputValues = useMemo(() => {
+      return exportSettingsValidation.decode(inputValues);
+    }, [inputValues]);
+    const advancedTransforms = useExportConfigurer(outputValues);
+
     return (
       <>
         <group.Field name="mode">
@@ -46,11 +95,17 @@ const ExportFields = withFieldGroup({
             <FormGroup label="Mode">
               <SegmentedControl
                 defaultValue={field.state.value}
-                onValueChange={(v) => field.handleChange(v as Mode)}
-                options={[
-                  { label: 'Basic', value: 'basic' },
-                  { label: 'Advanced', value: 'advance' },
-                ]}
+                onValueChange={(v) => {
+                  const newMode = v as Mode;
+                  const newOptions = getExportDefaultOptionsByMode(newMode);
+
+                  for (const [key, value] of Object.entries(newOptions)) {
+                    group.setFieldValue(key as keyof typeof newOptions, value, {
+                      dontRunListeners: true,
+                    });
+                  }
+                }}
+                options={modeItems}
                 inline
               />
             </FormGroup>
@@ -58,7 +113,9 @@ const ExportFields = withFieldGroup({
         </group.Field>
         <group.Subscribe selector={(s) => s.values}>
           {(values) => {
-            const { width, height, dpi, unit } = getExportOptions(values);
+            const { width, height, dpi, unit } = getExportOptions(
+              exportSettingsValidation.decode(values),
+            );
             const widthInPixel = convertToPixels(width, unit, dpi, {
               precision: 0,
             });
@@ -82,19 +139,13 @@ const ExportFields = withFieldGroup({
                     <group.Subscribe
                       selector={(state) => {
                         assert(state.values.mode === 'basic');
-                        return state.values.layout;
+                        return pageSizeItems[state.values.layout];
                       }}
                     >
-                      {(layout) => (
+                      {(items) => (
                         <group.AppField name="size">
                           {(field) => (
-                            <field.Select
-                              label="Size"
-                              items={pageSizes.map((item) => ({
-                                value: item.name,
-                                label: `${item.name} (${item[layout].width} cm x ${item[layout].height} cm)`,
-                              }))}
-                            />
+                            <field.Select label="Size" items={items} />
                           )}
                         </group.AppField>
                       )}
@@ -121,13 +172,121 @@ const ExportFields = withFieldGroup({
                   </>
                 );
               case 'advance':
-                return null;
+                return (
+                  <>
+                    <group.AppField
+                      name="unit"
+                      listeners={{
+                        onChange: ({ value }) => {
+                          const { width, height } =
+                            advancedTransforms.changeUnit({ unit: value });
+                          group.setFieldValue('width', String(width), {
+                            dontRunListeners: true,
+                          });
+                          group.setFieldValue('height', String(height), {
+                            dontRunListeners: true,
+                          });
+                        },
+                      }}
+                    >
+                      {(field) => (
+                        <field.Select label="Unit" items={unitItems} />
+                      )}
+                    </group.AppField>
+                    <Checkbox
+                      label="Keep ratio"
+                      checked={advancedTransforms.isAspectRatioEnabled}
+                      onChange={(event) => {
+                        advancedTransforms.enableAspectRatio(
+                          event.currentTarget.checked,
+                        );
+                      }}
+                    />
+                    <group.Subscribe
+                      selector={(state) => {
+                        assert(state.values.mode === 'advance');
+                        return state.values.unit;
+                      }}
+                    >
+                      {(unit) => (
+                        <>
+                          <group.AppField
+                            name="width"
+                            listeners={{
+                              onChange: ({ value }) => {
+                                const height = advancedTransforms.changeSize(
+                                  Number(value),
+                                  'height',
+                                  'width',
+                                );
+                                if (!advancedTransforms.isAspectRatioEnabled) {
+                                  return;
+                                }
+                                group.setFieldValue('height', String(height), {
+                                  dontRunListeners: true,
+                                });
+                              },
+                            }}
+                          >
+                            {(field) => (
+                              <field.NumericInput
+                                label="Width"
+                                rightElement={<Tag>{unit}</Tag>}
+                              />
+                            )}
+                          </group.AppField>
+                          <group.AppField
+                            name="height"
+                            listeners={{
+                              onChange: ({ value }) => {
+                                const width = advancedTransforms.changeSize(
+                                  Number(value),
+                                  'width',
+                                  'height',
+                                );
+                                if (!advancedTransforms.isAspectRatioEnabled) {
+                                  return;
+                                }
+                                group.setFieldValue('width', String(width), {
+                                  dontRunListeners: true,
+                                });
+                              },
+                            }}
+                          >
+                            {(field) => (
+                              <field.NumericInput
+                                label="Height"
+                                rightElement={<Tag>{unit}</Tag>}
+                              />
+                            )}
+                          </group.AppField>
+                        </>
+                      )}
+                    </group.Subscribe>
+                  </>
+                );
               default:
                 assertUnreachable(mode);
             }
           }}
         </group.Subscribe>
-        <group.AppField name="dpi">
+        <group.AppField
+          name="dpi"
+          listeners={{
+            onChange: ({ value }) => {
+              if (group.state.values.mode !== 'advance') return;
+              if (group.state.values.unit !== 'px') return;
+
+              const { width, height } = advancedTransforms.changeDPI(value);
+              group.setFieldValue('width', String(width), {
+                dontRunListeners: true,
+              });
+              group.setFieldValue('height', String(height), {
+                dontRunListeners: true,
+              });
+            },
+          }}
+        >
           {(field) => <field.NumericInput label="DPI" />}
         </group.AppField>
         <group.AppField name="useDefaultSettings">
@@ -138,4 +297,5 @@ const ExportFields = withFieldGroup({
       </>
     );
   },
+  /* eslint-enable react-hooks/rules-of-hooks */
 });
