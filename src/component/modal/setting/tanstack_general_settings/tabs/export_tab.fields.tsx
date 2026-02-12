@@ -51,14 +51,12 @@ const layoutItems: Array<SelectItem<Layout>> = [
 
 export const ExportFields = withFieldGroup({
   defaultValues: defaultGeneralSettingsFormValues.export.png,
-  render: ({ group }) => {
-    /* eslint-disable react-hooks/rules-of-hooks */
+  render: function ExportFields({ group }) {
     const inputValues = useStore(group.store, (s) => s.values);
     const outputValues = useMemo(() => {
       return exportSettingsValidation.decode(inputValues);
     }, [inputValues]);
     const advancedTransforms = useExportConfigurer(outputValues);
-    /* eslint-enable react-hooks/rules-of-hooks */
 
     function onModeChange({ value }: { value: Mode }) {
       const newOptions = getExportDefaultOptionsByMode(value);
