@@ -37,7 +37,9 @@ export function GeneralSettings(props: GeneralSettingsProps) {
       onDynamic: workspaceValidation,
     },
     validationLogic: revalidateLogic({ mode: 'change' }),
-    defaultValues: currentWorkspace as GeneralSettingsFormType,
+    defaultValues: workspaceValidation.encode(
+      currentWorkspace as unknown as z.output<typeof workspaceValidation>,
+    ),
     onSubmit: ({ value }) => {
       const safeParseResult = workspaceValidation.safeParse(value);
 
@@ -45,7 +47,7 @@ export function GeneralSettings(props: GeneralSettingsProps) {
         throw new Error('Failed to parse workspace validation');
       }
 
-      saveSettings(value as Partial<Workspace>);
+      saveSettings(value as unknown as Partial<Workspace>);
       close();
     },
   });
@@ -54,7 +56,7 @@ export function GeneralSettings(props: GeneralSettingsProps) {
     dispatch({
       type: 'APPLY_General_PREFERENCES',
       payload: {
-        data: values as Omit<Workspace, 'label' | 'version'>,
+        data: values as unknown as Omit<Workspace, 'label' | 'version'>,
       },
     });
 
