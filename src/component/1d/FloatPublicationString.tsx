@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
-import type { BoundingBox, TextStyle } from '@zakodium/nmrium-core';
-import { useEffect, useMemo, useState } from 'react';
+import type { BoundingBox, Spectrum, TextStyle } from '@zakodium/nmrium-core';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { BsArrowsMove } from 'react-icons/bs';
-import { FaTimes } from 'react-icons/fa';
+import { FaEdit, FaTimes } from 'react-icons/fa';
 import { Rnd } from 'react-rnd';
 import { SVGStyledText } from 'react-science/ui';
 
@@ -17,6 +17,7 @@ import { useTextMetrics } from '../hooks/useTextMetrics.js';
 import { useCheckExportStatus } from '../hooks/useViewportSize.js';
 import { useACSSettings } from '../hooks/use_acs_settings.js';
 import { usePublicationStrings } from '../hooks/use_publication_strings.js';
+import { PublicationStringModal } from '../modal/PublicationStringModal.js';
 
 const ReactRnd = styled(Rnd)`
   border: 1px solid transparent;
@@ -33,25 +34,29 @@ const ReactRnd = styled(Rnd)`
 
 interface UseWrapSVGTextParams {
   text: string;
+  style: TextStyle;
   width: number;
-  fontSize: number;
-  fontStyle: string | undefined;
-  fontWeight: string | undefined;
 }
 
 function useWrapSVGText(params: UseWrapSVGTextParams) {
-  const { text, width, fontSize, fontStyle, fontWeight } = params;
-  const { getTextWidth } = useTextMetrics({
-    labelSize: fontSize,
-    labelStyle: fontStyle,
-    labelWeight: fontWeight,
+  const { text, width, style } = params;
+
+  const debugCanvas = false;
+  const labelSize = style.fontSize ?? 12;
+  // ctx used only for debug canvas purpose.
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  const { getTextWidth, ctx } = useTextMetrics({
+    labelSize,
+    labelStyle: style.fontStyle,
+    labelWeight: style.fontWeight,
+    debugCanvasWidth: debugCanvas ? width : undefined,
   });
 
   const formattedText = text
     .replaceAll(/<sup>(?<n>.*?)<\/sup>/g, '++$1++ ')
     .replaceAll(/<i>(?<j>.*?)<\/i>/g, '**$1**');
 
-  const lineHeight = fontSize * 1.6;
+  const lineHeight = labelSize * 1.6;
 
   const lines: string[][] = [];
   let line: string[] = [];
@@ -73,31 +78,59 @@ function useWrapSVGText(params: UseWrapSVGTextParams) {
   }
   if (line.length > 0) lines.push(line);
 
+  useEffect(() => {
+    if (!debugCanvas) return;
+    if (!ctx) return;
+
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    let y = lineHeight;
+    for (const line of lines) {
+      let x = 0;
+      for (const word of line) {
+        const isSuper = word.startsWith('++') && word.endsWith('++');
+        const isItalic = word.startsWith('**') && word.endsWith('**');
+        const baseLine = ctx.textBaseline;
+
+        let finalWord = `${word} `;
+        if (isSuper) {
+          finalWord = word.replaceAll('++', '');
+
+          ctx.textBaseline = 'bottom';
+        } else if (isItalic) {
+          finalWord = word.replaceAll('**', '');
+        }
+
+        ctx?.fillText(finalWord, x, y);
+        x += getTextWidth(finalWord);
+
+        ctx.textBaseline = baseLine;
+      }
+
+      y += lineHeight;
+    }
+  });
+
   return { lines, lineHeight };
 }
 
 interface PublicationTextProps {
   text: string;
   textStyle: TextStyle;
-  fontSize?: number;
   width: number;
-  padding?: number;
 }
 
 function PublicationText(props: PublicationTextProps) {
   const { text, width } = props;
-  const textStyle = {
-    ...props.textStyle,
-    fontSize: props.textStyle.fontSize ?? props.fontSize ?? 12,
-  };
-  const { fontSize = textStyle.fontSize, padding = 10 } = props;
+  const padding = 10;
   const boxWidth = width - padding * 2;
 
+  const textStyle = {
+    ...props.textStyle,
+    fontSize: props.textStyle.fontSize ?? 12,
+  };
   const { lineHeight, lines } = useWrapSVGText({
     width: boxWidth,
-    fontSize,
-    fontStyle: textStyle.fontStyle,
-    fontWeight: textStyle.fontWeight,
+    style: textStyle,
     text,
   });
 
@@ -115,8 +148,12 @@ function PublicationText(props: PublicationTextProps) {
           {line.map((word, wordIndex) => {
             if (word.startsWith('++') && word.endsWith('++')) {
               return (
-                // eslint-disable-next-line react/no-array-index-key
-                <tspan key={wordIndex} baselineShift="super" fontSize={10}>
+                <tspan
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={wordIndex}
+                  baselineShift="super"
+                  fontSize={Math.floor((5 / 6) * textStyle.fontSize)}
+                >
                   {word.replaceAll('++', '')}
                 </tspan>
               );
@@ -140,52 +177,115 @@ function PublicationText(props: PublicationTextProps) {
 
 interface DraggablePublicationStringProps {
   value: string;
-  bonding: BoundingBox;
-  spectrumKey: string;
-  nucleus: string | undefined;
+  bounding: BoundingBox;
+  nucleus: string;
+  spectrum: Spectrum;
+}
+
+function useBoundingBox(externalBoundingPercent: BoundingBox) {
+  const { percentToPixel, pixelToPercent } = useSVGUnitConverter();
+
+  const convertToPixel = useCallback(
+    (bounding: Partial<BoundingBox>) => {
+      const { x, y, height, width } = bounding;
+      const output: Partial<BoundingBox> = {};
+
+      if (typeof x === 'number') {
+        output.x = percentToPixel(x, 'x');
+      }
+      if (typeof y === 'number') {
+        output.y = percentToPixel(y, 'y');
+      }
+      if (typeof width === 'number') {
+        output.width = width;
+      }
+      if (typeof height === 'number') {
+        output.height = height;
+      }
+
+      return output;
+    },
+    [percentToPixel],
+  );
+
+  const convertToPercent = useCallback(
+    (bounding: Partial<BoundingBox>) => {
+      const { x, y, height, width } = bounding;
+      const output: Partial<BoundingBox> = {};
+
+      if (typeof x === 'number') {
+        output.x = pixelToPercent(x, 'x');
+      }
+      if (typeof y === 'number') {
+        output.y = pixelToPercent(y, 'y');
+      }
+      if (typeof width === 'number') {
+        output.width = width;
+      }
+      if (typeof height === 'number') {
+        output.height = height;
+      }
+
+      return output;
+    },
+    [pixelToPercent],
+  );
+
+  const [bounding, setBounding] = useState<BoundingBox>(() => {
+    return convertToPixel(externalBoundingPercent) as BoundingBox;
+  });
+
+  useEffect(() => {
+    setBounding(convertToPixel(externalBoundingPercent) as BoundingBox);
+  }, [convertToPixel, externalBoundingPercent]);
+
+  return {
+    bounding,
+    setBounding,
+    convertToPixel,
+    convertToPercent,
+  };
 }
 
 function DraggablePublicationString(props: DraggablePublicationStringProps) {
-  const { value, bonding: externalBounding, spectrumKey, nucleus } = props;
+  const {
+    value,
+    bounding: externalBoundingInPercent,
+    nucleus,
+    spectrum,
+  } = props;
+  const spectrumKey = spectrum.id;
+
   const dispatch = useDispatch();
   const { viewerRef } = useGlobal();
-  const [bounding, setBounding] = useState<BoundingBox>(externalBounding);
   const [isMoveActive, setIsMoveActive] = useState(false);
-  const { percentToPixel, pixelToPercent } = useSVGUnitConverter();
   const isExportProcessStart = useCheckExportStatus();
   const acsOptions = useACSSettings(nucleus);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  useEffect(() => {
-    setBounding({ ...externalBounding });
-  }, [externalBounding]);
+  const { bounding, setBounding, convertToPercent } = useBoundingBox(
+    externalBoundingInPercent,
+  );
 
-  function handleResize(
-    internalBounding: Pick<BoundingBox, 'height' | 'width'>,
-  ) {
-    const { width = 0, height = 0 } = convertToPixel(externalBounding);
-    internalBounding.width += width;
-    internalBounding.height += height;
+  function handleResize(bounding: Pick<BoundingBox, 'height' | 'width'>) {
+    setBounding((prevBounding) => {
+      return {
+        ...prevBounding,
+        width: bounding.width,
+        height: bounding.height,
+      };
+    });
+  }
+
+  function handleDrag(newPosition: Pick<BoundingBox, 'x' | 'y'>) {
     setBounding((prevBounding) => ({
       ...prevBounding,
-      ...convertToPercent(internalBounding),
+      ...newPosition,
     }));
   }
 
-  function handleDrag(internalBounding: Pick<BoundingBox, 'x' | 'y'>) {
-    setBounding((prevBounding) => ({
-      ...prevBounding,
-      ...convertToPercent(internalBounding),
-    }));
-  }
   function handleChangeInsetBounding(bounding: Partial<BoundingBox>) {
-    if (
-      typeof bounding?.width === 'number' &&
-      typeof bounding?.height === 'number'
-    ) {
-      const { width, height } = externalBounding;
-      bounding.width += width;
-      bounding.height += height;
-    }
+    setBounding((prev) => ({ ...prev, ...bounding }));
 
     dispatch({
       type: 'CHANGE_RANGES_VIEW_FLOATING_BOX_BOUNDING',
@@ -195,45 +295,6 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
         target: 'publicationStringBounding',
       },
     });
-  }
-
-  function convertToPixel(bounding: Partial<BoundingBox>) {
-    const { x, y, height, width } = bounding;
-    const output: Partial<BoundingBox> = {};
-
-    if (x) {
-      output.x = percentToPixel(x, 'x');
-    }
-    if (y) {
-      output.y = percentToPixel(y, 'y');
-    }
-    if (width) {
-      output.width = width;
-    }
-    if (height) {
-      output.height = height;
-    }
-
-    return output;
-  }
-  function convertToPercent(bounding: Partial<BoundingBox>) {
-    const { x, y, height, width } = bounding;
-    const output: Partial<BoundingBox> = {};
-
-    if (x) {
-      output.x = pixelToPercent(x, 'x');
-    }
-    if (y) {
-      output.y = pixelToPercent(y, 'y');
-    }
-    if (width) {
-      output.width = width;
-    }
-    if (height) {
-      output.height = height;
-    }
-
-    return output;
   }
 
   function handleRemove() {
@@ -246,11 +307,18 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
   const actionButtons: ActionsButtonsPopoverProps['buttons'] = [
     {
       icon: <BsArrowsMove />,
-
       intent: 'none',
       title: 'Move publication string',
       style: { cursor: 'move' },
       className: 'handle',
+    },
+    {
+      icon: <FaEdit />,
+      intent: 'primary',
+      title: 'Configure publication string',
+      onClick: () => {
+        setIsDialogOpen(true);
+      },
     },
     {
       icon: <FaTimes />,
@@ -261,10 +329,7 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
   ];
   if (!viewerRef || !value) return null;
 
-  const { width, height, x: xInPercent, y: yInPercent } = bounding;
-
-  const x = percentToPixel(xInPercent, 'x');
-  const y = percentToPixel(yInPercent, 'y');
+  const { width, height, x = 0, y = 0 } = bounding;
 
   if (isExportProcessStart) {
     return (
@@ -279,51 +344,71 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
   }
 
   return (
-    <ReactRnd
-      default={{ x, y, width: width || 'auto', height: height || 'auto' }}
-      position={{ x, y }}
-      size={{ width: width || 'auto', height: height || 'auto' }}
-      minWidth={100}
-      minHeight={50}
-      dragHandleClassName="handle"
-      enableUserSelectHack={false}
-      bounds={`#${viewerRef.id}`}
-      onDragStart={() => setIsMoveActive(true)}
-      onResize={(e, dir, eRef, size, position) =>
-        handleResize({ ...size, ...position })
-      }
-      onResizeStop={(e, dir, eRef, size, position) =>
-        handleChangeInsetBounding({ ...size, ...position })
-      }
-      onDrag={(e, { x, y }) => {
-        handleDrag({ x, y });
-      }}
-      onDragStop={(e, { x, y }) => {
-        handleChangeInsetBounding({ x, y });
-        setIsMoveActive(false);
-      }}
-      resizeHandleWrapperStyle={{ backgroundColor: 'white' }}
-    >
-      <ActionsButtonsPopover
-        buttons={actionButtons}
-        fill
-        positioningStrategy="fixed"
-        direction="row"
-        targetProps={{ style: { width: '100%', height: '100%' } }}
-        space={2}
-        {...(isMoveActive && { isOpen: true })}
-        x={x}
-        y={y}
+    <>
+      <ReactRnd
+        position={{ x, y }}
+        size={{ width: width || 'auto', height: height || 'auto' }}
+        minWidth={100}
+        minHeight={50}
+        dragHandleClassName="handle"
+        enableUserSelectHack={false}
+        bounds={`#${viewerRef.id}`}
+        onResize={(e, dir, eRef, size, position) => {
+          handleResize({
+            ...position,
+            height: eRef.clientHeight,
+            width: eRef.clientWidth,
+          });
+        }}
+        onResizeStop={(e, dir, eRef, size, position) => {
+          handleChangeInsetBounding({
+            ...position,
+            height: eRef.clientHeight,
+            width: eRef.clientWidth,
+          });
+        }}
+        onDragStart={() => setIsMoveActive(true)}
+        onDrag={(e, data) => {
+          handleDrag({ x: data.x, y: data.y });
+        }}
+        onDragStop={(e, data) => {
+          handleChangeInsetBounding({ x: data.x, y: data.y });
+          setIsMoveActive(false);
+        }}
+        resizeHandleWrapperStyle={{ backgroundColor: 'white' }}
       >
-        <svg width={width} height={'auto'} xmlns="http://www.w3.org/2000/svg">
-          <PublicationText
-            text={value}
-            width={width}
-            textStyle={acsOptions.textStyle}
-          />
-        </svg>
-      </ActionsButtonsPopover>
-    </ReactRnd>
+        <ActionsButtonsPopover
+          buttons={actionButtons}
+          fill
+          positioningStrategy="fixed"
+          direction="row"
+          targetProps={{ style: { width: '100%', height: '100%' } }}
+          space={2}
+          {...(isMoveActive && { isOpen: true })}
+          x={x}
+          y={y}
+        >
+          <svg
+            width={width || 'auto'}
+            height={height || 'auto'}
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <PublicationText
+              text={value}
+              width={width}
+              textStyle={acsOptions.textStyle}
+            />
+          </svg>
+        </ActionsButtonsPopover>
+      </ReactRnd>
+      <PublicationStringModal
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        acsExportOptions={acsOptions}
+        spectrum={spectrum}
+        allowTextStyle
+      />
+    </>
   );
 }
 
@@ -333,30 +418,41 @@ export function FloatPublicationString() {
     data: spectra,
     view: { ranges },
   } = useChartData();
-  const options = useMemo(() => Object.entries(ranges), [ranges]);
-  const spectraToNucleusMap = useMemo(() => {
-    const map = new Map<string, string>();
+  const spectraMap = useMemo(() => {
+    const map = new Map<string, Spectrum>();
 
     for (const spectrum of spectra) {
-      if (!isSpectrum1D(spectrum)) continue;
-      const { nucleus } = spectrum.info;
-      map.set(spectrum.id, nucleus);
+      map.set(spectrum.id, spectrum);
     }
 
     return map;
   }, [spectra]);
+  const options = useMemo(() => {
+    return Object.entries(ranges).map(([spectrumKey, viewOptions]) => ({
+      spectrum: spectraMap.get(spectrumKey),
+      viewOptions,
+    }));
+  }, [ranges, spectraMap]);
 
-  return options.map(([spectrumKey, viewOptions]) => {
+  return options.map((options) => {
+    const { viewOptions, spectrum } = options;
+
     const { showPublicationString, publicationStringBounding } = viewOptions;
     if (!showPublicationString) return null;
+    if (!isSpectrum1D(spectrum)) return null;
+
+    const {
+      id,
+      info: { nucleus },
+    } = spectrum;
 
     return (
       <DraggablePublicationString
-        key={spectrumKey}
-        spectrumKey={spectrumKey}
-        nucleus={spectraToNucleusMap.get(spectrumKey)}
-        bonding={publicationStringBounding}
-        value={publicationString[spectrumKey]}
+        key={id}
+        spectrum={spectrum}
+        nucleus={nucleus}
+        bounding={publicationStringBounding}
+        value={publicationString[id]}
       />
     );
   });
