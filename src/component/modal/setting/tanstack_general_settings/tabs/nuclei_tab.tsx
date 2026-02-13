@@ -133,9 +133,11 @@ export const NucleiTab = withForm({
                 {(subField) => (
                   <NumericInput
                     style={{ backgroundColor: 'transparent' }}
-                    value={subField.state.value}
+                    value={Number(subField.state.value) || undefined}
                     fill
-                    onChange={(e) => subField.handleChange(e.target.value)}
+                    onValueChange={(valueAsNumber) =>
+                      subField.handleChange(valueAsNumber)
+                    }
                   />
                 )}
               </form.Field>
@@ -151,9 +153,11 @@ export const NucleiTab = withForm({
                 {(subField) => (
                   <NumericInput
                     style={{ backgroundColor: 'transparent' }}
-                    value={subField.state.value}
+                    value={Number(subField.state.value) || undefined}
                     fill
-                    onChange={(e) => subField.handleChange(e.target.value)}
+                    onValueChange={(valueAsNumber) =>
+                      subField.handleChange(valueAsNumber)
+                    }
                   />
                 )}
               </form.Field>

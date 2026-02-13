@@ -110,8 +110,8 @@ const nucleiValidation = z
       nucleus: z.string({ error: 'Nucleus is a required field' }),
       ppmFormat: z.string({ error: 'PPM format is a required field' }),
       hzFormat: z.string({ error: 'Hz format  is a required field' }),
-      axisFrom: z.string().optional(),
-      axisTo: z.string().optional(),
+      axisFrom: z.coerce.number().optional(),
+      axisTo: z.coerce.number().optional(),
     }),
   )
   .superRefine((nuclei, ctx) => {
