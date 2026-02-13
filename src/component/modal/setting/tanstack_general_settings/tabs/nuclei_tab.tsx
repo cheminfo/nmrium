@@ -69,11 +69,7 @@ export const NucleiTab = withForm({
             return (
               <form.Field key={index} name={`nuclei[${index}].nucleus`}>
                 {(subField) => (
-                  <Input2
-                    style={{
-                      backgroundColor: 'transparent',
-                      boxShadow: 'none',
-                    }}
+                  <Input
                     value={subField.state.value}
                     onChange={subField.handleChange}
                   />
@@ -89,11 +85,7 @@ export const NucleiTab = withForm({
             return (
               <form.Field key={index} name={`nuclei[${index}].ppmFormat`}>
                 {(subField) => (
-                  <Input2
-                    style={{
-                      backgroundColor: 'transparent',
-                      boxShadow: 'none',
-                    }}
+                  <Input
                     value={subField.state.value}
                     onChange={subField.handleChange}
                   />
@@ -109,11 +101,7 @@ export const NucleiTab = withForm({
             return (
               <form.Field key={index} name={`nuclei[${index}].hzFormat`}>
                 {(subField) => (
-                  <Input2
-                    style={{
-                      backgroundColor: 'transparent',
-                      boxShadow: 'none',
-                    }}
+                  <Input
                     value={subField.state.value}
                     onChange={subField.handleChange}
                   />
@@ -252,4 +240,9 @@ function FieldsBlockHeader(props: FieldsBlockHeaderProps) {
 const Buttons = styled.div`
   display: flex;
   justify-content: space-evenly;
+`;
+
+const Input = styled(Input2)`
+  background-color: transparent;
+  box-shadow: none;
 `;
