@@ -8,14 +8,16 @@ import {
 export const ImportFiltersTab = withForm({
   defaultValues: defaultGeneralSettingsFormValues,
   render: ({ form }) => {
+    const { Section } = form;
+
     return (
       <>
-        <form.Section title="General">
+        <Section title="General">
           <General form={form} fields="nmrLoaders.general" />
-        </form.Section>
-        <form.Section title="Bruker">
+        </Section>
+        <Section title="Bruker">
           <Bruker form={form} fields="nmrLoaders.bruker" />
-        </form.Section>
+        </Section>
       </>
     );
   },
@@ -24,25 +26,27 @@ export const ImportFiltersTab = withForm({
 const General = withFieldGroup({
   defaultValues: defaultGeneralSettingsFormValues.nmrLoaders.general,
   render: ({ group }) => {
+    const { AppField } = group;
+
     return (
       <>
-        <group.AppField name="keep1D">
+        <AppField name="keep1D">
           {({ Checkbox }) => <Checkbox label="Keep 1D" />}
-        </group.AppField>
-        <group.AppField name="keep2D">
+        </AppField>
+        <AppField name="keep2D">
           {({ Checkbox }) => <Checkbox label="Keep 2D" />}
-        </group.AppField>
-        <group.AppField name="onlyReal">
+        </AppField>
+        <AppField name="onlyReal">
           {({ Checkbox }) => <Checkbox label="Only real" />}
-        </group.AppField>
-        <group.AppField name="dataSelection">
+        </AppField>
+        <AppField name="dataSelection">
           {({ Select }) => (
             <Select
               label="Data selection"
               items={nmrLoadersGeneralDataSelection}
             />
           )}
-        </group.AppField>
+        </AppField>
       </>
     );
   },
@@ -51,17 +55,19 @@ const General = withFieldGroup({
 const Bruker = withFieldGroup({
   defaultValues: defaultGeneralSettingsFormValues.nmrLoaders.bruker,
   render: ({ group }) => {
+    const { AppField } = group;
+
     return (
       <>
-        <group.AppField name="processingNumbers">
+        <AppField name="processingNumbers">
           {({ Input }) => <Input label="Processing numbers" />}
-        </group.AppField>
-        <group.AppField name="experimentNumbers">
+        </AppField>
+        <AppField name="experimentNumbers">
           {({ Input }) => <Input label="Experiment numbers" />}
-        </group.AppField>
-        <group.AppField name="onlyFirstProcessedData">
+        </AppField>
+        <AppField name="onlyFirstProcessedData">
           {({ Checkbox }) => <Checkbox label="Only first processed data" />}
-        </group.AppField>
+        </AppField>
       </>
     );
   },
