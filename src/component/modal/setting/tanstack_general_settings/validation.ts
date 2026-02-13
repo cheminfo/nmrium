@@ -5,6 +5,8 @@ import { z } from 'zod/v4';
 import type { LoggerType } from '../../../context/LoggerContext.tsx';
 import { workspaceDefaultProperties } from '../../../workspaces/workspaceDefaultProperties.ts';
 
+import { checkUniqueByKey } from './utils/checkUniqueByKey.ts';
+
 const loggingLevel: LoggerType[] = [
   'fatal',
   'error',
@@ -183,10 +185,56 @@ const exportPreferencesValidation = z.object({
   clipboard: exportSettingsValidation,
 });
 
+const nucleiValidation = z
+  .array(
+    z.object({
+      nucleus: z.string({ error: 'Nucleus is a required field' }),
+      ppmFormat: z.string({ error: 'PPM format is a required field' }),
+      hzFormat: z.string({ error: 'Hz format  is a required field' }),
+      axisFrom: z.coerce.number().optional(),
+      axisTo: z.coerce.number().optional(),
+    }),
+  )
+  .superRefine((nuclei, ctx) => {
+    checkUniqueByKey({
+      data: nuclei,
+      checkKey: 'nucleus',
+      context: ctx,
+    });
+  });
+
+export const nmrLoadersGeneralDataSelection = [
+  { label: 'FT', value: 'ft' } as const,
+  { label: 'FID', value: 'fid' } as const,
+  { label: 'Both', value: 'both' } as const,
+  { label: 'Prefer FT', value: 'preferFT' } as const,
+  { label: 'Prefer FID', value: 'preferFID' } as const,
+];
+
+const nmrLoadersGeneralValidation = z.object({
+  dataSelection: z
+    .enum(nmrLoadersGeneralDataSelection.map(({ value }) => value))
+    .optional(),
+  keep1D: z.boolean().optional(),
+  keep2D: z.boolean().optional(),
+  onlyReal: z.boolean().optional(),
+});
+const nmrLoadersBrukerValidation = z.object({
+  processingNumbers: z.string().optional(),
+  experimentNumbers: z.string().optional(),
+  onlyFirstProcessedData: z.boolean().optional(),
+});
+const nmrLoadersValidation = z.object({
+  general: nmrLoadersGeneralValidation,
+  bruker: nmrLoadersBrukerValidation,
+});
+
 export const workspaceValidation = z.object({
+  nuclei: nucleiValidation,
   peaksLabel: peaksLabelValidation,
   general: generalValidation,
   display: displayValidation,
+  nmrLoaders: nmrLoadersValidation,
   export: exportPreferencesValidation,
 });
 
@@ -194,6 +242,7 @@ export const workspaceValidation = z.object({
 export const defaultGeneralSettingsFormValues: z.input<
   typeof workspaceValidation
 > = {
+  nuclei: [{ nucleus: '', ppmFormat: '', hzFormat: '' }],
   peaksLabel: {
     marginTop: 0,
   },
@@ -215,5 +264,8 @@ export const defaultGeneralSettingsFormValues: z.input<
       workspaceDefaultProperties.display.panels,
     ),
   },
+  nmrLoaders: nmrLoadersValidation.encode(
+    workspaceDefaultProperties.nmrLoaders,
+  ),
   export: exportPreferencesValidation.encode(workspaceDefaultProperties.export),
 };

@@ -9,11 +9,9 @@ export const ExportTab = withForm({
   render: ({ form }) => {
     return (
       <>
-        <div style={{ marginTop: '-15px' }}>
-          <form.Section title="Export SVG to file options">
-            <ExportFields form={form} fields="export.svg" />
-          </form.Section>
-        </div>
+        <form.Section title="Export SVG to file options">
+          <ExportFields form={form} fields="export.svg" />
+        </form.Section>
         <form.Section title="Export PNG to file options">
           <ExportFields form={form} fields="export.png" />
         </form.Section>
