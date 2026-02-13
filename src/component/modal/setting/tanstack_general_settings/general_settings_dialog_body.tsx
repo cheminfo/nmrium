@@ -6,6 +6,7 @@ import { StyledDialogBody } from '../../../elements/StyledDialogBody.tsx';
 
 import { ExportTab } from './tabs/export_tab.tsx';
 import { GeneralTab } from './tabs/general_tab.tsx';
+import { PanelsTab } from './tabs/panels_tab.tsx';
 import { defaultGeneralSettingsFormValues } from './validation.ts';
 
 const Tabs = styled(BPTabs)`
@@ -42,6 +43,8 @@ export const GeneralSettingsDialogBody = withForm({
               id="general"
               panel={<GeneralTab form={form} />}
             />
+
+            <Tab id="panels" title="Panels" panel={<PanelsTab form={form} />} />
 
             <Tab id="export" title="Export" panel={<ExportTab form={form} />} />
           </Tabs>
