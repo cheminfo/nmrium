@@ -1,5 +1,31 @@
 # Changelog
 
+## [1.12.0](https://github.com/cheminfo/nmrium/compare/v1.11.0...v1.12.0) (2026-02-13)
+
+
+### Features
+
+* add "n" shortcut and tooltip for inset tool ([a6378a5](https://github.com/cheminfo/nmrium/commit/a6378a5adbac161739825268b8233ef6947bf842))
+* add a tooltip in custom labels ([d523a3b](https://github.com/cheminfo/nmrium/commit/d523a3bcd0206b350279f29050271d9afd58c757))
+* add export tab to settings dialog ([#3976](https://github.com/cheminfo/nmrium/issues/3976)) ([d3dba78](https://github.com/cheminfo/nmrium/commit/d3dba78a387174d0d5cd54857d414e76812d2de0))
+* add general tab & header on general settings ([#3975](https://github.com/cheminfo/nmrium/issues/3975)) ([acd4353](https://github.com/cheminfo/nmrium/commit/acd435369eefdcda34f907fb85196066d8ca1ea6))
+* add import filters tab ([#3977](https://github.com/cheminfo/nmrium/issues/3977)) ([0ccf9ab](https://github.com/cheminfo/nmrium/commit/0ccf9ab674a0f19489950e17af50f3de0c3c189d))
+* add nuclei tab on general settings ([#3978](https://github.com/cheminfo/nmrium/issues/3978)) ([cf1cb06](https://github.com/cheminfo/nmrium/commit/cf1cb062d73f00d1a16606971d6aaa7775a976b9))
+* collapse toolbar when panel header overflows ([bdf619e](https://github.com/cheminfo/nmrium/commit/bdf619e97948847a2a4c89d6b75824be9882e934))
+* create base of the new general settings form ([#3957](https://github.com/cheminfo/nmrium/issues/3957)) ([e879a80](https://github.com/cheminfo/nmrium/commit/e879a8060835bea7df2a887c8cc59ef2e1b5dd05))
+* implement panels tab ([#3979](https://github.com/cheminfo/nmrium/issues/3979)) ([07e7fe4](https://github.com/cheminfo/nmrium/commit/07e7fe498d3979bf7c76c3c3b4f73b264e2ebe11))
+* improve information panel header ([c95d83a](https://github.com/cheminfo/nmrium/commit/c95d83a879f0d48be235387ad4a1848215a57630))
+* **ranges:** forward options to publication string renderer ([#3958](https://github.com/cheminfo/nmrium/issues/3958)) ([14b4929](https://github.com/cheminfo/nmrium/commit/14b49290a82d9b5ce7c8e82774031c5d80efec55))
+* show 1D assign actions in 2D directly next to the cursor ([cae8872](https://github.com/cheminfo/nmrium/commit/cae8872cf452029aed827a4070e192c202293693)), closes [#3941](https://github.com/cheminfo/nmrium/issues/3941)
+* take into account publication string feedbacks ([#3966](https://github.com/cheminfo/nmrium/issues/3966)) ([94407c6](https://github.com/cheminfo/nmrium/commit/94407c69baf18f31d174e12fff45a92e158571a6))
+
+
+### Bug Fixes
+
+* double click to collapse panels ([b02bf61](https://github.com/cheminfo/nmrium/commit/b02bf61cca398cca3b6ac9105bafc2ab861f5fd3))
+* **ranges:** publication string preview iso with chart ([14b4929](https://github.com/cheminfo/nmrium/commit/14b49290a82d9b5ce7c8e82774031c5d80efec55))
+* reset activeSpectra and selectReferences state before load ([2f2de1f](https://github.com/cheminfo/nmrium/commit/2f2de1f6c2fe2f135fe8ef4ab6c5f1b5fabc53b2))
+
 ## [1.11.0](https://github.com/cheminfo/nmrium/compare/v1.10.1...v1.11.0) (2026-01-27)
 
 
