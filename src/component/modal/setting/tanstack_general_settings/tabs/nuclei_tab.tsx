@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-
 import { Classes, NumericInput } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { useStore } from '@tanstack/react-form';
@@ -29,7 +27,7 @@ const emptyNucleiFormElement: NucleiFormElement = {
 
 export const NucleiTab = withForm({
   defaultValues: defaultGeneralSettingsFormValues,
-  render: ({ form }) => {
+  render: function Render({ form }) {
     const fields = useStore(form.store, (state) => state.values.nuclei);
 
     const handleAdd = useCallback(
