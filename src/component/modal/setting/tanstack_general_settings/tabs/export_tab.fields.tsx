@@ -117,13 +117,14 @@ export const ExportFields = withFieldGroup({
       });
     }
 
+    const { AppField, Subscribe } = group;
     return (
       <>
-        <group.AppField name="mode" listeners={{ onChange: onModeChange }}>
-          {(field) => <field.RadioGroup label="Mode" options={modeItems} />}
-        </group.AppField>
+        <AppField name="mode" listeners={{ onChange: onModeChange }}>
+          {({ RadioGroup }) => <RadioGroup label="Mode" options={modeItems} />}
+        </AppField>
         <DescriptionPreview {...outputValues} />
-        <group.Subscribe
+        <Subscribe
           selector={(state) => {
             const mode = state.values.mode;
             switch (state.values.mode) {
@@ -141,35 +142,29 @@ export const ExportFields = withFieldGroup({
               case 'basic':
                 return (
                   <>
-                    <group.AppField name="size">
-                      {(field) => (
-                        <field.Select
-                          label="Size"
-                          items={pageSizeItems[layout]}
-                        />
+                    <AppField name="size">
+                      {({ Select }) => (
+                        <Select label="Size" items={pageSizeItems[layout]} />
                       )}
-                    </group.AppField>
-                    <group.AppField name="layout">
-                      {(field) => (
-                        <field.RadioGroup
-                          label="Layout"
-                          options={layoutItems}
-                        />
+                    </AppField>
+                    <AppField name="layout">
+                      {({ RadioGroup }) => (
+                        <RadioGroup label="Layout" options={layoutItems} />
                       )}
-                    </group.AppField>
+                    </AppField>
                   </>
                 );
               case 'advance':
                 return (
                   <>
-                    <group.AppField
+                    <AppField
                       name="unit"
                       listeners={{ onChange: onChangeUnit }}
                     >
-                      {(field) => (
-                        <field.Select label="Unit" items={unitItems} />
+                      {({ Select }) => (
+                        <Select label="Unit" items={unitItems} />
                       )}
-                    </group.AppField>
+                    </AppField>
                     <Checkbox
                       label="Keep ratio"
                       checked={advancedTransforms.isAspectRatioEnabled}
@@ -179,43 +174,43 @@ export const ExportFields = withFieldGroup({
                         );
                       }}
                     />
-                    <group.AppField
+                    <AppField
                       name="width"
                       listeners={{ onChange: onWidthChange }}
                     >
-                      {(field) => (
-                        <field.NumericInput
+                      {({ NumericInput }) => (
+                        <NumericInput
                           label="Width"
                           rightElement={<Tag>{unit}</Tag>}
                         />
                       )}
-                    </group.AppField>
-                    <group.AppField
+                    </AppField>
+                    <AppField
                       name="height"
                       listeners={{ onChange: onHeightChange }}
                     >
-                      {(field) => (
-                        <field.NumericInput
+                      {({ NumericInput }) => (
+                        <NumericInput
                           label="Height"
                           rightElement={<Tag>{unit}</Tag>}
                         />
                       )}
-                    </group.AppField>
+                    </AppField>
                   </>
                 );
               default:
                 assertUnreachable(mode);
             }
           }}
-        </group.Subscribe>
-        <group.AppField name="dpi" listeners={{ onChange: onDPIChange }}>
-          {(field) => <field.NumericInput label="DPI" />}
-        </group.AppField>
-        <group.AppField name="useDefaultSettings">
-          {(field) => (
-            <field.Checkbox label="Don't show the options dialog during export and use current settings" />
+        </Subscribe>
+        <AppField name="dpi" listeners={{ onChange: onDPIChange }}>
+          {({ NumericInput }) => <NumericInput label="DPI" />}
+        </AppField>
+        <AppField name="useDefaultSettings">
+          {({ Checkbox }) => (
+            <Checkbox label="Don't show the options dialog during export and use current settings" />
           )}
-        </group.AppField>
+        </AppField>
       </>
     );
   },
