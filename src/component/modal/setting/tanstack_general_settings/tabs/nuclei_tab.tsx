@@ -69,7 +69,11 @@ export const NucleiTab = withForm({
             return (
               <form.Field key={index} name={`nuclei[${index}].nucleus`}>
                 {(subField) => (
-                  <Input
+                  <Input2
+                    style={{
+                      backgroundColor: 'transparent',
+                      boxShadow: 'none',
+                    }}
                     value={subField.state.value}
                     onChange={subField.handleChange}
                   />
@@ -85,7 +89,11 @@ export const NucleiTab = withForm({
             return (
               <form.Field key={index} name={`nuclei[${index}].ppmFormat`}>
                 {(subField) => (
-                  <Input
+                  <Input2
+                    style={{
+                      backgroundColor: 'transparent',
+                      boxShadow: 'none',
+                    }}
                     value={subField.state.value}
                     onChange={subField.handleChange}
                   />
@@ -101,7 +109,11 @@ export const NucleiTab = withForm({
             return (
               <form.Field key={index} name={`nuclei[${index}].hzFormat`}>
                 {(subField) => (
-                  <Input
+                  <Input2
+                    style={{
+                      backgroundColor: 'transparent',
+                      boxShadow: 'none',
+                    }}
                     value={subField.state.value}
                     onChange={subField.handleChange}
                   />
@@ -118,7 +130,10 @@ export const NucleiTab = withForm({
               <form.Field key={index} name={`nuclei[${index}].axisFrom`}>
                 {(subField) => (
                   <NumericInput
-                    style={{ backgroundColor: 'transparent' }}
+                    style={{
+                      backgroundColor: 'transparent',
+                      boxShadow: 'none',
+                    }}
                     value={Number(subField.state.value) || undefined}
                     fill
                     onValueChange={(valueAsNumber) =>
@@ -138,7 +153,10 @@ export const NucleiTab = withForm({
               <form.Field key={index} name={`nuclei[${index}].axisTo`}>
                 {(subField) => (
                   <NumericInput
-                    style={{ backgroundColor: 'transparent' }}
+                    style={{
+                      backgroundColor: 'transparent',
+                      boxShadow: 'none',
+                    }}
                     value={Number(subField.state.value) || undefined}
                     fill
                     onValueChange={(valueAsNumber) =>
@@ -240,9 +258,4 @@ function FieldsBlockHeader(props: FieldsBlockHeaderProps) {
 const Buttons = styled.div`
   display: flex;
   justify-content: space-evenly;
-`;
-
-const Input = styled(Input2)`
-  background-color: transparent;
-  box-shadow: none;
 `;
