@@ -5,6 +5,8 @@ import { z } from 'zod/v4';
 import type { LoggerType } from '../../../context/LoggerContext.tsx';
 import { workspaceDefaultProperties } from '../../../workspaces/workspaceDefaultProperties.ts';
 
+import { checkUniqueByKey } from './utils/checkUniqueByKey.ts';
+
 const loggingLevel: LoggerType[] = [
   'fatal',
   'error',
@@ -102,7 +104,26 @@ const exportPreferencesValidation = z.object({
   clipboard: exportSettingsValidation,
 });
 
+const nucleiValidation = z
+  .array(
+    z.object({
+      nucleus: z.string({ error: 'Nucleus is a required field' }),
+      ppmFormat: z.string({ error: 'PPM format is a required field' }),
+      hzFormat: z.string({ error: 'Hz format  is a required field' }),
+      axisFrom: z.coerce.number().optional(),
+      axisTo: z.coerce.number().optional(),
+    }),
+  )
+  .superRefine((nuclei, ctx) => {
+    checkUniqueByKey({
+      data: nuclei,
+      checkKey: 'nucleus',
+      context: ctx,
+    });
+  });
+
 export const workspaceValidation = z.object({
+  nuclei: nucleiValidation,
   peaksLabel: peaksLabelValidation,
   general: generalValidation,
   display: displayValidation,
@@ -113,6 +134,7 @@ export const workspaceValidation = z.object({
 export const defaultGeneralSettingsFormValues: z.input<
   typeof workspaceValidation
 > = {
+  nuclei: [{ nucleus: '', ppmFormat: '', hzFormat: '' }],
   peaksLabel: {
     marginTop: 0,
   },
