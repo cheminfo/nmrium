@@ -200,7 +200,6 @@ export const NucleiTab = withForm({
       [form, handleAdd, handleDelete],
     );
 
-    // TODO: voir si je peux changer ReactTable et le style par un styled
     return (
       <GroupPane
         text="Number formatting for crosshair and info line and axis domain"
