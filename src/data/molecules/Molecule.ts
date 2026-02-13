@@ -31,15 +31,25 @@ export const DRAGGABLE_STRUCTURE_INITIAL_BOUNDING_REACT: MoleculeBoundingRect =
 
 export type MoleculesView = Record<string, MoleculeView>;
 
-export function initMolecule(
-  options: Partial<StateMolecule> = {},
-): StateMoleculeExtended {
-  const id = options.id || crypto.randomUUID();
-  const label = options.label || 'p#';
-  const molfile = options.molfile || '';
+type InitializeMoleculeOptions = { text: string } & Omit<
+  Partial<StateMolecule>,
+  'molfile'
+>;
 
-  const mol = Molecule.fromMolfile(molfile);
-  const mfInfo = mol.getMolecularFormula();
+export function initMolecule(
+  options: InitializeMoleculeOptions,
+): StateMoleculeExtended {
+  const { id = crypto.randomUUID(), label = 'p#', text } = options;
+
+  const molecule = Molecule.fromText(text);
+
+  if (!molecule) {
+    throw new Error(
+      'Failed to parse SMILES or molfile. Please paste a valid format',
+    );
+  }
+  const molfile = molecule.toMolfileV3();
+  const mfInfo = molecule.getMolecularFormula();
 
   return {
     id,
@@ -49,7 +59,7 @@ export function initMolecule(
     mf: mfInfo.formula,
     em: mfInfo.absoluteWeight,
     mw: mfInfo.relativeWeight,
-    svg: mol.toSVG(50, 50),
+    svg: molecule.toSVG(50, 50),
     atoms: getAtomsFromMF(mfInfo.formula),
   };
 }
