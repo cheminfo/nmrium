@@ -110,7 +110,7 @@ export const nmrLoadersGeneralDataSelection = [
   { label: 'Prefer FID', value: 'preferFID' } as const,
 ];
 
-export const nmrLoadersGeneralValidation = z.object({
+const nmrLoadersGeneralValidation = z.object({
   dataSelection: z
     .enum(nmrLoadersGeneralDataSelection.map(({ value }) => value))
     .optional(),
@@ -118,7 +118,7 @@ export const nmrLoadersGeneralValidation = z.object({
   keep2D: z.boolean().optional(),
   onlyReal: z.boolean().optional(),
 });
-export const nmrLoadersBrukerValidation = z.object({
+const nmrLoadersBrukerValidation = z.object({
   processingNumbers: z.string().optional(),
   experimentNumbers: z.string().optional(),
   onlyFirstProcessedData: z.boolean().optional(),
