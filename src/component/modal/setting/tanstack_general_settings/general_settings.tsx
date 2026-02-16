@@ -25,6 +25,7 @@ const Dialog = styled(BPDialog)`
   min-width: 800px;
 `;
 
+type FormMeta = 'apply' | 'save';
 export function GeneralSettings(props: GeneralSettingsProps) {
   const { isOpen, close, height } = props;
 
@@ -46,7 +47,7 @@ export function GeneralSettings(props: GeneralSettingsProps) {
     },
     validationLogic: revalidateLogic({ mode: 'change' }),
     defaultValues: workspaceValidation.encode(currentWorkspace),
-    onSubmitMeta: undefined as unknown as SubmitEvent,
+    onSubmitMeta: 'apply' satisfies FormMeta as FormMeta,
     onSubmit: ({ value, meta }) => {
       const safeParseResult = workspaceValidation.safeParse(value);
 
@@ -57,10 +58,7 @@ export function GeneralSettings(props: GeneralSettingsProps) {
       const safeValue = safeParseResult.data;
       const mergedValues = lodashMerge({}, currentWorkspace, safeValue);
 
-      const submitter = meta.submitter as HTMLButtonElement | null;
-      assert(submitter, 'form event should have a submitter');
-
-      switch (submitter.dataset.action) {
+      switch (meta) {
         case 'apply':
           onApply(mergedValues);
           break;
@@ -68,7 +66,7 @@ export function GeneralSettings(props: GeneralSettingsProps) {
           saveSettings(mergedValues);
           break;
         default:
-          assertUnreachable(submitter.dataset.action as never);
+          assertUnreachable(meta);
       }
 
       close();
@@ -82,7 +80,13 @@ export function GeneralSettings(props: GeneralSettingsProps) {
         noValidate
         onSubmit={(event) => {
           event.preventDefault();
-          void form.handleSubmit(event.nativeEvent as SubmitEvent);
+
+          const nativeEvent = event.nativeEvent as SubmitEvent;
+          const submitter = nativeEvent.submitter as HTMLButtonElement | null;
+          assert(submitter, 'form event should have a submitter');
+          const action = submitter.dataset.action;
+
+          void form.handleSubmit(action as FormMeta);
         }}
       >
         <form.Subscribe selector={(state) => state.values}>
