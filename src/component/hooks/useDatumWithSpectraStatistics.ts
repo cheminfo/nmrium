@@ -42,7 +42,7 @@ export default function useDatumWithSpectraStatistics(): SpectrumWithStatisticsP
           if (isFt) {
             ftCounter++;
           }
-          if (activeSpectrum && dataInfo.id === activeSpectrum.id) {
+          if (dataInfo.id === activeSpectrum?.id) {
             info = dataInfo.info;
             datum = dataInfo.data;
           }
