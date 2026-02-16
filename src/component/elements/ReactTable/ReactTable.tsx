@@ -45,7 +45,10 @@ interface ExtraColumn<T extends object> {
   Cell?: (cell: CellProps<T>) => ReactElement | string;
 }
 
-export type Column<T extends object = object> = ReactColumn<T> &
+export type Column<T extends object = object> = Omit<
+  ReactColumn<T>,
+  keyof ExtraColumn<T> | keyof UseSortByColumnOptions<T>
+> &
   ExtraColumn<T> &
   UseSortByColumnOptions<T>;
 
