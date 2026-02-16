@@ -49,7 +49,7 @@ const validationSchema = z.object({
     format: z.string(),
     couplingFormat: z.string(),
     deltaFormat: z.string(),
-    textStyle: svgTextStyleFieldsSchema,
+    textStyle: svgTextStyleFieldsSchema.optional(),
   }),
   isPublicationStringShown: z.boolean(),
 });
@@ -131,7 +131,10 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
     acs: acsExportOptions,
     isPublicationStringShown: publicationStringVisibility?.isShown ?? false,
   });
-  if (defaultValues.acs.textStyle.fontSize === undefined) {
+  if (
+    defaultValues.acs.textStyle &&
+    defaultValues.acs.textStyle.fontSize === undefined
+  ) {
     defaultValues.acs.textStyle.fontSize = '12';
   }
 
@@ -145,7 +148,7 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
       const parsedValues = validationSchema.parse(value);
       if (
         !formApi.state.fieldMeta['acs.textStyle.fontSize']?.isTouched &&
-        parsedValues.acs.textStyle.fontSize === 12
+        parsedValues.acs.textStyle?.fontSize === 12
       ) {
         parsedValues.acs.textStyle.fontSize = undefined;
       }

@@ -115,22 +115,22 @@ function useWrapSVGText(params: UseWrapSVGTextParams) {
 
 interface PublicationTextProps {
   text: string;
-  textStyle: TextStyle;
+  textStyle?: TextStyle;
   width: number;
 }
 
 function PublicationText(props: PublicationTextProps) {
-  const { text, width } = props;
+  const { text, textStyle = {}, width } = props;
   const padding = 10;
   const boxWidth = width - padding * 2;
 
-  const textStyle = {
-    ...props.textStyle,
-    fontSize: props.textStyle.fontSize ?? 12,
+  const textStyleWithSize = {
+    ...textStyle,
+    fontSize: textStyle.fontSize ?? 12,
   };
   const { lineHeight, lines } = useWrapSVGText({
     width: boxWidth,
-    style: textStyle,
+    style: textStyleWithSize,
     text,
   });
 
@@ -140,7 +140,7 @@ function PublicationText(props: PublicationTextProps) {
         <SVGStyledText
           // eslint-disable-next-line react/no-array-index-key
           key={lineIndex}
-          {...textStyle}
+          {...textStyleWithSize}
           fontFamily="Arial"
           y={lineIndex * lineHeight}
           dominantBaseline="hanging"
@@ -152,7 +152,7 @@ function PublicationText(props: PublicationTextProps) {
                   // eslint-disable-next-line react/no-array-index-key
                   key={wordIndex}
                   baselineShift="super"
-                  fontSize={Math.floor((5 / 6) * textStyle.fontSize)}
+                  fontSize={Math.floor((5 / 6) * textStyleWithSize.fontSize)}
                 >
                   {word.replaceAll('++', '')}
                 </tspan>
