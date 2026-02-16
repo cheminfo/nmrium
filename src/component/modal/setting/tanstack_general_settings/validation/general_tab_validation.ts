@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import type { LoggerType } from '../../../../context/LoggerContext.tsx';
+import type { LoggerType } from '../../../../context/LoggerContext.js';
 
 const loggingLevel: LoggerType[] = [
   'fatal',
@@ -30,9 +30,13 @@ export const generalValidation = z.object({
   loggingLevel: z.enum(loggingLevel).optional(),
 });
 
-export const displayGeneralValidation = z.object({
-  experimentalFeatures: z.object({
-    display: z.boolean(),
-  }),
-  hidePanelsBar: z.boolean().optional(),
-});
+export const displayGeneralValidation = z
+  .object({
+    experimentalFeatures: z
+      .object({
+        display: z.boolean(),
+      })
+      .optional(),
+    hidePanelsBar: z.boolean().optional(),
+  })
+  .optional();

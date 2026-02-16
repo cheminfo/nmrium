@@ -12,6 +12,13 @@ import { nmrLoadersValidation } from './validation/import_filters_tab_validation
 import { nucleiValidation } from './validation/nuclei_tab_validation.js';
 import { displayPanelsValidation } from './validation/panels_tab_validation.js';
 
+/**
+ * The type for the workspace preferences is `WorkspaceWithSource`
+ * The form save / apply actions merge current workspace values with form values.
+ *
+ * @see {import('../../reducer/preferences/preferencesReducer.ts').WorkspaceWithSource}
+ */
+
 const displayValidation = z.object({
   general: displayGeneralValidation,
   panels: displayPanelsValidation,
@@ -30,7 +37,7 @@ export const workspaceValidation = z.object({
 export const defaultGeneralSettingsFormValues: z.input<
   typeof workspaceValidation
 > = {
-  nuclei: [{ nucleus: '', ppmFormat: '', hzFormat: '' }],
+  nuclei: nucleiValidation.encode(workspaceDefaultProperties.nuclei),
   peaksLabel: {
     marginTop: 0,
   },

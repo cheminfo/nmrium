@@ -7,7 +7,7 @@ import { FormGroup, assertUnreachable, withFieldGroup } from 'react-science/ui';
 import type { z } from 'zod/v4';
 
 import { convertToPixels } from '../../../../elements/export/units.js';
-import { useExportConfigurer } from '../../../../elements/export/useExportConfigurer.tsx';
+import { useExportConfigurer } from '../../../../elements/export/useExportConfigurer.js';
 import {
   getExportDefaultOptionsByMode,
   getExportOptions,

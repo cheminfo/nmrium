@@ -2,13 +2,13 @@ import { Classes, Tab, Tabs as BPTabs } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { withForm } from 'react-science/ui';
 
-import { StyledDialogBody } from '../../../elements/StyledDialogBody.tsx';
+import { StyledDialogBody } from '../../../elements/StyledDialogBody.js';
 
-import { ExportTab } from './tabs/export_tab.tsx';
-import { GeneralTab } from './tabs/general_tab.tsx';
-import { ImportFiltersTab } from './tabs/import_filters_tab.tsx';
-import { NucleiTab } from './tabs/nuclei_tab.tsx';
-import { PanelsTab } from './tabs/panels_tab.tsx';
+import { ExportTab } from './tabs/export_tab.js';
+import { GeneralTab } from './tabs/general_tab.js';
+import { ImportFiltersTab } from './tabs/import_filters_tab.js';
+import { NucleiTab } from './tabs/nuclei_tab.js';
+import { PanelsTab } from './tabs/panels_tab.js';
 import { defaultGeneralSettingsFormValues } from './validation.js';
 
 const Tabs = styled(BPTabs)`

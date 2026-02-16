@@ -2,13 +2,13 @@ import { Dialog as BPDialog } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { revalidateLogic } from '@tanstack/react-form';
 import type { Workspace } from '@zakodium/nmrium-core';
-import { Form, useForm } from 'react-science/ui';
-import type { z } from 'zod/v4';
+import lodashMerge from 'lodash/merge.js';
+import { Form, assert, assertUnreachable, useForm } from 'react-science/ui';
 
 import { usePreferences } from '../../../context/PreferencesContext.js';
-import { useSaveSettings } from '../../../hooks/useSaveSettings.tsx';
+import { useSaveSettings } from '../../../hooks/useSaveSettings.js';
 
-import { GeneralSettingsDialogBody } from './general_settings_dialog_body.tsx';
+import { GeneralSettingsDialogBody } from './general_settings_dialog_body.js';
 import { GeneralSettingsDialogFooter } from './general_settings_dialog_footer.js';
 import { GeneralSettingsDialogHeader } from './general_settings_dialog_header.js';
 import { workspaceValidation } from './validation.js';
@@ -25,43 +25,55 @@ const Dialog = styled(BPDialog)`
   min-width: 800px;
 `;
 
-export type GeneralSettingsFormType = z.input<typeof workspaceValidation>;
 export function GeneralSettings(props: GeneralSettingsProps) {
   const { isOpen, close, height } = props;
 
   const { current: currentWorkspace, dispatch } = usePreferences();
   const { saveSettings } = useSaveSettings();
 
+  function onApply(data: Omit<Workspace, 'version' | 'label'>) {
+    dispatch({
+      type: 'APPLY_General_PREFERENCES',
+      payload: { data },
+    });
+
+    close();
+  }
+
   const form = useForm({
     validators: {
       onDynamic: workspaceValidation,
     },
     validationLogic: revalidateLogic({ mode: 'change' }),
-    defaultValues: workspaceValidation.encode(
-      currentWorkspace as unknown as z.output<typeof workspaceValidation>,
-    ),
-    onSubmit: ({ value }) => {
+    defaultValues: workspaceValidation.encode(currentWorkspace),
+    onSubmitMeta: undefined as unknown as SubmitEvent,
+    onSubmit: ({ value, meta }) => {
       const safeParseResult = workspaceValidation.safeParse(value);
 
       if (!safeParseResult.success) {
         throw new Error('Failed to parse workspace validation');
       }
 
-      saveSettings(value as unknown as Partial<Workspace>);
+      const safeValue = safeParseResult.data;
+      const mergedValues = lodashMerge({}, currentWorkspace, safeValue);
+
+      const submitter = meta.submitter as HTMLButtonElement | null;
+      assert(submitter, 'form event should have a submitter');
+
+      switch (submitter.dataset.action) {
+        case 'apply':
+          onApply(mergedValues);
+          break;
+        case 'save':
+          saveSettings(mergedValues);
+          break;
+        default:
+          assertUnreachable(submitter.dataset.action as never);
+      }
+
       close();
     },
   });
-
-  function onApply(values: GeneralSettingsFormType) {
-    dispatch({
-      type: 'APPLY_General_PREFERENCES',
-      payload: {
-        data: values as unknown as Omit<Workspace, 'label' | 'version'>,
-      },
-    });
-
-    close();
-  }
 
   return (
     <Dialog isOpen={isOpen} onClose={close} title="General settings" icon="cog">
@@ -70,7 +82,7 @@ export function GeneralSettings(props: GeneralSettingsProps) {
         noValidate
         onSubmit={(event) => {
           event.preventDefault();
-          void form.handleSubmit();
+          void form.handleSubmit(event.nativeEvent as SubmitEvent);
         }}
       >
         <form.Subscribe selector={(state) => state.values}>
@@ -83,11 +95,7 @@ export function GeneralSettings(props: GeneralSettingsProps) {
         </form.Subscribe>
 
         <GeneralSettingsDialogBody form={form} height={height} />
-        <GeneralSettingsDialogFooter
-          form={form}
-          onCancel={close}
-          onApply={onApply}
-        />
+        <GeneralSettingsDialogFooter form={form} onCancel={close} />
       </Form>
     </Dialog>
   );
