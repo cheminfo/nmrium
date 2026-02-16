@@ -69,7 +69,7 @@ export type DataExportOptions =
 
 type ExportTarget = 'nmrium' | 'onChange';
 
-export interface ExportOptions {
+interface ExportOptions {
   dataType?: DataExportOptions;
   view?: boolean;
   settings?: boolean;

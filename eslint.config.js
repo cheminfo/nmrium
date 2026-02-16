@@ -36,6 +36,7 @@ export default [
       '@typescript-eslint/naming-convention': 'off',
       '@typescript-eslint/no-implied-eval': 'off',
       '@typescript-eslint/no-misused-promises': 'off',
+      '@typescript-eslint/no-useless-default-assignment': 'off',
       '@typescript-eslint/restrict-plus-operands': 'off',
       'react/no-unstable-nested-components': 'off',
       'react-hooks/refs': 'off',
