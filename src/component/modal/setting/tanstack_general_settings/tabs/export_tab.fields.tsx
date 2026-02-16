@@ -6,17 +6,15 @@ import { memo, useMemo } from 'react';
 import { FormGroup, assertUnreachable, withFieldGroup } from 'react-science/ui';
 import type { z } from 'zod/v4';
 
-import { convertToPixels } from '../../../../elements/export/units.ts';
+import { convertToPixels } from '../../../../elements/export/units.js';
 import { useExportConfigurer } from '../../../../elements/export/useExportConfigurer.tsx';
 import {
   getExportDefaultOptionsByMode,
   getExportOptions,
-} from '../../../../elements/export/utilities/getExportOptions.ts';
-import { pageSizes } from '../../../../elements/print/pageSize.ts';
-import {
-  defaultGeneralSettingsFormValues,
-  exportSettingsValidation,
-} from '../validation.ts';
+} from '../../../../elements/export/utilities/getExportOptions.js';
+import { pageSizes } from '../../../../elements/print/pageSize.js';
+import { exportSettingsValidation } from '../validation/export_tab_validation.js';
+import { defaultGeneralSettingsFormValues } from '../validation.js';
 
 type Mode = 'basic' | 'advance';
 type Layout = 'portrait' | 'landscape';

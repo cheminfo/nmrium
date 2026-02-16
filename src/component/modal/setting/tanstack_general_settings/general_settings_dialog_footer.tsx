@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { Button, withForm } from 'react-science/ui';
 
 import type { GeneralSettingsFormType } from './general_settings.tsx';
-import { defaultGeneralSettingsFormValues } from './validation.ts';
+import { defaultGeneralSettingsFormValues } from './validation.js';
 
 const Footer = styled.div`
   display: flex;

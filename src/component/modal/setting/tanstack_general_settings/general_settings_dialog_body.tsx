@@ -9,7 +9,7 @@ import { GeneralTab } from './tabs/general_tab.tsx';
 import { ImportFiltersTab } from './tabs/import_filters_tab.tsx';
 import { NucleiTab } from './tabs/nuclei_tab.tsx';
 import { PanelsTab } from './tabs/panels_tab.tsx';
-import { defaultGeneralSettingsFormValues } from './validation.ts';
+import { defaultGeneralSettingsFormValues } from './validation.js';
 
 const Tabs = styled(BPTabs)`
   height: 100%;

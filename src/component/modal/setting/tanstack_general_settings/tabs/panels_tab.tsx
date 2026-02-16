@@ -1,9 +1,7 @@
 import { withFieldGroup, withForm } from 'react-science/ui';
 
-import {
-  defaultGeneralSettingsFormValues,
-  displayPanelsStatus,
-} from '../validation.ts';
+import { displayPanelsStatus } from '../validation/panels_tab_validation.js';
+import { defaultGeneralSettingsFormValues } from '../validation.js';
 
 export const PanelsTab = withForm({
   defaultValues: defaultGeneralSettingsFormValues,

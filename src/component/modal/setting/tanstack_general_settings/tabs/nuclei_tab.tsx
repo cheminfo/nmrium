@@ -11,7 +11,7 @@ import { Input2 } from '../../../../elements/Input2.tsx';
 import type { Column } from '../../../../elements/ReactTable/ReactTable.tsx';
 import ReactTable from '../../../../elements/ReactTable/ReactTable.tsx';
 import { Section } from '../../general_settings.tsx';
-import { defaultGeneralSettingsFormValues } from '../validation.ts';
+import { defaultGeneralSettingsFormValues } from '../validation.js';
 
 interface NucleiFormElement {
   nucleus: string;

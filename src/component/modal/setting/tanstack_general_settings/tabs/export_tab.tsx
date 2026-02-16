@@ -1,6 +1,6 @@
 import { withForm } from 'react-science/ui';
 
-import { defaultGeneralSettingsFormValues } from '../validation.ts';
+import { defaultGeneralSettingsFormValues } from '../validation.js';
 
 import { ExportFields } from './export_tab.fields.tsx';
 

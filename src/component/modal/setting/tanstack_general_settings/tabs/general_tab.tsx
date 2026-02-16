@@ -3,7 +3,7 @@ import { withForm } from 'react-science/ui';
 
 import { LOGGER_LEVELS } from '../../../../context/LoggerContext.tsx';
 import type { SelectDefaultItem } from '../../../../elements/Select2.tsx';
-import { defaultGeneralSettingsFormValues } from '../validation.ts';
+import { defaultGeneralSettingsFormValues } from '../validation.js';
 
 const SHAPE_RENDERING: SelectDefaultItem[] = [
   {
