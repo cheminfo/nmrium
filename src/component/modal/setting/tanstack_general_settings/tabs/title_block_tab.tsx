@@ -2,7 +2,6 @@ import { Checkbox, Classes } from '@blueprintjs/core';
 import type { CSSObject } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useStore } from '@tanstack/react-form';
-import type { InfoBlockField } from '@zakodium/nmrium-core';
 import { useCallback, useMemo } from 'react';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button, withFieldGroup, withForm } from 'react-science/ui';
@@ -127,7 +126,7 @@ const Fields = withFieldGroup({
         },
         {
           Header: 'Label',
-          Cell: ({ row: { index } }) => (
+          Cell: ({ row: { index } }: CellProps<Field>) => (
             <Field name={`fields[${index}].label`}>
               {(field) => (
                 <CellInput
@@ -141,7 +140,7 @@ const Fields = withFieldGroup({
         },
         {
           Header: 'Field',
-          Cell: ({ row }) => {
+          Cell: ({ row }: CellProps<Field>) => {
             const rowIndex = row.index;
 
             return (
@@ -160,7 +159,7 @@ const Fields = withFieldGroup({
         },
         {
           Header: 'Format',
-          Cell: ({ row: { index } }) => (
+          Cell: ({ row: { index } }: CellProps<Field>) => (
             <Field name={`fields[${index}].format`}>
               {(field) => (
                 <CellInput
@@ -175,7 +174,7 @@ const Fields = withFieldGroup({
         {
           Header: 'Visible',
           style: { width: '30px', textAlign: 'center' },
-          Cell: ({ row: { index } }) => (
+          Cell: ({ row: { index } }: CellProps<Field>) => (
             <Field name={`fields[${index}].visible`}>
               {(field) => (
                 <CellCheckbox
@@ -191,7 +190,7 @@ const Fields = withFieldGroup({
           Header: '',
           style: { width: '60px' },
           id: 'add-button',
-          Cell: ({ row: { index } }) => {
+          Cell: ({ row: { index } }: CellProps<Field>) => {
             return (
               <Actions>
                 <Button
