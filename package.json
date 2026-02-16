@@ -123,7 +123,7 @@
     "@blueprintjs/core": "^6.8.0",
     "@blueprintjs/icons": "^6.5.2",
     "@blueprintjs/select": "^6.1.0",
-    "@playwright/test": "^1.58.2",
+    "@playwright/test": "=1.57.0",
     "@simbathesailor/use-what-changed": "^2.0.0",
     "@types/d3-array": "^3.2.2",
     "@types/d3-scale": "^4.0.9",
