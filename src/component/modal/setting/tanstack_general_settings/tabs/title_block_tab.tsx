@@ -82,7 +82,7 @@ const CellCheckbox = styled(Checkbox)`
 const Actions = styled.div`
   display: flex;
   justify-content: space-evenly;
-  gap: 0.5em;
+  gap: 0.25em;
 `;
 
 type Field = z.input<typeof infoBlockFieldTabValidation>;
