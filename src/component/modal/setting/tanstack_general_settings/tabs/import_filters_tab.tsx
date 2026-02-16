@@ -1,9 +1,7 @@
 import { withFieldGroup, withForm } from 'react-science/ui';
 
-import {
-  defaultGeneralSettingsFormValues,
-  nmrLoadersGeneralDataSelection,
-} from '../validation.ts';
+import { nmrLoadersGeneralDataSelection } from '../validation/import_filters_tab_validation.js';
+import { defaultGeneralSettingsFormValues } from '../validation.js';
 
 export const ImportFiltersTab = withForm({
   defaultValues: defaultGeneralSettingsFormValues,

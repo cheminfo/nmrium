@@ -6,12 +6,12 @@ import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button, withForm } from 'react-science/ui';
 import type { CellProps } from 'react-table';
 
-import { GroupPane } from '../../../../elements/GroupPane.tsx';
-import { Input2 } from '../../../../elements/Input2.tsx';
-import type { Column } from '../../../../elements/ReactTable/ReactTable.tsx';
-import ReactTable from '../../../../elements/ReactTable/ReactTable.tsx';
-import { Section } from '../../general_settings.tsx';
-import { defaultGeneralSettingsFormValues } from '../validation.ts';
+import { GroupPane } from '../../../../elements/GroupPane.js';
+import { Input2 } from '../../../../elements/Input2.js';
+import type { Column } from '../../../../elements/ReactTable/ReactTable.js';
+import ReactTable from '../../../../elements/ReactTable/ReactTable.js';
+import { Section } from '../../general_settings.js';
+import { defaultGeneralSettingsFormValues } from '../validation.js';
 
 interface NucleiFormElement {
   nucleus: string;
