@@ -1,6 +1,4 @@
-import { Checkbox, Classes } from '@blueprintjs/core';
-import type { CSSObject } from '@emotion/react';
-import styled from '@emotion/styled';
+import { Classes } from '@blueprintjs/core';
 import { useStore } from '@tanstack/react-form';
 import { useCallback, useMemo } from 'react';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
@@ -9,13 +7,14 @@ import type { CellProps } from 'react-table';
 import type { z } from 'zod';
 
 import { useChartData } from '../../../../context/ChartContext.js';
-import { Input2 } from '../../../../elements/Input2.js';
-import type {
-  BaseRowStyle,
-  Column,
-} from '../../../../elements/ReactTable/ReactTable.js';
-import ReactTable from '../../../../elements/ReactTable/ReactTable.js';
+import type { Column } from '../../../../elements/ReactTable/ReactTable.js';
 import { getSpectraObjectPaths } from '../../../../utility/getSpectraObjectPaths.js';
+import {
+  CellActions,
+  CellCheckbox,
+  CellInput,
+  TableSettings,
+} from '../ui/table.js';
 import { TableSection } from '../ui/table_section.js';
 import type { infoBlockFieldTabValidation } from '../validation/title_block_tab_validation.js';
 import { defaultGeneralSettingsFormValues } from '../validation.js';
@@ -58,30 +57,6 @@ export const TitleBlockTab = withForm({
     );
   },
 });
-
-const tableStyle: CSSObject = {
-  'thead tr th': { zIndex: 1 },
-  td: { padding: 0 },
-};
-const rowStyle: BaseRowStyle = {
-  hover: { backgroundColor: '#f7f7f7' },
-  active: { backgroundColor: '#f5f5f5' },
-};
-
-const CellInput = styled(Input2)`
-  input {
-    background-color: transparent;
-    box-shadow: none;
-  }
-`;
-const CellCheckbox = styled(Checkbox)`
-  margin: 0;
-`;
-const Actions = styled.div`
-  display: flex;
-  justify-content: space-evenly;
-  gap: 0.25em;
-`;
 
 type Field = z.input<typeof infoBlockFieldTabValidation>;
 const emptyField: Field = {
@@ -190,7 +165,7 @@ const Fields = withFieldGroup({
           id: 'add-button',
           Cell: ({ row: { index } }: CellProps<Field>) => {
             return (
-              <Actions>
+              <CellActions>
                 <Button
                   size="small"
                   intent="success"
@@ -207,7 +182,7 @@ const Fields = withFieldGroup({
                 >
                   <FaRegTrashAlt className={Classes.ICON} />
                 </Button>
-              </Actions>
+              </CellActions>
             );
           },
         },
@@ -218,9 +193,7 @@ const Fields = withFieldGroup({
     const fields = useStore(group.store, (state) => state.values.fields);
 
     return (
-      <ReactTable
-        style={tableStyle}
-        rowStyle={rowStyle}
+      <TableSettings
         data={fields}
         columns={columns}
         emptyDataRowText="No Fields"

@@ -1,11 +1,13 @@
 import { Classes, Tab, Tabs as BPTabs } from '@blueprintjs/core';
 import styled from '@emotion/styled';
+import { useStore } from '@tanstack/react-form';
 import { withForm } from 'react-science/ui';
 
 import { StyledDialogBody } from '../../../elements/StyledDialogBody.js';
 
 import { DatabaseTab } from './tabs/database_tab.js';
 import { ExportTab } from './tabs/export_tab.js';
+import { ExternalApiTab } from './tabs/external_api_tab.js';
 import { GeneralTab } from './tabs/general_tab.js';
 import { ImportFiltersTab } from './tabs/import_filters_tab.js';
 import { NucleiTab } from './tabs/nuclei_tab.js';
@@ -41,7 +43,13 @@ export const GeneralSettingsDialogBody = withForm({
   props: {
     height: undefined as number | undefined,
   },
-  render: ({ height, form }) => {
+  render: function GeneralSettingsDialogBody({ height, form }) {
+    const isExperimentalEnabled = useStore(
+      form.store,
+      (state) =>
+        state.values.display.general?.experimentalFeatures?.display ?? false,
+    );
+
     return (
       <StyledDialogBody>
         <Div height={height}>
@@ -67,6 +75,14 @@ export const GeneralSettingsDialogBody = withForm({
               title="Title block"
               panel={<TitleBlockTab form={form} />}
             />
+
+            {isExperimentalEnabled && (
+              <Tab
+                id="external-apis"
+                title="External APIs"
+                panel={<ExternalApiTab form={form} />}
+              />
+            )}
 
             <Tab id="export" title="Export" panel={<ExportTab form={form} />} />
 
