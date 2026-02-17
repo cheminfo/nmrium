@@ -37,10 +37,22 @@ const TableSection = styled.section`
   }
 `;
 
+const TitleActions = styled.div`
+  float: right;
+  display: flex;
+  gap: 0.5em;
+`;
+
 export const TitleBlockTab = withForm({
   defaultValues: defaultGeneralSettingsFormValues,
   render: ({ form }) => {
-    const { Section, AppField } = form;
+    const { Section, AppField, pushFieldValue } = form;
+
+    function onAddField() {
+      pushFieldValue('infoBlock.fields', emptyField, {
+        dontRunListeners: true,
+      });
+    }
 
     return (
       <>
@@ -51,7 +63,20 @@ export const TitleBlockTab = withForm({
         </Section>
         <TableSection>
           <header>
-            <h2>Fields</h2>
+            <h2>
+              <TitleActions>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  intent="primary"
+                  icon="plus"
+                  onClick={onAddField}
+                >
+                  Add Field
+                </Button>
+              </TitleActions>
+              Fields
+            </h2>
           </header>
 
           <Fields form={form} fields="infoBlock" />
