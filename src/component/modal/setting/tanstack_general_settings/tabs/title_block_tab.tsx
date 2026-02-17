@@ -16,32 +16,9 @@ import type {
 } from '../../../../elements/ReactTable/ReactTable.js';
 import ReactTable from '../../../../elements/ReactTable/ReactTable.js';
 import { getSpectraObjectPaths } from '../../../../utility/getSpectraObjectPaths.js';
+import { TableSection } from '../ui/table_section.js';
 import type { infoBlockFieldTabValidation } from '../validation/title_block_tab_validation.js';
 import { defaultGeneralSettingsFormValues } from '../validation.js';
-
-const TableSection = styled.section`
-  margin-top: 15px;
-  gap: 5px;
-  display: flex;
-  flex-direction: column;
-
-  > header {
-    display: flex;
-    flex-direction: column;
-
-    > h2 {
-      font-weight: 600;
-      font-size: 1rem;
-      line-height: 1.75rem;
-    }
-  }
-`;
-
-const TitleActions = styled.div`
-  float: right;
-  display: flex;
-  gap: 0.5em;
-`;
 
 export const TitleBlockTab = withForm({
   defaultValues: defaultGeneralSettingsFormValues,
@@ -61,24 +38,20 @@ export const TitleBlockTab = withForm({
             {({ Checkbox }) => <Checkbox label="Display spectrum info block" />}
           </AppField>
         </Section>
-        <TableSection>
-          <header>
-            <h2>
-              <TitleActions>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  intent="primary"
-                  icon="plus"
-                  onClick={onAddField}
-                >
-                  Add Field
-                </Button>
-              </TitleActions>
-              Fields
-            </h2>
-          </header>
-
+        <TableSection
+          title="Fields"
+          actions={
+            <Button
+              size="small"
+              variant="outlined"
+              intent="primary"
+              icon="plus"
+              onClick={onAddField}
+            >
+              Add Field
+            </Button>
+          }
+        >
           <Fields form={form} fields="infoBlock" />
         </TableSection>
       </>
