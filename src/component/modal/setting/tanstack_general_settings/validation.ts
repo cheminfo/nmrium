@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { workspaceDefaultProperties } from '../../../workspaces/workspaceDefaultProperties.js';
 
 import { exportPreferencesValidation } from './validation/export_tab_validation.js';
+import { externalAPIsValidation } from './validation/external_apis_validation.js';
 import {
   displayGeneralValidation,
   generalValidation,
@@ -33,6 +34,7 @@ export const workspaceValidation = z.object({
   nmrLoaders: nmrLoadersValidation,
   export: exportPreferencesValidation,
   infoBlock: infoBlockTabValidation,
+  externalAPIs: externalAPIsValidation,
 });
 
 // This object is used to define type not real values. Do not use it as values
@@ -68,4 +70,7 @@ export const defaultGeneralSettingsFormValues: z.input<
     workspaceDefaultProperties.nmrLoaders,
   ),
   export: exportPreferencesValidation.encode(workspaceDefaultProperties.export),
+  externalAPIs: externalAPIsValidation.encode(
+    workspaceDefaultProperties.externalAPIs,
+  ),
 };
