@@ -8,16 +8,16 @@ import { Button, withFieldGroup, withForm } from 'react-science/ui';
 import type { CellProps } from 'react-table';
 import type { z } from 'zod';
 
-import { useChartData } from '../../../../context/ChartContext.tsx';
-import { Input2 } from '../../../../elements/Input2.tsx';
+import { useChartData } from '../../../../context/ChartContext.js';
+import { Input2 } from '../../../../elements/Input2.js';
 import type {
   BaseRowStyle,
   Column,
-} from '../../../../elements/ReactTable/ReactTable.tsx';
-import ReactTable from '../../../../elements/ReactTable/ReactTable.tsx';
-import { getSpectraObjectPaths } from '../../../../utility/getSpectraObjectPaths.ts';
-import type { infoBlockFieldTabValidation } from '../validation/title_block_tab_validation.ts';
-import { defaultGeneralSettingsFormValues } from '../validation.ts';
+} from '../../../../elements/ReactTable/ReactTable.js';
+import ReactTable from '../../../../elements/ReactTable/ReactTable.js';
+import { getSpectraObjectPaths } from '../../../../utility/getSpectraObjectPaths.js';
+import type { infoBlockFieldTabValidation } from '../validation/title_block_tab_validation.js';
+import { defaultGeneralSettingsFormValues } from '../validation.js';
 
 const TableSection = styled.section`
   margin-top: 15px;

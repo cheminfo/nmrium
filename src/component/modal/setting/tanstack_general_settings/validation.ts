@@ -11,7 +11,7 @@ import {
 import { nmrLoadersValidation } from './validation/import_filters_tab_validation.js';
 import { nucleiValidation } from './validation/nuclei_tab_validation.js';
 import { displayPanelsValidation } from './validation/panels_tab_validation.js';
-import { infoBlockTabValidation } from './validation/title_block_tab_validation.ts';
+import { infoBlockTabValidation } from './validation/title_block_tab_validation.js';
 
 /**
  * The type for the workspace preferences is `WorkspaceWithSource`
