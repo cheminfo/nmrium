@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { checkUniqueByKey } from '../utils/checkUniqueByKey.js';
+import { checkUniqueByKey } from './check_unique_by_key.js';
 
 export const nucleiValidation = z
   .array(
