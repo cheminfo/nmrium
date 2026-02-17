@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import { workspaceDefaultProperties } from '../../../workspaces/workspaceDefaultProperties.js';
 
+import { databasesValidation } from './validation/database_tab_validation.ts';
 import { exportPreferencesValidation } from './validation/export_tab_validation.js';
 import {
   displayGeneralValidation,
@@ -31,12 +32,14 @@ export const workspaceValidation = z.object({
   display: displayValidation,
   nmrLoaders: nmrLoadersValidation,
   export: exportPreferencesValidation,
+  databases: databasesValidation,
 });
 
 // This object is used to define type not real values. Do not use it as values
 export const defaultGeneralSettingsFormValues: z.input<
   typeof workspaceValidation
 > = {
+  databases: databasesValidation.encode(workspaceDefaultProperties.databases),
   nuclei: nucleiValidation.encode(workspaceDefaultProperties.nuclei),
   peaksLabel: {
     marginTop: 0,

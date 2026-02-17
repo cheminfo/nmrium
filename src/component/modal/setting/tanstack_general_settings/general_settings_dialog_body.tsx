@@ -4,6 +4,7 @@ import { withForm } from 'react-science/ui';
 
 import { StyledDialogBody } from '../../../elements/StyledDialogBody.js';
 
+import { DatabaseTab } from './tabs/database_tab.js';
 import { ExportTab } from './tabs/export_tab.js';
 import { GeneralTab } from './tabs/general_tab.js';
 import { ImportFiltersTab } from './tabs/import_filters_tab.js';
@@ -61,6 +62,12 @@ export const GeneralSettingsDialogBody = withForm({
             />
 
             <Tab id="export" title="Export" panel={<ExportTab form={form} />} />
+
+            <Tab
+              title="Databases"
+              id="databases"
+              panel={<DatabaseTab form={form} />}
+            />
           </Tabs>
         </Div>
       </StyledDialogBody>
