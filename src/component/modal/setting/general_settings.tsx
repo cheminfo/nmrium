@@ -158,11 +158,13 @@ function GeneralSettingsModal(props: GeneralSettingsModalProps) {
         />
       )}
 
-      <GeneralSettings
-        height={otherProps.height}
-        isOpen={isOpenGeneralSettingsDialog}
-        close={closeGeneralSettingsDialog}
-      />
+      {isOpenGeneralSettingsDialog && (
+        <GeneralSettings
+          height={otherProps.height}
+          isOpen={isOpenGeneralSettingsDialog}
+          close={closeGeneralSettingsDialog}
+        />
+      )}
     </>
   );
 }

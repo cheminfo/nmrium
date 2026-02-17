@@ -89,6 +89,8 @@ export function GeneralSettings(props: GeneralSettingsProps) {
           void form.handleSubmit(action as FormMeta);
         }}
       >
+        <PreventImplicitSubmit />
+
         <form.Subscribe selector={(state) => state.values}>
           {(values) => (
             <GeneralSettingsDialogHeader
@@ -103,4 +105,17 @@ export function GeneralSettings(props: GeneralSettingsProps) {
       </Form>
     </Dialog>
   );
+}
+const InvisibleButton = styled.button`
+  display: none;
+`;
+
+/**
+ * In this form there are inputs with datalist, the complete event with the `Enter` key also triggers the form submission.
+ * The previous version of this form did not use a proper Submit button, so there was no implicit form submission.
+ *
+ * @see https://stackoverflow.com/a/51507806
+ */
+function PreventImplicitSubmit() {
+  return <InvisibleButton type="submit" aria-hidden="true" disabled />;
 }
