@@ -11,6 +11,7 @@ import {
 import { nmrLoadersValidation } from './validation/import_filters_tab_validation.js';
 import { nucleiValidation } from './validation/nuclei_tab_validation.js';
 import { displayPanelsValidation } from './validation/panels_tab_validation.js';
+import { infoBlockTabValidation } from './validation/title_block_tab_validation.js';
 
 /**
  * The type for the workspace preferences is `WorkspaceWithSource`
@@ -31,6 +32,7 @@ export const workspaceValidation = z.object({
   display: displayValidation,
   nmrLoaders: nmrLoadersValidation,
   export: exportPreferencesValidation,
+  infoBlock: infoBlockTabValidation,
 });
 
 // This object is used to define type not real values. Do not use it as values
@@ -38,6 +40,9 @@ export const defaultGeneralSettingsFormValues: z.input<
   typeof workspaceValidation
 > = {
   nuclei: nucleiValidation.encode(workspaceDefaultProperties.nuclei),
+  infoBlock: infoBlockTabValidation.encode(
+    workspaceDefaultProperties.infoBlock,
+  ),
   peaksLabel: {
     marginTop: 0,
   },

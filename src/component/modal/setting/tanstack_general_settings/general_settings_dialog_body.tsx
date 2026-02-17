@@ -9,6 +9,7 @@ import { GeneralTab } from './tabs/general_tab.js';
 import { ImportFiltersTab } from './tabs/import_filters_tab.js';
 import { NucleiTab } from './tabs/nuclei_tab.js';
 import { PanelsTab } from './tabs/panels_tab.js';
+import { TitleBlockTab } from './tabs/title_block_tab.js';
 import { defaultGeneralSettingsFormValues } from './validation.js';
 
 const Tabs = styled(BPTabs)`
@@ -58,6 +59,12 @@ export const GeneralSettingsDialogBody = withForm({
               id="import-filters"
               title="Import filters"
               panel={<ImportFiltersTab form={form} />}
+            />
+
+            <Tab
+              id="title-block"
+              title="Title block"
+              panel={<TitleBlockTab form={form} />}
             />
 
             <Tab id="export" title="Export" panel={<ExportTab form={form} />} />
