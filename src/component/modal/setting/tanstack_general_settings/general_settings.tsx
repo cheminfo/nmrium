@@ -73,8 +73,6 @@ export function GeneralSettings(props: GeneralSettingsProps) {
     },
   });
 
-  console.log(currentWorkspace);
-
   return (
     <Dialog isOpen={isOpen} onClose={close} title="General settings" icon="cog">
       <Form
