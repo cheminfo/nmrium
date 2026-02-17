@@ -1,4 +1,4 @@
-import { Checkbox, Classes } from '@blueprintjs/core';
+import { Classes } from '@blueprintjs/core';
 import { useStore } from '@tanstack/react-form';
 import { useCallback, useMemo } from 'react';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
@@ -8,15 +8,12 @@ import type { z } from 'zod';
 
 import { useChartData } from '../../../../context/ChartContext.js';
 import type { Column } from '../../../../elements/ReactTable/ReactTable.js';
-import ReactTable from '../../../../elements/ReactTable/ReactTable.js';
 import { getSpectraObjectPaths } from '../../../../utility/getSpectraObjectPaths.js';
 import {
   CellActions,
   CellCheckbox,
   CellInput,
   TableSettings,
-  rowStyle,
-  tableStyle,
 } from '../ui/table.js';
 import { TableSection } from '../ui/table_section.js';
 import type { infoBlockFieldTabValidation } from '../validation/title_block_tab_validation.js';

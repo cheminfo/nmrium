@@ -7,11 +7,11 @@ import { Input2 } from '../../../../elements/Input2.js';
 import type { BaseRowStyle } from '../../../../elements/ReactTable/ReactTable.js';
 import ReactTable from '../../../../elements/ReactTable/ReactTable.js';
 
-export const tableStyle: CSSObject = {
+const tableStyle: CSSObject = {
   'thead tr th': { zIndex: 1 },
   td: { padding: 0 },
 };
-export const rowStyle: BaseRowStyle = {
+const rowStyle: BaseRowStyle = {
   hover: { backgroundColor: '#f7f7f7' },
   active: { backgroundColor: '#f5f5f5' },
 };
