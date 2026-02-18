@@ -1,4 +1,3 @@
-import styled from '@emotion/styled';
 import type {
   Cell,
   Header,
@@ -8,6 +7,22 @@ import type {
   Table,
 } from '@tanstack/react-table';
 import type { ElementType, ReactNode } from 'react';
+
+import {
+  EmptyStateStyled,
+  TBodyStyled,
+  TDBodyEmptyStyled,
+  TDBodyStyled,
+  TFootStyled,
+  THFootStyled,
+  THHeadStyled,
+  THeadStyled,
+  TRBodyEmptyStyled,
+  TRBodyStyled,
+  TRFootStyled,
+  TRHeadStyled,
+  TableStyled,
+} from './base_components_styled.ts';
 
 export interface TableComponents<Data extends RowData> {
   Table: ElementType<BaseTableProps<Data>>;
@@ -38,7 +53,7 @@ export interface BaseTableProps<Data extends RowData> {
 export function BaseTable<Data extends RowData>(props: BaseTableProps<Data>) {
   const { components, table, ...otherProps } = props;
 
-  return <table {...otherProps} />;
+  return <TableStyled {...otherProps} />;
 }
 
 export interface BaseTHeadProps<Data extends RowData> {
@@ -50,7 +65,7 @@ export interface BaseTHeadProps<Data extends RowData> {
 export function BaseTHead<Data extends RowData>(props: BaseTHeadProps<Data>) {
   const { components, table, ...otherProps } = props;
 
-  return <thead {...otherProps} />;
+  return <THeadStyled {...otherProps} />;
 }
 
 export interface BaseTRHeadProps<Data extends RowData> {
@@ -63,7 +78,7 @@ export interface BaseTRHeadProps<Data extends RowData> {
 export function BaseTRHead<Data extends RowData>(props: BaseTRHeadProps<Data>) {
   const { components, table, headerGroup, ...otherProps } = props;
 
-  return <tr {...otherProps} />;
+  return <TRHeadStyled {...otherProps} />;
 }
 
 export interface BaseTHHeadProps<Data extends RowData> {
@@ -77,7 +92,7 @@ export interface BaseTHHeadProps<Data extends RowData> {
 export function BaseTHHead<Data extends RowData>(props: BaseTHHeadProps<Data>) {
   const { components, table, headerGroup, header, ...otherProps } = props;
 
-  return <th {...otherProps} />;
+  return <THHeadStyled {...otherProps} />;
 }
 
 export interface BaseTBodyProps<Data extends RowData> {
@@ -89,7 +104,7 @@ export interface BaseTBodyProps<Data extends RowData> {
 export function BaseTBody<Data extends RowData>(props: BaseTBodyProps<Data>) {
   const { components, table, ...otherProps } = props;
 
-  return <tbody {...otherProps} />;
+  return <TBodyStyled {...otherProps} />;
 }
 
 export interface BaseTRBodyProps<Data extends RowData> {
@@ -102,7 +117,7 @@ export interface BaseTRBodyProps<Data extends RowData> {
 export function BaseTRBody<Data extends RowData>(props: BaseTRBodyProps<Data>) {
   const { components, table, row, ...otherProps } = props;
 
-  return <tr {...otherProps} />;
+  return <TRBodyStyled {...otherProps} />;
 }
 
 export interface BaseTDBodyProps<Data extends RowData> {
@@ -116,7 +131,7 @@ export interface BaseTDBodyProps<Data extends RowData> {
 export function BaseTDBody<Data extends RowData>(props: BaseTDBodyProps<Data>) {
   const { components, table, row, cell, ...otherProps } = props;
 
-  return <td {...otherProps} />;
+  return <TDBodyStyled {...otherProps} />;
 }
 
 export interface BaseTRBodyEmptyProps<Data extends RowData> {
@@ -130,7 +145,7 @@ export function BaseTRBodyEmpty<Data extends RowData>(
 ) {
   const { components, table, ...otherProps } = props;
 
-  return <tr {...otherProps} />;
+  return <TRBodyEmptyStyled {...otherProps} />;
 }
 
 export interface BaseTDBodyEmptyProps<Data extends RowData> {
@@ -144,7 +159,7 @@ export function BaseTDBodyEmpty<Data extends RowData>(
 ) {
   const { components, table, ...otherProps } = props;
 
-  return <td {...otherProps} />;
+  return <TDBodyEmptyStyled {...otherProps} />;
 }
 
 export interface BaseEmptyStateProps<Data extends RowData> {
@@ -161,15 +176,6 @@ export function BaseEmptyState<Data extends RowData>(
   return <EmptyStateStyled {...otherProps} />;
 }
 
-const EmptyStateStyled = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-  gap: 1em;
-`;
-
 export interface BaseTFootProps<Data extends RowData> {
   components: TableComponents<Data>;
   table: Table<Data>;
@@ -179,7 +185,7 @@ export interface BaseTFootProps<Data extends RowData> {
 export function BaseTFoot<Data extends RowData>(props: BaseTFootProps<Data>) {
   const { components, table, ...otherProps } = props;
 
-  return <tfoot {...otherProps} />;
+  return <TFootStyled {...otherProps} />;
 }
 
 export interface BaseTRFootProps<Data extends RowData> {
@@ -192,7 +198,7 @@ export interface BaseTRFootProps<Data extends RowData> {
 export function BaseTRFoot<Data extends RowData>(props: BaseTRFootProps<Data>) {
   const { components, table, footerGroup, ...otherProps } = props;
 
-  return <tfoot {...otherProps} />;
+  return <TRFootStyled {...otherProps} />;
 }
 
 export interface BaseTHFootProps<Data extends RowData> {
@@ -206,5 +212,5 @@ export interface BaseTHFootProps<Data extends RowData> {
 export function BaseTHFoot<Data extends RowData>(props: BaseTHFootProps<Data>) {
   const { components, table, footerGroup, footer, ...otherProps } = props;
 
-  return <th {...otherProps} />;
+  return <THFootStyled {...otherProps} />;
 }
