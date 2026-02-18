@@ -13,7 +13,7 @@ import {
 } from '@tanstack/react-table';
 import type { ReactNode } from 'react';
 
-import type { TableComponents } from './base_components.tsx';
+import type { TableComponents } from './types.tsx';
 import { useComponents } from './use_components.ts';
 
 type TablePropsHookOptions<Data extends RowData> = Omit<
