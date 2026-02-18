@@ -12,24 +12,9 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import type { ReactNode } from 'react';
-import { useMemo } from 'react';
 
 import type { TableComponents } from './base_components.tsx';
-import {
-  BaseEmptyState,
-  BaseTBody,
-  BaseTDBody,
-  BaseTDBodyEmpty,
-  BaseTFoot,
-  BaseTHFoot,
-  BaseTHHead,
-  BaseTHead,
-  BaseTRBody,
-  BaseTRBodyEmpty,
-  BaseTRFoot,
-  BaseTRHead,
-  BaseTable,
-} from './base_components.tsx';
+import { useComponents } from './use_components.ts';
 
 type TablePropsHookOptions<Data extends RowData> = Omit<
   TableOptions<Data>,
@@ -207,58 +192,5 @@ export function Table<Data extends RowData>(props: TableProps<Data>) {
         ))}
       </TFoot>
     </Table>
-  );
-}
-
-function useComponents<Data extends RowData>(
-  componentsPartial: Partial<TableComponents<Data>> = {},
-): TableComponents<Data> {
-  const {
-    Table = BaseTable,
-    THead = BaseTHead,
-    TRHead = BaseTRHead,
-    THHead = BaseTHHead,
-    TBody = BaseTBody,
-    TRBody = BaseTRBody,
-    TDBody = BaseTDBody,
-    TRBodyEmpty = BaseTRBodyEmpty,
-    TDBodyEmpty = BaseTDBodyEmpty,
-    EmptyState = BaseEmptyState,
-    TFoot = BaseTFoot,
-    TRFoot = BaseTRFoot,
-    THFoot = BaseTHFoot,
-  } = componentsPartial;
-
-  return useMemo<TableComponents<Data>>(
-    () => ({
-      Table,
-      THead,
-      TRHead,
-      THHead,
-      TBody,
-      TRBody,
-      TDBody,
-      TRBodyEmpty,
-      TDBodyEmpty,
-      EmptyState,
-      TFoot,
-      TRFoot,
-      THFoot,
-    }),
-    [
-      Table,
-      THead,
-      TRHead,
-      THHead,
-      TBody,
-      TRBody,
-      TDBody,
-      TRBodyEmpty,
-      TDBodyEmpty,
-      EmptyState,
-      TFoot,
-      TRFoot,
-      THFoot,
-    ],
   );
 }
