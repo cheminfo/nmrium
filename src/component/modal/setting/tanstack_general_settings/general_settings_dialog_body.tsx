@@ -65,6 +65,12 @@ export const GeneralSettingsDialogBody = withForm({
             <Tab id="panels" title="Panels" panel={<PanelsTab form={form} />} />
 
             <Tab
+              title="Databases"
+              id="databases"
+              panel={<DatabaseTab form={form} />}
+            />
+
+            <Tab
               id="import-filters"
               title="Import filters"
               panel={<ImportFiltersTab form={form} />}
@@ -85,12 +91,6 @@ export const GeneralSettingsDialogBody = withForm({
             )}
 
             <Tab id="export" title="Export" panel={<ExportTab form={form} />} />
-
-            <Tab
-              title="Databases"
-              id="databases"
-              panel={<DatabaseTab form={form} />}
-            />
           </Tabs>
         </Div>
       </StyledDialogBody>
