@@ -196,7 +196,7 @@ export const DatabaseTab = withForm({
       <TableSection
         title="Databases"
         actions={
-          <DatabaseHeaderButtons>
+          <>
             <Button
               size="small"
               variant="minimal"
@@ -216,7 +216,7 @@ export const DatabaseTab = withForm({
             >
               Add Database
             </Button>
-          </DatabaseHeaderButtons>
+          </>
         }
       >
         <TableSettings
@@ -228,8 +228,3 @@ export const DatabaseTab = withForm({
     );
   },
 });
-
-const DatabaseHeaderButtons = styled.div`
-  display: flex;
-  justify-content: space-between;
-`;
