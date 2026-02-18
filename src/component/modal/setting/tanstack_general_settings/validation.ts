@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import { workspaceDefaultProperties } from '../../../workspaces/workspaceDefaultProperties.js';
 
+import { databasesValidation } from './validation/database_tab_validation.ts';
 import { exportPreferencesValidation } from './validation/export_tab_validation.js';
 import { externalAPIsValidation } from './validation/external_apis_validation.js';
 import {
@@ -33,6 +34,7 @@ export const workspaceValidation = z.object({
   display: displayValidation,
   nmrLoaders: nmrLoadersValidation,
   export: exportPreferencesValidation,
+  databases: databasesValidation,
   infoBlock: infoBlockTabValidation,
   externalAPIs: externalAPIsValidation,
 });
@@ -41,6 +43,7 @@ export const workspaceValidation = z.object({
 export const defaultGeneralSettingsFormValues: z.input<
   typeof workspaceValidation
 > = {
+  databases: databasesValidation.encode(workspaceDefaultProperties.databases),
   nuclei: nucleiValidation.encode(workspaceDefaultProperties.nuclei),
   infoBlock: infoBlockTabValidation.encode(
     workspaceDefaultProperties.infoBlock,
