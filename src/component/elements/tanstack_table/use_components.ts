@@ -1,6 +1,7 @@
 import type { RowData } from '@tanstack/react-table';
 import { useMemo } from 'react';
 
+import type { TableComponents } from './base_components.tsx';
 import {
   BaseEmptyState,
   BaseTBody,
@@ -16,7 +17,6 @@ import {
   BaseTRHead,
   BaseTable,
 } from './base_components.tsx';
-import type { TableComponents } from './types.tsx';
 
 export function useComponents<Data extends RowData>(
   componentsPartial: Partial<TableComponents<Data>> = {},
