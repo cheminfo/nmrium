@@ -151,7 +151,6 @@ export function BaseTRBodyEmpty<Data extends RowData>(
 export interface BaseTDBodyEmptyProps<Data extends RowData> {
   components: TableComponents<Data>;
   table: Table<Data>;
-  colSpan: number;
   children: ReactNode;
 }
 
