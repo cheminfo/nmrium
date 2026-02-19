@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import { workspaceDefaultProperties } from '../../../workspaces/workspaceDefaultProperties.js';
 
+import { autoProcessingTabValidation } from './validation/auto_processing_tab_validation.ts';
 import { databasesValidation } from './validation/database_tab_validation.ts';
 import { exportPreferencesValidation } from './validation/export_tab_validation.js';
 import { externalAPIsValidation } from './validation/external_apis_validation.js';
@@ -37,12 +38,16 @@ export const workspaceValidation = z.object({
   databases: databasesValidation,
   infoBlock: infoBlockTabValidation,
   externalAPIs: externalAPIsValidation,
+  onLoadProcessing: autoProcessingTabValidation,
 });
 
 // This object is used to define type not real values. Do not use it as values
 export const defaultGeneralSettingsFormValues: z.input<
   typeof workspaceValidation
 > = {
+  onLoadProcessing: autoProcessingTabValidation.encode(
+    workspaceDefaultProperties.onLoadProcessing,
+  ),
   databases: databasesValidation.encode(workspaceDefaultProperties.databases),
   nuclei: nucleiValidation.encode(workspaceDefaultProperties.nuclei),
   infoBlock: infoBlockTabValidation.encode(
