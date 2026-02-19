@@ -1,8 +1,12 @@
 import { Checkbox, Classes } from '@blueprintjs/core';
 import type { CSSObject } from '@emotion/react';
+import type { StyledComponent } from '@emotion/styled';
 import styled from '@emotion/styled';
 import type { RowData } from '@tanstack/react-table';
 import type { CSSProperties, ComponentProps } from 'react';
+import { useCallback } from 'react';
+import type { GetTdProps, TableProps } from 'react-science/ui';
+import { Table } from 'react-science/ui';
 
 import { Input2 } from '../../../../elements/Input2.js';
 import type { BaseRowStyle } from '../../../../elements/ReactTable/ReactTable.js';
@@ -49,33 +53,42 @@ export function TableSettings<T extends object>(
 }
 
 /**
- * It's styling for tables in settings, it should be used with `.withComponent(Table<YourDataType>)`.
- * It seems it is the only way to use styled components with a generic component.
- *
- * @example
- *
- * ```tsx
- * import { Table, createTableColumnHelper } from 'react-science/ui';
- *
- * interface MyData {
- *   foo: string;
- * }
- *
- * const TableStyled = NewTableSettings.withComponent(Table<MyData>);
- *
- * const columnHelper = createTableColumnHelper<MyData>();
- * const columns = [
- *  columnHelper.accessor('foo', 'Foo'),
- * ];
- *
- * export function MyDataTable() {
- *  const data = [];
- *  return <TableStyled data={data} columns={columns} />;
- * }
- *
- * ```
+ * Return stylized table.
+ * It set `compact`, `bordered` and `stickyHeader` props to true by default.
+ * It add supports for `tdStyle` `meta` property in columns definition.
  */
-export const NewTableSettings = styled.table`
+export function NewTableSettings<Data extends RowData>(
+  props: TableProps<Data>,
+) {
+  const getTdPropsProp = props.getTdProps;
+  const getTdPropsMerge = useCallback<GetTdProps<Data>>(
+    (cell) => {
+      const tdStyleMeta = cell.column.columnDef.meta?.tdStyle;
+      const tdProps = getTdPropsProp?.(cell);
+
+      return { ...tdProps, style: { ...tdStyleMeta, ...tdProps?.style } };
+    },
+    [getTdPropsProp],
+  );
+
+  // We should not create a component in another component,
+  // But here it's OK, it is just an alias to fix the type
+  const Table = NewTableSettingsStyled as StyledComponent<TableProps<Data>>;
+
+  return (
+    <Table
+      compact
+      bordered
+      stickyHeader
+      {...props}
+      getTdProps={getTdPropsMerge}
+    />
+  );
+}
+
+const NewTableSettingsStyled = styled(Table)`
+  ${(props) => (props.bordered ? `border: 1px solid #11141826;` : '')}
+
   &.${Classes.HTML_TABLE} {
     font-size: 12px;
 

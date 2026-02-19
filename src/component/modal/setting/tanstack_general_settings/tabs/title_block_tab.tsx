@@ -3,10 +3,8 @@ import styled from '@emotion/styled';
 import { useStore } from '@tanstack/react-form';
 import { useCallback, useMemo } from 'react';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
-import type { GetTdProps } from 'react-science/ui';
 import {
   Button,
-  Table,
   TableDragRowHandler,
   createTableColumnHelper,
   withFieldGroup,
@@ -104,6 +102,9 @@ const Fields = withFieldGroup({
         columnHelper.display({
           id: 'dnd',
           header: '',
+          meta: {
+            tdStyle: { textAlign: 'center' },
+          },
           cell: () => <TableDragRowHandlerStyled size="small" />,
         }),
         columnHelper.accessor('label', {
@@ -198,29 +199,16 @@ const Fields = withFieldGroup({
     const fields = useStore(group.store, (state) => state.values.fields);
 
     return (
-      <TableStyled
+      <NewTableSettings
         data={fields}
         columns={columns}
         onRowOrderChanged={(fields) => group.setFieldValue('fields', fields)}
         // emptyDataRowText="No Fields"
-        getTdProps={getTdProps}
-        compact
-        bordered
-        stickyHeader
       />
     );
   },
 });
 
-const getTdProps: GetTdProps<Field> = (cell) => {
-  const metaStyle = cell.column.columnDef.meta?.tdStyle;
-
-  if (!['dnd', 'actions'].includes(cell.column.id)) return { style: metaStyle };
-
-  return { style: { ...metaStyle, textAlign: 'center' } };
-};
-
-const TableStyled = NewTableSettings.withComponent(Table<Field>);
 const TableDragRowHandlerStyled = styled(TableDragRowHandler)`
   margin: 0 2px;
 `;
