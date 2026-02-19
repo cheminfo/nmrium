@@ -1,19 +1,26 @@
 import { Classes } from '@blueprintjs/core';
+import styled from '@emotion/styled';
 import { useStore } from '@tanstack/react-form';
 import { useCallback, useMemo } from 'react';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
-import { Button, withFieldGroup, withForm } from 'react-science/ui';
-import type { CellProps } from 'react-table';
+import type { GetTdProps } from 'react-science/ui';
+import {
+  Button,
+  Table,
+  TableDragRowHandler,
+  createTableColumnHelper,
+  withFieldGroup,
+  withForm,
+} from 'react-science/ui';
 import type { z } from 'zod';
 
 import { useChartData } from '../../../../context/ChartContext.js';
-import type { Column } from '../../../../elements/ReactTable/ReactTable.js';
 import { getSpectraObjectPaths } from '../../../../utility/getSpectraObjectPaths.js';
 import {
   CellActions,
   CellCheckbox,
   CellInput,
-  TableSettings,
+  NewTableSettings,
 } from '../ui/table.js';
 import { TableSection } from '../ui/table_section.js';
 import type { infoBlockFieldTabValidation } from '../validation/title_block_tab_validation.js';
@@ -69,6 +76,7 @@ const Fields = withFieldGroup({
   defaultValues: defaultGeneralSettingsFormValues.infoBlock,
   render: function Fields({ group }) {
     const { Field, insertFieldValue, removeFieldValue } = group;
+
     const { data } = useChartData();
     const { datalist } = useMemo(() => getSpectraObjectPaths(data), [data]);
 
@@ -90,16 +98,17 @@ const Fields = withFieldGroup({
       [removeFieldValue],
     );
 
-    const columns = useMemo<Array<Column<Field>>>(
-      () => [
-        {
-          Header: '#',
-          style: { minWidth: '2em', textAlign: 'center' },
-          accessor: (_, index) => index + 1,
-        },
-        {
-          Header: 'Label',
-          Cell: ({ row: { index } }: CellProps<Field>) => (
+    const columns = useMemo(() => {
+      const columnHelper = createTableColumnHelper<Field>();
+      return [
+        columnHelper.display({
+          id: 'dnd',
+          header: '',
+          cell: () => <TableDragRowHandlerStyled size="small" />,
+        }),
+        columnHelper.accessor('label', {
+          header: () => 'Label',
+          cell: ({ row: { index } }) => (
             <Field name={`fields[${index}].label`}>
               {(field) => (
                 <CellInput
@@ -110,29 +119,25 @@ const Fields = withFieldGroup({
               )}
             </Field>
           ),
-        },
-        {
-          Header: 'Field',
-          Cell: ({ row }: CellProps<Field>) => {
-            const rowIndex = row.index;
-
-            return (
-              <Field name={`fields[${rowIndex}].jpath`}>
-                {(field) => (
-                  <CellInput
-                    name={field.name}
-                    value={field.state.value}
-                    onChange={field.handleChange}
-                    filterItems={datalist}
-                  />
-                )}
-              </Field>
-            );
-          },
-        },
-        {
-          Header: 'Format',
-          Cell: ({ row: { index } }: CellProps<Field>) => (
+        }),
+        columnHelper.accessor('jpath', {
+          header: 'Field',
+          cell: ({ row: { index } }) => (
+            <Field name={`fields[${index}].jpath`}>
+              {(field) => (
+                <CellInput
+                  name={field.name}
+                  value={field.state.value}
+                  onChange={field.handleChange}
+                  filterItems={datalist}
+                />
+              )}
+            </Field>
+          ),
+        }),
+        columnHelper.accessor('format', {
+          header: 'Format',
+          cell: ({ row: { index } }) => (
             <Field name={`fields[${index}].format`}>
               {(field) => (
                 <CellInput
@@ -143,11 +148,13 @@ const Fields = withFieldGroup({
               )}
             </Field>
           ),
-        },
-        {
-          Header: 'Visible',
-          style: { width: '30px', textAlign: 'center' },
-          Cell: ({ row: { index } }: CellProps<Field>) => (
+        }),
+        columnHelper.accessor('visible', {
+          header: 'Visible',
+          meta: {
+            tdStyle: { textAlign: 'center' },
+          },
+          cell: ({ row: { index } }) => (
             <Field name={`fields[${index}].visible`}>
               {(field) => (
                 <CellCheckbox
@@ -158,12 +165,11 @@ const Fields = withFieldGroup({
               )}
             </Field>
           ),
-        },
-        {
-          Header: '',
-          style: { width: '60px' },
-          id: 'add-button',
-          Cell: ({ row: { index } }: CellProps<Field>) => {
+        }),
+        columnHelper.display({
+          id: 'actions',
+          header: '',
+          cell: ({ row: { index } }) => {
             return (
               <CellActions>
                 <Button
@@ -185,19 +191,36 @@ const Fields = withFieldGroup({
               </CellActions>
             );
           },
-        },
-      ],
-      [Field, datalist, onAddRowAfter, onDeleteAt],
-    );
+        }),
+      ];
+    }, [Field, datalist, onAddRowAfter, onDeleteAt]);
 
     const fields = useStore(group.store, (state) => state.values.fields);
 
     return (
-      <TableSettings
+      <TableStyled
         data={fields}
         columns={columns}
-        emptyDataRowText="No Fields"
+        onRowOrderChanged={(fields) => group.setFieldValue('fields', fields)}
+        // emptyDataRowText="No Fields"
+        getTdProps={getTdProps}
+        compact
+        bordered
+        stickyHeader
       />
     );
   },
 });
+
+const getTdProps: GetTdProps<Field> = (cell) => {
+  const metaStyle = cell.column.columnDef.meta?.tdStyle;
+
+  if (!['dnd', 'actions'].includes(cell.column.id)) return { style: metaStyle };
+
+  return { style: { ...metaStyle, textAlign: 'center' } };
+};
+
+const TableStyled = NewTableSettings.withComponent(Table<Field>);
+const TableDragRowHandlerStyled = styled(TableDragRowHandler)`
+  margin: 0 2px;
+`;
