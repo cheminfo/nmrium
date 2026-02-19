@@ -102,13 +102,13 @@ const NewTableSettingsStyled = styled(Table)`
         flex: 1;
       }
     }
+
     tbody td {
       padding: 0;
       vertical-align: middle;
     }
   }
 `;
-
 declare module '@tanstack/react-table' {
   // Declaration merging
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
