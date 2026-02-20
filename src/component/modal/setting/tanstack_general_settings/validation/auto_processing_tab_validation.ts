@@ -52,12 +52,7 @@ const outputFilterElement = z.object({
 
 const outputValidation = z.object({
   autoProcessing: z.boolean(),
-  filters: z
-    .object({
-      '1H': outputFilterElement,
-      '13C': outputFilterElement,
-    })
-    .optional(),
+  filters: z.record(z.string(), outputFilterElement).optional(),
 });
 
 export const autoProcessingTabValidation = z.codec(
