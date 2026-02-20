@@ -5,8 +5,6 @@ import { defaultGeneralSettingsFormValues } from '../validation.ts';
 export const ToolsTab = withForm({
   defaultValues: defaultGeneralSettingsFormValues,
   render: ({ form }) => {
-    const { Section, AppField } = form;
-
     return (
       <>
         <ChartTools form={form} fields="display.toolBarButtons" />
@@ -20,14 +18,6 @@ export const ToolsTab = withForm({
           form={form}
           fields="display.toolBarButtons"
         />
-
-        <Section title="TODO Organize">
-          <AppField name="display.toolBarButtons.multipleSpectraAnalysis">
-            {({ Checkbox }) => (
-              <Checkbox label="Multiple spectra integration" />
-            )}
-          </AppField>
-        </Section>
       </>
     );
   },
@@ -123,6 +113,9 @@ const SpectraManipulationTools = withFieldGroup({
         </AppField>
         <AppField name="autoRangeAndZonePicking">
           {({ Checkbox }) => <Checkbox label="Auto range and zone picking" />}
+        </AppField>
+        <AppField name="multipleSpectraAnalysis">
+          {({ Checkbox }) => <Checkbox label="Multiple spectra integration" />}
         </AppField>
       </Section>
     );
