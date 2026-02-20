@@ -1,5 +1,5 @@
 import type { StateMolecule } from '@zakodium/nmrium-core';
-import { readSDF, readSMILES } from '@zakodium/nmrium-core-plugins';
+import { readSDF } from '@zakodium/nmrium-core-plugins';
 import { Molecule } from 'openchemlib';
 
 import type { StateMoleculeExtended } from './Molecule.js';
@@ -14,22 +14,23 @@ export function fromJSON(
 
   const molecules: StateMoleculeExtended[] = [];
   for (const mol of mols) {
-    const molecule = Molecule.fromMolfile(mol.molfile);
-
-    const atomCount = molecule.getAllAtoms();
-
-    if (atomCount === 0) {
+    const {
+      molfile,
+      label = `P${getLabelNumber(reservedNumbers)}`,
+      id,
+      ...others
+    } = mol;
+    const moleculeOverride = {
+      ...others,
+      text: molfile,
+      label,
+      id,
+    };
+    try {
+      molecules.push(initMolecule(moleculeOverride));
+    } catch {
       continue;
     }
-
-    const moleculeOverride = {
-      ...mol,
-      molfile: molecule.toMolfileV3(),
-      label: mol.label || `P${getLabelNumber(reservedNumbers)}`,
-      id: mol.id,
-    };
-
-    molecules.push(initMolecule(moleculeOverride));
   }
 
   return molecules;
@@ -49,10 +50,9 @@ export function addMolfile(
 
   // try to parse molfile
   // this will throw if the molecule can not be parsed !
-  const molecule = Molecule.fromMolfile(molfile);
   molecules.push(
     initMolecule({
-      molfile: molecule.toMolfileV3(),
+      text: molfile,
       label: label ?? `P${getLabelNumber(reservedNumbers)}`,
       id,
     }),
@@ -66,9 +66,8 @@ export function setMolfile(
   const { molfile, id, label } = currentMolecule;
   // try to parse molfile
   // this will throw if the molecule can not be parsed !
-  const molecule = Molecule.fromMolfile(molfile);
   const _mol = initMolecule({
-    molfile: molecule.toMolfileV3(),
+    text: molfile,
     id,
     label,
   });
@@ -137,20 +136,23 @@ function validateMolecules(molecules: StateMolecule[]) {
  * @param text - text containing one or several molecules in SMILES, molfile or SDF format
  * @returns
  */
+
+function parseSDF(text: string) {
+  try {
+    const molecules = readSDF(text);
+    validateMolecules(molecules);
+    return molecules;
+  } catch (error) {
+    throw new Error(parseErrorMessage, { cause: error });
+  }
+}
+
 export function getMolecules(text?: string) {
   if (!text?.trim()) {
     throw new Error(parseErrorMessage);
   }
 
-  // parse SDF
-  let molecules = [];
-  const parse = /v[23]000/i.test(text) ? readSDF : readSMILES;
-  try {
-    molecules = parse(text);
-  } catch (error) {
-    throw new Error(parseErrorMessage, { cause: error });
-  }
+  const isSDF = /v[23]000/i.test(text);
 
-  validateMolecules(molecules);
-  return molecules;
+  return isSDF ? parseSDF(text) : [initMolecule({ text })];
 }
