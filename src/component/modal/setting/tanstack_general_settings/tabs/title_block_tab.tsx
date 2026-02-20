@@ -112,8 +112,8 @@ const Fields = withForm({
         }),
         columnHelper.accessor('label', {
           header: () => 'Label',
-          cell: ({ row: { index } }) => (
-            <Field name={`${name}[${index}].label`}>
+          cell: ({ row: { index, id } }) => (
+            <Field key={id} name={`${name}[${index}].label`}>
               {(field) => (
                 <CellInput
                   name={field.name}
@@ -126,8 +126,8 @@ const Fields = withForm({
         }),
         columnHelper.accessor('jpath', {
           header: 'Field',
-          cell: ({ row: { index } }) => (
-            <Field name={`${name}[${index}].jpath`}>
+          cell: ({ row: { index, id } }) => (
+            <Field key={id} name={`${name}[${index}].jpath`}>
               {(field) => (
                 <CellInput
                   name={field.name}
@@ -141,8 +141,8 @@ const Fields = withForm({
         }),
         columnHelper.accessor('format', {
           header: 'Format',
-          cell: ({ row: { index } }) => (
-            <Field name={`${name}[${index}].format`}>
+          cell: ({ row: { index, id } }) => (
+            <Field key={id} name={`${name}[${index}].format`}>
               {(field) => (
                 <CellInput
                   name={field.name}
@@ -158,8 +158,8 @@ const Fields = withForm({
           meta: {
             tdStyle: { textAlign: 'center' },
           },
-          cell: ({ row: { index } }) => (
-            <Field name={`${name}[${index}].visible`}>
+          cell: ({ row: { index, id } }) => (
+            <Field key={id} name={`${name}[${index}].visible`}>
               {(field) => (
                 <CellCheckbox
                   name={field.name}
@@ -173,9 +173,9 @@ const Fields = withForm({
         columnHelper.display({
           id: 'actions',
           header: '',
-          cell: ({ row: { index } }) => {
+          cell: ({ row: { index, id } }) => {
             return (
-              <CellActions>
+              <CellActions key={id}>
                 <Button
                   size="small"
                   intent="success"
