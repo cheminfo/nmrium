@@ -210,7 +210,7 @@ const Fields = withForm({
         columns={columns}
         onRowOrderChanged={onRowOrderChanged}
         getRowId={getRowId}
-        // emptyDataRowText="No Fields"
+        emptyContent="No Fields"
       />
     );
   },
