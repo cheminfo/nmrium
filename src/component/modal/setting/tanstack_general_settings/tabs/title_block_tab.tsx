@@ -200,7 +200,6 @@ const Fields = withForm({
     }, [Field, datalist, name, onAddRowAfter, onDeleteAt]);
 
     function onRowOrderChanged(value: Field[]) {
-      console.log(value);
       fields.setValue(value);
     }
 
