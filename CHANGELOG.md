@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.13.0](https://github.com/cheminfo/nmrium/compare/v1.12.0...v1.13.0) (2026-02-20)
+
+
+### Features
+
+* add auto processing tab to general settings ([#3995](https://github.com/cheminfo/nmrium/issues/3995)) ([d20ab1e](https://github.com/cheminfo/nmrium/commit/d20ab1e215b0bd2f3209cee16647c5a9e9501a8b))
+* add databases tab ([#3992](https://github.com/cheminfo/nmrium/issues/3992)) ([3f69944](https://github.com/cheminfo/nmrium/commit/3f69944c5ed8db11beae815255ff43b9e2d6b3ea))
+* implement external APIs tab ([#3990](https://github.com/cheminfo/nmrium/issues/3990)) ([40b95d1](https://github.com/cheminfo/nmrium/commit/40b95d189bbd072c82eb729206456aeb55548106))
+* implement title block tab ([#3985](https://github.com/cheminfo/nmrium/issues/3985)) ([be8dbbc](https://github.com/cheminfo/nmrium/commit/be8dbbc48efe7eb9bf5fe489c1ace761b3fcd1a5))
+
 ## [1.12.0](https://github.com/cheminfo/nmrium/compare/v1.11.0...v1.12.0) (2026-02-17)
 
 
