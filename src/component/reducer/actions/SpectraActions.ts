@@ -1,6 +1,7 @@
 import type { NMRRange } from '@zakodium/nmr-types';
 import type {
   Color2D,
+  ContourOptions,
   Display1D,
   Display2D,
   SpectraColors,
@@ -30,6 +31,7 @@ import {
   getMissingProjection,
   isSpectrum2D,
 } from '../../../data/data2d/Spectrum2D/index.js';
+import { isFt2DSpectrum } from '../../../data/data2d/Spectrum2D/isSpectrum2D.ts';
 import {
   adjustAlpha,
   generateColor,
@@ -87,10 +89,15 @@ type ChangeActiveSpectrumAction = ActionType<
 >;
 type ChangeSpectrumSettingAction = ActionType<
   'CHANGE_SPECTRUM_SETTING',
-  {
-    id: string;
-    display: Display1D | Display2D;
-  }
+  | {
+      id: string;
+      display: Display1D | Display2D;
+    }
+  | {
+      id: string;
+      display: Display2D;
+      contourOptions: ContourOptions;
+    }
 >;
 type DeleteSpectraAction = ActionType<
   'DELETE_SPECTRA',
@@ -443,8 +450,9 @@ function handleChangeSpectrumSetting(
   if (!spectrum) return;
 
   spectrum.display = display;
-  if (isSpectrum2D(spectrum)) {
-    const { checkLevel } = contoursManager(spectrum);
+  if (isFt2DSpectrum(spectrum) && 'contourOptions' in action.payload) {
+    draft.view.zoom.levels[id] = action.payload.contourOptions;
+    const { checkLevel } = contoursManager(draft.view.zoom.levels[id]);
     checkLevel();
   }
 }

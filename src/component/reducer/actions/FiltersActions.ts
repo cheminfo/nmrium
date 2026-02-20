@@ -25,7 +25,10 @@ import {
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import { isFid1DSpectrum } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
-import { getDefaultContoursLevel } from '../../../data/data2d/Spectrum2D/contours.js';
+import {
+  getDefaultContoursLevel,
+  initializeContoursLevels,
+} from '../../../data/data2d/Spectrum2D/contours.js';
 import { getProjection } from '../../../data/data2d/Spectrum2D/getMissingProjection.js';
 import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.js';
 import {
@@ -736,8 +739,17 @@ function beforeRollback(draft: Draft<State>, filterKey: any) {
   }
 }
 function afterRollback(draft: Draft<State>, filterKey: any) {
+  const activeSpectrum = getActiveSpectrum(draft);
+
   switch (filterKey) {
     //specify the filters here
+    case fftDimension1:
+    case fftDimension2: {
+      if (!activeSpectrum) return;
+      const spectrum = current(draft).data[activeSpectrum.index];
+      draft.view.zoom.levels[spectrum.id] = initializeContoursLevels(spectrum);
+      break;
+    }
     default:
       break;
   }
@@ -1356,6 +1368,7 @@ function applyFFTTwoDimensionFilter(
 
   draft.toolOptions.selectedOptionPanel = null;
   draft.toolOptions.selectedTool = 'zoom';
+  draft.view.zoom.levels[spectrum.id] = initializeContoursLevels(spectrum);
 }
 
 function handleApplyFFtDimension1Filter(draft: Draft<State>) {

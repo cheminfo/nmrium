@@ -14,6 +14,7 @@ import type {
 import { generateSpectra } from '../../../data/PredictionManager.js';
 import { changeSpectraRelativeSum } from '../../../data/data1d/Spectrum1D/SumManager.js';
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
+import { initializeContoursLevels } from '../../../data/data2d/Spectrum2D/contours.ts';
 import type { MoleculeBoundingRect } from '../../../data/molecules/Molecule.js';
 import { DRAGGABLE_STRUCTURE_INITIAL_BOUNDING_REACT } from '../../../data/molecules/Molecule.js';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager.js';
@@ -304,6 +305,7 @@ function handlePredictSpectraFromMolecule(
   )) {
     draft.data.push(spectrum);
     spectraIds.push(spectrum.id);
+    draft.view.zoom.levels[spectrum.id] = initializeContoursLevels(spectrum);
   }
   let id = molecule?.id;
   //if the id object is not exits add a new molecule

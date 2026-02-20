@@ -15,15 +15,16 @@ export function Spectrum1DSetting({
   data: SpectrumData,
   onSubmit,
 }: Spectrum1DSettingProps) {
+  const { display } = SpectrumData;
   const { control, handleSubmit } = useForm({
-    defaultValues: SpectrumData.display,
+    defaultValues: { display },
   });
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
       <div style={{ display: 'block', position: 'relative' }}>
         <Controller
-          name="color"
+          name="display.color"
           control={control}
           render={({ field }) => {
             const { value, onChange } = field;

@@ -15,6 +15,7 @@ import { buildCorrelationData } from 'nmr-correlation';
 import type { ParseResult } from 'papaparse';
 
 import { initiateDatum1D } from '../../../data/data1d/Spectrum1D/index.js';
+import { initializeContours } from '../../../data/data2d/Spectrum2D/contours.ts';
 import { initiateDatum2D } from '../../../data/data2d/Spectrum2D/index.js';
 import type { StateMoleculeExtended } from '../../../data/molecules/Molecule.js';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager.js';
@@ -195,6 +196,9 @@ function setData(draft: Draft<State>, input: InputProps | InitiateProps) {
       spectraColors,
     }),
   );
+
+  draft.view.zoom.levels = initializeContours(draft.data);
+
   setCorrelation(draft, correlations);
 
   if (parseMetaFileResult) {
