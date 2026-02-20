@@ -15,6 +15,7 @@ import { nmrLoadersValidation } from './validation/import_filters_tab_validation
 import { nucleiValidation } from './validation/nuclei_tab_validation.js';
 import { displayPanelsValidation } from './validation/panels_tab_validation.js';
 import { infoBlockTabValidation } from './validation/title_block_tab_validation.js';
+import { toolBarButtonsValidation } from './validation/tools_tab_validation.ts';
 
 /**
  * The type for the workspace preferences is `WorkspaceWithSource`
@@ -26,6 +27,7 @@ import { infoBlockTabValidation } from './validation/title_block_tab_validation.
 const displayValidation = z.object({
   general: displayGeneralValidation,
   panels: displayPanelsValidation,
+  toolBarButtons: toolBarButtonsValidation,
 });
 
 export const workspaceValidation = z.object({
@@ -72,6 +74,9 @@ export const defaultGeneralSettingsFormValues: z.input<
     },
     panels: displayPanelsValidation.encode(
       workspaceDefaultProperties.display.panels,
+    ),
+    toolBarButtons: toolBarButtonsValidation.encode(
+      workspaceDefaultProperties.display.toolBarButtons,
     ),
   },
   nmrLoaders: nmrLoadersValidation.encode(

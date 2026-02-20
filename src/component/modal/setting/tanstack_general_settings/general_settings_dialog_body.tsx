@@ -14,6 +14,7 @@ import { ImportFiltersTab } from './tabs/import_filters_tab.js';
 import { NucleiTab } from './tabs/nuclei_tab.js';
 import { PanelsTab } from './tabs/panels_tab.js';
 import { TitleBlockTab } from './tabs/title_block_tab.js';
+import { ToolsTab } from './tabs/tools_tab.tsx';
 import { defaultGeneralSettingsFormValues } from './validation.js';
 
 const Tabs = styled(BPTabs)`
@@ -64,6 +65,8 @@ export const GeneralSettingsDialogBody = withForm({
             <Tab title="Nuclei" id="nuclei" panel={<NucleiTab form={form} />} />
 
             <Tab id="panels" title="Panels" panel={<PanelsTab form={form} />} />
+
+            <Tab id="tools" title="Tools" panel={<ToolsTab form={form} />} />
 
             <Tab
               title="Databases"
