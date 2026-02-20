@@ -36,8 +36,18 @@ export const CellInput = styled(Input2)`
 `;
 
 export const CellCheckbox = styled(Checkbox)`
-  margin: 6px auto;
-  display: inline;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.${Classes.CONTROL} {
+    padding: 0;
+    margin: 0;
+
+    .${Classes.CONTROL_INDICATOR} {
+      margin: 0;
+    }
+  }
 `;
 
 export const CellActions = styled.div`
@@ -76,16 +86,22 @@ export function NewTableSettings<Data extends RowData>(
   const Table = NewTableSettingsStyled as StyledComponent<TableProps<Data>>;
 
   return (
-    <Table
-      compact
-      bordered
-      stickyHeader
-      {...props}
-      getTdProps={getTdPropsMerge}
-    />
+    <TableContainer>
+      <Table
+        compact
+        bordered
+        stickyHeader
+        {...props}
+        getTdProps={getTdPropsMerge}
+      />
+    </TableContainer>
   );
 }
 
+const TableContainer = styled.div`
+  height: 100%;
+  overflow-y: auto;
+`;
 const NewTableSettingsStyled = styled(Table)`
   ${(props) => (props.bordered ? `border: 1px solid #11141826;` : '')}
 
