@@ -1,9 +1,9 @@
-import { Checkbox, Classes } from '@blueprintjs/core';
+import { Checkbox, Classes, Icon } from '@blueprintjs/core';
 import type { CSSObject } from '@emotion/react';
 import type { StyledComponent } from '@emotion/styled';
 import styled from '@emotion/styled';
 import type { RowData } from '@tanstack/react-table';
-import type { CSSProperties, ComponentProps } from 'react';
+import type { CSSProperties, ComponentProps, ReactNode } from 'react';
 import { useCallback } from 'react';
 import type { GetTdProps, TableProps } from 'react-science/ui';
 import { Table } from 'react-science/ui';
@@ -62,23 +62,45 @@ export function TableSettings<T extends object>(
   return <ReactTable<T> {...props} style={tableStyle} rowStyle={rowStyle} />;
 }
 
+declare module '@tanstack/react-table' {
+  // Declaration merging
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface ColumnMeta<TData extends RowData, TValue> {
+    /**
+     * Merged into the `style` prop of the default-rendered `<th>` element.
+     */
+    tdStyle?: CSSProperties;
+  }
+}
+
+type NewTableSettingsProps<Data extends RowData> = {
+  emptyIcon?: ReactNode;
+  emptyContent?: ReactNode;
+} & TableProps<Data>;
+
 /**
  * Return stylized table.
  * It set `compact`, `bordered` and `stickyHeader` props to true by default.
  * It add supports for `tdStyle` `meta` property in columns definition.
  */
 export function NewTableSettings<Data extends RowData>(
-  props: TableProps<Data>,
+  props: NewTableSettingsProps<Data>,
 ) {
-  const getTdPropsProp = props.getTdProps;
+  const {
+    emptyIcon = <Icon icon="eye-off" />,
+    emptyContent = 'No data',
+    getTdProps,
+    ...tableProps
+  } = props;
+
   const getTdPropsMerge = useCallback<GetTdProps<Data>>(
     (cell) => {
       const tdStyleMeta = cell.column.columnDef.meta?.tdStyle;
-      const tdProps = getTdPropsProp?.(cell);
+      const tdProps = getTdProps?.(cell);
 
       return { ...tdProps, style: { ...tdStyleMeta, ...tdProps?.style } };
     },
-    [getTdPropsProp],
+    [getTdProps],
   );
 
   // We should not create a component in another component,
@@ -91,9 +113,16 @@ export function NewTableSettings<Data extends RowData>(
         compact
         bordered
         stickyHeader
-        {...props}
+        {...tableProps}
         getTdProps={getTdPropsMerge}
       />
+
+      {props.data.length === 0 && (
+        <TableEmptyState bordered={tableProps.bordered ?? true}>
+          {emptyIcon}
+          {emptyContent}
+        </TableEmptyState>
+      )}
     </TableContainer>
   );
 }
@@ -107,6 +136,7 @@ const NewTableSettingsStyled = styled(Table)`
 
   &.${Classes.HTML_TABLE} {
     font-size: 12px;
+    width: 100%;
 
     thead th {
       padding: 2px 8px;
@@ -125,13 +155,19 @@ const NewTableSettingsStyled = styled(Table)`
     }
   }
 `;
-declare module '@tanstack/react-table' {
-  // Declaration merging
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  interface ColumnMeta<TData extends RowData, TValue> {
-    /**
-     * Merged into the `style` prop of the default-rendered `<th>` element.
-     */
-    tdStyle?: CSSProperties;
-  }
-}
+const TableEmptyState = styled.div<{ bordered?: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25em;
+  gap: 0.5em;
+
+  ${(props) => {
+    if (!props.bordered) return '';
+
+    return `
+      border: 1px solid #11141826;
+      border-top: none;
+    `;
+  }}
+`;
