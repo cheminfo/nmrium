@@ -1,6 +1,6 @@
 import { Classes } from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import { useField } from '@tanstack/react-form';
+import { useField, useStore } from '@tanstack/react-form';
 import { useCallback, useMemo } from 'react';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import {
@@ -203,9 +203,13 @@ const Fields = withForm({
       fields.setValue(value);
     }
 
+    // It seems fields.setValue don't always trigger rerender
+    // so fields.state.value can de-sync and cause weird behavior with DnD reorder.
+    const fieldsData = useStore(fields.store, (s) => s.value);
+
     return (
       <NewTableSettings
-        data={fields.state.value}
+        data={fieldsData}
         columns={columns}
         onRowOrderChanged={onRowOrderChanged}
         getRowId={getRowId}
