@@ -1,6 +1,7 @@
 import type { RangeSliderProps } from '@blueprintjs/core';
 import { RangeSlider } from '@blueprintjs/core';
 import styled from '@emotion/styled';
+import type { Spectrum2D } from '@zakodium/nmrium-core';
 import debounce from 'lodash/debounce.js';
 import type { CSSProperties } from 'react';
 import { useMemo } from 'react';
@@ -14,6 +15,7 @@ import {
 import { ColorPicker } from 'react-science/ui';
 
 import { COLORS } from '../../../../../data/utilities/generateColor.js';
+import { useChartData } from '../../../../context/ChartContext.tsx';
 import { NumberInput2 } from '../../../../elements/NumberInput2.js';
 import { useFormValidateField } from '../../../../elements/useFormValidateField.js';
 import { colorToHexWithAlpha } from '../../../../utility/colorToHexWithAlpha.js';
@@ -38,7 +40,7 @@ function ContoursRangeSlider(props: ContoursRangeSliderProps) {
 }
 
 interface Spectrum2DSettingProps {
-  data: any;
+  data: Spectrum2D;
   onSubmit: (values: any) => void;
 }
 
@@ -53,8 +55,16 @@ export function Spectrum2DSetting({
   data: SpectrumData,
   onSubmit,
 }: Spectrum2DSettingProps) {
-  const { positiveColor, negativeColor } = SpectrumData.display;
-  const methods = useForm({ defaultValues: SpectrumData.display });
+  const { id, display } = SpectrumData;
+  const {
+    view: {
+      zoom: { levels },
+    },
+  } = useChartData();
+  const methods = useForm({
+    defaultValues: { contourOptions: levels[id], display },
+  });
+  const { positiveColor, negativeColor } = display;
 
   return (
     <FormProvider {...methods}>
@@ -95,7 +105,7 @@ function Settings(props: SettingsProps) {
   return (
     <>
       <Controller
-        name={`${sign}Color`}
+        name={`display.${sign}Color`}
         control={control}
         render={({ field }) => {
           const { value, onChange } = field;

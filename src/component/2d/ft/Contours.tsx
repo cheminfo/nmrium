@@ -1,30 +1,27 @@
-import type { Spectrum2D } from '@zakodium/nmrium-core';
 import debounce from 'lodash/debounce.js';
 import { memo, useMemo, useRef } from 'react';
 
 import type { LevelSign } from '../../../data/data2d/Spectrum2D/contours.js';
 import { drawContours } from '../../../data/data2d/Spectrum2D/contours.js';
-import { isFt2DSpectrum } from '../../../data/data2d/Spectrum2D/isSpectrum2D.ts';
 import { useChartData } from '../../context/ChartContext.js';
 import { usePreferences } from '../../context/PreferencesContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
-import type { SpectrumData } from '../../hooks/use2DReducer.tsx';
-import { use2DReducer } from '../../hooks/use2DReducer.tsx';
+import type { SpectrumFTData } from '../../hooks/use2DReducer.tsx';
+import { use2DFTSpectra } from '../../hooks/use2DReducer.tsx';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.js';
 import { PathBuilder } from '../../utility/PathBuilder.js';
-import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus.js';
 import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 
 interface ContoursPathsProps {
   id: string;
   color: string;
   sign: LevelSign;
-  spectrum: SpectrumData;
+  spectrum: SpectrumFTData;
   onTimeout: () => void;
 }
 
 interface ContoursInnerProps {
-  spectra: Spectrum2D[];
+  spectra: SpectrumFTData[];
 }
 
 function usePath(contours: ReturnType<typeof drawContours>['contours']) {
@@ -49,11 +46,14 @@ function usePath(contours: ReturnType<typeof drawContours>['contours']) {
   return pathBuilder.toString();
 }
 
-const useContoursLevel = (spectrum: SpectrumData, sign: LevelSign) => {
+const useContoursLevel = (spectrumID: string, sign: LevelSign) => {
   const {
-    display: { contourOptions },
-  } = spectrum;
-  return contourOptions?.[sign];
+    view: {
+      zoom: { levels },
+    },
+  } = useChartData();
+  const level = levels[spectrumID]?.[sign];
+  return level;
 };
 
 function ContoursPaths({
@@ -65,7 +65,7 @@ function ContoursPaths({
 }: ContoursPathsProps) {
   const activeSpectrum = useActiveSpectrum();
   const preferences = usePreferences();
-  const level = useContoursLevel(spectrum, sign);
+  const level = useContoursLevel(spectrumID, sign);
 
   const contours = useMemo(() => {
     const { contours, timeout } = drawContours(
@@ -113,11 +113,10 @@ function ContoursInner({ spectra }: ContoursInnerProps) {
   function timeoutHandler() {
     debounceAlert.current();
   }
-  const spectraData = use2DReducer(spectra);
 
   return (
     <g className="contours">
-      {spectraData?.map((spectrum) => {
+      {spectra?.map((spectrum) => {
         return (
           <g key={spectrum.id}>
             {spectrum.display.isPositiveVisible && (
@@ -148,18 +147,7 @@ function ContoursInner({ spectra }: ContoursInnerProps) {
 const MemoizedContours = memo(ContoursInner);
 
 export default function Contours() {
-  const {
-    data: spectra,
-    displayerKey,
-    view: {
-      spectra: { activeTab },
-    },
-  } = useChartData();
-  const spectra2d = useMemo<Spectrum2D[]>(() => {
-    return getSpectraByNucleus(activeTab, spectra).filter((datum) =>
-      isFt2DSpectrum(datum),
-    ) as Spectrum2D[];
-  }, [activeTab, spectra]);
+  const spectra = use2DFTSpectra();
 
-  return <MemoizedContours {...{ spectra: spectra2d, displayerKey }} />;
+  return <MemoizedContours spectra={spectra} />;
 }

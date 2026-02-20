@@ -2,34 +2,47 @@ import type { Spectrum2D } from '@zakodium/nmrium-core';
 import type { NmrData2DContent, NmrData2DFt } from 'cheminfo-types';
 import type { XYEquallySpacedOptions } from 'ml-spectra-processing';
 import { xyEquallySpaced } from 'ml-spectra-processing';
+import { useMemo } from 'react';
 
+import { isFt2DSpectrum } from '../../data/data2d/Spectrum2D/isSpectrum2D.ts';
 import { useChartData } from '../context/ChartContext.tsx';
+import { getSpectraByNucleus } from '../utility/getSpectraByNucleus.ts';
 
-export interface SpectrumData extends Pick<Spectrum2D, 'display' | 'id'> {
+export interface SpectrumFTData extends Pick<Spectrum2D, 'display' | 'id'> {
   data: NmrData2DContent;
 }
-export function use2DReducer(spectra: Spectrum2D[]) {
-  const { xDomain, yDomain } = useChartData();
+
+export function use2DFTSpectra(): SpectrumFTData[] {
+  const {
+    xDomain,
+    yDomain,
+    view: {
+      spectra: { activeTab },
+    },
+    data,
+  } = useChartData();
   const [fromX, toX] = xDomain;
   const [fromY, toY] = yDomain;
-  const outputSpectra: SpectrumData[] = [];
-  for (const spectrum of spectra) {
-    const { id, display, data } = spectrum;
-    const { rr } = data as NmrData2DFt;
-    const reducedData = reduce2DSpectrum(rr, {
-      fromX,
-      fromY,
-      toX,
-      toY,
-    });
-    outputSpectra.push({
-      data: reducedData,
-      id,
-      display,
-    });
-  }
 
-  return outputSpectra;
+  return useMemo(() => {
+    return getSpectraByNucleus(activeTab, data)
+      .filter(isFt2DSpectrum)
+      .map((spectrum) => {
+        const { id, display, data } = spectrum;
+        const { rr } = data as NmrData2DFt;
+        const reducedData = reduce2DSpectrum(rr, {
+          fromX,
+          fromY,
+          toX,
+          toY,
+        });
+        return {
+          data: reducedData,
+          id,
+          display,
+        };
+      });
+  }, [activeTab, data, fromX, fromY, toX, toY]);
 }
 
 interface Reduce2DSpectrumOptions {

@@ -29,7 +29,7 @@ export function SpectrumSetting({
   function submitHandler(values: any) {
     dispatch({
       type: 'CHANGE_SPECTRUM_SETTING',
-      payload: { id, display: values },
+      payload: { id, ...values },
     });
   }
 
