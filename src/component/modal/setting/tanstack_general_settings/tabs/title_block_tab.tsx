@@ -199,11 +199,16 @@ const Fields = withForm({
       ];
     }, [Field, datalist, name, onAddRowAfter, onDeleteAt]);
 
+    function onRowOrderChanged(value: Field[]) {
+      console.log(value);
+      fields.setValue(value);
+    }
+
     return (
       <NewTableSettings
         data={fields.state.value}
         columns={columns}
-        onRowOrderChanged={(value) => fields.setValue(value)}
+        onRowOrderChanged={onRowOrderChanged}
         getRowId={getRowId}
         // emptyDataRowText="No Fields"
       />
