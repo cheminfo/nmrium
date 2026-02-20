@@ -81,7 +81,7 @@ const Fields = withForm({
       name: 'infoBlock.fields',
       mode: 'array',
     });
-    const { insertValue, removeValue, name } = fields;
+    const { insertValue, removeValue, setValue, name } = fields;
 
     const { data } = useChartData();
     const { datalist } = useMemo(() => getSpectraObjectPaths(data), [data]);
@@ -199,9 +199,12 @@ const Fields = withForm({
       ];
     }, [Field, datalist, name, onAddRowAfter, onDeleteAt]);
 
-    function onRowOrderChanged(value: Field[]) {
-      fields.setValue(value);
-    }
+    const onRowOrderChanged = useCallback(
+      (value: Field[]) => {
+        setValue(value);
+      },
+      [setValue],
+    );
 
     // It seems fields.setValue don't always trigger rerender
     // so fields.state.value can de-sync and cause weird behavior with DnD reorder.
