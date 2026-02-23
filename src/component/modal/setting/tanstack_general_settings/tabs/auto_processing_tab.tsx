@@ -48,7 +48,6 @@ const AutoProcessingTabs = withForm({
   },
 });
 
-type NucleusKey = '1H' | '13C';
 const NucleusElement = withForm({
   defaultValues: defaultGeneralSettingsFormValues,
   props: {
@@ -57,7 +56,7 @@ const NucleusElement = withForm({
   render: function Render({ form, nucleus }) {
     const elements = useStore(
       form.store,
-      (state) => state.values.onLoadProcessing.filters?.[nucleus as NucleusKey],
+      (state) => state.values.onLoadProcessing.filters?.[nucleus],
     );
 
     return (
@@ -66,7 +65,7 @@ const NucleusElement = withForm({
           return (
             <form.AppField
               key={key}
-              name={`onLoadProcessing.filters.${nucleus as NucleusKey}.${key as FilterEntry['name']}`}
+              name={`onLoadProcessing.filters.${nucleus}.${key as FilterEntry['name']}`}
             >
               {(field) => (
                 <field.Checkbox
