@@ -11,6 +11,7 @@ import { useToaster } from '../context/ToasterContext.js';
 import type { AlertButton } from '../elements/Alert.js';
 import { useAlert } from '../elements/Alert.js';
 import { useExportManagerAPI } from '../elements/export/ExportManager.js';
+import type { HighlightEventSource } from '../highlight/index.js';
 import { useHighlightData } from '../highlight/index.js';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility.js';
 import { useExport } from '../hooks/useExport.js';
@@ -82,11 +83,11 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
   }, [data, displayerMode]);
 
   const deleteHandler = useCallback(
-    async (sourceData: any) => {
+    async (sourceData: HighlightEventSource) => {
       const { type, extra } = sourceData;
       switch (type) {
         case 'INTEGRAL': {
-          const { id, spectrumID } = extra || {};
+          const { id, spectrumID } = extra;
           if (id) {
             dispatch({
               type: 'DELETE_INTEGRAL',
@@ -101,7 +102,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
           break;
         }
         case 'PEAK': {
-          const { id, spectrumID } = extra || {};
+          const { id, spectrumID } = extra;
           if (id) {
             dispatch({
               type: 'DELETE_PEAK',
@@ -117,8 +118,8 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
           break;
         }
         case 'RANGE_PEAK': {
-          const { id, spectrumID } = extra || {};
-          if (id) {
+          const { id, spectrumID } = extra;
+          if (id && spectrumID) {
             dispatch({
               type: 'DELETE_RANGE_PEAK',
               payload: {
@@ -133,7 +134,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
           break;
         }
         case 'RANGE': {
-          const { id, spectrumID } = extra || {};
+          const { id, spectrumID } = extra;
           if (id) {
             dispatch({
               type: 'DELETE_RANGE',
@@ -147,8 +148,24 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
           }
           break;
         }
+        case 'SIGNAL_1D': {
+          const { id, rangeId, spectrumID } = extra;
+          if (id && spectrumID) {
+            dispatch({
+              type: 'DELETE_1D_SIGNAL',
+              payload: {
+                signalId: id,
+                spectrumId: spectrumID,
+                rangeId,
+              },
+            });
+            // remove keys from the highlighted list after delete
+            remove();
+          }
+          break;
+        }
         case 'ZONE': {
-          const { id } = extra || {};
+          const { id } = extra;
           if (id) {
             dispatch({
               type: 'DELETE_2D_ZONE',
@@ -162,7 +179,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
           break;
         }
         case 'EXCLUSION_ZONE': {
-          const { zone, spectrumID } = extra || {};
+          const { zone, spectrumID } = extra;
 
           const buttons: AlertButton[] = [
             {
@@ -210,7 +227,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
           break;
         }
         case 'MATRIX_GENERATION_EXCLUSION_ZONE': {
-          const { zone } = extra || {};
+          const { zone } = extra;
 
           const buttons: AlertButton[] = [
             {
@@ -243,7 +260,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
           break;
         }
         case 'MULTIPLE_ANALYSIS_ZONE': {
-          const { colKey } = extra || {};
+          const { colKey } = extra;
           if (colKey) {
             dispatchPreferences({
               type: 'DELETE_ANALYSIS_COLUMN',
@@ -255,7 +272,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
           break;
         }
         case 'BASELINE_ZONE': {
-          const { id } = extra || {};
+          const { id } = extra;
           if (id) {
             dispatch({ type: 'DELETE_BASE_LINE_ZONE', payload: { id } });
             // remove keys from the highlighted list after delete
@@ -264,7 +281,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
           break;
         }
         case 'PHASE_CORRECTION_TRACE': {
-          const { id } = extra || {};
+          const { id } = extra;
           if (id) {
             dispatch({
               type: 'DELETE_PHASE_CORRECTION_TRACE',
