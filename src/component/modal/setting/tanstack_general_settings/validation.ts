@@ -14,6 +14,7 @@ import {
 import { nmrLoadersValidation } from './validation/import_filters_tab_validation.js';
 import { nucleiValidation } from './validation/nuclei_tab_validation.js';
 import { displayPanelsValidation } from './validation/panels_tab_validation.js';
+import { spectraColorsTabValidation } from './validation/spectra_colors_tab_validation.ts';
 import { infoBlockTabValidation } from './validation/title_block_tab_validation.js';
 
 /**
@@ -39,12 +40,16 @@ export const workspaceValidation = z.object({
   infoBlock: infoBlockTabValidation,
   externalAPIs: externalAPIsValidation,
   onLoadProcessing: autoProcessingTabValidation,
+  spectraColors: spectraColorsTabValidation,
 });
 
 // This object is used to define type not real values. Do not use it as values
 export const defaultGeneralSettingsFormValues: z.input<
   typeof workspaceValidation
 > = {
+  spectraColors: spectraColorsTabValidation.encode(
+    workspaceDefaultProperties.spectraColors,
+  ),
   onLoadProcessing: autoProcessingTabValidation.encode(
     workspaceDefaultProperties.onLoadProcessing,
   ),
