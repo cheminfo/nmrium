@@ -85,7 +85,7 @@ function Tree(props: TreeProps) {
       assignment: assignmentLabel,
     },
   } = props;
-  const { from, to } = range;
+  const { from, to, id: rangeID } = range;
   const { width } = useChartData();
   const { scaleX, shiftY } = useScaleChecked();
   const dispatch = useDispatch();
@@ -94,7 +94,8 @@ function Tree(props: TreeProps) {
   const activeSpectrum = useActiveSpectrum();
   const assignment = useAssignment(signalKey);
   const highlight = useHighlight(extractID(signalKey, assignment), {
-    type: 'SIGNAL',
+    type: 'SIGNAL_1D',
+    extra: { id: signalKey, rangeId: rangeID },
   });
 
   let widthRatio: number;

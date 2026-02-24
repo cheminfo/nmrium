@@ -80,7 +80,12 @@ function RangesTableRow({
         rowData.signals.map((_signal: any) => _signal.id),
       ),
     ),
-    { type: 'RANGE' },
+    {
+      type: 'RANGE',
+      extra: {
+        id: rangeKey,
+      },
+    },
   );
   const signalKey = rowData?.tableMetaInfo?.id || '';
   const assignmentSignal = useAssignment(signalKey);

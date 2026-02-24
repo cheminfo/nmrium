@@ -7,7 +7,10 @@ import { useChartData } from '../../context/ChartContext.js';
 import { useCore } from '../../context/CoreContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
-import { useHighlightData } from '../../highlight/index.js';
+import {
+  isHighlightEventSource,
+  useHighlightData,
+} from '../../highlight/index.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import { spinnerContext } from '../../loader/SpinnerContext.js';
 import { PathBuilder } from '../../utility/PathBuilder.js';
@@ -22,7 +25,10 @@ function DatabaseSpectrum() {
   const toaster = useToaster();
   const { color, marginBottom } = usePanelPreferences('database');
   const { jcampURL: jcampRelativeURL = '', baseURL } =
-    highlight?.sourceData?.extra || {};
+    highlight?.sourceData &&
+    isHighlightEventSource(highlight.sourceData, 'DATABASE')
+      ? highlight.sourceData.extra
+      : { jcampURL: '', baseURL: '' };
   const getSpinner = useContext(spinnerContext);
 
   const scaleY = useCallback(
