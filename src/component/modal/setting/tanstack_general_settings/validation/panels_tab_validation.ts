@@ -8,20 +8,26 @@ export const displayPanelsStatus = [
 ];
 
 type PanelStatus = (typeof displayPanelsStatus)[number]['value'];
-const panelStatusValidation = z.enum(displayPanelsStatus.map((s) => s.value));
+const panelStatusValidation = z.enum([
+  ...displayPanelsStatus.map((s) => s.value),
+  'undefined',
+]);
 
+export const panelPreferencesTypeValidation = z
+  .object({
+    display: z.boolean(),
+    visible: z.boolean(),
+    open: z.boolean().optional(),
+  })
+  .optional();
 const panelCodec = z.codec(
   panelStatusValidation,
-  z
-    .object({
-      display: z.boolean(),
-      visible: z.boolean(),
-      open: z.boolean().optional(),
-    })
-    .optional(),
+  panelPreferencesTypeValidation,
   {
     encode: (status) => {
-      const { display = false, visible = false, open = false } = status ?? {};
+      if (!status) return 'undefined';
+
+      const { display = false, visible = false, open = false } = status;
       let value: PanelStatus = 'hidden';
       const isActive = visible && display;
 
@@ -36,6 +42,8 @@ const panelCodec = z.codec(
       return value;
     },
     decode: (status) => {
+      if (status === 'undefined') return undefined;
+
       let visible = false;
       let display = false;
       let open = false;

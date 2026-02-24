@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const jpathCodec = z.codec(z.string(), z.array(z.string()), {
+const jpathCodec = z.codec(z.string(), z.array(z.string()).min(1), {
   encode: (path) => path.join('.'),
   decode: (path) => path.split('.'),
 });
