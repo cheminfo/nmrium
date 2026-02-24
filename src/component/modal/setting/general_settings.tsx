@@ -47,7 +47,7 @@ import OnLoadProcessingTabContent from './settings-tabs/OnLoadProcessingTabConte
 import SpectraColorsTabContent from './settings-tabs/SpectraColorsTabContent.js';
 import ToolsTabContent from './settings-tabs/ToolsTabContent.js';
 import { validation } from './settingsValidation.js';
-import { GeneralSettings } from './tanstack_general_settings/general_settings.js';
+import { GeneralSettingsDialog } from './tanstack_general_settings/general_settings.js';
 
 export const Section = styled.div`
   border-bottom: 0.55px solid #f9f9f9;
@@ -159,7 +159,7 @@ function GeneralSettingsModal(props: GeneralSettingsModalProps) {
       )}
 
       {isOpenGeneralSettingsDialog && (
-        <GeneralSettings
+        <GeneralSettingsDialog
           height={otherProps.height}
           isOpen={isOpenGeneralSettingsDialog}
           close={closeGeneralSettingsDialog}

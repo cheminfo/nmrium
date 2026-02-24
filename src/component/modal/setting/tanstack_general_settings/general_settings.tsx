@@ -3,10 +3,12 @@ import styled from '@emotion/styled';
 import { revalidateLogic } from '@tanstack/react-form';
 import type { Workspace } from '@zakodium/nmrium-core';
 import lodashMerge from 'lodash/merge.js';
+import { ErrorBoundary } from 'react-error-boundary';
 import { Form, assert, assertUnreachable, useForm } from 'react-science/ui';
 
 import { usePreferences } from '../../../context/PreferencesContext.js';
 import { useSaveSettings } from '../../../hooks/useSaveSettings.js';
+import ErrorOverlay from '../../../main/ErrorOverlay.tsx';
 
 import { GeneralSettingsDialogBody } from './general_settings_dialog_body.js';
 import { GeneralSettingsDialogFooter } from './general_settings_dialog_footer.js';
@@ -25,9 +27,21 @@ const Dialog = styled(BPDialog)`
   min-width: 800px;
 `;
 
+export function GeneralSettingsDialog(props: GeneralSettingsProps) {
+  const { isOpen, close } = props;
+
+  return (
+    <Dialog isOpen={isOpen} onClose={close} title="General settings" icon="cog">
+      <ErrorBoundary FallbackComponent={ErrorOverlay}>
+        <GeneralSettings {...props} />
+      </ErrorBoundary>
+    </Dialog>
+  );
+}
+
 type FormMeta = 'apply' | 'save';
-export function GeneralSettings(props: GeneralSettingsProps) {
-  const { isOpen, close, height } = props;
+function GeneralSettings(props: Omit<GeneralSettingsProps, 'isOpen'>) {
+  const { close, height } = props;
 
   const { current: currentWorkspace, dispatch } = usePreferences();
   const { saveSettings } = useSaveSettings();
@@ -74,36 +88,34 @@ export function GeneralSettings(props: GeneralSettingsProps) {
   });
 
   return (
-    <Dialog isOpen={isOpen} onClose={close} title="General settings" icon="cog">
-      <Form
-        layout="inline"
-        noValidate
-        onSubmit={(event) => {
-          event.preventDefault();
+    <Form
+      layout="inline"
+      noValidate
+      onSubmit={(event) => {
+        event.preventDefault();
 
-          const nativeEvent = event.nativeEvent as SubmitEvent;
-          const submitter = nativeEvent.submitter as HTMLButtonElement | null;
-          assert(submitter, 'form event should have a submitter');
-          const action = submitter.dataset.action;
+        const nativeEvent = event.nativeEvent as SubmitEvent;
+        const submitter = nativeEvent.submitter as HTMLButtonElement | null;
+        assert(submitter, 'form event should have a submitter');
+        const action = submitter.dataset.action;
 
-          void form.handleSubmit(action as FormMeta);
-        }}
-      >
-        <PreventImplicitSubmit />
+        void form.handleSubmit(action as FormMeta);
+      }}
+    >
+      <PreventImplicitSubmit />
 
-        <form.Subscribe selector={(state) => state.values}>
-          {(values) => (
-            <GeneralSettingsDialogHeader
-              reset={form.reset}
-              currentValues={values}
-            />
-          )}
-        </form.Subscribe>
+      <form.Subscribe selector={(state) => state.values}>
+        {(values) => (
+          <GeneralSettingsDialogHeader
+            reset={form.reset}
+            currentValues={values}
+          />
+        )}
+      </form.Subscribe>
 
-        <GeneralSettingsDialogBody form={form} height={height} />
-        <GeneralSettingsDialogFooter form={form} onCancel={close} />
-      </Form>
-    </Dialog>
+      <GeneralSettingsDialogBody form={form} height={height} />
+      <GeneralSettingsDialogFooter form={form} onCancel={close} />
+    </Form>
   );
 }
 const InvisibleButton = styled.button`

@@ -2,6 +2,8 @@ import { z } from 'zod';
 
 import type { LoggerType } from '../../../../context/LoggerContext.js';
 
+import { panelPreferencesTypeValidation } from './panels_tab_validation.ts';
+
 const loggingLevel: LoggerType[] = [
   'fatal',
   'error',
@@ -13,7 +15,7 @@ const loggingLevel: LoggerType[] = [
 ];
 
 export const peaksLabelValidation = z.object({
-  marginTop: z.coerce.number().int().min(0),
+  marginTop: z.coerce.number(),
 });
 
 export const generalValidation = z.object({
@@ -32,11 +34,7 @@ export const generalValidation = z.object({
 
 export const displayGeneralValidation = z
   .object({
-    experimentalFeatures: z
-      .object({
-        display: z.boolean(),
-      })
-      .optional(),
+    experimentalFeatures: panelPreferencesTypeValidation,
     hidePanelsBar: z.boolean().optional(),
   })
   .optional();

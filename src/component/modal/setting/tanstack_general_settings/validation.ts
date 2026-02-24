@@ -30,60 +30,20 @@ const displayValidation = z.object({
 });
 
 export const workspaceValidation = z.object({
-  nuclei: nucleiValidation,
-  peaksLabel: peaksLabelValidation,
-  general: generalValidation,
   display: displayValidation,
-  nmrLoaders: nmrLoadersValidation,
-  export: exportPreferencesValidation,
+  general: generalValidation,
+  nuclei: nucleiValidation,
   databases: databasesValidation,
+  nmrLoaders: nmrLoadersValidation,
   infoBlock: infoBlockTabValidation,
-  externalAPIs: externalAPIsValidation,
   onLoadProcessing: autoProcessingTabValidation,
+  externalAPIs: externalAPIsValidation,
+  export: exportPreferencesValidation,
+  peaksLabel: peaksLabelValidation,
   spectraColors: spectraColorsTabValidation,
 });
 
 // This object is used to define type not real values. Do not use it as values
 export const defaultGeneralSettingsFormValues: z.input<
   typeof workspaceValidation
-> = {
-  spectraColors: spectraColorsTabValidation.encode(
-    workspaceDefaultProperties.spectraColors,
-  ),
-  onLoadProcessing: autoProcessingTabValidation.encode(
-    workspaceDefaultProperties.onLoadProcessing,
-  ),
-  databases: databasesValidation.encode(workspaceDefaultProperties.databases),
-  nuclei: nucleiValidation.encode(workspaceDefaultProperties.nuclei),
-  infoBlock: infoBlockTabValidation.encode(
-    workspaceDefaultProperties.infoBlock,
-  ),
-  peaksLabel: {
-    marginTop: 0,
-  },
-  general: {
-    dimmedSpectraOpacity: 0,
-    invert: false,
-    invertScroll: false,
-    spectraRendering: 'auto',
-    loggingLevel: 'info',
-    popupLoggingLevel: 'info',
-  },
-  display: {
-    general: {
-      experimentalFeatures: {
-        display: false,
-      },
-    },
-    panels: displayPanelsValidation.encode(
-      workspaceDefaultProperties.display.panels,
-    ),
-  },
-  nmrLoaders: nmrLoadersValidation.encode(
-    workspaceDefaultProperties.nmrLoaders,
-  ),
-  export: exportPreferencesValidation.encode(workspaceDefaultProperties.export),
-  externalAPIs: externalAPIsValidation.encode(
-    workspaceDefaultProperties.externalAPIs,
-  ),
-};
+> = workspaceValidation.encode(workspaceDefaultProperties);
