@@ -37,10 +37,10 @@ export const workspaceValidation = z.object({
   nmrLoaders: nmrLoadersValidation,
   infoBlock: infoBlockTabValidation,
   onLoadProcessing: autoProcessingTabValidation,
+  spectraColors: spectraColorsTabValidation,
   externalAPIs: externalAPIsValidation,
   export: exportPreferencesValidation,
   peaksLabel: peaksLabelValidation,
-  spectraColors: spectraColorsTabValidation,
 });
 
 // This object is used to define type not real values. Do not use it as values
