@@ -24,7 +24,10 @@ import type {
 } from 'react-table';
 import { useSortBy, useTable } from 'react-table';
 
-import type { HighlightEventSource } from '../../highlight/index.js';
+import type {
+  HighlightEventSourceExtra,
+  HighlightEventSourceType,
+} from '../../highlight/index.js';
 import type { BaseContextMenuProps } from '../ContextMenuBluePrint.js';
 
 import { BaseReactTable } from './BaseReactTable.js';
@@ -38,6 +41,15 @@ import {
 } from './utility/ReactTableContext.js';
 import type { RowSpanHeaders } from './utility/useRowSpan.js';
 import useRowSpan, { prepareRowSpan } from './utility/useRowSpan.js';
+
+export type HighlightSourceProps = {
+  [K in HighlightEventSourceType]: HighlightEventSourceExtra<K> extends never
+    ? { highlightedSource?: K; getHighlightExtra?: never }
+    : {
+        highlightedSource: K;
+        getHighlightExtra: (row: any) => HighlightEventSourceExtra<K>;
+      };
+}[HighlightEventSourceType];
 
 interface ExtraColumn<T extends object> {
   enableRowSpan?: boolean;
@@ -77,7 +89,6 @@ interface ReactTableProps<T extends object>
   extends TableContextMenuProps, ClickEvent, SortEvent {
   data: T[];
   columns: Array<Column<T>>;
-  highlightedSource?: HighlightEventSource;
   approxItemHeight?: number;
   approxColumnWidth?: number;
   groupKey?: keyof T;
@@ -93,9 +104,13 @@ interface ReactTableProps<T extends object>
   disableDefaultRowStyle?: boolean;
 }
 
-interface ReactTableInnerProps<T extends object> extends ReactTableProps<T> {
-  onScroll?: (event: WheelEvent<HTMLDivElement>) => void;
-}
+type ReactTableInnerProps<T extends object> = ReactTableProps<T> &
+  HighlightSourceProps & {
+    onScroll?: (event: WheelEvent<HTMLDivElement>) => void;
+  };
+
+type ReactTableOuterProps<T extends object> = ReactTableProps<T> &
+  HighlightSourceProps;
 
 const styles = {
   table: (
@@ -140,6 +155,7 @@ function TableInner<T extends object>(
     data,
     columns,
     highlightedSource,
+    getHighlightExtra,
     contextMenu = [],
     onContextMenuSelect,
     onScroll,
@@ -294,6 +310,10 @@ function TableInner<T extends object>(
                 groupKey,
               );
               const { key, ...restRowProps } = row.getRowProps();
+              const highlightSourceProps = {
+                highlightedSource,
+                getHighlightExtra,
+              } as HighlightSourceProps;
 
               return (
                 <ReactTableRow
@@ -307,7 +327,6 @@ function TableInner<T extends object>(
                       ? clickHandler
                       : onClick
                   }
-                  highlightedSource={highlightedSource}
                   isRowActive={
                     !activeRow
                       ? enableDefaultActiveRow
@@ -321,6 +340,7 @@ function TableInner<T extends object>(
                       : rowStyle
                   }
                   disableDefaultRowStyle={disableDefaultRowStyle}
+                  {...highlightSourceProps}
                 />
               );
             })}
@@ -356,7 +376,7 @@ export interface TableVirtualBoundary {
   columns: VirtualBoundary;
 }
 
-function ReactTable<T extends object>(props: ReactTableProps<T>) {
+function ReactTable<T extends object>(props: ReactTableOuterProps<T>) {
   const {
     data,
     approxItemHeight = 40,
@@ -514,5 +534,5 @@ function ReactTable<T extends object>(props: ReactTableProps<T>) {
 }
 
 export default memo(ReactTable) as <T extends object = any>(
-  props: ReactTableInnerProps<T>,
+  props: ReactTableOuterProps<T>,
 ) => ReactElement;
