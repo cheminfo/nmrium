@@ -14,6 +14,7 @@ import {
 import { nmrLoadersValidation } from './validation/import_filters_tab_validation.js';
 import { nucleiValidation } from './validation/nuclei_tab_validation.js';
 import { displayPanelsValidation } from './validation/panels_tab_validation.js';
+import { spectraColorsTabValidation } from './validation/spectra_colors_tab_validation.ts';
 import { infoBlockTabValidation } from './validation/title_block_tab_validation.js';
 
 /**
@@ -36,6 +37,7 @@ export const workspaceValidation = z.object({
   nmrLoaders: nmrLoadersValidation,
   infoBlock: infoBlockTabValidation,
   onLoadProcessing: autoProcessingTabValidation,
+  spectraColors: spectraColorsTabValidation,
   externalAPIs: externalAPIsValidation,
   export: exportPreferencesValidation,
   peaksLabel: peaksLabelValidation,

@@ -11,19 +11,23 @@ const tableStyle: CSSObject = {
   'thead tr th': { zIndex: 1 },
   td: { padding: 0 },
 };
+
 const rowStyle: BaseRowStyle = {
   hover: { backgroundColor: '#f7f7f7' },
   active: { backgroundColor: '#f5f5f5' },
 };
+
 export const CellInput = styled(Input2)`
   input {
     background-color: transparent;
     box-shadow: none;
   }
 `;
+
 export const CellCheckbox = styled(Checkbox)`
   margin: 0;
 `;
+
 export const CellActions = styled.div`
   display: flex;
   justify-content: space-evenly;

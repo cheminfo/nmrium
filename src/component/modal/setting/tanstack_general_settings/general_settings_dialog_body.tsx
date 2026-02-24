@@ -13,6 +13,7 @@ import { GeneralTab } from './tabs/general_tab.js';
 import { ImportFiltersTab } from './tabs/import_filters_tab.js';
 import { NucleiTab } from './tabs/nuclei_tab.js';
 import { PanelsTab } from './tabs/panels_tab.js';
+import { SpectraColorsTab } from './tabs/spectra_colors_tab.tsx';
 import { TitleBlockTab } from './tabs/title_block_tab.js';
 import { defaultGeneralSettingsFormValues } from './validation.js';
 
@@ -87,6 +88,12 @@ export const GeneralSettingsDialogBody = withForm({
               title="Auto processing"
               id="on-load-processing"
               panel={<AutoProcessingTab form={form} />}
+            />
+
+            <Tab
+              title="Spectra colors"
+              id="spectra-colors"
+              panel={<SpectraColorsTab form={form} />}
             />
 
             {isExperimentalEnabled && (
