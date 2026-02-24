@@ -1,19 +1,21 @@
 import { Classes } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { useField } from '@tanstack/react-form';
-import type {
-  SpectrumOneDimensionColor,
-  SpectrumTwoDimensionsColor,
-} from '@zakodium/nmrium-core';
 import { useCallback, useMemo } from 'react';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button, ColorPickerDropdown, withForm } from 'react-science/ui';
 import type { CellProps } from 'react-table';
+import type { z } from 'zod/v4';
 
 import { useChartData } from '../../../../context/ChartContext.tsx';
 import type { Column } from '../../../../elements/ReactTable/ReactTable.tsx';
 import { getSpectraObjectPaths } from '../../../../utility/getSpectraObjectPaths.ts';
 import { CellActions, CellInput, TableSettings } from '../ui/table.tsx';
+import { TableSection } from '../ui/table_section.tsx';
+import type {
+  spectraColorsTabOneDimensionValidation,
+  spectraColorsTabTwoDimensionValidation,
+} from '../validation/spectra_colors_tab_validation.ts';
 import { defaultGeneralSettingsFormValues } from '../validation.ts';
 
 export const SpectraColorsTab = withForm({
@@ -31,18 +33,18 @@ export const SpectraColorsTab = withForm({
             {(field) => <field.ColorPicker label="Indicator line color" />}
           </form.AppField>
         </form.Section>
-        <form.Section title="One dimension">
+        <TableSection title="One dimension">
           <OneDimension form={form} />
-        </form.Section>
-        <form.Section title="Two dimension">
+        </TableSection>
+        <TableSection title="Two dimension">
           <TwoDimension form={form} />
-        </form.Section>
+        </TableSection>
       </>
     );
   },
 });
 
-type OneDimensionData = SpectrumOneDimensionColor;
+type OneDimensionData = z.input<typeof spectraColorsTabOneDimensionValidation>;
 const OneDimension = withForm({
   defaultValues: defaultGeneralSettingsFormValues,
   render: function Render({ form }) {
@@ -61,7 +63,7 @@ const OneDimension = withForm({
       (index: number) => {
         field.insertValue(index, {
           value: '',
-          jpath: ['info', 'experiment'],
+          jpath: 'info.experiment',
           color: 'red',
         });
       },
@@ -85,22 +87,13 @@ const OneDimension = withForm({
                 name={`spectraColors.oneDimension[${index}].jpath`}
               >
                 {(field) => (
-                  <>
-                    <CellInput
-                      list="one-dimension-datalist"
-                      value={field.state.value.join('.')}
-                      onBlur={field.handleBlur}
-                      onValueChange={(value) => {
-                        field.handleChange(value.split('.'));
-                      }}
-                    />
-
-                    <datalist id="one-dimension-datalist">
-                      {datalist.map((element) => {
-                        return <option key={element} value={element} />;
-                      })}
-                    </datalist>
-                  </>
+                  <CellInput
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    filterItems={datalist}
+                    onValueChange={field.handleChange}
+                  />
                 )}
               </form.AppField>
             );
@@ -198,7 +191,7 @@ const OneDimension = withForm({
   },
 });
 
-type TwoDimensionData = SpectrumTwoDimensionsColor;
+type TwoDimensionData = z.input<typeof spectraColorsTabTwoDimensionValidation>;
 const TwoDimension = withForm({
   defaultValues: defaultGeneralSettingsFormValues,
   render: function Render({ form }) {
@@ -212,7 +205,7 @@ const TwoDimension = withForm({
       (index: number) => {
         field.insertValue(index, {
           value: '',
-          jpath: ['info', 'experiment'],
+          jpath: 'info.experiment',
           positiveColor: 'red',
           negativeColor: 'blue',
         });
@@ -242,22 +235,13 @@ const TwoDimension = withForm({
                 name={`spectraColors.twoDimensions[${index}].jpath`}
               >
                 {(field) => (
-                  <>
-                    <CellInput
-                      list="two-dimensions-datalist"
-                      value={field.state.value.join('.')}
-                      onBlur={field.handleBlur}
-                      onValueChange={(value) => {
-                        field.handleChange(value.split('.'));
-                      }}
-                    />
-
-                    <datalist id="two-dimensions-datalist">
-                      {datalist.map((element) => {
-                        return <option key={element} value={element} />;
-                      })}
-                    </datalist>
-                  </>
+                  <CellInput
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    filterItems={datalist}
+                    onValueChange={field.handleChange}
+                  />
                 )}
               </form.AppField>
             );

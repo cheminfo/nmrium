@@ -1,9 +1,6 @@
 import { z } from 'zod';
 
-const jpathCodec = z.codec(z.string(), z.array(z.string()), {
-  encode: (path) => path.join('.'),
-  decode: (path) => path.split('.'),
-});
+import { jpathCodec } from './utils.ts';
 
 export const infoBlockFieldTabValidation = z.object({
   format: z.string(),
