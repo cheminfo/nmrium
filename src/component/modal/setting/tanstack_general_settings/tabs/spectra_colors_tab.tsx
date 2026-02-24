@@ -92,7 +92,7 @@ const OneDimension = withForm({
                     value={field.state.value}
                     onBlur={field.handleBlur}
                     filterItems={datalist}
-                    onValueChange={field.handleChange}
+                    onChange={field.handleChange}
                   />
                 )}
               </form.AppField>
@@ -240,7 +240,7 @@ const TwoDimension = withForm({
                     value={field.state.value}
                     onBlur={field.handleBlur}
                     filterItems={datalist}
-                    onValueChange={field.handleChange}
+                    onChange={field.handleChange}
                   />
                 )}
               </form.AppField>
