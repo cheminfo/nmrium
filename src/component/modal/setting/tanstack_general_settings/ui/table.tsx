@@ -129,9 +129,10 @@ export function NewTableSettings<Data extends RowData>(
 
 const TableContainer = styled.div`
   height: 100%;
-  overflow-y: auto;
 `;
 const NewTableSettingsStyled = styled(Table)`
+  overflow: auto;
+
   ${(props) => (props.bordered ? `border: 1px solid #11141826;` : '')}
 
   &.${Classes.HTML_TABLE} {
