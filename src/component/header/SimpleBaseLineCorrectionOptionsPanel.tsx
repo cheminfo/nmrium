@@ -112,6 +112,112 @@ function BaseLineCorrectionInnerPanel(
           />
         </Label>
       )}
+      {algorithm?.value === 'whittaker' && (
+        <>
+          <Label title="Max iterations:" style={headerLabelStyle}>
+            <NumberInput2Controller
+              control={control}
+              name="maxIterations"
+              min={1}
+              debounceTime={250}
+              style={{ width: '60px' }}
+              onValueChange={() => {
+                submitHandler();
+              }}
+            />
+          </Label>
+          <Label title="Lambda:" style={headerLabelStyle}>
+            <NumberInput2Controller
+              control={control}
+              name="lambda"
+              min={1}
+              debounceTime={250}
+              style={{ width: '60px' }}
+              onValueChange={() => {
+                submitHandler();
+              }}
+            />
+          </Label>
+
+          <Label title="Scale:" style={headerLabelStyle}>
+            <NumberInput2Controller
+              control={control}
+              name="scale"
+              min={1}
+              debounceTime={250}
+              style={{ width: '60px' }}
+              onValueChange={() => {
+                submitHandler();
+              }}
+            />
+          </Label>
+        </>
+      )}
+
+      {algorithm?.value === 'bernstein' && (
+        <>
+          <Label title="Max iterations:" style={headerLabelStyle}>
+            <NumberInput2Controller
+              control={control}
+              name="maxIterations"
+              min={1}
+              debounceTime={250}
+              style={{ width: '60px' }}
+              onValueChange={() => {
+                submitHandler();
+              }}
+            />
+          </Label>
+          <Label title="Tolerance:" style={headerLabelStyle}>
+            <NumberInput2Controller
+              control={control}
+              name="tolerance"
+              min={0}
+              debounceTime={250}
+              style={{ width: '60px' }}
+              onValueChange={() => {
+                submitHandler();
+              }}
+            />
+          </Label>
+          <Label title="Factor Std:" style={headerLabelStyle}>
+            <NumberInput2Controller
+              control={control}
+              name="factorStd"
+              min={0}
+              debounceTime={250}
+              style={{ width: '60px' }}
+              onValueChange={() => {
+                submitHandler();
+              }}
+            />
+          </Label>
+          <Label title="Learning Rate:" style={headerLabelStyle}>
+            <NumberInput2Controller
+              control={control}
+              name="learningRate"
+              min={0}
+              debounceTime={250}
+              style={{ width: '60px' }}
+              onValueChange={() => {
+                submitHandler();
+              }}
+            />
+          </Label>
+          <Label title="Min Weight:" style={headerLabelStyle}>
+            <NumberInput2Controller
+              control={control}
+              name="minWeight"
+              min={0}
+              debounceTime={250}
+              style={{ width: '60px' }}
+              onValueChange={() => {
+                submitHandler();
+              }}
+            />
+          </Label>
+        </>
+      )}
 
       <Label title="Live preview" style={headerLabelStyle}>
         <Checkbox
