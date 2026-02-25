@@ -36,6 +36,9 @@ export const CellInput = styled(Input2)`
 `;
 
 export const CellNumericInput = styled(NumericInput)`
+  margin-top: 1px;
+  margin-right: 1px;
+
   input {
     background-color: transparent;
     box-shadow: none;
@@ -47,13 +50,19 @@ export const CellNumericInput = styled(NumericInput)`
     outline: none;
   }
 
-  &.${Classes.CONTROL_GROUP}
-    .${Classes.BUTTON_GROUP}.${Classes.VERTICAL}
-    > .${Classes.BUTTON} {
-    border-radius: 0;
-    background: white;
-    box-shadow: none;
+  &.${Classes.CONTROL_GROUP} .${Classes.BUTTON_GROUP}.${Classes.VERTICAL} {
     border-left: 1px dotted lightgray;
+
+    > .${Classes.BUTTON} {
+      margin: 0 !important;
+      border-radius: 0;
+      background: white;
+      box-shadow: none;
+
+      :first-child {
+        border-bottom: 1px dotted lightgray;
+      }
+    }
   }
 `;
 
