@@ -55,6 +55,7 @@ export default function BaseLineCorrectionOptionsPanel(
     filter.value &&
     !isDirty &&
     filter.value?.algorithm === getValues()?.algorithm;
+
   return (
     <ReadOnly enabled={!enableEdit} onClick={onEditStart}>
       {enableEdit && (
@@ -159,6 +160,113 @@ export default function BaseLineCorrectionOptionsPanel(
                 fill
               />
             </Label>
+          )}
+
+          {algorithm?.value === 'whittaker' && (
+            <>
+              <Label title="Max iterations:" style={formLabelStyle}>
+                <NumberInput2Controller
+                  control={control}
+                  name="maxIterations"
+                  min={1}
+                  debounceTime={250}
+                  onValueChange={() => {
+                    submitHandler();
+                  }}
+                  fill
+                />
+              </Label>
+              <Label title="Lambda:" style={formLabelStyle}>
+                <NumberInput2Controller
+                  control={control}
+                  name="lambda"
+                  min={1}
+                  debounceTime={250}
+                  onValueChange={() => {
+                    submitHandler();
+                  }}
+                  fill
+                />
+              </Label>
+
+              <Label title="Scale:" style={formLabelStyle}>
+                <NumberInput2Controller
+                  control={control}
+                  name="scale"
+                  min={1}
+                  debounceTime={250}
+                  onValueChange={() => {
+                    submitHandler();
+                  }}
+                  fill
+                />
+              </Label>
+            </>
+          )}
+
+          {algorithm?.value === 'bernstein' && (
+            <>
+              <Label title="Max iterations:" style={formLabelStyle}>
+                <NumberInput2Controller
+                  control={control}
+                  name="maxIterations"
+                  min={1}
+                  debounceTime={250}
+                  onValueChange={() => {
+                    submitHandler();
+                  }}
+                  fill
+                />
+              </Label>
+              <Label title="Tolerance:" style={formLabelStyle}>
+                <NumberInput2Controller
+                  control={control}
+                  name="tolerance"
+                  min={0}
+                  debounceTime={250}
+                  onValueChange={() => {
+                    submitHandler();
+                  }}
+                  fill
+                />
+              </Label>
+              <Label title="Factor Std:" style={formLabelStyle}>
+                <NumberInput2Controller
+                  control={control}
+                  name="factorStd"
+                  min={0}
+                  debounceTime={250}
+                  onValueChange={() => {
+                    submitHandler();
+                  }}
+                  fill
+                />
+              </Label>
+              <Label title="Learning Rate:" style={formLabelStyle}>
+                <NumberInput2Controller
+                  control={control}
+                  name="learningRate"
+                  min={0}
+                  debounceTime={250}
+                  onValueChange={() => {
+                    submitHandler();
+                  }}
+                  fill
+                />
+              </Label>
+              <Label title="Min Weight:" style={formLabelStyle}>
+                <NumberInput2Controller
+                  control={control}
+                  name="minWeight"
+                  min={0}
+                  debounceTime={250}
+                  onValueChange={() => {
+                    submitHandler();
+                  }}
+                  fill
+                />
+              </Label>
+            </>
           )}
         </div>
       </Sections.Body>
