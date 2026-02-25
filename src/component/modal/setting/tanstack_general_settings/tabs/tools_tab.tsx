@@ -9,7 +9,6 @@ export const ToolsTab = withForm({
       <>
         <ChartTools form={form} fields="display.toolBarButtons" />
         <ImportExportTools form={form} fields="display.toolBarButtons" />
-        <SpectraManipulationTools form={form} fields="display.toolBarButtons" />
         <Spectra1DManipulationTools
           form={form}
           fields="display.toolBarButtons"
@@ -71,13 +70,13 @@ const ImportExportTools = withFieldGroup({
   },
 });
 
-const SpectraManipulationTools = withFieldGroup({
+const Spectra1DManipulationTools = withFieldGroup({
   defaultValues: defaultGeneralSettingsFormValues.display.toolBarButtons,
   render: ({ group }) => {
     const { Section, AppField } = group;
 
     return (
-      <Section title="Spectra manipulation">
+      <Section title="1D Spectra">
         <AppField name="peakPicking">
           {({ Checkbox }) => <Checkbox label="Peak picking" />}
         </AppField>
@@ -122,45 +121,33 @@ const SpectraManipulationTools = withFieldGroup({
   },
 });
 
-const Spectra1DManipulationTools = withFieldGroup({
-  defaultValues: defaultGeneralSettingsFormValues.display.toolBarButtons,
-  render: ({ group }) => {
-    const { Section, AppField } = group;
-
-    return (
-      <Section title="1D Spectra manipulation">
-        <AppField name="zeroFillingDimension1">
-          {({ Checkbox }) => <Checkbox label="Zero filling" />}
-        </AppField>
-        <AppField name="apodizationDimension1">
-          {({ Checkbox }) => <Checkbox label="Apodization" />}
-        </AppField>
-        <AppField name="fftDimension1">
-          {({ Checkbox }) => <Checkbox label="Fourier transform" />}
-        </AppField>
-      </Section>
-    );
-  },
-});
-
 const Spectra2DManipulationTools = withFieldGroup({
   defaultValues: defaultGeneralSettingsFormValues.display.toolBarButtons,
   render: ({ group }) => {
     const { Section, AppField } = group;
 
     return (
-      <Section title="2D Spectra manipulation">
+      <Section title="2D Spectra">
+        <AppField name="zeroFillingDimension1">
+          {({ Checkbox }) => <Checkbox label="Zero filling direct" />}
+        </AppField>
         <AppField name="zeroFillingDimension2">
-          {({ Checkbox }) => <Checkbox label="Zero filling" />}
+          {({ Checkbox }) => <Checkbox label="Zero filling indirect" />}
+        </AppField>
+        <AppField name="apodizationDimension1">
+          {({ Checkbox }) => <Checkbox label="Apodization direct" />}
         </AppField>
         <AppField name="apodizationDimension2">
-          {({ Checkbox }) => <Checkbox label="Apodization" />}
+          {({ Checkbox }) => <Checkbox label="Apodization indirect" />}
+        </AppField>
+        <AppField name="fftDimension1">
+          {({ Checkbox }) => <Checkbox label="Fourier transform direct" />}
+        </AppField>
+        <AppField name="fftDimension2">
+          {({ Checkbox }) => <Checkbox label="Fourier transform indirect" />}
         </AppField>
         <AppField name="phaseCorrectionTwoDimensions">
           {({ Checkbox }) => <Checkbox label="Phase correction" />}
-        </AppField>
-        <AppField name="fftDimension2">
-          {({ Checkbox }) => <Checkbox label="Fourier transform" />}
         </AppField>
       </Section>
     );
