@@ -75,7 +75,7 @@ type SaveEditedRangeAction = ActionType<
 
 interface DeleteSignalProps {
   spectrumId: string;
-  range: Range;
+  rangeId: string;
   signalId: string;
 }
 type DeleteSignalAction = ActionType<'DELETE_1D_SIGNAL', DeleteSignalProps>;
@@ -352,12 +352,15 @@ function handleSaveEditedRange(
 }
 
 function deleteSignal1D(draft: Draft<State>, props: DeleteSignalProps) {
-  const { spectrumId, range, signalId } = props;
+  const { spectrumId, signalId, rangeId } = props;
 
   const spectrum = getSpectrum(draft, spectrumId);
   if (!isSpectrum1D(spectrum)) return;
 
-  const rangeIndex = getRangeIndex(spectrum, range.id);
+  const rangeIndex = getRangeIndex(spectrum, rangeId);
+
+  if (rangeIndex === -1) return;
+  const range = spectrum.ranges.values[rangeIndex];
   const signalIndex = range.signals.findIndex(
     (_signal) => _signal.id === signalId,
   );

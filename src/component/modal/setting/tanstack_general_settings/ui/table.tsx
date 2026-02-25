@@ -37,5 +37,15 @@ export const CellActions = styled.div`
 export function TableSettings<T extends object>(
   props: Omit<ComponentProps<typeof ReactTable<T>>, 'style' | 'rowStyle'>,
 ) {
-  return <ReactTable<T> {...props} style={tableStyle} rowStyle={rowStyle} />;
+  const { highlightedSource, getHighlightExtra, ...rest } = props as any;
+
+  return (
+    <ReactTable<T>
+      {...rest}
+      style={tableStyle}
+      rowStyle={rowStyle}
+      highlightedSource={highlightedSource}
+      getHighlightExtra={getHighlightExtra}
+    />
+  );
 }

@@ -11,38 +11,58 @@ import {
 
 import type { ExclusionZone } from '../../data/types/data1d/ExclusionZone.js';
 
-export type HighlightEventSource =
-  | 'PEAK'
-  | 'INTEGRAL'
-  | 'SIGNAL'
-  | 'RANGE'
-  | 'RANGE_PEAK'
-  | 'ZONE'
-  | 'BASELINE_ZONE'
-  | 'EXCLUSION_ZONE'
-  | 'MATRIX_GENERATION_EXCLUSION_ZONE'
-  | 'MULTIPLE_ANALYSIS_ZONE'
-  | 'DATABASE'
-  | 'ATOM'
-  | 'PHASE_CORRECTION_TRACE'
-  | 'UNKNOWN';
+interface BaseSource {
+  id: string;
+  spectrumID?: string;
+}
+
+interface ExclusionZoneSource {
+  zone: ExclusionZone;
+  spectrumID: string;
+}
+
+interface HighlightEventSourceMap {
+  PEAK: BaseSource;
+  INTEGRAL: BaseSource;
+  SIGNAL: never;
+  SIGNAL_1D: BaseSource & { rangeId: string };
+  RANGE: BaseSource;
+  RANGE_PEAK: BaseSource;
+  ZONE: { id: string };
+  BASELINE_ZONE: { id: string };
+  PHASE_CORRECTION_TRACE: { id: string };
+  EXCLUSION_ZONE: ExclusionZoneSource;
+  MATRIX_GENERATION_EXCLUSION_ZONE: ExclusionZoneSource;
+  MULTIPLE_ANALYSIS_ZONE: { colKey: string };
+  DATABASE: { ranges: Range[]; jcampURL: string; baseURL: string };
+  ATOM: never;
+  UNKNOWN: never;
+}
+
+// Auto-generate the discriminated union from the map
+export type HighlightEventSource = {
+  [K in keyof HighlightEventSourceMap]: HighlightEventSourceMap[K] extends never
+    ? { type: K; extra?: never }
+    : { type: K; extra: HighlightEventSourceMap[K] };
+}[keyof HighlightEventSourceMap];
+
+// Derive the type keys for free — no duplication
+export type HighlightEventSourceType = keyof HighlightEventSourceMap;
+
+// Extract extra type for a specific source — useful in components
+export type HighlightEventSourceExtra<T extends HighlightEventSourceType> =
+  HighlightEventSourceMap[T];
+
+export function isHighlightEventSource<T extends HighlightEventSourceType>(
+  source: HighlightEventSource,
+  ...types: T[]
+): source is Extract<HighlightEventSource, { type: T }> {
+  return types.includes(source.type as T);
+}
 
 const highLightStyle: CSSProperties = {
   backgroundColor: '#ff6f0091',
 };
-
-interface SourceData {
-  type: HighlightEventSource;
-  extra?: {
-    zone?: ExclusionZone;
-    spectrumID?: string;
-    id?: string;
-    jcampURL?: string;
-    baseURL?: string;
-    ranges?: Range[];
-    colKey?: string;
-  } | null;
-}
 
 type HighlightActions = 'HIDE' | 'SHOW' | 'SET_PERMANENT' | 'UNSET_PERMANENT';
 
@@ -50,12 +70,12 @@ interface HighlightState {
   highlights: Record<string, number>;
   highlighted: string[];
   highlightedPermanently: string[];
-  sourceData: SourceData | null;
+  sourceData: HighlightEventSource | null;
 }
 interface HighlightPayload {
   convertedHighlights: string[];
   id?: number | string;
-  sourceData?: SourceData | null;
+  sourceData?: HighlightEventSource | null;
 }
 interface HighlightContextProps {
   highlight: HighlightState;
@@ -89,12 +109,11 @@ function highlightReducer(
   switch (action.type) {
     case 'SHOW': {
       const { convertedHighlights = [], sourceData } = action.payload || {};
-      const { type = 'UNKNOWN', extra = null } = sourceData || {};
 
       const newState: HighlightState = {
         ...state,
         highlights: { ...state.highlights },
-        sourceData: { type, extra },
+        sourceData: sourceData ?? { type: 'UNKNOWN' },
       };
       for (const value of convertedHighlights) {
         if (!(value in newState.highlights)) {
@@ -178,7 +197,7 @@ export function useHighlightData() {
  */
 export function useHighlight(
   highlights: Array<string | number>,
-  sourceData: SourceData | null = null,
+  sourceData: HighlightEventSource | null = null,
 ) {
   if (!Array.isArray(highlights)) {
     throw new Error('highlights must be an array');

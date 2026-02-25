@@ -15,6 +15,7 @@ function useZoneHighlight(rowData: ZoneData) {
     [buildID(id, 'X')].concat(assignedDiaIds.x ?? []),
     {
       type: 'ZONE',
+      extra: { id },
     },
   );
 
@@ -22,6 +23,7 @@ function useZoneHighlight(rowData: ZoneData) {
     [buildID(id, 'Y')].concat(assignedDiaIds.y ?? []),
     {
       type: 'ZONE',
+      extra: { id },
     },
   );
 
