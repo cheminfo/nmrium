@@ -170,7 +170,7 @@ const OneDimension = withForm({
 
     return (
       <Header>
-        <div>
+        <HeaderButtons>
           <Button
             size="small"
             variant="outlined"
@@ -180,7 +180,7 @@ const OneDimension = withForm({
           >
             Add custom color
           </Button>
-        </div>
+        </HeaderButtons>
         <TableSettings
           data={field.state.value}
           columns={COLUMNS}
@@ -234,15 +234,23 @@ const TwoDimension = withForm({
               <form.AppField
                 name={`spectraColors.twoDimensions[${index}].jpath`}
               >
-                {(field) => (
-                  <CellInput
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    filterItems={datalist}
-                    onChange={field.handleChange}
-                  />
-                )}
+                {(field) => {
+                  console.log('test', field.state.value);
+
+                  return (
+                    <CellInput
+                      name={field.name}
+                      value={
+                        Array.isArray(field.state.value)
+                          ? field.state.value.join('.')
+                          : field.state.value
+                      }
+                      onBlur={field.handleBlur}
+                      filterItems={datalist}
+                      onChange={field.handleChange}
+                    />
+                  );
+                }}
               </form.AppField>
             );
           },
@@ -335,7 +343,7 @@ const TwoDimension = withForm({
 
     return (
       <Header>
-        <div>
+        <HeaderButtons>
           <Button
             size="small"
             variant="outlined"
@@ -345,7 +353,7 @@ const TwoDimension = withForm({
           >
             Add custom color
           </Button>
-        </div>
+        </HeaderButtons>
         <TableSettings
           data={field.state.value}
           columns={COLUMNS}
@@ -360,9 +368,9 @@ const Header = styled.div`
   display: flex;
   gap: 5px;
   flex-direction: column;
+`;
 
-  & > *:first-child {
-    display: flex;
-    justify-content: end;
-  }
+const HeaderButtons = styled.div`
+  display: flex;
+  justify-content: end;
 `;
