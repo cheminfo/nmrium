@@ -195,7 +195,7 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
       enforceFocus={false}
       onOpening={handleMouseEnter}
       disabled={disablePopover || disabled}
-      renderTarget={({ onMouseEnter, ...otherProps }) => (
+      renderTarget={({ onMouseEnter, isOpen, ...otherProps }) => (
         <Wrapper
           {...targetProps}
           {...otherProps}
