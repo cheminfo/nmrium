@@ -1,5 +1,4 @@
 import { Classes } from '@blueprintjs/core';
-import styled from '@emotion/styled';
 import { useField } from '@tanstack/react-form';
 import { useCallback, useMemo } from 'react';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
@@ -33,12 +32,8 @@ export const SpectraColorsTab = withForm({
             {(field) => <field.ColorPicker label="Indicator line color" />}
           </form.AppField>
         </form.Section>
-        <TableSection title="One dimension">
-          <OneDimension form={form} />
-        </TableSection>
-        <TableSection title="Two dimension">
-          <TwoDimension form={form} />
-        </TableSection>
+        <OneDimension title="One dimension" form={form} />
+        <TwoDimension title="Two dimension" form={form} />
       </>
     );
   },
@@ -46,8 +41,11 @@ export const SpectraColorsTab = withForm({
 
 type OneDimensionData = z.input<typeof spectraColorsTabOneDimensionValidation>;
 const OneDimension = withForm({
+  props: {
+    title: '',
+  },
   defaultValues: defaultGeneralSettingsFormValues,
-  render: function Render({ form }) {
+  render: function Render({ form, title }) {
     const field = useField({
       form,
       name: 'spectraColors.oneDimension',
@@ -169,8 +167,9 @@ const OneDimension = withForm({
     }, [datalist, form, handleAdd, handleDelete]);
 
     return (
-      <Header>
-        <div>
+      <TableSection
+        title={title}
+        actions={
           <Button
             size="small"
             variant="outlined"
@@ -180,21 +179,25 @@ const OneDimension = withForm({
           >
             Add custom color
           </Button>
-        </div>
+        }
+      >
         <TableSettings
           data={field.state.value}
           columns={COLUMNS}
           emptyDataRowText="No Fields"
         />
-      </Header>
+      </TableSection>
     );
   },
 });
 
 type TwoDimensionData = z.input<typeof spectraColorsTabTwoDimensionValidation>;
 const TwoDimension = withForm({
+  props: {
+    title: '',
+  },
   defaultValues: defaultGeneralSettingsFormValues,
-  render: function Render({ form }) {
+  render: function Render({ form, title }) {
     const field = useField({
       form,
       name: 'spectraColors.twoDimensions',
@@ -334,8 +337,9 @@ const TwoDimension = withForm({
     }, [datalist, form, handleAdd, handleDelete]);
 
     return (
-      <Header>
-        <div>
+      <TableSection
+        title={title}
+        actions={
           <Button
             size="small"
             variant="outlined"
@@ -345,24 +349,14 @@ const TwoDimension = withForm({
           >
             Add custom color
           </Button>
-        </div>
+        }
+      >
         <TableSettings
           data={field.state.value}
           columns={COLUMNS}
           emptyDataRowText="No Fields"
         />
-      </Header>
+      </TableSection>
     );
   },
 });
-
-const Header = styled.div`
-  display: flex;
-  gap: 5px;
-  flex-direction: column;
-
-  & > *:first-child {
-    display: flex;
-    justify-content: end;
-  }
-`;
