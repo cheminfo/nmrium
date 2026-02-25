@@ -234,23 +234,15 @@ const TwoDimension = withForm({
               <form.AppField
                 name={`spectraColors.twoDimensions[${index}].jpath`}
               >
-                {(field) => {
-                  console.log('test', field.state.value);
-
-                  return (
-                    <CellInput
-                      name={field.name}
-                      value={
-                        Array.isArray(field.state.value)
-                          ? field.state.value.join('.')
-                          : field.state.value
-                      }
-                      onBlur={field.handleBlur}
-                      filterItems={datalist}
-                      onChange={field.handleChange}
-                    />
-                  );
-                }}
+                {(field) => (
+                  <CellInput
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    filterItems={datalist}
+                    onChange={field.handleChange}
+                  />
+                )}
               </form.AppField>
             );
           },
