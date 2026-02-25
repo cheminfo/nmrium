@@ -21,14 +21,12 @@ export const axisValidation = z
   .object({
     primaryTicks: z.object({ textStyle: svgTextStyleFieldsSchema }),
     secondaryTicks: z.object({ enabled: z.boolean() }),
-    gridlines1d: gridlinesValidation,
-    gridlines2d: gridlinesValidation,
-    units: z.object({
-      dimension1: z.object({ horizontal: axisUnitValidation }),
-      dimension2: z.object({
-        direct: axisUnitValidation,
-        indirect: axisUnitValidation,
-      }),
+    gridlines1D: gridlinesValidation,
+    gridlines2D: gridlinesValidation,
+    unit1D: z.object({ horizontal: axisUnitValidation }),
+    units2D: z.object({
+      direct: axisUnitValidation,
+      indirect: axisUnitValidation,
     }),
   })
   .optional();
