@@ -12,6 +12,10 @@ const Section = styled.section`
     flex-direction: column;
 
     > h2 {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+
       font-weight: 600;
       font-size: 1rem;
       line-height: 1.75rem;
@@ -20,7 +24,6 @@ const Section = styled.section`
 `;
 
 const Actions = styled.div`
-  float: right;
   display: flex;
   gap: 0.5em;
 `;
@@ -38,8 +41,8 @@ export function TableSection(props: TableSectionProps) {
     <Section>
       <header>
         <h2>
-          {actions && <Actions>{actions}</Actions>}
           {title}
+          {actions && <Actions>{actions}</Actions>}
         </h2>
         {description && <p>{description}</p>}
       </header>

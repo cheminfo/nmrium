@@ -1,12 +1,12 @@
-import { Checkbox, Classes, Icon } from '@blueprintjs/core';
+import { Checkbox, Classes, Icon, NumericInput } from '@blueprintjs/core';
 import type { CSSObject } from '@emotion/react';
 import type { StyledComponent } from '@emotion/styled';
 import styled from '@emotion/styled';
 import type { RowData } from '@tanstack/react-table';
 import type { CSSProperties, ComponentProps, ReactNode } from 'react';
 import { useCallback } from 'react';
-import type { GetTdProps, TableProps } from 'react-science/ui';
-import { Table } from 'react-science/ui';
+import type { ButtonProps, GetTdProps, TableProps } from 'react-science/ui';
+import { Button, Table } from 'react-science/ui';
 
 import { Input2 } from '../../../../elements/Input2.js';
 import type { BaseRowStyle } from '../../../../elements/ReactTable/ReactTable.js';
@@ -35,6 +35,28 @@ export const CellInput = styled(Input2)`
   }
 `;
 
+export const CellNumericInput = styled(NumericInput)`
+  input {
+    background-color: transparent;
+    box-shadow: none;
+    outline: none;
+  }
+
+  input.${Classes.INPUT}:focus {
+    box-shadow: none;
+    outline: none;
+  }
+
+  &.${Classes.CONTROL_GROUP}
+    .${Classes.BUTTON_GROUP}.${Classes.VERTICAL}
+    > .${Classes.BUTTON} {
+    border-radius: 0;
+    background: white;
+    box-shadow: none;
+    border-left: 1px dotted lightgray;
+  }
+`;
+
 export const CellCheckbox = styled(Checkbox)`
   display: flex;
   align-items: center;
@@ -55,6 +77,12 @@ export const CellActions = styled.div`
   justify-content: space-evenly;
   gap: 0.25em;
 `;
+
+export function CellActionsButton(props: ButtonProps) {
+  const { size = 'small', variant = 'minimal' } = props;
+
+  return <Button {...props} size={size} variant={variant} />;
+}
 
 export function TableSettings<T extends object>(
   props: Omit<ComponentProps<typeof ReactTable<T>>, 'style' | 'rowStyle'>,

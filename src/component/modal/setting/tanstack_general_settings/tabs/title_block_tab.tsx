@@ -15,6 +15,7 @@ import { useChartData } from '../../../../context/ChartContext.js';
 import { getSpectraObjectPaths } from '../../../../utility/getSpectraObjectPaths.js';
 import {
   CellActions,
+  CellActionsButton,
   CellCheckbox,
   CellInput,
   NewTableSettings,
@@ -173,25 +174,26 @@ const Fields = withForm({
         columnHelper.display({
           id: 'actions',
           header: '',
+          meta: {
+            thStyle: {
+              width: '60px',
+            },
+          },
           cell: ({ row: { index } }) => {
             return (
               <CellActions>
-                <Button
-                  size="small"
+                <CellActionsButton
                   intent="success"
-                  variant="minimal"
                   onClick={() => onAddRowAfter(index)}
                 >
                   <FaPlus className={Classes.ICON} />
-                </Button>
-                <Button
-                  size="small"
+                </CellActionsButton>
+                <CellActionsButton
                   intent="danger"
-                  variant="minimal"
                   onClick={() => onDeleteAt(index)}
                 >
                   <FaRegTrashAlt className={Classes.ICON} />
-                </Button>
+                </CellActionsButton>
               </CellActions>
             );
           },

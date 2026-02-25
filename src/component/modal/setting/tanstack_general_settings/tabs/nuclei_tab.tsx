@@ -1,16 +1,19 @@
-import { Classes, NumericInput } from '@blueprintjs/core';
-import styled from '@emotion/styled';
-import { useStore } from '@tanstack/react-form';
+import { Classes } from '@blueprintjs/core';
+import { useField, useStore } from '@tanstack/react-form';
 import { useCallback, useMemo } from 'react';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button, withForm } from 'react-science/ui';
 import type { CellProps } from 'react-table';
 
-import { GroupPane } from '../../../../elements/GroupPane.js';
-import { Input2 } from '../../../../elements/Input2.js';
 import type { Column } from '../../../../elements/ReactTable/ReactTable.js';
-import ReactTable from '../../../../elements/ReactTable/ReactTable.js';
-import { Section } from '../../general_settings.js';
+import {
+  CellActions,
+  CellActionsButton,
+  CellInput,
+  CellNumericInput,
+  TableSettings,
+} from '../ui/table.tsx';
+import { TableSection } from '../ui/table_section.tsx';
 import { defaultGeneralSettingsFormValues } from '../validation.js';
 
 interface NucleiFormElement {
@@ -28,36 +31,25 @@ const emptyNucleiFormElement: NucleiFormElement = {
 export const NucleiTab = withForm({
   defaultValues: defaultGeneralSettingsFormValues,
   render: function Render({ form }) {
+    const nucleiField = useField({ form, name: 'nuclei', mode: 'array' });
+    const { insertValue, removeValue, pushValue } = nucleiField;
+
     const fields = useStore(form.store, (state) => state.values.nuclei);
 
-    const handleAdd = useCallback(
-      (data: readonly NucleiFormElement[], index: number) => {
-        let columns: NucleiFormElement[] = [];
-
-        if (data) {
-          columns = [
-            ...data.slice(0, index),
-            emptyNucleiFormElement,
-            ...data.slice(index),
-          ];
-        } else {
-          columns.push(emptyNucleiFormElement);
-        }
-
-        form.setFieldValue('nuclei', columns);
+    const insertNucleus = useCallback(
+      (index: number) => {
+        insertValue(index, emptyNucleiFormElement);
       },
-      [form],
+      [insertValue],
     );
-
-    const handleDelete = useCallback(
-      (data: readonly NucleiFormElement[], formElement: NucleiFormElement) => {
-        const fields = data.filter((element) => {
-          return element.nucleus !== formElement.nucleus;
-        });
-
-        form.setFieldValue('nuclei', fields);
+    const pushNucleus = useCallback(() => {
+      pushValue(emptyNucleiFormElement);
+    }, [pushValue]);
+    const deleteNucleus = useCallback(
+      (index: number) => {
+        removeValue(index);
       },
-      [form],
+      [removeValue],
     );
 
     const COLUMNS = useMemo<Array<Column<NucleiFormElement>>>(
@@ -69,11 +61,7 @@ export const NucleiTab = withForm({
             return (
               <form.Field key={index} name={`nuclei[${index}].nucleus`}>
                 {(subField) => (
-                  <Input2
-                    style={{
-                      backgroundColor: 'transparent',
-                      boxShadow: 'none',
-                    }}
+                  <CellInput
                     value={subField.state.value}
                     onChange={subField.handleChange}
                   />
@@ -89,11 +77,7 @@ export const NucleiTab = withForm({
             return (
               <form.Field key={index} name={`nuclei[${index}].ppmFormat`}>
                 {(subField) => (
-                  <Input2
-                    style={{
-                      backgroundColor: 'transparent',
-                      boxShadow: 'none',
-                    }}
+                  <CellInput
                     value={subField.state.value}
                     onChange={subField.handleChange}
                   />
@@ -109,11 +93,7 @@ export const NucleiTab = withForm({
             return (
               <form.Field key={index} name={`nuclei[${index}].hzFormat`}>
                 {(subField) => (
-                  <Input2
-                    style={{
-                      backgroundColor: 'transparent',
-                      boxShadow: 'none',
-                    }}
+                  <CellInput
                     value={subField.state.value}
                     onChange={subField.handleChange}
                   />
@@ -129,16 +109,10 @@ export const NucleiTab = withForm({
             return (
               <form.Field key={index} name={`nuclei[${index}].axisFrom`}>
                 {(subField) => (
-                  <NumericInput
-                    style={{
-                      backgroundColor: 'transparent',
-                      boxShadow: 'none',
-                    }}
-                    value={Number(subField.state.value) || undefined}
+                  <CellNumericInput
+                    value={subField.state.value}
+                    onValueChange={(num, str) => subField.handleChange(str)}
                     fill
-                    onValueChange={(valueAsNumber) =>
-                      subField.handleChange(valueAsNumber)
-                    }
                   />
                 )}
               </form.Field>
@@ -152,16 +126,10 @@ export const NucleiTab = withForm({
             return (
               <form.Field key={index} name={`nuclei[${index}].axisTo`}>
                 {(subField) => (
-                  <NumericInput
-                    style={{
-                      backgroundColor: 'transparent',
-                      boxShadow: 'none',
-                    }}
-                    value={Number(subField.state.value) || undefined}
+                  <CellNumericInput
+                    value={subField.state.value}
+                    onValueChange={(num, str) => subField.handleChange(str)}
                     fill
-                    onValueChange={(valueAsNumber) =>
-                      subField.handleChange(valueAsNumber)
-                    }
                   />
                 )}
               </form.Field>
@@ -175,87 +143,51 @@ export const NucleiTab = withForm({
           },
           id: 'op-buttons',
           Cell: ({
-            row: { original, index: rowIndex },
-            data,
+            row: { index: rowIndex },
           }: CellProps<NucleiFormElement>) => {
             return (
-              <Buttons>
-                <Button
-                  size="small"
-                  variant="outlined"
+              <CellActions>
+                <CellActionsButton
                   intent="success"
-                  onClick={() => handleAdd(data, rowIndex + 1)}
+                  onClick={() => insertNucleus(rowIndex + 1)}
                 >
                   <FaPlus className={Classes.ICON} />
-                </Button>
-                <Button
-                  size="small"
-                  variant="outlined"
+                </CellActionsButton>
+                <CellActionsButton
                   intent="danger"
-                  onClick={() => handleDelete(data, original)}
+                  onClick={() => deleteNucleus(rowIndex)}
                 >
                   <FaRegTrashAlt className={Classes.ICON} />
-                </Button>
-              </Buttons>
+                </CellActionsButton>
+              </CellActions>
             );
           },
         },
       ],
-      [form, handleAdd, handleDelete],
+      [deleteNucleus, form, insertNucleus],
     );
 
     return (
-      <GroupPane
-        text="Number formatting for crosshair and info line and axis domain"
-        renderHeader={(text) => {
-          return (
-            <FieldsBlockHeader text={text} onAdd={() => handleAdd(fields, 0)} />
-          );
-        }}
+      <TableSection
+        title="Number formatting for crosshair and info line and axis domain"
+        actions={
+          <Button
+            size="small"
+            variant="outlined"
+            intent="success"
+            tooltipProps={{ content: '', disabled: true }}
+            onClick={pushNucleus}
+          >
+            Add nuclei preferences
+          </Button>
+        }
       >
-        <ReactTable
-          style={{
-            'thead tr th': { zIndex: 1 },
-            td: { padding: 0 },
-          }}
-          rowStyle={{
-            hover: { backgroundColor: '#f7f7f7' },
-            active: { backgroundColor: '#f5f5f5' },
-          }}
+        <TableSettings
           data={fields}
           columns={COLUMNS}
           emptyDataRowText="No Nucleus"
         />
-      </GroupPane>
+      </TableSection>
     );
   },
 });
-
-interface FieldsBlockHeaderProps {
-  onAdd: () => void;
-  text: string;
-}
-
-function FieldsBlockHeader(props: FieldsBlockHeaderProps) {
-  const { onAdd, text } = props;
-  return (
-    <Section>
-      <p style={{ flex: 1 }}>{text}</p>
-
-      <Button
-        size="small"
-        variant="outlined"
-        intent="success"
-        tooltipProps={{ content: '', disabled: true }}
-        onClick={onAdd}
-      >
-        Add nuclei preferences
-      </Button>
-    </Section>
-  );
-}
-
-const Buttons = styled.div`
-  display: flex;
-  justify-content: space-evenly;
-`;
