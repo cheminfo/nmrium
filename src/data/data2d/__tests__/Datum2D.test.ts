@@ -27,11 +27,19 @@ test('Datum2D', () => {
 
   const positive = drawContours(
     { contourLevels: [10, 100], numberOfLayers: 10 },
-    spectra[0],
+    {
+      data: spectra[0].data.rr,
+      display: spectra[0].display,
+      id: '',
+    },
   );
   const negative = drawContours(
     { contourLevels: [10, 100], numberOfLayers: 10 },
-    spectra[0],
+    {
+      data: spectra[0].data.rr,
+      display: spectra[0].display,
+      id: '',
+    },
     true,
   );
   expect(positive.contours).toHaveLength(10);

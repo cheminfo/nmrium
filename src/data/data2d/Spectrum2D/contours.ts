@@ -296,10 +296,5 @@ export function initializeContours(spectra: Spectrum[]) {
   return contoursOptions;
 }
 
-export {
-  DEFAULT_CONTOURS_OPTIONS,
-  contoursManager,
-  drawContours,
-  getDefaultContoursLevel,
-};
+export { contoursManager, drawContours, getDefaultContoursLevel };
 export type { LevelSign };
