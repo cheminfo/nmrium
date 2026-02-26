@@ -13,7 +13,7 @@ import {
   CellActionsButton,
   CellColorPicker,
   CellInput,
-  NewTableSettings,
+  TableSettings,
 } from '../ui/table.tsx';
 import { TableSection } from '../ui/table_section.tsx';
 import type {
@@ -173,7 +173,7 @@ const Spectra1DColors = withForm({
           </Button>
         }
       >
-        <NewTableSettings
+        <TableSettings
           data={field.state.value}
           columns={COLUMNS}
           emptyContent="No criteria colors"
@@ -325,7 +325,7 @@ const Spectra2DColors = withForm({
           </Button>
         }
       >
-        <NewTableSettings
+        <TableSettings
           data={field.state.value}
           columns={COLUMNS}
           emptyContent="No criteria colors"

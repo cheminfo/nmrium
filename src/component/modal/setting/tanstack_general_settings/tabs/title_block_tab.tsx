@@ -18,7 +18,7 @@ import {
   CellActionsButton,
   CellCheckbox,
   CellInput,
-  NewTableSettings,
+  TableSettings,
 } from '../ui/table.js';
 import { TableSection } from '../ui/table_section.js';
 import type { infoBlockFieldTabValidationWithUUID } from '../validation/title_block_tab_validation.js';
@@ -213,7 +213,7 @@ const Fields = withForm({
     const fieldsData = useStore(fields.store, (s) => s.value);
 
     return (
-      <NewTableSettings
+      <TableSettings
         data={fieldsData}
         columns={columns}
         onRowOrderChanged={onRowOrderChanged}

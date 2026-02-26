@@ -9,7 +9,7 @@ import {
   CellActionsButton,
   CellInput,
   CellNumericInput,
-  NewTableSettings,
+  TableSettings,
 } from '../ui/table.tsx';
 import { TableSection } from '../ui/table_section.tsx';
 import { defaultGeneralSettingsFormValues } from '../validation.js';
@@ -166,7 +166,7 @@ export const NucleiTab = withForm({
           </Button>
         }
       >
-        <NewTableSettings
+        <TableSettings
           data={fields}
           columns={COLUMNS}
           emptyContent="No nucleus"

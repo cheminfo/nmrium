@@ -12,7 +12,7 @@ import {
   CellActions,
   CellActionsButton,
   CellInput,
-  NewTableSettings,
+  TableSettings,
 } from '../ui/table.js';
 import { TableSection } from '../ui/table_section.js';
 import type { externalAPIValidation } from '../validation/external_apis_validation.js';
@@ -132,7 +132,7 @@ export const ExternalApiTab = withForm({
           </Button>
         }
       >
-        <NewTableSettings
+        <TableSettings
           data={state.value}
           columns={columns}
           emptyContent="No external APIs"

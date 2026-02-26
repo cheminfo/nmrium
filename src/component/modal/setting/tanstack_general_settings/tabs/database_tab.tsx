@@ -12,7 +12,7 @@ import {
   CellActionsButton,
   CellCheckbox,
   CellInput,
-  NewTableSettings,
+  TableSettings,
 } from '../ui/table.tsx';
 import { TableSection } from '../ui/table_section.tsx';
 import type { databasesValidation } from '../validation/database_tab_validation.ts';
@@ -192,7 +192,7 @@ export const DatabaseTab = withForm({
           </>
         }
       >
-        <NewTableSettings
+        <TableSettings
           data={field.state.value}
           columns={COLUMNS}
           emptyContent="No database item"

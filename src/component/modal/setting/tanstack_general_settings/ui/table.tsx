@@ -102,17 +102,15 @@ export function CellActionsButton(props: ButtonProps) {
  * It set `compact`, `bordered` and `stickyHeader` props to true by default.
  * It add supports for `tdStyle` `meta` property in columns definition.
  */
-export function NewTableSettings<Data extends RowData>(
-  props: TableProps<Data>,
-) {
+export function TableSettings<Data extends RowData>(props: TableProps<Data>) {
   // We should not create a component in another component,
   // But here it's OK, it is just an alias to fix the type
-  const Table = NewTableSettingsStyled as StyledComponent<TableProps<Data>>;
+  const Table = TableSettingsStyled as StyledComponent<TableProps<Data>>;
 
   return <Table compact bordered stickyHeader {...props} />;
 }
 
-const NewTableSettingsStyled = styled(Table)`
+const TableSettingsStyled = styled(Table)`
   overflow: auto;
 
   ${(props) => (props.bordered ? `border: 1px solid #11141826;` : '')}
