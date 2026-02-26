@@ -1,6 +1,5 @@
 import type { Spectrum } from '@zakodium/nmrium-core';
 import dlv from 'dlv';
-import type { CSSProperties } from 'react';
 import { useState } from 'react';
 import { useResizeObserver } from 'react-d3-utils';
 import { BsArrowsMove } from 'react-icons/bs';
@@ -22,22 +21,6 @@ import { formatNumber } from '../../utility/formatNumber.js';
 const verticalSpace = 5;
 const boxPadding = 0;
 const dragShiftY = 24;
-
-const styles: Record<'value' | 'label' | 'colorIndicator', CSSProperties> = {
-  label: {
-    fontSize: '11px',
-    fill: 'black',
-    fontWeight: 'bold',
-  },
-  value: {
-    fontSize: '12px',
-    fill: 'black',
-  },
-  colorIndicator: {
-    width: '10px',
-    height: '2px',
-  },
-};
 
 function getInfoValue(
   spectrum: Spectrum,
