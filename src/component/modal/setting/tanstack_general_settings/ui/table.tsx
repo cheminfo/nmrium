@@ -1,25 +1,12 @@
-import { Checkbox, Classes, NumericInput, RadioGroup } from '@blueprintjs/core';
-import type { CSSObject } from '@emotion/react';
+import { Checkbox, Classes, NumericInput } from '@blueprintjs/core';
 import type { StyledComponent } from '@emotion/styled';
 import styled from '@emotion/styled';
 import type { RowData } from '@tanstack/react-table';
-import type { CSSProperties, ComponentProps, ReactNode } from 'react';
+import type { ComponentProps } from 'react';
 import type { ButtonProps, TableProps } from 'react-science/ui';
 import { Button, ColorPickerDropdown, Table } from 'react-science/ui';
 
 import { Input2 } from '../../../../elements/Input2.js';
-import type { BaseRowStyle } from '../../../../elements/ReactTable/ReactTable.js';
-import ReactTable from '../../../../elements/ReactTable/ReactTable.js';
-
-const tableStyle: CSSObject = {
-  'thead tr th': { zIndex: 1 },
-  td: { padding: 0 },
-};
-
-const rowStyle: BaseRowStyle = {
-  hover: { backgroundColor: '#f7f7f7' },
-  active: { backgroundColor: '#f5f5f5' },
-};
 
 export const CellInput = styled(Input2)`
   input {
@@ -55,7 +42,7 @@ export const CellNumericInput = styled(NumericInput)`
     > .${Classes.BUTTON} {
       margin: 0 !important;
       border-radius: 0;
-      background: white;
+      background: transparent;
       box-shadow: none;
 
       :first-of-type {
@@ -73,23 +60,6 @@ export const CellCheckbox = styled(Checkbox)`
   &.${Classes.CONTROL} {
     padding: 0;
     margin: 0;
-
-    .${Classes.CONTROL_INDICATOR} {
-      margin: 0;
-    }
-  }
-`;
-
-export const CellRadioGroup = styled(RadioGroup)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  .${Classes.CONTROL} {
-    padding: 0;
-    margin: 0;
-    display: flex;
-    align-items: center;
 
     .${Classes.CONTROL_INDICATOR} {
       margin: 0;
@@ -127,35 +97,13 @@ export function CellActionsButton(props: ButtonProps) {
   return <Button {...props} size={size} variant={variant} />;
 }
 
-export function TableSettings<T extends object>(
-  props: Omit<ComponentProps<typeof ReactTable<T>>, 'style' | 'rowStyle'>,
-) {
-  return <ReactTable<T> {...props} style={tableStyle} rowStyle={rowStyle} />;
-}
-
-declare module '@tanstack/react-table' {
-  // Declaration merging
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  interface ColumnMeta<TData extends RowData, TValue> {
-    /**
-     * Merged into the `style` prop of the default-rendered `<th>` element.
-     */
-    tdStyle?: CSSProperties;
-  }
-}
-
-type NewTableSettingsProps<Data extends RowData> = {
-  emptyIcon?: ReactNode;
-  emptyContent?: ReactNode;
-} & TableProps<Data>;
-
 /**
  * Return stylized table.
  * It set `compact`, `bordered` and `stickyHeader` props to true by default.
  * It add supports for `tdStyle` `meta` property in columns definition.
  */
 export function NewTableSettings<Data extends RowData>(
-  props: NewTableSettingsProps<Data>,
+  props: TableProps<Data>,
 ) {
   // We should not create a component in another component,
   // But here it's OK, it is just an alias to fix the type
@@ -185,9 +133,19 @@ const NewTableSettingsStyled = styled(Table)`
       }
     }
 
-    tbody td {
-      padding: 0;
-      vertical-align: middle;
+    tbody {
+      tr:active {
+        background-color: #f5f5f5;
+      }
+
+      tr:hover {
+        background-color: #f7f7f7;
+      }
+
+      td {
+        padding: 0;
+        vertical-align: middle;
+      }
     }
   }
 `;
