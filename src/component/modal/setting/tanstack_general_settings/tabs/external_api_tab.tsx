@@ -1,15 +1,19 @@
 import { Classes } from '@blueprintjs/core';
 import { useField } from '@tanstack/react-form';
+import { createColumnHelper } from '@tanstack/react-table';
 import { EXTERNAL_API_KEYS } from '@zakodium/nmrium-core';
 import { useMemo } from 'react';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button, withForm } from 'react-science/ui';
-import type { CellProps } from 'react-table';
 import type { z } from 'zod';
 
-import type { Column } from '../../../../elements/ReactTable/ReactTable.js';
 import { Select2 } from '../../../../elements/Select2.js';
-import { CellActions, CellInput, TableSettings } from '../ui/table.js';
+import {
+  CellActions,
+  CellActionsButton,
+  CellInput,
+  NewTableSettings,
+} from '../ui/table.js';
 import { TableSection } from '../ui/table_section.js';
 import type { externalAPIValidation } from '../validation/external_apis_validation.js';
 import { defaultGeneralSettingsFormValues } from '../validation.js';
@@ -26,16 +30,12 @@ export const ExternalApiTab = withForm({
     const field = useField({ form, name: 'externalAPIs', mode: 'array' });
     const { name, state, pushValue, insertValue, removeValue } = field;
 
-    const columns = useMemo<Array<Column<API>>>(
-      () => [
-        {
-          Header: '#',
-          style: { minWidth: '2em', textAlign: 'center' },
-          accessor: (_, index) => index + 1,
-        },
-        {
-          Header: 'Service',
-          Cell: ({ row: { index } }: CellProps<API>) => (
+    const columns = useMemo(() => {
+      const helper = createColumnHelper<API>();
+      return [
+        helper.accessor('key', {
+          header: 'Service',
+          cell: ({ row: { index } }) => (
             <Field name={`${name}[${index}].key`}>
               {(field) => (
                 <Select2
@@ -50,10 +50,10 @@ export const ExternalApiTab = withForm({
               )}
             </Field>
           ),
-        },
-        {
-          Header: 'Server link',
-          Cell: ({ row: { index } }: CellProps<API>) => (
+        }),
+        helper.accessor('serverLink', {
+          header: 'Server link',
+          cell: ({ row: { index } }) => (
             <Field name={`${name}[${index}].serverLink`}>
               {(field) => (
                 <CellInput
@@ -70,10 +70,10 @@ export const ExternalApiTab = withForm({
               )}
             </Field>
           ),
-        },
-        {
-          Header: 'API key',
-          Cell: ({ row: { index } }: CellProps<API>) => (
+        }),
+        helper.accessor('APIKey', {
+          header: 'API key',
+          cell: ({ row: { index } }) => (
             <Field name={`${name}[${index}].APIKey`}>
               {(field) => (
                 <CellInput
@@ -90,51 +90,52 @@ export const ExternalApiTab = withForm({
               )}
             </Field>
           ),
-        },
-        {
-          Header: '',
-          style: { width: '60px' },
-          id: 'add-button',
-          Cell: ({ row: { index } }: CellProps<API>) => {
-            return (
-              <CellActions>
-                <Button
-                  size="small"
-                  intent="success"
-                  variant="minimal"
-                  onClick={() => insertValue(index, emptyApi)}
-                >
-                  <FaPlus className={Classes.ICON} />
-                </Button>
-                <Button
-                  size="small"
-                  intent="danger"
-                  variant="minimal"
-                  onClick={() => removeValue(index)}
-                >
-                  <FaRegTrashAlt className={Classes.ICON} />
-                </Button>
-              </CellActions>
-            );
-          },
-        },
-      ],
-      [Field, insertValue, name, removeValue],
-    );
+        }),
+        helper.display({
+          id: 'actions',
+          header: '',
+          cell: ({ row: { index } }) => (
+            <CellActions>
+              <CellActionsButton
+                intent="success"
+                onClick={() => insertValue(index, emptyApi)}
+              >
+                <FaPlus className={Classes.ICON} />
+              </CellActionsButton>
+              <CellActionsButton
+                intent="danger"
+                onClick={() => removeValue(index)}
+              >
+                <FaRegTrashAlt className={Classes.ICON} />
+              </CellActionsButton>
+            </CellActions>
+          ),
+        }),
+      ];
+    }, [Field, insertValue, name, removeValue]);
 
     function onAddField() {
-      pushValue(emptyApi, { dontRunListeners: true });
+      pushValue(emptyApi);
     }
 
     return (
       <TableSection
         title="External APIs"
-        actions={<Button onClick={onAddField}>Add an external API</Button>}
+        actions={
+          <Button
+            size="small"
+            variant="outlined"
+            intent="success"
+            onClick={onAddField}
+          >
+            Add an external API
+          </Button>
+        }
       >
-        <TableSettings
+        <NewTableSettings
           data={state.value}
           columns={columns}
-          emptyDataRowText="No external APIs"
+          emptyContent="No external APIs"
         />
       </TableSection>
     );
