@@ -1,3 +1,4 @@
+import { svgTextStyleFieldsSchema } from 'react-science/ui';
 import { z } from 'zod';
 
 import { jpathCodec } from './utils.ts';
@@ -8,6 +9,7 @@ const infoBlockFieldTabValidation = z.object({
   visible: z.boolean(),
   label: z.string(),
 });
+
 export const infoBlockFieldTabValidationWithUUID = z.codec(
   z.object({ ...infoBlockFieldTabValidation.shape, uuid: z.string() }),
   infoBlockFieldTabValidation,
@@ -28,4 +30,6 @@ const infoBlockFieldsTabValidation = z.array(
 export const infoBlockTabValidation = z.object({
   visible: z.boolean(),
   fields: infoBlockFieldsTabValidation,
+  nameStyle: svgTextStyleFieldsSchema.optional(),
+  valueStyle: svgTextStyleFieldsSchema.optional(),
 });

@@ -1,10 +1,10 @@
 import type { Spectrum } from '@zakodium/nmrium-core';
 import dlv from 'dlv';
-import type { CSSProperties } from 'react';
 import { useState } from 'react';
 import { useResizeObserver } from 'react-d3-utils';
 import { BsArrowsMove } from 'react-icons/bs';
 import { FaTimes } from 'react-icons/fa';
+import { SVGStyledText } from 'react-science/ui';
 
 import { useIsInset } from '../../1d/inset/InsetProvider.js';
 import { useChartData } from '../../context/ChartContext.js';
@@ -21,22 +21,6 @@ import { formatNumber } from '../../utility/formatNumber.js';
 const verticalSpace = 5;
 const boxPadding = 0;
 const dragShiftY = 24;
-
-const styles: Record<'value' | 'label' | 'colorIndicator', CSSProperties> = {
-  label: {
-    fontSize: '11px',
-    fill: 'black',
-    fontWeight: 'bold',
-  },
-  value: {
-    fontSize: '12px',
-    fill: 'black',
-  },
-  colorIndicator: {
-    width: '10px',
-    height: '2px',
-  },
-};
 
 function getInfoValue(
   spectrum: Spectrum,
@@ -81,9 +65,10 @@ function SpectrumInfoBlock() {
     x: number;
     y: number;
   }>(coordinate);
+
   const {
     current: {
-      infoBlock: { visible, fields },
+      infoBlock: { visible, fields, nameStyle, valueStyle },
     },
   } = usePreferences();
 
@@ -95,10 +80,12 @@ function SpectrumInfoBlock() {
       : infoFields?.length - (infoFields?.length % 2)
         ? 2
         : 1) || 0);
+
   const [
     ref,
     { width: boxWidth, height: boxHeight } = { width: 0, height: 0 },
   ] = useResizeObserver();
+
   const { onPointerDown } = useDraggable({
     position: coordinate,
     onChange: (dragEvent) => {
@@ -215,12 +202,13 @@ function SpectrumInfoBlock() {
                 space={verticalSpace}
                 key={field.jpath + field.label}
               >
-                <text alignmentBaseline="middle" style={styles.label}>
+                <SVGStyledText {...nameStyle} alignmentBaseline="middle">
                   {field.label} :
-                </text>
-                <text alignmentBaseline="middle" style={styles.value}>
+                </SVGStyledText>
+
+                <SVGStyledText {...valueStyle} alignmentBaseline="middle">
                   {getInfoValue(spectrum, field)}
-                </text>
+                </SVGStyledText>
               </SVGGroup>
             );
           })}

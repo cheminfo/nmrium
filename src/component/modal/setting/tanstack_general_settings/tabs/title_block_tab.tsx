@@ -5,6 +5,7 @@ import { useCallback, useMemo } from 'react';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import {
   Button,
+  FieldGroupSVGTextStyleFields,
   TableDragRowHandler,
   createTableColumnHelper,
   withForm,
@@ -41,6 +42,21 @@ export const TitleBlockTab = withForm({
           <AppField name="infoBlock.visible">
             {({ Checkbox }) => <Checkbox label="Display spectrum info block" />}
           </AppField>
+        </Section>
+        <Section title="Text style color">
+          <FieldGroupSVGTextStyleFields
+            form={form}
+            fields="infoBlock.nameStyle"
+            label="Name text color"
+            previewText="Pulse sequence :"
+          />
+
+          <FieldGroupSVGTextStyleFields
+            form={form}
+            fields="infoBlock.valueStyle"
+            label="Value text color"
+            previewText="lon1027"
+          />
         </Section>
         <TableSection
           title="Fields"
