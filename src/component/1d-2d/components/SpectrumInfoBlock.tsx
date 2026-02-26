@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useResizeObserver } from 'react-d3-utils';
 import { BsArrowsMove } from 'react-icons/bs';
 import { FaTimes } from 'react-icons/fa';
+import { SVGStyledText } from 'react-science/ui';
 
 import { useIsInset } from '../../1d/inset/InsetProvider.js';
 import { useChartData } from '../../context/ChartContext.js';
@@ -81,9 +82,10 @@ function SpectrumInfoBlock() {
     x: number;
     y: number;
   }>(coordinate);
+
   const {
     current: {
-      infoBlock: { visible, fields },
+      infoBlock: { visible, fields, nameStyle, valueStyle },
     },
   } = usePreferences();
 
@@ -95,10 +97,12 @@ function SpectrumInfoBlock() {
       : infoFields?.length - (infoFields?.length % 2)
         ? 2
         : 1) || 0);
+
   const [
     ref,
     { width: boxWidth, height: boxHeight } = { width: 0, height: 0 },
   ] = useResizeObserver();
+
   const { onPointerDown } = useDraggable({
     position: coordinate,
     onChange: (dragEvent) => {
@@ -215,12 +219,13 @@ function SpectrumInfoBlock() {
                 space={verticalSpace}
                 key={field.jpath + field.label}
               >
-                <text alignmentBaseline="middle" style={styles.label}>
+                <SVGStyledText {...nameStyle} alignmentBaseline="middle">
                   {field.label} :
-                </text>
-                <text alignmentBaseline="middle" style={styles.value}>
+                </SVGStyledText>
+
+                <SVGStyledText {...valueStyle} alignmentBaseline="middle">
                   {getInfoValue(spectrum, field)}
-                </text>
+                </SVGStyledText>
               </SVGGroup>
             );
           })}
