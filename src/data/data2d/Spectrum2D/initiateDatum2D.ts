@@ -7,10 +7,6 @@ import { Filters2DManager } from 'nmr-processing';
 import type { UsedColors } from '../../../types/UsedColors.js';
 import { initiateFilters } from '../../initiateFilters.js';
 
-import {
-  DEFAULT_CONTOURS_OPTIONS,
-  getDefaultContoursLevel,
-} from './contours.js';
 import { get2DColor } from './get2DColor.js';
 import { initiateZones } from './zones/initiateZones.js';
 
@@ -42,18 +38,6 @@ function initiateInfo(spectrum: any) {
     ...spectrum.info,
   };
 }
-function initiateContoursLevels(spectrum: any) {
-  const {
-    display: { contourOptions },
-    data,
-  } = spectrum;
-
-  if (contourOptions) return contourOptions;
-
-  if ('rr' in data) return getDefaultContoursLevel(spectrum);
-
-  return DEFAULT_CONTOURS_OPTIONS;
-}
 
 export function initiateDatum2D(
   spectrum: any,
@@ -82,7 +66,7 @@ export function initiateDatum2D(
   //reapply filters after load the original data
   Filters2DManager.reapplyFilters(datum);
 
-  datum.display.contourOptions = initiateContoursLevels(datum);
+  // datum.display.contourOptions = initializeSpectrumContoursOptions(datum);
 
   return datum;
 }

@@ -2,8 +2,12 @@ import type { Spectrum2D } from '@zakodium/nmrium-core';
 import type { NmrData2DFt } from 'cheminfo-types';
 import { Conrec } from 'ml-conrec';
 import { xMaxAbsoluteValue } from 'ml-spectra-processing';
+import type { Spectrum } from 'nmr-correlation';
 
+import type { SpectrumFTData } from '../../../component/hooks/use2DReducer.tsx';
 import { calculateSanPlot } from '../../utilities/calculateSanPlot.js';
+
+import { isFt2DSpectrum } from './isSpectrum2D.ts';
 
 interface Level {
   positive: ContourItem;
@@ -91,8 +95,8 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
   return defaultLevel;
 }
 
-function contoursManager(spectrum: Spectrum2D): ReturnContoursManager {
-  const contourOptions = { ...spectrum.display.contourOptions };
+function contoursManager(options: ContourOptions): ReturnContoursManager {
+  const contourOptions = { ...options };
 
   const wheel = (value: any, options: any) =>
     prepareWheel(value, { ...options, contourOptions });
@@ -194,9 +198,8 @@ function range(from: number, to: number, step: number) {
 
 function drawContours(
   level: ContourItem,
-  spectrum: Spectrum2D,
+  spectrum: SpectrumFTData,
   negative = false,
-  quadrant = 'rr',
 ) {
   const { contourLevels, numberOfLayers } = level;
 
@@ -204,8 +207,7 @@ function drawContours(
     negative,
     boundary: contourLevels,
     nbLevels: numberOfLayers,
-    // @ts-expect-error type of NmrData2D should have a discriminator field to separate fid and ft
-    data: spectrum.data[quadrant],
+    data: spectrum.data,
   });
 }
 
@@ -270,10 +272,29 @@ function calculateValueOfLevel(level: number, max: number, invert = false) {
   return (max * (2 ** (level / 10) - 1)) / (2 ** 10 - 1);
 }
 
-export {
-  DEFAULT_CONTOURS_OPTIONS,
-  contoursManager,
-  drawContours,
-  getDefaultContoursLevel,
-};
+export function initializeContoursLevels(spectrum: any) {
+  const {
+    display: { contourOptions },
+    data,
+  } = spectrum;
+
+  if (contourOptions) return contourOptions;
+
+  if ('rr' in data) return getDefaultContoursLevel(spectrum);
+
+  return DEFAULT_CONTOURS_OPTIONS;
+}
+
+export function initializeContours(spectra: Spectrum[]) {
+  const contoursOptions: Record<string, ContourOptions> = {};
+  for (const spectrum of spectra) {
+    if (isFt2DSpectrum(spectrum)) {
+      const spectrum2D = spectrum as Spectrum2D;
+      contoursOptions[spectrum2D.id] = initializeContoursLevels(spectrum2D);
+    }
+  }
+  return contoursOptions;
+}
+
+export { contoursManager, drawContours, getDefaultContoursLevel };
 export type { LevelSign };
