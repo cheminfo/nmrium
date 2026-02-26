@@ -114,6 +114,15 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
   },
   infoBlock: {
     visible: false,
+    nameStyle: {
+      fontSize: 11,
+      fill: 'black',
+      fontWeight: 'bold',
+    },
+    valueStyle: {
+      fontSize: 12,
+      fill: 'black',
+    },
     fields: [
       { label: 'Name', jpath: ['info', 'name'], visible: true, format: '' },
       {
