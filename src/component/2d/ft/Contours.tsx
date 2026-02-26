@@ -7,7 +7,7 @@ import { useChartData } from '../../context/ChartContext.js';
 import { usePreferences } from '../../context/PreferencesContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import type { SpectrumFTData } from '../../hooks/use2DReducer.tsx';
-import { use2DFTSpectra } from '../../hooks/use2DReducer.tsx';
+import { use2DReducer } from '../../hooks/use2DReducer.tsx';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.js';
 import { PathBuilder } from '../../utility/PathBuilder.js';
 import { useScale2DX, useScale2DY } from '../utilities/scale.js';
@@ -147,7 +147,7 @@ function ContoursInner({ spectra }: ContoursInnerProps) {
 const MemoizedContours = memo(ContoursInner);
 
 export default function Contours() {
-  const spectra = use2DFTSpectra();
+  const spectra = use2DReducer();
 
   return <MemoizedContours spectra={spectra} />;
 }
