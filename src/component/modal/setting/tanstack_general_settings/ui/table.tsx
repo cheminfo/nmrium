@@ -1,4 +1,10 @@
-import { Checkbox, Classes, Icon, NumericInput } from '@blueprintjs/core';
+import {
+  Checkbox,
+  Classes,
+  Icon,
+  NumericInput,
+  RadioGroup,
+} from '@blueprintjs/core';
 import type { CSSObject } from '@emotion/react';
 import type { StyledComponent } from '@emotion/styled';
 import styled from '@emotion/styled';
@@ -59,7 +65,7 @@ export const CellNumericInput = styled(NumericInput)`
       background: white;
       box-shadow: none;
 
-      :first-child {
+      :first-of-type {
         border-bottom: 1px dotted lightgray;
       }
     }
@@ -81,10 +87,30 @@ export const CellCheckbox = styled(Checkbox)`
   }
 `;
 
+export const CellRadioGroup = styled(RadioGroup)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .${Classes.CONTROL} {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+
+    .${Classes.CONTROL_INDICATOR} {
+      margin: 0;
+    }
+  }
+`;
+
 export const CellActions = styled.div`
   display: flex;
-  justify-content: space-evenly;
+  align-items: center;
+  justify-content: center;
   gap: 0.25em;
+  margin-left: 3px;
+  margin-right: 2px;
 `;
 
 export function CellActionsButton(props: ButtonProps) {
@@ -179,6 +205,7 @@ const NewTableSettingsStyled = styled(Table)`
     thead th {
       padding: 2px 8px;
       text-align: center;
+      vertical-align: bottom;
       font-weight: bold;
 
       /* See getThProps in react-science table_header_cell */
