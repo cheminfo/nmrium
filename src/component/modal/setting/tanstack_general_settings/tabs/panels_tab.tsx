@@ -46,14 +46,6 @@ const SpectraSettings = withFieldGroup({
             <Select label="Processing" items={displayPanelsStatus} />
           )}
         </AppField>
-        <AppField name="multipleSpectraAnalysisPanel">
-          {({ Select }) => (
-            <Select
-              label="Multiple spectra analysis"
-              items={displayPanelsStatus}
-            />
-          )}
-        </AppField>
       </Section>
     );
   },
@@ -65,7 +57,7 @@ const Spectra1dSettings = withFieldGroup({
     const { Section, AppField } = group;
 
     return (
-      <Section title="Spectra 1D">
+      <Section title="1D Spectra">
         <AppField name="peaksPanel">
           {({ Select }) => <Select label="Peaks" items={displayPanelsStatus} />}
         </AppField>
@@ -92,6 +84,14 @@ const Spectra1dSettings = withFieldGroup({
             <Select label="Spectrum simulation" items={displayPanelsStatus} />
           )}
         </AppField>
+        <AppField name="multipleSpectraAnalysisPanel">
+          {({ Select }) => (
+            <Select
+              label="Multiple spectra analysis"
+              items={displayPanelsStatus}
+            />
+          )}
+        </AppField>
       </Section>
     );
   },
@@ -103,7 +103,7 @@ const Spectra2dSettings = withFieldGroup({
     const { Section, AppField } = group;
 
     return (
-      <Section title="Spectra 2D">
+      <Section title="2D Spectra">
         <AppField name="zonesPanel">
           {({ Select }) => <Select label="Zones" items={displayPanelsStatus} />}
         </AppField>
