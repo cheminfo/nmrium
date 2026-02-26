@@ -1,22 +1,27 @@
 import { Classes } from '@blueprintjs/core';
-import { useStore } from '@tanstack/react-form';
+import styled from '@emotion/styled';
+import { useField, useStore } from '@tanstack/react-form';
 import { useCallback, useMemo } from 'react';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
-import { Button, withFieldGroup, withForm } from 'react-science/ui';
-import type { CellProps } from 'react-table';
+import {
+  Button,
+  TableDragRowHandler,
+  createTableColumnHelper,
+  withForm,
+} from 'react-science/ui';
 import type { z } from 'zod';
 
 import { useChartData } from '../../../../context/ChartContext.js';
-import type { Column } from '../../../../elements/ReactTable/ReactTable.js';
 import { getSpectraObjectPaths } from '../../../../utility/getSpectraObjectPaths.js';
 import {
   CellActions,
+  CellActionsButton,
   CellCheckbox,
   CellInput,
   TableSettings,
 } from '../ui/table.js';
 import { TableSection } from '../ui/table_section.js';
-import type { infoBlockFieldTabValidation } from '../validation/title_block_tab_validation.js';
+import type { infoBlockFieldTabValidationWithUUID } from '../validation/title_block_tab_validation.js';
 import { defaultGeneralSettingsFormValues } from '../validation.js';
 
 export const TitleBlockTab = withForm({
@@ -25,7 +30,7 @@ export const TitleBlockTab = withForm({
     const { Section, AppField, pushFieldValue } = form;
 
     function onAddField() {
-      pushFieldValue('infoBlock.fields', emptyField, {
+      pushFieldValue('infoBlock.fields', getEmptyField(), {
         dontRunListeners: true,
       });
     }
@@ -51,89 +56,65 @@ export const TitleBlockTab = withForm({
             </Button>
           }
         >
-          <Fields form={form} fields="infoBlock" />
+          <Fields form={form} />
         </TableSection>
       </>
     );
   },
 });
 
-type Field = z.input<typeof infoBlockFieldTabValidation>;
-const emptyField: Field = {
-  label: '',
-  format: '',
-  jpath: '',
-  visible: true,
-};
-const Fields = withFieldGroup({
-  defaultValues: defaultGeneralSettingsFormValues.infoBlock,
-  render: function Fields({ group }) {
-    const { Field, insertFieldValue, removeFieldValue } = group;
+type Field = z.input<typeof infoBlockFieldTabValidationWithUUID>;
+function getEmptyField(): Field {
+  return {
+    label: '',
+    format: '',
+    jpath: '',
+    visible: true,
+    uuid: crypto.randomUUID(),
+  };
+}
+const Fields = withForm({
+  defaultValues: defaultGeneralSettingsFormValues,
+  render: function Fields({ form }) {
+    const { Field } = form;
+    const fields = useField({
+      form,
+      name: 'infoBlock.fields',
+      mode: 'array',
+    });
+    const { insertValue, removeValue, setValue, name } = fields;
+
     const { data } = useChartData();
     const { datalist } = useMemo(() => getSpectraObjectPaths(data), [data]);
 
     const onAddRowAfter = useCallback(
       (index: number) => {
-        void insertFieldValue(
-          'fields',
-          index + 1,
-          { ...emptyField },
-          { dontRunListeners: true },
-        );
+        insertValue(index + 1, getEmptyField(), { dontRunListeners: true });
       },
-      [insertFieldValue],
+      [insertValue],
     );
     const onDeleteAt = useCallback(
       (index: number) => {
-        void removeFieldValue('fields', index);
+        removeValue(index);
       },
-      [removeFieldValue],
+      [removeValue],
     );
 
-    const columns = useMemo<Array<Column<Field>>>(
-      () => [
-        {
-          Header: '#',
-          style: { minWidth: '2em', textAlign: 'center' },
-          accessor: (_, index) => index + 1,
-        },
-        {
-          Header: 'Label',
-          Cell: ({ row: { index } }: CellProps<Field>) => (
-            <Field name={`fields[${index}].label`}>
-              {(field) => (
-                <CellInput
-                  name={field.name}
-                  value={field.state.value}
-                  onChange={field.handleChange}
-                />
-              )}
-            </Field>
-          ),
-        },
-        {
-          Header: 'Field',
-          Cell: ({ row }: CellProps<Field>) => {
-            const rowIndex = row.index;
-
-            return (
-              <Field name={`fields[${rowIndex}].jpath`}>
-                {(field) => (
-                  <CellInput
-                    name={field.name}
-                    value={field.state.value}
-                    onChange={field.handleChange}
-                    filterItems={datalist}
-                  />
-                )}
-              </Field>
-            );
+    const columns = useMemo(() => {
+      const columnHelper = createTableColumnHelper<Field>();
+      return [
+        columnHelper.display({
+          id: 'dnd',
+          header: '',
+          meta: {
+            tdStyle: { textAlign: 'center' },
           },
-        },
-        {
-          Header: 'Format',
-          Cell: ({ row: { index } }: CellProps<Field>) => (
-            <Field name={`fields[${index}].format`}>
+          cell: () => <TableDragRowHandlerStyled size="small" />,
+        }),
+        columnHelper.accessor('label', {
+          header: () => 'Label',
+          cell: ({ row: { index } }) => (
+            <Field name={`${name}[${index}].label`}>
               {(field) => (
                 <CellInput
                   name={field.name}
@@ -143,12 +124,43 @@ const Fields = withFieldGroup({
               )}
             </Field>
           ),
-        },
-        {
-          Header: 'Visible',
-          style: { width: '30px', textAlign: 'center' },
-          Cell: ({ row: { index } }: CellProps<Field>) => (
-            <Field name={`fields[${index}].visible`}>
+        }),
+        columnHelper.accessor('jpath', {
+          header: 'Field',
+          cell: ({ row: { index } }) => (
+            <Field name={`${name}[${index}].jpath`}>
+              {(field) => (
+                <CellInput
+                  name={field.name}
+                  value={field.state.value}
+                  onChange={field.handleChange}
+                  filterItems={datalist}
+                />
+              )}
+            </Field>
+          ),
+        }),
+        columnHelper.accessor('format', {
+          header: 'Format',
+          cell: ({ row: { index } }) => (
+            <Field name={`${name}[${index}].format`}>
+              {(field) => (
+                <CellInput
+                  name={field.name}
+                  value={field.state.value}
+                  onChange={field.handleChange}
+                />
+              )}
+            </Field>
+          ),
+        }),
+        columnHelper.accessor('visible', {
+          header: 'Visible',
+          meta: {
+            tdStyle: { textAlign: 'center' },
+          },
+          cell: ({ row: { index } }) => (
+            <Field name={`${name}[${index}].visible`}>
               {(field) => (
                 <CellCheckbox
                   name={field.name}
@@ -158,46 +170,64 @@ const Fields = withFieldGroup({
               )}
             </Field>
           ),
-        },
-        {
-          Header: '',
-          style: { width: '60px' },
-          id: 'add-button',
-          Cell: ({ row: { index } }: CellProps<Field>) => {
+        }),
+        columnHelper.display({
+          id: 'actions',
+          header: '',
+          meta: {
+            thStyle: {
+              width: '60px',
+            },
+          },
+          cell: ({ row: { index } }) => {
             return (
               <CellActions>
-                <Button
-                  size="small"
+                <CellActionsButton
                   intent="success"
-                  variant="minimal"
                   onClick={() => onAddRowAfter(index)}
                 >
                   <FaPlus className={Classes.ICON} />
-                </Button>
-                <Button
-                  size="small"
+                </CellActionsButton>
+                <CellActionsButton
                   intent="danger"
-                  variant="minimal"
                   onClick={() => onDeleteAt(index)}
                 >
                   <FaRegTrashAlt className={Classes.ICON} />
-                </Button>
+                </CellActionsButton>
               </CellActions>
             );
           },
-        },
-      ],
-      [Field, datalist, onAddRowAfter, onDeleteAt],
+        }),
+      ];
+    }, [Field, datalist, name, onAddRowAfter, onDeleteAt]);
+
+    const onRowOrderChanged = useCallback(
+      (value: Field[]) => {
+        setValue(value);
+      },
+      [setValue],
     );
 
-    const fields = useStore(group.store, (state) => state.values.fields);
+    // It seems fields.setValue don't always trigger rerender
+    // so fields.state.value can de-sync and cause weird behavior with DnD reorder.
+    const fieldsData = useStore(fields.store, (s) => s.value);
 
     return (
       <TableSettings
-        data={fields}
+        data={fieldsData}
         columns={columns}
-        emptyDataRowText="No Fields"
+        onRowOrderChanged={onRowOrderChanged}
+        getRowId={getRowId}
+        emptyContent="No Fields"
       />
     );
   },
 });
+
+function getRowId(row: Field) {
+  return row.uuid;
+}
+
+const TableDragRowHandlerStyled = styled(TableDragRowHandler)`
+  margin: 0 2px;
+`;
