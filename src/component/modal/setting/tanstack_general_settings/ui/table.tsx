@@ -76,7 +76,7 @@ export function CellColorPicker(
     </CellColorPickerContainer>
   );
 }
-export const CellColorPickerContainer = styled.div`
+const CellColorPickerContainer = styled.div`
   .${Classes.POPOVER_TARGET} button {
     border: none;
   }
