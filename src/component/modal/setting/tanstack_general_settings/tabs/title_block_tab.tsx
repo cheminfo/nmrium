@@ -5,8 +5,8 @@ import { useCallback, useMemo } from 'react';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import {
   Button,
-  TableDragRowHandler,
   createTableColumnHelper,
+  TableDragRowHandler,
   withForm,
 } from 'react-science/ui';
 import type { z } from 'zod';
@@ -40,6 +40,15 @@ export const TitleBlockTab = withForm({
         <Section title="Visibility">
           <AppField name="infoBlock.visible">
             {({ Checkbox }) => <Checkbox label="Display spectrum info block" />}
+          </AppField>
+        </Section>
+        <Section title="Text style color">
+          <AppField name="infoBlock.nameStyle.fill">
+            {({ ColorPicker }) => <ColorPicker label="Name text color" />}
+          </AppField>
+
+          <AppField name="infoBlock.valueStyle.fill">
+            {({ ColorPicker }) => <ColorPicker label="Value text color" />}
           </AppField>
         </Section>
         <TableSection
