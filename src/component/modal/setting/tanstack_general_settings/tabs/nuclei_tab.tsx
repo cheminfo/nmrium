@@ -152,7 +152,8 @@ export const NucleiTab = withForm({
 
     return (
       <TableSection
-        title="Number formatting for crosshair and info line and axis domain"
+        title="Nuclei number formatting"
+        description="for crosshair, info line and axis domain"
         actions={
           <Button
             size="small"
