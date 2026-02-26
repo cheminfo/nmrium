@@ -15,7 +15,6 @@ const Section = styled.section`
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-
       font-weight: 600;
       font-size: 1rem;
       line-height: 1.75rem;
