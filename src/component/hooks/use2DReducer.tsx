@@ -5,6 +5,7 @@ import { useMemo } from 'react';
 import { isFt2DSpectrum } from '../../data/data2d/Spectrum2D/isSpectrum2D.ts';
 import { useChartData } from '../context/ChartContext.tsx';
 import { getSpectraByNucleus } from '../utility/getSpectraByNucleus.ts';
+
 import { reduce2DSpectrum } from './reduce2DSpectrum.ts';
 
 export interface SpectrumFTData extends Pick<Spectrum2D, 'display' | 'id'> {
