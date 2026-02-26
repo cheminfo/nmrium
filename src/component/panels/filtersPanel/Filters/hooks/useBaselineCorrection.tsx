@@ -9,13 +9,18 @@ import type { ExtractFilterEntry } from '../../../../../data/types/common/Extrac
 import { useDispatch } from '../../../../context/DispatchContext.js';
 import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsContext.js';
 
-export const baselineCorrectionsAlgorithms = ['airPLS', 'Polynomial'].map(
-  (val) => ({
-    label: val,
-    value: val.toLowerCase(),
-  }),
-);
+const ALGORITHM_LABELS: Record<BaselineCorrectionOptions['algorithm'], string> =
+  {
+    airpls: 'airPLS',
+    polynomial: 'Polynomial',
+    whittaker: 'Whittaker',
+    cubic: 'Cubic',
+    bernstein: 'Bernstein',
+  };
 
+export const baselineCorrectionsAlgorithms = (
+  Object.keys(ALGORITHM_LABELS) as Array<BaselineCorrectionOptions['algorithm']>
+).map((value) => ({ value, label: ALGORITHM_LABELS[value] }));
 interface BaseOptions {
   algorithm: string;
   livePreview: boolean;
@@ -26,6 +31,18 @@ interface AirplsOptions extends BaseOptions {
 }
 interface PolynomialOptions extends BaseOptions {
   degree: number;
+}
+interface WhittakerOptions extends BaseOptions {
+  lambda: number;
+  scale: number;
+  maxIterations: number;
+}
+interface BernsteinOptions extends BaseOptions {
+  maxIterations: number;
+  tolerance: number;
+  factorStd: number;
+  learningRate: number;
+  minWeight: number;
 }
 
 function findAlgorithmItem(algorithmName: string) {
@@ -75,6 +92,57 @@ export function getBaselineData(
         },
       };
     }
+    case 'whittaker': {
+      const validation = Yup.object().shape({
+        lambda: Yup.number().integer().required(),
+        scale: Yup.number().integer().required(),
+        maxIterations: Yup.number().integer().required(),
+      });
+
+      return {
+        resolver: yupResolver(validation),
+        values: {
+          algorithm,
+          livePreview: true,
+          lambda: 150,
+          scale: 1,
+          maxIterations: 1,
+          ...(baseAlgorithm === 'whittaker' ? other : {}),
+        },
+      };
+    }
+    case 'cubic': {
+      return {
+        resolver: null,
+        values: {
+          algorithm,
+          livePreview: true,
+        },
+      };
+    }
+    case 'bernstein': {
+      const validation = Yup.object().shape({
+        maxIterations: Yup.number().integer().required(),
+        tolerance: Yup.number().required(),
+        factorStd: Yup.number().integer().required(),
+        learningRate: Yup.number().required(),
+        minWeight: Yup.number().required(),
+      });
+
+      return {
+        resolver: yupResolver(validation),
+        values: {
+          algorithm,
+          livePreview: true,
+          maxIterations: 100,
+          tolerance: 1e-6,
+          factorStd: 3,
+          learningRate: 0.3,
+          minWeight: 0.01,
+          ...(baseAlgorithm === 'bernstein' ? other : {}),
+        },
+      };
+    }
     default:
       return {
         resolver: yupResolver(
@@ -105,7 +173,7 @@ export function useBaselineCorrection(
   const { resolver, values } = getBaselineData(algorithm?.value, filter?.value);
 
   const { handleSubmit, reset, ...otherFormOptions } = useForm<
-    AirplsOptions | PolynomialOptions
+    AirplsOptions | PolynomialOptions | WhittakerOptions | BernsteinOptions
   >({
     defaultValues: values,
     resolver: resolver as any,
