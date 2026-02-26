@@ -6,6 +6,7 @@ import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import {
   Button,
   createTableColumnHelper,
+  FieldGroupSVGTextStyleFields,
   TableDragRowHandler,
   withForm,
 } from 'react-science/ui';
@@ -43,13 +44,19 @@ export const TitleBlockTab = withForm({
           </AppField>
         </Section>
         <Section title="Text style color">
-          <AppField name="infoBlock.nameStyle.fill">
-            {({ ColorPicker }) => <ColorPicker label="Name text color" />}
-          </AppField>
+          <FieldGroupSVGTextStyleFields
+            form={form}
+            fields="infoBlock.nameStyle"
+            label="Name text color"
+            previewText="Pulse sequence :"
+          />
 
-          <AppField name="infoBlock.valueStyle.fill">
-            {({ ColorPicker }) => <ColorPicker label="Value text color" />}
-          </AppField>
+          <FieldGroupSVGTextStyleFields
+            form={form}
+            fields="infoBlock.valueStyle"
+            label="Value text color"
+            previewText="lon1027"
+          />
         </Section>
         <TableSection
           title="Fields"
