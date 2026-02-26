@@ -14,7 +14,7 @@ export interface LabelStyle {
   wrapper?: CSSProperties;
   container?: CSSProperties;
 }
-interface LabelProps
+export interface LabelProps
   extends
     Omit<LabelHTMLAttributes<HTMLLabelElement>, 'style'>,
     Partial<ContainerQueryWrapperProps> {

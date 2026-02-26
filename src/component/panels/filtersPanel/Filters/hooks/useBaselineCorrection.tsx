@@ -9,17 +9,18 @@ import type { ExtractFilterEntry } from '../../../../../data/types/common/Extrac
 import { useDispatch } from '../../../../context/DispatchContext.js';
 import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsContext.js';
 
-export const baselineCorrectionsAlgorithms = [
-  'airPLS',
-  'Polynomial',
-  'Whittaker',
-  'Cubic',
-  'Bernstein',
-].map((val) => ({
-  label: val,
-  value: val.toLowerCase(),
-}));
+const ALGORITHM_LABELS: Record<BaselineCorrectionOptions['algorithm'], string> =
+  {
+    airpls: 'airPLS',
+    polynomial: 'Polynomial',
+    whittaker: 'Whittaker',
+    cubic: 'Cubic',
+    bernstein: 'Bernstein',
+  };
 
+export const baselineCorrectionsAlgorithms = (
+  Object.keys(ALGORITHM_LABELS) as Array<BaselineCorrectionOptions['algorithm']>
+).map((value) => ({ value, label: ALGORITHM_LABELS[value] }));
 interface BaseOptions {
   algorithm: string;
   livePreview: boolean;
