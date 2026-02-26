@@ -1,16 +1,17 @@
-import { Classes, NumericInput } from '@blueprintjs/core';
-import styled from '@emotion/styled';
-import { useStore } from '@tanstack/react-form';
+import { Classes } from '@blueprintjs/core';
+import { useField, useStore } from '@tanstack/react-form';
 import { useCallback, useMemo } from 'react';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
-import { Button, withForm } from 'react-science/ui';
-import type { CellProps } from 'react-table';
+import { Button, createTableColumnHelper, withForm } from 'react-science/ui';
 
-import { GroupPane } from '../../../../elements/GroupPane.js';
-import { Input2 } from '../../../../elements/Input2.js';
-import type { Column } from '../../../../elements/ReactTable/ReactTable.js';
-import ReactTable from '../../../../elements/ReactTable/ReactTable.js';
-import { Section } from '../../general_settings.js';
+import {
+  CellActions,
+  CellActionsButton,
+  CellInput,
+  CellNumericInput,
+  TableSettings,
+} from '../ui/table.tsx';
+import { TableSection } from '../ui/table_section.tsx';
 import { defaultGeneralSettingsFormValues } from '../validation.js';
 
 interface NucleiFormElement {
@@ -28,234 +29,149 @@ const emptyNucleiFormElement: NucleiFormElement = {
 export const NucleiTab = withForm({
   defaultValues: defaultGeneralSettingsFormValues,
   render: function Render({ form }) {
+    const nucleiField = useField({ form, name: 'nuclei', mode: 'array' });
+    const { insertValue, removeValue, pushValue } = nucleiField;
+
     const fields = useStore(form.store, (state) => state.values.nuclei);
 
-    const handleAdd = useCallback(
-      (data: readonly NucleiFormElement[], index: number) => {
-        let columns: NucleiFormElement[] = [];
-
-        if (data) {
-          columns = [
-            ...data.slice(0, index),
-            emptyNucleiFormElement,
-            ...data.slice(index),
-          ];
-        } else {
-          columns.push(emptyNucleiFormElement);
-        }
-
-        form.setFieldValue('nuclei', columns);
+    const insertNucleus = useCallback(
+      (index: number) => {
+        insertValue(index, emptyNucleiFormElement);
       },
-      [form],
+      [insertValue],
     );
-
-    const handleDelete = useCallback(
-      (data: readonly NucleiFormElement[], formElement: NucleiFormElement) => {
-        const fields = data.filter((element) => {
-          return element.nucleus !== formElement.nucleus;
-        });
-
-        form.setFieldValue('nuclei', fields);
+    const pushNucleus = useCallback(() => {
+      pushValue(emptyNucleiFormElement);
+    }, [pushValue]);
+    const deleteNucleus = useCallback(
+      (index: number) => {
+        removeValue(index);
       },
-      [form],
+      [removeValue],
     );
 
-    const COLUMNS = useMemo<Array<Column<NucleiFormElement>>>(
-      () => [
-        {
-          Header: 'Nucleus',
-          style: { padding: 0 },
-          Cell: ({ row: { index } }: CellProps<NucleiFormElement>) => {
-            return (
-              <form.Field key={index} name={`nuclei[${index}].nucleus`}>
-                {(subField) => (
-                  <Input2
-                    style={{
-                      backgroundColor: 'transparent',
-                      boxShadow: 'none',
-                    }}
-                    value={subField.state.value}
-                    onChange={subField.handleChange}
-                  />
-                )}
-              </form.Field>
-            );
+    const COLUMNS = useMemo(() => {
+      const columnHelper = createTableColumnHelper<NucleiFormElement>();
+      return [
+        columnHelper.accessor('nucleus', {
+          header: 'Nucleus',
+          cell: ({ row: { index } }) => (
+            <form.Field key={index} name={`nuclei[${index}].nucleus`}>
+              {(subField) => (
+                <CellInput
+                  value={subField.state.value}
+                  onChange={subField.handleChange}
+                />
+              )}
+            </form.Field>
+          ),
+        }),
+        columnHelper.accessor('ppmFormat', {
+          header: 'δ (ppm)',
+          cell: ({ row: { index } }) => (
+            <form.Field key={index} name={`nuclei[${index}].ppmFormat`}>
+              {(subField) => (
+                <CellInput
+                  value={subField.state.value}
+                  onChange={subField.handleChange}
+                />
+              )}
+            </form.Field>
+          ),
+        }),
+        columnHelper.accessor('hzFormat', {
+          header: 'Coupling (Hz)',
+          cell: ({ row: { index } }) => (
+            <form.Field key={index} name={`nuclei[${index}].hzFormat`}>
+              {(subField) => (
+                <CellInput
+                  value={subField.state.value}
+                  onChange={subField.handleChange}
+                />
+              )}
+            </form.Field>
+          ),
+        }),
+        columnHelper.display({
+          id: 'axisFrom',
+          header: 'Axis from',
+          cell: ({ row: { index } }) => (
+            <form.Field key={index} name={`nuclei[${index}].axisFrom`}>
+              {(subField) => (
+                <CellNumericInput
+                  value={subField.state.value}
+                  onValueChange={(num, str) => subField.handleChange(str)}
+                  fill
+                />
+              )}
+            </form.Field>
+          ),
+        }),
+        columnHelper.display({
+          id: 'axisTo',
+          header: 'Axis to',
+          cell: ({ row: { index } }) => (
+            <form.Field key={index} name={`nuclei[${index}].axisTo`}>
+              {(subField) => (
+                <CellNumericInput
+                  value={subField.state.value}
+                  onValueChange={(num, str) => subField.handleChange(str)}
+                  fill
+                />
+              )}
+            </form.Field>
+          ),
+        }),
+        columnHelper.display({
+          id: 'actions',
+          header: '',
+          meta: {
+            thStyle: {
+              width: '60px',
+            },
           },
-        },
-        {
-          Header: 'δ (ppm)',
-          style: { padding: 0 },
-          Cell: ({ row: { index } }: CellProps<NucleiFormElement>) => {
-            return (
-              <form.Field key={index} name={`nuclei[${index}].ppmFormat`}>
-                {(subField) => (
-                  <Input2
-                    style={{
-                      backgroundColor: 'transparent',
-                      boxShadow: 'none',
-                    }}
-                    value={subField.state.value}
-                    onChange={subField.handleChange}
-                  />
-                )}
-              </form.Field>
-            );
-          },
-        },
-        {
-          Header: 'Coupling (Hz)',
-          style: { padding: 0 },
-          Cell: ({ row: { index } }: CellProps<NucleiFormElement>) => {
-            return (
-              <form.Field key={index} name={`nuclei[${index}].hzFormat`}>
-                {(subField) => (
-                  <Input2
-                    style={{
-                      backgroundColor: 'transparent',
-                      boxShadow: 'none',
-                    }}
-                    value={subField.state.value}
-                    onChange={subField.handleChange}
-                  />
-                )}
-              </form.Field>
-            );
-          },
-        },
-        {
-          Header: 'Axis from',
-          style: { padding: 0 },
-          Cell: ({ row: { index } }: CellProps<NucleiFormElement>) => {
-            return (
-              <form.Field key={index} name={`nuclei[${index}].axisFrom`}>
-                {(subField) => (
-                  <NumericInput
-                    style={{
-                      backgroundColor: 'transparent',
-                      boxShadow: 'none',
-                    }}
-                    value={Number(subField.state.value) || undefined}
-                    fill
-                    onValueChange={(valueAsNumber) =>
-                      subField.handleChange(valueAsNumber)
-                    }
-                  />
-                )}
-              </form.Field>
-            );
-          },
-        },
-        {
-          Header: 'Axis to',
-          style: { padding: 0 },
-          Cell: ({ row: { index } }: CellProps<NucleiFormElement>) => {
-            return (
-              <form.Field key={index} name={`nuclei[${index}].axisTo`}>
-                {(subField) => (
-                  <NumericInput
-                    style={{
-                      backgroundColor: 'transparent',
-                      boxShadow: 'none',
-                    }}
-                    value={Number(subField.state.value) || undefined}
-                    fill
-                    onValueChange={(valueAsNumber) =>
-                      subField.handleChange(valueAsNumber)
-                    }
-                  />
-                )}
-              </form.Field>
-            );
-          },
-        },
-        {
-          Header: '',
-          style: {
-            width: 60,
-          },
-          id: 'op-buttons',
-          Cell: ({
-            row: { original, index: rowIndex },
-            data,
-          }: CellProps<NucleiFormElement>) => {
-            return (
-              <Buttons>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  intent="success"
-                  onClick={() => handleAdd(data, rowIndex + 1)}
-                >
-                  <FaPlus className={Classes.ICON} />
-                </Button>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  intent="danger"
-                  onClick={() => handleDelete(data, original)}
-                >
-                  <FaRegTrashAlt className={Classes.ICON} />
-                </Button>
-              </Buttons>
-            );
-          },
-        },
-      ],
-      [form, handleAdd, handleDelete],
-    );
+          cell: ({ row: { index } }) => (
+            <CellActions>
+              <CellActionsButton
+                intent="success"
+                onClick={() => insertNucleus(index + 1)}
+              >
+                <FaPlus className={Classes.ICON} />
+              </CellActionsButton>
+              <CellActionsButton
+                intent="danger"
+                onClick={() => deleteNucleus(index)}
+              >
+                <FaRegTrashAlt className={Classes.ICON} />
+              </CellActionsButton>
+            </CellActions>
+          ),
+        }),
+      ];
+    }, [deleteNucleus, form, insertNucleus]);
 
     return (
-      <GroupPane
-        text="Number formatting for crosshair and info line and axis domain"
-        renderHeader={(text) => {
-          return (
-            <FieldsBlockHeader text={text} onAdd={() => handleAdd(fields, 0)} />
-          );
-        }}
+      <TableSection
+        title="Nuclei number formatting"
+        description="for crosshair, info line and axis domain"
+        actions={
+          <Button
+            size="small"
+            variant="outlined"
+            intent="success"
+            tooltipProps={{ content: '', disabled: true }}
+            onClick={pushNucleus}
+          >
+            Add nuclei preferences
+          </Button>
+        }
       >
-        <ReactTable
-          style={{
-            'thead tr th': { zIndex: 1 },
-            td: { padding: 0 },
-          }}
-          rowStyle={{
-            hover: { backgroundColor: '#f7f7f7' },
-            active: { backgroundColor: '#f5f5f5' },
-          }}
+        <TableSettings
           data={fields}
           columns={COLUMNS}
-          emptyDataRowText="No Nucleus"
+          emptyContent="No nucleus"
         />
-      </GroupPane>
+      </TableSection>
     );
   },
 });
-
-interface FieldsBlockHeaderProps {
-  onAdd: () => void;
-  text: string;
-}
-
-function FieldsBlockHeader(props: FieldsBlockHeaderProps) {
-  const { onAdd, text } = props;
-  return (
-    <Section>
-      <p style={{ flex: 1 }}>{text}</p>
-
-      <Button
-        size="small"
-        variant="outlined"
-        intent="success"
-        tooltipProps={{ content: '', disabled: true }}
-        onClick={onAdd}
-      >
-        Add nuclei preferences
-      </Button>
-    </Section>
-  );
-}
-
-const Buttons = styled.div`
-  display: flex;
-  justify-content: space-evenly;
-`;

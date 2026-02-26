@@ -39,7 +39,7 @@ const AutoProcessingTabs = withForm({
     return (
       <>
         {Object.keys(filters || {}).map((nucleus) => (
-          <form.Section key={nucleus} title={`[${nucleus}] Filters`}>
+          <form.Section key={nucleus} title={`${nucleus} Filters`}>
             <NucleusElement form={form} nucleus={nucleus} />
           </form.Section>
         ))}
