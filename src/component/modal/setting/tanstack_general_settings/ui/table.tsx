@@ -1,18 +1,11 @@
-import {
-  Checkbox,
-  Classes,
-  Icon,
-  NumericInput,
-  RadioGroup,
-} from '@blueprintjs/core';
+import { Checkbox, Classes, NumericInput, RadioGroup } from '@blueprintjs/core';
 import type { CSSObject } from '@emotion/react';
 import type { StyledComponent } from '@emotion/styled';
 import styled from '@emotion/styled';
 import type { RowData } from '@tanstack/react-table';
 import type { CSSProperties, ComponentProps, ReactNode } from 'react';
-import { useCallback } from 'react';
-import type { ButtonProps, GetTdProps, TableProps } from 'react-science/ui';
-import { Button, Table } from 'react-science/ui';
+import type { ButtonProps, TableProps } from 'react-science/ui';
+import { Button, ColorPickerDropdown, Table } from 'react-science/ui';
 
 import { Input2 } from '../../../../elements/Input2.js';
 import type { BaseRowStyle } from '../../../../elements/ReactTable/ReactTable.js';
@@ -104,6 +97,21 @@ export const CellRadioGroup = styled(RadioGroup)`
   }
 `;
 
+export function CellColorPicker(
+  props: ComponentProps<typeof ColorPickerDropdown>,
+) {
+  return (
+    <CellColorPickerContainer>
+      <ColorPickerDropdown {...props} />
+    </CellColorPickerContainer>
+  );
+}
+export const CellColorPickerContainer = styled.div`
+  .${Classes.POPOVER_TARGET} button {
+    border: none;
+  }
+`;
+
 export const CellActions = styled.div`
   display: flex;
   align-items: center;
@@ -149,50 +157,13 @@ type NewTableSettingsProps<Data extends RowData> = {
 export function NewTableSettings<Data extends RowData>(
   props: NewTableSettingsProps<Data>,
 ) {
-  const {
-    emptyIcon = <Icon icon="eye-off" />,
-    emptyContent = 'No data',
-    getTdProps,
-    ...tableProps
-  } = props;
-
-  const getTdPropsMerge = useCallback<GetTdProps<Data>>(
-    (cell) => {
-      const tdStyleMeta = cell.column.columnDef.meta?.tdStyle;
-      const tdProps = getTdProps?.(cell);
-
-      return { ...tdProps, style: { ...tdStyleMeta, ...tdProps?.style } };
-    },
-    [getTdProps],
-  );
-
   // We should not create a component in another component,
   // But here it's OK, it is just an alias to fix the type
   const Table = NewTableSettingsStyled as StyledComponent<TableProps<Data>>;
 
-  return (
-    <TableContainer>
-      <Table
-        compact
-        bordered
-        stickyHeader
-        {...tableProps}
-        getTdProps={getTdPropsMerge}
-      />
-
-      {props.data.length === 0 && (
-        <TableEmptyState bordered={tableProps.bordered ?? true}>
-          {emptyIcon}
-          {emptyContent}
-        </TableEmptyState>
-      )}
-    </TableContainer>
-  );
+  return <Table compact bordered stickyHeader {...props} />;
 }
 
-const TableContainer = styled.div`
-  height: 100%;
-`;
 const NewTableSettingsStyled = styled(Table)`
   overflow: auto;
 
@@ -219,20 +190,4 @@ const NewTableSettingsStyled = styled(Table)`
       vertical-align: middle;
     }
   }
-`;
-const TableEmptyState = styled.div<{ bordered?: boolean }>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.25em;
-  gap: 0.5em;
-
-  ${(props) => {
-    if (!props.bordered) return '';
-
-    return `
-      border: 1px solid #11141826;
-      border-top: none;
-    `;
-  }}
 `;

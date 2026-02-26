@@ -1,15 +1,20 @@
 import { Classes } from '@blueprintjs/core';
 import { useField } from '@tanstack/react-form';
+import { createColumnHelper } from '@tanstack/react-table';
 import { useCallback, useMemo } from 'react';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
-import { Button, ColorPickerDropdown, withForm } from 'react-science/ui';
-import type { CellProps } from 'react-table';
+import { Button, withFieldGroup, withForm } from 'react-science/ui';
 import type { z } from 'zod/v4';
 
 import { useChartData } from '../../../../context/ChartContext.tsx';
-import type { Column } from '../../../../elements/ReactTable/ReactTable.tsx';
 import { getSpectraObjectPaths } from '../../../../utility/getSpectraObjectPaths.ts';
-import { CellActions, CellInput, TableSettings } from '../ui/table.tsx';
+import {
+  CellActions,
+  CellActionsButton,
+  CellColorPicker,
+  CellInput,
+  NewTableSettings,
+} from '../ui/table.tsx';
 import { TableSection } from '../ui/table_section.tsx';
 import type {
   spectraColorsTabOneDimensionValidation,
@@ -22,35 +27,42 @@ export const SpectraColorsTab = withForm({
   render: function Render({ form }) {
     return (
       <>
-        <form.Section title="General">
-          <form.AppField name="spectraColors.highlightColor">
-            {(field) => (
-              <field.ColorPicker label="Assignment highlight color" />
-            )}
-          </form.AppField>
-          <form.AppField name="spectraColors.indicatorLineColor">
-            {(field) => <field.ColorPicker label="Indicator line color" />}
-          </form.AppField>
-        </form.Section>
-        <OneDimension title="One dimension" form={form} />
-        <TwoDimension title="Two dimension" form={form} />
+        <GeneralColors form={form} fields="spectraColors" />
+        <Spectra1DColors form={form} />
+        <Spectra2DColors form={form} />
       </>
     );
   },
 });
 
-type OneDimensionData = z.input<typeof spectraColorsTabOneDimensionValidation>;
-const OneDimension = withForm({
-  props: {
-    title: '',
+const GeneralColors = withFieldGroup({
+  defaultValues: defaultGeneralSettingsFormValues.spectraColors,
+  render: ({ group }) => {
+    return (
+      <group.Section title="General">
+        <group.AppField name="highlightColor">
+          {(field) => <field.ColorPicker label="Assignment highlight color" />}
+        </group.AppField>
+        <group.AppField name="indicatorLineColor">
+          {(field) => <field.ColorPicker label="Indicator line color" />}
+        </group.AppField>
+      </group.Section>
+    );
   },
+});
+
+type OneDimensionData = z.input<typeof spectraColorsTabOneDimensionValidation>;
+const Spectra1DColors = withForm({
   defaultValues: defaultGeneralSettingsFormValues,
-  render: function Render({ form, title }) {
+  render: function Render({ form }) {
+    const { Field } = form;
+
     const field = useField({
       form,
       name: 'spectraColors.oneDimension',
       mode: 'array',
     });
+    const { insertValue, removeValue } = field;
 
     const { data: chartData } = useChartData();
     const { datalist } = useMemo(() => {
@@ -59,132 +71,112 @@ const OneDimension = withForm({
 
     const handleAdd = useCallback(
       (index: number) => {
-        field.insertValue(index, {
+        insertValue(index, {
           value: '',
           jpath: 'info.experiment',
           color: 'red',
         });
       },
-      [field],
+      [insertValue],
     );
 
     const handleDelete = useCallback(
       (index: number) => {
-        field.removeValue(index);
+        removeValue(index);
       },
-      [field],
+      [removeValue],
     );
 
-    const COLUMNS = useMemo<Array<Column<OneDimensionData>>>(() => {
+    const COLUMNS = useMemo(() => {
+      const helper = createColumnHelper<OneDimensionData>();
       return [
-        {
-          Header: 'Field',
-          Cell: ({ row: { index } }: CellProps<OneDimensionData>) => {
-            return (
-              <form.AppField
-                name={`spectraColors.oneDimension[${index}].jpath`}
+        helper.accessor('jpath', {
+          header: 'Field',
+          cell: ({ row: { index } }) => (
+            <Field name={`spectraColors.oneDimension[${index}].jpath`}>
+              {(field) => (
+                <CellInput
+                  name={field.name}
+                  value={field.state.value}
+                  filterItems={datalist}
+                  onChange={field.handleChange}
+                  onBlur={field.handleBlur}
+                />
+              )}
+            </Field>
+          ),
+        }),
+        helper.accessor('value', {
+          header: 'Value',
+          cell: ({ row: { index } }) => (
+            <Field name={`spectraColors.oneDimension[${index}].value`}>
+              {(field) => (
+                <CellInput
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={field.handleChange}
+                />
+              )}
+            </Field>
+          ),
+        }),
+        helper.accessor('color', {
+          header: 'Color',
+          cell: ({ row: { index } }) => (
+            <Field name={`spectraColors.oneDimension[${index}].color`}>
+              {(field) => (
+                <CellColorPicker
+                  color={{ hex: field.state.value }}
+                  onChangeComplete={({ hex }) => field.handleChange(hex)}
+                />
+              )}
+            </Field>
+          ),
+        }),
+        helper.display({
+          id: 'actions',
+          header: '',
+          cell: ({ row: { index, original } }) => (
+            <CellActions>
+              <CellActionsButton
+                intent="success"
+                onClick={() => handleAdd(index + 1)}
               >
-                {(field) => (
-                  <CellInput
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    filterItems={datalist}
-                    onChange={field.handleChange}
-                  />
-                )}
-              </form.AppField>
-            );
-          },
-        },
-        {
-          Header: 'Value',
-          Cell: ({ row: { index } }: CellProps<OneDimensionData>) => {
-            return (
-              <form.AppField
-                name={`spectraColors.oneDimension[${index}].value`}
-              >
-                {(field) => (
-                  <CellInput
-                    onBlur={field.handleBlur}
-                    value={field.state.value}
-                    onChange={field.handleChange}
-                  />
-                )}
-              </form.AppField>
-            );
-          },
-        },
-        {
-          Header: 'Color',
-          Cell: ({ row: { index } }: CellProps<OneDimensionData>) => {
-            return (
-              <form.AppField
-                name={`spectraColors.oneDimension[${index}].color`}
-              >
-                {(field) => (
-                  <ColorPickerDropdown
-                    color={{ hex: field.state.value }}
-                    onChangeComplete={({ hex }) => field.handleChange(hex)}
-                  />
-                )}
-              </form.AppField>
-            );
-          },
-        },
-        {
-          Header: '',
-          style: { width: 60 },
-          id: 'operation-button',
-          Cell: ({ row: { index, original } }: CellProps<OneDimensionData>) => {
-            return (
-              <CellActions>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  intent="success"
-                  tooltipProps={{ content: '', disabled: true }}
-                  onClick={() => handleAdd(index + 1)}
+                <FaPlus className={Classes.ICON} />
+              </CellActionsButton>
+              {!('name' in original) && (
+                <CellActionsButton
+                  intent="danger"
+                  onClick={() => handleDelete(index)}
                 >
-                  <FaPlus className={Classes.ICON} />
-                </Button>
-                {!('name' in original) && (
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    intent="danger"
-                    tooltipProps={{ content: '', disabled: true }}
-                    onClick={() => handleDelete(index)}
-                  >
-                    <FaRegTrashAlt className={Classes.ICON} />
-                  </Button>
-                )}
-              </CellActions>
-            );
-          },
-        },
+                  <FaRegTrashAlt className={Classes.ICON} />
+                </CellActionsButton>
+              )}
+            </CellActions>
+          ),
+        }),
       ];
-    }, [datalist, form, handleAdd, handleDelete]);
+    }, [Field, datalist, handleAdd, handleDelete]);
 
     return (
       <TableSection
-        title={title}
+        title="1D Spectra"
         actions={
           <Button
             size="small"
             variant="outlined"
             intent="success"
-            tooltipProps={{ content: '', disabled: true }}
             onClick={() => handleAdd(0)}
           >
             Add custom color
           </Button>
         }
       >
-        <TableSettings
+        <NewTableSettings
           data={field.state.value}
           columns={COLUMNS}
-          emptyDataRowText="No Fields"
+          emptyContent="No criteria colors"
         />
       </TableSection>
     );
@@ -192,35 +184,35 @@ const OneDimension = withForm({
 });
 
 type TwoDimensionData = z.input<typeof spectraColorsTabTwoDimensionValidation>;
-const TwoDimension = withForm({
-  props: {
-    title: '',
-  },
+const Spectra2DColors = withForm({
   defaultValues: defaultGeneralSettingsFormValues,
-  render: function Render({ form, title }) {
+  render: function Render({ form }) {
+    const { Field } = form;
+
     const field = useField({
       form,
       name: 'spectraColors.twoDimensions',
       mode: 'array',
     });
+    const { insertValue, removeValue } = field;
 
     const handleAdd = useCallback(
       (index: number) => {
-        field.insertValue(index, {
+        insertValue(index, {
           value: '',
           jpath: 'info.experiment',
           positiveColor: 'red',
           negativeColor: 'blue',
         });
       },
-      [field],
+      [insertValue],
     );
 
     const handleDelete = useCallback(
       (index: number) => {
-        field.removeValue(index);
+        removeValue(index);
       },
-      [field],
+      [removeValue],
     );
 
     const { data: chartData } = useChartData();
@@ -228,133 +220,115 @@ const TwoDimension = withForm({
       return getSpectraObjectPaths(chartData);
     }, [chartData]);
 
-    const COLUMNS = useMemo<Array<Column<TwoDimensionData>>>(() => {
+    const COLUMNS = useMemo(() => {
+      const helper = createColumnHelper<TwoDimensionData>();
       return [
-        {
-          Header: 'Field',
-          Cell: ({ row: { index } }: CellProps<TwoDimensionData>) => {
-            return (
-              <form.AppField
-                name={`spectraColors.twoDimensions[${index}].jpath`}
+        helper.accessor('jpath', {
+          header: 'Field',
+          cell: ({ row: { index } }) => (
+            <Field name={`spectraColors.twoDimensions[${index}].jpath`}>
+              {(field) => (
+                <CellInput
+                  name={field.name}
+                  value={field.state.value}
+                  filterItems={datalist}
+                  onChange={field.handleChange}
+                  onBlur={field.handleBlur}
+                />
+              )}
+            </Field>
+          ),
+        }),
+        helper.accessor('value', {
+          header: 'Value',
+          cell: ({ row: { index } }) => (
+            <Field name={`spectraColors.twoDimensions[${index}].value`}>
+              {(field) => (
+                <CellInput
+                  name={field.name}
+                  value={field.state.value}
+                  onChange={field.handleChange}
+                  onBlur={field.handleBlur}
+                />
+              )}
+            </Field>
+          ),
+        }),
+        helper.accessor('positiveColor', {
+          header: 'Positive color',
+          cell: ({ row: { index } }) => (
+            <Field name={`spectraColors.twoDimensions[${index}].positiveColor`}>
+              {(field) => (
+                <CellColorPicker
+                  color={{ hex: field.state.value }}
+                  onChangeComplete={({ hex }) => {
+                    field.handleChange(hex);
+                    field.handleBlur();
+                  }}
+                />
+              )}
+            </Field>
+          ),
+        }),
+        helper.accessor('negativeColor', {
+          header: 'Negative color',
+          cell: ({ row: { index } }) => (
+            <Field name={`spectraColors.twoDimensions[${index}].negativeColor`}>
+              {(field) => (
+                <CellColorPicker
+                  color={{ hex: field.state.value }}
+                  onChangeComplete={({ hex }) => {
+                    field.handleChange(hex);
+                    field.handleBlur();
+                  }}
+                />
+              )}
+            </Field>
+          ),
+        }),
+        helper.display({
+          id: 'actions',
+          header: '',
+          cell: ({ row: { index, original } }) => (
+            <CellActions>
+              <CellActionsButton
+                intent="success"
+                onClick={() => handleAdd(index + 1)}
               >
-                {(field) => (
-                  <CellInput
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    filterItems={datalist}
-                    onChange={field.handleChange}
-                  />
-                )}
-              </form.AppField>
-            );
-          },
-        },
-        {
-          Header: 'Value',
-          Cell: ({ row: { index } }: CellProps<TwoDimensionData>) => {
-            return (
-              <form.AppField
-                name={`spectraColors.twoDimensions[${index}].value`}
-              >
-                {(field) => (
-                  <CellInput
-                    onBlur={field.handleBlur}
-                    value={field.state.value}
-                    onChange={field.handleChange}
-                  />
-                )}
-              </form.AppField>
-            );
-          },
-        },
-        {
-          Header: 'Positive color',
-          Cell: ({ row: { index } }: CellProps<TwoDimensionData>) => {
-            return (
-              <form.AppField
-                name={`spectraColors.twoDimensions[${index}].positiveColor`}
-              >
-                {(field) => (
-                  <ColorPickerDropdown
-                    color={{ hex: field.state.value }}
-                    onChangeComplete={({ hex }) => field.handleChange(hex)}
-                  />
-                )}
-              </form.AppField>
-            );
-          },
-        },
-        {
-          Header: 'Negative color',
-          Cell: ({ row: { index } }: CellProps<TwoDimensionData>) => {
-            return (
-              <form.AppField
-                name={`spectraColors.twoDimensions[${index}].negativeColor`}
-              >
-                {(field) => (
-                  <ColorPickerDropdown
-                    color={{ hex: field.state.value }}
-                    onChangeComplete={({ hex }) => field.handleChange(hex)}
-                  />
-                )}
-              </form.AppField>
-            );
-          },
-        },
-        {
-          Header: '',
-          style: { width: 60 },
-          id: 'operation-button',
-          Cell: ({ row: { index, original } }: CellProps<TwoDimensionData>) => {
-            return (
-              <CellActions>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  intent="success"
-                  tooltipProps={{ content: '', disabled: true }}
-                  onClick={() => handleAdd(index + 1)}
+                <FaPlus className={Classes.ICON} />
+              </CellActionsButton>
+              {!('name' in original) && (
+                <CellActionsButton
+                  intent="danger"
+                  onClick={() => handleDelete(index)}
                 >
-                  <FaPlus className={Classes.ICON} />
-                </Button>
-                {!('name' in original) && (
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    intent="danger"
-                    tooltipProps={{ content: '', disabled: true }}
-                    onClick={() => handleDelete(index)}
-                  >
-                    <FaRegTrashAlt className={Classes.ICON} />
-                  </Button>
-                )}
-              </CellActions>
-            );
-          },
-        },
+                  <FaRegTrashAlt className={Classes.ICON} />
+                </CellActionsButton>
+              )}
+            </CellActions>
+          ),
+        }),
       ];
-    }, [datalist, form, handleAdd, handleDelete]);
+    }, [Field, datalist, handleAdd, handleDelete]);
 
     return (
       <TableSection
-        title={title}
+        title="2D Spectra"
         actions={
           <Button
             size="small"
             variant="outlined"
             intent="success"
-            tooltipProps={{ content: '', disabled: true }}
             onClick={() => handleAdd(0)}
           >
             Add custom color
           </Button>
         }
       >
-        <TableSettings
+        <NewTableSettings
           data={field.state.value}
           columns={COLUMNS}
-          emptyDataRowText="No Fields"
+          emptyContent="No criteria colors"
         />
       </TableSection>
     );
