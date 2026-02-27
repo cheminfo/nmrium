@@ -87,7 +87,7 @@ export function formValueToWorkspace(
   return lodashMergeWith({}, baseValue, safeValue, mergeReplaceArray);
 }
 
-export function mergeReplaceArray(obj: unknown, src: unknown) {
+function mergeReplaceArray(obj: unknown, src: unknown) {
   if (!Array.isArray(obj)) return;
   if (!Array.isArray(src)) return;
 

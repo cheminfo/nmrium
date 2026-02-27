@@ -2,27 +2,20 @@ import { Dialog as BPDialog } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { revalidateLogic } from '@tanstack/react-form';
 import type { Workspace } from '@zakodium/nmrium-core';
-import lodashMergeWith from 'lodash/mergeWith.js';
-import { useMemo } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Form, assert, assertUnreachable, useForm } from 'react-science/ui';
 
-import { useLogger } from '../../../context/LoggerContext.tsx';
 import { usePreferences } from '../../../context/PreferencesContext.js';
 import ErrorOverlay from '../../../main/ErrorOverlay.tsx';
-import { workspaceDefaultProperties } from '../../../workspaces/workspaceDefaultProperties.ts';
 
 import { GeneralSettingsDialogBody } from './general_settings_dialog_body.js';
 import { GeneralSettingsDialogFooter } from './general_settings_dialog_footer.js';
 import { GeneralSettingsDialogHeader } from './general_settings_dialog_header.js';
 import {
   formValueToWorkspace,
-  mergeReplaceArray,
+  useDefaultValues,
 } from './hooks/use_safe_workspace.ts';
-import {
-  defaultGeneralSettingsFormValues,
-  workspaceValidation,
-} from './validation.js';
+import { workspaceValidation } from './validation.js';
 
 interface GeneralSettingsDialogProps {
   isOpen: boolean;
@@ -113,51 +106,6 @@ function GeneralSettings(props: GeneralSettingsProps) {
       <GeneralSettingsDialogFooter form={form} onCancel={close} />
     </Form>
   );
-}
-
-/**
- * Best effort to return typesafe values for the form
- * If one step does not work
- * - warn zod result with workspace in context
- * - fallback on the next step.
- *
- * 1. try to encode the current workspace
- * 2. try to encode the current workspace merged with workspaceDefaultProperties
- * 3. fallback on defaultGeneralSettingsFormValues (apply / save will lose current workspace values)
- *
- * NB: merge use a replacement array strategy.
- */
-function useDefaultValues() {
-  const { current: currentWorkspace } = usePreferences();
-  const { logger } = useLogger();
-
-  return useMemo(() => {
-    const result = workspaceValidation.safeEncode(currentWorkspace);
-    if (result.success) return result.data;
-
-    const childLogger = logger.child({ workspace: currentWorkspace });
-
-    childLogger.warn(
-      result,
-      'Failed to encode current workspace, try to merge with current workspace default values',
-    );
-    const workspaceMergedWithDefault = lodashMergeWith(
-      {},
-      workspaceDefaultProperties,
-      currentWorkspace,
-      mergeReplaceArray,
-    );
-    const mergedResult = workspaceValidation.safeEncode(
-      workspaceMergedWithDefault,
-    );
-    if (mergedResult.success) return mergedResult.data;
-
-    childLogger.warn(
-      mergedResult,
-      'Failed to encode workspace merged with default values, use current default values instead',
-    );
-    return defaultGeneralSettingsFormValues;
-  }, [currentWorkspace, logger]);
 }
 
 const InvisibleButton = styled.button`
