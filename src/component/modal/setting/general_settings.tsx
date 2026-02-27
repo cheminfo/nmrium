@@ -163,6 +163,7 @@ function GeneralSettingsModal(props: GeneralSettingsModalProps) {
           height={otherProps.height}
           isOpen={isOpenGeneralSettingsDialog}
           close={closeGeneralSettingsDialog}
+          onSave={saveSettings}
         />
       )}
     </>
