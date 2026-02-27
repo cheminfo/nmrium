@@ -1,19 +1,25 @@
 import { Dialog as BPDialog } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { revalidateLogic } from '@tanstack/react-form';
-import type { Workspace } from '@zakodium/nmrium-core';
-import lodashMerge from 'lodash/merge.js';
+import lodashMergeWith from 'lodash/mergeWith.js';
+import { useMemo } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Form, assert, assertUnreachable, useForm } from 'react-science/ui';
 
+import { useLogger } from '../../../context/LoggerContext.tsx';
 import { usePreferences } from '../../../context/PreferencesContext.js';
 import { useSaveSettings } from '../../../hooks/useSaveSettings.js';
 import ErrorOverlay from '../../../main/ErrorOverlay.tsx';
+import type { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer.ts';
+import { workspaceDefaultProperties } from '../../../workspaces/workspaceDefaultProperties.ts';
 
 import { GeneralSettingsDialogBody } from './general_settings_dialog_body.js';
 import { GeneralSettingsDialogFooter } from './general_settings_dialog_footer.js';
 import { GeneralSettingsDialogHeader } from './general_settings_dialog_header.js';
-import { workspaceValidation } from './validation.js';
+import {
+  defaultGeneralSettingsFormValues,
+  workspaceValidation,
+} from './validation.js';
 
 interface GeneralSettingsProps {
   isOpen: boolean;
@@ -45,10 +51,11 @@ function GeneralSettings(props: Omit<GeneralSettingsProps, 'isOpen'>) {
 
   const { current: currentWorkspace, dispatch } = usePreferences();
   const { saveSettings } = useSaveSettings();
+  const defaultValues = useDefaultValues();
 
-  function onApply(data: Omit<Workspace, 'version' | 'label'>) {
+  function onApply(data: WorkspaceWithSource) {
     dispatch({
-      type: 'APPLY_General_PREFERENCES',
+      type: 'APPLY_GENERAL_PREFERENCES',
       payload: { data },
     });
 
@@ -60,7 +67,7 @@ function GeneralSettings(props: Omit<GeneralSettingsProps, 'isOpen'>) {
       onDynamic: workspaceValidation,
     },
     validationLogic: revalidateLogic({ mode: 'change' }),
-    defaultValues: workspaceValidation.encode(currentWorkspace),
+    defaultValues,
     onSubmitMeta: 'apply' satisfies FormMeta as FormMeta,
     onSubmit: ({ value, meta }) => {
       const safeParseResult = workspaceValidation.safeParse(value);
@@ -70,7 +77,12 @@ function GeneralSettings(props: Omit<GeneralSettingsProps, 'isOpen'>) {
       }
 
       const safeValue = safeParseResult.data;
-      const mergedValues = lodashMerge({}, currentWorkspace, safeValue);
+      const mergedValues = lodashMergeWith(
+        {},
+        currentWorkspace,
+        safeValue,
+        mergeReplaceArray,
+      );
 
       switch (meta) {
         case 'apply':
@@ -118,6 +130,59 @@ function GeneralSettings(props: Omit<GeneralSettingsProps, 'isOpen'>) {
     </Form>
   );
 }
+
+/**
+ * Best effort to return typesafe values for the form
+ * If one step does not work
+ * - warn zod result with workspace in context
+ * - fallback on the next step.
+ *
+ * 1. try to encode the current workspace
+ * 2. try to encode the current workspace merged with workspaceDefaultProperties
+ * 3. fallback on defaultGeneralSettingsFormValues (apply / save will lose current workspace values)
+ *
+ * NB: merge use a replacement array strategy.
+ */
+function useDefaultValues() {
+  const { current: currentWorkspace } = usePreferences();
+  const { logger } = useLogger();
+
+  return useMemo(() => {
+    const result = workspaceValidation.safeEncode(currentWorkspace);
+    if (result.success) return result.data;
+
+    const childLogger = logger.child({ workspace: currentWorkspace });
+
+    childLogger.warn(
+      result,
+      'Failed to encode current workspace, try to merge with current workspace default values',
+    );
+    const workspaceMergedWithDefault = lodashMergeWith(
+      {},
+      workspaceDefaultProperties,
+      currentWorkspace,
+      mergeReplaceArray,
+    );
+    const mergedResult = workspaceValidation.safeEncode(
+      workspaceMergedWithDefault,
+    );
+    if (mergedResult.success) return mergedResult.data;
+
+    childLogger.warn(
+      mergedResult,
+      'Failed to encode workspace merged with default values, use current default values instead',
+    );
+    return defaultGeneralSettingsFormValues;
+  }, [currentWorkspace, logger]);
+}
+
+function mergeReplaceArray(obj: unknown, src: unknown) {
+  if (!Array.isArray(obj)) return;
+  if (!Array.isArray(src)) return;
+
+  return src;
+}
+
 const InvisibleButton = styled.button`
   display: none;
 `;

@@ -493,7 +493,7 @@ function DialogActionButtons(props: BasseGeneralModalProps) {
     }
 
     dispatch({
-      type: 'APPLY_General_PREFERENCES',
+      type: 'APPLY_GENERAL_PREFERENCES',
       payload: {
         data: values as any,
       },
