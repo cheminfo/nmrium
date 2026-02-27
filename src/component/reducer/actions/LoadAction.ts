@@ -197,7 +197,7 @@ function setData(draft: Draft<State>, input: InputProps | InitiateProps) {
     }),
   );
 
-  draft.view.zoom.levels = initializeContours(draft.data);
+  draft.view.spectraContourLevels = initializeContours(draft.data);
 
   setCorrelation(draft, correlations);
 

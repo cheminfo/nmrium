@@ -49,10 +49,10 @@ function usePath(contours: ReturnType<typeof drawContours>['contours']) {
 const useContoursLevel = (spectrumID: string, sign: LevelSign) => {
   const {
     view: {
-      zoom: { levels },
+      spectraContourLevels,
     },
   } = useChartData();
-  const level = levels[spectrumID]?.[sign];
+  const level = spectraContourLevels[spectrumID]?.[sign];
   return level;
 };
 
@@ -85,7 +85,7 @@ function ContoursPaths({
     activeSpectrum === null || spectrumID === activeSpectrum.id
       ? '1'
       : // TODO: make sure preferences are not a lie and remove the optional chaining.
-        (preferences?.current?.general?.dimmedSpectraOpacity ?? 0.1);
+      (preferences?.current?.general?.dimmedSpectraOpacity ?? 0.1);
 
   return (
     <path

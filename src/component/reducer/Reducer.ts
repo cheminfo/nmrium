@@ -104,9 +104,7 @@ export function getDefaultViewState(): ViewState {
       showSimilarityTree: false,
       selectReferences: {},
     },
-    zoom: {
-      levels: {},
-    },
+    spectraContourLevels: {},
     verticalAlign: {},
     predictions: {},
     currentSimulatedSpectrumKey: null,
