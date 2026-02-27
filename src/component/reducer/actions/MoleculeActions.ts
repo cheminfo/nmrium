@@ -305,7 +305,7 @@ function handlePredictSpectraFromMolecule(
   )) {
     draft.data.push(spectrum);
     spectraIds.push(spectrum.id);
-    draft.view.zoom.levels[spectrum.id] = initializeContoursLevels(spectrum);
+    draft.view.spectraContourLevels[spectrum.id] = initializeContoursLevels(spectrum);
   }
   let id = molecule?.id;
   //if the id object is not exits add a new molecule

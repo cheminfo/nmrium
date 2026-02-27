@@ -26,14 +26,12 @@ import {
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import { isFid1DSpectrum } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
 import {
-  getDefaultContoursLevel,
   initializeContoursLevels,
 } from '../../../data/data2d/Spectrum2D/contours.js';
 import { getProjection } from '../../../data/data2d/Spectrum2D/getMissingProjection.js';
 import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.js';
 import {
   isFid2DSpectrum,
-  isFt2DSpectrum,
 } from '../../../data/data2d/Spectrum2D/isSpectrum2D.js';
 import type { ExclusionZone } from '../../../data/types/data1d/ExclusionZone.js';
 import { getXScale } from '../../1d/utilities/scale.js';
@@ -268,15 +266,15 @@ export type FiltersActions =
   | ManualTwoDimensionsPhaseCorrectionFilterAction
   | ReorderFiltersAction
   | ActionType<
-      | 'APPLY_FFT_FILTER'
-      | 'APPLY_FFT_DIMENSION_1_FILTER'
-      | 'APPLY_FFT_DIMENSION_2_FILTER'
-      | 'APPLY_AUTO_PHASE_CORRECTION_FILTER'
-      | 'APPLY_ABSOLUTE_FILTER'
-      | 'APPLY_MANUAL_PHASE_CORRECTION_TOW_DIMENSION_FILTER'
-      | 'TOGGLE_ADD_PHASE_CORRECTION_TRACE_TO_BOTH_DIRECTIONS'
-      | 'APPLY_AUTO_PHASE_CORRECTION_TOW_DIMENSION_FILTER'
-    >;
+    | 'APPLY_FFT_FILTER'
+    | 'APPLY_FFT_DIMENSION_1_FILTER'
+    | 'APPLY_FFT_DIMENSION_2_FILTER'
+    | 'APPLY_AUTO_PHASE_CORRECTION_FILTER'
+    | 'APPLY_ABSOLUTE_FILTER'
+    | 'APPLY_MANUAL_PHASE_CORRECTION_TOW_DIMENSION_FILTER'
+    | 'TOGGLE_ADD_PHASE_CORRECTION_TRACE_TO_BOTH_DIRECTIONS'
+    | 'APPLY_AUTO_PHASE_CORRECTION_TOW_DIMENSION_FILTER'
+  >;
 
 const DEFAULT_FILTER_DOMAIN_UPDATE_RULES: FilterDomainUpdateRules = {
   updateXDomain: false,
@@ -450,8 +448,8 @@ function rollbackSpectrumByFilter(
         const activeFilterIndex =
           !reset && toolData.activeFilterID
             ? spectrum.filters.findIndex(
-                (f) => f.id === toolData.activeFilterID,
-              )
+              (f) => f.id === toolData.activeFilterID,
+            )
             : spectrum.filters.length;
 
         const filters = spectrum.filters.slice(0, activeFilterIndex);
@@ -564,16 +562,16 @@ function rollbackSpectrum(
   const applyFilter = !filterKey
     ? true
     : [
-        phaseCorrection.name,
-        phaseCorrectionTwoDimensions.name,
-        fft.name,
-        shiftX.name,
-        shift2DX.name,
-        shift2DY.name,
-        signalProcessing.name,
-        digitalFilter.name,
-        digitalFilter2D.name,
-      ].includes(filterKey as any);
+      phaseCorrection.name,
+      phaseCorrectionTwoDimensions.name,
+      fft.name,
+      shiftX.name,
+      shift2DX.name,
+      shift2DY.name,
+      signalProcessing.name,
+      digitalFilter.name,
+      digitalFilter2D.name,
+    ].includes(filterKey as any);
 
   beforeRollback(draft, filterKey);
 
@@ -747,7 +745,7 @@ function afterRollback(draft: Draft<State>, filterKey: any) {
     case fftDimension2: {
       if (!activeSpectrum) return;
       const spectrum = current(draft).data[activeSpectrum.index];
-      draft.view.zoom.levels[spectrum.id] = initializeContoursLevels(spectrum);
+      draft.view.spectraContourLevels[spectrum.id] = initializeContoursLevels(spectrum);
       break;
     }
     default:
@@ -1357,10 +1355,6 @@ function applyFFTTwoDimensionFilter(
 
   const spectrum = draft.data[index];
 
-  if (isFt2DSpectrum(spectrum)) {
-    spectrum.display.contourOptions = getDefaultContoursLevel(spectrum);
-  }
-
   updateView(draft, domainUpdateRules);
 
   //clear zoom history
@@ -1368,7 +1362,7 @@ function applyFFTTwoDimensionFilter(
 
   draft.toolOptions.selectedOptionPanel = null;
   draft.toolOptions.selectedTool = 'zoom';
-  draft.view.zoom.levels[spectrum.id] = initializeContoursLevels(spectrum);
+  draft.view.spectraContourLevels[spectrum.id] = initializeContoursLevels(spectrum);
 }
 
 function handleApplyFFtDimension1Filter(draft: Draft<State>) {
