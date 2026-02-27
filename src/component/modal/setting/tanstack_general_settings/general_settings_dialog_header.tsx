@@ -1,7 +1,8 @@
 import { Classes } from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import type { Workspace } from '@zakodium/nmrium-core';
+import { useStore } from '@tanstack/react-form';
 import { useMemo } from 'react';
+import { withForm } from 'react-science/ui';
 
 import type { ExtendedWorkspace } from '../../../context/PreferencesContext.js';
 import {
@@ -12,83 +13,89 @@ import Label from '../../../elements/Label.js';
 import type { DropDownListItem } from '../../../elements/dropDownButton/DropDownButton.js';
 import DropDownButton from '../../../elements/dropDownButton/DropDownButton.js';
 import { useWorkspaceAction } from '../../../hooks/useWorkspaceAction.js';
+import { workspaceDefaultProperties } from '../../../workspaces/workspaceDefaultProperties.ts';
 import WorkspaceItem from '../WorkspaceItem.js';
 
 import { GeneralSettingsDialogHeaderActionsButtons } from './general_settings_dialog_header_actions_buttons.js';
+import {
+  formValueToWorkspace,
+  unsafeWorkspaceToForm,
+} from './hooks/use_safe_workspace.ts';
+import { defaultGeneralSettingsFormValues } from './validation.ts';
 
-interface GeneralSettingsDialogHeaderProps<T extends object> {
-  reset: (values?: T) => void;
-  currentValues: T;
-}
+export const GeneralSettingsDialogHeader = withForm({
+  defaultValues: defaultGeneralSettingsFormValues,
+  render: function GeneralSettingsDialogHeader({ form }) {
+    const { reset } = form;
 
-export function GeneralSettingsDialogHeader<T extends object>(
-  props: GeneralSettingsDialogHeaderProps<T>,
-) {
-  const { reset, currentValues } = props;
+    const baseWorkspaces = useWorkspacesList();
+    const { workspaces, ...preferences } = usePreferences();
 
-  const baseWorkspaces = useWorkspacesList();
-  const { workspaces, ...preferences } = usePreferences();
+    const { addNewWorkspace, removeWorkspace, setActiveWorkspace } =
+      useWorkspaceAction();
 
-  const { addNewWorkspace, removeWorkspace, setActiveWorkspace } =
-    useWorkspaceAction();
+    const workspacesList = useMemo(() => {
+      return baseWorkspaces.concat([
+        {
+          key: 'new',
+          label: 'Custom workspace',
+          source: 'custom',
+          visible: true,
+          ...workspaceDefaultProperties,
+        },
+      ]);
+    }, [baseWorkspaces]);
 
-  const workspacesList = useMemo(() => {
-    return baseWorkspaces.concat([
-      {
-        key: 'new',
-        label: 'Custom workspace',
-      } as any,
-    ]);
-  }, [baseWorkspaces]);
+    const currentValues = useStore(form.store, (state) => state.values);
 
-  function handleChangeWorkspace(option: DropDownListItem) {
-    setActiveWorkspace(option.key);
-    reset(workspaces[option.key] as T);
-  }
-
-  function handleDeleteWorkspace(key: string) {
-    const isActiveWorkspace = removeWorkspace(key);
-
-    if (!isActiveWorkspace) {
-      return;
+    function handleChangeWorkspace(option: DropDownListItem) {
+      setActiveWorkspace(option.key);
+      reset(unsafeWorkspaceToForm(workspaces[option.key]));
     }
 
-    reset(workspaces.default as T);
-  }
+    function handleDeleteWorkspace(key: string) {
+      const isActiveWorkspace = removeWorkspace(key);
 
-  function handleAddWorkspace(name: string) {
-    // TODO: change the as when the full form is done.
-    addNewWorkspace(name, currentValues as Workspace);
-  }
+      if (!isActiveWorkspace) {
+        return;
+      }
 
-  function renderItem(item: DropDownListItem) {
-    return (
-      <WorkspaceItem
-        item={item}
-        onSave={handleAddWorkspace}
-        onDelete={handleDeleteWorkspace}
-      />
-    );
-  }
+      reset(unsafeWorkspaceToForm(workspaces.default));
+    }
 
-  return (
-    <DialogHeader className={Classes.DIALOG_HEADER}>
-      <Label title="Workspace">
-        <DropDownButton<ExtendedWorkspace>
-          data={workspacesList}
-          renderItem={renderItem}
-          selectedKey={preferences.workspace.current}
-          onSelect={handleChangeWorkspace}
+    function handleAddWorkspace(name: string) {
+      addNewWorkspace(
+        name,
+        formValueToWorkspace(currentValues, preferences.current),
+      );
+    }
+
+    function renderItem(item: DropDownListItem) {
+      return (
+        <WorkspaceItem
+          item={item}
+          onSave={handleAddWorkspace}
+          onDelete={handleDeleteWorkspace}
         />
-      </Label>
+      );
+    }
 
-      <GeneralSettingsDialogHeaderActionsButtons<T>
-        reset={reset}
-        values={currentValues}
-      />
-    </DialogHeader>
-  );
-}
+    return (
+      <DialogHeader className={Classes.DIALOG_HEADER}>
+        <Label title="Workspace">
+          <DropDownButton<ExtendedWorkspace>
+            data={workspacesList}
+            renderItem={renderItem}
+            selectedKey={preferences.workspace.current}
+            onSelect={handleChangeWorkspace}
+          />
+        </Label>
+
+        <GeneralSettingsDialogHeaderActionsButtons form={form} />
+      </DialogHeader>
+    );
+  },
+});
 
 const DialogHeader = styled.div`
   cursor: default;

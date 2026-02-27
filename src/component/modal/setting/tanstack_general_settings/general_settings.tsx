@@ -2,22 +2,25 @@ import { Dialog as BPDialog } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { revalidateLogic } from '@tanstack/react-form';
 import type { Workspace } from '@zakodium/nmrium-core';
-import lodashMerge from 'lodash/merge.js';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Form, assert, assertUnreachable, useForm } from 'react-science/ui';
 
 import { usePreferences } from '../../../context/PreferencesContext.js';
-import { useSaveSettings } from '../../../hooks/useSaveSettings.js';
 import ErrorOverlay from '../../../main/ErrorOverlay.tsx';
 
 import { GeneralSettingsDialogBody } from './general_settings_dialog_body.js';
 import { GeneralSettingsDialogFooter } from './general_settings_dialog_footer.js';
 import { GeneralSettingsDialogHeader } from './general_settings_dialog_header.js';
+import {
+  formValueToWorkspace,
+  useDefaultValues,
+} from './hooks/use_safe_workspace.ts';
 import { workspaceValidation } from './validation.js';
 
-interface GeneralSettingsProps {
+interface GeneralSettingsDialogProps {
   isOpen: boolean;
   close: () => void;
+  onSave: (values?: Partial<Workspace>) => void;
   height?: number;
 }
 
@@ -27,7 +30,7 @@ const Dialog = styled(BPDialog)`
   min-width: 800px;
 `;
 
-export function GeneralSettingsDialog(props: GeneralSettingsProps) {
+export function GeneralSettingsDialog(props: GeneralSettingsDialogProps) {
   const { isOpen, close } = props;
 
   return (
@@ -39,45 +42,39 @@ export function GeneralSettingsDialog(props: GeneralSettingsProps) {
   );
 }
 
+interface GeneralSettingsProps extends Omit<
+  GeneralSettingsDialogProps,
+  'isOpen'
+> {
+  onSave: (values?: Partial<Workspace>) => void;
+}
+
 type FormMeta = 'apply' | 'save';
-function GeneralSettings(props: Omit<GeneralSettingsProps, 'isOpen'>) {
-  const { close, height } = props;
+function GeneralSettings(props: GeneralSettingsProps) {
+  const { close, height, onSave } = props;
 
   const { current: currentWorkspace, dispatch } = usePreferences();
-  const { saveSettings } = useSaveSettings();
-
-  function onApply(data: Omit<Workspace, 'version' | 'label'>) {
-    dispatch({
-      type: 'APPLY_General_PREFERENCES',
-      payload: { data },
-    });
-
-    close();
-  }
+  const defaultValues = useDefaultValues();
 
   const form = useForm({
     validators: {
       onDynamic: workspaceValidation,
     },
     validationLogic: revalidateLogic({ mode: 'change' }),
-    defaultValues: workspaceValidation.encode(currentWorkspace),
+    defaultValues,
     onSubmitMeta: 'apply' satisfies FormMeta as FormMeta,
     onSubmit: ({ value, meta }) => {
-      const safeParseResult = workspaceValidation.safeParse(value);
-
-      if (!safeParseResult.success) {
-        throw new Error('Failed to parse workspace validation');
-      }
-
-      const safeValue = safeParseResult.data;
-      const mergedValues = lodashMerge({}, currentWorkspace, safeValue);
+      const mergedValues = formValueToWorkspace(value, currentWorkspace);
 
       switch (meta) {
         case 'apply':
-          onApply(mergedValues);
+          dispatch({
+            type: 'APPLY_GENERAL_PREFERENCES',
+            payload: { data: mergedValues },
+          });
           break;
         case 'save':
-          saveSettings(mergedValues);
+          onSave(mergedValues);
           break;
         default:
           assertUnreachable(meta);
@@ -104,20 +101,13 @@ function GeneralSettings(props: Omit<GeneralSettingsProps, 'isOpen'>) {
     >
       <PreventImplicitSubmit />
 
-      <form.Subscribe selector={(state) => state.values}>
-        {(values) => (
-          <GeneralSettingsDialogHeader
-            reset={form.reset}
-            currentValues={values}
-          />
-        )}
-      </form.Subscribe>
-
+      <GeneralSettingsDialogHeader form={form} />
       <GeneralSettingsDialogBody form={form} height={height} />
       <GeneralSettingsDialogFooter form={form} onCancel={close} />
     </Form>
   );
 }
+
 const InvisibleButton = styled.button`
   display: none;
 `;
