@@ -43,6 +43,7 @@ interface BernsteinOptions extends BaseOptions {
   factorStd: number;
   learningRate: number;
   minWeight: number;
+  degree: number;
 }
 
 function findAlgorithmItem(algorithmName: string) {
@@ -127,6 +128,7 @@ export function getBaselineData(
         factorStd: Yup.number().integer().required(),
         learningRate: Yup.number().required(),
         minWeight: Yup.number().required(),
+        degree: Yup.number().integer().required(),
       });
 
       return {
@@ -139,6 +141,7 @@ export function getBaselineData(
           factorStd: 3,
           learningRate: 0.3,
           minWeight: 0.01,
+          degree: 3,
           ...(baseAlgorithm === 'bernstein' ? other : {}),
         },
       };
