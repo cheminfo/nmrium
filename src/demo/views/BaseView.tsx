@@ -2,16 +2,20 @@ import type { CustomWorkspaces } from '@zakodium/nmrium-core';
 import { useCallback, useState } from 'react';
 import { ObjectInspector } from 'react-inspector';
 
-import type { NMRiumWorkspace } from '../../component/main/index.js';
+import type {
+  NMRiumProps,
+  NMRiumWorkspace,
+} from '../../component/main/index.js';
 import { NMRium } from '../../component/main/index.js';
 import type { PageConfig } from '../layouts/Main.js';
 
-export interface BaseViewProps {
+export interface BaseViewProps extends Required<
+  Pick<NMRiumProps, 'state' | 'aggregator'>
+> {
   title?: string;
   workspace?: NMRiumWorkspace;
   customWorkspaces?: CustomWorkspaces;
   pageConfig: PageConfig;
-  data: any;
 }
 
 export default function BaseView(props: BaseViewProps) {
@@ -20,7 +24,8 @@ export default function BaseView(props: BaseViewProps) {
     workspace,
     customWorkspaces,
     pageConfig: { width, height },
-    data,
+    state,
+    aggregator,
   } = props;
 
   const [callbackData, setCallbackData] = useState<any[]>([]);
@@ -111,7 +116,8 @@ export default function BaseView(props: BaseViewProps) {
         <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
           <div style={{ width: isCallbackVisible ? '75%' : '100%' }}>
             <NMRium
-              data={data}
+              state={state}
+              aggregator={aggregator}
               onChange={changeHandler}
               {...(workspace && { workspace })}
               {...(customWorkspaces && { customWorkspaces })}

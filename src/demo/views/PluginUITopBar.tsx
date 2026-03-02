@@ -87,7 +87,8 @@ export default function PluginUITopBar(props: ViewProps) {
         <DemoContext.Provider value={context}>
           <NMRium
             core={core}
-            data={data}
+            state={data?.state}
+            aggregator={data?.aggregator}
             {...(workspace && { workspace })}
             {...(customWorkspaces && { customWorkspaces })}
           />

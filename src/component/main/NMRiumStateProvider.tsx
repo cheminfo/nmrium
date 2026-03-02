@@ -1,4 +1,5 @@
 import type { NmriumState } from '@zakodium/nmrium-core';
+import { FileCollection } from 'file-collection';
 import { produce } from 'immer';
 import type { ReactNode } from 'react';
 import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
@@ -17,20 +18,22 @@ import {
   spectrumReducer,
 } from '../reducer/Reducer.js';
 
-import type { NMRiumChangeCb, NMRiumData } from './types.js';
+import type { NMRiumChangeCb } from './types.js';
 
 interface NMRiumStateProviderProps {
   children: ReactNode;
   onChange: NMRiumChangeCb | undefined;
-  nmriumData: NMRiumData | undefined;
+  state: Partial<NmriumState> | undefined;
+  aggregator: FileCollection | undefined;
 }
 
-const defaultData: NMRiumData = {
-  spectra: [],
-};
-
 export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
-  const { children, onChange, nmriumData = defaultData } = props;
+  const {
+    children,
+    onChange,
+    state: externalState,
+    aggregator: externalAggregator,
+  } = props;
 
   const core = useCore();
   const { logger } = useLogger();
@@ -110,41 +113,60 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
     handleChange.current?.(stateRef.current as NmriumState, 'settings');
   }, [preferencesState]);
 
+  const loggerRef = useRef(logger);
+  useEffect(() => void (loggerRef.current = logger));
   useEffect(() => {
+    const logger = loggerRef.current;
+
     dispatch({
       type: 'SET_LOADING_FLAG',
       payload: { isLoading: true },
     });
-    if (nmriumData) {
-      void core
-        .readNMRiumObject(nmriumData)
-        .then((result) => {
-          const [nmriumState, aggregator] = result;
-          if (nmriumState?.settings) {
-            dispatchPreferences({
-              type: 'SET_WORKSPACE',
-              payload: {
-                data: nmriumState.settings,
-                workspaceSource: 'nmriumFile',
-              },
-            });
-          }
-          dispatch({
-            type: 'INITIATE',
-            payload: { nmriumState, aggregator },
-          });
-        })
-        .catch((error: unknown) => {
-          dispatch({ type: 'SET_LOADING_FLAG', payload: { isLoading: false } });
 
-          if (error instanceof Error) {
-            // eslint-disable-next-line no-alert
-            globalThis.alert(error.message);
-          }
-          reportError(error);
-        });
+    function loadingEmptyState() {
+      dispatch({
+        type: 'INITIATE',
+        payload: { nmriumState: {}, aggregator: new FileCollection() },
+      });
+      dispatch({ type: 'SET_LOADING_FLAG', payload: { isLoading: false } });
     }
-  }, [nmriumData, dispatch, dispatchPreferences, core]);
+
+    if (externalState && externalAggregator) {
+      if (externalState.version !== core.version) {
+        logger.warn(
+          externalState,
+          `The provided state is for a different version of NMRium (${externalState.version}) than the current version (${core.version}). The provided state is ignored.`,
+        );
+        loadingEmptyState();
+        return;
+      }
+
+      if (externalState.settings) {
+        dispatchPreferences({
+          type: 'SET_WORKSPACE',
+          payload: {
+            data: externalState.settings,
+            workspaceSource: 'nmriumFile',
+          },
+        });
+      }
+      dispatch({
+        type: 'INITIATE',
+        payload: { nmriumState: externalState, aggregator: externalAggregator },
+      });
+      dispatch({ type: 'SET_LOADING_FLAG', payload: { isLoading: false } });
+      return;
+    }
+
+    if (externalState && !externalAggregator) {
+      logger.warn(
+        externalState,
+        '`aggregator` is mandatory with `state` props. The provided `state` is ignored',
+      );
+    }
+
+    loadingEmptyState();
+  }, [dispatch, dispatchPreferences, core, externalState, externalAggregator]);
   const { sortOptions } = useSortSpectra();
 
   const spectra = useMemo(() => {

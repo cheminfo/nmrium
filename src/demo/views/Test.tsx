@@ -1,9 +1,12 @@
+import type { NmriumState } from '@zakodium/nmrium-core';
+import type { FileCollection } from 'file-collection';
 import debounce from 'lodash/debounce.js';
 import { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import { ObjectInspector } from 'react-inspector';
 import { DropZone } from 'react-science/ui';
 
 import { NMRium } from '../../component/main/index.js';
+import { demoCore } from '../utility/core.ts';
 
 import { loadData } from './View.helpers.js';
 
@@ -63,7 +66,10 @@ function Inspector(data: any) {
 
 export default function Test(props: any) {
   const { file, title, baseURL, workspace } = props;
-  const [data, setData] = useState<any>();
+  const [data, setData] = useState<{
+    state: Partial<NmriumState>;
+    aggregator: FileCollection;
+  }>();
   const [viewCount, incrementViewCount] = useReducer((a: any) => a + 1, 0);
   const [dataCount, incrementDataCount] = useReducer((a: any) => a + 1, 0);
   const [settingsCount, incrementSettingsCount] = useReducer(
@@ -76,12 +82,9 @@ export default function Test(props: any) {
   }
 
   useEffect(() => {
-    if (file) {
-      void loadData(file).then((d: any) => {
-        const _d = JSON.parse(JSON.stringify(d).replaceAll(/\.\/+?/g, baseURL));
-        setData(_d);
-      });
-    }
+    if (!file) return;
+
+    void loadData(file, baseURL).then(setData);
   }, [baseURL, file, props]);
   const [viewCallBack, setViewCallBack] = useState<any>({});
   const [dataCallBack, setDataCallBack] = useState<any>({});
@@ -89,10 +92,11 @@ export default function Test(props: any) {
   const dropFileHandler = useCallback((dropFiles: File[]) => {
     void (async () => {
       try {
-        const arrayBuffer = await dropFiles[0].arrayBuffer();
-        const decoder = new TextDecoder('utf-8');
-        const data = JSON.parse(decoder.decode(arrayBuffer));
-        setData(data);
+        const rawText = await dropFiles[0].text();
+        const nmriumObject = JSON.parse(rawText);
+        const [state, aggregator] =
+          await demoCore.readNMRiumObject(nmriumObject);
+        setData({ state, aggregator });
       } catch (error) {
         reportError(error);
         // eslint-disable-next-line no-alert
@@ -183,7 +187,8 @@ export default function Test(props: any) {
       >
         <div style={{ flex: 9 }}>
           <NMRium
-            data={data}
+            state={data?.state}
+            aggregator={data?.aggregator}
             onChange={changeHandler}
             workspace={workspace || null}
           />

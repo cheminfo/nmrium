@@ -1,4 +1,9 @@
+import type { NmriumState } from '@zakodium/nmrium-core';
+import type { FileCollection } from 'file-collection';
+import { useEffect, useState } from 'react';
+
 import { NMRium } from '../../component/main/index.js';
+import { demoCore } from '../utility/core.ts';
 
 const data1 = {
   spectra: [
@@ -36,9 +41,28 @@ const data2 = {
     },
   ],
 };
-
+interface InstanceState {
+  state: Partial<NmriumState>;
+  aggregator: FileCollection;
+}
 export default function TwoInstances(props: any) {
   const { path } = props;
+  const [aInstance, setAInstance] = useState<InstanceState>();
+  const [bInstance, setBInstance] = useState<InstanceState>();
+
+  useEffect(() => {
+    async function readOldInstances() {
+      const [ra, rb] = await Promise.all([
+        demoCore.readNMRiumObject(data1),
+        demoCore.readNMRiumObject(data2),
+      ]);
+
+      setAInstance({ state: ra[0], aggregator: ra[1] });
+      setBInstance({ state: rb[0], aggregator: rb[1] });
+    }
+
+    void readOldInstances();
+  }, []);
 
   return (
     <div
@@ -73,10 +97,18 @@ export default function TwoInstances(props: any) {
         </p>
       )}
       <div style={{ flex: 1 }}>
-        <NMRium data={data1} key="1" />
+        <NMRium
+          key="1"
+          state={aInstance?.state}
+          aggregator={aInstance?.aggregator}
+        />
       </div>
       <div style={{ flex: 1 }}>
-        <NMRium data={data2} key="2" />
+        <NMRium
+          key="2"
+          state={bInstance?.state}
+          aggregator={bInstance?.aggregator}
+        />
       </div>
     </div>
   );

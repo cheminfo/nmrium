@@ -1,27 +1,39 @@
-import { useState } from 'react';
+import type { NmriumState } from '@zakodium/nmrium-core';
+import { FileCollection } from 'file-collection';
+import { useEffect, useState } from 'react';
 
 import { NMRium } from '../../component/main/index.js';
+import { demoCore } from '../utility/core.ts';
 
-export default function SingleView(props: any) {
+interface SingleViewProps {
+  path: string;
+}
+export default function SingleView(props: SingleViewProps) {
   const { path } = props;
 
-  const [data, setData] = useState<
-    { spectra: Array<{ source: { jcampURL: string } }> } | undefined
-  >();
+  const [data, setData] = useState<{
+    state: Partial<NmriumState>;
+    aggregator: FileCollection;
+  }>();
 
-  const [previousPath, setPreviousPath] = useState<string>();
-  if (previousPath !== path) {
-    setPreviousPath(path);
-    setData({
-      spectra: [
-        {
-          source: {
-            jcampURL: path,
-          },
-        },
-      ],
-    });
-  }
+  useEffect(() => {
+    let canceled = false;
+    void demoCore
+      .readFromWebSource({ entries: [{ relativePath: path }] })
+      .then(([state, fileCollection, selectorRoot]) => {
+        if (canceled) return;
+
+        const aggregator = new FileCollection().appendFileCollection(
+          fileCollection,
+          selectorRoot,
+        );
+        setData({ state, aggregator });
+      });
+
+    return () => {
+      canceled = true;
+    };
+  }, [path]);
 
   return (
     <div
@@ -55,8 +67,7 @@ export default function SingleView(props: any) {
           {path}
         </p>
       )}
-      {/* @ts-expect-error data type is wrong */}
-      <NMRium data={data} />
+      <NMRium state={data?.state} aggregator={data?.aggregator} />
     </div>
   );
 }

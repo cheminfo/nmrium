@@ -1,12 +1,23 @@
+import type { NmriumState } from '@zakodium/nmrium-core';
+import type { FileCollection } from 'file-collection';
 import { useEffect, useState } from 'react';
+
+import { demoCore } from '../utility/core.ts';
 
 import type { BaseViewProps } from './BaseView.js';
 
-export async function loadData(file: any) {
+export async function loadData(file: string | URL, baseURL?: string) {
   const response = await fetch(file);
   checkStatus(response);
-  const data = await response.json();
-  return data;
+  const nmriumObject = await response.json();
+
+  if (baseURL === './') baseURL = window.location.href;
+  const [state, aggregator] = await demoCore.readNMRiumObject(
+    nmriumObject,
+    undefined,
+    { baseURL },
+  );
+  return { state, aggregator };
 }
 
 function checkStatus(response: any) {
@@ -22,7 +33,10 @@ export interface ViewProps extends Omit<BaseViewProps, 'data'> {
 }
 
 export function useView(props: ViewProps) {
-  const [data, setData] = useState();
+  const [data, setData] = useState<{
+    state: Partial<NmriumState>;
+    aggregator: FileCollection;
+  }>();
 
   const { file, baseURL, ...otherProps } = props;
 
@@ -32,10 +46,7 @@ export function useView(props: ViewProps) {
 
   useEffect(() => {
     if (file) {
-      void loadData(file).then((d: any) => {
-        const _d = JSON.parse(JSON.stringify(d).replaceAll(/\.\/+?/g, baseURL));
-        setData(_d);
-      });
+      void loadData(file, baseURL).then(setData);
     }
   }, [baseURL, file]);
 

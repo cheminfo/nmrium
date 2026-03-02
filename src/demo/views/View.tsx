@@ -5,5 +5,10 @@ import { useView } from './View.helpers.js';
 export default function View(props: ViewProps) {
   const [data, otherProps] = useView(props);
 
-  return <BaseView {...otherProps} data={data} />;
+  if (!data) {
+    return <BaseView {...otherProps} />;
+  }
+
+  const { state, aggregator } = data;
+  return <BaseView {...otherProps} state={state} aggregator={aggregator} />;
 }
