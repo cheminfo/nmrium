@@ -224,6 +224,15 @@ function BernsteinFields({ control, onValueChange }: AlgorithmFieldProps) {
   return (
     <>
       <NumberInputField
+        labelProps={{ title: 'Degree:', style: formLabelStyle }}
+        name="degree"
+        control={control}
+        min={1}
+        onValueChange={onValueChange}
+        fill
+        debounceTime={250}
+      />
+      <NumberInputField
         labelProps={{ title: 'Max iterations:', style: formLabelStyle }}
         name="maxIterations"
         control={control}
