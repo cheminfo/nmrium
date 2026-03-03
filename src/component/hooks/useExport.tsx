@@ -1,10 +1,6 @@
-import type { NmriumState } from '@zakodium/nmrium-core';
 import { useCallback } from 'react';
 
-import { toJSON } from '../../data/SpectraManager.js';
 import { useChartData } from '../context/ChartContext.js';
-import { useCore } from '../context/CoreContext.js';
-import { usePreferences } from '../context/PreferencesContext.js';
 import { useToaster } from '../context/ToasterContext.js';
 import {
   browserNotSupportedErrorToast,
@@ -14,23 +10,27 @@ import {
 } from '../utility/export.js';
 import { saveAs } from '../utility/save_as.js';
 
+import { useCreateNmriumZip } from './useCreateNmriumZip.ts';
+
+type DataType =
+  | 'NO_DATA'
+  | 'SELF_CONTAINED'
+  | 'SELF_CONTAINED_EXTERNAL_DATASOURCE';
+
+export interface SaveIncludeOptions {
+  settings: boolean;
+  view: boolean;
+  dataType: DataType;
+}
 export interface SaveOptions {
-  include: {
-    settings: boolean;
-    view: boolean;
-    dataType:
-      | 'NO_DATA'
-      | 'SELF_CONTAINED'
-      | 'SELF_CONTAINED_EXTERNAL_DATASOURCE';
-  };
+  include: SaveIncludeOptions;
   name: string;
 }
 
 export function useExport() {
   const toaster = useToaster();
   const state = useChartData();
-  const preferencesState = usePreferences();
-  const core = useCore();
+  const createNmriumZip = useCreateNmriumZip();
 
   const saveHandler = useCallback(
     (options: SaveOptions) => {
@@ -43,22 +43,7 @@ export function useExport() {
         });
         setTimeout(async () => {
           try {
-            const nmriumState = toJSON(core, state, preferencesState, {
-              serialize: false,
-              exportTarget: 'nmrium',
-            }) as NmriumState;
-            const archive = await core.serializeNmriumArchive({
-              state: nmriumState,
-              aggregator: state.aggregator,
-              includeData: include.dataType !== 'NO_DATA',
-              externalData:
-                include.dataType === 'SELF_CONTAINED' ? 'embedded' : 'linked',
-              includeSettings: include.settings,
-              includeView: include.view,
-            });
-            const zipBlob = new Blob([archive], {
-              type: 'chemical/x-nmrium+zip',
-            });
+            const zipBlob = await createNmriumZip(include);
             saveAs({ blob: zipBlob, name, extension: '.nmrium.zip' });
           } catch (error) {
             toaster.show({
@@ -74,7 +59,7 @@ export function useExport() {
 
       void handler();
     },
-    [core, preferencesState, state, toaster],
+    [createNmriumZip, toaster],
   );
 
   const defaultName = state.data[0]?.info?.name || 'experiment';
