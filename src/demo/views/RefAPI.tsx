@@ -1,14 +1,27 @@
 import { useCallback, useRef } from 'react';
-import { DropZone } from 'react-science/ui';
+import { Button, DropZone } from 'react-science/ui';
 
 import type { NMRiumRefAPI } from '../../component/main/index.js';
 import { NMRium } from '../../component/main/index.js';
+import { saveAs } from '../../component/utility/save_as.ts';
 
 export default function RefAPI() {
   const nmriumRef = useRef<NMRiumRefAPI>(null);
   const dropFileHandler = useCallback((dropFiles: File[]) => {
     nmriumRef.current?.loadFiles(dropFiles);
   }, []);
+
+  async function saveAsNMRiumFile() {
+    const blob = await nmriumRef.current?.getNMRiumFile({
+      settings: true,
+      view: true,
+      dataType: 'SELF_CONTAINED',
+    });
+
+    if (!blob) return;
+
+    saveAs({ blob, name: 'experiment', extension: '.nmrium.zip' });
+  }
 
   return (
     <div
@@ -17,6 +30,7 @@ export default function RefAPI() {
         marginLeft: 30,
       }}
     >
+      <Button onClick={saveAsNMRiumFile}>Save as NMRium File</Button>
       <div
         style={{
           display: 'flex',
