@@ -7,7 +7,7 @@ const infoBlockFieldTabValidation = z.object({
   format: z.string(),
   jpath: jpathCodec,
   visible: z.boolean(),
-  label: z.string(),
+  label: z.string().min(1),
 });
 
 export const infoBlockFieldTabValidationWithUUID = z.codec(
