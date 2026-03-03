@@ -47,7 +47,9 @@ function DatabaseSpectrum() {
       try {
         setLoading(true);
         const url = new URL(jcampRelativeURL, baseURL);
-        const [{ data }] = await core.readFromWebSource({
+        const {
+          state: { data },
+        } = await core.readFromWebSource({
           entries: [{ relativePath: url.pathname, baseURL: url.origin }],
         });
         setLoading(false);

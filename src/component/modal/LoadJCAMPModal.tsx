@@ -67,7 +67,7 @@ function InnerLoadJCAMPModal({ onCloseDialog }: InnerLoadJCAMPModalProps) {
     });
     const { pathname, origin } = new URL(url);
     try {
-      const [nmriumState, fileCollection, selectorRoot] =
+      const { state, aggregator, containsNmrium } =
         await core.readFromWebSource({
           entries: [{ relativePath: pathname, baseURL: origin }],
         });
@@ -75,10 +75,10 @@ function InnerLoadJCAMPModal({ onCloseDialog }: InnerLoadJCAMPModalProps) {
       dispatch({
         type: 'LOAD_DROP_FILES',
         payload: {
-          nmriumState,
+          nmriumState: state,
+          containsNmrium,
+          aggregator,
           resetSourceObject: false,
-          fileCollection,
-          selectorRoot,
         },
       });
     } catch {
