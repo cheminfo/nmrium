@@ -38,7 +38,8 @@ type InnerNMRiumProps = Omit<NMRiumProps, 'onError'> & {
 
 export function InnerNMRium(props: InnerNMRiumProps) {
   const {
-    data: nmriumData,
+    state,
+    aggregator,
     workspace,
     customWorkspaces,
     preferences,
@@ -110,7 +111,8 @@ export function InnerNMRium(props: InnerNMRiumProps) {
                     <SortSpectraProvider>
                       <NMRiumStateProvider
                         onChange={onChange}
-                        nmriumData={nmriumData}
+                        state={state}
+                        aggregator={aggregator}
                       >
                         <TopicMoleculeProvider>
                           <DialogProvider>

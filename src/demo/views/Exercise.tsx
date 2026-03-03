@@ -1,23 +1,34 @@
 import styled from '@emotion/styled';
+import type { NmriumState } from '@zakodium/nmrium-core';
+import type { FileCollection } from 'file-collection';
 import { Molecule } from 'openchemlib';
 import type { CSSProperties } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { MF } from 'react-mf';
 import { CanvasMoleculeEditor } from 'react-ocl';
 
-import type { NMRiumData } from '../../component/main/index.js';
 import { NMRium } from '../../component/main/index.js';
+import { demoCore } from '../utility/core.ts';
 
-const answers = JSON.parse(localStorage.getItem('nmrium-exercises') || '{}');
+const answers: Record<string, string> = JSON.parse(
+  localStorage.getItem('nmrium-exercises') || '{}',
+);
 
-async function loadData(file: any) {
+async function loadData(file: string | URL, baseURL: string) {
   const response = await fetch(file);
   checkStatus(response);
-  const data = await response.json();
-  return data;
+  const nmriumObject = await response.json();
+
+  if (baseURL === './') baseURL = window.location.href;
+  const [state, aggregator] = await demoCore.readNMRiumObject(
+    nmriumObject,
+    undefined,
+    { baseURL },
+  );
+  return { state, aggregator };
 }
 
-function checkStatus(response: any) {
+function checkStatus(response: Response) {
   if (!response.ok) {
     throw new Error(`HTTP ${response.status} - ${response.statusText}`);
   }
@@ -119,12 +130,14 @@ const Container = styled.div`
   padding: 10px;
 `;
 
-interface ExerciceData extends NMRiumData {
+interface ExerciceData {
   answer: {
     idCode: string;
-    currentAnswer: string;
+    currentAnswer: string | undefined;
     mf: string;
   };
+  state: Partial<NmriumState>;
+  aggregator: FileCollection;
 }
 
 export default function Exercise(props: any) {
@@ -151,27 +164,25 @@ export default function Exercise(props: any) {
     if (!file) return;
 
     let canceled = false;
-    loadData(file)
-      .then((d: any) => {
+    loadData(file, baseURL)
+      .then((result) => {
         if (canceled) return;
 
-        const _d = JSON.parse(JSON.stringify(d).replaceAll(/\.\/+?/g, baseURL));
+        const { state, aggregator } = result;
+        if (!state?.data?.molecules?.[0]?.molfile) return;
 
-        if (_d?.molecules?.[0]?.molfile) {
-          const molecule = Molecule.fromMolfile(_d.molecules[0].molfile);
-          const idCode = molecule.getIDCode();
-          let currentAnswer = answers[idCode];
+        const molecule = Molecule.fromMolfile(state.data.molecules[0].molfile);
+        const idCode = molecule.getIDCode();
+        const currentAnswer = answers[idCode]
+          ? Molecule.fromIDCode(answers[idCode]).toMolfile()
+          : undefined;
+        const answer = {
+          idCode,
+          currentAnswer,
+          mf: molecule.getMolecularFormula().formula,
+        };
 
-          if (currentAnswer) {
-            currentAnswer = Molecule.fromIDCode(currentAnswer).toMolfile();
-          }
-          _d.answer = {
-            idCode,
-            currentAnswer,
-            mf: molecule.getMolecularFormula().formula,
-          };
-          setData(_d);
-        }
+        setData({ state, aggregator, answer });
       })
 
       .catch(reportError);
@@ -196,7 +207,11 @@ export default function Exercise(props: any) {
         <div
           style={{ height: answerAreaVisible ? '50%' : 'calc(100% - 25px)' }}
         >
-          <NMRium data={data} workspace="exercise" />
+          <NMRium
+            state={data?.state}
+            aggregator={data?.aggregator}
+            workspace="exercise"
+          />
         </div>
         <ToggleButton type="button" onClick={showAnswerAreaHandler}>
           {!answerAreaVisible ? 'Show answer area' : 'Hide answer area '}

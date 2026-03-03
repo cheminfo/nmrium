@@ -1,5 +1,6 @@
-import type { CustomWorkspaces, NmriumData } from '@zakodium/nmrium-core';
+import type { CustomWorkspaces, NmriumState } from '@zakodium/nmrium-core';
 import init from '@zakodium/nmrium-core-plugins';
+import { FileCollection } from 'file-collection';
 import { useCallback, useEffect, useState } from 'react';
 import { ObjectInspector } from 'react-inspector';
 
@@ -11,7 +12,15 @@ const core = init();
 
 async function loadFromURL(url: string) {
   const { pathname: relativePath, origin: baseURL } = new URL(url);
-  return core.readFromWebSource({ entries: [{ relativePath, baseURL }] });
+  const [state, fileCollection, selectorRoot] = await core.readFromWebSource({
+    entries: [{ relativePath, baseURL }],
+  });
+  const aggregator = new FileCollection().appendFileCollection(
+    fileCollection,
+    selectorRoot,
+  );
+
+  return { state, aggregator };
 }
 
 interface WebSourceViewProps {
@@ -24,7 +33,10 @@ interface WebSourceViewProps {
 }
 
 export default function WebSourceView(props: WebSourceViewProps) {
-  const [data, setData] = useState<NmriumData>();
+  const [data, setData] = useState<{
+    state: Partial<NmriumState>;
+    aggregator: FileCollection;
+  }>();
 
   const {
     file,
@@ -39,9 +51,7 @@ export default function WebSourceView(props: WebSourceViewProps) {
   const [isCallbackVisible, showCallback] = useState(false);
 
   useEffect(() => {
-    void loadFromURL(file).then(([state]) => {
-      return setData(state.data as any);
-    });
+    void loadFromURL(file).then(setData);
   }, [baseURL, file, props]);
 
   const changeHandler = useCallback((logData: any) => {
@@ -129,7 +139,8 @@ export default function WebSourceView(props: WebSourceViewProps) {
         <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
           <div style={{ width: isCallbackVisible ? '75%' : '100%' }}>
             <NMRium
-              data={data}
+              state={data?.state}
+              aggregator={data?.aggregator}
               onChange={changeHandler}
               {...(workspace && { workspace })}
               {...(customWorkspaces && { customWorkspaces })}

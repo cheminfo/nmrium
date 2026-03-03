@@ -543,7 +543,7 @@ test('check callbacks count on changing structures', async ({ page }) => {
     // wait the spectrum to load
     await expect(nmrium.page.getByTestId('spectrum-line')).toBeVisible();
 
-    await expect(dataCount).toContainText(/[2-5]/);
+    await expect(dataCount).toContainText('0');
     await expect(viewCount).toContainText(/[2-5]/);
   });
 

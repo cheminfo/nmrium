@@ -1,3 +1,4 @@
+import type { NmriumState } from '@zakodium/nmrium-core';
 import init from '@zakodium/nmrium-core-plugins';
 import { FileCollection } from 'file-collection';
 import { useEffect, useState } from 'react';
@@ -23,29 +24,39 @@ async function loadSpectrumFromURL(url: string) {
     ],
     baseURL,
   };
-  const fileCollection = await new FileCollection().appendSource(source);
+  const [state, fileCollection, selectorRoot] = await core.readFromWebSource(
+    source,
+    {
+      experimentalFeatures: true,
+      onLoadProcessing: { autoProcessing: true },
+    },
+  );
 
-  const { nmriumState } = await core.read(fileCollection, {
-    experimentalFeatures: true,
-    onLoadProcessing: { autoProcessing: true },
-  });
-  return nmriumState;
+  return {
+    state,
+    aggregator: new FileCollection().appendFileCollection(
+      fileCollection,
+      selectorRoot,
+    ),
+  };
 }
 
 export default function ExternalLoadView(props: ExternalLoadViewProps) {
-  const [data, setData] = useState();
+  const [data, setData] = useState<{
+    state: Partial<NmriumState>;
+    aggregator: FileCollection;
+  }>();
 
   const { file, baseURL, ...otherProps } = props;
 
   useEffect(() => {
-    void loadSpectrumFromURL(file).then((d: any) => {
-      setData(d);
-    });
+    void loadSpectrumFromURL(file).then(setData);
   }, [baseURL, file]);
 
   if (!data) {
     return <Loading />;
   }
 
-  return <BaseView {...otherProps} data={data} />;
+  const { state, aggregator } = data;
+  return <BaseView {...otherProps} state={state} aggregator={aggregator} />;
 }

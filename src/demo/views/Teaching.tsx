@@ -1,12 +1,20 @@
 import { useEffect, useState } from 'react';
 
 import { NMRium } from '../../component/main/index.js';
+import { demoCore } from '../utility/core.ts';
 
-async function loadData(file: any) {
+async function loadData(file: string | URL, baseURL: string) {
   const response = await fetch(file);
   checkStatus(response);
-  const data = await response.json();
-  return data;
+  const nmriumObject = await response.json();
+
+  if (baseURL === './') baseURL = window.location.href;
+  const [state, aggregator] = await demoCore.readNMRiumObject(
+    nmriumObject,
+    undefined,
+    { baseURL },
+  );
+  return { state, aggregator };
 }
 
 function checkStatus(response: any) {
@@ -20,17 +28,14 @@ export default function Teaching(props: any) {
   const [data, setData] = useState<any>();
   const { file, title, baseURL } = props;
 
-  if (!file && data !== undefined) {
+  if (!file && data) {
     setData(undefined);
   }
 
   useEffect(() => {
-    if (file) {
-      void loadData(file).then((d: any) => {
-        const _d = JSON.parse(JSON.stringify(d).replaceAll(/\.\/+?/g, baseURL));
-        setData(_d);
-      });
-    }
+    if (!file) return;
+
+    void loadData(file, baseURL).then(setData);
   }, [baseURL, file, props]);
 
   return (
@@ -82,7 +87,8 @@ export default function Teaching(props: any) {
         <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
           <div style={{ width: '100%' }}>
             <NMRium
-              data={data}
+              state={data?.state}
+              aggregator={data?.aggregator}
               preferences={{
                 display: {
                   panels: {

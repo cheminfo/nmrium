@@ -1,4 +1,6 @@
 import styled from '@emotion/styled';
+import type { NmriumState } from '@zakodium/nmrium-core';
+import type { FileCollection } from 'file-collection';
 import { Molecule } from 'openchemlib';
 import { useCallback, useEffect, useState } from 'react';
 import { FaCheck, FaRegCopy } from 'react-icons/fa';
@@ -8,17 +10,27 @@ import { CanvasMoleculeEditor } from 'react-ocl';
 import { NMRium } from '../../component/main/index.js';
 import { ClipboardFallbackModal } from '../../utils/clipboard/clipboardComponents.js';
 import { useClipboard } from '../../utils/clipboard/clipboardHooks.js';
+import { demoCore } from '../utility/core.ts';
 
-const answers = JSON.parse(localStorage.getItem('nmrium-exams') || '{}');
+const answers: Record<string, string> = JSON.parse(
+  localStorage.getItem('nmrium-exams') || '{}',
+);
 
-async function loadData(file: any) {
+async function loadData(file: string | URL, baseURL: string) {
   const response = await fetch(file);
   checkStatus(response);
-  const data = await response.json();
-  return data;
+  const nmriumObject = await response.json();
+
+  if (baseURL === './') baseURL = window.location.href;
+  const [state, aggregator] = await demoCore.readNMRiumObject(
+    nmriumObject,
+    undefined,
+    { baseURL },
+  );
+  return { state, aggregator };
 }
 
-function checkStatus(response: any) {
+function checkStatus(response: Response) {
   if (!response.ok) {
     throw new Error(`HTTP ${response.status} - ${response.statusText}`);
   }
@@ -178,7 +190,12 @@ const CopyButton = ({ result }: { result: string }) => {
 };
 
 export default function Exam(props: any) {
-  const [data, setData] = useState<any>();
+  const [data, setData] = useState<{
+    state: Partial<NmriumState>;
+    aggregator: FileCollection;
+    answer: { idCode: string; currentAnswer: string | undefined; mf: string };
+  }>();
+
   const [result, setResult] = useState('');
   const [answerAreaVisible, showAnswerArea] = useState(false);
 
@@ -190,37 +207,38 @@ export default function Exam(props: any) {
 
   const checkAnswer = useCallback(
     (response: any) => {
-      if (data.answer) {
-        const MolResponse = Molecule.fromMolfile(response.getMolfileV3());
-        const idCodeResponse = MolResponse.getIDCode();
-        answers[data.answer.idCode] = idCodeResponse;
-        localStorage.setItem('nmrium-exams', JSON.stringify(answers));
-        setResult(MolResponse.toIsomericSmiles());
-      }
+      if (!data?.answer) return;
+
+      const MolResponse = Molecule.fromMolfile(response.getMolfileV3());
+      const idCodeResponse = MolResponse.getIDCode();
+      answers[data.answer.idCode] = idCodeResponse;
+      localStorage.setItem('nmrium-exams', JSON.stringify(answers));
+      setResult(MolResponse.toIsomericSmiles());
     },
     [data],
   );
 
   useEffect(() => {
     if (file) {
-      void loadData(file).then((d: any) => {
-        const _d = JSON.parse(JSON.stringify(d).replaceAll(/\.\/+?/g, baseURL));
+      void loadData(file, baseURL).then((result) => {
+        const { state, aggregator } = result;
+        if (!state?.data?.molecules?.[0]?.molfile) return;
 
-        if (_d?.molecules?.[0]?.molfile) {
-          const molecule = Molecule.fromMolfile(_d.molecules[0].molfile);
-          const idCode = molecule.getIDCode();
-          let currentAnswer = answers[idCode];
+        const molecule = Molecule.fromMolfile(state.data.molecules[0].molfile);
+        const idCode = molecule.getIDCode();
+        const currentAnswer = answers[idCode]
+          ? Molecule.fromIDCode(answers[idCode]).toMolfile()
+          : undefined;
 
-          if (currentAnswer) {
-            currentAnswer = Molecule.fromIDCode(currentAnswer).toMolfile();
-          }
-          _d.answer = {
+        setData({
+          state,
+          aggregator,
+          answer: {
             idCode,
             currentAnswer,
             mf: molecule.getMolecularFormula().formula,
-          };
-          setData(_d);
-        }
+          },
+        });
       });
     }
   }, [baseURL, file, props]);
@@ -238,7 +256,11 @@ export default function Exam(props: any) {
       </Title>
       <BodyContainer>
         <NMRContainer isVisible={answerAreaVisible}>
-          <NMRium data={data} workspace="exercise" />
+          <NMRium
+            state={data?.state}
+            aggregator={data?.aggregator}
+            workspace="exercise"
+          />
         </NMRContainer>
         <ToggleButton type="button" onClick={showAnswerAreaHandler}>
           {!answerAreaVisible ? 'Show answer area' : 'Hide answer area '}
@@ -256,10 +278,12 @@ export default function Exam(props: any) {
           </StructureEditorContainer>
           <BottomRightContainer>
             <MFContainer>
-              <MF
-                style={{ color: 'navy', fontSize: 30 }}
-                mf={data?.answer?.mf}
-              />
+              {data?.answer?.mf && (
+                <MF
+                  style={{ color: 'navy', fontSize: 30 }}
+                  mf={data.answer.mf}
+                />
+              )}
             </MFContainer>
             <ResultContainer>
               <CopyButton result={result} />
