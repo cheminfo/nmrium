@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
-import type { NmriumState } from '@zakodium/nmrium-core';
-import type { FileCollection } from 'file-collection';
+import type { CoreReadReturn } from '@zakodium/nmrium-core';
 import { Molecule } from 'openchemlib';
 import { useCallback, useEffect, useState } from 'react';
 import { FaCheck, FaRegCopy } from 'react-icons/fa';
@@ -22,12 +21,7 @@ async function loadData(file: string | URL, baseURL: string) {
   const nmriumObject = await response.json();
 
   if (baseURL === './') baseURL = window.location.href;
-  const [state, aggregator] = await demoCore.readNMRiumObject(
-    nmriumObject,
-    undefined,
-    { baseURL },
-  );
-  return { state, aggregator };
+  return await demoCore.readNMRiumObject(nmriumObject, undefined, { baseURL });
 }
 
 function checkStatus(response: Response) {
@@ -189,12 +183,16 @@ const CopyButton = ({ result }: { result: string }) => {
   );
 };
 
+interface ExamData extends Pick<CoreReadReturn, 'state' | 'aggregator'> {
+  answer: {
+    idCode: string;
+    currentAnswer: string | undefined;
+    mf: string;
+  };
+}
+
 export default function Exam(props: any) {
-  const [data, setData] = useState<{
-    state: Partial<NmriumState>;
-    aggregator: FileCollection;
-    answer: { idCode: string; currentAnswer: string | undefined; mf: string };
-  }>();
+  const [data, setData] = useState<ExamData>();
 
   const [result, setResult] = useState('');
   const [answerAreaVisible, showAnswerArea] = useState(false);

@@ -1,5 +1,4 @@
-import type { NmriumState } from '@zakodium/nmrium-core';
-import type { FileCollection } from 'file-collection';
+import type { CoreReadReturn } from '@zakodium/nmrium-core';
 import { useEffect, useState } from 'react';
 
 import { NMRium } from '../../component/main/index.js';
@@ -41,14 +40,11 @@ const data2 = {
     },
   ],
 };
-interface InstanceState {
-  state: Partial<NmriumState>;
-  aggregator: FileCollection;
-}
+
 export default function TwoInstances(props: any) {
   const { path } = props;
-  const [aInstance, setAInstance] = useState<InstanceState>();
-  const [bInstance, setBInstance] = useState<InstanceState>();
+  const [aInstance, setAInstance] = useState<CoreReadReturn>();
+  const [bInstance, setBInstance] = useState<CoreReadReturn>();
 
   useEffect(() => {
     async function readOldInstances() {
@@ -57,8 +53,8 @@ export default function TwoInstances(props: any) {
         demoCore.readNMRiumObject(data2),
       ]);
 
-      setAInstance({ state: ra[0], aggregator: ra[1] });
-      setBInstance({ state: rb[0], aggregator: rb[1] });
+      setAInstance(ra);
+      setBInstance(rb);
     }
 
     void readOldInstances();
