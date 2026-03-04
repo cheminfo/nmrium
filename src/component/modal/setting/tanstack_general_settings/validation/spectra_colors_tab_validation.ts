@@ -11,7 +11,7 @@ export const spectraColorsTabOneDimensionWithUUIDValidation = withUUID(
   spectraColorsTabOneDimensionValidation,
 );
 
-export const spectraColorsTabTwoDimensionValidation = z.object({
+const spectraColorsTabTwoDimensionValidation = z.object({
   jpath: jpathCodec,
   value: z.string(),
   positiveColor: z.string(),
