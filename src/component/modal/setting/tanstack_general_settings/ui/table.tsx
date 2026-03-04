@@ -97,15 +97,29 @@ export function CellActionsButton(props: ButtonProps) {
   return <Button {...props} size={size} variant={variant} />;
 }
 
+type MakeRequired<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
+
+type TableSettingsProps<Data extends RowData> = MakeRequired<
+  TableProps<Data>,
+  'getRowId'
+>;
+
 /**
  * Return stylized table.
  * It set `compact`, `bordered` and `stickyHeader` props to true by default.
- * It add supports for `tdStyle` `meta` property in columns definition.
+ * It adds supports for `tdStyle` `meta` property in columns definition.
+ * It needs a mandatory ` getRowId ` prop.
+ *   Table with fields in the columns is known to cause issue if the row key is index.
+ *   use `withUUID` validation helper to have items with uuid
  */
-export function TableSettings<Data extends RowData>(props: TableProps<Data>) {
+export function TableSettings<Data extends RowData>(
+  props: TableSettingsProps<Data>,
+) {
   // We should not create a component in another component,
   // But here it's OK, it is just an alias to fix the type
-  const Table = TableSettingsStyled as StyledComponent<TableProps<Data>>;
+  const Table = TableSettingsStyled as StyledComponent<
+    TableSettingsProps<Data>
+  >;
 
   return <Table compact bordered stickyHeader {...props} />;
 }

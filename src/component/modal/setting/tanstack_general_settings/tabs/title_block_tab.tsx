@@ -1,8 +1,8 @@
 import { Classes } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { useField, useStore } from '@tanstack/react-form';
-import { useCallback, useMemo } from 'react';
-import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
+import { useCallback, useMemo, useState } from 'react';
+import { FaRegTrashAlt } from 'react-icons/fa';
 import {
   Button,
   FieldGroupSVGTextStyleFields,
@@ -28,13 +28,7 @@ import { defaultGeneralSettingsFormValues } from '../validation.js';
 export const TitleBlockTab = withForm({
   defaultValues: defaultGeneralSettingsFormValues,
   render: ({ form }) => {
-    const { Section, AppField, pushFieldValue } = form;
-
-    function onAddField() {
-      pushFieldValue('infoBlock.fields', getEmptyField(), {
-        dontRunListeners: true,
-      });
-    }
+    const { Section, AppField } = form;
 
     return (
       <>
@@ -58,22 +52,8 @@ export const TitleBlockTab = withForm({
             previewText="lon1027"
           />
         </Section>
-        <TableSection
-          title="Fields"
-          actions={
-            <Button
-              size="small"
-              variant="outlined"
-              intent="primary"
-              icon="plus"
-              onClick={onAddField}
-            >
-              Add Field
-            </Button>
-          }
-        >
-          <Fields form={form} />
-        </TableSection>
+
+        <TableFields form={form} />
       </>
     );
   },
@@ -89,7 +69,7 @@ function getEmptyField(): Field {
     uuid: crypto.randomUUID(),
   };
 }
-const Fields = withForm({
+const TableFields = withForm({
   defaultValues: defaultGeneralSettingsFormValues,
   render: function Fields({ form }) {
     const { Field } = form;
@@ -98,17 +78,18 @@ const Fields = withForm({
       name: 'infoBlock.fields',
       mode: 'array',
     });
-    const { insertValue, removeValue, setValue, name } = fields;
+    const { removeValue, setValue, pushValue, name } = fields;
+
+    const [autoFocus, setAutoFocus] = useState<string>('');
+    function onAddField() {
+      const value = getEmptyField();
+      pushValue(value, { dontRunListeners: true });
+      setAutoFocus(value.uuid);
+    }
 
     const { data } = useChartData();
     const { datalist } = useMemo(() => getSpectraObjectPaths(data), [data]);
 
-    const onAddRowAfter = useCallback(
-      (index: number) => {
-        insertValue(index + 1, getEmptyField(), { dontRunListeners: true });
-      },
-      [insertValue],
-    );
     const onDeleteAt = useCallback(
       (index: number) => {
         removeValue(index);
@@ -129,13 +110,19 @@ const Fields = withForm({
         }),
         columnHelper.accessor('label', {
           header: () => 'Label',
-          cell: ({ row: { index } }) => (
+          cell: ({ row: { index, original } }) => (
             <Field name={`${name}[${index}].label`}>
               {(field) => (
                 <CellInput
+                  autoFocus={original.uuid === autoFocus ? true : undefined}
                   name={field.name}
                   value={field.state.value}
                   onChange={field.handleChange}
+                  onBlur={() => {
+                    field.handleBlur();
+                    setAutoFocus('');
+                  }}
+                  intent={!field.state.meta.isValid ? 'danger' : undefined}
                 />
               )}
             </Field>
@@ -151,6 +138,7 @@ const Fields = withForm({
                   value={field.state.value}
                   onChange={field.handleChange}
                   filterItems={datalist}
+                  intent={!field.state.meta.isValid ? 'danger' : undefined}
                 />
               )}
             </Field>
@@ -165,6 +153,7 @@ const Fields = withForm({
                   name={field.name}
                   value={field.state.value}
                   onChange={field.handleChange}
+                  intent={!field.state.meta.isValid ? 'danger' : undefined}
                 />
               )}
             </Field>
@@ -199,12 +188,6 @@ const Fields = withForm({
             return (
               <CellActions>
                 <CellActionsButton
-                  intent="success"
-                  onClick={() => onAddRowAfter(index)}
-                >
-                  <FaPlus className={Classes.ICON} />
-                </CellActionsButton>
-                <CellActionsButton
                   intent="danger"
                   onClick={() => onDeleteAt(index)}
                 >
@@ -215,7 +198,7 @@ const Fields = withForm({
           },
         }),
       ];
-    }, [Field, datalist, name, onAddRowAfter, onDeleteAt]);
+    }, [Field, autoFocus, datalist, name, onDeleteAt]);
 
     const onRowOrderChanged = useCallback(
       (value: Field[]) => {
@@ -229,13 +212,28 @@ const Fields = withForm({
     const fieldsData = useStore(fields.store, (s) => s.value);
 
     return (
-      <TableSettings
-        data={fieldsData}
-        columns={columns}
-        onRowOrderChanged={onRowOrderChanged}
-        getRowId={getRowId}
-        emptyContent="No Fields"
-      />
+      <TableSection
+        title="Fields"
+        actions={
+          <Button
+            size="small"
+            variant="outlined"
+            intent="primary"
+            icon="plus"
+            onClick={onAddField}
+          >
+            Add Field
+          </Button>
+        }
+      >
+        <TableSettings
+          data={fieldsData}
+          columns={columns}
+          onRowOrderChanged={onRowOrderChanged}
+          getRowId={getRowId}
+          emptyContent="No Fields"
+        />
+      </TableSection>
     );
   },
 });

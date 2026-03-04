@@ -1,26 +1,17 @@
 import { svgTextStyleFieldsSchema } from 'react-science/ui';
 import { z } from 'zod';
 
-import { jpathCodec } from './utils.ts';
+import { jpathCodec, withUUID } from './utils.ts';
 
 const infoBlockFieldTabValidation = z.object({
   format: z.string(),
   jpath: jpathCodec,
   visible: z.boolean(),
-  label: z.string(),
+  label: z.string().min(1),
 });
 
-export const infoBlockFieldTabValidationWithUUID = z.codec(
-  z.object({ ...infoBlockFieldTabValidation.shape, uuid: z.string() }),
+export const infoBlockFieldTabValidationWithUUID = withUUID(
   infoBlockFieldTabValidation,
-  {
-    encode: (infoBlock) => ({
-      ...infoBlockFieldTabValidation.decode(infoBlock),
-      uuid: crypto.randomUUID(),
-    }),
-    decode: ({ uuid, ...infoBlock }) =>
-      infoBlockFieldTabValidation.encode(infoBlock),
-  },
 );
 
 const infoBlockFieldsTabValidation = z.array(

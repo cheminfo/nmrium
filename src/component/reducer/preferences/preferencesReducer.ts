@@ -69,7 +69,7 @@ export const WORKSPACES_KEYS = {
 export interface Settings {
   version: number;
   workspaces: Record<string, WorkspaceWithSource>;
-  currentWorkspace: any;
+  currentWorkspace: NMRiumWorkspace;
 }
 
 type InitPreferencesAction = ActionType<
@@ -106,8 +106,8 @@ export type AddWorkspaceAction = ActionType<
   { workspaceKey: string; data?: Omit<Workspace, 'version' | 'label'> }
 >;
 export type ApplyGeneralPreferences = ActionType<
-  'APPLY_General_PREFERENCES',
-  { data: Omit<Workspace, 'version' | 'label'> }
+  'APPLY_GENERAL_PREFERENCES',
+  { data: WorkspaceWithSource }
 >;
 export type AnalyzeSpectraAction = ActionType<
   'ANALYZE_SPECTRA',
@@ -301,7 +301,7 @@ function innerPreferencesReducer(
       return addWorkspace(draft, action);
     case 'REMOVE_WORKSPACE':
       return removeWorkspace(draft, action);
-    case 'APPLY_General_PREFERENCES':
+    case 'APPLY_GENERAL_PREFERENCES':
       return applyGeneralPreferences(draft, action);
     case 'ANALYZE_SPECTRA':
       return analyzeSpectra(draft, action);
