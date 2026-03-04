@@ -42,7 +42,7 @@
     "stylelint-fix": "node --run stylelint -- --fix",
     "test": "node --run test-only && node --run check-types && node --run eslint && node --run prettier && node --run stylelint && node --run knip && node --run build-no-minify && node --run test-e2e",
     "test-only": "vitest run --coverage",
-    "test-e2e": "playwright test --project chromium",
+    "test-e2e": "playwright test --project=chromium",
     "test-e2e-server": "serve -l tcp://localhost:3000 build"
   },
   "bugs": {
