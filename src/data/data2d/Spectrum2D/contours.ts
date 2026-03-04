@@ -73,7 +73,7 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
   const minContourLevel = Math.min(
     calculateValueOfLevel(minLevel, max, true),
     DEFAULT_CONTOURS_OPTIONS.positive.contourLevels[1] -
-    DEFAULT_CONTOURS_OPTIONS.positive.numberOfLayers,
+      DEFAULT_CONTOURS_OPTIONS.positive.numberOfLayers,
   );
 
   const defaultLevel: ContourOptions = {
@@ -273,9 +273,7 @@ function calculateValueOfLevel(level: number, max: number, invert = false) {
 }
 
 export function initializeContoursLevels(spectrum: any) {
-  const {
-    data,
-  } = spectrum;
+  const { data } = spectrum;
 
   if ('rr' in data) return getDefaultContoursLevel(spectrum);
 
@@ -293,5 +291,5 @@ export function initializeContours(spectra: Spectrum[]) {
   return contoursOptions;
 }
 
-export { contoursManager, drawContours, getDefaultContoursLevel };
+export { contoursManager, drawContours };
 export type { LevelSign };

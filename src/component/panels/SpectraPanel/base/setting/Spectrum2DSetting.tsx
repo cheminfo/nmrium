@@ -22,7 +22,7 @@ import { colorToHexWithAlpha } from '../../../../utility/colorToHexWithAlpha.js'
 
 import Spectrum2DHistogram from './Spectrum2DHistogram.js';
 
-const StyledRangeSlider = styled(RangeSlider) <{
+const StyledRangeSlider = styled(RangeSlider)<{
   progressColor: CSSProperties['backgroundColor'];
 }>`
   width: 90%;
@@ -57,9 +57,7 @@ export function Spectrum2DSetting({
 }: Spectrum2DSettingProps) {
   const { id, display } = SpectrumData;
   const {
-    view: {
-      spectraContourLevels
-    },
+    view: { spectraContourLevels },
   } = useChartData();
   const methods = useForm({
     defaultValues: { contourOptions: spectraContourLevels[id], display },
