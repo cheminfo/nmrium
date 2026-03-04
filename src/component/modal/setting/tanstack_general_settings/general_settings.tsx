@@ -25,6 +25,15 @@ const Dialog = styled(BPDialog)`
   max-width: 1000px;
   width: 50vw;
   min-width: 800px;
+
+  /*
+   * Fix: Blueprint NumericInput text selection bug inside Dialog
+   * https://github.com/palantir/blueprint/issues/3004#issuecomment-432853498
+   *
+   * Clicking the up/down buttons of a NumericInput selects the surrounding text.
+   * Recommended way to fix this is to set user-select with initial.
+   */
+  user-select: initial !important;
 `;
 
 export function GeneralSettingsDialog(props: GeneralSettingsProps) {
