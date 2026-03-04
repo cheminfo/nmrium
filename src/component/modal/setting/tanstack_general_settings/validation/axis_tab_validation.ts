@@ -1,11 +1,11 @@
+import { axisUnits } from '@zakodium/nmrium-core';
 import {
   svgLineStyleFieldsSchema,
   svgTextStyleFieldsSchema,
 } from 'react-science/ui';
 import { z } from 'zod';
 
-const axisUnit = ['ppm', 'hz', 'pt'] as const;
-const axisUnitValidation = z.enum(axisUnit);
+const axisUnitValidation = z.enum(axisUnits);
 
 const gridlineValidation = z.object({
   enabled: z.boolean(),
