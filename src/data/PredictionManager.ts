@@ -87,8 +87,11 @@ export const FREQUENCIES: Array<{ value: number; label: string }> = [
   { value: 400, label: '400 MHz' },
   { value: 500, label: '500 MHz' },
   { value: 600, label: '600 MHz' },
+  { value: 700, label: '700 MHz' },
   { value: 800, label: '800 MHz' },
+  { value: 950, label: '950 MHz' },
   { value: 1000, label: '1000 MHz' },
+  { value: 1100, label: '1100 MHz' },
   { value: 1200, label: '1200 MHz' },
 ];
 
