@@ -159,7 +159,6 @@ export const NucleiTab = withForm({
         }),
       ];
     }, [Field, deleteNucleus, insertNucleus]);
-    // const fields = useStore(form.store, (state) => state.values.nuclei);
 
     return (
       <TableSection
