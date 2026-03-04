@@ -1,7 +1,7 @@
 import type { NMRRange } from '@zakodium/nmr-types';
 import type {
   Color2D,
-  ContourOptions,
+  ContourLevel,
   Display1D,
   Display2D,
   SpectraColors,
@@ -96,7 +96,7 @@ type ChangeSpectrumSettingAction = ActionType<
   | {
       id: string;
       display: Display2D;
-      contourOptions: ContourOptions;
+      contourOptions: ContourLevel;
     }
 >;
 type DeleteSpectraAction = ActionType<
@@ -451,8 +451,8 @@ function handleChangeSpectrumSetting(
 
   spectrum.display = display;
   if (isFt2DSpectrum(spectrum) && 'contourOptions' in action.payload) {
-    draft.view.zoom.levels[id] = action.payload.contourOptions;
-    const { checkLevel } = contoursManager(draft.view.zoom.levels[id]);
+    draft.view.spectraContourLevels[id] = action.payload.contourOptions;
+    const { checkLevel } = contoursManager(draft.view.spectraContourLevels[id]);
     checkLevel();
   }
 }

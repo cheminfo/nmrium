@@ -25,16 +25,10 @@ import {
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import { isFid1DSpectrum } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
-import {
-  getDefaultContoursLevel,
-  initializeContoursLevels,
-} from '../../../data/data2d/Spectrum2D/contours.js';
+import { initializeContoursLevels } from '../../../data/data2d/Spectrum2D/contours.js';
 import { getProjection } from '../../../data/data2d/Spectrum2D/getMissingProjection.js';
 import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.js';
-import {
-  isFid2DSpectrum,
-  isFt2DSpectrum,
-} from '../../../data/data2d/Spectrum2D/isSpectrum2D.js';
+import { isFid2DSpectrum } from '../../../data/data2d/Spectrum2D/isSpectrum2D.js';
 import type { ExclusionZone } from '../../../data/types/data1d/ExclusionZone.js';
 import { getXScale } from '../../1d/utilities/scale.js';
 import { get2DXScale, get2DYScale } from '../../2d/utilities/scale.js';
@@ -747,7 +741,8 @@ function afterRollback(draft: Draft<State>, filterKey: any) {
     case fftDimension2: {
       if (!activeSpectrum) return;
       const spectrum = current(draft).data[activeSpectrum.index];
-      draft.view.zoom.levels[spectrum.id] = initializeContoursLevels(spectrum);
+      draft.view.spectraContourLevels[spectrum.id] =
+        initializeContoursLevels(spectrum);
       break;
     }
     default:
@@ -1357,10 +1352,6 @@ function applyFFTTwoDimensionFilter(
 
   const spectrum = draft.data[index];
 
-  if (isFt2DSpectrum(spectrum)) {
-    spectrum.display.contourOptions = getDefaultContoursLevel(spectrum);
-  }
-
   updateView(draft, domainUpdateRules);
 
   //clear zoom history
@@ -1368,7 +1359,8 @@ function applyFFTTwoDimensionFilter(
 
   draft.toolOptions.selectedOptionPanel = null;
   draft.toolOptions.selectedTool = 'zoom';
-  draft.view.zoom.levels[spectrum.id] = initializeContoursLevels(spectrum);
+  draft.view.spectraContourLevels[spectrum.id] =
+    initializeContoursLevels(spectrum);
 }
 
 function handleApplyFFtDimension1Filter(draft: Draft<State>) {

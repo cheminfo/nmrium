@@ -273,12 +273,7 @@ function calculateValueOfLevel(level: number, max: number, invert = false) {
 }
 
 export function initializeContoursLevels(spectrum: any) {
-  const {
-    display: { contourOptions },
-    data,
-  } = spectrum;
-
-  if (contourOptions) return contourOptions;
+  const { data } = spectrum;
 
   if ('rr' in data) return getDefaultContoursLevel(spectrum);
 
@@ -296,5 +291,5 @@ export function initializeContours(spectra: Spectrum[]) {
   return contoursOptions;
 }
 
-export { contoursManager, drawContours, getDefaultContoursLevel };
+export { contoursManager, drawContours };
 export type { LevelSign };

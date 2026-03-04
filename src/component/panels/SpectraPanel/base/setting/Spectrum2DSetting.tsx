@@ -57,12 +57,10 @@ export function Spectrum2DSetting({
 }: Spectrum2DSettingProps) {
   const { id, display } = SpectrumData;
   const {
-    view: {
-      zoom: { levels },
-    },
+    view: { spectraContourLevels },
   } = useChartData();
   const methods = useForm({
-    defaultValues: { contourOptions: levels[id], display },
+    defaultValues: { contourOptions: spectraContourLevels[id], display },
   });
   const { positiveColor, negativeColor } = display;
 

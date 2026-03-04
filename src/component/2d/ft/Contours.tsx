@@ -48,11 +48,9 @@ function usePath(contours: ReturnType<typeof drawContours>['contours']) {
 
 const useContoursLevel = (spectrumID: string, sign: LevelSign) => {
   const {
-    view: {
-      zoom: { levels },
-    },
+    view: { spectraContourLevels },
   } = useChartData();
-  const level = levels[spectrumID]?.[sign];
+  const level = spectraContourLevels[spectrumID]?.[sign];
   return level;
 };
 
