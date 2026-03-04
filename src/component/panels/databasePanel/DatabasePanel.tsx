@@ -304,7 +304,9 @@ function DatabasePanelInner({
           });
 
           try {
-            const [{ data }] = await core.readFromWebSource({
+            const {
+              state: { data },
+            } = await core.readFromWebSource({
               entries: [{ baseURL: url.origin, relativePath: url.pathname }],
             });
             const spectrum = data?.spectra?.[0] || null;
@@ -520,9 +522,9 @@ async function saveJcampAsJson(
   const { index, baseURL, jcampURL, names, ocl = {}, smiles } = rowData;
   const { ranges } = filteredData.data[index];
   const url = new URL(jcampURL, baseURL);
-  const [
-    { data: { spectra, sources } = { sources: [], spectra: [] }, version },
-  ] = await core.readFromWebSource({
+  const {
+    state: { data: { spectra = [], sources = [] } = {}, version },
+  } = await core.readFromWebSource({
     entries: [{ baseURL: url.origin, relativePath: url.pathname }],
   });
 

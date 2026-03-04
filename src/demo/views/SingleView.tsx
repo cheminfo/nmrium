@@ -1,5 +1,4 @@
-import type { NmriumState } from '@zakodium/nmrium-core';
-import { FileCollection } from 'file-collection';
+import type { CoreReadReturn } from '@zakodium/nmrium-core';
 import { useEffect, useState } from 'react';
 
 import { NMRium } from '../../component/main/index.js';
@@ -11,23 +10,16 @@ interface SingleViewProps {
 export default function SingleView(props: SingleViewProps) {
   const { path } = props;
 
-  const [data, setData] = useState<{
-    state: Partial<NmriumState>;
-    aggregator: FileCollection;
-  }>();
+  const [data, setData] = useState<CoreReadReturn>();
 
   useEffect(() => {
     let canceled = false;
     void demoCore
       .readFromWebSource({ entries: [{ relativePath: path }] })
-      .then(([state, fileCollection, selectorRoot]) => {
+      .then((result) => {
         if (canceled) return;
 
-        const aggregator = new FileCollection().appendFileCollection(
-          fileCollection,
-          selectorRoot,
-        );
-        setData({ state, aggregator });
+        setData(result);
       });
 
     return () => {

@@ -1,6 +1,5 @@
-import type { CustomWorkspaces, NmriumState } from '@zakodium/nmrium-core';
+import type { CoreReadReturn, CustomWorkspaces } from '@zakodium/nmrium-core';
 import init from '@zakodium/nmrium-core-plugins';
-import { FileCollection } from 'file-collection';
 import { useCallback, useEffect, useState } from 'react';
 import { ObjectInspector } from 'react-inspector';
 
@@ -12,15 +11,10 @@ const core = init();
 
 async function loadFromURL(url: string) {
   const { pathname: relativePath, origin: baseURL } = new URL(url);
-  const [state, fileCollection, selectorRoot] = await core.readFromWebSource({
+
+  return await core.readFromWebSource({
     entries: [{ relativePath, baseURL }],
   });
-  const aggregator = new FileCollection().appendFileCollection(
-    fileCollection,
-    selectorRoot,
-  );
-
-  return { state, aggregator };
 }
 
 interface WebSourceViewProps {
@@ -33,10 +27,7 @@ interface WebSourceViewProps {
 }
 
 export default function WebSourceView(props: WebSourceViewProps) {
-  const [data, setData] = useState<{
-    state: Partial<NmriumState>;
-    aggregator: FileCollection;
-  }>();
+  const [data, setData] = useState<CoreReadReturn>();
 
   const {
     file,

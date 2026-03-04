@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
-import type { NmriumState } from '@zakodium/nmrium-core';
-import type { FileCollection } from 'file-collection';
+import type { CoreReadReturn } from '@zakodium/nmrium-core';
 import { Molecule } from 'openchemlib';
 import type { CSSProperties } from 'react';
 import { useCallback, useEffect, useState } from 'react';
@@ -20,12 +19,7 @@ async function loadData(file: string | URL, baseURL: string) {
   const nmriumObject = await response.json();
 
   if (baseURL === './') baseURL = window.location.href;
-  const [state, aggregator] = await demoCore.readNMRiumObject(
-    nmriumObject,
-    undefined,
-    { baseURL },
-  );
-  return { state, aggregator };
+  return await demoCore.readNMRiumObject(nmriumObject, undefined, { baseURL });
 }
 
 function checkStatus(response: Response) {
@@ -130,14 +124,12 @@ const Container = styled.div`
   padding: 10px;
 `;
 
-interface ExerciceData {
+interface ExerciceData extends Pick<CoreReadReturn, 'state' | 'aggregator'> {
   answer: {
     idCode: string;
     currentAnswer: string | undefined;
     mf: string;
   };
-  state: Partial<NmriumState>;
-  aggregator: FileCollection;
 }
 
 export default function Exercise(props: any) {

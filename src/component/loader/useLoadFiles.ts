@@ -48,12 +48,10 @@ export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
 
   const loadNmriumArchives = useCallback(
     async (file: File, parsingOptions: Partial<ParsingOptions>) => {
-      const [nmriumState, aggregator] = await core.readNMRiumArchive(
-        file.stream(),
-        parsingOptions,
-      );
+      const { state, aggregator, containsNmrium } =
+        await core.readNMRiumArchive(file.stream(), parsingOptions);
 
-      dispatchPayload({ nmriumState, aggregator, containsNmrium: true });
+      dispatchPayload({ nmriumState: state, aggregator, containsNmrium });
     },
     [core, dispatchPayload],
   );
@@ -68,10 +66,9 @@ export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
         ? await parseMetaFile(metaFile)
         : null;
       const {
-        nmriumState,
+        state: nmriumState,
         containsNmrium,
-        selectorRoot,
-        fileCollection: sanitizedCollection,
+        aggregator,
       } = await core.read(fileCollection, parsingOptions);
       const resetSourceObject = containsNmrium;
 
@@ -79,8 +76,7 @@ export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
         nmriumState,
         containsNmrium,
         parseMetaFileResult,
-        fileCollection: sanitizedCollection,
-        selectorRoot,
+        aggregator,
         resetSourceObject,
       });
     },

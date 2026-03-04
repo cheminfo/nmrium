@@ -36,15 +36,12 @@ interface InitiateProps {
   nmriumState: Partial<NmriumState>;
   aggregator: FileCollection;
 }
-interface InputProps extends Omit<InitiateProps, 'aggregator'> {
+interface InputProps extends InitiateProps {
   containsNmrium?: boolean;
   usedColors?: UsedColors;
   parseMetaFileResult?: ParseResult<any> | null;
   resetSourceObject?: boolean;
   spectraColors?: SpectraColors;
-  fileCollection?: FileCollection;
-  selectorRoot?: string;
-  aggregator?: FileCollection;
   defaultMoleculeSettings?: MoleculeView;
 }
 
@@ -156,26 +153,11 @@ function setData(draft: Draft<State>, input: InputProps | InitiateProps) {
     }
   }
 
-  if (input.aggregator) {
-    if ('forceInitialize' in input && input.forceInitialize) {
-      draft.aggregator = input.aggregator;
-    } else {
-      draft.aggregator = FileCollection.fromCollection(draft.aggregator);
-      draft.aggregator.appendFileCollection(input.aggregator, '');
-    }
-  }
-
-  if (
-    'fileCollection' in input &&
-    input.fileCollection &&
-    'selectorRoot' in input &&
-    input.selectorRoot
-  ) {
+  if ('forceInitialize' in input && input.forceInitialize) {
+    draft.aggregator = input.aggregator;
+  } else {
     draft.aggregator = FileCollection.fromCollection(draft.aggregator);
-    draft.aggregator.appendFileCollection(
-      input.fileCollection,
-      input.selectorRoot,
-    );
+    draft.aggregator.appendFileCollection(input.aggregator, '');
   }
 
   const newMolecules = MoleculeManager.fromJSON(molecules, draft.molecules);
@@ -289,10 +271,9 @@ function initData(
       initialDraft.actionType = action.type;
     });
   } else {
-    if (action.payload.aggregator) {
-      draft.aggregator = FileCollection.fromCollection(draft.aggregator);
-      draft.aggregator.appendFileCollection(action.payload.aggregator, '');
-    }
+    draft.aggregator = FileCollection.fromCollection(draft.aggregator);
+    draft.aggregator.appendFileCollection(action.payload.aggregator, '');
+
     if (view) {
       const defaultViewState = getDefaultViewState();
       draft.view = lodashMerge(defaultViewState, view);

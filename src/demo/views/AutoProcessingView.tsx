@@ -1,6 +1,6 @@
 import type { NmriumState } from '@zakodium/nmrium-core';
 import init from '@zakodium/nmrium-core-plugins';
-import { FileCollection } from 'file-collection';
+import type { FileCollection } from 'file-collection';
 import { useEffect, useState } from 'react';
 
 import type { BaseViewProps } from './BaseView.js';
@@ -24,21 +24,11 @@ async function loadSpectrumFromURL(url: string) {
     ],
     baseURL,
   };
-  const [state, fileCollection, selectorRoot] = await core.readFromWebSource(
-    source,
-    {
-      experimentalFeatures: true,
-      onLoadProcessing: { autoProcessing: true },
-    },
-  );
 
-  return {
-    state,
-    aggregator: new FileCollection().appendFileCollection(
-      fileCollection,
-      selectorRoot,
-    ),
-  };
+  return await core.readFromWebSource(source, {
+    experimentalFeatures: true,
+    onLoadProcessing: { autoProcessing: true },
+  });
 }
 
 export default function ExternalLoadView(props: ExternalLoadViewProps) {

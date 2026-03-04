@@ -1,5 +1,4 @@
-import type { NmriumState } from '@zakodium/nmrium-core';
-import type { FileCollection } from 'file-collection';
+import type { CoreReadReturn } from '@zakodium/nmrium-core';
 import debounce from 'lodash/debounce.js';
 import { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import { ObjectInspector } from 'react-inspector';
@@ -66,10 +65,7 @@ function Inspector(data: any) {
 
 export default function Test(props: any) {
   const { file, title, baseURL, workspace } = props;
-  const [data, setData] = useState<{
-    state: Partial<NmriumState>;
-    aggregator: FileCollection;
-  }>();
+  const [data, setData] = useState<CoreReadReturn>();
   const [viewCount, incrementViewCount] = useReducer((a: any) => a + 1, 0);
   const [dataCount, incrementDataCount] = useReducer((a: any) => a + 1, 0);
   const [settingsCount, incrementSettingsCount] = useReducer(
@@ -94,9 +90,8 @@ export default function Test(props: any) {
       try {
         const rawText = await dropFiles[0].text();
         const nmriumObject = JSON.parse(rawText);
-        const [state, aggregator] =
-          await demoCore.readNMRiumObject(nmriumObject);
-        setData({ state, aggregator });
+        const result = await demoCore.readNMRiumObject(nmriumObject);
+        setData(result);
       } catch (error) {
         reportError(error);
         // eslint-disable-next-line no-alert

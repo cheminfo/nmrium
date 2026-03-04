@@ -1,3 +1,4 @@
+import type { CoreReadReturn } from '@zakodium/nmrium-core';
 import { useEffect, useState } from 'react';
 
 import { NMRium } from '../../component/main/index.js';
@@ -9,12 +10,7 @@ async function loadData(file: string | URL, baseURL: string) {
   const nmriumObject = await response.json();
 
   if (baseURL === './') baseURL = window.location.href;
-  const [state, aggregator] = await demoCore.readNMRiumObject(
-    nmriumObject,
-    undefined,
-    { baseURL },
-  );
-  return { state, aggregator };
+  return await demoCore.readNMRiumObject(nmriumObject, undefined, { baseURL });
 }
 
 function checkStatus(response: any) {
@@ -25,7 +21,7 @@ function checkStatus(response: any) {
 }
 
 export default function Teaching(props: any) {
-  const [data, setData] = useState<any>();
+  const [data, setData] = useState<CoreReadReturn>();
   const { file, title, baseURL } = props;
 
   if (!file && data) {
