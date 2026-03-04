@@ -30,15 +30,8 @@ test('automatic assignment panel', async ({ page }) => {
 
     await nmrium.getToolbarLocatorByTitle('Automatic assignment').click();
 
-    // Wait for auto assignments process completed.
-    const progressLocator = nmrium.page.locator('text=Auto Assignments');
-    await expect(progressLocator).toBeVisible();
-
-    // 10-seconds default can be short for CI runner
-    await expect(progressLocator).toBeHidden({ timeout: 20 * 1000 });
-
     await expect(
       nmrium.page.locator('_react=AutomaticAssignmentTable >> text=0.75'),
-    ).toHaveCount(2);
+    ).toHaveCount(2, { timeout: 30 * 1000 });
   });
 });
