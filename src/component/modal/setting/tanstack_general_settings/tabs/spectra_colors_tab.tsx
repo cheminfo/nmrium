@@ -17,8 +17,8 @@ import {
 } from '../ui/table.tsx';
 import { TableSection } from '../ui/table_section.tsx';
 import type {
-  spectraColorsTabOneDimensionValidation,
-  spectraColorsTabTwoDimensionValidation,
+  spectraColorsTabOneDimensionWithUUIDValidation,
+  spectraColorsTabTwoDimensionWithUUIDValidation,
 } from '../validation/spectra_colors_tab_validation.ts';
 import { defaultGeneralSettingsFormValues } from '../validation.ts';
 
@@ -51,7 +51,9 @@ const GeneralColors = withFieldGroup({
   },
 });
 
-type OneDimensionData = z.input<typeof spectraColorsTabOneDimensionValidation>;
+type OneDimensionData = z.input<
+  typeof spectraColorsTabOneDimensionWithUUIDValidation
+>;
 const Spectra1DColors = withForm({
   defaultValues: defaultGeneralSettingsFormValues,
   render: function Render({ form }) {
@@ -72,6 +74,7 @@ const Spectra1DColors = withForm({
     const handleAdd = useCallback(
       (index: number) => {
         insertValue(index, {
+          uuid: crypto.randomUUID(),
           value: '',
           jpath: 'info.experiment',
           color: 'red',
@@ -176,6 +179,7 @@ const Spectra1DColors = withForm({
         <TableSettings
           data={field.state.value}
           columns={COLUMNS}
+          getRowId={get1DRowId}
           emptyContent="No criteria colors"
         />
       </TableSection>
@@ -183,7 +187,13 @@ const Spectra1DColors = withForm({
   },
 });
 
-type TwoDimensionData = z.input<typeof spectraColorsTabTwoDimensionValidation>;
+function get1DRowId(row: OneDimensionData) {
+  return row.uuid;
+}
+
+type TwoDimensionData = z.input<
+  typeof spectraColorsTabTwoDimensionWithUUIDValidation
+>;
 const Spectra2DColors = withForm({
   defaultValues: defaultGeneralSettingsFormValues,
   render: function Render({ form }) {
@@ -199,6 +209,7 @@ const Spectra2DColors = withForm({
     const handleAdd = useCallback(
       (index: number) => {
         insertValue(index, {
+          uuid: crypto.randomUUID(),
           value: '',
           jpath: 'info.experiment',
           positiveColor: 'red',
@@ -328,9 +339,14 @@ const Spectra2DColors = withForm({
         <TableSettings
           data={field.state.value}
           columns={COLUMNS}
+          getRowId={get2DRowId}
           emptyContent="No criteria colors"
         />
       </TableSection>
     );
   },
 });
+
+function get2DRowId(row: TwoDimensionData) {
+  return row.uuid;
+}

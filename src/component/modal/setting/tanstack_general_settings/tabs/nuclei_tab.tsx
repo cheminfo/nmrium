@@ -1,8 +1,9 @@
 import { Classes } from '@blueprintjs/core';
-import { useField, useStore } from '@tanstack/react-form';
+import { useField } from '@tanstack/react-form';
 import { useCallback, useMemo } from 'react';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button, createTableColumnHelper, withForm } from 'react-science/ui';
+import type { z } from 'zod';
 
 import {
   CellActions,
@@ -12,36 +13,36 @@ import {
   TableSettings,
 } from '../ui/table.tsx';
 import { TableSection } from '../ui/table_section.tsx';
+import type { nucleiValidation } from '../validation/nuclei_tab_validation.ts';
 import { defaultGeneralSettingsFormValues } from '../validation.js';
 
-interface NucleiFormElement {
-  nucleus: string;
-  ppmFormat: string;
-  hzFormat: string;
-}
+type NucleiFormElement = z.input<typeof nucleiValidation>[number];
 
-const emptyNucleiFormElement: NucleiFormElement = {
-  nucleus: '',
-  ppmFormat: '0.00',
-  hzFormat: '0.00',
-};
+function emptyNucleiFormElement(): NucleiFormElement {
+  return {
+    nucleus: '',
+    ppmFormat: '0.00',
+    hzFormat: '0.00',
+    uuid: crypto.randomUUID(),
+  };
+}
 
 export const NucleiTab = withForm({
   defaultValues: defaultGeneralSettingsFormValues,
   render: function Render({ form }) {
     const nucleiField = useField({ form, name: 'nuclei', mode: 'array' });
-    const { insertValue, removeValue, pushValue } = nucleiField;
 
-    const fields = useStore(form.store, (state) => state.values.nuclei);
+    const { Field } = form;
+    const { insertValue, removeValue, pushValue } = nucleiField;
 
     const insertNucleus = useCallback(
       (index: number) => {
-        insertValue(index, emptyNucleiFormElement);
+        insertValue(index, emptyNucleiFormElement());
       },
       [insertValue],
     );
     const pushNucleus = useCallback(() => {
-      pushValue(emptyNucleiFormElement);
+      pushValue(emptyNucleiFormElement());
     }, [pushValue]);
     const deleteNucleus = useCallback(
       (index: number) => {
@@ -56,70 +57,79 @@ export const NucleiTab = withForm({
         columnHelper.accessor('nucleus', {
           header: 'Nucleus',
           cell: ({ row: { index } }) => (
-            <form.Field key={index} name={`nuclei[${index}].nucleus`}>
+            <Field key={index} name={`nuclei[${index}].nucleus`}>
               {(subField) => (
                 <CellInput
                   value={subField.state.value}
                   onChange={subField.handleChange}
+                  onBlur={subField.handleBlur}
                 />
               )}
-            </form.Field>
+            </Field>
           ),
         }),
         columnHelper.accessor('ppmFormat', {
           header: 'δ (ppm)',
           cell: ({ row: { index } }) => (
-            <form.Field key={index} name={`nuclei[${index}].ppmFormat`}>
+            <Field key={index} name={`nuclei[${index}].ppmFormat`}>
               {(subField) => (
                 <CellInput
                   value={subField.state.value}
                   onChange={subField.handleChange}
+                  onBlur={subField.handleBlur}
                 />
               )}
-            </form.Field>
+            </Field>
           ),
         }),
         columnHelper.accessor('hzFormat', {
           header: 'Coupling (Hz)',
           cell: ({ row: { index } }) => (
-            <form.Field key={index} name={`nuclei[${index}].hzFormat`}>
+            <Field key={index} name={`nuclei[${index}].hzFormat`}>
               {(subField) => (
                 <CellInput
                   value={subField.state.value}
                   onChange={subField.handleChange}
+                  onBlur={subField.handleBlur}
                 />
               )}
-            </form.Field>
+            </Field>
           ),
         }),
         columnHelper.display({
           id: 'axisFrom',
           header: 'Axis from',
           cell: ({ row: { index } }) => (
-            <form.Field key={index} name={`nuclei[${index}].axisFrom`}>
+            <Field key={index} name={`nuclei[${index}].axisFrom`}>
               {(subField) => (
                 <CellNumericInput
                   value={subField.state.value}
-                  onValueChange={(num, str) => subField.handleChange(str)}
+                  onChange={(event) =>
+                    subField.handleChange(event.currentTarget.value)
+                  }
+                  onBlur={subField.handleBlur}
                   fill
                 />
               )}
-            </form.Field>
+            </Field>
           ),
         }),
         columnHelper.display({
           id: 'axisTo',
           header: 'Axis to',
           cell: ({ row: { index } }) => (
-            <form.Field key={index} name={`nuclei[${index}].axisTo`}>
+            <Field key={index} name={`nuclei[${index}].axisTo`}>
               {(subField) => (
                 <CellNumericInput
                   value={subField.state.value}
-                  onValueChange={(num, str) => subField.handleChange(str)}
+                  onChange={(event) =>
+                    subField.handleChange(event.currentTarget.value)
+                  }
+                  onBlur={subField.handleBlur}
                   fill
                 />
               )}
-            </form.Field>
+            </Field>
           ),
         }),
         columnHelper.display({
@@ -148,7 +158,8 @@ export const NucleiTab = withForm({
           ),
         }),
       ];
-    }, [deleteNucleus, form, insertNucleus]);
+    }, [Field, deleteNucleus, insertNucleus]);
+    // const fields = useStore(form.store, (state) => state.values.nuclei);
 
     return (
       <TableSection
@@ -167,11 +178,16 @@ export const NucleiTab = withForm({
         }
       >
         <TableSettings
-          data={fields}
+          data={nucleiField.state.value}
           columns={COLUMNS}
           emptyContent="No nucleus"
+          getRowId={getRowId}
         />
       </TableSection>
     );
   },
 });
+
+function getRowId(row: NucleiFormElement) {
+  return row.uuid;
+}
