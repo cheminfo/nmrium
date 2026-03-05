@@ -2,8 +2,8 @@ import { ClipPathContainer } from '../1d-2d/components/ClipPathContainer.js';
 import SpectrumInfoBlock from '../1d-2d/components/SpectrumInfoBlock.js';
 import { ShareDataProvider } from '../context/ShareDataContext.js';
 
-import XAxis from './XAxis.js';
-import YAxis from './YAxis.js';
+import DirectAxis2D from './DirectAxis2D.tsx';
+import IndirectAxis2D from './IndirectAxis2D.tsx';
 import { FidContainer } from './fid/FidContainer.js';
 import { FTContainer } from './ft/FTContainer.js';
 import type { Spectrum1DTraces } from './useTracesSpectra.js';
@@ -31,8 +31,8 @@ export function SVGContent2D({ spectra }: Chart2DProps) {
       <SpectrumInfoBlock />
 
       <g className="container" style={{ pointerEvents: 'none' }}>
-        <XAxis />
-        <YAxis />
+        <DirectAxis2D />
+        <IndirectAxis2D />
       </g>
     </g>
   );

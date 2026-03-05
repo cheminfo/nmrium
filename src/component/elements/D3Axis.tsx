@@ -1,8 +1,12 @@
 import type { SVGAttributes } from 'react';
 import { forwardRef } from 'react';
 import type { Tick, UseLinearPrimaryTicksResult } from 'react-d3-utils';
-import type { SVGStyledLineProps, SVGStyledTextProps } from 'react-science/ui';
-import { SVGStyledText } from 'react-science/ui';
+import type {
+  SVGStyledLineProps,
+  SVGStyledLineUserConfig,
+  SVGStyledTextProps,
+} from 'react-science/ui';
+import { SVGStyledLine, SVGStyledText } from 'react-science/ui';
 
 import { useTicksConfig } from '../hooks/use_ticks_config.ts';
 
@@ -12,10 +16,7 @@ interface BaseD3AxisProps {
   axisPosition: AxisPosition;
 }
 
-type PrimaryGridElementProps = Pick<
-  SVGAttributes<SVGLineElement>,
-  'stroke' | 'strokeOpacity' | 'strokeDasharray'
->;
+type PrimaryGridElementProps = SVGStyledLineUserConfig;
 
 type SecondaryGridElementProps = PrimaryGridElementProps & {
   secondaryGridDensity?: number;
@@ -30,6 +31,8 @@ interface D3AxisProps
   primaryGridProps?: PrimaryGridElementProps;
   secondaryGridProps?: SecondaryGridElementProps;
   showGrid?: boolean;
+  showPrimaryGrid?: boolean;
+  showSecondaryGrid?: boolean;
 }
 
 interface TicketsProps extends UseLinearPrimaryTicksResult, BaseD3AxisProps {}
@@ -180,11 +183,11 @@ function PrimaryGrid(props: GridProps<PrimaryGridElementProps>) {
 
   return ticks.map(({ position }) => {
     return (
-      <line
+      <SVGStyledLine
         key={position}
         {...getLinePosition(position, axisPosition, gridSize)}
         stroke="black"
-        strokeDasharray="3"
+        strokeDasharray="dashed"
         strokeOpacity={0.1}
         {...gridProps}
       />
@@ -202,11 +205,11 @@ function SecondaryGrid(props: GridProps<SecondaryGridElementProps>) {
     if (!position) return null;
 
     return (
-      <line
+      <SVGStyledLine
         key={position}
         {...getLinePosition(position, axisPosition, gridSize)}
         stroke="black"
-        strokeDasharray="3"
+        strokeDasharray="dashed"
         strokeOpacity={0.05}
         {...otherGridProps}
       />
@@ -226,6 +229,8 @@ export const D3Axis = forwardRef<SVGGElement | null, D3AxisProps>(
       secondaryGridProps,
       tickLength,
       showGrid = false,
+      showPrimaryGrid = true,
+      showSecondaryGrid = true,
       ...otherProps
     } = props;
 
@@ -254,20 +259,24 @@ export const D3Axis = forwardRef<SVGGElement | null, D3AxisProps>(
         </g>
         {showGrid && (
           <g className="grid">
-            <PrimaryGrid
-              ticks={ticks}
-              axisPosition={axisPosition}
-              scale={scale}
-              gridSize={gridSize}
-              gridProps={primaryGridProps}
-            />
-            <SecondaryGrid
-              ticks={ticks}
-              axisPosition={axisPosition}
-              scale={scale}
-              gridSize={gridSize}
-              gridProps={secondaryGridProps}
-            />
+            {showPrimaryGrid && (
+              <PrimaryGrid
+                ticks={ticks}
+                axisPosition={axisPosition}
+                scale={scale}
+                gridSize={gridSize}
+                gridProps={primaryGridProps}
+              />
+            )}
+            {showSecondaryGrid && (
+              <SecondaryGrid
+                ticks={ticks}
+                axisPosition={axisPosition}
+                scale={scale}
+                gridSize={gridSize}
+                gridProps={secondaryGridProps}
+              />
+            )}
           </g>
         )}
       </g>

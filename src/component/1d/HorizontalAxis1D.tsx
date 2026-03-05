@@ -5,14 +5,15 @@ import { useChartData } from '../context/ChartContext.js';
 import { useScaleChecked } from '../context/ScaleContext.js';
 import { D3Axis } from '../elements/D3Axis.js';
 import { useCheckExportStatus } from '../hooks/useViewportSize.js';
+import { useGridline1DConfig } from '../hooks/use_gridlines_config.ts';
 
 import { useIsInset } from './inset/InsetProvider.js';
 
-interface XAxisProps {
+interface HorizontalAxis1DProps {
   label?: string;
 }
 
-export function XAxis1D(props: XAxisProps) {
+export function HorizontalAxis1D(props: HorizontalAxis1DProps) {
   const { label: labelProp } = props;
   const { height, width, margin, mode } = useChartData();
   const { scaleX } = useScaleChecked();
@@ -29,6 +30,7 @@ export function XAxis1D(props: XAxisProps) {
     'horizontal',
     refAxis,
   );
+  const gridConfig = useGridline1DConfig();
 
   if (!width || !height) {
     return null;
@@ -43,6 +45,10 @@ export function XAxis1D(props: XAxisProps) {
       gridSize={height - margin.top - margin.bottom}
       ticks={ticks}
       showGrid={!isExportingProcessStart && !isInset}
+      showPrimaryGrid={gridConfig.primary.enabled}
+      showSecondaryGrid={gridConfig.secondary.enabled}
+      primaryGridProps={gridConfig.primary.lineStyle}
+      secondaryGridProps={gridConfig.secondary.lineStyle}
     >
       {!isInset && (
         <text fill="#000" x={width - 10} y="30" dy="0.70em" textAnchor="end">

@@ -1,16 +1,19 @@
 import { memo, useRef } from 'react';
 import { useLinearPrimaryTicks } from 'react-d3-utils';
 
+import { useIsInset } from '../1d/inset/InsetProvider.tsx';
 import { useChartData } from '../context/ChartContext.js';
 import { D3Axis } from '../elements/D3Axis.js';
 import { useActiveNucleusTab } from '../hooks/useActiveNucleusTab.js';
 import { useTextMetrics } from '../hooks/useTextMetrics.js';
+import { useCheckExportStatus } from '../hooks/useViewportSize.tsx';
+import { useGridline2DConfig } from '../hooks/use_gridlines_config.ts';
 
 import { useScale2DY } from './utilities/scale.js';
 
 const defaultMargin = { right: 50, top: 0, bottom: 0, left: 0 };
 
-interface YAxisProps {
+interface IndirectAxis2DProps {
   margin?: {
     right: number;
     top: number;
@@ -19,7 +22,7 @@ interface YAxisProps {
   };
 }
 
-function YAxis(props: YAxisProps) {
+function IndirectAxis2D(props: IndirectAxis2DProps) {
   const { margin: marginProps = defaultMargin } = props;
 
   const { width, height, margin } = useChartData();
@@ -28,6 +31,8 @@ function YAxis(props: YAxisProps) {
   const { getTextWidth } = useTextMetrics({ labelSize: 10 });
 
   const scaleY = useScale2DY();
+  const isInset = useIsInset();
+  const isExportingProcessStart = useCheckExportStatus();
 
   const refAxis = useRef<SVGGElement>(null);
 
@@ -36,6 +41,7 @@ function YAxis(props: YAxisProps) {
     'vertical',
     refAxis,
   );
+  const gridConfig = useGridline2DConfig();
 
   if (!width || !height) {
     return null;
@@ -50,7 +56,13 @@ function YAxis(props: YAxisProps) {
       transform={`translate(${width - marginProps.right})`}
       scale={ticksScale}
       axisPosition="right"
+      gridSize={width - margin.left - margin.right}
       ticks={ticks}
+      showGrid={!isExportingProcessStart && !isInset}
+      showPrimaryGrid={gridConfig.primary.enabled}
+      showSecondaryGrid={gridConfig.secondary.enabled}
+      primaryGridProps={gridConfig.primary.lineStyle}
+      secondaryGridProps={gridConfig.secondary.lineStyle}
     >
       <g transform={`translate(${marginProps.right - 20}, ${margin.top})`}>
         <rect
@@ -76,4 +88,4 @@ function YAxis(props: YAxisProps) {
   );
 }
 
-export default memo(YAxis);
+export default memo(IndirectAxis2D);
