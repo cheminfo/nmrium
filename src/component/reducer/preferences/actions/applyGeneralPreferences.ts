@@ -3,7 +3,6 @@ import type { Draft } from 'immer';
 import type {
   ApplyGeneralPreferences,
   PreferencesState,
-  WorkspaceWithSource,
 } from '../preferencesReducer.js';
 
 export function applyGeneralPreferences(
@@ -12,5 +11,5 @@ export function applyGeneralPreferences(
 ) {
   const { data } = action.payload;
 
-  draft.workspaces[draft.workspace.current] = data as WorkspaceWithSource;
+  draft.workspaces[draft.workspace.current] = data;
 }

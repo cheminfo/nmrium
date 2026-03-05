@@ -21,12 +21,14 @@ import { defaultGeneralSettingsFormValues } from '../validation.ts';
 type DatabaseForm = z.input<typeof databasesValidation>;
 type DatabaseFormElement = DatabaseForm['data'][number];
 
-const emptyDatabaseFormElement: DatabaseFormElement = {
-  key: crypto.randomUUID(),
-  label: '',
-  url: '',
-  enabled: true,
-};
+function emptyDatabaseFormElement(): DatabaseFormElement {
+  return {
+    key: crypto.randomUUID(),
+    label: '',
+    url: '',
+    enabled: true,
+  };
+}
 
 export const DatabaseTab = withForm({
   defaultValues: defaultGeneralSettingsFormValues,
@@ -44,7 +46,7 @@ export const DatabaseTab = withForm({
 
     const handleAdd = useCallback(
       (index: number) => {
-        insertValue(index, emptyDatabaseFormElement);
+        insertValue(index, emptyDatabaseFormElement());
       },
       [insertValue],
     );
@@ -195,9 +197,14 @@ export const DatabaseTab = withForm({
         <TableSettings
           data={field.state.value}
           columns={COLUMNS}
+          getRowId={getRowId}
           emptyContent="No database item"
         />
       </TableSection>
     );
   },
 });
+
+function getRowId(row: DatabaseFormElement) {
+  return row.key;
+}

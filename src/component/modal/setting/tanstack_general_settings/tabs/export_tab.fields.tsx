@@ -47,6 +47,33 @@ const layoutItems: Array<SelectItem<Layout>> = [
   { value: 'landscape', label: 'Landscape' },
 ];
 
+function safeNumber(value: number) {
+  if (Number.isNaN(value)) value = 1;
+  else if (value <= 0) value = 1;
+  return value;
+}
+
+function safeStringNumber(str: string, onInvalid: (str: string) => void) {
+  let isInvalid = false;
+  let value = Number(str);
+  if (Number.isNaN(value)) {
+    value = 1;
+    isInvalid = true;
+  }
+  if (value <= 0) {
+    value = 1;
+    isInvalid = true;
+  }
+
+  if (!isInvalid) {
+    const result = String(value);
+    onInvalid(result);
+    return result;
+  }
+
+  return str;
+}
+
 export const ExportFields = withFieldGroup({
   defaultValues: defaultGeneralSettingsFormValues.export.png,
   render: function ExportFields({ group }) {
@@ -68,14 +95,18 @@ export const ExportFields = withFieldGroup({
 
     function onChangeUnit({ value }: { value: Unit }) {
       const { width, height } = advancedTransforms.changeUnit({ unit: value });
-      group.setFieldValue('width', String(width), {
+      group.setFieldValue('width', String(safeNumber(width)), {
         dontRunListeners: true,
       });
-      group.setFieldValue('height', String(height), {
+      group.setFieldValue('height', String(safeNumber(height)), {
         dontRunListeners: true,
       });
     }
     function onWidthChange({ value }: { value: string }) {
+      value = safeStringNumber(value, (width) =>
+        group.setFieldValue('width', width, { dontRunListeners: true }),
+      );
+
       const height = advancedTransforms.changeSize(
         Number(value),
         'height',
@@ -84,11 +115,15 @@ export const ExportFields = withFieldGroup({
       if (!advancedTransforms.isAspectRatioEnabled) {
         return;
       }
-      group.setFieldValue('height', String(height), {
+      group.setFieldValue('height', String(safeNumber(height)), {
         dontRunListeners: true,
       });
     }
     function onHeightChange({ value }: { value: string }) {
+      value = safeStringNumber(value, (height) =>
+        group.setFieldValue('height', height, { dontRunListeners: true }),
+      );
+
       const width = advancedTransforms.changeSize(
         Number(value),
         'width',
@@ -97,20 +132,23 @@ export const ExportFields = withFieldGroup({
       if (!advancedTransforms.isAspectRatioEnabled) {
         return;
       }
-      group.setFieldValue('width', String(width), {
+      group.setFieldValue('width', String(safeNumber(width)), {
         dontRunListeners: true,
       });
     }
 
     function onDPIChange({ value }: { value: string }) {
-      if (group.state.values.mode !== 'advance') return;
-      if (group.state.values.unit !== 'px') return;
+      if (inputValues.mode !== 'advance') return;
+      if (inputValues.unit !== 'px') return;
 
+      value = safeStringNumber(value, (dpi) =>
+        group.setFieldValue('dpi', dpi, { dontRunListeners: true }),
+      );
       const { width, height } = advancedTransforms.changeDPI(Number(value));
-      group.setFieldValue('width', String(width), {
+      group.setFieldValue('width', String(safeNumber(width)), {
         dontRunListeners: true,
       });
-      group.setFieldValue('height', String(height), {
+      group.setFieldValue('height', String(safeNumber(height)), {
         dontRunListeners: true,
       });
     }
@@ -179,6 +217,7 @@ export const ExportFields = withFieldGroup({
                       {({ NumericInput }) => (
                         <NumericInput
                           label="Width"
+                          min={1}
                           rightElement={<Tag>{unit}</Tag>}
                         />
                       )}
@@ -190,6 +229,7 @@ export const ExportFields = withFieldGroup({
                       {({ NumericInput }) => (
                         <NumericInput
                           label="Height"
+                          min={1}
                           rightElement={<Tag>{unit}</Tag>}
                         />
                       )}

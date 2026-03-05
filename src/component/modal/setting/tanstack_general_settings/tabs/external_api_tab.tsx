@@ -15,11 +15,13 @@ import {
   TableSettings,
 } from '../ui/table.js';
 import { TableSection } from '../ui/table_section.js';
-import type { externalAPIValidation } from '../validation/external_apis_validation.js';
+import type { externalAPIWithUUIDValidation } from '../validation/external_apis_validation.js';
 import { defaultGeneralSettingsFormValues } from '../validation.js';
 
-type API = z.input<typeof externalAPIValidation>;
-const emptyApi: API = { key: 'CT', serverLink: '', APIKey: '' };
+type API = z.input<typeof externalAPIWithUUIDValidation>;
+function emptyApi(): API {
+  return { key: 'CT', serverLink: '', APIKey: '', uuid: crypto.randomUUID() };
+}
 
 const itemsAPI = EXTERNAL_API_KEYS.slice();
 
@@ -28,7 +30,7 @@ export const ExternalApiTab = withForm({
   render: function ExternalApiTab({ form }) {
     const { Field } = form;
     const field = useField({ form, name: 'externalAPIs', mode: 'array' });
-    const { name, state, pushValue, insertValue, removeValue } = field;
+    const { name, pushValue, insertValue, removeValue } = field;
 
     const columns = useMemo(() => {
       const helper = createColumnHelper<API>();
@@ -98,7 +100,7 @@ export const ExternalApiTab = withForm({
             <CellActions>
               <CellActionsButton
                 intent="success"
-                onClick={() => insertValue(index, emptyApi)}
+                onClick={() => insertValue(index, emptyApi())}
               >
                 <FaPlus className={Classes.ICON} />
               </CellActionsButton>
@@ -115,7 +117,7 @@ export const ExternalApiTab = withForm({
     }, [Field, insertValue, name, removeValue]);
 
     function onAddField() {
-      pushValue(emptyApi);
+      pushValue(emptyApi());
     }
 
     return (
@@ -133,11 +135,16 @@ export const ExternalApiTab = withForm({
         }
       >
         <TableSettings
-          data={state.value}
+          data={field.state.value}
           columns={columns}
+          getRowId={getRowId}
           emptyContent="No external APIs"
         />
       </TableSection>
     );
   },
 });
+
+function getRowId(row: API) {
+  return row.uuid;
+}
