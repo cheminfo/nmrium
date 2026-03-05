@@ -36,10 +36,10 @@ function IndirectAxis2D(props: IndirectAxis2DProps) {
   const nucleus = useActiveNucleusTab();
   const [, maybeNucleusUnit] = nucleus.split(',');
   const workspaceUnit = useIndirectAxis2DUnit();
-  const chartUnit = 'ppm';
-  const unitToDisplay = /^[0-9]+[A-Z][a-z]?$/.test(maybeNucleusUnit)
-    ? workspaceUnit
+  const chartUnit = /^[0-9]+[A-Z][a-z]?$/.test(maybeNucleusUnit)
+    ? 'ppm'
     : undefined;
+  const unitToDisplay = chartUnit && workspaceUnit;
 
   // TODO scale chartUnit to workspaceUnit
   // if (!unitToDisplay) no need to scale chartUnit to workspaceUnit

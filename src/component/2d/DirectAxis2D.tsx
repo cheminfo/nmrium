@@ -33,11 +33,11 @@ function DirectAxis2D(props: DirectAxis2DProps) {
   const spectrum = useSpectrum() as Spectrum2D;
 
   const workspaceUnit = useDirectAxis2DUnit();
-  const spectraUnit = spectrum?.info?.isFid ? 'hz' : 'ppm';
+  const spectrumUnit = spectrum?.info?.isFid ? 'hz' : 'ppm';
   const unitLabel = axisUnitToLabel[workspaceUnit];
 
-  // TODO scale spectraUnit to workspaceUnit
-  void spectraUnit;
+  // TODO scale spectrumUnit to workspaceUnit
+  void spectrumUnit;
   const scaleX = useScale2DX();
   const isInset = useIsInset();
   const isExportingProcessStart = useCheckExportStatus();
