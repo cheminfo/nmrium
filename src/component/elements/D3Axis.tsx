@@ -1,6 +1,10 @@
 import type { SVGAttributes } from 'react';
 import { forwardRef } from 'react';
-import type { UseLinearPrimaryTicksResult } from 'react-d3-utils';
+import type { Tick, UseLinearPrimaryTicksResult } from 'react-d3-utils';
+import type { SVGStyledLineProps, SVGStyledTextProps } from 'react-science/ui';
+import { SVGStyledText } from 'react-science/ui';
+
+import { useTicksConfig } from '../hooks/use_ticks_config.ts';
 
 type AxisPosition = 'top' | 'bottom' | 'left' | 'right';
 interface BaseD3AxisProps {
@@ -58,45 +62,99 @@ function BaseLine(props: BaseLineProps) {
 
 function Tickets(props: TicketsProps) {
   const { ticks, tickLength = 6, axisPosition } = props;
+  const config = useTicksConfig();
+
   if (!Array.isArray(ticks) || ticks.length === 0) return null;
 
   const isVertical = isVerticalAxis(axisPosition);
   const positionSign =
     axisPosition === 'left' || axisPosition === 'top' ? -1 : 1;
 
-  return ticks.map(({ label, position }) => {
+  const positionTextConfig: SVGStyledTextProps = isVertical
+    ? {
+        x: positionSign * (tickLength + 3),
+        dy: '0.32em',
+        textAnchor: positionSign === -1 ? 'end' : 'start',
+      }
+    : {
+        y: positionSign * (tickLength + 3),
+        dy: positionSign === -1 ? '0em' : '0.71em',
+        textAnchor: 'middle',
+      };
+
+  const positionPrimaryLineConfig: SVGStyledLineProps = isVertical
+    ? { x1: positionSign * tickLength, x2: 0 }
+    : { y1: positionSign * tickLength, y2: 0 };
+
+  const secondaryTickLength = tickLength / 2;
+  const secondaryTickOffset = getSecondaryTickOffset(ticks, positionSign);
+  const positionSecondaryLineConfig: SVGStyledLineProps = isVertical
+    ? {
+        x1: positionSign * secondaryTickLength,
+        x2: 0,
+        y1: secondaryTickOffset,
+        y2: secondaryTickOffset,
+      }
+    : {
+        y1: positionSign * secondaryTickLength,
+        y2: 0,
+        x1: secondaryTickOffset,
+        x2: secondaryTickOffset,
+      };
+  const positionSecondaryFirstLineConfig: SVGStyledLineProps = isVertical
+    ? {
+        x1: positionSign * secondaryTickLength,
+        x2: 0,
+        y1: -secondaryTickOffset,
+        y2: -secondaryTickOffset,
+      }
+    : {
+        y1: positionSign * secondaryTickLength,
+        y2: 0,
+        x1: -secondaryTickOffset,
+        x2: -secondaryTickOffset,
+      };
+
+  return ticks.map(({ label, position }, index) => {
+    const isFirst = index === 0;
+
     return (
       <g
         key={label}
         transform={`translate(${isVertical ? `0,${position}` : `${position},0`})`}
         className="tick"
       >
-        <line
-          {...(isVertical
-            ? { x1: positionSign * tickLength, x2: 0 }
-            : { y1: positionSign * tickLength, y2: 0 })}
-          stroke="black"
-        />
+        {config.isSecondaryEnabled && isFirst && (
+          <line {...positionSecondaryFirstLineConfig} stroke="black" />
+        )}
 
-        <text
-          {...(isVertical
-            ? {
-                x: positionSign * (tickLength + 3),
-                dy: '0.32em',
-                textAnchor: positionSign === -1 ? 'end' : 'start',
-              }
-            : {
-                y: positionSign * (tickLength + 3),
-                dy: positionSign === -1 ? '0em' : '0.71em',
-                textAnchor: 'middle',
-              })}
+        <line {...positionPrimaryLineConfig} stroke="black" />
+
+        {config.isSecondaryEnabled && (
+          <line {...positionSecondaryLineConfig} stroke="black" />
+        )}
+
+        <SVGStyledText
           fill="black"
+          {...config.textStyle}
+          {...positionTextConfig}
         >
           {label}
-        </text>
+        </SVGStyledText>
       </g>
     );
   });
+}
+
+function getSecondaryTickOffset(ticks: Array<Tick<number>>, direction: -1 | 1) {
+  if (ticks.length < 2) return 0;
+
+  let [first, second] = ticks;
+  if (direction === -1) {
+    [first, second] = [second, first];
+  }
+
+  return (second.position - first.position) / 2;
 }
 
 function getLinePosition(position: any, axisPosition: any, gridSize: any) {
