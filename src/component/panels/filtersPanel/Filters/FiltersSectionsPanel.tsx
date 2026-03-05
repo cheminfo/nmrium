@@ -1,13 +1,13 @@
 import { Switch } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { Filters1D, Filters2D } from 'nmr-processing';
-import { memo, useEffect, useRef, useState } from 'react';
+import { memo, useMemo, useRef, useState } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { ObjectInspector } from 'react-inspector';
 import { Button } from 'react-science/ui';
 
 import { getFilterLabel } from '../../../../data/getFilterLabel.js';
-import type { FilterEntry as BaseFilterEntry } from '../../../../data/types/common/FilterEntry.js';
+import type { FilterEntry } from '../../../../data/types/common/FilterEntry.js';
 import { useChartData } from '../../../context/ChartContext.js';
 import { useDispatch } from '../../../context/DispatchContext.js';
 import { useFilterSyncOptions } from '../../../context/FilterSyncOptionsContext.js';
@@ -23,11 +23,11 @@ import { getDefaultFilterOptions } from '../../../utility/getDefaultFilterOption
 
 import { filterOptionPanels } from './index.js';
 
-export const nonRemovableFilters = new Set<BaseFilterEntry['name']>([
+export const nonRemovableFilters = new Set<FilterEntry['name']>([
   'digitalFilter',
   'digitalFilter2D',
 ]);
-const readOnlyFilters = new Set<BaseFilterEntry['name']>([
+const readOnlyFilters = new Set<FilterEntry['name']>([
   'digitalFilter',
   'shiftX',
   'exclusionZones',
@@ -45,10 +45,6 @@ const IconButton = styled(Button)`
 const Filters = {
   ...Filters1D,
   ...Filters2D,
-};
-
-type FilterEntry = Omit<BaseFilterEntry, 'value'> & {
-  value: null | BaseFilterEntry['value'];
 };
 interface FilterElementsProps {
   filter: FilterEntry;
@@ -75,7 +71,7 @@ function FilterElements(props: FilterElementsProps) {
   const label = getFilterLabel(name);
 
   function handleFilterCheck(
-    id: any,
+    id: string,
     event: React.ChangeEvent<HTMLInputElement>,
   ) {
     const enabled = event.target.checked;
@@ -169,6 +165,7 @@ function FilterElements(props: FilterElementsProps) {
         innerLabel="Off"
         checked={enabled || false}
         onChange={(event) => {
+          if (!id) return;
           handleFilterCheck(id, event);
         }}
       />
@@ -187,20 +184,16 @@ function FiltersInner(props: FiltersInnerProps) {
   const {
     toolOptions: { selectedTool },
   } = useChartData();
-  const [newFilter, setNewFilter] = useState<FilterEntry | null>();
+  const [manualSection, setManualSection] = useState<string | null>(null);
+
   const { updateFilterOptions } = useFilterSyncOptions();
 
-  const [selectedSection, openSection] = useState<string | null>();
   const dispatch = useDispatch();
   const toaster = useToaster();
-  const selectedFilterIndex = useRef<number>();
+  const selectedFilterIndex = useRef<number | null>();
   const activeSpectrum = useActiveSpectrum();
 
-  function toggleSection(sectionKey: any) {
-    openSection(selectedSection === sectionKey ? '' : sectionKey);
-  }
-
-  function filterSnapShotHandler(filter: any, index: any) {
+  function filterSnapShotHandler(filter: FilterEntry, index: number) {
     selectedFilterIndex.current =
       selectedFilterIndex.current && index === selectedFilterIndex.current
         ? null
@@ -210,7 +203,7 @@ function FiltersInner(props: FiltersInnerProps) {
       //Clear the filter sync object
       updateFilterOptions(null);
       //Close the opened section
-      openSection(null);
+      setManualSection(null);
     }
     const hideLoading = toaster.showLoading({
       message: 'Filter snapshot process in progress',
@@ -224,7 +217,7 @@ function FiltersInner(props: FiltersInnerProps) {
     }, 0);
   }
 
-  function getStyle(filter: any, index: any) {
+  function getStyle(filter: FilterEntry, index: number) {
     const { id, error } = filter;
 
     if (error) {
@@ -245,38 +238,34 @@ function FiltersInner(props: FiltersInnerProps) {
     return {};
   }
 
-  useEffect(() => {
-    const isFilterExists = filters.some(
-      (filter) => filter.name === selectedTool,
-    );
-
-    // TODO: The types of selectedTool and Filters are completely incompatible
-    // I think we need a propper mapping between the two
+  const newFilter = useMemo<FilterEntry | null>(() => {
+    const isFilterExists = filters.some((f) => f.name === selectedTool);
     if (!isFilterExists && (Filters as any)?.[selectedTool]) {
       const { name } = (Filters as any)[selectedTool];
-      setNewFilter(getDefaultFilterOptions(name));
-    } else {
-      setNewFilter((previousNewFilter) => {
-        if (previousNewFilter) {
-          openSection('');
-        }
-        return null;
-      });
+      return getDefaultFilterOptions(name);
     }
+    return null;
   }, [filters, selectedTool]);
 
-  useEffect(() => {
-    if ((Filters as any)?.[selectedTool]) {
-      openSection(selectedTool);
-      return;
-    }
+  const selectedSection = useMemo(() => {
+    // New filter tool is selected
+    if ((Filters as any)?.[selectedTool]) return selectedTool;
 
-    const filter = filters.find((filter) => filter.id === activeFilterID);
+    //An existing filter is being edited
+    const filter = filters.find((f) => f.id === activeFilterID);
+    if (filter) return filter.name;
 
-    if (filter) {
-      openSection(filter.name);
-    }
-  }, [activeFilterID, filters, selectedTool]);
+    // otherwise, fallback to the manual selected section
+    return manualSection;
+  }, [selectedTool, activeFilterID, filters, manualSection]);
+
+  function toggleSection(sectionKey: string) {
+    setManualSection((prev) => (prev === sectionKey ? null : sectionKey));
+  }
+
+  function handleClose() {
+    setManualSection(null);
+  }
 
   const filtersList = [...filters];
 
@@ -295,11 +284,7 @@ function FiltersInner(props: FiltersInnerProps) {
     return <EmptyText text="No Filters" />;
   }
 
-  function handleClose() {
-    openSection(null);
-  }
-
-  function handleReorderFilters(sourceIndex: any, targetIndex: any) {
+  function handleReorderFilters(sourceIndex: number, targetIndex: number) {
     dispatch({
       type: 'REORDER_FILTERS',
       payload: { sourceIndex, targetIndex },
