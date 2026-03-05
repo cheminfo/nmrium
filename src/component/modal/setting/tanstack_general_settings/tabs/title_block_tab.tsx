@@ -5,9 +5,9 @@ import { useCallback, useMemo, useState } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import {
   Button,
-  createTableColumnHelper,
   FieldGroupSVGTextStyleFields,
   TableDragRowHandler,
+  createTableColumnHelper,
   withForm,
 } from 'react-science/ui';
 import type { z } from 'zod';
