@@ -29,6 +29,7 @@ import { initializeContoursLevels } from '../../../data/data2d/Spectrum2D/contou
 import { getProjection } from '../../../data/data2d/Spectrum2D/getMissingProjection.js';
 import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.js';
 import { isFid2DSpectrum } from '../../../data/data2d/Spectrum2D/isSpectrum2D.js';
+import type { FilterEntry } from '../../../data/types/common/FilterEntry.ts';
 import type { ExclusionZone } from '../../../data/types/data1d/ExclusionZone.js';
 import { getXScale } from '../../1d/utilities/scale.js';
 import { get2DXScale, get2DYScale } from '../../2d/utilities/scale.js';
@@ -182,7 +183,7 @@ type DeleteSpectraFilterAction = ActionType<
 type SetFilterSnapshotAction = ActionType<
   'SET_FILTER_SNAPSHOT',
   {
-    filter: { name: string; id: string };
+    filter: FilterEntry;
     tempRollback: boolean;
     triggerSource?: 'none' | 'processedToggle';
   }

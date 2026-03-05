@@ -98,7 +98,7 @@ export function BaseApodizationOptions(
                     dispatch({
                       type: 'SET_FILTER_SNAPSHOT',
                       payload: {
-                        filter: { id: filter.id, name: filter.name },
+                        filter,
                         tempRollback: event.target.checked,
                         triggerSource: 'processedToggle',
                       },
