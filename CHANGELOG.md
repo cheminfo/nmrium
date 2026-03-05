@@ -1,5 +1,35 @@
 # Changelog
 
+## [2.0.0](https://github.com/cheminfo/nmrium/compare/v1.12.0...v2.0.0) (2026-03-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* More informations inside NMRiumProps `state` and `aggregator` props tsdoc.
+
+### Features
+
+* add auto processing tab to general settings ([#3995](https://github.com/cheminfo/nmrium/issues/3995)) ([d20ab1e](https://github.com/cheminfo/nmrium/commit/d20ab1e215b0bd2f3209cee16647c5a9e9501a8b))
+* add databases tab ([#3992](https://github.com/cheminfo/nmrium/issues/3992)) ([3f69944](https://github.com/cheminfo/nmrium/commit/3f69944c5ed8db11beae815255ff43b9e2d6b3ea))
+* add spectra colors pane on general settings ([#4001](https://github.com/cheminfo/nmrium/issues/4001)) ([c78555a](https://github.com/cheminfo/nmrium/commit/c78555a164cd2b600c2b5b5aafe0f835ce080373))
+* add tools bar panel ([#3996](https://github.com/cheminfo/nmrium/issues/3996)) ([763e920](https://github.com/cheminfo/nmrium/commit/763e9201f0f00a3a85c3ddec06210a613d3b71bd))
+* allow to customize style for spectrum info block ([#4011](https://github.com/cheminfo/nmrium/issues/4011)) ([9f2b29f](https://github.com/cheminfo/nmrium/commit/9f2b29ffd84e39dedabae129d128b01a654205b4))
+* display custom labels annotation when its change ([7dd3cfb](https://github.com/cheminfo/nmrium/commit/7dd3cfb67dbfd9411a9e0642a5ad6597b3b54b73))
+* expose 'getNMRiumFile' method on NMRium API  ([#4025](https://github.com/cheminfo/nmrium/issues/4025)) ([4828b4f](https://github.com/cheminfo/nmrium/commit/4828b4f6b9aae1f7d5b5d6978ccdfd8b8a1cac60))
+* implement external APIs tab ([#3990](https://github.com/cheminfo/nmrium/issues/3990)) ([40b95d1](https://github.com/cheminfo/nmrium/commit/40b95d189bbd072c82eb729206456aeb55548106))
+* implement title block tab ([#3985](https://github.com/cheminfo/nmrium/issues/3985)) ([be8dbbc](https://github.com/cheminfo/nmrium/commit/be8dbbc48efe7eb9bf5fe489c1ace761b3fcd1a5))
+* improve 2D FT spectrum rendering speed ([#3927](https://github.com/cheminfo/nmrium/issues/3927)) ([54426e2](https://github.com/cheminfo/nmrium/commit/54426e2f5e1f5052092bd10e56146ede9ff56a24))
+* improves validation and use error boundary in dialog ([#3998](https://github.com/cheminfo/nmrium/issues/3998)) ([5cc565d](https://github.com/cheminfo/nmrium/commit/5cc565d1a41fac2eab016266b4cb8cdbbba0f2a4))
+
+
+### Bug Fixes
+
+* **Dialog:** text being selected on dialog ([#4033](https://github.com/cheminfo/nmrium/issues/4033)) ([d43f19a](https://github.com/cheminfo/nmrium/commit/d43f19ae207b828ce3fe1f038dfc8bcb90b99705))
+* **GeneralSettings:** form validation and submission ([#4017](https://github.com/cheminfo/nmrium/issues/4017)) ([7750f2e](https://github.com/cheminfo/nmrium/commit/7750f2e114d6d05f2000bfa4f426fdd2a9c11106))
+* replace `data` by `state` and `aggregator` props ([#4023](https://github.com/cheminfo/nmrium/issues/4023)) ([a15cb51](https://github.com/cheminfo/nmrium/commit/a15cb515e7603e7959ba0b44b35757fccc10f2fb))
+* replace useEffect with useMemo for derived filter sections state ([df9ae35](https://github.com/cheminfo/nmrium/commit/df9ae35b77f17bbc91841e9ef7718a9511b332dc))
+* resolve bug when using & &gt; *:first-child instead of styled ([#4005](https://github.com/cheminfo/nmrium/issues/4005)) ([8767aba](https://github.com/cheminfo/nmrium/commit/8767abac86fc62eca2ab935a419cdb6beffaab3b))
+
 ## [1.12.0](https://github.com/cheminfo/nmrium/compare/v1.11.0...v1.12.0) (2026-02-17)
 
 
