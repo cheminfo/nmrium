@@ -1,3 +1,4 @@
+import type { AxisUnit } from '@zakodium/nmrium-core';
 import { memo, useRef } from 'react';
 import { useLinearPrimaryTicks } from 'react-d3-utils';
 
@@ -7,6 +8,10 @@ import { D3Axis } from '../elements/D3Axis.js';
 import { useActiveNucleusTab } from '../hooks/useActiveNucleusTab.js';
 import { useTextMetrics } from '../hooks/useTextMetrics.js';
 import { useCheckExportStatus } from '../hooks/useViewportSize.tsx';
+import {
+  axisUnitToLabel,
+  useIndirectAxis2DUnit,
+} from '../hooks/use_axis_unit.ts';
 import { useGridline2DConfig } from '../hooks/use_gridlines_config.ts';
 
 import { useScale2DY } from './utilities/scale.js';
@@ -25,11 +30,20 @@ interface IndirectAxis2DProps {
 function IndirectAxis2D(props: IndirectAxis2DProps) {
   const { margin: marginProps = defaultMargin } = props;
 
-  const { width, height, margin } = useChartData();
-  const nucleusStr = useActiveNucleusTab();
-  const [, unit] = nucleusStr.split(',');
   const { getTextWidth } = useTextMetrics({ labelSize: 10 });
+  const { width, height, margin } = useChartData();
 
+  const nucleus = useActiveNucleusTab();
+  const [, maybeNucleusUnit] = nucleus.split(',');
+  const workspaceUnit = useIndirectAxis2DUnit();
+  const chartUnit = 'ppm';
+  const unitToDisplay = /^[0-9]+[A-Z][a-z]?$/.test(maybeNucleusUnit)
+    ? workspaceUnit
+    : undefined;
+
+  // TODO scale chartUnit to workspaceUnit
+  // if (!unitToDisplay) no need to scale chartUnit to workspaceUnit
+  void chartUnit;
   const scaleY = useScale2DY();
   const isInset = useIsInset();
   const isExportingProcessStart = useCheckExportStatus();
@@ -47,7 +61,9 @@ function IndirectAxis2D(props: IndirectAxis2DProps) {
     return null;
   }
 
-  const label = /^[0-9]+[A-Z][a-z]?$/.test(unit) ? 'δ [ppm]' : unit;
+  const label = unitToDisplay
+    ? axisUnitToLabel[unitToDisplay]
+    : maybeNucleusUnit;
   const labelHeight = getTextWidth(label);
 
   return (
