@@ -5,9 +5,9 @@ import { useCallback, useMemo, useState } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import {
   Button,
+  createTableColumnHelper,
   FieldGroupSVGTextStyleFields,
   TableDragRowHandler,
-  createTableColumnHelper,
   withForm,
 } from 'react-science/ui';
 import type { z } from 'zod';
@@ -40,18 +40,18 @@ export const TitleBlockTab = withForm({
 
         <TableFields form={form} />
 
-        <Section title="Text style color">
+        <Section title="Styling">
           <FieldGroupSVGTextStyleFields
             form={form}
             fields="infoBlock.nameStyle"
-            label="Field label text color"
+            label="Field label"
             previewText="Pulse sequence :"
           />
 
           <FieldGroupSVGTextStyleFields
             form={form}
             fields="infoBlock.valueStyle"
-            label="Field value text color"
+            label="Field value"
             previewText="lon1027"
           />
         </Section>
