@@ -37,23 +37,24 @@ export const TitleBlockTab = withForm({
             {({ Checkbox }) => <Checkbox label="Display spectrum info block" />}
           </AppField>
         </Section>
-        <Section title="Text style color">
+
+        <TableFields form={form} />
+
+        <Section title="Styling">
           <FieldGroupSVGTextStyleFields
             form={form}
             fields="infoBlock.nameStyle"
-            label="Name text color"
+            label="Field label"
             previewText="Pulse sequence :"
           />
 
           <FieldGroupSVGTextStyleFields
             form={form}
             fields="infoBlock.valueStyle"
-            label="Value text color"
+            label="Field value"
             previewText="lon1027"
           />
         </Section>
-
-        <TableFields form={form} />
       </>
     );
   },
