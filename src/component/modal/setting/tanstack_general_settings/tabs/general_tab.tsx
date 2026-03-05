@@ -82,6 +82,7 @@ export const GeneralTab = withForm({
                 label="Margin top"
                 min={0}
                 max={1}
+                step={0.1}
                 stepSize={0.1}
                 rightElement={<Tag>px</Tag>}
               />
