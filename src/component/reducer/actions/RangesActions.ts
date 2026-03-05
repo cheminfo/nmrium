@@ -74,7 +74,7 @@ type SaveEditedRangeAction = ActionType<
 >;
 
 interface DeleteSignalProps {
-  spectrumId: string;
+  spectrumId?: string;
   rangeId: string;
   signalId: string;
 }
@@ -150,7 +150,7 @@ type ToggleRangesViewAction = ActionType<
 
 type DeleteRangePeakAction = ActionType<
   'DELETE_RANGE_PEAK',
-  { id: string; spectrumKey: string }
+  { id: string; spectrumKey?: string }
 >;
 type Change1DSignalAssignmentLabelAction = ActionType<
   'CHANGE_1D_SIGNAL_ASSIGNMENT_LABEL',
