@@ -6,6 +6,7 @@ import { withForm } from 'react-science/ui';
 import { StyledDialogBody } from '../../../elements/StyledDialogBody.js';
 
 import { AutoProcessingTab } from './tabs/auto_processing_tab.tsx';
+import { AxisTab } from './tabs/axis_tab.tsx';
 import { DatabaseTab } from './tabs/database_tab.js';
 import { ExportTab } from './tabs/export_tab.js';
 import { ExternalApiTab } from './tabs/external_api_tab.js';
@@ -62,6 +63,8 @@ export const GeneralSettingsDialogBody = withForm({
               id="general"
               panel={<GeneralTab form={form} />}
             />
+
+            <Tab title="Axis" id="axis" panel={<AxisTab form={form} />} />
 
             <Tab title="Nuclei" id="nuclei" panel={<NucleiTab form={form} />} />
 

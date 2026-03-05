@@ -7,7 +7,7 @@ import { z } from 'zod';
 
 const axisUnitValidation = z.enum(axisUnits);
 
-const gridlineValidation = z.object({
+export const gridlineValidation = z.object({
   enabled: z.boolean(),
   lineStyle: svgLineStyleFieldsSchema,
 });
