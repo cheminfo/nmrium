@@ -5,9 +5,9 @@ import { useCallback, useMemo } from 'react';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import {
   Button,
+  createTableColumnHelper,
   FieldGroupSVGTextStyleFields,
   TableDragRowHandler,
-  createTableColumnHelper,
   withForm,
 } from 'react-science/ui';
 import type { z } from 'zod';
@@ -43,21 +43,7 @@ export const TitleBlockTab = withForm({
             {({ Checkbox }) => <Checkbox label="Display spectrum info block" />}
           </AppField>
         </Section>
-        <Section title="Text style color">
-          <FieldGroupSVGTextStyleFields
-            form={form}
-            fields="infoBlock.nameStyle"
-            label="Name text color"
-            previewText="Pulse sequence :"
-          />
 
-          <FieldGroupSVGTextStyleFields
-            form={form}
-            fields="infoBlock.valueStyle"
-            label="Value text color"
-            previewText="lon1027"
-          />
-        </Section>
         <TableSection
           title="Fields"
           actions={
@@ -74,6 +60,22 @@ export const TitleBlockTab = withForm({
         >
           <Fields form={form} />
         </TableSection>
+
+        <Section title="Field style color">
+          <FieldGroupSVGTextStyleFields
+            form={form}
+            fields="infoBlock.nameStyle"
+            label="Field label text color"
+            previewText="Pulse sequence :"
+          />
+
+          <FieldGroupSVGTextStyleFields
+            form={form}
+            fields="infoBlock.valueStyle"
+            label="Field value text color"
+            previewText="lon1027"
+          />
+        </Section>
       </>
     );
   },
