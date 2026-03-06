@@ -81,7 +81,7 @@ export const GeneralTab = withForm({
               <field.NumericInput
                 label="Margin top"
                 min={0}
-                step={1}
+                stepSize={1}
                 rightElement={<Tag>px</Tag>}
               />
             )}
