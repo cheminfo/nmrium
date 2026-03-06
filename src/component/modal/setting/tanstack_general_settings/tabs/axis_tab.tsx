@@ -1,4 +1,3 @@
-import { axisUnits } from '@zakodium/nmrium-core';
 import {
   FieldGroupSVGLineStyleFields,
   FieldGroupSVGTextStyleFields,
@@ -9,8 +8,6 @@ import type { z } from 'zod';
 
 import type { gridlineValidation } from '../validation/axis_tab_validation.ts';
 import { defaultGeneralSettingsFormValues } from '../validation.ts';
-
-const axisUnitItems = axisUnits.map((unit) => ({ label: unit, value: unit }));
 
 export const AxisTab = withForm({
   defaultValues: defaultGeneralSettingsFormValues,
