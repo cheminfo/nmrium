@@ -32,7 +32,7 @@ const TicksSection = withFieldGroup({
         <FieldGroupSVGTextStyleFields
           form={group}
           fields="primaryTicks.textStyle"
-          label="Primary tick style"
+          label="Annotation style"
           previewText="0"
         />
         <hr />
