@@ -7,7 +7,11 @@ import { useCallback, useEffect, useMemo } from 'react';
 import type { HighlightEventSource } from '../../../highlight/index.js';
 import { useHighlight } from '../../../highlight/index.js';
 import { ContextMenu } from '../../ContextMenuBluePrint.js';
-import type { BaseRowStyle, TableContextMenuProps } from '../ReactTable.js';
+import type {
+  BaseRowStyle,
+  HighlightSourceProps,
+  TableContextMenuProps,
+} from '../ReactTable.js';
 
 function getRowStyle(
   isActive: boolean,
@@ -38,13 +42,16 @@ function getRowStyle(
 export interface ClickEvent {
   onClick?: (event: Event, data: unknown) => void;
 }
+
 interface ReactTableRowProps extends ClickEvent, TableContextMenuProps {
   row: any;
-  highlightedSource?: HighlightEventSource;
   isRowActive: boolean;
   rowStyle: BaseRowStyle | undefined;
   disableDefaultRowStyle?: boolean;
 }
+
+type ReactTableRowPropsWithHighlight = ReactTableRowProps &
+  HighlightSourceProps;
 
 function getIDs(row: any): string[] {
   const id = row.original.id;
@@ -57,10 +64,12 @@ function getIDs(row: any): string[] {
   }
   return [''];
 }
-function ReactTableRow(props: ReactTableRowProps) {
+
+function ReactTableRow(props: ReactTableRowPropsWithHighlight) {
   const {
     row,
     highlightedSource = 'UNKNOWN',
+    getHighlightExtra,
     onContextMenuSelect,
     contextMenu = [],
     onClick,
@@ -69,11 +78,12 @@ function ReactTableRow(props: ReactTableRowProps) {
     disableDefaultRowStyle,
   } = props;
   const data = useMemo(
-    () => ({
-      type: highlightedSource,
-      extra: row.original,
-    }),
-    [highlightedSource, row],
+    (): HighlightEventSource =>
+      ({
+        type: highlightedSource,
+        extra: getHighlightExtra?.(row.original),
+      }) as HighlightEventSource,
+    [highlightedSource, row.original, getHighlightExtra],
   );
   const highlight = useHighlight(getIDs(row), data);
 

@@ -370,7 +370,7 @@ function SummaryPanel() {
             type: 'DELETE_1D_SIGNAL',
             payload: {
               spectrumId: spectrum.id,
-              range,
+              rangeId: range.id,
               signalId: signal.id,
             },
           });

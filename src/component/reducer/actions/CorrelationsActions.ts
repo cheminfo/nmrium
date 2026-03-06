@@ -150,7 +150,7 @@ function handleDeleteCorrelation(
       if (range && signal) {
         deleteSignal1D(draft, {
           spectrumId: spectrum.id,
-          range,
+          rangeId: range.id,
           signalId: signal.id,
         });
       }

@@ -271,6 +271,11 @@ function DatabaseTable({
       data={data}
       columns={tableColumns}
       highlightedSource="DATABASE"
+      getHighlightExtra={(row) => ({
+        jcampURL: row.jcampURL,
+        baseURL: row.baseURL,
+        ranges: row.ranges,
+      })}
       groupKey="index"
       approxItemHeight={23}
       enableVirtualScroll

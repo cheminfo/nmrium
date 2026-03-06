@@ -11,6 +11,7 @@ import { useToaster } from '../context/ToasterContext.js';
 import type { AlertButton } from '../elements/Alert.js';
 import { useAlert } from '../elements/Alert.js';
 import { useExportManagerAPI } from '../elements/export/ExportManager.js';
+import type { HighlightEventSource } from '../highlight/index.js';
 import { useHighlightData } from '../highlight/index.js';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility.js';
 import { useExport } from '../hooks/useExport.js';
@@ -82,122 +83,119 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
   }, [data, displayerMode]);
 
   const deleteHandler = useCallback(
-    async (sourceData: any) => {
+    async (sourceData: HighlightEventSource) => {
       const { type, extra } = sourceData;
       switch (type) {
         case 'INTEGRAL': {
-          const { id, spectrumID } = extra || {};
-          if (id) {
-            dispatch({
-              type: 'DELETE_INTEGRAL',
-              payload: {
-                id,
-                spectrumKey: spectrumID,
-              },
-            });
-            // remove keys from the highlighted list after delete
-            remove();
-          }
+          const { id, spectrumID } = extra;
+          dispatch({
+            type: 'DELETE_INTEGRAL',
+            payload: {
+              id,
+              spectrumKey: spectrumID,
+            },
+          });
+          // remove keys from the highlighted list after delete
+          remove();
           break;
         }
         case 'PEAK': {
-          const { id, spectrumID } = extra || {};
-          if (id) {
-            dispatch({
-              type: 'DELETE_PEAK',
-              payload: {
-                id,
-                spectrumKey: spectrumID,
-              },
-            });
-            // remove keys from the highlighted list after delete
-            remove();
-          }
-
+          const { id, spectrumID } = extra;
+          dispatch({
+            type: 'DELETE_PEAK',
+            payload: {
+              id,
+              spectrumKey: spectrumID,
+            },
+          });
+          // remove keys from the highlighted list after delete
+          remove();
           break;
         }
         case 'RANGE_PEAK': {
-          const { id, spectrumID } = extra || {};
-          if (id) {
-            dispatch({
-              type: 'DELETE_RANGE_PEAK',
-              payload: {
-                id,
-                spectrumKey: spectrumID,
-              },
-            });
-            // remove keys from the highlighted list after delete
-            remove();
-          }
-
+          const { id, spectrumID } = extra;
+          dispatch({
+            type: 'DELETE_RANGE_PEAK',
+            payload: {
+              id,
+              spectrumKey: spectrumID,
+            },
+          });
+          // remove keys from the highlighted list after delete
+          remove();
           break;
         }
         case 'RANGE': {
-          const { id, spectrumID } = extra || {};
-          if (id) {
-            dispatch({
-              type: 'DELETE_RANGE',
-              payload: {
-                id,
-                spectrumKey: spectrumID,
-              },
-            });
-            // remove keys from the highlighted list after delete
-            remove();
-          }
+          const { id, spectrumID } = extra;
+          dispatch({
+            type: 'DELETE_RANGE',
+            payload: {
+              id,
+              spectrumKey: spectrumID,
+            },
+          });
+          // remove keys from the highlighted list after delete
+          remove();
+          break;
+        }
+        case 'SIGNAL_1D': {
+          const { id, rangeId } = extra;
+          dispatch({
+            type: 'DELETE_1D_SIGNAL',
+            payload: {
+              signalId: id,
+              rangeId,
+            },
+          });
+          // remove keys from the highlighted list after delete
+          remove();
           break;
         }
         case 'ZONE': {
-          const { id } = extra || {};
-          if (id) {
-            dispatch({
-              type: 'DELETE_2D_ZONE',
-              payload: {
-                id,
-              },
-            });
-            // remove keys from the highlighted list after delete
-            remove();
-          }
+          const { id } = extra;
+          dispatch({
+            type: 'DELETE_2D_ZONE',
+            payload: {
+              id,
+            },
+          });
+          // remove keys from the highlighted list after delete
+          remove();
           break;
         }
         case 'EXCLUSION_ZONE': {
-          const { zone, spectrumID } = extra || {};
+          const { zone, spectrumID } = extra;
 
           const buttons: AlertButton[] = [
             {
               text: 'Yes, for all spectra',
               onClick: async () => {
-                if (zone) {
-                  const hideLoading = toaster.showLoading({
-                    message: 'Delete all spectra exclusion zones in progress',
-                  });
-                  dispatch({
-                    type: 'DELETE_EXCLUSION_ZONE',
-                    payload: {
-                      zone,
-                    },
-                  });
-                  hideLoading();
-                }
+                const hideLoading = toaster.showLoading({
+                  message: 'Delete all spectra exclusion zones in progress',
+                });
+                dispatch({
+                  type: 'DELETE_EXCLUSION_ZONE',
+                  payload: {
+                    zone,
+                  },
+                });
+                hideLoading();
               },
             },
             {
               text: 'Yes',
               onClick: async () => {
-                if (spectrumID) {
-                  const hideLoading = toaster.showLoading({
-                    message: 'Delete exclusion zones in progress',
-                  });
-                  dispatch({
-                    type: 'DELETE_EXCLUSION_ZONE',
-                    payload: {
-                      zone,
-                      spectrumId: spectrumID,
-                    },
-                  });
-                  hideLoading();
-                }
+                const hideLoading = toaster.showLoading({
+                  message: 'Delete exclusion zones in progress',
+                });
+                dispatch({
+                  type: 'DELETE_EXCLUSION_ZONE',
+                  payload: {
+                    zone,
+                    spectrumId: spectrumID,
+                  },
+                });
+                hideLoading();
               },
             },
             { text: 'No' },
@@ -210,7 +208,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
           break;
         }
         case 'MATRIX_GENERATION_EXCLUSION_ZONE': {
-          const { zone } = extra || {};
+          const { zone } = extra;
 
           const buttons: AlertButton[] = [
             {
@@ -243,36 +241,33 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
           break;
         }
         case 'MULTIPLE_ANALYSIS_ZONE': {
-          const { colKey } = extra || {};
-          if (colKey) {
-            dispatchPreferences({
-              type: 'DELETE_ANALYSIS_COLUMN',
-              payload: { columnKey: colKey, nucleus: activeTab },
-            });
-            // remove keys from the highlighted list after delete
-            remove();
-          }
+          const { colKey } = extra;
+          dispatchPreferences({
+            type: 'DELETE_ANALYSIS_COLUMN',
+            payload: { columnKey: colKey, nucleus: activeTab },
+          });
+          // remove keys from the highlighted list after delete
+          remove();
+
           break;
         }
         case 'BASELINE_ZONE': {
-          const { id } = extra || {};
-          if (id) {
-            dispatch({ type: 'DELETE_BASE_LINE_ZONE', payload: { id } });
-            // remove keys from the highlighted list after delete
-            remove();
-          }
+          const { id } = extra;
+          dispatch({ type: 'DELETE_BASE_LINE_ZONE', payload: { id } });
+          // remove keys from the highlighted list after delete
+          remove();
+
           break;
         }
         case 'PHASE_CORRECTION_TRACE': {
-          const { id } = extra || {};
-          if (id) {
-            dispatch({
-              type: 'DELETE_PHASE_CORRECTION_TRACE',
-              payload: { id },
-            });
-            // remove keys from the highlighted list after delete
-            remove();
-          }
+          const { id } = extra;
+          dispatch({
+            type: 'DELETE_PHASE_CORRECTION_TRACE',
+            payload: { id },
+          });
+          // remove keys from the highlighted list after delete
+          remove();
+
           break;
         }
 

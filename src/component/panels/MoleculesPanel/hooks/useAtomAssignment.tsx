@@ -16,8 +16,10 @@ import { useAssignmentContext } from '../../../assignment/AssignmentsContext.js'
 import { useChartData } from '../../../context/ChartContext.js';
 import { useDispatch } from '../../../context/DispatchContext.js';
 import { useToaster } from '../../../context/ToasterContext.js';
-import type { HighlightEventSource } from '../../../highlight/index.js';
-import { useHighlightData } from '../../../highlight/index.js';
+import {
+  isHighlightEventSource,
+  useHighlightData,
+} from '../../../highlight/index.js';
 import useSpectrum from '../../../hooks/useSpectrum.js';
 import type { AtomData } from '../utilities/AtomData.js';
 import { extractFromAtom } from '../utilities/extractFromAtom.js';
@@ -35,12 +37,6 @@ function flattenAssignedDiaIDs(assignments: Assignments) {
     assignedDiaIDs.push(...x, ...y);
   }
   return assignedDiaIDs;
-}
-
-function isValidHighlightEventSource(type: HighlightEventSource) {
-  return (
-    type === 'ZONE' || type === 'RANGE' || type === 'ATOM' || type === 'SIGNAL'
-  );
 }
 
 function getSignalsDiaIDs(
@@ -106,22 +102,32 @@ export default function useAtomAssignment() {
 
   const currentDiaIDsToHighlight = useMemo(() => {
     const { highlighted, sourceData } = highlightData.highlight;
-    const { type, extra } = sourceData || {};
-    const { spectrumID } = extra || {};
 
     let currentSpectrum = spectrum;
 
-    if (isSpectrum2D(spectrum) && spectrumID) {
+    if (
+      !sourceData ||
+      !isHighlightEventSource(
+        sourceData,
+        'ZONE',
+        'RANGE',
+        'ATOM',
+        'SIGNAL',
+        'SIGNAL_1D',
+      ) ||
+      !currentSpectrum
+    ) {
+      return [];
+    }
+
+    if (isSpectrum2D(spectrum) && isHighlightEventSource(sourceData, 'RANGE')) {
+      const { spectrumID } = sourceData.extra || {};
       const traceSpectrum = tracesSpectra.find(
         (traceSpectrum) => traceSpectrum?.id === spectrumID,
       );
       if (traceSpectrum) {
         currentSpectrum = traceSpectrum;
       }
-    }
-
-    if (!type || !isValidHighlightEventSource(type) || !currentSpectrum) {
-      return [];
     }
 
     const highlightedAssignmentsIDs = highlighted.filter((highlightID) => {
