@@ -80,6 +80,7 @@ function PeakAnnotationsSpreadMode(props: PeakAnnotationsSpreadModeProps) {
     height,
     spectrumKey,
   } = props;
+
   const [ref, { height: boxSizeHeight } = { height: 0 }] = useResizeObserver();
   const { marginTop, isDragActive, onPointerDown } = usePeaksPosition();
 
