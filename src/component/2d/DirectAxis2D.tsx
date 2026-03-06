@@ -1,4 +1,4 @@
-import type { Spectrum2D } from '@zakodium/nmrium-core';
+import type { AxisUnit, Spectrum2D } from '@zakodium/nmrium-core';
 import { memo, useRef } from 'react';
 import { useLinearPrimaryTicks } from 'react-d3-utils';
 
@@ -29,7 +29,7 @@ function DirectAxis2D(props: DirectAxis2DProps) {
   const { height, width, margin } = useChartData();
   const spectrum = useSpectrum() as Spectrum2D;
 
-  const spectrumUnit = spectrum?.info?.isFid ? 's' : 'ppm';
+  const spectrumUnit: AxisUnit = spectrum?.info?.isFid ? 's' : 'ppm';
   const unitLabel = axisUnitToLabel[spectrumUnit];
 
   const scaleX = useScale2DX();

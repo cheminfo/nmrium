@@ -1,3 +1,4 @@
+import type { AxisUnit } from '@zakodium/nmrium-core';
 import { memo, useRef } from 'react';
 import { useLinearPrimaryTicks } from 'react-d3-utils';
 
@@ -31,7 +32,9 @@ function IndirectAxis2D(props: IndirectAxis2DProps) {
 
   const nucleus = useActiveNucleusTab();
   const [, maybeNucleusUnit] = nucleus.split(',');
-  const chartUnit = /^[0-9]+[A-Z][a-z]?$/.test(maybeNucleusUnit)
+  const chartUnit: AxisUnit | undefined = /^[0-9]+[A-Z][a-z]?$/.test(
+    maybeNucleusUnit,
+  )
     ? 'ppm'
     : undefined;
   const unitToDisplay = chartUnit;
