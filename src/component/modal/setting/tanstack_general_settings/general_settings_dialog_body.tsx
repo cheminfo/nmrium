@@ -64,7 +64,7 @@ export const GeneralSettingsDialogBody = withForm({
               panel={<GeneralTab form={form} />}
             />
 
-            <Tab title="Axis" id="axis" panel={<AxisTab form={form} />} />
+            <Tab title="Axes" id="axis" panel={<AxisTab form={form} />} />
 
             <Tab title="Nuclei" id="nuclei" panel={<NucleiTab form={form} />} />
 
