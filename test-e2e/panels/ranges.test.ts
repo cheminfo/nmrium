@@ -27,7 +27,9 @@ async function shiftSignal(nmrium: NmriumPage) {
   await inputLocator.selectText();
   await inputLocator.fill('100');
   await inputLocator.press('Enter');
-  const trackerLocator = nmrium.page.locator('_react=XAxis1D >> text=100');
+  const trackerLocator = nmrium.page.locator(
+    '_react=HorizontalAxis1D >> text=100',
+  );
   await expect(trackerLocator).toHaveCount(1);
 }
 
@@ -414,10 +416,10 @@ test('2D spectra reference change', async ({ page }) => {
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
 
     await expect(
-      nmrium.page.locator('_react=XAxis >> _react=Tickets  >> text'),
+      nmrium.page.locator('_react=DirectAxis2D >> _react=Tickets  >> text'),
     ).toContainText(xAxisDefault.map(String));
     await expect(
-      nmrium.page.locator('_react=YAxis >> _react=Tickets >> text'),
+      nmrium.page.locator('_react=IndirectAxis2D >> _react=Tickets >> text'),
     ).toContainText(yAxisDefault.map(String));
   });
 
@@ -486,10 +488,10 @@ test('2D spectra reference change', async ({ page }) => {
     const newXAxis = xAxisDefault.map((n) => String(n + xShift));
     const newYAxis = yAxisDefault.map((n) => String(n + yShift));
     await expect(
-      nmrium.page.locator('_react=XAxis >> _react=Tickets >> text'),
+      nmrium.page.locator('_react=DirectAxis2D >> _react=Tickets >> text'),
     ).toContainText(newXAxis);
     await expect(
-      nmrium.page.locator('_react=YAxis >> _react=Tickets >> text'),
+      nmrium.page.locator('_react=IndirectAxis2D >> _react=Tickets >> text'),
     ).toContainText(newYAxis);
   });
 });

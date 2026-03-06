@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { workspaceDefaultProperties } from '../../../workspaces/workspaceDefaultProperties.js';
 
 import { autoProcessingTabValidation } from './validation/auto_processing_tab_validation.ts';
+import { axisValidation } from './validation/axis_tab_validation.ts';
 import { databasesValidation } from './validation/database_tab_validation.ts';
 import { exportPreferencesValidation } from './validation/export_tab_validation.js';
 import { externalAPIsValidation } from './validation/external_apis_validation.js';
@@ -43,6 +44,7 @@ export const workspaceValidation = z.object({
   externalAPIs: externalAPIsValidation,
   export: exportPreferencesValidation,
   peaksLabel: peaksLabelValidation,
+  axis: axisValidation,
 });
 
 // This object is used to define type not real values. Do not use it as values

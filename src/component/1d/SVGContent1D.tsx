@@ -4,11 +4,11 @@ import { ShareDataProvider } from '../context/ShareDataContext.js';
 
 import { ApodizationLine } from './ApodizationLine.js';
 import ExclusionZonesAnnotations from './ExclusionZonesAnnotations.js';
+import { HorizontalAxis1D } from './HorizontalAxis1D.tsx';
 import LinesSeries from './LinesSeries.js';
 import { PredictionErrorsNotations } from './PredictionErrorsNotations.js';
 import SimilarityTree from './SimilarityTree.js';
 import SpectraTracker from './SpectraLegends.js';
-import { XAxis1D } from './XAxis1D.js';
 import DatabaseElements from './database/DatabaseElements.js';
 import IntegralsSeries from './integral/IntegralsSeries.js';
 import JGraph from './jCouplingGraph/JGraph.js';
@@ -53,7 +53,7 @@ export function SVGContent1D() {
       <PredictionErrorsNotations />
 
       <g className="container" style={{ pointerEvents: 'none' }}>
-        <XAxis1D />
+        <HorizontalAxis1D />
       </g>
     </g>
   );

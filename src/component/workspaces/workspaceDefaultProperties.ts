@@ -70,6 +70,51 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
     },
   },
 
+  axis: {
+    secondaryTicks: { enabled: true },
+    primaryTicks: { textStyle: { fontSize: 10 } },
+    gridlines1D: {
+      primary: {
+        enabled: true,
+        lineStyle: {
+          strokeWidth: 1,
+          strokeOpacity: 0.1,
+          strokeDasharray: 'dashed',
+          stroke: '#000000',
+        },
+      },
+      secondary: {
+        enabled: true,
+        lineStyle: {
+          strokeWidth: 1,
+          strokeOpacity: 0.05,
+          strokeDasharray: 'dashed',
+          stroke: '#000000',
+        },
+      },
+    },
+    gridlines2D: {
+      primary: {
+        enabled: false,
+        lineStyle: {
+          strokeWidth: 1,
+          strokeOpacity: 0.1,
+          strokeDasharray: 'dashed',
+          stroke: '#000000',
+        },
+      },
+      secondary: {
+        enabled: false,
+        lineStyle: {
+          strokeWidth: 1,
+          strokeOpacity: 0.05,
+          strokeDasharray: 'dashed',
+          stroke: '#000000',
+        },
+      },
+    },
+  },
+
   general: {
     dimmedSpectraOpacity: 0.4,
     verticalSplitterPosition: '560px',

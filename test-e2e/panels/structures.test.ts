@@ -620,7 +620,9 @@ test('check callbacks count on changing structures', async ({ page }) => {
         '_react=ActionButton[tooltipProps.content *= "Move molecule" i] >> nth=0',
       )
       .dragTo(
-        nmrium.page.locator('_react=XAxis1D >> _react=Tickets >> nth=1'),
+        nmrium.page.locator(
+          '_react=HorizontalAxis1D >> _react=Tickets >> nth=1',
+        ),
         { force: true },
       );
     await expect(dataCount).toContainText(String(initialDataCount + 1));

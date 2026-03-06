@@ -47,7 +47,7 @@ function LinearVerticalAxis(props: VerticalAxisProps) {
       gridSize={width - x}
       ticks={ticks}
       showGrid
-      primaryGridProps={{ strokeDasharray: '0' }}
+      primaryGridProps={{ strokeDasharray: 'solid' }}
     />
   );
 }
