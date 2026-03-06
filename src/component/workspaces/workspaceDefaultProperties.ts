@@ -73,7 +73,6 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
   axis: {
     secondaryTicks: { enabled: true },
     primaryTicks: { textStyle: { fontSize: 10 } },
-    unit1D: { horizontal: 'ppm' },
     gridlines1D: {
       primary: {
         enabled: true,
@@ -94,7 +93,6 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
         },
       },
     },
-    units2D: { direct: 'ppm', indirect: 'ppm' },
     gridlines2D: {
       primary: {
         enabled: false,

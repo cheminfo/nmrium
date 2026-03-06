@@ -6,10 +6,7 @@ import { useChartData } from '../context/ChartContext.js';
 import { useScaleChecked } from '../context/ScaleContext.js';
 import { D3Axis } from '../elements/D3Axis.js';
 import { useCheckExportStatus } from '../hooks/useViewportSize.js';
-import {
-  axisUnitToLabel,
-  useHorizontalAxis1DUnit,
-} from '../hooks/use_axis_unit.ts';
+import { axisUnitToLabel } from '../hooks/use_axis_unit.ts';
 import { useGridline1DConfig } from '../hooks/use_gridlines_config.ts';
 
 import { useIsInset } from './inset/InsetProvider.js';
@@ -20,19 +17,14 @@ export function HorizontalAxis1D() {
   const isInset = useIsInset();
   const isExportingProcessStart = useCheckExportStatus();
 
-  const workspaceUnit = useHorizontalAxis1DUnit();
-  const chartUnit: AxisUnit = mode === 'RTL' ? 'ppm' : 'hz';
-  const label = axisUnitToLabel[workspaceUnit];
+  const chartUnit: AxisUnit = mode === 'RTL' ? 'ppm' : 's';
+  const label = axisUnitToLabel[chartUnit];
 
   const refAxis = useRef<SVGGElement>(null);
 
   const scaler = useMemo(() => {
-    // TODO scale chartUnit to workspaceUnit
-    // also, should not it be spectrumUnit instead (see DirectAxis2D)
-    void workspaceUnit;
-    void chartUnit;
     return scaleX(null);
-  }, [scaleX, chartUnit, workspaceUnit]);
+  }, [scaleX]);
   const { ticks, scale: ticksScale } = useLinearPrimaryTicks(
     scaler,
     'horizontal',

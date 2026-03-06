@@ -1,11 +1,8 @@
-import { axisUnits } from '@zakodium/nmrium-core';
 import {
   svgLineStyleFieldsSchema,
   svgTextStyleFieldsSchema,
 } from 'react-science/ui';
 import { z } from 'zod';
-
-const axisUnitValidation = z.enum(axisUnits);
 
 export const gridlineValidation = z.object({
   enabled: z.boolean(),
@@ -23,10 +20,5 @@ export const axisValidation = z
     secondaryTicks: z.object({ enabled: z.boolean() }),
     gridlines1D: gridlinesValidation,
     gridlines2D: gridlinesValidation,
-    unit1D: z.object({ horizontal: axisUnitValidation }),
-    units2D: z.object({
-      direct: axisUnitValidation,
-      indirect: axisUnitValidation,
-    }),
   })
   .optional();

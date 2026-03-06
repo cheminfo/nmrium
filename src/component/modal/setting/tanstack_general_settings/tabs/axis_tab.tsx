@@ -50,16 +50,10 @@ const TicksSection = withFieldGroup({
 const Spectra1DSection = withFieldGroup({
   defaultValues: defaultGeneralSettingsFormValues.axis,
   render: ({ group }) => {
-    const { AppField, Section } = group;
+    const { Section } = group;
 
     return (
       <Section title="Spectra 1D">
-        <AppField name="unit1D.horizontal">
-          {({ Select }) => (
-            <Select items={axisUnitItems} label="Horizontal unit" />
-          )}
-        </AppField>
-
         <GridlineSection
           form={group}
           fields="gridlines1D.primary"
@@ -104,19 +98,10 @@ const GridlineSection = withFieldGroup({
 const Spectra2DSection = withFieldGroup({
   defaultValues: defaultGeneralSettingsFormValues.axis,
   render: ({ group }) => {
-    const { AppField, Section } = group;
+    const { Section } = group;
 
     return (
       <Section title="Spectra 2D">
-        <AppField name="units2D.direct">
-          {({ Select }) => <Select items={axisUnitItems} label="Direct unit" />}
-        </AppField>
-        <AppField name="units2D.indirect">
-          {({ Select }) => (
-            <Select items={axisUnitItems} label="Indirect unit" />
-          )}
-        </AppField>
-
         <GridlineSection
           form={group}
           fields="gridlines2D.primary"
