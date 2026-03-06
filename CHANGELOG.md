@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.1.0](https://github.com/cheminfo/nmrium/compare/v2.0.0...v2.1.0) (2026-03-06)
+
+
+### Features
+
+* supports axis customizations ([#4004](https://github.com/cheminfo/nmrium/issues/4004)) ([fdff7d7](https://github.com/cheminfo/nmrium/commit/fdff7d7691025486922e91f7c9a33ccdf2967aec))
+
+
+### Bug Fixes
+
+* margin for peaks label should not have max in general form ([#4038](https://github.com/cheminfo/nmrium/issues/4038)) ([3620893](https://github.com/cheminfo/nmrium/commit/3620893ca99f7f6d4577cbb0db8fc3e62b5d1598))
+
 ## [2.0.0](https://github.com/cheminfo/nmrium/compare/v1.12.0...v2.0.0) (2026-03-05)
 
 
