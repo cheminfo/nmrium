@@ -95,7 +95,7 @@
     "ml-conrec": "^5.0.3",
     "ml-gsd": "^13.1.1",
     "ml-signal-processing": "^2.2.0",
-    "ml-spectra-processing": "^14.21.0",
+    "ml-spectra-processing": "^14.22.0",
     "ml-tree-similarity": "^2.2.0",
     "nmr-correlation": "2.3.3",
     "nmr-processing": "^22.5.2",
