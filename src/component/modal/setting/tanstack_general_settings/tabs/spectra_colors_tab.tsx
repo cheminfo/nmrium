@@ -8,13 +8,10 @@ import type { z } from 'zod/v4';
 
 import { useChartData } from '../../../../context/ChartContext.tsx';
 import { getSpectraObjectPaths } from '../../../../utility/getSpectraObjectPaths.ts';
-import {
-  CellActions,
-  CellActionsButton,
-  CellColorPicker,
-  CellInput,
-  TableSettings,
-} from '../ui/table.tsx';
+import { CellActions, CellActionsButton } from '../ui/cell_actions.tsx';
+import { CellColorPicker } from '../ui/cell_color_picker.tsx';
+import { CellInput } from '../ui/cell_input.tsx';
+import { TableSettings } from '../ui/table.tsx';
 import { TableSection } from '../ui/table_section.tsx';
 import type {
   spectraColorsTabOneDimensionWithUUIDValidation,
@@ -97,15 +94,7 @@ const Spectra1DColors = withForm({
           header: 'Field',
           cell: ({ row: { index } }) => (
             <Field name={`spectraColors.oneDimension[${index}].jpath`}>
-              {(field) => (
-                <CellInput
-                  name={field.name}
-                  value={field.state.value}
-                  filterItems={datalist}
-                  onChange={field.handleChange}
-                  onBlur={field.handleBlur}
-                />
-              )}
+              {(field) => <CellInput field={field} filterItems={datalist} />}
             </Field>
           ),
         }),
@@ -113,14 +102,7 @@ const Spectra1DColors = withForm({
           header: 'Value',
           cell: ({ row: { index } }) => (
             <Field name={`spectraColors.oneDimension[${index}].value`}>
-              {(field) => (
-                <CellInput
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={field.handleChange}
-                />
-              )}
+              {(field) => <CellInput field={field} />}
             </Field>
           ),
         }),
@@ -128,12 +110,7 @@ const Spectra1DColors = withForm({
           header: 'Color',
           cell: ({ row: { index } }) => (
             <Field name={`spectraColors.oneDimension[${index}].color`}>
-              {(field) => (
-                <CellColorPicker
-                  color={{ hex: field.state.value }}
-                  onChangeComplete={({ hex }) => field.handleChange(hex)}
-                />
-              )}
+              {(field) => <CellColorPicker field={field} />}
             </Field>
           ),
         }),
@@ -238,15 +215,7 @@ const Spectra2DColors = withForm({
           header: 'Field',
           cell: ({ row: { index } }) => (
             <Field name={`spectraColors.twoDimensions[${index}].jpath`}>
-              {(field) => (
-                <CellInput
-                  name={field.name}
-                  value={field.state.value}
-                  filterItems={datalist}
-                  onChange={field.handleChange}
-                  onBlur={field.handleBlur}
-                />
-              )}
+              {(field) => <CellInput field={field} filterItems={datalist} />}
             </Field>
           ),
         }),
@@ -254,14 +223,7 @@ const Spectra2DColors = withForm({
           header: 'Value',
           cell: ({ row: { index } }) => (
             <Field name={`spectraColors.twoDimensions[${index}].value`}>
-              {(field) => (
-                <CellInput
-                  name={field.name}
-                  value={field.state.value}
-                  onChange={field.handleChange}
-                  onBlur={field.handleBlur}
-                />
-              )}
+              {(field) => <CellInput field={field} />}
             </Field>
           ),
         }),
@@ -269,15 +231,7 @@ const Spectra2DColors = withForm({
           header: 'Positive color',
           cell: ({ row: { index } }) => (
             <Field name={`spectraColors.twoDimensions[${index}].positiveColor`}>
-              {(field) => (
-                <CellColorPicker
-                  color={{ hex: field.state.value }}
-                  onChangeComplete={({ hex }) => {
-                    field.handleChange(hex);
-                    field.handleBlur();
-                  }}
-                />
-              )}
+              {(field) => <CellColorPicker field={field} />}
             </Field>
           ),
         }),
@@ -285,15 +239,7 @@ const Spectra2DColors = withForm({
           header: 'Negative color',
           cell: ({ row: { index } }) => (
             <Field name={`spectraColors.twoDimensions[${index}].negativeColor`}>
-              {(field) => (
-                <CellColorPicker
-                  color={{ hex: field.state.value }}
-                  onChangeComplete={({ hex }) => {
-                    field.handleChange(hex);
-                    field.handleBlur();
-                  }}
-                />
-              )}
+              {(field) => <CellColorPicker field={field} />}
             </Field>
           ),
         }),

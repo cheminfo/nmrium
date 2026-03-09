@@ -8,12 +8,9 @@ import { Button, withForm } from 'react-science/ui';
 import type { z } from 'zod';
 
 import { Select2 } from '../../../../elements/Select2.js';
-import {
-  CellActions,
-  CellActionsButton,
-  CellInput,
-  TableSettings,
-} from '../ui/table.js';
+import { CellActions, CellActionsButton } from '../ui/cell_actions.tsx';
+import { CellInput } from '../ui/cell_input.tsx';
+import { TableSettings } from '../ui/table.js';
 import { TableSection } from '../ui/table_section.js';
 import type { externalAPIWithUUIDValidation } from '../validation/external_apis_validation.js';
 import { defaultGeneralSettingsFormValues } from '../validation.js';
@@ -57,19 +54,7 @@ export const ExternalApiTab = withForm({
           header: 'Server link',
           cell: ({ row: { index } }) => (
             <Field name={`${name}[${index}].serverLink`}>
-              {(field) => (
-                <CellInput
-                  name={field.name}
-                  value={field.state.value}
-                  onChange={field.handleChange}
-                  onBlur={field.handleBlur}
-                  intent={
-                    !field.state.meta.isValid && field.state.meta.isDirty
-                      ? 'danger'
-                      : 'none'
-                  }
-                />
-              )}
+              {(field) => <CellInput field={field} />}
             </Field>
           ),
         }),
@@ -77,19 +62,7 @@ export const ExternalApiTab = withForm({
           header: 'API key',
           cell: ({ row: { index } }) => (
             <Field name={`${name}[${index}].APIKey`}>
-              {(field) => (
-                <CellInput
-                  name={field.name}
-                  value={field.state.value}
-                  onChange={field.handleChange}
-                  onBlur={field.handleBlur}
-                  intent={
-                    !field.state.meta.isValid && field.state.meta.isDirty
-                      ? 'danger'
-                      : 'none'
-                  }
-                />
-              )}
+              {(field) => <CellInput field={field} />}
             </Field>
           ),
         }),

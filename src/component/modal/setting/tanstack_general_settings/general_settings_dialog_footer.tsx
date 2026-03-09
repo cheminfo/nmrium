@@ -1,12 +1,7 @@
 import { DialogFooter } from '@blueprintjs/core';
-import styled from '@emotion/styled';
 import { Button, withForm } from 'react-science/ui';
 
-import { GeneralSettingsErrorRenderer } from './errors/renderer.tsx';
-import {
-  defaultGeneralSettingsFormValues,
-  workspaceValidation,
-} from './validation.js';
+import { defaultGeneralSettingsFormValues } from './validation.js';
 
 export const GeneralSettingsDialogFooter = withForm({
   props: {
@@ -14,12 +9,11 @@ export const GeneralSettingsDialogFooter = withForm({
       /* empty */
     },
   },
-  validators: { onDynamic: workspaceValidation },
   defaultValues: defaultGeneralSettingsFormValues,
   render: ({ form, onCancel }) => {
     return (
       <form.AppForm>
-        <DialogFooterStyled
+        <DialogFooter
           actions={
             <>
               <Button variant="outlined" intent="danger" onClick={onCancel}>
@@ -33,16 +27,8 @@ export const GeneralSettingsDialogFooter = withForm({
               </form.SubmitButton>
             </>
           }
-        >
-          <GeneralSettingsErrorRenderer form={form} />
-        </DialogFooterStyled>
+        />
       </form.AppForm>
     );
   },
 });
-
-const DialogFooterStyled = styled(DialogFooter)`
-  flex-direction: column;
-  align-items: stretch;
-  gap: 0.5rem;
-`;

@@ -5,13 +5,9 @@ import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button, createTableColumnHelper, withForm } from 'react-science/ui';
 import type { z } from 'zod';
 
-import {
-  CellActions,
-  CellActionsButton,
-  CellInput,
-  CellNumericInput,
-  TableSettings,
-} from '../ui/table.tsx';
+import { CellActions, CellActionsButton } from '../ui/cell_actions.tsx';
+import { CellInput, CellNumericInput } from '../ui/cell_input.tsx';
+import { TableSettings } from '../ui/table.tsx';
 import { TableSection } from '../ui/table_section.tsx';
 import type { nucleiValidation } from '../validation/nuclei_tab_validation.ts';
 import { defaultGeneralSettingsFormValues } from '../validation.js';
@@ -58,13 +54,7 @@ export const NucleiTab = withForm({
           header: 'Nucleus',
           cell: ({ row: { index } }) => (
             <Field key={index} name={`nuclei[${index}].nucleus`}>
-              {(subField) => (
-                <CellInput
-                  value={subField.state.value}
-                  onChange={subField.handleChange}
-                  onBlur={subField.handleBlur}
-                />
-              )}
+              {(field) => <CellInput field={field} />}
             </Field>
           ),
         }),
@@ -72,13 +62,7 @@ export const NucleiTab = withForm({
           header: 'δ (ppm)',
           cell: ({ row: { index } }) => (
             <Field key={index} name={`nuclei[${index}].ppmFormat`}>
-              {(subField) => (
-                <CellInput
-                  value={subField.state.value}
-                  onChange={subField.handleChange}
-                  onBlur={subField.handleBlur}
-                />
-              )}
+              {(field) => <CellInput field={field} />}
             </Field>
           ),
         }),
@@ -86,13 +70,7 @@ export const NucleiTab = withForm({
           header: 'Coupling (Hz)',
           cell: ({ row: { index } }) => (
             <Field key={index} name={`nuclei[${index}].hzFormat`}>
-              {(subField) => (
-                <CellInput
-                  value={subField.state.value}
-                  onChange={subField.handleChange}
-                  onBlur={subField.handleBlur}
-                />
-              )}
+              {(field) => <CellInput field={field} />}
             </Field>
           ),
         }),
@@ -101,16 +79,7 @@ export const NucleiTab = withForm({
           header: 'Axis from',
           cell: ({ row: { index } }) => (
             <Field key={index} name={`nuclei[${index}].axisFrom`}>
-              {(subField) => (
-                <CellNumericInput
-                  value={subField.state.value}
-                  onChange={(event) =>
-                    subField.handleChange(event.currentTarget.value)
-                  }
-                  onBlur={subField.handleBlur}
-                  fill
-                />
-              )}
+              {(field) => <CellNumericInput field={field} />}
             </Field>
           ),
         }),
@@ -119,16 +88,7 @@ export const NucleiTab = withForm({
           header: 'Axis to',
           cell: ({ row: { index } }) => (
             <Field key={index} name={`nuclei[${index}].axisTo`}>
-              {(subField) => (
-                <CellNumericInput
-                  value={subField.state.value}
-                  onChange={(event) =>
-                    subField.handleChange(event.currentTarget.value)
-                  }
-                  onBlur={subField.handleBlur}
-                  fill
-                />
-              )}
+              {(field) => <CellNumericInput field={field} />}
             </Field>
           ),
         }),

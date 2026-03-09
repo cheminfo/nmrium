@@ -14,13 +14,10 @@ import type { z } from 'zod';
 
 import { useChartData } from '../../../../context/ChartContext.js';
 import { getSpectraObjectPaths } from '../../../../utility/getSpectraObjectPaths.js';
-import {
-  CellActions,
-  CellActionsButton,
-  CellCheckbox,
-  CellInput,
-  TableSettings,
-} from '../ui/table.js';
+import { CellActions, CellActionsButton } from '../ui/cell_actions.tsx';
+import { CellCheckbox } from '../ui/cell_checkbox.tsx';
+import { CellInput } from '../ui/cell_input.tsx';
+import { TableSettings } from '../ui/table.js';
 import { TableSection } from '../ui/table_section.js';
 import type { infoBlockFieldTabValidationWithUUID } from '../validation/title_block_tab_validation.js';
 import { defaultGeneralSettingsFormValues } from '../validation.js';
@@ -115,15 +112,9 @@ const TableFields = withForm({
             <Field name={`${name}[${index}].label`}>
               {(field) => (
                 <CellInput
+                  field={field}
                   autoFocus={original.uuid === autoFocus ? true : undefined}
-                  name={field.name}
-                  value={field.state.value}
-                  onChange={field.handleChange}
-                  onBlur={() => {
-                    field.handleBlur();
-                    setAutoFocus('');
-                  }}
-                  intent={!field.state.meta.isValid ? 'danger' : undefined}
+                  onBlur={() => setAutoFocus('')}
                 />
               )}
             </Field>
@@ -133,15 +124,7 @@ const TableFields = withForm({
           header: 'Field',
           cell: ({ row: { index } }) => (
             <Field name={`${name}[${index}].jpath`}>
-              {(field) => (
-                <CellInput
-                  name={field.name}
-                  value={field.state.value}
-                  onChange={field.handleChange}
-                  filterItems={datalist}
-                  intent={!field.state.meta.isValid ? 'danger' : undefined}
-                />
-              )}
+              {(field) => <CellInput field={field} filterItems={datalist} />}
             </Field>
           ),
         }),
@@ -149,14 +132,7 @@ const TableFields = withForm({
           header: 'Format',
           cell: ({ row: { index } }) => (
             <Field name={`${name}[${index}].format`}>
-              {(field) => (
-                <CellInput
-                  name={field.name}
-                  value={field.state.value}
-                  onChange={field.handleChange}
-                  intent={!field.state.meta.isValid ? 'danger' : undefined}
-                />
-              )}
+              {(field) => <CellInput field={field} />}
             </Field>
           ),
         }),
@@ -167,13 +143,7 @@ const TableFields = withForm({
           },
           cell: ({ row: { index } }) => (
             <Field name={`${name}[${index}].visible`}>
-              {(field) => (
-                <CellCheckbox
-                  name={field.name}
-                  checked={field.state.value}
-                  onChange={(e) => field.handleChange(e.currentTarget.checked)}
-                />
-              )}
+              {(field) => <CellCheckbox field={field} />}
             </Field>
           ),
         }),
