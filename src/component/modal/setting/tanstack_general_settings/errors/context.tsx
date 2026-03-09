@@ -15,11 +15,14 @@ import {
   workspaceValidation,
 } from '../validation.ts';
 
-const GeneralSettingsErrorsContext = createContext<{
+interface GeneralSettingsErrors {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   count: number;
-} | null>(null);
+}
+
+const GeneralSettingsErrorsContext =
+  createContext<GeneralSettingsErrors | null>(null);
 
 interface GeneralSettingsErrorsOpenProvider {
   children: ReactNode;
