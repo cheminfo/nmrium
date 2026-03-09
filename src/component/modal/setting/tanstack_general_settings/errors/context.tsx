@@ -1,6 +1,13 @@
 import { useStore } from '@tanstack/react-form';
 import type { Dispatch, ReactNode, SetStateAction } from 'react';
-import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { assert, withForm } from 'react-science/ui';
 
 import {
@@ -8,11 +15,11 @@ import {
   workspaceValidation,
 } from '../validation.ts';
 
-const GeneralSettingsErrorsIsOpenContext = createContext<boolean | null>(null);
-const GeneralSettingsErrorsSetIsOpenContext = createContext<Dispatch<
-  SetStateAction<boolean>
-> | null>(null);
-const GeneralSettingsErrorsCountContext = createContext<number | null>(null);
+const GeneralSettingsErrorsContext = createContext<{
+  isOpen: boolean;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  count: number;
+} | null>(null);
 
 interface GeneralSettingsErrorsOpenProvider {
   children: ReactNode;
@@ -59,46 +66,25 @@ export const GeneralSettingsErrorsOpenProvider = withForm({
       setIsOpen(false);
     }, [errorsCount]);
 
+    const contextValue = useMemo(
+      () => ({ isOpen, setIsOpen, count: errorsCount }),
+      [errorsCount, isOpen],
+    );
+
     return (
-      <GeneralSettingsErrorsCountContext.Provider value={errorsCount}>
-        <GeneralSettingsErrorsSetIsOpenContext.Provider value={setIsOpen}>
-          <GeneralSettingsErrorsIsOpenContext.Provider value={isOpen}>
-            {children}
-          </GeneralSettingsErrorsIsOpenContext.Provider>
-        </GeneralSettingsErrorsSetIsOpenContext.Provider>
-      </GeneralSettingsErrorsCountContext.Provider>
+      <GeneralSettingsErrorsContext.Provider value={contextValue}>
+        {children}
+      </GeneralSettingsErrorsContext.Provider>
     );
   },
 });
 
-export function useErrorsIsOpen() {
-  const context = useContext(GeneralSettingsErrorsIsOpenContext);
+export function useErrors() {
+  const context = useContext(GeneralSettingsErrorsContext);
 
   assert(
-    typeof context === 'boolean',
-    'useErrorsIsOpen must be used within a GeneralSettingsErrorsOpenProvider',
-  );
-
-  return context;
-}
-
-export function useErrorsDispatch() {
-  const context = useContext(GeneralSettingsErrorsSetIsOpenContext);
-
-  assert(
-    typeof context === 'function',
-    'useErrorsDispatch must be used within a GeneralSettingsErrorsOpenProvider',
-  );
-
-  return context;
-}
-
-export function useErrorsCount() {
-  const context = useContext(GeneralSettingsErrorsCountContext);
-
-  assert(
-    typeof context === 'number',
-    'useErrorsCount must be used within a GeneralSettingsErrorsOpenProvider',
+    context,
+    'useErrors must be used within a GeneralSettingsErrorsOpenProvider',
   );
 
   return context;

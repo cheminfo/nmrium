@@ -16,7 +16,7 @@ import { useWorkspaceAction } from '../../../hooks/useWorkspaceAction.js';
 import { workspaceDefaultProperties } from '../../../workspaces/workspaceDefaultProperties.ts';
 import WorkspaceItem from '../WorkspaceItem.js';
 
-import { useErrorsCount, useErrorsDispatch } from './errors/context.tsx';
+import { useErrors } from './errors/context.tsx';
 import { GeneralSettingsDialogHeaderActionsButtons } from './general_settings_dialog_header_actions_buttons.js';
 import {
   formValueToWorkspace,
@@ -29,8 +29,6 @@ export const GeneralSettingsDialogHeader = withForm({
   render: function GeneralSettingsDialogHeader({ form }) {
     const { reset } = form;
 
-    const errors = useErrorsCount();
-    const setIsOpenErrors = useErrorsDispatch();
     const baseWorkspaces = useWorkspacesList();
     const { workspaces, ...preferences } = usePreferences();
 
@@ -97,23 +95,31 @@ export const GeneralSettingsDialogHeader = withForm({
 
         <FlexSeparator />
 
-        {errors > 0 && (
-          <ErrorButton
-            variant="outlined"
-            intent="danger"
-            size="small"
-            tooltipProps={{
-              content: `There is ${errors} errors in the form. Click to show them.`,
-            }}
-            onClick={() => setIsOpenErrors(true)}
-          >
-            {errors}
-          </ErrorButton>
-        )}
+        <ErrorsIndicator />
       </DialogHeader>
     );
   },
 });
+
+function ErrorsIndicator() {
+  const { setIsOpen, count } = useErrors();
+
+  if (count === 0) return null;
+
+  return (
+    <ErrorButton
+      variant="outlined"
+      intent="danger"
+      size="small"
+      tooltipProps={{
+        content: `There is ${count} errors in the form. Click to show them.`,
+      }}
+      onClick={() => setIsOpen(true)}
+    >
+      {count}
+    </ErrorButton>
+  );
+}
 
 const DialogHeader = styled.div`
   cursor: default;

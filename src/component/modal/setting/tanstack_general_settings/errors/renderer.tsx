@@ -8,14 +8,13 @@ import {
   workspaceValidation,
 } from '../validation.ts';
 
-import { useErrorsDispatch, useErrorsIsOpen } from './context.tsx';
+import { useErrors } from './context.tsx';
 
 export const GeneralSettingsErrorRenderer = withForm({
   defaultValues: defaultGeneralSettingsFormValues,
   validators: { onDynamic: workspaceValidation },
   render: function GeneralSettingsErrorRenderer({ form }) {
-    const isOpen = useErrorsIsOpen();
-    const dispatch = useErrorsDispatch();
+    const { isOpen, setIsOpen } = useErrors();
     const errors = useStore(form.store, (state) => {
       return Object.values(state.errorMap.onDynamic ?? {}).flat();
     });
@@ -26,7 +25,7 @@ export const GeneralSettingsErrorRenderer = withForm({
           <CloseButton
             icon="cross"
             variant="minimal"
-            onClick={() => dispatch(false)}
+            onClick={() => setIsOpen(false)}
           />
 
           <ul>
