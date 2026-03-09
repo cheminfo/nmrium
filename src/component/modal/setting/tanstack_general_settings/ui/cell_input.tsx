@@ -5,7 +5,7 @@ import type { ComponentProps } from 'react';
 import type { Input2Props } from '../../../../elements/Input2.tsx';
 import { Input2 } from '../../../../elements/Input2.tsx';
 
-export const CellInputStyled = styled(Input2)`
+const CellInputStyled = styled(Input2)`
   input {
     background-color: transparent;
     box-shadow: none;
@@ -54,7 +54,7 @@ export function CellInput<FilterItem extends string = string>(
   );
 }
 
-export const CellNumericInputStyled = styled(NumericInput)`
+const CellNumericInputStyled = styled(NumericInput)`
   margin-top: 1px;
   margin-right: 1px;
 
