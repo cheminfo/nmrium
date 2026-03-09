@@ -2,7 +2,7 @@ import { Classes } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { useStore } from '@tanstack/react-form';
 import { useMemo } from 'react';
-import { withForm } from 'react-science/ui';
+import { Button, withForm } from 'react-science/ui';
 
 import type { ExtendedWorkspace } from '../../../context/PreferencesContext.js';
 import {
@@ -16,6 +16,7 @@ import { useWorkspaceAction } from '../../../hooks/useWorkspaceAction.js';
 import { workspaceDefaultProperties } from '../../../workspaces/workspaceDefaultProperties.ts';
 import WorkspaceItem from '../WorkspaceItem.js';
 
+import { useErrors } from './errors/context.tsx';
 import { GeneralSettingsDialogHeaderActionsButtons } from './general_settings_dialog_header_actions_buttons.js';
 import {
   formValueToWorkspace,
@@ -90,16 +91,48 @@ export const GeneralSettingsDialogHeader = withForm({
             onSelect={handleChangeWorkspace}
           />
         </Label>
-
         <GeneralSettingsDialogHeaderActionsButtons form={form} />
+
+        <FlexSeparator />
+
+        <ErrorsIndicator />
       </DialogHeader>
     );
   },
 });
+
+function ErrorsIndicator() {
+  const { setIsOpen, count } = useErrors();
+
+  if (count === 0) return null;
+
+  return (
+    <ErrorButton
+      variant="outlined"
+      intent="danger"
+      size="small"
+      tooltipProps={{
+        content: `There is ${count} errors in the form. Click to show them.`,
+      }}
+      onClick={() => setIsOpen(true)}
+    >
+      {count}
+    </ErrorButton>
+  );
+}
 
 const DialogHeader = styled.div`
   cursor: default;
   padding-top: 10px;
   box-shadow: none;
   background-color: #f8f8f8;
+`;
+
+const FlexSeparator = styled.div`
+  flex: 1;
+`;
+
+const ErrorButton = styled(Button)`
+  border-radius: 100%;
+  font-size: 0.75em;
 `;

@@ -5,6 +5,7 @@ import { withForm } from 'react-science/ui';
 
 import { StyledDialogBody } from '../../../elements/StyledDialogBody.js';
 
+import { GeneralSettingsErrorRenderer } from './errors/renderer.tsx';
 import { AutoProcessingTab } from './tabs/auto_processing_tab.tsx';
 import { AxisTab } from './tabs/axis_tab.tsx';
 import { DatabaseTab } from './tabs/database_tab.js';
@@ -17,7 +18,10 @@ import { PanelsTab } from './tabs/panels_tab.js';
 import { SpectraColorsTab } from './tabs/spectra_colors_tab.tsx';
 import { TitleBlockTab } from './tabs/title_block_tab.js';
 import { ToolsTab } from './tabs/tools_tab.tsx';
-import { defaultGeneralSettingsFormValues } from './validation.js';
+import {
+  defaultGeneralSettingsFormValues,
+  workspaceValidation,
+} from './validation.js';
 
 const Tabs = styled(BPTabs)`
   height: 100%;
@@ -44,6 +48,7 @@ const Div = styled.div<{ height?: number }>`
 
 export const GeneralSettingsDialogBody = withForm({
   defaultValues: defaultGeneralSettingsFormValues,
+  validators: { onDynamic: workspaceValidation },
   props: {
     height: undefined as number | undefined,
   },
@@ -113,6 +118,8 @@ export const GeneralSettingsDialogBody = withForm({
             <Tab id="export" title="Export" panel={<ExportTab form={form} />} />
           </Tabs>
         </Div>
+
+        <GeneralSettingsErrorRenderer form={form} />
       </StyledDialogBody>
     );
   },

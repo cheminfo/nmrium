@@ -7,13 +7,10 @@ import { Button, withForm } from 'react-science/ui';
 import type { z } from 'zod';
 
 import { isGoogleDocument } from '../../../../utility/isGoogleDocument.ts';
-import {
-  CellActions,
-  CellActionsButton,
-  CellCheckbox,
-  CellInput,
-  TableSettings,
-} from '../ui/table.tsx';
+import { CellActions, CellActionsButton } from '../ui/cell_actions.tsx';
+import { CellCheckbox, CellCheckboxStyled } from '../ui/cell_checkbox.tsx';
+import { CellInput } from '../ui/cell_input.tsx';
+import { TableSettings } from '../ui/table.tsx';
 import { TableSection } from '../ui/table_section.tsx';
 import type { databasesValidation } from '../validation/database_tab_validation.ts';
 import { defaultGeneralSettingsFormValues } from '../validation.ts';
@@ -66,13 +63,7 @@ export const DatabaseTab = withForm({
           },
           cell: ({ row: { index } }) => (
             <Field key={index} name={`databases.data[${index}].label`}>
-              {(subField) => (
-                <CellInput
-                  value={subField.state.value}
-                  onChange={subField.handleChange}
-                  onBlur={subField.handleBlur}
-                />
-              )}
+              {(field) => <CellInput field={field} />}
             </Field>
           ),
         }),
@@ -85,13 +76,7 @@ export const DatabaseTab = withForm({
           },
           cell: ({ row: { index } }) => (
             <Field key={index} name={`databases.data[${index}].url`}>
-              {(subField) => (
-                <CellInput
-                  value={subField.state.value}
-                  onChange={subField.handleChange}
-                  onBlur={subField.handleBlur}
-                />
-              )}
+              {(field) => <CellInput field={field} />}
             </Field>
           ),
         }),
@@ -99,15 +84,7 @@ export const DatabaseTab = withForm({
           header: 'Enabled',
           cell: ({ row: { index } }) => (
             <Field key={index} name={`databases.data[${index}].enabled`}>
-              {(subField) => (
-                <CellCheckbox
-                  checked={subField.state.value}
-                  onChange={(event) => {
-                    subField.handleChange(event.currentTarget.checked);
-                  }}
-                  onBlur={subField.handleBlur}
-                />
-              )}
+              {(field) => <CellCheckbox field={field} />}
             </Field>
           ),
         }),
@@ -122,7 +99,7 @@ export const DatabaseTab = withForm({
           }) => (
             <Field key={index} name="databases.defaultDatabase">
               {(subField) => (
-                <CellCheckbox
+                <CellCheckboxStyled
                   name={subField.name}
                   value={key}
                   checked={subField.state.value === key}
