@@ -43,7 +43,7 @@ function useUnsafeWorkspaceToForm(
 export function unsafeWorkspaceToForm(
   potentialUnsafeWorkspace: WorkspaceWithSource,
   logger?: FifoLogger,
-) {
+): z.input<typeof workspaceValidation> {
   const result = workspaceValidation.safeEncode(potentialUnsafeWorkspace);
   if (result.success) return result.data;
 
@@ -78,7 +78,7 @@ export function formValueToWorkspace(
   const safeParseResult = workspaceValidation.safeParse(value);
 
   if (!safeParseResult.success) {
-    throw new Error('Failed to parse workspace validation', {
+    throw new Error('Form values are invalid', {
       cause: safeParseResult.error,
     });
   }
