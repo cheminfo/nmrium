@@ -2,7 +2,11 @@ import { Button, DialogBody, DialogFooter } from '@blueprintjs/core';
 import { revalidateLogic } from '@tanstack/react-form';
 import type { Workspace } from '@zakodium/nmrium-core';
 import { useRef } from 'react';
-import { useForm as useReactScienceForm, useOnOff } from 'react-science/ui';
+import {
+  Form,
+  useForm as useReactScienceForm,
+  useOnOff,
+} from 'react-science/ui';
 import { z } from 'zod/v4';
 
 import { usePreferences } from '../context/PreferencesContext.js';
@@ -58,13 +62,13 @@ export function useSaveSettings() {
     SaveSettingsModal: () => {
       return (
         <StandardDialog
-          style={{ width: 500 }}
           onClose={closeDialog}
           isOpen={isOpenDialog}
           title="Save workspace"
           role="dialog"
         >
-          <form
+          <Form
+            layout="stacked"
             noValidate
             onSubmit={(event) => {
               event.preventDefault();
@@ -75,7 +79,6 @@ export function useSaveSettings() {
               <form.AppField name="workspaceName">
                 {(field) => (
                   <field.Input
-                    layout="inline"
                     autoFocus
                     label="New Workspace name"
                     placeholder="Enter workspace name"
@@ -104,7 +107,7 @@ export function useSaveSettings() {
                 </>
               }
             />
-          </form>
+          </Form>
         </StandardDialog>
       );
     },
