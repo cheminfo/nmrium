@@ -89,7 +89,10 @@ function CopyPasteButtons(props: WorkspacesProps) {
         }),
       )
       .catch((error: unknown) =>
-        toaster.show({ intent: 'danger', message: (error as Error).message }),
+        toaster.show({
+          intent: 'danger',
+          message: (error as Error).message ?? 'Unknown error',
+        }),
       );
   }
 
@@ -110,7 +113,10 @@ function CopyPasteButtons(props: WorkspacesProps) {
 
   function onPasteWorkspace() {
     handlePasteWorkspaces().catch((error: unknown) =>
-      toaster.show({ intent: 'danger', message: (error as Error).message }),
+      toaster.show({
+        intent: 'danger',
+        message: (error as Error).message ?? 'Unknown error',
+      }),
     );
   }
 
