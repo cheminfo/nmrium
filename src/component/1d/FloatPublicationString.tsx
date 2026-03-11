@@ -54,6 +54,7 @@ function useWrapSVGText(params: UseWrapSVGTextParams) {
 
   const formattedText = text
     .replaceAll(/<sup>(?<n>.*?)<\/sup>/g, '++$1++ ')
+    .replaceAll(/<sub>(?<k>.*?)<\/sub>/g, '--$1-- ')
     .replaceAll(/<i>(?<j>.*?)<\/i>/g, '**$1**');
 
   const lineHeight = labelSize * 1.6;
@@ -88,15 +89,21 @@ function useWrapSVGText(params: UseWrapSVGTextParams) {
       let x = 0;
       for (const word of line) {
         const isSuper = word.startsWith('++') && word.endsWith('++');
+        const isSub = word.startsWith('--') && word.endsWith('--');
         const isItalic = word.startsWith('**') && word.endsWith('**');
         const baseLine = ctx.textBaseline;
 
         let finalWord = `${word} `;
         if (isSuper) {
           finalWord = word.replaceAll('++', '');
-
           ctx.textBaseline = 'bottom';
-        } else if (isItalic) {
+        }
+
+        if (isSub) {
+          finalWord = word.replaceAll('--', '');
+        }
+
+        if (isItalic) {
           finalWord = word.replaceAll('**', '');
         }
 
@@ -108,6 +115,7 @@ function useWrapSVGText(params: UseWrapSVGTextParams) {
 
       y += lineHeight;
     }
+    ctx.fillStyle = 'black';
   });
 
   return { lines, lineHeight };
@@ -162,6 +170,17 @@ function PublicationText(props: PublicationTextProps) {
                 // eslint-disable-next-line react/no-array-index-key
                 <tspan key={wordIndex} fontStyle="italic">
                   {word.replaceAll('**', '')}
+                </tspan>
+              );
+            } else if (word.startsWith('--') && word.endsWith('--')) {
+              return (
+                <tspan
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={wordIndex}
+                  baselineShift="sub"
+                  fontSize={Math.floor((5 / 6) * textStyleWithSize.fontSize)}
+                >
+                  {word.replaceAll('--', '')}
                 </tspan>
               );
             } else {
