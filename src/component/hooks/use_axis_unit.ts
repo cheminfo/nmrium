@@ -21,14 +21,18 @@ export const axisUnitToLabel: Record<AxisUnit, string> = {
   pt: 'index [pt]',
 };
 
-export function useHorizontalAxisUnit(): AxisUnit1DFid | AxisUnit1DFt {
+export function useHorizontalAxisUnit() {
   const spectra = useVisibleSpectra1D();
   const nucleusUnit = useAxisUnit1D();
-  const type: keyof Nucleus1DUnit['horizontal'] = spectra[0]?.info.isFt
+
+  const mode: keyof Nucleus1DUnit['horizontal'] = spectra[0]?.info.isFt
     ? 'ft'
     : 'fid';
+  const unit: AxisUnit1DFid | AxisUnit1DFt = nucleusUnit.horizontal[mode];
+  const allowedUnits: AxisUnit[] =
+    mode === 'ft' ? ['pt', 'ppm', 'hz'] : ['pt', 's'];
 
-  return nucleusUnit.horizontal[type];
+  return { mode, unit, allowedUnits };
 }
 
 export function useDirectAxisUnit(): AxisUnit2DFid | AxisUnit2DFt {
