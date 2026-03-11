@@ -1,4 +1,3 @@
-import type { AxisUnit } from '@zakodium/nmrium-core';
 import { useMemo, useRef } from 'react';
 import { useLinearPrimaryTicks } from 'react-d3-utils';
 
@@ -6,23 +5,27 @@ import { useChartData } from '../context/ChartContext.js';
 import { useScaleChecked } from '../context/ScaleContext.js';
 import { D3Axis } from '../elements/D3Axis.js';
 import { useCheckExportStatus } from '../hooks/useViewportSize.js';
-import { axisUnitToLabel } from '../hooks/use_axis_unit.ts';
+import {
+  axisUnitToLabel,
+  useHorizontalAxisUnit,
+} from '../hooks/use_axis_unit.ts';
 import { useGridline1DConfig } from '../hooks/use_gridlines_config.ts';
 
 import { useIsInset } from './inset/InsetProvider.js';
 
 export function HorizontalAxis1D() {
-  const { height, width, margin, mode } = useChartData();
+  const { height, width, margin } = useChartData();
   const { scaleX } = useScaleChecked();
   const isInset = useIsInset();
   const isExportingProcessStart = useCheckExportStatus();
 
-  const chartUnit: AxisUnit = mode === 'RTL' ? 'ppm' : 's';
-  const label = axisUnitToLabel[chartUnit];
+  const unit = useHorizontalAxisUnit();
+  const label = axisUnitToLabel[unit];
 
   const refAxis = useRef<SVGGElement>(null);
 
   const scaler = useMemo(() => {
+    // TODO apply unit conversion
     return scaleX(null);
   }, [scaleX]);
   const { ticks, scale: ticksScale } = useLinearPrimaryTicks(

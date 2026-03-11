@@ -7,7 +7,7 @@ import { useChartData } from '../context/ChartContext.js';
 import { D3Axis } from '../elements/D3Axis.js';
 import useSpectrum from '../hooks/useSpectrum.js';
 import { useCheckExportStatus } from '../hooks/useViewportSize.tsx';
-import { axisUnitToLabel } from '../hooks/use_axis_unit.ts';
+import { axisUnitToLabel, useDirectAxisUnit } from '../hooks/use_axis_unit.ts';
 import { useGridline2DConfig } from '../hooks/use_gridlines_config.ts';
 
 import { useScale2DX } from './utilities/scale.js';
@@ -27,10 +27,9 @@ function DirectAxis2D(props: DirectAxis2DProps) {
   const { margin: marginProps = defaultMargin } = props;
 
   const { height, width, margin } = useChartData();
-  const spectrum = useSpectrum() as Spectrum2D;
 
-  const spectrumUnit: AxisUnit = spectrum?.info?.isFid ? 's' : 'ppm';
-  const unitLabel = axisUnitToLabel[spectrumUnit];
+  const unit = useDirectAxisUnit();
+  const unitLabel = axisUnitToLabel[unit];
 
   const scaleX = useScale2DX();
   const isInset = useIsInset();

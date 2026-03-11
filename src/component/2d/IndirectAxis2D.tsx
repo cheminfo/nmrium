@@ -8,7 +8,10 @@ import { D3Axis } from '../elements/D3Axis.js';
 import { useActiveNucleusTab } from '../hooks/useActiveNucleusTab.js';
 import { useTextMetrics } from '../hooks/useTextMetrics.js';
 import { useCheckExportStatus } from '../hooks/useViewportSize.tsx';
-import { axisUnitToLabel } from '../hooks/use_axis_unit.ts';
+import {
+  axisUnitToLabel,
+  useIndirectAxisUnit,
+} from '../hooks/use_axis_unit.ts';
 import { useGridline2DConfig } from '../hooks/use_gridlines_config.ts';
 
 import { useScale2DY } from './utilities/scale.js';
@@ -32,12 +35,12 @@ function IndirectAxis2D(props: IndirectAxis2DProps) {
 
   const nucleus = useActiveNucleusTab();
   const [, maybeNucleusUnit] = nucleus.split(',');
-  const chartUnit: AxisUnit | undefined = /^[0-9]+[A-Z][a-z]?$/.test(
-    maybeNucleusUnit,
-  )
-    ? 'ppm'
+  const nucleusUnit = useIndirectAxisUnit();
+
+  const matchNucleus = /^[0-9]+[A-Z][a-z]?$/.test(maybeNucleusUnit);
+  const unitToDisplay: AxisUnit | undefined = matchNucleus
+    ? nucleusUnit
     : undefined;
-  const unitToDisplay = chartUnit;
 
   const scaleY = useScale2DY();
   const isInset = useIsInset();

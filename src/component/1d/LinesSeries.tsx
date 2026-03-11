@@ -2,13 +2,13 @@ import styled from '@emotion/styled';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 
 import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY.js';
-import { isSpectrum1D } from '../../data/data1d/Spectrum1D/isSpectrum1D.js';
 import { useBrushTracker } from '../EventsTrackers/BrushTracker.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useScaleChecked } from '../context/ScaleContext.js';
 import { useActiveSpectra } from '../hooks/useActiveSpectra.js';
 import { useSetActiveSpectrumAction } from '../hooks/useSetActiveSpectrumAction.js';
 import { useVerticalAlign } from '../hooks/useVerticalAlign.js';
+import { useVisibleSpectra1D } from '../hooks/use_visible_spectra_1d.ts';
 
 import Line from './Line.js';
 import { useInsetOptions } from './inset/InsetProvider.js';
@@ -23,23 +23,9 @@ const Rect = styled.rect`
   }
 `;
 
-function useSpectra() {
-  const { xDomains, data } = useChartData();
-
-  const inset = useInsetOptions();
-
-  if (inset) {
-    return data?.filter((d) => isSpectrum1D(d) && d.id === inset.spectrumKey);
-  }
-
-  return data?.filter(
-    (d) => isSpectrum1D(d) && d.display.isVisible && xDomains[d.id],
-  );
-}
-
 function LinesSeries() {
   const activeSpectra = useActiveSpectra();
-  const spectra = useSpectra() as Spectrum1D[];
+  const spectra = useVisibleSpectra1D();
   const { id: insetKey = 'primary' } = useInsetOptions() || {};
 
   return (
