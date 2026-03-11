@@ -1682,6 +1682,11 @@ function handleEnableFilter(draft: Draft<State>, action: EnableFilterAction) {
   }
   if (isSpectrum2D(datum)) {
     Filters2DManager.enableFilter(datum, { id, enabled });
+
+    if (datum.info.isFt) {
+      draft.view.spectraContourLevels[datum.id] =
+        initializeContoursLevels(datum);
+    }
   }
 
   resetSelectedTool(draft);
