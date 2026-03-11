@@ -108,6 +108,8 @@ export function getDefaultViewState(): ViewState {
     verticalAlign: {},
     predictions: {},
     currentSimulatedSpectrumKey: null,
+    units1D: {},
+    units2D: {},
   };
 }
 export const getInitialState = (): State => ({
