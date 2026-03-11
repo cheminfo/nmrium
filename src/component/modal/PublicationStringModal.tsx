@@ -38,7 +38,12 @@ interface SelectItem<T> {
   value: T;
 }
 
-type ExportFormatType = 'IMJA' | 'IMJ' | 'D';
+// todo this 'D' is a hack and it should be in fact an empty string
+// by default the formatter always add the chemical shift
+// need to remove:
+// https://github.com/cheminfo/nmrium/blob/c2f67752c4ae831d9924a529878717170367dc1a/src/component/hooks/use_publication_strings.ts#L61-L64
+// and change the default formatting value for carbon in workspaceDefaultProperties.ts
+type ExportFormatType = 'IMJA' | 'IMJ' | 'D' | 'A';
 
 type ExportSignalKind = ACSExportOptions['signalKind'];
 
@@ -68,6 +73,10 @@ const exportFormats: Array<SelectItem<ExportFormatType>> = [
   {
     label: 'Delta',
     value: 'D',
+  },
+  {
+    label: 'Delta, Assignment',
+    value: 'A',
   },
   {
     label: 'Delta, Intensity, Multiplicity, Couplings, Assignment',
