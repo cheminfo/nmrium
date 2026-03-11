@@ -4,58 +4,76 @@
     "source": {
       "entries": [
         {
-          "baseURL": "", "relativePath": "data/brukerFolders/cosyAndHsqcFid/2/acqu"
+          "baseURL": "",
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/2/acqu"
         },
         {
-          "baseURL": "", "relativePath": "data/brukerFolders/cosyAndHsqcFid/2/acqu2"
+          "baseURL": "",
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/2/acqu2"
         },
         {
-          "baseURL": "", "relativePath": "data/brukerFolders/cosyAndHsqcFid/2/acqu2s"
+          "baseURL": "",
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/2/acqu2s"
         },
         {
-          "baseURL": "", "relativePath": "data/brukerFolders/cosyAndHsqcFid/2/acqus"
+          "baseURL": "",
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/2/acqus"
         },
         {
-          "baseURL": "", "relativePath": "data/brukerFolders/cosyAndHsqcFid/2/pdata/1/proc"
+          "baseURL": "",
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/2/pdata/1/proc"
         },
         {
-          "baseURL": "", "relativePath": "data/brukerFolders/cosyAndHsqcFid/2/pdata/1/proc2"
+          "baseURL": "",
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/2/pdata/1/proc2"
         },
         {
-          "baseURL": "", "relativePath": "data/brukerFolders/cosyAndHsqcFid/2/pdata/1/proc2s"
+          "baseURL": "",
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/2/pdata/1/proc2s"
         },
         {
-          "baseURL": "", "relativePath": "data/brukerFolders/cosyAndHsqcFid/2/pdata/1/procs"
+          "baseURL": "",
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/2/pdata/1/procs"
         },
         {
-          "baseURL": "", "relativePath": "data/brukerFolders/cosyAndHsqcFid/2/ser"
+          "baseURL": "",
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/2/ser"
         },
         {
-          "baseURL": "", "relativePath": "data/brukerFolders/cosyAndHsqcFid/3/acqu"
+          "baseURL": "",
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/3/acqu"
         },
         {
-          "baseURL": "", "relativePath": "data/brukerFolders/cosyAndHsqcFid/3/acqu2"
+          "baseURL": "",
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/3/acqu2"
         },
         {
-          "baseURL": "", "relativePath": "data/brukerFolders/cosyAndHsqcFid/3/acqu2s"
+          "baseURL": "",
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/3/acqu2s"
         },
         {
-          "baseURL": "", "relativePath": "data/brukerFolders/cosyAndHsqcFid/3/acqus"
+          "baseURL": "",
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/3/acqus"
         },
         {
-          "baseURL": "", "relativePath": "data/brukerFolders/cosyAndHsqcFid/3/pdata/1/proc"
+          "baseURL": "",
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/3/pdata/1/proc"
         },
         {
-          "baseURL": "", "relativePath": "data/brukerFolders/cosyAndHsqcFid/3/pdata/1/proc2"
+          "baseURL": "",
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/3/pdata/1/proc2"
         },
         {
-          "baseURL": "", "relativePath": "data/brukerFolders/cosyAndHsqcFid/3/pdata/1/proc2s"
+          "baseURL": "",
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/3/pdata/1/proc2s"
         },
         {
-          "baseURL": "", "relativePath": "data/brukerFolders/cosyAndHsqcFid/3/pdata/1/procs"
+          "baseURL": "",
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/3/pdata/1/procs"
         },
         {
-          "baseURL": "", "relativePath": "data/brukerFolders/cosyAndHsqcFid/3/ser"
+          "baseURL": "",
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/3/ser"
         }
       ]
     },
@@ -67,70 +85,91 @@
           {
             "name": "apodizationDimension1",
             "value": {
-              "exponential": {
-                "apply": false,
-                "options": { "lineBroadening": 0.3 }
-              },
-              "sineBell": { "apply": false, "options": { "offset": 0.5 } },
-              "sineSquare": { "apply": true, "options": { "offset": 0.5 } },
-              "traf": { "apply": false, "options": { "lineBroadening": 0.3 } },
-              "gaussian": {
-                "apply": false,
-                "options": { "lineBroadening": 0.3, "lineBroadeningCenter": 0 }
+              "compose": {
+                "shapes": [
+                  {
+                    "shape": {
+                      "kind": "sineBell",
+                      "options": {
+                        "offset": 0,
+                        "exponent": 2
+                      }
+                    }
+                  }
+                ]
               }
             },
-            "enabled": true,
+            "isDeleteAllow": true,
+            "flag": true,
             "id": "b2567a33-4d90-4c7f-8c2e-43f3be893962"
           },
           {
             "name": "zeroFillingDimension1",
-            "value": { "nbPoints": 1024 },
-            "enabled": true,
+            "value": {
+              "nbPoints": 1024
+            },
+            "isDeleteAllow": true,
+            "flag": true,
             "id": "567a334d-905c-4fcc-ae43-f3be8939623c"
           },
           {
             "name": "fftDimension1",
             "value": {},
-            "enabled": true,
+            "isDeleteAllow": true,
+            "flag": true,
             "id": "7a334d90-5c7f-4c2e-83f3-be8939623c3d"
           },
           {
             "name": "apodizationDimension2",
             "value": {
-              "exponential": {
-                "apply": false,
-                "options": { "lineBroadening": 0.3 }
-              },
-              "sineBell": { "apply": false, "options": { "offset": 0.5 } },
-              "sineSquare": { "apply": true, "options": { "offset": 0.5 } },
-              "traf": { "apply": false, "options": { "lineBroadening": 0.3 } },
-              "gaussian": {
-                "apply": false,
-                "options": { "lineBroadening": 0.3, "lineBroadeningCenter": 0 }
+              "compose": {
+                "shapes": [
+                  {
+                    "shape": {
+                      "kind": "sineBell",
+                      "options": {
+                        "offset": 0,
+                        "exponent": 2
+                      }
+                    }
+                  }
+                ]
               }
             },
-            "enabled": true,
+            "isDeleteAllow": true,
+            "flag": true,
             "id": "334d905c-7fcc-4e43-b3be-8939623c3d36"
           },
           {
             "name": "zeroFillingDimension2",
-            "value": { "nbPoints": 1024 },
-            "enabled": true,
+            "value": {
+              "nbPoints": 1024
+            },
+            "isDeleteAllow": true,
+            "flag": true,
             "id": "4d905c7f-cc2e-43f3-be89-39623c3d3670"
           },
           {
             "name": "fftDimension2",
             "value": {},
-            "enabled": true,
+            "isDeleteAllow": true,
+            "flag": true,
             "id": "905c7fcc-2e43-43be-8939-623c3d367007"
           },
           {
             "name": "phaseCorrectionTwoDimensions",
             "value": {
-              "horizontal": { "ph0": 33.84521484375, "ph1": -5.625 },
-              "vertical": { "ph0": -15.28564453125, "ph1": 33.75 }
+              "horizontal": {
+                "ph0": 33.84521484375,
+                "ph1": -5.625
+              },
+              "vertical": {
+                "ph0": -15.28564453125,
+                "ph1": 33.75
+              }
             },
-            "enabled": true,
+            "isDeleteAllow": true,
+            "flag": true,
             "id": "5c7fcc2e-43f3-4e89-b962-3c3d36700728"
           }
         ],
@@ -140,8 +179,20 @@
           "isNegativeVisible": true,
           "isVisible": true,
           "contourOptions": {
-            "positive": { "contourLevels": [47, 100], "numberOfLayers": 10 },
-            "negative": { "contourLevels": [47, 100], "numberOfLayers": 10 }
+            "positive": {
+              "contourLevels": [
+                47,
+                100
+              ],
+              "numberOfLayers": 10
+            },
+            "negative": {
+              "contourLevels": [
+                47,
+                100
+              ],
+              "numberOfLayers": 10
+            }
           },
           "dimension": 2,
           "negativeColor": "yellow",
@@ -159,7 +210,10 @@
         },
         "zones": {
           "values": [],
-          "options": { "isSumConstant": true, "sumAuto": true }
+          "options": {
+            "isSumConstant": true,
+            "sumAuto": true
+          }
         },
         "customInfo": {}
       },
@@ -179,80 +233,90 @@
           {
             "name": "apodizationDimension1",
             "value": {
-              "exponential": {
-                "apply": false,
-                "options": { "lineBroadening": 0.3 }
-              },
-              "sineBell": {
-                "apply": true,
-                "options": { "offset": 0, "exponent": 1 }
-              },
-              "sineSquare": { "apply": false, "options": { "offset": 0 } },
-              "traf": { "apply": false, "options": { "lineBroadening": 0.3 } },
-              "gaussian": {
-                "apply": false,
-                "options": { "lineBroadening": 0.3, "lineBroadeningCenter": 0 }
+              "compose": {
+                "shapes": [
+                  {
+                    "shape": {
+                      "kind": "sineBell",
+                      "options": {
+                        "offset": 0,
+                        "exponent": 2
+                      }
+                    }
+                  }
+                ]
               }
             },
-            "enabled": true,
+            "isDeleteAllow": true,
+            "flag": true,
             "id": "1a5fda6e-9dc9-48f1-9897-2ad0f7e70197"
           },
           {
             "name": "zeroFillingDimension1",
-            "value": { "nbPoints": 1024 },
-            "enabled": true,
+            "value": {
+              "nbPoints": 1024
+            },
+            "isDeleteAllow": true,
+            "flag": true,
             "id": "5fda6e9d-c948-4118-972a-d0f7e70197ad"
           },
           {
             "name": "fftDimension1",
             "value": {},
-            "enabled": true,
+            "isDeleteAllow": true,
+            "flag": true,
             "id": "da6e9dc9-48f1-4897-aad0-f7e70197ad07"
           },
           {
             "name": "apodizationDimension2",
             "value": {
-              "exponential": {
-                "apply": false,
-                "options": { "lineBroadening": 0.3 }
-              },
-              "sineBell": {
-                "apply": true,
-                "options": { "offset": 0, "exponent": 1 }
-              },
-              "sineSquare": { "apply": false, "options": { "offset": 0 } },
-              "traf": { "apply": false, "options": { "lineBroadening": 0.3 } },
-              "gaussian": {
-                "apply": false,
-                "options": { "lineBroadening": 0.3, "lineBroadeningCenter": 0 }
+              "compose": {
+                "shapes": [
+                  {
+                    "shape": {
+                      "kind": "sineBell",
+                      "options": {
+                        "offset": 0,
+                        "exponent": 2
+                      }
+                    }
+                  }
+                ]
               }
             },
-            "enabled": true,
+            "isDeleteAllow": true,
+            "flag": true,
             "id": "6e9dc948-f118-472a-90f7-e70197ad075d"
           },
           {
             "name": "zeroFillingDimension2",
-            "value": { "nbPoints": 1024 },
-            "enabled": true,
+            "value": {
+              "nbPoints": 1024
+            },
+            "isDeleteAllow": true,
+            "flag": true,
             "id": "9dc948f1-1897-4ad0-b7e7-0197ad075d90"
           },
           {
             "name": "fftDimension2",
             "value": {},
-            "enabled": true,
+            "isDeleteAllow": true,
+            "flag": true,
             "id": "c948f118-972a-40f7-a701-97ad075d90f1"
           },
           {
             "name": "phaseCorrectionTwoDimensions",
             "value": {},
-            "enabled": true,
+            "isDeleteAllow": true,
+            "flag": true,
             "id": "48f11897-2ad0-47e7-8197-ad075d90f11e",
             "error": "Phase correction is not applicable to raw data"
           },
           {
             "name": "symmetrizeCosyLike",
             "value": {},
-            "enabled": false,
+            "isDeleteAllow": true,
+            "flag": false,
             "id": "f118972a-d0f7-4701-97ad-075d90f11e9a"
           }
         ],
@@ -262,8 +326,20 @@
           "isNegativeVisible": true,
           "isVisible": true,
           "contourOptions": {
-            "positive": { "contourLevels": [51, 100], "numberOfLayers": 10 },
-            "negative": { "contourLevels": [51, 100], "numberOfLayers": 10 }
+            "positive": {
+              "contourLevels": [
+                51,
+                100
+              ],
+              "numberOfLayers": 10
+            },
+            "negative": {
+              "contourLevels": [
+                51,
+                100
+              ],
+              "numberOfLayers": 10
+            }
           },
           "dimension": 2,
           "negativeColor": "blue",
@@ -272,7 +348,10 @@
         "data": {},
         "zones": {
           "values": [],
-          "options": { "isSumConstant": true, "sumAuto": true }
+          "options": {
+            "isSumConstant": true,
+            "sumAuto": true
+          }
         },
         "customInfo": {}
       }
