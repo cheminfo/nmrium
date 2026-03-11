@@ -19,6 +19,18 @@ import { useACSSettings } from '../hooks/use_acs_settings.js';
 import { usePublicationStrings } from '../hooks/use_publication_strings.js';
 import { PublicationStringModal } from '../modal/PublicationStringModal.js';
 
+const MARKERS: Record<string, React.SVGProps<SVGTSpanElement>> = {
+  '++': { baselineShift: 'super' },
+  '--': { baselineShift: 'sub' },
+  '**': { fontStyle: 'italic' },
+};
+
+function getMarker(word: string) {
+  return Object.keys(MARKERS).find(
+    (marker) => word.startsWith(marker) && word.endsWith(marker),
+  );
+}
+
 const ReactRnd = styled(Rnd)`
   border: 1px solid transparent;
 
@@ -51,10 +63,11 @@ function useWrapSVGText(params: UseWrapSVGTextParams) {
     labelWeight: style.fontWeight,
     debugCanvasWidth: debugCanvas ? width : undefined,
   });
-
   const formattedText = text
-    .replaceAll(/<sup>(?<n>.*?)<\/sup>/g, '++$1++ ')
-    .replaceAll(/<i>(?<j>.*?)<\/i>/g, '**$1**');
+    .replaceAll(/<sup>(?<n>.*?)<\/sup>/g, ' ++$1++ ')
+    .replaceAll(/<sub>(?<k>.*?)<\/sub>/g, ' --$1-- ')
+    .replaceAll(/<i>(?<j>.*?)<\/i>/g, ' **$1** ')
+    .trim();
 
   const lineHeight = labelSize * 1.6;
 
@@ -63,10 +76,12 @@ function useWrapSVGText(params: UseWrapSVGTextParams) {
   let lineWidth = 0;
 
   const spaceWidth = getTextWidth(' ');
-  const words = formattedText.split(' ');
+  const words = formattedText.split(/\s+/);
 
   for (const word of words) {
-    const wordWidth = getTextWidth(word);
+    const marker = getMarker(word);
+    const cleanWord = marker ? word.replaceAll(marker, '') : word;
+    const wordWidth = getTextWidth(cleanWord);
     if (lineWidth + wordWidth > width) {
       lines.push(line);
       line = [word];
@@ -87,27 +102,22 @@ function useWrapSVGText(params: UseWrapSVGTextParams) {
     for (const line of lines) {
       let x = 0;
       for (const word of line) {
-        const isSuper = word.startsWith('++') && word.endsWith('++');
-        const isItalic = word.startsWith('**') && word.endsWith('**');
-        const baseLine = ctx.textBaseline;
+        const marker = getMarker(word);
+        const finalWord = marker ? word.replaceAll(marker, '') : word;
 
-        let finalWord = `${word} `;
-        if (isSuper) {
-          finalWord = word.replaceAll('++', '');
-
-          ctx.textBaseline = 'bottom';
-        } else if (isItalic) {
-          finalWord = word.replaceAll('**', '');
+        if (marker === '++') {
+          ctx.fillText(finalWord, x, y - lineHeight * 0.3);
+        } else if (marker === '--') {
+          ctx.fillText(finalWord, x, y + lineHeight * 0.3);
+        } else {
+          ctx.fillText(finalWord, x, y);
         }
 
-        ctx?.fillText(finalWord, x, y);
         x += getTextWidth(finalWord);
-
-        ctx.textBaseline = baseLine;
       }
-
       y += lineHeight;
     }
+    ctx.fillStyle = 'black';
   });
 
   return { lines, lineHeight };
@@ -146,28 +156,35 @@ function PublicationText(props: PublicationTextProps) {
           dominantBaseline="hanging"
         >
           {line.map((word, wordIndex) => {
-            if (word.startsWith('++') && word.endsWith('++')) {
+            const marker = getMarker(word);
+
+            if (marker) {
+              const props = MARKERS[marker];
+              const isBaselineShift = 'baselineShift' in props;
+              const fontSize = isBaselineShift
+                ? Math.floor((5 / 6) * textStyleWithSize.fontSize)
+                : undefined;
+
               return (
                 <tspan
                   // eslint-disable-next-line react/no-array-index-key
                   key={wordIndex}
-                  baselineShift="super"
-                  fontSize={Math.floor((5 / 6) * textStyleWithSize.fontSize)}
+                  fontSize={fontSize}
+                  {...props}
                 >
-                  {word.replaceAll('++', '')}
+                  {word.replaceAll(marker, '')}
                 </tspan>
               );
-            } else if (word.startsWith('**') && word.endsWith('**')) {
-              return (
-                // eslint-disable-next-line react/no-array-index-key
-                <tspan key={wordIndex} fontStyle="italic">
-                  {word.replaceAll('**', '')}
-                </tspan>
-              );
-            } else {
-              // eslint-disable-next-line react/no-array-index-key
-              return <tspan key={wordIndex}>{word} </tspan>;
             }
+
+            const addSpace =
+              !line[wordIndex + 1]?.startsWith('--') ||
+              /\s$/.test(word) ||
+              /[^a-zA-Z0-9]$/.test(word);
+            return (
+              // eslint-disable-next-line react/no-array-index-key
+              <tspan key={wordIndex}>{addSpace ? `${word} ` : word}</tspan>
+            );
           })}
         </SVGStyledText>
       ))}
