@@ -24,11 +24,12 @@ export function CellColorPicker(props: CellColorPicker) {
   }
 
   return (
-    <CellColorPickerContainer onBlur={field.handleBlur}>
+    <CellColorPickerContainer>
       <ColorPickerDropdown
         {...props}
         color={{ hex: field.state.value }}
         onChangeComplete={onChange}
+        onBlur={field.handleBlur}
       />
     </CellColorPickerContainer>
   );
