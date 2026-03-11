@@ -1,4 +1,4 @@
-import type { AxisUnit } from '@zakodium/nmrium-core';
+import styled from '@emotion/styled';
 import { useMemo, useRef } from 'react';
 import { useLinearPrimaryTicks } from 'react-d3-utils';
 
@@ -7,10 +7,7 @@ import { useChartData } from '../context/ChartContext.js';
 import { useScaleChecked } from '../context/ScaleContext.js';
 import { D3Axis } from '../elements/D3Axis.js';
 import { useCheckExportStatus } from '../hooks/useViewportSize.js';
-import {
-  axisUnitToLabel,
-  useHorizontalAxisUnit,
-} from '../hooks/use_axis_unit.ts';
+import { useHorizontalAxisUnit } from '../hooks/use_axis_unit.ts';
 import { useGridline1DConfig } from '../hooks/use_gridlines_config.ts';
 
 import { useIsInset } from './inset/InsetProvider.js';
@@ -22,7 +19,6 @@ export function HorizontalAxis1D() {
   const isExportingProcessStart = useCheckExportStatus();
 
   const { unit, allowedUnits } = useHorizontalAxisUnit();
-  const label = axisUnitToLabel[unit];
 
   const refAxis = useRef<SVGGElement>(null);
 
@@ -57,27 +53,15 @@ export function HorizontalAxis1D() {
     >
       {!isInset && (
         <AxisUnitPicker
+          fill="#000"
+          x={width - 10}
+          y="30"
+          dy="0.70em"
+          textAnchor="end"
           unit={unit}
           allowedUnits={allowedUnits}
           onChange={(unit) => void unit}
-        >
-          {(props) => (
-            <text
-              className={props.className}
-              // @ts-expect-error SVG element incompatible with HTMLElement but the callback from blueprint should be OK.
-              onContextMenu={props.onContextMenu}
-              ref={props.ref}
-              fill="#000"
-              x={width - 10}
-              y="30"
-              dy="0.70em"
-              textAnchor="end"
-            >
-              {props.popover}
-              {label}
-            </text>
-          )}
-        </AxisUnitPicker>
+        />
       )}
     </D3Axis>
   );

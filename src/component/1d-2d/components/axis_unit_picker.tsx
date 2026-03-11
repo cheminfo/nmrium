@@ -1,37 +1,44 @@
-import type { ContextMenuChildrenProps } from '@blueprintjs/core';
-import { ContextMenu, Menu, MenuItem } from '@blueprintjs/core';
 import type { AxisUnit } from '@zakodium/nmrium-core';
-import type { ReactElement } from 'react';
+import type { ComponentProps } from 'react';
 
+import type { ContextMenuItem } from '../../elements/ContextMenuBluePrint.tsx';
+import { ContextMenu } from '../../elements/ContextMenuBluePrint.tsx';
 import { axisUnitToLabel } from '../../hooks/use_axis_unit.ts';
 
-interface AxisUnitPickerProps {
+interface AxisUnitPickerProps extends Omit<
+  ComponentProps<typeof ContextMenu<'text'>>,
+  'onChange' | 'options' | 'onSelect' | 'children'
+> {
   unit: AxisUnit;
   allowedUnits: AxisUnit[];
   onChange: (unit: AxisUnit) => void;
-  children: (props: ContextMenuChildrenProps) => ReactElement;
 }
 
 export function AxisUnitPicker(props: AxisUnitPickerProps) {
-  const { children, unit, allowedUnits, onChange } = props;
+  const { unit, allowedUnits, onChange, ...contextMenuProps } = props;
+
+  const options: ContextMenuItem[] = allowedUnits.map((allowedUnit) => ({
+    key: allowedUnit,
+    roleStructure: 'listoption',
+    text: axisUnitToLabel[allowedUnit],
+    selected: allowedUnit === unit,
+    data: { unit: allowedUnit } as Data,
+  }));
+  const label = axisUnitToLabel[unit];
 
   return (
     <ContextMenu
-      content={
-        <Menu>
-          {allowedUnits.map((allowedUnit) => (
-            <MenuItem
-              key={allowedUnit}
-              roleStructure="listitem"
-              text={axisUnitToLabel[allowedUnit]}
-              selected={allowedUnit === unit}
-              onClick={() => onChange(allowedUnit)}
-            />
-          ))}
-        </Menu>
-      }
+      as="text"
+      {...contextMenuProps}
+      options={options}
+      onSelect={({ unit }: Data) => onChange(unit)}
+      style={{ pointerEvents: 'auto', ...contextMenuProps.style }}
     >
-      {(props) => children(props)}
+      {label}
     </ContextMenu>
   );
+}
+
+interface Data {
+  unit: AxisUnit;
 }

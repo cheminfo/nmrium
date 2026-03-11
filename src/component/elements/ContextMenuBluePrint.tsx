@@ -56,7 +56,7 @@ export function ContextMenu<E extends ElementType = 'div'>(
             typeof visible === 'function' ? visible(data) : visible,
           )
           .map(({ tooltip = {}, ...options }: any) => {
-            const { disabled = false, visible, ...otherOptions } = options;
+            const { disabled = false, visible, key, ...otherOptions } = options;
 
             const isDisabled =
               typeof disabled === 'function' ? disabled(data) : disabled;
@@ -73,7 +73,7 @@ export function ContextMenu<E extends ElementType = 'div'>(
                     />
                   </div>
                 )}
-                key={otherOptions.text}
+                key={key ?? otherOptions.text}
                 {...tooltip}
               />
             );
