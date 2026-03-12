@@ -2,6 +2,8 @@ import type { Nucleus1DUnit, Nucleus2DUnit } from '@zakodium/nmrium-core';
 import {
   defaultAxisUnit1DFid,
   defaultAxisUnit1DFt,
+  defaultAxisUnit2DFid,
+  defaultAxisUnit2DFt,
 } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
 import { match } from 'ts-pattern';
@@ -85,12 +87,12 @@ export function handleSetAxisUnit1DHorizontalAction(
 
 const defaultUnit2DNucleus: Nucleus2DUnit = {
   direct: {
-    fid: 's',
-    ft: 'ppm',
+    fid: defaultAxisUnit2DFid,
+    ft: defaultAxisUnit2DFt,
   },
   indirect: {
-    fid: 's',
-    ft: 'ppm',
+    fid: defaultAxisUnit2DFid,
+    ft: defaultAxisUnit2DFt,
   },
 };
 export function handleSetAxisUnit2DDirectAction(

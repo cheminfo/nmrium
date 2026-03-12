@@ -12,15 +12,20 @@ import {
   axisUnits1DFt,
   axisUnits2DFid,
   axisUnits2DFt,
+  defaultAxisUnit1DFid,
+  defaultAxisUnit1DFt,
+  defaultAxisUnit2DFid,
+  defaultAxisUnit2DFt,
 } from '@zakodium/nmrium-core';
 import { useCallback, useMemo } from 'react';
 import { match } from 'ts-pattern';
 
 import { isSpectrum2D } from '../../data/data2d/Spectrum2D/index.ts';
+import { useChartData } from '../context/ChartContext.tsx';
 import { useDispatch } from '../context/DispatchContext.tsx';
 
+import { useActiveNucleusTab } from './useActiveNucleusTab.ts';
 import useSpectrum from './useSpectrum.ts';
-import { useAxisUnit1D, useAxisUnit2D } from './use_view.ts';
 import { useVisibleSpectra1D } from './use_visible_spectra_1d.ts';
 
 export const axisUnitToLabel: Record<AxisUnit, string> = {
@@ -148,4 +153,40 @@ export function useIndirectAxisUnit() {
 
     return { mode, unit, allowedUnits, setUnit };
   }, [dispatch, nucleus, spectrum, units.indirect]);
+}
+
+const defaultUnit1D: Nucleus1DUnit = {
+  horizontal: {
+    fid: defaultAxisUnit1DFid,
+    ft: defaultAxisUnit1DFt,
+  },
+};
+
+function useAxisUnit1D() {
+  const nucleus = useActiveNucleusTab();
+  const { view } = useChartData();
+
+  const nucleusUnits = view.units1D[nucleus] ?? defaultUnit1D;
+
+  return { nucleus, nucleusUnits };
+}
+
+const defaultUnit2D: Nucleus2DUnit = {
+  direct: {
+    fid: defaultAxisUnit2DFid,
+    ft: defaultAxisUnit2DFt,
+  },
+  indirect: {
+    fid: defaultAxisUnit2DFid,
+    ft: defaultAxisUnit2DFt,
+  },
+};
+
+function useAxisUnit2D() {
+  const nucleus = useActiveNucleusTab();
+  const { view } = useChartData();
+
+  const units = view.units2D[nucleus] ?? defaultUnit2D;
+
+  return { nucleus, units };
 }
