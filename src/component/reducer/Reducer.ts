@@ -31,6 +31,11 @@ import * as RangesActions from './actions/RangesActions.js';
 import * as SpectraActions from './actions/SpectraActions.js';
 import * as ToolsActions from './actions/ToolsActions.js';
 import * as ZonesActions from './actions/ZonesActions.js';
+import {
+  handleSetAxisUnit1DHorizontalAction,
+  handleSetAxisUnit2DDirectAction,
+  handleSetAxisUnit2DIndirectAction,
+} from './actions/unit_actions.ts';
 import type { ZoomHistory } from './helper/ZoomHistoryManager.js';
 
 export type DisplayerMode = '1D' | '2D';
@@ -108,6 +113,8 @@ export function getDefaultViewState(): ViewState {
     verticalAlign: {},
     predictions: {},
     currentSimulatedSpectrumKey: null,
+    units1D: {},
+    units2D: {},
   };
 }
 export const getInitialState = (): State => ({
@@ -823,6 +830,13 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
       case 'TOGGLE_INSET_PEAKS_DISPLAYING_MODE': {
         return InsetActions.handleToggleInsetDisplayingPeaksMode(draft, action);
       }
+
+      case 'SET_AXIS_UNIT_1D_HORIZONTAL':
+        return handleSetAxisUnit1DHorizontalAction(draft, action);
+      case 'SET_AXIS_UNIT_2D_DIRECT':
+        return handleSetAxisUnit2DDirectAction(draft, action);
+      case 'SET_AXIS_UNIT_2D_INDIRECT':
+        return handleSetAxisUnit2DIndirectAction(draft, action);
 
       case 'SECRET_THROW_ERROR': {
         throw new Error('Error thrown in main reducer');

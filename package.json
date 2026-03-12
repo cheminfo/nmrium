@@ -71,8 +71,8 @@
     "@tanstack/react-form": "^1.28.3",
     "@tanstack/react-table": "^8.21.3",
     "@zakodium/nmr-types": "^0.5.3",
-    "@zakodium/nmrium-core": "^0.7.2",
-    "@zakodium/nmrium-core-plugins": "^0.7.2",
+    "@zakodium/nmrium-core": "^0.7.4",
+    "@zakodium/nmrium-core-plugins": "^0.7.6",
     "@zakodium/pdnd-esm": "^1.0.2",
     "@zip.js/zip.js": "^2.8.22",
     "cheminfo-font": "^1.20.0",
@@ -117,6 +117,7 @@
     "react-science": "^19.10.3",
     "react-table": "^7.8.0",
     "smart-array-filter": "^5.0.0",
+    "ts-pattern": "^5.9.0",
     "yup": "^1.7.1",
     "zod": "^4.3.6"
   },

@@ -53,7 +53,7 @@ const SortSpectraContext = createContext<SortSpectraContextState | null>(null);
 export function useSortSpectra(): SortSpectraContextState {
   const context = useContext(SortSpectraContext);
   if (!context) {
-    throw new Error('useSpectra must be used within a SpectraProvider');
+    throw new Error('useSortSpectra must be used within a SortSpectraProvider');
   }
 
   return context;

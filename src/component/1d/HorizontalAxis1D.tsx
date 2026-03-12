@@ -1,28 +1,32 @@
-import type { AxisUnit } from '@zakodium/nmrium-core';
 import { useMemo, useRef } from 'react';
 import { useLinearPrimaryTicks } from 'react-d3-utils';
 
+import { AxisUnitPicker } from '../1d-2d/components/axis_unit_picker.tsx';
 import { useChartData } from '../context/ChartContext.js';
 import { useScaleChecked } from '../context/ScaleContext.js';
 import { D3Axis } from '../elements/D3Axis.js';
 import { useCheckExportStatus } from '../hooks/useViewportSize.js';
-import { axisUnitToLabel } from '../hooks/use_axis_unit.ts';
+import {
+  axisUnitToLabel,
+  useHorizontalAxisUnit,
+} from '../hooks/use_axis_unit.ts';
 import { useGridline1DConfig } from '../hooks/use_gridlines_config.ts';
 
 import { useIsInset } from './inset/InsetProvider.js';
 
 export function HorizontalAxis1D() {
-  const { height, width, margin, mode } = useChartData();
+  const { height, width, margin } = useChartData();
   const { scaleX } = useScaleChecked();
   const isInset = useIsInset();
   const isExportingProcessStart = useCheckExportStatus();
 
-  const chartUnit: AxisUnit = mode === 'RTL' ? 'ppm' : 's';
-  const label = axisUnitToLabel[chartUnit];
+  const { unit, allowedUnits, setUnit } = useHorizontalAxisUnit();
+  const unitLabel = axisUnitToLabel[unit];
 
   const refAxis = useRef<SVGGElement>(null);
 
   const scaler = useMemo(() => {
+    // TODO apply unit conversion
     return scaleX(null);
   }, [scaleX]);
   const { ticks, scale: ticksScale } = useLinearPrimaryTicks(
@@ -51,9 +55,15 @@ export function HorizontalAxis1D() {
       secondaryGridProps={gridConfig.secondary.lineStyle}
     >
       {!isInset && (
-        <text fill="#000" x={width - 10} y="30" dy="0.70em" textAnchor="end">
-          {label}
-        </text>
+        <AxisUnitPicker
+          unit={unit}
+          allowedUnits={allowedUnits}
+          onChange={setUnit}
+        >
+          <text fill="#000" x={width - 10} y="30" dy="0.70em" textAnchor="end">
+            {unitLabel}
+          </text>
+        </AxisUnitPicker>
       )}
     </D3Axis>
   );
