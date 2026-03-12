@@ -120,8 +120,9 @@ export function useIndirectAxisUnit() {
     if (!spectrum) return;
     if (!isSpectrum2D(spectrum)) return;
 
-    const mode: keyof Nucleus2DUnit['direct'] =
-      spectrum.info.isFt || spectrum.info.isFtDimensionOne ? 'ft' : 'fid';
+    const mode: keyof Nucleus2DUnit['direct'] = spectrum.info.isFt
+      ? 'ft'
+      : 'fid';
     const unit: AxisUnit2DFid | AxisUnit2DFt = units.indirect[mode];
     const allowedUnits: AxisUnit2DFid[] | AxisUnit2DFt[] =
       mode === 'ft' ? axisUnits2DFt : axisUnits2DFid;
