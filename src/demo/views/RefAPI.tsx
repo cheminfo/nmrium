@@ -49,8 +49,21 @@ export default function RefAPI() {
             flex: 3,
           }}
         >
-          <div style={{ flex: 3 }}>
-            <DropZone onDrop={dropFileHandler} emptyTitle="Drop data files" />
+          <div style={{ flex: 3, display: 'flex', flexDirection: 'column' }}>
+            <div style={{ flex: 1 }}>
+              <DropZone
+                onDrop={dropFileHandler}
+                emptyTitle="Drop data files"
+                emptyDescription="To load with ref.loadFileCollection API"
+              />
+            </div>
+            <div style={{ flex: 1 }}>
+              <DropZone
+                onDrop={dropFileHandler}
+                emptyTitle="Drop data files"
+                emptyDescription="To load with ref.loadFiles API"
+              />
+            </div>
           </div>
         </div>
       </div>

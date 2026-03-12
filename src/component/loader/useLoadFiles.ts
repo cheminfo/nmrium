@@ -85,8 +85,13 @@ export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
 
   const currentPreferences = preferences.current;
   const loadUserFiles = useCallback(
-    async (files: File[]) => {
-      if (onOpenMetaInformation && files.length === 1 && isMetaFile(files[0])) {
+    async (files: File[] | FileCollection) => {
+      if (
+        onOpenMetaInformation &&
+        Array.isArray(files) &&
+        files.length === 1 &&
+        isMetaFile(files[0])
+      ) {
         onOpenMetaInformation(files[0]);
         return;
       }
@@ -101,18 +106,22 @@ export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
         experimentalFeatures,
       };
 
-      const groupedFiles = await groupFiles(files);
-      const { nmriumArchiveFiles, fileCollection, metaFile } = groupedFiles;
+      if (Array.isArray(files)) {
+        const groupedFiles = await groupFiles(files);
+        const { nmriumArchiveFiles, fileCollection, metaFile } = groupedFiles;
 
-      if (nmriumArchiveFiles.length > 0) {
-        await Promise.all(
-          nmriumArchiveFiles.map((file) =>
-            loadNmriumArchives(file, parsingOptions),
-          ),
-        );
+        if (nmriumArchiveFiles.length > 0) {
+          await Promise.all(
+            nmriumArchiveFiles.map((file) =>
+              loadNmriumArchives(file, parsingOptions),
+            ),
+          );
+        }
+
+        await loadFileCollection(fileCollection, metaFile, parsingOptions);
+      } else {
+        await loadFileCollection(files, undefined, parsingOptions);
       }
-
-      await loadFileCollection(fileCollection, metaFile, parsingOptions);
     },
     [
       experimentalFeatures,
@@ -126,7 +135,7 @@ export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
   );
 
   return useCallback(
-    (files: File[]) => {
+    (files: File[] | FileCollection) => {
       dispatch({ type: 'SET_LOADING_FLAG', payload: { isLoading: true } });
 
       loadUserFiles(files)

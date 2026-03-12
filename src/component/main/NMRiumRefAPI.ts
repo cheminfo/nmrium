@@ -1,3 +1,4 @@
+import type { FileCollection } from 'file-collection';
 import type { ForwardedRef, RefObject } from 'react';
 import { useImperativeHandle } from 'react';
 
@@ -11,6 +12,7 @@ export interface NMRiumRefAPI {
   getSpectraViewerAsBlob: () => BlobObject | null;
   getNMRiumFile: (option: SaveIncludeOptions) => Promise<Blob>;
   loadFiles: (files: File[]) => void;
+  loadFileCollection: (fileCollection: FileCollection) => void;
 }
 
 export function useNMRiumRefAPI(
@@ -29,6 +31,8 @@ export function useNMRiumRefAPI(
           : null;
       },
       loadFiles,
+      loadFileCollection: (fileCollection: FileCollection) =>
+        loadFiles(fileCollection),
       getNMRiumFile: (options) => createNmriumZip(options),
     }),
     [loadFiles, rootRef, createNmriumZip],
