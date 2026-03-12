@@ -4,7 +4,6 @@ import {
   defaultAxisUnit1DFt,
 } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
-import { assertUnreachable } from 'react-science/ui';
 import { match } from 'ts-pattern';
 
 import type { State } from '../Reducer.ts';
