@@ -5,6 +5,7 @@ import { assert } from 'react-science/ui';
 
 import type { ContextMenuItem } from '../../elements/ContextMenuBluePrint.tsx';
 import { ContextMenu } from '../../elements/ContextMenuBluePrint.tsx';
+import useCheckExperimentalFeature from '../../hooks/useCheckExperimentalFeature.ts';
 import { axisUnitToLabel } from '../../hooks/use_axis_unit.ts';
 
 interface AxisUnitPickerProps {
@@ -16,6 +17,9 @@ interface AxisUnitPickerProps {
 
 export function AxisUnitPicker(props: AxisUnitPickerProps) {
   const { unit, allowedUnits, onChange, children } = props;
+  const isExperimental = useCheckExperimentalFeature();
+
+  if (!isExperimental) return children;
 
   const options: ContextMenuItem[] = allowedUnits.map((allowedUnit) => ({
     key: allowedUnit,
