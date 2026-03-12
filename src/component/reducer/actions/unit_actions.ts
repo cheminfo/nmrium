@@ -5,6 +5,7 @@ import {
 } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
 import { assertUnreachable } from 'react-science/ui';
+import { match } from 'ts-pattern';
 
 import type { State } from '../Reducer.ts';
 import type { ActionType } from '../types/ActionType.ts';
@@ -68,19 +69,19 @@ export function handleSetAxisUnit1DHorizontalAction(
 ) {
   const { nucleus } = action.payload;
 
-  draft.view.units1D[nucleus] ??= defaultUnit1DNucleus;
+  const unitNucleus =
+    draft.view.units1D[nucleus] ?? structuredClone(defaultUnit1DNucleus);
 
-  const mode = action.payload.mode;
-  switch (mode) {
-    case 'fid':
-      draft.view.units1D[nucleus].horizontal.fid = action.payload.unit;
-      break;
-    case 'ft':
-      draft.view.units1D[nucleus].horizontal.ft = action.payload.unit;
-      break;
-    default:
-      assertUnreachable(mode);
-  }
+  match(action.payload)
+    .with({ mode: 'fid' }, ({ mode, unit }) => {
+      unitNucleus.horizontal[mode] = unit;
+    })
+    .with({ mode: 'ft' }, ({ mode, unit }) => {
+      unitNucleus.horizontal[mode] = unit;
+    })
+    .exhaustive();
+
+  draft.view.units1D[nucleus] = unitNucleus;
 }
 
 const defaultUnit2DNucleus: Nucleus2DUnit = {
@@ -99,19 +100,19 @@ export function handleSetAxisUnit2DDirectAction(
 ) {
   const { nucleus } = action.payload;
 
-  draft.view.units2D[nucleus] ??= defaultUnit2DNucleus;
+  const unitNucleus =
+    draft.view.units2D[nucleus] ?? structuredClone(defaultUnit2DNucleus);
 
-  const mode = action.payload.mode;
-  switch (mode) {
-    case 'fid':
-      draft.view.units2D[nucleus].direct.fid = action.payload.unit;
-      break;
-    case 'ft':
-      draft.view.units2D[nucleus].direct.ft = action.payload.unit;
-      break;
-    default:
-      assertUnreachable(mode);
-  }
+  match(action.payload)
+    .with({ mode: 'fid' }, ({ mode, unit }) => {
+      unitNucleus.direct[mode] = unit;
+    })
+    .with({ mode: 'ft' }, ({ mode, unit }) => {
+      unitNucleus.direct[mode] = unit;
+    })
+    .exhaustive();
+
+  draft.view.units2D[nucleus] = unitNucleus;
 }
 
 export function handleSetAxisUnit2DIndirectAction(
@@ -120,17 +121,17 @@ export function handleSetAxisUnit2DIndirectAction(
 ) {
   const { nucleus } = action.payload;
 
-  draft.view.units2D[nucleus] ??= defaultUnit2DNucleus;
+  const unitNucleus =
+    draft.view.units2D[nucleus] ?? structuredClone(defaultUnit2DNucleus);
 
-  const mode = action.payload.mode;
-  switch (mode) {
-    case 'fid':
-      draft.view.units2D[nucleus].indirect.fid = action.payload.unit;
-      break;
-    case 'ft':
-      draft.view.units2D[nucleus].indirect.ft = action.payload.unit;
-      break;
-    default:
-      assertUnreachable(mode);
-  }
+  match(action.payload)
+    .with({ mode: 'fid' }, ({ mode, unit }) => {
+      unitNucleus.indirect[mode] = unit;
+    })
+    .with({ mode: 'ft' }, ({ mode, unit }) => {
+      unitNucleus.indirect[mode] = unit;
+    })
+    .exhaustive();
+
+  draft.view.units2D[nucleus] = unitNucleus;
 }

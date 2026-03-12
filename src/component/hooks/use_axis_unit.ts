@@ -14,7 +14,7 @@ import {
   axisUnits2DFt,
 } from '@zakodium/nmrium-core';
 import { useCallback, useMemo } from 'react';
-import { assertUnreachable } from 'react-science/ui';
+import { match } from 'ts-pattern';
 
 import { isSpectrum2D } from '../../data/data2d/Spectrum2D/index.ts';
 import { useDispatch } from '../context/DispatchContext.tsx';
@@ -50,22 +50,22 @@ export function useHorizontalAxisUnit() {
 
   const setUnit = useCallback(
     (unit: AxisUnit) => {
-      switch (mode) {
-        case 'fid':
+      match(mode)
+        .with('fid', (mode) => {
           assertIn(unit, axisUnits1DFid);
           return dispatch({
             type: 'SET_AXIS_UNIT_1D_HORIZONTAL',
             payload: { nucleus, mode, unit },
           });
-        case 'ft':
+        })
+        .with('ft', (mode) => {
           assertIn(unit, axisUnits1DFt);
           return dispatch({
             type: 'SET_AXIS_UNIT_1D_HORIZONTAL',
             payload: { nucleus, mode, unit },
           });
-        default:
-          assertUnreachable(mode);
-      }
+        })
+        .exhaustive();
     },
     [dispatch, mode, nucleus],
   );
@@ -89,22 +89,22 @@ export function useDirectAxisUnit() {
       mode === 'ft' ? axisUnits2DFt : axisUnits2DFid;
 
     function setUnit(unit: AxisUnit) {
-      switch (mode) {
-        case 'fid':
+      match(mode)
+        .with('fid', (mode) => {
           assertIn(unit, axisUnits2DFid);
           return dispatch({
             type: 'SET_AXIS_UNIT_2D_DIRECT',
             payload: { nucleus, mode, unit },
           });
-        case 'ft':
+        })
+        .with('ft', (mode) => {
           assertIn(unit, axisUnits2DFt);
           return dispatch({
             type: 'SET_AXIS_UNIT_2D_DIRECT',
             payload: { nucleus, mode, unit },
           });
-        default:
-          assertUnreachable(mode);
-      }
+        })
+        .exhaustive();
     }
 
     return { mode, unit, allowedUnits, setUnit };
@@ -128,22 +128,22 @@ export function useIndirectAxisUnit() {
       mode === 'ft' ? axisUnits2DFt : axisUnits2DFid;
 
     function setUnit(unit: AxisUnit) {
-      switch (mode) {
-        case 'fid':
+      match(mode)
+        .with('fid', (mode) => {
           assertIn(unit, axisUnits2DFid);
           return dispatch({
             type: 'SET_AXIS_UNIT_2D_INDIRECT',
             payload: { nucleus, mode, unit },
           });
-        case 'ft':
+        })
+        .with('ft', (mode) => {
           assertIn(unit, axisUnits2DFt);
           return dispatch({
             type: 'SET_AXIS_UNIT_2D_INDIRECT',
             payload: { nucleus, mode, unit },
           });
-        default:
-          assertUnreachable(mode);
-      }
+        })
+        .exhaustive();
     }
 
     return { mode, unit, allowedUnits, setUnit };
