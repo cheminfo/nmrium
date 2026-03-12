@@ -1,3 +1,4 @@
+import { FileCollection } from 'file-collection';
 import { useCallback, useRef } from 'react';
 import { Button, DropZone } from 'react-science/ui';
 
@@ -7,7 +8,13 @@ import { saveAs } from '../../component/utility/save_as.ts';
 
 export default function RefAPI() {
   const nmriumRef = useRef<NMRiumRefAPI>(null);
-  const dropFileHandler = useCallback((dropFiles: File[]) => {
+  const dropLoadFileCollectionHandler = useCallback((dropFiles: File[]) => {
+    const fileCollection = new FileCollection();
+    void fileCollection.appendFileList(dropFiles).then(() => {
+      nmriumRef.current?.loadFileCollection(fileCollection);
+    });
+  }, []);
+  const dropLoadFilesHandler = useCallback((dropFiles: File[]) => {
     nmriumRef.current?.loadFiles(dropFiles);
   }, []);
 
@@ -49,8 +56,21 @@ export default function RefAPI() {
             flex: 3,
           }}
         >
-          <div style={{ flex: 3 }}>
-            <DropZone onDrop={dropFileHandler} emptyTitle="Drop data files" />
+          <div style={{ flex: 3, display: 'flex', flexDirection: 'column' }}>
+            <div style={{ flex: 1 }}>
+              <DropZone
+                onDrop={dropLoadFileCollectionHandler}
+                emptyTitle="Drop data files"
+                emptyDescription="To load with ref.loadFileCollection API"
+              />
+            </div>
+            <div style={{ flex: 1 }}>
+              <DropZone
+                onDrop={dropLoadFilesHandler}
+                emptyTitle="Drop data files"
+                emptyDescription="To load with ref.loadFiles API"
+              />
+            </div>
           </div>
         </div>
       </div>
