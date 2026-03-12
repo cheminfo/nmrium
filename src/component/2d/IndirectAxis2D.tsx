@@ -1,8 +1,8 @@
-import type { AxisUnit } from '@zakodium/nmrium-core';
 import { memo, useRef } from 'react';
 import { useLinearPrimaryTicks } from 'react-d3-utils';
 
 import { useIsInset } from '../1d/inset/InsetProvider.tsx';
+import { AxisUnitPicker } from '../1d-2d/components/axis_unit_picker.tsx';
 import { useChartData } from '../context/ChartContext.js';
 import { D3Axis } from '../elements/D3Axis.js';
 import { useActiveNucleusTab } from '../hooks/useActiveNucleusTab.js';
@@ -30,18 +30,15 @@ interface IndirectAxis2DProps {
 function IndirectAxis2D(props: IndirectAxis2DProps) {
   const { margin: marginProps = defaultMargin } = props;
 
-  const { getTextWidth } = useTextMetrics({ labelSize: 10 });
   const { width, height, margin } = useChartData();
 
   const nucleus = useActiveNucleusTab();
   const [, maybeNucleusUnit] = nucleus.split(',');
-  const nucleusUnit = useIndirectAxisUnit();
+  const axis = useIndirectAxisUnit();
 
   const matchNucleus = /^[0-9]+[A-Z][a-z]?$/.test(maybeNucleusUnit);
-  const unitToDisplay: AxisUnit | undefined = matchNucleus
-    ? nucleusUnit
-    : undefined;
 
+  // TODO apply `axis.unit` conversion
   const scaleY = useScale2DY();
   const isInset = useIsInset();
   const isExportingProcessStart = useCheckExportStatus();
@@ -59,11 +56,6 @@ function IndirectAxis2D(props: IndirectAxis2DProps) {
     return null;
   }
 
-  const label = unitToDisplay
-    ? axisUnitToLabel[unitToDisplay]
-    : maybeNucleusUnit;
-  const labelHeight = getTextWidth(label);
-
   return (
     <D3Axis
       ref={refAxis}
@@ -79,26 +71,67 @@ function IndirectAxis2D(props: IndirectAxis2DProps) {
       secondaryGridProps={gridConfig.secondary.lineStyle}
     >
       <g transform={`translate(${marginProps.right - 20}, ${margin.top})`}>
-        <rect
-          fill="white"
-          rx={5}
-          ry={5}
-          width={20}
-          height={labelHeight + 10}
-          x={-10}
-          y={-5}
-          opacity={0.8}
+        <Unit
+          axis={axis}
+          matchNucleus={matchNucleus}
+          maybeNucleusUnit={maybeNucleusUnit}
         />
-        <text
-          fill="#000"
-          transform="rotate(-90)"
-          dominantBaseline="middle"
-          textAnchor="end"
-        >
-          {label}
-        </text>
       </g>
     </D3Axis>
+  );
+}
+
+interface UnitProps {
+  matchNucleus: boolean;
+  maybeNucleusUnit: string;
+  axis: ReturnType<typeof useIndirectAxisUnit>;
+}
+function Unit(props: UnitProps) {
+  const { axis, matchNucleus, maybeNucleusUnit } = props;
+
+  if (!matchNucleus) return <UnitLabel>{maybeNucleusUnit}</UnitLabel>;
+  if (!axis) return <UnitLabel>{axisUnitToLabel.ppm}</UnitLabel>;
+
+  const { unit, setUnit, allowedUnits } = axis;
+  const label = axisUnitToLabel[unit];
+
+  return (
+    <AxisUnitPicker unit={unit} allowedUnits={allowedUnits} onChange={setUnit}>
+      <UnitLabel>{label}</UnitLabel>
+    </AxisUnitPicker>
+  );
+}
+
+interface UnitLabelProps {
+  children: string;
+}
+function UnitLabel(props: UnitLabelProps) {
+  const { children } = props;
+
+  const { getTextWidth } = useTextMetrics({ labelSize: 10 });
+  const labelHeight = getTextWidth(children);
+
+  return (
+    <>
+      <rect
+        fill="white"
+        rx={5}
+        ry={5}
+        width={20}
+        height={labelHeight + 10}
+        x={-10}
+        y={-5}
+        opacity={0.8}
+      />
+      <text
+        fill="#000"
+        transform="rotate(-90)"
+        dominantBaseline="middle"
+        textAnchor="end"
+      >
+        {children}
+      </text>
+    </>
   );
 }
 

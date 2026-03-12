@@ -20,7 +20,9 @@ export function useAxisUnit1D() {
   const nucleus = useActiveNucleusTab();
   const { view } = useChartData();
 
-  return view.units1D[nucleus] ?? defaultUnit1D;
+  const nucleusUnits = view.units1D[nucleus] ?? defaultUnit1D;
+
+  return { nucleus, nucleusUnits };
 }
 
 const defaultUnit2D: Nucleus2DUnit = {
@@ -37,5 +39,7 @@ export function useAxisUnit2D() {
   const nucleus = useActiveNucleusTab();
   const { view } = useChartData();
 
-  return view.units2D[nucleus] ?? defaultUnit2D;
+  const units = view.units2D[nucleus] ?? defaultUnit2D;
+
+  return { nucleus, units };
 }

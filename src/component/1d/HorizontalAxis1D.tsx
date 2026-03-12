@@ -20,7 +20,7 @@ export function HorizontalAxis1D() {
   const isInset = useIsInset();
   const isExportingProcessStart = useCheckExportStatus();
 
-  const { unit, allowedUnits } = useHorizontalAxisUnit();
+  const { unit, allowedUnits, setUnit } = useHorizontalAxisUnit();
   const unitLabel = axisUnitToLabel[unit];
 
   const refAxis = useRef<SVGGElement>(null);
@@ -58,7 +58,7 @@ export function HorizontalAxis1D() {
         <AxisUnitPicker
           unit={unit}
           allowedUnits={allowedUnits}
-          onChange={(unit) => void unit}
+          onChange={setUnit}
         >
           <text fill="#000" x={width - 10} y="30" dy="0.70em" textAnchor="end">
             {unitLabel}

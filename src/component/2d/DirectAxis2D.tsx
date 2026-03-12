@@ -1,11 +1,10 @@
-import type { AxisUnit, Spectrum2D } from '@zakodium/nmrium-core';
 import { memo, useRef } from 'react';
 import { useLinearPrimaryTicks } from 'react-d3-utils';
 
 import { useIsInset } from '../1d/inset/InsetProvider.tsx';
+import { AxisUnitPicker } from '../1d-2d/components/axis_unit_picker.tsx';
 import { useChartData } from '../context/ChartContext.js';
 import { D3Axis } from '../elements/D3Axis.js';
-import useSpectrum from '../hooks/useSpectrum.js';
 import { useCheckExportStatus } from '../hooks/useViewportSize.tsx';
 import { axisUnitToLabel, useDirectAxisUnit } from '../hooks/use_axis_unit.ts';
 import { useGridline2DConfig } from '../hooks/use_gridlines_config.ts';
@@ -28,9 +27,8 @@ function DirectAxis2D(props: DirectAxis2DProps) {
 
   const { height, width, margin } = useChartData();
 
-  const unit = useDirectAxisUnit();
-  const unitLabel = axisUnitToLabel[unit];
-
+  const axis = useDirectAxisUnit();
+  // TODO apply `axis.unit` conversion
   const scaleX = useScale2DX();
   const isInset = useIsInset();
   const isExportingProcessStart = useCheckExportStatus();
@@ -64,10 +62,43 @@ function DirectAxis2D(props: DirectAxis2DProps) {
       primaryGridProps={gridConfig.primary.lineStyle}
       secondaryGridProps={gridConfig.secondary.lineStyle}
     >
-      <text fill="#000" x={width - 60} y="20" dy="0.71em" textAnchor="end">
-        {unitLabel}
-      </text>
+      <Unit width={width - 60} axis={axis} />
     </D3Axis>
+  );
+}
+
+interface UnitProps {
+  width: number;
+  axis: ReturnType<typeof useDirectAxisUnit>;
+}
+function Unit(props: UnitProps) {
+  const { width, axis } = props;
+
+  if (!axis) {
+    return <UnitLabel width={width}>{axisUnitToLabel.ppm}</UnitLabel>;
+  }
+
+  const { unit, allowedUnits, setUnit } = axis;
+  const label = axisUnitToLabel[unit];
+
+  return (
+    <AxisUnitPicker unit={unit} allowedUnits={allowedUnits} onChange={setUnit}>
+      <UnitLabel width={width}>{label}</UnitLabel>
+    </AxisUnitPicker>
+  );
+}
+
+interface UnitLabelProps {
+  width: number;
+  children: string;
+}
+function UnitLabel(props: UnitLabelProps) {
+  const { width, children } = props;
+
+  return (
+    <text fill="#000" x={width - 60} y="20" dy="0.71em" textAnchor="end">
+      {children}
+    </text>
   );
 }
 
