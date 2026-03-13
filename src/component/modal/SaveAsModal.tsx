@@ -22,7 +22,7 @@ const INITIAL_VALUE: SaveOptions = {
   },
 };
 
-export const labelStyle: LabelStyle = {
+const labelStyle: LabelStyle = {
   label: {
     flex: 4,
     color: '#232323',
