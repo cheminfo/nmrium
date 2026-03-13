@@ -6,6 +6,7 @@ import type { z } from 'zod/v4';
 import { useLogger } from '../../../../context/LoggerContext.tsx';
 import { usePreferences } from '../../../../context/PreferencesContext.tsx';
 import type { WorkspaceWithSource } from '../../../../reducer/preferences/preferencesReducer.ts';
+import { mergeReplaceArray } from '../../../../utility/merge_replace_array.ts';
 import { workspaceDefaultProperties } from '../../../../workspaces/workspaceDefaultProperties.ts';
 import {
   defaultGeneralSettingsFormValues,
@@ -85,11 +86,4 @@ export function formValueToWorkspace(
 
   const safeValue = safeParseResult.data;
   return lodashMergeWith({}, baseValue, safeValue, mergeReplaceArray);
-}
-
-function mergeReplaceArray(obj: unknown, src: unknown) {
-  if (!Array.isArray(obj)) return;
-  if (!Array.isArray(src)) return;
-
-  return src;
 }

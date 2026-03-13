@@ -1,8 +1,9 @@
 import { useStore } from '@tanstack/react-form';
-import { withForm } from 'react-science/ui';
+import { withFieldGroup, withForm } from 'react-science/ui';
+import type { z } from 'zod';
 
 import { getFilterLabel } from '../../../../../data/getFilterLabel.ts';
-import type { FilterEntry } from '../../../../../data/types/common/FilterEntry.ts';
+import type { filtersValidation } from '../validation/auto_processing_tab_validation.ts';
 import { defaultGeneralSettingsFormValues } from '../validation.ts';
 
 export const AutoProcessingTab = withForm({
@@ -22,60 +23,53 @@ export const AutoProcessingTab = withForm({
             )}
           </form.AppField>
         </form.Section>
-        {isExperimentalFeatures && <AutoProcessingTabs form={form} />}
+        {isExperimentalFeatures && (
+          <AutoProcessingFilters
+            form={form}
+            fields="onLoadProcessing.filters"
+          />
+        )}
       </div>
     );
   },
 });
 
-const AutoProcessingTabs = withForm({
-  defaultValues: defaultGeneralSettingsFormValues,
-  render: function Render({ form }) {
-    const filters = useStore(
-      form.store,
-      (state) => state.values.onLoadProcessing.filters,
-    );
+const AutoProcessingFilters = withFieldGroup({
+  defaultValues: defaultGeneralSettingsFormValues.onLoadProcessing.filters,
+  render: function Render({ group }) {
+    const { Section } = group;
+
+    const nuclei = Object.keys(group.state.values);
 
     return (
       <>
-        {Object.keys(filters || {}).map((nucleus) => (
-          <form.Section key={nucleus} title={`${nucleus} Filters`}>
-            <NucleusElement form={form} nucleus={nucleus} />
-          </form.Section>
+        {nuclei.map((nucleus) => (
+          <Section key={nucleus} title={`${nucleus} Filters`}>
+            <NucleusFilters form={group} fields={nucleus} />
+          </Section>
         ))}
       </>
     );
   },
 });
 
-const NucleusElement = withForm({
-  defaultValues: defaultGeneralSettingsFormValues,
-  props: {
-    nucleus: '',
-  },
-  render: function Render({ form, nucleus }) {
-    const elements = useStore(
-      form.store,
-      (state) => state.values.onLoadProcessing.filters?.[nucleus],
-    );
+const defaultValuesNucleus: z.input<typeof filtersValidation> = [
+  { name: 'apodization', enabled: true },
+];
+const NucleusFilters = withFieldGroup({
+  defaultValues: defaultValuesNucleus,
+  render: function Render({ group }) {
+    const { AppField } = group;
 
-    return (
-      <div>
-        {Object.keys(elements ?? {}).map((key) => {
-          return (
-            <form.AppField
-              key={key}
-              name={`onLoadProcessing.filters.${nucleus}.${key as FilterEntry['name']}`}
-            >
-              {(field) => (
-                <field.Checkbox
-                  label={getFilterLabel(key as FilterEntry['name'])}
-                />
-              )}
-            </form.AppField>
-          );
-        })}
-      </div>
-    );
+    const filters = group.state.values;
+    if (!filters) return null;
+
+    return filters.map(({ name }, index) => {
+      return (
+        <AppField key={name} name={`[${index}].enabled`}>
+          {(field) => <field.Checkbox label={getFilterLabel(name)} />}
+        </AppField>
+      );
+    });
   },
 });

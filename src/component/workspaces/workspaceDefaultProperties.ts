@@ -5,7 +5,9 @@ import { color2D } from '../../data/data2d/Spectrum2D/get2DColor.js';
 
 const defaultTextStyle: TextStyle = {};
 
-export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
+type RequiredWorkspacePreferences = Required<WorkspacePreferences>;
+
+export const workspaceDefaultProperties: RequiredWorkspacePreferences = {
   display: {
     general: {
       hideGeneralSettings: false,
@@ -16,7 +18,7 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
       hideMaximize: false,
       hideWorkspaces: false,
       hidePanelsBar: false,
-    },
+    } satisfies Required<RequiredWorkspacePreferences['display']['general']>,
 
     panels: {
       spectraPanel: { display: false, visible: false, open: false },
@@ -37,7 +39,9 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
       predictionPanel: { display: false, visible: false, open: false },
       summaryPanel: { display: false, visible: false, open: false },
       simulationPanel: { display: false, visible: false, open: false },
-    },
+      matrixGenerationPanel: { display: false, visible: false, open: false },
+    } satisfies Required<RequiredWorkspacePreferences['display']['panels']>,
+
     toolBarButtons: {
       baselineCorrection: false,
       exclusionZones: false,
@@ -67,8 +71,10 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
       zeroFillingDimension1: false,
       zeroFillingDimension2: false,
       phaseCorrectionTwoDimensions: false,
-    },
-  },
+    } satisfies Required<
+      RequiredWorkspacePreferences['display']['toolBarButtons']
+    >,
+  } satisfies Required<WorkspacePreferences['display']>,
 
   axis: {
     secondaryTicks: { enabled: true },
@@ -124,7 +130,8 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
     popupLoggingLevel: 'error',
     invert: true,
     invertScroll: false,
-  },
+  } satisfies Required<WorkspacePreferences['general']>,
+
   nuclei: [
     { nucleus: '1H', ppmFormat: '0.00', hzFormat: '0.00' },
     { nucleus: '13C', ppmFormat: '0.00', hzFormat: '0.00' },
@@ -198,54 +205,44 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
       '1H': [
         {
           name: Filters1D.digitalFilter.name,
-
           enabled: true,
         },
         {
           name: Filters1D.apodization.name,
-
           enabled: false,
         },
         {
           name: Filters1D.zeroFilling.name,
-
           enabled: true,
         },
         {
           name: Filters1D.fft.name,
-
           enabled: true,
         },
         {
           name: Filters1D.phaseCorrection.name,
-
           enabled: true,
         },
       ],
       '13C': [
         {
           name: Filters1D.digitalFilter.name,
-
           enabled: true,
         },
         {
           name: Filters1D.apodization.name,
-
           enabled: true,
         },
         {
           name: Filters1D.zeroFilling.name,
-
           enabled: true,
         },
         {
           name: Filters1D.fft.name,
-
           enabled: true,
         },
         {
           name: Filters1D.phaseCorrection.name,
-
           enabled: true,
         },
       ],

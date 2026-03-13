@@ -31,7 +31,7 @@ const resetTooltipProps = {
   compact: true,
 };
 function ResetWorkspaceButton(props: WorkspacesProps) {
-  const { isPristine, reset } = props;
+  const { reset, formValues } = props;
   const {
     current,
     workspace: { current: currentName },
@@ -39,12 +39,11 @@ function ResetWorkspaceButton(props: WorkspacesProps) {
   } = usePreferences();
 
   const isResetDisabled = useMemo(() => {
-    if (!isPristine) return false;
-
+    const currentValues = formValueToWorkspace(formValues, current);
     const original = getPreferencesByWorkspace(currentName, originalWorkspaces);
 
-    return isEqualLodash(current, original);
-  }, [current, currentName, isPristine, originalWorkspaces]);
+    return isEqualLodash(currentValues, original);
+  }, [current, currentName, formValues, originalWorkspaces]);
 
   function handleReset() {
     const workSpaceDisplayPreferences = getPreferencesByWorkspace(
