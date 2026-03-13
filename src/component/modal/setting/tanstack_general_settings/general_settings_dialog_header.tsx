@@ -13,7 +13,10 @@ export const GeneralSettingsDialogHeader = withForm({
   render: function GeneralSettingsDialogHeader({ form }) {
     const { reset, store } = form;
     const formValues = useStore(store, (state) => state.values);
-    const isPristine = useStore(store, (state) => state.isPristine);
+
+    // https://tanstack.com/form/latest/docs/framework/vue/guides/basic-concepts#understanding-isdirty-in-different-libraries
+    // use non-persistent pristine
+    const isPristine = useStore(store, (state) => state.isDefaultValue);
 
     return (
       <DialogHeader className={Classes.DIALOG_HEADER}>

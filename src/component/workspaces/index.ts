@@ -14,4 +14,4 @@ export default {
   assignment,
   embedded,
   simulation,
-};
+} as const;
