@@ -26,7 +26,7 @@ import { useWorkspaceAction } from '../hooks/useWorkspaceAction.js';
 import { LogsHistoryModal } from '../modal/LogsHistoryModal.js';
 import AboutUsModal from '../modal/aboutUs/AboutUsModal.js';
 import WorkspaceItem from '../modal/setting/WorkspaceItem.js';
-import GeneralSettingsModal from '../modal/setting/general_settings.js';
+import { GeneralSettingsToolbarItem } from '../modal/setting/general_settings.js';
 import { options } from '../toolbar/ToolTypes.js';
 import { renderCoreSlot } from '../utility/renderCoreSlot.js';
 
@@ -183,7 +183,7 @@ function HeaderInner(props: HeaderInnerProps) {
               />
 
               {!hideGeneralSettings && (
-                <GeneralSettingsModal height={height / 2} />
+                <GeneralSettingsToolbarItem height={height / 2} />
               )}
 
               {!fullscreen.isFullScreen && !general?.hideMaximize && (
