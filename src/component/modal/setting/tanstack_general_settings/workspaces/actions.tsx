@@ -39,10 +39,20 @@ function ResetWorkspaceButton(props: WorkspacesProps) {
   } = usePreferences();
 
   const isResetDisabled = useMemo(() => {
-    const currentValues = formValueToWorkspace(formValues, current);
-    const original = getPreferencesByWorkspace(currentName, originalWorkspaces);
+    try {
+      const currentValues = formValueToWorkspace(formValues, current);
+      const original = getPreferencesByWorkspace(
+        currentName,
+        originalWorkspaces,
+      );
 
-    return isEqualLodash(currentValues, original);
+      return isEqualLodash(currentValues, original);
+    } catch {
+      // the error should come from `formValueToWorkspace`
+      // if there is an error, it generally means the current workspace,
+      // or formValues does not match the original workspace
+      return false;
+    }
   }, [current, currentName, formValues, originalWorkspaces]);
 
   function handleReset() {
