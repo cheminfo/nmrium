@@ -2,7 +2,6 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import react from '@vitejs/plugin-react';
-import analyze from 'rollup-plugin-analyzer';
 import type { AliasOptions } from 'vite';
 import { defaultClientConditions, defaultServerConditions } from 'vite';
 import { defineConfig } from 'vitest/config';
@@ -21,30 +20,20 @@ export default () => {
 
   return defineConfig({
     base: './',
-    esbuild: {
-      jsx: 'automatic',
-      sourcemap: 'inline',
-    },
+    oxc: {},
     build: {
       sourcemap: 'inline',
-      rollupOptions: {
-        // @ts-expect-error analyzer types are wrong.
-        plugins: process.env.ANALYZE ? [analyze()] : [],
+      rolldownOptions: {
         output: {
-          manualChunks(id) {
-            if (id.includes('node_modules/openchemlib/')) {
-              return 'openchemlib';
-            }
-
-            if (id.includes('node_modules')) {
-              return 'vendor';
-            }
-
-            return undefined;
+          codeSplitting: {
+            groups: [
+              { name: 'openchemlib', test: 'node_modules/openchemlib/' },
+              { name: 'vendor', test: 'node_modules/' },
+            ],
           },
         },
       },
-      minify: process.env.NO_MINIFY ? false : 'esbuild',
+      minify: process.env.NO_MINIFY ? false : 'oxc',
     },
     plugins: [react()],
     resolve: {
