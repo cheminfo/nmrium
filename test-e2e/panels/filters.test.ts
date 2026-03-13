@@ -211,7 +211,12 @@ test('Exclusion zones', async ({ page }) => {
     await nmrium.page.getByRole('tablist').locator('text=tools').click();
 
     //enable exclusion zone tool
-    await nmrium.page.locator('td:has-text("Exclusion zones")  + td').click();
+    await nmrium.page
+      .getByRole('tabpanel')
+      .getByLabel('Exclusion zones')
+      // it seems tanstack-blueprint checkboxes have issues with `actionability`
+      // https://playwright.dev/docs/actionability
+      .check({ force: true });
 
     await nmrium.saveWorkspaceModal('test');
   });

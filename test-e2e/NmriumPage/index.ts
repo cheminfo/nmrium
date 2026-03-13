@@ -191,9 +191,9 @@ export default class NmriumPage {
     panelTitle: string,
     status: 'hidden' | 'active' | 'available',
   ) {
-    const selectLocator = this.page.locator(
-      `td:has-text("${panelTitle}")  + td`,
-    );
+    const selectLocator = this.page
+      .getByRole('tabpanel')
+      .getByLabel(panelTitle);
     await selectLocator.click();
     await this.page.getByRole('option', { name: status }).click();
   }

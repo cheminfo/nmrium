@@ -14,7 +14,7 @@ test('automatic assignment panel', async ({ page }) => {
     await nmrium.page.getByRole('tablist').locator('text=Panels').click();
 
     //change panel status to active (displays the panel in the accordion panels and the right bar )
-    await nmrium.changePanelStatus('Automatic assignment panel', 'active');
+    await nmrium.changePanelStatus('Automatic assignment', 'active');
 
     await nmrium.saveWorkspaceModal('test');
   });
