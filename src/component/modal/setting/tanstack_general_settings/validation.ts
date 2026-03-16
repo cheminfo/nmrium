@@ -47,7 +47,6 @@ export const workspaceValidation = z.object({
   axis: axisValidation,
 });
 
-// This object is used to define type not real values. Do not use it as values
 export const defaultGeneralSettingsFormValues: z.input<
   typeof workspaceValidation
 > = workspaceValidation.encode(workspaceDefaultProperties);

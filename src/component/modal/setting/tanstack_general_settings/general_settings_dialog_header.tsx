@@ -13,20 +13,11 @@ export const GeneralSettingsDialogHeader = withForm({
   render: function GeneralSettingsDialogHeader({ form }) {
     const { reset, store } = form;
     const formValues = useStore(store, (state) => state.values);
-    const isPristine = useStore(store, (state) => state.isPristine);
 
     return (
       <DialogHeader className={Classes.DIALOG_HEADER}>
-        <WorkspacePicker
-          formValues={formValues}
-          reset={reset}
-          isPristine={isPristine}
-        />
-        <WorkspaceActions
-          formValues={formValues}
-          reset={reset}
-          isPristine={isPristine}
-        />
+        <WorkspacePicker formValues={formValues} reset={reset} />
+        <WorkspaceActions formValues={formValues} reset={reset} />
 
         <FlexSeparator />
 

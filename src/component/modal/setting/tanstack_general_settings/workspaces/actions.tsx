@@ -1,4 +1,6 @@
 import { Classes } from '@blueprintjs/core';
+import isEqualLodash from 'lodash/isEqual.js';
+import { useMemo } from 'react';
 import { FaBolt, FaPaste, FaRegCopy } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
 
@@ -29,13 +31,34 @@ const resetTooltipProps = {
   compact: true,
 };
 function ResetWorkspaceButton(props: WorkspacesProps) {
-  const { isPristine, reset } = props;
-  const preferences = usePreferences();
+  const { reset, formValues } = props;
+  const {
+    current,
+    workspace: { current: currentName },
+    originalWorkspaces,
+  } = usePreferences();
+
+  const isResetDisabled = useMemo(() => {
+    try {
+      const currentValues = formValueToWorkspace(formValues, current);
+      const original = getPreferencesByWorkspace(
+        currentName,
+        originalWorkspaces,
+      );
+
+      return isEqualLodash(currentValues, original);
+    } catch {
+      // the error should come from `formValueToWorkspace`
+      // if there is an error, it generally means the current workspace,
+      // or formValues does not match the original workspace
+      return false;
+    }
+  }, [current, currentName, formValues, originalWorkspaces]);
 
   function handleReset() {
     const workSpaceDisplayPreferences = getPreferencesByWorkspace(
-      preferences.workspace.current,
-      preferences.originalWorkspaces,
+      currentName,
+      originalWorkspaces,
     );
 
     reset(unsafeWorkspaceToForm(workSpaceDisplayPreferences));
@@ -47,7 +70,7 @@ function ResetWorkspaceButton(props: WorkspacesProps) {
       intent="primary"
       onClick={handleReset}
       tooltipProps={resetTooltipProps}
-      disabled={isPristine}
+      disabled={isResetDisabled}
     >
       <FaBolt className={Classes.ICON} />
     </Button>
