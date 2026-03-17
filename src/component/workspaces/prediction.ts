@@ -11,6 +11,14 @@ export const prediction: InnerWorkspace = {
     popupLoggingLevel: 'error',
     invertScroll: false,
     invert: true,
+    molecules: {
+      labelStyle: {
+        fontSize: 15,
+        fontWeight: 'normal',
+        fontStyle: 'normal',
+        fill: '#8A3B3B',
+      },
+    },
   },
   display: {
     general: {
