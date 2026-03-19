@@ -23,11 +23,7 @@ function BaseLine() {
   const indicatorColor = useIndicatorLineColor();
 
   const innerWidth = width - left - right;
-  if (
-    ![options.phaseCorrection.id, options.baselineCorrection.id].includes(
-      selectedTool,
-    )
-  ) {
+  if (![options.phaseCorrection.id].includes(selectedTool)) {
     return null;
   }
   return (
