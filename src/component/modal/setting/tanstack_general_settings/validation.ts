@@ -23,7 +23,7 @@ import { toolBarButtonsValidation } from './validation/tools_tab_validation.ts';
  * The type for the workspace preferences is `WorkspaceWithSource`
  * The form save / apply actions merge current workspace values with form values.
  *
- * @see {import('../../reducer/preferences/preferencesReducer.ts').WorkspaceWithSource}
+ * @see {import('../../../reducer/preferences/preferencesReducer.ts').WorkspaceWithSource}
  */
 
 const displayValidation = z.object({
