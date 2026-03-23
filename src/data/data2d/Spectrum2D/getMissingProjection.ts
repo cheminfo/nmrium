@@ -16,13 +16,13 @@ export function getProjection(datum: NmrData2DFt['rr'], index: number) {
   if (index === 1) {
     for (let i = 0; i < datum.z.length; i++) {
       for (let j = 0; j < datum.z[0].length; j++) {
-        projection[i] += datum.z[i][j];
+        projection[i] += Math.abs(datum.z[i][j]);
       }
     }
   } else {
     for (let i = 0; i < datum.z[0].length; i++) {
       for (const z of datum.z) {
-        projection[i] += z[i];
+        projection[i] += Math.abs(z[i]);
       }
     }
   }
