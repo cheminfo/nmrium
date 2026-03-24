@@ -1,7 +1,7 @@
 import { Checkbox } from '@blueprintjs/core';
 import { Select } from '@blueprintjs/select';
-import type { BaselineCorrectionOptions } from '@zakodium/nmr-types';
 import { memo, useCallback } from 'react';
+import type { Control } from 'react-hook-form';
 import { Button } from 'react-science/ui';
 
 import type { ExtractFilterEntry } from '../../data/types/common/ExtractFilterEntry.js';
@@ -9,6 +9,15 @@ import ActionButtons from '../elements/ActionButtons.js';
 import Label from '../elements/Label.js';
 import { NumberInputField } from '../elements/NumberInputField.js';
 import { useFilter } from '../hooks/useFilter.js';
+import type {
+  AirplsOptions,
+  AlgorithmFieldProps,
+  BaselineAlgorithmFieldsMap,
+  BernsteinOptions,
+  CubicOptions,
+  PolynomialOptions,
+  WhittakerOptions,
+} from '../panels/filtersPanel/Filters/base/baselineCorrectionFields.ts';
 import {
   baselineCorrectionsAlgorithms,
   getBaselineData,
@@ -18,16 +27,12 @@ import {
 import { headerLabelStyle } from './Header.js';
 import { HeaderWrapper } from './HeaderWrapper.js';
 
-const BaselineAlgorithmFields: Partial<
-  Record<
-    BaselineCorrectionOptions['algorithm'],
-    React.ComponentType<AlgorithmFieldProps>
-  >
-> = {
+const BaselineAlgorithmFields: BaselineAlgorithmFieldsMap = {
   airpls: AirplsFields,
   polynomial: PolynomialFields,
   whittaker: WhittakerFields,
   bernstein: BernsteinFields,
+  cubic: CubicFields,
 };
 
 interface BaseLineCorrectionInnerPanelProps {
@@ -95,7 +100,10 @@ function BaseLineCorrectionInnerPanel({
       </Label>
 
       {AlgorithmFields && (
-        <AlgorithmFields control={control} onValueChange={submitHandler} />
+        <AlgorithmFields
+          control={control as Control<any>}
+          onValueChange={submitHandler}
+        />
       )}
 
       <Label title="Live preview" style={headerLabelStyle}>
@@ -111,12 +119,10 @@ function BaseLineCorrectionInnerPanel({
   );
 }
 
-interface AlgorithmFieldProps {
-  control: any;
-  onValueChange: () => void;
-}
-
-function AirplsFields({ control, onValueChange }: AlgorithmFieldProps) {
+function AirplsFields({
+  control,
+  onValueChange,
+}: AlgorithmFieldProps<AirplsOptions>) {
   return (
     <div style={{ display: 'flex' }}>
       <NumberInputField
@@ -145,7 +151,10 @@ function AirplsFields({ control, onValueChange }: AlgorithmFieldProps) {
   );
 }
 
-function PolynomialFields({ control, onValueChange }: AlgorithmFieldProps) {
+function PolynomialFields({
+  control,
+  onValueChange,
+}: AlgorithmFieldProps<PolynomialOptions>) {
   return (
     <NumberInputField
       labelProps={{ title: 'Degree [1 - 6]:', style: headerLabelStyle }}
@@ -160,7 +169,10 @@ function PolynomialFields({ control, onValueChange }: AlgorithmFieldProps) {
   );
 }
 
-function WhittakerFields({ control, onValueChange }: AlgorithmFieldProps) {
+function WhittakerFields({
+  control,
+  onValueChange,
+}: AlgorithmFieldProps<WhittakerOptions>) {
   return (
     <>
       <NumberInputField
@@ -183,7 +195,7 @@ function WhittakerFields({ control, onValueChange }: AlgorithmFieldProps) {
       />
       <NumberInputField
         labelProps={{ title: 'Scale:', style: headerLabelStyle }}
-        name="scale"
+        name="learningRate"
         control={control}
         min={1}
         onValueChange={onValueChange}
@@ -194,7 +206,52 @@ function WhittakerFields({ control, onValueChange }: AlgorithmFieldProps) {
   );
 }
 
-function BernsteinFields({ control, onValueChange }: AlgorithmFieldProps) {
+function CubicFields({
+  control,
+  onValueChange,
+}: AlgorithmFieldProps<CubicOptions>) {
+  return (
+    <div style={{ display: 'flex' }}>
+      <NumberInputField
+        labelProps={{ title: 'Anchors:', style: headerLabelStyle }}
+        name="numAnchors"
+        control={control}
+        min={0}
+        stepSize={1}
+        onValueChange={onValueChange}
+        style={{ width: '60px' }}
+        debounceTime={250}
+      />
+      <NumberInputField
+        labelProps={{ title: 'Noise threshold:', style: headerLabelStyle }}
+        name="noiseThreshold"
+        control={control}
+        min={0}
+        stepSize={0.1}
+        majorStepSize={0.1}
+        minorStepSize={0.1}
+        onValueChange={onValueChange}
+        style={{ width: '60px' }}
+        debounceTime={250}
+      />
+      <NumberInputField
+        labelProps={{ title: 'Max iterations:', style: headerLabelStyle }}
+        name="maxIterations"
+        control={control}
+        min={0}
+        stepSize={1}
+        onValueChange={onValueChange}
+        style={{ width: '60px' }}
+        debounceTime={250}
+      />
+    </div>
+  );
+}
+
+function BernsteinFields({
+  control,
+  onValueChange,
+}: AlgorithmFieldProps<BernsteinOptions>) {
   return (
     <>
       <NumberInputField
@@ -216,10 +273,13 @@ function BernsteinFields({ control, onValueChange }: AlgorithmFieldProps) {
         debounceTime={250}
       />
       <NumberInputField
-        labelProps={{ title: 'Tolerance:', style: headerLabelStyle }}
-        name="tolerance"
+        labelProps={{ title: 'Learning rate:', style: headerLabelStyle }}
+        name="learningRate"
         control={control}
         min={0}
+        stepSize={0.1}
+        majorStepSize={0.1}
+        minorStepSize={0.1}
         onValueChange={onValueChange}
         style={{ width: '60px' }}
         debounceTime={250}
@@ -227,24 +287,6 @@ function BernsteinFields({ control, onValueChange }: AlgorithmFieldProps) {
       <NumberInputField
         labelProps={{ title: 'Factor Std:', style: headerLabelStyle }}
         name="factorStd"
-        control={control}
-        min={0}
-        onValueChange={onValueChange}
-        style={{ width: '60px' }}
-        debounceTime={250}
-      />
-      <NumberInputField
-        labelProps={{ title: 'Learning Rate:', style: headerLabelStyle }}
-        name="learningRate"
-        control={control}
-        min={0}
-        onValueChange={onValueChange}
-        style={{ width: '60px' }}
-        debounceTime={250}
-      />
-      <NumberInputField
-        labelProps={{ title: 'Min Weight:', style: headerLabelStyle }}
-        name="minWeight"
         control={control}
         min={0}
         onValueChange={onValueChange}
