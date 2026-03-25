@@ -788,8 +788,13 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
           action,
         );
 
-      case 'RESURRECTING_SPECTRUM':
-        return DatabaseActions.handleResurrectSpectrum(draft, action);
+      case 'RESURRECTING_SPECTRUM_FROM_SIGNALS_OR_RANGES':
+        return DatabaseActions.handleResurrectSpectrumFromRangesOrSignals(
+          draft,
+          action,
+        );
+      case 'RESURRECTING_SPECTRUM_FROM_JCAMP':
+        return DatabaseActions.handleResurrectSpectrumFromJCAMP(draft, action);
       case 'TOGGLE_SIMILARITY_TREE':
         return DatabaseActions.handleToggleSimilarityTree(draft);
 

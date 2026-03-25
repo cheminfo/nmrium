@@ -1,18 +1,22 @@
 import type { Info1D } from '@zakodium/nmr-types';
-import type { Spectrum1D, Spectrum } from '@zakodium/nmrium-core';
+import type { Spectrum } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
 import type { DatabaseNMREntry } from 'nmr-processing';
 
 import {
-  get1DColor,
+  initiateDatum1D,
   isSpectrum1D,
   mapRanges,
+  updateRangesRelativeValues,
 } from '../../../data/data1d/Spectrum1D/index.js';
 import {
   resurrectSpectrumFromRanges,
   resurrectSpectrumFromSignals,
 } from '../../../data/data1d/Spectrum1D/ranges/resurrectSpectrum.js';
+import { initializeContoursLevels } from '../../../data/data2d/Spectrum2D/contours.ts';
+import { initiateDatum2D } from '../../../data/data2d/Spectrum2D/initiateDatum2D.ts';
 import { filterDatabaseInfoEntry } from '../../utility/filterDatabaseInfoEntry.js';
+import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus.ts';
 import type { State } from '../Reducer.js';
 import { setZoom } from '../helper/Zoom1DManager.js';
 import zoomHistoryManager from '../helper/ZoomHistoryManager.js';
@@ -28,106 +32,27 @@ interface BaseResurrectSpectrum {
   molfile?: string;
 }
 interface ResurrectSpectrumFromJCAMP extends BaseResurrectSpectrum {
-  source: 'jcamp';
-  spectrum: Spectrum1D;
-}
-interface ResurrectSpectrumFromRangesOrSignals extends BaseResurrectSpectrum {
-  source: 'rangesOrSignals';
+  spectra: Spectrum[];
 }
 
-type ResurrectSpectrum =
-  | ResurrectSpectrumFromJCAMP
-  | ResurrectSpectrumFromRangesOrSignals;
-
-type ResurrectSpectrumAction = ActionType<
-  'RESURRECTING_SPECTRUM',
-  ResurrectSpectrum
+type ResurrectSpectrumFromRangesOrSignalsAction = ActionType<
+  'RESURRECTING_SPECTRUM_FROM_SIGNALS_OR_RANGES',
+  BaseResurrectSpectrum
+>;
+type ResurrectSpectrumFromJCAMPAction = ActionType<
+  'RESURRECTING_SPECTRUM_FROM_JCAMP',
+  ResurrectSpectrumFromJCAMP
 >;
 
 export type DatabaseActions =
   | ActionType<'TOGGLE_SIMILARITY_TREE'>
-  | ResurrectSpectrumAction;
+  | ResurrectSpectrumFromRangesOrSignalsAction
+  | ResurrectSpectrumFromJCAMPAction;
 
-function handleResurrectSpectrum(
-  draft: Draft<State>,
-  action: ResurrectSpectrumAction,
-) {
-  const {
-    spectra: { activeTab: nucleus },
-  } = draft.view;
-  const { databaseEntry, source, molfile } = action.payload;
-  const {
-    ranges,
-    signals,
-    solvent,
-    names = [],
-    id: spectrumID,
-  } = databaseEntry;
-
-  let resurrectedSpectrum: Spectrum | null | undefined = null;
-
-  if (source === 'jcamp') {
-    const { spectrum } = action.payload;
-
-    resurrectedSpectrum = {
-      ...spectrum,
-      id: spectrumID,
-      ranges: {
-        ...spectrum.ranges,
-        values: mapRanges(ranges, spectrum),
-      },
-      display: {
-        ...spectrum.display,
-        ...get1DColor(spectrum.display, { usedColors: draft.usedColors }),
-      },
-    };
-  }
-
-  if (source === 'rangesOrSignals') {
-    const activeSpectrum = getSpectrum(draft) || draft.data[0];
-    let options: { from?: number; to?: number } = {};
-    let info: Partial<Info1D> = { solvent, name: names[0], nucleus };
-
-    if (isSpectrum1D(activeSpectrum)) {
-      const {
-        data: { x },
-        info: spectrumInfo,
-      } = activeSpectrum;
-      options = { from: x[0], to: x.at(-1) };
-      info = { ...spectrumInfo, ...info };
-    }
-
-    if (signals) {
-      resurrectedSpectrum = resurrectSpectrumFromSignals(signals, {
-        spectrumID,
-        info,
-        usedColors: draft.usedColors,
-        ...options,
-      });
-    } else if (ranges) {
-      resurrectedSpectrum = resurrectSpectrumFromRanges(ranges, {
-        spectrumID,
-        info,
-        usedColors: draft.usedColors,
-        ...options,
-      });
-    }
-  }
-
-  if (!resurrectedSpectrum) return;
-
-  const filterDatabaseEntryInfo = filterDatabaseInfoEntry(databaseEntry);
-  resurrectedSpectrum.customInfo = filterDatabaseEntryInfo;
-
-  draft.data.push(resurrectedSpectrum);
-
+function updateDomain(draft: Draft<State>) {
   setDomain(draft, { isYDomainShared: false });
-  //rescale the vertical zoom
-  setZoom(draft, { scale: 0.8, spectrumID: resurrectedSpectrum.id });
-
   changeSpectrumVerticalAlignment(draft, { verticalAlign: 'stack' });
 
-  //keep the last horizontal zoom
   const zoomHistory = zoomHistoryManager(
     draft.zoom.history,
     draft.view.spectra.activeTab,
@@ -137,9 +62,125 @@ function handleResurrectSpectrum(
     draft.xDomain = zoomValue.xDomain;
     draft.yDomain = zoomValue.yDomain;
   }
+}
+
+function handleResurrectSpectrumFromJCAMP(
+  draft: Draft<State>,
+  action: ResurrectSpectrumFromJCAMPAction,
+) {
+  const { databaseEntry, spectra, molfile } = action.payload;
+  const { ranges, id: spectrumID, nucleus } = databaseEntry;
+
+  if (spectra.length === 0) return;
+
+  const containOneSpectrum = spectra.length === 1;
+  const spectra1D = [];
 
   if (molfile) {
-    addMolecule(draft, { molfile, id: spectrumID });
+    addMolecule(draft, { molfile, id: spectra[0].id });
+  }
+
+  for (const spectrum of spectra) {
+    const filterDatabaseEntryInfo = filterDatabaseInfoEntry(databaseEntry);
+    if (isSpectrum1D(spectrum)) {
+      const spectrum1D = initiateDatum1D(spectrum, {
+        usedColors: draft.usedColors,
+      });
+
+      if (spectrum.info.nucleus === nucleus) {
+        spectrum1D.ranges.values = mapRanges(ranges, spectrum);
+        updateRangesRelativeValues(spectrum1D);
+      }
+
+      if (containOneSpectrum) {
+        spectrum1D.id = spectrumID;
+      }
+
+      draft.data.push(spectrum1D);
+      spectra1D.push(spectrum1D);
+    } else {
+      const spectrum2d = initiateDatum2D(spectrum, {
+        usedColors: draft.usedColors,
+      });
+      spectrum2d.customInfo = filterDatabaseEntryInfo;
+      draft.view.spectraContourLevels[spectrum2d.id] =
+        initializeContoursLevels(spectrum2d);
+      draft.data.push(spectrum2d);
+    }
+  }
+
+  updateDomain(draft);
+
+  const active1DSpectra = getSpectraByNucleus(
+    draft.view.spectra.activeTab,
+    spectra1D,
+  );
+
+  for (const spectrum of active1DSpectra) {
+    setZoom(draft, { scale: 0.8, spectrumID: spectrum.id });
+  }
+}
+
+function handleResurrectSpectrumFromRangesOrSignals(
+  draft: Draft<State>,
+  action: ResurrectSpectrumFromRangesOrSignalsAction,
+) {
+  const {
+    spectra: { activeTab: nucleus },
+  } = draft.view;
+  const { databaseEntry, molfile } = action.payload;
+  const {
+    ranges,
+    signals,
+    solvent,
+    names = [],
+    id: spectrumID,
+  } = databaseEntry;
+
+  let options: { from?: number; to?: number } = {};
+  let info: Partial<Info1D> = { solvent, name: names[0], nucleus };
+
+  const activeSpectrum = getSpectrum(draft) || draft.data[0];
+  if (isSpectrum1D(activeSpectrum)) {
+    const {
+      data: { x },
+      info: spectrumInfo,
+    } = activeSpectrum;
+    options = { from: x[0], to: x.at(-1) };
+    info = { ...spectrumInfo, ...info };
+  }
+
+  let resurrectedSpectrum: Spectrum | null | undefined = null;
+
+  if (signals) {
+    resurrectedSpectrum = resurrectSpectrumFromSignals(signals, {
+      spectrumID,
+      info,
+      usedColors: draft.usedColors,
+      ...options,
+    });
+  } else if (ranges) {
+    resurrectedSpectrum = resurrectSpectrumFromRanges(ranges, {
+      spectrumID,
+      info,
+      usedColors: draft.usedColors,
+      ...options,
+    });
+  }
+
+  if (!resurrectedSpectrum) return;
+
+  const filterDatabaseEntryInfo = filterDatabaseInfoEntry(databaseEntry);
+  resurrectedSpectrum.customInfo = filterDatabaseEntryInfo;
+
+  draft.data.push(resurrectedSpectrum);
+
+  updateDomain(draft);
+
+  setZoom(draft, { scale: 0.8, spectrumID: resurrectedSpectrum.id });
+
+  if (molfile) {
+    addMolecule(draft, { molfile, id: resurrectedSpectrum.id });
   }
 }
 
@@ -148,4 +189,8 @@ function handleToggleSimilarityTree(draft: Draft<State>) {
     !draft.view.spectra.showSimilarityTree;
 }
 
-export { handleResurrectSpectrum, handleToggleSimilarityTree };
+export {
+  handleResurrectSpectrumFromJCAMP,
+  handleResurrectSpectrumFromRangesOrSignals,
+  handleToggleSimilarityTree,
+};
