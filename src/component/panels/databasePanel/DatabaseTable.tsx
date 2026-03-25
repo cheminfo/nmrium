@@ -2,7 +2,7 @@ import { Classes } from '@blueprintjs/core';
 import dlv from 'dlv';
 import type { DatabaseNMREntry } from 'nmr-processing';
 import type { CSSProperties } from 'react';
-import { memo, useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 import { FaDownload, FaInfoCircle, FaMinus, FaPlus } from 'react-icons/fa';
 import { IdcodeSvgRenderer, SmilesSvgRenderer } from 'react-ocl';
@@ -11,6 +11,7 @@ import type { CellProps } from 'react-table';
 
 import type { PrepareDataResult } from '../../../data/data1d/database.js';
 import { ColumnWrapper } from '../../elements/ColumnWrapper.js';
+import type { ContextMenuItem } from '../../elements/ContextMenuBluePrint.tsx';
 import type { Column } from '../../elements/ReactTable/ReactTable.js';
 import ReactTable from '../../elements/ReactTable/ReactTable.js';
 import type { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn.js';
@@ -21,8 +22,17 @@ import { formatNumber } from '../../utility/formatNumber.js';
 
 import { DatabaseInfo } from './DatabaseInfo.js';
 
+const contextMenu: ContextMenuItem[] = [
+  {
+    text: 'Add all spectra',
+    icon: <FaPlus />,
+    data: { id: 'addAllSpectra' },
+    disabled: (data) => !data.jcampFullURL,
+  },
+];
+
 interface ToggleEvent {
-  onAdd: (row: any) => void;
+  onAdd: (row: any, isFullJcamp: boolean) => void;
   onRemove: (row: any) => void;
 }
 interface DatabaseTableProps extends ToggleEvent {
@@ -266,9 +276,25 @@ function DatabaseTable({
     columns.sort((object1, object2) => object1.index - object2.index);
     return columns;
   }, [databasePreferences, initialColumns]);
+
+  const selectContextMenuHandler = useCallback(
+    (option: any, data: any) => {
+      const { id } = option;
+
+      if (id !== 'addAllSpectra') {
+        return;
+      }
+
+      onAdd(data, true);
+    },
+    [onAdd],
+  );
+
   return (
     <ReactTable
       data={data}
+      contextMenu={contextMenu}
+      onContextMenuSelect={selectContextMenuHandler}
       columns={tableColumns}
       highlightedSource="DATABASE"
       getHighlightExtra={(row) => ({
@@ -304,7 +330,7 @@ function ToggleBtn(props: ToggleBtnProps) {
         if (isAdded) {
           onRemove(data);
         } else {
-          onAdd(data);
+          onAdd(data, false);
         }
       }}
     >
