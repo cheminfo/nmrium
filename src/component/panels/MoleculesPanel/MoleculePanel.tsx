@@ -137,6 +137,7 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
                                 height={height - 60}
                                 molecule={mol}
                                 moleculeView={moleculesView?.[mol.id] || {}}
+                                showLabel={false}
                               />
                             </div>
                           </div>
