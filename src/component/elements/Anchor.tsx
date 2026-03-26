@@ -79,8 +79,6 @@ function resolveVisuals(
 
 const AnchorItem = styled.div<{ cursor: string }>`
   position: absolute;
-  width: 50px;
-  height: 50px;
   cursor: ${({ cursor }) => cursor};
   display: flex;
   align-items: center;
