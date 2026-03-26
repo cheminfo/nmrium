@@ -2,10 +2,12 @@ import styled from '@emotion/styled';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import type { DoubleArray } from 'cheminfo-types';
 import { xFindClosestIndex } from 'ml-spectra-processing';
+import { xyBaselineCalculation } from 'nmr-processing';
 import { useMemo, useRef, useState } from 'react';
 
 import { isSpectrum1D } from '../../data/data1d/Spectrum1D/isSpectrum1D.ts';
 import { useChartData } from '../context/ChartContext.tsx';
+import { useFilterSyncOptions, useSyncedFilterOptions } from '../context/FilterSyncOptionsContext.tsx';
 import { useScaleChecked } from '../context/ScaleContext.tsx';
 import { Anchor } from '../elements/Anchor.tsx';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum.ts';
@@ -16,12 +18,6 @@ import { PathBuilder } from '../utility/PathBuilder.ts';
 interface AnchorData {
     x: number;
     id: string;
-}
-
-interface AnchorsProps {
-    spectrum: Spectrum1D;
-    initialAnchors: AnchorData[];
-    onAnchorsChange: (anchors: AnchorData[]) => void;
 }
 
 const SVGWrapper = styled.svg`
@@ -44,43 +40,64 @@ const Container = styled.div`
   pointer-events: none;
 `;
 
-function Anchors(props: AnchorsProps) {
+export function BaselinePreview() {
+    const spectrum = useSpectrum();
+    const activeSpectrum = useActiveSpectrum();
+    const {
+        toolOptions: { selectedTool },
+    } = useChartData();
+
+    const { updateFilterOptions, sharedFilterOptions } = useFilterSyncOptions<Partial<{ anchors: Array<{ id: string, x: number }> }>>();
+
     const containerRef = useRef<HTMLDivElement>(null);
-    const { spectrum, initialAnchors, onAnchorsChange } = props;
-    const [anchors, updateAnchors] = useState(initialAnchors);
+    const [localAnchors, updateLocalAnchors] = useState<Array<{ id: string, x: number }>>([]);
     const { scaleX, scaleY, shiftY } = useScaleChecked();
 
+
+    useSyncedFilterOptions((data) => {
+        updateLocalAnchors(data.anchors || [])
+    })
+
+    if (
+        !isSpectrum1D(spectrum) ||
+        selectedTool !== 'baselineCorrection' ||
+        !activeSpectrum
+    ) { return; }
+
+
+
+
     function handleDragMove(id: string, newX: number) {
-        updateAnchors((prev) =>
+        updateLocalAnchors((prev) =>
             prev.map((a) => (a.id === id ? { ...a, x: scaleX().invert(newX) } : a)),
         );
     }
 
     function handleDragEnd(id: string) {
-        updateAnchors((prev) => {
+        updateLocalAnchors((prev) => {
             const next = prev.map((a) => {
                 if (a.id !== id) return a;
                 return a;
             });
-            onAnchorsChange(next);
+
+            updateFilterOptions({ ...sharedFilterOptions, anchors: next })
             return next;
         });
     }
 
     function handleDelete(id: string) {
-        updateAnchors((prev) => {
+        updateLocalAnchors((prev) => {
             const next = prev.filter((a) => a.id !== id);
-            onAnchorsChange(next);
+            updateFilterOptions({ ...sharedFilterOptions, anchors: next })
             return next;
         });
     }
-    const activeSpectrum = useActiveSpectrum();
 
     return (
         <>
-            <SpectrumPreview spectrum={spectrum} anchors={anchors} />
+            <SpectrumPreview spectrum={spectrum} anchors={localAnchors} />
             <Container ref={containerRef}>
-                {anchors.map((anchor) => {
+                {localAnchors.map((anchor) => {
                     const { x: xPPM } = anchor;
                     const x = scaleX()(xPPM);
                     const yPPM = getMedianY(xPPM, spectrum);
@@ -95,7 +112,7 @@ function Anchors(props: AnchorsProps) {
                             onDragMove={(x) => handleDragMove(anchor.id, x)}
                             onDragEnd={() => handleDragEnd(anchor.id)}
                             onDelete={() => handleDelete(anchor.id)}
-                            anchorStyle={{ size: 10 }}
+                            anchorStyle={{ size: 10, hoverStroke: "red", dragStroke: "darkgreen", guideColor: "red", guideDragColor: "darkgreen" }}
                         />
                     );
                 })}
@@ -104,50 +121,7 @@ function Anchors(props: AnchorsProps) {
     );
 }
 
-const INITIAL_ANCHORS = [
-    {
-        id: 'a1',
-        x: 1,
-    },
-    { id: 'a2', x: 5 },
-    { id: 'a3', x: 8 },
-    { id: 'a4', x: 7 },
-];
-
-export function BaselinePreview() {
-    const [globalAnchors, setGlobalAnchors] = useState(INITIAL_ANCHORS);
-    const spectrum = useSpectrum();
-    const activeSpectrum = useActiveSpectrum();
-    const {
-        toolOptions: { selectedTool },
-    } = useChartData();
-
-    function handleGlobalChange(updated: any) {
-        setGlobalAnchors(updated);
-    }
-
-    if (
-        !isSpectrum1D(spectrum) ||
-        selectedTool !== 'baselineCorrection' ||
-        !activeSpectrum
-    ) { return; }
-    /**
-     *  TODO: Apply the baseline correction on the fly and pass the anchors along with the newly processed spectrum,
-     *  where the y-value of each anchor is also calculated on the fly.
-     *  This removes the need to store the y-value in the filter anchors.
-     *  Preview the spectrum after applying the baseline correction method
-     */
-
-    return (
-        <Anchors
-            spectrum={spectrum}
-            initialAnchors={globalAnchors}
-            onAnchorsChange={handleGlobalChange}
-        />
-    );
-}
-
-function getMedianY(x: number, spectrum: Spectrum1D, windowSize = 20): number {
+function getMedianY(x: number, spectrum: Spectrum1D, windowSize = 21): number {
     const { x: xValues, re: yValues } = spectrum.data;
 
     const centerIndex = xFindClosestIndex(xValues, x);
@@ -175,38 +149,16 @@ function getMedian(values: DoubleArray): number {
     return (sorted[mid - 1] + sorted[mid]) / 2;
 }
 
-function generatePreviewData(
-    spectrum: Spectrum1D,
-    anchors: AnchorData[],
-): { x: Float64Array; y: Float64Array } {
-    const { x: xValues } = spectrum.data;
-    const length = xValues.length;
-
-    const previewX = new Float64Array(xValues);
-    const previewY = new Float64Array(length);
+function mapAnchors(spectrum: Spectrum1D,
+    anchors: AnchorData[]) {
+    const { x: dataX } = spectrum.data;
 
     const sorted = anchors.toSorted((a, b) => a.x - b.x);
+    const x = sorted.map((a) => xFindClosestIndex(dataX, a.x, { sorted: true }));
+    const y = sorted.map((a) => getMedianY(a.x, spectrum));
 
-    if (sorted.length < 2) return { x: previewX, y: previewY };
-
-    const mappedAnchors = sorted.map((a) => ({
-        index: xFindClosestIndex(xValues, a.x),
-        y: getMedianY(a.x, spectrum),
-    }));
-
-    for (let p = 0; p < mappedAnchors.length - 1; p++) {
-        const { index, y: fromY } = mappedAnchors[p];
-        const { index: nextIndex, y: toY } = mappedAnchors[p + 1];
-        const span = nextIndex - index;
-
-        for (let i = index; i <= nextIndex; i++) {
-            const t = span === 0 ? 0 : (i - index) / span;
-            previewY[i] = fromY + t * (toY - fromY);
-        }
-    }
-    return { x: previewX, y: previewY };
+    return { x, y }
 }
-
 interface SpectrumPreviewProps {
     spectrum: Spectrum1D;
     anchors: AnchorData[];
@@ -216,30 +168,43 @@ function SpectrumPreview({ spectrum, anchors }: SpectrumPreviewProps) {
     const { scaleX, scaleY, shiftY } = useScaleChecked();
     const activeSpectrum = useActiveSpectrum();
     const indicatorColor = useIndicatorLineColor();
+    const { sharedFilterOptions } = useFilterSyncOptions();
+
 
     const paths = useMemo(() => {
-        const data = generatePreviewData(spectrum, anchors);
+        const { x } = spectrum.data;
+
+        let y: Float64Array = new Float64Array(x.length);
+
+        if (sharedFilterOptions && anchors.length > 1) {
+            const { re } = spectrum.data;
+            const mappedAnchors = mapAnchors(spectrum, anchors);
+            y = xyBaselineCalculation({ x, y: re }, { algorithm: "cubic", anchors: mappedAnchors }) as Float64Array;
+
+        }
+
+
         const _scaleX = scaleX();
         const _scaleY = scaleY(spectrum.id);
 
         const pathBuilder = new PathBuilder();
 
-        if (!data.x || !data.y || !_scaleX(0)) return '';
+        if (!x || !y || !_scaleX(0)) return '';
 
         const v = shiftY * (activeSpectrum?.index || 0);
 
-        const firstX = _scaleX(data.x[0]);
-        const firstY = _scaleY(data.y[0]) - v;
+        const firstX = _scaleX(x[0]);
+        const firstY = _scaleY(y[0]) - v;
         pathBuilder.moveTo(firstX, firstY);
 
-        for (let i = 1; i < data.x.length; i++) {
-            const x = _scaleX(data.x[i]);
-            const y = _scaleY(data.y[i]) - v;
-            pathBuilder.lineTo(x, y);
+        for (let i = 1; i < x.length; i++) {
+            const px = _scaleX(x[i]);
+            const py = _scaleY(y[i]) - v;
+            pathBuilder.lineTo(px, py);
         }
 
         return pathBuilder.toString();
-    }, [spectrum, anchors, scaleX, scaleY, shiftY, activeSpectrum?.index]);
+    }, [sharedFilterOptions, spectrum, anchors, scaleX, scaleY, shiftY, activeSpectrum?.index]);
     return (
         <SVGWrapper>
             <path
