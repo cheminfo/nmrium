@@ -1,6 +1,6 @@
 import type { ExportSettings } from '@zakodium/nmrium-core';
 import type { ReactNode } from 'react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { ExportOptionsModal } from './ExportOptionsModal.js';
@@ -9,8 +9,6 @@ import { RenderDetector } from './RenderDetector.js';
 import { INITIAL_BASIC_EXPORT_OPTIONS } from './utilities/getExportOptions.js';
 import { getSizeInPixel } from './utilities/getSizeInPixel.js';
 import { transferDocumentStyles } from './utilities/transferDocumentStyles.js';
-
-const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
 
 export interface BaseExportProps {
   onExportOptionsChange: (options: ExportSettings) => void;
@@ -107,25 +105,15 @@ function InnerPrintFrame(props: InnerExportFrameProps) {
   const { children, exportOptions, onExportReady, renderOptions } = props;
   const { width, height } = getSizeInPixel(exportOptions);
 
-  const frameRef = useRef<HTMLIFrameElement>(null);
-  const [content, setContent] = useState<HTMLElement>();
+  const [iframeDocument, setIframeDocument] = useState<Document>();
 
-  const load = useCallback(() => {
-    const contentWindow = frameRef.current?.contentWindow;
-    if (!contentWindow) return;
-    const document = contentWindow.document;
-
-    setContent(document.body);
-
+  function refHandler(frame: HTMLIFrameElement | null) {
+    if (!frame) return;
+    const document = frame.contentWindow?.document;
+    if (!document) return;
+    setIframeDocument(document);
     transferDocumentStyles(document);
-    return contentWindow;
-  }, []);
-
-  useEffect(() => {
-    if (!isFirefox) {
-      load();
-    }
-  }, [load]);
+  }
 
   const exportWidthInPixel = Math.round(width);
   const exportHeightInPixel = Math.round(height);
@@ -151,26 +139,18 @@ function InnerPrintFrame(props: InnerExportFrameProps) {
       exportHeight={exportHeightInPixel}
     >
       <iframe
-        ref={frameRef}
+        ref={refHandler}
         style={{
           width: 0,
           height: 0,
           border: 'none',
         }}
-        onLoad={() => {
-          if (isFirefox) {
-            load();
-          }
-        }}
       >
-        {content &&
+        {iframeDocument &&
           createPortal(
             <RenderDetector
               onRender={() => {
-                const document = frameRef.current?.contentWindow?.document;
-                if (document) {
-                  onExportReady(document.documentElement, exportOptions);
-                }
+                onExportReady(iframeDocument.documentElement, exportOptions);
               }}
               style={{
                 width: `${widthInPixel}px`,
@@ -180,7 +160,7 @@ function InnerPrintFrame(props: InnerExportFrameProps) {
             >
               {children}
             </RenderDetector>,
-            content,
+            iframeDocument.body,
           )}
       </iframe>
     </ExportSettingsProvider>
