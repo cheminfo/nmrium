@@ -1,3 +1,4 @@
+import { svgTextStyleFieldsSchema } from 'react-science/ui';
 import { z } from 'zod';
 
 import type { LoggerType } from '../../../../context/LoggerContext.js';
@@ -30,6 +31,9 @@ export const generalValidation = z.object({
   ]),
   popupLoggingLevel: z.enum(loggingLevel).optional(),
   loggingLevel: z.enum(loggingLevel).optional(),
+  molecules: z.object({
+    labelStyle: svgTextStyleFieldsSchema,
+  }),
 });
 
 export const displayGeneralValidation = z

@@ -1,5 +1,5 @@
 import { Tag } from '@blueprintjs/core';
-import { withForm } from 'react-science/ui';
+import { FieldGroupSVGTextStyleFields, withForm } from 'react-science/ui';
 
 import { LOGGER_LEVELS } from '../../../../context/LoggerContext.js';
 import type { SelectDefaultItem } from '../../../../elements/Select2.js';
@@ -86,6 +86,13 @@ export const GeneralTab = withForm({
               />
             )}
           </form.AppField>
+        </form.Section>
+        <form.Section title="Molecules">
+          <FieldGroupSVGTextStyleFields
+            form={form}
+            fields="general.molecules.labelStyle"
+            label="Label styling"
+          />
         </form.Section>
       </>
     );

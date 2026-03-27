@@ -11,6 +11,14 @@ export const simulation: InnerWorkspace = {
     popupLoggingLevel: 'error',
     invert: true,
     invertScroll: false,
+    molecules: {
+      labelStyle: {
+        fontSize: 15,
+        fontWeight: 'normal',
+        fontStyle: 'normal',
+        fill: '#8A3B3B',
+      },
+    },
   },
   display: {
     general: {

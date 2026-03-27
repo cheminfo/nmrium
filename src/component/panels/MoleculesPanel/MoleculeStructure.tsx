@@ -9,6 +9,7 @@ import OCLnmr from 'react-ocl-nmr';
 
 import type { StateMoleculeExtended } from '../../../data/molecules/Molecule.js';
 import { useDispatch } from '../../context/DispatchContext.js';
+import { usePreferences } from '../../context/PreferencesContext.tsx';
 import { useTopicMolecule } from '../../context/TopicMoleculeContext.tsx';
 import { useHighlightColor } from '../../hooks/useHighlightColor.js';
 
@@ -65,6 +66,7 @@ export function MoleculeStructure(props: MoleculeStructureProps) {
   } = useAtomAssignment();
   const highlightColor = useHighlightColor();
   const dispatch = useDispatch();
+  const { current } = usePreferences();
   const { onAtomHover, getAssignmentLabelByHover, getLastHoverAtom } =
     useExtractAtomAssignmentLabel();
   //TODO Temporary workaround to prevent other focused elements from being triggered by the space key
@@ -73,12 +75,15 @@ export function MoleculeStructure(props: MoleculeStructureProps) {
 
   const atomHighlightColor =
     currentDiaIDsToHighlight?.length > 0 ? '#ff000080' : highlightColor;
+  const labelStyle = current.general.molecules.labelStyle;
   const baseProps: MolfileSvgRendererProps = {
     height,
     width,
     label: (showLabel ?? moleculeView.showLabel) ? molecule.label : '',
-    labelFontSize: 15,
-    labelColor: 'rgba(138, 59, 59, 1)',
+    labelFontSize: labelStyle.fontSize ?? 15,
+    labelColor: labelStyle.fill ?? 'rgba(138, 59, 59, 1)',
+    labelFontStyle: labelStyle.fontStyle ?? 'normal',
+    labelFontWeight: labelStyle.fontWeight ?? 'normal',
     molfile: molecule.molfile,
     atomHighlightColor,
     atomHighlightOpacity: 1,

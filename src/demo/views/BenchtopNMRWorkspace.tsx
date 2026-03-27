@@ -123,6 +123,14 @@ const customWorkspaces: CustomWorkspaces = {
       popupLoggingLevel: 'error',
       invert: false,
       invertScroll: false,
+      molecules: {
+        labelStyle: {
+          fontSize: 15,
+          fontWeight: 'normal',
+          fontStyle: 'normal',
+          fill: '#8A3B3B',
+        },
+      },
     },
     nuclei: [
       {
