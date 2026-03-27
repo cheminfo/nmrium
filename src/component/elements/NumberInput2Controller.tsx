@@ -4,7 +4,7 @@ import { Controller } from 'react-hook-form';
 import type { NumberInput2Props } from './NumberInput2.js';
 import { NumberInput2 } from './NumberInput2.js';
 
-interface NumberInput2ControllerProps<
+export interface NumberInput2ControllerProps<
   TFieldValues extends FieldValues = FieldValues,
 >
   extends

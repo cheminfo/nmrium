@@ -1,14 +1,25 @@
 import { Button, Switch } from '@blueprintjs/core';
 import { Select } from '@blueprintjs/select';
+import type { BaselineCorrectionOptions } from '@zakodium/nmr-types';
+import type { Control } from 'react-hook-form';
 
 import type { ExtractFilterEntry } from '../../../../data/types/common/ExtractFilterEntry.js';
 import Label from '../../../elements/Label.js';
-import { NumberInput2Controller } from '../../../elements/NumberInput2Controller.js';
+import { NumberInputField } from '../../../elements/NumberInputField.js';
 import { ReadOnly } from '../../../elements/ReadOnly.js';
 import { Sections } from '../../../elements/Sections.js';
 
 import { FilterActionButtons } from './FilterActionButtons.js';
 import { HeaderContainer, StickyHeader } from './InnerFilterHeader.js';
+import type {
+  AirplsOptions,
+  AlgorithmFieldProps,
+  BaselineAlgorithmFieldsMap,
+  BernsteinOptions,
+  CubicOptions,
+  PolynomialOptions,
+  WhittakerOptions,
+} from './base/baselineCorrectionFields.ts';
 import {
   baselineCorrectionsAlgorithms,
   getBaselineData,
@@ -18,6 +29,13 @@ import {
 import type { BaseFilterOptionsPanelProps } from './index.js';
 import { formLabelStyle } from './index.js';
 
+const BaselineAlgorithmFields: BaselineAlgorithmFieldsMap = {
+  airpls: AirplsFields,
+  polynomial: PolynomialFields,
+  whittaker: WhittakerFields,
+  bernstein: BernsteinFields,
+  cubic: CubicFields,
+};
 export default function BaseLineCorrectionOptionsPanel(
   props: BaseFilterOptionsPanelProps<ExtractFilterEntry<'baselineCorrection'>>,
 ) {
@@ -52,9 +70,24 @@ export default function BaseLineCorrectionOptionsPanel(
     register('livePreview');
 
   const disabledAction =
-    filter.value &&
+    !!filter.value &&
     !isDirty &&
-    filter.value?.algorithm === getValues()?.algorithm;
+    filter.value.algorithm === getValues().algorithm;
+
+  const AlgorithmFields = algorithm?.value
+    ? BaselineAlgorithmFields[algorithm.value]
+    : null;
+
+  function handleAlgorithmSelect(item: {
+    value: BaselineCorrectionOptions['algorithm'];
+    label: string;
+  }) {
+    onAlgorithmChange(item);
+    const { values } = getBaselineData(item.value, props.filter?.value || {});
+    reset(values);
+    setTimeout(submitHandler, 0);
+  }
+
   return (
     <ReadOnly enabled={!enableEdit} onClick={onEditStart}>
       {enableEdit && (
@@ -86,17 +119,7 @@ export default function BaseLineCorrectionOptionsPanel(
               items={baselineCorrectionsAlgorithms}
               filterable={false}
               itemsEqual="value"
-              onItemSelect={(item) => {
-                onAlgorithmChange(item);
-                const { values } = getBaselineData(
-                  item.value,
-                  props?.filter?.value || {},
-                );
-                reset(values);
-                setTimeout(() => {
-                  submitHandler();
-                }, 0);
-              }}
+              onItemSelect={handleAlgorithmSelect}
               fill
               {...defaultAlgorithmSelectProps}
             >
@@ -107,61 +130,249 @@ export default function BaseLineCorrectionOptionsPanel(
               />
             </Select>
           </Label>
-
-          {algorithm?.value === 'airpls' && (
-            <>
-              <Label title="Max iterations:" style={formLabelStyle}>
-                <NumberInput2Controller
-                  control={control}
-                  name="maxIterations"
-                  min={0}
-                  stepSize={1}
-                  debounceTime={250}
-                  onValueChange={() => {
-                    submitHandler();
-                  }}
-                  fill
-                />
-              </Label>
-              <Label title="Tolerance:" style={formLabelStyle}>
-                <NumberInput2Controller
-                  control={control}
-                  name="tolerance"
-                  min={0}
-                  stepSize={0.001}
-                  majorStepSize={0.001}
-                  minorStepSize={0.001}
-                  debounceTime={250}
-                  onValueChange={() => {
-                    submitHandler();
-                  }}
-                  fill
-                />
-              </Label>
-            </>
-          )}
-
-          {algorithm?.value === 'polynomial' && (
-            <Label
-              title="Degree [1 - 6]:"
-              shortTitle="Degree:"
-              style={formLabelStyle}
-            >
-              <NumberInput2Controller
-                control={control}
-                name="degree"
-                min={1}
-                max={6}
-                debounceTime={250}
-                onValueChange={() => {
-                  submitHandler();
-                }}
-                fill
-              />
-            </Label>
+          {AlgorithmFields && (
+            <AlgorithmFields
+              control={control as Control<any>}
+              onValueChange={submitHandler}
+            />
           )}
         </div>
       </Sections.Body>
     </ReadOnly>
+  );
+}
+function AirplsFields({
+  control,
+  onValueChange,
+}: AlgorithmFieldProps<AirplsOptions>) {
+  return (
+    <>
+      <NumberInputField
+        labelProps={{ title: 'Max iterations:', style: formLabelStyle }}
+        name="maxIterations"
+        control={control}
+        min={1}
+        onValueChange={onValueChange}
+        fill
+        debounceTime={250}
+      />
+      <NumberInputField
+        labelProps={{ title: 'Tolerance:', style: formLabelStyle }}
+        name="tolerance"
+        control={control}
+        min={0}
+        stepSize={0.001}
+        majorStepSize={0.001}
+        minorStepSize={0.001}
+        onValueChange={onValueChange}
+        fill
+        debounceTime={250}
+      />
+    </>
+  );
+}
+
+function PolynomialFields({
+  control,
+  onValueChange,
+}: AlgorithmFieldProps<PolynomialOptions>) {
+  return (
+    <NumberInputField
+      labelProps={{
+        title: 'Degree [1 - 6]:',
+        shortTitle: 'Degree:',
+        style: formLabelStyle,
+      }}
+      name="degree"
+      control={control}
+      min={1}
+      max={6}
+      onValueChange={onValueChange}
+      fill
+      debounceTime={250}
+    />
+  );
+}
+
+function WhittakerFields({
+  control,
+  onValueChange,
+}: AlgorithmFieldProps<WhittakerOptions>) {
+  return (
+    <>
+      <NumberInputField
+        labelProps={{ title: 'Max iterations:', style: formLabelStyle }}
+        name="maxIterations"
+        control={control}
+        min={1}
+        onValueChange={onValueChange}
+        fill
+        debounceTime={250}
+      />
+      <NumberInputField
+        labelProps={{ title: 'Lambda:', style: formLabelStyle }}
+        name="lambda"
+        control={control}
+        min={1}
+        onValueChange={onValueChange}
+        fill
+        debounceTime={250}
+      />
+      <NumberInputField
+        labelProps={{ title: 'Learning rate:', style: formLabelStyle }}
+        name="learningRate"
+        control={control}
+        min={1}
+        onValueChange={onValueChange}
+        fill
+        debounceTime={250}
+      />
+      <NumberInputField
+        labelProps={{ title: 'Tolerance:', style: formLabelStyle }}
+        name="tolerance"
+        control={control}
+        min={0}
+        stepSize={0.001}
+        majorStepSize={0.001}
+        minorStepSize={0.001}
+        onValueChange={onValueChange}
+        fill
+        debounceTime={250}
+      />
+    </>
+  );
+}
+
+function BernsteinFields({
+  control,
+  onValueChange,
+}: AlgorithmFieldProps<BernsteinOptions>) {
+  return (
+    <>
+      <NumberInputField
+        labelProps={{ title: 'Degree:', style: formLabelStyle }}
+        name="degree"
+        control={control}
+        min={1}
+        onValueChange={onValueChange}
+        fill
+        debounceTime={250}
+      />
+      <NumberInputField
+        labelProps={{ title: 'Max iterations:', style: formLabelStyle }}
+        name="maxIterations"
+        control={control}
+        min={1}
+        onValueChange={onValueChange}
+        fill
+        debounceTime={250}
+      />
+      <NumberInputField
+        labelProps={{ title: 'Learning rate:', style: formLabelStyle }}
+        name="learningRate"
+        control={control}
+        min={0}
+        stepSize={0.1}
+        majorStepSize={0.1}
+        minorStepSize={0.1}
+        onValueChange={onValueChange}
+        fill
+        debounceTime={250}
+      />
+      <NumberInputField
+        labelProps={{ title: 'Factor Std:', style: formLabelStyle }}
+        name="factorStd"
+        control={control}
+        min={0}
+        onValueChange={onValueChange}
+        fill
+        debounceTime={250}
+      />
+      <NumberInputField
+        labelProps={{ title: 'Tolerance:', style: formLabelStyle }}
+        name="tolerance"
+        control={control}
+        min={0}
+        stepSize={0.001}
+        majorStepSize={0.001}
+        minorStepSize={0.001}
+        onValueChange={onValueChange}
+        fill
+        debounceTime={250}
+      />
+    </>
+  );
+}
+function CubicFields({
+  control,
+  onValueChange,
+}: AlgorithmFieldProps<CubicOptions>) {
+  return (
+    <>
+      <NumberInputField
+        labelProps={{ title: 'Anchors:', style: formLabelStyle }}
+        name="numAnchors"
+        control={control}
+        min={0}
+        stepSize={1}
+        onValueChange={onValueChange}
+        fill
+        debounceTime={250}
+      />
+      <NumberInputField
+        labelProps={{ title: 'Noise threshold:', style: formLabelStyle }}
+        name="noiseThreshold"
+        control={control}
+        min={0}
+        stepSize={0.1}
+        majorStepSize={0.1}
+        minorStepSize={0.1}
+        onValueChange={onValueChange}
+        fill
+        debounceTime={250}
+      />
+      <NumberInputField
+        labelProps={{ title: 'Max iterations:', style: formLabelStyle }}
+        name="maxIterations"
+        control={control}
+        min={0}
+        stepSize={1}
+        onValueChange={onValueChange}
+        fill
+        debounceTime={250}
+      />
+      <NumberInputField
+        labelProps={{ title: 'Tolerance:', style: formLabelStyle }}
+        name="tolerance"
+        control={control}
+        min={0}
+        stepSize={0.001}
+        majorStepSize={0.001}
+        minorStepSize={0.001}
+        onValueChange={onValueChange}
+        fill
+        debounceTime={250}
+      />
+      <NumberInputField
+        labelProps={{ title: 'Noise level:', style: formLabelStyle }}
+        name="noiseLevel"
+        control={control}
+        min={0}
+        stepSize={1}
+        onValueChange={onValueChange}
+        fill
+        debounceTime={250}
+      />
+      <NumberInputField
+        labelProps={{ title: 'Noise percentile:', style: formLabelStyle }}
+        name="noisePercentile"
+        control={control}
+        min={0}
+        stepSize={1}
+        onValueChange={onValueChange}
+        fill
+        debounceTime={250}
+      />
+    </>
   );
 }
