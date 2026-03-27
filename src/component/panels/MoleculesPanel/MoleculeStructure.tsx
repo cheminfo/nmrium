@@ -20,7 +20,7 @@ interface MoleculeStructureProps extends Pick<OCLnmrProps, 'width' | 'height'> {
   moleculeView: MoleculeView;
   renderAsSVG?: boolean;
   molecule: StateMoleculeExtended;
-  showMoleculeLabel?: boolean;
+  showLabel?: boolean;
   index?: number;
 }
 
@@ -55,7 +55,7 @@ export function MoleculeStructure(props: MoleculeStructureProps) {
     width,
     height,
     renderAsSVG = false,
-    showMoleculeLabel,
+    showLabel,
     index = 0,
   } = props;
   const {
@@ -79,7 +79,7 @@ export function MoleculeStructure(props: MoleculeStructureProps) {
   const baseProps: MolfileSvgRendererProps = {
     height,
     width,
-    label: (showMoleculeLabel ?? moleculeView.showLabel) ? molecule.label : '',
+    label: (showLabel ?? moleculeView.showLabel) ? molecule.label : '',
     labelFontSize: labelStyle.fontSize ?? 15,
     labelColor: labelStyle.fill ?? 'rgba(138, 59, 59, 1)',
     labelFontStyle: labelStyle.fontStyle ?? 'normal',

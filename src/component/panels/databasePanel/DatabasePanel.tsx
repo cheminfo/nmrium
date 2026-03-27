@@ -11,7 +11,6 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useOnOff } from 'react-science/ui';
 
 import { getSum } from '../../../data/data1d/Spectrum1D/SumManager.js';
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import type {
   InitiateDatabaseResult,
   LocalDatabase,
@@ -98,6 +97,22 @@ function mapKeywordsToArray(searchKeywords: string, solvent: string) {
     values.unshift(`solvent:${solvent}`);
   }
   return values;
+}
+
+function resolveSpectraURL(
+  rowData: {
+    baseURL: string;
+    jcampURL: string;
+    jcampFullURL: string;
+  },
+  isFullJcamp: boolean,
+): URL | null {
+  const { baseURL, jcampURL, jcampFullURL } = rowData;
+  const spectraURL = isFullJcamp ? jcampFullURL : jcampURL;
+
+  if (!spectraURL) return null;
+
+  return new URL(spectraURL, baseURL);
 }
 
 function DatabasePanelInner({
@@ -285,49 +300,44 @@ function DatabasePanelInner({
 
   const core = useCore();
   const resurrectHandler = useCallback(
-    (rowData: any) => {
-      const {
-        index,
-        baseURL,
-        jcampURL: jcampRelativeURL,
-        ocl,
-        smiles,
-      } = rowData;
+    (rowData: any, isFullJcamp = false) => {
+      const { index, ocl, smiles } = rowData;
       const molfile = getMolfile({ ocl, smiles });
       const databaseEntry = result.data[index];
 
-      if (jcampRelativeURL) {
-        const url = new URL(jcampRelativeURL, baseURL);
-        setTimeout(async () => {
-          const hideLoading = toaster.showLoading({
-            message: `load jcamp in progress...`,
-          });
+      const spectraURL = resolveSpectraURL(rowData, isFullJcamp);
 
-          try {
-            const {
-              state: { data },
-            } = await core.readFromWebSource({
-              entries: [{ baseURL: url.origin, relativePath: url.pathname }],
-            });
-            const spectrum = data?.spectra?.[0] || null;
-            if (spectrum && isSpectrum1D(spectrum)) {
-              dispatch({
-                type: 'RESURRECTING_SPECTRUM',
-                payload: { source: 'jcamp', databaseEntry, spectrum, molfile },
-              });
-            }
-          } catch {
-            toaster.show({ message: 'Failed to load Jcamp', intent: 'danger' });
-          } finally {
-            hideLoading();
-          }
-        }, 0);
-      } else {
+      if (!spectraURL) {
         dispatch({
-          type: 'RESURRECTING_SPECTRUM',
-          payload: { source: 'rangesOrSignals', databaseEntry, molfile },
+          type: 'RESURRECTING_SPECTRUM_FROM_SIGNALS_OR_RANGES',
+          payload: { databaseEntry, molfile },
         });
+        return;
       }
+
+      setTimeout(async () => {
+        const hideLoading = toaster.showLoading({
+          message: `load jcamp in progress...`,
+        });
+
+        try {
+          const {
+            state: { data },
+          } = await core.readFromWebSource({
+            entries: [
+              { baseURL: spectraURL.origin, relativePath: spectraURL.pathname },
+            ],
+          });
+          dispatch({
+            type: 'RESURRECTING_SPECTRUM_FROM_JCAMP',
+            payload: { databaseEntry, spectra: data?.spectra || [], molfile },
+          });
+        } catch {
+          toaster.show({ message: 'Failed to load Jcamp', intent: 'danger' });
+        } finally {
+          hideLoading();
+        }
+      }, 0);
     },
     [core, dispatch, result.data, toaster],
   );
