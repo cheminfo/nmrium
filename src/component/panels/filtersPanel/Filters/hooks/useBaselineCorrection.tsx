@@ -93,9 +93,10 @@ export function getBaselineData(
     }
     case 'cubic': {
       const validation = Yup.object().shape({
-        noiseThreshold: Yup.number().integer().required(),
+        noiseThreshold: Yup.number().required(),
         maxIterations: Yup.number().integer().required(),
         noisePercentile: Yup.number().integer().required(),
+        noiseLevel: Yup.number().integer().required(),
         numAnchors: Yup.number().integer().required(),
         tolerance: Yup.number().required(),
       });
@@ -109,6 +110,7 @@ export function getBaselineData(
           maxIterations: 10,
           tolerance: 1e-6,
           noisePercentile: 10,
+          noiseLevel: 1,
           numAnchors: 260,
         },
       };

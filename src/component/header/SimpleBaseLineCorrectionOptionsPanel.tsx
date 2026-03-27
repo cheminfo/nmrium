@@ -194,7 +194,7 @@ function WhittakerFields({
         debounceTime={250}
       />
       <NumberInputField
-        labelProps={{ title: 'Scale:', style: headerLabelStyle }}
+        labelProps={{ title: 'Learning rate:', style: headerLabelStyle }}
         name="learningRate"
         control={control}
         min={1}
