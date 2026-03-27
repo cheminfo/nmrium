@@ -82,7 +82,6 @@ export function MoleculeStructure(props: MoleculeStructureProps) {
     label: (showMoleculeLabel ?? moleculeView.showLabel) ? molecule.label : '',
     labelFontSize: labelStyle.fontSize ?? 15,
     labelColor: labelStyle.fill ?? 'rgba(138, 59, 59, 1)',
-    // @ts-expect-error not in react-ocl yet
     labelFontStyle: labelStyle.fontStyle ?? 'normal',
     labelFontWeight: labelStyle.fontWeight ?? 'normal',
     molfile: molecule.molfile,
