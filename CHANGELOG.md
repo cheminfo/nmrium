@@ -1,5 +1,31 @@
 # Changelog
 
+## [2.1.0](https://github.com/cheminfo/nmrium/compare/v2.0.0...v2.1.0) (2026-03-27)
+
+
+### Features
+
+* add `loadFileCollection` imperative API ([#4056](https://github.com/cheminfo/nmrium/issues/4056)) ([4ae8ee3](https://github.com/cheminfo/nmrium/commit/4ae8ee34b4411ab4f1c8df4da95cb6a2e6f91be4))
+* allow to add assignment in 13C ([cc55619](https://github.com/cheminfo/nmrium/commit/cc5561988796923d4b6fc23f2372cb27ba012926))
+* delete 1D signal on backspace key press ([a19fc1f](https://github.com/cheminfo/nmrium/commit/a19fc1f1e6f41ecd2cd4a23f9b92e5aad539c000)), closes [#3991](https://github.com/cheminfo/nmrium/issues/3991)
+* display form errors in footer (and count in header) ([#4044](https://github.com/cheminfo/nmrium/issues/4044)) ([b8f5674](https://github.com/cheminfo/nmrium/commit/b8f5674af96846f95bcfc912c07945093e7ff0c5))
+* implement `MoleculesPreferences` ([#4062](https://github.com/cheminfo/nmrium/issues/4062)) ([3eb317b](https://github.com/cheminfo/nmrium/commit/3eb317bb6fa3b040cc11a32ab2027416284ef136))
+* implement axis unit picker behind experimental flag ([#4054](https://github.com/cheminfo/nmrium/issues/4054)) ([cf9f1ec](https://github.com/cheminfo/nmrium/commit/cf9f1ec373e4d1a4f06391e762090f2edaf0f527))
+* replace old settings form with the new implementation ([#4058](https://github.com/cheminfo/nmrium/issues/4058)) ([fe2f032](https://github.com/cheminfo/nmrium/commit/fe2f0321256feba5eb04163215d039a5751f0ad0))
+* resurrect all spectra from database record ([1aac7c7](https://github.com/cheminfo/nmrium/commit/1aac7c7cc14f8efe6bdad3c23818dcac9c68c63e))
+* supports axis customizations ([#4004](https://github.com/cheminfo/nmrium/issues/4004)) ([fdff7d7](https://github.com/cheminfo/nmrium/commit/fdff7d7691025486922e91f7c9a33ccdf2967aec))
+
+
+### Bug Fixes
+
+* add support for &lt;sub&gt; tag in SVG publication string rendering ([#4052](https://github.com/cheminfo/nmrium/issues/4052)) ([165b088](https://github.com/cheminfo/nmrium/commit/165b0883ce986de6a9dd6e242e8c1cdbe677859a))
+* form reset is properly applied to checkboxes ([eb51408](https://github.com/cheminfo/nmrium/commit/eb51408f5c54e84966a4b7ccc8dd386bab335a27))
+* margin for peaks label should not have max in general form ([#4038](https://github.com/cheminfo/nmrium/issues/4038)) ([3620893](https://github.com/cheminfo/nmrium/commit/3620893ca99f7f6d4577cbb0db8fc3e62b5d1598))
+* unexpected scrollbar in new workspace dialog ([#4046](https://github.com/cheminfo/nmrium/issues/4046)) ([c2f6775](https://github.com/cheminfo/nmrium/commit/c2f67752c4ae831d9924a529878717170367dc1a))
+* update contour level for 2D spectra once it is processed to FT ([0949192](https://github.com/cheminfo/nmrium/commit/094919225e1b5e7c5267c210a1e1376e9b44b848))
+* use absolute sum for 1D projections ([#4068](https://github.com/cheminfo/nmrium/issues/4068)) ([2c0adf3](https://github.com/cheminfo/nmrium/commit/2c0adf3937e16fc929762892be965c2c0862352e))
+* use ref callback to access iframe document before portal render ([1ade0fc](https://github.com/cheminfo/nmrium/commit/1ade0fcbed80a51e77e946f88189264fd9fdf05c))
+
 ## [2.0.0](https://github.com/cheminfo/nmrium/compare/v1.12.0...v2.0.0) (2026-03-05)
 
 
