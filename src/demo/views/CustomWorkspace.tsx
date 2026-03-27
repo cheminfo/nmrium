@@ -66,6 +66,14 @@ const customWorkspaces: CustomWorkspaces = {
       invert: false,
       popupLoggingLevel: 'info',
       invertScroll: false,
+      molecules: {
+        labelStyle: {
+          fontSize: 15,
+          fontWeight: 'normal',
+          fontStyle: 'normal',
+          fill: '#8A3B3B',
+        },
+      },
     },
     nuclei: [
       { nucleus: '1H', ppmFormat: '0.00', hzFormat: '0.00' },
