@@ -8,25 +8,20 @@ import * as Yup from 'yup';
 import type { ExtractFilterEntry } from '../../../../../data/types/common/ExtractFilterEntry.js';
 import { useDispatch } from '../../../../context/DispatchContext.js';
 import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsContext.js';
+import type { AlgorithmOptions } from '../base/baselineCorrectionFields.ts';
 
-export const baselineCorrectionsAlgorithms = ['airPLS', 'Polynomial'].map(
-  (val) => ({
-    label: val,
-    value: val.toLowerCase(),
-  }),
-);
+const ALGORITHM_LABELS: Record<BaselineCorrectionOptions['algorithm'], string> =
+  {
+    airpls: 'airPLS',
+    polynomial: 'Polynomial',
+    whittaker: 'Whittaker',
+    cubic: 'Cubic',
+    bernstein: 'Bernstein',
+  };
 
-interface BaseOptions {
-  algorithm: string;
-  livePreview: boolean;
-}
-interface AirplsOptions extends BaseOptions {
-  maxIterations: number;
-  tolerance: number;
-}
-interface PolynomialOptions extends BaseOptions {
-  degree: number;
-}
+export const baselineCorrectionsAlgorithms = (
+  Object.keys(ALGORITHM_LABELS) as Array<BaselineCorrectionOptions['algorithm']>
+).map((value) => ({ value, label: ALGORITHM_LABELS[value] }));
 
 function findAlgorithmItem(algorithmName: string) {
   return baselineCorrectionsAlgorithms.find(
@@ -75,6 +70,74 @@ export function getBaselineData(
         },
       };
     }
+    case 'whittaker': {
+      const validation = Yup.object().shape({
+        lambda: Yup.number().integer().required(),
+        maxIterations: Yup.number().integer().required(),
+        learningRate: Yup.number().required(),
+        tolerance: Yup.number().required(),
+      });
+
+      return {
+        resolver: yupResolver(validation),
+        values: {
+          algorithm,
+          livePreview: true,
+          lambda: 200,
+          maxIterations: 20,
+          learningRate: 0.2,
+          tolerance: 1e-3,
+          ...(baseAlgorithm === 'whittaker' ? other : {}),
+        },
+      };
+    }
+    case 'cubic': {
+      const validation = Yup.object().shape({
+        noiseThreshold: Yup.number().required(),
+        maxIterations: Yup.number().integer().required(),
+        noisePercentile: Yup.number().integer().required(),
+        noiseLevel: Yup.number().integer().required(),
+        numAnchors: Yup.number().integer().required(),
+        tolerance: Yup.number().required(),
+      });
+
+      return {
+        resolver: yupResolver(validation),
+        values: {
+          algorithm,
+          livePreview: true,
+          noiseThreshold: 1,
+          maxIterations: 10,
+          tolerance: 1e-6,
+          noisePercentile: 10,
+          noiseLevel: 1,
+          numAnchors: 260,
+        },
+      };
+    }
+    case 'bernstein': {
+      const validation = Yup.object().shape({
+        maxIterations: Yup.number().integer().required(),
+        tolerance: Yup.number().required(),
+        factorStd: Yup.number().integer().required(),
+        learningRate: Yup.number().required(),
+        degree: Yup.number().integer().required(),
+      });
+
+      return {
+        resolver: yupResolver(validation),
+        values: {
+          algorithm,
+          livePreview: true,
+          maxIterations: 100,
+          tolerance: 1e-6,
+          factorStd: 3,
+          learningRate: 0.3,
+          degree: 3,
+          ...(baseAlgorithm === 'bernstein' ? other : {}),
+        },
+      };
+    }
     default:
       return {
         resolver: yupResolver(
@@ -104,12 +167,11 @@ export function useBaselineCorrection(
 
   const { resolver, values } = getBaselineData(algorithm?.value, filter?.value);
 
-  const { handleSubmit, reset, ...otherFormOptions } = useForm<
-    AirplsOptions | PolynomialOptions
-  >({
-    defaultValues: values,
-    resolver: resolver as any,
-  });
+  const { handleSubmit, reset, ...otherFormOptions } =
+    useForm<AlgorithmOptions>({
+      defaultValues: values,
+      resolver: resolver as any,
+    });
 
   function syncWatch(sharedFilterOptions: any) {
     const { algorithm } = sharedFilterOptions;
