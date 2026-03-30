@@ -29,7 +29,7 @@ function Line({ data, id, display, index }: LineProps) {
 
   const paths = useMemo(() => {
     const _scaleX = scaleX();
-    const _scaleY = scaleY(id);
+    const _scaleY = scaleY({ spectrumId: id });
 
     const pathBuilder = new PathBuilder();
     if (data?.x && data?.y && _scaleX(0)) {

@@ -44,7 +44,7 @@ export default function MultiplicityTree(props: MultiplicityTreeProps) {
   if (!spectrum || !isSpectrum1D(spectrum)) return null;
   const { from, to } = range;
   const maxY = getMaxY(spectrum, { from, to });
-  const startY = scaleY(spectrum.id)(maxY) - marginBottom;
+  const startY = scaleY({ spectrumId: spectrum.id })(maxY) - marginBottom;
 
   const tree = generateTreeNodes(range, spectrum);
 

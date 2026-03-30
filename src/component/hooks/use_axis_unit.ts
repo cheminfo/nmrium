@@ -23,8 +23,10 @@ import { match } from 'ts-pattern';
 import { isSpectrum2D } from '../../data/data2d/Spectrum2D/index.ts';
 import { useChartData } from '../context/ChartContext.tsx';
 import { useDispatch } from '../context/DispatchContext.tsx';
+import { useScaleChecked } from '../context/ScaleContext.tsx';
 
 import { useActiveNucleusTab } from './useActiveNucleusTab.ts';
+import { useActiveSpectra } from './useActiveSpectra.ts';
 import useSpectrum from './useSpectrum.ts';
 import { useVisibleSpectra1D } from './use_visible_spectra_1d.ts';
 
@@ -43,15 +45,53 @@ function assertIn<V, T extends V>(value: V, values: T[]): asserts value is T {
 
 export function useHorizontalAxisUnit() {
   const spectra = useVisibleSpectra1D();
+  const activeSpectra = useActiveSpectra();
+  const firstActiveSpectrum = useMemo(() => {
+    const firstSelected = activeSpectra?.find((s) => s.selected);
+    return firstSelected
+      ? spectra.find((s) => s.id === firstSelected.id)
+      : spectra[0];
+  }, [activeSpectra, spectra]);
+  const { scaleX } = useScaleChecked();
+
   const { nucleus, nucleusUnits } = useAxisUnit1D();
   const dispatch = useDispatch();
 
-  const mode: keyof Nucleus1DUnit['horizontal'] = spectra[0]?.info.isFt
+  const mode: keyof Nucleus1DUnit['horizontal'] = firstActiveSpectrum?.info.isFt
     ? 'ft'
     : 'fid';
   const unit: AxisUnit1DFid | AxisUnit1DFt = nucleusUnits.horizontal[mode];
   const allowedUnits: AxisUnit1DFid[] | AxisUnit1DFt[] =
     mode === 'ft' ? axisUnits1DFt : axisUnits1DFid;
+
+  const domain = useMemo(() => {
+    function getPtDomain() {
+      return [0, firstActiveSpectrum?.data.x.length ?? 0];
+    }
+
+    return match(mode)
+      .with('fid', () =>
+        match(unit)
+          .with('s', () => undefined)
+          .with('pt', getPtDomain)
+          .run(),
+      )
+      .with('ft', () =>
+        match(unit)
+          .with('ppm', () => undefined)
+          .with('pt', getPtDomain)
+          .with('hz', () => {
+            if (!firstActiveSpectrum) return undefined;
+
+            const scale = scaleX();
+            return scale
+              .domain()
+              .map((v) => v * firstActiveSpectrum.info.originFrequency);
+          })
+          .run(),
+      )
+      .exhaustive();
+  }, [firstActiveSpectrum, mode, scaleX, unit]);
 
   const setUnit = useCallback(
     (unit: AxisUnit) => {
@@ -75,7 +115,7 @@ export function useHorizontalAxisUnit() {
     [dispatch, mode, nucleus],
   );
 
-  return { mode, unit, allowedUnits, setUnit };
+  return { mode, unit, allowedUnits, setUnit, domain };
 }
 
 export function useDirectAxisUnit() {

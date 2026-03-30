@@ -2,6 +2,7 @@ import { scaleLinear } from 'd3-scale';
 import { useCallback } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';
+import type { ScaleLinearNumberOptions } from '../../context/ScaleContext.tsx';
 import type {
   Domains,
   Margin,
@@ -16,7 +17,7 @@ interface ScaleInsetXOptions {
   xDomain: number[];
   mode: SpectraDirection;
 }
-interface ScaleXOptions extends ScaleInsetXOptions {
+interface ScaleXOptions extends ScaleInsetXOptions, ScaleLinearNumberOptions {
   xDomains: Domains;
 }
 
@@ -27,7 +28,7 @@ interface InsetYScaleOptions {
   spectraBottomMargin: number;
 }
 
-interface ScaleYOptions extends InsetYScaleOptions {
+interface ScaleYOptions extends InsetYScaleOptions, ScaleLinearNumberOptions {
   yDomains: Domains;
   verticalAlign: VerticalAlignment;
 }
@@ -47,22 +48,23 @@ function getInsetYScale(options: InsetYScaleOptions) {
   return scaleLinear(yDomain, [innerHeight, margin.top]);
 }
 
-function getXScale(
-  options: ScaleXOptions,
-  spectrumId: number | null | string = null,
-) {
-  const { width, margin, xDomains, xDomain, mode } = options;
+function getXScale(options: ScaleXOptions) {
+  const { width, margin, xDomains, xDomain, mode, spectrumId, customDomain } =
+    options;
+
   const range =
     mode === 'RTL'
       ? [width - margin.right, margin.left]
       : [margin.left, width - margin.right];
-  return scaleLinear(spectrumId ? xDomains[spectrumId] : xDomain, range);
+
+  let domain = spectrumId ? xDomains[spectrumId] : xDomain;
+  if (customDomain) {
+    domain = customDomain;
+  }
+  return scaleLinear(domain, range);
 }
 
-function getYScale(
-  options: ScaleYOptions,
-  spectrumId: number | null | string = null,
-) {
+function getYScale(options: ScaleYOptions) {
   const {
     height,
     margin,
@@ -70,10 +72,15 @@ function getYScale(
     yDomain,
     yDomains,
     spectraBottomMargin = 10,
+    spectrumId = null,
+    customDomain,
   } = options;
   let domainY: number[] = yDomain;
   if (spectrumId && yDomains?.[spectrumId]) {
     domainY = yDomains[spectrumId];
+  }
+  if (customDomain) {
+    domainY = customDomain;
   }
   const [min, max] = domainY;
   let bottomShift = spectraBottomMargin;
@@ -126,7 +133,7 @@ function useScaleX() {
         return getInsetXScale({ margin, mode, width, xDomain });
       }
 
-      return getXScale({ margin, mode, width, xDomain, xDomains }, spectrumId);
+      return getXScale({ margin, mode, width, xDomain, xDomains, spectrumId });
     },
     [isInset, margin, mode, width, xDomain, xDomains],
   );

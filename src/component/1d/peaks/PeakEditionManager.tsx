@@ -93,7 +93,7 @@ export function PeakEditionProvider({ children }: Required<PropsWithChildren>) {
     }
     y = py + dy;
     if (useScaleY) {
-      y = scaleY(spectrum?.id)(py) + dy;
+      y = scaleY({ spectrumId: spectrum?.id })(py) + dy;
     }
 
     if (x + InputDimension.width > width) {

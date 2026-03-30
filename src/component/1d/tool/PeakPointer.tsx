@@ -65,7 +65,9 @@ function PeakPointer() {
   if (!closePeak) return null;
 
   const x = scaleX()(closePeak.x);
-  const y = scaleY(activeSpectrum.id)(closePeak.y) - spectrumIndex * shiftY;
+  const y =
+    scaleY({ spectrumId: activeSpectrum.id })(closePeak.y) -
+    spectrumIndex * shiftY;
 
   return (
     <div
