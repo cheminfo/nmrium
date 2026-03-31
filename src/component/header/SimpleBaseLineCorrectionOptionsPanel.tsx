@@ -5,6 +5,7 @@ import type { Control } from 'react-hook-form';
 import { Button } from 'react-science/ui';
 
 import type { ExtractFilterEntry } from '../../data/types/common/ExtractFilterEntry.js';
+import { useFilterSyncOptions } from '../context/FilterSyncOptionsContext.tsx';
 import ActionButtons from '../elements/ActionButtons.js';
 import Label from '../elements/Label.js';
 import { NumberInputField } from '../elements/NumberInputField.js';
@@ -12,6 +13,7 @@ import { useFilter } from '../hooks/useFilter.js';
 import type {
   AirplsOptions,
   AlgorithmFieldProps,
+  AlgorithmOptions,
   BaselineAlgorithmFieldsMap,
   BernsteinOptions,
   CubicOptions,
@@ -57,15 +59,18 @@ function BaseLineCorrectionInnerPanel({
 
   const { onChange: onLivePreviewChange, ...otherLivePreviewRegisterOptions } =
     register('livePreview');
+  const { sharedFilterOptions } = useFilterSyncOptions<AlgorithmOptions>();
 
   const handleAlgorithmSelect = useCallback(
     (item: (typeof baselineCorrectionsAlgorithms)[number]) => {
       onAlgorithmChange(item);
       const { values } = getBaselineData(item.value, filter?.value);
-      reset(values);
-      setTimeout(submitHandler, 0);
+      const { anchors = [] } = sharedFilterOptions || {};
+      const options = { ...values, anchors };
+      reset(options);
+      setTimeout(() => handleApplyFilter(options, 'onChange'), 0);
     },
-    [onAlgorithmChange, filter?.value, reset, submitHandler],
+    [onAlgorithmChange, filter?.value, sharedFilterOptions, reset, handleApplyFilter],
   );
 
   const handleLivePreviewChange = useCallback(
@@ -212,28 +217,6 @@ function CubicFields({
 }: AlgorithmFieldProps<CubicOptions>) {
   return (
     <div style={{ display: 'flex' }}>
-      <NumberInputField
-        labelProps={{ title: 'Anchors:', style: headerLabelStyle }}
-        name="numAnchors"
-        control={control}
-        min={0}
-        stepSize={1}
-        onValueChange={onValueChange}
-        style={{ width: '60px' }}
-        debounceTime={250}
-      />
-      <NumberInputField
-        labelProps={{ title: 'Noise threshold:', style: headerLabelStyle }}
-        name="noiseThreshold"
-        control={control}
-        min={0}
-        stepSize={0.1}
-        majorStepSize={0.1}
-        minorStepSize={0.1}
-        onValueChange={onValueChange}
-        style={{ width: '60px' }}
-        debounceTime={250}
-      />
       <NumberInputField
         labelProps={{ title: 'Max iterations:', style: headerLabelStyle }}
         name="maxIterations"
