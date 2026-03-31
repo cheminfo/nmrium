@@ -56,11 +56,21 @@ function get2DYScale(options: Scale2DYOptions, reverse = false) {
   );
 }
 
-function useScale2DY(reverse?: boolean) {
+interface UseScale2DIndirectOptions {
+  reverse?: boolean;
+  customDomain?: number[];
+}
+function useScale2DY(options?: UseScale2DIndirectOptions) {
+  const { reverse, customDomain } = options ?? {};
   const { height, margin, yDomain } = useChartData();
+
   return useMemo(
-    () => get2DYScale({ height, margin, yDomain }, reverse),
-    [height, margin, reverse, yDomain],
+    () =>
+      get2DYScale(
+        { height, margin, yDomain: customDomain ?? yDomain },
+        reverse,
+      ),
+    [customDomain, height, margin, reverse, yDomain],
   );
 }
 

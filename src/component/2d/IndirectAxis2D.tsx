@@ -38,8 +38,9 @@ function IndirectAxis2D(props: IndirectAxis2DProps) {
 
   const matchNucleus = /^[0-9]+[A-Z][a-z]?$/.test(maybeNucleusUnit);
 
-  // TODO apply `axis.unit` conversion
-  const scaleY = useScale2DY();
+  const scaleY = useScale2DY({
+    customDomain: matchNucleus ? axis?.domain : undefined,
+  });
   const isInset = useIsInset();
   const isExportingProcessStart = useCheckExportStatus();
 

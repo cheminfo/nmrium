@@ -22,8 +22,7 @@ import { assertUnreachable } from 'react-science/ui';
 import { match } from 'ts-pattern';
 
 import { isSpectrum2D } from '../../data/data2d/Spectrum2D/index.ts';
-import { isFid2DData } from '../../data/data2d/Spectrum2D/isSpectrum2D.ts';
-import { useScale2DX } from '../2d/utilities/scale.ts';
+import { useScale2DX, useScale2DY } from '../2d/utilities/scale.ts';
 import { useChartData } from '../context/ChartContext.tsx';
 import { useDispatch } from '../context/DispatchContext.tsx';
 import { useScaleChecked } from '../context/ScaleContext.tsx';
@@ -163,9 +162,8 @@ export function useDirectAxisUnit() {
           .with('ppm', () => undefined)
           .with('pt', () => ptDomain)
           .with('hz', () => {
-            return scaleX
-              .domain()
-              .map((v) => v * spectrum.info.originFrequency[directAxisIndex]);
+            const frequency = spectrum.info.originFrequency[directAxisIndex];
+            return scaleX.domain().map((v) => v * frequency);
           })
           .with('s', (unit) => {
             assertUnreachable(unit as never);
@@ -201,6 +199,7 @@ export function useIndirectAxisUnit() {
   const { nucleus, units } = useAxisUnit2D();
   const spectrum = useSpectrum();
   const dispatch = useDispatch();
+  const scaleY = useScale2DY();
 
   return useMemo(() => {
     if (!spectrum) return;
@@ -212,6 +211,36 @@ export function useIndirectAxisUnit() {
     const unit: AxisUnit2DFid | AxisUnit2DFt = units.indirect[mode];
     const allowedUnits: AxisUnit2DFid[] | AxisUnit2DFt[] =
       mode === 'ft' ? axisUnits2DFt : axisUnits2DFid;
+
+    // spectrum.info.spectrumSize = [nbColumns, nbRows];
+    // in nmrium-core formatSpectrum2D
+    const indirectAxisIndex = 1;
+    const ptDomain = [0, spectrum.info.spectrumSize[indirectAxisIndex]];
+
+    const domain = match(mode)
+      .with('fid', () =>
+        match(unit)
+          .with('s', () => undefined)
+          .with('pt', () => ptDomain)
+          .with('hz', 'ppm', (unit) => {
+            assertUnreachable(unit as never);
+          })
+          .exhaustive(),
+      )
+      .with('ft', () =>
+        match(unit)
+          .with('ppm', () => undefined)
+          .with('pt', () => ptDomain)
+          .with('hz', () => {
+            const frequency = spectrum.info.originFrequency[indirectAxisIndex];
+            return scaleY.domain().map((v) => v * frequency);
+          })
+          .with('s', (unit) => {
+            assertUnreachable(unit as never);
+          })
+          .exhaustive(),
+      )
+      .exhaustive();
 
     function setUnit(unit: AxisUnit) {
       match(mode)
@@ -232,8 +261,8 @@ export function useIndirectAxisUnit() {
         .exhaustive();
     }
 
-    return { mode, unit, allowedUnits, setUnit };
-  }, [dispatch, nucleus, spectrum, units.indirect]);
+    return { mode, unit, allowedUnits, setUnit, domain };
+  }, [dispatch, nucleus, scaleY, spectrum, units.indirect]);
 }
 
 const defaultUnit1D: Nucleus1DUnit = {
