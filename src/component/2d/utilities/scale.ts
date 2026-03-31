@@ -22,11 +22,21 @@ function get2DXScale(options: Scale2DXOptions, reverse?: boolean) {
   return scaleLinear(xDomain, range);
 }
 
-function useScale2DX(reverse?: boolean) {
+interface UseScale2DDirectOptions {
+  reverse?: boolean;
+  customDomain?: number[];
+}
+function useScale2DX(options?: UseScale2DDirectOptions) {
+  const { reverse, customDomain } = options ?? {};
   const { width, margin, xDomain, mode } = useChartData();
+
   return useMemo(
-    () => get2DXScale({ width, margin, xDomain, mode }, reverse),
-    [margin, mode, reverse, width, xDomain],
+    () =>
+      get2DXScale(
+        { width, margin, xDomain: customDomain ?? xDomain, mode },
+        reverse,
+      ),
+    [customDomain, margin, mode, reverse, width, xDomain],
   );
 }
 
