@@ -290,13 +290,13 @@ const customWorkspaces: CustomWorkspaces = {
         {
           jpath: ['info', 'experiment'],
           value: 'noesy',
-          positiveColor: 'pink',
+          positiveColor: 'deeppink',
           negativeColor: 'yellow',
         },
         {
           jpath: ['info', 'experiment'],
           value: 'roesy',
-          positiveColor: 'pink',
+          positiveColor: 'deeppink',
           negativeColor: 'yellow',
         },
         {

@@ -75,8 +75,8 @@ type ExperimentType = 'cosy' | 'roesy' | 'noesy' | 'tocsy' | 'hsqc' | 'hmbc';
 
 export const color2D: Readonly<Record<ExperimentType, Color2D>> = {
   cosy: { positiveColor: 'darkblue', negativeColor: 'blue' },
-  roesy: { positiveColor: 'pink', negativeColor: 'yellow' },
-  noesy: { positiveColor: 'pink', negativeColor: 'yellow' },
+  roesy: { positiveColor: 'deeppink', negativeColor: 'yellow' },
+  noesy: { positiveColor: 'deeppink', negativeColor: 'yellow' },
   tocsy: { positiveColor: 'green', negativeColor: 'yellow' },
   hsqc: { positiveColor: 'black', negativeColor: 'yellow' },
   hmbc: { positiveColor: 'darkviolet', negativeColor: 'yellow' },
