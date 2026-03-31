@@ -9,6 +9,12 @@ import {
   useState,
 } from 'react';
 
+import { isSpectrum1D } from '../../data/data1d/Spectrum1D/isSpectrum1D.ts';
+import { useFilter } from '../hooks/useFilter.ts';
+import useSpectrum from '../hooks/useSpectrum.ts';
+
+import { useChartData } from './ChartContext.tsx';
+
 interface FilterSyncOptionsState<T> {
   sharedFilterOptions: T | null;
   updateFilterOptions: (options: T) => void;
@@ -87,6 +93,21 @@ export function FilterSyncOptionsProvider({
   const [sharedFilterOptions, updateFilterOptions] = useState<unknown | null>(
     null,
   );
+
+
+  const filter = useFilter('baselineCorrection');
+  const { toolOptions: { selectedTool } } = useChartData();
+  const spectrum = useSpectrum();
+
+
+  useEffect(() => {
+    if (filter && selectedTool === 'baselineCorrection' && isSpectrum1D(spectrum)) {
+      const options = filter.value;
+      const anchors = Array.from(options.anchors?.x || []).map((index: number) => ({ id: crypto.randomUUID(), x: spectrum.data?.x[index] }));
+      updateFilterOptions({ ...filter.value, anchors });
+    }
+
+  }, [filter, selectedTool, spectrum])
 
   const state = useMemo(() => {
     return {

@@ -1,24 +1,26 @@
 import styled from '@emotion/styled';
+import type { BaselineCorrectionOptions } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import type { DoubleArray } from 'cheminfo-types';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { xyBaselineCalculation } from 'nmr-processing';
 import { useMemo, useRef, useState } from 'react';
 
-import { isSpectrum1D } from '../../data/data1d/Spectrum1D/isSpectrum1D.ts';
-import { useChartData } from '../context/ChartContext.tsx';
-import { useFilterSyncOptions, useSyncedFilterOptions } from '../context/FilterSyncOptionsContext.tsx';
-import { useScaleChecked } from '../context/ScaleContext.tsx';
-import { Anchor } from '../elements/Anchor.tsx';
-import { useActiveSpectrum } from '../hooks/useActiveSpectrum.ts';
-import { useIndicatorLineColor } from '../hooks/useIndicatorLineColor.ts';
-import useSpectrum from '../hooks/useSpectrum.ts';
-import { PathBuilder } from '../utility/PathBuilder.ts';
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.ts';
+import { useChartData } from '../../context/ChartContext.tsx';
+import { useFilterSyncOptions, useSyncedFilterOptions } from '../../context/FilterSyncOptionsContext.tsx';
+import { useScaleChecked } from '../../context/ScaleContext.tsx';
+import { Anchor } from '../../elements/Anchor.tsx';
+import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.ts';
+import { useIndicatorLineColor } from '../../hooks/useIndicatorLineColor.ts';
+import useSpectrum from '../../hooks/useSpectrum.ts';
+import { getBaselineValues } from '../../panels/filtersPanel/Filters/hooks/useBaselineCorrection.tsx';
+import { PathBuilder } from '../../utility/PathBuilder.ts';
 
-interface AnchorData {
-    x: number;
-    id: string;
-}
+import type { AnchorData } from './mapAnchors.ts';
+import { mapAnchors } from './mapAnchors.ts';
+
+
 
 const SVGWrapper = styled.svg`
   position: absolute;
@@ -52,10 +54,32 @@ export function BaselinePreview() {
     const containerRef = useRef<HTMLDivElement>(null);
     const [localAnchors, updateLocalAnchors] = useState<Array<{ id: string, x: number }>>([]);
     const { scaleX, scaleY, shiftY } = useScaleChecked();
+    // const filter = useFilter('baselineCorrection');
+
+
+    // useEffect(() => {
+    //     if (filter && selectedTool === 'baselineCorrection' && isSpectrum1D(spectrum)) {
+    //         const options = filter.value;
+    //         const anchors = Array.from(options.anchors?.x || []).map((index: number) => ({ id: crypto.randomUUID(), x: spectrum.data?.x[index] }));
+    //         updateLocalAnchors(anchors)
+    //     }
+    // }, [filter, selectedTool, spectrum])
+
+    // console.log(localAnchors)
 
 
     useSyncedFilterOptions((data) => {
-        updateLocalAnchors(data.anchors || [])
+        if (!data.anchors) return;
+
+        updateLocalAnchors(data.anchors);
+        // updateLocalAnchors((prevAnchors) => {
+        //     const newAnchors = data?.anchors;
+
+        //     if (!Array.isArray(newAnchors)) return prevAnchors;
+
+        //     const prevAnchorsSet = new Set(prevAnchors.map((a) => a.id));
+        //     return [...newAnchors.filter((anchor) => !prevAnchorsSet.has(anchor.id)), ...prevAnchors];
+        // });
     })
 
     if (
@@ -149,16 +173,6 @@ function getMedian(values: DoubleArray): number {
     return (sorted[mid - 1] + sorted[mid]) / 2;
 }
 
-function mapAnchors(spectrum: Spectrum1D,
-    anchors: AnchorData[]) {
-    const { x: dataX } = spectrum.data;
-
-    const sorted = anchors.toSorted((a, b) => a.x - b.x);
-    const x = sorted.map((a) => xFindClosestIndex(dataX, a.x, { sorted: true }));
-    const y = sorted.map((a) => getMedianY(a.x, spectrum));
-
-    return { x, y }
-}
 interface SpectrumPreviewProps {
     spectrum: Spectrum1D;
     anchors: AnchorData[];
@@ -168,7 +182,7 @@ function SpectrumPreview({ spectrum, anchors }: SpectrumPreviewProps) {
     const { scaleX, scaleY, shiftY } = useScaleChecked();
     const activeSpectrum = useActiveSpectrum();
     const indicatorColor = useIndicatorLineColor();
-    const { sharedFilterOptions } = useFilterSyncOptions();
+    const { sharedFilterOptions } = useFilterSyncOptions<BaselineCorrectionOptions>();
 
 
     const paths = useMemo(() => {
@@ -177,9 +191,9 @@ function SpectrumPreview({ spectrum, anchors }: SpectrumPreviewProps) {
         let y: Float64Array = new Float64Array(x.length);
 
         if (sharedFilterOptions && anchors.length > 1) {
+            const options = { ...getBaselineValues('polynomial'), ...sharedFilterOptions, anchors: mapAnchors(spectrum, anchors) }
             const { re } = spectrum.data;
-            const mappedAnchors = mapAnchors(spectrum, anchors);
-            y = xyBaselineCalculation({ x, y: re }, { algorithm: "cubic", anchors: mappedAnchors }) as Float64Array;
+            y = xyBaselineCalculation({ x, y: re }, options) as Float64Array;
 
         }
 

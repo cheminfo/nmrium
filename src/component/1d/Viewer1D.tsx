@@ -10,10 +10,10 @@ import { useChartData } from '../context/ChartContext.js';
 import { ScaleProvider } from '../context/ScaleContext.js';
 import Spinner from '../loader/Spinner.js';
 
-import { BaselinePreview } from './BaselinePreview.tsx';
 import { BrushTracker1D } from './BrushTracker1D.js';
 import FooterBanner from './FooterBanner.js';
 import { SVGContent1D } from './SVGContent1D.js';
+import { BaselinePreview } from './baseline/BaselinePreview.tsx';
 import { PeakEditionProvider } from './peaks/PeakEditionManager.js';
 import BaseLine from './tool/BaseLine.js';
 import PeakPointer from './tool/PeakPointer.js';

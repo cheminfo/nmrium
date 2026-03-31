@@ -5,6 +5,7 @@ import type { MouseEvent } from 'react';
 import type { Control } from 'react-hook-form';
 
 import type { ExtractFilterEntry } from '../../../../data/types/common/ExtractFilterEntry.js';
+import { useFilterSyncOptions } from '../../../context/FilterSyncOptionsContext.tsx';
 import Label from '../../../elements/Label.js';
 import { NumberInputField } from '../../../elements/NumberInputField.js';
 import { ReadOnly } from '../../../elements/ReadOnly.js';
@@ -15,6 +16,7 @@ import { HeaderContainer, StickyHeader } from './InnerFilterHeader.js';
 import type {
   AirplsOptions,
   AlgorithmFieldProps,
+  AlgorithmOptions,
   BaselineAlgorithmFieldsMap,
   BernsteinOptions,
   CubicOptions,
@@ -41,6 +43,7 @@ export default function BaseLineCorrectionOptionsPanel(
   props: BaseFilterOptionsPanelProps<ExtractFilterEntry<'baselineCorrection'>>,
 ) {
   const { filter, enableEdit = true, onCancel, onConfirm, onEditStart } = props;
+  const { sharedFilterOptions } = useFilterSyncOptions<AlgorithmOptions>();
 
   const {
     register,
@@ -74,19 +77,24 @@ export default function BaseLineCorrectionOptionsPanel(
     !!filter.value &&
     !isDirty &&
     filter.value.algorithm === getValues().algorithm;
-
   const AlgorithmFields = algorithm?.value
     ? BaselineAlgorithmFields[algorithm.value]
     : null;
+
+
+
+
 
   function handleAlgorithmSelect(item: {
     value: BaselineCorrectionOptions['algorithm'];
     label: string;
   }) {
     onAlgorithmChange(item);
-    const { values } = getBaselineData(item.value, filter?.value || {});
-    reset(values);
-    setTimeout(submitHandler, 0);
+    const { values } = getBaselineData(item.value, filter?.value);
+    const { anchors = [] } = sharedFilterOptions || {};
+    const options = { ...values, anchors };
+    reset(options);
+    setTimeout(() => handleApplyFilter(options, 'onChange'), 0);
   }
 
   return (
@@ -310,16 +318,6 @@ function CubicFields({
 }: AlgorithmFieldProps<CubicOptions>) {
   return (
     <>
-      <NumberInputField
-        labelProps={{ title: 'Anchors:', style: formLabelStyle }}
-        name="numAnchors"
-        control={control}
-        min={0}
-        stepSize={1}
-        onValueChange={onValueChange}
-        fill
-        debounceTime={250}
-      />
       <NumberInputField
         labelProps={{ title: 'Noise threshold:', style: formLabelStyle }}
         name="noiseThreshold"
