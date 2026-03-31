@@ -1,8 +1,11 @@
 import type { Control, FieldValues } from 'react-hook-form';
 
+import type { AnchorData } from '../../../../1d/baseline/mapAnchors.ts';
+
 interface BaseOptions {
   algorithm: string;
   livePreview: boolean;
+  anchors?: AnchorData[];
 }
 export interface AirplsOptions extends BaseOptions {
   maxIterations: number;
@@ -25,7 +28,6 @@ export interface BernsteinOptions extends BaseOptions {
   degree: number;
 }
 export interface CubicOptions extends BaseOptions {
-  numAnchors: number;
   noiseThreshold: number;
   maxIterations: number;
   tolerance: number;
