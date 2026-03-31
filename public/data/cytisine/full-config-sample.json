@@ -614,7 +614,7 @@
             "experiment"
           ],
           "value": "noesy",
-          "positiveColor": "pink",
+          "positiveColor": "deeppink",
           "negativeColor": "yellow"
         },
         {
@@ -623,7 +623,7 @@
             "experiment"
           ],
           "value": "roesy",
-          "positiveColor": "pink",
+          "positiveColor": "deeppink",
           "negativeColor": "yellow"
         },
         {
