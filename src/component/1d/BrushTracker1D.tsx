@@ -101,7 +101,10 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
   const { getModifiersKey, primaryKeyIdentifier } = useMapKeyModifiers();
   const activeSpectrum = useActiveSpectrum();
   const inset = useInsetOptions();
-  const { updateFilterOptions } = useFilterSyncOptions<Partial<{ anchors: Array<{ id: string, x: number }> }>>();
+  const { updateFilterOptions } =
+    useFilterSyncOptions<
+      Partial<{ anchors: Array<{ id: string; x: number }> }>
+    >();
 
   const [isOpenAnalysisModal, openAnalysisModal, closeAnalysisModal] =
     useOnOff(false);
@@ -480,13 +483,16 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
               });
 
               break;
-            case 'baselineCorrection':
-              {
-                updateFilterOptions((prev) => {
-                  const { anchors = [], ...other } = prev || {};
-                  return { ...other, anchors: [...anchors, { id: crypto.randomUUID(), x: xPPM }] };
-                }); break;
-              }
+            case 'baselineCorrection': {
+              updateFilterOptions((prev) => {
+                const { anchors = [], ...other } = prev || {};
+                return {
+                  ...other,
+                  anchors: [...anchors, { id: crypto.randomUUID(), x: xPPM }],
+                };
+              });
+              break;
+            }
             default:
               break;
           }
@@ -496,7 +502,18 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
           break;
       }
     },
-    [activeTab, dispatch, dispatchPreferences, getModifiersKey, primaryKeyIdentifier, scaleState, selectedTool, showStocsy, spectrum, updateFilterOptions],
+    [
+      activeTab,
+      dispatch,
+      dispatchPreferences,
+      getModifiersKey,
+      primaryKeyIdentifier,
+      scaleState,
+      selectedTool,
+      showStocsy,
+      spectrum,
+      updateFilterOptions,
+    ],
   );
 
   if (inset) {
