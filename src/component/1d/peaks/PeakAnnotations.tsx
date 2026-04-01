@@ -178,7 +178,7 @@ function PeakAnnotation({
   const { scaleX, scaleY } = useScaleChecked();
 
   const sx = scaleX()(x);
-  const sy = scaleY(spectrumKey)(y) - 5;
+  const sy = scaleY({ spectrumId: spectrumKey })(y) - 5;
 
   const { y1, y2 } = getLineYCoordinates(sign, isOverlap);
 

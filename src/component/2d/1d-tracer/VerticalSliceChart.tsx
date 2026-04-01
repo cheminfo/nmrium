@@ -22,7 +22,7 @@ interface usePathOptions extends BaseProps {
 function usePath(data: NmrData1D, props: usePathOptions) {
   const { reverse, width = 100, horizontalMargin = 10 } = props;
   const { mode } = useChartData();
-  const scaleX = useScale2DY(reverse);
+  const scaleX = useScale2DY({ reverse });
   const spectrum = useSpectrum() as Spectrum2D;
 
   if (!data || !spectrum) {

@@ -53,7 +53,7 @@ export function usePeakShapesPath(spectrum: Spectrum1D) {
         break;
     }
     const _scaleX = scaleX();
-    const _scaleY = scaleY(spectrum.id);
+    const _scaleY = scaleY({ spectrumId: spectrum.id });
 
     const pathBuilder = new PathBuilder();
     let fill = 'transparent';

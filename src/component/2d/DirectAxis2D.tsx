@@ -28,8 +28,7 @@ function DirectAxis2D(props: DirectAxis2DProps) {
   const { height, width, margin } = useChartData();
 
   const axis = useDirectAxisUnit();
-  // TODO apply `axis.unit` conversion
-  const scaleX = useScale2DX();
+  const scaleX = useScale2DX({ customDomain: axis?.domain });
   const isInset = useIsInset();
   const isExportingProcessStart = useCheckExportStatus();
 

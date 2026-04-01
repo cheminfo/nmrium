@@ -14,8 +14,12 @@ import { useVerticalAlign } from '../hooks/useVerticalAlign.js';
 
 import { useChartData } from './ChartContext.js';
 
+export interface ScaleLinearNumberOptions {
+  spectrumId?: number | null | string;
+  customDomain?: number[];
+}
 type ScaleLinearNumberFunction = (
-  spectrumId?: number | null | string,
+  options?: ScaleLinearNumberOptions,
 ) => ScaleLinear<number, number, number>;
 
 interface ScaleState {
@@ -59,7 +63,7 @@ export function ScaleProvider({ children }: Required<PropsWithChildren>) {
   const isInset = useIsInset();
 
   const scaleX = useCallback<ScaleLinearNumberFunction>(
-    (spectrumId = null) => {
+    (options) => {
       if (isInset) {
         return getInsetXScale({
           width,
@@ -69,28 +73,26 @@ export function ScaleProvider({ children }: Required<PropsWithChildren>) {
         });
       }
 
-      return getXScale({ width, margin, xDomains, xDomain, mode }, spectrumId);
+      return getXScale({ ...options, width, margin, xDomains, xDomain, mode });
     },
     [isInset, margin, mode, width, xDomain, xDomains],
   );
 
   const scaleY = useCallback<ScaleLinearNumberFunction>(
-    (spectrumId = null) => {
+    (options) => {
       if (isInset) {
         return getInsetYScale({ height, yDomain, margin, spectraBottomMargin });
       }
 
-      return getYScale(
-        {
-          height,
-          margin,
-          yDomains,
-          yDomain,
-          verticalAlign,
-          spectraBottomMargin,
-        },
-        spectrumId,
-      );
+      return getYScale({
+        ...options,
+        height,
+        margin,
+        yDomains,
+        yDomain,
+        verticalAlign,
+        spectraBottomMargin,
+      });
     },
     [
       spectraBottomMargin,

@@ -20,15 +20,14 @@ export function HorizontalAxis1D() {
   const isInset = useIsInset();
   const isExportingProcessStart = useCheckExportStatus();
 
-  const { unit, allowedUnits, setUnit } = useHorizontalAxisUnit();
+  const { unit, allowedUnits, setUnit, domain } = useHorizontalAxisUnit();
   const unitLabel = axisUnitToLabel[unit];
 
   const refAxis = useRef<SVGGElement>(null);
 
   const scaler = useMemo(() => {
-    // TODO apply unit conversion
-    return scaleX(null);
-  }, [scaleX]);
+    return scaleX({ customDomain: domain });
+  }, [domain, scaleX]);
   const { ticks, scale: ticksScale } = useLinearPrimaryTicks(
     scaler,
     'horizontal',
