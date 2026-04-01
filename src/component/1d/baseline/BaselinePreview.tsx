@@ -8,10 +8,7 @@ import { useMemo, useRef, useState } from 'react';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.ts';
 import { useChartData } from '../../context/ChartContext.tsx';
-import {
-  useFilterSyncOptions,
-  useSyncedFilterOptions,
-} from '../../context/FilterSyncOptionsContext.tsx';
+import { useFilterSyncOptions } from '../../context/FilterSyncOptionsContext.tsx';
 import { useScaleChecked } from '../../context/ScaleContext.tsx';
 import { Anchor } from '../../elements/Anchor.tsx';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.ts';
@@ -55,38 +52,15 @@ export function BaselinePreview() {
       Partial<{ anchors: Array<{ id: string; x: number }> }>
     >();
 
+  // Only used during active drag for local updates
+  const [draggingAnchor, setDraggingAnchor] = useState<{
+    id: string;
+    x: number;
+  } | null>(null);
+  const draggingAnchorRef = useRef<{ id: string; x: number } | null>(null);
+
   const containerRef = useRef<HTMLDivElement>(null);
-  const [localAnchors, updateLocalAnchors] = useState<
-    Array<{ id: string; x: number }>
-  >([]);
   const { scaleX, scaleY, shiftY } = useScaleChecked();
-  // const filter = useFilter('baselineCorrection');
-
-  // useEffect(() => {
-  //     if (filter && selectedTool === 'baselineCorrection' && isSpectrum1D(spectrum)) {
-  //         const options = filter.value;
-  //         const anchors = Array.from(options.anchors?.x || []).map((index: number) => ({ id: crypto.randomUUID(), x: spectrum.data?.x[index] }));
-  //         updateLocalAnchors(anchors)
-  //     }
-  // }, [filter, selectedTool, spectrum])
-
-  // console.log(localAnchors)
-
-  useSyncedFilterOptions<
-    Partial<{ anchors: Array<{ id: string; x: number }> }>
-  >((data) => {
-    if (!data.anchors) return;
-
-    updateLocalAnchors(data.anchors);
-    // updateLocalAnchors((prevAnchors) => {
-    //     const newAnchors = data?.anchors;
-
-    //     if (!Array.isArray(newAnchors)) return prevAnchors;
-
-    //     const prevAnchorsSet = new Set(prevAnchors.map((a) => a.id));
-    //     return [...newAnchors.filter((anchor) => !prevAnchorsSet.has(anchor.id)), ...prevAnchors];
-    // });
-  });
 
   if (
     !isSpectrum1D(spectrum) ||
@@ -96,37 +70,43 @@ export function BaselinePreview() {
     return;
   }
 
+  const anchors = (sharedFilterOptions?.anchors ?? []).map((a) =>
+    draggingAnchor?.id === a.id ? { ...a, x: draggingAnchor.x } : a,
+  );
+
   function handleDragMove(id: string, newX: number) {
-    updateLocalAnchors((prev) =>
-      prev.map((a) => (a.id === id ? { ...a, x: scaleX().invert(newX) } : a)),
-    );
+    const updated = { id, x: scaleX().invert(newX) };
+    draggingAnchorRef.current = updated;
+    setDraggingAnchor(updated);
   }
 
   function handleDragEnd(id: string) {
-    updateLocalAnchors((prev) => {
-      const next = prev.map((a) => {
-        if (a.id !== id) return a;
-        return a;
-      });
-
-      updateFilterOptions({ ...sharedFilterOptions, anchors: next });
-      return next;
+    const finalX = draggingAnchorRef.current?.x;
+    draggingAnchorRef.current = null;
+    setDraggingAnchor(null);
+    updateFilterOptions((prev) => {
+      const anchors = (prev?.anchors ?? []).map((a) =>
+        a.id === id ? { ...a, x: finalX ?? a.x } : a,
+      );
+      return { ...prev, anchors };
     });
   }
 
   function handleDelete(id: string) {
-    updateLocalAnchors((prev) => {
-      const next = prev.filter((a) => a.id !== id);
-      updateFilterOptions({ ...sharedFilterOptions, anchors: next });
-      return next;
+    updateFilterOptions((prev) => {
+      const anchors = (prev?.anchors || []).filter((a) => a.id !== id);
+      return {
+        ...prev,
+        anchors,
+      };
     });
   }
 
   return (
     <>
-      <SpectrumPreview spectrum={spectrum} anchors={localAnchors} />
+      <SpectrumPreview spectrum={spectrum} anchors={anchors} />
       <Container ref={containerRef}>
-        {localAnchors.map((anchor) => {
+        {anchors.map((anchor) => {
           const { x: xPPM } = anchor;
           const x = scaleX()(xPPM);
           const yPPM = getMedianY(xPPM, spectrum);
