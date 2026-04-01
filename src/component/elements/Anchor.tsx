@@ -324,7 +324,7 @@ export function Anchor({
         <VerticalGuideLine
           color={dragging ? guideDragColor : guideColor}
           lineStyle={guideStyle}
-          style={{ transform: `translateX(${position.x}px)` }}
+          style={{ transform: `translateX(${position.x}px)`, willChange: 'transform' }}
         />
       )}
 
@@ -332,6 +332,7 @@ export function Anchor({
         cursor={cursor}
         style={{
           transform: `translate(calc(${position.x}px - 50%), calc(${position.y}px - 50%))`,
+          willChange: 'transform',
         }}
         tabIndex={0}
         onMouseDown={handleMouseDown}
