@@ -100,22 +100,22 @@ export function FilterSyncOptionsProvider({
   const spectrum = useSpectrum();
 
 
-  useEffect(() => {
-    if (filter && selectedTool === 'baselineCorrection' && isSpectrum1D(spectrum)) {
-      const options = filter.value;
-      const anchors = Array.from(options.anchors?.x || []).map((index: number) => ({ id: crypto.randomUUID(), x: spectrum.data?.x[index] }));
-      updateFilterOptions({ ...filter.value, anchors });
-    }
-
-  }, [filter, selectedTool, spectrum])
 
   const state = useMemo(() => {
+
+    const isBaselineCorrection = filter && selectedTool === 'baselineCorrection' && isSpectrum1D(spectrum);
+    let options = null;
+    if (isBaselineCorrection) {
+      const anchors = Array.from(filter.value.anchors?.x || []).map((index: number) => ({ id: crypto.randomUUID(), x: spectrum.data?.x[index] }));
+      options = { ...filter.value, anchors };
+    }
+
     return {
-      sharedFilterOptions,
+      sharedFilterOptions: { ...options, ...sharedFilterOptions as any },
       updateFilterOptions: (options: any) =>
         updateFilterOptions(structuredClone(options)),
     };
-  }, [sharedFilterOptions]);
+  }, [filter, selectedTool, sharedFilterOptions, spectrum]);
 
   return (
     <FilterSyncOptionsContext.Provider value={state}>
