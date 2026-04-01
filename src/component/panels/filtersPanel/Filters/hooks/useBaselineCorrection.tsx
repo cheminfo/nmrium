@@ -11,13 +11,13 @@ import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsCon
 import type { AlgorithmOptions } from '../base/baselineCorrectionFields.ts';
 
 const ALGORITHM_LABELS: Record<BaselineCorrectionOptions['algorithm'], string> =
-{
-  airpls: 'airPLS',
-  polynomial: 'Polynomial',
-  whittaker: 'Whittaker',
-  cubic: 'Cubic',
-  bernstein: 'Bernstein',
-};
+  {
+    airpls: 'airPLS',
+    polynomial: 'Polynomial',
+    whittaker: 'Whittaker',
+    cubic: 'Cubic',
+    bernstein: 'Bernstein',
+  };
 
 export const baselineCorrectionsAlgorithms = (
   Object.keys(ALGORITHM_LABELS) as Array<BaselineCorrectionOptions['algorithm']>
@@ -28,7 +28,6 @@ function findAlgorithmItem(algorithmName: string) {
     (item) => item.value === algorithmName,
   );
 }
-
 
 function getBaselineResolver(algorithm: any) {
   switch (algorithm) {
@@ -134,7 +133,6 @@ export function getBaselineValues(
         noisePercentile: 10,
         noiseLevel: 1,
         ...overrides,
-
       };
 
     case 'bernstein':
@@ -153,7 +151,6 @@ export function getBaselineValues(
       return { livePreview: true };
   }
 }
-
 
 export function getBaselineData(
   algorithm: any,
@@ -199,7 +196,6 @@ export function useBaselineCorrection(
     reset({ ...values, ...sharedFilterOptions });
   }
 
-
   // const onChange = useCallback(
   //   (values: any) => {
   //     const { livePreview, ...options } = values;
@@ -220,7 +216,6 @@ export function useBaselineCorrection(
     values: any,
     triggerSource: 'apply' | 'onChange' = 'apply',
   ) => {
-
     const { livePreview, ...options } = values;
     switch (triggerSource) {
       case 'onChange': {

@@ -324,7 +324,10 @@ export function Anchor({
         <VerticalGuideLine
           color={dragging ? guideDragColor : guideColor}
           lineStyle={guideStyle}
-          style={{ transform: `translateX(${position.x}px)`, willChange: 'transform' }}
+          style={{
+            transform: `translateX(${position.x}px)`,
+            willChange: 'transform',
+          }}
         />
       )}
 

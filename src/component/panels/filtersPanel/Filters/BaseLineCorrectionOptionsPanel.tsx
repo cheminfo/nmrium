@@ -81,10 +81,6 @@ export default function BaseLineCorrectionOptionsPanel(
     ? BaselineAlgorithmFields[algorithm.value]
     : null;
 
-
-
-
-
   function handleAlgorithmSelect(item: {
     value: BaselineCorrectionOptions['algorithm'];
     label: string;

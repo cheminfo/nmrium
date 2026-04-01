@@ -71,7 +71,13 @@ function BaseLineCorrectionInnerPanel({
       reset(options);
       setTimeout(() => handleApplyFilter(options, 'onChange'), 0);
     },
-    [onAlgorithmChange, filter?.value, sharedFilterOptions, reset, handleApplyFilter],
+    [
+      onAlgorithmChange,
+      filter?.value,
+      sharedFilterOptions,
+      reset,
+      handleApplyFilter,
+    ],
   );
 
   const handleLivePreviewChange = useCallback(

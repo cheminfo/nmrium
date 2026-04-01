@@ -159,7 +159,10 @@ type ManualTwoDimensionsPhaseCorrectionFilterAction = ActionType<
   { ph0: number; ph1: number; applyOn2D?: boolean }
 >;
 
-type BaselineCorrectionFilterOptions = Omit<BaselineCorrectionOptions, 'zones' | 'anchors'> & { anchors?: AnchorData[] };
+type BaselineCorrectionFilterOptions = Omit<
+  BaselineCorrectionOptions,
+  'zones' | 'anchors'
+> & { anchors?: AnchorData[] };
 interface BaselineCorrectionFilterProps {
   options: BaselineCorrectionFilterOptions;
   livePreview: boolean;
@@ -265,15 +268,15 @@ export type FiltersActions =
   | ManualTwoDimensionsPhaseCorrectionFilterAction
   | ReorderFiltersAction
   | ActionType<
-    | 'APPLY_FFT_FILTER'
-    | 'APPLY_FFT_DIMENSION_1_FILTER'
-    | 'APPLY_FFT_DIMENSION_2_FILTER'
-    | 'APPLY_AUTO_PHASE_CORRECTION_FILTER'
-    | 'APPLY_ABSOLUTE_FILTER'
-    | 'APPLY_MANUAL_PHASE_CORRECTION_TOW_DIMENSION_FILTER'
-    | 'TOGGLE_ADD_PHASE_CORRECTION_TRACE_TO_BOTH_DIRECTIONS'
-    | 'APPLY_AUTO_PHASE_CORRECTION_TOW_DIMENSION_FILTER'
-  >;
+      | 'APPLY_FFT_FILTER'
+      | 'APPLY_FFT_DIMENSION_1_FILTER'
+      | 'APPLY_FFT_DIMENSION_2_FILTER'
+      | 'APPLY_AUTO_PHASE_CORRECTION_FILTER'
+      | 'APPLY_ABSOLUTE_FILTER'
+      | 'APPLY_MANUAL_PHASE_CORRECTION_TOW_DIMENSION_FILTER'
+      | 'TOGGLE_ADD_PHASE_CORRECTION_TRACE_TO_BOTH_DIRECTIONS'
+      | 'APPLY_AUTO_PHASE_CORRECTION_TOW_DIMENSION_FILTER'
+    >;
 
 const DEFAULT_FILTER_DOMAIN_UPDATE_RULES: FilterDomainUpdateRules = {
   updateXDomain: false,
@@ -447,8 +450,8 @@ function rollbackSpectrumByFilter(
         const activeFilterIndex =
           !reset && toolData.activeFilterID
             ? spectrum.filters.findIndex(
-              (f) => f.id === toolData.activeFilterID,
-            )
+                (f) => f.id === toolData.activeFilterID,
+              )
             : spectrum.filters.length;
 
         const filters = spectrum.filters.slice(0, activeFilterIndex);
@@ -561,16 +564,16 @@ function rollbackSpectrum(
   const applyFilter = !filterKey
     ? true
     : [
-      phaseCorrection.name,
-      phaseCorrectionTwoDimensions.name,
-      fft.name,
-      shiftX.name,
-      shift2DX.name,
-      shift2DY.name,
-      signalProcessing.name,
-      digitalFilter.name,
-      digitalFilter2D.name,
-    ].includes(filterKey as any);
+        phaseCorrection.name,
+        phaseCorrectionTwoDimensions.name,
+        fft.name,
+        shiftX.name,
+        shift2DX.name,
+        shift2DY.name,
+        signalProcessing.name,
+        digitalFilter.name,
+        digitalFilter2D.name,
+      ].includes(filterKey as any);
 
   beforeRollback(draft, filterKey);
 
@@ -1606,8 +1609,7 @@ function handleBaseLineCorrectionFilter(
         name: 'baselineCorrection',
         value: {
           ...options,
-          anchors: mapAnchors(draft.data[index] as Spectrum1D, anchors)
-          ,
+          anchors: mapAnchors(draft.data[index] as Spectrum1D, anchors),
         },
       } as Extract<Filter1D, { name: 'baseLineCorrection' }>,
     ],
@@ -1622,7 +1624,6 @@ function calculateBaseLineCorrection(
   draft: Draft<State>,
   baseLineOptions?: BaselineCorrectionFilterProps,
 ) {
-
   const activeSpectrum = getActiveSpectrum(draft);
 
   if (!activeSpectrum || !draft.tempData) {
@@ -1646,8 +1647,7 @@ function calculateBaseLineCorrection(
     const _data = { data: { x, re, im }, info } as Spectrum1D;
     baselineCorrection.apply(_data, {
       ...options,
-      anchors: mapAnchors(draft.data[index] as Spectrum1D, anchors)
-
+      anchors: mapAnchors(draft.data[index] as Spectrum1D, anchors),
     });
     const { im: newIm, re: newRe } = _data.data;
     const datum = draft.data[index];
