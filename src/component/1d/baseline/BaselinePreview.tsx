@@ -68,7 +68,7 @@ export function BaselinePreview() {
     // console.log(localAnchors)
 
 
-    useSyncedFilterOptions((data) => {
+    useSyncedFilterOptions<Partial<{ anchors: Array<{ id: string, x: number }> }>>((data) => {
         if (!data.anchors) return;
 
         updateLocalAnchors(data.anchors);

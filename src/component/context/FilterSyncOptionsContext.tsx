@@ -15,42 +15,43 @@ import useSpectrum from '../hooks/useSpectrum.ts';
 
 import { useChartData } from './ChartContext.tsx';
 
+type FilterSyncOptionsUpdater<T> = T | null | ((prev: T | null) => T | null);
+
 interface FilterSyncOptionsState<T> {
   sharedFilterOptions: T | null;
-  updateFilterOptions: (options: T) => void;
+  updateFilterOptions: (options: FilterSyncOptionsUpdater<T>) => void;
 }
 
 const FilterSyncOptionsContext =
-  createContext<FilterSyncOptionsState<any> | null>(null);
+  createContext<FilterSyncOptionsState<unknown> | null>(null);
 
 export function useFilterSyncOptions<T>(): FilterSyncOptionsState<T> {
-  const context = useContext(
-    FilterSyncOptionsContext,
-  ) as FilterSyncOptionsState<T>;
+  const context = useContext(FilterSyncOptionsContext);
 
   if (!context) {
     throw new Error(
-      'Filter sync options context must be used within an FilterSyncOptionsProvider',
+      'Filter sync options context must be used within a FilterSyncOptionsProvider',
     );
   }
 
-  return context;
+  return context as FilterSyncOptionsState<T>;
 }
 
-export function useSyncedFilterOptions(
-  onWatch: (options: any) => void,
+export function useSyncedFilterOptions<T>(
+  onWatch: (options: T) => void,
   onReset?: () => void,
 ) {
-  const { sharedFilterOptions, updateFilterOptions } = useFilterSyncOptions();
+  const { sharedFilterOptions, updateFilterOptions } = useFilterSyncOptions<T>();
   const isSyncOptionsDirty = useRef(true);
 
   const watchRef = useRef(onWatch);
   const resetRef = useRef(onReset);
-
   // Update the ref when onWatch changes
+
   useEffect(() => {
     watchRef.current = onWatch;
   }, [onWatch]);
+
   // Update the ref when onWatch changes
   useEffect(() => {
     resetRef.current = onReset;
@@ -75,7 +76,7 @@ export function useSyncedFilterOptions(
   }, [updateFilterOptions]);
 
   const syncFilterOptions = useCallback(
-    (options: any) => {
+    (options: T) => {
       isSyncOptionsDirty.current = false;
       updateFilterOptions(options);
     },
@@ -85,37 +86,43 @@ export function useSyncedFilterOptions(
   return { clearSyncFilterOptions, syncFilterOptions };
 }
 
-export function FilterSyncOptionsProvider({
-  children,
-}: {
-  children: ReactNode;
-}) {
-  const [sharedFilterOptions, updateFilterOptions] = useState<unknown | null>(
-    null,
-  );
-
+export function FilterSyncOptionsProvider({ children }: { children: ReactNode }) {
+  const [sharedFilterOptions, setSharedFilterOptions] = useState<unknown | null>(null);
 
   const filter = useFilter('baselineCorrection');
   const { toolOptions: { selectedTool } } = useChartData();
   const spectrum = useSpectrum();
 
+  const updateFilterOptions = useCallback(
+    (options: FilterSyncOptionsUpdater<unknown>) => {
+      setSharedFilterOptions((prev: any) => {
+        const next = typeof options === 'function' ? options(prev) : options;
+        return structuredClone(next);
+      });
+    },
+    [],
+  );
 
+  const baseOptions = useMemo(() => {
+    const isBaselineCorrection =
+      filter && selectedTool === 'baselineCorrection' && isSpectrum1D(spectrum);
 
-  const state = useMemo(() => {
+    if (!isBaselineCorrection) return null;
 
-    const isBaselineCorrection = filter && selectedTool === 'baselineCorrection' && isSpectrum1D(spectrum);
-    let options = null;
-    if (isBaselineCorrection) {
-      const anchors = Array.from(filter.value.anchors?.x || []).map((index: number) => ({ id: crypto.randomUUID(), x: spectrum.data?.x[index] }));
-      options = { ...filter.value, anchors };
-    }
+    const anchors = Array.from(filter.value.anchors?.x ?? []).map((index: number) => ({
+      id: crypto.randomUUID(),
+      x: spectrum.data?.x[index],
+    }));
 
-    return {
-      sharedFilterOptions: { ...options, ...sharedFilterOptions as any },
-      updateFilterOptions: (options: any) =>
-        updateFilterOptions(structuredClone(options)),
-    };
-  }, [filter, selectedTool, sharedFilterOptions, spectrum]);
+    return { ...filter.value, anchors };
+  }, [filter, selectedTool, spectrum]);
+
+  const state = useMemo<FilterSyncOptionsState<unknown>>(() => ({
+    sharedFilterOptions: baseOptions
+      ? { ...baseOptions, ...(sharedFilterOptions as any) }
+      : sharedFilterOptions,
+    updateFilterOptions,
+  }), [baseOptions, sharedFilterOptions, updateFilterOptions]);
 
   return (
     <FilterSyncOptionsContext.Provider value={state}>
