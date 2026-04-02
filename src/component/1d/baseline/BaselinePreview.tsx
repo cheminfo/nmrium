@@ -139,10 +139,19 @@ export function BaselinePreview() {
 }
 
 function getMedianY(x: number, spectrum: Spectrum1D, windowSize = 21): number {
-  const { x: xValues, re: yValues } = spectrum.data;
+  const {
+    data,
+    info: { numberOfPoints },
+  } = spectrum;
+  const { x: xValues, re: yValues } = data;
+  let nbPoints = numberOfPoints
+    ? Math.round(numberOfPoints / 100)
+    : windowSize;
+  // always take an odd number for median
+  nbPoints = nbPoints % 2 === 0 ? nbPoints + 1 : nbPoints;
 
   const centerIndex = xFindClosestIndex(xValues, x);
-  const halfWindow = Math.floor(windowSize / 2);
+  const halfWindow = Math.floor(nbPoints / 2);
 
   const fromIndex = Math.max(0, centerIndex - halfWindow);
   const toIndex = Math.min(xValues.length, centerIndex + halfWindow + 1);
