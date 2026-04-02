@@ -268,15 +268,15 @@ export type FiltersActions =
   | ManualTwoDimensionsPhaseCorrectionFilterAction
   | ReorderFiltersAction
   | ActionType<
-    | 'APPLY_FFT_FILTER'
-    | 'APPLY_FFT_DIMENSION_1_FILTER'
-    | 'APPLY_FFT_DIMENSION_2_FILTER'
-    | 'APPLY_AUTO_PHASE_CORRECTION_FILTER'
-    | 'APPLY_ABSOLUTE_FILTER'
-    | 'APPLY_MANUAL_PHASE_CORRECTION_TOW_DIMENSION_FILTER'
-    | 'TOGGLE_ADD_PHASE_CORRECTION_TRACE_TO_BOTH_DIRECTIONS'
-    | 'APPLY_AUTO_PHASE_CORRECTION_TOW_DIMENSION_FILTER'
-  >;
+      | 'APPLY_FFT_FILTER'
+      | 'APPLY_FFT_DIMENSION_1_FILTER'
+      | 'APPLY_FFT_DIMENSION_2_FILTER'
+      | 'APPLY_AUTO_PHASE_CORRECTION_FILTER'
+      | 'APPLY_ABSOLUTE_FILTER'
+      | 'APPLY_MANUAL_PHASE_CORRECTION_TOW_DIMENSION_FILTER'
+      | 'TOGGLE_ADD_PHASE_CORRECTION_TRACE_TO_BOTH_DIRECTIONS'
+      | 'APPLY_AUTO_PHASE_CORRECTION_TOW_DIMENSION_FILTER'
+    >;
 
 const DEFAULT_FILTER_DOMAIN_UPDATE_RULES: FilterDomainUpdateRules = {
   updateXDomain: false,
@@ -450,8 +450,8 @@ function rollbackSpectrumByFilter(
         const activeFilterIndex =
           !reset && toolData.activeFilterID
             ? spectrum.filters.findIndex(
-              (f) => f.id === toolData.activeFilterID,
-            )
+                (f) => f.id === toolData.activeFilterID,
+              )
             : spectrum.filters.length;
 
         const filters = spectrum.filters.slice(0, activeFilterIndex);
@@ -564,16 +564,16 @@ function rollbackSpectrum(
   const applyFilter = !filterKey
     ? true
     : [
-      phaseCorrection.name,
-      phaseCorrectionTwoDimensions.name,
-      fft.name,
-      shiftX.name,
-      shift2DX.name,
-      shift2DY.name,
-      signalProcessing.name,
-      digitalFilter.name,
-      digitalFilter2D.name,
-    ].includes(filterKey as any);
+        phaseCorrection.name,
+        phaseCorrectionTwoDimensions.name,
+        fft.name,
+        shiftX.name,
+        shift2DX.name,
+        shift2DY.name,
+        signalProcessing.name,
+        digitalFilter.name,
+        digitalFilter2D.name,
+      ].includes(filterKey as any);
 
   beforeRollback(draft, filterKey);
 
@@ -587,8 +587,6 @@ function rollbackSpectrum(
 
   afterRollback(draft, filterKey);
 }
-
-
 
 function getTwoDimensionFilterOptions(
   draft: Draft<State>,

@@ -34,9 +34,7 @@ import type { ActionType } from '../types/ActionType.js';
 import type { SetDomainOptions } from './DomainActions.js';
 import { setDomain, setMode } from './DomainActions.js';
 import type { RollbackSpectrumOptions } from './FiltersActions.js';
-import {
-  rollbackSpectrum,
-} from './FiltersActions.js';
+import { rollbackSpectrum } from './FiltersActions.js';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions.js';
 
 interface BrushBoundary {
@@ -82,13 +80,13 @@ type LevelChangeAction = ActionType<'SET_2D_LEVEL', { options: ZoomOptions }>;
 
 export type ToolsActions =
   | ActionType<
-    | 'TOGGLE_REAL_IMAGINARY_VISIBILITY'
-    | 'RESET_SELECTED_TOOL'
-    | 'SET_SPECTRA_VERTICAL_ALIGN'
-    | 'CHANGE_SPECTRUM_DISPLAY_VIEW_MODE'
-    | 'SET_SPECTRA_SAME_TOP'
-    | 'RESET_SPECTRA_SCALE'
-  >
+      | 'TOGGLE_REAL_IMAGINARY_VISIBILITY'
+      | 'RESET_SELECTED_TOOL'
+      | 'SET_SPECTRA_VERTICAL_ALIGN'
+      | 'CHANGE_SPECTRUM_DISPLAY_VIEW_MODE'
+      | 'SET_SPECTRA_SAME_TOP'
+      | 'RESET_SPECTRA_SCALE'
+    >
   | SetSelectedToolAction
   | BrushEndAction
   | ZoomAction
@@ -557,7 +555,7 @@ function setTab(
 
   if (
     JSON.stringify(groupByTab) !==
-    JSON.stringify(Object.keys(draft.view.spectra.activeSpectra)) ||
+      JSON.stringify(Object.keys(draft.view.spectra.activeSpectra)) ||
     refresh
   ) {
     const tabs2D = setTabActiveSpectrum(draft, dataGroupByTab);
