@@ -45,7 +45,6 @@ function BaseLineCorrectionInnerPanel({
   filter,
 }: BaseLineCorrectionInnerPanelProps) {
   const {
-    register,
     reset,
     onAlgorithmChange,
     submitHandler,
@@ -57,8 +56,6 @@ function BaseLineCorrectionInnerPanel({
     defaultAlgorithmSelectProps,
   } = useBaselineCorrection(filter);
 
-  const { onChange: onLivePreviewChange, ...otherLivePreviewRegisterOptions } =
-    register('livePreview');
   const { sharedFilterOptions } = useFilterSyncOptions<AlgorithmOptions>();
 
   const handleAlgorithmSelect = useCallback(
@@ -77,14 +74,6 @@ function BaseLineCorrectionInnerPanel({
       reset,
       handleApplyFilter,
     ],
-  );
-
-  const handleLivePreviewChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      void onLivePreviewChange(event);
-      submitHandler();
-    },
-    [onLivePreviewChange, submitHandler],
   );
 
   const handleDone = useCallback(
@@ -116,15 +105,6 @@ function BaseLineCorrectionInnerPanel({
           onValueChange={submitHandler}
         />
       )}
-
-      <Label title="Live preview" style={headerLabelStyle}>
-        <Checkbox
-          style={{ margin: 0 }}
-          {...otherLivePreviewRegisterOptions}
-          onChange={handleLivePreviewChange}
-        />
-      </Label>
-
       <ActionButtons onDone={handleDone} onCancel={handleCancelFilter} />
     </HeaderWrapper>
   );
