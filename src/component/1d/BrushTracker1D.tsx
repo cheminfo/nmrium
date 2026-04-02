@@ -470,7 +470,7 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
               break;
             case 'zoom':
             case 'matrixGenerationExclusionZones':
-              if (!showStocsy || !event.shiftKey) break;
+              if (!showStocsy) break;
 
               dispatchPreferences({
                 type: 'CHANGE_MATRIX_GENERATION_STOCSY_CHEMICAL_SHIFT',
