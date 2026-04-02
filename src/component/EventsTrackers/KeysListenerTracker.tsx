@@ -251,14 +251,6 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
 
           break;
         }
-        case 'BASELINE_ZONE': {
-          const { id } = extra;
-          dispatch({ type: 'DELETE_BASE_LINE_ZONE', payload: { id } });
-          // remove keys from the highlighted list after delete
-          remove();
-
-          break;
-        }
         case 'PHASE_CORRECTION_TRACE': {
           const { id } = extra;
           dispatch({

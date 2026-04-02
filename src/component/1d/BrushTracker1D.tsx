@@ -213,17 +213,6 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
                   payload: brushData,
                 });
                 break;
-
-              case options.baselineCorrection.id:
-                dispatch({
-                  type: 'ADD_BASE_LINE_ZONE',
-                  payload: {
-                    startX: brushData.startX,
-                    endX: brushData.endX,
-                  },
-                });
-                break;
-
               case options.exclusionZones.id:
                 dispatch({
                   type: 'ADD_EXCLUSION_ZONE',
