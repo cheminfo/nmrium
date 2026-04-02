@@ -13,7 +13,7 @@ import { useScaleChecked } from '../../context/ScaleContext.tsx';
 import { Anchor } from '../../elements/Anchor.tsx';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.ts';
 import { useIndicatorLineColor } from '../../hooks/useIndicatorLineColor.ts';
-import useSpectrum from '../../hooks/useSpectrum.ts';
+import useTempSpectrum from '../../hooks/useTempSpectrum.ts';
 import { getBaselineValues } from '../../panels/filtersPanel/Filters/hooks/useBaselineCorrection.tsx';
 import { PathBuilder } from '../../utility/PathBuilder.ts';
 
@@ -41,7 +41,9 @@ const Container = styled.div`
 `;
 
 export function BaselinePreview() {
-  const spectrum = useSpectrum();
+  // const spectrum = useSpectrum();
+  const spectrum = useTempSpectrum();
+
   const activeSpectrum = useActiveSpectrum();
   const {
     toolOptions: { selectedTool },
@@ -144,9 +146,7 @@ function getMedianY(x: number, spectrum: Spectrum1D, windowSize = 21): number {
     info: { numberOfPoints },
   } = spectrum;
   const { x: xValues, re: yValues } = data;
-  let nbPoints = numberOfPoints
-    ? Math.round(numberOfPoints / 100)
-    : windowSize;
+  let nbPoints = numberOfPoints ? Math.round(numberOfPoints / 100) : windowSize;
   // always take an odd number for median
   nbPoints = nbPoints % 2 === 0 ? nbPoints + 1 : nbPoints;
 
