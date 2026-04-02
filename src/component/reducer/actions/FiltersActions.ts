@@ -1,5 +1,4 @@
 import type {
-  AirplsOptions,
   Apodization1DOptions,
   BaselineCorrectionOptions,
   Filter1DEntry,
@@ -7,10 +6,9 @@ import type {
   Filter2DEntry,
   Filter2DOptions,
   MatrixOptions,
-  PolynomialOptions,
 } from '@zakodium/nmr-types';
 import type { Spectrum1D, Spectrum2D, Spectrum } from '@zakodium/nmrium-core';
-import type { NmrData1D, NmrData2DFt } from 'cheminfo-types';
+import type { NmrData2DFt } from 'cheminfo-types';
 import type { Draft } from 'immer';
 import { current, isDraft } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
@@ -20,7 +18,6 @@ import {
   Filters1DManager,
   Filters2D,
   Filters2DManager,
-  getBaselineZonesByDietrich,
 } from 'nmr-processing';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
@@ -31,7 +28,8 @@ import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.js';
 import { isFid2DSpectrum } from '../../../data/data2d/Spectrum2D/isSpectrum2D.js';
 import type { FilterEntry } from '../../../data/types/common/FilterEntry.ts';
 import type { ExclusionZone } from '../../../data/types/data1d/ExclusionZone.js';
-import { mapAnchors, type AnchorData } from '../../1d/baseline/mapAnchors.ts';
+import type { AnchorData } from '../../1d/baseline/mapAnchors.ts';
+import { mapAnchors } from '../../1d/baseline/mapAnchors.ts';
 import { getXScale } from '../../1d/utilities/scale.js';
 import { get2DXScale, get2DYScale } from '../../2d/utilities/scale.js';
 import { nonRemovableFilters } from '../../panels/filtersPanel/Filters/FiltersSectionsPanel.js';
@@ -267,15 +265,15 @@ export type FiltersActions =
   | ManualTwoDimensionsPhaseCorrectionFilterAction
   | ReorderFiltersAction
   | ActionType<
-      | 'APPLY_FFT_FILTER'
-      | 'APPLY_FFT_DIMENSION_1_FILTER'
-      | 'APPLY_FFT_DIMENSION_2_FILTER'
-      | 'APPLY_AUTO_PHASE_CORRECTION_FILTER'
-      | 'APPLY_ABSOLUTE_FILTER'
-      | 'APPLY_MANUAL_PHASE_CORRECTION_TOW_DIMENSION_FILTER'
-      | 'TOGGLE_ADD_PHASE_CORRECTION_TRACE_TO_BOTH_DIRECTIONS'
-      | 'APPLY_AUTO_PHASE_CORRECTION_TOW_DIMENSION_FILTER'
-    >;
+    | 'APPLY_FFT_FILTER'
+    | 'APPLY_FFT_DIMENSION_1_FILTER'
+    | 'APPLY_FFT_DIMENSION_2_FILTER'
+    | 'APPLY_AUTO_PHASE_CORRECTION_FILTER'
+    | 'APPLY_ABSOLUTE_FILTER'
+    | 'APPLY_MANUAL_PHASE_CORRECTION_TOW_DIMENSION_FILTER'
+    | 'TOGGLE_ADD_PHASE_CORRECTION_TRACE_TO_BOTH_DIRECTIONS'
+    | 'APPLY_AUTO_PHASE_CORRECTION_TOW_DIMENSION_FILTER'
+  >;
 
 const DEFAULT_FILTER_DOMAIN_UPDATE_RULES: FilterDomainUpdateRules = {
   updateXDomain: false,
@@ -449,8 +447,8 @@ function rollbackSpectrumByFilter(
         const activeFilterIndex =
           !reset && toolData.activeFilterID
             ? spectrum.filters.findIndex(
-                (f) => f.id === toolData.activeFilterID,
-              )
+              (f) => f.id === toolData.activeFilterID,
+            )
             : spectrum.filters.length;
 
         const filters = spectrum.filters.slice(0, activeFilterIndex);
@@ -563,16 +561,16 @@ function rollbackSpectrum(
   const applyFilter = !filterKey
     ? true
     : [
-        phaseCorrection.name,
-        phaseCorrectionTwoDimensions.name,
-        fft.name,
-        shiftX.name,
-        shift2DX.name,
-        shift2DY.name,
-        signalProcessing.name,
-        digitalFilter.name,
-        digitalFilter2D.name,
-      ].includes(filterKey as any);
+      phaseCorrection.name,
+      phaseCorrectionTwoDimensions.name,
+      fft.name,
+      shiftX.name,
+      shift2DX.name,
+      shift2DY.name,
+      signalProcessing.name,
+      digitalFilter.name,
+      digitalFilter2D.name,
+    ].includes(filterKey as any);
 
   beforeRollback(draft, filterKey);
 
@@ -587,11 +585,7 @@ function rollbackSpectrum(
   afterRollback(draft, filterKey);
 }
 
-// function hasBaselineZones(
-//   filterOptions: any,
-// ): filterOptions is PolynomialOptions | AirplsOptions {
-//   return 'zones' in filterOptions;
-// }
+
 
 function getTwoDimensionFilterOptions(
   draft: Draft<State>,
@@ -709,30 +703,6 @@ function beforeRollback(draft: Draft<State>, filterKey: any) {
       }
       break;
     }
-    // case baselineCorrection.name: {
-    //   if (activeSpectrum) {
-    //     const datum = current(draft).data[activeSpectrum.index];
-    //     const baselineCorrectionFilter = datum.filters.find(
-    //       (filter) => filter.name === Filters1D.baselineCorrection.name,
-    //     );
-
-    //     const filterOptions = baselineCorrectionFilter?.value;
-
-    //     if (
-    //       filterOptions &&
-    //       hasBaselineZones(filterOptions) &&
-    //       filterOptions.zones.length > 0
-    //     ) {
-    //       draft.toolOptions.data.baselineCorrection.zones = filterOptions.zones;
-    //       return;
-    //     }
-
-    //     draft.toolOptions.data.baselineCorrection.zones =
-    //       getBaselineZonesByDietrich(datum.data as NmrData1D);
-    //   }
-    //   break;
-    // }
-
     default:
       break;
   }
