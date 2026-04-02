@@ -46,6 +46,7 @@ export function BaselinePreview() {
   const {
     toolOptions: { selectedTool },
   } = useChartData();
+  const indicatorColor = useIndicatorLineColor();
 
   const { updateFilterOptions, sharedFilterOptions } =
     useFilterSyncOptions<
@@ -127,6 +128,7 @@ export function BaselinePreview() {
                 dragStroke: 'darkgreen',
                 guideColor: 'red',
                 guideDragColor: 'darkgreen',
+                stroke: indicatorColor,
               }}
             />
           );
