@@ -95,12 +95,14 @@ export function FilterSyncOptionsProvider({
   const [sharedFilterOptions, setSharedFilterOptions] = useState<
     unknown | null
   >(null);
-
   const filter = useFilter('baselineCorrection');
   const {
     toolOptions: { selectedTool },
   } = useChartData();
   const spectrum = useSpectrum();
+  const prevFilterRef = useRef<typeof filter | null>(null);
+  const isBaselineCorrection =
+    filter && selectedTool === 'baselineCorrection' && isSpectrum1D(spectrum);
 
   const updateFilterOptions = useCallback(
     (options: FilterSyncOptionsUpdater<unknown>) => {
@@ -112,30 +114,32 @@ export function FilterSyncOptionsProvider({
     [],
   );
 
-  const baseOptions = useMemo(() => {
-    const isBaselineCorrection =
-      filter && selectedTool === 'baselineCorrection' && isSpectrum1D(spectrum);
+  useEffect(() => {
+    if (isBaselineCorrection) {
+      const filterChanged = prevFilterRef.current !== filter;
 
-    if (!isBaselineCorrection) return null;
+      if (filterChanged) {
+        const anchors = Array.from(filter.value.anchors?.x ?? []).map(
+          (index: number) => ({
+            id: crypto.randomUUID(),
+            x: spectrum.data?.x[index],
+          }),
+        );
+        setSharedFilterOptions({ ...filter.value, anchors });
+      }
+    } else {
+      setSharedFilterOptions(null);
+    }
 
-    const anchors = Array.from(filter.value.anchors?.x ?? []).map(
-      (index: number) => ({
-        id: crypto.randomUUID(),
-        x: spectrum.data?.x[index],
-      }),
-    );
-
-    return { ...filter.value, anchors };
-  }, [filter, selectedTool, spectrum]);
+    prevFilterRef.current = isBaselineCorrection ? filter : null;
+  }, [isBaselineCorrection, filter, spectrum]);
 
   const state = useMemo<FilterSyncOptionsState<unknown>>(
     () => ({
-      sharedFilterOptions: baseOptions
-        ? { ...baseOptions, ...(sharedFilterOptions as any) }
-        : sharedFilterOptions,
+      sharedFilterOptions,
       updateFilterOptions,
     }),
-    [baseOptions, sharedFilterOptions, updateFilterOptions],
+    [sharedFilterOptions, updateFilterOptions],
   );
 
   return (
