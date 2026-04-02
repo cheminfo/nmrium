@@ -1982,26 +1982,24 @@ function handleSetTwoDimensionPhaseCorrectionPivotPoint(
     getTwoDimensionPhaseCorrectionOptions(draft);
 
   switch (activeTraceDirection) {
-    case 'horizontal':
-      {
-        const scale = get2DXScale({ margin, width, xDomain, mode });
-        const pivotValue = scale.invert(x);
-        const spectrum = spectra[activeSpectrum.index];
-        const datum = getProjection((spectrum.data as NmrData2DFt).rr, 0);
-        const index = xFindClosestIndex(datum.x, pivotValue);
-        activeTraces.pivot = { value: pivotValue, index };
-      }
+    case 'horizontal': {
+      const scale = get2DXScale({ margin, width, xDomain, mode });
+      const pivotValue = scale.invert(x);
+      const spectrum = spectra[activeSpectrum.index];
+      const datum = getProjection((spectrum.data as NmrData2DFt).rr, 0);
+      const index = xFindClosestIndex(datum.x, pivotValue);
+      activeTraces.pivot = { value: pivotValue, index };
       break;
-    case 'vertical':
-      {
-        const scale = get2DYScale({ margin, height, yDomain });
-        const pivotValue = scale.invert(y);
-        const spectrum = spectra[activeSpectrum.index];
-        const datum = getProjection((spectrum.data as NmrData2DFt).rr, 1);
-        const index = xFindClosestIndex(datum.x, pivotValue);
-        activeTraces.pivot = { value: pivotValue, index };
-      }
+    }
+    case 'vertical': {
+      const scale = get2DYScale({ margin, height, yDomain });
+      const pivotValue = scale.invert(y);
+      const spectrum = spectra[activeSpectrum.index];
+      const datum = getProjection((spectrum.data as NmrData2DFt).rr, 1);
+      const index = xFindClosestIndex(datum.x, pivotValue);
+      activeTraces.pivot = { value: pivotValue, index };
       break;
+    }
 
     default:
       break;
