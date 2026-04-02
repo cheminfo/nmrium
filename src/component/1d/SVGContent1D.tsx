@@ -20,7 +20,6 @@ import Peaks from './peaks/Peaks.js';
 import PeaksShapes from './peaks/PeaksShapes.js';
 import Ranges from './ranges/Ranges.js';
 import RangesIntegrals from './ranges/RangesIntegrals.js';
-import BaseLineZones from './tool/BaseLineZones.js';
 
 export function SVGContent1D() {
   return (
@@ -38,7 +37,6 @@ export function SVGContent1D() {
 
         <Peaks peaksSource="ranges" />
         <MultiAnalysisRanges />
-        <BaseLineZones />
         <ExclusionZonesAnnotations />
         <DatabaseElements />
         <PeaksShapes />

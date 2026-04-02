@@ -657,15 +657,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return ToolsActions.setSpectraVerticalAlign(draft);
       case 'SET_ACTIVE_TAB':
         return ToolsActions.handleSetActiveTab(draft, action);
-      case 'ADD_BASE_LINE_ZONE':
-        return ToolsActions.handleAddBaseLineZone(draft, action);
-      case 'DELETE_BASE_LINE_ZONE':
-        return ToolsActions.handleDeleteBaseLineZone(draft, action);
-      case 'RESIZE_BASE_LINE_ZONE':
-        return ToolsActions.handleResizeBaseLineZone(draft, action);
       case 'SET_2D_LEVEL':
         return ToolsActions.levelChangeHandler(draft, action);
-
       case 'ADD_MOLECULE':
         return MoleculeActions.handleAddMolecule(draft, action);
       case 'ADD_MOLECULES':
