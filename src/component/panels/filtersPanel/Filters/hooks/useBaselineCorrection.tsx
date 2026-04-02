@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import type { BaselineCorrectionOptions } from '@zakodium/nmr-types';
-import { useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelect } from 'react-science/ui';
 import * as Yup from 'yup';
@@ -98,7 +98,7 @@ export function getBaselineValues(
     case 'airpls':
       return {
         algorithm,
-        livePreview: true,
+        livePreview: false,
         maxIterations: 100,
         tolerance: 0.001,
         ...overrides,
@@ -107,7 +107,7 @@ export function getBaselineValues(
     case 'polynomial':
       return {
         algorithm,
-        livePreview: true,
+        livePreview: false,
         degree: 3,
         ...overrides,
       };
@@ -115,7 +115,7 @@ export function getBaselineValues(
     case 'whittaker':
       return {
         algorithm,
-        livePreview: true,
+        livePreview: false,
         lambda: 200,
         maxIterations: 20,
         learningRate: 0.2,
@@ -126,7 +126,7 @@ export function getBaselineValues(
     case 'cubic':
       return {
         algorithm,
-        livePreview: true,
+        livePreview: false,
         noiseThreshold: 1,
         maxIterations: 10,
         tolerance: 1e-6,
@@ -138,7 +138,7 @@ export function getBaselineValues(
     case 'bernstein':
       return {
         algorithm,
-        livePreview: true,
+        livePreview: false,
         maxIterations: 100,
         tolerance: 1e-6,
         factorStd: 3,
@@ -148,7 +148,7 @@ export function getBaselineValues(
       };
 
     default:
-      return { livePreview: true };
+      return { livePreview: false };
   }
 }
 
@@ -196,21 +196,21 @@ export function useBaselineCorrection(
     reset({ ...values, ...sharedFilterOptions });
   }
 
-  // const onChange = useCallback(
-  //   (values: any) => {
-  //     const { livePreview, ...options } = values;
-  //     if (livePreview || previousPreviewRef !== livePreview) {
-  //       // dispatch({
-  //       //   type: 'CALCULATE_BASE_LINE_CORRECTION_FILTER',
-  //       //   payload: {
-  //       //     options,
-  //       //     livePreview,
-  //       //   },
-  //       // });
-  //     }
-  //   },
-  //   [dispatch],
-  // );
+  const onChange = useCallback(
+    (values: any) => {
+      const { livePreview, ...options } = values;
+      if (livePreview || previousPreviewRef !== livePreview) {
+        dispatch({
+          type: 'CALCULATE_BASE_LINE_CORRECTION_FILTER',
+          payload: {
+            options,
+            livePreview,
+          },
+        });
+      }
+    },
+    [dispatch],
+  );
 
   const handleApplyFilter = (
     values: any,
@@ -219,8 +219,7 @@ export function useBaselineCorrection(
     const { livePreview, ...options } = values;
     switch (triggerSource) {
       case 'onChange': {
-        // onChange(values);
-        // console.log(values)
+        onChange(values);
         syncFilterOptions(values);
         break;
       }
@@ -251,9 +250,9 @@ export function useBaselineCorrection(
     void handleSubmit((values: any) => handleApplyFilter(values, 'onChange'))();
   }
 
-  // useEffect(() => {
-  //   void handleSubmit((values) => onChange(values))();
-  // }, [handleSubmit]);
+  useEffect(() => {
+    void handleSubmit((values) => onChange(values))();
+  }, [handleSubmit, onChange]);
 
   return {
     algorithm,
