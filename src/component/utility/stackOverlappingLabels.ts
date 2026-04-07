@@ -38,17 +38,23 @@ export function stackOverlappingLabelsArray<T extends Record<string, any>>(
     });
   });
 }
-
+/**
+ * Assigns a stack index (vertical lane) to each item so that horizontally
+ * overlapping labels are pushed to different lanes, while non-overlapping
+ * labels reuse the lowest available lane.
+ * */
 export function stackOverlappingLabelsMap<T extends Record<string, any>>(
   items: T[],
   options: StackOverlappingLabelsOptions<T> & { idKey: keyof T },
 ): StackOverlappingLabelsMapReturnType {
-  const { idKey } = options;
+  const { idKey, startPositionKey, labelWidthKey, padding = 0 } = options;
   const groups = stackOverlappingLabels(items, options);
 
   const stackMap: StackOverlappingLabelsMapReturnType = {};
+
   for (const group of groups) {
-    let i = 0;
+    const laneEdges: number[] = [];
+
     for (const item of group) {
       const key = item[idKey];
       if (key === undefined || key === null) {
@@ -56,10 +62,22 @@ export function stackOverlappingLabelsMap<T extends Record<string, any>>(
           `Invalid or missing idKey value for item: ${JSON.stringify(item)}`,
         );
       }
-      stackMap[key as string | number] = i;
-      if (item.assignment) i++;
+
+      const startPosition = item[startPositionKey];
+      const itemEnd = startPosition + item[labelWidthKey] + padding;
+
+      // Find the first lane whose right edge does not overlap this item is start.
+      // If no such lane exists, open a new one.
+      let assignedLane = laneEdges.findIndex((edge) => edge <= startPosition);
+      if (assignedLane === -1) {
+        assignedLane = laneEdges.length;
+      }
+
+      laneEdges[assignedLane] = itemEnd;
+      stackMap[key] = assignedLane;
     }
   }
+
   return stackMap;
 }
 
@@ -84,7 +102,7 @@ function stackOverlappingLabels<T extends Record<string, any>>(
       }
       currentGroup = [item];
     }
-    lastInPixel = startPosition + labelWidth + padding;
+    lastInPixel = Math.max(lastInPixel, startPosition + labelWidth + padding);
   }
 
   if (currentGroup.length > 0) {
