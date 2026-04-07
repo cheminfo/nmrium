@@ -49,14 +49,14 @@ function useStackRangesAssignmentsLabels(ranges: RangeType[]) {
       processedRanges.push({
         ...range,
         labelWidth,
-        startPosition,
+        startPosition: startPosition - labelWidth / 2,
         signalId: id,
         assignment,
       });
     }
   }
+  processedRanges.sort((a, b) => a.startPosition - b.startPosition);
 
-  processedRanges.sort((a, b) => b.startPosition - a.startPosition);
   return stackOverlappingLabelsMap(processedRanges, {
     startPositionKey: 'startPosition',
     labelWidthKey: 'labelWidth',
