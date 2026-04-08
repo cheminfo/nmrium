@@ -11,7 +11,7 @@ import {
 
 import { isSpectrum1D } from '../../data/data1d/Spectrum1D/isSpectrum1D.ts';
 import { useFilter } from '../hooks/useFilter.ts';
-import useSpectrum from '../hooks/useSpectrum.ts';
+import useTempSpectrum from '../hooks/useTempSpectrum.ts';
 
 import { useChartData } from './ChartContext.tsx';
 
@@ -99,7 +99,7 @@ export function FilterSyncOptionsProvider({
   const {
     toolOptions: { selectedTool },
   } = useChartData();
-  const spectrum = useSpectrum();
+  const spectrum = useTempSpectrum();
   const prevFilterRef = useRef<typeof filter | null>(null);
   const isBaselineCorrection =
     filter && selectedTool === 'baselineCorrection' && isSpectrum1D(spectrum);
@@ -120,9 +120,9 @@ export function FilterSyncOptionsProvider({
 
       if (filterChanged) {
         const anchors = Array.from(filter.value.anchors?.x ?? []).map(
-          (index: number) => ({
+          (x: number) => ({
             id: crypto.randomUUID(),
-            x: spectrum.data?.x[index],
+            x,
           }),
         );
         setSharedFilterOptions({ ...filter.value, anchors });

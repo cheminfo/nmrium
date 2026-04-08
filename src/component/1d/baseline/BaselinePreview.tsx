@@ -1,8 +1,6 @@
 import styled from '@emotion/styled';
 import type { BaselineCorrectionOptions } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
-import type { DoubleArray } from 'cheminfo-types';
-import { xFindClosestIndex } from 'ml-spectra-processing';
 import { xyBaselineCalculation } from 'nmr-processing';
 import { useMemo, useRef, useState } from 'react';
 
@@ -17,6 +15,7 @@ import useTempSpectrum from '../../hooks/useTempSpectrum.ts';
 import { getBaselineValues } from '../../panels/filtersPanel/Filters/hooks/useBaselineCorrection.tsx';
 import { PathBuilder } from '../../utility/PathBuilder.ts';
 
+import { getMedianY } from './getMedianY.ts';
 import type { AnchorData } from './mapAnchors.ts';
 import { mapAnchors } from './mapAnchors.ts';
 
@@ -114,7 +113,7 @@ export function BaselinePreview() {
           const x = scaleX()(xPPM);
           const yPPM = getMedianY(xPPM, spectrum);
           const v = shiftY * (activeSpectrum?.index || 0);
-          const y = scaleY(spectrum.id)(yPPM) - v;
+          const y = scaleY()(yPPM) - v;
 
           return (
             <Anchor
@@ -138,41 +137,6 @@ export function BaselinePreview() {
       </Container>
     </>
   );
-}
-
-function getMedianY(x: number, spectrum: Spectrum1D, windowSize = 21): number {
-  const {
-    data,
-    info: { numberOfPoints },
-  } = spectrum;
-  const { x: xValues, re: yValues } = data;
-  let nbPoints = numberOfPoints ? Math.round(numberOfPoints / 100) : windowSize;
-  // always take an odd number for median
-  nbPoints = nbPoints % 2 === 0 ? nbPoints + 1 : nbPoints;
-
-  const centerIndex = xFindClosestIndex(xValues, x);
-  const halfWindow = Math.floor(nbPoints / 2);
-
-  const fromIndex = Math.max(0, centerIndex - halfWindow);
-  const toIndex = Math.min(xValues.length, centerIndex + halfWindow + 1);
-
-  const yWindow = yValues.slice(fromIndex, toIndex);
-
-  if (yWindow.length === 0) return 0;
-
-  return getMedian(yWindow);
-}
-
-function getMedian(values: DoubleArray): number {
-  const sorted = values.toSorted((a, b) => a - b);
-  const mid = Math.floor(sorted.length / 2);
-  const isOdd = sorted.length % 2 !== 0;
-
-  if (isOdd) {
-    return sorted[mid];
-  }
-
-  return (sorted[mid - 1] + sorted[mid]) / 2;
 }
 
 interface SpectrumPreviewProps {
@@ -203,7 +167,7 @@ function SpectrumPreview({ spectrum, anchors }: SpectrumPreviewProps) {
     }
 
     const _scaleX = scaleX();
-    const _scaleY = scaleY(spectrum.id);
+    const _scaleY = scaleY();
 
     const pathBuilder = new PathBuilder();
 
