@@ -33,7 +33,7 @@ function getAnchors(
 ): Array<{ id: string; x: number }> {
   const xValues: number[] =
     filterValue?.anchors?.x ?? getBaselineAnchors(spectrum.data).x;
-  return xValues.map((x) => ({ id: crypto.randomUUID(), x }));
+  return Array.from(xValues).map((x) => ({ id: crypto.randomUUID(), x }));
 }
 
 export function useFilterSyncOptions<T>(): FilterSyncOptionsState<T> {
