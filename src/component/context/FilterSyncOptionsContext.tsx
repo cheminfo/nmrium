@@ -1,3 +1,5 @@
+import type { Spectrum1D } from '@zakodium/nmrium-core';
+import { getBaselineAnchors } from 'nmr-processing';
 import type { ReactNode } from 'react';
 import {
   createContext,
@@ -24,6 +26,15 @@ interface FilterSyncOptionsState<T> {
 
 const FilterSyncOptionsContext =
   createContext<FilterSyncOptionsState<unknown> | null>(null);
+
+function getAnchors(
+  filterValue: any,
+  spectrum: Spectrum1D,
+): Array<{ id: string; x: number }> {
+  const xValues: number[] =
+    filterValue?.anchors?.x ?? getBaselineAnchors(spectrum.data).x;
+  return xValues.map((x) => ({ id: crypto.randomUUID(), x }));
+}
 
 export function useFilterSyncOptions<T>(): FilterSyncOptionsState<T> {
   const context = useContext(FilterSyncOptionsContext);
@@ -100,9 +111,8 @@ export function FilterSyncOptionsProvider({
     toolOptions: { selectedTool },
   } = useChartData();
   const spectrum = useTempSpectrum();
-  const prevFilterRef = useRef<typeof filter | null>(null);
   const isBaselineCorrection =
-    filter && selectedTool === 'baselineCorrection' && isSpectrum1D(spectrum);
+    selectedTool === 'baselineCorrection' && isSpectrum1D(spectrum);
 
   const updateFilterOptions = useCallback(
     (options: FilterSyncOptionsUpdater<unknown>) => {
@@ -116,22 +126,11 @@ export function FilterSyncOptionsProvider({
 
   useEffect(() => {
     if (isBaselineCorrection) {
-      const filterChanged = prevFilterRef.current !== filter;
-
-      if (filterChanged) {
-        const anchors = Array.from(filter.value.anchors?.x ?? []).map(
-          (x: number) => ({
-            id: crypto.randomUUID(),
-            x,
-          }),
-        );
-        setSharedFilterOptions({ ...filter.value, anchors });
-      }
+      const anchors = getAnchors(filter?.value, spectrum);
+      setSharedFilterOptions({ ...filter?.value, anchors });
     } else {
       setSharedFilterOptions(null);
     }
-
-    prevFilterRef.current = isBaselineCorrection ? filter : null;
   }, [isBaselineCorrection, filter, spectrum]);
 
   const state = useMemo<FilterSyncOptionsState<unknown>>(
