@@ -10,6 +10,7 @@ import { useChartData } from '../context/ChartContext.js';
 import { ScaleProvider } from '../context/ScaleContext.js';
 import Spinner from '../loader/Spinner.js';
 
+import { BaselinePreview } from './BaselinePreview.tsx';
 import { BrushTracker1D } from './BrushTracker1D.js';
 import FooterBanner from './FooterBanner.js';
 import { SVGContent1D } from './SVGContent1D.js';
@@ -61,6 +62,7 @@ function InnerViewer1D(props: InnerViewer1DProps) {
                 </MouseTracker>
               </BrushTracker1D>
             )}
+            <BaselinePreview />
           </div>
         </ViewerResponsiveWrapper>
       )}
