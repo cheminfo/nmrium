@@ -72,7 +72,7 @@ function resolveVisuals(
     return { fill: dragFill, stroke: dragStroke, cursor: CUR_MOVE };
   }
   if (state === 'hovered') {
-    return { fill: hoverFill, stroke: hoverStroke, cursor: 'default' };
+    return { fill: hoverFill, stroke: hoverStroke, cursor: CUR_MOVE };
   }
   return { fill: idleFill, stroke: idleStroke, cursor: 'default' };
 }
