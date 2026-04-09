@@ -64,6 +64,14 @@ export function BaselinePreview() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scaleX, scaleY, shiftY } = useScaleChecked();
 
+  const anchors = useMemo(
+    () =>
+      (sharedFilterOptions?.anchors ?? []).map((a) =>
+        draggingAnchor?.id === a.id ? { ...a, x: draggingAnchor.x } : a,
+      ),
+    [sharedFilterOptions?.anchors, draggingAnchor],
+  );
+
   if (
     !isSpectrum1D(spectrum) ||
     selectedTool !== 'baselineCorrection' ||
@@ -71,10 +79,6 @@ export function BaselinePreview() {
   ) {
     return;
   }
-
-  const anchors = (sharedFilterOptions?.anchors ?? []).map((a) =>
-    draggingAnchor?.id === a.id ? { ...a, x: draggingAnchor.x } : a,
-  );
 
   function handleDragMove(id: string, newX: number) {
     const updated = { id, x: scaleX().invert(newX) };
@@ -151,20 +155,25 @@ function SpectrumPreview({ spectrum, anchors }: SpectrumPreviewProps) {
   const { sharedFilterOptions } =
     useFilterSyncOptions<BaselineCorrectionOptions>();
 
-  const paths = useMemo(() => {
-    const { x } = spectrum.data;
+  const baselineData = useMemo(() => {
+    const { x, re } = spectrum.data;
 
-    let y: Float64Array = new Float64Array(x.length);
-
-    if (sharedFilterOptions && anchors.length > 1) {
-      const options = {
-        ...getBaselineValues('polynomial'),
-        ...sharedFilterOptions,
-        anchors: mapAnchors(spectrum, anchors),
-      };
-      const { re } = spectrum.data;
-      y = xyBaselineCalculation({ x, y: re }, options) as Float64Array;
+    if (!sharedFilterOptions || anchors.length <= 1) {
+      return { x, y: new Float64Array(x.length) };
     }
+
+    const options = {
+      ...getBaselineValues('polynomial'),
+      ...sharedFilterOptions,
+      anchors: mapAnchors(spectrum, anchors),
+    };
+
+    const y = xyBaselineCalculation({ x, y: re }, options) as Float64Array;
+    return { x, y };
+  }, [anchors, sharedFilterOptions, spectrum]);
+
+  const paths = useMemo(() => {
+    const { x, y } = baselineData;
 
     const _scaleX = scaleX();
     const _scaleY = scaleY();
@@ -186,15 +195,7 @@ function SpectrumPreview({ spectrum, anchors }: SpectrumPreviewProps) {
     }
 
     return pathBuilder.toString();
-  }, [
-    sharedFilterOptions,
-    spectrum,
-    anchors,
-    scaleX,
-    scaleY,
-    shiftY,
-    activeSpectrum?.index,
-  ]);
+  }, [baselineData, scaleX, scaleY, shiftY, activeSpectrum?.index]);
   return (
     <SVGWrapper>
       <path
