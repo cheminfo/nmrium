@@ -138,6 +138,7 @@ function PeakAnnotationsSpreadMode(props: PeakAnnotationsSpreadModeProps) {
             height={roundedBoxHeight}
             fill={isDragActive ? 'white' : 'transparent'}
             opacity={isDragActive ? 0.9 : 0}
+            pointerEvents="none"
           />
           <g ref={ref}>
             {mapPeaks.map((group) => {
@@ -242,6 +243,7 @@ function PeakAnnotation(props: PeakAnnotationProps) {
         stroke={color}
         fill="transparent"
         strokeWidth={highlight.isActive ? '3px' : '1px'}
+        pointerEvents="none"
       />
     </g>
   );
