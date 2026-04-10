@@ -2,7 +2,6 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import react from '@vitejs/plugin-react';
-import analyze from 'rollup-plugin-analyzer';
 import type { AliasOptions } from 'vite';
 import { defaultClientConditions, defaultServerConditions } from 'vite';
 import { defineConfig } from 'vitest/config';
@@ -21,30 +20,35 @@ export default () => {
 
   return defineConfig({
     base: './',
-    esbuild: {
-      jsx: 'automatic',
-      sourcemap: 'inline',
-    },
     build: {
       sourcemap: 'inline',
-      rollupOptions: {
-        // @ts-expect-error analyzer types are wrong.
-        plugins: process.env.ANALYZE ? [analyze()] : [],
+      rolldownOptions: {
         output: {
-          manualChunks(id) {
-            if (id.includes('node_modules/openchemlib/')) {
-              return 'openchemlib';
-            }
+          strictExecutionOrder: true,
+          codeSplitting: {
 
-            if (id.includes('node_modules')) {
-              return 'vendor';
-            }
+            groups: [
+              {
+                name: 'openchemlib', test: 'node_modules/openchemlib/',
+                entriesAware: true,
+              },
+              {
+                name: 'd3',
+                test: /node_modules\/d3[-/]/,
+                entriesAware: true,
+              },
+              {
+                name: 'blueprint',
+                test: 'node_modules/@blueprintjs/',
+                entriesAware: true,
+              },
+              { name: 'vendor', test: 'node_modules/', entriesAware: true, maxSize: 500_000 },
+            ],
 
-            return undefined;
-          },
+          }
         },
       },
-      minify: process.env.NO_MINIFY ? false : 'esbuild',
+      minify: process.env.NO_MINIFY ? false : 'oxc',
     },
     plugins: [react()],
     resolve: {
