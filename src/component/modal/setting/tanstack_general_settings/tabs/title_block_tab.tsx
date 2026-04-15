@@ -76,7 +76,7 @@ const TableFields = withForm({
       name: 'infoBlock.fields',
       mode: 'array',
     });
-    const { removeValue, setValue, pushValue, name } = fields;
+    const { removeValue, setValue, pushValue, name, store } = fields;
 
     const [autoFocus, setAutoFocus] = useState<string>('');
     function onAddField() {
@@ -180,7 +180,7 @@ const TableFields = withForm({
 
     // It seems fields.setValue don't always trigger rerender
     // so fields.state.value can de-sync and cause weird behavior with DnD reorder.
-    const fieldsData = useStore(fields.store, (s) => s.value);
+    const fieldsData = useStore(store, (s) => s.value);
 
     return (
       <TableSection

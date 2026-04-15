@@ -74,8 +74,8 @@ function useSignalsOverlap(axis: IndicationLinesAxis, spectrum: Spectrum1D) {
   const isOverXAxis = axis === 'x';
 
   const processedSignals: ProcessedSignal[] = signals.map((signal) => {
-    const { delta } = signal;
-    const text = signal.assignment ?? '';
+    const { delta, assignment } = signal;
+    const text = assignment ?? '';
     const labelWidth = getTextWidth(text);
 
     return {

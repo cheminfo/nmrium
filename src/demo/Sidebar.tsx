@@ -91,12 +91,12 @@ const SideBarWrapper = styled.div<MenuStatus>`
 `;
 
 function Sidebar(props: any) {
-  const navigate = useNavigate();
-  const routes = useMemo(() => {
-    return buildMenu(props.routes);
-  }, [props.routes]);
+  const { menuIsClosed, routes, onMenuToggle } = props;
 
-  const { menuIsClosed } = props;
+  const navigate = useNavigate();
+  const menu = useMemo(() => {
+    return buildMenu(routes);
+  }, [routes]);
 
   return (
     <SideBarContainer isMenuClosed={menuIsClosed} className="demo-side-bar">
@@ -104,7 +104,7 @@ function Sidebar(props: any) {
         <TitleContainer isMenuClosed={menuIsClosed}>
           <Title>NMRium</Title>
         </TitleContainer>
-        <MenuButton type="button" onClick={props.onMenuToggle}>
+        <MenuButton type="button" onClick={onMenuToggle}>
           <FaBars />
         </MenuButton>
       </SideBarHeader>
@@ -125,7 +125,7 @@ function Sidebar(props: any) {
           }}
           mode="inline"
         >
-          {routes}
+          {menu}
         </Menu>
       </SideBarWrapper>
     </SideBarContainer>

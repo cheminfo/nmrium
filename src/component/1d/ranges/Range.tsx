@@ -116,7 +116,7 @@ function Range(options: RangeProps) {
     dispatch({
       type: 'UNASSIGN_1D_SIGNAL',
       payload: {
-        rangeKey: range.id,
+        rangeKey: id,
         signalIndex: 0,
       },
     });
@@ -141,7 +141,7 @@ function Range(options: RangeProps) {
     isUnAssignLabelButtonVisible: hasOnlyOneSignal && !!signal.assignment,
     onAssign: assignHandler,
     onUnAssign: unAssignHandler,
-    rangeId: range.id,
+    rangeId: id,
   });
 
   const isOpen = isAssignBtnTrigged.current ? isAssignmentActive : undefined;
@@ -200,7 +200,7 @@ function Range(options: RangeProps) {
                   fill={isHighlighted || isActive ? '#ff6f0057' : 'transparent'}
                   data-no-export="true"
                 />
-                {range.signals.map((signal) => (
+                {signals.map((signal) => (
                   <AssignmentLabel
                     key={signal.id}
                     stackIndex={signalsStackIndexes?.[signal.id] || 0}

@@ -39,7 +39,7 @@ type InitializeMoleculeOptions = { text: string } & Omit<
 export function initMolecule(
   options: InitializeMoleculeOptions,
 ): StateMoleculeExtended {
-  const { id = crypto.randomUUID(), label = 'p#', text } = options;
+  const { id = crypto.randomUUID(), label = 'p#', text, selector } = options;
 
   const molecule = Molecule.fromText(text);
 
@@ -55,7 +55,7 @@ export function initMolecule(
     id,
     molfile,
     label,
-    selector: options.selector,
+    selector,
     mf: mfInfo.formula,
     em: mfInfo.absoluteWeight,
     mw: mfInfo.relativeWeight,

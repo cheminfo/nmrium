@@ -123,6 +123,7 @@ function ReactTableRow(props: ReactTableRowPropsWithHighlight) {
         const {
           column: { style },
           isRowSpanned,
+          rowSpan,
         } = cell;
         if (isRowSpanned) {
           return null;
@@ -131,7 +132,7 @@ function ReactTableRow(props: ReactTableRowPropsWithHighlight) {
 
           return (
             <td
-              rowSpan={cell.rowSpan}
+              rowSpan={rowSpan}
               key={columnKey}
               {...otherColumnProps}
               onContextMenu={(e) => {

@@ -180,10 +180,9 @@ export function SVGTable<T>(props: SVGTableProps<T>) {
                   cellBoxProps,
                   cellTextProps,
                   _columnOptions: { key: columnKey },
+                  rowSpanGroupKey,
                 } = col;
-                const groupKey = col.rowSpanGroupKey
-                  ? row?.[col.rowSpanGroupKey]
-                  : '';
+                const groupKey = rowSpanGroupKey ? row?.[rowSpanGroupKey] : '';
                 const cellKey = formatKey({
                   groupKey: String(groupKey),
                   columnKey,

@@ -296,7 +296,7 @@ function FiltersInner(props: FiltersInnerProps) {
       {filtersList.map((filter, index) => {
         const { id, name, error, value } = filter;
         const FilterOptionsPanel = filterOptionPanels[name];
-        const enableEdit = activeFilterID === id || filter.value === null;
+        const enableEdit = activeFilterID === id || value === null;
         return (
           <Sections.Item
             index={index}

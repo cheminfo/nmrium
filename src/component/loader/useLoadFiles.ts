@@ -83,7 +83,6 @@ export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
     [core, dispatchPayload],
   );
 
-  const currentPreferences = preferences.current;
   const loadUserFiles = useCallback(
     async (files: File[] | FileCollection) => {
       if (
@@ -96,8 +95,7 @@ export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
         return;
       }
 
-      const { onLoadProcessing } = workspacePreferences;
-      const { nmrLoaders: selector } = currentPreferences;
+      const { onLoadProcessing, nmrLoaders: selector } = workspacePreferences;
 
       const parsingOptions: Partial<ParsingOptions> = {
         selector,
@@ -129,7 +127,6 @@ export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
       loadNmriumArchives,
       logger,
       onOpenMetaInformation,
-      currentPreferences,
       workspacePreferences,
     ],
   );

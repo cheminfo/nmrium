@@ -27,7 +27,7 @@ export const ExternalApiTab = withForm({
   render: function ExternalApiTab({ form }) {
     const { Field } = form;
     const field = useField({ form, name: 'externalAPIs', mode: 'array' });
-    const { name, pushValue, insertValue, removeValue } = field;
+    const { name, pushValue, insertValue, removeValue, state } = field;
 
     const columns = useMemo(() => {
       const helper = createColumnHelper<API>();
@@ -108,7 +108,7 @@ export const ExternalApiTab = withForm({
         }
       >
         <TableSettings
-          data={field.state.value}
+          data={state.value}
           columns={columns}
           getRowId={getRowId}
           emptyContent="No external APIs"

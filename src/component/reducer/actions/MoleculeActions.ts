@@ -241,9 +241,9 @@ function clearAssignments(draft: Draft<State>, diaIDs: DiaIDAndInfo[]) {
     } else {
       const zones = spectrum.zones.values;
       for (const zone of zones) {
-        const { signals = [] } = zone;
-        clearDiaIDs(zone.x, { diaIDsObj, nucleus });
-        clearDiaIDs(zone.y, { diaIDsObj, nucleus });
+        const { x, y, signals = [] } = zone;
+        clearDiaIDs(x, { diaIDsObj, nucleus });
+        clearDiaIDs(y, { diaIDsObj, nucleus });
 
         for (const signal of signals) {
           clearDiaIDs(signal.x, { diaIDsObj, nucleus });

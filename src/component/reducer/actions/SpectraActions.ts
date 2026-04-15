@@ -444,12 +444,12 @@ function handleChangeSpectrumSetting(
   draft: Draft<State>,
   action: ChangeSpectrumSettingAction,
 ) {
-  const { id, display } = action.payload;
+  const id = action.payload.id;
 
   const spectrum = getSpectrum(draft, id);
   if (!spectrum) return;
 
-  spectrum.display = display;
+  spectrum.display = action.payload.display;
   if (isFt2DSpectrum(spectrum) && 'contourOptions' in action.payload) {
     draft.view.spectraContourLevels[id] = action.payload.contourOptions;
     const { checkLevel } = contoursManager(draft.view.spectraContourLevels[id]);

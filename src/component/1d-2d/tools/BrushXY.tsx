@@ -158,14 +158,14 @@ export default function BrushXY(props: BrushXYProps) {
   let x1;
 
   if (brush.type === 'X') {
-    y1 = Math.max(brushTracker.startY, margin.top);
+    y1 = Math.max(startY, margin.top);
   } else if (brush.type === 'XY') {
-    y1 = Math.round((brushTracker.endY + brushTracker.startY) / 2);
+    y1 = Math.round((endY + startY) / 2);
   }
   if (brush.type === 'Y') {
-    x1 = Math.max(brushTracker.startX, margin.left);
+    x1 = Math.max(startX, margin.left);
   } else if (brush.type === 'XY') {
-    x1 = Math.round((brushTracker.endX + brushTracker.startX) / 2);
+    x1 = Math.round((endX + startX) / 2);
   }
 
   const invScaleX = 1 / scaleX;
@@ -247,8 +247,8 @@ export default function BrushXY(props: BrushXYProps) {
 
   if (scaleX === 0 || scaleY === 0) return;
 
-  const centerX = Math.round((brushTracker.endX + brushTracker.startX) / 2);
-  const centerY = Math.round((brushTracker.endY + brushTracker.startY) / 2);
+  const centerX = Math.round((endX + startX) / 2);
+  const centerY = Math.round((endY + startY) / 2);
 
   return (
     <div

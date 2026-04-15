@@ -30,28 +30,22 @@ export function get2DColor(
   spectrum: any,
   options: ColorOptions | RandomColorOptions,
 ): Color2D {
-  const {
-    regenerate = false,
-    usedColors = {} as Partial<UsedColors>,
-    colors,
-  } = options;
-
-  let color: Partial<Color2D> = {};
+  let color: Partial<Color2D>;
   if (
     spectrum?.display?.negativeColor === undefined ||
     spectrum?.display?.positiveColor === undefined ||
-    regenerate
+    options.regenerate
   ) {
     const isRandom = isRandomColorGeneration(options) && options.random;
     const customColor =
-      getCustomColor(spectrum, colors) ||
+      getCustomColor(spectrum, options.colors) ||
       ((color2D as any)?.[spectrum.info.experiment] ?? null);
 
     if (customColor && !isRandom) {
       color = customColor;
     } else {
       const positiveColor = generateColor({
-        usedColors: usedColors?.['2d'] || [],
+        usedColors: options.usedColors?.['2d'] || [],
       });
       const negativeColor = adjustAlpha(positiveColor, 50);
       color = { positiveColor, negativeColor };
@@ -61,8 +55,8 @@ export function get2DColor(
       spectrum?.display || {};
     color = { positiveColor, negativeColor };
   }
-  if (usedColors['2d'] && color.positiveColor) {
-    usedColors['2d'].push(color.positiveColor);
+  if (options.usedColors?.['2d'] && color.positiveColor) {
+    options.usedColors['2d'].push(color.positiveColor);
   }
 
   return {

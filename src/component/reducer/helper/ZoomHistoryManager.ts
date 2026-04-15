@@ -77,7 +77,6 @@ export function addToBrushHistory(
   draft: Draft<State>,
   options: { axis?: BrushAxis | null; xDomain: number[]; yDomain: number[] },
 ) {
-  const { displayerMode } = draft;
   const { axis } = options;
   let { xDomain, yDomain } = options;
 
@@ -106,7 +105,7 @@ export function addToBrushHistory(
       break;
   }
 
-  if (displayerMode === '1D' && axis && ['XY', 'Y'].includes(axis)) {
+  if (draft.displayerMode === '1D' && axis && ['XY', 'Y'].includes(axis)) {
     const ids = Object.keys(draft.yDomains);
     for (const id of ids) {
       draft.yDomains[id] = yDomain;

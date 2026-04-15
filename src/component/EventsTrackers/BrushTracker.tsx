@@ -250,9 +250,17 @@ export function BrushTracker(options: BrushTrackerProps) {
 
       function moveCallback(event: globalThis.PointerEvent) {
         isDraggingRef.current = true; // set flag to true to skip click event if the user dragged the mouse
-        const { clientX, clientY, shiftKey, altKey, ctrlKey } = event;
+        const {
+          clientX,
+          clientY,
+          screenX,
+          screenY,
+          shiftKey,
+          altKey,
+          ctrlKey,
+        } = event;
 
-        if (event.ctrlKey) {
+        if (ctrlKey) {
           if (boundingRectRef.current) {
             const boundingRect = boundingRectRef.current;
 
@@ -281,10 +289,10 @@ export function BrushTracker(options: BrushTrackerProps) {
           dispatch({
             type: 'MOVE',
             payload: {
-              screenX: event.screenX,
-              screenY: event.screenY,
-              clientX: event.clientX,
-              clientY: event.clientY,
+              screenX,
+              screenY,
+              clientX,
+              clientY,
             },
           });
         }

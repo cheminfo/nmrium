@@ -111,6 +111,8 @@ function prepareWheel(value: number, options: WheelOptions) {
   const sign = Math.sign(value);
   const direction = invertScroll ? -sign : sign;
 
+  // This function is doing the bad practice of mutating its parameters.
+  /* eslint-disable unicorn/consistent-destructuring */
   const { positive, negative } = contourOptions;
   const {
     contourLevels: [minPositiveLevel, maxPositiveLevel],
@@ -145,6 +147,8 @@ function prepareWheel(value: number, options: WheelOptions) {
       contourOptions.negative.contourLevels[0] += direction * 2;
     }
   }
+  /* eslint-enable unicorn/consistent-destructuring */
+
   return contourOptions;
 }
 
