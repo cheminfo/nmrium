@@ -88,7 +88,7 @@ export default function useAtomAssignment() {
   const highlightedIdDsRef = useRef<string[]>([]);
   const assignments = useAssignmentContext();
   const { getAssignmentLabelById } = useExtractAtomAssignmentLabel();
-  const { activated: activatedAssignment } = assignments;
+  const { activated: activatedAssignment, data: assignmentsData } = assignments;
 
   const activatedKey = activatedAssignment
     ? activatedAssignment.id
@@ -96,8 +96,8 @@ export default function useAtomAssignment() {
 
   // used for atom highlighting for now, until we would like to highlight atoms per axis separately
   const assignedDiaIDsMerged = useMemo(
-    () => flattenAssignedDiaIDs(assignments.data),
-    [assignments],
+    () => flattenAssignedDiaIDs(assignmentsData),
+    [assignmentsData],
   );
 
   const currentDiaIDsToHighlight = useMemo(() => {
@@ -131,14 +131,20 @@ export default function useAtomAssignment() {
     }
 
     const highlightedAssignmentsIDs = highlighted.filter((highlightID) => {
-      return assignments.data[highlightID];
+      return assignmentsData[highlightID];
     });
 
     const highlights = highlightedAssignmentsIDs.flatMap((highlightID) =>
-      getSignalsDiaIDs(currentSpectrum, assignments.data, highlightID),
+      getSignalsDiaIDs(currentSpectrum, assignmentsData, highlightID),
     );
     return getCurrentDiaIDsToHighlight(assignments).concat(highlights);
-  }, [assignments, highlightData.highlight, spectrum, tracesSpectra]);
+  }, [
+    assignments,
+    assignmentsData,
+    highlightData.highlight,
+    spectrum,
+    tracesSpectra,
+  ]);
 
   interface Assign1DOptions {
     spectrum: Spectrum1D;
@@ -218,7 +224,7 @@ export default function useAtomAssignment() {
     if (checkModifierKeyActivated(event) || !activatedAssignment) return;
 
     event.preventDefault(); // prevent floating form custom label edit
-    const { axis, id } = activatedAssignment;
+    const { axis, id, spectrumId } = activatedAssignment;
 
     if (!id || !axis) {
       return;
@@ -242,10 +248,8 @@ export default function useAtomAssignment() {
     // determine the level of setting the diaIDs array (range vs. signal level) and save there
     // let nbAtoms = 0;
     // on range/zone level
-    const currentSpectrum = activatedAssignment.spectrumId
-      ? spectra.find(
-          (spectrum) => spectrum.id === activatedAssignment.spectrumId,
-        )
+    const currentSpectrum = spectrumId
+      ? spectra.find((spectrum) => spectrum.id === spectrumId)
       : spectrum;
 
     if (!currentSpectrum) return;
@@ -253,17 +257,12 @@ export default function useAtomAssignment() {
     if (isSpectrum1D(currentSpectrum)) {
       assign1DAtom({
         spectrum: currentSpectrum,
-        assignId: activatedAssignment.id,
+        assignId: id,
         atom: atomInformation,
         assignmentLabel,
       });
     } else {
-      assign2DAtom(
-        currentSpectrum,
-        activatedAssignment.id,
-        atomInformation,
-        axis,
-      );
+      assign2DAtom(currentSpectrum, id, atomInformation, axis);
     }
     assignments.activate({ id: activatedKey, axis });
   }

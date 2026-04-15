@@ -253,6 +253,7 @@ function initData(
 
   const {
     nmriumState: { data, view },
+    aggregator,
   } = action.payload;
 
   const viewState = view as ViewState;
@@ -272,7 +273,7 @@ function initData(
     });
   } else {
     draft.aggregator = FileCollection.fromCollection(draft.aggregator);
-    draft.aggregator.appendFileCollection(action.payload.aggregator, '');
+    draft.aggregator.appendFileCollection(aggregator, '');
 
     if (view) {
       const defaultViewState = getDefaultViewState();

@@ -37,9 +37,9 @@ export const AutoProcessingTab = withForm({
 const AutoProcessingFilters = withFieldGroup({
   defaultValues: defaultGeneralSettingsFormValues.onLoadProcessing.filters,
   render: function Render({ group }) {
-    const { Section } = group;
+    const { Section, state } = group;
 
-    const nuclei = Object.keys(group.state.values);
+    const nuclei = Object.keys(state.values);
 
     return (
       <>
@@ -59,9 +59,9 @@ const defaultValuesNucleus: z.input<typeof filtersValidation> = [
 const NucleusFilters = withFieldGroup({
   defaultValues: defaultValuesNucleus,
   render: function Render({ group }) {
-    const { AppField } = group;
+    const { AppField, state } = group;
 
-    const filters = group.state.values;
+    const filters = state.values;
     if (!filters) return null;
 
     return filters.map(({ name }, index) => {

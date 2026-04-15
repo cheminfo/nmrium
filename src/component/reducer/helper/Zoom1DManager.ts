@@ -39,11 +39,12 @@ function wheelZoom(
 function mapSharedDomain(draft: Draft<State>) {
   const {
     originDomain: { yDomain },
+    yDomains,
   } = draft;
 
   const targetDomain: Record<string, number[]> = {};
 
-  for (const spectrumKey of Object.keys(draft.yDomains)) {
+  for (const spectrumKey of Object.keys(yDomains)) {
     targetDomain[spectrumKey] = yDomain;
   }
   return targetDomain;

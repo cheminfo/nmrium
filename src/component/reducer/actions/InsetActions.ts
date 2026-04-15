@@ -116,6 +116,7 @@ function handleAddInset(draft: Draft<State>, action: AddInsetAction) {
     },
     width: baseWidth,
     height: baseHeight,
+    insets,
   } = draft;
   const { id: spectrumKey } = spectrum;
 
@@ -143,10 +144,10 @@ function handleAddInset(draft: Draft<State>, action: AddInsetAction) {
     },
   };
 
-  if (draft.insets?.[nucleus]) {
-    draft.insets[nucleus].push(inset);
+  if (insets?.[nucleus]) {
+    insets[nucleus].push(inset);
   } else {
-    draft.insets[nucleus] = [inset];
+    insets[nucleus] = [inset];
   }
 }
 
@@ -157,11 +158,12 @@ function handleDeleteInset(draft: Draft<State>, action: DeleteInsetAction) {
     view: {
       spectra: { activeTab },
     },
+    insets,
   } = draft;
 
   if (!activeTab) return;
 
-  draft.insets[activeTab] = draft.insets[activeTab].filter(
+  insets[activeTab] = insets[activeTab].filter(
     (inset) => inset.id !== insetKey,
   );
 }
@@ -308,10 +310,11 @@ function setZoom(
   const { scale = 1, inset } = options;
   const {
     bounding: { height },
+    spectrumKey,
   } = inset;
   const { originDomain } = draft;
 
-  const originalYDomain = originDomain.yDomains[inset.spectrumKey];
+  const originalYDomain = originDomain.yDomains[spectrumKey];
 
   const scaleValue = scaleLinear(originalYDomain, [
     height - insetMargin.bottom,

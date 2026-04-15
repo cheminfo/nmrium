@@ -149,7 +149,7 @@ function resetSelectedTool(draft: Draft<State>) {
     data: { activeFilterID },
   } = draft.toolOptions;
   if ((selectedTool && Tools[selectedTool].isFilter) || activeFilterID) {
-    resetTool(draft, { reset: true, toolId: draft.toolOptions.selectedTool });
+    resetTool(draft, { reset: true, toolId: selectedTool });
   }
 }
 
@@ -679,6 +679,7 @@ function levelChangeHandler(draft: Draft<State>, action: LevelChangeAction) {
   const {
     data,
     view: {
+      spectraContourLevels,
       spectra: { activeTab },
     },
   } = draft;
@@ -697,9 +698,7 @@ function levelChangeHandler(draft: Draft<State>, action: LevelChangeAction) {
 
   try {
     for (const spectrum of spectra as Spectrum2D[]) {
-      const zoom = contoursManager(
-        draft.view.spectraContourLevels[spectrum.id],
-      );
+      const zoom = contoursManager(spectraContourLevels[spectrum.id]);
       zoom.wheel(deltaY, { altKey, invertScroll });
     }
   } catch (error) {

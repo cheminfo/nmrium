@@ -61,7 +61,7 @@ const Spectra1DColors = withForm({
       name: 'spectraColors.oneDimension',
       mode: 'array',
     });
-    const { insertValue, removeValue } = field;
+    const { insertValue, removeValue, state } = field;
 
     const { data: chartData } = useChartData();
     const { datalist } = useMemo(() => {
@@ -154,7 +154,7 @@ const Spectra1DColors = withForm({
         }
       >
         <TableSettings
-          data={field.state.value}
+          data={state.value}
           columns={COLUMNS}
           getRowId={get1DRowId}
           emptyContent="No criteria colors"
@@ -181,7 +181,7 @@ const Spectra2DColors = withForm({
       name: 'spectraColors.twoDimensions',
       mode: 'array',
     });
-    const { insertValue, removeValue } = field;
+    const { insertValue, removeValue, state } = field;
 
     const handleAdd = useCallback(
       (index: number) => {
@@ -283,7 +283,7 @@ const Spectra2DColors = withForm({
         }
       >
         <TableSettings
-          data={field.state.value}
+          data={state.value}
           columns={COLUMNS}
           getRowId={get2DRowId}
           emptyContent="No criteria colors"

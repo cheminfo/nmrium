@@ -267,9 +267,9 @@ function SectionBody(props: HTMLAttributes<HTMLDivElement>) {
 
 function SectionItem(props: SectionItemProps) {
   const {
-    dragLabel = props.title,
-    id = props.title,
     title,
+    dragLabel = title,
+    id = title,
     onClick,
     serial,
     rightElement,

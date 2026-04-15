@@ -171,10 +171,10 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
 
   const spectra = useMemo(() => {
     if (sortOptions) {
-      return sortSpectra(state.data, sortOptions);
+      return sortSpectra(spectraData, sortOptions);
     }
-    return state.data;
-  }, [sortOptions, state.data]);
+    return spectraData;
+  }, [sortOptions, spectraData]);
 
   const updatedState = useMemo(() => {
     return produce(state, (draft) => {

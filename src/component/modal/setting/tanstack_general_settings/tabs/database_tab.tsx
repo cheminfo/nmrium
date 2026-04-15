@@ -31,7 +31,7 @@ export const DatabaseTab = withForm({
   defaultValues: defaultGeneralSettingsFormValues,
   render: function Render({ form }) {
     const field = useField({ form, name: 'databases.data', mode: 'array' });
-    const { removeValue, insertValue } = field;
+    const { removeValue, insertValue, state } = field;
     const { resetField, Field } = form;
 
     const handleDelete = useCallback(
@@ -172,7 +172,7 @@ export const DatabaseTab = withForm({
         }
       >
         <TableSettings
-          data={field.state.value}
+          data={state.value}
           columns={COLUMNS}
           getRowId={getRowId}
           emptyContent="No database item"

@@ -27,28 +27,23 @@ export function get1DColor(
   spectrum: any,
   options: ColorOptions | RandomColorOptions,
 ) {
-  const {
-    regenerate = false,
-    usedColors = {} as Partial<UsedColors>,
-    colors,
-  } = options;
-  let color = 'black';
+  let color: string;
 
-  if (!spectrum?.display?.color || regenerate) {
-    const customColor = getCustomColor(spectrum, colors);
+  if (!spectrum?.display?.color || options.regenerate) {
+    const customColor = getCustomColor(spectrum, options.colors);
     const isRandom = isRandomColorGeneration(options) && options.random;
 
     if (customColor && !isRandom) {
       color = customColor;
     } else {
-      color = generateColor({ usedColors: usedColors['1d'] || [] });
+      color = generateColor({ usedColors: options.usedColors?.['1d'] || [] });
     }
   } else {
     color = spectrum.display.color;
   }
 
-  if (usedColors['1d']) {
-    usedColors['1d'].push(color);
+  if (options.usedColors?.['1d']) {
+    options.usedColors['1d'].push(color);
   }
 
   return { color };

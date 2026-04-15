@@ -85,7 +85,7 @@ function Tree(props: TreeProps) {
       assignment: assignmentLabel,
     },
   } = props;
-  const { from, to, id: rangeID } = range;
+  const { from, to, id: rangeId } = range;
   const { width } = useChartData();
   const { scaleX, shiftY } = useScaleChecked();
   const dispatch = useDispatch();
@@ -95,7 +95,7 @@ function Tree(props: TreeProps) {
   const assignment = useAssignment(signalKey);
   const highlight = useHighlight(extractID(signalKey, assignment), {
     type: 'SIGNAL_1D',
-    extra: { id: signalKey, rangeId: rangeID },
+    extra: { id: signalKey, rangeId },
   });
 
   let widthRatio: number;
@@ -135,7 +135,7 @@ function Tree(props: TreeProps) {
     isUnAssignLabelButtonVisible: !!assignmentLabel,
     onAssign: assignHandler,
     onUnAssign: unAssignHandler,
-    rangeId: range.id,
+    rangeId,
   });
 
   if (!multiplicity) return null;
@@ -149,7 +149,7 @@ function Tree(props: TreeProps) {
     dispatch({
       type: 'UNASSIGN_1D_SIGNAL',
       payload: {
-        rangeKey: range.id,
+        rangeKey: rangeId,
         signalIndex,
       },
     });

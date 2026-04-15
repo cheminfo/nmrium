@@ -83,7 +83,7 @@ export default function BaseLineCorrectionOptionsPanel(
     label: string;
   }) {
     onAlgorithmChange(item);
-    const { values } = getBaselineData(item.value, props.filter?.value || {});
+    const { values } = getBaselineData(item.value, filter?.value || {});
     reset(values);
     setTimeout(submitHandler, 0);
   }

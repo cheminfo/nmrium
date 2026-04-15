@@ -51,11 +51,8 @@ const Container = styled.div<{ color: CSSProperties['backgroundColor'] }>`
     background-color: ${(props) => props.color} !important;
   }
 `;
-export function Spectrum2DSetting({
-  data: SpectrumData,
-  onSubmit,
-}: Spectrum2DSettingProps) {
-  const { id, display } = SpectrumData;
+export function Spectrum2DSetting({ data, onSubmit }: Spectrum2DSettingProps) {
+  const { id, display, data: spectrumData } = data;
   const {
     view: { spectraContourLevels },
   } = useChartData();
@@ -75,7 +72,7 @@ export function Spectrum2DSetting({
           <span style={{ padding: '0 10px' }}>Negative</span>
           <Settings sign="negative" onSubmit={onSubmit} />
         </Container>
-        <Spectrum2DHistogram data={SpectrumData.data} />
+        <Spectrum2DHistogram data={spectrumData} />
       </div>
     </FormProvider>
   );

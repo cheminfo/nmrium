@@ -74,12 +74,16 @@ const {
 } = Filters1D;
 
 const {
+  apodizationDimension1,
+  apodizationDimension2,
   fftDimension1,
   fftDimension2,
   phaseCorrectionTwoDimensions,
   shift2DX,
   shift2DY,
   digitalFilter2D,
+  zeroFillingDimension1,
+  zeroFillingDimension2,
 } = Filters2D;
 interface ShiftOneDimension {
   shift: number;
@@ -709,7 +713,7 @@ function beforeRollback(draft: Draft<State>, filterKey: any) {
       if (activeSpectrum) {
         const datum = current(draft).data[activeSpectrum.index];
         const baselineCorrectionFilter = datum.filters.find(
-          (filter) => filter.name === Filters1D.baselineCorrection.name,
+          (filter) => filter.name === baselineCorrection.name,
         );
 
         const filterOptions = baselineCorrectionFilter?.value;
@@ -926,7 +930,7 @@ function handleApplyZeroFillingDimensionOneFilter(
   });
   draft.data[index] = draft.tempData[index];
 
-  updateView(draft, Filters2D.zeroFillingDimension1.domainUpdateRules);
+  updateView(draft, zeroFillingDimension1.domainUpdateRules);
 }
 //action
 function handleApplyZeroFillingDimensionTwoFilter(
@@ -954,7 +958,7 @@ function handleApplyZeroFillingDimensionTwoFilter(
   });
   draft.data[index] = draft.tempData[index];
 
-  updateView(draft, Filters2D.zeroFillingDimension2.domainUpdateRules);
+  updateView(draft, zeroFillingDimension2.domainUpdateRules);
 }
 
 //action
@@ -1016,7 +1020,7 @@ function handleCalculateZeroFillingDimensionOneFilter(
       filters,
     }) as Spectrum2D;
 
-    Filters2D.zeroFillingDimension1.apply(_data, options);
+    zeroFillingDimension1.apply(_data, options);
 
     const datum = draft.data[index];
 
@@ -1032,7 +1036,7 @@ function handleCalculateZeroFillingDimensionOneFilter(
     draft.xDomains = xDomains;
     draft.yDomains = yDomains;
   } else {
-    disableLivePreview(draft, Filters2D.zeroFillingDimension1.name);
+    disableLivePreview(draft, zeroFillingDimension1.name);
   }
 }
 //action
@@ -1057,7 +1061,7 @@ function handleCalculateZeroFillingDimensionTwoFilter(
       filters,
     }) as Spectrum2D;
 
-    Filters2D.zeroFillingDimension2.apply(_data, options);
+    zeroFillingDimension2.apply(_data, options);
 
     const datum = draft.data[index];
 
@@ -1075,7 +1079,7 @@ function handleCalculateZeroFillingDimensionTwoFilter(
     draft.xDomains = xDomains;
     draft.yDomains = yDomains;
   } else {
-    disableLivePreview(draft, Filters2D.zeroFillingDimension2.name);
+    disableLivePreview(draft, zeroFillingDimension2.name);
   }
 }
 
@@ -1111,8 +1115,6 @@ function handleCalculateApodizationFilter(
       );
 
       for (const filter of datum.filters.slice(index)) {
-        const { name, value } = filter;
-
         delete filter.error;
 
         if (!filter.enabled) {
@@ -1120,8 +1122,9 @@ function handleCalculateApodizationFilter(
         }
 
         try {
-          const filterOptions = name === 'apodization' ? options : value;
-          Filters1D[name].apply(spectrum, filterOptions as any);
+          const filterOptions =
+            filter.name === 'apodization' ? options : filter.value;
+          Filters1D[filter.name].apply(spectrum, filterOptions as any);
         } catch (error: any) {
           filter.error = error.message;
         }
@@ -1156,8 +1159,7 @@ function handleCalculateApodizationDimensionOneFilter(
       data,
       info,
     }) as Spectrum2D;
-
-    Filters2D.apodizationDimension1.apply(_data, options);
+    apodizationDimension1.apply(_data, options);
 
     const datum = draft.data[index];
 
@@ -1166,7 +1168,7 @@ function handleCalculateApodizationDimensionOneFilter(
     }
     datum.data = _data.data;
   } else {
-    disableLivePreview(draft, Filters2D.apodizationDimension1.name);
+    disableLivePreview(draft, apodizationDimension1.name);
   }
 }
 //action
@@ -1190,7 +1192,7 @@ function handleCalculateApodizationDimensionTwoFilter(
       info,
     }) as Spectrum2D;
 
-    Filters2D.apodizationDimension2.apply(_data, options);
+    apodizationDimension2.apply(_data, options);
 
     const datum = draft.data[index];
 
@@ -1199,7 +1201,7 @@ function handleCalculateApodizationDimensionTwoFilter(
     }
     datum.data = _data.data;
   } else {
-    disableLivePreview(draft, Filters2D.apodizationDimension2.name);
+    disableLivePreview(draft, apodizationDimension2.name);
   }
 }
 

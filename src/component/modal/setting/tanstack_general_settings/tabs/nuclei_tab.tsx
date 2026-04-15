@@ -29,7 +29,7 @@ export const NucleiTab = withForm({
     const nucleiField = useField({ form, name: 'nuclei', mode: 'array' });
 
     const { Field } = form;
-    const { insertValue, removeValue, pushValue } = nucleiField;
+    const { insertValue, removeValue, pushValue, state } = nucleiField;
 
     const insertNucleus = useCallback(
       (index: number) => {
@@ -137,7 +137,7 @@ export const NucleiTab = withForm({
         }
       >
         <TableSettings
-          data={nucleiField.state.value}
+          data={state.value}
           columns={COLUMNS}
           emptyContent="No nucleus"
           getRowId={getRowId}

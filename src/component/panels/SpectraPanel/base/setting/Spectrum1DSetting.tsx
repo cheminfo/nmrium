@@ -11,11 +11,8 @@ interface Spectrum1DSettingProps {
   onSubmit: (values: any) => void;
 }
 
-export function Spectrum1DSetting({
-  data: SpectrumData,
-  onSubmit,
-}: Spectrum1DSettingProps) {
-  const { display } = SpectrumData;
+export function Spectrum1DSetting({ data, onSubmit }: Spectrum1DSettingProps) {
+  const { display, data: spectrumData } = data;
   const { control, handleSubmit } = useForm({
     defaultValues: { display },
   });
@@ -42,7 +39,7 @@ export function Spectrum1DSetting({
           }}
         />
       </div>
-      <Spectrum1DHistogram color="red" data={SpectrumData.data} />
+      <Spectrum1DHistogram color="red" data={spectrumData} />
     </div>
   );
 }

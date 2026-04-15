@@ -243,6 +243,7 @@ function toggleDisplayingPeaks(
 ) {
   const {
     view: {
+      [key]: viewOptions,
       spectra: { activeTab: nucleus },
     },
   } = draft;
@@ -250,7 +251,6 @@ function toggleDisplayingPeaks(
   const activeSpectrum = getActiveSpectrum(draft);
   if (!activeSpectrum) return;
 
-  const viewOptions = draft.view[key];
   if (viewOptions[activeSpectrum.id]) {
     viewOptions[activeSpectrum.id].displayingMode =
       viewOptions[activeSpectrum.id].displayingMode === 'single'

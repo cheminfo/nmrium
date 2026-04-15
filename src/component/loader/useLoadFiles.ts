@@ -83,6 +83,9 @@ export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
     [core, dispatchPayload],
   );
 
+  // TODO: Check what's happening here, because this should be the same as
+  //  workspacePreferences since the access is not asynchronous.
+  // eslint-disable-next-line unicorn/consistent-destructuring
   const currentPreferences = preferences.current;
   const loadUserFiles = useCallback(
     async (files: File[] | FileCollection) => {
