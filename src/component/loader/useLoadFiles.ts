@@ -83,10 +83,6 @@ export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
     [core, dispatchPayload],
   );
 
-  // TODO: Check what's happening here, because this should be the same as
-  //  workspacePreferences since the access is not asynchronous.
-  // eslint-disable-next-line unicorn/consistent-destructuring
-  const currentPreferences = preferences.current;
   const loadUserFiles = useCallback(
     async (files: File[] | FileCollection) => {
       if (
@@ -99,8 +95,7 @@ export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
         return;
       }
 
-      const { onLoadProcessing } = workspacePreferences;
-      const { nmrLoaders: selector } = currentPreferences;
+      const { onLoadProcessing, nmrLoaders: selector } = workspacePreferences;
 
       const parsingOptions: Partial<ParsingOptions> = {
         selector,
@@ -132,7 +127,6 @@ export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
       loadNmriumArchives,
       logger,
       onOpenMetaInformation,
-      currentPreferences,
       workspacePreferences,
     ],
   );

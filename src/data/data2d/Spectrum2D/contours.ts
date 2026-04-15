@@ -111,7 +111,7 @@ function prepareWheel(value: number, options: WheelOptions) {
   const sign = Math.sign(value);
   const direction = invertScroll ? -sign : sign;
 
-  // TODO: This function is doing the bad practice of mutating its parameters.
+  // This function is doing the bad practice of mutating its parameters.
   /* eslint-disable unicorn/consistent-destructuring */
   const { positive, negative } = contourOptions;
   const {
