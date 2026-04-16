@@ -201,47 +201,15 @@ function BernsteinFields({
   onValueChange,
 }: AlgorithmFieldProps<BernsteinOptions>) {
   return (
-    <>
-      <NumberInputField
-        labelProps={{ title: 'Degree:', style: headerLabelStyle }}
-        name="degree"
-        control={control}
-        min={1}
-        onValueChange={onValueChange}
-        style={{ width: '60px' }}
-        debounceTime={250}
-      />
-      <NumberInputField
-        labelProps={{ title: 'Max iterations:', style: headerLabelStyle }}
-        name="maxIterations"
-        control={control}
-        min={1}
-        onValueChange={onValueChange}
-        style={{ width: '60px' }}
-        debounceTime={250}
-      />
-      <NumberInputField
-        labelProps={{ title: 'Learning rate:', style: headerLabelStyle }}
-        name="learningRate"
-        control={control}
-        min={0}
-        stepSize={0.1}
-        majorStepSize={0.1}
-        minorStepSize={0.1}
-        onValueChange={onValueChange}
-        style={{ width: '60px' }}
-        debounceTime={250}
-      />
-      <NumberInputField
-        labelProps={{ title: 'Factor Std:', style: headerLabelStyle }}
-        name="factorStd"
-        control={control}
-        min={0}
-        onValueChange={onValueChange}
-        style={{ width: '60px' }}
-        debounceTime={250}
-      />
-    </>
+    <NumberInputField
+      labelProps={{ title: 'Degree:', style: headerLabelStyle }}
+      name="degree"
+      control={control}
+      min={1}
+      onValueChange={onValueChange}
+      style={{ width: '60px' }}
+      debounceTime={250}
+    />
   );
 }
 

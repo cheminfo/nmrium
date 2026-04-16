@@ -143,7 +143,7 @@ export function getBaselineValues(
         tolerance: 1e-6,
         factorStd: 3,
         learningRate: 0.3,
-        degree: 3,
+        degree: 9,
         ...overrides,
       };
 
