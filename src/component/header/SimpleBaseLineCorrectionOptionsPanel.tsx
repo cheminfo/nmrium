@@ -164,35 +164,15 @@ function WhittakerFields({
   onValueChange,
 }: AlgorithmFieldProps<WhittakerOptions>) {
   return (
-    <>
-      <NumberInputField
-        labelProps={{ title: 'Max iterations:', style: headerLabelStyle }}
-        name="maxIterations"
-        control={control}
-        min={1}
-        onValueChange={onValueChange}
-        style={{ width: '60px' }}
-        debounceTime={250}
-      />
-      <NumberInputField
-        labelProps={{ title: 'Lambda:', style: headerLabelStyle }}
-        name="lambda"
-        control={control}
-        min={1}
-        onValueChange={onValueChange}
-        style={{ width: '60px' }}
-        debounceTime={250}
-      />
-      <NumberInputField
-        labelProps={{ title: 'Learning rate:', style: headerLabelStyle }}
-        name="learningRate"
-        control={control}
-        min={1}
-        onValueChange={onValueChange}
-        style={{ width: '60px' }}
-        debounceTime={250}
-      />
-    </>
+    <NumberInputField
+      labelProps={{ title: 'Lambda:', style: headerLabelStyle }}
+      name="lambda"
+      control={control}
+      min={1}
+      onValueChange={onValueChange}
+      style={{ width: '60px' }}
+      debounceTime={250}
+    />
   );
 }
 
