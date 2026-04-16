@@ -46,6 +46,8 @@ export function BaselinePreview() {
   const activeSpectrum = useActiveSpectrum();
   const {
     toolOptions: { selectedTool },
+    width,
+    margin: { left, right },
   } = useChartData();
   const indicatorColor = useIndicatorLineColor();
 
@@ -81,7 +83,11 @@ export function BaselinePreview() {
   }
 
   function handleDragMove(id: string, newX: number) {
-    const updated = { id, x: scaleX().invert(newX) };
+    const leftEdge = left;
+    const rightEdge = width - right;
+
+    const clampedX = Math.max(leftEdge, Math.min(rightEdge, newX));
+    const updated = { id, x: scaleX().invert(clampedX) };
     draggingAnchorRef.current = updated;
     setDraggingAnchor(updated);
   }
