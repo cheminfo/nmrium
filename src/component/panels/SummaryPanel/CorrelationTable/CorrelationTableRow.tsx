@@ -76,7 +76,7 @@ function CorrelationTableRow(props: CorrelationTableRowProps) {
 
   const onSaveEquivalencesHandler = useCallback(
     (e: any) => {
-      onSaveEditEquivalences(correlation, e.target.value);
+      onSaveEditEquivalences(correlation, Number(e.target.value));
     },
     [correlation, onSaveEditEquivalences],
   );
