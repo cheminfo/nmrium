@@ -147,11 +147,11 @@ function PolynomialFields({
 }: AlgorithmFieldProps<PolynomialOptions>) {
   return (
     <NumberInputField
-      labelProps={{ title: 'Degree [1 - 6]:', style: headerLabelStyle }}
+      labelProps={{ title: 'Degree [1 - 20]:', style: headerLabelStyle }}
       name="degree"
       control={control}
       min={1}
-      max={6}
+      max={20}
       onValueChange={onValueChange}
       style={{ width: '60px' }}
       debounceTime={250}

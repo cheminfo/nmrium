@@ -184,14 +184,14 @@ function PolynomialFields({
   return (
     <NumberInputField
       labelProps={{
-        title: 'Degree [1 - 6]:',
+        title: 'Degree [1 - 20]:',
         shortTitle: 'Degree:',
         style: formLabelStyle,
       }}
       name="degree"
       control={control}
       min={1}
-      max={6}
+      max={20}
       onValueChange={onValueChange}
       fill
       debounceTime={250}
