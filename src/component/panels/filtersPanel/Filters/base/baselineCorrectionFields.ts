@@ -36,7 +36,7 @@ export interface CubicOptions extends BaseOptions {
   noiseLevel: number;
   noisePercentile: number;
 }
-export type AlgorithmOptions =
+export type BaselineAlgorithmOptions =
   | AirplsOptions
   | PolynomialOptions
   | WhittakerOptions

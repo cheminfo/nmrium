@@ -12,6 +12,7 @@ import { Anchor } from '../../elements/Anchor.tsx';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.ts';
 import { useIndicatorLineColor } from '../../hooks/useIndicatorLineColor.ts';
 import useTempSpectrum from '../../hooks/useTempSpectrum.ts';
+import type { BaselineAlgorithmOptions } from '../../panels/filtersPanel/Filters/base/baselineCorrectionFields.ts';
 import { getBaselineValues } from '../../panels/filtersPanel/Filters/hooks/useBaselineCorrection.tsx';
 import { PathBuilder } from '../../utility/PathBuilder.ts';
 
@@ -159,12 +160,16 @@ function SpectrumPreview({ spectrum, anchors }: SpectrumPreviewProps) {
   const activeSpectrum = useActiveSpectrum();
   const indicatorColor = useIndicatorLineColor();
   const { sharedFilterOptions } =
-    useFilterSyncOptions<BaselineCorrectionOptions>();
+    useFilterSyncOptions<BaselineAlgorithmOptions>();
 
   const baselineData = useMemo(() => {
     const { x, re } = spectrum.data;
 
-    if (!sharedFilterOptions || anchors.length <= 1) {
+    if (
+      !sharedFilterOptions ||
+      anchors.length <= 1 ||
+      sharedFilterOptions?.livePreview
+    ) {
       return { x, y: new Float64Array(x.length) };
     }
 
@@ -174,7 +179,10 @@ function SpectrumPreview({ spectrum, anchors }: SpectrumPreviewProps) {
       anchors: mapAnchors(spectrum, anchors),
     };
 
-    const y = xyBaselineCalculation({ x, y: re }, options) as Float64Array;
+    const y = xyBaselineCalculation(
+      { x, y: re },
+      options as BaselineCorrectionOptions,
+    ) as Float64Array;
     return { x, y };
   }, [anchors, sharedFilterOptions, spectrum]);
 

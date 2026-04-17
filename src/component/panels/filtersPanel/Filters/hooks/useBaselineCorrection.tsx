@@ -8,7 +8,7 @@ import * as Yup from 'yup';
 import type { ExtractFilterEntry } from '../../../../../data/types/common/ExtractFilterEntry.js';
 import { useDispatch } from '../../../../context/DispatchContext.js';
 import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsContext.js';
-import type { AlgorithmOptions } from '../base/baselineCorrectionFields.ts';
+import type { BaselineAlgorithmOptions } from '../base/baselineCorrectionFields.ts';
 
 const ALGORITHM_LABELS: Record<BaselineCorrectionOptions['algorithm'], string> =
   {
@@ -184,7 +184,7 @@ export function useBaselineCorrection(
   const { resolver, values } = getBaselineData(algorithm?.value, filter?.value);
 
   const { handleSubmit, reset, ...otherFormOptions } =
-    useForm<AlgorithmOptions>({
+    useForm<BaselineAlgorithmOptions>({
       defaultValues: values,
       resolver: resolver as any,
     });
@@ -219,6 +219,7 @@ export function useBaselineCorrection(
     triggerSource: 'apply' | 'onChange' = 'apply',
   ) => {
     const { livePreview, ...options } = values;
+
     switch (triggerSource) {
       case 'onChange': {
         onChange(values);

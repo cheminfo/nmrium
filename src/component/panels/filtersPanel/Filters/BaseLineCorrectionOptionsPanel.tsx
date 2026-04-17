@@ -22,8 +22,8 @@ import { HeaderContainer, StickyHeader } from './InnerFilterHeader.js';
 import type {
   AirplsOptions,
   AlgorithmFieldProps,
-  AlgorithmOptions,
   BaselineAlgorithmFieldsMap,
+  BaselineAlgorithmOptions,
   BernsteinOptions,
   CubicOptions,
   PolynomialOptions,
@@ -50,7 +50,7 @@ export default function BaseLineCorrectionOptionsPanel(
 ) {
   const { filter, enableEdit = true, onCancel, onConfirm, onEditStart } = props;
   const { updateFilterOptions, sharedFilterOptions } =
-    useFilterSyncOptions<AlgorithmOptions>();
+    useFilterSyncOptions<BaselineAlgorithmOptions>();
   const spectrum = useTempSpectrum();
   const {
     register,

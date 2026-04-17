@@ -12,8 +12,8 @@ import { useFilter } from '../hooks/useFilter.js';
 import type {
   AirplsOptions,
   AlgorithmFieldProps,
-  AlgorithmOptions,
   BaselineAlgorithmFieldsMap,
+  BaselineAlgorithmOptions,
   BernsteinOptions,
   PolynomialOptions,
   WhittakerOptions,
@@ -53,7 +53,8 @@ function BaseLineCorrectionInnerPanel({
     defaultAlgorithmSelectProps,
   } = useBaselineCorrection(filter);
 
-  const { sharedFilterOptions } = useFilterSyncOptions<AlgorithmOptions>();
+  const { sharedFilterOptions } =
+    useFilterSyncOptions<BaselineAlgorithmOptions>();
 
   const handleAlgorithmSelect = useCallback(
     (item: (typeof baselineCorrectionsAlgorithms)[number]) => {
