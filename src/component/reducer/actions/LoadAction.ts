@@ -179,6 +179,29 @@ function setData(draft: Draft<State>, input: InputProps | InitiateProps) {
     }),
   );
 
+  // Spectra loading is async, it can cause index reordering
+  // this code section is here to fix the index stored into `activeSpectra`
+  {
+    const mapEntries = draft.data.map((spectrum, index) => {
+      return [spectrum.id, index] as const;
+    });
+    const idToIndex = new Map(mapEntries);
+
+    const nucleusActiveSpectra = Object.values(
+      draft.view.spectra.activeSpectra,
+    );
+    for (const activeSpectra of nucleusActiveSpectra) {
+      if (!activeSpectra) continue;
+
+      for (const activeSpectrum of activeSpectra) {
+        const internalIndex = idToIndex.get(activeSpectrum.id);
+        if (typeof internalIndex !== 'number') continue;
+
+        activeSpectrum.index = internalIndex;
+      }
+    }
+  }
+
   draft.view.spectraContourLevels = initializeContours(draft.data);
 
   setCorrelation(draft, correlations);
