@@ -1,15 +1,21 @@
 import { Button, Switch } from '@blueprintjs/core';
 import { Select } from '@blueprintjs/select';
 import type { BaselineCorrectionOptions } from '@zakodium/nmr-types';
+import { getBaselineAnchors } from 'nmr-processing';
 import type { MouseEvent } from 'react';
 import type { Control } from 'react-hook-form';
+import { BiReset } from 'react-icons/bi';
+import { MdRemoveCircleOutline } from 'react-icons/md';
+import { Toolbar } from 'react-science/ui';
 
+import { isSpectrum1D } from '../../../../data/data1d/Spectrum1D/isSpectrum1D.ts';
 import type { ExtractFilterEntry } from '../../../../data/types/common/ExtractFilterEntry.js';
 import { useFilterSyncOptions } from '../../../context/FilterSyncOptionsContext.tsx';
 import Label from '../../../elements/Label.js';
 import { NumberInputField } from '../../../elements/NumberInputField.js';
 import { ReadOnly } from '../../../elements/ReadOnly.js';
 import { Sections } from '../../../elements/Sections.js';
+import useTempSpectrum from '../../../hooks/useTempSpectrum.ts';
 
 import { FilterActionButtons } from './FilterActionButtons.js';
 import { HeaderContainer, StickyHeader } from './InnerFilterHeader.js';
@@ -43,8 +49,9 @@ export default function BaseLineCorrectionOptionsPanel(
   props: BaseFilterOptionsPanelProps<ExtractFilterEntry<'baselineCorrection'>>,
 ) {
   const { filter, enableEdit = true, onCancel, onConfirm, onEditStart } = props;
-  const { sharedFilterOptions } = useFilterSyncOptions<AlgorithmOptions>();
-
+  const { updateFilterOptions, sharedFilterOptions } =
+    useFilterSyncOptions<AlgorithmOptions>();
+  const spectrum = useTempSpectrum();
   const {
     register,
     reset,
@@ -93,22 +100,52 @@ export default function BaseLineCorrectionOptionsPanel(
     setTimeout(() => handleApplyFilter(options, 'onChange'), 0);
   }
 
+  function handleRemoveAllAnchors() {
+    updateFilterOptions((prev) => (prev ? { ...prev, anchors: [] } : prev));
+  }
+
+  function handleResetAnchors() {
+    if (!isSpectrum1D(spectrum)) return;
+    const xValues = getBaselineAnchors(spectrum.data).x;
+    const anchors = Array.from(xValues).map((x) => ({
+      id: crypto.randomUUID(),
+      x,
+    }));
+    updateFilterOptions((prev) => (prev ? { ...prev, anchors } : prev));
+  }
+
   return (
     <ReadOnly enabled={!enableEdit} onClick={onEditStart}>
       {enableEdit && (
         <StickyHeader>
           <HeaderContainer>
-            <Switch
-              style={{ margin: 0, marginLeft: '5px' }}
-              innerLabelChecked="On"
-              innerLabel="Off"
-              {...livePreviewFieldOptions}
-              onChange={(event) => {
-                void onLivePreviewFieldChange(event);
-                submitHandler();
-              }}
-              label="Live preview"
-            />
+            <div style={{ display: 'flex', minWidth: 0, alignItems: 'center' }}>
+              <Toolbar overflow="collapse">
+                <Toolbar.Item
+                  icon={<MdRemoveCircleOutline />}
+                  intent="danger"
+                  tooltip="Remove anchors"
+                  onClick={handleRemoveAllAnchors}
+                />
+
+                <Toolbar.Item
+                  icon={<BiReset />}
+                  tooltip="Reset anchors"
+                  onClick={handleResetAnchors}
+                />
+              </Toolbar>
+              <Switch
+                style={{ margin: 0, marginLeft: '5px', whiteSpace: 'nowrap' }}
+                innerLabelChecked="On"
+                innerLabel="Off"
+                {...livePreviewFieldOptions}
+                onChange={(event) => {
+                  void onLivePreviewFieldChange(event);
+                  submitHandler();
+                }}
+                label="Live preview"
+              />
+            </div>
             <FilterActionButtons
               onConfirm={handleConfirm}
               onCancel={handleCancel}
