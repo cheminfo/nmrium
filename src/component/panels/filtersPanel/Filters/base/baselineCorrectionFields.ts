@@ -11,6 +11,7 @@ interface BaseOptions {
 export interface AirplsOptions extends BaseOptions {
   maxIterations: number;
   tolerance: number;
+  lambda: number;
 }
 export interface PolynomialOptions extends BaseOptions {
   degree: number;

@@ -34,6 +34,7 @@ function getBaselineResolver(algorithm: any) {
     case 'airpls':
       return yupResolver(
         Yup.object().shape({
+          lambda: Yup.number().integer().required(),
           algorithm: Yup.string().required(),
           livePreview: Yup.boolean().required(),
           maxIterations: Yup.number().integer().min(1).required(),
@@ -99,6 +100,7 @@ export function getBaselineValues(
       return {
         algorithm,
         livePreview: false,
+        lambda: 200,
         maxIterations: 100,
         tolerance: 0.001,
         ...overrides,

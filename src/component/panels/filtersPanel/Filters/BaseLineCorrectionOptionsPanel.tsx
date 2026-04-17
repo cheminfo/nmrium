@@ -190,6 +190,15 @@ function AirplsFields({
   return (
     <>
       <NumberInputField
+        labelProps={{ title: 'Lambda:', style: formLabelStyle }}
+        name="lambda"
+        control={control}
+        min={1}
+        onValueChange={onValueChange}
+        fill
+        debounceTime={250}
+      />
+      <NumberInputField
         labelProps={{ title: 'Max iterations:', style: formLabelStyle }}
         name="maxIterations"
         control={control}

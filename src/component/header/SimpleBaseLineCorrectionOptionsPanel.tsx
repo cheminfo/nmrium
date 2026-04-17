@@ -116,11 +116,10 @@ function AirplsFields({
   return (
     <div style={{ display: 'flex' }}>
       <NumberInputField
-        labelProps={{ title: 'Max iterations:', style: headerLabelStyle }}
-        name="maxIterations"
+        labelProps={{ title: 'Lambda:', style: headerLabelStyle }}
+        name="lambda"
         control={control}
-        min={0}
-        stepSize={1}
+        min={1}
         onValueChange={onValueChange}
         style={{ width: '60px' }}
         debounceTime={250}
