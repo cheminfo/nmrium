@@ -15,7 +15,6 @@ import type {
   AlgorithmOptions,
   BaselineAlgorithmFieldsMap,
   BernsteinOptions,
-  CubicOptions,
   PolynomialOptions,
   WhittakerOptions,
 } from '../panels/filtersPanel/Filters/base/baselineCorrectionFields.ts';
@@ -28,12 +27,11 @@ import {
 import { headerLabelStyle } from './Header.js';
 import { HeaderWrapper } from './HeaderWrapper.js';
 
-const BaselineAlgorithmFields: BaselineAlgorithmFieldsMap = {
+const BaselineAlgorithmFields: Omit<BaselineAlgorithmFieldsMap, 'cubic'> = {
   airpls: AirplsFields,
   polynomial: PolynomialFields,
   whittaker: WhittakerFields,
   bernstein: BernsteinFields,
-  cubic: CubicFields,
 };
 
 interface BaseLineCorrectionInnerPanelProps {
@@ -80,9 +78,10 @@ function BaseLineCorrectionInnerPanel({
     [handleSubmit, handleApplyFilter],
   );
 
-  const AlgorithmFields = algorithm?.value
-    ? BaselineAlgorithmFields[algorithm.value]
-    : null;
+  const AlgorithmFields =
+    algorithm?.value && algorithm.value !== 'cubic'
+      ? BaselineAlgorithmFields[algorithm.value]
+      : null;
 
   return (
     <HeaderWrapper>
@@ -172,26 +171,6 @@ function WhittakerFields({
       style={{ width: '60px' }}
       debounceTime={250}
     />
-  );
-}
-
-function CubicFields({
-  control,
-  onValueChange,
-}: AlgorithmFieldProps<CubicOptions>) {
-  return (
-    <div style={{ display: 'flex' }}>
-      <NumberInputField
-        labelProps={{ title: 'Max iterations:', style: headerLabelStyle }}
-        name="maxIterations"
-        control={control}
-        min={0}
-        stepSize={1}
-        onValueChange={onValueChange}
-        style={{ width: '60px' }}
-        debounceTime={250}
-      />
-    </div>
   );
 }
 
