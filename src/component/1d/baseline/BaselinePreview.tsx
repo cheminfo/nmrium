@@ -123,7 +123,7 @@ export function BaselinePreview() {
           const x = scaleX()(xPPM);
           const yPPM = getMedianY(xPPM, spectrum);
           const v = shiftY * (activeSpectrum?.index || 0);
-          const y = scaleY()(yPPM) - v;
+          const y = scaleY({ spectrumId: activeSpectrum?.id })(yPPM) - v;
 
           return (
             <Anchor
@@ -182,7 +182,7 @@ function SpectrumPreview({ spectrum, anchors }: SpectrumPreviewProps) {
     const { x, y } = baselineData;
 
     const _scaleX = scaleX();
-    const _scaleY = scaleY();
+    const _scaleY = scaleY({ spectrumId: activeSpectrum?.id });
 
     const pathBuilder = new PathBuilder();
 
@@ -201,7 +201,14 @@ function SpectrumPreview({ spectrum, anchors }: SpectrumPreviewProps) {
     }
 
     return pathBuilder.toString();
-  }, [baselineData, scaleX, scaleY, shiftY, activeSpectrum?.index]);
+  }, [
+    baselineData,
+    scaleX,
+    scaleY,
+    activeSpectrum?.id,
+    activeSpectrum?.index,
+    shiftY,
+  ]);
   return (
     <SVGWrapper>
       <path
