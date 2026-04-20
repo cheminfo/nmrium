@@ -315,7 +315,7 @@ function handleChangeRangeSignalKind(
 
   const rangeIndex = getRangeIndex(spectrum, range.id);
   const _range = spectrum.ranges.values[rangeIndex];
-  if (_range?.signals) {
+  if (_range.signals && range.tableMetaInfo.signalIndex) {
     _range.signals[range.tableMetaInfo.signalIndex].kind = kind;
     updateRangesRelativeValues(spectrum);
     handleUpdateCorrelations(draft);

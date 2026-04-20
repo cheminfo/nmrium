@@ -16,6 +16,7 @@ import { useResizeObserver } from 'react-d3-utils';
 import type {
   CellProps,
   Column as ReactColumn,
+  Row,
   TableInstance,
   UseSortByColumnOptions,
   UseSortByInstanceProps,
@@ -95,7 +96,7 @@ interface ReactTableProps<T extends object>
   indexKey?: string;
   enableVirtualScroll?: boolean;
   enableColumnsVirtualScroll?: boolean;
-  activeRow?: (data: any) => boolean;
+  activeRow?: (data: Row<T>) => boolean;
   enableDefaultActiveRow?: boolean;
   totalCount?: number;
   emptyDataRowText?: string;

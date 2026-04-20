@@ -1,4 +1,4 @@
-import type { Info1D, Ranges } from '@zakodium/nmr-types';
+import type { Info1D, Range, Ranges } from '@zakodium/nmr-types';
 import type {
   Spectrum1D,
   WorkSpacePanelPreferences,
@@ -39,14 +39,16 @@ interface RangesTablePanelInnerProps {
   preferences: WorkSpacePanelPreferences['ranges'];
 }
 
-function RangesTablePanelInner({
-  ranges,
-  data,
-  info,
-  xDomain,
-  preferences,
-  activeTab,
-}: RangesTablePanelInnerProps) {
+export interface RangesTableDataMetaInfo {
+  isConstantlyHighlighted: boolean;
+}
+
+export interface RangesTableDataRow extends Range {
+  tableMetaInfo: RangesTableDataMetaInfo;
+}
+
+function RangesTablePanelInner(props: RangesTablePanelInnerProps) {
+  const { ranges, data, info, xDomain, preferences, activeTab } = props;
   const [isFilterActive, setFilterIsActive] = useState(false);
 
   const dispatch = useDispatch();
@@ -55,7 +57,7 @@ function RangesTablePanelInner({
 
   const settingRef = useRef<any>();
 
-  const rangesData = useMemo(() => {
+  const rangesData: RangesTableDataRow[] = useMemo(() => {
     const isInView = (from: number, to: number) => {
       const factor = 10000;
       to = to * factor;
@@ -99,7 +101,7 @@ function RangesTablePanelInner({
     useClipboard();
 
   const saveJSONToClipboardHandler = useCallback(
-    async (value: any) => {
+    async (value: RangesTableDataRow) => {
       if (data.x && data.re) {
         const { x, re } = data;
         const { from, to } = value;
@@ -122,7 +124,7 @@ function RangesTablePanelInner({
   );
 
   const contextMenuSelectHandler = useCallback(
-    (option: any, data: any) => {
+    (option: unknown, data: RangesTableDataRow) => {
       void saveJSONToClipboardHandler(data);
     },
     [saveJSONToClipboardHandler],

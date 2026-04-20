@@ -2,7 +2,7 @@ import type { Info1D, Peak1D } from '@zakodium/nmr-types';
 import dlv from 'dlv';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { FaEdit, FaRegTrashAlt } from 'react-icons/fa';
-import type { CellProps } from 'react-table';
+import type { CellProps, Row } from 'react-table';
 
 import { useDispatch } from '../../context/DispatchContext.js';
 import { EditableColumn } from '../../elements/EditableColumn.js';
@@ -25,7 +25,7 @@ interface PeaksTableProps {
   info: Info1D;
 }
 
-function handleActiveRow(row: any) {
+function handleActiveRow(row: Row<PeakRecord>) {
   return row.original.isConstantlyHighlighted;
 }
 
@@ -36,7 +36,7 @@ function PeaksTable(props: PeaksTableProps) {
   const [peak, setEditedPeak] = useState<Peak1D | undefined>();
 
   const deletePeakHandler = useCallback(
-    (row: any) => {
+    (row: Row<PeakRecord>) => {
       const params = row.original;
       dispatch({
         type: 'DELETE_PEAK',
@@ -45,18 +45,19 @@ function PeaksTable(props: PeaksTableProps) {
     },
     [dispatch],
   );
-  const editPeakHandler = useCallback((row: any) => {
+
+  const editPeakHandler = useCallback((row: Row<PeakRecord>) => {
     setEditedPeak(row.original);
   }, []);
 
   const saveDeltaPPMRefsHandler = useCallback(
-    (event: any, row: any) => {
-      const shift =
-        Number.parseFloat(event.target.value) - Number.parseFloat(row.x);
+    (value: string | number, peak: PeakRecord) => {
+      const shift = Number(value) - peak.x;
       dispatch({ type: 'SHIFT_SPECTRUM', payload: { shift } });
     },
     [dispatch],
   );
+
   const COLUMNS = useMemo<Array<ControlCustomColumn<PeakRecord>>>(
     () => [
       {
@@ -77,7 +78,7 @@ function PeaksTable(props: PeaksTableProps) {
               row.original.x,
               peaksPreferences.deltaPPM.format,
             )}
-            onSave={(event) => saveDeltaPPMRefsHandler(event, row.original)}
+            onSave={(value) => saveDeltaPPMRefsHandler(value, row.original)}
             type="number"
             validate={(val) => val !== ''}
           />

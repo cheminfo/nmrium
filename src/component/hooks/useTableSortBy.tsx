@@ -1,4 +1,5 @@
 import dlv from 'dlv';
+import type { MouseEventHandler } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 
 type SortType = 'ASCENDING' | 'DESCENDING' | 'ORIGINAL';
@@ -8,12 +9,15 @@ interface SortConfig {
   direction: SortType;
 }
 
-export default function useTableSortBy(items: any, config = null) {
+export default function useTableSortBy<ItemType extends object>(
+  items: readonly ItemType[],
+  config = null,
+) {
   const [sortConfig, setSortConfig] = useState<SortConfig | null>(config);
   const sortedItems = useMemo(() => {
     const sortableItems = items.slice();
     if (sortConfig !== null) {
-      sortableItems.sort((a: any, b: any) => {
+      sortableItems.sort((a, b) => {
         if (sortConfig.direction === 'ASCENDING') {
           return dlv(a, sortConfig.key, 0) - dlv(b, sortConfig.key, 0);
         } else if (sortConfig.direction === 'DESCENDING') {
@@ -25,11 +29,11 @@ export default function useTableSortBy(items: any, config = null) {
     return sortableItems;
   }, [items, sortConfig]);
 
-  const sortHandler = useCallback(
-    (event: any) => {
-      const key = event.currentTarget?.id;
+  const sortHandler: MouseEventHandler = useCallback(
+    (event) => {
+      const key = event.currentTarget.id;
       let direction: SortType = 'ASCENDING';
-      if (key && sortConfig && sortConfig.key === key) {
+      if (key && sortConfig?.key === key) {
         switch (sortConfig.direction) {
           case 'ASCENDING':
             direction = 'DESCENDING';
@@ -48,10 +52,10 @@ export default function useTableSortBy(items: any, config = null) {
   );
 
   const isSortedDesc = useCallback(
-    (columnName: any): { flag: boolean | null; content: string } => {
+    (columnName: string): { flag: boolean | null; content: string } => {
       const defaultContent = { flag: null, content: ' ' };
 
-      if (!sortConfig || sortConfig.key !== columnName) {
+      if (sortConfig?.key !== columnName) {
         return defaultContent;
       }
       switch (sortConfig.direction) {

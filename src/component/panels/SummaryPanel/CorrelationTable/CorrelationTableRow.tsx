@@ -1,10 +1,12 @@
-import type { Link } from 'nmr-correlation';
+import type { Spectrum } from '@zakodium/nmrium-core';
+import type { Correlation, CorrelationData, Link } from 'nmr-correlation';
 import {
   buildLink,
   getCorrelationDelta,
   getLabel,
   getLinkDim,
 } from 'nmr-correlation';
+import type { CSSProperties } from 'react';
 import { useCallback, useMemo } from 'react';
 
 import { buildID } from '../../../../data/utilities/Concatenation.js';
@@ -19,27 +21,30 @@ import { convertValuesString } from '../utilities/Utilities.js';
 import useInView from '../utilities/useInView.js';
 
 import AdditionalColumnField from './AdditionalColumnField.js';
+import type { AdditionalColumnHeaderProps } from './AdditionalColumnHeader.tsx';
 import type { EditLinkDialogData } from './editLink/EditLinkModal.js';
 import { EditLinkModal } from './editLink/EditLinkModal.js';
 
-interface CorrelationTableRowProps {
-  additionalColumnData: any;
-  correlations: any;
-  correlation: any;
-  styleRow: any;
-  styleLabel: any;
-  onSaveEditEquivalences: any;
-  onSaveEditNumericValues: any;
-  onEditCorrelationTableCellHandler: any;
-  spectraData: any;
+export interface CorrelationTableRowProps {
+  additionalColumnData: Correlation[];
+  correlations: CorrelationData;
+  correlation: Correlation;
+  styleLabel: CSSProperties;
+  onSaveEditEquivalences: (correlation: Correlation, value: number) => void;
+  onSaveEditNumericValues: (params: {
+    correlation: Correlation;
+    values: number[];
+    key: 'hybridization' | 'protonsCount';
+  }) => void;
+  onEditCorrelationTableCellHandler: AdditionalColumnHeaderProps['onEdit'];
+  spectraData: Spectrum[];
 }
 
-function CorrelationTableRow(props: CorrelationTableRowProps) {
+export default function CorrelationTableRow(props: CorrelationTableRowProps) {
   const {
     additionalColumnData,
     correlations,
     correlation,
-    styleRow,
     styleLabel,
     onSaveEditEquivalences,
     onSaveEditNumericValues,
@@ -75,17 +80,17 @@ function CorrelationTableRow(props: CorrelationTableRowProps) {
   const highlightRow = useHighlight(highlightIDsRow);
 
   const onSaveEquivalencesHandler = useCallback(
-    (e: any) => {
-      onSaveEditEquivalences(correlation, e.target.value);
+    (value: string | number) => {
+      onSaveEditEquivalences(correlation, Number(value));
     },
     [correlation, onSaveEditEquivalences],
   );
 
   const onSaveEditNumericValuesHandler = useCallback(
-    (e: any, key: 'protonsCount' | 'hybridization') => {
+    (value: string | number, key: 'protonsCount' | 'hybridization') => {
       onSaveEditNumericValues({
         correlation,
-        values: convertValuesString(e.target.value, key),
+        values: convertValuesString(String(value), key),
         key,
       });
     },
@@ -93,7 +98,7 @@ function CorrelationTableRow(props: CorrelationTableRowProps) {
   );
 
   const additionalColumnFields = useMemo(() => {
-    return additionalColumnData.map((_correlation: any) => {
+    return additionalColumnData.map((_correlation: Correlation) => {
       const commonLinks: Link[] = [];
       for (const link of correlation.link) {
         for (const _link of _correlation.link) {
@@ -176,7 +181,6 @@ function CorrelationTableRow(props: CorrelationTableRowProps) {
 
     return {
       style: {
-        ...styleRow,
         backgroundColor: highlightRow.isActive
           ? '#ff6f0057'
           : isInView
@@ -194,7 +198,6 @@ function CorrelationTableRow(props: CorrelationTableRowProps) {
     isInView,
     mouseEnterHandler,
     mouseLeaveHandler,
-    styleRow,
   ]);
 
   const deleteCorrelationLink = useCallback(() => {
@@ -277,7 +280,7 @@ function CorrelationTableRow(props: CorrelationTableRowProps) {
   const t = title || '';
 
   return (
-    <tr style={styleRow}>
+    <tr style={{ backgroundColor: 'mintcream' }}>
       <ContextMenu
         as="td"
         options={contextMenus}
@@ -314,7 +317,9 @@ function CorrelationTableRow(props: CorrelationTableRowProps) {
             type="text"
             value={correlation.protonsCount.join(',')}
             style={correlation.edited.protonsCount ? { color: 'blue' } : {}}
-            onSave={(e) => onSaveEditNumericValuesHandler(e, 'protonsCount')}
+            onSave={(value) =>
+              onSaveEditNumericValuesHandler(value, 'protonsCount')
+            }
             validate={(val) => val !== ''}
           />
         ) : (
@@ -335,7 +340,9 @@ function CorrelationTableRow(props: CorrelationTableRowProps) {
               .map((hybrid: any) => `sp${hybrid}`)
               .join(',')}
             style={correlation.edited.hybridization ? { color: 'blue' } : {}}
-            onSave={(e) => onSaveEditNumericValuesHandler(e, 'hybridization')}
+            onSave={(value) =>
+              onSaveEditNumericValuesHandler(value, 'hybridization')
+            }
             validate={(val) => val !== ''}
           />
         ) : (
@@ -346,5 +353,3 @@ function CorrelationTableRow(props: CorrelationTableRowProps) {
     </tr>
   );
 }
-
-export default CorrelationTableRow;

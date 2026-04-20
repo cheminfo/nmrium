@@ -7,6 +7,7 @@ import { getLabelColor } from '../utilities/Utilities.js';
 
 import type { AdditionalColumnHeaderProps } from './AdditionalColumnHeader.js';
 import AdditionalColumnHeader from './AdditionalColumnHeader.js';
+import type { CorrelationTableRowProps } from './CorrelationTableRow.js';
 import CorrelationTableRow from './CorrelationTableRow.js';
 
 const Container = styled.div`
@@ -62,17 +63,10 @@ const Container = styled.div`
 
 interface CorrelationTableProps {
   correlationsData: CorrelationData;
-  filteredCorrelationsData: any;
+  filteredCorrelationsData: CorrelationData;
   additionalColumnData: Correlation[];
-  editEquivalencesSaveHandler: (
-    correlation: Correlation,
-    value: number,
-  ) => void;
-  onSaveEditNumericValues: (params: {
-    correlation: Correlation;
-    values: number[];
-    key: 'hybridization' | 'protonsCount';
-  }) => void;
+  editEquivalencesSaveHandler: CorrelationTableRowProps['onSaveEditEquivalences'];
+  onSaveEditNumericValues: CorrelationTableRowProps['onSaveEditNumericValues'];
   onEditCorrelationTableCellHandler: AdditionalColumnHeaderProps['onEdit'];
   showProtonsAsRows: boolean;
   spectraData: Spectrum[];
@@ -106,7 +100,6 @@ export default function CorrelationTable(props: CorrelationTableProps) {
           correlations={correlationsData.values}
           correlation={correlation}
           key={`correlation${correlation.atomType}${correlation.id}`}
-          styleRow={{ backgroundColor: 'mintcream' }}
           styleLabel={
             correlation.atomType === 'H'
               ? {

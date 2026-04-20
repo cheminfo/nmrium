@@ -1,5 +1,5 @@
 import type { CSSProperties, MouseEvent, ReactNode } from 'react';
-import type { CellProps } from 'react-table';
+import type { CellProps, Row } from 'react-table';
 
 import type { Column } from '../ReactTable.js';
 
@@ -36,7 +36,7 @@ export default function addCustomColumn<T extends object>(
 }
 
 interface CreateActionColumnOptions<T extends object> {
-  onClick: (row: T | object, even?: MouseEvent<HTMLButtonElement>) => void;
+  onClick: (row: Row<T>, even?: MouseEvent<HTMLButtonElement>) => void;
   icon: ReactNode;
   style?: CSSProperties;
   index: number;

@@ -63,16 +63,20 @@ const className = 'editable-column';
 interface BaseEditableColumnProps {
   type: 'number' | 'text';
   value: number | string;
-  validate?: (value?: string | number) => boolean;
+  validate?: (value: string | number) => boolean;
 }
 
-interface EditableColumnProps extends BaseEditableColumnProps {
-  onSave?: (element: KeyboardEvent<HTMLInputElement>) => void;
+export interface EditableColumnProps extends BaseEditableColumnProps {
+  onSave?: (value: string | number) => void;
   onEditStart?: (element: boolean) => void;
   editStatus?: boolean;
   style?: CSSProperties;
   textOverflowEllipses?: boolean;
-  clickType?: 'single' | 'double';
+  /**
+   * What kind of click is needed to trigger the edition.
+   * Use "none" to conditionally disable the behaviour.
+   */
+  clickType?: 'single' | 'double' | 'none';
 }
 
 export const EditableColumn = forwardRef(function EditableColumn(
@@ -120,8 +124,8 @@ export const EditableColumn = forwardRef(function EditableColumn(
     enableEdit(true);
   }
 
-  function onConfirm(event: KeyboardEvent<HTMLInputElement>) {
-    onSave?.(event);
+  function onConfirm(value: string | number) {
+    onSave?.(value);
     enableEdit(false);
     globalThis.removeEventListener('mousedown', mouseClickCallback);
   }
@@ -155,7 +159,7 @@ export const EditableColumn = forwardRef(function EditableColumn(
       )}
       {enabled && (
         <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>
-          <EditFiled
+          <EditField
             value={value}
             type={type}
             onConfirm={onConfirm}
@@ -168,23 +172,23 @@ export const EditableColumn = forwardRef(function EditableColumn(
   );
 });
 
-interface EditFiledProps extends BaseEditableColumnProps {
-  onConfirm: (event: KeyboardEvent<HTMLInputElement>) => void;
+interface EditFieldProps extends BaseEditableColumnProps {
+  onConfirm: (value: string | number) => void;
   onCancel: (event?: KeyboardEvent<HTMLInputElement>) => void;
 }
 
-function EditFiled(props: EditFiledProps) {
+function EditField(props: EditFieldProps) {
   const { value: externalValue, type, onConfirm, onCancel, validate } = props;
 
   const [isValid, setValid] = useState<boolean>(true);
-  const [value, setVal] = useState(extractNumber(externalValue, type));
+  const [value, setVal] = useState(() => extractNumber(externalValue, type));
 
   function handleKeydown(event: KeyboardEvent<HTMLInputElement>) {
     const valid = typeof validate === 'function' ? validate(value) : true;
     setValid(valid);
     // when press Enter or Tab
     if (valid && ['Enter', 'Tab'].includes(event.key)) {
-      onConfirm(event);
+      onConfirm(value);
     }
     // close edit mode if press Enter, Tab or Escape
     if (['Escape'].includes(event.key)) {
@@ -223,7 +227,9 @@ function EditFiled(props: EditFiledProps) {
         size="small"
         fill
         buttonPosition="none"
-        stepSize={1}
+        stepSize={0.1}
+        minorStepSize={0.01}
+        majorStepSize={1}
         rightElement={rightElement}
       />
     );
