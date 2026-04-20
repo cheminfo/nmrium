@@ -1,9 +1,9 @@
-import type { Info1D, Integral } from '@zakodium/nmr-types';
+import type { Info1D, Integral, SignalKind } from '@zakodium/nmr-types';
 import dlv from 'dlv';
 import { checkIntegralKind } from 'nmr-processing';
 import { memo, useCallback, useMemo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
-import type { CellProps } from 'react-table';
+import type { CellProps, Row } from 'react-table';
 
 import { SIGNAL_KINDS } from '../../../data/constants/signalsKinds.js';
 import { useDispatch } from '../../context/DispatchContext.js';
@@ -36,7 +36,7 @@ function IntegralTable(props: IntegralTableProps) {
   const dispatch = useDispatch();
 
   const deleteIntegralHandler = useCallback(
-    (row: any) => {
+    (row: Row<Integral>) => {
       const { id } = row.original;
       dispatch({
         type: 'DELETE_INTEGRAL',
@@ -49,21 +49,20 @@ function IntegralTable(props: IntegralTableProps) {
   );
 
   const changeIntegralDataHandler = useCallback(
-    (value: any, row: any) => {
-      const integral = { ...row.original, kind: value };
+    (kind: SignalKind, integral: Integral) => {
       dispatch({
         type: 'CHANGE_INTEGRAL',
-        payload: { integral },
+        payload: { integral: { ...integral, kind } },
       });
     },
     [dispatch],
   );
 
   const saveRelativeHandler = useCallback(
-    (event: any, row: any) => {
+    (value: string | number, integral: Integral) => {
       dispatch({
         type: 'CHANGE_INTEGRAL_RELATIVE',
-        payload: { value: event.target.value, id: row.id },
+        payload: { value: Number(value), id: integral.id },
       });
     },
     [dispatch],
@@ -128,7 +127,7 @@ function IntegralTable(props: IntegralTableProps) {
             <EditableColumn
               key={integral}
               value={integral}
-              onSave={(event) => saveRelativeHandler(event, row.original)}
+              onSave={(value) => saveRelativeHandler(value, row.original)}
               type="number"
               validate={(val) => val !== ''}
             />
@@ -144,7 +143,9 @@ function IntegralTable(props: IntegralTableProps) {
         showWhen: 'showKind',
         Cell: ({ row }: CellProps<Integral>) => (
           <Select
-            onChange={(value) => changeIntegralDataHandler(value, row)}
+            onChange={(value) =>
+              changeIntegralDataHandler(value as SignalKind, row.original)
+            }
             items={SIGNAL_KINDS}
             style={selectStyle}
             defaultValue={row.original.kind}

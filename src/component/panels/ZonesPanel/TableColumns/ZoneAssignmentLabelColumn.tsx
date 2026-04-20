@@ -6,16 +6,17 @@ interface ZoneAssignmentLabelColumnProps {
   rowData: ZoneData;
 }
 
-export function ZoneAssignmentLabelColumn({
-  rowData,
-}: ZoneAssignmentLabelColumnProps) {
+export function ZoneAssignmentLabelColumn(
+  props: ZoneAssignmentLabelColumnProps,
+) {
+  const { rowData } = props;
   const dispatch = useDispatch();
 
-  function saveHandler(event: any) {
+  function saveHandler(value: string | number) {
     dispatch({
       type: 'CHANGE_ZONE_ASSIGNMENT_LABEL',
       payload: {
-        value: event.target.value,
+        value: String(value),
         zoneID: rowData.id,
       },
     });

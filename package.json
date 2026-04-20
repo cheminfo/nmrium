@@ -26,7 +26,7 @@
     "clean-lib": "rimraf lib",
     "cspell": "cspell lint \"**/*.tsx\"",
     "dev": "vite --host localhost --port 3000 --open",
-    "eslint": "eslint . --cache --max-warnings=98",
+    "eslint": "eslint . --cache --max-warnings=97",
     "eslint-fix": "node --run eslint -- --fix",
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start",
     "knip": "knip",

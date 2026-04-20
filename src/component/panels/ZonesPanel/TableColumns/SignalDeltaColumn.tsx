@@ -13,7 +13,8 @@ interface SignalDeltaColumnProps {
   nucleus: string;
 }
 
-function SignalDeltaColumn({ rowData, nucleus }: SignalDeltaColumnProps) {
+export default function SignalDeltaColumn(props: SignalDeltaColumnProps) {
+  const { rowData, nucleus } = props;
   const dispatch = useDispatch();
   const nuclei = nucleus.split(',');
   const { deltaPPM: deltaX } = usePanelPreferences(
@@ -31,24 +32,22 @@ function SignalDeltaColumn({ rowData, nucleus }: SignalDeltaColumnProps) {
   const signalDeltaY = rowData.tableMetaInfo.signal.y.delta ?? null;
   const id = rowData.tableMetaInfo.signal.id;
 
-  function saveXHandler(event: any) {
-    const value = Number(event.target.value);
+  function saveXHandler(value: string | number) {
     dispatch({
       type: 'CHANGE_ZONE_SIGNAL_VALUE',
       payload: {
         zoneId: rowData.id,
-        signal: { id, deltaX: value },
+        signal: { id, deltaX: Number(value) },
       },
     });
   }
 
-  function saveYHandler(event: any) {
-    const value = Number(event.target.value);
+  function saveYHandler(value: string | number) {
     dispatch({
       type: 'CHANGE_ZONE_SIGNAL_VALUE',
       payload: {
         zoneId: rowData.id,
-        signal: { id, deltaY: value },
+        signal: { id, deltaY: Number(value) },
       },
     });
   }
@@ -94,5 +93,3 @@ function SignalDeltaColumn({ rowData, nucleus }: SignalDeltaColumnProps) {
     </>
   );
 }
-
-export default SignalDeltaColumn;

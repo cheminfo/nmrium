@@ -4,23 +4,19 @@ import { EditableColumn } from '../../../elements/EditableColumn.js';
 import { formatNumber } from '../../../utility/formatNumber.js';
 import type { RangeColumnProps } from '../RangesTableRow.js';
 
-function RelativeColumn({
-  row,
-  rowSpanTags,
-  onHover,
-  format,
-}: RangeColumnProps) {
+export default function RelativeColumn(props: RangeColumnProps) {
+  const { row, rowSpanTags, onHover, format } = props;
   const dispatch = useDispatch();
 
   const flag = isSignalRange(row);
   const formattedValue = formatNumber(row.integration, format);
   const integralVal = flag ? formattedValue : `[ ${formattedValue} ]`;
 
-  function saveHandler(event: any) {
+  function saveHandler(value: string | number) {
     dispatch({
       type: 'CHANGE_RANGE_RELATIVE',
       payload: {
-        value: event.target.value,
+        value: Number(value),
         id: row.id,
       },
     });
@@ -38,5 +34,3 @@ function RelativeColumn({
     </td>
   );
 }
-
-export default RelativeColumn;

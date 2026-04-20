@@ -46,7 +46,7 @@ function getLabelColor(correlationData: any, correlation: any) {
     }
   }
 
-  return null;
+  return undefined;
 }
 
 function findSignalMatch1D(

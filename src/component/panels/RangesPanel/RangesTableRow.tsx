@@ -34,7 +34,7 @@ const ConstantlyHighlightedRowStyle = {
 };
 
 interface RangesTableRowProps extends TableContextMenuProps {
-  rowData: any;
+  rowData: RangeData;
   preferences: WorkSpacePanelPreferences['ranges'];
   info: Info1D;
 }
@@ -53,8 +53,8 @@ export interface OnHoverEvent {
 
 export interface RowSpanTags {
   rowSpanTags: {
-    rowSpan: any;
-    style: CSSProperties;
+    rowSpan?: number;
+    style?: CSSProperties;
   };
 }
 
@@ -62,13 +62,14 @@ export type RangeColumnProps = BaseRangeColumnProps &
   OnHoverEvent &
   RowSpanTags;
 
-function RangesTableRow({
-  rowData,
-  onContextMenuSelect,
-  contextMenu = [],
-  preferences,
-  info,
-}: RangesTableRowProps) {
+export default function RangesTableRow(props: RangesTableRowProps) {
+  const {
+    rowData,
+    onContextMenuSelect,
+    contextMenu = [],
+    preferences,
+    info,
+  } = props;
   const dispatch = useDispatch();
   const assignmentData = useAssignmentContext();
   const rangeKey = rowData.id;
@@ -77,7 +78,7 @@ function RangesTableRow({
     [rangeKey].concat(assignmentRange.assignedDiaIds?.x || []).concat(
       filterAssignedIDs(
         assignmentData.data,
-        rowData.signals.map((_signal: any) => _signal.id),
+        rowData.signals.map((signal) => signal.id),
       ),
     ),
     {
@@ -96,7 +97,7 @@ function RangesTableRow({
       : [],
     { type: 'SIGNAL' },
   );
-  const rowSpanTags: any = useMemo(() => {
+  const rowSpanTags = useMemo(() => {
     return {
       rowSpan: rowData.tableMetaInfo.rowSpan,
       style: rowData.tableMetaInfo.hide ? { display: 'none' } : undefined,
@@ -281,5 +282,3 @@ function RangesTableRow({
     </ContextMenu>
   );
 }
-
-export default RangesTableRow;

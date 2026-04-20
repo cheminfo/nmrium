@@ -11,6 +11,7 @@ import { EditRangeModal } from '../../modal/editRange/EditRangeModal.js';
 import { extractChemicalElement } from '../../utility/extractChemicalElement.js';
 import { NoDataForFid } from '../extra/placeholder/NoDataForFid.js';
 
+import type { RangesTableDataRow } from './RangesPanel.js';
 import RangesTableRow from './RangesTableRow.js';
 import useMapRanges from './hooks/useMapRanges.js';
 
@@ -58,16 +59,17 @@ const Table = styled.table`
     }
   }
 `;
+
 interface RangesTableProps extends TableContextMenuProps {
   preferences: WorkSpacePanelPreferences['ranges'];
-  tableData: any;
+  tableData: RangesTableDataRow[];
   activeTab: string;
   info: Info1D;
 }
 
 const EditRangeDialog = withDialog(EditRangeModal, { force: true });
 
-function RangesTable(props: RangesTableProps) {
+export default function RangesTable(props: RangesTableProps) {
   const {
     tableData,
     contextMenu = [],
@@ -141,7 +143,7 @@ function RangesTable(props: RangesTableProps) {
           </tr>
         </thead>
         <tbody>
-          {data?.map((range) => {
+          {data.map((range) => {
             return (
               <RangesTableRow
                 key={range.rowKey}
@@ -158,5 +160,3 @@ function RangesTable(props: RangesTableProps) {
     </>
   );
 }
-
-export default RangesTable;

@@ -1,29 +1,28 @@
 import { checkMultiplicity } from 'nmr-processing';
+import { assert } from 'react-science/ui';
 
 import { useDispatch } from '../../../context/DispatchContext.js';
+import type { EditableColumnProps } from '../../../elements/EditableColumn.js';
 import { EditableColumn } from '../../../elements/EditableColumn.js';
 import { formatNumber } from '../../../utility/formatNumber.js';
 import type { RangeColumnProps } from '../RangesTableRow.js';
 
-function SignalDeltaColumn({
-  row,
-  onHover,
-  format,
-  rowSpanTags,
-}: RangeColumnProps) {
+export default function SignalDeltaColumn(props: RangeColumnProps) {
+  const { row, onHover, format, rowSpanTags } = props;
   const dispatch = useDispatch();
   const signal = row?.tableMetaInfo?.signal;
 
-  function saveHandler(event: any) {
+  const saveHandler: EditableColumnProps['onSave'] = (value) => {
+    assert(signal);
     dispatch({
       type: 'CHANGE_RANGE_SIGNAL_VALUE',
       payload: {
-        value: event.target.value,
+        value: Number(value),
         rangeId: row.id,
         signalId: signal.id,
       },
     });
-  }
+  };
 
   const rangeText = `${formatNumber(row.from, format)} - ${formatNumber(
     row.to,
@@ -50,5 +49,3 @@ function SignalDeltaColumn({
     </td>
   );
 }
-
-export default SignalDeltaColumn;

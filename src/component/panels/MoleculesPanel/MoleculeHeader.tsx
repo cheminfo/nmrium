@@ -38,16 +38,17 @@ export default function MoleculeHeader(props: MoleculeHeaderProps) {
   const dispatch = useDispatch();
 
   const validateLabel = useCallback(
-    (value: any) => {
+    (value: string | number) => {
       const reservedNumbers = extractLabelsNumbers(molecules);
-      const number = extractNumber(value);
-      return value && !reservedNumbers.includes(Number(number));
+      const number = extractNumber(String(value));
+      return Boolean(value && !reservedNumbers.includes(Number(number)));
     },
     [molecules],
   );
+
   const saveLabelHandler = useCallback(
-    (id: string, event: any) => {
-      const label = event.target.value as string;
+    (id: string, value: string | number) => {
+      const label = String(value);
       dispatch({ type: 'CHANGE_MOLECULE_LABEL', payload: { label, id } });
     },
     [dispatch],
@@ -60,7 +61,7 @@ export default function MoleculeHeader(props: MoleculeHeaderProps) {
           value={currentMolecule.label}
           style={styles.labelInput}
           validate={validateLabel}
-          onSave={(event) => saveLabelHandler(currentMolecule.id, event)}
+          onSave={(value) => saveLabelHandler(currentMolecule.id, value)}
           textOverflowEllipses
           type="text"
         />

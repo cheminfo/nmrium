@@ -1,13 +1,24 @@
-import type { Range } from '@zakodium/nmr-types';
+import type { Range, Signal1D } from '@zakodium/nmr-types';
 import { useMemo } from 'react';
+
+import type {
+  RangesTableDataMetaInfo,
+  RangesTableDataRow,
+} from '../RangesPanel.tsx';
 
 export interface RangeData extends Range {
   rowKey: string;
-  tableMetaInfo: any;
+  tableMetaInfo: RangesTableDataMetaInfo & {
+    rowIndex: number;
+    signal?: Signal1D;
+    signalIndex?: number;
+    id?: string;
+    rowSpan?: number;
+    hide?: boolean;
+  };
 }
-//TODO need to refactor the ranges table
 
-function useMapRanges(data: any) {
+export default function useMapRanges(data: RangesTableDataRow[]) {
   return useMemo(() => {
     const rangesData: RangeData[] = [];
     for (const [i, range] of data.entries()) {
@@ -36,7 +47,7 @@ function useMapRanges(data: any) {
       } else if (range.signals.length > 1) {
         for (const [j, signal] of range.signals.entries()) {
           let hide = false;
-          let rowSpan = null;
+          let rowSpan;
           if (j < range.signals.length - 1) {
             if (j === 0) {
               rowSpan = range.signals.length;
@@ -67,5 +78,3 @@ function useMapRanges(data: any) {
     return rangesData;
   }, [data]);
 }
-
-export default useMapRanges;
