@@ -6,6 +6,7 @@ export default function useCombinedRefs<T>(
 ) {
   const targetRef = useRef<any>();
 
+  // eslint-disable-next-line react-hooks/immutability
   useEffect(() => {
     for (const ref of refs) {
       if (!ref) return;

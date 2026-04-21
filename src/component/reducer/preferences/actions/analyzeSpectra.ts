@@ -63,7 +63,7 @@ export function changeAnalysisColumnValueKey(
     panels.multipleSpectraAnalysis as any,
     nucleus,
     columnKey,
-    valueKey as any,
+    valueKey,
   );
 }
 export function deleteAnalysisColumn(

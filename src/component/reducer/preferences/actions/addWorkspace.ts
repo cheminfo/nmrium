@@ -14,6 +14,6 @@ export function addWorkspace(
   if (data) {
     draft.workspaces[workspaceKey] = data as WorkspaceWithSource;
     draft.originalWorkspaces[workspaceKey] = data as WorkspaceWithSource;
-    draft.workspace.current = workspaceKey as any;
+    draft.workspace.current = workspaceKey;
   }
 }

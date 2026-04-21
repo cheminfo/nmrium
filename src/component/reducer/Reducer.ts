@@ -158,7 +158,7 @@ export const getInitialState = (): State => ({
   correlations: {},
   displayerKey: '',
   zoom: {
-    history: {} as ZoomHistory,
+    history: {},
   },
   toolOptions: {
     selectedTool: 'zoom',

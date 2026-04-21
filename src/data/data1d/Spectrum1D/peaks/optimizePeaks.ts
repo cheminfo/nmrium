@@ -35,11 +35,7 @@ export function optimizePeaks(
     frequency,
     groupingFactor: 3,
   });
-  return mapPeaks(
-    spectrum.peaks.values.concat(newPeaks as Peak1D[]),
-    spectrum,
-    {
-      checkIsExisting: false,
-    },
-  );
+  return mapPeaks(spectrum.peaks.values.concat(newPeaks), spectrum, {
+    checkIsExisting: false,
+  });
 }

@@ -67,7 +67,7 @@ function useIntegrals() {
         reverse: true,
       },
     );
-    values.push({ ...integral, ...integralData } as IntegralData);
+    values.push({ ...integral, ...integralData });
     const value = xyMaxY(integralData);
     if (value > max) max = value;
   }

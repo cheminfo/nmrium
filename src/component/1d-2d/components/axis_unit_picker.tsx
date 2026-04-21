@@ -22,7 +22,7 @@ export function AxisUnitPicker(props: AxisUnitPickerProps) {
     roleStructure: 'listoption',
     text: axisUnitToLabel[allowedUnit],
     selected: allowedUnit === unit,
-    data: { unit: allowedUnit } as Data,
+    data: { unit: allowedUnit } satisfies Data,
   }));
 
   function onSelect(data?: object) {

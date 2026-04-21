@@ -3,7 +3,8 @@ import styled from '@emotion/styled';
 import { revalidateLogic } from '@tanstack/react-form';
 import type { Workspace } from '@zakodium/nmrium-core';
 import { ErrorBoundary } from 'react-error-boundary';
-import { Form, assert, assertUnreachable, useForm } from 'react-science/ui';
+import { Form, assert, useForm } from 'react-science/ui';
+import { match } from 'ts-pattern';
 
 import { usePreferences } from '../../../context/PreferencesContext.js';
 import ErrorOverlay from '../../../main/ErrorOverlay.tsx';
@@ -60,6 +61,7 @@ interface GeneralSettingsProps extends Omit<
 }
 
 type FormMeta = 'apply' | 'save';
+
 function GeneralSettings(props: GeneralSettingsProps) {
   const { close, height, onSave } = props;
 
@@ -72,23 +74,23 @@ function GeneralSettings(props: GeneralSettingsProps) {
     },
     validationLogic: revalidateLogic({ mode: 'change' }),
     defaultValues,
-    onSubmitMeta: 'apply' satisfies FormMeta as FormMeta,
+    // We don't want onSubmitMeta to be inferred as sting.
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+    onSubmitMeta: 'apply' as FormMeta,
     onSubmit: ({ value, meta }) => {
       const mergedValues = formValueToWorkspace(value, currentWorkspace);
 
-      switch (meta) {
-        case 'apply':
+      match(meta)
+        .with('apply', () => {
           dispatch({
             type: 'APPLY_GENERAL_PREFERENCES',
             payload: { data: mergedValues },
           });
-          break;
-        case 'save':
+        })
+        .with('save', () => {
           onSave(mergedValues);
-          break;
-        default:
-          assertUnreachable(meta);
-      }
+        })
+        .exhaustive();
 
       close();
     },
