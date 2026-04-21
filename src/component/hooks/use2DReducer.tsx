@@ -1,5 +1,5 @@
 import type { Spectrum2D } from '@zakodium/nmrium-core';
-import type { NmrData2DContent, NmrData2DFt } from 'cheminfo-types';
+import type { NmrData2DContent } from 'cheminfo-types';
 import { useMemo } from 'react';
 
 import { isFt2DSpectrum } from '../../data/data2d/Spectrum2D/isSpectrum2D.ts';
@@ -30,7 +30,7 @@ export function use2DReducer(): SpectrumFTData[] {
       isFt2DSpectrum,
     )) {
       const { id, display, data } = spectrum;
-      const { rr } = data as NmrData2DFt;
+      const { rr } = data;
       const reducedData = reduce2DSpectrum(rr, {
         fromX,
         fromY,

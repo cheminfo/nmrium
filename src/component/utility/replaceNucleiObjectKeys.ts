@@ -7,5 +7,5 @@ export function replaceNucleiObjectKeys<
     nuclei[key.replace(searchValue, replaceValue)] = data.nuclei[key];
   }
 
-  return { ...data, nuclei } as T;
+  return { ...data, nuclei };
 }

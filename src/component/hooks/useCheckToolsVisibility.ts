@@ -55,7 +55,7 @@ export function useCheckToolsVisibility(): (
         modeFlag &&
         spectrumCheckFlag &&
         (!extraInfoCheckParameters ||
-          checkInfo(extraInfoCheckParameters, spectrum?.info as SpectrumInfo))
+          checkInfo(extraInfoCheckParameters, spectrum?.info))
       );
     },
 

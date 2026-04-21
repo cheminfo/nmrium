@@ -404,13 +404,13 @@ function handleMoveOverXAxis(draft: Draft<State>, action: MoveAction) {
   const { xDomain, yDomain } = moveOverAxis(
     action.payload,
     {
-      xDomain: draft.xDomain as NumberExtent,
-      yDomain: draft.yDomain as NumberExtent,
+      xDomain: draft.xDomain,
+      yDomain: draft.yDomain,
     },
     { xDomain: originXDomain, yDomain: originYDomain },
   );
-  draft.xDomain = xDomain as number[];
-  draft.yDomain = yDomain as number[];
+  draft.xDomain = xDomain;
+  draft.yDomain = yDomain;
 }
 
 export {

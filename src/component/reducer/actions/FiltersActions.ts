@@ -39,7 +39,6 @@ import { options as Tools } from '../../toolbar/ToolTypes.js';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus.js';
 import nucleusToString from '../../utility/nucleusToString.js';
 import type {
-  PhaseCorrectionTraceData,
   State,
   TraceDirection,
   TwoDimensionPhaseCorrection,
@@ -663,10 +662,10 @@ function beforeRollback(draft: Draft<State>, filterKey: any) {
         }
 
         for (const direction in filterOptions) {
-          const phaseOptions = draft.toolOptions.data
-            .twoDimensionPhaseCorrection.traces[
-            direction as TraceDirection
-          ] as PhaseCorrectionTraceData;
+          const phaseOptions =
+            draft.toolOptions.data.twoDimensionPhaseCorrection.traces[
+              direction as TraceDirection
+            ];
           const {
             ph0,
             ph1,
@@ -2043,9 +2042,8 @@ function getTwoDimensionsPhaseCorrectionOptions(draft: Draft<State>) {
 
   const result: any = {};
   for (const direction in filterOptions) {
-    const { ph0, ph1, pivot, spectra } = filterOptions[
-      direction as TraceDirection
-    ] as PhaseCorrectionTraceData;
+    const { ph0, ph1, pivot, spectra } =
+      filterOptions[direction as TraceDirection];
     result[direction as TraceDirection] = {
       ph0,
       ph1,
