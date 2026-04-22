@@ -16,6 +16,7 @@ import type { BaselineAlgorithmOptions } from '../../panels/filtersPanel/Filters
 import { getBaselineValues } from '../../panels/filtersPanel/Filters/hooks/useBaselineCorrection.tsx';
 import { PathBuilder } from '../../utility/PathBuilder.ts';
 
+import { getMedianWindow } from './getMedianWindow.ts';
 import { getMedianY } from './getMedianY.ts';
 import type { AnchorData } from './mapAnchors.ts';
 import { mapAnchors } from './mapAnchors.ts';
@@ -172,11 +173,12 @@ function SpectrumPreview({ spectrum, anchors }: SpectrumPreviewProps) {
     ) {
       return { x, y: new Float64Array(x.length) };
     }
-
+    const medianWindow = getMedianWindow(spectrum);
     const options = {
       ...getBaselineValues(sharedFilterOptions?.algorithm || 'polynomial'),
       ...sharedFilterOptions,
       anchors: mapAnchors(anchors),
+      medianWindow,
     };
 
     const y = xyBaselineCalculation(
