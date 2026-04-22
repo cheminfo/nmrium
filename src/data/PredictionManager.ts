@@ -76,6 +76,7 @@ export const getDefaultPredictionOptions = (): PredictionOptions => ({
 });
 
 export const FREQUENCIES: Array<{ value: number; label: string }> = [
+  { value: 25, label: '25 MHz' },
   { value: 40, label: '40 MHz' },
   { value: 60, label: '60 MHz' },
   { value: 80, label: '80 MHz' },
