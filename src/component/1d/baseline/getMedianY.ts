@@ -1,13 +1,10 @@
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { xFindClosestIndex, xMedian } from 'ml-spectra-processing';
 
-export function getMedianY(
-  x: number,
-  spectrum: Spectrum1D,
-  windowSize = 41,
-): number {
-  const { info } = spectrum;
-  const size = info.numberOfPoints ? info.numberOfPoints / 100 : windowSize;
+import { getMedianWindow } from './getMedianWindow.ts';
+
+export function getMedianY(x: number, spectrum: Spectrum1D): number {
+  const size = getMedianWindow(spectrum);
   const { x: xValues, re: y } = spectrum.data;
   const halfWindow = Math.floor(size / 2);
   const centerIndex = xFindClosestIndex(xValues, x);

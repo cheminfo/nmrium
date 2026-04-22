@@ -176,7 +176,7 @@ function SpectrumPreview({ spectrum, anchors }: SpectrumPreviewProps) {
     const options = {
       ...getBaselineValues(sharedFilterOptions?.algorithm || 'polynomial'),
       ...sharedFilterOptions,
-      anchors: mapAnchors(spectrum, anchors),
+      anchors: mapAnchors(anchors),
     };
 
     const y = xyBaselineCalculation(

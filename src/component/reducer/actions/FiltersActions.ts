@@ -28,6 +28,7 @@ import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.js';
 import { isFid2DSpectrum } from '../../../data/data2d/Spectrum2D/isSpectrum2D.js';
 import type { FilterEntry } from '../../../data/types/common/FilterEntry.ts';
 import type { ExclusionZone } from '../../../data/types/data1d/ExclusionZone.js';
+import { getMedianWindow } from '../../1d/baseline/getMedianWindow.ts';
 import type { AnchorData } from '../../1d/baseline/mapAnchors.ts';
 import { mapAnchors } from '../../1d/baseline/mapAnchors.ts';
 import { getXScale } from '../../1d/utilities/scale.js';
@@ -1569,17 +1570,25 @@ function handleBaseLineCorrectionFilter(
   const activeFilterIndex = getActiveFilterIndex(draft);
 
   const { index } = activeSpectrum;
+  const tempSpectrum = draft.tempData[index];
+
+  if (!isSpectrum1D(tempSpectrum)) {
+    return;
+  }
+
   const { options } = action.payload;
   const { anchors = [] } = options;
+  const medianWindow = getMedianWindow(tempSpectrum);
 
   Filters1DManager.applyFilters(
-    draft.tempData[index],
+    tempSpectrum,
     [
       {
         name: 'baselineCorrection',
         value: {
           ...options,
-          anchors: mapAnchors(draft.data[index] as Spectrum1D, anchors),
+          anchors: mapAnchors(anchors),
+          medianWindow,
         },
       } as Extract<Filter1D, { name: 'baseLineCorrection' }>,
     ],
@@ -1599,12 +1608,18 @@ function calculateBaseLineCorrection(
   if (!activeSpectrum || !draft.tempData) {
     return;
   }
-
   const { index } = activeSpectrum;
+  const tempSpectrum = draft.tempData[index];
+
+  if (!isSpectrum1D(tempSpectrum)) {
+    return;
+  }
+
+  const medianWindow = getMedianWindow(tempSpectrum);
   const {
     data: { x, re, im },
     info,
-  } = draft.tempData[index];
+  } = tempSpectrum;
   // save the baseline options temporary
   draft.toolOptions.data.baselineCorrection = {
     ...draft.toolOptions.data.baselineCorrection,
@@ -1617,7 +1632,8 @@ function calculateBaseLineCorrection(
     const _data = { data: { x, re, im }, info } as Spectrum1D;
     baselineCorrection.apply(_data, {
       ...options,
-      anchors: mapAnchors(draft.data[index] as Spectrum1D, anchors),
+      anchors: mapAnchors(anchors),
+      medianWindow,
     });
     const { im: newIm, re: newRe } = _data.data;
     const datum = draft.data[index];
