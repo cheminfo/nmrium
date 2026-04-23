@@ -8,7 +8,7 @@ import type {
   StateMolecule,
 } from '@zakodium/nmrium-core';
 import dlv from 'dlv';
-import type { CSSProperties } from 'react';
+import type { CSSProperties, MouseEvent } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import { FaCopy, FaFileExport, FaRegTrashAlt } from 'react-icons/fa';
 import { IoColorPaletteOutline } from 'react-icons/io5';
@@ -57,7 +57,7 @@ const columnStyle: CSSProperties = {
 interface SpectraTableProps extends OnChangeVisibilityEvent {
   data: any;
   activeSpectra: ActiveSpectrum[] | null;
-  onChangeActiveSpectrum: (event: Event, data: Spectrum) => void;
+  onChangeActiveSpectrum: (event: MouseEvent, data: Spectrum) => void;
   nucleus: string;
 }
 

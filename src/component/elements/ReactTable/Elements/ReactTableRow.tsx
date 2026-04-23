@@ -2,6 +2,7 @@
 
 import type { CSSObject, SerializedStyles } from '@emotion/react';
 import { css } from '@emotion/react';
+import type { MouseEvent } from 'react';
 import { useCallback, useEffect, useMemo } from 'react';
 
 import type { HighlightEventSource } from '../../../highlight/index.js';
@@ -40,7 +41,7 @@ function getRowStyle(
 }
 
 export interface ClickEvent {
-  onClick?: (event: Event, data: unknown) => void;
+  onClick?: (event: MouseEvent, data: unknown) => void;
 }
 
 interface ReactTableRowProps extends ClickEvent, TableContextMenuProps {
@@ -96,7 +97,7 @@ function ReactTableRow(props: ReactTableRowPropsWithHighlight) {
   }, []);
 
   const clickHandler = useCallback(
-    (event: Event) => {
+    (event: MouseEvent) => {
       onClick?.(event, row);
     },
     [onClick, row],

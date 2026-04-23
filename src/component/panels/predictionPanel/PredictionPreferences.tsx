@@ -7,41 +7,41 @@ import type { SettingsRef } from '../extra/utilities/settingImperativeHandle.js'
 
 import PredictionOptionsPanel from './PredictionOptionsPanel.js';
 
-function PredictionPreferences(props: any, ref: any) {
-  const formRef = useRef<SettingsRef | null>(null);
-  const preferences = usePreferences();
-  const predictionPreferences = usePanelPreferences('prediction');
+export default forwardRef<SettingsRef | null>(
+  function PredictionPreferences(_, ref) {
+    const formRef = useRef<SettingsRef | null>(null);
+    const preferences = usePreferences();
+    const predictionPreferences = usePanelPreferences('prediction');
 
-  const saveHandler = useCallback(
-    (values: any) => {
-      preferences.dispatch({
-        type: 'SET_PANELS_PREFERENCES',
-        payload: { key: 'prediction', value: values },
-      });
-    },
-    [preferences],
-  );
-
-  useImperativeHandle(
-    ref,
-    () => ({
-      saveSetting: () => {
-        return formRef.current?.saveSetting();
+    const saveHandler = useCallback(
+      (values: any) => {
+        preferences.dispatch({
+          type: 'SET_PANELS_PREFERENCES',
+          payload: { key: 'prediction', value: values },
+        });
       },
-    }),
-    [],
-  );
+      [preferences],
+    );
 
-  return (
-    <PreferencesContainer style={{ backgroundColor: 'white' }}>
-      <PredictionOptionsPanel
-        onSave={saveHandler}
-        options={predictionPreferences}
-        ref={formRef}
-        hideName
-      />
-    </PreferencesContainer>
-  );
-}
+    useImperativeHandle(
+      ref,
+      () => ({
+        saveSetting: () => {
+          return formRef.current?.saveSetting();
+        },
+      }),
+      [],
+    );
 
-export default forwardRef(PredictionPreferences);
+    return (
+      <PreferencesContainer style={{ backgroundColor: 'white' }}>
+        <PredictionOptionsPanel
+          onSave={saveHandler}
+          options={predictionPreferences}
+          ref={formRef}
+          hideName
+        />
+      </PreferencesContainer>
+    );
+  },
+);

@@ -66,65 +66,65 @@ const preferences2DFields: NucleusPreferenceField[] = [
   },
 ];
 
-function ZonesPreferences(props: any, ref: any) {
-  const preferences = usePreferences();
-  const nucleus = useNucleus();
-  const nuclei = useMemo(
-    () =>
-      getUniqueNuclei(nucleus).concat(nucleus.filter((n) => is2DNucleus(n))),
-    [nucleus],
-  );
-  const zonesPreferences = usePanelPreferencesByNuclei('zones', nuclei);
+export default memo(
+  forwardRef<SettingsRef | null>(function ZonesPreferences(_, ref) {
+    const preferences = usePreferences();
+    const nucleus = useNucleus();
+    const nuclei = useMemo(
+      () =>
+        getUniqueNuclei(nucleus).concat(nucleus.filter((n) => is2DNucleus(n))),
+      [nucleus],
+    );
+    const zonesPreferences = usePanelPreferencesByNuclei('zones', nuclei);
 
-  const saveHandler = useCallback(
-    (values: any) => {
-      preferences.dispatch({
-        type: 'SET_PANELS_PREFERENCES',
-        payload: {
-          key: 'zones',
-          value: replaceNucleiObjectKeys(values, '_', ','),
-        },
-      });
-    },
-    [preferences],
-  );
+    const saveHandler = useCallback(
+      (values: any) => {
+        preferences.dispatch({
+          type: 'SET_PANELS_PREFERENCES',
+          payload: {
+            key: 'zones',
+            value: replaceNucleiObjectKeys(values, '_', ','),
+          },
+        });
+      },
+      [preferences],
+    );
 
-  const { handleSubmit, reset, control } = useForm<any>({
-    defaultValues: {},
-  });
+    const { handleSubmit, reset, control } = useForm<any>({
+      defaultValues: {},
+    });
 
-  useSettingImperativeHandle(ref, handleSubmit, saveHandler);
+    useSettingImperativeHandle(ref, handleSubmit, saveHandler);
 
-  useEffect(() => {
-    reset(replaceNucleiObjectKeys(zonesPreferences, ',', '_'));
-  }, [reset, zonesPreferences]);
+    useEffect(() => {
+      reset(replaceNucleiObjectKeys(zonesPreferences, ',', '_'));
+    }, [reset, zonesPreferences]);
 
-  return (
-    <PreferencesContainer>
-      {nuclei?.map((n) => {
-        if (is2DNucleus(n)) {
-          return (
-            <NucleusPreferences
-              control={control}
-              key={n}
-              nucleus={n.replace(',', '_')}
-              nucleusTitle={n}
-              fields={preferences2DFields}
-            />
-          );
-        } else {
-          return (
-            <NucleusPreferences
-              control={control}
-              key={n}
-              nucleus={n}
-              fields={preferences1DFields}
-            />
-          );
-        }
-      })}
-    </PreferencesContainer>
-  );
-}
-
-export default memo(forwardRef<SettingsRef>(ZonesPreferences));
+    return (
+      <PreferencesContainer>
+        {nuclei?.map((n) => {
+          if (is2DNucleus(n)) {
+            return (
+              <NucleusPreferences
+                control={control}
+                key={n}
+                nucleus={n.replace(',', '_')}
+                nucleusTitle={n}
+                fields={preferences2DFields}
+              />
+            );
+          } else {
+            return (
+              <NucleusPreferences
+                control={control}
+                key={n}
+                nucleus={n}
+                fields={preferences1DFields}
+              />
+            );
+          }
+        })}
+      </PreferencesContainer>
+    );
+  }),
+);

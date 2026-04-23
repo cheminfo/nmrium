@@ -8,6 +8,7 @@ import { getUniqueNuclei } from '../../utility/getUniqueNuclei.js';
 import type { NucleusPreferenceField } from '../extra/preferences/NucleusPreferences.js';
 import { NucleusPreferences } from '../extra/preferences/NucleusPreferences.js';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer.js';
+import type { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
 import { useSettingImperativeHandle } from '../extra/utilities/settingImperativeHandle.js';
 
 const formatFields: NucleusPreferenceField[] = [
@@ -78,40 +79,40 @@ const formatFields: NucleusPreferenceField[] = [
   },
 ];
 
-function PeaksPreferences(props: any, ref: any) {
-  const preferences = usePreferences();
-  const nucleus = useNucleus();
-  const nuclei = useMemo(() => getUniqueNuclei(nucleus), [nucleus]);
-  const preferencesByNuclei = usePanelPreferencesByNuclei('peaks', nuclei);
+export default memo(
+  forwardRef<SettingsRef | null>(function PeaksPreferences(_, ref) {
+    const preferences = usePreferences();
+    const nucleus = useNucleus();
+    const nuclei = useMemo(() => getUniqueNuclei(nucleus), [nucleus]);
+    const preferencesByNuclei = usePanelPreferencesByNuclei('peaks', nuclei);
 
-  const saveHandler = useCallback(
-    (values: any) => {
-      preferences.dispatch({
-        type: 'SET_PANELS_PREFERENCES',
-        payload: { key: 'peaks', value: values },
-      });
-    },
-    [preferences],
-  );
+    const saveHandler = useCallback(
+      (values: any) => {
+        preferences.dispatch({
+          type: 'SET_PANELS_PREFERENCES',
+          payload: { key: 'peaks', value: values },
+        });
+      },
+      [preferences],
+    );
 
-  const { handleSubmit, control } = useForm<any>({
-    defaultValues: preferencesByNuclei,
-  });
+    const { handleSubmit, control } = useForm<any>({
+      defaultValues: preferencesByNuclei,
+    });
 
-  useSettingImperativeHandle(ref, handleSubmit, saveHandler);
+    useSettingImperativeHandle(ref, handleSubmit, saveHandler);
 
-  return (
-    <PreferencesContainer>
-      {nuclei?.map((n) => (
-        <NucleusPreferences
-          control={control}
-          key={n}
-          nucleus={n}
-          fields={formatFields}
-        />
-      ))}
-    </PreferencesContainer>
-  );
-}
-
-export default memo(forwardRef(PeaksPreferences));
+    return (
+      <PreferencesContainer>
+        {nuclei?.map((n) => (
+          <NucleusPreferences
+            control={control}
+            key={n}
+            nucleus={n}
+            fields={formatFields}
+          />
+        ))}
+      </PreferencesContainer>
+    );
+  }),
+);

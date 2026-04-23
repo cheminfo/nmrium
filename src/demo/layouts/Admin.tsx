@@ -58,7 +58,6 @@ export default function Dashboard(props: DashboardProps) {
       }}
     >
       <Sidebar
-        {...props}
         routes={routes}
         menuIsClosed={menuIsClosed}
         onMenuToggle={toggleMenu}
@@ -88,7 +87,12 @@ export default function Dashboard(props: DashboardProps) {
   );
 }
 
-function RenderView(props: any) {
+interface RenderViewProps {
+  prop: any;
+  baseURL?: string;
+}
+
+function RenderView(props: RenderViewProps) {
   const { prop, baseURL } = props;
   const viewName = prop.view || 'View';
   // @ts-expect-error We bypass type checking here anyway
