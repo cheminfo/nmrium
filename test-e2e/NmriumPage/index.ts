@@ -37,8 +37,8 @@ export default class NmriumPage {
     await this.page.click('li >> text=COSY ethylbenzene');
   }
 
-  public async clickPanel(title: string, options: ClickOptions = {}) {
-    await this.page.click(`_react=AccordionItem[title="${title}"]`, {
+  public async clickPanel(name: string, options: ClickOptions = {}) {
+    await this.page.getByRole('button', { name }).click({
       position: { x: 10, y: 10 },
       ...options,
     });
@@ -50,6 +50,7 @@ export default class NmriumPage {
       .or(this.page.locator(`_react=ToolbarPopoverItem[id="${id}"] >> nth=0`))
       .click();
   }
+
   public async clickToolByTitle(title: string) {
     await this.page.click(`_react=ToolbarItem[tooltip="${title}"] >> nth=0`);
   }
