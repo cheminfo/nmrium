@@ -1,9 +1,9 @@
-import type { RefObject } from 'react';
+import type { Ref } from 'react';
 import { useImperativeHandle } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 
 export interface SettingsRef {
-  saveSetting: () => Promise<boolean>;
+  saveSetting: () => Promise<boolean> | undefined;
 }
 
 function saveSetting(
@@ -24,7 +24,7 @@ function saveSetting(
 }
 
 export function useSettingImperativeHandle(
-  ref: RefObject<any>,
+  ref: Ref<any>,
   handleSubmit: UseFormReturn['handleSubmit'],
   handleSuccess: (data: any) => void,
 ) {

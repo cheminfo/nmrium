@@ -1,11 +1,16 @@
 import { FaRegEyeSlash } from 'react-icons/fa';
 
-export function EmptyDataRow(props: any) {
-  const { columns, text } = props;
+interface EmptyDataRowProps {
+  numColumns: number;
+  text: string;
+}
+
+export function EmptyDataRow(props: EmptyDataRowProps) {
+  const { numColumns, text } = props;
   return (
     <tr>
       <td
-        colSpan={columns.length}
+        colSpan={numColumns}
         style={{ textAlign: 'center', padding: '0.5em' }}
       >
         <FaRegEyeSlash

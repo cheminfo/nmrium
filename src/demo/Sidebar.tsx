@@ -90,7 +90,13 @@ const SideBarWrapper = styled.div<MenuStatus>`
   z-index: 4;
 `;
 
-function Sidebar(props: any) {
+interface SidebarProps {
+  routes: any[];
+  menuIsClosed: boolean;
+  onMenuToggle: () => void;
+}
+
+export default memo(function Sidebar(props: SidebarProps) {
   const { menuIsClosed, routes, onMenuToggle } = props;
 
   const navigate = useNavigate();
@@ -130,6 +136,4 @@ function Sidebar(props: any) {
       </SideBarWrapper>
     </SideBarContainer>
   );
-}
-
-export default memo(Sidebar);
+});

@@ -70,7 +70,7 @@ function InnerSetMolecularFormulaModal({
 }: InnerMolecularFormulaModalProps) {
   const dispatch = useDispatch();
 
-  function saveHandler(mf: any) {
+  function saveHandler(mf: string) {
     dispatch({
       type: 'SET_CORRELATIONS_MF',
       payload: {
@@ -105,11 +105,15 @@ function InnerSetMolecularFormulaModal({
   );
 }
 
-function ManualFormula(props: any) {
+interface ManualFormulaProps {
+  onSave: (mf: string) => void;
+}
+
+function ManualFormula(props: ManualFormulaProps) {
   const { correlations } = useChartData();
 
-  function saveHandler(data: any) {
-    props?.onSave(data.mf);
+  function saveHandler(data: { mf: string }) {
+    props.onSave(data.mf);
   }
 
   const { handleSubmit, control } = useForm({
@@ -136,18 +140,22 @@ function ManualFormula(props: any) {
   );
 }
 
-function AutoFormula(props: any) {
+interface AutoFormulaProps {
+  onSave: (mf: string) => void;
+}
+
+function AutoFormula(props: AutoFormulaProps) {
   const { molecules } = useChartData();
 
   const [currentIndex, setCurrentIndex] = useState<number>(0);
 
-  function onChangeHandlerMoleculeSelection(index: any) {
+  function onChangeHandlerMoleculeSelection(index: number) {
     setCurrentIndex(index);
   }
 
   function saveHandler() {
     const mf = molecules?.[currentIndex]?.mf;
-    props?.onSave(mf);
+    props.onSave(mf);
   }
 
   if (!molecules || molecules?.length === 0) {

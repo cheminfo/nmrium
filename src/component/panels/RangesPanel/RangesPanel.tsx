@@ -17,6 +17,7 @@ import type { BaseContextMenuProps } from '../../elements/ContextMenuBluePrint.j
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import { TablePanel } from '../extra/BasicPanelStyle.js';
+import type { SettingsRef } from '../extra/utilities/settingImperativeHandle.ts';
 import PreferencesHeader from '../header/PreferencesHeader.js';
 
 import RangesHeader from './RangesHeader.js';
@@ -55,7 +56,7 @@ function RangesTablePanelInner(props: RangesTablePanelInnerProps) {
   const toaster = useToaster();
   const [isFlipped, setFlipStatus] = useState(false);
 
-  const settingRef = useRef<any>();
+  const settingsRef = useRef<SettingsRef | null>(null);
 
   const rangesData: RangesTableDataRow[] = useMemo(() => {
     const isInView = (from: number, to: number) => {
@@ -138,8 +139,8 @@ function RangesTablePanelInner(props: RangesTablePanelInnerProps) {
     setFlipStatus(!isFlipped);
   }, [isFlipped]);
 
-  const saveSettingHandler = useCallback(() => {
-    settingRef.current.saveSetting();
+  const saveSettingHandler = useCallback(async () => {
+    await settingsRef.current?.saveSetting();
     setFlipStatus(false);
   }, []);
 
@@ -175,7 +176,7 @@ function RangesTablePanelInner(props: RangesTablePanelInnerProps) {
             />
           </div>
         ) : (
-          <RangesPreferences ref={settingRef} />
+          <RangesPreferences ref={settingsRef} />
         )}
       </div>
       <ClipboardFallbackModal

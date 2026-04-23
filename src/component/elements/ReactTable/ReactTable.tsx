@@ -2,7 +2,13 @@
 /** @jsxImportSource @emotion/react */
 import type { CSSObject, SerializedStyles } from '@emotion/react';
 import { css } from '@emotion/react';
-import type { CSSProperties, ReactElement, Ref, WheelEvent } from 'react';
+import type {
+  CSSProperties,
+  MouseEvent,
+  ReactElement,
+  Ref,
+  UIEvent,
+} from 'react';
 import {
   forwardRef,
   memo,
@@ -107,7 +113,7 @@ interface ReactTableProps<T extends object>
 
 type ReactTableInnerProps<T extends object> = ReactTableProps<T> &
   HighlightSourceProps & {
-    onScroll?: (event: WheelEvent<HTMLDivElement>) => void;
+    onScroll?: (event: UIEvent<HTMLDivElement>) => void;
   };
 
 type ReactTableOuterProps<T extends object> = ReactTableProps<T> &
@@ -116,7 +122,7 @@ type ReactTableOuterProps<T extends object> = ReactTableProps<T> &
 const styles = {
   table: (
     enableVirtualScroll: boolean,
-    enableColumnsVirtualScroll: any,
+    enableColumnsVirtualScroll: boolean,
   ): CSSProperties => {
     const style: CSSProperties = { tableLayout: 'auto' };
 
@@ -213,12 +219,12 @@ function TableInner<T extends object>(
 
   const { sortBy } = state as any;
 
-  function clickHandler(event: any, row: any) {
+  function clickHandler(event: MouseEvent, row: any) {
     setRowIndex(row.index);
     onClick?.(event, row);
   }
 
-  function scrollHandler(e: any) {
+  function scrollHandler(e: UIEvent<HTMLDivElement>) {
     if (enableVirtualScroll) {
       onScroll?.(e);
     }
@@ -297,7 +303,10 @@ function TableInner<T extends object>(
           <tbody {...getTableBodyProps()}>
             {!data ||
               (data?.length === 0 && (
-                <EmptyDataRow columns={columns} text={emptyDataRowText} />
+                <EmptyDataRow
+                  numColumns={columns.length}
+                  text={emptyDataRowText}
+                />
               ))}
             {rowsData.map((row, index) => {
               prepareRow(row);

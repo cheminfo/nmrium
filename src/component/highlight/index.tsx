@@ -1,5 +1,5 @@
 import type { Range } from '@zakodium/nmr-types';
-import type { CSSProperties, MouseEvent } from 'react';
+import type { CSSProperties, MouseEvent, PropsWithChildren } from 'react';
 import {
   createContext,
   useCallback,
@@ -164,7 +164,7 @@ function highlightReducer(
   }
 }
 
-export function HighlightProvider(props: any) {
+export function HighlightProvider(props: PropsWithChildren) {
   const [highlight, dispatch] = useReducer(
     highlightReducer,
     emptyState.highlight,
@@ -205,7 +205,7 @@ export function useHighlight(
   const { dispatch, highlight } = useHighlightData();
 
   const convertedHighlights = useMemo(() => {
-    const newHighlights: any[] = [];
+    const newHighlights: string[] = [];
     for (const highlight of highlights) {
       if (typeof highlight !== 'string' && typeof highlight !== 'number') {
         throw new Error(`highlight key must be a string or number`);

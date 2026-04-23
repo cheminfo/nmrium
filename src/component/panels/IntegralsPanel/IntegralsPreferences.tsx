@@ -60,66 +60,69 @@ const formatFields: NucleusPreferenceField[] = [
   },
 ];
 
-function IntegralsPreferences(props: any, ref: any) {
-  const preferences = usePreferences();
-  const nucleus = useNucleus();
-  const nuclei = useMemo(() => getUniqueNuclei(nucleus), [nucleus]);
-  const preferencesByNuclei = usePanelPreferencesByNuclei('integrals', nuclei);
+export default memo(
+  forwardRef<SettingsRef>(function IntegralsPreferences(_, ref) {
+    const preferences = usePreferences();
+    const nucleus = useNucleus();
+    const nuclei = useMemo(() => getUniqueNuclei(nucleus), [nucleus]);
+    const preferencesByNuclei = usePanelPreferencesByNuclei(
+      'integrals',
+      nuclei,
+    );
 
-  const saveHandler = useCallback(
-    (values: any) => {
-      preferences.dispatch({
-        type: 'SET_PANELS_PREFERENCES',
-        payload: { key: 'integrals', value: values },
-      });
-    },
-    [preferences],
-  );
-  const { handleSubmit, control } = useForm<any>({
-    defaultValues: preferencesByNuclei,
-  });
+    const saveHandler = useCallback(
+      (values: any) => {
+        preferences.dispatch({
+          type: 'SET_PANELS_PREFERENCES',
+          payload: { key: 'integrals', value: values },
+        });
+      },
+      [preferences],
+    );
+    const { handleSubmit, control } = useForm<any>({
+      defaultValues: preferencesByNuclei,
+    });
 
-  useSettingImperativeHandle(ref, handleSubmit, saveHandler);
+    useSettingImperativeHandle(ref, handleSubmit, saveHandler);
 
-  return (
-    <PreferencesContainer>
-      {nuclei?.map((n) => (
-        <NucleusPreferences
-          key={n}
-          control={control}
-          nucleus={n}
-          fields={formatFields}
-          renderTop={() => (
-            <>
-              <Label title="Color" style={fieldLabelStyle}>
-                <div style={{ display: 'flex', padding: '2px 0' }}>
-                  <div style={{ width: '23px' }} />
-                  <ColorPickerDropdownController
-                    control={control}
-                    name={`nuclei.${n}.color`}
-                  />
-                </div>
-              </Label>
-              <Label title="Stroke width:" style={fieldLabelStyle}>
-                <div style={{ display: 'flex', padding: '2px 0' }}>
-                  <div style={{ width: '23px' }} />
-                  <NumberInput2Controller
-                    name={`nuclei.${n}.strokeWidth`}
-                    control={control}
-                    min={1}
-                    max={9}
-                    controllerProps={{
-                      rules: { min: 1, max: 9, required: true },
-                    }}
-                  />
-                </div>
-              </Label>
-            </>
-          )}
-        />
-      ))}
-    </PreferencesContainer>
-  );
-}
-
-export default memo(forwardRef<SettingsRef>(IntegralsPreferences));
+    return (
+      <PreferencesContainer>
+        {nuclei?.map((n) => (
+          <NucleusPreferences
+            key={n}
+            control={control}
+            nucleus={n}
+            fields={formatFields}
+            renderTop={() => (
+              <>
+                <Label title="Color" style={fieldLabelStyle}>
+                  <div style={{ display: 'flex', padding: '2px 0' }}>
+                    <div style={{ width: '23px' }} />
+                    <ColorPickerDropdownController
+                      control={control}
+                      name={`nuclei.${n}.color`}
+                    />
+                  </div>
+                </Label>
+                <Label title="Stroke width:" style={fieldLabelStyle}>
+                  <div style={{ display: 'flex', padding: '2px 0' }}>
+                    <div style={{ width: '23px' }} />
+                    <NumberInput2Controller
+                      name={`nuclei.${n}.strokeWidth`}
+                      control={control}
+                      min={1}
+                      max={9}
+                      controllerProps={{
+                        rules: { min: 1, max: 9, required: true },
+                      }}
+                    />
+                  </div>
+                </Label>
+              </>
+            )}
+          />
+        ))}
+      </PreferencesContainer>
+    );
+  }),
+);
