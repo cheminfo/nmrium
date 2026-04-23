@@ -79,7 +79,6 @@ export default function BaseLineCorrectionOptionsPanel(
 
   const { onChange: onLivePreviewFieldChange, ...livePreviewFieldOptions } =
     register('livePreview');
-
   const disabledAction =
     !!filter.value &&
     !isDirty &&

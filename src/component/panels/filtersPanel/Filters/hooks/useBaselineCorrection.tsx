@@ -183,7 +183,7 @@ export function useBaselineCorrection(
 
   const { resolver, values } = getBaselineData(algorithm?.value, filter?.value);
 
-  const { handleSubmit, reset, ...otherFormOptions } =
+  const { handleSubmit, trigger, reset, ...otherFormOptions } =
     useForm<BaselineAlgorithmOptions>({
       defaultValues: values,
       resolver: resolver as any,
@@ -196,8 +196,7 @@ export function useBaselineCorrection(
       onAlgorithmChange(algorithmItem);
     }
     const merged = { ...values, ...sharedFilterOptions };
-    reset(merged);
-
+    reset(merged, { keepDefaultValues: true });
     onChange(merged);
   }
 

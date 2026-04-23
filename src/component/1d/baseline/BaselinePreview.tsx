@@ -11,6 +11,7 @@ import { useScaleChecked } from '../../context/ScaleContext.tsx';
 import { Anchor } from '../../elements/Anchor.tsx';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.ts';
 import { useIndicatorLineColor } from '../../hooks/useIndicatorLineColor.ts';
+import useSpectrum from '../../hooks/useSpectrum.ts';
 import useTempSpectrum from '../../hooks/useTempSpectrum.ts';
 import type { BaselineAlgorithmOptions } from '../../panels/filtersPanel/Filters/base/baselineCorrectionFields.ts';
 import { getBaselineValues } from '../../panels/filtersPanel/Filters/hooks/useBaselineCorrection.tsx';
@@ -42,6 +43,7 @@ const Container = styled.div`
 export function BaselinePreview() {
   // const spectrum = useSpectrum();
   const spectrum = useTempSpectrum();
+  const processedSpectrum = useSpectrum();
 
   const activeSpectrum = useActiveSpectrum();
   const {
@@ -52,7 +54,9 @@ export function BaselinePreview() {
   const indicatorColor = useIndicatorLineColor();
 
   const { updateFilterOptions, sharedFilterOptions } =
-    useFilterSyncOptions<Partial<{ anchors: number[] }>>();
+    useFilterSyncOptions<
+      Partial<{ anchors: number[]; livePreview: boolean }>
+    >();
 
   // Only used during active drag for local updates
   const [draggingAnchor, setDraggingAnchor] = useState<{
@@ -74,6 +78,7 @@ export function BaselinePreview() {
 
   if (
     !isSpectrum1D(spectrum) ||
+    !isSpectrum1D(processedSpectrum) ||
     selectedTool !== 'baselineCorrection' ||
     !activeSpectrum
   ) {
@@ -112,13 +117,16 @@ export function BaselinePreview() {
       <Container ref={containerRef}>
         {anchors.map((xPPM, index) => {
           const x = scaleX()(xPPM);
-          const yPPM = getMedianY(xPPM, spectrum);
+          const yPPM = getMedianY(
+            xPPM,
+            sharedFilterOptions?.livePreview ? processedSpectrum : spectrum,
+          );
           const v = shiftY * (activeSpectrum?.index || 0);
           const y = scaleY({ spectrumId: activeSpectrum?.id })(yPPM) - v;
 
           return (
             <Anchor
-              key={index}
+              key={index + yPPM}
               position={{ x, y }}
               containerRef={containerRef}
               onDragMove={(x) => handleDragMove(index, x)}
@@ -208,6 +216,11 @@ function SpectrumPreview({ spectrum, anchors }: SpectrumPreviewProps) {
     activeSpectrum?.index,
     shiftY,
   ]);
+
+  if (sharedFilterOptions?.livePreview) {
+    return null;
+  }
+
   return (
     <SVGWrapper>
       <path
