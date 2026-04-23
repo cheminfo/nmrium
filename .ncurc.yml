@@ -1,7 +1,5 @@
 dep: 'prod,dev'
 reject:
-  # https://github.com/cheminfo/nmrium/issues/3983
-  - '@playwright/test'
   # Our plugins are not all compatible with v10
   - eslint
   # Types are deeply broken between this package and nmrium
