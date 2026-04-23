@@ -16,7 +16,7 @@
   ],
   "scripts": {
     "build": "vite build --outDir build && node --run build-clean",
-    "build-clean": "rm build/data/cytisine/2d/HMBC_Cytisin_RI+FT.dx && rm build/data/cytisine/2d/HSQC_Cytisin_RI+FT.dx",
+    "build-clean": "rimraf build/data/cytisine/2d/HMBC_Cytisin_RI+FT.dx && rimraf build/data/cytisine/2d/HSQC_Cytisin_RI+FT.dx",
     "build-cloudflare": "node --run set-version-sha && node --run build-with-profiling && node --run copy-samples-toc",
     "build-no-minify": "cross-env NO_MINIFY=true node --run build",
     "build-with-profiling": "cross-env WITH_PROFILING=true NO_MINIFY=true node --run build",
