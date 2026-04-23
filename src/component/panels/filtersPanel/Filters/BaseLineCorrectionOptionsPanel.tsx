@@ -106,11 +106,7 @@ export default function BaseLineCorrectionOptionsPanel(
 
   function handleResetAnchors() {
     if (!isSpectrum1D(spectrum)) return;
-    const xValues = getBaselineAnchors(spectrum.data).x;
-    const anchors = Array.from(xValues).map((x) => ({
-      id: crypto.randomUUID(),
-      x,
-    }));
+    const anchors = Array.from(getBaselineAnchors(spectrum.data).x);
     updateFilterOptions((prev) => (prev ? { ...prev, anchors } : prev));
   }
 

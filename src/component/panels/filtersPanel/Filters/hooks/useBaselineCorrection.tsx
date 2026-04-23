@@ -195,7 +195,10 @@ export function useBaselineCorrection(
     if (algorithmItem) {
       onAlgorithmChange(algorithmItem);
     }
-    reset({ ...values, ...sharedFilterOptions });
+    const merged = { ...values, ...sharedFilterOptions };
+    reset(merged);
+
+    onChange(merged);
   }
 
   const onChange = useCallback(
@@ -222,7 +225,6 @@ export function useBaselineCorrection(
 
     switch (triggerSource) {
       case 'onChange': {
-        onChange(values);
         syncFilterOptions(values);
         break;
       }
