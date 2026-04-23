@@ -102,9 +102,7 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
   const activeSpectrum = useActiveSpectrum();
   const inset = useInsetOptions();
   const { updateFilterOptions } =
-    useFilterSyncOptions<
-      Partial<{ anchors: Array<{ id: string; x: number }> }>
-    >();
+    useFilterSyncOptions<Partial<{ anchors: number[] }>>();
 
   const [isOpenAnalysisModal, openAnalysisModal, closeAnalysisModal] =
     useOnOff(false);
@@ -477,7 +475,7 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
                 const { anchors = [], ...other } = prev || {};
                 return {
                   ...other,
-                  anchors: [...anchors, { id: crypto.randomUUID(), x: xPPM }],
+                  anchors: [...anchors, xPPM],
                 };
               });
               break;

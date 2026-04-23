@@ -18,8 +18,6 @@ import { PathBuilder } from '../../utility/PathBuilder.ts';
 
 import { getMedianWindow } from './getMedianWindow.ts';
 import { getMedianY } from './getMedianY.ts';
-import type { AnchorData } from './mapAnchors.ts';
-import { mapAnchors } from './mapAnchors.ts';
 
 const SVGWrapper = styled.svg`
   position: absolute;
@@ -54,24 +52,22 @@ export function BaselinePreview() {
   const indicatorColor = useIndicatorLineColor();
 
   const { updateFilterOptions, sharedFilterOptions } =
-    useFilterSyncOptions<
-      Partial<{ anchors: Array<{ id: string; x: number }> }>
-    >();
+    useFilterSyncOptions<Partial<{ anchors: number[] }>>();
 
   // Only used during active drag for local updates
   const [draggingAnchor, setDraggingAnchor] = useState<{
-    id: string;
+    index: number;
     x: number;
   } | null>(null);
-  const draggingAnchorRef = useRef<{ id: string; x: number } | null>(null);
+  const draggingAnchorRef = useRef<{ index: number; x: number } | null>(null);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const { scaleX, scaleY, shiftY } = useScaleChecked();
 
   const anchors = useMemo(
     () =>
-      (sharedFilterOptions?.anchors ?? []).map((a) =>
-        draggingAnchor?.id === a.id ? { ...a, x: draggingAnchor.x } : a,
+      (sharedFilterOptions?.anchors ?? []).map((xVal, i) =>
+        draggingAnchor?.index === i ? draggingAnchor.x : xVal,
       ),
     [sharedFilterOptions?.anchors, draggingAnchor],
   );
@@ -84,44 +80,37 @@ export function BaselinePreview() {
     return;
   }
 
-  function handleDragMove(id: string, newX: number) {
-    const leftEdge = left;
-    const rightEdge = width - right;
-
-    const clampedX = Math.max(leftEdge, Math.min(rightEdge, newX));
-    const updated = { id, x: scaleX().invert(clampedX) };
+  function handleDragMove(index: number, newX: number) {
+    const clampedX = Math.max(left, Math.min(width - right, newX));
+    const updated = { index, x: scaleX().invert(clampedX) };
     draggingAnchorRef.current = updated;
     setDraggingAnchor(updated);
   }
 
-  function handleDragEnd(id: string) {
+  function handleDragEnd(index: number) {
     const finalX = draggingAnchorRef.current?.x;
     draggingAnchorRef.current = null;
     setDraggingAnchor(null);
-    updateFilterOptions((prev) => {
-      const anchors = (prev?.anchors ?? []).map((a) =>
-        a.id === id ? { ...a, x: finalX ?? a.x } : a,
-      );
-      return { ...prev, anchors };
-    });
+    updateFilterOptions((prev) => ({
+      ...prev,
+      anchors: (prev?.anchors ?? []).map((x, i) =>
+        i === index ? (finalX ?? x) : x,
+      ),
+    }));
   }
 
-  function handleDelete(id: string) {
-    updateFilterOptions((prev) => {
-      const anchors = (prev?.anchors || []).filter((a) => a.id !== id);
-      return {
-        ...prev,
-        anchors,
-      };
-    });
+  function handleDelete(index: number) {
+    updateFilterOptions((prev) => ({
+      ...prev,
+      anchors: (prev?.anchors ?? []).filter((_, i) => i !== index),
+    }));
   }
 
   return (
     <>
       <SpectrumPreview spectrum={spectrum} anchors={anchors} />
       <Container ref={containerRef}>
-        {anchors.map((anchor) => {
-          const { x: xPPM } = anchor;
+        {anchors.map((xPPM, index) => {
           const x = scaleX()(xPPM);
           const yPPM = getMedianY(xPPM, spectrum);
           const v = shiftY * (activeSpectrum?.index || 0);
@@ -129,12 +118,12 @@ export function BaselinePreview() {
 
           return (
             <Anchor
-              key={anchor.id}
+              key={index}
               position={{ x, y }}
               containerRef={containerRef}
-              onDragMove={(x) => handleDragMove(anchor.id, x)}
-              onDragEnd={() => handleDragEnd(anchor.id)}
-              onDelete={() => handleDelete(anchor.id)}
+              onDragMove={(x) => handleDragMove(index, x)}
+              onDragEnd={() => handleDragEnd(index)}
+              onDelete={() => handleDelete(index)}
               anchorStyle={{
                 size: 10,
                 hoverStroke: 'red',
@@ -153,7 +142,7 @@ export function BaselinePreview() {
 
 interface SpectrumPreviewProps {
   spectrum: Spectrum1D;
-  anchors: AnchorData[];
+  anchors: number[];
 }
 
 function SpectrumPreview({ spectrum, anchors }: SpectrumPreviewProps) {
@@ -177,7 +166,7 @@ function SpectrumPreview({ spectrum, anchors }: SpectrumPreviewProps) {
     const options = {
       ...getBaselineValues(sharedFilterOptions?.algorithm || 'polynomial'),
       ...sharedFilterOptions,
-      anchors: mapAnchors(anchors),
+      anchors,
       medianWindow,
     };
 

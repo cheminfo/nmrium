@@ -27,13 +27,10 @@ interface FilterSyncOptionsState<T> {
 const FilterSyncOptionsContext =
   createContext<FilterSyncOptionsState<unknown> | null>(null);
 
-function getAnchors(
-  filterValue: any,
-  spectrum: Spectrum1D,
-): Array<{ id: string; x: number }> {
+function getAnchors(filterValue: any, spectrum: Spectrum1D) {
   const xValues: number[] =
     filterValue?.anchors?.x ?? getBaselineAnchors(spectrum.data).x;
-  return Array.from(xValues).map((x) => ({ id: crypto.randomUUID(), x }));
+  return Array.from(xValues);
 }
 
 export function useFilterSyncOptions<T>(): FilterSyncOptionsState<T> {

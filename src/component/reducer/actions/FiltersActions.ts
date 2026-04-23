@@ -29,8 +29,6 @@ import { isFid2DSpectrum } from '../../../data/data2d/Spectrum2D/isSpectrum2D.js
 import type { FilterEntry } from '../../../data/types/common/FilterEntry.ts';
 import type { ExclusionZone } from '../../../data/types/data1d/ExclusionZone.js';
 import { getMedianWindow } from '../../1d/baseline/getMedianWindow.ts';
-import type { AnchorData } from '../../1d/baseline/mapAnchors.ts';
-import { mapAnchors } from '../../1d/baseline/mapAnchors.ts';
 import { getXScale } from '../../1d/utilities/scale.js';
 import { get2DXScale, get2DYScale } from '../../2d/utilities/scale.js';
 import { nonRemovableFilters } from '../../panels/filtersPanel/Filters/FiltersSectionsPanel.js';
@@ -163,7 +161,7 @@ type ManualTwoDimensionsPhaseCorrectionFilterAction = ActionType<
 type BaselineCorrectionFilterOptions = Omit<
   BaselineCorrectionOptions,
   'zones' | 'anchors'
-> & { anchors?: AnchorData[] };
+> & { anchors?: number[] };
 interface BaselineCorrectionFilterProps {
   options: BaselineCorrectionFilterOptions;
   livePreview: boolean;
@@ -1587,7 +1585,7 @@ function handleBaseLineCorrectionFilter(
         name: 'baselineCorrection',
         value: {
           ...options,
-          anchors: mapAnchors(anchors),
+          anchors,
           medianWindow,
         },
       } as Extract<Filter1D, { name: 'baseLineCorrection' }>,
@@ -1632,7 +1630,7 @@ function calculateBaseLineCorrection(
     const _data = { data: { x, re, im }, info } as Spectrum1D;
     baselineCorrection.apply(_data, {
       ...options,
-      anchors: mapAnchors(anchors),
+      anchors,
       medianWindow,
     });
     const { im: newIm, re: newRe } = _data.data;
