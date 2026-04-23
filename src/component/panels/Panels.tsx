@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import type { NMRiumPanelPreferences } from '@zakodium/nmrium-core';
+import type { MouseEvent } from 'react';
 import { memo } from 'react';
 import { Accordion, Toolbar } from 'react-science/ui';
 
@@ -66,7 +67,7 @@ function PanelsInner() {
 function RightButtons(props: { id: keyof NMRiumPanelPreferences }) {
   const { id } = props;
   const toggle = useTogglePanel();
-  function handleClosePanel(event: any) {
+  function handleClosePanel(event: MouseEvent) {
     event?.stopPropagation();
     toggle(id);
   }

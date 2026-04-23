@@ -6,6 +6,7 @@ import type {
   WorkSpacePanelPreferences,
 } from '@zakodium/nmrium-core';
 import dlv from 'dlv';
+import type { ChangeEvent } from 'react';
 import { useMemo, useRef, useState } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 import { FaCopy, FaFileExport, FaFileImage } from 'react-icons/fa';
@@ -239,7 +240,7 @@ export default function AnalysisChart(props: PlotChartPros) {
 
   function handleChangeKey(
     value: string,
-    event?: React.ChangeEvent<HTMLInputElement>,
+    event?: ChangeEvent<HTMLInputElement>,
   ) {
     if (!event) return;
     const { name } = event.target;

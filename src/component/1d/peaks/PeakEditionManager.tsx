@@ -40,10 +40,7 @@ interface PeakEditionListenerProps {
 }
 
 interface PeaksEditionContextProps {
-  onEdit: (
-    e: React.MouseEvent,
-    peak?: Required<PeakEditionListenerProps>,
-  ) => void;
+  onEdit: (e: MouseEvent, peak?: Required<PeakEditionListenerProps>) => void;
   id?: string;
 }
 

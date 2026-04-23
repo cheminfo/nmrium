@@ -3,6 +3,7 @@ import type {
   CSSProperties,
   ChangeEvent,
   ForwardedRef,
+  InputHTMLAttributes,
   ReactElement,
 } from 'react';
 import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
@@ -48,7 +49,7 @@ export interface InputStyle {
 }
 
 interface InputProps extends Omit<
-  React.InputHTMLAttributes<HTMLInputElement>,
+  InputHTMLAttributes<HTMLInputElement>,
   'style'
 > {
   style?: InputStyle;
@@ -87,7 +88,7 @@ const Input = forwardRef(
     } = props;
 
     const [internalValue, setInternalValue] =
-      useState<React.InputHTMLAttributes<HTMLInputElement>['value']>();
+      useState<InputHTMLAttributes<HTMLInputElement>['value']>();
     const value = debounceTime ? internalValue : externalValue;
     const localRef = useRef<HTMLInputElement>(null);
     const combinedRef = useCombinedRefs([ref, localRef]);

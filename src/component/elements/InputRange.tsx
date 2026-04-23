@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react';
+import type { CSSProperties, MouseEvent } from 'react';
 import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
 
 const styles: Record<'container' | 'label', CSSProperties> = {
@@ -57,8 +57,8 @@ function InputRange(props: InputRangeProps, ref: any) {
   }));
 
   const mouseDownCallback = useCallback(
-    (event: any) => {
-      function mouseMoveCallback(event: any) {
+    (event: MouseEvent) => {
+      function mouseMoveCallback(event: globalThis.MouseEvent) {
         const diff = event.clientX - previousPosition.current;
         previousPosition.current = event.clientX;
         if (event.buttons === 1) {

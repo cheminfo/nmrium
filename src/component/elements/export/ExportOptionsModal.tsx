@@ -133,7 +133,7 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
       }, 0);
     };
 
-    const handleKeyDown = (event: any) => {
+    const handleKeyDown = (event: globalThis.KeyboardEvent) => {
       if (event.key === 'Enter') {
         void handleSubmit(onExportOptionsChange)();
       }

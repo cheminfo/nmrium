@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unused-prop-types */
 import styled from '@emotion/styled';
-import type { CSSProperties } from 'react';
+import type { CSSProperties, PointerEventHandler, ReactElement } from 'react';
 
 import useResizer from './useResizer.js';
 
@@ -35,7 +35,7 @@ export interface Position {
   x2: number;
 }
 
-type ChildType = React.ReactElement[] | React.ReactElement | boolean | null;
+type ChildType = ReactElement[] | ReactElement | boolean | null;
 
 export interface ResizerProps {
   children?: ChildType | ((position: Position, isActive: boolean) => ChildType);
@@ -72,7 +72,7 @@ export default function SVGResizer(props: ResizerProps) {
 }
 
 function SVGResizerHandle(props: {
-  onPointerDown: React.PointerEventHandler<SVGAElement>;
+  onPointerDown: PointerEventHandler<SVGAElement>;
   position: number;
 }) {
   return (

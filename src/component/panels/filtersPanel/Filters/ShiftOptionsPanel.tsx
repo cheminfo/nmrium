@@ -1,3 +1,4 @@
+import type { MouseEvent } from 'react';
 import { useForm } from 'react-hook-form';
 
 import type { ExtractFilterEntry } from '../../../../data/types/common/ExtractFilterEntry.js';
@@ -68,12 +69,12 @@ export default function ShiftOptionsPanel(
     }
   }
 
-  function handleConfirm(event: any) {
+  function handleConfirm(event: MouseEvent<HTMLElement>) {
     void handleSubmit(handleApplyFilter)();
     onConfirm?.(event);
   }
 
-  function handleCancel(event: any) {
+  function handleCancel(event: MouseEvent<HTMLElement>) {
     handleCancelFilter();
     onCancel?.(event);
   }

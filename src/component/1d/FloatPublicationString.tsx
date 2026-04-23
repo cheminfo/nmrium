@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import type { BoundingBox, Spectrum, TextStyle } from '@zakodium/nmrium-core';
+import type { SVGProps } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { BsArrowsMove } from 'react-icons/bs';
 import { FaEdit, FaTimes } from 'react-icons/fa';
@@ -19,7 +20,7 @@ import { useACSSettings } from '../hooks/use_acs_settings.js';
 import { usePublicationStrings } from '../hooks/use_publication_strings.js';
 import { PublicationStringModal } from '../modal/PublicationStringModal.js';
 
-const MARKERS: Record<string, React.SVGProps<SVGTSpanElement>> = {
+const MARKERS: Record<string, SVGProps<SVGTSpanElement>> = {
   '++': { baselineShift: 'super' },
   '--': { baselineShift: 'sub' },
   '**': { fontStyle: 'italic' },

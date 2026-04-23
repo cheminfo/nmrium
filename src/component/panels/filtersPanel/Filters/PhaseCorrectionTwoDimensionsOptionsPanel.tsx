@@ -1,5 +1,5 @@
 import { Select } from '@blueprintjs/select';
-import type { CSSProperties } from 'react';
+import type { CSSProperties, MouseEvent } from 'react';
 import { FaRulerHorizontal, FaRulerVertical } from 'react-icons/fa';
 import { MdLooksTwo } from 'react-icons/md';
 import { Button, Toolbar } from 'react-science/ui';
@@ -65,12 +65,12 @@ export default function PhaseCorrectionTwoDimensionsOptionsPanel(
     value,
   } = usePhaseCorrectionTwoDimensions(filter);
 
-  function handleConfirm(event: any) {
+  function handleConfirm(event: MouseEvent<HTMLElement>) {
     handleApplyFilter();
     onConfirm?.(event);
   }
 
-  function handleCancel(event: any) {
+  function handleCancel(event: MouseEvent<HTMLElement>) {
     handleCancelFilter();
     onCancel?.(event);
   }

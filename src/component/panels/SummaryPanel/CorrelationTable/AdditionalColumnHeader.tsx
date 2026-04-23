@@ -6,6 +6,7 @@ import type {
   Options as CorrelationOptions,
 } from 'nmr-correlation';
 import { getCorrelationDelta, getLinkDim } from 'nmr-correlation';
+import type { MouseEvent } from 'react';
 import { useCallback, useMemo } from 'react';
 
 import { buildID } from '../../../../data/utilities/Concatenation.js';
@@ -63,14 +64,14 @@ function AdditionalColumnHeader(props: AdditionalColumnHeaderProps) {
   const highlightAdditionalColumn = useHighlight(highlightIDsAdditionalColumn);
 
   const mouseEnterHandler = useCallback(
-    (event: any) => {
+    (event: MouseEvent<HTMLTableCellElement>) => {
       event.currentTarget.focus();
       highlightAdditionalColumn.show();
     },
     [highlightAdditionalColumn],
   );
   const mouseLeaveHandler = useCallback(
-    (event: any) => {
+    (event: MouseEvent<HTMLTableCellElement>) => {
       event.currentTarget.blur();
       highlightAdditionalColumn.hide();
     },

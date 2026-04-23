@@ -82,7 +82,7 @@ const initialState: BrushTrackerState = {
   boundingRect: null,
 };
 
-function stopPageScrolling(event: any) {
+function stopPageScrolling(event: globalThis.WheelEvent) {
   event.preventDefault();
 }
 

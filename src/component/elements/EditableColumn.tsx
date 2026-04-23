@@ -1,6 +1,6 @@
 import { Button } from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import type { CSSProperties, KeyboardEvent } from 'react';
+import type { CSSProperties, KeyboardEvent, MouseEvent } from 'react';
 import {
   forwardRef,
   useCallback,
@@ -53,7 +53,7 @@ function extractNumber(val: string | number, type: string) {
   return val;
 }
 
-function handleMousedown(event: any) {
+function handleMousedown(event: MouseEvent) {
   event.stopPropagation();
 }
 
@@ -109,7 +109,7 @@ export const EditableColumn = forwardRef(function EditableColumn(
     },
   }));
 
-  const mouseClickCallback = useCallback((e: MouseEvent) => {
+  const mouseClickCallback = useCallback((e: globalThis.MouseEvent) => {
     if (!(e.target as HTMLInputElement).classList.contains('editable-column')) {
       enableEdit(false);
       // TODO: refactor this

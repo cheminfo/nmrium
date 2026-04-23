@@ -1,5 +1,6 @@
 import type { Correlation, Link } from 'nmr-correlation';
 import { buildLink } from 'nmr-correlation';
+import type { MouseEvent } from 'react';
 import { useCallback, useMemo } from 'react';
 
 import { buildID } from '../../../../data/utilities/Concatenation.js';
@@ -69,23 +70,23 @@ function AdditionalColumnField(props: AdditionalColumnFieldProps) {
   const highlightCommonLinks = useHighlight(highlightIDsCommonLinks);
 
   const mouseEnterHandler = useCallback(
-    (event: any) => {
+    (event: MouseEvent<HTMLTableCellElement>) => {
       event.currentTarget.focus();
       highlightCommonLinks.show();
     },
     [highlightCommonLinks],
   );
   const mouseLeaveHandler = useCallback(
-    (event: any) => {
+    (event: MouseEvent<HTMLTableCellElement>) => {
       event.currentTarget.blur();
       highlightCommonLinks.hide();
     },
     [highlightCommonLinks],
   );
 
-  function contextMenuHandler(data: any) {
+  function contextMenuHandler(data: EditLinkDialogData) {
     highlightCommonLinks.hide();
-    openDialog<EditLinkDialogData>(EditLinkModal, data);
+    openDialog(EditLinkModal, data);
   }
 
   const handleEditPseudoHSQC = useCallback(

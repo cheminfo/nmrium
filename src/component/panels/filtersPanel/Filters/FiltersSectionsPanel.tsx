@@ -1,6 +1,7 @@
 import { Switch } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { Filters1D, Filters2D } from 'nmr-processing';
+import type { ChangeEvent } from 'react';
 import { memo, useMemo, useRef, useState } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { ObjectInspector } from 'react-inspector';
@@ -70,10 +71,7 @@ function FilterElements(props: FilterElementsProps) {
   const { id, name, enabled } = filter;
   const label = getFilterLabel(name);
 
-  function handleFilterCheck(
-    id: string,
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) {
+  function handleFilterCheck(id: string, event: ChangeEvent<HTMLInputElement>) {
     const enabled = event.target.checked;
     const hideLoading = toaster.showLoading({
       message: `${enabled ? 'Enable' : 'Disable'} filter in progress`,

@@ -1,6 +1,6 @@
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
-import type { ReactNode } from 'react';
+import type { HTMLAttributes, MouseEvent, ReactNode } from 'react';
 import { useState } from 'react';
 import { IoLockClosedOutline } from 'react-icons/io5';
 
@@ -39,7 +39,7 @@ const MessageContainer = styled.div<{ show: boolean }>`
 `;
 
 interface ReadOnlyProps extends Pick<
-  React.HTMLAttributes<HTMLDivElement>,
+  HTMLAttributes<HTMLDivElement>,
   'onClick'
 > {
   enabled: boolean;
@@ -58,7 +58,7 @@ export function ReadOnly(props: ReadOnlyProps) {
   } = props;
   const [showMessage, setShowMessage] = useState(false);
 
-  function handleOverlayClick(event: any) {
+  function handleOverlayClick(event: MouseEvent<HTMLDivElement>) {
     onClick?.(event);
     setShowMessage(true);
     setTimeout(() => setShowMessage(false), messageDisplayDuration);

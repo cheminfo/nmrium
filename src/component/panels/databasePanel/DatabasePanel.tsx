@@ -195,7 +195,7 @@ function DatabasePanelInner({
   }, [idCode, keywords, search, toaster]);
 
   useEffect(() => {
-    function handle(event: any) {
+    function handle(event: { range: [number, number] }) {
       if (selectedTool === options.databaseRangesSelection.id) {
         setKeywords((prevState) => {
           const oldKeywords = prevState.searchKeywords

@@ -1,7 +1,7 @@
 import { DialogBody, DialogFooter } from '@blueprintjs/core';
 import { yupResolver } from '@hookform/resolvers/yup';
 import type { ParseResult } from 'papaparse';
-import type { CSSProperties } from 'react';
+import type { CSSProperties, DragEvent } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import type { FileError, FileWithPath } from 'react-dropzone';
 import { useForm } from 'react-hook-form';
@@ -256,7 +256,7 @@ function InnerMetaImportationModal({
       <DialogBody>
         <div
           style={{ width: '100%', height: '100%' }}
-          onDrop={(e: React.DragEvent<HTMLDivElement>) => e.preventDefault()}
+          onDrop={(e: DragEvent<HTMLDivElement>) => e.preventDefault()}
         >
           {!parseResult ? (
             <DropZone

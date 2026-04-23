@@ -15,7 +15,7 @@ import {
 import { SmallCross } from '@blueprintjs/icons';
 import { Global } from '@emotion/react';
 import styled from '@emotion/styled';
-import type { ReactNode, RefObject } from 'react';
+import type { MouseEvent, ReactNode, RefObject } from 'react';
 import { useLayoutEffect, useRef } from 'react';
 
 const Container = styled.div`
@@ -140,7 +140,7 @@ function InnerDraggableDialog(props: InnerDraggableDialogProps) {
     };
   }, [innerDialogRef, placement]);
 
-  function handleMouseDown(event: React.MouseEvent<HTMLDivElement>) {
+  function handleMouseDown(event: MouseEvent<HTMLDivElement>) {
     const target = event.currentTarget as HTMLElement;
 
     if (!containerRefInternal.current) {
@@ -158,7 +158,7 @@ function InnerDraggableDialog(props: InnerDraggableDialogProps) {
       y: offsetY,
     };
 
-    function handleMouseMove(event: MouseEvent) {
+    function handleMouseMove(event: globalThis.MouseEvent) {
       target.style.cursor = 'move';
       if (!innerDialogRef.current || !offsetRef.current) {
         return;

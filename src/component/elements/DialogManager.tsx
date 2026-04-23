@@ -126,7 +126,7 @@ interface WithDialogOptions {
 }
 
 export function withDialog<P extends object>(
-  WrappedComponent: React.ComponentType<P>,
+  WrappedComponent: ComponentType<P>,
   options: WithDialogOptions = {},
 ) {
   const { dialogName, force = false } = options;

@@ -1,7 +1,7 @@
 import type { HTMLInputProps, NumericInputProps } from '@blueprintjs/core';
 import { Classes, NumericInput } from '@blueprintjs/core';
 import debounce from 'lodash/debounce.js';
-import type { ForwardedRef } from 'react';
+import type { ForwardedRef, InputHTMLAttributes } from 'react';
 import {
   forwardRef,
   isValidElement,
@@ -15,7 +15,7 @@ import useCombinedRefs from '../hooks/useCombinedRefs.js';
 
 interface ValueProps
   extends
-    Pick<React.InputHTMLAttributes<HTMLInputElement>, 'name' | 'style'>,
+    Pick<InputHTMLAttributes<HTMLInputElement>, 'name' | 'style'>,
     Pick<NumericInputProps, 'onValueChange' | 'value'> {
   checkValue?: (element?: number) => boolean;
   debounceTime?: number;

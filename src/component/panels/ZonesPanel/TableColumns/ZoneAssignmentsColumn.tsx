@@ -1,3 +1,5 @@
+import type { MouseEvent } from 'react';
+
 import { buildID } from '../../../../data/utilities/Concatenation.js';
 import type { Axis } from '../../../assignment/AssignmentsContext.js';
 import { useAssignment } from '../../../assignment/AssignmentsContext.js';
@@ -100,7 +102,7 @@ function ZoneAssignmentColumn({
     totalNumberOfAtoms += signal[axis].nbAtoms ?? 0;
   }
 
-  function handleClick(event: React.MouseEvent<HTMLTableCellElement>) {
+  function handleClick(event: MouseEvent<HTMLTableCellElement>) {
     event.stopPropagation();
     zoneAssignment.activate(axis);
   }

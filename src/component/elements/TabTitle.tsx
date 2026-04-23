@@ -1,7 +1,7 @@
 import type { ButtonProps } from '@blueprintjs/core';
 import { Button, Popover } from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import type { ReactNode } from 'react';
+import type { MouseEvent, ReactNode } from 'react';
 
 interface TabTitleProps {
   onDelete?: ButtonProps['onClick'];
@@ -11,7 +11,7 @@ interface TabTitleProps {
 export function TabTitle(props: TabTitleProps) {
   const { onDelete, children } = props;
 
-  function handleOnDelete(event: any) {
+  function handleOnDelete(event: MouseEvent<HTMLElement>) {
     event.stopPropagation();
     onDelete?.(event);
   }

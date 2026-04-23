@@ -2,7 +2,7 @@ import type { PopoverProps } from '@blueprintjs/core';
 import { Popover } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
-import type { MouseEvent, ReactNode } from 'react';
+import type { KeyboardEvent, MouseEvent, ReactNode } from 'react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
@@ -75,7 +75,7 @@ function Field(props: FieldProps) {
     resolver: yupResolver(validationSchema(inputType)),
   });
 
-  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+  function handleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
     if (event.key === 'Enter') {
       void handleSubmit(onChange)();
     }

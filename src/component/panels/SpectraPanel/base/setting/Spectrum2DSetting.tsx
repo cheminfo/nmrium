@@ -32,7 +32,7 @@ const StyledRangeSlider = styled(RangeSlider)<{
   }
 `;
 type ContoursRangeSliderProps = RangeSliderProps & {
-  progressColor: React.CSSProperties['backgroundColor'];
+  progressColor: CSSProperties['backgroundColor'];
   name?: string;
 };
 function ContoursRangeSlider(props: ContoursRangeSliderProps) {

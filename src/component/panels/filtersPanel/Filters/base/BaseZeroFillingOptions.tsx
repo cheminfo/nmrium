@@ -1,4 +1,5 @@
 import { Switch } from '@blueprintjs/core';
+import type { MouseEvent } from 'react';
 
 import { HeaderContainer } from '../../../../elements/HeaderContainer.js';
 import Label from '../../../../elements/Label.js';
@@ -27,12 +28,12 @@ export function BaseZeroFillingOptions(
     formState: { isDirty },
   } = useZeroFilling(filter);
 
-  function handleConfirm(event: any) {
+  function handleConfirm(event: MouseEvent<HTMLElement>) {
     submitHandler();
     onConfirm?.(event);
   }
 
-  function handleCancel(event: any) {
+  function handleCancel(event: MouseEvent<HTMLElement>) {
     handleCancelFilter();
     onCancel?.(event);
   }
