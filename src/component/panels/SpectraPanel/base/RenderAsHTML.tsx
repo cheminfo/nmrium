@@ -6,28 +6,25 @@ interface RenderAsHTMLProps {
   jpath: string | string[];
 }
 
-function formatValueAsHTML(value: any) {
-  if (value) {
-    value = value.replaceAll(/(?<value>\d+)/g, '<sub>$<value></sub>');
-  }
-  return value;
-}
-
 export function RenderAsHTML(props: RenderAsHTMLProps) {
   const { data, jpath } = props;
 
   const value = dlv(data, jpath);
 
-  if (!value) {
-    return null;
+  if (typeof value !== 'string') {
+    return value;
   }
+
   return (
     <div
-      // style={styles.info}
       // eslint-disable-next-line react/no-danger
       dangerouslySetInnerHTML={{
         __html: formatValueAsHTML(value),
       }}
     />
   );
+}
+
+function formatValueAsHTML(value: string) {
+  return value.replaceAll(/(?<value>\d+)/g, '<sub>$<value></sub>');
 }
