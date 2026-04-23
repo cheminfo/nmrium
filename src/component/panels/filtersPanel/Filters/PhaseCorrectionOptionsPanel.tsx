@@ -1,7 +1,7 @@
 import { Button } from '@blueprintjs/core';
 import { Select } from '@blueprintjs/select';
 import styled from '@emotion/styled';
-import type { CSSProperties } from 'react';
+import type { CSSProperties, MouseEvent } from 'react';
 
 import type { ExtractFilterEntry } from '../../../../data/types/common/ExtractFilterEntry.js';
 import InputRange from '../../../elements/InputRange.js';
@@ -57,12 +57,12 @@ export default function PhaseCorrectionOptionsPanel(
     ph1Ref,
   } = usePhaseCorrection(filter);
 
-  function handleConfirm(event: any) {
+  function handleConfirm(event: MouseEvent<HTMLElement>) {
     handleApplyFilter();
     onConfirm?.(event);
   }
 
-  function handleCancel(event: any) {
+  function handleCancel(event: MouseEvent<HTMLElement>) {
     handleCancelFilter();
     onCancel?.(event);
   }

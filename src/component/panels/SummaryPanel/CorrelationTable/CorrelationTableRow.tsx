@@ -6,7 +6,7 @@ import {
   getLabel,
   getLinkDim,
 } from 'nmr-correlation';
-import type { CSSProperties } from 'react';
+import type { CSSProperties, MouseEvent } from 'react';
 import { useCallback, useMemo } from 'react';
 
 import { buildID } from '../../../../data/utilities/Concatenation.js';
@@ -153,14 +153,14 @@ export default function CorrelationTableRow(props: CorrelationTableRowProps) {
   }, [correlation]);
 
   const mouseEnterHandler = useCallback(
-    (event: any) => {
+    (event: MouseEvent<HTMLTableCellElement>) => {
       event.currentTarget.focus();
       highlightRow.show();
     },
     [highlightRow],
   );
   const mouseLeaveHandler = useCallback(
-    (event: any) => {
+    (event: MouseEvent<HTMLTableCellElement>) => {
       event.currentTarget.blur();
       highlightRow.hide();
     },

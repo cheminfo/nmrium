@@ -21,7 +21,7 @@ const ConstantlyHighlightedRowStyle = { backgroundColor: '#f5f5dc' };
 
 export interface AssignmentsColumnProps {
   rowData: ZoneData;
-  onUnlink: (event: any, flag: boolean, axis: Axis) => void;
+  onUnlink: (event: MouseEvent, flag: boolean, axis: Axis) => void;
 }
 
 interface ZonesTableRowProps extends TableContextMenuProps {
@@ -29,7 +29,7 @@ interface ZonesTableRowProps extends TableContextMenuProps {
   onUnlink: (
     rowData: ZoneData,
     isOnZoneLevel: boolean,
-    signalIndex: any,
+    signalIndex: number,
     axis: Axis,
   ) => void;
   rowIndex: number;

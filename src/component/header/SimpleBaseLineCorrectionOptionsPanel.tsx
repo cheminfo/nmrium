@@ -1,5 +1,6 @@
 import { Checkbox } from '@blueprintjs/core';
 import { Select } from '@blueprintjs/select';
+import type { ChangeEvent } from 'react';
 import { memo, useCallback } from 'react';
 import type { Control } from 'react-hook-form';
 import { Button } from 'react-science/ui';
@@ -69,7 +70,7 @@ function BaseLineCorrectionInnerPanel({
   );
 
   const handleLivePreviewChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
+    (event: ChangeEvent<HTMLInputElement>) => {
       void onLivePreviewChange(event);
       submitHandler();
     },

@@ -1,6 +1,6 @@
 import { Classes, NumericInput } from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import type { ComponentProps } from 'react';
+import type { ComponentProps, FocusEvent } from 'react';
 
 import type { Input2Props } from '../../../../elements/Input2.tsx';
 import { Input2 } from '../../../../elements/Input2.tsx';
@@ -36,7 +36,7 @@ export function CellInput<FilterItem extends string = string>(
   const { filterItems, autoFocus, onBlur, field } = props;
   const hasIssue = !field.state.meta.isValid && field.state.meta.isDirty;
 
-  function handleBlur(e: React.FocusEvent<HTMLInputElement>) {
+  function handleBlur(e: FocusEvent<HTMLInputElement>) {
     field.handleBlur();
     onBlur?.(e);
   }

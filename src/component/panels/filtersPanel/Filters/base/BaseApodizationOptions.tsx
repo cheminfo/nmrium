@@ -1,6 +1,6 @@
 import { Switch } from '@blueprintjs/core';
 import type { Apodization1DOptions } from '@zakodium/nmr-types';
-import type { ReactNode } from 'react';
+import type { ChangeEvent, MouseEvent, ReactNode } from 'react';
 import { FormProvider, useFormContext } from 'react-hook-form';
 import * as Yup from 'yup';
 
@@ -46,12 +46,12 @@ export function BaseApodizationOptions(
     register,
     formState: { isDirty },
   } = formMethods;
-  function handleConfirm(event: any) {
+  function handleConfirm(event: MouseEvent<HTMLElement>) {
     void handleSubmit((values) => handleApplyFilter(values))();
     onConfirm?.(event);
   }
 
-  function handleCancel(event: any) {
+  function handleCancel(event: MouseEvent<HTMLElement>) {
     handleCancelFilter();
     onCancel?.(event);
   }
@@ -322,7 +322,7 @@ function OptionsSection(options: OptionsSectionProps) {
   const { setValue, watch } = useFormContext();
   const isApplyChecked = watch(`options.${algorithm}.apply`) || false;
 
-  function handleToggleApply(event: any) {
+  function handleToggleApply(event: ChangeEvent<HTMLInputElement>) {
     const checked = event.target.checked;
     setValue(`options.${algorithm}.apply`, checked, { shouldDirty: true });
     onChange();

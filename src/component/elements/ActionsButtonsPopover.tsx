@@ -2,7 +2,7 @@ import type { PopoverProps } from '@blueprintjs/core';
 import { Popover } from '@blueprintjs/core';
 import type { Interpolation, Theme } from '@emotion/react';
 import styled from '@emotion/styled';
-import type { CSSProperties } from 'react';
+import type { CSSProperties, MouseEvent } from 'react';
 import { useState } from 'react';
 import type { ButtonProps } from 'react-science/ui';
 import { Button } from 'react-science/ui';
@@ -173,7 +173,7 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
 
   const { visibleButtons, disablePopover } = filterButtons(buttons);
 
-  function handleMouseEnter(event: any) {
+  function handleMouseEnter(event: MouseEvent<HTMLElement>) {
     const { clientX, clientY, currentTarget } = event;
     if (!(currentTarget instanceof Element)) return;
     const rect = currentTarget.getBoundingClientRect();
@@ -193,13 +193,12 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
       popoverClassName="actions-buttons-popover"
       interactionKind="hover"
       enforceFocus={false}
-      onOpening={handleMouseEnter}
       disabled={disablePopover || disabled}
       renderTarget={({ onMouseEnter, isOpen, ...otherProps }) => (
         <Wrapper
           {...targetProps}
           {...otherProps}
-          onMouseEnter={(event: any) => {
+          onMouseEnter={(event: MouseEvent<HTMLElement>) => {
             handleMouseEnter(event);
             onMouseEnter?.(event);
           }}

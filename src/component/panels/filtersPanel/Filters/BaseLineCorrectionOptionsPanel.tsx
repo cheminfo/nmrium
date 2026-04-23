@@ -1,6 +1,7 @@
 import { Button, Switch } from '@blueprintjs/core';
 import { Select } from '@blueprintjs/select';
 import type { BaselineCorrectionOptions } from '@zakodium/nmr-types';
+import type { MouseEvent } from 'react';
 import type { Control } from 'react-hook-form';
 
 import type { ExtractFilterEntry } from '../../../../data/types/common/ExtractFilterEntry.js';
@@ -56,12 +57,12 @@ export default function BaseLineCorrectionOptionsPanel(
     getValues,
   } = useBaselineCorrection(filter);
 
-  function handleConfirm(event: any) {
+  function handleConfirm(event: MouseEvent<HTMLElement>) {
     void handleSubmit((values) => handleApplyFilter(values))();
     onConfirm?.(event);
   }
 
-  function handleCancel(event: any) {
+  function handleCancel(event: MouseEvent<HTMLElement>) {
     handleCancelFilter();
     onCancel?.(event);
   }

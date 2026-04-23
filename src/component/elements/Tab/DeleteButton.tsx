@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import type { CSSProperties } from 'react';
+import type { CSSProperties, MouseEvent } from 'react';
 import { FaTimes } from 'react-icons/fa';
 
 const BaseButton = styled.button`
@@ -29,7 +29,7 @@ const BaseButton = styled.button`
 `;
 
 interface DeleteButtonProps {
-  onDelete: (element: React.MouseEvent<HTMLButtonElement>) => void;
+  onDelete: (element: MouseEvent<HTMLButtonElement>) => void;
   className?: string;
   style?: CSSProperties;
 }

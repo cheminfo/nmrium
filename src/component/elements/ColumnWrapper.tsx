@@ -1,4 +1,6 @@
-interface ColumnWrapperProps extends React.InputHTMLAttributes<HTMLDivElement> {
+import type { InputHTMLAttributes } from 'react';
+
+interface ColumnWrapperProps extends InputHTMLAttributes<HTMLDivElement> {
   stopPropagation?: boolean;
 }
 

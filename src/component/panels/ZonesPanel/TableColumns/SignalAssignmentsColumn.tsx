@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react';
+import type { CSSProperties, MouseEvent } from 'react';
 
 import type { Axis } from '../../../assignment/AssignmentsContext.js';
 import { AssignmentsCell } from '../../../elements/AssignmentsCell.js';
@@ -10,11 +10,8 @@ interface SignalAssignmentsColumnProps extends AssignmentsColumnProps {
   axis: Axis;
 }
 
-function SignalAssignmentsColumn({
-  rowData,
-  onUnlink,
-  axis,
-}: SignalAssignmentsColumnProps) {
+function SignalAssignmentsColumn(props: SignalAssignmentsColumnProps) {
+  const { rowData, onUnlink, axis } = props;
   const {
     signalAssignment,
     handleOnMouseEnter,
@@ -34,7 +31,7 @@ function SignalAssignmentsColumn({
         }
       : {};
 
-  function handleClick(event: React.MouseEvent<HTMLTableCellElement>) {
+  function handleClick(event: MouseEvent<HTMLTableCellElement>) {
     event.stopPropagation();
     signalAssignment.activate(axis);
   }

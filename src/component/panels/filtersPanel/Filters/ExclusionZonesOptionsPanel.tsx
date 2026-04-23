@@ -1,5 +1,6 @@
 import { Classes } from '@blueprintjs/core';
 import { yupResolver } from '@hookform/resolvers/yup';
+import type { MouseEvent } from 'react';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { FaRegTrashAlt } from 'react-icons/fa';
@@ -140,12 +141,12 @@ export default function ExclusionZonesOptionsPanel(
     });
   }
 
-  function handleConfirm(event: any) {
+  function handleConfirm(event: MouseEvent<HTMLElement>) {
     void handleSubmit(handleApplyFilter)();
     onConfirm?.(event);
   }
 
-  function handleCancel(event: any) {
+  function handleCancel(event: MouseEvent<HTMLElement>) {
     dispatch({
       type: 'RESET_SELECTED_TOOL',
     });

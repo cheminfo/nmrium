@@ -1,6 +1,6 @@
 import type { Spectrum1D, Spectrum2D } from '@zakodium/nmrium-core';
 import { Filters1D } from 'nmr-processing';
-import type { ReactNode } from 'react';
+import type { ReactNode, SVGAttributes } from 'react';
 
 import { getSlice } from '../../../../data/data2d/Spectrum2D/index.js';
 import { useChartData } from '../../../context/ChartContext.js';
@@ -18,7 +18,7 @@ import {
 
 import { useActivePhaseTraces } from './useActivePhaseTraces.js';
 
-interface BaseComponentProps extends React.SVGAttributes<SVGGElement> {
+interface BaseComponentProps extends SVGAttributes<SVGGElement> {
   children?: ReactNode;
 }
 

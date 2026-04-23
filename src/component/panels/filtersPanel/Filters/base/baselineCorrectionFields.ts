@@ -1,3 +1,4 @@
+import type { ComponentType } from 'react';
 import type { Control, FieldValues } from 'react-hook-form';
 
 interface BaseOptions {
@@ -40,11 +41,11 @@ export type AlgorithmOptions =
   | CubicOptions;
 
 export interface BaselineAlgorithmFieldsMap {
-  airpls: React.ComponentType<AlgorithmFieldProps<AirplsOptions>>;
-  polynomial: React.ComponentType<AlgorithmFieldProps<PolynomialOptions>>;
-  whittaker: React.ComponentType<AlgorithmFieldProps<WhittakerOptions>>;
-  bernstein: React.ComponentType<AlgorithmFieldProps<BernsteinOptions>>;
-  cubic: React.ComponentType<AlgorithmFieldProps<CubicOptions>>;
+  airpls: ComponentType<AlgorithmFieldProps<AirplsOptions>>;
+  polynomial: ComponentType<AlgorithmFieldProps<PolynomialOptions>>;
+  whittaker: ComponentType<AlgorithmFieldProps<WhittakerOptions>>;
+  bernstein: ComponentType<AlgorithmFieldProps<BernsteinOptions>>;
+  cubic: ComponentType<AlgorithmFieldProps<CubicOptions>>;
 }
 
 export interface AlgorithmFieldProps<T extends FieldValues> {

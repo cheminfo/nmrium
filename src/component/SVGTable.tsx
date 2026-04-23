@@ -1,11 +1,12 @@
+import type { SVGAttributes } from 'react';
 import { createContext, useContext, useMemo } from 'react';
 
 type CellTextProps = Omit<
-  React.SVGAttributes<SVGTextElement>,
+  SVGAttributes<SVGTextElement>,
   'x' | 'y' | 'width' | 'height'
 >;
 type CellBoxProps = Omit<
-  React.SVGAttributes<SVGRectElement>,
+  SVGAttributes<SVGRectElement>,
   'x' | 'y' | 'width' | 'height' | 'dx' | 'dy'
 >;
 

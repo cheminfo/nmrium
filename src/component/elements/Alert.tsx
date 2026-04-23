@@ -1,7 +1,7 @@
 import type { ButtonProps } from '@blueprintjs/core';
 import { Button, DialogBody, DialogFooter } from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import type { ReactNode } from 'react';
+import type { MouseEvent, ReactNode } from 'react';
 import { createContext, useContext, useMemo, useState } from 'react';
 
 import { StandardDialog } from './StandardDialog.tsx';
@@ -108,7 +108,7 @@ interface AlertsProps {
 function Alerts(props: AlertsProps) {
   const { alerts, onHide } = props;
 
-  function optionsHandler(e: React.MouseEvent, options: any) {
+  function optionsHandler(e: MouseEvent, options: any) {
     const { onClick = () => null, preventClose = false, id } = options;
     onClick(e);
     e.stopPropagation();
