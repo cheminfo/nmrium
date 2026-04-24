@@ -1,11 +1,10 @@
-import { Checkbox } from '@blueprintjs/core';
 import { Select } from '@blueprintjs/select';
-import type { ChangeEvent } from 'react';
 import { memo, useCallback } from 'react';
 import type { Control } from 'react-hook-form';
 import { Button } from 'react-science/ui';
 
 import type { ExtractFilterEntry } from '../../data/types/common/ExtractFilterEntry.js';
+import { useFilterSyncOptions } from '../context/FilterSyncOptionsContext.tsx';
 import ActionButtons from '../elements/ActionButtons.js';
 import Label from '../elements/Label.js';
 import { NumberInputField } from '../elements/NumberInputField.js';
@@ -14,8 +13,8 @@ import type {
   AirplsOptions,
   AlgorithmFieldProps,
   BaselineAlgorithmFieldsMap,
+  BaselineAlgorithmOptions,
   BernsteinOptions,
-  CubicOptions,
   PolynomialOptions,
   WhittakerOptions,
 } from '../panels/filtersPanel/Filters/base/baselineCorrectionFields.ts';
@@ -28,12 +27,11 @@ import {
 import { headerLabelStyle } from './Header.js';
 import { HeaderWrapper } from './HeaderWrapper.js';
 
-const BaselineAlgorithmFields: BaselineAlgorithmFieldsMap = {
+const BaselineAlgorithmFields: Omit<BaselineAlgorithmFieldsMap, 'cubic'> = {
   airpls: AirplsFields,
   polynomial: PolynomialFields,
   whittaker: WhittakerFields,
   bernstein: BernsteinFields,
-  cubic: CubicFields,
 };
 
 interface BaseLineCorrectionInnerPanelProps {
@@ -44,7 +42,6 @@ function BaseLineCorrectionInnerPanel({
   filter,
 }: BaseLineCorrectionInnerPanelProps) {
   const {
-    register,
     reset,
     onAlgorithmChange,
     submitHandler,
@@ -56,25 +53,25 @@ function BaseLineCorrectionInnerPanel({
     defaultAlgorithmSelectProps,
   } = useBaselineCorrection(filter);
 
-  const { onChange: onLivePreviewChange, ...otherLivePreviewRegisterOptions } =
-    register('livePreview');
+  const { sharedFilterOptions } =
+    useFilterSyncOptions<BaselineAlgorithmOptions>();
 
   const handleAlgorithmSelect = useCallback(
     (item: (typeof baselineCorrectionsAlgorithms)[number]) => {
       onAlgorithmChange(item);
       const { values } = getBaselineData(item.value, filter?.value);
-      reset(values);
-      setTimeout(submitHandler, 0);
+      const { anchors = [] } = sharedFilterOptions || {};
+      const options = { ...values, anchors };
+      reset(options);
+      setTimeout(() => handleApplyFilter(options, 'onChange'), 0);
     },
-    [onAlgorithmChange, filter?.value, reset, submitHandler],
-  );
-
-  const handleLivePreviewChange = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      void onLivePreviewChange(event);
-      submitHandler();
-    },
-    [onLivePreviewChange, submitHandler],
+    [
+      onAlgorithmChange,
+      filter?.value,
+      sharedFilterOptions,
+      reset,
+      handleApplyFilter,
+    ],
   );
 
   const handleDone = useCallback(
@@ -82,9 +79,10 @@ function BaseLineCorrectionInnerPanel({
     [handleSubmit, handleApplyFilter],
   );
 
-  const AlgorithmFields = algorithm?.value
-    ? BaselineAlgorithmFields[algorithm.value]
-    : null;
+  const AlgorithmFields =
+    algorithm?.value && algorithm.value !== 'cubic'
+      ? BaselineAlgorithmFields[algorithm.value]
+      : null;
 
   return (
     <HeaderWrapper>
@@ -106,15 +104,6 @@ function BaseLineCorrectionInnerPanel({
           onValueChange={submitHandler}
         />
       )}
-
-      <Label title="Live preview" style={headerLabelStyle}>
-        <Checkbox
-          style={{ margin: 0 }}
-          {...otherLivePreviewRegisterOptions}
-          onChange={handleLivePreviewChange}
-        />
-      </Label>
-
       <ActionButtons onDone={handleDone} onCancel={handleCancelFilter} />
     </HeaderWrapper>
   );
@@ -127,11 +116,10 @@ function AirplsFields({
   return (
     <div style={{ display: 'flex' }}>
       <NumberInputField
-        labelProps={{ title: 'Max iterations:', style: headerLabelStyle }}
-        name="maxIterations"
+        labelProps={{ title: 'Lambda:', style: headerLabelStyle }}
+        name="lambda"
         control={control}
-        min={0}
-        stepSize={1}
+        min={1}
         onValueChange={onValueChange}
         style={{ width: '60px' }}
         debounceTime={250}
@@ -158,11 +146,11 @@ function PolynomialFields({
 }: AlgorithmFieldProps<PolynomialOptions>) {
   return (
     <NumberInputField
-      labelProps={{ title: 'Degree [1 - 6]:', style: headerLabelStyle }}
+      labelProps={{ title: 'Degree [1 - 20]:', style: headerLabelStyle }}
       name="degree"
       control={control}
       min={1}
-      max={6}
+      max={20}
       onValueChange={onValueChange}
       style={{ width: '60px' }}
       debounceTime={250}
@@ -175,77 +163,15 @@ function WhittakerFields({
   onValueChange,
 }: AlgorithmFieldProps<WhittakerOptions>) {
   return (
-    <>
-      <NumberInputField
-        labelProps={{ title: 'Max iterations:', style: headerLabelStyle }}
-        name="maxIterations"
-        control={control}
-        min={1}
-        onValueChange={onValueChange}
-        style={{ width: '60px' }}
-        debounceTime={250}
-      />
-      <NumberInputField
-        labelProps={{ title: 'Lambda:', style: headerLabelStyle }}
-        name="lambda"
-        control={control}
-        min={1}
-        onValueChange={onValueChange}
-        style={{ width: '60px' }}
-        debounceTime={250}
-      />
-      <NumberInputField
-        labelProps={{ title: 'Learning rate:', style: headerLabelStyle }}
-        name="learningRate"
-        control={control}
-        min={1}
-        onValueChange={onValueChange}
-        style={{ width: '60px' }}
-        debounceTime={250}
-      />
-    </>
-  );
-}
-
-function CubicFields({
-  control,
-  onValueChange,
-}: AlgorithmFieldProps<CubicOptions>) {
-  return (
-    <div style={{ display: 'flex' }}>
-      <NumberInputField
-        labelProps={{ title: 'Anchors:', style: headerLabelStyle }}
-        name="numAnchors"
-        control={control}
-        min={0}
-        stepSize={1}
-        onValueChange={onValueChange}
-        style={{ width: '60px' }}
-        debounceTime={250}
-      />
-      <NumberInputField
-        labelProps={{ title: 'Noise threshold:', style: headerLabelStyle }}
-        name="noiseThreshold"
-        control={control}
-        min={0}
-        stepSize={0.1}
-        majorStepSize={0.1}
-        minorStepSize={0.1}
-        onValueChange={onValueChange}
-        style={{ width: '60px' }}
-        debounceTime={250}
-      />
-      <NumberInputField
-        labelProps={{ title: 'Max iterations:', style: headerLabelStyle }}
-        name="maxIterations"
-        control={control}
-        min={0}
-        stepSize={1}
-        onValueChange={onValueChange}
-        style={{ width: '60px' }}
-        debounceTime={250}
-      />
-    </div>
+    <NumberInputField
+      labelProps={{ title: 'Lambda:', style: headerLabelStyle }}
+      name="lambda"
+      control={control}
+      min={1}
+      onValueChange={onValueChange}
+      style={{ width: '60px' }}
+      debounceTime={250}
+    />
   );
 }
 
@@ -254,47 +180,15 @@ function BernsteinFields({
   onValueChange,
 }: AlgorithmFieldProps<BernsteinOptions>) {
   return (
-    <>
-      <NumberInputField
-        labelProps={{ title: 'Degree:', style: headerLabelStyle }}
-        name="degree"
-        control={control}
-        min={1}
-        onValueChange={onValueChange}
-        style={{ width: '60px' }}
-        debounceTime={250}
-      />
-      <NumberInputField
-        labelProps={{ title: 'Max iterations:', style: headerLabelStyle }}
-        name="maxIterations"
-        control={control}
-        min={1}
-        onValueChange={onValueChange}
-        style={{ width: '60px' }}
-        debounceTime={250}
-      />
-      <NumberInputField
-        labelProps={{ title: 'Learning rate:', style: headerLabelStyle }}
-        name="learningRate"
-        control={control}
-        min={0}
-        stepSize={0.1}
-        majorStepSize={0.1}
-        minorStepSize={0.1}
-        onValueChange={onValueChange}
-        style={{ width: '60px' }}
-        debounceTime={250}
-      />
-      <NumberInputField
-        labelProps={{ title: 'Factor Std:', style: headerLabelStyle }}
-        name="factorStd"
-        control={control}
-        min={0}
-        onValueChange={onValueChange}
-        style={{ width: '60px' }}
-        debounceTime={250}
-      />
-    </>
+    <NumberInputField
+      labelProps={{ title: 'Degree:', style: headerLabelStyle }}
+      name="degree"
+      control={control}
+      min={1}
+      onValueChange={onValueChange}
+      style={{ width: '60px' }}
+      debounceTime={250}
+    />
   );
 }
 

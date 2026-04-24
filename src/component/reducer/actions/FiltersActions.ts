@@ -1,5 +1,4 @@
 import type {
-  AirplsOptions,
   Apodization1DOptions,
   BaselineCorrectionOptions,
   Filter1DEntry,
@@ -7,10 +6,9 @@ import type {
   Filter2DEntry,
   Filter2DOptions,
   MatrixOptions,
-  PolynomialOptions,
 } from '@zakodium/nmr-types';
 import type { Spectrum1D, Spectrum2D, Spectrum } from '@zakodium/nmrium-core';
-import type { NmrData1D, NmrData2DFt } from 'cheminfo-types';
+import type { NmrData2DFt } from 'cheminfo-types';
 import type { Draft } from 'immer';
 import { current, isDraft } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
@@ -20,7 +18,6 @@ import {
   Filters1DManager,
   Filters2D,
   Filters2DManager,
-  getBaselineZonesByDietrich,
 } from 'nmr-processing';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
@@ -31,6 +28,7 @@ import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.js';
 import { isFid2DSpectrum } from '../../../data/data2d/Spectrum2D/isSpectrum2D.js';
 import type { FilterEntry } from '../../../data/types/common/FilterEntry.ts';
 import type { ExclusionZone } from '../../../data/types/data1d/ExclusionZone.js';
+import { getMedianWindow } from '../../1d/baseline/getMedianWindow.ts';
 import { getXScale } from '../../1d/utilities/scale.js';
 import { get2DXScale, get2DYScale } from '../../2d/utilities/scale.js';
 import { nonRemovableFilters } from '../../panels/filtersPanel/Filters/FiltersSectionsPanel.js';
@@ -160,7 +158,10 @@ type ManualTwoDimensionsPhaseCorrectionFilterAction = ActionType<
   { ph0: number; ph1: number; applyOn2D?: boolean }
 >;
 
-type BaselineCorrectionFilterOptions = Omit<BaselineCorrectionOptions, 'zones'>;
+type BaselineCorrectionFilterOptions = Omit<
+  BaselineCorrectionOptions,
+  'zones' | 'anchors'
+> & { anchors?: number[] };
 interface BaselineCorrectionFilterProps {
   options: BaselineCorrectionFilterOptions;
   livePreview: boolean;
@@ -586,12 +587,6 @@ function rollbackSpectrum(
   afterRollback(draft, filterKey);
 }
 
-function hasBaselineZones(
-  filterOptions: any,
-): filterOptions is PolynomialOptions | AirplsOptions {
-  return 'zones' in filterOptions;
-}
-
 function getTwoDimensionFilterOptions(
   draft: Draft<State>,
 ): TwoDimensionPhaseCorrection['traces'] | null {
@@ -708,30 +703,6 @@ function beforeRollback(draft: Draft<State>, filterKey: any) {
       }
       break;
     }
-    case baselineCorrection.name: {
-      if (activeSpectrum) {
-        const datum = current(draft).data[activeSpectrum.index];
-        const baselineCorrectionFilter = datum.filters.find(
-          (filter) => filter.name === baselineCorrection.name,
-        );
-
-        const filterOptions = baselineCorrectionFilter?.value;
-
-        if (
-          filterOptions &&
-          hasBaselineZones(filterOptions) &&
-          filterOptions.zones.length > 0
-        ) {
-          draft.toolOptions.data.baselineCorrection.zones = filterOptions.zones;
-          return;
-        }
-
-        draft.toolOptions.data.baselineCorrection.zones =
-          getBaselineZonesByDietrich(datum.data as NmrData1D);
-      }
-      break;
-    }
-
     default:
       break;
   }
@@ -1597,16 +1568,25 @@ function handleBaseLineCorrectionFilter(
   const activeFilterIndex = getActiveFilterIndex(draft);
 
   const { index } = activeSpectrum;
-  const { zones } = draft.toolOptions.data.baselineCorrection;
+  const tempSpectrum = draft.tempData[index];
+
+  if (!isSpectrum1D(tempSpectrum)) {
+    return;
+  }
+
   const { options } = action.payload;
+  const { anchors = [] } = options;
+  const medianWindow = getMedianWindow(tempSpectrum);
+
   Filters1DManager.applyFilters(
-    draft.tempData[index],
+    tempSpectrum,
     [
       {
         name: 'baselineCorrection',
         value: {
           ...options,
-          zones,
+          anchors,
+          medianWindow,
         },
       } as Extract<Filter1D, { name: 'baseLineCorrection' }>,
     ],
@@ -1616,34 +1596,43 @@ function handleBaseLineCorrectionFilter(
 
   updateView(draft, baselineCorrection.domainUpdateRules);
 }
-
-function calculateBaseLineCorrection(
+//action
+function handleCalculateBaseLineCorrection(
   draft: Draft<State>,
-  baseLineOptions?: BaselineCorrectionFilterProps,
+  action: BaselineCorrectionFilterLiveAction,
 ) {
+  const baseLineOptions = action.payload;
   const activeSpectrum = getActiveSpectrum(draft);
 
   if (!activeSpectrum || !draft.tempData) {
     return;
   }
-
   const { index } = activeSpectrum;
+  const tempSpectrum = draft.tempData[index];
+
+  if (!isSpectrum1D(tempSpectrum)) {
+    return;
+  }
+
+  const medianWindow = getMedianWindow(tempSpectrum);
   const {
     data: { x, re, im },
     info,
-  } = draft.tempData[index];
+  } = tempSpectrum;
   // save the baseline options temporary
   draft.toolOptions.data.baselineCorrection = {
     ...draft.toolOptions.data.baselineCorrection,
     ...(baseLineOptions && baseLineOptions),
   };
-  const { zones, options, livePreview } =
+  const { options, livePreview } =
     current(draft).toolOptions.data.baselineCorrection;
+  const { anchors = [] } = options || {};
   if (livePreview) {
     const _data = { data: { x, re, im }, info } as Spectrum1D;
     baselineCorrection.apply(_data, {
-      zones,
       ...options,
+      anchors,
+      medianWindow,
     });
     const { im: newIm, re: newRe } = _data.data;
     const datum = draft.data[index];
@@ -1657,13 +1646,6 @@ function calculateBaseLineCorrection(
   } else {
     disableLivePreview(draft, baselineCorrection.name);
   }
-}
-//action
-function handleCalculateBaseLineCorrection(
-  draft: Draft<State>,
-  action: BaselineCorrectionFilterLiveAction,
-) {
-  calculateBaseLineCorrection(draft, action.payload);
 }
 
 //action
@@ -2142,7 +2124,6 @@ function handleReorderFilters(
 }
 
 export {
-  calculateBaseLineCorrection,
   handleAddExclusionZone,
   handleAddPhaseCorrectionTrace,
   handleApplyAbsoluteFilter,

@@ -4,10 +4,12 @@ import type { Control, FieldValues } from 'react-hook-form';
 interface BaseOptions {
   algorithm: string;
   livePreview: boolean;
+  anchors?: number[];
 }
 export interface AirplsOptions extends BaseOptions {
   maxIterations: number;
   tolerance: number;
+  lambda: number;
 }
 export interface PolynomialOptions extends BaseOptions {
   degree: number;
@@ -26,14 +28,13 @@ export interface BernsteinOptions extends BaseOptions {
   degree: number;
 }
 export interface CubicOptions extends BaseOptions {
-  numAnchors: number;
   noiseThreshold: number;
   maxIterations: number;
   tolerance: number;
   noiseLevel: number;
   noisePercentile: number;
 }
-export type AlgorithmOptions =
+export type BaselineAlgorithmOptions =
   | AirplsOptions
   | PolynomialOptions
   | WhittakerOptions

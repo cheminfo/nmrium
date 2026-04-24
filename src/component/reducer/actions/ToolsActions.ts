@@ -1,4 +1,3 @@
-import type { BaselineCorrectionZone } from '@zakodium/nmr-types';
 import type { Spectrum1D, Spectrum2D, Spectrum } from '@zakodium/nmrium-core';
 import { zoomIdentity } from 'd3-zoom';
 import type { Draft } from 'immer';
@@ -35,10 +34,7 @@ import type { ActionType } from '../types/ActionType.js';
 import type { SetDomainOptions } from './DomainActions.js';
 import { setDomain, setMode } from './DomainActions.js';
 import type { RollbackSpectrumOptions } from './FiltersActions.js';
-import {
-  calculateBaseLineCorrection,
-  rollbackSpectrum,
-} from './FiltersActions.js';
+import { rollbackSpectrum } from './FiltersActions.js';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions.js';
 
 interface BrushBoundary {
@@ -68,19 +64,6 @@ type SetSelectedToolAction = ActionType<
   { selectedTool: Tool }
 >;
 
-type AddBaseLineZoneAction = ActionType<
-  'ADD_BASE_LINE_ZONE',
-  { startX: number; endX: number }
->;
-type ResizeBaseLineZoneAction = ActionType<
-  'RESIZE_BASE_LINE_ZONE',
-  BaselineCorrectionZone
->;
-type DeleteBaseLineZoneAction = ActionType<
-  'DELETE_BASE_LINE_ZONE',
-  { id: string }
->;
-
 type BrushEndAction = ActionType<'BRUSH_END', BrushBoundary>;
 
 type ZoomAction = ActionType<
@@ -105,9 +88,6 @@ export type ToolsActions =
       | 'RESET_SPECTRA_SCALE'
     >
   | SetSelectedToolAction
-  | AddBaseLineZoneAction
-  | DeleteBaseLineZoneAction
-  | ResizeBaseLineZoneAction
   | BrushEndAction
   | ZoomAction
   | ZoomOutAction
@@ -218,52 +198,6 @@ function handleChangeSpectrumDisplayMode(draft: Draft<State>) {
   const currentVerticalAlign = getVerticalAlign(draft);
   const verticalAlign = currentVerticalAlign === 'stack' ? 'bottom' : 'stack';
   changeSpectrumVerticalAlignment(draft, { verticalAlign });
-}
-
-function handleAddBaseLineZone(
-  draft: Draft<State>,
-  action: AddBaseLineZoneAction,
-) {
-  const scaleX = getXScale(draft);
-  const { startX, endX } = action.payload;
-  const start = scaleX.invert(startX);
-  const end = scaleX.invert(endX);
-
-  const zone = start > end ? [end, start] : [start, end];
-  const zones = draft.toolOptions.data.baselineCorrection.zones;
-  zones.push({
-    id: crypto.randomUUID(),
-    from: zone[0],
-    to: zone[1],
-  });
-  draft.toolOptions.data.baselineCorrection.zones = zones.slice();
-
-  calculateBaseLineCorrection(draft);
-}
-function handleResizeBaseLineZone(
-  draft: Draft<State>,
-  action: ResizeBaseLineZoneAction,
-) {
-  const { from, to, id } = action.payload;
-
-  const zones = draft.toolOptions.data.baselineCorrection.zones;
-  const zoneIndex = zones.findIndex((zone) => zone.id === id);
-  if (zoneIndex !== -1) {
-    zones[zoneIndex] = { id, from, to };
-  }
-  calculateBaseLineCorrection(draft);
-}
-
-function handleDeleteBaseLineZone(
-  draft: Draft<State>,
-  action: DeleteBaseLineZoneAction,
-) {
-  const { id } = action.payload;
-  draft.toolOptions.data.baselineCorrection.zones =
-    draft.toolOptions.data.baselineCorrection.zones.filter(
-      (zone) => zone.id !== id,
-    );
-  calculateBaseLineCorrection(draft);
 }
 
 function handleToggleRealImaginaryVisibility(draft: Draft<State>) {
@@ -722,12 +656,9 @@ function resetSpectraScale(draft: Draft<State>) {
 
 export {
   activateTool,
-  handleAddBaseLineZone,
   handleBrushEnd,
   handleChangeSpectrumDisplayMode,
-  handleDeleteBaseLineZone,
   handleResetSelectedTool,
-  handleResizeBaseLineZone,
   handleSetActiveTab,
   handleToggleRealImaginaryVisibility,
   handleZoom,
