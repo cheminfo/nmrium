@@ -1596,11 +1596,12 @@ function handleBaseLineCorrectionFilter(
 
   updateView(draft, baselineCorrection.domainUpdateRules);
 }
-
-function calculateBaseLineCorrection(
+//action
+function handleCalculateBaseLineCorrection(
   draft: Draft<State>,
-  baseLineOptions?: BaselineCorrectionFilterProps,
+  action: BaselineCorrectionFilterLiveAction,
 ) {
+  const baseLineOptions = action.payload;
   const activeSpectrum = getActiveSpectrum(draft);
 
   if (!activeSpectrum || !draft.tempData) {
@@ -1645,13 +1646,6 @@ function calculateBaseLineCorrection(
   } else {
     disableLivePreview(draft, baselineCorrection.name);
   }
-}
-//action
-function handleCalculateBaseLineCorrection(
-  draft: Draft<State>,
-  action: BaselineCorrectionFilterLiveAction,
-) {
-  calculateBaseLineCorrection(draft, action.payload);
 }
 
 //action
@@ -2130,7 +2124,6 @@ function handleReorderFilters(
 }
 
 export {
-  calculateBaseLineCorrection,
   handleAddExclusionZone,
   handleAddPhaseCorrectionTrace,
   handleApplyAbsoluteFilter,
