@@ -10,6 +10,9 @@ import { useDispatch } from '../../../../context/DispatchContext.js';
 import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsContext.js';
 import type { BaselineAlgorithmOptions } from '../base/baselineCorrectionFields.ts';
 
+export const DEFAULT_BASELINE_ALGORITHM: BaselineCorrectionOptions['algorithm'] =
+  'cubic' as const;
+
 const ALGORITHM_LABELS: Record<BaselineCorrectionOptions['algorithm'], string> =
   {
     airpls: 'airPLS',
@@ -169,7 +172,8 @@ export function useBaselineCorrection(
 ) {
   const dispatch = useDispatch();
   const previousPreviewRef = useRef<boolean>(true);
-  const { algorithm: baseAlgorithm = 'polynomial' } = filter?.value || {};
+  const { algorithm: baseAlgorithm = DEFAULT_BASELINE_ALGORITHM } =
+    filter?.value || {};
   const {
     value: algorithm,
     onItemSelect: onAlgorithmChange,

@@ -14,7 +14,10 @@ import { useIndicatorLineColor } from '../../hooks/useIndicatorLineColor.ts';
 import useSpectrum from '../../hooks/useSpectrum.ts';
 import useTempSpectrum from '../../hooks/useTempSpectrum.ts';
 import type { BaselineAlgorithmOptions } from '../../panels/filtersPanel/Filters/base/baselineCorrectionFields.ts';
-import { getBaselineValues } from '../../panels/filtersPanel/Filters/hooks/useBaselineCorrection.tsx';
+import {
+  DEFAULT_BASELINE_ALGORITHM,
+  getBaselineValues,
+} from '../../panels/filtersPanel/Filters/hooks/useBaselineCorrection.tsx';
 import { PathBuilder } from '../../utility/PathBuilder.ts';
 
 import { getMedianWindow } from './getMedianWindow.ts';
@@ -172,7 +175,9 @@ function SpectrumPreview({ spectrum, anchors }: SpectrumPreviewProps) {
     }
     const medianWindow = getMedianWindow(spectrum);
     const options = {
-      ...getBaselineValues(sharedFilterOptions?.algorithm || 'polynomial'),
+      ...getBaselineValues(
+        sharedFilterOptions?.algorithm || DEFAULT_BASELINE_ALGORITHM,
+      ),
       ...sharedFilterOptions,
       anchors,
       medianWindow,
