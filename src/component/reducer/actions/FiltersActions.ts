@@ -659,7 +659,7 @@ function beforeRollback(draft: Draft<State>, filterKey: any) {
         for (const direction in filterOptions) {
           const phaseOptions =
             draft.toolOptions.data.twoDimensionPhaseCorrection.traces[
-            direction as TraceDirection
+              direction as TraceDirection
             ];
           const {
             ph0,
