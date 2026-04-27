@@ -67,9 +67,15 @@ function addColumnKey(
   return key;
 }
 
+interface GetSpectraAnalysisOptions {
+  from: number;
+  to: number;
+  nucleus: string;
+}
+
 function getSpectraAnalysis(
   spectra: Spectrum[],
-  options: any,
+  options: GetSpectraAnalysisOptions,
 ): { values: AnalysisRow[]; sum: number } {
   const { from, to, nucleus } = options;
   const result: { values: AnalysisRow[]; sum: number } = {
@@ -113,10 +119,10 @@ export function mapColumns(
 ) {
   const { code, columns: inputColumns, ...restSetting } = options;
   const columns = Object.fromEntries(
-    Object.values(inputColumns).map((value: any) => {
-      const data = { ...value };
-      delete data.tempKey;
-      return [value.tempKey, data];
+    Object.values(inputColumns).map((value) => {
+      // @ts-expect-error tempKey is added for the form state.
+      const { tempKey, ...data } = value;
+      return [tempKey, data];
     }),
   );
   return {

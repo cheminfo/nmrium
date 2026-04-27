@@ -56,24 +56,21 @@ const columnsFilters: Array<{ value: string; label: string }> = [
   { value: ANALYSIS_COLUMN_VALUES_KEYS.MAX, label: 'Max Intensity' },
 ];
 
-interface AnalysisColumnHeaderProps {
+export interface AnalysisColumnHeaderProps {
   columnKey: string;
   rangeLabel: string;
   onColumnFilter: (value: string) => void;
   data: {
     type: string;
     valueKey: string;
+    from?: number;
+    to?: number;
   };
   onDelete: () => void;
 }
 
-function AnalysisColumnHeader({
-  columnKey,
-  rangeLabel,
-  data,
-  onColumnFilter,
-  onDelete,
-}: AnalysisColumnHeaderProps) {
+export default function AnalysisColumnHeader(props: AnalysisColumnHeaderProps) {
+  const { columnKey, rangeLabel, data, onColumnFilter, onDelete } = props;
   const highlight = useHighlight([columnKey]);
 
   function deleteHandler(e: MouseEvent) {
@@ -111,5 +108,3 @@ function AnalysisColumnHeader({
     </div>
   );
 }
-
-export default AnalysisColumnHeader;

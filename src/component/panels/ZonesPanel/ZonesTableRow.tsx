@@ -36,14 +36,15 @@ interface ZonesTableRowProps extends TableContextMenuProps {
   nucleus: string;
 }
 
-function ZonesTableRow({
-  rowData,
-  onUnlink,
-  contextMenu = [],
-  onContextMenuSelect,
-  rowIndex,
-  nucleus,
-}: ZonesTableRowProps) {
+export default function ZonesTableRow(props: ZonesTableRowProps) {
+  const {
+    rowData,
+    onUnlink,
+    contextMenu = [],
+    onContextMenuSelect,
+    rowIndex,
+    nucleus,
+  } = props;
   const zoneKey = rowData.id;
   const assignmentZone = useAssignment(zoneKey);
   const highlightZone = useHighlight([zoneKey]);
@@ -116,5 +117,3 @@ function ZonesTableRow({
     </ContextMenu>
   );
 }
-
-export default ZonesTableRow;

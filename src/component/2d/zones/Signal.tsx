@@ -11,18 +11,19 @@ interface SignalProps {
   signal: Signal2D;
 }
 
-function Signal({ signal }: SignalProps) {
+export default function Signal(props: SignalProps) {
+  const { signal } = props;
   const scaleX = useScale2DX();
   const scaleY = useScale2DY();
 
   const buildIDs = useCallback((id: string) => {
     return [id].concat(buildID(id, 'X'), buildID(id, 'Y'));
   }, []);
-  const assignment = useAssignment(signal?.id || '');
+  const assignment = useAssignment(signal.id);
   const isAssignmentActive = assignment.isActive;
 
   const { showSignals, showPeaks } = useActiveSpectrumZonesViewState();
-  const highlight = useHighlight(buildIDs(signal?.id || ''));
+  const highlight = useHighlight(buildIDs(signal.id));
   const highlightData = useHighlightData();
 
   const [isHighlighted, setIsHighlighted] = useState(false);
@@ -45,18 +46,16 @@ function Signal({ signal }: SignalProps) {
     signal.id,
   ]);
 
-  if (!signal) return null;
-
   return (
     <g className="zone-signal">
       {showSignals && (
         <circle
           onMouseEnter={() => {
-            assignment?.highlight();
+            assignment.highlight();
             highlight.show();
           }}
           onMouseLeave={() => {
-            assignment?.clearHighlight();
+            assignment.clearHighlight();
             highlight.hide();
           }}
           key={signal.id}
@@ -68,10 +67,9 @@ function Signal({ signal }: SignalProps) {
       )}
       <g className="zone-signal-peak" style={{ pointerEvents: 'none' }}>
         {showPeaks &&
-          signal?.peaks?.map((peak, i) => (
+          signal.peaks?.map((peak) => (
             <circle
-              // eslint-disable-next-line react/no-array-index-key
-              key={signal.id + i}
+              key={peak.id}
               cx={scaleX(peak.x)}
               cy={scaleY(peak.y)}
               r={2}
@@ -82,5 +80,3 @@ function Signal({ signal }: SignalProps) {
     </g>
   );
 }
-
-export default Signal;

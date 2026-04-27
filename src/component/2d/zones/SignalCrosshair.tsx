@@ -9,7 +9,8 @@ interface SignalCrosshairProps {
   signal: Signal2D;
 }
 
-export function SignalCrosshair({ signal }: SignalCrosshairProps) {
+export function SignalCrosshair(props: SignalCrosshairProps) {
+  const { signal } = props;
   const highlightIDsX = useMemo(() => {
     return [buildID(signal.id, 'Crosshair'), buildID(signal.id, 'Crosshair_X')];
   }, [signal.id]);
@@ -22,7 +23,7 @@ export function SignalCrosshair({ signal }: SignalCrosshairProps) {
   const highlightY = useHighlight(highlightIDsY);
   const highlight = useHighlight([signal.id]);
 
-  if (!signal?.x?.delta || !signal?.y?.delta) return null;
+  if (!signal.x?.delta || !signal.y?.delta) return null;
 
   return (
     <g>
