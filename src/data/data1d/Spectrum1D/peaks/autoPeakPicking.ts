@@ -1,14 +1,26 @@
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import median from 'ml-array-median';
+import type { OptionsXYAutoPeaksPicking } from 'nmr-processing';
 import { mapPeaks, xyAutoPeaksPicking } from 'nmr-processing';
 
-export function autoPeakPicking(spectrum: Spectrum1D, options: any) {
+interface AutoPeakPickingOptions {
+  maxNumberOfPeaks: number;
+  minMaxRatio: number;
+  noiseFactor: number;
+  direction?: OptionsXYAutoPeaksPicking['direction'];
+  windowFromIndex?: number;
+  windowToIndex?: number;
+}
+
+export function autoPeakPicking(
+  spectrum: Spectrum1D,
+  options: AutoPeakPickingOptions,
+) {
   const {
-    minMaxRatio,
     maxNumberOfPeaks,
+    minMaxRatio,
     noiseFactor,
     direction,
-    sensitivity = 100,
     windowFromIndex,
     windowToIndex,
   } = options;
@@ -28,7 +40,7 @@ export function autoPeakPicking(spectrum: Spectrum1D, options: any) {
     {
       frequency,
       direction,
-      sensitivity,
+      sensitivity: 100,
       shape: { kind: 'lorentzian' },
       noiseLevel: noise * noiseFactor,
       minMaxRatio, // Threshold to determine if a given peak should be considered as a noise

@@ -1,4 +1,7 @@
-import type { SpectrumOneDimensionColor } from '@zakodium/nmrium-core';
+import type {
+  Spectrum1D,
+  SpectrumOneDimensionColor,
+} from '@zakodium/nmrium-core';
 
 import type { UsedColors } from '../../../types/UsedColors.js';
 import { generateColor } from '../../utilities/generateColor.js';
@@ -24,7 +27,7 @@ function isRandomColorGeneration(
 }
 
 export function get1DColor(
-  spectrum: any,
+  spectrum: Spectrum1D,
   options: ColorOptions | RandomColorOptions,
 ) {
   let color: string;

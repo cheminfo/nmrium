@@ -45,7 +45,8 @@ const DEFAULT_CONTOURS_OPTIONS: ContourOptions = {
 type LevelSign = keyof Level;
 
 const LEVEL_SIGNS: Readonly<[LevelSign, LevelSign]> = ['positive', 'negative'];
-interface ReturnContoursManager {
+
+interface ContoursManagerReturn {
   wheel: (value: number, options: BaseWheelOptions) => Level;
   getLevel: () => Level;
   checkLevel: () => Level;
@@ -95,14 +96,14 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
   return defaultLevel;
 }
 
-function contoursManager(options: ContourOptions): ReturnContoursManager {
+function contoursManager(options: ContourOptions): ContoursManagerReturn {
   const contourOptions = { ...options };
-
-  const wheel = (value: any, options: any) =>
-    prepareWheel(value, { ...options, contourOptions });
-  const getLevel = () => contourOptions;
-  const checkLevel = () => prepareCheckLevel(contourOptions);
-  return { wheel, getLevel, checkLevel };
+  return {
+    wheel: (value, options) =>
+      prepareWheel(value, { ...options, contourOptions }),
+    getLevel: () => contourOptions,
+    checkLevel: () => prepareCheckLevel(contourOptions),
+  };
 }
 
 function prepareWheel(value: number, options: WheelOptions) {
@@ -276,7 +277,7 @@ function calculateValueOfLevel(level: number, max: number, invert = false) {
   return (max * (2 ** (level / 10) - 1)) / (2 ** 10 - 1);
 }
 
-export function initializeContoursLevels(spectrum: any) {
+export function initializeContoursLevels(spectrum: Spectrum2D) {
   const { data } = spectrum;
 
   if ('rr' in data) return getDefaultContoursLevel(spectrum);

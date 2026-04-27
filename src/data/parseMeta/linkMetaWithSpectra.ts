@@ -97,14 +97,14 @@ function linkMetaWithSpectra(options: {
 }
 
 class TargetPathError extends Error {
-  constructor(fieldPath: any) {
-    super(`Target field path [ ${fieldPath} ] is not exists`);
+  constructor(fieldPath: string | string[]) {
+    super(`Target field path [ ${String(fieldPath)} ] does not exist`);
     this.name = 'TargetPathError';
   }
 }
 class SourcePathError extends Error {
-  constructor(fieldPath: any) {
-    super(`Source field path [ ${fieldPath} ] is not exists`);
+  constructor(fieldPath: string) {
+    super(`Source field path [ ${fieldPath} ] does not exist`);
     this.name = 'AutomaticPathsMatchesError';
   }
 }

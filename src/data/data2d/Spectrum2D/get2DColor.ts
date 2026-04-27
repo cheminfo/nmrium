@@ -1,5 +1,6 @@
 import type {
   Color2D,
+  Spectrum2D,
   SpectrumTwoDimensionsColor,
 } from '@zakodium/nmrium-core';
 
@@ -27,7 +28,7 @@ function isRandomColorGeneration(
 }
 
 export function get2DColor(
-  spectrum: any,
+  spectrum: Spectrum2D,
   options: ColorOptions | RandomColorOptions,
 ): Color2D {
   let color: Partial<Color2D>;

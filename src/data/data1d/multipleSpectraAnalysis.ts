@@ -57,7 +57,7 @@ function addColumnKey(
   spectraAnalysis: PanelsPreferences['multipleSpectraAnalysis'],
   nucleus: string,
   columnProps: SpectraAnalysisColumn,
-  columnKey: string,
+  columnKey: string | null,
 ) {
   const spectraAnalysisOptions = spectraAnalysis[nucleus].analysisOptions;
   const key =
@@ -141,9 +141,16 @@ export function changeColumnValueKey(
   spectraAnalysis[nucleus].analysisOptions.columns[columnKey].valueKey = newKey;
 }
 
+interface AnalyzeSpectraOptions {
+  from: number;
+  to: number;
+  nucleus: string;
+  columnKey?: string;
+}
+
 export function analyzeSpectra(
   spectraAnalysis: PanelsPreferences['multipleSpectraAnalysis'],
-  options: any,
+  options: AnalyzeSpectraOptions,
 ) {
   const { from, to, nucleus, columnKey = null } = options;
   init(spectraAnalysis, nucleus);

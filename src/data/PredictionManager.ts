@@ -169,7 +169,11 @@ function checkFromTo(
   inputOptions: PredictionOptions,
   logger: Logger,
 ) {
-  const setFromTo = (inputOptions: any, nucleus: any, fromTo: any) => {
+  const setFromTo = (
+    inputOptions: PredictionOptions,
+    nucleus: '1H' | '13C',
+    fromTo: GetNewFromToReturn,
+  ) => {
     inputOptions['1d'][nucleus].to = fromTo.to;
     inputOptions['1d'][nucleus].from = fromTo.from;
     if (fromTo.signalsOutOfRange) {
@@ -196,7 +200,7 @@ function checkFromTo(
         nucleus,
         autoExtendRange,
       });
-      setFromTo(inputOptions, nucleus, fromTo);
+      setFromTo(inputOptions, nucleus as '1H' | '13C', fromTo);
     } else {
       const { signals, nuclei } = predictedSpectra[experiment] as Prediction2D;
       for (const nucleus of nuclei) {
@@ -209,7 +213,7 @@ function checkFromTo(
           nucleus,
           autoExtendRange,
         });
-        setFromTo(inputOptions, nucleus, fromTo);
+        setFromTo(inputOptions, nucleus as '1H' | '13C', fromTo);
       }
     }
   }
@@ -227,13 +231,19 @@ function checkFromTo(
   }
 }
 
+interface GetNewFromToReturn {
+  from: number;
+  to: number;
+  signalsOutOfRange: boolean;
+}
+
 function getNewFromTo(params: {
   deltas: number[];
   from: number;
   to: number;
   nucleus: string;
   autoExtendRange: boolean;
-}) {
+}): GetNewFromToReturn {
   const { deltas, nucleus, autoExtendRange } = params;
   let { from, to } = params;
   const { min, max } = xMinMaxValues(deltas);
@@ -275,7 +285,7 @@ function generated1DSpectrum(params: {
 
   const first = x[0] ?? 0;
   const last = x.at(-1) ?? 0;
-  const getFreqOffset = (freq: any) => {
+  const getFreqOffset = (freq: number) => {
     return (first + last) * freq * 0.5;
   };
 
