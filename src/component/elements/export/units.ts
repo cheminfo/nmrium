@@ -49,7 +49,7 @@ export function convert(
   value: number,
   fromUnit: Unit,
   toUnit: Unit,
-  dpi: any,
+  dpi: number,
   options: ConvertOptions = {},
 ): number {
   const { precision } = options;

@@ -29,7 +29,7 @@ export function useExportConfigurer(options: ExportSettings) {
     return value;
   }
 
-  function changeDPI(value: any) {
+  function changeDPI(value: number) {
     const { width, height, dpi } = refSize.current;
     const convertedWidth =
       convertToPixels(width, unit, 1, { precision: 2 }) * value;

@@ -71,7 +71,7 @@ export default function ExclusionZonesOptionsPanel(
   }, [filter.value, reset]);
 
   const handleDelete = useCallback(
-    (index: any) => {
+    (index: number) => {
       setValue(
         'zones',
         getValues('zones').filter((_, i) => i !== index),

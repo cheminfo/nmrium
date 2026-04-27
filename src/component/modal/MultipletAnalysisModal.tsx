@@ -67,8 +67,8 @@ const LoaderContainer = styled.div`
 
 interface InnerMultipleAnalysisProps {
   activeSpectrum: ActiveSpectrum | null;
-  startX: any;
-  endX: any;
+  startX: number;
+  endX: number;
 }
 
 interface MultipletAnalysisModalProps extends InnerMultipleAnalysisProps {

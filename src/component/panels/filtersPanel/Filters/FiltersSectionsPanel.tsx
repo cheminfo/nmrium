@@ -304,7 +304,7 @@ function FiltersInner(props: FiltersInnerProps) {
             onReorder={handleReorderFilters}
             title={error || getFilterLabel(name)}
             serial={index + 1}
-            onClick={(id: any) => {
+            onClick={(id: string) => {
               toggleSection(id);
             }}
             isOpen={name === selectedSection}

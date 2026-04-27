@@ -32,7 +32,11 @@ interface SignalPeaksTableProps {
   index: number;
 }
 
-function getPeakKey(signalIndex: number, peakIndex: any, key?: keyof Peak1D) {
+function getPeakKey(
+  signalIndex: number,
+  peakIndex: number,
+  key?: keyof Peak1D,
+) {
   const path = `signals[${signalIndex}].peaks.${peakIndex}`;
 
   if (!key) {
@@ -121,7 +125,7 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
   const deleteHandler = useCallback(
     (data: any, index: number) => {
       const peaks = data.filter(
-        (_: any, columnIndex: any) => columnIndex !== index,
+        (_: any, columnIndex: number) => columnIndex !== index,
       );
 
       setValue(`signals[${signalIndex}].peaks`, peaks);
@@ -216,7 +220,7 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
     [changeDeltaHandler, control, deleteHandler, signalIndex],
   );
 
-  function selectRowHandler(index: any) {
+  function selectRowHandler(index: number) {
     setFocusSource('peak');
     lastSelectedPeakIndexRef.current = index;
     setFocus(`signals.${signalIndex}.peaks.${index}.x`, { shouldSelect: true });

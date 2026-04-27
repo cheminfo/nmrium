@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from 'react';
+import type { CSSProperties, MouseEvent, ReactNode } from 'react';
 import { createContext, useCallback, useContext, useState } from 'react';
 
 interface MouseTrackerData {
@@ -23,32 +23,28 @@ interface MouseTrackerProps {
   noPropagation?: boolean;
 }
 
-export function MouseTracker({
-  children,
-  className,
-  style,
-  noPropagation,
-}: MouseTrackerProps) {
+export function MouseTracker(props: MouseTrackerProps) {
+  const { children, className, style, noPropagation } = props;
   const [mouseTrackerState, setMouseTrackerState] =
     useState<MouseTrackerData | null>(null);
   const mouseMoveHandler = useCallback(
-    (e: any) => {
-      const boundingRect = e.currentTarget.getBoundingClientRect();
-      const x = e.clientX - boundingRect.x;
-      const y = e.clientY - boundingRect.y;
+    (event: MouseEvent) => {
+      const boundingRect = event.currentTarget.getBoundingClientRect();
+      const x = event.clientX - boundingRect.x;
+      const y = event.clientY - boundingRect.y;
       setMouseTrackerState({ x, y });
       if (noPropagation) {
-        e.stopPropagation();
+        event.stopPropagation();
       }
     },
     [noPropagation],
   );
 
   const mouseLeaveHandler = useCallback(
-    (e: any) => {
+    (event: MouseEvent) => {
       setMouseTrackerState(null);
       if (noPropagation) {
-        e.stopPropagation();
+        event.stopPropagation();
       }
     },
     [noPropagation],

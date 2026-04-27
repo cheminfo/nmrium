@@ -121,7 +121,7 @@ function Viewer(props: ViewerProps) {
   );
 }
 
-function useOnRender(onRender: any) {
+function useOnRender(onRender: (() => void) | undefined) {
   const { width, height } = useChartData();
   const renderDimension = useDeferredValue({ width, height });
 

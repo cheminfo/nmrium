@@ -8,6 +8,7 @@ import { usePreferences } from '../context/PreferencesContext.js';
 import type { ToolbarPopoverMenuItem } from '../elements/ToolbarPopoverItem.js';
 import { ToolbarPopoverItem } from '../elements/ToolbarPopoverItem.js';
 
+import type { AccordionItem } from './accordionItems.js';
 import { useAccordionItems } from './hooks/useAccordionItems.js';
 import { useGetPanelOptions } from './hooks/useGetPanelOptions.js';
 import { useTogglePanel } from './hooks/useTogglePanel.js';
@@ -22,13 +23,13 @@ const PanelsBarContainer = styled(ButtonGroup)`
 `;
 
 function useHiddenItemsMenu(
-  items: any,
-  sliceIndex: any,
+  items: AccordionItem[],
+  sliceIndex: number,
 ): Array<ToolbarPopoverMenuItem<{ id: keyof NMRiumPanelPreferences }>> {
   const getPanelPreferences = useGetPanelOptions();
   const hiddenItems = items.slice(sliceIndex);
 
-  return hiddenItems.map((item: any) => {
+  return hiddenItems.map((item) => {
     const panelOptions = getPanelPreferences(item);
     return {
       icon: item.icon,

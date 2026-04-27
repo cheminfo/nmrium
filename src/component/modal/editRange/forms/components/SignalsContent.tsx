@@ -62,8 +62,8 @@ function SignalsContent({ range }: SignalsFormProps) {
   const { signals } = useWatch();
 
   const handleDeleteSignal = useCallback(
-    (index: any) => {
-      const _signals = signals.filter((_signal: any, i: any) => i !== index);
+    (index: number) => {
+      const _signals = signals.filter((_signal: any, i: number) => i !== index);
       setValue('signals', _signals);
       selectTab(signals.length - 2 || 0);
     },
@@ -73,7 +73,7 @@ function SignalsContent({ range }: SignalsFormProps) {
   const signalFormTabs = useMemo(() => {
     const signalTabs: any[] =
       signals.length > 0
-        ? signals.map((signal: any, i: any) => (
+        ? signals.map((signal: any, i: number) => (
             <Tab
               // eslint-disable-next-line react/no-array-index-key
               key={`signalForm${i}`}

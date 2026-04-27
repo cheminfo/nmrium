@@ -1,4 +1,5 @@
 import { SvgNmrAssignment } from 'cheminfo-font';
+import type { MouseEvent } from 'react';
 import { memo, useCallback, useMemo } from 'react';
 import type { CellProps } from 'react-table';
 
@@ -16,9 +17,9 @@ function AutomaticAssignmentTable({ data }: AutomaticAssignmentTableProps) {
   const dispatch = useDispatch();
 
   const assignHandler = useCallback(
-    (e: any, row: any) => {
-      e.preventDefault();
-      e.stopPropagation();
+    (event: MouseEvent, row: any) => {
+      event.preventDefault();
+      event.stopPropagation();
 
       dispatch({
         type: 'SET_AUTOMATIC_ASSIGNMENTS',

@@ -40,13 +40,13 @@ interface SignalJCouplingsTableProps {
 
 function getJCouplingKey(
   signalIndex: number,
-  jIndex: any,
+  jIndex: number,
   jCouplingKey: keyof Jcoupling,
 ) {
   return `signals[${signalIndex}].js.${jIndex}.${jCouplingKey}`;
 }
 
-function getCouplingMinErrorMessage(errors: any, index: any) {
+function getCouplingMinErrorMessage(errors: any, index: number) {
   return dlv(errors, `signals.${index}.js.root.message`);
 }
 
@@ -127,7 +127,7 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
   const deleteHandler = useCallback(
     (data: any, index: number) => {
       const jCouplings = data.filter(
-        (_: any, columnIndex: any) => columnIndex !== index,
+        (_: any, columnIndex: number) => columnIndex !== index,
       );
 
       setValue(`signals[${signalIndex}].js`, jCouplings);
@@ -228,7 +228,7 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
     [control, deleteHandler, setFocus, setValue, signalIndex],
   );
 
-  function selectRowHandler(index: any) {
+  function selectRowHandler(index: number) {
     setFocusSource('coupling');
     lastSelectedCouplingIndexRef.current = index;
   }

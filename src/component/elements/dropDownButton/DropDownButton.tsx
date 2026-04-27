@@ -52,7 +52,7 @@ function DropDownButton<T extends DropDownListItem>(
     }
   }, [selectedKey, data]);
 
-  function selectHandler(index: any) {
+  function selectHandler(index: number) {
     setOpen(false);
     setItem(data[index]);
     onSelect?.(data[index]);

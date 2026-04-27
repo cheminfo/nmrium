@@ -7,6 +7,7 @@ import type {
   CSSProperties,
   ComponentPropsWithoutRef,
   ElementType,
+  MouseEvent,
 } from 'react';
 import { FaInfoCircle } from 'react-icons/fa';
 
@@ -285,7 +286,7 @@ function Button<E extends ElementType = 'button'>(props: ButtonProps<E>) {
         onClick={
           Wrapper === 'button' || (Wrapper === 'div' && !disabled)
             ? onClick
-            : (e: any) => e.stopPropagation()
+            : (e: MouseEvent) => e.stopPropagation()
         }
         css={[
           styles.button({
