@@ -15,11 +15,12 @@ const styles: Record<'container' | 'errorLabel', CSSProperties> = {
 
 interface AnalysisCellProps {
   columnKey: string;
-  value: any;
+  value: number | Error;
   activeTab: string;
 }
 
-function AnalysisCell({ columnKey, value, activeTab }: AnalysisCellProps) {
+export default function AnalysisCell(props: AnalysisCellProps) {
+  const { columnKey, value, activeTab } = props;
   const highlight = useHighlight([columnKey]);
   const format = useFormatNumberByNucleus(activeTab);
 
@@ -36,5 +37,3 @@ function AnalysisCell({ columnKey, value, activeTab }: AnalysisCellProps) {
     </div>
   );
 }
-
-export default AnalysisCell;

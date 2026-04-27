@@ -13,6 +13,7 @@ import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import evaluate from '../../utility/Evaluate.js';
 
 import AnalysisCell from './base/AnalysisCell.js';
+import type { AnalysisColumnHeaderProps } from './base/AnalysisColumnHeader.js';
 import AnalysisColumnHeader from './base/AnalysisColumnHeader.js';
 
 interface MultipleSpectraAnalysisTableProps {
@@ -23,11 +24,10 @@ interface MultipleSpectraAnalysisTableProps {
 
 type ValueType = SpectraAnalysisData['values'][number];
 
-function MultipleSpectraAnalysisTable({
-  data,
-  activeTab,
-  resortSpectra,
-}: MultipleSpectraAnalysisTableProps) {
+function MultipleSpectraAnalysisTable(
+  props: MultipleSpectraAnalysisTableProps,
+) {
+  const { data, activeTab, resortSpectra } = props;
   const format = useFormatNumberByNucleus(activeTab);
   const { dispatch: dispatchPreferences } = usePreferences();
   const panelPreferences = usePanelPreferences(
@@ -37,11 +37,11 @@ function MultipleSpectraAnalysisTable({
 
   const codeEvaluation = useMemo(() => {
     const code = data.options.code || '';
-    return evaluate(code, data as any);
+    return evaluate(code, data);
   }, [data]);
 
   const tableColumns = useMemo(() => {
-    function handleChangeColumnValueKey(columnKey: any, valueKey: any) {
+    function handleChangeColumnValueKey(columnKey: string, valueKey: string) {
       dispatchPreferences({
         type: 'CHANGE_ANALYSIS_COLUMN_VALUE_KEY',
         payload: {
@@ -51,7 +51,7 @@ function MultipleSpectraAnalysisTable({
         },
       });
     }
-    function handleDeleteColumn(columnKey: any) {
+    function handleDeleteColumn(columnKey: string) {
       dispatchPreferences({
         type: 'DELETE_ANALYSIS_COLUMN',
         payload: {
@@ -80,7 +80,10 @@ function MultipleSpectraAnalysisTable({
       );
     }
 
-    function headerHandler(columnData: any, columnKey: any) {
+    function headerHandler(
+      columnData: AnalysisColumnHeaderProps['data'],
+      columnKey: string,
+    ) {
       return (
         <AnalysisColumnHeader
           onDelete={() => handleDeleteColumn(columnKey)}
@@ -126,12 +129,15 @@ function MultipleSpectraAnalysisTable({
 
   const { sort, reset } = useSortSpectra();
 
-  function handleSortEnd(data: any, isTableSorted?: boolean) {
+  function handleSortEnd(
+    data: SpectraAnalysisData['values'],
+    isTableSorted?: boolean,
+  ) {
     if (resortSpectra) {
       if (isTableSorted) {
         sort({
           sortType: 'sortByReferenceIndexes',
-          sortByReferences: data.map((analysisData: any) => {
+          sortByReferences: data.map((analysisData) => {
             const key = Object.keys(analysisData)[0];
             const id = analysisData[key].SID;
             return { id };
@@ -155,7 +161,7 @@ function MultipleSpectraAnalysisTable({
           padding: '10px',
         }}
         // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: codeEvaluation }}
+        dangerouslySetInnerHTML={{ __html: codeEvaluation as string }}
       />
     </Fragment>
   ) : (

@@ -18,7 +18,8 @@ interface ZoneProps {
   zoneData: ZoneType;
 }
 
-function Zone({ zoneData }: ZoneProps) {
+function Zone(props: ZoneProps) {
+  const { zoneData } = props;
   const { x, y, id, signals, assignment } = zoneData;
 
   const { setData } = useShareData<{ id: string }>();
@@ -88,9 +89,8 @@ function Zone({ zoneData }: ZoneProps) {
             />
           </g>
         )}
-        {signals.map((_signal, i) => (
-          // eslint-disable-next-line react/no-array-index-key
-          <Signal key={id + i} signal={_signal} />
+        {signals.map((signal) => (
+          <Signal key={signal.id} signal={signal} />
         ))}
       </ActionsButtonsPopover>
     </g>
