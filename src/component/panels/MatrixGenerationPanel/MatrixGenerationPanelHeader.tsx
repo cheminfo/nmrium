@@ -3,6 +3,7 @@ import { IoAnalytics } from 'react-icons/io5';
 import { TbBrandGoogleAnalytics } from 'react-icons/tb';
 import { TooltipHelpContent } from 'react-science/ui';
 
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.ts';
 import { useChartData } from '../../context/ChartContext.js';
 import { usePreferences } from '../../context/PreferencesContext.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
@@ -41,7 +42,11 @@ export function MatrixGenerationPanelHeader(
   const signalProcessingFilterData = useHasSignalProcessingFilter();
 
   function handleExportAsMatrix() {
-    exportAsMatrix(data, spectraPreferences?.columns || [], 'Spectra Matrix');
+    exportAsMatrix(
+      data.filter(isSpectrum1D),
+      spectraPreferences?.columns || [],
+      'Spectra Matrix',
+    );
   }
   function handleToggleStocsy() {
     dispatchPreferences({

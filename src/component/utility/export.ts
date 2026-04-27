@@ -2,7 +2,9 @@ import type { ToastProps } from '@blueprintjs/core';
 import type { SerializedStyles } from '@emotion/react';
 import type {
   JpathTableColumn,
+  SerializedNmriumState,
   SpectraTableColumn,
+  Spectrum1D,
 } from '@zakodium/nmrium-core';
 import { BlobWriter, TextReader, ZipWriter } from '@zip.js/zip.js';
 import dlv from 'dlv';
@@ -23,14 +25,14 @@ export const browserNotSupportedErrorToast: ToastProps = {
  * @param isCompressed
  */
 async function exportAsJsonBlob(
-  data: any,
+  data: SerializedNmriumState,
   fileName = 'experiment',
   spaceIndent = 0,
   isCompressed = false,
 ) {
   const fileData = JSON.stringify(
     data,
-    (key, value: any) =>
+    (key, value: unknown) =>
       ArrayBuffer.isView(value) ? Array.from(value as any) : value,
     spaceIndent,
   );
@@ -44,11 +46,10 @@ async function exportAsJsonBlob(
 }
 
 function exportAsMatrix(
-  data: any,
+  data: Spectrum1D[],
   spectraColumns: SpectraTableColumn[],
   name: string,
 ) {
-  //columns labels
   const columnsLabels: string[] = [];
   // listed the spectra panel columns
   for (const col of spectraColumns) {
@@ -58,7 +59,7 @@ function exportAsMatrix(
   }
 
   for (const value of data[0].data.x) {
-    columnsLabels.push(value);
+    columnsLabels.push(String(value));
   }
   let matrix = `${columnsLabels.join('\t')}\n`;
 
@@ -76,7 +77,7 @@ function exportAsMatrix(
       }
     }
     for (const value of re) {
-      cellsValues.push(value);
+      cellsValues.push(String(value));
     }
     matrix += `${cellsValues.join('\t')}\n`;
   }
@@ -289,7 +290,7 @@ function transferToCanvas(offscreenCanvas: OffscreenCanvas) {
 // hack way to copy the image to the clipboard
 // TODO: remove when Firefox widely supports ClipboardItem
 // https://caniuse.com/mdn-api_clipboarditem
-function copyDataURLClipboardFireFox(image: any) {
+function copyDataURLClipboardFireFox(image: string) {
   const img = document.createElement('img');
   img.src = image;
 
@@ -397,13 +398,13 @@ function parseDimension(value: string | null) {
 
 function getBlob(targetElementID: string, options: GetBlobOptions): BlobObject {
   const { rootElement, css } = options;
-  const _svg: any = (rootElement.getRootNode() as Document)
+  const _svg = (rootElement.getRootNode() as Document)
     .querySelector(`#${targetElementID}`)
-    ?.cloneNode(true);
+    ?.cloneNode(true) as SVGElement;
 
-  const width = parseDimension(_svg?.getAttribute('width'));
-  const height = parseDimension(_svg?.getAttribute('height'));
-  const viewBox = _svg?.getAttribute('viewBox') || `0 0 ${width} ${height}`;
+  const width = parseDimension(_svg.getAttribute('width'));
+  const height = parseDimension(_svg.getAttribute('height'));
+  const viewBox = _svg.getAttribute('viewBox') || `0 0 ${width} ${height}`;
 
   for (const element of _svg.querySelectorAll('[data-no-export="true"]')) {
     element.remove();

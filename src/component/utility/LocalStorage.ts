@@ -2,7 +2,10 @@ import dlv from 'dlv';
 import lodashSet from 'lodash/set.js';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-export function useStateWithLocalStorage(localStorageKey: any, key?: string) {
+export function useStateWithLocalStorage(
+  localStorageKey: string,
+  key?: string,
+) {
   const [value, setValue] = useState(
     localStorage.getItem(localStorageKey) || '{}',
   );
@@ -28,12 +31,12 @@ export function useStateWithLocalStorage(localStorageKey: any, key?: string) {
   }, [key, setData, value]);
 }
 
-export function getLocalStorage(localStorageKey: any, isJson = true) {
+export function getLocalStorage(localStorageKey: string, isJson = true) {
   const settings = localStorage.getItem(localStorageKey);
   return settings && isJson ? JSON.parse(settings) : settings;
 }
 
-export function storeData(localStorageKey: any, value: any) {
+export function storeData(localStorageKey: string, value: any) {
   localStorage.setItem(localStorageKey, value);
 }
 

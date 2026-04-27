@@ -26,7 +26,7 @@ export function stackOverlappingLabelsArray<T extends Record<string, any>>(
 
   return groups.flatMap((group) => {
     let i = 0;
-    return group.map((item: any) => {
+    return group.map((item) => {
       const stackIndex = i;
       if (item.assignment) {
         i++;
@@ -86,8 +86,8 @@ function stackOverlappingLabels<T extends Record<string, any>>(
   options: StackOverlappingLabelsOptions<T>,
 ) {
   const { startPositionKey, labelWidthKey, padding = 0 } = options;
-  const groups: any[][] = [];
-  let currentGroup: any[] = [];
+  const groups: T[][] = [];
+  let currentGroup: T[] = [];
   let lastInPixel = 0;
 
   for (const item of items) {
