@@ -8,19 +8,14 @@ import type {
   Workspace,
 } from '@zakodium/nmrium-core';
 import { CURRENT_EXPORT_VERSION } from '@zakodium/nmrium-core';
-import {
-  processJCAMPDX,
-  spectrum1DToJCAMPDX,
-} from '@zakodium/nmrium-core-plugins';
+import { spectrum1DToJCAMPDX } from '@zakodium/nmrium-core-plugins';
 import { BlobWriter, TextReader, ZipWriter } from '@zip.js/zip.js';
 import * as OCL from 'openchemlib';
-import { assert } from 'react-science/ui';
 
 import type { State } from '../component/reducer/Reducer.js';
 import { saveAs } from '../component/utility/save_as.js';
 
-import { initiateDatum1D, isSpectrum1D } from './data1d/Spectrum1D/index.js';
-import { initiateDatum2D } from './data2d/Spectrum2D/index.js';
+import { isSpectrum1D } from './data1d/Spectrum1D/index.js';
 import * as Molecule from './molecules/Molecule.js';
 
 export const DataExportOptions = {
@@ -76,42 +71,6 @@ interface ExportOptions {
   /** @default true */
   serialize?: boolean;
   exportTarget?: ExportTarget;
-}
-
-function getData(datum: any, usedColors: any) {
-  const dimension = datum.info.dimension;
-  if (dimension === 1) {
-    return initiateDatum1D(datum, { usedColors });
-  } else {
-    assert(dimension === 2);
-    return initiateDatum2D(datum, { usedColors });
-  }
-}
-
-export function addJcamp(
-  output: any,
-  jcamp: any,
-  options: any,
-  usedColors: any,
-) {
-  options = options || {};
-  const name = options?.info?.name;
-  const { spectra: spectraIn } = processJCAMPDX(jcamp, {
-    name,
-    converter: {
-      keepRecordsRegExp: /.*/,
-      profiling: true,
-    },
-  });
-  if (spectraIn.length === 0) return;
-
-  const spectra: Spectrum[] = [];
-  for (const spectrum of spectraIn) {
-    const data = getData(spectrum, usedColors);
-    if (!data) continue;
-    spectra.push(data);
-  }
-  output.push(...spectra);
 }
 
 /**
