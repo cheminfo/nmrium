@@ -10,19 +10,11 @@ function resetDiaIDs(range: Range) {
   return range;
 }
 
-/**
- *
- * @param {object} range
- * @param {String('both' | 'range' | 'signal')} unlinkType
- * @param {object} options
- * @param {number} [options.signalIndex]
- * @returns {object}
- */
-
 interface UnlinkOptions {
   unlinkType?: 'both' | 'range' | 'signal';
   signalIndex?: number;
 }
+
 export function unlink(range: Range, options: UnlinkOptions = {}): Range {
   const { unlinkType = 'both', signalIndex = -1 } = options;
   const keys = ['diaIDs', 'nbAtoms'];

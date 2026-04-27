@@ -192,8 +192,8 @@ export function useHighlightData() {
 }
 
 /**
- * @param {Array<string | number>}  highlights
- * @param {SourceData = null} sourceData
+ * @param highlights
+ * @param sourceData
  */
 export function useHighlight(
   highlights: Array<string | number>,

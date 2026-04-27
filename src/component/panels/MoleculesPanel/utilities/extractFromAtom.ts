@@ -10,9 +10,9 @@ import type { AtomData } from './AtomData.js';
  * In case of an heavy atom with bonded hydrogens the OCL id(s)
  * and number of these hydrogens are added as well.
  *
- * @param {DiaIDAndInfo} diaIDAndInfo - atom returned by OCLnmr component
- * @param {string} activeTab - active tab
- * @param {Axis} axis - current axis
+ * @param diaIDAndInfo - atom returned by OCLnmr component
+ * @param activeTab - active tab
+ * @param axis - current axis
  *
  */
 export function extractFromAtom(

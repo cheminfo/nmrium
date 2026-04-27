@@ -8,8 +8,8 @@ export interface ChangeRangeRelativeValueProps {
 
 /**
  * Change Range relative value and re-calculate the relative values for the other ranges
- * @param {Spectrum1D} spectrum  spectrum 1d
- * @param {RangeProps} newRange
+ * @param spectrum  spectrum 1d
+ * @param data
  */
 export function changeRangeRelativeValue(
   spectrum: Spectrum1D,
