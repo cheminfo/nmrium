@@ -1,5 +1,6 @@
 import { Button } from '@blueprintjs/core';
 import { yupResolver } from '@hookform/resolvers/yup';
+import type { Range } from '@zakodium/nmr-types';
 import type { CSSProperties } from 'react';
 import { useEffect } from 'react';
 import { useForm, useFormContext, useWatch } from 'react-hook-form';
@@ -32,7 +33,7 @@ const styles: Record<
 };
 
 interface NewSignalTabProps {
-  range: any;
+  range: Range;
 }
 
 export function NewSignalTab(props: NewSignalTabProps) {
@@ -119,7 +120,7 @@ export function NewSignalTab(props: NewSignalTabProps) {
   );
 }
 
-function getSignalValidationSchema(range: any) {
+function getSignalValidationSchema(range: Range) {
   return Yup.object().shape({
     delta: Yup.number()
       .test(`test-range`, '', function testNewSignalDelta(value) {

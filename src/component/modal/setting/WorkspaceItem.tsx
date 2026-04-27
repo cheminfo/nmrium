@@ -1,5 +1,5 @@
 import type { WorkSpaceSource } from '@zakodium/nmrium-core';
-import type { CSSProperties } from 'react';
+import type { CSSProperties, ChangeEvent, MouseEvent } from 'react';
 import { useState } from 'react';
 import { Button } from 'react-science/ui';
 
@@ -48,20 +48,20 @@ interface WorkspaceItemProps {
 function WorkspaceItem({ item, onSave, onDelete }: WorkspaceItemProps) {
   const [name, setName] = useState<string>('');
   // Add new workspace
-  function addHandler(e: any) {
-    e.stopPropagation();
+  function addHandler(event: MouseEvent) {
+    event.stopPropagation();
     setName('');
     onSave?.(name);
   }
 
   // bubble onDelete
-  function deleteHandler(e: any) {
-    e.stopPropagation();
+  function deleteHandler(event: MouseEvent) {
+    event.stopPropagation();
     onDelete?.(item.key);
   }
 
-  function onTextChange(e: any) {
-    setName(e.target.value);
+  function onTextChange(event: ChangeEvent<HTMLInputElement>) {
+    setName(event.target.value);
   }
 
   return (

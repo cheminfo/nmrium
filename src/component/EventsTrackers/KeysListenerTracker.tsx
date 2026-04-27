@@ -279,9 +279,9 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
   );
 
   const keysPreferencesListenerHandler = useCallback(
-    (e: any, num: any) => {
+    (event: globalThis.KeyboardEvent, num: number) => {
       if (data && data.length > 0 && num >= 1 && num <= 9) {
-        if (e.shiftKey) {
+        if (event.shiftKey) {
           dispatch({
             type: 'SET_KEY_PREFERENCES',
             payload: {
@@ -291,7 +291,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
           toaster.show({
             message: `Configuration Reset, press '${num}' again to reload it.`,
           });
-        } else if (!checkModifierKeyActivated(e)) {
+        } else if (!checkModifierKeyActivated(event)) {
           if (keysPreferences?.[num]) {
             dispatch({
               type: 'APPLY_KEY_PREFERENCES',
@@ -317,7 +317,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
   );
 
   const toolsListenerHandler = useCallback(
-    (e: any) => {
+    (e: globalThis.KeyboardEvent) => {
       try {
         if (!e.shiftKey && !e.metaKey && !e.ctrlKey) {
           switch (e.key) {
@@ -495,19 +495,19 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
   );
 
   const handleOnKeyDown = useCallback(
-    (e: any) => {
-      if (!ignoreElement(e) && mouseIsOverDisplayer.current) {
-        const num = Number(e.code.slice(-1)) || 0;
+    (event: globalThis.KeyboardEvent) => {
+      if (!ignoreElement(event) && mouseIsOverDisplayer.current) {
+        const num = Number(event.code.slice(-1)) || 0;
         if (num > 0) {
-          keysPreferencesListenerHandler(e, num);
+          keysPreferencesListenerHandler(event, num);
         } else if (
-          ['Delete', 'Backspace'].includes(e.key) &&
+          ['Delete', 'Backspace'].includes(event.key) &&
           highlight.sourceData
         ) {
-          e.preventDefault();
+          event.preventDefault();
           void deleteHandler(highlight.sourceData);
         } else {
-          toolsListenerHandler(e);
+          toolsListenerHandler(event);
         }
       }
     },
@@ -532,7 +532,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
 const tags = new Set(['INPUT', 'TEXTAREA']);
 const inputTypes = new Set(['checkbox', 'radio']);
 
-function ignoreElement(e: Event) {
+function ignoreElement(e: globalThis.KeyboardEvent) {
   const element = e.target as HTMLInputElement;
   return (
     (tags.has(element.tagName) && !inputTypes.has(element.type)) ||

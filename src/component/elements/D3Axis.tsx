@@ -27,7 +27,7 @@ interface D3AxisProps
     BaseD3AxisProps,
     Pick<SVGAttributes<SVGGElement>, 'transform' | 'children' | 'className'>,
     UseLinearPrimaryTicksResult {
-  gridSize?: number;
+  gridSize: number;
   primaryGridProps?: PrimaryGridElementProps;
   secondaryGridProps?: SecondaryGridElementProps;
   showGrid?: boolean;
@@ -41,7 +41,7 @@ interface BaseLineProps
 
 interface GridProps<T> extends UseLinearPrimaryTicksResult {
   axisPosition: AxisPosition;
-  gridSize?: number;
+  gridSize: number;
   gridProps?: T;
 }
 
@@ -160,7 +160,11 @@ function getSecondaryTickOffset(ticks: Array<Tick<number>>, direction: -1 | 1) {
   return (second.position - first.position) / 2;
 }
 
-function getLinePosition(position: any, axisPosition: any, gridSize: any) {
+function getLinePosition(
+  position: number,
+  axisPosition: AxisPosition,
+  gridSize: number,
+) {
   if (['top', 'bottom'].includes(axisPosition)) {
     return {
       x1: position,

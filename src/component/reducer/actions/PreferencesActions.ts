@@ -12,7 +12,7 @@ import { setDomain } from './DomainActions.js';
 
 type KeyPreferencesAction = ActionType<
   'SET_KEY_PREFERENCES' | 'APPLY_KEY_PREFERENCES',
-  { keyCode: string }
+  { keyCode: number }
 >;
 
 export type PreferencesActions = KeyPreferencesAction;

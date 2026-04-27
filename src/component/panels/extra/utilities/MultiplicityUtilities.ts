@@ -4,9 +4,12 @@ import {
   translateMultiplet,
 } from 'nmr-processing';
 
-function getMultiplicityNumber(string: any) {
-  const multiplet = findMultiplet(string);
-  return multiplet ? multiplet.multiplicity : null;
+function getMultiplicityNumber(
+  multiplicity: string | undefined,
+): number | undefined {
+  if (!multiplicity) return undefined;
+  const multiplet = findMultiplet(multiplicity);
+  return multiplet?.multiplicity ?? undefined;
 }
 
 function hasCouplingConstant(multiplet: string) {
@@ -17,10 +20,10 @@ function hasCouplingConstant(multiplet: string) {
   return checkMultiplicity(multiplet, ['m', 's']);
 }
 
-function getPascal(n: any, spin: any) {
-  if (n === undefined || n === 0 || spin === undefined) return [1];
+function getPascal(n: number | undefined, spin: number) {
+  if (n === undefined || n === 0) return [1];
   const mult = 2 * spin + 1;
-  let previousLine: any[] = [];
+  let previousLine: number[] = [];
   for (let j = 0; j < mult - 1; j++) previousLine.push(1);
   // complete with "1 1" or "1 1 1" for spin 1/2 and 1 respectively
   for (let i = 0; i < n - 1; i++) {
