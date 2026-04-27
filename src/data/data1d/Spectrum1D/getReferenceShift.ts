@@ -18,14 +18,8 @@ interface GetReferenceShiftOptions extends CalibrateOptions {
 
 /**
  *
- * @param {*} datum1D
- * @param {object} [options={}]
- * @param {number} [options.from]
- * @param {number} [options.to] Define the from zone where the reference is expected to be found
- * @param {number} [options.from]
- * @param {number} [options.nbPeaks]
- * @param {number} [options.targetX]
- * @param {string} [options.reference]
+ * @param datum1D
+ * @param options
  */
 export function getReferenceShift(
   datum1D: any,

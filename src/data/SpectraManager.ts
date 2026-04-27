@@ -116,7 +116,7 @@ export function addJcamp(
 
 /**
  * @param core
- * @param {object} state
+ * @param state
  * @param preferencesState
  * @param options
  *

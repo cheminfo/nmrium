@@ -1,9 +1,3 @@
-/**
- * @typedef {Object} datum
- * @property {number[]} x - The X points series
- * @property {number[]} y - The Y points series
- */
-
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 
 /**
@@ -11,7 +5,6 @@ import type { Spectrum1D } from '@zakodium/nmrium-core';
  * @param spectrum 1d spectrum
  * @returns {datum} datum object includes x and y series
  */
-
 export function get1DDataXY(spectrum: Spectrum1D): {
   x: Float64Array;
   y: Float64Array;

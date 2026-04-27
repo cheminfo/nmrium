@@ -7,13 +7,14 @@ import { initiateDatum1D } from '../../data1d/Spectrum1D/index.js';
 
 import { isFid2DData } from './isSpectrum2D.js';
 
-/** get 2d projection
- * @param {number} x in ppm
- * @param {number} y in ppm
- */
-
 interface SlicePosition {
+  /**
+   * x in ppm.
+   */
   x: number;
+  /**
+   * y in ppm.
+   */
   y: number;
 }
 
