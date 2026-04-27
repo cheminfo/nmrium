@@ -26,9 +26,9 @@ export function changeZoneSignal(
 
     const zone = spectrum.zones.values[zoneIndex];
     if (signalIndex !== -1) {
-      const originalSignal: any = zone.signals[signalIndex];
+      const originalSignal = zone.signals[signalIndex];
       const xShift = isNumber(deltaX) ? deltaX - originalSignal.x.delta : 0;
-      const yShift = isNumber(deltaY) ? deltaY - originalSignal.y?.delta : 0;
+      const yShift = isNumber(deltaY) ? deltaY - originalSignal.y.delta : 0;
 
       return { xShift, yShift };
     }

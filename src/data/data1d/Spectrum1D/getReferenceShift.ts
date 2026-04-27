@@ -1,3 +1,4 @@
+import type { Spectrum1D } from '@zakodium/nmrium-core';
 import type { DataXY } from 'cheminfo-types';
 import mean from 'ml-array-mean';
 import { gsd } from 'ml-gsd';
@@ -22,13 +23,13 @@ interface GetReferenceShiftOptions extends CalibrateOptions {
  * @param options
  */
 export function getReferenceShift(
-  datum1D: any,
+  datum1D: Spectrum1D,
   options: GetReferenceShiftOptions,
 ) {
   const { reference } = options;
   let { from, to, nbPeaks, targetX } = options;
   if (reference) {
-    const data = getRange({ reference, nucleus: datum1D.nucleus });
+    const data = getRange({ reference, nucleus: datum1D.info.nucleus });
     from = data.from;
     to = data.to;
     nbPeaks = data.nbPeaks;

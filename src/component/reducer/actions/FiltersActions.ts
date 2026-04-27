@@ -745,8 +745,10 @@ function afterRollback(draft: Draft<State>, filterKey: any) {
     case fftDimension2: {
       if (!activeSpectrum) return;
       const spectrum = current(draft).data[activeSpectrum.index];
-      draft.view.spectraContourLevels[spectrum.id] =
-        initializeContoursLevels(spectrum);
+      if (isSpectrum2D(spectrum)) {
+        draft.view.spectraContourLevels[spectrum.id] =
+          initializeContoursLevels(spectrum);
+      }
       break;
     }
     default:
@@ -1353,6 +1355,9 @@ function applyFFTTwoDimensionFilter(
   }
 
   const spectrum = draft.data[index];
+  if (!isSpectrum2D(spectrum)) {
+    return;
+  }
 
   updateView(draft, domainUpdateRules);
 

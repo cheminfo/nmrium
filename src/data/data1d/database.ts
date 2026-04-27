@@ -103,7 +103,7 @@ function processSearchByStructure(
   return result.map((entry: any) => entry.data);
 }
 
-function prepareGetSolvents(data: any) {
+function prepareGetSolvents(data: DatabaseNMREntry[]) {
   const result: string[] = [];
   const map = new Map();
   for (const item of data) {

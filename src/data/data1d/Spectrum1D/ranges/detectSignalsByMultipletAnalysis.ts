@@ -8,9 +8,15 @@ import {
   xyAutoPeaksPicking,
 } from 'nmr-processing';
 
+interface DetectSignalsByMultipletAnalysisOptions {
+  fromIndex: number;
+  toIndex: number;
+  frequency: number;
+}
+
 export function detectSignalsByMultipletAnalysis(
   data: DataXY<Float64Array>,
-  options: any,
+  options: DetectSignalsByMultipletAnalysisOptions,
 ) {
   const { fromIndex, toIndex, frequency } = options;
   const dataRoi = {

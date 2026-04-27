@@ -5,15 +5,18 @@ import { xyAutoRangesPicking } from 'nmr-processing';
 import { detectSignalsByMultipletAnalysis } from './detectSignalsByMultipletAnalysis.js';
 
 const MAX_LENGTH = 4092;
+
+interface DetectSignalsOptions {
+  from: number;
+  to: number;
+  logger?: Logger;
+  nucleus: string;
+  frequency: number;
+}
+
 export default function detectSignals(
   data: DataXY<Float64Array>,
-  options: {
-    from: number;
-    to: number;
-    logger?: Logger;
-    nucleus: string;
-    frequency: number;
-  },
+  options: DetectSignalsOptions,
 ) {
   const { from, to, frequency, nucleus, logger } = options;
 
@@ -49,9 +52,9 @@ export default function detectSignals(
       .map((s) => ({ multiplicity: '', js: [], ...s }));
   } else {
     return detectSignalsByMultipletAnalysis(data, {
-      ...options,
       fromIndex,
       toIndex,
+      frequency,
     });
   }
 }

@@ -71,7 +71,7 @@ export function initiateDatum2D(
   return datum;
 }
 
-function getData(datum: any, options: any) {
+function getData(datum: Spectrum2D, options: any) {
   if (datum.info.isFid) {
     const { re = defaultMinMax, im = defaultMinMax } = options.data;
     return { re, im };

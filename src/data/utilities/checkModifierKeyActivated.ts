@@ -9,7 +9,7 @@ const modifiersKeys: ModifierKey[] = [
 ];
 
 export default function checkModifierKeyActivated<E = HTMLDivElement>(
-  event: KeyboardEvent<E> | MouseEvent<E>,
+  event: KeyboardEvent<E> | MouseEvent<E> | globalThis.KeyboardEvent,
 ): boolean {
   return modifiersKeys.some((key) => event.getModifierState(key));
 }

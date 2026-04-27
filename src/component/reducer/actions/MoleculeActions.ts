@@ -15,6 +15,7 @@ import { generateSpectra } from '../../../data/PredictionManager.js';
 import { changeSpectraRelativeSum } from '../../../data/data1d/Spectrum1D/SumManager.js';
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
 import { initializeContoursLevels } from '../../../data/data2d/Spectrum2D/contours.ts';
+import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.ts';
 import type { MoleculeBoundingRect } from '../../../data/molecules/Molecule.js';
 import { DRAGGABLE_STRUCTURE_INITIAL_BOUNDING_REACT } from '../../../data/molecules/Molecule.js';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager.js';
@@ -305,11 +306,13 @@ function handlePredictSpectraFromMolecule(
   )) {
     draft.data.push(spectrum);
     spectraIds.push(spectrum.id);
-    draft.view.spectraContourLevels[spectrum.id] =
-      initializeContoursLevels(spectrum);
+    if (isSpectrum2D(spectrum)) {
+      draft.view.spectraContourLevels[spectrum.id] =
+        initializeContoursLevels(spectrum);
+    }
   }
   let id = molecule?.id;
-  //if the id object is not exits add a new molecule
+  // If the id object does not exist, add a new molecule
   if (!id || predictionAction === 'add') {
     const moleculeObj = addMolecule(draft, {
       molfile: molecule.molfile,
