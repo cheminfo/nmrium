@@ -1,6 +1,6 @@
 import init from '@zakodium/nmrium-core-plugins';
 import type { ForwardedRef } from 'react';
-import { useEffect, useMemo, useReducer, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
 import { useFullscreen } from 'react-science/ui';
 
 import { AssignmentProvider } from '../assignment/AssignmentProvider.js';
@@ -76,7 +76,7 @@ export function InnerNMRium(props: InnerNMRiumProps) {
     rootRef.current?.focus();
   }, [isFullScreen]);
 
-  useEffect(() => {
+  const refreshPreferences = useCallback(() => {
     const settings = readSettings();
     dispatchPreferences({
       type: 'INIT_PREFERENCES',
@@ -113,6 +113,7 @@ export function InnerNMRium(props: InnerNMRiumProps) {
                         onChange={onChange}
                         state={state}
                         aggregator={aggregator}
+                        refreshPreferences={refreshPreferences}
                       >
                         <TopicMoleculeProvider>
                           <DialogProvider>
