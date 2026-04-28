@@ -96,7 +96,7 @@ const getZoneDefaultValues = (nucleus?: string): PanelsPreferences['zones'] => {
       showDeleteAction: true,
       showZoomAction: true,
       showEditAction: true,
-      showAssignment: true,
+      showAssignment: false,
       showAssignmentLabel: false,
     };
 
