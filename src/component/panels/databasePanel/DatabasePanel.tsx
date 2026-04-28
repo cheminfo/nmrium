@@ -27,7 +27,6 @@ import { usePreferences } from '../../context/PreferencesContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import { EmptyText } from '../../elements/EmptyText.js';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus.js';
-import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus.js';
 import { options } from '../../toolbar/ToolTypes.js';
 import Events from '../../utility/Events.js';
 import { exportAsJsonBlob } from '../../utility/export.js';
@@ -391,27 +390,15 @@ function DatabasePanelInner({
     [dispatch],
   );
 
-  const spectra = useSpectraByActiveNucleus();
   const removeAllHandler = useCallback(() => {
-    const addedSpectraIDs: string[] = [];
-    const dataBaseSpectraIds = new Set(
-      databaseInstance.current?.data.map((databaseEntry) => databaseEntry.id),
-    );
-
-    for (const spectrum of spectra) {
-      if (dataBaseSpectraIds.has(spectrum.id)) {
-        addedSpectraIDs.push(spectrum.id);
-      }
-    }
-
     dispatch({
       type: 'DELETE_SPECTRA',
       payload: {
-        ids: addedSpectraIDs,
+        spectrumSource: 'database',
         domainOptions: { isYDomainShared: false, updateYDomain: false },
       },
     });
-  }, [dispatch, spectra]);
+  }, [dispatch]);
   const searchByStructureHandler = (idCodeValue: string) => {
     const molecule = Molecule.fromIDCode(idCodeValue);
     const atoms = molecule.getAllAtoms();

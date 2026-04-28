@@ -91,7 +91,7 @@ function handleResurrectSpectrumFromJCAMP(
         spectrum1D.ranges.values = mapRanges(ranges, spectrum);
         updateRangesRelativeValues(spectrum1D);
       }
-
+      spectrum1D.info.spectrumSource = 'database';
       if (containOneSpectrum) {
         spectrum1D.id = spectrumID;
       }
@@ -102,6 +102,7 @@ function handleResurrectSpectrumFromJCAMP(
       const spectrum2d = initiateDatum2D(spectrum, {
         usedColors: draft.usedColors,
       });
+      spectrum2d.info.spectrumSource = 'database';
       spectrum2d.customInfo = filterDatabaseEntryInfo;
       draft.view.spectraContourLevels[spectrum2d.id] =
         initializeContoursLevels(spectrum2d);
@@ -138,7 +139,12 @@ function handleResurrectSpectrumFromRangesOrSignals(
   } = databaseEntry;
 
   let options: { from?: number; to?: number } = {};
-  let info: Partial<Info1D> = { solvent, name: names[0], nucleus };
+  let info: Partial<Info1D> = {
+    solvent,
+    name: names[0],
+    nucleus,
+    spectrumSource: 'database',
+  };
 
   const activeSpectrum = getSpectrum(draft) || draft.data[0];
   if (isSpectrum1D(activeSpectrum)) {
@@ -172,7 +178,6 @@ function handleResurrectSpectrumFromRangesOrSignals(
 
   const filterDatabaseEntryInfo = filterDatabaseInfoEntry(databaseEntry);
   resurrectedSpectrum.customInfo = filterDatabaseEntryInfo;
-
   draft.data.push(resurrectedSpectrum);
 
   updateDomain(draft);

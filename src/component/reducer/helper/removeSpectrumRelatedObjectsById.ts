@@ -15,7 +15,7 @@ export function removeSpectrumRelatedObjectsById(
       ['view.zones', null],
       ['view.peaks', null],
       ['view.integrals', null],
-      ['view.zoom.levels', null],
+      ['view.spectraContourLevels', null],
       [`view.spectra.activeSpectra.${nucleus}`, 'id'],
       ['xDomains', null],
       ['yDomains', null],
