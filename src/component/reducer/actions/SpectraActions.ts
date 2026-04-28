@@ -78,10 +78,10 @@ type ChangeActiveSpectrumAction = ActionType<
   'CHANGE_ACTIVE_SPECTRUM',
   {
     modifier?:
-    | 'shift[false]_ctrl[true]'
-    | 'shift[true]_ctrl[false]'
-    | 'shift[true]_ctrl[true]'
-    | (string & {});
+      | 'shift[false]_ctrl[true]'
+      | 'shift[true]_ctrl[false]'
+      | 'shift[true]_ctrl[true]'
+      | (string & {});
 
     id?: string; // spectrum id
     sortedSpectra?: Spectrum[];
@@ -90,14 +90,14 @@ type ChangeActiveSpectrumAction = ActionType<
 type ChangeSpectrumSettingAction = ActionType<
   'CHANGE_SPECTRUM_SETTING',
   | {
-    id: string;
-    display: Display1D | Display2D;
-  }
+      id: string;
+      display: Display1D | Display2D;
+    }
   | {
-    id: string;
-    display: Display2D;
-    contourOptions: ContourLevel;
-  }
+      id: string;
+      display: Display2D;
+      contourOptions: ContourLevel;
+    }
 >;
 type DeleteSpectraAction = ActionType<
   'DELETE_SPECTRA',
