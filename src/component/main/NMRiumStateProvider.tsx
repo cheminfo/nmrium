@@ -25,6 +25,7 @@ interface NMRiumStateProviderProps {
   onChange: NMRiumChangeCb | undefined;
   state: Partial<NmriumState> | undefined;
   aggregator: FileCollection | undefined;
+  refreshPreferences: () => void;
 }
 
 export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
@@ -33,12 +34,21 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
     onChange,
     state: externalState,
     aggregator: externalAggregator,
+    refreshPreferences,
   } = props;
 
   const core = useCore();
   const { logger } = useLogger();
   const preferencesState = usePreferences();
   const { dispatch: dispatchPreferences } = preferencesState;
+
+  /**
+   * The preference refresh is done here to ensure it is done before the state loading,
+   * because state loading can dispatch preferences.
+   */
+  useEffect(() => {
+    refreshPreferences();
+  }, [refreshPreferences]);
 
   const [state, dispatchRaw] = useReducer(
     spectrumReducer,
