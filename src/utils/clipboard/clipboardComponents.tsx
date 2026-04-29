@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import type { FormEvent } from 'react';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { match } from 'ts-pattern';
 
 import Button from '../../component/elements/Button.js';
 import { StandardDialog } from '../../component/elements/StandardDialog.tsx';
@@ -90,23 +91,27 @@ function assertWriteTextProps(
  * @param props
  */
 function ClipboardFallback(props: ClipboardFallbackProps) {
-  switch (props.mode) {
-    case 'read':
+  return match(props)
+    .with({ mode: 'read' }, (props) => {
       assertReadProps(props);
       return <ClipboardFallbackRead {...props} />;
-    case 'readText':
+    })
+    .with({ mode: 'readText' }, (props) => {
       assertReadTextProps(props);
       return <ClipboardFallbackReadText {...props} />;
-    case 'write': {
+    })
+    .with({ mode: 'write' }, (props) => {
       assertWriteProps(props);
       return <ClipboardFallbackWrite {...props} />;
-    }
-    case 'writeText':
+    })
+    .with({ mode: 'writeText' }, (props) => {
       assertWriteTextProps(props);
       return <ClipboardFallbackWriteText {...props} />;
-    default:
+    })
+    .with({ mode: undefined }, () => {
       return null;
-  }
+    })
+    .exhaustive();
 }
 
 /**

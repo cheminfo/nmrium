@@ -20,7 +20,6 @@ export default defineConfig(
   react,
   {
     rules: {
-      '@typescript-eslint/switch-exhaustiveness-check': 'off',
       'import/default': 'off',
       'import/no-unresolved': 'off',
       'react-refresh/only-export-components': 'off',

@@ -1,6 +1,7 @@
 import lodashSet from 'lodash/set.js';
 import type { FilterXYType } from 'ml-signal-processing';
 import filterXY from 'ml-signal-processing/FilterXYSchema.json' with { type: 'json' };
+import { match } from 'ts-pattern';
 
 interface BaseField {
   key: string;
@@ -56,11 +57,10 @@ export function normalCase(str: string) {
   return result.charAt(0).toUpperCase() + result.slice(1);
 }
 
+const leaves = new Set(['number', 'boolean', 'string']);
+
 function isLeave(fieldOptions: any) {
-  if (['number', 'boolean', 'string'].includes(fieldOptions.type)) {
-    return true;
-  }
-  return false;
+  return leaves.has(fieldOptions.type);
 }
 
 function flattenFields(
@@ -190,42 +190,40 @@ function generateFilterOptions(properties: MatrixProperties) {
 
   for (const key in properties) {
     const field = properties[key];
-    switch (field.type) {
-      case 'list':
+    match(field)
+      .with({ type: 'list' }, () => {
         lodashSet(options, key, []);
-        break;
-      case 'select':
+      })
+      .with({ type: 'select' }, (field) => {
         lodashSet(
           options,
           key,
           field.default
-            ? field.default.replaceAll(/'|"/g, '')
+            ? field.default.replaceAll(/['"]/g, '')
             : field.choices[0],
         );
-        break;
-      case 'string':
+      })
+      .with({ type: 'string' }, () => {
         lodashSet(options, key, undefined);
-        break;
-      case 'number': {
+      })
+      .with({ type: 'number' }, (field) => {
         lodashSet(
           options,
           key,
           typeof field.default === 'number' ? field.default : undefined,
         );
-        break;
-      }
-      case 'boolean': {
+      })
+      .with({ type: 'boolean' }, (field) => {
         lodashSet(
           options,
           key,
           typeof field.default === 'boolean' ? field.default : false,
         );
-        break;
-      }
-
-      default:
-        break;
-    }
+      })
+      .with({ type: 'label' }, () => {
+        // Ignore
+      })
+      .exhaustive();
   }
   return options;
 }
