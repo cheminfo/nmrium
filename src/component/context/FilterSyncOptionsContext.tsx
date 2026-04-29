@@ -1,3 +1,5 @@
+import type { Spectrum1D } from '@zakodium/nmrium-core';
+import { getBaselineAnchors } from 'nmr-processing';
 import type { ReactNode } from 'react';
 import {
   createContext,
@@ -9,42 +11,56 @@ import {
   useState,
 } from 'react';
 
+import { isSpectrum1D } from '../../data/data1d/Spectrum1D/isSpectrum1D.ts';
+import { useFilter } from '../hooks/useFilter.ts';
+import useTempSpectrum from '../hooks/useTempSpectrum.ts';
+
+import { useChartData } from './ChartContext.tsx';
+
+type FilterSyncOptionsUpdater<T> = T | null | ((prev: T | null) => T | null);
+
 interface FilterSyncOptionsState<T> {
   sharedFilterOptions: T | null;
-  updateFilterOptions: (options: T) => void;
+  updateFilterOptions: (options: FilterSyncOptionsUpdater<T>) => void;
 }
 
 const FilterSyncOptionsContext =
-  createContext<FilterSyncOptionsState<any> | null>(null);
+  createContext<FilterSyncOptionsState<unknown> | null>(null);
+
+function getAnchors(filterValue: any, spectrum: Spectrum1D) {
+  const xValues: number[] =
+    filterValue?.anchors?.x ?? getBaselineAnchors(spectrum.data).x;
+  return Array.from(xValues);
+}
 
 export function useFilterSyncOptions<T>(): FilterSyncOptionsState<T> {
-  const context = useContext(
-    FilterSyncOptionsContext,
-  ) as FilterSyncOptionsState<T>;
+  const context = useContext(FilterSyncOptionsContext);
 
   if (!context) {
     throw new Error(
-      'Filter sync options context must be used within an FilterSyncOptionsProvider',
+      'Filter sync options context must be used within a FilterSyncOptionsProvider',
     );
   }
 
-  return context;
+  return context as FilterSyncOptionsState<T>;
 }
 
-export function useSyncedFilterOptions(
-  onWatch: (options: any) => void,
+export function useSyncedFilterOptions<T>(
+  onWatch: (options: T) => void,
   onReset?: () => void,
 ) {
-  const { sharedFilterOptions, updateFilterOptions } = useFilterSyncOptions();
+  const { sharedFilterOptions, updateFilterOptions } =
+    useFilterSyncOptions<T>();
   const isSyncOptionsDirty = useRef(true);
 
   const watchRef = useRef(onWatch);
   const resetRef = useRef(onReset);
-
   // Update the ref when onWatch changes
+
   useEffect(() => {
     watchRef.current = onWatch;
   }, [onWatch]);
+
   // Update the ref when onWatch changes
   useEffect(() => {
     resetRef.current = onReset;
@@ -69,7 +85,7 @@ export function useSyncedFilterOptions(
   }, [updateFilterOptions]);
 
   const syncFilterOptions = useCallback(
-    (options: any) => {
+    (options: T) => {
       isSyncOptionsDirty.current = false;
       updateFilterOptions(options);
     },
@@ -84,17 +100,43 @@ export function FilterSyncOptionsProvider({
 }: {
   children: ReactNode;
 }) {
-  const [sharedFilterOptions, updateFilterOptions] = useState<unknown | null>(
-    null,
+  const [sharedFilterOptions, setSharedFilterOptions] = useState<
+    unknown | null
+  >(null);
+  const filter = useFilter('baselineCorrection');
+  const {
+    toolOptions: { selectedTool },
+  } = useChartData();
+  const spectrum = useTempSpectrum();
+  const isBaselineCorrection =
+    selectedTool === 'baselineCorrection' && isSpectrum1D(spectrum);
+
+  const updateFilterOptions = useCallback(
+    (options: FilterSyncOptionsUpdater<unknown>) => {
+      setSharedFilterOptions((prev: any) => {
+        const next = typeof options === 'function' ? options(prev) : options;
+        return structuredClone(next);
+      });
+    },
+    [],
   );
 
-  const state = useMemo(() => {
-    return {
+  useEffect(() => {
+    if (isBaselineCorrection) {
+      const anchors = getAnchors(filter?.value, spectrum);
+      setSharedFilterOptions({ ...filter?.value, anchors });
+    } else {
+      setSharedFilterOptions(null);
+    }
+  }, [isBaselineCorrection, filter, spectrum]);
+
+  const state = useMemo<FilterSyncOptionsState<unknown>>(
+    () => ({
       sharedFilterOptions,
-      updateFilterOptions: (options: any) =>
-        updateFilterOptions(structuredClone(options)),
-    };
-  }, [sharedFilterOptions]);
+      updateFilterOptions,
+    }),
+    [sharedFilterOptions, updateFilterOptions],
+  );
 
   return (
     <FilterSyncOptionsContext.Provider value={state}>

@@ -1,14 +1,21 @@
 import { Button, Switch } from '@blueprintjs/core';
 import { Select } from '@blueprintjs/select';
 import type { BaselineCorrectionOptions } from '@zakodium/nmr-types';
+import { getBaselineAnchors } from 'nmr-processing';
 import type { MouseEvent } from 'react';
 import type { Control } from 'react-hook-form';
+import { BiReset } from 'react-icons/bi';
+import { MdRemoveCircleOutline } from 'react-icons/md';
+import { Toolbar } from 'react-science/ui';
 
+import { isSpectrum1D } from '../../../../data/data1d/Spectrum1D/isSpectrum1D.ts';
 import type { ExtractFilterEntry } from '../../../../data/types/common/ExtractFilterEntry.js';
+import { useFilterSyncOptions } from '../../../context/FilterSyncOptionsContext.tsx';
 import Label from '../../../elements/Label.js';
 import { NumberInputField } from '../../../elements/NumberInputField.js';
 import { ReadOnly } from '../../../elements/ReadOnly.js';
 import { Sections } from '../../../elements/Sections.js';
+import useTempSpectrum from '../../../hooks/useTempSpectrum.ts';
 
 import { FilterActionButtons } from './FilterActionButtons.js';
 import { HeaderContainer, StickyHeader } from './InnerFilterHeader.js';
@@ -16,6 +23,7 @@ import type {
   AirplsOptions,
   AlgorithmFieldProps,
   BaselineAlgorithmFieldsMap,
+  BaselineAlgorithmOptions,
   BernsteinOptions,
   CubicOptions,
   PolynomialOptions,
@@ -41,7 +49,9 @@ export default function BaseLineCorrectionOptionsPanel(
   props: BaseFilterOptionsPanelProps<ExtractFilterEntry<'baselineCorrection'>>,
 ) {
   const { filter, enableEdit = true, onCancel, onConfirm, onEditStart } = props;
-
+  const { updateFilterOptions, sharedFilterOptions } =
+    useFilterSyncOptions<BaselineAlgorithmOptions>();
+  const spectrum = useTempSpectrum();
   const {
     register,
     reset,
@@ -69,12 +79,10 @@ export default function BaseLineCorrectionOptionsPanel(
 
   const { onChange: onLivePreviewFieldChange, ...livePreviewFieldOptions } =
     register('livePreview');
-
   const disabledAction =
     !!filter.value &&
     !isDirty &&
     filter.value.algorithm === getValues().algorithm;
-
   const AlgorithmFields = algorithm?.value
     ? BaselineAlgorithmFields[algorithm.value]
     : null;
@@ -84,9 +92,21 @@ export default function BaseLineCorrectionOptionsPanel(
     label: string;
   }) {
     onAlgorithmChange(item);
-    const { values } = getBaselineData(item.value, filter?.value || {});
-    reset(values);
-    setTimeout(submitHandler, 0);
+    const { values } = getBaselineData(item.value, filter?.value);
+    const { anchors = [] } = sharedFilterOptions || {};
+    const options = { ...values, anchors };
+    reset(options);
+    setTimeout(() => handleApplyFilter(options, 'onChange'), 0);
+  }
+
+  function handleRemoveAllAnchors() {
+    updateFilterOptions((prev) => (prev ? { ...prev, anchors: [] } : prev));
+  }
+
+  function handleResetAnchors() {
+    if (!isSpectrum1D(spectrum)) return;
+    const anchors = Array.from(getBaselineAnchors(spectrum.data).x);
+    updateFilterOptions((prev) => (prev ? { ...prev, anchors } : prev));
   }
 
   return (
@@ -94,17 +114,33 @@ export default function BaseLineCorrectionOptionsPanel(
       {enableEdit && (
         <StickyHeader>
           <HeaderContainer>
-            <Switch
-              style={{ margin: 0, marginLeft: '5px' }}
-              innerLabelChecked="On"
-              innerLabel="Off"
-              {...livePreviewFieldOptions}
-              onChange={(event) => {
-                void onLivePreviewFieldChange(event);
-                submitHandler();
-              }}
-              label="Live preview"
-            />
+            <div style={{ display: 'flex', minWidth: 0, alignItems: 'center' }}>
+              <Toolbar overflow="collapse">
+                <Toolbar.Item
+                  icon={<MdRemoveCircleOutline />}
+                  intent="danger"
+                  tooltip="Remove anchors"
+                  onClick={handleRemoveAllAnchors}
+                />
+
+                <Toolbar.Item
+                  icon={<BiReset />}
+                  tooltip="Reset anchors"
+                  onClick={handleResetAnchors}
+                />
+              </Toolbar>
+              <Switch
+                style={{ margin: 0, marginLeft: '5px', whiteSpace: 'nowrap' }}
+                innerLabelChecked="On"
+                innerLabel="Off"
+                {...livePreviewFieldOptions}
+                onChange={(event) => {
+                  void onLivePreviewFieldChange(event);
+                  submitHandler();
+                }}
+                label="Live preview"
+              />
+            </div>
             <FilterActionButtons
               onConfirm={handleConfirm}
               onCancel={handleCancel}
@@ -149,6 +185,15 @@ function AirplsFields({
   return (
     <>
       <NumberInputField
+        labelProps={{ title: 'Lambda:', style: formLabelStyle }}
+        name="lambda"
+        control={control}
+        min={1}
+        onValueChange={onValueChange}
+        fill
+        debounceTime={250}
+      />
+      <NumberInputField
         labelProps={{ title: 'Max iterations:', style: formLabelStyle }}
         name="maxIterations"
         control={control}
@@ -180,14 +225,14 @@ function PolynomialFields({
   return (
     <NumberInputField
       labelProps={{
-        title: 'Degree [1 - 6]:',
+        title: 'Degree [1 - 20]:',
         shortTitle: 'Degree:',
         style: formLabelStyle,
       }}
       name="degree"
       control={control}
       min={1}
-      max={6}
+      max={20}
       onValueChange={onValueChange}
       fill
       debounceTime={250}
@@ -310,16 +355,6 @@ function CubicFields({
 }: AlgorithmFieldProps<CubicOptions>) {
   return (
     <>
-      <NumberInputField
-        labelProps={{ title: 'Anchors:', style: formLabelStyle }}
-        name="numAnchors"
-        control={control}
-        min={0}
-        stepSize={1}
-        onValueChange={onValueChange}
-        fill
-        debounceTime={250}
-      />
       <NumberInputField
         labelProps={{ title: 'Noise threshold:', style: formLabelStyle }}
         name="noiseThreshold"

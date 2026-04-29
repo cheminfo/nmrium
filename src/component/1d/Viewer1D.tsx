@@ -13,6 +13,7 @@ import Spinner from '../loader/Spinner.js';
 import { BrushTracker1D } from './BrushTracker1D.js';
 import FooterBanner from './FooterBanner.js';
 import { SVGContent1D } from './SVGContent1D.js';
+import { BaselinePreview } from './baseline/BaselinePreview.tsx';
 import { PeakEditionProvider } from './peaks/PeakEditionManager.js';
 import BaseLine from './tool/BaseLine.js';
 import PeakPointer from './tool/PeakPointer.js';
@@ -61,6 +62,7 @@ function InnerViewer1D(props: InnerViewer1DProps) {
                 </MouseTracker>
               </BrushTracker1D>
             )}
+            <BaselinePreview />
           </div>
         </ViewerResponsiveWrapper>
       )}
