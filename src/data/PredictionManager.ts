@@ -310,6 +310,7 @@ function generated1DSpectrum(params: {
         isFt: true,
         name: SpectrumName,
         title: SpectrumName,
+        spectrumSource: 'prediction',
       },
     },
     {},
@@ -394,6 +395,7 @@ function generated2DSpectrum(params: {
       pulseSequence: 'prediction',
       spectralWidth,
       experiment,
+      spectrumSource: 'prediction',
     },
   });
   datum.zones.values = mapZones(zones);

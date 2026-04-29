@@ -1,4 +1,4 @@
-import type { NMRRange } from '@zakodium/nmr-types';
+import type { NMRRange, SpectrumSource } from '@zakodium/nmr-types';
 import type {
   Color2D,
   ContourLevel,
@@ -104,6 +104,7 @@ type DeleteSpectraAction = ActionType<
   {
     ids?: string[];
     domainOptions?: SetDomainOptions;
+    spectrumSource?: SpectrumSource;
   }
 >;
 type AddMissingProjectionAction = ActionType<
@@ -457,28 +458,53 @@ function handleChangeSpectrumSetting(
   }
 }
 
-//action
-function handleDeleteSpectra(draft: Draft<State>, action: DeleteSpectraAction) {
-  const { ids, domainOptions } = action?.payload || {};
+interface SpectraEntry {
+  id: string;
+  index: number;
+}
+function resolveDeleteSpectraIDs(
+  draft: Draft<State>,
+  action: DeleteSpectraAction,
+): SpectraEntry[] {
   const activeSpectra = getActiveSpectra(draft);
+  const { ids, spectrumSource } = action?.payload || {};
+  const result: SpectraEntry[] = [];
 
-  let deleteSpectraIDs: Array<{ id: string; index: number }> = [];
-  if (ids) {
-    const hashIDs = new Set(ids);
+  if (spectrumSource) {
     for (let index = 0; index < draft.data.length; index++) {
-      const { id } = draft.data[index];
-      if (hashIDs.has(id)) {
-        deleteSpectraIDs.push({ id, index });
-        hashIDs.delete(id);
-
-        if (hashIDs.size === 0) {
-          break;
-        }
+      const { info, id } = draft.data[index];
+      if (info?.spectrumSource === spectrumSource) {
+        result.push({ id, index });
       }
     }
-  } else {
-    deleteSpectraIDs = activeSpectra || [];
+
+    return result;
   }
+
+  if (ids) {
+    const remainingIDs = new Set(ids);
+
+    for (let index = 0; index < draft.data.length; index++) {
+      const { id } = draft.data[index];
+      if (remainingIDs.has(id)) {
+        result.push({ id, index });
+        remainingIDs.delete(id);
+
+        if (remainingIDs.size === 0) break;
+      }
+    }
+
+    return result;
+  }
+
+  return activeSpectra ?? [];
+}
+
+//action
+function handleDeleteSpectra(draft: Draft<State>, action: DeleteSpectraAction) {
+  const { domainOptions } = action?.payload || {};
+
+  const deleteSpectraIDs = resolveDeleteSpectraIDs(draft, action);
 
   /**
    * Sort the spectraIDs indices in descending order.

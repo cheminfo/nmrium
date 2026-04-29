@@ -30,6 +30,7 @@ function resurrectSpectrumFromRanges(
     baseFrequency = 400,
     originFrequency = 400,
     numberOfPoints = 2 ** 17,
+    ...otherInfo
   } = info;
 
   try {
@@ -45,6 +46,7 @@ function resurrectSpectrumFromRanges(
         id: spectrumID,
         data: { x, im: null, re: y },
         info: {
+          ...otherInfo,
           numberOfPoints,
           nucleus,
           originFrequency,
@@ -83,6 +85,7 @@ function resurrectSpectrumFromSignals(
     baseFrequency = 400,
     originFrequency = 400,
     numberOfPoints: nbPoints = 2 ** 17,
+    ...otherInfo
   } = info;
 
   try {
@@ -108,6 +111,7 @@ function resurrectSpectrumFromSignals(
         id: spectrumID,
         data: { x, im: null, re: y },
         info: {
+          ...otherInfo,
           nucleus,
           originFrequency,
           baseFrequency,
