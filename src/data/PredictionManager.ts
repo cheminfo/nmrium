@@ -1,7 +1,11 @@
 import type { Peak2D, Signal2D, Zone } from '@zakodium/nmr-types';
 import type { Spectrum } from '@zakodium/nmrium-core';
 import type { Logger } from 'cheminfo-types';
-import { xMinMaxValues } from 'ml-spectra-processing';
+import {
+  xMaxAbsoluteValue,
+  xMinMaxValues,
+  xNormed,
+} from 'ml-spectra-processing';
 import type {
   NMRZone,
   Predicted,
@@ -283,6 +287,11 @@ function generated1DSpectrum(params: {
     lineWidth,
   });
 
+  const normalizedY = xNormed(y, {
+    algorithm: 'max',
+    value: xMaxAbsoluteValue(y),
+  });
+
   const first = x[0] ?? 0;
   const last = x.at(-1) ?? 0;
   const getFreqOffset = (freq: number) => {
@@ -291,7 +300,7 @@ function generated1DSpectrum(params: {
 
   const datum = initiateDatum1D(
     {
-      data: { x, im: null, re: y },
+      data: { x, im: null, re: normalizedY },
       display: {
         color,
       },
