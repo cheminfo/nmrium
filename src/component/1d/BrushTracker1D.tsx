@@ -20,6 +20,7 @@ import {
 } from '../EventsTrackers/BrushTracker.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useDispatch } from '../context/DispatchContext.js';
+import { useFilterSyncOptions } from '../context/FilterSyncOptionsContext.tsx';
 import { useMapKeyModifiers } from '../context/KeyModifierContext.js';
 import { useLogger } from '../context/LoggerContext.js';
 import { usePreferences } from '../context/PreferencesContext.js';
@@ -100,6 +101,8 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
   const { getModifiersKey, primaryKeyIdentifier } = useMapKeyModifiers();
   const activeSpectrum = useActiveSpectrum();
   const inset = useInsetOptions();
+  const { updateFilterOptions } =
+    useFilterSyncOptions<Partial<{ anchors: number[] }>>();
 
   const [isOpenAnalysisModal, openAnalysisModal, closeAnalysisModal] =
     useOnOff(false);
@@ -208,17 +211,6 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
                   payload: brushData,
                 });
                 break;
-
-              case options.baselineCorrection.id:
-                dispatch({
-                  type: 'ADD_BASE_LINE_ZONE',
-                  payload: {
-                    startX: brushData.startX,
-                    endX: brushData.endX,
-                  },
-                });
-                break;
-
               case options.exclusionZones.id:
                 dispatch({
                   type: 'ADD_EXCLUSION_ZONE',
@@ -478,6 +470,16 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
               });
 
               break;
+            case 'baselineCorrection': {
+              updateFilterOptions((prev) => {
+                const { anchors = [], ...other } = prev || {};
+                return {
+                  ...other,
+                  anchors: [...anchors, xPPM],
+                };
+              });
+              break;
+            }
             default:
               break;
           }
@@ -497,6 +499,7 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
       selectedTool,
       showStocsy,
       spectrum,
+      updateFilterOptions,
     ],
   );
 

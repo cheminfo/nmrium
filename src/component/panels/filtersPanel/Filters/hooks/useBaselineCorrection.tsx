@@ -8,7 +8,10 @@ import * as Yup from 'yup';
 import type { ExtractFilterEntry } from '../../../../../data/types/common/ExtractFilterEntry.js';
 import { useDispatch } from '../../../../context/DispatchContext.js';
 import { useSyncedFilterOptions } from '../../../../context/FilterSyncOptionsContext.js';
-import type { AlgorithmOptions } from '../base/baselineCorrectionFields.ts';
+import type { BaselineAlgorithmOptions } from '../base/baselineCorrectionFields.ts';
+
+export const DEFAULT_BASELINE_ALGORITHM: BaselineCorrectionOptions['algorithm'] =
+  'cubic' as const;
 
 const ALGORITHM_LABELS: Record<BaselineCorrectionOptions['algorithm'], string> =
   {
@@ -29,125 +32,139 @@ function findAlgorithmItem(algorithmName: string) {
   );
 }
 
-export function getBaselineData(
+function getBaselineResolver(algorithm: any) {
+  switch (algorithm) {
+    case 'airpls':
+      return yupResolver(
+        Yup.object().shape({
+          lambda: Yup.number().integer().required(),
+          algorithm: Yup.string().required(),
+          livePreview: Yup.boolean().required(),
+          maxIterations: Yup.number().integer().min(1).required(),
+          tolerance: Yup.number().moreThan(0).required(),
+        }),
+      );
+
+    case 'polynomial':
+      return yupResolver(
+        Yup.object().shape({
+          algorithm: Yup.string().required(),
+          livePreview: Yup.boolean().required(),
+          degree: Yup.number().integer().min(1).max(6).required(),
+        }),
+      );
+
+    case 'whittaker':
+      return yupResolver(
+        Yup.object().shape({
+          lambda: Yup.number().integer().required(),
+          maxIterations: Yup.number().integer().required(),
+          learningRate: Yup.number().required(),
+          tolerance: Yup.number().required(),
+        }),
+      );
+
+    case 'cubic':
+      return yupResolver(
+        Yup.object().shape({
+          noiseThreshold: Yup.number().required(),
+          maxIterations: Yup.number().integer().required(),
+          noisePercentile: Yup.number().integer().required(),
+          noiseLevel: Yup.number().integer().required(),
+          tolerance: Yup.number().required(),
+        }),
+      );
+
+    case 'bernstein':
+      return yupResolver(
+        Yup.object().shape({
+          maxIterations: Yup.number().integer().required(),
+          tolerance: Yup.number().required(),
+          factorStd: Yup.number().integer().required(),
+          learningRate: Yup.number().required(),
+          degree: Yup.number().integer().required(),
+        }),
+      );
+
+    default:
+      return yupResolver(Yup.object({ livePreview: Yup.boolean().required() }));
+  }
+}
+
+export function getBaselineValues(
   algorithm: any,
   filterValues?: BaselineCorrectionOptions | null,
 ) {
   const { algorithm: baseAlgorithm, ...other } = filterValues || {};
+  const overrides = baseAlgorithm === algorithm ? other : {};
+
   switch (algorithm) {
-    case 'airpls': {
-      const validation = Yup.object().shape({
-        algorithm: Yup.string().required(),
-        livePreview: Yup.boolean().required(),
-        maxIterations: Yup.number().integer().min(1).required(),
-        tolerance: Yup.number().moreThan(0).required(),
-      });
+    case 'airpls':
       return {
-        resolver: yupResolver(validation),
-        values: {
-          algorithm,
-          livePreview: true,
-          maxIterations: 100,
-          tolerance: 0.001,
-          ...(baseAlgorithm === 'airpls' ? other : {}),
-        },
+        algorithm,
+        livePreview: false,
+        lambda: 200,
+        maxIterations: 100,
+        tolerance: 0.001,
+        ...overrides,
       };
-    }
-    case 'polynomial': {
-      const validation = Yup.object().shape({
-        algorithm: Yup.string().required(),
-        livePreview: Yup.boolean().required(),
-        degree: Yup.number().integer().min(1).max(6).required(),
-      });
 
+    case 'polynomial':
       return {
-        resolver: yupResolver(validation),
-        values: {
-          algorithm,
-          livePreview: true,
-          degree: 3,
-          ...(baseAlgorithm === 'polynomial' ? other : {}),
-        },
+        algorithm,
+        livePreview: false,
+        degree: 3,
+        ...overrides,
       };
-    }
-    case 'whittaker': {
-      const validation = Yup.object().shape({
-        lambda: Yup.number().integer().required(),
-        maxIterations: Yup.number().integer().required(),
-        learningRate: Yup.number().required(),
-        tolerance: Yup.number().required(),
-      });
 
+    case 'whittaker':
       return {
-        resolver: yupResolver(validation),
-        values: {
-          algorithm,
-          livePreview: true,
-          lambda: 200,
-          maxIterations: 20,
-          learningRate: 0.2,
-          tolerance: 1e-3,
-          ...(baseAlgorithm === 'whittaker' ? other : {}),
-        },
+        algorithm,
+        livePreview: false,
+        lambda: 200,
+        maxIterations: 20,
+        learningRate: 0.2,
+        tolerance: 1e-3,
+        ...overrides,
       };
-    }
-    case 'cubic': {
-      const validation = Yup.object().shape({
-        noiseThreshold: Yup.number().required(),
-        maxIterations: Yup.number().integer().required(),
-        noisePercentile: Yup.number().integer().required(),
-        noiseLevel: Yup.number().integer().required(),
-        numAnchors: Yup.number().integer().required(),
-        tolerance: Yup.number().required(),
-      });
 
+    case 'cubic':
       return {
-        resolver: yupResolver(validation),
-        values: {
-          algorithm,
-          livePreview: true,
-          noiseThreshold: 1,
-          maxIterations: 10,
-          tolerance: 1e-6,
-          noisePercentile: 10,
-          noiseLevel: 1,
-          numAnchors: 260,
-        },
+        algorithm,
+        livePreview: false,
+        noiseThreshold: 1,
+        maxIterations: 10,
+        tolerance: 1e-6,
+        noisePercentile: 10,
+        noiseLevel: 1,
+        ...overrides,
       };
-    }
-    case 'bernstein': {
-      const validation = Yup.object().shape({
-        maxIterations: Yup.number().integer().required(),
-        tolerance: Yup.number().required(),
-        factorStd: Yup.number().integer().required(),
-        learningRate: Yup.number().required(),
-        degree: Yup.number().integer().required(),
-      });
 
+    case 'bernstein':
       return {
-        resolver: yupResolver(validation),
-        values: {
-          algorithm,
-          livePreview: true,
-          maxIterations: 100,
-          tolerance: 1e-6,
-          factorStd: 3,
-          learningRate: 0.3,
-          degree: 3,
-          ...(baseAlgorithm === 'bernstein' ? other : {}),
-        },
+        algorithm,
+        livePreview: false,
+        maxIterations: 100,
+        tolerance: 1e-6,
+        factorStd: 3,
+        learningRate: 0.3,
+        degree: 9,
+        ...overrides,
       };
-    }
+
     default:
-      return {
-        resolver: yupResolver(
-          Yup.object({
-            livePreview: Yup.boolean().required(),
-          }),
-        ),
-        values: { livePreview: true },
-      };
+      return { livePreview: false };
   }
+}
+
+export function getBaselineData(
+  algorithm: any,
+  filterValues?: BaselineCorrectionOptions | null,
+) {
+  return {
+    resolver: getBaselineResolver(algorithm),
+    values: getBaselineValues(algorithm, filterValues),
+  };
 }
 
 export function useBaselineCorrection(
@@ -155,7 +172,8 @@ export function useBaselineCorrection(
 ) {
   const dispatch = useDispatch();
   const previousPreviewRef = useRef<boolean>(true);
-  const { algorithm: baseAlgorithm = 'polynomial' } = filter?.value || {};
+  const { algorithm: baseAlgorithm = DEFAULT_BASELINE_ALGORITHM } =
+    filter?.value || {};
   const {
     value: algorithm,
     onItemSelect: onAlgorithmChange,
@@ -164,11 +182,13 @@ export function useBaselineCorrection(
     defaultSelectedItem: findAlgorithmItem(baseAlgorithm),
     itemTextKey: 'label',
   });
+  const { syncFilterOptions, clearSyncFilterOptions } =
+    useSyncedFilterOptions(syncWatch);
 
   const { resolver, values } = getBaselineData(algorithm?.value, filter?.value);
 
-  const { handleSubmit, reset, ...otherFormOptions } =
-    useForm<AlgorithmOptions>({
+  const { handleSubmit, trigger, reset, ...otherFormOptions } =
+    useForm<BaselineAlgorithmOptions>({
       defaultValues: values,
       resolver: resolver as any,
     });
@@ -179,16 +199,14 @@ export function useBaselineCorrection(
     if (algorithmItem) {
       onAlgorithmChange(algorithmItem);
     }
-    reset(sharedFilterOptions);
+    const merged = { ...values, ...sharedFilterOptions };
+    reset(merged, { keepDefaultValues: true });
+    onChange(merged);
   }
-
-  const { syncFilterOptions, clearSyncFilterOptions } =
-    useSyncedFilterOptions(syncWatch);
 
   const onChange = useCallback(
     (values: any) => {
       const { livePreview, ...options } = values;
-
       if (livePreview || previousPreviewRef !== livePreview) {
         dispatch({
           type: 'CALCULATE_BASE_LINE_CORRECTION_FILTER',
@@ -210,7 +228,6 @@ export function useBaselineCorrection(
 
     switch (triggerSource) {
       case 'onChange': {
-        onChange(values);
         syncFilterOptions(values);
         break;
       }
@@ -238,7 +255,7 @@ export function useBaselineCorrection(
   };
 
   function submitHandler() {
-    void handleSubmit((values) => handleApplyFilter(values, 'onChange'))();
+    void handleSubmit((values: any) => handleApplyFilter(values, 'onChange'))();
   }
 
   useEffect(() => {
