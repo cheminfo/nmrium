@@ -1,31 +1,23 @@
+import { defineConfig, globalIgnores } from 'eslint/config';
 import react from 'eslint-config-cheminfo-react/base';
 import ts from 'eslint-config-cheminfo-typescript/base';
 import unicorn from 'eslint-config-cheminfo-typescript/unicorn';
 
-export default [
-  {
-    ignores: [
-      'build',
-      'coverage',
-      'lib',
-      'lib-internal',
-      'node_modules',
-      'playwright-report',
-      'test-results',
-      'public',
-      '.yalc',
-    ],
-  },
-  ...ts,
-  ...unicorn,
-  ...react,
-  {
-    files: ['**/*.{ts,tsx,cts,mts}'],
-    rules: {
-      '@typescript-eslint/consistent-type-imports': 'error',
-      'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
-    },
-  },
+export default defineConfig(
+  globalIgnores([
+    'build',
+    'coverage',
+    'lib',
+    'lib-internal',
+    'node_modules',
+    'playwright-report',
+    'test-results',
+    'public',
+    '.yalc',
+  ]),
+  ts,
+  unicorn,
+  react,
   {
     rules: {
       '@typescript-eslint/switch-exhaustiveness-check': 'off',
@@ -72,4 +64,4 @@ export default [
       ],
     },
   },
-];
+);
