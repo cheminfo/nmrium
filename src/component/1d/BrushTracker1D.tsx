@@ -211,6 +211,9 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
                   payload: brushData,
                 });
                 break;
+              case options.databaseRangesSelection.id:
+                propagateEvent();
+                break;
               case options.exclusionZones.id:
                 dispatch({
                   type: 'ADD_EXCLUSION_ZONE',
@@ -266,7 +269,7 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
           }
         }
 
-        const tools = new Set<Tool>(['zoom', 'databaseRangesSelection']);
+        const tools = new Set<Tool>(['zoom']);
         const enableDefaultBrush =
           !tools.has(selectedTool) ||
           (tools.has(selectedTool) && !brushData.shiftKey);

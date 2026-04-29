@@ -20,9 +20,11 @@ import {
   initiateDatabase,
   prepareData,
 } from '../../../data/data1d/database.js';
+import type { BrushTrackerData } from '../../EventsTrackers/BrushTracker.tsx';
 import { useChartData } from '../../context/ChartContext.js';
 import { useCore } from '../../context/CoreContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
+import { useMapKeyModifiers } from '../../context/KeyModifierContext.tsx';
 import { usePreferences } from '../../context/PreferencesContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import { EmptyText } from '../../elements/EmptyText.js';
@@ -192,22 +194,29 @@ function DatabasePanelInner({
 
     void runner();
   }, [idCode, keywords, search, toaster]);
+  const { getModifiersKey, primaryKeyIdentifier } = useMapKeyModifiers();
 
   useEffect(() => {
-    function handle(event: { range: [number, number] }) {
-      if (selectedTool === options.databaseRangesSelection.id) {
-        setKeywords((prevState) => {
-          const oldKeywords = prevState.searchKeywords
-            ? prevState.searchKeywords.split(' ')
-            : [];
-          const [from, to] = event.range;
-          const searchKeywords = [
-            ...oldKeywords,
-            `delta:${format(from)}..${format(to)}`,
-          ].join(' ');
-          return { ...prevState, searchKeywords };
-        });
+    function handle(event: BrushTrackerData & { range: [number, number] }) {
+      const keyModifiers = getModifiersKey(event);
+      if (
+        selectedTool !== options.databaseRangesSelection.id ||
+        keyModifiers !== primaryKeyIdentifier
+      ) {
+        return;
       }
+
+      setKeywords((prevState) => {
+        const oldKeywords = prevState.searchKeywords
+          ? prevState.searchKeywords.split(' ')
+          : [];
+        const [from, to] = event.range;
+        const searchKeywords = [
+          ...oldKeywords,
+          `delta:${format(from)}..${format(to)}`,
+        ].join(' ');
+        return { ...prevState, searchKeywords };
+      });
     }
 
     Events.on('brushEnd', handle);
@@ -215,7 +224,7 @@ function DatabasePanelInner({
     return () => {
       Events.off('brushEnd', handle);
     };
-  }, [format, selectedTool]);
+  }, [format, getModifiersKey, primaryKeyIdentifier, selectedTool]);
 
   useEffect(() => {
     if (!databaseInstance.current) return;
