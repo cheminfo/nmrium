@@ -11,7 +11,6 @@ import { usePreferences } from '../../context/PreferencesContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import { useAlert } from '../../elements/Alert.js';
 import { useActiveSpectrumPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState.js';
-import useCheckExperimentalFeature from '../../hooks/useCheckExperimentalFeature.js';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import { booleanToString } from '../../utility/booleanToString.js';
@@ -47,7 +46,6 @@ function PeaksPanelInner(props: PeaksPanelInnerProps) {
   const dispatch = useDispatch();
   const alert = useAlert();
   const toaster = useToaster();
-  const isExperimental = useCheckExperimentalFeature();
 
   const settingRef = useRef<SettingsRef | null>(null);
 
@@ -132,6 +130,25 @@ function PeaksPanelInner(props: PeaksPanelInnerProps) {
     {
       disabled,
       icon: <SvgNmrPeaks />,
+      tooltip: `${booleanToString(!showPeaksShapes)} peaks shapes`,
+      onClick: () => toggleViewProperty('showPeaksShapes'),
+      active: showPeaksShapes,
+    },
+    {
+      disabled,
+      icon: <SvgNmrFt />,
+      tooltip: `${booleanToString(!showPeaksSum)} peaks sum`,
+      onClick: () => toggleViewProperty('showPeaksSum'),
+      active: showPeaksSum,
+    },
+    {
+      icon: <FaThinkPeaks />,
+      tooltip: 'Optimize peaks',
+      onClick: optimizePeaksHandler,
+    },
+    {
+      disabled,
+      icon: <SvgNmrPeaks />,
       tooltip: `${booleanToString(!showPeaks)} peaks`,
       onClick: () => toggleViewProperty('showPeaks'),
       active: showPeaks,
@@ -143,32 +160,10 @@ function PeaksPanelInner(props: PeaksPanelInnerProps) {
         displayingMode === 'spread' ? 'Top of the peak' : 'Top of the spectrum',
       onClick: toggleDisplayingMode,
       active: displayingMode === 'spread',
-    },
+    }
+
   ];
 
-  if (isExperimental) {
-    leftButtons.unshift(
-      {
-        disabled,
-        icon: <SvgNmrPeaks />,
-        tooltip: `${booleanToString(!showPeaksShapes)} peaks shapes`,
-        onClick: () => toggleViewProperty('showPeaksShapes'),
-        active: showPeaksShapes,
-      },
-      {
-        disabled,
-        icon: <SvgNmrFt />,
-        tooltip: `${booleanToString(!showPeaksSum)} peaks sum`,
-        onClick: () => toggleViewProperty('showPeaksSum'),
-        active: showPeaksSum,
-      },
-      {
-        icon: <FaThinkPeaks />,
-        tooltip: 'Optimize peaks',
-        onClick: optimizePeaksHandler,
-      },
-    );
-  }
   return (
     <TablePanel isFlipped={isFlipped}>
       {!isFlipped && (

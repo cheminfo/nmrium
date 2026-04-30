@@ -1,12 +1,13 @@
 import { DialogFooter } from '@blueprintjs/core';
+import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
 import type { Peak1D } from '@zakodium/nmr-types';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { Button } from 'react-science/ui';
 import * as Yup from 'yup';
 
 import { useDispatch } from '../context/DispatchContext.js';
-import ActionButtons from '../elements/ActionButtons.js';
 import type { LabelStyle } from '../elements/Label.js';
 import Label from '../elements/Label.js';
 import { NumberInput2Controller } from '../elements/NumberInput2Controller.js';
@@ -16,6 +17,14 @@ import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 import { useActiveNucleusTab } from '../hooks/useActiveNucleusTab.js';
 import { usePanelPreferences } from '../hooks/usePanelPreferences.js';
 import { formatNumber } from '../utility/formatNumber.js';
+
+
+const FooterContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 5px;
+`;
+
 
 type Shape = NonNullable<Peak1D['shape']>;
 
@@ -40,9 +49,9 @@ function getValues(peak: Peak1D, kind: Kind): Shape {
   const shapeData =
     (shape?.kind || '').toLocaleLowerCase() !== kind
       ? {
-          ...getKindDefaultValues(kind),
-          ...(shape?.fwhm && { fwhm: shape?.fwhm }),
-        }
+        ...getKindDefaultValues(kind),
+        ...(shape?.fwhm && { fwhm: shape?.fwhm }),
+      }
       : shape;
 
   return shapeData as Shape;
@@ -104,17 +113,23 @@ function InnerEditPeakShapeModal(props: Required<EditPeakShapeModalProps>) {
     resolver: yupResolver(validation(kind)) as any,
   });
 
-  function changePeakShapeHandler(values: any) {
-    dispatch({
-      type: 'CHANGE_PEAK_SHAPE',
-      payload: {
-        id: peak.id,
-        shape: {
-          ...values,
+  function changePeakShapeHandler(applyToAll = false) {
+
+    void handleSubmit((values) => {
+
+      dispatch({
+        type: 'CHANGE_PEAK_SHAPE',
+        payload: {
+          id: !applyToAll ? peak.id : undefined,
+          shape: {
+            ...values,
+          },
         },
-      },
-    });
-    onCloseDialog();
+      });
+      onCloseDialog();
+
+    })();
+
   }
 
   function handleChangeKind({ value }: { value: Kind }) {
@@ -162,13 +177,18 @@ function InnerEditPeakShapeModal(props: Required<EditPeakShapeModalProps>) {
           )}
         </>
       </StyledDialogBody>
-      <DialogFooter>
-        <ActionButtons
-          style={{ flexDirection: 'row-reverse', margin: 0 }}
-          onDone={() => handleSubmit(changePeakShapeHandler)()}
-          doneLabel="Save"
-          onCancel={() => onCloseDialog?.()}
-        />
+      <DialogFooter  >
+        <FooterContainer  >
+          <Button variant="outlined" intent="danger" onClick={() => onCloseDialog?.()}>
+            Cancel
+          </Button>
+          <Button intent="primary" onClick={() => changePeakShapeHandler()}>
+            Apply
+          </Button>
+          <Button intent="success" data-action="apply" onClick={() => changePeakShapeHandler(true)} >
+            Apply to all
+          </Button>
+        </FooterContainer>
       </DialogFooter>
     </StandardDialog>
   );
