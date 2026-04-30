@@ -4,6 +4,7 @@ import type {
   MatrixGenerationOptions,
   MultipleSpectraAnalysisPreferences,
   PanelsPreferences,
+  PeaksNucleusPreferences,
   SpectraPreferences,
   Zones1DNucleusPreferences,
   Zones2DNucleusPreferences,
@@ -148,7 +149,7 @@ const getRangeDefaultValues = (
 const getPeaksDefaultValues = (
   nucleus?: string,
 ): PanelsPreferences['peaks'] => {
-  const preferences = {
+  const preferences: PeaksNucleusPreferences = {
     showSerialNumber: true,
     deltaPPM: { show: true, format: '0.00' },
     deltaHz: { show: false, format: '0.00' },
@@ -160,6 +161,11 @@ const getPeaksDefaultValues = (
     showDeleteAction: true,
     showEditPeakShapeAction: true,
     showKind: true,
+    defaultPeakShape: {
+      kind: 'pseudoVoigt',
+      fwhm: 1,
+      mu: 0.5,
+    },
   };
   return getPreferences(preferences, nucleus);
 };

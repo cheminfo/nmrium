@@ -27,8 +27,14 @@ import getRange from '../helper/getRange.js';
 import { getSpectrum } from '../helper/getSpectrum.js';
 import type { ActionType } from '../types/ActionType.js';
 
-type AddPeakAction = ActionType<'ADD_PEAK', { x: number }>;
-type AddPeaksAction = ActionType<'ADD_PEAKS', { startX: number; endX: number }>;
+type AddPeakAction = ActionType<
+  'ADD_PEAK',
+  { x: number; defaultPeakShape?: Peak1D['shape'] }
+>;
+type AddPeaksAction = ActionType<
+  'ADD_PEAKS',
+  { startX: number; endX: number; defaultPeakShape?: Peak1D['shape'] }
+>;
 type DeletePeakAction = ActionType<
   'DELETE_PEAK',
   { id?: string; spectrumKey?: string }
@@ -37,10 +43,13 @@ type OptimizePeaksAction = ActionType<'OPTIMIZE_PEAKS', { peaks: Peak1D[] }>;
 type AutoPeaksPickingAction = ActionType<
   'AUTO_PEAK_PICKING',
   {
-    maxNumberOfPeaks: number;
-    minMaxRatio: number;
-    noiseFactor: number;
-    direction: OptionsXYAutoPeaksPicking['direction'];
+    options: {
+      maxNumberOfPeaks: number;
+      minMaxRatio: number;
+      noiseFactor: number;
+      direction: OptionsXYAutoPeaksPicking['direction'];
+    };
+    defaultPeakShape: Peak1D['shape'];
   }
 >;
 type ChangePeaksShapeAction = ActionType<
@@ -69,7 +78,14 @@ export type PeaksActions =
 
 //action
 function handleAddPeak(draft: Draft<State>, action: AddPeakAction) {
-  const { x: mouseXPosition } = action.payload;
+  const {
+    x: mouseXPosition,
+    defaultPeakShape = {
+      kind: 'pseudoVoigt',
+      fwhm: 1,
+      mu: 0.5,
+    },
+  } = action.payload;
 
   const spectrum = getSpectrum(draft);
   if (!isSpectrum1D(spectrum)) return;
@@ -91,11 +107,7 @@ function handleAddPeak(draft: Draft<State>, action: AddPeakAction) {
       x: candidatePeak.x,
       y: candidatePeak.y,
       width: 1,
-      shape: {
-        kind: 'pseudoVoigt',
-        fwhm: 1,
-        mu: 0.5,
-      },
+      shape: defaultPeakShape,
     };
     spectrum.peaks.values.push(...mapPeaks([peak], spectrum));
   }
@@ -103,7 +115,15 @@ function handleAddPeak(draft: Draft<State>, action: AddPeakAction) {
 
 //action
 function handleAddPeaks(draft: Draft<State>, action: AddPeaksAction) {
-  const { startX, endX } = action.payload;
+  const {
+    startX,
+    endX,
+    defaultPeakShape = {
+      kind: 'pseudoVoigt',
+      fwhm: 1,
+      mu: 0.5,
+    },
+  } = action.payload;
 
   const spectrum = getSpectrum(draft);
   if (!isSpectrum1D(spectrum)) return;
@@ -120,11 +140,7 @@ function handleAddPeaks(draft: Draft<State>, action: AddPeaksAction) {
         x: peak.x,
         y: peak.y,
         width: 1,
-        shape: {
-          kind: 'pseudoVoigt',
-          fwhm: 1,
-          mu: 0.5,
-        },
+        shape: defaultPeakShape,
       };
       spectrum.peaks.values.push(newPeak);
     }
@@ -170,8 +186,7 @@ function handleAutoPeakPicking(
   draft: Draft<State>,
   action: AutoPeaksPickingAction,
 ) {
-  const { maxNumberOfPeaks, minMaxRatio, noiseFactor, direction } =
-    action.payload;
+  const { options, defaultPeakShape } = action.payload;
 
   const spectrum = getSpectrum(draft);
   if (!isSpectrum1D(spectrum)) return;
@@ -184,12 +199,10 @@ function handleAutoPeakPicking(
   const windowToIndex = xFindClosestIndex(spectrum.data.x, to);
 
   const peaks = autoPeakPicking(spectrum, {
-    maxNumberOfPeaks,
-    minMaxRatio,
-    noiseFactor,
-    direction,
+    ...options,
     windowFromIndex,
     windowToIndex,
+    defaultPeakShape,
   });
   spectrum.peaks.values = spectrum.peaks.values.concat(peaks);
 }

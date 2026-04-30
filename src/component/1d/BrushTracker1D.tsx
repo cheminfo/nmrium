@@ -94,6 +94,8 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
     'matrixGeneration',
     activeTab,
   );
+  const { defaultPeakShape } = usePanelPreferences('peaks', activeTab);
+
   const { logger } = useLogger();
   const scaleState = useScaleChecked();
   const convertToPPM = usePixelToPPMConverter();
@@ -205,12 +207,14 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
                 });
                 break;
               }
-              case options.peakPicking.id:
+              case options.peakPicking.id: {
+                const { startX, endX } = brushData;
                 dispatch({
                   type: 'ADD_PEAKS',
-                  payload: brushData,
+                  payload: { startX, endX, defaultPeakShape },
                 });
                 break;
+              }
               case options.databaseRangesSelection.id:
                 propagateEvent();
                 break;
@@ -304,6 +308,7 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
       logger,
       dispatchPreferences,
       activeTab,
+      defaultPeakShape,
       openAnalysisModal,
       width,
       height,
@@ -420,13 +425,14 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
       switch (keyModifiers) {
         case primaryKeyIdentifier: {
           switch (selectedTool) {
-            case 'peakPicking':
+            case 'peakPicking': {
+              const { x } = event;
               dispatch({
                 type: 'ADD_PEAK',
-                payload: event,
+                payload: { x, defaultPeakShape },
               });
               break;
-
+            }
             case 'integral':
               dispatch({
                 type: 'CUT_INTEGRAL',
@@ -494,6 +500,7 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
     },
     [
       activeTab,
+      defaultPeakShape,
       dispatch,
       dispatchPreferences,
       getModifiersKey,

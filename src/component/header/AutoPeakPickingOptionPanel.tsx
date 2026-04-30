@@ -8,10 +8,12 @@ import { useToaster } from '../context/ToasterContext.js';
 import Label from '../elements/Label.js';
 import { NumberInput2Controller } from '../elements/NumberInput2Controller.js';
 import { Select2Controller } from '../elements/Select2Controller.js';
+import { useActiveNucleusTab } from '../hooks/useActiveNucleusTab.ts';
 import {
   MIN_AREA_POINTS,
   useCheckPointsNumberInWindowArea,
 } from '../hooks/useCheckPointsNumberInWindowArea.js';
+import { usePanelPreferences } from '../hooks/usePanelPreferences.ts';
 
 import { headerLabelStyle } from './Header.js';
 import { HeaderWrapper } from './HeaderWrapper.js';
@@ -60,6 +62,8 @@ export function AutoPeakPickingOptionPanel() {
   const dispatch = useDispatch();
   const pointsNumber = useCheckPointsNumberInWindowArea();
   const toaster = useToaster();
+  const nucleus = useActiveNucleusTab();
+  const { defaultPeakShape } = usePanelPreferences('peaks', nucleus);
   const {
     handleSubmit,
     formState: { isValid },
@@ -74,7 +78,10 @@ export function AutoPeakPickingOptionPanel() {
     if (pointsNumber > MIN_AREA_POINTS) {
       dispatch({
         type: 'AUTO_PEAK_PICKING',
-        payload: values,
+        payload: {
+          options: values,
+          defaultPeakShape,
+        },
       });
     } else {
       toaster.show({
