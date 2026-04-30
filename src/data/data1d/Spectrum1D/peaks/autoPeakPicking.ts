@@ -41,7 +41,7 @@ export function autoPeakPicking(
       frequency,
       direction,
       sensitivity: 100,
-      shape: { kind: 'lorentzian' },
+      shape: { kind: 'pseudoVoigt', mu: 0.5, fwhm: 1 },
       noiseLevel: noise * noiseFactor,
       minMaxRatio, // Threshold to determine if a given peak should be considered as a noise
       realTopDetection: true,
