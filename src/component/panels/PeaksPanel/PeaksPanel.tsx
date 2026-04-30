@@ -160,8 +160,7 @@ function PeaksPanelInner(props: PeaksPanelInnerProps) {
         displayingMode === 'spread' ? 'Top of the peak' : 'Top of the spectrum',
       onClick: toggleDisplayingMode,
       active: displayingMode === 'spread',
-    }
-
+    },
   ];
 
   return (

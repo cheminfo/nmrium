@@ -1,9 +1,14 @@
 import { forwardRef, memo, useCallback, useMemo } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 
 import { usePreferences } from '../../context/PreferencesContext.js';
+import { fieldLabelStyle } from '../../elements/FormatField.tsx';
+import Label from '../../elements/Label.tsx';
+import { NumberInput2Controller } from '../../elements/NumberInput2Controller.tsx';
+import { Select2Controller } from '../../elements/Select2Controller.tsx';
 import useNucleus from '../../hooks/useNucleus.js';
 import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences.js';
+import { PEAKS_SHAPES } from '../../modal/EditPeakShapeModal.tsx';
 import { getUniqueNuclei } from '../../utility/getUniqueNuclei.js';
 import type { NucleusPreferenceField } from '../extra/preferences/NucleusPreferences.js';
 import { NucleusPreferences } from '../extra/preferences/NucleusPreferences.js';
@@ -101,17 +106,72 @@ export default memo(
     });
 
     useSettingImperativeHandle(ref, handleSubmit, saveHandler);
+    const currentPreferences = useWatch({ control, name: 'nuclei' });
 
     return (
       <PreferencesContainer>
-        {nuclei?.map((n) => (
-          <NucleusPreferences
-            control={control}
-            key={n}
-            nucleus={n}
-            fields={formatFields}
-          />
-        ))}
+        {nuclei?.map((n) => {
+          const kind = currentPreferences?.[n].defaultPeakShape?.kind;
+          return (
+            <NucleusPreferences
+              control={control}
+              key={n}
+              nucleus={n}
+              fields={formatFields}
+              renderBottom={() => (
+                <>
+                  <Label title="Kind:" style={fieldLabelStyle}>
+                    <Select2Controller
+                      items={PEAKS_SHAPES}
+                      control={control}
+                      name={`nuclei.${n}.defaultPeakShape.kind`}
+                    />
+                  </Label>
+
+                  <Label title="FWHM:" style={fieldLabelStyle}>
+                    <NumberInput2Controller
+                      min={0}
+                      control={control}
+                      name={`nuclei.${n}.defaultPeakShape.fwhm`}
+                      controllerProps={{
+                        rules: { required: true },
+                        defaultValue: 1,
+                      }}
+                    />
+                  </Label>
+
+                  {kind === 'pseudoVoigt' && (
+                    <Label title="Mu:" style={fieldLabelStyle}>
+                      <NumberInput2Controller
+                        min={0}
+                        control={control}
+                        name={`nuclei.${n}.defaultPeakShape.mu`}
+                        controllerProps={{
+                          rules: { required: true },
+                          defaultValue: 0.5,
+                        }}
+                      />
+                    </Label>
+                  )}
+                  {kind === 'generalizedLorentzian' && (
+                    <Label title="Gamma:" style={fieldLabelStyle}>
+                      <NumberInput2Controller
+                        min={-1}
+                        max={2}
+                        control={control}
+                        name={`nuclei.${n}.defaultPeakShape.gamma`}
+                        controllerProps={{
+                          rules: { required: true },
+                          defaultValue: 0.5,
+                        }}
+                      />
+                    </Label>
+                  )}
+                </>
+              )}
+            />
+          );
+        })}
       </PreferencesContainer>
     );
   }),
