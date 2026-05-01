@@ -46,7 +46,7 @@ type AutoPeaksPickingAction = ActionType<
 type ChangePeaksShapeAction = ActionType<
   'CHANGE_PEAK_SHAPE',
   {
-    id: string;
+    id?: string;
     shape: Peak1D['shape'];
   }
 >;
@@ -92,9 +92,9 @@ function handleAddPeak(draft: Draft<State>, action: AddPeakAction) {
       y: candidatePeak.y,
       width: 1,
       shape: {
-        kind: 'generalizedLorentzian',
+        kind: 'pseudoVoigt',
         fwhm: 1,
-        gamma: 0.5,
+        mu: 0.5,
       },
     };
     spectrum.peaks.values.push(...mapPeaks([peak], spectrum));
@@ -121,9 +121,9 @@ function handleAddPeaks(draft: Draft<State>, action: AddPeaksAction) {
         y: peak.y,
         width: 1,
         shape: {
-          kind: 'generalizedLorentzian',
+          kind: 'pseudoVoigt',
           fwhm: 1,
-          gamma: 0.5,
+          mu: 0.5,
         },
       };
       spectrum.peaks.values.push(newPeak);
@@ -203,6 +203,14 @@ function handleChangePeakShape(
 
   const spectrum = getSpectrum(draft);
   if (!isSpectrum1D(spectrum)) return;
+
+  if (!id) {
+    spectrum.peaks.values = spectrum.peaks.values.map((peak) => ({
+      ...peak,
+      shape,
+    }));
+    return;
+  }
 
   const peakIndex = spectrum.peaks.values.findIndex((peak) => peak.id === id);
   if (peakIndex !== -1) {
