@@ -66,11 +66,11 @@ export function detectSignalsByMultipletAnalysis(
     { shape: { kind: 'pseudoVoigt' }, optimization: { kind: 'lm' } },
   );
 
-  const log = logs.find((l: any) => l.message === 'optimization successful');
+  const log = logs.find((l) => l.message === 'optimization successful');
 
   if (log) {
     const { error } = log;
-    if (error < 0.2) {
+    if (typeof error === 'number' && error < 0.2) {
       return [
         {
           multiplicity: 's',
