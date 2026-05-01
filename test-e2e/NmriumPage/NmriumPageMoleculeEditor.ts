@@ -18,9 +18,7 @@ export class NmriumPageMoleculeEditor {
 
   constructor(page: Page) {
     this.page = page;
-    const canvasLocator = page
-      .locator('_react=CanvasMoleculeEditor')
-      .locator('canvas');
+    const canvasLocator = page.getByRole('dialog').locator('canvas');
     this.toolbarLocator = canvasLocator.nth(0);
     this.drawAreaLocator = canvasLocator.nth(1);
   }

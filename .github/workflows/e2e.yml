@@ -14,8 +14,8 @@ jobs:
         project: [chromium, firefox, webkit]
       fail-fast: false
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version-file: package.json
       - name: Install dependencies
@@ -31,7 +31,7 @@ jobs:
         continue-on-error: ${{ matrix.project == 'webkit' }}
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-${{ matrix.project }}
           path: |
