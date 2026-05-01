@@ -98,9 +98,9 @@ test('Should ranges Add/resize/delete', async ({ page }) => {
   await test.step('Add ranges', async () => {
     // Add two ranges.
     // The first range should find a signal.
-    await addRange(nmrium, 165, 175, 1);
+    await addRange(nmrium, 82, 92, 1);
     // The second range should be on the noise and find no signal.
-    await addRange(nmrium, 280, 300, 2);
+    await addRange(nmrium, 155, 175, 2);
   });
 
   await test.step('Clicking and subsequently releasing the resizing action should not crash or add a new range', async () => {
