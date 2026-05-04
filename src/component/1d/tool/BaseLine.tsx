@@ -10,7 +10,7 @@ const styles: CSSProperties = {
   position: 'absolute',
   top: '0px',
   left: '0px',
-  height: '2px',
+  height: '1px',
 };
 
 function BaseLine() {
