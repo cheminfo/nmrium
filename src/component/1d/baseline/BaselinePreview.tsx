@@ -235,6 +235,7 @@ function SpectrumPreview({ spectrum, anchors }: SpectrumPreviewProps) {
         stroke={indicatorColor}
         fill="none"
         d={paths}
+        strokeWidth="2"
       />
     </SVGWrapper>
   );
