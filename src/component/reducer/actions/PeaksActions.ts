@@ -167,6 +167,7 @@ function handleDeletePeak(draft: Draft<State>, action: DeletePeakAction) {
 //action
 function handleOptimizePeaks(draft: Draft<State>, action: OptimizePeaksAction) {
   const { peaks } = action.payload;
+  togglePeaksViewProperty(draft, 'showPeaksSum', true);
 
   const spectrum = getSpectrum(draft);
   if (!isSpectrum1D(spectrum)) return;
@@ -243,13 +244,15 @@ function handleTogglePeaksViewProperty(
 function togglePeaksViewProperty(
   draft: Draft<State>,
   key: keyof FilterType<PeaksViewState, boolean>,
+  value?: boolean,
 ) {
   const activeSpectrum = getActiveSpectrum(draft);
   if (!activeSpectrum) return;
 
   const peaksView = draft.view.peaks;
   if (peaksView[activeSpectrum.id]) {
-    peaksView[activeSpectrum.id][key] = !peaksView[activeSpectrum.id][key];
+    peaksView[activeSpectrum.id][key] =
+      value ?? !peaksView[activeSpectrum.id][key];
   } else {
     const defaultPeaksView = { ...defaultPeaksViewState };
     defaultPeaksView[key] = !defaultPeaksView[key];
