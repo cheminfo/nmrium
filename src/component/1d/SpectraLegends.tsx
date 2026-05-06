@@ -64,8 +64,13 @@ function InnerSpectraLegends({
   spectra,
   legendsFields,
 }: InnerSpectraLegendsProps) {
-  const visibleLegendsFields = legendsFields.filter((legend) => legend.visible);
-
+  const visibleLegendsFields = legendsFields
+    .filter((legend) => legend.visible)
+    .toSorted((a, b) => {
+      if ((a as PredefinedLegendField).name === 'intensity') return 1;
+      if ((b as PredefinedLegendField).name === 'intensity') return -1;
+      return 0;
+    });
   return (
     <g className="spectra-intensity-legend">
       {spectra.map((spectrum, index) => (
