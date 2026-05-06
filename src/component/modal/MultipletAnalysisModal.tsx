@@ -188,6 +188,7 @@ function InnerMultipleAnalysis(props: InnerMultipleAnalysisProps) {
   return (
     <Container>
       {analysisData?.debug.steps.map((d, index) => {
+        const j = analysisData.js[index];
         return (
           // eslint-disable-next-line react/no-array-index-key
           <Row key={index}>
@@ -217,11 +218,7 @@ function InnerMultipleAnalysis(props: InnerMultipleAnalysisProps) {
               </Plot>
             </div>
             <Multiplicity>
-              {analysisData.js[index]
-                ? `${analysisData.js[index].multiplicity}: ${analysisData.js[
-                    index
-                  ].coupling.toFixed(3)} Hz`
-                : ''}
+              {j ? `${j.multiplicity}: ${j.coupling.toFixed(3)} Hz` : ''}
             </Multiplicity>
             <div>
               <Plot
