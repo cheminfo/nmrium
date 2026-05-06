@@ -10,6 +10,7 @@ import type {
   Zones2DNucleusPreferences,
 } from '@zakodium/nmrium-core';
 
+import { DEFAULT_PEAK_SHAPE } from '../../../data/constants/defaultPeakShape.ts';
 import { isProton } from '../../../data/utilities/isProton.js';
 import { is2DNucleus } from '../../utility/nucleusToString.js';
 
@@ -161,11 +162,7 @@ const getPeaksDefaultValues = (
     showDeleteAction: true,
     showEditPeakShapeAction: true,
     showKind: true,
-    defaultPeakShape: {
-      kind: 'pseudoVoigt',
-      fwhm: 1,
-      mu: 0.5,
-    },
+    defaultPeakShape: DEFAULT_PEAK_SHAPE,
   };
   return getPreferences(preferences, nucleus);
 };

@@ -11,6 +11,7 @@ import { xFindClosestIndex } from 'ml-spectra-processing';
 import type { OptionsXYAutoPeaksPicking } from 'nmr-processing';
 import { mapPeaks } from 'nmr-processing';
 
+import { DEFAULT_PEAK_SHAPE } from '../../../data/constants/defaultPeakShape.ts';
 import {
   autoPeakPicking,
   getShiftX,
@@ -78,14 +79,8 @@ export type PeaksActions =
 
 //action
 function handleAddPeak(draft: Draft<State>, action: AddPeakAction) {
-  const {
-    x: mouseXPosition,
-    defaultPeakShape = {
-      kind: 'pseudoVoigt',
-      fwhm: 1,
-      mu: 0.5,
-    },
-  } = action.payload;
+  const { x: mouseXPosition, defaultPeakShape = DEFAULT_PEAK_SHAPE } =
+    action.payload;
 
   const spectrum = getSpectrum(draft);
   if (!isSpectrum1D(spectrum)) return;
@@ -118,11 +113,7 @@ function handleAddPeaks(draft: Draft<State>, action: AddPeaksAction) {
   const {
     startX,
     endX,
-    defaultPeakShape = {
-      kind: 'pseudoVoigt',
-      fwhm: 1,
-      mu: 0.5,
-    },
+    defaultPeakShape = DEFAULT_PEAK_SHAPE,
   } = action.payload;
 
   const spectrum = getSpectrum(draft);

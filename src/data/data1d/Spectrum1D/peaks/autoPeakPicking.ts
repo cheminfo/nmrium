@@ -4,6 +4,8 @@ import median from 'ml-array-median';
 import type { OptionsXYAutoPeaksPicking } from 'nmr-processing';
 import { mapPeaks, xyAutoPeaksPicking } from 'nmr-processing';
 
+import { DEFAULT_PEAK_SHAPE } from '../../../constants/defaultPeakShape.ts';
+
 interface AutoPeakPickingOptions {
   maxNumberOfPeaks: number;
   minMaxRatio: number;
@@ -25,7 +27,7 @@ export function autoPeakPicking(
     direction,
     windowFromIndex,
     windowToIndex,
-    defaultPeakShape = { kind: 'pseudoVoigt', mu: 0.5, fwhm: 1 },
+    defaultPeakShape = DEFAULT_PEAK_SHAPE,
   } = options;
   // we calculate the noise but this could be improved
   const noise = median(spectrum.data.re.map((y) => Math.abs(y)));
