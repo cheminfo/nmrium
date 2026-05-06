@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import type { ActiveSpectrum } from '@zakodium/nmrium-core';
 import { xGetFromToIndex, xyToXYObject } from 'ml-spectra-processing';
+import type { XreimMultipletAnalysisResultWithDebug } from 'nmr-processing';
 import { xreimMultipletAnalysis } from 'nmr-processing';
 import { useEffect, useState } from 'react';
 import { Axis, LineSeries, Plot } from 'react-plot';
@@ -76,13 +77,11 @@ interface MultipletAnalysisModalProps extends InnerMultipleAnalysisProps {
   onClose: (element?: string) => void;
 }
 
-export default function MultipletAnalysisModal({
-  activeSpectrum,
-  startX,
-  endX,
-  onClose,
-  isOpen,
-}: MultipletAnalysisModalProps) {
+export default function MultipletAnalysisModal(
+  props: MultipletAnalysisModalProps,
+) {
+  const { activeSpectrum, startX, endX, onClose, isOpen } = props;
+
   return (
     <StandardDialog
       isOpen={isOpen}
@@ -116,7 +115,8 @@ function InnerMultipleAnalysis(props: InnerMultipleAnalysisProps) {
   }, []);
 
   const { activeSpectrum, startX, endX } = props;
-  const [analysisData, setAnalysisData] = useState<any>();
+  const [analysisData, setAnalysisData] =
+    useState<XreimMultipletAnalysisResultWithDebug>();
 
   useEffect(() => {
     if (activeSpectrum && startX && endX && calcStart) {
@@ -187,7 +187,7 @@ function InnerMultipleAnalysis(props: InnerMultipleAnalysisProps) {
 
   return (
     <Container>
-      {analysisData?.debug?.steps.map((d: any, index: any) => {
+      {analysisData?.debug.steps.map((d, index) => {
         return (
           // eslint-disable-next-line react/no-array-index-key
           <Row key={index}>
@@ -218,9 +218,9 @@ function InnerMultipleAnalysis(props: InnerMultipleAnalysisProps) {
             </div>
             <Multiplicity>
               {analysisData.js[index]
-                ? `${analysisData.js[index]?.multiplicity}: ${analysisData.js[
+                ? `${analysisData.js[index].multiplicity}: ${analysisData.js[
                     index
-                  ]?.coupling.toFixed(3)} Hz`
+                  ].coupling.toFixed(3)} Hz`
                 : ''}
             </Multiplicity>
             <div>
