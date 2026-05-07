@@ -1,7 +1,10 @@
 import type { DataXY } from 'cheminfo-types';
 import { optimizePeaksWithLogs } from 'ml-gsd';
 import { xMaxValue } from 'ml-spectra-processing';
-import type { NMRPeak1DWithShapeID } from 'nmr-processing';
+import type {
+  NMRPeak1DWithShapeID,
+  XreimMultipletAnalysisResult,
+} from 'nmr-processing';
 import {
   signalJoinCouplings,
   xreimMultipletAnalysis,
@@ -124,7 +127,7 @@ export function detectSignalsByMultipletAnalysis(
 }
 
 function getMultiplicity(
-  js: Array<{ value: number; multiplicity: 'string' }>,
+  js: Array<{ coupling: number; multiplicity: string }>,
   peaks: NMRPeak1DWithShapeID[],
 ) {
   if (peaks.length > 1) {
@@ -153,7 +156,7 @@ function getMultiplicity(
   }
 }
 
-function joinCouplings(result: any) {
+function joinCouplings(result: XreimMultipletAnalysisResult) {
   const { chemShift: delta, js } = result;
   let jCouplings = js;
   if (js.length > 1) {

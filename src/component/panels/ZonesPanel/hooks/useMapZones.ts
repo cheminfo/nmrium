@@ -10,13 +10,13 @@ export interface ZoneData extends Zone {
     rowSpan: number | null;
     signal: Signal2D;
     hide: boolean;
-    experiment: string;
+    experiment?: string;
   };
 }
 
 export function useMapZones(
   data: ZonesTableDataElement[],
-  info: { experiment: string; nuclei: string[] },
+  info: { experiment?: string; nuclei: string[] },
 ): ZoneData[] {
   return useMemo(() => {
     const zonesData: ZoneData[] = [];
