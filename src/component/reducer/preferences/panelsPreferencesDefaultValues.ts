@@ -4,11 +4,13 @@ import type {
   MatrixGenerationOptions,
   MultipleSpectraAnalysisPreferences,
   PanelsPreferences,
+  PeaksNucleusPreferences,
   SpectraPreferences,
   Zones1DNucleusPreferences,
   Zones2DNucleusPreferences,
 } from '@zakodium/nmrium-core';
 
+import { DEFAULT_PEAK_SHAPE } from '../../../data/constants/defaultPeakShape.ts';
 import { isProton } from '../../../data/utilities/isProton.js';
 import { is2DNucleus } from '../../utility/nucleusToString.js';
 
@@ -148,7 +150,7 @@ const getRangeDefaultValues = (
 const getPeaksDefaultValues = (
   nucleus?: string,
 ): PanelsPreferences['peaks'] => {
-  const preferences = {
+  const preferences: PeaksNucleusPreferences = {
     showSerialNumber: true,
     deltaPPM: { show: true, format: '0.00' },
     deltaHz: { show: false, format: '0.00' },
@@ -160,6 +162,7 @@ const getPeaksDefaultValues = (
     showDeleteAction: true,
     showEditPeakShapeAction: true,
     showKind: true,
+    defaultPeakShape: DEFAULT_PEAK_SHAPE,
   };
   return getPreferences(preferences, nucleus);
 };

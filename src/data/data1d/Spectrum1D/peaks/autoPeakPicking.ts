@@ -1,7 +1,10 @@
+import type { Peak1D } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import median from 'ml-array-median';
 import type { OptionsXYAutoPeaksPicking } from 'nmr-processing';
 import { mapPeaks, xyAutoPeaksPicking } from 'nmr-processing';
+
+import { DEFAULT_PEAK_SHAPE } from '../../../constants/defaultPeakShape.ts';
 
 interface AutoPeakPickingOptions {
   maxNumberOfPeaks: number;
@@ -10,6 +13,7 @@ interface AutoPeakPickingOptions {
   direction?: OptionsXYAutoPeaksPicking['direction'];
   windowFromIndex?: number;
   windowToIndex?: number;
+  defaultPeakShape?: Peak1D['shape'];
 }
 
 export function autoPeakPicking(
@@ -23,6 +27,7 @@ export function autoPeakPicking(
     direction,
     windowFromIndex,
     windowToIndex,
+    defaultPeakShape = DEFAULT_PEAK_SHAPE,
   } = options;
   // we calculate the noise but this could be improved
   const noise = median(spectrum.data.re.map((y) => Math.abs(y)));
@@ -41,7 +46,7 @@ export function autoPeakPicking(
       frequency,
       direction,
       sensitivity: 100,
-      shape: { kind: 'lorentzian' },
+      shape: defaultPeakShape,
       noiseLevel: noise * noiseFactor,
       minMaxRatio, // Threshold to determine if a given peak should be considered as a noise
       realTopDetection: true,
