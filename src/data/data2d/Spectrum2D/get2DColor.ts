@@ -40,7 +40,9 @@ export function get2DColor(
     const isRandom = isRandomColorGeneration(options) && options.random;
     const customColor =
       getCustomColor(spectrum, options.colors) ||
-      ((color2D as any)?.[spectrum.info.experiment] ?? null);
+      (spectrum.info.experiment
+        ? ((color2D as any)?.[spectrum.info.experiment] ?? null)
+        : null);
 
     if (customColor && !isRandom) {
       color = customColor;
