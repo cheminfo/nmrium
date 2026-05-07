@@ -122,7 +122,9 @@ function mapSignals(zone: ZoneData) {
     signals,
     tableMetaInfo: { experiment },
   } = zone;
-  const { from = 1, to = 1 } = DefaultPathLengths?.[experiment] || {};
+  const { from = 1, to = 1 } = experiment
+    ? DefaultPathLengths?.[experiment] || {}
+    : {};
   for (const signal of signals) {
     const mappedSignal = {
       ...signal,
