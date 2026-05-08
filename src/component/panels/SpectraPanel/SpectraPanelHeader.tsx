@@ -7,7 +7,7 @@ import { SvgNmrResetScale, SvgNmrSameTop } from 'cheminfo-font';
 import { memo, useCallback } from 'react';
 import { FaCreativeCommonsSamplingPlus } from 'react-icons/fa';
 import { IoColorPaletteOutline } from 'react-icons/io5';
-import { MdFormatColorFill } from 'react-icons/md';
+import { MdFormatColorFill, MdOutlineFormatColorText } from 'react-icons/md';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
@@ -15,9 +15,11 @@ import { usePreferences } from '../../context/PreferencesContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import { useAlert } from '../../elements/Alert.js';
 import { useActiveSpectra } from '../../hooks/useActiveSpectra.js';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences.ts';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import { useToggleSpectraVisibility } from '../../hooks/useToggleSpectraVisibility.js';
 import type { DisplayerMode } from '../../reducer/Reducer.js';
+import { booleanToString } from '../../utility/booleanToString.ts';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus.js';
 import type { ToolbarItemProps } from '../header/DefaultPanelHeader.js';
 import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
@@ -60,7 +62,9 @@ function SpectraPanelHeaderInner({
   const dispatch = useDispatch();
   const {
     current: { spectraColors },
+    dispatch: dispatchPreferences,
   } = usePreferences();
+  const { enableSpectraLabel } = usePanelPreferences('spectra', activeTab);
 
   const handleDelete = useCallback(() => {
     alert.showAlert({
@@ -116,6 +120,14 @@ function SpectraPanelHeaderInner({
       payload: {},
     });
   }
+
+  function toggleSpectraLabelHandler() {
+    dispatchPreferences({
+      type: 'TOGGLE_SPECTRA_LABEL',
+      payload: { nucleus: activeTab },
+    });
+  }
+
   const hasActiveSpectra = activeSpectra && activeSpectra?.length > 0;
   const spectraLengthPerTab = getSpectraByNucleus(activeTab, data)?.length;
   const { getToggleVisibilityButtons } = useToggleSpectraVisibility(
@@ -167,6 +179,12 @@ function SpectraPanelHeaderInner({
       icon: <MdFormatColorFill />,
       tooltip: 'Distinct spectra recoloring',
       onClick: distinctReColorSpectraHandler,
+    },
+    {
+      icon: <MdOutlineFormatColorText />,
+      tooltip: `${booleanToString(!enableSpectraLabel)} spectra label`,
+      active: enableSpectraLabel,
+      onClick: toggleSpectraLabelHandler,
     },
   ]);
 

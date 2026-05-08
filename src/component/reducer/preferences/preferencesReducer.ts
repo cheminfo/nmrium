@@ -57,6 +57,7 @@ import { setWorkspace } from './actions/setWorkspace.js';
 import { toggleInformationBlock } from './actions/toggleInformationBlock.js';
 import { toggleOpenSplitPanel } from './actions/toggleOpenSplitPanel.js';
 import { togglePanel } from './actions/togglePanel.js';
+import { toggleSpectraLabel } from './actions/toggleSpectraLabel.ts';
 import { mapWorkspaces } from './utilities/mapWorkspaces.js';
 
 const LOCAL_STORAGE_SETTINGS_KEY = 'nmr-general-settings';
@@ -90,6 +91,10 @@ type SetPreferencesAction =
 export type SetPanelsPreferencesAction = ActionType<
   'SET_PANELS_PREFERENCES',
   { key: keyof PanelsPreferences; value: any }
+>;
+export type ToggleSpectraLabelAction = ActionType<
+  'TOGGLE_SPECTRA_LABEL',
+  { nucleus: string }
 >;
 
 export type SetWorkspaceAction = ActionType<
@@ -196,6 +201,7 @@ export type PreferencesActions =
   | InitPreferencesAction
   | SetPreferencesAction
   | SetPanelsPreferencesAction
+  | ToggleSpectraLabelAction
   | SetWorkspaceAction
   | WorkspaceAction
   | AddWorkspaceAction
@@ -345,7 +351,8 @@ function innerPreferencesReducer(
       return changeDefaultMoleculeSettings(draft, action);
     case 'TOGGLE_SPLIT_PANEL':
       return toggleOpenSplitPanel(draft, action);
-
+    case 'TOGGLE_SPECTRA_LABEL':
+      return toggleSpectraLabel(draft, action);
     default:
       return draft;
   }

@@ -116,6 +116,16 @@ export function SpectraColumnsManager({
         ),
       },
       {
+        Header: 'spectrum label',
+        style: { width: '30px', textAlign: 'center' },
+        Cell: ({ row }: CellProps<SpectraTableColumn>) => (
+          <Checkbox
+            style={{ margin: 0 }}
+            {...register(getObjectKey(nucleus, row.index, 'isSpectrumLabel'))}
+          />
+        ),
+      },
+      {
         Header: '',
         style: { width: '65px' },
         id: 'op-buttons',
