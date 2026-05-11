@@ -28,6 +28,7 @@ import type { Column } from '../../elements/ReactTable/ReactTable.js';
 import ReactTable from '../../elements/ReactTable/ReactTable.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import ExportAsJcampModal from '../../modal/ExportAsJcampModal.js';
+import { formatNumber } from '../../utility/formatNumber.ts';
 import { saveAs } from '../../utility/save_as.js';
 
 import { RenderAsHTML } from './base/RenderAsHTML.js';
@@ -298,7 +299,7 @@ export function SpectraTable(props: SpectraTableProps) {
     );
     for (const col of visibleColumns) {
       const name = (col as PredefinedTableColumn<any>)?.name;
-      const path = (col as JpathTableColumn)?.jpath;
+      const { jpath, format } = col as JpathTableColumn;
 
       if (name && COLUMNS[name]) {
         columns.push({
@@ -307,7 +308,7 @@ export function SpectraTable(props: SpectraTableProps) {
           id: name,
         });
       } else {
-        const pathString = pathToString(path);
+        const pathString = pathToString(jpath);
         let style: CSSProperties = columnStyle;
         let cellRender: Column<Spectrum>['Cell'] | null = null;
         if (pathString === 'info.name') {
@@ -327,7 +328,7 @@ export function SpectraTable(props: SpectraTableProps) {
 
         const cell: Column<Spectrum> = {
           Header: () => <ColumnHeader label={col.label} col={col} />,
-          accessor: (row) => getValue(row, path),
+          accessor: (row) => getValue(row, jpath, format),
           ...(cellRender && { Cell: cellRender }),
           id: `${index}`,
           style,
@@ -444,20 +445,24 @@ function pathToString(path: string[]) {
   return Array.isArray(path) ? path.join('.') : '';
 }
 
-function getValue(row: any, path: any) {
+function formatValue(value: any, format = '') {
+  if (format.trim()) {
+    return formatNumber(value, format);
+  }
+  return value;
+}
+
+function getValue(row: any, path: any, format = ' ') {
   const value = dlv(row, path, '');
   const pathString = pathToString(path);
 
-  if (
-    Array.isArray(value) &&
-    ['info.baseFrequency', 'info.originFrequency'].includes(pathString)
-  ) {
-    return value[0];
-  }
-
   if (Array.isArray(value)) {
-    return value.join(',');
+    if (['info.baseFrequency', 'info.originFrequency'].includes(pathString)) {
+      return formatValue(value[0], format);
+    }
+
+    return value.map((v: any) => formatValue(v, format)).join(',');
   }
 
-  return value;
+  return formatValue(value, format);
 }

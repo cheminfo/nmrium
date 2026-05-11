@@ -130,6 +130,7 @@ function SpectraPreferences(props: object, ref: Ref<any>) {
           label: '',
           visible: true,
           isSpectrumLabel: false,
+          format: '',
         },
         ...columns.slice(index),
       ];

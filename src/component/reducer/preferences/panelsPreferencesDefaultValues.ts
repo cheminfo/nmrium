@@ -34,24 +34,28 @@ const getSpectraDefaultValues = (
         jpath: ['info', 'name'],
         visible: true,
         isSpectrumLabel: true,
+        format: '',
       },
       {
         label: 'Solvent',
         jpath: ['info', 'solvent'],
         visible: true,
         isSpectrumLabel: false,
+        format: '',
       },
       {
         jpath: ['info', 'pulseSequence'],
         label: 'Pulse',
         visible: true,
         isSpectrumLabel: false,
+        format: '',
       },
       {
         jpath: ['info', 'experiment'],
         label: 'Experiment',
         visible: true,
         isSpectrumLabel: false,
+        format: '',
       },
       {
         name: 'color',

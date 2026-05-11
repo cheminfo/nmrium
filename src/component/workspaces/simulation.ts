@@ -44,6 +44,7 @@ export const simulation: InnerWorkspace = {
     spectra: {
       nuclei: {
         '1H': {
+          enableSpectraLabel: true,
           columns: [
             {
               name: 'visible',
@@ -55,17 +56,23 @@ export const simulation: InnerWorkspace = {
               label: 'Spectrum Name',
               jpath: ['info', 'name'],
               visible: true,
+              isSpectrumLabel: true,
+              format: '',
             },
             {
               label: 'Frequency',
               description: 'frequency',
               jpath: ['info', 'originFrequency'],
               visible: true,
+              isSpectrumLabel: false,
+              format: '',
             },
             {
               jpath: ['info', 'nucleus'],
               label: 'Experiment',
               visible: true,
+              isSpectrumLabel: false,
+              format: '',
             },
             {
               name: 'color',
