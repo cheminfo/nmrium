@@ -18,9 +18,7 @@ function getPreferences<T>(data: T, nucleus?: string) {
   return { nuclei: { ...(nucleus ? { [nucleus]: data } : {}) } };
 }
 
-const getSpectraDefaultValues = (
-  nucleus?: string,
-): PanelsPreferences['spectra'] => {
+export function getBaseSpectraPreferences(): SpectraPreferences {
   const preferences: SpectraPreferences = {
     columns: [
       {
@@ -67,6 +65,13 @@ const getSpectraDefaultValues = (
     enableSpectraLabel: true,
   };
 
+  return preferences;
+}
+
+const getSpectraDefaultValues = (
+  nucleus?: string,
+): PanelsPreferences['spectra'] => {
+  const preferences = getBaseSpectraPreferences();
   return getPreferences(preferences, nucleus);
 };
 
