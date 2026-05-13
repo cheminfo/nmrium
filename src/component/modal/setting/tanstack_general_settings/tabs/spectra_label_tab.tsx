@@ -42,7 +42,7 @@ export const SpectraLabelTab = withForm({
             form={form}
             fields="spectraLabel.valueStyle"
             label="Field value"
-            previewText="lon1027"
+            previewText="Placeholder"
           />
         </Section>
       </>

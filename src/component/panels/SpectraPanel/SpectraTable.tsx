@@ -7,7 +7,6 @@ import type {
   Spectrum,
   StateMolecule,
 } from '@zakodium/nmrium-core';
-import dlv from 'dlv';
 import type { CSSProperties, MouseEvent } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import { FaCopy, FaFileExport, FaRegTrashAlt } from 'react-icons/fa';
@@ -28,7 +27,8 @@ import type { Column } from '../../elements/ReactTable/ReactTable.js';
 import ReactTable from '../../elements/ReactTable/ReactTable.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import ExportAsJcampModal from '../../modal/ExportAsJcampModal.js';
-import { formatNumber } from '../../utility/formatNumber.ts';
+import { getValueByPath } from '../../utility/getValueByPath.ts';
+import { pathToString } from '../../utility/pathToString.ts';
 import { saveAs } from '../../utility/save_as.js';
 
 import { RenderAsHTML } from './base/RenderAsHTML.js';
@@ -328,7 +328,7 @@ export function SpectraTable(props: SpectraTableProps) {
 
         const cell: Column<Spectrum> = {
           Header: () => <ColumnHeader label={col.label} col={col} />,
-          accessor: (row) => getValue(row, jpath, format),
+          accessor: (row) => getValueByPath(row, jpath, format),
           ...(cellRender && { Cell: cellRender }),
           id: `${index}`,
           style,
@@ -439,30 +439,4 @@ function convertSpectrumToText(spectrum: Spectrum) {
     lines.push(`${x[i]}\t${re[i]}`);
   }
   return lines.join('\n');
-}
-
-function pathToString(path: string[]) {
-  return Array.isArray(path) ? path.join('.') : '';
-}
-
-function formatValue(value: any, format = '') {
-  if (format.trim()) {
-    return formatNumber(value, format);
-  }
-  return value;
-}
-
-function getValue(row: any, path: any, format = ' ') {
-  const value = dlv(row, path, '');
-  const pathString = pathToString(path);
-
-  if (Array.isArray(value)) {
-    if (['info.baseFrequency', 'info.originFrequency'].includes(pathString)) {
-      return formatValue(value[0], format);
-    }
-
-    return value.map((v: any) => formatValue(v, format)).join(',');
-  }
-
-  return formatValue(value, format);
 }

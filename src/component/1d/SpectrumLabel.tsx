@@ -1,11 +1,11 @@
 import type { Spectrum, SpectrumLabelField } from '@zakodium/nmrium-core';
-import dlv from 'dlv';
 import { SVGStyledText } from 'react-science/ui';
 
 import { useChartData } from '../context/ChartContext.tsx';
 import { usePreferences } from '../context/PreferencesContext.tsx';
 import { useScaleChecked } from '../context/ScaleContext.tsx';
 import { useVerticalAlign } from '../hooks/useVerticalAlign.ts';
+import { getValueByPath } from '../utility/getValueByPath.ts';
 
 export function SpectrumLabel({
   index,
@@ -54,6 +54,6 @@ function getSpectrumLabel(
 ): string {
   return fields
     .filter((field) => field.visible)
-    .map((field) => (field.jpath ? dlv(spectrum, field.jpath, '') : ''))
+    .map((field) => getValueByPath(spectrum, field.jpath, field.format))
     .join(', ');
 }
