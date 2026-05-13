@@ -94,7 +94,7 @@ export type SetPanelsPreferencesAction = ActionType<
 >;
 export type ToggleSpectraLabelAction = ActionType<
   'TOGGLE_SPECTRA_LABEL',
-  { nucleus: string }
+  { value?: boolean }
 >;
 
 export type SetWorkspaceAction = ActionType<

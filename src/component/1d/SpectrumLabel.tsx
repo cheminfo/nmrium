@@ -1,9 +1,10 @@
-import type { SpectraTableColumn, Spectrum } from '@zakodium/nmrium-core';
+import type { Spectrum, SpectrumLabelField } from '@zakodium/nmrium-core';
 import dlv from 'dlv';
+import { SVGStyledText } from 'react-science/ui';
 
 import { useChartData } from '../context/ChartContext.tsx';
+import { usePreferences } from '../context/PreferencesContext.tsx';
 import { useScaleChecked } from '../context/ScaleContext.tsx';
-import { usePanelPreferences } from '../hooks/usePanelPreferences.ts';
 import { useVerticalAlign } from '../hooks/useVerticalAlign.ts';
 
 export function SpectrumLabel({
@@ -18,46 +19,41 @@ export function SpectrumLabel({
     height,
     margin,
     toolOptions: { selectedTool },
-    view: {
-      spectra: { activeTab },
-    },
   } = useChartData();
-  const { columns, enableSpectraLabel } = usePanelPreferences(
-    'spectra',
-    activeTab,
-  );
+  const { current } = usePreferences();
   const verticalAlign = useVerticalAlign();
+  const { fields, visible, valueStyle } = current.spectraLabel;
 
   if (
     verticalAlign !== 'stack' ||
     selectedTool !== 'zoom' ||
-    !Array.isArray(columns) ||
-    columns.length === 0 ||
-    !enableSpectraLabel
+    !Array.isArray(fields) ||
+    fields.length === 0 ||
+    !visible
   ) {
     return null;
   }
 
   const innerHeight = height - margin.bottom - spectraBottomMargin;
-  const label = getSpectrumLabel(columns, spectrum);
+  const label = getSpectrumLabel(fields, spectrum);
 
   return (
-    <text
+    <SVGStyledText
+      {...valueStyle}
       dy={-5}
-      fontSize={12}
       transform={`translate(${margin.left},${innerHeight - shiftY * index})`}
     >
       {label}
-    </text>
+    </SVGStyledText>
   );
 }
 
 function getSpectrumLabel(
-  columns: SpectraTableColumn[],
+  fields: SpectrumLabelField[],
   spectrum: Spectrum,
 ): string {
-  return columns
-    .filter((column) => column.isSpectrumLabel)
-    .map((column) => (column.jpath ? dlv(spectrum, column.jpath, '') : ''))
+  return fields
+    .filter((field) => field.visible)
+    .map((field) => (field.jpath ? dlv(spectrum, field.jpath, '') : ''))
     .join(', ');
 }

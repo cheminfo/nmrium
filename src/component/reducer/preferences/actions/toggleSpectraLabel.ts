@@ -1,6 +1,5 @@
 import type { Draft } from 'immer';
 
-import { getBaseSpectraPreferences } from '../panelsPreferencesDefaultValues.ts';
 import type {
   PreferencesState,
   ToggleSpectraLabelAction,
@@ -11,21 +10,10 @@ export function toggleSpectraLabel(
   draft: Draft<PreferencesState>,
   action: ToggleSpectraLabelAction,
 ) {
-  const { panels } = getActiveWorkspace(draft);
+  const { value } = action.payload;
+  const currentWorkspace = getActiveWorkspace(draft);
+  if (!currentWorkspace) return;
 
-  const { nucleus } = action.payload;
-
-  panels.spectra ??= { nuclei: {} };
-  const { nuclei } = panels.spectra;
-
-  if (!nuclei[nucleus]) {
-    const defaultValues = getBaseSpectraPreferences();
-    nuclei[nucleus] = {
-      ...defaultValues,
-      enableSpectraLabel: !defaultValues.enableSpectraLabel,
-    };
-    return;
-  }
-
-  nuclei[nucleus].enableSpectraLabel = !nuclei[nucleus].enableSpectraLabel;
+  currentWorkspace.spectraLabel.visible =
+    value ?? !currentWorkspace.spectraLabel.visible;
 }

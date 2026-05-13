@@ -18,7 +18,9 @@ function getPreferences<T>(data: T, nucleus?: string) {
   return { nuclei: { ...(nucleus ? { [nucleus]: data } : {}) } };
 }
 
-export function getBaseSpectraPreferences(): SpectraPreferences {
+const getSpectraDefaultValues = (
+  nucleus?: string,
+): PanelsPreferences['spectra'] => {
   const preferences: SpectraPreferences = {
     columns: [
       {
@@ -31,28 +33,24 @@ export function getBaseSpectraPreferences(): SpectraPreferences {
         label: 'Spectrum Name',
         jpath: ['info', 'name'],
         visible: true,
-        isSpectrumLabel: true,
         format: '',
       },
       {
         label: 'Solvent',
         jpath: ['info', 'solvent'],
         visible: true,
-        isSpectrumLabel: false,
         format: '',
       },
       {
         jpath: ['info', 'pulseSequence'],
         label: 'Pulse',
         visible: true,
-        isSpectrumLabel: false,
         format: '',
       },
       {
         jpath: ['info', 'experiment'],
         label: 'Experiment',
         visible: true,
-        isSpectrumLabel: false,
         format: '',
       },
       {
@@ -62,16 +60,7 @@ export function getBaseSpectraPreferences(): SpectraPreferences {
         visible: true,
       },
     ],
-    enableSpectraLabel: true,
   };
-
-  return preferences;
-}
-
-const getSpectraDefaultValues = (
-  nucleus?: string,
-): PanelsPreferences['spectra'] => {
-  const preferences = getBaseSpectraPreferences();
   return getPreferences(preferences, nucleus);
 };
 

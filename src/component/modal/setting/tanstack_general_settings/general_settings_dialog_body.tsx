@@ -16,6 +16,7 @@ import { ImportFiltersTab } from './tabs/import_filters_tab.js';
 import { NucleiTab } from './tabs/nuclei_tab.js';
 import { PanelsTab } from './tabs/panels_tab.js';
 import { SpectraColorsTab } from './tabs/spectra_colors_tab.tsx';
+import { SpectraLabelTab } from './tabs/spectra_label_tab.tsx';
 import { TitleBlockTab } from './tabs/title_block_tab.js';
 import { ToolsTab } from './tabs/tools_tab.tsx';
 import {
@@ -105,6 +106,12 @@ export const GeneralSettingsDialogBody = withForm({
               title="Spectra colors"
               id="spectra-colors"
               panel={<SpectraColorsTab form={form} />}
+            />
+
+            <Tab
+              title="Spectra label"
+              id="spectra-label"
+              panel={<SpectraLabelTab form={form} />}
             />
 
             {isExperimentalEnabled && (

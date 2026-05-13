@@ -67,7 +67,6 @@ export const prediction: InnerWorkspace = {
     spectra: {
       nuclei: {
         '1H,1H': {
-          enableSpectraLabel: true,
           columns: [
             {
               name: 'visible',
@@ -79,7 +78,6 @@ export const prediction: InnerWorkspace = {
               label: 'Spectrum Name',
               jpath: ['info', 'name'],
               visible: true,
-              isSpectrumLabel: true,
               format: '',
             },
             {
@@ -87,28 +85,24 @@ export const prediction: InnerWorkspace = {
               description: 'frequency',
               jpath: ['info', 'baseFrequency'],
               visible: true,
-              isSpectrumLabel: false,
               format: '',
             },
             {
               label: 'Solvent',
               jpath: ['info', 'solvent'],
               visible: false,
-              isSpectrumLabel: false,
               format: '',
             },
             {
               jpath: ['info', 'pulseSequence'],
               label: 'Pulse',
               visible: true,
-              isSpectrumLabel: false,
               format: '',
             },
             {
               jpath: ['info', 'experiment'],
               label: 'Experiment',
               visible: true,
-              isSpectrumLabel: false,
               format: '',
             },
             {
@@ -120,7 +114,6 @@ export const prediction: InnerWorkspace = {
           ],
         },
         '1H,13C': {
-          enableSpectraLabel: true,
           columns: [
             {
               name: 'visible',
@@ -132,7 +125,6 @@ export const prediction: InnerWorkspace = {
               label: 'Spectrum Name',
               jpath: ['info', 'name'],
               visible: true,
-              isSpectrumLabel: true,
               format: '',
             },
             {
@@ -140,28 +132,24 @@ export const prediction: InnerWorkspace = {
               description: 'frequency',
               jpath: ['info', 'baseFrequency'],
               visible: true,
-              isSpectrumLabel: false,
               format: '',
             },
             {
               label: 'Solvent',
               jpath: ['info', 'solvent'],
               visible: false,
-              isSpectrumLabel: false,
               format: '',
             },
             {
               jpath: ['info', 'pulseSequence'],
               label: 'Pulse',
               visible: true,
-              isSpectrumLabel: false,
               format: '',
             },
             {
               jpath: ['info', 'experiment'],
               label: 'Experiment',
               visible: true,
-              isSpectrumLabel: false,
               format: '',
             },
             {
@@ -173,7 +161,6 @@ export const prediction: InnerWorkspace = {
           ],
         },
         '1H': {
-          enableSpectraLabel: true,
           columns: [
             {
               name: 'visible',
@@ -185,7 +172,6 @@ export const prediction: InnerWorkspace = {
               label: 'Spectrum Name',
               jpath: ['info', 'name'],
               visible: true,
-              isSpectrumLabel: true,
               format: '',
             },
             {
@@ -193,28 +179,24 @@ export const prediction: InnerWorkspace = {
               description: 'frequency',
               jpath: ['info', 'baseFrequency'],
               visible: true,
-              isSpectrumLabel: false,
               format: '',
             },
             {
               label: 'Solvent',
               jpath: ['info', 'solvent'],
               visible: false,
-              isSpectrumLabel: false,
               format: '',
             },
             {
               jpath: ['info', 'pulseSequence'],
               label: 'Pulse',
               visible: true,
-              isSpectrumLabel: false,
               format: '',
             },
             {
               jpath: ['info', 'experiment'],
               label: 'Experiment',
               visible: true,
-              isSpectrumLabel: false,
               format: '',
             },
             {
@@ -226,7 +208,6 @@ export const prediction: InnerWorkspace = {
           ],
         },
         '13C': {
-          enableSpectraLabel: true,
           columns: [
             {
               name: 'visible',
@@ -238,7 +219,6 @@ export const prediction: InnerWorkspace = {
               label: 'Spectrum Name',
               jpath: ['info', 'name'],
               visible: true,
-              isSpectrumLabel: true,
               format: '',
             },
             {
@@ -246,28 +226,24 @@ export const prediction: InnerWorkspace = {
               description: 'frequency',
               jpath: ['info', 'baseFrequency'],
               visible: true,
-              isSpectrumLabel: false,
               format: '',
             },
             {
               label: 'Solvent',
               jpath: ['info', 'solvent'],
               visible: false,
-              isSpectrumLabel: false,
               format: '',
             },
             {
               jpath: ['info', 'pulseSequence'],
               label: 'Pulse',
               visible: true,
-              isSpectrumLabel: false,
               format: '',
             },
             {
               jpath: ['info', 'experiment'],
               label: 'Experiment',
               visible: true,
-              isSpectrumLabel: false,
               format: '',
             },
             {

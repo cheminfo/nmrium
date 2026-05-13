@@ -15,7 +15,6 @@ import { usePreferences } from '../../context/PreferencesContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import { useAlert } from '../../elements/Alert.js';
 import { useActiveSpectra } from '../../hooks/useActiveSpectra.js';
-import { usePanelPreferences } from '../../hooks/usePanelPreferences.ts';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import { useToggleSpectraVisibility } from '../../hooks/useToggleSpectraVisibility.js';
 import type { DisplayerMode } from '../../reducer/Reducer.js';
@@ -61,10 +60,9 @@ function SpectraPanelHeaderInner({
   const toaster = useToaster();
   const dispatch = useDispatch();
   const {
-    current: { spectraColors },
+    current: { spectraColors, spectraLabel },
     dispatch: dispatchPreferences,
   } = usePreferences();
-  const { enableSpectraLabel } = usePanelPreferences('spectra', activeTab);
 
   const handleDelete = useCallback(() => {
     alert.showAlert({
@@ -124,7 +122,7 @@ function SpectraPanelHeaderInner({
   function toggleSpectraLabelHandler() {
     dispatchPreferences({
       type: 'TOGGLE_SPECTRA_LABEL',
-      payload: { nucleus: activeTab },
+      payload: {},
     });
   }
 
@@ -182,8 +180,8 @@ function SpectraPanelHeaderInner({
     },
     {
       icon: <MdOutlineFormatColorText />,
-      tooltip: `${booleanToString(!enableSpectraLabel)} spectra label`,
-      active: enableSpectraLabel,
+      tooltip: `${booleanToString(!spectraLabel.visible)} spectra label`,
+      active: spectraLabel.visible,
       onClick: toggleSpectraLabelHandler,
     },
   ]);
