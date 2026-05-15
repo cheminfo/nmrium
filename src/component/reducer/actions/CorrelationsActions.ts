@@ -67,7 +67,7 @@ function handleUpdateCorrelations(draft: Draft<State>) {
 
 //action
 function handleSetMF(draft: Draft<State>, action: SetMFAction) {
-  const state = original(draft) as State;
+  const state = original(draft);
   const { data: spectra, correlations } = state;
   const { mf } = action.payload;
   // update of correlation data is needed only if the following is true
@@ -82,7 +82,7 @@ function handleSetMF(draft: Draft<State>, action: SetMFAction) {
 
 //action
 function handleSetTolerance(draft: Draft<State>, action: SetToleranceAction) {
-  const state = original(draft) as State;
+  const state = original(draft);
   const { data: spectra, correlations } = state;
   const { tolerance } = action.payload;
   draft.correlations = buildCorrelationData(spectra, {
@@ -97,7 +97,7 @@ function handleSetCorrelation(
   draft: Draft<State>,
   action: SetCorrelationAction,
 ) {
-  const state = original(draft) as State;
+  const state = original(draft);
   const { correlations } = state;
   const { id, correlation, options } = action.payload;
   draft.correlations = setCorrelation(correlations, id, correlation);
@@ -116,7 +116,7 @@ function handleSetCorrelations(
   action: SetCorrelationsAction,
 ) {
   const { correlations, options } = action.payload;
-  const state = original(draft) as State;
+  const state = original(draft);
   let correlationsData = lodashCloneDeep(state.correlations);
   for (const correlation of correlations) {
     correlationsData = setCorrelation(

@@ -2,7 +2,6 @@ import type { Peak1D } from '@zakodium/nmr-types';
 import type {
   PeaksViewState,
   RangesViewState,
-  Spectrum1D,
   ViewState,
 } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
@@ -89,7 +88,7 @@ function handleAddPeak(draft: Draft<State>, action: AddPeakAction) {
   const startX = mouseXPosition - xShift;
   const endX = mouseXPosition + xShift;
   const [from, to] = getRange(draft, { startX, endX });
-  const candidatePeak = getClosePeak(original(spectrum) as Spectrum1D, {
+  const candidatePeak = getClosePeak(original(spectrum), {
     from,
     to,
   });
@@ -122,7 +121,7 @@ function handleAddPeaks(draft: Draft<State>, action: AddPeaksAction) {
   const [from, to] = getRange(draft, { startX, endX });
 
   if (from !== to) {
-    const peak = getClosePeak(original(spectrum) as Spectrum1D, { from, to });
+    const peak = getClosePeak(original(spectrum), { from, to });
     if (peak && !spectrum.peaks.values.some((p) => p.x === peak.x)) {
       const shiftX = getShiftX(spectrum);
       const newPeak: Peak1D = {
