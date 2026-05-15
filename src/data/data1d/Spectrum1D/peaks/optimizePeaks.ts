@@ -34,7 +34,7 @@ export function optimizePeaks(
  let newPeaks = xyPeaksOptimization({ x, y: re }, peaks, {
     frequency,
     groupingFactor: 3,
-    optimization: { kind: 'lm', options: { maxIterations: 20, } },
+    optimization: { kind: 'lm', options: { maxIterations: 20 } },
     parameters: {
       fwhm: { 
         optimize: true, 
@@ -94,7 +94,7 @@ export function optimizePeaks(
   newPeaks = xyPeaksOptimization({ x, y: re }, newPeaks, {
     frequency,
     groupingFactor: 3,
-    optimization: { kind: 'lm', options: { maxIterations: 10, } },
+    optimization: { kind: 'lm', options: { maxIterations: 10 } },
     parameters: {
       fwhm: {
         optimize: true, 
