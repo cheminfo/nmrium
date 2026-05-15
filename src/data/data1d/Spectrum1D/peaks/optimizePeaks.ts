@@ -31,10 +31,86 @@ export function optimizePeaks(
   x = x.subarray(fromIndex, ToIndex);
   re = re.subarray(fromIndex, ToIndex);
 
-  const newPeaks = xyPeaksOptimization({ x, y: re }, peaks, {
+ let newPeaks = xyPeaksOptimization({ x, y: re }, peaks, {
     frequency,
     groupingFactor: 3,
+    optimization: { kind: 'lm', options: { maxIterations: 20, } },
+    parameters: {
+      fwhm: { 
+        optimize: true, 
+        min: (peak) => (peak.shape?.fwhm ?? 0) / 3,
+        max: (peak) => (peak.shape?.fwhm ?? 0) * 3,
+       },
+      mu: { optimize: false },
+      x: { optimize: false },
+      y: {
+        optimize: true,
+        min: 0, 
+        init: (peak) => peak.y * 0.8, 
+       },
+    }
   });
+
+  newPeaks = xyPeaksOptimization({ x, y: re }, newPeaks, {
+    frequency,
+    groupingFactor: 3,
+    optimization: { kind: 'lm', options: { maxIterations: 20, } },
+    parameters: {
+      fwhm: { 
+        optimize: true, 
+        min: (peak) => (peak.shape?.fwhm ?? 0) / 3,
+        max: (peak) => (peak.shape?.fwhm ?? 0) * 3,
+       },
+      mu: { optimize: true },
+      x: { optimize: false },
+      y: {
+        optimize: true, 
+        min: 0,
+       },
+    }
+  });
+
+
+  newPeaks = xyPeaksOptimization({ x, y: re }, newPeaks, {
+    frequency,
+    groupingFactor: 4,
+    optimization: { kind: 'lm', options: { maxIterations: 20, } },
+    parameters: {
+      fwhm: {
+        optimize: true, 
+        min: (peak) => (peak.shape?.fwhm ?? 0) / 2, 
+        max: (peak) => (peak.shape?.fwhm ?? 0) * 2, 
+      },
+      mu: {
+        optimize: false, 
+      },
+      x: { optimize: true }, 
+      y: { optimize: true, 
+        min: 0,
+      },
+    }
+  });
+
+  newPeaks = xyPeaksOptimization({ x, y: re }, newPeaks, {
+    frequency,
+    groupingFactor: 3,
+    optimization: { kind: 'lm', options: { maxIterations: 10, } },
+    parameters: {
+      fwhm: {
+        optimize: true, 
+        min: (peak) => (peak.shape?.fwhm ?? 0) / 2, 
+        max: (peak) => (peak.shape?.fwhm ?? 0) * 2, 
+      },
+      mu: {
+        optimize: true, 
+      },
+      x: { optimize: true }, 
+      y: { optimize: true, 
+        min: 0,
+      },
+    }
+  });
+
   return mapPeaks(spectrum.peaks.values.concat(newPeaks), spectrum, {
     checkIsExisting: false,
   });
