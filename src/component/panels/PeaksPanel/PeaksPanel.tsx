@@ -105,11 +105,11 @@ function PeaksPanelInner(props: PeaksPanelInnerProps) {
     const filterPeaks = peaks.values.filter((peak) =>
       isInRange(peak.x, { from, to }),
     );
-    if (filterPeaks.length <= 4) {
+    if (filterPeaks.length <= 15) {
       dispatch({ type: 'OPTIMIZE_PEAKS', payload: { peaks: filterPeaks } });
     } else {
       toaster.show({
-        message: 'optimization can be done on no more than 4 peaks',
+        message: 'optimization can be done on no more than 15 peaks',
         intent: 'danger',
       });
     }
