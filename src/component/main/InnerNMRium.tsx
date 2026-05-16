@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
 import { useFullscreen } from 'react-science/ui';
 
 import { AssignmentProvider } from '../assignment/AssignmentProvider.js';
+import { PluginsProvider } from '../plugins/PluginsContext.js';
 import { CoreProvider } from '../context/CoreContext.js';
 import { GlobalProvider } from '../context/GlobalContext.js';
 import { KeyModifiersProvider } from '../context/KeyModifierContext.js';
@@ -48,6 +49,7 @@ export function InnerNMRium(props: InnerNMRiumProps) {
     emptyText,
     apiRef,
     core,
+    plugins,
   } = props;
 
   const rootRef = useRef<HTMLDivElement>(null);
@@ -121,14 +123,16 @@ export function InnerNMRium(props: InnerNMRiumProps) {
                               <HighlightProvider>
                                 <AssignmentProvider>
                                   <SpinnerProvider value={getSpinner}>
-                                    <InnerNMRiumContents
-                                      emptyText={emptyText}
-                                      mainDivRef={mainDivRef}
-                                      elementsWrapperRef={elementsWrapperRef}
-                                      rootRef={rootRef}
-                                      viewerRef={viewerRef}
-                                      apiRef={apiRef}
-                                    />
+                                    <PluginsProvider plugins={plugins}>
+                                      <InnerNMRiumContents
+                                        emptyText={emptyText}
+                                        mainDivRef={mainDivRef}
+                                        elementsWrapperRef={elementsWrapperRef}
+                                        rootRef={rootRef}
+                                        viewerRef={viewerRef}
+                                        apiRef={apiRef}
+                                      />
+                                    </PluginsProvider>
                                   </SpinnerProvider>
                                 </AssignmentProvider>
                               </HighlightProvider>

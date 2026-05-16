@@ -12,6 +12,7 @@ import { useChartData } from '../../context/ChartContext.js';
 import { NextPrev } from '../../elements/NextPrev.js';
 import { useMoleculeEditor } from '../../modal/MoleculeStructureEditorModal.js';
 
+import { usePluginSlot } from '../../plugins/PluginsContext.js';
 import MoleculeHeader from './MoleculeHeader.js';
 import { MoleculeOptionsPanel } from './MoleculeOptionsPanel.js';
 import MoleculePanelHeader from './MoleculePanelHeader.js';
@@ -57,6 +58,7 @@ interface MoleculePanelInnerProps {
 
 function MoleculePanelInner(props: MoleculePanelInnerProps) {
   const { molecules: moleculesProp, moleculesView } = props;
+  const OverlaySlot = usePluginSlot('molecules.panel.overlay');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [molecules, setMolecules] = useState<StateMoleculeExtended[]>([]);
   const [isFlipped, setFlipStatus] = useState(false);
@@ -127,6 +129,7 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
                               className="mol-svg-container"
                               onDoubleClick={() => openMoleculeEditor(mol)}
                               style={{
+                                position: 'relative',
                                 backgroundColor:
                                   (index + 1) % 2 !== 0 ? '#fafafa' : 'white',
                               }}
@@ -139,6 +142,22 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
                                 moleculeView={moleculesView?.[mol.id] || {}}
                                 showLabel={false}
                               />
+                              {OverlaySlot && (
+                                <div
+                                  style={{
+                                    position: 'absolute',
+                                    inset: 0,
+                                    zIndex: 1,
+                                  }}
+                                >
+                                  <OverlaySlot
+                                    molecule={mol}
+                                    moleculeIndex={index}
+                                    width={width}
+                                    height={height - 60}
+                                  />
+                                </div>
+                              )}
                             </div>
                           </div>
                         );
