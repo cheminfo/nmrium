@@ -11,6 +11,7 @@ import type { ErrorBoundaryPropsWithComponent } from 'react-error-boundary';
 import { ErrorBoundary } from 'react-error-boundary';
 import { RootLayout } from 'react-science/ui';
 
+import type { NMRiumPlugin } from '../plugins/index.js';
 import ErrorOverlay from './ErrorOverlay.js';
 import { InnerNMRium } from './InnerNMRium.js';
 import type { NMRiumRefAPI } from './NMRiumRefAPI.js';
@@ -76,6 +77,8 @@ export interface NMRiumProps {
    */
   getSpinner?: () => ReactElement;
   core?: NMRiumCore;
+  /** UI plugins that inject components into named panel slots. */
+  plugins?: NMRiumPlugin[];
 }
 
 const NMRiumBase = forwardRef<NMRiumRefAPI, NMRiumProps>(function NMRium(
