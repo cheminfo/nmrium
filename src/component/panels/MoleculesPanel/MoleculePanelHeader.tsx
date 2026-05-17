@@ -41,6 +41,7 @@ import { useDialogToggle } from '../../hooks/useDialogToggle.js';
 import AboutPredictionModal from '../../modal/AboutPredictionModal.js';
 import { MoleculeAutoLabelsDatabaseModal } from '../../modal/MoleculeAutoLabelsDatabaseModal.js';
 import PredictSpectraModal from '../../modal/PredictSpectraModal.js';
+import { usePluginSlot } from '../../plugins/PluginsContext.js';
 import { booleanToString } from '../../utility/booleanToString.js';
 import {
   browserNotSupportedErrorToast,
@@ -115,6 +116,22 @@ const MOL_EXPORT_MENU: Array<ToolbarPopoverMenuItem<ExportDataItem>> = [
   },
 ];
 
+interface MoleculePanelHeaderSlotProps {
+  molecule: StateMoleculeExtended;
+  moleculeIndex: number;
+}
+
+/* eslint-disable react-hooks/static-components -- the slot returns a stable component reference from the plugin registry, not a new definition */
+function MoleculePanelHeaderSlot({
+  molecule,
+  moleculeIndex,
+}: MoleculePanelHeaderSlotProps) {
+  const HeaderSlot = usePluginSlot('molecules.panel.header');
+  if (!HeaderSlot) return null;
+  return <HeaderSlot molecule={molecule} moleculeIndex={moleculeIndex} />;
+}
+/* eslint-enable react-hooks/static-components */
+
 interface MoleculePanelHeaderProps {
   currentIndex: number;
   molecules: StateMoleculeExtended[];
@@ -125,6 +142,8 @@ interface MoleculePanelHeaderProps {
   onClickPreferences?: () => void;
   onClickPasteMolecule?: () => void;
   children?: ReactNode;
+  /** Current molecule — passed to the molecules.panel.header plugin slot */
+  currentMolecule?: StateMoleculeExtended;
 }
 
 export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
@@ -138,6 +157,7 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
     onClickPreferences,
     onClickPasteMolecule,
     children,
+    currentMolecule,
   } = props;
   const { rootRef } = useGlobal();
   const toaster = useToaster();
@@ -484,6 +504,13 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
           active={moleculesView?.[moleculeKey]?.floating.visible || false}
           disabled={!hasMolecules}
         />
+
+        {currentMolecule && (
+          <MoleculePanelHeaderSlot
+            molecule={currentMolecule}
+            moleculeIndex={currentIndex}
+          />
+        )}
 
         <ToolbarPopoverItem
           options={moreMenu}

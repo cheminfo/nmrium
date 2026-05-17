@@ -67,6 +67,41 @@ function getSignalsDiaIDs(
     ]);
 }
 
+// This enables 2D molecule atom highlighting whenever a range/signal has diaIDs in the spectrum data,
+// without requiring the user to have performed the explicit NMRium assignment workflow.
+function getDiaIdsFromSpectrumData(
+  spectrum: Spectrum,
+  highlighted: string[],
+): string[] {
+  const diaIds: string[] = [];
+  if (isSpectrum1D(spectrum)) {
+    for (const range of spectrum.ranges.values) {
+      const rangeHighlighted = highlighted.includes(range.id);
+      if (rangeHighlighted) {
+        // range-level diaIDs (stored when the whole range is assigned)
+        diaIds.push(
+          ...((range as unknown as { diaIDs?: string[] }).diaIDs ?? []),
+        );
+      }
+      for (const signal of range.signals) {
+        if (rangeHighlighted || highlighted.includes(signal.id)) {
+          diaIds.push(...(signal.diaIDs ?? []));
+        }
+      }
+    }
+  } else if (isSpectrum2D(spectrum)) {
+    for (const zone of spectrum.zones.values) {
+      const zoneHighlighted = highlighted.includes(zone.id);
+      for (const signal of zone.signals) {
+        if (zoneHighlighted || highlighted.includes(signal.id)) {
+          diaIds.push(...(signal.x?.diaIDs ?? []), ...(signal.y?.diaIDs ?? []));
+        }
+      }
+    }
+  }
+  return diaIds;
+}
+
 function use1DSpectraTraces() {
   const traces = useTracesSpectra();
   return Object.values(traces).filter((spectrum) => spectrum !== null);
@@ -137,7 +172,17 @@ export default function useAtomAssignment() {
     const highlights = highlightedAssignmentsIDs.flatMap((highlightID) =>
       getSignalsDiaIDs(currentSpectrum, assignmentsData, highlightID),
     );
-    return getCurrentDiaIDsToHighlight(assignments).concat(highlights);
+
+    // This ensures the 2D molecule highlights whenever spectrum ranges/signals have diaIDs stored,
+    // regardless of whether the user has performed the explicit assignment workflow.
+    const directDiaIds = getDiaIdsFromSpectrumData(
+      currentSpectrum,
+      highlighted,
+    );
+
+    return getCurrentDiaIDsToHighlight(assignments)
+      .concat(highlights)
+      .concat(directDiaIds);
   }, [
     assignments,
     assignmentsData,

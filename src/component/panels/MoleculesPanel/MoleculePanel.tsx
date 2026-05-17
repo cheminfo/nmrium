@@ -11,8 +11,8 @@ import type {
 import { useChartData } from '../../context/ChartContext.js';
 import { NextPrev } from '../../elements/NextPrev.js';
 import { useMoleculeEditor } from '../../modal/MoleculeStructureEditorModal.js';
-
 import { usePluginSlot } from '../../plugins/PluginsContext.js';
+
 import MoleculeHeader from './MoleculeHeader.js';
 import { MoleculeOptionsPanel } from './MoleculeOptionsPanel.js';
 import MoleculePanelHeader from './MoleculePanelHeader.js';
@@ -102,6 +102,7 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
           onOpenMoleculeEditor={() => openMoleculeEditor()}
           onMoleculeIndexChange={moleculeIndexHandler}
           onClickPreferences={settingsPanelHandler}
+          currentMolecule={molecules[activeIndex]}
         />
       )}
       {isFlipped && <MoleculeOptionsPanel onClose={onClose} />}
@@ -148,6 +149,7 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
                                     position: 'absolute',
                                     inset: 0,
                                     zIndex: 1,
+                                    pointerEvents: 'none',
                                   }}
                                 >
                                   <OverlaySlot

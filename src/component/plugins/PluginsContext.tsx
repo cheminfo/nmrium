@@ -24,7 +24,7 @@ export function usePluginSlot<K extends keyof NMRiumPluginSlots>(
   const plugins = useContext(PluginsContext);
   for (let i = plugins.length - 1; i >= 0; i--) {
     const component = plugins[i].slots?.[slot];
-    if (component) return component as NMRiumPluginSlots[K];
+    if (component) return component;
   }
   return undefined;
 }

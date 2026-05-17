@@ -12,6 +12,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { RootLayout } from 'react-science/ui';
 
 import type { NMRiumPlugin } from '../plugins/index.js';
+
 import ErrorOverlay from './ErrorOverlay.js';
 import { InnerNMRium } from './InnerNMRium.js';
 import type { NMRiumRefAPI } from './NMRiumRefAPI.js';

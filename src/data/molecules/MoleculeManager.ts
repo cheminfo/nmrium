@@ -27,7 +27,9 @@ export function fromJSON(
       id,
     };
     try {
-      molecules.push(initMolecule(moleculeOverride));
+      const extended = initMolecule(moleculeOverride);
+      if (others.mol3d) extended.mol3d = others.mol3d;
+      molecules.push(extended);
     } catch {
       continue;
     }
