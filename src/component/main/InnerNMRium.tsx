@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
 import { useFullscreen } from 'react-science/ui';
 
 import { AssignmentProvider } from '../assignment/AssignmentProvider.js';
-import { PluginsProvider } from '../plugins/PluginsContext.js';
 import { CoreProvider } from '../context/CoreContext.js';
 import { GlobalProvider } from '../context/GlobalContext.js';
 import { KeyModifiersProvider } from '../context/KeyModifierContext.js';
@@ -22,6 +21,7 @@ import {
   SpinnerProvider,
   defaultGetSpinner,
 } from '../loader/SpinnerContext.js';
+import { PluginsProvider } from '../plugins/PluginsContext.js';
 import preferencesReducer, {
   initPreferencesState,
   preferencesInitialState,

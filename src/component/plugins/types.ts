@@ -9,6 +9,11 @@ export interface MoleculesPanelOverlayProps {
   height: number;
 }
 
+export interface MoleculesPanelHeaderProps {
+  molecule: StateMoleculeExtended;
+  moleculeIndex: number;
+}
+
 export interface NMRiumPluginSlots {
   /**
    * Rendered inside the molecule viewer container with absolute positioning,
@@ -16,6 +21,12 @@ export interface NMRiumPluginSlots {
    * The component receives the current molecule and container dimensions.
    */
   'molecules.panel.overlay'?: ComponentType<MoleculesPanelOverlayProps>;
+  /**
+   * Rendered as a toolbar item inside the Molecules panel header toolbar,
+   * between the float-molecule button and the "More" menu.
+   * The component receives the current molecule.
+   */
+  'molecules.panel.header'?: ComponentType<MoleculesPanelHeaderProps>;
 }
 
 export interface NMRiumPlugin {
