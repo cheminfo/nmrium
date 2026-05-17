@@ -16,7 +16,10 @@ import { changeSpectraRelativeSum } from '../../../data/data1d/Spectrum1D/SumMan
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
 import { initializeContoursLevels } from '../../../data/data2d/Spectrum2D/contours.ts';
 import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.ts';
-import type { MoleculeBoundingRect } from '../../../data/molecules/Molecule.js';
+import type {
+  Molecule3DData,
+  MoleculeBoundingRect,
+} from '../../../data/molecules/Molecule.js';
 import { DRAGGABLE_STRUCTURE_INITIAL_BOUNDING_REACT } from '../../../data/molecules/Molecule.js';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager.js';
 import { generateColor } from '../../../data/utilities/generateColor.js';
@@ -94,6 +97,11 @@ type ChangeMoleculeLabelAction = ActionType<
   'CHANGE_MOLECULE_LABEL',
   { id: string; label: string }
 >;
+type SetMolecule3DAction = ActionType<
+  'SET_MOLECULE_3D',
+  { id: string; mol3d: Molecule3DData }
+>;
+type ToggleMolecule3DAction = ActionType<'TOGGLE_MOLECULE_3D', { id: string }>;
 
 export type MoleculeActions =
   | AddMoleculeAction
@@ -105,7 +113,9 @@ export type MoleculeActions =
   | ChangeFloatMoleculePositionAction
   | ChangeMoleculeLabelAction
   | ChangeMoleculeAnnotationAction
-  | ToggleMoleculeLabelAction;
+  | ToggleMoleculeLabelAction
+  | SetMolecule3DAction
+  | ToggleMolecule3DAction;
 
 function addMolecule(draft: Draft<State>, props: AddMoleculeProps) {
   const { molfile, id, label, floatMoleculeOnSave, defaultMoleculeSettings } =
@@ -149,6 +159,12 @@ function handleAddMolecules(draft: Draft<State>, action: AddMoleculesAction) {
 
 function setMolecule(draft: Draft<State>, props: SetMoleculeAction['payload']) {
   const { id, label, molfile, mappings } = props;
+
+  // Preserve 3D state before setMolfile replaces the molecule object
+  const existing = draft.molecules.find((m) => m.id === id);
+  const show3d = existing?.show3d;
+  const mol3d = existing?.mol3d;
+
   MoleculeManager.setMolfile(draft.molecules, {
     id,
     label,
@@ -159,6 +175,13 @@ function setMolecule(draft: Draft<State>, props: SetMoleculeAction['payload']) {
    * update all spectra that its sum was based on this molecule with the new molecule
    */
   const index = draft.molecules.findIndex((molecule) => molecule.id === id);
+
+  // Restore 3D state that setMolfile would otherwise clear
+  const updated = draft.molecules[index];
+  if (updated) {
+    if (show3d !== undefined) updated.show3d = show3d;
+    if (mol3d !== undefined) updated.mol3d = mol3d;
+  }
 
   if (mappings) {
     deepReplaceDiaIDs(draft, mappings);
@@ -544,6 +567,25 @@ function handleToggleMoleculeLabel(
   molecule.showLabel = !molecule.showLabel;
 }
 
+function handleSetMolecule3D(draft: Draft<State>, action: SetMolecule3DAction) {
+  const { id, mol3d } = action.payload;
+  const molecule = draft.molecules.find((m) => m.id === id);
+  if (molecule) {
+    molecule.mol3d = mol3d;
+  }
+}
+
+function handleToggleMolecule3D(
+  draft: Draft<State>,
+  action: ToggleMolecule3DAction,
+) {
+  const { id } = action.payload;
+  const molecule = draft.molecules.find((m) => m.id === id);
+  if (molecule) {
+    molecule.show3d = !molecule.show3d;
+  }
+}
+
 export {
   addMolecule,
   handleAddMolecule,
@@ -554,7 +596,9 @@ export {
   handleDeleteMolecule,
   handleFloatMoleculeOverSpectrum,
   handlePredictSpectraFromMolecule,
+  handleSetMolecule3D,
   handleSetMolecule,
+  handleToggleMolecule3D,
   handleToggleMoleculeLabel,
   initMoleculeViewProperties,
 };
