@@ -2,9 +2,11 @@ import type { Info1D, Peak1D, Peaks } from '@zakodium/nmr-types';
 import type { PeaksViewState, Spectrum1D } from '@zakodium/nmrium-core';
 import { SvgNmrFt, SvgNmrPeaks, SvgNmrPeaksTopLabels } from 'cheminfo-font';
 import { memo, useCallback, useMemo, useRef, useState } from 'react';
-import { FaThinkPeaks } from 'react-icons/fa';
+import { FaCopy, FaThinkPeaks } from 'react-icons/fa';
 
 import isInRange from '../../../data/utilities/isInRange.js';
+import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents.tsx';
+import { useClipboard } from '../../../utils/clipboard/clipboardHooks.ts';
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { usePreferences } from '../../context/PreferencesContext.js';
@@ -13,6 +15,7 @@ import { useAlert } from '../../elements/Alert.js';
 import { useActiveSpectrumPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState.js';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
+import { EditPeakShapeModal } from '../../modal/EditPeakShapeModal.tsx';
 import { booleanToString } from '../../utility/booleanToString.js';
 import type { FilterType } from '../../utility/filterType.js';
 import { TablePanel } from '../extra/BasicPanelStyle.js';
@@ -22,7 +25,8 @@ import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
 import PreferencesHeader from '../header/PreferencesHeader.js';
 
 import PeaksPreferences from './PeaksPreferences.js';
-import PeaksTable from './PeaksTable.js';
+import PeaksTable, { usePeaksTableColumns } from './PeaksTable.js';
+import { exportPeaksToTSV } from './peaksToTSV.ts';
 
 interface PeaksPanelInnerProps {
   peaks: Peaks;
@@ -48,7 +52,9 @@ function PeaksPanelInner(props: PeaksPanelInnerProps) {
   const toaster = useToaster();
 
   const settingRef = useRef<SettingsRef | null>(null);
-
+  const { peak, tableColumns, setEditedPeak } = usePeaksTableColumns(activeTab);
+  const { rawWriteWithType, shouldFallback, cleanShouldFallback, text } =
+    useClipboard();
   const yesHandler = useCallback(() => {
     dispatch({ type: 'DELETE_PEAK', payload: {} });
   }, [dispatch]);
@@ -126,6 +132,16 @@ function PeaksPanelInner(props: PeaksPanelInnerProps) {
   const { showPeaks, displayingMode, showPeaksShapes, showPeaksSum } =
     peaksViewState;
 
+  function handleExportPeaksToTSV(): void {
+    const tsv = exportPeaksToTSV(filteredPeaks, tableColumns);
+    void rawWriteWithType(tsv, 'text/plain').then(() =>
+      toaster.show({
+        message: 'Peaks copied to clipboard',
+        intent: 'success',
+      }),
+    );
+  }
+
   const leftButtons: ToolbarItemProps[] = [
     {
       disabled,
@@ -161,38 +177,60 @@ function PeaksPanelInner(props: PeaksPanelInnerProps) {
       onClick: toggleDisplayingMode,
       active: displayingMode === 'spread',
     },
+    {
+      disabled,
+      icon: <FaCopy />,
+      tooltip: `Copy as TSV`,
+      onClick: handleExportPeaksToTSV,
+    },
   ];
 
   return (
-    <TablePanel isFlipped={isFlipped}>
-      {!isFlipped && (
-        <DefaultPanelHeader
-          total={total}
-          counter={filteredPeaks.length}
-          onDelete={handleDeleteAll}
-          deleteToolTip="Delete All Peaks"
-          onFilter={handleOnFilter}
-          filterToolTip={
-            filterIsActive ? 'Show all peaks' : 'Hide peaks out of view'
-          }
-          onSettingClick={settingsPanelHandler}
-          leftButtons={leftButtons}
-        />
-      )}
-      {isFlipped && (
-        <PreferencesHeader
-          onSave={saveSettingHandler}
-          onClose={settingsPanelHandler}
-        />
-      )}
-      <div className="inner-container">
-        {!isFlipped ? (
-          <PeaksTable data={filteredPeaks} info={info} activeTab={activeTab} />
-        ) : (
-          <PeaksPreferences ref={settingRef} />
+    <>
+      <ClipboardFallbackModal
+        mode={shouldFallback}
+        onDismiss={cleanShouldFallback}
+        text={text}
+        label="Peaks"
+      />
+      <EditPeakShapeModal
+        peak={peak}
+        onCloseDialog={() => setEditedPeak(undefined)}
+      />
+      <TablePanel isFlipped={isFlipped}>
+        {!isFlipped && (
+          <DefaultPanelHeader
+            total={total}
+            counter={filteredPeaks.length}
+            onDelete={handleDeleteAll}
+            deleteToolTip="Delete All Peaks"
+            onFilter={handleOnFilter}
+            filterToolTip={
+              filterIsActive ? 'Show all peaks' : 'Hide peaks out of view'
+            }
+            onSettingClick={settingsPanelHandler}
+            leftButtons={leftButtons}
+          />
         )}
-      </div>
-    </TablePanel>
+        {isFlipped && (
+          <PreferencesHeader
+            onSave={saveSettingHandler}
+            onClose={settingsPanelHandler}
+          />
+        )}
+        <div className="inner-container">
+          {!isFlipped ? (
+            <PeaksTable
+              data={filteredPeaks}
+              info={info}
+              tableColumns={tableColumns}
+            />
+          ) : (
+            <PeaksPreferences ref={settingRef} />
+          )}
+        </div>
+      </TablePanel>
+    </>
   );
 }
 
