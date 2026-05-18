@@ -13,24 +13,12 @@ import addCustomColumn, {
   createActionColumn,
 } from '../../elements/ReactTable/utility/addCustomColumn.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
-import { EditPeakShapeModal } from '../../modal/EditPeakShapeModal.js';
 import { formatNumber } from '../../utility/formatNumber.js';
 import { NoDataForFid } from '../extra/placeholder/NoDataForFid.js';
 
 import type { PeakRecord } from './PeaksPanel.js';
 
-interface PeaksTableProps {
-  activeTab: string;
-  data: PeakRecord[];
-  info: Info1D;
-}
-
-function handleActiveRow(row: Row<PeakRecord>) {
-  return row.original.isConstantlyHighlighted;
-}
-
-function PeaksTable(props: PeaksTableProps) {
-  const { activeTab, data, info } = props;
+export function usePeaksTableColumns(activeTab: string) {
   const dispatch = useDispatch();
   const peaksPreferences = usePanelPreferences('peaks', activeTab);
   const [peak, setEditedPeak] = useState<Peak1D | undefined>();
@@ -202,6 +190,22 @@ function PeaksTable(props: PeaksTableProps) {
     return columns;
   }, [COLUMNS, peaksPreferences]);
 
+  return { tableColumns, peak, setEditedPeak };
+}
+
+interface PeaksTableProps {
+  tableColumns: Array<ControlCustomColumn<PeakRecord>>;
+  data: PeakRecord[];
+  info: Info1D;
+}
+
+function handleActiveRow(row: Row<PeakRecord>) {
+  return row.original.isConstantlyHighlighted;
+}
+
+function PeaksTable(props: PeaksTableProps) {
+  const { tableColumns, data, info } = props;
+
   if (info?.isFid) {
     return <NoDataForFid />;
   }
@@ -211,20 +215,14 @@ function PeaksTable(props: PeaksTableProps) {
   }
 
   return (
-    <>
-      <EditPeakShapeModal
-        peak={peak}
-        onCloseDialog={() => setEditedPeak(undefined)}
-      />
-      <ReactTable
-        activeRow={handleActiveRow}
-        rowStyle={{ activated: { backgroundColor: '#f5f5dc' } }}
-        data={data}
-        columns={tableColumns}
-        approxItemHeight={24}
-        enableVirtualScroll
-      />
-    </>
+    <ReactTable
+      activeRow={handleActiveRow}
+      rowStyle={{ activated: { backgroundColor: '#f5f5dc' } }}
+      data={data}
+      columns={tableColumns}
+      approxItemHeight={24}
+      enableVirtualScroll
+    />
   );
 }
 
