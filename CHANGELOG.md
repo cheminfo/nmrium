@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.2.0](https://github.com/cheminfo/nmrium/compare/v2.1.0...v2.2.0) (2026-05-18)
+
+
+### Features
+
+* copy peaks table as TSV to clipboard ([e435bb1](https://github.com/cheminfo/nmrium/commit/e435bb1a77a8d9693aacabd3f66ca5d4a6626e4a))
+* display intensity ratio relative to the maximum absolute peak ([543ff58](https://github.com/cheminfo/nmrium/commit/543ff58f018bb92dcb0308279b696cd20fcd65e1))
+* Improve peak shape options ([67bedcc](https://github.com/cheminfo/nmrium/commit/67bedcccb24298e946a0668bed15e2cc70082097))
+
+
+### Bug Fixes
+
+* handle potentially undefined `info.experiment` ([#4128](https://github.com/cheminfo/nmrium/issues/4128)) ([abd7b93](https://github.com/cheminfo/nmrium/commit/abd7b9389979f4d92b830dbc196a33ddf7cb27f3))
+* typings of multiplet analysis ([#4125](https://github.com/cheminfo/nmrium/issues/4125)) ([336a8e9](https://github.com/cheminfo/nmrium/commit/336a8e935d096ac05afe2d06b98d1b12e8e6b975))
+
 ## [2.1.0](https://github.com/cheminfo/nmrium/compare/v2.0.0...v2.1.0) (2026-05-04)
 
 
