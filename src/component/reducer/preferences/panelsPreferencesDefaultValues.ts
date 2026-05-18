@@ -33,21 +33,25 @@ const getSpectraDefaultValues = (
         label: 'Spectrum Name',
         jpath: ['info', 'name'],
         visible: true,
+        format: '',
       },
       {
         label: 'Solvent',
         jpath: ['info', 'solvent'],
         visible: true,
+        format: '',
       },
       {
         jpath: ['info', 'pulseSequence'],
         label: 'Pulse',
         visible: true,
+        format: '',
       },
       {
         jpath: ['info', 'experiment'],
         label: 'Experiment',
         visible: true,
+        format: '',
       },
       {
         name: 'color',
@@ -57,7 +61,6 @@ const getSpectraDefaultValues = (
       },
     ],
   };
-
   return getPreferences(preferences, nucleus);
 };
 

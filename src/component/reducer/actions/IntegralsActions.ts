@@ -166,7 +166,7 @@ function handleChangeIntegral(
   if (integralIndex !== -1) {
     const {
       data: { x, re },
-    } = original(spectrum) as Spectrum1D;
+    } = original(spectrum);
     spectrum.integrals.values[integralIndex] = {
       ...integral,
       originalFrom: integral.from,

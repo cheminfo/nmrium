@@ -352,4 +352,12 @@ export const workspaceDefaultProperties: RequiredWorkspacePreferences = {
       },
     },
   },
+  spectraLabel: {
+    visible: true,
+    fields: [{ jpath: ['info', 'name'], visible: true, format: '' }],
+    valueStyle: {
+      fontSize: 12,
+      fill: 'black',
+    },
+  },
 };

@@ -10,6 +10,7 @@ import { useVerticalAlign } from '../hooks/useVerticalAlign.js';
 import { useVisibleSpectra1D } from '../hooks/use_visible_spectra_1d.ts';
 
 import Line from './Line.js';
+import { SpectrumLabel } from './SpectrumLabel.tsx';
 import { useInsetOptions } from './inset/InsetProvider.js';
 
 const BOX_SIZE = 10;
@@ -31,6 +32,7 @@ function LinesSeries() {
     <g className="spectra">
       {spectra.map((d, i) => (
         <g key={d.id}>
+          <SpectrumLabel index={i} spectrum={d} />
           <Line display={d.display} id={d.id} data={get1DDataXY(d)} index={i} />
           <HeadlightRectStackMode spectrumID={d.id} index={i} />
         </g>

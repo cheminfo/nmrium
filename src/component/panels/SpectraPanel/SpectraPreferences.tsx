@@ -129,6 +129,7 @@ function SpectraPreferences(props: object, ref: Ref<any>) {
           jpath: [],
           label: '',
           visible: true,
+          format: '',
         },
         ...columns.slice(index),
       ];

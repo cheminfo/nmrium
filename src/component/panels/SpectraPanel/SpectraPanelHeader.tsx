@@ -7,7 +7,7 @@ import { SvgNmrResetScale, SvgNmrSameTop } from 'cheminfo-font';
 import { memo, useCallback } from 'react';
 import { FaCreativeCommonsSamplingPlus } from 'react-icons/fa';
 import { IoColorPaletteOutline } from 'react-icons/io5';
-import { MdFormatColorFill } from 'react-icons/md';
+import { MdFormatColorFill, MdOutlineFormatColorText } from 'react-icons/md';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
@@ -18,6 +18,7 @@ import { useActiveSpectra } from '../../hooks/useActiveSpectra.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import { useToggleSpectraVisibility } from '../../hooks/useToggleSpectraVisibility.js';
 import type { DisplayerMode } from '../../reducer/Reducer.js';
+import { booleanToString } from '../../utility/booleanToString.ts';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus.js';
 import type { ToolbarItemProps } from '../header/DefaultPanelHeader.js';
 import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
@@ -59,7 +60,8 @@ function SpectraPanelHeaderInner({
   const toaster = useToaster();
   const dispatch = useDispatch();
   const {
-    current: { spectraColors },
+    current: { spectraColors, spectraLabel },
+    dispatch: dispatchPreferences,
   } = usePreferences();
 
   const handleDelete = useCallback(() => {
@@ -116,6 +118,14 @@ function SpectraPanelHeaderInner({
       payload: {},
     });
   }
+
+  function toggleSpectraLabelHandler() {
+    dispatchPreferences({
+      type: 'TOGGLE_SPECTRA_LABEL',
+      payload: {},
+    });
+  }
+
   const hasActiveSpectra = activeSpectra && activeSpectra?.length > 0;
   const spectraLengthPerTab = getSpectraByNucleus(activeTab, data)?.length;
   const { getToggleVisibilityButtons } = useToggleSpectraVisibility(
@@ -167,6 +177,12 @@ function SpectraPanelHeaderInner({
       icon: <MdFormatColorFill />,
       tooltip: 'Distinct spectra recoloring',
       onClick: distinctReColorSpectraHandler,
+    },
+    {
+      icon: <MdOutlineFormatColorText />,
+      tooltip: `${booleanToString(!spectraLabel.visible)} spectra label`,
+      active: spectraLabel.visible,
+      onClick: toggleSpectraLabelHandler,
     },
   ]);
 
