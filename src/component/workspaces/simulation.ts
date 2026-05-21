@@ -55,17 +55,20 @@ export const simulation: InnerWorkspace = {
               label: 'Spectrum Name',
               jpath: ['info', 'name'],
               visible: true,
+              format: '',
             },
             {
               label: 'Frequency',
               description: 'frequency',
               jpath: ['info', 'originFrequency'],
               visible: true,
+              format: '',
             },
             {
               jpath: ['info', 'nucleus'],
               label: 'Experiment',
               visible: true,
+              format: '',
             },
             {
               name: 'color',

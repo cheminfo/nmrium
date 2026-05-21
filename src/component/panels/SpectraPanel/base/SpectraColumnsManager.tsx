@@ -106,6 +106,23 @@ export function SpectraColumnsManager({
         },
       },
       {
+        Header: 'Format',
+        style: { padding: 0 },
+        Cell: ({ row }: CellProps<SpectraTableColumn>) => {
+          const column: any = row.original;
+          const name = getObjectKey(nucleus, row.index, 'format');
+          return (
+            <Input2Controller
+              control={control}
+              name={name}
+              style={{ backgroundColor: 'transparent' }}
+              noShadowBox
+              disabled={column.name}
+            />
+          );
+        },
+      },
+      {
         Header: 'Visible',
         style: { width: '30px', textAlign: 'center' },
         Cell: ({ row }: CellProps<SpectraTableColumn>) => (
