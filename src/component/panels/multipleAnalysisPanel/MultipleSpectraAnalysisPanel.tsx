@@ -29,6 +29,14 @@ import AnalysisChart from './AnalysisChart.js';
 import MultipleSpectraAnalysisTable from './MultipleSpectraAnalysisTable.js';
 import MultipleSpectraAnalysisPreferences from './preferences/index.js';
 
+function mapSpectraColors(spectra: Spectrum1D[]) {
+  const result: Record<string, string> = {};
+
+  for (const spectrum of spectra) {
+    result[spectrum.id] = spectrum.display.color || '#000000';
+  }
+  return result;
+}
 interface MultipleSpectraAnalysisPanelInnerProps {
   spectra: Spectrum1D[];
   displayerMode: DisplayerMode;
@@ -52,6 +60,8 @@ function MultipleSpectraAnalysisPanelInner({
     spectra,
     activeTab,
   );
+
+  const spectraColors = mapSpectraColors(spectra);
 
   const settingRef = useRef<SettingsRef | null>(null);
   const toaster = useToaster();
@@ -160,6 +170,7 @@ function MultipleSpectraAnalysisPanelInner({
               data={spectraAnalysis}
               resortSpectra={preferences.analysisOptions.resortSpectra}
               activeTab={activeTab}
+              spectraColors={spectraColors}
             />
           </div>
         )}
