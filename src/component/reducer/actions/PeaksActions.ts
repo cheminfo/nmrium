@@ -2,6 +2,7 @@ import type { Peak1D } from '@zakodium/nmr-types';
 import type {
   PeaksViewState,
   RangesViewState,
+  Spectrum1D,
   ViewState,
 } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
@@ -22,6 +23,7 @@ import { getDefaultRangesViewState } from '../../hooks/useActiveSpectrumRangesVi
 import type { FilterType } from '../../utility/filterType.js';
 import { getClosePeak } from '../../utility/getClosePeak.js';
 import type { State } from '../Reducer.js';
+import { getActiveSpectra } from '../helper/getActiveSpectra.ts';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
 import getRange from '../helper/getRange.js';
 import { getSpectrum } from '../helper/getSpectrum.js';
@@ -179,23 +181,36 @@ function handleAutoPeakPicking(
 ) {
   const { options, defaultPeakShape } = action.payload;
 
-  const spectrum = getSpectrum(draft);
-  if (!isSpectrum1D(spectrum)) return;
+  const activeSpectra = getActiveSpectra(draft);
+
+  if (!activeSpectra || activeSpectra?.length === 0) return;
+
+  const spectra: Spectrum1D[] = [];
+
+  for (const activeSpectrum of activeSpectra) {
+    const spectrum = getSpectrum(draft, activeSpectrum.id);
+    if (spectrum && isSpectrum1D(spectrum)) {
+      spectra.push(spectrum);
+    }
+  }
+
+  const [from, to] = draft.xDomain;
+
+  for (const spectrum of spectra) {
+    const windowFromIndex = xFindClosestIndex(spectrum.data.x, from);
+    const windowToIndex = xFindClosestIndex(spectrum.data.x, to);
+
+    const peaks = autoPeakPicking(spectrum, {
+      ...options,
+      windowFromIndex,
+      windowToIndex,
+      defaultPeakShape,
+    });
+    spectrum.peaks.values = spectrum.peaks.values.concat(peaks);
+  }
 
   draft.toolOptions.selectedTool = 'zoom';
   draft.toolOptions.selectedOptionPanel = null;
-
-  const [from, to] = draft.xDomain;
-  const windowFromIndex = xFindClosestIndex(spectrum.data.x, from);
-  const windowToIndex = xFindClosestIndex(spectrum.data.x, to);
-
-  const peaks = autoPeakPicking(spectrum, {
-    ...options,
-    windowFromIndex,
-    windowToIndex,
-    defaultPeakShape,
-  });
-  spectrum.peaks.values = spectrum.peaks.values.concat(peaks);
 }
 
 //action

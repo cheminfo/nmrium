@@ -53,6 +53,9 @@ export const options: RecordOptions = {
         info: [{ key: 'isFt', value: true }],
         active: true,
       },
+      {
+        active: false,
+      },
     ],
     isToggle: true,
   },

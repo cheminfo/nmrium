@@ -9,6 +9,7 @@ import Label from '../elements/Label.js';
 import { NumberInput2Controller } from '../elements/NumberInput2Controller.js';
 import { Select2Controller } from '../elements/Select2Controller.js';
 import { useActiveNucleusTab } from '../hooks/useActiveNucleusTab.ts';
+import { useActiveSpectra } from '../hooks/useActiveSpectra.ts';
 import {
   MIN_AREA_POINTS,
   useCheckPointsNumberInWindowArea,
@@ -43,7 +44,7 @@ interface AutoPeakPickingOptions {
 }
 
 const validationSchema = Yup.object().shape({
-  maxNumberOfPeaks: Yup.number().min(0).required(),
+  maxNumberOfPeaks: Yup.number().min(1).required(),
   minMaxRatio: Yup.number().min(0).required(),
   noiseFactor: Yup.number().min(0).required(),
   direction: Yup.mixed<Direction>()
@@ -63,6 +64,8 @@ export function AutoPeakPickingOptionPanel() {
   const pointsNumber = useCheckPointsNumberInWindowArea();
   const toaster = useToaster();
   const nucleus = useActiveNucleusTab();
+  const activeSpectra = useActiveSpectra();
+
   const { defaultPeakShape } = usePanelPreferences('peaks', nucleus);
   const {
     handleSubmit,
@@ -90,7 +93,6 @@ export function AutoPeakPickingOptionPanel() {
       });
     }
   }
-
   return (
     <HeaderWrapper>
       <Label title="Direction:" shortTitle="" style={headerLabelStyle}>
@@ -104,7 +106,7 @@ export function AutoPeakPickingOptionPanel() {
         <NumberInput2Controller
           control={control}
           name="maxNumberOfPeaks"
-          min={0}
+          min={1}
           stepSize={1}
           style={{ width: '60px' }}
         />
@@ -138,9 +140,9 @@ export function AutoPeakPickingOptionPanel() {
         intent="success"
         onClick={() => handleSubmit(handlePeakPicking)()}
         style={{ margin: '0 10px' }}
-        disabled={!isValid}
+        disabled={!isValid || !activeSpectra}
       >
-        Apply
+        Apply to {activeSpectra?.length || 0} spectra
       </Button>
     </HeaderWrapper>
   );
