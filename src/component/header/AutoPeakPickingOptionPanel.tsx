@@ -56,7 +56,7 @@ const INIT_VALUES: AutoPeakPickingOptions = {
   maxNumberOfPeaks: 50,
   minMaxRatio: 0.05,
   noiseFactor: 3,
-  direction: 'positive',
+  direction: 'both',
 };
 
 export function AutoPeakPickingOptionPanel() {
