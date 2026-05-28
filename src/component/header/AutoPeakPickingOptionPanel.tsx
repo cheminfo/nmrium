@@ -12,7 +12,7 @@ import { useActiveNucleusTab } from '../hooks/useActiveNucleusTab.ts';
 import { useActiveSpectra } from '../hooks/useActiveSpectra.ts';
 import {
   MIN_AREA_POINTS,
-  useCheckPointsNumberInWindowArea,
+  useCheckPointsNumberInSelectedSpectra,
 } from '../hooks/useCheckPointsNumberInWindowArea.js';
 import { usePanelPreferences } from '../hooks/usePanelPreferences.ts';
 
@@ -61,7 +61,7 @@ const INIT_VALUES: AutoPeakPickingOptions = {
 
 export function AutoPeakPickingOptionPanel() {
   const dispatch = useDispatch();
-  const pointsNumber = useCheckPointsNumberInWindowArea();
+  const hasEnoughPoints = useCheckPointsNumberInSelectedSpectra();
   const toaster = useToaster();
   const nucleus = useActiveNucleusTab();
   const activeSpectra = useActiveSpectra();
@@ -78,7 +78,7 @@ export function AutoPeakPickingOptionPanel() {
   });
 
   function handlePeakPicking(values: any) {
-    if (pointsNumber > MIN_AREA_POINTS) {
+    if (hasEnoughPoints) {
       dispatch({
         type: 'AUTO_PEAK_PICKING',
         payload: {
@@ -140,9 +140,9 @@ export function AutoPeakPickingOptionPanel() {
         intent="success"
         onClick={() => handleSubmit(handlePeakPicking)()}
         style={{ margin: '0 10px' }}
-        disabled={!isValid || !activeSpectra}
+        disabled={!isValid}
       >
-        Apply to {activeSpectra?.length || 0} spectra
+        Apply to {activeSpectra?.length || 'all'} spectra
       </Button>
     </HeaderWrapper>
   );
