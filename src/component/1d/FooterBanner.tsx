@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import type { ActiveSpectrum, Spectrum1D } from '@zakodium/nmrium-core';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 import { BsCursor } from 'react-icons/bs';
 import { IoPulseSharp } from 'react-icons/io5';
 
@@ -14,6 +14,7 @@ import { FooterContainer, InfoItem } from '../elements/Footer.js';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
 import { useFormatNumberByNucleus } from '../hooks/useFormatNumberByNucleus.js';
 import useSpectrum from '../hooks/useSpectrum.js';
+import { maxAbsoluteValue } from '../utility/maxAbsoluteValue.ts';
 
 import { useInsetOptions } from './inset/InsetProvider.js';
 
@@ -57,6 +58,14 @@ function FooterBannerInner({
   const { startX, endX, step, mouseButton } = useBrushTracker();
   const { scaleX } = useScaleChecked();
 
+  const maxIntensityAbsValue = useMemo(() => {
+    if (spectrum) {
+      const data = get1DDataXY(spectrum);
+      return maxAbsoluteValue(data.y);
+    }
+    return 0;
+  }, [spectrum]);
+
   const format = useFormatNumberByNucleus(activeTab);
   const isInset = useInsetOptions();
 
@@ -92,7 +101,8 @@ function FooterBannerInner({
   }
 
   const isBrushing = step === 'brushing' && mouseButton === 'main';
-
+  const intensity = getYValue(position.x);
+  const ratio = (Math.abs(intensity) / maxIntensityAbsValue) * 100;
   return (
     <FooterContainer>
       <BsCursor />
@@ -164,7 +174,13 @@ function FooterBannerInner({
           <InfoBlock>
             <InfoItem.Label>Intensity: </InfoItem.Label>
             <InfoItem.Value style={{ minWidth: 80 }}>
-              {format(getYValue(position.x))}
+              {format(intensity)}
+            </InfoItem.Value>
+          </InfoBlock>
+          <Separator />
+          <InfoBlock>
+            <InfoItem.Value style={{ minWidth: 80 }}>
+              {ratio.toFixed(2)} %
             </InfoItem.Value>
           </InfoBlock>
         </FlexInfoItem>

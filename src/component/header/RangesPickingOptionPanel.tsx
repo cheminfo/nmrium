@@ -42,11 +42,11 @@ function RangesPickingOptionPanel() {
     resolver: yupResolver(validationSchema),
     mode: 'onChange',
   });
-  const pointsNumber = useCheckPointsNumberInWindowArea();
+  const hasEnoughPoints = useCheckPointsNumberInWindowArea();
   const toaster = useToaster();
 
   function handleRangesPicking(values: any) {
-    if (pointsNumber > MIN_AREA_POINTS) {
+    if (hasEnoughPoints) {
       dispatch({
         type: 'AUTO_RANGES_DETECTION',
         payload: values,

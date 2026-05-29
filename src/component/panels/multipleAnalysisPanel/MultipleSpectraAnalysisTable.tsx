@@ -1,9 +1,11 @@
+import styled from '@emotion/styled';
 import { Fragment, useMemo } from 'react';
 import type { CellProps, Row } from 'react-table';
 
 import type { SpectraAnalysisData } from '../../../data/data1d/multipleSpectraAnalysis.js';
 import { usePreferences } from '../../context/PreferencesContext.js';
 import { useSortSpectra } from '../../context/SortSpectraContext.js';
+import { ColorDot } from '../../elements/ColorDot.tsx';
 import { EmptyText } from '../../elements/EmptyText.js';
 import ReactTable from '../../elements/ReactTable/ReactTable.js';
 import type { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn.js';
@@ -16,10 +18,28 @@ import AnalysisCell from './base/AnalysisCell.js';
 import type { AnalysisColumnHeaderProps } from './base/AnalysisColumnHeader.js';
 import AnalysisColumnHeader from './base/AnalysisColumnHeader.js';
 
+const SerialWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+`;
+
+const Serial = styled.span`
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  min-width: 22px;
+  text-align: right;
+  user-select: none;
+  padding: 4px;
+`;
+
 interface MultipleSpectraAnalysisTableProps {
   data: SpectraAnalysisData;
   activeTab: string;
   resortSpectra: boolean;
+  spectraColors: Record<string, string>;
 }
 
 type ValueType = SpectraAnalysisData['values'][number];
@@ -27,7 +47,7 @@ type ValueType = SpectraAnalysisData['values'][number];
 function MultipleSpectraAnalysisTable(
   props: MultipleSpectraAnalysisTableProps,
 ) {
-  const { data, activeTab, resortSpectra } = props;
+  const { data, activeTab, resortSpectra, spectraColors } = props;
   const format = useFormatNumberByNucleus(activeTab);
   const { dispatch: dispatchPreferences } = usePreferences();
   const panelPreferences = usePanelPreferences(
@@ -66,6 +86,22 @@ function MultipleSpectraAnalysisTable(
         Header: '#',
         index: 0,
         accessor: (_, index) => index !== undefined && index + 1,
+        disableSortBy: true,
+        Cell: ({ row, data }: CellProps<any>) => {
+          const spectrumId = row.original[Object.keys(row.original)[0]].SID;
+          const color = spectraColors?.[spectrumId] || '#000000';
+          return (
+            <SerialWrapper>
+              <Serial>
+                {String(row.index + 1).padStart(
+                  String(data.length).length,
+                  '0',
+                )}
+              </Serial>
+              <ColorDot color={color} />
+            </SerialWrapper>
+          );
+        },
       },
     ];
 
@@ -125,6 +161,7 @@ function MultipleSpectraAnalysisTable(
     dispatchPreferences,
     format,
     panelPreferences?.analysisOptions?.columns,
+    spectraColors,
   ]);
 
   const { sort, reset } = useSortSpectra();

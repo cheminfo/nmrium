@@ -27,6 +27,7 @@ interface InfoContainerProps {
 const InfoContainer = styled.div<InfoContainerProps>`
   display: ${({ display = 'inline-block' }) => display};
   margin: 0 10px;
+  font-variant-numeric: tabular-nums;
 
   @container (max-width:${({ hideThreshold = 600 }) => hideThreshold}px) {
     display: ${({ autoHide = false, display = 'inline-block' }) =>

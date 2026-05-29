@@ -2,7 +2,7 @@ import type { Peak1D } from '@zakodium/nmr-types';
 import type {
   PeaksViewState,
   RangesViewState,
-  Spectrum1D,
+  Spectrum,
   ViewState,
 } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
@@ -22,7 +22,9 @@ import { defaultPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewSta
 import { getDefaultRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
 import type { FilterType } from '../../utility/filterType.js';
 import { getClosePeak } from '../../utility/getClosePeak.js';
+import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus.ts';
 import type { State } from '../Reducer.js';
+import { getActiveSpectra } from '../helper/getActiveSpectra.ts';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
 import getRange from '../helper/getRange.js';
 import { getSpectrum } from '../helper/getSpectrum.js';
@@ -89,7 +91,7 @@ function handleAddPeak(draft: Draft<State>, action: AddPeakAction) {
   const startX = mouseXPosition - xShift;
   const endX = mouseXPosition + xShift;
   const [from, to] = getRange(draft, { startX, endX });
-  const candidatePeak = getClosePeak(original(spectrum) as Spectrum1D, {
+  const candidatePeak = getClosePeak(original(spectrum), {
     from,
     to,
   });
@@ -122,7 +124,7 @@ function handleAddPeaks(draft: Draft<State>, action: AddPeaksAction) {
   const [from, to] = getRange(draft, { startX, endX });
 
   if (from !== to) {
-    const peak = getClosePeak(original(spectrum) as Spectrum1D, { from, to });
+    const peak = getClosePeak(original(spectrum), { from, to });
     if (peak && !spectrum.peaks.values.some((p) => p.x === peak.x)) {
       const shiftX = getShiftX(spectrum);
       const newPeak: Peak1D = {
@@ -180,23 +182,40 @@ function handleAutoPeakPicking(
 ) {
   const { options, defaultPeakShape } = action.payload;
 
-  const spectrum = getSpectrum(draft);
-  if (!isSpectrum1D(spectrum)) return;
+  const activeSpectra = getActiveSpectra(draft);
+
+  let spectra: Spectrum[] = [];
+
+  if (!activeSpectra || activeSpectra.length === 0) {
+    spectra = getSpectraByNucleus(draft.view.spectra.activeTab, draft.data);
+  } else {
+    for (const activeSpectrum of activeSpectra) {
+      const spectrum = getSpectrum(draft, activeSpectrum.index);
+      if (spectrum) {
+        spectra.push(spectrum);
+      }
+    }
+  }
+
+  const [from, to] = draft.xDomain;
+
+  for (const spectrum of spectra) {
+    if (!isSpectrum1D(spectrum)) continue;
+
+    const windowFromIndex = xFindClosestIndex(spectrum.data.x, from);
+    const windowToIndex = xFindClosestIndex(spectrum.data.x, to);
+
+    const peaks = autoPeakPicking(spectrum, {
+      ...options,
+      windowFromIndex,
+      windowToIndex,
+      defaultPeakShape,
+    });
+    spectrum.peaks.values = spectrum.peaks.values.concat(peaks);
+  }
 
   draft.toolOptions.selectedTool = 'zoom';
   draft.toolOptions.selectedOptionPanel = null;
-
-  const [from, to] = draft.xDomain;
-  const windowFromIndex = xFindClosestIndex(spectrum.data.x, from);
-  const windowToIndex = xFindClosestIndex(spectrum.data.x, to);
-
-  const peaks = autoPeakPicking(spectrum, {
-    ...options,
-    windowFromIndex,
-    windowToIndex,
-    defaultPeakShape,
-  });
-  spectrum.peaks.values = spectrum.peaks.values.concat(peaks);
 }
 
 //action
