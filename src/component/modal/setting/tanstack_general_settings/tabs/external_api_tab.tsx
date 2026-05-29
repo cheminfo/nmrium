@@ -17,7 +17,14 @@ import { defaultGeneralSettingsFormValues } from '../validation.js';
 
 type API = z.input<typeof externalAPIWithUUIDValidation>;
 function emptyApi(): API {
-  return { key: 'CT', serverLink: '', APIKey: '', uuid: crypto.randomUUID() };
+  return {
+    uuid: crypto.randomUUID(),
+    key: 'ct',
+    name: '',
+    description: '',
+    apiUrl: '',
+    apiKey: '',
+  };
 }
 
 const itemsAPI = EXTERNAL_API_KEYS.slice();
@@ -34,13 +41,16 @@ export const ExternalApiTab = withForm({
       return [
         helper.accessor('key', {
           header: 'Service',
+          meta: {
+            tdStyle: { width: '180px' },
+          },
           cell: ({ row: { index } }) => (
             <Field name={`${name}[${index}].key`}>
               {(field) => (
                 <Select2
                   items={itemsAPI}
                   itemValueKey="key"
-                  itemTextKey="description"
+                  itemTextKey="label"
                   selectedItemValue={field.state.value}
                   onItemSelect={({ key }) => field.handleChange(key)}
                   intent={!field.state.meta.isValid ? 'danger' : 'none'}
@@ -50,18 +60,35 @@ export const ExternalApiTab = withForm({
             </Field>
           ),
         }),
-        helper.accessor('serverLink', {
-          header: 'Server link',
+        helper.accessor('name', {
+          header: 'Name',
           cell: ({ row: { index } }) => (
-            <Field name={`${name}[${index}].serverLink`}>
+            <Field name={`${name}[${index}].name`}>
               {(field) => <CellInput field={field} />}
             </Field>
           ),
         }),
-        helper.accessor('APIKey', {
+        helper.accessor('description', {
+          header: 'Description',
+          cell: ({ row: { index } }) => (
+            <Field name={`${name}[${index}].description`}>
+              {(field) => <CellInput field={field} />}
+            </Field>
+          ),
+        }),
+        helper.accessor('apiUrl', {
+          header: 'API link',
+          cell: ({ row: { index } }) => (
+            <Field name={`${name}[${index}].apiUrl`}>
+              {(field) => <CellInput field={field} />}
+            </Field>
+          ),
+        }),
+
+        helper.accessor('apiKey', {
           header: 'API key',
           cell: ({ row: { index } }) => (
-            <Field name={`${name}[${index}].APIKey`}>
+            <Field name={`${name}[${index}].apiKey`}>
               {(field) => <CellInput field={field} />}
             </Field>
           ),
