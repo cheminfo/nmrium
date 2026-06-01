@@ -1,4 +1,5 @@
 import { memo, useMemo } from 'react';
+import { useWatch } from 'react-hook-form';
 
 import PlotChart from './PlotChart.js';
 import { processSnapPlot } from './processSnapPlot.js';
@@ -16,6 +17,10 @@ function Spectrum1DHistogram({
   const processedData = useMemo(() => {
     return processSnapPlot('1D', data, yLogBase);
   }, [data]);
+
+  const isApplyToAllSelected = useWatch({ name: 'applyToAll' });
+
+  if (isApplyToAllSelected) return null;
 
   return (
     <div

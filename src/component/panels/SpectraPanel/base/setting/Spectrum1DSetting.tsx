@@ -1,9 +1,10 @@
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { ColorPicker } from 'react-science/ui';
 
 import { COLORS } from '../../../../../data/utilities/generateColor.js';
 import { colorToHexWithAlpha } from '../../../../utility/colorToHexWithAlpha.js';
 
+import { ApplyToAllSelected } from './ApplyToAllSelected.tsx';
 import Spectrum1DHistogram from './Spectrum1DHistogram.js';
 
 interface Spectrum1DSettingProps {
@@ -13,33 +14,40 @@ interface Spectrum1DSettingProps {
 
 export function Spectrum1DSetting({ data, onSubmit }: Spectrum1DSettingProps) {
   const { display, data: spectrumData } = data;
-  const { control, handleSubmit } = useForm({
-    defaultValues: { display },
+  const methods = useForm({
+    defaultValues: { display, applyToAll: false },
   });
+  const { control, handleSubmit } = methods;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-      <div style={{ display: 'block', position: 'relative' }}>
-        <Controller
-          name="display.color"
-          control={control}
-          render={({ field }) => {
-            const { value, onChange } = field;
-            return (
-              <ColorPicker
-                onChangeComplete={(color) => {
-                  onChange(colorToHexWithAlpha(color));
-                  void handleSubmit(onSubmit)();
-                }}
-                color={{ hex: value || '#000' }}
-                presetColors={COLORS}
-                style={{ boxShadow: 'none' }}
-              />
-            );
-          }}
-        />
+    <FormProvider {...methods}>
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <ApplyToAllSelected />
+
+        <div
+          style={{ display: 'block', position: 'relative', margin: '0 auto' }}
+        >
+          <Controller
+            name="display.color"
+            control={control}
+            render={({ field }) => {
+              const { value, onChange } = field;
+              return (
+                <ColorPicker
+                  onChangeComplete={(color) => {
+                    onChange(colorToHexWithAlpha(color));
+                    void handleSubmit(onSubmit)();
+                  }}
+                  color={{ hex: value || '#000' }}
+                  presetColors={COLORS}
+                  style={{ boxShadow: 'none', width: 250 }}
+                />
+              );
+            }}
+          />
+        </div>
+        <Spectrum1DHistogram color="red" data={spectrumData} />
       </div>
-      <Spectrum1DHistogram color="red" data={spectrumData} />
-    </div>
+    </FormProvider>
   );
 }

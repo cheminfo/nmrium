@@ -90,11 +90,11 @@ type ChangeActiveSpectrumAction = ActionType<
 type ChangeSpectrumSettingAction = ActionType<
   'CHANGE_SPECTRUM_SETTING',
   | {
-      id: string;
+      ids: string[];
       display: Display1D | Display2D;
     }
   | {
-      id: string;
+      ids: string[];
       display: Display2D;
       contourOptions: ContourLevel;
     }
@@ -445,16 +445,22 @@ function handleChangeSpectrumSetting(
   draft: Draft<State>,
   action: ChangeSpectrumSettingAction,
 ) {
-  const id = action.payload.id;
+  const ids = action.payload.ids;
 
-  const spectrum = getSpectrum(draft, id);
-  if (!spectrum) return;
+  const spectraById = new Map(draft.data.map((s) => [s.id, s]));
 
-  spectrum.display = action.payload.display;
-  if (isFt2DSpectrum(spectrum) && 'contourOptions' in action.payload) {
-    draft.view.spectraContourLevels[id] = action.payload.contourOptions;
-    const { checkLevel } = contoursManager(draft.view.spectraContourLevels[id]);
-    checkLevel();
+  for (const id of ids) {
+    const spectrum = spectraById.get(id);
+    if (!spectrum) continue;
+
+    spectrum.display = action.payload.display;
+    if (isFt2DSpectrum(spectrum) && 'contourOptions' in action.payload) {
+      draft.view.spectraContourLevels[id] = action.payload.contourOptions;
+      const { checkLevel } = contoursManager(
+        draft.view.spectraContourLevels[id],
+      );
+      checkLevel();
+    }
   }
 }
 
