@@ -3,13 +3,14 @@ import styled from '@emotion/styled';
 import type { Display1D, Display2D } from '@zakodium/nmrium-core';
 
 import { useDispatch } from '../../../../context/DispatchContext.js';
+import { useActiveSpectra } from '../../../../hooks/useActiveSpectra.ts';
 import { ColorIndicator } from '../ColorIndicator.js';
 
 import { Spectrum1DSetting } from './Spectrum1DSetting.js';
 import { Spectrum2DSetting } from './Spectrum2DSetting.js';
 
 const SpectrumSettingContent = styled.div`
-  max-height: 360px;
+  max-height: 390px;
   overflow-y: auto;
 `;
 interface SpectrumSettingProps {
@@ -25,11 +26,18 @@ export function SpectrumSetting({
 }: SpectrumSettingProps) {
   const dispatch = useDispatch();
   const { id, info } = data;
+  const activeSpectra = useActiveSpectra();
 
   function submitHandler(values: any) {
+    const { applyToAll, ...other } = values;
+    const ids =
+      activeSpectra && activeSpectra.length >= 2 && applyToAll
+        ? activeSpectra.map((s) => s.id)
+        : [id];
+
     dispatch({
       type: 'CHANGE_SPECTRUM_SETTING',
-      payload: { id, ...values },
+      payload: { ids, ...other },
     });
   }
 

@@ -20,6 +20,7 @@ import { NumberInput2 } from '../../../../elements/NumberInput2.js';
 import { useFormValidateField } from '../../../../elements/useFormValidateField.js';
 import { colorToHexWithAlpha } from '../../../../utility/colorToHexWithAlpha.js';
 
+import { ApplyToAllSelected } from './ApplyToAllSelected.tsx';
 import Spectrum2DHistogram from './Spectrum2DHistogram.js';
 
 const StyledRangeSlider = styled(RangeSlider)<{
@@ -57,22 +58,29 @@ export function Spectrum2DSetting({ data, onSubmit }: Spectrum2DSettingProps) {
     view: { spectraContourLevels },
   } = useChartData();
   const methods = useForm({
-    defaultValues: { contourOptions: spectraContourLevels[id], display },
+    defaultValues: {
+      contourOptions: spectraContourLevels[id],
+      display,
+      applyToAll: false,
+    },
   });
   const { positiveColor, negativeColor } = display;
 
   return (
     <FormProvider {...methods}>
-      <div>
-        <Container color={positiveColor}>
-          <span style={{ padding: '0 10px' }}>Positive</span>
-          <Settings sign="positive" onSubmit={onSubmit} />
-        </Container>
-        <Container color={negativeColor}>
-          <span style={{ padding: '0 10px' }}>Negative</span>
-          <Settings sign="negative" onSubmit={onSubmit} />
-        </Container>
-        <Spectrum2DHistogram data={spectrumData} />
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <ApplyToAllSelected />
+        <div>
+          <Container color={positiveColor}>
+            <span style={{ padding: '0 10px' }}>Positive</span>
+            <Settings sign="positive" onSubmit={onSubmit} />
+          </Container>
+          <Container color={negativeColor}>
+            <span style={{ padding: '0 10px' }}>Negative</span>
+            <Settings sign="negative" onSubmit={onSubmit} />
+          </Container>
+          <Spectrum2DHistogram data={spectrumData} />
+        </div>
       </div>
     </FormProvider>
   );
