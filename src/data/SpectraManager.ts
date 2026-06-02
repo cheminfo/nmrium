@@ -171,13 +171,11 @@ export function exportAsJcamp(
   spectrum: Spectrum,
   dataExportStage: DataExportStage,
 ) {
-  let jcamp: string | null = null;
   if (!isSpectrum1D(spectrum)) {
     throw new Error('convert 2D spectrum to JCAMP is not supported');
   }
-  const { originalData, originalInfo, ...otherSpectrum } = spectrum;
-
-  const exportedSpectrum: Spectrum = { ...otherSpectrum };
+  const { originalData, originalInfo, info } = spectrum;
+  const exportedSpectrum = { ...spectrum };
 
   if (!['processedReal', 'processedRealImaginary'].includes(dataExportStage)) {
     if (!originalData || !originalInfo) {
@@ -192,16 +190,14 @@ export function exportAsJcamp(
   const onlyReal =
     dataExportStage === 'processedReal' || dataExportStage === 'originalFtReal';
 
-  jcamp = spectrum1DToJCAMPDX(exportedSpectrum, {
-    onlyReal,
-  });
+  const jcamp = spectrum1DToJCAMPDX({ ...exportedSpectrum }, { onlyReal });
 
   if (!jcamp) {
     throw new Error('convert spectrum to JCAMP failed');
   }
 
   const blob = new Blob([jcamp], { type: 'text/plain' });
-  const name = spectrum.info.name || 'experiment';
+  const name = info.name || 'experiment';
   saveAs({ blob, name, extension: '.jdx' });
 }
 
