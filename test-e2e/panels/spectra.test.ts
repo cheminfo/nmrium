@@ -68,11 +68,21 @@ test('Check change spectrum color, Should be white', async ({ page }) => {
 
   // Open Change color modal
   await nmrium.page.click('_react=ColorIndicator');
+  await nmrium.page.hover('_react=Saturation');
+  // Change color by move to the top-left of the color picker (white)
+  const saturationBox = nmrium.page.locator('_react=Saturation');
+  const box = await saturationBox.boundingBox();
 
-  // Click on the top-left of the color picker (white)
-  await nmrium.page.click('_react=Saturation', {
-    position: { x: 0, y: 0 },
-  });
+  if (box) {
+    const startX = box.x + box.width - 1;
+    const startY = box.y + box.height - 1;
+    const targetX = box.x;
+    const targetY = box.y;
+    await nmrium.page.mouse.move(startX, startY, { steps: 15 });
+    await nmrium.page.mouse.down();
+    await nmrium.page.mouse.move(targetX, targetY, { steps: 15 });
+    await nmrium.page.mouse.up();
+  }
 
   // The line should now be white.
   await expect(whiteSpectrumLine).toBeVisible();
@@ -127,20 +137,20 @@ test('2d spectrum', async ({ page }) => {
     // Open Change color modal
     await nmrium.page.click('_react=ColorIndicator');
 
-    // change the color to #ddb1c9ff
+    // change the color to #e4c0d3
     await nmrium.page.click('_react=Saturation', {
       position: { x: 40, y: 20 },
     });
 
     // Check that ColorIndicator color changed
     await expect(
-      nmrium.page.locator('_react=ColorIndicator[display.color="#ddb1c9ff"]'),
+      nmrium.page.locator('_react=ColorIndicator[display.color="#e4c0d3ff"]'),
     ).toBeVisible();
     // Check that spectrum color changed
     await expect(
       nmrium.page
         .getByTestId('spectrum-line')
-        .locator('_react=Line[display.color="#ddb1c9ff"]'),
+        .locator('_react=Line[display.color="#e4c0d3ff"]'),
     ).toBeVisible();
 
     // Close color picker
