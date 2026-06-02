@@ -48,7 +48,7 @@ const EXTERNAL_API_DEFINITIONS: Record<ExternalAPIKeyType, ExternalApiItem> = {
   ct: {
     icon: <AiOutlineApi />,
     disable: ({ spectra, activeTab }) => {
-      return activeTab === '1H' || spectra?.length === 0;
+      return activeTab !== '1H' || !spectra || spectra.length === 0;
     },
     disableMessage:
       'CT can only be used when there is at least one proton (1H) spectrum selected',
@@ -57,7 +57,7 @@ const EXTERNAL_API_DEFINITIONS: Record<ExternalAPIKeyType, ExternalApiItem> = {
   mixonat: {
     icon: <AiOutlineApi />,
     disable: ({ spectra, activeTab }) => {
-      return activeTab === '13C' || spectra?.length === 0;
+      return activeTab !== '13C' || !spectra || spectra.length === 0;
     },
     disableMessage:
       'MixOnat can only be used when there is at least one carbon (13C) spectrum selected',
@@ -93,6 +93,7 @@ function useExternalApiMenuItems(): Array<
       const { icon, disable, disableMessage } =
         EXTERNAL_API_DEFINITIONS?.[key] || {};
       const isDisabled = disable ? disable({ spectra, activeTab }) : false;
+
       return {
         icon,
         text: name,
@@ -101,11 +102,7 @@ function useExternalApiMenuItems(): Array<
           title: name,
           description: isDisabled ? disableMessage : description,
         },
-        style: {
-          cursor: isDisabled ? 'not-allowed' : undefined,
-          opacity: isDisabled ? 0.5 : 1,
-        },
-        ...(isDisabled && { onClick: (e) => e.stopPropagation() }), // Disable onClick if the item is disabled
+        disabled: isDisabled,
         tooltipProps: { intent: isDisabled ? 'danger' : undefined },
       };
     });
