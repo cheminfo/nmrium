@@ -43,7 +43,7 @@ export function usePeakShapesPath(spectrum: Spectrum1D) {
         const { peaks } = options;
         pathSeries = peaksToXY(peaks, {
           frequency,
-          nbPoints: width,
+          nbPoints: Math.ceil(width),
           from: xDomain[0],
           to: xDomain[1],
         });
