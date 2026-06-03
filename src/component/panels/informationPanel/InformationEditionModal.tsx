@@ -1,34 +1,110 @@
-import { Classes, DialogFooter } from '@blueprintjs/core';
+import { Classes, DialogFooter, Icon } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
+import type { Spectrum } from '@zakodium/nmrium-core';
 import { useCallback, useMemo } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
 import type { CellProps } from 'react-table';
-import { array, object, string } from 'yup';
+import { array, mixed, object, string } from 'yup';
 
 import { useDispatch } from '../../context/DispatchContext.js';
 import { Input2Controller } from '../../elements/Input2Controller.js';
 import type { Column } from '../../elements/ReactTable/ReactTable.js';
 import ReactTable from '../../elements/ReactTable/ReactTable.js';
+import { Select2Controller } from '../../elements/Select2Controller.tsx';
 import { StandardDialog } from '../../elements/StandardDialog.tsx';
 import { StyledDialogBody } from '../../elements/StyledDialogBody.js';
-import useSpectrum from '../../hooks/useSpectrum.js';
+import { useSelectedSpectra } from '../../hooks/useSelectedSpectra.ts';
 import { checkUniqueByKey } from '../../utility/checkUniqueByKey.js';
+
+import { SpectraPicker } from './SpectraPicker.tsx';
+
+export type Scope = 'all' | 'override' | 'missing';
+
+interface ScopeItem {
+  value: Scope;
+  label: string;
+}
+
+const SCOPES: ScopeItem[] = [
+  { value: 'all', label: 'All spectra' },
+  { value: 'override', label: 'Override existing' },
+  { value: 'missing', label: 'Fill missing only' },
+];
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  height: calc(100% - 30px);
+  height: calc(100% - 40px);
   width: 100%;
+`;
+
+const Footer = styled(DialogFooter)`
+  div {
+    padding: 10px;
+    background: #f8fafc;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+`;
+
+const CardHeader = styled.div`
+  padding: 18px 22px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+`;
+
+const CardHeaderText = styled.div`
+  flex: 1;
+`;
+
+const CardTitle = styled.h2`
+  font-size: 15px;
+  font-weight: 600;
+  color: #1c2127;
+  margin: 0 0 3px;
+`;
+
+const CardSubtitle = styled.p`
+  font-size: 12px;
+  color: #8f99a8;
+  margin: 0;
+  line-height: 1.5;
+`;
+
+const FooterHint = styled.div`
+  font-size: 12px;
+  color: #8f99a8;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+`;
+
+const Toolbar = styled.div`
+  padding: 12px 0px;
+  border-bottom: 1px solid #edf0f3;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+
+const RowCount = styled.span`
+  margin-left: auto;
+  font-size: 12px;
+  color: #8f99a8;
 `;
 
 const metaInfoArraySchema = array()
   .of(
     object({
       key: string().required().trim(),
-      value: string().required().trim(),
+      value: string().trim(),
+      scope: mixed<Scope>().oneOf(['all', 'missing', 'override']).required(),
+      spectra: array().of(string().required()).required(),
     }),
   )
   .required();
@@ -42,10 +118,6 @@ const metaInfoValidationSchema = object()
     return checkUniqueByKey(values.metaInfo, 'key', this, 'metaInfo');
   });
 
-interface MetaInfoItem {
-  key: string;
-  value: string;
-}
 interface InformationEditionModalProps {
   onCloseDialog: () => void;
   isOpen: boolean;
@@ -58,21 +130,142 @@ interface InnerInformationPanelProps extends Omit<
   metaInfo: MetaInfoItem[];
 }
 
+interface MetaInfoItem {
+  key: string;
+  value?: string;
+  values?: Record<string, string>;
+  scope: Scope;
+  spectra: string[];
+}
+
+function generateMetaInfo(selectedSpectra: Spectrum[]): MetaInfoItem[] {
+  if (selectedSpectra.length === 0) return [];
+
+  const keyData = new Map<
+    string,
+    {
+      spectra: string[];
+      valueMap: Map<string, string | undefined>;
+    }
+  >();
+
+  for (const spectrum of selectedSpectra) {
+    if (!spectrum.customInfo) continue;
+
+    for (const [key, value] of Object.entries(spectrum.customInfo)) {
+      let data = keyData.get(key);
+      if (!data) {
+        data = { spectra: [], valueMap: new Map() };
+        keyData.set(key, data);
+      }
+      data.spectra.push(spectrum.id);
+      data.valueMap.set(spectrum.id, value as string | undefined);
+    }
+  }
+
+  const result: MetaInfoItem[] = [];
+  for (const [key, data] of keyData) {
+    const values = Array.from(data.valueMap.values());
+    const uniqueValues = new Set(values);
+    const valuesObj: Record<string, string> = {};
+    for (const [id, val] of data.valueMap) {
+      if (val !== undefined) {
+        valuesObj[id] = val;
+      }
+    }
+    if (uniqueValues.size === 1) {
+      const singleValue = values[0];
+
+      // Skip if all values are undefined
+      if (singleValue === undefined) continue;
+
+      result.push({
+        key,
+        value: singleValue,
+        scope: 'all',
+        values: valuesObj,
+        spectra: data.spectra,
+      });
+    } else {
+      result.push({
+        key,
+        value: '',
+        values: valuesObj,
+        scope: 'missing',
+        spectra: data.spectra,
+      });
+    }
+  }
+
+  return result;
+}
+
+function metaToSpectraMap(
+  metaInfo: MetaInfoItem[],
+  allSpectraIds: string[],
+): Record<string, Record<string, string>> {
+  const result: Record<string, Record<string, string>> = {};
+
+  for (const id of allSpectraIds) {
+    result[id] = {};
+  }
+
+  for (const meta of metaInfo) {
+    const { scope, spectra, key, value, values } = meta;
+    for (const spectrumId of spectra) {
+      if (!(spectrumId in result)) continue;
+
+      const hasExistingKey = values && spectrumId in values;
+      const hasValue = typeof value === 'string';
+
+      if (scope === 'all' && hasValue) {
+        result[spectrumId][key] = value;
+      }
+
+      if (scope === 'missing') {
+        if (hasExistingKey) {
+          result[spectrumId][key] = values?.[spectrumId] || '';
+        } else if (hasValue) {
+          result[spectrumId][key] = value;
+        }
+      }
+
+      if (
+        scope === 'override' && // Only update spectra that have this key in meta.values
+        hasExistingKey &&
+        hasValue
+      ) {
+        // Overwrite with the new value meta.value
+        result[spectrumId][key] = value;
+      }
+    }
+  }
+
+  return result;
+}
+
 export function InformationEditionModal(props: InformationEditionModalProps) {
   const { isOpen, onCloseDialog } = props;
-  const spectrum = useSpectrum();
+  const spectra = useSelectedSpectra();
 
-  if (!isOpen || !spectrum) return null;
+  if (!isOpen || !spectra) return null;
 
-  const metaInfo = Object.keys(spectrum.customInfo).map((key) => ({
-    key,
-    value: spectrum.customInfo[key],
-  }));
+  const metaInfo: MetaInfoItem[] = generateMetaInfo(spectra);
 
   return (
     <StandardDialog
       isOpen
-      title="Edit spectrum meta information"
+      title={
+        <CardHeader>
+          <CardHeaderText>
+            <CardTitle>Meta information</CardTitle>
+            <CardSubtitle>
+              Define keys and values to apply across spectra. Control scope and
+              target spectra per row.
+            </CardSubtitle>
+          </CardHeaderText>
+        </CardHeader>
+      }
       onClose={onCloseDialog}
       style={{ width: 700, height: 500 }}
     >
@@ -87,7 +280,9 @@ export function InformationEditionModal(props: InformationEditionModalProps) {
 function InnerInformationPanel(props: InnerInformationPanelProps) {
   const { metaInfo = [], onCloseDialog } = props;
   const dispatch = useDispatch();
-  const { handleSubmit, reset, control, watch } = useForm<{
+  const spectra = useSelectedSpectra();
+  const disabled = (spectra?.length ?? 0) < 2;
+  const { handleSubmit, reset, control } = useForm<{
     metaInfo: MetaInfoItem[];
   }>({
     defaultValues: { metaInfo },
@@ -96,12 +291,17 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
 
   const addHandler = useCallback(
     (data: any, index = 0) => {
-      const meta = { key: '', value: '' };
+      const meta = {
+        key: '',
+        value: '',
+        scope: 'all',
+        spectra: spectra?.map(({ id }) => id),
+      };
       reset({
         metaInfo: [...data.slice(0, index), meta, ...data.slice(index)],
       });
     },
-    [reset],
+    [reset, spectra],
   );
 
   const deleteHandler = useCallback(
@@ -116,12 +316,7 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
 
   function saveHandler(values: any) {
     const { metaInfo } = values;
-    const meta: Record<string, string> = {};
-
-    for (const { key, value } of metaInfo) {
-      meta[key] = value;
-    }
-
+    const meta = metaToSpectraMap(metaInfo, spectra?.map(({ id }) => id) || []);
     dispatch({ type: 'UPDATE_SPECTRUM_META', payload: { meta } });
     onCloseDialog();
   }
@@ -141,6 +336,7 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
             <Input2Controller
               control={control}
               name={`metaInfo.${row.index}.key`}
+              placeholder="e.g. solvent"
               noShadowBox
             />
           );
@@ -154,8 +350,53 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
             <Input2Controller
               control={control}
               name={`metaInfo.${row.index}.value`}
+              placeholder="Value"
               mapValue={String}
               noShadowBox
+            />
+          );
+        },
+      },
+      {
+        Header: 'Scope',
+        style: { padding: 0 },
+        Cell: ({ row }: CellProps<MetaInfoItem>) => {
+          return (
+            <Select2Controller
+              disabled={disabled}
+              name={`metaInfo.${row.index}.scope`}
+              control={control}
+              items={SCOPES}
+              getSelectedText={(item) =>
+                item.value.charAt(0).toUpperCase() + item.value.slice(1)
+              }
+              selectedButtonProps={{
+                variant: 'minimal',
+                size: 'small',
+                disabled,
+              }}
+            />
+          );
+        },
+      },
+      {
+        Header: 'Spectra',
+        style: { padding: 0 },
+        Cell: ({ row }: CellProps<MetaInfoItem>) => {
+          return (
+            <Controller
+              name={`metaInfo.${row.index}.spectra`}
+              control={control}
+              render={({ field }) => {
+                const { value, onChange } = field;
+                return (
+                  <SpectraPicker
+                    disabled={disabled}
+                    selected={value}
+                    onChange={(ids) => onChange(ids)}
+                  />
+                );
+              }}
             />
           );
         },
@@ -169,7 +410,7 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
             <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
               <Button
                 size="small"
-                variant="outlined"
+                variant="minimal"
                 intent="success"
                 tooltipProps={{ content: '', disabled: true }}
                 onClick={(e) => {
@@ -181,7 +422,7 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
               </Button>
               <Button
                 size="small"
-                variant="outlined"
+                variant="minimal"
                 intent="danger"
                 tooltipProps={{ content: '', disabled: true }}
                 onClick={(e) => {
@@ -196,32 +437,49 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
         },
       },
     ],
-    [addHandler, control, deleteHandler],
+    [addHandler, control, deleteHandler, disabled],
   );
 
-  const values = watch('metaInfo');
+  const values = useWatch({ name: 'metaInfo', control });
 
   return (
     <>
       <StyledDialogBody>
         <Container>
-          <div style={{ padding: '5px 0', display: 'flex' }}>
+          <Toolbar>
             <Button
               intent="success"
-              size="small"
+              size="medium"
               variant="outlined"
+              icon="plus"
               onClick={() => addHandler(values)}
               tooltipProps={{ content: '', disabled: true }}
             >
               Add a new meta
             </Button>
-          </div>
+            <RowCount>{spectra?.length} spectra selected</RowCount>
+          </Toolbar>
 
           <ReactTable<MetaInfoItem>
             data={values}
             columns={COLUMNS}
             emptyDataRowText="No meta"
             style={{
+              'thead th': {
+                textAlign: 'center',
+                padding: '5px 0px',
+                fontWeight: '600',
+                fontSize: '11px',
+                letterSpacing: '0.5px',
+                color: '#6b7280',
+                border: 'none',
+                borderBottom: '2px solid #e5e7eb',
+                background: '#f9fafb',
+              },
+              'thead tr td': {
+                borderRight: 'none',
+              },
+
               'thead tr th': { zIndex: 1 },
               td: { padding: 0 },
             }}
@@ -232,7 +490,11 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
           />
         </Container>
       </StyledDialogBody>
-      <DialogFooter>
+      <Footer style={{ padding: 0 }}>
+        <FooterHint>
+          <Icon icon="info-sign" size={13} color="#8F99A8" />
+          Click the spectra badge to choose which spectra each row targets
+        </FooterHint>
         <Button
           intent="success"
           onClick={() => handleSubmit(saveHandler)()}
@@ -240,7 +502,7 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
         >
           Save meta
         </Button>
-      </DialogFooter>
+      </Footer>
     </>
   );
 }

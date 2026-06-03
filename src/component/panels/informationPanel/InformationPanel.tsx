@@ -6,7 +6,7 @@ import type { InfoPanelData } from 'react-science/ui';
 import { InfoPanel, Toolbar } from 'react-science/ui';
 
 import { usePreferences } from '../../context/PreferencesContext.js';
-import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.js';
+import { useActiveSpectra } from '../../hooks/useActiveSpectra.ts';
 import { useDialogToggle } from '../../hooks/useDialogToggle.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import { booleanToString } from '../../utility/booleanToString.js';
@@ -28,14 +28,15 @@ function getToggleInformationBlock(
 
 function getEditTooltip(isSpectrumSelected: boolean) {
   if (!isSpectrumSelected) {
-    return 'Select a spectrum to edit its meta information';
+    return 'Select a one or more spectra to edit their metadata';
   }
-  return 'Edit spectrum meta information';
+  return 'Edit metadata for the selected spectra';
 }
 
 export function InformationPanel() {
   const { info, meta, customInfo } = useSpectrum(emptyData);
-  const activeSpectrum = useActiveSpectrum();
+  const activeSpectra = useActiveSpectra();
+
   const {
     dispatch,
     current: { infoBlock },
@@ -53,7 +54,7 @@ export function InformationPanel() {
   );
 
   const toolTipProps: Omit<TooltipProps, 'content'> = {
-    intent: !activeSpectrum ? 'danger' : 'none',
+    intent: !activeSpectra ? 'danger' : 'none',
   };
 
   function handleToggleInformationBlock() {
@@ -73,24 +74,24 @@ export function InformationPanel() {
         leftElement={
           <Toolbar>
             <Toolbar.Item
-              disabled={!activeSpectrum}
+              disabled={!activeSpectra || activeSpectra.length > 1}
               tooltipProps={toolTipProps}
               icon={<TbTableShortcut />}
               onClick={handleToggleInformationBlock}
               active={infoBlock.visible}
               tooltip={getToggleInformationBlock(
                 infoBlock.visible,
-                !!activeSpectrum,
+                !!activeSpectra,
               )}
             />
             <Toolbar.Item
-              disabled={!activeSpectrum}
+              disabled={!activeSpectra || activeSpectra.length === 0}
               tooltipProps={toolTipProps}
               icon={<FaRegEdit />}
               onClick={() => {
                 openDialog('informationModal');
               }}
-              tooltip={getEditTooltip(!!activeSpectrum)}
+              tooltip={getEditTooltip(!!activeSpectra)}
             />
           </Toolbar>
         }
