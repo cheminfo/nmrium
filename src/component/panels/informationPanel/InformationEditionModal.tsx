@@ -19,6 +19,7 @@ import { StyledDialogBody } from '../../elements/StyledDialogBody.js';
 import { useSelectedSpectra } from '../../hooks/useSelectedSpectra.ts';
 import { checkUniqueByKey } from '../../utility/checkUniqueByKey.js';
 
+import { MixedValuesBadge } from './MixedValuesBadge.tsx';
 import { SpectraPicker } from './SpectraPicker.tsx';
 
 type Scope = 'all' | 'override' | 'missing';
@@ -96,6 +97,12 @@ const RowCount = styled.span`
   margin-left: auto;
   font-size: 12px;
   color: #8f99a8;
+`;
+const ValueCellWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
 `;
 
 const metaInfoArraySchema = array()
@@ -347,14 +354,27 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
         Header: 'Value',
         style: { padding: 0 },
         Cell: ({ row }: CellProps<MetaInfoItem>) => {
+          const values = Object.values(row.original.values || {});
+          const uniqueValues = new Set(values);
+          const isMixed = uniqueValues.size > 1;
           return (
-            <Input2Controller
-              control={control}
-              name={`metaInfo.${row.index}.value`}
-              placeholder="Value"
-              mapValue={String}
-              noShadowBox
-            />
+            <ValueCellWrapper>
+              <Input2Controller
+                control={control}
+                name={`metaInfo.${row.index}.value`}
+                placeholder={
+                  isMixed
+                    ? `e.g., "${uniqueValues.size} different values"`
+                    : 'Value'
+                }
+                mapValue={String}
+                noShadowBox
+                fill
+              />
+              {isMixed && row.original.values && (
+                <MixedValuesBadge values={row.original.values} />
+              )}
+            </ValueCellWrapper>
           );
         },
       },
