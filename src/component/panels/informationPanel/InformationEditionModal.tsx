@@ -21,7 +21,7 @@ import { checkUniqueByKey } from '../../utility/checkUniqueByKey.js';
 
 import { SpectraPicker } from './SpectraPicker.tsx';
 
-export type Scope = 'all' | 'override' | 'missing';
+type Scope = 'all' | 'override' | 'missing';
 
 interface ScopeItem {
   value: Scope;
@@ -85,7 +85,7 @@ const FooterHint = styled.div`
 `;
 
 const Toolbar = styled.div`
-  padding: 12px 0px;
+  padding: 12px 0;
   border-bottom: 1px solid #edf0f3;
   display: flex;
   align-items: center;
@@ -266,6 +266,7 @@ export function InformationEditionModal(props: InformationEditionModalProps) {
           </CardHeaderText>
         </CardHeader>
       }
+      canOutsideClickClose
       onClose={onCloseDialog}
       style={{ width: 700, height: 500 }}
     >
@@ -475,13 +476,11 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
                 border: 'none',
                 borderBottom: '2px solid #e5e7eb',
                 background: '#f9fafb',
+                zIndex: 1,
               },
-              'thead tr td': {
+              'tr td': {
                 borderRight: 'none',
               },
-
-              'thead tr th': { zIndex: 1 },
-              td: { padding: 0 },
             }}
             rowStyle={{
               hover: { backgroundColor: '#f7f7f7' },

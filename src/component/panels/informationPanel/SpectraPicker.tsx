@@ -35,6 +35,7 @@ const SpectraTrigger = styled.button<{ active?: boolean; disabled?: boolean }>`
   justify-content: space-between;
   opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
   cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+
   &:hover {
     border-color: ${COLORS.blue};
     background: ${COLORS.blueBg};
@@ -89,6 +90,7 @@ const PickerLink = styled.button`
   font-weight: 500;
   cursor: pointer;
   padding: 0;
+
   &:hover {
     text-decoration: underline;
   }
@@ -116,6 +118,7 @@ const PickerItem = styled.label<{ $checked: boolean }>`
   font-size: 13px;
   color: ${COLORS.textPrimary};
   background: ${(p) => (p.$checked ? '#f5f9ff' : 'transparent')};
+
   &:hover {
     background: #f5f9ff;
   }
@@ -248,7 +251,6 @@ export function SpectraPicker({
         onClick={() => setOpen(true)}
       >
         <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <Icon icon="eye-open" size={13} />
           <CountBadge variant={variant}>{label}</CountBadge>
         </span>
         <Icon icon="caret-down" size={12} />
