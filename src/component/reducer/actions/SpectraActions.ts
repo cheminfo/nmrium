@@ -159,7 +159,7 @@ type SimulateSpectrumAction = ActionType<
 type UpdateSpectrumMetaAction = ActionType<
   'UPDATE_SPECTRUM_META',
   {
-    meta: Record<string, string>;
+    meta: Record<string, Record<string, string>>;
   }
 >;
 
@@ -794,10 +794,14 @@ function handleUpdateSpectrumMeta(
     payload: { meta },
   } = action;
 
-  const spectrum = getSpectrum(draft);
-  if (!spectrum) return;
+  const { data } = draft;
 
-  spectrum.customInfo = meta;
+  for (const spectrum of data) {
+    const { id } = spectrum;
+    if (id in meta) {
+      spectrum.customInfo = meta[id];
+    }
+  }
 }
 
 export {
