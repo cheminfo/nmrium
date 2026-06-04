@@ -20,6 +20,7 @@ type PeaksShapesOptions =
 export function usePeakShapesPath(spectrum: Spectrum1D) {
   const { scaleX, scaleY } = useScaleChecked();
   const { width, xDomain } = useChartData();
+
   return function getPath(options: PeaksShapesOptions): {
     path: string;
     fill: string;
@@ -43,7 +44,7 @@ export function usePeakShapesPath(spectrum: Spectrum1D) {
         const { peaks } = options;
         pathSeries = peaksToXY(peaks, {
           frequency,
-          nbPoints: width,
+          nbPoints: Math.trunc(width),
           from: xDomain[0],
           to: xDomain[1],
         });
