@@ -89,7 +89,7 @@ function useExternalApiMenuItems(): Array<
       return !option?.include || option.include({ spectra, activeTab });
     })
     .map((options) => {
-      const { key, name, description, apiUrl, apkKey } = options;
+      const { key, name, description, apiUrl, apiKey } = options;
       const { icon, disable, disableMessage } =
         EXTERNAL_API_DEFINITIONS?.[key] || {};
       const isDisabled = disable ? disable({ spectra, activeTab }) : false;
@@ -97,7 +97,7 @@ function useExternalApiMenuItems(): Array<
       return {
         icon,
         text: name,
-        data: { id: key, apiUrl, apkKey },
+        data: { id: key, apiUrl, apiKey },
         tooltip: {
           title: name,
           description: isDisabled ? disableMessage : description,
