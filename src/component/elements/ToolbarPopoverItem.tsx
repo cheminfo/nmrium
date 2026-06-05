@@ -36,7 +36,7 @@ export function ToolbarPopoverItem<T = object>(
 ) {
   const {
     options,
-    onClick,
+    onClick: onClickHandler,
     icon,
     tooltip,
     tooltipProps,
@@ -73,7 +73,6 @@ export function ToolbarPopoverItem<T = object>(
             return (
               <Tooltip
                 key={JSON.stringify({ data, text })}
-                disabled={disabled ?? !option.tooltip}
                 content={
                   typeof tooltip === 'string' ? (
                     tooltip
@@ -90,14 +89,22 @@ export function ToolbarPopoverItem<T = object>(
                       placement: 'right',
                       ...tooltipProps,
                     })}
-                renderTarget={({ isOpen, ...props }) => (
-                  <MenuItem
-                    disabled={disabled}
-                    text={text}
-                    onClick={() => onClick?.(data)}
-                    {...otherOptions}
-                    {...props}
-                  />
+                renderTarget={({ isOpen, ...targetProps }) => (
+                  <span
+                    {...targetProps}
+                    style={{
+                      display: 'block',
+                      cursor: disabled ? 'not-allowed' : 'pointer',
+                      opacity: disabled ? 0.5 : 1,
+                    }}
+                  >
+                    <MenuItem
+                      text={text}
+                      {...otherOptions}
+                      disabled={disabled}
+                      onClick={() => !disabled && onClickHandler?.(data)}
+                    />
+                  </span>
                 )}
               />
             );
