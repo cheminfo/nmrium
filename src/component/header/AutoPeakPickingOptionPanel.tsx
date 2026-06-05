@@ -1,6 +1,6 @@
-import { Button } from '@blueprintjs/core';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
+import { Button, TooltipHelpContent } from 'react-science/ui';
 import * as Yup from 'yup';
 
 import { useDispatch } from '../context/DispatchContext.js';
@@ -93,6 +93,8 @@ export function AutoPeakPickingOptionPanel() {
       });
     }
   }
+
+  const isSpectraSelected = activeSpectra && activeSpectra.length > 0;
   return (
     <HeaderWrapper>
       <Label title="Direction:" shortTitle="" style={headerLabelStyle}>
@@ -140,9 +142,20 @@ export function AutoPeakPickingOptionPanel() {
         intent="success"
         onClick={() => handleSubmit(handlePeakPicking)()}
         style={{ margin: '0 10px' }}
-        disabled={!isValid}
+        disabled={!isValid || !isSpectraSelected}
+        {...(!isSpectraSelected && {
+          tooltipProps: {
+            content: (
+              <TooltipHelpContent
+                title="Auto peak picking"
+                description="Select a one or more spectra to enable auto peak picking"
+              />
+            ),
+            intent: 'danger',
+          },
+        })}
       >
-        Apply to {activeSpectra?.length || 'all'} spectra
+        Apply to {activeSpectra?.length} spectra
       </Button>
     </HeaderWrapper>
   );
