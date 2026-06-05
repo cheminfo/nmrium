@@ -70,9 +70,21 @@ interface ExternalMenuOptions {
   apiKey?: string;
 }
 
-function useExternalApiMenuItems(): Array<
-  ToolbarPopoverMenuItem<ExternalMenuOptions>
-> {
+const NO_SERVICES_ITEM: ToolbarPopoverMenuItem<ExternalMenuOptions> = {
+  icon: 'disable',
+  text: 'No services configured',
+  tooltip: {
+    title: 'No external services',
+    description:
+      'Add an external API in general settings to enable this feature.',
+  },
+  disabled: true,
+  tooltipProps: { intent: 'danger' },
+};
+
+type ExternalMenuItem = ToolbarPopoverMenuItem<ExternalMenuOptions>;
+
+function useExternalApiMenuItems(): ExternalMenuItem[] {
   const spectra = useSelectedSpectra();
   const {
     view: {
@@ -83,7 +95,7 @@ function useExternalApiMenuItems(): Array<
     current: { externalAPIs },
   } = usePreferences();
 
-  return externalAPIs
+  const items: ExternalMenuItem[] = externalAPIs
     .filter(({ key }) => {
       const option = EXTERNAL_API_DEFINITIONS?.[key];
       return !option?.include || option.include({ spectra, activeTab });
@@ -103,9 +115,10 @@ function useExternalApiMenuItems(): Array<
           description: isDisabled ? disableMessage : description,
         },
         disabled: isDisabled,
-        tooltipProps: { intent: isDisabled ? 'danger' : undefined },
+        tooltipProps: { ...(isDisabled && { intent: 'danger' }) },
       };
     });
+  return items.length > 0 ? items : [NO_SERVICES_ITEM];
 }
 function getMissingProjection(spectraData: any, activeTab: any) {
   let nucleus = activeTab.split(',');
@@ -273,9 +286,6 @@ function SpectraPanelHeaderInner({
           );
         }
 
-        const result = await response.json();
-        // eslint-disable-next-line no-console
-        console.log('MixOnat response:', result);
         toaster.show({
           message: 'Spectra successfully sent to MixOnat',
           intent: 'success',
