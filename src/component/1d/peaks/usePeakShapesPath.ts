@@ -29,12 +29,13 @@ export function usePeakShapesPath(spectrum: Spectrum1D) {
 
     const frequency = spectrum.info.originFrequency;
     let pathSeries: DataXY | null = null;
+    
     switch (target) {
       case 'peakShape': {
         const { peak } = options;
         pathSeries = peakToXY(peak, {
           frequency,
-          nbPoints: 1024,
+          nbPoints: Math.ceil(width * 3),
           from: peak.x - (peak.width / frequency) * 9,
           to: peak.x + (peak.width / frequency) * 9,
         });
@@ -46,7 +47,7 @@ export function usePeakShapesPath(spectrum: Spectrum1D) {
           frequency,
           nbPoints: Math.trunc(width),
           from: xDomain[0],
-          to: xDomain[1],
+          to:xDomain[1],
         });
         break;
       }
