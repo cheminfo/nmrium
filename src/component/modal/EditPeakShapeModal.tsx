@@ -31,7 +31,8 @@ type Kind =
   | 'lorentzian'
   | 'pseudoVoigt'
   | 'generalizedLorentzian'
-  | 'lorentzianDispersive';
+  | 'lorentzianDispersive'
+  | 'pseudoVoigtTCH';
 
 function getKindDefaultValues(kind: Kind) {
   return {
