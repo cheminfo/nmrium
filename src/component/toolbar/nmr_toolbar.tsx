@@ -37,7 +37,6 @@ import { ToolbarPopoverItem } from '../elements/ToolbarPopoverItem.js';
 import { useExportManagerAPI } from '../elements/export/ExportManager.js';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
 import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature.js';
-import type { CheckOptions } from '../hooks/useCheckToolsVisibility.js';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility.js';
 import useDatumWithSpectraStatistics from '../hooks/useDatumWithSpectraStatistics.js';
 import { useDialogToggle } from '../hooks/useDialogToggle.js';
@@ -58,7 +57,6 @@ import { EXPORT_MENU, IMPORT_MENU } from './toolbarMenu.js';
 
 interface BaseToolItem extends Pick<ToolbarItemProps, 'icon' | 'disabled'> {
   id: MainTool;
-  checkOptions?: CheckOptions;
   isVisible?: boolean;
 }
 interface ToolItem extends BaseToolItem {
@@ -303,7 +301,6 @@ export default function NMRToolbar() {
           'Integrate multiple spectra at once and adjust integration zones by dragging their edges.',
       },
       icon: <SvgNmrMultipleAnalysis />,
-      checkOptions: { checkSpectrumType: false },
       isVisible: ftCounter > 0,
     },
     {
@@ -398,7 +395,6 @@ export default function NMRToolbar() {
         description: `Define exclusion zones by clicking, dragging, releasing${!invert ? ' while holding SHIFT' : ''}. This option is practical for excluding large peaks like solvents.`,
       },
       icon: <SvgNmrMultipleAnalysis />,
-      checkOptions: { checkSpectrumType: false },
       isVisible: ftCounter > 0,
     },
     {
@@ -510,10 +506,9 @@ export default function NMRToolbar() {
       <SaveAsModal isOpen={dialog.saveAs} onCloseDialog={closeDialog} />
       <Toolbar vertical>
         {toolItems.map((item) => {
-          const { id, icon, tooltip, checkOptions, disabled, isVisible } = item;
+          const { id, icon, tooltip, disabled, isVisible } = item;
           const isToolVisible =
-            isButtonVisible(id, checkOptions) &&
-            (isVisible === undefined || isVisible);
+            isButtonVisible(id) && (isVisible === undefined || isVisible);
 
           if (!isToolVisible) return null;
 
