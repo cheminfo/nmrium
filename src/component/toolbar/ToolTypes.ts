@@ -10,13 +10,22 @@ export interface ToolOptionItem {
   id: Tool;
   label: string;
   mode?: DisplayerMode;
-  spectraOptions?: Array<
-    | {
-        info?: Array<{ key: InfoKey; value: any }>; // check if the active spectrum has these info
-        active: true;
-      }
-    | { active: false }
-  >;
+  spectraFilter?: Array<{
+    info?: Array<{ key: InfoKey; value: any }>; // check if the active spectrum has these info
+  }>;
+  /**
+   * Minium and Maximum number of spectra that must be selected
+   * @default({min:1,max:1}}) exact one spectrum selected
+   */
+  selectedSpectra?: {
+    min?: number;
+    max?: number;
+  }; /**
+   * controls how spectraFilter is evaluated
+   * 'all' : every selected spectrum must meet spectraFilter.
+   * 'any' : at least one selected spectrum must meet the spectraFilter.
+   */
+  spectraMatch?: 'any' | 'all';
   isToggle: boolean;
   hasOptionPanel: boolean;
   isFilter: boolean;
@@ -48,15 +57,13 @@ export const options: RecordOptions = {
     hasOptionPanel: true,
     isFilter: false,
     mode: '1D',
-    spectraOptions: [
+    spectraFilter: [
       {
         info: [{ key: 'isFt', value: true }],
-        active: true,
-      },
-      {
-        active: false,
       },
     ],
+    selectedSpectra: { min: 1 },
+    spectraMatch: 'all',
     isToggle: true,
   },
   integral: {
@@ -65,10 +72,9 @@ export const options: RecordOptions = {
     hasOptionPanel: false,
     isFilter: false,
     mode: '1D',
-    spectraOptions: [
+    spectraFilter: [
       {
         info: [{ key: 'isFt', value: true }],
-        active: true,
       },
     ],
     isToggle: true,
@@ -79,9 +85,9 @@ export const options: RecordOptions = {
     hasOptionPanel: false,
     isFilter: false,
     mode: '1D',
-    spectraOptions: [
+    spectraFilter: [
       {
-        active: true,
+        info: [{ key: 'isFt', value: true }],
       },
     ],
     isToggle: true,
@@ -92,10 +98,9 @@ export const options: RecordOptions = {
     hasOptionPanel: true,
     isFilter: false,
     mode: '2D',
-    spectraOptions: [
+    spectraFilter: [
       {
         info: [{ key: 'isFt', value: true }],
-        active: true,
       },
     ],
     isToggle: true,
@@ -106,10 +111,9 @@ export const options: RecordOptions = {
     hasOptionPanel: false,
     isFilter: false,
     mode: '2D',
-    spectraOptions: [
+    spectraFilter: [
       {
         info: [{ key: 'isFt', value: true }],
-        active: true,
       },
     ],
     isToggle: true,
@@ -120,10 +124,9 @@ export const options: RecordOptions = {
     hasOptionPanel: true,
     isFilter: false,
     mode: '1D',
-    spectraOptions: [
+    spectraFilter: [
       {
         info: [{ key: 'isFt', value: true }],
-        active: true,
       },
     ],
     isToggle: true,
@@ -134,13 +137,12 @@ export const options: RecordOptions = {
     hasOptionPanel: true,
     isFilter: true,
     mode: '1D',
-    spectraOptions: [
+    spectraFilter: [
       {
         info: [
           { key: 'isFid', value: true },
           { key: 'isComplex', value: true },
         ],
-        active: true,
       },
     ],
     isToggle: true,
@@ -151,13 +153,12 @@ export const options: RecordOptions = {
     hasOptionPanel: true,
     isFilter: true,
     mode: '1D',
-    spectraOptions: [
+    spectraFilter: [
       {
         info: [
           { key: 'isFid', value: true },
           { key: 'isComplex', value: true },
         ],
-        active: true,
       },
     ],
     isToggle: true,
@@ -168,13 +169,12 @@ export const options: RecordOptions = {
     hasOptionPanel: true,
     isFilter: true,
     mode: '2D',
-    spectraOptions: [
+    spectraFilter: [
       {
         info: [
           { key: 'isFid', value: true },
           { key: 'isComplex', value: true },
         ],
-        active: true,
       },
     ],
     isToggle: true,
@@ -185,14 +185,13 @@ export const options: RecordOptions = {
     hasOptionPanel: true,
     isFilter: true,
     mode: '2D',
-    spectraOptions: [
+    spectraFilter: [
       {
         info: [
           { key: 'isFid', value: true },
           { key: 'isFtDimensionOne', value: true },
           { key: 'isComplex', value: true },
         ],
-        active: true,
       },
     ],
     isToggle: true,
@@ -203,13 +202,12 @@ export const options: RecordOptions = {
     hasOptionPanel: true,
     isFilter: true,
     mode: '1D',
-    spectraOptions: [
+    spectraFilter: [
       {
         info: [
           { key: 'isFt', value: true },
           { key: 'isComplex', value: true },
         ],
-        active: true,
       },
     ],
     isToggle: true,
@@ -220,10 +218,9 @@ export const options: RecordOptions = {
     hasOptionPanel: true,
     isFilter: true,
     mode: '1D',
-    spectraOptions: [
+    spectraFilter: [
       {
         info: [{ key: 'isFt', value: true }],
-        active: true,
       },
     ],
     isToggle: true,
@@ -234,15 +231,12 @@ export const options: RecordOptions = {
     hasOptionPanel: false,
     isFilter: false,
     mode: '1D',
-    spectraOptions: [
+    spectraFilter: [
       {
         info: [{ key: 'isFt', value: true }],
-        active: true,
-      },
-      {
-        active: false,
       },
     ],
+    selectedSpectra: { min: 0 },
     isToggle: true,
   },
   exclusionZones: {
@@ -251,15 +245,12 @@ export const options: RecordOptions = {
     hasOptionPanel: false,
     isFilter: true,
     mode: '1D',
-    spectraOptions: [
+    spectraFilter: [
       {
         info: [{ key: 'isFt', value: true }],
-        active: true,
-      },
-      {
-        active: false,
       },
     ],
+    selectedSpectra: { min: 0 },
     isToggle: true,
   },
   matrixGenerationExclusionZones: {
@@ -268,15 +259,12 @@ export const options: RecordOptions = {
     hasOptionPanel: false,
     isFilter: false,
     mode: '1D',
-    spectraOptions: [
+    spectraFilter: [
       {
         info: [{ key: 'isFt', value: true }],
-        active: true,
-      },
-      {
-        active: false,
       },
     ],
+    selectedSpectra: { min: 0 },
     isToggle: true,
   },
   databaseRangesSelection: {
@@ -285,10 +273,9 @@ export const options: RecordOptions = {
     hasOptionPanel: false,
     isFilter: false,
     mode: '1D',
-    spectraOptions: [
+    spectraFilter: [
       {
         info: [{ key: 'isFt', value: true }],
-        active: true,
       },
     ],
     isToggle: true,
@@ -306,13 +293,12 @@ export const options: RecordOptions = {
     hasOptionPanel: false,
     isFilter: true,
     mode: '1D',
-    spectraOptions: [
+    spectraFilter: [
       {
         info: [
           { key: 'isFid', value: true },
           { key: 'isComplex', value: true },
         ],
-        active: true,
       },
     ],
     isToggle: false,
@@ -323,13 +309,12 @@ export const options: RecordOptions = {
     hasOptionPanel: false,
     isFilter: true,
     mode: '2D',
-    spectraOptions: [
+    spectraFilter: [
       {
         info: [
           { key: 'isFid', value: true },
           { key: 'isComplex', value: true },
         ],
-        active: true,
       },
     ],
     isToggle: false,
@@ -340,14 +325,13 @@ export const options: RecordOptions = {
     hasOptionPanel: false,
     isFilter: true,
     mode: '2D',
-    spectraOptions: [
+    spectraFilter: [
       {
         info: [
           { key: 'isFtDimensionOne', value: true },
           { key: 'isFt', value: false },
           { key: 'isComplex', value: true },
         ],
-        active: true,
       },
     ],
     isToggle: false,
@@ -358,10 +342,9 @@ export const options: RecordOptions = {
     hasOptionPanel: true,
     isFilter: true,
     mode: '2D',
-    spectraOptions: [
+    spectraFilter: [
       {
         info: [{ key: 'isFt', value: true }],
-        active: true,
       },
     ],
     isToggle: true,
@@ -379,10 +362,9 @@ export const options: RecordOptions = {
     hasOptionPanel: false,
     isFilter: false,
     mode: '1D',
-    spectraOptions: [
+    spectraFilter: [
       {
         info: [{ key: 'isComplex', value: true }],
-        active: true,
       },
     ],
     isToggle: false,
@@ -401,15 +383,12 @@ export const options: RecordOptions = {
     hasOptionPanel: false,
     isFilter: false,
     mode: '1D',
-    spectraOptions: [
+    spectraFilter: [
       {
         info: [{ key: 'isFt', value: true }],
-        active: true,
-      },
-      {
-        active: false,
       },
     ],
+    selectedSpectra: { min: 0 },
     isToggle: false,
   },
   zoomOut: {
@@ -432,10 +411,9 @@ export const options: RecordOptions = {
     hasOptionPanel: true,
     isFilter: true,
     mode: '2D',
-    spectraOptions: [
+    spectraFilter: [
       {
         info: [{ key: 'isFid', value: true }],
-        active: true,
       },
     ],
     isToggle: true,
@@ -446,14 +424,13 @@ export const options: RecordOptions = {
     hasOptionPanel: true,
     isFilter: true,
     mode: '2D',
-    spectraOptions: [
+    spectraFilter: [
       {
         info: [
           { key: 'isFid', value: true },
           { key: 'isFtDimensionOne', value: true },
           { key: 'isComplex', value: true },
         ],
-        active: true,
       },
     ],
     isToggle: true,

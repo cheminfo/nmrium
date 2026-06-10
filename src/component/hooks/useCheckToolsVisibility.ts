@@ -1,4 +1,3 @@
-import type { Info1D, Info2D } from '@zakodium/nmr-types';
 import { useCallback } from 'react';
 
 import { useChartData } from '../context/ChartContext.js';
@@ -7,102 +6,98 @@ import type { MainTool, ToolOptionItem } from '../toolbar/ToolTypes.js';
 import { options } from '../toolbar/ToolTypes.js';
 
 import useCheckExperimentalFeature from './useCheckExperimentalFeature.js';
-import useSpectrum from './useSpectrum.js';
+import { useSelectedSpectra } from './useSelectedSpectra.ts';
+import useSpectraByActiveNucleus from './useSpectraPerNucleus.ts';
 
-type SpectrumInfo = Info1D | Info2D;
-
-export interface CheckOptions {
-  checkSpectrumType?: boolean;
-  checkMode?: boolean;
-  extraInfoCheckParameters?: SpectrumInfo;
-}
-
-export function useCheckToolsVisibility(): (
-  toolKey: MainTool,
-  checkOptions?: CheckOptions,
-) => boolean {
+export function useCheckToolsVisibility(): (toolKey: MainTool) => boolean {
   const { displayerMode } = useChartData();
   const preferences = usePreferences();
-  const spectrum = useSpectrum(null);
+  const selectedSpectra = useSelectedSpectra();
+  const spectra = useSpectraByActiveNucleus();
   const isExperimentalFeatureActivated = useCheckExperimentalFeature();
+  const toolbarButtons = preferences?.current?.display?.toolBarButtons;
 
   return useCallback(
-    (toolKey: MainTool, checkOptions: CheckOptions = {}) => {
+    (toolKey: MainTool): boolean => {
       const {
-        checkMode = true,
-        checkSpectrumType = true,
-        extraInfoCheckParameters,
-      } = checkOptions;
+        spectraFilter,
+        spectraMatch = 'all',
+        selectedSpectra: selectionRules = { min: 1, max: 1 },
+        mode,
+        isExperimental,
+      } = options[toolKey];
 
-      const { spectraOptions, mode, isExperimental } = options[toolKey];
-
-      // TODO: make sure preferences are not a lie and remove the optional chaining.
-      const flag =
-        preferences?.current?.display?.toolBarButtons?.[toolKey] ?? false;
-
-      const modeFlag =
-        !checkMode || (checkMode && (!mode || displayerMode === mode));
-
-      const spectrumCheckFlag =
-        !checkSpectrumType ||
-        (checkSpectrumType && checkSpectrum(spectrum, spectraOptions));
+      // 1. Tool status
+      const flag = toolbarButtons?.[toolKey] ?? false;
 
       const isToolActivated =
         (flag && !isExperimental) ||
         (isExperimental && isExperimentalFeatureActivated);
-      return !!(
-        isToolActivated &&
-        modeFlag &&
-        spectrumCheckFlag &&
-        (!extraInfoCheckParameters ||
-          checkInfo(extraInfoCheckParameters, spectrum?.info))
-      );
-    },
 
-    [displayerMode, isExperimentalFeatureActivated, preferences, spectrum],
+      if (!isToolActivated) return false;
+
+      // 2. Mode check
+      if (mode && displayerMode !== mode) return false;
+
+      // 3. No spectra rules,  always visible
+      if (!spectraFilter) return true;
+
+      // 4. Resolve spectra source
+      const spectraToCheck =
+        selectedSpectra && selectedSpectra.length > 0
+          ? selectedSpectra
+          : spectra;
+
+      // 5. Selection constraints
+      if (selectionRules) {
+        const { min, max } = selectionRules;
+
+        if (typeof min === 'number' && spectraToCheck.length < min) {
+          return false;
+        }
+
+        if (typeof max === 'number' && spectraToCheck.length > max) {
+          return false;
+        }
+      }
+
+      // 6. Evaluate spectra filters
+      const matchCount = spectraToCheck.filter((spectrum) =>
+        checkSpectrum(spectrum, spectraFilter),
+      ).length;
+
+      //  7. Match strategy
+      if (spectraMatch === 'any') {
+        return matchCount > 0;
+      }
+
+      return matchCount === spectraToCheck.length;
+    },
+    [
+      displayerMode,
+      isExperimentalFeatureActivated,
+      toolbarButtons,
+      selectedSpectra,
+      spectra,
+    ],
   );
 }
 
 function checkSpectrum(
   spectrum: any,
-  options: ToolOptionItem['spectraOptions'],
-) {
-  let outerConditionResult = false;
+  spectraFilter: ToolOptionItem['spectraFilter'],
+): boolean {
+  if (!spectraFilter) return true;
 
-  if (!options) {
-    return true;
+  for (const option of spectraFilter) {
+    if (!spectrum) continue;
+
+    const infoConditionsMet = (option.info ?? []).every(
+      ({ key, value }) => spectrum.info[key] === value,
+    );
+
+    if (infoConditionsMet) return true;
   }
 
-  for (const option of options) {
-    let innerConditionFlag = true;
-
-    if (option.active) {
-      if (spectrum) {
-        for (const { key, value } of option.info || []) {
-          if (spectrum.info[key] !== value) {
-            innerConditionFlag = false;
-          }
-        }
-      } else {
-        innerConditionFlag = false;
-      }
-    }
-
-    outerConditionResult = outerConditionResult || innerConditionFlag;
-  }
-
-  return outerConditionResult;
-}
-
-function checkInfo(checkParameters: SpectrumInfo, data: SpectrumInfo) {
-  for (const key in checkParameters) {
-    if (
-      checkParameters[key as keyof SpectrumInfo] !==
-      data[key as keyof SpectrumInfo]
-    ) {
-      return false;
-    }
-  }
-
-  return true;
+  return false;
 }
