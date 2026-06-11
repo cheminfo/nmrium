@@ -1,7 +1,7 @@
 import type { Peak1D } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import { mapPeaks, xyPeaksOptimization } from 'nmr-processing';
+import { mapPeaks, xyPeaksOptimizationByStages } from 'nmr-processing';
 
 interface OptimizePeaksOptions {
   from: number;
@@ -31,85 +31,120 @@ export function optimizePeaks(
   x = x.subarray(fromIndex, ToIndex);
   re = re.subarray(fromIndex, ToIndex);
 
- let newPeaks = xyPeaksOptimization({ x, y: re }, peaks, {
-    frequency,
-    groupingFactor: 3,
-    optimization: { kind: 'lm', options: { maxIterations: 20 } },
+ const newPeaks = xyPeaksOptimizationByStages({ x, y: re }, peaks, 
+  {
+    frequency, groupingFactor: 10,stages: 
+    [
+      {
+    optimization: {
+      kind: 'lm',
+      options: { maxIterations: 20, errorTolerance: 1e-3 },
+    },
     parameters: {
-      fwhm: { 
-        optimize: true, 
-        min: (peak) => (peak.shape?.fwhm ?? 0) / 3,
-        max: (peak) => (peak.shape?.fwhm ?? 0) * 3,
-       },
+      fwhm: {
+        optimize: true,
+        min: (peak: any) => (peak.shape?.fwhm ?? 0) / 2,
+        max: (peak: any) => (peak.shape?.fwhm ?? 0) * 2,
+      },
       mu: { optimize: false },
       x: { optimize: false },
       y: {
         optimize: true,
-        min: 0, 
-        init: (peak) => peak.y * 0.8, 
-       },
-    }
-  });
+        init: (peak: any) => peak.y * 0.8,
+      },
+    },
+  },
+  {
 
-  newPeaks = xyPeaksOptimization({ x, y: re }, newPeaks, {
-    frequency,
-    groupingFactor: 3,
-    optimization: { kind: 'lm', options: { maxIterations: 20, } },
+    optimization: {
+      kind: 'lm',
+      options: { maxIterations: 20, errorTolerance: 5e-4 },
+    },
     parameters: {
-      fwhm: { 
-        optimize: true, 
-        min: (peak) => (peak.shape?.fwhm ?? 0) / 3,
-        max: (peak) => (peak.shape?.fwhm ?? 0) * 3,
-       },
+      fwhm: {
+        optimize: true,
+        min: (peak: any) => (peak.shape?.fwhm ?? 0) / 2,
+        max: (peak: any) => (peak.shape?.fwhm ?? 0) * 2,
+      },
+      mu: { optimize: false },
+      x: { optimize: false },
+      y: {
+        optimize: true,
+      },
+    },
+  },
+  {
+
+    optimization: {
+      kind: 'lm',
+      options: { maxIterations: 20, errorTolerance: 1e-5 },
+    },
+    parameters: {
+      fwhm: {
+        optimize: true,
+        min: (peak: any) => (peak.shape?.fwhm ?? 0) / 2,
+        max: (peak: any) => (peak.shape?.fwhm ?? 0) * 2,
+      },
       mu: { optimize: true },
       x: { optimize: false },
       y: {
-        optimize: true, 
-        min: 0,
-       },
-    }
-  });
+        optimize: true,
+      },
+    },
+  },
+  {
 
-
-  newPeaks = xyPeaksOptimization({ x, y: re }, newPeaks, {
-    frequency,
-    groupingFactor: 4,
-    optimization: { kind: 'lm', options: { maxIterations: 20, } },
+    optimization: {
+      kind: 'lm',
+      options: { maxIterations: 20, errorTolerance: 5e-4 },
+    },
     parameters: {
       fwhm: {
-        optimize: true, 
-        min: (peak) => (peak.shape?.fwhm ?? 0) / 2, 
-        max: (peak) => (peak.shape?.fwhm ?? 0) * 2, 
+        optimize: true,
+        min: (peak: any) => (peak.shape?.fwhm ?? 0) / 3,
+        max: (peak: any) => (peak.shape?.fwhm ?? 0) * 3,
       },
-      mu: {
-        optimize: false, 
-      },
-      x: { optimize: true }, 
-      y: { optimize: true, 
-        min: 0,
-      },
-    }
-  });
+      mu: { optimize: true },
+      x: { optimize: true },
+      y: { optimize: true },
+    },
+  },
+  {
 
-  newPeaks = xyPeaksOptimization({ x, y: re }, newPeaks, {
-    frequency,
-    groupingFactor: 3,
-    optimization: { kind: 'lm', options: { maxIterations: 10 } },
+    optimization: {
+      kind: 'lm',
+      options: { maxIterations: 20, errorTolerance: 1e-4 },
+    },
     parameters: {
       fwhm: {
-        optimize: true, 
-        min: (peak) => (peak.shape?.fwhm ?? 0) / 2, 
-        max: (peak) => (peak.shape?.fwhm ?? 0) * 2, 
+        optimize: true,
+        min: (peak: any) => (peak.shape?.fwhm ?? 0) / 2,
+        max: (peak: any) => (peak.shape?.fwhm ?? 0) * 2,
       },
-      mu: {
-        optimize: true, 
+      mu: { optimize: false },
+      x: { optimize: true },
+      y: { optimize: true },
+    },
+  },
+  {
+
+    optimization: {
+      kind: 'lm',
+      options: { maxIterations: 20, errorTolerance: 1e-8 },
+    },
+    parameters: {
+      fwhm: {
+        optimize: true,
+        min: (peak: any) => (peak.shape?.fwhm ?? 0) / 2,
+        max: (peak: any) => (peak.shape?.fwhm ?? 0) * 2,
       },
-      x: { optimize: true }, 
-      y: { optimize: true, 
-        min: 0,
-      },
-    }
-  });
+      mu: { optimize: true },
+      x: { optimize: true },
+      y: { optimize: true },
+    },
+  },
+    ]});
+
 
   return mapPeaks(spectrum.peaks.values.concat(newPeaks), spectrum, {
     checkIsExisting: false,
