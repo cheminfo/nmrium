@@ -11,7 +11,7 @@ import {
 import { useChartData } from '../../context/ChartContext.js';
 import { usePreferences } from '../../context/PreferencesContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
-import { useExportViewPort } from '../../hooks/useExport.js';
+import { useExportViewport } from '../../hooks/useExport.js';
 import { useWorkspaceExportSettings } from '../../hooks/useWorkspaceExportSettings.js';
 
 import { ExportContent } from './ExportContent.js';
@@ -89,7 +89,7 @@ export function ExportManagerController(props: ExportManagerControllerProps) {
   );
 
   const { saveAsPNGHandler, saveAsSVGHandler, copyPNGToClipboardHandler } =
-    useExportViewPort();
+    useExportViewport();
 
   function handleCloseExportOptionsDialog() {
     triggerExport(null);

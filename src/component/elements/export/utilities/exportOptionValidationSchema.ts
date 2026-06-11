@@ -63,10 +63,8 @@ const advanceExportOptionValidationSchema = Yup.object().shape({
     .test(
       'width-test',
       `Width should be less or equal to ${MAX_PIXEL}`,
-      // eslint-disable-next-line func-names
-      function (value) {
-        // eslint-disable-next-line no-invalid-this
-        const { unit, dpi } = this.parent;
+      (value, context) => {
+        const { unit, dpi } = context.parent;
         return testSize(value, unit, dpi);
       },
     ),
@@ -76,10 +74,8 @@ const advanceExportOptionValidationSchema = Yup.object().shape({
     .test(
       'height-test',
       `Height should be less or equal to ${MAX_PIXEL}`,
-      // eslint-disable-next-line func-names
-      function (value) {
-        // eslint-disable-next-line no-invalid-this
-        const { unit, dpi } = this.parent;
+      (value, context) => {
+        const { unit, dpi } = context.parent;
         return testSize(value, unit, dpi);
       },
     ),

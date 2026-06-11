@@ -23,7 +23,7 @@ const loadFormValidation = Yup.object({
       (url) => {
         try {
           const fileURL = new URL(url);
-          const extension = fileURL.pathname.split('.')?.[1] || '';
+          const extension = fileURL.pathname.split('.', 2)[1] || '';
           if (allowedExtensions.has(extension)) {
             return true;
           }

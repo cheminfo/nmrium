@@ -28,8 +28,8 @@ function isCustomToolbarItem(
 interface DefaultPanelHeaderProps {
   total?: number;
   counter?: number;
-  deleteToolTip?: string;
-  filterToolTip?: string;
+  deleteTooltip?: string;
+  filterTooltip?: string;
   onDelete?: () => void;
   onFilter?: () => void;
   onSettingClick?: () => void;
@@ -47,9 +47,9 @@ function DefaultPanelHeader(props: DefaultPanelHeaderProps) {
     total,
     counter,
     onDelete,
-    deleteToolTip = 'Delete',
+    deleteTooltip = 'Delete',
     onFilter,
-    filterToolTip = '',
+    filterTooltip = '',
     children,
     onSettingClick,
     disableDelete = false,
@@ -80,7 +80,7 @@ function DefaultPanelHeader(props: DefaultPanelHeaderProps) {
             <Toolbar.Item
               id="delete-button"
               onClick={onDelete}
-              tooltip={deleteToolTip}
+              tooltip={deleteTooltip}
               icon={<FaRegTrashAlt />}
               intent="danger"
               disabled={!total || disableDelete}
@@ -91,7 +91,7 @@ function DefaultPanelHeader(props: DefaultPanelHeaderProps) {
             <Toolbar.Item
               id="filter-button"
               onClick={handleFilter}
-              tooltip={filterToolTip}
+              tooltip={filterTooltip}
               active={isFiltered}
               icon={<FaFilter />}
             />

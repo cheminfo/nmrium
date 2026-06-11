@@ -340,12 +340,15 @@ function handleSaveEditedRange(
   // remove assignments in assignment hook data
   // for now: clear all assignments for this range because signals or levels to store might have changed
   const rangeIndex = getRangeIndex(spectrum, _editedRowData.id);
+  if (rangeIndex === -1) {
+    throw new Error('unreachable');
+  }
 
   if (_editedRowData.id === 'new') {
     _editedRowData.id = crypto.randomUUID();
   }
 
-  spectrum.ranges.values.splice(rangeIndex, 1, _editedRowData);
+  spectrum.ranges.values[rangeIndex] = _editedRowData;
   updateRangesRelativeValues(spectrum);
   handleUpdateCorrelations(draft);
   resetSelectedTool(draft);

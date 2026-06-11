@@ -59,7 +59,7 @@ function AboutPredictionModal() {
             <li>
               Damiano Banfi and Luc Patiny{' '}
               <a
-                href="http://dx.doi.org/10.2533/chimia.2008.280"
+                href="https://dx.doi.org/10.2533/chimia.2008.280"
                 target="_blank"
                 rel="noreferrer"
               >
@@ -70,7 +70,7 @@ function AboutPredictionModal() {
             <li>
               Andrés M. Castillo, Luc Patiny and Julien Wist{' '}
               <a
-                href="http://dx.doi.org/10.1016/j.jmr.2010.12.008"
+                href="https://dx.doi.org/10.1016/j.jmr.2010.12.008"
                 target="_blank"
                 rel="noreferrer"
               >
@@ -89,7 +89,7 @@ function AboutPredictionModal() {
             <li>
               Yuri Binev, Maria M. B. Marques and João Aires-de-Sousa{' '}
               <a
-                href="http://dx.doi.org/10.1021/ci700172n"
+                href="https://dx.doi.org/10.1021/ci700172n"
                 target="_blank"
                 rel="noreferrer"
               >
@@ -101,7 +101,7 @@ function AboutPredictionModal() {
             <li>
               João Aires-de-Sousa, Markus C. Hemmer and Johann Gasteiger{' '}
               <a
-                href="http://dx.doi.org/10.1021/ac010737m"
+                href="https://dx.doi.org/10.1021/ac010737m"
                 target="_blank"
                 rel="noreferrer"
               >
@@ -118,7 +118,7 @@ function AboutPredictionModal() {
             <li>
               Steinbeck, Christoph, Stefan Krause, and Stefan Kuhn{' '}
               <a
-                href="http://dx.doi.org/10.1021/ci0341363"
+                href="https://dx.doi.org/10.1021/ci0341363"
                 target="_blank"
                 rel="noreferrer"
               >

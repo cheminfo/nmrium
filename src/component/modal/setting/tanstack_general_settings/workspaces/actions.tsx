@@ -56,12 +56,12 @@ function ResetWorkspaceButton(props: WorkspacesProps) {
   }, [current, currentName, formValues, originalWorkspaces]);
 
   function handleReset() {
-    const workSpaceDisplayPreferences = getPreferencesByWorkspace(
+    const workspaceDisplayPreferences = getPreferencesByWorkspace(
       currentName,
       originalWorkspaces,
     );
 
-    reset(unsafeWorkspaceToForm(workSpaceDisplayPreferences));
+    reset(unsafeWorkspaceToForm(workspaceDisplayPreferences));
   }
 
   return (

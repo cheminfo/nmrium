@@ -114,7 +114,7 @@ const SectionWrapper = styled.div<
   ({ isOpen, isOverflow, matchContentHeight }) => `
   display: flex;
   flex:none;
-  flex: ${isOpen && !matchContentHeight ? (isOverflow ? '1' : isOverflow ? '1' : '1 1 1px') : 'none'};
+  flex: ${isOpen && !matchContentHeight ? (isOverflow ? '1' : '1 1 1px') : 'none'};
   flex-direction: column;
 `,
 );

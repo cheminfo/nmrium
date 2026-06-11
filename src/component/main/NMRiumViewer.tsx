@@ -31,7 +31,7 @@ interface ViewerProps {
 
 export function NMRiumViewer(props: NMRiumViewerProps) {
   const { emptyText, viewerRef, onRender, style = {} } = props;
-  const viewPort = useViewportSize();
+  const viewportSize = useViewportSize();
   const { displayerMode } = useChartData();
   const exportSettings = useExportSettings();
   const printSettings = usePrintPage();
@@ -82,7 +82,7 @@ export function NMRiumViewer(props: NMRiumViewerProps) {
     <div
       id="nmrium-viewer"
       data-testid="viewer"
-      ref={!viewPort ? viewerRef : null}
+      ref={!viewportSize ? viewerRef : null}
       style={{
         width: '100%',
         height: '100%',

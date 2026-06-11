@@ -47,10 +47,12 @@ type AddMoleculesAction = ActionType<
 >;
 type SetMoleculeAction = ActionType<
   'SET_MOLECULE',
-  Required<Pick<StateMolecule, 'id' | 'molfile' | 'label'>> &
-    Omit<StateMolecule, 'id' | 'molfile' | 'label'> & {
-      mappings?: ReturnType<TopicMolecule['getDiaIDsMapping']>;
-    }
+  {
+    id: string;
+    label: string;
+    molfile: string;
+    mappings?: ReturnType<TopicMolecule['getDiaIDsMapping']>;
+  }
 >;
 type DeleteMoleculeAction = ActionType<
   'DELETE_MOLECULE',
@@ -320,7 +322,11 @@ function handlePredictSpectraFromMolecule(
     });
     id = moleculeObj?.id;
   } else {
-    setMolecule(draft, { id: crypto.randomUUID(), label: '', ...molecule });
+    setMolecule(draft, {
+      id,
+      label: molecule.label ?? '',
+      molfile: molecule.molfile,
+    });
   }
 
   if (id) {

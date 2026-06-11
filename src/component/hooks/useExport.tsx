@@ -80,7 +80,7 @@ export function useExport() {
   };
 }
 
-export function useExportViewPort() {
+export function useExportViewport() {
   const toaster = useToaster();
   const state = useChartData();
 

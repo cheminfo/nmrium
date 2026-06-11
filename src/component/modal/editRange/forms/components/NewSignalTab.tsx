@@ -123,9 +123,8 @@ export function NewSignalTab(props: NewSignalTabProps) {
 function getSignalValidationSchema(range: Range) {
   return Yup.object().shape({
     delta: Yup.number()
-      .test(`test-range`, '', function testNewSignalDelta(value) {
-        // eslint-disable-next-line no-invalid-this
-        const { path, createError } = this;
+      .test(`test-range`, '', function testNewSignalDelta(value, context) {
+        const { path, createError } = context;
         if (value && value >= range.from && value <= range.to) {
           return true;
         }

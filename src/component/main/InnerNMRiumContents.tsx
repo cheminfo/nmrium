@@ -14,7 +14,7 @@ import { PrintContent } from '../elements/print/PrintContent.js';
 import { Header } from '../header/Header.js';
 import DropZone from '../loader/DropZone.js';
 import { PanelsBar } from '../panels/PanelsBar.js';
-import ToolBar from '../toolbar/ToolBar.js';
+import NMRToolbar from '../toolbar/nmr_toolbar.tsx';
 
 import { useNMRiumRefAPI } from './NMRiumRefAPI.js';
 import { NMRiumViewer } from './NMRiumViewer.js';
@@ -144,7 +144,7 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
               >
                 <KeysListenerTracker mainDivRef={mainDivRef} />
 
-                <ToolBar />
+                <NMRToolbar />
                 <NMRiumViewerWrapper
                   viewerRef={viewerRef}
                   emptyText={emptyText}

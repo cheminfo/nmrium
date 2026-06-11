@@ -94,7 +94,7 @@ function useExportList() {
   return exportMenu;
 }
 
-export default function ToolBar() {
+export default function NMRToolbar() {
   const {
     toolOptions: { selectedTool },
   } = useChartData();

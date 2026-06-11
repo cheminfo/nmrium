@@ -350,9 +350,9 @@ function RangesHeader(props: RangesHeaderProps) {
         total={total}
         counter={filterCounter}
         onDelete={handleDeleteAll}
-        deleteToolTip="Delete All Ranges"
+        deleteTooltip="Delete All Ranges"
         onFilter={onFilterActivated}
-        filterToolTip={
+        filterTooltip={
           isFilterActive ? 'Show all ranges' : 'Hide ranges out of view'
         }
         onSettingClick={onSettingClick}

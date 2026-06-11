@@ -33,11 +33,11 @@ export function useWorkspaceAction() {
     workspaceName: string,
     data?: Omit<Workspace, 'version' | 'label'>,
   ) {
-    const workSpaceData = data ?? current;
-    const newWorkSpace = lodashMerge(
+    const workspaceData = data ?? current;
+    const newWorkspace = lodashMerge(
       {},
       workspaceDefaultProperties,
-      workSpaceData,
+      workspaceData,
       {
         version: 1,
         label: workspaceName,
@@ -49,7 +49,7 @@ export function useWorkspaceAction() {
     const settings = {
       ...localData,
       currentWorkspace: workspaceKey,
-      workspaces: { ...localData?.workspaces, [workspaceKey]: newWorkSpace },
+      workspaces: { ...localData?.workspaces, [workspaceKey]: newWorkspace },
     };
     updateSettings(settings as Settings);
 
@@ -57,7 +57,7 @@ export function useWorkspaceAction() {
       type: 'ADD_WORKSPACE',
       payload: {
         workspaceKey,
-        data: newWorkSpace,
+        data: newWorkspace,
       },
     });
   }
