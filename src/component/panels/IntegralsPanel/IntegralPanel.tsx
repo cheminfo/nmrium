@@ -123,9 +123,9 @@ function IntegralPanelInner(props: IntegralPanelInnerProps) {
           total={total}
           counter={filteredData?.length}
           onDelete={handleDeleteAll}
-          deleteToolTip="Delete All Integrals"
+          deleteTooltip="Delete All Integrals"
           onFilter={handleOnFilter}
-          filterToolTip={
+          filterTooltip={
             filterIsActive ? 'Show all integrals' : 'Hide integrals out of view'
           }
           onSettingClick={settingsPanelHandler}

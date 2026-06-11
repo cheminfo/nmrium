@@ -1,4 +1,3 @@
-/* eslint-disable no-invalid-this */
 import * as Yup from 'yup';
 
 import { hasCouplingConstant } from '../../../../panels/extra/utilities/MultiplicityUtilities.js';
@@ -14,10 +13,10 @@ const editRangeFormValidation = Yup.object().shape({
             coupling: Yup.mixed().test(
               'checkValue',
               '',
-              function testCoupling(value) {
-                const { path, createError } = this;
+              function testCoupling(value, context) {
+                const { path, createError } = context;
                 const hasCoupling = hasCouplingConstant(
-                  this.parent.multiplicity,
+                  context.parent.multiplicity,
                 );
 
                 if ((!hasCoupling && !value) || (hasCoupling && value)) {
@@ -36,18 +35,18 @@ const editRangeFormValidation = Yup.object().shape({
         .test(
           'checkMultiplicity',
           'Massive multiplicity requires exactly one coupling',
-          function test(js) {
+          function test(js, context) {
             const multiplicity: string =
               js?.map((j) => j.multiplicity).join('') || '';
 
             if (multiplicity.includes('m') && js && js?.length > 1) {
-              return this.createError({
+              return context.createError({
                 message: 'Massive multiplicity requires exactly one coupling',
               });
             }
 
             if (multiplicity.includes('s') && js && js?.length > 1) {
-              return this.createError({
+              return context.createError({
                 message: 'Singlet multiplicity requires exactly one coupling',
               });
             }

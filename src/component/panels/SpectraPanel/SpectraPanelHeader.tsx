@@ -378,7 +378,7 @@ function SpectraPanelHeaderInner({
       onDelete={handleDelete}
       total={data?.length}
       counter={spectraLengthPerTab}
-      deleteToolTip="Delete selected spectra"
+      deleteTooltip="Delete selected spectra"
       disableDelete={!hasActiveSpectra}
       onSettingClick={onSettingClick}
       leftButtons={leftButtons}

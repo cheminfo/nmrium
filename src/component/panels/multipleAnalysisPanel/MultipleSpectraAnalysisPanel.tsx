@@ -137,7 +137,7 @@ function MultipleSpectraAnalysisPanelInner({
     <TablePanel isFlipped={isFlipped}>
       {!isFlipped && (
         <DefaultPanelHeader
-          deleteToolTip="Delete All Peaks"
+          deleteTooltip="Delete All Peaks"
           onSettingClick={settingsPanelHandler}
           leftButtons={lefButtons}
         />

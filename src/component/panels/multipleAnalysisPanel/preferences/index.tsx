@@ -34,10 +34,13 @@ const preferencesSchema = Yup.object({
     columns: Yup.lazy((data: any) => {
       return Yup.array()
         .of(columnSchema(data))
-        .test('Unique', 'must be unique column name', function check(nuclei) {
-          // eslint-disable-next-line no-invalid-this
-          return checkUniqueByKey(nuclei, 'tempKey', this);
-        });
+        .test(
+          'Unique',
+          'must be unique column name',
+          function check(nuclei, context) {
+            return checkUniqueByKey(nuclei, 'tempKey', context);
+          },
+        );
     }),
     resortSpectra: Yup.boolean(),
   }),
@@ -148,7 +151,7 @@ function columnSchema(columns: any) {
     formula: Yup.string().test(
       'required',
       'Please enter formula field',
-      function checkRequired() {
+      function checkRequired(_, context) {
         const errors: Yup.ValidationError[] = [];
         for (let index = 0; index < columns.length; index++) {
           const column = columns[index];
@@ -157,11 +160,9 @@ function columnSchema(columns: any) {
             (!column.formula || column.formula === '')
           ) {
             errors.push(
-              // eslint-disable-next-line no-invalid-this
-              this.createError({
+              context.createError({
                 message: `${column.tempKey} formula value is required`,
-                // eslint-disable-next-line no-invalid-this
-                path: `${this.path}[${index}].formula`,
+                path: `${context.path}[${index}].formula`,
               }),
             );
           }

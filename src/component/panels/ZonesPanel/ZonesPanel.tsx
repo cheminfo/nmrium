@@ -201,9 +201,9 @@ const MemoizedZonesPanel = memo(function ZonesPanelInner(
           total={total}
           counter={tableData?.length}
           onDelete={handleDeleteAll}
-          deleteToolTip="Delete All Zones"
+          deleteTooltip="Delete All Zones"
           onFilter={handleOnFilter}
-          filterToolTip={
+          filterTooltip={
             filterIsActive ? 'Show all zones' : 'Hide zones out of view'
           }
           onSettingClick={settingsPanelHandler}

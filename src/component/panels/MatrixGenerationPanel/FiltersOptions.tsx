@@ -1,5 +1,4 @@
 import { Button, Classes } from '@blueprintjs/core';
-import type { ReactNode } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 
@@ -139,7 +138,7 @@ function FiltersPanelGroupHeader({ index }: { index: number }) {
 
   function handleSelectFilter(value: any, index: number) {
     const clonedFilters = filters.slice();
-    clonedFilters.splice(index, 1, value);
+    clonedFilters[index] = value;
     setValue('filters', clonedFilters);
   }
 
@@ -210,18 +209,6 @@ function FiltersPanelGroupHeader({ index }: { index: number }) {
           <FaRegTrashAlt className={Classes.ICON} />
         </Button>
       </div>
-    </div>
-  );
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function FieldInfo(props: { children: ReactNode; description: string }) {
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
-      {props.children}
-      <span style={{ fontSize: '11px', color: 'gray' }}>
-        {props.description}
-      </span>
     </div>
   );
 }

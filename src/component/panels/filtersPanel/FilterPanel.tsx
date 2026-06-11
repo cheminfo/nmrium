@@ -39,7 +39,7 @@ export default function FiltersPanel() {
   return (
     <TablePanel>
       <DefaultPanelHeader
-        deleteToolTip="Delete all filters"
+        deleteTooltip="Delete all filters"
         onDelete={handleDeleteFilter}
         total={filters?.length}
         hideCounter

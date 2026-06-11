@@ -160,7 +160,7 @@ function InnerMetaImportationModal({
 
   const errors = mapErrors(parseResult?.errors || []);
 
-  const metaData: ParseResult<any>['data'] = parseResult?.data || [];
+  const metadata: ParseResult<any>['data'] = parseResult?.data || [];
 
   const columns = useMemo(() => {
     const fields = parseResult?.meta.fields || [];
@@ -305,7 +305,7 @@ function InnerMetaImportationModal({
               <div style={{ height: 'calc(100% - 160px)' }}>
                 <ReactTable
                   columns={columns}
-                  data={metaData}
+                  data={metadata}
                   approxItemHeight={25}
                   approxColumnWidth={100}
                   enableVirtualScroll

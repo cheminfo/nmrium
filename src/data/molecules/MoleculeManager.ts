@@ -61,9 +61,9 @@ export function addMolfile(
 
 export function setMolfile(
   molecules: StateMoleculeExtended[],
-  currentMolecule: StateMolecule,
+  moleculeData: { id: string; molfile: string; label: string },
 ) {
-  const { molfile, id, label } = currentMolecule;
+  const { molfile, id, label } = moleculeData;
   // try to parse molfile
   // this will throw if the molecule can not be parsed !
   const _mol = initMolecule({
@@ -72,7 +72,8 @@ export function setMolfile(
     label,
   });
   const molIndex = molecules.findIndex((m) => m.id === id);
-  molecules.splice(molIndex, 1, _mol);
+  if (molIndex === -1) throw new Error('unreachable');
+  molecules[molIndex] = _mol;
 }
 
 export function extractNumber(value: string) {

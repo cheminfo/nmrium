@@ -76,7 +76,7 @@ export interface DatabaseSearchKeywords {
   searchKeywords: string;
 }
 
-export interface DataBaseSearchResultEntry {
+export interface DatabaseSearchResultEntry {
   data: DatabaseNMREntry[];
   databases: Array<{ key: string; value: string }>;
   solvents: Array<{ label: string; value: string }>;
@@ -137,7 +137,7 @@ function DatabasePanelInner({
     useState<DatabaseSearchKeywords>(emptyKeywords);
   const databaseInstance = useRef<InitiateDatabaseResult | null>(null);
   const databaseDataRef = useRef<DatabaseNMREntry[]>([]);
-  const [result, setResult] = useState<DataBaseSearchResultEntry>({
+  const [result, setResult] = useState<DatabaseSearchResultEntry>({
     data: [],
     databases: [],
     solvents: [],

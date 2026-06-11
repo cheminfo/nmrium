@@ -86,7 +86,7 @@ function WorkspaceItem({ item, onSave, onDelete }: WorkspaceItemProps) {
         </div>
       ) : (
         <div style={styles.container}>
-          <WorkSpaceIndicator source={item.source} />
+          <WorkspaceIndicator source={item.source} />
           <span style={styles.workspaceName}>{item.label}</span>
           {item.source !== 'user' && (
             <span style={styles.readOnly}>Read Only</span>
@@ -115,7 +115,7 @@ const style = {
   alignItems: 'center',
 };
 
-const WorkSpaceIndicator = (props: { source: WorkSpaceSource }) => {
+const WorkspaceIndicator = (props: { source: WorkSpaceSource }) => {
   let letter = '';
   let backgroundColor = 'red';
 

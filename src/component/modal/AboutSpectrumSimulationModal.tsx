@@ -63,7 +63,7 @@ function AboutSpectrumSimulationModal() {
             <li>
               Andrés M. Castillo, Luc Patiny and Julien Wist{' '}
               <a
-                href="http://dx.doi.org/10.1016/j.jmr.2010.12.008"
+                href="https://dx.doi.org/10.1016/j.jmr.2010.12.008"
                 target="_blank"
                 rel="noreferrer"
               >

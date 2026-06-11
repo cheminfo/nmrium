@@ -12,7 +12,7 @@ interface MenuStatus {
   isMenuClosed: boolean;
 }
 
-const SideBarContainer = styled.div<MenuStatus>`
+const SidebarContainer = styled.div<MenuStatus>`
   position: fixed;
   top: 0;
   bottom: 0;
@@ -52,7 +52,7 @@ const MenuButton = styled.button`
   }
 `;
 
-const SideBarHeader = styled.div`
+const SidebarHeader = styled.div`
   align-items: center;
   border-bottom: 1px solid #eee;
   display: flex;
@@ -80,7 +80,7 @@ const Title = styled.a`
   white-space: nowrap;
 `;
 
-const SideBarWrapper = styled.div<MenuStatus>`
+const SidebarWrapper = styled.div<MenuStatus>`
   position: relative;
   display: ${({ isMenuClosed }) => (isMenuClosed ? 'none' : 'block')};
   height: calc(100vh - 75px);
@@ -105,16 +105,16 @@ export default memo(function Sidebar(props: SidebarProps) {
   }, [routes]);
 
   return (
-    <SideBarContainer isMenuClosed={menuIsClosed} className="demo-side-bar">
-      <SideBarHeader>
+    <SidebarContainer isMenuClosed={menuIsClosed} className="demo-side-bar">
+      <SidebarHeader>
         <TitleContainer isMenuClosed={menuIsClosed}>
           <Title>NMRium</Title>
         </TitleContainer>
         <MenuButton type="button" onClick={onMenuToggle}>
           <FaBars />
         </MenuButton>
-      </SideBarHeader>
-      <SideBarWrapper isMenuClosed={menuIsClosed}>
+      </SidebarHeader>
+      <SidebarWrapper isMenuClosed={menuIsClosed}>
         {/* @ts-expect-error menu typings are wrong */}
         <Menu
           onClick={(e: any) => {
@@ -133,7 +133,7 @@ export default memo(function Sidebar(props: SidebarProps) {
         >
           {menu}
         </Menu>
-      </SideBarWrapper>
-    </SideBarContainer>
+      </SidebarWrapper>
+    </SidebarContainer>
   );
 });

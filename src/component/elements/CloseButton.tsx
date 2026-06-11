@@ -1,13 +1,13 @@
 import { FaTimes } from 'react-icons/fa';
 import type { ToolbarItemProps } from 'react-science/ui';
 
-import { ToolBarButton } from './ToolBarButton.js';
+import { ToolbarButton } from './toolbar_button.tsx';
 
 export function CloseButton(
   props: Pick<ToolbarItemProps, 'onClick' | 'tooltip'>,
 ) {
   return (
-    <ToolBarButton
+    <ToolbarButton
       id="close-button"
       {...props}
       intent="danger"

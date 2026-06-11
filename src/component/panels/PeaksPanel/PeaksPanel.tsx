@@ -203,9 +203,9 @@ function PeaksPanelInner(props: PeaksPanelInnerProps) {
             total={total}
             counter={filteredPeaks.length}
             onDelete={handleDeleteAll}
-            deleteToolTip="Delete All Peaks"
+            deleteTooltip="Delete All Peaks"
             onFilter={handleOnFilter}
-            filterToolTip={
+            filterTooltip={
               filterIsActive ? 'Show all peaks' : 'Hide peaks out of view'
             }
             onSettingClick={settingsPanelHandler}

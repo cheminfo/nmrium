@@ -120,9 +120,8 @@ const metaInfoValidationSchema = object()
   .shape({
     metaInfo: metaInfoArraySchema,
   })
-  .test('Unique', 'Key need te be unique', function check(values) {
-    // eslint-disable-next-line no-invalid-this
-    return checkUniqueByKey(values.metaInfo, 'key', this, 'metaInfo');
+  .test('Unique', 'Key need te be unique', function check(values, context) {
+    return checkUniqueByKey(values.metaInfo, 'key', context, 'metaInfo');
   });
 
 interface InformationEditionModalProps {
