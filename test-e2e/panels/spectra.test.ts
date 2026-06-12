@@ -55,37 +55,22 @@ test('Should Zoom', async ({ page }) => {
   expect(path).not.toMatch(previousPath);
 });
 
-test('Check change spectrum color, Should be white', async ({ page }) => {
+test('Check change spectrum color, Should be green', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
 
-  const whiteSpectrumLine = nmrium.page.locator(
-    '_react=Line[display.color = "#ffffffff"]',
+  const greenSpectrumLine = nmrium.page.locator(
+    '_react=Line[display.color = "#007d34ff"]',
   );
 
   // There should be no white spectrum line at the beginning.
-  await expect(whiteSpectrumLine).toBeHidden();
-
-  // Open Change color modal
+  await expect(greenSpectrumLine).toBeHidden();
+  // Open Change colour modal.
   await nmrium.page.click('_react=ColorIndicator');
-  await nmrium.page.hover('_react=Saturation');
-  // Change color by move to the top-left of the color picker (white)
-  const saturationBox = nmrium.page.locator('_react=Saturation');
-  const box = await saturationBox.boundingBox();
-
-  if (box) {
-    const startX = box.x + box.width - 1;
-    const startY = box.y + box.height - 1;
-    const targetX = box.x;
-    const targetY = box.y;
-    await nmrium.page.mouse.move(startX, startY, { steps: 15 });
-    await nmrium.page.mouse.down();
-    await nmrium.page.mouse.move(targetX, targetY, { steps: 15 });
-    await nmrium.page.mouse.up();
-  }
-
-  // The line should now be white.
-  await expect(whiteSpectrumLine).toBeVisible();
+  // Select the green colour preset.
+  await nmrium.page.getByTitle('#007D34').click();
+  // The line should now be green.
+  await expect(greenSpectrumLine).toBeVisible();
 });
 
 test('Should 2d deactivate spectrum', async ({ page }) => {
