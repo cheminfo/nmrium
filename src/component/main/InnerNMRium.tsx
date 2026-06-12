@@ -21,7 +21,6 @@ import {
   SpinnerProvider,
   defaultGetSpinner,
 } from '../loader/SpinnerContext.js';
-import { PluginsProvider } from '../plugins/PluginsContext.js';
 import preferencesReducer, {
   initPreferencesState,
   preferencesInitialState,
@@ -49,7 +48,6 @@ export function InnerNMRium(props: InnerNMRiumProps) {
     emptyText,
     apiRef,
     core,
-    plugins,
   } = props;
 
   const rootRef = useRef<HTMLDivElement>(null);
@@ -123,16 +121,14 @@ export function InnerNMRium(props: InnerNMRiumProps) {
                               <HighlightProvider>
                                 <AssignmentProvider>
                                   <SpinnerProvider value={getSpinner}>
-                                    <PluginsProvider plugins={plugins}>
-                                      <InnerNMRiumContents
-                                        emptyText={emptyText}
-                                        mainDivRef={mainDivRef}
-                                        elementsWrapperRef={elementsWrapperRef}
-                                        rootRef={rootRef}
-                                        viewerRef={viewerRef}
-                                        apiRef={apiRef}
-                                      />
-                                    </PluginsProvider>
+                                    <InnerNMRiumContents
+                                      emptyText={emptyText}
+                                      mainDivRef={mainDivRef}
+                                      elementsWrapperRef={elementsWrapperRef}
+                                      rootRef={rootRef}
+                                      viewerRef={viewerRef}
+                                      apiRef={apiRef}
+                                    />
                                   </SpinnerProvider>
                                 </AssignmentProvider>
                               </HighlightProvider>

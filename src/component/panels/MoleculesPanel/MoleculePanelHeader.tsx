@@ -28,6 +28,7 @@ import {
 } from '../../../data/molecules/MoleculeManager.js';
 import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents.js';
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks.js';
+import { useCore } from '../../context/CoreContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useGlobal } from '../../context/GlobalContext.js';
 import { usePreferences } from '../../context/PreferencesContext.js';
@@ -39,7 +40,6 @@ import { useDialogToggle } from '../../hooks/useDialogToggle.js';
 import AboutPredictionModal from '../../modal/AboutPredictionModal.js';
 import { MoleculeAutoLabelsDatabaseModal } from '../../modal/MoleculeAutoLabelsDatabaseModal.js';
 import PredictSpectraModal from '../../modal/PredictSpectraModal.js';
-import { usePluginSlot } from '../../plugins/PluginsContext.js';
 import { booleanToString } from '../../utility/booleanToString.js';
 import {
   browserNotSupportedErrorToast,
@@ -47,7 +47,10 @@ import {
   exportAsMolfile,
   exportAsSVG,
 } from '../../utility/export.js';
+import { renderCoreSlot } from '../../utility/renderCoreSlot.js';
 import { useMoleculeAnnotationCore } from '../hooks/useMoleculeAnnotationCore.js';
+
+import { MoleculePanelSlotProvider } from './MoleculePanelSlotContext.js';
 
 type ExportOperation =
   | 'CopyAsSmiles'
@@ -113,22 +116,6 @@ const MOL_EXPORT_MENU: Array<ToolbarPopoverMenuItem<ExportDataItem>> = [
     },
   },
 ];
-interface MoleculePanelHeaderSlotProps {
-  molecule: StateMoleculeExtended;
-  moleculeIndex: number;
-}
-
-/* eslint-disable react-hooks/static-components -- the slot returns a stable component reference from the plugin registry, not a new definition */
-function MoleculePanelHeaderSlot({
-  molecule,
-  moleculeIndex,
-}: MoleculePanelHeaderSlotProps) {
-  const HeaderSlot = usePluginSlot('molecules.panel.header');
-  if (!HeaderSlot) return null;
-  return <HeaderSlot molecule={molecule} moleculeIndex={moleculeIndex} />;
-}
-/* eslint-enable react-hooks/static-components */
-
 interface MoleculePanelHeaderProps {
   currentIndex: number;
   molecules: StateMoleculeExtended[];
@@ -139,7 +126,7 @@ interface MoleculePanelHeaderProps {
   onClickPreferences?: () => void;
   onClickPasteMolecule?: () => void;
   children?: ReactNode;
-  /** Current molecule — passed to the molecules.panel.header plugin slot */
+  /** Current molecule — provided to the `molecules_panel.header` UI slot. */
   currentMolecule?: StateMoleculeExtended;
 }
 
@@ -159,6 +146,7 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
   const { rootRef } = useGlobal();
   const toaster = useToaster();
   const dispatch = useDispatch();
+  const core = useCore();
   const {
     current: { defaultMoleculeSettings },
   } = usePreferences();
@@ -473,10 +461,12 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
         />
 
         {currentMolecule && (
-          <MoleculePanelHeaderSlot
+          <MoleculePanelSlotProvider
             molecule={currentMolecule}
             moleculeIndex={currentIndex}
-          />
+          >
+            {renderCoreSlot(core, 'molecules_panel.header')}
+          </MoleculePanelSlotProvider>
         )}
 
         <ToolbarPopoverItem
