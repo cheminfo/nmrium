@@ -25,7 +25,6 @@ import { useMapKeyModifiers } from '../context/KeyModifierContext.js';
 import { useLogger } from '../context/LoggerContext.js';
 import { usePreferences } from '../context/PreferencesContext.js';
 import { useScaleChecked } from '../context/ScaleContext.js';
-import { useActiveSpectrum } from '../hooks/useActiveSpectrum.js';
 import { usePanelPreferences } from '../hooks/usePanelPreferences.js';
 import useSpectrum from '../hooks/useSpectrum.js';
 import { useVerticalAlign } from '../hooks/useVerticalAlign.js';
@@ -101,7 +100,6 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
   const convertToPPM = usePixelToPPMConverter();
 
   const { getModifiersKey, primaryKeyIdentifier } = useMapKeyModifiers();
-  const activeSpectrum = useActiveSpectrum();
   const inset = useInsetOptions();
   const { updateFilterOptions } =
     useFilterSyncOptions<Partial<{ anchors: number[] }>>();
@@ -561,7 +559,6 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
         <MultipletAnalysisModal
           isOpen={isOpenAnalysisModal}
           onClose={closeAnalysisModal}
-          activeSpectrum={activeSpectrum}
           {...brushData}
         />
       )}

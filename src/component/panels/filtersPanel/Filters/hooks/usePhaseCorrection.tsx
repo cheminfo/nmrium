@@ -56,9 +56,11 @@ export function usePhaseCorrection(
     });
 
   useEffect(() => {
+    // eslint-disable-next-line react-you-might-not-need-an-effect/no-event-handler
     if (filter && phaseCorrectionTypeItem?.value === 'manual') {
       const { ph0 = 0, ph1 = 0 } = filter?.value || {};
       valueRef.current = { ph0, ph1 };
+      // eslint-disable-next-line react-you-might-not-need-an-effect/no-adjust-state-on-prop-change
       setValue(valueRef.current);
     }
 

@@ -78,6 +78,7 @@ export default function Test(props: any) {
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-you-might-not-need-an-effect/no-event-handler
     if (!file) return;
 
     void loadData(file, baseURL).then(setData);

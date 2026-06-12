@@ -1,16 +1,15 @@
 import styled from '@emotion/styled';
-import type { ActiveSpectrum } from '@zakodium/nmrium-core';
+import { isSpectrum1D } from '@zakodium/nmrium-core';
 import { xGetFromToIndex, xyToXYObject } from 'ml-spectra-processing';
 import type { XreimMultipletAnalysisResultWithDebug } from 'nmr-processing';
 import { xreimMultipletAnalysis } from 'nmr-processing';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Axis, LineSeries, Plot } from 'react-plot';
 
-import { isSpectrum2D } from '../../data/data2d/Spectrum2D/index.js';
-import { useChartData } from '../context/ChartContext.js';
 import { useScaleChecked } from '../context/ScaleContext.js';
 import { StandardDialog } from '../elements/StandardDialog.tsx';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
+import useSpectrum from '../hooks/useSpectrum.ts';
 
 const Container = styled.div`
   max-height: 500px;
@@ -67,9 +66,68 @@ const LoaderContainer = styled.div`
 `;
 
 interface InnerMultipleAnalysisProps {
-  activeSpectrum: ActiveSpectrum | null;
   startX: number;
   endX: number;
+}
+
+const ANALYZER_OPTIONS = {
+  autoPhase: false,
+  analyzer: {
+    minimalResolution: 0.1,
+    critFoundJ: 0.75,
+    maxTestedJ: 25,
+    minTestedJ: 1,
+    checkSymmetryFirst: false,
+    takeBestPartMultiplet: true,
+    correctVerticalOffset: true,
+    symmetrizeEachStep: false,
+    decreasingJvalues: true,
+    makeShortCutForSpeed: true,
+    debug: true,
+  },
+} as const;
+
+function useMultipletAnalysis(
+  startX: number | null,
+  endX: number | null,
+): XreimMultipletAnalysisResultWithDebug | null {
+  const spectrum = useSpectrum();
+  const { scaleX } = useScaleChecked();
+
+  return useMemo(() => {
+    if (
+      !isSpectrum1D(spectrum) ||
+      typeof startX !== 'number' ||
+      typeof endX !== 'number'
+    ) {
+      return null;
+    }
+
+    const {
+      data,
+      info: { baseFrequency: frequency },
+    } = spectrum;
+    const { x, re, im } = data;
+
+    const from = scaleX().invert(startX);
+    const to = scaleX().invert(endX);
+    const { fromIndex, toIndex } = xGetFromToIndex(x, { from, to });
+
+    return xreimMultipletAnalysis(
+      {
+        x: x.slice(fromIndex, toIndex),
+        re: re.slice(fromIndex, toIndex),
+        im: im?.slice(fromIndex, toIndex),
+      },
+      {
+        ...ANALYZER_OPTIONS,
+        analyzer: {
+          ...ANALYZER_OPTIONS.analyzer,
+          frequency,
+        },
+      },
+    );
+  }, [spectrum, startX, endX, scaleX]);
 }
 
 interface MultipletAnalysisModalProps extends InnerMultipleAnalysisProps {
@@ -80,7 +138,7 @@ interface MultipletAnalysisModalProps extends InnerMultipleAnalysisProps {
 export default function MultipletAnalysisModal(
   props: MultipletAnalysisModalProps,
 ) {
-  const { activeSpectrum, startX, endX, onClose, isOpen } = props;
+  const { startX, endX, onClose, isOpen } = props;
 
   return (
     <StandardDialog
@@ -92,7 +150,6 @@ export default function MultipletAnalysisModal(
       <StyledDialogBody>
         <InnerMultipleAnalysis
           {...{
-            activeSpectrum,
             startX,
             endX,
           }}
@@ -103,75 +160,20 @@ export default function MultipletAnalysisModal(
 }
 
 function InnerMultipleAnalysis(props: InnerMultipleAnalysisProps) {
-  const [calcStart, setCalcStartStatus] = useState(false);
-  const [isCalcFinished, setCalcFinished] = useState(false);
-  const { data } = useChartData();
-  const { scaleX } = useScaleChecked();
+  const [isReady, setIsReady] = useState(false);
+  const { endX, startX } = props;
 
   useEffect(() => {
-    setTimeout(() => {
-      setCalcStartStatus(true);
-    }, 400);
+    const timer = setTimeout(() => setIsReady(true), 400);
+    return () => clearTimeout(timer);
   }, []);
 
-  const { activeSpectrum, startX, endX } = props;
-  const [analysisData, setAnalysisData] =
-    useState<XreimMultipletAnalysisResultWithDebug>();
+  const analysisData = useMultipletAnalysis(
+    isReady ? startX : null,
+    isReady ? endX : null,
+  );
 
-  useEffect(() => {
-    if (activeSpectrum && startX && endX && calcStart) {
-      const spectrum = data[activeSpectrum.index];
-      if (isSpectrum2D(spectrum)) {
-        throw new Error('unreachable');
-      }
-
-      const {
-        data: { x, re, im },
-        info,
-      } = spectrum;
-
-      const from = scaleX().invert(startX);
-      const to = scaleX().invert(endX);
-
-      const { fromIndex, toIndex } = xGetFromToIndex(x, {
-        from,
-        to,
-      });
-
-      const analysesProps = {
-        x: x.slice(fromIndex, toIndex),
-        re: re.slice(fromIndex, toIndex),
-        im: im?.slice(fromIndex, toIndex),
-      };
-
-      try {
-        const result = xreimMultipletAnalysis(analysesProps, {
-          autoPhase: false,
-          analyzer: {
-            frequency: info.originFrequency,
-            minimalResolution: 0.1,
-            critFoundJ: 0.75,
-            maxTestedJ: 25,
-            minTestedJ: 1,
-            checkSymmetryFirst: false,
-            takeBestPartMultiplet: true,
-            correctVerticalOffset: true,
-            symmetrizeEachStep: false,
-            decreasingJvalues: true,
-            makeShortCutForSpeed: true,
-            debug: true,
-          },
-        });
-        setCalcFinished(true);
-        setAnalysisData(result);
-      } catch (error) {
-        // TODO: handle error
-        reportError(error);
-      }
-    }
-  }, [startX, endX, data, scaleX, activeSpectrum, calcStart]);
-
-  if (!isCalcFinished) {
+  if (!isReady || !analysisData) {
     return (
       <LoaderContainer>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 595.3">
