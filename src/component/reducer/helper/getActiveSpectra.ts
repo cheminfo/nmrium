@@ -1,9 +1,10 @@
+import type { ViewState } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
 
-import type { State } from '../Reducer.js';
-
-export function getActiveSpectra(state: Draft<State> | State) {
-  const { activeSpectra, activeTab } = state.view.spectra;
+export function getActiveSpectra(
+  viewSpectraState: Draft<ViewState['spectra']> | ViewState['spectra'],
+) {
+  const { activeSpectra, activeTab } = viewSpectraState;
   const spectra = activeSpectra?.[activeTab]?.filter(
     (spectrum) => spectrum?.selected,
   );

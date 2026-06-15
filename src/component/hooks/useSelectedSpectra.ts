@@ -8,7 +8,6 @@ import { useActiveSpectra } from './useActiveSpectra.ts';
 export function useSelectedSpectra() {
   const activeSpectrum = useActiveSpectra();
   const { data } = useChartData();
-
   return useMemo<Spectrum[] | null>(() => {
     const spectra = [];
 
