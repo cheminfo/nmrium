@@ -415,7 +415,7 @@ function handleChangeActiveSpectrum(
   const refreshDomain =
     (previousActiveSpectraHasFT === undefined ||
       previousActiveSpectraHasFT !== newActiveSpectraHasFT) &&
-    spectra &&
+    !!spectra &&
     spectra?.length > 0 &&
     spectraIds?.length > 0;
 
