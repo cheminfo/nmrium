@@ -102,7 +102,7 @@ function handleAddPeak(draft: Draft<State>, action: AddPeakAction) {
       x: candidatePeak.x,
       y: candidatePeak.y,
       width: 1,
-      shape: defaultPeakShape,
+      shape: { ...defaultPeakShape },
     };
     spectrum.peaks.values.push(...mapPeaks([peak], spectrum));
   }
@@ -131,7 +131,7 @@ function handleAddPeaks(draft: Draft<State>, action: AddPeaksAction) {
         x: peak.x,
         y: peak.y,
         width: 1,
-        shape: defaultPeakShape,
+        shape: { ...defaultPeakShape },
       };
       spectrum.peaks.values.push(newPeak);
     }
