@@ -7,7 +7,10 @@ import { getActiveSpectra } from './getActiveSpectra.js';
 export function getActiveSpectraAsObject(
   state: Draft<State> | State,
 ): Record<string, number> | null {
-  const activeSpectra = getActiveSpectra(state);
+  const {
+    view: { spectra },
+  } = state;
+  const activeSpectra = getActiveSpectra(spectra);
 
   if (!activeSpectra || activeSpectra?.length === 0) return null;
 

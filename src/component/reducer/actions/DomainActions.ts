@@ -272,8 +272,13 @@ function setDomain(draft: Draft<State>, options?: SetDomainOptions) {
 }
 
 function setMode(draft: Draft<State>) {
-  const { xDomains, view, data, displayerMode } = draft;
-  const nucleus = view.spectra.activeTab;
+  const {
+    xDomains,
+    view: { spectra },
+    data,
+    displayerMode,
+  } = draft;
+  const { activeTab: nucleus } = spectra;
 
   if (displayerMode === '1D') {
     const spectrum = data.find(
@@ -282,7 +287,7 @@ function setMode(draft: Draft<State>) {
     );
     draft.mode = spectrum && isFid1DSpectrum(spectrum) ? 'LTR' : 'RTL';
   } else {
-    const activeSpectra = getActiveSpectra(draft);
+    const activeSpectra = getActiveSpectra(spectra);
     let hasFt: boolean;
     if (Array.isArray(activeSpectra) && activeSpectra?.length > 0) {
       hasFt = activeSpectra.some((spectrum) =>
