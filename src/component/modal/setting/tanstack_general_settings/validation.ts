@@ -18,7 +18,7 @@ import { displayPanelsValidation } from './validation/panels_tab_validation.js';
 import { spectraColorsTabValidation } from './validation/spectra_colors_tab_validation.ts';
 import { spectraLabelTabValidation } from './validation/spectra_label_tab_validation.ts';
 import { infoBlockTabValidation } from './validation/title_block_tab_validation.js';
-import { toolBarButtonsValidation } from './validation/tools_tab_validation.ts';
+import { toolbarButtonsValidation } from './validation/tools_tab_validation.ts';
 
 /**
  * The type for the workspace preferences is `WorkspaceWithSource`
@@ -30,7 +30,7 @@ import { toolBarButtonsValidation } from './validation/tools_tab_validation.ts';
 const displayValidation = z.object({
   general: displayGeneralValidation,
   panels: displayPanelsValidation,
-  toolBarButtons: toolBarButtonsValidation,
+  toolBarButtons: toolbarButtonsValidation,
 });
 
 export const workspaceValidation = z.object({

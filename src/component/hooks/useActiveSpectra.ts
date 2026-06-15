@@ -4,6 +4,8 @@ import { useChartData } from '../context/ChartContext.js';
 import { getActiveSpectra } from '../reducer/helper/getActiveSpectra.js';
 
 export function useActiveSpectra() {
-  const state = useChartData();
-  return useMemo(() => getActiveSpectra(state), [state]);
+  const {
+    view: { spectra },
+  } = useChartData();
+  return useMemo(() => getActiveSpectra(spectra), [spectra]);
 }

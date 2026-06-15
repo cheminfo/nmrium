@@ -203,7 +203,7 @@ const styles: Style = {
 type TooltipOrientation = 'vertical' | 'horizontal';
 
 //based on the tooltip from react-science
-const toolTipStyle = (orientation: TooltipOrientation) => {
+const tooltipStyle = (orientation: TooltipOrientation) => {
   const common: CSSObject = {
     display: 'none',
     position: 'absolute',
@@ -306,7 +306,7 @@ function Button<E extends ElementType = 'button'>(props: ButtonProps<E>) {
         <span style={{ flex: 1, pointerEvents: 'none' }}>{props.children}</span>
       </Wrapper>
       {toolTip && (
-        <div className="content" css={toolTipStyle(tooltipOrientation)}>
+        <div className="content" css={tooltipStyle(tooltipOrientation)}>
           <span
             style={{
               display: 'flex',

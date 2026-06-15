@@ -25,14 +25,7 @@ const FooterContainer = styled.div`
 `;
 
 type Shape = NonNullable<Peak1D['shape']>;
-
-type Kind =
-  | 'gaussian'
-  | 'lorentzian'
-  | 'pseudoVoigt'
-  | 'generalizedLorentzian'
-  | 'lorentzianDispersive'
-  | 'pseudoVoigtTCH';
+type Kind = Shape['kind'];
 
 function getKindDefaultValues(kind: Kind) {
   return {

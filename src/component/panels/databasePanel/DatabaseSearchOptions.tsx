@@ -9,13 +9,13 @@ import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import Input from '../../elements/Input.js';
 import Select from '../../elements/Select.js';
-import { ToolBarButton } from '../../elements/ToolBarButton.js';
+import { ToolbarButton } from '../../elements/toolbar_button.tsx';
 import useToolsFunctions from '../../hooks/useToolsFunctions.js';
 import { options } from '../../toolbar/ToolTypes.js';
 
 import type {
-  DataBaseSearchResultEntry,
   DatabaseSearchKeywords,
+  DatabaseSearchResultEntry,
   Databases,
 } from './DatabasePanel.js';
 
@@ -23,7 +23,7 @@ interface DatabaseSearchOptionsProps {
   databases: Databases;
   defaultDatabase: string;
   keywords: DatabaseSearchKeywords;
-  result: DataBaseSearchResultEntry;
+  result: DatabaseSearchResultEntry;
   idCode?: string;
   total: number;
   onKeywordsChange: (k: Partial<DatabaseSearchKeywords>) => void;
@@ -94,7 +94,7 @@ export function DatabaseSearchOptions(props: DatabaseSearchOptionsProps) {
             paddingBottom: '2px',
           }}
         >
-          <ToolBarButton
+          <ToolbarButton
             tooltip={`${showSimilarityTree ? 'Hide' : 'Show'} similarity tree`}
             icon={<TbBinaryTree />}
             active={showSimilarityTree}
@@ -120,7 +120,7 @@ export function DatabaseSearchOptions(props: DatabaseSearchOptionsProps) {
         </div>
       </PanelHeader>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <ToolBarButton
+        <ToolbarButton
           tooltip="Filter by select ranges"
           icon={<FaICursor />}
           active={selectedTool === options.databaseRangesSelection.id}

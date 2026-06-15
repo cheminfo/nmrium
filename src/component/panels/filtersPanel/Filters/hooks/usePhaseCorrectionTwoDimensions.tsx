@@ -68,6 +68,7 @@ export function usePhaseCorrectionTwoDimensions(filter: Filter2DEntry | null) {
   });
 
   useEffect(() => {
+    // eslint-disable-next-line react-you-might-not-need-an-effect/no-event-handler
     if (filter && phaseCorrectionSelectItem?.value === 'manual') {
       const { value } = filter;
       const phaseOptions: PhaseOptions = defaultPhaseOptions;
@@ -77,6 +78,7 @@ export function usePhaseCorrectionTwoDimensions(filter: Filter2DEntry | null) {
         (phaseOptions as any)[direction] = { ph0, ph1 };
       }
 
+      // eslint-disable-next-line react-you-might-not-need-an-effect/no-adjust-state-on-prop-change
       setValue(phaseOptions);
       valueRef.current = phaseOptions;
     }

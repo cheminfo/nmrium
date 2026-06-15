@@ -264,7 +264,7 @@ function SummaryPanel() {
 
   const additionalColumnData = useMemo<Correlation[]>(() => {
     const _selectedAdditionalColumnsAtomType =
-      selectedAdditionalColumnsAtomType.split('-')[0];
+      selectedAdditionalColumnsAtomType.split('-', 1)[0];
     if (!filteredCorrelationsData) {
       return [];
     }
@@ -434,11 +434,7 @@ function SummaryPanel() {
       options?: CorrelationOptions,
     ) => {
       if (
-        action === 'add' ||
-        action === 'move' ||
-        action === 'remove' ||
-        action === 'unmove' ||
-        action === 'setPathLength'
+        ['add', 'move', 'remove', 'unmove', 'setPathLength'].includes(action)
       ) {
         if (link && !link.pseudo) {
           if (action === 'remove') {
@@ -480,7 +476,7 @@ function SummaryPanel() {
         total={total}
         counter={filteredCorrelationsData?.values.length}
         onFilter={handleOnFilter}
-        filterToolTip={
+        filterTooltip={
           filterIsActive
             ? 'Show all correlations'
             : 'Hide correlations out of view'

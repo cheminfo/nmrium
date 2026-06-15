@@ -217,6 +217,7 @@ export default function Exam(props: any) {
   );
 
   useEffect(() => {
+    // eslint-disable-next-line react-you-might-not-need-an-effect/no-event-handler
     if (file) {
       void loadData(file, baseURL).then((result) => {
         const { state, aggregator } = result;

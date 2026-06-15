@@ -329,7 +329,10 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
     }
 
     case '1D': {
-      const activeSpectra = getActiveSpectra(draft);
+      const {
+        view: { spectra },
+      } = draft;
+      const activeSpectra = getActiveSpectra(spectra);
 
       // Horizontal zoom in/out 1d spectra by mouse wheel
       if (shiftKey || isBidirectionalZoom) {
@@ -612,12 +615,10 @@ function levelChangeHandler(draft: Draft<State>, action: LevelChangeAction) {
   const { deltaY, altKey, invertScroll } = action.payload.options;
   const {
     data,
-    view: {
-      spectraContourLevels,
-      spectra: { activeTab },
-    },
+    view: { spectraContourLevels, spectra: viewSpectra },
   } = draft;
-  const activeSpectra = getActiveSpectra(draft) || [];
+  const { activeTab } = viewSpectra;
+  const activeSpectra = getActiveSpectra(viewSpectra) || [];
 
   const activeSpectraObj: Record<string, true> = {};
   for (const activeSpectrum of activeSpectra) {

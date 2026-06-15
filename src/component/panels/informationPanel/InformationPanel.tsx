@@ -53,7 +53,7 @@ export function InformationPanel() {
     [customInfo, info, meta],
   );
 
-  const toolTipProps: Omit<TooltipProps, 'content'> = {
+  const tooltipProps: Omit<TooltipProps, 'content'> = {
     intent: !activeSpectra ? 'danger' : 'none',
   };
 
@@ -75,7 +75,7 @@ export function InformationPanel() {
           <Toolbar>
             <Toolbar.Item
               disabled={!activeSpectra || activeSpectra.length > 1}
-              tooltipProps={toolTipProps}
+              tooltipProps={tooltipProps}
               icon={<TbTableShortcut />}
               onClick={handleToggleInformationBlock}
               active={infoBlock.visible}
@@ -86,7 +86,7 @@ export function InformationPanel() {
             />
             <Toolbar.Item
               disabled={!activeSpectra || activeSpectra.length === 0}
-              tooltipProps={toolTipProps}
+              tooltipProps={tooltipProps}
               icon={<FaRegEdit />}
               onClick={() => {
                 openDialog('informationModal');

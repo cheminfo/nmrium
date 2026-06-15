@@ -26,7 +26,7 @@ import type { DisplayerMode } from '../../../reducer/Reducer.js';
 import { ErrorColors } from '../CorrelationTable/Constants.js';
 
 function getAtomType(nucleus: string): string {
-  return nucleus.split(/\d+/)[1];
+  return nucleus.split(/\d+/, 2)[1];
 }
 
 function getLabelColor(correlationData: any, correlation: any) {

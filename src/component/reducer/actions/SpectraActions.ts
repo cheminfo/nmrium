@@ -295,14 +295,14 @@ function handleChangeActiveSpectrum(
   action: ChangeActiveSpectrumAction,
 ) {
   const {
-    view: {
-      spectra: { activeTab, selectReferences, activeSpectra },
-    },
+    view: { spectra: viewSpectra },
     data,
     toolOptions,
   } = draft;
+
+  const { activeTab, selectReferences, activeSpectra } = viewSpectra;
   const { modifier, id, sortedSpectra } = action.payload;
-  const spectra = getActiveSpectra(draft);
+  const spectra = getActiveSpectra(viewSpectra);
 
   //get the spectra that its nucleus match the active tab
   const spectraPerNucleus = getSpectraByNucleus(
@@ -472,13 +472,17 @@ function resolveDeleteSpectraIDs(
   draft: Draft<State>,
   action: DeleteSpectraAction,
 ): SpectraEntry[] {
-  const activeSpectra = getActiveSpectra(draft);
+  const {
+    view: { spectra },
+    data,
+  } = draft;
+  const activeSpectra = getActiveSpectra(spectra);
   const { ids, spectrumSource } = action?.payload || {};
   const result: SpectraEntry[] = [];
 
   if (spectrumSource) {
-    for (let index = 0; index < draft.data.length; index++) {
-      const { info, id } = draft.data[index];
+    for (let index = 0; index < data.length; index++) {
+      const { info, id } = data[index];
       if (info?.spectrumSource === spectrumSource) {
         result.push({ id, index });
       }
@@ -490,8 +494,8 @@ function resolveDeleteSpectraIDs(
   if (ids) {
     const remainingIDs = new Set(ids);
 
-    for (let index = 0; index < draft.data.length; index++) {
-      const { id } = draft.data[index];
+    for (let index = 0; index < data.length; index++) {
+      const { id } = data[index];
       if (remainingIDs.has(id)) {
         result.push({ id, index });
         remainingIDs.delete(id);

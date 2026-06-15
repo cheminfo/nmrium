@@ -78,13 +78,14 @@ export default function Test(props: any) {
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-you-might-not-need-an-effect/no-event-handler
     if (!file) return;
 
     void loadData(file, baseURL).then(setData);
   }, [baseURL, file, props]);
-  const [viewCallBack, setViewCallBack] = useState<any>({});
-  const [dataCallBack, setDataCallBack] = useState<any>({});
-  const [settingsCallBack, setSettingsCallBack] = useState<any>({});
+  const [viewCallback, setViewCallback] = useState<any>({});
+  const [dataCallback, setDataCallback] = useState<any>({});
+  const [settingsCallback, setSettingsCallback] = useState<any>({});
   const dropFileHandler = useCallback((dropFiles: File[]) => {
     void (async () => {
       try {
@@ -105,25 +106,25 @@ export default function Test(props: any) {
       switch (source) {
         case 'view': {
           incrementViewCount();
-          setViewCallBack({ activate: true, data: view });
+          setViewCallback({ activate: true, data: view });
           setTimeout(() => {
-            setViewCallBack(({ data }: any) => ({ data, activate: false }));
+            setViewCallback(({ data }: any) => ({ data, activate: false }));
           }, 500);
           break;
         }
         case 'data': {
           incrementDataCount();
-          setDataCallBack({ activate: true, data });
+          setDataCallback({ activate: true, data });
           setTimeout(() => {
-            setDataCallBack(({ data }: any) => ({ data, activate: false }));
+            setDataCallback(({ data }: any) => ({ data, activate: false }));
           }, 500);
           break;
         }
         case 'settings': {
           incrementSettingsCount();
-          setSettingsCallBack({ activate: true, data: settings });
+          setSettingsCallback({ activate: true, data: settings });
           setTimeout(() => {
-            setSettingsCallBack(({ data }: any) => ({ data, activate: false }));
+            setSettingsCallback(({ data }: any) => ({ data, activate: false }));
           }, 500);
           break;
         }
@@ -202,27 +203,27 @@ export default function Test(props: any) {
           <div style={{ flex: 9 }}>
             <h3
               style={
-                dataCallBack.activate
+                dataCallback.activate
                   ? { color: 'red', fontWeight: 'bold' }
                   : {}
               }
             >
               <span data-testid="data-count">{dataCount}</span> - Data Change:
             </h3>
-            <Inspector data={dataCallBack.data} />
+            <Inspector data={dataCallback.data} />
             <h3
               style={
-                viewCallBack.activate
+                viewCallback.activate
                   ? { color: 'red', fontWeight: 'bold' }
                   : {}
               }
             >
               <span data-testid="view-count">{viewCount}</span> - View Change:
             </h3>
-            <Inspector data={viewCallBack.data} />
+            <Inspector data={viewCallback.data} />
             <h3
               style={
-                settingsCallBack.activate
+                settingsCallback.activate
                   ? { color: 'red', fontWeight: 'bold' }
                   : {}
               }
@@ -230,7 +231,7 @@ export default function Test(props: any) {
               <span data-testid="settings-count">{settingsCount}</span> -
               Settings Change:
             </h3>
-            <Inspector data={settingsCallBack.data} />
+            <Inspector data={settingsCallback.data} />
           </div>
         </div>
       </div>

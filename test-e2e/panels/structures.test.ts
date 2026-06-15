@@ -10,6 +10,8 @@ async function checkMoleculeStructureIsExists(
   const locator = nmrium.page.locator(
     `_react=MoleculePanel >> _react=MoleculeStructure >> nth=${index} >> svg`,
   );
+  // This would have to be fixed in OpenChemLib.
+  // eslint-disable-next-line unicorn/prefer-https
   await expect(locator).toHaveAttribute('xmlns', 'http://www.w3.org/2000/svg');
   await expect(locator).toBeVisible();
 }

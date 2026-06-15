@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const toolBarButtonsValidation = z
+export const toolbarButtonsValidation = z
   .object({
     zoom: z.boolean().optional(),
     zoomOut: z.boolean().optional(),

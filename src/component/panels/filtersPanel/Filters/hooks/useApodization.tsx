@@ -202,6 +202,7 @@ export const useApodization = (
   }, [handleSubmit, syncFilterOptions, handleApplyFilter]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-you-might-not-need-an-effect/no-event-handler
     if (applyFilterOnload) {
       void handleSubmit((values) => onChange(values))();
     }

@@ -5,12 +5,12 @@ import * as OCL from 'openchemlib';
 import { MoleculesDB } from 'openchemlib-utils';
 import { filter } from 'smart-array-filter';
 
-interface DataBaseSignal {
+interface DatabaseSignal {
   assignment: string;
   delta: number;
 }
 
-interface DataBaseBasic {
+interface DatabaseBasic {
   spectrumID: string;
   index: number;
   names: string[];
@@ -21,10 +21,10 @@ interface DataBaseBasic {
     coordinates: string;
   };
 }
-interface DataBaseRange {
+interface DatabaseRange {
   from: number;
   to: number;
-  signals: DataBaseSignal[];
+  signals: DatabaseSignal[];
 }
 
 export interface LocalDatabase {
@@ -38,7 +38,7 @@ export const DATA_BASES: LocalDatabase[] = [
   {
     key: 'local_solvent',
     label: 'Solvent database',
-    value: prepareDataBase([...protonImpurities, ...carbonImpurities]),
+    value: prepareDatabase([...protonImpurities, ...carbonImpurities]),
   },
 ];
 
@@ -48,7 +48,7 @@ interface Coupling {
 }
 
 export type PrepareDataResult = Partial<
-  DataBaseBasic & DataBaseRange & DataBaseSignal & Coupling
+  DatabaseBasic & DatabaseRange & DatabaseSignal & Coupling
 >;
 
 export interface InitiateDatabaseResult {
@@ -152,7 +152,7 @@ function prepareMoleculesDB(array: DatabaseNMREntry[]) {
   return moleculesDB;
 }
 
-function prepareDataBase(array: DatabaseNMREntry[]) {
+function prepareDatabase(array: DatabaseNMREntry[]) {
   return array.map((item) => {
     item.ranges = item.ranges.map((range) => ({
       id: crypto.randomUUID(),

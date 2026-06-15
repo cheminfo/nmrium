@@ -23,6 +23,7 @@ export function useWatchForm<F extends FieldValues = FieldValues>(
   }, [onChange]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-you-might-not-need-an-effect/no-event-handler
     if (initialValues !== undefined) {
       isMountedRef.current = false;
       reset?.(initialValues);

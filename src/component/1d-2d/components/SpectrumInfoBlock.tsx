@@ -75,11 +75,9 @@ function SpectrumInfoBlock() {
   const infoFields = fields.filter((field) => field.visible);
   const totalSpace =
     verticalSpace *
-    ((infoFields?.length < 2
+    ((infoFields?.length < 2 || infoFields?.length - (infoFields?.length % 2)
       ? 2
-      : infoFields?.length - (infoFields?.length % 2)
-        ? 2
-        : 1) || 0);
+      : 1) || 0);
 
   const [
     ref,

@@ -179,14 +179,18 @@ function handleAutoPeakPicking(
   action: AutoPeaksPickingAction,
 ) {
   const { options, defaultPeakShape } = action.payload;
-
-  const activeSpectra = getActiveSpectra(draft);
+  const {
+    view: { spectra },
+    xDomain,
+    toolOptions,
+  } = draft;
+  const activeSpectra = getActiveSpectra(spectra);
 
   if (!activeSpectra || activeSpectra.length === 0) {
     return;
   }
 
-  const [from, to] = draft.xDomain;
+  const [from, to] = xDomain;
 
   for (const activeSpectrum of activeSpectra) {
     const spectrum = getSpectrum(draft, activeSpectrum.index);
@@ -205,8 +209,8 @@ function handleAutoPeakPicking(
     spectrum.peaks.values = spectrum.peaks.values.concat(peaks);
   }
 
-  draft.toolOptions.selectedTool = 'zoom';
-  draft.toolOptions.selectedOptionPanel = null;
+  toolOptions.selectedTool = 'zoom';
+  toolOptions.selectedOptionPanel = null;
 }
 
 //action
