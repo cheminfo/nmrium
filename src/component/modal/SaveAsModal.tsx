@@ -98,7 +98,7 @@ function InnerSaveAsModal(props: InnerSaveAsModalProps) {
           <DialogBody style={{ backgroundColor: 'white' }}>
             <form.Section title="General information">
               <form.AppField name="name">
-                {(field) => <field.Input label="Name" required />}
+                {(field) => <field.Input label="Name" required autoFocus />}
               </form.AppField>
             </form.Section>
             <form.Section title="Include">
