@@ -28,7 +28,7 @@ import AboutUsModal from '../modal/aboutUs/AboutUsModal.js';
 import WorkspaceItem from '../modal/setting/WorkspaceItem.js';
 import { GeneralSettingsToolbarItem } from '../modal/setting/general_settings.js';
 import { options } from '../toolbar/ToolTypes.js';
-import { renderCoreSlot } from '../utility/renderCoreSlot.js';
+import { CoreSlot } from '../utility/CoreSlot.tsx';
 
 import { AutoPeakPickingOptionPanel } from './AutoPeakPickingOptionPanel.js';
 import { HeaderWrapper } from './HeaderWrapper.js';
@@ -149,7 +149,7 @@ function HeaderInner(props: HeaderInnerProps) {
           }}
         >
           <PluginTopBarRight>
-            {renderCoreSlot(core, 'topbar.right')}
+            <CoreSlot slot="topbar.right" core={core} />
           </PluginTopBarRight>
 
           {!hideWorkspaces && (
