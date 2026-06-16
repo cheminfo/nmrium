@@ -205,7 +205,7 @@ const InnerHeader = styled.div`
 `;
 
 interface BaseSectionProps {
-  title: string;
+  title: ReactNode;
   serial?: number;
   rightElement?: ReactNode | ((isOpen: boolean) => ReactNode);
   leftElement?: ReactNode | ((isOpen: boolean) => ReactNode);
@@ -214,14 +214,14 @@ interface BaseSectionProps {
 }
 
 interface SectionItemProps extends BaseSectionProps {
-  id?: string;
+  id: string;
   index?: number;
   onClick?: (id: any, event?: MouseEvent<HTMLDivElement>) => void;
   children?: ReactNode | ((options: { isOpen?: boolean }) => ReactNode);
   isOpen: boolean;
   sticky?: boolean;
   onReorder?: (sourceId: number, targetId: number) => void;
-  dragLabel?: string;
+  dragLabel?: ReactNode;
 }
 
 interface SectionProps {
@@ -269,7 +269,7 @@ function SectionItem(props: SectionItemProps) {
   const {
     title,
     dragLabel = title,
-    id = title,
+    id,
     onClick,
     serial,
     rightElement,
