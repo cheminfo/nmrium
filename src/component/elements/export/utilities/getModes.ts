@@ -1,6 +1,7 @@
 import type { OptionProps } from '@blueprintjs/core';
 
-export const MODES: Array<OptionProps<string>> = [
+type PossibleMode = 'basic' | 'advance';
+export const MODES: Array<OptionProps<PossibleMode>> = [
   {
     label: 'Basic',
     value: 'basic',

@@ -1,35 +1,21 @@
-import {
-  Button,
-  DialogFooter,
-  Radio,
-  RadioGroup,
-  SegmentedControl,
-  Tag,
-} from '@blueprintjs/core';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { Button, DialogFooter, SegmentedControl, Tag } from '@blueprintjs/core';
+import { revalidateLogic } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
 import type {
   AdvanceExportSettings,
   BasicExportSettings,
-  ExportSettings,
 } from '@zakodium/nmrium-core';
-import { useEffect, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { useState } from 'react';
+import { Form, FormGroup, useForm } from 'react-science/ui';
 
-import ActionButtons from '../ActionButtons.js';
-import { CheckController } from '../CheckController.js';
-import type { LabelStyle } from '../Label.js';
-import Label from '../Label.js';
-import { NumberInput2Controller } from '../NumberInput2Controller.js';
-import { Select2Controller } from '../Select2Controller.js';
 import { StandardDialog } from '../StandardDialog.tsx';
 import { StyledDialogBody } from '../StyledDialogBody.js';
-import type { SizeItem } from '../print/pageSize.js';
 import { getSizesList } from '../print/pageSize.js';
 
 import type { BaseExportProps } from './ExportContent.js';
 import { units } from './units.js';
 import { useExportConfigurer } from './useExportConfigurer.js';
-import { exportOptionValidationSchema } from './utilities/exportOptionValidationSchema.js';
+import { exportOptionValidationSchemaZod } from './utilities/exportOptionValidationSchema.js';
 import {
   getExportDefaultOptions,
   getExportDefaultOptionsByMode,
@@ -39,7 +25,6 @@ import { MODES } from './utilities/getModes.js';
 
 interface InnerExportOptionsModalProps extends BaseExportProps {
   onCloseDialog: () => void;
-  confirmButtonText?: string;
 }
 interface ExportOptionsModalProps extends InnerExportOptionsModalProps {
   isOpen: boolean;
@@ -53,49 +38,45 @@ export function ExportOptionsModal(props: ExportOptionsModalProps) {
   return <InnerExportOptionsModal {...otherProps} />;
 }
 
-const labelStyle: LabelStyle = {
-  label: {
-    color: '#232323',
-    width: '80px',
-  },
-  wrapper: {
-    display: 'flex',
-    justifyContent: 'flex-start',
-  },
-  container: { margin: '5px 0' },
-};
-
 function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
-  const {
-    onCloseDialog,
-    onExportOptionsChange,
-    confirmButtonText,
-    defaultExportOptions,
-  } = props;
-  const defaultValues = getExportDefaultOptions(defaultExportOptions);
+  const { onCloseDialog, defaultExportOptions, onExportOptionsChange } = props;
 
+  const defaultValues = getExportDefaultOptions(defaultExportOptions);
   const [mode, setMode] = useState<Mode>(defaultValues.mode);
 
-  const methods = useForm<ExportSettings>({
-    defaultValues,
-    resolver: yupResolver(exportOptionValidationSchema as any),
+  const form = useForm({
+    defaultValues: getExportDefaultOptionsByMode(mode),
+    validators: {
+      onDynamic: exportOptionValidationSchemaZod as any,
+    },
+    validationLogic: revalidateLogic({ modeAfterSubmission: 'change' }),
+    onSubmit: ({ value }) => {
+      const parsedValue = exportOptionValidationSchemaZod.parse(value);
+      onExportOptionsChange(parsedValue);
+    },
   });
-  const {
-    handleSubmit,
-    control,
-    watch,
-    setValue,
-    formState: { isValid, errors },
-    reset,
-    setFocus,
-  } = methods;
 
-  const watchSettings = watch();
-  const {
-    unit,
-    dpi = 0,
-    layout,
-  } = watchSettings as AdvanceExportSettings & BasicExportSettings;
+  const { unit, layout } = useSelector(form.store, (state) => {
+    const { unit, layout } = state.values as AdvanceExportSettings &
+      BasicExportSettings;
+
+    return {
+      unit,
+      layout,
+    };
+  });
+
+  const { values, isValid, errors } = useSelector(
+    form.store,
+    ({ values, isValid, errors }) => {
+      return {
+        values,
+        isValid,
+        errors,
+      };
+    },
+  );
+
   const {
     widthInPixel,
     heightInPixel,
@@ -104,51 +85,9 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
     enableAspectRatio,
     changeSize,
     changeUnit,
-  } = useExportConfigurer(watchSettings);
+  } = useExportConfigurer(values);
 
-  let sizesList: SizeItem[] = [];
-
-  if (layout) {
-    sizesList = getSizesList(layout);
-  }
-
-  function handleChangeMode(mode: any) {
-    const options = defaultValues;
-    setMode(mode);
-    if (options.mode === mode) {
-      reset(defaultValues);
-    } else {
-      reset(getExportDefaultOptionsByMode(mode));
-    }
-  }
-
-  useEffect(() => {
-    const handleRenderComplete = () => {
-      setTimeout(() => {
-        if (mode === 'advance') {
-          setFocus('width');
-        } else {
-          setFocus('dpi');
-        }
-      }, 0);
-    };
-
-    const handleKeyDown = (event: globalThis.KeyboardEvent) => {
-      if (event.key === 'Enter') {
-        void handleSubmit(onExportOptionsChange)();
-      }
-    };
-
-    globalThis.addEventListener('keydown', handleKeyDown);
-
-    const animationFrameId = requestAnimationFrame(handleRenderComplete);
-
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-      globalThis.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [handleSubmit, mode, onExportOptionsChange, setFocus]);
-
+  // TODO: focus width if mode === advance, else focus dpi + save on "Enter"
   return (
     <StandardDialog
       isOpen
@@ -158,165 +97,207 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
       canEscapeKeyClose
       autoFocus
     >
-      <StyledDialogBody>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            marginBottom: '15px',
+      <form.AppForm>
+        <Form
+          layout="inline"
+          noValidate
+          onSubmit={(event) => {
+            event.preventDefault();
+            void form.handleSubmit();
           }}
         >
-          <SegmentedControl
-            defaultValue="list"
-            inline
-            options={MODES}
-            value={mode}
-            onValueChange={handleChangeMode}
-          />
-        </div>
-
-        <Label style={labelStyle} title="Description:">
-          <Tag
-            intent={
-              !isValid && Object.keys(errors).length > 0 ? 'danger' : 'none'
-            }
-          >{`${widthInPixel} px x ${heightInPixel} px @ ${dpi}DPI`}</Tag>
-        </Label>
-        {mode === 'basic' && (
-          <>
-            <Label style={labelStyle} title="Size">
-              <Select2Controller
-                control={control}
-                name="size"
-                items={sizesList}
+          <StyledDialogBody>
+            <StyledDialogBody>
+              <SegmentedControl
+                defaultValue="list"
+                inline
+                options={MODES}
+                value={mode}
+                onValueChange={(element) => {
+                  setMode(element as Mode);
+                }}
               />
-            </Label>
-            <Label style={labelStyle} title="Layout">
-              <Controller
-                name="layout"
-                control={control}
-                render={({ field }) => {
-                  const { value, ref, ...otherFieldProps } = field;
-                  return (
-                    <RadioGroup
-                      inline
-                      selectedValue={value}
-                      {...otherFieldProps}
+
+              <form.Section title="General informations">
+                <FormGroup label="Description">
+                  <Tag
+                    intent={
+                      !isValid && Object.keys(errors).length > 0
+                        ? 'danger'
+                        : 'none'
+                    }
+                  >
+                    <span>{widthInPixel} px</span>
+                    <span> x </span>
+                    <span>{heightInPixel} px</span>
+                    <form.Subscribe selector={(state) => state.values.dpi}>
+                      {(dpi) => <span> @ {dpi}DPI</span>}
+                    </form.Subscribe>
+                  </Tag>
+                </FormGroup>
+
+                {mode === 'basic' && (
+                  <>
+                    <form.AppField name="size">
+                      {(field) => (
+                        <field.Select
+                          label="Size"
+                          items={layout ? getSizesList(layout) : []}
+                        />
+                      )}
+                    </form.AppField>
+                    <form.AppField name="layout">
+                      {(field) => (
+                        <field.RadioGroup
+                          label="Layout"
+                          inline
+                          options={[
+                            { label: 'Portrait', value: 'portrait' },
+                            { label: 'Landscape', value: 'landscape' },
+                          ]}
+                        />
+                      )}
+                    </form.AppField>
+                  </>
+                )}
+
+                {mode === 'advance' && (
+                  <>
+                    <form.AppField
+                      name="width"
+                      listeners={{
+                        onChange: ({ value }) => {
+                          const newHeight = changeSize(
+                            value,
+                            'height',
+                            'width',
+                          );
+                          form.setFieldValue('height', newHeight);
+                        },
+                      }}
                     >
-                      <Radio label="Portrait" value="portrait" />
-                      <Radio label="Landscape" value="landscape" />
-                    </RadioGroup>
-                  );
+                      {(field) => (
+                        <field.NumericInput
+                          label="Width"
+                          rightElement={<Tag>{unit}</Tag>}
+                          required
+                          placeholder="width"
+                        />
+                      )}
+                    </form.AppField>
+
+                    <FormGroup>
+                      <Button
+                        icon="link"
+                        variant="minimal"
+                        active={isAspectRatioEnabled}
+                        onClick={() => {
+                          enableAspectRatio((prevFlag) => !prevFlag);
+                        }}
+                      />
+                    </FormGroup>
+
+                    <form.AppField
+                      name="height"
+                      listeners={{
+                        onChange: ({ value }) => {
+                          const newWidth = changeSize(value, 'width', 'height');
+                          form.setFieldValue('width', newWidth);
+                        },
+                      }}
+                    >
+                      {(field) => (
+                        <field.NumericInput
+                          label="Height"
+                          rightElement={<Tag>{unit}</Tag>}
+                          required
+                          placeholder="height"
+                        />
+                      )}
+                    </form.AppField>
+
+                    <form.AppField
+                      name="unit"
+                      listeners={{
+                        onChange: ({ value }) => {
+                          const { width, height } = changeUnit({ unit: value });
+
+                          form.setFieldValue('width', width);
+                          form.setFieldValue('height', height);
+                        },
+                      }}
+                    >
+                      {(field) => (
+                        <field.Select
+                          label="Units"
+                          items={units.map(({ name, unit }) => ({
+                            label: name,
+                            value: unit,
+                          }))}
+                        />
+                      )}
+                    </form.AppField>
+                  </>
+                )}
+
+                <form.AppField
+                  name="dpi"
+                  listeners={{
+                    onChange: ({ value }) => {
+                      if (unit === 'px') {
+                        const convertedValue = changeDPI(value);
+
+                        form.setFieldValue('width', convertedValue.width);
+                        form.setFieldValue('height', convertedValue.height);
+                      }
+                    },
+                  }}
+                >
+                  {(field) => (
+                    <field.NumericInput
+                      required
+                      label="DPI"
+                      placeholder="DPI"
+                    />
+                  )}
+                </form.AppField>
+              </form.Section>
+            </StyledDialogBody>
+          </StyledDialogBody>
+          <DialogFooter>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'baseline',
+              }}
+            >
+              <form.AppField name="useDefaultSettings">
+                {(field) => (
+                  <field.Checkbox label="Don't show options dialog next time and use those settings" />
+                )}
+              </form.AppField>
+
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  gap: 5,
                 }}
-              />
-            </Label>
-          </>
-        )}
-        {mode === 'advance' && (
-          <>
-            <Label style={labelStyle} title="Size">
-              <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <NumberInput2Controller
-                  name="width"
-                  control={control}
-                  style={{ width: 100 }}
-                  rightElement={<Tag>{unit}</Tag>}
-                  controllerProps={{ rules: { required: true } }}
-                  transformValue={(value) => {
-                    const newHeight = changeSize(value, 'height', 'width');
-                    setValue('height', newHeight);
-                    return value;
-                  }}
-                  debounceTime={250}
-                  placeholder="width"
-                />
-                <div style={{ padding: '0px 5px' }}>
-                  <Button
-                    icon="link"
-                    variant="minimal"
-                    active={isAspectRatioEnabled}
-                    onClick={() => {
-                      enableAspectRatio((prevFlag) => !prevFlag);
-                    }}
-                  />
-                </div>
-                <NumberInput2Controller
-                  name="height"
-                  control={control}
-                  style={{ width: 100 }}
-                  rightElement={<Tag>{unit}</Tag>}
-                  controllerProps={{ rules: { required: true } }}
-                  transformValue={(value) => {
-                    const newWidth = changeSize(value, 'width', 'height');
-                    setValue('width', newWidth);
-                    return value;
-                  }}
-                  debounceTime={250}
-                  placeholder="height"
-                />
+              >
+                <Button
+                  variant="outlined"
+                  intent="danger"
+                  onClick={() => onCloseDialog?.()}
+                >
+                  Cancel
+                </Button>
+                <form.SubmitButton intent="success">Save</form.SubmitButton>
               </div>
-            </Label>
-            <Label style={labelStyle} title="Units">
-              <Select2Controller
-                control={control}
-                name="unit"
-                itemTextKey="name"
-                itemValueKey="unit"
-                items={units}
-                onItemSelect={({ unit }) => {
-                  const newSize = changeUnit({ unit });
-                  setValue('width', newSize.width);
-                  setValue('height', newSize.height);
-                }}
-              />
-            </Label>
-          </>
-        )}
-        <Label style={labelStyle} title="DPI">
-          <NumberInput2Controller
-            name="dpi"
-            control={control}
-            style={{ width: 100 }}
-            controllerProps={{ rules: { required: true } }}
-            transformValue={(value) => {
-              if (unit === 'px') {
-                const convertedValue = changeDPI(value);
-                setValue('width', convertedValue.width);
-                setValue('height', convertedValue.height);
-              }
-
-              return value;
-            }}
-            debounceTime={250}
-            placeholder="DPI"
-          />
-        </Label>
-      </StyledDialogBody>
-      <DialogFooter>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'baseline',
-          }}
-        >
-          <CheckController
-            control={control}
-            name="useDefaultSettings"
-            style={{ fontSize: '12px' }}
-            label="Don't show options dialog next time and use those settings"
-          />
-
-          <ActionButtons
-            style={{ flexDirection: 'row-reverse', margin: 0 }}
-            onDone={() => {
-              void handleSubmit(onExportOptionsChange)();
-            }}
-            doneLabel={confirmButtonText}
-            onCancel={() => onCloseDialog?.()}
-          />
-        </div>
-      </DialogFooter>
+            </div>
+          </DialogFooter>
+        </Form>
+      </form.AppForm>
     </StandardDialog>
   );
 }

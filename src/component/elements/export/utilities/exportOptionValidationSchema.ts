@@ -1,10 +1,5 @@
-import type {
-  ExportSettings,
-  Layout,
-  PageSizeName,
-  Unit,
-} from '@zakodium/nmrium-core';
-import * as Yup from 'yup';
+import type { Unit } from '@zakodium/nmrium-core';
+import { z } from 'zod/v4';
 
 import { pageSizes } from '../../print/pageSize.js';
 import { convertToPixels, units } from '../units.js';
@@ -18,89 +13,52 @@ function testSize(value: number, unit: Unit, dpi: number) {
   const valueInPixel = convertToPixels(value, unit, dpi, {
     precision: 2,
   });
+
   if (value) {
     return valueInPixel <= MAX_PIXEL;
   }
+
   return true;
 }
 
-// export const exportOptionValidationSchema = Yup.object().shape({
-//   width: Yup.number()
-//     .required()
-//     .test(
-//       'width-test',
-//       `Width should be less or equal to ${MAX_PIXEL}`,
-//       // eslint-disable-next-line func-names
-//       function (value) {
-//         // eslint-disable-next-line no-invalid-this
-//         const { unit, dpi } = this.parent;
-//         return testSize(value, unit, dpi);
-//       },
-//     ),
-
-//   height: Yup.number()
-//     .required()
-//     .test(
-//       'height-test',
-//       `Height should be less or equal to ${MAX_PIXEL}`,
-//       // eslint-disable-next-line func-names
-//       function (value) {
-//         // eslint-disable-next-line no-invalid-this
-//         const { unit, dpi } = this.parent;
-//         return testSize(value, unit, dpi);
-//       },
-//     ),
-
-//   dpi: Yup.number().required(),
-//   unit: Yup.mixed<Unit>().oneOf(unitsKeys, 'Unit is invalid').required(),
-//   useDefaultSettings: Yup.boolean().required(),
-// });
-
-const advanceExportOptionValidationSchema = Yup.object().shape({
-  mode: Yup.string().oneOf(['basic', 'advance']).required(),
-  width: Yup.number()
-    .required()
-    .test(
-      'width-test',
-      `Width should be less or equal to ${MAX_PIXEL}`,
-      (value, context) => {
-        const { unit, dpi } = context.parent;
-        return testSize(value, unit, dpi);
-      },
-    ),
-
-  height: Yup.number()
-    .required()
-    .test(
-      'height-test',
-      `Height should be less or equal to ${MAX_PIXEL}`,
-      (value, context) => {
-        const { unit, dpi } = context.parent;
-        return testSize(value, unit, dpi);
-      },
-    ),
-
-  dpi: Yup.number().required(),
-  unit: Yup.mixed<Unit>().oneOf(unitsKeys).required(),
-  useDefaultSettings: Yup.boolean().required(),
+const basicExportOptionValidationSchemaZod = z.object({
+  mode: z.literal('basic'),
+  size: z.enum(pageSizesKeys, { error: 'Size is invalid' }),
+  layout: z.enum(['portrait', 'landscape'], 'Layout is invalid'),
+  dpi: z.coerce.number().min(1, { error: 'DPI is invalid' }),
+  useDefaultSettings: z.boolean(),
 });
 
-const basicExportOptionValidationSchema = Yup.object().shape({
-  mode: Yup.string().oneOf(['basic', 'advance']).required(),
-  size: Yup.mixed<PageSizeName>()
-    .oneOf(pageSizesKeys, 'Size is invalid')
-    .required(),
-  layout: Yup.mixed<Layout>()
-    .oneOf(['portrait', 'landscape'], 'Layout is invalid')
-    .required(),
-  dpi: Yup.number().required(),
-  useDefaultSettings: Yup.boolean().required(),
-});
+const advanceExportOptionValidationSchemaZod = z
+  .object({
+    mode: z.literal('advance'),
+    width: z.coerce.number(),
+    height: z.coerce.number(),
+    dpi: z.coerce.number().min(1, { error: 'DPI is invalid' }),
+    unit: z.enum(unitsKeys),
+    useDefaultSettings: z.boolean(),
+  })
+  .superRefine((data, context) => {
+    const { dpi, unit, height, width } = data;
 
-export const exportOptionValidationSchema = Yup.lazy(
-  (values: ExportSettings) => {
-    return values?.mode === 'advance'
-      ? advanceExportOptionValidationSchema
-      : basicExportOptionValidationSchema;
-  },
-);
+    if (!testSize(width, unit, dpi)) {
+      context.addIssue({
+        code: 'custom',
+        message: `Width should be less or equal to ${MAX_PIXEL}`,
+        path: ['width'],
+      });
+    }
+
+    if (!testSize(height, unit, dpi)) {
+      context.addIssue({
+        code: 'custom',
+        message: `Height should be less or equal to ${MAX_PIXEL}`,
+        path: ['height'],
+      });
+    }
+  });
+
+export const exportOptionValidationSchemaZod = z.discriminatedUnion('mode', [
+  basicExportOptionValidationSchemaZod,
+  advanceExportOptionValidationSchemaZod,
+]);
