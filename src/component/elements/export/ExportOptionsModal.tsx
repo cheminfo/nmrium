@@ -143,6 +143,7 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
                         <field.Select
                           label="Size"
                           items={layout ? getSizesList(layout) : []}
+                          required
                         />
                       )}
                     </form.AppField>
@@ -151,6 +152,7 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
                         <field.RadioGroup
                           label="Layout"
                           inline
+                          required
                           options={[
                             { label: 'Portrait', value: 'portrait' },
                             { label: 'Landscape', value: 'landscape' },
@@ -230,6 +232,7 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
                       {(field) => (
                         <field.Select
                           label="Units"
+                          required
                           items={units.map(({ name, unit }) => ({
                             label: name,
                             value: unit,
