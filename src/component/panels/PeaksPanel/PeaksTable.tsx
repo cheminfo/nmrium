@@ -20,7 +20,7 @@ import type { PeakRecord } from './PeaksPanel.js';
 
 export function usePeaksTableColumns(activeTab: string) {
   const dispatch = useDispatch();
-  const peaksPreferences = usePanelPreferences('peaks', activeTab);
+  const { tablePreferences } = usePanelPreferences('peaks', activeTab);
   const [peak, setEditedPeak] = useState<Peak1D | undefined>();
 
   const deletePeakHandler = useCallback(
@@ -64,7 +64,7 @@ export function usePeaksTableColumns(activeTab: string) {
           <EditableColumn
             value={formatNumber(
               row.original.x,
-              peaksPreferences.deltaPPM.format,
+              tablePreferences.deltaPPM.format,
             )}
             onSave={(value) => saveDeltaPPMRefsHandler(value, row.original)}
             type="number"
@@ -78,7 +78,7 @@ export function usePeaksTableColumns(activeTab: string) {
         Header: 'δ (Hz)',
         accessor: 'xHz',
         Cell: ({ row }: CellProps<PeakRecord>) =>
-          formatNumber(row.original.xHz, peaksPreferences.deltaHz.format),
+          formatNumber(row.original.xHz, tablePreferences.deltaHz.format),
       },
       {
         showWhen: 'intensity.show',
@@ -87,7 +87,7 @@ export function usePeaksTableColumns(activeTab: string) {
         style: { maxWidth: '80px' },
         accessor: 'y',
         Cell: ({ row }: CellProps<PeakRecord>) =>
-          formatNumber(row.original.y, peaksPreferences.intensity.format),
+          formatNumber(row.original.y, tablePreferences.intensity.format),
       },
       {
         showWhen: 'peakWidth.show',
@@ -95,7 +95,7 @@ export function usePeaksTableColumns(activeTab: string) {
         Header: 'Width (Hz)',
         accessor: 'width',
         Cell: ({ row }: CellProps<PeakRecord>) =>
-          formatNumber(row.original.width, peaksPreferences.peakWidth.format),
+          formatNumber(row.original.width, tablePreferences.peakWidth.format),
       },
       {
         showWhen: 'showKind',
@@ -111,7 +111,7 @@ export function usePeaksTableColumns(activeTab: string) {
         Cell: ({ row }: CellProps<PeakRecord>) => {
           const fwhm = row.original?.shape?.fwhm;
           if (fwhm) {
-            return formatNumber(fwhm, peaksPreferences.fwhm.format);
+            return formatNumber(fwhm, tablePreferences.fwhm.format);
           }
           return '';
         },
@@ -127,7 +127,7 @@ export function usePeaksTableColumns(activeTab: string) {
             row.original?.shape?.kind === 'pseudoVoigt' &&
             row.original?.shape?.mu;
           if (mu) {
-            return formatNumber(mu, peaksPreferences.mu.format);
+            return formatNumber(mu, tablePreferences.mu.format);
           }
           return '';
         },
@@ -144,7 +144,7 @@ export function usePeaksTableColumns(activeTab: string) {
             row.original?.shape?.kind === 'generalizedLorentzian' &&
             row.original?.shape?.gamma;
           if (gamma) {
-            return formatNumber(gamma, peaksPreferences.gamma.format);
+            return formatNumber(gamma, tablePreferences.gamma.format);
           }
           return '';
         },
@@ -170,7 +170,7 @@ export function usePeaksTableColumns(activeTab: string) {
       },
     ],
     [
-      peaksPreferences,
+      tablePreferences,
       saveDeltaPPMRefsHandler,
       deletePeakHandler,
       editPeakHandler,
@@ -181,14 +181,14 @@ export function usePeaksTableColumns(activeTab: string) {
     const columns: Array<ControlCustomColumn<PeakRecord>> = [];
     for (const col of COLUMNS) {
       const { showWhen, ...colParams } = col;
-      if (dlv(peaksPreferences, showWhen)) {
+      if (dlv(tablePreferences, showWhen)) {
         addCustomColumn(columns, colParams);
       }
     }
 
     columns.sort((object1, object2) => object1.index - object2.index);
     return columns;
-  }, [COLUMNS, peaksPreferences]);
+  }, [COLUMNS, tablePreferences]);
 
   return { tableColumns, peak, setEditedPeak };
 }

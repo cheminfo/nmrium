@@ -42,7 +42,7 @@ export function NewSignalTab(props: NewSignalTabProps) {
   const { selectedTabId: signalIndex, selectTab } = useTabsController();
   const { signals } = useWatch();
   const activeTab = useActiveNucleusTab();
-  const rangesPreferences = usePanelPreferences('ranges', activeTab);
+  const { tablePreferences } = usePanelPreferences('ranges', activeTab);
 
   function saveHandler(val: any) {
     const newSignal = {
@@ -95,8 +95,8 @@ export function NewSignalTab(props: NewSignalTabProps) {
           Edit or select a delta value of new signal in range [
           {`${formatNumber(
             range.from,
-            rangesPreferences.from.format,
-          )} ppm - ${formatNumber(range.to, rangesPreferences.to.format)} ppm`}
+            tablePreferences.from.format,
+          )} ppm - ${formatNumber(range.to, tablePreferences.to.format)} ppm`}
           ]:
         </p>
         <NumberInput2Controller

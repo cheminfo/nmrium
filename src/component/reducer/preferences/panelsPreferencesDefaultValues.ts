@@ -1,10 +1,12 @@
 import type {
   BaseNucleus1DPreferences,
   BaseNucleus2DPreferences,
+  BaseRangesTablePreferences,
   MatrixGenerationOptions,
   MultipleSpectraAnalysisPreferences,
   PanelsPreferences,
   PeaksNucleusPreferences,
+  RangesNucleusPreferences,
   SpectraPreferences,
   Zones1DNucleusPreferences,
   Zones2DNucleusPreferences,
@@ -124,26 +126,33 @@ const getZoneDefaultValues = (nucleus?: string): PanelsPreferences['zones'] => {
   }
 };
 
+const createBaseRangesTablePreferences = (): BaseRangesTablePreferences => ({
+  showSerialNumber: true,
+  from: { show: false, format: '0.00' },
+  to: { show: false, format: '0.00' },
+  absolute: { show: false, format: '0.00' },
+  relative: { show: true, format: '0.00' },
+  deltaPPM: { show: true, format: '0.00' },
+  deltaHz: { show: false, format: '0.00' },
+  coupling: { show: true, format: '0.00' },
+  showKind: true,
+  showMultiplicity: true,
+  showAssignment: true,
+  showAssignmentLabel: true,
+});
+
 const getRangeDefaultValues = (
   nucleus?: string,
 ): PanelsPreferences['ranges'] => {
-  const preferences = {
-    showSerialNumber: true,
-    from: { show: false, format: '0.00' },
-    to: { show: false, format: '0.00' },
-    absolute: { show: false, format: '0.00' },
-    relative: { show: true, format: '0.00' },
-    deltaPPM: { show: true, format: '0.00' },
-    deltaHz: { show: false, format: '0.00' },
-    coupling: { show: true, format: '0.00' },
+  const preferences: RangesNucleusPreferences = {
+    floatingTablePreferences: createBaseRangesTablePreferences(),
+    tablePreferences: {
+      ...createBaseRangesTablePreferences(),
+      showDeleteAction: true,
+      showZoomAction: true,
+      showEditAction: true,
+    },
     jGraphTolerance: isProton(nucleus || '') ? 0.2 : nucleus === '13C' ? 2 : 0, //J Graph tolerance for: 1H: 0.2Hz 13C: 2Hz
-    showKind: true,
-    showMultiplicity: true,
-    showAssignment: true,
-    showDeleteAction: true,
-    showZoomAction: true,
-    showEditAction: true,
-    showAssignmentLabel: true,
     isSumConstant: true,
   };
 
@@ -154,17 +163,19 @@ const getPeaksDefaultValues = (
   nucleus?: string,
 ): PanelsPreferences['peaks'] => {
   const preferences: PeaksNucleusPreferences = {
-    showSerialNumber: true,
-    deltaPPM: { show: true, format: '0.00' },
-    deltaHz: { show: false, format: '0.00' },
-    peakWidth: { show: false, format: '0.00' },
-    intensity: { show: true, format: '0.00' },
-    fwhm: { show: true, format: '0.00000' },
-    mu: { show: false, format: '0.00000' },
-    gamma: { show: false, format: '0.000' },
-    showDeleteAction: true,
-    showEditPeakShapeAction: true,
-    showKind: true,
+    tablePreferences: {
+      showSerialNumber: true,
+      deltaPPM: { show: true, format: '0.00' },
+      deltaHz: { show: false, format: '0.00' },
+      peakWidth: { show: false, format: '0.00' },
+      intensity: { show: true, format: '0.00' },
+      fwhm: { show: true, format: '0.00000' },
+      mu: { show: false, format: '0.00000' },
+      gamma: { show: false, format: '0.000' },
+      showKind: true,
+      showDeleteAction: true,
+      showEditPeakShapeAction: true,
+    },
     defaultPeakShape: DEFAULT_PEAK_SHAPE,
   };
   return getPreferences(preferences, nucleus);

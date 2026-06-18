@@ -329,84 +329,159 @@ const customWorkspaces: CustomWorkspaces = {
       ranges: {
         nuclei: {
           '1H': {
+            tablePreferences: {
+              showAssignment: false,
+              showAssignmentLabel: false,
+              showSerialNumber: false,
+              showMultiplicity: false,
+              from: {
+                show: false,
+                format: '0.00',
+              },
+              to: {
+                show: false,
+                format: '0.00',
+              },
+              absolute: {
+                show: false,
+                format: '0.00',
+              },
+              relative: {
+                show: true,
+                format: '0.00',
+              },
+              deltaPPM: {
+                show: true,
+                format: '0.00',
+              },
+              deltaHz: {
+                show: false,
+                format: '0.00',
+              },
+              coupling: {
+                show: false,
+                format: '0.00',
+              },
+              showKind: false,
+              showDeleteAction: false,
+              showEditAction: false,
+              showZoomAction: false,
+            },
+            floatingTablePreferences: {
+              showAssignment: false,
+              showAssignmentLabel: false,
+              showSerialNumber: false,
+              showMultiplicity: false,
+              from: {
+                show: false,
+                format: '0.00',
+              },
+              to: {
+                show: false,
+                format: '0.00',
+              },
+              absolute: {
+                show: false,
+                format: '0.00',
+              },
+              relative: {
+                show: true,
+                format: '0.00',
+              },
+              deltaPPM: {
+                show: true,
+                format: '0.00',
+              },
+              deltaHz: {
+                show: false,
+                format: '0.00',
+              },
+              coupling: {
+                show: false,
+                format: '0.00',
+              },
+              showKind: false,
+            },
             isSumConstant: false,
-            showAssignment: false,
-            showAssignmentLabel: false,
-            showSerialNumber: false,
-            showDeleteAction: false,
-            showEditAction: false,
-            showMultiplicity: false,
-            showZoomAction: false,
-            from: {
-              show: false,
-              format: '0.00',
-            },
-            to: {
-              show: false,
-              format: '0.00',
-            },
-            absolute: {
-              show: false,
-              format: '0.00',
-            },
-            relative: {
-              show: true,
-              format: '0.00',
-            },
-            deltaPPM: {
-              show: true,
-              format: '0.00',
-            },
-            deltaHz: {
-              show: false,
-              format: '0.00',
-            },
-            coupling: {
-              show: false,
-              format: '0.00',
-            },
             jGraphTolerance: 0.2,
-            showKind: false,
           },
           '13C': {
+            tablePreferences: {
+              showAssignment: false,
+              showAssignmentLabel: false,
+              showSerialNumber: false,
+              showMultiplicity: false,
+              from: {
+                show: false,
+                format: '0.00',
+              },
+              to: {
+                show: false,
+                format: '0.00',
+              },
+              absolute: {
+                show: false,
+                format: '0.00',
+              },
+              relative: {
+                show: true,
+                format: '0.00',
+              },
+              deltaPPM: {
+                show: true,
+                format: '0.00',
+              },
+              deltaHz: {
+                show: false,
+                format: '0.00',
+              },
+              coupling: {
+                show: true,
+                format: '0.00',
+              },
+              showKind: true,
+
+              showDeleteAction: false,
+              showEditAction: false,
+              showZoomAction: false,
+            },
+            floatingTablePreferences: {
+              showAssignment: false,
+              showAssignmentLabel: false,
+              showSerialNumber: false,
+              showMultiplicity: false,
+              from: {
+                show: false,
+                format: '0.00',
+              },
+              to: {
+                show: false,
+                format: '0.00',
+              },
+              absolute: {
+                show: false,
+                format: '0.00',
+              },
+              relative: {
+                show: true,
+                format: '0.00',
+              },
+              deltaPPM: {
+                show: true,
+                format: '0.00',
+              },
+              deltaHz: {
+                show: false,
+                format: '0.00',
+              },
+              coupling: {
+                show: true,
+                format: '0.00',
+              },
+              showKind: true,
+            },
             isSumConstant: false,
-            showAssignment: false,
-            showAssignmentLabel: false,
-            showSerialNumber: false,
-            showDeleteAction: false,
-            showEditAction: false,
-            showMultiplicity: false,
-            showZoomAction: false,
-            from: {
-              show: false,
-              format: '0.00',
-            },
-            to: {
-              show: false,
-              format: '0.00',
-            },
-            absolute: {
-              show: false,
-              format: '0.00',
-            },
-            relative: {
-              show: true,
-              format: '0.00',
-            },
-            deltaPPM: {
-              show: true,
-              format: '0.00',
-            },
-            deltaHz: {
-              show: false,
-              format: '0.00',
-            },
-            coupling: {
-              show: true,
-              format: '0.00',
-            },
             jGraphTolerance: 2,
-            showKind: true,
           },
         },
       },

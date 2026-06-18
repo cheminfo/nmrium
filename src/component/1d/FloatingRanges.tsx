@@ -52,21 +52,21 @@ interface RangeItem {
 function useMapRanges(ranges: Ranges['values']) {
   const output: RangeItem[] = [];
   const activeTab = useActiveNucleusTab();
-  const preferences = usePanelPreferences('ranges', activeTab);
+  const { tablePreferences } = usePanelPreferences('ranges', activeTab);
   for (const range of ranges) {
     const { id, from, to, integration, signals = [] } = range;
     const relativeFlag = isSignalRange(range);
     const formattedValue = formatNumber(
       integration,
-      preferences.relative.format,
+      tablePreferences.relative.format,
     );
     const integrationValue = relativeFlag
       ? formattedValue
       : `[ ${formattedValue} ]`;
 
-    const rangeText = `${formatNumber(from, preferences.from.format)} - ${formatNumber(
+    const rangeText = `${formatNumber(from, tablePreferences.from.format)} - ${formatNumber(
       to,
-      preferences.to.format,
+      tablePreferences.to.format,
     )}`;
     if (signals.length > 0) {
       for (const signal of signals) {
@@ -74,13 +74,13 @@ function useMapRanges(ranges: Ranges['values']) {
         const coupling = js
           .map((jsItem) =>
             !Number.isNaN(jsItem.coupling)
-              ? formatNumber(jsItem.coupling, preferences.coupling.format)
+              ? formatNumber(jsItem.coupling, tablePreferences.coupling.format)
               : '',
           )
           .join(',');
         const signalDelta = !checkMultiplicity(multiplicity, ['m'])
           ? rangeText
-          : formatNumber(delta, preferences.deltaPPM.format);
+          : formatNumber(delta, tablePreferences.deltaPPM.format);
         output.push({
           id,
           delta: signalDelta,

@@ -188,9 +188,12 @@ export default function Peaks(props: PeaksProps) {
   const spectrum = useSpectrum(emptyData) as Spectrum1D;
   const peaksViewState = useActiveSpectrumPeaksViewState();
   const rangesViewState = useActiveSpectrumRangesViewState();
+  const { tablePreferences } = usePanelPreferences(
+    peaksSource === 'peaks' ? 'peaks' : 'ranges',
+    nucleus,
+  );
   const { deltaPPM: { format: peakFormat } = { format: '0.0' } } =
-    usePanelPreferences(peaksSource === 'peaks' ? 'peaks' : 'ranges', nucleus);
-
+    tablePreferences;
   const canDisplaySpectrumPeaks =
     !spectrum.display.isVisible || spectrum.info?.isFid;
   let mode: PeaksMode = 'spread';
