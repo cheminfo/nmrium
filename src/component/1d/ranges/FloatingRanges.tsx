@@ -4,25 +4,28 @@ import type { BoundingBox } from '@zakodium/nmrium-core';
 import { checkMultiplicity } from 'nmr-processing';
 import { memo, useEffect, useState } from 'react';
 import { BsArrowsMove } from 'react-icons/bs';
-import { FaTimes } from 'react-icons/fa';
+import { FaCog, FaTimes } from 'react-icons/fa';
 import { Rnd } from 'react-rnd';
 
-import { isSpectrum1D } from '../../data/data1d/Spectrum1D/index.js';
-import { isSignalRange } from '../../data/utilities/RangeUtilities.js';
-import type { SVGTableColumn } from '../SVGTable.js';
-import { SVGTable } from '../SVGTable.js';
-import { useChartData } from '../context/ChartContext.js';
-import { useDispatch } from '../context/DispatchContext.js';
-import { useGlobal } from '../context/GlobalContext.js';
-import type { ActionsButtonsPopoverProps } from '../elements/ActionsButtonsPopover.js';
-import { ActionsButtonsPopover } from '../elements/ActionsButtonsPopover.js';
-import { useActiveNucleusTab } from '../hooks/useActiveNucleusTab.js';
-import { usePanelPreferences } from '../hooks/usePanelPreferences.js';
-import { useSVGUnitConverter } from '../hooks/useSVGUnitConverter.js';
-import useSpectraByActiveNucleus from '../hooks/useSpectraPerNucleus.js';
-import { useCheckExportStatus } from '../hooks/useViewportSize.js';
-import { extractChemicalElement } from '../utility/extractChemicalElement.js';
-import { formatNumber } from '../utility/formatNumber.js';
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
+import { isSignalRange } from '../../../data/utilities/RangeUtilities.js';
+import type { SVGTableColumn } from '../../SVGTable.js';
+import { SVGTable } from '../../SVGTable.js';
+import { useChartData } from '../../context/ChartContext.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { useGlobal } from '../../context/GlobalContext.js';
+import type { ActionsButtonsPopoverProps } from '../../elements/ActionsButtonsPopover.js';
+import { ActionsButtonsPopover } from '../../elements/ActionsButtonsPopover.js';
+import { useActiveNucleusTab } from '../../hooks/useActiveNucleusTab.js';
+import { useDialogToggle } from '../../hooks/useDialogToggle.ts';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
+import { useSVGUnitConverter } from '../../hooks/useSVGUnitConverter.js';
+import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus.js';
+import { useCheckExportStatus } from '../../hooks/useViewportSize.js';
+import { extractChemicalElement } from '../../utility/extractChemicalElement.js';
+import { formatNumber } from '../../utility/formatNumber.js';
+
+import { FloatingRangeTablePreferencesModal } from './FloatingRangeTablePreferencesModal.tsx';
 
 const ReactRnd = styled(Rnd)`
   border: 1px solid transparent;
@@ -171,6 +174,7 @@ function DraggableRanges(props: DraggablePublicationStringProps) {
   const [isMoveActive, setIsMoveActive] = useState(false);
   const { percentToPixel, pixelToPercent } = useSVGUnitConverter();
   const isExportProcessStart = useCheckExportStatus();
+  const { dialog, closeDialog, openDialog } = useDialogToggle({ settingModal: false })
 
   useEffect(() => {
     setBounding({ ...externalBounding });
@@ -263,11 +267,19 @@ function DraggableRanges(props: DraggablePublicationStringProps) {
   const actionButtons: ActionsButtonsPopoverProps['buttons'] = [
     {
       icon: <BsArrowsMove />,
-
       intent: 'none',
       title: 'Move ranges table',
       style: { cursor: 'move' },
       className: 'handle',
+    },
+    {
+      icon: <FaCog />,
+      intent: 'none',
+      title: 'Table preferences',
+      onClick: () => {
+        openDialog('settingModal')
+      },
+
     },
     {
       icon: <FaTimes />,
@@ -292,45 +304,49 @@ function DraggableRanges(props: DraggablePublicationStringProps) {
   }
 
   return (
-    <ReactRnd
-      default={{ x, y, width: 'auto', height: 'auto' }}
-      position={{ x, y }}
-      enableResizing={false}
-      minWidth={100}
-      minHeight={50}
-      dragHandleClassName="handle"
-      enableUserSelectHack={false}
-      bounds={`#${viewerRef.id}`}
-      onDragStart={() => setIsMoveActive(true)}
-      onResize={(e, dir, eRef, size, position) =>
-        handleResize({ ...size, ...position })
-      }
-      onResizeStop={(e, dir, eRef, size, position) =>
-        handleChangeInsetBounding({ ...size, ...position })
-      }
-      onDrag={(e, { x, y }) => {
-        handleDrag({ x, y });
-      }}
-      onDragStop={(e, { x, y }) => {
-        handleChangeInsetBounding({ x, y });
-        setIsMoveActive(false);
-      }}
-      resizeHandleWrapperStyle={{ backgroundColor: 'white' }}
-    >
-      <ActionsButtonsPopover
-        buttons={actionButtons}
-        fill
-        positioningStrategy="fixed"
-        direction="row"
-        targetProps={{ style: { width: '100%', height: '100%' } }}
-        space={2}
-        {...(isMoveActive && { isOpen: true })}
-        x={x}
-        y={y}
+    <>
+      <FloatingRangeTablePreferencesModal isOpen={dialog.settingModal} onCloseDialog={closeDialog} />
+      <ReactRnd
+        default={{ x, y, width: 'auto', height: 'auto' }}
+        position={{ x, y }}
+        enableResizing={false}
+        minWidth={100}
+        minHeight={50}
+        dragHandleClassName="handle"
+        enableUserSelectHack={false}
+        bounds={`#${viewerRef.id}`}
+        onDragStart={() => setIsMoveActive(true)}
+        onResize={(e, dir, eRef, size, position) =>
+          handleResize({ ...size, ...position })
+        }
+        onResizeStop={(e, dir, eRef, size, position) =>
+          handleChangeInsetBounding({ ...size, ...position })
+        }
+        onDrag={(e, { x, y }) => {
+          handleDrag({ x, y });
+        }}
+        onDragStop={(e, { x, y }) => {
+          handleChangeInsetBounding({ x, y });
+          setIsMoveActive(false);
+        }}
+        resizeHandleWrapperStyle={{ backgroundColor: 'white' }}
       >
-        <SVGRangesTable ranges={ranges} />
-      </ActionsButtonsPopover>
-    </ReactRnd>
+        <ActionsButtonsPopover
+          buttons={actionButtons}
+          fill
+          positioningStrategy="fixed"
+          direction="row"
+          targetProps={{ style: { width: '100%', height: '100%' } }}
+          space={2}
+          {...(isMoveActive && { isOpen: true })}
+          x={x}
+          y={y}
+        >
+          <SVGRangesTable ranges={ranges} />
+        </ActionsButtonsPopover>
+      </ReactRnd>
+    </>
+
   );
 }
 
