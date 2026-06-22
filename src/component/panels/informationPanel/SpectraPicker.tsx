@@ -1,4 +1,10 @@
-import { Button, Checkbox, Icon, InputGroup, Popover } from '@blueprintjs/core';
+import {
+  Button,
+  Checkbox,
+  Icon,
+  InputGroup,
+  PopoverNext,
+} from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { useState } from 'react';
 
@@ -232,11 +238,12 @@ export function SpectraPicker({
         : `${selectedTotal} / ${total}`;
 
   return (
-    <Popover
+    <PopoverNext
       isOpen={disabled ? false : open}
       onInteraction={setOpen}
       placement="bottom-start"
-      minimal
+      arrow={false}
+      animation="minimal"
       content={
         <SpectraPickerContent
           selected={selected}
@@ -255,6 +262,6 @@ export function SpectraPicker({
         </span>
         <Icon icon="caret-down" size={12} />
       </SpectraTrigger>
-    </Popover>
+    </PopoverNext>
   );
 }

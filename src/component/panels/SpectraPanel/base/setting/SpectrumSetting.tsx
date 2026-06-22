@@ -1,4 +1,4 @@
-import { Popover } from '@blueprintjs/core';
+import { PopoverNext } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import type { Display1D, Display2D } from '@zakodium/nmrium-core';
 
@@ -42,7 +42,7 @@ export function SpectrumSetting({
   }
 
   return (
-    <Popover
+    <PopoverNext
       interactionKind="click"
       placement="left-start"
       canEscapeKeyClose

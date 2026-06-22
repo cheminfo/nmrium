@@ -1,5 +1,5 @@
 import type { ButtonProps } from '@blueprintjs/core';
-import { Button, Popover } from '@blueprintjs/core';
+import { Button, PopoverNext } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import type { MouseEvent, ReactNode } from 'react';
 
@@ -17,10 +17,11 @@ export function TabTitle(props: TabTitleProps) {
   }
 
   return (
-    <Popover
-      minimal
+    <PopoverNext
+      arrow={false}
+      animation="minimal"
       popoverClassName="popover-tab"
-      position="top-left"
+      placement="top-end"
       interactionKind="hover"
       enforceFocus={false}
       disabled={typeof onDelete !== 'function'}
@@ -35,7 +36,7 @@ export function TabTitle(props: TabTitleProps) {
       }
     >
       {children}
-    </Popover>
+    </PopoverNext>
   );
 }
 

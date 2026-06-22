@@ -451,7 +451,7 @@ function AssignmentLabel(props: AssignmentLabelProps) {
           inputType="text"
           value={assignment || ''}
           PopoverProps={{
-            position: 'top',
+            placement: 'top',
             targetTagName: 'g',
             ...(newAssignmentLabelState?.id === id
               ? { isOpen: true, onClose: () => dismissNewLabel() }

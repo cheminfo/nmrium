@@ -1,8 +1,8 @@
-import { Popover } from '@blueprintjs/core';
+import { PopoverNext } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { IdcodeSvgRenderer } from 'react-ocl';
 
-import { isSpectrum1D } from '../../data/data1d/Spectrum1D/isSpectrum1D.js';
+import { isSpectrum1D } from '../../data/data1d/Spectrum1D/index.ts';
 import type { AssignmentsData } from '../assignment/AssignmentsContext.js';
 import { useAssignment } from '../assignment/AssignmentsContext.js';
 import { useScaleChecked } from '../context/ScaleContext.js';
@@ -148,7 +148,7 @@ function PredictionError(props: SignalStatistics) {
 
   const { hose, sphere } = metadata;
   return (
-    <Popover
+    <PopoverNext
       targetTagName="g"
       interactionKind="hover"
       content={
@@ -178,7 +178,7 @@ function PredictionError(props: SignalStatistics) {
           isHighlighted={isHighlighted}
         />
       </g>
-    </Popover>
+    </PopoverNext>
   );
 }
 

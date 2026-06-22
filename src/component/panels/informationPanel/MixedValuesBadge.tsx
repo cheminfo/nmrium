@@ -1,4 +1,4 @@
-import { Icon, Popover } from '@blueprintjs/core';
+import { Icon, PopoverNext } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 
 const MixedBadge = styled.div`
@@ -52,7 +52,7 @@ export function MixedValuesBadge({ values }: MixedValuesBadgeProps) {
   if (!values) return null;
 
   return (
-    <Popover
+    <PopoverNext
       placement="bottom"
       interactionKind="hover"
       renderTarget={({ ref, ...targetProps }) => (
