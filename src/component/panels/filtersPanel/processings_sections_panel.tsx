@@ -6,7 +6,10 @@ import { useAlert } from '../../elements/Alert.tsx';
 import { EmptyText } from '../../elements/EmptyText.tsx';
 import { Sections } from '../../elements/Sections.tsx';
 import useSpectrum from '../../hooks/useSpectrum.ts';
-import { CoreSlot } from '../../utility/CoreSlot.tsx';
+import {
+  CoreOperatorExpanded,
+  CoreOperatorName,
+} from '../../utility/CoreSlot.tsx';
 import DefaultPanelHeader from '../header/DefaultPanelHeader.tsx';
 
 export function ProcessingsSectionsPanel() {
@@ -49,10 +52,9 @@ export function ProcessingsSectionsPanel() {
             key={operation.uid}
             id={operation.uid}
             title={
-              <CoreSlot
-                slot="panels.processings.operation.name"
+              <CoreOperatorName
+                id={operation.operatorId}
                 fallback={operation.operatorId.split('#', 2).at(-1)}
-                operation={operation}
               />
             }
             isOpen={openedOperation === operation.uid}
@@ -60,8 +62,8 @@ export function ProcessingsSectionsPanel() {
             onClick={() => toggleSection(operation.uid)}
           >
             <Sections.Body>
-              <CoreSlot
-                slot="panels.processings.operation.expanded"
+              <CoreOperatorExpanded
+                id={operation.operatorId}
                 fallback={
                   operation.settings !== null ? (
                     <ObjectInspector
