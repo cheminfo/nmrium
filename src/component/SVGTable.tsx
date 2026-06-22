@@ -1,5 +1,5 @@
-import type { SVGAttributes } from 'react';
-import { createContext, useContext, useMemo } from 'react';
+import type { ReactElement, SVGAttributes } from 'react';
+import { createContext, isValidElement, useContext, useMemo } from 'react';
 
 type CellTextProps = Omit<
   SVGAttributes<SVGTextElement>,
@@ -15,7 +15,7 @@ interface StyleCell {
   cellBoxProps?: CellBoxProps;
 }
 interface BaseSVGTableColumn<T> extends StyleCell {
-  header: string;
+  header: string | ReactElement;
   width: number;
   minWidth?: number;
   rowSpanGroupKey?: keyof T;
@@ -27,7 +27,7 @@ interface AccessorKeyColumn<T> extends BaseSVGTableColumn<T> {
 }
 
 interface AccessorFuncColumn<T> extends BaseSVGTableColumn<T> {
-  accessorFun: (row: T) => number | string;
+  accessorFun: (row: T & { index: number }) => number | string;
 }
 
 export type SVGTableColumn<T> = AccessorKeyColumn<T> | AccessorFuncColumn<T>;
@@ -69,14 +69,14 @@ function mapColumns<T>(columns: Array<SVGTableColumn<T>>) {
 }
 
 interface FormatKeyOptions {
-  rowIndex: number;
+  index: number;
   columnKey: string;
   groupKey: string;
 }
 
 function formatKey(options: FormatKeyOptions) {
-  const { rowIndex, columnKey, groupKey } = options;
-  return `GroupKey[${groupKey || null}]-ColumnKey[${columnKey}]-RowIndex[${rowIndex}]`;
+  const { index, columnKey, groupKey } = options;
+  return `GroupKey[${groupKey || null}]-ColumnKey[${columnKey}]-RowIndex[${index}]`;
 }
 
 function mapRowsSpan<T>(data: T[], columns: Array<InternalColumns<T>>) {
@@ -89,14 +89,14 @@ function mapRowsSpan<T>(data: T[], columns: Array<InternalColumns<T>>) {
     let lastRowIndex = 0;
     let lastGroupKey: string | null = null;
 
-    for (let rowIndex = 0; rowIndex < data.length; rowIndex++) {
-      const row = data[rowIndex];
+    for (let index = 0; index < data.length; index++) {
+      const row = data[index];
       const groupKey = String(row?.[col.rowSpanGroupKey] || '');
       const key = col._columnOptions.key;
 
       const value = isAccessorKeyColumn(col)
         ? (row as any)[col.accessorKey]
-        : col.accessorFun(row);
+        : col.accessorFun({ ...row, index });
 
       if (
         value === lastValue &&
@@ -107,16 +107,16 @@ function mapRowsSpan<T>(data: T[], columns: Array<InternalColumns<T>>) {
         const prevKey = formatKey({
           groupKey,
           columnKey: key,
-          rowIndex: lastRowIndex,
+          index: lastRowIndex,
         });
         rowSpanMap.set(prevKey, (rowSpanMap.get(prevKey) || 1) + 1);
-        skipColumns.add(formatKey({ groupKey, columnKey: key, rowIndex }));
+        skipColumns.add(formatKey({ groupKey, columnKey: key, index }));
       } else {
         // Start a new rowspan
         lastValue = value;
-        lastRowIndex = rowIndex;
+        lastRowIndex = index;
         lastGroupKey = groupKey;
-        rowSpanMap.set(formatKey({ groupKey, columnKey: key, rowIndex }), 1);
+        rowSpanMap.set(formatKey({ groupKey, columnKey: key, index }), 1);
       }
     }
   }
@@ -170,11 +170,11 @@ export function SVGTable<T>(props: SVGTableProps<T>) {
           );
         })}
 
-        {data.map((row, rowIndex) => {
+        {data.map((row, index) => {
           return (
             <g
-              key={rowIndex}
-              transform={`translate(0, ${rowHeight * (rowIndex + 1)})`}
+              key={index}
+              transform={`translate(0, ${rowHeight * (index + 1)})`}
             >
               {columns.map((col) => {
                 const {
@@ -187,7 +187,7 @@ export function SVGTable<T>(props: SVGTableProps<T>) {
                 const cellKey = formatKey({
                   groupKey: String(groupKey),
                   columnKey,
-                  rowIndex,
+                  index,
                 });
                 if (skipColumns.has(cellKey)) {
                   return null; // Skip merged row
@@ -199,7 +199,7 @@ export function SVGTable<T>(props: SVGTableProps<T>) {
                   <ValueColumn
                     key={columnKey}
                     column={col}
-                    row={row}
+                    row={{ ...row, index }}
                     rowSpan={rowSpan}
                     cellBoxProps={cellBoxProps}
                     cellTextProps={cellTextProps}
@@ -220,11 +220,11 @@ interface BaseColumnProps<T> extends StyleCell {
 }
 
 interface ColumnProps<T> extends BaseColumnProps<T> {
-  value: string | number;
+  value: string | number | ReactElement;
 }
 
 interface ValueColumnProps<T> extends BaseColumnProps<T> {
-  row: T;
+  row: T & { index: number };
 }
 
 function ValueColumn<T>(props: ValueColumnProps<T>) {
@@ -250,10 +250,8 @@ function Column<T>(props: ColumnProps<T>) {
   const { rowHeight } = tableOptions;
 
   return (
-    <g>
+    <g transform={`translate(${x} 0)`}>
       <rect
-        x={x}
-        y="0"
         width={width}
         height={rowHeight * rowSpan}
         fill="white"
@@ -261,15 +259,19 @@ function Column<T>(props: ColumnProps<T>) {
         strokeWidth="1"
         {...cellBoxProps}
       />
-      <text
-        x={x + width / 2}
-        y={(rowHeight * rowSpan) / 2}
-        fontSize="11"
-        dominantBaseline="middle"
-        {...cellTextProps}
-      >
-        {value}
-      </text>
+      {isValidElement(value) ? (
+        value
+      ) : (
+        <text
+          x={width / 2}
+          y={(rowHeight * rowSpan) / 2}
+          fontSize="11"
+          dominantBaseline="middle"
+          {...cellTextProps}
+        >
+          {value}
+        </text>
+      )}
     </g>
   );
 }
