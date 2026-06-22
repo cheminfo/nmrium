@@ -11,9 +11,6 @@ import type { NucleusPreferenceField } from '../../panels/extra/preferences/Nucl
 import { NucleusPreferences } from '../../panels/extra/preferences/NucleusPreferences.tsx';
 import { getUniqueNuclei } from '../../utility/getUniqueNuclei.js';
 
-
-
-
 const formatFields: NucleusPreferenceField[] = [
   {
     id: 1,
@@ -81,12 +78,6 @@ const formatFields: NucleusPreferenceField[] = [
     checkFieldName: 'floatingTablePreferences.showMultiplicity',
     hideFormatField: true,
   },
-  {
-    id: 12,
-    label: 'Assignment links :',
-    checkFieldName: 'floatingTablePreferences.showAssignment',
-    hideFormatField: true,
-  },
 ];
 
 interface InnerFloatingRangeTablePreferencesModalProps {
@@ -97,31 +88,33 @@ interface FloatingRangeTablePreferencesModalProps extends InnerFloatingRangeTabl
   isOpen: boolean;
 }
 
-export function FloatingRangeTablePreferencesModal(props: FloatingRangeTablePreferencesModalProps) {
+export function FloatingRangeTablePreferencesModal(
+  props: FloatingRangeTablePreferencesModalProps,
+) {
   const { onCloseDialog, isOpen } = props;
 
   if (!isOpen) return;
 
-
-
-  return <StandardDialog
-    isOpen
-    title="Ranges table preferences "
-    onClose={onCloseDialog}
-    style={{ width: 600 }}
-  >
-    <InnerFloatingRangeTablePreferencesModal onCloseDialog={onCloseDialog} />
-  </StandardDialog>
+  return (
+    <StandardDialog
+      isOpen
+      title="Ranges table preferences "
+      onClose={onCloseDialog}
+      style={{ width: 600 }}
+    >
+      <InnerFloatingRangeTablePreferencesModal onCloseDialog={onCloseDialog} />
+    </StandardDialog>
+  );
 }
 
-function InnerFloatingRangeTablePreferencesModal(props: InnerFloatingRangeTablePreferencesModalProps) {
+function InnerFloatingRangeTablePreferencesModal(
+  props: InnerFloatingRangeTablePreferencesModalProps,
+) {
   const { onCloseDialog } = props;
   const preferences = usePreferences();
   const nucleus = useNucleus();
   const nuclei = useMemo(() => getUniqueNuclei(nucleus), [nucleus]);
   const preferencesByNuclei = usePanelPreferencesByNuclei('ranges', nuclei);
-
-
 
   const { handleSubmit, control } = useForm<any>({
     defaultValues: preferencesByNuclei,
@@ -134,9 +127,7 @@ function InnerFloatingRangeTablePreferencesModal(props: InnerFloatingRangeTableP
       });
       onCloseDialog();
     })();
-
   }
-
 
   return (
     <>
@@ -152,16 +143,11 @@ function InnerFloatingRangeTablePreferencesModal(props: InnerFloatingRangeTableP
       </DialogBody>
       <DialogFooter>
         <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
-          <Button
-            intent="success"
-            onClick={saveHandler}
-          >
+          <Button intent="success" onClick={saveHandler}>
             Save preferences
           </Button>
         </div>
       </DialogFooter>
-
     </>
   );
 }
-

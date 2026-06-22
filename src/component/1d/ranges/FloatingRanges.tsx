@@ -1,10 +1,13 @@
 import styled from '@emotion/styled';
-import type { Ranges } from '@zakodium/nmr-types';
-import type { BoundingBox } from '@zakodium/nmrium-core';
+import type { Info1D, Range, Ranges, Signal1D } from '@zakodium/nmr-types';
+import type {
+  BaseRangesTablePreferences,
+  BoundingBox,
+} from '@zakodium/nmrium-core';
 import { checkMultiplicity } from 'nmr-processing';
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import { BsArrowsMove } from 'react-icons/bs';
-import { FaCog, FaTimes } from 'react-icons/fa';
+import { FaCog, FaLink, FaTimes } from 'react-icons/fa';
 import { Rnd } from 'react-rnd';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
@@ -39,142 +42,265 @@ const ReactRnd = styled(Rnd)`
     }
   }
 `;
+interface SpectrumRangesInfo {
+  ranges: Ranges['values'];
+  info: Info1D;
+}
 
 interface RangesTableProps {
-  ranges: Ranges['values'];
+  data: SpectrumRangesInfo;
 }
 
 interface RangeItem {
   id: string;
   delta: string;
+  deltaHz: string;
   multiplicity: string;
   integration: string;
   coupling: string;
+  from: string;
+  to: string;
+  absolute: string;
+  kind: string;
+  assignment: string;
+  nbAssignment: string;
 }
 
-function useMapRanges(ranges: Ranges['values']) {
-  const output: RangeItem[] = [];
+function buildRangeBaseItem(
+  range: Range,
+  info: Info1D,
+  preferences: BaseRangesTablePreferences,
+) {
+  const { id, from, to, integration, absolute } = range;
+  const formatHz = preferences.deltaHz.format;
+  return {
+    id,
+    from: formatNumber(from, preferences.from.format),
+    to: formatNumber(to, preferences.to.format),
+    absolute: formatNumber(absolute, preferences.absolute.format),
+    integration: isSignalRange(range)
+      ? formatNumber(integration, preferences.relative.format)
+      : `[ ${formatNumber(integration, preferences.relative.format)} ]`,
+    deltaText: `${formatNumber(from, preferences.from.format)} - ${formatNumber(to, preferences.to.format)}`,
+    deltaHzText: `${formatNumber(from * info.originFrequency, formatHz)} - ${formatNumber(to * info.originFrequency, formatHz)}`,
+    formatHz,
+  };
+}
+
+function buildSignalItem(
+  signal: Signal1D,
+  base: ReturnType<typeof buildRangeBaseItem>,
+  info: Info1D,
+  preferences: BaseRangesTablePreferences,
+): RangeItem {
+  const {
+    multiplicity,
+    delta,
+    kind = '',
+    assignment = '',
+    js = [],
+    diaIDs,
+  } = signal;
+  const isNotMultiplet = !checkMultiplicity(multiplicity, ['m']);
+  return {
+    id: base.id,
+    from: base.from,
+    to: base.to,
+    absolute: base.absolute,
+    integration: base.integration,
+    multiplicity,
+    kind,
+    assignment,
+    coupling: js
+      .map((j) =>
+        !Number.isNaN(j.coupling)
+          ? formatNumber(j.coupling, preferences.coupling.format)
+          : '',
+      )
+      .join(','),
+    delta: isNotMultiplet
+      ? base.deltaText
+      : formatNumber(delta, preferences.deltaPPM.format),
+    deltaHz: isNotMultiplet
+      ? base.deltaHzText
+      : info?.originFrequency
+        ? formatNumber(delta * info.originFrequency, base.formatHz)
+        : '',
+    nbAssignment: diaIDs?.length ? String(diaIDs.length) : '',
+  };
+}
+
+function useMapRanges(data: SpectrumRangesInfo): RangeItem[] {
+  const { ranges, info } = data;
   const activeTab = useActiveNucleusTab();
-  const { tablePreferences } = usePanelPreferences('ranges', activeTab);
-  for (const range of ranges) {
-    const { id, from, to, integration, signals = [] } = range;
-    const relativeFlag = isSignalRange(range);
-    const formattedValue = formatNumber(
-      integration,
-      tablePreferences.relative.format,
-    );
-    const integrationValue = relativeFlag
-      ? formattedValue
-      : `[ ${formattedValue} ]`;
+  const { floatingTablePreferences: preferences } = usePanelPreferences(
+    'ranges',
+    activeTab,
+  );
 
-    const rangeText = `${formatNumber(from, tablePreferences.from.format)} - ${formatNumber(
-      to,
-      tablePreferences.to.format,
-    )}`;
-    if (signals.length > 0) {
-      for (const signal of signals) {
-        const { multiplicity, delta, js = [] } = signal;
-        const coupling = js
-          .map((jsItem) =>
-            !Number.isNaN(jsItem.coupling)
-              ? formatNumber(jsItem.coupling, tablePreferences.coupling.format)
-              : '',
-          )
-          .join(',');
-        const signalDelta = !checkMultiplicity(multiplicity, ['m'])
-          ? rangeText
-          : formatNumber(delta, tablePreferences.deltaPPM.format);
-        output.push({
-          id,
-          delta: signalDelta,
-          multiplicity,
-          integration: integrationValue,
-          coupling,
-        });
-      }
-    } else {
-      output.push({
-        id,
-        delta: rangeText,
-        multiplicity: 'm',
-        integration: integrationValue,
-        coupling: '',
-      });
+  return ranges.flatMap((range) => {
+    const base = buildRangeBaseItem(range, info, preferences);
+    const { signals = [] } = range;
+
+    if (signals.length === 0) {
+      return [
+        {
+          ...base,
+          delta: base.deltaText,
+          deltaHz: '',
+          multiplicity: 'm',
+          coupling: '',
+          kind: '',
+          assignment: '',
+          nbAssignment: '',
+        },
+      ];
     }
-  }
-  return output;
+
+    return signals.map((signal) =>
+      buildSignalItem(signal, base, info, preferences),
+    );
+  });
 }
+
+function isColumnVisible(
+  pref: BaseRangesTablePreferences[keyof BaseRangesTablePreferences],
+): boolean {
+  if (typeof pref === 'boolean') return pref;
+  return pref?.show;
+}
+
 function InnerSVGRangesTable(props: RangesTableProps) {
-  const { ranges } = props;
+  const { data } = props;
   const {
     view: {
       spectra: { activeTab },
     },
   } = useChartData();
-  const data = useMapRanges(ranges);
-
-  if (!data) return null;
+  const rangesData = useMapRanges(data);
+  const { floatingTablePreferences } = usePanelPreferences('ranges', activeTab);
 
   const element = extractChemicalElement(activeTab);
 
-  const columns: Array<SVGTableColumn<RangeItem>> = [
-    {
-      accessorKey: 'delta',
-      header: 'δ (ppm)',
-      width: 100,
-      rowSpanGroupKey: 'id',
-      headerTextProps: { fontWeight: 'bold' },
-      cellBoxProps: { stroke: '#dedede', fill: 'white', fillOpacity: 0.8 },
-      headerBoxProps: { stroke: '#dedede', fill: '#E5E8EB' },
-    },
-    {
-      accessorKey: 'integration',
-      header: `Rel. ${element}`,
-      width: 60,
-      rowSpanGroupKey: 'id',
-      headerTextProps: { fontWeight: 'bold' },
-      cellBoxProps: { stroke: '#dedede', fill: 'white', fillOpacity: 0.8 },
-      headerBoxProps: { stroke: '#dedede', fill: '#E5E8EB' },
-    },
-    {
-      accessorKey: 'multiplicity',
-      header: 'Mult.',
-      width: 60,
-      rowSpanGroupKey: 'id',
-      headerTextProps: { fontWeight: 'bold' },
-      cellBoxProps: { stroke: '#dedede', fill: 'white', fillOpacity: 0.8 },
-      headerBoxProps: { stroke: '#dedede', fill: '#E5E8EB' },
-    },
-    {
-      accessorKey: 'coupling',
-      header: 'J (Hz)',
-      width: 120,
-      headerTextProps: { fontWeight: 'bold' },
-      cellBoxProps: { stroke: '#dedede', fill: 'white', fillOpacity: 0.8 },
-      headerBoxProps: { stroke: '#dedede', fill: '#E5E8EB' },
-    },
-  ];
+  const columns = useMemo((): Array<SVGTableColumn<RangeItem>> => {
+    const allColumns: Array<
+      { prefKey: keyof BaseRangesTablePreferences } & SVGTableColumn<RangeItem>
+    > = [
+        {
+          prefKey: 'showSerialNumber',
+          accessorFun: (row) => row.index + 1,
+          header: '#',
+          width: 40,
+        },
+        {
+          prefKey: 'showAssignmentLabel',
+          accessorKey: 'assignment',
+          header: 'Assignment',
+          width: 120,
+        },
+        {
+          prefKey: 'deltaPPM',
+          accessorKey: 'delta',
+          header: 'δ (ppm)',
+          width: 100,
+          rowSpanGroupKey: 'id',
+        },
+        {
+          prefKey: 'deltaHz',
+          accessorKey: 'deltaHz',
+          header: 'δ (Hz)',
+          width: 110,
+          rowSpanGroupKey: 'id',
+        },
+        {
+          prefKey: 'from',
+          accessorKey: 'from',
+          header: `From`,
+          width: 60,
+        },
+        {
+          prefKey: 'to',
+          accessorKey: 'to',
+          header: `To`,
+          width: 60,
+        },
+        {
+          prefKey: 'relative',
+          accessorKey: 'integration',
+          header: `Rel. ${element}`,
+          width: 60,
+          rowSpanGroupKey: 'id',
+        },
+        {
+          prefKey: 'absolute',
+          accessorKey: 'absolute',
+          header: 'Absolute',
+          width: 80,
+          rowSpanGroupKey: 'id',
+        },
+        {
+          prefKey: 'showMultiplicity',
+          accessorKey: 'multiplicity',
+          header: 'Mult.',
+          width: 60,
+          rowSpanGroupKey: 'id',
+        },
+        {
+          prefKey: 'coupling',
+          accessorKey: 'coupling',
+          header: 'J (Hz)',
+          width: 120,
+        },
 
-  return <SVGTable<RangeItem> data={data} columns={columns} />;
+        {
+          prefKey: 'showAssignment',
+          accessorKey: 'nbAssignment',
+          header: <FaLink x="15px" y="8px" style={{ fontSize: 10 }} />,
+          width: 40,
+        },
+        {
+          prefKey: 'showKind',
+          accessorKey: 'kind',
+          header: 'Kind',
+          width: 120,
+        },
+      ];
+
+    return allColumns
+      .filter(({ prefKey }) =>
+        isColumnVisible(floatingTablePreferences[prefKey]),
+      )
+      .map(({ prefKey: _, ...col }) => ({
+        ...col,
+        headerTextProps: { fontWeight: 'bold' },
+        cellBoxProps: { stroke: '#dedede', fill: 'white', fillOpacity: 0.8 },
+        headerBoxProps: { stroke: '#dedede', fill: '#E5E8EB' },
+      }));
+  }, [floatingTablePreferences, element]);
+  if (!data) return null;
+
+  return <SVGTable<RangeItem> data={rangesData} columns={columns} />;
 }
 
 const SVGRangesTable = memo(InnerSVGRangesTable);
 
 interface DraggablePublicationStringProps {
-  ranges: Ranges['values'] | undefined;
+  data: SpectrumRangesInfo | undefined;
   bonding: BoundingBox;
   spectrumKey: string;
 }
 
 function DraggableRanges(props: DraggablePublicationStringProps) {
-  const { ranges = [], bonding: externalBounding, spectrumKey } = props;
+  const { data, bonding: externalBounding, spectrumKey } = props;
   const dispatch = useDispatch();
   const { viewerRef } = useGlobal();
   const [bounding, setBounding] = useState<BoundingBox>(externalBounding);
   const [isMoveActive, setIsMoveActive] = useState(false);
   const { percentToPixel, pixelToPercent } = useSVGUnitConverter();
   const isExportProcessStart = useCheckExportStatus();
-  const { dialog, closeDialog, openDialog } = useDialogToggle({ settingModal: false })
+  const { dialog, closeDialog, openDialog } = useDialogToggle({
+    settingModal: false,
+  });
 
   useEffect(() => {
     setBounding({ ...externalBounding });
@@ -277,9 +403,8 @@ function DraggableRanges(props: DraggablePublicationStringProps) {
       intent: 'none',
       title: 'Table preferences',
       onClick: () => {
-        openDialog('settingModal')
+        openDialog('settingModal');
       },
-
     },
     {
       icon: <FaTimes />,
@@ -288,7 +413,7 @@ function DraggableRanges(props: DraggablePublicationStringProps) {
       onClick: handleRemove,
     },
   ];
-  if (!viewerRef || ranges.length === 0) return null;
+  if (!viewerRef || !data || data?.ranges?.length === 0) return null;
 
   const { x: xInPercent, y: yInPercent } = bounding;
 
@@ -298,14 +423,17 @@ function DraggableRanges(props: DraggablePublicationStringProps) {
   if (isExportProcessStart) {
     return (
       <g transform={`translate(${x} ${y})`}>
-        <SVGRangesTable ranges={ranges} />
+        <SVGRangesTable data={data} />
       </g>
     );
   }
 
   return (
     <>
-      <FloatingRangeTablePreferencesModal isOpen={dialog.settingModal} onCloseDialog={closeDialog} />
+      <FloatingRangeTablePreferencesModal
+        isOpen={dialog.settingModal}
+        onCloseDialog={closeDialog}
+      />
       <ReactRnd
         default={{ x, y, width: 'auto', height: 'auto' }}
         position={{ x, y }}
@@ -342,29 +470,28 @@ function DraggableRanges(props: DraggablePublicationStringProps) {
           x={x}
           y={y}
         >
-          <SVGRangesTable ranges={ranges} />
+          <SVGRangesTable data={data} />
         </ActionsButtonsPopover>
       </ReactRnd>
     </>
-
   );
 }
 
 function useSpectraRanges() {
   const spectra = useSpectraByActiveNucleus();
-  const output: Record<string, Ranges['values']> = {};
+  const output: Record<string, { ranges: Ranges['values']; info: Info1D }> = {};
 
   for (const spectrum of spectra) {
     if (!isSpectrum1D(spectrum)) {
       continue;
     }
-    const { id: spectrumKey, ranges } = spectrum;
+    const { id: spectrumKey, ranges, info } = spectrum;
 
     if (!Array.isArray(ranges?.values) || ranges.values.length === 0) {
       continue;
     }
 
-    output[spectrumKey] = ranges.values;
+    output[spectrumKey] = { ranges: ranges.values, info };
   }
 
   return output;
@@ -387,7 +514,7 @@ export function FloatingRanges() {
         key={spectrumKey}
         spectrumKey={spectrumKey}
         bonding={rangesBounding}
-        ranges={spectraRanges[spectrumKey]}
+        data={spectraRanges[spectrumKey]}
       />
     );
   });

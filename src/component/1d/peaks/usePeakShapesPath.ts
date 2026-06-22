@@ -9,13 +9,13 @@ import { PathBuilder } from '../../utility/PathBuilder.js';
 
 type PeaksShapesOptions =
   | {
-    target: 'peakShape';
-    peak: Peak1D;
-  }
+      target: 'peakShape';
+      peak: Peak1D;
+    }
   | {
-    target: 'peaksSum';
-    peaks: Peak1D[];
-  };
+      target: 'peaksSum';
+      peaks: Peak1D[];
+    };
 
 export function usePeakShapesPath(spectrum: Spectrum1D) {
   const { scaleX, scaleY } = useScaleChecked();
