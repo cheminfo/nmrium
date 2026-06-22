@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { ObjectInspector } from 'react-inspector';
 
-import { useCore } from '../../context/CoreContext.tsx';
 import type { AlertButton } from '../../elements/Alert.tsx';
 import { useAlert } from '../../elements/Alert.tsx';
 import { EmptyText } from '../../elements/EmptyText.tsx';
@@ -11,8 +10,6 @@ import { CoreSlot } from '../../utility/CoreSlot.tsx';
 import DefaultPanelHeader from '../header/DefaultPanelHeader.tsx';
 
 export function ProcessingsSectionsPanel() {
-  const core = useCore();
-
   const { showAlert } = useAlert();
   const { processings } = useSpectrum({ filters: [] });
   const [openedOperation, setOpenedOperation] = useState<string | null>(null);
@@ -54,7 +51,6 @@ export function ProcessingsSectionsPanel() {
             title={
               <CoreSlot
                 slot="panels.processings.operation.name"
-                core={core}
                 fallback={operation.operatorId.split('#', 2).at(-1)}
                 operation={operation}
               />
@@ -66,7 +62,6 @@ export function ProcessingsSectionsPanel() {
             <Sections.Body>
               <CoreSlot
                 slot="panels.processings.operation.expanded"
-                core={core}
                 fallback={
                   operation.settings !== null ? (
                     <ObjectInspector

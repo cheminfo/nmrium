@@ -3,7 +3,6 @@ import { SvgLogoNmrium } from 'cheminfo-font';
 import { Toolbar, useOnOff } from 'react-science/ui';
 
 import versionInfo from '../../../versionInfo.js';
-import { useCore } from '../../context/CoreContext.js';
 import Logo from '../../elements/Logo.js';
 import { StandardDialog } from '../../elements/StandardDialog.tsx';
 import { StyledDialogBody } from '../../elements/StyledDialogBody.js';
@@ -116,7 +115,6 @@ const modalContentFallback = (
 
 function AboutUsModal() {
   const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
-  const core = useCore();
 
   return (
     <>
@@ -139,7 +137,6 @@ function AboutUsModal() {
         <StyledDialogBody>
           <CoreSlot
             slot="topbar.about_us.modal"
-            core={core}
             fallback={modalContentFallback}
           />
         </StyledDialogBody>

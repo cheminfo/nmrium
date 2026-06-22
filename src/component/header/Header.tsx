@@ -10,7 +10,6 @@ import { Toolbar, useFullscreen } from 'react-science/ui';
 
 import { docsBaseUrl } from '../../constants.js';
 import { useChartData } from '../context/ChartContext.js';
-import { useCore } from '../context/CoreContext.js';
 import {
   usePreferences,
   useWorkspacesList,
@@ -63,7 +62,6 @@ interface HeaderInnerProps {
 
 function HeaderInner(props: HeaderInnerProps) {
   const { selectedOptionPanel, height } = props;
-  const core = useCore();
 
   const {
     current: {
@@ -149,7 +147,7 @@ function HeaderInner(props: HeaderInnerProps) {
           }}
         >
           <PluginTopBarRight>
-            <CoreSlot slot="topbar.right" core={core} />
+            <CoreSlot slot="topbar.right" />
           </PluginTopBarRight>
 
           {!hideWorkspaces && (

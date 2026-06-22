@@ -1,10 +1,11 @@
 import type {
-  NMRiumCore,
   PluginUIComponentProps,
   SupportedUISlot,
 } from '@zakodium/nmrium-core';
 import { castSlotProps } from '@zakodium/nmrium-core';
 import type { ReactNode } from 'react';
+
+import { useCore } from '../context/CoreContext.tsx';
 
 type SlotProps<Slot extends SupportedUISlot> =
   Omit<Extract<PluginUIComponentProps, { slot: Slot }>, 'slot'> extends Record<
@@ -16,7 +17,6 @@ type SlotProps<Slot extends SupportedUISlot> =
 
 interface CoreSlotProps<Slot extends SupportedUISlot> {
   slot: Slot;
-  core: NMRiumCore;
   fallback?: ReactNode;
 }
 
@@ -26,8 +26,10 @@ interface CoreSlotProps<Slot extends SupportedUISlot> {
 export function CoreSlot<Slot extends SupportedUISlot>(
   props: CoreSlotProps<Slot> & SlotProps<Slot>,
 ) {
-  const { slot, core, fallback, ...slotProps } = props;
+  const { slot, fallback, ...slotProps } = props;
   castSlotProps(slotProps, slot);
+
+  const core = useCore();
 
   const jsx = Array.from(core.slot(slot), ([key, Component]) => (
     <Component key={key} {...slotProps} slot={slot} />
