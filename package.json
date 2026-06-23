@@ -69,6 +69,7 @@
     "@emotion/styled": "^11.14.1",
     "@hookform/resolvers": "^5.4.0",
     "@tanstack/react-form": "^1.33.0",
+    "@tanstack/react-store": "^0.11.0",
     "@tanstack/react-table": "^8.21.3",
     "@zakodium/nmr-types": "^0.5.12",
     "@zakodium/nmrium-core": "^0.7.24",
