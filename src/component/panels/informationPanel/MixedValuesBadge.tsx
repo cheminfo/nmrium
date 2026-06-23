@@ -53,6 +53,7 @@ export function MixedValuesBadge({ values }: MixedValuesBadgeProps) {
 
   return (
     <PopoverNext
+      lazy
       placement="bottom"
       interactionKind="hover"
       renderTarget={({ ref, ...targetProps }) => (

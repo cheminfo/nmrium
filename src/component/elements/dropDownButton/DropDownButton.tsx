@@ -60,6 +60,7 @@ function DropDownButton<T extends DropDownListItem>(
 
   return (
     <PopoverNext
+      lazy
       isOpen={open}
       onClose={() => setOpen(false)}
       className={className}

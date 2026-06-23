@@ -239,6 +239,7 @@ export function SpectraPicker({
 
   return (
     <PopoverNext
+      lazy
       isOpen={disabled ? false : open}
       onInteraction={setOpen}
       placement="bottom-start"

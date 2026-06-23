@@ -43,6 +43,7 @@ export function SpectrumSetting({
 
   return (
     <PopoverNext
+      lazy
       interactionKind="click"
       placement="left-start"
       canEscapeKeyClose

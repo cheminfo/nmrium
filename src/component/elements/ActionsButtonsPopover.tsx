@@ -188,6 +188,7 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
   const offset = getOffset({ anchorTo, offsetX, offsetY, cursorPosition });
   return (
     <PopoverNext
+      lazy
       arrow={false}
       animation="minimal"
       placement={placement}

@@ -149,6 +149,7 @@ function PredictionError(props: SignalStatistics) {
   const { hose, sphere } = metadata;
   return (
     <PopoverNext
+      lazy
       targetTagName="g"
       interactionKind="hover"
       content={

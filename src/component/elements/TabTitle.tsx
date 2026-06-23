@@ -18,10 +18,11 @@ export function TabTitle(props: TabTitleProps) {
 
   return (
     <PopoverNext
+      lazy
       arrow={false}
       animation="minimal"
       popoverClassName="popover-tab"
-      placement="top-end"
+      placement="top-start"
       interactionKind="hover"
       enforceFocus={false}
       disabled={typeof onDelete !== 'function'}
