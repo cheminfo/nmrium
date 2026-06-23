@@ -29,6 +29,7 @@ interface CustomToolbarPopoverItemProps<T = object>
   itemProps?: Omit<ToolbarItemProps, 'onClick' | 'disabled'>;
   options: Array<ToolbarPopoverMenuItem<T> | ToolbarPopoverMenuDivider>;
   onClick?: (data?: T) => void;
+  stopParentClick?: boolean;
 }
 
 export function ToolbarPopoverItem<T = object>(
@@ -36,7 +37,7 @@ export function ToolbarPopoverItem<T = object>(
 ) {
   const {
     options,
-    onClick: onClickHandler,
+    onClick: onParentClick,
     icon,
     tooltip,
     tooltipProps,
@@ -44,6 +45,7 @@ export function ToolbarPopoverItem<T = object>(
     id,
     itemProps,
     disabled,
+    stopParentClick = false,
     ...otherPopoverItemProps
   } = props;
 
@@ -68,6 +70,7 @@ export function ToolbarPopoverItem<T = object>(
               tooltipProps,
               disabled,
               menuItemType,
+              onClick,
               ...otherOptions
             } = option;
             return (
@@ -102,7 +105,15 @@ export function ToolbarPopoverItem<T = object>(
                       text={text}
                       {...otherOptions}
                       disabled={disabled}
-                      onClick={() => !disabled && onClickHandler?.(data)}
+                      onClick={(e) => {
+                        if (disabled) return;
+
+                        onClick?.(e);
+
+                        if (!stopParentClick) {
+                          onParentClick?.(data);
+                        }
+                      }}
                     />
                   </span>
                 )}
