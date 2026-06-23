@@ -78,6 +78,12 @@ const formatFields: NucleusPreferenceField[] = [
     checkFieldName: 'floatingTablePreferences.showMultiplicity',
     hideFormatField: true,
   },
+  {
+    id: 12,
+    label: 'Assignment :',
+    checkFieldName: 'floatingTablePreferences.showAssignment',
+    hideFormatField: true,
+  },
 ];
 
 interface InnerFloatingRangeTablePreferencesModalProps {

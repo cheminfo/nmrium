@@ -186,85 +186,85 @@ function InnerSVGRangesTable(props: RangesTableProps) {
     const allColumns: Array<
       { prefKey: keyof BaseRangesTablePreferences } & SVGTableColumn<RangeItem>
     > = [
-        {
-          prefKey: 'showSerialNumber',
-          accessorFun: (row) => row.index + 1,
-          header: '#',
-          width: 40,
-        },
-        {
-          prefKey: 'showAssignmentLabel',
-          accessorKey: 'assignment',
-          header: 'Assignment',
-          width: 120,
-        },
-        {
-          prefKey: 'deltaPPM',
-          accessorKey: 'delta',
-          header: 'δ (ppm)',
-          width: 100,
-          rowSpanGroupKey: 'id',
-        },
-        {
-          prefKey: 'deltaHz',
-          accessorKey: 'deltaHz',
-          header: 'δ (Hz)',
-          width: 110,
-          rowSpanGroupKey: 'id',
-        },
-        {
-          prefKey: 'from',
-          accessorKey: 'from',
-          header: `From`,
-          width: 60,
-        },
-        {
-          prefKey: 'to',
-          accessorKey: 'to',
-          header: `To`,
-          width: 60,
-        },
-        {
-          prefKey: 'relative',
-          accessorKey: 'integration',
-          header: `Rel. ${element}`,
-          width: 60,
-          rowSpanGroupKey: 'id',
-        },
-        {
-          prefKey: 'absolute',
-          accessorKey: 'absolute',
-          header: 'Absolute',
-          width: 80,
-          rowSpanGroupKey: 'id',
-        },
-        {
-          prefKey: 'showMultiplicity',
-          accessorKey: 'multiplicity',
-          header: 'Mult.',
-          width: 60,
-          rowSpanGroupKey: 'id',
-        },
-        {
-          prefKey: 'coupling',
-          accessorKey: 'coupling',
-          header: 'J (Hz)',
-          width: 120,
-        },
+      {
+        prefKey: 'showSerialNumber',
+        accessorFun: (row) => row.index + 1,
+        header: '#',
+        width: 40,
+      },
+      {
+        prefKey: 'showAssignmentLabel',
+        accessorKey: 'assignment',
+        header: 'Assignment',
+        width: 120,
+      },
+      {
+        prefKey: 'deltaPPM',
+        accessorKey: 'delta',
+        header: 'δ (ppm)',
+        width: 100,
+        rowSpanGroupKey: 'id',
+      },
+      {
+        prefKey: 'deltaHz',
+        accessorKey: 'deltaHz',
+        header: 'δ (Hz)',
+        width: 110,
+        rowSpanGroupKey: 'id',
+      },
+      {
+        prefKey: 'from',
+        accessorKey: 'from',
+        header: `From`,
+        width: 60,
+      },
+      {
+        prefKey: 'to',
+        accessorKey: 'to',
+        header: `To`,
+        width: 60,
+      },
+      {
+        prefKey: 'relative',
+        accessorKey: 'integration',
+        header: `Rel. ${element}`,
+        width: 60,
+        rowSpanGroupKey: 'id',
+      },
+      {
+        prefKey: 'absolute',
+        accessorKey: 'absolute',
+        header: 'Absolute',
+        width: 80,
+        rowSpanGroupKey: 'id',
+      },
+      {
+        prefKey: 'showMultiplicity',
+        accessorKey: 'multiplicity',
+        header: 'Mult.',
+        width: 60,
+        rowSpanGroupKey: 'id',
+      },
+      {
+        prefKey: 'coupling',
+        accessorKey: 'coupling',
+        header: 'J (Hz)',
+        width: 120,
+      },
 
-        {
-          prefKey: 'showAssignment',
-          accessorKey: 'nbAssignment',
-          header: <FaLink x="15px" y="8px" style={{ fontSize: 10 }} />,
-          width: 40,
-        },
-        {
-          prefKey: 'showKind',
-          accessorKey: 'kind',
-          header: 'Kind',
-          width: 120,
-        },
-      ];
+      {
+        prefKey: 'showAssignment',
+        accessorKey: 'nbAssignment',
+        header: <FaLink x="15px" y="8px" style={{ fontSize: 10 }} />,
+        width: 40,
+      },
+      {
+        prefKey: 'showKind',
+        accessorKey: 'kind',
+        header: 'Kind',
+        width: 120,
+      },
+    ];
 
     return allColumns
       .filter(({ prefKey }) =>
