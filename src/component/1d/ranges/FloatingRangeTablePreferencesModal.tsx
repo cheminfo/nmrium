@@ -1,9 +1,16 @@
-import { DialogBody, DialogFooter } from '@blueprintjs/core';
+import { DialogBody, DialogFooter, MenuItem } from '@blueprintjs/core';
+import { MultiSelect } from '@blueprintjs/select';
+import type { SignalKind } from '@zakodium/nmr-types';
 import { useMemo } from 'react';
-import { useForm } from 'react-hook-form';
+import type { Control } from 'react-hook-form';
+import { useController, useForm } from 'react-hook-form';
 import { Button } from 'react-science/ui';
 
+import type { SignalKindItem } from '../../../data/constants/signalsKinds.ts';
+import { SIGNAL_KINDS } from '../../../data/constants/signalsKinds.ts';
 import { usePreferences } from '../../context/PreferencesContext.js';
+import { fieldLabelStyle } from '../../elements/FormatField.tsx';
+import Label from '../../elements/Label.tsx';
 import { StandardDialog } from '../../elements/StandardDialog.tsx';
 import useNucleus from '../../hooks/useNucleus.js';
 import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences.js';
@@ -121,7 +128,6 @@ function InnerFloatingRangeTablePreferencesModal(
   const nucleus = useNucleus();
   const nuclei = useMemo(() => getUniqueNuclei(nucleus), [nucleus]);
   const preferencesByNuclei = usePanelPreferencesByNuclei('ranges', nuclei);
-
   const { handleSubmit, control } = useForm<any>({
     defaultValues: preferencesByNuclei,
   });
@@ -144,6 +150,9 @@ function InnerFloatingRangeTablePreferencesModal(
             control={control}
             nucleus={n}
             fields={formatFields}
+            renderBottom={() => (
+              <SignalKindFilter control={control} nucleus={n} />
+            )}
           />
         ))}
       </DialogBody>
@@ -155,5 +164,75 @@ function InnerFloatingRangeTablePreferencesModal(
         </div>
       </DialogFooter>
     </>
+  );
+}
+
+interface SignalKindFilterProps {
+  control: Control<any>;
+  nucleus: string;
+}
+
+function SignalKindFilter({ control, nucleus }: SignalKindFilterProps) {
+  const { field } = useController({
+    control,
+    name: `nuclei.${nucleus}.floatingTablePreferences.signalKinds`,
+    defaultValue: [],
+  });
+
+  const selectedKinds: SignalKind[] = field.value ?? [];
+
+  function handleSelect(item: SignalKindItem) {
+    const already = selectedKinds.includes(item.value);
+    field.onChange(
+      already
+        ? selectedKinds.filter((k) => k !== item.value)
+        : [...selectedKinds, item.value],
+    );
+  }
+
+  function handleRemove(item: SignalKindItem, index: number) {
+    field.onChange(selectedKinds.filter((_, i) => i !== index));
+  }
+
+  function handleClear() {
+    field.onChange([]);
+  }
+
+  const selectedItems = SIGNAL_KINDS.filter((k) =>
+    selectedKinds.includes(k.value),
+  );
+
+  return (
+    <Label title="Signal kinds :" style={fieldLabelStyle}>
+      <div style={{ display: 'flex' }}>
+        <div style={{ width: '23px' }} />
+
+        <MultiSelect<SignalKindItem>
+          items={SIGNAL_KINDS}
+          selectedItems={selectedItems}
+          itemRenderer={(item, { handleClick, modifiers }) => (
+            <MenuItem
+              key={item.value}
+              text={item.label}
+              active={modifiers.active}
+              selected={selectedKinds.includes(item.value)}
+              onClick={handleClick}
+              roleStructure="listoption"
+            />
+          )}
+          tagRenderer={(item) => item.label}
+          onItemSelect={handleSelect}
+          itemPredicate={(query, item) =>
+            item.label.toLowerCase().includes(query.toLowerCase())
+          }
+          onRemove={handleRemove}
+          onClear={selectedKinds.length > 0 ? handleClear : undefined}
+          placeholder="All signal kinds…"
+          fill
+          popoverProps={{ minimal: true, matchTargetWidth: true }}
+          resetOnSelect
+        />
+      </div>
+    </Label>
   );
 }

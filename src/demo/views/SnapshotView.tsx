@@ -368,6 +368,7 @@ const customWorkspaces: CustomWorkspaces = {
               showZoomAction: false,
             },
             floatingTablePreferences: {
+              signalKinds: ['signal'],
               showAssignment: false,
               showAssignmentLabel: false,
               showSerialNumber: false,
@@ -446,6 +447,7 @@ const customWorkspaces: CustomWorkspaces = {
               showZoomAction: false,
             },
             floatingTablePreferences: {
+              signalKinds: ['signal'],
               showAssignment: false,
               showAssignmentLabel: false,
               showSerialNumber: false,

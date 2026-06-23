@@ -3,6 +3,7 @@ import type { Info1D, Range, Ranges, Signal1D } from '@zakodium/nmr-types';
 import type {
   BaseRangesTablePreferences,
   BoundingBox,
+  FloatingRangesTablePreferences,
 } from '@zakodium/nmrium-core';
 import { checkMultiplicity } from 'nmr-processing';
 import { memo, useEffect, useMemo, useState } from 'react';
@@ -69,7 +70,7 @@ interface RangeItem {
 function buildRangeBaseItem(
   range: Range,
   info: Info1D,
-  preferences: BaseRangesTablePreferences,
+  preferences: FloatingRangesTablePreferences,
 ) {
   const { id, from, to, integration, absolute } = range;
   const formatHz = preferences.deltaHz.format;
@@ -91,7 +92,7 @@ function buildSignalItem(
   signal: Signal1D,
   base: ReturnType<typeof buildRangeBaseItem>,
   info: Info1D,
-  preferences: BaseRangesTablePreferences,
+  preferences: FloatingRangesTablePreferences,
 ): RangeItem {
   const {
     multiplicity,
@@ -157,8 +158,15 @@ function useMapRanges(data: SpectrumRangesInfo): RangeItem[] {
       ];
     }
 
-    return signals.map((signal) =>
+    const result = signals.map((signal) =>
       buildSignalItem(signal, base, info, preferences),
+    );
+    if (preferences.signalKinds.length === 0) {
+      return result;
+    }
+
+    return result.filter((signal) =>
+      preferences.signalKinds.includes(signal.kind || ''),
     );
   });
 }

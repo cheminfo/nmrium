@@ -1,7 +1,7 @@
 import type {
   BaseNucleus1DPreferences,
   BaseNucleus2DPreferences,
-  BaseRangesTablePreferences,
+  FloatingRangesTablePreferences,
   MatrixGenerationOptions,
   MultipleSpectraAnalysisPreferences,
   PanelsPreferences,
@@ -126,20 +126,22 @@ const getZoneDefaultValues = (nucleus?: string): PanelsPreferences['zones'] => {
   }
 };
 
-const createBaseRangesTablePreferences = (): BaseRangesTablePreferences => ({
-  showSerialNumber: true,
-  from: { show: false, format: '0.00' },
-  to: { show: false, format: '0.00' },
-  absolute: { show: false, format: '0.00' },
-  relative: { show: true, format: '0.00' },
-  deltaPPM: { show: true, format: '0.00' },
-  deltaHz: { show: false, format: '0.00' },
-  coupling: { show: true, format: '0.00' },
-  showKind: true,
-  showMultiplicity: true,
-  showAssignment: true,
-  showAssignmentLabel: true,
-});
+const createBaseRangesTablePreferences =
+  (): FloatingRangesTablePreferences => ({
+    showSerialNumber: true,
+    from: { show: false, format: '0.00' },
+    to: { show: false, format: '0.00' },
+    absolute: { show: false, format: '0.00' },
+    relative: { show: true, format: '0.00' },
+    deltaPPM: { show: true, format: '0.00' },
+    deltaHz: { show: false, format: '0.00' },
+    coupling: { show: true, format: '0.00' },
+    showKind: true,
+    showMultiplicity: true,
+    showAssignment: true,
+    showAssignmentLabel: true,
+    signalKinds: ['signal'],
+  });
 
 const getRangeDefaultValues = (
   nucleus?: string,
