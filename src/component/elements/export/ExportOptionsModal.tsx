@@ -87,7 +87,6 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
     changeUnit,
   } = useExportConfigurer(values);
 
-  // TODO: focus width if mode === advance, else focus dpi + save on "Enter"
   return (
     <StandardDialog
       isOpen
@@ -180,6 +179,7 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
                     >
                       {(field) => (
                         <field.NumericInput
+                          autoFocus={mode === 'advance'}
                           label="Width"
                           rightElement={<Tag>{unit}</Tag>}
                           required
@@ -258,6 +258,7 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
                 >
                   {(field) => (
                     <field.NumericInput
+                      autoFocus={mode !== 'advance'}
                       required
                       label="DPI"
                       placeholder="DPI"
