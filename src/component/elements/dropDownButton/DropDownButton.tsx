@@ -1,4 +1,4 @@
-import { Button, Popover } from '@blueprintjs/core';
+import { Button, PopoverNext } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import type { CSSProperties, ReactNode } from 'react';
 import { useEffect, useState } from 'react';
@@ -59,12 +59,14 @@ function DropDownButton<T extends DropDownListItem>(
   }
 
   return (
-    <Popover
+    <PopoverNext
+      lazy
       isOpen={open}
       onClose={() => setOpen(false)}
       className={className}
-      minimal
-      position="bottom"
+      arrow={false}
+      animation="minimal"
+      placement="bottom"
       content={
         <DropDownList
           data={data}
@@ -80,7 +82,7 @@ function DropDownButton<T extends DropDownListItem>(
       >
         {!item ? <FaEllipsisH /> : formatSelectedValue(item)}
       </PopoverButton>
-    </Popover>
+    </PopoverNext>
   );
 }
 

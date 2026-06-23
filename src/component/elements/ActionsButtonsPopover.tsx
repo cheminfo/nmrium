@@ -1,5 +1,5 @@
-import type { PopoverProps } from '@blueprintjs/core';
-import { Popover } from '@blueprintjs/core';
+import type { PopoverNextProps } from '@blueprintjs/core';
+import { PopoverNext } from '@blueprintjs/core';
 import type { Interpolation, Theme } from '@emotion/react';
 import styled from '@emotion/styled';
 import type { CSSProperties, MouseEvent } from 'react';
@@ -62,7 +62,7 @@ interface Position {
 export interface ActionsButtonsPopoverProps
   extends
     Omit<
-      PopoverProps,
+      PopoverNextProps,
       'interactionKind' | 'content' | 'modifiers' | 'renderTarget'
     >,
     Partial<Position> {
@@ -132,7 +132,7 @@ function getOffset(options: OffsetOptions): [number, number] {
 function getPlacement(
   anchorTo: AnchorTo,
   anchorPlacement: AnchorPlacement,
-): PopoverProps['placement'] {
+): PopoverNextProps['placement'] {
   switch (anchorTo) {
     case 'cursor-x':
       return `${anchorPlacement === 'start' ? 'top' : 'bottom'}-start`;
@@ -187,8 +187,10 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
   const placement = getPlacement(anchorTo, anchorPlacement);
   const offset = getOffset({ anchorTo, offsetX, offsetY, cursorPosition });
   return (
-    <Popover
-      minimal
+    <PopoverNext
+      lazy
+      arrow={false}
+      animation="minimal"
       placement={placement}
       popoverClassName="actions-buttons-popover"
       interactionKind="hover"
@@ -206,16 +208,12 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
           {children}
         </Wrapper>
       )}
-      modifiers={{
+      middleware={{
         offset: {
-          enabled: true,
-          data: { x, y },
-          options: {
-            offset,
-          },
+          crossAxis: offset[0],
+          mainAxis: offset[1],
         },
-
-        flip: { enabled: autoFlip },
+        flip: autoFlip ? undefined : { mainAxis: false, crossAxis: false },
       }}
       content={
         <Container style={contentStyle} flexDirection={direction} gap={space}>

@@ -51,7 +51,7 @@ export function AssignmentLabel(props: AssignmentLabelProps) {
         inputType="text"
         value={assignment || ''}
         PopoverProps={{
-          position: 'bottom',
+          placement: 'bottom',
           targetTagName: 'g',
           ...(isNewAssignment
             ? { isOpen: true, onClose: () => dismissNewLabel() }
