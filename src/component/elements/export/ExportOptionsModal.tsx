@@ -25,6 +25,7 @@ import { MODES } from './utilities/getModes.js';
 
 interface InnerExportOptionsModalProps extends BaseExportProps {
   onCloseDialog: () => void;
+  confirmButtonText: string;
 }
 interface ExportOptionsModalProps extends InnerExportOptionsModalProps {
   isOpen: boolean;
@@ -39,7 +40,12 @@ export function ExportOptionsModal(props: ExportOptionsModalProps) {
 }
 
 function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
-  const { onCloseDialog, defaultExportOptions, onExportOptionsChange } = props;
+  const {
+    onCloseDialog,
+    defaultExportOptions,
+    onExportOptionsChange,
+    confirmButtonText,
+  } = props;
 
   const defaultValues = getExportDefaultOptions(defaultExportOptions);
   const [mode, setMode] = useState<Mode>(defaultValues.mode);
@@ -296,7 +302,9 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
                 >
                   Cancel
                 </Button>
-                <form.SubmitButton intent="success">Save</form.SubmitButton>
+                <form.SubmitButton intent="success">
+                  {confirmButtonText}
+                </form.SubmitButton>
               </div>
             </div>
           </DialogFooter>
