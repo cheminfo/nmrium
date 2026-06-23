@@ -1,6 +1,7 @@
 import { Classes } from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import { useField, useStore } from '@tanstack/react-form';
+import { useField } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
 import { useCallback, useMemo, useState } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import {
@@ -163,7 +164,7 @@ const TableFields = withForm({
       [setValue],
     );
 
-    const fieldsData = useStore(store, (s) => s.value);
+    const fieldsData = useSelector(store, (s) => s.value);
 
     return (
       <TableSection

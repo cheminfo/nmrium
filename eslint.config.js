@@ -24,6 +24,7 @@ export default [
     rules: {
       '@typescript-eslint/consistent-type-imports': 'error',
       'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
+      '@typescript-eslint/no-deprecated': 'error',
     },
   },
   {

@@ -1,6 +1,6 @@
 import { Classes, Tab, Tabs as BPTabs } from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import { useStore } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
 import { withForm } from 'react-science/ui';
 
 import { StyledDialogBody } from '../../../elements/StyledDialogBody.js';
@@ -54,7 +54,7 @@ export const GeneralSettingsDialogBody = withForm({
     height: undefined as number | undefined,
   },
   render: function GeneralSettingsDialogBody({ height, form }) {
-    const isExperimentalEnabled = useStore(
+    const isExperimentalEnabled = useSelector(
       form.store,
       (state) =>
         state.values.display.general?.experimentalFeatures?.display ?? false,

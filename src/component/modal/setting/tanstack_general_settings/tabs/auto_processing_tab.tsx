@@ -1,4 +1,4 @@
-import { useStore } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
 import { withFieldGroup, withForm } from 'react-science/ui';
 import type { z } from 'zod';
 
@@ -9,7 +9,7 @@ import { defaultGeneralSettingsFormValues } from '../validation.ts';
 export const AutoProcessingTab = withForm({
   defaultValues: defaultGeneralSettingsFormValues,
   render: function Render({ form }) {
-    const isExperimentalFeatures = useStore(
+    const isExperimentalFeatures = useSelector(
       form.store,
       (state) => state.values.display.general?.experimentalFeatures?.display,
     );
