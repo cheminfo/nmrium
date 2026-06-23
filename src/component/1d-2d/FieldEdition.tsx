@@ -1,5 +1,5 @@
-import type { PopoverProps } from '@blueprintjs/core';
-import { Popover } from '@blueprintjs/core';
+import type { PopoverNextProps } from '@blueprintjs/core';
+import { PopoverNext } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
 import type { KeyboardEvent, MouseEvent, ReactNode } from 'react';
@@ -10,7 +10,7 @@ import * as Yup from 'yup';
 import { Input2Controller } from '../elements/Input2Controller.js';
 import { NumberInput2Controller } from '../elements/NumberInput2Controller.js';
 
-const StyledPopover = styled(Popover)`
+const StyledPopover = styled(PopoverNext)`
   .field-edition-popover {
     border-radius: 5px;
   }
@@ -25,7 +25,7 @@ interface FieldProps {
 }
 interface FieldEditionsProps extends FieldProps {
   children: ReactNode;
-  PopoverProps?: PopoverProps;
+  PopoverProps?: PopoverNextProps;
 }
 const InputDimension = { height: 28, width: 100 };
 
