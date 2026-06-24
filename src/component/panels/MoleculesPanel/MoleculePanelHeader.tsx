@@ -8,8 +8,10 @@ import {
   FaDownload,
   FaFileExport,
   FaFileImage,
+  FaMinusSquare,
   FaPaste,
   FaPlus,
+  FaPlusSquare,
   FaRegBookmark,
   FaRegTrashAlt,
 } from 'react-icons/fa';
@@ -112,6 +114,7 @@ const MOL_EXPORT_MENU: Array<ToolbarPopoverMenuItem<ExportDataItem>> = [
     },
   },
 ];
+
 interface MoleculePanelHeaderProps {
   currentIndex: number;
   molecules: StateMoleculeExtended[];
@@ -318,6 +321,23 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
       payload: { id, label, molfile: molecule.toMolfileV3() },
     });
   }
+  function toggleProchirality(action: 'add' | 'remove') {
+    const molecule = molecules[currentIndex];
+
+    if (!molecule) return;
+
+    const { id, label } = molecule;
+    if (action === 'add') {
+      topicMolecule[id].setProchiralHydrogenLabels();
+    } else {
+      topicMolecule[id].removeProchiralHydrogenLabels();
+    }
+
+    dispatch({
+      type: 'SET_MOLECULE',
+      payload: { id, label, molfile: topicMolecule[id].toMolfile() },
+    });
+  }
 
   function autoLabels() {
     const currentMolecule = molecules[currentIndex];
@@ -371,6 +391,16 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
       text: 'Template database',
       onClick: () => openDialog('autoLabelDatabaseDialog'),
     },
+    {
+      icon: <FaPlusSquare />,
+      text: 'Add prochirality',
+      onClick: () => toggleProchirality('add'),
+    },
+    {
+      icon: <FaMinusSquare />,
+      text: 'Remove prochirality',
+      onClick: () => toggleProchirality('remove'),
+    },
   ];
 
   const { handleChangeAtomAnnotation, isAnnotation } =
@@ -393,7 +423,7 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
             disabled={!hasMolecules}
             tooltip="Export As"
             icon={<FaFileExport />}
-            id="molecule-export-as"
+            id="molecule-exportAs"
           />
         )}
         <Toolbar.Item
