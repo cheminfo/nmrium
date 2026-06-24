@@ -35,6 +35,7 @@ export default function detectSignals(
         from,
         frequency,
         broadRatio: 0.0025,
+        shape: { kind: 'pseudoVoigt', mu: 0.5 },
         smoothY: true,
       },
       ranges: {

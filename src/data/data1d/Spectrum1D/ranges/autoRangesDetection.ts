@@ -10,7 +10,7 @@ const defaultPeakPickingOptions: Omit<
   'frequency'
 > = {
   minMaxRatio: 1,
-  shape: { kind: 'lorentzian' },
+  shape: { kind: 'pseudoVoigt', mu: 0.5 },
   realTopDetection: true,
   maxCriteria: true,
   smoothY: true,
