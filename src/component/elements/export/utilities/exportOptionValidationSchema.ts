@@ -32,9 +32,9 @@ const basicExportOptionValidationSchemaZod = z.object({
 const advanceExportOptionValidationSchemaZod = z
   .object({
     mode: z.literal('advance'),
-    width: z.coerce.number(),
-    height: z.coerce.number(),
-    dpi: z.coerce.number().min(1, { error: 'DPI is invalid' }),
+    width: z.coerce.number<string>(),
+    height: z.coerce.number<string>(),
+    dpi: z.coerce.number<string>().min(1, { error: 'DPI is invalid' }),
     unit: z.enum(unitsKeys),
     useDefaultSettings: z.boolean(),
   })

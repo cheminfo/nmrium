@@ -5,7 +5,7 @@ import type {
   AdvanceExportSettings,
   BasicExportSettings,
 } from '@zakodium/nmrium-core';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Form, FormGroup, useForm } from 'react-science/ui';
 
 import { StandardDialog } from '../StandardDialog.tsx';
@@ -93,6 +93,15 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
     changeUnit,
   } = useExportConfigurer(values);
 
+  const handleChangeMode = useCallback(
+    (mode: Mode) => {
+      const newOptions = getExportDefaultOptionsByMode(mode);
+      form.reset(newOptions);
+      setMode(mode);
+    },
+    [form],
+  );
+
   return (
     <StandardDialog
       isOpen
@@ -119,7 +128,7 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
                 options={MODES}
                 value={mode}
                 onValueChange={(element) => {
-                  setMode(element as Mode);
+                  handleChangeMode(element as Mode);
                 }}
               />
 
@@ -179,7 +188,9 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
                             'height',
                             'width',
                           );
-                          form.setFieldValue('height', newHeight);
+                          form.setFieldValue('height', newHeight, {
+                            dontRunListeners: true,
+                          });
                         },
                       }}
                     >
@@ -210,7 +221,10 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
                       listeners={{
                         onChange: ({ value }) => {
                           const newWidth = changeSize(value, 'width', 'height');
-                          form.setFieldValue('width', newWidth);
+
+                          form.setFieldValue('width', newWidth, {
+                            dontRunListeners: true,
+                          });
                         },
                       }}
                     >
@@ -230,8 +244,13 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
                         onChange: ({ value }) => {
                           const { width, height } = changeUnit({ unit: value });
 
-                          form.setFieldValue('width', width);
-                          form.setFieldValue('height', height);
+                          form.setFieldValue('width', width, {
+                            dontRunListeners: true,
+                          });
+
+                          form.setFieldValue('height', height, {
+                            dontRunListeners: true,
+                          });
                         },
                       }}
                     >
@@ -256,8 +275,13 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
                       if (unit === 'px') {
                         const convertedValue = changeDPI(value);
 
-                        form.setFieldValue('width', convertedValue.width);
-                        form.setFieldValue('height', convertedValue.height);
+                        form.setFieldValue('width', convertedValue.width, {
+                          dontRunListeners: true,
+                        });
+
+                        form.setFieldValue('height', convertedValue.height, {
+                          dontRunListeners: true,
+                        });
                       }
                     },
                   }}
