@@ -9,19 +9,26 @@ export function useMoleculeAnnotationCore(
   moleculeView: MoleculeView,
 ) {
   const dispatch = useDispatch();
-  const { atomAnnotation: baseAtomAnnotation } = moleculeView || {};
-  function isAnnotation(annotation: Annotation) {
-    return baseAtomAnnotation === annotation;
+  const { atomAnnotation: activeAnnotation } = moleculeView || {};
+  function isActiveAnnotation(annotation: Annotation) {
+    return activeAnnotation === annotation;
   }
 
-  function handleChangeAtomAnnotation(annotation: Annotation) {
-    const atomAnnotation =
-      baseAtomAnnotation === annotation ? 'none' : annotation;
+  function setAtomAnnotation(annotation: Annotation) {
+    if (activeAnnotation === annotation) {
+      return;
+    }
+
     dispatch({
       type: 'CHANGE_MOLECULE_ANNOTATION',
-      payload: { id, atomAnnotation },
+      payload: { id, atomAnnotation: annotation },
     });
   }
+
+  function toggleAtomAnnotation(annotation: Annotation) {
+    setAtomAnnotation(activeAnnotation === annotation ? 'none' : annotation);
+  }
+
   function handleToggleMoleculeLabel() {
     dispatch({
       type: 'TOGGLE_MOLECULE_LABEL',
@@ -30,7 +37,8 @@ export function useMoleculeAnnotationCore(
   }
   return {
     handleToggleMoleculeLabel,
-    isAnnotation,
-    handleChangeAtomAnnotation,
+    isActiveAnnotation,
+    setAtomAnnotation,
+    toggleAtomAnnotation,
   };
 }

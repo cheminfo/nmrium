@@ -8,8 +8,10 @@ import {
   FaDownload,
   FaFileExport,
   FaFileImage,
+  FaMinusSquare,
   FaPaste,
   FaPlus,
+  FaPlusSquare,
   FaRegBookmark,
   FaRegTrashAlt,
 } from 'react-icons/fa';
@@ -112,6 +114,7 @@ const MOL_EXPORT_MENU: Array<ToolbarPopoverMenuItem<ExportDataItem>> = [
     },
   },
 ];
+
 interface MoleculePanelHeaderProps {
   currentIndex: number;
   molecules: StateMoleculeExtended[];
@@ -146,6 +149,9 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
   const { dialog, openDialog, closeDialog } = useDialogToggle({
     autoLabelDatabaseDialog: false,
   });
+  const { toggleAtomAnnotation, isActiveAnnotation, setAtomAnnotation } =
+    useMoleculeAnnotationCore(moleculeKey, moleculesView[moleculeKey]);
+
   const saveAsSVGHandler = useCallback(() => {
     if (!rootRef) return;
     exportAsSVG(`molSVG${currentIndex}`, {
@@ -318,6 +324,25 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
       payload: { id, label, molfile: molecule.toMolfileV3() },
     });
   }
+  function toggleProchirality(action: 'add' | 'remove') {
+    const molecule = molecules[currentIndex];
+
+    setAtomAnnotation('custom-labels');
+
+    if (!molecule) return;
+
+    const { id, label } = molecule;
+    if (action === 'add') {
+      topicMolecule[id].setProchiralHydrogenLabels();
+    } else {
+      topicMolecule[id].removeProchiralHydrogenLabels();
+    }
+
+    dispatch({
+      type: 'SET_MOLECULE',
+      payload: { id, label, molfile: topicMolecule[id].toMolfile() },
+    });
+  }
 
   function autoLabels() {
     const currentMolecule = molecules[currentIndex];
@@ -371,10 +396,18 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
       text: 'Template database',
       onClick: () => openDialog('autoLabelDatabaseDialog'),
     },
+    {
+      icon: <FaPlusSquare />,
+      text: 'Add prochirality',
+      onClick: () => toggleProchirality('add'),
+    },
+    {
+      icon: <FaMinusSquare />,
+      text: 'Remove prochirality',
+      onClick: () => toggleProchirality('remove'),
+    },
   ];
 
-  const { handleChangeAtomAnnotation, isAnnotation } =
-    useMoleculeAnnotationCore(moleculeKey, moleculesView[moleculeKey]);
   return (
     <PanelHeader
       onClickSettings={onClickPreferences}
@@ -422,23 +455,23 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
             )}
 
             <Toolbar.Item
-              tooltip={`${booleanToString(!isAnnotation('atom-numbers'))} atom number`}
+              tooltip={`${booleanToString(!isActiveAnnotation('atom-numbers'))} atom number`}
               icon={<MdNumbers />}
-              onClick={() => handleChangeAtomAnnotation('atom-numbers')}
-              active={isAnnotation('atom-numbers')}
+              onClick={() => toggleAtomAnnotation('atom-numbers')}
+              active={isActiveAnnotation('atom-numbers')}
               disabled={!hasMolecules}
             />
             <Toolbar.Item
               tooltip={
                 <TooltipHelpContent
-                  title={`${booleanToString(!isAnnotation('custom-labels'), { trueLabel: 'Display' })} custom atom labels`}
+                  title={`${booleanToString(!isActiveAnnotation('custom-labels'), { trueLabel: 'Display' })} custom atom labels`}
                   description="Custom atom labels can be displayed or hidden on the molecule structure"
                   link="https://docs.nmrium.org/help/structure-labelling/"
                 />
               }
               icon={<FaRegBookmark />}
-              onClick={() => handleChangeAtomAnnotation('custom-labels')}
-              active={isAnnotation('custom-labels')}
+              onClick={() => toggleAtomAnnotation('custom-labels')}
+              active={isActiveAnnotation('custom-labels')}
               disabled={!hasMolecules}
             />
           </>
