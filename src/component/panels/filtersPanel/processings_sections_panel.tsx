@@ -1,8 +1,13 @@
 import { Classes, Switch } from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import type { ProcessingOperatorId, Spectrum } from '@zakodium/nmrium-core';
+import type {
+  ProcessingOperatorId,
+  Spectrum,
+  SpectrumProcessingOperation,
+} from '@zakodium/nmrium-core';
 import { cast } from '@zakodium/utils';
 import type { Filter1D, Filter2D } from 'nmr-processing';
+import type { Dispatch, SetStateAction } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { ObjectInspector } from 'react-inspector';
 import { Button } from 'react-science/ui';
@@ -139,7 +144,6 @@ export function ProcessingsSectionsPanel() {
 
             return (
               <Sections.Item
-                index={index}
                 key={operation.uid}
                 id={operation.uid}
                 title={
@@ -148,72 +152,56 @@ export function ProcessingsSectionsPanel() {
                     fallback={operation.operatorId.split('#', 2).at(-1)}
                   />
                 }
-                onReorder={onReorder}
                 isOpen={isOpen}
+                index={index}
                 serial={index + 1}
+                sticky
+                onReorder={onReorder}
                 onClick={() => toggleSection(operation.uid)}
                 rightElement={
-                  <CompactControls>
-                    {isEditable && (
-                      <Button
-                        intent="success"
-                        tooltipProps={{ content: 'Edit filter' }}
-                        variant="minimal"
-                        onClick={() => setOpenedOperation(operation.uid)}
-                        icon="annotation"
-                        disabled={isOpen}
-                      />
-                    )}
-
-                    <Button
-                      intent="danger"
-                      tooltipProps={{ content: 'Delete filter' }}
-                      variant="minimal"
-                      onClick={() =>
-                        setProcessings(
-                          processings.filter((p) => p.uid !== operation.uid),
-                        )
-                      }
-                      disabled={unremoveableProcessings.has(
-                        operation.operatorId,
-                      )}
-                      icon="trash"
-                    />
-
-                    <Switch
-                      innerLabelChecked="On"
-                      innerLabel="Off"
-                      checked={operation.enabled || false}
-                      onChange={() => {
-                        setProcessings(
-                          processings.map((p) =>
-                            p.uid === operation.uid
-                              ? { ...operation, enabled: !operation.enabled }
-                              : p,
-                          ),
-                        );
-                      }}
-                    />
-                  </CompactControls>
+                  <ProcessingItemExtra
+                    isOpen={isOpen}
+                    isEditable={isEditable}
+                    setOpenedOperation={setOpenedOperation}
+                    setProcessings={setProcessings}
+                    operation={operation}
+                  />
                 }
               >
                 <Sections.Body>
                   <CoreOperatorExpanded
                     id={operation.operatorId}
-                    fallback={
-                      operation.settings !== null ? (
-                        <ObjectInspector
-                          data={{
-                            settings: operation.settings,
-                            options: operation.options,
-                          }}
-                        />
-                      ) : (
-                        <EmptyText text=" No options available" />
-                      )
-                    }
+                    fallback={<OperationFallback operation={operation} />}
                     operation={operation}
-                  />
+                    core={core}
+                  >
+                    {(children) => (
+                      <LiveEditBanner>
+                        <Switch
+                          label="Live preview"
+                          innerLabelChecked="On"
+                          innerLabel="Off"
+                          checked
+                        />
+                        <Switch
+                          label="Processed"
+                          innerLabelChecked="On"
+                          innerLabel="Off"
+                          checked
+                        />
+                        <Spacer />
+                        {children}
+                        <Button
+                          variant="minimal"
+                          intent="danger"
+                          onClick={() => setOpenedOperation(undefined)}
+                          size="small"
+                        >
+                          Cancel
+                        </Button>
+                      </LiveEditBanner>
+                    )}
+                  </CoreOperatorExpanded>
                 </Sections.Body>
               </Sections.Item>
             );
@@ -224,6 +212,79 @@ export function ProcessingsSectionsPanel() {
   );
 }
 
+interface ProcessingItemExtraProps {
+  operation: SpectrumProcessingOperation<unknown, unknown>;
+  isOpen: boolean;
+  isEditable: boolean | undefined;
+  setOpenedOperation: Dispatch<SetStateAction<string | undefined>>;
+  setProcessings: Dispatch<
+    SetStateAction<Array<SpectrumProcessingOperation<unknown, unknown>>>
+  >;
+}
+
+function ProcessingItemExtra(props: ProcessingItemExtraProps) {
+  const { operation, isOpen, isEditable, setOpenedOperation, setProcessings } =
+    props;
+
+  return (
+    <CompactControls>
+      {isEditable && (
+        <Button
+          intent="success"
+          tooltipProps={{ content: 'Edit filter' }}
+          variant="minimal"
+          onClick={() => setOpenedOperation(operation.uid)}
+          icon="annotation"
+          disabled={isOpen}
+        />
+      )}
+
+      <Button
+        intent="danger"
+        tooltipProps={{ content: 'Delete filter' }}
+        variant="minimal"
+        onClick={() =>
+          setProcessings((processings) =>
+            processings.filter((p) => p.uid !== operation.uid),
+          )
+        }
+        disabled={unremoveableProcessings.has(operation.operatorId)}
+        icon="trash"
+      />
+
+      <Switch
+        innerLabelChecked="On"
+        innerLabel="Off"
+        checked={operation.enabled || false}
+        onChange={() => {
+          setProcessings((processings) =>
+            processings.map((p) =>
+              p.uid === operation.uid
+                ? { ...operation, enabled: !operation.enabled }
+                : p,
+            ),
+          );
+        }}
+      />
+    </CompactControls>
+  );
+}
+
+interface OperationFallbackProps {
+  operation: SpectrumProcessingOperation<unknown, unknown>;
+}
+
+function OperationFallback(props: OperationFallbackProps) {
+  const { operation } = props;
+  const { settings, options } = operation;
+
+  if (settings === null) {
+    return <EmptyText text=" No options available" />;
+  }
+
+  return <ObjectInspector data={{ settings, options }} />;
+}
+
 const CompactControls = styled.div`
   display: flex;
   align-items: center;
@@ -231,4 +292,24 @@ const CompactControls = styled.div`
   .${Classes.CONTROL} {
     margin-bottom: 0;
   }
+`;
+
+const LiveEditBanner = styled.div`
+  background-color: white;
+  box-shadow: rgb(0 0 0 / 16%) 0 1px 4px;
+  margin-left: -10px;
+  margin-right: -10px;
+  transform: translateY(-10px);
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  .${Classes.CONTROL} {
+    margin-bottom: 0;
+  }
+`;
+
+const Spacer = styled.span`
+  flex: 1;
 `;
