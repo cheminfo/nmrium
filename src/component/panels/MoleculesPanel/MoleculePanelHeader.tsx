@@ -149,6 +149,9 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
   const { dialog, openDialog, closeDialog } = useDialogToggle({
     autoLabelDatabaseDialog: false,
   });
+  const { toggleAtomAnnotation, isActiveAnnotation, setAtomAnnotation } =
+    useMoleculeAnnotationCore(moleculeKey, moleculesView[moleculeKey]);
+
   const saveAsSVGHandler = useCallback(() => {
     if (!rootRef) return;
     exportAsSVG(`molSVG${currentIndex}`, {
@@ -324,6 +327,8 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
   function toggleProchirality(action: 'add' | 'remove') {
     const molecule = molecules[currentIndex];
 
+    setAtomAnnotation('custom-labels');
+
     if (!molecule) return;
 
     const { id, label } = molecule;
@@ -403,8 +408,6 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
     },
   ];
 
-  const { handleChangeAtomAnnotation, isAnnotation } =
-    useMoleculeAnnotationCore(moleculeKey, moleculesView[moleculeKey]);
   return (
     <PanelHeader
       onClickSettings={onClickPreferences}
@@ -423,7 +426,7 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
             disabled={!hasMolecules}
             tooltip="Export As"
             icon={<FaFileExport />}
-            id="molecule-exportAs"
+            id="molecule-export-as"
           />
         )}
         <Toolbar.Item
@@ -452,23 +455,23 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
             )}
 
             <Toolbar.Item
-              tooltip={`${booleanToString(!isAnnotation('atom-numbers'))} atom number`}
+              tooltip={`${booleanToString(!isActiveAnnotation('atom-numbers'))} atom number`}
               icon={<MdNumbers />}
-              onClick={() => handleChangeAtomAnnotation('atom-numbers')}
-              active={isAnnotation('atom-numbers')}
+              onClick={() => toggleAtomAnnotation('atom-numbers')}
+              active={isActiveAnnotation('atom-numbers')}
               disabled={!hasMolecules}
             />
             <Toolbar.Item
               tooltip={
                 <TooltipHelpContent
-                  title={`${booleanToString(!isAnnotation('custom-labels'), { trueLabel: 'Display' })} custom atom labels`}
+                  title={`${booleanToString(!isActiveAnnotation('custom-labels'), { trueLabel: 'Display' })} custom atom labels`}
                   description="Custom atom labels can be displayed or hidden on the molecule structure"
                   link="https://docs.nmrium.org/help/structure-labelling/"
                 />
               }
               icon={<FaRegBookmark />}
-              onClick={() => handleChangeAtomAnnotation('custom-labels')}
-              active={isAnnotation('custom-labels')}
+              onClick={() => toggleAtomAnnotation('custom-labels')}
+              active={isActiveAnnotation('custom-labels')}
               disabled={!hasMolecules}
             />
           </>
