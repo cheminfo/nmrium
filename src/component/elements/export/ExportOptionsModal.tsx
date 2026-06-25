@@ -1,27 +1,14 @@
-import { Button, DialogFooter, SegmentedControl, Tag } from '@blueprintjs/core';
-import { revalidateLogic } from '@tanstack/react-form';
-import { useSelector } from '@tanstack/react-store';
-import type {
-  AdvanceExportSettings,
-  BasicExportSettings,
-} from '@zakodium/nmrium-core';
-import { useCallback, useState } from 'react';
-import { Form, FormGroup, useForm } from 'react-science/ui';
+import { DialogFooter } from '@blueprintjs/core';
+import { Button, Form, useForm } from 'react-science/ui';
+import { z } from 'zod/v4';
 
+import { ExportFields } from '../../modal/setting/tanstack_general_settings/tabs/export_tab.fields.tsx';
+import { exportSettingsValidation } from '../../modal/setting/tanstack_general_settings/validation/export_tab_validation.ts';
 import { StandardDialog } from '../StandardDialog.tsx';
-import { StyledDialogBody } from '../StyledDialogBody.js';
-import { getSizesList } from '../print/pageSize.js';
+import { StyledDialogBody } from '../StyledDialogBody.tsx';
 
 import type { BaseExportProps } from './ExportContent.js';
-import { units } from './units.js';
-import { useExportConfigurer } from './useExportConfigurer.js';
-import { exportOptionValidationSchemaZod } from './utilities/exportOptionValidationSchema.js';
-import {
-  getExportDefaultOptions,
-  getExportDefaultOptionsByMode,
-} from './utilities/getExportOptions.js';
-import type { Mode } from './utilities/getModes.js';
-import { MODES } from './utilities/getModes.js';
+import { getExportDefaultOptions } from './utilities/getExportOptions.ts';
 
 interface InnerExportOptionsModalProps extends BaseExportProps {
   onCloseDialog: () => void;
@@ -42,65 +29,27 @@ export function ExportOptionsModal(props: ExportOptionsModalProps) {
 function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
   const {
     onCloseDialog,
+    confirmButtonText,
     defaultExportOptions,
     onExportOptionsChange,
-    confirmButtonText,
   } = props;
 
-  const defaultValues = getExportDefaultOptions(defaultExportOptions);
-  const [mode, setMode] = useState<Mode>(defaultValues.mode);
-
   const form = useForm({
-    defaultValues: getExportDefaultOptionsByMode(mode),
+    defaultValues: {
+      values: getExportDefaultOptions(
+        defaultExportOptions,
+      ) as unknown as z.input<typeof exportSettingsValidation>,
+    },
     validators: {
-      onDynamic: exportOptionValidationSchemaZod as any,
+      onDynamic: z.object({
+        values: exportSettingsValidation,
+      }),
     },
-    validationLogic: revalidateLogic({ modeAfterSubmission: 'change' }),
-    onSubmit: ({ value }) => {
-      const parsedValue = exportOptionValidationSchemaZod.parse(value);
-      onExportOptionsChange(parsedValue);
+    onSubmit: ({ value: { values } }) => {
+      const parsedValues = exportSettingsValidation.parse(values);
+      onExportOptionsChange(parsedValues);
     },
   });
-
-  const { unit, layout } = useSelector(form.store, (state) => {
-    const { unit, layout } = state.values as AdvanceExportSettings &
-      BasicExportSettings;
-
-    return {
-      unit,
-      layout,
-    };
-  });
-
-  const { values, isValid, errors } = useSelector(
-    form.store,
-    ({ values, isValid, errors }) => {
-      return {
-        values,
-        isValid,
-        errors,
-      };
-    },
-  );
-
-  const {
-    widthInPixel,
-    heightInPixel,
-    isAspectRatioEnabled,
-    changeDPI,
-    enableAspectRatio,
-    changeSize,
-    changeUnit,
-  } = useExportConfigurer(values);
-
-  const handleChangeMode = useCallback(
-    (mode: Mode) => {
-      const newOptions = getExportDefaultOptionsByMode(mode);
-      form.reset(newOptions);
-      setMode(mode);
-    },
-    [form],
-  );
 
   return (
     <StandardDialog
@@ -121,182 +70,9 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
           }}
         >
           <StyledDialogBody>
-            <StyledDialogBody>
-              <SegmentedControl
-                defaultValue="list"
-                inline
-                options={MODES}
-                value={mode}
-                onValueChange={(element) => {
-                  handleChangeMode(element as Mode);
-                }}
-              />
-
-              <form.Section title="General informations">
-                <FormGroup label="Description">
-                  <Tag
-                    intent={
-                      !isValid && Object.keys(errors).length > 0
-                        ? 'danger'
-                        : 'none'
-                    }
-                  >
-                    <span>{widthInPixel} px</span>
-                    <span> x </span>
-                    <span>{heightInPixel} px</span>
-                    <form.Subscribe selector={(state) => state.values.dpi}>
-                      {(dpi) => <span> @ {dpi}DPI</span>}
-                    </form.Subscribe>
-                  </Tag>
-                </FormGroup>
-
-                {mode === 'basic' && (
-                  <>
-                    <form.AppField name="size">
-                      {(field) => (
-                        <field.Select
-                          label="Size"
-                          items={layout ? getSizesList(layout) : []}
-                          required
-                        />
-                      )}
-                    </form.AppField>
-                    <form.AppField name="layout">
-                      {(field) => (
-                        <field.RadioGroup
-                          label="Layout"
-                          inline
-                          required
-                          options={[
-                            { label: 'Portrait', value: 'portrait' },
-                            { label: 'Landscape', value: 'landscape' },
-                          ]}
-                        />
-                      )}
-                    </form.AppField>
-                  </>
-                )}
-
-                {mode === 'advance' && (
-                  <>
-                    <form.AppField
-                      name="width"
-                      listeners={{
-                        onChange: ({ value }) => {
-                          const newHeight = changeSize(
-                            value,
-                            'height',
-                            'width',
-                          );
-                          form.setFieldValue('height', newHeight, {
-                            dontRunListeners: true,
-                          });
-                        },
-                      }}
-                    >
-                      {(field) => (
-                        <field.NumericInput
-                          autoFocus={mode === 'advance'}
-                          label="Width"
-                          rightElement={<Tag>{unit}</Tag>}
-                          required
-                          placeholder="width"
-                        />
-                      )}
-                    </form.AppField>
-
-                    <FormGroup>
-                      <Button
-                        icon="link"
-                        variant="minimal"
-                        active={isAspectRatioEnabled}
-                        onClick={() => {
-                          enableAspectRatio((prevFlag) => !prevFlag);
-                        }}
-                      />
-                    </FormGroup>
-
-                    <form.AppField
-                      name="height"
-                      listeners={{
-                        onChange: ({ value }) => {
-                          const newWidth = changeSize(value, 'width', 'height');
-
-                          form.setFieldValue('width', newWidth, {
-                            dontRunListeners: true,
-                          });
-                        },
-                      }}
-                    >
-                      {(field) => (
-                        <field.NumericInput
-                          label="Height"
-                          rightElement={<Tag>{unit}</Tag>}
-                          required
-                          placeholder="height"
-                        />
-                      )}
-                    </form.AppField>
-
-                    <form.AppField
-                      name="unit"
-                      listeners={{
-                        onChange: ({ value }) => {
-                          const { width, height } = changeUnit({ unit: value });
-
-                          form.setFieldValue('width', width, {
-                            dontRunListeners: true,
-                          });
-
-                          form.setFieldValue('height', height, {
-                            dontRunListeners: true,
-                          });
-                        },
-                      }}
-                    >
-                      {(field) => (
-                        <field.Select
-                          label="Units"
-                          required
-                          items={units.map(({ name, unit }) => ({
-                            label: name,
-                            value: unit,
-                          }))}
-                        />
-                      )}
-                    </form.AppField>
-                  </>
-                )}
-
-                <form.AppField
-                  name="dpi"
-                  listeners={{
-                    onChange: ({ value }) => {
-                      if (unit === 'px') {
-                        const convertedValue = changeDPI(value);
-
-                        form.setFieldValue('width', convertedValue.width, {
-                          dontRunListeners: true,
-                        });
-
-                        form.setFieldValue('height', convertedValue.height, {
-                          dontRunListeners: true,
-                        });
-                      }
-                    },
-                  }}
-                >
-                  {(field) => (
-                    <field.NumericInput
-                      autoFocus={mode !== 'advance'}
-                      required
-                      label="DPI"
-                      placeholder="DPI"
-                    />
-                  )}
-                </form.AppField>
-              </form.Section>
-            </StyledDialogBody>
+            <form.Section title="Export to file options">
+              <ExportFields form={form} fields="values" />
+            </form.Section>
           </StyledDialogBody>
           <DialogFooter>
             <div
@@ -306,12 +82,6 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
                 alignItems: 'baseline',
               }}
             >
-              <form.AppField name="useDefaultSettings">
-                {(field) => (
-                  <field.Checkbox label="Don't show options dialog next time and use those settings" />
-                )}
-              </form.AppField>
-
               <div
                 style={{
                   display: 'flex',
