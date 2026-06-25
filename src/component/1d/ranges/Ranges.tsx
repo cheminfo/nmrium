@@ -100,7 +100,7 @@ export default function Ranges() {
     toolOptions: { selectedTool },
   } = useChartData();
   const spectrum = useSpectrum(emptyData) as Spectrum1D;
-  const rangesPreferences = usePanelPreferences('ranges', activeTab);
+  const { tablePreferences } = usePanelPreferences('ranges', activeTab);
 
   if (
     !spectrum.ranges?.values ||
@@ -114,7 +114,7 @@ export default function Ranges() {
     <MemoizedRanges
       ranges={spectrum.ranges}
       selectedTool={selectedTool}
-      relativeFormat={rangesPreferences.relative.format}
+      relativeFormat={tablePreferences.relative.format}
     />
   );
 }

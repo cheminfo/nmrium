@@ -2,9 +2,9 @@ import type { CSSProperties, RefObject } from 'react';
 import { useDeferredValue, useEffect } from 'react';
 
 import { FloatPublicationString } from '../1d/FloatPublicationString.js';
-import { FloatingRanges } from '../1d/FloatingRanges.js';
 import { Viewer1D } from '../1d/Viewer1D.js';
 import { SpectraInsets } from '../1d/inset/SpectraInsets.js';
+import { FloatingRanges } from '../1d/ranges/FloatingRanges.tsx';
 import { FloatMolecules } from '../1d-2d/components/FloatMoleculeStructures/FloatMolecules.js';
 import { SVGRootContainer } from '../1d-2d/components/SVGRootContainer.js';
 import Viewer2D from '../2d/Viewer2D.js';

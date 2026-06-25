@@ -29,7 +29,6 @@ export function usePeakShapesPath(spectrum: Spectrum1D) {
 
     const frequency = spectrum.info.originFrequency;
     let pathSeries: DataXY | null = null;
-
     switch (target) {
       case 'peakShape': {
         const { peak } = options;

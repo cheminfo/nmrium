@@ -1,10 +1,12 @@
 import type {
   BaseNucleus1DPreferences,
   BaseNucleus2DPreferences,
+  FloatingRangesTablePreferences,
   MatrixGenerationOptions,
   MultipleSpectraAnalysisPreferences,
   PanelsPreferences,
   PeaksNucleusPreferences,
+  RangesNucleusPreferences,
   SpectraPreferences,
   Zones1DNucleusPreferences,
   Zones2DNucleusPreferences,
@@ -124,10 +126,8 @@ const getZoneDefaultValues = (nucleus?: string): PanelsPreferences['zones'] => {
   }
 };
 
-const getRangeDefaultValues = (
-  nucleus?: string,
-): PanelsPreferences['ranges'] => {
-  const preferences = {
+const createBaseRangesTablePreferences =
+  (): FloatingRangesTablePreferences => ({
     showSerialNumber: true,
     from: { show: false, format: '0.00' },
     to: { show: false, format: '0.00' },
@@ -136,14 +136,25 @@ const getRangeDefaultValues = (
     deltaPPM: { show: true, format: '0.00' },
     deltaHz: { show: false, format: '0.00' },
     coupling: { show: true, format: '0.00' },
-    jGraphTolerance: isProton(nucleus || '') ? 0.2 : nucleus === '13C' ? 2 : 0, //J Graph tolerance for: 1H: 0.2Hz 13C: 2Hz
     showKind: true,
     showMultiplicity: true,
     showAssignment: true,
-    showDeleteAction: true,
-    showZoomAction: true,
-    showEditAction: true,
     showAssignmentLabel: true,
+    signalKinds: ['signal'],
+  });
+
+const getRangeDefaultValues = (
+  nucleus?: string,
+): PanelsPreferences['ranges'] => {
+  const preferences: RangesNucleusPreferences = {
+    floatingTablePreferences: createBaseRangesTablePreferences(),
+    tablePreferences: {
+      ...createBaseRangesTablePreferences(),
+      showDeleteAction: true,
+      showZoomAction: true,
+      showEditAction: true,
+    },
+    jGraphTolerance: isProton(nucleus || '') ? 0.2 : nucleus === '13C' ? 2 : 0, //J Graph tolerance for: 1H: 0.2Hz 13C: 2Hz
     isSumConstant: true,
   };
 
@@ -154,17 +165,19 @@ const getPeaksDefaultValues = (
   nucleus?: string,
 ): PanelsPreferences['peaks'] => {
   const preferences: PeaksNucleusPreferences = {
-    showSerialNumber: true,
-    deltaPPM: { show: true, format: '0.00' },
-    deltaHz: { show: false, format: '0.00' },
-    peakWidth: { show: false, format: '0.00' },
-    intensity: { show: true, format: '0.00' },
-    fwhm: { show: true, format: '0.00000' },
-    mu: { show: false, format: '0.00000' },
-    gamma: { show: false, format: '0.000' },
-    showDeleteAction: true,
-    showEditPeakShapeAction: true,
-    showKind: true,
+    tablePreferences: {
+      showSerialNumber: true,
+      deltaPPM: { show: true, format: '0.00' },
+      deltaHz: { show: false, format: '0.00' },
+      peakWidth: { show: false, format: '0.00' },
+      intensity: { show: true, format: '0.00' },
+      fwhm: { show: true, format: '0.00000' },
+      mu: { show: false, format: '0.00000' },
+      gamma: { show: false, format: '0.000' },
+      showKind: true,
+      showDeleteAction: true,
+      showEditPeakShapeAction: true,
+    },
     defaultPeakShape: DEFAULT_PEAK_SHAPE,
   };
   return getPreferences(preferences, nucleus);
