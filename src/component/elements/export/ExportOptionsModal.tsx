@@ -1,4 +1,5 @@
 import { DialogFooter } from '@blueprintjs/core';
+import { useMemo } from 'react';
 import { Button, Form, useForm } from 'react-science/ui';
 import { z } from 'zod/v4';
 
@@ -26,6 +27,10 @@ export function ExportOptionsModal(props: ExportOptionsModalProps) {
   return <InnerExportOptionsModal {...otherProps} />;
 }
 
+const validator = z.object({
+  values: exportSettingsValidation,
+});
+
 function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
   const {
     onCloseDialog,
@@ -34,16 +39,18 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
     onExportOptionsChange,
   } = props;
 
+  const values = useMemo(() => {
+    return exportSettingsValidation.encode(
+      getExportDefaultOptions(defaultExportOptions),
+    );
+  }, [defaultExportOptions]);
+
   const form = useForm({
     defaultValues: {
-      values: getExportDefaultOptions(
-        defaultExportOptions,
-      ) as unknown as z.input<typeof exportSettingsValidation>,
+      values,
     },
     validators: {
-      onDynamic: z.object({
-        values: exportSettingsValidation,
-      }),
+      onDynamic: validator,
     },
     onSubmit: ({ value: { values } }) => {
       const parsedValues = exportSettingsValidation.parse(values);
@@ -70,9 +77,7 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
           }}
         >
           <StyledDialogBody>
-            <form.Section title="Export to file options">
-              <ExportFields form={form} fields="values" />
-            </form.Section>
+            <ExportFields form={form} fields="values" />
           </StyledDialogBody>
           <DialogFooter>
             <div
