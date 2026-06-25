@@ -1,2 +1,3 @@
-*.json
-!tsconfig*.json
+/CHANGELOG.md
+/public/data
+**/__tests__/data
