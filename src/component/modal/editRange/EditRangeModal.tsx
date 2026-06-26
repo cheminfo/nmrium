@@ -67,7 +67,7 @@ function InnerEditRangeModal(props: InnerEditRangeModalProps) {
   const dispatch = useDispatch();
   const range = useRange(rangeID);
   const originalRangeRef = useRef(range);
-  const rangesPreferences = usePanelPreferences('ranges', activeTab);
+  const preferences = usePanelPreferences('ranges', activeTab);
 
   function handleOnZoom() {
     onZoom(range);
@@ -113,14 +113,16 @@ function InnerEditRangeModal(props: InnerEditRangeModalProps) {
     },
   });
 
-  if (!rangesPreferences || !range) {
+  if (!preferences || !range) {
     return;
   }
 
+  const { tablePreferences } = preferences;
+
   const title = ` Range and Signal edition: ${formatNumber(
     range?.from,
-    rangesPreferences.from.format,
-  )} ppm to ${formatNumber(range?.to, rangesPreferences.to.format)} ppm`;
+    tablePreferences.from.format,
+  )} ppm to ${formatNumber(range?.to, tablePreferences.to.format)} ppm`;
 
   return (
     <TabsProvider defaultSelectedTabId={0}>

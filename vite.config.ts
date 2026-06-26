@@ -26,10 +26,10 @@ export default () => {
         output: {
           strictExecutionOrder: true,
           codeSplitting: {
-
             groups: [
               {
-                name: 'openchemlib', test: 'node_modules/openchemlib/',
+                name: 'openchemlib',
+                test: 'node_modules/openchemlib/',
                 entriesAware: true,
               },
               {
@@ -42,10 +42,14 @@ export default () => {
                 test: 'node_modules/@blueprintjs/',
                 entriesAware: true,
               },
-              { name: 'vendor', test: 'node_modules/', entriesAware: true, maxSize: 500_000 },
+              {
+                name: 'vendor',
+                test: 'node_modules/',
+                entriesAware: true,
+                maxSize: 500_000,
+              },
             ],
-
-          }
+          },
         },
       },
       minify: process.env.NO_MINIFY ? false : 'oxc',

@@ -1,4 +1,4 @@
-import { useStore } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
 import type { Dispatch, ReactNode, SetStateAction } from 'react';
 import {
   createContext,
@@ -38,9 +38,9 @@ export const GeneralSettingsErrorsOpenProvider = withForm({
   render: function GeneralSettingsErrorsOpenProvider({ form, children }) {
     const [isOpen, setIsOpen] = useState(false);
 
-    const submitCount = useStore(form.store, (s) => s.submissionAttempts);
+    const submitCount = useSelector(form.store, (s) => s.submissionAttempts);
     const previousSubmitCount = useRef(submitCount);
-    const errorsCount = useStore(form.store, (s) => {
+    const errorsCount = useSelector(form.store, (s) => {
       const recordErrors = s.errorMap.onDynamic;
       if (!recordErrors) return 0;
 

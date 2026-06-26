@@ -1,12 +1,6 @@
 import type { Unit } from '@zakodium/nmrium-core';
-import { units as baseUnits } from '@zakodium/nmrium-core';
 
 import { roundNumber } from '../../utility/roundNumber.js';
-
-export const units = baseUnits.map((unit) => ({
-  ...unit,
-  name: unit.name[0].toUpperCase() + unit.name.slice(1),
-}));
 
 const conversionFactors: Record<Unit, number> = {
   in: 1, // inches

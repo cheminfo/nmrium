@@ -1,7 +1,7 @@
 import type { SignalKind } from '@zakodium/nmr-types';
 import { signalKindLabelMapping } from 'nmr-processing';
 
-interface SignalKindItem {
+export interface SignalKindItem {
   value: SignalKind;
   label: string;
 }

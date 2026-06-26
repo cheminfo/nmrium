@@ -97,7 +97,7 @@ function InnerEditPeakShapeModal(props: Required<EditPeakShapeModalProps>) {
   const { peak, onCloseDialog } = props;
   const dispatch = useDispatch();
   const activeTab = useActiveNucleusTab();
-  const peaksPreferences = usePanelPreferences('peaks', activeTab);
+  const { tablePreferences } = usePanelPreferences('peaks', activeTab);
 
   const [kind, setKind] = useState<Kind>(peak.shape?.kind || 'gaussian');
   const { handleSubmit, control, reset } = useForm<Shape>({
@@ -125,7 +125,7 @@ function InnerEditPeakShapeModal(props: Required<EditPeakShapeModalProps>) {
     setKind(value);
   }
 
-  const valuePPM = formatNumber(peak.x, peaksPreferences.deltaPPM.format);
+  const valuePPM = formatNumber(peak.x, tablePreferences.deltaPPM.format);
 
   return (
     <StandardDialog

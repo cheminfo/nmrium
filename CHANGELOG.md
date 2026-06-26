@@ -1,5 +1,34 @@
 # Changelog
 
+## [2.2.0](https://github.com/cheminfo/nmrium/compare/v2.1.0...v2.2.0) (2026-06-15)
+
+
+### Features
+
+* add automatic peak picking for selected spectra ([dabfb55](https://github.com/cheminfo/nmrium/commit/dabfb5519f330160f8b3d440dfa16331a03a4982))
+* add spectrum color bullet to multi-spectra analysis table ([9143f6e](https://github.com/cheminfo/nmrium/commit/9143f6e6d067f48ccef8991758d634137967940d))
+* copy peaks table as TSV to clipboard ([e435bb1](https://github.com/cheminfo/nmrium/commit/e435bb1a77a8d9693aacabd3f66ca5d4a6626e4a))
+* differentiate mixed values from empty values in meta info edition ([360484b](https://github.com/cheminfo/nmrium/commit/360484b4d8763b6d3800d01b28ea6ec1b5b6f9e6))
+* display intensity ratio relative to the maximum absolute peak ([543ff58](https://github.com/cheminfo/nmrium/commit/543ff58f018bb92dcb0308279b696cd20fcd65e1))
+* display spectrum label in stack mode ([b2ef5b2](https://github.com/cheminfo/nmrium/commit/b2ef5b204eb12e4e9e113ba555560bd44ebbdfa8))
+* display spectrum label in stack mode and colunms format ([b2ef5b2](https://github.com/cheminfo/nmrium/commit/b2ef5b204eb12e4e9e113ba555560bd44ebbdfa8))
+* format numeric columns in spectra table ([b2ef5b2](https://github.com/cheminfo/nmrium/commit/b2ef5b204eb12e4e9e113ba555560bd44ebbdfa8))
+* improve edit meta info to be based on selected spectra instead of the spectrum ([78a5cea](https://github.com/cheminfo/nmrium/commit/78a5cea152ac854174e56616dd7a74d6f60e9f1f))
+* improve edit meta info to be based on selected spectra instead of the spectrum ([78a5cea](https://github.com/cheminfo/nmrium/commit/78a5cea152ac854174e56616dd7a74d6f60e9f1f))
+* improve external API settings ([#4147](https://github.com/cheminfo/nmrium/issues/4147)) ([3049e57](https://github.com/cheminfo/nmrium/commit/3049e5762d40692ba1f24969ca94c646088d7902))
+* Improve peak shape options ([67bedcc](https://github.com/cheminfo/nmrium/commit/67bedcccb24298e946a0668bed15e2cc70082097))
+* peak shape parameter optimization by stages ([#4164](https://github.com/cheminfo/nmrium/issues/4164)) ([3c28f1c](https://github.com/cheminfo/nmrium/commit/3c28f1c0297f1c7b2dd81a66f546272ca3d2d4ad))
+* support applying color changes to selected spectra ([cde774a](https://github.com/cheminfo/nmrium/commit/cde774a7aafb0f6edb9915504f17c151d01e7962))
+
+
+### Bug Fixes
+
+* ensure nbPoints is an integer ([2252d33](https://github.com/cheminfo/nmrium/commit/2252d330aaea321491fa56a6bf144f93a7eed2e0))
+* filter 2d ft spectra ([77f3403](https://github.com/cheminfo/nmrium/commit/77f34032fec8da0974b9157457cbc740e2fa657e))
+* handle potentially undefined `info.experiment` ([#4128](https://github.com/cheminfo/nmrium/issues/4128)) ([abd7b93](https://github.com/cheminfo/nmrium/commit/abd7b9389979f4d92b830dbc196a33ddf7cb27f3))
+* mandatory originalData ([#4149](https://github.com/cheminfo/nmrium/issues/4149)) ([49b8977](https://github.com/cheminfo/nmrium/commit/49b8977b64e5903100aa52678b1204b02f4c942d))
+* typings of multiplet analysis ([#4125](https://github.com/cheminfo/nmrium/issues/4125)) ([336a8e9](https://github.com/cheminfo/nmrium/commit/336a8e935d096ac05afe2d06b98d1b12e8e6b975))
+
 ## [2.1.0](https://github.com/cheminfo/nmrium/compare/v2.0.0...v2.1.0) (2026-05-04)
 
 

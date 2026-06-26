@@ -1,6 +1,6 @@
 import { Classes } from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import { useStore } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
 import { Button, withForm } from 'react-science/ui';
 
 import { useErrors } from './errors/context.tsx';
@@ -12,7 +12,7 @@ export const GeneralSettingsDialogHeader = withForm({
   defaultValues: defaultGeneralSettingsFormValues,
   render: function GeneralSettingsDialogHeader({ form }) {
     const { reset, store } = form;
-    const formValues = useStore(store, (state) => state.values);
+    const formValues = useSelector(store, (state) => state.values);
 
     return (
       <DialogHeader className={Classes.DIALOG_HEADER}>

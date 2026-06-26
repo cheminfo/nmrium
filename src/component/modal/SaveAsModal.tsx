@@ -1,52 +1,48 @@
-import { Checkbox, DialogFooter, Radio, RadioGroup } from '@blueprintjs/core';
+import { DialogBody, DialogFooter } from '@blueprintjs/core';
+import { revalidateLogic } from '@tanstack/react-form';
 import { useMemo } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { Button, Form, useForm } from 'react-science/ui';
+import { z } from 'zod/v4';
 
 import { DataExportOptions } from '../../data/SpectraManager.js';
 import { useChartData } from '../context/ChartContext.js';
-import ActionButtons from '../elements/ActionButtons.js';
-import { Input2Controller } from '../elements/Input2Controller.js';
-import type { LabelStyle } from '../elements/Label.js';
-import Label from '../elements/Label.js';
 import { StandardDialog } from '../elements/StandardDialog.tsx';
-import { StyledDialogBody } from '../elements/StyledDialogBody.js';
-import type { SaveOptions } from '../hooks/useExport.js';
 import { useExport } from '../hooks/useExport.js';
 
-const INITIAL_VALUE: SaveOptions = {
+const formSchema = z.object({
+  name: z.string().min(1, { error: 'Name is required' }),
+  include: z.object({
+    dataType: z.enum([
+      'NO_DATA',
+      'SELF_CONTAINED',
+      'SELF_CONTAINED_EXTERNAL_DATASOURCE',
+    ]),
+    view: z.boolean(),
+    settings: z.boolean(),
+  }),
+});
+
+const INITIAL_VALUE: z.input<typeof formSchema> = {
   name: '',
   include: {
-    dataType: DataExportOptions.SELF_CONTAINED,
+    dataType: 'SELF_CONTAINED',
     view: false,
     settings: false,
   },
 };
 
-const labelStyle: LabelStyle = {
-  label: {
-    flex: 4,
-    color: '#232323',
-  },
-  wrapper: {
-    flex: 8,
-    display: 'flex',
-    justifyContent: 'flex-start',
-  },
-  container: { padding: '5px 0' },
-};
-
 interface InnerSaveAsModalProps {
   onCloseDialog: () => void;
 }
+
 interface SaveAsModalProps extends InnerSaveAsModalProps {
   isOpen: boolean;
 }
 
-function SaveAsModal(props: SaveAsModalProps) {
+export default function SaveAsModal(props: SaveAsModalProps) {
   const { onCloseDialog, isOpen } = props;
 
   if (!isOpen) return;
-
   return <InnerSaveAsModal onCloseDialog={onCloseDialog} />;
 }
 
@@ -54,20 +50,34 @@ function InnerSaveAsModal(props: InnerSaveAsModalProps) {
   const { onCloseDialog } = props;
   const { data, aggregator } = useChartData();
   const { saveHandler } = useExport();
-  const fileName = data[0]?.info?.name;
 
-  function submitHandler(values: SaveOptions) {
-    saveHandler(values);
-    onCloseDialog?.();
-  }
+  const form = useForm({
+    defaultValues: { ...INITIAL_VALUE, name: data[0]?.info?.name },
+    validators: { onDynamic: formSchema },
+    validationLogic: revalidateLogic({ modeAfterSubmission: 'change' }),
+    onSubmit: ({ value }) => {
+      const parsedValue = formSchema.parse(value);
+      saveHandler(parsedValue);
 
-  const { handleSubmit, control, register } = useForm({
-    defaultValues: { ...INITIAL_VALUE, name: fileName },
+      onCloseDialog();
+    },
   });
 
   const containsLinkedFiles = useMemo(() => {
     return aggregator.sources.some((s) => !s.baseURL?.startsWith('ium:'));
   }, [aggregator]);
+
+  const options = useMemo(() => {
+    return [
+      { value: DataExportOptions.SELF_CONTAINED, label: 'Embed data' },
+      {
+        value: DataExportOptions.SELF_CONTAINED_EXTERNAL_DATASOURCE,
+        label: 'Link data',
+        disabled: !containsLinkedFiles,
+      },
+      { value: DataExportOptions.NO_DATA, label: 'None' },
+    ];
+  }, [containsLinkedFiles]);
 
   return (
     <StandardDialog
@@ -76,57 +86,54 @@ function InnerSaveAsModal(props: InnerSaveAsModalProps) {
       onClose={onCloseDialog}
       style={{ width: 600 }}
     >
-      <StyledDialogBody>
-        <Label style={labelStyle} title="Name">
-          <Input2Controller
-            name="name"
-            control={control}
-            fill
-            controllerProps={{ rules: { required: true } }}
-          />
-        </Label>
-        <Label style={labelStyle} title="Include view">
-          <Checkbox style={{ margin: 0 }} {...register(`include.view`)} />
-        </Label>
-        <Label style={labelStyle} title="Include workspace">
-          <Checkbox style={{ margin: 0 }} {...register(`include.settings`)} />
-        </Label>
-        <Label style={labelStyle} title="Include data">
-          <Controller
-            name="include.dataType"
-            control={control}
-            render={({ field }) => {
-              const { value, ref, ...otherFieldProps } = field;
-              return (
-                <RadioGroup inline selectedValue={value} {...otherFieldProps}>
-                  <Radio
-                    label="External data embed"
-                    value={DataExportOptions.SELF_CONTAINED}
-                  />
-                  <Radio
-                    label="External data linked"
-                    disabled={!containsLinkedFiles}
-                    value={DataExportOptions.SELF_CONTAINED_EXTERNAL_DATASOURCE}
-                  />
-                  <Radio label="No data" value={DataExportOptions.NO_DATA} />
-                </RadioGroup>
-              );
-            }}
-          />
-        </Label>
-      </StyledDialogBody>
-      <DialogFooter>
-        <ActionButtons
-          style={{ flexDirection: 'row-reverse', margin: 0 }}
-          onDone={() => {
-            void handleSubmit(submitHandler)();
+      <form.AppForm>
+        <Form
+          layout="inline"
+          noValidate
+          onSubmit={(event) => {
+            event.preventDefault();
+            void form.handleSubmit();
           }}
-          doneLabel="Save"
-          onCancel={() => onCloseDialog?.()}
-        />
-      </DialogFooter>
+        >
+          <DialogBody style={{ backgroundColor: 'white' }}>
+            <form.Section title="General information">
+              <form.AppField name="name">
+                {(field) => <field.Input label="Name" required autoFocus />}
+              </form.AppField>
+            </form.Section>
+            <form.Section title="Include">
+              <form.AppField name="include.view">
+                {(field) => <field.Checkbox label="View" />}
+              </form.AppField>
+
+              <form.AppField name="include.settings">
+                {(field) => <field.Checkbox label="Workspace" />}
+              </form.AppField>
+
+              <form.AppField name="include.dataType">
+                {(field) => (
+                  <field.RadioGroup inline label="Data" options={options} />
+                )}
+              </form.AppField>
+            </form.Section>
+          </DialogBody>
+
+          <DialogFooter
+            actions={
+              <>
+                <Button
+                  variant="outlined"
+                  intent="danger"
+                  onClick={() => onCloseDialog?.()}
+                >
+                  Cancel
+                </Button>
+                <form.SubmitButton intent="success">Save</form.SubmitButton>
+              </>
+            }
+          />
+        </Form>
+      </form.AppForm>
     </StandardDialog>
   );
 }
-
-export default SaveAsModal;

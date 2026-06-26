@@ -1,3 +1,4 @@
+import { Tooltip } from '@blueprintjs/core';
 import type { Spectrum } from '@zakodium/nmrium-core';
 import { SvgNmr2D, SvgNmrFid, SvgNmrFt } from 'cheminfo-font';
 import type { CSSProperties } from 'react';
@@ -24,13 +25,21 @@ const styles: Record<'info' | 'icon', CSSProperties> = {
 };
 
 export function SpectrumName(props: SpectrumNameProps) {
+  const name = props.data.info.name;
   return (
-    <div style={styles.info}>
-      <div style={styles.icon}>
-        <SpectraIcon {...props} />
-      </div>
-      <span>{props.data.info.name}</span>
-    </div>
+    <Tooltip
+      content={name}
+      renderTarget={({ isOpen, ...targetProps }) => {
+        return (
+          <div style={styles.info} {...targetProps}>
+            <div style={styles.icon}>
+              <SpectraIcon {...props} />
+            </div>
+            <span>{props.data.info.name}</span>
+          </div>
+        );
+      }}
+    />
   );
 }
 

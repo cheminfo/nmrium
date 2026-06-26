@@ -1,5 +1,5 @@
 import { Checkbox, Tag } from '@blueprintjs/core';
-import { useStore } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
 import type { PageSizeName, Unit } from '@zakodium/nmrium-core';
 import { units } from '@zakodium/nmrium-core';
 import { memo, useMemo } from 'react';
@@ -77,7 +77,7 @@ function safeStringNumber(str: string, onInvalid: (str: string) => void) {
 export const ExportFields = withFieldGroup({
   defaultValues: defaultGeneralSettingsFormValues.export.png,
   render: function ExportFields({ group }) {
-    const inputValues = useStore(group.store, (s) => s.values);
+    const inputValues = useSelector(group.store, (s) => s.values);
     const outputValues = useMemo(() => {
       return exportSettingsValidation.decode(inputValues);
     }, [inputValues]);

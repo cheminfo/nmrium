@@ -1,6 +1,6 @@
 import { Callout, Collapse } from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import { useStore } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
 import { Button, withForm } from 'react-science/ui';
 
 import {
@@ -15,7 +15,7 @@ export const GeneralSettingsErrorRenderer = withForm({
   validators: { onDynamic: workspaceValidation },
   render: function GeneralSettingsErrorRenderer({ form }) {
     const { isOpen, setIsOpen } = useErrors();
-    const errors = useStore(form.store, (state) => {
+    const errors = useSelector(form.store, (state) => {
       return Object.values(state.errorMap.onDynamic ?? {}).flat();
     });
 

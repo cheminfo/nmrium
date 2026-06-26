@@ -33,6 +33,7 @@ export function useTextMetrics(options: UseTextMetricsOptions = {}) {
     /**
      * @deprecated Use only for debug mode
      */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     ctx,
   };
 }

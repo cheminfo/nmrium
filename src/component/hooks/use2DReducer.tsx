@@ -26,17 +26,20 @@ export function use2DReducer(): SpectrumFTData[] {
 
   return useMemo(() => {
     const outputSpectra: SpectrumFTData[] = [];
-    for (const spectrum of getSpectraByNucleus(activeTab, data).filter(
-      isFt2DSpectrum,
-    )) {
+    const spectra = getSpectraByNucleus(activeTab, data).filter(isFt2DSpectrum);
+    for (const spectrum of spectra) {
       const { id, display, data } = spectrum;
       const { rr } = data;
+
       const reducedData = reduce2DSpectrum(rr, {
         fromX,
         fromY,
         toX,
         toY,
       });
+      if (reducedData.z.length === 0) {
+        continue;
+      }
       outputSpectra.push({
         data: reducedData,
         id,

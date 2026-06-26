@@ -79,6 +79,8 @@ export default function RangesTable(props: RangesTableProps) {
     info,
   } = props;
 
+  const { tablePreferences } = preferences;
+
   const element = extractChemicalElement(activeTab);
   const { items: sortedData, isSortedDesc, onSort } = useTableSortBy(tableData);
   const data = useMapRanges(sortedData);
@@ -92,9 +94,9 @@ export default function RangesTable(props: RangesTableProps) {
   }
 
   const showActions =
-    preferences.showDeleteAction ||
-    preferences.showEditAction ||
-    preferences.showZoomAction;
+    tablePreferences.showDeleteAction ||
+    tablePreferences.showEditAction ||
+    tablePreferences.showZoomAction;
 
   return (
     <>
@@ -102,43 +104,43 @@ export default function RangesTable(props: RangesTableProps) {
       <Table>
         <thead>
           <tr>
-            {preferences.showSerialNumber && <th>#</th>}
-            {preferences.showAssignmentLabel && (
+            {tablePreferences.showSerialNumber && <th>#</th>}
+            {tablePreferences.showAssignmentLabel && (
               <th title="Assignment">Assignment</th>
             )}
-            {preferences.from.show && (
+            {tablePreferences.from.show && (
               <th id="from" {...onSort}>
                 From
                 {isSortedDesc('from').content}
               </th>
             )}
-            {preferences.to.show && (
+            {tablePreferences.to.show && (
               <th id="to" {...onSort}>
                 To {isSortedDesc('to').content}
               </th>
             )}
-            {preferences.deltaPPM.show && (
+            {tablePreferences.deltaPPM.show && (
               <th id="from" {...onSort}>
                 δ (ppm) {isSortedDesc('from').content}
               </th>
             )}
-            {preferences.deltaHz.show && <th>δ (Hz) </th>}
+            {tablePreferences.deltaHz.show && <th>δ (Hz) </th>}
 
-            {preferences.relative.show && (
+            {tablePreferences.relative.show && (
               <th id="integration" {...onSort}>
                 Rel. {element} {isSortedDesc('integration').content}
               </th>
             )}
-            {preferences.absolute.show && <th>Absolute</th>}
-            {preferences.showMultiplicity && <th>Mult.</th>}
-            {preferences.coupling.show && <th>J (Hz)</th>}
+            {tablePreferences.absolute.show && <th>Absolute</th>}
+            {tablePreferences.showMultiplicity && <th>Mult.</th>}
+            {tablePreferences.coupling.show && <th>J (Hz)</th>}
 
-            {preferences.showAssignment && (
+            {tablePreferences.showAssignment && (
               <th title="Assign multiplets">
                 <FaLink style={{ fontSize: 10, margin: 'auto' }} />
               </th>
             )}
-            {preferences.showKind && <th>Kind</th>}
+            {tablePreferences.showKind && <th>Kind</th>}
             {showActions && <th>{''}</th>}
           </tr>
         </thead>

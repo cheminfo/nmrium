@@ -67,7 +67,7 @@ export default function RangesTableRow(props: RangesTableRowProps) {
     rowData,
     onContextMenuSelect,
     contextMenu = [],
-    preferences,
+    preferences: { tablePreferences },
     info,
   } = props;
   const dispatch = useDispatch();
@@ -181,12 +181,12 @@ export default function RangesTableRow(props: RangesTableRowProps) {
       as="tr"
       style={trStyle}
     >
-      {preferences.showSerialNumber && (
+      {tablePreferences.showSerialNumber && (
         <td {...rowSpanTags} {...onHoverRange}>
           {rowData.tableMetaInfo.rowIndex + 1}
         </td>
       )}
-      {preferences.showAssignmentLabel && (
+      {tablePreferences.showAssignmentLabel && (
         <SignalAssignmentColumn
           row={rowData}
           highlight={highlightSignal}
@@ -194,72 +194,72 @@ export default function RangesTableRow(props: RangesTableRowProps) {
         />
       )}
 
-      {preferences.from.show && (
+      {tablePreferences.from.show && (
         <RangeColumn
           value={rowData.from}
           rowSpanTags={rowSpanTags}
           onHover={onHoverRange}
-          format={preferences.from.format}
+          format={tablePreferences.from.format}
         />
       )}
-      {preferences.to.show && (
+      {tablePreferences.to.show && (
         <RangeColumn
           value={rowData.to}
           rowSpanTags={rowSpanTags}
           onHover={onHoverRange}
-          format={preferences.to.format}
+          format={tablePreferences.to.format}
         />
       )}
 
-      {preferences.deltaPPM.show && (
+      {tablePreferences.deltaPPM.show && (
         <SignalDeltaColumn
           row={rowData}
           rowSpanTags={rowSpanTags}
           onHover={onHoverSignal}
-          format={preferences.deltaPPM.format}
+          format={tablePreferences.deltaPPM.format}
         />
       )}
-      {preferences.deltaHz.show && (
+      {tablePreferences.deltaHz.show && (
         <SignalDeltaHzColumn
           row={rowData}
           rowSpanTags={rowSpanTags}
           onHover={onHoverSignal}
-          format={preferences.deltaHz.format}
+          format={tablePreferences.deltaHz.format}
           info={info}
         />
       )}
 
-      {preferences.relative.show && (
+      {tablePreferences.relative.show && (
         <RelativeColumn
           row={rowData}
           rowSpanTags={rowSpanTags}
           onHover={onHoverRange}
-          format={preferences.relative.format}
+          format={tablePreferences.relative.format}
         />
       )}
 
-      {preferences.absolute.show && (
+      {tablePreferences.absolute.show && (
         <AbsoluteColumn
           row={rowData}
           rowSpanTags={rowSpanTags}
           onHover={onHoverRange}
-          format={preferences.absolute.format}
+          format={tablePreferences.absolute.format}
         />
       )}
-      {preferences.showMultiplicity && (
+      {tablePreferences.showMultiplicity && (
         <td {...onHoverSignal}>
           {rowData.tableMetaInfo.signal?.multiplicity ?? 'm'}
         </td>
       )}
 
-      {preferences.coupling.show && (
+      {tablePreferences.coupling.show && (
         <CouplingColumn
           row={rowData}
           onHover={onHoverSignal}
-          format={preferences.coupling.format}
+          format={tablePreferences.coupling.format}
         />
       )}
-      {preferences.showAssignment && (
+      {tablePreferences.showAssignment && (
         <SignalAssignmentsColumn
           row={rowData}
           assignment={assignmentSignal}
@@ -274,10 +274,10 @@ export default function RangesTableRow(props: RangesTableRowProps) {
         onHoverSignal={onHoverSignal}
         onHoverRange={onHoverRange}
         rowSpanTags={rowSpanTags}
-        showKind={preferences.showKind}
-        showDeleteAction={preferences.showDeleteAction}
-        showEditAction={preferences.showEditAction}
-        showZoomAction={preferences.showZoomAction}
+        showKind={tablePreferences.showKind}
+        showDeleteAction={tablePreferences.showDeleteAction}
+        showEditAction={tablePreferences.showEditAction}
+        showZoomAction={tablePreferences.showZoomAction}
       />
     </ContextMenu>
   );

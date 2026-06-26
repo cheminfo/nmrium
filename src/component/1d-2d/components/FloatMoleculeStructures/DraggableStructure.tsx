@@ -101,8 +101,8 @@ export function DraggableStructure(props: DraggableStructureProps) {
   }
 
   const {
-    handleChangeAtomAnnotation,
-    isAnnotation,
+    toggleAtomAnnotation,
+    isActiveAnnotation,
     handleToggleMoleculeLabel,
   } = useMoleculeAnnotationCore(molecule.id, moleculeView);
 
@@ -136,15 +136,15 @@ export function DraggableStructure(props: DraggableStructureProps) {
     },
     {
       icon: <MdNumbers />,
-      title: `${booleanToString(!isAnnotation('atom-numbers'))} atom number`,
-      onClick: () => handleChangeAtomAnnotation('atom-numbers'),
-      active: isAnnotation('atom-numbers'),
+      title: `${booleanToString(!isActiveAnnotation('atom-numbers'))} atom number`,
+      onClick: () => toggleAtomAnnotation('atom-numbers'),
+      active: isActiveAnnotation('atom-numbers'),
     },
     {
       icon: <FaRegBookmark />,
-      title: `${booleanToString(!isAnnotation('custom-labels'))} custom labels`,
-      onClick: () => handleChangeAtomAnnotation('custom-labels'),
-      active: isAnnotation('custom-labels'),
+      title: `${booleanToString(!isActiveAnnotation('custom-labels'))} custom labels`,
+      onClick: () => toggleAtomAnnotation('custom-labels'),
+      active: isActiveAnnotation('custom-labels'),
     },
   ];
   const { x: xInPercent, y: yInPercent, width, height } = bounding;
