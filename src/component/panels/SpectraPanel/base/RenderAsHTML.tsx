@@ -1,9 +1,21 @@
+import { Tooltip } from '@blueprintjs/core';
 import type { Spectrum } from '@zakodium/nmrium-core';
 import dlv from 'dlv';
 
 interface RenderAsHTMLProps {
   data: Spectrum;
   jpath: string | string[];
+}
+
+interface HTMLContentProps extends React.HTMLAttributes<HTMLDivElement> {
+  html: string;
+}
+
+function HTMLContent({ html }: HTMLContentProps) {
+  return (
+    // eslint-disable-next-line react/no-danger
+    <div dangerouslySetInnerHTML={{ __html: html }} />
+  );
 }
 
 export function RenderAsHTML(props: RenderAsHTMLProps) {
@@ -15,11 +27,17 @@ export function RenderAsHTML(props: RenderAsHTMLProps) {
     return value;
   }
 
+  const formattedHTML = formatValueAsHTML(value);
+
   return (
-    <div
-      // eslint-disable-next-line react/no-danger
-      dangerouslySetInnerHTML={{
-        __html: formatValueAsHTML(value),
+    <Tooltip
+      content={<HTMLContent html={formattedHTML} />}
+      renderTarget={({ isOpen, ...targetProps }) => {
+        return (
+          <div {...targetProps}>
+            <HTMLContent html={formattedHTML} />
+          </div>
+        );
       }}
     />
   );
