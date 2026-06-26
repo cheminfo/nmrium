@@ -3,6 +3,7 @@
   "compilerOptions": {
     "composite": true,
     "emitDeclarationOnly": true,
-    "outDir": "lib-internal"
+    "outDir": "lib-internal",
+    "tsBuildInfoFile": "lib-internal/tsconfig.nmrium-internal.tsbuildinfo"
   }
 }
