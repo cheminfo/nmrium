@@ -70,7 +70,7 @@ export const pageSizes: PageSize[] = [
   },
 ];
 
-export interface SizeItem {
+interface SizeItem {
   label: string;
   value: PageSizeName;
 }

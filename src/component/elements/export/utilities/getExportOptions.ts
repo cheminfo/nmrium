@@ -50,6 +50,7 @@ export function getExportDefaultOptions(options?: ExportSettings) {
 
   return options || INITIAL_ADVANCE_EXPORT_OPTIONS;
 }
+
 export function getExportDefaultOptionsByMode(mode: 'basic' | 'advance') {
   if (mode === 'basic') {
     return INITIAL_BASIC_EXPORT_OPTIONS;
