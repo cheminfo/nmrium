@@ -174,6 +174,15 @@ export function ProcessingsSectionsPanel() {
                     fallback={<OperationFallback operation={operation} />}
                     operation={operation}
                     core={core}
+                    onChange={(operation) => {
+                      const newProcessings = processings.map((p) =>
+                        p.uid === operation.uid
+                          ? { ...operation, options: undefined }
+                          : p,
+                      );
+                      setProcessings(newProcessings);
+                      setOpenedOperation(undefined);
+                    }}
                   >
                     {(children) => (
                       <LiveEditBanner>
