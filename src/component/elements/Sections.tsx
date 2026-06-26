@@ -1,8 +1,10 @@
-import type { ElementDropTargetEventBasePayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types/adapter/element-adapter.js';
-import type { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types.js';
-import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
 import { Colors, Icon, Tag } from '@blueprintjs/core';
 import styled from '@emotion/styled';
+import type {
+  Edge,
+  ElementDragPayload,
+  ElementDropTargetEventBasePayload,
+} from '@zakodium/pdnd-esm';
 import {
   attachClosestEdge,
   combine,
