@@ -1,3 +1,4 @@
+import { Tooltip } from '@blueprintjs/core';
 import type {
   ActiveSpectrum,
   JpathTableColumn,
@@ -328,7 +329,17 @@ export function SpectraTable(props: SpectraTableProps) {
 
         const cell: Column<Spectrum> = {
           Header: () => <ColumnHeader label={col.label} col={col} />,
-          accessor: (row) => getValueByPath(row, jpath, format),
+          Cell: ({ row }: CellProps<Spectrum>) => {
+            const val = getValueByPath(row.original, jpath, format);
+            return (
+              <Tooltip
+                content={val}
+                renderTarget={({ isOpen, ...targetProps }) => (
+                  <div {...targetProps}>{val}</div>
+                )}
+              />
+            );
+          },
           ...(cellRender && { Cell: cellRender }),
           id: `${index}`,
           style,
