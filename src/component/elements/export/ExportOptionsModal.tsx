@@ -79,21 +79,9 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
           <StyledDialogBody>
             <ExportFields form={form} fields="values" />
           </StyledDialogBody>
-          <DialogFooter>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'baseline',
-              }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  gap: 5,
-                }}
-              >
+          <DialogFooter
+            actions={
+              <>
                 <Button
                   variant="outlined"
                   intent="danger"
@@ -104,9 +92,9 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
                 <form.SubmitButton intent="success">
                   {confirmButtonText}
                 </form.SubmitButton>
-              </div>
-            </div>
-          </DialogFooter>
+              </>
+            }
+          />
         </Form>
       </form.AppForm>
     </StandardDialog>
