@@ -1,5 +1,5 @@
 import type { Info1D, Info2D } from '@zakodium/nmr-types';
-import type { NMRiumToolBarPreferences } from '@zakodium/nmrium-core';
+import type { NMRiumToolbarPreferences } from '@zakodium/nmrium-core';
 import { Filters1D, Filters2D } from 'nmr-processing';
 
 import type { DisplayerMode } from '../reducer/Reducer.js';
@@ -32,7 +32,7 @@ export interface ToolOptionItem {
   isExperimental?: true;
 }
 
-export type MainTool = keyof NMRiumToolBarPreferences;
+export type MainTool = keyof NMRiumToolbarPreferences;
 
 /**
  * Tools that are selectable in panels, not in the main toolbar.

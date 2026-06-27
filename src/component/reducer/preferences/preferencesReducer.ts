@@ -9,8 +9,8 @@ import type {
   PanelPreferencesType,
   PanelsPreferences,
   PrintPageOptions,
-  WorkSpaceSource,
   Workspace,
+  WorkspaceSource,
 } from '@zakodium/nmrium-core';
 import { CURRENT_EXPORT_VERSION, migrateSettings } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
@@ -223,7 +223,7 @@ export type PreferencesActions =
   | CutSpectraAnalysisAction
   | ToggleSplitPanelAction;
 
-export type WorkspaceWithSource = Workspace & { source: WorkSpaceSource };
+export type WorkspaceWithSource = Workspace & { source: WorkspaceSource };
 type WorkspacesWithSource = Record<string, WorkspaceWithSource>;
 
 export interface PreferencesState {

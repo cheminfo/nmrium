@@ -1,7 +1,7 @@
 import type { Info1D, Range, Ranges } from '@zakodium/nmr-types';
 import type {
   Spectrum1D,
-  WorkSpacePanelPreferences,
+  WorkspacePanelPreferences,
 } from '@zakodium/nmrium-core';
 import type { NmrData1D } from 'cheminfo-types';
 import { xGetFromToIndex } from 'ml-spectra-processing';
@@ -37,7 +37,7 @@ interface RangesTablePanelInnerProps {
   info: Info1D;
   xDomain: number[];
   activeTab: string;
-  preferences: WorkSpacePanelPreferences['ranges'];
+  preferences: WorkspacePanelPreferences['ranges'];
 }
 
 export interface RangesTableDataMetaInfo {

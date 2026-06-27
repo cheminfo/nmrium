@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import type { Info1D } from '@zakodium/nmr-types';
-import type { WorkSpacePanelPreferences } from '@zakodium/nmrium-core';
+import type { WorkspacePanelPreferences } from '@zakodium/nmrium-core';
 import { FaLink } from 'react-icons/fa';
 
 import { withDialog } from '../../elements/DialogManager.js';
@@ -61,7 +61,7 @@ const Table = styled.table`
 `;
 
 interface RangesTableProps extends TableContextMenuProps {
-  preferences: WorkSpacePanelPreferences['ranges'];
+  preferences: WorkspacePanelPreferences['ranges'];
   tableData: RangesTableDataRow[];
   activeTab: string;
   info: Info1D;

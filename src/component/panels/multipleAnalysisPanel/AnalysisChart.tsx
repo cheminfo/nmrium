@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import type {
   JpathTableColumn,
   Spectrum,
-  WorkSpacePanelPreferences,
+  WorkspacePanelPreferences,
 } from '@zakodium/nmrium-core';
 import dlv from 'dlv';
 import type { ChangeEvent } from 'react';
@@ -82,7 +82,7 @@ function getPlotDataAsString(
   options: {
     plotOptions: PlotOptions;
     spectra: Spectrum[];
-    spectraPanelPreferences: WorkSpacePanelPreferences['spectra'];
+    spectraPanelPreferences: WorkspacePanelPreferences['spectra'];
   },
 ) {
   const { plotOptions, spectra, spectraPanelPreferences } = options;
