@@ -52,7 +52,7 @@ function InnerSaveAsModal(props: InnerSaveAsModalProps) {
   const { saveHandler } = useExport();
 
   const form = useForm({
-    defaultValues: { ...INITIAL_VALUE, name: data[0]?.info?.name },
+    defaultValues: { ...INITIAL_VALUE, name: data[0]?.info?.name ?? '' },
     validators: { onDynamic: formSchema },
     validationLogic: revalidateLogic({ modeAfterSubmission: 'change' }),
     onSubmit: ({ value }) => {
