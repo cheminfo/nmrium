@@ -28,56 +28,66 @@ const TicksSection = withFieldGroup({
     const { AppField, Section } = group;
 
     return (
-      <Section title="Ticks">
-        <FieldGroupSVGTextStyleFields
-          form={group}
-          fields="primaryTicks.textStyle"
-          label="Style"
-          previewText="0"
-        />
-        <group.AppField name="primaryTicks.tickStyle.stroke">
-          {(field) => <field.ColorPicker label="Primary color" disableAlpha />}
-        </group.AppField>
-        <group.AppField name="primaryTicks.tickStyle.strokeOpacity">
-          {(field) => (
-            <field.NumericInput
-              label="Primary opacity"
-              min={0}
-              max={1}
-              minorStepSize={0.01}
-              step={0.05}
-              majorStepSize={0.1}
-            />
-          )}
-        </group.AppField>
-        <group.AppField name="primaryTicks.tickStyle.strokeWidth">
-          {(field) => <field.NumericInput label="Primary width" />}
-        </group.AppField>
+      <>
+        <Section title="Axis label">
+          <FieldGroupSVGTextStyleFields
+            form={group}
+            fields="labelStyle"
+            label="Style"
+            previewText="0"
+          />
+        </Section>
+        <Section title="Primary ticks">
+          <FieldGroupSVGTextStyleFields
+            form={group}
+            fields="primaryTicks.textStyle"
+            label="Style"
+            previewText="0"
+          />
+          <group.AppField name="primaryTicks.tickStyle.stroke">
+            {(field) => <field.ColorPicker label="Color" disableAlpha />}
+          </group.AppField>
+          <group.AppField name="primaryTicks.tickStyle.strokeOpacity">
+            {(field) => (
+              <field.NumericInput
+                label="Opacity"
+                min={0}
+                max={1}
+                minorStepSize={0.01}
+                step={0.05}
+                majorStepSize={0.1}
+              />
+            )}
+          </group.AppField>
+          <group.AppField name="primaryTicks.tickStyle.strokeWidth">
+            {(field) => <field.NumericInput label="Width" />}
+          </group.AppField>
+        </Section>
 
-        <group.AppField name="secondaryTicks.tickStyle.stroke">
-          {(field) => (
-            <field.ColorPicker label="Secondary color" disableAlpha />
-          )}
-        </group.AppField>
-        <group.AppField name="secondaryTicks.tickStyle.strokeOpacity">
-          {(field) => (
-            <field.NumericInput
-              label="Secondary opacity"
-              min={0}
-              max={1}
-              minorStepSize={0.01}
-              step={0.05}
-              majorStepSize={0.1}
-            />
-          )}
-        </group.AppField>
-        <group.AppField name="secondaryTicks.tickStyle.strokeWidth">
-          {(field) => <field.NumericInput label="Secondary width" />}
-        </group.AppField>
-        <AppField name="secondaryTicks.enabled">
-          {({ Checkbox }) => <Checkbox label="Show secondary ticks" />}
-        </AppField>
-      </Section>
+        <Section title="Secondary ticks">
+          <AppField name="secondaryTicks.enabled">
+            {({ Checkbox }) => <Checkbox label="Show secondary ticks" />}
+          </AppField>
+          <group.AppField name="secondaryTicks.tickStyle.stroke">
+            {(field) => <field.ColorPicker label="Color" disableAlpha />}
+          </group.AppField>
+          <group.AppField name="secondaryTicks.tickStyle.strokeOpacity">
+            {(field) => (
+              <field.NumericInput
+                label="Opacity"
+                min={0}
+                max={1}
+                minorStepSize={0.01}
+                step={0.05}
+                majorStepSize={0.1}
+              />
+            )}
+          </group.AppField>
+          <group.AppField name="secondaryTicks.tickStyle.strokeWidth">
+            {(field) => <field.NumericInput label="Secondary width" />}
+          </group.AppField>
+        </Section>
+      </>
     );
   },
 });

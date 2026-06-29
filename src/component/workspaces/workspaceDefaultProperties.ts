@@ -77,6 +77,9 @@ export const workspaceDefaultProperties: RequiredWorkspacePreferences = {
   } satisfies Required<WorkspacePreferences['display']>,
 
   axis: {
+    labelStyle: {
+      fontSize: 10,
+    },
     secondaryTicks: {
       enabled: true,
       tickStyle: {

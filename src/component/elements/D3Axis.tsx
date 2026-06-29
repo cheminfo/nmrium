@@ -24,9 +24,9 @@ type SecondaryGridElementProps = PrimaryGridElementProps & {
 
 interface D3AxisProps
   extends
-  BaseD3AxisProps,
-  Pick<SVGAttributes<SVGGElement>, 'transform' | 'children' | 'className'>,
-  UseLinearPrimaryTicksResult {
+    BaseD3AxisProps,
+    Pick<SVGAttributes<SVGGElement>, 'transform' | 'children' | 'className'>,
+    UseLinearPrimaryTicksResult {
   gridSize: number;
   primaryGridProps?: PrimaryGridElementProps;
   secondaryGridProps?: SecondaryGridElementProps;
@@ -35,9 +35,9 @@ interface D3AxisProps
   showSecondaryGrid?: boolean;
 }
 
-interface TicketsProps extends UseLinearPrimaryTicksResult, BaseD3AxisProps { }
+interface TicketsProps extends UseLinearPrimaryTicksResult, BaseD3AxisProps {}
 interface BaseLineProps
-  extends Pick<UseLinearPrimaryTicksResult, 'scale'>, BaseD3AxisProps { }
+  extends Pick<UseLinearPrimaryTicksResult, 'scale'>, BaseD3AxisProps {}
 
 interface GridProps<T> extends UseLinearPrimaryTicksResult {
   axisPosition: AxisPosition;
@@ -85,15 +85,15 @@ function Tickets(props: TicketsProps) {
 
   const positionTextConfig: SVGStyledTextProps = isVertical
     ? {
-      x: positionSign * (tickLength + 3),
-      dy: '0.32em',
-      textAnchor: positionSign === -1 ? 'end' : 'start',
-    }
+        x: positionSign * (tickLength + 3),
+        dy: '0.32em',
+        textAnchor: positionSign === -1 ? 'end' : 'start',
+      }
     : {
-      y: positionSign * (tickLength + 3),
-      dy: positionSign === -1 ? '0em' : '0.71em',
-      textAnchor: 'middle',
-    };
+        y: positionSign * (tickLength + 3),
+        dy: positionSign === -1 ? '0em' : '0.71em',
+        textAnchor: 'middle',
+      };
 
   const positionPrimaryLineConfig: SVGStyledLineProps = isVertical
     ? { x1: positionSign * tickLength, x2: 0 }
@@ -103,30 +103,30 @@ function Tickets(props: TicketsProps) {
   const secondaryTickOffset = getSecondaryTickOffset(ticks, positionSign);
   const positionSecondaryLineConfig: SVGStyledLineProps = isVertical
     ? {
-      x1: positionSign * secondaryTickLength,
-      x2: 0,
-      y1: secondaryTickOffset,
-      y2: secondaryTickOffset,
-    }
+        x1: positionSign * secondaryTickLength,
+        x2: 0,
+        y1: secondaryTickOffset,
+        y2: secondaryTickOffset,
+      }
     : {
-      y1: positionSign * secondaryTickLength,
-      y2: 0,
-      x1: secondaryTickOffset,
-      x2: secondaryTickOffset,
-    };
+        y1: positionSign * secondaryTickLength,
+        y2: 0,
+        x1: secondaryTickOffset,
+        x2: secondaryTickOffset,
+      };
   const positionSecondaryFirstLineConfig: SVGStyledLineProps = isVertical
     ? {
-      x1: positionSign * secondaryTickLength,
-      x2: 0,
-      y1: -secondaryTickOffset,
-      y2: -secondaryTickOffset,
-    }
+        x1: positionSign * secondaryTickLength,
+        x2: 0,
+        y1: -secondaryTickOffset,
+        y2: -secondaryTickOffset,
+      }
     : {
-      y1: positionSign * secondaryTickLength,
-      y2: 0,
-      x1: -secondaryTickOffset,
-      x2: -secondaryTickOffset,
-    };
+        y1: positionSign * secondaryTickLength,
+        y2: 0,
+        x1: -secondaryTickOffset,
+        x2: -secondaryTickOffset,
+      };
 
   return ticks.map(({ label, position }, index) => {
     const isFirst = index === 0;

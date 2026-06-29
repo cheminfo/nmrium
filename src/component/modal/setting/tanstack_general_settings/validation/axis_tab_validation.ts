@@ -29,6 +29,7 @@ const secondaryTicksValidation = z.object({
 
 export const axisValidation = z
   .object({
+    labelStyle: svgTextStyleFieldsSchema,
     primaryTicks: primaryTicksValidation,
     secondaryTicks: secondaryTicksValidation,
     gridlines1D: gridlinesValidation,
