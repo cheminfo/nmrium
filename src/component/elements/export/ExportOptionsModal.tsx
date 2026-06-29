@@ -1,6 +1,6 @@
 import { DialogFooter } from '@blueprintjs/core';
 import { useMemo } from 'react';
-import { Button, Form, useForm } from 'react-science/ui';
+import { AppForm, Button, useForm } from 'react-science/ui';
 import { z } from 'zod/v4';
 
 import { ExportFields } from '../../modal/setting/tanstack_general_settings/tabs/export_tab.fields.tsx';
@@ -67,36 +67,27 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
       canEscapeKeyClose
       autoFocus
     >
-      <form.AppForm>
-        <Form
-          layout="inline"
-          noValidate
-          onSubmit={(event) => {
-            event.preventDefault();
-            void form.handleSubmit();
-          }}
-        >
-          <StyledDialogBody>
-            <ExportFields form={form} fields="values" />
-          </StyledDialogBody>
-          <DialogFooter
-            actions={
-              <>
-                <Button
-                  variant="outlined"
-                  intent="danger"
-                  onClick={() => onCloseDialog?.()}
-                >
-                  Cancel
-                </Button>
-                <form.SubmitButton intent="success">
-                  {confirmButtonText}
-                </form.SubmitButton>
-              </>
-            }
-          />
-        </Form>
-      </form.AppForm>
+      <AppForm form={form} layout="inline">
+        <StyledDialogBody>
+          <ExportFields form={form} fields="values" />
+        </StyledDialogBody>
+        <DialogFooter
+          actions={
+            <>
+              <Button
+                variant="outlined"
+                intent="danger"
+                onClick={() => onCloseDialog?.()}
+              >
+                Cancel
+              </Button>
+              <form.SubmitButton intent="success">
+                {confirmButtonText}
+              </form.SubmitButton>
+            </>
+          }
+        />
+      </AppForm>
     </StandardDialog>
   );
 }
