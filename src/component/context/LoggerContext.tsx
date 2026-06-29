@@ -36,13 +36,7 @@ interface LoggerProviderProps {
 }
 
 export type LoggerType =
-  | 'fatal'
-  | 'error'
-  | 'warn'
-  | 'info'
-  | 'debug'
-  | 'trace'
-  | 'silent';
+  'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace' | 'silent';
 
 export const LOGGER_LEVELS = {
   fatal: 60,

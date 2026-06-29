@@ -1,4 +1,4 @@
-import type { WorkSpaceSource } from '@zakodium/nmrium-core';
+import type { WorkspaceSource } from '@zakodium/nmrium-core';
 import type { CSSProperties, ChangeEvent, MouseEvent } from 'react';
 import { useState } from 'react';
 import { Button } from 'react-science/ui';
@@ -115,7 +115,7 @@ const style = {
   alignItems: 'center',
 };
 
-const WorkspaceIndicator = (props: { source: WorkSpaceSource }) => {
+const WorkspaceIndicator = (props: { source: WorkspaceSource }) => {
   let letter = '';
   let backgroundColor = 'red';
 
