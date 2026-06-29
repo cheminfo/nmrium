@@ -29,8 +29,7 @@ export function setRangesViewProperty<T extends keyof RangesViewState>(
   options: {
     spectrumKey?: string;
     value:
-      | ((value: RangesViewState[T]) => RangesViewState[T])
-      | RangesViewState[T];
+      ((value: RangesViewState[T]) => RangesViewState[T]) | RangesViewState[T];
   },
 ) {
   const rangesView = draft.view.ranges;

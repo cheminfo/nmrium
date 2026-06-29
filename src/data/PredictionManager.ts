@@ -343,12 +343,10 @@ function mapZones(zones: NMRZone[]): Zone[] {
         kind: kind || 'signal',
         x: { ...x, originalDelta: x.delta || 0 },
         y: { ...y, originalDelta: y.delta || 0 },
-        peaks: peaks?.map(
-          (peak): Peak2D => ({
-            ...peak,
-            id: peak.id || crypto.randomUUID(),
-          }),
-        ),
+        peaks: peaks?.map((peak): Peak2D => ({
+          ...peak,
+          id: peak.id || crypto.randomUUID(),
+        })),
       };
     });
     return {

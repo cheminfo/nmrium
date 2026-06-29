@@ -36,11 +36,7 @@ import {
 } from './utilities/Utilities.js';
 
 type EditCorrelationAction =
-  | 'add'
-  | 'move'
-  | 'remove'
-  | 'unmove'
-  | 'setPathLength';
+  'add' | 'move' | 'remove' | 'unmove' | 'setPathLength';
 
 export type OnEditCorrelationCallback = (
   editedCorrelations: Correlation[],

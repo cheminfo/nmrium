@@ -60,10 +60,7 @@ function is2DFTSpectrum(
 }
 
 export type DomainActions =
-  | SetXDomainAction
-  | SetYDomainAction
-  | SetAxisDomainAction
-  | MoveAction;
+  SetXDomainAction | SetYDomainAction | SetAxisDomainAction | MoveAction;
 
 function getActiveData(draft: Draft<State>): Spectrum1D[] {
   let data = draft.data.filter(

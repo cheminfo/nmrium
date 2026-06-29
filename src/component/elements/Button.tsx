@@ -24,12 +24,7 @@ interface BaseColor {
 type Fill = 'clear' | 'outline' | 'solid';
 
 type ColorTheme =
-  | 'success'
-  | 'danger'
-  | 'warning'
-  | 'medium'
-  | 'light'
-  | 'secondary';
+  'success' | 'danger' | 'warning' | 'medium' | 'light' | 'secondary';
 
 type ColorPalettes = Record<
   ColorTheme,

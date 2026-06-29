@@ -533,8 +533,7 @@ interface DetectBrushingThresholdSize {
 type BrushDetectionThresholdAxis = 'both' | 'x' | 'y';
 
 type DetectBrushingOptions = { thresholdAxis?: BrushDetectionThresholdAxis } & (
-  | DetectBrushingThreshold
-  | DetectBrushingThresholdSize
+  DetectBrushingThreshold | DetectBrushingThresholdSize
 );
 
 export function detectBrushing(
