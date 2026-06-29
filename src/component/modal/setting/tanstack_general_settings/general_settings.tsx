@@ -3,8 +3,9 @@ import styled from '@emotion/styled';
 import { revalidateLogic } from '@tanstack/react-form';
 import type { Workspace } from '@zakodium/nmrium-core';
 import { ErrorBoundary } from 'react-error-boundary';
-import { AppForm, assert, useForm } from 'react-science/ui';
+import { AppForm, useForm } from 'react-science/ui';
 import { match } from 'ts-pattern';
+import { z } from 'zod';
 
 import { usePreferences } from '../../../context/PreferencesContext.js';
 import ErrorOverlay from '../../../main/ErrorOverlay.tsx';
@@ -60,7 +61,9 @@ interface GeneralSettingsProps extends Omit<
   onSave: (values?: Partial<Workspace>) => void;
 }
 
-type FormMeta = 'apply' | 'save';
+const metaSchema = z.enum(['apply', 'save']);
+type FormMeta = z.input<typeof metaSchema>;
+const onSubmitMeta: FormMeta = 'apply';
 
 function GeneralSettings(props: GeneralSettingsProps) {
   const { close, height, onSave } = props;
@@ -74,10 +77,12 @@ function GeneralSettings(props: GeneralSettingsProps) {
     },
     validationLogic: revalidateLogic({ mode: 'change' }),
     defaultValues,
-    // We don't want onSubmitMeta to be inferred as sting.
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-    onSubmitMeta: 'apply' as FormMeta,
+    onSubmitMeta,
     onSubmit: ({ value, meta }) => {
+      meta = metaSchema.parse(meta, {
+        error: () =>
+          'Submit event must be attached to a submitter with "data-action" attribute with "apply" or "save" value',
+      });
       const mergedValues = formValueToWorkspace(value, currentWorkspace);
 
       match(meta)
@@ -100,17 +105,7 @@ function GeneralSettings(props: GeneralSettingsProps) {
     <AppForm
       form={form}
       layout="inline"
-      noValidate
-      onSubmit={(event) => {
-        event.preventDefault();
-
-        const nativeEvent = event.nativeEvent as SubmitEvent;
-        const submitter = nativeEvent.submitter as HTMLButtonElement | null;
-        assert(submitter, 'form event should have a submitter');
-        const action = submitter.dataset.action;
-
-        void form.handleSubmit(action as FormMeta);
-      }}
+      onSubmitMeta={(event) => event.nativeEvent.submitter?.dataset.action}
     >
       <PreventImplicitSubmit />
 
