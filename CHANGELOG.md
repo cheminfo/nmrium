@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.3.0](https://github.com/cheminfo/nmrium/compare/v2.2.0...v2.3.0) (2026-06-29)
+
+
+### Features
+
+* add pro-R/pro-S prochiral hydrogen labelling ([6f5197a](https://github.com/cheminfo/nmrium/commit/6f5197aed5dce4937a4681ccba6f397351c90507))
+* add tooltips to spectra list cells ([08e9281](https://github.com/cheminfo/nmrium/commit/08e92819fe1f488a5eaf644634ebafad97fe7b81))
+* improve floating ranges table preferences ([#4213](https://github.com/cheminfo/nmrium/issues/4213)) ([3e8d091](https://github.com/cheminfo/nmrium/commit/3e8d091937b70d31c15bc1311aef2be14400c95c))
+
 ## [2.2.0](https://github.com/cheminfo/nmrium/compare/v2.1.0...v2.2.0) (2026-06-15)
 
 
