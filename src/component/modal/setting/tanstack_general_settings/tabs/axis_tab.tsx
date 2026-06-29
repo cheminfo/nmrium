@@ -84,7 +84,7 @@ const TicksSection = withFieldGroup({
             )}
           </group.AppField>
           <group.AppField name="secondaryTicks.tickStyle.strokeWidth">
-            {(field) => <field.NumericInput label="Secondary width" />}
+            {(field) => <field.NumericInput label="Width" />}
           </group.AppField>
         </Section>
       </>
