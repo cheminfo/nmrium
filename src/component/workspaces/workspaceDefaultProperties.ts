@@ -77,8 +77,22 @@ export const workspaceDefaultProperties: RequiredWorkspacePreferences = {
   } satisfies Required<WorkspacePreferences['display']>,
 
   axis: {
-    secondaryTicks: { enabled: true },
-    primaryTicks: { textStyle: { fontSize: 10 } },
+    secondaryTicks: {
+      enabled: true,
+      tickStyle: {
+        strokeWidth: 1,
+        strokeOpacity: 1,
+        stroke: '#000000',
+      },
+    },
+    primaryTicks: {
+      textStyle: { fontSize: 10 },
+      tickStyle: {
+        strokeWidth: 1,
+        strokeOpacity: 1,
+        stroke: '#000000',
+      },
+    },
     gridlines1D: {
       primary: {
         enabled: true,

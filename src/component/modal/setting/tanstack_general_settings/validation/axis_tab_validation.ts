@@ -14,10 +14,23 @@ const gridlinesValidation = z.object({
   secondary: gridlineValidation,
 });
 
+const primaryTicksValidation = z.object({
+  textStyle: svgTextStyleFieldsSchema,
+  tickStyle: svgLineStyleFieldsSchema.omit({
+    strokeDasharray: true,
+  }),
+});
+const secondaryTicksValidation = z.object({
+  enabled: z.boolean(),
+  tickStyle: svgLineStyleFieldsSchema.omit({
+    strokeDasharray: true,
+  }),
+});
+
 export const axisValidation = z
   .object({
-    primaryTicks: z.object({ textStyle: svgTextStyleFieldsSchema }),
-    secondaryTicks: z.object({ enabled: z.boolean() }),
+    primaryTicks: primaryTicksValidation,
+    secondaryTicks: secondaryTicksValidation,
     gridlines1D: gridlinesValidation,
     gridlines2D: gridlinesValidation,
   })
