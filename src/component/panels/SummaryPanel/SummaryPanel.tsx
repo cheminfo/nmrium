@@ -153,6 +153,9 @@ function SummaryPanel() {
               link.experimentID,
               true,
             ) as Spectrum2D;
+
+            if (!spectrum) return false;
+
             return findSignalMatch1D(
               spectrum,
               link,
@@ -180,6 +183,9 @@ function SummaryPanel() {
           true,
         ) as Spectrum2D;
         // correlation is represented by a 2D signal
+
+        if (!spectrum) return false;
+
         if (
           findSignalMatch2D(
             spectrum,
@@ -201,6 +207,9 @@ function SummaryPanel() {
               link.experimentID,
               true,
             ) as Spectrum2D;
+
+            if (!spectrum) return false;
+
             return findSignalMatch2D(
               spectrum,
               link,
