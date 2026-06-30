@@ -47,6 +47,7 @@ export function autoPeakPicking(
       direction,
       sensitivity: 100,
       shape: defaultPeakShape,
+      broadRatio: 0.0025,
       noiseLevel: noise * noiseFactor,
       minMaxRatio, // Threshold to determine if a given peak should be considered as a noise
       realTopDetection: true,
