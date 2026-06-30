@@ -84,9 +84,7 @@ interface SelectXYRangeOptions extends SelectRangeBaseOptions {
 }
 
 type SelectRangeOptions =
-  | SelectXRangeOptions
-  | SelectYRangeOptions
-  | SelectXYRangeOptions;
+  SelectXRangeOptions | SelectYRangeOptions | SelectXYRangeOptions;
 
 interface Boundary {
   x1: number;

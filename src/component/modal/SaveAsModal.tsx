@@ -1,7 +1,7 @@
 import { DialogBody, DialogFooter } from '@blueprintjs/core';
 import { revalidateLogic } from '@tanstack/react-form';
 import { useMemo } from 'react';
-import { Button, Form, useForm } from 'react-science/ui';
+import { AppForm, Button, useForm } from 'react-science/ui';
 import { z } from 'zod/v4';
 
 import { DataExportOptions } from '../../data/SpectraManager.js';
@@ -52,7 +52,7 @@ function InnerSaveAsModal(props: InnerSaveAsModalProps) {
   const { saveHandler } = useExport();
 
   const form = useForm({
-    defaultValues: { ...INITIAL_VALUE, name: data[0]?.info?.name },
+    defaultValues: { ...INITIAL_VALUE, name: data[0]?.info?.name ?? '' },
     validators: { onDynamic: formSchema },
     validationLogic: revalidateLogic({ modeAfterSubmission: 'change' }),
     onSubmit: ({ value }) => {
@@ -86,54 +86,45 @@ function InnerSaveAsModal(props: InnerSaveAsModalProps) {
       onClose={onCloseDialog}
       style={{ width: 600 }}
     >
-      <form.AppForm>
-        <Form
-          layout="inline"
-          noValidate
-          onSubmit={(event) => {
-            event.preventDefault();
-            void form.handleSubmit();
-          }}
-        >
-          <DialogBody style={{ backgroundColor: 'white' }}>
-            <form.Section title="General information">
-              <form.AppField name="name">
-                {(field) => <field.Input label="Name" required autoFocus />}
-              </form.AppField>
-            </form.Section>
-            <form.Section title="Include">
-              <form.AppField name="include.view">
-                {(field) => <field.Checkbox label="View" />}
-              </form.AppField>
+      <AppForm form={form} layout="inline">
+        <DialogBody style={{ backgroundColor: 'white' }}>
+          <form.Section title="General information">
+            <form.AppField name="name">
+              {(field) => <field.Input label="Name" required autoFocus />}
+            </form.AppField>
+          </form.Section>
+          <form.Section title="Include">
+            <form.AppField name="include.view">
+              {(field) => <field.Checkbox label="View" />}
+            </form.AppField>
 
-              <form.AppField name="include.settings">
-                {(field) => <field.Checkbox label="Workspace" />}
-              </form.AppField>
+            <form.AppField name="include.settings">
+              {(field) => <field.Checkbox label="Workspace" />}
+            </form.AppField>
 
-              <form.AppField name="include.dataType">
-                {(field) => (
-                  <field.RadioGroup inline label="Data" options={options} />
-                )}
-              </form.AppField>
-            </form.Section>
-          </DialogBody>
+            <form.AppField name="include.dataType">
+              {(field) => (
+                <field.RadioGroup inline label="Data" options={options} />
+              )}
+            </form.AppField>
+          </form.Section>
+        </DialogBody>
 
-          <DialogFooter
-            actions={
-              <>
-                <Button
-                  variant="outlined"
-                  intent="danger"
-                  onClick={() => onCloseDialog?.()}
-                >
-                  Cancel
-                </Button>
-                <form.SubmitButton intent="success">Save</form.SubmitButton>
-              </>
-            }
-          />
-        </Form>
-      </form.AppForm>
+        <DialogFooter
+          actions={
+            <>
+              <Button
+                variant="outlined"
+                intent="danger"
+                onClick={() => onCloseDialog?.()}
+              >
+                Cancel
+              </Button>
+              <form.SubmitButton intent="success">Save</form.SubmitButton>
+            </>
+          }
+        />
+      </AppForm>
     </StandardDialog>
   );
 }

@@ -13,9 +13,7 @@ import { saveAs } from '../utility/save_as.js';
 import { useCreateNmriumZip } from './useCreateNmriumZip.ts';
 
 type DataType =
-  | 'NO_DATA'
-  | 'SELF_CONTAINED'
-  | 'SELF_CONTAINED_EXTERNAL_DATASOURCE';
+  'NO_DATA' | 'SELF_CONTAINED' | 'SELF_CONTAINED_EXTERNAL_DATASOURCE';
 
 export interface SaveIncludeOptions {
   settings: boolean;

@@ -1704,8 +1704,7 @@ function deleteFilter(datum: Spectrum, id?: string) {
   } else {
     removedFilter = datum.filters.find((filter) => filter.id === id);
     datum.filters = filters.filter((filter) => filter.id !== id) as
-      | Filter1DEntry[]
-      | Filter2DEntry[];
+      Filter1DEntry[] | Filter2DEntry[];
   }
 
   // do not reprocess the filters when the deleted filter is inactive

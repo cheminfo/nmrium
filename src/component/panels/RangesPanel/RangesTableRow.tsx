@@ -1,5 +1,5 @@
 import type { Info1D } from '@zakodium/nmr-types';
-import type { WorkSpacePanelPreferences } from '@zakodium/nmrium-core';
+import type { WorkspacePanelPreferences } from '@zakodium/nmrium-core';
 import type { CSSProperties, MouseEvent } from 'react';
 import { useCallback, useMemo } from 'react';
 
@@ -35,7 +35,7 @@ const ConstantlyHighlightedRowStyle = {
 
 interface RangesTableRowProps extends TableContextMenuProps {
   rowData: RangeData;
-  preferences: WorkSpacePanelPreferences['ranges'];
+  preferences: WorkspacePanelPreferences['ranges'];
   info: Info1D;
 }
 

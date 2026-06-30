@@ -40,8 +40,7 @@ interface ExportData {
   id: ExportRangesType;
 }
 type ExportItem =
-  | ToolbarPopoverMenuItem<ExportData>
-  | ToolbarPopoverMenuDivider;
+  ToolbarPopoverMenuItem<ExportData> | ToolbarPopoverMenuDivider;
 
 const EXPORT_MENU: ExportItem[] = [
   {

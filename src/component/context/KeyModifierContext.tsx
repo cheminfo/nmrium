@@ -6,8 +6,7 @@ import { usePreferences } from './PreferencesContext.js';
 type ModifiersKey = `shift[${boolean}]_ctrl[${boolean}]_alt[${boolean}]`;
 
 type PrimaryKey =
-  | 'shift[true]_ctrl[false]_alt[false]'
-  | 'shift[false]_ctrl[false]_alt[false]';
+  'shift[true]_ctrl[false]_alt[false]' | 'shift[false]_ctrl[false]_alt[false]';
 
 function getPrimaryKey(invert: boolean): PrimaryKey {
   if (invert) {

@@ -2,8 +2,8 @@ import type {
   MatrixGenerationOptions,
   MultipleSpectraAnalysisPreferences,
   PanelsPreferences,
-  WorkSpacePanelPreferences,
   Workspace,
+  WorkspacePanelPreferences,
 } from '@zakodium/nmrium-core';
 import has from 'lodash/has.js';
 import { useMemo } from 'react';
@@ -128,15 +128,15 @@ export function usePanelPreferences<T extends Panel>(
   ? MatrixGenerationOptions
   : T extends 'multipleSpectraAnalysis'
     ? MultipleSpectraAnalysisPreferences
-    : WorkSpacePanelPreferences[T];
+    : WorkspacePanelPreferences[T];
 export function usePanelPreferences<T extends 'database' | 'prediction'>(
   panelKey: T,
-): WorkSpacePanelPreferences[T];
+): WorkspacePanelPreferences[T];
 
 export function usePanelPreferences<T extends Panel>(
   panelKey: T,
   nucleus?: string,
-): WorkSpacePanelPreferences[T] {
+): WorkspacePanelPreferences[T] {
   const { current } = usePreferences();
   return useMemo(() => {
     return getPanelPreferences(current, panelKey, nucleus);

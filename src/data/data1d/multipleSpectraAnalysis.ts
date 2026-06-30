@@ -8,7 +8,7 @@ import type {
   SpectraAnalysisColumns,
   Spectrum1D,
   Spectrum,
-  WorkSpacePanelPreferences,
+  WorkspacePanelPreferences,
 } from '@zakodium/nmrium-core';
 import {
   ANALYSIS_COLUMN_TYPES,
@@ -314,7 +314,7 @@ function calculate(
 export function getDataAsString(
   spectraAnalysis: SpectraAnalysisData,
   spectra: Spectrum1D[],
-  spectraPanelPreferences: WorkSpacePanelPreferences['spectra'],
+  spectraPanelPreferences: WorkspacePanelPreferences['spectra'],
 ) {
   const spectraData = convertSpectraArrayToObject(spectra);
   if (spectraAnalysis) {

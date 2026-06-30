@@ -1,7 +1,7 @@
 import type {
-  WorkSpaceSource,
   Workspace,
   WorkspacePreferences,
+  WorkspaceSource,
 } from '@zakodium/nmrium-core';
 import lodashMerge from 'lodash/merge.js';
 
@@ -10,7 +10,7 @@ import { workspaceDefaultProperties } from '../../../workspaces/workspaceDefault
 interface MapWorkspacesOptions {
   ignoreKeys?: object;
   mergeWithDefaultProperties?: boolean;
-  source?: WorkSpaceSource;
+  source?: WorkspaceSource;
 }
 
 export function mapWorkspaces(
