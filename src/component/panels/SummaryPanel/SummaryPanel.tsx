@@ -10,6 +10,7 @@ import { getLinkDelta, getLinkDim } from 'nmr-correlation';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { FaFlask, FaSlidersH } from 'react-icons/fa';
 
+import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/isSpectrum2D.ts';
 import {
   findRange,
   findSignal1D,
@@ -148,13 +149,9 @@ function SummaryPanel() {
         // try to find a link which contains the belonging 2D signal in the spectra in view
         if (
           correlation.link.some((link: Link) => {
-            const spectrum = findSpectrum(
-              spectraData,
-              link.experimentID,
-              true,
-            ) as Spectrum2D;
+            const spectrum = findSpectrum(spectraData, link.experimentID, true);
 
-            if (!spectrum) return false;
+            if (!isSpectrum2D(spectrum)) return false;
 
             return findSignalMatch1D(
               spectrum,
@@ -181,10 +178,10 @@ function SummaryPanel() {
           spectraData,
           firstLink2D.experimentID,
           true,
-        ) as Spectrum2D;
+        );
         // correlation is represented by a 2D signal
 
-        if (!spectrum) return false;
+        if (!isSpectrum2D(spectrum)) return false;
 
         if (
           findSignalMatch2D(
@@ -202,13 +199,9 @@ function SummaryPanel() {
         // try to find a link which contains the belonging 2D signal in the spectra in view
         else if (
           correlation.link.some((link: any) => {
-            const spectrum = findSpectrum(
-              spectraData,
-              link.experimentID,
-              true,
-            ) as Spectrum2D;
+            const spectrum = findSpectrum(spectraData, link.experimentID, true);
 
-            if (!spectrum) return false;
+            if (!isSpectrum2D(spectrum)) return false;
 
             return findSignalMatch2D(
               spectrum,
