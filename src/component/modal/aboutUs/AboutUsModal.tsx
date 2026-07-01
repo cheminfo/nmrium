@@ -3,11 +3,10 @@ import { SvgLogoNmrium } from 'cheminfo-font';
 import { Toolbar, useOnOff } from 'react-science/ui';
 
 import versionInfo from '../../../versionInfo.js';
-import { useCore } from '../../context/CoreContext.js';
 import Logo from '../../elements/Logo.js';
 import { StandardDialog } from '../../elements/StandardDialog.tsx';
 import { StyledDialogBody } from '../../elements/StyledDialogBody.js';
-import { renderCoreSlot } from '../../utility/renderCoreSlot.js';
+import { CoreSlot } from '../../utility/CoreSlot.tsx';
 
 import AboutUsZakodium from './AboutUsZakodium.js';
 
@@ -116,7 +115,6 @@ const modalContentFallback = (
 
 function AboutUsModal() {
   const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
-  const core = useCore();
 
   return (
     <>
@@ -137,7 +135,10 @@ function AboutUsModal() {
         title="About NMRium"
       >
         <StyledDialogBody>
-          {renderCoreSlot(core, 'topbar.about_us.modal', modalContentFallback)}
+          <CoreSlot
+            slot="topbar.about_us.modal"
+            fallback={modalContentFallback}
+          />
         </StyledDialogBody>
       </StandardDialog>
     </>
