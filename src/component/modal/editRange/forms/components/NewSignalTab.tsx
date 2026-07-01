@@ -1,9 +1,11 @@
+import { revalidateLogic } from '@tanstack/react-form';
 import type { Range } from '@zakodium/nmr-types';
 import type { CSSProperties } from 'react';
 import { useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { AppForm, useForm } from 'react-science/ui';
 import { z } from 'zod/v4';
+import type { CheckParams } from 'zod/v4/core';
 
 import { useTabsController } from '../../../../elements/TabsProvider.js';
 import { useActiveNucleusTab } from '../../../../hooks/useActiveNucleusTab.js';
@@ -54,7 +56,7 @@ export function NewSignalTab(props: NewSignalTabProps) {
       js: [{ multiplicity: 'm', coupling: '' }],
     };
 
-    const _signals = signals.slice().concat(newSignal);
+    const _signals = [...signals, newSignal];
     setValue('signals', _signals);
     selectTab(_signals.length - 1);
   }
@@ -67,6 +69,7 @@ export function NewSignalTab(props: NewSignalTabProps) {
       const parsedValues = schemaFormValidation.parse(value);
       saveHandler(parsedValues);
     },
+    validationLogic: revalidateLogic({ modeAfterSubmission: 'change' }),
     validators: {
       onDynamic: schemaFormValidation,
     },
@@ -98,23 +101,21 @@ export function NewSignalTab(props: NewSignalTabProps) {
             event.stopPropagation();
           }}
         >
-          <form.AppForm>
-            <form.AppField name="delta">
-              {(field) => (
-                <field.NumericInput
-                  autoFocus
-                  placeholder="𝛅(ppm)"
-                  label="Edit or select a delta value of new signal"
-                  helpText={`Value should be in range [${formatNumber(
-                    range.from,
-                    tablePreferences.from.format,
-                  )} ppm - ${formatNumber(range.to, tablePreferences.to.format)} ppm]`}
-                />
-              )}
-            </form.AppField>
+          <form.AppField name="delta">
+            {(field) => (
+              <field.NumericInput
+                autoFocus
+                placeholder="𝛅(ppm)"
+                label="Edit or select a delta value of new signal"
+                helpText={`Value should be in range [${formatNumber(
+                  range.from,
+                  tablePreferences.from.format,
+                )} ppm - ${formatNumber(range.to, tablePreferences.to.format)} ppm]`}
+              />
+            )}
+          </form.AppField>
 
-            <form.SubmitButton intent="success">Add a signal</form.SubmitButton>
-          </form.AppForm>
+          <form.SubmitButton intent="success">Add a signal</form.SubmitButton>
         </AppForm>
       </div>
     </div>
@@ -122,17 +123,17 @@ export function NewSignalTab(props: NewSignalTabProps) {
 }
 
 function getSignalValidationSchema(range: Range) {
+  const params: CheckParams = {
+    error: (ctx) => {
+      const input = Number(ctx.input);
+      return `${input.toFixed(5)} ppm out of the range`;
+    },
+  };
+
   return z.object({
-    delta: z.coerce.number<string>().refine(
-      (value) => {
-        return value >= range.from && value <= range.to;
-      },
-      {
-        error: (context) => {
-          const input = context.input as number;
-          return `${input.toFixed(5)} ppm out of the range`;
-        },
-      },
-    ),
+    delta: z.coerce
+      .number<string>()
+      .min(range.from, params)
+      .max(range.to, params),
   });
 }
