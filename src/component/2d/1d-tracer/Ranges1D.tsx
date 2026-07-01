@@ -3,13 +3,10 @@ import type { Jcoupling, Range, Signal1D } from '@zakodium/nmr-types';
 
 import { useChartData } from '../../context/ChartContext.tsx';
 import { useDispatch } from '../../context/DispatchContext.tsx';
-import { formatNumber } from '../../utility/formatNumber.ts';
 import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 
 interface Range1DTraceProps {
   position: number;
-  value: number | undefined;
-  format: string;
   size: number;
   orientation?: 'horizontal' | 'vertical';
   opacity?: number;
@@ -19,7 +16,6 @@ interface Range1DTraceProps {
 interface ElementLayout {
   groupTransform: string;
   pathD: string;
-  textTransform?: string;
   textProps: {
     x?: number;
     y?: number;
@@ -28,10 +24,6 @@ interface ElementLayout {
   };
 }
 
-const Text = styled.text`
-  font-size: 11px;
-  fill: black;
-`;
 const Path = styled.path`
   fill: none;
   stroke-width: 1px;
@@ -48,16 +40,13 @@ const innerMargin = 10;
 function Range1DTrace(props: Range1DTraceProps) {
   const {
     position,
-    value,
     size,
-    format,
     orientation = 'horizontal',
     opacity = 1,
     onClick,
   } = props;
   const { margin } = useChartData();
 
-  const label = value ? formatNumber(value, format) : '';
   const half = Math.round(size / 2);
 
   const layout: ElementLayout =
@@ -76,7 +65,6 @@ function Range1DTrace(props: Range1DTraceProps) {
           groupTransform: `translate(${position} ${margin.top - innerMargin})`,
           pathD: `M0 0 L0 ${length} L${size} ${length} L${size} 0`,
           textProps: {},
-          textTransform: `rotate(-90) translate(5 ${half + 4})`,
         };
 
   return (
@@ -88,9 +76,6 @@ function Range1DTrace(props: Range1DTraceProps) {
         height={orientation === 'vertical' ? size : margin.top}
         fill="transparent"
       />
-      <Text transform={layout.textTransform} {...layout.textProps}>
-        {label}
-      </Text>
       <Path d={layout.pathD} />
     </g>
   );
@@ -110,9 +95,40 @@ export function Ranges1D(props: Ranges1DProps) {
   const scale = orientation === 'horizontal' ? scaleX : scaleY;
 
   return ranges.map((range) => {
-    const { from, to, integration, id } = range;
+    const { from, to, id } = range;
     const start = scale(to);
     const size = scale(from) - start;
+
+    function handleAddSignal(e: React.MouseEvent<SVGGElement, MouseEvent>) {
+      const boundingRect = e.currentTarget.getBoundingClientRect();
+      const x = e.clientX - boundingRect.left + start;
+      const y = e.clientY - boundingRect.top + start;
+
+      const valueInPixel = orientation === 'horizontal' ? x : y;
+      const delta = scale.invert(valueInPixel);
+
+      const updatedRange = structuredClone(range);
+      const signal: Signal1D = {
+        id: crypto.randomUUID(),
+        delta,
+        js: [
+          {
+            multiplicity: 'm',
+          } as Jcoupling,
+        ],
+        kind: 'signal',
+        multiplicity: 'm',
+      };
+      updatedRange.signals.push(signal);
+
+      dispatch({
+        type: 'UPDATE_RANGE',
+        payload: {
+          range: updatedRange,
+          spectrumId,
+        },
+      });
+    }
 
     return (
       <Range1DTrace
@@ -120,38 +136,7 @@ export function Ranges1D(props: Ranges1DProps) {
         key={id}
         position={start}
         size={size}
-        value={integration}
-        format="0.00"
-        onClick={(e) => {
-          const boundingRect = e.currentTarget.getBoundingClientRect();
-          const x = e.clientX - boundingRect.left + start;
-          const y = e.clientY - boundingRect.top + start;
-
-          const valueInPixel = orientation === 'horizontal' ? x : y;
-          const delta = scale.invert(valueInPixel);
-
-          const updatedRange = structuredClone(range);
-          const signal: Signal1D = {
-            id: crypto.randomUUID(),
-            delta,
-            js: [
-              {
-                multiplicity: 'm',
-              } as Jcoupling,
-            ],
-            kind: 'signal',
-            multiplicity: 'm',
-          };
-          updatedRange.signals.push(signal);
-
-          dispatch({
-            type: 'UPDATE_RANGE',
-            payload: {
-              range: updatedRange,
-              spectrumId,
-            },
-          });
-        }}
+        onClick={handleAddSignal}
       />
     );
   });
