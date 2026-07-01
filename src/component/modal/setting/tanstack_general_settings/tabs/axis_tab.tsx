@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import {
   FieldGroupSVGLineStyleFields,
   FieldGroupSVGTextStyleFields,
@@ -8,6 +9,18 @@ import type { z } from 'zod';
 
 import type { gridlineValidation } from '../validation/axis_tab_validation.ts';
 import { defaultGeneralSettingsFormValues } from '../validation.ts';
+
+// TODO: Expose the Fieldset and Legend components in react-science/ui package
+const Fieldset = styled.fieldset`
+  display: block;
+  border-top: 1px lightgrey groove;
+  min-inline-size: min-content;
+`;
+
+const Legend = styled.legend`
+  display: block;
+  padding-inline-end: 5px;
+`;
 
 export const AxisTab = withForm({
   defaultValues: defaultGeneralSettingsFormValues,
@@ -41,27 +54,30 @@ const TicksSection = withFieldGroup({
           <FieldGroupSVGTextStyleFields
             form={group}
             fields="primaryTicks.textStyle"
-            label="Style"
+            label="Label style"
             previewText="0"
           />
-          <group.AppField name="primaryTicks.tickStyle.stroke">
-            {(field) => <field.ColorPicker label="Color" disableAlpha />}
-          </group.AppField>
-          <group.AppField name="primaryTicks.tickStyle.strokeOpacity">
-            {(field) => (
-              <field.NumericInput
-                label="Opacity"
-                min={0}
-                max={1}
-                minorStepSize={0.01}
-                step={0.05}
-                majorStepSize={0.1}
-              />
-            )}
-          </group.AppField>
-          <group.AppField name="primaryTicks.tickStyle.strokeWidth">
-            {(field) => <field.NumericInput label="Width" />}
-          </group.AppField>
+          <Fieldset>
+            <Legend>Line style</Legend>
+            <group.AppField name="primaryTicks.tickStyle.stroke">
+              {(field) => <field.ColorPicker label="Color" disableAlpha />}
+            </group.AppField>
+            <group.AppField name="primaryTicks.tickStyle.strokeOpacity">
+              {(field) => (
+                <field.NumericInput
+                  label="Opacity"
+                  min={0}
+                  max={1}
+                  minorStepSize={0.01}
+                  step={0.05}
+                  majorStepSize={0.1}
+                />
+              )}
+            </group.AppField>
+            <group.AppField name="primaryTicks.tickStyle.strokeWidth">
+              {(field) => <field.NumericInput label="Width" />}
+            </group.AppField>
+          </Fieldset>
         </Section>
 
         <Section title="Secondary ticks">
