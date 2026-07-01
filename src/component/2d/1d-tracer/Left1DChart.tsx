@@ -1,10 +1,13 @@
 import type { Spectrum1D } from '@zakodium/nmrium-core';
-import { memo } from 'react';
+import { memo, useRef } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';
 import useXYReduce from '../../hooks/useXYReduce.js';
 import { PathBuilder } from '../../utility/PathBuilder.js';
 import { use1DTraceYScale, useScale2DY } from '../utilities/scale.js';
+
+import { Ranges1D } from './Ranges1D.tsx';
+import { Signals1D } from './Signals1D.tsx';
 
 interface Left1DChartProps {
   horizontalMargin?: number;
@@ -44,10 +47,12 @@ function Left1DChart({
   data: spectrum,
 }: Left1DChartProps) {
   const { height, margin, displayerKey } = useChartData();
+  const svgRef = useRef<SVGSVGElement>(null);
 
   const width = margin.left;
 
   const path = usePath(spectrum, { horizontalMargin, width });
+  const ranges = spectrum.ranges.values;
 
   const innerHeight = height - margin.bottom - margin.top;
 
@@ -55,6 +60,8 @@ function Left1DChart({
 
   return (
     <svg
+      ref={svgRef}
+      style={{ overflow: 'visible' }}
       viewBox={`0 0 ${width} ${innerHeight + margin.top}`}
       width={width}
       height={innerHeight + margin.top}
@@ -63,6 +70,9 @@ function Left1DChart({
         <clipPath id={`${displayerKey}clip-left`}>
           <rect width={width} height={innerHeight} x="0" y={margin.top} />
         </clipPath>
+        <clipPath id={`${displayerKey}clip-left-ranges`}>
+          <rect width={width + 20} height={innerHeight} x="0" y={margin.top} />
+        </clipPath>
       </defs>
       <g clipPath={`url(#${displayerKey}clip-left)`}>
         <path
@@ -70,6 +80,19 @@ function Left1DChart({
           stroke={spectrum.display.color}
           fill="none"
           d={path}
+        />
+      </g>
+      <g clipPath={`url(#${displayerKey}clip-left-ranges)`}>
+        <Ranges1D
+          ranges={ranges}
+          orientation="vertical"
+          spectrumId={spectrum.id}
+        />
+        <Signals1D
+          ranges={ranges}
+          svgRef={svgRef}
+          orientation="vertical"
+          spectrumId={spectrum.id}
         />
       </g>
     </svg>

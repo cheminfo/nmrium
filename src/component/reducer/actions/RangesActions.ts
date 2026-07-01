@@ -122,6 +122,7 @@ type ChangeRangeSumAction = ActionType<
 type AddRangeAction = ActionType<
   'ADD_RANGE',
   {
+    spectrumId?: string;
     range: Range;
   }
 >;
@@ -133,7 +134,14 @@ type ChangeRangeSignalValueAction = ActionType<
   'CHANGE_RANGE_SIGNAL_VALUE',
   { rangeId: string; signalId: string; value: number }
 >;
-type UpdateRangAction = ActionType<'UPDATE_RANGE', { range: Range }>;
+type ChangeSignalDeltaAction = ActionType<
+  'CHANGE_SIGNAL_DELTA',
+  { spectrumId: string; rangeId: string; signalId: string; value: number }
+>;
+type UpdateRangAction = ActionType<
+  'UPDATE_RANGE',
+  { range: Range; spectrumId?: string }
+>;
 type CutRangAction = ActionType<
   'CUT_RANGE',
   { ranges: Record<string, Range[]> }
@@ -189,6 +197,7 @@ export type RangesActions =
   | Change1DSignalAssignmentLabelAction
   | ChangeRangesViewFloatingBoxBoundingAction
   | ChangeRangesAssignmentsLabelsByDiaIdsAction
+  | ChangeSignalDeltaAction
   | ActionType<
       | 'AUTO_RANGES_SPECTRA_PICKING'
       | 'CHANGE_RANGES_SUM_FLAG'
@@ -317,6 +326,29 @@ function handleChangeRangeSignalKind(
   const _range = spectrum.ranges.values[rangeIndex];
   if (_range.signals && range.tableMetaInfo.signalIndex !== undefined) {
     _range.signals[range.tableMetaInfo.signalIndex].kind = kind;
+    updateRangesRelativeValues(spectrum);
+    handleUpdateCorrelations(draft);
+  }
+}
+//action
+function handleChangeSignalDelta(
+  draft: Draft<State>,
+  action: ChangeSignalDeltaAction,
+) {
+  const { spectrumId, rangeId, signalId, value } = action.payload;
+
+  const spectrum = getSpectrum(draft, spectrumId);
+  if (!isSpectrum1D(spectrum)) return;
+
+  const rangeIndex = getRangeIndex(spectrum, rangeId);
+  const range = spectrum.ranges.values[rangeIndex];
+  if (range.signals) {
+    const signalIndex = range.signals.findIndex(
+      (_signal) => _signal.id === signalId,
+    );
+    if (signalIndex !== -1) {
+      range.signals[signalIndex].delta = value;
+    }
     updateRangesRelativeValues(spectrum);
     handleUpdateCorrelations(draft);
   }
@@ -517,9 +549,9 @@ function initiateRangeSumOptions(datum: Spectrum1D, options: SumParams) {
 
 //action
 function handleAddRange(draft: Draft<State>, action: AddRangeAction) {
-  const { range } = action.payload;
+  const { range, spectrumId } = action.payload;
 
-  const spectrum = getSpectrum(draft);
+  const spectrum = getSpectrum(draft, spectrumId);
   if (!isSpectrum1D(spectrum)) return;
 
   const { molecules } = draft;
@@ -583,9 +615,9 @@ function handleChangeRangesSumFlag(draft: Draft<State>) {
 
 //action
 function handleUpdateRange(draft: Draft<State>, action: UpdateRangAction) {
-  const { range } = action.payload;
+  const { range, spectrumId } = action.payload;
 
-  const spectrum = getSpectrum(draft);
+  const spectrum = getSpectrum(draft, spectrumId);
   if (!isSpectrum1D(spectrum)) return;
 
   const index = spectrum.ranges.values.findIndex(
@@ -720,6 +752,7 @@ export {
   handleChangeRangesAssignmentLabelsByDiaIds,
   handleChangeRangesSumFlag,
   handleChangeRangesViewFloatingBoxBounding,
+  handleChangeSignalDelta,
   handleCutRange,
   handleDeleteRange,
   handleDeleteRangePeak,
