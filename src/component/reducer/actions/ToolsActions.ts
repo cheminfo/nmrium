@@ -6,7 +6,6 @@ import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import { contoursManager } from '../../../data/data2d/Spectrum2D/contours.js';
 import { getXScale } from '../../1d/utilities/scale.js';
 import type { Layout } from '../../2d/utilities/DimensionLayout.js';
-import { LAYOUT } from '../../2d/utilities/DimensionLayout.js';
 import { get2DXScale, get2DYScale } from '../../2d/utilities/scale.js';
 import type {
   BrushAxis,
@@ -25,6 +24,7 @@ import zoomHistoryManager, {
 } from '../helper/ZoomHistoryManager.js';
 import { getActiveSpectra } from '../helper/getActiveSpectra.js';
 import { getSpectrum } from '../helper/getSpectrum.js';
+import { getTraceSpectrumID } from '../helper/getTraceSpectrumID.tsx';
 import { getTwoDimensionPhaseCorrectionOptions } from '../helper/getTwoDimensionPhaseCorrectionOptions.js';
 import { getVerticalAlign } from '../helper/getVerticalAlign.js';
 import { setIntegralsViewProperty } from '../helper/setIntegralsViewProperty.js';
@@ -173,18 +173,6 @@ function setSelectedTool(draft: Draft<State>, action: SetSelectedToolAction) {
   const { selectedTool } = action.payload;
   activateTool(draft, { toolId: selectedTool });
 }
-//utility
-function getSpectrumID(draft: Draft<State>, index: any): string | null {
-  const { activeSpectra, activeTab } = draft.view.spectra;
-
-  const spectra = activeSpectra[activeTab.split(',')[index]];
-
-  if (spectra?.length === 1) {
-    return spectra[0].id;
-  }
-
-  return null;
-}
 
 function setSpectraVerticalAlign(draft: Draft<State>) {
   const currentVerticalAlign = getVerticalAlign(draft);
@@ -314,14 +302,10 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
         }
       } else {
         // change the vertical scale of 1D traces
-        const index =
-          trackID === LAYOUT.top ? 0 : trackID === LAYOUT.left ? 1 : null;
-        if (index !== null) {
-          const id = getSpectrumID(draft, index);
-          if (id) {
-            const domain = yDomains[id];
-            yDomains[id] = wheelZoom(options, domain);
-          }
+        const id = getTraceSpectrumID(draft, trackID);
+        if (id) {
+          const domain = yDomains[id];
+          yDomains[id] = wheelZoom(options, domain);
         }
       }
 

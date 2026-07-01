@@ -24,6 +24,7 @@ export function FTContainer(props: FTContainerProps) {
     <>
       {spectra.x && <Top1DChart data={spectra.x} />}
       {spectra.y && <Left1DChart data={spectra.y} />}
+
       <ClipPathContainer>
         <Contours />
       </ClipPathContainer>

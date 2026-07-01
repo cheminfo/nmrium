@@ -1,10 +1,13 @@
 import type { Spectrum1D } from '@zakodium/nmrium-core';
-import { memo } from 'react';
+import { memo, useRef } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';
 import useXYReduce from '../../hooks/useXYReduce.js';
 import { PathBuilder } from '../../utility/PathBuilder.js';
 import { use1DTraceYScale, useScale2DY } from '../utilities/scale.js';
+
+import { Ranges1D } from './Ranges1D.tsx';
+import { Signals1D } from './Signals1D.tsx';
 
 interface Left1DChartProps {
   horizontalMargin?: number;
@@ -44,10 +47,12 @@ function Left1DChart({
   data: spectrum,
 }: Left1DChartProps) {
   const { height, margin, displayerKey } = useChartData();
+  const svgRef = useRef<SVGSVGElement>(null);
 
   const width = margin.left;
 
   const path = usePath(spectrum, { horizontalMargin, width });
+  const ranges = spectrum.ranges.values;
 
   const innerHeight = height - margin.bottom - margin.top;
 
@@ -55,6 +60,8 @@ function Left1DChart({
 
   return (
     <svg
+      ref={svgRef}
+      style={{ overflow: 'visible' }}
       viewBox={`0 0 ${width} ${innerHeight + margin.top}`}
       width={width}
       height={innerHeight + margin.top}
@@ -72,6 +79,18 @@ function Left1DChart({
           d={path}
         />
       </g>
+
+      <Ranges1D
+        ranges={ranges}
+        orientation="vertical"
+        spectrumId={spectrum.id}
+      />
+      <Signals1D
+        ranges={ranges}
+        svgRef={svgRef}
+        orientation="vertical"
+        spectrumId={spectrum.id}
+      />
     </svg>
   );
 }
