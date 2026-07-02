@@ -215,6 +215,12 @@ export function BrushTracker(options: BrushTrackerProps) {
     (event: PointerEvent) => {
       event.persist();
       const currentTarget = event.currentTarget;
+
+      const target = event.target as HTMLElement;
+      if (target.closest('[data-self-control="true"]')) {
+        return;
+      }
+
       isDraggingRef.current = false; // Reset dragging flag
 
       //check that the right or left mouse button pressed
