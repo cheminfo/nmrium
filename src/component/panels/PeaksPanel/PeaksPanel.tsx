@@ -111,8 +111,7 @@ function PeaksPanelInner(props: PeaksPanelInnerProps) {
     const filterPeaks = peaks.values.filter((peak) =>
       isInRange(peak.x, { from, to }),
     );
-      dispatch({ type: 'OPTIMIZE_PEAKS', payload: { peaks: filterPeaks } });
-
+    dispatch({ type: 'OPTIMIZE_PEAKS', payload: { peaks: filterPeaks } });
   };
 
   function toggleViewProperty(key: keyof FilterType<PeaksViewState, boolean>) {

@@ -37,113 +37,113 @@ export function optimizePeaks(
     stages: [
       {
         // Stage 1: local stabilization
-    factorLimits: 2,
-    maxNumberOfPeaks: 40,
-    optimization: {
-      kind: 'lm',
-      options: { maxIterations: 20, errorTolerance: 1e-3 },
-    },
-    parameters: {
-      fwhm: {
-        optimize: true,
-        min: (peak: any) => (peak.shape?.fwhm ?? 0) * 0.5,
-        max: (peak: any) => (peak.shape?.fwhm ?? 0) * 2,
+        factorLimits: 2,
+        maxNumberOfPeaks: 40,
+        optimization: {
+          kind: 'lm',
+          options: { maxIterations: 20, errorTolerance: 1e-3 },
+        },
+        parameters: {
+          fwhm: {
+            optimize: true,
+            min: (peak: any) => (peak.shape?.fwhm ?? 0) * 0.5,
+            max: (peak: any) => (peak.shape?.fwhm ?? 0) * 2,
+          },
+          mu: { optimize: false },
+          x: { optimize: false },
+          y: {
+            optimize: true,
+            init: (peak: any) => peak.y,
+          },
+        },
       },
-      mu: { optimize: false },
-      x: { optimize: false },
-      y: {
-        optimize: true,
-        init: (peak: any) => peak.y
+      {
+        factorLimits: 2,
+        maxNumberOfPeaks: 40,
+        optimization: {
+          kind: 'lm',
+          options: { maxIterations: 20, errorTolerance: 1e-3 },
+        },
+        parameters: {
+          fwhm: {
+            optimize: true,
+            min: (peak: any) => (peak.shape?.fwhm ?? 0) * 0.5,
+            max: (peak: any) => (peak.shape?.fwhm ?? 0) * 2,
+          },
+          mu: { optimize: false },
+          x: { optimize: false },
+          y: {
+            optimize: true,
+            init: (peak: any) => peak.y,
+          },
+        },
       },
-    },
-  },
-  {
-    factorLimits: 2,
-    maxNumberOfPeaks: 40,
-    optimization: {
-      kind: 'lm',
-      options: { maxIterations: 20, errorTolerance: 1e-3 },
-    },
-    parameters: {
-      fwhm: {
-        optimize: true,
-        min: (peak: any) => (peak.shape?.fwhm ?? 0) * 0.5,
-        max: (peak: any) => (peak.shape?.fwhm ?? 0) * 2,
+      {
+        // Stage 2: regroup into the real overlapping cluster
+        factorLimits: 2,
+        maxNumberOfPeaks: 40,
+        optimization: {
+          kind: 'lm',
+          options: { maxIterations: 25, errorTolerance: 1e-4 },
+        },
+        parameters: {
+          fwhm: {
+            optimize: true,
+            min: (peak: any) => (peak.shape?.fwhm ?? 0) * 0.5,
+            max: (peak: any) => (peak.shape?.fwhm ?? 0) * 2,
+          },
+          mu: { optimize: true },
+          x: { optimize: false },
+          y: { optimize: true },
+        },
       },
-      mu: { optimize: false },
-      x: { optimize: false },
-      y: {
-        optimize: true,
-        init: (peak: any) => peak.y
+      {
+        // Stage 3: final polish
+        factorLimits: 2,
+        maxNumberOfPeaks: 40,
+        optimization: {
+          kind: 'lm',
+          options: { maxIterations: 30, errorTolerance: 1e-5 },
+        },
+        parameters: {
+          fwhm: {
+            optimize: true,
+            min: (peak: any) => (peak.shape?.fwhm ?? 0) * 0.5,
+            max: (peak: any) => (peak.shape?.fwhm ?? 0) * 2,
+          },
+          mu: { optimize: true },
+          x: {
+            optimize: true,
+            min: (peak: any) => peak.x - (peak.shape?.fwhm ?? 0) / 4,
+            max: (peak: any) => peak.x + (peak.shape?.fwhm ?? 0) / 4,
+          },
+          y: { optimize: true },
+        },
       },
-    },
-  },
-  {
-    // Stage 2: regroup into the real overlapping cluster
-    factorLimits: 2,
-    maxNumberOfPeaks: 40,
-    optimization: {
-      kind: 'lm',
-      options: { maxIterations: 25, errorTolerance: 1e-4 },
-    },
-    parameters: {
-      fwhm: {
-        optimize: true,
-        min: (peak: any) => (peak.shape?.fwhm ?? 0) * 0.5,
-        max: (peak: any) => (peak.shape?.fwhm ?? 0) * 2,
+      {
+        // Stage 3: final polish
+        factorLimits: 2,
+        maxNumberOfPeaks: 40,
+        optimization: {
+          kind: 'lm',
+          options: { maxIterations: 30, errorTolerance: 1e-5 },
+        },
+        parameters: {
+          fwhm: {
+            optimize: true,
+            min: (peak: any) => (peak.shape?.fwhm ?? 0) * 0.5,
+            max: (peak: any) => (peak.shape?.fwhm ?? 0) * 2,
+          },
+          mu: { optimize: true },
+          x: {
+            optimize: true,
+            min: (peak: any) => peak.x - (peak.shape?.fwhm ?? 0) / 4,
+            max: (peak: any) => peak.x + (peak.shape?.fwhm ?? 0) / 4,
+          },
+          y: { optimize: true },
+        },
       },
-      mu: { optimize: true },
-      x: { optimize: false },
-      y: { optimize: true },
-    },
-  },
-  {
-    // Stage 3: final polish
-    factorLimits: 2,
-    maxNumberOfPeaks: 40,
-    optimization: {
-      kind: 'lm',
-      options: { maxIterations: 30, errorTolerance: 1e-5 },
-    },
-    parameters: {
-      fwhm: {
-        optimize: true,
-        min: (peak: any) => (peak.shape?.fwhm ?? 0) * 0.5,
-        max: (peak: any) => (peak.shape?.fwhm ?? 0) * 2,
-      },
-      mu: { optimize: true },
-      x: {
-        optimize: true,
-        min: (peak: any) => peak.x - (peak.shape?.fwhm ?? 0) / 4,
-        max: (peak: any) => peak.x + (peak.shape?.fwhm ?? 0) / 4,
-      },
-      y: { optimize: true },
-    },
-  },
-  {
-    // Stage 3: final polish
-    factorLimits: 2,
-    maxNumberOfPeaks: 40,
-    optimization: {
-      kind: 'lm',
-      options: { maxIterations: 30, errorTolerance: 1e-5 },
-    },
-    parameters: {
-      fwhm: {
-        optimize: true,
-        min: (peak: any) => (peak.shape?.fwhm ?? 0) * 0.5,
-        max: (peak: any) => (peak.shape?.fwhm ?? 0) * 2,
-      },
-      mu: { optimize: true },
-      x: {
-        optimize: true,
-        min: (peak: any) => peak.x - (peak.shape?.fwhm ?? 0) / 4,
-        max: (peak: any) => peak.x + (peak.shape?.fwhm ?? 0) / 4,
-      },
-      y: { optimize: true },
-    },
-  },
-],
+    ],
   });
 
   return mapPeaks(spectrum.peaks.values.concat(newPeaks), spectrum, {
