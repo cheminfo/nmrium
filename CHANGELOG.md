@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.4.0](https://github.com/cheminfo/nmrium/compare/v2.3.0...v2.4.0) (2026-07-02)
+
+
+### Features
+
+* processings panel for experimental spectra operations ([#4214](https://github.com/cheminfo/nmrium/issues/4214)) ([cd38501](https://github.com/cheminfo/nmrium/commit/cd38501d40d6f31e5677add9d1c33cc99cfe50e7))
+
+
+### Bug Fixes
+
+* do not look for matching signals if the spectrum does not exist ([1187f5d](https://github.com/cheminfo/nmrium/commit/1187f5d6cb41dee94c9aac994d1a9617636aa320))
+* return empty string when FWHM, mu, or gamma is missing or invalid ([e8faddc](https://github.com/cheminfo/nmrium/commit/e8faddcdaa912efddffda9c0dee6616f03cf626c))
+* uncontrolled input on save as modal ([#4234](https://github.com/cheminfo/nmrium/issues/4234)) ([d8ebb3c](https://github.com/cheminfo/nmrium/commit/d8ebb3cbabd7e6f04c7652b77a4c452fecc4a67a))
+
 ## [2.3.0](https://github.com/cheminfo/nmrium/compare/v2.2.0...v2.3.0) (2026-06-29)
 
 
