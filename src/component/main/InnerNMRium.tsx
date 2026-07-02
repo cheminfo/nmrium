@@ -1,5 +1,5 @@
 import { HotkeysProvider } from '@blueprintjs/core';
-import init from '@zakodium/nmrium-core-plugins';
+import { NMRiumCore } from '@zakodium/nmrium-core';
 import type { ForwardedRef } from 'react';
 import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
 import { useFullscreen } from 'react-science/ui';
@@ -37,6 +37,8 @@ type InnerNMRiumProps = Omit<NMRiumProps, 'onError'> & {
   apiRef: ForwardedRef<NMRiumRefAPI>;
 };
 
+const defaultCore = new NMRiumCore();
+
 export function InnerNMRium(props: InnerNMRiumProps) {
   const {
     state,
@@ -58,10 +60,13 @@ export function InnerNMRium(props: InnerNMRiumProps) {
   const { isFullScreen } = useFullscreen();
 
   const finalCore = useMemo(() => {
-    if (!core) return init();
-
-    return core;
+    return core ?? defaultCore;
   }, [core]);
+
+  console.log(
+    `Used core: ${finalCore === defaultCore ? 'default' : 'custom'}`,
+    finalCore,
+  );
 
   const [preferencesState, dispatchPreferences] = useReducer(
     preferencesReducer,
