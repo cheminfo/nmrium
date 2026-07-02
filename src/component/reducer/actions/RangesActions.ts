@@ -234,6 +234,7 @@ function handleAutoRangesDetection(
         broadWidth: 0.05,
         thresholdFactor: 8,
         minMaxRatio,
+        maxAbsoluteRatio: minMaxRatio,
         direction: lookNegative ? 'both' : 'positive',
       },
     };

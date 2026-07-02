@@ -93,7 +93,7 @@
     "ml-array-mean": "^2.0.0",
     "ml-array-median": "^2.0.0",
     "ml-conrec": "^6.0.0",
-    "ml-gsd": "^14.2.0",
+    "ml-gsd": "^14.2.1",
     "ml-signal-processing": "^2.2.2",
     "ml-spectra-processing": "^14.29.1",
     "ml-tree-similarity": "^2.2.0",
