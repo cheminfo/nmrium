@@ -1,4 +1,4 @@
-import init from '@zakodium/nmrium-core-plugins';
+import { NMRiumCore } from '@zakodium/nmrium-core';
 import type { ForwardedRef } from 'react';
 import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
 import { useFullscreen } from 'react-science/ui';
@@ -57,10 +57,15 @@ export function InnerNMRium(props: InnerNMRiumProps) {
   const { isFullScreen } = useFullscreen();
 
   const finalCore = useMemo(() => {
-    if (!core) return init();
-
+    if (!core) {
+      console.log('default missing core');
+      return new NMRiumCore();
+    }
+    console.log('existing core');
     return core;
   }, [core]);
+
+  console.log(finalCore);
 
   const [preferencesState, dispatchPreferences] = useReducer(
     preferencesReducer,
