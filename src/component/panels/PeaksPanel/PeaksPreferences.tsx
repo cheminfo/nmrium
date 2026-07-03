@@ -51,7 +51,7 @@ const formatFields: NucleusPreferenceField[] = [
   {
     id: 6,
     label: 'kind :',
-    checkFieldName: 'tablePreferences.fwhm.show',
+    checkFieldName: 'tablePreferences.showKind',
   },
   {
     id: 7,
