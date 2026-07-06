@@ -12,7 +12,7 @@ import {
   Overlay2,
   mergeRefs,
 } from '@blueprintjs/core';
-import { SmallCross } from '@blueprintjs/icons';
+import { SmallCrossIcon } from '@blueprintjs/icons';
 import { Global } from '@emotion/react';
 import styled from '@emotion/styled';
 import type { MouseEvent, ReactNode, RefObject } from 'react';
@@ -224,7 +224,7 @@ function CloseButton(
     <Button
       aria-label="Close"
       className={Classes.DIALOG_CLOSE_BUTTON}
-      icon={<SmallCross size={IconSize.STANDARD} />}
+      icon={<SmallCrossIcon size={IconSize.STANDARD} />}
       variant="minimal"
       onClick={onClose}
     />
