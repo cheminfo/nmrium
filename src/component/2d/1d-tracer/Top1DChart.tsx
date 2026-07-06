@@ -83,7 +83,6 @@ function Top1DChart({ verticalMargin = 10, data: spectrum }: Top1DChartProps) {
         />
         <Signals1D
           ranges={ranges}
-          svgRef={svgRef}
           orientation="horizontal"
           spectrumId={spectrum.id}
         />

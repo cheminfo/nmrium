@@ -1,5 +1,4 @@
 import type { Range, Signal1D } from '@zakodium/nmr-types';
-import type { RefObject } from 'react';
 import { useMemo, useRef, useState } from 'react';
 
 import { Anchor } from '../../AnchorSVG.tsx';
@@ -10,7 +9,6 @@ import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 interface Signals1DProps {
   spectrumId: string;
   ranges: Range[];
-  svgRef: RefObject<SVGSVGElement>;
   orientation: 'horizontal' | 'vertical';
 }
 
@@ -21,7 +19,7 @@ interface SignalWithRange extends Signal1D {
 }
 
 export function Signals1D(props: Signals1DProps) {
-  const { ranges, svgRef, orientation, spectrumId } = props;
+  const { ranges, orientation, spectrumId } = props;
   const {
     margin: { top, left },
   } = useChartData();
@@ -116,7 +114,6 @@ export function Signals1D(props: Signals1DProps) {
           <Anchor
             key={`${id}-${rangeID}`}
             position={{ x, y }}
-            svgRef={svgRef}
             shape="circle"
             onDragMove={(newPosition) =>
               handleDragMove(index, newPosition, { from, to })

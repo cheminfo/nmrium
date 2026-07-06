@@ -1,9 +1,4 @@
-import type {
-  CSSProperties,
-  KeyboardEvent,
-  MouseEvent,
-  RefObject,
-} from 'react';
+import type { CSSProperties, KeyboardEvent, MouseEvent } from 'react';
 import { useRef, useState } from 'react';
 
 type CursorOrientation = 'horizontal' | 'vertical';
@@ -36,7 +31,7 @@ interface AnchorPosition {
 interface AnchorProps {
   position: AnchorPosition;
   shape?: AnchorShape;
-  svgRef: RefObject<SVGSVGElement>;
+  svg?: SVGSVGElement | null;
   svgHeight: number;
   anchorStyle?: AnchorStyle;
   restoreFocusOnLeave?: boolean;
@@ -204,7 +199,7 @@ function ShapeRenderer({
 export function Anchor({
   position,
   shape,
-  svgRef,
+  svg: externalSVG,
   svgHeight,
   anchorStyle = {},
   restoreFocusOnLeave = false,
@@ -255,7 +250,10 @@ export function Anchor({
   function handleMouseDown(e: MouseEvent<SVGGElement>) {
     e.preventDefault();
     setDragging(true);
-    const { x, y } = clientToSvg(e, svgRef.current);
+
+    const svg = externalSVG ?? e.currentTarget.ownerSVGElement;
+
+    const { x, y } = clientToSvg(e, svg);
     dragState.current = {
       startX: x,
       startY: y,
@@ -268,7 +266,7 @@ export function Anchor({
       if (!current) return;
       const { x, y } = clientToSvg(
         e as unknown as MouseEvent<SVGGElement>,
-        svgRef.current,
+        svg,
       );
       const newX = current.startAnchorX + x - current.startX;
       const newY = current.startAnchorY + y - current.startY;

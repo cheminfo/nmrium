@@ -90,7 +90,6 @@ function Left1DChart({
         />
         <Signals1D
           ranges={ranges}
-          svgRef={svgRef}
           orientation="vertical"
           spectrumId={spectrum.id}
         />
