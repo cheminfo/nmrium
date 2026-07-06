@@ -168,7 +168,7 @@ export function ProcessingsSectionsPanel() {
                   />
                 }
               >
-                <Sections.Body>
+                <Sections.Body style={{ paddingBottom: '120px' }}>
                   <CoreOperatorExpanded
                     id={operation.operatorId}
                     fallback={<OperationFallback operation={operation} />}

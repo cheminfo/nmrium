@@ -352,13 +352,8 @@
     }
   },
   {
-    "groupName": "Plugin UI",
-    "children": [
-      {
-        "title": "TopBar Plugin",
-        "file": "./data/cytisine/1H.json",
-        "view": "PluginUITopBar"
-      }
-    ]
+    "title": "Plugin UI",
+    "view": "PluginUI",
+    "file": "./data/cytisine/1H.json"
   }
 ]
