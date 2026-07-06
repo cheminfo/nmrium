@@ -1,15 +1,16 @@
 import type { Range, Signal1D } from '@zakodium/nmr-types';
+import type { ScaleLinear } from 'd3-scale';
 import { useMemo, useRef, useState } from 'react';
 
 import { Anchor } from '../../AnchorSVG.tsx';
-import { useChartData } from '../../context/ChartContext.tsx';
 import { useDispatch } from '../../context/DispatchContext.tsx';
-import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 
 interface Signals1DProps {
   spectrumId: string;
   ranges: Range[];
   orientation: 'horizontal' | 'vertical';
+  scale: ScaleLinear<number, number, number>;
+  position: number;
 }
 
 interface SignalWithRange extends Signal1D {
@@ -19,14 +20,7 @@ interface SignalWithRange extends Signal1D {
 }
 
 export function Signals1D(props: Signals1DProps) {
-  const { ranges, orientation, spectrumId } = props;
-  const {
-    margin: { top, left },
-  } = useChartData();
-  const scaleX = useScale2DX();
-  const scaleY = useScale2DY();
-  const size = orientation === 'horizontal' ? top : left;
-  const scale = orientation === 'horizontal' ? scaleX : scaleY;
+  const { ranges, orientation, spectrumId, scale, position } = props;
   const draggingAnchorRef = useRef<{ index: number; delta: number } | null>(
     null,
   );
@@ -103,12 +97,14 @@ export function Signals1D(props: Signals1DProps) {
 
     return result;
   }, [ranges, draggingAnchor?.index, draggingAnchor?.delta]);
+
+  if (!scale) return null;
   return (
     <g>
       {signals.map((signal, index) => {
         const { rangeID, id, delta, from, to } = signal;
-        const x = orientation === 'horizontal' ? scale(delta) : size - 5;
-        const y = orientation === 'horizontal' ? size - 5 : scale(delta);
+        const x = orientation === 'horizontal' ? scale(delta) : position - 5;
+        const y = orientation === 'horizontal' ? position - 5 : scale(delta);
 
         return (
           <Anchor
@@ -133,7 +129,7 @@ export function Signals1D(props: Signals1DProps) {
               fill: 'red',
               stroke: 'transparent',
             }}
-            svgHeight={100}
+            svgHeight={position}
           />
         );
       })}

@@ -1,13 +1,13 @@
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { memo, useRef } from 'react';
 
+import { Signals1D } from '../../1d-2d/components/Signals1D.tsx';
 import { useChartData } from '../../context/ChartContext.js';
 import useXYReduce from '../../hooks/useXYReduce.js';
 import { PathBuilder } from '../../utility/PathBuilder.js';
 import { use1DTraceYScale, useScale2DX } from '../utilities/scale.js';
 
 import { Ranges1D } from './Ranges1D.tsx';
-import { Signals1D } from './Signals1D.tsx';
 
 interface Top1DChartProps {
   verticalMargin?: number;
@@ -41,6 +41,7 @@ function Top1DChart({ verticalMargin = 10, data: spectrum }: Top1DChartProps) {
   const { width, margin, displayerKey } = useChartData();
   const height = margin.top;
   const svgRef = useRef<SVGSVGElement>(null);
+  const scale = useScale2DX();
 
   const path = usePath(spectrum, { height, verticalMargin });
   const ranges = spectrum.ranges.values;
@@ -85,6 +86,8 @@ function Top1DChart({ verticalMargin = 10, data: spectrum }: Top1DChartProps) {
           ranges={ranges}
           orientation="horizontal"
           spectrumId={spectrum.id}
+          scale={scale}
+          position={margin.top}
         />
       </g>
     </svg>
