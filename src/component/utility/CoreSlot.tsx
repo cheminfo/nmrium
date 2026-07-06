@@ -6,8 +6,10 @@ import type {
 } from '@zakodium/nmrium-core';
 import { castSlotProps } from '@zakodium/nmrium-core';
 import type { ReactNode } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 
 import { useCore } from '../context/CoreContext.tsx';
+import ErrorOverlay from '../main/ErrorOverlay.tsx';
 
 type SlotProps<Slot extends SupportedUISlot> =
   Omit<Extract<PluginUIComponentProps, { slot: Slot }>, 'slot'> extends Record<
@@ -72,5 +74,16 @@ export function CoreOperatorExpanded<Id extends ProcessingOperatorId>(
   const Expanded = operator?.Expanded;
   if (!Expanded) return fallback;
 
-  return <Expanded {...operatorProps} />;
+  return (
+    <ErrorBoundary
+      fallbackRender={(props) => (
+        <>
+          <ErrorOverlay {...props} />
+          {fallback}
+        </>
+      )}
+    >
+      <Expanded {...operatorProps} />
+    </ErrorBoundary>
+  );
 }
