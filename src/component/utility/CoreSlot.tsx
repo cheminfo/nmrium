@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import type {
   PluginUIComponentProps,
   ProcessingOperatorId,
@@ -6,6 +7,8 @@ import type {
 } from '@zakodium/nmrium-core';
 import { castSlotProps } from '@zakodium/nmrium-core';
 import type { ReactNode } from 'react';
+import type { FallbackProps } from 'react-error-boundary';
+import { ErrorBoundary } from 'react-error-boundary';
 
 import { useCore } from '../context/CoreContext.tsx';
 
@@ -72,5 +75,52 @@ export function CoreOperatorExpanded<Id extends ProcessingOperatorId>(
   const Expanded = operator?.Expanded;
   if (!Expanded) return fallback;
 
-  return <Expanded {...operatorProps} />;
+  return (
+    <ErrorBoundary
+      fallbackRender={(props) => (
+        <>
+          <ErrorOverlay {...props} />
+          {fallback}
+        </>
+      )}
+    >
+      <Expanded {...operatorProps} />
+    </ErrorBoundary>
+  );
 }
+
+function ErrorOverlay(props: FallbackProps) {
+  const error = props.error;
+  const message =
+    error && typeof error === 'object' && 'message' in error
+      ? error.message
+      : null;
+  const stack =
+    error && typeof error === 'object' && 'stack' in error ? error.stack : null;
+
+  return (
+    <ErrorOverlayStyled>
+      <p>Something went wrong.</p>
+      <details>
+        <summary>{message as ReactNode}</summary>
+        {stack as ReactNode}
+      </details>
+    </ErrorOverlayStyled>
+  );
+}
+
+const ErrorOverlayStyled = styled.div`
+  background: white;
+  padding-block: 10px;
+
+  > p {
+    margin: 0;
+    text-align: center;
+    font-size: 20px;
+  }
+
+  details {
+    color: red;
+    white-space: pre-wrap;
+  }
+`;
