@@ -5,8 +5,6 @@ import type {
   Spectrum1D,
 } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
-import { original } from 'immer';
-import cloneDeep from 'lodash/cloneDeep.js';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { Filters1DManager } from 'nmr-processing';
 
@@ -400,8 +398,7 @@ function deleteSignal1D(draft: Draft<State>, props: DeleteSignalProps) {
   if (signalIndex === -1) return;
 
   // Remove assignments for the signal range object in the global state.
-  const _range = cloneDeep(original(range));
-  unlink(_range, signalIndex);
+  const _range = unlink(range, signalIndex);
 
   _range.signals.splice(signalIndex, 1);
   spectrum.ranges.values[rangeIndex] = _range;
@@ -430,9 +427,7 @@ function clearSignalAssignment(
   const ranges = spectrum.ranges.values;
   if (rangeKey) {
     const rangeIndex = getRangeIndex(spectrum, rangeKey);
-    if (signalIndex !== -1) {
-      unlink(ranges[rangeIndex], signalIndex);
-    }
+    ranges[rangeIndex] = unlink(ranges[rangeIndex], signalIndex);
   } else {
     for (const range of ranges) {
       unlink(range, -1);
