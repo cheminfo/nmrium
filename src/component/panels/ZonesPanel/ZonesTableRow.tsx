@@ -4,7 +4,7 @@ import type { CSSProperties, MouseEvent } from 'react';
 import type { Axis } from '../../assignment/AssignmentsContext.js';
 import { useAssignment } from '../../assignment/AssignmentsContext.js';
 import { ContextMenu } from '../../elements/ContextMenuBluePrint.js';
-import type { TableContextMenuProps } from '../../elements/ReactTable/ReactTable.js';
+import type { TableContextMenuProps } from '../../elements/TanStackTable/TanStackTable.js';
 import { useHighlight } from '../../highlight/index.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 

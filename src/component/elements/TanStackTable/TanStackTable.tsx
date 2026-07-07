@@ -70,6 +70,14 @@ export interface TanStackTableRowStyle {
   base?: CSSProperties;
 }
 
+export interface TableContextMenuProps {
+  contextMenu?: BaseContextMenuProps['options'];
+  onContextMenuSelect?: (
+    selected: Parameters<BaseContextMenuProps['onSelect']>[0],
+    data: any,
+  ) => void;
+}
+
 export type HighlightSourceProps = {
   [K in HighlightEventSourceType]: HighlightEventSourceExtra<K> extends never
     ? { highlightedSource?: K; getHighlightExtra?: never }

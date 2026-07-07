@@ -11,7 +11,7 @@ import {
 import { filterAssignedIDs } from '../../assignment/utilities/filterAssignedIDs.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { ContextMenu } from '../../elements/ContextMenuBluePrint.js';
-import type { TableContextMenuProps } from '../../elements/ReactTable/ReactTable.js';
+import type { TableContextMenuProps } from '../../elements/TanStackTable/TanStackTable.js';
 import { useHighlight } from '../../highlight/index.js';
 
 import AbsoluteColumn from './TableColumns/AbsoluteColumn.js';

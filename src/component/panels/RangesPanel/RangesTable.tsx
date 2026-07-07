@@ -5,7 +5,7 @@ import { FaLink } from 'react-icons/fa';
 
 import { withDialog } from '../../elements/DialogManager.js';
 import { EmptyText } from '../../elements/EmptyText.js';
-import type { TableContextMenuProps } from '../../elements/ReactTable/ReactTable.js';
+import type { TableContextMenuProps } from '../../elements/TanStackTable/TanStackTable.js';
 import useTableSortBy from '../../hooks/useTableSortBy.js';
 import { EditRangeModal } from '../../modal/editRange/EditRangeModal.js';
 import { extractChemicalElement } from '../../utility/extractChemicalElement.js';
