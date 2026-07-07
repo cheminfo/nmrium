@@ -6,15 +6,14 @@ import { useCallback, useMemo, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Toolbar } from 'react-science/ui';
-import type { CellProps } from 'react-table';
 
 import { multiplets } from '../../../../../../data/constants/Multiplets.js';
 import { isSpectrum1D } from '../../../../../../data/data1d/Spectrum1D/index.js';
 import { NumberInput2Controller } from '../../../../../elements/NumberInput2Controller.js';
-import type { Column } from '../../../../../elements/ReactTable/ReactTable.js';
-import ReactTable from '../../../../../elements/ReactTable/ReactTable.js';
 import { Select2Controller } from '../../../../../elements/Select2Controller.js';
 import { useTabsController } from '../../../../../elements/TabsProvider.js';
+import type { TanStackTableColumn } from '../../../../../elements/TanStackTable/TanStackTable.js';
+import TanStackTable from '../../../../../elements/TanStackTable/TanStackTable.js';
 import useSpectrum from '../../../../../hooks/useSpectrum.js';
 import { hasCouplingConstant } from '../../../../../panels/extra/utilities/MultiplicityUtilities.js';
 import { useEvent } from '../../../../../utility/Events.js';
@@ -57,6 +56,7 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
     setValue,
     control,
     setFocus,
+    getValues,
     formState: { errors },
   } = useFormContext();
   const signals = useWatch({ name: 'signals' });
@@ -125,7 +125,8 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
   );
 
   const deleteHandler = useCallback(
-    (data: any, index: number) => {
+    (index: number) => {
+      const data = getValues(`signals.${signalIndex}.js`) || [];
       const jCouplings = data.filter(
         (_: any, columnIndex: number) => columnIndex !== index,
       );
@@ -135,24 +136,24 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
         lastSelectedCouplingIndexRef.current = null;
       }
     },
-    [setValue, signalIndex],
+    [getValues, setValue, signalIndex],
   );
 
   function deleteAllHandler() {
     setValue(`signals[${signalIndex}].js`, []);
     lastSelectedCouplingIndexRef.current = null;
   }
-  const COLUMNS = useMemo<Array<Column<Jcoupling>>>(
+  const COLUMNS = useMemo<Array<TanStackTableColumn<Jcoupling>>>(
     () => [
       {
-        Header: '#',
-        style: { width: '25px', ...styles.column },
-        accessor: (_: any, index) => index + 1,
+        header: '#',
+        meta: { style: { width: '25px', ...styles.column } },
+        accessorFn: (_: any, index) => index + 1,
       },
       {
-        Header: 'Multiplicity',
-        style: { padding: 0, ...styles.column },
-        Cell: ({ row }: CellProps<Jcoupling>) => {
+        header: 'Multiplicity',
+        meta: { style: { padding: 0, ...styles.column } },
+        cell: ({ row }) => {
           return (
             <Select2Controller
               control={control}
@@ -184,9 +185,9 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
         },
       },
       {
-        Header: 'J (Hz)',
-        style: { padding: 0, ...styles.column },
-        Cell: ({ row }: CellProps<Jcoupling>) => {
+        header: 'J (Hz)',
+        meta: { style: { padding: 0, ...styles.column } },
+        cell: ({ row }) => {
           return (
             <NumberInput2Controller
               control={control}
@@ -203,10 +204,10 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
         },
       },
       {
-        Header: '',
-        style: { width: '70px', ...styles.column },
+        header: '',
+        meta: { style: { width: '70px', ...styles.column } },
         id: 'action-button',
-        Cell: ({ data, row }: CellProps<Jcoupling>) => {
+        cell: ({ row }) => {
           const record: any = row.original;
           return (
             <div style={{ display: 'flex', justifyContent: 'space-around' }}>
@@ -215,7 +216,7 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
                   size="small"
                   variant="outlined"
                   intent="danger"
-                  onClick={() => deleteHandler(data, row.index)}
+                  onClick={() => deleteHandler(row.index)}
                 >
                   <FaRegTrashAlt className={Classes.ICON} />
                 </Button>
@@ -263,7 +264,7 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
           overflow: 'auto',
         }}
       >
-        <ReactTable
+        <TanStackTable
           data={signal?.js || []}
           columns={COLUMNS}
           onClick={(e, rowData: any) => selectRowHandler(rowData.index)}
