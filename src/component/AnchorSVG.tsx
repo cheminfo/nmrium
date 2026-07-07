@@ -31,7 +31,6 @@ interface AnchorPosition {
 interface AnchorProps {
   position: AnchorPosition;
   shape?: AnchorShape;
-  svg?: SVGSVGElement | null;
   svgHeight: number;
   anchorStyle?: AnchorStyle;
   restoreFocusOnLeave?: boolean;
@@ -199,7 +198,6 @@ function ShapeRenderer({
 export function Anchor({
   position,
   shape,
-  svg: externalSVG,
   svgHeight,
   anchorStyle = {},
   restoreFocusOnLeave = false,
@@ -251,7 +249,7 @@ export function Anchor({
     e.preventDefault();
     setDragging(true);
 
-    const svg = externalSVG ?? e.currentTarget.ownerSVGElement;
+    const svg = e.currentTarget.ownerSVGElement;
 
     const { x, y } = clientToSvg(e, svg);
     dragState.current = {
