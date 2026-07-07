@@ -82,11 +82,14 @@ interface BaseTanStackTableProps<TData extends RowData> {
   data: TData[];
   columns: Array<TanStackTableColumn<TData, any>>;
   activeRow?: (data: Row<TanStackTableFeatures, TData>) => boolean;
+  approxColumnWidth?: number;
   approxItemHeight?: number;
   contextMenu?: BaseContextMenuProps['options'];
+  enableColumnsVirtualScroll?: boolean;
   enableDefaultActiveRow?: boolean;
   enableVirtualScroll?: boolean;
   emptyDataRowText?: string;
+  indexKey?: string;
   onClick?: (
     event: MouseEvent,
     data: Row<TanStackTableFeatures, TData>,
@@ -96,6 +99,7 @@ interface BaseTanStackTableProps<TData extends RowData> {
     data: TData,
   ) => void;
   onSortEnd?: (data: TData[], isTableSorted?: boolean) => void;
+  totalCount?: number;
   rowStyle?:
     | TanStackTableRowStyle
     | ((data: TData) => TanStackTableRowStyle | undefined);
@@ -129,12 +133,19 @@ const counterStyle: CSSProperties = {
   zIndex: 1,
 };
 
-function getTableStyle(enableVirtualScroll: boolean): CSSProperties {
+function getTableStyle(
+  enableVirtualScroll: boolean,
+  enableColumnsVirtualScroll: boolean,
+): CSSProperties {
   const style: CSSProperties = { tableLayout: 'auto' };
 
   if (enableVirtualScroll) {
     style.position = 'sticky';
     style.top = 0;
+  }
+  if (enableColumnsVirtualScroll) {
+    style.position = 'sticky';
+    style.left = 0;
   }
 
   return style;
@@ -284,34 +295,67 @@ function TanStackTable<TData extends RowData>(
 ) {
   const {
     activeRow,
+    approxColumnWidth = 40,
     approxItemHeight = 40,
     contextMenu = [],
     data,
     columns,
+    enableColumnsVirtualScroll = false,
     enableDefaultActiveRow = false,
     enableVirtualScroll = false,
     emptyDataRowText = 'No Data',
+    indexKey = 'index',
     onClick,
     onContextMenuSelect,
     onSortEnd,
     rowStyle,
     style = {},
+    totalCount,
     disableDefaultRowStyle = false,
     highlightedSource,
     getHighlightExtra,
   } = props;
 
+  const [scrollTop, setScrollTop] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+  const [activeRowIndex, setActiveRowIndex] = useState<number>();
+  const [mRef, { height, width } = { height: 0, width: 0 }] =
+    useResizeObserver();
+
+  const { startColumn, tableColumns, virtualScrollWidth } = useMemo(() => {
+    if (!enableColumnsVirtualScroll || !width) {
+      return {
+        startColumn: undefined,
+        tableColumns: columns,
+        virtualScrollWidth: undefined,
+      };
+    }
+
+    const start = Math.max(0, Math.floor(scrollLeft / approxColumnWidth) - 1);
+    const visibleColumnsCount = Math.ceil(width / approxColumnWidth) + 2;
+    const end = Math.min(columns.length, start + visibleColumnsCount);
+
+    return {
+      startColumn: columns[start]?.header,
+      tableColumns: columns.slice(start, end),
+      virtualScrollWidth: approxColumnWidth * (columns.length + 1),
+    };
+  }, [
+    approxColumnWidth,
+    columns,
+    enableColumnsVirtualScroll,
+    scrollLeft,
+    width,
+  ]);
+
   const table = useTable({
     features: tanStackTableFeatures,
     data,
-    columns,
+    columns: tableColumns,
   });
   const rows = table.getRowModel().rows;
   const sorting = table.state.sorting ?? [];
   const isSortedEventTriggered = useRef(false);
-  const [scrollTop, setScrollTop] = useState(0);
-  const [activeRowIndex, setActiveRowIndex] = useState<number>();
-  const [mRef, { height } = { height: 0 }] = useResizeObserver();
 
   useEffect(() => {
     if (isSortedEventTriggered.current) {
@@ -325,11 +369,10 @@ function TanStackTable<TData extends RowData>(
     }
   }, [onSortEnd, rows, sorting.length]);
 
-  const { rowsData, counterIndex, virtualScrollHeight } = useMemo(() => {
+  const { rowsData, virtualScrollHeight } = useMemo(() => {
     if (!enableVirtualScroll || !height) {
       return {
         rowsData: rows,
-        counterIndex: rows.length,
         virtualScrollHeight: undefined,
       };
     }
@@ -340,17 +383,24 @@ function TanStackTable<TData extends RowData>(
 
     return {
       rowsData: rows.slice(start, end),
-      counterIndex: end,
       virtualScrollHeight: approxItemHeight * (rows.length + 1),
     };
   }, [approxItemHeight, enableVirtualScroll, height, rows, scrollTop]);
 
+  const lastRow = rowsData.at(-1);
+  const rowIndex = lastRow
+    ? ((lastRow.original as Record<string, unknown>)[indexKey] ?? lastRow.index)
+    : undefined;
+  const total = totalCount ?? rows.length;
+  const counterIndex = typeof rowIndex === 'number' ? rowIndex + 1 : total;
+
   function scrollHandler(event: React.UIEvent<HTMLDivElement>) {
-    if (!enableVirtualScroll) {
+    if (!enableVirtualScroll && !enableColumnsVirtualScroll) {
       return;
     }
 
     setScrollTop(event.currentTarget.scrollTop);
+    setScrollLeft(event.currentTarget.scrollLeft);
   }
 
   function clickHandler(
@@ -380,22 +430,25 @@ function TanStackTable<TData extends RowData>(
       <div
         style={{
           height: '100%',
+          overflowX: enableColumnsVirtualScroll ? 'auto' : undefined,
           overflowY: 'auto',
           position: 'relative',
         }}
         onScroll={scrollHandler}
       >
-        {enableVirtualScroll && (
+        {(enableVirtualScroll || enableColumnsVirtualScroll) && (
           <div
             style={{
-              height: virtualScrollHeight,
+              height: enableVirtualScroll ? virtualScrollHeight : '100%',
               pointerEvents: 'none',
               position: 'absolute',
-              width: '100%',
+              width: enableColumnsVirtualScroll ? virtualScrollWidth : '100%',
             }}
           />
         )}
-        <BaseReactTable style={getTableStyle(enableVirtualScroll)}>
+        <BaseReactTable
+          style={getTableStyle(enableVirtualScroll, enableColumnsVirtualScroll)}
+        >
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
@@ -437,7 +490,7 @@ function TanStackTable<TData extends RowData>(
           <tbody>
             {data.length === 0 && (
               <EmptyDataRow
-                numColumns={columns.length}
+                numColumns={tableColumns.length}
                 text={emptyDataRowText}
               />
             )}
@@ -474,13 +527,17 @@ function TanStackTable<TData extends RowData>(
           </tbody>
         </BaseReactTable>
       </div>
-      {enableVirtualScroll && (
+      {(enableVirtualScroll || enableColumnsVirtualScroll) && (
         <p
           style={{
             ...counterStyle,
+            ...(enableColumnsVirtualScroll && { bottom: '15px' }),
           }}
         >
-          {counterIndex} / {rows.length}
+          {enableColumnsVirtualScroll && typeof startColumn === 'string' && (
+            <span style={{ left: 0 }}>{`Column ${startColumn}`} </span>
+          )}
+          {counterIndex} / {total}
         </p>
       )}
     </div>

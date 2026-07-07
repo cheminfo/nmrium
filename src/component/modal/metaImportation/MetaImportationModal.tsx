@@ -21,10 +21,10 @@ import { useToaster } from '../../context/ToasterContext.js';
 import Button from '../../elements/Button.js';
 import { Input2Controller } from '../../elements/Input2Controller.js';
 import Label from '../../elements/Label.js';
-import type { Column } from '../../elements/ReactTable/ReactTable.js';
-import ReactTable from '../../elements/ReactTable/ReactTable.js';
 import { Select2Controller } from '../../elements/Select2Controller.js';
 import { StandardDialog } from '../../elements/StandardDialog.tsx';
+import type { TanStackTableColumn } from '../../elements/TanStackTable/TanStackTable.js';
+import TanStackTable from '../../elements/TanStackTable/TanStackTable.js';
 import { convertPathArrayToString } from '../../utility/convertPathArrayToString.js';
 import { getSpectraObjectPaths } from '../../utility/getSpectraObjectPaths.js';
 
@@ -164,8 +164,8 @@ function InnerMetaImportationModal({
 
   const columns = useMemo(() => {
     const fields = parseResult?.meta.fields || [];
-    const columns: Array<Column<any>> = [
-      { Header: '#', accessor: (_: any, index) => index + 1 },
+    const columns: Array<TanStackTableColumn<any>> = [
+      { header: '#', accessorFn: (_: any, index) => index + 1 },
     ];
 
     function getRowValue(val: any) {
@@ -177,9 +177,9 @@ function InnerMetaImportationModal({
     for (const fieldName of fields) {
       if (fieldName) {
         columns.push({
-          Header: fieldName,
-          accessor: (row: any) => getRowValue(row[fieldName]),
-          style: styles.column,
+          header: fieldName,
+          accessorFn: (row: any) => getRowValue(row[fieldName]),
+          meta: { style: styles.column },
         });
       }
     }
@@ -230,11 +230,12 @@ function InnerMetaImportationModal({
   }
 
   function handleRowStyle(data: any) {
-    const record = compareResults[data.index] || null;
+    const index = metadata.indexOf(data);
+    const record = compareResults[index] || null;
     if (
       record?.isDuplicated ||
       record?.spectraIDs.length > 1 ||
-      errors?.[data.index]
+      errors?.[index]
     ) {
       return rowColors.noMatch;
     } else if (record) {
@@ -303,7 +304,7 @@ function InnerMetaImportationModal({
                 </Button.Done>
               </div>
               <div style={{ height: 'calc(100% - 160px)' }}>
-                <ReactTable
+                <TanStackTable
                   columns={columns}
                   data={metadata}
                   approxItemHeight={25}
