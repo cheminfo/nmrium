@@ -38,6 +38,7 @@ interface AnchorProps {
   onDragEnd: (lastPosition: AnchorPosition) => void;
   onDelete: () => void;
   cursorOrientation?: CursorOrientation;
+  stopClickPropagation?: boolean;
 }
 
 interface DragState {
@@ -195,17 +196,19 @@ function ShapeRenderer({
   );
 }
 
-export function Anchor({
-  position,
-  shape,
-  svgHeight,
-  anchorStyle = {},
-  restoreFocusOnLeave = false,
-  onDragMove,
-  onDragEnd,
-  onDelete,
-  cursorOrientation = 'horizontal',
-}: AnchorProps) {
+export function Anchor(props: AnchorProps) {
+  const {
+    position,
+    shape,
+    svgHeight,
+    anchorStyle = {},
+    restoreFocusOnLeave = false,
+    onDragMove,
+    onDragEnd,
+    onDelete,
+    cursorOrientation = 'horizontal',
+    stopClickPropagation = true,
+  } = props;
   const {
     size = 16,
     hoverSize = size,
@@ -247,6 +250,9 @@ export function Anchor({
 
   function handleMouseDown(e: MouseEvent<SVGGElement>) {
     e.preventDefault();
+    if (stopClickPropagation) {
+      e.stopPropagation();
+    }
     setDragging(true);
 
     const svg = e.currentTarget.ownerSVGElement;
