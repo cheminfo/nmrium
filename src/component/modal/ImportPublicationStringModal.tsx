@@ -9,10 +9,10 @@ import { Controller, useForm } from 'react-hook-form';
 import { useDispatch } from '../context/DispatchContext.js';
 import { useToaster } from '../context/ToasterContext.js';
 import { GroupPane } from '../elements/GroupPane.js';
-import type { Column } from '../elements/ReactTable/ReactTable.js';
-import ReactTable from '../elements/ReactTable/ReactTable.js';
 import { StandardDialog } from '../elements/StandardDialog.tsx';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
+import type { TanStackTableColumn } from '../elements/TanStackTable/TanStackTable.js';
+import TanStackTable from '../elements/TanStackTable/TanStackTable.js';
 
 interface InnerImportPublicationStringModalProps {
   onClose: () => void;
@@ -23,7 +23,7 @@ interface ImportPublicationStringModalProps extends InnerImportPublicationString
 }
 
 function handleRowStyle(data: any) {
-  const level = (data?.original as LogEntry).level;
+  const { level } = data as LogEntry;
   let backgroundColor = 'lightgreen';
   if (level > 40) {
     backgroundColor = 'pink';
@@ -39,20 +39,21 @@ const INITIAL_VALUES = {
     '1H NMR (CDCl3, 400MHz) δ 1 (s, 1H), 2 (d, 1H, J=7), 3 (t, 1H, J=7), 4 (q, 1H, J=7), 5 (quint, 1H, J=7), 6 (hex, 1H, J=7), 7 (hept, 1H, J=7), 8 (dd, 1H, J=7, J=4)',
 };
 
-const COLUMNS: Array<Column<LogEntry>> = [
+const COLUMNS: Array<TanStackTableColumn<LogEntry>> = [
   {
-    Header: '#',
-    accessor: (_, index) => index + 1,
-    style: { width: '40px' },
+    id: 'rowNumber',
+    header: '#',
+    accessorFn: (_, index) => index + 1,
+    meta: { style: { width: '40px' } },
   },
   {
-    Header: 'Label',
-    accessor: 'levelLabel',
-    style: { width: '60px' },
+    header: 'Label',
+    accessorKey: 'levelLabel',
+    meta: { style: { width: '60px' } },
   },
   {
-    Header: 'Message',
-    accessor: 'message',
+    header: 'Message',
+    accessorKey: 'message',
   },
 ];
 
@@ -183,7 +184,7 @@ function InnerImportPublicationStringModal(
             />
           </div>
           <GroupPane text="Logs">
-            <ReactTable
+            <TanStackTable
               columns={COLUMNS}
               data={logs}
               emptyDataRowText="No Logs"
