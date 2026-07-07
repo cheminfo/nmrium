@@ -4,12 +4,11 @@ import { useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
-import type { CellProps } from 'react-table';
 
 import type { InputStyle } from '../../../elements/Input.js';
 import { Input2Controller } from '../../../elements/Input2Controller.js';
-import type { Column } from '../../../elements/ReactTable/ReactTable.js';
-import ReactTable from '../../../elements/ReactTable/ReactTable.js';
+import type { TanStackTableColumn } from '../../../elements/TanStackTable/TanStackTable.js';
+import TanStackTable from '../../../elements/TanStackTable/TanStackTable.js';
 import { convertPathArrayToString } from '../../../utility/convertPathArrayToString.js';
 
 const inputStyle: InputStyle = {
@@ -51,17 +50,17 @@ export function SpectraColumnsManager({
 }: SpectraColumnsManagerProps) {
   const { control, getValues, register } = useFormContext();
 
-  const COLUMNS = useMemo<Array<Column<SpectraTableColumn>>>(
+  const COLUMNS = useMemo<Array<TanStackTableColumn<SpectraTableColumn>>>(
     () => [
       {
-        Header: '#',
-        style: { width: '25px' },
-        accessor: (_, index) => index + 1,
+        header: '#',
+        meta: { style: { width: '25px' } },
+        accessorFn: (_, index) => index + 1,
       },
       {
-        Header: 'Label',
-        style: { padding: 0 },
-        Cell: ({ row }: CellProps<SpectraTableColumn>) => {
+        header: 'Label',
+        meta: { style: { padding: 0 } },
+        cell: ({ row }) => {
           const name = getObjectKey(nucleus, row.index, 'label');
           return (
             <Input2Controller
@@ -74,9 +73,9 @@ export function SpectraColumnsManager({
         },
       },
       {
-        Header: 'Column',
-        style: { padding: 0 },
-        Cell: ({ row }: CellProps<SpectraTableColumn>) => {
+        header: 'Column',
+        meta: { style: { padding: 0 } },
+        cell: ({ row }) => {
           const column: any = row.original;
 
           if (column?.name) {
@@ -106,9 +105,9 @@ export function SpectraColumnsManager({
         },
       },
       {
-        Header: 'Format',
-        style: { padding: 0 },
-        Cell: ({ row }: CellProps<SpectraTableColumn>) => {
+        header: 'Format',
+        meta: { style: { padding: 0 } },
+        cell: ({ row }) => {
           const column: any = row.original;
           const name = getObjectKey(nucleus, row.index, 'format');
           return (
@@ -123,9 +122,9 @@ export function SpectraColumnsManager({
         },
       },
       {
-        Header: 'Visible',
-        style: { width: '30px', textAlign: 'center' },
-        Cell: ({ row }: CellProps<SpectraTableColumn>) => (
+        header: 'Visible',
+        meta: { style: { width: '30px', textAlign: 'center' } },
+        cell: ({ row }) => (
           <Checkbox
             style={{ margin: 0 }}
             {...register(getObjectKey(nucleus, row.index, 'visible'))}
@@ -133,10 +132,10 @@ export function SpectraColumnsManager({
         ),
       },
       {
-        Header: '',
-        style: { width: '65px' },
+        header: '',
+        meta: { style: { width: '65px' } },
         id: 'op-buttons',
-        Cell: ({ row }: CellProps<SpectraTableColumn>) => {
+        cell: ({ row }) => {
           const record: any = row.original;
           return (
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -169,7 +168,7 @@ export function SpectraColumnsManager({
   );
 
   return (
-    <ReactTable
+    <TanStackTable
       data={getValues().nuclei[nucleus]?.columns || []}
       columns={COLUMNS}
       rowStyle={{
