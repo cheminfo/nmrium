@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import type { Integral } from '@zakodium/nmr-types';
 
+import { RangeIndicator } from '../../1d-2d/components/RangeIndicator.tsx';
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';
@@ -9,8 +10,6 @@ import type { Position } from '../../elements/resizer/SVGResizer.js';
 import { useHighlight } from '../../highlight/index.js';
 import { useResizerStatus } from '../../hooks/useResizerStatus.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
-
-import { IntegralIndicator } from './IntegralIndicator.js';
 
 const Group = styled.g<{ isActive: boolean }>`
   rect {
@@ -77,10 +76,11 @@ function IntegralResizable({
           return (
             <Group isActive={highlight.isActive || isActive}>
               <rect width={width} height={bottom} data-no-export="true" />
-              <IntegralIndicator
+              <RangeIndicator
+                position={0}
                 value={integral}
                 format={integralFormat}
-                width={width}
+                size={width}
               />
             </Group>
           );
