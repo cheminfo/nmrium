@@ -33,6 +33,7 @@ import { BaseReactTable } from '../ReactTable/BaseReactTable.js';
 import { EmptyDataRow } from '../ReactTable/Elements/EmptyDataRow.js';
 
 export interface TanStackTableColumnMeta {
+  enableRowSpan?: boolean;
   style?: CSSProperties;
   thStyle?: CSSProperties;
   tdStyle?: CSSProperties;
@@ -88,6 +89,7 @@ interface BaseTanStackTableProps<TData extends RowData> {
   enableColumnsVirtualScroll?: boolean;
   enableDefaultActiveRow?: boolean;
   enableVirtualScroll?: boolean;
+  groupKey?: keyof TData;
   emptyDataRowText?: string;
   indexKey?: string;
   onClick?: (
@@ -210,8 +212,64 @@ type TanStackTableRowProps<TData extends RowData> = {
   rowData: TData;
   rowStyle: TanStackTableRowStyle | undefined;
   rowKey: string;
+  rowSpanCells: Map<string, RowSpanCell>;
   table: ReactTable<TanStackTableFeatures, TData>;
 } & HighlightSourceProps;
+
+interface RowSpanCell {
+  isRowSpanned?: boolean;
+  rowSpan?: number;
+}
+
+function getCellRowSpanValue<TData extends RowData>(
+  cell: ReturnType<Row<TanStackTableFeatures, TData>['getAllCells']>[number],
+  row: Row<TanStackTableFeatures, TData>,
+  groupKey?: keyof TData,
+) {
+  const value = cell.getValue();
+  if (!groupKey) {
+    return String(value);
+  }
+
+  return `${String(value)}-${String(row.original[groupKey])}`;
+}
+
+function getRowSpanCells<TData extends RowData>(
+  rows: Array<Row<TanStackTableFeatures, TData>>,
+  groupKey?: keyof TData,
+) {
+  const trackers = new Map<
+    string,
+    { cellId: string; cellValue: string; rowSpan: number }
+  >();
+  const rowSpanCells = new Map<string, RowSpanCell>();
+
+  for (const row of rows) {
+    for (const cell of row.getAllCells()) {
+      if (!cell.column.columnDef.meta?.enableRowSpan) {
+        continue;
+      }
+
+      const cellValue = getCellRowSpanValue(cell, row, groupKey);
+      const tracker = trackers.get(cell.column.id);
+
+      if (tracker?.cellValue !== cellValue) {
+        trackers.set(cell.column.id, {
+          cellId: cell.id,
+          cellValue,
+          rowSpan: 1,
+        });
+        rowSpanCells.set(cell.id, { rowSpan: 1 });
+      } else {
+        tracker.rowSpan++;
+        rowSpanCells.set(tracker.cellId, { rowSpan: tracker.rowSpan });
+        rowSpanCells.set(cell.id, { isRowSpanned: true });
+      }
+    }
+  }
+
+  return rowSpanCells;
+}
 
 function TanStackTableRow<TData extends RowData>(
   props: TanStackTableRowProps<TData>,
@@ -228,6 +286,7 @@ function TanStackTableRow<TData extends RowData>(
     rowData,
     rowKey,
     rowStyle,
+    rowSpanCells,
     table,
   } = props;
 
@@ -272,10 +331,15 @@ function TanStackTableRow<TData extends RowData>(
     >
       {row.getAllCells().map((cell) => {
         const meta = cell.column.columnDef.meta;
+        const rowSpanCell = rowSpanCells.get(cell.id);
+        if (rowSpanCell?.isRowSpanned) {
+          return null;
+        }
 
         return (
           <td
             key={cell.id}
+            rowSpan={rowSpanCell?.rowSpan}
             style={{
               ...meta?.style,
               ...meta?.tdStyle,
@@ -303,6 +367,7 @@ function TanStackTable<TData extends RowData>(
     enableColumnsVirtualScroll = false,
     enableDefaultActiveRow = false,
     enableVirtualScroll = false,
+    groupKey,
     emptyDataRowText = 'No Data',
     indexKey = 'index',
     onClick,
@@ -393,6 +458,10 @@ function TanStackTable<TData extends RowData>(
     : undefined;
   const total = totalCount ?? rows.length;
   const counterIndex = typeof rowIndex === 'number' ? rowIndex + 1 : total;
+  const rowSpanCells = useMemo(
+    () => getRowSpanCells(rowsData, groupKey),
+    [groupKey, rowsData],
+  );
 
   function scrollHandler(event: React.UIEvent<HTMLDivElement>) {
     if (!enableVirtualScroll && !enableColumnsVirtualScroll) {
@@ -508,6 +577,7 @@ function TanStackTable<TData extends RowData>(
                   rowKey={row.id}
                   rowData={row.original}
                   rowStyle={currentRowStyle}
+                  rowSpanCells={rowSpanCells}
                   disableDefaultRowStyle={disableDefaultRowStyle}
                   isRowActive={
                     activeRow
