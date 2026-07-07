@@ -84,6 +84,7 @@ interface BaseTanStackTableProps<TData extends RowData> {
   activeRow?: (data: Row<TanStackTableFeatures, TData>) => boolean;
   approxItemHeight?: number;
   contextMenu?: BaseContextMenuProps['options'];
+  enableDefaultActiveRow?: boolean;
   enableVirtualScroll?: boolean;
   emptyDataRowText?: string;
   onClick?: (
@@ -287,6 +288,7 @@ function TanStackTable<TData extends RowData>(
     contextMenu = [],
     data,
     columns,
+    enableDefaultActiveRow = false,
     enableVirtualScroll = false,
     emptyDataRowText = 'No Data',
     onClick,
@@ -308,6 +310,7 @@ function TanStackTable<TData extends RowData>(
   const sorting = table.state.sorting ?? [];
   const isSortedEventTriggered = useRef(false);
   const [scrollTop, setScrollTop] = useState(0);
+  const [activeRowIndex, setActiveRowIndex] = useState<number>();
   const [mRef, { height } = { height: 0 }] = useResizeObserver();
 
   useEffect(() => {
@@ -348,6 +351,17 @@ function TanStackTable<TData extends RowData>(
     }
 
     setScrollTop(event.currentTarget.scrollTop);
+  }
+
+  function clickHandler(
+    event: MouseEvent,
+    row: Row<TanStackTableFeatures, TData>,
+  ) {
+    if (!activeRow && enableDefaultActiveRow) {
+      setActiveRowIndex(row.index);
+    }
+
+    onClick?.(event, row);
   }
 
   return (
@@ -442,9 +456,13 @@ function TanStackTable<TData extends RowData>(
                   rowData={row.original}
                   rowStyle={currentRowStyle}
                   disableDefaultRowStyle={disableDefaultRowStyle}
-                  isRowActive={activeRow?.(row) ?? false}
+                  isRowActive={
+                    activeRow
+                      ? activeRow(row)
+                      : enableDefaultActiveRow && activeRowIndex === row.index
+                  }
                   contextMenu={contextMenu}
-                  onClick={onClick}
+                  onClick={clickHandler}
                   onContextMenuSelect={onContextMenuSelect}
                   {...({
                     highlightedSource,
