@@ -5,7 +5,6 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
-import type { CellProps } from 'react-table';
 import * as Yup from 'yup';
 
 import type { ExtractFilterEntry } from '../../../../data/types/common/ExtractFilterEntry.js';
@@ -13,10 +12,10 @@ import type { ExclusionZone } from '../../../../data/types/data1d/ExclusionZone.
 import { useChartData } from '../../../context/ChartContext.js';
 import { useDispatch } from '../../../context/DispatchContext.js';
 import { NumberInput2Controller } from '../../../elements/NumberInput2Controller.js';
-import type { Column } from '../../../elements/ReactTable/ReactTable.js';
-import ReactTable from '../../../elements/ReactTable/ReactTable.js';
 import { ReadOnly } from '../../../elements/ReadOnly.js';
 import { Sections } from '../../../elements/Sections.js';
+import type { TanStackTableColumn } from '../../../elements/TanStackTable/TanStackTable.js';
+import TanStackTable from '../../../elements/TanStackTable/TanStackTable.js';
 
 import { FilterActionButtons } from './FilterActionButtons.js';
 import { HeaderContainer, StickyHeader } from './InnerFilterHeader.js';
@@ -81,16 +80,18 @@ export default function ExclusionZonesOptionsPanel(
     [getValues, setValue],
   );
 
-  const exclusionsZonesColumns = useMemo<Array<Column<ExclusionZone>>>(
+  const exclusionsZonesColumns = useMemo<
+    Array<TanStackTableColumn<ExclusionZone>>
+  >(
     () => [
       {
-        Header: '#',
-        style: { width: '30px' },
-        accessor: (_, index) => index + 1,
+        header: '#',
+        meta: { style: { width: '30px' } },
+        accessorFn: (_, index) => index + 1,
       },
       {
-        Header: 'from',
-        Cell: ({ row }: CellProps<ExclusionZone>) => (
+        header: 'from',
+        cell: ({ row }) => (
           <NumberInput2Controller
             control={control}
             name={`zones.${row.index}.from`}
@@ -101,8 +102,8 @@ export default function ExclusionZonesOptionsPanel(
         ),
       },
       {
-        Header: 'To',
-        Cell: ({ row }: CellProps<ExclusionZone>) => (
+        header: 'To',
+        cell: ({ row }) => (
           <NumberInput2Controller
             control={control}
             name={`zones.${row.index}.to`}
@@ -114,10 +115,10 @@ export default function ExclusionZonesOptionsPanel(
       },
 
       {
-        Header: '',
-        style: { width: '30px' },
+        header: '',
+        meta: { style: { width: '30px' } },
         id: 'actions',
-        Cell: ({ row }: CellProps<ExclusionZone>) => {
+        cell: ({ row }) => {
           return (
             <Button
               size="small"
@@ -168,7 +169,7 @@ export default function ExclusionZonesOptionsPanel(
         </StickyHeader>
       )}
       <Sections.Body>
-        <ReactTable<ExclusionZone>
+        <TanStackTable
           columns={exclusionsZonesColumns}
           data={exclusionsZones}
           emptyDataRowText="No Zones"
