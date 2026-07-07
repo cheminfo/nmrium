@@ -55,6 +55,13 @@ export function createActionColumn<TData extends RowData>(
   };
 }
 
+export default function addCustomColumn<TData extends RowData>(
+  array: Array<CustomColumn<TData>>,
+  options: CustomColumn<TData>,
+) {
+  array.push(options);
+}
+
 export function getTableColumns<TData extends RowData>(
   columns: Array<ControlCustomColumn<TData>>,
   isVisible: (showWhen: string) => boolean,

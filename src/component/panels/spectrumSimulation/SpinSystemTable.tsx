@@ -1,12 +1,11 @@
 import type { CSSProperties } from 'react';
 import { useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
-import type { CellProps } from 'react-table';
 
 import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
-import type { Column } from '../../elements/ReactTable/ReactTable.js';
-import ReactTable from '../../elements/ReactTable/ReactTable.js';
-import addCustomColumn from '../../elements/ReactTable/utility/addCustomColumn.js';
+import TanStackTable from '../../elements/TanStackTable/TanStackTable.js';
+import type { CustomColumn } from '../../elements/TanStackTable/utility/addCustomColumn.js';
+import addCustomColumn from '../../elements/TanStackTable/utility/addCustomColumn.js';
 
 const cellStyle: CSSProperties = {
   padding: '1px',
@@ -26,16 +25,18 @@ export function SpinSystemTable(props: SpinSystemTableProps) {
   const data = useWatch({ name: 'data' });
 
   const tableColumns = useMemo(() => {
-    const columns: Array<Column<SpinSystemElement>> = [
+    const columns: Array<CustomColumn<SpinSystemElement>> = [
       {
+        index: 0,
         id: 'rowLabel',
-        Header: '',
-        accessor: (_, index) => spinSystem.at(index),
+        header: '',
+        accessorFn: (_, index) => spinSystem.at(index),
       },
       {
-        Header: 'Delta',
-        style: cellStyle,
-        Cell: ({ row }: CellProps<SpinSystemElement>) => (
+        index: 1,
+        header: 'Delta',
+        meta: { style: cellStyle },
+        cell: ({ row }) => (
           <NumberInput2Controller
             control={control}
             name={`data.${row.index}.0`}
@@ -51,9 +52,9 @@ export function SpinSystemTable(props: SpinSystemTableProps) {
       const columnIndex = i + 1;
       addCustomColumn(columns, {
         id: label,
-        index: i,
-        style: cellStyle,
-        Cell: function cellRender({ row }: CellProps<SpinSystemElement>) {
+        index: i + 2,
+        meta: { style: cellStyle },
+        cell: function cellRender({ row }) {
           const val = row.original?.[columnIndex] ?? null;
           if (val !== null) {
             return (
@@ -67,7 +68,7 @@ export function SpinSystemTable(props: SpinSystemTableProps) {
           }
           return <div />;
         },
-        Header: () => (
+        header: () => (
           <span>
             J<sub>{label}-X</sub>(Hz)
           </span>
@@ -82,5 +83,5 @@ export function SpinSystemTable(props: SpinSystemTableProps) {
     return null;
   }
 
-  return <ReactTable columns={tableColumns} data={data} />;
+  return <TanStackTable columns={tableColumns} data={data} />;
 }
