@@ -10,10 +10,16 @@ import {
   tableFeatures,
   useTable,
 } from '@tanstack/react-table';
-import type { CSSProperties, ReactElement } from 'react';
-import { memo } from 'react';
+import type { CSSProperties, ReactElement, ReactNode } from 'react';
+import { memo, useEffect, useMemo } from 'react';
 import { FaSortAmountDown, FaSortAmountUp } from 'react-icons/fa';
 
+import type {
+  HighlightEventSource,
+  HighlightEventSourceExtra,
+  HighlightEventSourceType,
+} from '../../highlight/index.js';
+import { useHighlight } from '../../highlight/index.js';
 import { BaseReactTable } from '../ReactTable/BaseReactTable.js';
 import { EmptyDataRow } from '../ReactTable/Elements/EmptyDataRow.js';
 
@@ -54,7 +60,16 @@ export interface TanStackTableRowStyle {
   base?: CSSProperties;
 }
 
-interface TanStackTableProps<TData extends RowData> {
+export type HighlightSourceProps = {
+  [K in HighlightEventSourceType]: HighlightEventSourceExtra<K> extends never
+    ? { highlightedSource?: K; getHighlightExtra?: never }
+    : {
+        highlightedSource: K;
+        getHighlightExtra: (row: any) => HighlightEventSourceExtra<K>;
+      };
+}[HighlightEventSourceType];
+
+interface BaseTanStackTableProps<TData extends RowData> {
   data: TData[];
   columns: Array<TanStackTableColumn<TData, any>>;
   emptyDataRowText?: string;
@@ -65,6 +80,9 @@ interface TanStackTableProps<TData extends RowData> {
   disableDefaultRowStyle?: boolean;
 }
 
+type TanStackTableProps<TData extends RowData> = BaseTanStackTableProps<TData> &
+  HighlightSourceProps;
+
 const sortIconStyle: CSSProperties = {
   position: 'absolute',
   top: '50%',
@@ -73,10 +91,11 @@ const sortIconStyle: CSSProperties = {
 };
 
 function getRowStyle(
+  isActive: boolean,
   rowStyle: TanStackTableRowStyle = {},
   disableDefaultRowStyle?: boolean,
 ): SerializedStyles {
-  const { hover = {}, active = {}, base = {} } = rowStyle;
+  const { hover = {}, active = {}, base = {}, activated = {} } = rowStyle;
 
   const hoverStyle = disableDefaultRowStyle
     ? (hover as CSSObject)
@@ -88,7 +107,80 @@ function getRowStyle(
     ? (base as CSSObject)
     : { backgroundColor: 'white', ...base };
 
-  return css([baseStyle, { ':hover': hoverStyle, ':active': activeStyle }]);
+  return css([
+    {
+      ...baseStyle,
+      ...(isActive && { backgroundColor: '#ff6f0070', ...activated }),
+    },
+    { ':hover': hoverStyle, ':active': activeStyle },
+  ]);
+}
+
+function getIDs(rowData: RowData): string[] {
+  const id = (rowData as { id?: unknown }).id;
+  if (id) {
+    if (Array.isArray(id)) {
+      return id.flatMap((value) =>
+        typeof value === 'string' || typeof value === 'number'
+          ? [String(value)]
+          : [],
+      );
+    }
+    if (typeof id === 'string' || typeof id === 'number') {
+      return [String(id)];
+    }
+  }
+  return [''];
+}
+
+type TanStackTableRowProps<TData extends RowData> = {
+  children: ReactNode;
+  disableDefaultRowStyle?: boolean;
+  rowData: TData;
+  rowStyle: TanStackTableRowStyle | undefined;
+  rowKey: string;
+} & HighlightSourceProps;
+
+function TanStackTableRow<TData extends RowData>(
+  props: TanStackTableRowProps<TData>,
+) {
+  const {
+    children,
+    disableDefaultRowStyle,
+    getHighlightExtra,
+    highlightedSource = 'UNKNOWN',
+    rowData,
+    rowKey,
+    rowStyle,
+  } = props;
+
+  const data = useMemo(
+    (): HighlightEventSource =>
+      ({
+        type: highlightedSource,
+        extra: getHighlightExtra?.(rowData),
+      }) as HighlightEventSource,
+    [getHighlightExtra, highlightedSource, rowData],
+  );
+  const highlight = useHighlight(getIDs(rowData), data);
+
+  useEffect(() => {
+    return () => {
+      highlight.hide();
+    };
+    // Keep this cleanup aligned with the legacy ReactTable row behavior.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <tr
+      key={rowKey}
+      css={getRowStyle(highlight.isActive, rowStyle, disableDefaultRowStyle)}
+      {...highlight.onHover}
+    >
+      {children}
+    </tr>
+  );
 }
 
 function TanStackTable<TData extends RowData>(
@@ -101,13 +193,19 @@ function TanStackTable<TData extends RowData>(
     rowStyle,
     style = {},
     disableDefaultRowStyle = false,
+    highlightedSource,
+    getHighlightExtra,
   } = props;
 
-  const table = useTable({
-    features: tanStackTableFeatures,
-    data,
-    columns,
-  });
+  const table = useTable(
+    {
+      features: tanStackTableFeatures,
+      data,
+      columns,
+    },
+    (state) => ({ sorting: state.sorting }),
+  );
+  const rows = table.getSortedRowModel().rows;
 
   return (
     <div
@@ -158,16 +256,23 @@ function TanStackTable<TData extends RowData>(
           {data.length === 0 && (
             <EmptyDataRow numColumns={columns.length} text={emptyDataRowText} />
           )}
-          {table.getRowModel().rows.map((row) => {
+          {rows.map((row) => {
             const currentRowStyle =
               typeof rowStyle === 'function'
                 ? rowStyle(row.original)
                 : rowStyle;
 
             return (
-              <tr
+              <TanStackTableRow
                 key={row.id}
-                css={getRowStyle(currentRowStyle, disableDefaultRowStyle)}
+                rowKey={row.id}
+                rowData={row.original}
+                rowStyle={currentRowStyle}
+                disableDefaultRowStyle={disableDefaultRowStyle}
+                {...({
+                  highlightedSource,
+                  getHighlightExtra,
+                } as HighlightSourceProps)}
               >
                 {row.getAllCells().map((cell) => {
                   const meta = cell.column.columnDef.meta;
@@ -184,7 +289,7 @@ function TanStackTable<TData extends RowData>(
                     </td>
                   );
                 })}
-              </tr>
+              </TanStackTableRow>
             );
           })}
         </tbody>

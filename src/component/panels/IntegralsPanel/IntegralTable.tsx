@@ -3,18 +3,18 @@ import dlv from 'dlv';
 import { checkIntegralKind } from 'nmr-processing';
 import { memo, useCallback, useMemo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
-import type { CellProps, Row } from 'react-table';
 
 import { SIGNAL_KINDS } from '../../../data/constants/signalsKinds.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { EditableColumn } from '../../elements/EditableColumn.js';
 import { EmptyText } from '../../elements/EmptyText.js';
-import ReactTable from '../../elements/ReactTable/ReactTable.js';
-import type { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn.js';
-import addCustomColumn, {
-  createActionColumn,
-} from '../../elements/ReactTable/utility/addCustomColumn.js';
 import Select from '../../elements/Select.js';
+import TanStackTable from '../../elements/TanStackTable/TanStackTable.js';
+import type { ControlCustomColumn } from '../../elements/TanStackTable/utility/addCustomColumn.js';
+import {
+  createActionColumn,
+  getTableColumns,
+} from '../../elements/TanStackTable/utility/addCustomColumn.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import { formatNumber } from '../../utility/formatNumber.js';
 import { NoDataForFid } from '../extra/placeholder/NoDataForFid.js';
@@ -36,8 +36,8 @@ function IntegralTable(props: IntegralTableProps) {
   const dispatch = useDispatch();
 
   const deleteIntegralHandler = useCallback(
-    (row: Row<Integral>) => {
-      const { id } = row.original;
+    (integral: Integral) => {
+      const { id } = integral;
       dispatch({
         type: 'DELETE_INTEGRAL',
         payload: {
@@ -69,53 +69,49 @@ function IntegralTable(props: IntegralTableProps) {
   );
   const integralsPreferences = usePanelPreferences('integrals', activeTab);
 
-  const COLUMNS = useMemo<
-    Array<
-      CustomColumn<Integral> & {
-        showWhen: string;
-      }
-    >
-  >(
+  const COLUMNS = useMemo<Array<ControlCustomColumn<Integral>>>(
     () => [
       {
         showWhen: 'showSerialNumber',
         index: 1,
-        Header: '#',
-        accessor: (_, index) => index + 1,
-        style: { width: '30px', maxWidth: '30px' },
+        id: 'rowNumber',
+        header: '#',
+        accessorFn: (_, index) => index + 1,
+        meta: { style: { width: '30px', maxWidth: '30px' } },
       },
       {
         showWhen: 'from.show',
         index: 2,
-        Header: 'From',
-        sortType: 'basic',
-        accessor: (row) =>
+        header: 'From',
+        sortFn: 'basic',
+        accessorFn: (row) =>
           formatNumber(row.from, integralsPreferences.from.format),
       },
       {
         showWhen: 'to.show',
         index: 3,
-        Header: 'To',
-        sortType: 'basic',
-        accessor: (row) => formatNumber(row.to, integralsPreferences.to.format),
+        header: 'To',
+        sortFn: 'basic',
+        accessorFn: (row) =>
+          formatNumber(row.to, integralsPreferences.to.format),
       },
       {
         showWhen: 'absolute.show',
         index: 4,
-        Header: 'Absolute',
-        accessor: (row) =>
+        header: 'Absolute',
+        accessorFn: (row) =>
           formatNumber(row.absolute, integralsPreferences.absolute.format),
       },
       {
         showWhen: 'relative.show',
         index: 5,
         id: 'relative',
-        Header: () => {
+        header: () => {
           const n = activeTab?.replaceAll(/\d/g, '');
           return <span>{`Relative ${n}`}</span>;
         },
-        accessor: 'integral',
-        Cell: ({ row }: CellProps<Integral>) => {
+        accessorKey: 'integral',
+        cell: ({ row }) => {
           const value = formatNumber(
             row.original.integral || 0,
             integralsPreferences.relative.format,
@@ -136,12 +132,11 @@ function IntegralTable(props: IntegralTableProps) {
       },
       {
         index: 6,
-        Header: 'Kind',
-        sortType: 'basic',
-        resizable: true,
-        accessor: 'kind',
+        header: 'Kind',
+        sortFn: 'basic',
+        accessorKey: 'kind',
         showWhen: 'showKind',
-        Cell: ({ row }: CellProps<Integral>) => (
+        cell: ({ row }) => (
           <Select
             onChange={(value) =>
               changeIntegralDataHandler(value as SignalKind, row.original)
@@ -156,6 +151,7 @@ function IntegralTable(props: IntegralTableProps) {
         showWhen: 'showDeleteAction',
         ...createActionColumn<Integral>({
           index: 20,
+          id: 'delete-action',
           icon: <FaRegTrashAlt />,
           onClick: deleteIntegralHandler,
         }),
@@ -171,16 +167,9 @@ function IntegralTable(props: IntegralTableProps) {
   );
 
   const tableColumns = useMemo(() => {
-    const columns: Array<CustomColumn<Integral>> = [];
-    for (const col of COLUMNS) {
-      const { showWhen, ...colParams } = col;
-      if (dlv(integralsPreferences, showWhen)) {
-        addCustomColumn(columns, colParams);
-      }
-    }
-
-    columns.sort((object1, object2) => object1.index - object2.index);
-    return columns;
+    return getTableColumns(COLUMNS, (showWhen) =>
+      dlv(integralsPreferences, showWhen),
+    );
   }, [COLUMNS, integralsPreferences]);
 
   if (info.isFid) {
@@ -191,7 +180,7 @@ function IntegralTable(props: IntegralTableProps) {
     return <EmptyText text="No data" />;
   }
 
-  return <ReactTable data={data} columns={tableColumns} />;
+  return <TanStackTable data={data} columns={tableColumns} />;
 }
 
 export default memo(IntegralTable);
