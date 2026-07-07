@@ -1,15 +1,14 @@
 import styled from '@emotion/styled';
 import { Fragment, useMemo } from 'react';
-import type { CellProps, Row } from 'react-table';
 
 import type { SpectraAnalysisData } from '../../../data/data1d/multipleSpectraAnalysis.js';
 import { usePreferences } from '../../context/PreferencesContext.js';
 import { useSortSpectra } from '../../context/SortSpectraContext.js';
 import { ColorDot } from '../../elements/ColorDot.tsx';
 import { EmptyText } from '../../elements/EmptyText.js';
-import ReactTable from '../../elements/ReactTable/ReactTable.js';
-import type { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn.js';
-import addCustomColumn from '../../elements/ReactTable/utility/addCustomColumn.js';
+import TanStackTable from '../../elements/TanStackTable/TanStackTable.js';
+import type { CustomColumn } from '../../elements/TanStackTable/utility/addCustomColumn.js';
+import addCustomColumn from '../../elements/TanStackTable/utility/addCustomColumn.js';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import evaluate from '../../utility/Evaluate.js';
@@ -83,18 +82,18 @@ function MultipleSpectraAnalysisTable(
 
     const columns: Array<CustomColumn<ValueType>> = [
       {
-        Header: '#',
+        header: '#',
         index: 0,
-        accessor: (_, index) => index !== undefined && index + 1,
-        disableSortBy: true,
-        Cell: ({ row, data }: CellProps<any>) => {
+        accessorFn: (_, index) => index !== undefined && index + 1,
+        enableSorting: false,
+        cell: ({ row }) => {
           const spectrumId = row.original[Object.keys(row.original)[0]].SID;
           const color = spectraColors?.[spectrumId] || '#000000';
           return (
             <SerialWrapper>
               <Serial>
                 {String(row.index + 1).padStart(
-                  String(data.length).length,
+                  String(data.values.length).length,
                   '0',
                 )}
               </Serial>
@@ -105,8 +104,8 @@ function MultipleSpectraAnalysisTable(
       },
     ];
 
-    function cellHandler(row: Row<ValueType>, columnKey: string) {
-      const value = row.original[columnKey].value;
+    function cellHandler(row: ValueType, columnKey: string) {
+      const value = row[columnKey].value;
       return (
         <AnalysisCell
           value={value}
@@ -143,14 +142,13 @@ function MultipleSpectraAnalysisTable(
         const { index: columnIndex } = analysisColumns[columnKey];
         addCustomColumn<ValueType>(columns, {
           index: columnIndex + 1,
-          Header: () => headerHandler(analysisColumns[columnKey], columnKey),
+          header: () => headerHandler(analysisColumns[columnKey], columnKey),
           id: columnKey,
-          accessor: (row) => {
+          accessorFn: (row) => {
             return row[columnKey].value;
           },
-          Cell: (cell: CellProps<ValueType>) =>
-            cellHandler(cell.row, columnKey),
-          style: { padding: 0 },
+          cell: ({ row }) => cellHandler(row.original, columnKey),
+          meta: { style: { padding: 0 } },
         });
       }
     }
@@ -159,6 +157,7 @@ function MultipleSpectraAnalysisTable(
   }, [
     activeTab,
     dispatchPreferences,
+    data.values.length,
     format,
     panelPreferences?.analysisOptions?.columns,
     spectraColors,
@@ -187,7 +186,7 @@ function MultipleSpectraAnalysisTable(
   }
   return data?.values.length > 0 ? (
     <Fragment>
-      <ReactTable
+      <TanStackTable
         data={data.values}
         columns={tableColumns}
         onSortEnd={handleSortEnd}
