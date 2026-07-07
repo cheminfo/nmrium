@@ -1,20 +1,31 @@
 import dlv from 'dlv';
 
-import type { ControlCustomColumn } from '../../elements/ReactTable/utility/addCustomColumn.tsx';
+import type { TanStackTableColumn } from '../../elements/TanStackTable/TanStackTable.js';
 
 import type { PeakRecord } from './PeaksPanel.tsx';
 
+type ExportCellValue = boolean | null | number | string | undefined;
+
+type ExportablePeakColumn = TanStackTableColumn<PeakRecord> & {
+  accessorFn?: (row: PeakRecord, index: number) => ExportCellValue;
+  accessorKey?: string | number;
+};
+
+function formatCellValue(value: ExportCellValue) {
+  return value === null || value === undefined ? '' : String(value);
+}
+
 export function exportPeaksToTSV(
   data: PeakRecord[],
-  tableColumns: Array<ControlCustomColumn<PeakRecord>>,
+  tableColumns: Array<TanStackTableColumn<PeakRecord>>,
 ) {
   const exportColumns = tableColumns.filter(
-    (col) => col.Header && typeof col.Header === 'string',
+    (col) => col.header && typeof col.header === 'string',
   );
 
   const headers: string[] = [];
   for (const col of exportColumns) {
-    headers.push(col.Header as string);
+    headers.push(col.header as string);
   }
 
   const rows: string[] = [];
@@ -22,19 +33,12 @@ export function exportPeaksToTSV(
     const record = data[i];
     const cells: string[] = [];
     for (const col of exportColumns) {
-      const accessor = col.accessor;
-      if (typeof accessor === 'string') {
-        cells.push(String(dlv(record, accessor) ?? ''));
-      } else if (typeof accessor === 'function') {
-        cells.push(
-          String(
-            accessor(record, i, {
-              subRows: [],
-              depth: 0,
-              data: [],
-            }) ?? '',
-          ),
-        );
+      const { accessorFn, accessorKey } = col as ExportablePeakColumn;
+      if (accessorKey) {
+        const accessor = String(accessorKey);
+        cells.push(formatCellValue(dlv(record, accessor) as ExportCellValue));
+      } else if (typeof accessorFn === 'function') {
+        cells.push(formatCellValue(accessorFn(record, i) as ExportCellValue));
       } else {
         cells.push('');
       }

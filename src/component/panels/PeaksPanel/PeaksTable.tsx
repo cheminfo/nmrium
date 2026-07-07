@@ -2,18 +2,19 @@ import type { Info1D, Peak1D } from '@zakodium/nmr-types';
 import dlv from 'dlv';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { FaEdit, FaRegTrashAlt } from 'react-icons/fa';
-import type { CellProps, Row } from 'react-table';
 
 import { getPeakAbsoluteArea } from '../../../data/utilities/getPeakAbsoluteArea.ts';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { EditableColumn } from '../../elements/EditableColumn.js';
 import { EmptyText } from '../../elements/EmptyText.js';
-import ReactTable from '../../elements/ReactTable/ReactTable.js';
-import type { ControlCustomColumn } from '../../elements/ReactTable/utility/addCustomColumn.js';
-import addCustomColumn, {
-  createActionColumn,
-} from '../../elements/ReactTable/utility/addCustomColumn.js';
 import { TableHeaderLabel } from '../../elements/TableHeaderLabel.tsx';
+import type { TanStackTableColumn } from '../../elements/TanStackTable/TanStackTable.js';
+import TanStackTable from '../../elements/TanStackTable/TanStackTable.js';
+import type { ControlCustomColumn } from '../../elements/TanStackTable/utility/addCustomColumn.js';
+import {
+  createActionColumn,
+  getTableColumns,
+} from '../../elements/TanStackTable/utility/addCustomColumn.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import { formatNumber } from '../../utility/formatNumber.js';
 import { NoDataForFid } from '../extra/placeholder/NoDataForFid.js';
@@ -33,8 +34,7 @@ export function usePeaksTableColumns(activeTab: string) {
   const [peak, setEditedPeak] = useState<Peak1D | undefined>();
 
   const deletePeakHandler = useCallback(
-    (row: Row<PeakRecord>) => {
-      const params = row.original;
+    (params: PeakRecord) => {
       dispatch({
         type: 'DELETE_PEAK',
         payload: { id: params.id },
@@ -43,8 +43,8 @@ export function usePeaksTableColumns(activeTab: string) {
     [dispatch],
   );
 
-  const editPeakHandler = useCallback((row: Row<PeakRecord>) => {
-    setEditedPeak(row.original);
+  const editPeakHandler = useCallback((row: PeakRecord) => {
+    setEditedPeak(row);
   }, []);
 
   const saveDeltaPPMRefsHandler = useCallback(
@@ -70,14 +70,14 @@ export function usePeaksTableColumns(activeTab: string) {
       {
         showWhen: 'showSerialNumber',
         index: 1,
-        Header: '#',
-        accessor: (_, index) => index + 1,
-        style: { width: '1%', maxWidth: '40px', minWidth: '40px' },
+        header: '#',
+        accessorFn: (_, index) => index + 1,
+        meta: { style: { width: '1%', maxWidth: '40px', minWidth: '40px' } },
       },
       {
         showWhen: 'deltaPPM.show',
         index: 3,
-        Header: () => {
+        header: () => {
           return (
             <TableHeaderLabel
               text="δ (ppm)"
@@ -87,8 +87,8 @@ export function usePeaksTableColumns(activeTab: string) {
             />
           );
         },
-        accessor: 'x',
-        Cell: ({ row }: CellProps<PeakRecord>) => (
+        accessorKey: 'x',
+        cell: ({ row }) => (
           <EditableColumn
             value={formatNumber(
               row.original.x,
@@ -103,40 +103,40 @@ export function usePeaksTableColumns(activeTab: string) {
       {
         showWhen: 'deltaHz.show',
         index: 4,
-        Header: 'δ (Hz)',
-        accessor: 'xHz',
-        Cell: ({ row }: CellProps<PeakRecord>) =>
+        header: 'δ (Hz)',
+        accessorKey: 'xHz',
+        cell: ({ row }) =>
           formatNumber(row.original.xHz, tablePreferences.deltaHz.format),
       },
       {
         showWhen: 'intensity.show',
         index: 5,
-        Header: 'Intensity',
-        style: { maxWidth: '80px' },
-        accessor: 'y',
-        Cell: ({ row }: CellProps<PeakRecord>) =>
+        header: 'Intensity',
+        meta: { style: { maxWidth: '80px' } },
+        accessorKey: 'y',
+        cell: ({ row }) =>
           formatNumber(row.original.y, tablePreferences.intensity.format),
       },
       {
         showWhen: 'peakWidth.show',
         index: 6,
-        Header: 'Width (Hz)',
-        accessor: 'width',
-        Cell: ({ row }: CellProps<PeakRecord>) =>
+        header: 'Width (Hz)',
+        accessorKey: 'width',
+        cell: ({ row }) =>
           formatNumber(row.original.width, tablePreferences.peakWidth.format),
       },
       {
         showWhen: 'showKind',
         index: 7,
-        Header: 'Kind',
-        accessor: (row) => row.shape?.kind || '',
+        header: 'Kind',
+        accessorFn: (row) => row.shape?.kind || '',
       },
       {
         showWhen: 'fwhm.show',
         index: 8,
-        Header: 'fwhm',
-        accessor: (row) => row?.shape?.fwhm ?? '',
-        Cell: ({ row }: CellProps<PeakRecord>) =>
+        header: 'fwhm',
+        accessorFn: (row) => row?.shape?.fwhm ?? '',
+        cell: ({ row }) =>
           getFormattedNumber(
             row.original?.shape?.fwhm,
             tablePreferences.fwhm.format,
@@ -145,10 +145,10 @@ export function usePeaksTableColumns(activeTab: string) {
       {
         showWhen: 'mu.show',
         index: 9,
-        Header: 'mu',
-        accessor: (row) =>
+        header: 'mu',
+        accessorFn: (row) =>
           row?.shape?.kind === 'pseudoVoigt' ? (row.shape.mu ?? '') : '',
-        Cell: ({ row }: CellProps<PeakRecord>) => {
+        cell: ({ row }) => {
           const shape = row.original?.shape;
           const mu = shape?.kind === 'pseudoVoigt' ? shape.mu : undefined;
           return getFormattedNumber(mu, tablePreferences.mu.format);
@@ -157,12 +157,12 @@ export function usePeaksTableColumns(activeTab: string) {
       {
         showWhen: 'gamma.show',
         index: 10,
-        Header: 'gamma',
-        accessor: (row) =>
+        header: 'gamma',
+        accessorFn: (row) =>
           row?.shape?.kind === 'generalizedLorentzian'
             ? (row.shape.gamma ?? '')
             : '',
-        Cell: ({ row }: CellProps<PeakRecord>) => {
+        cell: ({ row }) => {
           const shape = row.original?.shape;
           const gamma =
             shape?.kind === 'generalizedLorentzian' ? shape.gamma : undefined;
@@ -172,9 +172,9 @@ export function usePeaksTableColumns(activeTab: string) {
       {
         showWhen: 'absoluteArea.show',
         index: 11,
-        Header: 'Absolute area',
-        accessor: (row) => getPeakAbsoluteArea(row) ?? '',
-        Cell: ({ row }: CellProps<PeakRecord>) =>
+        header: 'Absolute area',
+        accessorFn: (row) => getPeakAbsoluteArea(row) ?? '',
+        cell: ({ row }) =>
           getFormattedNumber(
             getPeakAbsoluteArea(row.original),
             tablePreferences.absoluteArea.format,
@@ -183,7 +183,7 @@ export function usePeaksTableColumns(activeTab: string) {
       {
         showWhen: 'relativeArea.show',
         index: 12,
-        Header: () => {
+        header: () => {
           return (
             <TableHeaderLabel
               text="Relative area"
@@ -193,8 +193,8 @@ export function usePeaksTableColumns(activeTab: string) {
             />
           );
         },
-        accessor: 'relativeArea',
-        Cell: ({ row }: CellProps<PeakRecord>) => {
+        accessorKey: 'relativeArea',
+        cell: ({ row }) => {
           const value = formatNumber(
             row.original.relativeArea || 0,
             tablePreferences.relativeArea.format,
@@ -217,6 +217,7 @@ export function usePeaksTableColumns(activeTab: string) {
         showWhen: 'showEditPeakShapeAction',
         ...createActionColumn<PeakRecord>({
           index: 20,
+          id: 'edit-peak',
           icon: <FaEdit />,
           onClick: editPeakHandler,
           style: {
@@ -228,6 +229,7 @@ export function usePeaksTableColumns(activeTab: string) {
         showWhen: 'showDeleteAction',
         ...createActionColumn<PeakRecord>({
           index: 21,
+          id: 'delete-peak',
           icon: <FaRegTrashAlt />,
           onClick: deletePeakHandler,
         }),
@@ -243,28 +245,21 @@ export function usePeaksTableColumns(activeTab: string) {
   );
 
   const tableColumns = useMemo(() => {
-    const columns: Array<ControlCustomColumn<PeakRecord>> = [];
-    for (const col of COLUMNS) {
-      const { showWhen, ...colParams } = col;
-      if (dlv(tablePreferences, showWhen)) {
-        addCustomColumn(columns, colParams);
-      }
-    }
-
-    columns.sort((object1, object2) => object1.index - object2.index);
-    return columns;
+    return getTableColumns(COLUMNS, (showWhen) =>
+      dlv(tablePreferences, showWhen),
+    );
   }, [COLUMNS, tablePreferences]);
 
   return { tableColumns, peak, setEditedPeak };
 }
 
 interface PeaksTableProps {
-  tableColumns: Array<ControlCustomColumn<PeakRecord>>;
+  tableColumns: Array<TanStackTableColumn<PeakRecord>>;
   data: PeakRecord[];
   info: Info1D;
 }
 
-function handleActiveRow(row: Row<PeakRecord>) {
+function handleActiveRow(row: any) {
   return row.original.isConstantlyHighlighted;
 }
 
@@ -280,7 +275,7 @@ function PeaksTable(props: PeaksTableProps) {
   }
 
   return (
-    <ReactTable
+    <TanStackTable
       activeRow={handleActiveRow}
       rowStyle={{ activated: { backgroundColor: '#f5f5dc' } }}
       data={data}
