@@ -330,6 +330,7 @@ function OptionsSection(options: OptionsSectionProps) {
 
   return (
     <Sections.Item
+      id={algorithm}
       title={algorithmTitle}
       arrowProps={{ hide: true }}
       isOpen={isApplyChecked}

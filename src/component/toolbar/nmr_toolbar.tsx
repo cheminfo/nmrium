@@ -30,6 +30,7 @@ import { Toolbar, TooltipHelpContent } from 'react-science/ui';
 import { isQuadrants2DSpectrum } from '../../data/data2d/Spectrum2D/isSpectrum2D.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useDispatch } from '../context/DispatchContext.js';
+import { useIsPrimaryKeyActivated } from '../context/KeyModifierContext.tsx';
 import { useLoader } from '../context/LoaderContext.js';
 import { usePreferences } from '../context/PreferencesContext.js';
 import type { ToolbarPopoverMenuItem } from '../elements/ToolbarPopoverItem.js';
@@ -99,6 +100,7 @@ export default function NMRToolbar() {
   const isButtonVisible = useCheckToolsVisibility();
   const dispatch = useDispatch();
   const spectrum = useSpectrum();
+  const isPrimaryKeyActivated = useIsPrimaryKeyActivated();
 
   const {
     isRealSpectrumShown,
@@ -234,8 +236,7 @@ export default function NMRToolbar() {
           { title: 'Horizontal', shortcuts: ['f'] },
           { title: 'Horizontal and Vertical', shortcuts: ['f', 'f'] },
         ],
-        description:
-          'Zoom out by double-clicking the left mouse button, and fully zoom out horizontally by pressing the key "f". Alternatively, press the key "ff" to fit the spectra horizontally and vertically.',
+        description: `Zoom out by ${isPrimaryKeyActivated ? 'Shift + ' : ''}double-clicking the left mouse button, and fully zoom out horizontally by pressing the key "f". Alternatively, press the key "ff" to fit the spectra horizontally and vertically.`,
         link: 'https://docs.nmrium.org/help/zoom-and-scale',
       },
       onClick: handleFullZoomOut,

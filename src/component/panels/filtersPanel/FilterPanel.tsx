@@ -2,17 +2,20 @@ import { useDispatch } from '../../context/DispatchContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import type { AlertButton } from '../../elements/Alert.js';
 import { useAlert } from '../../elements/Alert.js';
+import useCheckExperimentalFeature from '../../hooks/useCheckExperimentalFeature.ts';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import { TablePanel } from '../extra/BasicPanelStyle.js';
 import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
 
 import { FiltersSectionsPanel } from './Filters/FiltersSectionsPanel.js';
+import { ProcessingsSectionsPanel } from './processings_sections_panel.tsx';
 
 export default function FiltersPanel() {
   const dispatch = useDispatch();
   const toaster = useToaster();
   const { showAlert } = useAlert();
   const { filters } = useSpectrum({ filters: [] });
+  const isExperimental = useCheckExperimentalFeature();
 
   function handleDeleteFilter() {
     const buttons: AlertButton[] = [
@@ -46,6 +49,13 @@ export default function FiltersPanel() {
       />
       <div className="inner-container">
         <FiltersSectionsPanel />
+
+        {isExperimental && (
+          <>
+            <hr />
+            <ProcessingsSectionsPanel />
+          </>
+        )}
       </div>
     </TablePanel>
   );

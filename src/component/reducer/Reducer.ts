@@ -741,6 +741,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
           draft,
           action,
         );
+      case 'CHANGE_SIGNAL_DELTA':
+        return RangesActions.handleChangeSignalDelta(draft, action);
 
       case 'SET_KEY_PREFERENCES':
         return PreferencesActions.handleSetKeyPreferences(draft, action);

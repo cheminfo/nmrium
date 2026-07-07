@@ -74,6 +74,11 @@ function getModifiersKey(event: EventModifierKeys) {
   return toModifiersKey(keyModifiers);
 }
 
+export function useIsPrimaryKeyActivated() {
+  const { primaryKeyIdentifier } = useMapKeyModifiers();
+  return primaryKeyIdentifier === 'shift[false]_ctrl[false]_alt[false]';
+}
+
 export function useMapKeyModifiers() {
   const {
     current: {

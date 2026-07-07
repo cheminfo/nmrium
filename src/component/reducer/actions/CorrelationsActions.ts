@@ -58,7 +58,7 @@ export type CorrelationsActions =
   | DeleteCorrelationAction;
 
 function handleUpdateCorrelations(draft: Draft<State>) {
-  const { data: spectra, correlations } = draft;
+  const { data: spectra, correlations } = original(draft);
   draft.correlations = buildCorrelationData(spectra as Spectrum, {
     ...correlations.options,
     values: lodashCloneDeep(correlations.values),

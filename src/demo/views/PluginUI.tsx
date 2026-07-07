@@ -1,6 +1,7 @@
 import type { IconName } from '@blueprintjs/icons';
 import { IconNames } from '@blueprintjs/icons';
 import styled from '@emotion/styled';
+import { defineProcessingOperatorUI, generateID } from '@zakodium/nmrium-core';
 import init from '@zakodium/nmrium-core-plugins';
 import {
   createContext,
@@ -64,10 +65,26 @@ const core = init([
       'topbar.right': DemoTopBarRight,
     },
   },
+  {
+    id: 'demo-plugin-operatorui',
+    version: 1,
+    migrations: [],
+    shouldSerialize: false,
+    operatorsUI: [
+      defineProcessingOperatorUI({
+        id: 'demo-plugin-operatorui#noop',
+        name: 'Expanded error operator',
+        isEditable: true,
+        Expanded: () => {
+          throw new Error('Check expanded error rendering');
+        },
+      }),
+    ],
+  },
 ]);
 
 const possibleIcons = Object.values(IconNames);
-export default function PluginUITopBar(props: ViewProps) {
+export default function PluginUI(props: ViewProps) {
   const [data, otherProps] = useView(props);
 
   const { workspace, customWorkspaces } = otherProps;
@@ -79,15 +96,45 @@ export default function PluginUITopBar(props: ViewProps) {
   }, []);
   const context = useMemo(() => ({ setRandom, icon }), [icon, setRandom]);
 
+  // inject processing operation to show Expanded error
+  const injectedData = useMemo(() => {
+    const injectedData = { ...data, state: { ...data?.state } };
+
+    if (!injectedData.state.data?.spectra) return injectedData;
+
+    injectedData.state.data.spectra = injectedData.state.data.spectra.map(
+      (spectrum) => {
+        return {
+          ...spectrum,
+          processings: [
+            ...(spectrum.processings ?? []),
+            {
+              uid: generateID(),
+              operatorId: 'demo-plugin-operatorui#noop',
+              options: undefined,
+              settings: {
+                showFallback: true,
+              },
+              enabled: true,
+              error: undefined,
+            },
+          ],
+        };
+      },
+    );
+
+    return injectedData;
+  }, [data]);
+
   return (
     <Container>
-      <h1>TopBar Plugin</h1>
+      <h1>Plugin UI</h1>
 
       <NMRiumContainer>
         <DemoContext.Provider value={context}>
           <NMRium
             core={core}
-            state={data?.state}
+            state={injectedData?.state}
             aggregator={data?.aggregator}
             {...(workspace && { workspace })}
             {...(customWorkspaces && { customWorkspaces })}
