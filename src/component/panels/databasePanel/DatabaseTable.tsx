@@ -7,15 +7,16 @@ import { ResponsiveChart } from 'react-d3-utils';
 import { FaDownload, FaInfoCircle, FaMinus, FaPlus } from 'react-icons/fa';
 import { IdcodeSvgRenderer, SmilesSvgRenderer } from 'react-ocl';
 import { Button } from 'react-science/ui';
-import type { CellProps } from 'react-table';
 
 import type { PrepareDataResult } from '../../../data/data1d/database.js';
 import { ColumnWrapper } from '../../elements/ColumnWrapper.js';
 import type { ContextMenuItem } from '../../elements/ContextMenuBluePrint.tsx';
-import type { Column } from '../../elements/ReactTable/ReactTable.js';
-import ReactTable from '../../elements/ReactTable/ReactTable.js';
-import type { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn.js';
-import addCustomColumn from '../../elements/ReactTable/utility/addCustomColumn.js';
+import TanStackTable from '../../elements/TanStackTable/TanStackTable.js';
+import type {
+  ControlCustomColumn,
+  CustomColumn,
+} from '../../elements/TanStackTable/utility/addCustomColumn.js';
+import addCustomColumn from '../../elements/TanStackTable/utility/addCustomColumn.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus.js';
 import { formatNumber } from '../../utility/formatNumber.js';
@@ -49,25 +50,27 @@ const overFlowStyle: CSSProperties = {
 
 const databaseTableColumns = (
   databasePreferences: any,
-): Array<CustomColumn<PrepareDataResult> & { showWhen: string }> => [
+): Array<ControlCustomColumn<PrepareDataResult>> => [
   {
     showWhen: 'showNames',
     index: 1,
-    Header: 'names',
-    accessor: (row) => (row.names ? row.names.join(',') : ''),
-    enableRowSpan: true,
-    style: {
-      width: '100px',
-      minWidth: '100px',
-      maxWidth: '100px',
-      ...overFlowStyle,
+    header: 'names',
+    accessorFn: (row) => (row.names ? row.names.join(',') : ''),
+    meta: {
+      enableRowSpan: true,
+      style: {
+        width: '100px',
+        minWidth: '100px',
+        maxWidth: '100px',
+        ...overFlowStyle,
+      },
     },
   },
   {
     showWhen: 'range.show',
     index: 2,
-    Header: 'From - To',
-    accessor: (row) => {
+    header: 'From - To',
+    accessorFn: (row) => {
       const rangeFormat = databasePreferences.range.format;
       return row?.from && row?.to
         ? `${formatNumber(row.from, rangeFormat)} - ${formatNumber(
@@ -76,14 +79,14 @@ const databaseTableColumns = (
           )}`
         : '';
     },
-    enableRowSpan: true,
+    meta: { enableRowSpan: true },
   },
   {
     showWhen: 'delta.show',
     index: 3,
-    Header: 'δ (ppm)',
-    accessor: 'delta',
-    Cell: ({ row }: CellProps<PrepareDataResult>) =>
+    header: 'δ (ppm)',
+    accessorKey: 'delta',
+    cell: ({ row }) =>
       row.original.delta
         ? formatNumber(row.original.delta, databasePreferences.delta.format)
         : '',
@@ -92,21 +95,21 @@ const databaseTableColumns = (
   {
     showWhen: 'showAssignment',
     index: 4,
-    Header: 'Assignment',
-    accessor: 'assignment',
+    header: 'Assignment',
+    accessorKey: 'assignment',
   },
   {
     showWhen: 'showMultiplicity',
     index: 5,
-    Header: 'Multi.',
-    accessor: 'multiplicity',
+    header: 'Multi.',
+    accessorKey: 'multiplicity',
   },
 
   {
     showWhen: 'coupling.show',
     index: 6,
-    Header: 'J (Hz)',
-    accessor: (row) => {
+    header: 'J (Hz)',
+    accessorFn: (row) => {
       if (!row?.coupling) {
         return '';
       } else {
@@ -118,31 +121,34 @@ const databaseTableColumns = (
           .join(',');
       }
     },
-    style: {
-      width: '60px',
-      minWidth: '60px',
-      ...overFlowStyle,
+    meta: {
+      style: {
+        width: '60px',
+        minWidth: '60px',
+        ...overFlowStyle,
+      },
     },
   },
   {
     showWhen: 'showSolvent',
     index: 7,
-    Header: 'Solvent',
-    accessor: 'solvent',
-    style: {
-      width: '80px',
-      minWidth: '80px',
-      ...overFlowStyle,
+    header: 'Solvent',
+    accessorKey: 'solvent',
+    meta: {
+      style: {
+        width: '80px',
+        minWidth: '80px',
+        ...overFlowStyle,
+      },
     },
   },
   {
     showWhen: 'showSmiles',
     index: 8,
-    Header: 'structure',
-    accessor: 'index',
-    style: { height: 0 },
-    enableRowSpan: true,
-    Cell({ row }: CellProps<PrepareDataResult>) {
+    header: 'structure',
+    accessorKey: 'index',
+    meta: { enableRowSpan: true, style: { height: 0 } },
+    cell({ row }) {
       const { idCode, coordinates } = row.original?.ocl || {};
       const smiles = row.original?.smiles;
       const { minWidth = 0, minHeight = 0 } =
@@ -179,8 +185,6 @@ const databaseTableColumns = (
   },
 ];
 
-type ColumnDef = Column<PrepareDataResult> & { index: number };
-
 function DatabaseTable({
   data,
   onAdd,
@@ -190,19 +194,22 @@ function DatabaseTable({
 }: DatabaseTableProps) {
   const databasePreferences = usePanelPreferences('database');
 
-  const initialColumns = useMemo<ColumnDef[]>(
+  const initialColumns = useMemo<Array<CustomColumn<PrepareDataResult>>>(
     () => [
       {
         index: 0,
         id: 'meta',
-        Header: '',
-        style: {
-          width: '1%',
-          maxWidth: '25px',
-          minWidth: '25px',
-          padding: 0,
+        header: '',
+        meta: {
+          enableRowSpan: true,
+          style: {
+            width: '1%',
+            maxWidth: '25px',
+            minWidth: '25px',
+            padding: 0,
+          },
         },
-        Cell: ({ row }: CellProps<PrepareDataResult>) => {
+        cell: ({ row }) => {
           return (
             <Button
               style={{ padding: 0 }}
@@ -217,21 +224,22 @@ function DatabaseTable({
             />
           );
         },
-        enableRowSpan: true,
       },
       {
         index: 10,
         id: 'add-button',
-        Header: '',
-        style: {
-          width: '1%',
-          maxWidth: '60px',
-          minWidth: '60px',
-          padding: 0,
+        header: '',
+        meta: {
+          enableRowSpan: true,
+          style: {
+            width: '1%',
+            maxWidth: '60px',
+            minWidth: '60px',
+            padding: 0,
+          },
         },
-        accessor: 'index',
-        enableRowSpan: true,
-        Cell: ({ row }: CellProps<PrepareDataResult>) => {
+        accessorKey: 'index',
+        cell: ({ row }) => {
           // TODO: Fix types or remove code.
           // @ts-expect-error jcampURL is not defined in PrepareDataResult.
           const { jcampURL } = row.original;
@@ -264,7 +272,7 @@ function DatabaseTable({
     [databasePreferences?.allowSaveAsNMRium, onAdd, onRemove, onSave],
   );
 
-  const tableColumns = useMemo<ColumnDef[]>(() => {
+  const tableColumns = useMemo<Array<CustomColumn<PrepareDataResult>>>(() => {
     const columns = initialColumns.slice();
     for (const col of databaseTableColumns(databasePreferences)) {
       const { showWhen, ...colParams } = col;
@@ -291,7 +299,7 @@ function DatabaseTable({
   );
 
   return (
-    <ReactTable
+    <TanStackTable
       data={data}
       contextMenu={contextMenu}
       onContextMenuSelect={selectContextMenuHandler}
