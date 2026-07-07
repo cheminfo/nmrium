@@ -3,16 +3,15 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import type { Tolerance } from 'nmr-correlation';
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import type { CellProps } from 'react-table';
 import * as Yup from 'yup';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import Button from '../../elements/Button.js';
 import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
-import type { Column } from '../../elements/ReactTable/ReactTable.js';
-import ReactTable from '../../elements/ReactTable/ReactTable.js';
 import { StandardDialog } from '../../elements/StandardDialog.tsx';
+import type { TanStackTableColumn } from '../../elements/TanStackTable/TanStackTable.js';
+import TanStackTable from '../../elements/TanStackTable/TanStackTable.js';
 
 interface ToleranceItem {
   atom: string;
@@ -86,22 +85,22 @@ function InnerSetShiftToleranceModal(props: InnerSetShiftToleranceModalProps) {
     onClose?.();
   }
 
-  const COLUMNS: Array<Column<ToleranceItem>> = useMemo(
+  const COLUMNS: Array<TanStackTableColumn<ToleranceItem>> = useMemo(
     () => [
       {
-        Header: '#',
-        style: { width: '25px', textAlign: 'center' },
-        accessor: (_, index) => index + 1,
+        header: '#',
+        meta: { style: { width: '25px', textAlign: 'center' } },
+        accessorFn: (_, index) => index + 1,
       },
       {
-        Header: 'Atom',
-        style: { width: '25px', textAlign: 'center' },
-        accessor: 'atom',
+        header: 'Atom',
+        meta: { style: { width: '25px', textAlign: 'center' } },
+        accessorKey: 'atom',
       },
       {
-        Header: 'Value',
-        style: { padding: 0 },
-        Cell: (cell: CellProps<ToleranceItem>) => {
+        header: 'Value',
+        meta: { style: { padding: 0 } },
+        cell: (cell) => {
           return (
             <NumberInput2Controller
               name={`tolerances.${cell.row.index}.value`}
@@ -123,7 +122,7 @@ function InnerSetShiftToleranceModal(props: InnerSetShiftToleranceModalProps) {
       style={{ width: 400 }}
     >
       <DialogBody>
-        <ReactTable
+        <TanStackTable
           data={tolerancesData}
           columns={COLUMNS}
           emptyDataRowText="No atoms"
