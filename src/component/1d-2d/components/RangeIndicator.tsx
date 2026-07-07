@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { useState } from 'react';
 
 import { useChartData } from '../../context/ChartContext.tsx';
 import { formatNumber } from '../../utility/formatNumber.ts';
@@ -35,6 +36,7 @@ interface RangeIndicatorProps extends Pick<
 
 const BRACKET_LENGTH = 5;
 const INNER_MARGIN = 10;
+const POINTER_SIZE = 4;
 
 interface Layout {
   groupTransform: string;
@@ -90,13 +92,38 @@ export function RangeIndicator(props: RangeIndicatorProps) {
 
   const layout = getLayout(orientation, position, size, resolvedTop);
 
+  const [pointerPosition, setPosition] = useState<number | null>(null);
+
+  function handleMove(event: React.MouseEvent<SVGRectElement>) {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const local =
+      orientation === 'horizontal'
+        ? event.clientX - rect.left
+        : event.clientY - rect.top;
+    setPosition(local);
+  }
+
   return (
-    <g transform={layout.groupTransform} style={{ opacity }} onClick={onClick}>
+    <g
+      transform={layout.groupTransform}
+      style={{ opacity }}
+      onClick={onClick}
+      onMouseMove={handleMove}
+      onMouseLeave={() => setPosition(null)}
+    >
       <Path d={layout.pathD} />
       {value !== undefined && (
         <Text transform={layout.textTransform} textAnchor={layout.textAnchor}>
           {formatNumber(value, format ?? '')}
         </Text>
+      )}
+      {pointerPosition !== null && (
+        <circle
+          cx={orientation === 'horizontal' ? pointerPosition : POINTER_SIZE}
+          cy={orientation === 'horizontal' ? POINTER_SIZE : pointerPosition}
+          r={POINTER_SIZE}
+          fill="red"
+        />
       )}
       <rect {...layout.backArea} fill="transparent" />
     </g>
