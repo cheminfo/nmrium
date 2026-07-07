@@ -12,7 +12,6 @@ import type { CSSProperties, MouseEvent } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import { FaCopy, FaFileExport, FaRegTrashAlt } from 'react-icons/fa';
 import { IoColorPaletteOutline } from 'react-icons/io5';
-import type { CellProps } from 'react-table';
 
 import { exportForCT } from '../../../data/SpectraManager.js';
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
@@ -24,8 +23,8 @@ import { useSortSpectra } from '../../context/SortSpectraContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import type { ContextMenuItem } from '../../elements/ContextMenuBluePrint.js';
 import { ContextMenu } from '../../elements/ContextMenuBluePrint.js';
-import type { Column } from '../../elements/ReactTable/ReactTable.js';
-import ReactTable from '../../elements/ReactTable/ReactTable.js';
+import type { TanStackTableColumn } from '../../elements/TanStackTable/TanStackTable.js';
+import TanStackTable from '../../elements/TanStackTable/TanStackTable.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import ExportAsJcampModal from '../../modal/ExportAsJcampModal.js';
 import { getValueByPath } from '../../utility/getValueByPath.ts';
@@ -165,18 +164,23 @@ export function SpectraTable(props: SpectraTableProps) {
   const { sort, reset } = useSortSpectra();
 
   const COLUMNS: Partial<
-    Record<(string & {}) | PredefinedSpectraColumn, Column<Spectrum>>
+    Record<
+      (string & {}) | PredefinedSpectraColumn,
+      TanStackTableColumn<Spectrum>
+    >
   > = useMemo(
     () => ({
       visible: {
         id: 'hide-show-spectrum',
-        Header: '',
-        style: {
-          width: '35px',
-          maxWidth: '55px',
-          height: '24px',
+        header: '',
+        meta: {
+          style: {
+            width: '35px',
+            maxWidth: '55px',
+            height: '24px',
+          },
         },
-        Cell: ({ row }: CellProps<Spectrum>) => {
+        cell: ({ row }) => {
           return (
             <ShowHideSpectrumButton
               data={row.original}
@@ -187,12 +191,14 @@ export function SpectraTable(props: SpectraTableProps) {
       },
       color: {
         id: 'spectrum-actions',
-        style: {
-          width: '30px',
-          maxWidth: '30px',
-          height: '24px',
+        meta: {
+          style: {
+            width: '30px',
+            maxWidth: '30px',
+            height: '24px',
+          },
         },
-        Cell: ({ row }: CellProps<Spectrum>) => {
+        cell: ({ row }) => {
           const {
             display,
             info: { dimension, isFid },
@@ -293,7 +299,7 @@ export function SpectraTable(props: SpectraTableProps) {
   }
 
   const tableColumns = useMemo(() => {
-    const columns: Array<Column<Spectrum>> = [];
+    const columns: Array<TanStackTableColumn<Spectrum>> = [];
     let index = 0;
     const visibleColumns = spectraPreferences.columns.filter(
       (col) => col.visible,
@@ -305,31 +311,31 @@ export function SpectraTable(props: SpectraTableProps) {
       if (name && COLUMNS[name]) {
         columns.push({
           ...COLUMNS[name],
-          Header: () => <ColumnHeader label={col.label} col={col} />,
+          header: () => <ColumnHeader label={col.label} col={col} />,
           id: name,
         });
       } else {
         const pathString = pathToString(jpath);
         let style: CSSProperties = columnStyle;
-        let cellRender: Column<Spectrum>['Cell'] | null = null;
+        let cellRender: TanStackTableColumn<Spectrum>['cell'] | null = null;
         if (pathString === 'info.name') {
           if (visibleColumns.length > 3) {
             style = { ...columnStyle, width: '50%' };
           }
-          cellRender = ({ row }: CellProps<Spectrum>) => {
+          cellRender = ({ row }) => {
             return <SpectrumName data={row.original} />;
           };
         }
 
         if (pathString === 'info.solvent') {
-          cellRender = ({ row }: CellProps<Spectrum>) => {
+          cellRender = ({ row }) => {
             return <RenderAsHTML data={row.original} jpath={pathString} />;
           };
         }
 
-        const cell: Column<Spectrum> = {
-          Header: () => <ColumnHeader label={col.label} col={col} />,
-          Cell: ({ row }: CellProps<Spectrum>) => {
+        const cell: TanStackTableColumn<Spectrum> = {
+          header: () => <ColumnHeader label={col.label} col={col} />,
+          cell: ({ row }) => {
             const val = getValueByPath(row.original, jpath, format);
             return (
               <Tooltip
@@ -340,9 +346,9 @@ export function SpectraTable(props: SpectraTableProps) {
               />
             );
           },
-          ...(cellRender && { Cell: cellRender }),
+          ...(cellRender && { cell: cellRender }),
           id: `${index}`,
-          style,
+          meta: { style },
         };
 
         columns.push(cell);
@@ -362,7 +368,7 @@ export function SpectraTable(props: SpectraTableProps) {
 
   function handleRowStyle(data: any) {
     return {
-      base: activeSpectraSet.has(data?.original.id) ? { opacity: 0.2 } : {},
+      base: activeSpectraSet.has(data.id) ? { opacity: 0.2 } : {},
       activated: { opacity: 1 },
     };
   }
@@ -375,7 +381,7 @@ export function SpectraTable(props: SpectraTableProps) {
       : Spectra2DContextMenuOptions;
   return (
     <>
-      <ReactTable
+      <TanStackTable
         rowStyle={handleRowStyle}
         activeRow={handleActiveRow}
         data={data}
