@@ -197,15 +197,11 @@ function TanStackTable<TData extends RowData>(
     getHighlightExtra,
   } = props;
 
-  const table = useTable(
-    {
-      features: tanStackTableFeatures,
-      data,
-      columns,
-    },
-    (state) => ({ sorting: state.sorting }),
-  );
-  const rows = table.getSortedRowModel().rows;
+  const table = useTable({
+    features: tanStackTableFeatures,
+    data,
+    columns,
+  });
 
   return (
     <div
@@ -256,7 +252,7 @@ function TanStackTable<TData extends RowData>(
           {data.length === 0 && (
             <EmptyDataRow numColumns={columns.length} text={emptyDataRowText} />
           )}
-          {rows.map((row) => {
+          {table.getRowModel().rows.map((row) => {
             const currentRowStyle =
               typeof rowStyle === 'function'
                 ? rowStyle(row.original)
