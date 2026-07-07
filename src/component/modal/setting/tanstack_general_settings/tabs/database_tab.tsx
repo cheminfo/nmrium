@@ -1,9 +1,8 @@
 import { Classes } from '@blueprintjs/core';
 import { useField } from '@tanstack/react-form';
-import { createColumnHelper } from '@tanstack/react-table';
 import { useCallback, useMemo } from 'react';
 import { FaLink, FaPlus, FaRegTrashAlt } from 'react-icons/fa';
-import { Button, withForm } from 'react-science/ui';
+import { Button, createTableColumnHelper, withForm } from 'react-science/ui';
 import type { z } from 'zod';
 
 import { isGoogleDocument } from '../../../../utility/isGoogleDocument.ts';
@@ -53,7 +52,7 @@ export const DatabaseTab = withForm({
     }, [resetField]);
 
     const COLUMNS = useMemo(() => {
-      const helper = createColumnHelper<DatabaseFormElement>();
+      const helper = createTableColumnHelper<DatabaseFormElement>();
       return [
         helper.accessor('label', {
           meta: {
