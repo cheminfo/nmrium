@@ -2,7 +2,6 @@ import { Classes, Switch } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import type {
   ProcessingOperatorId,
-  Spectrum,
   SpectrumProcessingOperation,
 } from '@zakodium/nmrium-core';
 import { cast } from '@zakodium/utils';
@@ -55,7 +54,7 @@ const unremoveableProcessings = new Set<ProcessingOperatorId>([
 export function ProcessingsSectionsPanel() {
   const core = useCore();
   const { showAlert } = useAlert();
-  const spectrum: Spectrum | undefined = useSpectrum();
+  const spectrum = useSpectrum();
   const { toolOptions } = useChartData();
   const processingsMutations = useProcessingsMutations();
 
