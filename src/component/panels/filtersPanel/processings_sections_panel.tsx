@@ -65,7 +65,7 @@ export function ProcessingsSectionsPanel() {
     mapFiltersToProcessings[toolOptions.data.activeFilterID];
   const [openedOperation, setOpenedOperation] = useState<string>();
 
-  const processings = spectrum.processings ?? [];
+  const processings = spectrum?.processings ?? [];
 
   const selectedProcessing = useMemo<{
     operatorId?: ProcessingOperatorId;
