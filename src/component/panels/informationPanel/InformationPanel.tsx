@@ -13,7 +13,7 @@ import { booleanToString } from '../../utility/booleanToString.js';
 
 import { InformationEditionModal } from './InformationEditionModal.js';
 
-const emptyData = { info: {}, meta: {} };
+const emptyData = { info: {}, meta: {}, customInfo: {} };
 
 function getToggleInformationBlock(
   isVisible: boolean,

@@ -30,7 +30,7 @@ export function isFt2DSpectrum(
   return isSpectrum2D(spectrum) && isFt2DData(spectrum.data);
 }
 export function isQuadrants2DSpectrum(
-  spectrum: Spectrum,
+  spectrum: Spectrum | undefined,
 ): spectrum is Spectrum2D & { data: NmrData2DFt } {
   return isSpectrum2D(spectrum) && isQuadrantsData(spectrum.data);
 }
