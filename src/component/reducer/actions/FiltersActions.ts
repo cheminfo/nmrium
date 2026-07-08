@@ -738,7 +738,7 @@ function getActiveFilterIndex(draft: Draft<State>) {
   return -1;
 }
 
-function updateView(
+export function updateView(
   draft: Draft<State>,
   filterUpdateDomainRules: Readonly<FilterDomainUpdateRules>,
 ) {

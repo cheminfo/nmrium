@@ -4,6 +4,7 @@ import type {
   ContourLevel,
   Display1D,
   Display2D,
+  DomainUpdateRules,
   SpectraColors,
   Spectrum1D,
   Spectrum2D,
@@ -48,7 +49,7 @@ import type { ActionType } from '../types/ActionType.js';
 
 import type { SetDomainOptions } from './DomainActions.js';
 import { setDomain, setMode } from './DomainActions.js';
-import { rollbackSpectrumByFilter } from './FiltersActions.js';
+import { rollbackSpectrumByFilter, updateView } from './FiltersActions.js';
 import {
   resetSelectedTool,
   setActiveTab,
@@ -163,6 +164,15 @@ type UpdateSpectrumMetaAction = ActionType<
   }
 >;
 
+type SetSpectrumAction = ActionType<
+  'SET_SPECTRUM',
+  {
+    index: number;
+    spectrum: Spectrum;
+    updateDomainRules: DomainUpdateRules;
+  }
+>;
+
 export type SpectrumActions =
   | ActionType<'TOGGLE_SPECTRA_LEGEND'>
   | ChangeSpectrumVisibilityByIdAction
@@ -176,7 +186,8 @@ export type SpectrumActions =
   | ImportSpectraMetaInfoAction
   | ReColorSpectraBasedOnDistinctValueAction
   | SimulateSpectrumAction
-  | UpdateSpectrumMetaAction;
+  | UpdateSpectrumMetaAction
+  | SetSpectrumAction;
 
 function checkIsVisible2D(datum: Spectrum2D): boolean {
   if (!datum.display.isPositiveVisible && !datum.display.isNegativeVisible) {
@@ -808,6 +819,13 @@ function handleUpdateSpectrumMeta(
   }
 }
 
+function setSpectrum(draft: Draft<State>, action: SetSpectrumAction) {
+  const { index, spectrum, updateDomainRules } = action.payload;
+
+  draft.data[index] = spectrum;
+  updateView(draft, updateDomainRules);
+}
+
 export {
   handleAddMissingProjectionHandler,
   handleAlignSpectraHandler,
@@ -823,4 +841,5 @@ export {
   handleToggleSpectraLegend,
   handleUpdateSpectrumMeta,
   setSpectraMetaInfo,
+  setSpectrum,
 };

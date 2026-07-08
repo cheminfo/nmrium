@@ -648,6 +648,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return ToolsActions.setSpectraSameTopHandler(draft);
       case 'RESET_SPECTRA_SCALE':
         return ToolsActions.resetSpectraScale(draft);
+      case 'SET_SPECTRUM':
+        return SpectraActions.setSpectrum(draft, action);
 
       case 'CHANGE_SPECTRUM_DISPLAY_VIEW_MODE':
         return ToolsActions.handleChangeSpectrumDisplayMode(draft);

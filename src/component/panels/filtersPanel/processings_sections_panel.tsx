@@ -8,7 +8,7 @@ import type {
 import { cast } from '@zakodium/utils';
 import type { Filter1D, Filter2D } from 'nmr-processing';
 import type { Dispatch, SetStateAction } from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ObjectInspector } from 'react-inspector';
 import { Button } from 'react-science/ui';
 
@@ -25,6 +25,8 @@ import {
   CoreOperatorName,
 } from '../../utility/CoreSlot.tsx';
 import DefaultPanelHeader from '../header/DefaultPanelHeader.tsx';
+import type { ProcessingsMutations } from '../hooks/use_processings_mutation.ts';
+import { useProcessingsMutations } from '../hooks/use_processings_mutation.ts';
 
 const mapToolsToProcessing: Partial<Record<Tool, ProcessingOperatorId>> = {
   apodization: '@zakodium/nmrium-core-plugins#apodization1D',
@@ -55,6 +57,7 @@ export function ProcessingsSectionsPanel() {
   const { showAlert } = useAlert();
   const spectrum: Spectrum | undefined = useSpectrum();
   const { toolOptions } = useChartData();
+  const processingsMutations = useProcessingsMutations();
 
   cast<FilterName>(toolOptions.data.activeFilterID);
   const selectedToolProcessing = mapToolsToProcessing[toolOptions.selectedTool];
@@ -62,12 +65,7 @@ export function ProcessingsSectionsPanel() {
     mapFiltersToProcessings[toolOptions.data.activeFilterID];
   const [openedOperation, setOpenedOperation] = useState<string>();
 
-  const [processings, setProcessings] = useState(
-    () => spectrum?.processings ?? [],
-  );
-  useEffect(() => {
-    setProcessings(spectrum?.processings ?? []);
-  }, [spectrum?.processings]);
+  const processings = spectrum.processings ?? [];
 
   const selectedProcessing = useMemo<{
     operatorId?: ProcessingOperatorId;
@@ -94,7 +92,7 @@ export function ProcessingsSectionsPanel() {
       {
         text: 'Yes',
         intent: 'danger',
-        onClick: () => setProcessings([]),
+        onClick: () => void processingsMutations.removeAll(),
       },
       { text: 'No' },
     ];
@@ -113,12 +111,7 @@ export function ProcessingsSectionsPanel() {
   }
 
   function onReorder(sourceIndex: number, targetIndex: number) {
-    const newProcessings = [...processings];
-    [newProcessings[sourceIndex], newProcessings[targetIndex]] = [
-      newProcessings[targetIndex],
-      newProcessings[sourceIndex],
-    ];
-    setProcessings(newProcessings);
+    void processingsMutations.reorder(sourceIndex, targetIndex);
   }
 
   if (!spectrum) return null;
@@ -163,7 +156,7 @@ export function ProcessingsSectionsPanel() {
                     isOpen={isOpen}
                     isEditable={isEditable}
                     setOpenedOperation={setOpenedOperation}
-                    setProcessings={setProcessings}
+                    processingsMutations={processingsMutations}
                     operation={operation}
                   />
                 }
@@ -175,12 +168,10 @@ export function ProcessingsSectionsPanel() {
                     operation={operation}
                     core={core}
                     onChange={(operation) => {
-                      const newProcessings = processings.map((p) =>
-                        p.uid === operation.uid
-                          ? { ...operation, options: undefined }
-                          : p,
-                      );
-                      setProcessings(newProcessings);
+                      void processingsMutations.apply({
+                        operation,
+                        indexOperation: index,
+                      });
                       setOpenedOperation(undefined);
                     }}
                   >
@@ -226,14 +217,17 @@ interface ProcessingItemExtraProps {
   isOpen: boolean;
   isEditable: boolean | undefined;
   setOpenedOperation: Dispatch<SetStateAction<string | undefined>>;
-  setProcessings: Dispatch<
-    SetStateAction<Array<SpectrumProcessingOperation<unknown, unknown>>>
-  >;
+  processingsMutations: ProcessingsMutations;
 }
 
 function ProcessingItemExtra(props: ProcessingItemExtraProps) {
-  const { operation, isOpen, isEditable, setOpenedOperation, setProcessings } =
-    props;
+  const {
+    operation,
+    isOpen,
+    isEditable,
+    setOpenedOperation,
+    processingsMutations,
+  } = props;
 
   return (
     <CompactControls>
@@ -252,11 +246,7 @@ function ProcessingItemExtra(props: ProcessingItemExtraProps) {
         intent="danger"
         tooltipProps={{ content: 'Delete filter' }}
         variant="minimal"
-        onClick={() =>
-          setProcessings((processings) =>
-            processings.filter((p) => p.uid !== operation.uid),
-          )
-        }
+        onClick={() => processingsMutations.remove(operation.uid)}
         disabled={unremoveableProcessings.has(operation.operatorId)}
         icon="trash"
       />
@@ -265,15 +255,7 @@ function ProcessingItemExtra(props: ProcessingItemExtraProps) {
         innerLabelChecked="On"
         innerLabel="Off"
         checked={operation.enabled || false}
-        onChange={() => {
-          setProcessings((processings) =>
-            processings.map((p) =>
-              p.uid === operation.uid
-                ? { ...operation, enabled: !operation.enabled }
-                : p,
-            ),
-          );
-        }}
+        onChange={() => processingsMutations.switchEnabled(operation.uid)}
       />
     </CompactControls>
   );
