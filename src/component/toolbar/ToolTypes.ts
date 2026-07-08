@@ -1,12 +1,58 @@
 import type { Info1D, Info2D } from '@zakodium/nmr-types';
 import type { NMRiumToolbarPreferences } from '@zakodium/nmrium-core';
+import {
+  SvgNmrAlignBottom,
+  SvgNmrAlignCenter,
+  SvgNmrApodization,
+  SvgNmrBaselineCorrection,
+  SvgNmrFourierTransform,
+  SvgNmrIntegrate,
+  SvgNmrMultipleAnalysis,
+  SvgNmrOverlay3,
+  SvgNmrOverlay3Aligned,
+  SvgNmrPeakPicking,
+  SvgNmrPhaseCorrection,
+  SvgNmrRangePicking,
+  SvgNmrRealImag,
+  SvgNmrZeroFilling,
+} from 'cheminfo-font';
 import { Filters1D, Filters2D } from 'nmr-processing';
+import type { ComponentType } from 'react';
+import {
+  FaDiceFour,
+  FaExpand,
+  FaFileExport,
+  FaFileImport,
+  FaICursor,
+} from 'react-icons/fa';
+import { PiKnifeBold, PiSelectionPlusDuotone } from 'react-icons/pi';
+import { TbZoom } from 'react-icons/tb';
 
 import type { DisplayerMode } from '../reducer/Reducer.js';
 
 type InfoKey = keyof Info1D | keyof Info2D;
 
-export interface ToolOptionItem {
+interface StaticIcon {
+  icon: ToolIconComponent;
+  getIcon?: never;
+}
+
+interface DynamicIcon {
+  icon?: never;
+  getIcon: (ctx: IconDataContext) => ToolIconComponent;
+}
+export interface IconOptions {
+  fontSize?: number;
+  strokeWidth?: number;
+}
+
+export type ToolIconComponent = ComponentType<IconOptions>;
+
+export interface IconDataContext {
+  verticalAlign?: 'bottom' | 'center' | 'stack';
+  isRealSpectrumShown?: boolean;
+}
+interface BaseToolOption {
   id: Tool;
   label: string;
   mode?: DisplayerMode;
@@ -32,6 +78,8 @@ export interface ToolOptionItem {
   isExperimental?: true;
 }
 
+export type ToolOptionItem = BaseToolOption & (StaticIcon | DynamicIcon);
+
 export type MainTool = keyof NMRiumToolbarPreferences;
 
 /**
@@ -47,6 +95,7 @@ export const options: RecordOptions = {
   zoom: {
     id: 'zoom',
     label: 'Zoom in / out',
+    icon: TbZoom,
     hasOptionPanel: false,
     isFilter: false,
     isToggle: true,
@@ -54,6 +103,7 @@ export const options: RecordOptions = {
   peakPicking: {
     id: 'peakPicking',
     label: 'Peaks picking',
+    icon: SvgNmrPeakPicking,
     hasOptionPanel: true,
     isFilter: false,
     mode: '1D',
@@ -69,6 +119,7 @@ export const options: RecordOptions = {
   integral: {
     id: 'integral',
     label: 'Integral Tool',
+    icon: SvgNmrIntegrate,
     hasOptionPanel: false,
     isFilter: false,
     mode: '1D',
@@ -82,6 +133,7 @@ export const options: RecordOptions = {
   inset: {
     id: 'inset',
     label: 'Inset Tool',
+    icon: PiSelectionPlusDuotone,
     hasOptionPanel: false,
     isFilter: false,
     mode: '1D',
@@ -95,6 +147,7 @@ export const options: RecordOptions = {
   zonePicking: {
     id: 'zonePicking',
     label: 'Zone tool',
+    icon: FaDiceFour,
     hasOptionPanel: true,
     isFilter: false,
     mode: '2D',
@@ -108,6 +161,7 @@ export const options: RecordOptions = {
   slicing: {
     id: 'slicing',
     label: 'Slicing tool',
+    icon: PiKnifeBold,
     hasOptionPanel: false,
     isFilter: false,
     mode: '2D',
@@ -121,6 +175,7 @@ export const options: RecordOptions = {
   rangePicking: {
     id: 'rangePicking',
     label: 'Range picking and multiplet analysis',
+    icon: SvgNmrRangePicking,
     hasOptionPanel: true,
     isFilter: false,
     mode: '1D',
@@ -134,6 +189,7 @@ export const options: RecordOptions = {
   apodization: {
     id: Filters1D.apodization.name,
     label: Filters1D.apodization.label,
+    icon: SvgNmrApodization,
     hasOptionPanel: true,
     isFilter: true,
     mode: '1D',
@@ -150,6 +206,7 @@ export const options: RecordOptions = {
   zeroFilling: {
     id: Filters1D.zeroFilling.name,
     label: Filters1D.zeroFilling.label,
+    icon: SvgNmrZeroFilling,
     hasOptionPanel: true,
     isFilter: true,
     mode: '1D',
@@ -166,6 +223,7 @@ export const options: RecordOptions = {
   zeroFillingDimension1: {
     id: Filters2D.zeroFillingDimension1.name,
     label: Filters2D.zeroFillingDimension1.label,
+    icon: SvgNmrZeroFilling,
     hasOptionPanel: true,
     isFilter: true,
     mode: '2D',
@@ -182,6 +240,7 @@ export const options: RecordOptions = {
   zeroFillingDimension2: {
     id: Filters2D.zeroFillingDimension2.name,
     label: Filters2D.zeroFillingDimension2.label,
+    icon: SvgNmrZeroFilling,
     hasOptionPanel: true,
     isFilter: true,
     mode: '2D',
@@ -199,6 +258,7 @@ export const options: RecordOptions = {
   phaseCorrection: {
     id: Filters1D.phaseCorrection.name,
     label: Filters1D.phaseCorrection.label,
+    icon: SvgNmrPhaseCorrection,
     hasOptionPanel: true,
     isFilter: true,
     mode: '1D',
@@ -215,6 +275,7 @@ export const options: RecordOptions = {
   baselineCorrection: {
     id: Filters1D.baselineCorrection.name,
     label: Filters1D.baselineCorrection.label,
+    icon: SvgNmrBaselineCorrection,
     hasOptionPanel: true,
     isFilter: true,
     mode: '1D',
@@ -228,6 +289,7 @@ export const options: RecordOptions = {
   multipleSpectraAnalysis: {
     id: 'multipleSpectraAnalysis',
     label: 'Multiple spectra integration',
+    icon: SvgNmrMultipleAnalysis,
     hasOptionPanel: false,
     isFilter: false,
     mode: '1D',
@@ -242,6 +304,7 @@ export const options: RecordOptions = {
   exclusionZones: {
     id: 'exclusionZones',
     label: 'Exclusion zones',
+    icon: SvgNmrMultipleAnalysis,
     hasOptionPanel: false,
     isFilter: true,
     mode: '1D',
@@ -266,6 +329,7 @@ export const options: RecordOptions = {
     ],
     selectedSpectra: { min: 0 },
     isToggle: true,
+    icon: SvgNmrMultipleAnalysis,
   },
   databaseRangesSelection: {
     id: 'databaseRangesSelection',
@@ -279,10 +343,12 @@ export const options: RecordOptions = {
       },
     ],
     isToggle: true,
+    icon: FaICursor,
   },
   exportAs: {
     id: 'exportAs',
     label: 'Export as',
+    icon: FaFileExport,
     hasOptionPanel: false,
     isFilter: false,
     isToggle: false,
@@ -290,6 +356,7 @@ export const options: RecordOptions = {
   fft: {
     id: 'fft',
     label: 'Fourier transform',
+    icon: SvgNmrFourierTransform,
     hasOptionPanel: false,
     isFilter: true,
     mode: '1D',
@@ -306,6 +373,7 @@ export const options: RecordOptions = {
   fftDimension1: {
     id: 'fftDimension1',
     label: 'Fourier transform dimension 1',
+    icon: SvgNmrFourierTransform,
     hasOptionPanel: false,
     isFilter: true,
     mode: '2D',
@@ -322,6 +390,7 @@ export const options: RecordOptions = {
   fftDimension2: {
     id: 'fftDimension2',
     label: 'Fourier transform dimension 2',
+    icon: SvgNmrFourierTransform,
     hasOptionPanel: false,
     isFilter: true,
     mode: '2D',
@@ -339,6 +408,7 @@ export const options: RecordOptions = {
   phaseCorrectionTwoDimensions: {
     id: 'phaseCorrectionTwoDimensions',
     label: 'Phase correction two dimension',
+    icon: SvgNmrPhaseCorrection,
     hasOptionPanel: true,
     isFilter: true,
     mode: '2D',
@@ -352,6 +422,7 @@ export const options: RecordOptions = {
   import: {
     id: 'import',
     label: 'Import',
+    icon: FaFileImport,
     hasOptionPanel: false,
     isFilter: false,
     isToggle: false,
@@ -359,6 +430,7 @@ export const options: RecordOptions = {
   realImaginary: {
     id: 'realImaginary',
     label: 'Real / Imaginary',
+    icon: SvgNmrRealImag,
     hasOptionPanel: false,
     isFilter: false,
     mode: '1D',
@@ -372,6 +444,9 @@ export const options: RecordOptions = {
   spectraCenterAlignments: {
     id: 'spectraCenterAlignments',
     label: 'Align spectrum',
+    // depends on current vertical alignment state
+    getIcon: (ctx: IconDataContext) =>
+      ctx.verticalAlign === 'bottom' ? SvgNmrAlignCenter : SvgNmrAlignBottom,
     hasOptionPanel: false,
     isFilter: false,
     mode: '1D',
@@ -380,6 +455,9 @@ export const options: RecordOptions = {
   spectraStackAlignments: {
     id: 'spectraStackAlignments',
     label: 'Stack spectra',
+    // depends on current vertical alignment state
+    getIcon: (ctx: IconDataContext) =>
+      ctx.verticalAlign === 'stack' ? SvgNmrOverlay3Aligned : SvgNmrOverlay3,
     hasOptionPanel: false,
     isFilter: false,
     mode: '1D',
@@ -394,6 +472,7 @@ export const options: RecordOptions = {
   zoomOut: {
     id: 'zoomOut',
     label: 'Zoom out',
+    icon: FaExpand,
     hasOptionPanel: false,
     isFilter: false,
     isToggle: false,
@@ -404,10 +483,12 @@ export const options: RecordOptions = {
     hasOptionPanel: false,
     isFilter: false,
     isToggle: false,
+    icon: SvgNmrRangePicking,
   },
   apodizationDimension1: {
     id: Filters2D.apodizationDimension1.name,
     label: Filters2D.apodizationDimension1.label,
+    icon: SvgNmrApodization,
     hasOptionPanel: true,
     isFilter: true,
     mode: '2D',
@@ -421,6 +502,7 @@ export const options: RecordOptions = {
   apodizationDimension2: {
     id: Filters2D.apodizationDimension2.name,
     label: Filters2D.apodizationDimension2.label,
+    icon: SvgNmrApodization,
     hasOptionPanel: true,
     isFilter: true,
     mode: '2D',
@@ -436,3 +518,12 @@ export const options: RecordOptions = {
     isToggle: true,
   },
 };
+
+export function getToolIcon(
+  id: Tool,
+  ctx: IconDataContext = {},
+): ToolIconComponent | undefined {
+  const option = options[id];
+
+  return 'getIcon' in option ? option.getIcon?.(ctx) : option.icon;
+}
