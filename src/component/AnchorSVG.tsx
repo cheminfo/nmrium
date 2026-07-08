@@ -38,7 +38,6 @@ interface AnchorProps {
   onDragEnd: (lastPosition: AnchorPosition) => void;
   onDelete: () => void;
   cursorOrientation?: CursorOrientation;
-  stopClickPropagation?: boolean;
 }
 
 interface DragState {
@@ -207,7 +206,6 @@ export function Anchor(props: AnchorProps) {
     onDragEnd,
     onDelete,
     cursorOrientation = 'horizontal',
-    stopClickPropagation = true,
   } = props;
   const {
     size = 16,
@@ -250,9 +248,6 @@ export function Anchor(props: AnchorProps) {
 
   function handleMouseDown(e: MouseEvent<SVGGElement>) {
     e.preventDefault();
-    if (stopClickPropagation) {
-      e.stopPropagation();
-    }
     setDragging(true);
 
     const svg = e.currentTarget.ownerSVGElement;
@@ -279,16 +274,6 @@ export function Anchor(props: AnchorProps) {
     };
 
     const onUp = () => {
-      if (dragState.current && stopClickPropagation) {
-        // Suppress the click event the browser fires after the drag ends.
-        function suppressClick(clickEvent: globalThis.MouseEvent) {
-          clickEvent.preventDefault();
-          clickEvent.stopPropagation();
-          window.removeEventListener('click', suppressClick, true);
-        }
-        window.addEventListener('click', suppressClick, true);
-      }
-
       setDragging(false);
       dragState.current = null;
       onDragEnd({ x: position.x, y: position.y });
