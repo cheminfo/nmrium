@@ -22,6 +22,7 @@ interface KeyModifiers {
 }
 interface KeyModifiersState extends KeyModifiers {
   modifiersKey: ModifiersKey | null;
+  isPrimary: boolean;
 }
 
 const defaultKeyModifiersState: KeyModifiersState = {
@@ -29,6 +30,7 @@ const defaultKeyModifiersState: KeyModifiersState = {
   shiftKey: false,
   altKey: false,
   modifiersKey: null,
+  isPrimary: false,
 };
 
 const KeyModifierContext = createContext<KeyModifiersState>(
@@ -97,26 +99,24 @@ export function useMapKeyModifiers() {
 }
 
 export function KeyModifiersProvider({ children }: KeyModifierProviderProps) {
-  const [modifiers, setModifiers] = useState<KeyModifiersState>(
-    defaultKeyModifiersState,
-  );
   const {
     current: {
       general: { invert },
     },
   } = usePreferences();
+  const [modifiers, setModifiers] = useState<KeyModifiers>(
+    defaultKeyModifiersState,
+  );
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
       const keyModifiers = getModifiers(event);
-      const modifiersKey = toModifiersKey(keyModifiers);
-      setModifiers({ ...keyModifiers, modifiersKey });
+      setModifiers(keyModifiers);
     }
 
     function handleKeyUp(event: KeyboardEvent) {
       const keyModifiers = getModifiers(event);
-      const modifiersKey = toModifiersKey(keyModifiers);
-      setModifiers({ ...keyModifiers, modifiersKey });
+      setModifiers(keyModifiers);
     }
 
     document.addEventListener('keydown', handleKeyDown);
@@ -128,8 +128,18 @@ export function KeyModifiersProvider({ children }: KeyModifierProviderProps) {
     };
   }, [invert]);
 
+  const state = useMemo(() => {
+    const modifiersKey = toModifiersKey(modifiers);
+
+    return {
+      ...modifiers,
+      isPrimary: modifiersKey === getPrimaryKey(invert),
+      modifiersKey,
+    };
+  }, [invert, modifiers]);
+
   return (
-    <KeyModifierContext.Provider value={modifiers}>
+    <KeyModifierContext.Provider value={state}>
       {children}
     </KeyModifierContext.Provider>
   );
