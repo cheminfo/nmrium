@@ -210,7 +210,6 @@ export function BrushTracker(options: BrushTrackerProps) {
     const { x, y } = getMouseXY(event);
     onDoubleClick({ ...event, x, y });
   }
-
   const pointerDownHandler = useCallback(
     (event: PointerEvent) => {
       event.persist();

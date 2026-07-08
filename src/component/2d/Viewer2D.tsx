@@ -5,6 +5,7 @@ import { SVGRootContainer } from '../1d-2d/components/SVGRootContainer.js';
 import { ViewerResponsiveWrapper } from '../1d-2d/components/ViewerResponsiveWrapper.js';
 import BrushXY from '../1d-2d/tools/BrushXY.js';
 import CrossLinePointer from '../1d-2d/tools/CrossLinePointer.js';
+import { CursorToolIcon } from '../1d-2d/tools/CursorToolIcon.tsx';
 import { MouseTracker } from '../EventsTrackers/MouseTracker.js';
 import { useChartData } from '../context/ChartContext.js';
 import Spinner from '../loader/Spinner.js';
@@ -60,7 +61,7 @@ function Viewer2D(props: Viewer2DProps) {
                   selectedTool === options.phaseCorrectionTwoDimensions.id && (
                     <PhaseTraces />
                   )}
-
+                <CursorToolIcon />
                 <CrossLinePointer />
                 <XYLabelPointer data1D={spectrumData} layout={DIMENSION} />
 

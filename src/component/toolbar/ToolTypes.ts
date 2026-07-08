@@ -445,8 +445,8 @@ export const options: RecordOptions = {
     id: 'spectraCenterAlignments',
     label: 'Align spectrum',
     // depends on current vertical alignment state
-    getIcon: (ctx: IconDataContext) =>
-      ctx.verticalAlign === 'bottom' ? SvgNmrAlignCenter : SvgNmrAlignBottom,
+    getIcon: (idc: IconDataContext) =>
+      idc.verticalAlign === 'bottom' ? SvgNmrAlignCenter : SvgNmrAlignBottom,
     hasOptionPanel: false,
     isFilter: false,
     mode: '1D',
@@ -456,8 +456,8 @@ export const options: RecordOptions = {
     id: 'spectraStackAlignments',
     label: 'Stack spectra',
     // depends on current vertical alignment state
-    getIcon: (ctx: IconDataContext) =>
-      ctx.verticalAlign === 'stack' ? SvgNmrOverlay3Aligned : SvgNmrOverlay3,
+    getIcon: (idc: IconDataContext) =>
+      idc.verticalAlign === 'stack' ? SvgNmrOverlay3Aligned : SvgNmrOverlay3,
     hasOptionPanel: false,
     isFilter: false,
     mode: '1D',
@@ -521,9 +521,9 @@ export const options: RecordOptions = {
 
 export function getToolIcon(
   id: Tool,
-  ctx: IconDataContext = {},
+  idc: IconDataContext = {},
 ): ToolIconComponent | undefined {
   const option = options[id];
 
-  return 'getIcon' in option ? option.getIcon?.(ctx) : option.icon;
+  return 'getIcon' in option ? option.getIcon?.(idc) : option.icon;
 }
