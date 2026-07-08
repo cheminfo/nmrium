@@ -1,7 +1,7 @@
 {
   "name": "nmrium",
   "description": "React component to display and process nuclear magnetic resonance (NMR) spectra.",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "license": "MIT",
   "type": "module",
   "exports": {
@@ -71,7 +71,7 @@
     "@tanstack/react-table": "^8.21.3",
     "@zakodium/nmr-types": "^0.5.18",
     "@zakodium/nmrium-core": "^0.7.37",
-    "@zakodium/nmrium-core-plugins": "^0.7.48",
+    "@zakodium/nmrium-core-plugins": "^0.7.50",
     "@zakodium/pdnd-esm": "^1.1.0",
     "@zakodium/utils": "^0.2.0",
     "@zip.js/zip.js": "^2.8.26",
@@ -98,7 +98,7 @@
     "ml-spectra-processing": "^14.29.2",
     "ml-tree-similarity": "^2.2.0",
     "nmr-correlation": "2.3.3",
-    "nmr-processing": "^22.18.0",
+    "nmr-processing": "^22.19.0",
     "numeral": "^2.0.6",
     "openchemlib": "^9.24.0",
     "openchemlib-utils": "^8.17.1",
