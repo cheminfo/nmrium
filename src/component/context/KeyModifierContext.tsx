@@ -98,6 +98,16 @@ export function useMapKeyModifiers() {
   }, [invert]);
 }
 
+function isPrimaryActive(shiftKey: boolean, invert: boolean): boolean {
+  const primaryKey = getPrimaryKey(invert);
+  const shiftOnlyKey = toModifiersKey({
+    shiftKey,
+    ctrlKey: false,
+    altKey: false,
+  });
+  return shiftOnlyKey === primaryKey;
+}
+
 export function KeyModifiersProvider({ children }: KeyModifierProviderProps) {
   const {
     current: {
@@ -130,10 +140,9 @@ export function KeyModifiersProvider({ children }: KeyModifierProviderProps) {
 
   const state = useMemo(() => {
     const modifiersKey = toModifiersKey(modifiers);
-
     return {
       ...modifiers,
-      isPrimary: modifiersKey === getPrimaryKey(invert),
+      isPrimary: isPrimaryActive(modifiers.shiftKey, invert),
       modifiersKey,
     };
   }, [invert, modifiers]);
