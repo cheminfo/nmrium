@@ -1,6 +1,4 @@
 import type {
-  DomainUpdateRules,
-  NMRiumCore,
   Spectrum,
   SpectrumProcessingOperation,
 } from '@zakodium/nmrium-core';

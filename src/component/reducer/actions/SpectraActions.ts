@@ -48,7 +48,7 @@ import type { ActionType } from '../types/ActionType.js';
 
 import type { SetDomainOptions } from './DomainActions.js';
 import { setDomain, setMode } from './DomainActions.js';
-import { rollbackSpectrumByFilter, updateView } from './FiltersActions.js';
+import { rollbackSpectrumByFilter } from './FiltersActions.js';
 import {
   resetSelectedTool,
   setActiveTab,
