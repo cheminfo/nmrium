@@ -41,7 +41,6 @@ export function Ranges1D(props: Ranges1DProps) {
       <RangeIndicator
         orientation={orientation}
         key={id}
-        value={10}
         position={start}
         size={size}
         onClick={handleAddSignal}
