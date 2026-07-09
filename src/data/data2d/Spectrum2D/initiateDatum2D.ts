@@ -2,7 +2,7 @@ import type {
   Spectrum2D,
   SpectrumTwoDimensionsColor,
 } from '@zakodium/nmrium-core';
-import { sliceData1D, sliceData2D } from '@zakodium/nmrium-core';
+import { sliceData2D } from '@zakodium/nmrium-core';
 import { Filters2DManager } from 'nmr-processing';
 
 import type { UsedColors } from '../../../types/UsedColors.js';
