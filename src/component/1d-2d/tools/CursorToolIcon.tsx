@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { createElement } from 'react';
+import { TbRulerMeasure } from 'react-icons/tb';
 
 import { useMouseTracker } from '../../EventsTrackers/MouseTracker.js';
 import { useChartData } from '../../context/ChartContext.js';
@@ -15,6 +16,7 @@ const CursorWrapper = styled.div`
   overflow: visible;
   will-change: transform;
   z-index: 99;
+  opacity: 0.5;
 `;
 
 export type CursorPlacement =
@@ -72,7 +74,7 @@ export function CursorToolIcon({
     toolOptions: { selectedTool },
   } = useChartData();
   const mousePosition = useMouseTracker();
-  const { isPrimary } = useKeyModifiers();
+  const { isPrimary, shiftKey } = useKeyModifiers();
   if (
     !mousePosition ||
     !width ||
@@ -87,6 +89,7 @@ export function CursorToolIcon({
 
   const x = mousePosition.x + offsetX - size / 2;
   const y = mousePosition.y + offsetY - size / 2;
+  const showRulerIcon = selectedTool === 'zoom' && shiftKey;
 
   return (
     <CursorWrapper
@@ -94,10 +97,14 @@ export function CursorToolIcon({
         transform: `translate(${x}px, ${y}px)`,
       }}
     >
-      <ToolIconRenderer
-        toolId={isPrimary ? selectedTool : 'zoom'}
-        size={size}
-      />
+      {showRulerIcon ? (
+        <TbRulerMeasure size={size} />
+      ) : (
+        <ToolIconRenderer
+          toolId={isPrimary ? selectedTool : 'zoom'}
+          size={size}
+        />
+      )}
     </CursorWrapper>
   );
 }
