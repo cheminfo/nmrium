@@ -1,4 +1,10 @@
+import { Classes, FormGroup, MenuItem, NumericInput } from '@blueprintjs/core';
+import type {ItemRenderer} from '@blueprintjs/select';
+import {  Select } from '@blueprintjs/select';
+import styled from '@emotion/styled';
+import { revalidateLogic } from '@tanstack/react-form';
 import { AppForm, Button, TooltipHelpContent, useForm } from 'react-science/ui';
+import { z } from 'zod/v4';
 
 import { useDispatch } from '../context/DispatchContext.js';
 import { useToaster } from '../context/ToasterContext.js';
@@ -9,11 +15,6 @@ import {
   useCheckPointsNumberInSelectedSpectra,
 } from '../hooks/useCheckPointsNumberInWindowArea.js';
 import { usePanelPreferences } from '../hooks/usePanelPreferences.ts';
-import { z } from 'zod/v4';
-import { revalidateLogic } from '@tanstack/react-form';
-import styled from '@emotion/styled';
-import { Classes, FormGroup, MenuItem, NumericInput } from '@blueprintjs/core';
-import { type ItemRenderer, Select } from '@blueprintjs/select';
 
 type Direction = 'positive' | 'negative' | 'both';
 
