@@ -167,10 +167,12 @@ export function ProcessingsSectionsPanel() {
                     operation={operation}
                     core={core}
                     onChange={(operation) => {
-                      void processingsMutations.apply({
-                        operation,
-                        indexOperation: index,
-                      });
+                      void processingsMutations.apply(
+                        // onChange generally change settings
+                        // so options should be re-computed
+                        { ...operation, options: undefined },
+                        index,
+                      );
                       setOpenedOperation(undefined);
                     }}
                   >
@@ -232,8 +234,8 @@ function ProcessingItemExtra(props: ProcessingItemExtraProps) {
     <CompactControls>
       {isEditable && (
         <Button
-          intent="success"
           tooltipProps={{ content: 'Edit filter' }}
+          intent="success"
           variant="minimal"
           onClick={() => setOpenedOperation(operation.uid)}
           icon="annotation"
@@ -242,8 +244,8 @@ function ProcessingItemExtra(props: ProcessingItemExtraProps) {
       )}
 
       <Button
-        intent="danger"
         tooltipProps={{ content: 'Delete filter' }}
+        intent="danger"
         variant="minimal"
         onClick={() => processingsMutations.remove(operation.uid)}
         disabled={unremoveableProcessings.has(operation.operatorId)}
@@ -251,9 +253,9 @@ function ProcessingItemExtra(props: ProcessingItemExtraProps) {
       />
 
       <Switch
+        checked={operation.enabled ?? false}
         innerLabelChecked="On"
         innerLabel="Off"
-        checked={operation.enabled || false}
         onChange={() => processingsMutations.switchEnabled(operation.uid)}
       />
     </CompactControls>

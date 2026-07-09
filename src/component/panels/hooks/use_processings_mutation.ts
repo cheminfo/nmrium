@@ -4,16 +4,12 @@ import type {
   Spectrum,
   SpectrumProcessingOperation,
 } from '@zakodium/nmrium-core';
+import { sliceSpectrum } from '@zakodium/nmrium-core';
 
 import { useChartData } from '../../context/ChartContext.tsx';
 import { useCore } from '../../context/CoreContext.tsx';
 import { useDispatch } from '../../context/DispatchContext.tsx';
 import { getActiveSpectrum } from '../../reducer/helper/getActiveSpectrum.ts';
-
-interface ApplyProcessingOperationMutation {
-  indexOperation: number;
-  operation: SpectrumProcessingOperation<any, any>;
-}
 
 export type ProcessingsMutations = ReturnType<typeof useProcessingsMutations>;
 
@@ -29,15 +25,18 @@ export function useProcessingsMutations() {
     });
   }
 
+  /**
+   * Return sliced spectrum allowing free mutations
+   */
   function getSpectrum() {
     const activeSpectrum = getActiveSpectrum(state);
     if (!activeSpectrum) return {};
-    const indexSpectrum = activeSpectrum.index;
-    const spectrum = { ...state.data[indexSpectrum] };
 
-    if (spectrum.processings) {
-      spectrum.processings = spectrum.processings.map((p) => ({ ...p }));
-    }
+    const id = activeSpectrum.id;
+    const indexSpectrum = state.data.findIndex((s) => s.id === id);
+    if (indexSpectrum === -1) return {};
+
+    const spectrum = sliceSpectrum(state.data[indexSpectrum]);
 
     return { spectrum, indexSpectrum };
   }
@@ -53,21 +52,22 @@ export function useProcessingsMutations() {
       payload: {
         index,
         spectrum: processedSpectrum,
-        updateDomainRules: aggregateDomains(spectrum, core),
+        updateDomainRules: aggregateDomains(processedSpectrum, core),
       },
     });
   }
 
   return {
-    async apply(payload: ApplyProcessingOperationMutation) {
+    async apply(
+      operation: SpectrumProcessingOperation<any, any>,
+      indexOperation: number,
+    ) {
       const { spectrum, indexSpectrum } = getSpectrum();
-      const { indexOperation, operation } = payload;
 
       if (!spectrum?.processings) return;
       if (indexOperation > spectrum.processings.length) return;
 
-      spectrum.processings = spectrum.processings.slice();
-      spectrum.processings[indexSpectrum] = operation;
+      spectrum.processings[indexOperation] = operation;
 
       await submit(spectrum, indexSpectrum);
     },
@@ -87,10 +87,9 @@ export function useProcessingsMutations() {
       const { spectrum, indexSpectrum } = getSpectrum();
       if (!spectrum?.processings) return;
 
-      const processings = [...spectrum.processings];
-      [processings[sourceIndex], processings[targetIndex]] = [
-        processings[targetIndex],
-        processings[sourceIndex],
+      [spectrum.processings[sourceIndex], spectrum.processings[targetIndex]] = [
+        spectrum.processings[targetIndex],
+        spectrum.processings[sourceIndex],
       ];
 
       await submit(spectrum, indexSpectrum);
@@ -114,9 +113,8 @@ export function useProcessingsMutations() {
       );
       if (operationIndex === -1) return;
 
-      const operation = { ...spectrum.processings[operationIndex] };
+      const operation = spectrum.processings[operationIndex];
       operation.enabled = !operation.enabled;
-      spectrum.processings[operationIndex] = operation;
 
       await submit(spectrum, indexSpectrum);
     },
