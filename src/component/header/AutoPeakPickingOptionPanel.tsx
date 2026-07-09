@@ -1,6 +1,6 @@
 import { Classes, FormGroup, MenuItem, NumericInput } from '@blueprintjs/core';
-import type {ItemRenderer} from '@blueprintjs/select';
-import {  Select } from '@blueprintjs/select';
+import type { ItemRenderer } from '@blueprintjs/select';
+import { Select } from '@blueprintjs/select';
 import styled from '@emotion/styled';
 import { revalidateLogic } from '@tanstack/react-form';
 import { AppForm, Button, TooltipHelpContent, useForm } from 'react-science/ui';
