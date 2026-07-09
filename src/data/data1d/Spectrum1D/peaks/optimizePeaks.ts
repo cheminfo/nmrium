@@ -29,7 +29,7 @@ export function optimizePeaks(
   spectrum.peaks.values = spectrum.peaks.values.filter((peak) => !ids[peak.id]);
 
   x = x.subarray(fromIndex, ToIndex);
-  re = re.subarray(fromIndex, ToIndex);
+  re = re.subarray(fromIndex, ToIndex); 
 
   const newPeaks = xyPeaksOptimizationByStages({ x, y: re }, peaks, {
     frequency,
@@ -41,7 +41,7 @@ export function optimizePeaks(
         maxNumberOfPeaks: 40,
         optimization: {
           kind: 'lm',
-          options: { maxIterations: 20, errorTolerance: 1e-3 },
+          options: { maxIterations: 10, errorTolerance: 1e-3 },
         },
         parameters: {
           fwhm: {
@@ -57,12 +57,55 @@ export function optimizePeaks(
           },
         },
       },
+      
+      {
+        // stage 2: tunning mu and y
+        factorLimits: 2,
+        maxNumberOfPeaks: 40,
+        optimization: {
+          kind: 'lm',
+          options: { maxIterations: 10, errorTolerance: 8e-4 },
+        },
+        parameters: {
+          fwhm: {
+            optimize: false,
+          },
+          mu: { optimize: true  },
+          x: { optimize: false },
+          y: {
+            optimize: true,
+            init: (peak: any) => peak.y,
+          },
+        },
+      },
+      // stage 3: tunning fwhm and mu
       {
         factorLimits: 2,
         maxNumberOfPeaks: 40,
         optimization: {
           kind: 'lm',
-          options: { maxIterations: 20, errorTolerance: 1e-3 },
+          options: { maxIterations: 5, errorTolerance: 6e-4 },
+        },
+        parameters: {
+          fwhm: {
+            optimize: true,
+            min: (peak: any) => (peak.shape?.fwhm ?? 0) * 0.5,
+            max: (peak: any) => (peak.shape?.fwhm ?? 0) * 2,
+          },
+          mu: { optimize: true  },
+          x: { optimize: false },
+          y: {
+            optimize: false,
+          },
+        },
+      },
+      {
+        // Stage 4: optimize x, fwhm and y
+        factorLimits: 2,
+        maxNumberOfPeaks: 40,
+        optimization: {
+          kind: 'lm',
+          options: { maxIterations: 10, errorTolerance: 5e-5 },
         },
         parameters: {
           fwhm: {
@@ -71,47 +114,6 @@ export function optimizePeaks(
             max: (peak: any) => (peak.shape?.fwhm ?? 0) * 2,
           },
           mu: { optimize: false },
-          x: { optimize: false },
-          y: {
-            optimize: true,
-            init: (peak: any) => peak.y,
-          },
-        },
-      },
-      {
-        // Stage 2: regroup into the real overlapping cluster
-        factorLimits: 2,
-        maxNumberOfPeaks: 40,
-        optimization: {
-          kind: 'lm',
-          options: { maxIterations: 25, errorTolerance: 1e-4 },
-        },
-        parameters: {
-          fwhm: {
-            optimize: true,
-            min: (peak: any) => (peak.shape?.fwhm ?? 0) * 0.5,
-            max: (peak: any) => (peak.shape?.fwhm ?? 0) * 2,
-          },
-          mu: { optimize: true },
-          x: { optimize: false },
-          y: { optimize: true },
-        },
-      },
-      {
-        // Stage 3: final polish
-        factorLimits: 2,
-        maxNumberOfPeaks: 40,
-        optimization: {
-          kind: 'lm',
-          options: { maxIterations: 30, errorTolerance: 1e-5 },
-        },
-        parameters: {
-          fwhm: {
-            optimize: true,
-            min: (peak: any) => (peak.shape?.fwhm ?? 0) * 0.5,
-            max: (peak: any) => (peak.shape?.fwhm ?? 0) * 2,
-          },
-          mu: { optimize: true },
           x: {
             optimize: true,
             min: (peak: any) => peak.x - (peak.shape?.fwhm ?? 0) / 4,
@@ -119,14 +121,18 @@ export function optimizePeaks(
           },
           y: { optimize: true },
         },
+        
       },
+
+      //refine by going to the first stage with a more strict error tolerance
+
       {
-        // Stage 3: final polish
+        // Stage 1: local stabilization
         factorLimits: 2,
         maxNumberOfPeaks: 40,
         optimization: {
           kind: 'lm',
-          options: { maxIterations: 30, errorTolerance: 1e-5 },
+          options: { maxIterations: 10, errorTolerance: 1e-5 },
         },
         parameters: {
           fwhm: {
@@ -134,7 +140,74 @@ export function optimizePeaks(
             min: (peak: any) => (peak.shape?.fwhm ?? 0) * 0.5,
             max: (peak: any) => (peak.shape?.fwhm ?? 0) * 2,
           },
-          mu: { optimize: true },
+          mu: { optimize: false },
+          x: { optimize: false },
+          y: {
+            optimize: true,
+            init: (peak: any) => peak.y,
+          },
+        },
+      },
+      
+      {
+        // stage 2: tunning mu and y.
+        factorLimits: 2,
+        maxNumberOfPeaks: 40,
+        optimization: {
+          kind: 'lm',
+          options: { maxIterations: 10, errorTolerance: 8e-6 },
+        },
+        parameters: {
+          fwhm: {
+            optimize: false,
+            min: (peak: any) => (peak.shape?.fwhm ?? 0) * 0.5,
+            max: (peak: any) => (peak.shape?.fwhm ?? 0) * 2,
+          },
+          mu: { optimize: true  },
+          x: { optimize: false },
+          y: {
+            optimize: true,
+            init: (peak: any) => peak.y,
+          },
+        },
+      },
+      // stage 3: tunning fwhm and mu
+      {
+        factorLimits: 2,
+        maxNumberOfPeaks: 40,
+        optimization: {
+          kind: 'lm',
+          options: { maxIterations: 5, errorTolerance: 6e-6 },
+        },
+        parameters: {
+          fwhm: {
+            optimize: true,
+            min: (peak: any) => (peak.shape?.fwhm ?? 0) * 0.5,
+            max: (peak: any) => (peak.shape?.fwhm ?? 0) * 2,
+          },
+          mu: { optimize: true  },
+          x: { optimize: false },
+          y: {
+            optimize: false,
+            init: (peak: any) => peak.y,
+          },
+        },
+      },
+      {
+        // Stage 4: optimize x, fwhm and y, but not mu
+        factorLimits: 2,
+        maxNumberOfPeaks: 40,
+        optimization: {
+          kind: 'lm',
+          options: { maxIterations: 10, errorTolerance: 1e-6 },
+        },
+        parameters: {
+          fwhm: {
+            optimize: true,
+            min: (peak: any) => (peak.shape?.fwhm ?? 0) * 0.5,
+            max: (peak: any) => (peak.shape?.fwhm ?? 0) * 2,
+          },
+          mu: { optimize: false },
           x: {
             optimize: true,
             min: (peak: any) => peak.x - (peak.shape?.fwhm ?? 0) / 4,
