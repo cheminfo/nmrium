@@ -27,11 +27,7 @@ const AppFormContainer = styled(AppForm)`
   gap: 10px;
   align-items: center;
 
-  .${Classes.CHECKBOX} {
-    margin-bottom: 0;
-  }
-
-  .${Classes.FORM_GROUP} {
+  .${Classes.CHECKBOX}, .${Classes.FORM_GROUP} {
     margin-bottom: 0;
   }
 `;
