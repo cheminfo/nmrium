@@ -1,13 +1,7 @@
-import { yupResolver } from '@hookform/resolvers/yup';
-import { useForm } from 'react-hook-form';
-import { Button, TooltipHelpContent } from 'react-science/ui';
-import * as Yup from 'yup';
+import { AppForm, Button, TooltipHelpContent, useForm } from 'react-science/ui';
 
 import { useDispatch } from '../context/DispatchContext.js';
 import { useToaster } from '../context/ToasterContext.js';
-import Label from '../elements/Label.js';
-import { NumberInput2Controller } from '../elements/NumberInput2Controller.js';
-import { Select2Controller } from '../elements/Select2Controller.js';
 import { useActiveNucleusTab } from '../hooks/useActiveNucleusTab.ts';
 import { useActiveSpectra } from '../hooks/useActiveSpectra.ts';
 import {
@@ -15,13 +9,20 @@ import {
   useCheckPointsNumberInSelectedSpectra,
 } from '../hooks/useCheckPointsNumberInWindowArea.js';
 import { usePanelPreferences } from '../hooks/usePanelPreferences.ts';
-
-import { headerLabelStyle } from './Header.js';
-import { HeaderWrapper } from './HeaderWrapper.js';
+import { z } from 'zod/v4';
+import { revalidateLogic } from '@tanstack/react-form';
+import styled from '@emotion/styled';
+import { Classes, FormGroup, MenuItem, NumericInput } from '@blueprintjs/core';
+import { type ItemRenderer, Select } from '@blueprintjs/select';
 
 type Direction = 'positive' | 'negative' | 'both';
 
-const LookFor: Array<{ label: string; value: Direction }> = [
+interface Item {
+  label: string;
+  value: Direction;
+}
+
+const LookFor: Item[] = [
   {
     label: 'Positive',
     value: 'positive',
@@ -36,27 +37,54 @@ const LookFor: Array<{ label: string; value: Direction }> = [
   },
 ];
 
-interface AutoPeakPickingOptions {
-  maxNumberOfPeaks: number;
-  minMaxRatio: number;
-  noiseFactor: number;
-  direction: Direction;
-}
-
-const validationSchema = Yup.object().shape({
-  maxNumberOfPeaks: Yup.number().min(1).required(),
-  minMaxRatio: Yup.number().min(0).required(),
-  noiseFactor: Yup.number().min(0).required(),
-  direction: Yup.mixed<Direction>()
-    .oneOf(['both', 'negative', 'positive'])
-    .required(),
+const validationSchema = z.object({
+  maxNumberOfPeaks: z.coerce.number<string>().min(1),
+  minMaxRatio: z.coerce.number<string>().min(0),
+  noiseFactor: z.coerce.number<string>().min(0),
+  direction: z.enum(['both', 'negative', 'positive']),
 });
 
-const INIT_VALUES: AutoPeakPickingOptions = {
-  maxNumberOfPeaks: 50,
-  minMaxRatio: 0.05,
-  noiseFactor: 3,
+type AutoPeakPickingOptionsInput = z.input<typeof validationSchema>;
+type AutoPeakPickingOptions = z.output<typeof validationSchema>;
+
+const defaultValues: AutoPeakPickingOptionsInput = {
+  maxNumberOfPeaks: '50',
+  minMaxRatio: '0.05',
+  noiseFactor: '3',
   direction: 'both',
+};
+
+const AppFormContainer = styled(AppForm)`
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+
+  .${Classes.FORM_GROUP} {
+    margin-bottom: 0;
+  }
+`;
+
+const renderDirection: ItemRenderer<Item> = (
+  direction,
+  { handleClick, handleFocus, modifiers },
+) => {
+  if (!modifiers.matchesPredicate) {
+    return null;
+  }
+
+  return (
+    <MenuItem
+      active={modifiers.active}
+      disabled={modifiers.disabled}
+      key={direction.value}
+      label={direction.label}
+      onClick={handleClick}
+      onFocus={handleFocus}
+      roleStructure="listoption"
+      text={direction.label}
+    />
+  );
 };
 
 export function AutoPeakPickingOptionPanel() {
@@ -65,19 +93,22 @@ export function AutoPeakPickingOptionPanel() {
   const toaster = useToaster();
   const nucleus = useActiveNucleusTab();
   const activeSpectra = useActiveSpectra();
-
   const { defaultPeakShape } = usePanelPreferences('peaks', nucleus);
-  const {
-    handleSubmit,
-    formState: { isValid },
-    control,
-  } = useForm<AutoPeakPickingOptions>({
-    defaultValues: INIT_VALUES,
-    resolver: yupResolver(validationSchema),
-    mode: 'onChange',
+  const isSpectraSelected = activeSpectra && activeSpectra.length > 0;
+
+  const form = useForm({
+    defaultValues,
+    validationLogic: revalidateLogic({ modeAfterSubmission: 'change' }),
+    onSubmit: ({ value }) => {
+      const parsedValues = validationSchema.parse(value);
+      handlePeakPicking(parsedValues);
+    },
+    validators: {
+      onDynamic: validationSchema,
+    },
   });
 
-  function handlePeakPicking(values: any) {
+  function handlePeakPicking(values: AutoPeakPickingOptions) {
     if (hasEnoughPoints) {
       dispatch({
         type: 'AUTO_PEAK_PICKING',
@@ -94,69 +125,108 @@ export function AutoPeakPickingOptionPanel() {
     }
   }
 
-  const isSpectraSelected = activeSpectra && activeSpectra.length > 0;
   return (
-    <HeaderWrapper>
-      <Label title="Direction:" shortTitle="" style={headerLabelStyle}>
-        <Select2Controller control={control} name="direction" items={LookFor} />
-      </Label>
-      <Label
-        title="Max number of peaks:"
-        shortTitle="Max peaks:"
-        style={headerLabelStyle}
-      >
-        <NumberInput2Controller
-          control={control}
-          name="maxNumberOfPeaks"
-          min={1}
-          stepSize={1}
-          style={{ width: '60px' }}
-        />
-      </Label>
-      <Label title="Noise factor:" shortTitle="Noise:" style={headerLabelStyle}>
-        <NumberInput2Controller
-          control={control}
-          name="noiseFactor"
-          min={0}
-          stepSize={1}
-          style={{ width: '60px' }}
-        />
-      </Label>
-      <Label
-        title="Min/max Ratio:"
-        shortTitle="Ratio:"
-        style={headerLabelStyle}
-      >
-        <NumberInput2Controller
-          control={control}
-          name="minMaxRatio"
-          min={0}
-          stepSize={0.01}
-          majorStepSize={0.01}
-          minorStepSize={0.01}
-          style={{ width: '60px' }}
-          debounceTime={500}
-        />
-      </Label>
-      <Button
-        intent="success"
-        onClick={() => handleSubmit(handlePeakPicking)()}
-        style={{ margin: '0 10px' }}
-        disabled={!isValid || !isSpectraSelected}
-        {...(!isSpectraSelected && {
-          tooltipProps: {
-            content: (
-              <TooltipHelpContent
-                title="Auto peak picking"
-                description="Select a one or more spectra to enable auto peak picking"
-              />
-            ),
-            intent: 'danger',
-          },
-        })}
-      >
-        Apply to {activeSpectra?.length} spectra
-      </Button>
-    </HeaderWrapper>
+    <AppFormContainer form={form}>
+      <form.AppField name="direction">
+        {(field) => {
+          const activeItem = LookFor.find(
+            (item) => item.value === field.state.value,
+          );
+
+          return (
+            <FormGroup label="Direction:" inline>
+              <Select<Item>
+                filterable={false}
+                items={LookFor}
+                itemRenderer={renderDirection}
+                activeItem={activeItem}
+                onItemSelect={(element) => {
+                  field.handleChange(element.value);
+                }}
+              >
+                <Button
+                  text={activeItem?.label}
+                  endIcon="double-caret-vertical"
+                />
+              </Select>
+            </FormGroup>
+          );
+        }}
+      </form.AppField>
+
+      <form.AppField name="maxNumberOfPeaks">
+        {(field) => (
+          <FormGroup label="Max peaks:" inline>
+            <NumericInput
+              value={field.state.value ?? ''}
+              onBlur={field.handleBlur}
+              min={1}
+              style={{ width: '60px' }}
+              stepSize={1}
+              onValueChange={(_, valueAsString) => {
+                field.handleChange(valueAsString);
+              }}
+            />
+          </FormGroup>
+        )}
+      </form.AppField>
+
+      <form.AppField name="noiseFactor">
+        {(field) => (
+          <FormGroup label="Noise:" inline>
+            <NumericInput
+              value={field.state.value ?? ''}
+              onBlur={field.handleBlur}
+              min={1}
+              style={{ width: '60px' }}
+              stepSize={1}
+              onValueChange={(_, valueAsString) => {
+                field.handleChange(valueAsString);
+              }}
+            />
+          </FormGroup>
+        )}
+      </form.AppField>
+
+      <form.AppField name="minMaxRatio">
+        {(field) => (
+          <FormGroup label="Ratio:" inline>
+            <NumericInput
+              value={field.state.value ?? ''}
+              onBlur={field.handleBlur}
+              style={{ width: '60px' }}
+              min={0}
+              stepSize={0.01}
+              majorStepSize={0.01}
+              minorStepSize={0.01}
+              onValueChange={(_, valueAsString) => {
+                field.handleChange(valueAsString);
+              }}
+            />
+          </FormGroup>
+        )}
+      </form.AppField>
+
+      <div>
+        <form.SubmitButton
+          tooltipProps={
+            !isSpectraSelected
+              ? {
+                  intent: 'danger',
+                  content: (
+                    <TooltipHelpContent
+                      title="Auto peak picking"
+                      description="Select a one or more spectra to enable auto peak picking"
+                    />
+                  ),
+                }
+              : undefined
+          }
+          intent={isSpectraSelected ? 'success' : 'danger'}
+        >
+          Apply to {activeSpectra?.length} spectra
+        </form.SubmitButton>
+      </div>
+    </AppFormContainer>
   );
 }
