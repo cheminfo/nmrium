@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
 
 import { useChartData } from '../../context/ChartContext.tsx';
 import { formatNumber } from '../../utility/formatNumber.ts';
@@ -19,7 +18,7 @@ const Text = styled.text`
   fill: black;
 `;
 
-type Orientation = 'horizontal' | 'vertical';
+export type IndicatorOrientation = 'horizontal' | 'vertical';
 
 interface RangeIndicatorProps extends Pick<
   React.HTMLAttributes<SVGGElement>,
@@ -27,27 +26,22 @@ interface RangeIndicatorProps extends Pick<
 > {
   position: number;
   size: number;
-  orientation?: Orientation;
-  top?: number;
+  orientation?: IndicatorOrientation;
   value?: number;
   format?: string;
   opacity?: number;
 }
-
 const BRACKET_LENGTH = 5;
-const INNER_MARGIN = 10;
-const POINTER_SIZE = 4;
 
 interface Layout {
   groupTransform: string;
   pathD: string;
   textTransform: string;
   textAnchor: 'start' | 'end' | undefined;
-  backArea: { width: number; height: number };
 }
 
 function getLayout(
-  orientation: Orientation,
+  orientation: IndicatorOrientation,
   position: number,
   size: number,
   top: number,
@@ -58,7 +52,6 @@ function getLayout(
       pathD: `M0 0 L${BRACKET_LENGTH} 0 L${BRACKET_LENGTH} ${size} L0 ${size}`,
       textTransform: `translate(${-BRACKET_LENGTH - 4} ${Math.round(size / 2) + 4})`,
       textAnchor: 'end',
-      backArea: { width: BRACKET_LENGTH * 2, height: size },
     };
   }
 
@@ -67,8 +60,23 @@ function getLayout(
     pathD: `M0 0 L0 ${BRACKET_LENGTH} L${size} ${BRACKET_LENGTH} L${size} 0`,
     textTransform: `rotate(-90) translate(5 ${Math.round(size / 2) + 4})`,
     textAnchor: undefined,
-    backArea: { width: size, height: BRACKET_LENGTH * 2 },
   };
+}
+
+export function useMarginBottom(
+  orientation: IndicatorOrientation,
+  offset = 10,
+) {
+  const { margin, height, displayerMode } = useChartData();
+  if (displayerMode === '1D') {
+    return height - margin.bottom - offset;
+  }
+
+  if (orientation === 'vertical') {
+    return margin.left - offset;
+  }
+
+  return margin.top - offset;
 }
 
 export function RangeIndicator(props: RangeIndicatorProps) {
@@ -76,56 +84,23 @@ export function RangeIndicator(props: RangeIndicatorProps) {
     position,
     size,
     orientation = 'horizontal',
-    top,
     value,
     format,
     opacity = 1,
     onClick,
   } = props;
-  const { margin, height, displayerMode } = useChartData();
-
-  const resolvedTop =
-    (displayerMode === '1D'
-      ? height - margin.bottom
-      : (top ?? (orientation === 'vertical' ? margin.left : margin.top))) -
-    INNER_MARGIN;
+  const resolvedTop = useMarginBottom(orientation);
 
   const layout = getLayout(orientation, position, size, resolvedTop);
 
-  const [pointerPosition, setPosition] = useState<number | null>(null);
-
-  function handleMove(event: React.MouseEvent<SVGRectElement>) {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const local =
-      orientation === 'horizontal'
-        ? event.clientX - rect.left
-        : event.clientY - rect.top;
-    setPosition(local);
-  }
-
   return (
-    <g
-      transform={layout.groupTransform}
-      style={{ opacity }}
-      onClick={onClick}
-      onMouseMove={handleMove}
-      onMouseLeave={() => setPosition(null)}
-    >
+    <g transform={layout.groupTransform} style={{ opacity }} onClick={onClick}>
       <Path d={layout.pathD} />
       {value !== undefined && (
         <Text transform={layout.textTransform} textAnchor={layout.textAnchor}>
           {formatNumber(value, format ?? '')}
         </Text>
       )}
-      {pointerPosition !== null && (
-        <circle
-          cx={orientation === 'horizontal' ? pointerPosition : POINTER_SIZE}
-          cy={orientation === 'horizontal' ? POINTER_SIZE : pointerPosition}
-          r={POINTER_SIZE}
-          fill="red"
-        />
-      )}
-      <rect {...layout.backArea} fill="transparent" />
     </g>
   );
 }
