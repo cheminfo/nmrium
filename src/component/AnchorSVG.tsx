@@ -34,9 +34,10 @@ interface AnchorProps {
   svgHeight: number;
   anchorStyle?: AnchorStyle;
   restoreFocusOnLeave?: boolean;
-  onDragMove: (newPosition: AnchorPosition) => void;
-  onDragEnd: (lastPosition: AnchorPosition) => void;
-  onDelete: () => void;
+  onDragMove?: (newPosition: AnchorPosition) => void;
+  onDragEnd?: (lastPosition: AnchorPosition) => void;
+  onDragStart?: (position: AnchorPosition) => void;
+  onDelete?: () => void;
   cursorOrientation?: CursorOrientation;
 }
 
@@ -202,6 +203,7 @@ export function Anchor(props: AnchorProps) {
     svgHeight,
     anchorStyle = {},
     restoreFocusOnLeave = false,
+    onDragStart,
     onDragMove,
     onDragEnd,
     onDelete,
@@ -259,7 +261,7 @@ export function Anchor(props: AnchorProps) {
       startAnchorX: position.x,
       startAnchorY: position.y,
     };
-
+    onDragStart?.(position);
     const onMove = (e: globalThis.MouseEvent) => {
       const current = dragState.current;
       if (!current) return;
@@ -270,13 +272,13 @@ export function Anchor(props: AnchorProps) {
       const newX = current.startAnchorX + x - current.startX;
       const newY = current.startAnchorY + y - current.startY;
 
-      onDragMove({ x: newX, y: newY });
+      onDragMove?.({ x: newX, y: newY });
     };
 
     const onUp = () => {
       setDragging(false);
       dragState.current = null;
-      onDragEnd({ x: position.x, y: position.y });
+      onDragEnd?.({ x: position.x, y: position.y });
 
       window.removeEventListener('mousemove', onMove);
       window.removeEventListener('mouseup', onUp);
@@ -289,7 +291,7 @@ export function Anchor(props: AnchorProps) {
   function handleKeyDown(e: KeyboardEvent<SVGGElement>) {
     if (e.key === 'Delete' || e.key === 'Backspace') {
       e.preventDefault();
-      onDelete();
+      onDelete?.();
     }
   }
 
