@@ -4,7 +4,6 @@ import type {
   ContourLevel,
   Display1D,
   Display2D,
-  DomainUpdateRules,
   SpectraColors,
   Spectrum1D,
   Spectrum2D,
@@ -169,7 +168,7 @@ type SetSpectrumAction = ActionType<
   {
     index: number;
     spectrum: Spectrum;
-    updateDomainRules: DomainUpdateRules;
+    onProduce: (draft: Draft<State>, processedSpectrum: Spectrum) => void;
   }
 >;
 
@@ -820,10 +819,11 @@ function handleUpdateSpectrumMeta(
 }
 
 function setSpectrum(draft: Draft<State>, action: SetSpectrumAction) {
-  const { index, spectrum, updateDomainRules } = action.payload;
+  const { index, spectrum, onProduce } = action.payload;
 
   draft.data[index] = spectrum;
-  updateView(draft, updateDomainRules);
+
+  onProduce(draft, spectrum);
 }
 
 export {
