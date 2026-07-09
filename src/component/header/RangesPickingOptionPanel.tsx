@@ -1,4 +1,4 @@
-import { Checkbox, FormGroup, NumericInput } from '@blueprintjs/core';
+import { Checkbox, Classes, FormGroup, NumericInput } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { revalidateLogic } from '@tanstack/react-form';
 import { AppForm, useForm } from 'react-science/ui';
@@ -26,6 +26,14 @@ const AppFormContainer = styled(AppForm)`
   flex-direction: row;
   gap: 10px;
   align-items: center;
+
+  .${Classes.CHECKBOX} {
+    margin-bottom: 0;
+  }
+
+  .${Classes.FORM_GROUP} {
+    margin-bottom: 0;
+  }
 `;
 
 type AutoRangesOptionsInput = z.input<typeof validationZodSchema>;
@@ -68,7 +76,6 @@ function RangesPickingOptionPanel() {
       <form.AppField name="lookNegative">
         {(field) => (
           <Checkbox
-            style={{ marginBottom: 0 }}
             label="Detect negative"
             checked={field.state.value}
             onBlur={field.handleBlur}
@@ -79,7 +86,7 @@ function RangesPickingOptionPanel() {
 
       <form.AppField name="minMaxRatio">
         {(field) => (
-          <FormGroup label="Min/max ratio:" inline style={{ marginBottom: 0 }}>
+          <FormGroup label="Min/max ratio:" inline>
             <NumericInput
               value={field.state.value ?? ''}
               onBlur={field.handleBlur}
