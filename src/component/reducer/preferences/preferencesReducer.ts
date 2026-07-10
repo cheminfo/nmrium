@@ -84,7 +84,7 @@ type InitPreferencesAction = ActionType<
   }
 >;
 
-type SetPreferencesAction =
+export type SetPreferencesAction =
   | ActionType<'SET_PREFERENCES', Partial<Workspace>>
   | ActionType<'SET_PREFERENCES'>;
 

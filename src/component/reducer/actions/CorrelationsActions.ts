@@ -160,7 +160,7 @@ function handleDeleteCorrelation(
       if (zone && signal) {
         deleteSignal2D(draft, {
           spectrumId: spectrum.id,
-          zone,
+          zone: original(zone),
           signalId: signal.id,
         });
       }

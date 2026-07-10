@@ -1,22 +1,30 @@
 import type { Draft } from 'immer';
+import { original } from 'immer';
 import cloneDeep from 'lodash/cloneDeep.js';
 
-import type { PreferencesState } from '../preferencesReducer.js';
+import type {
+  PreferencesState,
+  SetPreferencesAction,
+  WorkspaceWithSource,
+} from '../preferencesReducer.js';
 import { getActiveWorkspace } from '../utilities/getActiveWorkspace.js';
 
-export function setPreferences(draft: Draft<PreferencesState>, action: any) {
-  const currentWorkspacePreferences = getActiveWorkspace(draft);
+export function setPreferences(
+  draft: Draft<PreferencesState>,
+  action: SetPreferencesAction,
+) {
+  const currentWorkspacePreferences = getActiveWorkspace(original(draft));
 
-  if (action.payload) {
+  if ('payload' in action) {
     const preferences = action.payload;
 
-    draft.workspaces[draft.workspace.current] = {
+    draft.workspaces[draft.workspace.current] = cloneDeep({
       ...currentWorkspacePreferences,
       ...preferences,
-    };
+    }) as WorkspaceWithSource;
+  } else {
+    draft.originalWorkspaces[draft.workspace.current] = cloneDeep(
+      original(draft.workspaces[draft.workspace.current]),
+    );
   }
-
-  draft.originalWorkspaces[draft.workspace.current] = cloneDeep(
-    draft.workspaces[draft.workspace.current],
-  );
 }
