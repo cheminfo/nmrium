@@ -11,3 +11,7 @@ reject:
   - react-dom
   - '@types/react'
   - '@types/react-dom'
+  # Not compatible with typescript-eslint
+  - typescript
+  # https://github.com/react-grid-layout/react-draggable/issues/806
+  - react-draggable
