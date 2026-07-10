@@ -1,12 +1,12 @@
-import { Button } from '@blueprintjs/core';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { revalidateLogic } from '@tanstack/react-form';
 import type { Range } from '@zakodium/nmr-types';
 import type { CSSProperties } from 'react';
-import { useEffect } from 'react';
-import { useForm, useFormContext, useWatch } from 'react-hook-form';
-import * as Yup from 'yup';
+import { useMemo } from 'react';
+import { useFormContext, useWatch } from 'react-hook-form';
+import { AppForm, useForm } from 'react-science/ui';
+import { z } from 'zod/v4';
+import type { CheckParams } from 'zod/v4/core';
 
-import { NumberInput2Controller } from '../../../../elements/NumberInput2Controller.js';
 import { useTabsController } from '../../../../elements/TabsProvider.js';
 import { useActiveNucleusTab } from '../../../../hooks/useActiveNucleusTab.js';
 import { usePanelPreferences } from '../../../../hooks/usePanelPreferences.js';
@@ -44,29 +44,41 @@ export function NewSignalTab(props: NewSignalTabProps) {
   const activeTab = useActiveNucleusTab();
   const { tablePreferences } = usePanelPreferences('ranges', activeTab);
 
-  function saveHandler(val: any) {
+  const schemaFormValidation = useMemo(() => {
+    return getSignalValidationSchema(range);
+  }, [range]);
+
+  function saveHandler({ delta }: z.infer<typeof schemaFormValidation>) {
     const newSignal = {
       multiplicity: 'm',
       kind: 'signal',
-      delta: val.delta,
+      delta,
       js: [{ multiplicity: 'm', coupling: '' }],
     };
-    const _signals = signals.slice().concat(newSignal);
 
+    const _signals = [...signals, newSignal];
     setValue('signals', _signals);
     selectTab(_signals.length - 1);
   }
-  const { handleSubmit, reset, control, setFocus } = useForm({
+
+  const form = useForm({
     defaultValues: {
-      delta: (range.from + range.to) / 2,
+      delta: String((range.from + range.to) / 2),
     },
-    resolver: yupResolver(getSignalValidationSchema(range)),
+    onSubmit: ({ value }) => {
+      const parsedValues = schemaFormValidation.parse(value);
+      saveHandler(parsedValues);
+    },
+    validationLogic: revalidateLogic({ modeAfterSubmission: 'change' }),
+    validators: {
+      onDynamic: schemaFormValidation,
+    },
   });
 
   useEvent({
     onClick: ({ xPPM, shiftKey }) => {
       if (signalIndex === -1 && shiftKey) {
-        reset({ delta: xPPM });
+        form.reset({ delta: String(xPPM) });
       }
     },
     onBrushEnd: (options) => {
@@ -75,65 +87,53 @@ export function NewSignalTab(props: NewSignalTabProps) {
         shiftKey,
       } = options;
       if (signalIndex === -1 && shiftKey) {
-        reset({ delta: (to - from) / 2 + from });
+        form.reset({ delta: String((to - from) / 2 + from) });
       }
     },
-  });
-
-  useEffect(() => {
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        setFocus('delta', { shouldSelect: true });
-      }, 0);
-    });
   });
 
   return (
     <div style={styles.container}>
       <div style={styles.innerContainer}>
-        <p style={styles.infoText}>
-          Edit or select a delta value of new signal in range [
-          {`${formatNumber(
-            range.from,
-            tablePreferences.from.format,
-          )} ppm - ${formatNumber(range.to, tablePreferences.to.format)} ppm`}
-          ]:
-        </p>
-        <NumberInput2Controller
-          control={control}
-          name="delta"
-          placeholder={`𝛅(ppm)`}
-          autoSelect
-          fill
-        />
-        <Button
-          intent="success"
-          style={{
-            marginTop: '20px',
+        <AppForm
+          form={form}
+          onSubmitMeta={(event) => {
+            event.stopPropagation();
           }}
-          onClick={() => handleSubmit(saveHandler)()}
         >
-          Add a signal
-        </Button>
+          <form.AppField name="delta">
+            {(field) => (
+              <field.NumericInput
+                autoFocus
+                placeholder="𝛅(ppm)"
+                label="Edit or select a delta value of new signal"
+                helpText={`Value should be in range [${formatNumber(
+                  range.from,
+                  tablePreferences.from.format,
+                )} ppm - ${formatNumber(range.to, tablePreferences.to.format)} ppm]`}
+              />
+            )}
+          </form.AppField>
+
+          <form.SubmitButton intent="success">Add a signal</form.SubmitButton>
+        </AppForm>
       </div>
     </div>
   );
 }
 
 function getSignalValidationSchema(range: Range) {
-  return Yup.object().shape({
-    delta: Yup.number()
-      .test(`test-range`, '', function testNewSignalDelta(value, context) {
-        const { path, createError } = context;
-        if (value && value >= range.from && value <= range.to) {
-          return true;
-        }
+  const params: CheckParams = {
+    error: (ctx) => {
+      const input = Number(ctx.input);
+      return `${input.toFixed(5)} ppm out of the range`;
+    },
+  };
 
-        const errorMessage = ` ${
-          value ? value.toFixed(5) : 0
-        } ppm out of the range`;
-        return createError({ path, message: errorMessage });
-      })
-      .required(),
+  return z.object({
+    delta: z.coerce
+      .number<string>()
+      .min(range.from, params)
+      .max(range.to, params),
   });
 }

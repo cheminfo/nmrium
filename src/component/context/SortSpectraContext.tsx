@@ -35,9 +35,7 @@ interface SortByPathOptions extends BaseSortOptions {
 }
 
 type SortOptions =
-  | SortByPathOptions
-  | SortByReferenceOptions
-  | SortByReferenceIndexesOptions;
+  SortByPathOptions | SortByReferenceOptions | SortByReferenceIndexesOptions;
 
 type SortFuncOptions = SortOptions & { activeSort?: string };
 

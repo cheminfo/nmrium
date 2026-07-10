@@ -5,10 +5,9 @@ import type {
   Spectrum1D,
   Spectrum,
 } from '@zakodium/nmrium-core';
-import type { FormEvent } from 'react';
 import {
+  AppForm,
   FieldGroupSVGTextStyleFields,
-  Form,
   assert,
   svgTextStyleFieldsSchema,
   useForm,
@@ -191,13 +190,8 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
 
   if (!spectrum || !isSpectrum1D(spectrum)) return null;
 
-  function onSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    void form.handleSubmit(event);
-  }
-
   return (
-    <form.AppForm>
+    <>
       <StandardDialog
         isOpen
         title="Publication string"
@@ -207,7 +201,7 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
         onClose={onClose}
         style={{ minWidth: 600 }}
       >
-        <Form noValidate onSubmit={onSubmit} layout="inline">
+        <AppForm form={form} layout="inline">
           <HelpForm>This configuration is at the nucleus level.</HelpForm>
           <StyledDialogBody>
             <form.AppField name="acs.signalKind">
@@ -265,7 +259,7 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
               </form.AppField>
             )}
           </DialogFooter>
-        </Form>
+        </AppForm>
       </StandardDialog>
 
       <ClipboardFallbackModal
@@ -274,7 +268,7 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
         text={text}
         label="Preview publication string"
       />
-    </form.AppForm>
+    </>
   );
 }
 

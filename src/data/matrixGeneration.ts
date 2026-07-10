@@ -32,11 +32,7 @@ interface BooleanField extends Field<boolean> {
 }
 
 type CommonField =
-  | SelectField
-  | StringField
-  | NumberField
-  | BooleanField
-  | LabelField;
+  SelectField | StringField | NumberField | BooleanField | LabelField;
 
 interface ListField extends Field<string[]> {
   type: 'list';

@@ -210,11 +210,16 @@ export function BrushTracker(options: BrushTrackerProps) {
     const { x, y } = getMouseXY(event);
     onDoubleClick({ ...event, x, y });
   }
-
   const pointerDownHandler = useCallback(
     (event: PointerEvent) => {
       event.persist();
       const currentTarget = event.currentTarget;
+
+      const target = event.target as HTMLElement;
+      if (target.closest('[data-self-control="true"]')) {
+        return;
+      }
+
       isDraggingRef.current = false; // Reset dragging flag
 
       //check that the right or left mouse button pressed
@@ -533,8 +538,7 @@ interface DetectBrushingThresholdSize {
 type BrushDetectionThresholdAxis = 'both' | 'x' | 'y';
 
 type DetectBrushingOptions = { thresholdAxis?: BrushDetectionThresholdAxis } & (
-  | DetectBrushingThreshold
-  | DetectBrushingThresholdSize
+  DetectBrushingThreshold | DetectBrushingThresholdSize
 );
 
 export function detectBrushing(

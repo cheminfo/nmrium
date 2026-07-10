@@ -146,14 +146,6 @@ export default function BrushXY(props: BrushXYProps) {
     },
   );
 
-  const scaleX = axis === 'X' || axis === 'XY' ? brush.scaleX : 1;
-  const scaleY = axis === 'Y' || axis === 'XY' ? brush.scaleY : 1;
-
-  startX = axis === 'Y' ? margin.left : brush.startX || margin.left;
-  startY = axis === 'X' ? margin.top : brush.startY || margin.top;
-  endX = axis === 'Y' ? finalWidth : brush.endX || finalWidth;
-  endY = axis === 'X' ? finalHeight : brush.endY || finalHeight;
-
   let y1;
   let x1;
 
@@ -167,6 +159,14 @@ export default function BrushXY(props: BrushXYProps) {
   } else if (brush.type === 'XY') {
     x1 = Math.round((endX + startX) / 2);
   }
+
+  const scaleX = axis === 'X' || axis === 'XY' ? brush.scaleX : 1;
+  const scaleY = axis === 'Y' || axis === 'XY' ? brush.scaleY : 1;
+
+  startX = axis === 'Y' ? margin.left : brush.startX || margin.left;
+  startY = axis === 'X' ? margin.top : brush.startY || margin.top;
+  endX = axis === 'Y' ? finalWidth : brush.endX || finalWidth;
+  endY = axis === 'X' ? finalHeight : brush.endY || finalHeight;
 
   const invScaleX = 1 / scaleX;
   const invScaleY = 1 / scaleY;

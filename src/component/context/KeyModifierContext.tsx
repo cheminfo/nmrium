@@ -6,8 +6,7 @@ import { usePreferences } from './PreferencesContext.js';
 type ModifiersKey = `shift[${boolean}]_ctrl[${boolean}]_alt[${boolean}]`;
 
 type PrimaryKey =
-  | 'shift[true]_ctrl[false]_alt[false]'
-  | 'shift[false]_ctrl[false]_alt[false]';
+  'shift[true]_ctrl[false]_alt[false]' | 'shift[false]_ctrl[false]_alt[false]';
 
 function getPrimaryKey(invert: boolean): PrimaryKey {
   if (invert) {
@@ -23,6 +22,7 @@ interface KeyModifiers {
 }
 interface KeyModifiersState extends KeyModifiers {
   modifiersKey: ModifiersKey | null;
+  isPrimary: boolean;
 }
 
 const defaultKeyModifiersState: KeyModifiersState = {
@@ -30,6 +30,7 @@ const defaultKeyModifiersState: KeyModifiersState = {
   shiftKey: false,
   altKey: false,
   modifiersKey: null,
+  isPrimary: false,
 };
 
 const KeyModifierContext = createContext<KeyModifiersState>(
@@ -75,6 +76,11 @@ function getModifiersKey(event: EventModifierKeys) {
   return toModifiersKey(keyModifiers);
 }
 
+export function useIsPrimaryKeyActivated() {
+  const { primaryKeyIdentifier } = useMapKeyModifiers();
+  return primaryKeyIdentifier === 'shift[false]_ctrl[false]_alt[false]';
+}
+
 export function useMapKeyModifiers() {
   const {
     current: {
@@ -92,27 +98,35 @@ export function useMapKeyModifiers() {
   }, [invert]);
 }
 
+function isPrimaryActive(shiftKey: boolean, invert: boolean): boolean {
+  const primaryKey = getPrimaryKey(invert);
+  const shiftOnlyKey = toModifiersKey({
+    shiftKey,
+    ctrlKey: false,
+    altKey: false,
+  });
+  return shiftOnlyKey === primaryKey;
+}
+
 export function KeyModifiersProvider({ children }: KeyModifierProviderProps) {
-  const [modifiers, setModifiers] = useState<KeyModifiersState>(
-    defaultKeyModifiersState,
-  );
   const {
     current: {
       general: { invert },
     },
   } = usePreferences();
+  const [modifiers, setModifiers] = useState<KeyModifiers>(
+    defaultKeyModifiersState,
+  );
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
       const keyModifiers = getModifiers(event);
-      const modifiersKey = toModifiersKey(keyModifiers);
-      setModifiers({ ...keyModifiers, modifiersKey });
+      setModifiers(keyModifiers);
     }
 
     function handleKeyUp(event: KeyboardEvent) {
       const keyModifiers = getModifiers(event);
-      const modifiersKey = toModifiersKey(keyModifiers);
-      setModifiers({ ...keyModifiers, modifiersKey });
+      setModifiers(keyModifiers);
     }
 
     document.addEventListener('keydown', handleKeyDown);
@@ -124,8 +138,17 @@ export function KeyModifiersProvider({ children }: KeyModifierProviderProps) {
     };
   }, [invert]);
 
+  const state = useMemo(() => {
+    const modifiersKey = toModifiersKey(modifiers);
+    return {
+      ...modifiers,
+      isPrimary: isPrimaryActive(modifiers.shiftKey, invert),
+      modifiersKey,
+    };
+  }, [invert, modifiers]);
+
   return (
-    <KeyModifierContext.Provider value={modifiers}>
+    <KeyModifierContext.Provider value={state}>
       {children}
     </KeyModifierContext.Provider>
   );

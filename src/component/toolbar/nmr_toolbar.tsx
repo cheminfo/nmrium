@@ -1,35 +1,12 @@
-import {
-  SvgNmrAlignBottom,
-  SvgNmrAlignCenter,
-  SvgNmrApodization,
-  SvgNmrBaselineCorrection,
-  SvgNmrFourierTransform,
-  SvgNmrIntegrate,
-  SvgNmrMultipleAnalysis,
-  SvgNmrOverlay3,
-  SvgNmrOverlay3Aligned,
-  SvgNmrPeakPicking,
-  SvgNmrPhaseCorrection,
-  SvgNmrRangePicking,
-  SvgNmrRealImag,
-  SvgNmrZeroFilling,
-} from 'cheminfo-font';
 import { useCallback } from 'react';
-import {
-  FaDiceFour,
-  FaDownload,
-  FaExpand,
-  FaFileExport,
-  FaFileImport,
-} from 'react-icons/fa';
-import { PiKnifeBold, PiSelectionPlusDuotone } from 'react-icons/pi';
-import { TbZoom } from 'react-icons/tb';
+import { FaDownload } from 'react-icons/fa';
 import type { ToolbarItemProps, TooltipItem } from 'react-science/ui';
 import { Toolbar, TooltipHelpContent } from 'react-science/ui';
 
 import { isQuadrants2DSpectrum } from '../../data/data2d/Spectrum2D/isSpectrum2D.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useDispatch } from '../context/DispatchContext.js';
+import { useIsPrimaryKeyActivated } from '../context/KeyModifierContext.tsx';
 import { useLoader } from '../context/LoaderContext.js';
 import { usePreferences } from '../context/PreferencesContext.js';
 import type { ToolbarPopoverMenuItem } from '../elements/ToolbarPopoverItem.js';
@@ -50,14 +27,15 @@ import { LoadJCAMPModal } from '../modal/LoadJCAMPModal.js';
 import SaveAsModal from '../modal/SaveAsModal.js';
 import { MetaImportationModal } from '../modal/metaImportation/MetaImportationModal.js';
 
-import type { MainTool } from './ToolTypes.js';
-import { options } from './ToolTypes.js';
+import type { IconOptions, MainTool } from './ToolTypes.js';
+import { getToolIcon, options } from './ToolTypes.js';
 import type { ExportMenuItems } from './toolbarMenu.js';
 import { EXPORT_MENU, IMPORT_MENU } from './toolbarMenu.js';
 
-interface BaseToolItem extends Pick<ToolbarItemProps, 'icon' | 'disabled'> {
+interface BaseToolItem extends Pick<ToolbarItemProps, 'disabled'> {
   id: MainTool;
   isVisible?: boolean;
+  iconProps?: IconOptions;
 }
 interface ToolItem extends BaseToolItem {
   onClick?: () => void;
@@ -99,6 +77,7 @@ export default function NMRToolbar() {
   const isButtonVisible = useCheckToolsVisibility();
   const dispatch = useDispatch();
   const spectrum = useSpectrum();
+  const isPrimaryKeyActivated = useIsPrimaryKeyActivated();
 
   const {
     isRealSpectrumShown,
@@ -224,7 +203,9 @@ export default function NMRToolbar() {
         ],
         style: { minWidth: '300px' },
       },
-      icon: <TbZoom strokeWidth={3} />,
+      iconProps: {
+        strokeWidth: 3,
+      },
     },
     {
       id: 'zoomOut',
@@ -234,12 +215,10 @@ export default function NMRToolbar() {
           { title: 'Horizontal', shortcuts: ['f'] },
           { title: 'Horizontal and Vertical', shortcuts: ['f', 'f'] },
         ],
-        description:
-          'Zoom out by double-clicking the left mouse button, and fully zoom out horizontally by pressing the key "f". Alternatively, press the key "ff" to fit the spectra horizontally and vertically.',
+        description: `Zoom out by ${isPrimaryKeyActivated ? 'Shift + ' : ''}double-clicking the left mouse button, and fully zoom out horizontally by pressing the key "f". Alternatively, press the key "ff" to fit the spectra horizontally and vertically.`,
         link: 'https://docs.nmrium.org/help/zoom-and-scale',
       },
       onClick: handleFullZoomOut,
-      icon: <FaExpand />,
     },
     {
       id: 'peakPicking',
@@ -249,8 +228,6 @@ export default function NMRToolbar() {
         description: 'Detect peaks manually or automatically in the spectrum.',
         link: 'https://docs.nmrium.org/help/peaks',
       },
-
-      icon: <SvgNmrPeakPicking />,
     },
     {
       id: 'integral',
@@ -260,7 +237,6 @@ export default function NMRToolbar() {
         description: `Manually integrate the spectrum. Click, drag, and release ${!invert ? 'while holding SHIFT' : ''} to draw the integral. Resize the integrals by moving the edges. Cut an integral with ${!invert ? 'SHIFT +' : ''} click.`,
         link: 'https://docs.nmrium.org/help/integrations',
       },
-      icon: <SvgNmrIntegrate />,
     },
     {
       id: 'zonePicking',
@@ -270,7 +246,6 @@ export default function NMRToolbar() {
         description: `Draw 2D zones by clicking, dragging, and releasing${!invert ? 'while holding SHIFT' : ''}. Alternatively, detect zones automatically.`,
         link: 'https://docs.nmrium.org/30_2d-spectra/zones',
       },
-      icon: <FaDiceFour />,
     },
     {
       id: 'slicing',
@@ -280,7 +255,6 @@ export default function NMRToolbar() {
           'Display the horizontal and vertical slices of the selected 2D spectrum at the level of the pointer.',
         link: 'https://docs.nmrium.org/30_2d-spectra/slicing',
       },
-      icon: <PiKnifeBold />,
     },
     {
       id: 'rangePicking',
@@ -290,7 +264,6 @@ export default function NMRToolbar() {
         description: `Define ranges and analyse multiplet automatically or manually.  Click, drag, and release ${!invert ? 'while holding SHIFT' : ''} to draw the range. Ranges can be resized by moving the edges.`,
         link: 'https://docs.nmrium.org/help/ranges',
       },
-      icon: <SvgNmrRangePicking />,
     },
     {
       id: 'multipleSpectraAnalysis',
@@ -300,7 +273,6 @@ export default function NMRToolbar() {
         description:
           'Integrate multiple spectra at once and adjust integration zones by dragging their edges.',
       },
-      icon: <SvgNmrMultipleAnalysis />,
       isVisible: ftCounter > 0,
     },
     {
@@ -312,21 +284,18 @@ export default function NMRToolbar() {
           'Apply mathematical function that the FID is multiplied by before Fourier Transform.',
         link: 'https://docs.nmrium.org/help/apodization',
       },
-      icon: <SvgNmrApodization />,
     },
     {
       id: 'apodizationDimension1',
       tooltip: {
         title: options.apodizationDimension1.label,
       },
-      icon: <SvgNmrApodization />,
     },
     {
       id: 'apodizationDimension2',
       tooltip: {
         title: options.apodizationDimension2.label,
       },
-      icon: <SvgNmrApodization />,
     },
     {
       id: 'zeroFilling',
@@ -337,7 +306,6 @@ export default function NMRToolbar() {
           'Improve spectrum quality by increasing the number of points. By default, the number of points is twice as many as in the original FID.',
         link: 'https://docs.nmrium.org/help/zero-filling',
       },
-      icon: <SvgNmrZeroFilling />,
     },
     {
       id: 'zeroFillingDimension1',
@@ -346,7 +314,6 @@ export default function NMRToolbar() {
         description:
           'Improve spectrum quality by increasing the number of points',
       },
-      icon: <SvgNmrZeroFilling />,
     },
     {
       id: 'zeroFillingDimension2',
@@ -355,7 +322,6 @@ export default function NMRToolbar() {
         description:
           'Improve spectrum quality by increasing the number of points.',
       },
-      icon: <SvgNmrZeroFilling />,
     },
     {
       id: 'phaseCorrection',
@@ -365,7 +331,6 @@ export default function NMRToolbar() {
         description: `Correct the spectrum phase manually or automatically. For manual phase correction, define the pivot${!invert ? ' using SHIFT +' : ''} click, then press the PH0 and PH1 button, and move the mouse horizontally.`,
         link: 'https://docs.nmrium.org/help/phase',
       },
-      icon: <SvgNmrPhaseCorrection />,
     },
     {
       id: 'phaseCorrectionTwoDimensions',
@@ -374,7 +339,6 @@ export default function NMRToolbar() {
         shortcuts: ['a'],
         description: 'To phase the spectrum after the FFT.',
       },
-      icon: <SvgNmrPhaseCorrection />,
       isVisible: isQuadrants2DSpectrum(spectrum),
     },
     {
@@ -385,7 +349,6 @@ export default function NMRToolbar() {
         description: `Correct the baseline of the spectrum. You should draw zones corresponding to the noise using click, drag, release${!invert ? 'while holding SHIFT' : ''}.`,
         link: 'https://docs.nmrium.org/help/baseline',
       },
-      icon: <SvgNmrBaselineCorrection />,
     },
     {
       id: 'exclusionZones',
@@ -394,7 +357,6 @@ export default function NMRToolbar() {
         shortcuts: ['e'],
         description: `Define exclusion zones by clicking, dragging, releasing${!invert ? ' while holding SHIFT' : ''}. This option is practical for excluding large peaks like solvents.`,
       },
-      icon: <SvgNmrMultipleAnalysis />,
       isVisible: ftCounter > 0,
     },
     {
@@ -406,31 +368,26 @@ export default function NMRToolbar() {
         link: 'https://docs.nmrium.org/help/ft',
       },
       onClick: handleOnFFTFilter,
-      icon: <SvgNmrFourierTransform />,
     },
     {
       id: 'fftDimension1',
       tooltip: options.fftDimension1.label,
       onClick: handleFFtDimension1Filter,
-      icon: <SvgNmrFourierTransform />,
     },
     {
       id: 'fftDimension2',
       tooltip: options.fftDimension2.label,
       onClick: handleFFtDimension2Filter,
-      icon: <SvgNmrFourierTransform />,
     },
     {
       id: 'import',
       tooltip: options.import.label,
-      icon: <FaFileImport />,
       menuItems: importMenu,
       onClick: importHandler,
     },
     {
       id: 'exportAs',
       tooltip: options.exportAs.label,
-      icon: <FaFileExport />,
       menuItems: exportMenu,
       onClick: exportHandler,
     },
@@ -442,12 +399,6 @@ export default function NMRToolbar() {
         description:
           'Toggle between stack mode and all the spectra aligned at the bottom.',
       },
-      icon:
-        verticalAlign === 'stack' ? (
-          <SvgNmrOverlay3Aligned />
-        ) : (
-          <SvgNmrOverlay3 />
-        ),
       isVisible: ftCounter > 1,
       onClick: changeDisplayViewModeHandler,
     },
@@ -458,7 +409,6 @@ export default function NMRToolbar() {
         description:
           'Toggle between the imaginary and real parts of the spectrum.',
       },
-      icon: <SvgNmrRealImag />,
       onClick: changeSpectrumViewHandler,
     },
     {
@@ -469,12 +419,6 @@ export default function NMRToolbar() {
         description:
           'Toggle between alignment of the spectra in the center or at the bottom of the display.',
       },
-      icon:
-        verticalAlign === 'bottom' ? (
-          <SvgNmrAlignCenter />
-        ) : (
-          <SvgNmrAlignBottom />
-        ),
       isVisible: ftCounter > 0 || fidCounter > 0,
       onClick: alignSpectraVerticallyHandler,
     },
@@ -486,7 +430,6 @@ export default function NMRToolbar() {
         description:
           'Drag a rectangle over the spectrum region to create an inset.',
       },
-      icon: <PiSelectionPlusDuotone />,
     },
   ];
   return (
@@ -506,7 +449,8 @@ export default function NMRToolbar() {
       <SaveAsModal isOpen={dialog.saveAs} onCloseDialog={closeDialog} />
       <Toolbar vertical>
         {toolItems.map((item) => {
-          const { id, icon, tooltip, disabled, isVisible } = item;
+          const { id, tooltip, disabled, isVisible, iconProps } = item;
+          const Icon = getToolIcon(id, { verticalAlign, isRealSpectrumShown });
           const isToolVisible =
             isButtonVisible(id) && (isVisible === undefined || isVisible);
 
@@ -530,7 +474,7 @@ export default function NMRToolbar() {
                 }}
                 id={id}
                 active={selectedTool === id}
-                icon={icon}
+                icon={Icon && <Icon {...iconProps} />}
                 onClick={onClick}
                 disabled={disabled}
               />
@@ -555,7 +499,7 @@ export default function NMRToolbar() {
               }}
               id={id}
               active={selectedTool === id}
-              icon={icon}
+              icon={Icon && <Icon {...iconProps} />}
               disabled={disabled}
             />
           );

@@ -1,5 +1,37 @@
 # Changelog
 
+## [2.4.0](https://github.com/cheminfo/nmrium/compare/v2.3.0...v2.4.0) (2026-07-08)
+
+
+### Features
+
+* manually add signal in a range from 2D ([7be751b](https://github.com/cheminfo/nmrium/commit/7be751bbe6ae1a1fe2ca58fed6ee989ceddced80))
+* processings panel for experimental spectra operations ([#4214](https://github.com/cheminfo/nmrium/issues/4214)) ([cd38501](https://github.com/cheminfo/nmrium/commit/cd38501d40d6f31e5677add9d1c33cc99cfe50e7))
+* remove peak limit for optimization and adjust autoPeakPicking parameters ([#4241](https://github.com/cheminfo/nmrium/issues/4241)) ([cedb1c9](https://github.com/cheminfo/nmrium/commit/cedb1c924e2441da11b1519bf5ffef4f800444ad))
+* wrap `CoreOperatorExpanded` content into a `ErrorBoundary` ([#4249](https://github.com/cheminfo/nmrium/issues/4249)) ([a097701](https://github.com/cheminfo/nmrium/commit/a0977014c9e6fb26ccf30ff4f647e7531def586a))
+
+
+### Bug Fixes
+
+* add signal in f2 trace ([7be751b](https://github.com/cheminfo/nmrium/commit/7be751bbe6ae1a1fe2ca58fed6ee989ceddced80))
+* brush label position ([ef296a9](https://github.com/cheminfo/nmrium/commit/ef296a9020f90e636791728156f88d41a0c71d93))
+* clip the 1d trace signals ([7be751b](https://github.com/cheminfo/nmrium/commit/7be751bbe6ae1a1fe2ca58fed6ee989ceddced80))
+* do not look for matching signals if the spectrum does not exist ([1187f5d](https://github.com/cheminfo/nmrium/commit/1187f5d6cb41dee94c9aac994d1a9617636aa320))
+* range and signal position ([7be751b](https://github.com/cheminfo/nmrium/commit/7be751bbe6ae1a1fe2ca58fed6ee989ceddced80))
+* return empty string when FWHM, mu, or gamma is missing or invalid ([e8faddc](https://github.com/cheminfo/nmrium/commit/e8faddcdaa912efddffda9c0dee6616f03cf626c))
+* show/hide kind in peak preference ([3d74386](https://github.com/cheminfo/nmrium/commit/3d7438652b82fd50b85988bc1f39976bcabfe9ac))
+* uncontrolled input on save as modal ([#4234](https://github.com/cheminfo/nmrium/issues/4234)) ([d8ebb3c](https://github.com/cheminfo/nmrium/commit/d8ebb3cbabd7e6f04c7652b77a4c452fecc4a67a))
+* update dependencies ([#4252](https://github.com/cheminfo/nmrium/issues/4252)) ([2424fef](https://github.com/cheminfo/nmrium/commit/2424fef28916bccc6f654615fd642cb2eca82b57))
+
+## [2.3.0](https://github.com/cheminfo/nmrium/compare/v2.2.0...v2.3.0) (2026-06-29)
+
+
+### Features
+
+* add pro-R/pro-S prochiral hydrogen labelling ([6f5197a](https://github.com/cheminfo/nmrium/commit/6f5197aed5dce4937a4681ccba6f397351c90507))
+* add tooltips to spectra list cells ([08e9281](https://github.com/cheminfo/nmrium/commit/08e92819fe1f488a5eaf644634ebafad97fe7b81))
+* improve floating ranges table preferences ([#4213](https://github.com/cheminfo/nmrium/issues/4213)) ([3e8d091](https://github.com/cheminfo/nmrium/commit/3e8d091937b70d31c15bc1311aef2be14400c95c))
+
 ## [2.2.0](https://github.com/cheminfo/nmrium/compare/v2.1.0...v2.2.0) (2026-06-15)
 
 

@@ -110,10 +110,10 @@ export function usePeaksTableColumns(activeTab: string) {
         accessor: (row) => row?.shape?.fwhm || '',
         Cell: ({ row }: CellProps<PeakRecord>) => {
           const fwhm = row.original?.shape?.fwhm;
-          if (fwhm) {
-            return formatNumber(fwhm, tablePreferences.fwhm.format);
+          if (typeof fwhm !== 'number') {
+            return '';
           }
-          return '';
+          return formatNumber(fwhm, tablePreferences.fwhm.format);
         },
       },
       {
@@ -126,10 +126,10 @@ export function usePeaksTableColumns(activeTab: string) {
           const mu =
             row.original?.shape?.kind === 'pseudoVoigt' &&
             row.original?.shape?.mu;
-          if (mu) {
-            return formatNumber(mu, tablePreferences.mu.format);
+          if (typeof mu !== 'number') {
+            return '';
           }
-          return '';
+          return formatNumber(mu, tablePreferences.mu.format);
         },
       },
       {
@@ -143,10 +143,12 @@ export function usePeaksTableColumns(activeTab: string) {
           const gamma =
             row.original?.shape?.kind === 'generalizedLorentzian' &&
             row.original?.shape?.gamma;
-          if (gamma) {
-            return formatNumber(gamma, tablePreferences.gamma.format);
+
+          if (typeof gamma !== 'number') {
+            return '';
           }
-          return '';
+
+          return formatNumber(gamma, tablePreferences.gamma.format);
         },
       },
       {

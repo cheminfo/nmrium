@@ -55,9 +55,7 @@ type LoadDropFilesAction = ActionType<'LOAD_DROP_FILES', InputProps>;
 type InitiateAction = ActionType<'INITIATE', InitiateProps>;
 
 export type LoadAction =
-  | SetIsLoadingAction
-  | LoadDropFilesAction
-  | InitiateAction;
+  SetIsLoadingAction | LoadDropFilesAction | InitiateAction;
 
 function convertHybridizationStringValuesInCorrelations(
   correlations: CorrelationData,

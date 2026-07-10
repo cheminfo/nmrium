@@ -35,6 +35,7 @@ export function detectSignalsByMultipletAnalysis(
     to,
     frequency,
     minMaxRatio: 0.1,
+    maxAbsoluteRatio: 0.1,
     broadWidth: 0.25,
     broadRatio: 0.0025,
     optimize: true,

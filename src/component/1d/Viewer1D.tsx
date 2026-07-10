@@ -5,6 +5,7 @@ import { SVGRootContainer } from '../1d-2d/components/SVGRootContainer.js';
 import { ViewerResponsiveWrapper } from '../1d-2d/components/ViewerResponsiveWrapper.js';
 import BrushXY from '../1d-2d/tools/BrushXY.js';
 import CrossLinePointer from '../1d-2d/tools/CrossLinePointer.js';
+import { CursorToolIcon } from '../1d-2d/tools/CursorToolIcon.tsx';
 import { MouseTracker } from '../EventsTrackers/MouseTracker.js';
 import { useChartData } from '../context/ChartContext.js';
 import { ScaleProvider } from '../context/ScaleContext.js';
@@ -47,6 +48,7 @@ function InnerViewer1D(props: InnerViewer1DProps) {
                     position: 'absolute',
                   }}
                 >
+                  <CursorToolIcon />
                   <CrossLinePointer />
                   <BrushXY axis="XY" enableHorizontalGuideline />
                   <XLabelPointer />
