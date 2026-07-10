@@ -1,5 +1,6 @@
 import { useMemo, useRef } from 'react';
 import { useLinearPrimaryTicks } from 'react-d3-utils';
+import { SVGStyledText } from 'react-science/ui';
 
 import { AxisUnitPicker } from '../1d-2d/components/axis_unit_picker.tsx';
 import { useChartData } from '../context/ChartContext.js';
@@ -11,6 +12,7 @@ import {
   useHorizontalAxisUnit,
 } from '../hooks/use_axis_unit.ts';
 import { useGridline1DConfig } from '../hooks/use_gridlines_config.ts';
+import { useTicksConfig } from '../hooks/use_ticks_config.ts';
 
 import { useIsInset } from './inset/InsetProvider.js';
 
@@ -33,6 +35,7 @@ export function HorizontalAxis1D() {
     'horizontal',
     refAxis,
   );
+  const { labelStyle } = useTicksConfig();
   const gridConfig = useGridline1DConfig();
 
   if (!width || !height) {
@@ -59,9 +62,16 @@ export function HorizontalAxis1D() {
           allowedUnits={allowedUnits}
           onChange={setUnit}
         >
-          <text fill="#000" x={width - 10} y="30" dy="0.70em" textAnchor="end">
+          <SVGStyledText
+            fill="black"
+            x={width - 10}
+            y="30"
+            dy="0.70em"
+            textAnchor="end"
+            {...labelStyle}
+          >
             {unitLabel}
-          </text>
+          </SVGStyledText>
         </AxisUnitPicker>
       )}
     </D3Axis>
