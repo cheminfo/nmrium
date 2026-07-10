@@ -13,18 +13,18 @@ export function setPreferences(
   draft: Draft<PreferencesState>,
   action: SetPreferencesAction,
 ) {
-  const currentWorkspacePreferences = getActiveWorkspace(draft);
+  const currentWorkspacePreferences = getActiveWorkspace(original(draft));
 
   if ('payload' in action) {
     const preferences = action.payload;
 
-    draft.workspaces[draft.workspace.current] = {
+    draft.workspaces[draft.workspace.current] = cloneDeep({
       ...currentWorkspacePreferences,
       ...preferences,
-    } as WorkspaceWithSource;
+    }) as WorkspaceWithSource;
+  } else {
+    draft.originalWorkspaces[draft.workspace.current] = cloneDeep(
+      original(draft.workspaces[draft.workspace.current]),
+    );
   }
-
-  draft.originalWorkspaces[draft.workspace.current] = cloneDeep(
-    original(draft.workspaces[draft.workspace.current]),
-  );
 }
