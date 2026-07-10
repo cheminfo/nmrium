@@ -5,13 +5,16 @@ import type { ComponentProps } from 'react';
 import { useMemo, useRef, useState } from 'react';
 
 import { Anchor } from '../../AnchorSVG.tsx';
+import { useChartData } from '../../context/ChartContext.tsx';
 import { useDispatch } from '../../context/DispatchContext.tsx';
 import { useAddMultipletSignal } from '../../hooks/useAddMultipletSignal.tsx';
+import { useSpectraBottomMargin } from '../../hooks/useSpectraBottomMargin.ts';
 
 import type { IndicatorOrientation } from './RangeIndicator.tsx';
 import { useMarginBottom } from './RangeIndicator.tsx';
 
 const POINTER_SIZE = 4;
+const BackAreaSize = 20;
 interface SignalCursorProps {
   range: Range;
   scale: ScaleLinear<number, number, number>;
@@ -64,6 +67,7 @@ function SignalCursor(props: SignalCursorProps) {
   const toInPixel = scale(to);
   const start = Math.min(fromInPixel, toInPixel);
   const size = Math.abs(fromInPixel - toInPixel);
+  const { displayerMode } = useChartData();
 
   const top = useMarginBottom(orientation);
   const [pointerPosition, setPosition] = useState<number | null>(null);
@@ -87,12 +91,14 @@ function SignalCursor(props: SignalCursorProps) {
     const delta = scale.invert(valueInPixel);
     addMultipletSignal({ range, delta, spectrumId });
   }
+  const offset = useSpectraBottomMargin();
+  const offset1D = offset - 10;
 
   return (
     <g
       transform={
         orientation === 'horizontal'
-          ? `translate(${start} ${top})`
+          ? `translate(${start} ${displayerMode === '1D' ? top - offset1D : top})`
           : `translate(${top} ${start})`
       }
       onMouseMove={handleMove}
@@ -101,13 +107,25 @@ function SignalCursor(props: SignalCursorProps) {
     >
       {pointerPosition !== null && (
         <circle
-          cx={orientation === 'horizontal' ? pointerPosition : POINTER_SIZE + 1}
-          cy={orientation === 'horizontal' ? POINTER_SIZE + 1 : pointerPosition}
+          cx={
+            orientation === 'horizontal'
+              ? pointerPosition
+              : POINTER_SIZE + offset1D + 1
+          }
+          cy={
+            orientation === 'horizontal'
+              ? POINTER_SIZE + offset1D + 1
+              : pointerPosition
+          }
           r={POINTER_SIZE}
-          fill="red"
+          fill="green"
         />
       )}
-      <BackArea orientation={orientation} size={size} />
+      <BackArea
+        orientation={orientation}
+        size={size}
+        length={displayerMode === '1D' ? BackAreaSize : undefined}
+      />
     </g>
   );
 }
