@@ -5,30 +5,38 @@ import { useInsetOptions } from '../1d/inset/InsetProvider.js';
 
 import { useActiveSpectrum } from './useActiveSpectrum.js';
 
-function getSpectrum(
+function getSpectrum<Default>(
   data: Spectrum[],
   spectrumKey: string,
-  defaultValue?: any,
+  defaultValue: Default,
 ) {
   return data.find((datum) => datum.id === spectrumKey) || defaultValue;
 }
 
-export function useSpectrumWithDataSource(
-  dataSource: any,
-  defaultValue: any = null,
+export function useSpectrumWithDataSource<Default = Spectrum>(
+  dataSource: Spectrum[],
+  defaultValue: Default | null = null,
 ) {
   const activeSpectrum = useActiveSpectrum();
   const inset = useInsetOptions();
 
-  return useMemo<Spectrum>(() => {
+  return useMemo<Spectrum | Default | null>(() => {
     if (!dataSource) return defaultValue;
 
     if (inset) {
-      return getSpectrum(dataSource, inset.spectrumKey, defaultValue);
+      return getSpectrum<Default | null>(
+        dataSource,
+        inset.spectrumKey,
+        defaultValue,
+      );
     }
 
     if (dataSource && activeSpectrum?.selected) {
-      return getSpectrum(dataSource, activeSpectrum.id, defaultValue);
+      return getSpectrum<Default | null>(
+        dataSource,
+        activeSpectrum.id,
+        defaultValue,
+      );
     }
 
     return defaultValue;

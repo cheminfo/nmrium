@@ -273,7 +273,7 @@ export default function useAtomAssignment() {
     if (oclIDs.length > 0) {
       // set all IDs to highlight when hovering over an atom from assignment data
       const highlights = getHighlightsOnHover(assignments, oclIDs, [
-        spectrum,
+        ...(spectrum ? [spectrum] : []),
         ...tracesSpectra,
       ]);
       highlightedIdDsRef.current = highlights;

@@ -64,7 +64,7 @@ function Range(options: RangeProps) {
     ),
     {
       type: 'RANGE',
-      extra: { id, spectrumID: spectrum.id },
+      extra: { id, spectrumID: spectrum?.id },
     },
   );
 

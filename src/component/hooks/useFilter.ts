@@ -1,4 +1,5 @@
 import type { Filter1DEntry, Filter2DEntry } from '@zakodium/nmr-types';
+import type { Spectrum } from '@zakodium/nmrium-core';
 import { useMemo } from 'react';
 
 import type { ExtractFilterEntry } from '../../data/types/common/ExtractFilterEntry.js';
@@ -6,7 +7,7 @@ import type { FilterEntry } from '../../data/types/common/FilterEntry.js';
 
 import useSpectrum from './useSpectrum.js';
 
-const emptyData = { filters: [] };
+const emptyData: Pick<Spectrum, 'filters'> = { filters: [] };
 type FilterReturnType<T> = T extends Filter1DEntry['name']
   ? ExtractFilterEntry<T>
   : T extends Filter2DEntry['name']

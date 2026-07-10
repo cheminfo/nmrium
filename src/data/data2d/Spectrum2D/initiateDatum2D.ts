@@ -2,6 +2,7 @@ import type {
   Spectrum2D,
   SpectrumTwoDimensionsColor,
 } from '@zakodium/nmrium-core';
+import { sliceData2D } from '@zakodium/nmrium-core';
 import { Filters2DManager } from 'nmr-processing';
 
 import type { UsedColors } from '../../../types/UsedColors.js';
@@ -51,20 +52,27 @@ export function initiateDatum2D(
     info: initiateInfo(spectrum),
   };
 
-  datum.originalInfo = datum.info;
+  // Now, processings can happen before loading in component
+  if (!datum.originalInfo) {
+    datum.originalInfo = structuredClone(datum.info);
+  }
 
   datum.meta = { ...spectrum.meta };
 
   datum.customInfo = { ...spectrum.customInfo };
 
   datum.data = getData(datum, spectrum);
-  datum.originalData = datum.data;
+  if (!datum.originalData) {
+    datum.originalData = sliceData2D(datum.data);
+  }
   datum.filters = initiateFilters(spectrum?.filters);
 
   datum.zones = initiateZones(spectrum, datum);
 
-  //reapply filters after load the original data
-  Filters2DManager.reapplyFilters(datum);
+  if (!datum.processings) {
+    //reapply filters after load the original data
+    Filters2DManager.reapplyFilters(datum);
+  }
 
   // datum.display.contourOptions = initializeSpectrumContoursOptions(datum);
 

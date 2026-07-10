@@ -39,7 +39,7 @@ function IntegralResizable({
   const { id, integral, to, from } = integralData;
   const highlight = useHighlight([id], {
     type: 'INTEGRAL',
-    extra: { id, spectrumID: spectrum.id },
+    extra: { id, spectrumID: spectrum?.id },
   });
 
   function handleOnStopResizing(position: Position) {
@@ -51,7 +51,7 @@ function IntegralResizable({
           from: scaleX().invert(position.x2),
           to: scaleX().invert(position.x1),
         },
-        spectrumKey: spectrum.id,
+        spectrumKey: spectrum?.id,
       },
     });
   }

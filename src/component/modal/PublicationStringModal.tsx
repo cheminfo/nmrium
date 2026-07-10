@@ -91,7 +91,7 @@ interface InnerPublicationStringModalProps {
   onClose: () => void;
 
   acsExportOptions: ACSExportOptions;
-  spectrum: Spectrum;
+  spectrum: Spectrum | undefined;
   publicationStringVisibility?: {
     isShown: boolean;
     toggle: () => void;
@@ -150,7 +150,7 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
     defaultValues,
     validators: { onChange: validationSchema },
     onSubmit: ({ value, formApi }) => {
-      assert(spectrum && isSpectrum1D(spectrum));
+      assert(isSpectrum1D(spectrum));
       const nucleus = spectrum.info.nucleus;
 
       const parsedValues = validationSchema.parse(value);
@@ -188,7 +188,7 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
     },
   });
 
-  if (!spectrum || !isSpectrum1D(spectrum)) return null;
+  if (!isSpectrum1D(spectrum)) return null;
 
   return (
     <>

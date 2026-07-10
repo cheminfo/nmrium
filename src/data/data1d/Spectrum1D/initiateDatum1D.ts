@@ -2,6 +2,7 @@ import type {
   Spectrum1D,
   SpectrumOneDimensionColor,
 } from '@zakodium/nmrium-core';
+import { sliceData1D } from '@zakodium/nmrium-core';
 import { Filters1DManager } from 'nmr-processing';
 
 import type { UsedColors } from '../../../types/UsedColors.js';
@@ -46,15 +47,18 @@ export function initiateDatum1D(
     },
   };
 
-  spectrumObj.originalInfo = spectrumObj.info;
-
-  spectrumObj.meta = { ...spectrum.meta };
-
-  spectrumObj.customInfo = { ...spectrum.customInfo };
+  // Now, processings can happen before loading in component
+  if (!spectrumObj.originalInfo) {
+    spectrumObj.originalInfo = structuredClone(spectrumObj.info);
+  }
 
   spectrumObj.data = convertDataToFloat64Array(spectrum.data);
+  if (!spectrumObj.originalData) {
+    spectrumObj.originalData = sliceData1D(spectrumObj.data);
+  }
 
-  spectrumObj.originalData = spectrumObj.data;
+  spectrumObj.meta = { ...spectrum.meta };
+  spectrumObj.customInfo = { ...spectrum.customInfo };
 
   spectrumObj.filters = initiateFilters(spectrum?.filters); //array of object {name: "FilterName", options: FilterOptions = {value | object} }
 
@@ -81,8 +85,10 @@ export function initiateDatum1D(
   });
   spectrumObj.ranges = initiateRanges(spectrum, spectrumObj, rangesOptions);
 
-  //reapply filters after load the original data
-  Filters1DManager.reapplyFilters(spectrumObj);
+  if (!spectrumObj.processings) {
+    //reapply filters after load the original data
+    Filters1DManager.reapplyFilters(spectrumObj);
+  }
 
   return spectrumObj;
 }
