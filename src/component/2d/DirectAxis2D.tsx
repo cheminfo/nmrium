@@ -1,5 +1,6 @@
 import { memo, useRef } from 'react';
 import { useLinearPrimaryTicks } from 'react-d3-utils';
+import { SVGStyledText } from 'react-science/ui';
 
 import { useIsInset } from '../1d/inset/InsetProvider.tsx';
 import { AxisUnitPicker } from '../1d-2d/components/axis_unit_picker.tsx';
@@ -8,6 +9,7 @@ import { D3Axis } from '../elements/D3Axis.js';
 import { useCheckExportStatus } from '../hooks/useViewportSize.tsx';
 import { axisUnitToLabel, useDirectAxisUnit } from '../hooks/use_axis_unit.ts';
 import { useGridline2DConfig } from '../hooks/use_gridlines_config.ts';
+import { useTicksConfig } from '../hooks/use_ticks_config.ts';
 
 import { useScale2DX } from './utilities/scale.js';
 
@@ -93,11 +95,18 @@ interface UnitLabelProps {
 }
 function UnitLabel(props: UnitLabelProps) {
   const { width, children } = props;
-
+  const { labelStyle } = useTicksConfig();
   return (
-    <text fill="#000" x={width - 60} y="20" dy="0.71em" textAnchor="end">
+    <SVGStyledText
+      fill="black"
+      x={width - 60}
+      y="20"
+      dy="0.71em"
+      textAnchor="end"
+      {...labelStyle}
+    >
       {children}
-    </text>
+    </SVGStyledText>
   );
 }
 

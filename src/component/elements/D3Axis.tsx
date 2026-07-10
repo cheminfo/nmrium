@@ -51,6 +51,8 @@ function isVerticalAxis(axisPosition: AxisPosition) {
 
 function BaseLine(props: BaseLineProps) {
   const { axisPosition, tickLength = 6, scale } = props;
+  const { primaryTicks } = useTicksConfig();
+
   const [x1, x2] = scale.range();
   const sign = ['left', 'top'].includes(axisPosition) ? -1 : 1;
 
@@ -60,12 +62,20 @@ function BaseLine(props: BaseLineProps) {
     path = `M${sign * tickLength},${x2} H0 V${x1} H${sign * tickLength}`;
   }
 
-  return <path d={path} stroke="black" fill="none" className="domain" />;
+  return (
+    <path
+      d={path}
+      stroke="black"
+      fill="none"
+      className="domain"
+      {...primaryTicks.tickStyle}
+    />
+  );
 }
 
 function Tickets(props: TicketsProps) {
   const { ticks, tickLength = 6, axisPosition } = props;
-  const config = useTicksConfig();
+  const { primaryTicks, secondaryTicks } = useTicksConfig();
 
   if (!Array.isArray(ticks) || ticks.length === 0) return null;
 
@@ -127,19 +137,31 @@ function Tickets(props: TicketsProps) {
         transform={`translate(${isVertical ? `0,${position}` : `${position},0`})`}
         className="tick"
       >
-        {config.isSecondaryEnabled && isFirst && (
-          <line {...positionSecondaryFirstLineConfig} stroke="black" />
+        {secondaryTicks.enabled && isFirst && (
+          <line
+            {...positionSecondaryFirstLineConfig}
+            stroke="black"
+            {...secondaryTicks.tickStyle}
+          />
         )}
 
-        <line {...positionPrimaryLineConfig} stroke="black" />
+        <line
+          {...positionPrimaryLineConfig}
+          stroke="black"
+          {...primaryTicks.tickStyle}
+        />
 
-        {config.isSecondaryEnabled && (
-          <line {...positionSecondaryLineConfig} stroke="black" />
+        {secondaryTicks.enabled && (
+          <line
+            {...positionSecondaryLineConfig}
+            stroke="black"
+            {...secondaryTicks.tickStyle}
+          />
         )}
 
         <SVGStyledText
           fill="black"
-          {...config.textStyle}
+          {...primaryTicks.textStyle}
           {...positionTextConfig}
         >
           {label}

@@ -5,6 +5,7 @@ import type {
   Spectrum1D,
 } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
+import { original } from 'immer';
 import cloneDeep from 'lodash/cloneDeep.js';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { Filters1DManager } from 'nmr-processing';
@@ -365,23 +366,19 @@ function handleSaveEditedRange(
   const spectrum = getSpectrum(draft);
   if (!isSpectrum1D(spectrum)) return;
 
-  // remove assignments in global state
-  const _editedRowData: any = unlink(range);
-
-  delete _editedRowData.tableMetaInfo;
-  delete _editedRowData.rowKey;
-  // remove assignments in assignment hook data
-  // for now: clear all assignments for this range because signals or levels to store might have changed
-  const rangeIndex = getRangeIndex(spectrum, _editedRowData.id);
+  const rangeIndex = getRangeIndex(spectrum, range.id);
   if (rangeIndex === -1) {
     throw new Error('unreachable');
   }
 
-  if (_editedRowData.id === 'new') {
-    _editedRowData.id = crypto.randomUUID();
+  // Remove assignments in global state
+  unlink(range, -1);
+
+  if (range.id === 'new') {
+    range.id = crypto.randomUUID();
   }
 
-  spectrum.ranges.values[rangeIndex] = _editedRowData;
+  spectrum.ranges.values[rangeIndex] = range;
   updateRangesRelativeValues(spectrum);
   handleUpdateCorrelations(draft);
   resetSelectedTool(draft);
@@ -400,11 +397,11 @@ function deleteSignal1D(draft: Draft<State>, props: DeleteSignalProps) {
   const signalIndex = range.signals.findIndex(
     (_signal) => _signal.id === signalId,
   );
+  if (signalIndex === -1) return;
+
   // Remove assignments for the signal range object in the global state.
-  const _range = unlink(cloneDeep(range), {
-    unlinkType: 'signal',
-    signalIndex,
-  });
+  const _range = cloneDeep(original(range));
+  unlink(_range, signalIndex);
 
   _range.signals.splice(signalIndex, 1);
   spectrum.ranges.values[rangeIndex] = _range;
@@ -433,16 +430,13 @@ function clearSignalAssignment(
   const ranges = spectrum.ranges.values;
   if (rangeKey) {
     const rangeIndex = getRangeIndex(spectrum, rangeKey);
-    const unlinkType = signalIndex === -1 ? 'range' : 'signal';
-    ranges[rangeIndex] = unlink(ranges[rangeIndex], {
-      unlinkType,
-      signalIndex,
-    });
+    if (signalIndex !== -1) {
+      unlink(ranges[rangeIndex], signalIndex);
+    }
   } else {
-    const newRanges = ranges.map((range) => {
-      return unlink(range);
-    });
-    spectrum.ranges.values = newRanges;
+    for (const range of ranges) {
+      unlink(range, -1);
+    }
   }
 }
 

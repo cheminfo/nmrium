@@ -1,51 +1,47 @@
-import { Button, Checkbox } from '@blueprintjs/core';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { useForm } from 'react-hook-form';
-import * as Yup from 'yup';
+import { Checkbox, Classes, FormGroup, NumericInput } from '@blueprintjs/core';
+import styled from '@emotion/styled';
+import { revalidateLogic } from '@tanstack/react-form';
+import { AppForm, useForm } from 'react-science/ui';
+import { z } from 'zod';
 
 import { useDispatch } from '../context/DispatchContext.js';
 import { useToaster } from '../context/ToasterContext.js';
-import Label from '../elements/Label.js';
-import { NumberInput2Controller } from '../elements/NumberInput2Controller.js';
 import {
   MIN_AREA_POINTS,
   useCheckPointsNumberInWindowArea,
 } from '../hooks/useCheckPointsNumberInWindowArea.js';
 
-import { headerLabelStyle } from './Header.js';
-import { HeaderWrapper } from './HeaderWrapper.js';
-
-interface AutoRangesOptions {
-  minMaxRatio: number;
-  lookNegative: boolean;
-}
-
-const validationSchema = Yup.object().shape({
-  minMaxRatio: Yup.number().min(0).required(),
-  lookNegative: Yup.boolean().required(),
+const validationZodSchema = z.object({
+  minMaxRatio: z.coerce.number<string>().min(0),
+  lookNegative: z.boolean(),
 });
 
-const initialValues: AutoRangesOptions = {
-  minMaxRatio: 0.05,
+const defaultValues: AutoRangesOptionsInput = {
+  minMaxRatio: '0.05',
   lookNegative: false,
 };
 
+const AppFormContainer = styled(AppForm)`
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+
+  .${Classes.CHECKBOX}, .${Classes.FORM_GROUP} {
+    margin-bottom: 0;
+  }
+`;
+
+type AutoRangesOptionsInput = z.input<typeof validationZodSchema>;
+type AutoRangesOptions = z.output<typeof validationZodSchema>;
+
 function RangesPickingOptionPanel() {
   const dispatch = useDispatch();
-  const {
-    handleSubmit,
-    register,
-    control,
-    formState: { isValid },
-  } = useForm<AutoRangesOptions>({
-    defaultValues: initialValues,
-    resolver: yupResolver(validationSchema),
-    mode: 'onChange',
-  });
+
   const hasEnoughPoints = useCheckPointsNumberInWindowArea();
   const toaster = useToaster();
 
-  function handleRangesPicking(values: any) {
+  function handleRangesPicking(values: AutoRangesOptions) {
     if (hasEnoughPoints) {
       dispatch({
         type: 'AUTO_RANGES_DETECTION',
@@ -59,37 +55,54 @@ function RangesPickingOptionPanel() {
     }
   }
 
-  return (
-    <HeaderWrapper>
-      <Label title="Detect negative" style={headerLabelStyle}>
-        <Checkbox
-          style={{ margin: 0 }}
-          {...register(`lookNegative`)}
-          defaultChecked={false}
-        />
-      </Label>
-      <Label title="Min/max ratio:" style={headerLabelStyle}>
-        <NumberInput2Controller
-          control={control}
-          name="minMaxRatio"
-          min={0}
-          stepSize={0.01}
-          majorStepSize={0.01}
-          minorStepSize={0.01}
-          style={{ width: '70px' }}
-          debounceTime={500}
-        />
-      </Label>
+  const form = useForm({
+    defaultValues,
+    validationLogic: revalidateLogic({ modeAfterSubmission: 'change' }),
+    validators: {
+      onDynamic: validationZodSchema,
+    },
+    onSubmit: ({ value }) => {
+      const parsedValues = validationZodSchema.parse(value);
+      handleRangesPicking(parsedValues);
+    },
+  });
 
-      <Button
-        intent="success"
-        onClick={() => handleSubmit(handleRangesPicking)()}
-        style={{ margin: '0 10px' }}
-        disabled={!isValid}
-      >
-        Auto ranges picking
-      </Button>
-    </HeaderWrapper>
+  return (
+    <AppFormContainer form={form}>
+      <form.AppField name="lookNegative">
+        {(field) => (
+          <Checkbox
+            label="Detect negative"
+            checked={field.state.value}
+            onBlur={field.handleBlur}
+            onChange={({ target: { checked } }) => field.handleChange(checked)}
+          />
+        )}
+      </form.AppField>
+
+      <form.AppField name="minMaxRatio">
+        {(field) => (
+          <FormGroup label="Min/max ratio:" inline>
+            <NumericInput
+              value={field.state.value ?? ''}
+              onBlur={field.handleBlur}
+              min={0}
+              stepSize={0.01}
+              minorStepSize={0.01}
+              onValueChange={(_, valueAsString) => {
+                field.handleChange(valueAsString);
+              }}
+            />
+          </FormGroup>
+        )}
+      </form.AppField>
+
+      <div>
+        <form.SubmitButton intent="success">
+          Auto ranges picking
+        </form.SubmitButton>
+      </div>
+    </AppFormContainer>
   );
 }
 
