@@ -71,12 +71,6 @@ export default () => {
     test: {
       include: ['./src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     },
-    define: {
-      // https://github.com/react-grid-layout/react-draggable/issues/806
-      'process.env.DRAGGABLE_DEBUG': JSON.stringify(
-        process.env.DRAGGABLE_DEBUG ?? false,
-      ),
-    },
   });
 };
 
