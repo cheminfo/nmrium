@@ -83,6 +83,7 @@ function SignalCursor(props: SignalCursorProps) {
   }
 
   function handleAddSignal(e: React.MouseEvent<SVGGElement, MouseEvent>) {
+    e.stopPropagation();
     const boundingRect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - boundingRect.left + start;
     const y = e.clientY - boundingRect.top + start;
@@ -146,8 +147,6 @@ function InnerSignals1D(props: InnerSignals1D) {
     index: number,
     newPosition: { x: number; y: number },
   ) {
-    // console.log(newX)
-
     const delta = orientation === 'horizontal' ? newPosition.x : newPosition.y;
     const from = orientation === 'horizontal' ? range.from : range.to;
     const to = orientation === 'horizontal' ? range.to : range.from;

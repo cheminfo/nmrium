@@ -22,7 +22,6 @@ import { ResizerWithScale } from '../../elements/ResizerWithScale.js';
 import type { Position } from '../../elements/resizer/SVGResizer.js';
 import { useHighlight } from '../../highlight/index.js';
 import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
-import { useAddMultipletSignal } from '../../hooks/useAddMultipletSignal.tsx';
 import { useHighlightColor } from '../../hooks/useHighlightColor.js';
 import { useResizerStatus } from '../../hooks/useResizerStatus.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
@@ -75,9 +74,6 @@ function Range(options: RangeProps) {
   const { showIntegralsValues } = useActiveSpectrumRangesViewState();
 
   const { isDialogOpen } = useDialogData();
-
-  const addMultipletSignal = useAddMultipletSignal();
-
   const isBlockedByEditing = selectedTool && isDialogOpen(EditRangeModal);
 
   function handleOnStopResizing(position: Position) {
@@ -148,17 +144,6 @@ function Range(options: RangeProps) {
   });
 
   const isOpen = isAssignBtnTrigged.current ? isAssignmentActive : undefined;
-
-  function handleAddSignal(e: React.MouseEvent<SVGGElement, MouseEvent>) {
-    e.stopPropagation();
-    const boundingRect = e.currentTarget.getBoundingClientRect();
-    const fromInPixel = scaleX()(from);
-    const toInPixel = scaleX()(to);
-    const start = Math.min(fromInPixel, toInPixel);
-    const x = e.clientX - boundingRect.left + start;
-    const delta = scaleX().invert(x);
-    addMultipletSignal({ range, delta });
-  }
 
   return (
     <ActionsButtonsPopover
@@ -232,7 +217,6 @@ function Range(options: RangeProps) {
                     size={rangeWidth}
                     value={integration}
                     opacity={opacity}
-                    onClick={handleAddSignal}
                     format={relativeFormat}
                   />
                 )}
