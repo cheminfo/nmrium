@@ -20,6 +20,7 @@ import Peaks from './peaks/Peaks.js';
 import PeaksShapes from './peaks/PeaksShapes.js';
 import Ranges from './ranges/Ranges.js';
 import RangesIntegrals from './ranges/RangesIntegrals.js';
+import { Signals } from './ranges/Signals.tsx';
 
 export function SVGContent1D() {
   return (
@@ -47,6 +48,7 @@ export function SVGContent1D() {
 
         <SimilarityTree />
       </ClipPathContainer>
+      <Signals />
       <JGraph />
       <PredictionErrorsNotations />
 

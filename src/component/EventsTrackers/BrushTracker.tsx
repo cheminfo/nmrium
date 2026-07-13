@@ -134,7 +134,9 @@ interface BrushTrackerProps {
   brushDetectionOptions?: BaseDetectBrushingOptions;
   clickTriggerMode?: 'native' | 'debounced';
 }
-
+function isSelfControlledTarget(target: EventTarget) {
+  return (target as Element).closest('[data-self-control="true"]') !== null;
+}
 function getMouseXY(event: MouseEvent, currentTarget?: Element) {
   const boundingRect = (
     currentTarget ?? event.currentTarget
@@ -169,6 +171,7 @@ export function BrushTracker(options: BrushTrackerProps) {
   const boundingRectRef = useRef<DOMRect | null>(null);
   const startPositionRef = useRef<Position>({ x: 0, y: 0 });
   const lastRef = useRef<Position>({ x: 0, y: 0 });
+  const isSelfControlledRef = useRef(false);
 
   const handleClickWithDebounce = useCallback(
     (event: MouseEvent, currentTarget: Element) => {
@@ -199,14 +202,26 @@ export function BrushTracker(options: BrushTrackerProps) {
   );
 
   function handleClick(event: MouseEvent) {
-    if (isDraggingRef.current || clickTriggerMode !== 'native') return;
+    if (
+      isDraggingRef.current ||
+      clickTriggerMode !== 'native' ||
+      isSelfControlledRef.current
+    ) {
+      return;
+    }
+
     const { x, y } = getMouseXY(event);
     onClick({ ...event, x, y });
   }
 
   function handleDoubleClick(event: MouseEvent) {
-    if (isDraggingRef.current || clickTriggerMode !== 'native') return;
-
+    if (
+      isDraggingRef.current ||
+      clickTriggerMode !== 'native' ||
+      isSelfControlledRef.current
+    ) {
+      return;
+    }
     const { x, y } = getMouseXY(event);
     onDoubleClick({ ...event, x, y });
   }
@@ -214,9 +229,9 @@ export function BrushTracker(options: BrushTrackerProps) {
     (event: PointerEvent) => {
       event.persist();
       const currentTarget = event.currentTarget;
+      isSelfControlledRef.current = isSelfControlledTarget(event.target);
 
-      const target = event.target as HTMLElement;
-      if (target.closest('[data-self-control="true"]')) {
+      if (isSelfControlledRef.current) {
         return;
       }
 

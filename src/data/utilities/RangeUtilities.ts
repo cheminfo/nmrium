@@ -1,16 +1,19 @@
 import type { Range, Signal1D } from '@zakodium/nmr-types';
 
-export function unlink(range: Range, signalIndex: number): void {
-  if (signalIndex !== -1) {
-    const signal = range.signals[signalIndex];
-    delete signal.diaIDs;
-    delete signal.nbAtoms;
-  } else {
-    for (const signal of range.signals) {
-      delete signal.diaIDs;
-      delete signal.nbAtoms;
-    }
-  }
+function omitSignalKeys(signal: Signal1D): Signal1D {
+  const { diaIDs, nbAtoms, ...rest } = signal;
+  return rest;
+}
+
+export function unlink(range: Range, signalIndex?: number): Range {
+  return {
+    ...range,
+    signals: range.signals.map((signal, index) =>
+      signalIndex === undefined || index === signalIndex
+        ? omitSignalKeys(signal)
+        : signal,
+    ),
+  };
 }
 
 export function getOpacityBasedOnSignalKind(input: Range | Signal1D) {

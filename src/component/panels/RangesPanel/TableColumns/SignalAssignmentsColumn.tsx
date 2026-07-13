@@ -12,7 +12,7 @@ interface SignalAssignmentsColumnProps
     isActive: boolean;
   };
   onLink?: (a: MouseEvent, b: AssignmentsData) => void;
-  onUnlink?: (element: MouseEvent, b: boolean) => void;
+  onUnlink?: (element: MouseEvent) => void;
 }
 
 function SignalAssignmentsColumn({
@@ -44,7 +44,7 @@ function SignalAssignmentsColumn({
       onClick={assignHandler}
       style={{ padding: '0', ...tdCss }}
       hideRemoveAssignmentButton={!diaIDs || diaIDs.length === 0}
-      onRemove={(e) => onUnlink?.(e, false)}
+      onRemove={(e) => onUnlink?.(e)}
     >
       {(diaIDs?.length > 0 || assignment.isActive) && (
         <span>{diaIDs?.length || 0}</span>
