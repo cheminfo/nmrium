@@ -1,5 +1,27 @@
 # Changelog
 
+## [2.5.0](https://github.com/cheminfo/nmrium/compare/v2.4.0...v2.5.0) (2026-07-13)
+
+
+### Features
+
+* add multiplet signal in 1d ([#4253](https://github.com/cheminfo/nmrium/issues/4253)) ([639200f](https://github.com/cheminfo/nmrium/commit/639200ff3e4eb3c47a66ed8163f45953628c7ebe))
+* apply processings from panel change ([#4254](https://github.com/cheminfo/nmrium/issues/4254)) ([6db04ba](https://github.com/cheminfo/nmrium/commit/6db04ba1c8c9de34d12c8da1041b5c4a7f0cb3e0))
+* change cursor based on the selected tool ([#4256](https://github.com/cheminfo/nmrium/issues/4256)) ([6ca2885](https://github.com/cheminfo/nmrium/commit/6ca2885660237d048d4230e1a2660fe4ac50eaa2))
+* hide the crosshair in add/move signal mode ([ac5eb4d](https://github.com/cheminfo/nmrium/commit/ac5eb4d678e86ae145434f283afb80af6f8e4e2f)), closes [#4259](https://github.com/cheminfo/nmrium/issues/4259)
+* improve useSpectrum type inference ([#4254](https://github.com/cheminfo/nmrium/issues/4254)) ([6db04ba](https://github.com/cheminfo/nmrium/commit/6db04ba1c8c9de34d12c8da1041b5c4a7f0cb3e0))
+* show green dotted vertical line when adding new signals ([f4c11bd](https://github.com/cheminfo/nmrium/commit/f4c11bd5ae8fcafefedc00396cbfb24d12a012c5))
+* support custom tick and axis label styles based on user preferences ([#4232](https://github.com/cheminfo/nmrium/issues/4232)) ([2f771eb](https://github.com/cheminfo/nmrium/commit/2f771eba4d653f62fd284812df7fd8a6236306e0))
+* update crosshair display for 1D and 2D ([8e62da7](https://github.com/cheminfo/nmrium/commit/8e62da75f9a7989e4718bc26f38a4fcaca13a8cc)), closes [#4258](https://github.com/cheminfo/nmrium/issues/4258)
+
+
+### Bug Fixes
+
+* do not deep clone immer drafts ([#4260](https://github.com/cheminfo/nmrium/issues/4260)) ([f24a3b1](https://github.com/cheminfo/nmrium/commit/f24a3b1350c968e66b5de017edf085d5d5c022ac))
+* downgrade react-draggable to 4.5.0 ([#4254](https://github.com/cheminfo/nmrium/issues/4254)) ([6db04ba](https://github.com/cheminfo/nmrium/commit/6db04ba1c8c9de34d12c8da1041b5c4a7f0cb3e0))
+* spectrum init when it imply `processings` ([#4254](https://github.com/cheminfo/nmrium/issues/4254)) ([6db04ba](https://github.com/cheminfo/nmrium/commit/6db04ba1c8c9de34d12c8da1041b5c4a7f0cb3e0))
+* update dependencies ([#4264](https://github.com/cheminfo/nmrium/issues/4264)) ([28da90c](https://github.com/cheminfo/nmrium/commit/28da90c4d87bbbf2c3ba8f0b53c333348a419250))
+
 ## [2.4.0](https://github.com/cheminfo/nmrium/compare/v2.3.0...v2.4.0) (2026-07-08)
 
 
