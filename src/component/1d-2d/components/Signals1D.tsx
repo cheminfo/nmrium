@@ -5,6 +5,7 @@ import type { ComponentProps } from 'react';
 import { useMemo, useRef, useState } from 'react';
 
 import { Anchor } from '../../AnchorSVG.tsx';
+import { disableMouseTrackingProps } from '../../EventsTrackers/MouseTracker.tsx';
 import { useChartData } from '../../context/ChartContext.tsx';
 import { useDispatch } from '../../context/DispatchContext.tsx';
 import { useAddMultipletSignal } from '../../hooks/useAddMultipletSignal.tsx';
@@ -97,6 +98,7 @@ function SignalCursor(props: SignalCursorProps) {
 
   return (
     <g
+      {...disableMouseTrackingProps}
       transform={
         orientation === 'horizontal'
           ? `translate(${start} ${displayerMode === '1D' ? top - offset1D : top})`
