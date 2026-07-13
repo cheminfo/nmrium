@@ -16,6 +16,7 @@ import type { RangesActions } from '../reducer/actions/RangesActions.js';
 import type { SpectrumActions } from '../reducer/actions/SpectraActions.js';
 import type { ToolsActions } from '../reducer/actions/ToolsActions.js';
 import type { ZonesActions } from '../reducer/actions/ZonesActions.js';
+import type { ProcessingsActions } from '../reducer/actions/processings_actions.ts';
 import type { UnitActions } from '../reducer/actions/unit_actions.ts';
 import type { ActionType } from '../reducer/types/ActionType.js';
 
@@ -38,7 +39,8 @@ export type Action =
   | ActionType<'INITIALIZE_NMRIUM'>
   | ActionType<'SECRET_THROW_ERROR', { randomNumber: number }>
   | InsetsActions
-  | UnitActions;
+  | UnitActions
+  | ProcessingsActions;
 // // eslint-disable-next-line @typescript-eslint/ban-types
 // | { type: string & {}; payload?: Object };
 

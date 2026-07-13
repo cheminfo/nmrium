@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef } from 'react';
 
 import { isFid2DSpectrum } from '../../../data/data2d/Spectrum2D/isSpectrum2D.js';
 import { useChartData } from '../../context/ChartContext.js';
-import useSpectrum from '../../hooks/useSpectrum.js';
+import { useViewSpectrum } from '../../hooks/useSpectrum.js';
 import { get2DXScale, get2DYScale } from '../utilities/scale.js';
 
 export function FidCanvas() {
@@ -18,7 +18,7 @@ export function FidCanvas() {
   const canvasWidth = width - right - left;
   const canvasHeight = height - top - bottom;
 
-  const spectrum = useSpectrum() as Spectrum2D;
+  const spectrum = useViewSpectrum() as Spectrum2D;
   const imageData = useMemo(() => getImageData(spectrum), [spectrum]);
 
   useEffect(() => {

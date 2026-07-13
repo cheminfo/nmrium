@@ -2,9 +2,15 @@ import type {
   Spectrum,
   SpectrumProcessingOperation,
 } from '@zakodium/nmrium-core';
-import { sliceSpectrum } from '@zakodium/nmrium-core';
-import { noop } from '@zakodium/utils';
+import {
+  isSpectrum1D,
+  sliceData1D,
+  sliceData2D,
+  sliceSpectrum,
+} from '@zakodium/nmrium-core';
+import { assertDefined, noop } from '@zakodium/utils';
 import type { Draft } from 'immer';
+import { assertUnreachable } from 'react-science/ui';
 
 import { initializeContoursLevels } from '../../../data/data2d/Spectrum2D/contours.ts';
 import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.ts';
@@ -44,6 +50,21 @@ export function useProcessingsMutations() {
     if (indexSpectrum === -1) return {};
 
     const spectrum = sliceSpectrum(state.data[indexSpectrum]);
+
+    return { spectrum, indexSpectrum };
+  }
+
+  function getTempSpectrum() {
+    const activeSpectrum = getActiveSpectrum(state);
+    if (!activeSpectrum) return {};
+
+    const id = activeSpectrum.id;
+    const indexSpectrum = state.tempData.findIndex(
+      (s: Spectrum) => s.id === id,
+    );
+    if (indexSpectrum === -1) return {};
+
+    const spectrum = sliceSpectrum(state.tempData[indexSpectrum]);
 
     return { spectrum, indexSpectrum };
   }
@@ -165,6 +186,87 @@ export function useProcessingsMutations() {
           draft.xDomain = zoomValue.xDomain;
           draft.yDomain = zoomValue.yDomain;
         }
+      });
+    },
+
+    // Related to live update
+    async prepareLiveChange(uid: string) {
+      const { spectrum, indexSpectrum } = getSpectrum();
+      if (!spectrum?.processings) return;
+
+      const preProcessings: typeof spectrum.processings = [];
+      const processings: typeof spectrum.processings = [];
+
+      let didFindUid = false;
+      for (const operation of spectrum.processings) {
+        if (uid === operation.uid) didFindUid = true;
+        if (didFindUid) processings.push(structuredClone(operation));
+        else preProcessings.push(structuredClone(operation));
+      }
+
+      // apply preProcessings
+      spectrum.processings = preProcessings;
+      const processedSpectrum = await core.processSpectrum(spectrum);
+
+      // prepare processings for live-update
+      processedSpectrum.processings = processings;
+      processedSpectrum.originalInfo = structuredClone(processedSpectrum.info);
+      if (isSpectrum1D(processedSpectrum)) {
+        processedSpectrum.originalData = sliceData1D(processedSpectrum.data);
+      } else if (isSpectrum2D(processedSpectrum)) {
+        processedSpectrum.originalData = sliceData2D(processedSpectrum.data);
+      } else {
+        assertUnreachable(processedSpectrum);
+      }
+
+      const tempData = state.data.slice();
+      tempData[indexSpectrum] = processedSpectrum;
+
+      dispatch({
+        type: 'SET_TEMP_SPECTRA',
+        payload: { spectra: tempData },
+      });
+    },
+
+    async resetLiveChange() {
+      dispatch({
+        type: 'SET_TEMP_SPECTRA',
+        payload: { spectra: undefined },
+      });
+    },
+
+    async applyLiveChange(
+      operation: SpectrumProcessingOperation<any, any>,
+      shouldProcessAll: boolean,
+    ) {
+      assertDefined(state.tempData);
+      const { spectrum, indexSpectrum } = getTempSpectrum();
+
+      if (!spectrum?.processings) return;
+
+      const indexOperation = spectrum.processings.findIndex(
+        (p) => p.uid === operation.uid,
+      );
+      if (indexSpectrum === -1) return;
+
+      const savedProcessings = structuredClone(spectrum.processings);
+
+      spectrum.processings[indexOperation] = operation;
+      if (!shouldProcessAll) {
+        spectrum.processings.splice(indexOperation + 1);
+      }
+      const processedSpectrum = await core.processSpectrum(spectrum);
+      assertDefined(processedSpectrum.processings);
+      const processedOperation = processedSpectrum.processings[indexOperation];
+      processedSpectrum.processings = savedProcessings;
+      spectrum.processings[indexOperation] = processedOperation;
+
+      const spectra = state.tempData.slice();
+      spectra[indexSpectrum] = processedSpectrum;
+
+      dispatch({
+        type: 'SET_TEMP_SPECTRA',
+        payload: { spectra },
       });
     },
   };

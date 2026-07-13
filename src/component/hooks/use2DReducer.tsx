@@ -20,13 +20,16 @@ export function use2DReducer(): SpectrumFTData[] {
       spectra: { activeTab },
     },
     data,
+    tempData,
   } = useChartData();
   const [fromX, toX] = xDomain;
   const [fromY, toY] = yDomain;
 
   return useMemo(() => {
     const outputSpectra: SpectrumFTData[] = [];
-    const spectra = getSpectraByNucleus(activeTab, data).filter(isFt2DSpectrum);
+    const spectra = getSpectraByNucleus(activeTab, tempData ?? data).filter(
+      isFt2DSpectrum,
+    );
     for (const spectrum of spectra) {
       const { id, display, data } = spectrum;
       const { rr } = data;
@@ -47,7 +50,7 @@ export function use2DReducer(): SpectrumFTData[] {
       });
     }
     return outputSpectra;
-  }, [activeTab, data, fromX, fromY, toX, toY]);
+  }, [activeTab, data, fromX, fromY, tempData, toX, toY]);
 }
 
 export interface Reduce2DSpectrumOptions {

@@ -31,6 +31,7 @@ import * as RangesActions from './actions/RangesActions.js';
 import * as SpectraActions from './actions/SpectraActions.js';
 import * as ToolsActions from './actions/ToolsActions.js';
 import * as ZonesActions from './actions/ZonesActions.js';
+import * as ProcessingsActions from './actions/processings_actions.js';
 import {
   handleSetAxisUnit1DHorizontalAction,
   handleSetAxisUnit2DDirectAction,
@@ -648,8 +649,11 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return ToolsActions.setSpectraSameTopHandler(draft);
       case 'RESET_SPECTRA_SCALE':
         return ToolsActions.resetSpectraScale(draft);
+
       case 'SET_SPECTRUM':
-        return SpectraActions.setSpectrum(draft, action);
+        return ProcessingsActions.setSpectrum(draft, action);
+      case 'SET_TEMP_SPECTRA':
+        return ProcessingsActions.setTempSpectra(draft, action);
 
       case 'CHANGE_SPECTRUM_DISPLAY_VIEW_MODE':
         return ToolsActions.handleChangeSpectrumDisplayMode(draft);

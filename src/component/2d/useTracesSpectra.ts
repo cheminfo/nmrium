@@ -49,11 +49,14 @@ export function getTracesSpectra(options: GetTracesSpectraOptions) {
 
 export function useTracesSpectra() {
   const {
-    data: spectra,
+    data,
+    tempData,
     view: {
       spectra: { activeSpectra, activeTab },
     },
   } = useChartData();
+
+  const spectra: Spectrum[] = tempData ?? data;
 
   return useMemo(() => {
     const nuclei = activeTab?.split(',');
