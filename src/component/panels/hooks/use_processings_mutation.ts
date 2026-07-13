@@ -1,4 +1,5 @@
 import type {
+  NMRiumCore,
   Spectrum,
   SpectrumProcessingOperation,
 } from '@zakodium/nmrium-core';
@@ -255,6 +256,7 @@ export function useProcessingsMutations() {
       if (!shouldProcessAll) {
         spectrum.processings.splice(indexOperation + 1);
       }
+      const domains = aggregateDomains(spectrum.processings, core);
       const processedSpectrum = await core.processSpectrum(spectrum);
       assertDefined(processedSpectrum.processings);
       const processedOperation = processedSpectrum.processings[indexOperation];
@@ -266,8 +268,29 @@ export function useProcessingsMutations() {
 
       dispatch({
         type: 'SET_TEMP_SPECTRA',
-        payload: { spectra },
+        payload: {
+          spectra,
+          onProduce: (draft) => updateView(draft, domains),
+        },
       });
     },
   };
+}
+
+function aggregateDomains(
+  operations: Array<SpectrumProcessingOperation<unknown, unknown>>,
+  core: NMRiumCore,
+) {
+  let updateXDomain = false;
+  let updateYDomain = false;
+
+  for (const operation of operations) {
+    const {
+      domainUpdateRules = { updateXDomain: false, updateYDomain: false },
+    } = core.getOperator(operation.operatorId) ?? {};
+    updateXDomain ||= domainUpdateRules.updateXDomain;
+    updateYDomain ||= domainUpdateRules.updateYDomain;
+  }
+
+  return { updateXDomain, updateYDomain };
 }
