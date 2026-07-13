@@ -61,6 +61,33 @@ export function Signals1D(props: Signals1DProps) {
   });
 }
 
+interface GuideLineProps {
+  orientation: IndicatorOrientation;
+  position: number;
+  length: number;
+  color: string;
+}
+
+function GuideLine({ orientation, position, length, color }: GuideLineProps) {
+  const isVerticalLine = orientation === 'horizontal';
+
+  return (
+    <line
+      transform={
+        isVerticalLine ? `translate(${position} 0)` : `translate(0 ${position})`
+      }
+      x1={0}
+      x2={isVerticalLine ? 0 : length}
+      y1={0}
+      y2={isVerticalLine ? length : 0}
+      stroke={color}
+      strokeDasharray="6 4"
+      shapeRendering="crispEdges"
+      vectorEffect="non-scaling-stroke"
+      pointerEvents="none"
+    />
+  );
+}
 function SignalCursor(props: SignalCursorProps) {
   const { orientation, range, scale, spectrumId } = props;
   const { from, to } = range;
@@ -68,7 +95,7 @@ function SignalCursor(props: SignalCursorProps) {
   const toInPixel = scale(to);
   const start = Math.min(fromInPixel, toInPixel);
   const size = Math.abs(fromInPixel - toInPixel);
-  const { displayerMode } = useChartData();
+  const { displayerMode, height, margin } = useChartData();
 
   const top = useMarginBottom(orientation);
   const [pointerPosition, setPosition] = useState<number | null>(null);
@@ -95,41 +122,59 @@ function SignalCursor(props: SignalCursorProps) {
   }
   const offset = useSpectraBottomMargin();
   const offset1D = offset - 10;
+  const translateY = displayerMode === '1D' ? top - offset1D : top;
+  const guideLineLength =
+    orientation === 'horizontal'
+      ? displayerMode === '1D'
+        ? height - margin.bottom
+        : margin.top
+      : margin.left;
 
   return (
-    <g
-      {...disableMouseTrackingProps}
-      transform={
-        orientation === 'horizontal'
-          ? `translate(${start} ${displayerMode === '1D' ? top - offset1D : top})`
-          : `translate(${top} ${start})`
-      }
-      onMouseMove={handleMove}
-      onMouseLeave={() => setPosition(null)}
-      onClick={handleAddSignal}
-    >
+    <>
+      <g
+        {...disableMouseTrackingProps}
+        transform={
+          orientation === 'horizontal'
+            ? `translate(${start} ${translateY})`
+            : `translate(${top} ${start})`
+        }
+        onMouseMove={handleMove}
+        onMouseLeave={() => setPosition(null)}
+        onClick={handleAddSignal}
+      >
+        {pointerPosition !== null && (
+          <circle
+            cx={
+              orientation === 'horizontal'
+                ? pointerPosition
+                : POINTER_SIZE + offset1D + 1
+            }
+            cy={
+              orientation === 'horizontal'
+                ? POINTER_SIZE + offset1D + 1
+                : pointerPosition
+            }
+            r={POINTER_SIZE}
+            fill="green"
+          />
+        )}
+        <BackArea
+          orientation={orientation}
+          size={size}
+          length={displayerMode === '1D' ? BackAreaSize : undefined}
+        />
+      </g>
+
       {pointerPosition !== null && (
-        <circle
-          cx={
-            orientation === 'horizontal'
-              ? pointerPosition
-              : POINTER_SIZE + offset1D + 1
-          }
-          cy={
-            orientation === 'horizontal'
-              ? POINTER_SIZE + offset1D + 1
-              : pointerPosition
-          }
-          r={POINTER_SIZE}
-          fill="green"
+        <GuideLine
+          orientation={orientation}
+          position={start + pointerPosition}
+          length={guideLineLength}
+          color="green"
         />
       )}
-      <BackArea
-        orientation={orientation}
-        size={size}
-        length={displayerMode === '1D' ? BackAreaSize : undefined}
-      />
-    </g>
+    </>
   );
 }
 
