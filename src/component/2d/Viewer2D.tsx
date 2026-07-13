@@ -62,7 +62,9 @@ function Viewer2D(props: Viewer2DProps) {
                     <PhaseTraces />
                   )}
                 <CursorToolIcon />
-                <CrossLinePointer />
+                <CrossLinePointer axis="X" dimensionBorder={DIMENSION.TOP} />
+                <CrossLinePointer axis="Y" dimensionBorder={DIMENSION.LEFT} />
+                <CrossLinePointer axis="XY" dimensionBorder={DIMENSION.MAIN} />
                 <XYLabelPointer data1D={spectrumData} layout={DIMENSION} />
 
                 <>
