@@ -174,6 +174,8 @@ const getPeaksDefaultValues = (
       fwhm: { show: true, format: '0.00000' },
       mu: { show: false, format: '0.00000' },
       gamma: { show: false, format: '0.000' },
+      absoluteArea: { show: true, format: '0.00' },
+      relativeArea: { show: true, format: '0.00' },
       showKind: true,
       showDeleteAction: true,
       showEditPeakShapeAction: true,

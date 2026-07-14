@@ -6,8 +6,10 @@ import { mapPeaks } from 'nmr-processing';
 export function initiatePeaks(
   inputSpectrum: Partial<Spectrum1D>,
   spectrum: Spectrum1D,
+  options: Peaks['options'],
 ): Peaks {
   return merge({ values: [], options: {} }, inputSpectrum.peaks, {
     values: mapPeaks(inputSpectrum?.peaks?.values || [], spectrum),
+    options,
   });
 }

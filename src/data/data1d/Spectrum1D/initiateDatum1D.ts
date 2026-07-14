@@ -28,7 +28,7 @@ export function initiateDatum1D(
 ): Spectrum1D {
   const { usedColors, colors, molecules = [] } = options;
 
-  const { integrals, ranges, ...restSpectrum } = spectrum;
+  const { integrals, ranges, peaks, ...restSpectrum } = spectrum;
   const spectrumObj: Spectrum1D = {
     ...restSpectrum,
     id: spectrum.id || crypto.randomUUID(),
@@ -64,7 +64,12 @@ export function initiateDatum1D(
 
   const { nucleus } = spectrumObj.info;
 
-  spectrumObj.peaks = initiatePeaks(spectrum, spectrumObj);
+  const peaksOptions = initSumOptions(peaks?.options || {}, {
+    nucleus,
+    molecules,
+  });
+
+  spectrumObj.peaks = initiatePeaks(spectrum, spectrumObj, peaksOptions);
 
   // array of object {index: xIndex, xShift}
   // in case the peak does not exactly correspond to the point value

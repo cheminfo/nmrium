@@ -9,7 +9,7 @@ import type { Draft } from 'immer';
 import { original } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import type { OptionsXYAutoPeaksPicking } from 'nmr-processing';
-import { mapPeaks } from 'nmr-processing';
+import { mapPeaks, updatePeaksRelativeValues } from 'nmr-processing';
 
 import { DEFAULT_PEAK_SHAPE } from '../../../data/constants/defaultPeakShape.ts';
 import {
@@ -17,6 +17,8 @@ import {
   getShiftX,
   optimizePeaks,
 } from '../../../data/data1d/Spectrum1D/index.js';
+import type { ChangePeakRelativeValueProps } from '../../../data/data1d/Spectrum1D/peaks/changePeakRelativeValue.ts';
+import { changePeakRelativeValue } from '../../../data/data1d/Spectrum1D/peaks/changePeakRelativeValue.ts';
 import { defaultPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState.js';
 import { getDefaultRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';
 import type { FilterType } from '../../utility/filterType.js';
@@ -27,6 +29,11 @@ import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
 import getRange from '../helper/getRange.js';
 import { getSpectrum } from '../helper/getSpectrum.js';
 import type { ActionType } from '../types/ActionType.js';
+
+type ChangePeaksRelativeValueAction = ActionType<
+  'CHANGE_PEAK_RELATIVE',
+  ChangePeakRelativeValueProps
+>;
 
 type AddPeakAction = ActionType<
   'ADD_PEAK',
@@ -75,6 +82,7 @@ export type PeaksActions =
   | AutoPeaksPickingAction
   | ChangePeaksShapeAction
   | TogglePeaksViewAction
+  | ChangePeaksRelativeValueAction
   | ActionType<'TOGGLE_PEAKS_DISPLAYING_MODE'>;
 
 //action
@@ -105,6 +113,7 @@ function handleAddPeak(draft: Draft<State>, action: AddPeakAction) {
       shape: { ...defaultPeakShape },
     };
     spectrum.peaks.values.push(...mapPeaks([peak], spectrum));
+    updatePeaksRelativeValues(spectrum);
   }
 }
 
@@ -134,6 +143,7 @@ function handleAddPeaks(draft: Draft<State>, action: AddPeaksAction) {
         shape: { ...defaultPeakShape },
       };
       spectrum.peaks.values.push(newPeak);
+      updatePeaksRelativeValues(spectrum);
     }
   }
 }
@@ -153,6 +163,8 @@ function handleDeletePeak(draft: Draft<State>, action: DeletePeakAction) {
     );
     spectrum.peaks.values.splice(peakIndex, 1);
   }
+
+  updatePeaksRelativeValues(spectrum);
 }
 
 //action
@@ -171,6 +183,7 @@ function handleOptimizePeaks(draft: Draft<State>, action: OptimizePeaksAction) {
   });
 
   spectrum.peaks.values = newPeaks;
+  updatePeaksRelativeValues(spectrum);
 }
 
 //action
@@ -207,6 +220,7 @@ function handleAutoPeakPicking(
       defaultPeakShape,
     });
     spectrum.peaks.values = spectrum.peaks.values.concat(peaks);
+    updatePeaksRelativeValues(spectrum);
   }
 
   toolOptions.selectedTool = 'zoom';
@@ -235,6 +249,7 @@ function handleChangePeakShape(
   if (peakIndex !== -1) {
     spectrum.peaks.values[peakIndex].shape = shape;
   }
+  updatePeaksRelativeValues(spectrum);
 }
 
 //action
@@ -308,12 +323,24 @@ function handleChangePeaksDisplayingMode(draft: Draft<State>) {
   toggleDisplayingPeaks(draft, 'peaks');
 }
 
+//action
+function handleChangeRangeRelativeValue(
+  draft: Draft<State>,
+  action: ChangePeaksRelativeValueAction,
+) {
+  const spectrum = getSpectrum(draft);
+  if (!isSpectrum1D(spectrum)) return;
+
+  changePeakRelativeValue(spectrum, action.payload);
+}
+
 export {
   handleAddPeak,
   handleAddPeaks,
   handleAutoPeakPicking,
   handleChangePeakShape,
   handleChangePeaksDisplayingMode,
+  handleChangeRangeRelativeValue,
   handleDeletePeak,
   handleOptimizePeaks,
   handleTogglePeaksViewProperty,
