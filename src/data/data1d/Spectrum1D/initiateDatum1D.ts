@@ -64,12 +64,7 @@ export function initiateDatum1D(
 
   const { nucleus } = spectrumObj.info;
 
-  const peaksOptions = initSumOptions(peaks?.options || {}, {
-    nucleus,
-    molecules,
-  });
-
-  spectrumObj.peaks = initiatePeaks(spectrum, spectrumObj, peaksOptions);
+  spectrumObj.peaks = initiatePeaks(spectrum, spectrumObj);
 
   // array of object {index: xIndex, xShift}
   // in case the peak does not exactly correspond to the point value

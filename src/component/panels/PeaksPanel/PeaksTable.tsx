@@ -19,7 +19,6 @@ import { NoDataForFid } from '../extra/placeholder/NoDataForFid.js';
 
 import type { PeakRecord } from './PeaksPanel.js';
 
-
 function getFormattedNumber(
   value: unknown,
   format: Parameters<typeof formatNumber>[1],
