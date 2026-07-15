@@ -9,15 +9,13 @@ import type {
   StateMoleculeExtended,
 } from '../../../data/molecules/Molecule.js';
 import { useChartData } from '../../context/ChartContext.js';
-import { useCore } from '../../context/CoreContext.js';
 import { NextPrev } from '../../elements/NextPrev.js';
 import { useMoleculeEditor } from '../../modal/MoleculeStructureEditorModal.js';
-import { renderCoreSlot } from '../../utility/renderCoreSlot.js';
+import { CoreSlot } from '../../utility/CoreSlot.tsx';
 
 import MoleculeHeader from './MoleculeHeader.js';
 import { MoleculeOptionsPanel } from './MoleculeOptionsPanel.js';
 import MoleculePanelHeader from './MoleculePanelHeader.js';
-import { MoleculePanelSlotProvider } from './MoleculePanelSlotContext.js';
 import { MoleculeStructure } from './MoleculeStructure.js';
 
 const styles: Record<
@@ -60,7 +58,6 @@ interface MoleculePanelInnerProps {
 
 function MoleculePanelInner(props: MoleculePanelInnerProps) {
   const { molecules: moleculesProp, moleculesView } = props;
-  const core = useCore();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [molecules, setMolecules] = useState<StateMoleculeExtended[]>([]);
   const [isFlipped, setFlipStatus] = useState(false);
@@ -120,10 +117,6 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
                   >
                     {molecules && molecules.length > 0 ? (
                       molecules.map((mol: StateMoleculeExtended, index) => {
-                        const overlay = renderCoreSlot(
-                          core,
-                          'molecules_panel.overlay',
-                        );
                         return (
                           <div key={mol.id} css={styles.items}>
                             <MoleculeHeader
@@ -149,25 +142,22 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
                                 moleculeView={moleculesView?.[mol.id] || {}}
                                 showLabel={false}
                               />
-                              {overlay && (
-                                <MoleculePanelSlotProvider
+                              <div
+                                style={{
+                                  position: 'absolute',
+                                  inset: 0,
+                                  zIndex: 1,
+                                  pointerEvents: 'none',
+                                }}
+                              >
+                                <CoreSlot
+                                  slot="molecules_panel.overlay"
                                   molecule={mol}
                                   moleculeIndex={index}
                                   width={width}
                                   height={height - 60}
-                                >
-                                  <div
-                                    style={{
-                                      position: 'absolute',
-                                      inset: 0,
-                                      zIndex: 1,
-                                      pointerEvents: 'none',
-                                    }}
-                                  >
-                                    {overlay}
-                                  </div>
-                                </MoleculePanelSlotProvider>
-                              )}
+                                />
+                              </div>
                             </div>
                           </div>
                         );

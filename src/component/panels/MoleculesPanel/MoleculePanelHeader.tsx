@@ -30,7 +30,6 @@ import {
 } from '../../../data/molecules/MoleculeManager.js';
 import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents.js';
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks.js';
-import { useCore } from '../../context/CoreContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useGlobal } from '../../context/GlobalContext.js';
 import { usePreferences } from '../../context/PreferencesContext.js';
@@ -42,6 +41,7 @@ import { useDialogToggle } from '../../hooks/useDialogToggle.js';
 import AboutPredictionModal from '../../modal/AboutPredictionModal.js';
 import { MoleculeAutoLabelsDatabaseModal } from '../../modal/MoleculeAutoLabelsDatabaseModal.js';
 import PredictSpectraModal from '../../modal/PredictSpectraModal.js';
+import { CoreSlot } from '../../utility/CoreSlot.tsx';
 import { booleanToString } from '../../utility/booleanToString.js';
 import {
   browserNotSupportedErrorToast,
@@ -49,10 +49,7 @@ import {
   exportAsMolfile,
   exportAsSVG,
 } from '../../utility/export.js';
-import { renderCoreSlot } from '../../utility/renderCoreSlot.js';
 import { useMoleculeAnnotationCore } from '../hooks/useMoleculeAnnotationCore.js';
-
-import { MoleculePanelSlotProvider } from './MoleculePanelSlotContext.js';
 
 type ExportOperation =
   | 'CopyAsSmiles'
@@ -148,7 +145,6 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
   const { rootRef } = useGlobal();
   const toaster = useToaster();
   const dispatch = useDispatch();
-  const core = useCore();
   const {
     current: { defaultMoleculeSettings },
   } = usePreferences();
@@ -493,12 +489,11 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
         />
 
         {currentMolecule && (
-          <MoleculePanelSlotProvider
+          <CoreSlot
+            slot="molecules_panel.header"
             molecule={currentMolecule}
             moleculeIndex={currentIndex}
-          >
-            {renderCoreSlot(core, 'molecules_panel.header')}
-          </MoleculePanelSlotProvider>
+          />
         )}
 
         <ToolbarPopoverItem
