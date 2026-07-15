@@ -21,7 +21,9 @@ import { useDispatch } from '../../context/DispatchContext.tsx';
 import type { State } from '../../reducer/Reducer.ts';
 import { setDomain, setMode } from '../../reducer/actions/DomainActions.ts';
 import { updateView } from '../../reducer/actions/FiltersActions.ts';
+import { changeSpectrumVerticalAlignment } from '../../reducer/actions/PreferencesActions.ts';
 import { resetSelectedTool } from '../../reducer/actions/ToolsActions.ts';
+import { updateLiveProcessingsView } from '../../reducer/actions/processings_actions.ts';
 import zoomHistoryManager from '../../reducer/helper/ZoomHistoryManager.ts';
 import { getActiveSpectrum } from '../../reducer/helper/getActiveSpectrum.ts';
 
@@ -110,6 +112,8 @@ export function useProcessingsMutations() {
           },
         } = core.getOperator(operation.operatorId) ?? {};
         updateView(draft, domainUpdateRules);
+        setDomain(draft);
+        setMode(draft);
       });
     },
 
@@ -207,32 +211,55 @@ export function useProcessingsMutations() {
 
       // apply preProcessings
       spectrum.processings = preProcessings;
-      const processedSpectrum = await core.processSpectrum(spectrum);
+      const preProcessedSpectrum = await core.processSpectrum(spectrum);
 
       // prepare processings for live-update
-      processedSpectrum.processings = processings;
-      processedSpectrum.originalInfo = structuredClone(processedSpectrum.info);
-      if (isSpectrum1D(processedSpectrum)) {
-        processedSpectrum.originalData = sliceData1D(processedSpectrum.data);
-      } else if (isSpectrum2D(processedSpectrum)) {
-        processedSpectrum.originalData = sliceData2D(processedSpectrum.data);
+      preProcessedSpectrum.processings = processings;
+      preProcessedSpectrum.originalInfo = structuredClone(
+        preProcessedSpectrum.info,
+      );
+      if (isSpectrum1D(preProcessedSpectrum)) {
+        preProcessedSpectrum.originalData = sliceData1D(
+          preProcessedSpectrum.data,
+        );
+      } else if (isSpectrum2D(preProcessedSpectrum)) {
+        preProcessedSpectrum.originalData = sliceData2D(
+          preProcessedSpectrum.data,
+        );
       } else {
-        assertUnreachable(processedSpectrum);
+        assertUnreachable(preProcessedSpectrum);
       }
+
+      // apply the rest of processings
+      const processedSpectrum = await core.processSpectrum(spectrum);
 
       const tempData = state.data.slice();
       tempData[indexSpectrum] = processedSpectrum;
 
       dispatch({
         type: 'SET_TEMP_SPECTRA',
-        payload: { spectra: tempData },
+        payload: {
+          spectra: tempData,
+          onProduce(draft) {
+            updateLiveProcessingsView(draft);
+          },
+        },
       });
     },
 
     async resetLiveChange() {
       dispatch({
         type: 'SET_TEMP_SPECTRA',
-        payload: { spectra: undefined },
+        payload: {
+          spectra: undefined,
+          onProduce(draft) {
+            setDomain(draft);
+            setMode(draft);
+            changeSpectrumVerticalAlignment(draft, {
+              verticalAlign: 'auto-check',
+            });
+          },
+        },
       });
     },
 
@@ -256,7 +283,7 @@ export function useProcessingsMutations() {
       if (!shouldProcessAll) {
         spectrum.processings.splice(indexOperation + 1);
       }
-      const domains = aggregateDomains(spectrum.processings, core);
+      // const domains = aggregateDomains(spectrum.processings, core);
       const processedSpectrum = await core.processSpectrum(spectrum);
       assertDefined(processedSpectrum.processings);
       const processedOperation = processedSpectrum.processings[indexOperation];
@@ -270,7 +297,9 @@ export function useProcessingsMutations() {
         type: 'SET_TEMP_SPECTRA',
         payload: {
           spectra,
-          onProduce: (draft) => updateView(draft, domains),
+          onProduce: (draft) => {
+            updateLiveProcessingsView(draft);
+          },
         },
       });
     },

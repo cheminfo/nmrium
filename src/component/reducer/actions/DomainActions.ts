@@ -45,12 +45,12 @@ export interface MoveOptions {
 
 type MoveAction = ActionType<'MOVE', MoveOptions>;
 
-function extentArray(iterable: Iterable<number>): NumberExtent {
+export function extentArray(iterable: Iterable<number>): NumberExtent {
   const [min = 0, max = 0] = extent(iterable);
   return [min, max];
 }
 
-function is2DFTSpectrum(
+export function is2DFTSpectrum(
   spectrum: Spectrum,
   nucleus: string,
 ): spectrum is Spectrum2D & { data: NmrData2DFt } {
