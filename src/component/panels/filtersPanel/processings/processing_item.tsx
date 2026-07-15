@@ -59,8 +59,10 @@ export function ProcessingItem(props: ProcessingItemProps) {
   const liveOperationRef =
     useRef<SpectrumProcessingOperation<unknown, unknown>>(operation);
 
+  // track liveEdit changes to prepare / reset / apply live changes
   useEffect(() => {
     const processingsMutations = processingsMutationsRef.current;
+    const operation = liveOperationRef.current;
 
     if (liveEdit.value?.checked !== liveEditRef.current.value?.checked) {
       if (liveEdit.value?.checked) {
@@ -84,7 +86,7 @@ export function ProcessingItem(props: ProcessingItemProps) {
     }
 
     liveEditRef.current = liveEdit;
-  }, [liveEdit, operation]);
+  }, [liveEdit]);
 
   function onReorder(sourceIndex: number, targetIndex: number) {
     void processingsMutations.reorder(sourceIndex, targetIndex);
@@ -128,15 +130,9 @@ export function ProcessingItem(props: ProcessingItemProps) {
           fallback={<OperationFallback operation={operation} />}
           operation={operation}
           core={core}
-          onMount={() => {
-            if (!liveEdit.value?.checked) return;
-
-            void processingsMutations.prepareLiveChange(
-              operation.uid,
-              liveEdit.value.shouldProcessNext,
-            );
-          }}
           onChange={(operation) => {
+            if (!isEditable) return;
+
             void processingsMutations.apply(
               // onChange generally change settings
               // so options should be re-computed
@@ -145,11 +141,21 @@ export function ProcessingItem(props: ProcessingItemProps) {
             );
             setOpenedOperation(undefined);
           }}
+          onMount={() => {
+            if (!isLiveEditable) return;
+            if (!liveEdit.value?.checked) return;
+
+            void processingsMutations.prepareLiveChange(
+              operation.uid,
+              liveEdit.value.shouldProcessNext,
+            );
+          }}
           onLiveChange={(liveOperation) => {
+            if (!isLiveEditable) return;
+            if (!liveEdit.value?.checked) return;
+
             liveOperation = { ...liveOperation, options: undefined };
             liveOperationRef.current = liveOperation;
-
-            if (!liveEdit.value?.checked) return;
 
             void processingsMutations.applyLiveChange(
               liveOperation,
@@ -157,15 +163,17 @@ export function ProcessingItem(props: ProcessingItemProps) {
             );
           }}
         >
-          {(children) => (
-            <OperatorEditBanner
-              isLiveEditable={isLiveEditable ?? false}
-              liveEdit={liveEdit}
-              onClose={() => setOpenedOperation(undefined)}
-            >
-              {children}
-            </OperatorEditBanner>
-          )}
+          {(submitButton) =>
+            !isEditable ? null : (
+              <OperatorEditBanner
+                isLiveEditable={isLiveEditable ?? false}
+                liveEdit={liveEdit}
+                onClose={() => setOpenedOperation(undefined)}
+              >
+                {submitButton}
+              </OperatorEditBanner>
+            )
+          }
         </CoreOperatorExpanded>
       </Sections.Body>
     </Sections.Item>
