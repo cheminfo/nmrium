@@ -46,7 +46,7 @@ function Left1DChart({
   horizontalMargin = 10,
   data: spectrum,
 }: Left1DChartProps) {
-  const { height, margin, displayerKey } = useChartData();
+  const { height, width: fullWidth, margin, displayerKey } = useChartData();
   const svgRef = useRef<SVGSVGElement>(null);
   const scale = useScale2DY();
 
@@ -54,7 +54,7 @@ function Left1DChart({
 
   const path = usePath(spectrum, { horizontalMargin, width });
   const ranges = spectrum.ranges.values;
-
+  const innerWidth = fullWidth - margin.right;
   const innerHeight = height - margin.bottom - margin.top;
 
   if (!innerHeight || !width) return null;
@@ -72,7 +72,7 @@ function Left1DChart({
           <rect width={width} height={innerHeight} x="0" y={margin.top} />
         </clipPath>
         <clipPath id={`${displayerKey}clip-left-ranges`}>
-          <rect width={width + 20} height={innerHeight} x="0" y={margin.top} />
+          <rect width={innerWidth} height={innerHeight} x="0" y={margin.top} />
         </clipPath>
       </defs>
       <g clipPath={`url(#${displayerKey}clip-left)`}>

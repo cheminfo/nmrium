@@ -38,7 +38,7 @@ function usePath(spectrum: Spectrum1D, options: UsePathOptions) {
 }
 
 function Top1DChart({ verticalMargin = 10, data: spectrum }: Top1DChartProps) {
-  const { width, margin, displayerKey } = useChartData();
+  const { width, margin, height: fullHeight, displayerKey } = useChartData();
   const height = margin.top;
   const svgRef = useRef<SVGSVGElement>(null);
   const scale = useScale2DX();
@@ -49,7 +49,7 @@ function Top1DChart({ verticalMargin = 10, data: spectrum }: Top1DChartProps) {
   if (!width || !height) {
     return null;
   }
-
+  const innerHeight = fullHeight - margin.bottom;
   const innerWidth = width - margin.left - margin.right;
   return (
     <svg
@@ -61,10 +61,10 @@ function Top1DChart({ verticalMargin = 10, data: spectrum }: Top1DChartProps) {
     >
       <defs>
         <clipPath id={`${displayerKey}clip-top`}>
-          <rect width={innerWidth} height={height} x={margin.left} y="0" />
+          <rect width={innerWidth} height={height} x={margin.left} y={0} />
         </clipPath>
         <clipPath id={`${displayerKey}clip-top-ranges`}>
-          <rect width={innerWidth} height={height + 20} x={margin.left} y="0" />
+          <rect width={innerWidth} height={innerHeight} x={margin.left} y={0} />
         </clipPath>
       </defs>
       <g clipPath={`url(#${displayerKey}clip-top)`}>
