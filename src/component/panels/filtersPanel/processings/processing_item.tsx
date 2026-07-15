@@ -47,7 +47,10 @@ export function ProcessingItem(props: ProcessingItemProps) {
   const isEditable = operatorUI?.isEditable;
   const isLiveEditable = operatorUI?.isLiveEditable;
 
-  const liveEdit = useLiveEdit(isLiveEditable);
+  const liveEdit = useLiveEdit(
+    isLiveEditable,
+    operatorUI?.defaultShouldProcessAll,
+  );
   const liveEditRef = useRef(liveEdit);
 
   const processingsMutationsRef = useRef(processingsMutations);
@@ -61,7 +64,10 @@ export function ProcessingItem(props: ProcessingItemProps) {
 
     if (liveEdit.value?.checked !== liveEditRef.current.value?.checked) {
       if (liveEdit.value?.checked) {
-        void processingsMutations.prepareLiveChange(operation.uid);
+        void processingsMutations.prepareLiveChange(
+          operation.uid,
+          liveEdit.value.shouldProcessNext,
+        );
       } else {
         void processingsMutations.resetLiveChange();
       }
@@ -125,7 +131,10 @@ export function ProcessingItem(props: ProcessingItemProps) {
           onMount={() => {
             if (!liveEdit.value?.checked) return;
 
-            void processingsMutations.prepareLiveChange(operation.uid);
+            void processingsMutations.prepareLiveChange(
+              operation.uid,
+              liveEdit.value.shouldProcessNext,
+            );
           }}
           onChange={(operation) => {
             void processingsMutations.apply(

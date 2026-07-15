@@ -195,7 +195,7 @@ export function useProcessingsMutations() {
     },
 
     // Related to live update
-    async prepareLiveChange(uid: string) {
+    async prepareLiveChange(uid: string, shouldProcessAll: boolean) {
       const { spectrum, indexSpectrum } = getSpectrum();
       if (!spectrum?.processings) return;
 
@@ -231,7 +231,19 @@ export function useProcessingsMutations() {
       }
 
       // apply the rest of processings
-      const processedSpectrum = await core.processSpectrum(spectrum);
+      const savedProcessings = structuredClone(
+        preProcessedSpectrum.processings,
+      );
+
+      if (!shouldProcessAll) {
+        preProcessedSpectrum.processings.splice(1);
+      }
+      const processedSpectrum =
+        await core.processSpectrum(preProcessedSpectrum);
+      assertDefined(processedSpectrum.processings);
+      const processedOperation = processedSpectrum.processings[0];
+      processedSpectrum.processings = savedProcessings;
+      spectrum.processings[0] = processedOperation;
 
       const tempData = state.data.slice();
       tempData[indexSpectrum] = processedSpectrum;
