@@ -1,10 +1,10 @@
+import type { CSSProperties } from 'react';
 import { useEffect, useMemo } from 'react';
 
-interface UseTextMetricsOptions {
-  labelSize?: number;
-  labelStyle?: string;
-  labelWeight?: string;
-
+interface UseTextMetricsOptions extends Pick<
+  CSSProperties,
+  'fontStyle' | 'fontWeight' | 'fontSize'
+> {
   /**
    * Dev purpose only.
    * Set a width to see the canvas used to measure text.
@@ -14,15 +14,16 @@ interface UseTextMetricsOptions {
 
 export function useTextMetrics(options: UseTextMetricsOptions = {}) {
   const {
-    labelSize = 12,
-    labelStyle = 'normal',
-    labelWeight = 'normal',
+    fontSize = 12,
+    fontStyle = 'normal',
+    fontWeight = 'normal',
     debugCanvasWidth,
   } = options;
   const canvas = useCanvas(debugCanvasWidth);
+  const size = typeof fontSize === 'number' ? `${fontSize}px` : fontSize;
 
   const ctx = canvas.getContext('2d');
-  if (ctx) ctx.font = `${labelStyle} ${labelWeight} ${labelSize}px Arial`;
+  if (ctx) ctx.font = `${fontStyle} ${fontWeight} ${size} Arial`;
 
   function getTextWidth(text: string): number {
     return measureTextWidth(ctx, text);
