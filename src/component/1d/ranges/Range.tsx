@@ -7,6 +7,7 @@ import {
 } from '../../../data/data1d/Spectrum1D/index.js';
 import { isRangeAssigned } from '../../../data/data1d/Spectrum1D/isRangeAssigned.js';
 import { getOpacityBasedOnSignalKind } from '../../../data/utilities/RangeUtilities.js';
+import { RangeIndicator } from '../../1d-2d/components/RangeIndicator.tsx';
 import {
   useAssignment,
   useAssignmentContext,
@@ -27,7 +28,6 @@ import useSpectrum from '../../hooks/useSpectrum.js';
 import { EditRangeModal } from '../../modal/editRange/EditRangeModal.js';
 import type { StackOverlappingLabelsMapReturnType } from '../../utility/stackOverlappingLabels.js';
 import { useIsInset } from '../inset/InsetProvider.js';
-import { IntegralIndicator } from '../integral/IntegralIndicator.js';
 import { useScaleX } from '../utilities/scale.js';
 
 import { AssignmentLabel } from './AssignmentLabel.js';
@@ -74,7 +74,6 @@ function Range(options: RangeProps) {
   const { showIntegralsValues } = useActiveSpectrumRangesViewState();
 
   const { isDialogOpen } = useDialogData();
-
   const isBlockedByEditing = selectedTool && isDialogOpen(EditRangeModal);
 
   function handleOnStopResizing(position: Position) {
@@ -213,11 +212,12 @@ function Range(options: RangeProps) {
                 <Atoms range={range} x={rangeWidth / 2} />
 
                 {showIntegralsValues && (
-                  <IntegralIndicator
+                  <RangeIndicator
+                    position={0}
+                    size={rangeWidth}
                     value={integration}
-                    format={relativeFormat}
-                    width={rangeWidth}
                     opacity={opacity}
+                    format={relativeFormat}
                   />
                 )}
               </g>

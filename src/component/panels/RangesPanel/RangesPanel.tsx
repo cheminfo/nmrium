@@ -92,9 +92,7 @@ function RangesTablePanelInner(props: RangesTablePanelInnerProps) {
   const unlinkRangeHandler = useCallback(() => {
     dispatch({
       type: 'UNASSIGN_1D_SIGNAL',
-      payload: {
-        signalIndex: -1,
-      },
+      payload: {},
     });
   }, [dispatch]);
 

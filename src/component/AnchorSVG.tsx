@@ -1,9 +1,4 @@
-import type {
-  CSSProperties,
-  KeyboardEvent,
-  MouseEvent,
-  RefObject,
-} from 'react';
+import type { CSSProperties, KeyboardEvent, MouseEvent } from 'react';
 import { useRef, useState } from 'react';
 
 type CursorOrientation = 'horizontal' | 'vertical';
@@ -36,13 +31,13 @@ interface AnchorPosition {
 interface AnchorProps {
   position: AnchorPosition;
   shape?: AnchorShape;
-  svgRef: RefObject<SVGSVGElement>;
   svgHeight: number;
   anchorStyle?: AnchorStyle;
   restoreFocusOnLeave?: boolean;
-  onDragMove: (newPosition: AnchorPosition) => void;
-  onDragEnd: (lastPosition: AnchorPosition) => void;
-  onDelete: () => void;
+  onDragMove?: (newPosition: AnchorPosition) => void;
+  onDragEnd?: (lastPosition: AnchorPosition) => void;
+  onDragStart?: (position: AnchorPosition) => void;
+  onDelete?: () => void;
   cursorOrientation?: CursorOrientation;
 }
 
@@ -201,18 +196,19 @@ function ShapeRenderer({
   );
 }
 
-export function Anchor({
-  position,
-  shape,
-  svgRef,
-  svgHeight,
-  anchorStyle = {},
-  restoreFocusOnLeave = false,
-  onDragMove,
-  onDragEnd,
-  onDelete,
-  cursorOrientation = 'horizontal',
-}: AnchorProps) {
+export function Anchor(props: AnchorProps) {
+  const {
+    position,
+    shape,
+    svgHeight,
+    anchorStyle = {},
+    restoreFocusOnLeave = false,
+    onDragStart,
+    onDragMove,
+    onDragEnd,
+    onDelete,
+    cursorOrientation = 'horizontal',
+  } = props;
   const {
     size = 16,
     hoverSize = size,
@@ -255,31 +251,34 @@ export function Anchor({
   function handleMouseDown(e: MouseEvent<SVGGElement>) {
     e.preventDefault();
     setDragging(true);
-    const { x, y } = clientToSvg(e, svgRef.current);
+
+    const svg = e.currentTarget.ownerSVGElement;
+
+    const { x, y } = clientToSvg(e, svg);
     dragState.current = {
       startX: x,
       startY: y,
       startAnchorX: position.x,
       startAnchorY: position.y,
     };
-
+    onDragStart?.(position);
     const onMove = (e: globalThis.MouseEvent) => {
       const current = dragState.current;
       if (!current) return;
       const { x, y } = clientToSvg(
         e as unknown as MouseEvent<SVGGElement>,
-        svgRef.current,
+        svg,
       );
       const newX = current.startAnchorX + x - current.startX;
       const newY = current.startAnchorY + y - current.startY;
 
-      onDragMove({ x: newX, y: newY });
+      onDragMove?.({ x: newX, y: newY });
     };
 
     const onUp = () => {
       setDragging(false);
       dragState.current = null;
-      onDragEnd({ x: position.x, y: position.y });
+      onDragEnd?.({ x: position.x, y: position.y });
 
       window.removeEventListener('mousemove', onMove);
       window.removeEventListener('mouseup', onUp);
@@ -292,7 +291,7 @@ export function Anchor({
   function handleKeyDown(e: KeyboardEvent<SVGGElement>) {
     if (e.key === 'Delete' || e.key === 'Backspace') {
       e.preventDefault();
-      onDelete();
+      onDelete?.();
     }
   }
 

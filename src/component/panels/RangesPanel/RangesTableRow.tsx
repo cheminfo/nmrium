@@ -105,25 +105,23 @@ export default function RangesTableRow(props: RangesTableRowProps) {
   }, [rowData.tableMetaInfo]);
 
   const unlinkHandler = useCallback(
-    (e: MouseEvent, isOnRangeLevel: boolean) => {
+    (e: MouseEvent) => {
       // stop propagation here to prevent enabling/disabling the assignment mode at the same time
       if (e) {
         e.stopPropagation();
       }
 
-      if (isOnRangeLevel !== undefined) {
-        const { id: rangeKey, tableMetaInfo } = rowData;
+      const { id: rangeKey, tableMetaInfo } = rowData;
 
-        const signalIndex = isOnRangeLevel ? -1 : tableMetaInfo.signalIndex;
+      const signalIndex = tableMetaInfo.signalIndex;
 
-        dispatch({
-          type: 'UNASSIGN_1D_SIGNAL',
-          payload: {
-            rangeKey,
-            signalIndex,
-          },
-        });
-      }
+      dispatch({
+        type: 'UNASSIGN_1D_SIGNAL',
+        payload: {
+          rangeKey,
+          signalIndex,
+        },
+      });
     },
     [dispatch, rowData],
   );
