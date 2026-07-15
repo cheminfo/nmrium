@@ -13,7 +13,7 @@ import { FidCanvas } from './FidCanvas.js';
 export function FidContainer() {
   const spectrum = useViewSpectrum();
 
-  if (!spectrum || !isFt2DSpectrum(spectrum)) return null;
+  if (!spectrum || isFt2DSpectrum(spectrum)) return null;
 
   return (
     <>
