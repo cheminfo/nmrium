@@ -1,22 +1,15 @@
 import type { MoleculeView, StateMolecule } from '@zakodium/nmrium-core';
 import { Molecule } from 'openchemlib';
-import type { DiaIDAndInfo } from 'openchemlib-utils';
 
 import getAtomsFromMF from '../utilities/getAtomsFromMF.js';
 
 export interface Molecule3DData {
-  /** V3000 molfile with 3D coordinates */
+  /**
+   * Molfile with 3D coordinates: the cached conformer plus any baked orientation.
+   * The per-atom diastereotopic-ID mapping is derived data and is recomputed by
+   * the viewer from the molfile, never stored here.
+   */
   molfile3d: string;
-  /**
-   * Maps atom index in the 3D molfile to diastereotopic ID.
-   * Indexed by atom position in moleculeWithH (heavy atoms first, then H).
-   */
-  atomIndexToDiaId: string[];
-  /**
-   * Full diastereotopic info per atom index (same ordering as atomIndexToDiaId).
-   * Used to look up DiaIDAndInfo for atom assignment when a 3D atom is clicked.
-   */
-  diaIDsAndInfo: DiaIDAndInfo[];
 }
 
 export interface StateMoleculeExtended

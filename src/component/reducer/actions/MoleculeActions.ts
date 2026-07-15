@@ -104,6 +104,10 @@ type SetMolecule3DAction = ActionType<
   { id: string; mol3d: Molecule3DData }
 >;
 type ToggleMolecule3DAction = ActionType<'TOGGLE_MOLECULE_3D', { id: string }>;
+type SetMolecule3DMolfileAction = ActionType<
+  'SET_MOLECULE_3D_MOLFILE',
+  { id: string; molfile3d: string }
+>;
 
 export type MoleculeActions =
   | AddMoleculeAction
@@ -117,7 +121,8 @@ export type MoleculeActions =
   | ChangeMoleculeAnnotationAction
   | ToggleMoleculeLabelAction
   | SetMolecule3DAction
-  | ToggleMolecule3DAction;
+  | ToggleMolecule3DAction
+  | SetMolecule3DMolfileAction;
 
 function addMolecule(draft: Draft<State>, props: AddMoleculeProps) {
   const { molfile, id, label, floatMoleculeOnSave, defaultMoleculeSettings } =
@@ -592,6 +597,21 @@ function handleToggleMolecule3D(
   }
 }
 
+/**
+ * Updates only the cached 3D molfile of a molecule (atom order unchanged), used
+ * to bake the viewer's current orientation into the saved conformer.
+ */
+function handleSetMolecule3DMolfile(
+  draft: Draft<State>,
+  action: SetMolecule3DMolfileAction,
+) {
+  const { id, molfile3d } = action.payload;
+  const molecule = draft.molecules.find((m) => m.id === id);
+  if (molecule?.mol3d) {
+    molecule.mol3d.molfile3d = molfile3d;
+  }
+}
+
 export {
   addMolecule,
   handleAddMolecule,
@@ -603,6 +623,7 @@ export {
   handleFloatMoleculeOverSpectrum,
   handlePredictSpectraFromMolecule,
   handleSetMolecule3D,
+  handleSetMolecule3DMolfile,
   handleSetMolecule,
   handleToggleMolecule3D,
   handleToggleMoleculeLabel,
