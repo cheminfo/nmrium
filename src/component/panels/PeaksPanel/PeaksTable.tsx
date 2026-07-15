@@ -13,6 +13,7 @@ import type { ControlCustomColumn } from '../../elements/ReactTable/utility/addC
 import addCustomColumn, {
   createActionColumn,
 } from '../../elements/ReactTable/utility/addCustomColumn.js';
+import { TableHeaderLabel } from '../../elements/TableHeaderLabel.tsx';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import { formatNumber } from '../../utility/formatNumber.js';
 import { NoDataForFid } from '../extra/placeholder/NoDataForFid.js';
@@ -76,7 +77,16 @@ export function usePeaksTableColumns(activeTab: string) {
       {
         showWhen: 'deltaPPM.show',
         index: 3,
-        Header: 'δ (ppm)',
+        Header: () => {
+          return (
+            <TableHeaderLabel
+              text="δ (ppm)"
+              shortText="δ"
+              fontSize={12}
+              fontWeight="bold"
+            />
+          );
+        },
         accessor: 'x',
         Cell: ({ row }: CellProps<PeakRecord>) => (
           <EditableColumn
@@ -173,7 +183,17 @@ export function usePeaksTableColumns(activeTab: string) {
       {
         showWhen: 'relativeArea.show',
         index: 12,
-        Header: 'Relative area',
+        Header: () => {
+          return (
+            <TableHeaderLabel
+              text="Relative area"
+              shortText="Area"
+              fontSize={12}
+              fontWeight="bold"
+            />
+          );
+        },
+        accessor: 'relativeArea',
         Cell: ({ row }: CellProps<PeakRecord>) => {
           const value = formatNumber(
             row.original.relativeArea || 0,

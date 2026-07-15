@@ -28,12 +28,11 @@ const ShortLabel = styled.span<{ widthThreshold: number }>`
 
 interface TableHeaderLabelProps extends Pick<
   CSSProperties,
-  'fontStyle' | 'fontWeight'
+  'fontStyle' | 'fontWeight' | 'fontSize'
 > {
   text: string;
   shortText: string;
   widthThreshold?: number;
-  fontSize?: number;
 }
 
 export function TableHeaderLabel(props: TableHeaderLabelProps) {
