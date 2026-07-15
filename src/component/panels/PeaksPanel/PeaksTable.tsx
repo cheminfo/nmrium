@@ -1,10 +1,10 @@
 import type { Info1D, Peak1D } from '@zakodium/nmr-types';
 import dlv from 'dlv';
-import { getShape1D } from 'ml-peak-shape-generator';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { FaEdit, FaRegTrashAlt } from 'react-icons/fa';
 import type { CellProps, Row } from 'react-table';
 
+import { getPeakAbsoluteArea } from '../../../data/utilities/getPeakAbsoluteArea.ts';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { EditableColumn } from '../../elements/EditableColumn.js';
 import { EmptyText } from '../../elements/EmptyText.js';
@@ -19,9 +19,6 @@ import { NoDataForFid } from '../extra/placeholder/NoDataForFid.js';
 
 import type { PeakRecord } from './PeaksPanel.js';
 
-function getPeakAbsoluteArea(peak: Peak1D) {
-  return peak.shape ? getShape1D(peak.shape).getArea() : 0;
-}
 
 function getFormattedNumber(
   value: unknown,
