@@ -37,36 +37,3 @@ export function getSpectrum(
 
   return undefined;
 }
-
-export function getLiveProcessingsSpectrum(
-  state: Draft<State>,
-): GetSpectrumReturn;
-export function getLiveProcessingsSpectrum(
-  state: Draft<State>,
-  index: number,
-): GetSpectrumReturn;
-export function getLiveProcessingsSpectrum(
-  state: Draft<State>,
-  id?: string,
-): GetSpectrumReturn;
-export function getLiveProcessingsSpectrum(
-  state: Draft<State>,
-  value?: number | string,
-): GetSpectrumReturn {
-  const activeSpectrum = getActiveSpectrum(state);
-
-  if (value === undefined && activeSpectrum) {
-    const index = activeSpectrum.index;
-    return state.tempData[index];
-  }
-
-  if (typeof value === 'number') {
-    return state.tempData[value] || undefined;
-  }
-
-  if (typeof value === 'string') {
-    return state.tempData.find((spectrum: Spectrum) => spectrum.id === value);
-  }
-
-  return undefined;
-}

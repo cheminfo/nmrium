@@ -8,9 +8,8 @@ import {
   sliceData2D,
   sliceSpectrum,
 } from '@zakodium/nmrium-core';
-import { assertDefined, noop } from '@zakodium/utils';
+import { assertDefined, assertUnreachable, noop } from '@zakodium/utils';
 import type { Draft } from 'immer';
-import { assertUnreachable } from 'react-science/ui';
 
 import { initializeContoursLevels } from '../../../data/data2d/Spectrum2D/contours.ts';
 import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.ts';

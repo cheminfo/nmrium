@@ -1,9 +1,7 @@
 import type { Spectrum } from '@zakodium/nmrium-core';
-import { assertDefinedNotNull } from '@zakodium/utils';
 import type { Draft } from 'immer';
 
 import type { State } from '../Reducer.ts';
-import { getActiveSpectrum } from '../helper/getActiveSpectrum.ts';
 import type { ActionType } from '../types/ActionType.ts';
 
 import { setDomain, setMode } from './DomainActions.ts';
