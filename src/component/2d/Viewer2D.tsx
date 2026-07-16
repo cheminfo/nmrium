@@ -32,8 +32,8 @@ function Viewer2D(props: Viewer2DProps) {
   const {
     toolOptions: { selectedTool },
     isLoading,
-    margin,
     data,
+    margin,
   } = state;
 
   const spectrumData = useTracesSpectra();
