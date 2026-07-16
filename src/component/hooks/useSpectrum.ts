@@ -1,4 +1,5 @@
 import type { Spectrum } from '@zakodium/nmrium-core';
+import { useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext.js';
 
@@ -9,6 +10,22 @@ export default function useSpectrum<Default>(
 ): Spectrum | Default;
 export default function useSpectrum(): Spectrum | undefined;
 export default function useSpectrum<Default>(defaultValue?: Default) {
-  const { data } = useChartData();
+  const { data: rawData, spectrumLiveProcessed } = useChartData();
+
+  const data = useMemo(() => {
+    return rawData.map((s) =>
+      s.id === spectrumLiveProcessed?.id ? spectrumLiveProcessed : s,
+    );
+  }, [rawData, spectrumLiveProcessed]);
+
   return useSpectrumWithDataSource(data, defaultValue);
+}
+
+/**
+ * Get active spectrum for live update processing
+ */
+export function useStableSpectrum() {
+  const { data } = useChartData();
+
+  return useSpectrumWithDataSource(data) ?? undefined;
 }

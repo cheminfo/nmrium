@@ -49,11 +49,18 @@ export function getTracesSpectra(options: GetTracesSpectraOptions) {
 
 export function useTracesSpectra() {
   const {
-    data: spectra,
+    data,
+    spectrumLiveProcessed,
     view: {
       spectra: { activeSpectra, activeTab },
     },
   } = useChartData();
+
+  const spectra = useMemo(() => {
+    return data.map((s) =>
+      s.id === spectrumLiveProcessed?.id ? spectrumLiveProcessed : s,
+    );
+  }, [data, spectrumLiveProcessed]);
 
   return useMemo(() => {
     const nuclei = activeTab?.split(',');

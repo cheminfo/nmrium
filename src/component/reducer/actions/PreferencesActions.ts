@@ -29,10 +29,14 @@ function changeSpectrumVerticalAlignment(
   const { verticalAlign = 'bottom', activeTab } = options;
   const nucleus = activeTab || draft.view.spectra.activeTab;
 
-  if (draft.data && draft.data.length > 0) {
+  const data = draft.data.map((s) =>
+    s.id === draft.spectrumLiveProcessed?.id ? draft.spectrumLiveProcessed : s,
+  );
+
+  if (data && data.length > 0) {
     let dataPerNucleus: Spectrum1D[] = [];
     if (['auto-check', 'stack'].includes(options.verticalAlign || '')) {
-      dataPerNucleus = draft.data.filter(
+      dataPerNucleus = data.filter(
         (datum) => datum.info.nucleus === nucleus && isSpectrum1D(datum),
       ) as Spectrum1D[];
     }

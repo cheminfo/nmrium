@@ -4,6 +4,7 @@ import type {
   Spectrum2D,
   Spectrum,
 } from '@zakodium/nmrium-core';
+import { cast } from '@zakodium/utils';
 import type { NmrData2DFt } from 'cheminfo-types';
 import { extent } from 'd3-array';
 import type { Draft } from 'immer';
@@ -77,7 +78,16 @@ function getActiveData(draft: Draft<State>): Spectrum1D[] {
     data = data.filter((datum) => isFt1DSpectrum(datum));
   }
 
-  return data as Spectrum1D[];
+  cast<Spectrum1D[]>(data);
+
+  if (!draft.spectrumLiveProcessed) return data;
+  if (!isSpectrum1D(draft.spectrumLiveProcessed)) return data;
+
+  return data.map((datum) =>
+    datum.id === draft.spectrumLiveProcessed?.id
+      ? (draft.spectrumLiveProcessed as Spectrum1D)
+      : datum,
+  );
 }
 
 interface GetDomainOptions {
@@ -143,11 +153,15 @@ function get2DDomain(state: State) {
     view: {
       spectra: { activeSpectra, activeTab },
     },
-    data,
+    spectrumLiveProcessed,
   } = state;
 
+  const data = state.data.map((s) =>
+    s.id === spectrumLiveProcessed?.id ? spectrumLiveProcessed : s,
+  );
+
   const nucleus = activeTab.split(',');
-  const spectrum = getSpectrum(state);
+  const spectrum = spectrumLiveProcessed ?? getSpectrum(state);
 
   if (isSpectrum2D(spectrum)) {
     if (isFid2DData(spectrum.data)) {
@@ -272,9 +286,14 @@ function setMode(draft: Draft<State>) {
   const {
     xDomains,
     view: { spectra },
-    data,
+    spectrumLiveProcessed,
     displayerMode,
   } = draft;
+
+  const data = draft.data.map((s) =>
+    s.id === spectrumLiveProcessed?.id ? spectrumLiveProcessed : s,
+  );
+
   const { activeTab: nucleus } = spectra;
 
   if (displayerMode === '1D') {

@@ -11,7 +11,7 @@ import type { AlertButton } from '../../elements/Alert.tsx';
 import { useAlert } from '../../elements/Alert.tsx';
 import { EmptyText } from '../../elements/EmptyText.tsx';
 import { Sections } from '../../elements/Sections.tsx';
-import useSpectrum from '../../hooks/useSpectrum.ts';
+import { useStableSpectrum } from '../../hooks/useSpectrum.ts';
 import type { Tool } from '../../toolbar/ToolTypes.ts';
 import DefaultPanelHeader from '../header/DefaultPanelHeader.tsx';
 import { useProcessingsMutations } from '../hooks/use_processings_mutation.ts';
@@ -39,7 +39,7 @@ const mapFiltersToProcessings: Partial<
 
 export function ProcessingsSectionsPanel() {
   const { showAlert } = useAlert();
-  const spectrum = useSpectrum();
+  const spectrum = useStableSpectrum();
   const { toolOptions } = useChartData();
   const processingsMutations = useProcessingsMutations();
 
