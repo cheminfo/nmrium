@@ -71,7 +71,7 @@ export function ProcessingItem(props: ProcessingItemProps) {
           liveEdit.value.shouldProcessNext,
         );
       } else {
-        void processingsMutations.resetLiveChange();
+        processingsMutations.resetLiveChange();
       }
     }
 
