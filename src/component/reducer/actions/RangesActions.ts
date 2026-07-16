@@ -650,11 +650,39 @@ function handleCutRange(draft: Draft<State>, action: CutRangAction) {
   const ranges = spectrum.ranges.values;
 
   for (let i = 0; i < ranges.length; i++) {
-    const { id } = ranges[i];
-    if (cutRanges?.[id]) {
-      ranges.splice(i, 1);
-      ranges.push(...cutRanges[id]);
+    const originalRange = ranges[i];
+    const { id, signals } = originalRange;
+    const newRanges = cutRanges?.[id];
+
+    if (!newRanges) {
+      continue;
     }
+
+    let remainingSignals = signals ?? [];
+
+    for (const newRange of newRanges) {
+      const { from, to } = newRange;
+      const lower = Math.min(from, to);
+      const upper = Math.max(from, to);
+
+      const matched: Signal1D[] = [];
+      const unmatched: Signal1D[] = [];
+
+      for (const signal of signals ?? []) {
+        if (signal.delta >= lower && signal.delta <= upper) {
+          matched.push(signal);
+        } else {
+          unmatched.push(signal);
+        }
+      }
+
+      newRange.signals = matched;
+      remainingSignals = unmatched;
+    }
+    originalRange.signals = remainingSignals;
+
+    ranges.splice(i, 1);
+    ranges.push(...newRanges);
   }
 
   updateRangesRelativeValues(spectrum);
