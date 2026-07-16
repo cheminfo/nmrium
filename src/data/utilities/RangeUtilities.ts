@@ -5,11 +5,14 @@ function omitSignalKeys(signal: Signal1D): Signal1D {
   return rest;
 }
 
-export function unlink(range: Range, signalIndex?: number): Range {
+export function unlink(range: Range, signalIndex?: number | 'all'): Range {
+  //Remove legacy -1 support and use 'all' only
+  const shouldUnlinkAll = [undefined, 'all', -1].includes(signalIndex);
+
   return {
     ...range,
     signals: range.signals.map((signal, index) =>
-      signalIndex === undefined || index === signalIndex
+      shouldUnlinkAll || index === signalIndex
         ? omitSignalKeys(signal)
         : signal,
     ),
