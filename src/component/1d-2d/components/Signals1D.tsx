@@ -46,7 +46,7 @@ export function Signals1D(props: Signals1DProps) {
     const { id } = range;
 
     return (
-      <Container key={id} data-no-export="true">
+      <Container key={id} data-no-export="true" {...disableMouseTrackingProps}>
         <SignalCursor
           spectrumId={spectrumId}
           range={range}
@@ -95,7 +95,7 @@ function SignalCursor(props: SignalCursorProps) {
   const toInPixel = scale(to);
   const start = Math.min(fromInPixel, toInPixel);
   const size = Math.abs(fromInPixel - toInPixel);
-  const { displayerMode, height, margin } = useChartData();
+  const { displayerMode, height, width, margin } = useChartData();
 
   const top = useMarginBottom(orientation);
   const [pointerPosition, setPosition] = useState<number | null>(null);
@@ -125,15 +125,12 @@ function SignalCursor(props: SignalCursorProps) {
   const translateY = displayerMode === '1D' ? top - offset1D : top;
   const guideLineLength =
     orientation === 'horizontal'
-      ? displayerMode === '1D'
-        ? height - margin.bottom
-        : margin.top
-      : margin.left;
+      ? height - margin.bottom
+      : width - margin.right;
 
   return (
     <>
       <g
-        {...disableMouseTrackingProps}
         transform={
           orientation === 'horizontal'
             ? `translate(${start} ${translateY})`
@@ -248,8 +245,15 @@ function InnerSignals1D(props: InnerSignals1D) {
 
     return result;
   }, [range, draggingAnchor?.index, draggingAnchor?.delta]);
+  const { height, width, margin } = useChartData();
 
   if (!scale) return null;
+
+  const guideLineLength =
+    orientation === 'horizontal'
+      ? height - margin.bottom
+      : width - margin.right;
+
   return (
     <g className={`signals-block ${draggingAnchor !== null ? 'dragging' : ''}`}>
       {signals.map((signal, index) => {
@@ -278,7 +282,7 @@ function InnerSignals1D(props: InnerSignals1D) {
               fill: 'red',
               stroke: 'transparent',
             }}
-            svgHeight={position}
+            guideLength={guideLineLength}
           />
         );
       })}

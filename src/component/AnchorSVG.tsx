@@ -31,7 +31,7 @@ interface AnchorPosition {
 interface AnchorProps {
   position: AnchorPosition;
   shape?: AnchorShape;
-  svgHeight: number;
+  guideLength: number;
   anchorStyle?: AnchorStyle;
   restoreFocusOnLeave?: boolean;
   onDragMove?: (newPosition: AnchorPosition) => void;
@@ -200,7 +200,7 @@ export function Anchor(props: AnchorProps) {
   const {
     position,
     shape,
-    svgHeight,
+    guideLength,
     anchorStyle = {},
     restoreFocusOnLeave = false,
     onDragStart,
@@ -312,15 +312,15 @@ export function Anchor(props: AnchorProps) {
 
     prevFocus.current = null;
   }
-
+  const isVerticalOrientation = cursorOrientation === 'vertical';
   return (
     <>
       {(hovered || dragging) && (
         <line
-          x1={position.x}
-          y1={0}
-          x2={position.x}
-          y2={svgHeight}
+          x1={isVerticalOrientation ? 0 : position.x}
+          y1={isVerticalOrientation ? position.y : 0}
+          x2={isVerticalOrientation ? guideLength : position.x}
+          y2={isVerticalOrientation ? position.y : guideLength}
           stroke={dragging ? guideDragColor : guideColor}
           strokeWidth={1}
           strokeDasharray={
