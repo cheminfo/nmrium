@@ -3,7 +3,7 @@ import type { Spectrum2D } from '@zakodium/nmrium-core';
 import { getSlice } from '../../../data/data2d/Spectrum2D/index.js';
 import { isFt2DSpectrum } from '../../../data/data2d/Spectrum2D/isSpectrum2D.js';
 import { useMouseTracker } from '../../EventsTrackers/MouseTracker.js';
-import { useViewSpectrum } from '../../hooks/useSpectrum.js';
+import useSpectrum from '../../hooks/useSpectrum.js';
 import HorizontalSliceChart from '../1d-tracer/HorizontalSliceChart.js';
 import VerticalSliceChart from '../1d-tracer/VerticalSliceChart.js';
 import { useScale2DX, useScale2DY } from '../utilities/scale.js';
@@ -11,7 +11,7 @@ import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 import { FidCanvas } from './FidCanvas.js';
 
 export function FidContainer() {
-  const spectrum = useViewSpectrum();
+  const spectrum = useSpectrum();
 
   if (!spectrum || isFt2DSpectrum(spectrum)) return null;
 
@@ -24,7 +24,7 @@ export function FidContainer() {
 }
 
 function TrackerContainer() {
-  const spectrum = useViewSpectrum() as Spectrum2D;
+  const spectrum = useSpectrum() as Spectrum2D;
   const scale2dX = useScale2DX();
   const scale2dY = useScale2DY();
 

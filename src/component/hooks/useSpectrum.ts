@@ -12,17 +12,3 @@ export default function useSpectrum<Default>(defaultValue?: Default) {
   const { data } = useChartData();
   return useSpectrumWithDataSource(data, defaultValue);
 }
-
-/**
- * return the first active spectrum from tempData if available, otherwise from data
- *
- * @param defaultValue
- */
-export function useViewSpectrum<Default>(
-  defaultValue: Default,
-): Spectrum | Default;
-export function useViewSpectrum(): Spectrum | undefined;
-export function useViewSpectrum<Default>(defaultValue?: Default) {
-  const { data, tempData } = useChartData();
-  return useSpectrumWithDataSource(tempData ?? data, defaultValue);
-}
