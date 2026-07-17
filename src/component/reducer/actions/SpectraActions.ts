@@ -163,15 +163,6 @@ type UpdateSpectrumMetaAction = ActionType<
   }
 >;
 
-type SetSpectrumAction = ActionType<
-  'SET_SPECTRUM',
-  {
-    index: number;
-    spectrum: Spectrum;
-    onProduce: (draft: Draft<State>, processedSpectrum: Spectrum) => void;
-  }
->;
-
 export type SpectrumActions =
   | ActionType<'TOGGLE_SPECTRA_LEGEND'>
   | ChangeSpectrumVisibilityByIdAction
@@ -185,8 +176,7 @@ export type SpectrumActions =
   | ImportSpectraMetaInfoAction
   | ReColorSpectraBasedOnDistinctValueAction
   | SimulateSpectrumAction
-  | UpdateSpectrumMetaAction
-  | SetSpectrumAction;
+  | UpdateSpectrumMetaAction;
 
 function checkIsVisible2D(datum: Spectrum2D): boolean {
   if (!datum.display.isPositiveVisible && !datum.display.isNegativeVisible) {
@@ -818,14 +808,6 @@ function handleUpdateSpectrumMeta(
   }
 }
 
-function setSpectrum(draft: Draft<State>, action: SetSpectrumAction) {
-  const { index, spectrum, onProduce } = action.payload;
-
-  draft.data[index] = spectrum;
-
-  onProduce(draft, spectrum);
-}
-
 export {
   handleAddMissingProjectionHandler,
   handleAlignSpectraHandler,
@@ -841,5 +823,4 @@ export {
   handleToggleSpectraLegend,
   handleUpdateSpectrumMeta,
   setSpectraMetaInfo,
-  setSpectrum,
 };

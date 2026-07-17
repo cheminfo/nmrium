@@ -4,8 +4,11 @@ import { isSpectrum1D } from '../../data/data1d/Spectrum1D/index.ts';
 import { useInsetOptions } from '../1d/inset/InsetProvider.tsx';
 import { useChartData } from '../context/ChartContext.tsx';
 
+import { useViewSpectra } from './use_view_spectra.ts';
+
 export function useVisibleSpectra1D() {
-  const { xDomains, data } = useChartData();
+  const { xDomains } = useChartData();
+  const data = useViewSpectra();
 
   const inset = useInsetOptions();
 

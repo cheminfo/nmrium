@@ -31,6 +31,7 @@ import * as RangesActions from './actions/RangesActions.js';
 import * as SpectraActions from './actions/SpectraActions.js';
 import * as ToolsActions from './actions/ToolsActions.js';
 import * as ZonesActions from './actions/ZonesActions.js';
+import * as ProcessingsActions from './actions/processings_actions.js';
 import {
   handleSetAxisUnit1DHorizontalAction,
   handleSetAxisUnit2DDirectAction,
@@ -122,6 +123,7 @@ export const getInitialState = (): State => ({
   sources: {},
   aggregator: new FileCollection(),
   data: [],
+  spectrumLiveProcessed: undefined,
   tempData: null,
   xDomain: [],
   yDomain: [],
@@ -217,11 +219,22 @@ export interface State {
    * spectra list (1d and 2d)
    */
   data: Spectrum[];
+
+  /**
+   * Snapshot of the active spectrum.
+   * It is preprocessed to minimize the processings to run in live update mode.
+   *
+   * Related to processings
+   */
+  spectrumLiveProcessed: Spectrum | undefined;
+
   /**
    * snapshot of the spectra data once phase correction activated
    *
+   * Related to filters
    */
   tempData: any;
+
   /**
    * X axis domain
    * value change when zooming in/out
@@ -648,8 +661,11 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return ToolsActions.setSpectraSameTopHandler(draft);
       case 'RESET_SPECTRA_SCALE':
         return ToolsActions.resetSpectraScale(draft);
+
       case 'SET_SPECTRUM':
-        return SpectraActions.setSpectrum(draft, action);
+        return ProcessingsActions.setSpectrum(draft, action);
+      case 'SET_SPECTRUM_LIVE_PROCESSED':
+        return ProcessingsActions.setSpectrumLiveProcessed(draft, action);
 
       case 'CHANGE_SPECTRUM_DISPLAY_VIEW_MODE':
         return ToolsActions.handleChangeSpectrumDisplayMode(draft);

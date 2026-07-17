@@ -2,8 +2,13 @@ import type {
   Spectrum,
   SpectrumProcessingOperation,
 } from '@zakodium/nmrium-core';
-import { sliceSpectrum } from '@zakodium/nmrium-core';
-import { noop } from '@zakodium/utils';
+import {
+  isSpectrum1D,
+  sliceData1D,
+  sliceData2D,
+  sliceSpectrum,
+} from '@zakodium/nmrium-core';
+import { assertDefined, assertUnreachable, noop } from '@zakodium/utils';
 import type { Draft } from 'immer';
 
 import { initializeContoursLevels } from '../../../data/data2d/Spectrum2D/contours.ts';
@@ -48,6 +53,16 @@ export function useProcessingsMutations() {
     return { spectrum, indexSpectrum };
   }
 
+  /**
+   * Return sliced spectrum live processed allowing free mutations
+   */
+  function getSpectrumLiveProcessed() {
+    const spectrum = state.spectrumLiveProcessed;
+    if (!spectrum) return;
+
+    return sliceSpectrum(spectrum);
+  }
+
   async function submit(
     spectrum: Spectrum,
     index: number,
@@ -63,109 +78,216 @@ export function useProcessingsMutations() {
       payload: {
         index,
         spectrum: processedSpectrum,
-        onProduce,
+        onProduce: (draft) => onProduce(draft, processedSpectrum),
+      },
+    });
+  }
+
+  // --- API --- //
+
+  async function apply(
+    operation: SpectrumProcessingOperation<any, any>,
+    indexOperation: number,
+  ) {
+    const { spectrum, indexSpectrum } = getSpectrum();
+
+    if (!spectrum?.processings) return;
+    if (indexOperation > spectrum.processings.length) return;
+
+    spectrum.processings[indexOperation] = operation;
+
+    resetLiveChange();
+    await submit(spectrum, indexSpectrum, (draft) => {
+      const {
+        domainUpdateRules = {
+          updateXDomain: false,
+          updateYDomain: false,
+        },
+      } = core.getOperator(operation.operatorId) ?? {};
+      updateView(draft, domainUpdateRules);
+    });
+  }
+
+  async function reorder(sourceIndex: number, targetIndex: number) {
+    const { spectrum, indexSpectrum } = getSpectrum();
+    if (!spectrum?.processings) return;
+
+    [spectrum.processings[sourceIndex], spectrum.processings[targetIndex]] = [
+      spectrum.processings[targetIndex],
+      spectrum.processings[sourceIndex],
+    ];
+
+    await submit(spectrum, indexSpectrum, noop);
+  }
+
+  async function remove(uid: string) {
+    const { spectrum, indexSpectrum } = getSpectrum();
+    if (!spectrum?.processings) return;
+
+    spectrum.processings = spectrum.processings.filter((p) => p.uid !== uid);
+
+    await submit(spectrum, indexSpectrum, (draft) => {
+      draft.toolOptions.data.activeFilterID = null;
+      resetSelectedTool(draft);
+      setDomain(draft);
+      setMode(draft);
+    });
+  }
+
+  async function removeAll() {
+    const { spectrum, indexSpectrum } = getSpectrum();
+
+    if (!spectrum?.processings) return;
+    if (spectrum.processings.length === 0) return;
+
+    spectrum.processings = [];
+
+    await submit(spectrum, indexSpectrum, (draft) => {
+      draft.toolOptions.data.activeFilterID = null;
+      resetSelectedTool(draft);
+      setDomain(draft);
+      setMode(draft);
+    });
+  }
+
+  async function switchEnabled(uid: string) {
+    const { spectrum, indexSpectrum } = getSpectrum();
+    if (!spectrum?.processings) return;
+
+    const operationIndex = spectrum.processings.findIndex((p) => p.uid === uid);
+    if (operationIndex === -1) return;
+
+    const operation = spectrum.processings[operationIndex];
+    operation.enabled = !operation.enabled;
+
+    await submit(spectrum, indexSpectrum, (draft, processedSpectrum) => {
+      if (isSpectrum2D(processedSpectrum) && processedSpectrum.info.isFt) {
+        draft.view.spectraContourLevels[processedSpectrum.id] =
+          initializeContoursLevels(processedSpectrum);
+      }
+
+      resetSelectedTool(draft);
+      setDomain(draft);
+      setMode(draft);
+
+      const zoomHistory = zoomHistoryManager(
+        draft.zoom.history,
+        draft.view.spectra.activeTab,
+      );
+      const zoomValue = zoomHistory.getLast();
+
+      if (zoomValue) {
+        draft.xDomain = zoomValue.xDomain;
+        draft.yDomain = zoomValue.yDomain;
+      }
+    });
+  }
+
+  // Related to live update
+  async function prepareLiveChange(uid: string, shouldProcessAll: boolean) {
+    const { spectrum } = getSpectrum();
+    if (!spectrum?.processings) return;
+
+    const preProcessings: typeof spectrum.processings = [];
+    const processings: typeof spectrum.processings = [];
+
+    let didFindUid = false;
+    for (const operation of spectrum.processings) {
+      if (uid === operation.uid) didFindUid = true;
+      if (didFindUid) processings.push(structuredClone(operation));
+      else preProcessings.push(structuredClone(operation));
+    }
+
+    // apply preProcessings
+    spectrum.processings = preProcessings;
+    const preProcessedSpectrum = await core.processSpectrum(spectrum);
+
+    // prepare processings for live-update
+    preProcessedSpectrum.processings = processings;
+    preProcessedSpectrum.originalInfo = structuredClone(
+      preProcessedSpectrum.info,
+    );
+    if (isSpectrum1D(preProcessedSpectrum)) {
+      preProcessedSpectrum.originalData = sliceData1D(
+        preProcessedSpectrum.data,
+      );
+    } else if (isSpectrum2D(preProcessedSpectrum)) {
+      preProcessedSpectrum.originalData = sliceData2D(
+        preProcessedSpectrum.data,
+      );
+    } else {
+      assertUnreachable(preProcessedSpectrum);
+    }
+
+    // apply the rest of processings
+    const savedProcessings = structuredClone(preProcessedSpectrum.processings);
+
+    if (!shouldProcessAll) {
+      preProcessedSpectrum.processings.splice(1);
+    }
+    const processedSpectrum = await core.processSpectrum(preProcessedSpectrum);
+    assertDefined(processedSpectrum.processings);
+    const processedOperation = processedSpectrum.processings[0];
+    processedSpectrum.processings = savedProcessings;
+    spectrum.processings[0] = processedOperation;
+
+    dispatch({
+      type: 'SET_SPECTRUM_LIVE_PROCESSED',
+      payload: {
+        spectrumLiveProcessed: processedSpectrum,
+      },
+    });
+  }
+
+  function resetLiveChange() {
+    dispatch({
+      type: 'SET_SPECTRUM_LIVE_PROCESSED',
+      payload: {
+        spectrumLiveProcessed: undefined,
+      },
+    });
+  }
+
+  async function applyLiveChange(
+    operation: SpectrumProcessingOperation<any, any>,
+    shouldProcessAll: boolean,
+  ) {
+    const spectrum = getSpectrumLiveProcessed();
+    if (!spectrum?.processings) return;
+
+    const indexOperation = spectrum.processings.findIndex(
+      (p) => p.uid === operation.uid,
+    );
+    if (indexOperation === -1) return;
+
+    const savedProcessings = structuredClone(spectrum.processings);
+
+    spectrum.processings[indexOperation] = operation;
+    if (!shouldProcessAll) {
+      spectrum.processings.splice(indexOperation + 1);
+    }
+    const processedSpectrum = await core.processSpectrum(spectrum);
+    assertDefined(processedSpectrum.processings);
+    const processedOperation = processedSpectrum.processings[indexOperation];
+    processedSpectrum.processings = savedProcessings;
+    spectrum.processings[indexOperation] = processedOperation;
+
+    dispatch({
+      type: 'SET_SPECTRUM_LIVE_PROCESSED',
+      payload: {
+        spectrumLiveProcessed: processedSpectrum,
       },
     });
   }
 
   return {
-    async apply(
-      operation: SpectrumProcessingOperation<any, any>,
-      indexOperation: number,
-    ) {
-      const { spectrum, indexSpectrum } = getSpectrum();
-
-      if (!spectrum?.processings) return;
-      if (indexOperation > spectrum.processings.length) return;
-
-      spectrum.processings[indexOperation] = operation;
-
-      await submit(spectrum, indexSpectrum, (draft) => {
-        const {
-          domainUpdateRules = {
-            updateXDomain: false,
-            updateYDomain: false,
-          },
-        } = core.getOperator(operation.operatorId) ?? {};
-        updateView(draft, domainUpdateRules);
-      });
-    },
-
-    async reorder(sourceIndex: number, targetIndex: number) {
-      const { spectrum, indexSpectrum } = getSpectrum();
-      if (!spectrum?.processings) return;
-
-      [spectrum.processings[sourceIndex], spectrum.processings[targetIndex]] = [
-        spectrum.processings[targetIndex],
-        spectrum.processings[sourceIndex],
-      ];
-
-      await submit(spectrum, indexSpectrum, noop);
-    },
-
-    async remove(uid: string) {
-      const { spectrum, indexSpectrum } = getSpectrum();
-      if (!spectrum?.processings) return;
-
-      spectrum.processings = spectrum.processings.filter((p) => p.uid !== uid);
-
-      await submit(spectrum, indexSpectrum, (draft) => {
-        draft.toolOptions.data.activeFilterID = null;
-        resetSelectedTool(draft);
-        setDomain(draft);
-        setMode(draft);
-      });
-    },
-
-    async removeAll() {
-      const { spectrum, indexSpectrum } = getSpectrum();
-
-      if (!spectrum?.processings) return;
-      if (spectrum.processings.length === 0) return;
-
-      spectrum.processings = [];
-
-      await submit(spectrum, indexSpectrum, (draft) => {
-        draft.toolOptions.data.activeFilterID = null;
-        resetSelectedTool(draft);
-        setDomain(draft);
-        setMode(draft);
-      });
-    },
-
-    async switchEnabled(uid: string) {
-      const { spectrum, indexSpectrum } = getSpectrum();
-      if (!spectrum?.processings) return;
-
-      const operationIndex = spectrum.processings.findIndex(
-        (p) => p.uid === uid,
-      );
-      if (operationIndex === -1) return;
-
-      const operation = spectrum.processings[operationIndex];
-      operation.enabled = !operation.enabled;
-
-      await submit(spectrum, indexSpectrum, (draft, processedSpectrum) => {
-        if (isSpectrum2D(processedSpectrum) && processedSpectrum.info.isFt) {
-          draft.view.spectraContourLevels[processedSpectrum.id] =
-            initializeContoursLevels(processedSpectrum);
-        }
-
-        resetSelectedTool(draft);
-        setDomain(draft);
-        setMode(draft);
-
-        const zoomHistory = zoomHistoryManager(
-          draft.zoom.history,
-          draft.view.spectra.activeTab,
-        );
-        const zoomValue = zoomHistory.getLast();
-
-        if (zoomValue) {
-          draft.xDomain = zoomValue.xDomain;
-          draft.yDomain = zoomValue.yDomain;
-        }
-      });
-    },
+    apply,
+    reorder,
+    remove,
+    removeAll,
+    switchEnabled,
+    prepareLiveChange,
+    resetLiveChange,
+    applyLiveChange,
   };
 }

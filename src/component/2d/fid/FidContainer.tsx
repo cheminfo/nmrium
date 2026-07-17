@@ -11,7 +11,7 @@ import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 import { FidCanvas } from './FidCanvas.js';
 
 export function FidContainer() {
-  const spectrum = useSpectrum() as Spectrum2D;
+  const spectrum = useSpectrum();
 
   if (!spectrum || isFt2DSpectrum(spectrum)) return null;
 
