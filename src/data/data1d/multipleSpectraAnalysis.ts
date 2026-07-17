@@ -13,6 +13,7 @@ import type {
 import {
   ANALYSIS_COLUMN_TYPES,
   ANALYSIS_COLUMN_VALUES_KEYS,
+  isSpectrum1D,
 } from '@zakodium/nmrium-core';
 import dlv from 'dlv';
 
@@ -20,7 +21,7 @@ import type { RangeDetectionResult } from '../types/data1d/index.js';
 import { convertSpectraArrayToObject } from '../utilities/convertSpectraListToObject.js';
 import generateChar from '../utilities/generateChar.js';
 
-import { detectRange, isSpectrum1D } from './Spectrum1D/index.js';
+import { detectRange } from './Spectrum1D/index.js';
 
 interface AnalysisRow extends RangeDetectionResult {
   SID: string;

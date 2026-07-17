@@ -1,11 +1,10 @@
 import type { Spectrum1D, Spectrum2D } from '@zakodium/nmrium-core';
+import { isSpectrum2DFidData } from '@zakodium/nmrium-core';
 import type { NmrData1D, NmrData2D } from 'cheminfo-types';
 import { xSequentialFillFromTo } from 'ml-spectra-processing';
 
 import type { TraceDirection } from '../../../component/reducer/Reducer.js';
 import { initiateDatum1D } from '../../data1d/Spectrum1D/index.js';
-
-import { isFid2DData } from './isSpectrum2D.js';
 
 interface SlicePosition {
   /**
@@ -106,7 +105,7 @@ function initiateData(from: number, to: number, size: number): NmrData1D {
 }
 
 function getRealData(data: NmrData2D) {
-  if (isFid2DData(data)) {
+  if (isSpectrum2DFidData(data)) {
     return data.re;
   }
   return data.rr;
@@ -115,7 +114,7 @@ function getImaginaryData(
   data: NmrData2D,
   options: { ftObjectKey?: 'ir' | 'ri' } = {},
 ) {
-  if (isFid2DData(data)) {
+  if (isSpectrum2DFidData(data)) {
     return data.im;
   }
   const { ftObjectKey = 'ir' } = options;

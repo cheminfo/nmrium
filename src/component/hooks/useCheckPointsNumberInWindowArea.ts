@@ -1,7 +1,7 @@
+import { isSpectrum1D } from '@zakodium/nmrium-core';
 import { xGetFromToIndex } from 'ml-spectra-processing';
 import type { Spectrum } from 'nmr-correlation';
 
-import { isSpectrum1D } from '../../data/data1d/Spectrum1D/isSpectrum1D.ts';
 import { useChartData } from '../context/ChartContext.js';
 
 import { useSelectedSpectra } from './useSelectedSpectra.ts';

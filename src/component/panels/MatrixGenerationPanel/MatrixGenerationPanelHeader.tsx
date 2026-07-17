@@ -1,9 +1,9 @@
+import { isSpectrum1D } from '@zakodium/nmrium-core';
 import { SvgNmrExportAsMatrix } from 'cheminfo-font';
 import { IoAnalytics } from 'react-icons/io5';
 import { TbBrandGoogleAnalytics } from 'react-icons/tb';
 import { TooltipHelpContent } from 'react-science/ui';
 
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.ts';
 import { useChartData } from '../../context/ChartContext.js';
 import { usePreferences } from '../../context/PreferencesContext.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';

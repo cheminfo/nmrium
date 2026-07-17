@@ -1,10 +1,9 @@
 import type { ZeroFillingOptions as BaseZeroFillingOptions } from '@zakodium/nmr-types';
+import { isSpectrum1D, isSpectrum2D } from '@zakodium/nmrium-core';
 import type { NmrData2DFid } from 'cheminfo-types';
 import { useCallback, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { isSpectrum1D } from '../../../../../data/data1d/Spectrum1D/index.js';
-import { isSpectrum2D } from '../../../../../data/data2d/Spectrum2D/index.js';
 import type { ExtractFilterEntry } from '../../../../../data/types/common/ExtractFilterEntry.js';
 import generateNumbersPowerOfX from '../../../../../data/utilities/generateNumbersPowerOfX.js';
 import { useDispatch } from '../../../../context/DispatchContext.js';

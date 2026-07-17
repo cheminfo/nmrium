@@ -8,7 +8,16 @@ import type {
   MatrixOptions,
 } from '@zakodium/nmr-types';
 import type { Spectrum1D, Spectrum2D, Spectrum } from '@zakodium/nmrium-core';
-import type { NmrData2DFt } from 'cheminfo-types';
+import {
+  assertSpectrum2D,
+  isSpectrum1D,
+  isSpectrum1DFid,
+  isSpectrum2D,
+  isSpectrum2DFid,
+  sliceSpectrum,
+} from '@zakodium/nmrium-core';
+import type { Nullish } from '@zakodium/utils';
+import type { NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
 import type { Draft } from 'immer';
 import { current, isDraft } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
@@ -20,12 +29,8 @@ import {
   Filters2DManager,
 } from 'nmr-processing';
 
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
-import { isFid1DSpectrum } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
 import { initializeContoursLevels } from '../../../data/data2d/Spectrum2D/contours.js';
 import { getProjection } from '../../../data/data2d/Spectrum2D/getMissingProjection.js';
-import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.js';
-import { isFid2DSpectrum } from '../../../data/data2d/Spectrum2D/isSpectrum2D.js';
 import type { FilterEntry } from '../../../data/types/common/FilterEntry.ts';
 import type { ExclusionZone } from '../../../data/types/data1d/ExclusionZone.js';
 import { getMedianWindow } from '../../1d/baseline/getMedianWindow.ts';
@@ -56,6 +61,12 @@ import type { ActionType } from '../types/ActionType.js';
 import { get2DDomain, setDomain, setMode } from './DomainActions.js';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions.js';
 import { activateTool, resetSelectedTool } from './ToolsActions.js';
+
+function isSpectrumFid(
+  spectrum: Spectrum | Nullish,
+): spectrum is Spectrum1D | (Spectrum2D & { data: NmrData2DFid }) {
+  return isSpectrum1DFid(spectrum) || isSpectrum2DFid(spectrum);
+}
 
 const {
   fft,
@@ -442,7 +453,7 @@ function rollbackSpectrumByFilter(
   const toolData = draft.toolOptions.data;
   if (currentSpectrum) {
     const { index, spectrum } = currentSpectrum;
-    previousIsFid = isFid1DSpectrum(spectrum) || isFid2DSpectrum(spectrum);
+    previousIsFid = isSpectrumFid(spectrum);
     const filterIndex = spectrum.filters.findIndex((f) => f[searchBy] === key);
     if (filterIndex === -1 || reset) {
       if (draft.tempData) {
@@ -502,7 +513,7 @@ function rollbackSpectrumByFilter(
         });
       }
 
-      currentIsFid = isFid1DSpectrum(spectrum) || isFid2DSpectrum(spectrum);
+      currentIsFid = isSpectrumFid(spectrum);
 
       // Update the X and Y domains when switching from FT to FID spectrum,
       if (!previousIsFid && currentIsFid) {
@@ -538,7 +549,7 @@ function rollbackSpectrumByFilter(
         toolOptions: { data },
       } = getInitialState();
       draft.toolOptions.data = data;
-      currentIsFid = isFid1DSpectrum(spectrum) || isFid2DSpectrum(spectrum);
+      currentIsFid = isSpectrumFid(spectrum);
     }
   }
   setDomain(draft, updateDomainOptions);
@@ -592,9 +603,7 @@ function getTwoDimensionFilterOptions(
 ): TwoDimensionPhaseCorrection['traces'] | null {
   const spectrum = getSpectrum(draft);
 
-  if (!spectrum || !isSpectrum2D(spectrum)) {
-    return null;
-  }
+  if (!isSpectrum2D(spectrum)) return null;
 
   const phaseCorrectionFilter = spectrum.filters.find(
     (filter: any) => filter.name === Tools.phaseCorrectionTwoDimensions.id,
@@ -996,9 +1005,8 @@ function handleCalculateZeroFillingDimensionOneFilter(
 
     const datum = draft.data[index];
 
-    if (!isSpectrum2D(datum)) {
-      return;
-    }
+    if (!isSpectrum2D(datum)) return;
+
     datum.data = _data.data;
     const { xDomain, yDomain, xDomains, yDomains } = get2DDomain(
       current(draft),
@@ -1037,9 +1045,8 @@ function handleCalculateZeroFillingDimensionTwoFilter(
 
     const datum = draft.data[index];
 
-    if (!isSpectrum2D(datum)) {
-      return;
-    }
+    if (!isSpectrum2D(datum)) return;
+
     datum.data = _data.data;
 
     const { xDomain, yDomain, xDomains, yDomains } = get2DDomain(
@@ -1135,9 +1142,8 @@ function handleCalculateApodizationDimensionOneFilter(
 
     const datum = draft.data[index];
 
-    if (!isSpectrum2D(datum)) {
-      return;
-    }
+    if (!isSpectrum2D(datum)) return;
+
     datum.data = _data.data;
   } else {
     disableLivePreview(draft, apodizationDimension1.name);
@@ -1168,9 +1174,8 @@ function handleCalculateApodizationDimensionTwoFilter(
 
     const datum = draft.data[index];
 
-    if (!isSpectrum2D(datum)) {
-      return;
-    }
+    if (!isSpectrum2D(datum)) return;
+
     datum.data = _data.data;
   } else {
     disableLivePreview(draft, apodizationDimension2.name);
@@ -1326,9 +1331,7 @@ function applyFFTTwoDimensionFilter(
   }
 
   const spectrum = draft.data[index];
-  if (!isSpectrum2D(spectrum)) {
-    return;
-  }
+  if (!isSpectrum2D(spectrum)) return;
 
   updateView(draft, domainUpdateRules);
 
@@ -2009,12 +2012,15 @@ function handleCalculateManualTwoDimensionPhaseCorrection(
   }
 
   const { index } = activeSpectrum;
-  const spectrum = structuredClone(current(draft).tempData[index]);
+
+  const tempSpectrum = current(draft).tempData[index];
+  if (!tempSpectrum) return;
+
+  const spectrum = sliceSpectrum(tempSpectrum);
   const datum = draft.data[index];
 
-  if (!isSpectrum2D(datum) || !spectrum) {
-    return;
-  }
+  if (!isSpectrum2D(datum)) return;
+  assertSpectrum2D(spectrum);
 
   const filterOptions = getTwoDimensionsPhaseCorrectionOptions(draft);
 

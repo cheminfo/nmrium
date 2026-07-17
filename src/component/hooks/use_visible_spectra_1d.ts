@@ -1,6 +1,6 @@
 import type { Spectrum1D } from '@zakodium/nmrium-core';
+import { isSpectrum1D } from '@zakodium/nmrium-core';
 
-import { isSpectrum1D } from '../../data/data1d/Spectrum1D/index.ts';
 import { useInsetOptions } from '../1d/inset/InsetProvider.tsx';
 import { useChartData } from '../context/ChartContext.tsx';
 

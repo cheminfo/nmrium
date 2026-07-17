@@ -9,6 +9,11 @@ import type {
   Spectrum2D,
   Spectrum,
 } from '@zakodium/nmrium-core';
+import {
+  isSpectrum1D,
+  isSpectrum2D,
+  isSpectrum2DFt,
+} from '@zakodium/nmrium-core';
 import type { NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
 import dlv from 'dlv';
 import type { Draft } from 'immer';
@@ -20,7 +25,6 @@ import {
   get1DColor,
   getReferenceShift,
   initiateDatum1D,
-  isSpectrum1D,
   resurrectSpectrumFromRanges,
 } from '../../../data/data1d/Spectrum1D/index.js';
 import type { SpectrumSimulationOptions } from '../../../data/data1d/spectrumSimulation.js';
@@ -29,9 +33,7 @@ import { contoursManager } from '../../../data/data2d/Spectrum2D/contours.js';
 import {
   get2DColor,
   getMissingProjection,
-  isSpectrum2D,
 } from '../../../data/data2d/Spectrum2D/index.js';
-import { isFt2DSpectrum } from '../../../data/data2d/Spectrum2D/isSpectrum2D.ts';
 import {
   adjustAlpha,
   generateColor,
@@ -454,7 +456,7 @@ function handleChangeSpectrumSetting(
     if (!spectrum) continue;
 
     spectrum.display = action.payload.display;
-    if (isFt2DSpectrum(spectrum) && 'contourOptions' in action.payload) {
+    if (isSpectrum2DFt(spectrum) && 'contourOptions' in action.payload) {
       draft.view.spectraContourLevels[id] = action.payload.contourOptions;
       const { checkLevel } = contoursManager(
         draft.view.spectraContourLevels[id],

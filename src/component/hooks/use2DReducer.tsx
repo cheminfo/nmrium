@@ -1,8 +1,8 @@
 import type { Spectrum2D } from '@zakodium/nmrium-core';
+import { isSpectrum2DFt } from '@zakodium/nmrium-core';
 import type { NmrData2DContent } from 'cheminfo-types';
 import { useMemo } from 'react';
 
-import { isFt2DSpectrum } from '../../data/data2d/Spectrum2D/isSpectrum2D.ts';
 import { useChartData } from '../context/ChartContext.tsx';
 import { getSpectraByNucleus } from '../utility/getSpectraByNucleus.ts';
 
@@ -26,7 +26,7 @@ export function use2DReducer(): SpectrumFTData[] {
 
   return useMemo(() => {
     const outputSpectra: SpectrumFTData[] = [];
-    const spectra = getSpectraByNucleus(activeTab, data).filter(isFt2DSpectrum);
+    const spectra = getSpectraByNucleus(activeTab, data).filter(isSpectrum2DFt);
     for (const spectrum of spectra) {
       const { id, display, data } = spectrum;
       const { rr } = data;

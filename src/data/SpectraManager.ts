@@ -7,7 +7,7 @@ import type {
   StateMolecule,
   Workspace,
 } from '@zakodium/nmrium-core';
-import { CURRENT_EXPORT_VERSION } from '@zakodium/nmrium-core';
+import { CURRENT_EXPORT_VERSION, isSpectrum1D } from '@zakodium/nmrium-core';
 import { spectrum1DToJCAMPDX } from '@zakodium/nmrium-core-plugins';
 import { BlobWriter, TextReader, ZipWriter } from '@zip.js/zip.js';
 import * as OCL from 'openchemlib';
@@ -15,7 +15,6 @@ import * as OCL from 'openchemlib';
 import type { State } from '../component/reducer/Reducer.js';
 import { saveAs } from '../component/utility/save_as.js';
 
-import { isSpectrum1D } from './data1d/Spectrum1D/index.js';
 import * as Molecule from './molecules/Molecule.js';
 
 export const DataExportOptions = {

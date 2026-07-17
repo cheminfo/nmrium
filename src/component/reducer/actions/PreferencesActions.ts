@@ -1,7 +1,7 @@
 import type { Spectrum1D, Spectrum } from '@zakodium/nmrium-core';
+import { isSpectrum1D } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
 
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import { getViewSpectra } from '../../../data/get_view_spectra.ts';
 import groupByInfoKey from '../../utility/groupByInfoKey.js';
 import nucleusToString from '../../utility/nucleusToString.js';

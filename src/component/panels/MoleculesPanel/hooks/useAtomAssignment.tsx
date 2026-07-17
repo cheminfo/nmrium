@@ -1,10 +1,9 @@
 import type { Spectrum1D, Spectrum2D, Spectrum } from '@zakodium/nmrium-core';
+import { isSpectrum1D, isSpectrum2D } from '@zakodium/nmrium-core';
 import type { DiaIDAndInfo } from 'openchemlib-utils';
 import type { MouseEvent } from 'react';
 import { useMemo, useRef } from 'react';
 
-import { isSpectrum1D } from '../../../../data/data1d/Spectrum1D/index.js';
-import { isSpectrum2D } from '../../../../data/data2d/Spectrum2D/index.js';
 import { ConcatenationString } from '../../../../data/utilities/Concatenation.js';
 import checkModifierKeyActivated from '../../../../data/utilities/checkModifierKeyActivated.js';
 import { useTracesSpectra } from '../../../2d/useTracesSpectra.js';

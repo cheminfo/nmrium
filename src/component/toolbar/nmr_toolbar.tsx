@@ -1,9 +1,9 @@
+import { isSpectrum2DQuadrants } from '@zakodium/nmrium-core';
 import { useCallback } from 'react';
 import { FaDownload } from 'react-icons/fa';
 import type { ToolbarItemProps, TooltipItem } from 'react-science/ui';
 import { Toolbar, TooltipHelpContent } from 'react-science/ui';
 
-import { isQuadrants2DSpectrum } from '../../data/data2d/Spectrum2D/isSpectrum2D.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useDispatch } from '../context/DispatchContext.js';
 import { useIsPrimaryKeyActivated } from '../context/KeyModifierContext.tsx';
@@ -339,7 +339,7 @@ export default function NMRToolbar() {
         shortcuts: ['a'],
         description: 'To phase the spectrum after the FFT.',
       },
-      isVisible: isQuadrants2DSpectrum(spectrum),
+      isVisible: isSpectrum2DQuadrants(spectrum),
     },
     {
       id: 'baselineCorrection',

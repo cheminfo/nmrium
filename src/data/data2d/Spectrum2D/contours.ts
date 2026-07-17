@@ -1,4 +1,5 @@
 import type { Spectrum2D } from '@zakodium/nmrium-core';
+import { isSpectrum2DFt } from '@zakodium/nmrium-core';
 import type { NmrData2DFt } from 'cheminfo-types';
 import { Conrec } from 'ml-conrec';
 import { xMaxAbsoluteValue } from 'ml-spectra-processing';
@@ -6,8 +7,6 @@ import type { Spectrum } from 'nmr-correlation';
 
 import type { SpectrumFTData } from '../../../component/hooks/use2DReducer.tsx';
 import { calculateSanPlot } from '../../utilities/calculateSanPlot.js';
-
-import { isFt2DSpectrum } from './isSpectrum2D.ts';
 
 interface Level {
   positive: ContourItem;
@@ -288,7 +287,7 @@ export function initializeContoursLevels(spectrum: Spectrum2D) {
 export function initializeContours(spectra: Spectrum[]) {
   const contoursOptions: Record<string, ContourOptions> = {};
   for (const spectrum of spectra) {
-    if (isFt2DSpectrum(spectrum)) {
+    if (isSpectrum2DFt(spectrum)) {
       const spectrum2D = spectrum as Spectrum2D;
       contoursOptions[spectrum2D.id] = initializeContoursLevels(spectrum2D);
     }

@@ -1,10 +1,8 @@
 import type { Range as RangeType } from '@zakodium/nmr-types';
+import { isSpectrum1D } from '@zakodium/nmrium-core';
 import { useRef } from 'react';
 
-import {
-  isSpectrum1D,
-  resizeRange,
-} from '../../../data/data1d/Spectrum1D/index.js';
+import { resizeRange } from '../../../data/data1d/Spectrum1D/index.js';
 import { isRangeAssigned } from '../../../data/data1d/Spectrum1D/isRangeAssigned.js';
 import { getOpacityBasedOnSignalKind } from '../../../data/utilities/RangeUtilities.js';
 import { RangeIndicator } from '../../1d-2d/components/RangeIndicator.tsx';
@@ -77,7 +75,7 @@ function Range(options: RangeProps) {
   const isBlockedByEditing = selectedTool && isDialogOpen(EditRangeModal);
 
   function handleOnStopResizing(position: Position) {
-    if (!spectrum || !isSpectrum1D(spectrum)) return;
+    if (!isSpectrum1D(spectrum)) return;
     const from = scaleX().invert(position.x2);
     const to = scaleX().invert(position.x1);
 

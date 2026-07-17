@@ -3,11 +3,11 @@ import type {
   PeaksViewState,
   RangesViewState,
 } from '@zakodium/nmrium-core';
+import { isSpectrum1D } from '@zakodium/nmrium-core';
 import { scaleLinear } from 'd3-scale';
 import { zoomIdentity } from 'd3-zoom';
 import type { Draft } from 'immer';
 
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import { insetMargin } from '../../1d/inset/InsetProvider.js';
 import type {
   Inset,

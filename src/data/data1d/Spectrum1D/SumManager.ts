@@ -1,5 +1,6 @@
 import type { Integrals, Ranges, SumOptions } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
+import { isSpectrum1D } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
 import { MF } from 'mf-parser';
 
@@ -8,7 +9,6 @@ import type { StateMoleculeExtended } from '../../molecules/Molecule.js';
 import getAtom from '../../utilities/getAtom.js';
 
 import {
-  isSpectrum1D,
   updateIntegralsRelativeValues,
   updateRangesRelativeValues,
 } from './index.js';

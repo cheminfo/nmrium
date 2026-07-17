@@ -5,16 +5,15 @@ import type {
   Spectrum1D,
   Spectrum,
 } from '@zakodium/nmrium-core';
+import { assertSpectrum1D, isSpectrum1D } from '@zakodium/nmrium-core';
 import {
   AppForm,
   FieldGroupSVGTextStyleFields,
-  assert,
   svgTextStyleFieldsSchema,
   useForm,
 } from 'react-science/ui';
 import { z } from 'zod';
 
-import { isSpectrum1D } from '../../data/data1d/Spectrum1D/index.js';
 import { ClipboardFallbackModal } from '../../utils/clipboard/clipboardComponents.tsx';
 import { useClipboard } from '../../utils/clipboard/clipboardHooks.ts';
 import { usePreferences } from '../context/PreferencesContext.js';
@@ -150,7 +149,7 @@ function InnerPublicationStringModal(props: InnerPublicationStringModalProps) {
     defaultValues,
     validators: { onChange: validationSchema },
     onSubmit: ({ value, formApi }) => {
-      assert(isSpectrum1D(spectrum));
+      assertSpectrum1D(spectrum);
       const nucleus = spectrum.info.nucleus;
 
       const parsedValues = validationSchema.parse(value);

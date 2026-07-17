@@ -4,6 +4,7 @@ import type {
   RangesViewState,
   Spectrum1D,
 } from '@zakodium/nmrium-core';
+import { isSpectrum1D } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { Filters1DManager } from 'nmr-processing';
@@ -20,7 +21,6 @@ import {
   changeRangeRelativeValue,
   changeRangeSignal,
   detectRanges,
-  isSpectrum1D,
   updateRangesRelativeValues,
 } from '../../../data/data1d/Spectrum1D/index.js';
 import type { ChangeRangeRelativeValueProps } from '../../../data/data1d/Spectrum1D/ranges/changeRangeRelativeValue.js';
@@ -295,9 +295,7 @@ function handleDeleteRange(draft: Draft<State>, action: DeleteRangeAction) {
 
   const datum = getSpectrum(draft, spectrumKey);
 
-  if (!datum || !isSpectrum1D(datum)) {
-    return;
-  }
+  if (!isSpectrum1D(datum)) return;
 
   if (id) {
     const rangeIndex = getRangeIndex(datum, id);

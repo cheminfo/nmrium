@@ -4,6 +4,7 @@ import type {
   RangesViewState,
   ViewState,
 } from '@zakodium/nmrium-core';
+import { isSpectrum1D } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
 import { original } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
@@ -14,7 +15,6 @@ import { DEFAULT_PEAK_SHAPE } from '../../../data/constants/defaultPeakShape.ts'
 import {
   autoPeakPicking,
   getShiftX,
-  isSpectrum1D,
   optimizePeaks,
 } from '../../../data/data1d/Spectrum1D/index.js';
 import { defaultPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState.js';

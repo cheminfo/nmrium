@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
 import type { Range } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
+import { isSpectrum1D } from '@zakodium/nmrium-core';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { useRef } from 'react';
 
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import type { AssignmentsData } from '../../assignment/AssignmentsContext.js';
 import { useAssignment } from '../../assignment/AssignmentsContext.js';
 import { useChartData } from '../../context/ChartContext.js';
@@ -41,7 +41,7 @@ export default function MultiplicityTree(props: MultiplicityTreeProps) {
   const { range } = props;
   const spectrum = useSpectrum();
   const { scaleY } = useScaleChecked();
-  if (!spectrum || !isSpectrum1D(spectrum)) return null;
+  if (!isSpectrum1D(spectrum)) return null;
   const { from, to } = range;
   const maxY = getMaxY(spectrum, { from, to });
   const startY = scaleY({ spectrumId: spectrum.id })(maxY) - marginBottom;

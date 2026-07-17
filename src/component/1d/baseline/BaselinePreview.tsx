@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
 import type { BaselineCorrectionOptions } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
+import { isSpectrum1D } from '@zakodium/nmrium-core';
 import { xyBaselineCalculation } from 'nmr-processing';
 import { useMemo, useRef, useState } from 'react';
 
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.ts';
 import { useChartData } from '../../context/ChartContext.tsx';
 import { useFilterSyncOptions } from '../../context/FilterSyncOptionsContext.tsx';
 import { useScaleChecked } from '../../context/ScaleContext.tsx';

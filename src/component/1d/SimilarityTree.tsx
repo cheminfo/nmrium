@@ -1,9 +1,9 @@
+import { isSpectrum1D } from '@zakodium/nmrium-core';
 import type { Tree } from 'ml-tree-similarity';
 import { createTree } from 'ml-tree-similarity';
 import type { CSSProperties } from 'react';
 import { Fragment } from 'react';
 
-import { isSpectrum1D } from '../../data/data1d/Spectrum1D/index.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useScaleChecked } from '../context/ScaleContext.js';
 import { useFormatNumberByNucleus } from '../hooks/useFormatNumberByNucleus.js';
@@ -30,7 +30,7 @@ export default function SimilarityTree() {
   const scaleY = (value: number) => (height * value) / maxTreeLevels;
   const treeHeadLength = height / maxTreeLevels;
 
-  if (!spectrum || !showSimilarityTree || !isSpectrum1D(spectrum)) return null;
+  if (!showSimilarityTree || !isSpectrum1D(spectrum)) return null;
 
   const {
     data: { x, re },

@@ -1,12 +1,9 @@
+import { isSpectrum2D, isSpectrum2DFidData } from '@zakodium/nmrium-core';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { Fragment, useMemo } from 'react';
 import { MF } from 'react-mf';
 
 import { get1DDataXY } from '../../data/data1d/Spectrum1D/index.js';
-import {
-  isFid2DData,
-  isSpectrum2D,
-} from '../../data/data2d/Spectrum2D/isSpectrum2D.js';
 import { useBrushTracker } from '../EventsTrackers/BrushTracker.js';
 import { useMouseTracker } from '../EventsTrackers/MouseTracker.js';
 import { useChartData } from '../context/ChartContext.js';
@@ -193,7 +190,7 @@ export default function FooterBanner(props: FooterBannerProps) {
 
     if (trackID === LAYOUT.main && isSpectrum2D(spectrum)) {
       const { data } = spectrum;
-      const { maxX, maxY, minX, minY, z } = isFid2DData(data)
+      const { maxX, maxY, minX, minY, z } = isSpectrum2DFidData(data)
         ? data.re
         : data.rr;
 
