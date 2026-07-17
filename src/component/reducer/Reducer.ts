@@ -7,6 +7,7 @@ import { original, produce } from 'immer';
 import type { CorrelationData } from 'nmr-correlation';
 import { buildCorrelationData } from 'nmr-correlation';
 import type { Reducer } from 'react';
+import { z } from 'zod';
 
 import type { StateMoleculeExtended } from '../../data/molecules/Molecule.js';
 import type { UsedColors } from '../../types/UsedColors.js';
@@ -853,8 +854,21 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
   }
 }
 
-export const spectrumReducer: Reducer<State, Action> =
-  produce(innerSpectrumReducer);
+const producer = produce(innerSpectrumReducer);
+
+const validator = z.strictObject({
+  actionType: z.string(),
+  // ...
+});
+
+export const spectrumReducer: Reducer<State, Action> = (state, action) => {
+  const newState = producer(state, action);
+  const validated = validator.safeParse(newState);
+  if (!validated.success) {
+    console.log(validated.error);
+  }
+  return newState;
+};
 
 function getDebugState(draft: Draft<State>) {
   const state = original(draft);
