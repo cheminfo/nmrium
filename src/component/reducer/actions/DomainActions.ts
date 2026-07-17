@@ -22,6 +22,7 @@ import {
   isFid2DData,
   isFt2DSpectrum,
 } from '../../../data/data2d/Spectrum2D/isSpectrum2D.js';
+import { getViewSpectra } from '../../../data/get_view_spectra.ts';
 import nucleusToString from '../../utility/nucleusToString.js';
 import type { State } from '../Reducer.js';
 import { rescaleToSameTop } from '../helper/Zoom1DManager.js';
@@ -83,11 +84,10 @@ function getActiveData(draft: Draft<State>): Spectrum1D[] {
   if (!draft.spectrumLiveProcessed) return data;
   if (!isSpectrum1D(draft.spectrumLiveProcessed)) return data;
 
-  return data.map((datum) =>
-    datum.id === draft.spectrumLiveProcessed?.id
-      ? (draft.spectrumLiveProcessed as Spectrum1D)
-      : datum,
-  );
+  return getViewSpectra({
+    data,
+    spectrumLiveProcessed: draft.spectrumLiveProcessed,
+  });
 }
 
 interface GetDomainOptions {
@@ -156,12 +156,11 @@ function get2DDomain(state: State) {
     spectrumLiveProcessed,
   } = state;
 
-  const data = state.data.map((s) =>
-    s.id === spectrumLiveProcessed?.id ? spectrumLiveProcessed : s,
-  );
+  const data = getViewSpectra<Spectrum>(state);
 
   const nucleus = activeTab.split(',');
-  const spectrum = spectrumLiveProcessed ?? getSpectrum(state);
+  const spectrum: Spectrum | undefined =
+    spectrumLiveProcessed ?? getSpectrum(state);
 
   if (isSpectrum2D(spectrum)) {
     if (isFid2DData(spectrum.data)) {
@@ -286,13 +285,10 @@ function setMode(draft: Draft<State>) {
   const {
     xDomains,
     view: { spectra },
-    spectrumLiveProcessed,
     displayerMode,
   } = draft;
 
-  const data = draft.data.map((s) =>
-    s.id === spectrumLiveProcessed?.id ? spectrumLiveProcessed : s,
-  );
+  const data = getViewSpectra<Spectrum>(draft);
 
   const { activeTab: nucleus } = spectra;
 

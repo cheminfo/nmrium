@@ -7,6 +7,7 @@ import { useMemo } from 'react';
 
 import { isFt1DSpectrum } from '../../data/data1d/Spectrum1D/isSpectrum1D.js';
 import { useChartData } from '../context/ChartContext.js';
+import { useViewSpectra } from '../hooks/use_view_spectra.ts';
 
 export interface GetTracesSpectraOptions {
   nuclei: string[];
@@ -49,18 +50,12 @@ export function getTracesSpectra(options: GetTracesSpectraOptions) {
 
 export function useTracesSpectra() {
   const {
-    data,
-    spectrumLiveProcessed,
     view: {
       spectra: { activeSpectra, activeTab },
     },
   } = useChartData();
 
-  const spectra = useMemo(() => {
-    return data.map((s) =>
-      s.id === spectrumLiveProcessed?.id ? spectrumLiveProcessed : s,
-    );
-  }, [data, spectrumLiveProcessed]);
+  const spectra = useViewSpectra();
 
   return useMemo(() => {
     const nuclei = activeTab?.split(',');
