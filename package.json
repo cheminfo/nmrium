@@ -73,7 +73,7 @@
     "@zakodium/nmrium-core": "^0.7.44",
     "@zakodium/nmrium-core-plugins": "^0.7.59",
     "@zakodium/pdnd-esm": "^1.1.0",
-    "@zakodium/utils": "^0.3.0",
+    "@zakodium/utils": "^0.4.0",
     "@zip.js/zip.js": "^2.8.30",
     "cheminfo-font": "^1.27.0",
     "cheminfo-types": "^1.15.0",
