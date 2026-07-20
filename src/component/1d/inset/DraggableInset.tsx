@@ -4,6 +4,7 @@ import type {
   PeaksViewState,
   RangesViewState,
 } from '@zakodium/nmrium-core';
+import { isSpectrum1D } from '@zakodium/nmrium-core';
 import {
   SvgNmrIntegrate,
   SvgNmrPeaks,
@@ -15,7 +16,6 @@ import { FaSitemap, FaTimes } from 'react-icons/fa';
 import { LuMessageSquareText } from 'react-icons/lu';
 import { Rnd } from 'react-rnd';
 
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
 import { SVGRootContainer } from '../../1d-2d/components/SVGRootContainer.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useGlobal } from '../../context/GlobalContext.js';

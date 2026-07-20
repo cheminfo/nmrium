@@ -1,4 +1,4 @@
-import { isSpectrum1D } from '../../data/data1d/Spectrum1D/isSpectrum1D.js';
+import { isSpectrum1D } from '@zakodium/nmrium-core';
 
 import { useActiveSpectrumIntegralsViewState } from './useActiveSpectrumIntegralsViewState.js';
 import { useActiveSpectrumRangesViewState } from './useActiveSpectrumRangesViewState.js';

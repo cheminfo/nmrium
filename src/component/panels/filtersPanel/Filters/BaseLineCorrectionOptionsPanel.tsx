@@ -1,6 +1,7 @@
 import { Button, Switch } from '@blueprintjs/core';
 import { Select } from '@blueprintjs/select';
 import type { BaselineCorrectionOptions } from '@zakodium/nmr-types';
+import { isSpectrum1D } from '@zakodium/nmrium-core';
 import { getBaselineAnchors } from 'nmr-processing';
 import type { MouseEvent } from 'react';
 import type { Control } from 'react-hook-form';
@@ -8,7 +9,6 @@ import { BiReset } from 'react-icons/bi';
 import { MdRemoveCircleOutline } from 'react-icons/md';
 import { Toolbar } from 'react-science/ui';
 
-import { isSpectrum1D } from '../../../../data/data1d/Spectrum1D/isSpectrum1D.ts';
 import type { ExtractFilterEntry } from '../../../../data/types/common/ExtractFilterEntry.js';
 import { useFilterSyncOptions } from '../../../context/FilterSyncOptionsContext.tsx';
 import Label from '../../../elements/Label.js';

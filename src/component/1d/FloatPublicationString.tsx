@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import type { BoundingBox, Spectrum, TextStyle } from '@zakodium/nmrium-core';
+import { isSpectrum1D } from '@zakodium/nmrium-core';
 import type { SVGProps } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { BsArrowsMove } from 'react-icons/bs';
@@ -7,7 +8,6 @@ import { FaEdit, FaTimes } from 'react-icons/fa';
 import { Rnd } from 'react-rnd';
 import { SVGStyledText } from 'react-science/ui';
 
-import { isSpectrum1D } from '../../data/data1d/Spectrum1D/index.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useDispatch } from '../context/DispatchContext.js';
 import { useGlobal } from '../context/GlobalContext.js';

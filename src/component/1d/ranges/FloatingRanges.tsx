@@ -5,13 +5,13 @@ import type {
   BoundingBox,
   FloatingRangesTablePreferences,
 } from '@zakodium/nmrium-core';
+import { isSpectrum1D } from '@zakodium/nmrium-core';
 import { checkMultiplicity } from 'nmr-processing';
 import { memo, useEffect, useMemo, useState } from 'react';
 import { BsArrowsMove } from 'react-icons/bs';
 import { FaCog, FaLink, FaTimes } from 'react-icons/fa';
 import { Rnd } from 'react-rnd';
 
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import { isSignalRange } from '../../../data/utilities/RangeUtilities.js';
 import type { SVGTableColumn } from '../../SVGTable.js';
 import { SVGTable } from '../../SVGTable.js';
@@ -490,9 +490,8 @@ function useSpectraRanges() {
   const output: Record<string, { ranges: Ranges['values']; info: Info1D }> = {};
 
   for (const spectrum of spectra) {
-    if (!isSpectrum1D(spectrum)) {
-      continue;
-    }
+    if (!isSpectrum1D(spectrum)) continue;
+
     const { id: spectrumKey, ranges, info } = spectrum;
 
     if (!Array.isArray(ranges?.values) || ranges.values.length === 0) {

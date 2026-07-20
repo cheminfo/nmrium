@@ -1,7 +1,7 @@
+import { isSpectrum1D } from '@zakodium/nmrium-core';
 import { SvgNmrAssignment2 } from 'cheminfo-font';
 import { FaBolt } from 'react-icons/fa';
 
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { TablePanel } from '../extra/BasicPanelStyle.js';
 import DefaultPanelHeader from '../header/DefaultPanelHeader.js';

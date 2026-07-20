@@ -4,24 +4,20 @@ import type {
   Spectrum2D,
   Spectrum,
 } from '@zakodium/nmrium-core';
+import {
+  isSpectrum1D,
+  isSpectrum1DFid,
+  isSpectrum1DFt,
+  isSpectrum2D,
+  isSpectrum2DFidData,
+  isSpectrum2DFt,
+} from '@zakodium/nmrium-core';
 import { cast } from '@zakodium/utils';
 import type { NmrData2DFt } from 'cheminfo-types';
 import { extent } from 'd3-array';
 import type { Draft } from 'immer';
 
-import {
-  get1DDataXY,
-  isSpectrum1D,
-} from '../../../data/data1d/Spectrum1D/index.js';
-import {
-  isFid1DSpectrum,
-  isFt1DSpectrum,
-} from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
-import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.js';
-import {
-  isFid2DData,
-  isFt2DSpectrum,
-} from '../../../data/data2d/Spectrum2D/isSpectrum2D.js';
+import { get1DDataXY } from '../../../data/data1d/Spectrum1D/index.js';
 import { getViewSpectra } from '../../../data/get_view_spectra.ts';
 import nucleusToString from '../../utility/nucleusToString.js';
 import type { State } from '../Reducer.js';
@@ -57,7 +53,7 @@ function is2DFTSpectrum(
   nucleus: string,
 ): spectrum is Spectrum2D & { data: NmrData2DFt } {
   return (
-    isFt2DSpectrum(spectrum) && spectrum.info.nucleus?.join(',') === nucleus
+    isSpectrum2DFt(spectrum) && spectrum.info.nucleus?.join(',') === nucleus
   );
 }
 
@@ -73,10 +69,10 @@ function getActiveData(draft: Draft<State>): Spectrum1D[] {
 
   const spectrum = getSpectrum(draft);
   if (spectrum) {
-    const isFid = isFid1DSpectrum(spectrum);
+    const isFid = isSpectrum1DFid(spectrum);
     data = data.filter((datum) => datum.info.isFid === isFid);
   } else {
-    data = data.filter((datum) => isFt1DSpectrum(datum));
+    data = data.filter((datum) => isSpectrum1DFt(datum));
   }
 
   cast<Spectrum1D[]>(data);
@@ -163,7 +159,7 @@ function get2DDomain(state: State) {
     spectrumLiveProcessed ?? getSpectrum(state);
 
   if (isSpectrum2D(spectrum)) {
-    if (isFid2DData(spectrum.data)) {
+    if (isSpectrum2DFidData(spectrum.data)) {
       const { minX, maxX, minY, maxY } = spectrum.data.re;
       xArray = [minX, maxX];
       yArray = [minY, maxY];
@@ -297,18 +293,18 @@ function setMode(draft: Draft<State>) {
       (datum) =>
         xDomains[datum.id] && nucleusToString(datum.info.nucleus) === nucleus,
     );
-    draft.mode = spectrum && isFid1DSpectrum(spectrum) ? 'LTR' : 'RTL';
+    draft.mode = spectrum && isSpectrum1DFid(spectrum) ? 'LTR' : 'RTL';
   } else {
     const activeSpectra = getActiveSpectra(spectra);
     let hasFt: boolean;
     if (Array.isArray(activeSpectra) && activeSpectra?.length > 0) {
       hasFt = activeSpectra.some((spectrum) =>
-        isFt2DSpectrum(data[spectrum.index]),
+        isSpectrum2DFt(data[spectrum.index]),
       );
     } else {
       hasFt = data.some(
         (spectrum) =>
-          isFt2DSpectrum(spectrum) &&
+          isSpectrum2DFt(spectrum) &&
           nucleusToString(spectrum.info.nucleus) === nucleus,
       );
     }

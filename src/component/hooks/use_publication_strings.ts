@@ -1,9 +1,8 @@
 import type { ACSExportOptions, Spectrum } from '@zakodium/nmrium-core';
+import { isSpectrum1D } from '@zakodium/nmrium-core';
 import type { RangesToACSOptions } from 'nmr-processing';
 import { rangesToACS } from 'nmr-processing';
 import { assert } from 'react-science/ui';
-
-import { isSpectrum1D } from '../../data/data1d/Spectrum1D/index.ts';
 
 import useSpectraByActiveNucleus from './useSpectraPerNucleus.ts';
 import { useActiveACSSettings } from './use_acs_settings.ts';

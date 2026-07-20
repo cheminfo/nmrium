@@ -1,8 +1,6 @@
 import type { Range, Signal1D, Signal2D, Zone } from '@zakodium/nmr-types';
 import type { Spectrum1D, Spectrum2D, Spectrum } from '@zakodium/nmrium-core';
-
-import { isSpectrum1D } from '../data1d/Spectrum1D/index.js';
-import { isSpectrum2D } from '../data2d/Spectrum2D/index.js';
+import { isSpectrum1D, isSpectrum2D } from '@zakodium/nmrium-core';
 
 function findSpectrum(
   spectraData: Spectrum[],

@@ -2,7 +2,6 @@ export { get1DDataXY } from './get1DDataXY.js';
 export { getReferenceShift } from './getReferenceShift.js';
 export { initiateDatum1D } from './initiateDatum1D.js';
 export { changeIntegralsRelative } from './integrals/changeIntegralsRelative.js';
-export { isSpectrum1D } from './isSpectrum1D.js';
 export { autoPeakPicking } from './peaks/autoPeakPicking.js';
 export { optimizePeaks } from './peaks/optimizePeaks.js';
 export { createRange } from './ranges/createRange.js';

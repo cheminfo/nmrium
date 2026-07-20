@@ -1,5 +1,6 @@
 import type { Filter2DEntry, SignalKind, Zone } from '@zakodium/nmr-types';
 import type { Spectrum2D, ZonesViewState } from '@zakodium/nmrium-core';
+import { isSpectrum2D } from '@zakodium/nmrium-core';
 import type { FromTo, NmrData2DFt } from 'cheminfo-types';
 import type { Draft } from 'immer';
 import lodashCloneDeep from 'lodash/cloneDeep.js';
@@ -10,7 +11,6 @@ import {
   changeZoneSignal,
   detectZones,
   detectZonesManual,
-  isSpectrum2D,
 } from '../../../data/data2d/Spectrum2D/index.js';
 import { unlink } from '../../../data/utilities/ZoneUtilities.js';
 import type { Axis } from '../../assignment/AssignmentsContext.js';

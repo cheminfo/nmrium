@@ -1,11 +1,11 @@
 import type { Info1D } from '@zakodium/nmr-types';
 import type { Spectrum } from '@zakodium/nmrium-core';
+import { isSpectrum1D } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
 import type { DatabaseNMREntry } from 'nmr-processing';
 
 import {
   initiateDatum1D,
-  isSpectrum1D,
   mapRanges,
   updateRangesRelativeValues,
 } from '../../../data/data1d/Spectrum1D/index.js';

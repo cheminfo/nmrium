@@ -1,3 +1,4 @@
+import { isSpectrum1D, isSpectrum2D } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
 import { original } from 'immer';
 import lodashCloneDeep from 'lodash/cloneDeep.js';
@@ -10,8 +11,6 @@ import type {
 } from 'nmr-correlation';
 import { buildCorrelationData, setCorrelation } from 'nmr-correlation';
 
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
-import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.js';
 import {
   findRange,
   findSignal1D,

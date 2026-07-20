@@ -1,4 +1,5 @@
-import { isFt2DSpectrum } from '../../../data/data2d/Spectrum2D/isSpectrum2D.js';
+import { isSpectrum2DFt } from '@zakodium/nmrium-core';
+
 import { ClipPathContainer } from '../../1d-2d/components/ClipPathContainer.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import Left1DChart from '../1d-tracer/Left1DChart.js';
@@ -16,9 +17,7 @@ export function FTContainer(props: FTContainerProps) {
 
   const activeSpectrum = useSpectrum();
 
-  if (activeSpectrum && !isFt2DSpectrum(activeSpectrum)) {
-    return null;
-  }
+  if (activeSpectrum && !isSpectrum2DFt(activeSpectrum)) return null;
 
   return (
     <>

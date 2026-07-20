@@ -16,13 +16,13 @@ import {
   defaultAxisUnit1DFt,
   defaultAxisUnit2DFid,
   defaultAxisUnit2DFt,
+  isSpectrum2D,
 } from '@zakodium/nmrium-core';
 import { scaleLinear } from 'd3-scale';
 import { useCallback, useMemo } from 'react';
 import { assert, assertUnreachable } from 'react-science/ui';
 import { match } from 'ts-pattern';
 
-import { isSpectrum2D } from '../../data/data2d/Spectrum2D/index.ts';
 import { useScale2DX, useScale2DY } from '../2d/utilities/scale.ts';
 import { useChartData } from '../context/ChartContext.tsx';
 import { useDispatch } from '../context/DispatchContext.tsx';

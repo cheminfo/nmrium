@@ -1,11 +1,9 @@
+import { isSpectrum1D } from '@zakodium/nmrium-core';
 import type { MouseEvent, PropsWithChildren } from 'react';
 import { useCallback, useRef, useState } from 'react';
 import { useOnOff } from 'react-science/ui';
 
-import {
-  createRange,
-  isSpectrum1D,
-} from '../../data/data1d/Spectrum1D/index.js';
+import { createRange } from '../../data/data1d/Spectrum1D/index.js';
 import { cutRange } from '../../data/data1d/Spectrum1D/ranges/createRange.js';
 import type {
   BaseDetectBrushingOptions,
@@ -174,23 +172,21 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
                 });
                 break;
               case options.rangePicking.id: {
-                if (!spectrum) break;
+                if (!isSpectrum1D(spectrum)) break;
 
-                if (isSpectrum1D(spectrum)) {
-                  const [from, to] = selectRange;
-                  const range = createRange(spectrum, {
-                    from,
-                    to,
-                    logger,
-                  });
+                const [from, to] = selectRange;
+                const range = createRange(spectrum, {
+                  from,
+                  to,
+                  logger,
+                });
 
-                  if (!range) break;
+                if (!range) break;
 
-                  dispatch({
-                    type: 'ADD_RANGE',
-                    payload: { range },
-                  });
-                }
+                dispatch({
+                  type: 'ADD_RANGE',
+                  payload: { range },
+                });
 
                 break;
               }
@@ -438,16 +434,14 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
               });
               break;
             case 'rangePicking': {
-              if (!spectrum) break;
+              if (!isSpectrum1D(spectrum)) break;
 
-              if (isSpectrum1D(spectrum)) {
-                const cutRanges = cutRange(spectrum, xPPM);
+              const cutRanges = cutRange(spectrum, xPPM);
 
-                dispatch({
-                  type: 'CUT_RANGE',
-                  payload: { ranges: cutRanges },
-                });
-              }
+              dispatch({
+                type: 'CUT_RANGE',
+                payload: { ranges: cutRanges },
+              });
               break;
             }
             case 'multipleSpectraAnalysis': {

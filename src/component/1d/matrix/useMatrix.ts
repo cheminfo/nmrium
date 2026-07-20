@@ -1,8 +1,8 @@
 import type { Spectrum } from '@zakodium/nmrium-core';
+import { isSpectrum1D } from '@zakodium/nmrium-core';
 import type { NumberArray } from 'cheminfo-types';
 import { useMemo } from 'react';
 
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import { useChartData } from '../../context/ChartContext.js';
 import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus.js';
 
@@ -36,7 +36,7 @@ export function sliceArrayForDomain<T extends string[] | NumberArray>(
 function getX(spectra: Spectrum[]) {
   const spectrum = spectra?.[0];
 
-  if (!spectrum || !isSpectrum1D(spectrum)) return [];
+  if (!isSpectrum1D(spectrum)) return [];
   return spectrum.data.x;
 }
 

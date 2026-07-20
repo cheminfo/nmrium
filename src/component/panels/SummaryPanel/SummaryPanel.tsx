@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import type { Spectrum1D, Spectrum2D } from '@zakodium/nmrium-core';
+import { isSpectrum2D } from '@zakodium/nmrium-core';
 import type {
   Correlation,
   Link,
@@ -10,7 +11,6 @@ import { getLinkDelta, getLinkDim } from 'nmr-correlation';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { FaFlask, FaSlidersH } from 'react-icons/fa';
 
-import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/isSpectrum2D.ts';
 import {
   findRange,
   findSignal1D,

@@ -3,9 +3,9 @@ import type {
   Spectrum1D,
   Spectrum,
 } from '@zakodium/nmrium-core';
+import { isSpectrum1DFt } from '@zakodium/nmrium-core';
 import { useMemo } from 'react';
 
-import { isFt1DSpectrum } from '../../data/data1d/Spectrum1D/isSpectrum1D.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useViewSpectra } from '../hooks/use_view_spectra.ts';
 
@@ -41,7 +41,7 @@ export function getTracesSpectra(options: GetTracesSpectraOptions) {
     const id = traceSpectra[0].id;
     const spectrum = spectra.find((datum) => datum.id === id);
     const key = index === 0 ? 'x' : 'y';
-    traces[key] = isFt1DSpectrum(spectrum) ? spectrum : null;
+    traces[key] = isSpectrum1DFt(spectrum) ? spectrum : null;
 
     index++;
   }

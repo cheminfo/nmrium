@@ -1,9 +1,9 @@
 import type { Spectrum2D } from '@zakodium/nmrium-core';
+import { isSpectrum2DFid } from '@zakodium/nmrium-core';
 import type { NmrData2DFt } from 'cheminfo-types';
 import { matrixZPivotRescale } from 'ml-spectra-processing';
 import { useEffect, useMemo, useRef } from 'react';
 
-import { isFid2DSpectrum } from '../../../data/data2d/Spectrum2D/isSpectrum2D.js';
 import { useChartData } from '../../context/ChartContext.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import { get2DXScale, get2DYScale } from '../utilities/scale.js';
@@ -101,7 +101,7 @@ export function FidCanvas() {
 
 function getImageData(spectrum: Spectrum2D) {
   const matrix = matrixZPivotRescale(
-    isFid2DSpectrum(spectrum)
+    isSpectrum2DFid(spectrum)
       ? spectrum.data.re.z
       : (spectrum.data as NmrData2DFt).rr.z,
     {

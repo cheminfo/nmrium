@@ -1,8 +1,8 @@
 import type { Spectrum1D, Spectrum2D, Spectrum } from '@zakodium/nmrium-core';
+import { isSpectrum1D } from '@zakodium/nmrium-core';
 import { zoomIdentity } from 'd3-zoom';
 import type { Draft } from 'immer';
 
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import { contoursManager } from '../../../data/data2d/Spectrum2D/contours.js';
 import { getXScale } from '../../1d/utilities/scale.js';
 import type { Layout } from '../../2d/utilities/DimensionLayout.js';

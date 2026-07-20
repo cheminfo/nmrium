@@ -4,6 +4,7 @@ import type {
 } from '@zakodium/nmrium-core';
 import {
   isSpectrum1D,
+  isSpectrum2D,
   sliceData1D,
   sliceData2D,
   sliceSpectrum,
@@ -12,7 +13,6 @@ import { assertDefined, assertUnreachable, noop } from '@zakodium/utils';
 import type { Draft } from 'immer';
 
 import { initializeContoursLevels } from '../../../data/data2d/Spectrum2D/contours.ts';
-import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.ts';
 import { useChartData } from '../../context/ChartContext.tsx';
 import { useCore } from '../../context/CoreContext.tsx';
 import { useDispatch } from '../../context/DispatchContext.tsx';

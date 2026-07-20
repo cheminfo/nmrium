@@ -1,8 +1,7 @@
 import styled from '@emotion/styled';
+import { isSpectrum1D, isSpectrum2D } from '@zakodium/nmrium-core';
 import type { CSSProperties } from 'react';
 
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
-import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/isSpectrum2D.js';
 import { useScale2DX } from '../../2d/utilities/scale.js';
 import type { BrushAxis } from '../../EventsTrackers/BrushTracker.js';
 import {
@@ -405,7 +404,7 @@ function DistanceOneDimension(props: DistanceProps) {
   const spectrum = useSpectrum();
   const { scaleX } = useScaleChecked();
 
-  if (!spectrum || !isSpectrum1D(spectrum)) return;
+  if (!isSpectrum1D(spectrum)) return;
 
   if (axis !== 'x') {
     return;
@@ -431,7 +430,7 @@ function DistanceTwoDimension(props: DistanceProps) {
   const spectrum = useSpectrum();
   const scaleX = useScale2DX();
 
-  if (!spectrum || !isSpectrum2D(spectrum)) return;
+  if (!isSpectrum2D(spectrum)) return;
   const value = (
     (scaleX.invert(start) - scaleX.invert(end)) *
     spectrum.info.originFrequency[axis === 'x' ? 0 : 1]

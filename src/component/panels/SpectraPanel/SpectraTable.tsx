@@ -8,6 +8,7 @@ import type {
   Spectrum,
   StateMolecule,
 } from '@zakodium/nmrium-core';
+import { isSpectrum1D } from '@zakodium/nmrium-core';
 import type { CSSProperties, MouseEvent } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import { FaCopy, FaFileExport, FaRegTrashAlt } from 'react-icons/fa';
@@ -15,7 +16,6 @@ import { IoColorPaletteOutline } from 'react-icons/io5';
 import type { CellProps } from 'react-table';
 
 import { exportForCT } from '../../../data/SpectraManager.js';
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/index.js';
 import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents.js';
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks.js';
 import { useChartData } from '../../context/ChartContext.js';

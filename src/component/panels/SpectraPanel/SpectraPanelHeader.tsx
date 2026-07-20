@@ -6,6 +6,7 @@ import type {
   Spectrum2D,
   Spectrum,
 } from '@zakodium/nmrium-core';
+import { isSpectrum1D } from '@zakodium/nmrium-core';
 import { SvgNmrResetScale, SvgNmrSameTop } from 'cheminfo-font';
 import { memo, useCallback } from 'react';
 import { AiOutlineApi } from 'react-icons/ai';
@@ -13,7 +14,6 @@ import { FaCreativeCommonsSamplingPlus } from 'react-icons/fa';
 import { IoColorPaletteOutline } from 'react-icons/io5';
 import { MdFormatColorFill, MdOutlineFormatColorText } from 'react-icons/md';
 
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.ts';
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { usePreferences } from '../../context/PreferencesContext.js';

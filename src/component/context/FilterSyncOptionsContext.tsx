@@ -1,4 +1,5 @@
 import type { Spectrum1D } from '@zakodium/nmrium-core';
+import { isSpectrum1D } from '@zakodium/nmrium-core';
 import { getBaselineAnchors } from 'nmr-processing';
 import type { ReactNode } from 'react';
 import {
@@ -11,7 +12,6 @@ import {
   useState,
 } from 'react';
 
-import { isSpectrum1D } from '../../data/data1d/Spectrum1D/isSpectrum1D.ts';
 import { useFilter } from '../hooks/useFilter.ts';
 import useTempSpectrum from '../hooks/useTempSpectrum.ts';
 

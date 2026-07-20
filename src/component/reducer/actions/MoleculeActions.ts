@@ -1,4 +1,5 @@
 import type { MoleculeView, StateMolecule } from '@zakodium/nmrium-core';
+import { isSpectrum1D, isSpectrum2D } from '@zakodium/nmrium-core';
 import type { Logger } from 'cheminfo-types';
 import type { FifoLogger } from 'fifo-logger';
 import type { Draft } from 'immer';
@@ -13,9 +14,7 @@ import type {
 } from '../../../data/PredictionManager.js';
 import { generateSpectra } from '../../../data/PredictionManager.js';
 import { changeSpectraRelativeSum } from '../../../data/data1d/Spectrum1D/SumManager.js';
-import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D.js';
 import { initializeContoursLevels } from '../../../data/data2d/Spectrum2D/contours.ts';
-import { isSpectrum2D } from '../../../data/data2d/Spectrum2D/index.ts';
 import type { MoleculeBoundingRect } from '../../../data/molecules/Molecule.js';
 import { DRAGGABLE_STRUCTURE_INITIAL_BOUNDING_REACT } from '../../../data/molecules/Molecule.js';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager.js';

@@ -1,5 +1,6 @@
 import { Button, Callout, Classes } from '@blueprintjs/core';
 import type { Jcoupling, Signal1D } from '@zakodium/nmr-types';
+import { isSpectrum1D } from '@zakodium/nmrium-core';
 import dlv from 'dlv';
 import type { CSSProperties } from 'react';
 import { useCallback, useMemo, useRef } from 'react';
@@ -9,7 +10,6 @@ import { Toolbar } from 'react-science/ui';
 import type { CellProps } from 'react-table';
 
 import { multiplets } from '../../../../../../data/constants/Multiplets.js';
-import { isSpectrum1D } from '../../../../../../data/data1d/Spectrum1D/index.js';
 import { NumberInput2Controller } from '../../../../../elements/NumberInput2Controller.js';
 import type { Column } from '../../../../../elements/ReactTable/ReactTable.js';
 import ReactTable from '../../../../../elements/ReactTable/ReactTable.js';
