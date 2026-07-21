@@ -14,12 +14,12 @@ import {
   isSpectrum2D,
   isSpectrum2DFt,
 } from '@zakodium/nmrium-core';
+import { assert } from '@zakodium/utils';
 import type { NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
 import dlv from 'dlv';
 import type { Draft } from 'immer';
 import { original } from 'immer';
 import { Filters1DManager } from 'nmr-processing';
-import { assert } from 'react-science/ui';
 
 import {
   get1DColor,

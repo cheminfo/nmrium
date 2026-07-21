@@ -1,9 +1,9 @@
 import type { Spectrum1D, Spectrum2D, Spectrum } from '@zakodium/nmrium-core';
+import { assert } from '@zakodium/utils';
 import type { SpectraData } from 'nmr-processing';
 import { getAssignments as getAssignmentsData } from 'nmr-processing';
 import { Molecule } from 'openchemlib';
 import { useRef, useState } from 'react';
-import { assert } from 'react-science/ui';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';

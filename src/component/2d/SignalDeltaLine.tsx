@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { assert } from 'react-science/ui';
+import { assert } from '@zakodium/utils';
 
 import { useChartData } from '../context/ChartContext.js';
 

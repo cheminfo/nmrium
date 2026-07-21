@@ -1,8 +1,7 @@
 import type { ACSExportOptions, Spectrum } from '@zakodium/nmrium-core';
-import { isSpectrum1D } from '@zakodium/nmrium-core';
+import { assertSpectrum1D, isSpectrum1D } from '@zakodium/nmrium-core';
 import type { RangesToACSOptions } from 'nmr-processing';
 import { rangesToACS } from 'nmr-processing';
-import { assert } from 'react-science/ui';
 
 import useSpectraByActiveNucleus from './useSpectraPerNucleus.ts';
 import { useActiveACSSettings } from './use_acs_settings.ts';
@@ -34,7 +33,7 @@ interface BuildPublicationStringOptions {
 }
 export function buildPublicationString(options: BuildPublicationStringOptions) {
   const { spectrum, acs } = options;
-  assert(isSpectrum1D(spectrum));
+  assertSpectrum1D(spectrum);
 
   const {
     info,

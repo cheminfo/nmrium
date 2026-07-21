@@ -4,8 +4,8 @@ import type {
   Spectrum1D,
   Spectrum2D,
 } from '@zakodium/nmrium-core';
+import { assert } from '@zakodium/utils';
 import { memo } from 'react';
-import { assert } from 'react-science/ui';
 
 import type {
   MoleculesView,

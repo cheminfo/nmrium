@@ -18,9 +18,9 @@ import {
   defaultAxisUnit2DFt,
   isSpectrum2D,
 } from '@zakodium/nmrium-core';
+import { assert, assertIn, assertUnreachable } from '@zakodium/utils';
 import { scaleLinear } from 'd3-scale';
 import { useCallback, useMemo } from 'react';
-import { assert, assertUnreachable } from 'react-science/ui';
 import { match } from 'ts-pattern';
 
 import { useScale2DX, useScale2DY } from '../2d/utilities/scale.ts';
@@ -39,12 +39,6 @@ export const axisUnitToLabel: Record<AxisUnit, string> = {
   ppm: 'δ [ppm]',
   pt: 'index [pt]',
 };
-
-function assertIn<V, T extends V>(value: V, values: T[]): asserts value is T {
-  if (values.includes(value as any)) return;
-
-  throw new Error(`Value ${String(value)} is not in [${values.join(',')}]`);
-}
 
 export function useHorizontalAxisUnit() {
   const {

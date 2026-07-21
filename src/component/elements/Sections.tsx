@@ -15,6 +15,7 @@ import {
   pointerOutsideOfPreview,
   setCustomNativeDragPreview,
 } from '@zakodium/pdnd-esm';
+import { assert } from '@zakodium/utils';
 import type {
   CSSProperties,
   HTMLAttributes,
@@ -31,7 +32,6 @@ import {
   useState,
 } from 'react';
 import { createPortal } from 'react-dom';
-import { assert } from 'react-science/ui';
 
 interface DropIndicatorProps {
   edge: Edge;

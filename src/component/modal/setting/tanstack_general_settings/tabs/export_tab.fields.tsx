@@ -2,8 +2,9 @@ import { Checkbox, Tag } from '@blueprintjs/core';
 import { useSelector } from '@tanstack/react-store';
 import type { PageSizeName, Unit } from '@zakodium/nmrium-core';
 import { units } from '@zakodium/nmrium-core';
+import { assertUnreachable } from '@zakodium/utils';
 import { memo, useMemo } from 'react';
-import { FormGroup, assertUnreachable, withFieldGroup } from 'react-science/ui';
+import { FormGroup, withFieldGroup } from 'react-science/ui';
 import type { z } from 'zod/v4';
 
 import { convertToPixels } from '../../../../elements/export/units.js';
@@ -163,13 +164,13 @@ export const ExportFields = withFieldGroup({
         <Subscribe
           selector={(state) => {
             const mode = state.values.mode;
-            switch (state.values.mode) {
+            switch (mode) {
               case 'basic':
-                return { mode: state.values.mode, layout: state.values.layout };
+                return { mode, layout: state.values.layout };
               case 'advance':
-                return { mode: state.values.mode, unit: state.values.unit };
+                return { mode, unit: state.values.unit };
               default:
-                assertUnreachable(mode as never);
+                assertUnreachable(mode);
             }
           }}
         >

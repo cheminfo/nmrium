@@ -1,3 +1,4 @@
+import { assert } from '@zakodium/utils';
 import type {
   CSSProperties,
   KeyboardEvent,
@@ -15,7 +16,6 @@ import {
   useReducer,
   useRef,
 } from 'react';
-import { assert } from 'react-science/ui';
 
 import type { EventModifierKeys } from '../context/KeyModifierContext.js';
 import type { ActionType } from '../reducer/types/ActionType.js';
