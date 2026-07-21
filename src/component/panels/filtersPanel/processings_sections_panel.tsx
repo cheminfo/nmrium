@@ -72,6 +72,29 @@ export function ProcessingsSectionsPanel() {
     spectrum?.processings,
   ]);
 
+  const processingsStatus = useMemo(() => {
+    const processings: Array<{
+      operation: SpectrumProcessingOperation<unknown, unknown>;
+      isOpen: boolean;
+      isAfterOpen: boolean;
+    }> = [];
+    let isAfterOpen = false;
+
+    for (const operation of spectrum?.processings ?? []) {
+      const isOpen =
+        selectedProcessing.operatorId === operation.operatorId ||
+        selectedProcessing.operationId === operation.uid;
+
+      processings.push({ isOpen, isAfterOpen, operation });
+
+      if (isOpen) {
+        isAfterOpen = true;
+      }
+    }
+
+    return processings;
+  }, [selectedProcessing, spectrum?.processings]);
+
   function handleDeleteFilter() {
     const buttons: AlertButton[] = [
       {
@@ -103,16 +126,19 @@ export function ProcessingsSectionsPanel() {
       {processings.length === 0 && <EmptyText text="No Processings" />}
       {processings.length > 0 && (
         <Sections isOverflow renderActiveSectionContentOnly>
-          {processings?.map((operation, index) => (
-            <ProcessingItem
-              key={operation.uid}
-              operation={operation}
-              operationIndex={index}
-              selectedProcessing={selectedProcessing}
-              setOpenedOperation={setOpenedOperation}
-              processingsMutations={processingsMutations}
-            />
-          ))}
+          {processingsStatus.map(
+            ({ operation, isOpen, isAfterOpen }, index) => (
+              <ProcessingItem
+                key={operation.uid}
+                operation={operation}
+                operationIndex={index}
+                isOpen={isOpen}
+                isAfterOpen={isAfterOpen}
+                setOpenedOperation={setOpenedOperation}
+                processingsMutations={processingsMutations}
+              />
+            ),
+          )}
         </Sections>
       )}
     </>

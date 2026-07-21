@@ -21,10 +21,8 @@ type SPO = SpectrumProcessingOperation<unknown, unknown>;
 interface ProcessingItemProps {
   operation: SPO;
   operationIndex: number;
-  selectedProcessing: {
-    operatorId?: string;
-    operationId?: string;
-  };
+  isOpen: boolean;
+  isAfterOpen: boolean;
   processingsMutations: ProcessingsMutations;
   setOpenedOperation: Dispatch<SetStateAction<SPO['uid'] | undefined>>;
 }
@@ -33,7 +31,8 @@ export function ProcessingItem(props: ProcessingItemProps) {
   const {
     operation,
     operationIndex,
-    selectedProcessing,
+    isOpen,
+    isAfterOpen,
     processingsMutations,
     setOpenedOperation,
   } = props;
@@ -41,9 +40,6 @@ export function ProcessingItem(props: ProcessingItemProps) {
   const core = useCore();
 
   const operatorUI = core.slotOperator(operation.operatorId);
-  const isOpen =
-    selectedProcessing.operatorId === operation.operatorId ||
-    selectedProcessing.operationId === operation.uid;
   const isEditable = operatorUI?.isEditable;
   const isLiveEditable = operatorUI?.isLiveEditable;
 
@@ -123,6 +119,14 @@ export function ProcessingItem(props: ProcessingItemProps) {
           operation={operation}
         />
       }
+      headerStyle={getHeaderStyle({
+        isOpen,
+        operation:
+          isOpen && liveEdit.value?.checked
+            ? liveOperationRef.current
+            : operation,
+        isAfterOpen,
+      })}
     >
       <Sections.Body style={{ paddingBottom: '120px' }}>
         <CoreOperatorExpanded
@@ -193,4 +197,30 @@ function OperationFallback(props: OperationFallbackProps) {
   }
 
   return <ObjectInspector data={{ settings, options }} />;
+}
+
+interface GetHeaderStyleOptions {
+  operation: SpectrumProcessingOperation<unknown, unknown>;
+  isOpen: boolean;
+  isAfterOpen: boolean;
+}
+
+function getHeaderStyle(options: GetHeaderStyleOptions) {
+  const { operation, isOpen, isAfterOpen } = options;
+
+  const { error } = operation;
+
+  if (error) {
+    return { backgroundColor: '#ea8f8f' };
+  }
+
+  if (isOpen) {
+    return { backgroundColor: '#c2ea8f' };
+  }
+
+  if (isAfterOpen) {
+    return { opacity: 0.5 };
+  }
+
+  return {};
 }
