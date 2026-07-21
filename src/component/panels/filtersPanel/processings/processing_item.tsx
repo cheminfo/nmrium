@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import type { SpectrumProcessingOperation } from '@zakodium/nmrium-core';
 import type { Dispatch, ReactNode, SetStateAction } from 'react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ObjectInspector } from 'react-inspector';
 
 import { useCore } from '../../../context/CoreContext.tsx';
@@ -53,8 +53,14 @@ export function ProcessingItem(props: ProcessingItemProps) {
   const processingsMutationsRef = useRef(processingsMutations);
   processingsMutationsRef.current = processingsMutations;
 
+  const [liveOperation, setLiveOperation] = useState<SPO>(() => ({
+    ...operation,
+    options: undefined,
+  }));
+
   const liveOperationRef =
-    useRef<SpectrumProcessingOperation<unknown, unknown>>(operation);
+    useRef<SpectrumProcessingOperation<unknown, unknown>>(liveOperation);
+  liveOperationRef.current = liveOperation;
 
   // track liveEdit changes to prepare / reset / apply live changes
   useEffect(() => {
@@ -127,9 +133,7 @@ export function ProcessingItem(props: ProcessingItemProps) {
       headerStyle={getHeaderStyle({
         isOpen,
         operation:
-          isOpen && liveEdit.value?.checked
-            ? liveOperationRef.current
-            : operation,
+          isOpen && liveEdit.value?.checked ? liveOperation : operation,
         isAfterOpen,
       })}
     >
@@ -164,7 +168,7 @@ export function ProcessingItem(props: ProcessingItemProps) {
             if (!liveEdit.value?.checked) return;
 
             liveOperation = { ...liveOperation, options: undefined };
-            liveOperationRef.current = liveOperation;
+            setLiveOperation(liveOperation);
 
             void processingsMutations.applyLiveChange(
               liveOperation,
