@@ -1,5 +1,6 @@
+import styled from '@emotion/styled';
 import type { SpectrumProcessingOperation } from '@zakodium/nmrium-core';
-import type { Dispatch, SetStateAction } from 'react';
+import type { Dispatch, ReactNode, SetStateAction } from 'react';
 import { useEffect, useRef } from 'react';
 import { ObjectInspector } from 'react-inspector';
 
@@ -179,10 +180,37 @@ export function ProcessingItem(props: ProcessingItemProps) {
             )
           }
         </CoreOperatorExpanded>
+        {operation.error && <ErrorRenderer>{operation.error}</ErrorRenderer>}
       </Sections.Body>
     </Sections.Item>
   );
 }
+
+interface ErrorRendererProps {
+  children: ReactNode;
+}
+function ErrorRenderer(props: ErrorRendererProps) {
+  return (
+    <Pre>
+      <Code>{props.children}</Code>
+    </Pre>
+  );
+}
+
+const Pre = styled.pre`
+  display: block;
+  margin-inline: -10px;
+  padding-inline: 10px;
+  padding-block: 5px;
+  background: #ea8f8f;
+`;
+
+const Code = styled.code`
+  display: block;
+  max-width: 100%;
+  overflow: auto;
+  white-space: normal;
+`;
 
 interface OperationFallbackProps {
   operation: SpectrumProcessingOperation<unknown, unknown>;
