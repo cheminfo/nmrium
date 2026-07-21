@@ -1,6 +1,7 @@
+import styled from '@emotion/styled';
 import type { SpectrumProcessingOperation } from '@zakodium/nmrium-core';
-import type { Dispatch, SetStateAction } from 'react';
-import { useEffect, useRef } from 'react';
+import type { Dispatch, ReactNode, SetStateAction } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ObjectInspector } from 'react-inspector';
 
 import { useCore } from '../../../context/CoreContext.tsx';
@@ -21,10 +22,8 @@ type SPO = SpectrumProcessingOperation<unknown, unknown>;
 interface ProcessingItemProps {
   operation: SPO;
   operationIndex: number;
-  selectedProcessing: {
-    operatorId?: string;
-    operationId?: string;
-  };
+  isOpen: boolean;
+  isAfterOpen: boolean;
   processingsMutations: ProcessingsMutations;
   setOpenedOperation: Dispatch<SetStateAction<SPO['uid'] | undefined>>;
 }
@@ -33,7 +32,8 @@ export function ProcessingItem(props: ProcessingItemProps) {
   const {
     operation,
     operationIndex,
-    selectedProcessing,
+    isOpen,
+    isAfterOpen,
     processingsMutations,
     setOpenedOperation,
   } = props;
@@ -41,9 +41,6 @@ export function ProcessingItem(props: ProcessingItemProps) {
   const core = useCore();
 
   const operatorUI = core.slotOperator(operation.operatorId);
-  const isOpen =
-    selectedProcessing.operatorId === operation.operatorId ||
-    selectedProcessing.operationId === operation.uid;
   const isEditable = operatorUI?.isEditable;
   const isLiveEditable = operatorUI?.isLiveEditable;
 
@@ -56,8 +53,14 @@ export function ProcessingItem(props: ProcessingItemProps) {
   const processingsMutationsRef = useRef(processingsMutations);
   processingsMutationsRef.current = processingsMutations;
 
+  const [liveOperation, setLiveOperation] = useState<SPO>(() => ({
+    ...operation,
+    options: undefined,
+  }));
+
   const liveOperationRef =
-    useRef<SpectrumProcessingOperation<unknown, unknown>>(operation);
+    useRef<SpectrumProcessingOperation<unknown, unknown>>(liveOperation);
+  liveOperationRef.current = liveOperation;
 
   // track liveEdit changes to prepare / reset / apply live changes
   useEffect(() => {
@@ -88,14 +91,18 @@ export function ProcessingItem(props: ProcessingItemProps) {
     liveEditRef.current = liveEdit;
   }, [liveEdit]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+
+    return () => processingsMutationsRef.current.resetLiveChange();
+  }, [isOpen]);
+
   function onReorder(sourceIndex: number, targetIndex: number) {
     void processingsMutations.reorder(sourceIndex, targetIndex);
   }
 
   function toggleSection(operationId: string) {
-    setOpenedOperation((openedOperation) =>
-      openedOperation === operationId ? undefined : operationId,
-    );
+    setOpenedOperation(isOpen ? undefined : operationId);
   }
 
   return (
@@ -123,6 +130,12 @@ export function ProcessingItem(props: ProcessingItemProps) {
           operation={operation}
         />
       }
+      headerStyle={getHeaderStyle({
+        isOpen,
+        operation:
+          isOpen && liveEdit.value?.checked ? liveOperation : operation,
+        isAfterOpen,
+      })}
     >
       <Sections.Body style={{ paddingBottom: '120px' }}>
         <CoreOperatorExpanded
@@ -155,7 +168,7 @@ export function ProcessingItem(props: ProcessingItemProps) {
             if (!liveEdit.value?.checked) return;
 
             liveOperation = { ...liveOperation, options: undefined };
-            liveOperationRef.current = liveOperation;
+            setLiveOperation(liveOperation);
 
             void processingsMutations.applyLiveChange(
               liveOperation,
@@ -175,10 +188,37 @@ export function ProcessingItem(props: ProcessingItemProps) {
             )
           }
         </CoreOperatorExpanded>
+        {operation.error && <ErrorRenderer>{operation.error}</ErrorRenderer>}
       </Sections.Body>
     </Sections.Item>
   );
 }
+
+interface ErrorRendererProps {
+  children: ReactNode;
+}
+function ErrorRenderer(props: ErrorRendererProps) {
+  return (
+    <Pre>
+      <Code>{props.children}</Code>
+    </Pre>
+  );
+}
+
+const Pre = styled.pre`
+  display: block;
+  margin-inline: -10px;
+  padding-inline: 10px;
+  padding-block: 5px;
+  background: #ea8f8f;
+`;
+
+const Code = styled.code`
+  display: block;
+  max-width: 100%;
+  overflow: auto;
+  white-space: normal;
+`;
 
 interface OperationFallbackProps {
   operation: SpectrumProcessingOperation<unknown, unknown>;
@@ -193,4 +233,30 @@ function OperationFallback(props: OperationFallbackProps) {
   }
 
   return <ObjectInspector data={{ settings, options }} />;
+}
+
+interface GetHeaderStyleOptions {
+  operation: SpectrumProcessingOperation<unknown, unknown>;
+  isOpen: boolean;
+  isAfterOpen: boolean;
+}
+
+function getHeaderStyle(options: GetHeaderStyleOptions) {
+  const { operation, isOpen, isAfterOpen } = options;
+
+  const { error } = operation;
+
+  if (error) {
+    return { backgroundColor: '#ea8f8f' };
+  }
+
+  if (isOpen) {
+    return { backgroundColor: '#c2ea8f' };
+  }
+
+  if (isAfterOpen) {
+    return { opacity: 0.5 };
+  }
+
+  return {};
 }
