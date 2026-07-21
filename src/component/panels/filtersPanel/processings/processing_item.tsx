@@ -85,14 +85,18 @@ export function ProcessingItem(props: ProcessingItemProps) {
     liveEditRef.current = liveEdit;
   }, [liveEdit]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+
+    return () => processingsMutationsRef.current.resetLiveChange();
+  }, [isOpen]);
+
   function onReorder(sourceIndex: number, targetIndex: number) {
     void processingsMutations.reorder(sourceIndex, targetIndex);
   }
 
   function toggleSection(operationId: string) {
-    setOpenedOperation((openedOperation) =>
-      openedOperation === operationId ? undefined : operationId,
-    );
+    setOpenedOperation(isOpen ? undefined : operationId);
   }
 
   return (
