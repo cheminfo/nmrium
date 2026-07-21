@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import type { AxisUnit } from '@zakodium/nmrium-core';
+import { assert } from '@zakodium/utils';
 import type { ReactNode } from 'react';
-import { assert } from 'react-science/ui';
 
 import type { ContextMenuItem } from '../../elements/ContextMenuBluePrint.tsx';
 import { ContextMenu } from '../../elements/ContextMenuBluePrint.tsx';

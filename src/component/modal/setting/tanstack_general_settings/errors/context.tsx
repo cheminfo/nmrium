@@ -1,4 +1,5 @@
 import { useSelector } from '@tanstack/react-store';
+import { assert } from '@zakodium/utils';
 import type { Dispatch, ReactNode, SetStateAction } from 'react';
 import {
   createContext,
@@ -8,7 +9,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { assert, withForm } from 'react-science/ui';
+import { withForm } from 'react-science/ui';
 
 import {
   defaultGeneralSettingsFormValues,

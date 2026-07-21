@@ -1,5 +1,5 @@
+import { assert } from '@zakodium/utils';
 import { checkMultiplicity } from 'nmr-processing';
-import { assert } from 'react-science/ui';
 
 import { useDispatch } from '../../../context/DispatchContext.js';
 import type { EditableColumnProps } from '../../../elements/EditableColumn.js';

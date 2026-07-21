@@ -1,7 +1,7 @@
+import { assert } from '@zakodium/utils';
 import type { NmrData2D } from 'cheminfo-types';
 import { scaleLinear } from 'd3-scale';
 import { useMemo } from 'react';
-import { assert } from 'react-science/ui';
 
 import { useChartData } from '../../context/ChartContext.js';
 import type { Margin, SpectraDirection } from '../../reducer/Reducer.js';
