@@ -11,6 +11,7 @@ import { SvgNmrResetScale, SvgNmrSameTop } from 'cheminfo-font';
 import { memo, useCallback } from 'react';
 import { AiOutlineApi } from 'react-icons/ai';
 import { FaCreativeCommonsSamplingPlus } from 'react-icons/fa';
+import { GrConnect } from 'react-icons/gr';
 import { IoColorPaletteOutline } from 'react-icons/io5';
 import { MdFormatColorFill, MdOutlineFormatColorText } from 'react-icons/md';
 
@@ -70,18 +71,6 @@ interface ExternalMenuOptions {
   apiKey?: string;
 }
 
-const NO_SERVICES_ITEM: ToolbarPopoverMenuItem<ExternalMenuOptions> = {
-  icon: 'disable',
-  text: 'No services configured',
-  tooltip: {
-    title: 'No external services',
-    description:
-      'Add an external API in general settings to enable this feature.',
-  },
-  disabled: true,
-  tooltipProps: { intent: 'danger' },
-};
-
 type ExternalMenuItem = ToolbarPopoverMenuItem<ExternalMenuOptions>;
 
 function useExternalApiMenuItems(): ExternalMenuItem[] {
@@ -118,7 +107,7 @@ function useExternalApiMenuItems(): ExternalMenuItem[] {
         tooltipProps: { ...(isDisabled && { intent: 'danger' }) },
       };
     });
-  return items.length > 0 ? items : [NO_SERVICES_ITEM];
+  return items;
 }
 function getMissingProjection(spectraData: any, activeTab: any) {
   let nucleus = activeTab.split(',');
@@ -361,17 +350,20 @@ function SpectraPanelHeaderInner({
       active: spectraLabel.visible,
       onClick: toggleSpectraLabelHandler,
     },
-    {
+  ]);
+
+  if (externalApiMenuItems.length > 0) {
+    leftButtons.push({
       component: (
         <ToolbarPopoverItem
           options={externalApiMenuItems}
           onClick={handleServiceClick}
-          icon="more"
+          icon={<GrConnect />}
           id="trigger-external-service"
         />
       ),
-    },
-  ]);
+    });
+  }
 
   return (
     <DefaultPanelHeader
