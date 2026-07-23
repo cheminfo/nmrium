@@ -1,5 +1,8 @@
 import styled from '@emotion/styled';
-import type { SpectrumProcessingOperation } from '@zakodium/nmrium-core';
+import type {
+  Spectrum,
+  SpectrumProcessingOperation,
+} from '@zakodium/nmrium-core';
 import type { Dispatch, ReactNode, SetStateAction } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { ObjectInspector } from 'react-inspector';
@@ -26,6 +29,7 @@ interface ProcessingItemProps {
   isAfterOpen: boolean;
   processingsMutations: ProcessingsMutations;
   setOpenedOperation: Dispatch<SetStateAction<SPO['uid'] | undefined>>;
+  spectrum: Spectrum;
 }
 
 export function ProcessingItem(props: ProcessingItemProps) {
@@ -36,6 +40,7 @@ export function ProcessingItem(props: ProcessingItemProps) {
     isAfterOpen,
     processingsMutations,
     setOpenedOperation,
+    spectrum,
   } = props;
 
   const core = useCore();
@@ -143,6 +148,7 @@ export function ProcessingItem(props: ProcessingItemProps) {
           fallback={<OperationFallback operation={operation} />}
           operation={operation}
           core={core}
+          spectrum={spectrum}
           onChange={(operation) => {
             if (!isEditable) return;
 

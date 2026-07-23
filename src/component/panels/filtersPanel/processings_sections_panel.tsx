@@ -136,6 +136,7 @@ export function ProcessingsSectionsPanel() {
                 isAfterOpen={isAfterOpen}
                 setOpenedOperation={setOpenedOperation}
                 processingsMutations={processingsMutations}
+                spectrum={spectrum}
               />
             ),
           )}
