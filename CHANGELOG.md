@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.6.0](https://github.com/cheminfo/nmrium/compare/v2.5.0...v2.6.0) (2026-07-23)
+
+
+### Features
+
+* display peak absolute and relative shape area ([#4266](https://github.com/cheminfo/nmrium/issues/4266)) ([6c2b78b](https://github.com/cheminfo/nmrium/commit/6c2b78b31d26c3d328f6944d7a90e3ab7f5b26db))
+* improve 2D signal guideline behavior ([#4273](https://github.com/cheminfo/nmrium/issues/4273)) ([a8a0ff5](https://github.com/cheminfo/nmrium/commit/a8a0ff55654e16657cf3df2f87550bd4e1d73be3)), closes [#4267](https://github.com/cheminfo/nmrium/issues/4267)
+* processings live preview ([#4272](https://github.com/cheminfo/nmrium/issues/4272)) ([dd353a1](https://github.com/cheminfo/nmrium/commit/dd353a10fa8facc6ebc5d79acd744e18c6321b8a))
+* show processings in error ([#4281](https://github.com/cheminfo/nmrium/issues/4281)) ([1f77f1d](https://github.com/cheminfo/nmrium/commit/1f77f1d613c032bce6a3392f71b66568000c3441))
+
+
+### Bug Fixes
+
+* correctly remove signal assignments ([#4277](https://github.com/cheminfo/nmrium/issues/4277)) ([b1ec480](https://github.com/cheminfo/nmrium/commit/b1ec480a8a0786aad36a370a7c24669ff43fb25c))
+* move signals into their new ranges when cutting a range ([#4275](https://github.com/cheminfo/nmrium/issues/4275)) ([379bb59](https://github.com/cheminfo/nmrium/commit/379bb59a99c541943ec1ff1f8634f3beeadd435c))
+* update react-science ([#4285](https://github.com/cheminfo/nmrium/issues/4285)) ([13253ef](https://github.com/cheminfo/nmrium/commit/13253ef8671b17eaf92569d292c1fe62676ade52))
+* use assert methods from `@zakodium/utils` ([#4280](https://github.com/cheminfo/nmrium/issues/4280)) ([123c344](https://github.com/cheminfo/nmrium/commit/123c344daa33f158bd4fe758a1392da58aa5ec69))
+
 ## [2.5.0](https://github.com/cheminfo/nmrium/compare/v2.4.0...v2.5.0) (2026-07-13)
 
 
