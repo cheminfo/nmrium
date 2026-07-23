@@ -4,6 +4,7 @@ import { memo, useCallback, useMemo, useState } from 'react';
 import { FaEdit, FaRegTrashAlt } from 'react-icons/fa';
 import type { CellProps, Row } from 'react-table';
 
+import { getPeakAbsoluteArea } from '../../../data/utilities/getPeakAbsoluteArea.ts';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { EditableColumn } from '../../elements/EditableColumn.js';
 import { EmptyText } from '../../elements/EmptyText.js';
@@ -12,11 +13,19 @@ import type { ControlCustomColumn } from '../../elements/ReactTable/utility/addC
 import addCustomColumn, {
   createActionColumn,
 } from '../../elements/ReactTable/utility/addCustomColumn.js';
+import { TableHeaderLabel } from '../../elements/TableHeaderLabel.tsx';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import { formatNumber } from '../../utility/formatNumber.js';
 import { NoDataForFid } from '../extra/placeholder/NoDataForFid.js';
 
 import type { PeakRecord } from './PeaksPanel.js';
+
+function getFormattedNumber(
+  value: unknown,
+  format: Parameters<typeof formatNumber>[1],
+) {
+  return typeof value === 'number' ? formatNumber(value, format) : '';
+}
 
 export function usePeaksTableColumns(activeTab: string) {
   const dispatch = useDispatch();
@@ -46,6 +55,16 @@ export function usePeaksTableColumns(activeTab: string) {
     [dispatch],
   );
 
+  const saveRelativeAreaHandler = useCallback(
+    (value: string | number, id: string) => {
+      dispatch({
+        type: 'CHANGE_PEAK_RELATIVE',
+        payload: { value: Number(value), id },
+      });
+    },
+    [dispatch],
+  );
+
   const COLUMNS = useMemo<Array<ControlCustomColumn<PeakRecord>>>(
     () => [
       {
@@ -58,7 +77,16 @@ export function usePeaksTableColumns(activeTab: string) {
       {
         showWhen: 'deltaPPM.show',
         index: 3,
-        Header: 'δ (ppm)',
+        Header: () => {
+          return (
+            <TableHeaderLabel
+              text="δ (ppm)"
+              shortText="δ"
+              fontSize={12}
+              fontWeight="bold"
+            />
+          );
+        },
         accessor: 'x',
         Cell: ({ row }: CellProps<PeakRecord>) => (
           <EditableColumn
@@ -107,48 +135,82 @@ export function usePeaksTableColumns(activeTab: string) {
         showWhen: 'fwhm.show',
         index: 8,
         Header: 'fwhm',
-        accessor: (row) => row?.shape?.fwhm || '',
-        Cell: ({ row }: CellProps<PeakRecord>) => {
-          const fwhm = row.original?.shape?.fwhm;
-          if (typeof fwhm !== 'number') {
-            return '';
-          }
-          return formatNumber(fwhm, tablePreferences.fwhm.format);
-        },
+        accessor: (row) => row?.shape?.fwhm ?? '',
+        Cell: ({ row }: CellProps<PeakRecord>) =>
+          getFormattedNumber(
+            row.original?.shape?.fwhm,
+            tablePreferences.fwhm.format,
+          ),
       },
       {
         showWhen: 'mu.show',
         index: 9,
         Header: 'mu',
         accessor: (row) =>
-          (row?.shape?.kind === 'pseudoVoigt' && row?.shape?.mu) || '',
+          row?.shape?.kind === 'pseudoVoigt' ? (row.shape.mu ?? '') : '',
         Cell: ({ row }: CellProps<PeakRecord>) => {
-          const mu =
-            row.original?.shape?.kind === 'pseudoVoigt' &&
-            row.original?.shape?.mu;
-          if (typeof mu !== 'number') {
-            return '';
-          }
-          return formatNumber(mu, tablePreferences.mu.format);
+          const shape = row.original?.shape;
+          const mu = shape?.kind === 'pseudoVoigt' ? shape.mu : undefined;
+          return getFormattedNumber(mu, tablePreferences.mu.format);
         },
       },
       {
         showWhen: 'gamma.show',
-        index: 9,
+        index: 10,
         Header: 'gamma',
         accessor: (row) =>
-          (row?.shape?.kind === 'generalizedLorentzian' && row?.shape?.gamma) ||
-          '',
+          row?.shape?.kind === 'generalizedLorentzian'
+            ? (row.shape.gamma ?? '')
+            : '',
         Cell: ({ row }: CellProps<PeakRecord>) => {
+          const shape = row.original?.shape;
           const gamma =
-            row.original?.shape?.kind === 'generalizedLorentzian' &&
-            row.original?.shape?.gamma;
+            shape?.kind === 'generalizedLorentzian' ? shape.gamma : undefined;
+          return getFormattedNumber(gamma, tablePreferences.gamma.format);
+        },
+      },
+      {
+        showWhen: 'absoluteArea.show',
+        index: 11,
+        Header: 'Absolute area',
+        accessor: (row) => getPeakAbsoluteArea(row) ?? '',
+        Cell: ({ row }: CellProps<PeakRecord>) =>
+          getFormattedNumber(
+            getPeakAbsoluteArea(row.original),
+            tablePreferences.absoluteArea.format,
+          ),
+      },
+      {
+        showWhen: 'relativeArea.show',
+        index: 12,
+        Header: () => {
+          return (
+            <TableHeaderLabel
+              text="Relative area"
+              shortText="Area"
+              fontSize={12}
+              fontWeight="bold"
+            />
+          );
+        },
+        accessor: 'relativeArea',
+        Cell: ({ row }: CellProps<PeakRecord>) => {
+          const value = formatNumber(
+            row.original.relativeArea || 0,
+            tablePreferences.relativeArea.format,
+          );
 
-          if (typeof gamma !== 'number') {
-            return '';
-          }
-
-          return formatNumber(gamma, tablePreferences.gamma.format);
+          return (
+            <EditableColumn
+              value={value}
+              onSave={(newValue) =>
+                saveRelativeAreaHandler(newValue, row.original.id)
+              }
+              validate={(val) => val !== ''}
+              type="number"
+              style={{ padding: '0.1rem 0.4rem' }}
+            />
+          );
         },
       },
       {
@@ -172,10 +234,11 @@ export function usePeaksTableColumns(activeTab: string) {
       },
     ],
     [
+      editPeakHandler,
+      deletePeakHandler,
       tablePreferences,
       saveDeltaPPMRefsHandler,
-      deletePeakHandler,
-      editPeakHandler,
+      saveRelativeAreaHandler,
     ],
   );
 

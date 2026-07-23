@@ -111,7 +111,7 @@ interface UnitLabelProps {
 function UnitLabel(props: UnitLabelProps) {
   const { children } = props;
   const { labelStyle } = useTicksConfig();
-  const { getTextWidth } = useTextMetrics({ labelSize: labelStyle.fontSize });
+  const { getTextWidth } = useTextMetrics({ fontSize: labelStyle.fontSize });
   const labelHeight = getTextWidth(children);
 
   return (

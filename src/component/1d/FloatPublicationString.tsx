@@ -55,13 +55,13 @@ function useWrapSVGText(params: UseWrapSVGTextParams) {
   const { text, width, style } = params;
 
   const debugCanvas = false;
-  const labelSize = style.fontSize ?? 12;
+  const fontSize = style.fontSize ?? 12;
   // ctx used only for debug canvas purpose.
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   const { getTextWidth, ctx } = useTextMetrics({
-    labelSize,
-    labelStyle: style.fontStyle,
-    labelWeight: style.fontWeight,
+    fontSize,
+    fontStyle: style.fontStyle,
+    fontWeight: style.fontWeight,
     debugCanvasWidth: debugCanvas ? width : undefined,
   });
   const formattedText = text
@@ -70,7 +70,7 @@ function useWrapSVGText(params: UseWrapSVGTextParams) {
     .replaceAll(/<i>(?<j>.*?)<\/i>/g, ' **$1** ')
     .trim();
 
-  const lineHeight = labelSize * 1.6;
+  const lineHeight = fontSize * 1.6;
 
   const lines: string[][] = [];
   let line: string[] = [];

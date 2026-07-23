@@ -28,7 +28,7 @@ export function initiateDatum1D(
 ): Spectrum1D {
   const { usedColors, colors, molecules = [] } = options;
 
-  const { integrals, ranges, ...restSpectrum } = spectrum;
+  const { integrals, ranges, peaks, ...restSpectrum } = spectrum;
   const spectrumObj: Spectrum1D = {
     ...restSpectrum,
     id: spectrum.id || crypto.randomUUID(),

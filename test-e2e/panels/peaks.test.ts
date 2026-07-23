@@ -45,7 +45,7 @@ async function shiftX(nmrium: NmriumPage) {
 
 async function shiftSpectraByDeltaColumn(nmrium: NmriumPage) {
   const ppmColumnLocator = nmrium.page.locator(
-    '_react=PeaksTable >> .editable-column-input >> nth=1 ',
+    '_react=PeaksTable >> .editable-column-input >> nth=2 ',
   );
 
   await ppmColumnLocator.dblclick();
@@ -119,11 +119,11 @@ test('Processed spectra peaks', async ({ page }) => {
     await expect(peaks).toHaveCount(16);
 
     const peaksData = [
-      { p: '26.93', intensity: '2304124678.9' },
-      { p: '28.58', intensity: '2220075572.1' },
-      { p: '36.3', intensity: '2169790333.08' },
-      { p: '50.39', intensity: '2029514468.85' },
-      { p: '53.66', intensity: '2053846103.58' },
+      { p: '26.93', intensity: '2.30e+9' },
+      { p: '28.58', intensity: '2.22e+9' },
+      { p: '36.3', intensity: '2.17e+9' },
+      { p: '50.39', intensity: '2.03e+9' },
+      { p: '53.66', intensity: '2.05e+9' },
     ];
     for (const [i, { p, intensity }] of peaksData.entries()) {
       const peak = peaks.nth(i);
