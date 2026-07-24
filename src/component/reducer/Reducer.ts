@@ -1,5 +1,9 @@
 import type { BaselineCorrectionZone } from '@zakodium/nmr-types';
-import type { Spectrum, ViewState } from '@zakodium/nmrium-core';
+import type {
+  ProcessingOperatorId,
+  Spectrum,
+  ViewState,
+} from '@zakodium/nmrium-core';
 import type { Source } from 'file-collection';
 import { FileCollection } from 'file-collection';
 import type { Draft } from 'immer';
@@ -161,6 +165,9 @@ export const getInitialState = (): State => ({
   displayerKey: '',
   zoom: {
     history: {},
+  },
+  processingOperators: {
+    selected: undefined,
   },
   toolOptions: {
     selectedTool: 'zoom',
@@ -344,6 +351,10 @@ export interface State {
    */
   zoom: {
     history: ZoomHistory;
+  };
+
+  processingOperators: {
+    selected: ProcessingOperatorId | undefined;
   };
 
   /**
@@ -668,6 +679,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return ProcessingsActions.setSpectrum(draft, action);
       case 'SET_SPECTRUM_LIVE_PROCESSED':
         return ProcessingsActions.setSpectrumLiveProcessed(draft, action);
+      case 'SELECT_PROCESSING_OPERATOR':
+        return ProcessingsActions.selectProcessingOperator(draft, action);
 
       case 'CHANGE_SPECTRUM_DISPLAY_VIEW_MODE':
         return ToolsActions.handleChangeSpectrumDisplayMode(draft);

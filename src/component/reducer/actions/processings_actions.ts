@@ -1,4 +1,4 @@
-import type { Spectrum } from '@zakodium/nmrium-core';
+import type { ProcessingOperatorId, Spectrum } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
 
 import type { State } from '../Reducer.ts';
@@ -23,7 +23,15 @@ type SetSpectrumLiveProcessed = ActionType<
   }
 >;
 
-export type ProcessingsActions = SetSpectrumAction | SetSpectrumLiveProcessed;
+type SelectProcessingOperator = ActionType<
+  'SELECT_PROCESSING_OPERATOR',
+  {
+    operatorId: ProcessingOperatorId | undefined;
+  }
+>;
+
+export type ProcessingsActions =
+  SetSpectrumAction | SetSpectrumLiveProcessed | SelectProcessingOperator;
 
 export function setSpectrum(draft: Draft<State>, action: SetSpectrumAction) {
   const { index, spectrum, onProduce } = action.payload;
@@ -42,6 +50,15 @@ export function setSpectrumLiveProcessed(
   draft.spectrumLiveProcessed = spectrumLiveProcessed;
 
   updateLiveProcessedView(draft);
+}
+
+export function selectProcessingOperator(
+  draft: Draft<State>,
+  { payload }: SelectProcessingOperator,
+) {
+  const { operatorId } = payload;
+
+  draft.processingOperators.selected = operatorId;
 }
 
 function updateLiveProcessedView(draft: Draft<State>) {

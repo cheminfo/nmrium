@@ -6,7 +6,7 @@ import versionInfo from '../../../versionInfo.js';
 import Logo from '../../elements/Logo.js';
 import { StandardDialog } from '../../elements/StandardDialog.tsx';
 import { StyledDialogBody } from '../../elements/StyledDialogBody.js';
-import { CoreSlot } from '../../utility/CoreSlot.tsx';
+import { CoreSlot } from '../../utility/core_slots/core_slot.tsx';
 
 import AboutUsZakodium from './AboutUsZakodium.js';
 
