@@ -21,7 +21,7 @@ export function CoreOperatorTool(
   > &
     CoreOperatorToolProps,
 ) {
-  const { spectrum, liveSpectrum, onAddOperation, operator } = props;
+  const { spectrum, liveSpectrum, onTriggerOperation, operator } = props;
   const core = useCore();
 
   if (!spectrum) return null;
@@ -43,7 +43,7 @@ export function CoreOperatorTool(
         core={core}
         spectrum={spectrum}
         liveSpectrum={liveSpectrum}
-        onAddOperation={onAddOperation}
+        onTriggerOperation={onTriggerOperation}
       />
     </ErrorBoundary>
   );

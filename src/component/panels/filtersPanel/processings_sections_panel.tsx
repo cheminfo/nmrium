@@ -2,75 +2,30 @@ import type {
   ProcessingOperatorId,
   SpectrumProcessingOperation,
 } from '@zakodium/nmrium-core';
-import { cast } from '@zakodium/utils';
-import type { Filter1D, Filter2D } from 'nmr-processing';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 import { useChartData } from '../../context/ChartContext.tsx';
+import { useDispatch } from '../../context/DispatchContext.tsx';
+import { useProcessingsMutations } from '../../context/processings_mutations_context.tsx';
 import type { AlertButton } from '../../elements/Alert.tsx';
 import { useAlert } from '../../elements/Alert.tsx';
 import { EmptyText } from '../../elements/EmptyText.tsx';
 import { Sections } from '../../elements/Sections.tsx';
 import { useStableSpectrum } from '../../hooks/useSpectrum.ts';
-import type { Tool } from '../../toolbar/ToolTypes.ts';
 import DefaultPanelHeader from '../header/DefaultPanelHeader.tsx';
-import { useProcessingsMutations } from '../hooks/use_processings_mutation.ts';
 
 import { ProcessingItem } from './processings/processing_item.tsx';
-
-const mapToolsToProcessing: Partial<Record<Tool, ProcessingOperatorId>> = {
-  apodization: '@zakodium/nmrium-core-plugins#apodization1D',
-  zeroFilling: '@zakodium/nmrium-core-plugins#zeroFilling1D',
-  fft: '@zakodium/nmrium-core-plugins#fft1D',
-  phaseCorrection: '@zakodium/nmrium-core-plugins#phaseCorrection1D',
-};
-
-type FilterName = Filter1D['name'] | Filter2D['name'];
-const mapFiltersToProcessings: Partial<
-  Record<FilterName, ProcessingOperatorId>
-> = {
-  apodization: '@zakodium/nmrium-core-plugins#apodization1D',
-  digitalFilter: '@zakodium/nmrium-core-plugins#digitalFilter1D',
-  fft: '@zakodium/nmrium-core-plugins#fft1D',
-  phaseCorrection: '@zakodium/nmrium-core-plugins#phaseCorrection1D',
-  shiftX: '@zakodium/nmrium-core-plugins#shiftX1D',
-  zeroFilling: '@zakodium/nmrium-core-plugins#zeroFilling1D',
-};
 
 export function ProcessingsSectionsPanel() {
   const { showAlert } = useAlert();
   const spectrum = useStableSpectrum();
-  const { toolOptions } = useChartData();
+  const {
+    processingOperators: { selected },
+  } = useChartData();
+  const dispatch = useDispatch();
   const processingsMutations = useProcessingsMutations();
 
-  cast<FilterName>(toolOptions.data.activeFilterID);
-  const selectedToolProcessing = mapToolsToProcessing[toolOptions.selectedTool];
-  const activeProcessing =
-    mapFiltersToProcessings[toolOptions.data.activeFilterID];
-  const [openedOperation, setOpenedOperation] =
-    useState<SpectrumProcessingOperation<unknown, unknown>['uid']>();
-
   const processings = spectrum?.processings ?? [];
-
-  const selectedProcessing = useMemo<{
-    operatorId?: ProcessingOperatorId;
-    operationId?: string;
-  }>(() => {
-    if (selectedToolProcessing) return { operatorId: selectedToolProcessing };
-    if (
-      activeProcessing &&
-      spectrum?.processings?.some((p) => p.operatorId === activeProcessing)
-    ) {
-      return { operatorId: activeProcessing };
-    }
-
-    return { operationId: openedOperation };
-  }, [
-    activeProcessing,
-    openedOperation,
-    selectedToolProcessing,
-    spectrum?.processings,
-  ]);
 
   const processingsStatus = useMemo(() => {
     const processings: Array<{
@@ -81,9 +36,7 @@ export function ProcessingsSectionsPanel() {
     let isAfterOpen = false;
 
     for (const operation of spectrum?.processings ?? []) {
-      const isOpen =
-        selectedProcessing.operatorId === operation.operatorId ||
-        selectedProcessing.operationId === operation.uid;
+      const isOpen = selected === operation.operatorId;
 
       processings.push({ isOpen, isAfterOpen, operation });
 
@@ -93,7 +46,7 @@ export function ProcessingsSectionsPanel() {
     }
 
     return processings;
-  }, [selectedProcessing, spectrum?.processings]);
+  }, [selected, spectrum?.processings]);
 
   function handleDeleteFilter() {
     const buttons: AlertButton[] = [
@@ -109,6 +62,15 @@ export function ProcessingsSectionsPanel() {
       message:
         'You are about to delete all processing steps, Are you sure?. Experimental, not implemented yet',
       buttons,
+    });
+  }
+
+  function selectProcessingOperator(
+    operatorId: ProcessingOperatorId | undefined,
+  ) {
+    dispatch({
+      type: 'SELECT_PROCESSING_OPERATOR',
+      payload: { operatorId },
     });
   }
 
@@ -134,7 +96,7 @@ export function ProcessingsSectionsPanel() {
                 operationIndex={index}
                 isOpen={isOpen}
                 isAfterOpen={isAfterOpen}
-                setOpenedOperation={setOpenedOperation}
+                selectProcessingOperator={selectProcessingOperator}
                 processingsMutations={processingsMutations}
               />
             ),

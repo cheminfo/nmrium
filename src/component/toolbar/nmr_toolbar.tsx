@@ -10,6 +10,7 @@ import { useDispatch } from '../context/DispatchContext.js';
 import { useIsPrimaryKeyActivated } from '../context/KeyModifierContext.tsx';
 import { useLoader } from '../context/LoaderContext.js';
 import { usePreferences } from '../context/PreferencesContext.js';
+import { useProcessingsMutations } from '../context/processings_mutations_context.tsx';
 import type { ToolbarPopoverMenuItem } from '../elements/ToolbarPopoverItem.js';
 import { ToolbarPopoverItem } from '../elements/ToolbarPopoverItem.js';
 import { useExportManagerAPI } from '../elements/export/ExportManager.js';
@@ -78,6 +79,7 @@ export default function NMRToolbar() {
     toolOptions: { selectedTool },
     spectrumLiveProcessed,
   } = useChartData();
+  const processingsMutations = useProcessingsMutations();
   const isButtonVisible = useCheckToolsVisibility();
   const dispatch = useDispatch();
   const spectrum = useSpectrum();
@@ -523,8 +525,8 @@ export default function NMRToolbar() {
               operator={operatorUI}
               spectrum={stableSpectrum}
               liveSpectrum={spectrumLiveProcessed}
-              onAddOperation={(operation) => {
-                console.log('onAddOperation', operation);
+              onTriggerOperation={(operation) => {
+                void processingsMutations.triggerOperation(operation);
               }}
             />
           ))}
