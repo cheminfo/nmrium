@@ -15,7 +15,7 @@ import { FaPlus } from 'react-icons/fa';
 import { TabTitle } from '../../../../elements/TabTitle.js';
 import { useTabsController } from '../../../../elements/TabsProvider.js';
 
-import { DeltaInput } from './DeltaInput.js';
+import { DeltaLabel } from './DeltaLabel.tsx';
 import { InfoBlock } from './InfoBlock.js';
 import { NewSignalTab } from './NewSignalTab.js';
 import SignalTab from './SignalTab.js';
@@ -73,7 +73,7 @@ function SignalsContent({ range }: SignalsFormProps) {
   const signalFormTabs = useMemo(() => {
     const signalTabs: any[] =
       signals.length > 0
-        ? signals.map((signal: any, i: number) => (
+        ? signals.map((_: any, i: number) => (
             <Tab
               // eslint-disable-next-line react/no-array-index-key
               key={`signalForm${i}`}
@@ -81,7 +81,7 @@ function SignalsContent({ range }: SignalsFormProps) {
               panel={<SignalTab index={i} />}
             >
               <TabTitle onDelete={() => handleDeleteSignal(i)}>
-                <DeltaInput signal={signal} index={i} />
+                <DeltaLabel index={i} />
               </TabTitle>
             </Tab>
           ))
