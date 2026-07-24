@@ -524,7 +524,7 @@ export default function NMRToolbar() {
               spectrum={stableSpectrum}
               liveSpectrum={spectrumLiveProcessed}
               onAddOperation={(operation) => {
-                void operation;
+                console.log('onAddOperation', operation);
               }}
             />
           ))}
