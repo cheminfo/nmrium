@@ -1,10 +1,11 @@
 import { isSpectrum2DQuadrants } from '@zakodium/nmrium-core';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { FaDownload } from 'react-icons/fa';
 import type { ToolbarItemProps, TooltipItem } from 'react-science/ui';
 import { Toolbar, TooltipHelpContent } from 'react-science/ui';
 
 import { useChartData } from '../context/ChartContext.js';
+import { useCore } from '../context/CoreContext.tsx';
 import { useDispatch } from '../context/DispatchContext.js';
 import { useIsPrimaryKeyActivated } from '../context/KeyModifierContext.tsx';
 import { useLoader } from '../context/LoaderContext.js';
@@ -18,7 +19,7 @@ import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility.js';
 import useDatumWithSpectraStatistics from '../hooks/useDatumWithSpectraStatistics.js';
 import { useDialogToggle } from '../hooks/useDialogToggle.js';
 import { useExport } from '../hooks/useExport.js';
-import useSpectrum from '../hooks/useSpectrum.js';
+import useSpectrum, { useStableSpectrum } from '../hooks/useSpectrum.js';
 import useToolsFunctions from '../hooks/useToolsFunctions.js';
 import { useVerticalAlign } from '../hooks/useVerticalAlign.js';
 import ExportAsJcampModal from '../modal/ExportAsJcampModal.js';
@@ -26,6 +27,7 @@ import { ImportPublicationStringModal } from '../modal/ImportPublicationStringMo
 import { LoadJCAMPModal } from '../modal/LoadJCAMPModal.js';
 import SaveAsModal from '../modal/SaveAsModal.js';
 import { MetaImportationModal } from '../modal/metaImportation/MetaImportationModal.js';
+import { CoreOperatorTool } from '../utility/core_slots/core_operator_tool.tsx';
 
 import type { IconOptions, MainTool } from './ToolTypes.js';
 import { getToolIcon, options } from './ToolTypes.js';
@@ -71,12 +73,15 @@ function useExportList() {
 }
 
 export default function NMRToolbar() {
+  const core = useCore();
   const {
     toolOptions: { selectedTool },
+    spectrumLiveProcessed,
   } = useChartData();
   const isButtonVisible = useCheckToolsVisibility();
   const dispatch = useDispatch();
   const spectrum = useSpectrum();
+  const stableSpectrum = useStableSpectrum();
   const isPrimaryKeyActivated = useIsPrimaryKeyActivated();
 
   const {
@@ -432,6 +437,12 @@ export default function NMRToolbar() {
       },
     },
   ];
+
+  const pluginTools = useMemo(() => {
+    return core.slotOperators();
+  }, [core]);
+  const isExperimental = useCheckExperimentalFeature();
+
   return (
     <>
       <LoadJCAMPModal isOpen={dialog.loadJCAMP} onCloseDialog={closeDialog} />
@@ -504,6 +515,19 @@ export default function NMRToolbar() {
             />
           );
         })}
+
+        {isExperimental &&
+          pluginTools.map((operatorUI) => (
+            <CoreOperatorTool
+              key={operatorUI.id}
+              operator={operatorUI}
+              spectrum={stableSpectrum}
+              liveSpectrum={spectrumLiveProcessed}
+              onAddOperation={(operation) => {
+                void operation;
+              }}
+            />
+          ))}
       </Toolbar>
     </>
   );

@@ -7,10 +7,8 @@ import { ObjectInspector } from 'react-inspector';
 import { useCore } from '../../../context/CoreContext.tsx';
 import { EmptyText } from '../../../elements/EmptyText.tsx';
 import { Sections } from '../../../elements/Sections.tsx';
-import {
-  CoreOperatorExpanded,
-  CoreOperatorName,
-} from '../../../utility/CoreSlot.tsx';
+import { CoreOperatorExpanded } from '../../../utility/core_slots/core_operator_expanded.tsx';
+import { CoreOperatorName } from '../../../utility/core_slots/core_operator_name.tsx';
 import type { ProcessingsMutations } from '../../hooks/use_processings_mutation.ts';
 
 import { OperatorEditBanner } from './operator_edit_banner.tsx';
