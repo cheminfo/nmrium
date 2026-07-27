@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { ControllerProps, FieldValues } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
 
@@ -16,6 +17,7 @@ export interface NumberInput2ControllerProps<
   >;
   noShadowBox?: boolean;
   transformValue?: (value: number) => number;
+  formatOnBlur?: (value: number) => string;
 }
 
 const numberPattern = /^-?\d+(\.\d+)?$/;
@@ -32,8 +34,11 @@ export function NumberInput2Controller<
     noShadowBox = false,
     style,
     transformValue,
+    onFocus,
+    formatOnBlur,
     ...otherInputProps
   } = props;
+  const [focused, setFocused] = useState(false);
 
   const { rules, ...otherControllerProps } = controllerProps;
 
@@ -44,11 +49,25 @@ export function NumberInput2Controller<
       rules={{ pattern: numberPattern, ...rules }}
       {...otherControllerProps}
       render={({ field, fieldState: { invalid } }) => {
-        const { onChange, ...otherFieldProps } = field;
+        const { onChange, onBlur, value, ...otherFieldProps } = field;
+        const showOverlay = !focused && typeof formatOnBlur === 'function';
+
         return (
           <NumberInput2
+            onFocus={(e) => {
+              onFocus?.(e);
+              setFocused(true);
+            }}
+
             {...otherFieldProps}
+            onBlur={() => {
+              onBlur?.();
+              setFocused(false);
+            }}
+            value={showOverlay ? formatOnBlur(value) : value}
             onValueChange={(valueAsNumber, valueAsString, event) => {
+              if (!focused) return;
+
               if (numberPattern.test(valueAsString)) {
                 onChange(
                   typeof transformValue === 'function'
