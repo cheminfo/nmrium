@@ -1,3 +1,4 @@
+import { HotkeysProvider } from '@blueprintjs/core';
 import init from '@zakodium/nmrium-core-plugins';
 import type { ForwardedRef } from 'react';
 import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
@@ -96,53 +97,55 @@ export function InnerNMRium(props: InnerNMRiumProps) {
       translate="no"
     >
       <CoreProvider value={finalCore}>
-        <ExportManagerProvider>
-          <GlobalProvider
-            value={{
-              rootRef: rootRef.current,
-              elementsWrapperRef: elementsWrapperRef.current,
-              viewerRef: viewerRef.current,
-            }}
-          >
-            <PreferencesProvider value={preferencesProviderValue}>
-              <LoggerProvider>
-                <KeyModifiersProvider>
-                  <ToasterProvider>
-                    <SortSpectraProvider>
-                      <NMRiumStateProvider
-                        onChange={onChange}
-                        state={state}
-                        aggregator={aggregator}
-                        refreshPreferences={refreshPreferences}
-                      >
-                        <TopicMoleculeProvider>
-                          <DialogProvider>
-                            <AlertProvider>
-                              <HighlightProvider>
-                                <AssignmentProvider>
-                                  <SpinnerProvider value={getSpinner}>
-                                    <InnerNMRiumContents
-                                      emptyText={emptyText}
-                                      mainDivRef={mainDivRef}
-                                      elementsWrapperRef={elementsWrapperRef}
-                                      rootRef={rootRef}
-                                      viewerRef={viewerRef}
-                                      apiRef={apiRef}
-                                    />
-                                  </SpinnerProvider>
-                                </AssignmentProvider>
-                              </HighlightProvider>
-                            </AlertProvider>
-                          </DialogProvider>
-                        </TopicMoleculeProvider>
-                      </NMRiumStateProvider>
-                    </SortSpectraProvider>
-                  </ToasterProvider>
-                </KeyModifiersProvider>
-              </LoggerProvider>
-            </PreferencesProvider>
-          </GlobalProvider>
-        </ExportManagerProvider>
+        <HotkeysProvider>
+          <ExportManagerProvider>
+            <GlobalProvider
+              value={{
+                rootRef: rootRef.current,
+                elementsWrapperRef: elementsWrapperRef.current,
+                viewerRef: viewerRef.current,
+              }}
+            >
+              <PreferencesProvider value={preferencesProviderValue}>
+                <LoggerProvider>
+                  <KeyModifiersProvider>
+                    <ToasterProvider>
+                      <SortSpectraProvider>
+                        <NMRiumStateProvider
+                          onChange={onChange}
+                          state={state}
+                          aggregator={aggregator}
+                          refreshPreferences={refreshPreferences}
+                        >
+                          <TopicMoleculeProvider>
+                            <DialogProvider>
+                              <AlertProvider>
+                                <HighlightProvider>
+                                  <AssignmentProvider>
+                                    <SpinnerProvider value={getSpinner}>
+                                      <InnerNMRiumContents
+                                        emptyText={emptyText}
+                                        mainDivRef={mainDivRef}
+                                        elementsWrapperRef={elementsWrapperRef}
+                                        rootRef={rootRef}
+                                        viewerRef={viewerRef}
+                                        apiRef={apiRef}
+                                      />
+                                    </SpinnerProvider>
+                                  </AssignmentProvider>
+                                </HighlightProvider>
+                              </AlertProvider>
+                            </DialogProvider>
+                          </TopicMoleculeProvider>
+                        </NMRiumStateProvider>
+                      </SortSpectraProvider>
+                    </ToasterProvider>
+                  </KeyModifiersProvider>
+                </LoggerProvider>
+              </PreferencesProvider>
+            </GlobalProvider>
+          </ExportManagerProvider>
+        </HotkeysProvider>
       </CoreProvider>
     </div>
   );

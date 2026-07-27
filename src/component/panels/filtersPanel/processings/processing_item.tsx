@@ -1,20 +1,19 @@
 import styled from '@emotion/styled';
 import type {
+  ProcessingOperatorId,
   Spectrum,
   SpectrumProcessingOperation,
 } from '@zakodium/nmrium-core';
-import type { Dispatch, ReactNode, SetStateAction } from 'react';
+import type { ReactNode } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { ObjectInspector } from 'react-inspector';
 
 import { useCore } from '../../../context/CoreContext.tsx';
+import type { ProcessingsMutations } from '../../../context/processings_mutations_context.api.ts';
 import { EmptyText } from '../../../elements/EmptyText.tsx';
 import { Sections } from '../../../elements/Sections.tsx';
-import {
-  CoreOperatorExpanded,
-  CoreOperatorName,
-} from '../../../utility/CoreSlot.tsx';
-import type { ProcessingsMutations } from '../../hooks/use_processings_mutation.ts';
+import { CoreOperatorExpanded } from '../../../utility/core_slots/core_operator_expanded.tsx';
+import { CoreOperatorName } from '../../../utility/core_slots/core_operator_name.tsx';
 
 import { OperatorEditBanner } from './operator_edit_banner.tsx';
 import { ProcessingItemExtra } from './processing_item_extra.tsx';
@@ -28,7 +27,9 @@ interface ProcessingItemProps {
   isOpen: boolean;
   isAfterOpen: boolean;
   processingsMutations: ProcessingsMutations;
-  setOpenedOperation: Dispatch<SetStateAction<SPO['uid'] | undefined>>;
+  selectProcessingOperator: (
+    operatorId: ProcessingOperatorId | undefined,
+  ) => void;
   spectrum: Spectrum;
 }
 
@@ -39,7 +40,7 @@ export function ProcessingItem(props: ProcessingItemProps) {
     isOpen,
     isAfterOpen,
     processingsMutations,
-    setOpenedOperation,
+    selectProcessingOperator,
     spectrum,
   } = props;
 
@@ -106,8 +107,8 @@ export function ProcessingItem(props: ProcessingItemProps) {
     void processingsMutations.reorder(sourceIndex, targetIndex);
   }
 
-  function toggleSection(operationId: string) {
-    setOpenedOperation(isOpen ? undefined : operationId);
+  function toggleSection(operatorId: ProcessingOperatorId) {
+    selectProcessingOperator(isOpen ? undefined : operatorId);
   }
 
   return (
@@ -125,12 +126,12 @@ export function ProcessingItem(props: ProcessingItemProps) {
       serial={operationIndex + 1}
       sticky
       onReorder={onReorder}
-      onClick={() => toggleSection(operation.uid)}
+      onClick={() => toggleSection(operation.operatorId)}
       rightElement={
         <ProcessingItemExtra
           isOpen={isOpen}
           isEditable={isEditable}
-          setOpenedOperation={setOpenedOperation}
+          selectProcessingOperator={selectProcessingOperator}
           processingsMutations={processingsMutations}
           operation={operation}
         />
@@ -158,7 +159,7 @@ export function ProcessingItem(props: ProcessingItemProps) {
               { ...operation, options: undefined },
               operationIndex,
             );
-            setOpenedOperation(undefined);
+            selectProcessingOperator(undefined);
           }}
           onMount={() => {
             if (!isLiveEditable) return;
@@ -187,7 +188,7 @@ export function ProcessingItem(props: ProcessingItemProps) {
               <OperatorEditBanner
                 isLiveEditable={isLiveEditable ?? false}
                 liveEdit={liveEdit}
-                onClose={() => setOpenedOperation(undefined)}
+                onClose={() => selectProcessingOperator(undefined)}
               >
                 {submitButton}
               </OperatorEditBanner>

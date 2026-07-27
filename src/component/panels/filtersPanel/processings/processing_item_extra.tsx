@@ -4,10 +4,9 @@ import type {
   ProcessingOperatorId,
   SpectrumProcessingOperation,
 } from '@zakodium/nmrium-core';
-import type { Dispatch, SetStateAction } from 'react';
 import { Button } from 'react-science/ui';
 
-import type { ProcessingsMutations } from '../../hooks/use_processings_mutation.ts';
+import type { ProcessingsMutations } from '../../../context/processings_mutations_context.api.ts';
 
 const unremoveableProcessings = new Set<ProcessingOperatorId>([
   '@zakodium/nmrium-core-plugins#digitalFilter1D',
@@ -18,7 +17,9 @@ interface ProcessingItemExtraProps {
   operation: SpectrumProcessingOperation<unknown, unknown>;
   isOpen: boolean;
   isEditable: boolean | undefined;
-  setOpenedOperation: Dispatch<SetStateAction<string | undefined>>;
+  selectProcessingOperator: (
+    operatorId: ProcessingOperatorId | undefined,
+  ) => void;
   processingsMutations: ProcessingsMutations;
 }
 
@@ -27,7 +28,7 @@ export function ProcessingItemExtra(props: ProcessingItemExtraProps) {
     operation,
     isOpen,
     isEditable,
-    setOpenedOperation,
+    selectProcessingOperator,
     processingsMutations,
   } = props;
 
@@ -38,7 +39,7 @@ export function ProcessingItemExtra(props: ProcessingItemExtraProps) {
           tooltipProps={{ content: 'Edit filter' }}
           intent="success"
           variant="minimal"
-          onClick={() => setOpenedOperation(operation.uid)}
+          onClick={() => selectProcessingOperator(operation.operatorId)}
           icon="annotation"
           disabled={isOpen}
         />

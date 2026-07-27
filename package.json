@@ -70,8 +70,8 @@
     "@tanstack/react-store": "^0.11.0",
     "@tanstack/react-table": "^8.21.3",
     "@zakodium/nmr-types": "^0.5.21",
-    "@zakodium/nmrium-core": "^0.7.49",
-    "@zakodium/nmrium-core-plugins": "^0.7.65",
+    "@zakodium/nmrium-core": "^0.7.50",
+    "@zakodium/nmrium-core-plugins": "^0.7.66",
     "@zakodium/pdnd-esm": "^1.1.0",
     "@zakodium/utils": "^0.5.0",
     "@zip.js/zip.js": "^2.8.33",
@@ -120,6 +120,7 @@
     "react-table": "^7.8.0",
     "smart-array-filter": "^5.0.0",
     "ts-pattern": "^5.9.0",
+    "usehooks-ts": "^3.1.1",
     "yup": "^1.7.1",
     "zod": "^4.4.3"
   },

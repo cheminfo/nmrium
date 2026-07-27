@@ -11,6 +11,7 @@ import { DispatchProvider } from '../context/DispatchContext.js';
 import { useLogger } from '../context/LoggerContext.js';
 import { usePreferences } from '../context/PreferencesContext.js';
 import { sortSpectra, useSortSpectra } from '../context/SortSpectraContext.js';
+import { ProcessingsMutationsProvider } from '../context/processings_mutations_context.tsx';
 import checkActionType from '../reducer/IgnoreActions.js';
 import {
   initState,
@@ -194,7 +195,9 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
 
   return (
     <DispatchProvider value={dispatch}>
-      <ChartDataProvider value={updatedState}>{children}</ChartDataProvider>
+      <ChartDataProvider value={updatedState}>
+        <ProcessingsMutationsProvider>{children}</ProcessingsMutationsProvider>
+      </ChartDataProvider>
     </DispatchProvider>
   );
 }
