@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import type {
   ProcessingOperatorId,
+  Spectrum,
   SpectrumProcessingOperation,
 } from '@zakodium/nmrium-core';
 import type { ReactNode } from 'react';
@@ -29,6 +30,7 @@ interface ProcessingItemProps {
   selectProcessingOperator: (
     operatorId: ProcessingOperatorId | undefined,
   ) => void;
+  spectrum: Spectrum;
 }
 
 export function ProcessingItem(props: ProcessingItemProps) {
@@ -39,6 +41,7 @@ export function ProcessingItem(props: ProcessingItemProps) {
     isAfterOpen,
     processingsMutations,
     selectProcessingOperator,
+    spectrum,
   } = props;
 
   const core = useCore();
@@ -146,6 +149,7 @@ export function ProcessingItem(props: ProcessingItemProps) {
           fallback={<OperationFallback operation={operation} />}
           operation={operation}
           core={core}
+          spectrum={spectrum}
           onChange={(operation) => {
             if (!isEditable) return;
 
@@ -184,9 +188,7 @@ export function ProcessingItem(props: ProcessingItemProps) {
               <OperatorEditBanner
                 isLiveEditable={isLiveEditable ?? false}
                 liveEdit={liveEdit}
-                onClose={() => {
-                  selectProcessingOperator(undefined);
-                }}
+                onClose={() => selectProcessingOperator(undefined)}
               >
                 {submitButton}
               </OperatorEditBanner>

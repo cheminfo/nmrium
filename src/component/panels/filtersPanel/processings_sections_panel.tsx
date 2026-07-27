@@ -98,6 +98,7 @@ export function ProcessingsSectionsPanel() {
                 isAfterOpen={isAfterOpen}
                 selectProcessingOperator={selectProcessingOperator}
                 processingsMutations={processingsMutations}
+                spectrum={spectrum}
               />
             ),
           )}
