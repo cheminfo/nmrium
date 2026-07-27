@@ -26,6 +26,7 @@ interface BaseWheelOptions {
   altKey: boolean;
   invertScroll?: boolean;
 }
+
 interface WheelOptions extends BaseWheelOptions {
   contourOptions: ContourOptions;
 }
@@ -40,6 +41,7 @@ const DEFAULT_CONTOURS_OPTIONS: ContourOptions = {
     numberOfLayers: 10,
   },
 };
+
 type LevelSign = keyof Level;
 
 const LEVEL_SIGNS: Readonly<[LevelSign, LevelSign]> = ['positive', 'negative'];
@@ -51,24 +53,41 @@ interface ContoursManagerReturn {
 }
 
 function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
-  const { data, info } = spectrum;
+  const { data, info, filters } = spectrum;
 
   // @ts-expect-error type of NmrData2D should have a discriminator field to separate fid and ft
   const quadrantData = data[quadrant];
 
+  
+  const { acquisitionScheme } = info;
   //@ts-expect-error will be included in nexts versions
-  const { noise = calculateSanPlot('2D', quadrantData) } = info;
+  const { noise = calculateSanPlot('2D', quadrantData, { magnitudeMode: acquisitionScheme === 'notPhaseSensitive' }) } = info;
 
-  const { positive = 0, negative = 0 } = noise;
+  const { positive = 0, negative = 0, percentiles } = noise;
+  const minAllowedFromNoise = 10 * Math.max(positive, negative);
   const max = Math.max(
     Math.abs(quadrantData.minZ),
     Math.abs(quadrantData.maxZ),
   );
 
-  const minAbsPeakBase = 0.005 * max;
-  const minAllowed = 3 * xMaxAbsoluteValue([positive, negative]);
+  const isSymmetrized = filters.some((filter) => filter.name === 'symmetrizeCosyLike' && filter.enabled);
+  const isNUS = filters.some((filter) => filter.name === 'nusDimension2' && filter.enabled);
+  
+  const { positive: pPositive, negative: pNegative } = percentiles
+  
+  const percentileValue = isSymmetrized ? isNUS ? 60 : 90 : 99;
+  const pPositiveIndex = pPositive(percentileValue) //getClosestYIndex(pPositive, 50, 1 * 50 / pPositive.length, percentileValue);
+  const pNegativeIndex = pNegative(percentileValue) //getClosestYIndex(pNegative, 50, 1 * 50 / pNegative.length, percentileValue);
 
-  const minLevel = Math.max(minAbsPeakBase, minAllowed);
+  const minAllowedByPercentile = Math.max(pPositive[pPositiveIndex] ?? 0, pNegative[pNegativeIndex] ?? 0);
+  
+  const { log10 } = Math;
+  const inLogScaleNoise = log10(minAllowedFromNoise) / log10(2);
+  const maxValue = log10(max) / log10(2);
+  const middleValue = 10 ** (log10(2) * ((maxValue - inLogScaleNoise) / 2 + inLogScaleNoise));
+
+  const minLevel = isNUS ? Math.min(middleValue, minAllowedByPercentile) : Math.max(middleValue, minAllowedByPercentile);
+
   const minContourLevel = Math.min(
     calculateValueOfLevel(minLevel, max, true),
     DEFAULT_CONTOURS_OPTIONS.positive.contourLevels[1] -
