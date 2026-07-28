@@ -155,7 +155,8 @@ function Tree(props: TreeProps) {
     });
   }
 
-  const isHighlighted = highlight.isActive || isAssignmentActive;
+  const isHighlighted =
+    highlight.isActive || highlight.isActivePermanently || isAssignmentActive;
   const padding = boxPadding * widthRatio;
   const x = scaleX()(max) - padding;
   const y = startY - headTextMargin - headerTextSize - padding;

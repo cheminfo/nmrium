@@ -6,6 +6,7 @@ import {
   memo,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -14,6 +15,7 @@ import { FaPlus } from 'react-icons/fa';
 
 import { TabTitle } from '../../../../elements/TabTitle.js';
 import { useTabsController } from '../../../../elements/TabsProvider.js';
+import { useHighlightData } from '../../../../highlight/index.tsx';
 
 import { DeltaLabel } from './DeltaLabel.tsx';
 import { InfoBlock } from './InfoBlock.js';
@@ -60,14 +62,46 @@ function SignalsContent({ range }: SignalsFormProps) {
   const { setValue } = useFormContext();
   const { selectedTabId: signalIndex, selectTab } = useTabsController<number>();
   const { signals } = useWatch();
+  const { dispatch } = useHighlightData();
+
+  useEffect(() => {
+    const signal = signals?.[signalIndex ?? 0];
+    if (!signal) return;
+
+    const id = String(signal.id);
+
+    dispatch({
+      type: 'SET_PERMANENT',
+      payload: { convertedHighlights: [id] },
+    });
+
+    return () => {
+      dispatch({ type: 'UNSET_PERMANENT' });
+    };
+  }, [dispatch, signalIndex, signals]);
+
+  const handleTabChange = useCallback(
+    (id: number) => {
+      selectTab(id);
+
+      const nextSignal = signals?.[id];
+      if (nextSignal) {
+        dispatch({
+          type: 'SET_PERMANENT',
+          payload: { convertedHighlights: [nextSignal.id] },
+        });
+      }
+    },
+    [dispatch, selectTab, signals],
+  );
 
   const handleDeleteSignal = useCallback(
     (index: number) => {
       const _signals = signals.filter((_signal: any, i: number) => i !== index);
       setValue('signals', _signals);
-      selectTab(signals.length - 2 || 0);
+      handleTabChange(signals.length - 2 || 0);
     },
-    [selectTab, setValue, signals],
+    [handleTabChange, setValue, signals],
   );
 
   const signalFormTabs = useMemo(() => {
@@ -113,7 +147,7 @@ function SignalsContent({ range }: SignalsFormProps) {
         <Tabs
           renderActiveTabPanelOnly
           selectedTabId={signalIndex}
-          onChange={selectTab}
+          onChange={handleTabChange}
           animate={false}
         >
           {signalFormTabs}
