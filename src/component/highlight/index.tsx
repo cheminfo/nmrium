@@ -219,14 +219,10 @@ export function useHighlight(
 
   useEffect(() => {
     // if deletion of component then also delete its highlight information -> componentWillUnmount
+
     return () => {
-      dispatch({
-        type: 'HIDE',
-        payload: { convertedHighlights: [] },
-      });
-      dispatch({
-        type: 'UNSET_PERMANENT',
-      });
+      dispatch({ type: 'HIDE', payload: { convertedHighlights: [] } });
+      dispatch({ type: 'UNSET_PERMANENT' });
     };
   }, [dispatch]);
 
@@ -243,40 +239,23 @@ export function useHighlight(
   }, [convertedHighlights, highlight.highlightedPermanently]);
 
   const show = useCallback(() => {
-    dispatch({
-      type: 'SHOW',
-      payload: {
-        convertedHighlights,
-        sourceData,
-      },
-    });
+    dispatch({ type: 'SHOW', payload: { convertedHighlights, sourceData } });
   }, [dispatch, convertedHighlights, sourceData]);
 
   const hide = useCallback(() => {
-    dispatch({
-      type: 'HIDE',
-      payload: {
-        convertedHighlights,
-      },
-    });
+    dispatch({ type: 'HIDE', payload: { convertedHighlights } });
   }, [convertedHighlights, dispatch]);
 
   const add = useCallback(
     (id: number | string) => {
-      dispatch({
-        type: 'SHOW',
-        payload: { convertedHighlights: [], id },
-      });
+      dispatch({ type: 'SHOW', payload: { convertedHighlights: [], id } });
     },
     [dispatch],
   );
 
   const remove = useCallback(
     (id: number | string) => {
-      dispatch({
-        type: 'HIDE',
-        payload: { convertedHighlights: [], id },
-      });
+      dispatch({ type: 'HIDE', payload: { convertedHighlights: [], id } });
     },
     [dispatch],
   );
@@ -287,25 +266,20 @@ export function useHighlight(
         e.preventDefault();
         e.stopPropagation();
       }
-
       if (!isActivePermanently) {
-        dispatch({
-          type: 'SET_PERMANENT',
-          payload: { convertedHighlights },
-        });
+        dispatch({ type: 'SET_PERMANENT', payload: { convertedHighlights } });
       } else {
-        dispatch({
-          type: 'UNSET_PERMANENT',
-        });
+        dispatch({ type: 'UNSET_PERMANENT' });
       }
     },
     [convertedHighlights, dispatch, isActivePermanently],
   );
 
   return useMemo(() => {
+    const active = isActive || isActivePermanently;
     return {
       isActive,
-      defaultActiveStyle: isActive ? highLightStyle : {},
+      defaultActiveStyle: active ? highLightStyle : {},
       onHover: {
         onMouseEnter: show,
         onMouseLeave: hide,
