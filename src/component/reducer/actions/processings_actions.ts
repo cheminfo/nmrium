@@ -1,4 +1,9 @@
-import type { ProcessingOperatorId, Spectrum } from '@zakodium/nmrium-core';
+import type {
+  ProcessingOperatorId,
+  ProcessingOperatorUI,
+  Spectrum,
+  SpectrumProcessingOperation,
+} from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
 
 import type { State } from '../Reducer.ts';
@@ -26,12 +31,29 @@ type SetSpectrumLiveProcessed = ActionType<
 type SelectProcessingOperator = ActionType<
   'SELECT_PROCESSING_OPERATOR',
   {
-    operatorId: ProcessingOperatorId | undefined;
+    operatorUI: ProcessingOperatorUI<ProcessingOperatorId> | undefined;
+  }
+>;
+
+type SetLiveEditChecked = ActionType<'SET_LIVE_EDIT_CHECKED', boolean>;
+type SetLiveEditShouldProcessNext = ActionType<
+  'SET_LIVE_EDIT_SHOULD_PROCESS_NEXT',
+  boolean
+>;
+type SetLiveOperation = ActionType<
+  'SET_LIVE_OPERATION',
+  {
+    liveOperation: SpectrumProcessingOperation<unknown, unknown> | undefined;
   }
 >;
 
 export type ProcessingsActions =
-  SetSpectrumAction | SetSpectrumLiveProcessed | SelectProcessingOperator;
+  | SetSpectrumAction
+  | SetSpectrumLiveProcessed
+  | SelectProcessingOperator
+  | SetLiveEditChecked
+  | SetLiveEditShouldProcessNext
+  | SetLiveOperation;
 
 export function setSpectrum(draft: Draft<State>, action: SetSpectrumAction) {
   const { index, spectrum, onProduce } = action.payload;
@@ -56,9 +78,48 @@ export function selectProcessingOperator(
   draft: Draft<State>,
   { payload }: SelectProcessingOperator,
 ) {
-  const { operatorId } = payload;
+  const { operatorUI } = payload;
 
-  draft.processingOperators.selected = operatorId;
+  draft.processingOperators.selected = operatorUI?.id;
+  draft.processingOperators.liveEdit = operatorUI?.isLiveEditable
+    ? {
+        checked: true,
+        shouldProcessNext: operatorUI.defaultShouldProcessAll ?? false,
+      }
+    : undefined;
+
+  if (!operatorUI) {
+    draft.processingOperators.liveOperation = undefined;
+    setSpectrumLiveProcessed(draft, {
+      type: 'SET_SPECTRUM_LIVE_PROCESSED',
+      payload: { spectrumLiveProcessed: undefined },
+    });
+  }
+}
+
+export function setLiveEditChecked(
+  draft: Draft<State>,
+  { payload }: SetLiveEditChecked,
+) {
+  if (!draft.processingOperators.liveEdit) return;
+
+  draft.processingOperators.liveEdit.checked = payload;
+}
+
+export function setLiveEditShouldProcessNext(
+  draft: Draft<State>,
+  { payload }: SetLiveEditShouldProcessNext,
+) {
+  if (!draft.processingOperators.liveEdit) return;
+
+  draft.processingOperators.liveEdit.shouldProcessNext = payload;
+}
+
+export function setLiveOperation(
+  draft: Draft<State>,
+  { payload: { liveOperation } }: SetLiveOperation,
+) {
+  draft.processingOperators.liveOperation = liveOperation;
 }
 
 function updateLiveProcessedView(draft: Draft<State>) {

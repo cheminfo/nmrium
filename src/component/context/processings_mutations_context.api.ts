@@ -97,7 +97,7 @@ export function useProcessingsMutationsAPI() {
   function resetSelectedTool() {
     dispatch({
       type: 'SELECT_PROCESSING_OPERATOR',
-      payload: { operatorId: undefined },
+      payload: { operatorUI: undefined },
     });
   }
 
@@ -124,7 +124,6 @@ export function useProcessingsMutationsAPI() {
     spectrum.processings[indexOperation] = operation;
 
     resetSelectedTool();
-    resetLiveChange();
     await submit(spectrum, indexSpectrum, (draft) => {
       const {
         domainUpdateRules = {
@@ -157,9 +156,9 @@ export function useProcessingsMutationsAPI() {
 
     spectrum.processings = spectrum.processings.filter((p) => p.uid !== uid);
 
+    resetSelectedTool();
     await submit(spectrum, indexSpectrum, (draft) => {
       draft.toolOptions.data.activeFilterID = null;
-      resetSelectedTool();
       setDomain(draft);
       setMode(draft);
     });
@@ -173,9 +172,8 @@ export function useProcessingsMutationsAPI() {
 
     spectrum.processings = [];
 
+    resetSelectedTool();
     await submit(spectrum, indexSpectrum, (draft) => {
-      draft.toolOptions.data.activeFilterID = null;
-      resetSelectedTool();
       setDomain(draft);
       setMode(draft);
     });
@@ -193,13 +191,13 @@ export function useProcessingsMutationsAPI() {
     const operation = spectrum.processings[operationIndex];
     operation.enabled = !operation.enabled;
 
+    resetSelectedTool();
     await submit(spectrum, indexSpectrum, (draft, processedSpectrum) => {
       if (isSpectrum2D(processedSpectrum) && processedSpectrum.info.isFt) {
         draft.view.spectraContourLevels[processedSpectrum.id] =
           initializeContoursLevels(processedSpectrum);
       }
 
-      resetSelectedTool();
       setDomain(draft);
       setMode(draft);
 
@@ -289,7 +287,7 @@ export function useProcessingsMutationsAPI() {
 
     const savedProcessings = structuredClone(spectrum.processings);
 
-    spectrum.processings[indexOperation] = operation;
+    spectrum.processings[indexOperation] = structuredClone(operation);
     if (!shouldProcessAll) {
       spectrum.processings.splice(indexOperation + 1);
     }
@@ -341,7 +339,11 @@ export function useProcessingsMutationsAPI() {
     if (operatorUI.isEditable) {
       dispatch({
         type: 'SELECT_PROCESSING_OPERATOR',
-        payload: { operatorId: operation.operatorId },
+        payload: { operatorUI },
+      });
+      dispatch({
+        type: 'SET_LIVE_OPERATION',
+        payload: { liveOperation: operation },
       });
     }
 

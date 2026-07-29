@@ -9,32 +9,24 @@ import { ErrorBoundary } from 'react-error-boundary';
 
 import { useCore } from '../../context/CoreContext.tsx';
 
-interface CoreOperatorExtendedProps<Id extends ProcessingOperatorId> {
+interface CoreOperatorTopBarProps<Id extends ProcessingOperatorId> {
   id: Id;
-  fallback?: ReactNode;
 }
 
-export function CoreOperatorExpanded<Id extends ProcessingOperatorId>(
-  props: CoreOperatorExtendedProps<Id> &
+export function CoreOperatorTopBar<Id extends ProcessingOperatorId>(
+  props: CoreOperatorTopBarProps<Id> &
     ProcessingOperatorUISettingsFormProps<Id>,
 ) {
-  const { id, fallback, ...operatorProps } = props;
+  const { id, ...operatorProps } = props;
   const core = useCore();
 
   const operator = core.slotOperator(id);
-  const Expanded = operator?.Expanded;
-  if (!Expanded) return fallback;
+  const TopBar = operator?.TopBar;
+  if (!TopBar) return null;
 
   return (
-    <ErrorBoundary
-      fallbackRender={(props) => (
-        <>
-          <ErrorOverlay {...props} />
-          {fallback}
-        </>
-      )}
-    >
-      <Expanded {...operatorProps} />
+    <ErrorBoundary fallbackRender={(props) => <ErrorOverlay {...props} />}>
+      <TopBar {...operatorProps} />
     </ErrorBoundary>
   );
 }
@@ -60,12 +52,11 @@ function ErrorOverlay(props: FallbackProps) {
 }
 
 const ErrorOverlayStyled = styled.div`
-  background: white;
-  padding-block: 10px;
+  display: flex;
+  gap: 5px;
 
   > p {
     margin: 0;
-    text-align: center;
     font-size: 20px;
   }
 

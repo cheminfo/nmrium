@@ -1,5 +1,6 @@
 import type {
   ProcessingOperatorId,
+  ProcessingOperatorUI,
   SpectrumProcessingOperation,
 } from '@zakodium/nmrium-core';
 import { useMemo } from 'react';
@@ -66,12 +67,17 @@ export function ProcessingsSectionsPanel() {
   }
 
   function selectProcessingOperator(
-    operatorId: ProcessingOperatorId | undefined,
+    operatorUI: ProcessingOperatorUI<ProcessingOperatorId> | undefined,
+    operation: SpectrumProcessingOperation<unknown, unknown>,
   ) {
-    dispatch({
-      type: 'SELECT_PROCESSING_OPERATOR',
-      payload: { operatorId },
-    });
+    if (operatorUI) {
+      void processingsMutations.triggerOperation(operation);
+    } else {
+      dispatch({
+        type: 'SELECT_PROCESSING_OPERATOR',
+        payload: { operatorUI: undefined },
+      });
+    }
   }
 
   if (!spectrum) return null;
@@ -96,7 +102,9 @@ export function ProcessingsSectionsPanel() {
                 operationIndex={index}
                 isOpen={isOpen}
                 isAfterOpen={isAfterOpen}
-                selectProcessingOperator={selectProcessingOperator}
+                selectProcessingOperator={(operatorUI) =>
+                  selectProcessingOperator(operatorUI, operation)
+                }
                 processingsMutations={processingsMutations}
                 spectrum={spectrum}
               />
