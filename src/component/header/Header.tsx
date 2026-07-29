@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { noop } from '@zakodium/utils';
 import { memo, useMemo } from 'react';
 import {
   FaFilm,
@@ -10,6 +11,7 @@ import { Toolbar, useFullscreen } from 'react-science/ui';
 
 import { docsBaseUrl } from '../../constants.js';
 import { useChartData } from '../context/ChartContext.js';
+import { useCore } from '../context/CoreContext.tsx';
 import {
   usePreferences,
   useWorkspacesList,
@@ -20,13 +22,16 @@ import { HeaderContainer } from '../elements/HeaderContainer.js';
 import type { LabelStyle } from '../elements/Label.js';
 import type { DropDownListItem } from '../elements/dropDownButton/DropDownButton.js';
 import DropDownButton from '../elements/dropDownButton/DropDownButton.js';
+import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature.ts';
 import { useSaveSettings } from '../hooks/useSaveSettings.js';
+import { useStableSpectrum } from '../hooks/useSpectrum.ts';
 import { useWorkspaceAction } from '../hooks/useWorkspaceAction.js';
 import { LogsHistoryModal } from '../modal/LogsHistoryModal.js';
 import AboutUsModal from '../modal/aboutUs/AboutUsModal.js';
 import WorkspaceItem from '../modal/setting/WorkspaceItem.js';
 import { GeneralSettingsToolbarItem } from '../modal/setting/general_settings.js';
 import { options } from '../toolbar/ToolTypes.js';
+import { CoreOperatorTopBar } from '../utility/core_slots/core_operator_topbar.tsx';
 import { CoreSlot } from '../utility/core_slots/core_slot.tsx';
 
 import { AutoPeakPickingOptionPanel } from './AutoPeakPickingOptionPanel.js';
@@ -71,6 +76,7 @@ function HeaderInner(props: HeaderInnerProps) {
   } = usePreferences();
   const { setActiveWorkspace } = useWorkspaceAction();
   const fullscreen = useFullscreen();
+  const isExperimental = useCheckExperimentalFeature();
 
   const workspacesList = useWorkspacesList();
 
@@ -137,6 +143,7 @@ function HeaderInner(props: HeaderInnerProps) {
               <AboutUsModal />
             </Toolbar>
           </div>
+          {isExperimental && <PluginTopBarTool />}
           <div className="toolOptionsPanel" style={{ flex: 1 }}>
             {selectedPanel}
           </div>
@@ -239,13 +246,9 @@ export function Header() {
     toolOptions: { selectedOptionPanel },
     height,
   } = useChartData();
+
   return (
-    <MemoizedHeader
-      {...{
-        selectedOptionPanel,
-        height,
-      }}
-    />
+    <MemoizedHeader selectedOptionPanel={selectedOptionPanel} height={height} />
   );
 }
 
@@ -255,3 +258,39 @@ const PluginTopBarRight = styled.div`
   gap: 5px;
   margin-right: 5px;
 `;
+
+const PluginTopBarToolContainer = styled.div`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+`;
+
+function PluginTopBarTool() {
+  const core = useCore();
+  const stableSpectrum = useStableSpectrum();
+  const {
+    spectrumLiveProcessed,
+    processingOperators: { liveOperation },
+  } = useChartData();
+
+  const spectrum = spectrumLiveProcessed ?? stableSpectrum;
+
+  if (!liveOperation) return null;
+  if (!spectrum) return null;
+
+  return (
+    <PluginTopBarToolContainer>
+      <CoreOperatorTopBar
+        core={core}
+        id={liveOperation.operatorId}
+        operation={liveOperation}
+        spectrum={spectrum}
+        onChange={noop}
+        onSubmit={noop}
+      >
+        {(children) => children}
+      </CoreOperatorTopBar>
+    </PluginTopBarToolContainer>
+  );
+}

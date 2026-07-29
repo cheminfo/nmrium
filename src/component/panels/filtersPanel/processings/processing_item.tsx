@@ -1,11 +1,11 @@
 import styled from '@emotion/styled';
 import type {
   ProcessingOperatorId,
+  ProcessingOperatorUI,
   Spectrum,
   SpectrumProcessingOperation,
 } from '@zakodium/nmrium-core';
 import type { ReactNode } from 'react';
-import { useEffect, useRef, useState } from 'react';
 import { ObjectInspector } from 'react-inspector';
 
 import { useCore } from '../../../context/CoreContext.tsx';
@@ -18,6 +18,7 @@ import { CoreOperatorName } from '../../../utility/core_slots/core_operator_name
 import { OperatorEditBanner } from './operator_edit_banner.tsx';
 import { ProcessingItemExtra } from './processing_item_extra.tsx';
 import { useLiveEdit } from './use_live_edit.ts';
+import { useLiveOperation } from './use_live_operation.ts';
 
 type SPO = SpectrumProcessingOperation<unknown, unknown>;
 
@@ -28,7 +29,7 @@ interface ProcessingItemProps {
   isAfterOpen: boolean;
   processingsMutations: ProcessingsMutations;
   selectProcessingOperator: (
-    operatorId: ProcessingOperatorId | undefined,
+    operatorUI: ProcessingOperatorUI<ProcessingOperatorId> | undefined,
   ) => void;
   spectrum: Spectrum;
 }
@@ -50,65 +51,15 @@ export function ProcessingItem(props: ProcessingItemProps) {
   const isEditable = operatorUI?.isEditable;
   const isLiveEditable = operatorUI?.isLiveEditable;
 
-  const liveEdit = useLiveEdit(
-    isLiveEditable,
-    operatorUI?.defaultShouldProcessAll,
-  );
-  const liveEditRef = useRef(liveEdit);
-
-  const processingsMutationsRef = useRef(processingsMutations);
-  processingsMutationsRef.current = processingsMutations;
-
-  const [liveOperation, setLiveOperation] = useState<SPO>(() => ({
-    ...operation,
-    options: undefined,
-  }));
-
-  const liveOperationRef =
-    useRef<SpectrumProcessingOperation<unknown, unknown>>(liveOperation);
-  liveOperationRef.current = liveOperation;
-
-  // track liveEdit changes to prepare / reset / apply live changes
-  useEffect(() => {
-    const processingsMutations = processingsMutationsRef.current;
-    const operation = liveOperationRef.current;
-
-    if (liveEdit.value?.checked !== liveEditRef.current.value?.checked) {
-      if (liveEdit.value?.checked) {
-        void processingsMutations.prepareLiveChange(
-          operation.uid,
-          liveEdit.value.shouldProcessNext,
-        );
-      } else {
-        processingsMutations.resetLiveChange();
-      }
-    }
-
-    if (
-      liveEdit.value?.shouldProcessNext !==
-      liveEditRef.current.value?.shouldProcessNext
-    ) {
-      void processingsMutations.applyLiveChange(
-        { ...operation, options: undefined },
-        liveEdit.value?.shouldProcessNext ?? false,
-      );
-    }
-
-    liveEditRef.current = liveEdit;
-  }, [liveEdit]);
-
-  useEffect(() => {
-    if (!isOpen) return;
-
-    return () => processingsMutationsRef.current.resetLiveChange();
-  }, [isOpen]);
+  const liveEdit = useLiveEdit(operation);
+  const [liveOperation, setLiveOperation] = useLiveOperation();
 
   function onReorder(sourceIndex: number, targetIndex: number) {
     void processingsMutations.reorder(sourceIndex, targetIndex);
   }
 
-  function toggleSection(operatorId: ProcessingOperatorId) {
-    selectProcessingOperator(isOpen ? undefined : operatorId);
+  function toggleSection() {
+    selectProcessingOperator(isOpen ? undefined : operatorUI);
   }
 
   return (
@@ -126,12 +77,12 @@ export function ProcessingItem(props: ProcessingItemProps) {
       serial={operationIndex + 1}
       sticky
       onReorder={onReorder}
-      onClick={() => toggleSection(operation.operatorId)}
+      onClick={() => toggleSection()}
       rightElement={
         <ProcessingItemExtra
           isOpen={isOpen}
           isEditable={isEditable}
-          selectProcessingOperator={selectProcessingOperator}
+          selectProcessingOperator={() => selectProcessingOperator(operatorUI)}
           processingsMutations={processingsMutations}
           operation={operation}
         />
@@ -139,7 +90,9 @@ export function ProcessingItem(props: ProcessingItemProps) {
       headerStyle={getHeaderStyle({
         isOpen,
         operation:
-          isOpen && liveEdit.value?.checked ? liveOperation : operation,
+          isOpen && liveEdit.value?.checked && liveOperation
+            ? liveOperation
+            : operation,
         isAfterOpen,
       })}
     >
@@ -147,35 +100,25 @@ export function ProcessingItem(props: ProcessingItemProps) {
         <CoreOperatorExpanded
           id={operation.operatorId}
           fallback={<OperationFallback operation={operation} />}
-          operation={operation}
+          operation={liveOperation ?? operation}
           core={core}
           spectrum={spectrum}
-          onChange={(operation) => {
+          onSubmit={(operation) => {
             if (!isEditable) return;
 
+            selectProcessingOperator(undefined);
             void processingsMutations.apply(
               // onChange generally change settings
               // so options should be re-computed
               { ...operation, options: undefined },
               operationIndex,
             );
-            selectProcessingOperator(undefined);
           }}
-          onMount={() => {
+          onChange={(liveOperation) => {
+            liveOperation = setLiveOperation(liveOperation);
+
             if (!isLiveEditable) return;
             if (!liveEdit.value?.checked) return;
-
-            void processingsMutations.prepareLiveChange(
-              operation.uid,
-              liveEdit.value.shouldProcessNext,
-            );
-          }}
-          onLiveChange={(liveOperation) => {
-            if (!isLiveEditable) return;
-            if (!liveEdit.value?.checked) return;
-
-            liveOperation = { ...liveOperation, options: undefined };
-            setLiveOperation(liveOperation);
 
             void processingsMutations.applyLiveChange(
               liveOperation,

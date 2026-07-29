@@ -28,10 +28,7 @@ export function OperatorEditBanner(props: OperatorEditBannerProps) {
             onChange={(event) => {
               assertDefined(liveEdit.value);
 
-              liveEdit.setValue({
-                ...liveEdit.value,
-                checked: event.currentTarget.checked,
-              });
+              liveEdit.setLiveEditCheck(event.currentTarget.checked);
             }}
           />
           <Switch
@@ -42,10 +39,7 @@ export function OperatorEditBanner(props: OperatorEditBannerProps) {
             onChange={(event) => {
               assertDefined(liveEdit.value);
 
-              liveEdit.setValue({
-                ...liveEdit.value,
-                shouldProcessNext: event.currentTarget.checked,
-              });
+              liveEdit.setShouldProcessNext(event.currentTarget.checked);
             }}
           />
         </>

@@ -17,9 +17,7 @@ interface ProcessingItemExtraProps {
   operation: SpectrumProcessingOperation<unknown, unknown>;
   isOpen: boolean;
   isEditable: boolean | undefined;
-  selectProcessingOperator: (
-    operatorId: ProcessingOperatorId | undefined,
-  ) => void;
+  selectProcessingOperator: () => void;
   processingsMutations: ProcessingsMutations;
 }
 
@@ -39,7 +37,7 @@ export function ProcessingItemExtra(props: ProcessingItemExtraProps) {
           tooltipProps={{ content: 'Edit filter' }}
           intent="success"
           variant="minimal"
-          onClick={() => selectProcessingOperator(operation.operatorId)}
+          onClick={selectProcessingOperator}
           icon="annotation"
           disabled={isOpen}
         />
