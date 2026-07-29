@@ -77,7 +77,7 @@ export default function NMRToolbar() {
   const core = useCore();
   const {
     toolOptions: { selectedTool },
-    spectrumLiveProcessed,
+    processingOperators: { selected: activeOperatorId },
   } = useChartData();
   const processingsMutations = useProcessingsMutations();
   const isButtonVisible = useCheckToolsVisibility();
@@ -524,7 +524,7 @@ export default function NMRToolbar() {
               key={operatorUI.id}
               operator={operatorUI}
               spectrum={stableSpectrum}
-              liveSpectrum={spectrumLiveProcessed}
+              activeOperatorId={activeOperatorId}
               onTriggerOperation={(operation) => {
                 void processingsMutations.triggerOperation(operation);
               }}
