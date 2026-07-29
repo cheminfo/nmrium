@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { noop } from '@zakodium/utils';
+import { assertDefined } from '@zakodium/utils';
 import { memo, useMemo } from 'react';
 import {
   FaFilm,
@@ -7,15 +7,17 @@ import {
   FaRegSave,
   FaRegWindowMaximize,
 } from 'react-icons/fa';
-import { Toolbar, useFullscreen } from 'react-science/ui';
+import { Button as RSButton, Toolbar, useFullscreen } from 'react-science/ui';
 
 import { docsBaseUrl } from '../../constants.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useCore } from '../context/CoreContext.tsx';
+import { useDispatch } from '../context/DispatchContext.tsx';
 import {
   usePreferences,
   useWorkspacesList,
 } from '../context/PreferencesContext.js';
+import { useProcessingsMutations } from '../context/processings_mutations_context.tsx';
 import Button from '../elements/Button.js';
 import { ContainerQueryWrapper } from '../elements/ContainerQueryWrapper.js';
 import { HeaderContainer } from '../elements/HeaderContainer.js';
@@ -30,6 +32,8 @@ import { LogsHistoryModal } from '../modal/LogsHistoryModal.js';
 import AboutUsModal from '../modal/aboutUs/AboutUsModal.js';
 import WorkspaceItem from '../modal/setting/WorkspaceItem.js';
 import { GeneralSettingsToolbarItem } from '../modal/setting/general_settings.js';
+import { useLiveEdit } from '../panels/filtersPanel/processings/use_live_edit.ts';
+import { useLiveOperation } from '../panels/filtersPanel/processings/use_live_operation.ts';
 import { options } from '../toolbar/ToolTypes.js';
 import { CoreOperatorTopBar } from '../utility/core_slots/core_operator_topbar.tsx';
 import { CoreSlot } from '../utility/core_slots/core_slot.tsx';
@@ -269,15 +273,24 @@ const PluginTopBarToolContainer = styled.div`
 function PluginTopBarTool() {
   const core = useCore();
   const stableSpectrum = useStableSpectrum();
-  const {
-    spectrumLiveProcessed,
-    processingOperators: { liveOperation },
-  } = useChartData();
-
-  const spectrum = spectrumLiveProcessed ?? stableSpectrum;
+  const [liveOperation, setLiveOperation] = useLiveOperation();
+  const liveEdit = useLiveEdit(liveOperation);
+  const processingsMutations = useProcessingsMutations();
+  const dispatch = useDispatch();
 
   if (!liveOperation) return null;
-  if (!spectrum) return null;
+  if (!stableSpectrum) return null;
+
+  const operatorUI = core.slotOperator(liveOperation.operatorId);
+  const isEditable = operatorUI?.isEditable ?? false;
+  const isLiveEditable = operatorUI?.isLiveEditable ?? false;
+
+  function closeProcessing() {
+    dispatch({
+      type: 'SELECT_PROCESSING_OPERATOR',
+      payload: { operatorUI: undefined },
+    });
+  }
 
   return (
     <PluginTopBarToolContainer>
@@ -285,11 +298,50 @@ function PluginTopBarTool() {
         core={core}
         id={liveOperation.operatorId}
         operation={liveOperation}
-        spectrum={spectrum}
-        onChange={noop}
-        onSubmit={noop}
+        spectrum={stableSpectrum}
+        onChange={(liveOperation) => {
+          liveOperation = setLiveOperation(liveOperation);
+
+          if (!isLiveEditable) return;
+          if (!liveEdit.value?.checked) return;
+
+          void processingsMutations.applyLiveChange(
+            liveOperation,
+            liveEdit.value?.shouldProcessNext ?? false,
+          );
+        }}
+        onSubmit={(operation) => {
+          if (!isEditable) return;
+
+          assertDefined(stableSpectrum?.processings);
+          const operationIndex = stableSpectrum.processings.findIndex(
+            (p) => p.uid === liveOperation.uid,
+          );
+
+          closeProcessing();
+          void processingsMutations.apply(
+            // onChange generally change settings
+            // so options should be re-computed
+            { ...operation, options: undefined },
+            operationIndex,
+          );
+        }}
       >
-        {(children) => children}
+        {(children) =>
+          isEditable && (
+            <>
+              {children}
+              <RSButton
+                variant="minimal"
+                intent="danger"
+                onClick={closeProcessing}
+                size="small"
+              >
+                Cancel
+              </RSButton>
+            </>
+          )
+        }
       </CoreOperatorTopBar>
     </PluginTopBarToolContainer>
   );
