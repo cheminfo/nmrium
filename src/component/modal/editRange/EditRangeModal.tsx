@@ -130,7 +130,7 @@ function InnerEditRangeModal(props: InnerEditRangeModalProps) {
         <DraggableDialog
           hasBackdrop={false}
           canOutsideClickClose={false}
-          style={{ width: 700 }}
+          style={{ width: 550 }}
           title={title}
           isOpen
           headerLeftElement={

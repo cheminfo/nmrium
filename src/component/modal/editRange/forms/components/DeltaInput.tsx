@@ -1,30 +1,25 @@
-import type { Signal1D } from '@zakodium/nmr-types';
+import { FormGroup } from '@blueprintjs/core';
 import { useFormContext } from 'react-hook-form';
 
 import { NumberInput2Controller } from '../../../../elements/NumberInput2Controller.js';
 import { useTabsController } from '../../../../elements/TabsProvider.js';
+import { useActiveNucleusTab } from '../../../../hooks/useActiveNucleusTab.ts';
+import { usePanelPreferences } from '../../../../hooks/usePanelPreferences.ts';
 import { useEvent } from '../../../../utility/Events.js';
+import { formatNumber } from '../../../../utility/formatNumber.ts';
 
 import { useEventFocusInput } from './SignalsContent.js';
 
 interface DeltaInputProps {
-  signal: Signal1D;
   index: number;
 }
 
-function hasError(errors: any, i: any) {
-  return !!errors?.signals?.[i];
-}
-
-export function DeltaInput({ signal, index }: DeltaInputProps) {
-  const {
-    control,
-    formState: { errors },
-    setValue,
-  } = useFormContext();
-  const isNotValid = hasError(errors, index);
+export function DeltaInput({ index }: DeltaInputProps) {
+  const { control, setValue } = useFormContext();
   const { selectedTabId: signalIndex } = useTabsController();
   const { focusSource, setFocusSource } = useEventFocusInput();
+  const activeTab = useActiveNucleusTab();
+  const { tablePreferences } = usePanelPreferences('ranges', activeTab);
 
   useEvent({
     onClick: ({ xPPM, shiftKey }) => {
@@ -45,34 +40,25 @@ export function DeltaInput({ signal, index }: DeltaInputProps) {
   });
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        color: isNotValid ? 'red' : 'black',
-      }}
+    <FormGroup
+      label="Chemical shift"
+      style={{ padding: '10px 0', borderBottom: '1px solid #f8f8f8' }}
     >
-      <span>𝛅: </span>
       <NumberInput2Controller
+        formatOnBlur={(value) =>
+          formatNumber(value, tablePreferences.deltaPPM.format)
+        }
         control={control}
         name={`signals.${index}.delta`}
-        placeholder="Delta (PPM)"
-        style={{
-          width: 50,
-          height: 20,
-          minHeight: 20,
-          paddingRight: 0,
-          paddingLeft: 0,
-        }}
+        placeholder="e.g. 7.25 ppm"
+        size="medium"
         fill
-        noShadowBox
         buttonPosition="none"
         debounceTime={250}
         onClick={() => {
           setFocusSource('delta');
         }}
       />
-      <span>{signal.js.map(({ multiplicity }) => multiplicity).join('')}</span>
-    </div>
+    </FormGroup>
   );
 }
