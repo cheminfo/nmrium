@@ -4,8 +4,11 @@ import type {
   SpectrumProcessingOperation,
 } from '@zakodium/nmrium-core';
 import { useMemo } from 'react';
+import { FaRegTrashAlt } from 'react-icons/fa';
+import { PanelHeader, Toolbar } from 'react-science/ui';
 
 import { useChartData } from '../../context/ChartContext.tsx';
+import { useCore } from '../../context/CoreContext.tsx';
 import { useDispatch } from '../../context/DispatchContext.tsx';
 import { useProcessingsMutations } from '../../context/processings_mutations_context.tsx';
 import type { AlertButton } from '../../elements/Alert.tsx';
@@ -13,7 +16,7 @@ import { useAlert } from '../../elements/Alert.tsx';
 import { EmptyText } from '../../elements/EmptyText.tsx';
 import { Sections } from '../../elements/Sections.tsx';
 import { useStableSpectrum } from '../../hooks/useSpectrum.ts';
-import DefaultPanelHeader from '../header/DefaultPanelHeader.tsx';
+import { CoreOperatorPanelTool } from '../../utility/core_slots/core_operator_panel_tool.tsx';
 
 import { ProcessingItem } from './processings/processing_item.tsx';
 
@@ -48,6 +51,9 @@ export function ProcessingsSectionsPanel() {
 
     return processings;
   }, [selected, spectrum?.processings]);
+
+  const core = useCore();
+  const operatorsUI = useMemo(() => core.slotOperators(), [core]);
 
   function handleDeleteFilter() {
     const buttons: AlertButton[] = [
@@ -84,15 +90,32 @@ export function ProcessingsSectionsPanel() {
 
   return (
     <>
-      <DefaultPanelHeader
-        deleteTooltip="Delete all filters"
-        onDelete={handleDeleteFilter}
-        total={processings?.length}
-        hideCounter
-      />
+      <PanelHeader>
+        <Toolbar overflow="collapse">
+          <Toolbar.Item
+            id="delete-button"
+            onClick={handleDeleteFilter}
+            tooltip="Delete all filters"
+            icon={<FaRegTrashAlt />}
+            intent="danger"
+            disabled={!processings?.length}
+          />
+          {operatorsUI.map((operatorUI) => (
+            <CoreOperatorPanelTool
+              key={operatorUI.id}
+              operator={operatorUI}
+              activeOperatorId={selected}
+              spectrum={spectrum}
+              onTriggerOperation={(operation) =>
+                void processingsMutations.triggerOperation(operation)
+              }
+            />
+          ))}
+        </Toolbar>
+      </PanelHeader>
 
-      {processings.length === 0 && <EmptyText text="No Processings" />}
-      {processings.length > 0 && (
+      {processingsStatus.length === 0 && <EmptyText text="No Processings" />}
+      {processingsStatus.length > 0 && (
         <Sections isOverflow renderActiveSectionContentOnly>
           {processingsStatus.map(
             ({ operation, isOpen, isAfterOpen }, index) => (
