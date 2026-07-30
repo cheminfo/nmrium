@@ -336,11 +336,12 @@ export function useProcessingsMutationsAPI() {
       updateView(draft, operator.domainUpdateRules),
     );
 
+    dispatch({
+      type: 'SELECT_PROCESSING_OPERATOR',
+      payload: { operatorUI },
+    });
+
     if (operatorUI.isEditable) {
-      dispatch({
-        type: 'SELECT_PROCESSING_OPERATOR',
-        payload: { operatorUI },
-      });
       dispatch({
         type: 'SET_LIVE_OPERATION',
         payload: { liveOperation: operation },

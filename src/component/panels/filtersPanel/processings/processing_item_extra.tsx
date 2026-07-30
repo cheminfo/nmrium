@@ -1,17 +1,9 @@
 import { Classes, Switch } from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import type {
-  ProcessingOperatorId,
-  SpectrumProcessingOperation,
-} from '@zakodium/nmrium-core';
+import type { SpectrumProcessingOperation } from '@zakodium/nmrium-core';
 import { Button } from 'react-science/ui';
 
 import type { ProcessingsMutations } from '../../../context/processings_mutations_context.api.ts';
-
-const unremoveableProcessings = new Set<ProcessingOperatorId>([
-  '@zakodium/nmrium-core-plugins#digitalFilter1D',
-  '@zakodium/nmrium-core-plugins#digitalFilter2D',
-]);
 
 interface ProcessingItemExtraProps {
   operation: SpectrumProcessingOperation<unknown, unknown>;
@@ -48,7 +40,6 @@ export function ProcessingItemExtra(props: ProcessingItemExtraProps) {
         intent="danger"
         variant="minimal"
         onClick={() => processingsMutations.remove(operation.uid)}
-        disabled={unremoveableProcessings.has(operation.operatorId)}
         icon="trash"
       />
 
