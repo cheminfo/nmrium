@@ -1,6 +1,6 @@
 import type { Spectrum2D } from '@zakodium/nmrium-core';
 import { isSpectrum2DFt } from '@zakodium/nmrium-core';
-import type { NmrData2DFt } from 'cheminfo-types';
+import type { DataXY, NmrData2DFt } from 'cheminfo-types';
 import { Conrec } from 'ml-conrec';
 import type { Spectrum } from 'nmr-correlation';
 
@@ -63,11 +63,13 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
   //@ts-expect-error will be included in nexts versions
   const { noise = calculateSanPlot('2D', quadrantData, { magnitudeMode: acquisitionScheme === 'notPhaseSensitive' }) } = info;
 
-  const { positive = 0, negative = 0, percentiles } = noise;
-  const minAllowedFromNoise = 10 * Math.max(positive, negative);
+  const {percentiles, sanplot } = noise;
+  const sanPlotMax = getSanPlotMinMax(sanplot ?? {});
+  const positiveSanPlotMax = sanPlotMax.positive?.max ?? 0;
+  const negativeSanPlotMax = sanPlotMax.negative?.max ?? 0;
   const max = Math.max(
-    Math.abs(quadrantData.minZ),
-    Math.abs(quadrantData.maxZ),
+    positiveSanPlotMax,
+    negativeSanPlotMax,
   );
 
   const isSymmetrized = filters.some((filter) => filter.name === 'symmetrizeCosyLike' && filter.enabled);
@@ -75,19 +77,19 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
   
   const { positive: pPositive, negative: pNegative } = percentiles
   
-  const percentileValue = isSymmetrized ? isNUS ? 60 : 90 : 99;
-  const pPositiveIndex = pPositive[percentileValue];
-  const pNegativeIndex = pNegative[percentileValue];
+  const percentileValue = isSymmetrized ? (isNUS ? 60 : 90) : 99;
+  const pPositiveValue = pPositive[percentileValue];
+  const pNegativeValue = pNegative[percentileValue];
 
-  const minAllowedByPercentile = Math.max(pPositive[pPositiveIndex] ?? 0, pNegative[pNegativeIndex] ?? 0);
-  
-  const { log10 } = Math;
-  const inLogScaleNoise = log10(minAllowedFromNoise) / log10(2);
-  const maxValue = log10(max) / log10(2);
-  const middleValue = 10 ** (log10(2) * ((maxValue - inLogScaleNoise) / 2 + inLogScaleNoise));
+  const optimalContourLevel = getContourThresholdFromPercentiles(pPositive, pNegative, {
+    minP: 80,
+    maxP: 99,
+    madScale: 1,
+  });
 
-  const minLevel = isNUS ? Math.min(middleValue, minAllowedByPercentile) : Math.max(middleValue, minAllowedByPercentile);
+  const minAllowedByPercentile = Math.max(pPositiveValue ?? 0, pNegativeValue ?? 0);
 
+  const minLevel = isNUS ? Math.min(optimalContourLevel, minAllowedByPercentile) : Math.max(optimalContourLevel, minAllowedByPercentile);
   const minContourLevel = Math.min(
     calculateValueOfLevel(minLevel, max, true),
     DEFAULT_CONTOURS_OPTIONS.positive.contourLevels[1] -
@@ -111,6 +113,128 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
     },
   };
   return defaultLevel;
+}
+
+function getSanPlotMinMax(
+  sanplot: Record<string, DataXY>,
+  options: { logBaseY?: number } = {},
+): Record<string, { min: number; max: number }> {
+  const { logBaseY = 2 } = options;
+
+  const result: Record<string, { min: number; max: number }> = {};
+
+  for (const [key, series] of Object.entries(sanplot)) {
+    const y = series.y;
+    if (y.length === 0) {
+      result[key] = { min: Number.MIN_SAFE_INTEGER, max: Number.MIN_SAFE_INTEGER };
+      continue;
+    }
+
+    const first = logBaseY ** y[0];
+    const last = logBaseY ** (y.at(-1) ?? 1);
+
+    result[key] = {
+      min: Math.min(first, last),
+      max: Math.max(first, last),
+    };
+  }
+
+  return result;
+}
+
+ function getContourThresholdFromPercentiles(
+  positivePercentiles: readonly number[],
+  negativePercentiles: readonly number[],
+  options: ContourThresholdOptions = {},
+): number {
+  const positiveContourLevel = findOptimalContourThreshold(positivePercentiles, options);
+  const negativeContourLevel = findOptimalContourThreshold(negativePercentiles, options);
+
+  const positiveThreshold = positivePercentiles[positiveContourLevel.optimalPercentile];
+  const negativeThreshold = negativePercentiles[negativeContourLevel.optimalPercentile];
+
+  return Math.max(positiveThreshold, negativeThreshold);
+}
+/**
+ * Finds the optimal minimum contour threshold for a 2D NMR spectrum
+ * using the Robust Median-MAD formulation on a percentile-intensity array.
+ *
+ * @param {number[]} percentiles - Array where index = percentile (0-100),
+ *                                 value = intensity at that percentile.
+ * @param {object} options - Configuration options
+ * @returns {object} - { optimalPercentile, optimalThreshold, maxSNR }
+ */
+interface ContourThresholdOptions {
+  minP?: number;
+  maxP?: number;
+  madScale?: number;
+  scoreRatio?: number;
+}
+
+interface OptimalContourMinLevel {
+  optimalPercentile: number;
+  optimalThreshold: number;
+  maxSNR: number;
+}
+
+function interpolate(arr: readonly number[], idx: number): number {
+  const i = Math.floor(idx);
+  const j = Math.ceil(idx);
+  if (i === j || i < 0 || j >= arr.length) {
+    return arr[Math.max(0, Math.min(arr.length - 1, Math.round(idx)))];
+  }
+  return arr[i] + (idx - i) * (arr[j] - arr[i]);
+}
+
+function findOptimalContourThreshold(
+  percentiles: readonly number[],
+  options: ContourThresholdOptions = {}
+): OptimalContourMinLevel {
+  const { minP = 80, maxP = 99, madScale = 1 } = options;
+
+  if (madScale <= 0) {
+    throw new Error('madScale must be > 0 to avoid division by zero.');
+  }
+
+  // Linear interpolation for non-integer percentile indices
+  
+  let bestP = minP;
+  let bestSNR = -Infinity;
+
+  for (let p = minP; p <= maxP; p++) {
+  const idxMedian    = p / 2;
+  const idxQ1        = p / 4;
+  const idxQ3        = (3 * p) / 4;
+  const idxMeanAbove = (p + 100) / 2;
+
+  const medianBelow = interpolate(percentiles, idxMedian);
+  const q1Below     = interpolate(percentiles, idxQ1);
+  const q3Below     = interpolate(percentiles, idxQ3);
+  const meanAbove   = interpolate(percentiles, idxMeanAbove);
+
+  const madBelow = (q3Below - q1Below) / 2;
+  if (madBelow <= 0) continue;
+
+  const snr = (meanAbove - medianBelow) / (madBelow * madScale);
+
+  // ✦ Coverage weight: fraction of points ABOVE the threshold
+  //   At p=80 → weight=0.20, at p=99 → weight=0.01
+  //   This penalizes thresholds that exclude too much.
+  const coverage = (100 - p) / 100;
+
+  // Optional: sharpen the penalty with an exponent
+  const score = snr * coverage ** 0.5;  // sqrt softens it
+
+  if (score > bestSNR) {
+    bestSNR = score;
+    bestP = p;
+  }
+}
+  return {
+    optimalPercentile: bestP,
+    optimalThreshold: interpolate(percentiles, bestP),
+    maxSNR: bestSNR
+  };
 }
 
 function contoursManager(options: ContourOptions): ContoursManagerReturn {
