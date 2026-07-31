@@ -14,6 +14,8 @@ import {
   isSpectrum1DFid,
   isSpectrum2D,
   isSpectrum2DFid,
+  sliceSpectrum1D,
+  sliceSpectrum2D,
   sliceSpectrum,
 } from '@zakodium/nmrium-core';
 import type { Nullish } from '@zakodium/utils';
@@ -470,7 +472,7 @@ function rollbackSpectrumByFilter(
 
       // If the filter doesn't exist, create a clone of the current data.
       draft.tempData = current(draft).data.slice();
-      draft.tempData[index] = structuredClone(
+      draft.tempData[index] = sliceSpectrum(
         isDraft(spectrum) ? current(spectrum) : spectrum,
       );
 
@@ -496,7 +498,7 @@ function rollbackSpectrumByFilter(
       reapplyFilters(spectrum, filters);
 
       draft.tempData = current(draft).data.slice();
-      draft.tempData[index] = structuredClone(
+      draft.tempData[index] = sliceSpectrum(
         isDraft(spectrum) ? current(spectrum) : spectrum,
       );
 
@@ -993,14 +995,9 @@ function handleCalculateZeroFillingDimensionOneFilter(
   const { options, livePreview } = action.payload;
   if (livePreview) {
     const index = activeSpectrum.index;
-    const { data, info, filters } = current(draft).tempData[index];
 
-    const _data = structuredClone({
-      data,
-      info,
-      filters,
-    }) as Spectrum2D;
-
+    const liveSpectrum: Spectrum2D = current(draft).tempData[index];
+    const _data = sliceSpectrum2D(liveSpectrum);
     zeroFillingDimension1.apply(_data, options);
 
     const datum = draft.data[index];
@@ -1033,13 +1030,9 @@ function handleCalculateZeroFillingDimensionTwoFilter(
   const { options, livePreview } = action.payload;
   if (livePreview) {
     const index = activeSpectrum.index;
-    const { data, info, filters } = current(draft).tempData[index];
 
-    const _data = structuredClone({
-      data,
-      info,
-      filters,
-    }) as Spectrum2D;
+    const liveSpectrum: Spectrum2D = current(draft).tempData[index];
+    const _data = sliceSpectrum2D(liveSpectrum);
 
     zeroFillingDimension2.apply(_data, options);
 
@@ -1079,15 +1072,12 @@ function handleCalculateApodizationFilter(
   if (livePreview) {
     const datum = draft.data[index];
 
-    if (!isSpectrum1D(datum)) {
-      return;
-    }
-    const spectrum: Spectrum1D = structuredClone(
-      current(draft).tempData[index],
-    );
+    if (!isSpectrum1D(datum)) return;
+
+    const liveSpectrum = sliceSpectrum1D(current(draft).tempData[index]);
 
     if (!tempRollback) {
-      apodization.apply(spectrum, options);
+      apodization.apply(liveSpectrum, options);
     } else {
       const index = datum.filters.findIndex(
         (filter) => filter.name === 'apodization',
@@ -1103,14 +1093,14 @@ function handleCalculateApodizationFilter(
         try {
           const filterOptions =
             filter.name === 'apodization' ? options : filter.value;
-          Filters1D[filter.name].apply(spectrum, filterOptions as any);
+          Filters1D[filter.name].apply(liveSpectrum, filterOptions as any);
         } catch (error: any) {
           filter.error = error.message;
         }
       }
     }
 
-    const { im: newIm, re: newRe } = spectrum.data;
+    const { im: newIm, re: newRe } = liveSpectrum.data;
 
     datum.data.im = newIm;
     datum.data.re = newRe;
@@ -1132,12 +1122,9 @@ function handleCalculateApodizationDimensionOneFilter(
   const index = activeSpectrum.index;
   const { livePreview, options } = action.payload;
   if (livePreview) {
-    const { data, info } = current(draft).tempData[index];
+    const liveSpectrum: Spectrum2D = current(draft).tempData[index];
 
-    const _data = structuredClone({
-      data,
-      info,
-    }) as Spectrum2D;
+    const _data = sliceSpectrum2D(liveSpectrum);
     apodizationDimension1.apply(_data, options);
 
     const datum = draft.data[index];
@@ -1163,13 +1150,9 @@ function handleCalculateApodizationDimensionTwoFilter(
   const index = activeSpectrum.index;
   const { livePreview, options } = action.payload;
   if (livePreview) {
-    const { data, info } = current(draft).tempData[index];
+    const liveSpectrum: Spectrum2D = current(draft).tempData[index];
 
-    const _data = structuredClone({
-      data,
-      info,
-    }) as Spectrum2D;
-
+    const _data = sliceSpectrum2D(liveSpectrum);
     apodizationDimension2.apply(_data, options);
 
     const datum = draft.data[index];
