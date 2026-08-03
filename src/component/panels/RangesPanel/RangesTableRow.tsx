@@ -115,6 +115,10 @@ export default function RangesTableRow(props: RangesTableRowProps) {
 
       const signalIndex = tableMetaInfo.signalIndex;
 
+      if (typeof signalIndex !== 'number') {
+        return;
+      }
+
       dispatch({
         type: 'UNASSIGN_1D_SIGNAL',
         payload: {
