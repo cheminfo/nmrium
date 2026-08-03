@@ -8,46 +8,54 @@ interface ExtractSpectrumSignalsOptions<T> {
   from?: number;
   to?: number;
   include?: (range: Range) => T;
+  onlyFirstSignal?: boolean;
 }
+
+function isRangeInBounds(range: Range, from?: number, to?: number): boolean {
+  if (typeof from === 'number' && typeof to === 'number') {
+    return range.from <= to && range.to >= from;
+  }
+  if (typeof to === 'number') {
+    return range.to <= to;
+  }
+  if (typeof from === 'number') {
+    return range.from >= from;
+  }
+  return true;
+}
+
 export function extractSpectrumSignals<T extends object = object>(
   spectrum: Spectrum1D,
   options: ExtractSpectrumSignalsOptions<T> = {},
-) {
-  const result: Array<ExtractedSignal<T>> = [];
-  const { from, to, include } = options;
+): Array<ExtractedSignal<T>> {
+  const { from, to, include, onlyFirstSignal = false } = options;
 
   const ranges = spectrum?.ranges?.values;
-  if (!Array.isArray(ranges) || ranges?.length === 0) {
+  if (!Array.isArray(ranges) || ranges.length === 0) {
     return [];
   }
 
+  const result: Array<ExtractedSignal<T>> = [];
+
   for (const range of ranges) {
-    const rangeFrom = range.from;
-    const rangeTo = range.to;
-    let isInRange = true;
-
-    if (typeof from === 'number' && typeof to === 'number') {
-      isInRange = rangeFrom <= to && rangeTo >= from;
-    } else if (typeof to === 'number') {
-      isInRange = rangeTo <= to;
-    } else if (typeof from === 'number') {
-      isInRange = rangeFrom >= from;
-    }
-
-    if (!isInRange) continue;
+    if (!isRangeInBounds(range, from, to)) continue;
 
     const { signals = [] } = range;
-    let index = 0;
+    let includedCount = 0;
+
     for (const signal of signals) {
       const { kind, assignment } = signal;
-      if (kind && signalKindsToInclude.has(kind)) {
-        result.push({
-          ...signal,
-          assignment: index === 0 ? assignment : '',
-          ...include?.(range),
-        } as ExtractedSignal<T>);
-        index++;
-      }
+      if (!kind || !signalKindsToInclude.has(kind)) continue;
+
+      const keepAssignment = !onlyFirstSignal || includedCount === 0;
+
+      result.push({
+        ...signal,
+        assignment: keepAssignment ? assignment : '',
+        ...include?.(range),
+      } as ExtractedSignal<T>);
+
+      includedCount++;
     }
   }
 
