@@ -139,12 +139,13 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
           break;
         }
         case 'SIGNAL_1D': {
-          const { id, rangeId } = extra;
+          const { id, rangeId, spectrumID } = extra;
           dispatch({
             type: 'DELETE_1D_SIGNAL',
             payload: {
               signalId: id,
               rangeId,
+              spectrumId: spectrumID,
             },
           });
           // remove keys from the highlighted list after delete

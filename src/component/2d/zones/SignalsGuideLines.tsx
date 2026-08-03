@@ -7,11 +7,7 @@ import { PiTextTBold, PiTextTSlashBold } from 'react-icons/pi';
 
 import { isAssigned } from '../../../data/data1d/Spectrum1D/isRangeAssigned.js';
 import { FieldEdition } from '../../1d-2d/FieldEdition.js';
-import {
-  useAssignment,
-  useAssignmentContext,
-} from '../../assignment/AssignmentsContext.js';
-import { filterAssignedIDs } from '../../assignment/utilities/filterAssignedIDs.js';
+import { useAssignment } from '../../assignment/AssignmentsContext.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import {
@@ -76,6 +72,7 @@ function useSignalsOverlap(axis: IndicationLinesAxis, spectrum: Spectrum1D) {
   const processedSignals: ProcessedSignal[] = signals.map((signal) => {
     const { delta, assignment } = signal;
     const text = assignment ?? '';
+
     const labelWidth = getTextWidth(text);
 
     return {
@@ -151,23 +148,23 @@ function getAxisRangeId(options: GetAxisRangeIdOptions) {
 
 interface UseRangeAssignmentOptions {
   rangeId: string;
-  signalsIds: string[];
   spectrumId: string;
   signalId: string;
 }
 
 function useRangeAssignment(options: UseRangeAssignmentOptions) {
-  const { rangeId, signalsIds, spectrumId, signalId } = options;
+  const { rangeId, spectrumId, signalId } = options;
 
-  const assignmentData = useAssignmentContext();
+  // const assignmentData = useAssignmentContext();
   const assignmentContext = useAssignment(signalId, spectrumId);
-  const highlightId = [rangeId]
-    .concat(assignmentContext.assignedDiaIds?.x || [])
-    .concat(filterAssignedIDs(assignmentData.data, signalsIds));
+  const highlightId = [signalId].concat(
+    assignmentContext.assignedDiaIds?.x || [],
+  );
+  // .concat(filterAssignedIDs(assignmentData.data, signalsIds));
 
   const highlightContext = useHighlight(highlightId, {
-    type: 'RANGE',
-    extra: { id: rangeId, spectrumID: spectrumId },
+    type: 'SIGNAL_1D',
+    extra: { id: signalId, rangeId, spectrumID: spectrumId },
   });
 
   return { highlightContext, assignmentContext };
@@ -180,10 +177,8 @@ function isRangeSignalAssigned(
   return isAssigned(otherProps);
 }
 
-function hasDiaIds(signals: Signal1D[]) {
-  return signals.some(
-    (signal) => Array.isArray(signal?.diaIDs) && signal.diaIDs.length > 0,
-  );
+function hasDiaIds(signal: Partial<Signal1D>) {
+  return Array.isArray(signal?.diaIDs) && signal.diaIDs.length > 0;
 }
 
 function IndicationLine(props: IndicationLineProps) {
@@ -199,11 +194,9 @@ function IndicationLine(props: IndicationLineProps) {
     nbAtoms,
     id: signalId,
   } = props;
-  const { id: rangeId, signals } = range;
+  const { id: rangeId } = range;
   const highlightColor = useHighlightColor();
   const isSignalAssigned = isRangeSignalAssigned({ range, diaIDs, nbAtoms });
-
-  const signalsIds = signals.map(({ id }) => id);
   const { margin, width, height } = useChartData();
   const { setData: addNewAssignmentLabel } = useShareData();
 
@@ -211,11 +204,10 @@ function IndicationLine(props: IndicationLineProps) {
   const { assignmentContext, highlightContext } = useRangeAssignment({
     rangeId,
     spectrumId,
-    signalsIds,
     signalId,
   });
 
-  const hasDiaIDs = hasDiaIds(signals);
+  const hasDiaIDs = hasDiaIds({ nbAtoms, diaIDs });
   const isAssignmentActive = assignmentContext.isActive;
   const isHighlighted = highlightContext.isActive || isAssignmentActive;
 
@@ -269,6 +261,7 @@ function IndicationLine(props: IndicationLineProps) {
       type: 'UNASSIGN_1D_SIGNAL',
       payload: {
         rangeKey: rangeId,
+        signalId,
         spectrumId,
       },
     });
@@ -279,13 +272,13 @@ function IndicationLine(props: IndicationLineProps) {
       icon: <LuLink />,
       onClick: assignHandler,
       intent: 'success',
-      title: 'Assign range',
+      title: 'Assign signal',
     },
     {
       icon: <LuUnlink />,
       onClick: () => unAssignHandler(),
       intent: 'danger',
-      title: 'Unassign range',
+      title: 'Unassign signal',
       visible: isAssignmentActive || hasDiaIDs,
     },
     {

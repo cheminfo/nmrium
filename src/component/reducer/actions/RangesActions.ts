@@ -79,11 +79,15 @@ interface DeleteSignalProps {
 }
 type DeleteSignalAction = ActionType<'DELETE_1D_SIGNAL', DeleteSignalProps>;
 
-interface UnAssign1DSignalOptions {
+type SignalSelector =
+  | { signalId: string; signalIndex?: never }
+  | { signalIndex: number; signalId?: never }
+  | { signalId?: never; signalIndex?: never };
+
+type UnAssign1DSignalOptions = {
   rangeKey?: string;
-  spectrumId?: string; // If not specified, the currently active spectrum will be used by default.
-  signalIndex?: number;
-}
+  spectrumId?: string;
+} & SignalSelector;
 type UnAssign1DSignalAction = ActionType<
   'UNASSIGN_1D_SIGNAL',
   UnAssign1DSignalOptions
@@ -413,24 +417,49 @@ function handleDeleteSignal(draft: Draft<State>, action: DeleteSignalAction) {
   deleteSignal1D(draft, action.payload);
 }
 
+function resolveSignalIndex(
+  range: Range,
+  {
+    signalId,
+    signalIndex = -1,
+  }: Pick<UnAssign1DSignalOptions, 'signalId' | 'signalIndex'>,
+): number {
+  if (!signalId) return signalIndex;
+  return range.signals.findIndex((signal) => signal.id === signalId);
+}
+
+function clearRangeAssignment(
+  ranges: Draft<Range[]>,
+  rangeIndex: number,
+  options: Pick<UnAssign1DSignalOptions, 'signalId' | 'signalIndex'>,
+) {
+  const index = resolveSignalIndex(ranges[rangeIndex], options);
+  ranges[rangeIndex] = unlink(ranges[rangeIndex], index);
+}
+
 function clearSignalAssignment(
   draft: Draft<State>,
   options: UnAssign1DSignalOptions = {},
 ) {
-  const { spectrumId, rangeKey, signalIndex = -1 } = options;
+  const { spectrumId, rangeKey, signalIndex = -1, signalId } = options;
 
   const spectrum = getSpectrum(draft, spectrumId);
   if (!isSpectrum1D(spectrum)) return;
 
   const ranges = spectrum.ranges.values;
-  if (rangeKey) {
-    const rangeIndex = getRangeIndex(spectrum, rangeKey);
-    ranges[rangeIndex] = unlink(ranges[rangeIndex], signalIndex);
-  } else {
+
+  if (!rangeKey) {
     for (const range of ranges) {
       unlink(range, -1);
     }
+    return;
   }
+
+  const rangeIndex = getRangeIndex(spectrum, rangeKey);
+  const index = resolveSignalIndex(ranges[rangeIndex], options);
+  ranges[rangeIndex] = unlink(ranges[rangeIndex], index);
+
+  clearRangeAssignment(ranges, rangeIndex, { signalId, signalIndex });
 }
 
 //action
