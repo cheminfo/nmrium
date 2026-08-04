@@ -77,7 +77,7 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
   
   const { positive: pPositive, negative: pNegative } = percentiles
   
-  const percentileValue = isSymmetrized ? (isNUS ? 60 : 90) : 99;
+  const percentileValue = isSymmetrized ? (isNUS ? 60 : 70) : 99;
   const pPositiveValue = pPositive[percentileValue];
   const pNegativeValue = pNegative[percentileValue];
 
@@ -89,7 +89,7 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
 
   const minAllowedByPercentile = Math.max(pPositiveValue ?? 0, pNegativeValue ?? 0);
 
-  const minLevel = isNUS ? Math.min(optimalContourLevel, minAllowedByPercentile) : Math.max(optimalContourLevel, minAllowedByPercentile);
+  const minLevel = isSymmetrized || isNUS ? Math.min(optimalContourLevel, minAllowedByPercentile) : Math.max(optimalContourLevel, minAllowedByPercentile);
   const minContourLevel = Math.min(
     calculateValueOfLevel(minLevel, max, true),
     DEFAULT_CONTOURS_OPTIONS.positive.contourLevels[1] -
