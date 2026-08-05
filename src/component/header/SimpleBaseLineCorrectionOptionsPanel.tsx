@@ -42,13 +42,11 @@ function BaseLineCorrectionInnerPanel({
   filter,
 }: BaseLineCorrectionInnerPanelProps) {
   const {
-    reset,
+    form: { handleSubmit, control, reset },
     onAlgorithmChange,
     submitHandler,
-    handleSubmit,
     handleApplyFilter,
     handleCancelFilter,
-    control,
     algorithm,
     defaultAlgorithmSelectProps,
   } = useBaselineCorrection(filter);
