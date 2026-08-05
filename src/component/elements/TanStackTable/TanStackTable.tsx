@@ -7,12 +7,17 @@ import type {
   ReactTable,
   Row,
   RowData,
+  TableOptions,
 } from '@tanstack/react-table';
 import {
   createColumnHelper,
   createSortedRowModel,
+  metaHelper,
   rowSortingFeature,
-  sortFns,
+  sortFn_alphanumeric as sortFnAlphanumeric,
+  sortFn_basic as sortFnBasic,
+  sortFn_datetime as sortFnDatetime,
+  sortFn_text as sortFnText,
   tableFeatures,
   useTable,
 } from '@tanstack/react-table';
@@ -39,13 +44,16 @@ export interface TanStackTableColumnMeta {
   tdStyle?: CSSProperties;
 }
 
-const tanStackTableColumnMeta: TanStackTableColumnMeta = {};
-
 const tanStackTableFeatures = tableFeatures({
   rowSortingFeature,
   sortedRowModel: createSortedRowModel(),
-  sortFns,
-  columnMeta: tanStackTableColumnMeta,
+  sortFns: {
+    alphanumeric: sortFnAlphanumeric,
+    basic: sortFnBasic,
+    datetime: sortFnDatetime,
+    text: sortFnText,
+  },
+  columnMeta: metaHelper<TanStackTableColumnMeta>(),
 });
 
 type TanStackTableFeatures = typeof tanStackTableFeatures;
@@ -88,8 +96,8 @@ export type HighlightSourceProps = {
 }[HighlightEventSourceType];
 
 interface BaseTanStackTableProps<TData extends RowData> {
-  data: TData[];
-  columns: Array<TanStackTableColumn<TData, any>>;
+  data: readonly TData[];
+  columns: ReadonlyArray<TanStackTableColumn<TData, any>>;
   activeRow?: (data: Row<TanStackTableFeatures, TData>) => boolean;
   approxColumnWidth?: number;
   approxItemHeight?: number;
@@ -98,6 +106,7 @@ interface BaseTanStackTableProps<TData extends RowData> {
   enableDefaultActiveRow?: boolean;
   enableVirtualScroll?: boolean;
   groupKey?: keyof TData;
+  getRowId?: TableOptions<TanStackTableFeatures, TData>['getRowId'];
   emptyDataRowText?: string;
   indexKey?: string;
   onClick?: (
@@ -189,7 +198,7 @@ function getRowStyle(
 
 function getIDs(rowData: RowData): string[] {
   const id = (rowData as { id?: unknown }).id;
-  if (id) {
+  if (id !== undefined && id !== null) {
     if (Array.isArray(id)) {
       return id.flatMap((value) =>
         typeof value === 'string' || typeof value === 'number'
@@ -222,6 +231,7 @@ type TanStackTableRowProps<TData extends RowData> = {
   rowKey: string;
   rowSpanCells: Map<string, RowSpanCell>;
   table: ReactTable<TanStackTableFeatures, TData>;
+  visibleColumnIds: ReadonlySet<string>;
 } & HighlightSourceProps;
 
 interface RowSpanCell {
@@ -229,42 +239,45 @@ interface RowSpanCell {
   rowSpan?: number;
 }
 
-function getCellRowSpanValue<TData extends RowData>(
-  cell: ReturnType<Row<TanStackTableFeatures, TData>['getAllCells']>[number],
-  row: Row<TanStackTableFeatures, TData>,
-  groupKey?: keyof TData,
-) {
-  const value = cell.getValue();
-  if (!groupKey) {
-    return String(value);
-  }
-
-  return `${String(value)}-${String(row.original[groupKey])}`;
-}
-
 function getRowSpanCells<TData extends RowData>(
   rows: Array<Row<TanStackTableFeatures, TData>>,
+  visibleColumnIds: ReadonlySet<string>,
   groupKey?: keyof TData,
 ) {
   const trackers = new Map<
     string,
-    { cellId: string; cellValue: string; rowSpan: number }
+    {
+      cellId: string;
+      cellValue: unknown;
+      groupValue: unknown;
+      rowSpan: number;
+    }
   >();
   const rowSpanCells = new Map<string, RowSpanCell>();
 
   for (const row of rows) {
     for (const cell of row.getAllCells()) {
-      if (!cell.column.columnDef.meta?.enableRowSpan) {
+      if (
+        !visibleColumnIds.has(cell.column.id) ||
+        !cell.column.columnDef.meta?.enableRowSpan
+      ) {
         continue;
       }
 
-      const cellValue = getCellRowSpanValue(cell, row, groupKey);
+      const cellValue = cell.getValue();
+      const groupValue =
+        groupKey === undefined ? undefined : row.original[groupKey];
       const tracker = trackers.get(cell.column.id);
 
-      if (tracker?.cellValue !== cellValue) {
+      if (
+        !tracker ||
+        !Object.is(tracker.cellValue, cellValue) ||
+        !Object.is(tracker.groupValue, groupValue)
+      ) {
         trackers.set(cell.column.id, {
           cellId: cell.id,
           cellValue,
+          groupValue,
           rowSpan: 1,
         });
         rowSpanCells.set(cell.id, { rowSpan: 1 });
@@ -296,6 +309,7 @@ function TanStackTableRow<TData extends RowData>(
     rowStyle,
     rowSpanCells,
     table,
+    visibleColumnIds,
   } = props;
 
   const data = useMemo(
@@ -312,7 +326,6 @@ function TanStackTableRow<TData extends RowData>(
     return () => {
       highlight.hide();
     };
-    // Keep this cleanup aligned with the legacy ReactTable row behavior.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -338,6 +351,10 @@ function TanStackTableRow<TData extends RowData>(
       {...highlight.onHover}
     >
       {row.getAllCells().map((cell) => {
+        if (!visibleColumnIds.has(cell.column.id)) {
+          return null;
+        }
+
         const meta = cell.column.columnDef.meta;
         const rowSpanCell = rowSpanCells.get(cell.id);
         if (rowSpanCell?.isRowSpanned) {
@@ -376,6 +393,7 @@ function TanStackTable<TData extends RowData>(
     enableDefaultActiveRow = false,
     enableVirtualScroll = false,
     groupKey,
+    getRowId,
     emptyDataRowText = 'No Data',
     indexKey = 'index',
     onClick,
@@ -391,43 +409,59 @@ function TanStackTable<TData extends RowData>(
 
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
-  const [activeRowIndex, setActiveRowIndex] = useState<number>();
+  const [activeRowId, setActiveRowId] = useState<string>();
   const [mRef, { height, width } = { height: 0, width: 0 }] =
     useResizeObserver();
 
-  const { startColumn, tableColumns, virtualScrollWidth } = useMemo(() => {
-    if (!enableColumnsVirtualScroll || !width) {
+  const { endColumnIndex, startColumnIndex, virtualScrollWidth } =
+    useMemo(() => {
+      if (!enableColumnsVirtualScroll || !width) {
+        return {
+          endColumnIndex: columns.length,
+          startColumnIndex: 0,
+          virtualScrollWidth: undefined,
+        };
+      }
+
+      const start = Math.min(
+        Math.max(0, columns.length - 1),
+        Math.max(0, Math.floor(scrollLeft / approxColumnWidth) - 1),
+      );
+      const visibleColumnsCount = Math.ceil(width / approxColumnWidth) + 2;
+      const end = Math.min(columns.length, start + visibleColumnsCount);
+
       return {
-        startColumn: undefined,
-        tableColumns: columns,
-        virtualScrollWidth: undefined,
+        endColumnIndex: end,
+        startColumnIndex: start,
+        virtualScrollWidth: approxColumnWidth * (columns.length + 1),
       };
-    }
-
-    const start = Math.max(0, Math.floor(scrollLeft / approxColumnWidth) - 1);
-    const visibleColumnsCount = Math.ceil(width / approxColumnWidth) + 2;
-    const end = Math.min(columns.length, start + visibleColumnsCount);
-
-    return {
-      startColumn: columns[start]?.header,
-      tableColumns: columns.slice(start, end),
-      virtualScrollWidth: approxColumnWidth * (columns.length + 1),
-    };
-  }, [
-    approxColumnWidth,
-    columns,
-    enableColumnsVirtualScroll,
-    scrollLeft,
-    width,
-  ]);
+    }, [
+      approxColumnWidth,
+      columns,
+      enableColumnsVirtualScroll,
+      scrollLeft,
+      width,
+    ]);
 
   const table = useTable({
     features: tanStackTableFeatures,
     data,
-    columns: tableColumns,
+    columns,
+    getRowId,
   });
+  const allColumns = table.getAllColumns();
+  const visibleColumnIds = useMemo(() => {
+    const visibleColumns = allColumns.slice(startColumnIndex, endColumnIndex);
+
+    return new Set(
+      visibleColumns.flatMap((column) =>
+        column.getLeafColumns().map((leafColumn) => leafColumn.id),
+      ),
+    );
+  }, [allColumns, endColumnIndex, startColumnIndex]);
+  const startColumn = columns[startColumnIndex]?.header;
   const rows = table.getRowModel().rows;
-  const sorting = table.state.sorting ?? [];
+  const sorting = table.state.sorting;
   const isSortedEventTriggered = useRef(false);
 
   useEffect(() => {
@@ -436,11 +470,11 @@ function TanStackTable<TData extends RowData>(
       // eslint-disable-next-line react-you-might-not-need-an-effect/no-pass-data-to-parent
       onSortEnd?.(
         rows.map((row) => row.original),
-        sorting.length > 0,
+        (sorting?.length ?? 0) > 0,
       );
       isSortedEventTriggered.current = false;
     }
-  }, [onSortEnd, rows, sorting.length]);
+  }, [onSortEnd, rows, sorting]);
 
   const { rowsData, virtualScrollHeight } = useMemo(() => {
     if (!enableVirtualScroll || !height) {
@@ -462,13 +496,14 @@ function TanStackTable<TData extends RowData>(
 
   const lastRow = rowsData.at(-1);
   const rowIndex = lastRow
-    ? ((lastRow.original as Record<string, unknown>)[indexKey] ?? lastRow.index)
+    ? ((lastRow.original as Record<string, unknown>)[indexKey] ??
+      lastRow.getDisplayIndex())
     : undefined;
   const total = totalCount ?? rows.length;
   const counterIndex = typeof rowIndex === 'number' ? rowIndex + 1 : total;
   const rowSpanCells = useMemo(
-    () => getRowSpanCells(rowsData, groupKey),
-    [groupKey, rowsData],
+    () => getRowSpanCells(rowsData, visibleColumnIds, groupKey),
+    [groupKey, rowsData, visibleColumnIds],
   );
 
   function scrollHandler(event: React.UIEvent<HTMLDivElement>) {
@@ -485,7 +520,7 @@ function TanStackTable<TData extends RowData>(
     row: Row<TanStackTableFeatures, TData>,
   ) {
     if (!activeRow && enableDefaultActiveRow) {
-      setActiveRowIndex(row.index);
+      setActiveRowId(row.id);
     }
 
     onClick?.(event, row);
@@ -505,6 +540,7 @@ function TanStackTable<TData extends RowData>(
       )}
     >
       <div
+        className="table-container"
         style={{
           height: '100%',
           overflowX: enableColumnsVirtualScroll ? 'auto' : undefined,
@@ -530,23 +566,38 @@ function TanStackTable<TData extends RowData>(
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
+                  const colSpan = header.column
+                    .getLeafColumns()
+                    .filter((column) => visibleColumnIds.has(column.id)).length;
+
+                  if (colSpan === 0 || header.rowSpan === 0) {
+                    return null;
+                  }
+
                   const meta = header.column.columnDef.meta;
-                  const toggleSortingHandler =
-                    header.column.getToggleSortingHandler();
+                  const canSort = header.column.getCanSort();
+                  const toggleSortingHandler = canSort
+                    ? header.column.getToggleSortingHandler()
+                    : undefined;
 
                   return (
                     <th
                       key={header.id}
-                      colSpan={header.colSpan}
+                      colSpan={colSpan}
+                      rowSpan={header.rowSpan}
                       style={{
                         ...meta?.style,
                         ...meta?.thStyle,
                         height: '1px',
                       }}
-                      onClick={(event) => {
-                        isSortedEventTriggered.current = true;
-                        toggleSortingHandler?.(event);
-                      }}
+                      onClick={
+                        toggleSortingHandler
+                          ? (event) => {
+                              isSortedEventTriggered.current = true;
+                              toggleSortingHandler(event);
+                            }
+                          : undefined
+                      }
                     >
                       <span style={sortIconStyle}>
                         {header.column.getIsSorted() === 'desc' ? (
@@ -555,9 +606,7 @@ function TanStackTable<TData extends RowData>(
                           <FaSortAmountUp />
                         ) : null}
                       </span>
-                      {header.isPlaceholder ? null : (
-                        <table.FlexRender header={header} />
-                      )}
+                      <table.FlexRender header={header} />
                     </th>
                   );
                 })}
@@ -567,7 +616,7 @@ function TanStackTable<TData extends RowData>(
           <tbody>
             {data.length === 0 && (
               <EmptyDataRow
-                numColumns={tableColumns.length}
+                numColumns={visibleColumnIds.size}
                 text={emptyDataRowText}
               />
             )}
@@ -586,11 +635,12 @@ function TanStackTable<TData extends RowData>(
                   rowData={row.original}
                   rowStyle={currentRowStyle}
                   rowSpanCells={rowSpanCells}
+                  visibleColumnIds={visibleColumnIds}
                   disableDefaultRowStyle={disableDefaultRowStyle}
                   isRowActive={
                     activeRow
                       ? activeRow(row)
-                      : enableDefaultActiveRow && activeRowIndex === row.index
+                      : enableDefaultActiveRow && activeRowId === row.id
                   }
                   contextMenu={contextMenu}
                   onClick={clickHandler}

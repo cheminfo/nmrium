@@ -84,23 +84,29 @@ function IntegralTable(props: IntegralTableProps) {
         index: 2,
         header: 'From',
         sortFn: 'basic',
-        accessorFn: (row) =>
-          formatNumber(row.from, integralsPreferences.from.format),
+        accessorKey: 'from',
+        cell: ({ row }) =>
+          formatNumber(row.original.from, integralsPreferences.from.format),
       },
       {
         showWhen: 'to.show',
         index: 3,
         header: 'To',
         sortFn: 'basic',
-        accessorFn: (row) =>
-          formatNumber(row.to, integralsPreferences.to.format),
+        accessorKey: 'to',
+        cell: ({ row }) =>
+          formatNumber(row.original.to, integralsPreferences.to.format),
       },
       {
         showWhen: 'absolute.show',
         index: 4,
         header: 'Absolute',
-        accessorFn: (row) =>
-          formatNumber(row.absolute, integralsPreferences.absolute.format),
+        accessorKey: 'absolute',
+        cell: ({ row }) =>
+          formatNumber(
+            row.original.absolute,
+            integralsPreferences.absolute.format,
+          ),
       },
       {
         showWhen: 'relative.show',

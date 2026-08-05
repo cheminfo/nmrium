@@ -92,14 +92,14 @@ async function addPeaks(nmrium: NmriumPage, { keyboard = false } = {}) {
 }
 async function checkPeakNumber(nmrium: NmriumPage, number: number) {
   const peaksTable = nmrium.page.locator(
-    '_react=PeaksTable >> _react=ReactTable >> .table-container',
+    '_react=PeaksTable >> _react=TanStackTable >> .table-container',
   );
   await peaksTable.evaluate((e) => {
     e.scrollTop = e.scrollHeight;
   });
 
   const lastPeak = peaksTable.locator(
-    `_react=[role="row"][key="row_${number - 1}"]`,
+    `_react=TanStackTableRow[key="${number - 1}"]`,
   );
 
   await expect(lastPeak).toBeVisible();

@@ -102,7 +102,8 @@ export function LogsHistoryModal(props: LogsHistoryModalProps) {
       },
       {
         header: 'Time',
-        accessorFn: (row) => logsDataFormat.format(row.time),
+        accessorKey: 'time',
+        cell: ({ row }) => logsDataFormat.format(row.original.time),
         meta: { style: { width: '100px' } },
       },
       {
@@ -130,7 +131,10 @@ export function LogsHistoryModal(props: LogsHistoryModalProps) {
     [lastReadLogId],
   );
 
-  const sortedLogs = logsHistory.toSorted((a, b) => b.time - a.time);
+  const sortedLogs = useMemo(
+    () => logsHistory.toSorted((a, b) => b.time - a.time),
+    [logsHistory],
+  );
   return (
     <>
       {!autoOpen && (

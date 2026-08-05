@@ -300,7 +300,7 @@ export function SpectraTable(props: SpectraTableProps) {
 
   const tableColumns = useMemo(() => {
     const columns: Array<TanStackTableColumn<Spectrum>> = [];
-    let index = 0;
+    const columnIdCounts = new Map<string, number>();
     const visibleColumns = spectraPreferences.columns.filter(
       (col) => col.visible,
     );
@@ -333,8 +333,13 @@ export function SpectraTable(props: SpectraTableProps) {
           };
         }
 
+        const baseColumnId = `jpath:${pathString}`;
+        const duplicateIndex = columnIdCounts.get(baseColumnId) ?? 0;
+        columnIdCounts.set(baseColumnId, duplicateIndex + 1);
+
         const cell: TanStackTableColumn<Spectrum> = {
           header: () => <ColumnHeader label={col.label} col={col} />,
+          accessorFn: (row) => getValueByPath(row, jpath),
           cell: ({ row }) => {
             const val = getValueByPath(row.original, jpath, format);
             return (
@@ -347,13 +352,15 @@ export function SpectraTable(props: SpectraTableProps) {
             );
           },
           ...(cellRender && { cell: cellRender }),
-          id: `${index}`,
+          id:
+            duplicateIndex === 0
+              ? baseColumnId
+              : `${baseColumnId}:${duplicateIndex}`,
           meta: { style },
         };
 
         columns.push(cell);
       }
-      index++;
     }
     return columns;
   }, [COLUMNS, spectraPreferences.columns]);

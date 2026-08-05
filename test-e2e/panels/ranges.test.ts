@@ -289,11 +289,11 @@ test('Range state', async ({ page }) => {
   await test.step('Check that first spectrum range state saved', async () => {
     // Change spectra
     await nmrium.page.click(
-      '_react=SpectraTable >> _react=ReactTableRow >> nth=0',
+      '_react=SpectraTable >> _react=TanStackTableRow >> nth=0',
     );
     // Change spectra
     await nmrium.page.click(
-      '_react=SpectraTable >> _react=ReactTableRow >> nth=1',
+      '_react=SpectraTable >> _react=TanStackTableRow >> nth=1',
     );
     // Check that the peaks btn is not active
 
@@ -397,7 +397,7 @@ test('Auto peak picking on all spectra', async ({ page }) => {
     ).toContainText('[ 15 ]');
 
     await nmrium.page.click(
-      '_react=SpectrumListPanel >> _react=ReactTableRow[key="row_1"]',
+      '_react=SpectrumListPanel >> _react=TanStackTableRow[key="1"]',
     );
     await expect(nmrium.page.locator('.zone')).toHaveCount(44);
     await expect(
