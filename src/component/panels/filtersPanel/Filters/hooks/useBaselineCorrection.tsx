@@ -187,11 +187,11 @@ export function useBaselineCorrection(
 
   const { resolver, values } = getBaselineData(algorithm?.value, filter?.value);
 
-  const { handleSubmit, trigger, reset, ...otherFormOptions } =
-    useForm<BaselineAlgorithmOptions>({
-      defaultValues: values,
-      resolver: resolver as any,
-    });
+  const form = useForm<BaselineAlgorithmOptions>({
+    defaultValues: values,
+    resolver: resolver as any,
+  });
+  const { reset, handleSubmit } = form;
 
   function syncWatch(sharedFilterOptions: any) {
     const { algorithm } = sharedFilterOptions;
@@ -266,11 +266,9 @@ export function useBaselineCorrection(
     algorithm,
     defaultAlgorithmSelectProps,
     onAlgorithmChange,
-    handleSubmit,
     submitHandler,
     handleApplyFilter,
     handleCancelFilter,
-    reset,
-    ...otherFormOptions,
+    form,
   };
 }
