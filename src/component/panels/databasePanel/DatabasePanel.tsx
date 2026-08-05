@@ -46,6 +46,26 @@ import DatabaseTable from './DatabaseTable.js';
 
 export type Databases = Array<LocalDatabase | Database>;
 
+function resolveNucleus(
+  nucleus: string | undefined,
+  currentPick: string | undefined,
+  distinctNuclei: string[],
+): string | undefined {
+  if (nucleus) return nucleus;
+  if (currentPick && distinctNuclei.includes(currentPick)) return currentPick;
+  return distinctNuclei[0];
+}
+
+function getDistinctNuclei(entries: DatabaseNMREntry[]): string[] {
+  const nuclei = new Set<string>();
+  for (const record of entries) {
+    if (record.nucleus) {
+      nuclei.add(record.nucleus);
+    }
+  }
+  return Array.from(nuclei);
+}
+
 function getMolfile(options: {
   ocl?: { idCode?: string; coordinates?: string };
   smiles?: string;
@@ -65,7 +85,7 @@ function getMolfile(options: {
 }
 
 interface DatabaseInnerProps {
-  nucleus: string;
+  nucleus?: string;
   selectedTool: string;
   databases: Databases;
   defaultDatabase: string;
@@ -125,7 +145,13 @@ function DatabasePanelInner({
   const dispatch = useDispatch();
   const toaster = useToaster();
 
-  const format = useFormatNumberByNucleus(nucleus);
+  const [availableNuclei, setAvailableNuclei] = useState<string[]>([]);
+  const [selectedNucleus, setSelectedNucleus] = useState<string | undefined>(
+    nucleus,
+  );
+  const effectiveNucleus = nucleus ?? selectedNucleus;
+
+  const format = useFormatNumberByNucleus(effectiveNucleus);
   const [isFlipped, setFlipStatus] = useState(false);
   const [
     isOpenSearchByStructure,
@@ -133,16 +159,20 @@ function DatabasePanelInner({
     closeSearchByStructure,
   ] = useOnOff(false);
   const settingRef = useRef<SettingsRef | null>(null);
+
   const [keywords, setKeywords] =
     useState<DatabaseSearchKeywords>(emptyKeywords);
+  const [idCode, setIdCode] = useState<string>();
+
   const databaseInstance = useRef<InitiateDatabaseResult | null>(null);
   const databaseDataRef = useRef<DatabaseNMREntry[]>([]);
+  const { getModifiersKey, primaryKeyIdentifier } = useMapKeyModifiers();
+
   const [result, setResult] = useState<DatabaseSearchResultEntry>({
     data: [],
     databases: [],
     solvents: [],
   });
-  const [idCode, setIdCode] = useState<string>();
 
   function settingsPanelHandler() {
     setFlipStatus((flag) => !flag);
@@ -150,51 +180,145 @@ function DatabasePanelInner({
 
   async function saveSettingHandler() {
     const isSettingValid = await settingRef.current?.saveSetting();
-    if (isSettingValid) {
-      setFlipStatus(false);
-    }
+    if (isSettingValid) setFlipStatus(false);
   }
 
-  const search = useCallback(
-    (solvents?: any[]) => {
-      const { solvent, searchKeywords } = keywords;
-      if (databaseInstance.current) {
-        const keywords = mapKeywordsToArray(searchKeywords, solvent);
-        const data = databaseInstance.current.search({ keywords, idCode });
-        setResult((prevResult) => ({
-          ...prevResult,
-          data,
-          ...(solvents && { solvents }),
-        }));
-      }
+  const runSearch = useCallback(
+    (options?: {
+      keywords?: DatabaseSearchKeywords;
+      idCode?: string;
+      solvents?: any[];
+    }) => {
+      const instance = databaseInstance.current;
+      if (!instance) return;
+
+      const {
+        keywords: overrideKeywords,
+        idCode: overrideIdCode,
+        solvents,
+      } = options ?? {};
+
+      const { solvent, searchKeywords } = overrideKeywords ?? keywords;
+      const effectiveIdCode =
+        overrideIdCode !== undefined ? overrideIdCode : idCode;
+
+      const keywordArray = mapKeywordsToArray(searchKeywords, solvent);
+      const data = instance.search({
+        keywords: keywordArray,
+        idCode: effectiveIdCode,
+      });
+
+      setResult((prev) => ({
+        ...prev,
+        data,
+        ...(solvents && { solvents }),
+      }));
     },
-    [idCode, keywords],
+    [keywords, idCode],
+  );
+  const buildInstanceAndSearch = useCallback(
+    async (data: DatabaseNMREntry[], nucleusToUse: string) => {
+      const hideLoading = await toaster.showAsyncLoading({
+        message: 'Loading the database',
+      });
+
+      databaseInstance.current = initiateDatabase(data, nucleusToUse);
+      const solvents = mapSolventsToSelect(
+        databaseInstance.current.getSolvents(),
+      );
+
+      setKeywords(emptyKeywords);
+      setIdCode(undefined);
+      runSearch({ keywords: emptyKeywords, solvents });
+      hideLoading();
+    },
+    [toaster, runSearch],
   );
 
-  useEffect(() => {
-    if (!databaseInstance.current) return;
+  const handleChangeDatabase = useCallback(
+    (databaseKey: any) => {
+      const database = databases.find((item) => item.key === databaseKey);
 
-    const { solvent, searchKeywords } = keywords;
-    const runner = async () => {
-      if (databaseInstance.current) {
-        const hideLoading = await toaster.showAsyncLoading({
-          message: 'Preparing of the Result',
-        });
-        if (solvent === '-1' && !searchKeywords) {
-          const solvents = mapSolventsToSelect(
-            databaseInstance.current.getSolvents(),
-          );
-          search(solvents);
+      setTimeout(async () => {
+        let data: DatabaseNMREntry[];
+
+        if (database?.url) {
+          const { url, label } = database;
+          const hideLoading = await toaster.showAsyncLoading({
+            message: `load ${label} database`,
+          });
+          try {
+            const records = await fetch(url).then((r) => r.json());
+            data = records.map((record: any) => ({ ...record, baseURL: url }));
+          } catch {
+            toaster.show({
+              message: `Failed to load ${url}`,
+              intent: 'danger',
+            });
+            hideLoading();
+            return;
+          } finally {
+            hideLoading();
+          }
         } else {
-          search();
+          data =
+            ((database as LocalDatabase)?.value as DatabaseNMREntry[]) ?? [];
         }
-        hideLoading();
-      }
-    };
 
-    void runner();
-  }, [idCode, keywords, search, toaster]);
-  const { getModifiersKey, primaryKeyIdentifier } = useMapKeyModifiers();
+        databaseDataRef.current = data;
+
+        const distinctNuclei = getDistinctNuclei(data);
+        setAvailableNuclei(distinctNuclei);
+
+        const nucleusToUse = resolveNucleus(
+          nucleus,
+          selectedNucleus,
+          distinctNuclei,
+        );
+        setSelectedNucleus(nucleusToUse);
+
+        if (!nucleusToUse) {
+          databaseInstance.current = null;
+          setKeywords(emptyKeywords);
+          setResult({ data: [], databases: [], solvents: [] });
+          return;
+        }
+
+        await buildInstanceAndSearch(data, nucleusToUse);
+      }, 0);
+    },
+    [databases, nucleus, selectedNucleus, toaster, buildInstanceAndSearch],
+  );
+
+  const handleNucleusChange = useCallback(
+    (newNucleus: string) => {
+      setSelectedNucleus(newNucleus);
+      void buildInstanceAndSearch(databaseDataRef.current, newNucleus);
+    },
+    [buildInstanceAndSearch],
+  );
+
+  const handleKeywordsChange = useCallback(
+    (partial: Partial<DatabaseSearchKeywords>) => {
+      setKeywords((prev) => {
+        const next = { ...prev, ...partial };
+        runSearch({ keywords: next });
+        return next;
+      });
+    },
+    [runSearch],
+  );
+
+  const searchByStructureHandler = useCallback(
+    (idCodeValue: string) => {
+      const molecule = Molecule.fromIDCode(idCodeValue);
+      const atoms = molecule.getAllAtoms();
+      const nextIdCode = atoms > 0 ? idCodeValue : '';
+      setIdCode(nextIdCode);
+      runSearch({ idCode: nextIdCode });
+    },
+    [runSearch],
+  );
 
   useEffect(() => {
     function handle(event: BrushTrackerData & { range: [number, number] }) {
@@ -211,11 +335,15 @@ function DatabasePanelInner({
           ? prevState.searchKeywords.split(' ')
           : [];
         const [from, to] = event.range;
-        const searchKeywords = [
-          ...oldKeywords,
-          `delta:${format(from)}..${format(to)}`,
-        ].join(' ');
-        return { ...prevState, searchKeywords };
+        const nextKeywords = {
+          ...prevState,
+          searchKeywords: [
+            ...oldKeywords,
+            `delta:${format(from)}..${format(to)}`,
+          ].join(' '),
+        };
+        runSearch({ keywords: nextKeywords });
+        return nextKeywords;
       });
     }
 
@@ -224,87 +352,16 @@ function DatabasePanelInner({
     return () => {
       Events.off('brushEnd', handle);
     };
-  }, [format, getModifiersKey, primaryKeyIdentifier, selectedTool]);
-
-  useEffect(() => {
-    if (!databaseInstance.current) return;
-
-    const runner = async () => {
-      const hideLoading = await toaster.showAsyncLoading({
-        message: 'Loading the database',
-      });
-
-      databaseInstance.current = initiateDatabase(
-        databaseDataRef.current,
-        nucleus,
-      );
-      hideLoading();
-      setKeywords({ ...emptyKeywords });
-    };
-
-    void runner();
-  }, [nucleus, toaster]);
-
-  const handleChangeDatabase = useCallback(
-    (databaseKey: any) => {
-      const database = databases.find((item) => item.key === databaseKey);
-
-      setTimeout(async () => {
-        if (database?.url) {
-          const { url, label } = database;
-
-          const hideLoading = await toaster.showAsyncLoading({
-            message: `load ${label} database`,
-          });
-
-          try {
-            databaseDataRef.current = await fetch(url)
-              .then((response) => response.json())
-              .then((databaseRecords: any) =>
-                databaseRecords.map((record: any) => ({
-                  ...record,
-                  baseURL: url,
-                })),
-              );
-          } catch {
-            toaster.show({
-              message: `Failed to load ${url}`,
-              intent: 'danger',
-            });
-          } finally {
-            hideLoading();
-          }
-        } else {
-          databaseDataRef.current = (database as LocalDatabase)
-            ?.value as DatabaseNMREntry[];
-        }
-
-        const hideLoading = await toaster.showAsyncLoading({
-          message: 'Loading the database',
-        });
-
-        databaseInstance.current = initiateDatabase(
-          databaseDataRef.current,
-          nucleus,
-        );
-
-        setKeywords({ ...emptyKeywords });
-
-        hideLoading();
-      }, 0);
-    },
-    [databases, nucleus, toaster],
-  );
+  }, [format, getModifiersKey, primaryKeyIdentifier, selectedTool, runSearch]);
 
   useEffect(() => {
     if (defaultDatabase && !databaseInstance.current) {
       handleChangeDatabase(defaultDatabase);
     }
-  }, [databases, defaultDatabase, handleChangeDatabase, nucleus]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [defaultDatabase]);
 
-  const tableData = useMemo(() => {
-    return prepareData(result.data);
-  }, [result.data]);
+  const tableData = useMemo(() => prepareData(result.data), [result.data]);
 
   const core = useCore();
   const resurrectHandler = useCallback(
@@ -408,11 +465,6 @@ function DatabasePanelInner({
       },
     });
   }, [dispatch]);
-  const searchByStructureHandler = (idCodeValue: string) => {
-    const molecule = Molecule.fromIDCode(idCodeValue);
-    const atoms = molecule.getAllAtoms();
-    setIdCode(atoms > 0 ? idCodeValue : '');
-  };
 
   return (
     <TablePanel isFlipped={isFlipped}>
@@ -425,13 +477,14 @@ function DatabasePanelInner({
             keywords={keywords}
             result={result}
             total={databaseInstance.current?.data.length || 0}
-            onKeywordsChange={(options) =>
-              setKeywords((prevKeywords) => ({ ...prevKeywords, ...options }))
-            }
+            onKeywordsChange={handleKeywordsChange}
             onSettingClick={settingsPanelHandler}
             onStructureClick={openSearchByStructure}
             onDatabaseChange={handleChangeDatabase}
             onRemoveAll={removeAllHandler}
+            onNucleiChange={handleNucleusChange}
+            availableNuclei={availableNuclei}
+            selectedNucleus={selectedNucleus}
           />
           {isOpenSearchByStructure && (
             <DatabaseStructureSearchModal
@@ -491,7 +544,7 @@ export default function PeaksPanel() {
     data.filter((datum) => datum.enabled),
   ) as Databases;
 
-  if (!activeTab || displayerMode !== '1D') {
+  if (displayerMode !== '1D') {
     return (
       <PanelNoData>
         Databases are only available when 1D experimental spectrum is displayed.
@@ -501,7 +554,7 @@ export default function PeaksPanel() {
   }
   return (
     <MemoizedDatabasePanel
-      nucleus={activeTab}
+      nucleus={activeTab || undefined}
       selectedTool={selectedTool}
       databases={databases}
       defaultDatabase={defaultDatabase}
