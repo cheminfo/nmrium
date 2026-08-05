@@ -3,7 +3,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import type { ParseResult } from 'papaparse';
 import type { CSSProperties, DragEvent } from 'react';
 import { useEffect, useMemo, useState } from 'react';
-import type { FileError, FileWithPath } from 'react-dropzone';
+import type { FileError } from 'react-dropzone';
 import { useForm } from 'react-hook-form';
 import { DropZone } from 'react-science/ui';
 import * as Yup from 'yup';
@@ -128,7 +128,7 @@ function InnerMetaImportationModal({
   const { data } = useChartData();
   const { datalist, paths } = getSpectraObjectPaths(data);
 
-  function handleParseFile(file: FileWithPath | File) {
+  function handleParseFile(file: File) {
     void (async () => {
       const results = await parseMetaFile(file);
       setParseResult(results);
@@ -152,7 +152,7 @@ function InnerMetaImportationModal({
     };
   }, [file]);
 
-  function handleDrop(files: FileWithPath[]) {
+  function handleDrop(files: File[]) {
     if (files[0]) {
       handleParseFile(files[0]);
     }

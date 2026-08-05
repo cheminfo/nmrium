@@ -19,10 +19,13 @@ export function BaseSimpleZeroFillingOptionsPanel(
 ) {
   const { filter } = props;
 
-  const { control, submitHandler, register, handleCancelFilter } =
-    useZeroFilling(filter, {
-      applyFilterOnload: true,
-    });
+  const {
+    form: { register, control },
+    submitHandler,
+    handleCancelFilter,
+  } = useZeroFilling(filter, {
+    applyFilterOnload: true,
+  });
 
   const { onChange: onLivePreviewChange, ...otherLivePreviewRegisterOptions } =
     register('livePreview');

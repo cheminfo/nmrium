@@ -21,11 +21,9 @@ export function BaseZeroFillingOptions(
   const { filter, enableEdit = true, onCancel, onConfirm, onEditStart } = props;
 
   const {
-    control,
+    form: { register, formState, control },
     submitHandler,
-    register,
     handleCancelFilter,
-    formState: { isDirty },
   } = useZeroFilling(filter);
 
   function handleConfirm(event: MouseEvent<HTMLElement>) {
@@ -41,7 +39,7 @@ export function BaseZeroFillingOptions(
   const { onChange: onLivePreviewFieldChange, ...livePreviewFieldOptions } =
     register('livePreview');
 
-  const disabledAction = filter.value && !isDirty;
+  const disabledAction = filter.value && !formState.isDirty;
 
   const nbPointsList = getZeroFillingNbPoints(filter);
   return (

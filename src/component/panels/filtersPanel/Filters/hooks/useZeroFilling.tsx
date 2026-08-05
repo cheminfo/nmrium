@@ -130,13 +130,13 @@ export const useZeroFilling = (
     useDispatchZeroFilling(filter);
   const previousPreviewRef = useRef<boolean>(true);
 
-  const { handleSubmit, register, reset, control, getValues, formState } =
-    useForm({
-      defaultValues: {
-        nbPoints: filter?.value?.nbPoints || defaultNbPoints,
-        livePreview: true,
-      },
-    });
+  const form = useForm({
+    defaultValues: {
+      nbPoints: filter?.value?.nbPoints || defaultNbPoints,
+      livePreview: true,
+    },
+  });
+  const { getValues, reset, handleSubmit } = form;
 
   function syncWatch(sharedFilterOptions: any) {
     reset({ ...getValues(), ...sharedFilterOptions });
@@ -193,12 +193,9 @@ export const useZeroFilling = (
   }, [applyFilterOnload, handleSubmit, onChange]);
 
   return {
-    handleSubmit,
-    register,
-    control,
     submitHandler,
     handleApplyFilter,
     handleCancelFilter,
-    formState,
+    form,
   };
 };

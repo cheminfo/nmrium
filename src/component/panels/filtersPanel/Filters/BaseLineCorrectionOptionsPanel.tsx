@@ -53,18 +53,13 @@ export default function BaseLineCorrectionOptionsPanel(
     useFilterSyncOptions<BaselineAlgorithmOptions>();
   const spectrum = useTempSpectrum();
   const {
-    register,
-    reset,
+    form: { handleSubmit, register, formState, getValues, reset, control },
     onAlgorithmChange,
     submitHandler,
-    handleSubmit,
     handleApplyFilter,
     handleCancelFilter,
-    control,
     algorithm,
     defaultAlgorithmSelectProps,
-    formState: { isDirty },
-    getValues,
   } = useBaselineCorrection(filter);
 
   function handleConfirm(event: MouseEvent<HTMLElement>) {
@@ -81,7 +76,7 @@ export default function BaseLineCorrectionOptionsPanel(
     register('livePreview');
   const disabledAction =
     !!filter.value &&
-    !isDirty &&
+    !formState.isDirty &&
     filter.value.algorithm === getValues().algorithm;
   const AlgorithmFields = algorithm?.value
     ? BaselineAlgorithmFields[algorithm.value]
