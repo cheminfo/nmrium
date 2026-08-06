@@ -35,6 +35,20 @@ interface ResurrectSpectrumFromJCAMP extends BaseResurrectSpectrum {
   spectra: Spectrum[];
 }
 
+const DEFAULT_DATABASE_SPECTRUM_DOMAINS: Record<
+  string,
+  { from: number; to: number }
+> = {
+  '1H': {
+    from: -1,
+    to: 13,
+  },
+  '13C': {
+    from: -5,
+    to: 245,
+  },
+} as const;
+
 type ResurrectSpectrumFromRangesOrSignalsAction = ActionType<
   'RESURRECTING_SPECTRUM_FROM_SIGNALS_OR_RANGES',
   BaseResurrectSpectrum
@@ -110,6 +124,10 @@ function handleResurrectSpectrumFromJCAMP(
     }
   }
 
+  if (!draft.view.spectra.activeTab) {
+    draft.view.spectra.activeTab = spectra1D[0].info.nucleus;
+  }
+
   updateDomain(draft);
 
   const active1DSpectra = getSpectraByNucleus(
@@ -126,10 +144,8 @@ function handleResurrectSpectrumFromRangesOrSignals(
   draft: Draft<State>,
   action: ResurrectSpectrumFromRangesOrSignalsAction,
 ) {
-  const {
-    spectra: { activeTab: nucleus },
-  } = draft.view;
   const { databaseEntry, molfile } = action.payload;
+  const nucleus = draft.view.spectra.activeTab || databaseEntry.nucleus;
   const {
     ranges,
     signals,
@@ -154,6 +170,9 @@ function handleResurrectSpectrumFromRangesOrSignals(
     } = activeSpectrum;
     options = { from: x[0], to: x.at(-1) };
     info = { ...spectrumInfo, ...info };
+  } else {
+    const domain = DEFAULT_DATABASE_SPECTRUM_DOMAINS[nucleus || '1H'];
+    options = { ...domain };
   }
 
   let resurrectedSpectrum: Spectrum | null | undefined = null;
@@ -179,6 +198,10 @@ function handleResurrectSpectrumFromRangesOrSignals(
   const filterDatabaseEntryInfo = filterDatabaseInfoEntry(databaseEntry);
   resurrectedSpectrum.customInfo = filterDatabaseEntryInfo;
   draft.data.push(resurrectedSpectrum);
+
+  if (!draft.view.spectra.activeTab) {
+    draft.view.spectra.activeTab = resurrectedSpectrum.info.nucleus;
+  }
 
   updateDomain(draft);
 

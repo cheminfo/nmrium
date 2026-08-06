@@ -26,10 +26,13 @@ interface DatabaseSearchOptionsProps {
   result: DatabaseSearchResultEntry;
   idCode?: string;
   total: number;
+  availableNuclei: string[];
+  selectedNucleus?: string;
   onKeywordsChange: (k: Partial<DatabaseSearchKeywords>) => void;
   onSettingClick: () => void;
   onStructureClick: ToolbarItemProps['onClick'];
   onDatabaseChange: (databaseKey: string) => void;
+  onNucleiChange: (nucleus: string) => void;
   onRemoveAll: () => void;
 }
 
@@ -41,35 +44,41 @@ export function DatabaseSearchOptions(props: DatabaseSearchOptionsProps) {
     result,
     idCode,
     total,
+    availableNuclei,
+    selectedNucleus,
     onKeywordsChange,
     onSettingClick,
     onStructureClick,
     onDatabaseChange,
+    onNucleiChange,
     onRemoveAll,
   } = props;
 
   const { handleChangeOption } = useToolsFunctions();
   const {
     view: {
-      spectra: { showSimilarityTree },
+      spectra: { showSimilarityTree, activeTab },
     },
     toolOptions: { selectedTool },
   } = useChartData();
   const dispatch = useDispatch();
-  function enableFilterHandler(flag: any) {
-    const tool = !flag ? options.zoom.id : options.databaseRangesSelection.id;
+
+  function enableFilterHandler() {
+    const tool =
+      selectedTool === options.databaseRangesSelection.id
+        ? options.zoom.id
+        : options.databaseRangesSelection.id;
     handleChangeOption(tool);
   }
 
-  function handleSearch(input: any) {
-    if (typeof input === 'string' || input === -1) {
-      const solvent = String(input);
-      onKeywordsChange({ solvent });
-    } else {
-      onKeywordsChange({
-        searchKeywords: input.target.value,
-      });
-    }
+  function handleSolventChange(value: string | number) {
+    onKeywordsChange({ solvent: String(value) });
+  }
+
+  function handleKeywordsInputChange(
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) {
+    onKeywordsChange({ searchKeywords: event.target.value });
   }
 
   function clearHandler() {
@@ -80,10 +89,12 @@ export function DatabaseSearchOptions(props: DatabaseSearchOptionsProps) {
     dispatch({ type: 'TOGGLE_SIMILARITY_TREE' });
   }
 
+  const nucleusItems = availableNuclei.map((n) => ({ key: n, label: n }));
+
   return (
     <>
       <PanelHeader
-        onClickSettings={() => onSettingClick()}
+        onClickSettings={onSettingClick}
         current={result.data.length}
         total={total || 0}
       >
@@ -110,21 +121,35 @@ export function DatabaseSearchOptions(props: DatabaseSearchOptionsProps) {
             placeholder="Select database"
             defaultValue={defaultDatabase}
           />
+
+          {!activeTab && nucleusItems.length > 0 && (
+            <Select
+              style={{ flex: 2, marginLeft: '5px' }}
+              items={nucleusItems}
+              itemTextField="label"
+              itemValueField="key"
+              onChange={onNucleiChange}
+              value={selectedNucleus}
+              placeholder="Select nucleus"
+            />
+          )}
+
           <Select
             style={{ flex: 4, margin: '0px 5px' }}
             items={result.solvents}
             placeholder="Solvent"
-            onChange={handleSearch}
+            onChange={handleSolventChange}
             value={keywords.solvent}
           />
         </div>
       </PanelHeader>
+
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <ToolbarButton
           tooltip="Filter by select ranges"
           icon={<FaICursor />}
           active={selectedTool === options.databaseRangesSelection.id}
-          onClick={enableFilterHandler}
+          onClick={() => enableFilterHandler()}
         />
 
         <Input
@@ -135,7 +160,7 @@ export function DatabaseSearchOptions(props: DatabaseSearchOptionsProps) {
           type="text"
           debounceTime={250}
           placeholder="Search for parameter..."
-          onChange={handleSearch}
+          onChange={handleKeywordsInputChange}
           onClear={clearHandler}
           canClear
         />
