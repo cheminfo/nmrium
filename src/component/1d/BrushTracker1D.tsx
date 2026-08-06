@@ -335,14 +335,26 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
   const handleOnDoubleClick = useCallback(
     (event: MouseEvent) => {
       const keyModifiers = getModifiersKey(event);
-      if (primaryKeyIdentifier === keyModifiers && !isClickDebounced) return;
+      if (
+        primaryKeyIdentifier === keyModifiers &&
+        selectedTool !== 'zoom' &&
+        !isClickDebounced
+      ) {
+        return;
+      }
 
       dispatch({
         type: 'FULL_ZOOM_OUT',
         payload: { zoomType: 'BIDIRECTIONAL' },
       });
     },
-    [dispatch, getModifiersKey, isClickDebounced, primaryKeyIdentifier],
+    [
+      dispatch,
+      getModifiersKey,
+      isClickDebounced,
+      primaryKeyIdentifier,
+      selectedTool,
+    ],
   );
 
   const handleInsetOnDoubleClick = useCallback(
