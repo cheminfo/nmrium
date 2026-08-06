@@ -172,7 +172,13 @@ export function BrushTracker2D({ children }: Required<PropsWithChildren>) {
     (event) => {
       const keyModifiers = getModifiersKey(event);
 
-      if (primaryKeyIdentifier === keyModifiers && !isClickDebounced) return;
+      if (
+        primaryKeyIdentifier === keyModifiers &&
+        selectedTool !== 'zoom' &&
+        !isClickDebounced
+      ) {
+        return;
+      }
 
       const { x: startX, y: startY } = event;
       const trackID = getLayoutID(DIMENSION, { startX, startY });
@@ -186,6 +192,7 @@ export function BrushTracker2D({ children }: Required<PropsWithChildren>) {
       getModifiersKey,
       isClickDebounced,
       primaryKeyIdentifier,
+      selectedTool,
     ],
   );
 
