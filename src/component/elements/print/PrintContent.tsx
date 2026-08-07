@@ -1,15 +1,13 @@
-import { DialogFooter, Radio, RadioGroup, Tag } from '@blueprintjs/core';
-import type { PageSizeName, PrintPageOptions } from '@zakodium/nmrium-core';
+import { DialogFooter, Tag } from '@blueprintjs/core';
+import { revalidateLogic } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
+import type { PrintPageOptions } from '@zakodium/nmrium-core';
 import type { CSSProperties, ReactNode } from 'react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Controller, useForm } from 'react-hook-form';
+import { AppForm, Button, useForm } from 'react-science/ui';
+import { z } from 'zod';
 
-import ActionButtons from '../ActionButtons.js';
-import type { LabelStyle } from '../Label.js';
-import Label from '../Label.js';
-import { NumberInput2Controller } from '../NumberInput2Controller.js';
-import { Select2Controller } from '../Select2Controller.js';
 import { StandardDialog } from '../StandardDialog.tsx';
 import { StyledDialogBody } from '../StyledDialogBody.js';
 
@@ -17,8 +15,6 @@ import { PrintProvider } from './PrintProvider.js';
 import { getSizesList, pageSizes } from './pageSize.js';
 
 const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
-
-type Layout = 'portrait' | 'landscape';
 
 interface BasePrintProps {
   onPrint: (options: PrintPageOptions) => void;
@@ -37,7 +33,7 @@ export function PrintContent(props: PrintFrameProps) {
   const [isPageOptionModalOpened, togglePageOptionDialog] =
     useState<boolean>(false);
   const [pageOptions, setPageOptions] =
-    useState<Partial<PrintPagOptions> | null>();
+    useState<Partial<PrintPagOptionsOutput> | null>();
 
   const {
     onBeforePrint,
@@ -297,45 +293,59 @@ function PrintPageOptionsModal(props: PrintOptionsModalProps) {
   return <InnerPrintOptionsModal {...otherProps} />;
 }
 
-const labelStyle: LabelStyle = {
-  label: {
-    flex: 4,
-    color: '#232323',
-  },
-  wrapper: {
-    flex: 8,
-    display: 'flex',
-    justifyContent: 'flex-start',
-  },
-  container: { margin: '5px 0' },
-};
+const printOptionsValidation = z.object({
+  margin: z.coerce.number<string>().min(0),
+  layout: z.enum(['landscape', 'portrait']),
+  size: z.enum([
+    'Letter',
+    'Legal',
+    'Tabloid',
+    'Executive',
+    'Statement',
+    'Folio',
+    'A3',
+    'A4',
+    'A5',
+    'B4',
+    'B5',
+  ]),
+});
 
-interface PrintPagOptions {
-  size: PageSizeName;
-  layout: Layout;
-  margin: number;
-}
+type PrintPagOptionsInput = z.input<typeof printOptionsValidation>;
+type PrintPagOptionsOutput = z.output<typeof printOptionsValidation>;
 
-const INITIAL_VALUE: PrintPagOptions = {
+const INITIAL_VALUE: PrintPagOptionsInput = {
   size: 'A4',
   layout: 'landscape',
-  margin: 0,
+  margin: '0',
 };
 
 function InnerPrintOptionsModal(props: InnerPrintOptionsModalProps) {
   const { onCloseDialog, onPrint, defaultPrintPageOptions } = props;
 
-  function submitHandler(values: any) {
-    onPrint(values);
-    onCloseDialog?.();
-  }
+  const defaultValues = useMemo(() => {
+    return {
+      ...INITIAL_VALUE,
+      ...defaultPrintPageOptions,
+    };
+  }, [defaultPrintPageOptions]);
 
-  const { handleSubmit, control, watch } = useForm<PrintPagOptions>({
-    defaultValues: { ...INITIAL_VALUE, ...defaultPrintPageOptions },
+  const form = useForm({
+    defaultValues,
+    validators: {
+      onDynamic: printOptionsValidation,
+    },
+    validationLogic: revalidateLogic({ mode: 'change' }),
+    onSubmit: ({ value }) => {
+      const parsedValues = printOptionsValidation.parse(value);
+      onPrint(parsedValues);
+      onCloseDialog?.();
+    },
   });
 
-  const layout = watch('layout');
-  const sizesList = getSizesList(layout);
+  const layoutStore = useSelector(form.store, (store) => store.values.layout);
+  const sizesList = getSizesList(layoutStore);
+
   return (
     <StandardDialog
       isOpen
@@ -343,45 +353,49 @@ function InnerPrintOptionsModal(props: InnerPrintOptionsModalProps) {
       onClose={onCloseDialog}
       style={{ width: 600 }}
     >
-      <StyledDialogBody>
-        <Label style={labelStyle} title="Size">
-          <Select2Controller control={control} name="size" items={sizesList} />
-        </Label>
-        <Label style={labelStyle} title="Layout">
-          <Controller
-            name="layout"
-            control={control}
-            render={({ field }) => {
-              const { value, ref, ...otherFieldProps } = field;
-              return (
-                <RadioGroup inline selectedValue={value} {...otherFieldProps}>
-                  <Radio label="Portrait" value="portrait" />
-                  <Radio label="Landscape" value="landscape" />
-                </RadioGroup>
-              );
-            }}
-          />
-        </Label>
+      <AppForm form={form} layout="inline">
+        <StyledDialogBody>
+          <form.AppField name="size">
+            {(field) => <field.Select label="Size" items={sizesList} />}
+          </form.AppField>
 
-        <Label style={labelStyle} title="Margin">
-          <NumberInput2Controller
-            name="margin"
-            control={control}
-            min={0}
-            rightElement={<Tag>cm</Tag>}
-          />
-        </Label>
-      </StyledDialogBody>
-      <DialogFooter>
-        <ActionButtons
-          style={{ flexDirection: 'row-reverse', margin: 0 }}
-          onDone={() => {
-            void handleSubmit(submitHandler)();
-          }}
-          doneLabel="Print"
-          onCancel={() => onCloseDialog?.()}
+          <form.AppField name="layout">
+            {(field) => (
+              <field.RadioGroup
+                label="Layout"
+                options={[
+                  { label: 'Portrait', value: 'portrait' },
+                  { label: 'Landscape', value: 'landscape' },
+                ]}
+              />
+            )}
+          </form.AppField>
+
+          <form.AppField name="margin">
+            {(field) => (
+              <field.NumericInput
+                label="Margin"
+                min={0}
+                rightElement={<Tag>cm</Tag>}
+              />
+            )}
+          </form.AppField>
+        </StyledDialogBody>
+        <DialogFooter
+          actions={
+            <>
+              <Button
+                onClick={onCloseDialog}
+                intent="danger"
+                variant="outlined"
+              >
+                Cancel
+              </Button>
+              <form.SubmitButton intent="success">Print</form.SubmitButton>
+            </>
+          }
         />
-      </DialogFooter>
+      </AppForm>
     </StandardDialog>
   );
 }
