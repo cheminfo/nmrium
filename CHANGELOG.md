@@ -1,5 +1,31 @@
 # Changelog
 
+## [2.6.0](https://github.com/cheminfo/nmrium/compare/v2.5.0...v2.6.0) (2026-08-07)
+
+
+### Features
+
+* display peak absolute and relative shape area ([#4266](https://github.com/cheminfo/nmrium/issues/4266)) ([6c2b78b](https://github.com/cheminfo/nmrium/commit/6c2b78b31d26c3d328f6944d7a90e3ab7f5b26db))
+* improve 2D signal guideline behavior ([#4273](https://github.com/cheminfo/nmrium/issues/4273)) ([a8a0ff5](https://github.com/cheminfo/nmrium/commit/a8a0ff55654e16657cf3df2f87550bd4e1d73be3)), closes [#4267](https://github.com/cheminfo/nmrium/issues/4267)
+* integrate `ProcessingOperatorUI.PanelTool` ([#4291](https://github.com/cheminfo/nmrium/issues/4291)) ([5fe4ade](https://github.com/cheminfo/nmrium/commit/5fe4adef7e4f87ba5cef18471f07f7716fa95e9b))
+* integration of `ProcessingOperatorUI.TopBar` ([#4290](https://github.com/cheminfo/nmrium/issues/4290)) ([5daffb5](https://github.com/cheminfo/nmrium/commit/5daffb55e3b711b092ac911f0d974169abc9f921))
+* ph0 & ph1 calculation ([#4289](https://github.com/cheminfo/nmrium/issues/4289)) ([7bc184e](https://github.com/cheminfo/nmrium/commit/7bc184e29e9f741d867539a8b340da600e63686d))
+* processings live preview ([#4272](https://github.com/cheminfo/nmrium/issues/4272)) ([dd353a1](https://github.com/cheminfo/nmrium/commit/dd353a10fa8facc6ebc5d79acd744e18c6321b8a))
+* show nucleus selector when no spectrum is loaded ([9398eac](https://github.com/cheminfo/nmrium/commit/9398eacc36afb2c79d3697fa7696758d7ae5ad44))
+* show processings in error ([#4281](https://github.com/cheminfo/nmrium/issues/4281)) ([1f77f1d](https://github.com/cheminfo/nmrium/commit/1f77f1d613c032bce6a3392f71b66568000c3441))
+* supports `ProcessingOperatorUI.Tool` ([#4287](https://github.com/cheminfo/nmrium/issues/4287)) ([407416b](https://github.com/cheminfo/nmrium/commit/407416bdc6b550c39fc81504ace4d03ddadce082))
+
+
+### Bug Fixes
+
+* avoid structuredClone on spectrum data ([#4293](https://github.com/cheminfo/nmrium/issues/4293)) ([514f930](https://github.com/cheminfo/nmrium/commit/514f93018ab3fa8017fdff4dffcab936a1e578f3))
+* correctly remove signal assignments ([#4277](https://github.com/cheminfo/nmrium/issues/4277)) ([b1ec480](https://github.com/cheminfo/nmrium/commit/b1ec480a8a0786aad36a370a7c24669ff43fb25c))
+* ensure signals fall within the range ([4898ecd](https://github.com/cheminfo/nmrium/commit/4898ecdbe28bb8fc44526861f6905cab80340ac9))
+* move signals into their new ranges when cutting a range ([#4275](https://github.com/cheminfo/nmrium/issues/4275)) ([379bb59](https://github.com/cheminfo/nmrium/commit/379bb59a99c541943ec1ff1f8634f3beeadd435c))
+* **triggerOperation:** operator should be selected even if not editable ([5fe4ade](https://github.com/cheminfo/nmrium/commit/5fe4adef7e4f87ba5cef18471f07f7716fa95e9b))
+* update react-science ([#4285](https://github.com/cheminfo/nmrium/issues/4285)) ([13253ef](https://github.com/cheminfo/nmrium/commit/13253ef8671b17eaf92569d292c1fe62676ade52))
+* use assert methods from `@zakodium/utils` ([#4280](https://github.com/cheminfo/nmrium/issues/4280)) ([123c344](https://github.com/cheminfo/nmrium/commit/123c344daa33f158bd4fe758a1392da58aa5ec69))
+
 ## [2.5.0](https://github.com/cheminfo/nmrium/compare/v2.4.0...v2.5.0) (2026-07-13)
 
 
