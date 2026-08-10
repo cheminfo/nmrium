@@ -46,8 +46,6 @@ const Container = styled.div`
 `;
 const MedianBox = styled.div`
   position: absolute;
-  background-color: black;
-  opacity: 0.2;
   pointer-events: none;
 `;
 
@@ -148,6 +146,7 @@ export function BaselinePreview() {
                 transform: `translate(${zoneX}px, ${y - boxHeight / 2}px)`,
                 width: zoneWidth,
                 height: boxHeight,
+                backgroundColor: indicatorColor,
               }}
             />
           );
