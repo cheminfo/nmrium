@@ -23,6 +23,8 @@ import { PathBuilder } from '../../utility/PathBuilder.ts';
 import { getMedianWindow } from './getMedianWindow.ts';
 import { getMedianY } from './getMedianY.ts';
 
+const boxHeight = 20;
+
 const SVGWrapper = styled.svg`
   position: absolute;
   width: 100%;
@@ -42,6 +44,11 @@ const Container = styled.div`
   overflow: hidden;
   pointer-events: none;
 `;
+const MedianBox = styled.div`
+  position: absolute;
+  background-color: black;
+  opacity: 0.2;
+  pointer-events: none;`;
 
 export function BaselinePreview() {
   // const spectrum = useSpectrum();
@@ -119,18 +126,38 @@ export function BaselinePreview() {
       <SpectrumPreview spectrum={spectrum} anchors={anchors} />
       <Container ref={containerRef}>
         {anchors.map((xPPM, index) => {
-          const x = scaleX()(xPPM);
-          const yPPM = getMedianY(
-            xPPM,
-            sharedFilterOptions?.livePreview ? processedSpectrum : spectrum,
-          );
+          const { from, to, median: yPPM } = getMedianY(xPPM, spectrum);
           const v = shiftY * (activeSpectrum?.index || 0);
           const y = scaleY({ spectrumId: activeSpectrum?.id })(yPPM) - v;
+          const x1 = scaleX()(from);
+          const x2 = scaleX()(to);
+          const zoneX = Math.min(x1, x2);
+          const zoneWidth = Math.abs(x2 - x1);
+
+
+          return <MedianBox
+            // eslint-disable-next-line react/no-array-index-key
+            key={`zone-${index}`}
+            style={{
+              transform: `translate(${zoneX}px, ${y - boxHeight / 2}px)`,
+              width: zoneWidth,
+              height: boxHeight,
+            }}
+          />
+
+
+
+        })}
+        {anchors.map((xPPM, index) => {
+          const x = scaleX()(xPPM);
+          const { median } = getMedianY(xPPM, spectrum);
+          const v = shiftY * (activeSpectrum?.index || 0);
+          const y = scaleY({ spectrumId: activeSpectrum?.id })(median) - v;
 
           return (
             <Anchor
               // eslint-disable-next-line react/no-array-index-key
-              key={index + yPPM}
+              key={index + median}
               position={{ x, y }}
               containerRef={containerRef}
               onDragMove={(x) => handleDragMove(index, x)}
