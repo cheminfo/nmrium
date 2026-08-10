@@ -48,7 +48,8 @@ const MedianBox = styled.div`
   position: absolute;
   background-color: black;
   opacity: 0.2;
-  pointer-events: none;`;
+  pointer-events: none;
+`;
 
 export function BaselinePreview() {
   // const spectrum = useSpectrum();
@@ -58,8 +59,6 @@ export function BaselinePreview() {
   const activeSpectrum = useActiveSpectrum();
   const {
     toolOptions: { selectedTool },
-    width,
-    margin: { left, right },
   } = useChartData();
   const indicatorColor = useIndicatorLineColor();
 
@@ -95,13 +94,19 @@ export function BaselinePreview() {
     return;
   }
 
-  function handleDragMove(index: number, newX: number) {
-    const clampedX = Math.max(left, Math.min(width - right, newX));
-    const updated = { index, x: scaleX().invert(clampedX) };
+  const {
+    data: { x },
+  } = spectrum;
+  const minX = x[0];
+  const maxX = x.at(-1) ?? 0;
+
+  function handleDragMove(index: number, newPixelX: number) {
+    const newX = scaleX().invert(newPixelX);
+    const clampedX = Math.min(Math.max(newX, minX), maxX);
+    const updated = { index, x: clampedX };
     draggingAnchorRef.current = updated;
     setDraggingAnchor(updated);
   }
-
   function handleDragEnd(index: number) {
     const finalX = draggingAnchorRef.current?.x;
     draggingAnchorRef.current = null;
@@ -131,22 +136,21 @@ export function BaselinePreview() {
           const y = scaleY({ spectrumId: activeSpectrum?.id })(yPPM) - v;
           const x1 = scaleX()(from);
           const x2 = scaleX()(to);
+
           const zoneX = Math.min(x1, x2);
           const zoneWidth = Math.abs(x2 - x1);
 
-
-          return <MedianBox
-            // eslint-disable-next-line react/no-array-index-key
-            key={`zone-${index}`}
-            style={{
-              transform: `translate(${zoneX}px, ${y - boxHeight / 2}px)`,
-              width: zoneWidth,
-              height: boxHeight,
-            }}
-          />
-
-
-
+          return (
+            <MedianBox
+              // eslint-disable-next-line react/no-array-index-key
+              key={`zone-${index}`}
+              style={{
+                transform: `translate(${zoneX}px, ${y - boxHeight / 2}px)`,
+                width: zoneWidth,
+                height: boxHeight,
+              }}
+            />
+          );
         })}
         {anchors.map((xPPM, index) => {
           const x = scaleX()(xPPM);
