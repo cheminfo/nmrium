@@ -60,7 +60,7 @@
     "react-dom": ">=18.0.0"
   },
   "overrides": {
-    "nmr-correlation": "3.0.2"
+    "nmr-correlation": "^2.3.5"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -98,7 +98,7 @@
     "ml-signal-processing": "^2.2.2",
     "ml-spectra-processing": "^14.32.0",
     "ml-tree-similarity": "^2.2.0",
-    "nmr-correlation": "3.0.2",
+    "nmr-correlation": "^2.3.5",
     "nmr-processing": "^22.22.1",
     "numeral": "^2.0.6",
     "openchemlib": "^9.24.0",
