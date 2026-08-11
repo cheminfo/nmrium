@@ -53,7 +53,9 @@ export function initiateDatum1D(
   }
 
   spectrumObj.data = convertDataToFloat64Array(spectrum.data);
-  if (!spectrumObj.originalData) {
+  if (spectrumObj.originalData) {
+    spectrumObj.originalData = convertDataToFloat64Array(spectrum.originalData);
+  } else {
     spectrumObj.originalData = sliceData1D(spectrumObj.data);
   }
 
