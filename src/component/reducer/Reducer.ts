@@ -162,7 +162,7 @@ export const getInitialState = (): State => ({
   isLoading: false,
   keysPreferences: {},
   displayerMode: '1D',
-  correlations: {},
+  correlations: undefined,
   displayerKey: '',
   zoom: {
     history: {},
@@ -346,7 +346,7 @@ export interface State {
   /**
    * Correlation data
    */
-  correlations: CorrelationData;
+  correlations: CorrelationData | undefined;
 
   /**
    * Zoom Manager for vertical scale for spectra, integral, And undo zoom in per tab (nucleus)

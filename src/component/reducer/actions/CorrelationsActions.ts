@@ -5,7 +5,7 @@ import lodashCloneDeep from 'lodash/cloneDeep.js';
 import type {
   Correlation,
   Options as CorrelationOptions,
-  Spectrum,
+  Spectra,
   Tolerance,
   Values as CorrelationValues,
 } from 'nmr-correlation';
@@ -58,9 +58,9 @@ export type CorrelationsActions =
 
 function handleUpdateCorrelations(draft: Draft<State>) {
   const { data: spectra, correlations } = original(draft);
-  draft.correlations = buildCorrelationData(spectra as Spectrum, {
-    ...correlations.options,
-    values: lodashCloneDeep(correlations.values),
+  draft.correlations = buildCorrelationData(spectra as Spectra, {
+    ...correlations?.options,
+    values: lodashCloneDeep(correlations?.values),
   });
 }
 

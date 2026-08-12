@@ -220,16 +220,13 @@ function SummaryPanel() {
       // do not show correlation
       return false;
     };
+    const _values = filterIsActive
+      ? correlationsData.values.filter((correlation: any) =>
+          isInView(correlation),
+        )
+      : correlationsData.values;
 
-    if (correlationsData) {
-      const _values = filterIsActive
-        ? correlationsData.values.filter((correlation: any) =>
-            isInView(correlation),
-          )
-        : correlationsData.values;
-
-      return { ...correlationsData, values: _values };
-    }
+    return { ...correlationsData, values: _values };
   }, [
     activeTab,
     correlationsData,
