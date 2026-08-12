@@ -5,7 +5,7 @@ import { useBrushTracker } from '../../EventsTrackers/BrushTracker.js';
 import { useMouseTracker } from '../../EventsTrackers/MouseTracker.js';
 import { useChartData } from '../../context/ChartContext.js';
 import type { Margin } from '../../reducer/Reducer.js';
-import { options } from '../../toolbar/ToolTypes.js';
+import type { Tool } from '../../toolbar/ToolTypes.js';
 
 const Line = styled.line`
   stroke: black;
@@ -14,25 +14,29 @@ const Line = styled.line`
   stroke-width: 1;
   will-change: transform;
 `;
-const allowTools = new Set([
-  options.zoom.id,
-  options.apodization.id,
-  options.apodizationDimension1.id,
-  options.apodizationDimension2.id,
-  options.baselineCorrection.id,
-  options.phaseCorrectionTwoDimensions.id,
-  options.zonePicking.id,
-  options.slicing.id,
-  options.zeroFillingDimension1.id,
-  options.zeroFillingDimension2.id,
-  options.integral.id,
-  options.rangePicking.id,
-  options.multipleSpectraAnalysis.id,
-  options.exclusionZones.id,
-  options.databaseRangesSelection.id,
-  options.matrixGenerationExclusionZones.id,
-  options.inset.id,
-]);
+
+type CrossLineVisibility = 'always' | 'onlyBrushing' | 'onlyNotBrushing';
+
+const toolsVisibility: Partial<Record<Tool, CrossLineVisibility>> = {
+  zoom: 'onlyNotBrushing',
+  apodization: 'onlyNotBrushing',
+  apodizationDimension1: 'onlyNotBrushing',
+  apodizationDimension2: 'onlyNotBrushing',
+  baselineCorrection: 'onlyNotBrushing',
+  phaseCorrectionTwoDimensions: 'onlyNotBrushing',
+  zonePicking: 'onlyNotBrushing',
+  slicing: 'onlyNotBrushing',
+  zeroFillingDimension1: 'onlyNotBrushing',
+  zeroFillingDimension2: 'onlyNotBrushing',
+  integral: 'onlyNotBrushing',
+  rangePicking: 'onlyNotBrushing',
+  multipleSpectraAnalysis: 'onlyNotBrushing',
+  exclusionZones: 'onlyNotBrushing',
+  databaseRangesSelection: 'onlyNotBrushing',
+  matrixGenerationExclusionZones: 'onlyNotBrushing',
+  inset: 'onlyNotBrushing',
+  alignTwoDimensionSpectra: 'always',
+};
 
 interface DimensionBorder {
   startX: number;
@@ -83,9 +87,17 @@ function CrossLinePointer(props: CrossLinePointerProps) {
     endY = finalHeight,
   } = dimensionBorder;
 
+  const visibility = toolsVisibility[selectedTool];
+
+  const isBrushing = brushState.step === 'brushing';
+  const isVisibleForBrushState =
+    visibility === 'always' ||
+    (visibility === 'onlyBrushing' && isBrushing) ||
+    (visibility === 'onlyNotBrushing' && !isBrushing);
+
   if (
-    !allowTools.has(selectedTool) ||
-    brushState.step === 'brushing' ||
+    !visibility ||
+    !isVisibleForBrushState ||
     !position ||
     !width ||
     !height ||
