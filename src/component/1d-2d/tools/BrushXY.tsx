@@ -112,8 +112,8 @@ export default function BrushXY(props: BrushXYProps) {
       ? endX > dimensionBorder.endX
       : endX < dimensionBorder.startX) &&
       (dimensionBorder.endX &&
-      dimensionBorder.endY &&
-      Math.sign(endY - startY) === 1
+        dimensionBorder.endY &&
+        Math.sign(endY - startY) === 1
         ? endY > dimensionBorder.endY
         : endY < dimensionBorder.startY))
   ) {
@@ -376,15 +376,15 @@ export default function BrushXY(props: BrushXYProps) {
 
 type DistanceProps =
   | {
-      start: number;
-      end: number;
-      axis: 'x';
-    }
+    start: number;
+    end: number;
+    axis: 'x';
+  }
   | {
-      start: number;
-      end: number;
-      axis: 'y';
-    };
+    start: number;
+    end: number;
+    axis: 'y';
+  };
 
 function DistanceValue(props: DistanceProps) {
   const spectrum = useSpectrum();

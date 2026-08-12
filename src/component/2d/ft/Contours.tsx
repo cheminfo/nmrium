@@ -3,7 +3,10 @@ import { memo, useMemo, useRef } from 'react';
 
 import type { LevelSign } from '../../../data/data2d/Spectrum2D/contours.js';
 import { drawContours } from '../../../data/data2d/Spectrum2D/contours.js';
+import { getAlignedPoint } from '../../1d-2d/tools/DistanceLine.tsx';
+import { useBrushTracker } from '../../EventsTrackers/BrushTracker.tsx';
 import { useChartData } from '../../context/ChartContext.js';
+import { useKeyModifiers } from '../../context/KeyModifierContext.tsx';
 import { usePreferences } from '../../context/PreferencesContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import type { SpectrumFTData } from '../../hooks/use2DReducer.tsx';
@@ -12,12 +15,14 @@ import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.js';
 import { PathBuilder } from '../../utility/PathBuilder.js';
 import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 
-interface ContoursPathsProps {
+interface SpectrumContoursProps {
+  spectrum: SpectrumFTData;
+  onTimeout: () => void;
+}
+interface ContoursPathsProps extends SpectrumContoursProps {
   id: string;
   color: string;
   sign: LevelSign;
-  spectrum: SpectrumFTData;
-  onTimeout: () => void;
 }
 
 interface ContoursInnerProps {
@@ -97,6 +102,48 @@ function ContoursPaths({
   );
 }
 
+function SpectrumContours(options: SpectrumContoursProps) {
+  const { spectrum, onTimeout } = options;
+  const {
+    id,
+    display: {
+      positiveColor,
+      isPositiveVisible,
+      isNegativeVisible,
+      negativeColor,
+    },
+  } = spectrum;
+  const { x, y } = useAlignTranslate(id);
+
+  return (
+    <g
+      style={{
+        transform: `translate(${x}px, ${y}px)`,
+        willChange: 'transform',
+      }}
+    >
+      {isPositiveVisible && (
+        <ContoursPaths
+          id={id}
+          sign="positive"
+          spectrum={spectrum}
+          color={positiveColor}
+          onTimeout={onTimeout}
+        />
+      )}
+      {isNegativeVisible && (
+        <ContoursPaths
+          id={id}
+          sign="negative"
+          spectrum={spectrum}
+          color={negativeColor}
+          onTimeout={onTimeout}
+        />
+      )}
+    </g>
+  );
+}
+
 function ContoursInner({ spectra }: ContoursInnerProps) {
   const toaster = useToaster();
   const debounceAlert = useRef(
@@ -116,26 +163,11 @@ function ContoursInner({ spectra }: ContoursInnerProps) {
     <g className="contours">
       {spectra?.map((spectrum) => {
         return (
-          <g key={spectrum.id}>
-            {spectrum.display.isPositiveVisible && (
-              <ContoursPaths
-                id={spectrum.id}
-                sign="positive"
-                spectrum={spectrum}
-                color={spectrum.display.positiveColor}
-                onTimeout={timeoutHandler}
-              />
-            )}
-            {spectrum.display.isNegativeVisible && (
-              <ContoursPaths
-                id={spectrum.id}
-                sign="negative"
-                spectrum={spectrum}
-                color={spectrum.display.negativeColor}
-                onTimeout={timeoutHandler}
-              />
-            )}
-          </g>
+          <SpectrumContours
+            key={spectrum.id}
+            spectrum={spectrum}
+            onTimeout={timeoutHandler}
+          />
         );
       })}
     </g>
@@ -146,6 +178,43 @@ const MemoizedContours = memo(ContoursInner);
 
 export default function Contours() {
   const spectra = use2DReducer();
-
   return <MemoizedContours spectra={spectra} />;
+}
+
+interface Translate {
+  x: number;
+  y: number;
+}
+
+function useAlignTranslate(spectrumId: string): Translate {
+  const {
+    toolOptions: { selectedTool },
+  } = useChartData();
+  const { startX, endX, startY, endY, mouseButton } = useBrushTracker();
+  const { isPrimary, altKey } = useKeyModifiers();
+  const activeSpectrum = useActiveSpectrum();
+
+  if (
+    selectedTool !== 'alignTwoDimensionsSpectra' ||
+    !isPrimary ||
+    mouseButton !== 'main' ||
+    activeSpectrum?.id !== spectrumId ||
+    endX === 0 ||
+    endY === 0
+  ) {
+    return { x: 0, y: 0 };
+  }
+
+  const { x: finalEndX, y: finalEndY } = getAlignedPoint({
+    startX,
+    startY,
+    endX,
+    endY,
+    altKey,
+  });
+
+  const dx = finalEndX - startX;
+  const dy = finalEndY - startY;
+
+  return { x: dx, y: dy };
 }

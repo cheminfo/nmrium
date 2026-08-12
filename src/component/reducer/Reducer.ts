@@ -823,6 +823,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
           draft,
           action,
         );
+      case 'ALIGN_2D_SPECTRUM':
+        return ZonesActions.handleAlign2DSpectrum(draft, action);
 
       case 'RESURRECTING_SPECTRUM_FROM_SIGNALS_OR_RANGES':
         return DatabaseActions.handleResurrectSpectrumFromRangesOrSignals(

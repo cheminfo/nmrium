@@ -1,6 +1,7 @@
 import type { PropsWithChildren } from 'react';
 import { useCallback, useRef } from 'react';
 
+import { getAlignedPoint } from '../1d-2d/tools/DistanceLine.tsx';
 import type {
   BaseDetectBrushingOptions,
   BrushAxis,
@@ -102,7 +103,6 @@ export function BrushTracker2D({ children }: Required<PropsWithChildren>) {
       const trackID = getLayoutID(DIMENSION, brushData);
 
       if (brushData.mouseButton !== 'main' || !trackID) return;
-
       if (trackID === 'MAIN' && isPrimaryKeyActivated(brushData)) {
         switch (selectedTool) {
           case options.zoom.id: {
@@ -111,6 +111,18 @@ export function BrushTracker2D({ children }: Required<PropsWithChildren>) {
           }
           case options.zonePicking.id: {
             dispatch({ type: 'ADD_2D_ZONE', payload: brushData });
+
+            break;
+          }
+          case options.alignTwoDimensionsSpectra.id: {
+            const { x: finalEndX, y: finalEndY } = getAlignedPoint(brushData);
+            const alignedBrushData = convertToPPM({
+              ...brushData,
+              endX: finalEndX,
+              endY: finalEndY,
+            });
+
+            dispatch({ type: 'ALIGN_2D_SPECTRUM', payload: alignedBrushData });
 
             break;
           }

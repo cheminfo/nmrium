@@ -49,6 +49,10 @@ type ChangeZoneSignalDeltaAction = ActionType<
   'CHANGE_ZONE_SIGNAL_VALUE',
   { zoneId: string; signal: { id?: string; deltaX?: number; deltaY?: number } }
 >;
+type Align2DSpectrumAction = ActionType<
+  'ALIGN_2D_SPECTRUM',
+  { startX: number; startY: number; endX: number; endY: number }
+>;
 type ChangeZoneSignalKindAction = ActionType<
   'CHANGE_ZONE_SIGNAL_KIND',
   { zoneData: ZoneData; kind: SignalKind }
@@ -119,6 +123,7 @@ export type ZonesActions =
   | ToggleZonesViewAction
   | ChangeZoneAssignmentLabelAction
   | SetZoneAssignmentLabelCoordinationAction
+  | Align2DSpectrumAction
   | ActionType<'AUTO_ZONES_SPECTRA_PICKING'>;
 
 //action
@@ -190,17 +195,12 @@ function handleAutoSpectraZonesDetection(draft: Draft<State>) {
   }
 }
 
-//action
-function handleChangeZoneSignalDelta(
+function applyShift2DFilters(
   draft: Draft<State>,
-  action: ChangeZoneSignalDeltaAction,
+  spectrum: Spectrum2D,
+  xShift: number,
+  yShift: number,
 ) {
-  const { zoneId, signal } = action.payload;
-
-  const spectrum = getSpectrum(draft);
-  if (!isSpectrum2D(spectrum)) return;
-
-  const { xShift, yShift } = changeZoneSignal(spectrum, zoneId, signal);
   const filters: Filter2DEntry[] = [];
   if (xShift !== 0) {
     filters.push({
@@ -229,6 +229,34 @@ function handleChangeZoneSignalDelta(
 
   setDomain(draft);
   handleUpdateCorrelations(draft);
+}
+
+//action
+function handleChangeZoneSignalDelta(
+  draft: Draft<State>,
+  action: ChangeZoneSignalDeltaAction,
+) {
+  const { zoneId, signal } = action.payload;
+
+  const spectrum = getSpectrum(draft);
+  if (!isSpectrum2D(spectrum)) return;
+
+  const { xShift, yShift } = changeZoneSignal(spectrum, zoneId, signal);
+  applyShift2DFilters(draft, spectrum, xShift, yShift);
+}
+//action
+function handleAlign2DSpectrum(
+  draft: Draft<State>,
+  action: Align2DSpectrumAction,
+) {
+  const { startX, startY, endX, endY } = action.payload;
+
+  const spectrum = getSpectrum(draft);
+  if (!isSpectrum2D(spectrum)) return;
+
+  const xShift = endX - startX;
+  const yShift = endY - startY;
+  applyShift2DFilters(draft, spectrum, xShift, yShift);
 }
 
 function getZoneIndex(spectrum: Spectrum2D, zoneId: string) {
@@ -481,6 +509,7 @@ function handleSetZoneAssignmentLabelCoordination(
 export {
   deleteSignal2D,
   handleAdd2dZone,
+  handleAlign2DSpectrum,
   handleAssignZone,
   handleAutoSpectraZonesDetection,
   handleAutoZonesDetection,

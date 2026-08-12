@@ -352,6 +352,10 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
               if (isToolVisible('multipleSpectraAnalysis')) {
                 handleChangeOption(options.multipleSpectraAnalysis.id);
               }
+
+              if (isToolVisible('alignTwoDimensionsSpectra')) {
+                handleChangeOption(options.alignTwoDimensionsSpectra.id);
+              }
               break;
             }
             case 't': {
