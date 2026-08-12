@@ -1,5 +1,7 @@
-import type { Correlation, Link } from 'nmr-correlation';
-import { buildLink } from 'nmr-correlation';
+import type { MenuItemProps } from '@blueprintjs/core';
+import type { Signal1D, Signal2D, Spectra } from '@zakodium/nmr-types';
+import type { Correlation, CorrelationLink } from 'nmr-processing';
+import { correlationApi } from 'nmr-processing';
 import type { MouseEvent } from 'react';
 import { useCallback, useMemo } from 'react';
 
@@ -17,11 +19,9 @@ import useInView from '../utilities/useInView.js';
 import type { EditLinkDialogData } from './editLink/EditLinkModal.js';
 import { EditLinkModal } from './editLink/EditLinkModal.js';
 
-function getLinkText(link: Link) {
-  const {
-    signal: { x, y },
-    edited,
-  } = link;
+function getLinkText(link: CorrelationLink) {
+  const { signal, edited } = link;
+  const { x, y } = signal as Signal2D;
 
   const deltaX = x?.delta?.toFixed(2) ?? '?';
   const deltaY = y?.delta?.toFixed(2) ?? '?';
@@ -31,14 +31,16 @@ function getLinkText(link: Link) {
 }
 
 interface AdditionalColumnFieldProps {
-  rowCorrelation: any;
-  columnCorrelation: any;
-  commonLinks: any;
-  spectraData: any;
+  rowCorrelation: Correlation;
+  columnCorrelation: Correlation;
+  commonLinks: CorrelationLink[];
+  spectraData: Spectra;
   onEdit: any;
 }
 
-function AdditionalColumnField(props: AdditionalColumnFieldProps) {
+export default function AdditionalColumnField(
+  props: AdditionalColumnFieldProps,
+) {
   const {
     rowCorrelation,
     columnCorrelation,
@@ -50,7 +52,7 @@ function AdditionalColumnField(props: AdditionalColumnFieldProps) {
   const { openDialog } = useDialog();
 
   const highlightIDsCommonLinks = useMemo(() => {
-    return commonLinks.flatMap((link: Link) => {
+    return commonLinks.flatMap((link: CorrelationLink) => {
       const ids: string[] = [];
       if (!link.pseudo) {
         ids.push(link.signal.id, buildID(link.signal.id, 'Crosshair'));
@@ -90,24 +92,24 @@ function AdditionalColumnField(props: AdditionalColumnFieldProps) {
   }
 
   const handleEditPseudoHSQC = useCallback(
-    (action: 'add' | 'remove', link?: Link) => {
+    (action: 'add' | 'remove', link?: CorrelationLink) => {
       const pseudoLinkCountHSQC = rowCorrelation.link.filter(
-        (_link: any) =>
+        (_link) =>
           (_link.experimentType === 'hsqc' ||
             _link.experimentType === 'hmqc') &&
-          _link.pseudo === true,
+          _link.pseudo,
       ).length;
 
       let _correlationDim1: Correlation;
       let _correlationDim2: Correlation;
       if (action === 'add') {
-        const commonPseudoLink = buildLink({
+        const commonPseudoLink = correlationApi.buildLink({
           experimentType: 'hsqc',
           experimentID: crypto.randomUUID(),
           atomType: [columnCorrelation.atomType, rowCorrelation.atomType],
           id: crypto.randomUUID(),
           pseudo: true,
-          signal: { id: crypto.randomUUID(), sign: 0 }, // pseudo signal
+          signal: { id: crypto.randomUUID(), sign: 0 } as unknown as Signal1D, // pseudo signal
         });
         _correlationDim1 = cloneCorrelationAndEditLink(
           columnCorrelation,
@@ -128,13 +130,13 @@ function AdditionalColumnField(props: AdditionalColumnFieldProps) {
       } else {
         _correlationDim1 = cloneCorrelationAndEditLink(
           columnCorrelation,
-          link,
+          link as CorrelationLink,
           'x',
           'remove',
         );
         _correlationDim2 = cloneCorrelationAndEditLink(
           rowCorrelation,
-          link,
+          link as CorrelationLink,
           'y',
           'remove',
         );
@@ -154,37 +156,38 @@ function AdditionalColumnField(props: AdditionalColumnFieldProps) {
 
   const contextMenu = useMemo(() => {
     // allow the edition of correlations
-    const commonLinksMenu = commonLinks.flatMap((commonLink: any) => {
-      if (commonLink.pseudo !== false) {
-        return [];
-      }
+    const commonLinksMenu: MenuItemProps[] = commonLinks.flatMap(
+      (commonLink) => {
+        if (commonLink.pseudo) {
+          return [];
+        }
 
-      return [
-        {
-          text: `Edit ${getLinkText(commonLink)}`,
-          icon: 'edit',
-          data: {
-            link: commonLink,
-            correlationDim1: columnCorrelation,
-            correlationDim2: rowCorrelation,
+        return [
+          {
+            text: `Edit ${getLinkText(commonLink)}`,
+            icon: 'edit',
+            data: {
+              link: commonLink,
+              correlationDim1: columnCorrelation,
+              correlationDim2: rowCorrelation,
+            },
           },
-        },
-      ];
-    });
+        ];
+      },
+    );
     // allow addition or removal of a pseudo HSQC link between pseudo heavy atom and proton
     const commonPseudoLinkHSQC = commonLinks.find(
-      (commonLink: any) =>
-        commonLink.pseudo === true && commonLink.experimentType === 'hsqc',
+      (commonLink) => commonLink.pseudo && commonLink.experimentType === 'hsqc',
     );
-    if (rowCorrelation.pseudo === true) {
+    if (rowCorrelation.pseudo) {
       if (commonPseudoLinkHSQC) {
         commonLinksMenu.push({
-          label: 'remove pseudo HSQC',
+          text: 'remove pseudo HSQC',
           onClick: () => handleEditPseudoHSQC('remove', commonPseudoLinkHSQC),
         });
       } else {
         commonLinksMenu.push({
-          label: 'add pseudo HSQC',
+          text: 'add pseudo HSQC',
           onClick: () => handleEditPseudoHSQC('add'),
         });
       }
@@ -237,18 +240,16 @@ function AdditionalColumnField(props: AdditionalColumnFieldProps) {
   );
 }
 
-function getTitle(commonLinks: any) {
+function getTitle(commonLinks: CorrelationLink[]) {
   if (commonLinks?.length === 0) {
     return '';
   }
 
   return [
     ...new Set(
-      commonLinks?.link?.map((link: any) => {
+      commonLinks?.map((link) => {
         return link.experimentType.toUpperCase();
       }),
     ),
   ].join('/');
 }
-
-export default AdditionalColumnField;

@@ -1,13 +1,14 @@
 import styled from '@emotion/styled';
+import type { Signal2D } from '@zakodium/nmr-types';
 import type { Spectrum1D, Spectrum2D } from '@zakodium/nmrium-core';
 import { isSpectrum2D } from '@zakodium/nmrium-core';
 import type {
   Correlation,
-  Link,
-  Options as CorrelationOptions,
-  Values as CorrelationValues,
-} from 'nmr-correlation';
-import { getLinkDelta, getLinkDim } from 'nmr-correlation';
+  CorrelationBuildOptions,
+  CorrelationLink,
+  CorrelationValues,
+} from 'nmr-processing';
+import { correlationApi } from 'nmr-processing';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { FaFlask, FaSlidersH } from 'react-icons/fa';
 
@@ -42,8 +43,8 @@ type EditCorrelationAction =
 export type OnEditCorrelationCallback = (
   editedCorrelations: Correlation[],
   action: EditCorrelationAction,
-  link?: Link,
-  options?: CorrelationOptions,
+  link?: CorrelationLink,
+  options?: CorrelationBuildOptions,
 ) => void;
 
 const Container = styled.div`
@@ -123,12 +124,12 @@ function SummaryPanel() {
 
       if (displayerMode === '1D') {
         const firstLink1D = correlation.link.find(
-          (link: Link) => getLinkDim(link) === 1,
+          (link: CorrelationLink) => correlationApi.getLinkDim(link) === 1,
         );
         if (!firstLink1D) {
           return false;
         }
-        let delta = getLinkDelta(firstLink1D);
+        let delta = correlationApi.getLinkDelta(firstLink1D);
         if (delta === undefined) {
           return false;
         }
@@ -148,7 +149,7 @@ function SummaryPanel() {
         }
         // try to find a link which contains the belonging 2D signal in the spectra in view
         if (
-          correlation.link.some((link: Link) => {
+          correlation.link.some((link: CorrelationLink) => {
             const spectrum = findSpectrum(spectraData, link.experimentID, true);
 
             if (!isSpectrum2D(spectrum)) return false;
@@ -169,7 +170,7 @@ function SummaryPanel() {
           return false;
         }
         const firstLink2D = correlation.link.find(
-          (link: Link) => getLinkDim(link) === 2,
+          (link: CorrelationLink) => correlationApi.getLinkDim(link) === 2,
         );
         if (!firstLink2D) {
           return false;
@@ -317,12 +318,12 @@ function SummaryPanel() {
   );
 
   const setCorrelationsHandler = useCallback(
-    (correlations: CorrelationValues, options?: CorrelationOptions) => {
+    (correlations: CorrelationValues, options?: CorrelationBuildOptions) => {
       dispatch({
         type: 'SET_CORRELATIONS',
         payload: {
           correlations,
-          options,
+          options: options ?? {},
         },
       });
     },
@@ -331,7 +332,7 @@ function SummaryPanel() {
 
   const deleteCorrelationHandler = useCallback(
     (correlation: Correlation) => {
-      const correlationLinks = correlation?.links;
+      const correlationLinks = correlation?.link;
 
       if (!(Array.isArray(correlationLinks) && correlationLinks.length > 0)) {
         return;
@@ -348,9 +349,9 @@ function SummaryPanel() {
   );
 
   const deleteSignalHandler = useCallback(
-    (link: Link) => {
+    (link: CorrelationLink) => {
       // remove linking signal in spectrum
-      const linkDim = getLinkDim(link);
+      const linkDim = correlationApi.getLinkDim(link);
       if (linkDim === 1) {
         const spectrum = findSpectrum(
           spectraData,
@@ -395,16 +396,17 @@ function SummaryPanel() {
   );
 
   const changeSignalPathLengthHandler = useCallback(
-    (link: Link) => {
-      const linkDim = getLinkDim(link);
+    (link: CorrelationLink) => {
+      const linkDim = correlationApi.getLinkDim(link);
       if (linkDim === 2) {
+        const linkSignal = link.signal as Signal2D;
         const spectrum = findSpectrum(
           spectraData,
           link.experimentID,
           false,
         ) as Spectrum2D;
-        const zone = findZone(spectrum, link.signal.id);
-        const signal = findSignal2D(spectrum, link.signal.id);
+        const zone = findZone(spectrum, linkSignal.id);
+        const signal = findSignal2D(spectrum, linkSignal.id);
         if (zone && signal) {
           dispatch({
             type: 'SET_2D_SIGNAL_PATH_LENGTH',
@@ -412,7 +414,7 @@ function SummaryPanel() {
               spectrumId: spectrum.id,
               zone,
               signalId: signal.id,
-              pathLength: link.signal.j?.pathLength,
+              pathLength: linkSignal.j?.pathLength,
             },
           });
         }
@@ -425,8 +427,8 @@ function SummaryPanel() {
     (
       editedCorrelations: Correlation[],
       action: string,
-      link?: Link,
-      options?: CorrelationOptions,
+      link?: CorrelationLink,
+      options?: CorrelationBuildOptions,
     ) => {
       if (
         ['add', 'move', 'remove', 'unmove', 'setPathLength'].includes(action)

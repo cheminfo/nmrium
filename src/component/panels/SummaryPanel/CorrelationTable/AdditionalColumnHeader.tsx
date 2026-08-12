@@ -1,11 +1,12 @@
+import type { Signal1D } from '@zakodium/nmr-types';
 import type { Spectrum } from '@zakodium/nmrium-core';
 import type {
   Correlation,
+  CorrelationBuildOptions,
   CorrelationData,
-  Link,
-  Options as CorrelationOptions,
-} from 'nmr-correlation';
-import { getCorrelationDelta, getLinkDim } from 'nmr-correlation';
+  CorrelationLink,
+} from 'nmr-processing';
+import { correlationApi } from 'nmr-processing';
 import type { MouseEvent } from 'react';
 import { useCallback, useMemo } from 'react';
 
@@ -29,8 +30,8 @@ export interface AdditionalColumnHeaderProps {
   onEdit: (
     editedCorrelations: Correlation[],
     action: string,
-    link?: Link,
-    options?: CorrelationOptions,
+    link?: CorrelationLink,
+    options?: CorrelationBuildOptions,
   ) => void;
 }
 
@@ -41,12 +42,12 @@ function AdditionalColumnHeader(props: AdditionalColumnHeaderProps) {
 
   const { openDialog } = useDialog();
   const highlightIDsAdditionalColumn = useMemo(() => {
-    if (correlation.pseudo === true) {
+    if (correlation.pseudo) {
       return [];
     }
-    return correlation.link.flatMap((link: any) => {
+    return correlation.link.flatMap((link) => {
       const ids: string[] = [];
-      if (link.pseudo === false) {
+      if (!link.pseudo) {
         ids.push(link.signal.id, buildID(link.signal.id, 'Crosshair_X'));
         const _id = findRangeOrZoneID(
           spectraData,
@@ -81,13 +82,13 @@ function AdditionalColumnHeader(props: AdditionalColumnHeaderProps) {
   const isInView = useInView({ correlation });
 
   const tableHeaderProps = useMemo(() => {
-    const correlationLinks = correlation.link.map((link: any) => {
-      if (link.pseudo === false) {
+    const correlationLinks = correlation.link.map((link) => {
+      if (!link.pseudo) {
         return link.experimentType.toUpperCase();
       }
-      return undefined;
+      return 'undefined';
     });
-    correlationLinks.sort();
+    correlationLinks.sort((l1, l2) => l1.localeCompare(l2));
     const title = Array.from(new Set(correlationLinks)).join('/');
 
     return {
@@ -99,7 +100,7 @@ function AdditionalColumnHeader(props: AdditionalColumnHeaderProps) {
             ? '#f5f5dc'
             : 'inherit',
       },
-      title: correlation.pseudo === false && title,
+      title: !correlation.pseudo && title,
       onMouseEnter: mouseEnterHandler,
       onMouseLeave: mouseLeaveHandler,
     };
@@ -125,7 +126,7 @@ function AdditionalColumnHeader(props: AdditionalColumnHeaderProps) {
   }, [correlation]);
 
   const contextMenu = useMemo(() => {
-    if (correlation.pseudo !== false) {
+    if (correlation.pseudo) {
       return [];
     }
 
@@ -138,12 +139,13 @@ function AdditionalColumnHeader(props: AdditionalColumnHeaderProps) {
     ];
 
     for (const link of correlation.link) {
-      const isValidLink = getLinkDim(link) === 1 && link.pseudo === false;
+      const isValidLink = correlationApi.getLinkDim(link) === 1 && !link.pseudo;
 
       if (isValidLink) {
+        const signalDelta = (link.signal as Signal1D).delta;
         const contextMenu: ContextMenuItem = {
-          text: `Edit 1D (${link.signal.delta.toFixed(3)}${
-            link.edited?.moved === true ? '[MOVED]' : ''
+          text: `Edit 1D (${signalDelta.toFixed(3)}${
+            link.edited?.moved ? '[MOVED]' : ''
           })`,
           icon: 'edit',
           data: {
@@ -164,7 +166,7 @@ function AdditionalColumnHeader(props: AdditionalColumnHeaderProps) {
   function removeAllLinks() {
     alert.showAlert({
       message: `All signals of ${correlation.label.origin} (${(
-        getCorrelationDelta(correlation) as number
+        correlationApi.getCorrelationDelta(correlation) as number
       ).toFixed(2)}) will be deleted. Are you sure?`,
       buttons: [
         {
@@ -208,8 +210,8 @@ function AdditionalColumnHeader(props: AdditionalColumnHeaderProps) {
     >
       <p>{correlation.label.origin}</p>
       <p>
-        {getCorrelationDelta(correlation)
-          ? getCorrelationDelta(correlation)?.toFixed(2)
+        {correlationApi.getCorrelationDelta(correlation)
+          ? correlationApi.getCorrelationDelta(correlation)?.toFixed(2)
           : ''}
       </p>
       <p style={equivalenceTextStyle}>

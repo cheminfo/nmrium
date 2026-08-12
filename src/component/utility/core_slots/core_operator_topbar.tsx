@@ -1,8 +1,6 @@
 import styled from '@emotion/styled';
-import type {
-  ProcessingOperatorId,
-  ProcessingOperatorUISettingsFormProps,
-} from '@zakodium/nmrium-core';
+import type { ProcessingOperatorId } from '@zakodium/nmr-types';
+import type { ProcessingOperatorUISettingsFormProps } from '@zakodium/nmrium-core';
 import type { ReactNode } from 'react';
 import type { FallbackProps } from 'react-error-boundary';
 import { ErrorBoundary } from 'react-error-boundary';

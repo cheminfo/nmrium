@@ -1,4 +1,4 @@
-import type { SpectrumProcessingOperation } from '@zakodium/nmrium-core';
+import type { SpectrumProcessingOperation } from '@zakodium/nmr-types';
 import { assertDefined } from '@zakodium/utils';
 
 import { useChartData } from '../../../context/ChartContext.tsx';

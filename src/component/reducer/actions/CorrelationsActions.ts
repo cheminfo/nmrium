@@ -4,12 +4,11 @@ import { original } from 'immer';
 import lodashCloneDeep from 'lodash/cloneDeep.js';
 import type {
   Correlation,
-  Options as CorrelationOptions,
-  Spectra,
-  Tolerance,
-  Values as CorrelationValues,
-} from 'nmr-correlation';
-import { buildCorrelationData, setCorrelation } from 'nmr-correlation';
+  CorrelationBuildOptions,
+  CorrelationTolerance,
+  CorrelationValues,
+} from 'nmr-processing';
+import { correlationApi } from 'nmr-processing';
 
 import {
   findRange,
@@ -27,21 +26,21 @@ import { deleteSignal2D } from './ZonesActions.js';
 type SetMFAction = ActionType<'SET_CORRELATIONS_MF', { mf: string }>;
 type SetToleranceAction = ActionType<
   'SET_CORRELATIONS_TOLERANCE',
-  { tolerance: Tolerance }
+  { tolerance: CorrelationTolerance }
 >;
 type SetCorrelationAction = ActionType<
   'SET_CORRELATION',
   {
     id: string;
     correlation: Correlation;
-    options?: CorrelationOptions;
+    options?: CorrelationBuildOptions;
   }
 >;
 type SetCorrelationsAction = ActionType<
   'SET_CORRELATIONS',
   {
     correlations: CorrelationValues;
-    options: CorrelationOptions;
+    options: CorrelationBuildOptions;
   }
 >;
 type DeleteCorrelationAction = ActionType<
@@ -58,7 +57,7 @@ export type CorrelationsActions =
 
 function handleUpdateCorrelations(draft: Draft<State>) {
   const { data: spectra, correlations } = original(draft);
-  draft.correlations = buildCorrelationData(spectra as Spectra, {
+  draft.correlations = correlationApi.buildCorrelationData(spectra, {
     ...correlations?.options,
     values: lodashCloneDeep(correlations?.values),
   });
@@ -71,7 +70,7 @@ function handleSetMF(draft: Draft<State>, action: SetMFAction) {
   const { mf } = action.payload;
   // update of correlation data is needed only if the following is true
   if (correlations.options.mf === '' || correlations.options.mf !== mf) {
-    draft.correlations = buildCorrelationData(spectra, {
+    draft.correlations = correlationApi.buildCorrelationData(spectra, {
       ...correlations.options,
       mf,
       values: lodashCloneDeep(correlations.values),
@@ -84,7 +83,7 @@ function handleSetTolerance(draft: Draft<State>, action: SetToleranceAction) {
   const state = original(draft);
   const { data: spectra, correlations } = state;
   const { tolerance } = action.payload;
-  draft.correlations = buildCorrelationData(spectra, {
+  draft.correlations = correlationApi.buildCorrelationData(spectra, {
     ...correlations.options,
     tolerance,
     values: lodashCloneDeep(correlations.values),
@@ -99,7 +98,11 @@ function handleSetCorrelation(
   const state = original(draft);
   const { correlations } = state;
   const { id, correlation, options } = action.payload;
-  draft.correlations = setCorrelation(correlations, id, correlation);
+  draft.correlations = correlationApi.setCorrelation(
+    correlations,
+    id,
+    correlation,
+  );
   if (options) {
     draft.correlations = {
       ...draft.correlations,
@@ -118,7 +121,7 @@ function handleSetCorrelations(
   const state = original(draft);
   let correlationsData = lodashCloneDeep(state.correlations);
   for (const correlation of correlations) {
-    correlationsData = setCorrelation(
+    correlationsData = correlationApi.setCorrelation(
       correlationsData,
       correlation.id,
       correlation,
@@ -141,7 +144,7 @@ function handleDeleteCorrelation(
 ) {
   const { correlation } = action.payload;
   // delete all signals linked to the correlation
-  for (const link of correlation.links) {
+  for (const link of correlation.link) {
     const spectrum = findSpectrum(draft.data, link.experimentID, false);
     if (isSpectrum1D(spectrum)) {
       const range = findRange(spectrum, link.signal.id);

@@ -4,7 +4,7 @@ import type {
   WorkspacePreferences as NMRiumPreferences,
 } from '@zakodium/nmrium-core';
 import type { Source } from 'file-collection';
-import type { CorrelationData } from 'nmr-correlation';
+import type { CorrelationData } from 'nmr-processing';
 
 type DeepPartial<T> = {
   [P in keyof T]?: DeepPartial<T[P]>;

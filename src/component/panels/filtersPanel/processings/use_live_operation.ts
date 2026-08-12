@@ -1,4 +1,4 @@
-import type { SpectrumProcessingOperation } from '@zakodium/nmrium-core';
+import type { SpectrumProcessingOperation } from '@zakodium/nmr-types';
 import { useEventCallback } from 'usehooks-ts';
 
 import { useChartData } from '../../../context/ChartContext.tsx';

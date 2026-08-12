@@ -1,6 +1,6 @@
 import { DialogBody, DialogFooter } from '@blueprintjs/core';
 import { yupResolver } from '@hookform/resolvers/yup';
-import type { Tolerance } from 'nmr-correlation';
+import type { CorrelationTolerance } from 'nmr-processing';
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import type { CellProps } from 'react-table';
@@ -73,7 +73,7 @@ function InnerSetShiftToleranceModal(props: InnerSetShiftToleranceModalProps) {
   });
 
   function onSaveHandler(data: any) {
-    const tolerance: Tolerance = {};
+    const tolerance: CorrelationTolerance = {};
     for (const { atom, value } of data.tolerances) {
       tolerance[atom] = value;
     }

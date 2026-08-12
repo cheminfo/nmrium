@@ -1,7 +1,5 @@
-import type {
-  Spectrum,
-  SpectrumProcessingOperation,
-} from '@zakodium/nmrium-core';
+import type { SpectrumProcessingOperation } from '@zakodium/nmr-types';
+import type { Spectrum } from '@zakodium/nmrium-core';
 import {
   isSpectrum1D,
   isSpectrum2D,

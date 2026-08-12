@@ -1,11 +1,11 @@
+import type { Signal1D } from '@zakodium/nmr-types';
 import type { Spectrum } from '@zakodium/nmrium-core';
-import type { Correlation, CorrelationData, Link } from 'nmr-correlation';
-import {
-  buildLink,
-  getCorrelationDelta,
-  getLabel,
-  getLinkDim,
-} from 'nmr-correlation';
+import type {
+  Correlation,
+  CorrelationLink,
+  CorrelationValues,
+} from 'nmr-processing';
+import { correlationApi } from 'nmr-processing';
 import type { CSSProperties, MouseEvent } from 'react';
 import { useCallback, useMemo } from 'react';
 
@@ -27,7 +27,7 @@ import { EditLinkModal } from './editLink/EditLinkModal.js';
 
 export interface CorrelationTableRowProps {
   additionalColumnData: Correlation[];
-  correlations: CorrelationData;
+  correlations: CorrelationValues;
   correlation: Correlation;
   styleLabel: CSSProperties;
   onSaveEditEquivalences: (correlation: Correlation, value: number) => void;
@@ -56,13 +56,13 @@ export default function CorrelationTableRow(props: CorrelationTableRowProps) {
   const alert = useAlert();
 
   const highlightIDsRow = useMemo(() => {
-    if (correlation.pseudo === true) {
+    if (correlation.pseudo) {
       return [];
     }
 
-    return correlation.link.flatMap((link: any) => {
+    return correlation.link.flatMap((link) => {
       const ids: string[] = [];
-      if (link.pseudo === false) {
+      if (!link.pseudo) {
         ids.push(link.signal.id, buildID(link.signal.id, 'Crosshair_Y'));
         const _id = findRangeOrZoneID(
           spectraData,
@@ -99,7 +99,7 @@ export default function CorrelationTableRow(props: CorrelationTableRowProps) {
 
   const additionalColumnFields = useMemo(() => {
     return additionalColumnData.map((_correlation: Correlation) => {
-      const commonLinks: Link[] = [];
+      const commonLinks: CorrelationLink[] = [];
       for (const link of correlation.link) {
         for (const _link of _correlation.link) {
           if (
@@ -111,11 +111,15 @@ export default function CorrelationTableRow(props: CorrelationTableRowProps) {
             )
           ) {
             let experimentLabel = link.experimentType;
-            if (link.signal && link.signal.sign !== 0) {
+            if (
+              link.signal &&
+              'sign' in link.signal &&
+              link.signal.sign !== 0
+            ) {
               experimentLabel += link.signal.sign === 1 ? ' (+)' : ' (-)';
             }
             commonLinks.push(
-              buildLink({
+              correlationApi.buildLink({
                 ...link,
                 experimentLabel,
                 axis: undefined,
@@ -170,13 +174,13 @@ export default function CorrelationTableRow(props: CorrelationTableRowProps) {
   const isInView = useInView({ correlation });
 
   const tableDataProps = useMemo(() => {
-    const correlationLinks = correlation.link.map((link: any) => {
-      if (link.pseudo === false) {
+    const correlationLinks = correlation.link.map((link) => {
+      if (!link.pseudo) {
         return link.experimentType.toUpperCase();
       }
-      return undefined;
+      return 'undefined';
     });
-    correlationLinks.sort();
+    correlationLinks.sort((l1, l2) => l1.localeCompare(l2));
     const title = Array.from(new Set(correlationLinks)).join('/');
 
     return {
@@ -187,7 +191,7 @@ export default function CorrelationTableRow(props: CorrelationTableRowProps) {
             ? '#f5f5dc'
             : 'inherit',
       },
-      title: correlation.pseudo === false && title,
+      title: !correlation.pseudo && title,
       onMouseEnter: mouseEnterHandler,
       onMouseLeave: mouseLeaveHandler,
     };
@@ -202,7 +206,7 @@ export default function CorrelationTableRow(props: CorrelationTableRowProps) {
 
   const deleteCorrelationLink = useCallback(() => {
     const message = `All signals of ${correlation.label.origin} (${(
-      getCorrelationDelta(correlation) as number
+      correlationApi.getCorrelationDelta(correlation) as number
     ).toFixed(2)}) will be deleted. Are you sure?`;
 
     alert.showAlert({
@@ -222,7 +226,7 @@ export default function CorrelationTableRow(props: CorrelationTableRowProps) {
   }, [alert, correlation, highlightRow, onEditCorrelationTableCellHandler]);
 
   const contextMenus = useMemo(() => {
-    if (correlation.pseudo !== false) {
+    if (correlation.pseudo) {
       return [];
     }
 
@@ -235,12 +239,13 @@ export default function CorrelationTableRow(props: CorrelationTableRowProps) {
     ];
 
     for (const link of correlation?.link || []) {
-      const isValidLink = getLinkDim(link) === 1 && link.pseudo === false;
+      const isValidLink = correlationApi.getLinkDim(link) === 1 && !link.pseudo;
+      const signalDelta = (link.signal as Signal1D).delta;
 
       if (isValidLink) {
         const contextMenu: ContextMenuItem = {
-          text: `Edit 1D (${link.signal.delta.toFixed(3)})${
-            link.edited?.moved === true ? '[MOVED]' : ''
+          text: `Edit 1D (${signalDelta.toFixed(3)})${
+            link.edited?.moved ? '[MOVED]' : ''
           }`,
           icon: 'edit',
           data: {
@@ -291,11 +296,11 @@ export default function CorrelationTableRow(props: CorrelationTableRowProps) {
         }}
         onSelect={contextMenuHandler}
       >
-        {getLabel(correlations, correlation)}
+        {correlationApi.getLabel(correlations, correlation)}
       </ContextMenu>
       <td title={t} {...otherTableDataProps}>
-        {getCorrelationDelta(correlation)
-          ? getCorrelationDelta(correlation)?.toFixed(2)
+        {correlationApi.getCorrelationDelta(correlation)
+          ? correlationApi.getCorrelationDelta(correlation)?.toFixed(2)
           : ''}
       </td>
       <td title={t} {...otherTableDataProps}>
@@ -337,7 +342,7 @@ export default function CorrelationTableRow(props: CorrelationTableRowProps) {
           <EditableColumn
             type="text"
             value={correlation.hybridization
-              .map((hybrid: any) => `sp${hybrid}`)
+              .map((hybrid) => `sp${hybrid}`)
               .join(',')}
             style={correlation.edited.hybridization ? { color: 'blue' } : {}}
             onSave={(value) =>

@@ -4,8 +4,7 @@ import { isSpectrum2D } from '@zakodium/nmrium-core';
 import type { FromTo, NmrData2DFt } from 'cheminfo-types';
 import type { Draft } from 'immer';
 import lodashCloneDeep from 'lodash/cloneDeep.js';
-import { setPathLength } from 'nmr-correlation';
-import { Filters2DManager } from 'nmr-processing';
+import { Filters2DManager, correlationApi } from 'nmr-processing';
 
 import {
   changeZoneSignal,
@@ -392,10 +391,10 @@ function handleSaveEditedZone(
 
   if (editedZone.signals) {
     for (const signal of editedZone.signals) {
-      setPathLength(
+      correlationApi.setPathLength(
         draft.correlations.values,
         signal.id,
-        signal.j?.pathLength as FromTo,
+        signal.j?.pathLength,
       );
     }
   }

@@ -1,6 +1,6 @@
 import { Classes, Switch } from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import type { SpectrumProcessingOperation } from '@zakodium/nmrium-core';
+import type { SpectrumProcessingOperation } from '@zakodium/nmr-types';
 import { Button } from 'react-science/ui';
 
 import type { ProcessingsMutations } from '../../../context/processings_mutations_context.api.ts';

@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
-import type { Correlation, Link } from 'nmr-correlation';
-import { getCorrelationDelta } from 'nmr-correlation';
+import type { Correlation, CorrelationLink } from 'nmr-processing';
+import { correlationApi } from 'nmr-processing';
 import { useCallback, useState } from 'react';
 
 import Select from '../../../../elements/Select.js';
@@ -39,7 +39,7 @@ const Container = styled.div`
 interface MoveLinkProps {
   correlationDim1: Correlation;
   correlationDim2: Correlation;
-  link: Link;
+  link: CorrelationLink;
   correlations: Correlation[];
   onEdit: (
     correlationIdDim1: string,
@@ -48,7 +48,7 @@ interface MoveLinkProps {
 }
 
 function getCorrelationLabel(correlation: Correlation) {
-  const delta = getCorrelationDelta(correlation);
+  const delta = correlationApi.getCorrelationDelta(correlation);
   return delta ? delta.toFixed(2) : '?';
 }
 
@@ -59,10 +59,12 @@ function MoveLink({
   correlations,
   onEdit,
 }: MoveLinkProps) {
-  const [selectedCorrelationIdDim1, setSelectedCorrelationIdDim1] =
-    useState<string>(correlationDim1.id);
-  const [selectedCorrelationIdDim2, setSelectedCorrelationIdDim2] =
-    useState<string>(correlationDim2?.id || undefined);
+  const [selectedCorrelationIdDim1, setSelectedCorrelationIdDim1] = useState(
+    correlationDim1.id,
+  );
+  const [selectedCorrelationIdDim2, setSelectedCorrelationIdDim2] = useState(
+    correlationDim2?.id || undefined,
+  );
 
   const getSelection = useCallback(
     (correlation: Correlation, dim: 0 | 1) => {
@@ -89,8 +91,8 @@ function MoveLink({
         value: 'new',
         label: `new -> ${(
           (dim === 0
-            ? getCorrelationDelta(correlationDim1)
-            : getCorrelationDelta(correlationDim2)) as number
+            ? correlationApi.getCorrelationDelta(correlationDim1)
+            : correlationApi.getCorrelationDelta(correlationDim2)) as number
         ).toFixed(2)}`,
       });
 

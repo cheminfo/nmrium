@@ -1,6 +1,7 @@
 import { DialogBody, Tab, Tabs } from '@blueprintjs/core';
-import type { Correlation, Link } from 'nmr-correlation';
-import { getLinkDim } from 'nmr-correlation';
+import type { Signal1D, Signal2D } from '@zakodium/nmr-types';
+import type { Correlation, CorrelationLink } from 'nmr-processing';
+import { correlationApi } from 'nmr-processing';
 
 import { useChartData } from '../../../../context/ChartContext.js';
 import type { DialogProps } from '../../../../elements/DialogManager.js';
@@ -15,7 +16,7 @@ import MoveLink from './MoveLink.js';
 export interface EditLinkDialogData {
   correlationDim1: Correlation;
   correlationDim2: Correlation;
-  link: Link;
+  link: CorrelationLink;
 }
 interface EditLinkModalProps extends DialogProps<EditLinkDialogData> {
   onEdit: OnEditCorrelationCallback;
@@ -28,13 +29,15 @@ export function EditLinkModal(props: EditLinkModalProps) {
   const { correlationDim1, correlationDim2, link } = dialogData;
 
   function getLinkLabel() {
-    const linkDim = getLinkDim(link);
+    const linkDim = correlationApi.getLinkDim(link);
     if (linkDim === 1) {
-      return ` 1D (${link.signal.delta.toFixed(3)})`;
+      const linkSignal = link.signal as Signal1D;
+      return ` 1D (${linkSignal.delta.toFixed(3)})`;
     } else if (linkDim === 2) {
-      return `${link.signal.x ? `${link.signal.x.delta.toFixed(2)}` : '?'} (${
+      const linkSignal = link.signal as Signal2D;
+      return `${linkSignal.x ? linkSignal.x.delta.toFixed(2) : '?'} (${
         correlationDim1.label.origin
-      }), ${link.signal.y ? link.signal.y.delta.toFixed(2) : '?'} (${
+      }), ${linkSignal.y ? linkSignal.y.delta.toFixed(2) : '?'} (${
         correlationDim2.label.origin
       })`;
     }
@@ -46,7 +49,7 @@ export function EditLinkModal(props: EditLinkModalProps) {
     action: 'move' | 'remove' | 'unmove' | 'setPathLength',
     selectedCorrelationIdDim1: string | undefined,
     selectedCorrelationIdDim2: string | undefined,
-    editedLink?: Link,
+    editedLink?: CorrelationLink,
   ) {
     const { editedCorrelations, buildCorrelationDataOptions } =
       getEditedCorrelations({
@@ -125,14 +128,14 @@ export function EditLinkModal(props: EditLinkModalProps) {
             id="setPathLength"
             panel={
               <EditPathLength
-                signal={link.signal}
+                signal={link.signal as Signal2D}
                 experimentType={link.experimentType}
                 onEdit={(editedSignal) => {
                   const editedLink = { ...link, signal: editedSignal };
                   handleOnEdit(
                     'setPathLength',
-                    correlationDim1,
-                    correlationDim2,
+                    correlationDim1.id,
+                    correlationDim2.id,
                     editedLink,
                   );
                 }}

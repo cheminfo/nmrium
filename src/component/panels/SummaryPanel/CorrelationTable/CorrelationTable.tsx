@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import type { Spectrum } from '@zakodium/nmrium-core';
-import type { Correlation, CorrelationData } from 'nmr-correlation';
+import type { Correlation, CorrelationData } from 'nmr-processing';
 import { useMemo } from 'react';
 
 import { getLabelColor } from '../utilities/Utilities.js';

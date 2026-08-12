@@ -1,10 +1,9 @@
 import styled from '@emotion/styled';
 import type {
   ProcessingOperatorId,
-  ProcessingOperatorUI,
-  Spectrum,
   SpectrumProcessingOperation,
-} from '@zakodium/nmrium-core';
+} from '@zakodium/nmr-types';
+import type { ProcessingOperatorUI, Spectrum } from '@zakodium/nmrium-core';
 import type { ReactNode } from 'react';
 import { ObjectInspector } from 'react-inspector';
 

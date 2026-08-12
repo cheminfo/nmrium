@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
-import type { CorrelationData } from 'nmr-correlation';
-import { getAtomCounts } from 'nmr-correlation';
+import type { CorrelationData } from 'nmr-processing';
+import { correlationApi } from 'nmr-processing';
 import { memo } from 'react';
 
 import { ErrorColors, Errors } from './CorrelationTable/Constants.js';
@@ -22,7 +22,7 @@ interface OverviewProps {
 }
 
 function Overview({ correlationsData }: OverviewProps) {
-  const atoms = getAtomCounts(correlationsData.options.mf || '');
+  const atoms = correlationApi.getAtomCounts(correlationsData.options.mf || '');
 
   const elements =
     Object.keys(atoms).length > 0 ? (
