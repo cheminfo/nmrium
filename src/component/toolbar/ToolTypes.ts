@@ -25,6 +25,7 @@ import {
   FaFileImport,
   FaICursor,
 } from 'react-icons/fa';
+import { GrShift } from 'react-icons/gr';
 import { PiKnifeBold, PiSelectionPlusDuotone } from 'react-icons/pi';
 import { TbZoom } from 'react-icons/tb';
 
@@ -80,7 +81,8 @@ interface BaseToolOption {
 
 export type ToolOptionItem = BaseToolOption & (StaticIcon | DynamicIcon);
 
-export type MainTool = keyof NMRiumToolbarPreferences;
+export type MainTool =
+  keyof NMRiumToolbarPreferences | 'alignTwoDimensionsSpectra';
 
 /**
  * Tools that are selectable in panels, not in the main toolbar.
@@ -516,6 +518,21 @@ export const options: RecordOptions = {
       },
     ],
     isToggle: true,
+  },
+  alignTwoDimensionsSpectra: {
+    id: 'alignTwoDimensionsSpectra',
+    label: 'Align Two Dimensions Spectra',
+    icon: GrShift,
+    hasOptionPanel: false,
+    isFilter: false,
+    mode: '2D',
+    spectraFilter: [
+      {
+        info: [{ key: 'isFt', value: true }],
+      },
+    ],
+    isToggle: true,
+    isExperimental: true,
   },
 };
 

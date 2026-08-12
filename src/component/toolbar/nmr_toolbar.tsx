@@ -438,6 +438,20 @@ export default function NMRToolbar() {
           'Drag a rectangle over the spectrum region to create an inset.',
       },
     },
+    {
+      id: 'alignTwoDimensionsSpectra',
+      tooltip: {
+        title: options.alignTwoDimensionsSpectra.label,
+        description: `To align two-dimensional spectra, ${!invert ? 'SHIFT +' : ''} click and drag. The spectrum moves freely on both axes to follow your cursor. Hold Alt while dragging to lock the movement to just one axis — F2 (horizontal) or F1 (vertical) — whichever matches your drag direction most closely. Release the mouse to apply the alignment.`,
+        shortcuts: ['m'],
+        subTitles: [
+          {
+            title: 'Lock to one axis (F1 or F2)',
+            shortcuts: !invert ? ['⇧', 'Alt'] : ['Alt'],
+          },
+        ],
+      },
+    },
   ];
 
   const pluginTools = useMemo(() => {

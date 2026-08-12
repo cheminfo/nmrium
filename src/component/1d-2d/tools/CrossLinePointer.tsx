@@ -35,7 +35,7 @@ const toolsVisibility: Partial<Record<Tool, CrossLineVisibility>> = {
   databaseRangesSelection: 'onlyNotBrushing',
   matrixGenerationExclusionZones: 'onlyNotBrushing',
   inset: 'onlyNotBrushing',
-  alignTwoDimensionSpectra: 'always',
+  alignTwoDimensionsSpectra: 'always',
 };
 
 interface DimensionBorder {
