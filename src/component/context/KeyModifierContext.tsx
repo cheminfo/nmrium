@@ -1,25 +1,27 @@
 import type { ReactNode } from 'react';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 import { usePreferences } from './PreferencesContext.js';
-
-type ModifiersKey = `shift[${boolean}]_ctrl[${boolean}]_alt[${boolean}]`;
-
-type PrimaryKey =
-  'shift[true]_ctrl[false]_alt[false]' | 'shift[false]_ctrl[false]_alt[false]';
-
-function getPrimaryKey(invert: boolean): PrimaryKey {
-  if (invert) {
-    return 'shift[false]_ctrl[false]_alt[false]';
-  }
-  return 'shift[true]_ctrl[false]_alt[false]';
-}
 
 interface KeyModifiers {
   ctrlKey: boolean;
   shiftKey: boolean;
   altKey: boolean;
 }
+
+type ModifierName = keyof KeyModifiers;
+
+const PRIMARY_MODIFIERS: ModifierName[] = ['shiftKey'];
+
+type ModifiersKey = `shift[${boolean}]_ctrl[${boolean}]_alt[${boolean}]`;
+
 interface KeyModifiersState extends KeyModifiers {
   modifiersKey: ModifiersKey | null;
   isPrimary: boolean;
@@ -57,7 +59,7 @@ export type EventModifierKeys = Record<
   boolean
 >;
 
-export function getModifiers(eventKeys: EventModifierKeys) {
+export function getModifiers(eventKeys: EventModifierKeys): KeyModifiers {
   const { shiftKey, altKey, metaKey, ctrlKey } = eventKeys;
   return {
     ctrlKey: isMac ? metaKey : ctrlKey,
@@ -71,14 +73,18 @@ function toModifiersKey(keyModifiers: KeyModifiers): ModifiersKey {
   return `shift[${shiftKey ? 'true' : 'false'}]_ctrl[${ctrlKey ? 'true' : 'false'}]_alt[${altKey ? 'true' : 'false'}]`;
 }
 
-function getModifiersKey(event: EventModifierKeys) {
-  const keyModifiers = getModifiers(event);
-  return toModifiersKey(keyModifiers);
+export function getModifiersKey(event: EventModifierKeys) {
+  return toModifiersKey(getModifiers(event));
+}
+
+function isPrimaryActive(modifiers: KeyModifiers, invert: boolean): boolean {
+  const allRequiredHeld = PRIMARY_MODIFIERS.every((mod) => modifiers[mod]);
+  return invert ? !allRequiredHeld : allRequiredHeld;
 }
 
 export function useIsPrimaryKeyActivated() {
-  const { primaryKeyIdentifier } = useMapKeyModifiers();
-  return primaryKeyIdentifier === 'shift[false]_ctrl[false]_alt[false]';
+  const { isPrimary } = useKeyModifiers();
+  return isPrimary;
 }
 
 export function useMapKeyModifiers() {
@@ -88,24 +94,12 @@ export function useMapKeyModifiers() {
     },
   } = usePreferences();
 
-  return useMemo(() => {
-    const primaryKeyIdentifier = getPrimaryKey(invert);
-
-    return {
-      primaryKeyIdentifier,
-      getModifiersKey,
-    };
-  }, [invert]);
-}
-
-function isPrimaryActive(shiftKey: boolean, invert: boolean): boolean {
-  const primaryKey = getPrimaryKey(invert);
-  const shiftOnlyKey = toModifiersKey({
-    shiftKey,
-    ctrlKey: false,
-    altKey: false,
-  });
-  return shiftOnlyKey === primaryKey;
+  return useCallback(
+    (modifiers: KeyModifiers) => {
+      return isPrimaryActive(modifiers, invert);
+    },
+    [invert],
+  );
 }
 
 export function KeyModifiersProvider({ children }: KeyModifierProviderProps) {
@@ -120,13 +114,11 @@ export function KeyModifiersProvider({ children }: KeyModifierProviderProps) {
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
-      const keyModifiers = getModifiers(event);
-      setModifiers(keyModifiers);
+      setModifiers(getModifiers(event));
     }
 
     function handleKeyUp(event: KeyboardEvent) {
-      const keyModifiers = getModifiers(event);
-      setModifiers(keyModifiers);
+      setModifiers(getModifiers(event));
     }
 
     document.addEventListener('keydown', handleKeyDown);
@@ -136,14 +128,13 @@ export function KeyModifiersProvider({ children }: KeyModifierProviderProps) {
       document.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('keyup', handleKeyUp);
     };
-  }, [invert]);
+  }, []);
 
   const state = useMemo(() => {
-    const modifiersKey = toModifiersKey(modifiers);
     return {
       ...modifiers,
-      isPrimary: isPrimaryActive(modifiers.shiftKey, invert),
-      modifiersKey,
+      isPrimary: isPrimaryActive(modifiers, invert),
+      modifiersKey: toModifiersKey(modifiers),
     };
   }, [invert, modifiers]);
 
