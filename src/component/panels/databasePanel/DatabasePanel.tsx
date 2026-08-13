@@ -166,7 +166,7 @@ function DatabasePanelInner({
 
   const databaseInstance = useRef<InitiateDatabaseResult | null>(null);
   const databaseDataRef = useRef<DatabaseNMREntry[]>([]);
-  const { getModifiersKey, primaryKeyIdentifier } = useMapKeyModifiers();
+  const isPrimaryKeyActivated = useMapKeyModifiers();
 
   const [result, setResult] = useState<DatabaseSearchResultEntry>({
     data: [],
@@ -322,10 +322,9 @@ function DatabasePanelInner({
 
   useEffect(() => {
     function handle(event: BrushTrackerData & { range: [number, number] }) {
-      const keyModifiers = getModifiersKey(event);
       if (
         selectedTool !== options.databaseRangesSelection.id ||
-        keyModifiers !== primaryKeyIdentifier
+        !isPrimaryKeyActivated(event)
       ) {
         return;
       }
@@ -352,7 +351,7 @@ function DatabasePanelInner({
     return () => {
       Events.off('brushEnd', handle);
     };
-  }, [format, getModifiersKey, primaryKeyIdentifier, selectedTool, runSearch]);
+  }, [format, selectedTool, runSearch, isPrimaryKeyActivated]);
 
   useEffect(() => {
     if (defaultDatabase && !databaseInstance.current) {

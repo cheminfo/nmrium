@@ -68,7 +68,7 @@ export function BrushTracker2D({ children }: Required<PropsWithChildren>) {
   const isClickDebounced = clickDebounceTools.has(selectedTool);
   const dispatch = useDispatch();
   const brushStartRef = useRef<{ x: number; y: number } | null>(null);
-  const { getModifiersKey, primaryKeyIdentifier } = useMapKeyModifiers();
+  const isPrimaryKeyActivated = useMapKeyModifiers();
   const DIMENSION = get2DDimensionLayout(state);
   const convertToPPM = usePixelToPPMConverter();
   const {
@@ -98,15 +98,12 @@ export function BrushTracker2D({ children }: Required<PropsWithChildren>) {
       //reset the brush start
       brushStartRef.current = null;
 
-      const modifierKey = getModifiersKey(brushData);
       let executeDefaultAction = false;
       const trackID = getLayoutID(DIMENSION, brushData);
 
       if (brushData.mouseButton !== 'main' || !trackID) return;
 
-      const isPrimaryKeyIdentifier = modifierKey === primaryKeyIdentifier;
-
-      if (trackID === 'MAIN' && isPrimaryKeyIdentifier) {
+      if (trackID === 'MAIN' && isPrimaryKeyActivated(brushData)) {
         switch (selectedTool) {
           case options.zoom.id: {
             executeDefaultAction = true;
@@ -158,10 +155,9 @@ export function BrushTracker2D({ children }: Required<PropsWithChildren>) {
     },
     [
       convertToPPM,
-      getModifiersKey,
       DIMENSION,
+      isPrimaryKeyActivated,
       selectedTool,
-      primaryKeyIdentifier,
       dispatch,
       width,
       height,
@@ -170,10 +166,8 @@ export function BrushTracker2D({ children }: Required<PropsWithChildren>) {
 
   const handleOnDoubleClick: OnDoubleClick = useCallback(
     (event) => {
-      const keyModifiers = getModifiersKey(event);
-
       if (
-        primaryKeyIdentifier === keyModifiers &&
+        isPrimaryKeyActivated(event) &&
         selectedTool !== 'zoom' &&
         !isClickDebounced
       ) {
@@ -189,9 +183,8 @@ export function BrushTracker2D({ children }: Required<PropsWithChildren>) {
     [
       DIMENSION,
       dispatch,
-      getModifiersKey,
       isClickDebounced,
-      primaryKeyIdentifier,
+      isPrimaryKeyActivated,
       selectedTool,
     ],
   );
