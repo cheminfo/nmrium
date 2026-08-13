@@ -10,11 +10,12 @@ import {
   useBrushTracker,
 } from '../../EventsTrackers/BrushTracker.js';
 import { useChartData } from '../../context/ChartContext.js';
+import { useKeyModifiers } from '../../context/KeyModifierContext.tsx';
 import { useScaleChecked } from '../../context/ScaleContext.js';
 import { ArrowBox } from '../../elements/ArrowBox.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import type { Margin } from '../../reducer/Reducer.js';
-import { options } from '../../toolbar/ToolTypes.js';
+import type { Tool } from '../../toolbar/ToolTypes.js';
 
 const LabelWrapper = styled.span`
   position: absolute;
@@ -35,28 +36,44 @@ const baseStyles: CSSProperties = {
   willChange: 'transform',
 };
 
-const allowTools = new Set([
-  options.zoom.id,
-  options.apodization.id,
-  options.apodizationDimension1.id,
-  options.apodizationDimension2.id,
-  options.zeroFilling.id,
-  options.zeroFillingDimension1.id,
-  options.zeroFillingDimension2.id,
-  options.peakPicking.id,
-  options.integral.id,
-  options.phaseCorrection.id,
-  options.phaseCorrectionTwoDimensions.id,
-  options.baselineCorrection.id,
-  options.rangePicking.id,
-  options.zonePicking.id,
-  options.slicing.id,
-  options.multipleSpectraAnalysis.id,
-  options.exclusionZones.id,
-  options.databaseRangesSelection.id,
-  options.matrixGenerationExclusionZones.id,
-  options.inset.id,
-]);
+type ModifierVisibilityRule = 'primary' | 'non-primary' | 'always';
+
+const TOOL_VISIBILITY_RULES: Partial<Record<Tool, ModifierVisibilityRule>> = {
+  alignTwoDimensionsSpectra: 'non-primary',
+  zoom: 'always',
+  apodization: 'always',
+  apodizationDimension1: 'always',
+  apodizationDimension2: 'always',
+  zeroFilling: 'always',
+  zeroFillingDimension1: 'always',
+  zeroFillingDimension2: 'always',
+  peakPicking: 'always',
+  integral: 'always',
+  phaseCorrection: 'always',
+  phaseCorrectionTwoDimensions: 'always',
+  baselineCorrection: 'always',
+  rangePicking: 'always',
+  zonePicking: 'always',
+  slicing: 'always',
+  multipleSpectraAnalysis: 'always',
+  exclusionZones: 'always',
+  databaseRangesSelection: 'always',
+  matrixGenerationExclusionZones: 'always',
+  inset: 'always',
+};
+
+function isBrushAllowed(selectedTool: Tool, isPrimary: boolean) {
+  const rule = TOOL_VISIBILITY_RULES[selectedTool] ?? 'always';
+
+  switch (rule) {
+    case 'primary':
+      return isPrimary;
+    case 'non-primary':
+      return !isPrimary;
+    default:
+      return true;
+  }
+}
 
 interface BrushCoordinates {
   startX: number;
@@ -100,9 +117,10 @@ export default function BrushXY(props: BrushXYProps) {
   const brushTracker = useBrushTracker();
   const { step, mouseButton } = brushTracker;
   let { startX, endX, startY, endY } = brushTracker;
+  const { isPrimary } = useKeyModifiers();
 
   if (
-    !allowTools.has(selectedTool) ||
+    !isBrushAllowed(selectedTool, isPrimary) ||
     step !== 'brushing' ||
     mouseButton !== 'main' ||
     !dimensionBorder ||
@@ -112,8 +130,8 @@ export default function BrushXY(props: BrushXYProps) {
       ? endX > dimensionBorder.endX
       : endX < dimensionBorder.startX) &&
       (dimensionBorder.endX &&
-        dimensionBorder.endY &&
-        Math.sign(endY - startY) === 1
+      dimensionBorder.endY &&
+      Math.sign(endY - startY) === 1
         ? endY > dimensionBorder.endY
         : endY < dimensionBorder.startY))
   ) {
@@ -376,15 +394,15 @@ export default function BrushXY(props: BrushXYProps) {
 
 type DistanceProps =
   | {
-    start: number;
-    end: number;
-    axis: 'x';
-  }
+      start: number;
+      end: number;
+      axis: 'x';
+    }
   | {
-    start: number;
-    end: number;
-    axis: 'y';
-  };
+      start: number;
+      end: number;
+      axis: 'y';
+    };
 
 function DistanceValue(props: DistanceProps) {
   const spectrum = useSpectrum();
