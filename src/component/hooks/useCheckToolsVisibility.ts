@@ -9,6 +9,16 @@ import useCheckExperimentalFeature from './useCheckExperimentalFeature.js';
 import { useSelectedSpectra } from './useSelectedSpectra.ts';
 import useSpectraByActiveNucleus from './useSpectraPerNucleus.ts';
 
+type NMRiumToolbarPreferences = Partial<Record<MainTool, boolean>>;
+
+function isToolVisible(
+  toolbarButtons: Partial<NMRiumToolbarPreferences> | undefined,
+  toolKey: MainTool,
+): boolean {
+  if (!toolbarButtons) return false;
+  return toolbarButtons[toolKey] ?? false;
+}
+
 export function useCheckToolsVisibility(): (toolKey: MainTool) => boolean {
   const { displayerMode } = useChartData();
   const preferences = usePreferences();
@@ -28,7 +38,7 @@ export function useCheckToolsVisibility(): (toolKey: MainTool) => boolean {
       } = options[toolKey];
 
       // 1. Tool status
-      const flag = toolbarButtons?.[toolKey] ?? false;
+      const flag = isToolVisible(toolbarButtons, toolKey);
 
       const isToolActivated =
         (flag && !isExperimental) ||
