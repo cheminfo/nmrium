@@ -52,7 +52,7 @@ import {
   getDefaultTwoDimensionsPhaseCorrectionTraceOptions,
   getInitialState,
 } from '../Reducer.js';
-import zoomHistoryManager from '../helper/ZoomHistoryManager.js';
+import { restoreLastZoomDomain } from '../helper/ZoomHistoryManager.js';
 import { findStrongestPeak } from '../helper/findStrongestPeak.js';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
 import getRange from '../helper/getRange.js';
@@ -1666,17 +1666,7 @@ function handleEnableFilter(draft: Draft<State>, action: EnableFilterAction) {
   resetSelectedTool(draft);
   setDomain(draft);
   setMode(draft);
-
-  const zoomHistory = zoomHistoryManager(
-    draft.zoom.history,
-    draft.view.spectra.activeTab,
-  );
-  const zoomValue = zoomHistory.getLast();
-
-  if (zoomValue) {
-    draft.xDomain = zoomValue.xDomain;
-    draft.yDomain = zoomValue.yDomain;
-  }
+  restoreLastZoomDomain(draft);
 }
 
 function deleteFilter(datum: Spectrum, id?: string) {

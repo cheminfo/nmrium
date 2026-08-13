@@ -116,3 +116,20 @@ export function addToBrushHistory(
     brushHistory.push({ xDomain, yDomain });
   }
 }
+
+export function restoreLastZoomDomain(draft: Draft<State>) {
+  const zoomHistory = zoomHistoryManager(
+    draft.zoom.history,
+    draft.view.spectra.activeTab,
+  );
+  const zoomValue = zoomHistory.getLast();
+
+  if (!zoomValue) {
+    return false;
+  }
+
+  draft.xDomain = zoomValue.xDomain;
+  draft.yDomain = zoomValue.yDomain;
+
+  return true;
+}

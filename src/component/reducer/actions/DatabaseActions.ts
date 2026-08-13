@@ -19,7 +19,7 @@ import { filterDatabaseInfoEntry } from '../../utility/filterDatabaseInfoEntry.j
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus.ts';
 import type { State } from '../Reducer.js';
 import { setZoom } from '../helper/Zoom1DManager.js';
-import zoomHistoryManager from '../helper/ZoomHistoryManager.js';
+import { restoreLastZoomDomain } from '../helper/ZoomHistoryManager.js';
 import { getSpectrum } from '../helper/getSpectrum.js';
 import type { ActionType } from '../types/ActionType.js';
 
@@ -66,16 +66,7 @@ export type DatabaseActions =
 function updateDomain(draft: Draft<State>) {
   setDomain(draft, { isYDomainShared: false });
   changeSpectrumVerticalAlignment(draft, { verticalAlign: 'stack' });
-
-  const zoomHistory = zoomHistoryManager(
-    draft.zoom.history,
-    draft.view.spectra.activeTab,
-  );
-  const zoomValue = zoomHistory.getLast();
-  if (zoomValue) {
-    draft.xDomain = zoomValue.xDomain;
-    draft.yDomain = zoomValue.yDomain;
-  }
+  restoreLastZoomDomain(draft);
 }
 
 function handleResurrectSpectrumFromJCAMP(
