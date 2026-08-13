@@ -21,6 +21,7 @@ import type { ZoomType } from '../helper/Zoom1DManager.js';
 import { setZoom, toScaleRatio, wheelZoom } from '../helper/Zoom1DManager.js';
 import zoomHistoryManager, {
   addToBrushHistory,
+  restoreLastZoomDomain,
 } from '../helper/ZoomHistoryManager.js';
 import { getActiveSpectra } from '../helper/getActiveSpectra.js';
 import { getSpectrum } from '../helper/getSpectrum.js';
@@ -576,15 +577,8 @@ function setActiveTab(draft: Draft<State>, options?: SetActiveTabOptions) {
   resetTool(draft);
 
   setDomain(draft, domainOptions);
-  const zoomHistory = zoomHistoryManager(
-    draft.zoom.history,
-    draft.view.spectra.activeTab,
-  );
-  const zoomValue = zoomHistory.getLast();
-  if (zoomValue) {
-    draft.xDomain = zoomValue.xDomain;
-    draft.yDomain = zoomValue.yDomain;
-  }
+
+  restoreLastZoomDomain(draft);
   setMode(draft);
 }
 

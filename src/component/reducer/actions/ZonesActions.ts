@@ -18,6 +18,7 @@ import type { TargetAssignKeys } from '../../panels/MoleculesPanel/utilities/get
 import type { ZoneData } from '../../panels/ZonesPanel/hooks/useMapZones.js';
 import type { FilterType } from '../../utility/filterType.js';
 import type { State } from '../Reducer.js';
+import { restoreLastZoomDomain } from '../helper/ZoomHistoryManager.ts';
 import type { ZoneBoundary } from '../helper/get2DRange.js';
 import get2DRange from '../helper/get2DRange.js';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
@@ -229,6 +230,7 @@ function applyShift2DFilters(
 
   setDomain(draft);
   handleUpdateCorrelations(draft);
+  restoreLastZoomDomain(draft);
 }
 
 //action

@@ -22,7 +22,7 @@ import { initializeContoursLevels } from '../../data/data2d/Spectrum2D/contours.
 import type { State } from '../reducer/Reducer.ts';
 import { setDomain, setMode } from '../reducer/actions/DomainActions.ts';
 import { updateView } from '../reducer/actions/FiltersActions.ts';
-import zoomHistoryManager from '../reducer/helper/ZoomHistoryManager.ts';
+import { restoreLastZoomDomain } from '../reducer/helper/ZoomHistoryManager.ts';
 import { getActiveSpectrum } from '../reducer/helper/getActiveSpectrum.ts';
 
 import { useChartData } from './ChartContext.tsx';
@@ -198,17 +198,7 @@ export function useProcessingsMutationsAPI() {
 
       setDomain(draft);
       setMode(draft);
-
-      const zoomHistory = zoomHistoryManager(
-        draft.zoom.history,
-        draft.view.spectra.activeTab,
-      );
-      const zoomValue = zoomHistory.getLast();
-
-      if (zoomValue) {
-        draft.xDomain = zoomValue.xDomain;
-        draft.yDomain = zoomValue.yDomain;
-      }
+      restoreLastZoomDomain(draft);
     });
   });
 
