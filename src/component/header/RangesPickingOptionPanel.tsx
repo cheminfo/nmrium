@@ -1,7 +1,7 @@
 import { Checkbox, Classes, FormGroup, NumericInput } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { revalidateLogic } from '@tanstack/react-form';
-import { AppForm, useForm } from 'react-science/ui';
+import { AppForm, coerceNumberInput, useForm } from 'react-science/ui';
 import { z } from 'zod';
 
 import { useDispatch } from '../context/DispatchContext.js';
@@ -12,7 +12,7 @@ import {
 } from '../hooks/useCheckPointsNumberInWindowArea.js';
 
 const validationZodSchema = z.object({
-  minMaxRatio: z.coerce.number<string>().min(0),
+  minMaxRatio: coerceNumberInput(z.number().min(0)),
   lookNegative: z.boolean(),
 });
 

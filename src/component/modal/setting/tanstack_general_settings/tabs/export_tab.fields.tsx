@@ -79,9 +79,11 @@ export const ExportFields = withFieldGroup({
   defaultValues: defaultGeneralSettingsFormValues.export.png,
   render: function ExportFields({ group }) {
     const inputValues = useSelector(group.store, (s) => s.values);
+
     const outputValues = useMemo(() => {
       return exportSettingsValidation.decode(inputValues);
     }, [inputValues]);
+
     const advancedTransforms = useExportConfigurer(outputValues);
 
     function onModeChange({ value }: { value: Mode }) {
@@ -103,6 +105,7 @@ export const ExportFields = withFieldGroup({
         dontRunListeners: true,
       });
     }
+
     function onWidthChange({ value }: { value: string }) {
       value = safeStringNumber(value, (width) =>
         group.setFieldValue('width', width, { dontRunListeners: true }),
@@ -120,6 +123,7 @@ export const ExportFields = withFieldGroup({
         dontRunListeners: true,
       });
     }
+
     function onHeightChange({ value }: { value: string }) {
       value = safeStringNumber(value, (height) =>
         group.setFieldValue('height', height, { dontRunListeners: true }),
