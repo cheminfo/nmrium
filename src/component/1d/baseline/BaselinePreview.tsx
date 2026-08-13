@@ -23,6 +23,8 @@ import { PathBuilder } from '../../utility/PathBuilder.ts';
 import { getMedianWindow } from './getMedianWindow.ts';
 import { getMedianY } from './getMedianY.ts';
 
+const boxHeight = 20;
+
 const SVGWrapper = styled.svg`
   position: absolute;
   width: 100%;
@@ -42,6 +44,10 @@ const Container = styled.div`
   overflow: hidden;
   pointer-events: none;
 `;
+const MedianBox = styled.div`
+  position: absolute;
+  pointer-events: none;
+`;
 
 export function BaselinePreview() {
   // const spectrum = useSpectrum();
@@ -51,8 +57,6 @@ export function BaselinePreview() {
   const activeSpectrum = useActiveSpectrum();
   const {
     toolOptions: { selectedTool },
-    width,
-    margin: { left, right },
   } = useChartData();
   const indicatorColor = useIndicatorLineColor();
 
@@ -88,13 +92,19 @@ export function BaselinePreview() {
     return;
   }
 
-  function handleDragMove(index: number, newX: number) {
-    const clampedX = Math.max(left, Math.min(width - right, newX));
-    const updated = { index, x: scaleX().invert(clampedX) };
+  const {
+    data: { x },
+  } = spectrum;
+  const minX = x[0];
+  const maxX = x.at(-1) ?? 0;
+
+  function handleDragMove(index: number, newPixelX: number) {
+    const newX = scaleX().invert(newPixelX);
+    const clampedX = Math.min(Math.max(newX, minX), maxX);
+    const updated = { index, x: clampedX };
     draggingAnchorRef.current = updated;
     setDraggingAnchor(updated);
   }
-
   function handleDragEnd(index: number) {
     const finalX = draggingAnchorRef.current?.x;
     draggingAnchorRef.current = null;
@@ -119,18 +129,38 @@ export function BaselinePreview() {
       <SpectrumPreview spectrum={spectrum} anchors={anchors} />
       <Container ref={containerRef}>
         {anchors.map((xPPM, index) => {
-          const x = scaleX()(xPPM);
-          const yPPM = getMedianY(
-            xPPM,
-            sharedFilterOptions?.livePreview ? processedSpectrum : spectrum,
-          );
+          const { from, to, median: yPPM } = getMedianY(xPPM, spectrum);
           const v = shiftY * (activeSpectrum?.index || 0);
           const y = scaleY({ spectrumId: activeSpectrum?.id })(yPPM) - v;
+          const x1 = scaleX()(from);
+          const x2 = scaleX()(to);
+
+          const zoneX = Math.min(x1, x2);
+          const zoneWidth = Math.abs(x2 - x1);
+
+          return (
+            <MedianBox
+              // eslint-disable-next-line react/no-array-index-key
+              key={`zone-${index}`}
+              style={{
+                transform: `translate(${zoneX}px, ${y - boxHeight / 2}px)`,
+                width: zoneWidth,
+                height: boxHeight,
+                backgroundColor: indicatorColor,
+              }}
+            />
+          );
+        })}
+        {anchors.map((xPPM, index) => {
+          const x = scaleX()(xPPM);
+          const { median } = getMedianY(xPPM, spectrum);
+          const v = shiftY * (activeSpectrum?.index || 0);
+          const y = scaleY({ spectrumId: activeSpectrum?.id })(median) - v;
 
           return (
             <Anchor
               // eslint-disable-next-line react/no-array-index-key
-              key={index + yPPM}
+              key={index + median}
               position={{ x, y }}
               containerRef={containerRef}
               onDragMove={(x) => handleDragMove(index, x)}

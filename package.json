@@ -96,7 +96,7 @@
     "ml-gsd": "^14.2.2",
     "ml-peak-shape-generator": "^5.5.0",
     "ml-signal-processing": "^2.2.2",
-    "ml-spectra-processing": "^14.32.0",
+    "ml-spectra-processing": "^14.33.0",
     "ml-tree-similarity": "^2.2.0",
     "nmr-correlation": "2.3.3",
     "nmr-processing": "^22.22.1",
