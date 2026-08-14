@@ -1,10 +1,9 @@
 import { Classes } from '@blueprintjs/core';
 import { useField } from '@tanstack/react-form';
-import { createColumnHelper } from '@tanstack/react-table';
 import { EXTERNAL_API_KEYS } from '@zakodium/nmrium-core';
 import { useMemo } from 'react';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
-import { Button, withForm } from 'react-science/ui';
+import { Button, createTableColumnHelper, withForm } from 'react-science/ui';
 import type { z } from 'zod';
 
 import { Select2 } from '../../../../elements/Select2.js';
@@ -37,7 +36,7 @@ export const ExternalApiTab = withForm({
     const { name, pushValue, insertValue, removeValue, state } = field;
 
     const columns = useMemo(() => {
-      const helper = createColumnHelper<API>();
+      const helper = createTableColumnHelper<API>();
       return [
         helper.accessor('key', {
           header: 'Service',
