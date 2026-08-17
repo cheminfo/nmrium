@@ -3,18 +3,19 @@ import type { LegendField, PredefinedLegendField } from '@zakodium/nmrium-core';
 import { useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
-import type { CellProps } from 'react-table';
 
 import { useChartData } from '../../../context/ChartContext.js';
 import { CheckController } from '../../../elements/CheckController.js';
 import { Input2Controller } from '../../../elements/Input2Controller.js';
-import type { Column } from '../../../elements/ReactTable/ReactTable.js';
-import ReactTable from '../../../elements/ReactTable/ReactTable.js';
+import {
+  TanStackTable,
+  createTanStackColumnHelper,
+} from '../../../elements/tanstack_table/index.ts';
 import { convertPathArrayToString } from '../../../utility/convertPathArrayToString.js';
 import { getSpectraObjectPaths } from '../../../utility/getSpectraObjectPaths.js';
 
 function LegendsPreferences() {
-  const { setValue, control } = useFormContext();
+  const { setValue, control, getValues } = useFormContext();
   const { data } = useChartData();
   const { datalist, paths } = useMemo(
     () => getSpectraObjectPaths(data),
@@ -24,12 +25,13 @@ function LegendsPreferences() {
   const fields = useWatch({ name: 'legendsFields' });
 
   const addHandler = useCallback(
-    (data: readonly any[], index: number) => {
-      let columns: any[] = [];
+    (index: number) => {
+      let columns = [];
       const emptyField = {
         jpath: null,
         visible: true,
       };
+      const data = getValues('legendsFields');
       if (data && Array.isArray(data)) {
         columns = [...data.slice(0, index), emptyField, ...data.slice(index)];
       } else {
@@ -37,29 +39,31 @@ function LegendsPreferences() {
       }
       setValue('legendsFields', columns);
     },
-    [setValue],
+    [getValues, setValue],
   );
 
   const deleteHandler = useCallback(
-    (data: any, index: number) => {
+    (index: number) => {
+      const data = getValues('legendsFields');
       const _fields = data.filter(
         (_: any, columnIndex: any) => columnIndex !== index,
       );
       setValue('legendsFields', _fields);
     },
-    [setValue],
+    [getValues, setValue],
   );
 
-  const COLUMNS = useMemo<Array<Column<LegendField>>>(
-    () => [
+  const COLUMNS = useMemo(() => {
+    const columnHelper = createTanStackColumnHelper<LegendField>();
+    return columnHelper.columns([
       {
-        Header: '#',
-        style: { width: '25px' },
-        accessor: (_, index) => index + 1,
+        header: '#',
+        meta: { style: { width: '25px' } },
+        accessorFn: (_, index) => index + 1,
       },
       {
-        Header: 'Field',
-        Cell: ({ row }: CellProps<LegendField>) => {
+        header: 'Field',
+        cell: ({ row }) => {
           const predefinedColumn = row.original as PredefinedLegendField;
           if (predefinedColumn?.name) {
             return (
@@ -74,7 +78,7 @@ function LegendsPreferences() {
               control={control}
               name={`legendsFields.${row.index}.jpath`}
               filterItems={datalist}
-              mapOnChangeValue={(key) => (paths as any)[key] || null}
+              mapOnChangeValue={(key) => paths[key] || null}
               mapValue={convertPathArrayToString}
               style={{ backgroundColor: 'transparent' }}
               noShadowBox
@@ -83,9 +87,9 @@ function LegendsPreferences() {
         },
       },
       {
-        Header: 'Visible',
-        style: { width: '30px', textAlign: 'center' },
-        Cell: ({ row }: CellProps<LegendField>) => (
+        header: 'Visible',
+        meta: { style: { width: '30px', textAlign: 'center' } },
+        cell: ({ row }) => (
           <CheckController
             control={control}
             style={{ margin: 0 }}
@@ -94,18 +98,18 @@ function LegendsPreferences() {
         ),
       },
       {
-        Header: '',
-        style: { width: '70px' },
+        header: '',
+        meta: { style: { width: '70px' } },
         id: 'operation-button',
-        Cell: ({ data, row }: CellProps<LegendField>) => {
-          const record: any = row.original;
+        cell: ({ row }) => {
+          const record = row.original;
           return (
             <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
               <Button
                 size="small"
                 intent="success"
                 variant="outlined"
-                onClick={() => addHandler(data, row.index + 1)}
+                onClick={() => addHandler(row.index + 1)}
               >
                 <FaPlus className={Classes.ICON} />
               </Button>
@@ -113,8 +117,8 @@ function LegendsPreferences() {
                 size="small"
                 variant="outlined"
                 intent="danger"
-                onClick={() => deleteHandler(data, row.index)}
-                disabled={record?.name}
+                onClick={() => deleteHandler(row.index)}
+                disabled={'name' in record}
               >
                 <FaRegTrashAlt className={Classes.ICON} />
               </Button>
@@ -122,12 +126,11 @@ function LegendsPreferences() {
           );
         },
       },
-    ],
-    [addHandler, control, datalist, deleteHandler, paths],
-  );
+    ]);
+  }, [addHandler, control, datalist, deleteHandler, paths]);
 
   return (
-    <ReactTable
+    <TanStackTable
       data={fields}
       columns={COLUMNS}
       style={{ table: { height: '100%' } }}

@@ -92,15 +92,13 @@ async function addPeaks(nmrium: NmriumPage, { keyboard = false } = {}) {
 }
 async function checkPeakNumber(nmrium: NmriumPage, number: number) {
   const peaksTable = nmrium.page.locator(
-    '_react=PeaksTable >> _react=ReactTable >> .table-container',
+    '_react=PeaksTable >> _react=TanStackTable >> .table-container',
   );
   await peaksTable.evaluate((e) => {
     e.scrollTop = e.scrollHeight;
   });
 
-  const lastPeak = peaksTable.locator(
-    `_react=[role="row"][key="row_${number - 1}"]`,
-  );
+  const lastPeak = peaksTable.locator(`_react=TableRow[key="${number - 1}"]`);
 
   await expect(lastPeak).toBeVisible();
 }
@@ -239,7 +237,7 @@ test('Exclusion zones', async ({ page }) => {
   await test.step('Check Exclusion Zones filter for the third spectrum', async () => {
     // Select the third spectrum to be sure that the filter is not only applied to the first spectrum.
     const spectraTable = nmrium.page.locator('_react=SpectraTable');
-    await spectraTable.locator(`_react=[role="row"]`).nth(2).click();
+    await spectraTable.locator(`tbody tr`).nth(2).click();
 
     const filters = nmrium.page.locator('_react=FiltersSectionsPanel');
 
