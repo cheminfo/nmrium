@@ -1,11 +1,13 @@
 import { SvgNmrAssignment } from 'cheminfo-font';
 import type { MouseEvent } from 'react';
 import { memo, useCallback, useMemo } from 'react';
-import type { CellProps } from 'react-table';
 
 import { useDispatch } from '../../context/DispatchContext.js';
-import ReactTable from '../../elements/ReactTable/ReactTable.js';
-import type { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn.js';
+import type { TanStackTableRow } from '../../elements/tanstack_table/index.ts';
+import {
+  TanStackTable,
+  createTanStackColumnHelper,
+} from '../../elements/tanstack_table/index.ts';
 
 import type { AutoAssignmentsData } from './useAutoAssignments.js';
 
@@ -13,11 +15,12 @@ interface AutomaticAssignmentTableProps {
   data: AutoAssignmentsData[];
 }
 
-function AutomaticAssignmentTable({ data }: AutomaticAssignmentTableProps) {
+function AutomaticAssignmentTable(props: AutomaticAssignmentTableProps) {
+  const { data } = props;
   const dispatch = useDispatch();
 
   const assignHandler = useCallback(
-    (event: MouseEvent, row: any) => {
+    (event: MouseEvent, row: TanStackTableRow<AutoAssignmentsData>) => {
       event.preventDefault();
       event.stopPropagation();
 
@@ -29,29 +32,29 @@ function AutomaticAssignmentTable({ data }: AutomaticAssignmentTableProps) {
     [dispatch],
   );
 
-  const COLUMNS = useMemo<Array<CustomColumn<AutoAssignmentsData>>>(
-    () => [
+  const COLUMNS = useMemo(() => {
+    const columnHelper = createTanStackColumnHelper<AutoAssignmentsData>();
+    return columnHelper.columns([
       {
-        index: 1,
-        Header: '#',
-        accessor: (_, index) => index + 1,
-        style: { width: '1%', maxWidth: '40px', minWidth: '40px' },
+        header: '#',
+        accessorFn: (_, index) => index + 1,
+        meta: { style: { width: '1%', maxWidth: '40px', minWidth: '40px' } },
       },
       {
-        index: 2,
-        Header: 'Score',
-        accessor: 'score',
+        header: 'Score',
+        accessorKey: 'score',
       },
       {
-        index: 3,
-        Header: '',
-        style: {
-          width: '1%',
-          maxWidth: '24px',
-          minWidth: '24px',
+        header: '',
+        meta: {
+          style: {
+            width: '1%',
+            maxWidth: '24px',
+            minWidth: '24px',
+          },
         },
         id: 'assign-button',
-        Cell: ({ row }: CellProps<AutoAssignmentsData>) => (
+        cell: ({ row }) => (
           <button
             type="button"
             className="assign-button"
@@ -61,12 +64,11 @@ function AutomaticAssignmentTable({ data }: AutomaticAssignmentTableProps) {
           </button>
         ),
       },
-    ],
-    [assignHandler],
-  );
+    ]);
+  }, [assignHandler]);
 
   return (
-    <ReactTable
+    <TanStackTable
       data={data}
       columns={COLUMNS}
       onClick={assignHandler}

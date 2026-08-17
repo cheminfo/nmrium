@@ -6,16 +6,17 @@ import { useCallback, useMemo } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
-import type { CellProps } from 'react-table';
 import { array, mixed, object, string } from 'yup';
 
 import { useDispatch } from '../../context/DispatchContext.js';
 import { Input2Controller } from '../../elements/Input2Controller.js';
-import type { Column } from '../../elements/ReactTable/ReactTable.js';
-import ReactTable from '../../elements/ReactTable/ReactTable.js';
 import { Select2Controller } from '../../elements/Select2Controller.tsx';
 import { StandardDialog } from '../../elements/StandardDialog.tsx';
 import { StyledDialogBody } from '../../elements/StyledDialogBody.js';
+import {
+  TanStackTable,
+  createTanStackColumnHelper,
+} from '../../elements/tanstack_table/index.ts';
 import { useSelectedSpectra } from '../../hooks/useSelectedSpectra.ts';
 import { checkUniqueByKey } from '../../utility/checkUniqueByKey.js';
 
@@ -289,7 +290,7 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
   const dispatch = useDispatch();
   const spectra = useSelectedSpectra();
   const disabled = (spectra?.length ?? 0) < 2;
-  const { handleSubmit, reset, control } = useForm<{
+  const { handleSubmit, reset, control, getValues } = useForm<{
     metaInfo: MetaInfoItem[];
   }>({
     defaultValues: { metaInfo },
@@ -297,28 +298,30 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
   });
 
   const addHandler = useCallback(
-    (data: any, index = 0) => {
-      const meta = {
+    (index = 0) => {
+      const meta: MetaInfoItem = {
         key: '',
         value: '',
         scope: 'all',
-        spectra: spectra?.map(({ id }) => id),
+        spectra: spectra?.map(({ id }) => id) || [],
       };
+      const data = getValues('metaInfo') || [];
       reset({
         metaInfo: [...data.slice(0, index), meta, ...data.slice(index)],
       });
     },
-    [reset, spectra],
+    [getValues, reset, spectra],
   );
 
   const deleteHandler = useCallback(
-    (data: any, index: number) => {
+    (index: number) => {
+      const data = getValues('metaInfo') || [];
       const meta = data.filter(
         (_: any, columnIndex: any) => columnIndex !== index,
       );
       reset({ metaInfo: meta });
     },
-    [reset],
+    [getValues, reset],
   );
 
   function saveHandler(values: any) {
@@ -328,17 +331,18 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
     onCloseDialog();
   }
 
-  const COLUMNS = useMemo<Array<Column<MetaInfoItem>>>(
-    () => [
+  const COLUMNS = useMemo(() => {
+    const columnHelper = createTanStackColumnHelper<MetaInfoItem>();
+    return columnHelper.columns([
       {
-        Header: '#',
-        style: { width: '25px', textAlign: 'center' },
-        accessor: (_, index) => index + 1,
+        header: '#',
+        meta: { style: { width: '25px', textAlign: 'center' } },
+        accessorFn: (_, index) => index + 1,
       },
       {
-        Header: 'Key',
-        style: { padding: 0 },
-        Cell: ({ row }: CellProps<MetaInfoItem>) => {
+        header: 'Key',
+        meta: { style: { padding: 0 } },
+        cell: ({ row }) => {
           return (
             <Input2Controller
               control={control}
@@ -350,9 +354,9 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
         },
       },
       {
-        Header: 'Value',
-        style: { padding: 0 },
-        Cell: ({ row }: CellProps<MetaInfoItem>) => {
+        header: 'Value',
+        meta: { style: { padding: 0 } },
+        cell: ({ row }) => {
           const values = Object.values(row.original.values || {});
           const uniqueValues = new Set(values);
           const isMixed = uniqueValues.size > 1;
@@ -378,9 +382,9 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
         },
       },
       {
-        Header: 'Scope',
-        style: { padding: 0 },
-        Cell: ({ row }: CellProps<MetaInfoItem>) => {
+        header: 'Scope',
+        meta: { style: { padding: 0 } },
+        cell: ({ row }) => {
           return (
             <Select2Controller
               disabled={disabled}
@@ -400,9 +404,9 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
         },
       },
       {
-        Header: 'Spectra',
-        style: { padding: 0 },
-        Cell: ({ row }: CellProps<MetaInfoItem>) => {
+        header: 'Spectra',
+        meta: { style: { padding: 0 } },
+        cell: ({ row }) => {
           return (
             <Controller
               name={`metaInfo.${row.index}.spectra`}
@@ -422,10 +426,10 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
         },
       },
       {
-        Header: '',
-        style: { width: '60px' },
+        header: '',
+        meta: { style: { width: '60px' } },
         id: 'action-button',
-        Cell: ({ data, row }: CellProps<MetaInfoItem>) => {
+        cell: ({ row }) => {
           return (
             <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
               <Button
@@ -435,7 +439,7 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
                 tooltipProps={{ content: '', disabled: true }}
                 onClick={(e) => {
                   e.stopPropagation();
-                  addHandler(data, row.index + 1);
+                  addHandler(row.index + 1);
                 }}
               >
                 <FaPlus className={Classes.ICON} />
@@ -447,7 +451,7 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
                 tooltipProps={{ content: '', disabled: true }}
                 onClick={(e) => {
                   e.stopPropagation();
-                  deleteHandler(data, row.index);
+                  deleteHandler(row.index);
                 }}
               >
                 <FaRegTrashAlt className={Classes.ICON} />
@@ -456,9 +460,8 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
           );
         },
       },
-    ],
-    [addHandler, control, deleteHandler, disabled],
-  );
+    ]);
+  }, [addHandler, control, deleteHandler, disabled]);
 
   const values = useWatch({ name: 'metaInfo', control });
 
@@ -472,7 +475,7 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
               size="medium"
               variant="outlined"
               icon="plus"
-              onClick={() => addHandler(values)}
+              onClick={() => addHandler()}
               tooltipProps={{ content: '', disabled: true }}
             >
               Add a new meta
@@ -480,7 +483,7 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
             <RowCount>{spectra?.length} spectra selected</RowCount>
           </Toolbar>
 
-          <ReactTable<MetaInfoItem>
+          <TanStackTable
             data={values}
             columns={COLUMNS}
             emptyDataRowText="No meta"

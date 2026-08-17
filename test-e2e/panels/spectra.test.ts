@@ -78,7 +78,7 @@ test('Should 2d deactivate spectrum', async ({ page }) => {
   await nmrium.open2D();
   await nmrium.page.click('_react=SpectraTabs >> _react=Tab[tabid="1H,1H"]');
   const spectrumButtonLocator = nmrium.page.locator(
-    '_react=SpectraTable >> _react=ReactTableRow >> nth=0',
+    '_react=SpectraTable >> tbody tr >> nth=0',
   );
 
   const spectrumLineLocator = nmrium.page.getByTestId('spectrum-line').nth(0);
