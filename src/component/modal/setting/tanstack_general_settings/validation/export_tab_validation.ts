@@ -1,5 +1,6 @@
 import type { Layout, PageSizeName } from '@zakodium/nmrium-core';
 import { units } from '@zakodium/nmrium-core';
+import { coerceNumberInput } from 'react-science/ui';
 import { z } from 'zod';
 
 const exportSizes: PageSizeName[] = [
@@ -22,7 +23,7 @@ const exportLayouts: Layout[] = ['portrait', 'landscape'];
  */
 const baseExportSettings = z.object({
   useDefaultSettings: z.boolean(),
-  dpi: z.coerce.number<string>(),
+  dpi: coerceNumberInput(),
 });
 
 /**
@@ -40,8 +41,8 @@ const basicExportSettings = z.object({
 const advancedExportSettings = z.object({
   mode: z.literal('advance'),
   ...baseExportSettings.shape,
-  width: z.coerce.number<string>(),
-  height: z.coerce.number<string>(),
+  width: coerceNumberInput(),
+  height: coerceNumberInput(),
   unit: z.enum(units.map((u) => u.unit)),
 });
 

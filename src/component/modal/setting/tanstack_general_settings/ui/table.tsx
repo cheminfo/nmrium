@@ -1,13 +1,12 @@
 import { Classes } from '@blueprintjs/core';
 import type { StyledComponent } from '@emotion/styled';
 import styled from '@emotion/styled';
-import type { RowData } from '@tanstack/react-table';
-import type { TableProps } from 'react-science/ui';
+import type { TableProps, TableRowData } from 'react-science/ui';
 import { Table } from 'react-science/ui';
 
 type MakeRequired<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
 
-type TableSettingsProps<Data extends RowData> = MakeRequired<
+type TableSettingsProps<Data extends TableRowData> = MakeRequired<
   TableProps<Data>,
   'getRowId'
 >;
@@ -20,7 +19,7 @@ type TableSettingsProps<Data extends RowData> = MakeRequired<
  *   Table with fields in the columns is known to cause issue if the row key is index.
  *   use `withUUID` validation helper to have items with uuid
  */
-export function TableSettings<Data extends RowData>(
+export function TableSettings<Data extends TableRowData>(
   props: TableSettingsProps<Data>,
 ) {
   // We should not create a component in another component,

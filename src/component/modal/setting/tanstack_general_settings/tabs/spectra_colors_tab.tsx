@@ -1,9 +1,13 @@
 import { Classes } from '@blueprintjs/core';
 import { useField } from '@tanstack/react-form';
-import { createColumnHelper } from '@tanstack/react-table';
 import { useCallback, useMemo } from 'react';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
-import { Button, withFieldGroup, withForm } from 'react-science/ui';
+import {
+  Button,
+  createTableColumnHelper,
+  withFieldGroup,
+  withForm,
+} from 'react-science/ui';
 import type { z } from 'zod/v4';
 
 import { useChartData } from '../../../../context/ChartContext.tsx';
@@ -88,7 +92,7 @@ const Spectra1DColors = withForm({
     );
 
     const COLUMNS = useMemo(() => {
-      const helper = createColumnHelper<OneDimensionData>();
+      const helper = createTableColumnHelper<OneDimensionData>();
       return [
         helper.accessor('jpath', {
           header: 'Field',
@@ -209,7 +213,7 @@ const Spectra2DColors = withForm({
     }, [chartData]);
 
     const COLUMNS = useMemo(() => {
-      const helper = createColumnHelper<TwoDimensionData>();
+      const helper = createTableColumnHelper<TwoDimensionData>();
       return [
         helper.accessor('jpath', {
           header: 'Field',
