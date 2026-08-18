@@ -22,6 +22,7 @@ interface InnerPrintFrameProps {
   children: ReactNode;
   onAfterPrint?: () => void;
   onBeforePrint?: () => void;
+  onError?: (error: Error) => void;
   printPageOptions?: Partial<PrintPageOptions>;
 }
 interface PrintFrameProps
@@ -40,6 +41,7 @@ export function PrintContent(props: PrintFrameProps) {
     printPageOptions,
     defaultPrintPageOptions,
     onPrint,
+    onError,
   } = props;
 
   useEffect(() => {
@@ -100,6 +102,10 @@ export function PrintContent(props: PrintFrameProps) {
         onBeforePrint={() => {
           onBeforePrint?.();
         }}
+        onError={(error) => {
+          setPageOptions(null);
+          onError?.(error);
+        }}
       >
         {children}
       </InnerPrintFrame>
@@ -112,6 +118,7 @@ function InnerPrintFrame(props: InnerPrintFrameProps) {
     children,
     onAfterPrint,
     onBeforePrint,
+    onError,
     printPageOptions = {},
   } = props;
 
@@ -134,8 +141,13 @@ function InnerPrintFrame(props: InnerPrintFrameProps) {
 
   function refHandler(frame: HTMLIFrameElement | null) {
     if (!frame) return;
+
     const document = frame.contentWindow?.document;
-    if (!document) return;
+
+    if (!document) {
+      onError?.(new Error('Print document is not available'));
+      return;
+    }
 
     transferStyles(document);
     appendPrintPageStyle(document, { size, layout, margin });
@@ -170,8 +182,14 @@ function InnerPrintFrame(props: InnerPrintFrameProps) {
             <RenderContainer
               onRenderComplete={() => {
                 const contentWindow = iframeDocument.defaultView;
-                contentWindow?.focus();
-                contentWindow?.print();
+
+                if (!contentWindow) {
+                  onError?.(new Error('Print content window is not available'));
+                  return;
+                }
+
+                contentWindow.focus();
+                contentWindow.print();
               }}
               style={{
                 width: `${width - margin}cm`,
