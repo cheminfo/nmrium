@@ -14,6 +14,7 @@ export const possibleViews = {
   Teaching: memo(lazy(() => import('./Teaching.js'))),
   Test: memo(lazy(() => import('./Test.js'))),
   TwoInstances: memo(lazy(() => import('./TwoInstances.js'))),
+  VersionedWorkspaces: memo(lazy(() => import('./VersionedWorkspaces.js'))),
   View: memo(lazy(() => import('./View.js'))),
   WebSourceView: memo(lazy(() => import('./WebSourceView.js'))),
   PluginUI: memo(lazy(() => import('./PluginUI.js'))),

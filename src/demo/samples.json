@@ -305,6 +305,11 @@
         "view": "BenchtopNMRWorkspace"
       },
       {
+        "title": "Versioned workspaces (v19)",
+        "view": "VersionedWorkspaces",
+        "file": "./data/cytisine/1H.json"
+      },
+      {
         "file": "https://cheminfo.github.io/bruker-data-test/data/zipped/aspirin-1h.zip",
         "title": "NMR Load Save",
         "view": "WebSourceView"

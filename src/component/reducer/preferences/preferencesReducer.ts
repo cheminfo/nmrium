@@ -1,6 +1,6 @@
 import type {
   ACSExportOptions,
-  CustomWorkspaces,
+  CustomWorkspacesInput,
   ExportPreferences,
   ExportSettings,
   MoleculeView,
@@ -79,7 +79,7 @@ type InitPreferencesAction = ActionType<
     preferences: NMRiumPreferences | undefined;
     display?: NMRiumPreferences;
     workspace: NMRiumWorkspace | undefined;
-    customWorkspaces: CustomWorkspaces | undefined;
+    customWorkspaces: CustomWorkspacesInput | undefined;
     currentWorkspace: Settings['currentWorkspace'] | undefined;
   }
 >;
@@ -270,7 +270,7 @@ export function initPreferencesState(
     updateSettings(settings);
   }
 
-  const predefinedWorkspaces = mapWorkspaces(Workspaces as any, {
+  const predefinedWorkspaces = mapWorkspaces(Workspaces, {
     source: 'predefined',
   });
   const localWorkspaces = mapWorkspaces(settings?.workspaces || {}, {

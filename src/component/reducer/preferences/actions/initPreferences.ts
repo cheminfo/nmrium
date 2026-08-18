@@ -1,3 +1,4 @@
+import { migrateCustomWorkspaces } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
 
 import type { NMRiumWorkspace } from '../../../main/index.js';
@@ -21,7 +22,9 @@ export function initPreferences(draft: Draft<PreferencesState>, action: any) {
       preferences,
       currentWorkspace,
     } = action.payload;
-    const customWorkspaces = mapWorkspaces(cw, { source: 'custom' });
+    const customWorkspaces = mapWorkspaces(migrateCustomWorkspaces(cw), {
+      source: 'custom',
+    });
 
     draft.workspaces = {
       ...draft.workspaces,
