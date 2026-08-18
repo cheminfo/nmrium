@@ -3,6 +3,7 @@ import type { Draft } from 'immer';
 import type { NMRiumWorkspace } from '../../../main/index.js';
 import type { PreferencesState } from '../preferencesReducer.js';
 import { WORKSPACES_KEYS } from '../preferencesReducer.js';
+import { getCustomWorkspaces } from '../utilities/getCustomWorkspaces.js';
 import { initWorkspace } from '../utilities/initWorkspace.js';
 import { mapWorkspaces } from '../utilities/mapWorkspaces.js';
 
@@ -21,7 +22,9 @@ export function initPreferences(draft: Draft<PreferencesState>, action: any) {
       preferences,
       currentWorkspace,
     } = action.payload;
-    const customWorkspaces = mapWorkspaces(cw, { source: 'custom' });
+    const customWorkspaces = mapWorkspaces(getCustomWorkspaces(cw), {
+      source: 'custom',
+    });
 
     draft.workspaces = {
       ...draft.workspaces,

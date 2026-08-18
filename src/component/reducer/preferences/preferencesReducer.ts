@@ -1,6 +1,5 @@
 import type {
   ACSExportOptions,
-  CustomWorkspaces,
   ExportPreferences,
   ExportSettings,
   MoleculeView,
@@ -18,7 +17,11 @@ import { produce } from 'immer';
 import type { Reducer } from 'react';
 import type { SplitPaneSize } from 'react-science/ui';
 
-import type { NMRiumPreferences, NMRiumWorkspace } from '../../main/index.js';
+import type {
+  NMRiumCustomWorkspaces,
+  NMRiumPreferences,
+  NMRiumWorkspace,
+} from '../../main/index.js';
 import { getLocalStorage, storeData } from '../../utility/LocalStorage.js';
 import Workspaces from '../../workspaces/index.js';
 import type { ActionType } from '../types/ActionType.js';
@@ -79,7 +82,7 @@ type InitPreferencesAction = ActionType<
     preferences: NMRiumPreferences | undefined;
     display?: NMRiumPreferences;
     workspace: NMRiumWorkspace | undefined;
-    customWorkspaces: CustomWorkspaces | undefined;
+    customWorkspaces: NMRiumCustomWorkspaces | undefined;
     currentWorkspace: Settings['currentWorkspace'] | undefined;
   }
 >;
@@ -270,7 +273,7 @@ export function initPreferencesState(
     updateSettings(settings);
   }
 
-  const predefinedWorkspaces = mapWorkspaces(Workspaces as any, {
+  const predefinedWorkspaces = mapWorkspaces(Workspaces, {
     source: 'predefined',
   });
   const localWorkspaces = mapWorkspaces(settings?.workspaces || {}, {

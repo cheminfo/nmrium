@@ -1,5 +1,4 @@
 import type {
-  CustomWorkspaces,
   NMRiumCore,
   NmriumState,
   WorkspacePreferences as NMRiumPreferences,
@@ -14,7 +13,11 @@ import { RootLayout } from 'react-science/ui';
 import ErrorOverlay from './ErrorOverlay.js';
 import { InnerNMRium } from './InnerNMRium.js';
 import type { NMRiumRefAPI } from './NMRiumRefAPI.js';
-import type { NMRiumChangeCb, NMRiumWorkspace } from './types.js';
+import type {
+  NMRiumChangeCb,
+  NMRiumCustomWorkspaces,
+  NMRiumWorkspace,
+} from './types.js';
 
 export interface NMRiumProps {
   /**
@@ -68,7 +71,7 @@ export interface NMRiumProps {
   noErrorBoundary?: boolean;
   onError?: ErrorBoundaryPropsWithComponent['onError'];
   workspace?: NMRiumWorkspace;
-  customWorkspaces?: CustomWorkspaces;
+  customWorkspaces?: NMRiumCustomWorkspaces;
   preferences?: NMRiumPreferences;
   emptyText?: ReactNode;
   /**

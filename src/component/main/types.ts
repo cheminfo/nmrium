@@ -1,4 +1,5 @@
 import type {
+  CustomWorkspaces,
   NmriumState as NMRiumState,
   Spectrum,
   WorkspacePreferences as NMRiumPreferences,
@@ -27,6 +28,20 @@ type NMRiumWorkspace =
   | 'simulation'
   | (string & {});
 
+interface VersionedCustomWorkspaces {
+  /**
+   * Version the workspaces were created with, they are migrated to the current one.
+   */
+  version: number;
+  workspaces: CustomWorkspaces;
+}
+
+/**
+ * Workspaces defined at the component level, either already in the current
+ * version or tagged with the version they were created with.
+ */
+type NMRiumCustomWorkspaces = CustomWorkspaces | VersionedCustomWorkspaces;
+
 type NMRiumChangeCb = (
   state: NMRiumState,
   source: 'data' | 'view' | 'settings',
@@ -37,10 +52,12 @@ type NMRiumMolecules = Array<{ molfile: string }>;
 /* eslint-disable unicorn/prefer-export-from */
 export type {
   NMRiumChangeCb,
+  NMRiumCustomWorkspaces,
   NMRiumData,
   NMRiumMolecules,
   NMRiumPreferences,
   NMRiumState,
   NMRiumWorkspace,
+  VersionedCustomWorkspaces,
 };
 /* eslint-enable unicorn/prefer-export-from */
