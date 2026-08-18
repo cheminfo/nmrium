@@ -3,7 +3,7 @@ import { revalidateLogic } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
 import type { PrintPageOptions } from '@zakodium/nmrium-core';
 import type { CSSProperties, ReactNode } from 'react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { AppForm, Button, coerceNumberInput, useForm } from 'react-science/ui';
 import { z } from 'zod';
@@ -13,8 +13,6 @@ import { StyledDialogBody } from '../StyledDialogBody.js';
 
 import { PrintProvider } from './PrintProvider.js';
 import { getSizesList, pageSizes } from './pageSize.js';
-
-const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
 
 interface BasePrintProps {
   onPrint: (options: PrintPageOptions) => void;
@@ -122,80 +120,58 @@ function InnerPrintFrame(props: InnerPrintFrameProps) {
     margin = 0,
     layout = 'landscape',
   } = printPageOptions || {};
-
-  const frameRef = useRef<HTMLIFrameElement>(null);
-  const [content, setContent] = useState<HTMLElement>();
+  const [iframeDocument, setIframeDocument] = useState<Document>();
   const { width = 0, height = 0 } =
     pageSizes.find((pageItem) => pageItem.name === size)?.[layout] || {};
 
   const handleAfterPrint = useCallback(() => {
     onAfterPrint?.();
   }, [onAfterPrint]);
+
   const handleBeforePrint = useCallback(() => {
     onBeforePrint?.();
   }, [onBeforePrint]);
 
-  const load = useCallback(() => {
-    const contentWindow = frameRef.current?.contentWindow;
-    if (!contentWindow) return;
-    const document = contentWindow.document;
-
-    setContent(document.body);
+  function refHandler(frame: HTMLIFrameElement | null) {
+    if (!frame) return;
+    const document = frame.contentWindow?.document;
+    if (!document) return;
 
     transferStyles(document);
     appendPrintPageStyle(document, { size, layout, margin });
+    setIframeDocument(document);
+  }
+
+  useEffect(() => {
+    const contentWindow = iframeDocument?.defaultView;
+    if (!contentWindow) return;
 
     contentWindow.addEventListener('afterprint', handleAfterPrint);
     contentWindow.addEventListener('beforeprint', handleBeforePrint);
 
-    return contentWindow;
-  }, [handleAfterPrint, handleBeforePrint, layout, margin, size]);
-
-  useEffect(() => {
-    const contentWindow = frameRef.current?.contentWindow;
-
-    if (!isFirefox) {
-      load();
-    }
-
     return () => {
-      if (!contentWindow) return;
-
       contentWindow.removeEventListener('afterprint', handleAfterPrint);
       contentWindow.removeEventListener('beforeprint', handleBeforePrint);
     };
-  }, [
-    onBeforePrint,
-    onAfterPrint,
-    handleBeforePrint,
-    handleAfterPrint,
-    size,
-    layout,
-    margin,
-    load,
-  ]);
+  }, [iframeDocument, handleAfterPrint, handleBeforePrint]);
 
   return (
     <PrintProvider width={width} height={height} margin={margin}>
       <iframe
-        ref={frameRef}
+        ref={refHandler}
         style={{
           width: 0,
           height: 0,
           border: 'none',
         }}
-        onLoad={() => {
-          if (isFirefox) {
-            load();
-          }
-        }}
       >
-        {content &&
+        {iframeDocument &&
           createPortal(
             <RenderContainer
               onRenderComplete={() => {
-                frameRef.current?.contentWindow?.focus();
-                frameRef.current?.contentWindow?.print();
+                const contentWindow = iframeDocument.defaultView;
+                contentWindow?.focus();
+                contentWindow?.print();
               }}
               style={{
                 width: `${width - margin}cm`,
@@ -205,7 +181,7 @@ function InnerPrintFrame(props: InnerPrintFrameProps) {
             >
               {children}
             </RenderContainer>,
-            content,
+            iframeDocument.body,
           )}
       </iframe>
     </PrintProvider>
