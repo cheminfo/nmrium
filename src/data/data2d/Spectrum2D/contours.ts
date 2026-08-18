@@ -2,10 +2,16 @@ import type { Spectrum2D, Spectrum } from '@zakodium/nmrium-core';
 import { isSpectrum2DFt } from '@zakodium/nmrium-core';
 import type { DataXY, NmrData2DFt } from 'cheminfo-types';
 import { Conrec } from 'ml-conrec';
-import { xMaxAbsoluteValue } from 'ml-spectra-processing';
+import { matrixMaxAbsoluteZ, matrixMinMaxZ, matrixToArray } from 'ml-spectra-processing';
+import type { Spectrum } from 'nmr-correlation';
 
 import type { SpectrumFTData } from '../../../component/hooks/use2DReducer.tsx';
 import { calculateSanPlot } from '../../utilities/calculateSanPlot.js';
+
+import { computeMinContourLevel } from './autoContourLevel.ts';
+import { NMRContourCalculator } from './countourLevelFinder.ts';
+import { findAutomaticContourLevels } from './findBestMinContour.ts';
+import { getContourThresholdFromPercentiles } from './getContourThresholdFromPercentiles.ts';
 
 interface Level {
   positive: ContourItem;
@@ -58,44 +64,81 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
   // @ts-expect-error type of NmrData2D should have a discriminator field to separate fid and ft
   const quadrantData = data[quadrant];
 
-  
   const { acquisitionScheme } = info;
   //@ts-expect-error will be included in nexts versions
-  const { noise = calculateSanPlot('2D', quadrantData, { magnitudeMode: acquisitionScheme === 'notPhaseSensitive' }) } = info;
+  const {
+    experiment = '',
+    noise = calculateSanPlot('2D', quadrantData, {
+      magnitudeMode: acquisitionScheme === 'notPhaseSensitive',
+    }),
+  } = info;
 
-  const {percentiles, sanplot } = noise;
-  const sanPlotMax = getSanPlotMinMax(sanplot ?? {});
-  const positiveSanPlotMax = sanPlotMax.positive?.max ?? 0;
-  const negativeSanPlotMax = sanPlotMax.negative?.max ?? 0;
-  const max = Math.max(
-    positiveSanPlotMax,
-    negativeSanPlotMax,
+  const { percentiles, sanplot } = noise;
+
+  const max = matrixMaxAbsoluteZ(quadrantData.z) // Math.max(positiveSanPlotMax, negativeSanPlotMax);//
+
+  const isSymmetrized = filters.some(
+    (filter) => filter.name === 'symmetrizeCosyLike' && filter.enabled,
+  );
+  const isNUS = filters.some(
+    (filter) => filter.name === 'nusDimension2' && filter.enabled,
   );
 
-  const isSymmetrized = filters.some((filter) => filter.name === 'symmetrizeCosyLike' && filter.enabled);
-  const isNUS = filters.some((filter) => filter.name === 'nusDimension2' && filter.enabled);
-  
-  const { positive: pPositive, negative: pNegative } = percentiles
-  
+  const { positive: pPositive, negative: pNegative } = percentiles;
+
   const percentileValue = isSymmetrized ? (isNUS ? 60 : 70) : 99;
   const pPositiveValue = pPositive[percentileValue];
   const pNegativeValue = pNegative[percentileValue];
 
-  const optimalContourLevel = getContourThresholdFromPercentiles(pPositive, pNegative, {
-    minP: 80,
-    maxP: 99,
-    madScale: 1,
-  });
+  const optimalContourLevel = getContourThresholdFromPercentiles(
+    pPositive,
+    pNegative,
+    {
+      minP: 80,
+      maxP: 99,
+      madScale: 1,
+    },
+  );
+  // console.log(matrixToArray(quadrantData.z).length, matrixMinMaxZ(quadrantData.z), matrixMaxAbsoluteZ(quadrantData.z), max, sanplot, 'length of data') 
+  // const contourLevelProposal = computeMinContourLevel(
+  //   matrixToArray(quadrantData.z),
+  //   Math.max(noise.positive, noise.negative),
+  //   {
+  //     signalPurityTarget: 0.998,
+  //     searchMaxMultiple: 1000,
+  //   }
+  // );
 
-  const minAllowedByPercentile = Math.max(pPositiveValue ?? 0, pNegativeValue ?? 0);
+  const newProposarGemma = NMRContourCalculator.calculateInitialMinLevel(matrixToArray(quadrantData.z), quadrantData.z.length,
+    quadrantData.z[0].length, { contourRatio: 1.5, noiseSigma: Math.max(noise.positive, noise.negative), targetSignalLevels: 10, signalPercentile: 0.999 });
+  const bestMinLevel = findAutomaticContourLevels(
+    matrixToArray(quadrantData.z),
+    quadrantData.z.length,
+    quadrantData.z[0].length,
+    Math.max(noise.poistive, noise.negative),
+    {
+      persistenceLevels: 10,
+      ridgeCoverageThreshold: experiment.includes('jres') ? 0.8 : 0.1
+    }
+  );
+  console.log(newProposarGemma, 'newProposarGemma');
+  console.log(contourLevelProposal, 'contourLevelProposal');
+  console.log(bestMinLevel, 'bestMinLevel');
+  // const minAllowedByPercentile = Math.max(
+  //   pPositiveValue ?? 0,
+  //   pNegativeValue ?? 0,
+  // );
 
-  const minLevel = isSymmetrized || isNUS ? Math.min(optimalContourLevel, minAllowedByPercentile) : Math.max(optimalContourLevel, minAllowedByPercentile);
+  // const minLevel =
+  //   isSymmetrized || isNUS
+  //     ? Math.min(optimalContourLevel, minAllowedByPercentile)
+  //     : Math.max(optimalContourLevel, minAllowedByPercentile);
   const minContourLevel = Math.min(
-    calculateValueOfLevel(minLevel, max, true),
+    calculateValueOfLevel(bestMinLevel.minLevelWithoutT1Noise, max, true),
     DEFAULT_CONTOURS_OPTIONS.positive.contourLevels[1] -
       DEFAULT_CONTOURS_OPTIONS.positive.numberOfLayers,
   );
-
+  console.log(`minLevel`, minContourLevel, calculateValueOfLevel(contourLevelProposal.minLevel, max, true), calculateValueOfLevel(bestMinLevel.minLevelWithoutT1Noise, max, true));
   const defaultLevel: ContourOptions = {
     negative: {
       numberOfLayers: DEFAULT_CONTOURS_OPTIONS.negative.numberOfLayers,
@@ -115,127 +158,7 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
   return defaultLevel;
 }
 
-function getSanPlotMinMax(
-  sanplot: Record<string, DataXY>,
-  options: { logBaseY?: number } = {},
-): Record<string, { min: number; max: number }> {
-  const { logBaseY = 2 } = options;
 
-  const result: Record<string, { min: number; max: number }> = {};
-
-  for (const [key, series] of Object.entries(sanplot)) {
-    const y = series.y;
-    if (y.length === 0) {
-      result[key] = { min: Number.MIN_SAFE_INTEGER, max: Number.MIN_SAFE_INTEGER };
-      continue;
-    }
-
-    const first = logBaseY ** y[0];
-    const last = logBaseY ** (y.at(-1) ?? 1);
-
-    result[key] = {
-      min: Math.min(first, last),
-      max: Math.max(first, last),
-    };
-  }
-
-  return result;
-}
-
- function getContourThresholdFromPercentiles(
-  positivePercentiles: readonly number[],
-  negativePercentiles: readonly number[],
-  options: ContourThresholdOptions = {},
-): number {
-  const positiveContourLevel = findOptimalContourThreshold(positivePercentiles, options);
-  const negativeContourLevel = findOptimalContourThreshold(negativePercentiles, options);
-
-  const positiveThreshold = positivePercentiles[positiveContourLevel.optimalPercentile];
-  const negativeThreshold = negativePercentiles[negativeContourLevel.optimalPercentile];
-
-  return Math.max(positiveThreshold, negativeThreshold);
-}
-/**
- * Finds the optimal minimum contour threshold for a 2D NMR spectrum
- * using the Robust Median-MAD formulation on a percentile-intensity array.
- *
- * @param {number[]} percentiles - Array where index = percentile (0-100),
- *                                 value = intensity at that percentile.
- * @param {object} options - Configuration options
- * @returns {object} - { optimalPercentile, optimalThreshold, maxSNR }
- */
-interface ContourThresholdOptions {
-  minP?: number;
-  maxP?: number;
-  madScale?: number;
-  scoreRatio?: number;
-}
-
-interface OptimalContourMinLevel {
-  optimalPercentile: number;
-  optimalThreshold: number;
-  maxSNR: number;
-}
-
-function interpolate(arr: readonly number[], idx: number): number {
-  const i = Math.floor(idx);
-  const j = Math.ceil(idx);
-  if (i === j || i < 0 || j >= arr.length) {
-    return arr[Math.max(0, Math.min(arr.length - 1, Math.round(idx)))];
-  }
-  return arr[i] + (idx - i) * (arr[j] - arr[i]);
-}
-
-function findOptimalContourThreshold(
-  percentiles: readonly number[],
-  options: ContourThresholdOptions = {}
-): OptimalContourMinLevel {
-  const { minP = 80, maxP = 99, madScale = 1 } = options;
-
-  if (madScale <= 0) {
-    throw new Error('madScale must be > 0 to avoid division by zero.');
-  }
-
-  // Linear interpolation for non-integer percentile indices
-  
-  let bestP = minP;
-  let bestSNR = -Infinity;
-
-  for (let p = minP; p <= maxP; p++) {
-  const idxMedian    = p / 2;
-  const idxQ1        = p / 4;
-  const idxQ3        = (3 * p) / 4;
-  const idxMeanAbove = (p + 100) / 2;
-
-  const medianBelow = interpolate(percentiles, idxMedian);
-  const q1Below     = interpolate(percentiles, idxQ1);
-  const q3Below     = interpolate(percentiles, idxQ3);
-  const meanAbove   = interpolate(percentiles, idxMeanAbove);
-
-  const madBelow = (q3Below - q1Below) / 2;
-  if (madBelow <= 0) continue;
-
-  const snr = (meanAbove - medianBelow) / (madBelow * madScale);
-
-  // ✦ Coverage weight: fraction of points ABOVE the threshold
-  //   At p=80 → weight=0.20, at p=99 → weight=0.01
-  //   This penalizes thresholds that exclude too much.
-  const coverage = (100 - p) / 100;
-
-  // Optional: sharpen the penalty with an exponent
-  const score = snr * coverage ** 0.5;  // sqrt softens it
-
-  if (score > bestSNR) {
-    bestSNR = score;
-    bestP = p;
-  }
-}
-  return {
-    optimalPercentile: bestP,
-    optimalThreshold: interpolate(percentiles, bestP),
-    maxSNR: bestSNR
-  };
-}
 
 function contoursManager(options: ContourOptions): ContoursManagerReturn {
   const contourOptions = { ...options };
