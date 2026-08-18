@@ -3,7 +3,13 @@ import type { ItemRenderer } from '@blueprintjs/select';
 import { Select } from '@blueprintjs/select';
 import styled from '@emotion/styled';
 import { revalidateLogic } from '@tanstack/react-form';
-import { AppForm, Button, TooltipHelpContent, useForm } from 'react-science/ui';
+import {
+  AppForm,
+  Button,
+  TooltipHelpContent,
+  coerceNumberInput,
+  useForm,
+} from 'react-science/ui';
 import { z } from 'zod/v4';
 
 import { useDispatch } from '../context/DispatchContext.js';
@@ -39,9 +45,9 @@ const LookFor: Item[] = [
 ];
 
 const validationSchema = z.object({
-  maxNumberOfPeaks: z.coerce.number<string>().min(1),
-  minMaxRatio: z.coerce.number<string>().min(0),
-  noiseFactor: z.coerce.number<string>().min(0),
+  maxNumberOfPeaks: coerceNumberInput(z.number().min(1)),
+  minMaxRatio: coerceNumberInput(z.number().min(0)),
+  noiseFactor: coerceNumberInput(z.number().min(0)),
   direction: z.enum(['both', 'negative', 'positive']),
 });
 

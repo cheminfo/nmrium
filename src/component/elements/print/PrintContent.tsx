@@ -5,7 +5,7 @@ import type { PrintPageOptions } from '@zakodium/nmrium-core';
 import type { CSSProperties, ReactNode } from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { AppForm, Button, useForm } from 'react-science/ui';
+import { AppForm, Button, coerceNumberInput, useForm } from 'react-science/ui';
 import { z } from 'zod';
 
 import { StandardDialog } from '../StandardDialog.tsx';
@@ -294,7 +294,7 @@ function PrintPageOptionsModal(props: PrintOptionsModalProps) {
 }
 
 const printOptionsValidation = z.object({
-  margin: z.coerce.number<string>().min(0),
+  margin: coerceNumberInput(z.number().min(0)),
   layout: z.enum(['landscape', 'portrait']),
   size: z.enum([
     'Letter',
