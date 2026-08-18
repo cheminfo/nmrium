@@ -1,8 +1,8 @@
 import type {
   ProcessingOperatorId,
-  ProcessingOperatorUI,
   SpectrumProcessingOperation,
-} from '@zakodium/nmrium-core';
+} from '@zakodium/nmr-types';
+import type { ProcessingOperatorUI } from '@zakodium/nmrium-core';
 import { useMemo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { PanelHeader, Toolbar } from 'react-science/ui';

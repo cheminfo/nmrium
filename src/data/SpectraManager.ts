@@ -96,7 +96,7 @@ export function toJSON(
     sources,
     data = [],
     molecules: mols = [],
-    correlations = {},
+    correlations,
     actionType = '',
   } = state;
 

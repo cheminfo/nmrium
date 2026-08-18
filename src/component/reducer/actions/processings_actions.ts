@@ -1,9 +1,8 @@
 import type {
   ProcessingOperatorId,
-  ProcessingOperatorUI,
-  Spectrum,
   SpectrumProcessingOperation,
-} from '@zakodium/nmrium-core';
+} from '@zakodium/nmr-types';
+import type { ProcessingOperatorUI, Spectrum } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
 
 import type { State } from '../Reducer.ts';

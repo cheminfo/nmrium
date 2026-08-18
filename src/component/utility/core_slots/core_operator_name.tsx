@@ -1,4 +1,4 @@
-import type { ProcessingOperatorId } from '@zakodium/nmrium-core';
+import type { ProcessingOperatorId } from '@zakodium/nmr-types';
 import type { ReactNode } from 'react';
 
 import { useCore } from '../../context/CoreContext.tsx';

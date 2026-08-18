@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
-import { getAtomCounts } from 'nmr-correlation';
+import type { CorrelationData } from 'nmr-processing';
+import { correlationApi } from 'nmr-processing';
 import { memo } from 'react';
 
 import { ErrorColors, Errors } from './CorrelationTable/Constants.js';
@@ -17,20 +18,11 @@ const Container = styled.div`
 `;
 
 interface OverviewProps {
-  correlationsData?: {
-    options: {
-      mf: string;
-    };
-    state: any;
-  };
+  correlationsData: CorrelationData;
 }
 
 function Overview({ correlationsData }: OverviewProps) {
-  if (!correlationsData) {
-    return null;
-  }
-
-  const atoms = getAtomCounts(correlationsData.options.mf);
+  const atoms = correlationApi.getAtomCounts(correlationsData.options.mf || '');
 
   const elements =
     Object.keys(atoms).length > 0 ? (

@@ -1,20 +1,17 @@
+import type { Signal2D } from '@zakodium/nmr-types';
 import type {
   ActiveSpectrum,
   Spectrum2D,
   Spectrum,
 } from '@zakodium/nmrium-core';
-import type { FromTo } from 'cheminfo-types';
 import dlv from 'dlv';
 import lodashCloneDeep from 'lodash/cloneDeep.js';
-import type { Correlation, Link } from 'nmr-correlation';
-import {
-  addLink,
-  buildCorrelation,
-  buildLink,
-  getLinkDelta,
-  getLinkDim,
-  removeLink,
-} from 'nmr-correlation';
+import type {
+  Correlation,
+  CorrelationData,
+  CorrelationLink,
+} from 'nmr-processing';
+import { correlationApi } from 'nmr-processing';
 
 import DefaultPathLengths from '../../../../data/constants/DefaultPathLengths.js';
 import {
@@ -29,8 +26,11 @@ function getAtomType(nucleus: string): string {
   return nucleus.split(/\d+/, 2)[1];
 }
 
-function getLabelColor(correlationData: any, correlation: any) {
-  const error = correlationData?.state?.[correlation.atomType]?.error ?? null;
+function getLabelColor(
+  correlationData: CorrelationData,
+  correlation: Correlation,
+) {
+  const error = correlationData.state?.[correlation.atomType]?.error ?? null;
 
   if (error) {
     for (const { key, color } of ErrorColors) {
@@ -38,7 +38,8 @@ function getLabelColor(correlationData: any, correlation: any) {
         key !== 'incomplete' && // do not consider this for a single atom type
         (key === 'notAttached' || key === 'ambiguousAttachment') &&
         dlv(error, key, []).some(
-          (index: any) => correlationData.values[index].id === correlation.id,
+          (index: number) =>
+            correlationData.values[index].id === correlation.id,
         )
       ) {
         return color;
@@ -51,7 +52,7 @@ function getLabelColor(correlationData: any, correlation: any) {
 
 function findSignalMatch1D(
   spectrum: Spectrum2D,
-  link: Link,
+  link: CorrelationLink,
   factor: number,
   xDomain0: number,
   xDomain1: number,
@@ -71,7 +72,7 @@ function findSignalMatch1D(
 
 function findSignalMatch2D(
   spectrum: Spectrum2D,
-  link: Link,
+  link: CorrelationLink,
   factor: number,
   xDomain0: number,
   xDomain1: number,
@@ -92,15 +93,14 @@ function findSignalMatch2D(
   return false;
 }
 
-function getAbbreviation(link: Link): string {
+function getAbbreviation(link: CorrelationLink): string {
+  const signal = link.signal as Signal2D;
   let abbreviation = 'X';
   switch (link.experimentType) {
     case 'hsqc':
     case 'hmqc': {
       abbreviation =
-        !link.signal || link.signal.sign === 0
-          ? 'S'
-          : `S${link.signal.sign === 1 ? '+' : '-'}`;
+        signal.sign === 0 ? 'S' : `S${signal.sign === 1 ? '+' : '-'}`;
       break;
     }
     case 'hmbc':
@@ -126,8 +126,8 @@ function getAbbreviation(link: Link): string {
     // No default
   }
 
-  const pathLength: FromTo | undefined = link.signal.j?.pathLength;
-  if (pathLength) {
+  const pathLength = signal.j?.pathLength;
+  if (pathLength && typeof pathLength === 'object') {
     const isDefaultCorrelation =
       DefaultPathLengths[link.experimentType] &&
       pathLength.from >= DefaultPathLengths[link.experimentType].from &&
@@ -141,8 +141,8 @@ function getAbbreviation(link: Link): string {
   return abbreviation;
 }
 
-function buildNewLink1D(link: any) {
-  return buildLink({
+function buildNewLink1D(link: CorrelationLink) {
+  return correlationApi.buildLink({
     ...link,
     edited: {
       ...link.edited,
@@ -151,9 +151,9 @@ function buildNewLink1D(link: any) {
   });
 }
 
-function buildNewLink2D(link: Link, axis: 'x' | 'y') {
+function buildNewLink2D(link: CorrelationLink, axis: 'x' | 'y') {
   const linkIDs = link.id.split('_');
-  return buildLink({
+  return correlationApi.buildLink({
     ...link,
     id: linkIDs[axis === 'x' ? 0 : 1],
     axis,
@@ -167,20 +167,20 @@ function buildNewLink2D(link: Link, axis: 'x' | 'y') {
 
 function cloneCorrelationAndEditLink(
   correlation: Correlation,
-  link: Link,
+  link: CorrelationLink,
   axis: 'x' | 'y',
   action: 'add' | 'remove' | 'unmove',
 ): Correlation {
-  const linkDim = getLinkDim(link);
+  const linkDim = correlationApi.getLinkDim(link);
   const _correlation = lodashCloneDeep(correlation);
   const split = link.id.split('_');
   if (action === 'add') {
-    addLink(
+    correlationApi.addLink(
       _correlation,
       linkDim === 1 ? buildNewLink1D(link) : buildNewLink2D(link, axis),
     );
   } else if (action === 'remove' || action === 'unmove') {
-    removeLink(_correlation, axis === 'x' ? split[0] : split[1]);
+    correlationApi.removeLink(_correlation, axis === 'x' ? split[0] : split[1]);
   }
 
   return _correlation;
@@ -200,7 +200,7 @@ function getEditedCorrelations({
   action: 'move' | 'remove' | 'unmove' | 'setPathLength';
   selectedCorrelationIdDim1: string | undefined;
   selectedCorrelationIdDim2: string | undefined;
-  link: Link;
+  link: CorrelationLink;
   correlations: Correlation[];
 }) {
   const selectedCorrelationDim1 = correlations.find(
@@ -212,7 +212,7 @@ function getEditedCorrelations({
   const hasChangedDim1 = selectedCorrelationDim1?.id !== correlationDim1.id;
   const hasChangedDim2 =
     correlationDim2 && selectedCorrelationDim2?.id !== correlationDim2?.id;
-  const linkDim = getLinkDim(link);
+  const linkDim = correlationApi.getLinkDim(link);
 
   const editedCorrelations: Correlation[] = [];
   const buildCorrelationDataOptions: {
@@ -239,7 +239,7 @@ function getEditedCorrelations({
             'add',
           );
         } else {
-          newCorrelationDim1 = buildCorrelation({
+          newCorrelationDim1 = correlationApi.buildCorrelation({
             atomType: correlationDim1.atomType,
             link: [buildNewLink1D(link)],
           });
@@ -290,7 +290,7 @@ function getEditedCorrelations({
               'x',
               'add',
             ),
-            buildCorrelation({
+            correlationApi.buildCorrelation({
               atomType: correlationDim2.atomType,
               link: [buildNewLink2D(link, 'y')],
             }),
@@ -300,7 +300,7 @@ function getEditedCorrelations({
           selectedCorrelationDim2
         ) {
           editedCorrelations.push(
-            buildCorrelation({
+            correlationApi.buildCorrelation({
               atomType: correlationDim1.atomType,
               link: [buildNewLink2D(link, 'x')],
             }),
@@ -316,11 +316,11 @@ function getEditedCorrelations({
           selectedCorrelationIdDim2 === 'new'
         ) {
           editedCorrelations.push(
-            buildCorrelation({
+            correlationApi.buildCorrelation({
               atomType: correlationDim1.atomType,
               link: [buildNewLink2D(link, 'x')],
             }),
-            buildCorrelation({
+            correlationApi.buildCorrelation({
               atomType: correlationDim2.atomType,
               link: [buildNewLink2D(link, 'y')],
             }),
@@ -339,7 +339,7 @@ function getEditedCorrelations({
         'remove',
       );
       editedCorrelations.push(_correlationDim1);
-      if (getLinkDim(link) === 2) {
+      if (correlationApi.getLinkDim(link) === 2) {
         const _correlationDim2 = cloneCorrelationAndEditLink(
           correlationDim2,
           link,
@@ -402,30 +402,34 @@ function getEditedCorrelations({
 
 function cloneCorrelationAndSetPathLength(
   correlation: Correlation,
-  editedLink: Link,
+  editedLink: CorrelationLink,
   axis: 'x' | 'y',
 ): Correlation {
   const _correlation = lodashCloneDeep(correlation);
-  const linkDim = getLinkDim(editedLink);
+  const linkDim = correlationApi.getLinkDim(editedLink);
   if (linkDim === 2) {
     const editedLinkID = editedLink.id.split('_')[axis === 'x' ? 0 : 1];
-    const _link = _correlation.link.find(
-      (link: any) => link.id === editedLinkID,
-    );
+    const editedLinkSignal = editedLink.signal as Signal2D;
+    const _link = _correlation.link.find((link) => link.id === editedLinkID);
     if (_link) {
-      const newPathLength: FromTo = editedLink.signal.j?.pathLength;
+      const _signal = _link.signal as Signal2D;
+      const newPathLength = editedLinkSignal.j?.pathLength;
       // remove (previous) pathLength if it is same as default
-      if (isDefaultPathLength(newPathLength, _link.experimentType)) {
-        delete _link.signal.j?.pathLength;
-        if (_link.signal.j && Object.keys(_link.signal.j).length === 0) {
-          delete _link.signal.j;
+      if (
+        newPathLength &&
+        typeof newPathLength === 'object' &&
+        isDefaultPathLength(newPathLength, _link.experimentType)
+      ) {
+        delete _signal.j?.pathLength;
+        if (_signal.j && Object.keys(_signal.j).length === 0) {
+          delete _signal.j;
         }
         delete _link.edited.pathLength;
       } else {
-        if (!_link.signal.j) {
-          _link.signal.j = { pathLength: newPathLength };
+        if (!_signal.j) {
+          _signal.j = { pathLength: newPathLength };
         } else {
-          _link.signal.j.pathLength = newPathLength;
+          _signal.j.pathLength = newPathLength;
         }
         _link.edited.pathLength = true;
       }
@@ -484,9 +488,7 @@ function isInView(
 
   if (
     activeSpectrum === null ||
-    !correlation.link.some(
-      (link: any) => link.experimentID === activeSpectrum.id,
-    )
+    !correlation.link.some((link) => link.experimentID === activeSpectrum.id)
   ) {
     return false;
   }
@@ -501,12 +503,12 @@ function isInView(
 
   if (displayerMode === '1D') {
     const firstLink1D = correlation.link.find(
-      (link: any) => getLinkDim(link) === 1,
+      (link) => correlationApi.getLinkDim(link) === 1,
     );
     if (!firstLink1D) {
       return false;
     }
-    let delta = getLinkDelta(firstLink1D);
+    let delta = correlationApi.getLinkDelta(firstLink1D);
     if (delta === undefined) {
       return false;
     }
@@ -522,7 +524,7 @@ function isInView(
     }
     // try to find a link which contains the belonging 2D signal in the spectra in view
     if (
-      correlation.link.some((link: any) => {
+      correlation.link.some((link) => {
         const spectrum = findSpectrum(
           spectraData,
           link.experimentID,
@@ -538,7 +540,7 @@ function isInView(
       return false;
     }
     const firstLink2D = correlation.link.find(
-      (link: any) => getLinkDim(link) === 2,
+      (link) => correlationApi.getLinkDim(link) === 2,
     );
     if (!firstLink2D) {
       return false;
@@ -564,7 +566,7 @@ function isInView(
     }
     // try to find a link which contains the belonging 2D signal in the spectra in view
     else if (
-      correlation.link.some((link: any) => {
+      correlation.link.some((link) => {
         const spectrum = findSpectrum(
           spectraData,
           link.experimentID,

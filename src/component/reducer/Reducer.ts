@@ -1,16 +1,15 @@
-import type { BaselineCorrectionZone } from '@zakodium/nmr-types';
 import type {
+  BaselineCorrectionZone,
   ProcessingOperatorId,
-  Spectrum,
   SpectrumProcessingOperation,
-  ViewState,
-} from '@zakodium/nmrium-core';
+} from '@zakodium/nmr-types';
+import type { Spectrum, ViewState } from '@zakodium/nmrium-core';
 import type { Source } from 'file-collection';
 import { FileCollection } from 'file-collection';
 import type { Draft } from 'immer';
 import { original, produce } from 'immer';
-import type { CorrelationData } from 'nmr-correlation';
-import { buildCorrelationData } from 'nmr-correlation';
+import type { CorrelationData } from 'nmr-processing';
+import { correlationApi } from 'nmr-processing';
 import type { Reducer } from 'react';
 
 import type { StateMoleculeExtended } from '../../data/molecules/Molecule.js';
@@ -162,7 +161,9 @@ export const getInitialState = (): State => ({
   isLoading: false,
   keysPreferences: {},
   displayerMode: '1D',
-  correlations: {},
+  correlations: correlationApi.buildCorrelationData([], {
+    tolerance: DefaultTolerance,
+  }),
   displayerKey: '',
   zoom: {
     history: {},
@@ -425,13 +426,9 @@ export interface State {
 
 export function initState(state: State): State {
   const displayerKey = crypto.randomUUID();
-  const correlations = buildCorrelationData([], {
-    tolerance: DefaultTolerance,
-  });
 
   return {
     ...state,
-    correlations,
     displayerKey,
     history: {},
   };

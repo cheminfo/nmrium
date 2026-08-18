@@ -10,8 +10,8 @@ import type { Draft } from 'immer';
 import { produce } from 'immer';
 import lodashMerge from 'lodash/merge.js';
 import lodashMergeWith from 'lodash/mergeWith.js';
-import type { CorrelationData } from 'nmr-correlation';
-import { buildCorrelationData } from 'nmr-correlation';
+import type { CorrelationData } from 'nmr-processing';
+import { correlationApi } from 'nmr-processing';
 import type { ParseResult } from 'papaparse';
 
 import { initiateDatum1D } from '../../../data/data1d/Spectrum1D/index.js';
@@ -78,9 +78,12 @@ function convertHybridizationStringValuesInCorrelations(
   };
 }
 
-function setCorrelation(draft: Draft<State>, correlations: CorrelationData) {
+function setCorrelation(
+  draft: Draft<State>,
+  correlations: CorrelationData | null,
+) {
   if (!correlations || Object.keys(correlations).length === 0) {
-    draft.correlations = buildCorrelationData([], {
+    draft.correlations = correlationApi.buildCorrelationData([], {
       tolerance: DefaultTolerance,
     });
   } else {
@@ -120,7 +123,7 @@ function setData(draft: Draft<State>, input: InputProps | InitiateProps) {
     sources,
     spectra = [],
     molecules = [],
-    correlations = {},
+    correlations = null,
   } = data || {};
 
   if (view) {

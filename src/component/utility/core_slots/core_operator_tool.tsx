@@ -1,5 +1,5 @@
+import type { ProcessingOperatorId } from '@zakodium/nmr-types';
 import type {
-  ProcessingOperatorId,
   ProcessingOperatorUI,
   ProcessingOperatorUIToolProps,
 } from '@zakodium/nmrium-core';

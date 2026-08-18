@@ -1,6 +1,6 @@
+import type { Spectrum } from '@zakodium/nmrium-core';
 import { isSpectrum1D } from '@zakodium/nmrium-core';
 import { xGetFromToIndex } from 'ml-spectra-processing';
-import type { Spectrum } from 'nmr-correlation';
 
 import { useChartData } from '../context/ChartContext.js';
 
@@ -37,6 +37,8 @@ export function useCheckPointsNumberInWindowArea() {
   const {
     xDomain: [from, to],
   } = state;
+
+  if (!spectrum) return false;
 
   return checkPointNumberInWindowArea(spectrum, from, to);
 }
