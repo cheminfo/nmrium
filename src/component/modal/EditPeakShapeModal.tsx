@@ -1,6 +1,5 @@
 import { DialogFooter } from '@blueprintjs/core';
 import { revalidateLogic } from '@tanstack/react-form';
-import { useSelector } from '@tanstack/react-store';
 import type { Peak1D } from '@zakodium/nmr-types';
 import { assertNotNullish } from '@zakodium/utils';
 import { AppForm, Button, coerceNumberInput, useForm } from 'react-science/ui';
@@ -177,7 +176,6 @@ function InnerEditPeakShapeModal(props: Required<EditPeakShapeModalProps>) {
   });
 
   const valuePPM = formatNumber(peak.x, tablePreferences.deltaPPM.format);
-  const storeKind = useSelector(form.store, (store) => store.values.kind);
 
   return (
     <StandardDialog
@@ -196,27 +194,31 @@ function InnerEditPeakShapeModal(props: Required<EditPeakShapeModalProps>) {
               },
             }}
           >
-            {(field) => <field.Select label="Kind" items={PEAKS_SHAPES} />}
-          </form.AppField>
+            {(field) => (
+              <>
+                <field.Select label="Kind" items={PEAKS_SHAPES} />
 
-          <form.AppField name="fwhm">
-            {(field) => <field.NumericInput label="FWHM" min={0} />}
-          </form.AppField>
+                <form.AppField name="fwhm">
+                  {(field) => <field.NumericInput label="FWHM" min={0} />}
+                </form.AppField>
 
-          {match(storeKind)
-            .with('pseudoVoigt', () => (
-              <form.AppField name="mu">
-                {(field) => <field.NumericInput label="Mu" min={0} />}
-              </form.AppField>
-            ))
-            .with('generalizedLorentzian', () => (
-              <form.AppField name="gamma">
-                {(field) => (
-                  <field.NumericInput label="Gamma" min={-1} max={2} />
-                )}
-              </form.AppField>
-            ))
-            .otherwise(() => null)}
+                {match(field.state.value)
+                  .with('pseudoVoigt', () => (
+                    <form.AppField name="mu">
+                      {(field) => <field.NumericInput label="Mu" min={0} />}
+                    </form.AppField>
+                  ))
+                  .with('generalizedLorentzian', () => (
+                    <form.AppField name="gamma">
+                      {(field) => (
+                        <field.NumericInput label="Gamma" min={-1} max={2} />
+                      )}
+                    </form.AppField>
+                  ))
+                  .otherwise(() => null)}
+              </>
+            )}
+          </form.AppField>
         </StyledDialogBody>
         <DialogFooter
           actions={
