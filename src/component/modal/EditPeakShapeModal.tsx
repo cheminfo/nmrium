@@ -1,60 +1,20 @@
 import { DialogFooter } from '@blueprintjs/core';
-import styled from '@emotion/styled';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { revalidateLogic } from '@tanstack/react-form';
 import type { Peak1D } from '@zakodium/nmr-types';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { Button } from 'react-science/ui';
-import * as Yup from 'yup';
+import { assertNotNullish } from '@zakodium/utils';
+import { AppForm, Button, coerceNumberInput, useForm } from 'react-science/ui';
+import { match } from 'ts-pattern';
+import { z } from 'zod';
 
 import { useDispatch } from '../context/DispatchContext.js';
-import type { LabelStyle } from '../elements/Label.js';
-import Label from '../elements/Label.js';
-import { NumberInput2Controller } from '../elements/NumberInput2Controller.js';
-import { Select2 } from '../elements/Select2.js';
 import { StandardDialog } from '../elements/StandardDialog.tsx';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 import { useActiveNucleusTab } from '../hooks/useActiveNucleusTab.js';
 import { usePanelPreferences } from '../hooks/usePanelPreferences.js';
 import { formatNumber } from '../utility/formatNumber.js';
 
-const FooterContainer = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  gap: 5px;
-`;
-
 type Shape = NonNullable<Peak1D['shape']>;
 type Kind = Shape['kind'];
-
-function getKindDefaultValues(kind: Kind) {
-  return {
-    kind,
-    fwhm: 500,
-    ...(kind === 'pseudoVoigt'
-      ? { mu: 0.5 }
-      : kind === 'generalizedLorentzian' && { gamma: 0.5 }),
-  };
-}
-function getValues(peak: Peak1D, kind: Kind): Shape {
-  const { shape } = peak;
-  const shapeData =
-    (shape?.kind || '').toLocaleLowerCase() !== kind
-      ? {
-          ...getKindDefaultValues(kind),
-          ...(shape?.fwhm && { fwhm: shape?.fwhm }),
-        }
-      : shape;
-
-  return shapeData as Shape;
-}
-
-function validation(kind: Kind) {
-  return Yup.object().shape({
-    fwhm: Yup.number().required(),
-    ...(kind === 'pseudoVoigt' && { mu: Yup.number().required() }),
-  });
-}
 
 export const PEAKS_SHAPES: Array<{ label: string; value: Kind }> = [
   {
@@ -75,11 +35,76 @@ export const PEAKS_SHAPES: Array<{ label: string; value: Kind }> = [
   },
 ];
 
-const labelStyle: LabelStyle = {
-  container: { paddingTop: '5px' },
-  label: { flex: 3, fontSize: '14px', fontWeight: 'normal' },
-  wrapper: { flex: 7, display: 'flex' },
+const sharedFieldsValidation = {
+  fwhm: coerceNumberInput(z.number().min(0)),
 };
+
+const otherShapeValuesValidation = PEAKS_SHAPES.map(
+  (shape) => shape.value,
+).filter(
+  (value) => value !== 'pseudoVoigt' && value !== 'generalizedLorentzian',
+);
+
+const baseZodValidation = z.object({
+  ...sharedFieldsValidation,
+  kind: z.enum(otherShapeValuesValidation),
+});
+
+const muZodValidation = z.object({
+  ...sharedFieldsValidation,
+  kind: z.literal('pseudoVoigt'),
+  mu: coerceNumberInput(),
+});
+
+const gammaZodValidation = z.object({
+  ...sharedFieldsValidation,
+  kind: z.literal('generalizedLorentzian'),
+  gamma: coerceNumberInput(z.number().min(-1).max(2)),
+});
+
+const zodValidation = z.discriminatedUnion('kind', [
+  baseZodValidation,
+  muZodValidation,
+  gammaZodValidation,
+]);
+
+function shapeToForm(shape: Shape): z.input<typeof zodValidation> {
+  if (shape.kind === 'pseudoVoigt') {
+    return {
+      kind: 'pseudoVoigt',
+      fwhm: shape.fwhm?.toString() || '500',
+      mu: shape.mu?.toString() || '0.5',
+    };
+  }
+
+  if (shape.kind === 'generalizedLorentzian') {
+    return {
+      kind: 'generalizedLorentzian',
+      fwhm: shape.fwhm?.toString() || '500',
+      gamma: shape.gamma?.toString() || '0.5',
+    };
+  }
+
+  return {
+    kind: shape.kind,
+    fwhm: shape.fwhm?.toString() || '500',
+  };
+}
+
+function getValues(peak: Peak1D, kind: Kind): z.input<typeof zodValidation> {
+  const { shape } = peak;
+  assertNotNullish(shape);
+
+  if ((shape?.kind || '').toLocaleLowerCase() !== kind) {
+    const defaults = getDefaultValues(kind);
+
+    return shape?.fwhm !== undefined
+      ? { ...defaults, fwhm: shape.fwhm.toString() }
+      : defaults;
+  }
+
+  return shapeToForm(shape);
+}
 
 interface EditPeakShapeModalProps {
   onCloseDialog: () => void;
@@ -93,37 +118,62 @@ export function EditPeakShapeModal(props: EditPeakShapeModalProps) {
   return <InnerEditPeakShapeModal peak={peak} {...otherProps} />;
 }
 
+function getDefaultValues(
+  shapeKind: Kind = 'gaussian',
+): z.input<typeof zodValidation> {
+  if (shapeKind === 'pseudoVoigt') {
+    return {
+      kind: 'pseudoVoigt',
+      fwhm: '500',
+      mu: '0.5',
+    };
+  }
+
+  if (shapeKind === 'generalizedLorentzian') {
+    return {
+      kind: 'generalizedLorentzian',
+      fwhm: '500',
+      gamma: '0.5',
+    };
+  }
+
+  return {
+    kind: shapeKind,
+    fwhm: '500',
+  };
+}
+
 function InnerEditPeakShapeModal(props: Required<EditPeakShapeModalProps>) {
   const { peak, onCloseDialog } = props;
   const dispatch = useDispatch();
   const activeTab = useActiveNucleusTab();
   const { tablePreferences } = usePanelPreferences('peaks', activeTab);
+  const initialKind = peak.shape?.kind || 'gaussian';
 
-  const [kind, setKind] = useState<Kind>(peak.shape?.kind || 'gaussian');
-  const { handleSubmit, control, reset } = useForm<Shape>({
-    defaultValues: getValues(peak, kind),
-    resolver: yupResolver(validation(kind)) as any,
-  });
+  const form = useForm({
+    defaultValues: getValues(peak, initialKind),
+    validationLogic: revalidateLogic({ mode: 'change' }),
+    validators: {
+      onDynamic: zodValidation,
+    },
+    onSubmitMeta: {
+      applyToAll: false,
+    },
+    onSubmit: ({ value, meta }) => {
+      const { applyToAll } = meta;
+      const shape = zodValidation.parse(value);
 
-  function changePeakShapeHandler(applyToAll = false) {
-    void handleSubmit((values) => {
       dispatch({
         type: 'CHANGE_PEAK_SHAPE',
         payload: {
           id: !applyToAll ? peak.id : undefined,
-          shape: {
-            ...values,
-          },
+          shape,
         },
       });
-      onCloseDialog();
-    })();
-  }
 
-  function handleChangeKind({ value }: { value: Kind }) {
-    reset(getValues(peak, value));
-    setKind(value);
-  }
+      onCloseDialog();
+    },
+  });
 
   const valuePPM = formatNumber(peak.x, tablePreferences.deltaPPM.format);
 
@@ -134,58 +184,69 @@ function InnerEditPeakShapeModal(props: Required<EditPeakShapeModalProps>) {
       onClose={onCloseDialog}
       title={`Peak Shape Edition ( ${valuePPM} PPM )`}
     >
-      <StyledDialogBody padding="1.5em 3em">
-        <>
-          <Label title="Kind:" style={labelStyle}>
-            <Select2
-              items={PEAKS_SHAPES}
-              selectedItemValue={kind}
-              onItemSelect={handleChangeKind}
-            />
-          </Label>
-
-          <Label title="FWHM:" style={labelStyle}>
-            <NumberInput2Controller min={0} control={control} name="fwhm" />
-          </Label>
-
-          {kind === 'pseudoVoigt' && (
-            <Label title="Mu:" style={labelStyle}>
-              <NumberInput2Controller min={0} control={control} name="mu" />
-            </Label>
-          )}
-          {kind === 'generalizedLorentzian' && (
-            <Label title="Gamma:" style={labelStyle}>
-              <NumberInput2Controller
-                min={-1}
-                max={2}
-                control={control}
-                name="gamma"
-              />
-            </Label>
-          )}
-        </>
-      </StyledDialogBody>
-      <DialogFooter>
-        <FooterContainer>
-          <Button
-            variant="outlined"
-            intent="danger"
-            onClick={() => onCloseDialog?.()}
+      <AppForm form={form} layout="inline">
+        <StyledDialogBody padding="1.5em 3em">
+          <form.AppField
+            name="kind"
+            listeners={{
+              onChange: ({ value }) => {
+                form.reset(getValues(peak, value));
+              },
+            }}
           >
-            Cancel
-          </Button>
-          <Button intent="primary" onClick={() => changePeakShapeHandler()}>
-            Apply
-          </Button>
-          <Button
-            intent="success"
-            data-action="apply"
-            onClick={() => changePeakShapeHandler(true)}
-          >
-            Apply to all
-          </Button>
-        </FooterContainer>
-      </DialogFooter>
+            {(field) => (
+              <>
+                <field.Select label="Kind" items={PEAKS_SHAPES} />
+
+                <form.AppField name="fwhm">
+                  {(field) => <field.NumericInput label="FWHM" min={0} />}
+                </form.AppField>
+
+                {match(field.state.value)
+                  .with('pseudoVoigt', () => (
+                    <form.AppField name="mu">
+                      {(field) => <field.NumericInput label="Mu" min={0} />}
+                    </form.AppField>
+                  ))
+                  .with('generalizedLorentzian', () => (
+                    <form.AppField name="gamma">
+                      {(field) => (
+                        <field.NumericInput label="Gamma" min={-1} max={2} />
+                      )}
+                    </form.AppField>
+                  ))
+                  .otherwise(() => null)}
+              </>
+            )}
+          </form.AppField>
+        </StyledDialogBody>
+        <DialogFooter
+          actions={
+            <>
+              <Button
+                variant="outlined"
+                intent="danger"
+                onClick={() => onCloseDialog?.()}
+              >
+                Cancel
+              </Button>
+              <Button
+                intent="primary"
+                onClick={() => form.handleSubmit({ applyToAll: false })}
+              >
+                Apply
+              </Button>
+              <Button
+                intent="success"
+                data-action="apply"
+                onClick={() => form.handleSubmit({ applyToAll: true })}
+              >
+                Apply to all
+              </Button>
+            </>
+          }
+        />
+      </AppForm>
     </StandardDialog>
   );
 }
