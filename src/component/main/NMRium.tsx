@@ -1,5 +1,5 @@
 import type {
-  CustomWorkspaces,
+  CustomWorkspacesInput,
   NMRiumCore,
   NmriumState,
   WorkspacePreferences as NMRiumPreferences,
@@ -68,7 +68,7 @@ export interface NMRiumProps {
   noErrorBoundary?: boolean;
   onError?: ErrorBoundaryPropsWithComponent['onError'];
   workspace?: NMRiumWorkspace;
-  customWorkspaces?: CustomWorkspaces;
+  customWorkspaces?: CustomWorkspacesInput;
   preferences?: NMRiumPreferences;
   emptyText?: ReactNode;
   /**

@@ -1,4 +1,4 @@
-import type { CustomWorkspaces } from '@zakodium/nmrium-core';
+import type { CustomWorkspacesInput } from '@zakodium/nmrium-core';
 import { useCallback, useState } from 'react';
 import { ObjectInspector } from 'react-inspector';
 
@@ -14,7 +14,7 @@ export interface BaseViewProps extends Required<
 > {
   title?: string;
   workspace?: NMRiumWorkspace;
-  customWorkspaces?: CustomWorkspaces;
+  customWorkspaces?: CustomWorkspacesInput;
   pageConfig: PageConfig;
 }
 
