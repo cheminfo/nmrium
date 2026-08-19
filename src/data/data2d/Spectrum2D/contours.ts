@@ -1,17 +1,13 @@
 import type { Spectrum2D, Spectrum } from '@zakodium/nmrium-core';
 import { isSpectrum2DFt } from '@zakodium/nmrium-core';
-import type { DataXY, NmrData2DFt } from 'cheminfo-types';
+import type { NmrData2DFt } from 'cheminfo-types';
 import { Conrec } from 'ml-conrec';
-import { matrixMaxAbsoluteZ, matrixMinMaxZ, matrixToArray } from 'ml-spectra-processing';
-import type { Spectrum } from 'nmr-correlation';
+import { matrixMaxAbsoluteZ, matrixToArray } from 'ml-spectra-processing';
 
 import type { SpectrumFTData } from '../../../component/hooks/use2DReducer.tsx';
 import { calculateSanPlot } from '../../utilities/calculateSanPlot.js';
 
-import { computeMinContourLevel } from './autoContourLevel.ts';
-import { NMRContourCalculator } from './countourLevelFinder.ts';
 import { findAutomaticContourLevels } from './findBestMinContour.ts';
-import { getContourThresholdFromPercentiles } from './getContourThresholdFromPercentiles.ts';
 
 interface Level {
   positive: ContourItem;
@@ -59,86 +55,44 @@ interface ContoursManagerReturn {
 }
 
 function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
-  const { data, info, filters } = spectrum;
+  const { data, info } = spectrum;
 
   // @ts-expect-error type of NmrData2D should have a discriminator field to separate fid and ft
   const quadrantData = data[quadrant];
 
   const { acquisitionScheme } = info;
-  //@ts-expect-error will be included in nexts versions
+ 
   const {
     experiment = '',
+     //@ts-expect-error will be included in nexts versions
     noise = calculateSanPlot('2D', quadrantData, {
       magnitudeMode: acquisitionScheme === 'notPhaseSensitive',
     }),
   } = info;
 
-  const { percentiles, sanplot } = noise;
+  const max = matrixMaxAbsoluteZ(quadrantData.z);
 
-  const max = matrixMaxAbsoluteZ(quadrantData.z) // Math.max(positiveSanPlotMax, negativeSanPlotMax);//
-
-  const isSymmetrized = filters.some(
-    (filter) => filter.name === 'symmetrizeCosyLike' && filter.enabled,
-  );
-  const isNUS = filters.some(
-    (filter) => filter.name === 'nusDimension2' && filter.enabled,
-  );
-
-  const { positive: pPositive, negative: pNegative } = percentiles;
-
-  const percentileValue = isSymmetrized ? (isNUS ? 60 : 70) : 99;
-  const pPositiveValue = pPositive[percentileValue];
-  const pNegativeValue = pNegative[percentileValue];
-
-  const optimalContourLevel = getContourThresholdFromPercentiles(
-    pPositive,
-    pNegative,
-    {
-      minP: 80,
-      maxP: 99,
-      madScale: 1,
-    },
-  );
-  // console.log(matrixToArray(quadrantData.z).length, matrixMinMaxZ(quadrantData.z), matrixMaxAbsoluteZ(quadrantData.z), max, sanplot, 'length of data') 
-  // const contourLevelProposal = computeMinContourLevel(
-  //   matrixToArray(quadrantData.z),
-  //   Math.max(noise.positive, noise.negative),
-  //   {
-  //     signalPurityTarget: 0.998,
-  //     searchMaxMultiple: 1000,
-  //   }
-  // );
-
-  const newProposarGemma = NMRContourCalculator.calculateInitialMinLevel(matrixToArray(quadrantData.z), quadrantData.z.length,
-    quadrantData.z[0].length, { contourRatio: 1.5, noiseSigma: Math.max(noise.positive, noise.negative), targetSignalLevels: 10, signalPercentile: 0.999 });
   const bestMinLevel = findAutomaticContourLevels(
     matrixToArray(quadrantData.z),
     quadrantData.z.length,
     quadrantData.z[0].length,
-    Math.max(noise.poistive, noise.negative),
+    Math.max(noise.positive, noise.negative),
     {
+      maxFdr: 0.05,
+      maxOccupancy: 0.03,
       persistenceLevels: 10,
-      ridgeCoverageThreshold: experiment.includes('jres') ? 0.8 : 0.1
-    }
+      contourRatio: 1.6,
+      maxVerticalRidgeScore: 0.1,
+      maxHorizontalRidgeScore: 0.1,
+      ridgeCoverageThreshold: experiment.includes('jres') ? 0.8 : 0.1,
+    },
   );
-  console.log(newProposarGemma, 'newProposarGemma');
-  console.log(contourLevelProposal, 'contourLevelProposal');
-  console.log(bestMinLevel, 'bestMinLevel');
-  // const minAllowedByPercentile = Math.max(
-  //   pPositiveValue ?? 0,
-  //   pNegativeValue ?? 0,
-  // );
 
-  // const minLevel =
-  //   isSymmetrized || isNUS
-  //     ? Math.min(optimalContourLevel, minAllowedByPercentile)
-  //     : Math.max(optimalContourLevel, minAllowedByPercentile);
   const minContourLevel = Math.min(
     calculateValueOfLevel(bestMinLevel.minLevelWithoutT1Noise, max, true),
     DEFAULT_CONTOURS_OPTIONS.positive.contourLevels[1] -
       DEFAULT_CONTOURS_OPTIONS.positive.numberOfLayers,
   );
-  console.log(`minLevel`, minContourLevel, calculateValueOfLevel(contourLevelProposal.minLevel, max, true), calculateValueOfLevel(bestMinLevel.minLevelWithoutT1Noise, max, true));
   const defaultLevel: ContourOptions = {
     negative: {
       numberOfLayers: DEFAULT_CONTOURS_OPTIONS.negative.numberOfLayers,
@@ -157,7 +111,6 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
   };
   return defaultLevel;
 }
-
 
 
 function contoursManager(options: ContourOptions): ContoursManagerReturn {

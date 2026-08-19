@@ -1,4 +1,4 @@
-import { matrixMaxAbsoluteZ, xMaxAbsoluteValue } from "ml-spectra-processing";
+import { xMaxAbsoluteValue } from "ml-spectra-processing";
 
 export interface AutoContourDiagnostics {
   recommended: ThresholdDiagnostics;
@@ -173,17 +173,6 @@ export interface AutoContourOptions {
   minSigma?: number;
 
   /**
-   * Highest threshold considered by the automatic contour search,
-   * expressed as a multiple of the supplied noise level.
-   *
-   * This limits the search range and prevents the algorithm from
-   * examining excessively high contour levels.
-   *
-   * @default 10
-   */
-  maxSigma?: number;
-
-  /**
    * Exponent used to determine the spacing between candidate
    * minimum contour levels.
    *
@@ -248,105 +237,7 @@ export interface AutoContourOptions {
   diagnostics?: boolean;
 }
 
-interface EvaluatedThreshold {
-  sigmaMultiplier: number;
 
-  activePixels: number;
-  occupancy: number;
-  fdr: number;
-  persistence: number;
-
-  verticalRidgeScore: number;
-  horizontalRidgeScore: number;
-}
-
-function evaluateThreshold(
-  matrix: Float64Array,
-  rows: number,
-  cols: number,
-  noiseLevel: number,
-  sigmaMultiplier: number,
-  contourRatio: number,
-  persistenceLevels: number,
-  ridgeCoverageThreshold: number,
-): EvaluatedThreshold {
-  const threshold =
-    sigmaMultiplier * noiseLevel;
-
-  const mask =
-    createMask(
-      matrix,
-      threshold,
-    );
-
-  const activePixels =
-    countActivePixels(mask);
-
-  const totalPixels =
-    rows * cols;
-
-  const occupancy =
-    activePixels / totalPixels;
-
-  if (activePixels === 0) {
-    return {
-      sigmaMultiplier,
-      activePixels: 0,
-      occupancy: 0,
-      fdr: 0,
-      persistence: 0,
-      verticalRidgeScore: 0,
-      horizontalRidgeScore: 0,
-    };
-  }
-
-  const expectedNoisePixels =
-    totalPixels *
-    gaussianTwoSidedTail(
-      sigmaMultiplier,
-    );
-
-  const fdr =
-    Math.min(
-      1,
-      expectedNoisePixels /
-        activePixels,
-    );
-
-  const persistence =
-    computePersistence(
-      matrix,
-      rows,
-      cols,
-      threshold,
-      contourRatio,
-      persistenceLevels,
-    );
-
-  const ridge =
-    computeRidgeScores(
-      mask,
-      rows,
-      cols,
-      ridgeCoverageThreshold,
-    );
-
-  return {
-    sigmaMultiplier,
-
-    activePixels,
-    occupancy,
-
-    fdr,
-    persistence,
-
-    verticalRidgeScore:
-      ridge.vertical,
-
-    horizontalRidgeScore:
-      ridge.horizontal,
-  };
-}
 
 export function findAutomaticContourLevels(
   matrix: ArrayLike<number>,
@@ -375,7 +266,6 @@ export function findAutomaticContourLevels(
     ridgeCoverageThreshold = 0.5,
 
     minSigma = 5,
-    maxSigma = 1000,
 
     candidateRatioExponent = 0.5,
 
@@ -413,7 +303,6 @@ export function findAutomaticContourLevels(
       values,
       noiseLevel,
     );
-  console.log(maxSigmaInData, 'maxSigmaInData');
   /*
    * Generate candidate minimum thresholds.
    */
@@ -594,6 +483,106 @@ export function findAutomaticContourLevels(
   return result;
 }
 
+interface EvaluatedThreshold {
+  sigmaMultiplier: number;
+
+  activePixels: number;
+  occupancy: number;
+  fdr: number;
+  persistence: number;
+
+  verticalRidgeScore: number;
+  horizontalRidgeScore: number;
+}
+
+function evaluateThreshold(
+  matrix: Float64Array,
+  rows: number,
+  cols: number,
+  noiseLevel: number,
+  sigmaMultiplier: number,
+  contourRatio: number,
+  persistenceLevels: number,
+  ridgeCoverageThreshold: number,
+): EvaluatedThreshold {
+  const threshold =
+    sigmaMultiplier * noiseLevel;
+
+  const mask =
+    createMask(
+      matrix,
+      threshold,
+    );
+
+  const activePixels =
+    countActivePixels(mask);
+
+  const totalPixels =
+    rows * cols;
+
+  const occupancy =
+    activePixels / totalPixels;
+
+  if (activePixels === 0) {
+    return {
+      sigmaMultiplier,
+      activePixels: 0,
+      occupancy: 0,
+      fdr: 0,
+      persistence: 0,
+      verticalRidgeScore: 0,
+      horizontalRidgeScore: 0,
+    };
+  }
+
+  const expectedNoisePixels =
+    totalPixels *
+    gaussianTwoSidedTail(
+      sigmaMultiplier,
+    );
+
+  const fdr =
+    Math.min(
+      1,
+      expectedNoisePixels /
+        activePixels,
+    );
+
+  const persistence =
+    computePersistence(
+      matrix,
+      rows,
+      cols,
+      threshold,
+      contourRatio,
+      persistenceLevels,
+    );
+
+  const ridge =
+    computeRidgeScores(
+      mask,
+      rows,
+      cols,
+      ridgeCoverageThreshold,
+    );
+
+  return {
+    sigmaMultiplier,
+
+    activePixels,
+    occupancy,
+
+    fdr,
+    persistence,
+
+    verticalRidgeScore:
+      ridge.vertical,
+
+    horizontalRidgeScore:
+      ridge.horizontal,
+  };
+}
+
 function evaluateFallbackThreshold(
   matrix: Float64Array,
   rows: number,
@@ -654,73 +643,6 @@ function evaluateFallbackThreshold(
   }
 
   return best;
-}
-
-function findRidgeFreeThreshold(
-  matrix: Float64Array,
-  rows: number,
-  cols: number,
-  noiseLevel: number,
-  startingSigma: number,
-  maxSigma: number,
-  contourRatio: number,
-  maxVerticalRidgeScore: number,
-  maxHorizontalRidgeScore: number,
-  ridgeCoverageThreshold: number,
-): EvaluatedThreshold {
-  /*
-   * Start at the recommended level.
-   */
-  let sigma = startingSigma;
-
-  /*
-   * We move through the same exponential contour hierarchy
-   * used by the visualization.
-   *
-   * This is important because the returned threshold corresponds
-   * naturally to the contour system.
-   */
-  while (sigma <= maxSigma) {
-    const evaluation =
-      evaluateThreshold(
-        matrix,
-        rows,
-        cols,
-        noiseLevel,
-        sigma,
-        contourRatio,
-        1,
-        ridgeCoverageThreshold,
-      );
-
-    const ridgeFree =
-      evaluation.verticalRidgeScore <=
-        maxVerticalRidgeScore &&
-      evaluation.horizontalRidgeScore <=
-        maxHorizontalRidgeScore;
-
-    if (ridgeFree) {
-      return evaluation;
-    }
-
-    sigma *= contourRatio;
-  }
-
-  /*
-   * No ridge-free threshold was found within maxSigma.
-   *
-   * Return the highest tested threshold.
-   */
-  return evaluateThreshold(
-    matrix,
-    rows,
-    cols,
-    noiseLevel,
-    Math.min(sigma, maxSigma),
-    contourRatio,
-    1,
-    ridgeCoverageThreshold,
-  );
 }
 
 function findRidgeFreeThresholdTopDown(
