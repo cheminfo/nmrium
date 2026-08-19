@@ -7,7 +7,7 @@ import { matrixMaxAbsoluteZ, matrixToArray } from 'ml-spectra-processing';
 import type { SpectrumFTData } from '../../../component/hooks/use2DReducer.tsx';
 import { calculateSanPlot } from '../../utilities/calculateSanPlot.js';
 
-import { findAutomaticContourLevels } from './findBestMinContour.ts';
+import { findAutomaticContourLevels } from './findBestMinContour/findAutomaticContourLevels.ts';
 
 interface Level {
   positive: ContourItem;
@@ -61,10 +61,10 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
   const quadrantData = data[quadrant];
 
   const { acquisitionScheme } = info;
- 
+
   const {
     experiment = '',
-     //@ts-expect-error will be included in nexts versions
+    //@ts-expect-error will be included in nexts versions
     noise = calculateSanPlot('2D', quadrantData, {
       magnitudeMode: acquisitionScheme === 'notPhaseSensitive',
     }),
@@ -78,18 +78,28 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
     quadrantData.z[0].length,
     Math.max(noise.positive, noise.negative),
     {
-      maxFdr: 0.05,
-      maxOccupancy: 0.03,
-      persistenceLevels: 10,
-      contourRatio: 1.6,
-      maxVerticalRidgeScore: 0.1,
-      maxHorizontalRidgeScore: 0.1,
+      maxFdr: 0.01,
+      maxOccupancy: 0.01,
+      persistenceLevels: 5,
+      contourRatio: 1.8,
+      maxVerticalRidgeScore: 0.05,
+      maxHorizontalRidgeScore: 0.05,
       ridgeCoverageThreshold: experiment.includes('jres') ? 0.8 : 0.1,
     },
   );
 
+  const {
+    diagnostics: { hasT1Noise },
+    minLevelWithoutT1Noise,
+    minLevel,
+  } = bestMinLevel;
+  console.log(hasT1Noise, minLevelWithoutT1Noise, minLevel);
   const minContourLevel = Math.min(
-    calculateValueOfLevel(bestMinLevel.minLevelWithoutT1Noise, max, true),
+    calculateValueOfLevel(
+      hasT1Noise ? minLevelWithoutT1Noise : minLevel,
+      max,
+      true,
+    ),
     DEFAULT_CONTOURS_OPTIONS.positive.contourLevels[1] -
       DEFAULT_CONTOURS_OPTIONS.positive.numberOfLayers,
   );
@@ -111,7 +121,6 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
   };
   return defaultLevel;
 }
-
 
 function contoursManager(options: ContourOptions): ContoursManagerReturn {
   const contourOptions = { ...options };
