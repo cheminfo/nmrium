@@ -149,6 +149,9 @@ const Spectra2DManipulationTools = withFieldGroup({
         <AppField name="phaseCorrectionTwoDimensions">
           {({ Checkbox }) => <Checkbox label="Phase correction" />}
         </AppField>
+        <AppField name="alignTwoDimensionsSpectra">
+          {({ Checkbox }) => <Checkbox label="Align spectra" />}
+        </AppField>
       </Section>
     );
   },

@@ -71,6 +71,7 @@ export const workspaceDefaultProperties: RequiredWorkspacePreferences = {
       zeroFillingDimension1: false,
       zeroFillingDimension2: false,
       phaseCorrectionTwoDimensions: false,
+      alignTwoDimensionsSpectra: false,
     } satisfies Required<
       RequiredWorkspacePreferences['display']['toolBarButtons']
     >,

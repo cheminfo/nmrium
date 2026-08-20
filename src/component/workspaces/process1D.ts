@@ -39,6 +39,7 @@ export const process1D: InnerWorkspace = {
       fftDimension1: true,
       fftDimension2: true,
       inset: true,
+      alignTwoDimensionsSpectra: true,
     },
   },
 };

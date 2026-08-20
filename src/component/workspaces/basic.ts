@@ -41,6 +41,7 @@ export const basic: InnerWorkspace = {
       zeroFillingDimension1: true,
       zeroFillingDimension2: true,
       inset: true,
+      alignTwoDimensionsSpectra: true,
     },
   },
 };

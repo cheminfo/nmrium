@@ -81,8 +81,7 @@ interface BaseToolOption {
 
 export type ToolOptionItem = BaseToolOption & (StaticIcon | DynamicIcon);
 
-export type MainTool =
-  keyof NMRiumToolbarPreferences | 'alignTwoDimensionsSpectra';
+export type MainTool = keyof NMRiumToolbarPreferences;
 
 /**
  * Tools that are selectable in panels, not in the main toolbar.
@@ -532,7 +531,6 @@ export const options: RecordOptions = {
       },
     ],
     isToggle: true,
-    isExperimental: true,
   },
 };
 
