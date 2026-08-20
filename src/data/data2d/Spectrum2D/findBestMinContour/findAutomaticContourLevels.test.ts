@@ -5,8 +5,20 @@ import {
   countValuesAboveThreshold,
   createThresholdIndex,
   evaluateThreshold,
+  maxPoolAbsolute,
 } from './evaluation.js';
 import { findAutomaticContourLevels } from './findAutomaticContourLevels.js';
+
+test('maxPoolAbsolute returns the global finite absolute maximum', () => {
+  const analysis = maxPoolAbsolute(
+    new Float64Array([-3, Number.NaN, 2, -7, Number.POSITIVE_INFINITY, 4]),
+    2,
+    3,
+    2,
+  );
+
+  expect(analysis.maxAbsoluteValue).toBe(7);
+});
 
 test('sorted threshold counts preserve direct comparison semantics', () => {
   const matrix = new Float64Array([
@@ -28,6 +40,7 @@ test('sorted threshold counts preserve direct comparison semantics', () => {
     Number.POSITIVE_INFINITY,
     Number.NaN,
   ];
+
   const thresholdIndex = createThresholdIndex(matrix);
 
   for (const threshold of thresholds) {

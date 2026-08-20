@@ -2,11 +2,11 @@ import type { Spectrum2D, Spectrum } from '@zakodium/nmrium-core';
 import { isSpectrum2DFt } from '@zakodium/nmrium-core';
 import type { NmrData2DFt } from 'cheminfo-types';
 import { Conrec } from 'ml-conrec';
-import { matrixMaxAbsoluteZ, matrixToArray } from 'ml-spectra-processing';
+import { matrixToArray } from 'ml-spectra-processing';
 
 import type { SpectrumFTData } from '../../../component/hooks/use2DReducer.tsx';
-import { calculateSanPlot } from '../../utilities/calculateSanPlot.js';
 
+import { estimateNoiseLevel } from './findBestMinContour/estimateNoiseLevel.js';
 import { findAutomaticContourLevels } from './findBestMinContour/findAutomaticContourLevels.ts';
 
 interface Level {
@@ -60,31 +60,31 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
   // @ts-expect-error type of NmrData2D should have a discriminator field to separate fid and ft
   const quadrantData = data[quadrant];
 
-  const { acquisitionScheme } = info;
-
   const {
     experiment = '',
-    //@ts-expect-error will be included in nexts versions
-    noise = calculateSanPlot('2D', quadrantData, {
-      magnitudeMode: acquisitionScheme === 'notPhaseSensitive',
-    }),
+    // @ts-expect-error will be included in nexts versions
+    noise,
   } = info;
+  const matrix = matrixToArray(quadrantData.z);
 
-  const max = matrixMaxAbsoluteZ(quadrantData.z);
+  const noiseLevel = (noise as { positive: number; negative: number })
+    ? Math.max(noise.positive, noise.negative)
+    : estimateNoiseLevel(matrix);
 
   const bestMinLevel = findAutomaticContourLevels(
-    matrixToArray(quadrantData.z),
+    matrix,
     quadrantData.z.length,
     quadrantData.z[0].length,
-    Math.max(noise.positive, noise.negative),
+    noiseLevel,
     {
-      maxFdr: 0.01,
-      maxOccupancy: 0.01,
+      maxFdr: 0.005,
+      maxOccupancy: 0.005,
       persistenceLevels: 5,
       contourRatio: 1.8,
+      minPersistence: 0.5,
       maxVerticalRidgeScore: 0.05,
       maxHorizontalRidgeScore: 0.05,
-      ridgeCoverageThreshold: experiment.includes('jres') ? 0.8 : 0.1,
+      ridgeCoverageThreshold: experiment.includes('jres') ? 0.9 : 0.1,
     },
   );
 
@@ -92,17 +92,18 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
     diagnostics: { hasT1Noise },
     minLevelWithoutT1Noise,
     minLevel,
+    maxAbsoluteValue,
   } = bestMinLevel;
-  console.log(hasT1Noise, minLevelWithoutT1Noise, minLevel);
   const minContourLevel = Math.min(
     calculateValueOfLevel(
       hasT1Noise ? minLevelWithoutT1Noise : minLevel,
-      max,
+      maxAbsoluteValue,
       true,
     ),
     DEFAULT_CONTOURS_OPTIONS.positive.contourLevels[1] -
       DEFAULT_CONTOURS_OPTIONS.positive.numberOfLayers,
   );
+
   const defaultLevel: ContourOptions = {
     negative: {
       numberOfLayers: DEFAULT_CONTOURS_OPTIONS.negative.numberOfLayers,

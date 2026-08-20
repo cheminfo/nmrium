@@ -1,10 +1,7 @@
-import { xMaxAbsoluteValue } from 'ml-spectra-processing';
-
 import {
   createThresholdIndex,
   evaluateFallbackThreshold,
   evaluateThreshold,
-  findMaximumNormalizedValue,
   findRidgeFreeThresholdTopDown,
   generateCandidateSigmaLevels,
   maxPoolAbsolute,
@@ -51,6 +48,10 @@ export type AutoContourResult<TDiagnostics extends boolean = boolean> = {
    */
   sigmaMultiplier: number;
   sigmaMultiplierWithoutT1Noise: number;
+  /**
+   * Maximum absolute value in the analysis matrix used for contour level selection.
+   */
+  maxAbsoluteValue: number;
 } & (TDiagnostics extends true
   ? {
       diagnostics: AutoContourDiagnostics;
@@ -297,10 +298,15 @@ export function findAutomaticContourLevels(
   }
 
   const analysis = maxPoolAbsolute(matrix, rows, cols, maxAnalysisDimension);
-  const { values, rows: analysisRows, cols: analysisCols } = analysis;
+  const {
+    values,
+    rows: analysisRows,
+    cols: analysisCols,
+    maxAbsoluteValue,
+  } = analysis;
   const thresholdIndex = createThresholdIndex(values);
 
-  const maxSigmaInData = findMaximumNormalizedValue(values, noiseLevel);
+  const maxSigmaInData = maxAbsoluteValue / noiseLevel;
   const candidates = generateCandidateSigmaLevels(
     minSigma,
     maxSigmaInData,
@@ -352,7 +358,7 @@ export function findAutomaticContourLevels(
     analysisCols,
     noiseLevel,
     recommended.sigmaMultiplier * noiseLevel,
-    xMaxAbsoluteValue(matrix as Float64Array),
+    maxAbsoluteValue,
     contourRatio,
     maxVerticalRidgeScore,
     maxHorizontalRidgeScore,
@@ -360,8 +366,10 @@ export function findAutomaticContourLevels(
   );
 
   const result: AutoContourResult<boolean> = {
+    maxAbsoluteValue,
     minLevel: recommended.sigmaMultiplier * noiseLevel,
     minLevelWithoutT1Noise: ridgeFreeLevel,
+
     sigmaMultiplier: recommended.sigmaMultiplier,
     sigmaMultiplierWithoutT1Noise: ridgeFreeLevel / noiseLevel,
   };

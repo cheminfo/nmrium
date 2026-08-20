@@ -16,6 +16,7 @@ export interface AnalysisMatrix {
   values: Float64Array;
   rows: number;
   cols: number;
+  maxAbsoluteValue: number;
 }
 
 export interface RidgeScores {
@@ -427,6 +428,7 @@ export function maxPoolAbsolute(
   const analysisRows = Math.ceil(rows / scale);
   const analysisCols = Math.ceil(cols / scale);
   const values = new Float64Array(analysisRows * analysisCols);
+  let maxAbsoluteValue = 0;
 
   for (let analysisRow = 0; analysisRow < analysisRows; analysisRow++) {
     const sourceRowStart = analysisRow * scale;
@@ -451,6 +453,7 @@ export function maxPoolAbsolute(
       }
 
       values[analysisRow * analysisCols + analysisCol] = maximum;
+      maxAbsoluteValue = Math.max(maxAbsoluteValue, maximum);
     }
   }
 
@@ -458,6 +461,7 @@ export function maxPoolAbsolute(
     values,
     rows: analysisRows,
     cols: analysisCols,
+    maxAbsoluteValue,
   };
 }
 
@@ -484,21 +488,4 @@ export function countValuesAboveThreshold(
   }
 
   return count;
-}
-
-export function findMaximumNormalizedValue(
-  matrix: Float64Array,
-  noiseLevel: number,
-): number {
-  let maximum = 0;
-
-  for (const value of matrix) {
-    const normalized = value / noiseLevel;
-
-    if (normalized > maximum) {
-      maximum = normalized;
-    }
-  }
-
-  return maximum;
 }
