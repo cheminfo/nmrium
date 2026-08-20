@@ -30,13 +30,13 @@ export function AssignmentLabel(props: AssignmentLabelProps) {
     return null;
   }
 
-  function handleChange(value: string) {
+  function handleChange(value: string | number) {
     dismissNewLabel();
 
     dispatch({
       type: 'CHANGE_1D_SIGNAL_ASSIGNMENT_LABEL',
       payload: {
-        value,
+        value: String(value),
         rangeId: id,
         signalId: signal.id,
       },
@@ -44,6 +44,7 @@ export function AssignmentLabel(props: AssignmentLabelProps) {
   }
   const baseYOffset = margin?.top + marginTop;
   const yOffset = baseYOffset + stackIndex * 12;
+
   return (
     <g transform={`translate(${width / 2} ${yOffset})`}>
       <FieldEdition

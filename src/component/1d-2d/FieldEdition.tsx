@@ -1,14 +1,12 @@
 import type { PopoverNextProps } from '@blueprintjs/core';
 import { PopoverNext } from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import { yupResolver } from '@hookform/resolvers/yup';
-import type { KeyboardEvent, MouseEvent, ReactNode } from 'react';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import * as Yup from 'yup';
-
-import { Input2Controller } from '../elements/Input2Controller.js';
-import { NumberInput2Controller } from '../elements/NumberInput2Controller.js';
+import { revalidateLogic } from '@tanstack/react-form';
+import type { ReactNode } from 'react';
+import { useMemo, useState } from 'react';
+import { AppForm, coerceNumberInput, useForm } from 'react-science/ui';
+import { match } from 'ts-pattern';
+import { z } from 'zod';
 
 const StyledPopover = styled(PopoverNext)`
   .field-edition-popover {
@@ -21,32 +19,19 @@ type InputType = 'number' | 'text';
 interface FieldProps {
   value: number | string;
   inputType?: InputType;
-  onChange: (value: any) => void;
+  onChange: (value: FieldProps['value']) => void;
 }
+
 interface FieldEditionsProps extends FieldProps {
   children: ReactNode;
   PopoverProps?: PopoverNextProps;
-}
-const InputDimension = { height: 28, width: 100 };
-
-const validationSchema = (inputType: 'number' | 'text') =>
-  Yup.object({
-    value: (inputType === 'number' ? Yup.number() : Yup.string()).required(),
-  });
-
-function stopPropagation(e: MouseEvent) {
-  e.stopPropagation();
 }
 
 export function FieldEdition(props: FieldEditionsProps) {
   const { value, inputType = 'text', onChange, children, PopoverProps } = props;
   const [isOpen, setIsOpen] = useState(false);
 
-  function handleChange({
-    value: newValue,
-  }: {
-    value: FieldEditionsProps['value'];
-  }) {
+  function handleChange(newValue: FieldEditionsProps['value']) {
     onChange(newValue);
     setIsOpen(false);
   }
@@ -67,49 +52,55 @@ export function FieldEdition(props: FieldEditionsProps) {
   );
 }
 
+function validationSchema(
+  inputType: InputType,
+): z.ZodType<{ value: string } | { value: number }, { value: string }> {
+  return match(inputType)
+    .with('number', () =>
+      z.object({
+        value: coerceNumberInput(),
+      }),
+    )
+    .with('text', () =>
+      z.object({
+        value: z.string(),
+      }),
+    )
+    .exhaustive();
+}
+
 function Field(props: FieldProps) {
   const { value, inputType = 'text', onChange } = props;
 
-  const { control, handleSubmit } = useForm({
-    defaultValues: { value },
-    resolver: yupResolver(validationSchema(inputType)),
+  const validation = useMemo(() => {
+    return validationSchema(inputType);
+  }, [inputType]);
+
+  const form = useForm({
+    validationLogic: revalidateLogic({ mode: 'change' }),
+    defaultValues: {
+      value,
+    },
+    validators: {
+      onDynamic: validation,
+    },
+    onSubmit: ({ value }) => {
+      const { value: parsedValue } = validation.parse(value);
+      onChange(parsedValue);
+    },
   });
 
-  function handleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
-    if (event.key === 'Enter') {
-      void handleSubmit(onChange)();
-    }
-  }
-
-  const style = {
-    height: `${InputDimension.height}px`,
-    outline: 'none',
-  };
-
-  if (inputType === 'number') {
-    return (
-      <NumberInput2Controller
-        name="value"
-        control={control}
-        style={style}
-        onKeyDown={handleKeyDown}
-        onClick={stopPropagation}
-        onMouseDown={stopPropagation}
-        autoFocus
-        buttonPosition="none"
-      />
-    );
-  }
-
   return (
-    <Input2Controller
-      name="value"
-      control={control}
-      style={style}
-      onKeyDown={handleKeyDown}
-      onClick={stopPropagation}
-      onMouseDown={stopPropagation}
-      autoFocus
-    />
+    <AppForm form={form}>
+      <form.AppField name="value">
+        {(field) =>
+          inputType === 'number' ? (
+            <field.NumericInput autoFocus />
+          ) : (
+            <field.Input autoFocus />
+          )
+        }
+      </form.AppField>
+    </AppForm>
   );
 }
