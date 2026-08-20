@@ -4,6 +4,10 @@ import { Controller, useFormContext, useWatch } from 'react-hook-form';
 
 import { useSelectedSpectra } from '../../../../hooks/useSelectedSpectra.ts';
 
+function shouldForwardProp(prop: string) {
+  return prop !== 'isActive';
+}
+
 const Container = styled.div<{ isActive: boolean; isDisabled: boolean }>`
   display: flex;
   align-items: center;
@@ -26,7 +30,7 @@ const LabelGroup = styled.div`
   min-width: 0;
 `;
 
-const LabelIcon = styled(Icon)<{ isActive: boolean }>`
+const LabelIcon = styled(Icon, { shouldForwardProp })<{ isActive: boolean }>`
   color: ${({ isActive }) => (isActive ? '#E8621A' : '#888')};
   flex-shrink: 0;
 `;
@@ -41,7 +45,7 @@ const StyledSwitch = styled(Switch)`
   margin: 0;
 `;
 
-const CountTag = styled(Tag)<{ isActive: boolean }>`
+const CountTag = styled(Tag, { shouldForwardProp })<{ isActive: boolean }>`
   color: ${({ isActive }) => (isActive ? '#E8621A' : '#666')} !important;
 `;
 
@@ -92,7 +96,6 @@ export function ApplyToAllSelected() {
             const { value, onChange } = field;
             return (
               <StyledSwitch
-                defaultChecked={value}
                 checked={value}
                 disabled={isDisabled}
                 onClick={(e) => {
