@@ -1,6 +1,7 @@
 import { xMaxAbsoluteValue } from 'ml-spectra-processing';
 
 import {
+  createThresholdIndex,
   evaluateFallbackThreshold,
   evaluateThreshold,
   findMaximumNormalizedValue,
@@ -297,6 +298,7 @@ export function findAutomaticContourLevels(
 
   const analysis = maxPoolAbsolute(matrix, rows, cols, maxAnalysisDimension);
   const { values, rows: analysisRows, cols: analysisCols } = analysis;
+  const thresholdIndex = createThresholdIndex(values);
 
   const maxSigmaInData = findMaximumNormalizedValue(values, noiseLevel);
   const candidates = generateCandidateSigmaLevels(
@@ -320,6 +322,7 @@ export function findAutomaticContourLevels(
       persistenceLevels,
       ridgeCoverageThreshold,
       false,
+      thresholdIndex,
     );
     evaluations.push(evaluation);
 
@@ -374,6 +377,7 @@ export function findAutomaticContourLevels(
       persistenceLevels,
       ridgeCoverageThreshold,
       true,
+      thresholdIndex,
     );
     const ridgeFree = evaluateThreshold(
       values,
@@ -385,6 +389,7 @@ export function findAutomaticContourLevels(
       1,
       ridgeCoverageThreshold,
       true,
+      thresholdIndex,
     );
 
     result.diagnostics = {

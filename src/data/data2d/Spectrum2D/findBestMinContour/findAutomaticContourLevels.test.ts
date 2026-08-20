@@ -1,7 +1,62 @@
 import { expect, test } from 'vitest';
 
-import { evaluateThreshold } from './evaluation.js';
+import {
+  computePersistence,
+  countValuesAboveThreshold,
+  createThresholdIndex,
+  evaluateThreshold,
+} from './evaluation.js';
 import { findAutomaticContourLevels } from './findAutomaticContourLevels.js';
+
+test('sorted threshold counts preserve direct comparison semantics', () => {
+  const matrix = new Float64Array([
+    Number.NaN,
+    Number.NEGATIVE_INFINITY,
+    -1,
+    0,
+    0,
+    2,
+    2,
+    Number.POSITIVE_INFINITY,
+  ]);
+  const thresholds = [
+    Number.NEGATIVE_INFINITY,
+    -1,
+    0,
+    1,
+    2,
+    Number.POSITIVE_INFINITY,
+    Number.NaN,
+  ];
+  const thresholdIndex = createThresholdIndex(matrix);
+
+  for (const threshold of thresholds) {
+    expect(thresholdIndex.countAtLeast(threshold)).toBe(
+      countValuesAboveThreshold(matrix, threshold),
+    );
+  }
+
+  expect(
+    computePersistence(matrix, 1, matrix.length, -1, 2, 4, thresholdIndex),
+  ).toBe(computePersistence(matrix, 1, matrix.length, -1, 2, 4));
+
+  expect(
+    evaluateThreshold(
+      matrix,
+      1,
+      matrix.length,
+      1,
+      0,
+      2,
+      4,
+      0.5,
+      false,
+      thresholdIndex,
+    ),
+  ).toEqual(
+    evaluateThreshold(matrix, 1, matrix.length, 1, 0, 2, 4, 0.5, false),
+  );
+});
 
 test('skipping ridge metrics preserves threshold selection metrics', () => {
   const matrix = new Float64Array([0, 2, 3, 0]);
@@ -15,6 +70,7 @@ test('skipping ridge metrics preserves threshold selection metrics', () => {
     1.5,
     2,
     0.5,
+    false,
   );
 
   expect(withoutRidgeMetrics).toEqual({

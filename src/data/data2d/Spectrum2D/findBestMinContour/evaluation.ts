@@ -23,9 +23,48 @@ export interface RidgeScores {
   horizontal: number;
 }
 
+export interface ThresholdIndex {
+  countAtLeast(threshold: number): number;
+}
+
 interface ThresholdMetrics {
   activePixels: number;
   ridge: RidgeScores;
+}
+
+export function createThresholdIndex(matrix: Float64Array): ThresholdIndex {
+  const sortedValues = new Float64Array(matrix.length);
+  let valueCount = 0;
+
+  for (const value of matrix) {
+    if (!Number.isNaN(value)) {
+      sortedValues[valueCount++] = value;
+    }
+  }
+
+  const values = sortedValues.subarray(0, valueCount);
+  values.sort();
+
+  return {
+    countAtLeast(threshold) {
+      if (Number.isNaN(threshold)) return 0;
+
+      let low = 0;
+      let high = values.length;
+
+      while (low < high) {
+        const middle = low + Math.floor((high - low) / 2);
+
+        if (values[middle] < threshold) {
+          low = middle + 1;
+        } else {
+          high = middle;
+        }
+      }
+
+      return values.length - low;
+    },
+  };
 }
 
 function evaluateThresholdMetrics(
@@ -35,7 +74,15 @@ function evaluateThresholdMetrics(
   threshold: number,
   ridgeCoverageThreshold: number,
   includeRidgeScores: boolean,
+  thresholdIndex?: ThresholdIndex,
 ): ThresholdMetrics {
+  if (!includeRidgeScores && thresholdIndex) {
+    return {
+      activePixels: thresholdIndex.countAtLeast(threshold),
+      ridge: { vertical: 0, horizontal: 0 },
+    };
+  }
+
   const rowCounts = includeRidgeScores ? new Uint32Array(rows) : undefined;
   const colCounts = includeRidgeScores ? new Uint32Array(cols) : undefined;
   let activePixels = 0;
@@ -79,6 +126,7 @@ export function evaluateThreshold(
   persistenceLevels: number,
   ridgeCoverageThreshold: number,
   includeRidgeScores = true,
+  thresholdIndex?: ThresholdIndex,
 ): EvaluatedThreshold {
   const threshold = sigmaMultiplier * noiseLevel;
   const { activePixels, ridge } = evaluateThresholdMetrics(
@@ -88,6 +136,7 @@ export function evaluateThreshold(
     threshold,
     ridgeCoverageThreshold,
     includeRidgeScores,
+    thresholdIndex,
   );
   const totalPixels = rows * cols;
   const occupancy = activePixels / totalPixels;
@@ -114,6 +163,7 @@ export function evaluateThreshold(
     threshold,
     contourRatio,
     persistenceLevels,
+    thresholdIndex,
   );
 
   return {
@@ -228,9 +278,12 @@ export function computePersistence(
   initialThreshold: number,
   contourRatio: number,
   levels: number,
+  thresholdIndex?: ThresholdIndex,
 ): number {
   let threshold = initialThreshold;
-  let previousArea = countValuesAboveThreshold(matrix, threshold);
+  let previousArea = thresholdIndex
+    ? thresholdIndex.countAtLeast(threshold)
+    : countValuesAboveThreshold(matrix, threshold);
 
   if (previousArea === 0) {
     return 0;
@@ -241,7 +294,9 @@ export function computePersistence(
   for (let level = 1; level < levels; level++) {
     threshold *= contourRatio;
 
-    const currentArea = countValuesAboveThreshold(matrix, threshold);
+    const currentArea = thresholdIndex
+      ? thresholdIndex.countAtLeast(threshold)
+      : countValuesAboveThreshold(matrix, threshold);
 
     if (currentArea === 0) {
       return 0;
