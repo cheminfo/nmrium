@@ -306,6 +306,7 @@ export function findAutomaticContourLevels(
     candidateRatioExponent,
   );
 
+  const evaluations: Array<ReturnType<typeof evaluateThreshold>> = [];
   let recommended: ReturnType<typeof evaluateThreshold> | undefined;
 
   for (const sigmaMultiplier of candidates) {
@@ -318,7 +319,9 @@ export function findAutomaticContourLevels(
       contourRatio,
       persistenceLevels,
       ridgeCoverageThreshold,
+      false,
     );
+    evaluations.push(evaluation);
 
     const passed =
       evaluation.fdr <= maxFdr &&
@@ -333,14 +336,7 @@ export function findAutomaticContourLevels(
 
   if (!recommended) {
     recommended = evaluateFallbackThreshold(
-      values,
-      analysisRows,
-      analysisCols,
-      noiseLevel,
-      candidates,
-      contourRatio,
-      persistenceLevels,
-      ridgeCoverageThreshold,
+      evaluations,
       maxFdr,
       maxOccupancy,
       minPersistence,
@@ -360,17 +356,6 @@ export function findAutomaticContourLevels(
     ridgeCoverageThreshold,
   );
 
-  const ridgeFree = evaluateThreshold(
-    values,
-    analysisRows,
-    analysisCols,
-    noiseLevel,
-    ridgeFreeLevel / noiseLevel,
-    contourRatio,
-    1,
-    ridgeCoverageThreshold,
-  );
-
   const result: AutoContourResult<boolean> = {
     minLevel: recommended.sigmaMultiplier * noiseLevel,
     minLevelWithoutT1Noise: ridgeFreeLevel,
@@ -379,15 +364,38 @@ export function findAutomaticContourLevels(
   };
 
   if (diagnostics) {
+    const recommendedDiagnostics = evaluateThreshold(
+      values,
+      analysisRows,
+      analysisCols,
+      noiseLevel,
+      recommended.sigmaMultiplier,
+      contourRatio,
+      persistenceLevels,
+      ridgeCoverageThreshold,
+      true,
+    );
+    const ridgeFree = evaluateThreshold(
+      values,
+      analysisRows,
+      analysisCols,
+      noiseLevel,
+      ridgeFreeLevel / noiseLevel,
+      contourRatio,
+      1,
+      ridgeCoverageThreshold,
+      true,
+    );
+
     result.diagnostics = {
       recommended: {
-        sigmaMultiplier: recommended.sigmaMultiplier,
-        minLevel: recommended.sigmaMultiplier * noiseLevel,
-        occupancy: recommended.occupancy,
-        fdr: recommended.fdr,
-        persistence: recommended.persistence,
-        verticalRidgeScore: recommended.verticalRidgeScore,
-        horizontalRidgeScore: recommended.horizontalRidgeScore,
+        sigmaMultiplier: recommendedDiagnostics.sigmaMultiplier,
+        minLevel: recommendedDiagnostics.sigmaMultiplier * noiseLevel,
+        occupancy: recommendedDiagnostics.occupancy,
+        fdr: recommendedDiagnostics.fdr,
+        persistence: recommendedDiagnostics.persistence,
+        verticalRidgeScore: recommendedDiagnostics.verticalRidgeScore,
+        horizontalRidgeScore: recommendedDiagnostics.horizontalRidgeScore,
       },
       ridgeFree: {
         sigmaMultiplier: ridgeFree.sigmaMultiplier,
@@ -399,8 +407,8 @@ export function findAutomaticContourLevels(
         horizontalRidgeScore: ridgeFree.horizontalRidgeScore,
       },
       hasT1Noise:
-        recommended.verticalRidgeScore > maxVerticalRidgeScore ||
-        recommended.horizontalRidgeScore > maxHorizontalRidgeScore,
+        recommendedDiagnostics.verticalRidgeScore > maxVerticalRidgeScore ||
+        recommendedDiagnostics.horizontalRidgeScore > maxHorizontalRidgeScore,
     };
   }
 

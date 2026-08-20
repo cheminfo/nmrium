@@ -23,6 +23,52 @@ export interface RidgeScores {
   horizontal: number;
 }
 
+interface ThresholdMetrics {
+  activePixels: number;
+  ridge: RidgeScores;
+}
+
+function evaluateThresholdMetrics(
+  matrix: Float64Array,
+  rows: number,
+  cols: number,
+  threshold: number,
+  ridgeCoverageThreshold: number,
+  includeRidgeScores: boolean,
+): ThresholdMetrics {
+  const rowCounts = includeRidgeScores ? new Uint32Array(rows) : undefined;
+  const colCounts = includeRidgeScores ? new Uint32Array(cols) : undefined;
+  let activePixels = 0;
+
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      const index = row * cols + col;
+
+      if (!(matrix[index] >= threshold)) continue;
+
+      activePixels++;
+      if (rowCounts && colCounts) {
+        rowCounts[row]++;
+        colCounts[col]++;
+      }
+    }
+  }
+
+  const ridge =
+    rowCounts && colCounts
+      ? calculateRidgeScores(
+          rowCounts,
+          colCounts,
+          rows,
+          cols,
+          activePixels,
+          ridgeCoverageThreshold,
+        )
+      : { vertical: 0, horizontal: 0 };
+
+  return { activePixels, ridge };
+}
+
 export function evaluateThreshold(
   matrix: Float64Array,
   rows: number,
@@ -32,10 +78,17 @@ export function evaluateThreshold(
   contourRatio: number,
   persistenceLevels: number,
   ridgeCoverageThreshold: number,
+  includeRidgeScores = true,
 ): EvaluatedThreshold {
   const threshold = sigmaMultiplier * noiseLevel;
-  const mask = createMask(matrix, threshold);
-  const activePixels = countActivePixels(mask);
+  const { activePixels, ridge } = evaluateThresholdMetrics(
+    matrix,
+    rows,
+    cols,
+    threshold,
+    ridgeCoverageThreshold,
+    includeRidgeScores,
+  );
   const totalPixels = rows * cols;
   const occupancy = activePixels / totalPixels;
 
@@ -62,7 +115,6 @@ export function evaluateThreshold(
     contourRatio,
     persistenceLevels,
   );
-  const ridge = computeRidgeScores(mask, rows, cols, ridgeCoverageThreshold);
 
   return {
     sigmaMultiplier,
@@ -76,14 +128,7 @@ export function evaluateThreshold(
 }
 
 export function evaluateFallbackThreshold(
-  matrix: Float64Array,
-  rows: number,
-  cols: number,
-  noiseLevel: number,
-  candidates: number[],
-  contourRatio: number,
-  persistenceLevels: number,
-  ridgeCoverageThreshold: number,
+  evaluations: EvaluatedThreshold[],
   maxFdr: number,
   maxOccupancy: number,
   minPersistence: number,
@@ -91,18 +136,7 @@ export function evaluateFallbackThreshold(
   let best: EvaluatedThreshold | undefined;
   let bestScore = Infinity;
 
-  for (const sigma of candidates) {
-    const evaluation = evaluateThreshold(
-      matrix,
-      rows,
-      cols,
-      noiseLevel,
-      sigma,
-      contourRatio,
-      persistenceLevels,
-      ridgeCoverageThreshold,
-    );
-
+  for (const evaluation of evaluations) {
     const score =
       violation(evaluation.fdr, maxFdr) * 4 +
       violation(evaluation.occupancy, maxOccupancy) * 2 +
@@ -139,20 +173,17 @@ export function findRidgeFreeThresholdTopDown(
   let consecutiveRidgeLevels = 0;
 
   while (level >= minLevel) {
-    const evaluation = evaluateThreshold(
+    const ridge = evaluateRidgeScores(
       matrix,
       rows,
       cols,
-      noiseLevel,
-      level / noiseLevel,
-      contourRatio,
-      1,
+      (level / noiseLevel) * noiseLevel,
       ridgeCoverageThreshold,
     );
 
     const hasRidge =
-      evaluation.verticalRidgeScore > maxVerticalRidgeScore ||
-      evaluation.horizontalRidgeScore > maxHorizontalRidgeScore;
+      ridge.vertical > maxVerticalRidgeScore ||
+      ridge.horizontal > maxHorizontalRidgeScore;
 
     if (hasRidge) {
       consecutiveRidgeLevels++;
@@ -224,30 +255,14 @@ export function computePersistence(
   return minimumPersistence;
 }
 
-export function computeRidgeScores(
-  mask: Uint8Array,
+function calculateRidgeScores(
+  rowCounts: Uint32Array,
+  colCounts: Uint32Array,
   rows: number,
   cols: number,
+  activePixels: number,
   coverageThreshold: number,
 ): RidgeScores {
-  const rowCounts = new Uint32Array(rows);
-  const colCounts = new Uint32Array(cols);
-  let activePixels = 0;
-
-  for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < cols; col++) {
-      const index = row * cols + col;
-
-      if (!mask[index]) {
-        continue;
-      }
-
-      activePixels++;
-      rowCounts[row]++;
-      colCounts[col]++;
-    }
-  }
-
   if (activePixels === 0) {
     return {
       vertical: 0,
@@ -279,6 +294,57 @@ export function computeRidgeScores(
     vertical: verticalRidgePixels / activePixels,
     horizontal: horizontalRidgePixels / activePixels,
   };
+}
+
+export function computeRidgeScores(
+  mask: Uint8Array,
+  rows: number,
+  cols: number,
+  coverageThreshold: number,
+): RidgeScores {
+  const rowCounts = new Uint32Array(rows);
+  const colCounts = new Uint32Array(cols);
+  let activePixels = 0;
+
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      const index = row * cols + col;
+
+      if (!mask[index]) {
+        continue;
+      }
+
+      activePixels++;
+      rowCounts[row]++;
+      colCounts[col]++;
+    }
+  }
+
+  return calculateRidgeScores(
+    rowCounts,
+    colCounts,
+    rows,
+    cols,
+    activePixels,
+    coverageThreshold,
+  );
+}
+
+export function evaluateRidgeScores(
+  matrix: Float64Array,
+  rows: number,
+  cols: number,
+  threshold: number,
+  coverageThreshold: number,
+): RidgeScores {
+  return evaluateThresholdMetrics(
+    matrix,
+    rows,
+    cols,
+    threshold,
+    coverageThreshold,
+    true,
+  ).ridge;
 }
 
 export function createMask(
