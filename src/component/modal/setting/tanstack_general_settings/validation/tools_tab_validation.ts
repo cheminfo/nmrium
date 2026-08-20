@@ -30,5 +30,6 @@ export const toolbarButtonsValidation = z
     exclusionZones: z.boolean().optional(),
     autoRangeAndZonePicking: z.boolean().optional(),
     inset: z.boolean().optional(),
+    alignTwoDimensionsSpectra: z.boolean().optional(),
   })
   .optional();
