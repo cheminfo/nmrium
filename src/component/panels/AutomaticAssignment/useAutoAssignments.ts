@@ -1,5 +1,5 @@
-import type { Spectrum1D, Spectrum2D, Spectrum } from '@zakodium/nmrium-core';
-import { assert } from '@zakodium/utils';
+import type { Spectrum } from '@zakodium/nmrium-core';
+import { assertSpectrum2D, isSpectrum1D } from '@zakodium/nmrium-core';
 import type { SpectraData } from 'nmr-processing';
 import { getAssignments as getAssignmentsData } from 'nmr-processing';
 import { Molecule } from 'openchemlib';
@@ -14,17 +14,21 @@ export interface AutoAssignmentsData {
   assignment: SpectraData[];
 }
 
-function mapSpectra(data: Spectrum[]) {
+function mapSpectra(data: Spectrum[]): SpectraData[] {
   return data.map((spectrum) => {
-    const { id, info } = spectrum;
-    const dimension = info.dimension;
-    assert(dimension === 1 || dimension === 2, 'dimension must be 1 or 2');
-    if (dimension === 1) {
-      const ranges = (spectrum as Spectrum1D).ranges.values;
-      return { id, info, ranges };
+    if (isSpectrum1D(spectrum)) {
+      return {
+        id: spectrum.id,
+        info: spectrum.info,
+        ranges: spectrum.ranges.values,
+      };
     } else {
-      const zones = (spectrum as Spectrum2D).zones.values;
-      return { id, info, zones };
+      assertSpectrum2D(spectrum);
+      return {
+        id: spectrum.id,
+        info: spectrum.info,
+        zones: spectrum.zones.values,
+      };
     }
   });
 }
@@ -49,7 +53,7 @@ export function useAutoAssignments() {
     void (async () => {
       const hideLoading = toaster.showLoading({ message: 'Auto Assignments' });
       const molecule = Molecule.fromMolfile(molecules[0]?.molfile || '');
-      const spectra = mapSpectra(data) as SpectraData[];
+      const spectra = mapSpectra(data);
 
       if (!originData.current) {
         originData.current = spectra;
