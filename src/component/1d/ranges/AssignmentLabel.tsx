@@ -30,13 +30,13 @@ export function AssignmentLabel(props: AssignmentLabelProps) {
     return null;
   }
 
-  function handleChange(value: string | number) {
+  function handleChange(value: string) {
     dismissNewLabel();
 
     dispatch({
       type: 'CHANGE_1D_SIGNAL_ASSIGNMENT_LABEL',
       payload: {
-        value: String(value),
+        value,
         rangeId: id,
         signalId: signal.id,
       },

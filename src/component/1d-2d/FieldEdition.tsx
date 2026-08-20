@@ -19,7 +19,7 @@ type InputType = 'number' | 'text';
 interface FieldProps {
   value: number | string;
   inputType?: InputType;
-  onChange: (value: FieldProps['value']) => void;
+  onChange: (value: string) => void;
 }
 
 interface FieldEditionsProps extends FieldProps {
@@ -32,7 +32,7 @@ export function FieldEdition(props: FieldEditionsProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   function handleChange(newValue: FieldEditionsProps['value']) {
-    onChange(newValue);
+    onChange(String(newValue));
     setIsOpen(false);
   }
 
@@ -73,7 +73,9 @@ function Field(props: FieldProps) {
   const { value, inputType = 'text', onChange } = props;
 
   const validation = useMemo(() => {
-    return validationSchema(inputType);
+    return validationSchema(inputType).transform(({ value }) => {
+      return String(value);
+    });
   }, [inputType]);
 
   const form = useForm({
@@ -85,7 +87,7 @@ function Field(props: FieldProps) {
       onDynamic: validation,
     },
     onSubmit: ({ value }) => {
-      const { value: parsedValue } = validation.parse(value);
+      const parsedValue = validation.parse(value);
       onChange(parsedValue);
     },
   });
