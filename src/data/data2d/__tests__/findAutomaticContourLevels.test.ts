@@ -6,8 +6,8 @@ import {
   createThresholdIndex,
   evaluateThreshold,
   maxPoolAbsolute,
-} from './evaluation.js';
-import { findAutomaticContourLevels } from './findAutomaticContourLevels.js';
+} from '../Spectrum2D/findBestMinContour/evaluation.js';
+import { findAutomaticContourLevels } from '../Spectrum2D/findBestMinContour/findAutomaticContourLevels.js';
 
 test('maxPoolAbsolute returns the global finite absolute maximum', () => {
   const analysis = maxPoolAbsolute(

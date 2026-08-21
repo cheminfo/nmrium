@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 
-import { estimateNoiseLevel } from './estimateNoiseLevel.js';
+import { estimateNoiseLevel } from '../Spectrum2D/findBestMinContour/estimateNoiseLevel.js';
 
 const GAUSSIAN_MAD_SCALE = 1 / 0.6744897501960817;
 
