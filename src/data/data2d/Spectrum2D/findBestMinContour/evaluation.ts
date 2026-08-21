@@ -412,7 +412,7 @@ export function maxPoolAbsolute(
     values,
     rows: analysisRows,
     cols: analysisCols,
-    maxAbsoluteValue,
+    maxAbsoluteValue: maxAbsoluteValue * 0.95,
   };
 }
 
