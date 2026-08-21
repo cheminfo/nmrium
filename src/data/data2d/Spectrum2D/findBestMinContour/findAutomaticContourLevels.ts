@@ -8,7 +8,7 @@ import {
 } from './evaluation.js';
 import { validateInput } from './math.js';
 
-export interface AutoContourDiagnostics {
+interface AutoContourDiagnostics {
   recommended: ThresholdDiagnostics;
   ridgeFree: ThresholdDiagnostics;
 
@@ -19,7 +19,7 @@ export interface AutoContourDiagnostics {
   hasT1Noise: boolean;
 }
 
-export interface ThresholdDiagnostics {
+interface ThresholdDiagnostics {
   sigmaMultiplier: number;
   minLevel: number;
 

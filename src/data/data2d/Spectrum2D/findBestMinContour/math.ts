@@ -6,7 +6,7 @@ export function gaussianTwoSidedTail(k: number): number {
  * Approximation of the complementary error function.
  * @TODO it would be replaced by the same implementation from ml-spectra-processing.
  */
-export function erfc(x: number): number {
+function erfc(x: number): number {
   const sign = x < 0 ? -1 : 1;
   const ax = Math.abs(x);
 

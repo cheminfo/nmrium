@@ -19,7 +19,7 @@ export interface AnalysisMatrix {
   maxAbsoluteValue: number;
 }
 
-export interface RidgeScores {
+interface RidgeScores {
   vertical: number;
   horizontal: number;
 }
@@ -105,13 +105,13 @@ function evaluateThresholdMetrics(
   const ridge =
     rowCounts && colCounts
       ? calculateRidgeScores(
-          rowCounts,
-          colCounts,
-          rows,
-          cols,
-          activePixels,
-          ridgeCoverageThreshold,
-        )
+        rowCounts,
+        colCounts,
+        rows,
+        cols,
+        activePixels,
+        ridgeCoverageThreshold,
+      )
       : { vertical: 0, horizontal: 0 };
 
   return { activePixels, ridge };
@@ -352,41 +352,7 @@ function calculateRidgeScores(
   };
 }
 
-export function computeRidgeScores(
-  mask: Uint8Array,
-  rows: number,
-  cols: number,
-  coverageThreshold: number,
-): RidgeScores {
-  const rowCounts = new Uint32Array(rows);
-  const colCounts = new Uint32Array(cols);
-  let activePixels = 0;
-
-  for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < cols; col++) {
-      const index = row * cols + col;
-
-      if (!mask[index]) {
-        continue;
-      }
-
-      activePixels++;
-      rowCounts[row]++;
-      colCounts[col]++;
-    }
-  }
-
-  return calculateRidgeScores(
-    rowCounts,
-    colCounts,
-    rows,
-    cols,
-    activePixels,
-    coverageThreshold,
-  );
-}
-
-export function evaluateRidgeScores(
+function evaluateRidgeScores(
   matrix: Float64Array,
   rows: number,
   cols: number,
@@ -401,21 +367,6 @@ export function evaluateRidgeScores(
     coverageThreshold,
     true,
   ).ridge;
-}
-
-export function createMask(
-  matrix: Float64Array,
-  threshold: number,
-): Uint8Array {
-  const mask = new Uint8Array(matrix.length);
-
-  for (const [index, value] of matrix.entries()) {
-    if (value >= threshold) {
-      mask[index] = 1;
-    }
-  }
-
-  return mask;
 }
 
 export function maxPoolAbsolute(
@@ -465,17 +416,7 @@ export function maxPoolAbsolute(
   };
 }
 
-export function countActivePixels(mask: Uint8Array): number {
-  let count = 0;
-
-  for (const value of mask) {
-    count += value;
-  }
-
-  return count;
-}
-
-export function countValuesAboveThreshold(
+function countValuesAboveThreshold(
   matrix: Float64Array,
   threshold: number,
 ): number {
