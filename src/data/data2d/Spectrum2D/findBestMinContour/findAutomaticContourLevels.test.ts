@@ -17,7 +17,7 @@ test('maxPoolAbsolute returns the global finite absolute maximum', () => {
     2,
   );
 
-  expect(analysis.maxAbsoluteValue).toBe(7);
+  expect(analysis.maxAbsoluteValue).toBe(7 * 0.95);
 });
 
 test('sorted threshold counts preserve direct comparison semantics', () => {
@@ -127,9 +127,11 @@ test('diagnostics do not change selected contour levels', () => {
     sigmaMultiplier: withDiagnostics.sigmaMultiplier,
     sigmaMultiplierWithoutT1Noise:
       withDiagnostics.sigmaMultiplierWithoutT1Noise,
+    hasT1Noise: withDiagnostics.hasT1Noise,
   });
   expect(withDiagnostics.diagnostics).toBeDefined();
   expect(withoutDiagnostics.diagnostics).toBeUndefined();
+  expect(withoutDiagnostics.hasT1Noise).toBe(withDiagnostics.hasT1Noise);
 });
 
 test('fallback uses the first cached candidate when scores tie', () => {

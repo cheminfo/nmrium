@@ -416,7 +416,7 @@ export function maxPoolAbsolute(
   };
 }
 
-function countValuesAboveThreshold(
+export function countValuesAboveThreshold(
   matrix: Float64Array,
   threshold: number,
 ): number {

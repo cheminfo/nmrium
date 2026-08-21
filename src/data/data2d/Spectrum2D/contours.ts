@@ -78,6 +78,7 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
     noiseLevel,
     {
       maxFdr: 0.005,
+      diagnostics: false,
       maxOccupancy: 0.005,
       persistenceLevels: 5,
       contourRatio: 1.8,
@@ -88,12 +89,8 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
     },
   );
 
-  const {
-    diagnostics: { hasT1Noise },
-    minLevelWithoutT1Noise,
-    minLevel,
-    maxAbsoluteValue,
-  } = bestMinLevel;
+  const { hasT1Noise, minLevelWithoutT1Noise, minLevel, maxAbsoluteValue } =
+    bestMinLevel;
   const minContourLevel = Math.min(
     calculateValueOfLevel(
       hasT1Noise ? minLevelWithoutT1Noise : minLevel,

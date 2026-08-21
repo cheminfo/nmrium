@@ -11,12 +11,6 @@ import { validateInput } from './math.js';
 interface AutoContourDiagnostics {
   recommended: ThresholdDiagnostics;
   ridgeFree: ThresholdDiagnostics;
-
-  /**
-   * True when directional ridge structures were detected
-   * at the recommended minimum.
-   */
-  hasT1Noise: boolean;
 }
 
 interface ThresholdDiagnostics {
@@ -42,6 +36,12 @@ export type AutoContourResult<TDiagnostics extends boolean = boolean> = {
    * ridge structures (e.g. t1-noise) are no longer present.
    */
   minLevelWithoutT1Noise: number;
+
+  /**
+   * True when directional ridge structures were detected
+   * at the recommended minimum.
+   */
+  hasT1Noise: boolean;
 
   /**
    * Same values expressed in multiples of the noise level.
@@ -365,10 +365,15 @@ export function findAutomaticContourLevels(
     ridgeCoverageThreshold,
   );
 
+  const hasT1Noise =
+    recommended.verticalRidgeScore > maxVerticalRidgeScore ||
+    recommended.horizontalRidgeScore > maxHorizontalRidgeScore;
+
   const result: AutoContourResult<boolean> = {
     maxAbsoluteValue,
     minLevel: recommended.sigmaMultiplier * noiseLevel,
     minLevelWithoutT1Noise: ridgeFreeLevel,
+    hasT1Noise,
 
     sigmaMultiplier: recommended.sigmaMultiplier,
     sigmaMultiplierWithoutT1Noise: ridgeFreeLevel / noiseLevel,
@@ -419,9 +424,6 @@ export function findAutomaticContourLevels(
         verticalRidgeScore: ridgeFree.verticalRidgeScore,
         horizontalRidgeScore: ridgeFree.horizontalRidgeScore,
       },
-      hasT1Noise:
-        recommendedDiagnostics.verticalRidgeScore > maxVerticalRidgeScore ||
-        recommendedDiagnostics.horizontalRidgeScore > maxHorizontalRidgeScore,
     };
   }
 
