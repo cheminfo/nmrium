@@ -44,6 +44,7 @@ export function AssignmentLabel(props: AssignmentLabelProps) {
   }
   const baseYOffset = margin?.top + marginTop;
   const yOffset = baseYOffset + stackIndex * 12;
+
   return (
     <g transform={`translate(${width / 2} ${yOffset})`}>
       <FieldEdition
