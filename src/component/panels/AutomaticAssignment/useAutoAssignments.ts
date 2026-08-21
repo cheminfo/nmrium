@@ -14,20 +14,33 @@ export interface AutoAssignmentsData {
   assignment: SpectraData[];
 }
 
+function omitPeaks<T extends { peaks?: unknown }>(signal: T): Omit<T, 'peaks'> {
+  const signalWithoutPeaks = { ...signal };
+  delete signalWithoutPeaks.peaks;
+  return signalWithoutPeaks;
+}
+
 function mapSpectra(data: Spectrum[]): SpectraData[] {
   return data.map((spectrum) => {
     if (isSpectrum1D(spectrum)) {
+      const { id, info, ranges } = spectrum;
       return {
-        id: spectrum.id,
-        info: spectrum.info,
-        ranges: spectrum.ranges.values,
+        id,
+        info,
+        ranges: ranges.values,
       };
     } else {
+      const { id, info, zones } = spectrum;
       assertSpectrum2D(spectrum);
       return {
-        id: spectrum.id,
-        info: spectrum.info,
-        zones: spectrum.zones.values,
+        id,
+        info,
+        zones: zones.values.map((zone) => {
+          return {
+            ...zone,
+            signals: zone.signals.map(omitPeaks),
+          };
+        }),
       };
     }
   });
