@@ -1,7 +1,7 @@
-/* eslint-disable unicorn/prefer-logical-operator-over-ternary */
 /** @jsxImportSource @emotion/react */
 import type { CSSObject, SerializedStyles } from '@emotion/react';
 import { css } from '@emotion/react';
+import { useTable } from '@tanstack/react-table';
 import type {
   CSSProperties,
   MouseEvent,
@@ -10,7 +10,6 @@ import type {
   UIEvent,
 } from 'react';
 import {
-  forwardRef,
   memo,
   useEffect,
   useLayoutEffect,
@@ -19,105 +18,61 @@ import {
   useState,
 } from 'react';
 import { useResizeObserver } from 'react-d3-utils';
-import type {
-  CellProps,
-  Column as ReactColumn,
-  Row,
-  TableInstance,
-  UseSortByColumnOptions,
-  UseSortByInstanceProps,
-  UseSortByOptions,
-  UseTableOptions,
-} from 'react-table';
-import { useSortBy, useTable } from 'react-table';
 
-import type {
-  HighlightEventSourceExtra,
-  HighlightEventSourceType,
-} from '../../highlight/index.js';
-import type { BaseContextMenuProps } from '../ContextMenuBluePrint.js';
-
-import { BaseReactTable } from './BaseReactTable.js';
-import { EmptyDataRow } from './Elements/EmptyDataRow.js';
-import ReactTableHeader from './Elements/ReactTableHeader.js';
-import type { ClickEvent } from './Elements/ReactTableRow.js';
-import ReactTableRow from './Elements/ReactTableRow.js';
+import { BaseReactTable } from './elements/base_react_table.tsx';
+import { EmptyDataRow } from './elements/empty_data_row.tsx';
 import {
-  ReactTableProvider,
-  useReactTableContext,
-} from './utility/ReactTableContext.js';
-import type { RowSpanHeaders } from './utility/useRowSpan.js';
-import useRowSpan, { prepareRowSpan } from './utility/useRowSpan.js';
+  TanStackTableProvider,
+  useTanStackTableContext,
+} from './elements/table_context.ts';
+import TableHeader from './elements/table_header.tsx';
+import TableRow from './elements/table_row.tsx';
+import { tanStackTableFeatures } from './features.ts';
+import type {
+  TanStackRowData,
+  TanStackTableClickEvent,
+  TanStackTableColumn,
+  TanStackTableContextMenuProps,
+  TanStackTableHighlightSourceProps,
+  TanStackTableRow,
+  TanStackTableRowStyle,
+  TanStackTableSortEvent,
+  TanStackTableVirtualBoundary,
+} from './types.ts';
 
-export type HighlightSourceProps = {
-  [K in HighlightEventSourceType]: HighlightEventSourceExtra<K> extends never
-    ? { highlightedSource?: K; getHighlightExtra?: never }
-    : {
-        highlightedSource: K;
-        getHighlightExtra: (row: any) => HighlightEventSourceExtra<K>;
-      };
-}[HighlightEventSourceType];
-
-interface ExtraColumn<T extends object> {
-  enableRowSpan?: boolean;
-  style?: CSSProperties;
-  Cell?: (cell: CellProps<T>) => ReactElement | string;
-}
-
-export type Column<T extends object = object> = ReactColumn<T> &
-  ExtraColumn<T> &
-  UseSortByColumnOptions<T>;
-
-type TableInstanceWithHooks<T extends object> = TableInstance<T> & {
-  rowSpanHeaders: RowSpanHeaders;
-} & UseSortByInstanceProps<T>;
-
-type TableOptions<T extends object> = UseTableOptions<T> & UseSortByOptions<T>;
-
-interface SortEvent {
-  onSortEnd?: (data: any, isTableSorted?: boolean) => void;
-}
-
-export interface BaseRowStyle {
-  active?: CSSProperties;
-  activated?: CSSProperties;
-  hover?: CSSProperties;
-  base?: CSSProperties;
-}
-
-export interface TableContextMenuProps {
-  onContextMenuSelect?: (
-    selected: Parameters<BaseContextMenuProps['onSelect']>[0],
-    data: any,
-  ) => void;
-  contextMenu?: BaseContextMenuProps['options'];
-}
-interface ReactTableProps<T extends object>
-  extends TableContextMenuProps, ClickEvent, SortEvent {
-  data: T[];
-  columns: Array<Column<T>>;
+interface TanStackTableProps<TData extends TanStackRowData>
+  extends
+    TanStackTableContextMenuProps<TData>,
+    TanStackTableClickEvent<TData>,
+    TanStackTableSortEvent<TData> {
+  data: readonly TData[];
+  columns: ReadonlyArray<TanStackTableColumn<TData, any>>;
   approxItemHeight?: number;
   approxColumnWidth?: number;
-  groupKey?: keyof T;
+  groupKey?: keyof TData;
   indexKey?: string;
   enableVirtualScroll?: boolean;
   enableColumnsVirtualScroll?: boolean;
-  activeRow?: (data: Row<T>) => boolean;
+  activeRow?: (data: TanStackTableRow<TData>) => boolean;
   enableDefaultActiveRow?: boolean;
   totalCount?: number;
   emptyDataRowText?: string;
-  rowStyle?: BaseRowStyle | ((data: T) => BaseRowStyle | undefined);
+  rowStyle?:
+    | TanStackTableRowStyle
+    | ((data: TData) => TanStackTableRowStyle | undefined);
   style?: CSSObject | SerializedStyles;
   disableDefaultRowStyle?: boolean;
 }
 
-type ReactTableInnerProps<T extends object> = ReactTableProps<T> &
-  HighlightSourceProps & {
-    onScroll?: (event: UIEvent<HTMLDivElement>) => void;
-  };
+type ReactTableInnerProps<TData extends TanStackRowData> =
+  TanStackTableProps<TData> &
+    TanStackTableHighlightSourceProps<TData> & {
+      containerRef: Ref<HTMLDivElement>;
+      onScroll?: (event: UIEvent<HTMLDivElement>) => void;
+    };
 
-type ReactTableOuterProps<T extends object> = ReactTableProps<T> &
-  HighlightSourceProps;
+type ReactTableOuterProps<TData extends TanStackRowData> =
+  TanStackTableProps<TData> & TanStackTableHighlightSourceProps<TData>;
 
 const styles = {
   table: (
@@ -150,13 +105,8 @@ const counterStyle: CSSProperties = {
   fontSize: '1.4em',
 };
 
-const ReactTableInner = forwardRef(TableInner) as <T extends object = any>(
-  props: ReactTableInnerProps<T> & { ref?: Ref<HTMLDivElement> },
-) => ReactElement;
-
-function TableInner<T extends object>(
-  props: ReactTableInnerProps<T>,
-  ref: Ref<HTMLDivElement>,
+function TanStackTableInner<TData extends TanStackRowData>(
+  props: ReactTableInnerProps<TData>,
 ) {
   const {
     data,
@@ -170,7 +120,6 @@ function TableInner<T extends object>(
     enableVirtualScroll = false,
     enableColumnsVirtualScroll = false,
     approxColumnWidth = 40,
-    groupKey,
     onClick,
     activeRow,
     totalCount,
@@ -180,10 +129,11 @@ function TableInner<T extends object>(
     disableDefaultRowStyle = false,
     enableDefaultActiveRow = false,
     emptyDataRowText = 'No Data',
+    containerRef,
   } = props;
 
   const isSortedEventTriggered = useRef<boolean>(false);
-  const virtualBoundary = useReactTableContext();
+  const virtualBoundary = useTanStackTableContext();
   const [rowIndex, setRowIndex] = useState<number>();
   const timeoutIdRef = useRef<NodeJS.Timeout>();
   const [isCounterVisible, setCounterVisibility] = useState(false);
@@ -199,25 +149,14 @@ function TableInner<T extends object>(
       : columns;
   }, [enableColumnsVirtualScroll, virtualBoundary.columns, columns]);
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-    rowSpanHeaders,
-    state, // Access the sort state here
-  } = useTable(
-    {
-      columns: memoColumns,
-      data,
-      autoResetSortBy: false,
-    } as TableOptions<T>,
-    useSortBy,
-    useRowSpan,
-  ) as TableInstanceWithHooks<T>;
+  const table = useTable({
+    features: tanStackTableFeatures,
+    data,
+    columns: memoColumns,
+  });
 
-  const { sortBy } = state as any;
+  const sortBy = table.state.sorting;
+  const rows = table.getRowModel().rows;
 
   function clickHandler(event: MouseEvent, row: any) {
     setRowIndex(row.index);
@@ -263,14 +202,14 @@ function TableInner<T extends object>(
 
   const lastRow = rowsData.at(-1);
   const index = (lastRow?.original as any)?.[indexKey] || lastRow?.index;
-  const total = totalCount ? totalCount : data.length;
+  const total = totalCount || data.length;
 
-  const startColumn = columns[virtualBoundary.columns.start]?.Header;
+  const startColumn = columns[virtualBoundary.columns.start]?.header;
 
   return (
     <>
       <div
-        ref={ref}
+        ref={containerRef}
         className="table-container"
         style={{
           overflowY: 'auto',
@@ -293,14 +232,14 @@ function TableInner<T extends object>(
           }}
         />
         <BaseReactTable
-          {...getTableProps()}
           style={styles.table(enableVirtualScroll, enableColumnsVirtualScroll)}
         >
-          <ReactTableHeader
-            headerGroups={headerGroups}
+          <TableHeader
+            headerGroups={table.getHeaderGroups()}
+            table={table}
             onClick={headerClickHandler}
           />
-          <tbody {...getTableBodyProps()}>
+          <tbody>
             {!data ||
               (data?.length === 0 && (
                 <EmptyDataRow
@@ -309,27 +248,16 @@ function TableInner<T extends object>(
                 />
               ))}
             {rowsData.map((row, index) => {
-              prepareRow(row);
-
-              prepareRowSpan(
-                rows,
-                enableVirtualScroll
-                  ? index + virtualBoundary.rows.start
-                  : index,
-                rowSpanHeaders,
-                groupKey,
-              );
-              const { key, ...restRowProps } = row.getRowProps();
               const highlightSourceProps = {
                 highlightedSource,
                 getHighlightExtra,
-              } as HighlightSourceProps;
+              } as TanStackTableHighlightSourceProps<TData>;
 
               return (
-                <ReactTableRow
-                  key={key}
-                  {...restRowProps}
+                <TableRow
+                  key={row.id}
                   row={row}
+                  table={table}
                   contextMenu={contextMenu}
                   onContextMenuSelect={onContextMenuSelect}
                   onClick={
@@ -346,7 +274,7 @@ function TableInner<T extends object>(
                   }
                   rowStyle={
                     typeof rowStyle === 'function'
-                      ? rowStyle(row as T)
+                      ? rowStyle(row.original)
                       : rowStyle
                   }
                   disableDefaultRowStyle={disableDefaultRowStyle}
@@ -377,16 +305,9 @@ function TableInner<T extends object>(
   );
 }
 
-interface VirtualBoundary {
-  start: number;
-  end: number;
-}
-export interface TableVirtualBoundary {
-  rows: VirtualBoundary;
-  columns: VirtualBoundary;
-}
-
-function ReactTable<T extends object>(props: ReactTableOuterProps<T>) {
+function TanStackTable<TData extends TanStackRowData>(
+  props: ReactTableOuterProps<TData>,
+) {
   const {
     data,
     approxItemHeight = 40,
@@ -403,7 +324,7 @@ function ReactTable<T extends object>(props: ReactTableOuterProps<T>) {
     useResizeObserver();
 
   const [tableVirtualBoundary, setTableVirtualBoundary] =
-    useState<TableVirtualBoundary>({
+    useState<TanStackTableVirtualBoundary>({
       rows: {
         start: 1,
         end: 0,
@@ -489,7 +410,6 @@ function ReactTable<T extends object>(props: ReactTableOuterProps<T>) {
   function findEndIndex(index: number, numberOfVisibleRows: number) {
     const newIndex = index + numberOfVisibleRows;
     const currentIndx = newIndex >= data.length ? data.length - 1 : newIndex;
-    // return currentIndx;
     // Look for the last index of the group
     return lookForGroupIndex(currentIndx, 1);
   }
@@ -521,7 +441,7 @@ function ReactTable<T extends object>(props: ReactTableOuterProps<T>) {
   }
 
   return (
-    <ReactTableProvider value={tableVirtualBoundary}>
+    <TanStackTableProvider value={tableVirtualBoundary}>
       <div
         ref={mRef}
         css={css(
@@ -532,17 +452,17 @@ function ReactTable<T extends object>(props: ReactTableOuterProps<T>) {
           style,
         )}
       >
-        <ReactTableInner<T>
+        <TanStackTableInner<TData>
           onScroll={scrollHandler}
           onSortEnd={onSortEnd}
-          ref={containerRef}
+          containerRef={containerRef}
           {...props}
         />
       </div>
-    </ReactTableProvider>
+    </TanStackTableProvider>
   );
 }
 
-export default memo(ReactTable) as <T extends object = any>(
-  props: ReactTableOuterProps<T>,
+export default memo(TanStackTable) as <TData extends TanStackRowData>(
+  props: ReactTableOuterProps<TData>,
 ) => ReactElement;

@@ -21,10 +21,12 @@ import { useToaster } from '../../context/ToasterContext.js';
 import Button from '../../elements/Button.js';
 import { Input2Controller } from '../../elements/Input2Controller.js';
 import Label from '../../elements/Label.js';
-import type { Column } from '../../elements/ReactTable/ReactTable.js';
-import ReactTable from '../../elements/ReactTable/ReactTable.js';
 import { Select2Controller } from '../../elements/Select2Controller.js';
 import { StandardDialog } from '../../elements/StandardDialog.tsx';
+import {
+  TanStackTable,
+  createTanStackColumnHelper,
+} from '../../elements/tanstack_table/index.ts';
 import { convertPathArrayToString } from '../../utility/convertPathArrayToString.js';
 import { getSpectraObjectPaths } from '../../utility/getSpectraObjectPaths.js';
 
@@ -164,9 +166,10 @@ function InnerMetaImportationModal({
 
   const columns = useMemo(() => {
     const fields = parseResult?.meta.fields || [];
-    const columns: Array<Column<any>> = [
-      { Header: '#', accessor: (_: any, index) => index + 1 },
-    ];
+    const columnHelper = createTanStackColumnHelper<any>();
+    const columns = columnHelper.columns([
+      { header: '#', accessorFn: (_: any, index) => index + 1 },
+    ]);
 
     function getRowValue(val: any) {
       if (typeof val === 'string') return val;
@@ -177,9 +180,9 @@ function InnerMetaImportationModal({
     for (const fieldName of fields) {
       if (fieldName) {
         columns.push({
-          Header: fieldName,
-          accessor: (row: any) => getRowValue(row[fieldName]),
-          style: styles.column,
+          header: fieldName,
+          accessorFn: (row: any) => getRowValue(row[fieldName]),
+          meta: { style: styles.column },
         });
       }
     }
@@ -303,7 +306,7 @@ function InnerMetaImportationModal({
                 </Button.Done>
               </div>
               <div style={{ height: 'calc(100% - 160px)' }}>
-                <ReactTable
+                <TanStackTable
                   columns={columns}
                   data={metadata}
                   approxItemHeight={25}
