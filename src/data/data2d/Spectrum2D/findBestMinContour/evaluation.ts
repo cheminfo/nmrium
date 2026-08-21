@@ -105,13 +105,13 @@ function evaluateThresholdMetrics(
   const ridge =
     rowCounts && colCounts
       ? calculateRidgeScores(
-        rowCounts,
-        colCounts,
-        rows,
-        cols,
-        activePixels,
-        ridgeCoverageThreshold,
-      )
+          rowCounts,
+          colCounts,
+          rows,
+          cols,
+          activePixels,
+          ridgeCoverageThreshold,
+        )
       : { vertical: 0, horizontal: 0 };
 
   return { activePixels, ridge };
