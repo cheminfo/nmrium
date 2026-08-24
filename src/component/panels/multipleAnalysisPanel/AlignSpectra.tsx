@@ -1,48 +1,42 @@
 import styled from '@emotion/styled';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { revalidateLogic } from '@tanstack/react-form';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { useMemo } from 'react';
-import { useForm } from 'react-hook-form';
-import * as Yup from 'yup';
+import { AppForm, Button, coerceNumberInput, useForm } from 'react-science/ui';
+import { z } from 'zod';
 
 import { REFERENCES } from '../../../data/constants/References.js';
 import type { CalibrateOptions } from '../../../data/data1d/Spectrum1D/getReferenceShift.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
-import ActionButtons from '../../elements/ActionButtons.js';
-import type { LabelStyle } from '../../elements/Label.js';
-import Label from '../../elements/Label.js';
-import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
-import { Select2 } from '../../elements/Select2.js';
 import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus.js';
 import { useEvent } from '../../utility/Events.js';
-
-const labelStyle: LabelStyle = {
-  label: { flex: 4, fontWeight: '500' },
-  wrapper: { flex: 8, display: 'flex', alignItems: 'center' },
-  container: { padding: '5px 0' },
-};
 
 const baseList = [{ key: 1, value: 'manual', label: 'Manual' }];
 
 interface AlignSpectraProps {
-  nucleus: any;
+  nucleus: string;
   onClose: () => void;
 }
 
-const DEFAULT_OPTIONS: CalibrateOptions = {
-  from: -1,
-  to: 1,
-  nbPeaks: 1,
-  targetX: 0,
+type FormInput = z.input<typeof validation>;
+type FormOutput = z.output<typeof validation>;
+
+const DEFAULT_OPTIONS: FormInput = {
+  from: '-1',
+  to: '1',
+  nbPeaks: '1',
+  targetX: '0',
+  options: 'manual',
 };
 
-const schemaValidation = Yup.object({
-  from: Yup.number().required(),
-  to: Yup.number().required(),
-  nbPeaks: Yup.number().required(),
-  targetX: Yup.number().required(),
+const validation = z.object({
+  from: coerceNumberInput(),
+  to: coerceNumberInput(),
+  nbPeaks: coerceNumberInput(),
+  targetX: coerceNumberInput(),
+  options: z.string(),
 });
 
 function checkSpectra(options: CalibrateOptions, spectra: Spectrum1D[]) {
@@ -51,11 +45,14 @@ function checkSpectra(options: CalibrateOptions, spectra: Spectrum1D[]) {
     const {
       data: { x },
     } = spectrum;
+
     const min = x[0];
     const max = x.at(-1) as number;
+
     if (from < min || to > max) {
       throw new Error('Some spectra do not have data in the selected range');
     }
+
     if (Math.abs(xFindClosestIndex(x, from) - xFindClosestIndex(x, to)) < 10) {
       throw new Error(
         'The selected range is too small to provide accurate results',
@@ -66,18 +63,23 @@ function checkSpectra(options: CalibrateOptions, spectra: Spectrum1D[]) {
 
 function checkOptions(options: CalibrateOptions) {
   const returnedOptions = { ...options };
+
   if (options.from > options.to) {
     returnedOptions.to = options.from;
     returnedOptions.from = options.to;
   }
+
   return returnedOptions;
 }
 
-function getList(nucleus: any) {
-  if (!(REFERENCES as any)?.[nucleus]) {
+function getList(nucleus: string) {
+  const references = REFERENCES as any;
+
+  if (!references?.[nucleus]) {
     return [];
   }
-  const list = Object.entries((REFERENCES as any)[nucleus]).map((item) => ({
+
+  const list = Object.entries(references[nucleus]).map((item) => ({
     value: item[0],
     label: item[0],
   }));
@@ -93,8 +95,9 @@ const Container = styled.div`
   padding: 10px 0 5px 20px;
 
   .body {
+    flex: 1;
     overflow: auto;
-    padding: 10px 10px 25px 0;
+    padding: 10px 10px 25px 1px;
   }
 
   .header {
@@ -102,38 +105,64 @@ const Container = styled.div`
     font-weight: bold;
     padding: 5px 0;
   }
-
-  .footer {
-    display: flex;
-    padding-top: 5px;
-  }
 `;
 
-function AlignSpectra({ onClose = () => null, nucleus }: AlignSpectraProps) {
+const Footer = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+`;
+
+function inputToFormInputSchema(input: FormOutput): FormInput {
+  return {
+    from: String(input.from),
+    to: String(input.to),
+    targetX: String(input.targetX),
+    nbPeaks: String(input.nbPeaks),
+    options: input.options,
+  };
+}
+
+export default function AlignSpectra(props: AlignSpectraProps) {
+  const { onClose = () => null, nucleus } = props;
   const spectra = useSpectraByActiveNucleus();
   const dispatch = useDispatch();
   const toaster = useToaster();
-  const { handleSubmit, reset, control, getValues } = useForm<CalibrateOptions>(
-    {
-      defaultValues: DEFAULT_OPTIONS,
-      resolver: yupResolver(schemaValidation),
+
+  const optionList = useMemo(() => {
+    return getList(nucleus);
+  }, [nucleus]);
+
+  const form = useForm({
+    defaultValues: {
+      ...DEFAULT_OPTIONS,
+      options: optionList[0].value,
     },
-  );
+    validationLogic: revalidateLogic({ mode: 'change' }),
+    onSubmit: ({ value, formApi }) => {
+      const parsed = validation.parse(value);
+      const options = checkOptions(parsed);
 
-  function submitHandler(inputOptions: any) {
-    const options = checkOptions(inputOptions);
-    reset(options);
-    try {
-      checkSpectra(options, spectra as Spectrum1D[]);
+      formApi.reset(
+        inputToFormInputSchema({
+          ...options,
+          options: optionList[0].value,
+        }),
+      );
 
-      dispatch({ type: 'ALIGN_SPECTRA', payload: options });
-      onClose();
-    } catch (error: unknown) {
-      const message = (error as Error).message;
-
-      toaster.show({ intent: 'danger', message });
-    }
-  }
+      try {
+        checkSpectra(options, spectra as Spectrum1D[]);
+        dispatch({ type: 'ALIGN_SPECTRA', payload: options });
+        onClose();
+      } catch (error: unknown) {
+        const message = (error as Error).message;
+        toaster.show({ intent: 'danger', message });
+      }
+    },
+    validators: {
+      onDynamic: validation,
+    },
+  });
 
   useEvent({
     onBrushEnd: (options) => {
@@ -141,62 +170,74 @@ function AlignSpectra({ onClose = () => null, nucleus }: AlignSpectraProps) {
         range: [from, to],
         shiftKey,
       } = options;
+
       if (shiftKey) {
-        reset({ ...getValues(), from, to });
+        form.setFieldValue('from', String(from));
+        form.setFieldValue('to', String(to));
       }
     },
   });
 
-  function optionChangeHandler({ value: key }: { value: string }) {
+  function optionChangeHandlerRefactor(key: string) {
     const { delta: targetX = 0, ...otherOptions } =
       (REFERENCES as any)?.[nucleus]?.[key] || {};
-    const value = {
-      ...DEFAULT_OPTIONS,
-      targetX,
-      ...otherOptions,
-    };
-    reset(value);
+
+    form.reset(
+      inputToFormInputSchema({
+        from: otherOptions.from ?? Number(DEFAULT_OPTIONS.from),
+        to: otherOptions.to ?? Number(DEFAULT_OPTIONS.to),
+        nbPeaks: otherOptions.nbPeaks ?? Number(DEFAULT_OPTIONS.nbPeaks),
+        options: key,
+        targetX,
+      }),
+    );
   }
-  const List = useMemo(() => getList(nucleus), [nucleus]);
 
   return (
-    <Container>
-      <div className="body" style={{ flex: 1 }}>
-        <div className="header">
-          <span>Spectra calibration</span>
+    <AppForm form={form} layout="inline">
+      <Container>
+        <div className="body">
+          <form.Section title="Spectra calibration">
+            <form.AppField
+              name="options"
+              listeners={{
+                onChange: ({ value }) => {
+                  optionChangeHandlerRefactor(value);
+                },
+              }}
+            >
+              {(field) => <field.Select label="Options" items={optionList} />}
+            </form.AppField>
+          </form.Section>
+
+          <form.Section title="Range">
+            <form.AppField name="from">
+              {(field) => <field.NumericInput label="From" fill />}
+            </form.AppField>
+
+            <form.AppField name="to">
+              {(field) => <field.NumericInput label="To" fill />}
+            </form.AppField>
+          </form.Section>
+
+          <form.Section title="Configuration">
+            <form.AppField name="nbPeaks">
+              {(field) => <field.NumericInput label="Number of peaks" />}
+            </form.AppField>
+
+            <form.AppField name="targetX">
+              {(field) => <field.NumericInput label="Target PPM" />}
+            </form.AppField>
+          </form.Section>
         </div>
-        <Label title="Options" style={labelStyle}>
-          <Select2
-            items={List}
-            onItemSelect={optionChangeHandler}
-            defaultSelectedItem={List[0]}
-          />
-        </Label>
+        <Footer>
+          <form.SubmitButton intent="success">Apply</form.SubmitButton>
 
-        <Label title="Range" style={labelStyle}>
-          <Label title="From">
-            <NumberInput2Controller control={control} name="from" fill />
-          </Label>
-          <Label title="To" style={{ label: { padding: '0 10px' } }}>
-            <NumberInput2Controller control={control} name="to" fill />
-          </Label>
-        </Label>
-
-        <Label title="Number of peaks" style={labelStyle}>
-          <NumberInput2Controller control={control} name="nbPeaks" fill />
-        </Label>
-        <Label title="Target PPM" style={labelStyle}>
-          <NumberInput2Controller control={control} name="targetX" fill />
-        </Label>
-      </div>
-      <div className="footer">
-        <ActionButtons
-          onDone={() => handleSubmit(submitHandler)()}
-          onCancel={onClose}
-        />
-      </div>
-    </Container>
+          <Button intent="danger" variant="outlined" onClick={onClose}>
+            Cancel
+          </Button>
+        </Footer>
+      </Container>
+    </AppForm>
   );
 }
-
-export default AlignSpectra;
