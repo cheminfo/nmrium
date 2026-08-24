@@ -1,5 +1,47 @@
 # Changelog
 
+## [2.6.0](https://github.com/cheminfo/nmrium/compare/v2.5.0...v2.6.0) (2026-08-24)
+
+
+### Features
+
+* add a new tool for 2D alignment ([8392351](https://github.com/cheminfo/nmrium/commit/839235149afca765ad9c4c7c0a0b864e2fa0a450))
+* allow versioning of custom workspaces ([#4315](https://github.com/cheminfo/nmrium/issues/4315)) ([428c1bf](https://github.com/cheminfo/nmrium/commit/428c1bf608d56d9f1c3b16f117c3b955a163aa2a))
+* create a basic line indicator to display the shift between two points ([8392351](https://github.com/cheminfo/nmrium/commit/839235149afca765ad9c4c7c0a0b864e2fa0a450))
+* display median calculation zone for anchors ([#4304](https://github.com/cheminfo/nmrium/issues/4304)) ([93bc869](https://github.com/cheminfo/nmrium/commit/93bc869a3512003e7be02a678227feae256bb18f))
+* display peak absolute and relative shape area ([#4266](https://github.com/cheminfo/nmrium/issues/4266)) ([6c2b78b](https://github.com/cheminfo/nmrium/commit/6c2b78b31d26c3d328f6944d7a90e3ab7f5b26db))
+* improve 2D signal guideline behavior ([#4273](https://github.com/cheminfo/nmrium/issues/4273)) ([a8a0ff5](https://github.com/cheminfo/nmrium/commit/a8a0ff55654e16657cf3df2f87550bd4e1d73be3)), closes [#4267](https://github.com/cheminfo/nmrium/issues/4267)
+* integrate `ProcessingOperatorUI.PanelTool` ([#4291](https://github.com/cheminfo/nmrium/issues/4291)) ([5fe4ade](https://github.com/cheminfo/nmrium/commit/5fe4adef7e4f87ba5cef18471f07f7716fa95e9b))
+* integration of `ProcessingOperatorUI.TopBar` ([#4290](https://github.com/cheminfo/nmrium/issues/4290)) ([5daffb5](https://github.com/cheminfo/nmrium/commit/5daffb55e3b711b092ac911f0d974169abc9f921))
+* make 2D alignment a stable feature ([623d258](https://github.com/cheminfo/nmrium/commit/623d258ed510f2f627bb93041a4c72abb833b02a))
+* ph0 & ph1 calculation ([#4289](https://github.com/cheminfo/nmrium/issues/4289)) ([7bc184e](https://github.com/cheminfo/nmrium/commit/7bc184e29e9f741d867539a8b340da600e63686d))
+* processings live preview ([#4272](https://github.com/cheminfo/nmrium/issues/4272)) ([dd353a1](https://github.com/cheminfo/nmrium/commit/dd353a10fa8facc6ebc5d79acd744e18c6321b8a))
+* show nucleus selector when no spectrum is loaded ([9398eac](https://github.com/cheminfo/nmrium/commit/9398eacc36afb2c79d3697fa7696758d7ae5ad44))
+* show processings in error ([#4281](https://github.com/cheminfo/nmrium/issues/4281)) ([1f77f1d](https://github.com/cheminfo/nmrium/commit/1f77f1d613c032bce6a3392f71b66568000c3441))
+* supports `ProcessingOperatorUI.Tool` ([#4287](https://github.com/cheminfo/nmrium/issues/4287)) ([407416b](https://github.com/cheminfo/nmrium/commit/407416bdc6b550c39fc81504ace4d03ddadce082))
+* translate contours during 2d alignment ([8392351](https://github.com/cheminfo/nmrium/commit/839235149afca765ad9c4c7c0a0b864e2fa0a450))
+* update nmrium core packages ([623d258](https://github.com/cheminfo/nmrium/commit/623d258ed510f2f627bb93041a4c72abb833b02a))
+
+
+### Bug Fixes
+
+* **autoZonesPicking:** normalize region peak coordinates using absolute weights ([#4309](https://github.com/cheminfo/nmrium/issues/4309)) ([9c16f1d](https://github.com/cheminfo/nmrium/commit/9c16f1d4ab05194ff03978ef33274c1541fcb167))
+* avoid structuredClone on spectrum data ([#4293](https://github.com/cheminfo/nmrium/issues/4293)) ([514f930](https://github.com/cheminfo/nmrium/commit/514f93018ab3fa8017fdff4dffcab936a1e578f3))
+* **baseline-correction:** preserve saved anchors instead of defaults ones ([9bf6d93](https://github.com/cheminfo/nmrium/commit/9bf6d93134f2c57b914c50245d9df76faaa1ff3b))
+* correctly align 2D spectra along both axes ([8392351](https://github.com/cheminfo/nmrium/commit/839235149afca765ad9c4c7c0a0b864e2fa0a450))
+* correctly remove signal assignments ([#4277](https://github.com/cheminfo/nmrium/issues/4277)) ([b1ec480](https://github.com/cheminfo/nmrium/commit/b1ec480a8a0786aad36a370a7c24669ff43fb25c))
+* ensure signals fall within the range ([4898ecd](https://github.com/cheminfo/nmrium/commit/4898ecdbe28bb8fc44526861f6905cab80340ac9))
+* ensure typed array of originalData when loading old .nmrium files ([#4306](https://github.com/cheminfo/nmrium/issues/4306)) ([8b97f35](https://github.com/cheminfo/nmrium/commit/8b97f35803272c0f69d7e8d859166be9828a626e))
+* move signals into their new ranges when cutting a range ([#4275](https://github.com/cheminfo/nmrium/issues/4275)) ([379bb59](https://github.com/cheminfo/nmrium/commit/379bb59a99c541943ec1ff1f8634f3beeadd435c))
+* omit peaks from automatic assignment data ([c9a40be](https://github.com/cheminfo/nmrium/commit/c9a40be56df71d75038405b92cc8a4147f38fa7e))
+* only translate contours on primary mouse button ([8392351](https://github.com/cheminfo/nmrium/commit/839235149afca765ad9c4c7c0a0b864e2fa0a450))
+* prevent crash and negative input in export form ([#4311](https://github.com/cheminfo/nmrium/issues/4311)) ([1e4e1be](https://github.com/cheminfo/nmrium/commit/1e4e1bedd79e00178f33b3a4372658c855251925))
+* **print:** replace load callback with refHandler ([#4313](https://github.com/cheminfo/nmrium/issues/4313)) ([c1ceab0](https://github.com/cheminfo/nmrium/commit/c1ceab0447e84e72b39301415d3e58327528e09d))
+* resolve React warnings in ApplyToAllSelected ([#4319](https://github.com/cheminfo/nmrium/issues/4319)) ([53b4c5a](https://github.com/cheminfo/nmrium/commit/53b4c5a3cdcac101338c0a4dc29e6ed9df07df78))
+* **triggerOperation:** operator should be selected even if not editable ([5fe4ade](https://github.com/cheminfo/nmrium/commit/5fe4adef7e4f87ba5cef18471f07f7716fa95e9b))
+* update react-science ([#4285](https://github.com/cheminfo/nmrium/issues/4285)) ([13253ef](https://github.com/cheminfo/nmrium/commit/13253ef8671b17eaf92569d292c1fe62676ade52))
+* use assert methods from `@zakodium/utils` ([#4280](https://github.com/cheminfo/nmrium/issues/4280)) ([123c344](https://github.com/cheminfo/nmrium/commit/123c344daa33f158bd4fe758a1392da58aa5ec69))
+
 ## [2.5.0](https://github.com/cheminfo/nmrium/compare/v2.4.0...v2.5.0) (2026-07-13)
 
 
