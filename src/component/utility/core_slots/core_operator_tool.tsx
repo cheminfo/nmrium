@@ -1,41 +1,23 @@
-import type { ProcessingOperatorId } from '@zakodium/nmr-types';
-import type {
-  ProcessingOperatorUI,
-  ProcessingOperatorUIToolProps,
-} from '@zakodium/nmrium-core';
-import type { PartialPick } from '@zakodium/utils';
 import { ErrorBoundary } from 'react-error-boundary';
 
-import { useCore } from '../../context/CoreContext.tsx';
 import { ToolbarItemError } from '../toolbar_item_error.tsx';
 
-interface CoreOperatorToolProps {
-  operator: ProcessingOperatorUI<ProcessingOperatorId>;
-}
+import type { CoreOperatorToolProps } from './core_operator_tool.commons.ts';
+import { useToolProps } from './core_operator_tool.commons.ts';
 
-export function CoreOperatorTool(
-  props: PartialPick<
-    Omit<ProcessingOperatorUIToolProps<ProcessingOperatorId>, 'core'>,
-    'spectrum'
-  > &
-    CoreOperatorToolProps,
-) {
-  const { spectrum, activeOperatorId, onTriggerOperation, operator } = props;
-  const core = useCore();
+export function CoreOperatorTool(props: CoreOperatorToolProps) {
+  const { spectrum, operatorUI } = props;
+  const toolProps = useToolProps(props);
 
   if (!spectrum) return null;
-  if (!operator.Tool) return null;
+  if (!toolProps) return null;
+  if (!operatorUI.Tool) return null;
 
-  const { Tool } = operator;
+  const { Tool } = operatorUI;
 
   return (
     <ErrorBoundary FallbackComponent={ToolbarItemError}>
-      <Tool
-        core={core}
-        spectrum={spectrum}
-        activeOperatorId={activeOperatorId}
-        onTriggerOperation={onTriggerOperation}
-      />
+      <Tool {...toolProps} />
     </ErrorBoundary>
   );
 }

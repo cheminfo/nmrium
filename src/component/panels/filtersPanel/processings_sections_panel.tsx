@@ -103,7 +103,7 @@ export function ProcessingsSectionsPanel() {
           {operatorsUI.map((operatorUI) => (
             <CoreOperatorPanelTool
               key={operatorUI.id}
-              operator={operatorUI}
+              operatorUI={operatorUI}
               activeOperatorId={selected}
               spectrum={spectrum}
               onTriggerOperation={(operation) =>
