@@ -1,4 +1,5 @@
-import { DialogFooter } from '@blueprintjs/core';
+import { Callout, DialogFooter } from '@blueprintjs/core';
+import { revalidateLogic } from '@tanstack/react-form';
 import { useMemo } from 'react';
 import { AppForm, Button, useForm } from 'react-science/ui';
 import { z } from 'zod/v4';
@@ -52,6 +53,8 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
     validators: {
       onDynamic: validator,
     },
+    // onDynamic validators are ignored by the default validation logic
+    validationLogic: revalidateLogic({ mode: 'change' }),
     onSubmit: ({ value: { values } }) => {
       const parsedValues = exportSettingsValidation.parse(values);
       onExportOptionsChange(parsedValues);
@@ -69,6 +72,34 @@ function InnerExportOptionsModal(props: InnerExportOptionsModalProps) {
     >
       <AppForm form={form} layout="inline">
         <StyledDialogBody>
+          <form.Subscribe
+            selector={(state) =>
+              Array.from(
+                new Set(
+                  Object.values(state.errorMap.onDynamic ?? {})
+                    .flat()
+                    .map((error) => error?.message)
+                    .filter((message) => typeof message === 'string'),
+                ),
+              )
+            }
+          >
+            {(messages) =>
+              messages.length > 0 && (
+                <Callout
+                  intent="danger"
+                  title="Invalid export options"
+                  style={{ marginBottom: 10 }}
+                >
+                  <ul style={{ margin: 0, paddingInlineStart: '1.2em' }}>
+                    {messages.map((message) => (
+                      <li key={message}>{message}</li>
+                    ))}
+                  </ul>
+                </Callout>
+              )
+            }
+          </form.Subscribe>
           <ExportFields form={form} fields="values" />
         </StyledDialogBody>
         <DialogFooter

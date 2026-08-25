@@ -14,7 +14,14 @@ import {
   getExportOptions,
 } from '../../../../elements/export/utilities/getExportOptions.js';
 import { pageSizes } from '../../../../elements/print/pageSize.js';
-import { exportSettingsValidation } from '../validation/export_tab_validation.js';
+import {
+  MAX_DPI,
+  MIN_DPI,
+  dpiField,
+  exportSettingsDecoder,
+  exportSettingsValidation,
+  sizeField,
+} from '../validation/export_tab_validation.js';
 import { defaultGeneralSettingsFormValues } from '../validation.js';
 
 type Mode = 'basic' | 'advance';
@@ -48,31 +55,11 @@ const layoutItems: Array<SelectItem<Layout>> = [
   { value: 'landscape', label: 'Landscape' },
 ];
 
-function safeNumber(value: number) {
-  if (Number.isNaN(value)) value = 1;
-  else if (value <= 0) value = 1;
+/** Returns null for values the schema rejects */
+function parsePositiveNumber(str: string) {
+  const value = Number(str);
+  if (!Number.isFinite(value) || value <= 0) return null;
   return value;
-}
-
-function safeStringNumber(str: string, onInvalid: (str: string) => void) {
-  let isInvalid = false;
-  let value = Number(str);
-  if (Number.isNaN(value)) {
-    value = 1;
-    isInvalid = true;
-  }
-  if (value <= 0) {
-    value = 1;
-    isInvalid = true;
-  }
-
-  if (!isInvalid) {
-    const result = String(value);
-    onInvalid(result);
-    return result;
-  }
-
-  return str;
 }
 
 export const ExportFields = withFieldGroup({
@@ -81,63 +68,56 @@ export const ExportFields = withFieldGroup({
     const inputValues = useSelector(group.store, (s) => s.values);
 
     const outputValues = useMemo(() => {
-      return exportSettingsValidation.decode(inputValues);
+      return exportSettingsDecoder.decode(inputValues);
     }, [inputValues]);
 
     const advancedTransforms = useExportConfigurer(outputValues);
 
     function onModeChange({ value }: { value: Mode }) {
-      const newOptions = getExportDefaultOptionsByMode(value);
+      const defaultOptions = getExportDefaultOptionsByMode(value);
+      const newOptions = exportSettingsValidation.encode(defaultOptions);
 
       for (const [key, value] of Object.entries(newOptions)) {
         group.setFieldValue(key as keyof typeof newOptions, value, {
           dontRunListeners: true,
         });
       }
+      // keep the aspect ratio if the options is activated
+      advancedTransforms.resetSize(defaultOptions);
     }
 
     function onChangeUnit({ value }: { value: Unit }) {
       const { width, height } = advancedTransforms.changeUnit({ unit: value });
-      group.setFieldValue('width', String(safeNumber(width)), {
+      group.setFieldValue('width', String(width), {
         dontRunListeners: true,
       });
-      group.setFieldValue('height', String(safeNumber(height)), {
+      group.setFieldValue('height', String(height), {
         dontRunListeners: true,
       });
     }
 
     function onWidthChange({ value }: { value: string }) {
-      value = safeStringNumber(value, (width) =>
-        group.setFieldValue('width', width, { dontRunListeners: true }),
-      );
+      const width = parsePositiveNumber(value);
+      if (width === null) return;
 
-      const height = advancedTransforms.changeSize(
-        Number(value),
-        'height',
-        'width',
-      );
+      const height = advancedTransforms.changeSize(width, 'height', 'width');
       if (!advancedTransforms.isAspectRatioEnabled) {
         return;
       }
-      group.setFieldValue('height', String(safeNumber(height)), {
+      group.setFieldValue('height', String(height), {
         dontRunListeners: true,
       });
     }
 
     function onHeightChange({ value }: { value: string }) {
-      value = safeStringNumber(value, (height) =>
-        group.setFieldValue('height', height, { dontRunListeners: true }),
-      );
+      const height = parsePositiveNumber(value);
+      if (height === null) return;
 
-      const width = advancedTransforms.changeSize(
-        Number(value),
-        'width',
-        'height',
-      );
+      const width = advancedTransforms.changeSize(height, 'width', 'height');
       if (!advancedTransforms.isAspectRatioEnabled) {
         return;
       }
-      group.setFieldValue('width', String(safeNumber(width)), {
+      group.setFieldValue('width', String(width), {
         dontRunListeners: true,
       });
     }
@@ -146,14 +126,14 @@ export const ExportFields = withFieldGroup({
       if (inputValues.mode !== 'advance') return;
       if (inputValues.unit !== 'px') return;
 
-      value = safeStringNumber(value, (dpi) =>
-        group.setFieldValue('dpi', dpi, { dontRunListeners: true }),
-      );
-      const { width, height } = advancedTransforms.changeDPI(Number(value));
-      group.setFieldValue('width', String(safeNumber(width)), {
+      const dpi = parsePositiveNumber(value);
+      if (dpi === null || dpi < MIN_DPI || dpi > MAX_DPI) return;
+
+      const { width, height } = advancedTransforms.changeDPI(dpi);
+      group.setFieldValue('width', String(width), {
         dontRunListeners: true,
       });
-      group.setFieldValue('height', String(safeNumber(height)), {
+      group.setFieldValue('height', String(height), {
         dontRunListeners: true,
       });
     }
@@ -218,11 +198,12 @@ export const ExportFields = withFieldGroup({
                     <AppField
                       name="width"
                       listeners={{ onChange: onWidthChange }}
+                      validators={{ onChange: sizeField }}
                     >
                       {({ NumericInput }) => (
                         <NumericInput
                           label="Width"
-                          min={1}
+                          min={0}
                           rightElement={<Tag>{unit}</Tag>}
                         />
                       )}
@@ -230,11 +211,12 @@ export const ExportFields = withFieldGroup({
                     <AppField
                       name="height"
                       listeners={{ onChange: onHeightChange }}
+                      validators={{ onChange: sizeField }}
                     >
                       {({ NumericInput }) => (
                         <NumericInput
                           label="Height"
-                          min={1}
+                          min={0}
                           rightElement={<Tag>{unit}</Tag>}
                         />
                       )}
@@ -246,8 +228,14 @@ export const ExportFields = withFieldGroup({
             }
           }}
         </Subscribe>
-        <AppField name="dpi" listeners={{ onChange: onDPIChange }}>
-          {({ NumericInput }) => <NumericInput label="DPI" />}
+        <AppField
+          name="dpi"
+          listeners={{ onChange: onDPIChange }}
+          validators={{ onChange: dpiField }}
+        >
+          {({ NumericInput }) => (
+            <NumericInput label="DPI" min={MIN_DPI} max={MAX_DPI} />
+          )}
         </AppField>
         <AppField name="useDefaultSettings">
           {({ Checkbox }) => (
