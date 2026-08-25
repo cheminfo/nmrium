@@ -536,7 +536,7 @@ export default function NMRToolbar() {
           pluginTools.map((operatorUI) => (
             <CoreOperatorTool
               key={operatorUI.id}
-              operator={operatorUI}
+              operatorUI={operatorUI}
               spectrum={stableSpectrum}
               activeOperatorId={activeOperatorId}
               onTriggerOperation={(operation) => {
