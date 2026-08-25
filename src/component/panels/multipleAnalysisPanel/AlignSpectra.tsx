@@ -21,7 +21,6 @@ interface AlignSpectraProps {
 }
 
 type FormInput = z.input<typeof schemaValidation>;
-type FormOutput = z.output<typeof schemaValidation>;
 
 const DEFAULT_OPTIONS: FormInput = {
   from: '-1',
