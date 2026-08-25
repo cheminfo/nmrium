@@ -148,7 +148,7 @@ function MultipleSpectraAnalysisPanelInner({
           onClose={settingsPanelHandler}
         />
       )}
-      <div className="inner-container">
+      <div>
         {isFlipped ? (
           <MultipleSpectraAnalysisPreferences
             data={spectraAnalysis}
