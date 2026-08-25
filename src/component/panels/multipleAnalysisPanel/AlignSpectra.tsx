@@ -20,8 +20,8 @@ interface AlignSpectraProps {
   onClose: () => void;
 }
 
-type FormInput = z.input<typeof validation>;
-type FormOutput = z.output<typeof validation>;
+type FormInput = z.input<typeof schemaValidation>;
+type FormOutput = z.output<typeof schemaValidation>;
 
 const DEFAULT_OPTIONS: FormInput = {
   from: '-1',
@@ -31,7 +31,7 @@ const DEFAULT_OPTIONS: FormInput = {
   options: 'manual',
 };
 
-const validation = z.object({
+const schemaValidation = z.object({
   from: coerceNumberInput(),
   to: coerceNumberInput(),
   nbPeaks: coerceNumberInput(),
@@ -113,16 +113,6 @@ const Footer = styled.div`
   gap: 5px;
 `;
 
-function inputToFormInputSchema(input: FormOutput): FormInput {
-  return {
-    from: String(input.from),
-    to: String(input.to),
-    targetX: String(input.targetX),
-    nbPeaks: String(input.nbPeaks),
-    options: input.options,
-  };
-}
-
 export default function AlignSpectra(props: AlignSpectraProps) {
   const { onClose = () => null, nucleus } = props;
   const spectra = useSpectraByActiveNucleus();
@@ -140,11 +130,11 @@ export default function AlignSpectra(props: AlignSpectraProps) {
     },
     validationLogic: revalidateLogic({ mode: 'change' }),
     onSubmit: ({ value, formApi }) => {
-      const parsed = validation.parse(value);
+      const parsed = schemaValidation.parse(value);
       const options = checkOptions(parsed);
 
       formApi.reset(
-        inputToFormInputSchema({
+        schemaValidation.encode({
           ...options,
           options: optionList[0].value,
         }),
@@ -160,7 +150,7 @@ export default function AlignSpectra(props: AlignSpectraProps) {
       }
     },
     validators: {
-      onDynamic: validation,
+      onDynamic: schemaValidation,
     },
   });
 
@@ -183,7 +173,7 @@ export default function AlignSpectra(props: AlignSpectraProps) {
       (REFERENCES as any)?.[nucleus]?.[key] || {};
 
     form.reset(
-      inputToFormInputSchema({
+      schemaValidation.encode({
         from: otherOptions.from ?? Number(DEFAULT_OPTIONS.from),
         to: otherOptions.to ?? Number(DEFAULT_OPTIONS.to),
         nbPeaks: otherOptions.nbPeaks ?? Number(DEFAULT_OPTIONS.nbPeaks),
