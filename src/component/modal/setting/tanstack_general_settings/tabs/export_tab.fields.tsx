@@ -159,6 +159,8 @@ export const ExportFields = withFieldGroup({
           }}
         >
           {({ mode, layout, unit }) => {
+            const minSize = unit === 'px' ? 1 : 0;
+
             switch (mode) {
               case 'basic':
                 return (
@@ -203,7 +205,7 @@ export const ExportFields = withFieldGroup({
                       {({ NumericInput }) => (
                         <NumericInput
                           label="Width"
-                          min={0}
+                          min={minSize}
                           rightElement={<Tag>{unit}</Tag>}
                         />
                       )}
@@ -216,7 +218,7 @@ export const ExportFields = withFieldGroup({
                       {({ NumericInput }) => (
                         <NumericInput
                           label="Height"
-                          min={0}
+                          min={minSize}
                           rightElement={<Tag>{unit}</Tag>}
                         />
                       )}
