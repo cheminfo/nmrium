@@ -1,6 +1,7 @@
 import { ClipPathContainer } from '../1d-2d/components/ClipPathContainer.js';
 import SpectrumInfoBlock from '../1d-2d/components/SpectrumInfoBlock.js';
 import { ShareDataProvider } from '../context/ShareDataContext.js';
+import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature.ts';
 
 import { ApodizationLine } from './ApodizationLine.js';
 import ExclusionZonesAnnotations from './ExclusionZonesAnnotations.js';
@@ -18,11 +19,14 @@ import MultiAnalysisRanges from './multiAnalysis/MultiAnalysisRanges.js';
 import MultiplicityTrees from './multiplicityTree/MultiplicityTrees.js';
 import Peaks from './peaks/Peaks.js';
 import PeaksShapes from './peaks/PeaksShapes.js';
+import { PluginSVGChart } from './plugin_svg_chart.tsx';
 import Ranges from './ranges/Ranges.js';
 import RangesIntegrals from './ranges/RangesIntegrals.js';
 import { Signals } from './ranges/Signals.tsx';
 
 export function SVGContent1D() {
+  const isExperimental = useCheckExperimentalFeature();
+
   return (
     <g>
       <ClipPathContainer>
@@ -47,6 +51,8 @@ export function SVGContent1D() {
         <SpectrumInfoBlock />
 
         <SimilarityTree />
+
+        {isExperimental && <PluginSVGChart />}
       </ClipPathContainer>
       <Signals />
       <JGraph />
