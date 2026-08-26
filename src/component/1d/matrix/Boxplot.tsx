@@ -4,12 +4,12 @@ import { xFindClosestIndex } from 'ml-spectra-processing';
 import { matrixToBoxPlot } from 'nmr-processing';
 import type { CSSProperties } from 'react';
 import { useMemo } from 'react';
+import { SVGPathBuilder } from 'react-science/ui';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';
 import { useActiveNucleusTab } from '../../hooks/useActiveNucleusTab.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
-import { PathBuilder } from '../../utility/PathBuilder.js';
 import { getYScaleWithRation } from '../utilities/scale.js';
 
 import { sliceArrayForDomain, useMatrix } from './useMatrix.js';
@@ -64,7 +64,7 @@ function usePath(
   const { scaleX } = useScaleChecked();
   const scaleY = useYScale(scaleRatio, yDomain);
 
-  const pathBuilder = new PathBuilder();
+  const pathBuilder = new SVGPathBuilder();
 
   const xScaler = scaleX();
 
@@ -83,8 +83,8 @@ function useAreaPath(
   const { scaleX } = useScaleChecked();
   const scaleY = useYScale(scaleRatio, yDomain);
 
-  const pathBuilder = new PathBuilder();
-  const pathBuilder2 = new PathBuilder();
+  const pathBuilder = new SVGPathBuilder();
+  const pathBuilder2 = new SVGPathBuilder();
 
   const xScaler = scaleX();
 
@@ -97,7 +97,7 @@ function useAreaPath(
     pathBuilder2.lineTo(xScaler(pathPoints.x[i]), scaleY(pathPoints.y2[i]));
   }
 
-  return pathBuilder.concatPath(pathBuilder2);
+  return SVGPathBuilder.concat(pathBuilder, pathBuilder2).toString();
 }
 
 function useBoxPlot() {

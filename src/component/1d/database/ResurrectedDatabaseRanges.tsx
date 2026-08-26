@@ -1,6 +1,7 @@
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { extent } from 'd3-array';
 import { rangesToXY } from 'nmr-processing';
+import { SVGPathBuilder } from 'react-science/ui';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';
@@ -11,7 +12,6 @@ import {
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import { useVerticalAlign } from '../../hooks/useVerticalAlign.js';
-import { PathBuilder } from '../../utility/PathBuilder.js';
 import { getYScale } from '../utilities/scale.js';
 
 const emptyData = { info: { originFrequency: 400 } };
@@ -71,7 +71,7 @@ function ResurrectedDatabaseRanges() {
   const finalScaleX = scaleX();
 
   const paths = spectra.map(({ data: { x, y }, from, to }) => {
-    const pathBuilder = new PathBuilder();
+    const pathBuilder = new SVGPathBuilder();
     pathBuilder.moveTo(finalScaleX(x[0]), scaleY(y[0]));
     for (let i = 1; i < x.length; i++) {
       pathBuilder.lineTo(finalScaleX(x[i]), scaleY(y[i]));

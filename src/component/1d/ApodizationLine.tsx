@@ -6,6 +6,7 @@ import {
   createApodizationWindowData,
   default1DApodization,
 } from 'nmr-processing';
+import { SVGPathBuilder } from 'react-science/ui';
 
 import { useChartData } from '../context/ChartContext.js';
 import { useFilterSyncOptions } from '../context/FilterSyncOptionsContext.js';
@@ -16,7 +17,6 @@ import useSpectrum from '../hooks/useSpectrum.js';
 import useTempSpectrum from '../hooks/useTempSpectrum.js';
 import { useVerticalAlign } from '../hooks/useVerticalAlign.js';
 import type { ApodizationOptions } from '../panels/filtersPanel/Filters/hooks/useApodization.js';
-import { PathBuilder } from '../utility/PathBuilder.js';
 
 import { useIsInset } from './inset/InsetProvider.js';
 import { getXScale, getYScale } from './utilities/scale.js';
@@ -84,7 +84,7 @@ export function ApodizationLine() {
     scaleX = windowScaleX;
   }
 
-  const pathBuilder = new PathBuilder();
+  const pathBuilder = new SVGPathBuilder();
   const { re, x } = tempSpectrum.data;
 
   const apodizationOptions = merge(
