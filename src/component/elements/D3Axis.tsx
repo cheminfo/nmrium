@@ -1,6 +1,6 @@
 import type { SVGAttributes } from 'react';
 import { forwardRef } from 'react';
-import type { Tick, UseLinearPrimaryTicksResult } from 'react-d3-utils';
+import type { UseLinearPrimaryTicksResult } from 'react-d3-utils';
 import type {
   SVGStyledLineProps,
   SVGStyledLineUserConfig,
@@ -47,6 +47,16 @@ interface GridProps<T> extends UseLinearPrimaryTicksResult {
 
 function isVerticalAxis(axisPosition: AxisPosition) {
   return ['left', 'right'].includes(axisPosition);
+}
+
+function getSecondaryTickPositions(ticks: Array<{ position: number }>) {
+  return ticks
+    .slice(0, -1)
+    .map((tick, index) => (tick.position + ticks[index + 1].position) / 2);
+}
+
+function getTickTransform(position: number, isVertical: boolean) {
+  return `translate(${isVertical ? `0,${position}` : `${position},0`})`;
 }
 
 function BaseLine(props: BaseLineProps) {
@@ -100,86 +110,55 @@ function Tickets(props: TicketsProps) {
     : { y1: positionSign * tickLength, y2: 0 };
 
   const secondaryTickLength = tickLength / 2;
-  const secondaryTickOffset = getSecondaryTickOffset(ticks, positionSign);
   const positionSecondaryLineConfig: SVGStyledLineProps = isVertical
     ? {
         x1: positionSign * secondaryTickLength,
         x2: 0,
-        y1: secondaryTickOffset,
-        y2: secondaryTickOffset,
       }
     : {
         y1: positionSign * secondaryTickLength,
         y2: 0,
-        x1: secondaryTickOffset,
-        x2: secondaryTickOffset,
       };
-  const positionSecondaryFirstLineConfig: SVGStyledLineProps = isVertical
-    ? {
-        x1: positionSign * secondaryTickLength,
-        x2: 0,
-        y1: -secondaryTickOffset,
-        y2: -secondaryTickOffset,
-      }
-    : {
-        y1: positionSign * secondaryTickLength,
-        y2: 0,
-        x1: -secondaryTickOffset,
-        x2: -secondaryTickOffset,
-      };
+  const secondaryTickPositions =
+    secondaryTicks.enabled && ticks.length > 1
+      ? getSecondaryTickPositions(ticks)
+      : [];
 
-  return ticks.map(({ label, position }, index) => {
-    const isFirst = index === 0;
+  return (
+    <>
+      {ticks.map(({ label, position }) => {
+        return (
+          <g key={`primary-${label}-${position}`} className="tick">
+            <line
+              transform={getTickTransform(position, isVertical)}
+              {...positionPrimaryLineConfig}
+              stroke="black"
+              {...primaryTicks.tickStyle}
+            />
 
-    return (
-      <g
-        key={label}
-        transform={`translate(${isVertical ? `0,${position}` : `${position},0`})`}
-        className="tick"
-      >
-        {secondaryTicks.enabled && isFirst && (
-          <line
-            {...positionSecondaryFirstLineConfig}
-            stroke="black"
-            {...secondaryTicks.tickStyle}
-          />
-        )}
+            <SVGStyledText
+              transform={getTickTransform(position, isVertical)}
+              fill="black"
+              {...primaryTicks.textStyle}
+              {...positionTextConfig}
+            >
+              {label}
+            </SVGStyledText>
+          </g>
+        );
+      })}
 
+      {secondaryTickPositions.map((secondaryTickPosition) => (
         <line
-          {...positionPrimaryLineConfig}
+          key={`secondary-${secondaryTickPosition}`}
+          transform={getTickTransform(secondaryTickPosition, isVertical)}
+          {...positionSecondaryLineConfig}
           stroke="black"
-          {...primaryTicks.tickStyle}
+          {...secondaryTicks.tickStyle}
         />
-
-        {secondaryTicks.enabled && (
-          <line
-            {...positionSecondaryLineConfig}
-            stroke="black"
-            {...secondaryTicks.tickStyle}
-          />
-        )}
-
-        <SVGStyledText
-          fill="black"
-          {...primaryTicks.textStyle}
-          {...positionTextConfig}
-        >
-          {label}
-        </SVGStyledText>
-      </g>
-    );
-  });
-}
-
-function getSecondaryTickOffset(ticks: Array<Tick<number>>, direction: -1 | 1) {
-  if (ticks.length < 2) return 0;
-
-  let [first, second] = ticks;
-  if (direction === -1) {
-    [first, second] = [second, first];
-  }
-
-  return (second.position - first.position) / 2;
+      ))}
+    </>
+  );
 }
 
 function getLinePosition(
