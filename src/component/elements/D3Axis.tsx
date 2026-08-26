@@ -130,6 +130,7 @@ function Tickets(props: TicketsProps) {
         return (
           <g key={`primary-${label}-${position}`} className="tick">
             <line
+              data-testid="axis-primary-tick-line"
               transform={getTickTransform(position, isVertical)}
               {...positionPrimaryLineConfig}
               stroke="black"
@@ -139,6 +140,7 @@ function Tickets(props: TicketsProps) {
             <SVGStyledText
               transform={getTickTransform(position, isVertical)}
               fill="black"
+              data-testid="axis-primary-tick-label"
               {...primaryTicks.textStyle}
               {...positionTextConfig}
             >
@@ -150,6 +152,7 @@ function Tickets(props: TicketsProps) {
 
       {secondaryTickPositions.map((secondaryTickPosition) => (
         <line
+          data-testid="axis-secondary-tick-line"
           key={`secondary-${secondaryTickPosition}`}
           transform={getTickTransform(secondaryTickPosition, isVertical)}
           {...positionSecondaryLineConfig}

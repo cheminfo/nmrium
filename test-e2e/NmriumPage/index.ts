@@ -70,11 +70,12 @@ export default class NmriumPage {
   }
 
   public async assertOneDimensionXScaleDomain(min: number, max: number) {
-    const xTicks = this.page.locator(
-      '_react=HorizontalAxis1D >> _react=Tickets',
-    );
-    const firstTick = xTicks.first();
-    const lastTick = xTicks.last();
+    const xTickLabels = this.page
+      .locator('_react=HorizontalAxis1D')
+      .getByTestId('axis-primary-tick-label');
+
+    const firstTick = xTickLabels.first();
+    const lastTick = xTickLabels.last();
     await expect(firstTick).toHaveText(min.toString());
     await expect(lastTick).toHaveText(max.toString());
   }
