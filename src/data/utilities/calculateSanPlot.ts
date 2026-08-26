@@ -4,13 +4,14 @@ import { xNoiseSanPlot } from 'ml-spectra-processing';
 export function calculateSanPlot<T extends '1D' | '2D'>(
   dimension: T,
   data: T extends '1D' ? NmrData1D : NmrData2DFt['rr'],
+  options?: { magnitudeMode?: boolean },
 ) {
   const input =
     dimension === '1D'
       ? prepare1DData(data as NmrData1D)
       : prepare2DData(data as NmrData2DFt['rr']);
 
-  return xNoiseSanPlot(input);
+  return xNoiseSanPlot(input, options);
 }
 
 function prepare1DData(data: NmrData1D) {

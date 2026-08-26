@@ -2,10 +2,12 @@ import type { Spectrum2D, Spectrum } from '@zakodium/nmrium-core';
 import { isSpectrum2DFt } from '@zakodium/nmrium-core';
 import type { NmrData2DFt } from 'cheminfo-types';
 import { Conrec } from 'ml-conrec';
-import { xMaxAbsoluteValue } from 'ml-spectra-processing';
+import { matrixToArray } from 'ml-spectra-processing';
 
 import type { SpectrumFTData } from '../../../component/hooks/use2DReducer.tsx';
-import { calculateSanPlot } from '../../utilities/calculateSanPlot.js';
+
+import { estimateNoiseLevel } from './findBestMinContour/estimateNoiseLevel.js';
+import { findAutomaticContourLevels } from './findBestMinContour/findAutomaticContourLevels.ts';
 
 interface Level {
   positive: ContourItem;
@@ -26,6 +28,7 @@ interface BaseWheelOptions {
   altKey: boolean;
   invertScroll?: boolean;
 }
+
 interface WheelOptions extends BaseWheelOptions {
   contourOptions: ContourOptions;
 }
@@ -40,6 +43,7 @@ const DEFAULT_CONTOURS_OPTIONS: ContourOptions = {
     numberOfLayers: 10,
   },
 };
+
 type LevelSign = keyof Level;
 
 const LEVEL_SIGNS: Readonly<[LevelSign, LevelSign]> = ['positive', 'negative'];
@@ -56,21 +60,43 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
   // @ts-expect-error type of NmrData2D should have a discriminator field to separate fid and ft
   const quadrantData = data[quadrant];
 
-  //@ts-expect-error will be included in nexts versions
-  const { noise = calculateSanPlot('2D', quadrantData) } = info;
+  const {
+    experiment = '',
+    // @ts-expect-error will be included in nexts versions
+    noise,
+  } = info;
+  const matrix = matrixToArray(quadrantData.z);
 
-  const { positive = 0, negative = 0 } = noise;
-  const max = Math.max(
-    Math.abs(quadrantData.minZ),
-    Math.abs(quadrantData.maxZ),
+  const noiseLevel = (noise as { positive: number; negative: number })
+    ? Math.max(noise.positive, noise.negative)
+    : estimateNoiseLevel(matrix);
+
+  const bestMinLevel = findAutomaticContourLevels(
+    matrix,
+    quadrantData.z.length,
+    quadrantData.z[0].length,
+    noiseLevel,
+    {
+      maxFdr: 0.005,
+      diagnostics: false,
+      maxOccupancy: 0.005,
+      persistenceLevels: 5,
+      contourRatio: 1.8,
+      minPersistence: 0.5,
+      maxVerticalRidgeScore: 0.05,
+      maxHorizontalRidgeScore: 0.05,
+      ridgeCoverageThreshold: experiment.includes('jres') ? 0.9 : 0.1,
+    },
   );
 
-  const minAbsPeakBase = 0.005 * max;
-  const minAllowed = 3 * xMaxAbsoluteValue([positive, negative]);
-
-  const minLevel = Math.max(minAbsPeakBase, minAllowed);
+  const { hasT1Noise, minLevelWithoutT1Noise, minLevel, maxAbsoluteValue } =
+    bestMinLevel;
   const minContourLevel = Math.min(
-    calculateValueOfLevel(minLevel, max, true),
+    calculateValueOfLevel(
+      hasT1Noise ? minLevelWithoutT1Noise : minLevel,
+      maxAbsoluteValue,
+      true,
+    ),
     DEFAULT_CONTOURS_OPTIONS.positive.contourLevels[1] -
       DEFAULT_CONTOURS_OPTIONS.positive.numberOfLayers,
   );
