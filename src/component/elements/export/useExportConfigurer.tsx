@@ -12,6 +12,11 @@ export function useExportConfigurer(options: ExportSettings) {
   const refSize = useRef({ width, height, dpi });
   const previousUnit = useDeferredValue(unit);
 
+  function resetSize(newOptions: ExportSettings) {
+    const { width, height, dpi } = getExportOptions(newOptions);
+    refSize.current = { width, height, dpi };
+  }
+
   function changeSize(
     value: number,
     target: 'width' | 'height',
@@ -65,5 +70,6 @@ export function useExportConfigurer(options: ExportSettings) {
     changeUnit,
     changeSize,
     enableAspectRatio,
+    resetSize,
   };
 }

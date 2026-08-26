@@ -139,6 +139,39 @@ interface CreateCanvasByChunksOptions {
   scaleFactor?: number;
 }
 
+/**
+ * Browsers limits.
+ */
+export const MAX_CANVAS_SIDE = 32_767;
+export const MAX_CANVAS_AREA = 268_435_456;
+
+function formatPixels(value: number) {
+  return Math.round(value).toLocaleString('en-US');
+}
+
+/** throw error if canvas size exceeds browsers limits */
+function assertCanvasSize(width: number, height: number) {
+  const size = `${formatPixels(width)} x ${formatPixels(height)} px`;
+
+  if (width < 1 || height < 1) {
+    throw new Error(
+      `Export size is too small: ${size}. Increase the size or the DPI.`,
+    );
+  }
+
+  if (width > MAX_CANVAS_SIDE || height > MAX_CANVAS_SIDE) {
+    throw new Error(
+      `Export size is too large: ${size}. Each side must be at most ${formatPixels(MAX_CANVAS_SIDE)} px. Reduce the size or the DPI.`,
+    );
+  }
+
+  if (width * height > MAX_CANVAS_AREA) {
+    throw new Error(
+      `Export size is too large: ${size} is over the ${formatPixels(MAX_CANVAS_AREA)} px limit. Reduce the size or the DPI.`,
+    );
+  }
+}
+
 interface DrawImageOptions {
   context: OffscreenCanvasRenderingContext2D;
   chunkX: number;
@@ -203,6 +236,7 @@ async function createCanvasByChunks(
   context: OffscreenCanvasRenderingContext2D;
 }> {
   const { width, height, scaleFactor = 1, chunkSize = 512 } = options;
+  assertCanvasSize(width, height);
   const canvas = new OffscreenCanvas(width, height);
   canvas.width = width;
   canvas.height = height;
