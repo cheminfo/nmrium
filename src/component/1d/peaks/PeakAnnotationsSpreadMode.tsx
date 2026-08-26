@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import { memo, useCallback, useRef, useState } from 'react';
 import { useResizeObserver } from 'react-d3-utils';
 import { BsArrowsMove } from 'react-icons/bs';
 
@@ -81,7 +81,18 @@ function PeakAnnotationsSpreadMode(props: PeakAnnotationsSpreadModeProps) {
     spectrumKey,
   } = props;
 
-  const [ref, { height: boxSizeHeight } = { height: 0 }] = useResizeObserver();
+  const [resizeRef, { height: boxSizeHeight } = { height: 0 }] =
+    useResizeObserver();
+  const labelGroupRef = useRef<SVGGElement | null>(null);
+  const ref = useCallback(
+    (node: SVGGElement | null) => {
+      // Keep a direct SVG node ref for getBBox (SVG unit measurement).
+      labelGroupRef.current = node;
+      // ResizeObserver is used as a re-render trigger when geometry changes.
+      resizeRef(node);
+    },
+    [resizeRef],
+  );
   const { marginTop, isDragActive, onPointerDown } = usePeaksPosition();
 
   const actionsButtons: ActionsButtonsPopoverProps['buttons'] = [
@@ -104,7 +115,9 @@ function PeakAnnotationsSpreadMode(props: PeakAnnotationsSpreadModeProps) {
     groupMargin: 10,
   });
 
-  const roundedBoxHeight = Math.round(boxSizeHeight);
+  // getBBox is stable across export/view contexts because it returns SVG-space size.
+  const bboxHeight = labelGroupRef.current?.getBBox().height ?? 0;
+  const roundedBoxHeight = Math.max(0, Math.round(bboxHeight));
 
   let y = roundedBoxHeight + marginTop;
 
@@ -115,6 +128,7 @@ function PeakAnnotationsSpreadMode(props: PeakAnnotationsSpreadModeProps) {
   if (marginTop < 0) {
     y = roundedBoxHeight;
   }
+
   return (
     <ActionsButtonsPopover
       targetTagName="g"

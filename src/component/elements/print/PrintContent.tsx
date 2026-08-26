@@ -10,6 +10,7 @@ import { z } from 'zod';
 
 import { StandardDialog } from '../StandardDialog.tsx';
 import { StyledDialogBody } from '../StyledDialogBody.js';
+import { transferStylesToDocument } from '../utilities/transferStyles.ts';
 
 import { PrintProvider } from './PrintProvider.js';
 import { getSizesList, pageSizes } from './pageSize.js';
@@ -142,16 +143,16 @@ function InnerPrintFrame(props: InnerPrintFrameProps) {
   function refHandler(frame: HTMLIFrameElement | null) {
     if (!frame) return;
 
-    const document = frame.contentWindow?.document;
+    const targetDocument = frame.contentWindow?.document;
 
-    if (!document) {
+    if (!targetDocument) {
       onError?.(new Error('Print document is not available'));
       return;
     }
 
-    transferStyles(document);
-    appendPrintPageStyle(document, { size, layout, margin });
-    setIframeDocument(document);
+    transferStylesToDocument(targetDocument);
+    appendPrintPageStyle(targetDocument, { size, layout, margin });
+    setIframeDocument(targetDocument);
   }
 
   useEffect(() => {
@@ -248,28 +249,6 @@ function appendPrintPageStyle(document: Document, style: Style = {}) {
 }
   `;
   document.head.append(styleElement);
-}
-
-function transferStyles(targetDocument: Document) {
-  // Copy the style from the main page and inject it inside the iframe
-  const styleSheets = Array.from(document.styleSheets);
-  const targetHead = targetDocument.head;
-
-  for (const styleSheet of styleSheets) {
-    try {
-      if (styleSheet.cssRules) {
-        const newStyleEl = document.createElement('style');
-        const cssRules = Array.from(styleSheet.cssRules);
-        const cssText = cssRules.map((rule) => rule.cssText).join('\n');
-
-        newStyleEl.append(document.createTextNode(cssText));
-        targetHead.append(newStyleEl);
-      }
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Error transferring styles:', error);
-    }
-  }
 }
 
 interface InnerPrintOptionsModalProps extends BasePrintProps {
