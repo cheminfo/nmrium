@@ -4,18 +4,12 @@ import { useChartData } from '../../context/ChartContext.tsx';
 import { formatNumber } from '../../utility/formatNumber.ts';
 
 const Path = styled.path`
-  fill: none;
   stroke-width: 1px;
   shape-rendering: crispedges;
-  stroke: black;
 
   &:hover {
     stroke: red;
   }
-`;
-const Text = styled.text`
-  font-size: 11px;
-  fill: black;
 `;
 
 export type IndicatorOrientation = 'horizontal' | 'vertical';
@@ -95,11 +89,16 @@ export function RangeIndicator(props: RangeIndicatorProps) {
 
   return (
     <g transform={layout.groupTransform} style={{ opacity }} onClick={onClick}>
-      <Path d={layout.pathD} />
+      <Path d={layout.pathD} fill="none" stroke="black" />
       {value !== undefined && (
-        <Text transform={layout.textTransform} textAnchor={layout.textAnchor}>
+        <text
+          transform={layout.textTransform}
+          textAnchor={layout.textAnchor}
+          fontSize={11}
+          fill="black"
+        >
           {formatNumber(value, format ?? '')}
-        </Text>
+        </text>
       )}
     </g>
   );

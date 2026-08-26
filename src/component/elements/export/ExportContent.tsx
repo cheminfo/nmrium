@@ -3,12 +3,13 @@ import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 
+import { transferStylesToDocument } from '../utilities/transferStyles.js';
+
 import { ExportOptionsModal } from './ExportOptionsModal.js';
 import { ExportSettingsProvider } from './ExportSettingsProvider.js';
 import { RenderDetector } from './RenderDetector.js';
 import { INITIAL_BASIC_EXPORT_OPTIONS } from './utilities/getExportOptions.js';
 import { getSizeInPixel } from './utilities/getSizeInPixel.js';
-import { transferDocumentStyles } from './utilities/transferDocumentStyles.js';
 
 export interface BaseExportProps {
   onExportOptionsChange: (options: ExportSettings) => void;
@@ -112,7 +113,7 @@ function InnerPrintFrame(props: InnerExportFrameProps) {
     const document = frame.contentWindow?.document;
     if (!document) return;
     setIframeDocument(document);
-    transferDocumentStyles(document);
+    transferStylesToDocument(document);
   }
 
   const exportWidthInPixel = Math.round(width);
