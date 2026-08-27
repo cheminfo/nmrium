@@ -2,12 +2,12 @@ import { extent } from 'd3-array';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { matrixToStocsy } from 'nmr-processing';
 import { useMemo } from 'react';
+import { SVGPathBuilder } from 'react-science/ui';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';
 import { useActiveNucleusTab } from '../../hooks/useActiveNucleusTab.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
-import { PathBuilder } from '../../utility/PathBuilder.js';
 import { getYScaleWithRation } from '../utilities/scale.js';
 
 import {
@@ -162,7 +162,7 @@ function RenderStocsyAsSVG(props: StocsyProps) {
 
   return Object.keys(colorGroups).map((color) => {
     const points = colorGroups[color];
-    const pathBuilder = new PathBuilder();
+    const pathBuilder = new SVGPathBuilder();
 
     pathBuilder.moveTo(xScaler(points[0].x), scaleY(points[0].y));
 

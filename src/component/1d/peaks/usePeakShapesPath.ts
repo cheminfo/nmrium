@@ -2,10 +2,10 @@ import type { Peak1D } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import type { DataXY } from 'cheminfo-types';
 import { peakToXY, peaksToXY } from 'nmr-processing';
+import { SVGPathBuilder } from 'react-science/ui';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { useScaleChecked } from '../../context/ScaleContext.js';
-import { PathBuilder } from '../../utility/PathBuilder.js';
 
 type PeaksShapesOptions =
   | {
@@ -56,7 +56,7 @@ export function usePeakShapesPath(spectrum: Spectrum1D) {
     const _scaleX = scaleX();
     const _scaleY = scaleY({ spectrumId: spectrum.id });
 
-    const pathBuilder = new PathBuilder();
+    const pathBuilder = new SVGPathBuilder();
     let fill = 'transparent';
 
     if (pathSeries) {

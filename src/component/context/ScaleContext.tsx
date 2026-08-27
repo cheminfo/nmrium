@@ -20,7 +20,7 @@ export interface ScaleLinearNumberOptions {
 }
 type ScaleLinearNumberFunction = (
   options?: ScaleLinearNumberOptions,
-) => ScaleLinear<number, number, number>;
+) => ScaleLinear<number, number>;
 
 interface ScaleState {
   scaleX: ScaleLinearNumberFunction | null;

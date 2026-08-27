@@ -1,10 +1,10 @@
 import type { CSSProperties } from 'react';
 import { useMemo } from 'react';
+import { SVGPathBuilder } from 'react-science/ui';
 
 import { useScaleChecked } from '../context/ScaleContext.js';
 import useActiveSpectrumStyleOptions from '../hooks/useActiveSpectrumStyleOptions.js';
 import useXYReduce from '../hooks/useXYReduce.js';
-import { PathBuilder } from '../utility/PathBuilder.js';
 import { parseColor } from '../utility/parseColor.js';
 
 import { useInsetOptions } from './inset/InsetProvider.js';
@@ -31,7 +31,7 @@ function Line({ data, id, display, index }: LineProps) {
     const _scaleX = scaleX();
     const _scaleY = scaleY({ spectrumId: id });
 
-    const pathBuilder = new PathBuilder();
+    const pathBuilder = new SVGPathBuilder();
     if (data?.x && data?.y && _scaleX(0)) {
       const pathPoints = xyReduce(data);
 

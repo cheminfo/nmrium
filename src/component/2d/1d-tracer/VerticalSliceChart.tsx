@@ -1,9 +1,9 @@
 import type { Spectrum2D } from '@zakodium/nmrium-core';
 import type { NmrData1D } from 'cheminfo-types';
+import { SVGPathBuilder } from 'react-science/ui';
 
 import { useChartData } from '../../context/ChartContext.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
-import { PathBuilder } from '../../utility/PathBuilder.js';
 import { getSliceYScale, useScale2DY } from '../utilities/scale.js';
 
 interface BaseProps {
@@ -35,7 +35,7 @@ function usePath(data: NmrData1D, props: usePathOptions) {
     margin: horizontalMargin,
   });
 
-  const pathBuilder = new PathBuilder();
+  const pathBuilder = new SVGPathBuilder();
 
   pathBuilder.moveTo(scaleY(y.at(-1) as number), scaleX(x.at(-1) as number));
 

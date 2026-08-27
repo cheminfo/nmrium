@@ -1,10 +1,10 @@
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { memo, useRef } from 'react';
+import { SVGPathBuilder } from 'react-science/ui';
 
 import { Signals1D } from '../../1d-2d/components/Signals1D.tsx';
 import { useChartData } from '../../context/ChartContext.js';
 import useXYReduce from '../../hooks/useXYReduce.js';
-import { PathBuilder } from '../../utility/PathBuilder.js';
 import { use1DTraceYScale, useScale2DX } from '../utilities/scale.js';
 
 import { Ranges1D } from './Ranges1D.tsx';
@@ -28,7 +28,7 @@ function usePath(spectrum: Spectrum1D, options: UsePathOptions) {
   const { x, re: y } = spectrum.data;
   const pathPoints = xyReduce({ x, y });
 
-  const pathBuilder = new PathBuilder();
+  const pathBuilder = new SVGPathBuilder();
   pathBuilder.moveTo(scaleX(pathPoints.x[0]), scaleY(pathPoints.y[0]));
   for (let i = 1; i < pathPoints.x.length; i++) {
     pathBuilder.lineTo(scaleX(pathPoints.x[i]), scaleY(pathPoints.y[i]));
