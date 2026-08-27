@@ -1,11 +1,11 @@
-import { Button, DialogFooter } from '@blueprintjs/core';
+import { DialogFooter } from '@blueprintjs/core';
 import { revalidateLogic } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
 import type { ChangeEvent, LogEntry } from 'fifo-logger';
 import { FifoLogger } from 'fifo-logger';
 import debounce from 'lodash/debounce.js';
 import { resurrect } from 'nmr-processing';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { AppForm, useForm } from 'react-science/ui';
 import { z } from 'zod';
 
@@ -55,9 +55,44 @@ const COLUMNS: Array<Column<LogEntry>> = [
 
 const validation = z.object({
   publicationText: z.string(),
+  logs: z.array(
+    z.object({
+      id: z.number(),
+      time: z.number(),
+      level: z.union([
+        z.literal(0),
+        z.literal(10),
+        z.literal(20),
+        z.literal(30),
+        z.literal(40),
+        z.literal(50),
+        z.literal(60),
+      ]),
+      levelLabel: z.enum([
+        'fatal',
+        'error',
+        'warn',
+        'info',
+        'debug',
+        'trace',
+        'silent',
+      ]),
+      uuids: z.array(z.string()),
+      message: z.string(),
+      meta: z.any().optional(),
+      error: z
+        .object({
+          name: z.string(),
+          message: z.string(),
+          stack: z.string().optional(),
+        })
+        .optional(),
+    }),
+  ),
 });
 
 const INITIAL_VALUES: z.input<typeof validation> = {
+  logs: [],
   publicationText:
     '1H NMR (CDCl3, 400MHz) δ 1 (s, 1H), 2 (d, 1H, J=7), 3 (t, 1H, J=7), 4 (q, 1H, J=7), 5 (quint, 1H, J=7), 6 (hex, 1H, J=7), 7 (hept, 1H, J=7), 8 (dd, 1H, J=7, J=4)',
 };
@@ -78,7 +113,6 @@ function InnerImportPublicationStringModal(
 
   const dispatch = useDispatch();
   const toaster = useToaster();
-  const [logs, setLogs] = useState<LogEntry[]>([]);
   const loggerRef = useRef<FifoLogger>(new FifoLogger());
 
   const form = useForm({
@@ -120,7 +154,7 @@ function InnerImportPublicationStringModal(
 
   useEffect(() => {
     function handleLogs({ detail: { logs } }: ChangeEvent) {
-      setLogs(logs.slice());
+      form.setFieldValue('logs', logs.slice());
     }
 
     const loggerInstance = loggerRef.current;
@@ -129,7 +163,7 @@ function InnerImportPublicationStringModal(
     return () => {
       loggerInstance.removeEventListener('change', handleLogs);
     };
-  }, []);
+  }, [form]);
 
   const debounceChanges = useMemo(
     () =>
@@ -139,18 +173,7 @@ function InnerImportPublicationStringModal(
     [],
   );
 
-  function handleOnChange(value: string) {
-    loggerRef.current.clear();
-
-    console.log('handle', { value });
-
-    if (!value) {
-      return;
-    }
-
-    debounceChanges(value);
-  }
-
+  const logs = useSelector(form.store, (store) => store.values.logs);
   const isNotValid = logs.some((log) =>
     ['error', 'fatal'].includes(log.levelLabel),
   );
@@ -181,8 +204,7 @@ function InnerImportPublicationStringModal(
                 name="publicationText"
                 listeners={{
                   onChange: ({ value }) => {
-                    form.setFieldValue('publicationText', value);
-                    handleOnChange(value);
+                    debounceChanges(value);
                   },
                 }}
               >
@@ -195,25 +217,20 @@ function InnerImportPublicationStringModal(
                 )}
               </form.AppField>
             </div>
-            <GroupPane text="Logs">
-              <ReactTable
-                columns={COLUMNS}
-                data={logs}
-                emptyDataRowText="No Logs"
-                rowStyle={handleRowStyle}
-                style={{ height: '120px' }}
-              />
-            </GroupPane>
 
-            <GroupPane text="Logs [new]">
-              <ReactTable
-                columns={COLUMNS}
-                data={logs}
-                emptyDataRowText="No Logs"
-                rowStyle={handleRowStyle}
-                style={{ height: '120px' }}
-              />
-            </GroupPane>
+            <form.AppField name="logs">
+              {(field) => (
+                <GroupPane text="Logs">
+                  <ReactTable
+                    columns={COLUMNS}
+                    data={field.state.value}
+                    emptyDataRowText="No Logs"
+                    rowStyle={handleRowStyle}
+                    style={{ height: '120px' }}
+                  />
+                </GroupPane>
+              )}
+            </form.AppField>
           </div>
         </StyledDialogBody>
         <DialogFooter
@@ -225,13 +242,7 @@ function InnerImportPublicationStringModal(
               Generate spectrum
             </form.SubmitButton>
           }
-        >
-          <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
-            <Button disabled={isNotValid || !isValid} intent="success">
-              Generate spectrum
-            </Button>
-          </div>
-        </DialogFooter>
+        />
       </AppForm>
     </StandardDialog>
   );
