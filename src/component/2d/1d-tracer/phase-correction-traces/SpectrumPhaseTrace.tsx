@@ -1,13 +1,13 @@
 import type { Spectrum1D, Spectrum2D } from '@zakodium/nmrium-core';
 import { Filters1D } from 'nmr-processing';
 import type { ReactNode, SVGAttributes } from 'react';
+import { SVGPathBuilder } from 'react-science/ui';
 
 import { getSlice } from '../../../../data/data2d/Spectrum2D/index.js';
 import { useChartData } from '../../../context/ChartContext.js';
 import { useActiveSpectrum } from '../../../hooks/useActiveSpectrum.js';
 import useSpectrum from '../../../hooks/useSpectrum.js';
 import type { TraceDirection } from '../../../reducer/Reducer.js';
-import { PathBuilder } from '../../../utility/PathBuilder.js';
 import {
   get2DXScale,
   get2DYScale,
@@ -43,7 +43,7 @@ function usePath(x: Float64Array, y: Float64Array, direction: TraceDirection) {
       scaleRatio,
     });
 
-    const pathBuilder = new PathBuilder();
+    const pathBuilder = new SVGPathBuilder();
     pathBuilder.moveTo(scaleX(x[0]), scaleY(y[0]));
     for (let i = 1; i < x.length; i++) {
       pathBuilder.lineTo(scaleX(x[i]), scaleY(y[i]));
@@ -58,7 +58,7 @@ function usePath(x: Float64Array, y: Float64Array, direction: TraceDirection) {
     scaleRatio,
   });
 
-  const pathBuilder = new PathBuilder();
+  const pathBuilder = new SVGPathBuilder();
 
   pathBuilder.moveTo(scaleY(y.at(-1) as number), scaleX(x.at(-1) as number));
 

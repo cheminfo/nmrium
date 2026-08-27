@@ -1,10 +1,10 @@
 import type { ScaleLinear } from 'd3-scale';
 import { xyReduce } from 'ml-spectra-processing';
+import { SVGPathBuilder } from 'react-science/ui';
 
 import { getIntegralYScale } from '../1d/utilities/scale.js';
 import { useChartData } from '../context/ChartContext.js';
 import { useScaleChecked } from '../context/ScaleContext.js';
-import { PathBuilder } from '../utility/PathBuilder.js';
 
 import { useXScale } from './useXScale.js';
 
@@ -48,7 +48,7 @@ export default function useIntegralPath(options: UseIntegralPathOptions) {
     },
   );
 
-  const pathBuilder = new PathBuilder();
+  const pathBuilder = new SVGPathBuilder();
   pathBuilder.moveTo(scaleX(xySeries.x[0]), scaleY(xySeries.y[0]));
   for (let i = 1; i < xySeries.x.length; i++) {
     pathBuilder.lineTo(scaleX(xySeries.x[i]), scaleY(xySeries.y[i]));

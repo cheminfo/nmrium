@@ -4,6 +4,7 @@ import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { isSpectrum1D } from '@zakodium/nmrium-core';
 import { xyBaselineCalculation } from 'nmr-processing';
 import { useMemo, useRef, useState } from 'react';
+import { SVGPathBuilder } from 'react-science/ui';
 
 import { useChartData } from '../../context/ChartContext.tsx';
 import { useFilterSyncOptions } from '../../context/FilterSyncOptionsContext.tsx';
@@ -18,7 +19,6 @@ import {
   DEFAULT_BASELINE_ALGORITHM,
   getBaselineValues,
 } from '../../panels/filtersPanel/Filters/hooks/useBaselineCorrection.tsx';
-import { PathBuilder } from '../../utility/PathBuilder.ts';
 
 import { getMedianWindow } from './getMedianWindow.ts';
 import { getMedianY } from './getMedianY.ts';
@@ -227,7 +227,7 @@ function SpectrumPreview({ spectrum, anchors }: SpectrumPreviewProps) {
     const _scaleX = scaleX();
     const _scaleY = scaleY({ spectrumId: activeSpectrum?.id });
 
-    const pathBuilder = new PathBuilder();
+    const pathBuilder = new SVGPathBuilder();
 
     if (!x || !y || !_scaleX(0)) return '';
 

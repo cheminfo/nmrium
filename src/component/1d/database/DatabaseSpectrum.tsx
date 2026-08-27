@@ -2,6 +2,7 @@ import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { extent } from 'd3-array';
 import throttle from 'lodash/throttle.js';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { SVGPathBuilder } from 'react-science/ui';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { useCore } from '../../context/CoreContext.js';
@@ -13,7 +14,6 @@ import {
 } from '../../highlight/index.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import { spinnerContext } from '../../loader/SpinnerContext.js';
-import { PathBuilder } from '../../utility/PathBuilder.js';
 import { getYScaleWithRation } from '../utilities/scale.js';
 
 function DatabaseSpectrum() {
@@ -61,7 +61,7 @@ function DatabaseSpectrum() {
         setLoading(false);
         const spectrum = data?.spectra?.[0] || null;
         if (spectrum) {
-          const pathBuilder = new PathBuilder();
+          const pathBuilder = new SVGPathBuilder();
           const { x, re: y } = (spectrum as Spectrum1D).data;
           const yDomain = extent(y) as number[];
           const finalScaleX = scaleX();

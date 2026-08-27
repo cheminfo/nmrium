@@ -1,5 +1,6 @@
 import debounce from 'lodash/debounce.js';
 import { memo, useMemo, useRef } from 'react';
+import { SVGPathBuilder } from 'react-science/ui';
 
 import type { LevelSign } from '../../../data/data2d/Spectrum2D/contours.js';
 import { drawContours } from '../../../data/data2d/Spectrum2D/contours.js';
@@ -12,7 +13,6 @@ import { useToaster } from '../../context/ToasterContext.js';
 import type { SpectrumFTData } from '../../hooks/use2DReducer.tsx';
 import { use2DReducer } from '../../hooks/use2DReducer.tsx';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.js';
-import { PathBuilder } from '../../utility/PathBuilder.js';
 import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 
 interface SpectrumContoursProps {
@@ -33,7 +33,7 @@ function usePath(contours: ReturnType<typeof drawContours>['contours']) {
   const scaleX = useScale2DX();
   const scaleY = useScale2DY();
 
-  const pathBuilder = new PathBuilder();
+  const pathBuilder = new SVGPathBuilder();
   for (const element of contours) {
     if (element.lines) {
       const lines = element.lines;
