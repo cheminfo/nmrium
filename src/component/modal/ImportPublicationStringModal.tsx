@@ -54,7 +54,7 @@ const COLUMNS: Array<Column<LogEntry>> = [
 ];
 
 const formSchema = z.object({
-  publicationText: z.string(),
+  publicationText: z.string().trim().min(1),
   logs: z.array(
     z.object({
       id: z.number(),
