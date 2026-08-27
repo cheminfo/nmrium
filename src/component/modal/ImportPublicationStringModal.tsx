@@ -1,10 +1,13 @@
-import { Button, DialogFooter, TextArea } from '@blueprintjs/core';
+import { Button, DialogFooter } from '@blueprintjs/core';
+import { revalidateLogic } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
 import type { ChangeEvent, LogEntry } from 'fifo-logger';
 import { FifoLogger } from 'fifo-logger';
 import debounce from 'lodash/debounce.js';
 import { resurrect } from 'nmr-processing';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { AppForm, useForm } from 'react-science/ui';
+import { z } from 'zod';
 
 import { useDispatch } from '../context/DispatchContext.js';
 import { useToaster } from '../context/ToasterContext.js';
@@ -24,20 +27,14 @@ interface ImportPublicationStringModalProps extends InnerImportPublicationString
 
 function handleRowStyle(data: any) {
   const level = (data?.original as LogEntry).level;
-  let backgroundColor = 'lightgreen';
-  if (level > 40) {
-    backgroundColor = 'pink';
-  } else if (level === 40) {
-    backgroundColor = 'lightyellow';
-  }
 
-  return { base: { backgroundColor } };
+  return {
+    base: {
+      backgroundColor:
+        level > 40 ? 'pink' : level === 40 ? 'lightyellow' : 'lightgreen',
+    },
+  };
 }
-
-const INITIAL_VALUES = {
-  publicationText:
-    '1H NMR (CDCl3, 400MHz) δ 1 (s, 1H), 2 (d, 1H, J=7), 3 (t, 1H, J=7), 4 (q, 1H, J=7), 5 (quint, 1H, J=7), 6 (hex, 1H, J=7), 7 (hept, 1H, J=7), 8 (dd, 1H, J=7, J=4)',
-};
 
 const COLUMNS: Array<Column<LogEntry>> = [
   {
@@ -55,6 +52,15 @@ const COLUMNS: Array<Column<LogEntry>> = [
     accessor: 'message',
   },
 ];
+
+const validation = z.object({
+  publicationText: z.string(),
+});
+
+const INITIAL_VALUES: z.input<typeof validation> = {
+  publicationText:
+    '1H NMR (CDCl3, 400MHz) δ 1 (s, 1H), 2 (d, 1H, J=7), 3 (t, 1H, J=7), 4 (q, 1H, J=7), 5 (quint, 1H, J=7), 6 (hex, 1H, J=7), 7 (hept, 1H, J=7), 8 (dd, 1H, J=7, J=4)',
+};
 
 export function ImportPublicationStringModal(
   props: ImportPublicationStringModalProps,
@@ -74,16 +80,49 @@ function InnerImportPublicationStringModal(
   const toaster = useToaster();
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const loggerRef = useRef<FifoLogger>(new FifoLogger());
-  const {
-    handleSubmit,
-    control,
-    formState: { isValid },
-  } = useForm({ defaultValues: INITIAL_VALUES, mode: 'onChange' });
+
+  const form = useForm({
+    defaultValues: INITIAL_VALUES,
+    validationLogic: revalidateLogic({ mode: 'change' }),
+    validators: {
+      onDynamic: validation,
+    },
+    onSubmit: ({ value }) => {
+      const { publicationText } = validation.parse(value);
+
+      const hideLoading = toaster.showLoading({
+        message: 'Generate spectrum from publication string in progress',
+      });
+
+      const {
+        ranges,
+        info: { nucleus, solvent = '', frequency },
+        parts,
+      } = resurrect(publicationText, { logger: loggerRef.current });
+
+      setTimeout(() => {
+        dispatch({
+          type: 'GENERATE_SPECTRUM_FROM_PUBLICATION_STRING',
+          payload: {
+            ranges,
+            info: { nucleus, solvent, frequency, name: parts[0] },
+          },
+        });
+
+        hideLoading();
+      });
+
+      onClose();
+    },
+  });
+
+  const isValid = useSelector(form.store, (store) => store.isValid);
 
   useEffect(() => {
     function handleLogs({ detail: { logs } }: ChangeEvent) {
       setLogs(logs.slice());
     }
+
     const loggerInstance = loggerRef.current;
     loggerInstance.addEventListener('change', handleLogs);
 
@@ -100,40 +139,15 @@ function InnerImportPublicationStringModal(
     [],
   );
 
-  function publicationStringHandler({
-    publicationText,
-  }: {
-    publicationText: string;
-  }) {
-    void (async () => {
-      const hideLoading = toaster.showLoading({
-        message: 'Generate spectrum from publication string in progress',
-      });
-      const {
-        ranges,
-        info: { nucleus, solvent = '', frequency },
-        parts,
-      } = resurrect(publicationText, { logger: loggerRef.current });
-      setTimeout(() => {
-        dispatch({
-          type: 'GENERATE_SPECTRUM_FROM_PUBLICATION_STRING',
-          payload: {
-            ranges,
-            info: { nucleus, solvent, frequency, name: parts[0] },
-          },
-        });
-        hideLoading();
-      });
-      onClose();
-    })();
-  }
-
-  function handleOnChange(value: any) {
+  function handleOnChange(value: string) {
     loggerRef.current.clear();
+
+    console.log('handle', { value });
 
     if (!value) {
       return;
     }
+
     debounceChanges(value);
   }
 
@@ -148,62 +162,77 @@ function InnerImportPublicationStringModal(
       onClose={onClose}
       style={{ width: 800, height: 500 }}
     >
-      <StyledDialogBody>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            height: '100%',
-          }}
-        >
-          <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-            <p>
-              Paste a publication string in the text area below and click on the
-              button <i>Generate spectrum</i>
-            </p>
-            <Controller
-              control={control}
-              name="publicationText"
-              rules={{ required: true }}
-              render={({ field, fieldState: { invalid } }) => {
-                const { onChange, ...otherFieldProps } = field;
-                return (
-                  <TextArea
-                    {...otherFieldProps}
-                    placeholder="Enter publication string"
-                    onChange={(event) => {
-                      onChange(event);
-                      handleOnChange(event.target.value);
-                    }}
-                    intent={invalid ? 'danger' : 'none'}
-                    style={{ flex: 1, width: '100%', resize: 'none' }}
-                  />
-                );
-              }}
-            />
-          </div>
-          <GroupPane text="Logs">
-            <ReactTable
-              columns={COLUMNS}
-              data={logs}
-              emptyDataRowText="No Logs"
-              rowStyle={handleRowStyle}
-              style={{ height: '120px' }}
-            />
-          </GroupPane>
-        </div>
-      </StyledDialogBody>
-      <DialogFooter>
-        <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
-          <Button
-            onClick={() => handleSubmit(publicationStringHandler)()}
-            disabled={isNotValid || !isValid}
-            intent="success"
+      <AppForm form={form}>
+        <StyledDialogBody>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              height: '100%',
+            }}
           >
-            Generate spectrum
-          </Button>
-        </div>
-      </DialogFooter>
+            <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+              <p>
+                Paste a publication string in the text area below and click on
+                the button <i>Generate spectrum</i>
+              </p>
+
+              <form.AppField
+                name="publicationText"
+                listeners={{
+                  onChange: ({ value }) => {
+                    form.setFieldValue('publicationText', value);
+                    handleOnChange(value);
+                  },
+                }}
+              >
+                {(field) => (
+                  <field.TextArea
+                    label="Publication text"
+                    placeholder="Enter publication string"
+                    fill
+                  />
+                )}
+              </form.AppField>
+            </div>
+            <GroupPane text="Logs">
+              <ReactTable
+                columns={COLUMNS}
+                data={logs}
+                emptyDataRowText="No Logs"
+                rowStyle={handleRowStyle}
+                style={{ height: '120px' }}
+              />
+            </GroupPane>
+
+            <GroupPane text="Logs [new]">
+              <ReactTable
+                columns={COLUMNS}
+                data={logs}
+                emptyDataRowText="No Logs"
+                rowStyle={handleRowStyle}
+                style={{ height: '120px' }}
+              />
+            </GroupPane>
+          </div>
+        </StyledDialogBody>
+        <DialogFooter
+          actions={
+            <form.SubmitButton
+              intent="success"
+              disabled={isNotValid || !isValid}
+            >
+              Generate spectrum
+            </form.SubmitButton>
+          }
+        >
+          <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
+            <Button disabled={isNotValid || !isValid} intent="success">
+              Generate spectrum
+            </Button>
+          </div>
+        </DialogFooter>
+      </AppForm>
     </StandardDialog>
   );
 }
