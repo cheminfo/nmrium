@@ -53,7 +53,7 @@ const COLUMNS: Array<Column<LogEntry>> = [
   },
 ];
 
-const validation = z.object({
+const formSchema = z.object({
   publicationText: z.string(),
   logs: z.array(
     z.object({
@@ -91,7 +91,7 @@ const validation = z.object({
   ),
 });
 
-const INITIAL_VALUES: z.input<typeof validation> = {
+const INITIAL_VALUES: z.input<typeof formSchema> = {
   logs: [],
   publicationText:
     '1H NMR (CDCl3, 400MHz) δ 1 (s, 1H), 2 (d, 1H, J=7), 3 (t, 1H, J=7), 4 (q, 1H, J=7), 5 (quint, 1H, J=7), 6 (hex, 1H, J=7), 7 (hept, 1H, J=7), 8 (dd, 1H, J=7, J=4)',
@@ -119,10 +119,10 @@ function InnerImportPublicationStringModal(
     defaultValues: INITIAL_VALUES,
     validationLogic: revalidateLogic({ mode: 'change' }),
     validators: {
-      onDynamic: validation,
+      onDynamic: formSchema,
     },
     onSubmit: ({ value }) => {
-      const { publicationText } = validation.parse(value);
+      const { publicationText } = formSchema.parse(value);
 
       const hideLoading = toaster.showLoading({
         message: 'Generate spectrum from publication string in progress',
