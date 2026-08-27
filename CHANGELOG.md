@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.7.0](https://github.com/cheminfo/nmrium/compare/v2.6.0...v2.7.0) (2026-08-27)
+
+
+### Features
+
+* improve min level determination contours ([#4317](https://github.com/cheminfo/nmrium/issues/4317)) ([b7e460c](https://github.com/cheminfo/nmrium/commit/b7e460c2c3b19d7c36ed5c3625c621a5af8f4e9b))
+* **processings:** integrate operatorUI ChartSVG ([#4331](https://github.com/cheminfo/nmrium/issues/4331)) ([a0a5aa9](https://github.com/cheminfo/nmrium/commit/a0a5aa96502a049a3028d63c9f73a47e0faa609a))
+* **processings:** tools integrate operation generation ([#4325](https://github.com/cheminfo/nmrium/issues/4325)) ([2b3e3e6](https://github.com/cheminfo/nmrium/commit/2b3e3e6607c6e74410657ea20b142917851deacf))
+
+
+### Bug Fixes
+
+* **export/print:** iframe style transfer and stabilize peak label positioning and sizing ([#4328](https://github.com/cheminfo/nmrium/issues/4328)) ([53fa2ef](https://github.com/cheminfo/nmrium/commit/53fa2ef59246b9d4c7a74dfc1160c65e20bd2c95))
+* **export:** prevent crashes during export size validation ([#4326](https://github.com/cheminfo/nmrium/issues/4326)) ([2f9b561](https://github.com/cheminfo/nmrium/commit/2f9b561b41e580ec44dfe5251d640d0abf1b357b))
+* render secondary ticks only between primary ticks ([#4330](https://github.com/cheminfo/nmrium/issues/4330)) ([4cbf176](https://github.com/cheminfo/nmrium/commit/4cbf176b187be5065089f7131972af76e240501a))
+
 ## [2.6.0](https://github.com/cheminfo/nmrium/compare/v2.5.0...v2.6.0) (2026-08-24)
 
 
