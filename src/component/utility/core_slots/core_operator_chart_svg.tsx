@@ -3,9 +3,9 @@ import type {
   ProcessingOperatorUI,
   ProcessingOperatorUIChartSVGProps,
 } from '@zakodium/nmrium-core';
-import { useEffect } from 'react';
-import type { FallbackProps } from 'react-error-boundary';
 import { ErrorBoundary } from 'react-error-boundary';
+
+import { LogError } from './core_operator_brush.commons.ts';
 
 interface CoreOperatorChartSVGProps extends ProcessingOperatorUIChartSVGProps<ProcessingOperatorId> {
   operatorUI: ProcessingOperatorUI<ProcessingOperatorId>;
@@ -43,19 +43,4 @@ export function CoreOperatorChartSVG(props: CoreOperatorChartSVGProps) {
       />
     </ErrorBoundary>
   );
-}
-
-/**
- * SVG context. No friendly error rendering method.
- *
- * @param props
- */
-function LogError(props: FallbackProps) {
-  const { error } = props;
-
-  useEffect(() => {
-    reportError(error);
-  }, [error]);
-
-  return null;
 }
