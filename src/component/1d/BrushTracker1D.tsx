@@ -150,10 +150,10 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
       brushStartRef.current = null;
       setBrushData(brushData);
       const brushDataInPPM = convertToPPM(brushData);
-
-      const keyModifiers = getModifiersKey(brushData);
-
       const selectRange = sortRange(brushDataInPPM.startX, brushDataInPPM.endX);
+      const modifiers = getModifiersKey(brushData);
+      const isAltOnly = modifiers === 'shift[false]_ctrl[false]_alt[true]';
+      const isPrimary = isPrimaryKeyActivated(brushData);
 
       if (brushData.mouseButton === 'main') {
         const propagateEvent = () => {
@@ -165,9 +165,17 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
 
         let executeDefaultAction = false;
 
-        const primaryKeyIdentifier = isPrimaryKeyActivated(brushData);
-
-        if (primaryKeyIdentifier) {
+        if (isAltOnly) {
+          switch (selectedTool) {
+            case options.rangePicking.id: {
+              openAnalysisModal();
+              break;
+            }
+            default:
+              executeDefaultAction = true;
+              break;
+          }
+        } else if (isPrimary) {
           switch (selectedTool) {
             case options.integral.id:
               dispatch({
@@ -245,16 +253,6 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
               });
               break;
 
-            default:
-              executeDefaultAction = true;
-              break;
-          }
-        } else if (keyModifiers === 'shift[true]_ctrl[false]_alt[false]') {
-          switch (selectedTool) {
-            case options.rangePicking.id: {
-              openAnalysisModal();
-              break;
-            }
             default:
               executeDefaultAction = true;
               break;
