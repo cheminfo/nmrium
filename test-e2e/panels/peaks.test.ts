@@ -98,7 +98,7 @@ test('Automatic peak picking should work', async ({ page }) => {
   //apply auto ranges detection
   await nmrium.page.click('button >> text=Apply');
 
-  await expect(nmrium.page.locator(PEAK_ANNOTATIONS_SELECTOR)).toHaveCount(50);
+  await expect(nmrium.page.locator(PEAK_ANNOTATIONS_SELECTOR)).toHaveCount(154);
 });
 test('Processed spectra peaks', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
