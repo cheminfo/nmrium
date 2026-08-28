@@ -55,7 +55,7 @@ type AutoPeakPickingOptionsInput = z.input<typeof validationSchema>;
 type AutoPeakPickingOptions = z.output<typeof validationSchema>;
 
 const defaultValues: AutoPeakPickingOptionsInput = {
-  maxNumberOfPeaks: '50',
+  maxNumberOfPeaks: '500',
   minMaxRatio: '0.05',
   noiseFactor: '3',
   direction: 'both',
