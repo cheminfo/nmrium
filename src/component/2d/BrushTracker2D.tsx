@@ -2,7 +2,6 @@ import type { PropsWithChildren } from 'react';
 import { useCallback, useRef } from 'react';
 
 import { getAlignedPoint } from '../1d-2d/tools/DistanceLine.tsx';
-import type { OnDoubleClick } from '../EventsTrackers/BrushTracker.js';
 import {
   BrushTracker,
   detectBrushing,
@@ -13,6 +12,7 @@ import type {
   BrushTrackerData,
   OnBrush,
   OnClick,
+  OnDoubleClick,
   OnZoom,
 } from '../EventsTrackers/brush_tracker.types.ts';
 import { useChartData } from '../context/ChartContext.js';
