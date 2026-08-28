@@ -2,6 +2,7 @@ import type { Info1D } from '@zakodium/nmr-types';
 import type { Spectrum } from '@zakodium/nmrium-core';
 import { isSpectrum1D } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
+import { current } from 'immer';
 import type { DatabaseNMREntry } from 'nmr-processing';
 
 import {
@@ -157,10 +158,10 @@ function handleResurrectSpectrumFromRangesOrSignals(
   if (isSpectrum1D(activeSpectrum)) {
     const {
       data: { x },
-      info: spectrumInfo,
-    } = activeSpectrum;
+      info: activeSpectrumInfo,
+    } = current(activeSpectrum);
     options = { from: x[0], to: x.at(-1) };
-    info = { ...spectrumInfo, ...info };
+    info = { ...activeSpectrumInfo, ...info };
   } else {
     const domain = DEFAULT_DATABASE_SPECTRUM_DOMAINS[nucleus || '1H'];
     options = { ...domain };
