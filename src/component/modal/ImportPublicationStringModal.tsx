@@ -1,6 +1,5 @@
 import { DialogFooter } from '@blueprintjs/core';
 import { revalidateLogic } from '@tanstack/react-form';
-import { useSelector } from '@tanstack/react-store';
 import type { ChangeEvent, LogEntry } from 'fifo-logger';
 import { FifoLogger } from 'fifo-logger';
 import debounce from 'lodash/debounce.js';
@@ -56,7 +55,7 @@ const COLUMNS: Array<Column<LogEntry>> = [
 const formSchema = z.object({
   publicationText: z.string().trim().min(1),
   logs: z.array(
-    z.object({
+    z.looseObject({
       id: z.number(),
       time: z.number(),
       level: z.union([
@@ -134,23 +133,18 @@ function InnerImportPublicationStringModal(
         parts,
       } = resurrect(publicationText, { logger: loggerRef.current });
 
-      setTimeout(() => {
-        dispatch({
-          type: 'GENERATE_SPECTRUM_FROM_PUBLICATION_STRING',
-          payload: {
-            ranges,
-            info: { nucleus, solvent, frequency, name: parts[0] },
-          },
-        });
-
-        hideLoading();
+      dispatch({
+        type: 'GENERATE_SPECTRUM_FROM_PUBLICATION_STRING',
+        payload: {
+          ranges,
+          info: { nucleus, solvent, frequency, name: parts[0] },
+        },
       });
 
+      hideLoading();
       onClose();
     },
   });
-
-  const isValid = useSelector(form.store, (store) => store.isValid);
 
   useEffect(() => {
     function handleLogs({ detail: { logs } }: ChangeEvent) {
@@ -167,15 +161,10 @@ function InnerImportPublicationStringModal(
 
   const debounceChanges = useMemo(
     () =>
-      debounce((value: any) => {
+      debounce((value: string) => {
         resurrect(value, { logger: loggerRef.current });
       }, 250),
     [],
-  );
-
-  const logs = useSelector(form.store, (store) => store.values.logs);
-  const isNotValid = logs.some((log) =>
-    ['error', 'fatal'].includes(log.levelLabel),
   );
 
   return (
@@ -235,12 +224,23 @@ function InnerImportPublicationStringModal(
         </StyledDialogBody>
         <DialogFooter
           actions={
-            <form.SubmitButton
-              intent="success"
-              disabled={isNotValid || !isValid}
+            <form.Subscribe
+              selector={(store) => {
+                const { logs } = store.values;
+
+                const isNotValid = logs.some((log) =>
+                  ['error', 'fatal'].includes(log.levelLabel),
+                );
+
+                return isNotValid || !store.isValid;
+              }}
             >
-              Generate spectrum
-            </form.SubmitButton>
+              {(disabled) => (
+                <form.SubmitButton intent="success" disabled={disabled}>
+                  Generate spectrum
+                </form.SubmitButton>
+              )}
+            </form.Subscribe>
           }
         />
       </AppForm>
