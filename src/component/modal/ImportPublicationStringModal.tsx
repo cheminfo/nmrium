@@ -1,4 +1,5 @@
 import { DialogFooter } from '@blueprintjs/core';
+import styled from '@emotion/styled';
 import { revalidateLogic } from '@tanstack/react-form';
 import type { ChangeEvent, LogEntry } from 'fifo-logger';
 import { FifoLogger } from 'fifo-logger';
@@ -23,6 +24,10 @@ interface InnerImportPublicationStringModalProps {
 interface ImportPublicationStringModalProps extends InnerImportPublicationStringModalProps {
   isOpen: boolean;
 }
+
+const Dialog = styled(StandardDialog)`
+  width: 800px;
+`;
 
 function handleRowStyle(data: any) {
   const level = (data?.original as LogEntry).level;
@@ -168,59 +173,48 @@ function InnerImportPublicationStringModal(
   );
 
   return (
-    <StandardDialog
+    <Dialog
       title="Generate spectrum from publication string"
       isOpen
       onClose={onClose}
-      style={{ width: 800, height: 500 }}
     >
       <AppForm form={form}>
         <StyledDialogBody>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              height: '100%',
+          <p>
+            Paste a publication string in the text area below and click on the
+            button <i>Generate spectrum</i>
+          </p>
+
+          <form.AppField
+            name="publicationText"
+            listeners={{
+              onChange: ({ value }) => {
+                debounceChanges(value);
+              },
             }}
           >
-            <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-              <p>
-                Paste a publication string in the text area below and click on
-                the button <i>Generate spectrum</i>
-              </p>
+            {(field) => (
+              <field.TextArea
+                label="Publication text"
+                placeholder="Enter publication string"
+                fill
+              />
+            )}
+          </form.AppField>
 
-              <form.AppField
-                name="publicationText"
-                listeners={{
-                  onChange: ({ value }) => {
-                    debounceChanges(value);
-                  },
-                }}
-              >
-                {(field) => (
-                  <field.TextArea
-                    label="Publication text"
-                    placeholder="Enter publication string"
-                    fill
-                  />
-                )}
-              </form.AppField>
-            </div>
-
-            <form.AppField name="logs">
-              {(field) => (
-                <GroupPane text="Logs">
-                  <ReactTable
-                    columns={COLUMNS}
-                    data={field.state.value}
-                    emptyDataRowText="No Logs"
-                    rowStyle={handleRowStyle}
-                    style={{ height: '120px' }}
-                  />
-                </GroupPane>
-              )}
-            </form.AppField>
-          </div>
+          <form.AppField name="logs">
+            {(field) => (
+              <GroupPane text="Logs">
+                <ReactTable
+                  columns={COLUMNS}
+                  data={field.state.value}
+                  emptyDataRowText="No Logs"
+                  rowStyle={handleRowStyle}
+                  style={{ height: '120px' }}
+                />
+              </GroupPane>
+            )}
+          </form.AppField>
         </StyledDialogBody>
         <DialogFooter
           actions={
@@ -244,6 +238,6 @@ function InnerImportPublicationStringModal(
           }
         />
       </AppForm>
-    </StandardDialog>
+    </Dialog>
   );
 }
