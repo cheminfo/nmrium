@@ -5,17 +5,17 @@ import { useOnOff } from 'react-science/ui';
 
 import { createRange } from '../../data/data1d/Spectrum1D/index.js';
 import { cutRange } from '../../data/data1d/Spectrum1D/ranges/createRange.js';
+import {
+  BrushTracker,
+  detectBrushing,
+} from '../EventsTrackers/BrushTracker.js';
 import type {
   BaseDetectBrushingOptions,
   BrushTrackerData,
   OnBrush,
   OnClick,
   OnZoom,
-} from '../EventsTrackers/BrushTracker.js';
-import {
-  BrushTracker,
-  detectBrushing,
-} from '../EventsTrackers/BrushTracker.js';
+} from '../EventsTrackers/brush_tracker.types.ts';
 import { useChartData } from '../context/ChartContext.js';
 import { useDispatch } from '../context/DispatchContext.js';
 import { useFilterSyncOptions } from '../context/FilterSyncOptionsContext.tsx';

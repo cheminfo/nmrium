@@ -2,19 +2,19 @@ import type { PropsWithChildren } from 'react';
 import { useCallback, useRef } from 'react';
 
 import { getAlignedPoint } from '../1d-2d/tools/DistanceLine.tsx';
+import type { OnDoubleClick } from '../EventsTrackers/BrushTracker.js';
+import {
+  BrushTracker,
+  detectBrushing,
+} from '../EventsTrackers/BrushTracker.js';
 import type {
   BaseDetectBrushingOptions,
   BrushAxis,
   BrushTrackerData,
   OnBrush,
   OnClick,
-  OnDoubleClick,
   OnZoom,
-} from '../EventsTrackers/BrushTracker.js';
-import {
-  BrushTracker,
-  detectBrushing,
-} from '../EventsTrackers/BrushTracker.js';
+} from '../EventsTrackers/brush_tracker.types.ts';
 import { useChartData } from '../context/ChartContext.js';
 import { useDispatch } from '../context/DispatchContext.js';
 import { useMapKeyModifiers } from '../context/KeyModifierContext.js';

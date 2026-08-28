@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import type {
   BrushTrackerData,
   ClickOptions,
-} from '../EventsTrackers/BrushTracker.js';
+} from '../EventsTrackers/brush_tracker.types.ts';
 
 const eventEmitter = new EventEmitter();
 

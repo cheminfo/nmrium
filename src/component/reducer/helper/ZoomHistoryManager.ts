@@ -1,6 +1,6 @@
 import type { Draft } from 'immer';
 
-import type { BrushAxis } from '../../EventsTrackers/BrushTracker.js';
+import type { BrushAxis } from '../../EventsTrackers/brush_tracker.types.ts';
 import type { State } from '../Reducer.js';
 
 export interface HistoryItem {
