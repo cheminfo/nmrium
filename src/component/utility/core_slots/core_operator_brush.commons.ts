@@ -2,7 +2,8 @@ import { useEffect } from 'react';
 import type { FallbackProps } from 'react-error-boundary';
 
 /**
- * SVG context. No friendly error rendering method.
+ * UI error rendering does not apply in this context.
+ * Used for error boundaries in chart tree.
  *
  * @param props
  */

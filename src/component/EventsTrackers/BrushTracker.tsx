@@ -116,7 +116,7 @@ export function BrushTracker(options: BrushTrackerProps) {
   const isSelfControlledRef = useRef(false);
 
   const { onClick, onDoubleClick, onBrush, onBrushEnd, onZoom, emitter } =
-    useWrapperEvents(options);
+    useWrappedEvents(options);
 
   const handleClickWithDebounce = useCallback(
     (event: MouseEvent, currentTarget: Element) => {
@@ -591,12 +591,12 @@ export function detectBrushing(
   };
 }
 
-type UseWrapperEventsProps = Pick<
+type UseWrappedEventsProps = Pick<
   BrushTrackerProps,
   'onBrush' | 'onBrushEnd' | 'onClick' | 'onDoubleClick' | 'onZoom'
 >;
 
-interface UseWrapperEvents extends Required<UseWrapperEventsProps> {
+interface UseWrappedEvents extends Required<UseWrappedEventsProps> {
   emitter: BrushTrackerEventEmitter;
 }
 
@@ -606,7 +606,7 @@ interface UseWrapperEvents extends Required<UseWrapperEventsProps> {
  *
  * @param props
  */
-function useWrapperEvents(props: UseWrapperEventsProps): UseWrapperEvents {
+function useWrappedEvents(props: UseWrappedEventsProps): UseWrappedEvents {
   const {
     onBrushEnd: onBrushEndProp = noop,
     onBrush: onBrushProp = noop,
