@@ -59,40 +59,7 @@ const COLUMNS: Array<Column<LogEntry>> = [
 
 const formSchema = z.object({
   publicationText: z.string().trim().min(1),
-  logs: z.array(
-    z.looseObject({
-      id: z.number(),
-      time: z.number(),
-      level: z.union([
-        z.literal(0),
-        z.literal(10),
-        z.literal(20),
-        z.literal(30),
-        z.literal(40),
-        z.literal(50),
-        z.literal(60),
-      ]),
-      levelLabel: z.enum([
-        'fatal',
-        'error',
-        'warn',
-        'info',
-        'debug',
-        'trace',
-        'silent',
-      ]),
-      uuids: z.array(z.string()),
-      message: z.string(),
-      meta: z.any().optional(),
-      error: z
-        .object({
-          name: z.string(),
-          message: z.string(),
-          stack: z.string().optional(),
-        })
-        .optional(),
-    }),
-  ),
+  logs: z.array(z.any()),
 });
 
 const INITIAL_VALUES: z.input<typeof formSchema> = {
