@@ -32,6 +32,6 @@ test('automatic assignment panel', async ({ page }) => {
 
     await expect(
       nmrium.page.locator('_react=AutomaticAssignmentTable >> text=0.75'),
-    ).toHaveCount(2, { timeout: 60 * 1000 });
+    ).toHaveCount(2, { timeout: 30 * 1000 });
   });
 });
