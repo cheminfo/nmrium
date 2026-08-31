@@ -10,7 +10,7 @@ import { get2DXScale, get2DYScale } from '../../2d/utilities/scale.js';
 import type {
   BrushAxis,
   ZoomOptions,
-} from '../../EventsTrackers/BrushTracker.js';
+} from '../../EventsTrackers/brush_tracker.types.ts';
 import type { Tool } from '../../toolbar/ToolTypes.js';
 import { options as Tools } from '../../toolbar/ToolTypes.js';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus.js';

@@ -16,6 +16,7 @@ import FooterBanner from './FooterBanner.js';
 import { SVGContent1D } from './SVGContent1D.js';
 import { BaselinePreview } from './baseline/BaselinePreview.tsx';
 import { PeakEditionProvider } from './peaks/PeakEditionManager.js';
+import { PluginChartBrushTracker } from './plugin_chart_brush_tracker.tsx';
 import BaseLine from './tool/BaseLine.js';
 import PeakPointer from './tool/PeakPointer.js';
 import { PivotIndicator1D } from './tool/PivotIndicator1D.js';
@@ -61,6 +62,7 @@ function InnerViewer1D(props: InnerViewer1DProps) {
                   </PeakEditionProvider>
                   <BaseLine />
                   <PivotIndicator1D />
+                  <PluginChartBrushTracker />
                 </MouseTracker>
               </BrushTracker1D>
             )}

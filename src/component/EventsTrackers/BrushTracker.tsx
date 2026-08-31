@@ -1,10 +1,8 @@
-import { assert } from '@zakodium/utils';
+import { assert, noop } from '@zakodium/utils';
 import type {
-  CSSProperties,
   KeyboardEvent,
   MouseEvent,
   PointerEvent,
-  ReactNode,
   Reducer,
   WheelEvent,
 } from 'react';
@@ -16,53 +14,31 @@ import {
   useReducer,
   useRef,
 } from 'react';
+import { useEventCallback } from 'usehooks-ts';
 
-import type { EventModifierKeys } from '../context/KeyModifierContext.js';
 import type { ActionType } from '../reducer/types/ActionType.js';
 
-type AdvanceOmit<T, K extends keyof any> = T extends any ? Omit<T, K> : never;
-
-export type BaseDetectBrushingOptions = AdvanceOmit<
+import type {
+  BaseDetectBrushingOptions,
+  BrushCoordination,
+  BrushTrackerData,
+  BrushTrackerProps,
+  BrushTrackerState,
   DetectBrushingOptions,
-  'width' | 'height'
->;
-type Step = 'initial' | 'start' | 'end' | 'brushing';
-
-export type BrushAxis = 'X' | 'Y' | 'XY';
-export interface BrushTrackerData extends EventModifierKeys {
-  step: Step;
-  startX: number;
-  endX: number;
-  startY: number;
-  endY: number;
-  mouseButton: MouseButton;
-}
-
-type MouseButton = 'main' | 'secondary' | 'unknown';
+  DetectBrushingResult,
+  MouseButton,
+  Position,
+} from './brush_tracker.types.ts';
+import type { BrushTrackerEventEmitter } from './brush_tracker_events_listeners.ts';
+import {
+  BrushTrackerEventEmitterProvider,
+  useInitBrushTrackerEventEmitter,
+} from './brush_tracker_events_listeners.ts';
 
 const MouseButtons: Record<number, MouseButton> = {
   0: 'main',
   2: 'secondary',
 } as const;
-
-export interface BrushCoordination {
-  startX: number;
-  endX: number;
-  startY: number;
-  endY: number;
-}
-interface BrushScreenCoordination {
-  startScreenX: number;
-  startScreenY: number;
-  startClientX: number;
-  startClientY: number;
-}
-
-interface BrushTrackerState
-  extends BrushTrackerData, BrushCoordination, BrushScreenCoordination {
-  step: Step;
-  boundingRect: DOMRect | null;
-}
 
 const initialState: BrushTrackerState = {
   step: 'initial',
@@ -105,35 +81,6 @@ export function useBrushTracker() {
   return useContext(BrushContext);
 }
 
-interface Position {
-  x: number;
-  y: number;
-}
-
-export type ClickOptions = MouseEvent & Position;
-export type OnClick = (element: ClickOptions) => void;
-export type { OnClick as OnDoubleClick };
-export type ZoomOptions = Pick<
-  WheelEvent,
-  'deltaY' | 'shiftKey' | 'deltaMode' | 'altKey' | 'deltaX' | 'ctrlKey'
-> &
-  Position & { invertScroll?: boolean; isBidirectionalZoom: boolean };
-export type OnZoom = (options: ZoomOptions) => void;
-export type OnBrush = (state: BrushTrackerData) => void;
-
-interface BrushTrackerProps {
-  children: ReactNode;
-  className?: string;
-  style?: CSSProperties;
-  onBrushEnd?: OnBrush;
-  onBrush?: OnBrush;
-  onZoom?: OnZoom;
-  onDoubleClick?: OnClick;
-  onClick?: OnClick;
-  noPropagation?: boolean;
-  brushDetectionOptions?: BaseDetectBrushingOptions;
-  clickTriggerMode?: 'native' | 'debounced';
-}
 function isSelfControlledTarget(target: EventTarget) {
   return (target as Element).closest('[data-self-control="true"]') !== null;
 }
@@ -151,11 +98,6 @@ export function BrushTracker(options: BrushTrackerProps) {
     children,
     className,
     style,
-    onBrushEnd,
-    onBrush,
-    onZoom = () => null,
-    onDoubleClick = () => null,
-    onClick = () => null,
     noPropagation,
     brushDetectionOptions = { thresholdFormat: 'fixed' },
     clickTriggerMode = 'native',
@@ -172,6 +114,9 @@ export function BrushTracker(options: BrushTrackerProps) {
   const startPositionRef = useRef<Position>({ x: 0, y: 0 });
   const lastRef = useRef<Position>({ x: 0, y: 0 });
   const isSelfControlledRef = useRef(false);
+
+  const { onClick, onDoubleClick, onBrush, onBrushEnd, onZoom, emitter } =
+    useWrappedEvents(options);
 
   const handleClickWithDebounce = useCallback(
     (event: MouseEvent, currentTarget: Element) => {
@@ -425,7 +370,9 @@ export function BrushTracker(options: BrushTrackerProps) {
             window.removeEventListener('wheel', stopPageScrolling);
           }}
         >
-          {children}
+          <BrushTrackerEventEmitterProvider value={emitter}>
+            {children}
+          </BrushTrackerEventEmitterProvider>
         </div>
       </BrushContext.Provider>
     </BrushDetectionOptionsContext.Provider>
@@ -516,45 +463,6 @@ function reducer(
       return state;
   }
 }
-
-interface DetectBrushingResult extends BrushCoordination {
-  type: BrushAxis;
-  scaleX: number;
-  scaleY: number;
-  directionX: number;
-  directionY: number;
-  xThreshold: number;
-  yThreshold: number;
-}
-interface DetectBrushingThreshold {
-  /** Width in pixels */
-  width: number;
-  /** Height in pixels */
-  height: number;
-  /**
-   * Threshold as a percentage of width and height (value between 0 and 1).
-   * @default 0.02
-   */
-  threshold?: number;
-  thresholdFormat: 'relative';
-}
-interface DetectBrushingThresholdSize {
-  /** Width in pixels */
-  width: number;
-  /** Height in pixels */
-  height: number;
-  /**
-   * Threshold size in pixels.
-   * @default 80
-   */
-  thresholdSize?: number;
-  thresholdFormat: 'fixed';
-}
-type BrushDetectionThresholdAxis = 'both' | 'x' | 'y';
-
-type DetectBrushingOptions = { thresholdAxis?: BrushDetectionThresholdAxis } & (
-  DetectBrushingThreshold | DetectBrushingThresholdSize
-);
 
 export function detectBrushing(
   coordination: BrushCoordination,
@@ -681,4 +589,99 @@ export function detectBrushing(
     scaleY,
     ...common,
   };
+}
+
+type UseWrappedEventsProps = Pick<
+  BrushTrackerProps,
+  'onBrush' | 'onBrushEnd' | 'onClick' | 'onDoubleClick' | 'onZoom'
+>;
+
+interface UseWrappedEvents extends Required<UseWrappedEventsProps> {
+  emitter: BrushTrackerEventEmitter;
+}
+
+/**
+ * Wrap events to forward them to props AND an emitter.
+ * So `ProcessingOperatorUI.ChartBrushTracker` can listen on events.
+ *
+ * @param props
+ */
+function useWrappedEvents(props: UseWrappedEventsProps): UseWrappedEvents {
+  const {
+    onBrushEnd: onBrushEndProp = noop,
+    onBrush: onBrushProp = noop,
+    onZoom: onZoomProp = noop,
+    onDoubleClick: onDoubleClickProp = noop,
+    onClick: onClickProp = noop,
+  } = props;
+  const emitter = useInitBrushTrackerEventEmitter();
+
+  const onClick = useEventCallback<Parameters<typeof onClickProp>, void>(
+    (event) => {
+      try {
+        emitter.emit('click', event);
+      } catch (error) {
+        reportError(error);
+      }
+
+      if (event.isPropagationStopped()) return;
+      if (event.isDefaultPrevented()) return;
+
+      onClickProp(event);
+    },
+  );
+
+  const onDoubleClick = useEventCallback<
+    Parameters<typeof onDoubleClickProp>,
+    void
+  >((event) => {
+    try {
+      emitter.emit('click-double', event);
+    } catch (error) {
+      reportError(error);
+    }
+
+    if (event.isPropagationStopped()) return;
+    if (event.isDefaultPrevented()) return;
+
+    onDoubleClickProp(event);
+  });
+
+  const onZoom = useEventCallback<Parameters<typeof onZoomProp>, void>(
+    (event) => {
+      try {
+        emitter.emit('zoom', event);
+      } catch (error) {
+        reportError(error);
+      }
+
+      onZoomProp(event);
+    },
+  );
+
+  const onBrush = useEventCallback<Parameters<typeof onBrushProp>, void>(
+    (event) => {
+      try {
+        emitter.emit('brush', event);
+      } catch (error) {
+        reportError(error);
+      }
+
+      onBrushProp(event);
+    },
+  );
+
+  const onBrushEnd = useEventCallback<Parameters<typeof onBrushEndProp>, void>(
+    (event) => {
+      try {
+        emitter.emit('brush-end', event);
+      } catch (error) {
+        reportError(error);
+      }
+
+      onBrushEndProp(event);
+    },
+  );
+
+  return { onClick, onDoubleClick, onBrush, onBrushEnd, onZoom, emitter };
 }

@@ -3,12 +3,12 @@ import { isSpectrum1D, isSpectrum2D } from '@zakodium/nmrium-core';
 import type { CSSProperties } from 'react';
 
 import { useScale2DX } from '../../2d/utilities/scale.js';
-import type { BrushAxis } from '../../EventsTrackers/BrushTracker.js';
 import {
   detectBrushing,
   useBrushDetectionOptions,
   useBrushTracker,
 } from '../../EventsTrackers/BrushTracker.js';
+import type { BrushAxis } from '../../EventsTrackers/brush_tracker.types.ts';
 import { useChartData } from '../../context/ChartContext.js';
 import { useKeyModifiers } from '../../context/KeyModifierContext.tsx';
 import { useScaleChecked } from '../../context/ScaleContext.js';

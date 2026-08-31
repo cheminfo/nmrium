@@ -1,4 +1,4 @@
-import type { BrushCoordination } from '../../EventsTrackers/BrushTracker.js';
+import type { BrushCoordination } from '../../EventsTrackers/brush_tracker.types.ts';
 
 export const LAYOUT = {
   main: 'MAIN',

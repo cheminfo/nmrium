@@ -2,7 +2,7 @@ import type { MatrixOptions } from '@zakodium/nmr-types';
 import type { MatrixGenerationOptions } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
 
-import type { ZoomOptions } from '../../../EventsTrackers/BrushTracker.js';
+import type { ZoomOptions } from '../../../EventsTrackers/brush_tracker.types.ts';
 import type { FilterType } from '../../../utility/filterType.js';
 import { toScaleRatio } from '../../helper/Zoom1DManager.js';
 import type { ActionType } from '../../types/ActionType.js';

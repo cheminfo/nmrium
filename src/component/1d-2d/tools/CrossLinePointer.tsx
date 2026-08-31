@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
 
-import type { BrushAxis } from '../../EventsTrackers/BrushTracker.js';
 import { useBrushTracker } from '../../EventsTrackers/BrushTracker.js';
 import { useMouseTracker } from '../../EventsTrackers/MouseTracker.js';
+import type { BrushAxis } from '../../EventsTrackers/brush_tracker.types.ts';
 import { useChartData } from '../../context/ChartContext.js';
 import type { Margin } from '../../reducer/Reducer.js';
 import type { Tool } from '../../toolbar/ToolTypes.js';

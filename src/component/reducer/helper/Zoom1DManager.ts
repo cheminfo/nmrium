@@ -1,6 +1,6 @@
 import type { Draft } from 'immer';
 
-import type { ZoomOptions } from '../../EventsTrackers/BrushTracker.js';
+import type { ZoomOptions } from '../../EventsTrackers/brush_tracker.types.ts';
 import type { State } from '../Reducer.js';
 
 import { getActiveSpectrum } from './getActiveSpectrum.js';

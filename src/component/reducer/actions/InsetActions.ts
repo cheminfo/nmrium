@@ -15,7 +15,7 @@ import type {
   InsetView,
 } from '../../1d/inset/SpectraInsets.js';
 import { getInsetXScale } from '../../1d/utilities/scale.js';
-import type { ZoomOptions } from '../../EventsTrackers/BrushTracker.js';
+import type { ZoomOptions } from '../../EventsTrackers/brush_tracker.types.ts';
 import { defaultIntegralsViewState } from '../../hooks/useActiveSpectrumIntegralsViewState.js';
 import { defaultPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState.js';
 import { getDefaultRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState.js';

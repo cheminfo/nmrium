@@ -20,7 +20,7 @@ import {
   initiateDatabase,
   prepareData,
 } from '../../../data/data1d/database.js';
-import type { BrushTrackerData } from '../../EventsTrackers/BrushTracker.tsx';
+import type { BrushTrackerData } from '../../EventsTrackers/brush_tracker.types.ts';
 import { useChartData } from '../../context/ChartContext.js';
 import { useCore } from '../../context/CoreContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
