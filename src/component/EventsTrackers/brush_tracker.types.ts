@@ -2,9 +2,7 @@ import type { CSSProperties, MouseEvent, ReactNode, WheelEvent } from 'react';
 
 import type { EventModifierKeys } from '../context/KeyModifierContext.tsx';
 
-export type AdvanceOmit<T, K extends keyof any> = T extends any
-  ? Omit<T, K>
-  : never;
+type AdvanceOmit<T, K extends keyof any> = T extends any ? Omit<T, K> : never;
 type Step = 'initial' | 'start' | 'end' | 'brushing';
 
 export interface BrushCoordination {
@@ -49,7 +47,7 @@ export type ZoomOptions = Pick<
   Position & { invertScroll?: boolean; isBidirectionalZoom: boolean };
 export type OnZoom = (options: ZoomOptions) => void;
 export type OnBrush = (state: BrushTrackerData) => void;
-export type OnBrushEnd = OnBrush;
+type OnBrushEnd = OnBrush;
 
 export type BaseDetectBrushingOptions = AdvanceOmit<
   DetectBrushingOptions,
