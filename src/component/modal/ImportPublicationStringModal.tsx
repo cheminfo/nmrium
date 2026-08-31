@@ -6,16 +6,16 @@ import { FifoLogger } from 'fifo-logger';
 import debounce from 'lodash/debounce.js';
 import { resurrect } from 'nmr-processing';
 import { useEffect, useMemo, useRef } from 'react';
-import { AppForm, useForm } from 'react-science/ui';
+import { AppForm, createTableColumnHelper, useForm } from 'react-science/ui';
 import { z } from 'zod';
 
 import { useDispatch } from '../context/DispatchContext.js';
 import { useToaster } from '../context/ToasterContext.js';
-import { GroupPane } from '../elements/GroupPane.js';
-import type { Column } from '../elements/ReactTable/ReactTable.js';
-import ReactTable from '../elements/ReactTable/ReactTable.js';
 import { StandardDialog } from '../elements/StandardDialog.tsx';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
+
+import { TableSettings } from './setting/tanstack_general_settings/ui/table.tsx';
+import { TableSection } from './setting/tanstack_general_settings/ui/table_section.tsx';
 
 interface InnerImportPublicationStringModalProps {
   onClose: () => void;
@@ -29,37 +29,24 @@ const Dialog = styled(StandardDialog)`
   width: 800px;
 `;
 
-function handleRowStyle(data: any) {
-  const level = (data?.original as LogEntry).level;
+const Tr = styled.tr<{ level: number }>`
+  background-color: ${({ level }) => (level > 40 ? 'pink' : level === 40 ? 'lightyellow' : 'lightgreen')};
 
-  return {
-    base: {
-      backgroundColor:
-        level > 40 ? 'pink' : level === 40 ? 'lightyellow' : 'lightgreen',
-    },
-  };
-}
+  &:hover {
+    background-color: #ff6f0091 !important;
+  }
+`;
 
-const COLUMNS: Array<Column<LogEntry>> = [
-  {
-    Header: '#',
-    accessor: (_, index) => index + 1,
-    style: { width: '40px' },
-  },
-  {
-    Header: 'Label',
-    accessor: 'levelLabel',
-    style: { width: '60px' },
-  },
-  {
-    Header: 'Message',
-    accessor: 'message',
-  },
-];
+const TableWrapper = styled.div`
+  max-height: 120px;
+  overflow-y: auto;
+`;
+
+const logSchema = z.custom<LogEntry>();
 
 const formSchema = z.object({
   publicationText: z.string().trim().min(1),
-  logs: z.array(z.any()),
+  logs: z.array(logSchema),
 });
 
 const INITIAL_VALUES: z.input<typeof formSchema> = {
@@ -139,6 +126,32 @@ function InnerImportPublicationStringModal(
     [],
   );
 
+  const columns = useMemo(() => {
+    const helper = createTableColumnHelper();
+
+    return [
+      helper.accessor('id', {
+        header: '#',
+        meta: {
+          thStyle: {
+            width: '40px',
+          },
+        },
+      }),
+      helper.accessor('levelLabel', {
+        header: 'Label',
+        meta: {
+          tdStyle: {
+            width: '60px',
+          },
+        },
+      }),
+      helper.accessor('message', {
+        header: 'Message',
+      }),
+    ];
+  }, []);
+
   return (
     <Dialog
       title="Generate spectrum from publication string"
@@ -171,15 +184,32 @@ function InnerImportPublicationStringModal(
 
           <form.AppField name="logs">
             {(field) => (
-              <GroupPane text="Logs">
-                <ReactTable
-                  columns={COLUMNS}
-                  data={field.state.value}
-                  emptyDataRowText="No Logs"
-                  rowStyle={handleRowStyle}
-                  style={{ height: '120px' }}
-                />
-              </GroupPane>
+              <TableSection title="Logs">
+                <TableWrapper>
+                  <TableSettings
+                    data={field.state.value}
+                    columns={columns}
+                    getRowId={(data) => {
+                      return getRowId(data as LogEntry);
+                    }}
+                    emptyContent="No Logs"
+                    tdStyle={{
+                      padding: '0.15rem 0.4rem',
+                    }}
+                    renderRowTr={(data) => {
+                      const level = field.state.value.find((value) => {
+                        return String(value.id) === data['data-row-id'];
+                      })?.level as number | undefined;
+
+                      if (!level) {
+                        return null;
+                      }
+
+                      return <Tr level={level} {...data} />;
+                    }}
+                  />
+                </TableWrapper>
+              </TableSection>
             )}
           </form.AppField>
         </StyledDialogBody>
@@ -207,4 +237,8 @@ function InnerImportPublicationStringModal(
       </AppForm>
     </Dialog>
   );
+}
+
+function getRowId(row: LogEntry) {
+  return String(row.id);
 }
