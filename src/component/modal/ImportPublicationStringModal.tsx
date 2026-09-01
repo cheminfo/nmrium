@@ -1,18 +1,21 @@
-import { Button, DialogFooter, TextArea } from '@blueprintjs/core';
+import { DialogFooter } from '@blueprintjs/core';
+import styled from '@emotion/styled';
+import { revalidateLogic } from '@tanstack/react-form';
 import type { ChangeEvent, LogEntry } from 'fifo-logger';
 import { FifoLogger } from 'fifo-logger';
 import debounce from 'lodash/debounce.js';
 import { resurrect } from 'nmr-processing';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { useEffect, useMemo, useRef } from 'react';
+import { AppForm, createTableColumnHelper, useForm } from 'react-science/ui';
+import { z } from 'zod';
 
 import { useDispatch } from '../context/DispatchContext.js';
 import { useToaster } from '../context/ToasterContext.js';
-import { GroupPane } from '../elements/GroupPane.js';
-import type { Column } from '../elements/ReactTable/ReactTable.js';
-import ReactTable from '../elements/ReactTable/ReactTable.js';
 import { StandardDialog } from '../elements/StandardDialog.tsx';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
+
+import { TableSettings } from './setting/tanstack_general_settings/ui/table.tsx';
+import { TableSection } from './setting/tanstack_general_settings/ui/table_section.tsx';
 
 interface InnerImportPublicationStringModalProps {
   onClose: () => void;
@@ -22,38 +25,57 @@ interface ImportPublicationStringModalProps extends InnerImportPublicationString
   isOpen: boolean;
 }
 
-function handleRowStyle(data: any) {
-  const level = (data?.original as LogEntry).level;
-  let backgroundColor = 'lightgreen';
-  if (level > 40) {
-    backgroundColor = 'pink';
-  } else if (level === 40) {
-    backgroundColor = 'lightyellow';
+const Dialog = styled(StandardDialog)`
+  width: 800px;
+`;
+
+const Tr = styled.tr<{ level: number }>`
+  background-color: ${({ level }) => (level > 40 ? 'pink' : level === 40 ? 'lightyellow' : 'lightgreen')};
+
+  &:hover {
+    background-color: #ff6f0091 !important;
   }
+`;
 
-  return { base: { backgroundColor } };
-}
+const TableWrapper = styled.div`
+  max-height: 120px;
+  overflow-y: auto;
+`;
 
-const INITIAL_VALUES = {
+const logSchema = z.custom<LogEntry>();
+
+const formSchema = z.object({
+  publicationText: z.string().trim().min(1),
+  logs: z.array(logSchema),
+});
+
+const INITIAL_VALUES: z.input<typeof formSchema> = {
+  logs: [],
   publicationText:
     '1H NMR (CDCl3, 400MHz) δ 1 (s, 1H), 2 (d, 1H, J=7), 3 (t, 1H, J=7), 4 (q, 1H, J=7), 5 (quint, 1H, J=7), 6 (hex, 1H, J=7), 7 (hept, 1H, J=7), 8 (dd, 1H, J=7, J=4)',
 };
 
-const COLUMNS: Array<Column<LogEntry>> = [
-  {
-    Header: '#',
-    accessor: (_, index) => index + 1,
-    style: { width: '40px' },
-  },
-  {
-    Header: 'Label',
-    accessor: 'levelLabel',
-    style: { width: '60px' },
-  },
-  {
-    Header: 'Message',
-    accessor: 'message',
-  },
+const logHelper = createTableColumnHelper<LogEntry>();
+const logColumns = [
+  logHelper.accessor('id', {
+    header: '#',
+    meta: {
+      thStyle: {
+        width: '40px',
+      },
+    },
+  }),
+  logHelper.accessor('levelLabel', {
+    header: 'Label',
+    meta: {
+      tdStyle: {
+        width: '60px',
+      },
+    },
+  }),
+  logHelper.accessor('message', {
+    header: 'Message',
+  }),
 ];
 
 export function ImportPublicationStringModal(
@@ -72,138 +94,140 @@ function InnerImportPublicationStringModal(
 
   const dispatch = useDispatch();
   const toaster = useToaster();
-  const [logs, setLogs] = useState<LogEntry[]>([]);
   const loggerRef = useRef<FifoLogger>(new FifoLogger());
-  const {
-    handleSubmit,
-    control,
-    formState: { isValid },
-  } = useForm({ defaultValues: INITIAL_VALUES, mode: 'onChange' });
+
+  const form = useForm({
+    defaultValues: INITIAL_VALUES,
+    validationLogic: revalidateLogic({ mode: 'change' }),
+    validators: {
+      onDynamic: formSchema,
+    },
+    onSubmit: ({ value }) => {
+      const { publicationText } = formSchema.parse(value);
+
+      const hideLoading = toaster.showLoading({
+        message: 'Generate spectrum from publication string in progress',
+      });
+
+      const {
+        ranges,
+        info: { nucleus, solvent = '', frequency },
+        parts,
+      } = resurrect(publicationText, { logger: loggerRef.current });
+
+      dispatch({
+        type: 'GENERATE_SPECTRUM_FROM_PUBLICATION_STRING',
+        payload: {
+          ranges,
+          info: { nucleus, solvent, frequency, name: parts[0] },
+        },
+      });
+
+      hideLoading();
+      onClose();
+    },
+  });
 
   useEffect(() => {
     function handleLogs({ detail: { logs } }: ChangeEvent) {
-      setLogs(logs.slice());
+      form.setFieldValue('logs', logs.slice());
     }
+
     const loggerInstance = loggerRef.current;
     loggerInstance.addEventListener('change', handleLogs);
 
     return () => {
       loggerInstance.removeEventListener('change', handleLogs);
     };
-  }, []);
+  }, [form]);
 
   const debounceChanges = useMemo(
     () =>
-      debounce((value: any) => {
+      debounce((value: string) => {
         resurrect(value, { logger: loggerRef.current });
       }, 250),
     [],
   );
 
-  function publicationStringHandler({
-    publicationText,
-  }: {
-    publicationText: string;
-  }) {
-    void (async () => {
-      const hideLoading = toaster.showLoading({
-        message: 'Generate spectrum from publication string in progress',
-      });
-      const {
-        ranges,
-        info: { nucleus, solvent = '', frequency },
-        parts,
-      } = resurrect(publicationText, { logger: loggerRef.current });
-      setTimeout(() => {
-        dispatch({
-          type: 'GENERATE_SPECTRUM_FROM_PUBLICATION_STRING',
-          payload: {
-            ranges,
-            info: { nucleus, solvent, frequency, name: parts[0] },
-          },
-        });
-        hideLoading();
-      });
-      onClose();
-    })();
-  }
-
-  function handleOnChange(value: any) {
-    loggerRef.current.clear();
-
-    if (!value) {
-      return;
-    }
-    debounceChanges(value);
-  }
-
-  const isNotValid = logs.some((log) =>
-    ['error', 'fatal'].includes(log.levelLabel),
-  );
-
   return (
-    <StandardDialog
+    <Dialog
       title="Generate spectrum from publication string"
       isOpen
       onClose={onClose}
-      style={{ width: 800, height: 500 }}
     >
-      <StyledDialogBody>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            height: '100%',
-          }}
-        >
-          <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-            <p>
-              Paste a publication string in the text area below and click on the
-              button <i>Generate spectrum</i>
-            </p>
-            <Controller
-              control={control}
-              name="publicationText"
-              rules={{ required: true }}
-              render={({ field, fieldState: { invalid } }) => {
-                const { onChange, ...otherFieldProps } = field;
-                return (
-                  <TextArea
-                    {...otherFieldProps}
-                    placeholder="Enter publication string"
-                    onChange={(event) => {
-                      onChange(event);
-                      handleOnChange(event.target.value);
-                    }}
-                    intent={invalid ? 'danger' : 'none'}
-                    style={{ flex: 1, width: '100%', resize: 'none' }}
-                  />
-                );
-              }}
-            />
-          </div>
-          <GroupPane text="Logs">
-            <ReactTable
-              columns={COLUMNS}
-              data={logs}
-              emptyDataRowText="No Logs"
-              rowStyle={handleRowStyle}
-              style={{ height: '120px' }}
-            />
-          </GroupPane>
-        </div>
-      </StyledDialogBody>
-      <DialogFooter>
-        <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
-          <Button
-            onClick={() => handleSubmit(publicationStringHandler)()}
-            disabled={isNotValid || !isValid}
-            intent="success"
+      <AppForm form={form}>
+        <StyledDialogBody>
+          <p>
+            Paste a publication string in the text area below and click on the
+            button <i>Generate spectrum</i>
+          </p>
+
+          <form.AppField
+            name="publicationText"
+            listeners={{
+              onChange: ({ value }) => {
+                debounceChanges(value);
+              },
+            }}
           >
-            Generate spectrum
-          </Button>
-        </div>
-      </DialogFooter>
-    </StandardDialog>
+            {(field) => (
+              <field.TextArea
+                label="Publication text"
+                placeholder="Enter publication string"
+                fill
+              />
+            )}
+          </form.AppField>
+
+          <form.AppField name="logs">
+            {(field) => (
+              <TableSection title="Logs">
+                <TableWrapper>
+                  <TableSettings
+                    data={field.state.value}
+                    columns={logColumns}
+                    getRowId={getRowId}
+                    emptyContent="No Logs"
+                    tdStyle={{
+                      padding: '0.15rem 0.4rem',
+                    }}
+                    renderRowTr={(trProps, row) => {
+                      const level = row.original.level;
+
+                      return <Tr level={level} {...trProps} />;
+                    }}
+                  />
+                </TableWrapper>
+              </TableSection>
+            )}
+          </form.AppField>
+        </StyledDialogBody>
+        <DialogFooter
+          actions={
+            <form.Subscribe
+              selector={(store) => {
+                const { logs } = store.values;
+
+                const isNotValid = logs.some((log) =>
+                  ['error', 'fatal'].includes(log.levelLabel),
+                );
+
+                return isNotValid || !store.isValid;
+              }}
+            >
+              {(disabled) => (
+                <form.SubmitButton intent="success" disabled={disabled}>
+                  Generate spectrum
+                </form.SubmitButton>
+              )}
+            </form.Subscribe>
+          }
+        />
+      </AppForm>
+    </Dialog>
   );
+}
+
+function getRowId(row: LogEntry) {
+  return String(row.id);
 }
