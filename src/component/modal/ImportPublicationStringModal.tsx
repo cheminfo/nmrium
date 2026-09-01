@@ -55,6 +55,29 @@ const INITIAL_VALUES: z.input<typeof formSchema> = {
     '1H NMR (CDCl3, 400MHz) δ 1 (s, 1H), 2 (d, 1H, J=7), 3 (t, 1H, J=7), 4 (q, 1H, J=7), 5 (quint, 1H, J=7), 6 (hex, 1H, J=7), 7 (hept, 1H, J=7), 8 (dd, 1H, J=7, J=4)',
 };
 
+const logHelper = createTableColumnHelper<LogEntry>();
+const logColumns = [
+  logHelper.accessor('id', {
+    header: '#',
+    meta: {
+      thStyle: {
+        width: '40px',
+      },
+    },
+  }),
+  logHelper.accessor('levelLabel', {
+    header: 'Label',
+    meta: {
+      tdStyle: {
+        width: '60px',
+      },
+    },
+  }),
+  logHelper.accessor('message', {
+    header: 'Message',
+  }),
+];
+
 export function ImportPublicationStringModal(
   props: ImportPublicationStringModalProps,
 ) {
@@ -126,32 +149,6 @@ function InnerImportPublicationStringModal(
     [],
   );
 
-  const columns = useMemo(() => {
-    const helper = createTableColumnHelper();
-
-    return [
-      helper.accessor('id', {
-        header: '#',
-        meta: {
-          thStyle: {
-            width: '40px',
-          },
-        },
-      }),
-      helper.accessor('levelLabel', {
-        header: 'Label',
-        meta: {
-          tdStyle: {
-            width: '60px',
-          },
-        },
-      }),
-      helper.accessor('message', {
-        header: 'Message',
-      }),
-    ];
-  }, []);
-
   return (
     <Dialog
       title="Generate spectrum from publication string"
@@ -188,24 +185,16 @@ function InnerImportPublicationStringModal(
                 <TableWrapper>
                   <TableSettings
                     data={field.state.value}
-                    columns={columns}
-                    getRowId={(data) => {
-                      return getRowId(data as LogEntry);
-                    }}
+                    columns={logColumns}
+                    getRowId={getRowId}
                     emptyContent="No Logs"
                     tdStyle={{
                       padding: '0.15rem 0.4rem',
                     }}
-                    renderRowTr={(data) => {
-                      const level = field.state.value.find((value) => {
-                        return String(value.id) === data['data-row-id'];
-                      })?.level as number | undefined;
+                    renderRowTr={(trProps, row) => {
+                      const level = row.original.level;
 
-                      if (!level) {
-                        return null;
-                      }
-
-                      return <Tr level={level} {...data} />;
+                      return <Tr level={level} {...trProps} />;
                     }}
                   />
                 </TableWrapper>
