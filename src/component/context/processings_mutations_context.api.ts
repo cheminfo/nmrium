@@ -101,11 +101,14 @@ export function useProcessingsMutationsAPI() {
 
   // --- API --- //
 
-  const resetLiveChange = useEventCallback(function resetLiveChange() {
+  const resetLiveChange = useEventCallback(function resetLiveChange(
+    updateView: boolean,
+  ) {
     dispatch({
       type: 'SET_SPECTRUM_LIVE_PROCESSED',
       payload: {
         spectrumLiveProcessed: undefined,
+        updateView,
       },
     });
   });
@@ -257,6 +260,7 @@ export function useProcessingsMutationsAPI() {
       type: 'SET_SPECTRUM_LIVE_PROCESSED',
       payload: {
         spectrumLiveProcessed: processedSpectrum,
+        updateView: true,
       },
     });
   });
@@ -289,6 +293,7 @@ export function useProcessingsMutationsAPI() {
       type: 'SET_SPECTRUM_LIVE_PROCESSED',
       payload: {
         spectrumLiveProcessed: processedSpectrum,
+        updateView: false,
       },
     });
   });
@@ -319,7 +324,7 @@ export function useProcessingsMutationsAPI() {
     assertNotNullish(operator);
 
     openPanel('processingsPanel');
-    resetLiveChange();
+    resetLiveChange(false);
     await submit(spectrum, indexSpectrum, (draft) =>
       updateView(draft, operator.domainUpdateRules),
     );

@@ -22,7 +22,7 @@ export function useLiveEdit(
     dispatch({ type: 'SET_LIVE_EDIT_CHECKED', payload: newValue });
 
     if (!newValue) {
-      processingsMutations.resetLiveChange();
+      processingsMutations.resetLiveChange(true);
     } else {
       assertDefined(operation);
       void processingsMutations.prepareLiveChange(
