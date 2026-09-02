@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import type { FormEvent } from 'react';
+import type { SubmitEvent } from 'react';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 import Button from '../../component/elements/Button.js';
@@ -144,7 +144,7 @@ function ClipboardFallbackRead(props: ClipboardFallbackReadProps) {
     onFileRef.current = props.onRead;
   });
 
-  const onSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
+  const onSubmit = useCallback((event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const data = new FormData(event.currentTarget);
@@ -188,7 +188,7 @@ function ClipboardFallbackReadText(props: ClipboardFallbackReadTextProps) {
     onTextRef.current = props.onReadText;
   });
 
-  const onSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
+  const onSubmit = useCallback((event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const data = new FormData(event.currentTarget);
@@ -232,7 +232,7 @@ function ClipboardFallbackWrite(props: ClipboardFallbackWriteProps) {
     onDismissRef.current = props.onDismiss;
   });
 
-  const onSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
+  const onSubmit = useCallback((event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     onDismissRef.current();
@@ -275,7 +275,7 @@ function ClipboardFallbackWriteText(props: ClipboardFallbackWriteTextProps) {
     onDismissRef.current = props.onDismiss;
   });
 
-  const onSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
+  const onSubmit = useCallback((event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     onDismissRef.current();
   }, []);

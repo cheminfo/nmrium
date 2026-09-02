@@ -47,8 +47,8 @@ export function usePhaseCorrection(
   const [value, setValue] = useState({ ph0: 0, ph1: 0 });
   const valueRef = useRef({ ph0: 0, ph1: 0 });
 
-  const ph0Ref = useRef<any>();
-  const ph1Ref = useRef<any>();
+  const ph0Ref = useRef<any>(undefined);
+  const ph1Ref = useRef<any>(undefined);
   const { value: phaseCorrectionTypeItem, ...defaultSelectProps } =
     useSelect<AlgorithmItem>({
       defaultSelectedItem: defaultPhasingTypeItem,

@@ -39,7 +39,7 @@ interface AnchorPosition {
 interface AnchorProps {
   position: AnchorPosition;
   shape?: AnchorShape;
-  containerRef: RefObject<HTMLElement>;
+  containerRef: RefObject<HTMLElement | null>;
   anchorStyle?: AnchorStyle;
   restoreFocusOnLeave?: boolean;
   onDragMove: (newX: number) => void;

@@ -46,8 +46,8 @@ export function usePhaseCorrectionTwoDimensions(filter: Filter2DEntry | null) {
   const [value, setValue] = useState<PhaseOptions>(defaultPhaseOptions);
   const valueRef = useRef<PhaseOptions>(defaultPhaseOptions);
 
-  const ph0Ref = useRef<any>();
-  const ph1Ref = useRef<any>();
+  const ph0Ref = useRef<any>(undefined);
+  const ph1Ref = useRef<any>(undefined);
 
   const { data } = useSpectrum(emptyData) as Spectrum2D;
   const debounceCalculation = useRef(
