@@ -3,18 +3,17 @@ import dlv from 'dlv';
 import { checkIntegralKind } from 'nmr-processing';
 import { memo, useCallback, useMemo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
-import type { CellProps, Row } from 'react-table';
 
 import { SIGNAL_KINDS } from '../../../data/constants/signalsKinds.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { EditableColumn } from '../../elements/EditableColumn.js';
 import { EmptyText } from '../../elements/EmptyText.js';
-import ReactTable from '../../elements/ReactTable/ReactTable.js';
-import type { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn.js';
-import addCustomColumn, {
-  createActionColumn,
-} from '../../elements/ReactTable/utility/addCustomColumn.js';
 import Select from '../../elements/Select.js';
+import {
+  TanStackTable,
+  createActionColumn,
+  createTanStackColumnHelper,
+} from '../../elements/tanstack_table/index.ts';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import { formatNumber } from '../../utility/formatNumber.js';
 import { NoDataForFid } from '../extra/placeholder/NoDataForFid.js';
@@ -36,8 +35,8 @@ function IntegralTable(props: IntegralTableProps) {
   const dispatch = useDispatch();
 
   const deleteIntegralHandler = useCallback(
-    (row: Row<Integral>) => {
-      const { id } = row.original;
+    (integral: Integral) => {
+      const { id } = integral;
       dispatch({
         type: 'DELETE_INTEGRAL',
         payload: {
@@ -69,55 +68,55 @@ function IntegralTable(props: IntegralTableProps) {
   );
   const integralsPreferences = usePanelPreferences('integrals', activeTab);
 
-  const COLUMNS = useMemo<
-    Array<
-      CustomColumn<Integral> & {
-        showWhen: string;
-      }
-    >
-  >(
-    () => [
-      {
-        showWhen: 'showSerialNumber',
-        index: 1,
-        Header: '#',
-        accessor: (_, index) => index + 1,
-        style: { width: '30px', maxWidth: '30px' },
-      },
-      {
-        showWhen: 'from.show',
-        index: 2,
-        Header: 'From',
-        sortType: 'basic',
-        accessor: (row) =>
-          formatNumber(row.from, integralsPreferences.from.format),
-      },
-      {
-        showWhen: 'to.show',
-        index: 3,
-        Header: 'To',
-        sortType: 'basic',
-        accessor: (row) => formatNumber(row.to, integralsPreferences.to.format),
-      },
-      {
-        showWhen: 'absolute.show',
-        index: 4,
-        Header: 'Absolute',
-        accessor: (row) =>
-          formatNumber(row.absolute, integralsPreferences.absolute.format),
-      },
-      {
-        showWhen: 'relative.show',
-        index: 5,
+  const COLUMNS = useMemo(() => {
+    const columnHelper = createTanStackColumnHelper<Integral>();
+    const columns = columnHelper.columns([]);
+    // TODO: Use column visibility feature instead.
+    if (dlv(integralsPreferences, 'showSerialNumber')) {
+      columns.push({
+        id: 'rowNumber',
+        header: '#',
+        accessorFn: (_, index) => index + 1,
+        meta: { style: { width: '30px', maxWidth: '30px' } },
+      });
+    }
+    if (dlv(integralsPreferences, 'from.show')) {
+      columns.push({
+        header: 'From',
+        sortFn: 'basic',
+        accessorKey: 'from',
+        cell: ({ getValue }) =>
+          formatNumber(getValue(), integralsPreferences.from.format),
+      });
+    }
+    if (dlv(integralsPreferences, 'to.show')) {
+      columns.push({
+        header: 'To',
+        sortFn: 'basic',
+        accessorKey: 'to',
+        cell: ({ getValue }) =>
+          formatNumber(getValue(), integralsPreferences.to.format),
+      });
+    }
+    if (dlv(integralsPreferences, 'absolute.show')) {
+      columns.push({
+        header: 'Absolute',
+        accessorKey: 'absolute',
+        cell: ({ getValue }) =>
+          formatNumber(getValue(), integralsPreferences.absolute.format),
+      });
+    }
+    if (dlv(integralsPreferences, 'relative.show')) {
+      columns.push({
         id: 'relative',
-        Header: () => {
+        header: () => {
           const n = activeTab?.replaceAll(/\d/g, '');
           return <span>{`Relative ${n}`}</span>;
         },
-        accessor: 'integral',
-        Cell: ({ row }: CellProps<Integral>) => {
+        accessorKey: 'integral',
+        cell: ({ getValue, row }) => {
           const value = formatNumber(
-            row.original.integral || 0,
+            getValue() || 0,
             integralsPreferences.relative.format,
           );
           const flag = checkIntegralKind(row.original);
@@ -133,55 +132,42 @@ function IntegralTable(props: IntegralTableProps) {
             />
           );
         },
-      },
-      {
-        index: 6,
-        Header: 'Kind',
-        sortType: 'basic',
-        resizable: true,
-        accessor: 'kind',
-        showWhen: 'showKind',
-        Cell: ({ row }: CellProps<Integral>) => (
+      });
+    }
+    if (dlv(integralsPreferences, 'showKind')) {
+      columns.push({
+        header: 'Kind',
+        sortFn: 'basic',
+        accessorKey: 'kind',
+        cell: ({ getValue, row }) => (
           <Select
             onChange={(value) =>
               changeIntegralDataHandler(value as SignalKind, row.original)
             }
             items={SIGNAL_KINDS}
             style={selectStyle}
-            defaultValue={row.original.kind}
+            defaultValue={getValue()}
           />
         ),
-      },
-      {
-        showWhen: 'showDeleteAction',
-        ...createActionColumn<Integral>({
-          index: 20,
+      });
+    }
+    if (dlv(integralsPreferences, 'showDeleteAction')) {
+      columns.push(
+        createActionColumn<Integral>({
+          id: 'delete-action',
           icon: <FaRegTrashAlt />,
           onClick: deleteIntegralHandler,
         }),
-      },
-    ],
-    [
-      activeTab,
-      changeIntegralDataHandler,
-      integralsPreferences,
-      saveRelativeHandler,
-      deleteIntegralHandler,
-    ],
-  );
-
-  const tableColumns = useMemo(() => {
-    const columns: Array<CustomColumn<Integral>> = [];
-    for (const col of COLUMNS) {
-      const { showWhen, ...colParams } = col;
-      if (dlv(integralsPreferences, showWhen)) {
-        addCustomColumn(columns, colParams);
-      }
+      );
     }
-
-    columns.sort((object1, object2) => object1.index - object2.index);
     return columns;
-  }, [COLUMNS, integralsPreferences]);
+  }, [
+    activeTab,
+    changeIntegralDataHandler,
+    integralsPreferences,
+    saveRelativeHandler,
+    deleteIntegralHandler,
+  ]);
 
   if (info.isFid) {
     return <NoDataForFid />;
@@ -191,7 +177,7 @@ function IntegralTable(props: IntegralTableProps) {
     return <EmptyText text="No data" />;
   }
 
-  return <ReactTable data={data} columns={tableColumns} />;
+  return <TanStackTable data={data} columns={COLUMNS} />;
 }
 
 export default memo(IntegralTable);

@@ -1,19 +1,23 @@
 import type { Info1D, Peak1D } from '@zakodium/nmr-types';
 import dlv from 'dlv';
+import type { Dispatch, SetStateAction } from 'react';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { FaEdit, FaRegTrashAlt } from 'react-icons/fa';
-import type { CellProps, Row } from 'react-table';
 
 import { getPeakAbsoluteArea } from '../../../data/utilities/getPeakAbsoluteArea.ts';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { EditableColumn } from '../../elements/EditableColumn.js';
 import { EmptyText } from '../../elements/EmptyText.js';
-import ReactTable from '../../elements/ReactTable/ReactTable.js';
-import type { ControlCustomColumn } from '../../elements/ReactTable/utility/addCustomColumn.js';
-import addCustomColumn, {
-  createActionColumn,
-} from '../../elements/ReactTable/utility/addCustomColumn.js';
 import { TableHeaderLabel } from '../../elements/TableHeaderLabel.tsx';
+import type {
+  TanStackTableColumn,
+  TanStackTableRow,
+} from '../../elements/tanstack_table/index.ts';
+import {
+  TanStackTable,
+  createActionColumn,
+  createTanStackColumnHelper,
+} from '../../elements/tanstack_table/index.ts';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import { formatNumber } from '../../utility/formatNumber.js';
 import { NoDataForFid } from '../extra/placeholder/NoDataForFid.js';
@@ -27,14 +31,21 @@ function getFormattedNumber(
   return typeof value === 'number' ? formatNumber(value, format) : '';
 }
 
-export function usePeaksTableColumns(activeTab: string) {
+interface UsePeaksTableColumnsReturn {
+  tableColumns: Array<TanStackTableColumn<PeakRecord>>;
+  peak: Peak1D | undefined;
+  setEditedPeak: Dispatch<SetStateAction<Peak1D | undefined>>;
+}
+
+export function usePeaksTableColumns(
+  activeTab: string,
+): UsePeaksTableColumnsReturn {
   const dispatch = useDispatch();
   const { tablePreferences } = usePanelPreferences('peaks', activeTab);
   const [peak, setEditedPeak] = useState<Peak1D | undefined>();
 
   const deletePeakHandler = useCallback(
-    (row: Row<PeakRecord>) => {
-      const params = row.original;
+    (params: PeakRecord) => {
       dispatch({
         type: 'DELETE_PEAK',
         payload: { id: params.id },
@@ -43,8 +54,8 @@ export function usePeaksTableColumns(activeTab: string) {
     [dispatch],
   );
 
-  const editPeakHandler = useCallback((row: Row<PeakRecord>) => {
-    setEditedPeak(row.original);
+  const editPeakHandler = useCallback((row: PeakRecord) => {
+    setEditedPeak(row);
   }, []);
 
   const saveDeltaPPMRefsHandler = useCallback(
@@ -65,19 +76,21 @@ export function usePeaksTableColumns(activeTab: string) {
     [dispatch],
   );
 
-  const COLUMNS = useMemo<Array<ControlCustomColumn<PeakRecord>>>(
-    () => [
-      {
-        showWhen: 'showSerialNumber',
-        index: 1,
-        Header: '#',
-        accessor: (_, index) => index + 1,
-        style: { width: '1%', maxWidth: '40px', minWidth: '40px' },
-      },
-      {
-        showWhen: 'deltaPPM.show',
-        index: 3,
-        Header: () => {
+  const COLUMNS = useMemo(() => {
+    const columnHelper = createTanStackColumnHelper<PeakRecord>();
+    const columns = columnHelper.columns([]);
+    // TODO: Use column visibility feature instead.
+    if (dlv(tablePreferences, 'showSerialNumber')) {
+      columns.push({
+        id: 'rowNumber',
+        header: '#',
+        accessorFn: (_, index) => index + 1,
+        meta: { style: { width: '1%', maxWidth: '40px', minWidth: '40px' } },
+      });
+    }
+    if (dlv(tablePreferences, 'deltaPPM.show')) {
+      columns.push({
+        header: () => {
           return (
             <TableHeaderLabel
               text="δ (ppm)"
@@ -87,8 +100,8 @@ export function usePeaksTableColumns(activeTab: string) {
             />
           );
         },
-        accessor: 'x',
-        Cell: ({ row }: CellProps<PeakRecord>) => (
+        accessorKey: 'x',
+        cell: ({ row }) => (
           <EditableColumn
             value={formatNumber(
               row.original.x,
@@ -99,91 +112,91 @@ export function usePeaksTableColumns(activeTab: string) {
             validate={(val) => val !== ''}
           />
         ),
-      },
-      {
-        showWhen: 'deltaHz.show',
-        index: 4,
-        Header: 'δ (Hz)',
-        accessor: 'xHz',
-        Cell: ({ row }: CellProps<PeakRecord>) =>
+      });
+    }
+    if (dlv(tablePreferences, 'deltaHz.show')) {
+      columns.push({
+        header: 'δ (Hz)',
+        accessorKey: 'xHz',
+        cell: ({ row }) =>
           formatNumber(row.original.xHz, tablePreferences.deltaHz.format),
-      },
-      {
-        showWhen: 'intensity.show',
-        index: 5,
-        Header: 'Intensity',
-        style: { maxWidth: '80px' },
-        accessor: 'y',
-        Cell: ({ row }: CellProps<PeakRecord>) =>
+      });
+    }
+    if (dlv(tablePreferences, 'intensity.show')) {
+      columns.push({
+        header: 'Intensity',
+        meta: { style: { maxWidth: '80px' } },
+        accessorKey: 'y',
+        cell: ({ row }) =>
           formatNumber(row.original.y, tablePreferences.intensity.format),
-      },
-      {
-        showWhen: 'peakWidth.show',
-        index: 6,
-        Header: 'Width (Hz)',
-        accessor: 'width',
-        Cell: ({ row }: CellProps<PeakRecord>) =>
+      });
+    }
+    if (dlv(tablePreferences, 'peakWidth.show')) {
+      columns.push({
+        header: 'Width (Hz)',
+        accessorKey: 'width',
+        cell: ({ row }) =>
           formatNumber(row.original.width, tablePreferences.peakWidth.format),
-      },
-      {
-        showWhen: 'showKind',
-        index: 7,
-        Header: 'Kind',
-        accessor: (row) => row.shape?.kind || '',
-      },
-      {
-        showWhen: 'fwhm.show',
-        index: 8,
-        Header: 'fwhm',
-        accessor: (row) => row?.shape?.fwhm ?? '',
-        Cell: ({ row }: CellProps<PeakRecord>) =>
+      });
+    }
+    if (dlv(tablePreferences, 'showKind')) {
+      columns.push({
+        header: 'Kind',
+        accessorFn: (row) => row.shape?.kind || '',
+      });
+    }
+    if (dlv(tablePreferences, 'fwhm.show')) {
+      columns.push({
+        header: 'fwhm',
+        accessorFn: (row) => row?.shape?.fwhm ?? '',
+        cell: ({ row }) =>
           getFormattedNumber(
             row.original?.shape?.fwhm,
             tablePreferences.fwhm.format,
           ),
-      },
-      {
-        showWhen: 'mu.show',
-        index: 9,
-        Header: 'mu',
-        accessor: (row) =>
+      });
+    }
+    if (dlv(tablePreferences, 'mu.show')) {
+      columns.push({
+        header: 'mu',
+        accessorFn: (row) =>
           row?.shape?.kind === 'pseudoVoigt' ? (row.shape.mu ?? '') : '',
-        Cell: ({ row }: CellProps<PeakRecord>) => {
+        cell: ({ row }) => {
           const shape = row.original?.shape;
           const mu = shape?.kind === 'pseudoVoigt' ? shape.mu : undefined;
           return getFormattedNumber(mu, tablePreferences.mu.format);
         },
-      },
-      {
-        showWhen: 'gamma.show',
-        index: 10,
-        Header: 'gamma',
-        accessor: (row) =>
+      });
+    }
+    if (dlv(tablePreferences, 'gamma.show')) {
+      columns.push({
+        header: 'gamma',
+        accessorFn: (row) =>
           row?.shape?.kind === 'generalizedLorentzian'
             ? (row.shape.gamma ?? '')
             : '',
-        Cell: ({ row }: CellProps<PeakRecord>) => {
+        cell: ({ row }) => {
           const shape = row.original?.shape;
           const gamma =
             shape?.kind === 'generalizedLorentzian' ? shape.gamma : undefined;
           return getFormattedNumber(gamma, tablePreferences.gamma.format);
         },
-      },
-      {
-        showWhen: 'absoluteArea.show',
-        index: 11,
-        Header: 'Absolute area',
-        accessor: (row) => getPeakAbsoluteArea(row) ?? '',
-        Cell: ({ row }: CellProps<PeakRecord>) =>
+      });
+    }
+    if (dlv(tablePreferences, 'absoluteArea.show')) {
+      columns.push({
+        header: 'Absolute area',
+        accessorFn: (row) => getPeakAbsoluteArea(row) ?? '',
+        cell: ({ row }) =>
           getFormattedNumber(
             getPeakAbsoluteArea(row.original),
             tablePreferences.absoluteArea.format,
           ),
-      },
-      {
-        showWhen: 'relativeArea.show',
-        index: 12,
-        Header: () => {
+      });
+    }
+    if (dlv(tablePreferences, 'relativeArea.show')) {
+      columns.push({
+        header: () => {
           return (
             <TableHeaderLabel
               text="Relative area"
@@ -193,8 +206,8 @@ export function usePeaksTableColumns(activeTab: string) {
             />
           );
         },
-        accessor: 'relativeArea',
-        Cell: ({ row }: CellProps<PeakRecord>) => {
+        accessorKey: 'relativeArea',
+        cell: ({ row }) => {
           const value = formatNumber(
             row.original.relativeArea || 0,
             tablePreferences.relativeArea.format,
@@ -212,59 +225,48 @@ export function usePeaksTableColumns(activeTab: string) {
             />
           );
         },
-      },
-      {
-        showWhen: 'showEditPeakShapeAction',
-        ...createActionColumn<PeakRecord>({
-          index: 20,
+      });
+    }
+    if (dlv(tablePreferences, 'showEditPeakShapeAction')) {
+      columns.push(
+        createActionColumn<PeakRecord>({
+          id: 'edit-peak',
           icon: <FaEdit />,
           onClick: editPeakHandler,
           style: {
             borderRight: '0px',
           },
         }),
-      },
-      {
-        showWhen: 'showDeleteAction',
-        ...createActionColumn<PeakRecord>({
-          index: 21,
+      );
+    }
+    if (dlv(tablePreferences, 'showDeleteAction')) {
+      columns.push(
+        createActionColumn<PeakRecord>({
+          id: 'delete-peak',
           icon: <FaRegTrashAlt />,
           onClick: deletePeakHandler,
         }),
-      },
-    ],
-    [
-      editPeakHandler,
-      deletePeakHandler,
-      tablePreferences,
-      saveDeltaPPMRefsHandler,
-      saveRelativeAreaHandler,
-    ],
-  );
-
-  const tableColumns = useMemo(() => {
-    const columns: Array<ControlCustomColumn<PeakRecord>> = [];
-    for (const col of COLUMNS) {
-      const { showWhen, ...colParams } = col;
-      if (dlv(tablePreferences, showWhen)) {
-        addCustomColumn(columns, colParams);
-      }
+      );
     }
-
-    columns.sort((object1, object2) => object1.index - object2.index);
     return columns;
-  }, [COLUMNS, tablePreferences]);
+  }, [
+    editPeakHandler,
+    deletePeakHandler,
+    tablePreferences,
+    saveDeltaPPMRefsHandler,
+    saveRelativeAreaHandler,
+  ]);
 
-  return { tableColumns, peak, setEditedPeak };
+  return { tableColumns: COLUMNS, peak, setEditedPeak };
 }
 
 interface PeaksTableProps {
-  tableColumns: Array<ControlCustomColumn<PeakRecord>>;
+  tableColumns: Array<TanStackTableColumn<PeakRecord>>;
   data: PeakRecord[];
   info: Info1D;
 }
 
-function handleActiveRow(row: Row<PeakRecord>) {
+function handleActiveRow(row: TanStackTableRow<PeakRecord>) {
   return row.original.isConstantlyHighlighted;
 }
 
@@ -280,7 +282,7 @@ function PeaksTable(props: PeaksTableProps) {
   }
 
   return (
-    <ReactTable
+    <TanStackTable
       activeRow={handleActiveRow}
       rowStyle={{ activated: { backgroundColor: '#f5f5dc' } }}
       data={data}
