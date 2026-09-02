@@ -19,7 +19,7 @@ import {
 import type { NMRiumProps } from './NMRium.js';
 
 interface NMRiumViewerProps {
-  viewerRef: RefObject<HTMLDivElement>;
+  viewerRef: RefObject<HTMLDivElement | null>;
   style?: CSSProperties;
   onRender?: () => void;
   emptyText: NMRiumProps['emptyText'];

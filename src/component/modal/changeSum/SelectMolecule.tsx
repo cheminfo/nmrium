@@ -73,12 +73,12 @@ export default function SelectMolecule<
 
   useEffect(() => {
     if (molecules && molecules.length > 0) {
-      const index = value
+      const index = value?.id
         ? molecules.findIndex((molecule) => molecule.id === value.id)
         : -1;
       setValue(index !== -1 ? index : 0);
     }
-  }, [molecules, setValue, value]);
+  }, [molecules, setValue, value?.id]);
 
   const onChangeMoleculeSelectionHandler = useCallback(
     (index: number) => {

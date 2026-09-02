@@ -49,7 +49,7 @@ function mapSpectra(data: Spectrum[]): SpectraData[] {
 export function useAutoAssignments() {
   const dispatch = useDispatch();
   const { data, molecules } = useChartData();
-  const originData = useRef<SpectraData[]>();
+  const originData = useRef<SpectraData[]>(undefined);
   const toaster = useToaster();
   const [assignments, setAssignments] = useState<AutoAssignmentsData[]>([]);
 

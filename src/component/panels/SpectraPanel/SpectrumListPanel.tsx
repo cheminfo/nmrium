@@ -16,7 +16,7 @@ const styles: CSSProperties = {
 };
 
 function SpectrumListPanel() {
-  const settingsRef = useRef<any>();
+  const settingsRef = useRef<any>(undefined);
   const [isFlipped, setFlipStatus] = useState(false);
 
   function settingsPanelHandler() {

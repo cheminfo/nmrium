@@ -17,7 +17,7 @@ export interface NMRiumRefAPI {
 
 export function useNMRiumRefAPI(
   ref: ForwardedRef<NMRiumRefAPI>,
-  rootRef: RefObject<HTMLDivElement>,
+  rootRef: RefObject<HTMLDivElement | null>,
 ) {
   const loadFiles = useLoadFiles();
   const createNmriumZip = useCreateNmriumZip();

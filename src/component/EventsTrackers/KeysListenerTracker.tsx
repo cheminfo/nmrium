@@ -20,7 +20,7 @@ import SaveAsModal from '../modal/SaveAsModal.js';
 import { options } from '../toolbar/ToolTypes.js';
 
 interface KeysListenerTrackerProps {
-  mainDivRef: RefObject<HTMLDivElement>;
+  mainDivRef: RefObject<HTMLDivElement | null>;
 }
 
 function KeysListenerTracker(props: KeysListenerTrackerProps) {
