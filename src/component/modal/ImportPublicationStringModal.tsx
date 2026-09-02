@@ -59,6 +59,7 @@ const logHelper = createTableColumnHelper<LogEntry>();
 const logColumns = [
   logHelper.accessor('id', {
     header: '#',
+    cell: ({ row }) => row.index,
     meta: {
       thStyle: {
         width: '40px',
@@ -166,6 +167,12 @@ function InnerImportPublicationStringModal(
             name="publicationText"
             listeners={{
               onChange: ({ value }) => {
+                loggerRef.current.clear();
+
+                if (!value) {
+                  return;
+                }
+
                 debounceChanges(value);
               },
             }}
