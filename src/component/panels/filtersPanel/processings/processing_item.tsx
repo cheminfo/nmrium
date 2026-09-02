@@ -50,7 +50,7 @@ export function ProcessingItem(props: ProcessingItemProps) {
   const isEditable = operatorUI?.isEditable;
   const isLiveEditable = operatorUI?.isLiveEditable;
 
-  const liveEdit = useLiveEdit(operation);
+  const liveEdit = useLiveEdit(operation?.uid);
   const [liveOperation, setLiveOperation] = useLiveOperation();
 
   function onReorder(sourceIndex: number, targetIndex: number) {
