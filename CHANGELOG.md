@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.1](https://github.com/cheminfo/nmrium/compare/v2.8.0...v2.8.1) (2026-09-02)
+
+
+### Bug Fixes
+
+* clear fifo-logger and render index on # ([#4359](https://github.com/cheminfo/nmrium/issues/4359)) ([bc25e76](https://github.com/cheminfo/nmrium/commit/bc25e767fc1e184869b77ad966be5f8241bfc4ca))
+
 ## [2.8.0](https://github.com/cheminfo/nmrium/compare/v2.7.0...v2.8.0) (2026-09-02)
 
 
