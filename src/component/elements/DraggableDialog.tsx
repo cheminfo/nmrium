@@ -57,7 +57,7 @@ interface DraggableDialogProps
 }
 
 interface InnerDraggableDialogProps extends DraggableDialogProps {
-  innerDialogRef: RefObject<HTMLDivElement>;
+  innerDialogRef: RefObject<HTMLDivElement | null>;
 }
 export function DraggableDialog(props: DraggableDialogProps) {
   const {
@@ -84,7 +84,7 @@ export function DraggableDialog(props: DraggableDialogProps) {
       />
       <Overlay2
         {...otherProps}
-        childRef={dialogRef}
+        childRef={dialogRef as RefObject<HTMLDivElement>}
         onClose={onClose}
         className="draggable-portal"
         hasBackdrop={hasBackdrop}

@@ -137,7 +137,7 @@ function TanStackTableInner<TData extends TanStackRowData>(
   const isSortedEventTriggered = useRef<boolean>(false);
   const virtualBoundary = useTanStackTableContext();
   const [rowIndex, setRowIndex] = useState<number>();
-  const timeoutIdRef = useRef<NodeJS.Timeout>();
+  const timeoutIdRef = useRef<NodeJS.Timeout>(undefined);
   const [isCounterVisible, setCounterVisibility] = useState(false);
 
   const memoColumns = useMemo(() => {

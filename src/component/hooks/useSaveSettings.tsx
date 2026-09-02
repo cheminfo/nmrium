@@ -21,7 +21,7 @@ const schema = z.object({
 export function useSaveSettings() {
   const toaster = useToaster();
   const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
-  const settingsRef = useRef<Workspace>();
+  const settingsRef = useRef<Workspace>(undefined);
   const { current } = usePreferences();
 
   const { saveWorkspace, addNewWorkspace } = useWorkspaceAction();

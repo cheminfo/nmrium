@@ -33,7 +33,7 @@ interface ExportManagerState {
 }
 
 const ExportManagerContext =
-  createContext<RefObject<ExportManagerState> | null>(null);
+  createContext<RefObject<ExportManagerState | null> | null>(null);
 
 export function useExportManagerAPI() {
   const context = useContext(ExportManagerContext);
