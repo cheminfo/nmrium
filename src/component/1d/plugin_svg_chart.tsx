@@ -1,5 +1,3 @@
-import type { Spectrum } from '@zakodium/nmr-types';
-import { assertSpectrum1D } from '@zakodium/nmrium-core';
 import { assertDefined } from '@zakodium/utils';
 import { useMemo } from 'react';
 
