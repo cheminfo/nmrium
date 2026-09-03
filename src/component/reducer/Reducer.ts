@@ -14,7 +14,6 @@ import type { Reducer } from 'react';
 
 import type { StateMoleculeExtended } from '../../data/molecules/Molecule.js';
 import type { UsedColors } from '../../types/UsedColors.js';
-import type { Insets } from '../1d/inset/SpectraInsets.js';
 import type { Action } from '../context/DispatchContext.js';
 import { DefaultTolerance } from '../panels/SummaryPanel/CorrelationTable/Constants.js';
 import type { Tool } from '../toolbar/ToolTypes.js';
@@ -120,6 +119,8 @@ export function getDefaultViewState(): ViewState {
     currentSimulatedSpectrumKey: null,
     units1D: {},
     units2D: {},
+    insets: {},
+
   };
 }
 export const getInitialState = (): State => ({
@@ -195,7 +196,6 @@ export const getInitialState = (): State => ({
     },
   },
   usedColors: { '1d': [], '2d': [] },
-  insets: {},
 });
 
 export const initialState = getInitialState();
@@ -421,7 +421,6 @@ export interface State {
   usedColors: UsedColors;
 
   errorAction?: any; // should be an Error
-  insets: Insets;
 }
 
 export function initState(state: State): State {
