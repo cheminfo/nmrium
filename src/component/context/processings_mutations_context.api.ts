@@ -336,7 +336,8 @@ export function useProcessingsMutationsAPI() {
     const ui = core.slotOperator(operationUid);
     const previousLiveEdit = state.processingOperators.liveEdit ?? {
       checked: ui?.isLiveEditable ?? false,
-      shouldProcessNext: ui?.defaultShouldProcessAll ?? false,
+      shouldProcessNext:
+        ui?.defaultShouldProcessAll ?? liveEdit.shouldProcessNext,
     };
     const shouldUpdateView =
       previousLiveEdit.shouldProcessNext !== liveEdit.shouldProcessNext;

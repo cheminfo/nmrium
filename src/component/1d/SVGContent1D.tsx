@@ -19,7 +19,7 @@ import MultiAnalysisRanges from './multiAnalysis/MultiAnalysisRanges.js';
 import MultiplicityTrees from './multiplicityTree/MultiplicityTrees.js';
 import Peaks from './peaks/Peaks.js';
 import PeaksShapes from './peaks/PeaksShapes.js';
-import { PluginSVGChart } from './plugin_svg_chart.tsx';
+import { PluginSVGChart1D } from './plugin_svg_chart.tsx';
 import Ranges from './ranges/Ranges.js';
 import RangesIntegrals from './ranges/RangesIntegrals.js';
 import { Signals } from './ranges/Signals.tsx';
@@ -52,7 +52,7 @@ export function SVGContent1D() {
 
         <SimilarityTree />
 
-        {isExperimental && <PluginSVGChart />}
+        {isExperimental && <PluginSVGChart1D />}
       </ClipPathContainer>
       <Signals />
       <JGraph />
