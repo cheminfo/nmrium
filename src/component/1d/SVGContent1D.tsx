@@ -18,7 +18,7 @@ import { Stocsy } from './matrix/Stocsy.js';
 import MultiAnalysisRanges from './multiAnalysis/MultiAnalysisRanges.js';
 import MultiplicityTrees from './multiplicityTree/MultiplicityTrees.js';
 import Peaks from './peaks/Peaks.js';
-import PeaksShapes from './peaks/PeaksShapes.js';
+import { PeaksShapes } from './peaks/PeaksShapes.js';
 import { PluginSVGChart } from './plugin_svg_chart.tsx';
 import Ranges from './ranges/Ranges.js';
 import RangesIntegrals from './ranges/RangesIntegrals.js';
