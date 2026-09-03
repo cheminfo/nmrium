@@ -19,15 +19,9 @@ export function useLiveEdit(operationUid: string | undefined) {
 
     dispatch({ type: 'SET_LIVE_EDIT_CHECKED', payload: newValue });
 
-    if (!newValue) {
-      processingsMutations.resetLiveChange(true);
-    } else {
-      assertDefined(operationUid);
-      void processingsMutations.prepareLiveChange(
-        operationUid,
-        value.shouldProcessNext,
-      );
-    }
+    const liveEdit = { ...value, checked: newValue };
+    assertDefined(operationUid);
+    void processingsMutations.handleLiveChange(liveEdit, operationUid);
   }
 
   function setShouldProcessNext(newValue: boolean) {
@@ -36,10 +30,9 @@ export function useLiveEdit(operationUid: string | undefined) {
 
     dispatch({ type: 'SET_LIVE_EDIT_SHOULD_PROCESS_NEXT', payload: newValue });
 
-    void processingsMutations.applyLiveChange(
-      { ...liveOperation, options: undefined },
-      newValue,
-    );
+    const liveEdit = { ...value, shouldProcessNext: newValue };
+    assertDefined(operationUid);
+    void processingsMutations.handleLiveChange(liveEdit, operationUid);
   }
 
   return { value, setLiveEditCheck, setShouldProcessNext };
