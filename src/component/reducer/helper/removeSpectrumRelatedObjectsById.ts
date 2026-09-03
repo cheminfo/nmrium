@@ -21,7 +21,7 @@ export function removeSpectrumRelatedObjectsById(
       ['yDomains', null],
       ['originDomain.xDomains', null],
       ['originDomain.yDomains', null],
-      [`insets.${nucleus}`, 'spectrumKey'],
+      [`view.insets.${nucleus}`, 'spectrumKey'],
     ],
     spectrumKey,
   );

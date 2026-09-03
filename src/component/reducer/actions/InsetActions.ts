@@ -1,4 +1,7 @@
 import type {
+  Inset,
+  InsetBounding,
+  InsetView,
   IntegralsViewState,
   PeaksViewState,
   RangesViewState,
@@ -9,11 +12,6 @@ import { zoomIdentity } from 'd3-zoom';
 import type { Draft } from 'immer';
 
 import { insetMargin } from '../../1d/inset/InsetProvider.js';
-import type {
-  Inset,
-  InsetBounding,
-  InsetView,
-} from '../../1d/inset/SpectraInsets.js';
 import { getInsetXScale } from '../../1d/utilities/scale.js';
 import type { ZoomOptions } from '../../EventsTrackers/brush_tracker.types.ts';
 import { defaultIntegralsViewState } from '../../hooks/useActiveSpectrumIntegralsViewState.js';
@@ -113,10 +111,10 @@ function handleAddInset(draft: Draft<State>, action: AddInsetAction) {
     yDomain,
     view: {
       spectra: { activeTab: nucleus },
+      insets,
     },
     width: baseWidth,
     height: baseHeight,
-    insets,
   } = draft;
   const { id: spectrumKey } = spectrum;
 
@@ -157,8 +155,8 @@ function handleDeleteInset(draft: Draft<State>, action: DeleteInsetAction) {
   const {
     view: {
       spectra: { activeTab },
+      insets,
     },
-    insets,
   } = draft;
 
   if (!activeTab) return;
@@ -172,11 +170,11 @@ function getInset(draft: Draft<State>, insetKey: string) {
   const {
     view: {
       spectra: { activeTab },
+      insets
     },
   } = draft;
 
-  const insets = draft.insets[activeTab];
-  return insets.find((inset) => inset.id === insetKey);
+  return insets[activeTab].find((inset) => inset.id === insetKey);
 }
 
 function handleChangeInsetBounding(
