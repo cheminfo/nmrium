@@ -1,3 +1,4 @@
+import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { isSpectrum1D } from '@zakodium/nmrium-core';
 
 import { useScale } from '../../context/ScaleContext.js';
@@ -7,7 +8,9 @@ import useSpectrum from '../../hooks/useSpectrum.js';
 
 import { usePeakShapesPath } from './usePeakShapesPath.js';
 
-function PeaksShapes() {
+type PeaksShapesMode = 'peakShape' | 'peaksSum';
+
+export function PeaksShapes() {
   const { shiftY } = useScale();
   const { showPeaksShapes, showPeaksSum } = useActiveSpectrumPeaksViewState();
   const activeSpectrum = useActiveSpectrum();
@@ -27,19 +30,33 @@ function PeaksShapes() {
 
   return (
     <g className="peaks-shapes">
-      {showPeaksShapes && <PeaksShapesItems vAlign={shift} />}
-      {showPeaksSum && <PeaksShapesSum vAlign={shift} />}
+      {showPeaksShapes && <PeaksShapesItems vAlign={shift} mode="peakShape" />}
+      {showPeaksSum && <PeaksShapesItems vAlign={shift} mode="peaksSum" />}
     </g>
   );
 }
 
-function PeaksShapesItems(props: { vAlign: number }) {
+function PeaksShapesItems(props: { vAlign: number; mode: PeaksShapesMode }) {
   const spectrum = useSpectrum();
-  const getPath = usePeakShapesPath(spectrum);
 
   if (!isSpectrum1D(spectrum)) {
     return null;
   }
+
+  return <PeaksShapesItemsContent spectrum={spectrum} {...props} />;
+}
+
+function PeaksShapesItemsContent(props: {
+  spectrum: Spectrum1D;
+  vAlign: number;
+  mode: PeaksShapesMode;
+}) {
+  const { spectrum, vAlign, mode } = props;
+  const {
+    id,
+    info: { originFrequency },
+  } = spectrum;
+  const getPath = usePeakShapesPath(id, originFrequency);
 
   const {
     peaks: { values: peaksList },
@@ -49,38 +66,25 @@ function PeaksShapesItems(props: { vAlign: number }) {
     return null;
   }
 
-  return (
-    <g>
-      {peaksList.map((peak) => {
-        const { fill, path } = getPath({ target: 'peakShape', peak });
-        return (
-          <path
-            key={peak.id}
-            fill={fill}
-            fillOpacity={0.3}
-            d={path}
-            transform={`translate(0,-${props.vAlign})`}
-          />
-        );
-      })}
-    </g>
-  );
-}
+  const transform = `translate(0,-${vAlign})`;
 
-function PeaksShapesSum(props: { vAlign: number }) {
-  const spectrum = useSpectrum();
-  const getPath = usePeakShapesPath(spectrum);
-
-  if (!isSpectrum1D(spectrum)) {
-    return null;
-  }
-
-  const {
-    peaks: { values: peaksList },
-  } = spectrum;
-
-  if (peaksList.length === 0) {
-    return null;
+  if (mode === 'peakShape') {
+    return (
+      <g>
+        {peaksList.map((peak) => {
+          const { fill, path } = getPath({ target: 'peakShape', peak });
+          return (
+            <path
+              key={peak.id}
+              fill={fill}
+              fillOpacity={0.3}
+              d={path}
+              transform={transform}
+            />
+          );
+        })}
+      </g>
+    );
   }
 
   const { fill, path } = getPath({
@@ -88,14 +92,5 @@ function PeaksShapesSum(props: { vAlign: number }) {
     peaks: peaksList,
   });
 
-  return (
-    <path
-      stroke={'darkblue'}
-      fill={fill}
-      d={path}
-      transform={`translate(0,-${props.vAlign})`}
-    />
-  );
+  return <path stroke="darkblue" fill={fill} d={path} transform={transform} />;
 }
-
-export default PeaksShapes;
