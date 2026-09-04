@@ -40,6 +40,7 @@ interface PrepareLiveChangeOptions {
   shouldUpdateView: boolean;
   liveOperation?: SpectrumProcessingOperation<unknown, unknown>;
   preProcessOnly?: boolean;
+  enforceSpectrum?: Spectrum;
 }
 
 export function useProcessingsMutationsAPI() {
@@ -99,6 +100,8 @@ export function useProcessingsMutationsAPI() {
         onProduce: (draft) => onProduce(draft, processedSpectrum),
       },
     });
+
+    return spectrum;
   }
 
   function resetSelectedTool() {
@@ -222,9 +225,12 @@ export function useProcessingsMutationsAPI() {
       shouldUpdateView,
       liveOperation,
       preProcessOnly = false,
+      enforceSpectrum,
     } = options;
 
-    const { spectrum } = getSpectrum();
+    const { spectrum } = enforceSpectrum
+      ? { spectrum: sliceSpectrum(enforceSpectrum) }
+      : getSpectrum();
     if (!spectrum?.processings) return;
 
     const preProcessings: typeof spectrum.processings = [];
@@ -406,7 +412,7 @@ export function useProcessingsMutationsAPI() {
 
     openPanel('processingsPanel');
     resetLiveChange(false);
-    await submit(spectrum, indexSpectrum, (draft) =>
+    const processedSpectrum = await submit(spectrum, indexSpectrum, (draft) =>
       updateView(draft, operator.domainUpdateRules),
     );
 
@@ -428,6 +434,7 @@ export function useProcessingsMutationsAPI() {
         liveOperation: operation,
         shouldProcessAll: operatorUI.defaultShouldProcessAll ?? false,
         shouldUpdateView: true,
+        enforceSpectrum: processedSpectrum,
       });
     }
   });
