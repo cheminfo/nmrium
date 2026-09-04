@@ -18,7 +18,8 @@ export interface ScaleLinearNumberOptions {
   spectrumId?: number | null | string;
   customDomain?: number[];
 }
-type ScaleLinearNumberFunction = (
+
+export type ScaleLinearNumberFunction = (
   options?: ScaleLinearNumberOptions,
 ) => ScaleLinear<number, number>;
 

@@ -274,7 +274,7 @@ function PluginTopBarTool() {
   const core = useCore();
   const stableSpectrum = useStableSpectrum();
   const [liveOperation, setLiveOperation] = useLiveOperation();
-  const liveEdit = useLiveEdit(liveOperation);
+  const liveEdit = useLiveEdit(liveOperation?.uid);
   const processingsMutations = useProcessingsMutations();
   const dispatch = useDispatch();
 

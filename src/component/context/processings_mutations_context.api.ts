@@ -16,10 +16,11 @@ import {
 import type { Draft } from 'immer';
 import { useMemo } from 'react';
 import { useAccordionControls } from 'react-science/ui';
+import { match } from 'ts-pattern';
 import { useEventCallback } from 'usehooks-ts';
 
 import { initializeContoursLevels } from '../../data/data2d/Spectrum2D/contours.ts';
-import type { State } from '../reducer/Reducer.ts';
+import type { LiveEdit, State } from '../reducer/Reducer.ts';
 import { setDomain, setMode } from '../reducer/actions/DomainActions.ts';
 import { updateView } from '../reducer/actions/FiltersActions.ts';
 import { restoreLastZoomDomain } from '../reducer/helper/ZoomHistoryManager.ts';
@@ -32,6 +33,15 @@ import { useDispatch } from './DispatchContext.tsx';
 export type ProcessingsMutations = ReturnType<
   typeof useProcessingsMutationsAPI
 >;
+
+interface PrepareLiveChangeOptions {
+  operationUid: string;
+  shouldProcessAll: boolean;
+  shouldUpdateView: boolean;
+  liveOperation?: SpectrumProcessingOperation<unknown, unknown>;
+  preProcessOnly?: boolean;
+  enforceSpectrum?: Spectrum;
+}
 
 export function useProcessingsMutationsAPI() {
   const core = useCore();
@@ -90,6 +100,8 @@ export function useProcessingsMutationsAPI() {
         onProduce: (draft) => onProduce(draft, processedSpectrum),
       },
     });
+
+    return spectrum;
   }
 
   function resetSelectedTool() {
@@ -101,11 +113,14 @@ export function useProcessingsMutationsAPI() {
 
   // --- API --- //
 
-  const resetLiveChange = useEventCallback(function resetLiveChange() {
+  const resetLiveChange = useEventCallback(function resetLiveChange(
+    updateView: boolean,
+  ) {
     dispatch({
       type: 'SET_SPECTRUM_LIVE_PROCESSED',
       payload: {
         spectrumLiveProcessed: undefined,
+        updateView,
       },
     });
   });
@@ -203,11 +218,19 @@ export function useProcessingsMutationsAPI() {
   });
 
   // Related to live update
-  const prepareLiveChange = useEventCallback(async function prepareLiveChange(
-    uid: string,
-    shouldProcessAll: boolean,
-  ) {
-    const { spectrum } = getSpectrum();
+  async function prepareLiveChange(options: PrepareLiveChangeOptions) {
+    const {
+      operationUid: uid,
+      shouldProcessAll,
+      shouldUpdateView,
+      liveOperation,
+      preProcessOnly = false,
+      enforceSpectrum,
+    } = options;
+
+    const { spectrum } = enforceSpectrum
+      ? { spectrum: sliceSpectrum(enforceSpectrum) }
+      : getSpectrum();
     if (!spectrum?.processings) return;
 
     const preProcessings: typeof spectrum.processings = [];
@@ -215,7 +238,12 @@ export function useProcessingsMutationsAPI() {
 
     let didFindUid = false;
     for (const operation of spectrum.processings) {
-      if (uid === operation.uid) didFindUid = true;
+      if (uid === operation.uid) {
+        didFindUid = true;
+        processings.push(structuredClone(liveOperation ?? operation));
+        continue;
+      }
+
       if (didFindUid) processings.push(structuredClone(operation));
       else preProcessings.push(structuredClone(operation));
     }
@@ -241,6 +269,18 @@ export function useProcessingsMutationsAPI() {
       assertUnreachable(preProcessedSpectrum);
     }
 
+    // stop here preProcessOnly
+    if (preProcessOnly) {
+      dispatch({
+        type: 'SET_SPECTRUM_LIVE_PROCESSED',
+        payload: {
+          spectrumLiveProcessed: preProcessedSpectrum,
+          updateView: shouldUpdateView,
+        },
+      });
+      return;
+    }
+
     // apply the rest of processings
     const savedProcessings = structuredClone(preProcessedSpectrum.processings);
 
@@ -257,9 +297,10 @@ export function useProcessingsMutationsAPI() {
       type: 'SET_SPECTRUM_LIVE_PROCESSED',
       payload: {
         spectrumLiveProcessed: processedSpectrum,
+        updateView: shouldUpdateView,
       },
     });
-  });
+  }
 
   const applyLiveChange = useEventCallback(async function applyLiveChange(
     operation: SpectrumProcessingOperation<any, any>,
@@ -289,8 +330,59 @@ export function useProcessingsMutationsAPI() {
       type: 'SET_SPECTRUM_LIVE_PROCESSED',
       payload: {
         spectrumLiveProcessed: processedSpectrum,
+        updateView: false,
       },
     });
+  });
+
+  const handleLiveChange = useEventCallback(async function handleLiveChange(
+    liveEdit: LiveEdit,
+    operationUid: string,
+  ) {
+    const ui = core.slotOperator(operationUid);
+    const previousLiveEdit = state.processingOperators.liveEdit ?? {
+      checked: ui?.isLiveEditable ?? false,
+      shouldProcessNext:
+        ui?.defaultShouldProcessAll ?? liveEdit.shouldProcessNext,
+    };
+    const shouldUpdateView =
+      previousLiveEdit.shouldProcessNext !== liveEdit.shouldProcessNext;
+    const liveOperation = state.processingOperators.liveOperation;
+
+    await match(liveEdit)
+      // spectrum fully processed with live operation
+      .with({ checked: true, shouldProcessNext: true }, async () => {
+        await prepareLiveChange({
+          operationUid,
+          shouldProcessAll: true,
+          shouldUpdateView,
+          liveOperation,
+        });
+      })
+      // spectrum fully processed with original operation
+      // ie: no `state.spectrumLiveProcessed`
+      .with({ checked: false, shouldProcessNext: true }, async () => {
+        resetLiveChange(true);
+      })
+      // spectrum processed until the operation (stop before) then apply the live operation
+      .with({ checked: true, shouldProcessNext: false }, async () => {
+        await prepareLiveChange({
+          operationUid,
+          shouldProcessAll: false,
+          shouldUpdateView,
+          liveOperation,
+        });
+      })
+      // spectrum processed until the operation (stop before)
+      .with({ checked: false, shouldProcessNext: false }, async () => {
+        await prepareLiveChange({
+          operationUid,
+          shouldProcessAll: false,
+          shouldUpdateView,
+          preProcessOnly: true,
+        });
+      })
+      .exhaustive();
   });
 
   const triggerOperation = useEventCallback(async function triggerOperation(
@@ -319,8 +411,8 @@ export function useProcessingsMutationsAPI() {
     assertNotNullish(operator);
 
     openPanel('processingsPanel');
-    resetLiveChange();
-    await submit(spectrum, indexSpectrum, (draft) =>
+    resetLiveChange(false);
+    const processedSpectrum = await submit(spectrum, indexSpectrum, (draft) =>
       updateView(draft, operator.domainUpdateRules),
     );
 
@@ -337,10 +429,13 @@ export function useProcessingsMutationsAPI() {
     }
 
     if (operatorUI.isLiveEditable) {
-      await prepareLiveChange(
-        operation.uid,
-        operatorUI.defaultShouldProcessAll ?? false,
-      );
+      await prepareLiveChange({
+        operationUid: operation.uid,
+        liveOperation: operation,
+        shouldProcessAll: operatorUI.defaultShouldProcessAll ?? false,
+        shouldUpdateView: true,
+        enforceSpectrum: processedSpectrum,
+      });
     }
   });
 
@@ -351,15 +446,15 @@ export function useProcessingsMutationsAPI() {
       remove,
       removeAll,
       switchEnabled,
-      prepareLiveChange,
       resetLiveChange,
       applyLiveChange,
+      handleLiveChange,
       triggerOperation,
     }),
     [
       apply,
       applyLiveChange,
-      prepareLiveChange,
+      handleLiveChange,
       remove,
       removeAll,
       reorder,

@@ -1,4 +1,3 @@
-import type { SpectrumProcessingOperation } from '@zakodium/nmr-types';
 import { assertDefined } from '@zakodium/utils';
 
 import { useChartData } from '../../../context/ChartContext.tsx';
@@ -7,9 +6,7 @@ import { useProcessingsMutations } from '../../../context/processings_mutations_
 
 export type UseLiveEdit = ReturnType<typeof useLiveEdit>;
 
-export function useLiveEdit(
-  operation: SpectrumProcessingOperation<unknown, unknown> | undefined,
-) {
+export function useLiveEdit(operationUid: string | undefined) {
   const {
     processingOperators: { liveEdit: value, liveOperation },
   } = useChartData();
@@ -18,18 +15,13 @@ export function useLiveEdit(
 
   function setLiveEditCheck(newValue: boolean) {
     if (!value) return;
+    if (!liveOperation) return;
 
     dispatch({ type: 'SET_LIVE_EDIT_CHECKED', payload: newValue });
 
-    if (!newValue) {
-      processingsMutations.resetLiveChange();
-    } else {
-      assertDefined(operation);
-      void processingsMutations.prepareLiveChange(
-        operation.uid,
-        value.shouldProcessNext,
-      );
-    }
+    const liveEdit = { ...value, checked: newValue };
+    assertDefined(operationUid);
+    void processingsMutations.handleLiveChange(liveEdit, operationUid);
   }
 
   function setShouldProcessNext(newValue: boolean) {
@@ -37,10 +29,10 @@ export function useLiveEdit(
     if (!liveOperation) return;
 
     dispatch({ type: 'SET_LIVE_EDIT_SHOULD_PROCESS_NEXT', payload: newValue });
-    void processingsMutations.applyLiveChange(
-      { ...liveOperation, options: undefined },
-      newValue,
-    );
+
+    const liveEdit = { ...value, shouldProcessNext: newValue };
+    assertDefined(operationUid);
+    void processingsMutations.handleLiveChange(liveEdit, operationUid);
   }
 
   return { value, setLiveEditCheck, setShouldProcessNext };
