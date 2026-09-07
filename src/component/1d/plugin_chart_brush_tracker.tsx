@@ -20,7 +20,7 @@ export function PluginChartBrushTracker() {
   const indicatorLineColor = useIndicatorLineColor();
 
   const [liveOperation, setLiveOperation] = useLiveOperation();
-  const liveEdit = useLiveEdit(liveOperation);
+  const liveEdit = useLiveEdit(liveOperation?.uid);
   const processingsMutations = useProcessingsMutations();
 
   const scaleX = useMemo(() => scaleXBuilder(), [scaleXBuilder]);

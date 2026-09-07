@@ -24,6 +24,7 @@ type SetSpectrumLiveProcessed = ActionType<
   'SET_SPECTRUM_LIVE_PROCESSED',
   {
     spectrumLiveProcessed: Spectrum | undefined;
+    updateView: boolean;
   }
 >;
 
@@ -66,9 +67,11 @@ export function setSpectrumLiveProcessed(
   draft: Draft<State>,
   action: SetSpectrumLiveProcessed,
 ) {
-  const { spectrumLiveProcessed } = action.payload;
+  const { spectrumLiveProcessed, updateView } = action.payload;
 
   draft.spectrumLiveProcessed = spectrumLiveProcessed;
+
+  if (!updateView) return;
 
   updateLiveProcessedView(draft);
 }
@@ -91,7 +94,7 @@ export function selectProcessingOperator(
     draft.processingOperators.liveOperation = undefined;
     setSpectrumLiveProcessed(draft, {
       type: 'SET_SPECTRUM_LIVE_PROCESSED',
-      payload: { spectrumLiveProcessed: undefined },
+      payload: { spectrumLiveProcessed: undefined, updateView: true },
     });
   }
 }

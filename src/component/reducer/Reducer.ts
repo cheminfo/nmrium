@@ -201,6 +201,11 @@ export const initialState = getInitialState();
 
 export type VerticalAlignment = 'bottom' | 'center' | 'stack';
 
+export interface LiveEdit {
+  checked: boolean;
+  shouldProcessNext: boolean;
+}
+
 export interface State {
   /**
    * Last action type
@@ -358,7 +363,7 @@ export interface State {
 
   processingOperators: {
     selected: ProcessingOperatorId | undefined;
-    liveEdit: { checked: boolean; shouldProcessNext: boolean } | undefined;
+    liveEdit: LiveEdit | undefined;
     liveOperation: SpectrumProcessingOperation<unknown, unknown> | undefined;
   };
 
