@@ -4,7 +4,7 @@ import type { CSSProperties, MouseEvent } from 'react';
 import type { Axis } from '../../assignment/AssignmentsContext.js';
 import { useAssignment } from '../../assignment/AssignmentsContext.js';
 import { ContextMenu } from '../../elements/ContextMenuBluePrint.js';
-import type { TableContextMenuProps } from '../../elements/ReactTable/ReactTable.js';
+import type { TanStackTableContextMenuProps } from '../../elements/tanstack_table/index.ts';
 import { useHighlight } from '../../highlight/index.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 
@@ -24,7 +24,7 @@ export interface AssignmentsColumnProps {
   onUnlink: (event: MouseEvent, flag: boolean, axis: Axis) => void;
 }
 
-interface ZonesTableRowProps extends TableContextMenuProps {
+interface ZonesTableRowProps extends TanStackTableContextMenuProps<ZoneData> {
   rowData: ZoneData;
   onUnlink: (
     rowData: ZoneData,

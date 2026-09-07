@@ -5,7 +5,7 @@ import { FaLink } from 'react-icons/fa';
 
 import { withDialog } from '../../elements/DialogManager.js';
 import { EmptyText } from '../../elements/EmptyText.js';
-import type { TableContextMenuProps } from '../../elements/ReactTable/ReactTable.js';
+import type { TanStackTableContextMenuProps } from '../../elements/tanstack_table/index.ts';
 import useTableSortBy from '../../hooks/useTableSortBy.js';
 import { EditRangeModal } from '../../modal/editRange/EditRangeModal.js';
 import { extractChemicalElement } from '../../utility/extractChemicalElement.js';
@@ -13,6 +13,7 @@ import { NoDataForFid } from '../extra/placeholder/NoDataForFid.js';
 
 import type { RangesTableDataRow } from './RangesPanel.js';
 import RangesTableRow from './RangesTableRow.js';
+import type { RangeData } from './hooks/useMapRanges.js';
 import useMapRanges from './hooks/useMapRanges.js';
 
 const Table = styled.table`
@@ -60,7 +61,7 @@ const Table = styled.table`
   }
 `;
 
-interface RangesTableProps extends TableContextMenuProps {
+interface RangesTableProps extends TanStackTableContextMenuProps<RangeData> {
   preferences: WorkspacePanelPreferences['ranges'];
   tableData: RangesTableDataRow[];
   activeTab: string;

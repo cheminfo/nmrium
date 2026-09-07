@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.8.0](https://github.com/cheminfo/nmrium/compare/v2.7.0...v2.8.0) (2026-09-02)
+
+
+### Features
+
+* **processings:** integration of `ChartBrushTracker` ([#4347](https://github.com/cheminfo/nmrium/issues/4347)) ([8bf25f0](https://github.com/cheminfo/nmrium/commit/8bf25f0af52314e6a2008b39678f097218f18600))
+
+
+### Bug Fixes
+
+* **database:** avoid cloning Immer proxies during spectrum resurrection ([02b5acf](https://github.com/cheminfo/nmrium/commit/02b5acfa80016300fc0f3a2771710c5fa5f72990))
+* prioritize range analysis when Alt is pressed alone ([99043a4](https://github.com/cheminfo/nmrium/commit/99043a42aa8f0667b89ca39766ffaf7238b0a6c5))
+
 ## [2.7.0](https://github.com/cheminfo/nmrium/compare/v2.6.0...v2.7.0) (2026-08-27)
 
 

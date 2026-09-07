@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-
 import type { CSSObject, SerializedStyles } from '@emotion/react';
 import { css } from '@emotion/react';
 import type { MouseEvent } from 'react';
@@ -7,16 +6,21 @@ import { useCallback, useEffect, useMemo } from 'react';
 
 import type { HighlightEventSource } from '../../../highlight/index.js';
 import { useHighlight } from '../../../highlight/index.js';
+import type { BaseContextMenuProps } from '../../ContextMenuBluePrint.js';
 import { ContextMenu } from '../../ContextMenuBluePrint.js';
 import type {
-  BaseRowStyle,
-  HighlightSourceProps,
-  TableContextMenuProps,
-} from '../ReactTable.js';
+  TanStackReactTable,
+  TanStackRowData,
+  TanStackTableClickEvent,
+  TanStackTableContextMenuProps,
+  TanStackTableHighlightSourceProps,
+  TanStackTableRow,
+  TanStackTableRowStyle,
+} from '../types.ts';
 
 function getRowStyle(
   isActive: boolean,
-  rowStyle: BaseRowStyle = {},
+  rowStyle: TanStackTableRowStyle = {},
   disableDefaultRowStyle?: boolean,
 ): SerializedStyles {
   const { hover = {}, active = {}, base = {}, activated = {} } = rowStyle;
@@ -40,19 +44,17 @@ function getRowStyle(
   ]);
 }
 
-export interface ClickEvent {
-  onClick?: (event: MouseEvent, data: unknown) => void;
-}
-
-interface ReactTableRowProps extends ClickEvent, TableContextMenuProps {
-  row: any;
+interface TableRowProps<TData extends TanStackRowData>
+  extends TanStackTableClickEvent<TData>, TanStackTableContextMenuProps<TData> {
+  row: TanStackTableRow<TData>;
+  table: TanStackReactTable<TData>;
   isRowActive: boolean;
-  rowStyle: BaseRowStyle | undefined;
+  rowStyle: TanStackTableRowStyle | undefined;
   disableDefaultRowStyle?: boolean;
 }
 
-type ReactTableRowPropsWithHighlight = ReactTableRowProps &
-  HighlightSourceProps;
+type TableRowPropsWithHighlight<TData extends TanStackRowData> =
+  TableRowProps<TData> & TanStackTableHighlightSourceProps<TData>;
 
 function getIDs(row: any): string[] {
   const id = row.original.id;
@@ -66,9 +68,12 @@ function getIDs(row: any): string[] {
   return [''];
 }
 
-function ReactTableRow(props: ReactTableRowPropsWithHighlight) {
+export default function TableRow<TData extends TanStackRowData>(
+  props: TableRowPropsWithHighlight<TData>,
+) {
   const {
     row,
+    table,
     highlightedSource = 'UNKNOWN',
     getHighlightExtra,
     onContextMenuSelect,
@@ -103,54 +108,50 @@ function ReactTableRow(props: ReactTableRowPropsWithHighlight) {
     [onClick, row],
   );
 
-  const { key: rowKey, ...otherKeyProps } = row.getRowProps();
   return (
     <ContextMenu
       data={row.original}
       options={contextMenu}
-      onSelect={(selected) => onContextMenuSelect?.(selected, row.original)}
+      onSelect={(selected: Parameters<BaseContextMenuProps['onSelect']>[0]) =>
+        onContextMenuSelect?.(selected, row.original)
+      }
       as="tr"
       style={{ position: 'static' }}
-      key={rowKey}
       css={getRowStyle(
         highlight.isActive || isRowActive,
         rowStyle,
         disableDefaultRowStyle,
       )}
-      {...otherKeyProps}
       {...highlight.onHover}
     >
-      {row.cells.map((cell: any) => {
-        const {
-          column: { style },
-          isRowSpanned,
-          rowSpan,
-        } = cell;
-        if (isRowSpanned) {
-          return null;
-        } else {
-          const { key: columnKey, ...otherColumnProps } = cell.getCellProps();
+      {row.getAllCells().map((cell) => {
+        const rowSpan = cell.getRowSpan();
+        const colSpan = cell.getColSpan();
+        // When span is 0, it means that the cell is covered by another one,
+        // so it should not be rendered.
+        if (rowSpan === 0 || colSpan === 0) return null;
 
-          return (
-            <td
-              rowSpan={rowSpan}
-              key={columnKey}
-              {...otherColumnProps}
-              onContextMenu={(e) => {
-                e.preventDefault();
+        const meta = cell.column.columnDef.meta;
+        return (
+          <td
+            key={cell.id}
+            rowSpan={rowSpan}
+            colSpan={colSpan}
+            onContextMenu={(e) => {
+              e.preventDefault();
 
-                return false;
-              }}
-              style={style}
-              onClick={clickHandler}
-            >
-              {cell.render('Cell')}
-            </td>
-          );
-        }
+              return false;
+            }}
+            style={{
+              ...meta?.style,
+              ...meta?.tdStyle,
+            }}
+            onClick={clickHandler}
+          >
+            <table.FlexRender cell={cell} />
+          </td>
+        );
       })}
     </ContextMenu>
   );
 }
-
-export default ReactTableRow;

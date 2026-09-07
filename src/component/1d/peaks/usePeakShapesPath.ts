@@ -1,5 +1,4 @@
 import type { Peak1D } from '@zakodium/nmr-types';
-import type { Spectrum1D } from '@zakodium/nmrium-core';
 import type { DataXY } from 'cheminfo-types';
 import { peakToXY, peaksToXY } from 'nmr-processing';
 import { SVGPathBuilder } from 'react-science/ui';
@@ -17,7 +16,7 @@ type PeaksShapesOptions =
       peaks: Peak1D[];
     };
 
-export function usePeakShapesPath(spectrum: Spectrum1D) {
+export function usePeakShapesPath(spectrumId: string, frequency: number) {
   const { scaleX, scaleY } = useScaleChecked();
   const { width, xDomain } = useChartData();
 
@@ -27,7 +26,6 @@ export function usePeakShapesPath(spectrum: Spectrum1D) {
   } {
     const { target } = options;
 
-    const frequency = spectrum.info.originFrequency;
     let pathSeries: DataXY | null = null;
     switch (target) {
       case 'peakShape': {
@@ -54,7 +52,7 @@ export function usePeakShapesPath(spectrum: Spectrum1D) {
         break;
     }
     const _scaleX = scaleX();
-    const _scaleY = scaleY({ spectrumId: spectrum.id });
+    const _scaleY = scaleY({ spectrumId });
 
     const pathBuilder = new SVGPathBuilder();
     let fill = 'transparent';

@@ -1,9 +1,8 @@
+import type { Inset } from '@zakodium/nmrium-core';
 import type { ReactNode } from 'react';
 import { createContext, useContext, useMemo } from 'react';
 
 import type { Margin } from '../../reducer/Reducer.js';
-
-import type { Inset } from './SpectraInsets.js';
 
 export const insetMargin: Margin = {
   top: 10,

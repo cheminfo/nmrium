@@ -11,7 +11,7 @@ import {
 import { filterAssignedIDs } from '../../assignment/utilities/filterAssignedIDs.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import { ContextMenu } from '../../elements/ContextMenuBluePrint.js';
-import type { TableContextMenuProps } from '../../elements/ReactTable/ReactTable.js';
+import type { TanStackTableContextMenuProps } from '../../elements/tanstack_table/index.ts';
 import { useHighlight } from '../../highlight/index.js';
 
 import AbsoluteColumn from './TableColumns/AbsoluteColumn.js';
@@ -33,7 +33,7 @@ const ConstantlyHighlightedRowStyle = {
   backgroundColor: '#f5f5dc',
 };
 
-interface RangesTableRowProps extends TableContextMenuProps {
+interface RangesTableRowProps extends TanStackTableContextMenuProps<RangeData> {
   rowData: RangeData;
   preferences: WorkspacePanelPreferences['ranges'];
   info: Info1D;

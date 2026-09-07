@@ -5,15 +5,17 @@ import { FaRegTrashAlt } from 'react-icons/fa';
 import { IoBugOutline } from 'react-icons/io5';
 import { ObjectInspector } from 'react-inspector';
 import { useOnOff } from 'react-science/ui';
-import type { CellProps } from 'react-table';
 
 import { useLogger } from '../context/LoggerContext.js';
 import Button from '../elements/Button.js';
 import { ColumnWrapper } from '../elements/ColumnWrapper.js';
-import type { Column } from '../elements/ReactTable/ReactTable.js';
-import ReactTable from '../elements/ReactTable/ReactTable.js';
 import { StandardDialog } from '../elements/StandardDialog.tsx';
 import { StyledDialogBody } from '../elements/StyledDialogBody.js';
+import type { TanStackTableRow } from '../elements/tanstack_table/index.ts';
+import {
+  TanStackTable,
+  createTanStackColumnHelper,
+} from '../elements/tanstack_table/index.ts';
 
 const logsDataFormat = new Intl.DateTimeFormat('default', {
   hour: 'numeric',
@@ -21,8 +23,8 @@ const logsDataFormat = new Intl.DateTimeFormat('default', {
   second: 'numeric',
 });
 
-function handleRowStyle(data: any) {
-  const level = (data?.original as LogEntry).level;
+function handleRowStyle(row: TanStackTableRow<LogEntry>) {
+  const level = row.original.level;
   let backgroundColor = 'lightgreen';
   if (level > 40) {
     backgroundColor = 'pink';
@@ -77,12 +79,13 @@ export function LogsHistoryModal(props: LogsHistoryModalProps) {
     lastReadLogId,
   );
 
-  const COLUMNS = useMemo<Array<Column<LogEntry>>>(
-    () => [
+  const COLUMNS = useMemo(() => {
+    const columnHelper = createTanStackColumnHelper<LogEntry>();
+    return columnHelper.columns([
       {
-        Header: '#',
-        accessor: (_, index) => index + 1,
-        Cell: ({ row }: CellProps<LogEntry>) => (
+        header: '#',
+        accessorFn: (_, index) => index + 1,
+        cell: ({ row }) => (
           <span>
             {row.original.id > lastReadLogId && (
               <div
@@ -99,26 +102,27 @@ export function LogsHistoryModal(props: LogsHistoryModalProps) {
             {row.index + 1}
           </span>
         ),
-        style: { width: '40px' },
+        meta: { style: { width: '40px' } },
       },
       {
-        Header: 'Time',
-        accessor: (row) => logsDataFormat.format(row.time),
-        style: { width: '100px' },
+        header: 'Time',
+        accessorKey: 'time',
+        cell: ({ getValue }) => logsDataFormat.format(getValue()),
+        meta: { style: { width: '100px' } },
       },
       {
-        Header: 'Label',
-        accessor: 'levelLabel',
-        style: { width: '60px' },
+        header: 'Label',
+        accessorKey: 'levelLabel',
+        meta: { style: { width: '60px' } },
       },
       {
-        Header: 'Message',
-        accessor: 'message',
+        header: 'Message',
+        accessorKey: 'message',
       },
 
       {
-        Header: 'Error',
-        Cell: ({ row }: CellProps<LogEntry>) => {
+        header: 'Error',
+        cell: ({ row }) => {
           const { error } = row.original;
           return (
             <ColumnWrapper>
@@ -127,11 +131,14 @@ export function LogsHistoryModal(props: LogsHistoryModalProps) {
           );
         },
       },
-    ],
-    [lastReadLogId],
+    ]);
+  }, [lastReadLogId]);
+
+  const sortedLogs = useMemo(
+    () => logsHistory.toSorted((a, b) => b.time - a.time),
+    [logsHistory],
   );
 
-  const sortedLogs = logsHistory.toSorted((a, b) => b.time - a.time);
   return (
     <>
       {!autoOpen && (
@@ -173,7 +180,7 @@ export function LogsHistoryModal(props: LogsHistoryModalProps) {
         style={{ width: '50vw', height: '50vh' }}
       >
         <StyledDialogBody>
-          <ReactTable
+          <TanStackTable
             columns={COLUMNS}
             data={sortedLogs}
             emptyDataRowText="No Logs"

@@ -1,8 +1,11 @@
 import { expect, test } from '@playwright/test';
 
 import NmriumPage from '../NmriumPage/index.js';
+import { flaky } from '../flaky.ts';
 
-test('automatic assignment panel', async ({ page }) => {
+test('automatic assignment panel', async ({ page }, info) => {
+  flaky('Network call to online prediction service', info);
+
   const nmrium = await NmriumPage.create(page);
   await test.step('open 1H ethylvinylether spectrum', async () => {
     await nmrium.page.click('li >> text=Simple spectra');

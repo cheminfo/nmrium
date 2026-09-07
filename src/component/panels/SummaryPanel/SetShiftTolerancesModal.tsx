@@ -3,16 +3,17 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import type { CorrelationTolerance } from 'nmr-processing';
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import type { CellProps } from 'react-table';
 import * as Yup from 'yup';
 
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import Button from '../../elements/Button.js';
 import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
-import type { Column } from '../../elements/ReactTable/ReactTable.js';
-import ReactTable from '../../elements/ReactTable/ReactTable.js';
 import { StandardDialog } from '../../elements/StandardDialog.tsx';
+import {
+  TanStackTable,
+  createTanStackColumnHelper,
+} from '../../elements/tanstack_table/index.ts';
 
 interface ToleranceItem {
   atom: string;
@@ -50,6 +51,10 @@ export function SetShiftToleranceModal(props: SetShiftToleranceModalProps) {
   return <InnerSetShiftToleranceModal {...otherPros} />;
 }
 
+interface FormData {
+  tolerances: ToleranceItem[];
+}
+
 function InnerSetShiftToleranceModal(props: InnerSetShiftToleranceModalProps) {
   const { onClose } = props;
   const { correlations } = useChartData();
@@ -66,13 +71,13 @@ function InnerSetShiftToleranceModal(props: InnerSetShiftToleranceModalProps) {
     handleSubmit,
     control,
     formState: { isValid },
-  } = useForm<{ tolerances: ToleranceItem[] }>({
+  } = useForm<FormData>({
     defaultValues: { tolerances: tolerancesData },
     resolver: yupResolver(schema),
     mode: 'onChange',
   });
 
-  function onSaveHandler(data: any) {
+  function onSaveHandler(data: FormData) {
     const tolerance: CorrelationTolerance = {};
     for (const { atom, value } of data.tolerances) {
       tolerance[atom] = value;
@@ -86,22 +91,23 @@ function InnerSetShiftToleranceModal(props: InnerSetShiftToleranceModalProps) {
     onClose?.();
   }
 
-  const COLUMNS: Array<Column<ToleranceItem>> = useMemo(
-    () => [
+  const COLUMNS = useMemo(() => {
+    const columnHelper = createTanStackColumnHelper<ToleranceItem>();
+    return columnHelper.columns([
       {
-        Header: '#',
-        style: { width: '25px', textAlign: 'center' },
-        accessor: (_, index) => index + 1,
+        header: '#',
+        meta: { style: { width: '25px', textAlign: 'center' } },
+        accessorFn: (_, index) => index + 1,
       },
       {
-        Header: 'Atom',
-        style: { width: '25px', textAlign: 'center' },
-        accessor: 'atom',
+        header: 'Atom',
+        meta: { style: { width: '25px', textAlign: 'center' } },
+        accessorKey: 'atom',
       },
       {
-        Header: 'Value',
-        style: { padding: 0 },
-        Cell: (cell: CellProps<ToleranceItem>) => {
+        header: 'Value',
+        meta: { style: { padding: 0 } },
+        cell: (cell) => {
           return (
             <NumberInput2Controller
               name={`tolerances.${cell.row.index}.value`}
@@ -111,9 +117,8 @@ function InnerSetShiftToleranceModal(props: InnerSetShiftToleranceModalProps) {
           );
         },
       },
-    ],
-    [control],
-  );
+    ]);
+  }, [control]);
 
   return (
     <StandardDialog
@@ -123,7 +128,7 @@ function InnerSetShiftToleranceModal(props: InnerSetShiftToleranceModalProps) {
       style={{ width: 400 }}
     >
       <DialogBody>
-        <ReactTable
+        <TanStackTable
           data={tolerancesData}
           columns={COLUMNS}
           emptyDataRowText="No atoms"

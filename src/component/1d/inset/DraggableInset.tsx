@@ -1,5 +1,7 @@
 import styled from '@emotion/styled';
 import type {
+  Inset,
+  InsetView,
   IntegralsViewState,
   PeaksViewState,
   RangesViewState,
@@ -30,7 +32,6 @@ import { Viewer1D } from '../Viewer1D.js';
 
 import { InsetProvider } from './InsetProvider.js';
 import { InsetViewerRoot } from './InsetViewerRoot.js';
-import type { Inset, InsetView } from './SpectraInsets.js';
 
 interface InsetBounding {
   x: number;
