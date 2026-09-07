@@ -120,7 +120,6 @@ export function getDefaultViewState(): ViewState {
     units1D: {},
     units2D: {},
     insets: {},
-
   };
 }
 export const getInitialState = (): State => ({

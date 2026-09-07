@@ -1,5 +1,3 @@
-
-
 import { useChartData } from '../../context/ChartContext.js';
 
 import { DraggableInset } from './DraggableInset.js';

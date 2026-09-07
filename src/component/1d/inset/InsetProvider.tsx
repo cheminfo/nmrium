@@ -4,7 +4,6 @@ import { createContext, useContext, useMemo } from 'react';
 
 import type { Margin } from '../../reducer/Reducer.js';
 
-
 export const insetMargin: Margin = {
   top: 10,
   right: 10,

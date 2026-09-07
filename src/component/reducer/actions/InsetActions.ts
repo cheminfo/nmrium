@@ -170,7 +170,7 @@ function getInset(draft: Draft<State>, insetKey: string) {
   const {
     view: {
       spectra: { activeTab },
-      insets
+      insets,
     },
   } = draft;
 
