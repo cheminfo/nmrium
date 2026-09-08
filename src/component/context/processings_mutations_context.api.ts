@@ -264,9 +264,15 @@ export function useProcessingsMutationsAPI() {
       preProcessedSpectrum.originalData = sliceData1D(
         preProcessedSpectrum.data,
       );
+      preProcessedSpectrum.originalProcessingInfo = structuredClone(
+        preProcessedSpectrum.processingInfo,
+      );
     } else if (isSpectrum2D(preProcessedSpectrum)) {
       preProcessedSpectrum.originalData = sliceData2D(
         preProcessedSpectrum.data,
+      );
+      preProcessedSpectrum.originalProcessingInfo = structuredClone(
+        preProcessedSpectrum.processingInfo,
       );
     } else {
       assertUnreachable(preProcessedSpectrum);
