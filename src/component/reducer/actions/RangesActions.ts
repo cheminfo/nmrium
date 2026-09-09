@@ -165,7 +165,13 @@ type DeleteRangePeakAction = ActionType<
 >;
 type Change1DSignalAssignmentLabelAction = ActionType<
   'CHANGE_1D_SIGNAL_ASSIGNMENT_LABEL',
-  { rangeId: string; signalId?: string; value: string; spectrumId?: string }
+  {
+    rangeId: string;
+    signalId?: string;
+    value: string;
+    spectrumId?: string;
+    isAutoAssignment?: boolean;
+  }
 >;
 
 type ChangeRangesViewFloatingBoxBoundingAction = ActionType<
@@ -520,6 +526,7 @@ function updateRangeSignalsAssignment(
       if (
         previousAssignment === signal.assignment &&
         hasDiaId(signal.diaIDs, uniqueDiaIds)
+        && signal.isAutoAssignment
       ) {
         signal.assignment = assignment;
       }
@@ -536,6 +543,7 @@ function updateZoneAssignments(
   for (const zone of zones) {
     if (
       previousAssignment === zone.assignment &&
+      zone.isAutoAssignment &&
       (hasDiaId(zone.x.diaIDs, uniqueDiaIds) ||
         hasDiaId(zone.y.diaIDs, uniqueDiaIds))
     ) {
@@ -785,7 +793,8 @@ function handleChange1DSignalAssignmentLabel(
   draft: Draft<State>,
   action: Change1DSignalAssignmentLabelAction,
 ) {
-  const { rangeId, signalId, value, spectrumId } = action.payload;
+  const { rangeId, signalId, value, spectrumId, isAutoAssignment = false } =
+    action.payload;
 
   const spectrum = getSpectrum(draft, spectrumId);
   if (!isSpectrum1D(spectrum)) return;
@@ -807,7 +816,7 @@ function handleChange1DSignalAssignmentLabel(
   if (!signal) return;
 
   signal.assignment = value;
-  signal.isAutoAssignment = false;
+  signal.isAutoAssignment = isAutoAssignment;
 }
 
 function handleChangeRangesViewFloatingBoxBounding(
