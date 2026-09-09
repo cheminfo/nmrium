@@ -65,6 +65,10 @@ export function initiateDatum2D(
   if (!datum.originalData) {
     datum.originalData = sliceData2D(datum.data);
   }
+
+  datum.processingInfo ??= {};
+  datum.originalProcessingInfo ??= {};
+
   datum.filters = initiateFilters(spectrum?.filters);
 
   datum.zones = initiateZones(spectrum, datum);

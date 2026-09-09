@@ -59,6 +59,9 @@ export function initiateDatum1D(
     spectrumObj.originalData = sliceData1D(spectrumObj.data);
   }
 
+  spectrumObj.processingInfo ??= {};
+  spectrumObj.originalProcessingInfo ??= {};
+
   spectrumObj.meta = { ...spectrum.meta };
   spectrumObj.customInfo = { ...spectrum.customInfo };
 

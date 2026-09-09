@@ -257,6 +257,9 @@ export function useProcessingsMutationsAPI() {
     preProcessedSpectrum.originalInfo = structuredClone(
       preProcessedSpectrum.info,
     );
+    preProcessedSpectrum.originalProcessingInfo = structuredClone(
+      preProcessedSpectrum.processingInfo,
+    );
     if (isSpectrum1D(preProcessedSpectrum)) {
       preProcessedSpectrum.originalData = sliceData1D(
         preProcessedSpectrum.data,
