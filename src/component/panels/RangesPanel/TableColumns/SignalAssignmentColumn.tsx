@@ -72,7 +72,8 @@ export function SignalAssignmentColumn(props: SignalAssignmentColumnProps) {
           <CloseEditOnClick>
             <Button
               variant="minimal"
-              icon={signal?.isAutoAssignment ? 'unlink' : 'link'}
+              icon={signal?.isAutoAssignment ? 'link' : 'unlink'}
+
               onClick={handleAssignmentLabel}
               disabled={!signal?.isAutoAssignment && !hasLink}
               tooltipProps={{
