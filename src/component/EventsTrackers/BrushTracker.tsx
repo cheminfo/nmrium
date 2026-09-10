@@ -3,7 +3,6 @@ import type {
   KeyboardEvent,
   MouseEvent,
   PointerEvent,
-  Reducer,
   WheelEvent,
 } from 'react';
 import {
@@ -103,9 +102,7 @@ export function BrushTracker(options: BrushTrackerProps) {
     clickTriggerMode = 'native',
   } = options;
 
-  const [state, dispatch] = useReducer<
-    Reducer<BrushTrackerState, BrushTrackerAction>
-  >(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, initialState);
   const clickCountRef = useRef(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastPointRef = useRef<number>(0);

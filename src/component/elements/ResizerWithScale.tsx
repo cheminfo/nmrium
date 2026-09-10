@@ -21,7 +21,7 @@ export function ResizerWithScale(props: ResizerWithScaleProps) {
   const x2 = scaleX()(from);
   const x1 = scaleX()(to);
   const [position, setPosition] = useState({ x1, x2 });
-  const startPositionRef = useRef<Position>();
+  const startPositionRef = useRef<Position>(undefined);
 
   useEffect(() => {
     const x2 = scaleX()(from);

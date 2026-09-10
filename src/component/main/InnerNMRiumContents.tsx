@@ -68,10 +68,10 @@ const NMRiumContainer = styled.div`
 
 interface InnerNMRiumContentsProps {
   emptyText: NMRiumProps['emptyText'];
-  mainDivRef: RefObject<HTMLDivElement>;
-  elementsWrapperRef: RefObject<HTMLDivElement>;
-  rootRef: RefObject<HTMLDivElement>;
-  viewerRef: RefObject<HTMLDivElement>;
+  mainDivRef: RefObject<HTMLDivElement | null>;
+  elementsWrapperRef: RefObject<HTMLDivElement | null>;
+  rootRef: RefObject<HTMLDivElement | null>;
+  viewerRef: RefObject<HTMLDivElement | null>;
   apiRef: ForwardedRef<NMRiumRefAPI>;
 }
 

@@ -11,7 +11,7 @@ import type { NMRiumProps } from './NMRium.js';
 import { NMRiumViewer } from './NMRiumViewer.js';
 
 interface NMRiumViewerWrapperProps {
-  viewerRef: RefObject<HTMLDivElement>;
+  viewerRef: RefObject<HTMLDivElement | null>;
   emptyText: NMRiumProps['emptyText'];
 }
 
