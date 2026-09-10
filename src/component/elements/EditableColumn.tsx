@@ -65,7 +65,7 @@ export function CloseEditOnClick(props: { children: ReactNode }) {
   const { children } = props;
   const closeEdit = useContext(CloseEditContext);
 
-  return <span onClick={() => closeEdit?.()}>{children}</span>;
+  return <span onClick={closeEdit}>{children}</span>;
 }
 
 interface BaseEditableColumnProps {
