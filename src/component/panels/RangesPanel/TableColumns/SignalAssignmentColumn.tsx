@@ -60,7 +60,6 @@ export function SignalAssignmentColumn(props: SignalAssignmentColumnProps) {
 
   const hasLink = signal?.diaIDs && signal.diaIDs.length > 0;
 
-
   return (
     <td {...onHover}>
       <EditableColumn

@@ -208,10 +208,10 @@ export type RangesActions =
   | ChangeRangesAssignmentsLabelsByDiaIdsAction
   | ChangeSignalDeltaAction
   | ActionType<
-    | 'AUTO_RANGES_SPECTRA_PICKING'
-    | 'CHANGE_RANGES_SUM_FLAG'
-    | 'TOGGLE_RANGES_PEAKS_DISPLAYING_MODE'
-  >;
+      | 'AUTO_RANGES_SPECTRA_PICKING'
+      | 'CHANGE_RANGES_SUM_FLAG'
+      | 'TOGGLE_RANGES_PEAKS_DISPLAYING_MODE'
+    >;
 
 function getRangeIndex(spectrum: Spectrum1D, rangeId: string) {
   return spectrum.ranges.values.findIndex((range) => range.id === rangeId);
@@ -525,8 +525,8 @@ function updateRangeSignalsAssignment(
     for (const signal of signals) {
       if (
         previousAssignment === signal.assignment &&
-        hasDiaId(signal.diaIDs, uniqueDiaIds)
-        && signal.isAutoAssignment
+        hasDiaId(signal.diaIDs, uniqueDiaIds) &&
+        signal.isAutoAssignment
       ) {
         signal.assignment = assignment;
       }
@@ -793,8 +793,13 @@ function handleChange1DSignalAssignmentLabel(
   draft: Draft<State>,
   action: Change1DSignalAssignmentLabelAction,
 ) {
-  const { rangeId, signalId, value, spectrumId, isAutoAssignment = false } =
-    action.payload;
+  const {
+    rangeId,
+    signalId,
+    value,
+    spectrumId,
+    isAutoAssignment = false,
+  } = action.payload;
 
   const spectrum = getSpectrum(draft, spectrumId);
   if (!isSpectrum1D(spectrum)) return;
