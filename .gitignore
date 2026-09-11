@@ -33,6 +33,7 @@ pnpm-lock.yaml
 *.tsbuildinfo
 
 .vscode
+.claude
 
 test-e2e/videos
 /test-results
