@@ -4,6 +4,25 @@ import { useRef } from 'react';
 
 import { useTopicMolecule } from '../../../context/TopicMoleculeContext.js';
 
+function getUniqueLabels(labels: string[]) {
+  return [...new Set(labels.map((label) => label.trim()).filter(Boolean))];
+}
+
+function getCustomLabels(atomData: {
+  customLabels?: string[];
+  heavyAtomsCustomLabels?: string[];
+}) {
+  const { customLabels = [], heavyAtomsCustomLabels = [] } = atomData;
+  return customLabels.length > 0 ? customLabels : heavyAtomsCustomLabels;
+}
+
+function getCustomLabel(atomData: {
+  customLabels?: string[];
+  heavyAtomsCustomLabels?: string[];
+}) {
+  return getCustomLabels(atomData).find((label) => label.trim());
+}
+
 export function useExtractAtomAssignmentLabel() {
   const topicMolecule = useTopicMolecule();
   const lastHoverAtomIdRef = useRef<DiaIDAndInfo>(undefined);
@@ -45,14 +64,26 @@ export function useExtractAtomAssignmentLabel() {
     const atomData = getTopicAtom(moleculeId, oclID, molfile);
     if (!atomData) return;
 
-    const { customLabels = [], heavyAtomsCustomLabels = [] } = atomData;
-    const labels =
-      customLabels.length > 0 ? customLabels : heavyAtomsCustomLabels;
-
-    const uniqueLabels = [
-      ...new Set(labels.map((l: string) => l.trim()).filter(Boolean)),
-    ];
+    const uniqueLabels = getUniqueLabels(getCustomLabels(atomData));
     return uniqueLabels.join(',');
+  }
+
+  function getAssignmentLabelByDiaIDs(diaIDs: string[]) {
+    if (!diaIDs || diaIDs.length === 0) return;
+    const moleculeObjects = Object.values(topicMolecule);
+    for (const topicMoleculeObject of moleculeObjects) {
+      const diaIDsObject = topicMoleculeObject.getDiaIDsObject();
+
+      for (const diaID of diaIDs) {
+        const atomData = diaIDsObject?.[diaID];
+        if (!atomData) continue;
+
+        const label = getCustomLabel(atomData);
+        if (label) return label;
+      }
+    }
+
+    return undefined;
   }
 
   function getAssignmentLabelByHover(moleculeId: string, molfile?: string) {
@@ -66,6 +97,7 @@ export function useExtractAtomAssignmentLabel() {
 
   return {
     getAssignmentLabelByHover,
+    getAssignmentLabelByDiaIDs,
     getAssignmentLabelById,
     onAtomHover,
     getLastHoverAtom,

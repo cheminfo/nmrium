@@ -1,4 +1,4 @@
-import type { Range, Signal1D, SignalKind } from '@zakodium/nmr-types';
+import type { Range, Signal1D, SignalKind, Zone } from '@zakodium/nmr-types';
 import type {
   BoundingBox,
   RangesViewState,
@@ -165,7 +165,13 @@ type DeleteRangePeakAction = ActionType<
 >;
 type Change1DSignalAssignmentLabelAction = ActionType<
   'CHANGE_1D_SIGNAL_ASSIGNMENT_LABEL',
-  { rangeId: string; signalId?: string; value: string; spectrumId?: string }
+  {
+    rangeId: string;
+    signalId?: string;
+    value: string;
+    spectrumId?: string;
+    isAutoAssignment?: boolean;
+  }
 >;
 
 type ChangeRangesViewFloatingBoxBoundingAction = ActionType<
@@ -483,6 +489,7 @@ function handleAssign1DSignal(
   if (!isSpectrum1D(spectrum) || keys.length !== 2) return;
 
   if (keys.length !== 2) return;
+
   const [{ index: rangeIndex }, { index: signalIndex }] = keys;
   const range = spectrum.ranges.values[rangeIndex];
 
@@ -494,36 +501,80 @@ function handleAssign1DSignal(
 
   if (assignment && !signal.assignment) {
     signal.assignment = assignment;
+    signal.isAutoAssignment = true;
   }
 
   signal.diaIDs = diaIDs;
   signal.nbAtoms = nbAtoms + (signal.nbAtoms || 0);
 }
+function hasDiaId(
+  diaIds: string[] | undefined,
+  uniqueDiaIds: Set<string>,
+): boolean {
+  return diaIds?.some((id) => uniqueDiaIds.has(id)) ?? false;
+}
+
+function updateRangeSignalsAssignment(
+  ranges: Range[],
+  previousAssignment: string | undefined,
+  assignment: string | undefined,
+  uniqueDiaIds: Set<string>,
+): void {
+  for (const range of ranges) {
+    const { signals = [] } = range;
+    for (const signal of signals) {
+      if (
+        previousAssignment === signal.assignment &&
+        hasDiaId(signal.diaIDs, uniqueDiaIds) &&
+        signal.isAutoAssignment
+      ) {
+        signal.assignment = assignment;
+      }
+    }
+  }
+}
+
+function updateZoneAssignments(
+  zones: Zone[],
+  previousAssignment: string | undefined,
+  assignment: string | undefined,
+  uniqueDiaIds: Set<string>,
+): void {
+  for (const zone of zones) {
+    if (
+      previousAssignment === zone.assignment &&
+      zone.isAutoAssignment &&
+      (hasDiaId(zone.x.diaIDs, uniqueDiaIds) ||
+        hasDiaId(zone.y.diaIDs, uniqueDiaIds))
+    ) {
+      zone.assignment = assignment;
+    }
+  }
+}
+
 //action
 function handleChangeRangesAssignmentLabelsByDiaIds(
   draft: Draft<State>,
   action: ChangeRangesAssignmentsLabelsByDiaIdsAction,
 ) {
   const { diaIDs, assignment, previousAssignment } = action.payload;
-
-  const spectrum = getSpectrum(draft);
-  if (!isSpectrum1D(spectrum)) return;
-
   const uniqueDiaIds = new Set(diaIDs);
-  const {
-    ranges: { values },
-  } = spectrum;
 
-  for (const range of values) {
-    const { signals = [] } = range;
-
-    for (const signal of signals) {
-      if (
-        previousAssignment === signal.assignment &&
-        signal.diaIDs?.some((id) => uniqueDiaIds.has(id))
-      ) {
-        signal.assignment = assignment;
-      }
+  for (const spectrum of draft.data) {
+    if (isSpectrum1D(spectrum)) {
+      updateRangeSignalsAssignment(
+        spectrum.ranges.values,
+        previousAssignment,
+        assignment,
+        uniqueDiaIds,
+      );
+    } else {
+      updateZoneAssignments(
+        spectrum.zones.values,
+        previousAssignment,
+        assignment,
+        uniqueDiaIds,
+      );
     }
   }
 }
@@ -742,7 +793,13 @@ function handleChange1DSignalAssignmentLabel(
   draft: Draft<State>,
   action: Change1DSignalAssignmentLabelAction,
 ) {
-  const { rangeId, signalId, value, spectrumId } = action.payload;
+  const {
+    rangeId,
+    signalId,
+    value,
+    spectrumId,
+    isAutoAssignment = false,
+  } = action.payload;
 
   const spectrum = getSpectrum(draft, spectrumId);
   if (!isSpectrum1D(spectrum)) return;
@@ -764,6 +821,7 @@ function handleChange1DSignalAssignmentLabel(
   if (!signal) return;
 
   signal.assignment = value;
+  signal.isAutoAssignment = isAutoAssignment;
 }
 
 function handleChangeRangesViewFloatingBoxBounding(
