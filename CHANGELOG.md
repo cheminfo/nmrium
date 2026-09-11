@@ -1,5 +1,25 @@
 # Changelog
 
+## [3.0.0](https://github.com/cheminfo/nmrium/compare/v2.8.0...v3.0.0) (2026-09-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* update React to v19 ([#4358](https://github.com/cheminfo/nmrium/issues/4358))
+
+### Features
+
+* Increase default contour levels ([#4370](https://github.com/cheminfo/nmrium/issues/4370)) ([1b85393](https://github.com/cheminfo/nmrium/commit/1b85393c4a1bc3649edc1ccf1ad03e30eb186b4c))
+* integrate operator ui `ChartMouseIcon` ([#4369](https://github.com/cheminfo/nmrium/issues/4369)) ([f467949](https://github.com/cheminfo/nmrium/commit/f4679499ea578a243b59c15f42841019c9eb9538))
+* update React to v19 ([#4358](https://github.com/cheminfo/nmrium/issues/4358)) ([d8f6ad6](https://github.com/cheminfo/nmrium/commit/d8f6ad6b3b64bd6290b7fe125eeb0a4dfbc3e9f6))
+
+
+### Bug Fixes
+
+* clear fifo-logger and render index on # ([#4359](https://github.com/cheminfo/nmrium/issues/4359)) ([bc25e76](https://github.com/cheminfo/nmrium/commit/bc25e767fc1e184869b77ad966be5f8241bfc4ca))
+* prepareLiveChange support processingInfo ([#4366](https://github.com/cheminfo/nmrium/issues/4366)) ([da3a4b4](https://github.com/cheminfo/nmrium/commit/da3a4b4bdb7f1a71edc725c96a040a957a24782e))
+* **processings:** avoid to update view during live change ([#4350](https://github.com/cheminfo/nmrium/issues/4350)) ([c4aa33e](https://github.com/cheminfo/nmrium/commit/c4aa33e97268a21754787fb22da69e890a40b634))
+
 ## [2.8.0](https://github.com/cheminfo/nmrium/compare/v2.7.0...v2.8.0) (2026-09-02)
 
 
