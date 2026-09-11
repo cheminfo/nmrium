@@ -188,7 +188,7 @@ function FiltersInner(props: FiltersInnerProps) {
 
   const dispatch = useDispatch();
   const toaster = useToaster();
-  const selectedFilterIndex = useRef<number | null>();
+  const selectedFilterIndex = useRef<number | null>(null);
   const activeSpectrum = useActiveSpectrum();
 
   function filterSnapShotHandler(filter: FilterEntry, index: number) {

@@ -1,10 +1,10 @@
-import type { ForwardedRef, MutableRefObject, RefCallback } from 'react';
+import type { ForwardedRef, RefCallback, RefObject } from 'react';
 import { useEffect, useRef } from 'react';
 
 export default function useCombinedRefs<T>(
-  refs: Array<RefCallback<T> | MutableRefObject<T> | ForwardedRef<T>>,
+  refs: Array<RefCallback<T> | RefObject<T> | ForwardedRef<T>>,
 ) {
-  const targetRef = useRef<any>();
+  const targetRef = useRef<any>(undefined);
 
   // eslint-disable-next-line react-hooks/immutability
   useEffect(() => {

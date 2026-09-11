@@ -25,7 +25,7 @@ function getCustomLabel(atomData: {
 
 export function useExtractAtomAssignmentLabel() {
   const topicMolecule = useTopicMolecule();
-  const lastHoverAtomIdRef = useRef<DiaIDAndInfo>();
+  const lastHoverAtomIdRef = useRef<DiaIDAndInfo>(undefined);
 
   function getLastHoverAtom() {
     return lastHoverAtomIdRef.current;

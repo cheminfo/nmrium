@@ -57,7 +57,7 @@ export function LoggerProvider({ children }: LoggerProviderProps) {
   const [lastReadLogId, setLastLogId] = useState(0);
   const [logsHistory, setLogsHistory] = useState<LogEntry[]>([]);
   const [isLogHistoryOpened, openLogHistory] = useState(false);
-  const popupLoggingLevelRef = useRef<LogEntry['levelLabel']>();
+  const popupLoggingLevelRef = useRef<LogEntry['levelLabel']>(undefined);
   const [logger] = useState(() => new FifoLogger());
 
   useEffect(() => {

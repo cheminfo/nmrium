@@ -74,7 +74,7 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
     view,
   } = state;
 
-  const stateRef = useRef<NmriumState>();
+  const stateRef = useRef<NmriumState>(undefined);
 
   const handleChange = useRef<NMRiumChangeCb | undefined>(onChange);
   useEffect(() => {

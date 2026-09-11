@@ -1,12 +1,16 @@
 import styled from '@emotion/styled';
 import { createElement } from 'react';
 import { TbRulerMeasure } from 'react-icons/tb';
+import { match } from 'ts-pattern';
 
 import { useMouseTracker } from '../../EventsTrackers/MouseTracker.js';
 import { useChartData } from '../../context/ChartContext.js';
+import { useCore } from '../../context/CoreContext.tsx';
 import { useKeyModifiers } from '../../context/KeyModifierContext.tsx';
+import useCheckExperimentalFeature from '../../hooks/useCheckExperimentalFeature.ts';
 import type { IconDataContext, Tool } from '../../toolbar/ToolTypes.ts';
 import { getToolIcon } from '../../toolbar/ToolTypes.ts';
+import { CoreOperatorChartMouseIcon } from '../../utility/core_slots/core_operator_chart_mouse_icon.tsx';
 
 const CursorWrapper = styled.div`
   position: absolute;
@@ -52,15 +56,14 @@ function getCursorOffset(placement: CursorPlacement, offset: number) {
 interface ToolIconRendererProps extends IconDataContext {
   toolId: Tool;
   size?: number;
-  strokeWidth?: number;
 }
 
 function ToolIconRenderer(props: ToolIconRendererProps) {
-  const { toolId, size, strokeWidth, ...idc } = props;
+  const { toolId, size, ...idc } = props;
 
   const icon = getToolIcon(toolId, idc);
   if (!icon) return null;
-  return createElement(icon, { fontSize: size, strokeWidth });
+  return createElement(icon, { fontSize: size });
 }
 export function CursorToolIcon({
   placement = 'bottom-right',
@@ -72,7 +75,10 @@ export function CursorToolIcon({
     height,
     margin,
     toolOptions: { selectedTool },
+    processingOperators: { selected: selectedProcessingTool },
   } = useChartData();
+  const core = useCore();
+  const isExperimental = useCheckExperimentalFeature();
   const mousePosition = useMouseTracker();
   const { isPrimary, shiftKey } = useKeyModifiers();
   if (
@@ -92,19 +98,35 @@ export function CursorToolIcon({
   const showRulerIcon = selectedTool === 'zoom' && shiftKey;
 
   return (
-    <CursorWrapper
-      style={{
-        transform: `translate(${x}px, ${y}px)`,
-      }}
-    >
-      {showRulerIcon ? (
-        <TbRulerMeasure size={size} />
-      ) : (
-        <ToolIconRenderer
-          toolId={isPrimary ? selectedTool : 'zoom'}
-          size={size}
-        />
-      )}
+    <CursorWrapper style={{ transform: `translate(${x}px, ${y}px)` }}>
+      {match({ showRulerIcon, selectedProcessingTool, isExperimental })
+        .when(
+          (input) => {
+            const { selectedProcessingTool, isExperimental } = input;
+
+            if (!isExperimental) return false;
+            if (!selectedProcessingTool) return false;
+
+            const operatorUI = core.slotOperator(selectedProcessingTool);
+            if (!operatorUI?.ChartMouseIcon) return false;
+
+            return true;
+          },
+          ({ selectedProcessingTool }) => (
+            <CoreOperatorChartMouseIcon
+              core={core}
+              selected={selectedProcessingTool}
+              size={size}
+            />
+          ),
+        )
+        .with({ showRulerIcon: true }, () => <TbRulerMeasure size={size} />)
+        .otherwise(() => (
+          <ToolIconRenderer
+            toolId={isPrimary ? selectedTool : 'zoom'}
+            size={size}
+          />
+        ))}
     </CursorWrapper>
   );
 }
