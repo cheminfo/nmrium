@@ -14,7 +14,7 @@ export function reduce2DSpectrum(
     z,
   } = data;
   const {
-    numberOfPoints = 512,
+    numberOfPoints = 256,
     fromX = originalMinX,
     fromY = originalMinY,
     toX = originalMaxX,

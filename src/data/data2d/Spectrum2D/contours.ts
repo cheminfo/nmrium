@@ -36,11 +36,11 @@ interface WheelOptions extends BaseWheelOptions {
 const DEFAULT_CONTOURS_OPTIONS: ContourOptions = {
   positive: {
     contourLevels: [15, 100],
-    numberOfLayers: 10,
+    numberOfLayers: 20,
   },
   negative: {
     contourLevels: [15, 100],
-    numberOfLayers: 10,
+    numberOfLayers: 20,
   },
 };
 
