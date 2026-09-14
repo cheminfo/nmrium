@@ -1,11 +1,15 @@
-import { Button } from '@blueprintjs/core';
+import type { InputGroupProps } from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import type { CSSProperties, KeyboardEvent, MouseEvent } from 'react';
+import type { CSSProperties, KeyboardEvent, ReactNode } from 'react';
 import {
+  createContext,
   forwardRef,
+  isValidElement,
   useCallback,
+  useContext,
   useEffect,
   useImperativeHandle,
+  useRef,
   useState,
 } from 'react';
 
@@ -53,12 +57,16 @@ function extractNumber(val: string | number, type: string) {
   return val;
 }
 
-function handleMousedown(event: MouseEvent) {
-  event.stopPropagation();
-}
-
 const style: CSSProperties = { minWidth: 60 };
 const className = 'editable-column';
+const CloseEditContext = createContext<(() => void) | undefined>(undefined);
+
+export function CloseEditOnClick(props: { children: ReactNode }) {
+  const { children } = props;
+  const closeEdit = useContext(CloseEditContext);
+
+  return <span onClick={closeEdit}>{children}</span>;
+}
 
 interface BaseEditableColumnProps {
   type: 'number' | 'text';
@@ -66,7 +74,8 @@ interface BaseEditableColumnProps {
   validate?: (value: string | number) => boolean;
 }
 
-export interface EditableColumnProps extends BaseEditableColumnProps {
+export interface EditableColumnProps
+  extends BaseEditableColumnProps, Pick<InputGroupProps, 'rightElement'> {
   onSave?: (value: string | number) => void;
   onEditStart?: (element: boolean) => void;
   editStatus?: boolean;
@@ -91,6 +100,7 @@ export const EditableColumn = forwardRef(function EditableColumn(
     onEditStart,
     editStatus = false,
     validate,
+    rightElement,
     textOverflowEllipses = false,
     clickType = 'single',
   } = props;
@@ -109,17 +119,7 @@ export const EditableColumn = forwardRef(function EditableColumn(
     },
   }));
 
-  const mouseClickCallback = useCallback((e: globalThis.MouseEvent) => {
-    if (!(e.target as HTMLInputElement).classList.contains('editable-column')) {
-      enableEdit(false);
-      // TODO: refactor this
-      // eslint-disable-next-line react-hooks/immutability
-      globalThis.removeEventListener('mousedown', mouseClickCallback);
-    }
-  }, []);
-
   function startEditHandler() {
-    globalThis.addEventListener('mousedown', mouseClickCallback);
     onEditStart?.(true);
     enableEdit(true);
   }
@@ -127,12 +127,10 @@ export const EditableColumn = forwardRef(function EditableColumn(
   function onConfirm(value: string | number) {
     onSave?.(value);
     enableEdit(false);
-    globalThis.removeEventListener('mousedown', mouseClickCallback);
   }
 
   function onCancel() {
     enableEdit(false);
-    globalThis.removeEventListener('mousedown', mouseClickCallback);
   }
 
   let clickHandler = {};
@@ -165,6 +163,7 @@ export const EditableColumn = forwardRef(function EditableColumn(
             onConfirm={onConfirm}
             onCancel={onCancel}
             validate={validate}
+            rightElement={rightElement}
           />
         </div>
       )}
@@ -175,20 +174,51 @@ export const EditableColumn = forwardRef(function EditableColumn(
 interface EditFieldProps extends BaseEditableColumnProps {
   onConfirm: (value: string | number) => void;
   onCancel: (event?: KeyboardEvent<HTMLInputElement>) => void;
+  rightElement?: ReactNode;
 }
 
 function EditField(props: EditFieldProps) {
-  const { value: externalValue, type, onConfirm, onCancel, validate } = props;
+  const {
+    value: externalValue,
+    type,
+    onConfirm,
+    onCancel,
+    validate,
+    rightElement,
+  } = props;
 
   const [isValid, setValid] = useState<boolean>(true);
   const [value, setVal] = useState(() => extractNumber(externalValue, type));
+  const editFieldRef = useRef<HTMLDivElement>(null);
+  const closeEdit = useCallback(() => onCancel(), [onCancel]);
 
-  function handleKeydown(event: KeyboardEvent<HTMLInputElement>) {
+  const confirmValue = useCallback(() => {
     const valid = typeof validate === 'function' ? validate(value) : true;
     setValid(valid);
-    // when press Enter or Tab
-    if (valid && ['Enter', 'Tab'].includes(event.key)) {
+    if (valid) {
       onConfirm(value);
+    }
+  }, [onConfirm, validate, value]);
+
+  useEffect(() => {
+    function handleOutsideMouseDown(event: globalThis.MouseEvent) {
+      if (
+        !(event.target instanceof Node) ||
+        !editFieldRef.current?.contains(event.target)
+      ) {
+        confirmValue();
+      }
+    }
+
+    globalThis.addEventListener('mousedown', handleOutsideMouseDown);
+    return () =>
+      globalThis.removeEventListener('mousedown', handleOutsideMouseDown);
+  }, [confirmValue]);
+
+  function handleKeydown(event: KeyboardEvent<HTMLInputElement>) {
+    // when press Enter or Tab
+    if (['Enter', 'Tab'].includes(event.key)) {
+      confirmValue();
     }
     // close edit mode if press Enter, Tab or Escape
     if (['Escape'].includes(event.key)) {
@@ -201,52 +231,52 @@ function EditField(props: EditFieldProps) {
   }
 
   const intent = !isValid ? 'danger' : 'none';
-
-  const rightElement = (
-    <Button
-      variant="minimal"
-      icon="cross"
-      onMouseDown={handleMousedown}
-      onClick={() => onCancel()}
-    />
-  );
+  const inputRightElement = isValidElement(rightElement)
+    ? rightElement
+    : undefined;
 
   if (type === 'number') {
     return (
-      <NumberInput2
-        intent={intent}
-        style={style}
-        autoSelect
-        className={className}
-        value={value}
-        onValueChange={(valueAsNumber, valueString) =>
-          handleChange(valueString ?? Number(valueString))
-        }
-        onKeyDown={handleKeydown}
-        onMouseDown={handleMousedown}
-        size="small"
-        fill
-        buttonPosition="none"
-        stepSize={0.1}
-        minorStepSize={0.01}
-        majorStepSize={1}
-        rightElement={rightElement}
-      />
+      <CloseEditContext.Provider value={closeEdit}>
+        <div ref={editFieldRef}>
+          <NumberInput2
+            intent={intent}
+            style={style}
+            autoSelect
+            className={className}
+            value={value}
+            onValueChange={(valueAsNumber, valueString) =>
+              handleChange(valueString ?? Number(valueString))
+            }
+            onKeyDown={handleKeydown}
+            size="small"
+            fill
+            buttonPosition="none"
+            stepSize={0.1}
+            minorStepSize={0.01}
+            majorStepSize={1}
+            rightElement={inputRightElement}
+          />
+        </div>
+      </CloseEditContext.Provider>
     );
   }
 
   return (
-    <Input2
-      intent={intent}
-      style={style}
-      autoSelect
-      className={className}
-      value={value as string}
-      onChange={(value) => handleChange(value)}
-      onKeyDown={handleKeydown}
-      onMouseDown={handleMousedown}
-      size="small"
-      rightElement={rightElement}
-    />
+    <CloseEditContext.Provider value={closeEdit}>
+      <div ref={editFieldRef}>
+        <Input2
+          intent={intent}
+          style={style}
+          autoSelect
+          className={className}
+          value={value as string}
+          onChange={(value) => handleChange(value)}
+          onKeyDown={handleKeydown}
+          size="small"
+          rightElement={inputRightElement}
+        />
+      </div>
+    </CloseEditContext.Provider>
   );
 }

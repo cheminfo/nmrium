@@ -125,7 +125,9 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
   }, [preferencesState]);
 
   const loggerRef = useRef(logger);
-  useEffect(() => void (loggerRef.current = logger));
+  useEffect(() => {
+    loggerRef.current = logger;
+  });
   useEffect(() => {
     const logger = loggerRef.current;
 
