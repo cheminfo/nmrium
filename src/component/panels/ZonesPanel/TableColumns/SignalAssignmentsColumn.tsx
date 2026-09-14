@@ -43,7 +43,7 @@ function SignalAssignmentsColumn(props: SignalAssignmentsColumnProps) {
       onClick={handleClick}
       style={{ padding: '0', ...tdCss }}
       hideRemoveAssignmentButton={!diaIDs || diaIDs.length === 0}
-      onRemove={(e) => onUnlink(e, false, axis)}
+      onRemove={(e) => onUnlink(e, axis)}
     >
       {(diaIDs?.length > 0 || isAssignmentActive) && (
         <span>{diaIDs?.length || 0}</span>
