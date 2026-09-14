@@ -104,7 +104,6 @@ const MemoizedZonesPanel = memo(function ZonesPanelInner(
     (
       // TODO: this must be a bug, `zoneData.id` will fail with `undefined`.
       zoneData?: any,
-      isOnZoneLevel = undefined,
       signalIndex = -1,
       axis = undefined,
     ) => {
@@ -112,7 +111,6 @@ const MemoizedZonesPanel = memo(function ZonesPanelInner(
         type: 'UNLINK_ZONE',
         payload: {
           zoneKey: zoneData.id,
-          isOnZoneLevel,
           signalIndex,
           axis,
         },

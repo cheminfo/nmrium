@@ -544,8 +544,11 @@ function updateZoneAssignments(
     if (
       previousAssignment === zone.assignment &&
       zone.isAutoAssignment &&
-      (hasDiaId(zone.x.diaIDs, uniqueDiaIds) ||
-        hasDiaId(zone.y.diaIDs, uniqueDiaIds))
+      zone.signals.some(
+        (signal) =>
+          hasDiaId(signal.x.diaIDs, uniqueDiaIds) ||
+          hasDiaId(signal.y.diaIDs, uniqueDiaIds),
+      )
     ) {
       zone.assignment = assignment;
     }
