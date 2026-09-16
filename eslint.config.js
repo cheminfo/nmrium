@@ -45,6 +45,7 @@ export default defineConfig(
       'unicorn/no-computed-property-existence-check': 'off',
       'unicorn/no-immediate-mutation': 'off',
       'unicorn/no-unreadable-object-destructuring': 'off',
+      'unicorn/no-useless-else': 'off',
       'unicorn/prefer-await': 'off',
       'unicorn/prefer-combined-guards': 'off',
       'unicorn/prefer-early-return': 'off',
