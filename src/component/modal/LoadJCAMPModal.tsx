@@ -71,7 +71,7 @@ function InnerLoadJCAMPModal({ onCloseDialog }: InnerLoadJCAMPModalProps) {
           nmriumState: state,
           containsNmrium,
           aggregator,
-          resetSourceObject: false,
+          shouldResetSourceObject: false,
         },
       });
     } catch {

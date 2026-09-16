@@ -42,6 +42,7 @@ export default defineConfig(
       'react-refresh/only-export-components': 'off',
       'unicorn/name-replacements': 'off',
       'unicorn/no-immediate-mutation': 'off',
+      'unicorn/prefer-await': 'off',
       'no-restricted-imports': [
         'error',
         {
