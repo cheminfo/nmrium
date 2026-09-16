@@ -15,12 +15,12 @@ export default function generateNumbersPowerOfX(
   return values;
 }
 
-function formatNumber(number: number) {
+function formatNumber(number: number): string {
   if (number >= 1024 * 1024) {
     return `${number / (1024 * 1024)}M`;
   } else if (number >= 1024) {
     return `${number / 1024}K`;
   } else {
-    return `${number}`;
+    return String(number);
   }
 }

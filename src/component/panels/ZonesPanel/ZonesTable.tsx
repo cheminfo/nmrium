@@ -112,8 +112,6 @@ function ZonesTable(props: ZonesTableProps) {
     showAssignmentLabel,
   } = usePanelPreferences('zones', nucleus) as Zones2DNucleusPreferences;
 
-  const showActions = showDeleteAction || showEditAction || showZoomAction;
-
   if (isFid) {
     return <NoDataForFid />;
   }
@@ -121,6 +119,8 @@ function ZonesTable(props: ZonesTableProps) {
   if (data.length === 0) {
     return <EmptyText text="No data" />;
   }
+
+  const showActions = showDeleteAction || showEditAction || showZoomAction;
 
   return (
     <div>
@@ -130,7 +130,7 @@ function ZonesTable(props: ZonesTableProps) {
           <tr>
             {showSerialNumber && <th rowSpan={2}>#</th>}
             {showAssignmentLabel && <th rowSpan={2}>Assignment</th>}
-            {(deltaX.show || deltaX.show) && <th colSpan={2}>δ (ppm)</th>}
+            {(deltaX.show || deltaY.show) && <th colSpan={2}>δ (ppm)</th>}
             {showAssignment && (
               <>
                 <th colSpan={2}>
@@ -181,7 +181,7 @@ function ZonesTable(props: ZonesTableProps) {
           {sortedData.map((rowData: any, index: any) => (
             <ZonesTableRow
               rowIndex={index}
-              key={`${rowData.tableMetaInfo.id}`}
+              key={rowData.tableMetaInfo.id}
               rowData={rowData}
               onUnlink={onUnlink}
               nucleus={nucleus}
