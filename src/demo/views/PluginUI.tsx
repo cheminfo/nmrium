@@ -2,7 +2,7 @@ import type { IconName } from '@blueprintjs/icons';
 import { IconNames } from '@blueprintjs/icons';
 import styled from '@emotion/styled';
 import { defineProcessingOperatorUI, generateID } from '@zakodium/nmrium-core';
-import init from '@zakodium/nmrium-core-plugins';
+import { init } from '@zakodium/nmrium-core-plugins';
 import {
   createContext,
   useCallback,

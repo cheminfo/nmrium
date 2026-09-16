@@ -210,9 +210,10 @@ function EditField(props: EditFieldProps) {
       }
     }
 
-    globalThis.addEventListener('mousedown', handleOutsideMouseDown);
-    return () =>
-      globalThis.removeEventListener('mousedown', handleOutsideMouseDown);
+    document.addEventListener('mousedown', handleOutsideMouseDown);
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideMouseDown);
+    };
   }, [confirmValue]);
 
   function handleKeydown(event: KeyboardEvent<HTMLInputElement>) {

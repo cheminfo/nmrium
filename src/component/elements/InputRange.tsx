@@ -63,7 +63,7 @@ function InputRange(props: InputRangeProps, ref: any) {
         previousPosition.current = event.clientX;
         if (event.buttons === 1) {
           const step = diff / (event.shiftKey ? 10 : 1);
-          valueRef.current = valueRef.current + step;
+          valueRef.current += step;
           onChange({
             value: valueRef.current,
             name,
@@ -72,13 +72,13 @@ function InputRange(props: InputRangeProps, ref: any) {
       }
 
       function mouseUpCallback() {
-        globalThis.removeEventListener('mousemove', mouseMoveCallback);
-        globalThis.removeEventListener('mouseup', mouseUpCallback);
+        document.removeEventListener('mousemove', mouseMoveCallback);
+        document.removeEventListener('mouseup', mouseUpCallback);
       }
 
       previousPosition.current = event.clientX;
-      globalThis.addEventListener('mousemove', mouseMoveCallback);
-      globalThis.addEventListener('mouseup', mouseUpCallback);
+      document.addEventListener('mousemove', mouseMoveCallback);
+      document.addEventListener('mouseup', mouseUpCallback);
     },
     [name, onChange],
   );
