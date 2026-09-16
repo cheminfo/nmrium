@@ -5,8 +5,8 @@ import type {
   WorkspacePreferences as NMRiumPreferences,
 } from '@zakodium/nmrium-core';
 import type { FileCollection } from 'file-collection';
-import type { ReactElement, ReactNode } from 'react';
-import { forwardRef, memo } from 'react';
+import type { ReactElement, ReactNode, Ref } from 'react';
+import { memo } from 'react';
 import type { ErrorBoundaryPropsWithComponent } from 'react-error-boundary';
 import { ErrorBoundary } from 'react-error-boundary';
 import { RootLayout } from 'react-science/ui';
@@ -76,13 +76,12 @@ export interface NMRiumProps {
    */
   getSpinner?: () => ReactElement;
   core?: NMRiumCore;
+
+  ref?: Ref<NMRiumRefAPI>;
 }
 
-const NMRiumBase = forwardRef<NMRiumRefAPI, NMRiumProps>(function NMRium(
-  props: NMRiumProps,
-  ref,
-) {
-  const { noErrorBoundary = false, onError, ...otherProps } = props;
+function NMRiumBase(props: NMRiumProps) {
+  const { noErrorBoundary = false, onError, ref, ...otherProps } = props;
 
   const innerNmrium = <InnerNMRium {...otherProps} apiRef={ref} />;
 
@@ -95,6 +94,6 @@ const NMRiumBase = forwardRef<NMRiumRefAPI, NMRiumProps>(function NMRium(
   );
 
   return <RootLayout style={{ width: '100%' }}>{children}</RootLayout>;
-});
+}
 
 export const NMRium = memo(NMRiumBase);

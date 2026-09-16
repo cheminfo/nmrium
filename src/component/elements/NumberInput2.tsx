@@ -1,15 +1,8 @@
 import type { HTMLInputProps, NumericInputProps } from '@blueprintjs/core';
 import { Classes, NumericInput } from '@blueprintjs/core';
 import debounce from 'lodash/debounce.js';
-import type { ForwardedRef, InputHTMLAttributes } from 'react';
-import {
-  forwardRef,
-  isValidElement,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import type { InputHTMLAttributes, Ref } from 'react';
+import { isValidElement, useEffect, useMemo, useRef, useState } from 'react';
 
 import useCombinedRefs from '../hooks/useCombinedRefs.js';
 
@@ -21,8 +14,8 @@ interface ValueProps
   debounceTime?: number;
   autoSelect?: boolean;
 }
-interface UseInputProps extends Omit<ValueProps, 'name'> {
-  ref: ForwardedRef<HTMLInputElement>;
+interface UseNumberInputOptions extends Omit<ValueProps, 'name'> {
+  ref?: Ref<HTMLInputElement>;
 }
 export interface NumberInput2Props
   extends
@@ -32,9 +25,10 @@ export interface NumberInput2Props
     >,
     ValueProps {
   format?: () => (element: string) => number | string;
+  ref?: Ref<HTMLInputElement>;
 }
 
-function useNumberInput(props: UseInputProps) {
+function useNumberInput(options: UseNumberInputOptions) {
   const {
     value: externalValue,
     debounceTime,
@@ -42,7 +36,7 @@ function useNumberInput(props: UseInputProps) {
     ref,
     autoSelect,
     checkValue,
-  } = props;
+  } = options;
   const [internalValue, setValue] = useState<number | string>();
   const localRef = useRef<HTMLInputElement>(null);
   const innerRef = useCombinedRefs([ref, localRef]);
@@ -120,7 +114,7 @@ function getClasses(isDebounced: boolean) {
   return classes.join(' ');
 }
 
-function InnerNumberInput(props: NumberInput2Props, ref: any) {
+export function NumberInput2(props: NumberInput2Props) {
   const {
     debounceTime = 0,
     onValueChange,
@@ -128,6 +122,7 @@ function InnerNumberInput(props: NumberInput2Props, ref: any) {
     value: externalValue,
     leftIcon,
     autoSelect = false,
+    ref,
     ...otherInputProps
   } = props;
 
@@ -155,7 +150,3 @@ function InnerNumberInput(props: NumberInput2Props, ref: any) {
     />
   );
 }
-
-const NumberInput2 = forwardRef(InnerNumberInput);
-
-export { NumberInput2 };

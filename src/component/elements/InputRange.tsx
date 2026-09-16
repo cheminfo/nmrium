@@ -1,5 +1,5 @@
-import type { CSSProperties, MouseEvent } from 'react';
-import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
+import type { CSSProperties, MouseEvent, Ref } from 'react';
+import { useCallback, useImperativeHandle, useRef } from 'react';
 
 const styles: Record<'container' | 'label', CSSProperties> = {
   container: {
@@ -34,10 +34,10 @@ interface InputRangeProps {
   shortLabel?: string;
   style?: CSSProperties;
   className?: string;
+  ref?: Ref<any>;
 }
 
-// TODO: remove this hacky ref usage.
-function InputRange(props: InputRangeProps, ref: any) {
+export default function InputRange(props: InputRangeProps) {
   const {
     name,
     value = 0,
@@ -46,6 +46,8 @@ function InputRange(props: InputRangeProps, ref: any) {
     shortLabel,
     style,
     className,
+    // TODO: remove this hacky ref usage.
+    ref,
   } = props;
   const previousPosition = useRef(0);
   const valueRef = useRef(value);
@@ -100,5 +102,3 @@ function InputRange(props: InputRangeProps, ref: any) {
     </div>
   );
 }
-
-export default forwardRef(InputRange);

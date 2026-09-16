@@ -1,5 +1,5 @@
 import type { FileCollection } from 'file-collection';
-import type { ForwardedRef, RefObject } from 'react';
+import type { Ref, RefObject } from 'react';
 import { useImperativeHandle } from 'react';
 
 import { useCreateNmriumZip } from '../hooks/useCreateNmriumZip.ts';
@@ -16,7 +16,7 @@ export interface NMRiumRefAPI {
 }
 
 export function useNMRiumRefAPI(
-  ref: ForwardedRef<NMRiumRefAPI>,
+  ref: Ref<NMRiumRefAPI> | undefined,
   rootRef: RefObject<HTMLDivElement | null>,
 ) {
   const loadFiles = useLoadFiles();
