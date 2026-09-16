@@ -61,7 +61,7 @@ export default function PredictionPanel() {
   const { open: openAccordionPanel } = useAccordionControls();
   const predictionPreferences = usePanelPreferences('prediction');
   const { modal, openMoleculeEditor } = useMoleculeEditor(true);
-  const refreshSlider = useRef<boolean>(true);
+  const refreshSliderRef = useRef<boolean>(true);
 
   const [initialMolfile] = useState(molfile ?? '');
 
@@ -69,7 +69,7 @@ export default function PredictionPanel() {
     if (
       !Array.isArray(molecules) ||
       molecules.length === 0 ||
-      !refreshSlider.current
+      !refreshSliderRef.current
     ) {
       return;
     }
@@ -82,7 +82,7 @@ export default function PredictionPanel() {
     setCurrentIndex(lastIndex);
     setMolfile(lastMolfile);
 
-    refreshSlider.current = false;
+    refreshSliderRef.current = false;
   }, [molecules]);
 
   function changeHandler(event: CanvasEditorOnChangeMolecule) {
@@ -97,7 +97,7 @@ export default function PredictionPanel() {
   }
 
   function predictHandler(action: 'add' | 'save') {
-    refreshSlider.current = action === 'add';
+    refreshSliderRef.current = action === 'add';
     void (async () => {
       if (molfile) {
         const predictedSpectra: string[] = [];
@@ -178,7 +178,7 @@ export default function PredictionPanel() {
             onClickPreferences={settingsPanelHandler}
             onOpenMoleculeEditor={() => openMoleculeEditor()}
             onClickPasteMolecule={() => {
-              refreshSlider.current = true;
+              refreshSliderRef.current = true;
             }}
           >
             <PredictionSimpleOptions />

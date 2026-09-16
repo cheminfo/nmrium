@@ -4,8 +4,8 @@ import type { PropsWithChildren } from 'react';
 import {
   createContext,
   memo,
+  use,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useState,
@@ -35,7 +35,7 @@ interface FocusInputContextState {
 const FocusInputContext = createContext<FocusInputContextState | null>(null);
 
 export function useEventFocusInput() {
-  const context = useContext(FocusInputContext);
+  const context = use(FocusInputContext);
 
   if (!context) {
     throw new Error('FocusInputContext was not found.');
@@ -51,11 +51,7 @@ function FocusInputProvider({ children }: Required<PropsWithChildren>) {
     return { focusSource, setFocusSource };
   }, [focusSource]);
 
-  return (
-    <FocusInputContext.Provider value={state}>
-      {children}
-    </FocusInputContext.Provider>
-  );
+  return <FocusInputContext value={state}>{children}</FocusInputContext>;
 }
 
 function SignalsContent({ range }: SignalsFormProps) {

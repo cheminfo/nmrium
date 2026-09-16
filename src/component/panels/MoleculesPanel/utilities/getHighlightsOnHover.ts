@@ -1,12 +1,12 @@
 import type { Spectrum } from '@zakodium/nmrium-core';
 
-import type { AssignmentContext } from '../../../assignment/AssignmentsContext.js';
+import type { AssignmentContextValue } from '../../../assignment/AssignmentsContext.js';
 import { assignmentAxes } from '../../../assignment/AssignmentsContext.js';
 
 import { getAssignIds } from './getAssignIds.js';
 
 export function getHighlightsOnHover(
-  assignments: AssignmentContext,
+  assignments: AssignmentContextValue,
   oclIDs: string[],
   spectra: Spectrum[],
 ) {
