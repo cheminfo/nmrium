@@ -70,8 +70,8 @@ export function reduce2DSpectrum(
         Math.floor(((newCol + 1) * sourceNbPointsX) / newNbPointsX);
 
       let sum = 0;
-      let min = Number.POSITIVE_INFINITY;
-      let max = Number.NEGATIVE_INFINITY;
+      let min = Infinity;
+      let max = -Infinity;
 
       for (let row = srcRowStart; row < srcRowEnd; row++) {
         const rowData = z[row];

@@ -11,7 +11,7 @@ import { findAutomaticContourLevels } from '../Spectrum2D/findBestMinContour/fin
 
 test('maxPoolAbsolute returns the global finite absolute maximum', () => {
   const analysis = maxPoolAbsolute(
-    new Float64Array([-3, Number.NaN, 2, -7, Number.POSITIVE_INFINITY, 4]),
+    new Float64Array([-3, NaN, 2, -7, Infinity, 4]),
     2,
     3,
     2,
@@ -21,25 +21,8 @@ test('maxPoolAbsolute returns the global finite absolute maximum', () => {
 });
 
 test('sorted threshold counts preserve direct comparison semantics', () => {
-  const matrix = new Float64Array([
-    Number.NaN,
-    Number.NEGATIVE_INFINITY,
-    -1,
-    0,
-    0,
-    2,
-    2,
-    Number.POSITIVE_INFINITY,
-  ]);
-  const thresholds = [
-    Number.NEGATIVE_INFINITY,
-    -1,
-    0,
-    1,
-    2,
-    Number.POSITIVE_INFINITY,
-    Number.NaN,
-  ];
+  const matrix = new Float64Array([NaN, -Infinity, -1, 0, 0, 2, 2, Infinity]);
+  const thresholds = [-Infinity, -1, 0, 1, 2, Infinity, NaN];
 
   const thresholdIndex = createThresholdIndex(matrix);
 

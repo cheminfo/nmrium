@@ -305,7 +305,7 @@ function getMaxY(spectrum: Spectrum1D, options: { from: number; to: number }) {
   } = spectrum;
   const fromIndex = xFindClosestIndex(x, from);
   const toIndex = xFindClosestIndex(x, to);
-  let max = Number.NEGATIVE_INFINITY;
+  let max = -Infinity;
   for (const value of re.slice(fromIndex, toIndex)) {
     if (value > max) {
       max = value;

@@ -50,7 +50,7 @@ function useIntegrals() {
     return null;
   }
 
-  let max = Number.NEGATIVE_INFINITY;
+  let max = -Infinity;
   const values: IntegralData[] = [];
 
   const {

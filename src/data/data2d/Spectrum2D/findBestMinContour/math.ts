@@ -41,11 +41,11 @@ export function validateInput(
   cols: number,
   noiseLevel: number,
 ): void {
-  if (!Number.isInteger(rows) || rows <= 0) {
+  if (!Number.isSafeInteger(rows) || rows <= 0) {
     throw new Error('rows must be a positive integer');
   }
 
-  if (!Number.isInteger(cols) || cols <= 0) {
+  if (!Number.isSafeInteger(cols) || cols <= 0) {
     throw new Error('cols must be a positive integer');
   }
 
