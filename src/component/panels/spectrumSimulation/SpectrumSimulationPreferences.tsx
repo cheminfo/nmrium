@@ -1,6 +1,6 @@
 import { Tag } from '@blueprintjs/core';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { forwardRef } from 'react';
+import type { Ref } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { FREQUENCIES } from '../../../data/PredictionManager.js';
@@ -11,6 +11,7 @@ import Label from '../../elements/Label.js';
 import { NumberInput2Controller } from '../../elements/NumberInput2Controller.js';
 import { Select2Controller } from '../../elements/Select2Controller.js';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer.js';
+import type { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
 import { useSettingImperativeHandle } from '../extra/utilities/settingImperativeHandle.js';
 
 import { simulationValidationSchema } from './simulationValidation.js';
@@ -25,11 +26,13 @@ const labelStyle: LabelStyle = {
 
 interface SpectrumSimulationPreferencesProps {
   onSave: (options: SpectrumSimulationOptions) => void;
+  ref?: Ref<SettingsRef | null>;
 }
-function SpectrumSimulationPreferences(
-  { onSave }: SpectrumSimulationPreferencesProps,
-  ref: any,
+
+export default function SpectrumSimulationPreferences(
+  props: SpectrumSimulationPreferencesProps,
 ) {
+  const { onSave, ref } = props;
   const options = useWatch() as Required<SpectrumSimulationOptions>;
 
   const { handleSubmit, control } = useForm({
@@ -91,5 +94,3 @@ function SpectrumSimulationPreferences(
     </PreferencesContainer>
   );
 }
-
-export default forwardRef(SpectrumSimulationPreferences);

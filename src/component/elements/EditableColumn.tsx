@@ -1,9 +1,8 @@
 import type { InputGroupProps } from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import type { CSSProperties, KeyboardEvent, ReactNode } from 'react';
+import type { CSSProperties, KeyboardEvent, ReactNode, Ref } from 'react';
 import {
   createContext,
-  forwardRef,
   isValidElement,
   useCallback,
   useContext,
@@ -86,12 +85,10 @@ export interface EditableColumnProps
    * Use "none" to conditionally disable the behaviour.
    */
   clickType?: 'single' | 'double' | 'none';
+  ref?: Ref<any>;
 }
 
-export const EditableColumn = forwardRef(function EditableColumn(
-  props: EditableColumnProps,
-  ref: any,
-) {
+export function EditableColumn(props: EditableColumnProps) {
   const {
     onSave,
     value,
@@ -103,6 +100,7 @@ export const EditableColumn = forwardRef(function EditableColumn(
     rightElement,
     textOverflowEllipses = false,
     clickType = 'single',
+    ref,
   } = props;
 
   const [enabled, enableEdit] = useState<boolean | undefined>();
@@ -169,7 +167,7 @@ export const EditableColumn = forwardRef(function EditableColumn(
       )}
     </Container>
   );
-});
+}
 
 interface EditFieldProps extends BaseEditableColumnProps {
   onConfirm: (value: string | number) => void;

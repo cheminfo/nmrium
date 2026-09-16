@@ -1,4 +1,5 @@
-import { forwardRef, memo, useCallback, useMemo } from 'react';
+import type { Ref } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { usePreferences } from '../../context/PreferencesContext.js';
@@ -60,69 +61,71 @@ const formatFields: NucleusPreferenceField[] = [
   },
 ];
 
-export default memo(
-  forwardRef<SettingsRef>(function IntegralsPreferences(_, ref) {
-    const preferences = usePreferences();
-    const nucleus = useNucleus();
-    const nuclei = useMemo(() => getUniqueNuclei(nucleus), [nucleus]);
-    const preferencesByNuclei = usePanelPreferencesByNuclei(
-      'integrals',
-      nuclei,
-    );
+interface IntegralsPreferencesProps {
+  ref?: Ref<SettingsRef | null>;
+}
 
-    const saveHandler = useCallback(
-      (values: any) => {
-        preferences.dispatch({
-          type: 'SET_PANELS_PREFERENCES',
-          payload: { key: 'integrals', value: values },
-        });
-      },
-      [preferences],
-    );
-    const { handleSubmit, control } = useForm<any>({
-      defaultValues: preferencesByNuclei,
-    });
+export default memo(function IntegralsPreferences(
+  props: IntegralsPreferencesProps,
+) {
+  const { ref } = props;
+  const preferences = usePreferences();
+  const nucleus = useNucleus();
+  const nuclei = useMemo(() => getUniqueNuclei(nucleus), [nucleus]);
+  const preferencesByNuclei = usePanelPreferencesByNuclei('integrals', nuclei);
 
-    useSettingImperativeHandle(ref, handleSubmit, saveHandler);
+  const saveHandler = useCallback(
+    (values: any) => {
+      preferences.dispatch({
+        type: 'SET_PANELS_PREFERENCES',
+        payload: { key: 'integrals', value: values },
+      });
+    },
+    [preferences],
+  );
+  const { handleSubmit, control } = useForm<any>({
+    defaultValues: preferencesByNuclei,
+  });
 
-    return (
-      <PreferencesContainer>
-        {nuclei?.map((n) => (
-          <NucleusPreferences
-            key={n}
-            control={control}
-            nucleus={n}
-            fields={formatFields}
-            renderTop={() => (
-              <>
-                <Label title="Color" style={fieldLabelStyle}>
-                  <div style={{ display: 'flex', padding: '2px 0' }}>
-                    <div style={{ width: '23px' }} />
-                    <ColorPickerDropdownController
-                      control={control}
-                      name={`nuclei.${n}.color`}
-                    />
-                  </div>
-                </Label>
-                <Label title="Stroke width:" style={fieldLabelStyle}>
-                  <div style={{ display: 'flex', padding: '2px 0' }}>
-                    <div style={{ width: '23px' }} />
-                    <NumberInput2Controller
-                      name={`nuclei.${n}.strokeWidth`}
-                      control={control}
-                      min={1}
-                      max={9}
-                      controllerProps={{
-                        rules: { min: 1, max: 9, required: true },
-                      }}
-                    />
-                  </div>
-                </Label>
-              </>
-            )}
-          />
-        ))}
-      </PreferencesContainer>
-    );
-  }),
-);
+  useSettingImperativeHandle(ref, handleSubmit, saveHandler);
+
+  return (
+    <PreferencesContainer>
+      {nuclei?.map((n) => (
+        <NucleusPreferences
+          key={n}
+          control={control}
+          nucleus={n}
+          fields={formatFields}
+          renderTop={() => (
+            <>
+              <Label title="Color" style={fieldLabelStyle}>
+                <div style={{ display: 'flex', padding: '2px 0' }}>
+                  <div style={{ width: '23px' }} />
+                  <ColorPickerDropdownController
+                    control={control}
+                    name={`nuclei.${n}.color`}
+                  />
+                </div>
+              </Label>
+              <Label title="Stroke width:" style={fieldLabelStyle}>
+                <div style={{ display: 'flex', padding: '2px 0' }}>
+                  <div style={{ width: '23px' }} />
+                  <NumberInput2Controller
+                    name={`nuclei.${n}.strokeWidth`}
+                    control={control}
+                    min={1}
+                    max={9}
+                    controllerProps={{
+                      rules: { min: 1, max: 9, required: true },
+                    }}
+                  />
+                </div>
+              </Label>
+            </>
+          )}
+        />
+      ))}
+    </PreferencesContainer>
+  );
+});

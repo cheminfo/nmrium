@@ -1,7 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import type { MultipleSpectraAnalysisPreferences as MultipleSpectraAnalysisPreferencesInterface } from '@zakodium/nmrium-core';
 import { ANALYSIS_COLUMN_TYPES } from '@zakodium/nmrium-core';
-import { forwardRef } from 'react';
+import type { Ref } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
@@ -14,6 +14,7 @@ import useCheckExperimentalFeature from '../../../hooks/useCheckExperimentalFeat
 import { usePanelPreferences } from '../../../hooks/usePanelPreferences.js';
 import { checkUniqueByKey } from '../../../utility/checkUniqueByKey.js';
 import { PreferencesContainer } from '../../extra/preferences/PreferencesContainer.js';
+import type { SettingsRef } from '../../extra/utilities/settingImperativeHandle.js';
 import { useSettingImperativeHandle } from '../../extra/utilities/settingImperativeHandle.js';
 
 import { AnalysisTablePreferences } from './AnalysisTablePreferences.js';
@@ -57,12 +58,13 @@ interface MultipleSpectraAnalysisPreferencesProps {
   data: SpectraAnalysisData;
   activeTab: string;
   onAfterSave: (flag: boolean) => void;
+  ref?: Ref<SettingsRef | null>;
 }
 
-function MultipleSpectraAnalysisPreferences(
-  { data, activeTab, onAfterSave }: MultipleSpectraAnalysisPreferencesProps,
-  ref: any,
+export default function MultipleSpectraAnalysisPreferences(
+  props: MultipleSpectraAnalysisPreferencesProps,
 ) {
+  const { data, activeTab, onAfterSave, ref } = props;
   const panelPreferences = usePanelPreferences(
     'multipleSpectraAnalysis',
     activeTab,
@@ -178,5 +180,3 @@ function columnSchema(columns: any) {
     index: Yup.number().required(),
   });
 }
-
-export default forwardRef(MultipleSpectraAnalysisPreferences);

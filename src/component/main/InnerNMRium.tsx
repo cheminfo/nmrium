@@ -1,6 +1,6 @@
 import { HotkeysProvider } from '@blueprintjs/core';
 import { init } from '@zakodium/nmrium-core-plugins';
-import type { ForwardedRef } from 'react';
+import type { Ref } from 'react';
 import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
 import { useFullscreen } from 'react-science/ui';
 
@@ -34,7 +34,7 @@ import type { NMRiumRefAPI } from './NMRiumRefAPI.js';
 import NMRiumStateProvider from './NMRiumStateProvider.js';
 
 type InnerNMRiumProps = Omit<NMRiumProps, 'onError'> & {
-  apiRef: ForwardedRef<NMRiumRefAPI>;
+  apiRef?: Ref<NMRiumRefAPI>;
 };
 
 export function InnerNMRium(props: InnerNMRiumProps) {

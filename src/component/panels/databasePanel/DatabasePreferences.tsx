@@ -1,5 +1,6 @@
 import { Tag } from '@blueprintjs/core';
-import { forwardRef, useCallback, useEffect } from 'react';
+import type { Ref } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { usePreferences } from '../../context/PreferencesContext.js';
@@ -13,127 +14,130 @@ import { PreferencesGroup } from '../extra/preferences/PreferencesGroup.js';
 import type { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
 import { useSettingImperativeHandle } from '../extra/utilities/settingImperativeHandle.js';
 
-export default forwardRef<SettingsRef | null>(
-  function DatabasePreferences(_, ref) {
-    const preferences = usePreferences();
-    const databasePreferences = usePanelPreferences('database');
+interface DatabasePreferencesProps {
+  ref?: Ref<SettingsRef | null>;
+}
 
-    const saveHandler = useCallback(
-      (values: any) => {
-        preferences.dispatch({
-          type: 'SET_PANELS_PREFERENCES',
-          payload: { key: 'database', value: values },
-        });
-      },
-      [preferences],
-    );
+export default function DatabasePreferences(props: DatabasePreferencesProps) {
+  const { ref } = props;
+  const preferences = usePreferences();
+  const databasePreferences = usePanelPreferences('database');
 
-    const { handleSubmit, reset, control } = useForm<any>({
-      defaultValues: databasePreferences,
-    });
+  const saveHandler = useCallback(
+    (values: any) => {
+      preferences.dispatch({
+        type: 'SET_PANELS_PREFERENCES',
+        payload: { key: 'database', value: values },
+      });
+    },
+    [preferences],
+  );
 
-    useEffect(() => {
-      reset(databasePreferences);
-    }, [databasePreferences, reset]);
+  const { handleSubmit, reset, control } = useForm<any>({
+    defaultValues: databasePreferences,
+  });
 
-    useSettingImperativeHandle(ref, handleSubmit, saveHandler);
+  useEffect(() => {
+    reset(databasePreferences);
+  }, [databasePreferences, reset]);
 
-    return (
-      <PreferencesContainer>
-        <PreferencesGroup>
-          <FormatField
+  useSettingImperativeHandle(ref, handleSubmit, saveHandler);
+
+  return (
+    <PreferencesContainer>
+      <PreferencesGroup>
+        <FormatField
+          control={control}
+          label="Preview jcamp"
+          checkFieldName="previewJcamp"
+          hideFormatField
+        />
+        <Label title="Color" style={fieldLabelStyle}>
+          <ColorPickerDropdownController control={control} name="color" />
+        </Label>
+        <Label title="Margin bottom (px):" style={fieldLabelStyle}>
+          <NumberInput2Controller
             control={control}
-            label="Preview jcamp"
-            checkFieldName="previewJcamp"
-            hideFormatField
+            name="marginBottom"
+            min={0}
+            controllerProps={{ rules: { min: 0, required: true } }}
           />
-          <Label title="Color" style={fieldLabelStyle}>
-            <ColorPickerDropdownController control={control} name="color" />
-          </Label>
-          <Label title="Margin bottom (px):" style={fieldLabelStyle}>
-            <NumberInput2Controller
-              control={control}
-              name="marginBottom"
-              min={0}
-              controllerProps={{ rules: { min: 0, required: true } }}
-            />
-          </Label>
-          <Label title="Structure min width:" style={fieldLabelStyle}>
-            <NumberInput2Controller
-              control={control}
-              name="structureSize.minWidth"
-              min={0}
-              controllerProps={{ rules: { min: 0, required: true } }}
-              rightElement={<Tag>px</Tag>}
-            />
-          </Label>
-          <Label title="Structure min height:" style={fieldLabelStyle}>
-            <NumberInput2Controller
-              control={control}
-              name="structureSize.minHeight"
-              min={0}
-              controllerProps={{ rules: { min: 0, required: true } }}
-              rightElement={<Tag>px</Tag>}
-            />
-          </Label>
-        </PreferencesGroup>
-        <PreferencesGroup header="Table Preferences">
-          <FormatField
+        </Label>
+        <Label title="Structure min width:" style={fieldLabelStyle}>
+          <NumberInput2Controller
             control={control}
-            label="Structure"
-            checkFieldName="showSmiles"
-            hideFormatField
+            name="structureSize.minWidth"
+            min={0}
+            controllerProps={{ rules: { min: 0, required: true } }}
+            rightElement={<Tag>px</Tag>}
           />
-          <FormatField
+        </Label>
+        <Label title="Structure min height:" style={fieldLabelStyle}>
+          <NumberInput2Controller
             control={control}
-            label="Solvent"
-            checkFieldName="showSolvent"
-            hideFormatField
+            name="structureSize.minHeight"
+            min={0}
+            controllerProps={{ rules: { min: 0, required: true } }}
+            rightElement={<Tag>px</Tag>}
           />
-          <FormatField
-            control={control}
-            label="Names"
-            checkFieldName="showNames"
-            hideFormatField
-          />
-          <FormatField
-            control={control}
-            label="Range"
-            checkFieldName="range.show"
-            formatFieldName="range.format"
-          />
-          <FormatField
-            control={control}
-            label="δ (ppm)"
-            checkFieldName="delta.show"
-            formatFieldName="delta.format"
-          />
-          <FormatField
-            control={control}
-            label="Assignment"
-            checkFieldName="showAssignment"
-            hideFormatField
-          />
-          <FormatField
-            control={control}
-            label="J (Hz)"
-            checkFieldName="coupling.show"
-            formatFieldName="coupling.format"
-          />
-          <FormatField
-            control={control}
-            label="Multiplicity"
-            checkFieldName="showMultiplicity"
-            hideFormatField
-          />
-          <FormatField
-            control={control}
-            label="Save as nmrium"
-            checkFieldName="allowSaveAsNMRium"
-            hideFormatField
-          />
-        </PreferencesGroup>
-      </PreferencesContainer>
-    );
-  },
-);
+        </Label>
+      </PreferencesGroup>
+      <PreferencesGroup header="Table Preferences">
+        <FormatField
+          control={control}
+          label="Structure"
+          checkFieldName="showSmiles"
+          hideFormatField
+        />
+        <FormatField
+          control={control}
+          label="Solvent"
+          checkFieldName="showSolvent"
+          hideFormatField
+        />
+        <FormatField
+          control={control}
+          label="Names"
+          checkFieldName="showNames"
+          hideFormatField
+        />
+        <FormatField
+          control={control}
+          label="Range"
+          checkFieldName="range.show"
+          formatFieldName="range.format"
+        />
+        <FormatField
+          control={control}
+          label="δ (ppm)"
+          checkFieldName="delta.show"
+          formatFieldName="delta.format"
+        />
+        <FormatField
+          control={control}
+          label="Assignment"
+          checkFieldName="showAssignment"
+          hideFormatField
+        />
+        <FormatField
+          control={control}
+          label="J (Hz)"
+          checkFieldName="coupling.show"
+          formatFieldName="coupling.format"
+        />
+        <FormatField
+          control={control}
+          label="Multiplicity"
+          checkFieldName="showMultiplicity"
+          hideFormatField
+        />
+        <FormatField
+          control={control}
+          label="Save as nmrium"
+          checkFieldName="allowSaveAsNMRium"
+          hideFormatField
+        />
+      </PreferencesGroup>
+    </PreferencesContainer>
+  );
+}

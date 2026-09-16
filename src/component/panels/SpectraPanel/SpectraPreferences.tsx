@@ -1,13 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import type { PanelsPreferences, Workspace } from '@zakodium/nmrium-core';
 import type { Ref } from 'react';
-import {
-  forwardRef,
-  memo,
-  useCallback,
-  useImperativeHandle,
-  useMemo,
-} from 'react';
+import { memo, useCallback, useImperativeHandle, useMemo } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
@@ -22,6 +16,7 @@ import { getSpectraObjectPaths } from '../../utility/getSpectraObjectPaths.js';
 import { replaceNucleiObjectKeys } from '../../utility/replaceNucleiObjectKeys.js';
 import { NucleusGroup } from '../extra/preferences/NucleusGroup.js';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer.js';
+import type { SettingsRef } from '../extra/utilities/settingImperativeHandle.ts';
 
 import { SpectraColumnsManager } from './base/SpectraColumnsManager.js';
 
@@ -67,7 +62,12 @@ const spectraPreferencesValidation: any = Yup.lazy(
     }),
 );
 
-function SpectraPreferences(props: object, ref: Ref<any>) {
+interface SpectraPreferencesProps {
+  ref?: Ref<SettingsRef | null>;
+}
+
+function SpectraPreferences(props: SpectraPreferencesProps) {
+  const { ref } = props;
   const {
     data,
     view: {
@@ -110,8 +110,8 @@ function SpectraPreferences(props: object, ref: Ref<any>) {
   useImperativeHandle(
     ref,
     () => ({
-      saveSetting: () => {
-        void handleSubmit(saveHandler)();
+      saveSetting: async () => {
+        await handleSubmit(saveHandler)();
         return isValid;
       },
     }),
@@ -203,4 +203,4 @@ function SpectraPreferences(props: object, ref: Ref<any>) {
   );
 }
 
-export default memo(forwardRef(SpectraPreferences));
+export default memo(SpectraPreferences);
