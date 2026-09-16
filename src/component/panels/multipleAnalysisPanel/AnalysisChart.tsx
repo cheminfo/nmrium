@@ -98,10 +98,12 @@ function getPlotDataAsString(
     let headerIndex = 0;
     // listed the spectra panel columns
     for (const col of spectraPanelPreferences.columns) {
-      if (col.visible && 'jpath' in col) {
-        columnsLabels.splice(headerIndex, 0, col.label);
-        headerIndex++;
+      if (!(col.visible && 'jpath' in col)) {
+        continue;
       }
+
+      columnsLabels.splice(headerIndex, 0, col.label);
+      headerIndex++;
     }
 
     let result = `${columnsLabels.join('\t')}\n`;
@@ -112,11 +114,13 @@ function getPlotDataAsString(
 
       // listed the spectra cell values
       for (const col of spectraPanelPreferences.columns) {
-        if (col.visible && 'jpath' in col) {
-          const jpath = (col as JpathTableColumn)?.jpath;
-          const value = jpath ? dlv(spectrum, jpath, 'null') : 'null';
-          cellsValues.push(value);
+        if (!(col.visible && 'jpath' in col)) {
+          continue;
         }
+
+        const jpath = (col as JpathTableColumn)?.jpath;
+        const value = jpath ? dlv(spectrum, jpath, 'null') : 'null';
+        cellsValues.push(value);
       }
 
       const x = xData
@@ -163,7 +167,7 @@ function preparePlotData(
   return { xPathKeys, yPathKeys, xData, yData };
 }
 
-function usePlotData(
+function getPlotData(
   analysisData: SpectraAnalysisData,
   options: { plotOption: PlotOptions; spectra: Spectrum[] },
 ) {
@@ -208,14 +212,12 @@ function getAnalysisColumnsPaths(spectraAnalysisData: SpectraAnalysisData) {
 
 export default function AnalysisChart(props: PlotChartPros) {
   const { spectraAnalysisData } = props;
-  const {
-    data,
-    view: {
-      spectra: { activeTab },
-    },
-  } = useChartData();
+  const { data, view } = useChartData();
   const toaster = useToaster();
-  const spectraPreferences = usePanelPreferences('spectra', activeTab);
+  const spectraPreferences = usePanelPreferences(
+    'spectra',
+    view.spectra.activeTab,
+  );
   const { sort } = useSortSpectra();
   const spectra = useSpectraByActiveNucleus();
 
@@ -265,7 +267,7 @@ export default function AnalysisChart(props: PlotChartPros) {
     }
   }
 
-  const plotData = usePlotData(spectraAnalysisData, {
+  const plotData = getPlotData(spectraAnalysisData, {
     plotOption: { ...plotOptions, paths },
     spectra,
   });
@@ -314,25 +316,23 @@ export default function AnalysisChart(props: PlotChartPros) {
     if (axis === 'x') {
       if (analysisData.xData) {
         path = 'value';
-        sortByReferences = Object.keys(analysisData.xData).map(
-          (spectrumKey) => ({
+        sortByReferences = Object.entries(analysisData.xData).map(
+          ([spectrumKey, value]) => ({
             id: spectrumKey,
-            value: (analysisData.xData as any)[spectrumKey],
+            value,
           }),
         );
       } else {
         path = plotOptions.xPath;
       }
       activeSort = plotOptions.xPath;
-    }
-
-    if (axis === 'y') {
+    } else if (axis === 'y') {
       if (analysisData.yData) {
         path = 'value';
-        sortByReferences = Object.keys(analysisData.yData).map(
-          (spectrumKey) => ({
+        sortByReferences = Object.entries(analysisData.yData).map(
+          ([spectrumKey, value]) => ({
             id: spectrumKey,
-            value: (analysisData.yData as any)[spectrumKey],
+            value,
           }),
         );
       } else {

@@ -35,13 +35,13 @@ function useZeroFillingDefaultSize(): number {
 
   if (isSpectrum1D(spectrum)) {
     return getZeroFillingSize(spectrum.data.x.length);
-  } else if (isSpectrum2D(spectrum)) {
+  }
+  if (isSpectrum2D(spectrum)) {
     const data = (spectrum.data as NmrData2DFid).re;
     const nbPoints = getZeroFillingSize(data.z[0].length);
     return Math.min(4096, nbPoints);
-  } else {
-    return 0;
   }
+  return 0;
 }
 
 export type ZeroFillingEntry =
@@ -165,9 +165,7 @@ export const useZeroFilling = (
     if (triggerSource === 'onChange') {
       onChange(values);
       syncFilterOptions(values);
-    }
-
-    if (triggerSource === 'apply') {
+    } else if (triggerSource === 'apply') {
       dispatchApply(values);
       clearSyncFilterOptions();
     }
