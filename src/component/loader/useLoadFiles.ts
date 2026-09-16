@@ -21,7 +21,7 @@ export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
     preferences;
   const toaster = useToaster();
   const { logger } = useLogger();
-  const experimentalFeatures = useCheckExperimentalFeature();
+  const hasExperimentalFeatures = useCheckExperimentalFeature();
   const core = useCore();
 
   const dispatchPayload = useCallback(
@@ -70,14 +70,14 @@ export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
         containsNmrium,
         aggregator,
       } = await core.read(fileCollection, parsingOptions);
-      const resetSourceObject = containsNmrium;
+      const shouldResetSourceObject = containsNmrium;
 
       dispatchPayload({
         nmriumState,
         containsNmrium,
         parseMetaFileResult,
         aggregator,
-        resetSourceObject,
+        shouldResetSourceObject,
       });
     },
     [core, dispatchPayload],
@@ -101,7 +101,7 @@ export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
         selector,
         logger: logger.child({ context: 'nmr-processing' }),
         onLoadProcessing,
-        experimentalFeatures,
+        experimentalFeatures: hasExperimentalFeatures,
       };
 
       if (Array.isArray(files)) {
@@ -122,7 +122,7 @@ export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
       }
     },
     [
-      experimentalFeatures,
+      hasExperimentalFeatures,
       loadFileCollection,
       loadNmriumArchives,
       logger,
