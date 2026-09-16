@@ -235,11 +235,11 @@ function ActionButtons(props: ActionButtonsProps) {
   return buttons.map((button, index) => {
     if (isSeparator(button)) {
       if (direction === 'row') {
-        // eslint-disable-next-line react/no-array-index-key
+        // eslint-disable-next-line @eslint-react/no-array-index-key
         return <HorizontalSeparator key={index} />;
       }
 
-      // eslint-disable-next-line react/no-array-index-key
+      // eslint-disable-next-line @eslint-react/no-array-index-key
       return <VerticalSeparator key={index} />;
     }
 
@@ -247,7 +247,7 @@ function ActionButtons(props: ActionButtonsProps) {
 
     return (
       <ActionButton
-        // eslint-disable-next-line react/no-array-index-key
+        // eslint-disable-next-line @eslint-react/no-array-index-key
         key={index}
         tooltipProps={{ content: title || '', compact: true }}
         {...otherProps}

@@ -40,8 +40,8 @@ export function SVGGroup(props: SVGGroupProps) {
       {Children.map(items, (child, index) => {
         return (
           <g
-            // eslint-disable-next-line react/no-array-index-key
-            key={`${index}`}
+            // eslint-disable-next-line @eslint-react/no-array-index-key
+            key={index}
             ref={(ref) => {
               if (ref) {
                 elementsRefs.current[index] = ref;

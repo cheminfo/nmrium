@@ -149,7 +149,7 @@ function PublicationText(props: PublicationTextProps) {
     <g transform={`translate(${padding} ${padding})`}>
       {lines.map((line, lineIndex) => (
         <SVGStyledText
-          // eslint-disable-next-line react/no-array-index-key
+          // eslint-disable-next-line @eslint-react/no-array-index-key
           key={lineIndex}
           {...textStyleWithSize}
           fontFamily="Arial"
@@ -168,7 +168,7 @@ function PublicationText(props: PublicationTextProps) {
 
               return (
                 <tspan
-                  // eslint-disable-next-line react/no-array-index-key
+                  // eslint-disable-next-line @eslint-react/no-array-index-key
                   key={wordIndex}
                   fontSize={fontSize}
                   {...props}
@@ -178,13 +178,15 @@ function PublicationText(props: PublicationTextProps) {
               );
             }
 
-            const addSpace =
+            const shouldAddSpace =
               !line[wordIndex + 1]?.startsWith('--') ||
               /\s$/.test(word) ||
               /[^a-zA-Z0-9]$/.test(word);
             return (
-              // eslint-disable-next-line react/no-array-index-key
-              <tspan key={wordIndex}>{addSpace ? `${word} ` : word}</tspan>
+              // eslint-disable-next-line @eslint-react/no-array-index-key
+              <tspan key={wordIndex}>
+                {shouldAddSpace ? `${word} ` : word}
+              </tspan>
             );
           })}
         </SVGStyledText>

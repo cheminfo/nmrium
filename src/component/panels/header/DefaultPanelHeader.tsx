@@ -109,10 +109,10 @@ function DefaultPanelHeader(props: DefaultPanelHeaderProps) {
 function mapToolbarButtons(buttons: ToolbarItemProps[]) {
   return buttons.map((props, index) =>
     isCustomToolbarItem(props) ? (
-      // eslint-disable-next-line react/no-array-index-key
-      <Fragment key={`${index}`}>{props.component}</Fragment>
+      // eslint-disable-next-line @eslint-react/no-array-index-key
+      <Fragment key={index}>{props.component}</Fragment>
     ) : (
-      <Toolbar.Item key={props?.id || `${index}`} {...props} />
+      <Toolbar.Item key={props?.id || index} {...props} />
     ),
   );
 }
