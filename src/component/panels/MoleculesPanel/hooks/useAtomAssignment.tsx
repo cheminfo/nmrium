@@ -58,12 +58,11 @@ function getSignalsDiaIDs(
   }
 
   const signals = spectrum.zones.values[index].signals;
-  return signals
-    .filter((signal) => signal.id in assignments)
-    .flatMap((signal) => [
-      ...(signal.x?.diaIDs || []),
-      ...(signal.y?.diaIDs || []),
-    ]);
+  return signals.flatMap((signal) =>
+    signal.id in assignments
+      ? [...(signal.x?.diaIDs || []), ...(signal.y?.diaIDs || [])]
+      : [],
+  );
 }
 
 function use1DSpectraTraces() {

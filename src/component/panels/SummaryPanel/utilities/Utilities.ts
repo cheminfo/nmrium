@@ -560,12 +560,8 @@ function isInView(
         xDomain1,
         yDomain0,
         yDomain1,
-      )
-    ) {
-      return true;
-    }
-    // try to find a link which contains the belonging 2D signal in the spectra in view
-    else if (
+      ) ||
+      // try to find a link which contains the belonging 2D signal in the spectra in view
       correlation.link.some((link) => {
         const spectrum = findSpectrum(
           spectraData,

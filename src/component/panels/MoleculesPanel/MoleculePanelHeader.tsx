@@ -481,7 +481,7 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
           tooltip="Float molecule"
           icon={<IoOpenOutline />}
           onClick={floatMoleculeHandler}
-          active={moleculesView?.[moleculeKey]?.floating.visible || false}
+          active={moleculesView?.[moleculeKey]?.floating.visible}
           disabled={!hasMolecules}
         />
 

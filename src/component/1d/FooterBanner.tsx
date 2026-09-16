@@ -110,7 +110,7 @@ function FooterBannerInner({
         <InfoItem.Label> 𝛅: </InfoItem.Label>
         <InfoItem.Value>{format(scaleX().invert(position.x))}</InfoItem.Value>
         <InfoItem.Unit>ppm</InfoItem.Unit>
-        {activeSpectrum && spectrum?.info?.originFrequency && (
+        {activeSpectrum && spectrum?.info?.originFrequency ? (
           <>
             <InfoItem.Value>
               &nbsp;(
@@ -127,7 +127,7 @@ function FooterBannerInner({
               <InfoItem.Value>{getXIndex(position.x)}</InfoItem.Value>
             </InfoItem>
           </>
-        )}
+        ) : null}
       </InfoBlock>
 
       {isBrushing && (
@@ -141,7 +141,7 @@ function FooterBannerInner({
 
       {activeSpectrum && (
         <FlexInfoItem autoHide display="flex" hideThreshold={750}>
-          {spectrum?.info?.originFrequency && isBrushing && (
+          {spectrum?.info?.originFrequency && isBrushing ? (
             <InfoBlock>
               <InfoItem.Label> ΔHz: </InfoItem.Label>
               <InfoItem.Value>
@@ -151,7 +151,7 @@ function FooterBannerInner({
                 ).toPrecision(5)}
               </InfoItem.Value>
             </InfoBlock>
-          )}
+          ) : null}
           {isBrushing && (
             <InfoBlock>
               <InfoItem.Label> ratio :</InfoItem.Label>

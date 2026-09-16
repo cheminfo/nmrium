@@ -82,7 +82,7 @@ export function DialogProvider({ children }: Required<PropsWithChildren>) {
     }
     function isDialogOpen(componentIdentifier: ComponentIdentifier) {
       const identifier = getDialogIdentifier(componentIdentifier);
-      return dialogStates?.[identifier]?.isOpen || false;
+      return dialogStates?.[identifier]?.isOpen;
     }
     function getDialog(componentIdentifier: ComponentIdentifier) {
       const identifier = getDialogIdentifier(componentIdentifier);

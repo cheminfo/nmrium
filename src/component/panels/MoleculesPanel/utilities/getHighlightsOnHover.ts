@@ -11,14 +11,14 @@ export function getHighlightsOnHover(
   spectra: Spectrum[],
 ) {
   // set all IDs to highlight when hovering over an atom from AssignKey data
-  let highlights: string[] = [];
+  const highlights: string[] = [];
   const assignmentsByKey = assignments.data;
 
   for (const key in assignmentsByKey) {
     const assignments = assignmentsByKey[key];
     for (const axis of assignmentAxes) {
       if (assignments[axis]?.some((oclKey: any) => oclIDs.includes(oclKey))) {
-        highlights = highlights.concat(assignments[axis]);
+        highlights.push(...assignments[axis]);
         for (const spectrum of spectra) {
           const assignIds = getAssignIds(spectrum, key);
           if (!assignIds) {

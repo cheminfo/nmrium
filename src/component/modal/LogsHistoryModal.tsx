@@ -149,7 +149,7 @@ export function LogsHistoryModal(props: LogsHistoryModalProps) {
         >
           <div style={{ position: 'relative' }}>
             <IoBugOutline fontSize="1.4em" />
-            {count && (
+            {count ? (
               <span
                 style={{
                   position: 'absolute',
@@ -164,7 +164,7 @@ export function LogsHistoryModal(props: LogsHistoryModalProps) {
               >
                 {count}
               </span>
-            )}
+            ) : null}
           </div>
         </Button.BarButton>
       )}

@@ -172,8 +172,8 @@ function sortArray(data: SortItem[], sortDirection?: SortDirection): void {
     const valueA = a.sortValue;
     const valueB = b.sortValue;
 
-    if (valueA == null && valueB != null) return -1 * direction;
-    if (valueB == null && valueA != null) return 1 * direction;
+    if (valueA == null && valueB != null) return -direction;
+    if (valueB == null && valueA != null) return direction;
     if (valueA == null && valueB == null) return 0;
 
     if (typeof valueA === 'string' && typeof valueB === 'string') {
