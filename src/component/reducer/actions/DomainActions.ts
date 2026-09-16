@@ -103,8 +103,8 @@ function getDomain(
   options: GetDomainOptions = {},
 ): GetDomainReturn {
   const { domainSpectraScope = 'visible' } = options;
-  let xArray: number[] = [];
-  let yArray: number[] = [];
+  const xArray: number[] = [];
+  const yArray: number[] = [];
   const yDomains: Record<string, NumberExtent> = {};
   const xDomains: Record<string, NumberExtent> = {};
 
@@ -123,8 +123,8 @@ function getDomain(
         domainSpectraScope === 'all' ||
         (domainSpectraScope === 'visible' && display.isVisible)
       ) {
-        xArray = xArray.concat(domain);
-        yArray = yArray.concat(_extent);
+        xArray.push(...domain);
+        yArray.push(..._extent);
       }
     }
   } catch (error) {
