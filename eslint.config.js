@@ -1,47 +1,46 @@
+import { defineConfig, globalIgnores } from 'eslint/config';
 import react from 'eslint-config-cheminfo-react/base';
 import ts from 'eslint-config-cheminfo-typescript/base';
 import unicorn from 'eslint-config-cheminfo-typescript/unicorn';
 
-export default [
-  {
-    ignores: [
-      'build',
-      'coverage',
-      'lib',
-      'lib-internal',
-      'node_modules',
-      'playwright-report',
-      'test-results',
-      'public',
-      '.yalc',
-    ],
-  },
-  ...ts,
-  ...unicorn,
-  ...react,
+export default defineConfig(
+  globalIgnores([
+    'build',
+    'coverage',
+    'lib',
+    'lib-internal',
+    'node_modules',
+    'playwright-report',
+    'test-results',
+    'public',
+    '.yalc',
+  ]),
+  ts,
+  unicorn,
+  react,
   {
     files: ['**/*.{ts,tsx,cts,mts}'],
     rules: {
       '@typescript-eslint/consistent-type-imports': 'error',
-      'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
-      '@typescript-eslint/no-deprecated': 'error',
-    },
-  },
-  {
-    rules: {
-      '@typescript-eslint/switch-exhaustiveness-check': 'off',
-      'import/default': 'off',
-      'import/no-unresolved': 'off',
-      'react-refresh/only-export-components': 'off',
-      '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/naming-convention': 'off',
+      '@typescript-eslint/no-deprecated': 'error',
+      '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-implied-eval': 'off',
       '@typescript-eslint/no-misused-promises': 'off',
       '@typescript-eslint/no-useless-default-assignment': 'off',
       '@typescript-eslint/restrict-plus-operands': 'off',
-      'react/no-unstable-nested-components': 'off',
+      '@typescript-eslint/switch-exhaustiveness-check': 'off',
+      'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
+    },
+  },
+  {
+    rules: {
+      'import/default': 'off',
+      'import/no-unresolved': 'off',
       'react-hooks/refs': 'off',
       'react-hooks/set-state-in-effect': 'off',
+      'react-refresh/only-export-components': 'off',
+      'unicorn/name-replacements': 'off',
       'no-restricted-imports': [
         'error',
         {
@@ -59,18 +58,6 @@ export default [
             'Use our internal utility at `src/component/utility/save_as.ts`',
         },
       ],
-      'react/no-unknown-property': ['error', { ignore: ['css'] }],
-      'react/forbid-dom-props': [
-        'error',
-        {
-          forbid: [
-            {
-              propName: 'data-test-id',
-              message: 'Use data-testid instead (testing framework standard)',
-            },
-          ],
-        },
-      ],
     },
   },
-];
+);
