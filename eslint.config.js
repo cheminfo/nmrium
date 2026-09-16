@@ -41,6 +41,7 @@ export default defineConfig(
       'react-hooks/set-state-in-effect': 'off',
       'react-refresh/only-export-components': 'off',
       'unicorn/name-replacements': 'off',
+      'unicorn/no-immediate-mutation': 'off',
       'no-restricted-imports': [
         'error',
         {

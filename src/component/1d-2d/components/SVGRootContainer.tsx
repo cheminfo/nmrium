@@ -25,11 +25,7 @@ export function SVGRootContainer(props: SVGRootContainerProps) {
     ...otherProps
   } = props;
 
-  const {
-    current: {
-      general: { spectraRendering },
-    },
-  } = usePreferences();
+  const { current: currentPreferences } = usePreferences();
   const {
     width: baseWidth,
     height: baseHeight,
@@ -54,7 +50,7 @@ export function SVGRootContainer(props: SVGRootContainerProps) {
       height={height}
       viewBox={viewBox}
       fontFamily="Arial, Helvetica, sans-serif"
-      shapeRendering={spectraRendering}
+      shapeRendering={currentPreferences.general.spectraRendering}
       style={{
         position: 'absolute',
       }}
