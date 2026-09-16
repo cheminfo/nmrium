@@ -13,7 +13,7 @@ interface HTMLContentProps extends React.HTMLAttributes<HTMLDivElement> {
 
 function HTMLContent({ html }: HTMLContentProps) {
   return (
-    // eslint-disable-next-line react/no-danger
+    // eslint-disable-next-line @eslint-react/dom-no-dangerously-set-innerhtml
     <div dangerouslySetInnerHTML={{ __html: html }} />
   );
 }

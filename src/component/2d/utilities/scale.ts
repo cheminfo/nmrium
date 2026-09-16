@@ -96,7 +96,7 @@ function getMax(data: NmrData2D): number {
   let max;
 
   for (const { minZ, maxZ } of Object.values(data)) {
-    const innerMax = Math.max(Math.abs(minZ), Math.max(maxZ));
+    const innerMax = Math.max(Math.abs(minZ), Math.abs(maxZ));
     if (max === undefined || max > innerMax) {
       max = innerMax;
     }

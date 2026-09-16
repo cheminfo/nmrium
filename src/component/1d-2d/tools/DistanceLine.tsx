@@ -175,8 +175,7 @@ export function DistanceLine(options: BrushXYProps) {
 
   const margin = externalMargin ?? innerMargin;
   const brushTracker = useBrushTracker();
-  const { step, mouseButton } = brushTracker;
-  const { startX, endX, startY, endY } = brushTracker;
+  const { step, mouseButton, startX, endX, startY, endY } = brushTracker;
   const { altKey } = useKeyModifiers();
   const indicatorColor = useIndicatorLineColor();
   const finalWidth = widthProps || width - margin.left - margin.right;

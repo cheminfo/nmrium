@@ -7,7 +7,7 @@ import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import DatabaseSpectrum from './DatabaseSpectrum.js';
 import ResurrectedDatabaseRanges from './ResurrectedDatabaseRanges.js';
 
-function DatabaseElements() {
+export default function DatabaseElements() {
   const {
     highlight: { sourceData },
   } = useHighlightData();
@@ -23,5 +23,3 @@ function DatabaseElements() {
 
   return <ResurrectedDatabaseRanges />;
 }
-
-export default DatabaseElements;

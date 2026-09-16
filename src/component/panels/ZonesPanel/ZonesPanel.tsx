@@ -45,7 +45,7 @@ const MemoizedZonesPanel = memo(function ZonesPanelInner(
   const [filterIsActive, setFilterIsActive] = useState(false);
   const dispatch = useDispatch();
   const alert = useAlert();
-  const [isFlipped, setFlipStatus] = useState(false);
+  const [isFlipped, setIsFlipped] = useState(false);
   const settingRef = useRef<SettingsRef | null>(null);
 
   const tableData = useMemo<ZonesTableDataElement[]>(() => {
@@ -56,10 +56,10 @@ const MemoizedZonesPanel = memo(function ZonesPanelInner(
       yTo: number,
     ) => {
       const factor = 10000;
-      xFrom = xFrom * factor;
-      xTo = xTo * factor;
-      yFrom = yFrom * factor;
-      yTo = yTo * factor;
+      xFrom *= factor;
+      xTo *= factor;
+      yFrom *= factor;
+      yTo *= factor;
       return (
         ((xTo >= xDomain[0] * factor && xFrom <= xDomain[1] * factor) ||
           (xFrom <= xDomain[0] * factor && xTo >= xDomain[1] * factor)) &&
@@ -156,13 +156,13 @@ const MemoizedZonesPanel = memo(function ZonesPanelInner(
   }, [dispatch, alert]);
 
   const settingsPanelHandler = useCallback(() => {
-    setFlipStatus(!isFlipped);
+    setIsFlipped(!isFlipped);
   }, [isFlipped]);
 
   const saveSettingHandler = useCallback(async () => {
     const isSettingValid = await settingRef.current?.saveSetting();
     if (isSettingValid) {
-      setFlipStatus(false);
+      setIsFlipped(false);
     }
   }, []);
 

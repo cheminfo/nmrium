@@ -124,7 +124,7 @@ function InnerSpectraLegends({
   );
 }
 
-function SpectraLegends() {
+export default function SpectraLegends() {
   const {
     data,
     view: {
@@ -158,5 +158,3 @@ function SpectraLegends() {
     <InnerSpectraLegends spectra={spectra} legendsFields={legendsFields} />
   );
 }
-
-export default SpectraLegends;

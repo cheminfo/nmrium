@@ -161,7 +161,7 @@ function FilterElements(props: FilterElementsProps) {
         style={{ margin: 0, marginLeft: '5px' }}
         innerLabelChecked="On"
         innerLabel="Off"
-        checked={enabled || false}
+        checked={enabled}
         onChange={(event) => {
           if (!id) return;
           handleFilterCheck(id, event);

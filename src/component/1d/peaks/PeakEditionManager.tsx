@@ -94,7 +94,7 @@ export function PeakEditionProvider({ children }: Required<PropsWithChildren>) {
     }
 
     if (x + InputDimension.width > width) {
-      x = x - InputDimension.width;
+      x -= InputDimension.width;
     }
 
     return { x, y };

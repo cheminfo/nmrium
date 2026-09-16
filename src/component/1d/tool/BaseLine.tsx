@@ -13,7 +13,7 @@ const styles: CSSProperties = {
   height: '1px',
 };
 
-function BaseLine() {
+export default function BaseLine() {
   const {
     width,
     margin: { left, right },
@@ -41,5 +41,3 @@ function BaseLine() {
     />
   );
 }
-
-export default BaseLine;

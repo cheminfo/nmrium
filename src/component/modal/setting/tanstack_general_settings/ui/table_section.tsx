@@ -41,9 +41,9 @@ export function TableSection(props: TableSectionProps) {
       <header>
         <h2>
           {title}
-          {actions && <Actions>{actions}</Actions>}
+          {actions ? <Actions>{actions}</Actions> : null}
         </h2>
-        {description && <p>{description}</p>}
+        {description ? <p>{description}</p> : null}
       </header>
 
       {children}

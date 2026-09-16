@@ -160,7 +160,7 @@ const Input = forwardRef(
           onChange={onChangeHandler}
           list={`${name || ''}-data-list`}
         />
-        {canClear && value && (
+        {canClear && value ? (
           <button
             type="button"
             style={styles.clearButton}
@@ -168,7 +168,7 @@ const Input = forwardRef(
           >
             <span style={{ display: 'block', margin: '0 auto' }}>&#10005;</span>
           </button>
-        )}
+        ) : null}
 
         <datalist id={`${name || ''}-data-list`}>
           {datalist.map((value) => (

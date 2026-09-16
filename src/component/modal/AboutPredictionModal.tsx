@@ -38,7 +38,7 @@ const DialogBody = styled(StyledDialogBody)`
   }
 `;
 
-function AboutPredictionModal() {
+export default function AboutPredictionModal() {
   const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
   return (
     <>
@@ -134,5 +134,3 @@ function AboutPredictionModal() {
     </>
   );
 }
-
-export default AboutPredictionModal;

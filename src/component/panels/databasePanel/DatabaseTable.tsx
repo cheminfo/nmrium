@@ -74,7 +74,7 @@ function databaseTableColumns(
       header: 'From - To',
       accessorFn: (row) => {
         const rangeFormat = databasePreferences.range.format;
-        return row?.from && row?.to
+        return row?.from && row.to
           ? `${formatNumber(row.from, rangeFormat)} - ${formatNumber(
               row.to,
               rangeFormat,
