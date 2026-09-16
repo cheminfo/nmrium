@@ -138,17 +138,12 @@ function getSpectra1DContextMenuOptions(
 }
 
 function isValidExportForCT(spectrum: Spectrum, molecules: StateMolecule[]) {
-  if (!isSpectrum1D(spectrum)) {
-    return false;
-  }
-  if (!spectrum.info.isFt) {
-    return false;
-  }
-  if (!(Array.isArray(molecules) && molecules.length > 0)) {
-    return false;
-  }
-
-  return true;
+  return (
+    isSpectrum1D(spectrum) &&
+    spectrum.info.isFt &&
+    Array.isArray(molecules) &&
+    molecules.length > 0
+  );
 }
 
 const columnHelper = createTanStackColumnHelper<Spectrum>();
@@ -334,9 +329,7 @@ export function SpectraTable(props: SpectraTableProps) {
           cellRender = ({ row }) => {
             return <SpectrumName data={row.original} />;
           };
-        }
-
-        if (pathString === 'info.solvent') {
+        } else if (pathString === 'info.solvent') {
           cellRender = ({ row }) => {
             return <RenderAsHTML data={row.original} jpath={pathString} />;
           };

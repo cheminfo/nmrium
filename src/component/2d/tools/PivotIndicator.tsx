@@ -60,9 +60,7 @@ export function PivotIndicator() {
   if (activeTraceDirection === 'horizontal') {
     const scale = get2DXScale({ width, margin, xDomain, mode });
     translate = scale(pivot.value);
-  }
-
-  if (activeTraceDirection === 'vertical') {
+  } else if (activeTraceDirection === 'vertical') {
     const scale = get2DYScale({ height, margin, yDomain });
     translate = scale(pivot.value);
   }

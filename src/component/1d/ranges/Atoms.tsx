@@ -29,11 +29,11 @@ function useAtoms(range: Range, moleculesView: MoleculesView) {
     const atoms: Array<string | number> = [];
     const diaIDsObject = topicMoleculeObject.getDiaIDsObject();
 
-    if (!diaIDsObject || !(id in moleculesView)) continue;
+    if (!diaIDsObject || !Object.hasOwn(moleculesView, id)) continue;
 
     const { atomAnnotation } = moleculesView[id];
     for (const id of diaIDs) {
-      if (!(id in diaIDsObject)) continue;
+      if (!Object.hasOwn(diaIDsObject, id)) continue;
 
       const {
         existingAtoms = [],
@@ -43,30 +43,30 @@ function useAtoms(range: Range, moleculesView: MoleculesView) {
 
       if (atomAnnotation === 'atom-numbers') {
         atoms.push(...existingAtoms);
-      }
-
-      if (atomAnnotation === 'custom-labels') {
+      } else if (atomAnnotation === 'custom-labels') {
         const labels =
           customLabels.length > 0 ? customLabels : heavyAtomsCustomLabels;
         atoms.push(...labels);
       }
     }
 
-    if (atoms.length > 0) {
-      atoms.sort((a, b) => {
-        if (typeof a === 'number' && typeof b === 'number') {
-          return a - b;
-        }
-        if (typeof a === 'string' && typeof b === 'string') {
-          return a.localeCompare(b);
-        }
-        return 0;
-      });
-      atomsList.push({
-        id,
-        atoms: Array.from(new Set(atoms)),
-      });
+    if (atoms.length === 0) {
+      continue;
     }
+
+    atoms.sort((a, b) => {
+      if (typeof a === 'number' && typeof b === 'number') {
+        return a - b;
+      }
+      if (typeof a === 'string' && typeof b === 'string') {
+        return a.localeCompare(b);
+      }
+      return 0;
+    });
+    atomsList.push({
+      id,
+      atoms: Array.from(new Set(atoms)),
+    });
   }
 
   return atomsList;

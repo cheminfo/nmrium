@@ -175,9 +175,7 @@ export const useApodization = (
 
       if (triggerSource === 'onChange') {
         onChange(values);
-      }
-
-      if (triggerSource === 'apply') {
+      } else if (triggerSource === 'apply') {
         dispatchApply(values);
         clearSyncFilterOptions();
       }
