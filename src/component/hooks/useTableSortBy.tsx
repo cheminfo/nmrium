@@ -20,7 +20,8 @@ export default function useTableSortBy<ItemType extends object>(
       sortableItems.sort((a, b) => {
         if (sortConfig.direction === 'ASCENDING') {
           return dlv(a, sortConfig.key, 0) - dlv(b, sortConfig.key, 0);
-        } else if (sortConfig.direction === 'DESCENDING') {
+        }
+        if (sortConfig.direction === 'DESCENDING') {
           return dlv(b, sortConfig.key, 0) - dlv(a, sortConfig.key, 0);
         }
         return 0;

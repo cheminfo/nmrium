@@ -87,9 +87,8 @@ function findBestLink(
   result.sort((a, b) => {
     if (a.angle !== b.angle) {
       return b.angle - a.angle;
-    } else {
-      return a.distance - b.distance;
     }
+    return a.distance - b.distance;
   });
   return result[0];
 }
@@ -302,7 +301,7 @@ function AssignmentLabel(props: AssignmentLabelProps) {
   const { id, x, y } = zone;
   let { assignment } = zone;
   const dispatch = useDispatch();
-  const { isActive } = useHighlight([zone.id]);
+  const { isActive } = useHighlight([id]);
   const { assignmentsLabelsCoordinates } = useActiveSpectrumZonesViewState();
   const scaleX = useScale2DX();
   const scaleY = useScale2DY();
@@ -380,7 +379,7 @@ function AssignmentLabel(props: AssignmentLabelProps) {
           dispatch({
             type: 'SET_ZONE_ASSIGNMENT_LABEL_COORDINATION',
             payload: {
-              zoneID: zone.id,
+              zoneID: id,
               coordination: {
                 x: scaleX.invert(position.x + centerX),
                 y: scaleY.invert(position.y + centerY),
@@ -453,9 +452,10 @@ function AssignmentLabel(props: AssignmentLabelProps) {
           PopoverProps={{
             placement: 'top',
             targetTagName: 'g',
-            ...(newAssignmentLabelState?.id === id
-              ? { isOpen: true, onClose: () => dismissNewLabel() }
-              : {}),
+            ...(newAssignmentLabelState?.id === id && {
+              isOpen: true,
+              onClose: () => dismissNewLabel(),
+            }),
           }}
         >
           <text
