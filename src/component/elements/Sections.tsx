@@ -1,7 +1,7 @@
-import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/types';
 import { Colors, Icon, Tag } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import type {
+  Edge,
   ElementDragPayload,
   ElementDropTargetEventBasePayload,
 } from '@zakodium/pdnd-esm';
