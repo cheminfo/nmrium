@@ -38,11 +38,11 @@ async function exportAsJsonBlob(
   );
   if (!isCompressed) {
     return new Blob([fileData], { type: 'text/plain' });
-  } else {
-    const zip = new ZipWriter(new BlobWriter());
-    await zip.add(`${fileName}.nmrium`, new TextReader(fileData));
-    return await zip.close();
   }
+
+  const zip = new ZipWriter(new BlobWriter());
+  await zip.add(`${fileName}.nmrium`, new TextReader(fileData));
+  return await zip.close();
 }
 
 function exportAsMatrix(
@@ -58,7 +58,8 @@ function exportAsMatrix(
     }
   }
 
-  for (const value of data[0].data.x) {
+  const firstDataX = data[0].data.x;
+  for (const value of firstDataX) {
     columnsLabels.push(String(value));
   }
   let matrix = `${columnsLabels.join('\t')}\n`;
@@ -149,7 +150,11 @@ function formatPixels(value: number) {
   return Math.round(value).toLocaleString('en-US');
 }
 
-/** throw error if canvas size exceeds browsers limits */
+/**
+ * Throw an error if canvas size exceeds browser limits
+ * @param width
+ * @param height
+ */
 function assertCanvasSize(width: number, height: number) {
   const size = `${formatPixels(width)} x ${formatPixels(height)} px`;
 
@@ -335,7 +340,7 @@ function copyDataURLClipboardFireFox(image: string) {
   document.body.append(img);
   const range = document.createRange();
   range.selectNode(img);
-  globalThis.getSelection()?.addRange(range);
+  document.getSelection()?.addRange(range);
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   document.execCommand('Copy');
   img.remove();
@@ -449,7 +454,7 @@ function getBlob(targetElementID: string, options: GetBlobOptions): BlobObject {
   const style = `
       <style>${css?.styles || ''}</style>
 `;
-  const svg = `${head + style + _svg.innerHTML}</svg>`;
+  const svg = `${head + style + _svg.getHTML()}</svg>`;
 
   const blob = new Blob([svg], { type: 'image/svg+xml' });
 

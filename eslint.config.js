@@ -40,9 +40,15 @@ export default defineConfig(
       'react-hooks/refs': 'off',
       'react-hooks/set-state-in-effect': 'off',
       'react-refresh/only-export-components': 'off',
+      'unicorn/consistent-boolean-name': 'off',
       'unicorn/name-replacements': 'off',
+      'unicorn/no-computed-property-existence-check': 'off',
       'unicorn/no-immediate-mutation': 'off',
+      'unicorn/no-unreadable-object-destructuring': 'off',
       'unicorn/prefer-await': 'off',
+      'unicorn/prefer-combined-guards': 'off',
+      'unicorn/prefer-early-return': 'off',
+      'unicorn/prefer-continue': 'off',
       'no-restricted-imports': [
         'error',
         {

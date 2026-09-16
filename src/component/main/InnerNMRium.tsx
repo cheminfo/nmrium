@@ -1,5 +1,5 @@
 import { HotkeysProvider } from '@blueprintjs/core';
-import init from '@zakodium/nmrium-core-plugins';
+import { init } from '@zakodium/nmrium-core-plugins';
 import type { ForwardedRef } from 'react';
 import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
 import { useFullscreen } from 'react-science/ui';
