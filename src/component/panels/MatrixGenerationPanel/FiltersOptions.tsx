@@ -38,8 +38,8 @@ export function FiltersOptions() {
   return filters.map((filter: any, index) => {
     return (
       <GroupPane
-        // eslint-disable-next-line react/no-array-index-key
-        key={`${index}`}
+        // eslint-disable-next-line @eslint-react/no-array-index-key
+        key={index}
         text={`${index + 1} - ${normalCase(filter.name)} options`}
         style={{ ...GroupPanelStyle, container: { padding: 0 } }}
         renderHeader={(text) => (

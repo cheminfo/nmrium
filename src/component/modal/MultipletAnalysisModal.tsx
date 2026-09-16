@@ -192,7 +192,7 @@ function InnerMultipleAnalysis(props: InnerMultipleAnalysisProps) {
       {analysisData?.debug.steps.map((d, index) => {
         const j = analysisData.js[index];
         return (
-          // eslint-disable-next-line react/no-array-index-key
+          // eslint-disable-next-line @eslint-react/no-array-index-key
           <Row key={index}>
             <div>
               <Plot

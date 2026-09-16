@@ -140,7 +140,7 @@ export function BaselinePreview() {
 
           return (
             <MedianBox
-              // eslint-disable-next-line react/no-array-index-key
+              // eslint-disable-next-line @eslint-react/no-array-index-key
               key={`zone-${index}`}
               style={{
                 transform: `translate(${zoneX}px, ${y - boxHeight / 2}px)`,
@@ -159,7 +159,7 @@ export function BaselinePreview() {
 
           return (
             <Anchor
-              // eslint-disable-next-line react/no-array-index-key
+              // eslint-disable-next-line @eslint-react/no-array-index-key
               key={index + median}
               position={{ x, y }}
               containerRef={containerRef}

@@ -35,7 +35,7 @@ function Overview({ correlationsData }: OverviewProps) {
 
         return (
           <span
-            // eslint-disable-next-line react/no-array-index-key
+            // eslint-disable-next-line @eslint-react/no-array-index-key
             key={`molFormulaView_${i}`}
             style={{
               color: stateAtomType

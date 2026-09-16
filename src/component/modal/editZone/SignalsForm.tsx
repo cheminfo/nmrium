@@ -38,9 +38,9 @@ export function SignalsForm() {
         {signals.map((signal, index) => {
           return (
             <Tab
-              // eslint-disable-next-line react/no-array-index-key
+              // eslint-disable-next-line @eslint-react/no-array-index-key
               key={`zone-signal-${index}`}
-              id={`${index}`}
+              id={index}
               style={{ ...(errors?.signals?.[index] && { color: 'red' }) }}
               panel={
                 <SignalTab index={index} experimentType={experimentType} />
