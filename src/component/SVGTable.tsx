@@ -1,5 +1,5 @@
 import type { ReactElement, SVGAttributes } from 'react';
-import { createContext, isValidElement, useContext, useMemo } from 'react';
+import { createContext, isValidElement, use, useMemo } from 'react';
 
 type CellTextProps = Omit<
   SVGAttributes<SVGTextElement>,
@@ -53,7 +53,7 @@ interface SVGTableContextProps {
 const SVGTableContext = createContext<SVGTableContextProps | null>(null);
 
 function useSVGTable() {
-  return useContext(SVGTableContext);
+  return use(SVGTableContext);
 }
 
 function mapColumns<T>(columns: Array<SVGTableColumn<T>>) {
@@ -144,7 +144,7 @@ export function SVGTable<T>(props: SVGTableProps<T>) {
   }, [columns, data]);
 
   return (
-    <SVGTableContext.Provider value={tableOptions}>
+    <SVGTableContext value={tableOptions}>
       <svg
         width={width}
         height={rowHeight * (data.length + 1)}
@@ -210,7 +210,7 @@ export function SVGTable<T>(props: SVGTableProps<T>) {
           );
         })}
       </svg>
-    </SVGTableContext.Provider>
+    </SVGTableContext>
   );
 }
 

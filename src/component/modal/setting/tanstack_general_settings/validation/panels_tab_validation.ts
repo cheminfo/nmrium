@@ -44,11 +44,9 @@ const panelCodec = z.codec(
     decode: (status) => {
       if (status === 'undefined') return undefined;
 
-      /* eslint-disable unicorn/consistent-boolean-name */
       let visible = false;
       let display = false;
       let open = false;
-      /* eslint-enable unicorn/consistent-boolean-name */
 
       if (status === 'available') {
         visible = true;

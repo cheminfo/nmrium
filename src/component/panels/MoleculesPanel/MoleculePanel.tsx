@@ -65,7 +65,6 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
 
   useEffect(() => {
     if (moleculesProp) {
-      // eslint-disable-next-line react-you-might-not-need-an-effect/no-derived-state
       setMolecules((prevMolecules) => {
         if (moleculesProp.length > prevMolecules.length) {
           setCurrentIndex(molecules.length);

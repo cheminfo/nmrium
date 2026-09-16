@@ -136,14 +136,13 @@ export function BaseApodizationOptions(
   );
 }
 
-interface SectionOptions {
+interface SectionProps {
   onChange: () => void;
-  setFocus?: boolean;
 }
 
-function ExponentialSectionOptionsSection(options: SectionOptions) {
+function ExponentialSectionOptionsSection(props: SectionProps) {
+  const { onChange } = props;
   const { control } = useFormContext();
-  const { onChange } = options;
   const basedPath = getBaseKeyPath('exponential');
 
   return (
@@ -173,9 +172,10 @@ function ExponentialSectionOptionsSection(options: SectionOptions) {
     </OptionsSection>
   );
 }
-function GaussianOptionSection(options: SectionOptions) {
+
+function GaussianOptionSection(props: SectionProps) {
+  const { onChange } = props;
   const { control } = useFormContext();
-  const { onChange } = options;
   const basedPath = getBaseKeyPath('gaussian');
 
   return (
@@ -223,9 +223,9 @@ function GaussianOptionSection(options: SectionOptions) {
     </OptionsSection>
   );
 }
-function SineBellOptionSection(options: SectionOptions) {
+function SineBellOptionSection(props: SectionProps) {
+  const { onChange } = props;
   const { control } = useFormContext();
-  const { onChange } = options;
   const basedPath = getBaseKeyPath('sineBell');
 
   return (
@@ -249,9 +249,9 @@ function SineBellOptionSection(options: SectionOptions) {
     </OptionsSection>
   );
 }
-function SineSquareOptionSection(options: SectionOptions) {
+function SineSquareOptionSection(props: SectionProps) {
+  const { onChange } = props;
   const { control } = useFormContext();
-  const { onChange } = options;
   const basedPath = getBaseKeyPath('sineSquare');
 
   return (
@@ -275,9 +275,9 @@ function SineSquareOptionSection(options: SectionOptions) {
     </OptionsSection>
   );
 }
-function TrafOptionSection(options: SectionOptions) {
+function TrafOptionSection(props: SectionProps) {
+  const { onChange } = props;
   const { control } = useFormContext();
-  const { onChange } = options;
   const basedPath = getBaseKeyPath('traf');
 
   return (
@@ -303,21 +303,21 @@ function TrafOptionSection(options: SectionOptions) {
   );
 }
 
-interface OptionsSectionProps extends SectionOptions {
+interface OptionsSectionProps extends SectionProps {
   algorithm: keyof Apodization1DOptions;
   algorithmTitle: string;
   children: ReactNode;
   autoFocus?: boolean;
 }
 
-function OptionsSection(options: OptionsSectionProps) {
+function OptionsSection(props: OptionsSectionProps) {
   const {
     onChange,
     algorithm,
     algorithmTitle,
     children,
     autoFocus = false,
-  } = options;
+  } = props;
 
   const { setValue, watch } = useFormContext();
   const isApplyChecked = watch(`options.${algorithm}.apply`) || false;

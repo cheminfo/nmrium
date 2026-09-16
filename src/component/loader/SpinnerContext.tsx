@@ -7,7 +7,5 @@ export function defaultGetSpinner(loadingText = 'Loading ...') {
   return <DefaultSpinnerComponent loadingText={loadingText} />;
 }
 
-export const spinnerContext =
+export const SpinnerContext =
   createContext<(loadingText?: string) => ReactElement>(defaultGetSpinner);
-
-export const SpinnerProvider = spinnerContext.Provider;

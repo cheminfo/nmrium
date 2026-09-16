@@ -1,6 +1,8 @@
-import type { AssignmentContext } from '../../../assignment/AssignmentsContext.js';
+import type { AssignmentContextValue } from '../../../assignment/AssignmentsContext.js';
 
-export function getCurrentDiaIDsToHighlight(assignmentData: AssignmentContext) {
+export function getCurrentDiaIDsToHighlight(
+  assignmentData: AssignmentContextValue,
+) {
   const { highlighted, data } = assignmentData;
   const assignment = highlighted ? data[highlighted.id] : null;
   const axisHover = highlighted ? highlighted.axis : null;

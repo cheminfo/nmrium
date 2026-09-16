@@ -50,7 +50,28 @@ export default defineConfig(
       'unicorn/prefer-combined-guards': 'off',
       'unicorn/prefer-early-return': 'off',
       'unicorn/prefer-continue': 'off',
-      // TODO: Review and enable these
+      // TODO: re-enable this one
+      'no-warning-comments': 'off',
+      // TODO: same
+      '@eslint-react/no-array-index-key': 'off',
+      '@eslint-react/naming-convention-ref-name': 'off',
+      '@eslint-react/use-state': 'off',
+      '@eslint-react/no-clone-element': 'off',
+      '@eslint-react/set-state-in-effect': 'off',
+      '@eslint-react/no-unstable-default-props': 'off',
+      '@eslint-react/purity': 'off',
+      '@eslint-react/no-children-map': 'off',
+      '@eslint-react/no-children-to-array': 'off',
+      'react-hooks/preserve-manual-memoization': 'off',
+      'react-you-might-not-need-an-effect/no-event-handler': 'off',
+      'react-you-might-not-need-an-effect/no-external-store-subscription':
+        'off',
+      'react-you-might-not-need-an-effect/no-adjust-state-on-prop-change':
+        'off',
+      'react-you-might-not-need-an-effect/no-chain-state-updates': 'off',
+      'react-you-might-not-need-an-effect/no-derived-state': 'off',
+      'react-you-might-not-need-an-effect/no-pass-data-to-parent': 'off',
+      'prefer-named-capture-group': 'off',
       'unicorn/max-nested-calls': 'off',
       'unicorn/no-duplicate-logical-operands': 'off',
       'unicorn/no-negated-array-predicate': 'off',

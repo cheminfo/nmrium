@@ -18,10 +18,7 @@ import { AlertProvider } from '../elements/Alert.js';
 import { DialogProvider } from '../elements/DialogManager.js';
 import { ExportManagerProvider } from '../elements/export/ExportManager.js';
 import { HighlightProvider } from '../highlight/index.js';
-import {
-  SpinnerProvider,
-  defaultGetSpinner,
-} from '../loader/SpinnerContext.js';
+import { SpinnerContext, defaultGetSpinner } from '../loader/SpinnerContext.js';
 import preferencesReducer, {
   initPreferencesState,
   preferencesInitialState,
@@ -122,7 +119,7 @@ export function InnerNMRium(props: InnerNMRiumProps) {
                               <AlertProvider>
                                 <HighlightProvider>
                                   <AssignmentProvider>
-                                    <SpinnerProvider value={getSpinner}>
+                                    <SpinnerContext value={getSpinner}>
                                       <InnerNMRiumContents
                                         emptyText={emptyText}
                                         mainDivRef={mainDivRef}
@@ -131,7 +128,7 @@ export function InnerNMRium(props: InnerNMRiumProps) {
                                         viewerRef={viewerRef}
                                         apiRef={apiRef}
                                       />
-                                    </SpinnerProvider>
+                                    </SpinnerContext>
                                   </AssignmentProvider>
                                 </HighlightProvider>
                               </AlertProvider>

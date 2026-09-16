@@ -10,11 +10,7 @@ import { useExtractAtomAssignmentLabel } from '../../MoleculesPanel/hooks/useExt
 import type { BaseRangeColumnProps, OnHoverEvent } from '../RangesTableRow.js';
 
 interface SignalAssignmentColumnProps
-  extends Omit<BaseRangeColumnProps, 'format'>, OnHoverEvent {
-  highlight: {
-    isActive: boolean;
-  };
-}
+  extends Omit<BaseRangeColumnProps, 'format'>, OnHoverEvent {}
 
 export function SignalAssignmentColumn(props: SignalAssignmentColumnProps) {
   const { row, onHover } = props;

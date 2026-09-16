@@ -39,7 +39,7 @@ export default function WebSourceView(props: WebSourceViewProps) {
   } = props;
 
   const [callbackData, setCallbackData] = useState<any[]>([]);
-  const [isCallbackVisible, showCallback] = useState(false);
+  const [isCallbackVisible, setIsCallbackVisible] = useState(false);
 
   useEffect(() => {
     void loadFromURL(file).then(setData);
@@ -55,7 +55,7 @@ export default function WebSourceView(props: WebSourceViewProps) {
   }, []);
 
   const showCallbackHandler = useCallback(() => {
-    showCallback((prevFlag) => !prevFlag);
+    setIsCallbackVisible((prevFlag) => !prevFlag);
   }, []);
 
   const clearHandler = useCallback(() => {
