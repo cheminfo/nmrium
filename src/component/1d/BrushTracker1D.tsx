@@ -71,24 +71,18 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
 
   const {
     toolOptions: { selectedTool },
-
-    view: {
-      spectra: { activeTab },
-    },
+    view,
     width,
     height,
   } = state;
+  const activeTab = view.spectra.activeTab;
   const isClickDebounced = clickDebounceTools.has(selectedTool);
   const brushStartRef = useRef<number | null>(null);
   const spectrum = useSpectrum();
   const align = useVerticalAlign();
   const dispatch = useDispatch();
-  const {
-    dispatch: dispatchPreferences,
-    current: {
-      general: { invertScroll },
-    },
-  } = usePreferences();
+  const { dispatch: dispatchPreferences, current: currentPreferences } =
+    usePreferences();
 
   const { showBoxPlot, showStocsy } = usePanelPreferences(
     'matrixGeneration',
@@ -113,35 +107,38 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
 
   function handleBrush(brushData: BrushTrackerData) {
     const { mouseButton } = brushData;
+
+    if (mouseButton !== 'secondary') return;
+
     const brushDataInPPM = convertToPPM(brushData);
 
-    if (mouseButton === 'secondary') {
-      if (!brushStartRef.current) {
-        brushStartRef.current = brushDataInPPM.startX;
-      }
-
-      const shiftX = brushDataInPPM.endX - brushStartRef.current;
-
-      dispatch({ type: 'MOVE', payload: { shiftX, shiftY: 0 } });
+    if (!brushStartRef.current) {
+      brushStartRef.current = brushDataInPPM.startX;
     }
+
+    const shiftX = brushDataInPPM.endX - brushStartRef.current;
+
+    dispatch({ type: 'MOVE', payload: { shiftX, shiftY: 0 } });
   }
   function handleInsetBrush(brushData: BrushTrackerData) {
     const { mouseButton } = brushData;
+
+    if (mouseButton !== 'secondary') return;
+
     const brushDataInPPM = convertToPPM(brushData);
 
-    if (mouseButton === 'secondary') {
-      if (!brushStartRef.current) {
-        brushStartRef.current = brushDataInPPM.startX;
-      }
-      const shiftX = brushDataInPPM.endX - brushStartRef.current;
-
-      if (!inset) return;
-
-      dispatch({
-        type: 'MOVE_INSET',
-        payload: { insetKey: inset.id, shiftX, shiftY: 0 },
-      });
+    if (!brushStartRef.current) {
+      brushStartRef.current = brushDataInPPM.startX;
     }
+
+    if (!inset) return;
+
+    const shiftX = brushDataInPPM.endX - brushStartRef.current;
+
+    dispatch({
+      type: 'MOVE_INSET',
+      payload: { insetKey: inset.id, shiftX, shiftY: 0 },
+    });
   }
 
   const handleBrushEnd = useCallback<OnBrush>(
@@ -155,136 +152,138 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
       const isAltOnly = modifiers === 'shift[false]_ctrl[false]_alt[true]';
       const isPrimary = isPrimaryKeyActivated(brushData);
 
-      if (brushData.mouseButton === 'main') {
-        const propagateEvent = () => {
-          Events.emit('brushEnd', {
-            ...brushData,
-            range: selectRange,
-          });
-        };
+      if (brushData.mouseButton !== 'main') return;
 
-        let executeDefaultAction = false;
+      const propagateEvent = () => {
+        Events.emit('brushEnd', {
+          ...brushData,
+          range: selectRange,
+        });
+      };
 
-        if (isAltOnly) {
-          switch (selectedTool) {
-            case options.rangePicking.id: {
-              openAnalysisModal();
-              break;
-            }
-            default:
-              executeDefaultAction = true;
-              break;
+      let shouldExecuteDefaultAction = false;
+
+      if (isAltOnly) {
+        switch (selectedTool) {
+          case options.rangePicking.id: {
+            openAnalysisModal();
+            break;
           }
-        } else if (isPrimary) {
-          switch (selectedTool) {
-            case options.integral.id:
-              dispatch({
-                type: 'ADD_INTEGRAL',
-                payload: brushData,
-              });
-              break;
-            case options.rangePicking.id: {
-              if (!isSpectrum1D(spectrum)) break;
-
-              const [from, to] = selectRange;
-              const range = createRange(spectrum, {
-                from,
-                to,
-                logger,
-              });
-
-              if (!range) break;
-
-              dispatch({
-                type: 'ADD_RANGE',
-                payload: { range },
-              });
-
-              break;
-            }
-            case options.multipleSpectraAnalysis.id: {
-              dispatchPreferences({
-                type: 'ANALYZE_SPECTRA',
-                payload: {
-                  start: brushDataInPPM.startX,
-                  end: brushDataInPPM.endX,
-                  nucleus: activeTab,
-                },
-              });
-              break;
-            }
-            case options.peakPicking.id: {
-              const { startX, endX } = brushData;
-              dispatch({
-                type: 'ADD_PEAKS',
-                payload: { startX, endX, defaultPeakShape },
-              });
-              break;
-            }
-            case options.databaseRangesSelection.id:
-              propagateEvent();
-              break;
-            case options.exclusionZones.id:
-              dispatch({
-                type: 'ADD_EXCLUSION_ZONE',
-                payload: { startX: brushData.startX, endX: brushData.endX },
-              });
-              break;
-            case options.matrixGenerationExclusionZones.id: {
-              const [from, to] = selectRange;
-              dispatchPreferences({
-                type: 'ADD_MATRIX_GENERATION_EXCLUSION_ZONE',
-                payload: {
-                  zone: { from, to },
-                  nucleus: activeTab,
-                },
-              });
-
-              break;
-            }
-
-            case options.inset.id:
-              dispatch({
-                type: 'ADD_INSET',
-                payload: {
-                  startX: brushData.startX,
-                  endX: brushData.endX,
-                },
-              });
-              break;
-
-            default:
-              executeDefaultAction = true;
-              break;
-          }
-        } else {
-          executeDefaultAction = true;
+          default:
+            shouldExecuteDefaultAction = true;
+            break;
         }
-
-        const tools = new Set<Tool>(['zoom']);
-        const enableDefaultBrush =
-          !tools.has(selectedTool) ||
-          (tools.has(selectedTool) && !brushData.shiftKey);
-
-        if (executeDefaultAction && selectedTool != null) {
-          if (enableDefaultBrush) {
+      } else if (isPrimary) {
+        switch (selectedTool) {
+          case options.integral.id:
             dispatch({
-              type: 'BRUSH_END',
+              type: 'ADD_INTEGRAL',
+              payload: brushData,
+            });
+            break;
+          case options.rangePicking.id: {
+            if (!isSpectrum1D(spectrum)) break;
+
+            const [from, to] = selectRange;
+            const range = createRange(spectrum, {
+              from,
+              to,
+              logger,
+            });
+
+            if (!range) break;
+
+            dispatch({
+              type: 'ADD_RANGE',
+              payload: { range },
+            });
+
+            break;
+          }
+          case options.multipleSpectraAnalysis.id: {
+            dispatchPreferences({
+              type: 'ANALYZE_SPECTRA',
               payload: {
-                ...brushDataInPPM,
-                axis: detectBrushing(brushData, {
-                  width,
-                  height,
-                  ...brushDetectionOptions,
-                  ...(align === 'stack' && { thresholdSize: 0 }),
-                }).type,
+                start: brushDataInPPM.startX,
+                end: brushDataInPPM.endX,
+                nucleus: activeTab,
               },
             });
+            break;
+          }
+          case options.peakPicking.id: {
+            const { startX, endX } = brushData;
+            dispatch({
+              type: 'ADD_PEAKS',
+              payload: { startX, endX, defaultPeakShape },
+            });
+            break;
+          }
+          case options.databaseRangesSelection.id:
+            propagateEvent();
+            break;
+          case options.exclusionZones.id:
+            dispatch({
+              type: 'ADD_EXCLUSION_ZONE',
+              payload: { startX: brushData.startX, endX: brushData.endX },
+            });
+            break;
+          case options.matrixGenerationExclusionZones.id: {
+            const [from, to] = selectRange;
+            dispatchPreferences({
+              type: 'ADD_MATRIX_GENERATION_EXCLUSION_ZONE',
+              payload: {
+                zone: { from, to },
+                nucleus: activeTab,
+              },
+            });
+
+            break;
           }
 
-          propagateEvent();
+          case options.inset.id:
+            dispatch({
+              type: 'ADD_INSET',
+              payload: {
+                startX: brushData.startX,
+                endX: brushData.endX,
+              },
+            });
+            break;
+
+          default:
+            shouldExecuteDefaultAction = true;
+            break;
         }
+      } else {
+        shouldExecuteDefaultAction = true;
       }
+
+      const tools = new Set<Tool>(['zoom']);
+      const isDefaultBrushEnabled =
+        !tools.has(selectedTool) ||
+        (tools.has(selectedTool) && !brushData.shiftKey);
+
+      if (!shouldExecuteDefaultAction || selectedTool == null) {
+        return;
+      }
+
+      if (isDefaultBrushEnabled) {
+        dispatch({
+          type: 'BRUSH_END',
+          payload: {
+            ...brushDataInPPM,
+            axis: detectBrushing(brushData, {
+              width,
+              height,
+              ...brushDetectionOptions,
+              ...(align === 'stack' && { thresholdSize: 0 }),
+            }).type,
+          },
+        });
+      }
+
+      propagateEvent();
     },
     [
       convertToPPM,
@@ -345,9 +344,7 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
 
   const handleInsetOnDoubleClick = useCallback(
     (event: MouseEvent) => {
-      if (isPrimaryKeyActivated(event)) return;
-
-      if (!inset) {
+      if (isPrimaryKeyActivated(event) || !inset) {
         return;
       }
 
@@ -375,7 +372,12 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
       } else {
         dispatch({
           type: 'SET_ZOOM',
-          payload: { options: { ...options, invertScroll } },
+          payload: {
+            options: {
+              ...options,
+              invertScroll: currentPreferences.general.invertScroll,
+            },
+          },
         });
       }
     },
@@ -383,7 +385,7 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
       activeTab,
       dispatch,
       dispatchPreferences,
-      invertScroll,
+      currentPreferences.general.invertScroll,
       selectedTool,
       showBoxPlot,
       showStocsy,

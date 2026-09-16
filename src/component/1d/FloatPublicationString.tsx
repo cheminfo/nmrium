@@ -54,7 +54,7 @@ interface UseWrapSVGTextParams {
 function useWrapSVGText(params: UseWrapSVGTextParams) {
   const { text, width, style } = params;
 
-  const debugCanvas = false;
+  const isDebuggingCanvas = false;
   const fontSize = style.fontSize ?? 12;
   // ctx used only for debug canvas purpose.
   // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -62,7 +62,7 @@ function useWrapSVGText(params: UseWrapSVGTextParams) {
     fontSize,
     fontStyle: style.fontStyle,
     fontWeight: style.fontWeight,
-    debugCanvasWidth: debugCanvas ? width : undefined,
+    debugCanvasWidth: isDebuggingCanvas ? width : undefined,
   });
   const formattedText = text
     .replaceAll(/<sup>(?<n>.*?)<\/sup>/g, ' ++$1++ ')
@@ -94,9 +94,10 @@ function useWrapSVGText(params: UseWrapSVGTextParams) {
   }
   if (line.length > 0) lines.push(line);
 
+  // TODO: ctx should be in a ref.
+  // eslint-disable-next-line react-hooks/immutability
   useEffect(() => {
-    if (!debugCanvas) return;
-    if (!ctx) return;
+    if (!isDebuggingCanvas || !ctx) return;
 
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     let y = lineHeight;
@@ -118,6 +119,7 @@ function useWrapSVGText(params: UseWrapSVGTextParams) {
       }
       y += lineHeight;
     }
+    // eslint-disable-next-line react-hooks/immutability
     ctx.fillStyle = 'black';
   });
 
@@ -131,13 +133,13 @@ interface PublicationTextProps {
 }
 
 function PublicationText(props: PublicationTextProps) {
-  const { text, textStyle = {}, width } = props;
+  const { text, textStyle, width } = props;
   const padding = 10;
   const boxWidth = width - padding * 2;
 
   const textStyleWithSize = {
     ...textStyle,
-    fontSize: textStyle.fontSize ?? 12,
+    fontSize: textStyle?.fontSize ?? 12,
   };
   const { lineHeight, lines } = useWrapSVGText({
     width: boxWidth,
@@ -324,6 +326,22 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
     });
   }
 
+  if (!viewerRef || !value) return null;
+
+  const { width, height, x = 0, y = 0 } = bounding;
+
+  if (isExportProcessStart) {
+    return (
+      <g transform={`translate(${x} ${y})`}>
+        <PublicationText
+          text={value}
+          width={width}
+          textStyle={acsOptions.textStyle}
+        />
+      </g>
+    );
+  }
+
   const actionButtons: ActionsButtonsPopoverProps['buttons'] = [
     {
       icon: <BsArrowsMove />,
@@ -347,21 +365,6 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
       onClick: handleRemove,
     },
   ];
-  if (!viewerRef || !value) return null;
-
-  const { width, height, x = 0, y = 0 } = bounding;
-
-  if (isExportProcessStart) {
-    return (
-      <g transform={`translate(${x} ${y})`}>
-        <PublicationText
-          text={value}
-          width={width}
-          textStyle={acsOptions.textStyle}
-        />
-      </g>
-    );
-  }
 
   return (
     <>
@@ -458,8 +461,7 @@ export function FloatPublicationString() {
     const { viewOptions, spectrum } = options;
 
     const { showPublicationString, publicationStringBounding } = viewOptions;
-    if (!showPublicationString) return null;
-    if (!isSpectrum1D(spectrum)) return null;
+    if (!showPublicationString || !isSpectrum1D(spectrum)) return null;
 
     const {
       id,

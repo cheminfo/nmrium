@@ -10,8 +10,6 @@ async function checkMoleculeStructureIsExists(
   const locator = nmrium.page.locator(
     `_react=MoleculePanel >> _react=MoleculeStructure >> nth=${index} >> svg`,
   );
-  // This would have to be fixed in OpenChemLib.
-  // eslint-disable-next-line unicorn/prefer-https
   await expect(locator).toHaveAttribute('xmlns', 'http://www.w3.org/2000/svg');
   await expect(locator).toBeVisible();
 }
@@ -532,7 +530,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
 async function getCount(locator: Locator): Promise<number> {
   const text = await locator.textContent();
   if (!text) throw new Error('no text content');
-  return Number.parseInt(text.slice(0, 1), 10);
+  return Number(text.slice(0, 1));
 }
 
 test('check callbacks count on changing structures', async ({ page }) => {
