@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.1](https://github.com/cheminfo/nmrium/compare/v3.0.0...v3.0.1) (2026-09-17)
+
+
+### Bug Fixes
+
+* prevent crash in getRange when contour level count is 0 ([#4379](https://github.com/cheminfo/nmrium/issues/4379)) ([9f10415](https://github.com/cheminfo/nmrium/commit/9f10415d5d7adbb88db5c6a6aac159044ab34539))
+
 ## [3.0.0](https://github.com/cheminfo/nmrium/compare/v2.8.0...v3.0.0) (2026-09-14)
 
 
