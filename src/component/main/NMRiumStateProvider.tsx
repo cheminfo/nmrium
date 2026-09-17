@@ -5,7 +5,7 @@ import type { ReactNode } from 'react';
 import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
 
 import { toJSON } from '../../data/SpectraManager.js';
-import { ChartDataContext } from '../context/ChartContext.js';
+import { ChartDataProvider } from '../context/ChartContext.js';
 import { useCore } from '../context/CoreContext.js';
 import { DispatchContext } from '../context/DispatchContext.js';
 import { useLogger } from '../context/LoggerContext.js';
@@ -197,9 +197,9 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
 
   return (
     <DispatchContext value={dispatch}>
-      <ChartDataContext value={updatedState}>
+      <ChartDataProvider value={updatedState}>
         <ProcessingsMutationsProvider>{children}</ProcessingsMutationsProvider>
-      </ChartDataContext>
+      </ChartDataProvider>
     </DispatchContext>
   );
 }
