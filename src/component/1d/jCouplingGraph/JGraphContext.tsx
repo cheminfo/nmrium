@@ -1,5 +1,5 @@
 import type { ScaleLinear } from 'd3-scale';
-import { createContext, useContext } from 'react';
+import { createContext, use } from 'react';
 
 interface JGraphState {
   scaleY: ScaleLinear<number, number> | null;
@@ -7,16 +7,14 @@ interface JGraphState {
   maxValue: number;
 }
 
-const JGraphContext = createContext<JGraphState>({
+export const JGraphContext = createContext<JGraphState>({
   scaleY: null,
   height: 0,
   maxValue: 0,
 });
 
-export const JGraphContextProvider = JGraphContext.Provider;
-
 export function useJGraph() {
-  const jGraphState = useContext(JGraphContext);
+  const jGraphState = use(JGraphContext);
   if (!jGraphState.scaleY) {
     throw new Error('scale cannot be null');
   }

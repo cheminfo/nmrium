@@ -2,7 +2,7 @@ import type { ButtonProps } from '@blueprintjs/core';
 import { Button, DialogBody, DialogFooter } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import type { MouseEvent, ReactNode } from 'react';
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, use, useMemo, useState } from 'react';
 
 import { StandardDialog } from './StandardDialog.tsx';
 
@@ -67,7 +67,7 @@ interface AlertContextType {
 const AlertContext = createContext<AlertContextType | null>(null);
 
 export function useAlert() {
-  const context = useContext(AlertContext);
+  const context = use(AlertContext);
   if (!context) {
     throw new Error('Alert context was not found');
   }
@@ -93,9 +93,7 @@ export function AlertProvider({ children }: { children: ReactNode }) {
   return (
     <>
       <Alerts alerts={alerts} onHide={hideAlert} />
-      <AlertContext.Provider value={alertState}>
-        {children}
-      </AlertContext.Provider>
+      <AlertContext value={alertState}>{children}</AlertContext>
     </>
   );
 }
@@ -136,6 +134,7 @@ function Alerts(props: AlertsProps) {
             const { text, onClick, preventClose, ...otherItemProps } = item;
             return (
               <Button
+                // eslint-disable-next-line @eslint-react/no-array-index-key
                 key={index}
                 onClick={(e) =>
                   optionsHandler(e, { onClick, preventClose, id })

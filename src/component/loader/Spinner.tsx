@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react';
-import { Fragment, useContext, useEffect, useState } from 'react';
+import { Fragment, use, useEffect, useState } from 'react';
 
 import { useChartData } from '../context/ChartContext.js';
 
 import NoData from './NoData.js';
-import { spinnerContext } from './SpinnerContext.js';
+import { SpinnerContext } from './SpinnerContext.js';
 
 interface SpinnerProps {
   isLoading?: boolean;
@@ -27,7 +27,7 @@ function Spinner({ isLoading = true, emptyText = undefined }: SpinnerProps) {
     };
   }, [isLoading]);
 
-  const getSpinner = useContext(spinnerContext);
+  const getSpinner = use(SpinnerContext);
 
   return (
     <Fragment>

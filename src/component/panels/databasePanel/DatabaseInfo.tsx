@@ -30,11 +30,13 @@ export function DatabaseInfo(props: { data: DatabaseNMREntry }) {
     <Container>
       <Column>
         {Object.keys(meta).map((key, index) => {
+          // eslint-disable-next-line @eslint-react/no-array-index-key
           return <Key key={index}>{key}</Key>;
         })}
       </Column>
       <Column>
         {Object.keys(meta).map((key, index) => {
+          // eslint-disable-next-line @eslint-react/no-array-index-key
           return <Column key={index}>{meta[key]}</Column>;
         })}
       </Column>

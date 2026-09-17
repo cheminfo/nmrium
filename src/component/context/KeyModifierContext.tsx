@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 import {
   createContext,
+  use,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useState,
@@ -40,7 +40,7 @@ const KeyModifierContext = createContext<KeyModifiersState>(
 );
 
 export function useKeyModifiers() {
-  const context = useContext(KeyModifierContext);
+  const context = use(KeyModifierContext);
   if (!context) {
     throw new Error('key modifiers context was not found');
   }
@@ -138,9 +138,5 @@ export function KeyModifiersProvider({ children }: KeyModifierProviderProps) {
     };
   }, [invert, modifiers]);
 
-  return (
-    <KeyModifierContext.Provider value={state}>
-      {children}
-    </KeyModifierContext.Provider>
-  );
+  return <KeyModifierContext value={state}>{children}</KeyModifierContext>;
 }

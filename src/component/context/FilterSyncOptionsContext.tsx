@@ -4,8 +4,8 @@ import { getBaselineAnchors } from 'nmr-processing';
 import type { ReactNode } from 'react';
 import {
   createContext,
+  use,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -34,7 +34,7 @@ function getAnchors(filterValue: any, spectrum: Spectrum1D) {
 }
 
 export function useFilterSyncOptions<T>(): FilterSyncOptionsState<T> {
-  const context = useContext(FilterSyncOptionsContext);
+  const context = use(FilterSyncOptionsContext);
 
   if (!context) {
     throw new Error(
@@ -139,8 +139,8 @@ export function FilterSyncOptionsProvider({
   );
 
   return (
-    <FilterSyncOptionsContext.Provider value={state}>
+    <FilterSyncOptionsContext value={state}>
       {children}
-    </FilterSyncOptionsContext.Provider>
+    </FilterSyncOptionsContext>
   );
 }

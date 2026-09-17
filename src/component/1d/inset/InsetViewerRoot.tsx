@@ -1,20 +1,20 @@
 import type { PropsWithChildren } from 'react';
-import { createContext, useContext, useRef } from 'react';
+import { createContext, use, useRef } from 'react';
 
 const InsetViewRefContext = createContext<HTMLDivElement | null>(null);
 
 export function useInsetViewerRootRef() {
-  return useContext(InsetViewRefContext);
+  return use(InsetViewRefContext);
 }
 
 export function InsetViewerRoot({ children }: Required<PropsWithChildren>) {
   const insetRootRef = useRef<HTMLDivElement | null>(null);
 
   return (
-    <InsetViewRefContext.Provider value={insetRootRef.current}>
+    <InsetViewRefContext value={insetRootRef.current}>
       <div ref={insetRootRef} style={{ width: '100%', height: '100%' }}>
         {children}
       </div>
-    </InsetViewRefContext.Provider>
+    </InsetViewRefContext>
   );
 }

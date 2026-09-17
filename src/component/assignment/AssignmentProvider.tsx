@@ -5,11 +5,11 @@ import { useChartData } from '../context/ChartContext.js';
 
 import type {
   ActivateAssignmentOptions,
-  AssignmentContext,
+  AssignmentContextValue,
   AssignmentStatus,
   HighlightAssignmentOptions,
 } from './AssignmentsContext.js';
-import { assignmentContext, assignmentStatus } from './AssignmentsContext.js';
+import { AssignmentContext, assignmentStatus } from './AssignmentsContext.js';
 import { getAssignments } from './utilities/getAssignments.js';
 
 interface AssignmentProviderProps {
@@ -22,7 +22,7 @@ export function AssignmentProvider(props: AssignmentProviderProps) {
   const [{ activated, highlighted }, setState] =
     useState<AssignmentStatus>(assignmentStatus);
 
-  const memoState = useMemo<AssignmentContext>(() => {
+  const memoState = useMemo<AssignmentContextValue>(() => {
     const activate = (options: ActivateAssignmentOptions) => {
       const { id, axis, spectrumId } = options;
       setState((prevState) => ({
@@ -61,9 +61,5 @@ export function AssignmentProvider(props: AssignmentProviderProps) {
     };
   }, [activated, highlighted, spectra]);
 
-  return (
-    <assignmentContext.Provider value={memoState}>
-      {children}
-    </assignmentContext.Provider>
-  );
+  return <AssignmentContext value={memoState}>{children}</AssignmentContext>;
 }

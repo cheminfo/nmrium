@@ -1,6 +1,6 @@
 import type { Inset } from '@zakodium/nmrium-core';
 import type { ReactNode } from 'react';
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, use, useMemo } from 'react';
 
 import type { Margin } from '../../reducer/Reducer.js';
 
@@ -26,10 +26,10 @@ interface InsetPagContextProps extends BaseInsetPagContextProps {
 const InsetContext = createContext<InsetPagContextProps | null>(null);
 
 export function useInsetOptions() {
-  return useContext(InsetContext);
+  return use(InsetContext);
 }
 export function useIsInset() {
-  return !!useContext(InsetContext);
+  return !!use(InsetContext);
 }
 
 interface InsetProviderProps extends BaseInsetPagContextProps {
@@ -61,7 +61,5 @@ export function InsetProvider(props: InsetProviderProps) {
     };
   }, [height, id, spectrumKey, view, width, xDomain, yDomain]);
 
-  return (
-    <InsetContext.Provider value={state}>{children}</InsetContext.Provider>
-  );
+  return <InsetContext value={state}>{children}</InsetContext>;
 }

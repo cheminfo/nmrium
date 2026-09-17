@@ -1,7 +1,7 @@
 import type { ToastProps } from '@blueprintjs/core';
 import { Classes, OverlayToaster, Position, Spinner } from '@blueprintjs/core';
 import type { ReactNode } from 'react';
-import { createContext, useContext, useMemo, useRef } from 'react';
+import { createContext, use, useMemo, useRef } from 'react';
 
 interface ToasterContextProps {
   toaster: OverlayToaster | null;
@@ -13,7 +13,7 @@ interface ToasterContextProps {
 const ToasterContext = createContext<ToasterContextProps | null>(null);
 
 export function useToaster() {
-  const context = useContext(ToasterContext);
+  const context = use(ToasterContext);
   if (!context) {
     throw new Error('Toaster context was not found');
   }
@@ -74,9 +74,7 @@ export function ToasterProvider({ children }: ToasterProviderProps) {
         position={Position.BOTTOM}
         ref={toasterRef}
       />
-      <ToasterContext.Provider value={toaster}>
-        {children}
-      </ToasterContext.Provider>
+      <ToasterContext value={toaster}>{children}</ToasterContext>
     </>
   );
 }

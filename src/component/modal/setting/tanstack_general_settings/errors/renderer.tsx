@@ -37,6 +37,7 @@ export const GeneralSettingsErrorRenderer = withForm({
                 .join('.');
 
               return (
+                // eslint-disable-next-line @eslint-react/no-array-index-key
                 <li key={`${path}-${index}`}>
                   {path}: {error.message}
                 </li>

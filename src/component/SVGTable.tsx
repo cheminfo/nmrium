@@ -173,6 +173,7 @@ export function SVGTable<T>(props: SVGTableProps<T>) {
         {data.map((row, index) => {
           return (
             <g
+              // eslint-disable-next-line @eslint-react/no-array-index-key
               key={index}
               transform={`translate(0, ${rowHeight * (index + 1)})`}
             >

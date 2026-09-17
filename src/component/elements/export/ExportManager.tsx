@@ -2,7 +2,7 @@ import type { ExportPreferences, ExportSettings } from '@zakodium/nmrium-core';
 import type { ReactNode, RefObject } from 'react';
 import {
   createContext,
-  useContext,
+  use,
   useImperativeHandle,
   useRef,
   useState,
@@ -36,7 +36,7 @@ const ExportManagerContext =
   createContext<RefObject<ExportManagerState | null> | null>(null);
 
 export function useExportManagerAPI() {
-  const context = useContext(ExportManagerContext);
+  const context = use(ExportManagerContext);
 
   if (!context) {
     throw new Error(
@@ -55,11 +55,7 @@ export function ExportManagerProvider(props: ExportManagerProviderProps) {
   const { children } = props;
   const ref = useRef<ExportManagerState>(null);
 
-  return (
-    <ExportManagerContext.Provider value={ref}>
-      {children}
-    </ExportManagerContext.Provider>
-  );
+  return <ExportManagerContext value={ref}>{children}</ExportManagerContext>;
 }
 
 interface ExportManagerControllerProps {

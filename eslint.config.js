@@ -52,14 +52,14 @@ export default defineConfig(
       'unicorn/prefer-continue': 'off',
       // TODO: re-enable this one
       'no-warning-comments': 'off',
-      // TODO: same
-      '@eslint-react/no-array-index-key': 'off',
       '@eslint-react/naming-convention-ref-name': 'off',
       '@eslint-react/use-state': 'off',
       '@eslint-react/no-clone-element': 'off',
       '@eslint-react/set-state-in-effect': 'off',
       '@eslint-react/no-unstable-default-props': 'off',
       '@eslint-react/purity': 'off',
+      '@eslint-react/no-children-count': 'off',
+      '@eslint-react/dom-no-missing-iframe-sandbox': 'off',
       '@eslint-react/no-children-map': 'off',
       '@eslint-react/no-children-to-array': 'off',
       'react-hooks/preserve-manual-memoization': 'off',
