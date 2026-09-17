@@ -76,12 +76,7 @@ export interface ZonesTableDataElement extends Zone {
 
 interface ZonesTableProps {
   tableData: ZonesTableDataElement[];
-  onUnlink: (
-    zoneData: any,
-    isOnZoneLevel: any,
-    signalIndex: any,
-    axis: any,
-  ) => void;
+  onUnlink: (zoneData: any, signalIndex: any, axis: any) => void;
   nucleus: string;
   info: Info2D;
 }
@@ -132,12 +127,9 @@ function ZonesTable(props: ZonesTableProps) {
             {showAssignmentLabel && <th rowSpan={2}>Assignment</th>}
             {(deltaX.show || deltaX.show) && <th colSpan={2}>δ (ppm)</th>}
             {showAssignment && (
-              <>
-                <th colSpan={2}>
-                  <FaLink />
-                </th>
-                <th colSpan={2}>Σ</th>
-              </>
+              <th colSpan={2}>
+                <FaLink />
+              </th>
             )}
             {showKind && <th rowSpan={2}>Kind</th>}
             {showActions && <th rowSpan={2}>{''}</th>}

@@ -32,17 +32,12 @@ function setRangesAssignments(assignments: Assignments, ranges: Ranges) {
   }
 }
 function setZonesAssignments(assignments: Assignments, zones: Zones) {
-  const diaIDRecords = zones.values.flatMap(({ id, x, y, signals }) => {
-    const diaIDRecords = signals.map((signal) => ({
+  const diaIDRecords = zones.values.flatMap(({ signals }) =>
+    signals.map((signal) => ({
       id: signal.id,
       diaIDs: { x: signal.x.diaIDs || [], y: signal.y.diaIDs || [] },
-    }));
-
-    return [
-      { id, diaIDs: { x: x.diaIDs || [], y: y.diaIDs || [] } },
-      ...diaIDRecords,
-    ];
-  });
+    })),
+  );
 
   for (const { id, diaIDs } of diaIDRecords) {
     for (const axis of ['x', 'y'] as Axis[]) {
