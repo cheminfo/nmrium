@@ -1,5 +1,5 @@
 import type { ComponentType, PropsWithChildren } from 'react';
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, use, useMemo, useState } from 'react';
 
 interface DialogItem {
   isOpen: boolean;
@@ -93,16 +93,14 @@ export function DialogProvider({ children }: Required<PropsWithChildren>) {
   }, [dialogStates]);
 
   return (
-    <DialogContext.Provider value={state}>
-      <DialogDataContext.Provider value={dataState}>
-        {children}
-      </DialogDataContext.Provider>
-    </DialogContext.Provider>
+    <DialogContext value={state}>
+      <DialogDataContext value={dataState}>{children}</DialogDataContext>
+    </DialogContext>
   );
 }
 
 export function useDialog() {
-  const context = useContext(DialogContext);
+  const context = use(DialogContext);
   if (!context) {
     throw new Error('useDialog must be used within a DialogProvider');
   }
@@ -110,7 +108,7 @@ export function useDialog() {
 }
 
 export function useDialogData() {
-  const context = useContext(DialogDataContext);
+  const context = use(DialogDataContext);
   if (!context) {
     throw new Error('useDialogData must be used within a DialogProvider');
   }

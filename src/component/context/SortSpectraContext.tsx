@@ -1,13 +1,7 @@
 import type { Spectrum } from '@zakodium/nmrium-core';
 import dlv from 'dlv';
 import type { ReactNode } from 'react';
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from 'react';
+import { createContext, use, useCallback, useMemo, useState } from 'react';
 
 import nucleusToString from '../utility/nucleusToString.js';
 
@@ -49,7 +43,7 @@ interface SortSpectraContextState {
 const SortSpectraContext = createContext<SortSpectraContextState | null>(null);
 
 export function useSortSpectra(): SortSpectraContextState {
-  const context = useContext(SortSpectraContext);
+  const context = use(SortSpectraContext);
   if (!context) {
     throw new Error('useSortSpectra must be used within a SortSpectraProvider');
   }
@@ -263,9 +257,5 @@ export function SortSpectraProvider(props: SpectraProviderProps) {
     };
   }, [activeSort, sort, sortOptions]);
 
-  return (
-    <SortSpectraContext.Provider value={state}>
-      {children}
-    </SortSpectraContext.Provider>
-  );
+  return <SortSpectraContext value={state}>{children}</SortSpectraContext>;
 }

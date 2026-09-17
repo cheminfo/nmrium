@@ -112,6 +112,7 @@ function mapToolbarButtons(buttons: ToolbarItemProps[]) {
       // eslint-disable-next-line @eslint-react/no-array-index-key
       <Fragment key={index}>{props.component}</Fragment>
     ) : (
+      // eslint-disable-next-line @eslint-react/no-array-index-key
       <Toolbar.Item key={props?.id || index} {...props} />
     ),
   );

@@ -3,17 +3,15 @@ import {
   Children,
   createContext,
   isValidElement,
-  useContext,
+  use,
   useEffect,
   useRef,
 } from 'react';
 
 const ScrollContext = createContext<string>('');
 
-const ScrollProvider = ScrollContext.Provider;
-
 function useScrollKey() {
-  const context = useContext(ScrollContext);
+  const context = use(ScrollContext);
 
   if (!context) {
     throw new Error('Scroller context was not found');
@@ -39,7 +37,7 @@ export function Scroller(props: ScrollerProps) {
     );
   }
 
-  return <ScrollProvider value={scrollTo}> {children} </ScrollProvider>;
+  return <ScrollContext value={scrollTo}> {children} </ScrollContext>;
 }
 
 interface ScrollerElementProps {

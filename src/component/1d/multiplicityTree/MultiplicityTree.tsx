@@ -243,6 +243,7 @@ function Tree(props: TreeProps) {
 
               return (
                 <text
+                  // eslint-disable-next-line @eslint-react/no-array-index-key
                   key={index}
                   x={x1}
                   y={startY + y}

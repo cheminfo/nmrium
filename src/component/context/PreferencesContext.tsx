@@ -17,8 +17,9 @@ interface PreferencesContextData extends PreferencesStateContext {
   current: WorkspaceWithSource;
 }
 
-const PreferencesContext = createContext<PreferencesStateContext | null>(null);
-export const PreferencesProvider = PreferencesContext.Provider;
+export const PreferencesContext = createContext<PreferencesStateContext | null>(
+  null,
+);
 
 export function usePreferences(): PreferencesContextData {
   const context = use(PreferencesContext);

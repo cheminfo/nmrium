@@ -4,8 +4,8 @@ import type { CSSProperties, KeyboardEvent, ReactNode, Ref } from 'react';
 import {
   createContext,
   isValidElement,
+  use,
   useCallback,
-  useContext,
   useEffect,
   useImperativeHandle,
   useRef,
@@ -62,7 +62,7 @@ const CloseEditContext = createContext<(() => void) | undefined>(undefined);
 
 export function CloseEditOnClick(props: { children: ReactNode }) {
   const { children } = props;
-  const closeEdit = useContext(CloseEditContext);
+  const closeEdit = use(CloseEditContext);
 
   return <span onClick={closeEdit}>{children}</span>;
 }
@@ -236,7 +236,7 @@ function EditField(props: EditFieldProps) {
 
   if (type === 'number') {
     return (
-      <CloseEditContext.Provider value={closeEdit}>
+      <CloseEditContext value={closeEdit}>
         <div ref={editFieldRef}>
           <NumberInput2
             intent={intent}
@@ -257,12 +257,12 @@ function EditField(props: EditFieldProps) {
             rightElement={inputRightElement}
           />
         </div>
-      </CloseEditContext.Provider>
+      </CloseEditContext>
     );
   }
 
   return (
-    <CloseEditContext.Provider value={closeEdit}>
+    <CloseEditContext value={closeEdit}>
       <div ref={editFieldRef}>
         <Input2
           intent={intent}
@@ -276,6 +276,6 @@ function EditField(props: EditFieldProps) {
           rightElement={inputRightElement}
         />
       </div>
-    </CloseEditContext.Provider>
+    </CloseEditContext>
   );
 }

@@ -22,7 +22,7 @@ import { useResizeObserver } from 'react-d3-utils';
 import { BaseReactTable } from './elements/base_react_table.tsx';
 import { EmptyDataRow } from './elements/empty_data_row.tsx';
 import {
-  TanStackTableProvider,
+  TanStackTableContext,
   useTanStackTableContext,
 } from './elements/table_context.ts';
 import TableHeader from './elements/table_header.tsx';
@@ -442,7 +442,7 @@ function TanStackTable<TData extends TanStackRowData>(
   }
 
   return (
-    <TanStackTableProvider value={tableVirtualBoundary}>
+    <TanStackTableContext value={tableVirtualBoundary}>
       <div
         ref={mRef}
         css={css(
@@ -460,7 +460,7 @@ function TanStackTable<TData extends TanStackRowData>(
           {...props}
         />
       </div>
-    </TanStackTableProvider>
+    </TanStackTableContext>
   );
 }
 

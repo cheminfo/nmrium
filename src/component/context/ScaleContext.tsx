@@ -1,6 +1,6 @@
 import type { ScaleLinear } from 'd3-scale';
 import type { PropsWithChildren } from 'react';
-import { createContext, useCallback, useContext, useMemo } from 'react';
+import { createContext, use, useCallback, useMemo } from 'react';
 
 import { useIsInset } from '../1d/inset/InsetProvider.js';
 import {
@@ -39,7 +39,7 @@ const scaleInitialState: ScaleState = {
 const ScaleContext = createContext<ScaleState>(scaleInitialState);
 
 export function useScale() {
-  return useContext(ScaleContext);
+  return use(ScaleContext);
 }
 
 type CheckedScaleState = {
@@ -126,7 +126,5 @@ export function ScaleProvider({ children }: Required<PropsWithChildren>) {
     spectraBottomMargin,
   ]);
 
-  return (
-    <ScaleContext.Provider value={scaleState}>{children}</ScaleContext.Provider>
-  );
+  return <ScaleContext value={scaleState}>{children}</ScaleContext>;
 }

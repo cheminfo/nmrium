@@ -1,7 +1,7 @@
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { extent } from 'd3-array';
 import throttle from 'lodash/throttle.js';
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { use, useCallback, useEffect, useRef, useState } from 'react';
 import { SVGPathBuilder } from 'react-science/ui';
 
 import { useChartData } from '../../context/ChartContext.js';
@@ -13,7 +13,7 @@ import {
   useHighlightData,
 } from '../../highlight/index.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
-import { spinnerContext } from '../../loader/SpinnerContext.js';
+import { SpinnerContext } from '../../loader/SpinnerContext.js';
 import { getYScaleWithRation } from '../utilities/scale.js';
 
 function DatabaseSpectrum() {
@@ -29,7 +29,7 @@ function DatabaseSpectrum() {
     isHighlightEventSource(highlight.sourceData, 'DATABASE')
       ? highlight.sourceData.extra
       : { jcampURL: '', baseURL: '' };
-  const getSpinner = useContext(spinnerContext);
+  const getSpinner = use(SpinnerContext);
 
   const scaleY = useCallback(
     (yDomain: number[]) =>

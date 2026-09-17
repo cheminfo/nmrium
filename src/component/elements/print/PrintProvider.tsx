@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, use, useMemo } from 'react';
 
 interface PrintPagContextProps {
   width: number;
@@ -9,7 +9,7 @@ interface PrintPagContextProps {
 const PrintContext = createContext<PrintPagContextProps | null>(null);
 
 export function usePrintPage() {
-  return useContext(PrintContext);
+  return use(PrintContext);
 }
 
 interface PrintProviderProps extends PrintPagContextProps {
@@ -19,6 +19,7 @@ interface PrintProviderProps extends PrintPagContextProps {
 /**
  * Converts centimetre to pixels.
  * @param cm - The value in centimetre.
+ * @param margin
  * @param ppi - Pixels per inch (default is 96).
  * @returns The value in pixels.
  */
@@ -39,7 +40,5 @@ export function PrintProvider(props: PrintProviderProps) {
     };
   }, [height, margin, width]);
 
-  return (
-    <PrintContext.Provider value={state}>{children}</PrintContext.Provider>
-  );
+  return <PrintContext value={state}>{children}</PrintContext>;
 }

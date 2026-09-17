@@ -5,13 +5,7 @@ import type {
   PropsWithChildren,
   ReactNode,
 } from 'react';
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from 'react';
+import { createContext, use, useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
@@ -54,7 +48,7 @@ const PeaksEditionContext =
   createContext<PeaksEditionContextProps>(peaksEditionContext);
 
 function usePeaksEditionManager() {
-  const context = useContext(PeaksEditionContext);
+  const context = use(PeaksEditionContext);
 
   if (!context) {
     throw new Error('Peak edition manager context was not found');
@@ -120,7 +114,7 @@ export function PeakEditionProvider({ children }: Required<PropsWithChildren>) {
   const { x, y } = getPosition();
 
   return (
-    <PeaksEditionContext.Provider value={editionManagerState}>
+    <PeaksEditionContext value={editionManagerState}>
       <div
         onClick={() => setPeak(null)}
         onContextMenu={() => setPeak(null)}
@@ -143,7 +137,7 @@ export function PeakEditionProvider({ children }: Required<PropsWithChildren>) {
           </div>
         )}
       </div>
-    </PeaksEditionContext.Provider>
+    </PeaksEditionContext>
   );
 }
 
