@@ -5,12 +5,12 @@ import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
 import { useFullscreen } from 'react-science/ui';
 
 import { AssignmentProvider } from '../assignment/AssignmentProvider.js';
-import { CoreProvider } from '../context/CoreContext.js';
-import { GlobalProvider } from '../context/GlobalContext.js';
+import { CoreContext } from '../context/CoreContext.js';
+import { GlobalContext } from '../context/GlobalContext.js';
 import { KeyModifiersProvider } from '../context/KeyModifierContext.js';
 import { LoggerProvider } from '../context/LoggerContext.js';
 import type { PreferencesStateContext } from '../context/PreferencesContext.js';
-import { PreferencesProvider } from '../context/PreferencesContext.js';
+import { PreferencesContext } from '../context/PreferencesContext.js';
 import { SortSpectraProvider } from '../context/SortSpectraContext.js';
 import { ToasterProvider } from '../context/ToasterContext.js';
 import { TopicMoleculeProvider } from '../context/TopicMoleculeContext.js';
@@ -93,17 +93,17 @@ export function InnerNMRium(props: InnerNMRiumProps) {
       style={{ height: '100%', position: 'relative' }}
       translate="no"
     >
-      <CoreProvider value={finalCore}>
+      <CoreContext value={finalCore}>
         <HotkeysProvider>
           <ExportManagerProvider>
-            <GlobalProvider
+            <GlobalContext
               value={{
                 rootRef: rootRef.current,
                 elementsWrapperRef: elementsWrapperRef.current,
                 viewerRef: viewerRef.current,
               }}
             >
-              <PreferencesProvider value={preferencesProviderValue}>
+              <PreferencesContext value={preferencesProviderValue}>
                 <LoggerProvider>
                   <KeyModifiersProvider>
                     <ToasterProvider>
@@ -139,11 +139,11 @@ export function InnerNMRium(props: InnerNMRiumProps) {
                     </ToasterProvider>
                   </KeyModifiersProvider>
                 </LoggerProvider>
-              </PreferencesProvider>
-            </GlobalProvider>
+              </PreferencesContext>
+            </GlobalContext>
           </ExportManagerProvider>
         </HotkeysProvider>
-      </CoreProvider>
+      </CoreContext>
     </div>
   );
 }

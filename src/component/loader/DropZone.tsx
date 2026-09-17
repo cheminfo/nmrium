@@ -5,7 +5,7 @@ import * as dropzone from 'react-dropzone';
 import { FaUpload } from 'react-icons/fa';
 
 import { useChartData } from '../context/ChartContext.js';
-import { LoaderProvider } from '../context/LoaderContext.js';
+import { LoaderContext } from '../context/LoaderContext.js';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility.js';
 import { MetaImportationModal } from '../modal/metaImportation/MetaImportationModal.js';
 
@@ -74,7 +74,7 @@ export default function DropZone(props: DropZoneProps) {
   }, [isImportEnabled, openImportDialog]);
 
   return (
-    <LoaderProvider value={open}>
+    <LoaderContext value={open}>
       {metaInformationFile && (
         <MetaImportationModal
           isOpen
@@ -99,6 +99,6 @@ export default function DropZone(props: DropZoneProps) {
         )}
         {props.children}
       </Container>
-    </LoaderProvider>
+    </LoaderContext>
   );
 }
