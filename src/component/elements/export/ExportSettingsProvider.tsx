@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, use, useMemo } from 'react';
 
 interface ExportSettingsContextProps {
   width: number;
@@ -12,7 +12,7 @@ const ExportSettingsContext =
   createContext<Required<ExportSettingsContextProps> | null>(null);
 
 export function useExportSettings() {
-  return useContext(ExportSettingsContext);
+  return use(ExportSettingsContext);
 }
 
 interface ExportSettingsProviderProps extends ExportSettingsContextProps {
@@ -32,8 +32,6 @@ export function ExportSettingsProvider(props: ExportSettingsProviderProps) {
   }, [exportHeight, exportWidth, height, width]);
 
   return (
-    <ExportSettingsContext.Provider value={state}>
-      {children}
-    </ExportSettingsContext.Provider>
+    <ExportSettingsContext value={state}>{children}</ExportSettingsContext>
   );
 }

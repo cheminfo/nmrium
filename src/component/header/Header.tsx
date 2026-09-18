@@ -64,9 +64,14 @@ export const headerLabelStyle: LabelStyle = {
     alignItems: 'center',
   },
 };
+
 interface HeaderInnerProps {
   selectedOptionPanel: string | null;
   height: number;
+}
+
+function renderItem(item: any) {
+  return <WorkspaceItem item={item} />;
 }
 
 function HeaderInner(props: HeaderInnerProps) {
@@ -122,10 +127,6 @@ function HeaderInner(props: HeaderInnerProps) {
 
   function changeWorkspaceHandler(option: DropDownListItem) {
     setActiveWorkspace(option.key);
-  }
-
-  function renderItem(item: any) {
-    return <WorkspaceItem item={item} />;
   }
 
   return (

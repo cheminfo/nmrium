@@ -77,11 +77,7 @@ function Top1DChart({ verticalMargin = 10, data: spectrum }: Top1DChartProps) {
         />
       </g>
       <g clipPath={`url(#${displayerKey}clip-top-ranges)`}>
-        <Ranges1D
-          ranges={ranges}
-          orientation="horizontal"
-          spectrumId={spectrum.id}
-        />
+        <Ranges1D ranges={ranges} orientation="horizontal" />
         <Signals1D
           ranges={ranges}
           orientation="horizontal"

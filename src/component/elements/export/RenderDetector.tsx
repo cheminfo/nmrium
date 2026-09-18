@@ -12,6 +12,7 @@ export function RenderDetector(props: RenderDetectorProps) {
 
   useEffect(() => {
     const handleRenderComplete = () => {
+      // eslint-disable-next-line @eslint-react/web-api-no-leaked-timeout
       setTimeout(() => {
         onRender();
       }, 250);

@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unused-prop-types */
 import styled from '@emotion/styled';
 import type { CSSProperties, PointerEventHandler, ReactElement } from 'react';
 

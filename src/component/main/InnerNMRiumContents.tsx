@@ -1,7 +1,7 @@
 import { Global, css } from '@emotion/react';
 import styled from '@emotion/styled';
 import type { PrintPageOptions } from '@zakodium/nmrium-core';
-import type { ForwardedRef, MouseEvent, ReactNode, RefObject } from 'react';
+import type { MouseEvent, ReactNode, Ref, RefObject } from 'react';
 import { useCallback } from 'react';
 import { useFullscreen } from 'react-science/ui';
 
@@ -72,7 +72,7 @@ interface InnerNMRiumContentsProps {
   elementsWrapperRef: RefObject<HTMLDivElement | null>;
   rootRef: RefObject<HTMLDivElement | null>;
   viewerRef: RefObject<HTMLDivElement | null>;
-  apiRef: ForwardedRef<NMRiumRefAPI>;
+  apiRef?: Ref<NMRiumRefAPI>;
 }
 
 export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {

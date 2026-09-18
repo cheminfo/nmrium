@@ -84,11 +84,7 @@ function Left1DChart({
         />
       </g>
       <g clipPath={`url(#${displayerKey}clip-left-ranges)`}>
-        <Ranges1D
-          ranges={ranges}
-          orientation="vertical"
-          spectrumId={spectrum.id}
-        />
+        <Ranges1D ranges={ranges} orientation="vertical" />
         <Signals1D
           ranges={ranges}
           orientation="vertical"

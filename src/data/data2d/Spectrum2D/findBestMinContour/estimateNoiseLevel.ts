@@ -21,7 +21,7 @@ export function estimateNoiseLevel(
 ): number {
   const { maxSamples = DEFAULT_MAX_SAMPLES } = options;
 
-  if (!Number.isInteger(maxSamples) || maxSamples <= 0) {
+  if (!Number.isSafeInteger(maxSamples) || maxSamples <= 0) {
     throw new Error('maxSamples must be a positive integer');
   }
 

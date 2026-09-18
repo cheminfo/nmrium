@@ -34,7 +34,7 @@ function IntegralPanelInner(props: IntegralPanelInnerProps) {
   const { showIntegralsValues } = useActiveSpectrumIntegralsViewState();
 
   const alert = useAlert();
-  const [isFlipped, setFlipStatus] = useState(false);
+  const [isFlipped, setIsFlipped] = useState(false);
   const settingRef = useRef<SettingsRef | null>(null);
 
   function handleShowIntegralsValues() {
@@ -69,13 +69,13 @@ function IntegralPanelInner(props: IntegralPanelInnerProps) {
   const currentSum = integrals?.options?.sum ?? null;
 
   const settingsPanelHandler = useCallback(() => {
-    setFlipStatus(!isFlipped);
+    setIsFlipped(!isFlipped);
   }, [isFlipped]);
 
   const saveSettingHandler = useCallback(async () => {
     const isSettingValid = await settingRef.current?.saveSetting();
     if (isSettingValid) {
-      setFlipStatus(false);
+      setIsFlipped(false);
     }
   }, []);
 
@@ -90,8 +90,8 @@ function IntegralPanelInner(props: IntegralPanelInnerProps) {
   const filteredData = useMemo(() => {
     function isInRange(from: any, to: any) {
       const factor = 10000;
-      to = to * factor;
-      from = from * factor;
+      to *= factor;
+      from *= factor;
       return (
         (to >= xDomain[0] * factor && from <= xDomain[1] * factor) ||
         (from <= xDomain[0] * factor && to >= xDomain[1] * factor)
@@ -144,7 +144,7 @@ function IntegralPanelInner(props: IntegralPanelInnerProps) {
               icon: <ImLink />,
               tooltip: 'Fixed integration values',
               onClick: toggleConstantSumHandler,
-              active: integrals?.options?.isSumConstant || false,
+              active: integrals?.options?.isSumConstant,
             },
             {
               icon: <SvgNmrIntegrate />,

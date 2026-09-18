@@ -77,7 +77,7 @@ export default function TableRow<TData extends TanStackRowData>(
     highlightedSource = 'UNKNOWN',
     getHighlightExtra,
     onContextMenuSelect,
-    contextMenu = [],
+    contextMenu,
     onClick,
     isRowActive = false,
     rowStyle,
@@ -98,7 +98,7 @@ export default function TableRow<TData extends TanStackRowData>(
       highlight.hide();
     };
     // TODO: avoid this hack.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps,@eslint-react/exhaustive-deps
   }, []);
 
   const clickHandler = useCallback(

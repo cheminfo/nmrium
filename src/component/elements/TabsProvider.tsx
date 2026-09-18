@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, use, useMemo, useState } from 'react';
 
 type TabId = string | number;
 
@@ -28,13 +28,11 @@ export function TabsProvider<T extends TabId>(props: TabsProviderProps<T>) {
     };
   }, [selectedTabId]);
 
-  return (
-    <TabsContext.Provider value={tabState}>{children}</TabsContext.Provider>
-  );
+  return <TabsContext value={tabState}>{children}</TabsContext>;
 }
 
 export function useTabsController<T extends TabId>() {
-  const context = useContext(TabsContext);
+  const context = use(TabsContext);
   if (!context) {
     throw new Error('useTabsContext must be used within a TabsProvider');
   }

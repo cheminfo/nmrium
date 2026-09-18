@@ -180,7 +180,7 @@ const styles: Style = {
       }
       &:not(${element === 'button' ? '[disabled]' : '.disabled'}):active {
         background-color: ${active || hover};
-        color: ${color?.active || color.hover};
+        color: ${color.active || color.hover};
       }
     `;
 

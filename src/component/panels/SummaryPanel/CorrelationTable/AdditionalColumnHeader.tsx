@@ -117,7 +117,7 @@ function AdditionalColumnHeader(props: AdditionalColumnHeaderProps) {
     return correlation.edited.equivalence
       ? { backgroundColor: '#F7F2E0' }
       : {
-          color: Number.isInteger(correlation.equivalence)
+          color: Number.isSafeInteger(correlation.equivalence)
             ? correlation.equivalence === 1
               ? '#bebebe'
               : 'black'
@@ -140,25 +140,24 @@ function AdditionalColumnHeader(props: AdditionalColumnHeaderProps) {
 
     for (const link of correlation.link) {
       const isValidLink = correlationApi.getLinkDim(link) === 1 && !link.pseudo;
+      if (!isValidLink) continue;
 
-      if (isValidLink) {
-        const signalDelta = (link.signal as Signal1D).delta;
-        const contextMenu: ContextMenuItem = {
-          text: `Edit 1D (${signalDelta.toFixed(3)}${
-            link.edited?.moved ? '[MOVED]' : ''
-          })`,
-          icon: 'edit',
+      const signalDelta = (link.signal as Signal1D).delta;
+      const contextMenu: ContextMenuItem = {
+        text: `Edit 1D (${signalDelta.toFixed(3)}${
+          link.edited?.moved ? '[MOVED]' : ''
+        })`,
+        icon: 'edit',
+        data: {
+          action: 'edit',
           data: {
-            action: 'edit',
-            data: {
-              link,
-              correlationDim1: correlation,
-              correlationDim2: null,
-            },
+            link,
+            correlationDim1: correlation,
+            correlationDim2: null,
           },
-        };
-        contextMenus.push(contextMenu);
-      }
+        },
+      };
+      contextMenus.push(contextMenu);
     }
     return contextMenus;
   }, [correlation]);
@@ -215,7 +214,7 @@ function AdditionalColumnHeader(props: AdditionalColumnHeaderProps) {
           : ''}
       </p>
       <p style={equivalenceTextStyle}>
-        {Number.isInteger(correlation.equivalence)
+        {Number.isSafeInteger(correlation.equivalence)
           ? correlation.equivalence
           : correlation.equivalence.toFixed(2)}
       </p>

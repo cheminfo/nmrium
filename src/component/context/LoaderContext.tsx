@@ -1,13 +1,11 @@
-import { createContext, useContext } from 'react';
+import { createContext, use } from 'react';
 
 function defaultLoader() {
   // Empty
 }
 
-const LoaderContext = createContext<() => void>(defaultLoader);
-
-export const LoaderProvider = LoaderContext.Provider;
+export const LoaderContext = createContext<() => void>(defaultLoader);
 
 export function useLoader() {
-  return useContext(LoaderContext);
+  return use(LoaderContext);
 }

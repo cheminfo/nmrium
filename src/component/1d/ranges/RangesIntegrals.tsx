@@ -10,7 +10,7 @@ import useSpectrum from '../../hooks/useSpectrum.js';
 interface IntegralData {
   x: Float64Array;
   y: Float64Array;
-  // eslint-disable-next-line react/no-unused-prop-types
+  // eslint-disable-next-line @eslint-react/no-unused-props
   id: string;
   from: number;
   to: number;
@@ -84,7 +84,7 @@ function useIntegrals() {
 
   if (!spectrum || !showIntegrals) return;
 
-  let max = Number.NEGATIVE_INFINITY;
+  let max = -Infinity;
   const values: IntegralData[] = [];
 
   const {

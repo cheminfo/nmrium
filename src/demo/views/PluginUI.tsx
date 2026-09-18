@@ -2,14 +2,8 @@ import type { IconName } from '@blueprintjs/icons';
 import { IconNames } from '@blueprintjs/icons';
 import styled from '@emotion/styled';
 import { defineProcessingOperatorUI, generateID } from '@zakodium/nmrium-core';
-import init from '@zakodium/nmrium-core-plugins';
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from 'react';
+import { init } from '@zakodium/nmrium-core-plugins';
+import { createContext, use, useCallback, useMemo, useState } from 'react';
 import { Toolbar } from 'react-science/ui';
 
 import { NMRium } from '../../component/main/index.js';
@@ -41,7 +35,7 @@ const DemoContext = createContext<{
 }>({ icon: 'console', setRandom: () => {} });
 
 function DemoTopBarRight() {
-  const { setRandom, icon } = useContext(DemoContext);
+  const { setRandom, icon } = use(DemoContext);
 
   return (
     <Toolbar>
@@ -131,7 +125,7 @@ export default function PluginUI(props: ViewProps) {
       <h1>Plugin UI</h1>
 
       <NMRiumContainer>
-        <DemoContext.Provider value={context}>
+        <DemoContext value={context}>
           <NMRium
             core={core}
             state={injectedData?.state}
@@ -139,7 +133,7 @@ export default function PluginUI(props: ViewProps) {
             {...(workspace && { workspace })}
             {...(customWorkspaces && { customWorkspaces })}
           />
-        </DemoContext.Provider>
+        </DemoContext>
       </NMRiumContainer>
     </Container>
   );

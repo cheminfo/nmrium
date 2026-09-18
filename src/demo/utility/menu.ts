@@ -41,6 +41,7 @@ function getMenu(
         title: array[index].groupName,
       });
       _nodes.push(node);
+      // eslint-disable-next-line unicorn/no-useless-recursion
       return getMenu(index + key, array[index].children, _nodes, 0);
     } else {
       const { queryParams: query, ...itemProps } = array[index];
@@ -58,10 +59,10 @@ function getMenu(
 }
 
 function mapTreeToFlatArray(array: any[] = []) {
-  let routes: any[] = [];
+  const routes: any[] = [];
   for (const item of array) {
     if (item.children && Array.isArray(item.children)) {
-      routes = routes.concat(getFlatArray([item], []));
+      routes.push(...getFlatArray([item], []));
     } else {
       routes.push(item);
     }
@@ -74,6 +75,7 @@ function getFlatArray(inputArray: any[] = [], children: any[] = []) {
 
   for (const item of inputArray) {
     if (item.children && Array.isArray(item.children)) {
+      // eslint-disable-next-line unicorn/no-useless-recursion
       return getFlatArray(item.children, _children);
     } else {
       children.push(item);

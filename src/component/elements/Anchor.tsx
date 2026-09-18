@@ -1,5 +1,10 @@
 import styled from '@emotion/styled';
-import type { CSSProperties, MouseEvent, RefObject } from 'react';
+import type {
+  CSSProperties,
+  KeyboardEvent,
+  MouseEvent,
+  RefObject,
+} from 'react';
 import { useRef, useState } from 'react';
 
 const CUR_MOVE = `url("position:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='12' viewBox='0 0 22 12'%3E%3Cpath d='M1 6h20M1 6l4-4M1 6l4 4M21 6l-4-4M21 6l-4 4' fill='none' stroke='black' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") 11 6, ew-resize`;
@@ -296,7 +301,7 @@ export function Anchor({
     window.addEventListener('mouseup', onUp);
   }
 
-  function handleKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+  function handleKeyDown(e: KeyboardEvent<HTMLDivElement>) {
     if (e.key === 'Backspace' || e.key === 'Delete') {
       e.preventDefault();
       onDelete();

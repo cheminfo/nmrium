@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import type { HTMLAttributes } from 'react';
 
 import { useChartData } from '../../context/ChartContext.tsx';
 import { formatNumber } from '../../utility/formatNumber.ts';
@@ -15,7 +16,7 @@ const Path = styled.path`
 export type IndicatorOrientation = 'horizontal' | 'vertical';
 
 interface RangeIndicatorProps extends Pick<
-  React.HTMLAttributes<SVGGElement>,
+  HTMLAttributes<SVGGElement>,
   'onClick'
 > {
   position: number;

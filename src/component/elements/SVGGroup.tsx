@@ -8,27 +8,30 @@ interface SVGGroupProps extends SVGAttributes<SVGElement> {
 }
 
 export function SVGGroup(props: SVGGroupProps) {
-  const elementsRefs = useRef<SVGGraphicsElement[]>([]);
+  const elementsRef = useRef<SVGGraphicsElement[]>([]);
   const { children, direction = 'row', space = 0, ...resProps } = props;
 
   useLayoutEffect(() => {
-    let shift = 0;
-    const elements = elementsRefs.current;
+    const elements = elementsRef.current;
 
     if (!elements) {
       return;
     }
 
+    let shift = 0;
+
     for (const element of elements) {
-      if (element) {
-        const boundary = element.getBBox();
-        if (direction === 'row') {
-          element.setAttribute('transform', `translate(${shift} 0)`);
-          shift += boundary.width + space;
-        } else {
-          element.setAttribute('transform', `translate(0 ${shift})`);
-          shift += boundary.height + space;
-        }
+      if (!element) {
+        continue;
+      }
+
+      const boundary = element.getBBox();
+      if (direction === 'row') {
+        element.setAttribute('transform', `translate(${shift} 0)`);
+        shift += boundary.width + space;
+      } else {
+        element.setAttribute('transform', `translate(0 ${shift})`);
+        shift += boundary.height + space;
       }
     }
   });
@@ -40,11 +43,11 @@ export function SVGGroup(props: SVGGroupProps) {
       {Children.map(items, (child, index) => {
         return (
           <g
-            // eslint-disable-next-line react/no-array-index-key
-            key={`${index}`}
+            // eslint-disable-next-line @eslint-react/no-array-index-key
+            key={index}
             ref={(ref) => {
               if (ref) {
-                elementsRefs.current[index] = ref;
+                elementsRef.current[index] = ref;
               }
             }}
           >

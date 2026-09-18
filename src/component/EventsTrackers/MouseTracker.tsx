@@ -1,19 +1,18 @@
 import type { CSSProperties, MouseEvent, ReactNode } from 'react';
-import { createContext, useCallback, useContext, useState } from 'react';
+import { createContext, use, useCallback, useState } from 'react';
 
 interface MouseTrackerData {
   x: number;
   y: number;
 }
 
-const MouseContext = createContext<MouseTrackerData | null>(null);
-const MouseProvider = MouseContext.Provider;
+const MouseTrackerContext = createContext<MouseTrackerData | null>(null);
 
 export function useMouseTracker() {
-  if (!MouseContext) {
+  if (!MouseTrackerContext) {
     throw new Error('Mouse context was not found');
   }
-  return useContext(MouseContext);
+  return use(MouseTrackerContext);
 }
 
 interface MouseTrackerProps {
@@ -72,7 +71,7 @@ export function MouseTracker(props: MouseTrackerProps) {
   );
 
   return (
-    <MouseProvider value={mouseTrackerState}>
+    <MouseTrackerContext value={mouseTrackerState}>
       <div
         className={className}
         style={style}
@@ -81,6 +80,6 @@ export function MouseTracker(props: MouseTrackerProps) {
       >
         {children}
       </div>
-    </MouseProvider>
+    </MouseTrackerContext>
   );
 }

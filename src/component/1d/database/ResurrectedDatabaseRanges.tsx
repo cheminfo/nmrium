@@ -82,8 +82,8 @@ function ResurrectedDatabaseRanges() {
   return (
     <g className="resurrected-database-ranges" width="100%" height="100%">
       {paths.map(({ path, from, to }, index) => (
-        // eslint-disable-next-line react/no-array-index-key
-        <g key={`${index}`}>
+        // eslint-disable-next-line @eslint-react/no-array-index-key
+        <g key={index}>
           <g transform={`translate(${scaleX()(to)},0)`}>
             <rect
               x="0"

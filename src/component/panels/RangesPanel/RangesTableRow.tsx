@@ -189,11 +189,7 @@ export default function RangesTableRow(props: RangesTableRowProps) {
         </td>
       )}
       {tablePreferences.showAssignmentLabel && (
-        <SignalAssignmentColumn
-          row={rowData}
-          highlight={highlightSignal}
-          onHover={onHoverSignal}
-        />
+        <SignalAssignmentColumn row={rowData} onHover={onHoverSignal} />
       )}
 
       {tablePreferences.from.show && (
@@ -274,7 +270,6 @@ export default function RangesTableRow(props: RangesTableRowProps) {
       <ActionsColumn
         row={rowData}
         onHoverSignal={onHoverSignal}
-        onHoverRange={onHoverRange}
         rowSpanTags={rowSpanTags}
         showKind={tablePreferences.showKind}
         showDeleteAction={tablePreferences.showDeleteAction}

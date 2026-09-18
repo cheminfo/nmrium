@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import type { Range, Signal1D } from '@zakodium/nmr-types';
 import type { ScaleLinear } from 'd3-scale';
-import type { ComponentProps } from 'react';
+import type { ComponentProps, MouseEvent } from 'react';
 import { useMemo, useRef, useState } from 'react';
 
 import { Anchor } from '../../AnchorSVG.tsx';
@@ -101,7 +101,7 @@ function SignalCursor(props: SignalCursorProps) {
   const [pointerPosition, setPosition] = useState<number | null>(null);
   const addMultipletSignal = useAddMultipletSignal();
 
-  function handleMove(event: React.MouseEvent<SVGRectElement>) {
+  function handleMove(event: MouseEvent<SVGRectElement>) {
     const rect = event.currentTarget.getBoundingClientRect();
     const local =
       orientation === 'horizontal'
@@ -110,7 +110,7 @@ function SignalCursor(props: SignalCursorProps) {
     setPosition(local);
   }
 
-  function handleAddSignal(e: React.MouseEvent<SVGGElement, MouseEvent>) {
+  function handleAddSignal(e: MouseEvent<SVGGElement>) {
     e.stopPropagation();
     const boundingRect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - boundingRect.left + start;

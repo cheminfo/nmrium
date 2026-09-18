@@ -1,5 +1,5 @@
 import type { NmriumState } from '@zakodium/nmrium-core';
-import init from '@zakodium/nmrium-core-plugins';
+import { init } from '@zakodium/nmrium-core-plugins';
 import type { FileCollection } from 'file-collection';
 import { useEffect, useState } from 'react';
 

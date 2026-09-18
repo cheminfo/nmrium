@@ -66,13 +66,11 @@ function SpectrumInfoBlock() {
     y: number;
   }>(coordinate);
 
-  const {
-    current: {
-      infoBlock: { visible, fields, nameStyle, valueStyle },
-    },
-  } = usePreferences();
+  const { current: currentPreferences } = usePreferences();
 
-  const infoFields = fields.filter((field) => field.visible);
+  const infoFields = currentPreferences.infoBlock.fields.filter(
+    (field) => field.visible,
+  );
   const totalSpace =
     verticalSpace *
     ((infoFields?.length < 2 || infoFields?.length - (infoFields?.length % 2)
@@ -121,7 +119,9 @@ function SpectrumInfoBlock() {
     parentElement: viewerRef,
   });
 
-  if (!visible || !spectrum || isInset) return null;
+  if (!currentPreferences.infoBlock.visible || !spectrum || isInset) {
+    return null;
+  }
 
   const bothSidePadding = boxPadding * 2;
   const shift = dragShiftY / 2;
@@ -200,11 +200,17 @@ function SpectrumInfoBlock() {
                 space={verticalSpace}
                 key={field.jpath + field.label}
               >
-                <SVGStyledText {...nameStyle} alignmentBaseline="middle">
+                <SVGStyledText
+                  {...currentPreferences.infoBlock.nameStyle}
+                  alignmentBaseline="middle"
+                >
                   {field.label} :
                 </SVGStyledText>
 
-                <SVGStyledText {...valueStyle} alignmentBaseline="middle">
+                <SVGStyledText
+                  {...currentPreferences.infoBlock.valueStyle}
+                  alignmentBaseline="middle"
+                >
                   {getInfoValue(spectrum, field)}
                 </SVGStyledText>
               </SVGGroup>

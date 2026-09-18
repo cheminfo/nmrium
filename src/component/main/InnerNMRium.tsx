@@ -1,16 +1,16 @@
 import { HotkeysProvider } from '@blueprintjs/core';
-import init from '@zakodium/nmrium-core-plugins';
-import type { ForwardedRef } from 'react';
+import { init } from '@zakodium/nmrium-core-plugins';
+import type { Ref } from 'react';
 import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
 import { useFullscreen } from 'react-science/ui';
 
 import { AssignmentProvider } from '../assignment/AssignmentProvider.js';
-import { CoreProvider } from '../context/CoreContext.js';
-import { GlobalProvider } from '../context/GlobalContext.js';
+import { CoreContext } from '../context/CoreContext.js';
+import { GlobalContext } from '../context/GlobalContext.js';
 import { KeyModifiersProvider } from '../context/KeyModifierContext.js';
 import { LoggerProvider } from '../context/LoggerContext.js';
 import type { PreferencesStateContext } from '../context/PreferencesContext.js';
-import { PreferencesProvider } from '../context/PreferencesContext.js';
+import { PreferencesContext } from '../context/PreferencesContext.js';
 import { SortSpectraProvider } from '../context/SortSpectraContext.js';
 import { ToasterProvider } from '../context/ToasterContext.js';
 import { TopicMoleculeProvider } from '../context/TopicMoleculeContext.js';
@@ -18,10 +18,7 @@ import { AlertProvider } from '../elements/Alert.js';
 import { DialogProvider } from '../elements/DialogManager.js';
 import { ExportManagerProvider } from '../elements/export/ExportManager.js';
 import { HighlightProvider } from '../highlight/index.js';
-import {
-  SpinnerProvider,
-  defaultGetSpinner,
-} from '../loader/SpinnerContext.js';
+import { SpinnerContext, defaultGetSpinner } from '../loader/SpinnerContext.js';
 import preferencesReducer, {
   initPreferencesState,
   preferencesInitialState,
@@ -34,7 +31,7 @@ import type { NMRiumRefAPI } from './NMRiumRefAPI.js';
 import NMRiumStateProvider from './NMRiumStateProvider.js';
 
 type InnerNMRiumProps = Omit<NMRiumProps, 'onError'> & {
-  apiRef: ForwardedRef<NMRiumRefAPI>;
+  apiRef?: Ref<NMRiumRefAPI>;
 };
 
 export function InnerNMRium(props: InnerNMRiumProps) {
@@ -90,23 +87,28 @@ export function InnerNMRium(props: InnerNMRiumProps) {
     });
   }, [customWorkspaces, preferences, workspace]);
 
+  const globalRef = useMemo(
+    () => ({
+      rootRef: rootRef.current,
+      elementsWrapperRef: elementsWrapperRef.current,
+      viewerRef: viewerRef.current,
+    }),
+    // TODO: Implement this differently as it's invalid to read `ref.current` during rendering.
+    // eslint-disable-next-line @eslint-react/exhaustive-deps,react-hooks/exhaustive-deps
+    [rootRef.current, elementsWrapperRef.current, viewerRef.current],
+  );
+
   return (
     <div
       ref={mainDivRef}
       style={{ height: '100%', position: 'relative' }}
       translate="no"
     >
-      <CoreProvider value={finalCore}>
+      <CoreContext value={finalCore}>
         <HotkeysProvider>
           <ExportManagerProvider>
-            <GlobalProvider
-              value={{
-                rootRef: rootRef.current,
-                elementsWrapperRef: elementsWrapperRef.current,
-                viewerRef: viewerRef.current,
-              }}
-            >
-              <PreferencesProvider value={preferencesProviderValue}>
+            <GlobalContext value={globalRef}>
+              <PreferencesContext value={preferencesProviderValue}>
                 <LoggerProvider>
                   <KeyModifiersProvider>
                     <ToasterProvider>
@@ -122,7 +124,7 @@ export function InnerNMRium(props: InnerNMRiumProps) {
                               <AlertProvider>
                                 <HighlightProvider>
                                   <AssignmentProvider>
-                                    <SpinnerProvider value={getSpinner}>
+                                    <SpinnerContext value={getSpinner}>
                                       <InnerNMRiumContents
                                         emptyText={emptyText}
                                         mainDivRef={mainDivRef}
@@ -131,7 +133,7 @@ export function InnerNMRium(props: InnerNMRiumProps) {
                                         viewerRef={viewerRef}
                                         apiRef={apiRef}
                                       />
-                                    </SpinnerProvider>
+                                    </SpinnerContext>
                                   </AssignmentProvider>
                                 </HighlightProvider>
                               </AlertProvider>
@@ -142,11 +144,11 @@ export function InnerNMRium(props: InnerNMRiumProps) {
                     </ToasterProvider>
                   </KeyModifiersProvider>
                 </LoggerProvider>
-              </PreferencesProvider>
-            </GlobalProvider>
+              </PreferencesContext>
+            </GlobalContext>
           </ExportManagerProvider>
         </HotkeysProvider>
-      </CoreProvider>
+      </CoreContext>
     </div>
   );
 }

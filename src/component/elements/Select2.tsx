@@ -2,8 +2,8 @@ import type { ButtonProps } from '@blueprintjs/core';
 import { Button } from '@blueprintjs/core';
 import type { SelectProps } from '@blueprintjs/select';
 import { Select } from '@blueprintjs/select';
-import type { ForwardedRef, ReactNode } from 'react';
-import { forwardRef, useEffect } from 'react';
+import type { ReactNode, Ref } from 'react';
+import { useEffect } from 'react';
 import { useSelect } from 'react-science/ui';
 
 import type { FilterType } from '../utility/filterType.js';
@@ -37,6 +37,7 @@ export type Select2Props<T extends Record<string, any> = SelectDefaultItem> =
   > &
     SelectOptions<T> & {
       selectedButtonProps?: Omit<ButtonProps, 'text'>;
+      ref?: Ref<HTMLButtonElement>;
     } & Pick<ButtonProps, 'intent'>;
 
 function getDefaultSelectedItem<
@@ -50,9 +51,8 @@ export interface SelectDefaultItem {
   value: any;
 }
 
-function InnerSelect2<T extends Record<string, any> = SelectDefaultItem>(
+export function Select2<T extends Record<string, any> = SelectDefaultItem>(
   props: Select2Props<T>,
-  ref: any,
 ) {
   const {
     items,
@@ -68,6 +68,7 @@ function InnerSelect2<T extends Record<string, any> = SelectDefaultItem>(
     filterPlaceholder,
     popoverProps,
     getSelectedText,
+    ref,
     ...otherProps
   } = props;
 
@@ -121,9 +122,3 @@ function InnerSelect2<T extends Record<string, any> = SelectDefaultItem>(
     </Select>
   );
 }
-
-export const Select2 = forwardRef(InnerSelect2) as <
-  T extends Record<string, any> = SelectDefaultItem,
->(
-  props: Select2Props<T> & { ref?: ForwardedRef<HTMLButtonElement> },
-) => ReturnType<typeof InnerSelect2>;

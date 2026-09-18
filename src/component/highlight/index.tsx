@@ -2,8 +2,8 @@ import type { Range } from '@zakodium/nmr-types';
 import type { CSSProperties, MouseEvent, PropsWithChildren } from 'react';
 import {
   createContext,
+  use,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useReducer,
@@ -77,7 +77,8 @@ interface HighlightPayload {
   id?: number | string;
   sourceData?: HighlightEventSource | null;
 }
-interface HighlightContextProps {
+
+interface HighlightContextValue {
   highlight: HighlightState;
   dispatch: (props: {
     type: HighlightActions;
@@ -97,7 +98,7 @@ const emptyState = {
   remove: () => null,
 };
 
-const highlightContext = createContext<HighlightContextProps>(emptyState);
+const HighlightContext = createContext<HighlightContextValue>(emptyState);
 
 function highlightReducer(
   state: HighlightState,
@@ -181,14 +182,12 @@ export function HighlightProvider(props: PropsWithChildren) {
   }, [highlight]);
 
   return (
-    <highlightContext.Provider value={contextValue}>
-      {props.children}
-    </highlightContext.Provider>
+    <HighlightContext value={contextValue}>{props.children}</HighlightContext>
   );
 }
 
 export function useHighlightData() {
-  return useContext(highlightContext);
+  return use(HighlightContext);
 }
 
 /**

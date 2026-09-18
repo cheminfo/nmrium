@@ -303,7 +303,7 @@ function PublicationStringPreview(props: PublicationStringPreviewProps) {
       >
         <CopyPreviewButton onClick={() => onCopy(value)} icon="duplicate" />
       </Tooltip>
-      {/* eslint-disable-next-line react/no-danger */}
+      {/* eslint-disable-next-line @eslint-react/dom-no-dangerously-set-innerhtml */}
       <div dangerouslySetInnerHTML={{ __html: value }} />
     </>
   );

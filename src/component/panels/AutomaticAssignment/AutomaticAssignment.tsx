@@ -20,7 +20,7 @@ function useCheckEnableAutomaticAssignments() {
   });
 }
 
-function AutomaticAssignment() {
+export default function AutomaticAssignment() {
   const { getAssignments, assignments, restAssignments } = useAutoAssignments();
   const enabled = useCheckEnableAutomaticAssignments();
 
@@ -51,5 +51,3 @@ function AutomaticAssignment() {
     </TablePanel>
   );
 }
-
-export default AutomaticAssignment;

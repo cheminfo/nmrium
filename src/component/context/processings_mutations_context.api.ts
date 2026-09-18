@@ -114,13 +114,13 @@ export function useProcessingsMutationsAPI() {
   // --- API --- //
 
   const resetLiveChange = useEventCallback(function resetLiveChange(
-    updateView: boolean,
+    shouldUpdateView: boolean,
   ) {
     dispatch({
       type: 'SET_SPECTRUM_LIVE_PROCESSED',
       payload: {
         spectrumLiveProcessed: undefined,
-        updateView,
+        shouldUpdateView,
       },
     });
   });
@@ -131,8 +131,12 @@ export function useProcessingsMutationsAPI() {
   ) {
     const { spectrum, indexSpectrum } = getSpectrum();
 
-    if (!spectrum?.processings) return;
-    if (indexOperation > spectrum.processings.length) return;
+    if (
+      !spectrum?.processings ||
+      indexOperation > spectrum.processings.length
+    ) {
+      return;
+    }
 
     spectrum.processings[indexOperation] = operation;
 
@@ -180,8 +184,7 @@ export function useProcessingsMutationsAPI() {
   const removeAll = useEventCallback(async function removeAll() {
     const { spectrum, indexSpectrum } = getSpectrum();
 
-    if (!spectrum?.processings) return;
-    if (spectrum.processings.length === 0) return;
+    if (!spectrum?.processings || spectrum.processings.length === 0) return;
 
     spectrum.processings = [];
 
@@ -278,7 +281,7 @@ export function useProcessingsMutationsAPI() {
         type: 'SET_SPECTRUM_LIVE_PROCESSED',
         payload: {
           spectrumLiveProcessed: preProcessedSpectrum,
-          updateView: shouldUpdateView,
+          shouldUpdateView,
         },
       });
       return;
@@ -300,7 +303,7 @@ export function useProcessingsMutationsAPI() {
       type: 'SET_SPECTRUM_LIVE_PROCESSED',
       payload: {
         spectrumLiveProcessed: processedSpectrum,
-        updateView: shouldUpdateView,
+        shouldUpdateView,
       },
     });
   }
@@ -333,7 +336,7 @@ export function useProcessingsMutationsAPI() {
       type: 'SET_SPECTRUM_LIVE_PROCESSED',
       payload: {
         spectrumLiveProcessed: processedSpectrum,
-        updateView: false,
+        shouldUpdateView: false,
       },
     });
   });

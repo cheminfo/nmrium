@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, use, useMemo, useState } from 'react';
 
 interface ShareDataState<T> {
   data: T | null;
@@ -9,7 +9,7 @@ interface ShareDataState<T> {
 const ShareDataContext = createContext<ShareDataState<any> | null>(null);
 
 export function useShareData<T>(): ShareDataState<T> {
-  const context = useContext(ShareDataContext) as ShareDataState<T>;
+  const context = use(ShareDataContext) as ShareDataState<T>;
 
   if (!context) {
     throw new Error('useShareData must be used within an ShareDataProvider');
@@ -28,9 +28,5 @@ export function ShareDataProvider({ children }: { children: ReactNode }) {
     };
   }, [data]);
 
-  return (
-    <ShareDataContext.Provider value={state}>
-      {children}
-    </ShareDataContext.Provider>
-  );
+  return <ShareDataContext value={state}>{children}</ShareDataContext>;
 }

@@ -25,7 +25,7 @@ import type {
 } from 'react';
 import {
   createContext,
-  useContext,
+  use,
   useEffect,
   useMemo,
   useRef,
@@ -83,7 +83,7 @@ const selectionState: SelectionsContextState = {
 const SectionsContext = createContext<SelectionsContextState>(selectionState);
 
 function useSections() {
-  const context = useContext(SectionsContext);
+  const context = use(SectionsContext);
 
   if (!context) {
     throw new Error('Section context was not found');
@@ -245,14 +245,14 @@ export function Sections(props: SectionProps) {
     return { isOverflow, renderActiveSectionContentOnly, matchContentHeight };
   }, [isOverflow, renderActiveSectionContentOnly, matchContentHeight]);
   return (
-    <SectionsContext.Provider value={state}>
+    <SectionsContext value={state}>
       <Container
         isOverflow={isOverflow}
         matchContentHeight={matchContentHeight}
       >
         {children}
       </Container>
-    </SectionsContext.Provider>
+    </SectionsContext>
   );
 }
 

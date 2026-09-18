@@ -3,7 +3,7 @@ import { assert } from '@zakodium/utils';
 import type { Dispatch, ReactNode, SetStateAction } from 'react';
 import {
   createContext,
-  useContext,
+  use,
   useEffect,
   useMemo,
   useRef,
@@ -76,15 +76,15 @@ export const GeneralSettingsErrorsOpenProvider = withForm({
     );
 
     return (
-      <GeneralSettingsErrorsContext.Provider value={contextValue}>
+      <GeneralSettingsErrorsContext value={contextValue}>
         {children}
-      </GeneralSettingsErrorsContext.Provider>
+      </GeneralSettingsErrorsContext>
     );
   },
 });
 
 export function useErrors() {
-  const context = useContext(GeneralSettingsErrorsContext);
+  const context = use(GeneralSettingsErrorsContext);
 
   assert(
     context,

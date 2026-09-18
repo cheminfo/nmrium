@@ -1,6 +1,6 @@
 import { assertDefined } from '@zakodium/utils';
 import type { PropsWithChildren } from 'react';
-import { createContext, useContext } from 'react';
+import { createContext, use } from 'react';
 
 import type { ProcessingsMutations } from './processings_mutations_context.api.ts';
 import { useProcessingsMutationsAPI } from './processings_mutations_context.api.ts';
@@ -14,14 +14,14 @@ export function ProcessingsMutationsProvider(props: PropsWithChildren) {
   const stableAPI = useProcessingsMutationsAPI();
 
   return (
-    <ProcessingsMutationsContext.Provider value={stableAPI}>
+    <ProcessingsMutationsContext value={stableAPI}>
       {children}
-    </ProcessingsMutationsContext.Provider>
+    </ProcessingsMutationsContext>
   );
 }
 
 export function useProcessingsMutations(): ProcessingsMutations {
-  const api = useContext(ProcessingsMutationsContext);
+  const api = use(ProcessingsMutationsContext);
   assertDefined(api);
 
   return api;

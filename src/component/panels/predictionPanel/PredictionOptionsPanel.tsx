@@ -1,6 +1,6 @@
 import { Tag } from '@blueprintjs/core';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { forwardRef } from 'react';
+import type { Ref } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
@@ -97,159 +97,133 @@ interface PredictionOptionsPanelProps {
   options: PredictionOptions;
   hideName?: boolean;
   onSave: (values: any) => void;
+  ref?: Ref<SettingsRef | null>;
 }
 
-export default forwardRef<SettingsRef | null, PredictionOptionsPanelProps>(
-  function PredictionOptionsPanel(props, ref) {
-    const { options, onSave, hideName = false } = props;
-    const { handleSubmit, control } = useForm({
-      defaultValues: options,
-      resolver: yupResolver(getPredictionFormValidation(!hideName) as any),
-    });
-    useSettingImperativeHandle(ref, handleSubmit, onSave);
+export default function PredictionOptionsPanel(
+  props: PredictionOptionsPanelProps,
+) {
+  const { options, onSave, hideName = false, ref } = props;
+  const { handleSubmit, control } = useForm({
+    defaultValues: options,
+    resolver: yupResolver(getPredictionFormValidation(!hideName) as any),
+  });
+  useSettingImperativeHandle(ref, handleSubmit, onSave);
 
-    return (
-      <>
-        {!hideName && (
-          <Label title="Name" style={labelStyle}>
-            <Input2Controller control={control} name="name" fill />
+  return (
+    <>
+      {!hideName && (
+        <Label title="Name" style={labelStyle}>
+          <Input2Controller control={control} name="name" fill />
+        </Label>
+      )}
+      <Label title="Frequency" style={labelStyle}>
+        <Select2Controller
+          control={control}
+          items={FREQUENCIES}
+          name="frequency"
+        />
+      </Label>
+
+      <GroupPane
+        text="1D Options"
+        style={{
+          header: styles.groupHeader,
+        }}
+      >
+        <Label title="Auto extend range" style={labelStyle}>
+          <CheckController control={control} name="autoExtendRange" />
+        </Label>
+        <Label
+          title="1H"
+          renderTitle={(title) => (
+            <IsotopesViewer value={title} className="custom-label" />
+          )}
+          style={labelStyle}
+        >
+          <Label title="From">
+            <NumberInput2Controller control={control} name="1d.1H.from" fill />
           </Label>
-        )}
-        <Label title="Frequency" style={labelStyle}>
-          <Select2Controller
+          <Label title="To" style={{ label: { padding: '0 10px' } }}>
+            <NumberInput2Controller control={control} name="1d.1H.to" fill />
+          </Label>
+        </Label>
+        <Label
+          title="13C"
+          renderTitle={(title) => (
+            <IsotopesViewer value={title} className="custom-label" />
+          )}
+          style={labelStyle}
+        >
+          <Label title="From">
+            <NumberInput2Controller control={control} name="1d.13C.from" fill />
+          </Label>
+          <Label title="To" style={{ label: { padding: '0 10px' } }}>
+            <NumberInput2Controller control={control} name="1d.13C.to" fill />
+          </Label>
+        </Label>
+        <Label title="Line width" style={labelStyle}>
+          <NumberInput2Controller
             control={control}
-            items={FREQUENCIES}
-            name="frequency"
+            name="1d.lineWidth"
+            min={1}
+            stepSize={1}
+            majorStepSize={1}
+            rightElement={<Tag>Hz</Tag>}
           />
         </Label>
-
-        <GroupPane
-          text="1D Options"
-          style={{
-            header: styles.groupHeader,
-          }}
-        >
-          <Label title="Auto extend range" style={labelStyle}>
-            <CheckController control={control} name="autoExtendRange" />
-          </Label>
-          <Label
-            title="1H"
-            renderTitle={(title) => (
-              <IsotopesViewer value={title} className="custom-label" />
-            )}
-            style={labelStyle}
-          >
-            <Label title="From">
-              <NumberInput2Controller
-                control={control}
-                name="1d.1H.from"
-                fill
-              />
-            </Label>
-            <Label title="To" style={{ label: { padding: '0 10px' } }}>
-              <NumberInput2Controller control={control} name="1d.1H.to" fill />
-            </Label>
-          </Label>
-          <Label
-            title="13C"
-            renderTitle={(title) => (
-              <IsotopesViewer value={title} className="custom-label" />
-            )}
-            style={labelStyle}
-          >
-            <Label title="From">
-              <NumberInput2Controller
-                control={control}
-                name="1d.13C.from"
-                fill
-              />
-            </Label>
-            <Label title="To" style={{ label: { padding: '0 10px' } }}>
-              <NumberInput2Controller control={control} name="1d.13C.to" fill />
-            </Label>
-          </Label>
-          <Label title="Line width" style={labelStyle}>
-            <NumberInput2Controller
-              control={control}
-              name="1d.lineWidth"
-              min={1}
-              stepSize={1}
-              majorStepSize={1}
-              rightElement={<Tag>Hz</Tag>}
-            />
-          </Label>
-          <Label title="Number of points" style={labelStyle}>
-            <Select2Controller
-              control={control}
-              items={NUMBER_OF_POINTS_1D}
-              name="1d.nbPoints"
-            />
-          </Label>
-        </GroupPane>
-        <GroupPane
-          text="2D Options"
-          style={{
-            header: styles.groupHeader,
-          }}
-        >
-          <Label title="Number of points" style={labelStyle}>
-            <Select2Controller
-              control={control}
-              items={NUMBER_OF_POINTS_2D}
-              name="2d.nbPoints.x"
-            />
-            <span style={{ padding: '0 10px' }}> X </span>
-            <Select2Controller
-              control={control}
-              items={NUMBER_OF_POINTS_2D}
-              name="2d.nbPoints.y"
-            />
-          </Label>
-        </GroupPane>
-        <GroupPane
-          text="Spectra"
-          style={{
-            header: styles.groupHeader,
-          }}
-        >
-          <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-            <IsotopesOption
-              control={control}
-              title="1H"
-              name="spectra.proton"
-            />
-            <IsotopesOption
-              control={control}
-              title="13C"
-              name="spectra.carbon"
-            />
-            <IsotopesOption
-              control={control}
-              title="COSY"
-              name="spectra.cosy"
-            />
-            <IsotopesOption
-              control={control}
-              title="HSQC"
-              name="spectra.hsqc"
-            />
-            <IsotopesOption
-              control={control}
-              title="HMBC"
-              name="spectra.hmbc"
-            />
-          </div>
-        </GroupPane>
-      </>
-    );
-  },
-);
+        <Label title="Number of points" style={labelStyle}>
+          <Select2Controller
+            control={control}
+            items={NUMBER_OF_POINTS_1D}
+            name="1d.nbPoints"
+          />
+        </Label>
+      </GroupPane>
+      <GroupPane
+        text="2D Options"
+        style={{
+          header: styles.groupHeader,
+        }}
+      >
+        <Label title="Number of points" style={labelStyle}>
+          <Select2Controller
+            control={control}
+            items={NUMBER_OF_POINTS_2D}
+            name="2d.nbPoints.x"
+          />
+          <span style={{ padding: '0 10px' }}> X </span>
+          <Select2Controller
+            control={control}
+            items={NUMBER_OF_POINTS_2D}
+            name="2d.nbPoints.y"
+          />
+        </Label>
+      </GroupPane>
+      <GroupPane
+        text="Spectra"
+        style={{
+          header: styles.groupHeader,
+        }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+          <IsotopesOption control={control} title="1H" name="spectra.proton" />
+          <IsotopesOption control={control} title="13C" name="spectra.carbon" />
+          <IsotopesOption control={control} title="COSY" name="spectra.cosy" />
+          <IsotopesOption control={control} title="HSQC" name="spectra.hsqc" />
+          <IsotopesOption control={control} title="HMBC" name="spectra.hmbc" />
+        </div>
+      </GroupPane>
+    </>
+  );
+}
 
 interface IsotopesOptionProps {
   name: string;
   title: string;
   control: any;
 }
+
 function IsotopesOption(props: IsotopesOptionProps) {
   const { name, title, control } = props;
   return (

@@ -1,4 +1,5 @@
-import { forwardRef, useEffect, useMemo } from 'react';
+import type { JSX, Ref } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { usePreferences } from '../../context/PreferencesContext.js';
@@ -107,54 +108,59 @@ const formatFields: NucleusPreferenceField[] = [
   },
 ];
 
-export default forwardRef<SettingsRef | null>(
-  function RangesPreferences(_, ref) {
-    const preferences = usePreferences();
-    const nucleus = useNucleus();
-    const nuclei = useMemo(() => getUniqueNuclei(nucleus), [nucleus]);
-    const preferencesByNuclei = usePanelPreferencesByNuclei('ranges', nuclei);
+interface RangesPreferencesProps {
+  ref?: Ref<SettingsRef | null>;
+}
 
-    function saveHandler(values: any) {
-      preferences.dispatch({
-        type: 'SET_PANELS_PREFERENCES',
-        payload: { key: 'ranges', value: values },
-      });
-    }
+export default function RangesPreferences(
+  props: RangesPreferencesProps,
+): JSX.Element {
+  const { ref } = props;
+  const preferences = usePreferences();
+  const nucleus = useNucleus();
+  const nuclei = useMemo(() => getUniqueNuclei(nucleus), [nucleus]);
+  const preferencesByNuclei = usePanelPreferencesByNuclei('ranges', nuclei);
 
-    const { handleSubmit, control, reset } = useForm<any>({
-      defaultValues: preferencesByNuclei,
+  function saveHandler(values: any) {
+    preferences.dispatch({
+      type: 'SET_PANELS_PREFERENCES',
+      payload: { key: 'ranges', value: values },
     });
+  }
 
-    useSettingImperativeHandle(ref, handleSubmit, saveHandler);
+  const { handleSubmit, control, reset } = useForm<any>({
+    defaultValues: preferencesByNuclei,
+  });
 
-    useEffect(() => {
-      reset(preferencesByNuclei);
-    }, [preferencesByNuclei, reset]);
+  useSettingImperativeHandle(ref, handleSubmit, saveHandler);
 
-    return (
-      <PreferencesContainer>
-        {nuclei?.map((n) => (
-          <NucleusPreferences
-            key={n}
-            control={control}
-            nucleus={n}
-            fields={formatFields}
-            renderBottom={() => (
-              <Label title="J graph tolerance (Hz):" style={fieldLabelStyle}>
-                <div style={{ display: 'flex' }}>
-                  <div style={{ width: '23px' }} />
-                  <NumberInput2Controller
-                    control={control}
-                    name={`nuclei.${n}.jGraphTolerance`}
-                    min={0}
-                    controllerProps={{ rules: { required: true, min: 0 } }}
-                  />
-                </div>
-              </Label>
-            )}
-          />
-        ))}
-      </PreferencesContainer>
-    );
-  },
-);
+  useEffect(() => {
+    reset(preferencesByNuclei);
+  }, [preferencesByNuclei, reset]);
+
+  return (
+    <PreferencesContainer>
+      {nuclei?.map((n) => (
+        <NucleusPreferences
+          key={n}
+          control={control}
+          nucleus={n}
+          fields={formatFields}
+          renderBottom={() => (
+            <Label title="J graph tolerance (Hz):" style={fieldLabelStyle}>
+              <div style={{ display: 'flex' }}>
+                <div style={{ width: '23px' }} />
+                <NumberInput2Controller
+                  control={control}
+                  name={`nuclei.${n}.jGraphTolerance`}
+                  min={0}
+                  controllerProps={{ rules: { required: true, min: 0 } }}
+                />
+              </div>
+            </Label>
+          )}
+        />
+      ))}
+    </PreferencesContainer>
+  );
+}

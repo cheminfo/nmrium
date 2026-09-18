@@ -45,7 +45,7 @@ function ExclusionZoneAnnotation({
       <Rect
         x="0"
         transform={`translate(0,${scaleY()(0) - (vAlign + 5)})`}
-        width={`${scaleX()(zone.from) - scaleX()(zone.to)}`}
+        width={scaleX()(zone.from) - scaleX()(zone.to)}
         height="10px"
         style={{
           fill: filterId === Filters1D.signalProcessing.name ? 'gray' : color,

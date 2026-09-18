@@ -38,8 +38,8 @@ export function FiltersOptions() {
   return filters.map((filter: any, index) => {
     return (
       <GroupPane
-        // eslint-disable-next-line react/no-array-index-key
-        key={`${index}`}
+        // eslint-disable-next-line @eslint-react/no-array-index-key
+        key={index}
         text={`${index + 1} - ${normalCase(filter.name)} options`}
         style={{ ...GroupPanelStyle, container: { padding: 0 } }}
         renderHeader={(text) => (
@@ -82,7 +82,7 @@ function Fields(props: { filter: MatrixFilter; basePath: string }) {
           }
           case 'string': {
             return (
-              <LevelLabel field={field}>
+              <LevelLabel key={key} field={field}>
                 <Input2Controller
                   control={control}
                   name={keyPath}
@@ -93,25 +93,25 @@ function Fields(props: { filter: MatrixFilter; basePath: string }) {
           }
           case 'number': {
             return (
-              <LevelLabel field={field}>
+              <LevelLabel key={key} field={field}>
                 <NumberInput2Controller
                   control={control}
                   name={keyPath}
-                  placeholder={`${field.default}`}
+                  placeholder={String(field.default)}
                 />
               </LevelLabel>
             );
           }
           case 'boolean': {
             return (
-              <LevelLabel field={field}>
+              <LevelLabel key={key} field={field}>
                 <CheckController control={control} name={keyPath} />
               </LevelLabel>
             );
           }
           case 'select': {
             return (
-              <LevelLabel field={field}>
+              <LevelLabel key={key} field={field}>
                 <Select2Controller
                   control={control}
                   items={mapSelectList(field.choices)}

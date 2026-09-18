@@ -12,6 +12,11 @@ interface ToolLocatorOptions {
 }
 
 export default class NmriumPage {
+  public static async create(page: Page): Promise<NmriumPage> {
+    await page.goto('http://localhost:3000/#/');
+    return new NmriumPage(page);
+  }
+
   public readonly page: Page;
   public readonly viewer: NmriumPageViewer;
   public readonly moleculeEditor: NmriumPageMoleculeEditor;
@@ -20,11 +25,6 @@ export default class NmriumPage {
     this.page = page;
     this.viewer = new NmriumPageViewer(page);
     this.moleculeEditor = new NmriumPageMoleculeEditor(page);
-  }
-
-  public static async create(page: Page): Promise<NmriumPage> {
-    await page.goto('http://localhost:3000/#/');
-    return new NmriumPage(page);
   }
 
   public async open1D() {
@@ -137,8 +137,7 @@ export default class NmriumPage {
     if (mode === 'automatic') {
       await selectLocator.click();
       await this.page.getByRole('option', { name: 'automatic' }).click();
-    }
-    if (mode === 'absolute') {
+    } else if (mode === 'absolute') {
       await selectLocator.click();
       await this.page
         .getByRole('option', { name: 'Convert to absolute spectrum' })

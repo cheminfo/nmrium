@@ -84,12 +84,11 @@ function mapPeaks(
   },
 ) {
   const { scaleX, scaleY } = options;
-  const mappedPeaks = peaks.map((peak) => ({
+  return peaks.map((peak) => ({
     ...peak,
     xInPixel: scaleX(peak.x),
     yInPixel: scaleY(peak.y),
   }));
-  return mappedPeaks;
 }
 
 function sortPeaks(peaks: Peak[]) {
@@ -102,9 +101,7 @@ function useMapPeaks(spectrum: Spectrum1D, peaksSource: PeaksSource) {
     let sourcePeaks: Peak[] = [];
     if (peaksSource === 'peaks') {
       sourcePeaks = spectrum.peaks.values as Peak[];
-    }
-
-    if (peaksSource === 'ranges') {
+    } else if (peaksSource === 'ranges') {
       sourcePeaks = flatRangesPeaks(spectrum.ranges.values) as Peak[];
     }
 
@@ -176,51 +173,36 @@ interface PeaksProps {
 
 export default function Peaks(props: PeaksProps) {
   const { peaksSource } = props;
-  const {
-    view: {
-      spectra: { activeTab: nucleus },
-    },
-    displayerKey,
-    xDomain,
-    height,
-    margin,
-  } = useChartData();
+  const { view, displayerKey, xDomain, height, margin } = useChartData();
   const spectrum = useSpectrum(emptyData) as Spectrum1D;
   const peaksViewState = useActiveSpectrumPeaksViewState();
   const rangesViewState = useActiveSpectrumRangesViewState();
   const { tablePreferences } = usePanelPreferences(
     peaksSource === 'peaks' ? 'peaks' : 'ranges',
-    nucleus,
+    view.spectra.activeTab,
   );
   const { deltaPPM: { format: peakFormat } = { format: '0.0' } } =
     tablePreferences;
   const canDisplaySpectrumPeaks =
     !spectrum.display.isVisible || spectrum.info?.isFid;
+
+  if (
+    (peaksSource === 'peaks' &&
+      (spectrum.peaks?.values?.length === 0 ||
+        !peaksViewState.showPeaks ||
+        canDisplaySpectrumPeaks)) ||
+    (peaksSource === 'ranges' &&
+      (spectrum.ranges?.values?.length === 0 ||
+        !rangesViewState.showPeaks ||
+        canDisplaySpectrumPeaks))
+  ) {
+    return null;
+  }
+
   let mode: PeaksMode = 'spread';
-
-  if (
-    peaksSource === 'peaks' &&
-    (spectrum.peaks?.values?.length === 0 ||
-      !peaksViewState.showPeaks ||
-      canDisplaySpectrumPeaks)
-  ) {
-    return null;
-  }
-
-  if (
-    peaksSource === 'ranges' &&
-    (spectrum.ranges?.values?.length === 0 ||
-      !rangesViewState.showPeaks ||
-      canDisplaySpectrumPeaks)
-  ) {
-    return null;
-  }
-
   if (peaksSource === 'peaks') {
     mode = peaksViewState?.displayingMode || 'spread';
-  }
-
-  if (peaksSource === 'ranges') {
+  } else if (peaksSource === 'ranges') {
     mode = rangesViewState?.displayingMode || 'spread';
   }
 

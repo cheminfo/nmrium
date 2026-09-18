@@ -1,12 +1,11 @@
 import type { InputGroupProps } from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import type { CSSProperties, KeyboardEvent, ReactNode } from 'react';
+import type { CSSProperties, KeyboardEvent, ReactNode, Ref } from 'react';
 import {
   createContext,
-  forwardRef,
   isValidElement,
+  use,
   useCallback,
-  useContext,
   useEffect,
   useImperativeHandle,
   useRef,
@@ -63,7 +62,7 @@ const CloseEditContext = createContext<(() => void) | undefined>(undefined);
 
 export function CloseEditOnClick(props: { children: ReactNode }) {
   const { children } = props;
-  const closeEdit = useContext(CloseEditContext);
+  const closeEdit = use(CloseEditContext);
 
   return <span onClick={closeEdit}>{children}</span>;
 }
@@ -86,12 +85,10 @@ export interface EditableColumnProps
    * Use "none" to conditionally disable the behaviour.
    */
   clickType?: 'single' | 'double' | 'none';
+  ref?: Ref<any>;
 }
 
-export const EditableColumn = forwardRef(function EditableColumn(
-  props: EditableColumnProps,
-  ref: any,
-) {
+export function EditableColumn(props: EditableColumnProps) {
   const {
     onSave,
     value,
@@ -103,6 +100,7 @@ export const EditableColumn = forwardRef(function EditableColumn(
     rightElement,
     textOverflowEllipses = false,
     clickType = 'single',
+    ref,
   } = props;
 
   const [enabled, enableEdit] = useState<boolean | undefined>();
@@ -169,7 +167,7 @@ export const EditableColumn = forwardRef(function EditableColumn(
       )}
     </Container>
   );
-});
+}
 
 interface EditFieldProps extends BaseEditableColumnProps {
   onConfirm: (value: string | number) => void;
@@ -210,9 +208,10 @@ function EditField(props: EditFieldProps) {
       }
     }
 
-    globalThis.addEventListener('mousedown', handleOutsideMouseDown);
-    return () =>
-      globalThis.removeEventListener('mousedown', handleOutsideMouseDown);
+    document.addEventListener('mousedown', handleOutsideMouseDown);
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideMouseDown);
+    };
   }, [confirmValue]);
 
   function handleKeydown(event: KeyboardEvent<HTMLInputElement>) {
@@ -237,7 +236,7 @@ function EditField(props: EditFieldProps) {
 
   if (type === 'number') {
     return (
-      <CloseEditContext.Provider value={closeEdit}>
+      <CloseEditContext value={closeEdit}>
         <div ref={editFieldRef}>
           <NumberInput2
             intent={intent}
@@ -258,12 +257,12 @@ function EditField(props: EditFieldProps) {
             rightElement={inputRightElement}
           />
         </div>
-      </CloseEditContext.Provider>
+      </CloseEditContext>
     );
   }
 
   return (
-    <CloseEditContext.Provider value={closeEdit}>
+    <CloseEditContext value={closeEdit}>
       <div ref={editFieldRef}>
         <Input2
           intent={intent}
@@ -277,6 +276,6 @@ function EditField(props: EditFieldProps) {
           rightElement={inputRightElement}
         />
       </div>
-    </CloseEditContext.Provider>
+    </CloseEditContext>
   );
 }
