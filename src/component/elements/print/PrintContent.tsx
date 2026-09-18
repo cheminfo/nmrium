@@ -216,6 +216,7 @@ function RenderContainer(props: {
 
   useEffect(() => {
     const handleRenderComplete = () => {
+      // eslint-disable-next-line @eslint-react/web-api-no-leaked-timeout
       setTimeout(() => {
         onRenderComplete();
       }, 250);

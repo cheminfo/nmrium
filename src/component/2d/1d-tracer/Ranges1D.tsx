@@ -7,7 +7,6 @@ import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 interface Ranges1DProps {
   ranges: Range[];
   orientation: 'horizontal' | 'vertical';
-  spectrumId: string;
 }
 
 export function Ranges1D(props: Ranges1DProps) {
