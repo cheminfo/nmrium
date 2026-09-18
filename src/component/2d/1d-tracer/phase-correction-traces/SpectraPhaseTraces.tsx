@@ -35,13 +35,15 @@ export function SpectraPhaseTraces() {
   });
 }
 
-interface SpectrumTraceProps {
+interface PhaseTraceProps {
   spectrum: SpectrumTrace;
+  // TODO: use the color
+  // eslint-disable-next-line @eslint-react/no-unused-props
   color: string;
   direction: TraceDirection;
 }
 
-function PhaseTrace(props: SpectrumTraceProps) {
+function PhaseTrace(props: PhaseTraceProps) {
   const { width, height, margin } = useChartData();
 
   const {

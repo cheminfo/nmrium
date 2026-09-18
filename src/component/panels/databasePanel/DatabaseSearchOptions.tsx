@@ -1,3 +1,4 @@
+import type { ChangeEvent } from 'react';
 import { BsHexagon, BsHexagonFill } from 'react-icons/bs';
 import { FaICursor, FaRegTrashAlt } from 'react-icons/fa';
 import { IoSearchOutline } from 'react-icons/io5';
@@ -75,9 +76,7 @@ export function DatabaseSearchOptions(props: DatabaseSearchOptionsProps) {
     onKeywordsChange({ solvent: String(value) });
   }
 
-  function handleKeywordsInputChange(
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) {
+  function handleKeywordsInputChange(event: ChangeEvent<HTMLInputElement>) {
     onKeywordsChange({ searchKeywords: event.target.value });
   }
 

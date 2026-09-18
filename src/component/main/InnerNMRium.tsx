@@ -87,6 +87,17 @@ export function InnerNMRium(props: InnerNMRiumProps) {
     });
   }, [customWorkspaces, preferences, workspace]);
 
+  const globalRef = useMemo(
+    () => ({
+      rootRef: rootRef.current,
+      elementsWrapperRef: elementsWrapperRef.current,
+      viewerRef: viewerRef.current,
+    }),
+    // TODO: Implement this differently as it's invalid to read `ref.current` during rendering.
+    // eslint-disable-next-line @eslint-react/exhaustive-deps,react-hooks/exhaustive-deps
+    [rootRef.current, elementsWrapperRef.current, viewerRef.current],
+  );
+
   return (
     <div
       ref={mainDivRef}
@@ -96,13 +107,7 @@ export function InnerNMRium(props: InnerNMRiumProps) {
       <CoreContext value={finalCore}>
         <HotkeysProvider>
           <ExportManagerProvider>
-            <GlobalContext
-              value={{
-                rootRef: rootRef.current,
-                elementsWrapperRef: elementsWrapperRef.current,
-                viewerRef: viewerRef.current,
-              }}
-            >
+            <GlobalContext value={globalRef}>
               <PreferencesContext value={preferencesProviderValue}>
                 <LoggerProvider>
                   <KeyModifiersProvider>

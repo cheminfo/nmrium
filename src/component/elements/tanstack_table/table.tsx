@@ -49,7 +49,6 @@ interface TanStackTableProps<TData extends TanStackRowData>
   columns: ReadonlyArray<TanStackTableColumn<TData, any>>;
   approxItemHeight?: number;
   approxColumnWidth?: number;
-  groupKey?: keyof TData;
   indexKey?: string;
   enableVirtualScroll?: boolean;
   enableColumnsVirtualScroll?: boolean;
@@ -60,7 +59,6 @@ interface TanStackTableProps<TData extends TanStackRowData>
   rowStyle?:
     | TanStackTableRowStyle
     | ((row: TanStackTableRow<TData>) => TanStackTableRowStyle | undefined);
-  style?: CSSObject | SerializedStyles;
   disableDefaultRowStyle?: boolean;
   enableCellSpanning?: boolean;
 }
@@ -73,7 +71,11 @@ type ReactTableInnerProps<TData extends TanStackRowData> =
     };
 
 type ReactTableOuterProps<TData extends TanStackRowData> =
-  TanStackTableProps<TData> & TanStackTableHighlightSourceProps<TData>;
+  TanStackTableProps<TData> &
+    TanStackTableHighlightSourceProps<TData> & {
+      groupKey?: keyof TData;
+      style?: CSSObject | SerializedStyles;
+    };
 
 const styles = {
   table: (
