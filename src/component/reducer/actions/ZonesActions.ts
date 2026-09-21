@@ -1,4 +1,9 @@
-import type { Filter2DEntry, SignalKind, Zone } from '@zakodium/nmr-types';
+import type {
+  Filter2DEntry,
+  Signal2D,
+  SignalKind,
+  Zone,
+} from '@zakodium/nmr-types';
 import type { Spectrum2D, ZonesViewState } from '@zakodium/nmrium-core';
 import { isSpectrum2D } from '@zakodium/nmrium-core';
 import type { FromTo, NmrData2DFt } from 'cheminfo-types';
@@ -75,7 +80,7 @@ type AssignZoneAction = ActionType<
   {
     keys: TargetAssignKeys;
     axis: Axis;
-  } & Required<Pick<Zone['x'], 'diaIDs' | 'nbAtoms'>>
+  } & Required<Pick<Signal2D['x'], 'diaIDs' | 'nbAtoms'>>
 >;
 type SaveEditedZoneAction = ActionType<
   'SAVE_EDITED_ZONE',
@@ -86,7 +91,6 @@ type SaveEditedZoneAction = ActionType<
 
 interface UnlinkZoneProps {
   zoneKey?: string;
-  isOnZoneLevel?: boolean;
   signalIndex?: number;
   axis?: Axis;
 }
@@ -102,11 +106,11 @@ type ToggleZonesViewAction = ActionType<
 
 type ChangeZoneAssignmentLabelAction = ActionType<
   'CHANGE_ZONE_ASSIGNMENT_LABEL',
-  { zoneID: string; value: string }
+  { zoneID: string; signalID: string; value: string }
 >;
 type SetZoneAssignmentLabelCoordinationAction = ActionType<
   'SET_ZONE_ASSIGNMENT_LABEL_COORDINATION',
-  { zoneID: string; coordination: { x: number; y: number } }
+  { signalID: string; coordination: { x: number; y: number } }
 >;
 
 export type ZonesActions =
@@ -313,7 +317,7 @@ function deleteSignal2D(draft: Draft<State>, options: DeleteSignal2DProps) {
   );
 
   // Remove assignments for the signal in the zone object and global state.
-  const _zone = unlink(lodashCloneDeep(zone), false, signalIndex, undefined);
+  const _zone = unlink(lodashCloneDeep(zone), signalIndex, undefined);
 
   _zone.signals.splice(signalIndex, 1);
   spectrum.zones.values[zoneIndex] = _zone;
@@ -346,7 +350,7 @@ function handleSetSignalPathLength(
   const signalIndex = zone.signals.findIndex(
     (_signal) => _signal.id === signalId,
   );
-  const _zone = unlink(lodashCloneDeep(zone), false, signalIndex, undefined);
+  const _zone = unlink(lodashCloneDeep(zone), signalIndex, undefined);
   _zone.signals[signalIndex].j = {
     ..._zone.signals[signalIndex].j,
     pathLength,
@@ -358,7 +362,7 @@ function handleSetSignalPathLength(
 
 //action
 function unlinkZone(draft: Draft<State>, props: UnlinkZoneProps) {
-  const { zoneKey, isOnZoneLevel, signalIndex = -1, axis } = props;
+  const { zoneKey, signalIndex = -1, axis } = props;
 
   const spectrum = getSpectrum(draft);
   if (!isSpectrum2D(spectrum)) return;
@@ -368,7 +372,7 @@ function unlinkZone(draft: Draft<State>, props: UnlinkZoneProps) {
     // remove assignments in global state
     const zoneIndex = getZoneIndex(spectrum, zoneKey);
     const zone = zones[zoneIndex];
-    zones[zoneIndex] = unlink(zone, isOnZoneLevel, signalIndex, axis);
+    zones[zoneIndex] = unlink(zone, signalIndex, axis);
   } else {
     const newZones = zones.map((zone) => {
       return unlink(zone);
@@ -388,20 +392,14 @@ function handleAssignZone(draft: Draft<State>, action: AssignZoneAction) {
   const spectrum = getSpectrum(draft);
   if (!isSpectrum2D(spectrum)) return;
 
-  const [{ index: zoneIndex }] = keys;
+  if (keys.length !== 2) return;
 
+  const [{ index: zoneIndex }, { index: signalIndex }] = keys;
   const zone = spectrum.zones.values[zoneIndex];
-  if (keys.length === 1) {
-    const zoneByAxis = zone[axis];
-    zoneByAxis.diaIDs = diaIDs;
-    zoneByAxis.nbAtoms = nbAtoms + (zoneByAxis?.nbAtoms || 0);
-  } else {
-    const [, { index: signalIndex }] = keys;
 
-    const signalByAxis = zone.signals[signalIndex][axis];
-    signalByAxis.diaIDs = diaIDs;
-    signalByAxis.nbAtoms = nbAtoms + (signalByAxis?.nbAtoms || 0);
-  }
+  const signalByAxis = zone.signals[signalIndex][axis];
+  signalByAxis.diaIDs = diaIDs;
+  signalByAxis.nbAtoms = nbAtoms + (signalByAxis?.nbAtoms || 0);
 }
 
 //action
@@ -468,7 +466,7 @@ function handleChangeZoneAssignmentLabel(
   draft: Draft<State>,
   action: ChangeZoneAssignmentLabelAction,
 ) {
-  const { zoneID, value } = action.payload;
+  const { zoneID, signalID, value } = action.payload;
 
   const spectrum = getSpectrum(draft);
   if (!isSpectrum2D(spectrum)) return;
@@ -481,14 +479,22 @@ function handleChangeZoneAssignmentLabel(
     zoneView.showAssignmentsLabels = true;
   }
 
-  const zone = spectrum.zones.values.find((zone) => zone.id === zoneID);
-  if (zone) {
-    zone.assignment = value;
+  const zoneIndex = getZoneIndex(spectrum, zoneID);
+  if (zoneIndex === -1) {
+    return;
+  }
+  const zone = spectrum.zones.values[zoneIndex];
+  const signal = zone.signals.find((signal) => signal.id === signalID);
 
-    if (!value) {
-      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-      delete zoneView.assignmentsLabelsCoordinates[zoneID];
-    }
+  if (!signal) {
+    return;
+  }
+
+  signal.assignment = value;
+
+  if (!value) {
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+    delete zoneView.assignmentsLabelsCoordinates[zoneID];
   }
 }
 
@@ -496,7 +502,7 @@ function handleSetZoneAssignmentLabelCoordination(
   draft: Draft<State>,
   action: SetZoneAssignmentLabelCoordinationAction,
 ) {
-  const { zoneID, coordination } = action.payload;
+  const { signalID, coordination } = action.payload;
 
   const activeSpectrum = getActiveSpectrum(draft);
   if (!activeSpectrum) return;
@@ -504,7 +510,7 @@ function handleSetZoneAssignmentLabelCoordination(
   initializeZoneViewObject(draft, activeSpectrum.id);
 
   const zonesView = draft.view.zones;
-  zonesView[activeSpectrum.id].assignmentsLabelsCoordinates[zoneID] =
+  zonesView[activeSpectrum.id].assignmentsLabelsCoordinates[signalID] =
     coordination;
 }
 

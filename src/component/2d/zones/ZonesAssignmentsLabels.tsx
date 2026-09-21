@@ -1,5 +1,10 @@
 import styled from '@emotion/styled';
-import type { Signal1D, Zone, Zones as ZonesType } from '@zakodium/nmr-types';
+import type {
+  Signal1D,
+  Signal2D,
+  Zone,
+  Zones as ZonesType,
+} from '@zakodium/nmr-types';
 import type { Spectrum1D, Spectrum2D } from '@zakodium/nmrium-core';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { PiTextTSlash } from 'react-icons/pi';
@@ -27,6 +32,7 @@ interface ZonesInnerProps {
 
 interface AssignmentLabelProps {
   zone: Zone;
+  signal: Signal2D;
 }
 
 const distance = 30;
@@ -292,17 +298,18 @@ function getDefaultAssignmentLabel(options: GetDefaultAssignmentOptions) {
 }
 
 function AssignmentLabel(props: AssignmentLabelProps) {
-  const { zone } = props;
+  const { zone, signal } = props;
   const {
     data: spectra,
     view: {
       spectra: { activeTab, activeSpectra },
     },
   } = useChartData();
-  const { id, x, y } = zone;
-  let { assignment } = zone;
+  const { id: zoneID, x, y } = zone;
+  let { assignment } = signal;
+  const { id: signalID } = signal;
   const dispatch = useDispatch();
-  const { isActive } = useHighlight([zone.id]);
+  const { isActive } = useHighlight([signalID]);
   const { assignmentsLabelsCoordinates } = useActiveSpectrumZonesViewState();
   const scaleX = useScale2DX();
   const scaleY = useScale2DY();
@@ -329,10 +336,10 @@ function AssignmentLabel(props: AssignmentLabelProps) {
     y: scaleY(y.from) - distance,
   };
 
-  if (assignmentsLabelsCoordinates?.[id]) {
+  if (assignmentsLabelsCoordinates?.[signalID]) {
     coordinate = {
-      x: scaleX(assignmentsLabelsCoordinates[id].x),
-      y: scaleY(assignmentsLabelsCoordinates[id].y),
+      x: scaleX(assignmentsLabelsCoordinates[signalID].x),
+      y: scaleY(assignmentsLabelsCoordinates[signalID].y),
     };
   }
 
@@ -380,7 +387,7 @@ function AssignmentLabel(props: AssignmentLabelProps) {
           dispatch({
             type: 'SET_ZONE_ASSIGNMENT_LABEL_COORDINATION',
             payload: {
-              zoneID: zone.id,
+              signalID,
               coordination: {
                 x: scaleX.invert(position.x + centerX),
                 y: scaleY.invert(position.y + centerY),
@@ -401,7 +408,7 @@ function AssignmentLabel(props: AssignmentLabelProps) {
     labelBoundary,
   );
 
-  if (!assignment && newAssignmentLabelState?.id !== id) {
+  if (!assignment && newAssignmentLabelState?.id !== signalID) {
     return null;
   }
 
@@ -412,7 +419,8 @@ function AssignmentLabel(props: AssignmentLabelProps) {
       type: 'CHANGE_ZONE_ASSIGNMENT_LABEL',
       payload: {
         value,
-        zoneID: id,
+        zoneID,
+        signalID,
       },
     });
   }
@@ -453,7 +461,7 @@ function AssignmentLabel(props: AssignmentLabelProps) {
           PopoverProps={{
             placement: 'top',
             targetTagName: 'g',
-            ...(newAssignmentLabelState?.id === id
+            ...(newAssignmentLabelState?.id === signalID
               ? { isOpen: true, onClose: () => dismissNewLabel() }
               : {}),
           }}
@@ -498,9 +506,12 @@ function AssignmentLabel(props: AssignmentLabelProps) {
 function ZonesAssignmentsLabelsInner({ zones }: ZonesInnerProps) {
   return (
     <g className="2d-zones-assignments-labels">
-      {zones.values.map((zone) => (
-        <AssignmentLabel key={zone.id} zone={zone} />
-      ))}
+      {zones.values.map((zone) => {
+        const { signals = [] } = zone;
+        return signals.map((signal) => (
+          <AssignmentLabel key={signal.id} zone={zone} signal={signal} />
+        ));
+      })}
     </g>
   );
 }

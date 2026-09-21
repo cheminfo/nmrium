@@ -12,7 +12,6 @@ import ActionsColumn from './TableColumns/ActionsColumn.js';
 import SignalAssignmentsColumns from './TableColumns/SignalAssignmentsColumns.js';
 import SignalDeltaColumn from './TableColumns/SignalDeltaColumn.js';
 import { ZoneAssignmentLabelColumn } from './TableColumns/ZoneAssignmentLabelColumn.js';
-import ZoneAssignmentsColumns from './TableColumns/ZoneAssignmentsColumns.js';
 import type { ZoneData } from './hooks/useMapZones.js';
 
 const HighlightedRowStyle: CSSProperties = { backgroundColor: '#ff6f0057' };
@@ -21,17 +20,12 @@ const ConstantlyHighlightedRowStyle = { backgroundColor: '#f5f5dc' };
 
 export interface AssignmentsColumnProps {
   rowData: ZoneData;
-  onUnlink: (event: MouseEvent, flag: boolean, axis: Axis) => void;
+  onUnlink: (event: MouseEvent, axis: Axis) => void;
 }
 
 interface ZonesTableRowProps extends TanStackTableContextMenuProps<ZoneData> {
   rowData: ZoneData;
-  onUnlink: (
-    rowData: ZoneData,
-    isOnZoneLevel: boolean,
-    signalIndex: number,
-    axis: Axis,
-  ) => void;
+  onUnlink: (rowData: ZoneData, signalIndex: number, axis: Axis) => void;
   rowIndex: number;
   nucleus: string;
 }
@@ -64,17 +58,13 @@ export default function ZonesTableRow(props: ZonesTableRowProps) {
     style: rowData.tableMetaInfo.hide ? { display: 'none' } : null,
   };
 
-  function unlinkHandler(
-    event: MouseEvent,
-    isOnZoneLevel: boolean,
-    axis: Axis,
-  ) {
+  function unlinkHandler(event: MouseEvent, axis: Axis) {
     // event handling here in case of unlink button clicked
     if (event) {
       event.stopPropagation();
     }
 
-    onUnlink(rowData, isOnZoneLevel, rowData.tableMetaInfo.signalIndex, axis);
+    onUnlink(rowData, rowData.tableMetaInfo.signalIndex, axis);
   }
 
   return (
@@ -97,17 +87,7 @@ export default function ZonesTableRow(props: ZonesTableRowProps) {
       {showAssignmentLabel && <ZoneAssignmentLabelColumn rowData={rowData} />}
       <SignalDeltaColumn rowData={rowData} nucleus={nucleus} />
       {showAssignment && (
-        <>
-          <SignalAssignmentsColumns
-            rowData={rowData}
-            onUnlink={unlinkHandler}
-          />
-          <ZoneAssignmentsColumns
-            rowData={rowData}
-            rowSpanTags={rowSpanTags}
-            onUnlink={unlinkHandler}
-          />
-        </>
+        <SignalAssignmentsColumns rowData={rowData} onUnlink={unlinkHandler} />
       )}
       <ActionsColumn
         rowData={rowData}
