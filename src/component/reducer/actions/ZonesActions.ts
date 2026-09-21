@@ -106,11 +106,11 @@ type ToggleZonesViewAction = ActionType<
 
 type ChangeZoneAssignmentLabelAction = ActionType<
   'CHANGE_ZONE_ASSIGNMENT_LABEL',
-  { zoneID: string; value: string }
+  { zoneID: string; signalID: string; value: string }
 >;
 type SetZoneAssignmentLabelCoordinationAction = ActionType<
   'SET_ZONE_ASSIGNMENT_LABEL_COORDINATION',
-  { zoneID: string; coordination: { x: number; y: number } }
+  { signalID: string; coordination: { x: number; y: number } }
 >;
 
 export type ZonesActions =
@@ -466,7 +466,7 @@ function handleChangeZoneAssignmentLabel(
   draft: Draft<State>,
   action: ChangeZoneAssignmentLabelAction,
 ) {
-  const { zoneID, value } = action.payload;
+  const { zoneID, signalID, value } = action.payload;
 
   const spectrum = getSpectrum(draft);
   if (!isSpectrum2D(spectrum)) return;
@@ -479,14 +479,22 @@ function handleChangeZoneAssignmentLabel(
     zoneView.showAssignmentsLabels = true;
   }
 
-  const zone = spectrum.zones.values.find((zone) => zone.id === zoneID);
-  if (zone) {
-    zone.assignment = value;
+  const zoneIndex = getZoneIndex(spectrum, zoneID);
+  if (zoneIndex === -1) {
+    return;
+  }
+  const zone = spectrum.zones.values[zoneIndex];
+  const signal = zone.signals.find((signal) => signal.id === signalID);
 
-    if (!value) {
-      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-      delete zoneView.assignmentsLabelsCoordinates[zoneID];
-    }
+  if (!signal) {
+    return;
+  }
+
+  signal.assignment = value;
+
+  if (!value) {
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+    delete zoneView.assignmentsLabelsCoordinates[zoneID];
   }
 }
 
@@ -494,7 +502,7 @@ function handleSetZoneAssignmentLabelCoordination(
   draft: Draft<State>,
   action: SetZoneAssignmentLabelCoordinationAction,
 ) {
-  const { zoneID, coordination } = action.payload;
+  const { signalID, coordination } = action.payload;
 
   const activeSpectrum = getActiveSpectrum(draft);
   if (!activeSpectrum) return;
@@ -502,7 +510,7 @@ function handleSetZoneAssignmentLabelCoordination(
   initializeZoneViewObject(draft, activeSpectrum.id);
 
   const zonesView = draft.view.zones;
-  zonesView[activeSpectrum.id].assignmentsLabelsCoordinates[zoneID] =
+  zonesView[activeSpectrum.id].assignmentsLabelsCoordinates[signalID] =
     coordination;
 }
 

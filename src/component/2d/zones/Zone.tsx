@@ -20,7 +20,7 @@ interface ZoneProps {
 
 function Zone(props: ZoneProps) {
   const { zoneData } = props;
-  const { x, y, id, signals, assignment } = zoneData;
+  const { x, y, id, signals } = zoneData;
 
   const { setData } = useShareData<{ id: string }>();
   const assignmentZone = useAssignment(id);
@@ -48,10 +48,10 @@ function Zone(props: ZoneProps) {
   const actionButtons: ActionsButtonsPopoverProps['buttons'] = [
     {
       icon: <PiTextTBold />,
-      onClick: () => setData({ id }),
+      onClick: () => setData({ id: signals[0]?.id }),
       intent: 'success',
       title: 'Add assignment label',
-      visible: !assignment,
+      visible: !signals[0]?.assignment,
     },
   ];
 
@@ -74,7 +74,7 @@ function Zone(props: ZoneProps) {
       <ActionsButtonsPopover
         buttons={actionButtons}
         targetTagName="g"
-        {...(assignment && { isOpen: false })}
+        {...(signals[0]?.assignment && { isOpen: false })}
       >
         {showZones && (
           <g transform={`translate(${scaleX(x2)},${scaleY(y1)})`}>
