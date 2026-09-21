@@ -541,16 +541,15 @@ function updateZoneAssignments(
   uniqueDiaIds: Set<string>,
 ): void {
   for (const zone of zones) {
-    if (
-      previousAssignment === zone.assignment &&
-      zone.isAutoAssignment &&
-      zone.signals.some(
-        (signal) =>
-          hasDiaId(signal.x.diaIDs, uniqueDiaIds) ||
-          hasDiaId(signal.y.diaIDs, uniqueDiaIds),
-      )
-    ) {
-      zone.assignment = assignment;
+    for (const signal of zone.signals) {
+      if (
+        previousAssignment === signal.assignment &&
+        (hasDiaId(signal.x.diaIDs, uniqueDiaIds) ||
+          hasDiaId(signal.y.diaIDs, uniqueDiaIds)) &&
+        signal.isAutoAssignment
+      ) {
+        signal.assignment = assignment;
+      }
     }
   }
 }
