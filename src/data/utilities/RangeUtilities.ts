@@ -19,16 +19,16 @@ export function unlink(range: Range, signalIndex?: number | 'all'): Range {
   };
 }
 
-export function getOpacityBasedOnSignalKind(input: Range | Signal1D) {
+export function getOpacityBasedOnSignalKind(input: Range | Signal1D): number {
   const isSignal =
     'signals' in input ? isSignalRange(input) : isSignalKind(input);
   return isSignal ? 1 : 0.3;
 }
 
-function isSignalKind(signal: Signal1D) {
+function isSignalKind(signal: Signal1D): boolean {
   return signal.kind === 'signal';
 }
 
-export function isSignalRange(range: Range) {
+export function isSignalRange(range: Range): boolean {
   return range.signals.every(isSignalKind);
 }
