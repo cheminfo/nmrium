@@ -95,7 +95,7 @@ function useWrapSVGText(params: UseWrapSVGTextParams) {
   if (line.length > 0) lines.push(line);
 
   // TODO: ctx should be in a ref.
-  // eslint-disable-next-line react-hooks/immutability
+  // eslint-disable-next-line @eslint-react/immutability
   useEffect(() => {
     if (!isDebuggingCanvas || !ctx) return;
 
@@ -119,7 +119,7 @@ function useWrapSVGText(params: UseWrapSVGTextParams) {
       }
       y += lineHeight;
     }
-    // eslint-disable-next-line react-hooks/immutability
+    // eslint-disable-next-line @eslint-react/immutability
     ctx.fillStyle = 'black';
   });
 

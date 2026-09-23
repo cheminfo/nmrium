@@ -52,7 +52,7 @@ function useInfoPosition(margin: Margin) {
   return { x, y };
 }
 
-function SpectrumInfoBlock() {
+export default function SpectrumInfoBlock() {
   const { height, width, margin } = useChartData();
   const spectrum = useSpectrum();
   const { viewerRef } = useGlobal();
@@ -221,5 +221,3 @@ function SpectrumInfoBlock() {
     </ActionsButtonsPopover>
   );
 }
-
-export default SpectrumInfoBlock;

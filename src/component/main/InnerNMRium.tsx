@@ -94,7 +94,7 @@ export function InnerNMRium(props: InnerNMRiumProps) {
       viewerRef: viewerRef.current,
     }),
     // TODO: Implement this differently as it's invalid to read `ref.current` during rendering.
-    // eslint-disable-next-line @eslint-react/exhaustive-deps,react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
     [rootRef.current, elementsWrapperRef.current, viewerRef.current],
   );
 

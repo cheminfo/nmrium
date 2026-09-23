@@ -357,7 +357,8 @@ function DatabasePanelInner({
     if (defaultDatabase && !databaseInstance.current) {
       handleChangeDatabase(defaultDatabase);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps,@eslint-react/exhaustive-deps
+    // TODO: avoid this hack.
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [defaultDatabase]);
 
   const tableData = useMemo(() => prepareData(result.data), [result.data]);

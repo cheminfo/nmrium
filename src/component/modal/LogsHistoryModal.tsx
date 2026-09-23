@@ -188,6 +188,8 @@ export function LogsHistoryModal(props: LogsHistoryModalProps) {
           />
         </StyledDialogBody>
         <DialogFooter>
+          {/* TODO: logger should be in a ref. */}
+          {/* eslint-disable-next-line @eslint-react/immutability */}
           <Button.Danger onClick={() => logger.clear()} fill="outline">
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <FaRegTrashAlt />

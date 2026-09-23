@@ -22,6 +22,7 @@ export function useTextMetrics(options: UseTextMetricsOptions = {}) {
   const canvas = useCanvas(debugCanvasWidth);
   const size = typeof fontSize === 'number' ? `${fontSize}px` : fontSize;
 
+  // TODO: ctx should probably be in a ref. It is wrong to mutate it during rendering.
   const ctx = canvas.getContext('2d');
   if (ctx) ctx.font = `${fontStyle} ${fontWeight} ${size} Arial`;
 

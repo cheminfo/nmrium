@@ -1,4 +1,4 @@
-import type { JSX, Ref } from 'react';
+import type { ReactElement, Ref } from 'react';
 import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -114,7 +114,7 @@ interface RangesPreferencesProps {
 
 export default function RangesPreferences(
   props: RangesPreferencesProps,
-): JSX.Element {
+): ReactElement {
   const { ref } = props;
   const preferences = usePreferences();
   const nucleus = useNucleus();

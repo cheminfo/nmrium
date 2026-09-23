@@ -98,7 +98,7 @@ export default function TableRow<TData extends TanStackRowData>(
       highlight.hide();
     };
     // TODO: avoid this hack.
-    // eslint-disable-next-line react-hooks/exhaustive-deps,@eslint-react/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, []);
 
   const clickHandler = useCallback(
