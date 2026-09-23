@@ -1,6 +1,6 @@
 import { isSpectrum1D, isSpectrum2D } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
-import { original } from 'immer';
+import { current, original } from 'immer';
 import lodashCloneDeep from 'lodash/cloneDeep.js';
 import type {
   Correlation,
@@ -56,7 +56,7 @@ export type CorrelationsActions =
   | DeleteCorrelationAction;
 
 function handleUpdateCorrelations(draft: Draft<State>) {
-  const { data: spectra, correlations } = original(draft);
+  const { data: spectra, correlations } = current(draft);
   draft.correlations = correlationApi.buildCorrelationData(spectra, {
     ...correlations?.options,
     values: lodashCloneDeep(correlations?.values),
@@ -109,7 +109,6 @@ function handleSetCorrelation(
       options: { ...draft.correlations.options, ...options },
     };
   }
-  handleUpdateCorrelations(draft);
 }
 
 //action
@@ -134,7 +133,6 @@ function handleSetCorrelations(
       options: { ...draft.correlations.options, ...options },
     };
   }
-  handleUpdateCorrelations(draft);
 }
 
 //action
