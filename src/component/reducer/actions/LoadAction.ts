@@ -10,8 +10,6 @@ import type { Draft } from 'immer';
 import { produce } from 'immer';
 import lodashMerge from 'lodash/merge.js';
 import lodashMergeWith from 'lodash/mergeWith.js';
-import type { CorrelationData } from 'nmr-processing';
-import { correlationApi } from 'nmr-processing';
 import type { ParseResult } from 'papaparse';
 
 import { initiateDatum1D } from '../../../data/data1d/Spectrum1D/index.js';
@@ -21,7 +19,6 @@ import type { StateMoleculeExtended } from '../../../data/molecules/Molecule.js'
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager.js';
 import { linkMetaWithSpectra } from '../../../data/parseMeta/linkMetaWithSpectra.js';
 import type { UsedColors } from '../../../types/UsedColors.js';
-import { DefaultTolerance } from '../../panels/SummaryPanel/CorrelationTable/Constants.js';
 import type { State } from '../Reducer.js';
 import { getDefaultViewState, getInitialState } from '../Reducer.js';
 import type { ActionType } from '../types/ActionType.js';
@@ -56,45 +53,6 @@ type InitiateAction = ActionType<'INITIATE', InitiateProps>;
 
 export type LoadAction =
   SetIsLoadingAction | LoadDropFilesAction | InitiateAction;
-
-function convertHybridizationStringValuesInCorrelations(
-  correlations: CorrelationData,
-): CorrelationData {
-  return {
-    ...correlations,
-    values: correlations.values.map((correlation: any) => {
-      if (typeof correlation.hybridization === 'string') {
-        const values: number[] = [];
-        if (correlation.hybridization.length > 0) {
-          const hybridizationString: string =
-            correlation.hybridization.replaceAll('SP', '');
-          const value = Number(hybridizationString);
-          values.push(value);
-        }
-        correlation.hybridization = values;
-      }
-      return correlation;
-    }),
-  };
-}
-
-function setCorrelation(
-  draft: Draft<State>,
-  correlations: CorrelationData | null,
-) {
-  if (!correlations || Object.keys(correlations).length === 0) {
-    draft.correlations = correlationApi.buildCorrelationData([], {
-      tolerance: DefaultTolerance,
-    });
-  } else {
-    // in case of older NMRium data are imported, convert hybridization string to number array
-    // @TODO remove following command to overwrite correlations at some point in future
-    draft.correlations =
-      convertHybridizationStringValuesInCorrelations(correlations);
-
-    // draft.correlations = correlations // original command without overwriting
-  }
-}
 
 function isDataSourceDropFiles(
   input: InputProps | InitiateProps,
@@ -204,8 +162,9 @@ function setData(draft: Draft<State>, input: InputProps | InitiateProps) {
   }
 
   draft.view.spectraContourLevels = initializeContours(draft.data);
-
-  setCorrelation(draft, correlations);
+  if (correlations) {
+    draft.correlations = correlations;
+  }
 
   if (parseMetaFileResult) {
     const { matches } = linkMetaWithSpectra({

@@ -199,6 +199,7 @@ function AdditionalColumnHeader(props: AdditionalColumnHeaderProps) {
     }
   }
   const { title, ...thProps } = tableHeaderProps;
+  const { equivalence, label } = correlation;
 
   return (
     <ContextMenu
@@ -208,16 +209,18 @@ function AdditionalColumnHeader(props: AdditionalColumnHeaderProps) {
       {...thProps}
       title={title === false ? undefined : title}
     >
-      <p>{correlation.label.origin}</p>
+      <p>{label.origin}</p>
       <p>
         {correlationApi.getCorrelationDelta(correlation)
           ? correlationApi.getCorrelationDelta(correlation)?.toFixed(2)
           : ''}
       </p>
       <p style={equivalenceTextStyle}>
-        {Number.isInteger(correlation.equivalence)
-          ? correlation.equivalence
-          : correlation.equivalence.toFixed(2)}
+        {typeof equivalence === 'number'
+          ? Number.isInteger(equivalence)
+            ? equivalence
+            : equivalence.toFixed(2)
+          : equivalence}
       </p>
     </ContextMenu>
   );
