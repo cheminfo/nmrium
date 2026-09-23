@@ -61,8 +61,8 @@ function RangesTablePanelInner(props: RangesTablePanelInnerProps) {
   const rangesData: RangesTableDataRow[] = useMemo(() => {
     const isInView = (from: number, to: number) => {
       const factor = 10000;
-      to = to * factor;
-      from = from * factor;
+      to *= factor;
+      from *= factor;
       return (
         (to >= xDomain[0] * factor && from <= xDomain[1] * factor) ||
         (from <= xDomain[0] * factor && to >= xDomain[1] * factor)

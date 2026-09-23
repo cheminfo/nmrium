@@ -13,15 +13,16 @@ function searchDeep(obj: any, searchKey: any) {
   const result: any = [];
   function objectHelper(obj: any) {
     for (const key in obj) {
+      const value = obj[key];
       if (searchKey === key) {
-        result.push({ [key]: obj[key] });
+        result.push({ [key]: value });
       }
-      if (Array.isArray(obj[key])) {
-        for (const object of obj[key]) {
+      if (Array.isArray(value)) {
+        for (const object of value) {
           objectHelper(object);
         }
-      } else if (typeof obj[key] === 'object' && obj[key] !== null) {
-        objectHelper(obj[key]);
+      } else if (typeof value === 'object' && value !== null) {
+        objectHelper(value);
       }
     }
   }
@@ -35,9 +36,8 @@ function Inspector(data: any) {
   const filteredData = useMemo(() => {
     if (key) {
       return searchDeep(data, key);
-    } else {
-      return data;
     }
+    return data;
   }, [data, key]);
   const handleSearch = useMemo(
     () =>
@@ -58,7 +58,7 @@ function Inspector(data: any) {
         placeholder="Search for key..."
         onChange={handleSearch}
       />
-      <ObjectInspector data={filteredData} />;
+      <ObjectInspector data={filteredData} />
     </div>
   );
 }
@@ -78,7 +78,6 @@ export default function Test(props: any) {
   }
 
   useEffect(() => {
-    // eslint-disable-next-line react-you-might-not-need-an-effect/no-event-handler
     if (!file) return;
 
     void loadData(file, baseURL).then(setData);
@@ -95,8 +94,8 @@ export default function Test(props: any) {
         setData(result);
       } catch (error) {
         reportError(error);
-        // eslint-disable-next-line no-alert
-        globalThis.alert('Invalid JSON file');
+        // eslint-disable-next-line no-alert,no-restricted-globals
+        alert('Invalid JSON file');
       }
     })();
   }, []);

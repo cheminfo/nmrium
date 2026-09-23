@@ -114,16 +114,16 @@ function InnerDraggableDialog(props: InnerDraggableDialogProps) {
     x: 0,
     y: 0,
   });
-  const containerRefInternal = useRef<HTMLDivElement>(null);
+  const internalContainerRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     const updateTransform = () => {
-      if (!innerDialogRef.current || !containerRefInternal.current) {
+      if (!innerDialogRef.current || !internalContainerRef.current) {
         return;
       }
       const dialogRect = innerDialogRef.current.getBoundingClientRect();
       const parentContainerRect =
-        containerRefInternal.current.getBoundingClientRect();
+        internalContainerRef.current.getBoundingClientRect();
       const { transformX, transformY } = calculateTransform(placement, {
         dialogRect,
         parentContainerRect,
@@ -140,14 +140,13 @@ function InnerDraggableDialog(props: InnerDraggableDialogProps) {
   }, [innerDialogRef, placement]);
 
   function handleMouseDown(event: MouseEvent<HTMLDivElement>) {
-    const target = event.currentTarget as HTMLElement;
-
-    if (!containerRefInternal.current) {
+    if (!internalContainerRef.current) {
       return;
     }
 
+    const target = event.currentTarget as HTMLElement;
     const dialogRect = target.getBoundingClientRect();
-    const containerRect = containerRefInternal.current.getBoundingClientRect();
+    const containerRect = internalContainerRef.current.getBoundingClientRect();
 
     const offsetX = event.clientX - (dialogRect.left - containerRect.left);
     const offsetY = event.clientY - (dialogRect.top - containerRect.top);
@@ -169,16 +168,16 @@ function InnerDraggableDialog(props: InnerDraggableDialogProps) {
     }
     function handleMouseUp() {
       target.style.cursor = 'default';
-      globalThis.removeEventListener('mousemove', handleMouseMove);
-      globalThis.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
     }
 
-    globalThis.addEventListener('mousemove', handleMouseMove);
-    globalThis.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
   }
 
   return (
-    <Container ref={containerRefInternal}>
+    <Container ref={internalContainerRef}>
       <div
         ref={
           containerRef === undefined

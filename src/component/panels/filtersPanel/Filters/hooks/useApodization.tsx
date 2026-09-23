@@ -175,9 +175,7 @@ export const useApodization = (
 
       if (triggerSource === 'onChange') {
         onChange(values);
-      }
-
-      if (triggerSource === 'apply') {
+      } else if (triggerSource === 'apply') {
         dispatchApply(values);
         clearSyncFilterOptions();
       }
@@ -202,7 +200,6 @@ export const useApodization = (
   }, [handleSubmit, syncFilterOptions, handleApplyFilter]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-you-might-not-need-an-effect/no-event-handler
     if (applyFilterOnload) {
       void handleSubmit((values) => onChange(values))();
     }

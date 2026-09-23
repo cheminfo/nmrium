@@ -57,10 +57,10 @@ export function PrintContent(props: PrintFrameProps) {
       }
     }
 
-    globalThis.addEventListener('keydown', handleKeyDow);
+    document.addEventListener('keydown', handleKeyDow);
 
     return () => {
-      globalThis.removeEventListener('keydown', handleKeyDow);
+      document.removeEventListener('keydown', handleKeyDow);
     };
   }, [printPageOptions]);
 
@@ -216,6 +216,7 @@ function RenderContainer(props: {
 
   useEffect(() => {
     const handleRenderComplete = () => {
+      // eslint-disable-next-line @eslint-react/web-api-no-leaked-timeout
       setTimeout(() => {
         onRenderComplete();
       }, 250);

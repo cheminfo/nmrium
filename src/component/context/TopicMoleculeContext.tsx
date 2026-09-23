@@ -1,14 +1,14 @@
 import { Molecule } from 'openchemlib';
 import { TopicMolecule } from 'openchemlib-utils';
 import type { ReactNode } from 'react';
-import { createContext, useContext, useEffect, useRef } from 'react';
+import { createContext, use, useEffect, useRef } from 'react';
 
 import { useChartData } from './ChartContext.js';
 
 const TopicMoleculeContext = createContext<Record<string, TopicMolecule>>({});
 
 export function useTopicMolecule() {
-  const context = useContext(TopicMoleculeContext);
+  const context = use(TopicMoleculeContext);
 
   if (!context) {
     throw new Error('Topic Molecule context was not found');
@@ -40,8 +40,8 @@ export function TopicMoleculeProvider({
   }, [molecules]);
 
   return (
-    <TopicMoleculeContext.Provider value={moleculesRef.current}>
+    <TopicMoleculeContext value={moleculesRef.current}>
       {children}
-    </TopicMoleculeContext.Provider>
+    </TopicMoleculeContext>
   );
 }

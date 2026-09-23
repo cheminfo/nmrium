@@ -11,7 +11,7 @@ import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import { useIsInset } from '../inset/InsetProvider.js';
 
-import { JGraphContextProvider } from './JGraphContext.js';
+import { JGraphContext } from './JGraphContext.js';
 import { JGraphVerticalAxis } from './JGraphVerticalAxis.js';
 import JCouplingLinks from './JsCouplingLinks.js';
 import JsCouplings from './JsCouplings.js';
@@ -80,8 +80,8 @@ export default function JGraph() {
   if (!showJGraph || !spectrum?.display?.isVisible || isInset) return null;
 
   return (
-    <JGraphContextProvider value={JGraphState}>
+    <JGraphContext value={JGraphState}>
       <MemoizedJGraph signals={signals} links={links} />
-    </JGraphContextProvider>
+    </JGraphContext>
   );
 }

@@ -62,14 +62,7 @@ const MemoizedFloatMolecules = memo(FloatMoleculesInner);
 const emptyData = { ranges: {}, zones: {} };
 
 export function FloatMolecules() {
-  const {
-    molecules,
-    displayerMode,
-    view: {
-      molecules: moleculesView,
-      spectra: { activeTab },
-    },
-  } = useChartData();
+  const { molecules, displayerMode, view } = useChartData();
 
   const data = useSpectrum(emptyData);
   const ranges: Ranges = (data as Spectrum1D)?.ranges || {};
@@ -78,10 +71,10 @@ export function FloatMolecules() {
   return (
     <MemoizedFloatMolecules
       {...{
-        moleculesView,
+        moleculesView: view.molecules,
         molecules,
         displayerMode,
-        activeTab,
+        activeTab: view.spectra.activeTab,
         ranges,
         zones,
       }}

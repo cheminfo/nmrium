@@ -113,7 +113,7 @@ const modalContentFallback = (
   </FallbackDialogContents>
 );
 
-function AboutUsModal() {
+export default function AboutUsModal() {
   const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
 
   return (
@@ -144,8 +144,6 @@ function AboutUsModal() {
     </>
   );
 }
-
-export default AboutUsModal;
 
 function VersionInfo() {
   const { version } = versionInfo;

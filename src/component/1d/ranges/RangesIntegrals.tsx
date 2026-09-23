@@ -8,16 +8,15 @@ import useIntegralPath from '../../hooks/useIntegralPath.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 
 interface IntegralData {
+  id: string;
   x: Float64Array;
   y: Float64Array;
-  // eslint-disable-next-line react/no-unused-prop-types
-  id: string;
-  from: number;
-  to: number;
   opacity: number;
 }
 
-interface IntegralProps extends IntegralData {
+interface IntegralProps extends Omit<IntegralData, 'id'> {
+  from: number;
+  to: number;
   max: number;
 }
 
@@ -47,7 +46,7 @@ function Integral(props: IntegralProps) {
 
 const emptyData = { ranges: {}, info: {}, display: {} };
 
-function RangesIntegrals() {
+export default function RangesIntegrals() {
   const {
     xDomain: [from, to],
   } = useChartData();
@@ -84,7 +83,7 @@ function useIntegrals() {
 
   if (!spectrum || !showIntegrals) return;
 
-  let max = Number.NEGATIVE_INFINITY;
+  let max = -Infinity;
   const values: IntegralData[] = [];
 
   const {
@@ -102,12 +101,10 @@ function useIntegrals() {
         reverse: true,
       },
     );
-    values.push({ ...integral, id, opacity } as IntegralData);
+    values.push({ ...integral, id, opacity });
     const value = xyMaxY(integral);
     if (value > max) max = value;
   }
 
   return { max, values };
 }
-
-export default RangesIntegrals;

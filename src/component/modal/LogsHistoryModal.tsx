@@ -149,7 +149,7 @@ export function LogsHistoryModal(props: LogsHistoryModalProps) {
         >
           <div style={{ position: 'relative' }}>
             <IoBugOutline fontSize="1.4em" />
-            {count && (
+            {count ? (
               <span
                 style={{
                   position: 'absolute',
@@ -164,7 +164,7 @@ export function LogsHistoryModal(props: LogsHistoryModalProps) {
               >
                 {count}
               </span>
-            )}
+            ) : null}
           </div>
         </Button.BarButton>
       )}
@@ -188,6 +188,8 @@ export function LogsHistoryModal(props: LogsHistoryModalProps) {
           />
         </StyledDialogBody>
         <DialogFooter>
+          {/* TODO: logger should be in a ref. */}
+          {/* eslint-disable-next-line @eslint-react/immutability */}
           <Button.Danger onClick={() => logger.clear()} fill="outline">
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <FaRegTrashAlt />

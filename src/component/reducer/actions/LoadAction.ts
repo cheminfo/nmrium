@@ -19,7 +19,7 @@ import { initializeContours } from '../../../data/data2d/Spectrum2D/contours.ts'
 import { initiateDatum2D } from '../../../data/data2d/Spectrum2D/index.js';
 import type { StateMoleculeExtended } from '../../../data/molecules/Molecule.js';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager.js';
-import { linkMetaWithSpectra } from '../../../data/parseMeta/linkMetaWithSpectra.js';
+import { linkMetaWithSpectra } from '../../../data/parseMeta/index.ts';
 import type { UsedColors } from '../../../types/UsedColors.js';
 import { DefaultTolerance } from '../../panels/SummaryPanel/CorrelationTable/Constants.js';
 import type { State } from '../Reducer.js';
@@ -40,7 +40,7 @@ interface InputProps extends InitiateProps {
   containsNmrium?: boolean;
   usedColors?: UsedColors;
   parseMetaFileResult?: ParseResult<any> | null;
-  resetSourceObject?: boolean;
+  shouldResetSourceObject?: boolean;
   spectraColors?: SpectraColors;
   defaultMoleculeSettings?: MoleculeView;
 }
@@ -137,7 +137,7 @@ function setData(draft: Draft<State>, input: InputProps | InitiateProps) {
 
   if (sources && sources.length > 0) {
     for (const source of sources) {
-      if (draft.sources[source.id]) {
+      if (Object.hasOwn(draft.sources, source.id)) {
         draft.sources[source.id] = lodashMergeWith(
           draft.sources[source.id],
           source,
@@ -207,14 +207,14 @@ function setData(draft: Draft<State>, input: InputProps | InitiateProps) {
 
   setCorrelation(draft, correlations);
 
-  if (parseMetaFileResult) {
-    const { matches } = linkMetaWithSpectra({
-      autolink: true,
-      spectra: draft.data,
-      parseMetaFileResult,
-    });
-    setSpectraMetaInfo(draft, matches);
-  }
+  if (!parseMetaFileResult) return;
+
+  const { matches } = linkMetaWithSpectra({
+    autolink: true,
+    spectra: draft.data,
+    parseMetaFileResult,
+  });
+  setSpectraMetaInfo(draft, matches);
 }
 
 function initSpectra(
@@ -295,23 +295,23 @@ function initData(
       initialDraft.isLoading = false;
       initialDraft.actionType = action.type;
     });
-  } else {
-    draft.aggregator = FileCollection.fromCollection(draft.aggregator);
-    draft.aggregator.appendFileCollection(aggregator, '');
-
-    if (view) {
-      const defaultViewState = getDefaultViewState();
-      draft.view = lodashMerge(defaultViewState, view);
-      draft.view.molecules = Object.fromEntries(
-        Object.entries(draft.view.molecules).filter(([id]) =>
-          draft.molecules.some((molecule) => molecule.id === id),
-        ),
-      );
-    }
-    draft.actionType = action.type;
-    draft.isLoading = false;
-    return undefined;
   }
+
+  draft.aggregator = FileCollection.fromCollection(draft.aggregator);
+  draft.aggregator.appendFileCollection(aggregator, '');
+
+  if (view) {
+    const defaultViewState = getDefaultViewState();
+    draft.view = lodashMerge(defaultViewState, view);
+    draft.view.molecules = Object.fromEntries(
+      Object.entries(draft.view.molecules).filter(([id]) =>
+        draft.molecules.some((molecule) => molecule.id === id),
+      ),
+    );
+  }
+  draft.actionType = action.type;
+  draft.isLoading = false;
+  return undefined;
 }
 
 //action
@@ -331,35 +331,35 @@ function handleLoadDropFiles(draft: Draft<State>, action: LoadDropFilesAction) {
   const { payload, type } = action;
 
   const {
-    nmriumState: { data: { spectra = [] } = {} },
+    nmriumState,
     containsNmrium = false,
-    resetSourceObject = true,
+    shouldResetSourceObject = true,
   } = payload;
 
   if (containsNmrium) {
     return initData(draft, action);
-  } else {
-    setData(draft, payload);
-    setActiveTab(draft, {
-      domainOptions: { domainSpectraScope: 'all', isYDomainShared: false },
-    });
-    changeSpectrumVerticalAlignment(draft, { verticalAlign: 'auto-check' });
-
-    // set source undefined when dragging and dropping a spectra file to prevent export spectra with the data source.
-    if (resetSourceObject && spectra?.length > 0) {
-      draft.sources = {};
-    }
-
-    draft.view.molecules = Object.fromEntries(
-      Object.entries(draft.view.molecules).filter(([id]) =>
-        draft.molecules.some((molecule) => molecule.id === id),
-      ),
-    );
-
-    draft.actionType = type;
-    draft.isLoading = false;
-    return undefined;
   }
+  setData(draft, payload);
+  setActiveTab(draft, {
+    domainOptions: { domainSpectraScope: 'all', isYDomainShared: false },
+  });
+  changeSpectrumVerticalAlignment(draft, { verticalAlign: 'auto-check' });
+
+  const spectra = nmriumState.data?.spectra ?? [];
+  // set source undefined when dragging and dropping a spectra file to prevent export spectra with the data source.
+  if (shouldResetSourceObject && spectra.length > 0) {
+    draft.sources = {};
+  }
+
+  draft.view.molecules = Object.fromEntries(
+    Object.entries(draft.view.molecules).filter(([id]) =>
+      draft.molecules.some((molecule) => molecule.id === id),
+    ),
+  );
+
+  draft.actionType = type;
+  draft.isLoading = false;
+  return undefined;
 }
 
 export const LoadActions = {

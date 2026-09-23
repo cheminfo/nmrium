@@ -72,7 +72,7 @@ function getMolfile(options: {
 }) {
   const { ocl, smiles } = options;
 
-  if (ocl?.idCode && ocl?.coordinates) {
+  if (ocl?.idCode && ocl.coordinates) {
     const { idCode, coordinates } = ocl;
     return Molecule.fromIDCode(idCode, coordinates).toMolfileV3();
   }
@@ -357,7 +357,8 @@ function DatabasePanelInner({
     if (defaultDatabase && !databaseInstance.current) {
       handleChangeDatabase(defaultDatabase);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // TODO: avoid this hack.
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [defaultDatabase]);
 
   const tableData = useMemo(() => prepareData(result.data), [result.data]);

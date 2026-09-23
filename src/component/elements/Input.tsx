@@ -2,11 +2,11 @@ import debounce from 'lodash/debounce.js';
 import type {
   CSSProperties,
   ChangeEvent,
-  ForwardedRef,
   InputHTMLAttributes,
   ReactElement,
+  Ref,
 } from 'react';
-import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import useCombinedRefs from '../hooks/useCombinedRefs.js';
 
@@ -62,122 +62,116 @@ interface InputProps extends Omit<
   datalist?: string[];
   debounceTime?: number;
   small?: boolean;
+  ref?: Ref<HTMLInputElement>;
 }
 
-const Input = forwardRef(
-  (props: InputProps, ref: ForwardedRef<HTMLInputElement>) => {
-    const {
-      value: externalValue = undefined,
-      name,
-      style = {
-        input: {},
-        inputWrapper: {},
-      },
-      onChange,
-      checkValue = () => true,
-      type = 'text',
-      autoSelect = false,
-      className,
-      renderIcon,
-      canClear = false,
-      onClear,
-      datalist = [],
-      debounceTime = 0,
-      small = false,
-      ...otherProps
-    } = props;
+export default function Input(props: InputProps) {
+  const {
+    value: externalValue = undefined,
+    name,
+    style = {
+      input: {},
+      inputWrapper: {},
+    },
+    onChange,
+    checkValue = () => true,
+    type = 'text',
+    autoSelect = false,
+    className,
+    renderIcon,
+    canClear = false,
+    onClear,
+    datalist = [],
+    debounceTime = 0,
+    small = false,
+    ref,
+    ...otherProps
+  } = props;
 
-    const [internalValue, setInternalValue] =
-      useState<InputHTMLAttributes<HTMLInputElement>['value']>();
-    const value = debounceTime ? internalValue : externalValue;
-    const localRef = useRef<HTMLInputElement>(null);
-    const combinedRef = useCombinedRefs([ref, localRef]);
-    const [isDebounced, setDebouncedStatus] = useState<boolean>(false);
+  const [internalValue, setInternalValue] =
+    useState<InputHTMLAttributes<HTMLInputElement>['value']>();
+  const value = debounceTime ? internalValue : externalValue;
+  const localRef = useRef<HTMLInputElement>(null);
+  const combinedRef = useCombinedRefs([ref, localRef]);
+  const [isDebounced, setIsDebounced] = useState<boolean>(false);
 
-    const debounceOnChange = useMemo(
-      () =>
-        debounce((e: any) => {
-          onChange?.(e);
-          setDebouncedStatus(true);
-        }, debounceTime),
-      [debounceTime, onChange],
-    );
+  const debounceOnChange = useMemo(
+    () =>
+      debounce((e: any) => {
+        onChange?.(e);
+        setIsDebounced(true);
+      }, debounceTime),
+    [debounceTime, onChange],
+  );
 
-    useEffect(() => {
-      if (autoSelect) {
-        combinedRef?.current?.select();
-      }
-    }, [autoSelect, combinedRef]);
+  useEffect(() => {
+    if (autoSelect) {
+      combinedRef?.current?.select();
+    }
+  }, [autoSelect, combinedRef]);
 
-    useEffect(() => {
+  useEffect(() => {
+    if (debounceTime) {
+      setInternalValue(externalValue);
+    }
+  }, [debounceTime, externalValue]);
+
+  function onChangeHandler(e: ChangeEvent<HTMLInputElement>) {
+    e.stopPropagation();
+    e.preventDefault();
+    const val = e.target.value;
+    setIsDebounced(false);
+    if (checkValue(val)) {
       if (debounceTime) {
-        setInternalValue(externalValue);
-      }
-    }, [debounceTime, externalValue]);
-
-    function onChangeHandler(e: ChangeEvent<HTMLInputElement>) {
-      e.stopPropagation();
-      e.preventDefault();
-      const val = e.target.value;
-      setDebouncedStatus(false);
-      if (checkValue(val)) {
-        if (debounceTime) {
-          setInternalValue(val);
-          debounceOnChange(e);
-        } else {
-          onChange?.(e);
-        }
+        setInternalValue(val);
+        debounceOnChange(e);
+      } else {
+        onChange?.(e);
       }
     }
+  }
 
-    function clearHandler() {
-      localRef.current?.setAttribute('value', '');
-      onClear?.();
-    }
+  function clearHandler() {
+    localRef.current?.setAttribute('value', '');
+    onClear?.();
+  }
 
-    return (
-      <div
+  return (
+    <div
+      style={{
+        ...((renderIcon || canClear) && { padding: '0 5px' }),
+        ...styles.inputWrapper,
+        ...style?.inputWrapper,
+      }}
+      className={`input ${className || ''} `}
+    >
+      {renderIcon?.()}
+      <input
+        {...otherProps}
+        className={isDebounced ? 'debounce-end' : ''}
+        ref={combinedRef}
+        name={name}
         style={{
-          ...((renderIcon || canClear) && { padding: '0 5px' }),
-          ...styles.inputWrapper,
-          ...style?.inputWrapper,
+          ...styles.input,
+          ...style?.input,
+          padding: !small ? '0.4rem' : '0 0.4rem',
         }}
-        className={`input ${className || ''} `}
-      >
-        {renderIcon?.()}
-        <input
-          {...otherProps}
-          className={isDebounced ? 'debounce-end' : ''}
-          ref={combinedRef}
-          name={name}
-          style={{
-            ...styles.input,
-            ...style?.input,
-            padding: !small ? '0.4rem' : '0 0.4rem',
-          }}
-          type={type}
-          value={mapValue(value)}
-          onChange={onChangeHandler}
-          list={`${name || ''}-data-list`}
-        />
-        {canClear && value && (
-          <button
-            type="button"
-            style={styles.clearButton}
-            onClick={clearHandler}
-          >
-            <span style={{ display: 'block', margin: '0 auto' }}>&#10005;</span>
-          </button>
-        )}
+        type={type}
+        value={mapValue(value)}
+        onChange={onChangeHandler}
+        list={`${name || ''}-data-list`}
+      />
+      {canClear && value ? (
+        <button type="button" style={styles.clearButton} onClick={clearHandler}>
+          <span style={{ display: 'block', margin: '0 auto' }}>&#10005;</span>
+        </button>
+      ) : null}
 
-        <datalist id={`${name || ''}-data-list`}>
-          {datalist.map((value) => (
-            <option key={value} value={value} />
-          ))}
-        </datalist>
-      </div>
-    );
-  },
-);
-
-export default Input;
+      <datalist id={`${name || ''}-data-list`}>
+        {datalist.map((value) => (
+          <option key={value} value={value} />
+        ))}
+      </datalist>
+    </div>
+  );
+}

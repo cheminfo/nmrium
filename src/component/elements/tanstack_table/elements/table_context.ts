@@ -1,13 +1,12 @@
-import { createContext, useContext } from 'react';
+import { createContext, use } from 'react';
 
 import type { TanStackTableVirtualBoundary } from '../types.ts';
 
-const reactContext = createContext<TanStackTableVirtualBoundary | null>(null);
-
-export const TanStackTableProvider = reactContext.Provider;
+export const TanStackTableContext =
+  createContext<TanStackTableVirtualBoundary | null>(null);
 
 export function useTanStackTableContext() {
-  const context = useContext(reactContext);
+  const context = use(TanStackTableContext);
   if (!context) {
     throw new Error('table context was not found');
   }

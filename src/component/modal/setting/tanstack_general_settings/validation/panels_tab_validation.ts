@@ -50,13 +50,10 @@ const panelCodec = z.codec(
 
       if (status === 'available') {
         visible = true;
-      }
-
-      if (status === 'active') {
+      } else if (status === 'active') {
         visible = true;
         display = true;
-      }
-      if (status === 'open') {
+      } else if (status === 'open') {
         visible = true;
         display = true;
         open = true;

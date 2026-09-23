@@ -1,5 +1,5 @@
 import type { Dispatch } from 'react';
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, use, useMemo } from 'react';
 
 import type {
   PreferencesActions,
@@ -17,11 +17,12 @@ interface PreferencesContextData extends PreferencesStateContext {
   current: WorkspaceWithSource;
 }
 
-const PreferencesContext = createContext<PreferencesStateContext | null>(null);
-export const PreferencesProvider = PreferencesContext.Provider;
+export const PreferencesContext = createContext<PreferencesStateContext | null>(
+  null,
+);
 
 export function usePreferences(): PreferencesContextData {
-  const context = useContext(PreferencesContext);
+  const context = use(PreferencesContext);
   if (!context) {
     throw new Error('Preferences context was not found');
   }
@@ -31,7 +32,7 @@ export function usePreferences(): PreferencesContextData {
   return useMemo(() => {
     return {
       ...context,
-      current: workspaces?.[workspace.current] || workspaces.default,
+      current: workspaces[workspace.current] || workspaces.default,
       isCurrentWorkspaceReadOnly: isReadOnlyWorkspace(context),
     };
   }, [workspaces, workspace, context]);

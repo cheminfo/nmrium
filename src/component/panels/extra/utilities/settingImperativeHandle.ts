@@ -24,7 +24,7 @@ function saveSetting(
 }
 
 export function useSettingImperativeHandle(
-  ref: Ref<any>,
+  ref: Ref<SettingsRef | null> | undefined,
   handleSubmit: UseFormReturn['handleSubmit'],
   handleSuccess: (data: any) => void,
 ) {

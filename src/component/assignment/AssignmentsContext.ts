@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react';
+import { createContext, use } from 'react';
 
 export type Axis = 'x' | 'y';
 /**
@@ -44,7 +44,8 @@ export interface AssignmentStatus {
   activated: (AssignmentItem & { spectrumId?: string }) | null;
   highlighted: AssignmentItem | null;
 }
-export interface AssignmentContext extends AssignmentStatus {
+
+export interface AssignmentContextValue extends AssignmentStatus {
   data: Assignments;
   activate: (options: ActivateAssignmentOptions) => void;
   highlight: (options: HighlightAssignmentOptions) => void;
@@ -70,12 +71,14 @@ export interface AssignmentsData extends AssignmentStatus {
   clearHighlight: () => void;
 }
 
-export const assignmentContext = createContext<AssignmentContext | null>(null);
+export const AssignmentContext = createContext<AssignmentContextValue | null>(
+  null,
+);
 
 export const assignmentAxes: Axis[] = ['x', 'y'];
 
 export function useAssignmentContext() {
-  const context = useContext(assignmentContext);
+  const context = use(AssignmentContext);
 
   if (!context) {
     throw new Error('Assignment context was not found');

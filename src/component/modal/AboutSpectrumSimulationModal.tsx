@@ -40,7 +40,7 @@ const DialogBody = styled(StyledDialogBody)`
   }
 `;
 
-function AboutSpectrumSimulationModal() {
+export default function AboutSpectrumSimulationModal() {
   const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
   return (
     <>
@@ -78,5 +78,3 @@ function AboutSpectrumSimulationModal() {
     </>
   );
 }
-
-export default AboutSpectrumSimulationModal;

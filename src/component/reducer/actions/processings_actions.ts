@@ -24,7 +24,7 @@ type SetSpectrumLiveProcessed = ActionType<
   'SET_SPECTRUM_LIVE_PROCESSED',
   {
     spectrumLiveProcessed: Spectrum | undefined;
-    updateView: boolean;
+    shouldUpdateView: boolean;
   }
 >;
 
@@ -67,11 +67,11 @@ export function setSpectrumLiveProcessed(
   draft: Draft<State>,
   action: SetSpectrumLiveProcessed,
 ) {
-  const { spectrumLiveProcessed, updateView } = action.payload;
+  const { spectrumLiveProcessed, shouldUpdateView } = action.payload;
 
   draft.spectrumLiveProcessed = spectrumLiveProcessed;
 
-  if (!updateView) return;
+  if (!shouldUpdateView) return;
 
   updateLiveProcessedView(draft);
 }
@@ -90,13 +90,13 @@ export function selectProcessingOperator(
       }
     : undefined;
 
-  if (!operatorUI) {
-    draft.processingOperators.liveOperation = undefined;
-    setSpectrumLiveProcessed(draft, {
-      type: 'SET_SPECTRUM_LIVE_PROCESSED',
-      payload: { spectrumLiveProcessed: undefined, updateView: true },
-    });
-  }
+  if (operatorUI) return;
+
+  draft.processingOperators.liveOperation = undefined;
+  setSpectrumLiveProcessed(draft, {
+    type: 'SET_SPECTRUM_LIVE_PROCESSED',
+    payload: { spectrumLiveProcessed: undefined, shouldUpdateView: true },
+  });
 }
 
 export function setLiveEditChecked(

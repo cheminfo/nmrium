@@ -1,3 +1,5 @@
+import { clearTimeout } from 'node:timers';
+
 import type { CSSProperties, RefObject } from 'react';
 import { useDeferredValue, useEffect } from 'react';
 
@@ -131,7 +133,7 @@ function useOnRender(onRender: (() => void) | undefined) {
         return;
       }
 
-      setTimeout(() => {
+      const timeout = setTimeout(() => {
         if (
           renderDimension.width !== width ||
           renderDimension.height !== height
@@ -139,6 +141,8 @@ function useOnRender(onRender: (() => void) | undefined) {
           onRender();
         }
       }, 0);
+
+      return () => clearTimeout(timeout);
     }
 
     const animationFrameId = requestAnimationFrame(handleRenderComplete);

@@ -1,5 +1,4 @@
-import type { SVGAttributes } from 'react';
-import { forwardRef } from 'react';
+import type { Ref, SVGAttributes } from 'react';
 import type { UseLinearPrimaryTicksResult } from 'react-d3-utils';
 import type {
   SVGStyledLineProps,
@@ -33,6 +32,7 @@ interface D3AxisProps
   showGrid?: boolean;
   showPrimaryGrid?: boolean;
   showSecondaryGrid?: boolean;
+  ref?: Ref<SVGGElement | null>;
 }
 
 interface TicketsProps extends UseLinearPrimaryTicksResult, BaseD3AxisProps {}
@@ -225,69 +225,68 @@ function SecondaryGrid(props: GridProps<SecondaryGridElementProps>) {
   });
 }
 
-export const D3Axis = forwardRef<SVGGElement | null, D3AxisProps>(
-  (props, ref) => {
-    const {
-      ticks,
-      scale,
-      axisPosition,
-      gridSize,
-      children,
-      primaryGridProps,
-      secondaryGridProps,
-      tickLength,
-      showGrid = false,
-      showPrimaryGrid = true,
-      showSecondaryGrid = true,
-      ...otherProps
-    } = props;
+export function D3Axis(props: D3AxisProps) {
+  const {
+    ref,
+    ticks,
+    scale,
+    axisPosition,
+    gridSize,
+    children,
+    primaryGridProps,
+    secondaryGridProps,
+    tickLength,
+    showGrid = false,
+    showPrimaryGrid = true,
+    showSecondaryGrid = true,
+    ...otherProps
+  } = props;
 
-    const isVertical = isVerticalAxis(axisPosition);
+  const isVertical = isVerticalAxis(axisPosition);
 
-    return (
-      <g
-        ref={ref}
-        fontSize="10"
-        textAnchor={isVertical ? 'start' : 'middle'}
-        {...otherProps}
-      >
-        <g className="axis">
-          <BaseLine
-            axisPosition={axisPosition}
-            scale={scale}
-            tickLength={tickLength}
-          />
-          <Tickets
-            ticks={ticks}
-            axisPosition={axisPosition}
-            scale={scale}
-            tickLength={tickLength}
-          />
-          {children}
-        </g>
-        {showGrid && (
-          <g className="grid">
-            {showPrimaryGrid && (
-              <PrimaryGrid
-                ticks={ticks}
-                axisPosition={axisPosition}
-                scale={scale}
-                gridSize={gridSize}
-                gridProps={primaryGridProps}
-              />
-            )}
-            {showSecondaryGrid && (
-              <SecondaryGrid
-                ticks={ticks}
-                axisPosition={axisPosition}
-                scale={scale}
-                gridSize={gridSize}
-                gridProps={secondaryGridProps}
-              />
-            )}
-          </g>
-        )}
+  return (
+    <g
+      ref={ref}
+      fontSize="10"
+      textAnchor={isVertical ? 'start' : 'middle'}
+      {...otherProps}
+    >
+      <g className="axis">
+        <BaseLine
+          axisPosition={axisPosition}
+          scale={scale}
+          tickLength={tickLength}
+        />
+        <Tickets
+          ticks={ticks}
+          axisPosition={axisPosition}
+          scale={scale}
+          tickLength={tickLength}
+        />
+        {children}
       </g>
-    );
-  },
-);
+      {showGrid && (
+        <g className="grid">
+          {showPrimaryGrid && (
+            <PrimaryGrid
+              ticks={ticks}
+              axisPosition={axisPosition}
+              scale={scale}
+              gridSize={gridSize}
+              gridProps={primaryGridProps}
+            />
+          )}
+          {showSecondaryGrid && (
+            <SecondaryGrid
+              ticks={ticks}
+              axisPosition={axisPosition}
+              scale={scale}
+              gridSize={gridSize}
+              gridProps={secondaryGridProps}
+            />
+          )}
+        </g>
+      )}
+    </g>
+  );
+}

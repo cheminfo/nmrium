@@ -1,19 +1,20 @@
 import { Tooltip } from '@blueprintjs/core';
 import type { Spectrum } from '@zakodium/nmrium-core';
 import dlv from 'dlv';
+import type { HTMLAttributes } from 'react';
 
 interface RenderAsHTMLProps {
   data: Spectrum;
   jpath: string | string[];
 }
 
-interface HTMLContentProps extends React.HTMLAttributes<HTMLDivElement> {
+interface HTMLContentProps extends HTMLAttributes<HTMLDivElement> {
   html: string;
 }
 
 function HTMLContent({ html }: HTMLContentProps) {
   return (
-    // eslint-disable-next-line react/no-danger
+    // eslint-disable-next-line @eslint-react/dom-no-dangerously-set-innerhtml
     <div dangerouslySetInnerHTML={{ __html: html }} />
   );
 }

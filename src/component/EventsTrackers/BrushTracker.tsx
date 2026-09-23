@@ -7,8 +7,8 @@ import type {
 } from 'react';
 import {
   createContext,
+  use,
   useCallback,
-  useContext,
   useEffect,
   useReducer,
   useRef,
@@ -30,7 +30,7 @@ import type {
 } from './brush_tracker.types.ts';
 import type { BrushTrackerEventEmitter } from './brush_tracker_events_listeners.ts';
 import {
-  BrushTrackerEventEmitterProvider,
+  BrushTrackerEventEmitterContext,
   useInitBrushTrackerEventEmitter,
 } from './brush_tracker_events_listeners.ts';
 
@@ -70,14 +70,14 @@ export function useBrushDetectionOptions() {
   if (!BrushDetectionOptionsContext) {
     throw new Error('Brush detection options context was not found');
   }
-  return useContext(BrushDetectionOptionsContext);
+  return use(BrushDetectionOptionsContext);
 }
 
 export function useBrushTracker() {
   if (!BrushContext) {
     throw new Error('Brush context was not found');
   }
-  return useContext(BrushContext);
+  return use(BrushContext);
 }
 
 function isSelfControlledTarget(target: EventTarget) {
@@ -274,12 +274,12 @@ export function BrushTracker(options: BrushTrackerProps) {
           }
         }
 
-        globalThis.removeEventListener('pointermove', moveCallback);
-        globalThis.removeEventListener('pointerup', upCallback);
+        document.removeEventListener('pointermove', moveCallback);
+        document.removeEventListener('pointerup', upCallback);
       }
 
-      globalThis.addEventListener('pointermove', moveCallback);
-      globalThis.addEventListener('pointerup', upCallback);
+      document.addEventListener('pointermove', moveCallback);
+      document.addEventListener('pointerup', upCallback);
 
       return false;
     },
@@ -340,8 +340,8 @@ export function BrushTracker(options: BrushTrackerProps) {
   }
 
   return (
-    <BrushDetectionOptionsContext.Provider value={brushDetectionOptions}>
-      <BrushContext.Provider value={state}>
+    <BrushDetectionOptionsContext value={brushDetectionOptions}>
+      <BrushContext value={state}>
         <div
           tabIndex={0}
           onClick={handleClick}
@@ -367,12 +367,12 @@ export function BrushTracker(options: BrushTrackerProps) {
             window.removeEventListener('wheel', stopPageScrolling);
           }}
         >
-          <BrushTrackerEventEmitterProvider value={emitter}>
+          <BrushTrackerEventEmitterContext value={emitter}>
             {children}
-          </BrushTrackerEventEmitterProvider>
+          </BrushTrackerEventEmitterContext>
         </div>
-      </BrushContext.Provider>
-    </BrushDetectionOptionsContext.Provider>
+      </BrushContext>
+    </BrushDetectionOptionsContext>
   );
 }
 

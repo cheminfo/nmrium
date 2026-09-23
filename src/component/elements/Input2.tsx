@@ -2,21 +2,14 @@ import type { InputGroupProps } from '@blueprintjs/core';
 import { Classes, MenuItem } from '@blueprintjs/core';
 import { Suggest } from '@blueprintjs/select';
 import debounce from 'lodash/debounce.js';
-import type { ChangeEvent, ForwardedRef } from 'react';
-import {
-  forwardRef,
-  isValidElement,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import type { ChangeEvent, Ref } from 'react';
+import { isValidElement, useEffect, useMemo, useRef, useState } from 'react';
 
 import useCombinedRefs from '../hooks/useCombinedRefs.js';
 
-interface UseInputProps extends BaseInputProps {
+interface UseInputOptions extends BaseInputProps {
   value?: string;
-  ref: ForwardedRef<HTMLInputElement>;
+  ref?: Ref<HTMLInputElement>;
 }
 
 interface BaseInputProps {
@@ -30,9 +23,10 @@ export interface Input2Props<FilterItem extends string = string>
   extends Omit<InputGroupProps, 'onChange' | 'inputRef'>, BaseInputProps {
   getFilterValue?: (item: FilterItem) => string;
   filterItems?: FilterItem[];
+  ref?: Ref<HTMLInputElement>;
 }
 
-function useInput(props: UseInputProps) {
+function useInput(options: UseInputOptions) {
   const {
     value: externalValue,
     debounceTime,
@@ -40,7 +34,7 @@ function useInput(props: UseInputProps) {
     autoSelect,
     onChange,
     checkValue,
-  } = props;
+  } = options;
   const [internalValue, setValue] = useState<string>();
   const value = debounceTime ? internalValue : externalValue;
   const localRef = useRef<HTMLInputElement>(null);
@@ -112,9 +106,8 @@ function getClasses(isDebounced: boolean) {
   return classes.join(' ');
 }
 
-function InnerInput<FilterItem extends string = string>(
+export function Input2<FilterItem extends string = string>(
   props: Input2Props<FilterItem>,
-  ref: any,
 ) {
   const {
     debounceTime = 0,
@@ -127,6 +120,7 @@ function InnerInput<FilterItem extends string = string>(
     autoSelect = false,
     fill,
     name,
+    ref,
     ...otherInputProps
   } = props;
 
@@ -203,7 +197,3 @@ function InnerInput<FilterItem extends string = string>(
     />
   );
 }
-
-const Input2 = forwardRef(InnerInput);
-
-export { Input2 };

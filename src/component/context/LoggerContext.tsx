@@ -3,8 +3,8 @@ import { FifoLogger } from 'fifo-logger';
 import type { ReactNode } from 'react';
 import {
   createContext,
+  use,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -23,7 +23,7 @@ const LoggerContext = createContext<{
 } | null>(null);
 
 export function useLogger() {
-  const context = useContext(LoggerContext);
+  const context = use(LoggerContext);
   if (!context) {
     throw new Error('Logger context was not found');
   }
@@ -110,11 +110,11 @@ export function LoggerProvider({ children }: LoggerProviderProps) {
   }, [logsHistory, popupLoggingLevel]);
 
   return (
-    <LoggerContext.Provider value={loggerState}>
+    <LoggerContext value={loggerState}>
       {isLogHistoryOpened && (
         <LogsHistoryModal autoOpen onClose={() => openLogHistory(false)} />
       )}
       {children}
-    </LoggerContext.Provider>
+    </LoggerContext>
   );
 }

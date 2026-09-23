@@ -196,7 +196,7 @@ function MultipleSpectraAnalysisTable(
           width: '100%',
           padding: '10px',
         }}
-        // eslint-disable-next-line react/no-danger
+        // eslint-disable-next-line @eslint-react/dom-no-dangerously-set-innerhtml
         dangerouslySetInnerHTML={{ __html: codeEvaluation as string }}
       />
     </Fragment>

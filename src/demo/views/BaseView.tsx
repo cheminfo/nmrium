@@ -167,7 +167,7 @@ export default function BaseView(props: BaseViewProps) {
               >
                 {callbackData.map((log: any, index) => (
                   <div
-                    key={`${index + log.datetime}`}
+                    key={String(index + log.datetime)}
                     style={{ margin: '5px 0' }}
                   >
                     <span style={{ fontSize: '12px' }}>{log.datetime}</span>

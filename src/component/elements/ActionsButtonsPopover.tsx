@@ -83,20 +83,20 @@ function ActionButton(props: ButtonProps) {
 
 function filterButtons(buttons: ActionButtonProps[]) {
   const visibleButtons: ActionButtonProps[] = [];
-  let disablePopover = true;
+  let shouldDisablePopover = true;
 
   for (const button of buttons) {
     const isSeparatorComponent = isSeparator(button);
 
-    const show = isSeparatorComponent || button?.visible !== false;
-    if (show) visibleButtons.push(button);
+    const shouldShow = isSeparatorComponent || button?.visible !== false;
+    if (shouldShow) visibleButtons.push(button);
 
     if (!isSeparatorComponent && button?.visible !== false) {
-      disablePopover = false;
+      shouldDisablePopover = false;
     }
   }
 
-  return { visibleButtons, disablePopover };
+  return { visibleButtons, shouldDisablePopover };
 }
 
 interface OffsetOptions {
@@ -112,11 +112,12 @@ function getOffset(options: OffsetOptions): [number, number] {
   const isTrackY = anchorTo === 'cursor-y' || anchorTo === 'cursor';
 
   const x = isTrackX ? cursorPosition.x : 0;
-  const y = isTrackY ? cursorPosition.y : 0;
 
   if (anchorTo === 'cursor-x') {
     return [x + offsetX, -offsetY];
   }
+
+  const y = isTrackY ? cursorPosition.y : 0;
 
   if (anchorTo === 'cursor-y') {
     return [y + offsetY, offsetX];
@@ -171,7 +172,7 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
   });
   const Wrapper = targetTagName as any;
 
-  const { visibleButtons, disablePopover } = filterButtons(buttons);
+  const { visibleButtons, shouldDisablePopover } = filterButtons(buttons);
 
   function handleMouseEnter(event: MouseEvent<HTMLElement>) {
     const { clientX, clientY, currentTarget } = event;
@@ -195,7 +196,7 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
       popoverClassName="actions-buttons-popover"
       interactionKind="hover"
       enforceFocus={false}
-      disabled={disablePopover || disabled}
+      disabled={shouldDisablePopover || disabled}
       renderTarget={({ onMouseEnter, isOpen, ...otherProps }) => (
         <Wrapper
           {...targetProps}
@@ -235,11 +236,11 @@ function ActionButtons(props: ActionButtonsProps) {
   return buttons.map((button, index) => {
     if (isSeparator(button)) {
       if (direction === 'row') {
-        // eslint-disable-next-line react/no-array-index-key
+        // eslint-disable-next-line @eslint-react/no-array-index-key
         return <HorizontalSeparator key={index} />;
       }
 
-      // eslint-disable-next-line react/no-array-index-key
+      // eslint-disable-next-line @eslint-react/no-array-index-key
       return <VerticalSeparator key={index} />;
     }
 
@@ -247,7 +248,7 @@ function ActionButtons(props: ActionButtonsProps) {
 
     return (
       <ActionButton
-        // eslint-disable-next-line react/no-array-index-key
+        // eslint-disable-next-line @eslint-react/no-array-index-key
         key={index}
         tooltipProps={{ content: title || '', compact: true }}
         {...otherProps}

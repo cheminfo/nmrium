@@ -12,7 +12,7 @@ function IsotopesViewer({ value = '', ...othersProps }: IsotopesViewerProps) {
   return (
     <div
       {...othersProps}
-      // eslint-disable-next-line react/no-danger
+      // eslint-disable-next-line @eslint-react/dom-no-dangerously-set-innerhtml
       dangerouslySetInnerHTML={{
         __html: renderIsotope(value),
       }}

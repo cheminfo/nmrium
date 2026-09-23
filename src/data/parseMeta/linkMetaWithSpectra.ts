@@ -35,9 +35,7 @@ function linkMetaWithSpectra(options: {
     if (source && !fields.includes(source)) {
       throw new SourcePathError(source);
     }
-  }
-
-  if (autolink) {
+  } else {
     for (const sourceField of fields) {
       if (dlv(spectra[0], sourceField, null)) {
         source = sourceField;

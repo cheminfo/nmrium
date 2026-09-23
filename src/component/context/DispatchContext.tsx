@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react';
+import { createContext, use } from 'react';
 
 import type { AssignmentsActions } from '../reducer/actions/AssignmentsActions.js';
 import type { CorrelationsActions } from '../reducer/actions/CorrelationsActions.js';
@@ -46,10 +46,8 @@ export type Action =
 
 type Dispatch = (action: Action) => void;
 
-const dispatchContext = createContext<Dispatch>(() => null);
-
-export const DispatchProvider = dispatchContext.Provider;
+export const DispatchContext = createContext<Dispatch>(() => null);
 
 export function useDispatch(): Dispatch {
-  return useContext(dispatchContext);
+  return use(DispatchContext);
 }

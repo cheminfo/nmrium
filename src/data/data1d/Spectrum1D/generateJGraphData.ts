@@ -34,12 +34,11 @@ export default function generateJGraphData(
   for (const range of ranges) {
     for (const signal of range.signals) {
       const { id: signalId, ...restSignal } = signal;
+      if (!restSignal.js) continue;
 
-      if (restSignal.js) {
-        signals.push({ id: `${range.id}${signalId}`, ...restSignal });
-        const tempMax = getJsCouplingMax(restSignal.js);
-        jCouplingMax = Math.max(tempMax, jCouplingMax);
-      }
+      signals.push({ id: `${range.id}${signalId}`, ...restSignal });
+      const tempMax = getJsCouplingMax(restSignal.js);
+      jCouplingMax = Math.max(tempMax, jCouplingMax);
     }
   }
 
@@ -47,7 +46,7 @@ export default function generateJGraphData(
 }
 
 function getJsCouplingMax(js: Jcoupling[]): number {
-  let max = Number.NEGATIVE_INFINITY;
+  let max = -Infinity;
   for (const { coupling } of js) {
     max = Math.max(coupling, max);
   }
@@ -57,8 +56,8 @@ function getJsCouplingMax(js: Jcoupling[]): number {
 function getCouplings(ranges: Range[]): Coupling[] {
   const couplings: Coupling[] = [];
   for (const range of ranges) {
-    for (const { delta, js } of range.signals) {
-      for (const { coupling } of js || []) {
+    for (const { delta, js = [] } of range.signals) {
+      for (const { coupling } of js) {
         couplings.push({ coupling, delta });
       }
     }
@@ -112,7 +111,7 @@ function createLinks(ranges: Range[], jGraphTolerance = 0) {
       index++;
       links[index] = initLink(couplings[end]);
       start = end;
-      end = end + 1;
+      end += 1;
     }
   }
 

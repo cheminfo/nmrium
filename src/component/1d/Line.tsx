@@ -32,7 +32,7 @@ function Line({ data, id, display, index }: LineProps) {
     const _scaleY = scaleY({ spectrumId: id });
 
     const pathBuilder = new SVGPathBuilder();
-    if (data?.x && data?.y && _scaleX(0)) {
+    if (data?.x && data.y && _scaleX(0)) {
       const pathPoints = xyReduce(data);
 
       pathBuilder.moveTo(_scaleX(pathPoints.x[0]), _scaleY(pathPoints.y[0]));

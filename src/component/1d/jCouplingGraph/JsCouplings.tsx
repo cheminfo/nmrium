@@ -30,7 +30,7 @@ export default function JsCouplings(props: JsCouplingsProps) {
               strokeWidth="1"
             />
             {signal.js?.map((j) => {
-              return <JsCoupling key={`${j.coupling}`} value={j.coupling} />;
+              return <JsCoupling key={j.coupling} value={j.coupling} />;
             })}
           </g>
         );
