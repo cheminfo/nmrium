@@ -15,6 +15,7 @@ test('convert x and re to Float64Array', () => {
     }),
   );
 
+  expect(actual).not.haveOwnProperty('im');
   expect(actual.x).toStrictEqual(Float64Array.of(1, 2, 3));
   expect(actual.re).toStrictEqual(Float64Array.of(4, 5, 6));
 });
@@ -32,34 +33,20 @@ test('keep im as Float64Array when defined', () => {
 });
 
 test.each([
-  ['undefined', undefined],
-  ['null', null],
-])('im is undefined when it is %s', (_label, im) => {
-  const actual = convertDataToFloat64Array(
-    asData({
-      x: [1, 2, 3],
-      re: [4, 5, 6],
-      im,
-    }),
-  );
-
-  expect(actual.im).toBeUndefined();
-});
-
-
-test.each([
   ['empty array', []],
   ['empty Float64Array', Float64Array.from([])],
-])('im is undefined when it is %s', (_label, im) => {
+])('data could be empty', (_label, data) => {
   const actual = convertDataToFloat64Array(
     asData({
-      x: [1, 2, 3],
-      re: [4, 5, 6],
-      im,
+      x: data,
+      re: data,
+      im: data,
     }),
   );
 
   // An empty `Float64Array` is truthy and would be treated as some imaginary
   // data by the consumers.
   expect(actual.im).toBeInstanceOf(Float64Array);
+  expect(actual.x).toBeInstanceOf(Float64Array);
+  expect(actual.re).toBeInstanceOf(Float64Array);
 });
