@@ -1,3 +1,4 @@
+
 import type { Peak2D, Signal2D, Zone } from '@zakodium/nmr-types';
 import type { Spectrum } from '@zakodium/nmrium-core';
 import type { Logger } from 'cheminfo-types';
@@ -300,7 +301,7 @@ function generated1DSpectrum(params: {
 
   const datum = initiateDatum1D(
     {
-      data: { x, im: null, re: normalizedY },
+      data: { x, re: normalizedY },
       display: {
         color,
       },
