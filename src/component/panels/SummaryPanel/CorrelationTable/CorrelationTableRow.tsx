@@ -310,7 +310,6 @@ export default function CorrelationTableRow(props: CorrelationTableRowProps) {
             value={correlation.equivalence}
             style={equivalenceCellStyle}
             onSave={onSaveEquivalencesHandler}
-            validate={(val) => val !== ''}
           />
         ) : (
           <span style={equivalenceCellStyle}>{correlation.equivalence}</span>
@@ -325,7 +324,6 @@ export default function CorrelationTableRow(props: CorrelationTableRowProps) {
             onSave={(value) =>
               onSaveEditNumericValuesHandler(value, 'protonsCount')
             }
-            validate={(val) => val !== ''}
           />
         ) : (
           ''
@@ -348,7 +346,6 @@ export default function CorrelationTableRow(props: CorrelationTableRowProps) {
             onSave={(value) =>
               onSaveEditNumericValuesHandler(value, 'hybridization')
             }
-            validate={(val) => val !== ''}
           />
         ) : (
           ''
