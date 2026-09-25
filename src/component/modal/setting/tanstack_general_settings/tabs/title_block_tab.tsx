@@ -114,7 +114,7 @@ const TableFields = withForm({
               {(field) => (
                 <CellInput
                   field={field}
-                  autoFocus={original.uuid === autoFocus ? true : undefined}
+                  autoFocus={original.uuid === autoFocus || undefined}
                   onBlur={() => setAutoFocus('')}
                 />
               )}

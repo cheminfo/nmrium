@@ -272,9 +272,7 @@ function TanStackTableInner<TData extends TanStackRowData>(
                   }
                   isRowActive={
                     !activeRow
-                      ? enableDefaultActiveRow
-                        ? rowIndex === index
-                        : false
+                      ? enableDefaultActiveRow && rowIndex === index
                       : activeRow(row)
                   }
                   rowStyle={

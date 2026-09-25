@@ -573,19 +573,19 @@ function rollbackSpectrum(
 ) {
   const { filterKey, reset = false, tempRollback = false } = options;
   //return back the spectra data to point of time before applying a specific filter
-  const applyFilter = !filterKey
-    ? true
-    : [
-        phaseCorrection.name,
-        phaseCorrectionTwoDimensions.name,
-        fft.name,
-        shiftX.name,
-        shift2DX.name,
-        shift2DY.name,
-        signalProcessing.name,
-        digitalFilter.name,
-        digitalFilter2D.name,
-      ].includes(filterKey as any);
+  const applyFilter =
+    !filterKey ||
+    [
+      phaseCorrection.name,
+      phaseCorrectionTwoDimensions.name,
+      fft.name,
+      shiftX.name,
+      shift2DX.name,
+      shift2DY.name,
+      signalProcessing.name,
+      digitalFilter.name,
+      digitalFilter2D.name,
+    ].includes(filterKey as any);
 
   beforeRollback(draft, filterKey);
 
