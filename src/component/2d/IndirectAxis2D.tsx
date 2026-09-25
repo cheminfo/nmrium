@@ -35,7 +35,7 @@ function IndirectAxis2D(props: IndirectAxis2DProps) {
   const { width, height, margin } = useChartData();
 
   const nucleus = useActiveNucleusTab();
-  const [, maybeNucleusUnit] = nucleus.split(',');
+  const [, maybeNucleusUnit] = nucleus.split(',', 2);
   const axis = useIndirectAxisUnit();
 
   const matchNucleus = /^[0-9]+[A-Z][a-z]?$/.test(maybeNucleusUnit);

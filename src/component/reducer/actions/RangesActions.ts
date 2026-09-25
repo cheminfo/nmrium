@@ -781,7 +781,7 @@ function handleDeleteRangePeak(
   const spectrum = getSpectrum(draft, spectrumKey);
   if (!isSpectrum1D(spectrum)) return;
 
-  const [rangeKey, signalKey, peakKey] = id.split(',');
+  const [rangeKey, signalKey, peakKey] = id.split(',', 3);
   const range = spectrum.ranges.values.find((range) => range.id === rangeKey);
   const signal = range?.signals.find((signal) => signal.id === signalKey);
   if (signal) {
