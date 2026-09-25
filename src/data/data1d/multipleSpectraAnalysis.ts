@@ -224,9 +224,9 @@ export function generateAnalyzeSpectra(
   > = Object.fromEntries(
     Object.entries(data).map(([entryKey, entryValue]) => {
       const result = Object.fromEntries(
-        Object.keys(columns).map((key) => {
-          const isFormula = columns[key].type === ANALYSIS_COLUMN_TYPES.FORMULA;
-          const valueKey = columns[key].valueKey;
+        Object.entries(columns).map(([key, column]) => {
+          const isFormula = column.type === ANALYSIS_COLUMN_TYPES.FORMULA;
+          const valueKey = column.valueKey;
           const { SID, id } = entryValue[key].analysisRow;
           if (isFormula) {
             return [
@@ -324,12 +324,12 @@ export function getDataAsString(
       options: { columns },
     } = spectraAnalysis;
 
-    //columns labels
+    // Columns labels.
     const letters = Object.keys(columns);
 
     const columnsLabels: string[] = letters.slice();
     let index = 0;
-    // listed the spectra panel columns
+    // Listed the spectra panel columns.
     for (const col of spectraPanelPreferences.columns) {
       if (col.visible && 'jpath' in col) {
         columnsLabels.splice(index, 0, col.label);
@@ -343,7 +343,7 @@ export function getDataAsString(
       const spectrum = spectraData[spectrumAnalysis[letters[0]].SID];
       const cellsValues: string[] = [];
 
-      // listed the spectra cell values
+      // Listed the spectra cell values.
       for (const col of spectraPanelPreferences.columns) {
         if (col.visible && 'jpath' in col) {
           const jpath = (col as JpathTableColumn)?.jpath;
@@ -352,7 +352,7 @@ export function getDataAsString(
         }
       }
 
-      // listed the spectra analysis cell values
+      // Listed the spectra analysis cell values.
       for (const letter of letters) {
         const value = spectrumAnalysis[letter].value;
         cellsValues.push(String(value));

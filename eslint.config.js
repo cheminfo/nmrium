@@ -83,7 +83,6 @@ export default defineConfig(
       'unicorn/prefer-continue': 'off',
       'unicorn/prefer-early-return': 'off',
       'unicorn/prefer-hoisting-branch-code': 'off',
-      'unicorn/prefer-object-iterable-methods': 'off',
       'no-restricted-imports': [
         'error',
         {

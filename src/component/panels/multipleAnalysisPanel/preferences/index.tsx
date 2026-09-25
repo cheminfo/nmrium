@@ -24,10 +24,12 @@ import MultipleAnalysisCodeEditor from './MultipleAnalysisCodeEditor.js';
 function getMultipleSpectraAnalysisData(
   preferences: MultipleSpectraAnalysisPreferencesInterface,
 ) {
-  return Object.keys(preferences.analysisOptions.columns).map((key) => ({
-    ...preferences.analysisOptions.columns[key],
-    tempKey: key,
-  }));
+  return Object.entries(preferences.analysisOptions.columns).map(
+    ([key, column]) => ({
+      ...column,
+      tempKey: key,
+    }),
+  );
 }
 
 const preferencesSchema = Yup.object({

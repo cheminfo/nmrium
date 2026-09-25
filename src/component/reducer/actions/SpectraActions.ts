@@ -535,8 +535,7 @@ function handleDeleteSpectra(draft: Draft<State>, action: DeleteSpectraAction) {
     spectraRemovedIDs[id] = true;
   }
 
-  for (const key of Object.keys(draft.keysPreferences)) {
-    const preferencesState = draft.keysPreferences[key];
+  for (const preferencesState of Object.values(draft.keysPreferences)) {
     // remove related object from save preferences for deleted spectra
     for (const { id } of preferencesState.data) {
       if (spectraRemovedIDs[id]) {

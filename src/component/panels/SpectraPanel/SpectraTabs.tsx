@@ -67,7 +67,7 @@ function SpectraTabsInner({
     <Container>
       <Tabs key={activeTab} activeTab={activeTab} onClick={onTabChangeHandler}>
         {spectraGroupByNucleus &&
-          Object.keys(spectraGroupByNucleus).map((nucleus) => (
+          Object.entries(spectraGroupByNucleus).map(([nucleus, data]) => (
             <Tab
               render={({ title }) => <IsotopesViewer value={title} />}
               title={nucleus}
@@ -76,7 +76,7 @@ function SpectraTabsInner({
             >
               <SpectraTable
                 nucleus={nucleus}
-                data={spectraGroupByNucleus[nucleus]}
+                data={data}
                 activeSpectra={activeSpectra?.[nucleus] || null}
                 onChangeVisibility={handleChangeVisibility}
                 onChangeActiveSpectrum={handleChangeActiveSpectrum}

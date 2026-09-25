@@ -13,7 +13,7 @@ export function useDialogToggle<T extends Record<string, boolean>>(
     setDialogState(
       (currentState) =>
         Object.fromEntries(
-          Object.entries(currentState).map(([key]) => [key as keyof T, false]),
+          Object.keys(currentState).map((key) => [key as keyof T, false]),
         ) as T,
     );
   }

@@ -336,7 +336,7 @@ export interface State {
   /**
    * temporary snapshot of state once the user press on number from 1-9
    */
-  keysPreferences: any;
+  keysPreferences: Record<string, any>;
 
   /**
    * displayer mode '1D' or '2D'

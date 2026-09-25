@@ -160,8 +160,7 @@ function RenderStocsyAsSVG(props: StocsyProps) {
 
   const xScaler = scaleX();
 
-  return Object.keys(colorGroups).map((color) => {
-    const points = colorGroups[color];
+  return Object.entries(colorGroups).map(([color, points]) => {
     const pathBuilder = new SVGPathBuilder();
 
     pathBuilder.moveTo(xScaler(points[0].x), scaleY(points[0].y));
