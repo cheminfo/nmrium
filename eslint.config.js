@@ -78,7 +78,6 @@ export default defineConfig(
       'unicorn/no-unsafe-string-replacement': 'off',
       'unicorn/no-useless-else': 'off',
       'unicorn/prefer-await': 'off',
-      'unicorn/prefer-array-from-map': 'off',
       'unicorn/prefer-boolean-return': 'off',
       'unicorn/prefer-combined-guards': 'off',
       'unicorn/prefer-continue': 'off',

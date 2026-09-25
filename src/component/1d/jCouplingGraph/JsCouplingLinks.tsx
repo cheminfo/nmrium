@@ -18,14 +18,13 @@ export default function JsCouplingLinks(props: JsCouplingLinksProps) {
       if (!scaleY) return '';
 
       const { from, to, couplings } = link;
-      const paths: string[] = [];
-      for (const coupling of couplings) {
-        paths.push(
+      const paths: string[] = Array.from(
+        couplings,
+        (coupling) =>
           `M${scaleX()(from)},${scaleY(coupling.coupling)} L${scaleX()(
             to,
           )},${scaleY(coupling.coupling)}`,
-        );
-      }
+      );
       return paths.join(' ');
     },
     [scaleX, scaleY],
