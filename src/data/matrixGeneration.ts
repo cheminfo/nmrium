@@ -214,7 +214,7 @@ function generateFilterOptions(properties: MatrixProperties) {
         lodashSet(
           options,
           key,
-          typeof field.default === 'boolean' ? field.default : false,
+          typeof field.default === 'boolean' && field.default,
         );
         break;
       }

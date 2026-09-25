@@ -191,7 +191,7 @@ function EditField(props: EditFieldProps) {
   const closeEdit = useCallback(() => onCancel(), [onCancel]);
 
   const confirmValue = useCallback(() => {
-    const valid = typeof validate === 'function' ? validate(value) : true;
+    const valid = typeof validate !== 'function' || validate(value);
     setValid(valid);
     if (valid) {
       onConfirm(value);

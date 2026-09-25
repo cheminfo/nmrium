@@ -52,7 +52,7 @@ export default () => {
           },
         },
       },
-      minify: process.env.NO_MINIFY ? false : 'oxc',
+      minify: !process.env.NO_MINIFY && 'oxc',
     },
     plugins: [react()],
     resolve: {

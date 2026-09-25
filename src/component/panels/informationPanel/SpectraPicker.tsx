@@ -240,7 +240,7 @@ export function SpectraPicker({
   return (
     <PopoverNext
       lazy
-      isOpen={disabled ? false : open}
+      isOpen={!disabled && open}
       onInteraction={setOpen}
       placement="bottom-start"
       arrow={false}
