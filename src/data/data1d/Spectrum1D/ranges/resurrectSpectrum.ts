@@ -44,7 +44,7 @@ function resurrectSpectrumFromRanges(
     const datum = initiateDatum1D(
       {
         id: spectrumID,
-        data: { x, im: null, re: y },
+        data: { x, re: y },
         info: {
           ...otherInfo,
           numberOfPoints,
@@ -109,7 +109,7 @@ function resurrectSpectrumFromSignals(
     const datum = initiateDatum1D(
       {
         id: spectrumID,
-        data: { x, im: null, re: y },
+        data: { x, re: y },
         info: {
           ...otherInfo,
           nucleus,

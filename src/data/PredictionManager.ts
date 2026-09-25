@@ -300,7 +300,7 @@ function generated1DSpectrum(params: {
 
   const datum = initiateDatum1D(
     {
-      data: { x, im: null, re: normalizedY },
+      data: { x, re: normalizedY },
       display: {
         color,
       },
