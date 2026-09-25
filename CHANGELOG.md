@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.1.0](https://github.com/cheminfo/nmrium/compare/v3.0.0...v3.1.0) (2026-09-25)
+
+
+### Features
+
+* update react-science to v24.0.1 ([6668ffc](https://github.com/cheminfo/nmrium/commit/6668ffc37f9544dbbd45adc23c2b43bb3132c85f))
+
+
+### Bug Fixes
+
+* avoid im as an empty Float64Array if im is undefined ([#4389](https://github.com/cheminfo/nmrium/issues/4389)) ([d19b38c](https://github.com/cheminfo/nmrium/commit/d19b38cb20c4ceb807fc9145aa42760393ad2d57))
+* do not import from `node:timers` ([75e0eb3](https://github.com/cheminfo/nmrium/commit/75e0eb3f8b848680e1c62378ea6c9aa6d2e0fb5a))
+* prevent crash in getRange when contour level count is 0 ([#4379](https://github.com/cheminfo/nmrium/issues/4379)) ([9f10415](https://github.com/cheminfo/nmrium/commit/9f10415d5d7adbb88db5c6a6aac159044ab34539))
+
 ## [3.0.0](https://github.com/cheminfo/nmrium/compare/v2.8.0...v3.0.0) (2026-09-14)
 
 
