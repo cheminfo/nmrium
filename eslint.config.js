@@ -84,7 +84,6 @@ export default defineConfig(
       'unicorn/prefer-early-return': 'off',
       'unicorn/prefer-hoisting-branch-code': 'off',
       'unicorn/prefer-object-iterable-methods': 'off',
-      'unicorn/prefer-split-limit': 'off',
       'unicorn/single-line-block-comment-style': 'off',
       'no-restricted-imports': [
         'error',
