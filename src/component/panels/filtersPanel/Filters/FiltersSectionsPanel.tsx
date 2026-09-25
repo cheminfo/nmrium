@@ -317,7 +317,7 @@ function FiltersInner(props: FiltersInnerProps) {
                 onFilterRestore={() => {
                   filterSnapShotHandler(filter, index);
                 }}
-                /** Hide filter restore button when the filter is new */
+                // Hide filter restore button when the filter is new.
                 hideFilterRestoreButton={value === null}
               />
             }

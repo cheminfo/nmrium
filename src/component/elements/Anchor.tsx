@@ -12,27 +12,51 @@ const CUR_MOVE = `url("position:image/svg+xml,%3Csvg xmlns='http://www.w3.org/20
 type AnchorShape = 'diamond' | 'circle' | 'square' | 'triangle';
 
 interface AnchorStyle {
-  /** Shape size in px. Default: 16 */
+  /**
+   * Shape size in px.
+   * @default 16
+   */
   size?: number;
-  /** Default: "rgba(255,255,255,0.85)" */
+  /**
+   * @default 'rgba(255,255,255,0.85)'
+   */
   fill?: string;
-  /** Default: "#7a8fa6" */
+  /**
+   * @efault '#7a8fa6'
+   */
   stroke?: string;
-  /** Default: "rgba(210,220,235,0.6)" */
+  /**
+   * @default 'rgba(210,220,235,0.6)'
+   */
   hoverFill?: string;
-  /** Default: "#7a8fa6" */
+  /**
+   * @default '#7a8fa6'
+   */
   hoverStroke?: string;
-  /** Default: "rgba(210,220,235,0.8)" */
+  /**
+   * @default 'rgba(210,220,235,0.8)'
+   */
   dragFill?: string;
-  /** Default: "#7a8fa6" */
+  /**
+   * @default '#7a8fa6'
+   */
   dragStroke?: string;
-  /** Stroke width in px. Default: 1.2 */
+  /**
+   * Stroke width in px.
+   * @default 1.2
+   */
   strokeWidth?: number;
-  /** Default: "rgba(74,111,168,0.5)" */
+  /**
+   * @default 'rgba(74,111,168,0.5)'
+   */
   guideColor?: string;
-  /** Default: "rgba(42,82,160,0.75)" */
+  /**
+   * @default 'rgba(42,82,160,0.75)'
+   */
   guideDragColor?: string;
-  /** Default: "solid" */
+  /**
+   * @default 'solid'
+   */
   guideStyle?: 'dashed' | 'dotted' | 'solid';
 }
 

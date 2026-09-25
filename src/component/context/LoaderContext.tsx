@@ -1,10 +1,7 @@
+import { noop } from '@zakodium/utils';
 import { createContext, use } from 'react';
 
-function defaultLoader() {
-  // Empty
-}
-
-export const LoaderContext = createContext<() => void>(defaultLoader);
+export const LoaderContext = createContext<() => void>(noop);
 
 export function useLoader() {
   return use(LoaderContext);

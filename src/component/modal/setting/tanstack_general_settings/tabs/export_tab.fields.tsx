@@ -55,7 +55,9 @@ const layoutItems: Array<SelectItem<Layout>> = [
   { value: 'landscape', label: 'Landscape' },
 ];
 
-/** Returns null for values the schema rejects */
+/**
+ * Returns null for values the schema rejects.
+ */
 function parsePositiveNumber(str: string) {
   const value = Number(str);
   if (!Number.isFinite(value) || value <= 0) return null;

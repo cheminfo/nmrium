@@ -119,7 +119,9 @@ type WrapperParameters<P> = Omit<P, keyof DialogProps<any>>;
 
 interface WithDialogOptions {
   dialogName?: string;
-  /** force re-render the dialog */
+  /**
+   * Force re-render the dialog.
+   */
   force?: boolean;
 }
 
