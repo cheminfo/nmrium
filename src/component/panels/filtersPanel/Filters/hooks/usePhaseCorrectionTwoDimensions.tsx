@@ -69,12 +69,11 @@ export function usePhaseCorrectionTwoDimensions(filter: Filter2DEntry | null) {
 
   useEffect(() => {
     if (filter && phaseCorrectionSelectItem?.value === 'manual') {
-      const { value } = filter;
       const phaseOptions: PhaseOptions = defaultPhaseOptions;
 
-      for (const direction of Object.keys(value)) {
-        const { ph0, ph1 } = (value as any)[direction];
-        (phaseOptions as any)[direction] = { ph0, ph1 };
+      for (const [direction, value] of Object.entries(filter.value)) {
+        const { ph0, ph1 } = value;
+        phaseOptions[direction as TraceDirection] = { ph0, ph1 };
       }
 
       setValue(phaseOptions);

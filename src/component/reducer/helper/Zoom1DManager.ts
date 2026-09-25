@@ -110,8 +110,8 @@ function rescaleToSameTop(
   options: RescaleOptions = {},
 ) {
   const newYDomains: Record<string, number[]> = {};
-  for (const spectrumId of Object.keys(yDomains)) {
-    newYDomains[spectrumId] = rescaleDomain(yDomains[spectrumId], options);
+  for (const [spectrumId, yDomain] of Object.entries(yDomains)) {
+    newYDomains[spectrumId] = rescaleDomain(yDomain, options);
   }
   return newYDomains;
 }

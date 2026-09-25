@@ -63,9 +63,9 @@ function InnerSetShiftToleranceModal(props: InnerSetShiftToleranceModalProps) {
   const tolerances = correlations?.options?.tolerance || {};
 
   const tolerancesData: ToleranceItem[] =
-    Object.keys(tolerances).map((atom) => ({
+    Object.entries(tolerances).map(([atom, value]) => ({
       atom,
-      value: tolerances[atom],
+      value,
     })) || [];
   const {
     handleSubmit,
