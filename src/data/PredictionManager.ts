@@ -1,4 +1,3 @@
-
 import type { Peak2D, Signal2D, Zone } from '@zakodium/nmr-types';
 import type { Spectrum } from '@zakodium/nmrium-core';
 import type { Logger } from 'cheminfo-types';

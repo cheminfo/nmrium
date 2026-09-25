@@ -20,7 +20,7 @@ test('convert x and re to Float64Array', () => {
   expect(actual.re).toStrictEqual(Float64Array.of(4, 5, 6));
 });
 
-test('keep im as Float64Array when defined', () => {
+test('also convert im to Float64Array when defined', () => {
   const actual = convertDataToFloat64Array(
     asData({
       x: [1, 2, 3],
@@ -44,8 +44,6 @@ test.each([
     }),
   );
 
-  // An empty `Float64Array` is truthy and would be treated as some imaginary
-  // data by the consumers.
   expect(actual.im).toBeInstanceOf(Float64Array);
   expect(actual.x).toBeInstanceOf(Float64Array);
   expect(actual.re).toBeInstanceOf(Float64Array);
