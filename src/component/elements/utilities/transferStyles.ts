@@ -3,9 +3,7 @@ function getCssTextFromStyleSheet(
 ): string | undefined {
   try {
     if (!styleSheet.cssRules) return undefined;
-    return Array.from(styleSheet.cssRules)
-      .map((rule) => rule.cssText)
-      .join('\n');
+    return Array.from(styleSheet.cssRules, (rule) => rule.cssText).join('\n');
   } catch (error) {
     if (
       error instanceof DOMException &&

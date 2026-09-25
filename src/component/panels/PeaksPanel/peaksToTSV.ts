@@ -18,10 +18,10 @@ export function exportPeaksToTSV(
     (col) => col.header && typeof col.header === 'string',
   );
 
-  const headers: string[] = [];
-  for (const col of exportColumns) {
-    headers.push(col.header as string);
-  }
+  const headers: string[] = Array.from(
+    exportColumns,
+    (col) => col.header as string,
+  );
 
   const rows: string[] = [];
   for (let i = 0; i < data.length; i++) {

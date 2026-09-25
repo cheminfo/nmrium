@@ -383,15 +383,12 @@ function handleChangeActiveSpectrum(
     spectraObj[data[i].id] = { spectrum: data[i], index: i };
   }
 
-  //set the index of the active spectra and make it visible
-  const newActiveSpectra: any[] = [];
-  for (const spectrumId of spectraIds) {
-    newActiveSpectra.push({
-      id: spectrumId,
-      index: spectraObj[spectrumId].index,
-      selected: true,
-    });
-  }
+  // Set the index of the active spectra and make it visible.
+  const newActiveSpectra = Array.from(spectraIds, (spectrumId) => ({
+    id: spectrumId,
+    index: spectraObj[spectrumId].index,
+    selected: true,
+  }));
 
   if (newActiveSpectra.length > 0) {
     //set the active spectra
@@ -557,7 +554,7 @@ function handleDeleteSpectra(draft: Draft<State>, action: DeleteSpectraAction) {
 
 //action
 function handleAddMissingProjectionHandler(
-  draft: any,
+  draft: Draft<State>,
   action: AddMissingProjectionAction,
 ) {
   const { nucleus } = action.payload;
