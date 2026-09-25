@@ -1,5 +1,3 @@
-import { clearTimeout } from 'node:timers';
-
 import type { CSSProperties, RefObject } from 'react';
 import { useDeferredValue, useEffect } from 'react';
 
