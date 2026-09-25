@@ -1,4 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import { noop } from '@zakodium/utils';
 import type {
   KeyboardEvent,
   MouseEvent,
@@ -39,9 +40,7 @@ interface PeaksEditionContextProps {
 }
 
 const peaksEditionContext: PeaksEditionContextProps = {
-  onEdit: () => {
-    // Empty default.
-  },
+  onEdit: noop,
 };
 
 const PeaksEditionContext =

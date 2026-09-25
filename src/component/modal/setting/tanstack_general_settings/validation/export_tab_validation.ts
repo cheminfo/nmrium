@@ -29,7 +29,9 @@ export const MAX_DPI = 1200;
 
 const formatNumber = (value: number) => value.toLocaleString('en-US');
 
-/** Sizes are unit-relative (m, in, cm, px...), so the only unit-agnostic invariant is being positive. */
+/**
+ *Sizes are unit-relative (m, in, cm, px...), so the only unit-agnostic invariant is being positive.
+ */
 export const sizeField = coerceNumberInput(z.number().positive());
 export const dpiField = coerceNumberInput(
   z.number().int().min(MIN_DPI).max(MAX_DPI),
@@ -40,7 +42,9 @@ type Side = 'width' | 'height';
 
 const sides: Side[] = ['width', 'height'];
 
-/** @see {import("@zakodium/nmrium-core").BasicExportSettings} */
+/**
+ * @see {import("@zakodium/nmrium-core").BasicExportSettings}
+ */
 function basicSettings(dpi: NumberField) {
   return z.object({
     mode: z.literal('basic'),
@@ -51,7 +55,9 @@ function basicSettings(dpi: NumberField) {
   });
 }
 
-/** @see {import("@zakodium/nmrium-core").AdvanceExportSettings} */
+/**
+ * @see {import("@zakodium/nmrium-core").AdvanceExportSettings}
+ */
 function advancedSettings(size: NumberField, dpi: NumberField) {
   return z.object({
     mode: z.literal('advance'),
@@ -65,7 +71,6 @@ function advancedSettings(size: NumberField, dpi: NumberField) {
 
 type AdvancedSettings = z.output<ReturnType<typeof advancedSettings>>;
 
-/** A canvas the browser cannot allocate makes the export fail, so the real limit is the size in pixels. */
 function getSizeErrors(settings: AdvancedSettings) {
   const { unit, dpi, width, height } = settings;
   const pixels = {

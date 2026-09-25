@@ -16,11 +16,17 @@ const FooterContainer = styled.div`
 `;
 
 interface InfoContainerProps {
-  /** Whether to auto-hide the element based on threshold (default: `false`) */
+  /**
+   * Whether to auto-hide the element based on threshold (default: `false`)
+   */
   autoHide?: boolean;
-  /** Hide threshold in pixel (default: `600`) */
+  /**
+   * Hide threshold in pixel (default: `600`)
+   */
   hideThreshold?: number;
-  /** The  display property (default: `'inline-block'`) */
+  /**
+   * The display property (default: `'inline-block'`)
+   */
   display?: CSSProperties['display'];
 }
 

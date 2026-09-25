@@ -83,9 +83,13 @@ export interface DetectBrushingResult extends BrushCoordination {
 }
 
 interface DetectBrushingThreshold {
-  /** Width in pixels */
+  /**
+   * Width in pixels.
+   */
   width: number;
-  /** Height in pixels */
+  /**
+   * Height in pixels.
+   */
   height: number;
   /**
    * Threshold as a percentage of width and height (value between 0 and 1).
@@ -96,9 +100,13 @@ interface DetectBrushingThreshold {
 }
 
 interface DetectBrushingThresholdSize {
-  /** Width in pixels */
+  /**
+   * Width in pixels.
+   */
   width: number;
-  /** Height in pixels */
+  /**
+   * Height in pixels.
+   */
   height: number;
   /**
    * Threshold size in pixels.

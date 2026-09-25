@@ -1,13 +1,12 @@
 import { DialogFooter } from '@blueprintjs/core';
+import { noop } from '@zakodium/utils';
 import { Button, withForm } from 'react-science/ui';
 
 import { defaultGeneralSettingsFormValues } from './validation.js';
 
 export const GeneralSettingsDialogFooter = withForm({
   props: {
-    onCancel: () => {
-      /* empty */
-    },
+    onCancel: noop,
   },
   defaultValues: defaultGeneralSettingsFormValues,
   render: ({ form, onCancel }) => {

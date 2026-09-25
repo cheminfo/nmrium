@@ -67,7 +67,9 @@ interface ExportOptions {
   dataType?: DataExportOptions;
   view?: boolean;
   settings?: boolean;
-  /** @default true */
+  /**
+   * @default true
+   */
   serialize?: boolean;
   exportTarget?: ExportTarget;
 }

@@ -3,6 +3,7 @@ import { IconNames } from '@blueprintjs/icons';
 import styled from '@emotion/styled';
 import { defineProcessingOperatorUI, generateID } from '@zakodium/nmrium-core';
 import { init } from '@zakodium/nmrium-core-plugins';
+import { noop } from '@zakodium/utils';
 import { createContext, use, useCallback, useMemo, useState } from 'react';
 import { Toolbar } from 'react-science/ui';
 
@@ -31,8 +32,7 @@ const NMRiumContainer = styled.div`
 const DemoContext = createContext<{
   setRandom: () => void;
   icon: IconName;
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-}>({ icon: 'console', setRandom: () => {} });
+}>({ icon: 'console', setRandom: noop });
 
 function DemoTopBarRight() {
   const { setRandom, icon } = use(DemoContext);
