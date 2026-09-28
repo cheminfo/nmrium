@@ -75,6 +75,7 @@
     "cheminfo-font": "^1.28.0",
     "cheminfo-types": "^1.16.0",
     "clipboard-polyfill": "^4.1.1",
+    "colord": "^2.10.0",
     "d3-array": "^3.2.4",
     "d3-scale": "^4.0.2",
     "d3-zoom": "^3.0.0",
