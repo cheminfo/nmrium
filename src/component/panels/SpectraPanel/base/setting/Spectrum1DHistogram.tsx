@@ -1,8 +1,23 @@
-import { memo, useMemo } from 'react';
+import styled from '@emotion/styled';
+import { memo, useMemo, useState } from 'react';
 import { useWatch } from 'react-hook-form';
+
+import { Sections } from '../../../../elements/Sections.tsx';
 
 import PlotChart from './PlotChart.js';
 import { processSnapPlot } from './processSnapPlot.js';
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0;
+`;
+
+const BlockContainer = styled.div`
+  display: block;
+`;
 
 const yLogBase = 2;
 interface Spectrum1DHistogramProps {
@@ -17,38 +32,42 @@ function Spectrum1DHistogram({
   const processedData = useMemo(() => {
     return processSnapPlot('1D', data, yLogBase);
   }, [data]);
+  const [isOpen, setIsOpen] = useState(false);
 
   const isApplyToAllSelected = useWatch({ name: 'applyToAll' });
 
   if (isApplyToAllSelected) return null;
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      <div style={{ display: 'block' }}>
-        <PlotChart
-          data={processedData}
-          sign="positive"
-          color={color}
-          yLogBase={yLogBase}
-        />
-      </div>
-      <div style={{ display: 'block', width: 180, height: 180 }}>
-        <PlotChart
-          data={processedData}
-          sign="negative"
-          color={color}
-          yLogBase={yLogBase}
-          hideHeading
-        />
-      </div>
-    </div>
+    <Sections>
+      <Sections.Item
+        id="spectrum-1d-histogram"
+        title="SAN plot"
+        isOpen={isOpen}
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <Container>
+          <BlockContainer>
+            <PlotChart
+              hideHeading
+              data={processedData}
+              sign="positive"
+              color={color}
+              yLogBase={yLogBase}
+            />
+          </BlockContainer>
+          <BlockContainer>
+            <PlotChart
+              data={processedData}
+              sign="negative"
+              color={color}
+              yLogBase={yLogBase}
+              hideHeading
+            />
+          </BlockContainer>
+        </Container>
+      </Sections.Item>
+    </Sections>
   );
 }
 

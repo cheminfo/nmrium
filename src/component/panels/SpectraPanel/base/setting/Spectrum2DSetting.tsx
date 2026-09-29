@@ -12,13 +12,12 @@ import {
   useFormContext,
   useWatch,
 } from 'react-hook-form';
-import { ColorPicker } from 'react-science/ui';
 
 import { COLORS } from '../../../../../data/utilities/generateColor.js';
 import { useChartData } from '../../../../context/ChartContext.tsx';
 import { NumberInput2 } from '../../../../elements/NumberInput2.js';
+import { CustomColorPicker } from '../../../../elements/custom-color-picker.tsx';
 import { useFormValidateField } from '../../../../elements/useFormValidateField.js';
-import { colorToHexWithAlpha } from '../../../../utility/colorToHexWithAlpha.js';
 
 import { ApplyToAllSelected } from './ApplyToAllSelected.tsx';
 import Spectrum2DHistogram from './Spectrum2DHistogram.js';
@@ -106,74 +105,70 @@ function Settings(props: SettingsProps) {
   );
 
   return (
-    <>
+    <div style={{ padding: '5px' }}>
       <Controller
         name={`display.${sign}Color`}
         control={control}
         render={({ field }) => {
           const { value, onChange } = field;
           return (
-            <ColorPicker
-              onChangeComplete={(color) => {
-                onChange(colorToHexWithAlpha(color));
-
+            <CustomColorPicker
+              presetColors={COLORS}
+              color={{ hex: value || '#000' }}
+              onChange={(color) => {
+                onChange(color.hex);
                 void handleSubmit(onSubmit)();
               }}
-              color={{ hex: value || '#000' }}
-              presetColors={COLORS}
-              style={{ boxShadow: 'none' }}
             />
           );
         }}
       />
-      <div style={{ padding: '5px' }}>
-        <span className="label">contour Levels [ min - max ]</span>
-        <Controller
-          name={`contourOptions.${sign}.contourLevels`}
-          control={control}
-          render={({ field }) => {
-            const { value, onChange } = field;
+      <span className="label">contour Levels [ min - max ]</span>
+      <Controller
+        name={`contourOptions.${sign}.contourLevels`}
+        control={control}
+        render={({ field }) => {
+          const { value, onChange } = field;
 
-            return (
-              <ContoursRangeSlider
-                name={sign}
-                min={0}
-                max={100}
-                stepSize={1}
-                labelStepSize={10}
-                onChange={(e) => {
-                  onChange(e);
-                  debounceOnSubmit(onSubmit);
-                }}
-                value={value}
-                showTrackFill
-                progressColor={progressColor}
-              />
-            );
-          }}
-        />
-        <span className="label">number of Layers </span>
-        <Controller
-          control={control}
-          name={`contourOptions.${sign}.numberOfLayers`}
-          rules={{ required: true }}
-          render={({ field }) => {
-            return (
-              <NumberInput2
-                {...field}
-                onValueChange={(valueAsNumber) => {
-                  field.onChange(valueAsNumber);
-                  void handleSubmit(onSubmit)();
-                }}
-                intent={!isValid(field.name) ? 'danger' : 'none'}
-                style={{ width: 60 }}
-                min={0}
-                debounceTime={250}
-              />
-            );
-          }}
-        />
-      </div>
-    </>
+          return (
+            <ContoursRangeSlider
+              name={sign}
+              min={0}
+              max={100}
+              stepSize={1}
+              labelStepSize={10}
+              onChange={(e) => {
+                onChange(e);
+                debounceOnSubmit(onSubmit);
+              }}
+              value={value}
+              showTrackFill
+              progressColor={progressColor}
+            />
+          );
+        }}
+      />
+      <span className="label">number of Layers </span>
+      <Controller
+        control={control}
+        name={`contourOptions.${sign}.numberOfLayers`}
+        rules={{ required: true }}
+        render={({ field }) => {
+          return (
+            <NumberInput2
+              {...field}
+              onValueChange={(valueAsNumber) => {
+                field.onChange(valueAsNumber);
+                void handleSubmit(onSubmit)();
+              }}
+              intent={!isValid(field.name) ? 'danger' : 'none'}
+              style={{ width: 60 }}
+              min={0}
+              debounceTime={250}
+            />
+          );
+        }}
+      />
+    </div>
   );
 }

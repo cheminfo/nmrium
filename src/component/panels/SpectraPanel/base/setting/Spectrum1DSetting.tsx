@@ -1,8 +1,7 @@
 import { Controller, FormProvider, useForm } from 'react-hook-form';
-import { ColorPicker } from 'react-science/ui';
 
 import { COLORS } from '../../../../../data/utilities/generateColor.js';
-import { colorToHexWithAlpha } from '../../../../utility/colorToHexWithAlpha.js';
+import { CustomColorPicker } from '../../../../elements/custom-color-picker.tsx';
 
 import { ApplyToAllSelected } from './ApplyToAllSelected.tsx';
 import Spectrum1DHistogram from './Spectrum1DHistogram.js';
@@ -25,7 +24,11 @@ export function Spectrum1DSetting({ data, onSubmit }: Spectrum1DSettingProps) {
         <ApplyToAllSelected />
 
         <div
-          style={{ display: 'block', position: 'relative', margin: '0 auto' }}
+          style={{
+            display: 'block',
+            position: 'relative',
+            margin: '0 auto 10px',
+          }}
         >
           <Controller
             name="display.color"
@@ -33,14 +36,13 @@ export function Spectrum1DSetting({ data, onSubmit }: Spectrum1DSettingProps) {
             render={({ field }) => {
               const { value, onChange } = field;
               return (
-                <ColorPicker
-                  onChangeComplete={(color) => {
-                    onChange(colorToHexWithAlpha(color));
+                <CustomColorPicker
+                  presetColors={COLORS}
+                  color={{ hex: value || '#000' }}
+                  onChange={(color) => {
+                    onChange(color.hex);
                     void handleSubmit(onSubmit)();
                   }}
-                  color={{ hex: value || '#000' }}
-                  presetColors={COLORS}
-                  style={{ boxShadow: 'none', width: 250 }}
                 />
               );
             }}

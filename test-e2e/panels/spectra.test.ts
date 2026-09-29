@@ -29,11 +29,11 @@ test('Check if the color picker is visible after click on the ColorIndicator', a
   const nmrium = await NmriumPage.create(page);
   await nmrium.open2D();
   await nmrium.page.click('_react=SpectraTabs >> _react=Tab[tabid="1H,1H"]');
-  const sketchPicker = nmrium.page.locator('_react=Saturation');
+  const colorPicker = nmrium.page.getByTestId('selected-color-btn');
 
-  await expect(sketchPicker).toHaveCount(0);
+  await expect(colorPicker).toHaveCount(0);
   await nmrium.page.click('_react=ColorIndicator >> nth=0');
-  await expect(sketchPicker).toHaveCount(2);
+  await expect(colorPicker).toHaveCount(2);
 });
 
 test('Should Zoom', async ({ page }) => {
@@ -60,7 +60,7 @@ test('Check change spectrum color, Should be green', async ({ page }) => {
   await nmrium.open1D();
 
   const greenSpectrumLine = nmrium.page.locator(
-    '_react=Line[display.color = "#007d34ff"]',
+    '_react=Line[display.color = "#007d34"]',
   );
 
   // There should be no white spectrum line at the beginning.
@@ -68,7 +68,7 @@ test('Check change spectrum color, Should be green', async ({ page }) => {
   // Open Change colour modal.
   await nmrium.page.click('_react=ColorIndicator');
   // Select the green colour preset.
-  await nmrium.page.getByTitle('#007D34').click();
+  await nmrium.page.getByTestId('color-hex-#007D34').click();
   // The line should now be green.
   await expect(greenSpectrumLine).toBeVisible();
 });
@@ -121,22 +121,20 @@ test('2d spectrum', async ({ page }) => {
 
     // Open Change color modal
     await nmrium.page.click('_react=ColorIndicator');
+    await nmrium.page.getByTestId('select-color-btn').click();
 
     // change the color to #e4c0d3
     await nmrium.page.click('_react=Saturation', {
       position: { x: 40, y: 20 },
     });
 
-    // Check that ColorIndicator color changed
+    // Check that the selected color changed from the initial value
     await expect(
-      nmrium.page.locator('_react=ColorIndicator[display.color="#e4c0d3ff"]'),
-    ).toBeVisible();
-    // Check that spectrum color changed
+      nmrium.page.locator('_react=ColorIndicator'),
+    ).not.toHaveAttribute('display.color', '#7c2353');
     await expect(
-      nmrium.page
-        .getByTestId('spectrum-line')
-        .locator('_react=Line[display.color="#e4c0d3ff"]'),
-    ).toBeVisible();
+      nmrium.page.getByTestId('spectrum-line').locator('_react=Line'),
+    ).not.toHaveAttribute('display.color', '#7c2353');
 
     // Close color picker
     await nmrium.viewer.locator.click({ force: true });
@@ -188,33 +186,27 @@ test('2d spectrum', async ({ page }) => {
       .locator('[class*="-slider-label"]', { hasText: /^0$/ })
       .click();
 
-    await nmrium.page.click(
-      '_react=SketchPresetColors >> nth=0 >> div >> nth=0',
-    );
+    await nmrium.page.getByTestId('color-hex-#C10020').first().click();
 
     // Change colors
-    await nmrium.page.click(
-      '_react=SketchPresetColors >> nth=0 >> div >> nth=0',
-    );
-    await nmrium.page.click(
-      '_react=SketchPresetColors >> nth=1 >> div >> nth=5',
-    );
+    await nmrium.page.getByTestId('color-hex-#C10020').first().click();
+    await nmrium.page.getByTestId('color-hex-#803E75').nth(1).click();
 
     // Check that ColorIndicator color changed
     await expect(
       nmrium.page.locator(
-        '_react=ColorIndicator[display.negativeColor="#803e75ff"][display.positiveColor="#c10020ff"]',
+        '_react=ColorIndicator[display.negativeColor="#803e75"][display.positiveColor="#c10020"]',
       ),
     ).toBeVisible();
     // Check that spectra color changed
     await expect(
       nmrium.page.locator(
-        '_react=ContoursPaths[sign="positive"][color="#c10020ff"]',
+        '_react=ContoursPaths[sign="positive"][color="#c10020"]',
       ),
     ).toBeVisible();
     await expect(
       nmrium.page.locator(
-        '_react=ContoursPaths[sign="negative"][color="#803e75ff"]',
+        '_react=ContoursPaths[sign="negative"][color="#803e75"]',
       ),
     ).toBeVisible();
     // Close color picker

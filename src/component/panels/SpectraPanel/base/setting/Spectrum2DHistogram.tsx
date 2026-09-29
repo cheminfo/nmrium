@@ -1,8 +1,19 @@
-import { memo, useMemo } from 'react';
+import styled from '@emotion/styled';
+import { memo, useMemo, useState } from 'react';
 import { useWatch } from 'react-hook-form';
+
+import { Sections } from '../../../../elements/Sections.tsx';
 
 import PlotChart from './PlotChart.js';
 import { processSnapPlot } from './processSnapPlot.js';
+
+const Container = styled.div`
+  border-top: 1px solid #ededed;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  padding: 10px;
+`;
 
 interface Spectrum2DHistogramProps {
   color?: string;
@@ -15,6 +26,8 @@ function Spectrum2DHistogram({
   color = 'red',
   data,
 }: Spectrum2DHistogramProps) {
+  const [isOpen, setIsOpen] = useState(false);
+
   const processedData = useMemo(() => {
     return processSnapPlot('2D', data.rr, yLogBase);
   }, [data]);
@@ -24,35 +37,31 @@ function Spectrum2DHistogram({
   if (isApplyToAllSelected) return null;
 
   return (
-    <div>
-      <div style={{ textAlign: 'center', paddingBottom: 5, paddingTop: 5 }}>
-        SAN plot
-      </div>
-
-      <div
-        style={{
-          borderTop: '1px solid #ededed',
-          marginTop: '10px',
-          paddingTop: '10px',
-          display: 'flex',
-          flexDirection: 'row',
-        }}
+    <Sections>
+      <Sections.Item
+        id="spectrum-2d-histogram"
+        title="SAN plot"
+        isOpen={isOpen}
+        onClick={() => setIsOpen(!isOpen)}
       >
-        <PlotChart
-          data={processedData}
-          sign="positive"
-          color={color}
-          yLogBase={yLogBase}
-        />
-        <PlotChart
-          data={processedData}
-          sign="negative"
-          color={color}
-          yLogBase={yLogBase}
-          hideHeading
-        />
-      </div>
-    </div>
+        <Container>
+          <PlotChart
+            data={processedData}
+            sign="positive"
+            color={color}
+            yLogBase={yLogBase}
+            hideHeading
+          />
+          <PlotChart
+            data={processedData}
+            sign="negative"
+            color={color}
+            yLogBase={yLogBase}
+            hideHeading
+          />
+        </Container>
+      </Sections.Item>
+    </Sections>
   );
 }
 
