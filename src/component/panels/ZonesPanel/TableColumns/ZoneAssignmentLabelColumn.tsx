@@ -12,12 +12,15 @@ export function ZoneAssignmentLabelColumn(
   const { rowData } = props;
   const dispatch = useDispatch();
 
+  const { id: signalID, assignment } = rowData.signals[0] || {};
+
   function saveHandler(value: string | number) {
     dispatch({
       type: 'CHANGE_ZONE_ASSIGNMENT_LABEL',
       payload: {
         value: String(value),
         zoneID: rowData.id,
+        signalID,
       },
     });
   }
@@ -25,7 +28,7 @@ export function ZoneAssignmentLabelColumn(
   return (
     <td>
       <EditableColumn
-        value={rowData?.assignment || ''}
+        value={assignment || ''}
         onSave={saveHandler}
         style={{ padding: '0.1rem 0.4rem' }}
         type="text"
