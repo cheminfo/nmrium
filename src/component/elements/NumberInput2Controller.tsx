@@ -28,6 +28,7 @@ export function NumberInput2Controller<
   const {
     controllerProps = {},
     onValueChange,
+    onButtonClick,
     name,
     control,
     intent = 'none',
@@ -51,6 +52,22 @@ export function NumberInput2Controller<
       render={({ field, fieldState: { invalid } }) => {
         const { onChange, onBlur, value, ...otherFieldProps } = field;
         const showOverlay = !focused && typeof formatOnBlur === 'function';
+        function handleValueChange(
+          valueAsNumber: number,
+          valueAsString: string,
+          event: HTMLInputElement | null,
+        ) {
+          if (numberPattern.test(valueAsString)) {
+            onChange(
+              typeof transformValue === 'function'
+                ? transformValue(valueAsNumber)
+                : valueAsNumber,
+            );
+          } else {
+            onChange(valueAsString);
+          }
+          onValueChange?.(valueAsNumber, valueAsString, event);
+        }
 
         return (
           <NumberInput2
@@ -67,17 +84,13 @@ export function NumberInput2Controller<
             value={showOverlay ? formatOnBlur(value) : value}
             onValueChange={(valueAsNumber, valueAsString, event) => {
               if (!focused) return;
-
-              if (numberPattern.test(valueAsString)) {
-                onChange(
-                  typeof transformValue === 'function'
-                    ? transformValue(valueAsNumber)
-                    : valueAsNumber,
-                );
-              } else {
-                onChange(valueAsString);
+              handleValueChange(valueAsNumber, valueAsString, event);
+            }}
+            onButtonClick={(valueAsNumber, valueAsString) => {
+              if (!focused) {
+                handleValueChange(valueAsNumber, valueAsString, null);
               }
-              onValueChange?.(valueAsNumber, valueAsString, event);
+              onButtonClick?.(valueAsNumber, valueAsString);
             }}
             {...otherInputProps}
             style={{

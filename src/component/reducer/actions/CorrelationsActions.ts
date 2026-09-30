@@ -1,6 +1,6 @@
 import { isSpectrum1D, isSpectrum2D } from '@zakodium/nmrium-core';
 import type { Draft } from 'immer';
-import { original } from 'immer';
+import { current, original } from 'immer';
 import lodashCloneDeep from 'lodash/cloneDeep.js';
 import type {
   Correlation,
@@ -55,10 +55,14 @@ export type CorrelationsActions =
   | SetCorrelationsAction
   | DeleteCorrelationAction;
 
-function handleUpdateCorrelations(draft: Draft<State>) {
-  const { data: spectra, correlations } = original(draft);
+function handleUpdateCorrelations(
+  draft: Draft<State>,
+  options?: CorrelationBuildOptions,
+) {
+  const { data: spectra, correlations } = current(draft);
   draft.correlations = correlationApi.buildCorrelationData(spectra, {
     ...correlations?.options,
+    ...options,
     values: lodashCloneDeep(correlations?.values),
   });
 }
@@ -66,28 +70,18 @@ function handleUpdateCorrelations(draft: Draft<State>) {
 //action
 function handleSetMF(draft: Draft<State>, action: SetMFAction) {
   const state = original(draft);
-  const { data: spectra, correlations } = state;
+  const { correlations } = state;
   const { mf } = action.payload;
-  // update of correlation data is needed only if the following is true
+  // update of correlation data only if the molecular formula is not empty and not equal to the current one
   if (correlations.options.mf === '' || correlations.options.mf !== mf) {
-    draft.correlations = correlationApi.buildCorrelationData(spectra, {
-      ...correlations.options,
-      mf,
-      values: lodashCloneDeep(correlations.values),
-    });
+    handleUpdateCorrelations(draft, { mf });
   }
 }
 
 //action
 function handleSetTolerance(draft: Draft<State>, action: SetToleranceAction) {
-  const state = original(draft);
-  const { data: spectra, correlations } = state;
   const { tolerance } = action.payload;
-  draft.correlations = correlationApi.buildCorrelationData(spectra, {
-    ...correlations.options,
-    tolerance,
-    values: lodashCloneDeep(correlations.values),
-  });
+  handleUpdateCorrelations(draft, { tolerance });
 }
 
 //action
@@ -98,18 +92,14 @@ function handleSetCorrelation(
   const state = original(draft);
   const { correlations } = state;
   const { id, correlation, options } = action.payload;
+  // replace the existing correlation with the new one but do not update the entire correlation data here
   draft.correlations = correlationApi.setCorrelation(
     correlations,
     id,
     correlation,
   );
-  if (options) {
-    draft.correlations = {
-      ...draft.correlations,
-      options: { ...draft.correlations.options, ...options },
-    };
-  }
-  handleUpdateCorrelations(draft);
+  // update the entire correlation data including the replaced correlation
+  handleUpdateCorrelations(draft, options);
 }
 
 //action
@@ -120,6 +110,7 @@ function handleSetCorrelations(
   const { correlations, options } = action.payload;
   const state = original(draft);
   let correlationsData = lodashCloneDeep(state.correlations);
+  // apply each correlation update to the cloned correlations data
   for (const correlation of correlations) {
     correlationsData = correlationApi.setCorrelation(
       correlationsData,
@@ -128,13 +119,8 @@ function handleSetCorrelations(
     );
   }
   draft.correlations = correlationsData;
-  if (options) {
-    draft.correlations = {
-      ...draft.correlations,
-      options: { ...draft.correlations.options, ...options },
-    };
-  }
-  handleUpdateCorrelations(draft);
+  // update the entire correlation data including the replaced correlations
+  handleUpdateCorrelations(draft, options);
 }
 
 //action
