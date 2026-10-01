@@ -67,7 +67,6 @@ export default defineConfig(
       'unicorn/name-replacements': 'off',
       'unicorn/no-computed-property-existence-check': 'off',
       'unicorn/no-immediate-mutation': 'off',
-      'unicorn/no-duplicate-logical-operands': 'off',
       'unicorn/no-declarations-before-early-exit': 'off',
       'unicorn/no-negated-array-predicate': 'off',
       'unicorn/no-non-function-verb-prefix': 'off',

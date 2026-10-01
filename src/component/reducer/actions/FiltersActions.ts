@@ -1613,7 +1613,7 @@ function handleCalculateBaseLineCorrection(
   // save the baseline options temporary
   draft.toolOptions.data.baselineCorrection = {
     ...draft.toolOptions.data.baselineCorrection,
-    ...(baseLineOptions && baseLineOptions),
+    ...baseLineOptions,
   };
   const { options, livePreview } =
     current(draft).toolOptions.data.baselineCorrection;
