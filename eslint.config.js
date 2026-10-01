@@ -62,7 +62,6 @@ export default defineConfig(
       'react-hooks/preserve-manual-memoization': 'off',
       'react-refresh/only-export-components': 'off',
       'unicorn/consistent-boolean-name': 'off',
-      'unicorn/consistent-conditional-object-spread': 'off',
       'unicorn/max-nested-calls': 'off',
       'unicorn/name-replacements': 'off',
       'unicorn/no-computed-property-existence-check': 'off',

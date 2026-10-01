@@ -17,7 +17,7 @@ import { isProton } from '../../../data/utilities/isProton.js';
 import { is2DNucleus } from '../../utility/nucleusToString.js';
 
 function getPreferences<T>(data: T, nucleus?: string) {
-  return { nuclei: { ...(nucleus ? { [nucleus]: data } : {}) } };
+  return { nuclei: { ...(nucleus && { [nucleus]: data }) } };
 }
 
 const getSpectraDefaultValues = (
