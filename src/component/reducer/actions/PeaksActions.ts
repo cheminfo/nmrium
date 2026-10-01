@@ -86,7 +86,7 @@ export type PeaksActions =
   | ActionType<'TOGGLE_PEAKS_DISPLAYING_MODE'>;
 
 //action
-function handleAddPeak(draft: Draft<State>, action: AddPeakAction) {
+export function handleAddPeak(draft: Draft<State>, action: AddPeakAction) {
   const { x: mouseXPosition, defaultPeakShape = DEFAULT_PEAK_SHAPE } =
     action.payload;
 
@@ -118,7 +118,7 @@ function handleAddPeak(draft: Draft<State>, action: AddPeakAction) {
 }
 
 //action
-function handleAddPeaks(draft: Draft<State>, action: AddPeaksAction) {
+export function handleAddPeaks(draft: Draft<State>, action: AddPeaksAction) {
   const {
     startX,
     endX,
@@ -132,7 +132,7 @@ function handleAddPeaks(draft: Draft<State>, action: AddPeaksAction) {
 
   if (from !== to) {
     const peak = getClosePeak(original(spectrum), { from, to });
-    if (peak && !spectrum.peaks.values.some((p) => p.x === peak.x)) {
+    if (peak && spectrum.peaks.values.every((p) => p.x !== peak.x)) {
       const shiftX = getShiftX(spectrum);
       const newPeak: Peak1D = {
         id: crypto.randomUUID(),
@@ -149,7 +149,10 @@ function handleAddPeaks(draft: Draft<State>, action: AddPeaksAction) {
 }
 
 //action
-function handleDeletePeak(draft: Draft<State>, action: DeletePeakAction) {
+export function handleDeletePeak(
+  draft: Draft<State>,
+  action: DeletePeakAction,
+) {
   const { id: peakId, spectrumKey } = action.payload;
 
   const spectrum = getSpectrum(draft, spectrumKey);
@@ -168,7 +171,10 @@ function handleDeletePeak(draft: Draft<State>, action: DeletePeakAction) {
 }
 
 //action
-function handleOptimizePeaks(draft: Draft<State>, action: OptimizePeaksAction) {
+export function handleOptimizePeaks(
+  draft: Draft<State>,
+  action: OptimizePeaksAction,
+) {
   const { peaks } = action.payload;
   togglePeaksViewProperty(draft, 'showPeaksSum', true);
 
@@ -176,18 +182,18 @@ function handleOptimizePeaks(draft: Draft<State>, action: OptimizePeaksAction) {
   if (!isSpectrum1D(spectrum)) return;
 
   const [from, to] = draft.xDomain;
-  const newPeaks = optimizePeaks(spectrum, {
+
+  spectrum.peaks.values = optimizePeaks(spectrum, {
     from,
     to,
     peaks,
   });
 
-  spectrum.peaks.values = newPeaks;
   updatePeaksRelativeValues(spectrum);
 }
 
 //action
-function handleAutoPeakPicking(
+export function handleAutoPeakPicking(
   draft: Draft<State>,
   action: AutoPeaksPickingAction,
 ) {
@@ -228,7 +234,7 @@ function handleAutoPeakPicking(
 }
 
 //action
-function handleChangePeakShape(
+export function handleChangePeakShape(
   draft: Draft<State>,
   action: ChangePeaksShapeAction,
 ) {
@@ -253,7 +259,7 @@ function handleChangePeakShape(
 }
 
 //action
-function handleTogglePeaksViewProperty(
+export function handleTogglePeaksViewProperty(
   draft: Draft<State>,
   action: TogglePeaksViewAction,
 ) {
@@ -281,7 +287,8 @@ function togglePeaksViewProperty(
 }
 
 type TogglePeaksViewState = RangesViewState | PeaksViewState;
-function toggleDisplayingPeaks(
+
+export function toggleDisplayingPeaks(
   draft: Draft<State>,
   key: keyof Pick<ViewState, 'peaks' | 'ranges'>,
 ) {
@@ -319,12 +326,12 @@ function toggleDisplayingPeaks(
   }
 }
 
-function handleChangePeaksDisplayingMode(draft: Draft<State>) {
+export function handleChangePeaksDisplayingMode(draft: Draft<State>) {
   toggleDisplayingPeaks(draft, 'peaks');
 }
 
 //action
-function handleChangeRangeRelativeValue(
+export function handleChangeRangeRelativeValue(
   draft: Draft<State>,
   action: ChangePeaksRelativeValueAction,
 ) {
@@ -333,16 +340,3 @@ function handleChangeRangeRelativeValue(
 
   changePeakRelativeValue(spectrum, action.payload);
 }
-
-export {
-  handleAddPeak,
-  handleAddPeaks,
-  handleAutoPeakPicking,
-  handleChangePeakShape,
-  handleChangePeaksDisplayingMode,
-  handleChangeRangeRelativeValue,
-  handleDeletePeak,
-  handleOptimizePeaks,
-  handleTogglePeaksViewProperty,
-  toggleDisplayingPeaks,
-};

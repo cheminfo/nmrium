@@ -106,8 +106,8 @@ export default function CorrelationTableRow(props: CorrelationTableRowProps) {
             link.axis !== _link.axis &&
             link.experimentID === _link.experimentID &&
             link.signal.id === _link.signal.id &&
-            !commonLinks.some(
-              (_commonLink) => _commonLink.signal.id === link.signal.id,
+            commonLinks.every(
+              (_commonLink) => _commonLink.signal.id !== link.signal.id,
             )
           ) {
             let experimentLabel = link.experimentType;

@@ -452,7 +452,7 @@ function convertValuesString(
   valuesString = valuesString.replaceAll('sp', '');
 
   let values: number[] = [];
-  const regex = /^(?:\d,{0,1})+$/g;
+  const regex = /^(?:\d,?)+$/g;
   if (regex.test(valuesString)) {
     // allow digits followed by optional comma only
     values = valuesString
@@ -488,7 +488,7 @@ function isInView(
 
   if (
     activeSpectrum === null ||
-    !correlation.link.some((link) => link.experimentID === activeSpectrum.id)
+    correlation.link.every((link) => link.experimentID !== activeSpectrum.id)
   ) {
     return false;
   }

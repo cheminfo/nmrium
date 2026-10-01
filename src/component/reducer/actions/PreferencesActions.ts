@@ -23,7 +23,7 @@ interface AlignmentOptions {
   activeTab?: string;
 }
 
-function changeSpectrumVerticalAlignment(
+export function changeSpectrumVerticalAlignment(
   draft: Draft<State>,
   options: AlignmentOptions,
 ) {
@@ -43,7 +43,7 @@ function changeSpectrumVerticalAlignment(
       if (verticalAlign === 'auto-check') {
         const isFid =
           dataPerNucleus[0]?.info.isFid &&
-          !dataPerNucleus.some((d) => !d.info.isFid);
+          dataPerNucleus.every((d) => d.info.isFid);
 
         if (isFid) {
           draft.view.verticalAlign[nucleus] = 'center';
@@ -72,7 +72,7 @@ function changeSpectrumVerticalAlignment(
   }
 }
 
-function handleSetKeyPreferences(
+export function handleSetKeyPreferences(
   draft: Draft<State>,
   action: KeyPreferencesAction,
 ) {
@@ -128,7 +128,7 @@ function setSpectraDisplayPreferences(draft: Draft<State>, preferences: any) {
   }
 }
 
-function handleApplyKeyPreferences(
+export function handleApplyKeyPreferences(
   draft: Draft<State>,
   action: KeyPreferencesAction,
 ) {
@@ -154,9 +154,3 @@ function handleApplyKeyPreferences(
     }
   }
 }
-
-export {
-  changeSpectrumVerticalAlignment,
-  handleApplyKeyPreferences,
-  handleSetKeyPreferences,
-};
