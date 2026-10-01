@@ -143,7 +143,7 @@ export default function AdditionalColumnField(
         // decrease number of attached protons if no value was specified manually before
         if (!_correlationDim2.edited.protonsCount) {
           _correlationDim2.protonsCount =
-            pseudoLinkCountHSQC - 1 > 0 ? [pseudoLinkCountHSQC - 1] : [];
+            pseudoLinkCountHSQC > 1 ? [pseudoLinkCountHSQC - 1] : [];
         }
       }
 

@@ -71,7 +71,6 @@ export default defineConfig(
       'unicorn/no-declarations-before-early-exit': 'off',
       'unicorn/no-negated-array-predicate': 'off',
       'unicorn/no-non-function-verb-prefix': 'off',
-      'unicorn/no-subtraction-comparison': 'off',
       'unicorn/no-top-level-side-effects': 'off',
       'unicorn/no-unreadable-for-of-expression': 'off',
       'unicorn/no-unreadable-object-destructuring': 'off',

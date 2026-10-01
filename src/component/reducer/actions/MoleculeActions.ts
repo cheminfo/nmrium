@@ -108,7 +108,7 @@ export type MoleculeActions =
   | ChangeMoleculeAnnotationAction
   | ToggleMoleculeLabelAction;
 
-function addMolecule(draft: Draft<State>, props: AddMoleculeProps) {
+export function addMolecule(draft: Draft<State>, props: AddMoleculeProps) {
   const { molfile, id, label, floatMoleculeOnSave, defaultMoleculeSettings } =
     props;
   const isEmpty = draft.molecules.length === 0;
@@ -137,10 +137,17 @@ function addMolecule(draft: Draft<State>, props: AddMoleculeProps) {
 }
 
 //action
-function handleAddMolecule(draft: Draft<State>, action: AddMoleculeAction) {
+export function handleAddMolecule(
+  draft: Draft<State>,
+  action: AddMoleculeAction,
+) {
   addMolecule(draft, action.payload);
 }
-function handleAddMolecules(draft: Draft<State>, action: AddMoleculesAction) {
+
+export function handleAddMolecules(
+  draft: Draft<State>,
+  action: AddMoleculesAction,
+) {
   const { molecules, defaultMoleculeSettings } = action.payload;
 
   for (const { molfile } of molecules) {
@@ -172,7 +179,10 @@ function setMolecule(draft: Draft<State>, props: SetMoleculeAction['payload']) {
   );
 }
 //action
-function handleSetMolecule(draft: Draft<State>, action: SetMoleculeAction) {
+export function handleSetMolecule(
+  draft: Draft<State>,
+  action: SetMoleculeAction,
+) {
   setMolecule(draft, action.payload);
 }
 
@@ -253,7 +263,7 @@ function clearAssignments(draft: Draft<State>, diaIDs: DiaIDAndInfo[]) {
 }
 
 //action
-function handleDeleteMolecule(
+export function handleDeleteMolecule(
   draft: Draft<State>,
   action: DeleteMoleculeAction,
 ) {
@@ -281,7 +291,7 @@ function handleDeleteMolecule(
 }
 
 //action
-function handlePredictSpectraFromMolecule(
+export function handlePredictSpectraFromMolecule(
   draft: Draft<State>,
   action: PredictSpectraFromMoleculeAction,
 ) {
@@ -354,7 +364,7 @@ function checkPredictions(
     switch (experiment) {
       case 'proton': {
         message =
-          atoms.H - nbLabileH(molecule) === 0
+          atoms.H === nbLabileH(molecule)
             ? 'No non-labile hydrogen found in the molecule, the proton spectrum could not be predicted'
             : `Proton was not predicted`;
         break;
@@ -411,7 +421,7 @@ function setPredictedSpectraReference(
   draft.view.predictions[moleculeId] = spectraIds;
 }
 
-function initMoleculeViewProperties(
+export function initMoleculeViewProperties(
   draft: Draft<State>,
   options: {
     id: string;
@@ -479,7 +489,7 @@ function getFloatingMoleculeInitialPosition(id: string, draft: Draft<State>) {
 }
 
 //action
-function handleFloatMoleculeOverSpectrum(
+export function handleFloatMoleculeOverSpectrum(
   draft: Draft<State>,
   action: ToggleMoleculeViewObjectAction,
 ) {
@@ -493,7 +503,7 @@ function handleFloatMoleculeOverSpectrum(
 }
 
 //action
-function handleChangeMoleculeAnnotation(
+export function handleChangeMoleculeAnnotation(
   draft: Draft<State>,
   action: ChangeMoleculeAnnotationAction,
 ) {
@@ -507,7 +517,7 @@ function handleChangeMoleculeAnnotation(
 }
 
 //action
-function handleChangeFloatMoleculePosition(
+export function handleChangeFloatMoleculePosition(
   draft: Draft<State>,
   action: ChangeFloatMoleculePositionAction,
 ) {
@@ -521,7 +531,7 @@ function handleChangeFloatMoleculePosition(
 }
 
 //action
-function handleChangeMoleculeLabel(
+export function handleChangeMoleculeLabel(
   draft: Draft<State>,
   action: ChangeMoleculeLabelAction,
 ) {
@@ -532,7 +542,7 @@ function handleChangeMoleculeLabel(
   draft.molecules[moleculeIndex].label = label;
 }
 //action
-function handleToggleMoleculeLabel(
+export function handleToggleMoleculeLabel(
   draft: Draft<State>,
   action: ToggleMoleculeLabelAction,
 ) {
@@ -544,18 +554,3 @@ function handleToggleMoleculeLabel(
 
   molecule.showLabel = !molecule.showLabel;
 }
-
-export {
-  addMolecule,
-  handleAddMolecule,
-  handleAddMolecules,
-  handleChangeFloatMoleculePosition,
-  handleChangeMoleculeAnnotation,
-  handleChangeMoleculeLabel,
-  handleDeleteMolecule,
-  handleFloatMoleculeOverSpectrum,
-  handlePredictSpectraFromMolecule,
-  handleSetMolecule,
-  handleToggleMoleculeLabel,
-  initMoleculeViewProperties,
-};
