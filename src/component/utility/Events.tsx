@@ -13,9 +13,7 @@ const Emitter = {
   once: (event: any, fn: any) => eventEmitter.once(event, fn),
   off: (event: any, fn: any) => eventEmitter.off(event, fn),
   emit: (event: any, payload: any) => eventEmitter.emit(event, payload),
-};
-
-Object.freeze(Emitter);
+} as const;
 
 type EventEmitterClickOptions = ClickOptions & { xPPM: number };
 
