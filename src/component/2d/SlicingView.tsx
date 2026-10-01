@@ -22,9 +22,9 @@ function SlicingView() {
 
   let { x, y } = position;
 
-  if (x - margin.left < 0) {
+  if (x < margin.left) {
     x = 0;
-  } else if (y - margin.top < 0) {
+  } else if (y < margin.top) {
     y = 0;
   }
   const data = getSlice(spectra[activeSpectrum.index] as Spectrum2D, {

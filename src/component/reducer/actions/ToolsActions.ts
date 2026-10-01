@@ -121,10 +121,11 @@ function resetTool(draft: Draft<State>, options: ResetToolOptions = {}) {
   rollbackSpectrum(draft, rollOptions);
 }
 
-function handleResetSelectedTool(draft: Draft<State>) {
+export function handleResetSelectedTool(draft: Draft<State>) {
   resetSelectedTool(draft);
 }
-function resetSelectedTool(draft: Draft<State>) {
+
+export function resetSelectedTool(draft: Draft<State>) {
   const {
     selectedTool,
     data: { activeFilterID },
@@ -141,7 +142,10 @@ interface ActivateToolOptions {
 }
 
 //utility
-function activateTool(draft: Draft<State>, options: ActivateToolOptions) {
+export function activateTool(
+  draft: Draft<State>,
+  options: ActivateToolOptions,
+) {
   const { toolId, reset = false, tempRollback } = options;
 
   if (draft?.data.length === 0) {
@@ -170,12 +174,15 @@ function activateTool(draft: Draft<State>, options: ActivateToolOptions) {
   setMargin(draft);
 }
 
-function setSelectedTool(draft: Draft<State>, action: SetSelectedToolAction) {
+export function setSelectedTool(
+  draft: Draft<State>,
+  action: SetSelectedToolAction,
+) {
   const { selectedTool } = action.payload;
   activateTool(draft, { toolId: selectedTool });
 }
 
-function setSpectraVerticalAlign(draft: Draft<State>) {
+export function setSpectraVerticalAlign(draft: Draft<State>) {
   const currentVerticalAlign = getVerticalAlign(draft);
   const verticalAlign = ['stack', 'bottom'].includes(currentVerticalAlign)
     ? 'center'
@@ -183,13 +190,13 @@ function setSpectraVerticalAlign(draft: Draft<State>) {
   changeSpectrumVerticalAlignment(draft, { verticalAlign });
 }
 
-function handleChangeSpectrumDisplayMode(draft: Draft<State>) {
+export function handleChangeSpectrumDisplayMode(draft: Draft<State>) {
   const currentVerticalAlign = getVerticalAlign(draft);
   const verticalAlign = currentVerticalAlign === 'stack' ? 'bottom' : 'stack';
   changeSpectrumVerticalAlignment(draft, { verticalAlign });
 }
 
-function handleToggleRealImaginaryVisibility(draft: Draft<State>) {
+export function handleToggleRealImaginaryVisibility(draft: Draft<State>) {
   const spectrum = getSpectrum(draft);
   if (!isSpectrum1D(spectrum)) return;
 
@@ -199,7 +206,7 @@ function handleToggleRealImaginaryVisibility(draft: Draft<State>) {
   setDomain(draft);
 }
 
-function handleBrushEnd(draft: Draft<State>, action: BrushEndAction) {
+export function handleBrushEnd(draft: Draft<State>, action: BrushEndAction) {
   const options = action.payload;
 
   const startX = Math.min(options.startX, options.endX);
@@ -271,7 +278,7 @@ function zoomWithScroll(
   }
 }
 
-function handleZoom(draft: Draft<State>, action: ZoomAction) {
+export function handleZoom(draft: Draft<State>, action: ZoomAction) {
   const { options, trackID } = action.payload;
   const {
     displayerMode,
@@ -371,7 +378,7 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
   }
 }
 
-function zoomOut(draft: Draft<State>, action: ZoomOutAction) {
+export function zoomOut(draft: Draft<State>, action: ZoomOutAction) {
   if (draft?.data.length > 0) {
     const { zoomType, trackID } = action?.payload || {};
     const { xDomain } = draft.originDomain;
@@ -448,7 +455,7 @@ function hasAcceptedSpectrum(draft: Draft<State>, index: any) {
 }
 
 //utility
-function setMargin(draft: Draft<State>) {
+export function setMargin(draft: Draft<State>) {
   const spectrum = getSpectrum(draft);
 
   if (
@@ -513,7 +520,7 @@ function setTabActiveSpectrum(draft: Draft<State>, dataGroupByTab: any) {
           tabActiveSpectrum[tabKey] = [
             { id: FTSpectra[0].id, index, selected },
           ];
-        } else if (tabSpectraLength - FTSpectra > 0) {
+        } else if (tabSpectraLength > FTSpectra) {
           const id = tabSpectra[0].id;
           const index = draft.data.findIndex((datum) => datum.id === id);
           tabActiveSpectrum[tabKey] = [{ id, index, selected: true }];
@@ -530,7 +537,7 @@ function setTabActiveSpectrum(draft: Draft<State>, dataGroupByTab: any) {
 }
 
 //utility
-function setTab(
+export function setTab(
   draft: Draft<State>,
   dataGroupByTab: any,
   tab: any,
@@ -564,7 +571,10 @@ function setTab(
 }
 
 //utility
-function setActiveTab(draft: Draft<State>, options?: SetActiveTabOptions) {
+export function setActiveTab(
+  draft: Draft<State>,
+  options?: SetActiveTabOptions,
+) {
   const {
     tab = null,
     refreshActiveTab = false,
@@ -582,14 +592,20 @@ function setActiveTab(draft: Draft<State>, options?: SetActiveTabOptions) {
   setMode(draft);
 }
 
-function handleSetActiveTab(draft: Draft<State>, action: SetActiveTabAction) {
+export function handleSetActiveTab(
+  draft: Draft<State>,
+  action: SetActiveTabAction,
+) {
   const { tab } = action.payload;
   if (tab) {
     setActiveTab(draft, { tab });
   }
 }
 
-function levelChangeHandler(draft: Draft<State>, action: LevelChangeAction) {
+export function levelChangeHandler(
+  draft: Draft<State>,
+  action: LevelChangeAction,
+) {
   const { deltaY, altKey, invertScroll } = action.payload.options;
   const {
     data,
@@ -620,35 +636,16 @@ function levelChangeHandler(draft: Draft<State>, action: LevelChangeAction) {
   }
 }
 
-function setSpectraSameTopHandler(draft: Draft<State>) {
+export function setSpectraSameTopHandler(draft: Draft<State>) {
   if (draft.displayerMode === '1D') {
     draft.originDomain.shareYDomain = false;
     setZoom(draft, { scale: 0.8 });
   }
 }
-function resetSpectraScale(draft: Draft<State>) {
+
+export function resetSpectraScale(draft: Draft<State>) {
   draft.originDomain.shareYDomain = true;
   draft.yDomains = draft.originDomain.yDomains;
   draft.yDomain = draft.originDomain.yDomain;
   setZoom(draft, { scale: 0.8 });
 }
-
-export {
-  activateTool,
-  handleBrushEnd,
-  handleChangeSpectrumDisplayMode,
-  handleResetSelectedTool,
-  handleSetActiveTab,
-  handleToggleRealImaginaryVisibility,
-  handleZoom,
-  levelChangeHandler,
-  resetSelectedTool,
-  resetSpectraScale,
-  setActiveTab,
-  setMargin,
-  setSelectedTool,
-  setSpectraSameTopHandler,
-  setSpectraVerticalAlign,
-  setTab,
-  zoomOut,
-};
