@@ -50,13 +50,13 @@ function ExclusionZonesAnnotations() {
   const { xDomains, displayerMode } = useChartData();
   const { shiftY } = useScale();
 
-  const spectra = useSpectraByActiveNucleus() as Spectrum1D[];
+  const spectra = useSpectraByActiveNucleus();
 
   if (displayerMode !== '1D') return null;
 
   return (
     <MemoizedPeakAnnotations
-      spectra={spectra}
+      spectra={spectra as Spectrum1D[]}
       xDomains={xDomains}
       shiftY={shiftY}
     />

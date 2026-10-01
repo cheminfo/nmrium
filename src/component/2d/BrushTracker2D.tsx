@@ -99,10 +99,11 @@ export function BrushTracker2D({ children }: Required<PropsWithChildren>) {
       //reset the brush start
       brushStartRef.current = null;
 
-      let executeDefaultAction = false;
       const trackID = getLayoutID(DIMENSION, brushData);
 
       if (brushData.mouseButton !== 'main' || !trackID) return;
+
+      let executeDefaultAction = false;
       if (trackID === 'MAIN' && isPrimaryKeyActivated(brushData)) {
         switch (selectedTool) {
           case options.zoom.id: {

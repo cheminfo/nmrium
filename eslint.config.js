@@ -65,7 +65,6 @@ export default defineConfig(
       'unicorn/max-nested-calls': 'off',
       'unicorn/name-replacements': 'off',
       'unicorn/no-computed-property-existence-check': 'off',
-      'unicorn/no-declarations-before-early-exit': 'off',
       'unicorn/no-non-function-verb-prefix': 'off',
       'unicorn/no-unreadable-for-of-expression': 'off',
       'unicorn/no-unreadable-object-destructuring': 'off',

@@ -22,7 +22,6 @@ export default function BaseLine() {
   const { scaleY } = useScaleChecked();
   const indicatorColor = useIndicatorLineColor();
 
-  const innerWidth = width - left - right;
   if (
     ![options.phaseCorrection.id, options.baselineCorrection.id].includes(
       selectedTool,
@@ -30,6 +29,9 @@ export default function BaseLine() {
   ) {
     return null;
   }
+
+  const innerWidth = width - left - right;
+
   return (
     <div
       style={{

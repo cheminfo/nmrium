@@ -19,9 +19,9 @@ export function useMapZones(
   info: { experiment?: string; nuclei: string[] },
 ): ZoneData[] {
   return useMemo(() => {
-    const zonesData: ZoneData[] = [];
     if (!data) return [];
 
+    const zonesData: ZoneData[] = [];
     for (const zone of data) {
       if (zone.signals.length === 1) {
         zonesData.push({

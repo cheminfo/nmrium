@@ -196,10 +196,11 @@ export default function FooterBanner(props: FooterBannerProps) {
 
       const xStep = (maxX - minX) / (z[0].length - 1);
       const yStep = (maxY - minY) / (z.length - 1);
-      const xIndex = Math.floor((getXValue() - minX) / xStep);
-      const yIndex = Math.floor((getYValue() - minY) / yStep);
 
+      const xIndex = Math.floor((getXValue() - minX) / xStep);
       if (xIndex < 0 || xIndex >= z[0].length) return 0;
+
+      const yIndex = Math.floor((getYValue() - minY) / yStep);
       if (yIndex < 0 || yIndex >= z.length) return 0;
 
       return z[yIndex][xIndex];

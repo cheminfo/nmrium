@@ -398,6 +398,8 @@ function DraggableRanges(props: DraggablePublicationStringProps) {
     });
   }
 
+  if (!viewerRef || !data || data?.ranges?.length === 0) return null;
+
   const actionButtons: ActionsButtonsPopoverProps['buttons'] = [
     {
       icon: <BsArrowsMove />,
@@ -421,7 +423,6 @@ function DraggableRanges(props: DraggablePublicationStringProps) {
       onClick: handleRemove,
     },
   ];
-  if (!viewerRef || !data || data?.ranges?.length === 0) return null;
 
   const { x: xInPercent, y: yInPercent } = bounding;
 

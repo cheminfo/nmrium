@@ -183,18 +183,19 @@ function appendCouplings(range: Range) {
   const signals: Signal1D[] = [];
 
   for (const signal of range?.signals || []) {
-    const js: Jcoupling[] = [];
     if (!signal.multiplicity || !['s', 'm'].includes(signal.multiplicity)) {
       signals.push(signal);
       continue;
     }
 
-    for (const multiplicity of splitPatterns(signal.multiplicity)) {
-      js.push({
-        multiplicity: multiplicity.value,
-        coupling: '',
-      } as unknown as Jcoupling);
-    }
+    const js: Jcoupling[] = Array.from(
+      splitPatterns(signal.multiplicity),
+      (multiplicity) =>
+        ({
+          multiplicity: multiplicity.value,
+          coupling: '',
+        }) as unknown as Jcoupling,
+    );
 
     signals.push({ ...signal, js });
   }

@@ -39,11 +39,11 @@ function Viewer2D(props: Viewer2DProps) {
 
   const spectrumData = useTracesSpectra();
 
-  const DIMENSION = get2DDimensionLayout(state);
-
   if (renderSvgContentOnly) {
     return <SVGContent2D spectra={spectrumData} />;
   }
+
+  const DIMENSION = get2DDimensionLayout(state);
 
   return (
     <ResponsiveChart>

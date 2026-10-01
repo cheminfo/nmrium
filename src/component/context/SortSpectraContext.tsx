@@ -156,12 +156,9 @@ interface SortItem {
 }
 
 function sortArray(data: SortItem[], sortDirection?: SortDirection): void {
+  if (!sortDirection) return;
+
   const direction = sortDirection === 'asc' ? 1 : -1;
-
-  if (!sortDirection) {
-    return;
-  }
-
   data.sort((a, b) => {
     const valueA = a.sortValue;
     const valueB = b.sortValue;

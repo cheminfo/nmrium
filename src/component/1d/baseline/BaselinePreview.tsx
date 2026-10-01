@@ -225,11 +225,11 @@ function SpectrumPreview({ spectrum, anchors }: SpectrumPreviewProps) {
     const { x, y } = baselineData;
 
     const _scaleX = scaleX();
-    const _scaleY = scaleY({ spectrumId: activeSpectrum?.id });
-
-    const pathBuilder = new SVGPathBuilder();
 
     if (!x || !y || !_scaleX(0)) return '';
+
+    const _scaleY = scaleY({ spectrumId: activeSpectrum?.id });
+    const pathBuilder = new SVGPathBuilder();
 
     const v = shiftY * (activeSpectrum?.index || 0);
 
