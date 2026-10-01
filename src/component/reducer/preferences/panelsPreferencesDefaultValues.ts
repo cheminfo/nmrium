@@ -107,22 +107,19 @@ const getZoneDefaultValues = (nucleus?: string): PanelsPreferences['zones'] => {
       showAssignmentLabel: false,
     };
 
-    const output: BaseNucleus2DPreferences<Zones2DNucleusPreferences> = {
+    return {
       ...common,
       ...getPreferences(preferences2D, nucleus),
-    };
-
-    return output;
+    } satisfies BaseNucleus2DPreferences<Zones2DNucleusPreferences>;
   } else {
     const preferences1D: Zones1DNucleusPreferences = {
       deltaPPM: { show: true, format: '0.00' },
     };
 
-    const output: BaseNucleus1DPreferences<Zones1DNucleusPreferences> = {
+    return {
       ...common,
       ...getPreferences(preferences1D, nucleus),
-    };
-    return output;
+    } satisfies BaseNucleus1DPreferences<Zones1DNucleusPreferences>;
   }
 };
 

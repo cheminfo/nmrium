@@ -103,13 +103,12 @@ export function useExportViewport() {
           });
           resolve();
         } catch (error: unknown) {
+          // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+          reject(error);
           if (error instanceof Error) {
             toaster.show({ intent: 'danger', message: error.message });
-            reject(error);
           } else {
             toaster.show(browserNotSupportedErrorToast);
-            // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
-            reject(error);
           }
         } finally {
           hideLoading();
@@ -157,13 +156,12 @@ export function useExportViewport() {
           });
           resolve();
         } catch (error: unknown) {
+          // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+          reject(error);
           if (error instanceof Error) {
             toaster.show({ intent: 'danger', message: error.message });
-            reject(error);
           } else {
             toaster.show(browserNotSupportedErrorToast);
-            // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
-            reject(error);
           }
         } finally {
           hideLoading();
