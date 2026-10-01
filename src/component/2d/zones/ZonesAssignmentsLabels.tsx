@@ -460,9 +460,10 @@ function AssignmentLabel(props: AssignmentLabelProps) {
           PopoverProps={{
             placement: 'top',
             targetTagName: 'g',
-            ...(newAssignmentLabelState?.id === signalID
-              ? { isOpen: true, onClose: () => dismissNewLabel() }
-              : {}),
+            ...(newAssignmentLabelState?.id === signalID && {
+              isOpen: true,
+              onClose: () => dismissNewLabel(),
+            }),
           }}
         >
           <text

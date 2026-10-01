@@ -117,7 +117,7 @@ export function toJSON(
   const nmriumState: NmriumState = {
     version: CURRENT_EXPORT_VERSION,
     data: {
-      ...(exportTarget === 'onChange' ? { actionType } : {}),
+      ...(exportTarget === 'onChange' && { actionType }),
       sources: Object.entries(sources ?? {}).map(([id, source]) => ({
         ...source,
         id,
