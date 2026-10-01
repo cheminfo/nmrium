@@ -255,11 +255,11 @@ function SummaryPanel() {
   }, [correlationsData]);
 
   const additionalColumnData = useMemo<Correlation[]>(() => {
+    if (!filteredCorrelationsData) return [];
+
     const _selectedAdditionalColumnsAtomType =
       selectedAdditionalColumnsAtomType.split('-', 1)[0];
-    if (!filteredCorrelationsData) {
-      return [];
-    }
+
     const result = filteredCorrelationsData.values.filter(
       (correlation: any) =>
         correlation.atomType === _selectedAdditionalColumnsAtomType,

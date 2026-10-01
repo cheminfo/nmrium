@@ -180,6 +180,8 @@ export default function BrushXY(props: BrushXYProps) {
   const scaleX = axis === 'X' || axis === 'XY' ? brush.scaleX : 1;
   const scaleY = axis === 'Y' || axis === 'XY' ? brush.scaleY : 1;
 
+  if (scaleX === 0 || scaleY === 0) return;
+
   startX = axis === 'Y' ? margin.left : brush.startX || margin.left;
   startY = axis === 'X' ? margin.top : brush.startY || margin.top;
   endX = axis === 'Y' ? finalWidth : brush.endX || finalWidth;
@@ -261,8 +263,6 @@ export default function BrushXY(props: BrushXYProps) {
       backgroundColor: 'rgba(0,0,0,0.1)',
     },
   };
-
-  if (scaleX === 0 || scaleY === 0) return;
 
   const centerX = Math.round((endX + startX) / 2);
   const centerY = Math.round((endY + startY) / 2);

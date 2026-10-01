@@ -431,7 +431,7 @@ function executeFilter(
   }
 }
 
-function rollbackSpectrumByFilter(
+export function rollbackSpectrumByFilter(
   draft: Draft<State>,
   options?: RollbackSpectrumByFilterOptions,
 ) {
@@ -567,7 +567,7 @@ export interface RollbackSpectrumOptions {
   tempRollback?: boolean;
 }
 
-function rollbackSpectrum(
+export function rollbackSpectrum(
   draft: Draft<State>,
   options: RollbackSpectrumOptions,
 ) {
@@ -783,7 +783,7 @@ function isOneDimensionShift(
 }
 
 //action
-function handleShiftSpectrumAlongXAxis(
+export function handleShiftSpectrumAlongXAxis(
   draft: Draft<State>,
   action: ShiftSpectrumAction,
 ) {
@@ -860,7 +860,7 @@ function handleShiftSpectrumAlongXAxis(
 }
 
 //action
-function handleApplyZeroFillingFilter(
+export function handleApplyZeroFillingFilter(
   draft: Draft<State>,
   action: ZeroFillingFilterAction,
 ) {
@@ -887,8 +887,9 @@ function handleApplyZeroFillingFilter(
   draft.data[index] = draft.tempData[index];
   updateView(draft, zeroFilling.domainUpdateRules);
 }
+
 //action
-function handleApplyZeroFillingDimensionOneFilter(
+export function handleApplyZeroFillingDimensionOneFilter(
   draft: Draft<State>,
   action: ZeroFillingDimensionOneFilterAction,
 ) {
@@ -915,8 +916,9 @@ function handleApplyZeroFillingDimensionOneFilter(
 
   updateView(draft, zeroFillingDimension1.domainUpdateRules);
 }
+
 //action
-function handleApplyZeroFillingDimensionTwoFilter(
+export function handleApplyZeroFillingDimensionTwoFilter(
   draft: Draft<State>,
   action: ZeroFillingDimensionTwoFilterAction,
 ) {
@@ -945,7 +947,7 @@ function handleApplyZeroFillingDimensionTwoFilter(
 }
 
 //action
-function handleCalculateZeroFillingFilter(
+export function handleCalculateZeroFillingFilter(
   draft: Draft<State>,
   action: ZeroFillingFilterLiveAction,
 ) {
@@ -981,8 +983,9 @@ function handleCalculateZeroFillingFilter(
     disableLivePreview(draft, zeroFilling.name);
   }
 }
+
 //action
-function handleCalculateZeroFillingDimensionOneFilter(
+export function handleCalculateZeroFillingDimensionOneFilter(
   draft: Draft<State>,
   action: ZeroFillingDimensionOneFilterLiveAction,
 ) {
@@ -1016,8 +1019,9 @@ function handleCalculateZeroFillingDimensionOneFilter(
     disableLivePreview(draft, zeroFillingDimension1.name);
   }
 }
+
 //action
-function handleCalculateZeroFillingDimensionTwoFilter(
+export function handleCalculateZeroFillingDimensionTwoFilter(
   draft: Draft<State>,
   action: ZeroFillingDimensionTwoFilterLiveAction,
 ) {
@@ -1056,7 +1060,7 @@ function handleCalculateZeroFillingDimensionTwoFilter(
 }
 
 //action
-function handleCalculateApodizationFilter(
+export function handleCalculateApodizationFilter(
   draft: Draft<State>,
   action: ApodizationFilterLiveAction,
 ) {
@@ -1108,8 +1112,9 @@ function handleCalculateApodizationFilter(
     disableLivePreview(draft, apodization.name);
   }
 }
+
 //action
-function handleCalculateApodizationDimensionOneFilter(
+export function handleCalculateApodizationDimensionOneFilter(
   draft: Draft<State>,
   action: ApodizationDimensionOneFilterLiveAction,
 ) {
@@ -1137,7 +1142,7 @@ function handleCalculateApodizationDimensionOneFilter(
   }
 }
 //action
-function handleCalculateApodizationDimensionTwoFilter(
+export function handleCalculateApodizationDimensionTwoFilter(
   draft: Draft<State>,
   action: ApodizationDimensionTwoFilterLiveAction,
 ) {
@@ -1166,7 +1171,7 @@ function handleCalculateApodizationDimensionTwoFilter(
 }
 
 //action
-function handleApplyApodizationFilter(
+export function handleApplyApodizationFilter(
   draft: Draft<State>,
   action: ApodizationFilterAction,
 ) {
@@ -1193,8 +1198,9 @@ function handleApplyApodizationFilter(
 
   updateView(draft, apodization.domainUpdateRules);
 }
+
 //action
-function handleApplyApodizationDimensionOneFilter(
+export function handleApplyApodizationDimensionOneFilter(
   draft: Draft<State>,
   action: ApodizationDimensionOneFilterAction,
 ) {
@@ -1221,8 +1227,9 @@ function handleApplyApodizationDimensionOneFilter(
 
   updateView(draft, apodization.domainUpdateRules);
 }
+
 //action
-function handleApplyApodizationDimensionTwoFilter(
+export function handleApplyApodizationDimensionTwoFilter(
   draft: Draft<State>,
   action: ApodizationDimensionTwoFilterAction,
 ) {
@@ -1251,7 +1258,7 @@ function handleApplyApodizationDimensionTwoFilter(
 }
 
 //action
-function handleApplyFFTFilter(draft: Draft<State>) {
+export function handleApplyFFTFilter(draft: Draft<State>) {
   const activeFilterIndex = getActiveFilterIndex(draft);
   const activeSpectrum = getActiveSpectrum(draft);
 
@@ -1327,14 +1334,14 @@ function applyFFTTwoDimensionFilter(
     initializeContoursLevels(spectrum);
 }
 
-function handleApplyFFtDimension1Filter(draft: Draft<State>) {
+export function handleApplyFFtDimension1Filter(draft: Draft<State>) {
   applyFFTTwoDimensionFilter(draft, {
     filterName: 'fftDimension1',
     domainUpdateRules: fftDimension1.domainUpdateRules,
   });
 }
 
-function handleApplyFFtDimension2Filter(draft: Draft<State>) {
+export function handleApplyFFtDimension2Filter(draft: Draft<State>) {
   applyFFTTwoDimensionFilter(draft, {
     filterName: 'fftDimension2',
     domainUpdateRules: fftDimension2.domainUpdateRules,
@@ -1342,7 +1349,7 @@ function handleApplyFFtDimension2Filter(draft: Draft<State>) {
 }
 
 //action
-function handleApplyManualPhaseCorrectionFilter(
+export function handleApplyManualPhaseCorrectionFilter(
   draft: Draft<State>,
   action: ManualPhaseCorrectionFilterAction,
 ) {
@@ -1373,7 +1380,7 @@ function handleApplyManualPhaseCorrectionFilter(
 }
 
 //action
-function handleAddPhaseCorrectionTrace(
+export function handleAddPhaseCorrectionTrace(
   draft: Draft<State>,
   action: AddPhaseCorrectionTraceAction,
 ) {
@@ -1423,13 +1430,13 @@ function handleAddPhaseCorrectionTrace(
   }
 }
 //action
-function handleToggleAddTracesToBothDirections(draft: Draft<State>) {
+export function handleToggleAddTracesToBothDirections(draft: Draft<State>) {
   const options = draft.toolOptions.data.twoDimensionPhaseCorrection;
   options.addTracesToBothDirections = !options.addTracesToBothDirections;
 }
 
 //action
-function handleChangePhaseCorrectionDirection(
+export function handleChangePhaseCorrectionDirection(
   draft: Draft<State>,
   action: ChangePhaseCorrectionDirectionAction,
 ) {
@@ -1442,7 +1449,7 @@ function handleChangePhaseCorrectionDirection(
 }
 
 //action
-function handleDeletePhaseCorrectionTrace(
+export function handleDeletePhaseCorrectionTrace(
   draft: Draft<State>,
   action: DeletePhaseCorrectionTrace,
 ) {
@@ -1463,7 +1470,7 @@ function handleDeletePhaseCorrectionTrace(
 }
 
 //action
-function handleCalculateManualPhaseCorrection(
+export function handleCalculateManualPhaseCorrection(
   draft: Draft<State>,
   action: ManualPhaseCorrectionFilterAction,
 ) {
@@ -1495,7 +1502,7 @@ function handleCalculateManualPhaseCorrection(
 }
 
 //action
-function handleApplyAbsoluteFilter(draft: Draft<State>) {
+export function handleApplyAbsoluteFilter(draft: Draft<State>) {
   const activeSpectrum = getActiveSpectrum(draft);
 
   if (!activeSpectrum || !draft.tempData) {
@@ -1521,7 +1528,7 @@ function handleApplyAbsoluteFilter(draft: Draft<State>) {
 }
 
 //action
-function handleApplyAutoPhaseCorrectionFilter(draft: Draft<State>) {
+export function handleApplyAutoPhaseCorrectionFilter(draft: Draft<State>) {
   const activeSpectrum = getActiveSpectrum(draft);
 
   if (!activeSpectrum || !draft.tempData) {
@@ -1547,7 +1554,7 @@ function handleApplyAutoPhaseCorrectionFilter(draft: Draft<State>) {
 }
 
 //action
-function handleBaseLineCorrectionFilter(
+export function handleBaseLineCorrectionFilter(
   draft: Draft<State>,
   action: BaselineCorrectionFilterAction,
 ) {
@@ -1587,8 +1594,9 @@ function handleBaseLineCorrectionFilter(
 
   updateView(draft, baselineCorrection.domainUpdateRules);
 }
+
 //action
-function handleCalculateBaseLineCorrection(
+export function handleCalculateBaseLineCorrection(
   draft: Draft<State>,
   action: BaselineCorrectionFilterLiveAction,
 ) {
@@ -1640,7 +1648,10 @@ function handleCalculateBaseLineCorrection(
 }
 
 //action
-function handleEnableFilter(draft: Draft<State>, action: EnableFilterAction) {
+export function handleEnableFilter(
+  draft: Draft<State>,
+  action: EnableFilterAction,
+) {
   const activeSpectrum = getActiveSpectrum(draft);
 
   if (!activeSpectrum) {
@@ -1694,7 +1705,10 @@ function deleteFilter(datum: Spectrum, id?: string) {
 }
 
 //action
-function handleDeleteFilter(draft: Draft<State>, action: DeleteFilterAction) {
+export function handleDeleteFilter(
+  draft: Draft<State>,
+  action: DeleteFilterAction,
+) {
   const activeSpectrum = getActiveSpectrum(draft);
 
   if (!activeSpectrum) {
@@ -1712,7 +1726,7 @@ function handleDeleteFilter(draft: Draft<State>, action: DeleteFilterAction) {
 }
 
 //action
-function handleDeleteSpectraFilter(
+export function handleDeleteSpectraFilter(
   draft: Draft<State>,
   action: DeleteSpectraFilterAction,
 ) {
@@ -1745,7 +1759,7 @@ function handleDeleteSpectraFilter(
 }
 
 //action
-function handleSetFilterSnapshotHandler(
+export function handleSetFilterSnapshotHandler(
   draft: Draft<State>,
   action: SetFilterSnapshotAction,
 ) {
@@ -1770,7 +1784,7 @@ function handleSetFilterSnapshotHandler(
 }
 
 //action
-function handleSignalProcessingFilter(
+export function handleSignalProcessingFilter(
   draft: Draft<State>,
   action: ApplySignalProcessingAction,
 ) {
@@ -1800,7 +1814,7 @@ function handleSignalProcessingFilter(
 }
 
 //action
-function handleApplyExclusionZone(
+export function handleApplyExclusionZone(
   draft: Draft<State>,
   action: ExclusionZoneFilterAction,
 ) {
@@ -1826,8 +1840,9 @@ function handleApplyExclusionZone(
 
   setDomain(draft, { updateXDomain, updateYDomain });
 }
+
 //action
-function handleAddExclusionZone(
+export function handleAddExclusionZone(
   draft: Draft<State>,
   action: AddExclusionZoneAction,
 ) {
@@ -1868,7 +1883,7 @@ function handleAddExclusionZone(
 }
 
 //action
-function handleDeleteExclusionZone(
+export function handleDeleteExclusionZone(
   draft: Draft<State>,
   action: DeleteExclusionZoneAction,
 ) {
@@ -1906,7 +1921,7 @@ function handleDeleteExclusionZone(
   }
 }
 
-function handleSetOneDimensionPhaseCorrectionPivotPoint(
+export function handleSetOneDimensionPhaseCorrectionPivotPoint(
   draft: Draft<State>,
   action: SetOneDimensionPhaseCorrectionPivotPoint,
 ) {
@@ -1920,7 +1935,8 @@ function handleSetOneDimensionPhaseCorrectionPivotPoint(
   const index = xFindClosestIndex(spectrum.data.x, value);
   draft.toolOptions.data.pivot = { value, index };
 }
-function handleSetTwoDimensionPhaseCorrectionPivotPoint(
+
+export function handleSetTwoDimensionPhaseCorrectionPivotPoint(
   draft: Draft<State>,
   action: SetTwoDimensionPhaseCorrectionPivotPoint,
 ) {
@@ -1970,7 +1986,7 @@ function handleSetTwoDimensionPhaseCorrectionPivotPoint(
 }
 
 //action
-function handleCalculateManualTwoDimensionPhaseCorrection(
+export function handleCalculateManualTwoDimensionPhaseCorrection(
   draft: Draft<State>,
   action: ManualTwoDimensionsPhaseCorrectionFilterAction,
 ) {
@@ -2023,7 +2039,7 @@ function getTwoDimensionsPhaseCorrectionOptions(draft: Draft<State>) {
 }
 
 //action
-function handleApplyManualTowDimensionsPhaseCorrectionFilter(
+export function handleApplyManualTowDimensionsPhaseCorrectionFilter(
   draft: Draft<State>,
 ) {
   const activeSpectrum = getActiveSpectrum(draft);
@@ -2053,7 +2069,7 @@ function handleApplyManualTowDimensionsPhaseCorrectionFilter(
 }
 
 //action
-function handleApplyAutoPhaseCorrectionTwoDimensionsFilter(
+export function handleApplyAutoPhaseCorrectionTwoDimensionsFilter(
   draft: Draft<State>,
 ) {
   const activeSpectrum = getActiveSpectrum(draft);
@@ -2081,20 +2097,18 @@ function handleApplyAutoPhaseCorrectionTwoDimensionsFilter(
   updateView(draft, phaseCorrectionTwoDimensions.domainUpdateRules);
 }
 
-function handleReorderFilters(
+export function handleReorderFilters(
   draft: Draft<State>,
   action: ReorderFiltersAction,
 ) {
   const { sourceIndex, targetIndex } = action.payload;
   const spectrum = getSpectrum(draft);
 
-  if (!spectrum) {
+  if (!spectrum || sourceIndex === -1 || targetIndex === -1) {
     return;
   }
 
   const filters = spectrum.filters;
-
-  if (sourceIndex === -1 || targetIndex === -1) return;
 
   const sourceFilter = filters[sourceIndex];
   filters.splice(sourceIndex, 1);
@@ -2105,48 +2119,3 @@ function handleReorderFilters(
     Filters2DManager.reapplyFilters(spectrum);
   }
 }
-
-export {
-  handleAddExclusionZone,
-  handleAddPhaseCorrectionTrace,
-  handleApplyAbsoluteFilter,
-  handleApplyApodizationDimensionOneFilter,
-  handleApplyApodizationDimensionTwoFilter,
-  handleApplyApodizationFilter,
-  handleApplyAutoPhaseCorrectionFilter,
-  handleApplyAutoPhaseCorrectionTwoDimensionsFilter,
-  handleApplyExclusionZone,
-  handleApplyFFTFilter,
-  handleApplyFFtDimension1Filter,
-  handleApplyFFtDimension2Filter,
-  handleApplyManualPhaseCorrectionFilter,
-  handleApplyManualTowDimensionsPhaseCorrectionFilter,
-  handleApplyZeroFillingDimensionOneFilter,
-  handleApplyZeroFillingDimensionTwoFilter,
-  handleApplyZeroFillingFilter,
-  handleBaseLineCorrectionFilter,
-  handleCalculateApodizationDimensionOneFilter,
-  handleCalculateApodizationDimensionTwoFilter,
-  handleCalculateApodizationFilter,
-  handleCalculateBaseLineCorrection,
-  handleCalculateManualPhaseCorrection,
-  handleCalculateManualTwoDimensionPhaseCorrection,
-  handleCalculateZeroFillingDimensionOneFilter,
-  handleCalculateZeroFillingDimensionTwoFilter,
-  handleCalculateZeroFillingFilter,
-  handleChangePhaseCorrectionDirection,
-  handleDeleteExclusionZone,
-  handleDeleteFilter,
-  handleDeletePhaseCorrectionTrace,
-  handleDeleteSpectraFilter,
-  handleEnableFilter,
-  handleReorderFilters,
-  handleSetFilterSnapshotHandler,
-  handleSetOneDimensionPhaseCorrectionPivotPoint,
-  handleSetTwoDimensionPhaseCorrectionPivotPoint,
-  handleShiftSpectrumAlongXAxis,
-  handleSignalProcessingFilter,
-  handleToggleAddTracesToBothDirections,
-  rollbackSpectrum,
-  rollbackSpectrumByFilter,
-};

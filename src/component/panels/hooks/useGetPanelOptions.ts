@@ -11,12 +11,6 @@ export function useGetPanelOptions(): (
 
   return useCallback(
     (item: AccordionItem) => {
-      const defaultValue: PanelPreferencesType = {
-        display: false,
-        visible: false,
-        open: false,
-      };
-
       if (item?.isExperimental && !item.id) {
         return {
           display: true,
@@ -24,6 +18,12 @@ export function useGetPanelOptions(): (
           open: false,
         };
       }
+
+      const defaultValue: PanelPreferencesType = {
+        display: false,
+        visible: false,
+        open: false,
+      };
 
       // TODO: make sure preferences are not a lie and remove the optional chaining.
       return preferences?.current?.display?.panels?.[item.id] ?? defaultValue;

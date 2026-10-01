@@ -37,18 +37,19 @@ function usePath(spectrum: Spectrum1D, options: UsePathOptions) {
   return pathBuilder.toString();
 }
 
-function Top1DChart({ verticalMargin = 10, data: spectrum }: Top1DChartProps) {
+function Top1DChart(props: Top1DChartProps) {
+  const { verticalMargin = 10, data: spectrum } = props;
   const { width, margin, height: fullHeight, displayerKey } = useChartData();
   const height = margin.top;
   const svgRef = useRef<SVGSVGElement>(null);
   const scale = useScale2DX();
 
   const path = usePath(spectrum, { height, verticalMargin });
+
+  if (!width || !height) return null;
+
   const ranges = spectrum.ranges.values;
 
-  if (!width || !height) {
-    return null;
-  }
   const innerHeight = fullHeight - margin.bottom;
   const innerWidth = width - margin.left - margin.right;
   return (

@@ -139,12 +139,13 @@ export default function SpectraLegends() {
     activeTab,
   );
 
-  const selectedSpectra = useActiveSpectra() || [];
-  const selectedSpectraIDs = new Set(
-    selectedSpectra.map((spectrum) => spectrum.id),
-  );
+  const selectedSpectra = useActiveSpectra();
 
   if (!showLegend || isInset) return null;
+
+  const selectedSpectraIDs = new Set(
+    (selectedSpectra ?? []).map((spectrum) => spectrum.id),
+  );
 
   const spectra = data.filter(
     (spectrum) =>

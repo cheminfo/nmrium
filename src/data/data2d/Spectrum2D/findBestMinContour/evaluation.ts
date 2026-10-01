@@ -139,8 +139,6 @@ export function evaluateThreshold(
     includeRidgeScores,
     thresholdIndex,
   );
-  const totalPixels = rows * cols;
-  const occupancy = activePixels / totalPixels;
 
   if (activePixels === 0) {
     return {
@@ -153,6 +151,9 @@ export function evaluateThreshold(
       horizontalRidgeScore: 0,
     };
   }
+
+  const totalPixels = rows * cols;
+  const occupancy = activePixels / totalPixels;
 
   const expectedNoisePixels =
     totalPixels * gaussianTwoSidedTail(sigmaMultiplier);

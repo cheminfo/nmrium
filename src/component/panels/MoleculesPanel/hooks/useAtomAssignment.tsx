@@ -156,6 +156,10 @@ export default function useAtomAssignment() {
     const assignKeys = getAssignIds(spectrum, assignId);
 
     if (!assignKeys) return;
+
+    //TODO: Refactor TargetAssignKeys after completing the 2D assignment and remove assignKeys.length !== 2 condition
+    if (assignKeys.length !== 2) return;
+
     const [{ index: rangeIndex }] = assignKeys;
     const {
       id: spectrumId,
@@ -164,9 +168,6 @@ export default function useAtomAssignment() {
     const range = values[rangeIndex];
 
     let diaIDs: string[] = [];
-
-    //TODO: Refactor TargetAssignKeys after completing the 2D assignment and remove assignKeys.length !== 2 condition
-    if (assignKeys.length !== 2) return;
     const [, { index: signalIndex }] = assignKeys;
     diaIDs = range?.signals[signalIndex]?.diaIDs || [];
 
@@ -192,13 +193,14 @@ export default function useAtomAssignment() {
     const assignKeys = getAssignIds(spectrum, key);
 
     if (!assignKeys) return;
+
+    //TODO: Refactor TargetAssignKeys after completing the 2D assignment and remove assignKeys.length !== 2 condition
+    if (assignKeys.length !== 2) return;
+
     const [{ index: zoneIndex }] = assignKeys;
     const zone = spectrum.zones.values[zoneIndex];
 
     let diaIDs: string[] = [];
-
-    //TODO: Refactor TargetAssignKeys after completing the 2D assignment and remove assignKeys.length !== 2 condition
-    if (assignKeys.length !== 2) return;
     const [, { index: signalIndex }] = assignKeys;
     diaIDs = zone?.signals[signalIndex][axis]?.diaIDs || [];
 

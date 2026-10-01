@@ -27,11 +27,11 @@ export default function SimilarityTree() {
   const spectrum = useSpectrum();
   const format = useFormatNumberByNucleus(activeTab);
   const { scaleX } = useScaleChecked();
-  const scaleY = (value: number) => (height * value) / maxTreeLevels;
-  const treeHeadLength = height / maxTreeLevels;
 
   if (!showSimilarityTree || !isSpectrum1D(spectrum)) return null;
 
+  const scaleY = (value: number) => (height * value) / maxTreeLevels;
+  const treeHeadLength = height / maxTreeLevels;
   const {
     data: { x, re },
     display: { color },

@@ -539,10 +539,6 @@ export default function PeaksPanel() {
     displayerMode,
   } = useChartData();
   const { current } = usePreferences();
-  const { data, defaultDatabase } = current.databases;
-  const databases = DATA_BASES.concat(
-    data.filter((datum) => datum.enabled),
-  ) as Databases;
 
   if (displayerMode !== '1D') {
     return (
@@ -552,6 +548,12 @@ export default function PeaksPanel() {
       </PanelNoData>
     );
   }
+
+  const { data, defaultDatabase } = current.databases;
+  const databases = DATA_BASES.concat(
+    data.filter((datum) => datum.enabled),
+  ) as Databases;
+
   return (
     <MemoizedDatabasePanel
       nucleus={activeTab || undefined}

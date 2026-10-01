@@ -9,10 +9,9 @@ export function useSelectedSpectra() {
   const activeSpectrum = useActiveSpectra();
   const { data } = useChartData();
   return useMemo<Spectrum[] | null>(() => {
-    const spectra = [];
-
     if (!activeSpectrum || activeSpectrum?.length === 0) return null;
 
+    const spectra = [];
     for (const active of activeSpectrum) {
       const spectrum = data?.[active.index];
       if (spectrum) {
