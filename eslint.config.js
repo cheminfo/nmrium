@@ -80,7 +80,6 @@ export default defineConfig(
       'unicorn/prefer-combined-guards': 'off',
       'unicorn/prefer-continue': 'off',
       'unicorn/prefer-early-return': 'off',
-      'unicorn/prefer-hoisting-branch-code': 'off',
       'no-restricted-imports': [
         'error',
         {
