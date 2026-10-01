@@ -63,10 +63,7 @@ const getPredictionFormValidation = (isNameRequired = false) =>
       'check-options',
       'You must check one of the options to start prediction',
       (obj) => {
-        if (Object.values(obj).includes(true)) {
-          return true;
-        }
-        return false;
+        return Object.values(obj).includes(true);
       },
     ),
   });

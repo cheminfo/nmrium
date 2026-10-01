@@ -108,9 +108,7 @@ export function CursorToolIcon({
             if (!selectedProcessingTool) return false;
 
             const operatorUI = core.slotOperator(selectedProcessingTool);
-            if (!operatorUI?.ChartMouseIcon) return false;
-
-            return true;
+            return Boolean(operatorUI?.ChartMouseIcon);
           },
           ({ selectedProcessingTool }) => (
             <CoreOperatorChartMouseIcon
