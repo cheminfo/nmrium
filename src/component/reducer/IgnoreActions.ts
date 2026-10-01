@@ -34,9 +34,6 @@ const ignoreActions = new Set<Partial<Action['type']>>([
   'TOGGLE_MOLECULE_LABEL',
 ]);
 
-function checkActionType(type: Action['type']): boolean {
-  if (!ignoreActions?.has(type)) return true;
-  return false;
+export default function checkActionType(type: Action['type']): boolean {
+  return !ignoreActions?.has(type);
 }
-
-export default checkActionType;

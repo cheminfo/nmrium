@@ -181,10 +181,7 @@ export type SpectrumActions =
   | UpdateSpectrumMetaAction;
 
 function checkIsVisible2D(datum: Spectrum2D): boolean {
-  if (!datum.display.isPositiveVisible && !datum.display.isNegativeVisible) {
-    return false;
-  }
-  return true;
+  return datum.display.isPositiveVisible || datum.display.isNegativeVisible;
 }
 
 function setVisible(datum: Spectrum, flag: boolean) {
@@ -226,7 +223,7 @@ function multipleSelect(
   }
 }
 
-function setSpectraMetaInfo(
+export function setSpectraMetaInfo(
   draft: Draft<State>,
   spectraMetaInfo: Record<string, Record<string, any>>,
 ) {
@@ -239,7 +236,7 @@ function setSpectraMetaInfo(
 }
 
 //action
-function handleChangeSpectrumVisibilityById(
+export function handleChangeSpectrumVisibilityById(
   draft: Draft<State>,
   action: ChangeSpectrumVisibilityByIdAction,
 ) {
@@ -264,7 +261,7 @@ function handleChangeSpectrumVisibilityById(
 }
 
 //action
-function handleChangeSpectraVisibilityByNucleus(
+export function handleChangeSpectraVisibilityByNucleus(
   draft: Draft<State>,
   action: ChangeSpectraVisibilityByNucleusAction,
 ) {
@@ -292,7 +289,7 @@ function handleChangeSpectraVisibilityByNucleus(
 }
 
 //action
-function handleChangeActiveSpectrum(
+export function handleChangeActiveSpectrum(
   draft: Draft<State>,
   action: ChangeActiveSpectrumAction,
 ) {
@@ -439,8 +436,9 @@ function handleChangeActiveSpectrum(
     resetSelectedTool(draft);
   }
 }
+
 //action
-function handleChangeSpectrumSetting(
+export function handleChangeSpectrumSetting(
   draft: Draft<State>,
   action: ChangeSpectrumSettingAction,
 ) {
@@ -510,7 +508,10 @@ function resolveDeleteSpectraIDs(
 }
 
 //action
-function handleDeleteSpectra(draft: Draft<State>, action: DeleteSpectraAction) {
+export function handleDeleteSpectra(
+  draft: Draft<State>,
+  action: DeleteSpectraAction,
+) {
   const { domainOptions } = action?.payload || {};
 
   const deleteSpectraIDs = resolveDeleteSpectraIDs(draft, action);
@@ -552,7 +553,7 @@ function handleDeleteSpectra(draft: Draft<State>, action: DeleteSpectraAction) {
 }
 
 //action
-function handleAddMissingProjectionHandler(
+export function handleAddMissingProjectionHandler(
   draft: Draft<State>,
   action: AddMissingProjectionAction,
 ) {
@@ -581,7 +582,7 @@ function handleAddMissingProjectionHandler(
 }
 
 //action
-function handleAlignSpectraHandler(
+export function handleAlignSpectraHandler(
   draft: Draft<State>,
   action: AlignSpectraAction,
 ) {
@@ -613,7 +614,7 @@ function handleAlignSpectraHandler(
 }
 
 //action
-function handleGenerateSpectrumFromPublicationStringHandler(
+export function handleGenerateSpectrumFromPublicationStringHandler(
   draft: Draft<State>,
   action: GenerateSpectrumFromPublicationStringAction,
 ) {
@@ -631,7 +632,7 @@ function handleGenerateSpectrumFromPublicationStringHandler(
 }
 
 //action
-function handleImportSpectraMetaInfo(
+export function handleImportSpectraMetaInfo(
   draft: Draft<State>,
   action: ImportSpectraMetaInfoAction,
 ) {
@@ -640,7 +641,7 @@ function handleImportSpectraMetaInfo(
 }
 
 //action
-function handleToggleSpectraLegend(draft: Draft<State>) {
+export function handleToggleSpectraLegend(draft: Draft<State>) {
   draft.view.spectra.showLegend = !draft.view.spectra.showLegend;
 }
 
@@ -662,7 +663,7 @@ function groupSpectraByClass(spectra: Spectrum[], jpath: string | string[]) {
 }
 
 //action
-function handleRecolorSpectraBasedOnDistinctValue(
+export function handleRecolorSpectraBasedOnDistinctValue(
   draft: Draft<State>,
   action: ReColorSpectraBasedOnDistinctValueAction,
 ) {
@@ -736,7 +737,7 @@ function handleRecolorSpectraBasedOnDistinctValue(
   }
 }
 
-function handleSimulateSpectrum(
+export function handleSimulateSpectrum(
   draft: Draft<State>,
   simulateSpectrumOptions: SimulateSpectrumAction,
 ) {
@@ -788,7 +789,8 @@ function handleSimulateSpectrum(
     setActiveTab(draft);
   }
 }
-function handleUpdateSpectrumMeta(
+
+export function handleUpdateSpectrumMeta(
   draft: Draft<State>,
   action: UpdateSpectrumMetaAction,
 ): void {
@@ -805,20 +807,3 @@ function handleUpdateSpectrumMeta(
     }
   }
 }
-
-export {
-  handleAddMissingProjectionHandler,
-  handleAlignSpectraHandler,
-  handleChangeActiveSpectrum,
-  handleChangeSpectraVisibilityByNucleus,
-  handleChangeSpectrumSetting,
-  handleChangeSpectrumVisibilityById,
-  handleDeleteSpectra,
-  handleGenerateSpectrumFromPublicationStringHandler,
-  handleImportSpectraMetaInfo,
-  handleRecolorSpectraBasedOnDistinctValue,
-  handleSimulateSpectrum,
-  handleToggleSpectraLegend,
-  handleUpdateSpectrumMeta,
-  setSpectraMetaInfo,
-};

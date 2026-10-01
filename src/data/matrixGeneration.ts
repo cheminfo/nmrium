@@ -53,10 +53,7 @@ export function normalCase(str: string) {
 }
 
 function isLeave(fieldOptions: any) {
-  if (['number', 'boolean', 'string'].includes(fieldOptions.type)) {
-    return true;
-  }
-  return false;
+  return ['number', 'boolean', 'string'].includes(fieldOptions.type);
 }
 
 function flattenFields(

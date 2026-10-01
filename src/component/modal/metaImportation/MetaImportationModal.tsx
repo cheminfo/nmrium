@@ -223,14 +223,11 @@ function InnerMetaImportationModal({
 
   function handleActiveRow(row: TanStackTableRow<any>) {
     const record = compareResults[row.index] || null;
-    if (
+    return Boolean(
       record?.isDuplicated ||
       record?.spectraIDs.length > 0 ||
-      errors?.[row.index]
-    ) {
-      return true;
-    }
-    return false;
+      errors?.[row.index],
+    );
   }
 
   function handleRowStyle(row: TanStackTableRow<any>) {
