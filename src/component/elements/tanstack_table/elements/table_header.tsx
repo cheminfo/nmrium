@@ -17,6 +17,7 @@ interface TableHeaderProps<
 > extends TableCellEvent {
   headerGroups: Array<TanStackTableHeaderGroup<TData>>;
   table: TanStackReactTable<TData>;
+  enableRowReordering?: boolean;
 }
 
 const sortIconStyle: CSSProperties = {
@@ -29,12 +30,13 @@ const sortIconStyle: CSSProperties = {
 export default function TableHeader<TData extends TanStackRowData>(
   props: TableHeaderProps<TData>,
 ) {
-  const { headerGroups, table, onClick } = props;
+  const { headerGroups, table, onClick, enableRowReordering } = props;
   return (
     <thead>
       {headerGroups.map((headerGroup) => {
         return (
           <tr key={headerGroup.id}>
+            {enableRowReordering && <th />}
             {headerGroup.headers.map((header) => (
               <HeaderCell
                 key={header.id}

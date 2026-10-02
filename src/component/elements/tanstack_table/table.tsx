@@ -34,6 +34,7 @@ import type {
   TanStackTableColumn,
   TanStackTableContextMenuProps,
   TanStackTableHighlightSourceProps,
+  TanStackTableReorderEvent,
   TanStackTableRow,
   TanStackTableRowStyle,
   TanStackTableSortEvent,
@@ -44,7 +45,8 @@ interface TanStackTableProps<TData extends TanStackRowData>
   extends
     TanStackTableContextMenuProps<TData>,
     TanStackTableClickEvent<TData>,
-    TanStackTableSortEvent<TData> {
+    TanStackTableSortEvent<TData>,
+    TanStackTableReorderEvent<TData> {
   data: readonly TData[];
   columns: ReadonlyArray<TanStackTableColumn<TData, any>>;
   approxItemHeight?: number;
@@ -124,6 +126,7 @@ function TanStackTableInner<TData extends TanStackRowData>(
     enableColumnsVirtualScroll = false,
     approxColumnWidth = 40,
     onClick,
+    onReorder,
     activeRow,
     totalCount,
     indexKey = 'index',
@@ -196,6 +199,11 @@ function TanStackTableInner<TData extends TanStackRowData>(
     isSortedEventTriggered.current = true;
   }
 
+  function handleReorder(...args: Parameters<NonNullable<typeof onReorder>>) {
+    onReorder?.(...args);
+    table.setSorting([]);
+  }
+
   const end =
     virtualBoundary.rows.end === rows.length - 1
       ? virtualBoundary.rows.end + 1
@@ -243,6 +251,7 @@ function TanStackTableInner<TData extends TanStackRowData>(
             headerGroups={table.getHeaderGroups()}
             table={table}
             onClick={headerClickHandler}
+            enableRowReordering={typeof onReorder === 'function'}
           />
           <tbody>
             {!data ||
@@ -270,6 +279,7 @@ function TanStackTableInner<TData extends TanStackRowData>(
                       ? clickHandler
                       : onClick
                   }
+                  onReorder={onReorder ? handleReorder : undefined}
                   isRowActive={
                     !activeRow
                       ? enableDefaultActiveRow && rowIndex === index
