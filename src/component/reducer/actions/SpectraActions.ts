@@ -109,6 +109,7 @@ type DeleteSpectraAction = ActionType<
     spectrumSource?: SpectrumSource;
   }
 >;
+type ReorderSpectraAction = ActionType<'REORDER_SPECTRA', { ids: string[] }>;
 type AddMissingProjectionAction = ActionType<
   'ADD_MISSING_PROJECTION',
   {
@@ -172,6 +173,7 @@ export type SpectrumActions =
   | ChangeActiveSpectrumAction
   | ChangeSpectrumSettingAction
   | DeleteSpectraAction
+  | ReorderSpectraAction
   | AddMissingProjectionAction
   | AlignSpectraAction
   | GenerateSpectrumFromPublicationStringAction
@@ -550,6 +552,28 @@ export function handleDeleteSpectra(
     refreshActiveTab: true,
     domainOptions,
   });
+}
+
+export function handleReorderSpectra(
+  draft: Draft<State>,
+  action: ReorderSpectraAction,
+) {
+  const { ids } = action.payload;
+  const activeSpectra = getSpectraByNucleus(
+    draft.view.spectra.activeTab,
+    draft.data,
+  );
+  const spectraById = new Map(activeSpectra.map((s) => [s.id, s]));
+
+  const reorderedSpectra = ids.map((id) => spectraById.get(id) as Spectrum);
+
+  let nextIndex = 0;
+  for (let i = 0; i < draft.data.length; i++) {
+    if (spectraById.has(draft.data[i].id)) {
+      draft.data[i] = reorderedSpectra[nextIndex];
+      nextIndex++;
+    }
+  }
 }
 
 //action
