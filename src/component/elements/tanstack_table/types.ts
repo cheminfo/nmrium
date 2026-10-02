@@ -75,6 +75,15 @@ export interface TanStackTableSortEvent<TData extends TanStackRowData> {
   onSortEnd?: (data: TData[], isTableSorted?: boolean) => void;
 }
 
+export interface TanStackTableReorderEvent<TData extends TanStackRowData> {
+  onReorder?: (
+    sourceIndex: number,
+    targetIndex: number,
+    source: TData,
+    target: TData,
+  ) => void;
+}
+
 interface VirtualBoundary {
   start: number;
   end: number;
