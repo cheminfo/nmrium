@@ -301,6 +301,20 @@ export function SpectraTable(props: SpectraTableProps) {
     return activeSpectraSet.has(row.original.id);
   }
 
+  function handleReorder(sourceIndex: number, targetIndex: number) {
+    if (sourceIndex === targetIndex) return;
+
+    const orderedSpectra = [...data];
+    const [sourceSpectrum] = orderedSpectra.splice(sourceIndex, 1);
+    orderedSpectra.splice(targetIndex, 0, sourceSpectrum);
+    const ids = orderedSpectra.map((spectrum) => spectrum.id);
+    dispatch({
+      type: 'REORDER_SPECTRA',
+      payload: { ids },
+    });
+    reset();
+  }
+
   const tableColumns = useMemo(() => {
     const columns = columnHelper.columns([]);
     const columnIdCounts = new Map<string, number>();
@@ -394,6 +408,7 @@ export function SpectraTable(props: SpectraTableProps) {
         rowStyle={handleRowStyle}
         activeRow={handleActiveRow}
         data={data}
+        onReorder={handleReorder}
         columns={tableColumns}
         onClick={(e, data: any) => onChangeActiveSpectrum(e, data.original)}
         enableVirtualScroll
