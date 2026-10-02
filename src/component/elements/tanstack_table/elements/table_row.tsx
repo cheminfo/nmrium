@@ -1,6 +1,8 @@
 /** @jsxImportSource @emotion/react */
+import { Icon } from '@blueprintjs/core';
 import type { CSSObject, SerializedStyles } from '@emotion/react';
 import { css } from '@emotion/react';
+import type { Edge } from '@zakodium/pdnd-esm';
 import type { MouseEvent } from 'react';
 import { useCallback, useEffect, useMemo } from 'react';
 
@@ -14,14 +16,22 @@ import type {
   TanStackTableClickEvent,
   TanStackTableContextMenuProps,
   TanStackTableHighlightSourceProps,
+  TanStackTableReorderEvent,
   TanStackTableRow,
   TanStackTableRowStyle,
 } from '../types.ts';
+
+import { useRowReorder } from './useRowReorder.ts';
+
+const draggingStyle = { backgroundColor: '#e8f3f9' };
+const dropLineColor = '#137cbd';
 
 function getRowStyle(
   isActive: boolean,
   rowStyle: TanStackTableRowStyle = {},
   disableDefaultRowStyle?: boolean,
+  closestEdge?: Edge | null,
+  isDragging = false,
 ): SerializedStyles {
   const { hover = {}, active = {}, base = {}, activated = {} } = rowStyle;
 
@@ -39,13 +49,30 @@ function getRowStyle(
     {
       ...baseStyle,
       ...(isActive && { backgroundColor: '#ff6f0070', ...activated }),
+      ...(isDragging && { opacity: 1, ...draggingStyle }),
+      ...(closestEdge && {
+        [closestEdge === 'top' ? '> td' : '+ tr > td']: {
+          boxShadow: `inset 0 2px ${dropLineColor}`,
+        },
+      }),
+      ...(closestEdge === 'bottom' && {
+        ':last-child > td': {
+          boxShadow: `inset 0 -2px ${dropLineColor}`,
+        },
+      }),
     },
-    { ':hover': hoverStyle, ':active': activeStyle },
+    {
+      ':hover': isDragging ? draggingStyle : hoverStyle,
+      ':active': isDragging ? draggingStyle : activeStyle,
+    },
   ]);
 }
 
 interface TableRowProps<TData extends TanStackRowData>
-  extends TanStackTableClickEvent<TData>, TanStackTableContextMenuProps<TData> {
+  extends
+    TanStackTableClickEvent<TData>,
+    TanStackTableContextMenuProps<TData>,
+    TanStackTableReorderEvent<TData> {
   row: TanStackTableRow<TData>;
   table: TanStackReactTable<TData>;
   isRowActive: boolean;
@@ -79,10 +106,13 @@ export default function TableRow<TData extends TanStackRowData>(
     onContextMenuSelect,
     contextMenu,
     onClick,
+    onReorder,
     isRowActive = false,
     rowStyle,
     disableDefaultRowStyle,
   } = props;
+  const { rowRef, handleRef, isReorderActive, isDragging, closestEdge } =
+    useRowReorder(row, onReorder);
   const data = useMemo(
     (): HighlightEventSource =>
       ({
@@ -116,14 +146,24 @@ export default function TableRow<TData extends TanStackRowData>(
         onContextMenuSelect?.(selected, row.original)
       }
       as="tr"
+      ref={rowRef}
       style={{ position: 'static' }}
       css={getRowStyle(
         highlight.isActive || isRowActive,
         rowStyle,
         disableDefaultRowStyle,
+        closestEdge,
+        isDragging,
       )}
       {...highlight.onHover}
     >
+      {isReorderActive && (
+        <td style={{ width: '24px' }}>
+          <div ref={handleRef} style={{ cursor: 'grab', display: 'flex' }}>
+            <Icon icon="drag-handle-vertical" />
+          </div>
+        </td>
+      )}
       {row.getAllCells().map((cell) => {
         const rowSpan = cell.getRowSpan();
         const colSpan = cell.getColSpan();
