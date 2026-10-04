@@ -5,6 +5,7 @@ import {
   use,
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -118,7 +119,8 @@ const emptyContextValue: HighlightContextValue = {
   remove: () => null,
 };
 
-const HighlightContext = createContext<HighlightContextValue>(emptyContextValue);
+const HighlightContext =
+  createContext<HighlightContextValue>(emptyContextValue);
 
 export function toPublicHighlightState(
   state: HighlightState,
@@ -212,8 +214,10 @@ export function highlightReducer(
 
 export interface HighlightProviderProps extends PropsWithChildren {
   /**
-   * When provided, highlight state is controlled by the host.
-   * Omit it to keep the previous uncontrolled behaviour.
+   * When provided, highlight state is controlled by the host, which must then
+   * also handle `onChange`, otherwise hover/click highlights inside NMRium are
+   * not rendered. Omit it to keep the previous uncontrolled behaviour. Do not
+   * switch between controlled and uncontrolled during the provider's lifetime.
    */
   value?: NMRiumHighlightState;
   /**
@@ -228,25 +232,36 @@ export function HighlightProvider(props: HighlightProviderProps) {
   const isControlled = value !== undefined;
   const [internalState, setInternalState] = useState(emptyInternalState);
 
-  const highlight = isControlled
-    ? toInternalHighlightState(value)
-    : internalState;
+  const controlledState = useMemo(
+    () => (value ? toInternalHighlightState(value) : null),
+    [value],
+  );
+  const highlight = controlledState ?? internalState;
 
-  // Keep a mutable snapshot so consecutive dispatches in the same tick
-  // (for example useHighlight unmount: HIDE then UNSET_PERMANENT) compose.
+  // `dispatch` must keep a stable identity: every useHighlight consumer runs an
+  // unmount effect keyed on it, so a new identity per render would clear the
+  // highlight (and loop when the host passes an inline onChange).
+  // `latestRef` also lets consecutive dispatches in one tick compose, for
+  // example useHighlight's unmount cleanup (HIDE then UNSET_PERMANENT).
   const latestRef = useRef(highlight);
-  latestRef.current = highlight;
+  const onChangeRef = useRef(onChange);
+  const isControlledRef = useRef(isControlled);
+  useLayoutEffect(() => {
+    latestRef.current = highlight;
+    onChangeRef.current = onChange;
+    isControlledRef.current = isControlled;
+  });
 
   const dispatch = useCallback(
     (action: { type: HighlightActions; payload?: HighlightPayload }) => {
       const next = highlightReducer(latestRef.current, action);
       latestRef.current = next;
-      if (!isControlled) {
+      if (!isControlledRef.current) {
         setInternalState(next);
       }
-      onChange?.(toPublicHighlightState(next));
+      onChangeRef.current?.(toPublicHighlightState(next));
     },
-    [isControlled, onChange],
+    [],
   );
 
   const contextValue = useMemo(() => {
@@ -259,9 +274,7 @@ export function HighlightProvider(props: HighlightProviderProps) {
     return { highlight, dispatch, remove };
   }, [dispatch, highlight]);
 
-  return (
-    <HighlightContext value={contextValue}>{children}</HighlightContext>
-  );
+  return <HighlightContext value={contextValue}>{children}</HighlightContext>;
 }
 
 export function useHighlightData() {

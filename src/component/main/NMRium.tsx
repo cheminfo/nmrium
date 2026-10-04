@@ -81,12 +81,15 @@ export interface NMRiumProps {
   getSpinner?: () => ReactElement;
   core?: NMRiumCore;
   /**
-   * When provided, highlight state is controlled by the host.
-   * Omit it to keep the previous uncontrolled behaviour.
+   * When provided, highlight state is controlled by the host, which must then
+   * also handle `onHighlightChange`, otherwise hover/click highlights inside
+   * NMRium are not rendered. Omit it to keep the previous uncontrolled
+   * behaviour.
    */
   highlight?: NMRiumHighlightState;
   /**
    * Called for every highlight change, including internal hover/click.
+   * Works in both controlled and uncontrolled mode.
    */
   onHighlightChange?: (state: NMRiumHighlightState) => void;
 
