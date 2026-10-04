@@ -1,7 +1,10 @@
 import styled from '@emotion/styled';
+import { useState } from 'react';
 
+import type { NMRiumHighlightState } from '../../component/highlight/index.js';
 import {
   HighlightProvider,
+  emptyHighlightState,
   useHighlight,
 } from '../../component/highlight/index.js';
 
@@ -44,18 +47,54 @@ const TableCell = styled.td`
   padding: 5px;
 `;
 
+const Controls = styled.div`
+  display: flex;
+  gap: 8px;
+  padding: 20px;
+`;
+
 export default function TestHighlight() {
+  const [highlight, setHighlight] =
+    useState<NMRiumHighlightState>(emptyHighlightState);
+
   return (
-    <HighlightProvider>
-      <Container>
-        <PanelContainer>
-          <HighlightTable data={tableOne} />
-        </PanelContainer>
-        <PanelContainer>
-          <HighlightTable data={tableTwo} />
-        </PanelContainer>
-      </Container>
-    </HighlightProvider>
+    <>
+      <Controls>
+        <button
+          type="button"
+          onClick={() => {
+            setHighlight({
+              highlighted: ['A', '1', '2'],
+              highlightedPermanently: ['A'],
+              sourceData: { type: 'UNKNOWN' },
+            });
+          }}
+        >
+          Highlight A from outside
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setHighlight(emptyHighlightState);
+          }}
+        >
+          Clear highlight
+        </button>
+        <span>
+          permanent: {highlight.highlightedPermanently.join(', ') || 'none'}
+        </span>
+      </Controls>
+      <HighlightProvider value={highlight} onChange={setHighlight}>
+        <Container>
+          <PanelContainer>
+            <HighlightTable data={tableOne} />
+          </PanelContainer>
+          <PanelContainer>
+            <HighlightTable data={tableTwo} />
+          </PanelContainer>
+        </Container>
+      </HighlightProvider>
+    </>
   );
 }
 

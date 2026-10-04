@@ -6,7 +6,8 @@ import {
   useCallback,
   useEffect,
   useMemo,
-  useReducer,
+  useRef,
+  useState,
 } from 'react';
 
 import type { ExclusionZone } from '../../data/types/data1d/ExclusionZone.js';
@@ -60,6 +61,17 @@ export function isHighlightEventSource<T extends HighlightEventSourceType>(
   return types.includes(source.type as T);
 }
 
+/**
+ * Public highlight state that hosts can read and write through
+ * `<NMRium highlight={...} onHighlightChange={...} />`.
+ * The internal `highlights` reference-count record stays private.
+ */
+export interface NMRiumHighlightState {
+  highlighted: string[];
+  highlightedPermanently: string[];
+  sourceData: HighlightEventSource | null;
+}
+
 const highLightStyle: CSSProperties = {
   backgroundColor: '#ff6f0091',
 };
@@ -87,20 +99,53 @@ interface HighlightContextValue {
   remove: () => void;
 }
 
-const emptyState = {
-  highlight: {
-    highlights: {},
-    highlighted: [],
-    highlightedPermanently: [],
-    sourceData: null,
-  },
+export const emptyHighlightState: NMRiumHighlightState = {
+  highlighted: [],
+  highlightedPermanently: [],
+  sourceData: null,
+};
+
+const emptyInternalState: HighlightState = {
+  highlights: {},
+  highlighted: [],
+  highlightedPermanently: [],
+  sourceData: null,
+};
+
+const emptyContextValue: HighlightContextValue = {
+  highlight: emptyInternalState,
   dispatch: () => null,
   remove: () => null,
 };
 
-const HighlightContext = createContext<HighlightContextValue>(emptyState);
+const HighlightContext = createContext<HighlightContextValue>(emptyContextValue);
 
-function highlightReducer(
+export function toPublicHighlightState(
+  state: HighlightState,
+): NMRiumHighlightState {
+  return {
+    highlighted: state.highlighted,
+    highlightedPermanently: state.highlightedPermanently,
+    sourceData: state.sourceData,
+  };
+}
+
+export function toInternalHighlightState(
+  value: NMRiumHighlightState,
+): HighlightState {
+  const highlights: Record<string, number> = {};
+  for (const id of value.highlighted) {
+    highlights[id] = 1;
+  }
+  return {
+    highlights,
+    highlighted: value.highlighted,
+    highlightedPermanently: value.highlightedPermanently,
+    sourceData: value.sourceData,
+  };
+}
+
+export function highlightReducer(
   state: HighlightState,
   action: {
     type: HighlightActions;
@@ -165,10 +210,43 @@ function highlightReducer(
   }
 }
 
-export function HighlightProvider(props: PropsWithChildren) {
-  const [highlight, dispatch] = useReducer(
-    highlightReducer,
-    emptyState.highlight,
+export interface HighlightProviderProps extends PropsWithChildren {
+  /**
+   * When provided, highlight state is controlled by the host.
+   * Omit it to keep the previous uncontrolled behaviour.
+   */
+  value?: NMRiumHighlightState;
+  /**
+   * Called for every highlight change, including internal hover/click and
+   * host-driven updates applied through the reducer.
+   */
+  onChange?: (state: NMRiumHighlightState) => void;
+}
+
+export function HighlightProvider(props: HighlightProviderProps) {
+  const { value, onChange, children } = props;
+  const isControlled = value !== undefined;
+  const [internalState, setInternalState] = useState(emptyInternalState);
+
+  const highlight = isControlled
+    ? toInternalHighlightState(value)
+    : internalState;
+
+  // Keep a mutable snapshot so consecutive dispatches in the same tick
+  // (for example useHighlight unmount: HIDE then UNSET_PERMANENT) compose.
+  const latestRef = useRef(highlight);
+  latestRef.current = highlight;
+
+  const dispatch = useCallback(
+    (action: { type: HighlightActions; payload?: HighlightPayload }) => {
+      const next = highlightReducer(latestRef.current, action);
+      latestRef.current = next;
+      if (!isControlled) {
+        setInternalState(next);
+      }
+      onChange?.(toPublicHighlightState(next));
+    },
+    [isControlled, onChange],
   );
 
   const contextValue = useMemo(() => {
@@ -179,10 +257,10 @@ export function HighlightProvider(props: PropsWithChildren) {
       });
     }
     return { highlight, dispatch, remove };
-  }, [highlight]);
+  }, [dispatch, highlight]);
 
   return (
-    <HighlightContext value={contextValue}>{props.children}</HighlightContext>
+    <HighlightContext value={contextValue}>{children}</HighlightContext>
   );
 }
 

@@ -11,10 +11,14 @@ import type { ErrorBoundaryPropsWithComponent } from 'react-error-boundary';
 import { ErrorBoundary } from 'react-error-boundary';
 import { RootLayout } from 'react-science/ui';
 
+import type { NMRiumHighlightState } from '../highlight/index.js';
+
 import ErrorOverlay from './ErrorOverlay.js';
 import { InnerNMRium } from './InnerNMRium.js';
 import type { NMRiumRefAPI } from './NMRiumRefAPI.js';
 import type { NMRiumChangeCb, NMRiumWorkspace } from './types.js';
+
+export type { NMRiumHighlightState } from '../highlight/index.js';
 
 export interface NMRiumProps {
   /**
@@ -76,6 +80,15 @@ export interface NMRiumProps {
    */
   getSpinner?: () => ReactElement;
   core?: NMRiumCore;
+  /**
+   * When provided, highlight state is controlled by the host.
+   * Omit it to keep the previous uncontrolled behaviour.
+   */
+  highlight?: NMRiumHighlightState;
+  /**
+   * Called for every highlight change, including internal hover/click.
+   */
+  onHighlightChange?: (state: NMRiumHighlightState) => void;
 
   ref?: Ref<NMRiumRefAPI>;
 }
