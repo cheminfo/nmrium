@@ -69,7 +69,7 @@ export interface NMRiumProps {
    * Externally control highlighting of ranges, signals, zones, and peaks ...etc by providing their IDs from the loaded data.
    * These highlights are applied in addition to NMRium's internal highlights.
    */
-  highlightedIds?: string[];
+  highlightedIds?: readonly string[];
   noErrorBoundary?: boolean;
   onError?: ErrorBoundaryPropsWithComponent['onError'];
   workspace?: NMRiumWorkspace;

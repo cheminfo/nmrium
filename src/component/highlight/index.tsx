@@ -80,7 +80,7 @@ interface HighlightPayload {
 
 interface HighlightContextValue {
   highlight: HighlightState;
-  externalHighlightedIds: Set<string>;
+  externalHighlightedIds: ReadonlySet<string>;
   dispatch: (props: {
     type: HighlightActions;
     payload?: HighlightPayload;
@@ -168,7 +168,7 @@ function highlightReducer(
 }
 
 export function HighlightProvider(
-  props: PropsWithChildren<{ highlightedIds?: string[] }>,
+  props: PropsWithChildren<{ highlightedIds?: readonly string[] }>,
 ) {
   const { highlightedIds, children } = props;
 
