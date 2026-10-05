@@ -80,6 +80,7 @@ interface HighlightPayload {
 
 interface HighlightContextValue {
   highlight: HighlightState;
+  externalHighlightedIds: Set<string>;
   dispatch: (props: {
     type: HighlightActions;
     payload?: HighlightPayload;
@@ -94,6 +95,7 @@ const emptyState = {
     highlightedPermanently: [],
     sourceData: null,
   },
+  externalHighlightedIds: new Set<string>(),
   dispatch: () => null,
   remove: () => null,
 };
@@ -165,10 +167,18 @@ function highlightReducer(
   }
 }
 
-export function HighlightProvider(props: PropsWithChildren) {
+export function HighlightProvider(
+  props: PropsWithChildren<{ highlightedIds?: string[] }>,
+) {
+  const { highlightedIds, children } = props;
+
   const [highlight, dispatch] = useReducer(
     highlightReducer,
     emptyState.highlight,
+  );
+  const externalHighlightedIds = useMemo(
+    () => new Set(highlightedIds),
+    [highlightedIds],
   );
 
   const contextValue = useMemo(() => {
@@ -178,12 +188,10 @@ export function HighlightProvider(props: PropsWithChildren) {
         payload: { convertedHighlights: highlight.highlighted },
       });
     }
-    return { highlight, dispatch, remove };
-  }, [highlight]);
+    return { highlight, externalHighlightedIds, dispatch, remove };
+  }, [externalHighlightedIds, highlight]);
 
-  return (
-    <HighlightContext value={contextValue}>{props.children}</HighlightContext>
-  );
+  return <HighlightContext value={contextValue}>{children}</HighlightContext>;
 }
 
 export function useHighlightData() {
@@ -201,7 +209,7 @@ export function useHighlight(
   if (!Array.isArray(highlights)) {
     throw new Error('highlights must be an array');
   }
-  const { dispatch, highlight } = useHighlightData();
+  const { dispatch, highlight, externalHighlightedIds } = useHighlightData();
 
   const convertedHighlights = useMemo(() => {
     const newHighlights: string[] = [];
@@ -226,10 +234,11 @@ export function useHighlight(
   }, [dispatch]);
 
   const isActive = useMemo(() => {
-    return highlight.highlighted.some((key) =>
-      convertedHighlights.includes(key),
+    return convertedHighlights.some(
+      (key) =>
+        highlight.highlighted.includes(key) || externalHighlightedIds.has(key),
     );
-  }, [convertedHighlights, highlight.highlighted]);
+  }, [convertedHighlights, externalHighlightedIds, highlight.highlighted]);
 
   const isActivePermanently = useMemo(() => {
     return highlight.highlightedPermanently.some((key) =>
