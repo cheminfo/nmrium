@@ -99,7 +99,7 @@ function processSearchByStructure(
   // https://github.com/cheminfo/openchemlib-utils/blob/ef3a9c30be7efe225a24de04ea9cefc9299674aa/src/db/MoleculesDB.js#L102-L115
 
   // todo: idCode may be null and the current version of search requires a string or molecule. `|| ''` will become useless in next release of openchemlib-util
-  const result = moleculesDB.search(idCode || '');
+  const result = moleculesDB.search(idCode);
   return result.map((entry: any) => entry.data);
 }
 
@@ -210,9 +210,9 @@ function mapJs(js: Jcoupling[]) {
       coupling: [],
       multiplicity: '',
     };
-    for (const { coupling, multiplicity } of js) {
+    for (const { coupling, multiplicity = '' } of js) {
       result.coupling.push(coupling);
-      result.multiplicity += multiplicity || '';
+      result.multiplicity += multiplicity;
     }
     const { coupling, multiplicity } = result;
     if (multiplicity.length === 0) return { coupling: coupling.join(',') };

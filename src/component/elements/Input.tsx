@@ -77,7 +77,7 @@ export default function Input(props: InputProps) {
     checkValue = () => true,
     type = 'text',
     autoSelect = false,
-    className,
+    className = '',
     renderIcon,
     canClear = false,
     onClear,
@@ -143,7 +143,7 @@ export default function Input(props: InputProps) {
         ...styles.inputWrapper,
         ...style?.inputWrapper,
       }}
-      className={`input ${className || ''} `}
+      className={`input ${className} `}
     >
       {renderIcon?.()}
       <input

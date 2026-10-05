@@ -191,7 +191,7 @@ export default function CorrelationTableRow(props: CorrelationTableRowProps) {
             ? '#f5f5dc'
             : 'inherit',
       },
-      title: !correlation.pseudo && title,
+      title: correlation.pseudo ? '' : title,
       onMouseEnter: mouseEnterHandler,
       onMouseLeave: mouseLeaveHandler,
     };
@@ -282,14 +282,13 @@ export default function CorrelationTableRow(props: CorrelationTableRowProps) {
   }
 
   const { title, ...otherTableDataProps } = tableDataProps;
-  const t = title || '';
 
   return (
     <tr style={{ backgroundColor: 'mintcream' }}>
       <ContextMenu
         as="td"
         options={contextMenus}
-        title={t}
+        title={title}
         {...{
           ...otherTableDataProps,
           style: { ...tableDataProps.style, styleLabel },
@@ -298,12 +297,12 @@ export default function CorrelationTableRow(props: CorrelationTableRowProps) {
       >
         {correlationApi.getLabel(correlations, correlation)}
       </ContextMenu>
-      <td title={t} {...otherTableDataProps}>
+      <td title={title} {...otherTableDataProps}>
         {correlationApi.getCorrelationDelta(correlation)
           ? correlationApi.getCorrelationDelta(correlation)?.toFixed(2)
           : ''}
       </td>
-      <td title={t} {...otherTableDataProps}>
+      <td title={title} {...otherTableDataProps}>
         {correlation.atomType !== 'H' ? (
           <EditableColumn
             type="number"
@@ -315,7 +314,7 @@ export default function CorrelationTableRow(props: CorrelationTableRowProps) {
           <span style={equivalenceCellStyle}>{correlation.equivalence}</span>
         )}
       </td>
-      <td title={t} {...otherTableDataProps}>
+      <td title={title} {...otherTableDataProps}>
         {correlation.atomType !== 'H' ? (
           <EditableColumn
             type="text"
@@ -330,7 +329,7 @@ export default function CorrelationTableRow(props: CorrelationTableRowProps) {
         )}
       </td>
       <td
-        title={t}
+        title={title}
         {...{
           ...otherTableDataProps,
           style: { ...tableDataProps.style, borderRight: '1px solid' },

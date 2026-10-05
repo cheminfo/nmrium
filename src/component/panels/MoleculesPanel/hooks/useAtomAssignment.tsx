@@ -152,7 +152,7 @@ export default function useAtomAssignment() {
   }
 
   function assign1DAtom(options: Assign1DOptions) {
-    const { spectrum, assignId, atom, assignmentLabel } = options;
+    const { spectrum, assignId, atom, assignmentLabel = '' } = options;
     const assignKeys = getAssignIds(spectrum, assignId);
 
     if (!assignKeys) return;
@@ -180,7 +180,7 @@ export default function useAtomAssignment() {
         diaIDs: uniqueDiaIDs.diaIDs,
         keys: assignKeys,
         spectrumId,
-        assignment: assignmentLabel || '',
+        assignment: assignmentLabel,
       },
     });
   }

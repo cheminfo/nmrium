@@ -144,18 +144,16 @@ function useMapRanges(data: SpectrumRangesInfo): RangeItem[] {
     const { signals = [] } = range;
 
     if (signals.length === 0) {
-      return [
-        {
-          ...base,
-          delta: base.deltaText,
-          deltaHz: '',
-          multiplicity: 'm',
-          coupling: '',
-          kind: '',
-          assignment: '',
-          nbAssignment: '',
-        },
-      ];
+      return {
+        ...base,
+        delta: base.deltaText,
+        deltaHz: '',
+        multiplicity: 'm',
+        coupling: '',
+        kind: '',
+        assignment: '',
+        nbAssignment: '',
+      };
     }
 
     const result = signals.map((signal) =>

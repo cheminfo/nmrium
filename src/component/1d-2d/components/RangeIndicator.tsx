@@ -80,7 +80,7 @@ export function RangeIndicator(props: RangeIndicatorProps) {
     size,
     orientation = 'horizontal',
     value,
-    format,
+    format = '',
     opacity = 1,
     onClick,
   } = props;
@@ -98,7 +98,7 @@ export function RangeIndicator(props: RangeIndicatorProps) {
           fontSize={11}
           fill="black"
         >
-          {formatNumber(value, format ?? '')}
+          {formatNumber(value, format)}
         </text>
       )}
     </g>

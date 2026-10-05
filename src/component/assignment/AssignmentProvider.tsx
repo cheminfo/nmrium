@@ -27,9 +27,7 @@ export function AssignmentProvider(props: AssignmentProviderProps) {
       const { id, axis, spectrumId } = options;
       setState((prevState) => ({
         ...prevState,
-        activated: !prevState.activated
-          ? { id, axis: axis || null, spectrumId }
-          : null,
+        activated: !prevState.activated ? { id, axis, spectrumId } : null,
       }));
     };
 

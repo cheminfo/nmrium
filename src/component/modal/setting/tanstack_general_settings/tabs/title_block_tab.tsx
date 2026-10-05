@@ -72,12 +72,11 @@ const TableFields = withForm({
   defaultValues: defaultGeneralSettingsFormValues,
   render: function Fields({ form }) {
     const { Field } = form;
-    const fields = useField({
+    const { removeValue, setValue, pushValue, name, store } = useField({
       form,
       name: 'infoBlock.fields',
       mode: 'array',
     });
-    const { removeValue, setValue, pushValue, name, store } = fields;
 
     const [autoFocus, setAutoFocus] = useState<string>('');
     function onAddField() {

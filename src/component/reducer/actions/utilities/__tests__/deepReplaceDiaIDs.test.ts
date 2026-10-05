@@ -37,7 +37,7 @@ describe('deepReplaceDiaIDs', () => {
   it('deepReplaceDiaIDs', () => {
     const data = JSON.parse(
       readFileSync(path.join(__dirname, 'data/test.json'), 'utf8'),
-    );
+    ) as unknown;
     const mappings = {
       'did@`@fTeYWaj@@@GzP`HeT': 'Hello World',
     };

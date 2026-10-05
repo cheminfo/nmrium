@@ -1,5 +1,5 @@
 import { Button, Classes } from '@blueprintjs/core';
-import type { NMRPeak1D, Peak1D, Signal1D } from '@zakodium/nmr-types';
+import type { NMRPeak1D, Signal1D } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { getShiftX } from 'nmr-processing';
@@ -33,18 +33,8 @@ interface SignalPeaksTableProps {
   index: number;
 }
 
-function getPeakKey(
-  signalIndex: number,
-  peakIndex: number,
-  key?: keyof Peak1D,
-) {
-  const path = `signals[${signalIndex}].peaks.${peakIndex}`;
-
-  if (!key) {
-    return path;
-  }
-
-  return `${path}.${key}`;
+function getPeakKey(signalIndex: number, peakIndex: number) {
+  return `signals[${signalIndex}].peaks.${peakIndex}`;
 }
 
 export function SignalPeaksTable(props: SignalPeaksTableProps) {

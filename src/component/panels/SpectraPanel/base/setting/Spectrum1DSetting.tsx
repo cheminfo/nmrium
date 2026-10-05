@@ -34,11 +34,11 @@ export function Spectrum1DSetting({ data, onSubmit }: Spectrum1DSettingProps) {
             name="display.color"
             control={control}
             render={({ field }) => {
-              const { value, onChange } = field;
+              const { value = '#000', onChange } = field;
               return (
                 <CustomColorPicker
                   presetColors={COLORS}
-                  color={{ hex: value || '#000' }}
+                  color={{ hex: value }}
                   onChange={(color) => {
                     onChange(color.hex);
                     void handleSubmit(onSubmit)();

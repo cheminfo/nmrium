@@ -244,13 +244,13 @@ function ActionButtons(props: ActionButtonsProps) {
       return <VerticalSeparator key={index} />;
     }
 
-    const { title, visible, ...otherProps } = button;
+    const { title = '', visible, ...otherProps } = button;
 
     return (
       <ActionButton
         // eslint-disable-next-line @eslint-react/no-array-index-key
         key={index}
-        tooltipProps={{ content: title || '', compact: true }}
+        tooltipProps={{ content: title, compact: true }}
         {...otherProps}
       />
     );
