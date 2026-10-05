@@ -71,9 +71,8 @@ function ResetWorkspaceButton(props: WorkspacesProps) {
       onClick={handleReset}
       tooltipProps={resetTooltipProps}
       disabled={isResetDisabled}
-    >
-      <FaBolt className={Classes.ICON} />
-    </Button>
+      icon={<FaBolt className={Classes.ICON} />}
+    />
   );
 }
 
@@ -149,17 +148,16 @@ function CopyPasteButtons(props: WorkspacesProps) {
         variant="outlined"
         onClick={onCopyWorkspace}
         tooltipProps={copyWorkspaceTooltipProps}
-      >
-        <FaRegCopy className={Classes.ICON} />
-      </Button>
+        icon={<FaRegCopy className={Classes.ICON} />}
+      />
+
       <Button
         variant="outlined"
         intent="success"
         onClick={onPasteWorkspace}
         tooltipProps={pasteWorkspaceTooltipProps}
-      >
-        <FaPaste className={Classes.ICON} />
-      </Button>
+        icon={<FaPaste className={Classes.ICON} />}
+      />
 
       <ClipboardFallbackModal
         mode={clipboard.shouldFallback}
