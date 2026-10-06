@@ -85,7 +85,8 @@ export default function useAtomAssignment() {
   const highlightData = useHighlightData();
   const highlightedIdDsRef = useRef<string[]>([]);
   const assignments = useAssignmentContext();
-  const { getAssignmentLabelById } = useExtractAtomAssignmentLabel();
+  const { getAssignmentLabelByDiaIDs, getAssignmentLabelById } =
+    useExtractAtomAssignmentLabel();
   const { activated: activatedAssignment, data: assignmentsData } = assignments;
 
   const activatedKey = activatedAssignment
@@ -172,6 +173,8 @@ export default function useAtomAssignment() {
     diaIDs = range?.signals[signalIndex]?.diaIDs || [];
 
     const uniqueDiaIDs = getUniqueDiaIDs(diaIDs, atom);
+    const updatedAssignment =
+      getAssignmentLabelByDiaIDs(uniqueDiaIDs.diaIDs) ?? assignmentLabel;
 
     dispatch({
       type: 'ASSIGN_1D_SIGNAL',
@@ -180,7 +183,7 @@ export default function useAtomAssignment() {
         diaIDs: uniqueDiaIDs.diaIDs,
         keys: assignKeys,
         spectrumId,
-        assignment: assignmentLabel,
+        assignment: updatedAssignment || '',
       },
     });
   }

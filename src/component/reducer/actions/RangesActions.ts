@@ -499,7 +499,7 @@ function handleAssign1DSignal(
 
   if (!signal) return;
 
-  if (assignment && !signal.assignment) {
+  if (assignment && (signal.isAutoAssignment || !signal.assignment)) {
     signal.assignment = assignment;
     signal.isAutoAssignment = true;
   }

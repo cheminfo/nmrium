@@ -3,11 +3,7 @@ import type { DiaIDAndInfo } from 'openchemlib-utils';
 import { useRef } from 'react';
 
 import { useTopicMolecule } from '../../../context/TopicMoleculeContext.js';
-
-const collator = new Intl.Collator(undefined, {
-  numeric: true,
-  sensitivity: 'base',
-});
+import { sortAssignmentLabels } from '../utilities/sortAssignmentLabels.js';
 
 function getLabels(labels: string[]) {
   return labels.map((label) => label.trim()).filter(Boolean);
@@ -62,7 +58,7 @@ export function useExtractAtomAssignmentLabel() {
     const atomData = getTopicAtom(moleculeId, oclID, molfile);
     if (!atomData) return;
 
-    return getCustomLabels(atomData).join(',');
+    return sortAssignmentLabels(getCustomLabels(atomData)).join(',');
   }
 
   function getAssignmentLabelByDiaIDs(diaIDs: string[]) {
@@ -81,8 +77,8 @@ export function useExtractAtomAssignmentLabel() {
       }
     }
 
-    const uniqueLabels = [...new Set(getLabels(labels))];
-    return uniqueLabels.toSorted(collator.compare).join(',');
+    const uniqueLabels = new Set(getLabels(labels));
+    return sortAssignmentLabels([...uniqueLabels]).join(',');
   }
 
   function getAssignmentLabelByHover(moleculeId: string, molfile?: string) {
