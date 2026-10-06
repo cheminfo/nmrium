@@ -43,6 +43,7 @@ export function InnerNMRium(props: InnerNMRiumProps) {
     preferences,
     getSpinner = defaultGetSpinner,
     onChange,
+    highlightedIds,
     emptyText,
     apiRef,
     core,
@@ -122,7 +123,9 @@ export function InnerNMRium(props: InnerNMRiumProps) {
                           <TopicMoleculeProvider>
                             <DialogProvider>
                               <AlertProvider>
-                                <HighlightProvider>
+                                <HighlightProvider
+                                  highlightedIds={highlightedIds}
+                                >
                                   <AssignmentProvider>
                                     <SpinnerContext value={getSpinner}>
                                       <InnerNMRiumContents
