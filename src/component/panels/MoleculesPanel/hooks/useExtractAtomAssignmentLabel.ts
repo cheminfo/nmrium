@@ -4,6 +4,11 @@ import { useRef } from 'react';
 
 import { useTopicMolecule } from '../../../context/TopicMoleculeContext.js';
 
+const collator = new Intl.Collator(undefined, {
+  numeric: true,
+  sensitivity: 'base',
+});
+
 function getLabels(labels: string[]) {
   return labels.map((label) => label.trim()).filter(Boolean);
 }
@@ -76,7 +81,8 @@ export function useExtractAtomAssignmentLabel() {
       }
     }
 
-    return getLabels(labels).join(',');
+    const uniqueLabels = [...new Set(getLabels(labels))];
+    return uniqueLabels.toSorted(collator.compare).join(',');
   }
 
   function getAssignmentLabelByHover(moleculeId: string, molfile?: string) {
