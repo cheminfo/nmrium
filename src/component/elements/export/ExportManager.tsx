@@ -146,9 +146,9 @@ export function ExportManagerController(props: ExportManagerControllerProps) {
 
   if (!exportOptions) return null;
 
-  const { format, destination = 'file' } = exportOptions;
+  const { destination = 'file' } = exportOptions;
 
-  let exportAs: keyof ExportPreferences = format;
+  let exportAs: keyof ExportPreferences = exportOptions.format;
 
   if (destination === 'clipboard') {
     exportAs = 'clipboard';

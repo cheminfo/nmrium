@@ -305,7 +305,7 @@ function AssignmentLabel(props: AssignmentLabelProps) {
     },
   } = useChartData();
   const { id: zoneID, x, y } = zone;
-  let { assignment } = signal;
+  let assignment = signal.assignment;
   const { id: signalID } = signal;
   const dispatch = useDispatch();
   const { isActive } = useHighlight([signalID]);

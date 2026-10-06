@@ -126,21 +126,22 @@ export default function SpectrumInfoBlock() {
   const bothSidePadding = boxPadding * 2;
   const shift = dragShiftY / 2;
 
-  let { x, y } = currentPosition;
+  let popoverX = currentPosition.x;
+  let popoverY = currentPosition.y;
 
-  if (x + boxWidth + boxPadding > width - margin.right) {
-    x = width - margin.right - boxWidth - boxPadding;
+  if (popoverX + boxWidth + boxPadding > width - margin.right) {
+    popoverX = width - margin.right - boxWidth - boxPadding;
   }
 
-  if (x - boxPadding < margin.left) {
-    x = margin.left + boxPadding;
+  if (popoverX - boxPadding < margin.left) {
+    popoverX = margin.left + boxPadding;
   }
-  if (y + boxHeight + bothSidePadding + shift > height - margin.bottom) {
-    y = height - margin.bottom - boxHeight - bothSidePadding - shift;
+  if (popoverY + boxHeight + bothSidePadding + shift > height - margin.bottom) {
+    popoverY = height - margin.bottom - boxHeight - bothSidePadding - shift;
   }
 
-  if (y + shift < margin.top) {
-    y = margin.top - shift;
+  if (popoverY + shift < margin.top) {
+    popoverY = margin.top - shift;
   }
 
   const finalBoxWidth = boxWidth + bothSidePadding;
@@ -178,10 +179,13 @@ export default function SpectrumInfoBlock() {
       direction="row"
       space={2}
       {...(isMoveActive && { isOpen: true })}
-      x={x}
-      y={y}
+      x={popoverX}
+      y={popoverY}
     >
-      <g className="spectra-info-block" transform={`translate(${x} ${y})`}>
+      <g
+        className="spectra-info-block"
+        transform={`translate(${popoverX} ${popoverY})`}
+      >
         <rect
           data-no-export="true"
           x={-boxPadding}

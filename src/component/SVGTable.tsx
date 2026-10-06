@@ -76,7 +76,7 @@ interface FormatKeyOptions {
 
 function formatKey(options: FormatKeyOptions) {
   const { index, columnKey, groupKey } = options;
-  return `GroupKey[${groupKey || null}]-ColumnKey[${columnKey}]-RowIndex[${index}]`;
+  return `GroupKey[${groupKey}]-ColumnKey[${columnKey}]-RowIndex[${index}]`;
 }
 
 function mapRowsSpan<T>(data: T[], columns: Array<InternalColumns<T>>) {

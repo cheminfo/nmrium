@@ -89,7 +89,7 @@ const CardInfo = styled.div`
 const MolecularFormula = styled.div<{ color?: string }>`
   font-size: 0.9rem;
   font-weight: 500;
-  color: ${({ color }) => color ?? '#374151'};
+  color: ${({ color = '#374151' }) => color};
 `;
 
 const SearchContainer = styled.div`

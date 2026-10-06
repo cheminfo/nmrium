@@ -46,7 +46,7 @@ export default function Tab({
   onDelete = () => null,
   tabstyles,
   render,
-  className,
+  className = '',
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   children,
 }: TabProps) {
@@ -70,7 +70,7 @@ export default function Tab({
 
   return (
     <li
-      className={`${classNames.join(' ')} ${className || ''}`}
+      className={`${classNames.join(' ')} ${className}`}
       onClick={clickHandler}
       css={styles(tabstyles)}
     >

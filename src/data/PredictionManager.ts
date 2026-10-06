@@ -173,11 +173,7 @@ function checkFromTo(
   inputOptions: PredictionOptions,
   logger: Logger,
 ) {
-  const setFromTo = (
-    inputOptions: PredictionOptions,
-    nucleus: '1H' | '13C',
-    fromTo: GetNewFromToReturn,
-  ) => {
+  const setFromTo = (nucleus: '1H' | '13C', fromTo: GetNewFromToReturn) => {
     inputOptions['1d'][nucleus].to = fromTo.to;
     inputOptions['1d'][nucleus].from = fromTo.from;
     if (fromTo.signalsOutOfRange) {
@@ -194,8 +190,7 @@ function checkFromTo(
     if (predictedSpectra[experiment]?.signals.length === 0) continue;
 
     if (['carbon', 'proton'].includes(experiment)) {
-      const spectrum = predictedSpectra[experiment] as Prediction1D;
-      const { signals, nucleus } = spectrum;
+      const { signals, nucleus } = predictedSpectra[experiment] as Prediction1D;
       const { from, to } = (inputOptions['1d'] as any)[nucleus];
       const fromTo = getNewFromTo({
         deltas: signals.map((s) => s.delta),
@@ -204,7 +199,7 @@ function checkFromTo(
         nucleus,
         autoExtendRange,
       });
-      setFromTo(inputOptions, nucleus as '1H' | '13C', fromTo);
+      setFromTo(nucleus as '1H' | '13C', fromTo);
     } else {
       const { signals, nuclei } = predictedSpectra[experiment] as Prediction2D;
       for (const nucleus of nuclei) {
@@ -217,7 +212,7 @@ function checkFromTo(
           nucleus,
           autoExtendRange,
         });
-        setFromTo(inputOptions, nucleus as '1H' | '13C', fromTo);
+        setFromTo(nucleus as '1H' | '13C', fromTo);
       }
     }
   }
@@ -336,11 +331,11 @@ function mapZones(zones: NMRZone[]): Zone[] {
   return zones.map((zone): Zone => {
     const { signals, ...resZone } = zone;
     const newSignals = signals.map((signal): Signal2D => {
-      const { x, y, id, peaks, kind, ...resSignal } = signal;
+      const { x, y, id, peaks, kind = 'signal', ...resSignal } = signal;
       return {
         ...resSignal,
         id: id || crypto.randomUUID(),
-        kind: kind || 'signal',
+        kind,
         x: { ...x, originalDelta: x.delta || 0 },
         y: { ...y, originalDelta: y.delta || 0 },
         peaks: peaks?.map((peak): Peak2D => ({

@@ -29,8 +29,11 @@ function emptyDatabaseFormElement(): DatabaseFormElement {
 export const DatabaseTab = withForm({
   defaultValues: defaultGeneralSettingsFormValues,
   render: function Render({ form }) {
-    const field = useField({ form, name: 'databases.data', mode: 'array' });
-    const { removeValue, insertValue, state } = field;
+    const { removeValue, insertValue, state } = useField({
+      form,
+      name: 'databases.data',
+      mode: 'array',
+    });
     const { resetField, Field } = form;
 
     const handleDelete = useCallback(

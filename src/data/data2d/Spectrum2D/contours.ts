@@ -71,26 +71,24 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
     ? Math.max(noise.positive, noise.negative)
     : estimateNoiseLevel(matrix);
 
-  const bestMinLevel = findAutomaticContourLevels(
-    matrix,
-    quadrantData.z.length,
-    quadrantData.z[0].length,
-    noiseLevel,
-    {
-      maxFdr: 0.005,
-      diagnostics: false,
-      maxOccupancy: 0.005,
-      persistenceLevels: 5,
-      contourRatio: 1.8,
-      minPersistence: 0.5,
-      maxVerticalRidgeScore: 0.05,
-      maxHorizontalRidgeScore: 0.05,
-      ridgeCoverageThreshold: experiment.includes('jres') ? 0.9 : 0.1,
-    },
-  );
-
   const { hasT1Noise, minLevelWithoutT1Noise, minLevel, maxAbsoluteValue } =
-    bestMinLevel;
+    findAutomaticContourLevels(
+      matrix,
+      quadrantData.z.length,
+      quadrantData.z[0].length,
+      noiseLevel,
+      {
+        maxFdr: 0.005,
+        diagnostics: false,
+        maxOccupancy: 0.005,
+        persistenceLevels: 5,
+        contourRatio: 1.8,
+        minPersistence: 0.5,
+        maxVerticalRidgeScore: 0.05,
+        maxHorizontalRidgeScore: 0.05,
+        ridgeCoverageThreshold: experiment.includes('jres') ? 0.9 : 0.1,
+      },
+    );
   const minContourLevel = Math.min(
     calculateValueOfLevel(
       hasT1Noise ? minLevelWithoutT1Noise : minLevel,

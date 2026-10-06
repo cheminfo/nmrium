@@ -346,19 +346,14 @@ function copyDataURLClipboardFireFox(image: string) {
   img.remove();
 }
 
-async function resolveBlob(b: Blob): Promise<Blob> {
-  return new Promise((resolve) => {
-    resolve(b);
-  });
-}
-
-async function writeImageToClipboard(image: Blob, isSafari = false) {
+async function writeImageToClipboard(image: Blob) {
   await navigator.clipboard.write([
     new ClipboardItem({
-      [image.type]: isSafari ? resolveBlob(image) : image,
+      [image.type]: image,
     }),
   ]);
 }
+
 async function copyBlobToClipboard(canvas: OffscreenCanvas): Promise<void> {
   // Check if the document is focused, If it is not focused, throw an error to inform the user.
   if (!document.hasFocus()) {
@@ -369,11 +364,8 @@ async function copyBlobToClipboard(canvas: OffscreenCanvas): Promise<void> {
 
   const pngBlob = await canvas.convertToBlob({ type: 'image/png' });
   if (!pngBlob) return;
-  const isSafari = /^(?<safari>(?!chrome|android).)*safari/i.test(
-    navigator.userAgent,
-  );
   if (typeof ClipboardItem !== 'undefined') {
-    await writeImageToClipboard(pngBlob, isSafari);
+    await writeImageToClipboard(pngBlob);
   } else {
     const screenCanvas = transferToCanvas(canvas);
     if (!screenCanvas) {
