@@ -501,8 +501,8 @@ function handleAssign1DSignal(
 
   if (assignment && (signal.isAutoAssignment || !signal.assignment)) {
     signal.assignment = assignment;
-    signal.isAutoAssignment = true;
   }
+  signal.isAutoAssignment = true;
 
   signal.diaIDs = diaIDs;
   signal.nbAtoms = nbAtoms + (signal.nbAtoms || 0);
@@ -516,18 +516,13 @@ function hasDiaId(
 
 function updateRangeSignalsAssignment(
   ranges: Range[],
-  previousAssignment: string | undefined,
   assignment: string | undefined,
   uniqueDiaIds: Set<string>,
 ): void {
   for (const range of ranges) {
     const { signals = [] } = range;
     for (const signal of signals) {
-      if (
-        previousAssignment === signal.assignment &&
-        hasDiaId(signal.diaIDs, uniqueDiaIds) &&
-        signal.isAutoAssignment
-      ) {
+      if (hasDiaId(signal.diaIDs, uniqueDiaIds) && signal.isAutoAssignment) {
         signal.assignment = assignment;
       }
     }
@@ -536,14 +531,12 @@ function updateRangeSignalsAssignment(
 
 function updateZoneAssignments(
   zones: Zone[],
-  previousAssignment: string | undefined,
   assignment: string | undefined,
   uniqueDiaIds: Set<string>,
 ): void {
   for (const zone of zones) {
     for (const signal of zone.signals) {
       if (
-        previousAssignment === signal.assignment &&
         (hasDiaId(signal.x.diaIDs, uniqueDiaIds) ||
           hasDiaId(signal.y.diaIDs, uniqueDiaIds)) &&
         signal.isAutoAssignment
@@ -559,24 +552,18 @@ function handleChangeRangesAssignmentLabelsByDiaIds(
   draft: Draft<State>,
   action: ChangeRangesAssignmentsLabelsByDiaIdsAction,
 ) {
-  const { diaIDs, assignment, previousAssignment } = action.payload;
+  const { diaIDs, assignment } = action.payload;
   const uniqueDiaIds = new Set(diaIDs);
 
   for (const spectrum of draft.data) {
     if (isSpectrum1D(spectrum)) {
       updateRangeSignalsAssignment(
         spectrum.ranges.values,
-        previousAssignment,
         assignment,
         uniqueDiaIds,
       );
     } else {
-      updateZoneAssignments(
-        spectrum.zones.values,
-        previousAssignment,
-        assignment,
-        uniqueDiaIds,
-      );
+      updateZoneAssignments(spectrum.zones.values, assignment, uniqueDiaIds);
     }
   }
 }
