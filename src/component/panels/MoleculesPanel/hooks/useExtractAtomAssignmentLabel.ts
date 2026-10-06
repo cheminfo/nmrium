@@ -4,8 +4,8 @@ import { useRef } from 'react';
 
 import { useTopicMolecule } from '../../../context/TopicMoleculeContext.js';
 
-function getUniqueLabels(labels: string[]) {
-  return [...new Set(labels.map((label) => label.trim()).filter(Boolean))];
+function getLabels(labels: string[]) {
+  return labels.map((label) => label.trim()).filter(Boolean);
 }
 
 function getCustomLabels(atomData: {
@@ -14,13 +14,6 @@ function getCustomLabels(atomData: {
 }) {
   const { customLabels = [], heavyAtomsCustomLabels = [] } = atomData;
   return customLabels.length > 0 ? customLabels : heavyAtomsCustomLabels;
-}
-
-function getCustomLabel(atomData: {
-  customLabels?: string[];
-  heavyAtomsCustomLabels?: string[];
-}) {
-  return getCustomLabels(atomData).find((label) => label.trim());
 }
 
 export function useExtractAtomAssignmentLabel() {
@@ -64,26 +57,26 @@ export function useExtractAtomAssignmentLabel() {
     const atomData = getTopicAtom(moleculeId, oclID, molfile);
     if (!atomData) return;
 
-    const uniqueLabels = getUniqueLabels(getCustomLabels(atomData));
-    return uniqueLabels.join(',');
+    return getCustomLabels(atomData).join(',');
   }
 
   function getAssignmentLabelByDiaIDs(diaIDs: string[]) {
     if (!diaIDs || diaIDs.length === 0) return;
     const moleculeObjects = Object.values(topicMolecule);
+    const labels: string[] = [];
+
     for (const topicMoleculeObject of moleculeObjects) {
       const diaIDsObject = topicMoleculeObject.getDiaIDsObject();
 
       for (const diaID of diaIDs) {
         const atomData = diaIDsObject?.[diaID];
-        if (!atomData) continue;
-
-        const label = getCustomLabel(atomData);
-        if (label) return label;
+        if (atomData) {
+          labels.push(...getCustomLabels(atomData));
+        }
       }
     }
 
-    return undefined;
+    return getLabels(labels).join(',');
   }
 
   function getAssignmentLabelByHover(moleculeId: string, molfile?: string) {
