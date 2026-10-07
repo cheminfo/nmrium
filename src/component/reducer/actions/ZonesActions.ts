@@ -397,7 +397,10 @@ function handleAssignZone(draft: Draft<State>, action: AssignZoneAction) {
   const [{ index: zoneIndex }, { index: signalIndex }] = keys;
   const zone = spectrum.zones.values[zoneIndex];
 
-  const signalByAxis = zone.signals[signalIndex][axis];
+  const signal = zone.signals[signalIndex];
+  signal.isAutoAssignment = true;
+
+  const signalByAxis = signal[axis];
   signalByAxis.diaIDs = diaIDs;
   signalByAxis.nbAtoms = nbAtoms + (signalByAxis?.nbAtoms || 0);
 }
@@ -491,10 +494,12 @@ function handleChangeZoneAssignmentLabel(
   }
 
   signal.assignment = value;
+  signal.isAutoAssignment = true;
 
   if (!value) {
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete zoneView.assignmentsLabelsCoordinates[zoneID];
+    signal.isAutoAssignment = false;
   }
 }
 

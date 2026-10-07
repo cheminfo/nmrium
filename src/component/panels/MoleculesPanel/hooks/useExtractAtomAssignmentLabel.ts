@@ -61,13 +61,23 @@ export function useExtractAtomAssignmentLabel() {
     return sortAssignmentLabels(getCustomLabels(atomData)).join(',');
   }
 
-  function getAssignmentLabelByDiaIDs(diaIDs: string[]) {
+  function getAssignmentLabelFromMolecules(
+    diaIDs: string[],
+    moleculeId?: string,
+    molfile?: string,
+  ) {
     if (!diaIDs || diaIDs.length === 0) return;
-    const moleculeObjects = Object.values(topicMolecule);
+    const baseMolecule = moleculeId ? topicMolecule[moleculeId] : undefined;
+    if (moleculeId && !baseMolecule) return;
+
     const labels: string[] = [];
 
-    for (const topicMoleculeObject of moleculeObjects) {
-      const diaIDsObject = topicMoleculeObject.getDiaIDsObject();
+    for (const [id, topic] of Object.entries(topicMolecule)) {
+      const molecule =
+        id === moleculeId && molfile
+          ? topic.fromMolecule(Molecule.fromMolfile(molfile))
+          : topic;
+      const diaIDsObject = molecule.getDiaIDsObject();
 
       for (const diaID of diaIDs) {
         const atomData = diaIDsObject?.[diaID];
@@ -79,6 +89,18 @@ export function useExtractAtomAssignmentLabel() {
 
     const uniqueLabels = new Set(getLabels(labels));
     return sortAssignmentLabels([...uniqueLabels]).join(',');
+  }
+
+  function getAssignmentLabelByDiaIDs(diaIDs: string[]) {
+    return getAssignmentLabelFromMolecules(diaIDs);
+  }
+
+  function getAssignmentLabelByDiaIDsForMolecule(
+    diaIDs: string[],
+    moleculeId: string,
+    molfile?: string,
+  ) {
+    return getAssignmentLabelFromMolecules(diaIDs, moleculeId, molfile);
   }
 
   function getAssignmentLabelByHover(moleculeId: string, molfile?: string) {
@@ -93,6 +115,7 @@ export function useExtractAtomAssignmentLabel() {
   return {
     getAssignmentLabelByHover,
     getAssignmentLabelByDiaIDs,
+    getAssignmentLabelByDiaIDsForMolecule,
     getAssignmentLabelById,
     onAtomHover,
     getLastHoverAtom,
