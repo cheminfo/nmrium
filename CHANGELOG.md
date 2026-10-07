@@ -1,5 +1,25 @@
 # Changelog
 
+## [3.1.0](https://github.com/cheminfo/nmrium/compare/v3.0.0...v3.1.0) (2026-10-06)
+
+
+### Features
+
+* add drag and drop row reordering for react table ([6da7b44](https://github.com/cheminfo/nmrium/commit/6da7b44291a5b5f0baf3a4e971266ec07ddaef61))
+* reorder spectra by drag and drop and persist the order in the original state ([70c276b](https://github.com/cheminfo/nmrium/commit/70c276bd2b737f99e7d4ba8f067918742dd7233d))
+* support externally controlled highlights ([#4405](https://github.com/cheminfo/nmrium/issues/4405)) ([479250d](https://github.com/cheminfo/nmrium/commit/479250dcb08061c4953ff5da92a4284b6d376cd1))
+* update react-science to v24.0.1 ([6668ffc](https://github.com/cheminfo/nmrium/commit/6668ffc37f9544dbbd45adc23c2b43bb3132c85f))
+
+
+### Bug Fixes
+
+* avoid im as an empty Float64Array if im is undefined ([#4389](https://github.com/cheminfo/nmrium/issues/4389)) ([d19b38c](https://github.com/cheminfo/nmrium/commit/d19b38cb20c4ceb807fc9145aa42760393ad2d57))
+* correct workspace action button styling ([eefb0b9](https://github.com/cheminfo/nmrium/commit/eefb0b936ff7ab2b3bcf51128ac270acf31782b0))
+* do not import from `node:timers` ([75e0eb3](https://github.com/cheminfo/nmrium/commit/75e0eb3f8b848680e1c62378ea6c9aa6d2e0fb5a))
+* prevent copy cursor during table row reordering ([6da7b44](https://github.com/cheminfo/nmrium/commit/6da7b44291a5b5f0baf3a4e971266ec07ddaef61))
+* prevent crash in getRange when contour level count is 0 ([#4379](https://github.com/cheminfo/nmrium/issues/4379)) ([9f10415](https://github.com/cheminfo/nmrium/commit/9f10415d5d7adbb88db5c6a6aac159044ab34539))
+* update correlation and load it correctly ([#4390](https://github.com/cheminfo/nmrium/issues/4390)) ([69adcff](https://github.com/cheminfo/nmrium/commit/69adcff090ef62f409b780720e19435a8f3a2ff8))
+
 ## [3.0.0](https://github.com/cheminfo/nmrium/compare/v2.8.0...v3.0.0) (2026-09-14)
 
 
