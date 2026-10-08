@@ -103,9 +103,11 @@ type Assign1DSignalAction = ActionType<
 type ChangeRangesAssignmentsLabelsByDiaIdsAction = ActionType<
   'CHANGE_ASSIGNMENT_LABEL_BY_DIAIDS',
   {
-    diaIDs: string[];
-    assignment?: string;
-    previousAssignment?: string;
+    assignments: Array<{
+      spectrumId: string;
+      signalId: string;
+      assignment: string;
+    }>;
   }
 >;
 type ResizeRangeAction = ActionType<
@@ -499,57 +501,39 @@ function handleAssign1DSignal(
 
   if (!signal) return;
 
-  if (assignment && !signal.assignment) {
+  if (assignment && (signal.isAutoAssignment || !signal.assignment)) {
     signal.assignment = assignment;
-    signal.isAutoAssignment = true;
   }
+  signal.isAutoAssignment = true;
 
   signal.diaIDs = diaIDs;
   signal.nbAtoms = nbAtoms + (signal.nbAtoms || 0);
 }
-function hasDiaId(
-  diaIds: string[] | undefined,
-  uniqueDiaIds: Set<string>,
-): boolean {
-  return diaIds?.some((id) => uniqueDiaIds.has(id)) ?? false;
-}
 
 function updateRangeSignalsAssignment(
   ranges: Range[],
-  previousAssignment: string | undefined,
-  assignment: string | undefined,
-  uniqueDiaIds: Set<string>,
-): void {
+  signalId: string,
+  assignment: string,
+) {
   for (const range of ranges) {
-    const { signals = [] } = range;
-    for (const signal of signals) {
-      if (
-        previousAssignment === signal.assignment &&
-        hasDiaId(signal.diaIDs, uniqueDiaIds) &&
-        signal.isAutoAssignment
-      ) {
-        signal.assignment = assignment;
-      }
+    const signal = range.signals.find((item) => item.id === signalId);
+    if (signal?.isAutoAssignment) {
+      signal.assignment = assignment;
+      break;
     }
   }
 }
 
 function updateZoneAssignments(
   zones: Zone[],
-  previousAssignment: string | undefined,
-  assignment: string | undefined,
-  uniqueDiaIds: Set<string>,
-): void {
+  signalId: string,
+  assignment: string,
+) {
   for (const zone of zones) {
-    for (const signal of zone.signals) {
-      if (
-        previousAssignment === signal.assignment &&
-        (hasDiaId(signal.x.diaIDs, uniqueDiaIds) ||
-          hasDiaId(signal.y.diaIDs, uniqueDiaIds)) &&
-        signal.isAutoAssignment
-      ) {
-        signal.assignment = assignment;
-      }
+    const signal = zone.signals.find((item) => item.id === signalId);
+    if (signal?.isAutoAssignment) {
+      signal.assignment = assignment;
+      break;
     }
   }
 }
@@ -559,24 +543,19 @@ function handleChangeRangesAssignmentLabelsByDiaIds(
   draft: Draft<State>,
   action: ChangeRangesAssignmentsLabelsByDiaIdsAction,
 ) {
-  const { diaIDs, assignment, previousAssignment } = action.payload;
-  const uniqueDiaIds = new Set(diaIDs);
+  for (const { spectrumId, signalId, assignment } of action.payload
+    .assignments) {
+    const spectrum = draft.data.find((item) => item.id === spectrumId);
+    if (!spectrum) continue;
 
-  for (const spectrum of draft.data) {
     if (isSpectrum1D(spectrum)) {
       updateRangeSignalsAssignment(
         spectrum.ranges.values,
-        previousAssignment,
+        signalId,
         assignment,
-        uniqueDiaIds,
       );
     } else {
-      updateZoneAssignments(
-        spectrum.zones.values,
-        previousAssignment,
-        assignment,
-        uniqueDiaIds,
-      );
+      updateZoneAssignments(spectrum.zones.values, signalId, assignment);
     }
   }
 }
