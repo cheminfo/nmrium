@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.1](https://github.com/cheminfo/nmrium/compare/v3.1.0...v3.1.1) (2026-10-08)
+
+
+### Bug Fixes
+
+* preserve all linked atom labels in automatic assignment ([#4407](https://github.com/cheminfo/nmrium/issues/4407)) ([4022862](https://github.com/cheminfo/nmrium/commit/4022862d68225d4960dd1edc854343f5a3f66625))
+
 ## [3.1.0](https://github.com/cheminfo/nmrium/compare/v3.0.0...v3.1.0) (2026-10-06)
 
 
