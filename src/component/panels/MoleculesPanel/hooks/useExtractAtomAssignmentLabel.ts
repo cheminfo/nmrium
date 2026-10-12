@@ -1,3 +1,4 @@
+import type { Signal2D } from '@zakodium/nmr-types';
 import { Molecule } from 'openchemlib';
 import type { DiaIDAndInfo } from 'openchemlib-utils';
 import { useRef } from 'react';
@@ -112,10 +113,28 @@ export function useExtractAtomAssignmentLabel() {
     };
   }
 
+  function get2DSignalAssignmentLabel(
+    signal: Signal2D,
+    moleculeId?: string,
+    molfile?: string,
+  ) {
+    const labels = (['y', 'x'] as const).flatMap((axis) =>
+      (
+        getAssignmentLabelFromMolecules(
+          signal[axis].diaIDs ?? [],
+          moleculeId,
+          molfile,
+        ) ?? ''
+      ).split(','),
+    );
+    return [...new Set(getLabels(labels))].join(',');
+  }
+
   return {
     getAssignmentLabelByHover,
     getAssignmentLabelByDiaIDs,
     getAssignmentLabelByDiaIDsForMolecule,
+    get2DSignalAssignmentLabel,
     getAssignmentLabelById,
     onAtomHover,
     getLastHoverAtom,
