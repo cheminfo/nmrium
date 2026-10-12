@@ -110,6 +110,7 @@ interface UnlinkZoneProps {
   zoneKey?: string;
   signalIndex?: number;
   axis?: Axis;
+  assignment?: string;
 }
 
 type UnlinkZoneAction = ActionType<'UNLINK_ZONE', UnlinkZoneProps>;
@@ -393,28 +394,34 @@ function clearAutoAssignmentWithoutLinks(zone: Zone) {
 
 //action
 function unlinkZone(draft: Draft<State>, props: UnlinkZoneProps) {
-  const { zoneKey, signalIndex = -1, axis } = props;
+  const { zoneKey, signalIndex = -1, axis, assignment } = props;
 
   const spectrum = getSpectrum(draft);
   if (!isSpectrum2D(spectrum)) return;
 
   const zones = spectrum.zones.values;
 
-  if (zoneKey) {
-    // remove assignments in global state
-    const zoneIndex = getZoneIndex(spectrum, zoneKey);
-    if (zoneIndex === -1) return;
-    const zone = zones[zoneIndex];
-    zones[zoneIndex] = unlink(zone, signalIndex, axis);
-    clearAutoAssignmentWithoutLinks(zone);
-  } else {
-    const newZones = zones.map((zone) => {
+  if (!zoneKey) {
+    spectrum.zones.values = zones.map((zone) => {
       const unlinkedZone = unlink(zone);
       clearAutoAssignmentWithoutLinks(unlinkedZone);
       return unlinkedZone;
     });
-    spectrum.zones.values = newZones;
+    return;
   }
+
+  const zoneIndex = getZoneIndex(spectrum, zoneKey);
+  if (zoneIndex === -1) return;
+
+  const unlinkedZone = unlink(zones[zoneIndex], signalIndex, axis);
+  zones[zoneIndex] = unlinkedZone;
+
+  const signal = unlinkedZone.signals[signalIndex];
+  if (axis && signal?.isAutoAssignment && assignment !== undefined) {
+    signal.assignment = assignment;
+  }
+
+  clearAutoAssignmentWithoutLinks(unlinkedZone);
 }
 //action
 function handleUnlinkZone(draft: Draft<State>, action: UnlinkZoneAction) {
