@@ -118,7 +118,7 @@ export function useExtractAtomAssignmentLabel() {
     moleculeId?: string,
     molfile?: string,
   ) {
-    const labels = (['y', 'x'] as const).flatMap((axis) =>
+    const labels = (['x', 'y'] as const).flatMap((axis) =>
       (
         getAssignmentLabelFromMolecules(
           signal[axis].diaIDs ?? [],
