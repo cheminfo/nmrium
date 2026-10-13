@@ -1,4 +1,4 @@
-import type { Spectrum } from '@zakodium/nmrium-core';
+import type { Spectrum1D, Spectrum2D } from '@zakodium/nmrium-core';
 import { isSpectrum1D } from '@zakodium/nmrium-core';
 import type { DiaIDAndInfo } from 'openchemlib-utils';
 
@@ -13,21 +13,17 @@ export interface SignalAssignmentUpdate {
   assignment: string;
 }
 
-function getSignalsWithDiaIDs(spectrum: Spectrum) {
-  if (isSpectrum1D(spectrum)) {
-    return spectrum.ranges.values.flatMap((range) =>
-      range.signals.map((signal) => ({
-        signal,
-        diaIDs: signal.diaIDs ?? [],
-      })),
-    );
-  }
+function hasChangedDiaID(diaIDs: string[], changedDiaIDs: Set<string>) {
+  return diaIDs.some((diaID) => changedDiaIDs.has(diaID));
+}
 
-  return spectrum.zones.values.flatMap((zone) =>
-    zone.signals.map((signal) => ({
-      signal,
-      diaIDs: [...(signal.x.diaIDs ?? []), ...(signal.y.diaIDs ?? [])],
-    })),
+function isAffectedSignal(
+  signal: { isAutoAssignment?: boolean },
+  diaIDs: string[],
+  changedDiaIDs: Set<string>,
+) {
+  return (
+    Boolean(signal.isAutoAssignment) && hasChangedDiaID(diaIDs, changedDiaIDs)
   );
 }
 
@@ -40,35 +36,86 @@ export function useSignalAssignmentUpdates() {
     diaObject: DiaIDAndInfo,
     molecule: Pick<StateMoleculeExtended, 'id' | 'molfile'>,
   ): SignalAssignmentUpdate[] => {
+    // #1 Track the changed atom and any attached hydrogens.
     const changedDiaIDs = new Set([
       diaObject.idCode,
       ...diaObject.attachedHydrogensIDCodes,
     ]);
-    const updates: SignalAssignmentUpdate[] = [];
+    const updatedAssignments: SignalAssignmentUpdate[] = [];
+
+    // #2 Recalculate assignments only for affected range and zone signals.
+    function getRangeSignalUpdates(spectrum: Spectrum1D) {
+      const signalUpdates: SignalAssignmentUpdate[] = [];
+
+      for (const range of spectrum.ranges.values) {
+        for (const signal of range.signals) {
+          const diaIDs = signal.diaIDs ?? [];
+          if (!isAffectedSignal(signal, diaIDs, changedDiaIDs)) {
+            continue;
+          }
+
+          signalUpdates.push({
+            spectrumId: spectrum.id,
+            signalId: signal.id,
+            assignment:
+              getAssignmentLabelByDiaIDsForMolecule(
+                diaIDs,
+                molecule.id,
+                molecule.molfile,
+              ) ?? '',
+          });
+        }
+      }
+
+      return signalUpdates;
+    }
+
+    function getZoneSignalUpdates(spectrum: Spectrum2D) {
+      const signalUpdates: SignalAssignmentUpdate[] = [];
+
+      for (const zone of spectrum.zones.values) {
+        for (const signal of zone.signals) {
+          const dimensions = [signal.y.diaIDs ?? [], signal.x.diaIDs ?? []];
+          const diaIDs = dimensions.flat();
+          if (!isAffectedSignal(signal, diaIDs, changedDiaIDs)) {
+            continue;
+          }
+
+          // #3 Use the edited molecule only for dimensions containing changed IDs.
+          const labels = dimensions.flatMap((axisDiaIDs) => {
+            const molfile = hasChangedDiaID(axisDiaIDs, changedDiaIDs)
+              ? molecule.molfile
+              : undefined;
+            return (
+              getAssignmentLabelByDiaIDsForMolecule(
+                axisDiaIDs,
+                molecule.id,
+                molfile,
+              ) ?? ''
+            ).split(',');
+          });
+
+          signalUpdates.push({
+            spectrumId: spectrum.id,
+            signalId: signal.id,
+            assignment: [
+              ...new Set(labels.map((label) => label.trim()).filter(Boolean)),
+            ].join(','),
+          });
+        }
+      }
+
+      return signalUpdates;
+    }
 
     for (const spectrum of spectra) {
-      const signalsWithDiaIDs = getSignalsWithDiaIDs(spectrum);
-
-      for (const { signal, diaIDs } of signalsWithDiaIDs) {
-        if (
-          !signal.isAutoAssignment ||
-          diaIDs.every((diaID) => !changedDiaIDs.has(diaID))
-        ) {
-          continue;
-        }
-        updates.push({
-          spectrumId: spectrum.id,
-          signalId: signal.id,
-          assignment:
-            getAssignmentLabelByDiaIDsForMolecule(
-              diaIDs,
-              molecule.id,
-              molecule.molfile,
-            ) ?? '',
-        });
+      if (isSpectrum1D(spectrum)) {
+        updatedAssignments.push(...getRangeSignalUpdates(spectrum));
+      } else {
+        updatedAssignments.push(...getZoneSignalUpdates(spectrum));
       }
     }
 
-    return updates;
+    return updatedAssignments;
   };
 }

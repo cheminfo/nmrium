@@ -61,3 +61,25 @@ export function extractSpectrumSignals<T extends object = object>(
 
   return result;
 }
+
+export function getClosestSignal(
+  spectrum: Spectrum1D | null,
+  options: { from: number; to: number; center: number },
+): Signal1D | undefined {
+  if (!spectrum) return;
+
+  const signals = extractSpectrumSignals(spectrum, options);
+  signals.sort((first, second) => first.delta - second.delta);
+
+  let closest: Signal1D | undefined;
+  for (const signal of signals) {
+    if (
+      !closest ||
+      Math.abs(signal.delta - options.center) <
+        Math.abs(closest.delta - options.center)
+    ) {
+      closest = signal;
+    }
+  }
+  return closest;
+}

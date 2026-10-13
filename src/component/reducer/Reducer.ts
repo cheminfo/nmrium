@@ -815,6 +815,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return ZonesActions.handleUnlinkZone(draft, action);
       case 'ASSIGN_ZONE':
         return ZonesActions.handleAssignZone(draft, action);
+      case 'AUTO_LINK_2D_SIGNALS':
+        return ZonesActions.handleAutoLink2DSignals(draft, action);
       case 'AUTO_ZONES_SPECTRA_PICKING':
         return ZonesActions.handleAutoSpectraZonesDetection(draft);
       case 'TOGGLE_ZONES_VIEW_PROPERTY':
