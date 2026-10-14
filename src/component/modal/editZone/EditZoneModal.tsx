@@ -1,10 +1,9 @@
-import { Button, DialogFooter } from '@blueprintjs/core';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { Button, Colors, DialogFooter, Tag } from '@blueprintjs/core';
+import styled from '@emotion/styled';
+import { revalidateLogic } from '@tanstack/react-form';
 import type { Signal2D } from '@zakodium/nmr-types';
-import type { FromTo } from 'cheminfo-types';
-import { FormProvider, useForm } from 'react-hook-form';
-import { FaSearchPlus } from 'react-icons/fa';
-import * as Yup from 'yup';
+import { noop } from '@zakodium/utils';
+import { AppForm, useForm, withForm } from 'react-science/ui';
 
 import DefaultPathLengths from '../../../data/constants/DefaultPathLengths.js';
 import type { DialogProps } from '../../elements/DialogManager.js';
@@ -15,109 +14,222 @@ import { useZoneActions } from '../../panels/ZonesPanel/hooks/useZoneActions.js'
 
 import { SignalsForm } from './SignalsForm.js';
 import { isDefaultPathLength } from './validation/isDefaultPathLength.js';
-
-export interface FormData {
-  activeTab: string;
-  signals: Signal2D[];
-}
-
-const signalSchema = Yup.object().shape({
-  j: Yup.object().shape({
-    pathLength: Yup.object().shape({
-      from: Yup.number().required().positive().integer(),
-      to: Yup.number().required().positive().integer(),
-    }),
-  }),
-});
-
-const zoneFormValidation = Yup.object().shape({
-  activeTab: Yup.string(),
-  signals: Yup.array()
-    .of(signalSchema)
-    .min(1, 'There must be at least one signal in a zone!'),
-});
+import type { FormData, ZoneSignal } from './zoneForm.js';
+import { defaultZoneFormValues, zoneFormSchema } from './zoneForm.js';
 
 export function EditZoneModal(props: DialogProps<ZoneData>) {
   const { dialogData: zone, onCloseDialog } = props;
   const { saveZone, zoomToZone } = useZoneActions();
 
-  function handleSave(values: any) {
-    void (async () => {
-      const zoneData = {
-        ...zone,
-        signals: mapSignalsBeforeSave(
-          values?.signals,
-          zone.tableMetaInfo.experiment,
-        ),
-      };
-      saveZone(zoneData);
-      onCloseDialog();
-    })();
+  function handleSave(values: FormData) {
+    const value = zoneFormSchema.parse(values);
+    saveZone({
+      ...zone,
+      signals: mapSignalsBeforeSave(
+        value.signals,
+        zone.tableMetaInfo.experiment,
+      ),
+    });
+    onCloseDialog();
   }
 
-  const methods = useForm<FormData>({
+  const form = useForm({
     defaultValues: {
-      activeTab: '0',
-      signals: mapSignals(zone),
+      signals: getSignalFormValues(zone),
     },
-    resolver: yupResolver(zoneFormValidation) as any,
+    validators: { onDynamic: zoneFormSchema },
+    validationLogic: revalidateLogic({ mode: 'change' }),
+    onSubmit: ({ value }) => handleSave(value),
   });
 
-  const { handleSubmit } = methods;
   return (
     <DraggableDialog
       hasBackdrop={false}
       canOutsideClickClose={false}
-      style={{ width: 700 }}
-      title="Zone and Signal edition"
+      style={{ width: 820, paddingBottom: 0 }}
+      title="Edit zone signals"
+      icon="properties"
       isOpen
-      headerLeftElement={
-        <Button
-          intent="success"
-          style={{ marginRight: '5px', borderRadius: '5px' }}
-          icon={
-            <FaSearchPlus title="Set to default view on range in spectrum" />
-          }
-          variant="minimal"
-          onClick={() => zoomToZone(zone)}
-        />
-      }
       onClose={onCloseDialog}
       placement="top-right"
     >
-      <StyledDialogBody>
-        <FormProvider {...methods}>
-          <SignalsForm />
-        </FormProvider>
-      </StyledDialogBody>
-      <DialogFooter>
-        <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
-          <Button intent="success" onClick={() => handleSubmit(handleSave)()}>
-            Save and Exit
-          </Button>
-        </div>
-      </DialogFooter>
+      <AppForm form={form}>
+        <DialogBody>
+          <ZoneSummaryContent zone={zone} onZoom={() => zoomToZone(zone)} />
+          <SignalsForm form={form} zone={zone} />
+        </DialogBody>
+        <ZoneEditorFooter form={form} onCancel={onCloseDialog} />
+      </AppForm>
     </DraggableDialog>
   );
 }
 
-function mapSignalsBeforeSave(signals: any, experiment: any) {
+function ZoneSummaryContent({
+  zone,
+  onZoom,
+}: {
+  zone: ZoneData;
+  onZoom: () => void;
+}) {
+  return (
+    <ZoneSummary aria-label="Zone boundaries">
+      <ZoneSummaryHeading>
+        <strong>Selected zone</strong>
+        {zone.tableMetaInfo.experiment && (
+          <Tag minimal>{zone.tableMetaInfo.experiment.toUpperCase()}</Tag>
+        )}
+      </ZoneSummaryHeading>
+      <ZoneBoundaries>
+        {(['x', 'y'] as const).map((axis) => (
+          <ZoneBoundary key={axis}>
+            <ZoneAxis>{axis === 'x' ? 'F2' : 'F1'}</ZoneAxis>
+            <ZoneRange>
+              {Math.min(zone[axis].from, zone[axis].to).toFixed(2)}
+              {Math.max(zone[axis].from, zone[axis].to).toFixed(2)}
+              <ZoneUnit>ppm</ZoneUnit>
+            </ZoneRange>
+          </ZoneBoundary>
+        ))}
+      </ZoneBoundaries>
+      <ZoomToZoneButton icon="zoom-in" variant="minimal" onClick={onZoom}>
+        Zoom to zone
+      </ZoomToZoneButton>
+    </ZoneSummary>
+  );
+}
+
+const ZoneEditorFooter = withForm({
+  defaultValues: defaultZoneFormValues,
+  validators: { onDynamic: zoneFormSchema },
+  props: { onCancel: noop },
+  render: ({ form, onCancel }) => {
+    return (
+      <DialogFooter
+        actions={
+          <>
+            <Button variant="outlined" onClick={onCancel}>
+              Cancel
+            </Button>
+            <form.Subscribe
+              selector={(state) => ({
+                isDefaultValue: state.isDefaultValue,
+                isValid: state.isValid,
+              })}
+            >
+              {({ isDefaultValue, isValid }) => (
+                <form.SubmitButton
+                  intent={
+                    !isValid ? 'danger' : isDefaultValue ? 'none' : 'success'
+                  }
+                  disabled={isDefaultValue}
+                >
+                  Save changes
+                </form.SubmitButton>
+              )}
+            </form.Subscribe>
+          </>
+        }
+      >
+        <form.Subscribe selector={(state) => state.isDefaultValue}>
+          {(isDefaultValue) => (
+            <SaveStatus role="status">
+              <StatusDot aria-hidden="true" isDirty={!isDefaultValue} />
+              {isDefaultValue ? 'No changes' : 'Unsaved changes'}
+            </SaveStatus>
+          )}
+        </form.Subscribe>
+      </DialogFooter>
+    );
+  },
+});
+
+const DialogBody = styled(StyledDialogBody)`
+  padding: 20px;
+`;
+
+const ZoneSummary = styled.section`
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  padding: 12px 16px;
+  margin-bottom: 24px;
+  background: #f6f7f9;
+  border: 1px solid #e5e8eb;
+  border-radius: 6px;
+`;
+
+const ZoneSummaryHeading = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const ZoneBoundaries = styled.dl`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+`;
+
+const ZoneBoundary = styled.div`
+  display: flex;
+  gap: 8px;
+`;
+
+const ZoneAxis = styled.dt`
+  color: #5f6b7c;
+`;
+
+const ZoneRange = styled.dd`
+  margin: 0;
+`;
+
+const ZoneUnit = styled.span`
+  color: #5f6b7c;
+  margin-left: 4px;
+  font-size: 12px;
+`;
+
+const ZoomToZoneButton = styled(Button)`
+  margin-left: auto;
+`;
+
+const SaveStatus = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #5f6b7c;
+  font-size: 12px;
+`;
+
+const StatusDot = styled.span<{ isDirty: boolean }>`
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background-color: ${({ isDirty }) =>
+    isDirty ? Colors.ORANGE3 : Colors.GREEN3};
+`;
+
+function mapSignalsBeforeSave(signals: ZoneSignal[], experiment?: string) {
   const outputSignals: Signal2D[] = [];
 
   for (const signal of signals) {
-    if (isDefaultPathLength(signal.j?.pathLength as FromTo, experiment)) {
-      delete signal.j?.pathLength;
-      if (signal.j && Object.keys(signal.j).length === 0) {
-        delete signal.j;
+    const mappedSignal: Signal2D = { ...signal, j: { ...signal.j } };
+    if (experiment && isDefaultPathLength(signal.j.pathLength, experiment)) {
+      delete mappedSignal.j?.pathLength;
+      if (mappedSignal.j && Object.keys(mappedSignal.j).length === 0) {
+        delete mappedSignal.j;
       }
     }
-    outputSignals.push(signal);
+    outputSignals.push(mappedSignal);
   }
 
   return outputSignals;
 }
-function mapSignals(zone: ZoneData) {
-  const outputSignals: Signal2D[] = [];
+function getSignalFormValues(zone: ZoneData): FormData['signals'] {
   const {
     signals,
     tableMetaInfo: { experiment },
@@ -125,20 +237,23 @@ function mapSignals(zone: ZoneData) {
   const { from = 1, to = 1 } = experiment
     ? DefaultPathLengths?.[experiment] || {}
     : {};
-  for (const signal of signals) {
-    const mappedSignal = {
+
+  return signals.map((signal) => {
+    const pathLength = signal.j?.pathLength;
+    const normalizedPathLength =
+      typeof pathLength === 'number'
+        ? { from: pathLength, to: pathLength }
+        : (pathLength ?? { from, to });
+
+    return {
       ...signal,
+      kind: signal.kind ?? 'signal',
+      x: { ...signal.x },
+      y: { ...signal.y },
       j: {
-        pathLength: {
-          from,
-          to,
-        },
         ...signal.j,
+        pathLength: { ...normalizedPathLength },
       },
     };
-
-    outputSignals.push(mappedSignal);
-  }
-
-  return outputSignals;
+  });
 }
