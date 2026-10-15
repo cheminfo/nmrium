@@ -1,6 +1,6 @@
 import type { Info1D, Integral, SignalKind } from '@zakodium/nmr-types';
 import dlv from 'dlv';
-import { checkIntegralKind } from 'nmr-processing';
+import { isIntegralSignalKind } from 'nmr-processing';
 import { memo, useCallback, useMemo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
@@ -119,7 +119,7 @@ function IntegralTable(props: IntegralTableProps) {
             getValue() || 0,
             integralsPreferences.relative.format,
           );
-          const flag = checkIntegralKind(row.original);
+          const flag = isIntegralSignalKind(row.original);
           const integral = flag ? value : `[ ${value} ]`;
 
           return (
