@@ -31,6 +31,10 @@ export default defineConfig(
       '@typescript-eslint/restrict-plus-operands': 'off',
       '@typescript-eslint/switch-exhaustiveness-check': 'off',
       'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
+      'unicorn/consistent-boolean-name': [
+        'error',
+        { prefixes: { force: true } },
+      ],
     },
   },
   {
@@ -61,7 +65,6 @@ export default defineConfig(
       'prefer-named-capture-group': 'off',
       'react-hooks/preserve-manual-memoization': 'off',
       'react-refresh/only-export-components': 'off',
-      'unicorn/consistent-boolean-name': 'off',
       'unicorn/max-nested-calls': 'off',
       'unicorn/name-replacements': 'off',
       'unicorn/no-computed-property-existence-check': 'off',
