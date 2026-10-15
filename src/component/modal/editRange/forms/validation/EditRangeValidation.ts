@@ -34,7 +34,7 @@ const editRangeFormValidation = Yup.object().shape({
           )
           .min(1, 'There must be at least one coupling in a signal')
           .test(
-            'checkMultiplicity',
+            'isMultiplicityValid',
             'Massive multiplicity requires exactly one coupling',
             function test(js, context) {
               const multiplicity: string =

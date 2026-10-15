@@ -1,5 +1,5 @@
 import type { Info1D } from '@zakodium/nmr-types';
-import { checkMultiplicity } from 'nmr-processing';
+import { isMultiplicityValid } from 'nmr-processing';
 
 import { formatNumber } from '../../../utility/formatNumber.js';
 import type { RangeColumnProps } from '../RangesTableRow.js';
@@ -20,7 +20,7 @@ function SignalDeltaHzColumn({
   if (!signal) return <td>{''}</td>;
   return (
     <td {...rowSpanTags} {...onHover}>
-      {!checkMultiplicity(signal.multiplicity, ['m'])
+      {!isMultiplicityValid(signal.multiplicity, ['m'])
         ? `${formatNumber(
             row.from * info.originFrequency,
             format,
