@@ -20,12 +20,11 @@ interface PrintProviderProps extends PrintPagContextProps {
  * Converts centimetre to pixels.
  * @param cm - The value in centimetre.
  * @param margin
- * @param ppi - Pixels per inch (default is 96).
  * @returns The value in pixels.
  */
-function cmToPx(cm: number, margin: number, ppi = 96) {
+function cmToPx(cm: number, margin: number) {
   const inches = (cm - margin * 2) / 2.54;
-  return Math.round(inches * ppi);
+  return Math.round(inches * 96);
 }
 
 export function PrintProvider(props: PrintProviderProps) {

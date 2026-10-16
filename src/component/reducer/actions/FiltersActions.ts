@@ -295,15 +295,12 @@ const DEFAULT_FILTER_DOMAIN_UPDATE_RULES: FilterDomainUpdateRules = {
   updateYDomain: false,
 };
 
-function getFilterUpdateDomainRules(
-  filterName: string,
-  defaultRule: FilterDomainUpdateRules = DEFAULT_FILTER_DOMAIN_UPDATE_RULES,
-) {
+function getFilterUpdateDomainRules(filterName: string) {
   const filterDomainUpdateRules =
     Filters1D[filterName as keyof typeof Filters1D]?.domainUpdateRules ??
     Filters2D[filterName as keyof typeof Filters2D]?.domainUpdateRules;
 
-  return filterDomainUpdateRules || defaultRule;
+  return filterDomainUpdateRules || DEFAULT_FILTER_DOMAIN_UPDATE_RULES;
 }
 
 interface SpectrumByObjectOptions {

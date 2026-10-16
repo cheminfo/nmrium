@@ -35,7 +35,7 @@ const Container = styled(AbsoluteDiv)`
 const CrossLine = styled(AbsoluteDiv)<CrossLineProps>`
   width: ${({ markerSize }) => markerSize * 2}px;
   height: 1px;
-  background-color: ${({ color }) => color || 'black'};
+  background-color: ${({ color = 'black' }) => color};
   transform-origin: 50% 50%;
   transform: translate(
       ${({ startX, markerSize }) => startX - markerSize}px,
@@ -174,8 +174,7 @@ export function DistanceLine(options: BrushXYProps) {
   } = useChartData();
 
   const margin = externalMargin ?? innerMargin;
-  const brushTracker = useBrushTracker();
-  const { step, mouseButton, startX, endX, startY, endY } = brushTracker;
+  const { step, mouseButton, startX, endX, startY, endY } = useBrushTracker();
   const { altKey } = useKeyModifiers();
   const indicatorColor = useIndicatorLineColor();
   const finalWidth = widthProps || width - margin.left - margin.right;

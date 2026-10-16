@@ -1,11 +1,13 @@
+import type { Signal2D } from '@zakodium/nmr-types';
 import { Molecule } from 'openchemlib';
 import type { DiaIDAndInfo } from 'openchemlib-utils';
 import { useRef } from 'react';
 
 import { useTopicMolecule } from '../../../context/TopicMoleculeContext.js';
+import { sortAssignmentLabels } from '../utilities/sortAssignmentLabels.js';
 
-function getUniqueLabels(labels: string[]) {
-  return [...new Set(labels.map((label) => label.trim()).filter(Boolean))];
+function getLabels(labels: string[]) {
+  return labels.map((label) => label.trim()).filter(Boolean);
 }
 
 function getCustomLabels(atomData: {
@@ -14,13 +16,6 @@ function getCustomLabels(atomData: {
 }) {
   const { customLabels = [], heavyAtomsCustomLabels = [] } = atomData;
   return customLabels.length > 0 ? customLabels : heavyAtomsCustomLabels;
-}
-
-function getCustomLabel(atomData: {
-  customLabels?: string[];
-  heavyAtomsCustomLabels?: string[];
-}) {
-  return getCustomLabels(atomData).find((label) => label.trim());
 }
 
 export function useExtractAtomAssignmentLabel() {
@@ -64,26 +59,49 @@ export function useExtractAtomAssignmentLabel() {
     const atomData = getTopicAtom(moleculeId, oclID, molfile);
     if (!atomData) return;
 
-    const uniqueLabels = getUniqueLabels(getCustomLabels(atomData));
-    return uniqueLabels.join(',');
+    return sortAssignmentLabels(getCustomLabels(atomData)).join(',');
   }
 
-  function getAssignmentLabelByDiaIDs(diaIDs: string[]) {
+  function getAssignmentLabelFromMolecules(
+    diaIDs: string[],
+    moleculeId?: string,
+    molfile?: string,
+  ) {
     if (!diaIDs || diaIDs.length === 0) return;
-    const moleculeObjects = Object.values(topicMolecule);
-    for (const topicMoleculeObject of moleculeObjects) {
-      const diaIDsObject = topicMoleculeObject.getDiaIDsObject();
+    const baseMolecule = moleculeId ? topicMolecule[moleculeId] : undefined;
+    if (moleculeId && !baseMolecule) return;
+
+    const labels: string[] = [];
+
+    for (const [id, topic] of Object.entries(topicMolecule)) {
+      const molecule =
+        id === moleculeId && molfile
+          ? topic.fromMolecule(Molecule.fromMolfile(molfile))
+          : topic;
+      const diaIDsObject = molecule.getDiaIDsObject();
 
       for (const diaID of diaIDs) {
         const atomData = diaIDsObject?.[diaID];
-        if (!atomData) continue;
-
-        const label = getCustomLabel(atomData);
-        if (label) return label;
+        if (atomData) {
+          labels.push(...getCustomLabels(atomData));
+        }
       }
     }
 
-    return undefined;
+    const uniqueLabels = new Set(getLabels(labels));
+    return sortAssignmentLabels([...uniqueLabels]).join(',');
+  }
+
+  function getAssignmentLabelByDiaIDs(diaIDs: string[]) {
+    return getAssignmentLabelFromMolecules(diaIDs);
+  }
+
+  function getAssignmentLabelByDiaIDsForMolecule(
+    diaIDs: string[],
+    moleculeId: string,
+    molfile?: string,
+  ) {
+    return getAssignmentLabelFromMolecules(diaIDs, moleculeId, molfile);
   }
 
   function getAssignmentLabelByHover(moleculeId: string, molfile?: string) {
@@ -95,9 +113,28 @@ export function useExtractAtomAssignmentLabel() {
     };
   }
 
+  function get2DSignalAssignmentLabel(
+    signal: Signal2D,
+    moleculeId?: string,
+    molfile?: string,
+  ) {
+    const labels = (['x', 'y'] as const).flatMap((axis) =>
+      (
+        getAssignmentLabelFromMolecules(
+          signal[axis].diaIDs ?? [],
+          moleculeId,
+          molfile,
+        ) ?? ''
+      ).split(','),
+    );
+    return [...new Set(getLabels(labels))].join(',');
+  }
+
   return {
     getAssignmentLabelByHover,
     getAssignmentLabelByDiaIDs,
+    getAssignmentLabelByDiaIDsForMolecule,
+    get2DSignalAssignmentLabel,
     getAssignmentLabelById,
     onAtomHover,
     getLastHoverAtom,

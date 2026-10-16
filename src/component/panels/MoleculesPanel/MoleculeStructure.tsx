@@ -15,6 +15,7 @@ import { useHighlightColor } from '../../hooks/useHighlightColor.js';
 
 import useAtomAssignment from './hooks/useAtomAssignment.js';
 import { useExtractAtomAssignmentLabel } from './hooks/useExtractAtomAssignmentLabel.js';
+import { useSignalAssignmentUpdates } from './hooks/useSignalAssignmentUpdates.js';
 
 interface MoleculeStructureProps extends Pick<OCLnmrProps, 'width' | 'height'> {
   moleculeView: MoleculeView;
@@ -67,8 +68,8 @@ export function MoleculeStructure(props: MoleculeStructureProps) {
   const highlightColor = useHighlightColor();
   const dispatch = useDispatch();
   const { current } = usePreferences();
-  const { onAtomHover, getAssignmentLabelByHover, getLastHoverAtom } =
-    useExtractAtomAssignmentLabel();
+  const { onAtomHover, getLastHoverAtom } = useExtractAtomAssignmentLabel();
+  const getSignalAssignmentUpdates = useSignalAssignmentUpdates();
   //TODO Temporary workaround to prevent other focused elements from being triggered by the space key
   const containerRef = useRef<HTMLDivElement>(null);
   const hasCustomLabelChanged = useCustomLabelChange();
@@ -120,25 +121,26 @@ export function MoleculeStructure(props: MoleculeStructureProps) {
         }}
         setMolfile={(molfile) => {
           const diaObject = getLastHoverAtom();
-          const assignmentObj = getAssignmentLabelByHover(molecule.id, molfile);
+          const isCustomLabelChanged = hasCustomLabelChanged(
+            molfile,
+            molecule.id,
+          );
 
-          if (hasCustomLabelChanged(molfile, molecule.id)) {
+          if (isCustomLabelChanged) {
             dispatch({
               type: 'CHANGE_MOLECULE_ANNOTATION',
               payload: { id: molecule.id, atomAnnotation: 'custom-labels' },
             });
           }
 
-          if (assignmentObj && diaObject) {
+          if (isCustomLabelChanged && diaObject) {
+            const assignments = getSignalAssignmentUpdates(diaObject, {
+              id: molecule.id,
+              molfile,
+            });
             dispatch({
               type: 'CHANGE_ASSIGNMENT_LABEL_BY_DIAIDS',
-              payload: {
-                diaIDs: [diaObject.idCode].concat(
-                  diaObject.attachedHydrogensIDCodes,
-                ),
-                assignment: assignmentObj.assignment,
-                previousAssignment: assignmentObj.previousAssignment,
-              },
+              payload: { assignments },
             });
           }
 

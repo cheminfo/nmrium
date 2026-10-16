@@ -16,9 +16,8 @@ type Payload = Extract<Action, { type: 'LOAD_DROP_FILES' }>['payload'];
 
 export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
   const dispatch = useDispatch();
-  const preferences = usePreferences();
   const { dispatch: dispatchPreferences, current: workspacePreferences } =
-    preferences;
+    usePreferences();
   const toaster = useToaster();
   const { logger } = useLogger();
   const hasExperimentalFeatures = useCheckExperimentalFeature();
@@ -105,8 +104,8 @@ export function useLoadFiles(onOpenMetaInformation?: (file: File) => void) {
       };
 
       if (Array.isArray(files)) {
-        const groupedFiles = await groupFiles(files);
-        const { nmriumArchiveFiles, fileCollection, metaFile } = groupedFiles;
+        const { nmriumArchiveFiles, fileCollection, metaFile } =
+          await groupFiles(files);
 
         if (nmriumArchiveFiles.length > 0) {
           await Promise.all(

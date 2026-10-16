@@ -110,11 +110,11 @@ function Settings(props: SettingsProps) {
         name={`display.${sign}Color`}
         control={control}
         render={({ field }) => {
-          const { value, onChange } = field;
+          const { value = '#000', onChange } = field;
           return (
             <CustomColorPicker
               presetColors={COLORS}
-              color={{ hex: value || '#000' }}
+              color={{ hex: value }}
               onChange={(color) => {
                 onChange(color.hex);
                 void handleSubmit(onSubmit)();

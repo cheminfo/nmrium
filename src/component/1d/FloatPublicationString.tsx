@@ -328,7 +328,7 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
 
   if (!viewerRef || !value) return null;
 
-  const { width, height, x = 0, y = 0 } = bounding;
+  const { width, height = 'auto', x = 0, y = 0 } = bounding;
 
   if (isExportProcessStart) {
     return (
@@ -370,7 +370,7 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
     <>
       <ReactRnd
         position={{ x, y }}
-        size={{ width: width || 'auto', height: height || 'auto' }}
+        size={{ width: width || 'auto', height }}
         minWidth={100}
         minHeight={50}
         dragHandleClassName="handle"
@@ -413,7 +413,7 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
         >
           <svg
             width={width || 'auto'}
-            height={height || 'auto'}
+            height={height}
             xmlns="http://www.w3.org/2000/svg"
           >
             <PublicationText

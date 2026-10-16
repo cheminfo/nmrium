@@ -162,17 +162,15 @@ export default function AdditionalColumnField(
           return [];
         }
 
-        return [
-          {
-            text: `Edit ${getLinkText(commonLink)}`,
-            icon: 'edit',
-            data: {
-              link: commonLink,
-              correlationDim1: columnCorrelation,
-              correlationDim2: rowCorrelation,
-            },
+        return {
+          text: `Edit ${getLinkText(commonLink)}`,
+          icon: 'edit',
+          data: {
+            link: commonLink,
+            correlationDim1: columnCorrelation,
+            correlationDim2: rowCorrelation,
           },
-        ];
+        };
       },
     );
     // allow addition or removal of a pseudo HSQC link between pseudo heavy atom and proton

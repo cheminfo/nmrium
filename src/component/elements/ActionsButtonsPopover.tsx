@@ -75,6 +75,7 @@ export interface ActionsButtonsPopoverProps
   anchorTo?: AnchorTo;
   autoFlip?: boolean;
   anchorPlacement?: AnchorPlacement;
+  closeOnAction?: boolean;
 }
 
 function ActionButton(props: ButtonProps) {
@@ -163,6 +164,9 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
     autoFlip = false,
     disabled,
     anchorPlacement = 'end',
+    closeOnAction = false,
+    isOpen: externalIsOpen,
+    onInteraction: onPopoverInteraction,
     ...otherProps
   } = props;
 
@@ -170,6 +174,7 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
     x: 0,
     y: 0,
   });
+  const [isOpen, setIsOpen] = useState(false);
   const Wrapper = targetTagName as any;
 
   const { visibleButtons, shouldDisablePopover } = filterButtons(buttons);
@@ -192,6 +197,11 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
       lazy
       arrow={false}
       animation="minimal"
+      isOpen={closeOnAction ? isOpen : externalIsOpen}
+      onInteraction={(nextOpenState, event) => {
+        onPopoverInteraction?.(nextOpenState, event);
+        if (closeOnAction) setIsOpen(nextOpenState);
+      }}
       placement={placement}
       popoverClassName="actions-buttons-popover"
       interactionKind="hover"
@@ -218,7 +228,11 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
       }}
       content={
         <Container style={contentStyle} flexDirection={direction} gap={space}>
-          <ActionButtons buttons={visibleButtons} direction={direction} />
+          <ActionButtons
+            buttons={visibleButtons}
+            direction={direction}
+            onAction={closeOnAction ? () => setIsOpen(false) : undefined}
+          />
         </Container>
       }
       {...otherProps}
@@ -228,10 +242,11 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
 interface ActionButtonsProps {
   buttons: ActionButtonProps[];
   direction: Direction;
+  onAction?: () => void;
 }
 
 function ActionButtons(props: ActionButtonsProps) {
-  const { buttons, direction } = props;
+  const { buttons, direction, onAction } = props;
 
   return buttons.map((button, index) => {
     if (isSeparator(button)) {
@@ -244,14 +259,18 @@ function ActionButtons(props: ActionButtonsProps) {
       return <VerticalSeparator key={index} />;
     }
 
-    const { title, visible, ...otherProps } = button;
+    const { title = '', visible, onClick, ...otherProps } = button;
 
     return (
       <ActionButton
         // eslint-disable-next-line @eslint-react/no-array-index-key
         key={index}
-        tooltipProps={{ content: title || '', compact: true }}
+        tooltipProps={{ content: title, compact: true }}
         {...otherProps}
+        onClick={(event) => {
+          onClick?.(event);
+          onAction?.();
+        }}
       />
     );
   });

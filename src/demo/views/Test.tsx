@@ -185,7 +185,7 @@ export default function Test(props: any) {
             state={data?.state}
             aggregator={data?.aggregator}
             onChange={changeHandler}
-            workspace={workspace || null}
+            workspace={workspace}
           />
         </div>
         <div

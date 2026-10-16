@@ -1,10 +1,5 @@
 import styled from '@emotion/styled';
-import type {
-  Signal1D,
-  Signal2D,
-  Zone,
-  Zones as ZonesType,
-} from '@zakodium/nmr-types';
+import type { Signal2D, Zone, Zones as ZonesType } from '@zakodium/nmr-types';
 import type { Spectrum1D, Spectrum2D } from '@zakodium/nmrium-core';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { PiTextTSlash } from 'react-icons/pi';
@@ -23,7 +18,7 @@ import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZo
 import useSpectrum from '../../hooks/useSpectrum.js';
 import type { GetTracesSpectraOptions } from '../useTracesSpectra.js';
 import { getTracesSpectra } from '../useTracesSpectra.js';
-import { extractSpectrumSignals } from '../utilities/extractSpectrumSignals.js';
+import { getClosestSignal } from '../utilities/extractSpectrumSignals.js';
 import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 
 interface ZonesInnerProps {
@@ -236,32 +231,12 @@ interface GetDefaultAssignmentOptions extends GetTracesSpectraOptions {
   zone: Zone;
 }
 
-function findClosestAssignment(signals: Signal1D[], target: number) {
-  if (signals.length === 0) return '';
-  let closest = signals[0];
-  let minDiff = Math.abs(closest.delta - target);
-
-  for (let i = 1; i < signals.length; i++) {
-    const { delta } = signals[i];
-    const diff = Math.abs(delta - target);
-    if (diff < minDiff) {
-      closest = signals[i];
-      minDiff = diff;
-    }
-  }
-
-  return closest.assignment || '';
-}
-
 function getAssignmentLabel(
   spectrum: Spectrum1D | null,
   options: { from: number; to: number; center: number },
 ) {
   if (!spectrum) return null;
-  const { center, from, to } = options;
-  const signalList = extractSpectrumSignals(spectrum, { from, to });
-  signalList.sort((a, b) => a.delta - b.delta);
-  return findClosestAssignment(signalList, center);
+  return getClosestSignal(spectrum, options)?.assignment || '';
 }
 
 function getDefaultAssignmentLabel(options: GetDefaultAssignmentOptions) {
@@ -305,7 +280,7 @@ function AssignmentLabel(props: AssignmentLabelProps) {
     },
   } = useChartData();
   const { id: zoneID, x, y } = zone;
-  let { assignment } = signal;
+  let assignment = signal.assignment;
   const { id: signalID } = signal;
   const dispatch = useDispatch();
   const { isActive } = useHighlight([signalID]);

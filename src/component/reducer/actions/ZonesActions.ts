@@ -89,10 +89,28 @@ type SaveEditedZoneAction = ActionType<
   }
 >;
 
+type AxisLink = Required<Pick<Signal2D['x'], 'diaIDs' | 'nbAtoms'>>;
+
+interface AutoLinkAssignment {
+  signalId: string;
+  x?: AxisLink;
+  y?: AxisLink;
+  assignment: string;
+}
+
+type AutoLink2DSignalsAction = ActionType<
+  'AUTO_LINK_2D_SIGNALS',
+  {
+    zoneId: string;
+    assignments: AutoLinkAssignment[];
+  }
+>;
+
 interface UnlinkZoneProps {
   zoneKey?: string;
   signalIndex?: number;
   axis?: Axis;
+  assignment?: string;
 }
 
 type UnlinkZoneAction = ActionType<'UNLINK_ZONE', UnlinkZoneProps>;
@@ -106,7 +124,12 @@ type ToggleZonesViewAction = ActionType<
 
 type ChangeZoneAssignmentLabelAction = ActionType<
   'CHANGE_ZONE_ASSIGNMENT_LABEL',
-  { zoneID: string; signalID: string; value: string }
+  {
+    zoneID: string;
+    signalID: string;
+    value: string;
+    isAutoAssignment?: boolean;
+  }
 >;
 type SetZoneAssignmentLabelCoordinationAction = ActionType<
   'SET_ZONE_ASSIGNMENT_LABEL_COORDINATION',
@@ -123,6 +146,7 @@ export type ZonesActions =
   | DeleteSignal2DAction
   | SetSignalPathLengthAction
   | AssignZoneAction
+  | AutoLink2DSignalsAction
   | SaveEditedZoneAction
   | UnlinkZoneAction
   | ToggleZonesViewAction
@@ -360,25 +384,44 @@ function handleSetSignalPathLength(
   handleUpdateCorrelations(draft);
 }
 
+function clearAutoAssignmentWithoutLinks(zone: Zone) {
+  for (const signal of zone.signals) {
+    if (!signal.x.diaIDs?.length && !signal.y.diaIDs?.length) {
+      signal.isAutoAssignment = false;
+    }
+  }
+}
+
 //action
 function unlinkZone(draft: Draft<State>, props: UnlinkZoneProps) {
-  const { zoneKey, signalIndex = -1, axis } = props;
+  const { zoneKey, signalIndex = -1, axis, assignment } = props;
 
   const spectrum = getSpectrum(draft);
   if (!isSpectrum2D(spectrum)) return;
 
   const zones = spectrum.zones.values;
-  if (zoneKey) {
-    // remove assignments in global state
-    const zoneIndex = getZoneIndex(spectrum, zoneKey);
-    const zone = zones[zoneIndex];
-    zones[zoneIndex] = unlink(zone, signalIndex, axis);
-  } else {
-    const newZones = zones.map((zone) => {
-      return unlink(zone);
+
+  if (!zoneKey) {
+    spectrum.zones.values = zones.map((zone) => {
+      const unlinkedZone = unlink(zone);
+      clearAutoAssignmentWithoutLinks(unlinkedZone);
+      return unlinkedZone;
     });
-    spectrum.zones.values = newZones;
+    return;
   }
+
+  const zoneIndex = getZoneIndex(spectrum, zoneKey);
+  if (zoneIndex === -1) return;
+
+  const unlinkedZone = unlink(zones[zoneIndex], signalIndex, axis);
+  zones[zoneIndex] = unlinkedZone;
+
+  const signal = unlinkedZone.signals[signalIndex];
+  if (axis && signal?.isAutoAssignment && assignment !== undefined) {
+    signal.assignment = assignment;
+  }
+
+  clearAutoAssignmentWithoutLinks(unlinkedZone);
 }
 //action
 function handleUnlinkZone(draft: Draft<State>, action: UnlinkZoneAction) {
@@ -397,9 +440,45 @@ function handleAssignZone(draft: Draft<State>, action: AssignZoneAction) {
   const [{ index: zoneIndex }, { index: signalIndex }] = keys;
   const zone = spectrum.zones.values[zoneIndex];
 
-  const signalByAxis = zone.signals[signalIndex][axis];
+  const signal = zone.signals[signalIndex];
+  signal.isAutoAssignment = true;
+
+  const signalByAxis = signal[axis];
   signalByAxis.diaIDs = diaIDs;
   signalByAxis.nbAtoms = nbAtoms + (signalByAxis?.nbAtoms || 0);
+}
+
+function handleAutoLink2DSignals(
+  draft: Draft<State>,
+  action: AutoLink2DSignalsAction,
+) {
+  const spectrum = getSpectrum(draft);
+  if (!isSpectrum2D(spectrum)) return;
+
+  const zoneIndex = getZoneIndex(spectrum, action.payload.zoneId);
+
+  if (zoneIndex === -1) return;
+
+  const zone = spectrum.zones.values[zoneIndex];
+
+  for (const { signalId, x, y, assignment } of action.payload.assignments) {
+    const signal = zone.signals.find((signal) => signal.id === signalId);
+    if (!signal) continue;
+
+    if (x) {
+      signal.x.diaIDs = [...x.diaIDs];
+      signal.x.nbAtoms = x.nbAtoms;
+    }
+    if (y) {
+      signal.y.diaIDs = [...y.diaIDs];
+      signal.y.nbAtoms = y.nbAtoms;
+    }
+    signal.assignment = assignment;
+    signal.isAutoAssignment = true;
+  }
+
+  initializeZoneViewObject(draft, spectrum.id);
+  draft.view.zones[spectrum.id].showAssignmentsLabels = true;
 }
 
 //action
@@ -466,7 +545,7 @@ function handleChangeZoneAssignmentLabel(
   draft: Draft<State>,
   action: ChangeZoneAssignmentLabelAction,
 ) {
-  const { zoneID, signalID, value } = action.payload;
+  const { zoneID, signalID, value, isAutoAssignment = false } = action.payload;
 
   const spectrum = getSpectrum(draft);
   if (!isSpectrum2D(spectrum)) return;
@@ -491,10 +570,12 @@ function handleChangeZoneAssignmentLabel(
   }
 
   signal.assignment = value;
+  signal.isAutoAssignment = isAutoAssignment;
 
   if (!value) {
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete zoneView.assignmentsLabelsCoordinates[zoneID];
+    signal.isAutoAssignment = false;
   }
 }
 
@@ -519,6 +600,7 @@ export {
   handleAdd2dZone,
   handleAlign2DSpectrum,
   handleAssignZone,
+  handleAutoLink2DSignals,
   handleAutoSpectraZonesDetection,
   handleAutoZonesDetection,
   handleChangeZoneAssignmentLabel,

@@ -10,6 +10,7 @@ import { useAlert } from '../../elements/Alert.js';
 import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import { booleanToString } from '../../utility/booleanToString.js';
+import { useExtractAtomAssignmentLabel } from '../MoleculesPanel/hooks/useExtractAtomAssignmentLabel.js';
 import { TablePanel } from '../extra/BasicPanelStyle.js';
 import type { SettingsRef } from '../extra/utilities/settingImperativeHandle.js';
 import DefaultPanelHeader from '../header/DefaultPanelHeader.js';
@@ -44,6 +45,7 @@ const MemoizedZonesPanel = memo(function ZonesPanelInner(
 
   const [filterIsActive, setFilterIsActive] = useState(false);
   const dispatch = useDispatch();
+  const { get2DSignalAssignmentLabel } = useExtractAtomAssignmentLabel();
   const alert = useAlert();
   const [isFlipped, setIsFlipped] = useState(false);
   const settingRef = useRef<SettingsRef | null>(null);
@@ -101,22 +103,31 @@ const MemoizedZonesPanel = memo(function ZonesPanelInner(
   }, [filterIsActive]);
 
   const unlinkZoneHandler = useCallback(
-    (
-      // TODO: this must be a bug, `zoneData.id` will fail with `undefined`.
-      zoneData?: any,
-      signalIndex = -1,
-      axis = undefined,
-    ) => {
+    (zoneData?: Zone, signalIndex = -1, axis?: 'x' | 'y') => {
+      const signal = zoneData?.signals[signalIndex];
+      const assignment =
+        signal?.isAutoAssignment && axis
+          ? get2DSignalAssignmentLabel({
+              ...signal,
+              [axis]: {
+                ...signal[axis],
+                diaIDs: undefined,
+                nbAtoms: undefined,
+              },
+            })
+          : undefined;
+
       dispatch({
         type: 'UNLINK_ZONE',
         payload: {
-          zoneKey: zoneData.id,
+          zoneKey: zoneData?.id,
           signalIndex,
           axis,
+          assignment,
         },
       });
     },
-    [dispatch],
+    [dispatch, get2DSignalAssignmentLabel],
   );
 
   const removeAssignments = useCallback(() => {

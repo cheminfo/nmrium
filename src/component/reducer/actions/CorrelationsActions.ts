@@ -69,8 +69,7 @@ function handleUpdateCorrelations(
 
 //action
 function handleSetMF(draft: Draft<State>, action: SetMFAction) {
-  const state = original(draft);
-  const { correlations } = state;
+  const { correlations } = original(draft);
   const { mf } = action.payload;
   // update of correlation data only if the molecular formula is not empty and not equal to the current one
   if (correlations.options.mf === '' || correlations.options.mf !== mf) {
@@ -89,8 +88,7 @@ function handleSetCorrelation(
   draft: Draft<State>,
   action: SetCorrelationAction,
 ) {
-  const state = original(draft);
-  const { correlations } = state;
+  const { correlations } = original(draft);
   const { id, correlation, options } = action.payload;
   // replace the existing correlation with the new one but do not update the entire correlation data here
   draft.correlations = correlationApi.setCorrelation(

@@ -76,7 +76,7 @@ export function DraggableInset(props: Inset) {
   function handleResize(
     internalBounding: Pick<InsetBounding, 'height' | 'width'>,
   ) {
-    const { width, height } = convertToPixel(externalBounding);
+    const { width, height } = convertToPixel();
     internalBounding.width += width;
     internalBounding.height += height;
     setBounding((prevBounding) => ({
@@ -97,7 +97,7 @@ export function DraggableInset(props: Inset) {
       typeof bounding?.width === 'number' &&
       typeof bounding?.height === 'number'
     ) {
-      const { width, height } = convertToPixel(externalBounding);
+      const { width, height } = convertToPixel();
       bounding.width += width;
       bounding.height += height;
     }
@@ -108,8 +108,8 @@ export function DraggableInset(props: Inset) {
     });
   }
 
-  function convertToPixel(bounding: Partial<InsetBounding>) {
-    const { x, y, height, width } = bounding;
+  function convertToPixel() {
+    const { x, y, height, width } = externalBounding;
     const output: Partial<InsetBounding> = {};
 
     if (x) {

@@ -124,7 +124,13 @@ export function Input2<FilterItem extends string = string>(
     ...otherInputProps
   } = props;
 
-  const { handleChange, setValue, isDebounced, innerRef, value } = useInput({
+  const {
+    handleChange,
+    setValue,
+    isDebounced,
+    innerRef,
+    value = '',
+  } = useInput({
     value: externalValue,
     ref,
     autoSelect,
@@ -176,7 +182,7 @@ export function Input2<FilterItem extends string = string>(
         ...otherInputProps,
       }}
       items={[]}
-      query={value ?? ''}
+      query={value}
       onQueryChange={handleChange}
       fill={fill}
       popoverProps={{ disabled: true }}

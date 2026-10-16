@@ -3,6 +3,7 @@ import { lazy, memo } from 'react';
 export const possibleViews = {
   AuoProcessingView: memo(lazy(() => import('./AutoProcessingView.tsx'))),
   BenchtopNMRWorkspace: memo(lazy(() => import('./BenchtopNMRWorkspace.js'))),
+  ControllableHighlight: memo(lazy(() => import('./ControllableHighlight.js'))),
   CustomWorkspace: memo(lazy(() => import('./CustomWorkspace.js'))),
   Exam: memo(lazy(() => import('./Exam.js'))),
   Exercise: memo(lazy(() => import('./Exercise.js'))),

@@ -297,13 +297,12 @@ export function findAutomaticContourLevels(
     throw new Error('contourRatio must be > 1');
   }
 
-  const analysis = maxPoolAbsolute(matrix, rows, cols, maxAnalysisDimension);
   const {
     values,
     rows: analysisRows,
     cols: analysisCols,
     maxAbsoluteValue,
-  } = analysis;
+  } = maxPoolAbsolute(matrix, rows, cols, maxAnalysisDimension);
   const thresholdIndex = createThresholdIndex(values);
 
   const maxSigmaInData = maxAbsoluteValue / noiseLevel;

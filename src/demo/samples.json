@@ -345,6 +345,11 @@
       {
         "title": "Ref API",
         "view": "RefAPI"
+      },
+      {
+        "file": "./data/ibuprofen.json",
+        "title": "Controllable highlight",
+        "view": "ControllableHighlight"
       }
     ]
   },

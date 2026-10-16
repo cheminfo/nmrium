@@ -60,12 +60,11 @@ const Spectra1DColors = withForm({
   render: function Render({ form }) {
     const { Field } = form;
 
-    const field = useField({
+    const { insertValue, removeValue, state } = useField({
       form,
       name: 'spectraColors.oneDimension',
       mode: 'array',
     });
-    const { insertValue, removeValue, state } = field;
 
     const { data: chartData } = useChartData();
     const { datalist } = useMemo(() => {
@@ -180,12 +179,11 @@ const Spectra2DColors = withForm({
   render: function Render({ form }) {
     const { Field } = form;
 
-    const field = useField({
+    const { insertValue, removeValue, state } = useField({
       form,
       name: 'spectraColors.twoDimensions',
       mode: 'array',
     });
-    const { insertValue, removeValue, state } = field;
 
     const handleAdd = useCallback(
       (index: number) => {

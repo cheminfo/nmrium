@@ -94,7 +94,10 @@ function getPlotDataAsString(
       plotOptions,
     );
 
-    const columnsLabels: string[] = [xPath || 'serial', yPath || 'serial'];
+    const columnsLabels: string[] = [
+      xPath === '' ? 'serial' : xPath,
+      yPath === '' ? 'serial' : xPath,
+    ];
     let headerIndex = 0;
     // listed the spectra panel columns
     for (const col of spectraPanelPreferences.columns) {
