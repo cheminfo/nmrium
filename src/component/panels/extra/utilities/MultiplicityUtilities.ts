@@ -1,6 +1,6 @@
 import {
-  checkMultiplicity,
   findMultiplet,
+  isMultiplicityValid,
   translateMultiplet,
 } from 'nmr-processing';
 
@@ -17,7 +17,7 @@ function hasCouplingConstant(multiplet: string) {
     multiplet = translateMultiplet(multiplet);
   }
   // with the pre-set rejected ones, we check the given multiplicity for the need of having a coupling constant (massive and singlet do not)
-  return checkMultiplicity(multiplet, ['m', 's']);
+  return isMultiplicityValid(multiplet, ['m', 's']);
 }
 
 function getPascal(n: number | undefined, spin: number) {
