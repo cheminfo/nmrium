@@ -6,7 +6,7 @@ import type {
   FloatingRangesTablePreferences,
 } from '@zakodium/nmrium-core';
 import { isSpectrum1D } from '@zakodium/nmrium-core';
-import { checkMultiplicity } from 'nmr-processing';
+import { isMultiplicityValid } from 'nmr-processing';
 import { memo, useEffect, useMemo, useState } from 'react';
 import { BsArrowsMove } from 'react-icons/bs';
 import { FaCog, FaLink, FaTimes } from 'react-icons/fa';
@@ -102,7 +102,7 @@ function buildSignalItem(
     js = [],
     diaIDs,
   } = signal;
-  const isNotMultiplet = !checkMultiplicity(multiplicity, ['m']);
+  const isNotMultiplet = !isMultiplicityValid(multiplicity, ['m']);
   return {
     id: base.id,
     from: base.from,

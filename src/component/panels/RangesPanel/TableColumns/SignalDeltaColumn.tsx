@@ -1,5 +1,5 @@
 import { assert } from '@zakodium/utils';
-import { checkMultiplicity } from 'nmr-processing';
+import { isMultiplicityValid } from 'nmr-processing';
 
 import { useDispatch } from '../../../context/DispatchContext.js';
 import type { EditableColumnProps } from '../../../elements/EditableColumn.js';
@@ -29,7 +29,7 @@ export default function SignalDeltaColumn(props: RangeColumnProps) {
     format,
   )}`;
 
-  if (!signal || !checkMultiplicity(signal.multiplicity, ['m'])) {
+  if (!signal || !isMultiplicityValid(signal.multiplicity, ['m'])) {
     return (
       <td {...rowSpanTags} {...onHover}>
         {rangeText}
