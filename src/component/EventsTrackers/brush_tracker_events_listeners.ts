@@ -3,7 +3,13 @@ import { EventEmitter } from 'eventemitter3';
 import { createContext, use, useState } from 'react';
 
 export type BrushTrackerEventEmitterSupportedEvents =
-  'click' | 'click-double' | 'zoom' | 'brush' | 'brush-end';
+  | 'click'
+  | 'click-double'
+  | 'zoom'
+  | 'brush'
+  | 'brush-end'
+  | 'drag'
+  | 'drag-end';
 export type BrushTrackerEventEmitter =
   EventEmitter<BrushTrackerEventEmitterSupportedEvents>;
 

@@ -1,5 +1,6 @@
 import type {
   BrushTrackerEvents,
+  BrushTrackerEventsDragEvent,
   BrushTrackerEventsOnClickEvent,
   BrushTrackerEventsTrackerEvent,
   BrushTrackerEventsZoomEvent,
@@ -11,6 +12,7 @@ import { useEventCallback } from 'usehooks-ts';
 import type {
   BrushTrackerData,
   ClickOptions,
+  DragTrackerEvent,
   ZoomOptions,
 } from '../../EventsTrackers/brush_tracker.types.ts';
 import type {
@@ -55,6 +57,16 @@ export function useBrushTrackerEvent(events: BrushTrackerEvents) {
 
     events.onDoubleClick?.(event);
   });
+  const onDragStable = useEventCallback((data: DragTrackerEvent) => {
+    const event = dragTrackerEventToCoreDragEvent(data);
+
+    events.onDrag?.(event);
+  });
+  const onDragEndStable = useEventCallback((data: DragTrackerEvent) => {
+    const event = dragTrackerEventToCoreDragEvent(data);
+
+    events.onDragEnd?.(event);
+  });
 
   //
   // Use stable version if the event is defined.
@@ -66,6 +78,8 @@ export function useBrushTrackerEvent(events: BrushTrackerEvents) {
   const onZoom = events.onZoom && onZoomStable;
   const onClick = events.onClick && onClickStable;
   const onDoubleClick = events.onDoubleClick && onDoubleClickStable;
+  const onDrag = events.onDrag && onDragStable;
+  const onDragEnd = events.onDragEnd && onDragEndStable;
 
   //
   // Forward the events listeners
@@ -76,6 +90,8 @@ export function useBrushTrackerEvent(events: BrushTrackerEvents) {
   useRegisterListener(emitter, 'zoom', onZoom);
   useRegisterListener(emitter, 'click', onClick);
   useRegisterListener(emitter, 'click-double', onDoubleClick);
+  useRegisterListener(emitter, 'drag', onDrag);
+  useRegisterListener(emitter, 'drag-end', onDragEnd);
 }
 
 function useRegisterListener(
@@ -135,4 +151,31 @@ function clickOptionsToCoreClickEvent(
   const { x, y, ...domEvent } = event;
 
   return { domEvent, position: { x, y } };
+}
+
+function dragTrackerEventToCoreDragEvent(
+  event: DragTrackerEvent,
+): BrushTrackerEventsDragEvent {
+  const {
+    x,
+    y,
+    startX,
+    startY,
+    domEvent,
+    mouseButton,
+    ctrlKey,
+    altKey,
+    shiftKey,
+  } = event;
+
+  return {
+    // Claiming the gesture delegates to the tracker event (NOT the native
+    // domEvent, whose stopPropagation is a no-op for the veto), so the
+    // brush suppression is honored by the host `BrushTracker`.
+    stopPropagation: () => event.stopPropagation(),
+    mouseButton,
+    modifiersKey: { ctrlKey, altKey, shiftKey, metaKey: domEvent.metaKey },
+    position: { x, y },
+    positionStart: { x: startX, y: startY },
+  };
 }
