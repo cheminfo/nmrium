@@ -49,7 +49,7 @@ export type OnZoom = (options: ZoomOptions) => void;
 export type OnBrush = (state: BrushTrackerData) => void;
 type OnBrushEnd = OnBrush;
 
-export interface DragCoordination {
+interface DragCoordination {
   /**
   x coordinate relative to the chart container
   */
@@ -87,8 +87,8 @@ export interface DragTrackerEvent extends DragCoordination {
   stopPropagation(): void;
 }
 
-export type OnDrag = (event: DragTrackerEvent) => void;
-export type OnDragEnd = OnDrag;
+type OnDrag = (event: DragTrackerEvent) => void;
+type OnDragEnd = OnDrag;
 
 export type BaseDetectBrushingOptions = AdvanceOmit<
   DetectBrushingOptions,
