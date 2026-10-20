@@ -33,7 +33,7 @@ const columnHelper = createTanStackColumnHelper<AssignmentListRow>();
  * Select visible rows from the complete hierarchy and update expansion flags.
  * rows with no parent or whose parent is expanded remain visible.
  */
-export function getVisibleAssignmentRows(
+function getVisibleAssignmentRows(
   allRows: readonly AssignmentListRow[],
   expandedGroups: ReadonlySet<string>,
 ): AssignmentListRow[] {

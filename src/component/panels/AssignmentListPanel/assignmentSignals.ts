@@ -17,7 +17,7 @@ interface AssignmentSpectrum {
   info: Pick<Spectrum1D['info'], 'nucleus' | 'originFrequency'>;
 }
 
-export interface AssignedSignal {
+interface AssignedSignal {
   spectrum: AssignmentSpectrum;
   range: Range;
   signal: Signal1D;
