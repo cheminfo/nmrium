@@ -18,6 +18,7 @@ export function CoreOperatorChartSVG(props: CoreOperatorChartSVGProps) {
     spectrum,
     operation,
     onChange,
+    isLivePreview,
     height,
     width,
     margin,
@@ -36,6 +37,7 @@ export function CoreOperatorChartSVG(props: CoreOperatorChartSVGProps) {
         spectrum={spectrum}
         operation={operation}
         onChange={onChange}
+        isLivePreview={isLivePreview}
         height={height}
         width={width}
         margin={margin}
