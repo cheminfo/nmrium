@@ -85,6 +85,15 @@ export function useBrushTracker() {
 function isSelfControlledTarget(target: EventTarget) {
   return (target as Element).closest('[data-self-control="true"]') !== null;
 }
+
+/**
+ * Minimal pointer travel in px between pointerdown and pointerup for the
+ * gesture to be considered a drag. Pointer jitter below this threshold
+ * (hand tremor, trackpad imprecision) still counts as a click.
+ * Keep it in sync with the consumer drag threshold
+ * (`ProcessingOperatorUI.ChartBrushTracker` dragThreshold).
+ */
+const dragDetectionThreshold = 2;
 function getMouseXY(event: MouseEvent, currentTarget?: Element) {
   const boundingRect = (
     currentTarget ?? event.currentTarget
@@ -231,16 +240,20 @@ export function BrushTracker(options: BrushTrackerProps) {
       }
 
       function moveCallback(event: globalThis.PointerEvent) {
-        isDraggingRef.current = true; // set flag to true to skip click event if the user dragged the mouse
-        const {
-          clientX,
-          clientY,
-          screenX,
-          screenY,
-          shiftKey,
-          altKey,
-          ctrlKey,
-        } = event;
+        const { clientX, clientY } = event;
+
+        // Only a real pointer travel marks the gesture as a drag: pointer
+        // jitter must not suppress the click event dispatched on pointerup.
+        if (
+          Math.hypot(
+            clientX - startPositionRef.current.x,
+            clientY - startPositionRef.current.y,
+          ) > dragDetectionThreshold
+        ) {
+          isDraggingRef.current = true;
+        }
+
+        const { screenX, screenY, shiftKey, altKey, ctrlKey } = event;
 
         if (ctrlKey) {
           if (boundingRectRef.current) {
