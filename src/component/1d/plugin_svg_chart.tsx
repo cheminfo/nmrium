@@ -36,6 +36,7 @@ export function PluginSVGChart1D() {
   if (!operatorUI) return null;
 
   const isLiveEditable = operatorUI?.isLiveEditable ?? false;
+  const isLivePreview = isLiveEditable && (liveEdit.value?.checked ?? false);
 
   return (
     <CoreOperatorChartSVG
@@ -43,6 +44,7 @@ export function PluginSVGChart1D() {
       operatorUI={operatorUI}
       spectrum={spectrum}
       operation={liveOperation}
+      isLivePreview={isLivePreview}
       onChange={(liveOperation) => {
         liveOperation = setLiveOperation(liveOperation);
 

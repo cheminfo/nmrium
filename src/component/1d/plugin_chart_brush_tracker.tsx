@@ -33,6 +33,7 @@ export function PluginChartBrushTracker() {
   if (!operatorUI) return null;
 
   const isLiveEditable = operatorUI?.isLiveEditable ?? false;
+  const isLivePreview = isLiveEditable && (liveEdit.value?.checked ?? false);
 
   return (
     <CoreOperatorChartBrushTracker
@@ -40,6 +41,7 @@ export function PluginChartBrushTracker() {
       operatorUI={operatorUI}
       spectrum={spectrum}
       operation={liveOperation}
+      isLivePreview={isLivePreview}
       height={height}
       width={width}
       margin={margin}
