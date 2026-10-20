@@ -125,9 +125,10 @@ export function ProcessingItem(props: ProcessingItemProps) {
             );
           }}
         >
-          {(submitButton) =>
+          {(submitButton, leftContent) =>
             !isEditable ? null : (
               <OperatorEditBanner
+                leftContent={leftContent}
                 isLiveEditable={isLiveEditable ?? false}
                 liveEdit={liveEdit}
                 onClose={() => selectProcessingOperator(undefined)}
