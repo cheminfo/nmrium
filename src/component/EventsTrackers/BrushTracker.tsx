@@ -93,7 +93,7 @@ function isSelfControlledTarget(target: EventTarget) {
  * Keep it in sync with the consumer drag threshold
  * (`ProcessingOperatorUI.ChartBrushTracker` dragThreshold).
  */
-const dragDetectionThreshold = 2;
+const dragDetectionThreshold = 4;
 function getMouseXY(event: MouseEvent, currentTarget?: Element) {
   const boundingRect = (
     currentTarget ?? event.currentTarget
@@ -244,10 +244,17 @@ export function BrushTracker(options: BrushTrackerProps) {
 
         // Only a real pointer travel marks the gesture as a drag: pointer
         // jitter must not suppress the click event dispatched on pointerup.
+        // Both positions must be compared in the same coordinate system:
+        // `clientX` is viewport-relative while `startPositionRef` is
+        // relative to the chart container, so the container offset must
+        // be removed before comparing, otherwise the layout offset itself
+        // counts as pointer travel.
+        const boundingRect = boundingRectRef.current;
         if (
+          boundingRect &&
           Math.hypot(
-            clientX - startPositionRef.current.x,
-            clientY - startPositionRef.current.y,
+            clientX - boundingRect.x - startPositionRef.current.x,
+            clientY - boundingRect.y - startPositionRef.current.y,
           ) > dragDetectionThreshold
         ) {
           isDraggingRef.current = true;
