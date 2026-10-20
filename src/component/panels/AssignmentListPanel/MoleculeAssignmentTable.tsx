@@ -66,25 +66,6 @@ const SpectrumColor = styled.span`
   border-radius: 50%;
 `;
 
-const Container = styled.section`
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  min-height: 0;
-
-  table {
-    border-top: 0;
-  }
-
-  table thead th {
-    background-color: #e0e0e0;
-    color: #333;
-    border-bottom-color: #bdbdbd;
-    box-shadow: inset 0 1px 0 #bdbdbd;
-    z-index: 1;
-  }
-`;
-
 interface SpectrumColumnHeaderProps {
   spectrum: Spectrum1D;
 }
@@ -169,20 +150,19 @@ export function MoleculeAssignmentTable(props: MoleculeAssignmentTableProps) {
   }
 
   return (
-    <Container>
-      <TanStackTable
-        data={rows}
-        columns={columns}
-        getHighlightIDs={getHighlightIDs}
-        highlightedSource="ASSIGNMENT_TABLE"
-        style={{ flex: 1, minHeight: 0 }}
-        rowStyle={({ original }) => ({
-          base: {
-            backgroundColor: original.isExpanded ? '#f2f2f2' : 'white',
-          },
-        })}
-        emptyDataRowText="No atom groups to display"
-      />
-    </Container>
+    <TanStackTable
+      data={rows}
+      columns={columns}
+      getHighlightIDs={getHighlightIDs}
+      highlightedSource="ASSIGNMENT_TABLE"
+      style={{ height: '100%' }}
+      rowStyle={({ original }) => ({
+        base: {
+          backgroundColor:
+            !original.isHydrogen && original.isExpanded ? '#f2f2f2' : 'white',
+        },
+      })}
+      emptyDataRowText="No atom groups to display"
+    />
   );
 }

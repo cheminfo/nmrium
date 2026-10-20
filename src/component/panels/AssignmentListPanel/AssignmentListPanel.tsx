@@ -1,47 +1,47 @@
-import { Switch, Tab, Tabs } from '@blueprintjs/core';
+import { Switch } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { Molecule } from 'openchemlib';
 import type { GroupedDiaID } from 'openchemlib-utils';
 import { TopicMolecule } from 'openchemlib-utils';
-import { useId, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
+import { PanelHeader } from 'react-science/ui';
 
 import type { StateMoleculeExtended } from '../../../data/molecules/Molecule.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { EmptyText } from '../../elements/EmptyText.js';
+import Select from '../../elements/Select.js';
+import { TablePanel } from '../extra/BasicPanelStyle.js';
 
 import { MoleculeAssignmentTable } from './MoleculeAssignmentTable.js';
 import { atomGroupsToAssignmentRows } from './atomGroupsToAssignmentRows.js';
 
-const Container = styled.div`
+const HeaderControls = styled.div`
   display: flex;
-  flex-direction: column;
-  height: 100%;
-  min-height: 0;
-  box-sizing: border-box;
-  gap: 8px;
-  padding: 8px;
-  overflow: hidden;
-
-  > :not(:last-child) {
-    flex-shrink: 0;
-  }
-
-  [role='tablist'] {
-    overflow-x: auto;
-    flex-shrink: 0;
-  }
-`;
-
-const TableContainer = styled.div`
+  align-items: center;
   flex: 1;
+  justify-content: flex-start;
+  gap: 8px;
   min-height: 0;
-  overflow: hidden;
+  min-width: 0;
+  padding: 4px;
+
+  label {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
 `;
 
 interface MoleculeAssignmentData {
   molecule: StateMoleculeExtended;
   groups: GroupedDiaID[];
   expandableGroupIds: string[];
+}
+
+function getMoleculeOptions(moleculeAssignments: MoleculeAssignmentData[]) {
+  return moleculeAssignments.map(({ molecule }) => ({
+    value: molecule.id,
+    label: molecule.label,
+  }));
 }
 
 function toggleExpandedRows(
@@ -134,7 +134,6 @@ function useAssignmentExpansion(
 
 export function AssignmentListPanel() {
   const { molecules } = useChartData();
-  const tabsId = useId();
   const { moleculeAssignments, activeAssignment, selectMolecule } =
     useMoleculeAssignments(molecules);
   const expansion = useAssignmentExpansion(activeAssignment);
@@ -146,35 +145,34 @@ export function AssignmentListPanel() {
   const { molecule } = activeAssignment;
 
   return (
-    <Container>
-      <Tabs
-        id={tabsId}
-        selectedTabId={molecule.id}
-        onChange={(id: string) => selectMolecule(id)}
-      >
-        {moleculeAssignments.map(({ molecule: tabMolecule }) => (
-          <Tab
-            key={tabMolecule.id}
-            id={tabMolecule.id}
-            title={tabMolecule.label}
+    <TablePanel>
+      <PanelHeader>
+        <HeaderControls>
+          {moleculeAssignments.length > 1 && (
+            <Select
+              items={getMoleculeOptions(moleculeAssignments)}
+              value={molecule.id}
+              onChange={selectMolecule}
+              style={{ width: 140 }}
+            />
+          )}
+          <Switch
+            label="Expand all"
+            checked={expansion.allExpanded}
+            disabled={!expansion.canExpand}
+            onChange={expansion.toggleAllRows}
+            style={{ marginBottom: 0 }}
           />
-        ))}
-      </Tabs>
-      <Switch
-        label="Expand all"
-        checked={expansion.allExpanded}
-        disabled={!expansion.canExpand}
-        onChange={expansion.toggleAllRows}
-        style={{ marginBottom: 0 }}
-      />
-      <TableContainer>
+        </HeaderControls>
+      </PanelHeader>
+      <div className="inner-container">
         <MoleculeAssignmentTable
           key={molecule.id}
           groups={activeAssignment.groups}
           expandedGroups={expansion.expandedGroups}
           onToggleRow={expansion.toggleRow}
         />
-      </TableContainer>
-    </Container>
+      </div>
+    </TablePanel>
   );
 }
