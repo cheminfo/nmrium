@@ -12,7 +12,11 @@ import { sortAssignmentLabels } from '../MoleculesPanel/utilities/sortAssignment
 export type AssignmentExpansion = boolean | ReadonlySet<string>;
 
 export interface AssignmentListRow {
+  /**
+   * The atom group's oclID, used to look up signal assignments.
+   */
   id: string;
+  parentOclId?: string;
   atomLabel: string;
   atomNumbers: string;
   atomLabels: string;
@@ -28,6 +32,22 @@ interface AssignmentRowOptions {
   parentOclId?: string;
   hasChildren?: boolean;
   isExpanded?: boolean;
+}
+
+export function getHydrogenIDsByParent(
+  rows: readonly AssignmentListRow[],
+): ReadonlyMap<string, readonly string[]> {
+  const hydrogenIDsByParent = new Map<string, string[]>();
+  for (const row of rows) {
+    if (row.parentOclId === undefined) continue;
+    const hydrogenIDs = hydrogenIDsByParent.get(row.parentOclId);
+    if (hydrogenIDs) {
+      hydrogenIDs.push(row.id);
+    } else {
+      hydrogenIDsByParent.set(row.parentOclId, [row.id]);
+    }
+  }
+  return hydrogenIDsByParent;
 }
 
 interface HydrogenPartition {
@@ -70,8 +90,8 @@ function toAssignmentRow(
   const { parentOclId, hasChildren = false, isExpanded = false } = options;
 
   return {
-    // Include the parent ID so the same hydrogen group can appear under different parents.
-    id: parentOclId ? `${parentOclId}:${group.oclID}` : group.oclID,
+    id: group.oclID,
+    parentOclId,
     atomLabel: group.atomLabel,
     atomNumbers: group.atoms.toSorted(compareNumbers).join(','),
     atomLabels: sortAssignmentLabels(group.customLabels).join(','),
@@ -175,7 +195,12 @@ export function atomGroupsToAssignmentRows(
     const isExpanded =
       hasChildren && isGroupExpanded(expansion, parentGroup.oclID);
 
-    rows.push(toAssignmentRow(parentGroup, { hasChildren, isExpanded }));
+    rows.push(
+      toAssignmentRow(parentGroup, {
+        hasChildren,
+        isExpanded,
+      }),
+    );
 
     if (isExpanded) {
       for (const hydrogenGroup of childHydrogens) {

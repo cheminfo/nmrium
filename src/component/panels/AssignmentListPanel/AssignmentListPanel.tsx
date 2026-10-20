@@ -144,10 +144,6 @@ export function AssignmentListPanel() {
   }
 
   const { molecule } = activeAssignment;
-  const rows = atomGroupsToAssignmentRows(
-    activeAssignment.groups,
-    expansion.expandedGroups,
-  );
 
   return (
     <Container>
@@ -174,7 +170,8 @@ export function AssignmentListPanel() {
       <TableContainer>
         <MoleculeAssignmentTable
           key={molecule.id}
-          rows={rows}
+          groups={activeAssignment.groups}
+          expandedGroups={expansion.expandedGroups}
           onToggleRow={expansion.toggleRow}
         />
       </TableContainer>
