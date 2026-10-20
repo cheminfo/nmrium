@@ -127,8 +127,8 @@ interface FormatAssignmentSignalsOptions {
 /**
  * Format one spectrum's collected assignments for a chemical-shift cell.
  *
- * @returns A comma-separated shift string without units, or the HTML returned by
- * `rangesToACS`
+ * @returns A comma-separated shift string without units, or ACS HTML without
+ * the spectrum header and final period.
  *
  */
 export function formatAssignmentSignals(
@@ -140,10 +140,13 @@ export function formatAssignmentSignals(
     return formatChemicalShifts({ entries, acs });
   }
 
-  return rangesToACS(getAssignedRanges(entries), {
+  const acsString = rangesToACS(getAssignedRanges(entries), {
     ...getRangesToACSOptions(spectrum.info, acs),
     filter: false,
   });
+
+  // "1H NMR (600 MHz): δ 4.04 (d)." becomes "δ 4.04 (d)".
+  return acsString.replaceAll(/^[^:]*:\s*|\.$/g, '');
 }
 
 interface formatChemicalShiftsOptions extends Pick<
