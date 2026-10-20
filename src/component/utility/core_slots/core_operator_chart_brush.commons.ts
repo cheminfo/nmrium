@@ -150,7 +150,29 @@ function clickOptionsToCoreClickEvent(
 ): BrushTrackerEventsOnClickEvent {
   const { x, y, ...domEvent } = event;
 
-  return { domEvent, position: { x, y } };
+  return {
+    // Claiming the event flags the emitted tracker event (NOT the native
+    // domEvent, whose stopPropagation would not be honored by the veto
+    // check), so the host `useWrappedEvents` skips its default behavior
+    // for this event (like the double-click zoom-out).
+    stopPropagation: () => claimTrackerEvent(event),
+    domEvent,
+    position: { x, y },
+  };
+}
+
+/**
+ * Flag a tracker event as propagation-stopped.
+ *
+ * The emitted click events are spreads of the React synthetic event, so
+ * they carry an own `isPropagationStopped` flag but no `stopPropagation`
+ * method: it lives on the synthetic event prototype and is lost in the
+ * spread. The claim reassigns the flag on the tracker event itself,
+ * which is the flag checked by the host `useWrappedEvents` after
+ * emitting to its listeners.
+ */
+function claimTrackerEvent(event: ClickOptions) {
+  event.isPropagationStopped = () => true;
 }
 
 function dragTrackerEventToCoreDragEvent(
