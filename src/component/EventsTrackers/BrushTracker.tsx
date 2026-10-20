@@ -248,15 +248,19 @@ export function BrushTracker(options: BrushTrackerProps) {
         // `clientX` is viewport-relative while `startPositionRef` is
         // relative to the chart container, so the container offset must
         // be removed before comparing, otherwise the layout offset itself
-        // counts as pointer travel.
+        // counts as pointer travel. The same threshold also gates the
+        // `MOVE` dispatch, so pointer jitter neither shows the brush
+        // banner nor updates the brush range while clicking (e.g. adding
+        // anchors).
         const boundingRect = boundingRectRef.current;
-        if (
+        const isPointerTravel =
           boundingRect &&
           Math.hypot(
             clientX - boundingRect.x - startPositionRef.current.x,
             clientY - boundingRect.y - startPositionRef.current.y,
-          ) > dragDetectionThreshold
-        ) {
+          ) > dragDetectionThreshold;
+
+        if (isPointerTravel) {
           isDraggingRef.current = true;
         }
 
@@ -293,7 +297,7 @@ export function BrushTracker(options: BrushTrackerProps) {
             onDrag(dragEvent);
           }
 
-          if (!dragEvent?.isPropagationStopped()) {
+          if (!dragEvent?.isPropagationStopped() && isPointerTravel) {
             dispatch({
               type: 'MOVE',
               payload: {
