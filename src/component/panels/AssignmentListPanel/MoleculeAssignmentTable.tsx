@@ -1,4 +1,4 @@
-import { Tag, Tooltip } from '@blueprintjs/core';
+import { Tag } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import type { GroupedDiaID } from 'openchemlib-utils';
 import { useMemo } from 'react';
@@ -78,22 +78,17 @@ function SpectrumColumnHeader({
   // Green means every atom has an assignment link, not a verified assignment.
   const isFullyAssigned = counts.total > 0 && counts.assigned === counts.total;
   return (
-    <Tooltip
-      content={tooltip}
-      renderTarget={({ isOpen, ...targetProps }) => (
-        <SpectrumHeader {...targetProps}>
-          <IsotopesViewer value={nucleus} />
-          <span>&delta;</span>
-          <Tag
-            minimal
-            intent={isFullyAssigned ? 'success' : 'danger'}
-            title={tooltip}
-          >
-            {counts.assigned}/{counts.total}
-          </Tag>
-        </SpectrumHeader>
-      )}
-    />
+    <SpectrumHeader>
+      <IsotopesViewer value={nucleus} />
+      <span>&delta;</span>
+      <Tag
+        minimal
+        intent={isFullyAssigned ? 'success' : 'danger'}
+        title={tooltip}
+      >
+        {counts.assigned}/{counts.total}
+      </Tag>
+    </SpectrumHeader>
   );
 }
 
