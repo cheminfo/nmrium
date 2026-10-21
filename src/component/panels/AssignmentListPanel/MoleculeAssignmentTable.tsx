@@ -12,6 +12,7 @@ import {
 
 import { AssignmentAtomCell } from './AssignmentAtomCell.js';
 import { AssignmentChemicalShiftCell } from './AssignmentChemicalShiftCell.js';
+import { AssignmentLabelCell } from './AssignmentLabelCell.js';
 import type { SignalsByOclID } from './assignmentSignals.js';
 import {
   getAssignedAtomCounts,
@@ -125,11 +126,25 @@ export function MoleculeAssignmentTable(props: MoleculeAssignmentTableProps) {
         header: 'Atom numbers',
         accessorKey: 'atomNumbers',
         enableSorting: false,
+        cell: ({ row }) => (
+          <AssignmentLabelCell
+            value={row.original.atomNumbers}
+            hydrogenValue={row.original.hydrogenAtomNumbers}
+            isExpanded={row.original.isExpanded}
+          />
+        ),
       },
       {
         header: 'Atom labels',
         accessorKey: 'atomLabels',
         enableSorting: false,
+        cell: ({ row }) => (
+          <AssignmentLabelCell
+            value={row.original.atomLabels}
+            hydrogenValue={row.original.hydrogenAtomLabels}
+            isExpanded={row.original.isExpanded}
+          />
+        ),
       },
       // One column per nucleus, combining assignments from all of its spectra.
       ...Array.from(signalsByNucleus).flatMap(([nucleus, signalsByOclID]) =>

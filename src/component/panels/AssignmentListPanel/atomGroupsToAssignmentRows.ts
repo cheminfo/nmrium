@@ -20,6 +20,8 @@ export interface AssignmentListRow {
   atomLabel: string;
   atomNumbers: string;
   atomLabels: string;
+  hydrogenAtomNumbers: string;
+  hydrogenAtomLabels: string;
   isHydrogen: boolean;
   hasChildren: boolean;
   isExpanded: boolean;
@@ -95,6 +97,13 @@ function toAssignmentRow(
     atomLabel: group.atomLabel,
     atomNumbers: group.atoms.toSorted(compareNumbers).join(','),
     atomLabels: sortAssignmentLabels(group.customLabels).join(','),
+    // The molecule already provides attached H values; keep them separate from the parent's.
+    hydrogenAtomNumbers: group.attachedHydrogens
+      .toSorted(compareNumbers)
+      .join(','),
+    hydrogenAtomLabels: sortAssignmentLabels(
+      group.attachedHydrogensCustomLabels,
+    ).join(','),
     isHydrogen: isHydrogenGroup(group),
     hasChildren,
     isExpanded,
@@ -161,7 +170,7 @@ function partitionHydrogenGroups(
  * - `heavyAtoms`: for hydrogens, the numbers of the atoms they are attached to.
  *
  * The table lists each heavy-atom group, followed by its hydrogen groups when
- * expanded.
+ * expanded. Parents retain their attached hydrogen values for collapsed cells.
  * for example:
  *   Input: carbon c1 contains atom 0, carbon c2 contains atom 1, and hydrogen group h1 contains atoms 2, 3, 4 attached to atom 0.
  *   atomGroupsToAssignmentRows(groups, new Set(['c1']));
