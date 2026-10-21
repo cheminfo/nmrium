@@ -1,3 +1,5 @@
+import type { ACSExportOptions } from '@zakodium/nmrium-core';
+
 import { useACSSettings } from '../../hooks/use_acs_settings.js';
 
 import type {
@@ -14,13 +16,23 @@ interface AssignmentShiftLineProps {
   shiftsOnly: boolean;
 }
 
-function AssignmentShiftLine(options: AssignmentShiftLineProps) {
+const acsOptions: Partial<ACSExportOptions> = {
+  signalKind: 'signal',
+  ascending: true,
+  format: 'IMJ',
+  textStyle: {},
+};
+
+function AssignmentShift(options: AssignmentShiftLineProps) {
   const { assignment, shiftsOnly } = options;
   const { spectrum } = assignment;
   const acs = useACSSettings(spectrum.info.nucleus);
   const value = formatAssignmentSignals({
     assignment,
-    acs,
+    acs: {
+      ...acs,
+      ...acsOptions,
+    },
     format: shiftsOnly ? 'shifts' : 'acs',
   });
 
@@ -47,7 +59,7 @@ export function AssignmentChemicalShiftCell(
   const assignments = getAssignmentSignals(options);
 
   return assignments.map((assignment) => (
-    <AssignmentShiftLine
+    <AssignmentShift
       key={assignment.spectrum.id}
       assignment={assignment}
       shiftsOnly={options.row.isHydrogen}
