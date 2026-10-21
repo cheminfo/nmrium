@@ -1,3 +1,4 @@
+import { Tag, Tooltip } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import type { GroupedDiaID } from 'openchemlib-utils';
 import { useMemo } from 'react';
@@ -11,7 +12,11 @@ import {
 
 import { AssignmentAtomCell } from './AssignmentAtomCell.js';
 import { AssignmentChemicalShiftCell } from './AssignmentChemicalShiftCell.js';
-import { getSignalsByNucleus } from './assignmentSignals.js';
+import type { SignalsByOclID } from './assignmentSignals.js';
+import {
+  getAssignedAtomCounts,
+  getSignalsByNucleus,
+} from './assignmentSignals.js';
 import type { AssignmentListRow } from './atomGroupsToAssignmentRows.js';
 import {
   atomGroupsToAssignmentRows,
@@ -58,14 +63,37 @@ const SpectrumHeader = styled.div`
 
 interface SpectrumColumnHeaderProps {
   nucleus: string;
+  groups: GroupedDiaID[];
+  signalsByOclID: SignalsByOclID;
 }
 
-function SpectrumColumnHeader({ nucleus }: SpectrumColumnHeaderProps) {
+function SpectrumColumnHeader({
+  nucleus,
+  groups,
+  signalsByOclID,
+}: SpectrumColumnHeaderProps) {
+  const counts = getAssignedAtomCounts(groups, signalsByOclID, nucleus);
+  const atomLabel = nucleus.replace(/^\d+/, '');
+  const tooltip = `${counts.assigned} of ${counts.total} ${atomLabel} atoms assigned.`;
+  // Green means every atom has an assignment link, not a verified assignment.
+  const isFullyAssigned = counts.total > 0 && counts.assigned === counts.total;
   return (
-    <SpectrumHeader>
-      <IsotopesViewer value={nucleus} />
-      <span>&delta;</span>
-    </SpectrumHeader>
+    <Tooltip
+      content={tooltip}
+      renderTarget={({ isOpen, ...targetProps }) => (
+        <SpectrumHeader {...targetProps}>
+          <IsotopesViewer value={nucleus} />
+          <span>&delta;</span>
+          <Tag
+            minimal
+            intent={isFullyAssigned ? 'success' : 'danger'}
+            title={tooltip}
+          >
+            {counts.assigned}/{counts.total}
+          </Tag>
+        </SpectrumHeader>
+      )}
+    />
   );
 }
 
@@ -112,7 +140,13 @@ export function MoleculeAssignmentTable(props: MoleculeAssignmentTableProps) {
       ...Array.from(signalsByNucleus).flatMap(([nucleus, signalsByOclID]) =>
         columnHelper.columns([
           {
-            header: () => <SpectrumColumnHeader nucleus={nucleus} />,
+            header: () => (
+              <SpectrumColumnHeader
+                nucleus={nucleus}
+                groups={groups}
+                signalsByOclID={signalsByOclID}
+              />
+            ),
             id: nucleus,
             enableSorting: false,
             cell: ({ row }) => (
@@ -128,7 +162,7 @@ export function MoleculeAssignmentTable(props: MoleculeAssignmentTableProps) {
         ]),
       ),
     ]);
-  }, [onToggleRow, signalsByNucleus, hydrogenIDsByParent]);
+  }, [groups, onToggleRow, signalsByNucleus, hydrogenIDsByParent]);
 
   function getHighlightIDs(row: AssignmentListRow): string[] {
     return [row.id, ...(hydrogenIDsByParent.get(row.id) ?? [])];
