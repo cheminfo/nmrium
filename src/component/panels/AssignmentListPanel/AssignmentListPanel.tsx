@@ -1,15 +1,16 @@
-import { Switch } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { Molecule } from 'openchemlib';
 import type { GroupedDiaID } from 'openchemlib-utils';
 import { TopicMolecule } from 'openchemlib-utils';
 import { useMemo, useState } from 'react';
-import { PanelHeader } from 'react-science/ui';
+import { PanelHeader, Toolbar } from 'react-science/ui';
 
 import type { StateMoleculeExtended } from '../../../data/molecules/Molecule.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { EmptyText } from '../../elements/EmptyText.js';
 import Select from '../../elements/Select.js';
+import type { ToolbarPopoverMenuItem } from '../../elements/ToolbarPopoverItem.js';
+import { ToolbarPopoverItem } from '../../elements/ToolbarPopoverItem.js';
 import { TablePanel } from '../extra/BasicPanelStyle.js';
 
 import { MoleculeAssignmentTable } from './MoleculeAssignmentTable.js';
@@ -87,24 +88,16 @@ function useMoleculeAssignments(molecules: StateMoleculeExtended[]) {
   return { moleculeAssignments, activeAssignment, selectMolecule };
 }
 
-function useAssignmentExpansion(
-  activeAssignment: MoleculeAssignmentData | undefined,
-) {
+function useAssignmentExpansion(activeAssignment: MoleculeAssignmentData) {
   const [expandedGroupsByMolecule, setExpandedGroupsByMolecule] = useState<
     ReadonlyMap<string, ReadonlySet<string>>
   >(() => new Map());
-  const moleculeId = activeAssignment?.molecule.id;
-  const expandableGroupIds = activeAssignment?.expandableGroupIds ?? [];
+  const moleculeId = activeAssignment.molecule.id;
+  const { expandableGroupIds } = activeAssignment;
   const expandedGroups =
-    moleculeId === undefined
-      ? new Set<string>()
-      : (expandedGroupsByMolecule.get(moleculeId) ?? new Set<string>());
-  const allExpanded =
-    expandableGroupIds.length > 0 &&
-    expandableGroupIds.every((id) => expandedGroups.has(id));
+    expandedGroupsByMolecule.get(moleculeId) ?? new Set<string>();
 
   function toggleRows(groupIds: readonly string[]) {
-    if (moleculeId === undefined) return;
     setExpandedGroupsByMolecule((previous) => {
       const next = new Map(previous);
       next.set(
@@ -115,54 +108,107 @@ function useAssignmentExpansion(
     });
   }
 
+  function setAllRows(expanded: boolean) {
+    setExpandedGroupsByMolecule((previous) => {
+      const next = new Map(previous);
+      next.set(moleculeId, new Set(expanded ? expandableGroupIds : []));
+      return next;
+    });
+  }
+
   function toggleRow(groupId: string) {
     toggleRows([groupId]);
   }
 
-  function toggleAllRows() {
-    toggleRows(expandableGroupIds);
-  }
-
   return {
     expandedGroups,
-    allExpanded,
-    canExpand: expandableGroupIds.length > 0,
+    canExpand: expandableGroupIds.some((id) => !expandedGroups.has(id)),
+    canCollapse: expandableGroupIds.some((id) => expandedGroups.has(id)),
     toggleRow,
-    toggleAllRows,
+    setAllRows,
   };
+}
+
+type ExpansionAction = 'expand' | 'collapse';
+
+const EXPANSION_MENU: Array<ToolbarPopoverMenuItem<ExpansionAction>> = [
+  { text: 'Expand all', icon: 'expand-all', data: 'expand' },
+  { text: 'Collapse all', icon: 'collapse-all', data: 'collapse' },
+];
+
+interface ExpansionMenuProps {
+  canExpand: boolean;
+  canCollapse: boolean;
+  onSelect: (expanded: boolean) => void;
+}
+
+function ExpansionMenu(props: ExpansionMenuProps) {
+  const { canExpand, canCollapse, onSelect } = props;
+  const options = EXPANSION_MENU.map((option) => ({
+    ...option,
+    disabled: option.data === 'expand' ? !canExpand : !canCollapse,
+  }));
+
+  return (
+    <Toolbar>
+      <ToolbarPopoverItem<ExpansionAction>
+        icon="expand-all"
+        tooltip="Expand / collapse rows"
+        tooltipProps={{ minimal: true }}
+        options={options}
+        onClick={(action) => onSelect(action === 'expand')}
+      />
+    </Toolbar>
+  );
 }
 
 export function AssignmentListPanel() {
   const { molecules } = useChartData();
   const { moleculeAssignments, activeAssignment, selectMolecule } =
     useMoleculeAssignments(molecules);
-  const expansion = useAssignmentExpansion(activeAssignment);
 
   if (!activeAssignment) {
     return <EmptyText text="No molecules available" />;
   }
 
+  return (
+    <AssignmentList
+      moleculeAssignments={moleculeAssignments}
+      activeAssignment={activeAssignment}
+      onSelectMolecule={selectMolecule}
+    />
+  );
+}
+
+interface AssignmentListProps {
+  moleculeAssignments: MoleculeAssignmentData[];
+  activeAssignment: MoleculeAssignmentData;
+  onSelectMolecule: (moleculeId: string) => void;
+}
+
+// Rendered only when a molecule exists, so the expansion hook never sees undefined.
+function AssignmentList(props: AssignmentListProps) {
+  const { moleculeAssignments, activeAssignment, onSelectMolecule } = props;
+  const expansion = useAssignmentExpansion(activeAssignment);
   const { molecule } = activeAssignment;
 
   return (
     <TablePanel>
       <PanelHeader>
+        <ExpansionMenu
+          canExpand={expansion.canExpand}
+          canCollapse={expansion.canCollapse}
+          onSelect={expansion.setAllRows}
+        />
         <HeaderControls>
           {moleculeAssignments.length > 1 && (
             <Select
               items={getMoleculeOptions(moleculeAssignments)}
               value={molecule.id}
-              onChange={selectMolecule}
+              onChange={onSelectMolecule}
               style={{ width: 140 }}
             />
           )}
-          <Switch
-            label="Expand all"
-            checked={expansion.allExpanded}
-            disabled={!expansion.canExpand}
-            onChange={expansion.toggleAllRows}
-            style={{ marginBottom: 0 }}
-          />
         </HeaderControls>
       </PanelHeader>
       <div className="inner-container">
