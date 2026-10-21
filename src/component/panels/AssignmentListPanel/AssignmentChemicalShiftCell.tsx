@@ -1,4 +1,5 @@
 import type { ACSExportOptions } from '@zakodium/nmrium-core';
+import { Fragment } from 'react';
 
 import { useACSSettings } from '../../hooks/use_acs_settings.js';
 
@@ -37,14 +38,14 @@ function AssignmentShift(options: AssignmentShiftLineProps) {
   });
 
   return (
-    <div>
+    <span>
       {shiftsOnly ? (
         <span>{value} ppm</span>
       ) : (
         // eslint-disable-next-line @eslint-react/dom-no-dangerously-set-innerhtml
-        <div dangerouslySetInnerHTML={{ __html: value }} />
+        <span dangerouslySetInnerHTML={{ __html: value }} />
       )}
-    </div>
+    </span>
   );
 }
 
@@ -58,11 +59,14 @@ export function AssignmentChemicalShiftCell(
   const { options } = props;
   const assignments = getAssignmentSignals(options);
 
-  return assignments.map((assignment) => (
-    <AssignmentShift
-      key={assignment.spectrum.id}
-      assignment={assignment}
-      shiftsOnly={options.row.isHydrogen}
-    />
+  // Separate spectra's values with commas while retaining per-spectrum formatting.
+  return assignments.map((assignment, index) => (
+    <Fragment key={assignment.spectrum.id}>
+      {index > 0 && ', '}
+      <AssignmentShift
+        assignment={assignment}
+        shiftsOnly={options.row.isHydrogen}
+      />
+    </Fragment>
   ));
 }

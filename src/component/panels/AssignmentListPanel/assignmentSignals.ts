@@ -26,9 +26,17 @@ interface AssignedSignal {
 export type SignalsByOclID = ReadonlyMap<string, readonly AssignedSignal[]>;
 
 /**
- * Build a lookup of assigned 1D signals using the OCL IDs in `signal.diaIDs`.
+ * Index signals by nucleus, then OCL ID, so each column can directly look up
+ * assignments across all spectra of its nucleus without filtering other nuclei.
+ * Entries retain spectrum metadata because ACS formatting needs its frequency.
+ */
+export type SignalsByNucleus = ReadonlyMap<string, SignalsByOclID>;
+
+/**
+ * Build a nucleus-to-OCL-ID lookup of assigned 1D signals.
  *
- * @returns A map from each OCL ID to its signals and original range references.
+ * @returns A map containing an OCL ID lookup for each 1D nucleus, including
+ * nuclei without assignments so their columns remain visible.
  * Only the spectrum ID, nucleus, and frequency are retained in a shared metadata
  * object.
  *
@@ -36,10 +44,21 @@ export type SignalsByOclID = ReadonlyMap<string, readonly AssignedSignal[]>;
  * 1. Unassigned signals are omitted.
  * 2. Repeated IDs within a signal occur once.
  */
-export function getSignalsByOclID(spectra: Spectrum[]): SignalsByOclID {
-  const signalsByOclID = new Map<string, AssignedSignal[]>();
+export function getSignalsByNucleus(spectra: Spectrum[]): SignalsByNucleus {
+  const signalsByNucleus = new Map<string, Map<string, AssignedSignal[]>>();
   for (const spectrum of spectra) {
     if (!isSpectrum1D(spectrum)) continue;
+
+    // Share one atom-group lookup across all 1D spectra of the same nucleus.
+    // Create it even without assignments so the nucleus column stays visible.
+    const nucleus = spectrum.info.nucleus;
+    let signalsByOclID = signalsByNucleus.get(nucleus);
+
+    if (!signalsByOclID) {
+      signalsByOclID = new Map();
+      signalsByNucleus.set(nucleus, signalsByOclID);
+    }
+    // Keep each spectrum's frequency for formatting its own coupling values.
     const assignmentSpectrum: AssignmentSpectrum = {
       id: spectrum.id,
       info: {
@@ -50,6 +69,7 @@ export function getSignalsByOclID(spectra: Spectrum[]): SignalsByOclID {
     for (const range of spectrum.ranges.values) {
       for (const signal of range.signals) {
         const entry = { spectrum: assignmentSpectrum, range, signal };
+        // Index a signal under every linked group, without repeating a link.
         for (const oclID of new Set(signal.diaIDs)) {
           const entries = signalsByOclID.get(oclID);
           if (entries) {
@@ -61,7 +81,7 @@ export function getSignalsByOclID(spectra: Spectrum[]): SignalsByOclID {
       }
     }
   }
-  return signalsByOclID;
+  return signalsByNucleus;
 }
 
 export interface AssignmentSignals {
@@ -79,8 +99,8 @@ export interface GetAssignmentSignalsOptions {
 /**
  * Collect a row's signals and those of its attached hydrogen groups.
  *
- * @param options - The row (`row.id` is its OCL ID), signal lookup, precomputed
- * parent-to-hydrogen lookup, and optional spectrum ID to restrict the results.
+ * @param options - The row (`row.id` is its OCL ID), nucleus-specific signal
+ * lookup, precomputed parent-to-hydrogen lookup, and optional spectrum ID.
  * @returns One group per matching spectrum, with duplicate entries removed when
  * the same signal matches several OCL IDs.
  */
@@ -88,6 +108,7 @@ export function getAssignmentSignals(
   options: GetAssignmentSignalsOptions,
 ): AssignmentSignals[] {
   const { row, signalsByOclID, hydrogenIDsByParent, spectrumId } = options;
+  // Include attached H assignments on the parent row even when H rows are hidden.
   const oclIDs = [row.id, ...(hydrogenIDsByParent.get(row.id) ?? [])];
   const signalsBySpectrum = new Map<
     string,
@@ -105,6 +126,7 @@ export function getAssignmentSignals(
         group = { spectrum: entry.spectrum, signals: new Set() };
         signalsBySpectrum.set(entry.spectrum.id, group);
       }
+      // A signal linked to several of this row's groups should appear only once.
       group.signals.add(entry);
     }
   }

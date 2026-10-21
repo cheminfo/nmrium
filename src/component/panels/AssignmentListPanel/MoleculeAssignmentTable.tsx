@@ -1,7 +1,4 @@
-import { Tooltip } from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import type { Spectrum1D } from '@zakodium/nmrium-core';
-import { isSpectrum1D } from '@zakodium/nmrium-core';
 import type { GroupedDiaID } from 'openchemlib-utils';
 import { useMemo } from 'react';
 
@@ -14,7 +11,7 @@ import {
 
 import { AssignmentAtomCell } from './AssignmentAtomCell.js';
 import { AssignmentChemicalShiftCell } from './AssignmentChemicalShiftCell.js';
-import { getSignalsByOclID } from './assignmentSignals.js';
+import { getSignalsByNucleus } from './assignmentSignals.js';
 import type { AssignmentListRow } from './atomGroupsToAssignmentRows.js';
 import {
   atomGroupsToAssignmentRows,
@@ -59,37 +56,25 @@ const SpectrumHeader = styled.div`
   white-space: nowrap;
 `;
 
-const SpectrumColor = styled.span`
-  width: 10px;
-  height: 10px;
-  flex-shrink: 0;
-  border-radius: 50%;
-`;
-
 interface SpectrumColumnHeaderProps {
-  spectrum: Spectrum1D;
+  nucleus: string;
 }
 
-function SpectrumColumnHeader({ spectrum }: SpectrumColumnHeaderProps) {
+function SpectrumColumnHeader({ nucleus }: SpectrumColumnHeaderProps) {
   return (
-    <Tooltip
-      content={spectrum.info.name || spectrum.id}
-      renderTarget={({ isOpen, ...targetProps }) => (
-        <SpectrumHeader {...targetProps}>
-          <SpectrumColor style={{ backgroundColor: spectrum.display.color }} />
-          <IsotopesViewer value={spectrum.info.nucleus} />
-          <span>&delta;</span>
-        </SpectrumHeader>
-      )}
-    />
+    <SpectrumHeader>
+      <IsotopesViewer value={nucleus} />
+      <span>&delta;</span>
+    </SpectrumHeader>
   );
 }
 
 export function MoleculeAssignmentTable(props: MoleculeAssignmentTableProps) {
   const { groups, expandedGroups, onToggleRow } = props;
   const { data } = useChartData();
-  const spectra = useMemo(() => data.filter(isSpectrum1D), [data]);
-  const signalsByOclID = useMemo(() => getSignalsByOclID(spectra), [spectra]);
+  // Build once per data change; headers and cells share the same nucleus lookup.
+  const signalsByNucleus = useMemo(() => getSignalsByNucleus(data), [data]);
+  // Keep the complete hierarchy for assignments; expansion only hides rows.
   const allRows = useMemo(
     () => atomGroupsToAssignmentRows(groups, true),
     [groups],
@@ -123,11 +108,12 @@ export function MoleculeAssignmentTable(props: MoleculeAssignmentTableProps) {
         accessorKey: 'atomLabels',
         enableSorting: false,
       },
-      ...spectra.flatMap((spectrum) =>
+      // One column per nucleus, combining assignments from all of its spectra.
+      ...Array.from(signalsByNucleus).flatMap(([nucleus, signalsByOclID]) =>
         columnHelper.columns([
           {
-            header: () => <SpectrumColumnHeader spectrum={spectrum} />,
-            id: spectrum.id,
+            header: () => <SpectrumColumnHeader nucleus={nucleus} />,
+            id: nucleus,
             enableSorting: false,
             cell: ({ row }) => (
               <AssignmentChemicalShiftCell
@@ -135,7 +121,6 @@ export function MoleculeAssignmentTable(props: MoleculeAssignmentTableProps) {
                   row: row.original,
                   hydrogenIDsByParent,
                   signalsByOclID,
-                  spectrumId: spectrum.id,
                 }}
               />
             ),
@@ -143,7 +128,7 @@ export function MoleculeAssignmentTable(props: MoleculeAssignmentTableProps) {
         ]),
       ),
     ]);
-  }, [onToggleRow, signalsByOclID, spectra, hydrogenIDsByParent]);
+  }, [onToggleRow, signalsByNucleus, hydrogenIDsByParent]);
 
   function getHighlightIDs(row: AssignmentListRow): string[] {
     return [row.id, ...(hydrogenIDsByParent.get(row.id) ?? [])];
