@@ -1,4 +1,3 @@
-import type { ACSExportOptions } from '@zakodium/nmrium-core';
 import { Fragment } from 'react';
 
 import { useACSSettings } from '../../hooks/use_acs_settings.js';
@@ -8,7 +7,8 @@ import type {
   GetAssignmentSignalsOptions,
 } from './assignmentSignals.js';
 import {
-  formatAssignmentSignals,
+  formatAssignmentACS,
+  formatAssignmentShifts,
   getAssignmentSignals,
 } from './assignmentSignals.js';
 
@@ -17,25 +17,13 @@ interface AssignmentShiftLineProps {
   shiftsOnly: boolean;
 }
 
-const acsOptions: Partial<ACSExportOptions> = {
-  signalKind: 'signal',
-  ascending: true,
-  format: 'IMJ',
-  textStyle: {},
-};
-
 function AssignmentShift(options: AssignmentShiftLineProps) {
   const { assignment, shiftsOnly } = options;
   const { spectrum } = assignment;
   const acs = useACSSettings(spectrum.info.nucleus);
-  const value = formatAssignmentSignals({
-    assignment,
-    acs: {
-      ...acs,
-      ...acsOptions,
-    },
-    format: shiftsOnly ? 'shifts' : 'acs',
-  });
+  const value = shiftsOnly
+    ? formatAssignmentShifts({ assignment, acs })
+    : formatAssignmentACS({ assignment, acs });
 
   return (
     <span>

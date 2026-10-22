@@ -5,8 +5,11 @@ interface AssignmentLabelCellProps {
 }
 
 export function AssignmentLabelCell(props: AssignmentLabelCellProps) {
-  const { value, hydrogenValue, isExpanded } = props;
+  return formatAssignmentLabel(props);
+}
 
+export function formatAssignmentLabel(options: AssignmentLabelCellProps) {
+  const { value, hydrogenValue, isExpanded } = options;
   if (isExpanded || !hydrogenValue) return value;
 
   return value ? `${value} (${hydrogenValue})` : `(${hydrogenValue})`;

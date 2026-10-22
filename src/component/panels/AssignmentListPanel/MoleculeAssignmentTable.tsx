@@ -22,6 +22,7 @@ import type { AssignmentListRow } from './atomGroupsToAssignmentRows.js';
 import {
   atomGroupsToAssignmentRows,
   getHydrogenIDsByParent,
+  getVisibleAssignmentRows,
 } from './atomGroupsToAssignmentRows.js';
 
 interface MoleculeAssignmentTableProps {
@@ -31,28 +32,6 @@ interface MoleculeAssignmentTableProps {
 }
 
 const columnHelper = createTanStackColumnHelper<AssignmentListRow>();
-
-/**
- * Select visible rows from the complete hierarchy and update expansion flags.
- * rows with no parent or whose parent is expanded remain visible.
- */
-function getVisibleAssignmentRows(
-  allRows: readonly AssignmentListRow[],
-  expandedGroups: ReadonlySet<string>,
-): AssignmentListRow[] {
-  const rows: AssignmentListRow[] = [];
-  for (const row of allRows) {
-    if (row.parentOclId !== undefined && !expandedGroups.has(row.parentOclId)) {
-      continue;
-    }
-    rows.push(
-      row.hasChildren
-        ? { ...row, isExpanded: expandedGroups.has(row.id) }
-        : row,
-    );
-  }
-  return rows;
-}
 
 const SpectrumHeader = styled.div`
   display: flex;

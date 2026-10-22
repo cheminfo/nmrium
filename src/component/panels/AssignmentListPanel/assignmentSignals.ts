@@ -175,27 +175,26 @@ export function getAssignmentSignals(
   });
 }
 
-interface FormatAssignmentSignalsOptions {
+const assignmentACSOptions: Partial<ACSExportOptions> = {
+  signalKind: 'signal',
+  ascending: true,
+  format: 'IMJ',
+  textStyle: {},
+};
+
+interface FormatAssignmentOptions {
   assignment: AssignmentSignals;
   acs: ACSExportOptions;
-  format: 'shifts' | 'acs';
 }
 
 /**
- * Format one spectrum's collected assignments for a chemical-shift cell.
- *
- * @returns A comma-separated shift string without units, or ACS HTML without
- * the spectrum header and final period.
- *
+ * Format one spectrum's assignments as ACS HTML without the spectrum header
+ * or final period.
  */
-export function formatAssignmentSignals(
-  options: FormatAssignmentSignalsOptions,
-): string {
-  const { assignment, acs, format } = options;
+export function formatAssignmentACS(options: FormatAssignmentOptions): string {
+  const { assignment } = options;
+  const acs = { ...options.acs, ...assignmentACSOptions };
   const { spectrum, entries } = assignment;
-  if (format === 'shifts') {
-    return formatChemicalShifts({ entries, acs });
-  }
 
   const acsString = rangesToACS(getAssignedRanges(entries), {
     ...getRangesToACSOptions(spectrum.info, acs),
@@ -206,19 +205,15 @@ export function formatAssignmentSignals(
   return acsString.replaceAll(/^[^:]*:\s*|\.$/g, '');
 }
 
-interface formatChemicalShiftsOptions extends Pick<
-  AssignmentSignals,
-  'entries'
-> {
-  acs: ACSExportOptions;
-}
-
 /**
  * Sort and format signal deltas without adding spectrum details or units.
  * @returns Shift values joined with ', '
  */
-function formatChemicalShifts(options: formatChemicalShiftsOptions) {
-  const { entries, acs } = options;
+export function formatAssignmentShifts(
+  options: FormatAssignmentOptions,
+): string {
+  const { entries } = options.assignment;
+  const acs = { ...options.acs, ...assignmentACSOptions };
 
   return entries
     .map(({ signal }) => signal.delta)

@@ -13,6 +13,7 @@ import type { ToolbarPopoverMenuItem } from '../../elements/ToolbarPopoverItem.j
 import { ToolbarPopoverItem } from '../../elements/ToolbarPopoverItem.js';
 import { TablePanel } from '../extra/BasicPanelStyle.js';
 
+import { AssignmentsExportAsCSVModal } from './AssignmentsExportAsCSVModal.js';
 import { MoleculeAssignmentTable } from './MoleculeAssignmentTable.js';
 import { atomGroupsToAssignmentRows } from './atomGroupsToAssignmentRows.js';
 
@@ -150,15 +151,13 @@ function ExpansionMenu(props: ExpansionMenuProps) {
   }));
 
   return (
-    <Toolbar>
-      <ToolbarPopoverItem<ExpansionAction>
-        icon="expand-all"
-        tooltip="Expand / collapse rows"
-        tooltipProps={{ minimal: true }}
-        options={options}
-        onClick={(action) => onSelect(action === 'expand')}
-      />
-    </Toolbar>
+    <ToolbarPopoverItem<ExpansionAction>
+      icon="expand-all"
+      tooltip="Expand / collapse rows"
+      tooltipProps={{ minimal: true }}
+      options={options}
+      onClick={(action) => onSelect(action === 'expand')}
+    />
   );
 }
 
@@ -186,7 +185,6 @@ interface AssignmentListProps {
   onSelectMolecule: (moleculeId: string) => void;
 }
 
-// Rendered only when a molecule exists, so the expansion hook never sees undefined.
 function AssignmentList(props: AssignmentListProps) {
   const { moleculeAssignments, activeAssignment, onSelectMolecule } = props;
   const expansion = useAssignmentExpansion(activeAssignment);
@@ -195,11 +193,18 @@ function AssignmentList(props: AssignmentListProps) {
   return (
     <TablePanel>
       <PanelHeader>
-        <ExpansionMenu
-          canExpand={expansion.canExpand}
-          canCollapse={expansion.canCollapse}
-          onSelect={expansion.setAllRows}
-        />
+        <Toolbar>
+          <AssignmentsExportAsCSVModal
+            groups={activeAssignment.groups}
+            expandedGroups={expansion.expandedGroups}
+            moleculeLabel={molecule.label}
+          />
+          <ExpansionMenu
+            canExpand={expansion.canExpand}
+            canCollapse={expansion.canCollapse}
+            onSelect={expansion.setAllRows}
+          />
+        </Toolbar>
         <HeaderControls>
           {moleculeAssignments.length > 1 && (
             <Select

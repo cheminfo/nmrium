@@ -36,6 +36,28 @@ interface AssignmentRowOptions {
   isExpanded?: boolean;
 }
 
+/**
+ * Select visible rows from the complete hierarchy and update expansion flags.
+ * Rows with no parent or whose parent is expanded remain visible.
+ */
+export function getVisibleAssignmentRows(
+  allRows: readonly AssignmentListRow[],
+  expandedGroups: ReadonlySet<string>,
+): AssignmentListRow[] {
+  const rows: AssignmentListRow[] = [];
+  for (const row of allRows) {
+    if (row.parentOclId !== undefined && !expandedGroups.has(row.parentOclId)) {
+      continue;
+    }
+    rows.push(
+      row.hasChildren
+        ? { ...row, isExpanded: expandedGroups.has(row.id) }
+        : row,
+    );
+  }
+  return rows;
+}
+
 export function getHydrogenIDsByParent(
   rows: readonly AssignmentListRow[],
 ): ReadonlyMap<string, readonly string[]> {
