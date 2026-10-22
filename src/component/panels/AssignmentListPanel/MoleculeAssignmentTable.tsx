@@ -94,7 +94,7 @@ export function MoleculeAssignmentTable(props: MoleculeAssignmentTableProps) {
       {
         header: 'Atom',
         accessorKey: 'atomLabel',
-        meta: { style: { width: '80px' } },
+        meta: { style: { width: '50px' } },
         enableSorting: false,
         cell: ({ row }) => (
           <AssignmentAtomCell row={row.original} onToggle={onToggleRow} />
