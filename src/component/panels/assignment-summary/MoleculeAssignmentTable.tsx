@@ -27,6 +27,7 @@ interface MoleculeAssignmentTableProps {
   groups: GroupedDiaID[];
   expandedGroups: ReadonlySet<string>;
   onToggleRow: (id: string) => void;
+  showAtomNumbers: boolean;
 }
 
 const columnHelper = createTanStackColumnHelper<AssignmentListRow>();
@@ -70,7 +71,7 @@ function SpectrumColumnHeader({
 }
 
 export function MoleculeAssignmentTable(props: MoleculeAssignmentTableProps) {
-  const { groups, expandedGroups, onToggleRow } = props;
+  const { groups, expandedGroups, onToggleRow, showAtomNumbers } = props;
   const { data } = useChartData();
   // Build once per data change.
   // headers and cells share the same nucleus lookup.
@@ -100,18 +101,22 @@ export function MoleculeAssignmentTable(props: MoleculeAssignmentTableProps) {
           <AssignmentAtomCell row={row.original} onToggle={onToggleRow} />
         ),
       },
-      {
-        header: 'Atom numbers',
-        accessorKey: 'atomNumbers',
-        enableSorting: false,
-        cell: ({ row }) => (
-          <AssignmentLabelCell
-            value={row.original.atomNumbers}
-            hydrogenValue={row.original.hydrogenAtomNumbers}
-            isExpanded={row.original.isExpanded}
-          />
-        ),
-      },
+      ...(showAtomNumbers
+        ? columnHelper.columns([
+            {
+              header: 'Atom numbers',
+              accessorKey: 'atomNumbers',
+              enableSorting: false,
+              cell: ({ row }) => (
+                <AssignmentLabelCell
+                  value={row.original.atomNumbers}
+                  hydrogenValue={row.original.hydrogenAtomNumbers}
+                  isExpanded={row.original.isExpanded}
+                />
+              ),
+            },
+          ])
+        : []),
       {
         header: 'Atom labels',
         accessorKey: 'atomLabels',
@@ -150,7 +155,13 @@ export function MoleculeAssignmentTable(props: MoleculeAssignmentTableProps) {
         ]),
       ),
     ]);
-  }, [groups, onToggleRow, signalsByNucleus, hydrogenIDsByParent]);
+  }, [
+    groups,
+    onToggleRow,
+    showAtomNumbers,
+    signalsByNucleus,
+    hydrogenIDsByParent,
+  ]);
 
   function getHighlightIDs(row: AssignmentListRow): string[] {
     return [row.id, ...(hydrogenIDsByParent.get(row.id) ?? [])];
