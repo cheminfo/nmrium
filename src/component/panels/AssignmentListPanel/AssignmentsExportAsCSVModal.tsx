@@ -18,8 +18,8 @@ import { useDialogToggle } from '../../hooks/useDialogToggle.js';
 import { useACSSettings } from '../../hooks/use_acs_settings.js';
 import { saveAs } from '../../utility/save_as.js';
 
-import type { AssignmentExportRowMode } from './assignmentsToCSV.js';
-import { exportAssignmentsToCSV } from './assignmentsToCSV.js';
+import type { AssignmentExportRowMode } from './utilities/assignmentsToCSV.js';
+import { exportAssignmentsToCSV } from './utilities/assignmentsToCSV.js';
 
 type ExportAction = 'copy' | 'export';
 interface RowOption {

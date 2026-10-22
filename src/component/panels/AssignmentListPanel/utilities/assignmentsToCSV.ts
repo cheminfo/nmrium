@@ -2,19 +2,18 @@ import type { ACSExportOptions, Spectrum } from '@zakodium/nmrium-core';
 import type { GroupedDiaID } from 'openchemlib-utils';
 import papa from 'papaparse';
 
-import { formatAssignmentLabel } from './AssignmentLabelCell.js';
-import type { GetAssignmentSignalsOptions } from './assignmentSignals.js';
-import {
-  formatAssignmentACS,
-  formatAssignmentShifts,
-  getAssignmentSignals,
-  getSignalsByNucleus,
-} from './assignmentSignals.js';
+import { formatAssignmentLabel } from '../table-cells/AssignmentLabelCell.js';
+
 import {
   atomGroupsToAssignmentRows,
   getHydrogenIDsByParent,
   getVisibleAssignmentRows,
 } from './atomGroupsToAssignmentRows.js';
+import { formatAssignmentACS } from './formatAssignmentACS.js';
+import { formatAssignmentShifts } from './formatAssignmentShifts.js';
+import { getAssignmentSignals } from './getAssignmentSignals.js';
+import { getSignalsByNucleus } from './getSignalsByNucleus.js';
+import type { GetAssignmentSignalsOptions } from './types.js';
 
 export type AssignmentExportRowMode = 'current' | 'expanded' | 'collapsed';
 

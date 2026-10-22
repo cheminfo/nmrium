@@ -15,7 +15,7 @@ import { TablePanel } from '../extra/BasicPanelStyle.js';
 
 import { AssignmentsExportAsCSVModal } from './AssignmentsExportAsCSVModal.js';
 import { MoleculeAssignmentTable } from './MoleculeAssignmentTable.js';
-import { atomGroupsToAssignmentRows } from './atomGroupsToAssignmentRows.js';
+import { atomGroupsToAssignmentRows } from './utilities/atomGroupsToAssignmentRows.js';
 
 const HeaderControls = styled.div`
   display: flex;

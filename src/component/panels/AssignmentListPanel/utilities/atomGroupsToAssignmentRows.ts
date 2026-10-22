@@ -1,6 +1,6 @@
 import type { GroupedDiaID } from 'openchemlib-utils';
 
-import { sortAssignmentLabels } from '../MoleculesPanel/utilities/sortAssignmentLabels.js';
+import { sortAssignmentLabels } from '../../MoleculesPanel/utilities/sortAssignmentLabels.js';
 
 /**
  * Controls which atoms show their attached hydrogens in the table.

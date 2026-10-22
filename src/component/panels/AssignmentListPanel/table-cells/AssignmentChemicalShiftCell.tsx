@@ -1,16 +1,13 @@
 import { Fragment } from 'react';
 
-import { useACSSettings } from '../../hooks/use_acs_settings.js';
-
+import { useACSSettings } from '../../../hooks/use_acs_settings.js';
+import { formatAssignmentACS } from '../utilities/formatAssignmentACS.js';
+import { formatAssignmentShifts } from '../utilities/formatAssignmentShifts.js';
+import { getAssignmentSignals } from '../utilities/getAssignmentSignals.js';
 import type {
   AssignmentSignals,
   GetAssignmentSignalsOptions,
-} from './assignmentSignals.js';
-import {
-  formatAssignmentACS,
-  formatAssignmentShifts,
-  getAssignmentSignals,
-} from './assignmentSignals.js';
+} from '../utilities/types.js';
 
 interface AssignmentShiftLineProps {
   assignment: AssignmentSignals;

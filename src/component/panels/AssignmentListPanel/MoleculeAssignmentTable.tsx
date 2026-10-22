@@ -10,20 +10,18 @@ import {
   createTanStackColumnHelper,
 } from '../../elements/tanstack_table/index.js';
 
-import { AssignmentAtomCell } from './AssignmentAtomCell.js';
-import { AssignmentChemicalShiftCell } from './AssignmentChemicalShiftCell.js';
-import { AssignmentLabelCell } from './AssignmentLabelCell.js';
-import type { SignalsByOclID } from './assignmentSignals.js';
-import {
-  getAssignedAtomCounts,
-  getSignalsByNucleus,
-} from './assignmentSignals.js';
-import type { AssignmentListRow } from './atomGroupsToAssignmentRows.js';
+import { AssignmentAtomCell } from './table-cells/AssignmentAtomCell.js';
+import { AssignmentChemicalShiftCell } from './table-cells/AssignmentChemicalShiftCell.js';
+import { AssignmentLabelCell } from './table-cells/AssignmentLabelCell.js';
+import type { AssignmentListRow } from './utilities/atomGroupsToAssignmentRows.js';
 import {
   atomGroupsToAssignmentRows,
   getHydrogenIDsByParent,
   getVisibleAssignmentRows,
-} from './atomGroupsToAssignmentRows.js';
+} from './utilities/atomGroupsToAssignmentRows.js';
+import { getAssignedAtomCounts } from './utilities/getAssignedAtomCounts.js';
+import { getSignalsByNucleus } from './utilities/getSignalsByNucleus.js';
+import type { SignalsByOclID } from './utilities/types.js';
 
 interface MoleculeAssignmentTableProps {
   groups: GroupedDiaID[];
@@ -75,9 +73,11 @@ function SpectrumColumnHeader({
 export function MoleculeAssignmentTable(props: MoleculeAssignmentTableProps) {
   const { groups, expandedGroups, onToggleRow } = props;
   const { data } = useChartData();
-  // Build once per data change; headers and cells share the same nucleus lookup.
+  // Build once per data change.
+  // headers and cells share the same nucleus lookup.
   const signalsByNucleus = useMemo(() => getSignalsByNucleus(data), [data]);
-  // Keep the complete hierarchy for assignments; expansion only hides rows.
+  // Keep the complete hierarchy for assignments.
+  // Expansion Only hides rows.
   const allRows = useMemo(
     () => atomGroupsToAssignmentRows(groups, true),
     [groups],

@@ -1,7 +1,7 @@
 import { Button } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 
-import type { AssignmentListRow } from './atomGroupsToAssignmentRows.js';
+import type { AssignmentListRow } from '../utilities/atomGroupsToAssignmentRows.js';
 
 interface AssignmentAtomCellProps {
   row: AssignmentListRow;
