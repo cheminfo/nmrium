@@ -161,7 +161,7 @@ function ExpansionMenu(props: ExpansionMenuProps) {
   );
 }
 
-export function AssignmentListPanel() {
+export function AssignmentSummaryPanel() {
   const { molecules } = useChartData();
   const { moleculeAssignments, activeAssignment, selectMolecule } =
     useMoleculeAssignments(molecules);
@@ -171,7 +171,7 @@ export function AssignmentListPanel() {
   }
 
   return (
-    <AssignmentList
+    <AssignmentSummary
       moleculeAssignments={moleculeAssignments}
       activeAssignment={activeAssignment}
       onSelectMolecule={selectMolecule}
@@ -179,13 +179,13 @@ export function AssignmentListPanel() {
   );
 }
 
-interface AssignmentListProps {
+interface AssignmentSummaryProps {
   moleculeAssignments: MoleculeAssignmentData[];
   activeAssignment: MoleculeAssignmentData;
   onSelectMolecule: (moleculeId: string) => void;
 }
 
-function AssignmentList(props: AssignmentListProps) {
+function AssignmentSummary(props: AssignmentSummaryProps) {
   const { moleculeAssignments, activeAssignment, onSelectMolecule } = props;
   const expansion = useAssignmentExpansion(activeAssignment);
   const { molecule } = activeAssignment;

@@ -7,8 +7,8 @@ import { Accordion, Toolbar } from 'react-science/ui';
 import { usePreferences } from '../context/PreferencesContext.js';
 import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature.js';
 
-import { AssignmentListPanel } from './AssignmentListPanel/AssignmentListPanel.js';
 import type { AccordionItem } from './accordionItems.js';
+import { AssignmentSummaryPanel } from './assignment-summary/AssignmentSummaryPanel.js';
 import { useAccordionItems } from './hooks/useAccordionItems.js';
 import { useGetPanelOptions } from './hooks/useGetPanelOptions.js';
 import { useTogglePanel } from './hooks/useTogglePanel.js';
@@ -66,12 +66,12 @@ function PanelsInner() {
           ...(isExperimental
             ? [
                 <Accordion.Item
-                  key="assignment-list"
-                  id="assignment-list"
-                  title="Assignment list"
+                  key="assignment-summary"
+                  id="assignment-summary"
+                  title="Assignment summary"
                   unmountChildren
                 >
-                  <AssignmentListPanel />
+                  <AssignmentSummaryPanel />
                 </Accordion.Item>,
               ]
             : []),
