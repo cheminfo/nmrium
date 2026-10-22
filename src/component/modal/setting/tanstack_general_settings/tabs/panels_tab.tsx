@@ -124,11 +124,17 @@ const ChemicalSettings = withFieldGroup({
             <Select label="Chemical structures" items={displayPanelsStatus} />
           )}
         </AppField>
+        <AppField name="assignmentSummaryPanel">
+          {({ Select }) => (
+            <Select label="Assignment summary" items={displayPanelsStatus} />
+          )}
+        </AppField>
         <AppField name="summaryPanel">
           {({ Select }) => (
             <Select label="Summary" items={displayPanelsStatus} />
           )}
         </AppField>
+
         <AppField name="databasePanel">
           {({ Select }) => (
             <Select label="Databases" items={displayPanelsStatus} />
