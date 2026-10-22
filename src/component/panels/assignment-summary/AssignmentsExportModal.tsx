@@ -115,8 +115,9 @@ export function AssignmentsExportModal(props: AssignmentsExportModalProps) {
       closeDialog();
     } catch (error: unknown) {
       toaster.show({
-        message: `Could not ${exportAction} assignments as ${isCopy ? 'TSV' : 'CSV'}: ${error instanceof Error ? error.message : String(error)
-          }`,
+        message: `Could not ${exportAction} assignments as ${isCopy ? 'TSV' : 'CSV'}: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
         intent: 'danger',
       });
     }
