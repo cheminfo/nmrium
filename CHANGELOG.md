@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.2.0](https://github.com/cheminfo/nmrium/compare/v3.1.0...v3.2.0) (2026-10-22)
+
+
+### Features
+
+* add an experimental assignment summary panel ([#4416](https://github.com/cheminfo/nmrium/issues/4416)) ([84c44cb](https://github.com/cheminfo/nmrium/commit/84c44cb1c89a2b9d3680ff4224570dfde7cfa18f))
+* auto link 2D signals to 1D signals ([#4410](https://github.com/cheminfo/nmrium/issues/4410)) ([615c353](https://github.com/cheminfo/nmrium/commit/615c353f99a32af28234863142998dc9fe7379de))
+
+
+### Bug Fixes
+
+* preserve all linked atom labels in automatic assignment ([#4407](https://github.com/cheminfo/nmrium/issues/4407)) ([4022862](https://github.com/cheminfo/nmrium/commit/4022862d68225d4960dd1edc854343f5a3f66625))
+* sync core ([#4412](https://github.com/cheminfo/nmrium/issues/4412)) ([3deea33](https://github.com/cheminfo/nmrium/commit/3deea33fe0fe40895d853786879ba06878d307f4))
+
 ## [3.1.0](https://github.com/cheminfo/nmrium/compare/v3.0.0...v3.1.0) (2026-10-06)
 
 
