@@ -75,6 +75,7 @@ export const displayPanelsValidation = z
     processingsPanel: panelCodec,
     zonesPanel: panelCodec,
     summaryPanel: panelCodec,
+    assignmentSummaryPanel: panelCodec,
     multipleSpectraAnalysisPanel: panelCodec,
     databasePanel: panelCodec,
     predictionPanel: panelCodec,
