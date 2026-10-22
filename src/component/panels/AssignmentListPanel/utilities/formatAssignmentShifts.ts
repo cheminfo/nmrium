@@ -1,21 +1,25 @@
 import { formatNumber } from '../../../utility/formatNumber.js';
 
-import { assignmentACSOptions } from './assignmentACSOptions.js';
-import type { FormatAssignmentOptions } from './types.js';
+import type { AssignmentSignals } from './types.js';
+
+interface FormatAssignmentShiftsOptions {
+  assignment: AssignmentSignals;
+  deltaFormat: string;
+}
 
 /**
  * Sort and format signal deltas without adding spectrum details or units.
  * @returns Shift values joined with ', '
  */
 export function formatAssignmentShifts(
-  options: FormatAssignmentOptions,
+  options: FormatAssignmentShiftsOptions,
 ): string {
-  const { entries } = options.assignment;
-  const acs = { ...options.acs, ...assignmentACSOptions };
+  const { assignment, deltaFormat } = options;
+  const { entries } = assignment;
 
   return entries
     .map(({ signal }) => signal.delta)
-    .toSorted((a, b) => (acs.ascending ? a - b : b - a))
-    .map((delta) => formatNumber(delta, acs.deltaFormat))
+    .toSorted((a, b) => a - b)
+    .map((delta) => formatNumber(delta, deltaFormat))
     .join(', ');
 }

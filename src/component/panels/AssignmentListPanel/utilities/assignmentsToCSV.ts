@@ -101,7 +101,7 @@ function formatAssignmentCSVCell(
   return getAssignmentSignals(options)
     .map((assignment) => {
       if (row.isHydrogen) {
-        return `${formatAssignmentShifts({ assignment, acs })} ppm`;
+        return `${formatAssignmentShifts({ assignment, deltaFormat: acs.deltaFormat })} ppm`;
       }
       // The ACS formatter emits <i>J</i> for couplings
       // Strip HTML tags so spreadsheet cells contain plain text.

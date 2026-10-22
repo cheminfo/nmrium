@@ -19,7 +19,7 @@ function AssignmentShift(options: AssignmentShiftLineProps) {
   const { spectrum } = assignment;
   const acs = useACSSettings(spectrum.info.nucleus);
   const value = shiftsOnly
-    ? formatAssignmentShifts({ assignment, acs })
+    ? formatAssignmentShifts({ assignment, deltaFormat: acs.deltaFormat })
     : formatAssignmentACS({ assignment, acs });
 
   return (

@@ -1,10 +1,17 @@
 import type { Range, Signal1D } from '@zakodium/nmr-types';
+import type { ACSExportOptions } from '@zakodium/nmrium-core';
 import { rangesToACS } from 'nmr-processing';
 
 import { getRangesToACSOptions } from '../../../hooks/use_publication_strings.js';
 
-import { assignmentACSOptions } from './assignmentACSOptions.js';
 import type { AssignedSignal, FormatAssignmentOptions } from './types.js';
+
+const assignmentACSOptions: Partial<ACSExportOptions> = {
+  signalKind: 'signal',
+  ascending: true,
+  format: 'IMJ',
+  textStyle: {},
+};
 
 /**
  * Format one spectrum's assignments as ACS HTML without the spectrum header,
