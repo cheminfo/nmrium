@@ -3,8 +3,8 @@ import type { MoleculeView } from '@zakodium/nmrium-core';
 import { useEffect, useState } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 import { BsArrowsMove } from 'react-icons/bs';
-import { FaRegBookmark, FaTimes } from 'react-icons/fa';
-import { MdFormatColorText, MdNumbers } from 'react-icons/md';
+import { FaHashtag, FaRegBookmark, FaTimes } from 'react-icons/fa';
+import { MdFormatColorText } from 'react-icons/md';
 import { Rnd } from 'react-rnd';
 
 import type {
@@ -135,7 +135,7 @@ export function DraggableStructure(props: DraggableStructureProps) {
       elementType: 'separator',
     },
     {
-      icon: <MdNumbers />,
+      icon: <FaHashtag />,
       title: `${booleanToString(!isActiveAnnotation('atom-numbers'))} atom number`,
       onClick: () => toggleAtomAnnotation('atom-numbers'),
       active: isActiveAnnotation('atom-numbers'),
