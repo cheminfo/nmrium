@@ -12,8 +12,12 @@ import type { AssignedSignal, FormatAssignmentOptions } from './types.js';
  */
 export function formatAssignmentACS(options: FormatAssignmentOptions): string {
   const { assignment } = options;
-  const acs = { ...options.acs, ...assignmentACSOptions };
   const { spectrum, entries } = assignment;
+  const acs = {
+    ...options.acs,
+    ...assignmentACSOptions,
+    ...(spectrum.info.nucleus === '13C' && { format: 'D' }),
+  };
 
   const acsString = rangesToACS(getAssignedRanges(entries), {
     ...getRangesToACSOptions(spectrum.info, acs),
