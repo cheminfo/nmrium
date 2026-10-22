@@ -5,8 +5,10 @@ import { memo } from 'react';
 import { Accordion, Toolbar } from 'react-science/ui';
 
 import { usePreferences } from '../context/PreferencesContext.js';
+import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature.js';
 
 import type { AccordionItem } from './accordionItems.js';
+import { AssignmentSummaryPanel } from './assignment-summary/AssignmentSummaryPanel.js';
 import { useAccordionItems } from './hooks/useAccordionItems.js';
 import { useGetPanelOptions } from './hooks/useGetPanelOptions.js';
 import { useTogglePanel } from './hooks/useTogglePanel.js';
@@ -18,6 +20,7 @@ const Container = styled.div`
 `;
 
 function PanelsInner() {
+  const isExperimental = useCheckExperimentalFeature();
   const getPanelPreferences = useGetPanelOptions();
 
   const { dispatch } = usePreferences();
@@ -38,27 +41,41 @@ function PanelsInner() {
   return (
     <Container>
       <Accordion>
-        {displayedPanels.map((item) => {
-          const { title, component, id } = item;
-          return (
-            <Accordion.Item
-              unmountChildren
-              id={id}
-              key={title}
-              title={title}
-              open={isOpened(item)}
-              onOpenChange={(isOpened) => {
-                dispatch({
-                  type: 'TOGGLE_PANEL',
-                  payload: { id, options: { open: isOpened } },
-                });
-              }}
-              renderToolbar={() => <RightButtons id={id} />}
-            >
-              {component}
-            </Accordion.Item>
-          );
-        })}
+        {[
+          ...displayedPanels.map((item) => {
+            const { title, component, id } = item;
+            return (
+              <Accordion.Item
+                unmountChildren
+                id={id}
+                key={title}
+                title={title}
+                open={isOpened(item)}
+                onOpenChange={(isOpened) => {
+                  dispatch({
+                    type: 'TOGGLE_PANEL',
+                    payload: { id, options: { open: isOpened } },
+                  });
+                }}
+                renderToolbar={() => <RightButtons id={id} />}
+              >
+                {component}
+              </Accordion.Item>
+            );
+          }),
+          ...(isExperimental
+            ? [
+                <Accordion.Item
+                  key="assignment-summary"
+                  id="assignment-summary"
+                  title="Assignment summary"
+                  unmountChildren
+                >
+                  <AssignmentSummaryPanel />
+                </Accordion.Item>,
+              ]
+            : []),
+        ]}
       </Accordion>
     </Container>
   );
