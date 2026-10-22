@@ -13,7 +13,7 @@ import type { ToolbarPopoverMenuItem } from '../../elements/ToolbarPopoverItem.j
 import { ToolbarPopoverItem } from '../../elements/ToolbarPopoverItem.js';
 import { TablePanel } from '../extra/BasicPanelStyle.js';
 
-import { AssignmentsExportAsCSVModal } from './AssignmentsExportAsCSVModal.js';
+import { AssignmentsExportModal } from './AssignmentsExportModal.js';
 import { MoleculeAssignmentTable } from './MoleculeAssignmentTable.js';
 import { atomGroupsToAssignmentRows } from './utilities/atomGroupsToAssignmentRows.js';
 
@@ -194,7 +194,7 @@ function AssignmentList(props: AssignmentListProps) {
     <TablePanel>
       <PanelHeader>
         <Toolbar>
-          <AssignmentsExportAsCSVModal
+          <AssignmentsExportModal
             groups={activeAssignment.groups}
             expandedGroups={expansion.expandedGroups}
             moleculeLabel={molecule.label}

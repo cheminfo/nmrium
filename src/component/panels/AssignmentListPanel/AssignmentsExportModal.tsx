@@ -18,10 +18,11 @@ import { useDialogToggle } from '../../hooks/useDialogToggle.js';
 import { useACSSettings } from '../../hooks/use_acs_settings.js';
 import { saveAs } from '../../utility/save_as.js';
 
-import type { AssignmentExportRowMode } from './utilities/assignmentsToCSV.js';
-import { exportAssignmentsToCSV } from './utilities/assignmentsToCSV.js';
+import type { AssignmentExportRowMode } from './utilities/exportAssignments.js';
+import { exportAssignments } from './utilities/exportAssignments.js';
 
 type ExportAction = 'copy' | 'export';
+
 interface RowOption {
   label: string;
   description: string;
@@ -29,7 +30,7 @@ interface RowOption {
 }
 
 const EXPORT_MENU = [
-  { text: 'Copy as CSV', icon: <FaCopy />, data: 'copy' },
+  { text: 'Copy as TSV', icon: <FaCopy />, data: 'copy' },
   { text: 'Export as CSV', icon: <FaDownload />, data: 'export' },
 ] satisfies Array<ToolbarPopoverMenuItem<ExportAction>>;
 
@@ -55,15 +56,13 @@ const ROW_OPTIONS: RowOption[] = [
 
 const INITIAL_VALUES: { rows: AssignmentExportRowMode } = { rows: 'current' };
 
-interface AssignmentsExportAsCSVModalProps {
+interface AssignmentsExportModalProps {
   groups: GroupedDiaID[];
   expandedGroups: ReadonlySet<string>;
   moleculeLabel: string;
 }
 
-export function AssignmentsExportAsCSVModal(
-  props: AssignmentsExportAsCSVModalProps,
-) {
+export function AssignmentsExportModal(props: AssignmentsExportModalProps) {
   const { groups, expandedGroups, moleculeLabel } = props;
   const { data } = useChartData();
   const { current } = usePreferences();
@@ -71,7 +70,7 @@ export function AssignmentsExportAsCSVModal(
   const toaster = useToaster();
   const [action, setAction] = useState<ExportAction>('copy');
   const { dialog, openDialog, closeDialog } = useDialogToggle({
-    exportAsCSV: false,
+    exportAssignments: false,
   });
   const { rawWriteWithType, shouldFallback, cleanShouldFallback, text } =
     useClipboard();
@@ -83,30 +82,32 @@ export function AssignmentsExportAsCSVModal(
 
   function handleOpenDialog(exportAction: ExportAction) {
     setAction(exportAction);
-    openDialog('exportAsCSV');
+    openDialog('exportAssignments');
   }
 
   async function handleExport(
     exportAction: ExportAction,
     rowMode: AssignmentExportRowMode,
   ) {
+    const isCopy = exportAction === 'copy';
     try {
-      const csv = exportAssignmentsToCSV({
+      const delimitedText = exportAssignments({
         groups,
         spectra: data,
         expandedGroups,
         rowMode,
         acsExportSettings: current.acsExportSettings,
         defaultACSOptions,
+        delimiter: isCopy ? '\t' : ',',
       });
 
-      if (exportAction === 'copy') {
-        await rawWriteWithType(csv, 'text/plain');
+      if (isCopy) {
+        await rawWriteWithType(delimitedText, 'text/plain');
         return closeDialog();
       }
 
       saveAs({
-        blob: new Blob([csv], { type: 'text/csv;charset=utf-8' }),
+        blob: new Blob([delimitedText], { type: 'text/csv;charset=utf-8' }),
         name: `${moleculeLabel}-assignments`,
         extension: '.csv',
       });
@@ -114,9 +115,8 @@ export function AssignmentsExportAsCSVModal(
       closeDialog();
     } catch (error: unknown) {
       toaster.show({
-        message: `Could not ${exportAction} assignments as CSV: ${
-          error instanceof Error ? error.message : String(error)
-        }`,
+        message: `Could not ${exportAction} assignments as ${isCopy ? 'TSV' : 'CSV'}: ${error instanceof Error ? error.message : String(error)
+          }`,
         intent: 'danger',
       });
     }
@@ -131,8 +131,8 @@ export function AssignmentsExportAsCSVModal(
         options={exportMenu}
         disabled={groups.length === 0}
       />
-      {dialog.exportAsCSV && (
-        <AssignmentsExportAsCSVModalContent
+      {dialog.exportAssignments && (
+        <AssignmentsExportModalContent
           action={action}
           onClose={closeDialog}
           onSubmit={(rowMode) => handleExport(action, rowMode)}
@@ -142,7 +142,7 @@ export function AssignmentsExportAsCSVModal(
         mode={shouldFallback}
         onDismiss={cleanShouldFallback}
         text={text}
-        label="Assignments as CSV"
+        label="Assignments as TSV"
       />
     </>
   );
@@ -165,17 +165,19 @@ const Description = styled.p`
   line-height: 1.5;
 `;
 
-interface AssignmentsExportAsCSVModalContentProps {
+interface AssignmentsExportModalContentProps {
   action: ExportAction;
   onClose: () => void;
   onSubmit: (rowMode: AssignmentExportRowMode) => Promise<void>;
 }
 
-function AssignmentsExportAsCSVModalContent(
-  props: AssignmentsExportAsCSVModalContentProps,
+function AssignmentsExportModalContent(
+  props: AssignmentsExportModalContentProps,
 ) {
   const { action, onClose, onSubmit } = props;
   const isCopy = action === 'copy';
+  const actionLabel = isCopy ? 'Copy' : 'Export';
+  const formatLabel = isCopy ? 'TSV' : 'CSV';
   const form = useForm({
     defaultValues: INITIAL_VALUES,
     onSubmit: ({ value }) => onSubmit(value.rows),
@@ -184,7 +186,7 @@ function AssignmentsExportAsCSVModalContent(
   return (
     <StandardDialog
       isOpen
-      title={`${isCopy ? 'Copy' : 'Export'} assignment table as CSV`}
+      title={`${actionLabel} assignment table as ${formatLabel}`}
       icon={isCopy ? 'clipboard' : 'export'}
       onClose={onClose}
       style={{ width: 520 }}
@@ -194,7 +196,7 @@ function AssignmentsExportAsCSVModalContent(
           <form.AppField name="rows">
             {(field) => (
               <field.RadioGroup
-                label="CSV layout"
+                label={`${formatLabel} layout`}
                 style={{ display: 'grid', gap: 10 }}
               >
                 {ROW_OPTIONS.map((option) => (
@@ -223,7 +225,7 @@ function AssignmentsExportAsCSVModalContent(
                 intent="primary"
                 icon={isCopy ? <FaCopy /> : <FaDownload />}
               >
-                {isCopy ? 'Copy CSV' : 'Download CSV'}
+                {`${isCopy ? 'Copy' : 'Download'} ${formatLabel}`}
               </form.SubmitButton>
             </>
           }

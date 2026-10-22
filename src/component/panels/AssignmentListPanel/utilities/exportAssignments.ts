@@ -17,21 +17,20 @@ import type { GetAssignmentSignalsOptions } from './types.js';
 
 export type AssignmentExportRowMode = 'current' | 'expanded' | 'collapsed';
 
-interface ExportAssignmentsToCSVOptions {
+interface ExportAssignmentsOptions {
   groups: readonly GroupedDiaID[];
   spectra: Spectrum[];
   expandedGroups: ReadonlySet<string>;
   rowMode: AssignmentExportRowMode;
   acsExportSettings: Record<string, ACSExportOptions>;
   defaultACSOptions: ACSExportOptions;
+  delimiter: ',' | '\t';
 }
 
 /**
- * Export the selected molecule using the table's row and formatting rules.
+ * Export the selected molecule as CSV or TSV using the table's formatting rules.
  */
-export function exportAssignmentsToCSV(
-  options: ExportAssignmentsToCSVOptions,
-): string {
+export function exportAssignments(options: ExportAssignmentsOptions): string {
   const {
     groups,
     spectra,
@@ -39,6 +38,7 @@ export function exportAssignmentsToCSV(
     rowMode,
     acsExportSettings,
     defaultACSOptions,
+    delimiter,
   } = options;
   const allRows = atomGroupsToAssignmentRows(groups, true);
   const rows =
@@ -77,7 +77,7 @@ export function exportAssignmentsToCSV(
       isExpanded: row.isExpanded,
     }),
     ...nuclei.map(({ signalsByOclID, acs }) =>
-      formatAssignmentCSVCell({
+      formatAssignmentCell({
         row,
         signalsByOclID,
         hydrogenIDsByParent,
@@ -86,16 +86,14 @@ export function exportAssignmentsToCSV(
     ),
   ]);
 
-  return papa.unparse({ fields, data }, { escapeFormulae: true });
+  return papa.unparse({ fields, data }, { delimiter, escapeFormulae: true });
 }
 
-interface FormatAssignmentCSVCellOptions extends GetAssignmentSignalsOptions {
+interface FormatAssignmentCellOptions extends GetAssignmentSignalsOptions {
   acs: ACSExportOptions;
 }
 
-function formatAssignmentCSVCell(
-  options: FormatAssignmentCSVCellOptions,
-): string {
+function formatAssignmentCell(options: FormatAssignmentCellOptions): string {
   const { row, acs } = options;
 
   return getAssignmentSignals(options)
