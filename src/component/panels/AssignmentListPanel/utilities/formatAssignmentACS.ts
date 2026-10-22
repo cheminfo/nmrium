@@ -7,8 +7,8 @@ import { assignmentACSOptions } from './assignmentACSOptions.js';
 import type { AssignedSignal, FormatAssignmentOptions } from './types.js';
 
 /**
- * Format one spectrum's assignments as ACS HTML without the spectrum header
- * or final period.
+ * Format one spectrum's assignments as ACS HTML without the spectrum header,
+ * delta prefix, or final period.
  */
 export function formatAssignmentACS(options: FormatAssignmentOptions): string {
   const { assignment } = options;
@@ -20,8 +20,8 @@ export function formatAssignmentACS(options: FormatAssignmentOptions): string {
     filter: false,
   });
 
-  // "1H NMR (600 MHz): δ 4.04 (d)." becomes "δ 4.04 (d)".
-  return acsString.replaceAll(/^[^:]*:\s*|\.$/g, '');
+  // "1H NMR (600 MHz): δ 4.04 (d)." becomes "4.04 (d)".
+  return acsString.replaceAll(/^(?:[^:]*:\s*)?\u{03B4}\s*|\.$/gu, '');
 }
 
 /**

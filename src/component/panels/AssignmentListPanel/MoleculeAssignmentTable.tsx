@@ -58,7 +58,6 @@ function SpectrumColumnHeader({
   return (
     <SpectrumHeader>
       <IsotopesViewer value={nucleus} />
-      <span>&delta;</span>
       <Tag
         minimal
         intent={isFullyAssigned ? 'success' : 'danger'}

@@ -62,7 +62,7 @@ export function exportAssignmentsToCSV(
     'Atom',
     'Atom numbers',
     'Atom labels',
-    ...nuclei.map(({ nucleus }) => `${nucleus} \u{03B4}`),
+    ...nuclei.map(({ nucleus }) => nucleus),
   ];
   const data = rows.map((row) => [
     row.atomLabel,
