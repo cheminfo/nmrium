@@ -8,6 +8,7 @@ import {
   FaDownload,
   FaFileExport,
   FaFileImage,
+  FaHashtag,
   FaMinusSquare,
   FaPaste,
   FaPlus,
@@ -17,7 +18,7 @@ import {
 } from 'react-icons/fa';
 import { FaMaximize, FaMinimize } from 'react-icons/fa6';
 import { IoOpenOutline } from 'react-icons/io5';
-import { MdFlashAuto, MdNumbers, MdOutlineLabelOff } from 'react-icons/md';
+import { MdFlashAuto, MdOutlineLabelOff } from 'react-icons/md';
 import { PanelHeader, Toolbar, TooltipHelpContent } from 'react-science/ui';
 
 import type {
@@ -456,7 +457,7 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
 
             <Toolbar.Item
               tooltip={`${booleanToString(!isActiveAnnotation('atom-numbers'))} atom number`}
-              icon={<MdNumbers />}
+              icon={<FaHashtag />}
               onClick={() => toggleAtomAnnotation('atom-numbers')}
               active={isActiveAnnotation('atom-numbers')}
               disabled={!hasMolecules}
