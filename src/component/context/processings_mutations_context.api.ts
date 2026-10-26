@@ -23,7 +23,7 @@ import { initializeContoursLevels } from '../../data/data2d/Spectrum2D/contours.
 import type { LiveEdit, State } from '../reducer/Reducer.ts';
 import { setDomain, setMode } from '../reducer/actions/DomainActions.ts';
 import { updateView } from '../reducer/actions/FiltersActions.ts';
-import { restoreLastZoomDomain } from '../reducer/helper/ZoomHistoryManager.ts';
+import { restoreLastZoomUnlessDomainChanged } from '../reducer/helper/ZoomHistoryManager.ts';
 import { getActiveSpectrum } from '../reducer/helper/getActiveSpectrum.ts';
 
 import { useChartData } from './ChartContext.tsx';
@@ -207,6 +207,10 @@ export function useProcessingsMutationsAPI() {
     const operation = spectrum.processings[operationIndex];
     operation.enabled = !operation.enabled;
 
+    // `processSpectrum` mutates the spectrum in place, so capture the current
+    // FID/FT state before processing to detect a FID <-> FT transition.
+    const wasFt = spectrum.info.isFt;
+
     resetSelectedTool();
     await submit(spectrum, indexSpectrum, (draft, processedSpectrum) => {
       if (isSpectrum2D(processedSpectrum) && processedSpectrum.info.isFt) {
@@ -216,7 +220,7 @@ export function useProcessingsMutationsAPI() {
 
       setDomain(draft);
       setMode(draft);
-      restoreLastZoomDomain(draft);
+      restoreLastZoomUnlessDomainChanged(draft, wasFt);
     });
   });
 
