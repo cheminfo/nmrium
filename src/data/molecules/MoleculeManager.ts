@@ -3,7 +3,9 @@ import { readSDF } from '@zakodium/nmrium-core-plugins';
 import { Molecule } from 'openchemlib';
 
 import type { StateMoleculeExtended } from './Molecule.js';
-import { initMolecule } from './Molecule.js';
+import { initMolecule, parseErrorMessage } from './Molecule.js';
+
+export { parseErrorMessage } from './Molecule.js';
 
 //TODO: Move molecule initialization to nmrium-core and log an error if the molecule cannot be parsed.
 export function fromJSON(
@@ -105,9 +107,6 @@ function getLabelNumber(reserveNumbers: number[]): number {
   return 1;
 }
 
-export const parseErrorMessage =
-  'Failed to parse SMILES or molfile. Please paste a valid format';
-
 function validateMolecules(molecules: StateMolecule[]) {
   if (!molecules?.length) {
     throw new Error(parseErrorMessage);
@@ -132,10 +131,8 @@ function validateMolecules(molecules: StateMolecule[]) {
 }
 
 /**
- * We will extract the molecule(s) from the text.
- * Because a molfile is actually a SDF we can just call 'readSDF' method
- * @param text - text containing one or several molecules in SMILES, molfile or SDF format
- * @returns
+ * Read SDF records and validate their structures.
+ * @param text - SDF content
  */
 
 function parseSDF(text: string) {
@@ -148,12 +145,17 @@ function parseSDF(text: string) {
   }
 }
 
+/**
+ * Parse SDF records or a single molfile, SMILES or chemical-group.
+ * @param text - Pasted structure text
+ */
 export function getMolecules(text?: string) {
   if (!text?.trim()) {
     throw new Error(parseErrorMessage);
   }
 
-  const isSDF = /v[23]000/i.test(text);
+  // identifies an SDF file by checking for the presence of the '$$$$' separator
+  const isSDF = text.includes('$$$$');
 
   return isSDF ? parseSDF(text) : [initMolecule({ text })];
 }

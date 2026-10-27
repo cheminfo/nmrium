@@ -251,7 +251,7 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
   }
 
   /**
-   * The moleecule pasted could be SMILES, molfile or SDF
+   * The molecule pasted could be SMILES, molfile, SDF or chemical groups
    * @param text - text from clipboard
    * @returns
    */
@@ -430,9 +430,10 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
           />
         )}
         <Toolbar.Item
-          tooltip="Paste SMILES or molfile"
+          tooltip="Paste SMILES, molfile or chemical groups"
           icon={<FaPaste />}
           onClick={handlePasteMoleculeAction}
+          data-testid="paste-molecule-action"
         />
         {renderSource === 'moleculePanel' && (
           <Toolbar.Item
@@ -502,7 +503,7 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
         onDismiss={cleanShouldFallback}
         onReadText={handlePasteMolecule}
         text={text}
-        label="Enter here a molfile or SMILES"
+        label="Enter here a molfile, SMILES or chemical groups (e.g. HAlaGlyOH)"
       />
     </PanelHeader>
   );
