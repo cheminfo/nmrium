@@ -39,7 +39,7 @@ export function validateInput(
   matrix: ArrayLike<number>,
   rows: number,
   cols: number,
-  noiseLevel: number,
+  noiseLevel: number | undefined,
 ): void {
   if (!Number.isSafeInteger(rows) || rows <= 0) {
     throw new Error('rows must be a positive integer');
@@ -53,7 +53,10 @@ export function validateInput(
     throw new Error('matrix.length must equal rows * cols');
   }
 
-  if (!Number.isFinite(noiseLevel) || noiseLevel <= 0) {
+  if (
+    noiseLevel !== undefined &&
+    (!Number.isFinite(noiseLevel) || noiseLevel <= 0)
+  ) {
     throw new Error('noiseLevel must be a positive finite number');
   }
 }

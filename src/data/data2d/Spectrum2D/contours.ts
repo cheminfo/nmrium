@@ -54,6 +54,22 @@ interface ContoursManagerReturn {
   checkLevel: () => Level;
 }
 
+function getNoiseLevel(
+  noise: { positive: number; negative: number } | undefined,
+  matrix: ArrayLike<number>,
+): number | undefined {
+  if (noise) {
+    const level = Math.max(noise.positive, noise.negative);
+    if (Number.isFinite(level) && level > 0) {
+      return level;
+    }
+  }
+
+  // No usable stored noise level: estimate it, which may yield `undefined` when
+  // the spectrum has no noise to measure.
+  return estimateNoiseLevel(matrix);
+}
+
 function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
   const { data, info } = spectrum;
 
@@ -67,9 +83,10 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
   } = info;
   const matrix = matrixToArray(quadrantData.z);
 
-  const noiseLevel = (noise as { positive: number; negative: number })
-    ? Math.max(noise.positive, noise.negative)
-    : estimateNoiseLevel(matrix);
+  const noiseLevel = getNoiseLevel(
+    noise as { positive: number; negative: number } | undefined,
+    matrix,
+  );
 
   const { hasT1Noise, minLevelWithoutT1Noise, minLevel, maxAbsoluteValue } =
     findAutomaticContourLevels(
