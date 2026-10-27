@@ -1,4 +1,5 @@
 import type { MoleculeView, StateMolecule } from '@zakodium/nmrium-core';
+import { expandChemicalGroups } from 'expand-chemical-groups';
 import { Molecule } from 'openchemlib';
 
 import getAtomsFromMF from '../utilities/getAtomsFromMF.js';
@@ -36,17 +37,32 @@ type InitializeMoleculeOptions = { text: string } & Omit<
   'molfile'
 >;
 
+export const parseErrorMessage =
+  'Failed to parse SMILES, molfile or chemical groups. Please paste a valid format';
+
+function parseMoleculeText(text: string): Molecule {
+  const moleculeText = text.trim();
+  if (!moleculeText) {
+    throw new Error(parseErrorMessage);
+  }
+
+  const molecule = Molecule.fromText(text);
+  if (molecule && molecule.getAllAtoms() > 0) {
+    return molecule;
+  }
+  // fallback to expanding chemical groups if `fromText` parsing fails
+  // for example HAlaGlyOH, BocAlaOH ...etc.
+  return expandChemicalGroups(moleculeText);
+}
+
 export function initMolecule(
   options: InitializeMoleculeOptions,
 ): StateMoleculeExtended {
   const { id = crypto.randomUUID(), label = 'p#', text, selector } = options;
+  const molecule = parseMoleculeText(text);
 
-  const molecule = Molecule.fromText(text);
-
-  if (!molecule) {
-    throw new Error(
-      'Failed to parse SMILES or molfile. Please paste a valid format',
-    );
+  if (molecule.getAllAtoms() === 0) {
+    throw new Error(parseErrorMessage);
   }
   const molfile = molecule.toMolfileV3();
   const mfInfo = molecule.getMolecularFormula();
