@@ -14,11 +14,16 @@ export interface EstimateNoiseLevelOptions {
 /**
  * Estimates the standard deviation of signed Gaussian noise using a
  * deterministically downsampled median absolute deviation.
+ *
+ * Returns `undefined` when there is no noise to measure: a median of zero (NUS
+ * reconstruction) or a median absolute deviation of zero (a constant offset
+ * plateau, as in a noiseless simulation). Callers must then anchor their
+ * analysis on the data range instead of on a fabricated noise level.
  */
 export function estimateNoiseLevel(
   matrix: ArrayLike<number>,
   options: EstimateNoiseLevelOptions = {},
-): number {
+): number | undefined {
   const { maxSamples = DEFAULT_MAX_SAMPLES } = options;
 
   if (!Number.isSafeInteger(maxSamples) || maxSamples <= 0) {
@@ -34,7 +39,7 @@ export function estimateNoiseLevel(
   const median = xMedian(sample);
 
   if (median === 0) {
-    return 1; //assume NUS reconstruction.
+    return undefined; //assume NUS reconstruction: no noise baseline to measure.
   }
 
   const averageDeviations = new Float64Array(sample.length);
@@ -44,11 +49,13 @@ export function estimateNoiseLevel(
 
   const noiseLevel = xMedian(averageDeviations) * GAUSSIAN_MAD_SCALE;
 
-  if (!Number.isFinite(noiseLevel) || noiseLevel < 0) {
+  if (!Number.isFinite(noiseLevel)) {
     throw new Error('unable to estimate a positive noise level');
   }
 
-  return noiseLevel;
+  // A zero median absolute deviation means a constant plateau: there is no
+  // noise scale to measure.
+  return noiseLevel === 0 ? undefined : noiseLevel;
 }
 
 function collectFiniteSample(
