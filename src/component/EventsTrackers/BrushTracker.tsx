@@ -28,6 +28,8 @@ import type {
   MouseButton,
   Position,
 } from './brush_tracker.types.ts';
+import type { DragGestureController } from './brush_tracker_drag_gesture.ts';
+import { createDragGesture } from './brush_tracker_drag_gesture.ts';
 import type { BrushTrackerEventEmitter } from './brush_tracker_events_listeners.ts';
 import {
   BrushTrackerEventEmitterContext,
@@ -83,6 +85,15 @@ export function useBrushTracker() {
 function isSelfControlledTarget(target: EventTarget) {
   return (target as Element).closest('[data-self-control="true"]') !== null;
 }
+
+/**
+ * Minimal pointer travel in px between pointerdown and pointerup for the
+ * gesture to be considered a drag. Pointer jitter below this threshold
+ * (hand tremor, trackpad imprecision) still counts as a click.
+ * Keep it in sync with the consumer drag threshold
+ * (`ProcessingOperatorUI.ChartBrushTracker` dragThreshold).
+ */
+const dragDetectionThreshold = 4;
 function getMouseXY(event: MouseEvent, currentTarget?: Element) {
   const boundingRect = (
     currentTarget ?? event.currentTarget
@@ -112,8 +123,16 @@ export function BrushTracker(options: BrushTrackerProps) {
   const lastRef = useRef<Position>({ x: 0, y: 0 });
   const isSelfControlledRef = useRef(false);
 
-  const { onClick, onDoubleClick, onBrush, onBrushEnd, onZoom, emitter } =
-    useWrappedEvents(options);
+  const {
+    onClick,
+    onDoubleClick,
+    onBrush,
+    onBrushEnd,
+    onZoom,
+    onDrag,
+    onDragEnd,
+    emitter,
+  } = useWrappedEvents(options);
 
   const handleClickWithDebounce = useCallback(
     (event: MouseEvent, currentTarget: Element) => {
@@ -179,6 +198,8 @@ export function BrushTracker(options: BrushTrackerProps) {
 
       isDraggingRef.current = false; // Reset dragging flag
 
+      let dragGesture: DragGestureController | null = null;
+
       //check that the right or left mouse button pressed
       if ([0, 2].includes(event.button)) {
         if (noPropagation) {
@@ -192,6 +213,14 @@ export function BrushTracker(options: BrushTrackerProps) {
           y: event.clientY - boundingRect.y,
         };
         lastRef.current = { x: 0, y: 0 };
+
+        dragGesture = createDragGesture({
+          mouseButton: MouseButtons[event.button],
+          startX: startPositionRef.current.x,
+          startY: startPositionRef.current.y,
+          rectX: boundingRect.x,
+          rectY: boundingRect.y,
+        });
 
         if (!event.ctrlKey) {
           dispatch({
@@ -211,16 +240,31 @@ export function BrushTracker(options: BrushTrackerProps) {
       }
 
       function moveCallback(event: globalThis.PointerEvent) {
-        isDraggingRef.current = true; // set flag to true to skip click event if the user dragged the mouse
-        const {
-          clientX,
-          clientY,
-          screenX,
-          screenY,
-          shiftKey,
-          altKey,
-          ctrlKey,
-        } = event;
+        const { clientX, clientY } = event;
+
+        // Only a real pointer travel marks the gesture as a drag: pointer
+        // jitter must not suppress the click event dispatched on pointerup.
+        // Both positions must be compared in the same coordinate system:
+        // `clientX` is viewport-relative while `startPositionRef` is
+        // relative to the chart container, so the container offset must
+        // be removed before comparing, otherwise the layout offset itself
+        // counts as pointer travel. The same threshold also gates the
+        // `MOVE` dispatch, so pointer jitter neither shows the brush
+        // banner nor updates the brush range while clicking (e.g. adding
+        // anchors).
+        const boundingRect = boundingRectRef.current;
+        const isPointerTravel =
+          boundingRect &&
+          Math.hypot(
+            clientX - boundingRect.x - startPositionRef.current.x,
+            clientY - boundingRect.y - startPositionRef.current.y,
+          ) > dragDetectionThreshold;
+
+        if (isPointerTravel) {
+          isDraggingRef.current = true;
+        }
+
+        const { screenX, screenY, shiftKey, altKey, ctrlKey } = event;
 
         if (ctrlKey) {
           if (boundingRectRef.current) {
@@ -248,19 +292,31 @@ export function BrushTracker(options: BrushTrackerProps) {
             lastRef.current = { x, y };
           }
         } else {
-          dispatch({
-            type: 'MOVE',
-            payload: {
-              screenX,
-              screenY,
-              clientX,
-              clientY,
-            },
-          });
+          const dragEvent = dragGesture?.move(event);
+          if (dragEvent) {
+            onDrag(dragEvent);
+          }
+
+          if (!dragEvent?.isPropagationStopped() && isPointerTravel) {
+            dispatch({
+              type: 'MOVE',
+              payload: {
+                screenX,
+                screenY,
+                clientX,
+                clientY,
+              },
+            });
+          }
         }
       }
 
-      function upCallback() {
+      function upCallback(pointerUpEvent: globalThis.PointerEvent) {
+        const dragEndEvent = dragGesture?.end(pointerUpEvent);
+        if (dragEndEvent) {
+          onDragEnd(dragEndEvent);
+        }
+
         if (isDraggingRef.current) {
           dispatch({
             type: 'UP',
@@ -283,7 +339,14 @@ export function BrushTracker(options: BrushTrackerProps) {
 
       return false;
     },
-    [clickTriggerMode, handleClickWithDebounce, noPropagation, onZoom],
+    [
+      clickTriggerMode,
+      handleClickWithDebounce,
+      noPropagation,
+      onDrag,
+      onDragEnd,
+      onZoom,
+    ],
   );
 
   const handleMouseWheel = useCallback(
@@ -590,7 +653,13 @@ export function detectBrushing(
 
 type UseWrappedEventsProps = Pick<
   BrushTrackerProps,
-  'onBrush' | 'onBrushEnd' | 'onClick' | 'onDoubleClick' | 'onZoom'
+  | 'onBrush'
+  | 'onBrushEnd'
+  | 'onClick'
+  | 'onDoubleClick'
+  | 'onZoom'
+  | 'onDrag'
+  | 'onDragEnd'
 >;
 
 interface UseWrappedEvents extends Required<UseWrappedEventsProps> {
@@ -610,6 +679,8 @@ function useWrappedEvents(props: UseWrappedEventsProps): UseWrappedEvents {
     onZoom: onZoomProp = noop,
     onDoubleClick: onDoubleClickProp = noop,
     onClick: onClickProp = noop,
+    onDrag: onDragProp = noop,
+    onDragEnd: onDragEndProp = noop,
   } = props;
   const emitter = useInitBrushTrackerEventEmitter();
 
@@ -680,5 +751,44 @@ function useWrappedEvents(props: UseWrappedEventsProps): UseWrappedEvents {
     },
   );
 
-  return { onClick, onDoubleClick, onBrush, onBrushEnd, onZoom, emitter };
+  const onDrag = useEventCallback<Parameters<typeof onDragProp>, void>(
+    (event) => {
+      try {
+        emitter.emit('drag', event);
+      } catch (error) {
+        reportError(error);
+      }
+
+      if (event.isPropagationStopped()) return;
+      if (event.isDefaultPrevented()) return;
+
+      onDragProp(event);
+    },
+  );
+
+  const onDragEnd = useEventCallback<Parameters<typeof onDragEndProp>, void>(
+    (event) => {
+      try {
+        emitter.emit('drag-end', event);
+      } catch (error) {
+        reportError(error);
+      }
+
+      if (event.isPropagationStopped()) return;
+      if (event.isDefaultPrevented()) return;
+
+      onDragEndProp(event);
+    },
+  );
+
+  return {
+    onClick,
+    onDoubleClick,
+    onBrush,
+    onBrushEnd,
+    onZoom,
+    onDrag,
+    onDragEnd,
+    emitter,
+  };
 }
