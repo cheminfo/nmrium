@@ -433,6 +433,7 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
           tooltip="Paste SMILES, molfile or chemical groups"
           icon={<FaPaste />}
           onClick={handlePasteMoleculeAction}
+          data-testid="paste-molecule-action"
         />
         {renderSource === 'moleculePanel' && (
           <Toolbar.Item
