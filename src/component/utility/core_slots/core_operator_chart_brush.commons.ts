@@ -20,6 +20,10 @@ import type {
   BrushTrackerEventEmitterSupportedEvents,
 } from '../../EventsTrackers/brush_tracker_events_listeners.ts';
 import { useBrushTrackerEventEmitter } from '../../EventsTrackers/brush_tracker_events_listeners.ts';
+import {
+  getModifiers,
+  useMapKeyModifiers,
+} from '../../context/KeyModifierContext.tsx';
 
 /**
  * Hook to forward to `ProcessingOperatorUI.ChartBrushTracker`.
@@ -27,6 +31,7 @@ import { useBrushTrackerEventEmitter } from '../../EventsTrackers/brush_tracker_
  */
 export function useBrushTrackerEvent(events: BrushTrackerEvents) {
   const emitter = useBrushTrackerEventEmitter();
+  const isPrimaryKeyActivated = useMapKeyModifiers();
 
   //
   // Integration mapping to core events listening stabilized
@@ -48,22 +53,34 @@ export function useBrushTrackerEvent(events: BrushTrackerEvents) {
     events.onZoom?.(event);
   });
   const onClickStable = useEventCallback((options: ClickOptions) => {
-    const event = clickOptionsToCoreClickEvent(options);
+    const event = clickOptionsToCoreClickEvent(
+      options,
+      isPrimaryKeyActivated(getModifiers(options)),
+    );
 
     events.onClick?.(event);
   });
   const onDoubleClickStable = useEventCallback((options: ClickOptions) => {
-    const event = clickOptionsToCoreClickEvent(options);
+    const event = clickOptionsToCoreClickEvent(
+      options,
+      isPrimaryKeyActivated(getModifiers(options)),
+    );
 
     events.onDoubleClick?.(event);
   });
   const onDragStable = useEventCallback((data: DragTrackerEvent) => {
-    const event = dragTrackerEventToCoreDragEvent(data);
+    const event = dragTrackerEventToCoreDragEvent(
+      data,
+      isPrimaryKeyActivated(getModifiers(getDragEventModifiers(data))),
+    );
 
     events.onDrag?.(event);
   });
   const onDragEndStable = useEventCallback((data: DragTrackerEvent) => {
-    const event = dragTrackerEventToCoreDragEvent(data);
+    const event = dragTrackerEventToCoreDragEvent(
+      data,
+      isPrimaryKeyActivated(getModifiers(getDragEventModifiers(data))),
+    );
 
     events.onDragEnd?.(event);
   });
@@ -147,6 +164,7 @@ function zoomOptionsToCoreZoomEvent(
 
 function clickOptionsToCoreClickEvent(
   event: ClickOptions,
+  isPrimaryKeyActivated: boolean,
 ): BrushTrackerEventsOnClickEvent {
   const { x, y, ...domEvent } = event;
 
@@ -158,6 +176,7 @@ function clickOptionsToCoreClickEvent(
     stopPropagation: () => claimTrackerEvent(event),
     domEvent,
     position: { x, y },
+    isPrimaryKeyActivated,
   };
 }
 
@@ -177,6 +196,7 @@ function claimTrackerEvent(event: ClickOptions) {
 
 function dragTrackerEventToCoreDragEvent(
   event: DragTrackerEvent,
+  isPrimaryKeyActivated: boolean,
 ): BrushTrackerEventsDragEvent {
   const {
     x,
@@ -199,5 +219,16 @@ function dragTrackerEventToCoreDragEvent(
     modifiersKey: { ctrlKey, altKey, shiftKey, metaKey: domEvent.metaKey },
     position: { x, y },
     positionStart: { x: startX, y: startY },
+    isPrimaryKeyActivated,
   };
+}
+
+/**
+ * Modifier keys of a drag tracker event, in the shape expected by the
+ * `KeyModifierContext` helpers (`metaKey` comes from the native event).
+ */
+function getDragEventModifiers(event: DragTrackerEvent) {
+  const { shiftKey, altKey, ctrlKey, domEvent } = event;
+
+  return { shiftKey, altKey, ctrlKey, metaKey: domEvent.metaKey };
 }
