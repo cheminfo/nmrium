@@ -8,7 +8,10 @@ on:
 
 jobs:
   e2e:
-    runs-on: ubuntu-latest
+    # Playwright 1.57 does not support Ubuntu 26.04.
+    # Migrate _react selectors to role/test-id locators before upgrading Playwright
+    # and returning to ubuntu-latest.
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         project: [chromium, firefox, webkit]
