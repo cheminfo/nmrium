@@ -102,6 +102,10 @@ export default function useAtomAssignment() {
   const currentDiaIDsToHighlight = useMemo(() => {
     const { highlighted, sourceData } = highlightData.highlight;
 
+    if (sourceData?.type === 'ASSIGNMENT_TABLE') {
+      return highlighted;
+    }
+
     let currentSpectrum = spectrum;
 
     if (

@@ -36,6 +36,7 @@ interface HighlightEventSourceMap {
   MULTIPLE_ANALYSIS_ZONE: { colKey: string };
   DATABASE: { ranges: Range[]; jcampURL: string; baseURL: string };
   ATOM: never;
+  ASSIGNMENT_TABLE: never;
   UNKNOWN: never;
 }
 

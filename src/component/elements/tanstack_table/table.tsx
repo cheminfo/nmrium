@@ -118,6 +118,7 @@ function TanStackTableInner<TData extends TanStackRowData>(
     columns,
     highlightedSource,
     getHighlightExtra,
+    getHighlightIDs,
     contextMenu = [],
     onContextMenuSelect,
     onScroll,
@@ -265,6 +266,7 @@ function TanStackTableInner<TData extends TanStackRowData>(
               const highlightSourceProps = {
                 highlightedSource,
                 getHighlightExtra,
+                getHighlightIDs,
               } as TanStackTableHighlightSourceProps<TData>;
 
               return (

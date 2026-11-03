@@ -23,6 +23,7 @@ import RangesPanel from './RangesPanel/RangesPanel.js';
 import SpectrumListPanel from './SpectraPanel/SpectrumListPanel.js';
 import SummaryPanel from './SummaryPanel/SummaryPanel.js';
 import ZonesPanel from './ZonesPanel/ZonesPanel.js';
+import { AssignmentSummaryPanel } from './assignment-summary/AssignmentSummaryPanel.js';
 import DatabasePanel from './databasePanel/DatabasePanel.js';
 import FilterPanel from './filtersPanel/FilterPanel.js';
 import { InformationPanel } from './informationPanel/InformationPanel.js';
@@ -113,6 +114,12 @@ const accordions: Record<
     component: <SummaryPanel />,
     mode: null,
     icon: 'document',
+  },
+  assignmentSummaryPanel: {
+    title: 'Assignment summary',
+    component: <AssignmentSummaryPanel />,
+    mode: null,
+    icon: <SvgNmrAssignment2 />,
   },
   structuresPanel: {
     title: 'Chemical structures',

@@ -38,6 +38,7 @@ export const workspaceDefaultProperties: RequiredWorkspacePreferences = {
       peaksPanel: { display: false, visible: false, open: false },
       predictionPanel: { display: false, visible: false, open: false },
       summaryPanel: { display: false, visible: false, open: false },
+      assignmentSummaryPanel: { display: false, visible: false, open: false },
       simulationPanel: { display: false, visible: false, open: false },
       matrixGenerationPanel: { display: false, visible: false, open: false },
     } satisfies Required<RequiredWorkspacePreferences['display']['panels']>,

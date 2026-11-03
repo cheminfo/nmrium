@@ -1,4 +1,5 @@
 import type {
+  AssignmentSummaryPreferences,
   BaseNucleus1DPreferences,
   BaseNucleus2DPreferences,
   FloatingRangesTablePreferences,
@@ -200,6 +201,11 @@ const databaseDefaultValues: PanelsPreferences['database'] = {
     minHeight: 100,
   },
 };
+
+const assignmentSummaryDefaultValues: AssignmentSummaryPreferences = {
+  showAtomNumbers: false,
+};
+
 const getMultipleSpectraAnalysisDefaultValues = (
   nucleus?: string,
 ): PanelsPreferences['multipleSpectraAnalysis'] => {
@@ -241,6 +247,7 @@ const getMatrixGenerationDefaultValues = (
 };
 
 export {
+  assignmentSummaryDefaultValues,
   databaseDefaultValues,
   getIntegralDefaultValues,
   getMatrixGenerationDefaultOptions,

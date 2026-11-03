@@ -44,6 +44,8 @@ export type TanStackTableHeaderGroup<TData extends TanStackRowData> =
   HeaderGroup<TanStackTableFeatures, TData>;
 
 export type TanStackTableHighlightSourceProps<TData extends TanStackRowData> = {
+  getHighlightIDs?: (row: TData) => string[];
+} & {
   [K in HighlightEventSourceType]: HighlightEventSourceExtra<K> extends never
     ? { highlightedSource?: K; getHighlightExtra?: never }
     : {

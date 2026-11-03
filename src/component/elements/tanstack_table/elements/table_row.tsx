@@ -103,6 +103,7 @@ export default function TableRow<TData extends TanStackRowData>(
     table,
     highlightedSource = 'UNKNOWN',
     getHighlightExtra,
+    getHighlightIDs,
     onContextMenuSelect,
     contextMenu,
     onClick,
@@ -121,7 +122,10 @@ export default function TableRow<TData extends TanStackRowData>(
       }) as HighlightEventSource,
     [highlightedSource, row.original, getHighlightExtra],
   );
-  const highlight = useHighlight(getIDs(row), data);
+  const highlight = useHighlight(
+    getHighlightIDs?.(row.original) ?? getIDs(row),
+    data,
+  );
 
   useEffect(() => {
     return () => {

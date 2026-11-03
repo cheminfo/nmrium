@@ -1,4 +1,8 @@
-import type { ACSExportOptions, Spectrum } from '@zakodium/nmrium-core';
+import type {
+  ACSExportOptions,
+  Spectrum1D,
+  Spectrum,
+} from '@zakodium/nmrium-core';
 import { assertSpectrum1D, isSpectrum1D } from '@zakodium/nmrium-core';
 import type { RangesToACSOptions } from 'nmr-processing';
 import { rangesToACS } from 'nmr-processing';
@@ -39,8 +43,7 @@ export function buildPublicationString(options: BuildPublicationStringOptions) {
     info,
     ranges: { values },
   } = spectrum;
-  const { originFrequency, nucleus } = info;
-  const { signalKind, format, couplingFormat, ...otherOptions } = acs;
+  const { signalKind } = acs;
 
   const ranges =
     signalKind === 'all'
@@ -49,7 +52,16 @@ export function buildPublicationString(options: BuildPublicationStringOptions) {
           range.signals?.some((signal) => signal.kind === 'signal'),
         );
 
-  const rangesToACSOptions: RangesToACSOptions = {
+  return rangesToACS(ranges, getRangesToACSOptions(info, acs));
+}
+
+export function getRangesToACSOptions(
+  info: Pick<Spectrum1D['info'], 'nucleus' | 'originFrequency'>,
+  acs: ACSExportOptions,
+): RangesToACSOptions {
+  const { originFrequency, nucleus } = info;
+  const { signalKind, format, couplingFormat, ...otherOptions } = acs;
+  const options: RangesToACSOptions = {
     nucleus,
     observedFrequency: originFrequency,
     ...otherOptions,
@@ -57,9 +69,9 @@ export function buildPublicationString(options: BuildPublicationStringOptions) {
   };
 
   if (format !== 'D') {
-    rangesToACSOptions.format = format;
-    rangesToACSOptions.couplingFormat = couplingFormat;
+    options.format = format;
+    options.couplingFormat = couplingFormat;
   }
 
-  return rangesToACS(ranges, rangesToACSOptions);
+  return options;
 }
