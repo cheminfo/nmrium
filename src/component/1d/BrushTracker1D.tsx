@@ -260,12 +260,12 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
       }
 
       const tools = new Set<Tool>(['zoom']);
-      // The default brush follows the `general.invert` preference: the
-      // primary key activates the tool action, so the brush (the host
-      // default, i.e. the region zoom) is enabled when the primary key is
-      // NOT activated.
+      // The region zoom is the tool action of the zoom tool, so it follows
+      // the `general.invert` preference like the other tools' actions: it
+      // is enabled when the primary key is activated (with `invert: false`
+      // that means SHIFT + drag, with `invert: true` a plain drag).
       const isDefaultBrushEnabled =
-        !tools.has(selectedTool) || (tools.has(selectedTool) && !isPrimary);
+        !tools.has(selectedTool) || (tools.has(selectedTool) && isPrimary);
 
       if (!shouldExecuteDefaultAction || selectedTool == null) {
         return;
