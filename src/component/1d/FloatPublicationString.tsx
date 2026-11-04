@@ -26,6 +26,8 @@ const MARKERS: Record<string, SVGProps<SVGTSpanElement>> = {
   '**': { fontStyle: 'italic' },
 };
 
+const TEXT_PADDING = 10;
+
 function getMarker(word: string) {
   return Object.keys(MARKERS).find(
     (marker) => word.startsWith(marker) && word.endsWith(marker),
@@ -83,10 +85,10 @@ function useWrapSVGText(params: UseWrapSVGTextParams) {
     const marker = getMarker(word);
     const cleanWord = marker ? word.replaceAll(marker, '') : word;
     const wordWidth = getTextWidth(cleanWord);
-    if (lineWidth + wordWidth > width) {
+    if (line.length > 0 && lineWidth + wordWidth > width) {
       lines.push(line);
       line = [word];
-      lineWidth = wordWidth;
+      lineWidth = wordWidth + spaceWidth;
     } else {
       line.push(word);
       lineWidth += wordWidth + spaceWidth;
@@ -127,33 +129,21 @@ function useWrapSVGText(params: UseWrapSVGTextParams) {
 }
 
 interface PublicationTextProps {
-  text: string;
-  textStyle?: TextStyle;
-  width: number;
+  lines: string[][];
+  lineHeight: number;
+  textStyle: TextStyle & { fontSize: number };
 }
 
 function PublicationText(props: PublicationTextProps) {
-  const { text, textStyle, width } = props;
-  const padding = 10;
-  const boxWidth = width - padding * 2;
-
-  const textStyleWithSize = {
-    ...textStyle,
-    fontSize: textStyle?.fontSize ?? 12,
-  };
-  const { lineHeight, lines } = useWrapSVGText({
-    width: boxWidth,
-    style: textStyleWithSize,
-    text,
-  });
+  const { textStyle, lineHeight, lines } = props;
 
   return (
-    <g transform={`translate(${padding} ${padding})`}>
+    <g transform={`translate(${TEXT_PADDING} ${TEXT_PADDING})`}>
       {lines.map((line, lineIndex) => (
         <SVGStyledText
           // eslint-disable-next-line @eslint-react/no-array-index-key
           key={lineIndex}
-          {...textStyleWithSize}
+          {...textStyle}
           fontFamily="Arial"
           y={lineIndex * lineHeight}
           dominantBaseline="hanging"
@@ -165,7 +155,7 @@ function PublicationText(props: PublicationTextProps) {
               const props = MARKERS[marker];
               const isBaselineShift = 'baselineShift' in props;
               const fontSize = isBaselineShift
-                ? Math.floor((5 / 6) * textStyleWithSize.fontSize)
+                ? Math.floor((5 / 6) * textStyle.fontSize)
                 : undefined;
 
               return (
@@ -176,6 +166,7 @@ function PublicationText(props: PublicationTextProps) {
                   {...props}
                 >
                   {word.replaceAll(marker, '')}
+                  {marker === '**' ? ' ' : ''}
                 </tspan>
               );
             }
@@ -288,6 +279,17 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
   const { bounding, setBounding, convertToPercent } = useBoundingBox(
     externalBoundingInPercent,
   );
+  const textStyle = {
+    ...acsOptions.textStyle,
+    fontSize: acsOptions.textStyle?.fontSize ?? 12,
+  };
+  const { lines, lineHeight } = useWrapSVGText({
+    text: value,
+    width: bounding.width - TEXT_PADDING * 2,
+    style: textStyle,
+  });
+  const textHeight = lines.length * lineHeight + TEXT_PADDING * 2;
+  const displayHeight = Math.max(bounding.height || 0, textHeight);
 
   function handleResize(bounding: Pick<BoundingBox, 'height' | 'width'>) {
     setBounding((prevBounding) => {
@@ -328,15 +330,15 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
 
   if (!viewerRef || !value) return null;
 
-  const { width, height = 'auto', x = 0, y = 0 } = bounding;
+  const { width = 'auto', x = 0, y = 0 } = bounding;
 
   if (isExportProcessStart) {
     return (
       <g transform={`translate(${x} ${y})`}>
         <PublicationText
-          text={value}
-          width={width}
-          textStyle={acsOptions.textStyle}
+          lines={lines}
+          lineHeight={lineHeight}
+          textStyle={textStyle}
         />
       </g>
     );
@@ -369,10 +371,11 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
   return (
     <>
       <ReactRnd
+        data-testid="publication-string-box"
         position={{ x, y }}
-        size={{ width: width || 'auto', height }}
+        size={{ width, height: displayHeight }}
         minWidth={100}
-        minHeight={50}
+        minHeight={Math.max(50, textHeight)}
         dragHandleClassName="handle"
         enableUserSelectHack={false}
         bounds={`#${viewerRef.id}`}
@@ -412,14 +415,15 @@ function DraggablePublicationString(props: DraggablePublicationStringProps) {
           y={y}
         >
           <svg
-            width={width || 'auto'}
-            height={height}
+            data-testid="publication-string"
+            width={width}
+            height={displayHeight}
             xmlns="http://www.w3.org/2000/svg"
           >
             <PublicationText
-              text={value}
-              width={width}
-              textStyle={acsOptions.textStyle}
+              lines={lines}
+              lineHeight={lineHeight}
+              textStyle={textStyle}
             />
           </svg>
         </ActionsButtonsPopover>
@@ -467,6 +471,8 @@ export function FloatPublicationString() {
       id,
       info: { nucleus },
     } = spectrum;
+    const value = publicationString[id];
+    if (!value) return null;
 
     return (
       <DraggablePublicationString
@@ -474,7 +480,7 @@ export function FloatPublicationString() {
         spectrum={spectrum}
         nucleus={nucleus}
         bounding={publicationStringBounding}
-        value={publicationString[id]}
+        value={value}
       />
     );
   });

@@ -157,6 +157,36 @@ test('Automatic ranges detection should work', async ({ page }) => {
   await Promise.all(testPromises);
 });
 
+test('Publication string is visible after automatic ranges detection', async ({
+  page,
+}) => {
+  const nmrium = await NmriumPage.create(page);
+  await nmrium.open1D();
+  await nmrium.clickTool('rangePicking');
+  await page.getByRole('button', { name: 'Auto ranges picking' }).click();
+  await expect(page.getByTestId('range')).toHaveCount(10);
+
+  await nmrium.getToolbarLocatorByTitle('Display publication string').click();
+  const publicationString = page.getByTestId('publication-string');
+  await expect(publicationString).toBeVisible();
+  await expect(publicationString).toHaveText(
+    '1H NMR (600 MHz): δ 1.77 (1H, br s), 1.95 (2H, t, J = 3.29 Hz), 2.33 (1H, m), 2.91 (1H, dt, J = 3.06, 2.47 Hz), 3.01 (4H, m), 3.84 (1H, ddd, J = 15.48, 6.68, 1.24 Hz), 4.04 (1H, d, J = 15.50 Hz), 6.01 (1H, ddd, J = 6.94, 1.47, 0.54 Hz), 6.34 (1H, dd, J = 9.02, 1.35 Hz), 7.30 (1H, m).',
+  );
+  await test.step('Hide and show the publication string', async () => {
+    await nmrium.getToolbarLocatorByTitle('Hide publication string').click();
+    await expect(publicationString).toBeHidden();
+    await nmrium.getToolbarLocatorByTitle('Display publication string').click();
+    await expect(publicationString).toBeVisible();
+  });
+
+  await test.step('Hide the publication string when all ranges are removed', async () => {
+    await nmrium.getToolbarLocatorByTitle('Delete All Ranges').click();
+    await page.getByRole('button', { name: 'Yes', exact: true }).click();
+    await expect(page.getByTestId('range')).toHaveCount(0);
+    await expect(publicationString).toBeHidden();
+  });
+});
+
 test('Multiplicity should be visible', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Open FULL ethylbenzene 2D spectrum', async () => {
