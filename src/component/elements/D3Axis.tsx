@@ -1,15 +1,12 @@
 import type { Ref, SVGAttributes } from 'react';
 import type { UseLinearPrimaryTicksResult } from 'react-d3-utils';
-import type {
-  SVGStyledLineProps,
-  SVGStyledLineUserConfig,
-  SVGStyledTextProps,
-} from 'react-science/ui';
+import type { SVGStyledLineUserConfig } from 'react-science/ui';
 import { SVGStyledLine, SVGStyledText } from 'react-science/ui';
 
 import { useTicksConfig } from '../hooks/use_ticks_config.ts';
+import type { AxisPosition } from '../utility/getAxisLayout.ts';
+import { getAxisLayout } from '../utility/getAxisLayout.ts';
 
-type AxisPosition = 'top' | 'bottom' | 'left' | 'right';
 interface BaseD3AxisProps {
   tickLength?: number;
   axisPosition: AxisPosition;
@@ -60,8 +57,10 @@ function getTickTransform(position: number, isVertical: boolean) {
 }
 
 function BaseLine(props: BaseLineProps) {
-  const { axisPosition, tickLength = 6, scale } = props;
-  const { primaryTicks } = useTicksConfig();
+  const { axisPosition, scale } = props;
+  const axis = useTicksConfig();
+  const { primaryTicks } = axis;
+  const { tickLength } = getAxisLayout(axis, props);
 
   const [x1, x2] = scale.range();
   const sign = ['left', 'top'].includes(axisPosition) ? -1 : 1;
@@ -84,41 +83,14 @@ function BaseLine(props: BaseLineProps) {
 }
 
 function Tickets(props: TicketsProps) {
-  const { ticks, tickLength = 6, axisPosition } = props;
-  const { primaryTicks, secondaryTicks } = useTicksConfig();
+  const { ticks, axisPosition } = props;
+  const axis = useTicksConfig();
+  const { primaryTicks, secondaryTicks } = axis;
+  const { tickText, primaryLine, secondaryLine } = getAxisLayout(axis, props);
 
   if (!Array.isArray(ticks) || ticks.length === 0) return null;
 
   const isVertical = isVerticalAxis(axisPosition);
-  const positionSign =
-    axisPosition === 'left' || axisPosition === 'top' ? -1 : 1;
-
-  const positionTextConfig: SVGStyledTextProps = isVertical
-    ? {
-        x: positionSign * (tickLength + 3),
-        dy: '0.32em',
-        textAnchor: positionSign === -1 ? 'end' : 'start',
-      }
-    : {
-        y: positionSign * (tickLength + 3),
-        dy: positionSign === -1 ? '0em' : '0.71em',
-        textAnchor: 'middle',
-      };
-
-  const positionPrimaryLineConfig: SVGStyledLineProps = isVertical
-    ? { x1: positionSign * tickLength, x2: 0 }
-    : { y1: positionSign * tickLength, y2: 0 };
-
-  const secondaryTickLength = tickLength / 2;
-  const positionSecondaryLineConfig: SVGStyledLineProps = isVertical
-    ? {
-        x1: positionSign * secondaryTickLength,
-        x2: 0,
-      }
-    : {
-        y1: positionSign * secondaryTickLength,
-        y2: 0,
-      };
   const secondaryTickPositions =
     secondaryTicks.enabled && ticks.length > 1
       ? getSecondaryTickPositions(ticks)
@@ -132,7 +104,7 @@ function Tickets(props: TicketsProps) {
             <line
               data-testid="axis-primary-tick-line"
               transform={getTickTransform(position, isVertical)}
-              {...positionPrimaryLineConfig}
+              {...primaryLine}
               stroke="black"
               {...primaryTicks.tickStyle}
             />
@@ -142,7 +114,7 @@ function Tickets(props: TicketsProps) {
               fill="black"
               data-testid="axis-primary-tick-label"
               {...primaryTicks.textStyle}
-              {...positionTextConfig}
+              {...tickText}
             >
               {label}
             </SVGStyledText>
@@ -155,7 +127,7 @@ function Tickets(props: TicketsProps) {
           data-testid="axis-secondary-tick-line"
           key={`secondary-${secondaryTickPosition}`}
           transform={getTickTransform(secondaryTickPosition, isVertical)}
-          {...positionSecondaryLineConfig}
+          {...secondaryLine}
           stroke="black"
           {...secondaryTicks.tickStyle}
         />
@@ -243,11 +215,13 @@ export function D3Axis(props: D3AxisProps) {
   } = props;
 
   const isVertical = isVerticalAxis(axisPosition);
+  const axis = useTicksConfig();
+  const { fontSize } = getAxisLayout(axis, { axisPosition, tickLength });
 
   return (
     <g
       ref={ref}
-      fontSize="10"
+      fontSize={fontSize}
       textAnchor={isVertical ? 'start' : 'middle'}
       {...otherProps}
     >

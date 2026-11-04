@@ -19,60 +19,55 @@ export function useTextMetrics(options: UseTextMetricsOptions = {}) {
     fontWeight = 'normal',
     debugCanvasWidth,
   } = options;
-  const canvas = useCanvas(debugCanvasWidth);
   const size = typeof fontSize === 'number' ? `${fontSize}px` : fontSize;
+  const font = `${fontStyle} ${fontWeight} ${size} Arial`;
 
-  // TODO: ctx should probably be in a ref. It is wrong to mutate it during rendering.
-  const ctx = canvas.getContext('2d');
-  if (ctx) ctx.font = `${fontStyle} ${fontWeight} ${size} Arial`;
+  const { context, getTextWidth, getTextHeight } = useMemo(() => {
+    // Configure a new context rather than mutate one used by a previous render.
+    const canvas = document.createElement('canvas');
+    if (debugCanvasWidth) {
+      canvas.width = debugCanvasWidth;
+      canvas.height = 450;
+    }
+    const context = canvas.getContext('2d');
+    if (!context) throw new Error('Could not create text metrics canvas');
+    context.font = font;
 
-  function getTextWidth(text: string): number {
-    return measureTextWidth(ctx, text);
-  }
+    const metrics = context.measureText('M');
+    const height =
+      metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
+
+    return {
+      context,
+      getTextWidth: (text: string) =>
+        Math.round(context.measureText(text).width),
+      getTextHeight: () => height,
+    };
+  }, [debugCanvasWidth, font]);
+
+  useEffect(() => {
+    if (!debugCanvasWidth) return;
+
+    const { canvas } = context;
+    Object.assign(canvas.style, {
+      position: 'absolute',
+      bottom: '0',
+      left: '0',
+      zIndex: '100',
+      opacity: '50%',
+      background: 'white',
+    });
+    document.body.append(canvas);
+    return () => canvas.remove();
+  }, [context, debugCanvasWidth]);
 
   return {
     getTextWidth,
+    getTextHeight,
     /**
      * @deprecated Use only for debug mode
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    ctx,
+    ctx: context,
   };
-}
-
-function useCanvas(width: number | undefined) {
-  const canvas = useMemo(() => {
-    const canvas = document.createElement('canvas');
-    if (width) {
-      canvas.width = width;
-      canvas.height = 450;
-    }
-    canvas.style.position = 'absolute';
-    canvas.style.bottom = '0';
-    canvas.style.left = '0';
-    canvas.style.zIndex = '100';
-    canvas.style.opacity = '50%';
-    canvas.style.background = 'white';
-    return canvas;
-  }, [width]);
-
-  useEffect(() => {
-    if (!width) return;
-
-    document.body.append(canvas);
-
-    return () => {
-      canvas.remove();
-    };
-  }, [canvas, width]);
-
-  return canvas;
-}
-
-function measureTextWidth(
-  context: CanvasRenderingContext2D | null,
-  text: string,
-) {
-  if (!context) return 0;
-  return Math.round(context.measureText(text).width);
 }

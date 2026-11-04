@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface RenderDetectorProps {
   onRender: () => void;
@@ -9,21 +9,30 @@ interface RenderDetectorProps {
 
 export function RenderDetector(props: RenderDetectorProps) {
   const { onRender, style, children } = props;
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleRenderComplete = () => {
-      // eslint-disable-next-line @eslint-react/web-api-no-leaked-timeout
-      setTimeout(() => {
-        onRender();
-      }, 250);
-    };
+    const element = ref.current;
+    if (!element) return;
+    let active = true;
+    let animationFrameId = 0;
 
-    const animationFrameId = requestAnimationFrame(handleRenderComplete);
+    void element.ownerDocument.fonts.ready.then(() => {
+      if (!active) return;
+      animationFrameId = requestAnimationFrame(() => {
+        onRender();
+      });
+    });
 
     return () => {
+      active = false;
       cancelAnimationFrame(animationFrameId);
     };
   }, [onRender]);
 
-  return <div style={style}>{children}</div>;
+  return (
+    <div ref={ref} style={style}>
+      {children}
+    </div>
+  );
 }

@@ -10,6 +10,7 @@ import { useCheckExportStatus } from '../hooks/useViewportSize.tsx';
 import { axisUnitToLabel, useDirectAxisUnit } from '../hooks/use_axis_unit.ts';
 import { useGridline2DConfig } from '../hooks/use_gridlines_config.ts';
 import { useTicksConfig } from '../hooks/use_ticks_config.ts';
+import { getAxisLayout } from '../utility/getAxisLayout.ts';
 
 import { useScale2DX } from './utilities/scale.js';
 
@@ -63,7 +64,7 @@ function DirectAxis2D(props: DirectAxis2DProps) {
       primaryGridProps={gridConfig.primary.lineStyle}
       secondaryGridProps={gridConfig.secondary.lineStyle}
     >
-      <Unit width={width - 60} axis={axis} />
+      <Unit width={width - margin.right} axis={axis} />
     </D3Axis>
   );
 }
@@ -95,16 +96,11 @@ interface UnitLabelProps {
 }
 function UnitLabel(props: UnitLabelProps) {
   const { width, children } = props;
-  const { labelStyle } = useTicksConfig();
+  const axis = useTicksConfig();
+  const { labelStyle } = axis;
+  const { labelText } = getAxisLayout(axis);
   return (
-    <SVGStyledText
-      fill="black"
-      x={width - 60}
-      y="20"
-      dy="0.71em"
-      textAnchor="end"
-      {...labelStyle}
-    >
+    <SVGStyledText fill="black" x={width} {...labelText} {...labelStyle}>
       {children}
     </SVGStyledText>
   );
