@@ -11,6 +11,7 @@ import { useMemo } from 'react';
 import { getDefaultPredictionOptions } from '../../data/PredictionManager.js';
 import { usePreferences } from '../context/PreferencesContext.js';
 import {
+  assignmentSummaryDefaultValues,
   databaseDefaultValues,
   getIntegralDefaultValues,
   getMatrixGenerationDefaultValues,
@@ -31,7 +32,8 @@ type Panel =
   | 'database'
   | 'multipleSpectraAnalysis'
   | 'matrixGeneration'
-  | 'prediction';
+  | 'prediction'
+  | 'assignmentSummary';
 
 function getDefaultPreferences(panelKey: Panel, nucleus?: string) {
   switch (panelKey) {
@@ -53,6 +55,8 @@ function getDefaultPreferences(panelKey: Panel, nucleus?: string) {
       return getDefaultPredictionOptions();
     case 'matrixGeneration':
       return getMatrixGenerationDefaultValues(nucleus);
+    case 'assignmentSummary':
+      return assignmentSummaryDefaultValues;
 
     default:
       return {};
@@ -62,7 +66,11 @@ function getDefaultPreferences(panelKey: Panel, nucleus?: string) {
 function joinWithNucleusPreferences(
   data: PanelsPreferences[Exclude<
     Panel,
-    'database' | 'matrixGeneration' | 'multipleSpectraAnalysis' | 'prediction'
+    | 'assignmentSummary'
+    | 'database'
+    | 'matrixGeneration'
+    | 'multipleSpectraAnalysis'
+    | 'prediction'
   >],
   nucleus: string,
   returnOnlyNucleusPreferences = false,
@@ -110,6 +118,8 @@ function getPanelPreferences(
     case 'database':
     case 'prediction':
       return panelPreferences;
+    case 'assignmentSummary':
+      return { ...assignmentSummaryDefaultValues, ...panelPreferences };
     default:
       return nucleus
         ? joinWithNucleusPreferences(
@@ -129,9 +139,9 @@ export function usePanelPreferences<T extends Panel>(
   : T extends 'multipleSpectraAnalysis'
     ? MultipleSpectraAnalysisPreferences
     : WorkspacePanelPreferences[T];
-export function usePanelPreferences<T extends 'database' | 'prediction'>(
-  panelKey: T,
-): WorkspacePanelPreferences[T];
+export function usePanelPreferences<
+  T extends 'database' | 'prediction' | 'assignmentSummary',
+>(panelKey: T): WorkspacePanelPreferences[T];
 
 export function usePanelPreferences<T extends Panel>(
   panelKey: T,

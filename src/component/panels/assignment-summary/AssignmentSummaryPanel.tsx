@@ -3,14 +3,18 @@ import { Molecule } from 'openchemlib';
 import type { GroupedDiaID } from 'openchemlib-utils';
 import { TopicMolecule } from 'openchemlib-utils';
 import { useMemo, useState } from 'react';
+import { FaHashtag } from 'react-icons/fa';
 import { PanelHeader, Toolbar } from 'react-science/ui';
 
 import type { StateMoleculeExtended } from '../../../data/molecules/Molecule.js';
 import { useChartData } from '../../context/ChartContext.js';
+import { usePreferences } from '../../context/PreferencesContext.js';
 import { EmptyText } from '../../elements/EmptyText.js';
 import Select from '../../elements/Select.js';
 import type { ToolbarPopoverMenuItem } from '../../elements/ToolbarPopoverItem.js';
 import { ToolbarPopoverItem } from '../../elements/ToolbarPopoverItem.js';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
+import { booleanToString } from '../../utility/booleanToString.js';
 import { TablePanel } from '../extra/BasicPanelStyle.js';
 
 import { AssignmentsExportModal } from './AssignmentsExportModal.js';
@@ -163,8 +167,20 @@ function ExpansionMenu(props: ExpansionMenuProps) {
 
 export function AssignmentSummaryPanel() {
   const { molecules } = useChartData();
+  const { dispatch } = usePreferences();
+  const { showAtomNumbers } = usePanelPreferences('assignmentSummary');
   const { moleculeAssignments, activeAssignment, selectMolecule } =
     useMoleculeAssignments(molecules);
+
+  function toggleAtomNumbers() {
+    dispatch({
+      type: 'SET_PANELS_PREFERENCES',
+      payload: {
+        key: 'assignmentSummary',
+        value: { showAtomNumbers: !showAtomNumbers },
+      },
+    });
+  }
 
   if (!activeAssignment) {
     return <EmptyText text="No molecules available" />;
@@ -175,6 +191,8 @@ export function AssignmentSummaryPanel() {
       moleculeAssignments={moleculeAssignments}
       activeAssignment={activeAssignment}
       onSelectMolecule={selectMolecule}
+      showAtomNumbers={showAtomNumbers}
+      onToggleAtomNumbers={toggleAtomNumbers}
     />
   );
 }
@@ -183,10 +201,18 @@ interface AssignmentSummaryProps {
   moleculeAssignments: MoleculeAssignmentData[];
   activeAssignment: MoleculeAssignmentData;
   onSelectMolecule: (moleculeId: string) => void;
+  showAtomNumbers: boolean;
+  onToggleAtomNumbers: () => void;
 }
 
 function AssignmentSummary(props: AssignmentSummaryProps) {
-  const { moleculeAssignments, activeAssignment, onSelectMolecule } = props;
+  const {
+    moleculeAssignments,
+    activeAssignment,
+    onSelectMolecule,
+    showAtomNumbers,
+    onToggleAtomNumbers,
+  } = props;
   const expansion = useAssignmentExpansion(activeAssignment);
   const { molecule } = activeAssignment;
 
@@ -194,6 +220,12 @@ function AssignmentSummary(props: AssignmentSummaryProps) {
     <TablePanel>
       <PanelHeader>
         <Toolbar>
+          <Toolbar.Item
+            icon={<FaHashtag />}
+            tooltip={`${booleanToString(!showAtomNumbers)} atom numbers column`}
+            active={showAtomNumbers}
+            onClick={onToggleAtomNumbers}
+          />
           <AssignmentsExportModal
             groups={activeAssignment.groups}
             expandedGroups={expansion.expandedGroups}
@@ -222,6 +254,7 @@ function AssignmentSummary(props: AssignmentSummaryProps) {
           groups={activeAssignment.groups}
           expandedGroups={expansion.expandedGroups}
           onToggleRow={expansion.toggleRow}
+          showAtomNumbers={showAtomNumbers}
         />
       </div>
     </TablePanel>
