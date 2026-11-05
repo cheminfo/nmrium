@@ -20,7 +20,11 @@ interface UsePathOptions extends BaseProps {
 
 function usePath(data: NmrData1D, options: UsePathOptions) {
   const { height = 100, verticalMargin = 10 } = options;
-  const { mode } = useChartData();
+  const {
+    mode,
+    view: { slicingScaleRatio },
+    toolOptions: { selectedTool },
+  } = useChartData();
   const scaleX = useScale2DX();
   const spectrum = useSpectrum() as Spectrum2D;
 
@@ -30,6 +34,7 @@ function usePath(data: NmrData1D, options: UsePathOptions) {
 
   const scaleY = getSliceYScale(spectrum.data, height, mode, {
     margin: verticalMargin,
+    scaleRatio: selectedTool === 'slicing' ? slicingScaleRatio : 1,
   });
 
   const pathBuilder = new SVGPathBuilder();

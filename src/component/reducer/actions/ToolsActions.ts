@@ -104,6 +104,7 @@ function resetTool(draft: Draft<State>, options: ResetToolOptions = {}) {
     toolId,
     tempRollback,
   } = options;
+
   // reset temp range
   if (resetFiltersOptionPanel) {
     draft.toolOptions.selectedOptionPanel = null;
@@ -141,6 +142,12 @@ interface ActivateToolOptions {
   tempRollback?: boolean;
 }
 
+function initializeToolState(draft: Draft<State>, toolId: Tool) {
+  if (toolId === 'slicing') {
+    draft.view.slicingScaleRatio = 1;
+  }
+}
+
 //utility
 export function activateTool(
   draft: Draft<State>,
@@ -167,6 +174,7 @@ export function activateTool(
     draft.toolOptions.data.activeFilterID = null;
   } else {
     draft.toolOptions.selectedTool = toolId;
+    initializeToolState(draft, toolId);
     if (Tools[toolId]?.hasOptionPanel) {
       draft.toolOptions.selectedOptionPanel = toolId;
     }
@@ -292,6 +300,11 @@ export function handleZoom(draft: Draft<State>, action: ZoomAction) {
 
   switch (displayerMode) {
     case '2D': {
+      if (selectedTool === 'slicing') {
+        draft.view.slicingScaleRatio *= scaleRatio;
+        return;
+      }
+
       if (trackID === 'MAIN') {
         // change the vertical scale for traces in 2D phase correction
         if (selectedTool === 'phaseCorrectionTwoDimensions') {
