@@ -212,7 +212,13 @@ export function BrushTracker2D({ children }: Required<PropsWithChildren>) {
       const isMouseOver1DTrace = trackID !== 'MAIN';
       const isTraceZoomActive =
         selectedTool === 'phaseCorrectionTwoDimensions' && !shiftKey;
-      if (isZoomWithScroll || isMouseOver1DTrace || isTraceZoomActive) {
+      const isSlicingTool = selectedTool === 'slicing';
+      if (
+        isSlicingTool ||
+        isZoomWithScroll ||
+        isMouseOver1DTrace ||
+        isTraceZoomActive
+      ) {
         dispatch({
           type: 'SET_ZOOM',
           payload: { options: { ...options, invertScroll }, trackID },
