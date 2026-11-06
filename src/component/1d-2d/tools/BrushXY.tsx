@@ -141,6 +141,7 @@ export default function BrushXY(props: BrushXYProps) {
       width: finalWidth,
       height: finalHeight,
       ...brushDetectionOptions,
+      axis,
     },
   );
 

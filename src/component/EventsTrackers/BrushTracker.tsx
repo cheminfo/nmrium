@@ -508,7 +508,13 @@ export function detectBrushing(
   coordination: BrushCoordination,
   options: DetectBrushingOptions,
 ): DetectBrushingResult {
-  const { width, height, thresholdFormat, thresholdAxis = 'both' } = options;
+  const {
+    width,
+    height,
+    thresholdFormat,
+    thresholdAxis = 'both',
+    axis = 'XY',
+  } = options;
   const { startX: x1, endX: x2, startY: y1, endY: y2 } = coordination;
   const startX = Math.min(x1, x2);
   const endX = Math.max(x1, x2);
@@ -542,7 +548,7 @@ export function detectBrushing(
     xThreshold,
     yThreshold,
   };
-  if (thresholdAxis === 'y') {
+  if (axis === 'XY' && thresholdAxis === 'y') {
     if (yDiff >= yThreshold && yThreshold > 0) {
       return {
         type: 'XY',
@@ -567,7 +573,7 @@ export function detectBrushing(
       ...common,
     };
   }
-  if (thresholdAxis === 'x') {
+  if (axis === 'XY' && thresholdAxis === 'x') {
     if (xDiff >= xThreshold && xThreshold > 0) {
       return {
         type: 'XY',
@@ -593,7 +599,7 @@ export function detectBrushing(
     };
   }
 
-  if (yDiff < yThreshold) {
+  if (axis === 'X' || (axis === 'XY' && yDiff < yThreshold)) {
     return {
       type: 'X',
       startX,
@@ -606,7 +612,7 @@ export function detectBrushing(
     };
   }
 
-  if (xDiff < xThreshold) {
+  if (axis === 'Y' || xDiff < xThreshold) {
     return {
       type: 'Y',
       startX: 0,
