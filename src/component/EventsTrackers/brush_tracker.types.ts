@@ -49,6 +49,47 @@ export type OnZoom = (options: ZoomOptions) => void;
 export type OnBrush = (state: BrushTrackerData) => void;
 type OnBrushEnd = OnBrush;
 
+interface DragCoordination {
+  /**
+  x coordinate relative to the chart container
+  */
+  x: number;
+  /**
+  y coordinate relative to the chart container
+  */
+  y: number;
+  /**
+  x coordinate relative to the chart container at pointerdown
+  */
+  startX: number;
+  /**
+  y coordinate relative to the chart container at pointerdown
+  */
+  startY: number;
+}
+
+export interface DragTrackerEvent extends DragCoordination {
+  /**
+  Native pointer event that triggered this event
+  */
+  domEvent: globalThis.PointerEvent;
+  mouseButton: MouseButton;
+  shiftKey: boolean;
+  altKey: boolean;
+  ctrlKey: boolean;
+  isDefaultPrevented(): boolean;
+  isPropagationStopped(): boolean;
+  preventDefault(): void;
+  /**
+   * Claim the current gesture as a drag.
+   * Prevents the default brush behavior for the rest of the gesture.
+   */
+  stopPropagation(): void;
+}
+
+type OnDrag = (event: DragTrackerEvent) => void;
+type OnDragEnd = OnDrag;
+
 export type BaseDetectBrushingOptions = AdvanceOmit<
   DetectBrushingOptions,
   'width' | 'height'
@@ -60,6 +101,8 @@ export interface BrushTrackerProps {
   style?: CSSProperties;
   onBrushEnd?: OnBrushEnd;
   onBrush?: OnBrush;
+  onDrag?: OnDrag;
+  onDragEnd?: OnDragEnd;
   onZoom?: OnZoom;
   onDoubleClick?: OnDoubleClick;
   onClick?: OnClick;

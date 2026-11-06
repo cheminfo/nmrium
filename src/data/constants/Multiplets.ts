@@ -7,9 +7,9 @@ interface MultipletDefinition {
 }
 
 export const multiplets: MultipletDefinition[] = MultiplicityPatterns.map(
-  ({ label, value, acs, multiplicity }) => ({
+  ({ label, value, acs = value, multiplicity }) => ({
     label,
-    value: acs || value,
+    value: acs,
     multiplicity,
   }),
 );
