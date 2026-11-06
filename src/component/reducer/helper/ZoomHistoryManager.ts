@@ -3,6 +3,8 @@ import type { Draft } from 'immer';
 import type { BrushAxis } from '../../EventsTrackers/brush_tracker.types.ts';
 import type { State } from '../Reducer.js';
 
+import { getSpectrum } from './getSpectrum.js';
+
 interface HistoryItem {
   xDomain: number[];
   yDomain: number[];
@@ -117,11 +119,31 @@ export function addToBrushHistory(
   }
 }
 
-export function restoreLastZoomDomain(draft: Draft<State>) {
+interface RestoreLastZoomDomainOptions {
+  /**
+   * Set to true when the displayed spectrum switched between FID and FT.
+   * A FID <-> FT transition regenerates the x axis, so any zoom domain stored
+   * for the previous state is expressed in a different scale and must be
+   * discarded instead of restored (otherwise the previous zoom is applied to
+   * the new axis, e.g. FFT keeps the FID zoom range and only flips the scale).
+   */
+  isFtStateChanged?: boolean;
+}
+
+export function restoreLastZoomDomain(
+  draft: Draft<State>,
+  options: RestoreLastZoomDomainOptions = {},
+) {
   const zoomHistory = zoomHistoryManager(
     draft.zoom.history,
     draft.view.spectra.activeTab,
   );
+
+  if (options.isFtStateChanged) {
+    zoomHistory.clear();
+    return false;
+  }
+
   const zoomValue = zoomHistory.getLast();
 
   if (!zoomValue) {
@@ -132,4 +154,22 @@ export function restoreLastZoomDomain(draft: Draft<State>) {
   draft.yDomain = zoomValue.yDomain;
 
   return true;
+}
+
+/**
+ * Restore the last zoom domain, unless the active spectrum switched between FID
+ * and FT since `previousIsFt` was captured. This is the shared criterion for
+ * every action that re-processes a spectrum (processings panel, legacy filter
+ * panel, FFT): a FID <-> FT transition regenerates the x axis, so the stored
+ * zoom is stale and the freshly computed full domain must be kept instead.
+ */
+export function restoreLastZoomUnlessDomainChanged(
+  draft: Draft<State>,
+  previousIsFt: boolean,
+) {
+  const currentIsFt = getSpectrum(draft)?.info.isFt ?? previousIsFt;
+
+  return restoreLastZoomDomain(draft, {
+    isFtStateChanged: previousIsFt !== currentIsFt,
+  });
 }

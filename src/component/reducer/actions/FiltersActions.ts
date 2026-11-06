@@ -52,7 +52,7 @@ import {
   getDefaultTwoDimensionsPhaseCorrectionTraceOptions,
   getInitialState,
 } from '../Reducer.js';
-import { restoreLastZoomDomain } from '../helper/ZoomHistoryManager.js';
+import { restoreLastZoomUnlessDomainChanged } from '../helper/ZoomHistoryManager.js';
 import { findStrongestPeak } from '../helper/findStrongestPeak.js';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum.js';
 import getRange from '../helper/getRange.js';
@@ -1658,6 +1658,10 @@ export function handleEnableFilter(
   const { id, enabled } = action.payload;
   const datum = draft.data[activeSpectrum.index];
 
+  // `enableFilter` reprocesses the spectrum in place, so capture the current
+  // FID/FT state before to detect a FID <-> FT transition.
+  const wasFt = datum.info.isFt;
+
   //apply filter into the spectrum
   if (isSpectrum1D(datum)) {
     Filters1DManager.enableFilter(datum, { id, enabled });
@@ -1674,7 +1678,7 @@ export function handleEnableFilter(
   resetSelectedTool(draft);
   setDomain(draft);
   setMode(draft);
-  restoreLastZoomDomain(draft);
+  restoreLastZoomUnlessDomainChanged(draft, wasFt);
 }
 
 function deleteFilter(datum: Spectrum, id?: string) {
