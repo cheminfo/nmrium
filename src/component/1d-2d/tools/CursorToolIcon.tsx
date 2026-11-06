@@ -3,6 +3,11 @@ import { createElement } from 'react';
 import { TbRulerMeasure } from 'react-icons/tb';
 import { match } from 'ts-pattern';
 
+import { useTracesSpectra } from '../../2d/useTracesSpectra.js';
+import {
+  getInteractive2DDimensionLayout,
+  getLayoutID,
+} from '../../2d/utilities/DimensionLayout.js';
 import { useMouseTracker } from '../../EventsTrackers/MouseTracker.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useCore } from '../../context/CoreContext.tsx';
@@ -70,21 +75,30 @@ export function CursorToolIcon({
   offset = 25,
   size = 25,
 }: CursorHeaderProps) {
+  const state = useChartData();
   const {
     width,
     height,
     margin,
     toolOptions: { selectedTool },
     processingOperators: { selected: selectedProcessingTool },
-  } = useChartData();
+    displayerMode,
+  } = state;
   const core = useCore();
   const isExperimental = useCheckExperimentalFeature();
   const mousePosition = useMouseTracker();
+  const traces = useTracesSpectra();
   const { isPrimary, shiftKey } = useKeyModifiers();
   if (
     !mousePosition ||
     !width ||
     !height ||
+    (displayerMode === '2D'
+      ? !getLayoutID(getInteractive2DDimensionLayout(state, traces), {
+          startX: mousePosition.x,
+          startY: mousePosition.y,
+        })
+      : mousePosition.x < margin.left || mousePosition.y < margin.top) ||
     mousePosition.x > width - margin.right ||
     mousePosition.y > height - margin.bottom
   ) {

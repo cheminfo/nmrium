@@ -45,26 +45,23 @@ interface DimensionBorder {
   endY?: number;
 }
 
-const defaultDimensionBorder: DimensionBorder = {
-  startX: 0,
-  startY: 0,
-};
-
 interface CrossLinePointerProps {
   axis?: BrushAxis;
   dimensionBorder?: DimensionBorder;
   width?: number;
   height?: number;
   margin?: Margin;
+  fullView?: boolean;
 }
 
 function CrossLinePointer(props: CrossLinePointerProps) {
   const {
     axis = 'XY',
-    dimensionBorder = defaultDimensionBorder,
+    dimensionBorder,
     width: externalWidth,
     height: externalHeight,
     margin: externalMargin,
+    fullView = false,
   } = props;
 
   const {
@@ -77,15 +74,12 @@ function CrossLinePointer(props: CrossLinePointerProps) {
   const brushState = useBrushTracker();
 
   const margin = externalMargin ?? innerMargin;
-  const finalWidth = externalWidth || width - margin.left - margin.right;
-  const finalHeight = externalHeight || height - margin.top - margin.bottom;
-
-  const {
-    startX,
-    startY,
-    endX = finalWidth,
-    endY = finalHeight,
-  } = dimensionBorder;
+  const finalWidth = externalWidth ?? width - margin.left - margin.right;
+  const finalHeight = externalHeight ?? height - margin.top - margin.bottom;
+  const startX = dimensionBorder?.startX ?? margin.left;
+  const startY = dimensionBorder?.startY ?? margin.top;
+  const endX = dimensionBorder?.endX ?? startX + finalWidth;
+  const endY = dimensionBorder?.endY ?? startY + finalHeight;
 
   const visibility = toolsVisibility[selectedTool];
 
@@ -109,32 +103,41 @@ function CrossLinePointer(props: CrossLinePointerProps) {
     return null;
   }
 
+  const left = fullView ? 0 : startX;
+  const top = fullView ? 0 : startY;
+
   return (
     <div
       key="crossLine"
       style={{
-        willChange: 'transform',
         cursor: 'crosshair',
-        transform: `translate(${-width + position.x}px, ${
-          -height + position.y
-        }px)`,
         position: 'absolute',
-        top: 0,
-        left: 0,
+        top,
+        left,
         pointerEvents: 'none',
-        overflow: 'visible',
-        width: 2 * width,
-        height: 2 * height,
+        overflow: 'hidden',
+        width: fullView ? width : endX - startX,
+        height: fullView ? height : endY - startY,
         zIndex: 10,
       }}
     >
-      <svg width={2 * width} height={2 * height}>
+      <svg
+        width={2 * width}
+        height={2 * height}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          transform: `translate(${position.x - left - width}px, ${position.y - top - height}px)`,
+          willChange: 'transform',
+        }}
+      >
         {(axis === 'X' || axis === 'XY') && (
           <Line
             x1={width}
             y1="0"
             x2={width}
-            y2={height * 2}
+            y2={2 * height}
             key="vertical_line"
           />
         )}
@@ -142,7 +145,7 @@ function CrossLinePointer(props: CrossLinePointerProps) {
           <Line
             x1="0"
             y1={height}
-            x2={width * 2}
+            x2={2 * width}
             y2={height}
             key="horizontal_line"
           />
