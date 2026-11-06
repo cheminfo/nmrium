@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { isSpectrum1D, isSpectrum2D } from '@zakodium/nmrium-core';
+import clamp from 'lodash/clamp.js';
 import type { CSSProperties } from 'react';
 
 import { useScale2DX } from '../../2d/utilities/scale.js';
@@ -81,11 +82,6 @@ interface BrushCoordinates {
   endX?: number;
   endY?: number;
 }
-const defaultDimensionBorder: BrushCoordinates = {
-  startX: 0,
-  startY: 0,
-};
-
 interface BrushXYProps {
   axis: BrushAxis;
   dimensionBorder?: BrushCoordinates;
@@ -99,7 +95,7 @@ interface BrushXYProps {
 export default function BrushXY(props: BrushXYProps) {
   const {
     axis = 'XY',
-    dimensionBorder = defaultDimensionBorder,
+    dimensionBorder,
     width: widthProps,
     height: heightProps,
     margin: externalMargin,
@@ -118,42 +114,27 @@ export default function BrushXY(props: BrushXYProps) {
   const { step, mouseButton } = brushTracker;
   let { startX, endX, startY, endY } = brushTracker;
   const { isPrimary } = useKeyModifiers();
+  const finalWidth = widthProps ?? width - margin.left - margin.right;
+  const finalHeight = heightProps ?? height - margin.top - margin.bottom;
+  const minX = dimensionBorder?.startX ?? margin.left;
+  const minY = dimensionBorder?.startY ?? margin.top;
+  const maxX = dimensionBorder?.endX ?? minX + finalWidth;
+  const maxY = dimensionBorder?.endY ?? minY + finalHeight;
 
   if (
     !isBrushAllowed(selectedTool, isPrimary) ||
     step !== 'brushing' ||
     mouseButton !== 'main' ||
-    !dimensionBorder ||
-    (dimensionBorder.startX && startX < dimensionBorder.startX) ||
-    (dimensionBorder.startY && startY < dimensionBorder.startY) ||
-    ((dimensionBorder.endX && Math.sign(endX - startX) === 1
-      ? endX > dimensionBorder.endX
-      : endX < dimensionBorder.startX) &&
-      (dimensionBorder.endX &&
-      dimensionBorder.endY &&
-      Math.sign(endY - startY) === 1
-        ? endY > dimensionBorder.endY
-        : endY < dimensionBorder.startY))
+    startX < minX ||
+    startX > maxX ||
+    startY < minY ||
+    startY > maxY
   ) {
     return null;
   }
 
-  const finalWidth = widthProps || width - margin.left - margin.right;
-  const finalHeight = heightProps || height - margin.top - margin.bottom;
-
-  endX =
-    dimensionBorder.endX && endX > dimensionBorder.endX
-      ? dimensionBorder.endX
-      : dimensionBorder.startX && endX < dimensionBorder.startX
-        ? dimensionBorder.startX
-        : endX;
-
-  endY =
-    dimensionBorder.endY && endY > dimensionBorder.endY
-      ? dimensionBorder.endY
-      : dimensionBorder.startY && endY < dimensionBorder.startY
-        ? dimensionBorder.startY
-        : endY;
+  endX = clamp(endX, minX, maxX);
+  endY = clamp(endY, minY, maxY);
   const brush = detectBrushing(
     { startX, startY, endX, endY },
     {
@@ -182,10 +163,10 @@ export default function BrushXY(props: BrushXYProps) {
 
   if (scaleX === 0 || scaleY === 0) return;
 
-  startX = axis === 'Y' ? margin.left : brush.startX || margin.left;
-  startY = axis === 'X' ? margin.top : brush.startY || margin.top;
-  endX = axis === 'Y' ? finalWidth : brush.endX || finalWidth;
-  endY = axis === 'X' ? finalHeight : brush.endY || finalHeight;
+  startX = axis === 'Y' || brush.type === 'Y' ? minX : brush.startX;
+  startY = axis === 'X' || brush.type === 'X' ? minY : brush.startY;
+  endX = axis === 'Y' || brush.type === 'Y' ? maxX : brush.endX;
+  endY = axis === 'X' || brush.type === 'X' ? maxY : brush.endY;
 
   const invScaleX = 1 / scaleX;
   const invScaleY = 1 / scaleY;

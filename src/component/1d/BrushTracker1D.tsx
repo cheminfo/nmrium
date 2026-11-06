@@ -74,8 +74,17 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
     view,
     width,
     height,
+    margin,
   } = state;
   const activeTab = view.spectra.activeTab;
+  const brushBounds = [
+    {
+      startX: margin.left,
+      startY: margin.top,
+      endX: width - margin.right,
+      endY: height - margin.bottom,
+    },
+  ];
   const isClickDebounced = clickDebounceTools.has(selectedTool);
   const brushStartRef = useRef<number | null>(null);
   const spectrum = useSpectrum();
@@ -499,6 +508,7 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
   if (inset) {
     return (
       <BrushTracker
+        brushBounds={brushBounds}
         onBrush={handleInsetBrush}
         onBrushEnd={handleInsetBrushEnd}
         onDoubleClick={handleInsetOnDoubleClick}
@@ -520,6 +530,7 @@ export function BrushTracker1D({ children }: Required<PropsWithChildren>) {
   return (
     <>
       <BrushTracker
+        brushBounds={brushBounds}
         clickTriggerMode={isClickDebounced ? 'debounced' : 'native'}
         onBrush={handleBrush}
         onBrushEnd={handleBrushEnd}

@@ -64,6 +64,7 @@ export interface BrushTrackerProps {
   onDoubleClick?: OnDoubleClick;
   onClick?: OnClick;
   noPropagation?: boolean;
+  brushBounds?: BrushCoordination[];
   brushDetectionOptions?: BaseDetectBrushingOptions;
   clickTriggerMode?: 'native' | 'debounced';
 }
