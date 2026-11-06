@@ -1,4 +1,5 @@
 import type { BrushCoordination } from '../../EventsTrackers/brush_tracker.types.ts';
+import type { Spectrum1DTraces } from '../useTracesSpectra.ts';
 
 export const LAYOUT = {
   main: 'MAIN',
@@ -49,6 +50,18 @@ export function get2DDimensionLayout(
   };
 }
 
+export function getInteractive2DDimensionLayout(
+  params: Get2DDimensionLayoutParams,
+  traces: Spectrum1DTraces,
+): Partial<Get2DDimensionLayoutReturn> {
+  const dimension = get2DDimensionLayout(params);
+  return {
+    MAIN: dimension.MAIN,
+    ...(traces.x && { TOP: dimension.TOP }),
+    ...(traces.y && { LEFT: dimension.LEFT }),
+  };
+}
+
 interface StartEndProps {
   startX: number;
   endX?: number;
@@ -56,18 +69,20 @@ interface StartEndProps {
   endY?: number;
 }
 
-type DimensionType = Record<Layout, Required<StartEndProps>>;
+type DimensionType = Partial<Record<Layout, Required<StartEndProps>>>;
 
 export function getLayoutID(
   dimension: DimensionType,
   brushData: StartEndProps,
 ): Layout | null {
   for (const key of Object.keys(dimension) as Layout[]) {
+    const bounds = dimension[key];
     if (
-      brushData.startX >= dimension[key].startX &&
-      brushData.startX <= dimension[key].endX &&
-      brushData.startY >= dimension[key].startY &&
-      brushData.startY <= dimension[key].endY
+      bounds &&
+      brushData.startX >= bounds.startX &&
+      brushData.startX <= bounds.endX &&
+      brushData.startY >= bounds.startY &&
+      brushData.startY <= bounds.endY
     ) {
       return key;
     }
