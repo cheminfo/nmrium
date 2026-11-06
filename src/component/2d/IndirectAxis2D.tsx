@@ -1,5 +1,4 @@
-import { memo, useRef } from 'react';
-import { useLinearPrimaryTicks } from 'react-d3-utils';
+import { memo, useMemo } from 'react';
 import { SVGStyledText } from 'react-science/ui';
 
 import { useIsInset } from '../1d/inset/InsetProvider.tsx';
@@ -7,7 +6,6 @@ import { AxisUnitPicker } from '../1d-2d/components/axis_unit_picker.tsx';
 import { useChartData } from '../context/ChartContext.js';
 import { D3Axis } from '../elements/D3Axis.js';
 import { useActiveNucleusTab } from '../hooks/useActiveNucleusTab.js';
-import { useTextMetrics } from '../hooks/useTextMetrics.js';
 import { useCheckExportStatus } from '../hooks/useViewportSize.tsx';
 import {
   axisUnitToLabel,
@@ -15,10 +13,12 @@ import {
 } from '../hooks/use_axis_unit.ts';
 import { useGridline2DConfig } from '../hooks/use_gridlines_config.ts';
 import { useTicksConfig } from '../hooks/use_ticks_config.ts';
+import { getAxisLayout } from '../utility/getAxisLayout.ts';
+import { getVerticalAxisTicks } from '../utility/getVerticalAxisTicks.ts';
 
 import { useScale2DY } from './utilities/scale.js';
 
-const defaultMargin = { right: 50, top: 0, bottom: 0, left: 0 };
+const defaultMargin = { right: 0, top: 0, bottom: 0, left: 0 };
 
 interface IndirectAxis2DProps {
   margin?: {
@@ -46,12 +46,11 @@ function IndirectAxis2D(props: IndirectAxis2DProps) {
   const isInset = useIsInset();
   const isExportingProcessStart = useCheckExportStatus();
 
-  const refAxis = useRef<SVGGElement>(null);
-
-  const { ticks, scale: ticksScale } = useLinearPrimaryTicks(
-    scaleY,
-    'vertical',
-    refAxis,
+  const axisStyle = useTicksConfig();
+  const { tickFontSize, rightLabelInset } = getAxisLayout(axisStyle);
+  const { ticks, scale: ticksScale } = useMemo(
+    () => getVerticalAxisTicks(scaleY, tickFontSize),
+    [scaleY, tickFontSize],
   );
   const gridConfig = useGridline2DConfig();
 
@@ -61,8 +60,7 @@ function IndirectAxis2D(props: IndirectAxis2DProps) {
 
   return (
     <D3Axis
-      ref={refAxis}
-      transform={`translate(${width - marginProps.right})`}
+      transform={`translate(${width - margin.right - marginProps.right})`}
       scale={ticksScale}
       axisPosition="right"
       gridSize={width - margin.left - margin.right}
@@ -73,7 +71,9 @@ function IndirectAxis2D(props: IndirectAxis2DProps) {
       primaryGridProps={gridConfig.primary.lineStyle}
       secondaryGridProps={gridConfig.secondary.lineStyle}
     >
-      <g transform={`translate(${marginProps.right - 20}, ${margin.top})`}>
+      <g
+        transform={`translate(${margin.right - rightLabelInset}, ${margin.top})`}
+      >
         <Unit
           axis={axis}
           matchNucleus={matchNucleus}
@@ -110,33 +110,14 @@ interface UnitLabelProps {
 }
 function UnitLabel(props: UnitLabelProps) {
   const { children } = props;
-  const { labelStyle } = useTicksConfig();
-  const { getTextWidth } = useTextMetrics({ fontSize: labelStyle.fontSize });
-  const labelHeight = getTextWidth(children);
+  const axis = useTicksConfig();
+  const { labelStyle } = axis;
+  const { rightLabelText } = getAxisLayout(axis);
 
   return (
-    <>
-      <rect
-        fill="white"
-        rx={5}
-        ry={5}
-        width={20}
-        height={labelHeight + 10}
-        x={-10}
-        y={-5}
-        opacity={0.8}
-      />
-
-      <SVGStyledText
-        fill="black"
-        transform="rotate(-90)"
-        dominantBaseline="middle"
-        textAnchor="end"
-        {...labelStyle}
-      >
-        {children}
-      </SVGStyledText>
-    </>
+    <SVGStyledText fill="black" {...rightLabelText} {...labelStyle}>
+      {children}
+    </SVGStyledText>
   );
 }
 

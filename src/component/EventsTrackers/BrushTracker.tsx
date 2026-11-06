@@ -1,4 +1,5 @@
 import { assert, noop } from '@zakodium/utils';
+import clamp from 'lodash/clamp.js';
 import type {
   KeyboardEvent,
   MouseEvent,
@@ -92,12 +93,33 @@ function getMouseXY(event: MouseEvent, currentTarget?: Element) {
   return { x, y };
 }
 
+/**
+ * Keeps a pointer inside its starting brush region while preserving client coordinates.
+ */
+function clampClientPosition(
+  position: { clientX: number; clientY: number },
+  boundary: BrushCoordination | undefined,
+  boundingRect: DOMRect | null,
+) {
+  if (!boundary || !boundingRect) return position;
+
+  return {
+    clientX:
+      boundingRect.x +
+      clamp(position.clientX - boundingRect.x, boundary.startX, boundary.endX),
+    clientY:
+      boundingRect.y +
+      clamp(position.clientY - boundingRect.y, boundary.startY, boundary.endY),
+  };
+}
+
 export function BrushTracker(options: BrushTrackerProps) {
   const {
     children,
     className,
     style,
     noPropagation,
+    brushBounds,
     brushDetectionOptions = { thresholdFormat: 'fixed' },
     clickTriggerMode = 'native',
   } = options;
@@ -179,6 +201,18 @@ export function BrushTracker(options: BrushTrackerProps) {
 
       isDraggingRef.current = false; // Reset dragging flag
 
+      const position = getMouseXY(event);
+      const boundary = brushBounds?.find(
+        ({ startX, startY, endX, endY }) =>
+          position.x >= startX &&
+          position.x <= endX &&
+          position.y >= startY &&
+          position.y <= endY,
+      );
+      if (brushBounds && !boundary) {
+        return;
+      }
+
       //check that the right or left mouse button pressed
       if ([0, 2].includes(event.button)) {
         if (noPropagation) {
@@ -253,8 +287,11 @@ export function BrushTracker(options: BrushTrackerProps) {
             payload: {
               screenX,
               screenY,
-              clientX,
-              clientY,
+              ...clampClientPosition(
+                { clientX, clientY },
+                boundary,
+                boundingRectRef.current,
+              ),
             },
           });
         }
@@ -283,7 +320,13 @@ export function BrushTracker(options: BrushTrackerProps) {
 
       return false;
     },
-    [clickTriggerMode, handleClickWithDebounce, noPropagation, onZoom],
+    [
+      brushBounds,
+      clickTriggerMode,
+      handleClickWithDebounce,
+      noPropagation,
+      onZoom,
+    ],
   );
 
   const handleMouseWheel = useCallback(
@@ -465,7 +508,13 @@ export function detectBrushing(
   coordination: BrushCoordination,
   options: DetectBrushingOptions,
 ): DetectBrushingResult {
-  const { width, height, thresholdFormat, thresholdAxis = 'both' } = options;
+  const {
+    width,
+    height,
+    thresholdFormat,
+    thresholdAxis = 'both',
+    axis = 'XY',
+  } = options;
   const { startX: x1, endX: x2, startY: y1, endY: y2 } = coordination;
   const startX = Math.min(x1, x2);
   const endX = Math.max(x1, x2);
@@ -499,7 +548,7 @@ export function detectBrushing(
     xThreshold,
     yThreshold,
   };
-  if (thresholdAxis === 'y') {
+  if (axis === 'XY' && thresholdAxis === 'y') {
     if (yDiff >= yThreshold && yThreshold > 0) {
       return {
         type: 'XY',
@@ -524,7 +573,7 @@ export function detectBrushing(
       ...common,
     };
   }
-  if (thresholdAxis === 'x') {
+  if (axis === 'XY' && thresholdAxis === 'x') {
     if (xDiff >= xThreshold && xThreshold > 0) {
       return {
         type: 'XY',
@@ -550,7 +599,7 @@ export function detectBrushing(
     };
   }
 
-  if (yDiff < yThreshold) {
+  if (axis === 'X' || (axis === 'XY' && yDiff < yThreshold)) {
     return {
       type: 'X',
       startX,
@@ -563,7 +612,7 @@ export function detectBrushing(
     };
   }
 
-  if (xDiff < xThreshold) {
+  if (axis === 'Y' || xDiff < xThreshold) {
     return {
       type: 'Y',
       startX: 0,

@@ -21,9 +21,10 @@ import { useMapKeyModifiers } from '../context/KeyModifierContext.js';
 import { usePreferences } from '../context/PreferencesContext.js';
 import { options } from '../toolbar/ToolTypes.js';
 
+import { useTracesSpectra } from './useTracesSpectra.js';
 import type { Layout } from './utilities/DimensionLayout.js';
 import {
-  get2DDimensionLayout,
+  getInteractive2DDimensionLayout,
   getLayoutID,
 } from './utilities/DimensionLayout.js';
 import { useScale2DX, useScale2DY } from './utilities/scale.js';
@@ -70,7 +71,8 @@ export function BrushTracker2D({ children }: Required<PropsWithChildren>) {
   const dispatch = useDispatch();
   const brushStartRef = useRef<{ x: number; y: number } | null>(null);
   const isPrimaryKeyActivated = useMapKeyModifiers();
-  const DIMENSION = get2DDimensionLayout(state);
+  const traces = useTracesSpectra();
+  const DIMENSION = getInteractive2DDimensionLayout(state, traces);
   const convertToPPM = usePixelToPPMConverter();
   const {
     current: {
@@ -229,6 +231,7 @@ export function BrushTracker2D({ children }: Required<PropsWithChildren>) {
   const mouseClick: OnClick = useCallback(
     (event) => {
       const { x, y, shiftKey } = event;
+      if (!getLayoutID(DIMENSION, { startX: x, startY: y })) return;
 
       if (shiftKey) {
         switch (selectedTool) {
@@ -251,11 +254,12 @@ export function BrushTracker2D({ children }: Required<PropsWithChildren>) {
         }
       }
     },
-    [selectedTool, dispatch],
+    [DIMENSION, selectedTool, dispatch],
   );
 
   return (
     <BrushTracker
+      brushBounds={Object.values(DIMENSION)}
       clickTriggerMode={isClickDebounced ? 'debounced' : 'native'}
       onBrush={handleBrush}
       onBrushEnd={handleBrushEnd}

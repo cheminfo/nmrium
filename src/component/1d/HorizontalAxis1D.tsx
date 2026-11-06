@@ -13,6 +13,7 @@ import {
 } from '../hooks/use_axis_unit.ts';
 import { useGridline1DConfig } from '../hooks/use_gridlines_config.ts';
 import { useTicksConfig } from '../hooks/use_ticks_config.ts';
+import { getAxisLayout } from '../utility/getAxisLayout.ts';
 
 import { useIsInset } from './inset/InsetProvider.js';
 
@@ -35,7 +36,9 @@ export function HorizontalAxis1D() {
     'horizontal',
     refAxis,
   );
-  const { labelStyle } = useTicksConfig();
+  const axis = useTicksConfig();
+  const { labelStyle } = axis;
+  const { labelText } = getAxisLayout(axis);
   const gridConfig = useGridline1DConfig();
 
   if (!width || !height) {
@@ -65,9 +68,7 @@ export function HorizontalAxis1D() {
           <SVGStyledText
             fill="black"
             x={width - 10}
-            y="30"
-            dy="0.70em"
-            textAnchor="end"
+            {...labelText}
             {...labelStyle}
           >
             {unitLabel}

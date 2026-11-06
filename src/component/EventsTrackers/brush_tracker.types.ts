@@ -64,12 +64,17 @@ export interface BrushTrackerProps {
   onDoubleClick?: OnDoubleClick;
   onClick?: OnClick;
   noPropagation?: boolean;
+  brushBounds?: BrushCoordination[];
   brushDetectionOptions?: BaseDetectBrushingOptions;
   clickTriggerMode?: 'native' | 'debounced';
 }
 
 export type BrushAxis = 'X' | 'Y' | 'XY';
 export type DetectBrushingOptions = {
+  /**
+   * Constrains trace brushes to one axis (XY enables threshold-based detection.)
+   */
+  axis?: BrushAxis;
   thresholdAxis?: BrushDetectionThresholdAxis;
 } & (DetectBrushingThreshold | DetectBrushingThresholdSize);
 export interface DetectBrushingResult extends BrushCoordination {

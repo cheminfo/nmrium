@@ -442,11 +442,19 @@ function getBlob(targetElementID: string, options: GetBlobOptions): BlobObject {
     element.remove();
   }
 
-  const head = `<svg class="nmr-svg"  viewBox="${viewBox}" width="${width}"  height="${height}"  version="1.1" xmlns="http://www.w3.org/2000/svg">`;
-  const style = `
-      <style>${css?.styles || ''}</style>
-`;
-  const svg = `${head + style + _svg.getHTML()}</svg>`;
+  _svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  _svg.setAttribute('version', '1.1');
+  _svg.setAttribute('viewBox', viewBox);
+  _svg.classList.add('nmr-svg');
+  if (css?.styles) {
+    const style = document.createElementNS(
+      'http://www.w3.org/2000/svg',
+      'style',
+    );
+    style.textContent = css.styles;
+    _svg.prepend(style);
+  }
+  const svg = new XMLSerializer().serializeToString(_svg);
 
   const blob = new Blob([svg], { type: 'image/svg+xml' });
 
