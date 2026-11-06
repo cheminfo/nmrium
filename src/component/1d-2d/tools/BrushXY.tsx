@@ -1,7 +1,10 @@
+import type { PopoverNextProps } from '@blueprintjs/core';
+import { PopoverNext } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import { isSpectrum1D, isSpectrum2D } from '@zakodium/nmrium-core';
 import clamp from 'lodash/clamp.js';
-import type { CSSProperties } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
+import { useResizeObserver } from 'react-d3-utils';
 
 import { useScale2DX } from '../../2d/utilities/scale.js';
 import {
@@ -11,22 +14,117 @@ import {
 } from '../../EventsTrackers/BrushTracker.js';
 import type { BrushAxis } from '../../EventsTrackers/brush_tracker.types.ts';
 import { useChartData } from '../../context/ChartContext.js';
+import { useGlobal } from '../../context/GlobalContext.js';
 import { useKeyModifiers } from '../../context/KeyModifierContext.tsx';
 import { useScaleChecked } from '../../context/ScaleContext.js';
-import { ArrowBox } from '../../elements/ArrowBox.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import type { Margin } from '../../reducer/Reducer.js';
 import type { Tool } from '../../toolbar/ToolTypes.js';
 
-const LabelWrapper = styled.span`
+const LabelTarget = styled.div`
+  pointer-events: none;
+`;
+
+const LabelWrapper = styled(LabelTarget)`
   position: absolute;
   top: 0;
   left: 0;
-  color: black;
-  font-size: 12px;
-  transform-origin: center;
   will-change: transform;
 `;
+
+const LabelContent = styled.div<{ vertical: boolean }>`
+  padding: 5px;
+  color: black;
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+  ${({ vertical }) =>
+    vertical && {
+      writingMode: 'vertical-rl',
+      transform: 'rotate(180deg)',
+    }}
+`;
+
+const distanceLabelPopoverProps = {
+  isOpen: true,
+  interactionKind: 'hover',
+  autoFocus: false,
+  enforceFocus: false,
+  openOnTargetFocus: false,
+  canEscapeKeyClose: false,
+  shouldReturnFocusOnClose: false,
+  transitionDuration: 0,
+  positioningStrategy: 'fixed',
+  animation: 'minimal',
+  autoUpdateOptions: { animationFrame: true },
+} satisfies Partial<PopoverNextProps>;
+
+function getDistanceLabelMiddleware(
+  boundary: PopoverNextProps['boundary'],
+  arrow: boolean,
+  labelSize = 0,
+): PopoverNextProps['middleware'] {
+  return {
+    shift: {
+      boundary: boundary ?? 'clippingAncestors',
+      mainAxis: true,
+      crossAxis: true,
+      padding: 4,
+    },
+    ...(!arrow && {
+      offset: { mainAxis: -labelSize / 2 },
+    }),
+  };
+}
+
+interface DistanceLabelOptions {
+  x: number;
+  y: number;
+  vertical?: boolean;
+  arrow: boolean;
+  span?: number;
+  children: ReactNode;
+}
+
+function DistanceLabel(options: DistanceLabelOptions) {
+  const { viewerRef } = useGlobal();
+  const { x, y, vertical = false, arrow, span = 0, children } = options;
+  const [ref, size] = useResizeObserver();
+  const boundary = viewerRef ?? undefined;
+  const targetStyle: CSSProperties = {
+    width: vertical ? 0 : span,
+    height: vertical ? span : 0,
+  };
+
+  return (
+    <LabelWrapper
+      style={{
+        transform: `translate(${x}px, ${y}px)`,
+        ...targetStyle,
+      }}
+    >
+      <PopoverNext
+        {...distanceLabelPopoverProps}
+        boundary={boundary}
+        arrow={arrow}
+        placement={vertical ? 'top' : 'left'}
+        middleware={getDistanceLabelMiddleware(
+          boundary,
+          arrow,
+          vertical ? size?.height : size?.width,
+        )}
+        renderTarget={({ isOpen: _isOpen, ...targetProps }) => (
+          <LabelTarget {...targetProps} style={targetStyle} />
+        )}
+        content={
+          <LabelContent ref={ref} vertical={vertical}>
+            {children}
+          </LabelContent>
+        }
+      />
+    </LabelWrapper>
+  );
+}
 
 const baseStyles: CSSProperties = {
   transformOrigin: 'top left',
@@ -109,6 +207,7 @@ export default function BrushXY(props: BrushXYProps) {
     margin: innerMargin,
   } = useChartData();
   const brushDetectionOptions = useBrushDetectionOptions();
+  const spectrum = useSpectrum();
   const margin = externalMargin ?? innerMargin;
   const brushTracker = useBrushTracker();
   const { step, mouseButton } = brushTracker;
@@ -246,9 +345,6 @@ export default function BrushXY(props: BrushXYProps) {
     },
   };
 
-  const centerX = Math.round((endX + startX) / 2);
-  const centerY = Math.round((endY + startY) / 2);
-
   return (
     <div
       style={{
@@ -282,109 +378,105 @@ export default function BrushXY(props: BrushXYProps) {
       <div style={styles.overlay} />
 
       {/* Horizontal guideline */}
-      {typeof y1 === 'number' && axis === 'XY' && enableHorizontalGuideline && (
-        <>
-          <div style={styles.horizontal} />
+      {typeof y1 === 'number' &&
+        axis === 'XY' &&
+        enableHorizontalGuideline &&
+        spectrum && (
+          <>
+            <div style={styles.horizontal} />
 
-          {/* Horizontal Threshold indicator */}
-          {brush.type === 'X' && (
-            <>
-              {/* left threshold indicator */}
+            {/* Horizontal Threshold indicator */}
+            {brush.type === 'X' && (
+              <>
+                {/* left threshold indicator */}
 
-              <div
-                style={{
-                  ...styles.baseHorizontalThreshold,
-                  transform: `translate(${startX}px,${y1 - brush.yThreshold}px)`,
-                }}
-              />
-              {/* Right threshold indicator */}
-              <div
-                style={{
-                  ...styles.baseHorizontalThreshold,
-                  transform: `translate(${endX}px,${y1 - brush.yThreshold}px)`,
-                }}
-              />
-            </>
-          )}
-          {/* Range distance */}
-          <LabelWrapper
-            style={{
-              transform: `translate(${brush.type === 'X' ? centerX : startX}px, ${y1}px) translate(-${brush.type === 'X' ? '50' : '100'}%,-50%)  `,
-            }}
-          >
-            <ArrowBox
-              position="right"
-              size={brush.type === 'X' ? 0 : 5}
-              borderColor="#f5f5f5"
-              borderWidth={1}
-              color="rgba(255,255,255,0.9)"
-            >
-              <DistanceValue start={startX} end={endX} axis="x" />
-            </ArrowBox>
-          </LabelWrapper>
-        </>
-      )}
+                <div
+                  style={{
+                    ...styles.baseHorizontalThreshold,
+                    transform: `translate(${startX}px,${y1 - brush.yThreshold}px)`,
+                  }}
+                />
+                {/* Right threshold indicator */}
+                <div
+                  style={{
+                    ...styles.baseHorizontalThreshold,
+                    transform: `translate(${endX}px,${y1 - brush.yThreshold}px)`,
+                  }}
+                />
+              </>
+            )}
+            {/* Range distance */}
+            <DistanceValue
+              start={startX}
+              end={endX}
+              axis="x"
+              x={brush.type === 'XY' ? startX : (startX + endX) / 2}
+              y={y1}
+              arrow={brush.type === 'XY'}
+              span={brush.type === 'XY' ? endX - startX : 0}
+            />
+          </>
+        )}
       {/* Vertical guideline */}
-      {typeof x1 === 'number' && axis === 'XY' && enableVerticalGuideline && (
-        <>
-          <div style={styles.vertical} />
+      {typeof x1 === 'number' &&
+        axis === 'XY' &&
+        enableVerticalGuideline &&
+        spectrum && (
+          <>
+            <div style={styles.vertical} />
 
-          {/* Vertical Threshold indicator */}
+            {/* Vertical Threshold indicator */}
 
-          {brush.type === 'Y' && (
-            <>
-              {/* left threshold indicator */}
+            {brush.type === 'Y' && (
+              <>
+                {/* left threshold indicator */}
 
-              <div
-                style={{
-                  ...styles.baseVerticalThreshold,
-                  transform: `translate(${x1 - brush.yThreshold}px,${startY}px)`,
-                }}
-              />
-              {/* Right threshold indicator */}
-              <div
-                style={{
-                  ...styles.baseVerticalThreshold,
-                  transform: `translate(${x1 - brush.yThreshold}px,${endY}px)`,
-                }}
-              />
-            </>
-          )}
-          {/* Range distance */}
+                <div
+                  style={{
+                    ...styles.baseVerticalThreshold,
+                    transform: `translate(${x1 - brush.yThreshold}px,${startY}px)`,
+                  }}
+                />
+                {/* Right threshold indicator */}
+                <div
+                  style={{
+                    ...styles.baseVerticalThreshold,
+                    transform: `translate(${x1 - brush.yThreshold}px,${endY}px)`,
+                  }}
+                />
+              </>
+            )}
+            {/* Range distance */}
 
-          <LabelWrapper
-            style={{
-              transformOrigin: 'top left',
-              transform: `translate(${x1}px, ${brush.type === 'Y' ? centerY : startY}px) rotate(-90deg) translate(${brush.type === 'Y' ? '-50%' : '0'}, -50%)  `,
-            }}
-          >
-            <ArrowBox
-              position="left"
-              size={brush.type === 'Y' ? 0 : 5}
-              borderColor="#f5f5f5"
-              borderWidth={1}
-              color="rgba(255,255,255,0.9)"
-            >
-              <DistanceValue start={startY} end={endY} axis="y" />
-            </ArrowBox>
-          </LabelWrapper>
-        </>
-      )}
+            <DistanceValue
+              start={startY}
+              end={endY}
+              axis="y"
+              x={x1}
+              y={brush.type === 'XY' ? startY : (startY + endY) / 2}
+              vertical
+              arrow={brush.type === 'XY'}
+              span={brush.type === 'XY' ? endY - startY : 0}
+            />
+          </>
+        )}
     </div>
   );
 }
 
-type DistanceProps =
-  | {
-      start: number;
-      end: number;
-      axis: 'x';
-    }
-  | {
-      start: number;
-      end: number;
-      axis: 'y';
-    };
+type DistanceProps = Omit<DistanceLabelOptions, 'children'> &
+  (
+    | {
+        start: number;
+        end: number;
+        axis: 'x';
+      }
+    | {
+        start: number;
+        end: number;
+        axis: 'y';
+      }
+  );
 
 function DistanceValue(props: DistanceProps) {
   const spectrum = useSpectrum();
@@ -399,7 +491,7 @@ function DistanceValue(props: DistanceProps) {
 }
 
 function DistanceOneDimension(props: DistanceProps) {
-  const { start, end, axis } = props;
+  const { start, end, axis, ...labelOptions } = props;
 
   const spectrum = useSpectrum();
   const { scaleX } = useScaleChecked();
@@ -416,17 +508,17 @@ function DistanceOneDimension(props: DistanceProps) {
   ).toPrecision(5);
 
   return (
-    <>
+    <DistanceLabel {...labelOptions}>
       <span style={{ fontWeight: 'bold', fontFamily: 'monospace' }}>
         {value}
       </span>
       <span>Hz</span>
-    </>
+    </DistanceLabel>
   );
 }
 
 function DistanceTwoDimension(props: DistanceProps) {
-  const { start, end, axis } = props;
+  const { start, end, axis, ...labelOptions } = props;
   const spectrum = useSpectrum();
   const scaleX = useScale2DX();
 
@@ -436,11 +528,11 @@ function DistanceTwoDimension(props: DistanceProps) {
     spectrum.info.originFrequency[axis === 'x' ? 0 : 1]
   ).toPrecision(5);
   return (
-    <>
+    <DistanceLabel {...labelOptions}>
       <span style={{ fontWeight: 'bold', fontFamily: 'monospace' }}>
         {value}
       </span>
       <span>Hz</span>
-    </>
+    </DistanceLabel>
   );
 }
