@@ -93,7 +93,7 @@ function useExternalApiMenuItems(): ExternalMenuItem[] {
       const { key, name, description, apiUrl, apiKey } = options;
       const { icon, disable, disableMessage } =
         EXTERNAL_API_DEFINITIONS?.[key] || {};
-      const isDisabled = disable?.({ spectra, activeTab }) ?? false;
+      const isDisabled = disable ? disable({ spectra, activeTab }) : false;
 
       return {
         icon,

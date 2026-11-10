@@ -149,7 +149,7 @@ const styles: Style = {
   button: (props) => {
     const {
       size,
-      backgroundColor: { hover },
+      backgroundColor: { hover, active },
       color,
       borderRadius,
       element,
@@ -179,7 +179,7 @@ const styles: Style = {
         color: ${color.hover};
       }
       &:not(${element === 'button' ? '[disabled]' : '.disabled'}):active {
-        background-color: ${props.backgroundColor.active || hover};
+        background-color: ${active || hover};
         color: ${color.active || color.hover};
       }
     `;
