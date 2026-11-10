@@ -90,9 +90,9 @@ function MoveLink({
         key: 'new',
         value: 'new',
         label: `new -> ${(
-          (dim === 0
-            ? correlationApi.getCorrelationDelta(correlationDim1)
-            : correlationApi.getCorrelationDelta(correlationDim2)) as number
+          correlationApi.getCorrelationDelta(
+            dim === 0 ? correlationDim1 : correlationDim2,
+          ) as number
         ).toFixed(2)}`,
       });
 
