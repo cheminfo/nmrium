@@ -2,6 +2,5 @@ dep: 'prod,dev'
 reject:
   # https://github.com/cheminfo/nmrium/issues/3983
   - '@playwright/test'
-  # typescript-eslint 8.71.0 supports TypeScript <6.1; keep the ~6.0.3 range.
-  # TODO: Re-enable TypeScript upgrades when the lint toolchain supports TypeScript 7.
+  # Not compatible with typescript-eslint
   - typescript
