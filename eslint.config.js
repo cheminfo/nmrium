@@ -23,6 +23,10 @@ export default defineConfig(
     rules: {
       '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/naming-convention': 'off',
+      // Since 8.72.0, string | TooltipItem incorrectly inherits String.prototype.link's deprecation.
+      // The package.json override pins the shared config's transitive dependency, not application code.
+      // TODO: Remove the override once union handling is fixed upstream; verify toolbar lint and types.
+      // Related issue: https://github.com/typescript-eslint/typescript-eslint/issues/13134
       '@typescript-eslint/no-deprecated': 'error',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-implied-eval': 'off',
