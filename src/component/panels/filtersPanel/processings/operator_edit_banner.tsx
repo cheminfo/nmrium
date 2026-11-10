@@ -7,6 +7,12 @@ import { Button } from 'react-science/ui';
 import type { UseLiveEdit } from './use_live_edit.ts';
 
 interface OperatorEditBannerProps {
+  /**
+   * Content rendered at the leftmost position of the banner, before the
+   * live preview controls. Provided by the processing operator UI
+   * (second argument of the `children` render method).
+   */
+  leftContent?: ReactNode;
   isLiveEditable: boolean;
   liveEdit: UseLiveEdit;
   onClose: () => void;
@@ -14,10 +20,11 @@ interface OperatorEditBannerProps {
 }
 
 export function OperatorEditBanner(props: OperatorEditBannerProps) {
-  const { isLiveEditable, liveEdit, children, onClose } = props;
+  const { leftContent, isLiveEditable, liveEdit, children, onClose } = props;
 
   return (
     <LiveEditBanner>
+      {leftContent}
       {isLiveEditable && (
         <>
           <Switch
