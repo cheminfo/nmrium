@@ -6,7 +6,7 @@ const viewportOverride: ViewportSize = {
   height: 900,
 };
 
-export default defineConfig({
+const config = defineConfig({
   testDir: 'test-e2e',
   retries: 1,
   forbidOnly: !!process.env.CI,
@@ -58,3 +58,5 @@ export default defineConfig({
     },
   ],
 });
+
+export default config;

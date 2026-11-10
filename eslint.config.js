@@ -3,7 +3,7 @@ import react from 'eslint-config-cheminfo-react/base';
 import ts from 'eslint-config-cheminfo-typescript/base';
 import unicorn from 'eslint-config-cheminfo-typescript/unicorn';
 
-export default defineConfig(
+const config = defineConfig(
   globalIgnores([
     'build',
     'coverage',
@@ -98,3 +98,5 @@ export default defineConfig(
     },
   },
 );
+
+export default config;
