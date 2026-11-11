@@ -22,7 +22,7 @@ const RANGE_PEAK_NOISE_FACTOR = 8;
  * `autoPeakPicking`. It is robust to the presence of intense peaks and it does
  * not depend on the range being analysed.
  */
-export function getBaselineNoise(y: Float64Array) {
+function getBaselineNoise(y: Float64Array) {
   return (
     median(Array.from(y, (value) => Math.abs(value))) * RANGE_PEAK_NOISE_FACTOR
   );
