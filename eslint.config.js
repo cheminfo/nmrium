@@ -74,6 +74,7 @@ export default defineConfig(
       'unicorn/prefer-combined-guards': 'off',
       'unicorn/prefer-continue': 'off',
       'unicorn/prefer-early-return': 'off',
+      'unicorn/prefer-smaller-scope': 'off',
       'no-restricted-imports': [
         'error',
         {
