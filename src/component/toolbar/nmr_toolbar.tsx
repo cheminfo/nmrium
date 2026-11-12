@@ -259,7 +259,7 @@ export default function NMRToolbar() {
       tooltip: {
         title: options.slicing.label,
         description:
-          'Display the horizontal and vertical slices of the selected 2D spectrum at the level of the pointer.',
+          'Display the horizontal and vertical slices of the selected 2D spectrum at the level of the pointer. Scroll over the spectrum to adjust the cut intensity in both directions.',
         link: 'https://docs.nmrium.org/30_2d-spectra/slicing',
       },
     },
