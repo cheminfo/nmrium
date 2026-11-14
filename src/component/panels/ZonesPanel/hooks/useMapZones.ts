@@ -11,6 +11,7 @@ export interface ZoneData extends Zone {
     signal: Signal2D;
     hide: boolean;
     experiment?: string;
+    nuclei: string[];
   };
 }
 
@@ -59,6 +60,7 @@ export function useMapZones(
               signalIndex: j,
               id: signal.id,
               experiment: info.experiment,
+              nuclei: info.nuclei,
             },
           });
         }
