@@ -60,6 +60,7 @@ export const workspaceDefaultProperties: RequiredWorkspacePreferences = {
       apodization: false,
       zeroFilling: false,
       zonePicking: false,
+      signalLinking: false,
       zoomOut: false,
       zoom: false,
       peakPicking: false,

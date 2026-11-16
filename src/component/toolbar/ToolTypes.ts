@@ -26,6 +26,7 @@ import {
   FaICursor,
 } from 'react-icons/fa';
 import { GrShift } from 'react-icons/gr';
+import { LuLink } from 'react-icons/lu';
 import { PiKnifeBold, PiSelectionPlusDuotone } from 'react-icons/pi';
 import { TbZoom } from 'react-icons/tb';
 
@@ -150,6 +151,20 @@ export const options: RecordOptions = {
     label: 'Zone tool',
     icon: FaDiceFour,
     hasOptionPanel: true,
+    isFilter: false,
+    mode: '2D',
+    spectraFilter: [
+      {
+        info: [{ key: 'isFt', value: true }],
+      },
+    ],
+    isToggle: true,
+  },
+  signalLinking: {
+    id: 'signalLinking',
+    label: 'Link signals',
+    icon: LuLink,
+    hasOptionPanel: false,
     isFilter: false,
     mode: '2D',
     spectraFilter: [

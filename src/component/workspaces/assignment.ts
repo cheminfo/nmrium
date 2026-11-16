@@ -22,6 +22,7 @@ export const assignment: InnerWorkspace = {
       spectraCenterAlignments: true,
       realImaginary: true,
       zonePicking: true,
+      signalLinking: true,
       rangePicking: true,
       slicing: true,
       apodization: true,

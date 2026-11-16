@@ -26,6 +26,7 @@ export const basic: InnerWorkspace = {
       peakPicking: true,
       integral: true,
       zonePicking: true,
+      signalLinking: true,
       rangePicking: true,
       slicing: true,
       apodization: true,
