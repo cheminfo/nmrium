@@ -49,6 +49,7 @@ export const prediction: InnerWorkspace = {
       apodization: true,
       zeroFilling: true,
       zonePicking: true,
+      signalLinking: true,
       zoomOut: true,
       zoom: true,
       autoRangeAndZonePicking: true,
