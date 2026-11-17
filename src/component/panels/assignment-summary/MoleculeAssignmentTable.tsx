@@ -111,19 +111,19 @@ export function MoleculeAssignmentTable(props: MoleculeAssignmentTableProps) {
       },
       ...(showAtomNumbers
         ? columnHelper.columns([
-          {
-            header: 'Atom numbers',
-            accessorKey: 'atomNumbers',
-            enableSorting: false,
-            cell: ({ row }) => (
-              <AssignmentLabelCell
-                value={row.original.atomNumbers}
-                hydrogenValue={row.original.hydrogenAtomNumbers}
-                isExpanded={row.original.isExpanded}
-              />
-            ),
-          },
-        ])
+            {
+              header: 'Atom numbers',
+              accessorKey: 'atomNumbers',
+              enableSorting: false,
+              cell: ({ row }) => (
+                <AssignmentLabelCell
+                  value={row.original.atomNumbers}
+                  hydrogenValue={row.original.hydrogenAtomNumbers}
+                  isExpanded={row.original.isExpanded}
+                />
+              ),
+            },
+          ])
         : []),
       {
         header: 'Atom labels',

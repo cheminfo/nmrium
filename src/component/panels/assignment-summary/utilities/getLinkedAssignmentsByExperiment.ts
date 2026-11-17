@@ -58,7 +58,6 @@ export function getLinkedAssignmentsByExperiment(
     //   },
     // }
     for (const link of spectrum.linkedSignals ?? []) {
-
       const { xSignalId, ySignalId, assignment } = link;
 
       if (!assignment) continue;
