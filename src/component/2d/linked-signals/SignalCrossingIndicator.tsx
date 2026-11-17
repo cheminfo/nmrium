@@ -1,29 +1,41 @@
 import type { Spectrum2D } from '@zakodium/nmr-types';
-import { isSpectrum2DFt } from '@zakodium/nmrium-core';
+import type { MouseEvent } from 'react';
 
-import useSpectrum from '../../hooks/useSpectrum.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { useShareData } from '../../context/ShareDataContext.js';
 import SignalDeltaLine from '../SignalDeltaLine.js';
 import { useNearestSignalCrossing } from '../useNearestSignalCrossing.js';
 import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 
-export function SignalCrossingIndicator() {
-  const spectrum = useSpectrum();
-
-  if (!isSpectrum2DFt(spectrum) || !spectrum.display.isVisible) return null;
-
-  return (
-    <SignalCrossingIndicatorInner linkedSignals={spectrum.linkedSignals} />
-  );
-}
-
-function SignalCrossingIndicatorInner({
+export function SignalCrossingIndicator({
   linkedSignals,
 }: Pick<Spectrum2D, 'linkedSignals'>) {
   const { nearest } = useNearestSignalCrossing({ linkedSignals });
   const scaleX = useScale2DX();
   const scaleY = useScale2DY();
+  const dispatch = useDispatch();
+  const { setData } = useShareData<string | null>();
 
-  if (!nearest) return null;
+  if (!nearest || nearest.isLinked) return null;
+
+  const { xSignalId, ySignalId, assignment } = nearest;
+
+  function handleClick(event: MouseEvent<SVGCircleElement>) {
+    event.stopPropagation();
+
+    dispatch({
+      type: 'ADD_2D_SIGNAL_LINK',
+      payload: {
+        xSignalId,
+        ySignalId,
+        assignment,
+      },
+    });
+
+    if (!assignment) {
+      setData(`${xSignalId}:${ySignalId}`);
+    }
+  }
 
   return (
     <g data-no-export="true" pointerEvents="none">
@@ -37,6 +49,9 @@ function SignalCrossingIndicatorInner({
         stroke="#ff0000"
         strokeWidth={2}
         pointerEvents="all"
+        data-self-control="true"
+        onClick={handleClick}
+        style={{ cursor: 'pointer' }}
       />
     </g>
   );
