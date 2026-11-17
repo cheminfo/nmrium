@@ -12,6 +12,10 @@ import {
 import { formatAssignmentACS } from './formatAssignmentACS.js';
 import { formatAssignmentShifts } from './formatAssignmentShifts.js';
 import { getAssignmentSignals } from './getAssignmentSignals.js';
+import {
+  formatLinkedAssignments,
+  getLinkedAssignmentsByExperiment,
+} from './getLinkedAssignmentsByExperiment.js';
 import { getSignalsByNucleus } from './getSignalsByNucleus.js';
 import type { GetAssignmentSignalsOptions } from './types.js';
 
@@ -49,6 +53,9 @@ export function exportAssignments(options: ExportAssignmentsOptions): string {
           rowMode === 'current' ? expandedGroups : new Set<string>(),
         );
   const hydrogenIDsByParent = getHydrogenIDsByParent(allRows);
+  const linkedAssignmentsByExperiment = Array.from(
+    getLinkedAssignmentsByExperiment(spectra),
+  );
   const nuclei = Array.from(
     getSignalsByNucleus(spectra),
     ([nucleus, signals]) => ({
@@ -63,6 +70,7 @@ export function exportAssignments(options: ExportAssignmentsOptions): string {
     'Atom numbers',
     'Atom labels',
     ...nuclei.map(({ nucleus }) => nucleus),
+    ...linkedAssignmentsByExperiment.map(([experiment]) => experiment),
   ];
   const data = rows.map((row) => [
     row.atomLabel,
@@ -83,6 +91,9 @@ export function exportAssignments(options: ExportAssignmentsOptions): string {
         hydrogenIDsByParent,
         acs,
       }),
+    ),
+    ...linkedAssignmentsByExperiment.map(([, assignmentsByOclID]) =>
+      formatLinkedAssignments(row, assignmentsByOclID, hydrogenIDsByParent),
     ),
   ]);
 

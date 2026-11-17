@@ -20,6 +20,10 @@ import {
   getVisibleAssignmentRows,
 } from './utilities/atomGroupsToAssignmentRows.js';
 import { getAssignedAtomCounts } from './utilities/getAssignedAtomCounts.js';
+import {
+  formatLinkedAssignments,
+  getLinkedAssignmentsByExperiment,
+} from './utilities/getLinkedAssignmentsByExperiment.js';
 import { getSignalsByNucleus } from './utilities/getSignalsByNucleus.js';
 import type { SignalsByOclID } from './utilities/types.js';
 
@@ -76,6 +80,10 @@ export function MoleculeAssignmentTable(props: MoleculeAssignmentTableProps) {
   // Build once per data change.
   // headers and cells share the same nucleus lookup.
   const signalsByNucleus = useMemo(() => getSignalsByNucleus(data), [data]);
+  const linkedAssignmentsByExperiment = useMemo(
+    () => getLinkedAssignmentsByExperiment(data),
+    [data],
+  );
   // Keep the complete hierarchy for assignments.
   // Expansion Only hides rows.
   const allRows = useMemo(
@@ -103,19 +111,19 @@ export function MoleculeAssignmentTable(props: MoleculeAssignmentTableProps) {
       },
       ...(showAtomNumbers
         ? columnHelper.columns([
-            {
-              header: 'Atom numbers',
-              accessorKey: 'atomNumbers',
-              enableSorting: false,
-              cell: ({ row }) => (
-                <AssignmentLabelCell
-                  value={row.original.atomNumbers}
-                  hydrogenValue={row.original.hydrogenAtomNumbers}
-                  isExpanded={row.original.isExpanded}
-                />
-              ),
-            },
-          ])
+          {
+            header: 'Atom numbers',
+            accessorKey: 'atomNumbers',
+            enableSorting: false,
+            cell: ({ row }) => (
+              <AssignmentLabelCell
+                value={row.original.atomNumbers}
+                hydrogenValue={row.original.hydrogenAtomNumbers}
+                isExpanded={row.original.isExpanded}
+              />
+            ),
+          },
+        ])
         : []),
       {
         header: 'Atom labels',
@@ -154,12 +162,29 @@ export function MoleculeAssignmentTable(props: MoleculeAssignmentTableProps) {
           },
         ]),
       ),
+      ...Array.from(linkedAssignmentsByExperiment).flatMap(
+        ([experiment, assignmentsByOclID]) =>
+          columnHelper.columns([
+            {
+              header: experiment,
+              id: experiment,
+              enableSorting: false,
+              cell: ({ row }) =>
+                formatLinkedAssignments(
+                  row.original,
+                  assignmentsByOclID,
+                  hydrogenIDsByParent,
+                ),
+            },
+          ]),
+      ),
     ]);
   }, [
     groups,
     onToggleRow,
     showAtomNumbers,
     signalsByNucleus,
+    linkedAssignmentsByExperiment,
     hydrogenIDsByParent,
   ]);
 
