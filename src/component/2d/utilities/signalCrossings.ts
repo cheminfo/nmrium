@@ -30,6 +30,39 @@ interface Position {
   y: number;
 }
 
+export type PositionedLinkedSignal = Spectrum2D['linkedSignals'][number] & {
+  xDelta: number;
+  yDelta: number;
+};
+
+export function getLinkedSignalPositions({
+  xSignals,
+  ySignals,
+  linkedSignals,
+}: Omit<BuildCandidatesOptions, 'domains'>): PositionedLinkedSignal[] {
+
+  if (!linkedSignals?.length) return [];
+
+  const xDeltaBySignalId = new Map(
+    xSignals.map((signal) => [signal.id, signal.delta]),
+  );
+  const yDeltaBySignalId = new Map(
+    ySignals.map((signal) => [signal.id, signal.delta]),
+  );
+  const positionedSignals: PositionedLinkedSignal[] = [];
+
+  for (const link of linkedSignals) {
+    const xDelta = xDeltaBySignalId.get(link.xSignalId);
+    const yDelta = yDeltaBySignalId.get(link.ySignalId);
+
+    if (xDelta === undefined || yDelta === undefined) continue;
+
+    positionedSignals.push({ ...link, xDelta, yDelta });
+  }
+
+  return positionedSignals;
+}
+
 function inDomain(value: number, domain: number[]) {
   const [min, max] = domain;
   return value >= Math.min(min, max) && value <= Math.max(min, max);

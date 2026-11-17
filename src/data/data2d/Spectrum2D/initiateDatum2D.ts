@@ -50,6 +50,7 @@ export function initiateDatum2D(
     id: spectrum.id || crypto.randomUUID(),
     display: initiateDisplay(spectrum, { usedColors, colors }),
     info: initiateInfo(spectrum),
+    linkedSignals: spectrum.linkedSignals ?? [],
   };
 
   // Now, processings can happen before loading in component

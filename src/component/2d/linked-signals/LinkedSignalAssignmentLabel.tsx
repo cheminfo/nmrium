@@ -1,0 +1,197 @@
+import styled from '@emotion/styled';
+import { useLayoutEffect, useRef, useState } from 'react';
+import { PiTextTSlash } from 'react-icons/pi';
+
+import { FieldEdition } from '../../1d-2d/FieldEdition.js';
+import { disableMouseTrackingProps } from '../../EventsTrackers/MouseTracker.js';
+import { useChartData } from '../../context/ChartContext.js';
+import { useDispatch } from '../../context/DispatchContext.js';
+import { useGlobal } from '../../context/GlobalContext.js';
+import { useShareData } from '../../context/ShareDataContext.js';
+import { SVGButton } from '../../elements/SVGButton.js';
+import type { Position } from '../../elements/draggable/useDraggable.js';
+import useDraggable from '../../elements/draggable/useDraggable.js';
+import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.js';
+import { useScale2DX, useScale2DY } from '../utilities/scale.js';
+import type { PositionedLinkedSignal } from '../utilities/signalCrossings.js';
+import { useAssignmentLabelLinkPath } from '../utilities/useAssignmentLabelLinkPath.js';
+
+const LabelContainer = styled.g<{ isMoving: boolean }>`
+  pointer-events: bounding-box;
+
+  .controls {
+    visibility: ${({ isMoving }) => (isMoving ? 'visible' : 'hidden')};
+  }
+
+  &:hover .controls {
+    visibility: visible;
+  }
+`;
+
+interface LinkedSignalAssignmentLabelProps {
+  signal: PositionedLinkedSignal;
+}
+
+export function LinkedSignalAssignmentLabel({
+  signal,
+}: LinkedSignalAssignmentLabelProps) {
+  const { xSignalId, ySignalId, assignment } = signal;
+  const id = `${xSignalId}:${ySignalId}`;
+  const scaleX = useScale2DX();
+  const scaleY = useScale2DY();
+  const dispatch = useDispatch();
+  const { viewerRef } = useGlobal();
+  const { data: newLabel, setData: setNewLabel } = useShareData<
+    string | null
+  >();
+  const [dragPosition, setDragPosition] = useState<Position | null>(null);
+  const textRef = useRef<SVGTextElement>(null);
+  const [labelBoundary, setLabelBoundary] = useState({ width: 0, height: 0 });
+  const moveOffset = { x: labelBoundary.width / 2 + 24, y: 18 };
+
+  useLayoutEffect(() => {
+    if (textRef.current) {
+      const { width, height } = textRef.current.getBBox();
+      setLabelBoundary({ width, height });
+    }
+  }, [assignment]);
+
+  const { coordinate, position, path, spectrum } =
+    useLinkedSignalAssignmentLabelPosition({
+      id,
+      signal,
+      dragPosition,
+      labelBoundary,
+    });
+  const isNewLabel = newLabel === id;
+  const { onPointerDown } = useDraggable({
+    position: coordinate,
+    parentElement: viewerRef,
+    onChange: ({ action, position }) => {
+      if (action === 'start') {
+        setDragPosition(coordinate);
+      } else if (action === 'move' || action === 'end') {
+        const nextPosition = {
+          x: position.x + moveOffset.x,
+          y: position.y + moveOffset.y,
+        };
+        if (action === 'move') {
+          setDragPosition(nextPosition);
+        } else {
+          if (!spectrum) return;
+
+          dispatch({
+            type: 'SET_LINKED_SIGNAL_ASSIGNMENT_LABEL_COORDINATION',
+            payload: {
+              spectrumId: spectrum.id,
+              id,
+              coordination: {
+                x: scaleX.invert(nextPosition.x),
+                y: scaleY.invert(nextPosition.y),
+              },
+            },
+          });
+          setDragPosition(null);
+        }
+      }
+    },
+  });
+
+  if (!assignment && !isNewLabel) return null;
+
+  function handleChange(value: string) {
+    if (isNewLabel) setNewLabel(null);
+    dispatch({
+      type: 'CHANGE_LINKED_SIGNAL_ASSIGNMENT_LABEL',
+      payload: { id, value },
+    });
+  }
+
+  return (
+    <LabelContainer
+      isMoving={dragPosition !== null}
+      data-self-control="true"
+      {...disableMouseTrackingProps}
+    >
+      <polygon points={path} fill="green" pointerEvents="none" />
+      <g transform={`translate(${position.x} ${position.y})`}>
+        <FieldEdition
+          onChange={handleChange}
+          inputType="text"
+          value={assignment || ''}
+          PopoverProps={{
+            placement: 'top',
+            targetTagName: 'g',
+            ...(isNewLabel && {
+              isOpen: true,
+              onClose: () => setNewLabel(null),
+            }),
+          }}
+        >
+          <text
+            ref={textRef}
+            textAnchor="middle"
+            fontSize={12}
+            fill="black"
+            style={{ cursor: 'pointer' }}
+          >
+            {assignment}
+          </text>
+        </FieldEdition>
+        <g className="controls" data-no-export="true">
+          <SVGButton
+            x={-moveOffset.x}
+            y={-moveOffset.y}
+            size={16}
+            title="Move label"
+            icon="move"
+            onPointerDown={onPointerDown}
+            style={{ cursor: 'move' }}
+          />
+          <SVGButton
+            x={-moveOffset.x - 24}
+            y={-moveOffset.y}
+            size={16}
+            title="Remove label"
+            renderIcon={(props) => <PiTextTSlash {...props} />}
+            backgroundColor="red"
+            onClick={() => handleChange('')}
+          />
+        </g>
+      </g>
+    </LabelContainer>
+  );
+}
+
+interface UseLinkedSignalAssignmentLabelPositionOptions {
+  id: string;
+  signal: PositionedLinkedSignal;
+  dragPosition: Position | null;
+  labelBoundary: { width: number; height: number };
+}
+
+function useLinkedSignalAssignmentLabelPosition({
+  id,
+  signal: { xDelta, yDelta },
+  dragPosition,
+  labelBoundary,
+}: UseLinkedSignalAssignmentLabelPositionOptions) {
+  const scaleX = useScale2DX();
+  const scaleY = useScale2DY();
+  const spectrum = useActiveSpectrum();
+  const { view } = useChartData();
+  const externalPosition =
+    spectrum && view.assignmentsLabelsCoordinates?.[spectrum.id]?.[id];
+
+  const coordinate = externalPosition
+    ? { x: scaleX(externalPosition.x), y: scaleY(externalPosition.y) }
+    : { x: scaleX(xDelta) + 20, y: scaleY(yDelta) - 30 };
+  const position = dragPosition ?? coordinate;
+  const path = useAssignmentLabelLinkPath(
+    position,
+    { x1: xDelta, x2: xDelta, y1: yDelta, y2: yDelta },
+    labelBoundary,
+  );
+
+  return { coordinate, position, path, spectrum };
+}

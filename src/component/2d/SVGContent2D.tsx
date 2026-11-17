@@ -6,8 +6,8 @@ import DirectAxis2D from './DirectAxis2D.tsx';
 import IndirectAxis2D from './IndirectAxis2D.tsx';
 import { FidContainer } from './fid/FidContainer.js';
 import { FTContainer } from './ft/FTContainer.js';
+import { LinkedSignals } from './linked-signals/LinkedSignals.js';
 import type { Spectrum1DTraces } from './useTracesSpectra.js';
-import { SignalCrossingIndicator } from './zones/SignalCrossingIndicator.js';
 import { SignalsGuideLines } from './zones/SignalsGuideLines.js';
 import Zones from './zones/Zones.js';
 import ZonesAssignmentsLabels from './zones/ZonesAssignmentsLabels.js';
@@ -27,7 +27,7 @@ export function SVGContent2D({ spectra }: Chart2DProps) {
           <Zones />
           <ZonesAssignmentsLabels />
         </ShareDataProvider>
-        <SignalCrossingIndicator />
+        <LinkedSignals />
       </ClipPathContainer>
 
       <SpectrumInfoBlock />
