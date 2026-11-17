@@ -386,8 +386,6 @@ test('Auto peak picking on all spectra', async ({ page }) => {
   await test.step("Check 1H spectrum's ranges", async () => {
     // switch to 1H tab.
     await nmrium.page.click('_react=SpectraTabs >> _react=Tab[tabid="1H"]');
-    //open ranges panel
-    await nmrium.clickPanel('Ranges / Multiplet analysis');
     await expect(nmrium.page.getByTestId('range')).toHaveCount(10);
     await expect(
       nmrium.page.locator('_react=RangesPanel >> _react=PanelHeader'),

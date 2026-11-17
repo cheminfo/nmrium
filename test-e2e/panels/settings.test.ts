@@ -14,7 +14,7 @@ test('process 1d FID 13c spectrum', async ({ page }) => {
     await nmrium.clickPanel('Spectra');
   });
   await test.step('Peaks panel settings', async () => {
-    await nmrium.clickPanel('Peaks');
+    await nmrium.showPanel('Peaks');
     await nmrium.page.click(
       '_react=AccordionItem[title="Peaks"] >> _react=PanelHeader >> button >> nth=-1',
     );
@@ -24,7 +24,7 @@ test('process 1d FID 13c spectrum', async ({ page }) => {
     await nmrium.clickPanel('Peaks');
   });
   await test.step('Integrals panel settings', async () => {
-    await nmrium.clickPanel('Integrals');
+    await nmrium.showPanel('Integrals');
     await nmrium.page.click(
       '_react=AccordionItem[title="Integrals"] >> _react=PanelHeader >> button >> nth=-1',
     );
@@ -34,7 +34,6 @@ test('process 1d FID 13c spectrum', async ({ page }) => {
     await nmrium.clickPanel('Integrals');
   });
   await test.step('Ranges panel settings', async () => {
-    await nmrium.clickPanel('Ranges / Multiplet analysis');
     await nmrium.page.click(
       '_react=AccordionItem[title="Ranges / Multiplet analysis"] >> _react=PanelHeader >> button >> nth=-1',
     );
