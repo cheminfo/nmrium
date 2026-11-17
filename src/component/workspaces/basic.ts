@@ -6,12 +6,13 @@ export const basic: InnerWorkspace = {
   display: {
     panels: {
       spectraPanel: { display: true, visible: true, open: true },
-      informationPanel: { display: true, visible: true, open: false },
-      peaksPanel: { display: true, visible: true, open: false },
-      integralsPanel: { display: true, visible: true, open: false },
-      rangesPanel: { display: true, visible: true, open: false },
-      structuresPanel: { display: true, visible: true, open: false },
       processingsPanel: { display: true, visible: true, open: false },
+      rangesPanel: { display: true, visible: true, open: true },
+      assignmentSummaryPanel: { display: true, visible: true, open: false },
+      structuresPanel: { display: true, visible: true, open: false },
+      informationPanel: { display: false, visible: true, open: false },
+      peaksPanel: { display: false, visible: true, open: false },
+      integralsPanel: { display: false, visible: true, open: false },
       zonesPanel: { display: true, visible: true, open: false },
     },
     toolBarButtons: {
