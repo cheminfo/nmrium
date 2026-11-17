@@ -40,7 +40,6 @@ export function getLinkedSignalPositions({
   ySignals,
   linkedSignals,
 }: Omit<BuildCandidatesOptions, 'domains'>): PositionedLinkedSignal[] {
-
   if (!linkedSignals?.length) return [];
 
   const xDeltaBySignalId = new Map(
