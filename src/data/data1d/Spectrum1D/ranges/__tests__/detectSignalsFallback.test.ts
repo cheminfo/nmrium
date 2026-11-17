@@ -1,4 +1,5 @@
-import type { DataXY, Logger } from 'cheminfo-types';
+import type { Logger } from 'cheminfo-types';
+import { generateSpectrum } from 'spectrum-generator';
 import { describe, expect, it, vi } from 'vitest';
 
 import detectSignals from '../detectSignals.js';
@@ -14,31 +15,14 @@ const FREQUENCY = 400;
 const FROM = -0.5;
 const TO = 10.5;
 const NB_POINTS = 64 * 1024;
-const NOISE = 1;
-const FWHM_TO_SIGMA = 2 * Math.sqrt(2 * Math.LN2);
-
 function buildSpectrum(peaks: Array<{ x: number; y: number; width: number }>) {
-  const dx = (TO - FROM) / (NB_POINTS - 1);
-  const x = new Float64Array(NB_POINTS);
-  const y = new Float64Array(NB_POINTS);
-  for (let i = 0; i < NB_POINTS; i++) {
-    x[i] = FROM + i * dx;
-  }
-  for (const peak of peaks) {
-    const sigma = peak.width / FWHM_TO_SIGMA;
-    for (let i = 0; i < NB_POINTS; i++) {
-      const z = (x[i] - peak.x) / sigma;
-      y[i] += peak.y * Math.exp(-0.5 * z * z);
-    }
-  }
-
-  let seed = 123_456_789;
-  for (let i = 0; i < NB_POINTS; i++) {
-    seed = (seed * 1_103_515_245 + 12_345) % 2_147_483_648;
-    y[i] += ((seed / 2_147_483_648) * 2 - 1) * NOISE;
-  }
-
-  return { x, y } as DataXY<Float64Array>;
+  return generateSpectrum(
+    peaks.map(({ x, y, width }) => [x, y, width] as [number, number, number]),
+    {
+      generator: { from: FROM, to: TO, nbPoints: NB_POINTS },
+      noise: { distribution: 'uniform', percent: 0.2, seed: 123_456_789 },
+    },
+  );
 }
 
 describe('detectSignals fallback', () => {

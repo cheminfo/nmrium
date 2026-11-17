@@ -1,5 +1,6 @@
 import type { DataXY } from 'cheminfo-types';
 import { rangesToXY } from 'nmr-processing';
+import { generateSpectrum } from 'spectrum-generator';
 import { describe, expect, it } from 'vitest';
 
 import detectSignals from '../detectSignals.js';
@@ -39,51 +40,14 @@ const FREQUENCY = 400;
 const FROM = -0.5;
 const TO = 10.5;
 const NB_POINTS = 64 * 1024;
-const NOISE = 1;
-
-interface Peak {
-  x: number;
-  /**
-   * Peak height.
-   */
-  y: number;
-  /**
-   * Full width at half maximum, in ppm.
-   */
-  width: number;
-}
-
-/**
- * Full width at half maximum to gaussian sigma.
- */
-const FWHM_TO_SIGMA = 2 * Math.sqrt(2 * Math.LN2);
-
-/**
- * Synthetic spectrum with a deterministic noise floor, so that the fixtures
- * have a baseline like real data does (`median(|y|) > 0`).
- */
-function buildSpectrum(peaks: Peak[]): DataXY<Float64Array> {
-  const dx = (TO - FROM) / (NB_POINTS - 1);
-  const x = new Float64Array(NB_POINTS);
-  const y = new Float64Array(NB_POINTS);
-  for (let i = 0; i < NB_POINTS; i++) {
-    x[i] = FROM + i * dx;
-  }
-  for (const peak of peaks) {
-    const sigma = peak.width / FWHM_TO_SIGMA;
-    for (let i = 0; i < NB_POINTS; i++) {
-      const z = (x[i] - peak.x) / sigma;
-      y[i] += peak.y * Math.exp(-0.5 * z * z);
-    }
-  }
-
-  let seed = 123_456_789;
-  for (let i = 0; i < NB_POINTS; i++) {
-    seed = (seed * 1_103_515_245 + 12_345) % 2_147_483_648;
-    y[i] += ((seed / 2_147_483_648) * 2 - 1) * NOISE;
-  }
-
-  return { x, y };
+function buildSpectrum(peaks: Array<{ x: number; y: number; width: number }>) {
+  return generateSpectrum(
+    peaks.map(({ x, y, width }) => [x, y, width] as [number, number, number]),
+    {
+      generator: { from: FROM, to: TO, nbPoints: NB_POINTS },
+      noise: { distribution: 'uniform', percent: 0.2, seed: 123_456_789 },
+    },
+  );
 }
 
 function getSignals(spectrum: DataXY<Float64Array>, from: number, to: number) {
