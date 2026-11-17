@@ -2,7 +2,6 @@ import type { NMRiumPanelPreferences } from '@zakodium/nmrium-core';
 import lodashDebounce from 'lodash/debounce.js';
 import lodashMap from 'lodash/map.js';
 import { useCallback, useRef, useState } from 'react';
-import { useAccordionControls } from 'react-science/ui';
 
 import { useChartData } from '../context/ChartContext.js';
 import { useDispatch } from '../context/DispatchContext.js';
@@ -15,7 +14,6 @@ export default function useToolsFunctions() {
   const dispatch = useDispatch();
   const toaster = useToaster();
 
-  const { open: openAccordionPanel } = useAccordionControls();
   const [isRealSpectrumShown, setIsRealSpectrumShown] = useState(false);
 
   const debounceClickEventsRef = useRef<{ clicks: any[] }>({ clicks: [] });
@@ -23,6 +21,7 @@ export default function useToolsFunctions() {
     current: {
       general: { invert },
     },
+    dispatch: dispatchPreferences,
   } = usePreferences();
   const {
     toolOptions: { selectedTool: previousSelectedTool },
@@ -53,7 +52,12 @@ export default function useToolsFunctions() {
         : toolPanelLookup?.[selectedTool];
 
       if (panelKey) {
-        openAccordionPanel(panelKey);
+        // A panel hidden from the stack is not registered in the accordion,
+        // so it must be displayed through the preferences to open it.
+        dispatchPreferences({
+          type: 'TOGGLE_PANEL',
+          payload: { id: panelKey, options: { display: true, open: true } },
+        });
       }
 
       dispatch({
@@ -61,7 +65,7 @@ export default function useToolsFunctions() {
         payload: { selectedTool: selectedTool || options.zoom.id },
       });
     },
-    [dispatch, invert, openAccordionPanel, previousSelectedTool, toaster],
+    [dispatch, dispatchPreferences, invert, previousSelectedTool, toaster],
   );
 
   const handleFullZoomOut = useCallback(() => {

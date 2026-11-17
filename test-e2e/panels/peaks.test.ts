@@ -112,8 +112,10 @@ test('Processed spectra peaks', async ({ page }) => {
   await test.step('Check peaks', async () => {
     //Close spectra panel
     await nmrium.clickPanel('Spectra');
+    //Close ranges panel
+    await nmrium.clickPanel('Ranges / Multiplet analysis');
     //Open peaks panel
-    await nmrium.clickPanel('Peaks');
+    await nmrium.showPanel('Peaks');
 
     const peaks = nmrium.page.locator('_react=PeaksTable >> tbody >> tr');
     await expect(peaks).toHaveCount(16);
@@ -148,8 +150,10 @@ test('Check no negative peaks in processed spectra', async ({ page }) => {
   await test.step('Check negative peaks', async () => {
     //Close spectra panel
     await nmrium.clickPanel('Spectra');
+    //Close ranges panel
+    await nmrium.clickPanel('Ranges / Multiplet analysis');
     //Open peaks panel
-    await nmrium.clickPanel('Peaks');
+    await nmrium.showPanel('Peaks');
     const peaks = nmrium.page.locator('_react=PeaksTable >> tbody >> tr');
 
     for (let i = 0; i < 16; i++) {
