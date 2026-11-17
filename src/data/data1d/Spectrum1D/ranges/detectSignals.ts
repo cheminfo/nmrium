@@ -1,6 +1,9 @@
 import type { DataXY, Logger } from 'cheminfo-types';
-import median from 'ml-array-median';
-import { xGetFromToIndex, xyMaxYPoint } from 'ml-spectra-processing';
+import {
+  xAbsoluteMedian,
+  xGetFromToIndex,
+  xyMaxYPoint,
+} from 'ml-spectra-processing';
 import { xyAutoRangesPicking } from 'nmr-processing';
 
 import { detectSignalsByMultipletAnalysis } from './detectSignalsByMultipletAnalysis.js';
@@ -17,17 +20,6 @@ const MAX_LENGTH = 4092;
  */
 const RANGE_PEAK_NOISE_FACTOR = 8;
 
-/**
- * Baseline noise of the spectrum: absolute median of the intensity, as in
- * `autoPeakPicking`. It is robust to the presence of intense peaks and it does
- * not depend on the range being analysed.
- */
-function getBaselineNoise(y: Float64Array) {
-  return (
-    median(Array.from(y, (value) => Math.abs(value))) * RANGE_PEAK_NOISE_FACTOR
-  );
-}
-
 interface DetectSignalsOptions {
   from: number;
   to: number;
@@ -43,7 +35,7 @@ export default function detectSignals(
   const { from, to, frequency, nucleus, logger } = options;
 
   const { fromIndex, toIndex } = xGetFromToIndex(data.x, { from, to });
-  const noiseLevel = getBaselineNoise(data.y);
+  const noiseLevel = xAbsoluteMedian(data.y) * RANGE_PEAK_NOISE_FACTOR;
   const size = toIndex - fromIndex;
 
   const signals =
