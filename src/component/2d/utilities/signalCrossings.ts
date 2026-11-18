@@ -34,6 +34,7 @@ interface Position {
 export type PositionedLinkedSignal = Spectrum2D['linkedSignals'][number] & {
   xDelta: number;
   yDelta: number;
+  diaIDs: string[];
 };
 
 export function getLinkedSignalPositions({
@@ -46,21 +47,22 @@ export function getLinkedSignalPositions({
 >): PositionedLinkedSignal[] {
   if (!linkedSignals?.length) return [];
 
-  const xDeltaBySignalId = new Map(
-    xSignals.map((signal) => [signal.id, signal.delta]),
-  );
-  const yDeltaBySignalId = new Map(
-    ySignals.map((signal) => [signal.id, signal.delta]),
-  );
+  const xSignalsById = new Map(xSignals.map((signal) => [signal.id, signal]));
+  const ySignalsById = new Map(ySignals.map((signal) => [signal.id, signal]));
   const positionedSignals: PositionedLinkedSignal[] = [];
 
   for (const link of linkedSignals) {
-    const xDelta = xDeltaBySignalId.get(link.xSignalId);
-    const yDelta = yDeltaBySignalId.get(link.ySignalId);
+    const xSignal = xSignalsById.get(link.xSignalId);
+    const ySignal = ySignalsById.get(link.ySignalId);
 
-    if (xDelta === undefined || yDelta === undefined) continue;
+    if (xSignal === undefined || ySignal === undefined) continue;
 
-    positionedSignals.push({ ...link, xDelta, yDelta });
+    positionedSignals.push({
+      ...link,
+      xDelta: xSignal.delta,
+      yDelta: ySignal.delta,
+      diaIDs: [...(xSignal.diaIDs ?? []), ...(ySignal.diaIDs ?? [])],
+    });
   }
 
   return positionedSignals;
