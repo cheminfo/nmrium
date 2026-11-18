@@ -55,6 +55,8 @@ function Top1DChart(props: Top1DChartProps) {
   return (
     <svg
       ref={svgRef}
+      role="img"
+      aria-label="Top 1D spectrum"
       viewBox={`0 0 ${width} ${height}`}
       width={width}
       height={height}

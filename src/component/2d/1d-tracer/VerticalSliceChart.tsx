@@ -56,7 +56,13 @@ function VerticalSliceChart(props: VerticalSliceChartProps) {
   const innerHeight = height - margin.bottom - margin.top;
 
   return (
-    <svg viewBox={`0 0 ${height} ${height}`} width={height} height={height}>
+    <svg
+      role="img"
+      aria-label="Vertical slice"
+      viewBox={`0 0 ${height} ${height}`}
+      width={height}
+      height={height}
+    >
       <defs>
         <clipPath id={`${displayerKey}clip-left`}>
           <rect width={width} height={innerHeight} x="0" y={margin.top} />

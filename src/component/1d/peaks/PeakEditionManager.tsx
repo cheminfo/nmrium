@@ -178,6 +178,7 @@ function PeakEditionField({ value, onClose }: PeakFieldProps) {
     <NumberInput2Controller
       control={control}
       name="value"
+      aria-label="Peak position"
       style={{
         height: `${InputDimension.height}px`,
         outline: 'none',

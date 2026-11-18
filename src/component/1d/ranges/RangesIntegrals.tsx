@@ -34,6 +34,7 @@ function Integral(props: IntegralProps) {
 
   return (
     <path
+      data-testid="range-integral"
       className="line"
       stroke="black"
       strokeWidth="1"

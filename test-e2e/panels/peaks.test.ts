@@ -3,12 +3,20 @@ import { expect, test } from '@playwright/test';
 import NmriumPage from '../NmriumPage/index.js';
 import { getTableCell, getTableRows } from '../table.js';
 
-const PEAK_ANNOTATIONS_SELECTOR =
-  '_react=Peaks[peaksSource="peaks"] >> _react=PeakAnnotation';
-const FIRST_PEAK_ANNOTATION_SELECTOR = `${PEAK_ANNOTATIONS_SELECTOR} >> nth=0 >> text`;
+function getPeakAnnotations(nmrium: NmriumPage) {
+  return nmrium.page.getByTestId('peak-annotation');
+}
+
+/**
+ * Get the label of the first peak annotation, which shows its position.
+ * @param nmrium - The NMRium page.
+ */
+function getFirstPeakLabel(nmrium: NmriumPage) {
+  return getPeakAnnotations(nmrium).first().locator('text');
+}
 
 async function addPeaks(nmrium: NmriumPage) {
-  const peaksAnnotationLocator = nmrium.page.locator(PEAK_ANNOTATIONS_SELECTOR);
+  const peaksAnnotationLocator = getPeakAnnotations(nmrium);
 
   // Select peak picking tool.
   await nmrium.clickTool('peakPicking');
@@ -32,12 +40,12 @@ async function addPeaks(nmrium: NmriumPage) {
 }
 
 async function shiftX(nmrium: NmriumPage) {
-  const peakLocator = nmrium.page.locator(FIRST_PEAK_ANNOTATION_SELECTOR);
+  const peakLocator = getFirstPeakLabel(nmrium);
 
   await peakLocator.click();
-  const peakInputLocator = nmrium.page.locator(
-    '_react=PeakEditionField >> input',
-  );
+  const peakInputLocator = nmrium.page.getByRole('spinbutton', {
+    name: 'Peak position',
+  });
   await peakInputLocator.pressSequentially('10');
   await peakInputLocator.press('Enter');
 
@@ -57,19 +65,17 @@ async function shiftSpectraByDeltaColumn(nmrium: NmriumPage) {
   await inputLocator.fill('20');
   await inputLocator.press('Enter');
 
-  const peakInputLocator = nmrium.page.locator(FIRST_PEAK_ANNOTATION_SELECTOR);
+  const peakInputLocator = getFirstPeakLabel(nmrium);
   await expect(peakInputLocator).toHaveText('20.00');
 }
 
 async function deletePeak(nmrium: NmriumPage) {
-  const peakAnnotationLocator = nmrium.page.locator(
-    FIRST_PEAK_ANNOTATION_SELECTOR,
-  );
+  const peakAnnotationLocator = getFirstPeakLabel(nmrium);
   await peakAnnotationLocator.hover();
   await nmrium.page.keyboard.press('Delete');
 
   // Test that the peak deleted
-  await expect(nmrium.page.locator(PEAK_ANNOTATIONS_SELECTOR)).toHaveCount(1);
+  await expect(getPeakAnnotations(nmrium)).toHaveCount(1);
 }
 
 test('add/shift/delete peaks', async ({ page }) => {
@@ -101,7 +107,7 @@ test('Automatic peak picking should work', async ({ page }) => {
   //apply auto ranges detection
   await nmrium.page.click('button >> text=Apply');
 
-  await expect(nmrium.page.locator(PEAK_ANNOTATIONS_SELECTOR)).toHaveCount(154);
+  await expect(getPeakAnnotations(nmrium)).toHaveCount(154);
 });
 test('Processed spectra peaks', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);

@@ -59,8 +59,13 @@ export default function SVGResizer(props: ResizerProps) {
       {!disabled && (
         <>
           {' '}
-          <SVGResizerHandle onPointerDown={left.onPointerDown} position={0} />
           <SVGResizerHandle
+            side="left"
+            onPointerDown={left.onPointerDown}
+            position={0}
+          />
+          <SVGResizerHandle
+            side="right"
             onPointerDown={right.onPointerDown}
             position={Math.ceil(position.x2 - position.x1)}
           />
@@ -71,11 +76,13 @@ export default function SVGResizer(props: ResizerProps) {
 }
 
 function SVGResizerHandle(props: {
+  side: 'left' | 'right';
   onPointerDown: PointerEventHandler<SVGAElement>;
   position: number;
 }) {
   return (
     <Group
+      data-testid={`resizer-handle-${props.side}`}
       onPointerDown={props.onPointerDown}
       transform={`translate(${props.position})`}
       data-no-export="true"

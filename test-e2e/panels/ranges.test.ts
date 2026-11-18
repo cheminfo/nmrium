@@ -42,9 +42,9 @@ async function shiftSignal(nmrium: NmriumPage) {
   await inputLocator.selectText();
   await inputLocator.fill('100');
   await inputLocator.press('Enter');
-  const trackerLocator = nmrium.page.locator(
-    '_react=HorizontalAxis1D >> text=100',
-  );
+  const trackerLocator = nmrium.page
+    .getByRole('group', { name: 'Horizontal axis' })
+    .getByText('100', { exact: true });
   await expect(trackerLocator).toHaveCount(1);
 }
 
@@ -52,8 +52,7 @@ async function simulateResizeWithoutChange(nmrium: NmriumPage) {
   const rightResizer = nmrium.page
     .getByTestId('range')
     .nth(0)
-    .locator('_react=SVGResizerHandle')
-    .nth(1);
+    .getByTestId('resizer-handle-right');
 
   await rightResizer.dblclick();
 
@@ -64,8 +63,7 @@ async function resizeRange(nmrium: NmriumPage) {
   const rightResizer = nmrium.page
     .getByTestId('range')
     .nth(0)
-    .locator('_react=SVGResizerHandle')
-    .nth(1);
+    .getByTestId('resizer-handle-right');
 
   const {
     x,
@@ -97,7 +95,7 @@ async function resizeRange(nmrium: NmriumPage) {
 }
 
 async function deleteRange(nmrium: NmriumPage) {
-  const rangeLocator = nmrium.page.locator('_react=Range >> nth=0 ');
+  const rangeLocator = nmrium.page.getByTestId('range').first();
   await rangeLocator.hover();
   await nmrium.page.keyboard.press('Delete');
   await expect(nmrium.page.getByTestId('range')).toHaveCount(1);
@@ -237,7 +235,7 @@ test('Multiplicity should be visible', async ({ page }) => {
     ).toBeVisible();
     // Check multiplicity tree is visible
     expect(
-      await nmrium.page.locator('_react=MultiplicityTree').count(),
+      await nmrium.page.getByTestId('multiplicity-tree').count(),
     ).toBeGreaterThan(0);
   });
   await test.step('Check that multiplicity tree btn save state', async () => {
@@ -289,14 +287,12 @@ test('Range state', async ({ page }) => {
     ).toBeHidden();
 
     // Check peaks within ranges are hidden
-    await expect(nmrium.page.locator('_react=PeakAnnotation')).toBeHidden();
+    await expect(nmrium.page.getByTestId('range-peak-annotation')).toBeHidden();
     // Check integrals within ranges are hidden
-    await expect(
-      nmrium.page.locator('_react=RangesIntegrals >> _react=Integral'),
-    ).toBeHidden();
+    await expect(nmrium.page.getByTestId('range-integral')).toBeHidden();
 
     // Check multiplicity tree
-    await expect(nmrium.page.locator('_react=MultiplicityTree')).toBeHidden();
+    await expect(nmrium.page.getByTestId('multiplicity-tree')).toBeHidden();
 
     //show peaks
     await nmrium.page.click(
@@ -318,17 +314,15 @@ test('Range state', async ({ page }) => {
     ).toBeVisible();
     // Check peaks within ranges are visible
     expect(
-      await nmrium.page.locator('_react=PeakAnnotation').count(),
+      await nmrium.page.getByTestId('range-peak-annotation').count(),
     ).toBeGreaterThan(0);
     // Check integrals within ranges are visible
     expect(
-      await nmrium.page
-        .locator('_react=RangesIntegrals >> _react=Integral')
-        .count(),
+      await nmrium.page.getByTestId('range-integral').count(),
     ).toBeGreaterThan(0);
     // Check multiplicity tree is visible
     expect(
-      await nmrium.page.locator('_react=MultiplicityTree').count(),
+      await nmrium.page.getByTestId('multiplicity-tree').count(),
     ).toBeGreaterThan(0);
   });
   await test.step('Check that first spectrum range state saved', async () => {
@@ -357,17 +351,15 @@ test('Range state', async ({ page }) => {
 
     // Check range peaks
     expect(
-      await nmrium.page.locator('_react=PeakAnnotation').count(),
+      await nmrium.page.getByTestId('range-peak-annotation').count(),
     ).toBeGreaterThan(0);
     // Check range integrals
     expect(
-      await nmrium.page
-        .locator('_react=RangesIntegrals >> _react=Integral')
-        .count(),
+      await nmrium.page.getByTestId('range-integral').count(),
     ).toBeGreaterThan(0);
     // Check multiplicity tree is visible
     expect(
-      await nmrium.page.locator('_react=MultiplicityTree').count(),
+      await nmrium.page.getByTestId('multiplicity-tree').count(),
     ).toBeGreaterThan(0);
   });
 });
@@ -457,10 +449,14 @@ test('2D spectra reference change', async ({ page }) => {
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
 
     await expect(
-      nmrium.page.locator('_react=DirectAxis2D >> _react=Tickets  >> text'),
+      nmrium.page
+        .getByRole('group', { name: 'Horizontal axis' })
+        .getByTestId('axis-primary-tick-label'),
     ).toContainText(xAxisDefault.map(String));
     await expect(
-      nmrium.page.locator('_react=IndirectAxis2D >> _react=Tickets >> text'),
+      nmrium.page
+        .getByRole('group', { name: 'Vertical axis' })
+        .getByTestId('axis-primary-tick-label'),
     ).toContainText(yAxisDefault.map(String));
   });
 
@@ -505,10 +501,14 @@ test('2D spectra reference change', async ({ page }) => {
     const newXAxis = xAxisDefault.map((n) => String(n + xShift));
     const newYAxis = yAxisDefault.map((n) => String(n + yShift));
     await expect(
-      nmrium.page.locator('_react=DirectAxis2D >> _react=Tickets >> text'),
+      nmrium.page
+        .getByRole('group', { name: 'Horizontal axis' })
+        .getByTestId('axis-primary-tick-label'),
     ).toContainText(newXAxis);
     await expect(
-      nmrium.page.locator('_react=IndirectAxis2D >> _react=Tickets >> text'),
+      nmrium.page
+        .getByRole('group', { name: 'Vertical axis' })
+        .getByTestId('axis-primary-tick-label'),
     ).toContainText(newYAxis);
   });
 });

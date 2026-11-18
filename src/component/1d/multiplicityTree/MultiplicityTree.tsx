@@ -176,6 +176,7 @@ function Tree(props: TreeProps) {
       }}
     >
       <Group
+        data-testid="multiplicity-tree"
         transform={`translate(0,-${(activeSpectrum?.index || 0) * shiftY})`}
         isActive={isAssignmentActive}
         isHighlighted={isHighlighted}
