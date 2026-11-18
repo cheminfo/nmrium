@@ -86,7 +86,7 @@ function getCrossingAssignmentLabel({
     return xAssignment || '';
   }
 
-  return [xAssignment, yAssignment].filter(Boolean).join('-');
+  return [xAssignment, yAssignment].filter(Boolean).join('→');
 }
 
 export function buildCandidates({
