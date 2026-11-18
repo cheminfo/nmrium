@@ -228,6 +228,7 @@ interface SectionItemProps extends BaseSectionProps {
 
 interface SectionProps {
   children?: ReactNode;
+  'aria-label'?: string;
   isOverflow?: boolean;
   renderActiveSectionContentOnly?: boolean;
   matchContentHeight?: boolean;
@@ -239,6 +240,7 @@ export function Sections(props: SectionProps) {
     isOverflow = false,
     renderActiveSectionContentOnly = false,
     matchContentHeight = false,
+    'aria-label': ariaLabel,
   } = props;
 
   const state = useMemo(() => {
@@ -247,6 +249,8 @@ export function Sections(props: SectionProps) {
   return (
     <SectionsContext value={state}>
       <Container
+        role="list"
+        aria-label={ariaLabel}
         isOverflow={isOverflow}
         matchContentHeight={matchContentHeight}
       >
@@ -568,7 +572,7 @@ function DroppableSectionWrapper(props: DroppableProps) {
   }, [id, indexOfTarget, onReorder]);
 
   return (
-    <div ref={ref} data-drop-id={id}>
+    <div ref={ref} role="listitem" data-drop-id={id}>
       {children}
     </div>
   );

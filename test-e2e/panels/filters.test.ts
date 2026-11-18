@@ -7,6 +7,13 @@ async function open13CFidSpectrum(nmrium: NmriumPage) {
   await nmrium.page.click('li >> text=13C FID >> nth=0');
 }
 
+async function clickApply(nmrium: NmriumPage) {
+  await nmrium
+    .getToolOptions()
+    .getByRole('button', { name: 'Apply', exact: true })
+    .click();
+}
+
 async function apodizationFilter(
   nmrium: NmriumPage,
   { keyboard = false } = {},
@@ -19,40 +26,32 @@ async function apodizationFilter(
   }
 
   await expect(nmrium.page.getByTestId('apodization-line')).toBeVisible();
-  await nmrium.page.fill(
-    '_react=ApodizationOptionsPanel >> [name*="lineBroadening"]',
-    '2',
-  );
-  await nmrium.page
-    .locator(
-      '_react=ApodizationOptionsPanel >> [name*="lineBroadening"].debounce-end',
-    )
-    .waitFor({ state: 'visible' });
+  const lineBroadening = nmrium
+    .getFiltersList()
+    .getByRole('spinbutton', { name: 'Line broadening:' });
+  await lineBroadening.fill('2');
+  await expect(lineBroadening).toHaveClass(/debounce-end/);
 
-  await nmrium.page.click('_react=Header >> button >> text=Apply');
+  await clickApply(nmrium);
 
   await expect(
-    nmrium.page
-      .locator('_react=FiltersSectionsPanel')
+    nmrium
+      .getFiltersList()
       .getByText('Apodization / Window functions', { exact: true }),
   ).toBeVisible();
 }
 
 async function zeroFillingFilter(nmrium: NmriumPage) {
   await nmrium.clickTool('zeroFilling');
-  await nmrium.page.click('_react=Header >> button >> text=Apply');
+  await clickApply(nmrium);
 
-  await expect(
-    nmrium.page.locator('_react=FiltersSectionsPanel >> text=Zero Filling'),
-  ).toBeVisible();
+  await expect(nmrium.getFiltersList().getByText('Zero Filling')).toBeVisible();
 }
 
 async function fourierTransformFilter(nmrium: NmriumPage) {
   await nmrium.clickTool('fft');
 
-  await expect(
-    nmrium.page.locator('_react=FiltersSectionsPanel >> text=FFT'),
-  ).toBeVisible();
+  await expect(nmrium.getFiltersList().getByText('FFT')).toBeVisible();
 }
 
 async function baselineCorrectionFilter(
@@ -65,12 +64,10 @@ async function baselineCorrectionFilter(
   } else {
     await nmrium.clickTool('baselineCorrection');
   }
-  await nmrium.page.click('_react=Header >> button >> text=Apply');
+  await clickApply(nmrium);
 
   await expect(
-    nmrium.page.locator(
-      '_react=FiltersSectionsPanel >> text=Baseline correction',
-    ),
+    nmrium.getFiltersList().getByText('Baseline correction'),
   ).toBeVisible();
 }
 
@@ -82,12 +79,13 @@ async function addPeaks(nmrium: NmriumPage, { keyboard = false } = {}) {
     await nmrium.clickTool('peakPicking');
   }
 
-  await nmrium.page.click('_react=Header >> button >> text=Apply');
+  await nmrium
+    .getToolOptions()
+    .getByRole('button', { name: 'Apply to 1 spectra' })
+    .click();
 
   await expect(
-    nmrium.page.locator(
-      '_react=FiltersSectionsPanel >> text=Baseline correction',
-    ),
+    nmrium.getFiltersList().getByText('Baseline correction'),
   ).toBeVisible();
 }
 async function checkPeakNumber(nmrium: NmriumPage, number: number) {
@@ -127,9 +125,7 @@ test('process 1d FID 13c spectrum', async ({ page }) => {
     await nmrium.assertOneDimensionXScaleDomain(0, 200);
   });
   await test.step('Check filters panel', async () => {
-    await expect(
-      nmrium.page.locator('_react=FiltersSectionsPanel >> _react=SectionItem'),
-    ).toHaveCount(6);
+    await expect(nmrium.getFiltersList().getByRole('listitem')).toHaveCount(6);
   });
   await test.step('Check spectrum is displayed', async () => {
     await expect(nmrium.page.getByTestId('spectrum-line')).toBeVisible();
@@ -163,9 +159,7 @@ test('process 13c spectrum with shortcuts', async ({ page }) => {
     await checkPeakNumber(nmrium, 16);
   });
   await test.step('Check filters panel', async () => {
-    await expect(
-      nmrium.page.locator('_react=FiltersSectionsPanel >> _react=SectionItem'),
-    ).toHaveCount(6);
+    await expect(nmrium.getFiltersList().getByRole('listitem')).toHaveCount(6);
   });
 });
 
@@ -182,10 +176,7 @@ test('Processed spectra filters', async ({ page }) => {
     //Open peaks panel
     await nmrium.clickPanel('Processing');
 
-    const filters = nmrium.page.locator(
-      '_react=FiltersSectionsPanel >> _react=SectionItem',
-    );
-    await expect(filters).toHaveCount(6);
+    await expect(nmrium.getFiltersList().getByRole('listitem')).toHaveCount(6);
   });
 });
 test('Exclusion zones', async ({ page }) => {
@@ -243,9 +234,9 @@ test('Exclusion zones', async ({ page }) => {
     const spectraTable = nmrium.page.locator('_react=SpectraTable');
     await spectraTable.locator(`tbody tr`).nth(2).click();
 
-    const filters = nmrium.page.locator('_react=FiltersSectionsPanel');
-
-    await expect(filters.locator('text=Exclusion zones')).toBeVisible();
+    await expect(
+      nmrium.getFiltersList().getByText('Exclusion zones'),
+    ).toBeVisible();
   });
 
   await test.step('add exclusion zones to the active spectrum', async () => {

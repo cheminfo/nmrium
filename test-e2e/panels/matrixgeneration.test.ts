@@ -26,22 +26,12 @@ test('Matrix generation panel', async ({ page }) => {
   await test.step('check matrix generation', async () => {
     await nmrium.clickPanel('Matrix generation');
 
-    await nmrium.page.fill(
-      '_react=MatrixGenerationPanel >> [name*="range.from"]',
-      '0',
-    );
-    await nmrium.page.fill(
-      '_react=MatrixGenerationPanel >> [name*="range.to"]',
-      '5',
-    );
-    await nmrium.page.fill(
-      '_react=MatrixGenerationPanel >> [name*="numberOfPoints"]',
-      '1000',
-    );
+    const panel = nmrium.getPanel('Matrix generation');
+    await panel.getByLabel('From', { exact: true }).fill('0');
+    await panel.getByLabel('To', { exact: true }).fill('5');
+    await panel.getByLabel('Number of points', { exact: true }).fill('1000');
 
-    await nmrium.page.click(
-      '_react=MatrixGenerationPanel >> text=Apply processing',
-    );
+    await panel.getByRole('button', { name: 'Apply processing' }).click();
 
     const path = await nmrium.page.getAttribute('#nmrSVG path.line ', 'd');
     const pointCount = path?.match(/-?\d+(?<temp1>\.\d+)?/g)?.length ?? 0;

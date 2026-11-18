@@ -290,7 +290,7 @@ function FiltersInner(props: FiltersInnerProps) {
   }
 
   return (
-    <Sections isOverflow renderActiveSectionContentOnly>
+    <Sections aria-label="Filters" isOverflow renderActiveSectionContentOnly>
       {filtersList.map((filter, index) => {
         const { id, name, error, value } = filter;
         const FilterOptionsPanel = filterOptionPanels[name];

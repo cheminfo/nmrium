@@ -388,8 +388,10 @@ test('Auto peak picking on all spectra', async ({ page }) => {
     await nmrium.getSpectraTab('1H').click();
     await expect(nmrium.page.getByTestId('range')).toHaveCount(10);
     await expect(
-      nmrium.page.locator('_react=RangesPanel >> _react=PanelHeader'),
-    ).toContainText('[ 10 ]');
+      nmrium
+        .getPanel('Ranges / Multiplet analysis')
+        .getByText('[ 10 ]', { exact: true }),
+    ).toBeVisible();
   });
 
   await test.step("Check 13C spectrum's ranges", async () => {
@@ -397,8 +399,10 @@ test('Auto peak picking on all spectra', async ({ page }) => {
     await nmrium.getSpectraTab('13C').click();
     await expect(nmrium.page.getByTestId('range')).toHaveCount(17);
     await expect(
-      nmrium.page.locator('_react=RangesPanel >> _react=PanelHeader'),
-    ).toContainText('[ 17 ]');
+      nmrium
+        .getPanel('Ranges / Multiplet analysis')
+        .getByText('[ 17 ]', { exact: true }),
+    ).toBeVisible();
   });
 
   await test.step("Check 1H,1H spectrum's ranges", async () => {
@@ -408,8 +412,8 @@ test('Auto peak picking on all spectra', async ({ page }) => {
     await nmrium.clickPanel('Zones');
     await expect(nmrium.page.locator('.zone')).toHaveCount(41);
     await expect(
-      nmrium.page.locator('_react=ZonesPanel >> _react=PanelHeader'),
-    ).toContainText('[ 41 ]');
+      nmrium.getPanel('Zones').getByText('[ 41 ]', { exact: true }),
+    ).toBeVisible();
   });
 
   await test.step("Check 1H,13C spectrum's ranges", async () => {
@@ -417,16 +421,16 @@ test('Auto peak picking on all spectra', async ({ page }) => {
     await nmrium.getSpectraTab('1H,13C').click();
     await expect(nmrium.page.locator('.zone')).toHaveCount(15);
     await expect(
-      nmrium.page.locator('_react=ZonesPanel >> _react=PanelHeader'),
-    ).toContainText('[ 15 ]');
+      nmrium.getPanel('Zones').getByText('[ 15 ]', { exact: true }),
+    ).toBeVisible();
 
     await nmrium.page.click(
       '_react=SpectrumListPanel >> _react=TableRow[key="1"]',
     );
     await expect(nmrium.page.locator('.zone')).toHaveCount(44);
     await expect(
-      nmrium.page.locator('_react=ZonesPanel >> _react=PanelHeader'),
-    ).toContainText('[ 44 ]');
+      nmrium.getPanel('Zones').getByText('[ 44 ]', { exact: true }),
+    ).toBeVisible();
   });
 });
 
@@ -455,8 +459,8 @@ test('2D spectra reference change', async ({ page }) => {
   await test.step("Check spectrum's zones", async () => {
     await expect(nmrium.page.locator('.zone')).toHaveCount(15);
     await expect(
-      nmrium.page.locator('_react=ZonesPanel >> _react=PanelHeader'),
-    ).toContainText('[ 15 ]');
+      nmrium.getPanel('Zones').getByText('[ 15 ]', { exact: true }),
+    ).toBeVisible();
 
     await expect(
       nmrium.page.locator(
