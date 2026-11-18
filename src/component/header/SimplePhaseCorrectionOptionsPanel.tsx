@@ -33,6 +33,10 @@ export function SimplePhaseCorrectionOptionsPanel() {
           filterable={false}
           itemsEqual="value"
           {...defaultSelectProps}
+          popoverTargetProps={{
+            ...defaultSelectProps.popoverTargetProps,
+            'aria-label': 'Phase correction mode',
+          }}
         >
           <Button
             text={phaseCorrectionTypeItem?.label}
