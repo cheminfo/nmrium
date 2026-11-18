@@ -24,6 +24,7 @@ import {
   updateRangesRelativeValues,
 } from '../../../data/data1d/Spectrum1D/index.js';
 import type { ChangeRangeRelativeValueProps } from '../../../data/data1d/Spectrum1D/ranges/changeRangeRelativeValue.js';
+import { RANGE_PEAK_NOISE_FACTOR } from '../../../data/data1d/Spectrum1D/ranges/constants.js';
 import type { DetectRangesOptions } from '../../../data/data1d/Spectrum1D/ranges/detectRanges.js';
 import { unlink } from '../../../data/utilities/RangeUtilities.js';
 import { isProton } from '../../../data/utilities/isProton.js';
@@ -252,7 +253,7 @@ function handleAutoRangesDetection(
         smoothY: false,
         sensitivity: 100,
         broadWidth: 0.05,
-        thresholdFactor: 8,
+        thresholdFactor: RANGE_PEAK_NOISE_FACTOR,
         minMaxRatio,
         maxAbsoluteRatio: minMaxRatio,
         direction: lookNegative ? 'both' : 'positive',
@@ -273,7 +274,7 @@ function handleAutoRangesDetection(
 function handleAutoSpectraRangesDetection(draft: Draft<State>) {
   const peakPicking: DetectRangesOptions['peakPicking'] = {
     sensitivity: 100,
-    thresholdFactor: 8,
+    thresholdFactor: RANGE_PEAK_NOISE_FACTOR,
     minMaxRatio: 0.05,
   };
   const { data, molecules } = draft;

@@ -15,13 +15,18 @@ interface DetectSignalsByMultipletAnalysisOptions {
   fromIndex: number;
   toIndex: number;
   frequency: number;
+  /**
+   * Baseline noise of the whole spectrum. It replaces the cutoff that
+   * `xyAutoPeaksPicking` would otherwise derive from the analysed range.
+   */
+  noiseLevel?: number;
 }
 
 export function detectSignalsByMultipletAnalysis(
   data: DataXY<Float64Array>,
   options: DetectSignalsByMultipletAnalysisOptions,
 ) {
-  const { fromIndex, toIndex, frequency } = options;
+  const { fromIndex, toIndex, frequency, noiseLevel } = options;
   const dataRoi = {
     x: data.x.slice(fromIndex, toIndex),
     y: data.y.slice(fromIndex, toIndex),
@@ -34,6 +39,7 @@ export function detectSignalsByMultipletAnalysis(
     from,
     to,
     frequency,
+    noiseLevel,
     minMaxRatio: 0.1,
     maxAbsoluteRatio: 0.1,
     broadWidth: 0.25,
