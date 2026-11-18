@@ -14,7 +14,10 @@ test('automatic assignment panel', async ({ page }, info) => {
   });
   await test.step('activate automatic assignment panel', async () => {
     await nmrium.page.click('_react=ToolbarItem[id="general-settings"]');
-    await nmrium.page.getByRole('tablist').locator('text=Panels').click();
+    await nmrium.page
+      .getByRole('dialog')
+      .getByRole('tab', { name: 'Panels', exact: true })
+      .click();
 
     //change panel status to active (displays the panel in the accordion panels and the right bar )
     await nmrium.changePanelStatus('Automatic assignment', 'active');

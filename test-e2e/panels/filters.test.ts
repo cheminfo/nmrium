@@ -198,7 +198,7 @@ test('Exclusion zones', async ({ page }) => {
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
 
     // select the 1H tab
-    await nmrium.page.click('_react=SpectraTabs >> _react=Tab[tabid="1H"]');
+    await nmrium.getSpectraTab('1H').click();
   });
 
   await test.step('activate exclusion zones tool', async () => {
@@ -206,10 +206,14 @@ test('Exclusion zones', async ({ page }) => {
     await nmrium.clickTool('general-settings');
 
     //click on the display tab
-    await nmrium.page.getByRole('tablist').locator('text=tools').click();
+    await nmrium.page
+      .getByRole('dialog')
+      .getByRole('tab', { name: 'Tools', exact: true })
+      .click();
 
     //enable exclusion zone tool
     await nmrium.page
+      .getByRole('dialog')
       .getByRole('tabpanel')
       .getByLabel('Exclusion zones')
       // it seems tanstack-blueprint checkboxes have issues with `actionability`

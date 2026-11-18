@@ -28,12 +28,47 @@ test('Check if the color picker is visible after click on the ColorIndicator', a
 }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open2D();
-  await nmrium.page.click('_react=SpectraTabs >> _react=Tab[tabid="1H,1H"]');
+  await nmrium.getSpectraTab('1H,1H').click();
   const colorPicker = nmrium.page.getByTestId('selected-color-btn');
 
   await expect(colorPicker).toHaveCount(0);
   await nmrium.page.click('_react=ColorIndicator >> nth=0');
   await expect(colorPicker).toHaveCount(2);
+});
+
+test('Navigate spectra tabs with the keyboard', async ({ page }) => {
+  const nmrium = await NmriumPage.create(page);
+  await nmrium.open2D();
+
+  const tab1H = nmrium.getSpectraTab('1H');
+  const tab2D = nmrium.getSpectraTab('1H,1H');
+
+  await tab1H.click();
+  await expect(tab1H).toHaveAttribute('aria-selected', 'true');
+  await expect(tab1H).toBeFocused();
+
+  await page.keyboard.press('ArrowRight');
+  await expect(tab2D).toHaveAttribute('aria-selected', 'true');
+  await expect(tab2D).toBeFocused();
+  await expect(tab1H).toHaveAttribute('aria-selected', 'false');
+
+  // Wraps around to the first tab.
+  await page.keyboard.press('ArrowRight');
+  await expect(tab1H).toHaveAttribute('aria-selected', 'true');
+  await expect(tab1H).toBeFocused();
+
+  await page.keyboard.press('End');
+  await expect(tab2D).toHaveAttribute('aria-selected', 'true');
+  await expect(tab2D).toBeFocused();
+
+  await page.keyboard.press('Home');
+  await expect(tab1H).toHaveAttribute('aria-selected', 'true');
+  await expect(tab1H).toBeFocused();
+
+  // The panel shows the content of the selected tab.
+  await expect(
+    nmrium.getPanel('Spectra').getByRole('tabpanel'),
+  ).toHaveAccessibleName('1H');
 });
 
 test('Should Zoom', async ({ page }) => {
@@ -76,7 +111,7 @@ test('Check change spectrum color, Should be green', async ({ page }) => {
 test('Should 2d deactivate spectrum', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open2D();
-  await nmrium.page.click('_react=SpectraTabs >> _react=Tab[tabid="1H,1H"]');
+  await nmrium.getSpectraTab('1H,1H').click();
   const spectrumButtonLocator = nmrium.page.locator(
     '_react=SpectraTable >> tbody tr >> nth=0',
   );
@@ -99,13 +134,10 @@ test('2d spectrum', async ({ page }) => {
     // Wait the spectrum to load
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
 
-    await nmrium.page.click('_react=SpectraTabs >> _react=Tab[tabid="1H"]');
+    await nmrium.getSpectraTab('1H').click();
   });
   await test.step('Check two spectrum tabs', async () => {
-    const Tabs = nmrium.page.locator('_react=SpectrumListPanel >> _react=Tab');
-    await expect(Tabs).toHaveCount(2);
-    await expect(Tabs.first()).toHaveText('1H');
-    await expect(Tabs.last()).toHaveText('1H,1H');
+    await expect(nmrium.getSpectraTabs()).toHaveText(['1H', '1H,1H']);
   });
   await test.step('Change 1H spectrum color', async () => {
     // Check ColorIndicator initial color
@@ -141,7 +173,7 @@ test('2d spectrum', async ({ page }) => {
     await expect(nmrium.page.locator('_react=Saturation')).toBeHidden();
   });
   await test.step('Change H1,H1 spectrum', async () => {
-    await nmrium.page.click('_react=SpectraTabs >> _react=Tab[tabid="1H,1H"]');
+    await nmrium.getSpectraTab('1H,1H').click();
     // Check top spectrum
     await expect(nmrium.page.locator('_react=Top1DChart')).toBeVisible();
 
@@ -265,7 +297,7 @@ test('2d spectrum', async ({ page }) => {
   });
   await test.step('Delete 1H tab', async () => {
     // Go to 1H tab
-    await nmrium.page.click('_react=SpectraTabs >> _react=Tab[tabid="1H"]');
+    await nmrium.getSpectraTab('1H').click();
 
     await nmrium.page.click(
       '_react=AccordionItem[title="Spectra"] >> _react=ToolbarItem[id="delete-button"] >> nth=0',
@@ -274,9 +306,7 @@ test('2d spectrum', async ({ page }) => {
     await nmrium.page.click('div[role="alertdialog"] >> text=Yes');
 
     // Check tabs
-    const Tabs = nmrium.page.locator('_react=SpectrumListPanel >> _react=Tab');
-    await expect(Tabs).toHaveCount(1);
-    await expect(Tabs).toHaveText('1H,1H');
+    await expect(nmrium.getSpectraTabs()).toHaveText(['1H,1H']);
     // Check top spectrum
     await expect(nmrium.page.locator('_react=Top1DChart')).toBeHidden();
     // Check left spectrum
@@ -295,10 +325,7 @@ test('2d spectrum', async ({ page }) => {
     await nmrium.clickToolByTitle('Add missing projection');
 
     // Check tabs
-    const Tabs = nmrium.page.locator('_react=SpectrumListPanel >> _react=Tab');
-    await expect(Tabs).toHaveCount(2);
-    await expect(Tabs.first()).toHaveText('1H');
-    await expect(Tabs.last()).toHaveText('1H,1H');
+    await expect(nmrium.getSpectraTabs()).toHaveText(['1H', '1H,1H']);
     // Check top spectrum
     await expect(nmrium.page.locator('_react=Top1DChart')).toBeVisible();
     // Check left spectrum
