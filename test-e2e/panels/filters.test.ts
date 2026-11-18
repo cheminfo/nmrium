@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 import NmriumPage from '../NmriumPage/index.js';
+import { getTableCell, getTableRows } from '../table.js';
 
 async function open13CFidSpectrum(nmrium: NmriumPage) {
   await nmrium.page.click('li >> text=Cytisine');
@@ -89,16 +90,13 @@ async function addPeaks(nmrium: NmriumPage, { keyboard = false } = {}) {
   ).toBeVisible();
 }
 async function checkPeakNumber(nmrium: NmriumPage, number: number) {
-  const peaksTable = nmrium.page.locator(
-    '_react=PeaksTable >> _react=TanStackTable >> .table-container',
-  );
-  await peaksTable.evaluate((e) => {
-    e.scrollTop = e.scrollHeight;
-  });
+  const peaksTable = nmrium.getPanel('Peaks').getByRole('table');
+  // The table is virtualized: scroll to the end to render the last peak.
+  await peaksTable.hover();
+  await nmrium.page.mouse.wheel(0, 100_000);
 
-  const lastPeak = peaksTable.locator(`_react=TableRow[key="${number - 1}"]`);
-
-  await expect(lastPeak).toBeVisible();
+  const lastPeak = await getTableCell(peaksTable, -1, '#');
+  await expect(lastPeak).toHaveText(String(number));
 }
 
 test('process 1d FID 13c spectrum', async ({ page }) => {
@@ -231,8 +229,7 @@ test('Exclusion zones', async ({ page }) => {
 
   await test.step('Check Exclusion Zones filter for the third spectrum', async () => {
     // Select the third spectrum to be sure that the filter is not only applied to the first spectrum.
-    const spectraTable = nmrium.page.locator('_react=SpectraTable');
-    await spectraTable.locator(`tbody tr`).nth(2).click();
+    await getTableRows(nmrium.getSpectraTable()).nth(2).click();
 
     await expect(
       nmrium.getFiltersList().getByText('Exclusion zones'),

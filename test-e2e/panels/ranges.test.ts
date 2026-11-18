@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 
 import NmriumPage from '../NmriumPage/index.js';
 import type { BoundingBox } from '../playwright_types.js';
+import { getTableCell, getTableRows } from '../table.js';
 
 async function addRange(
   nmrium: NmriumPage,
@@ -17,13 +18,27 @@ async function addRange(
   await expect(nmrium.page.getByTestId(`range`)).toHaveCount(count);
 }
 
+/**
+ * Get a cell of the first zone in the zones table.
+ * @param nmrium - The NMRium page.
+ * @param index - 1 for the F2 (direct) dimension, 2 for the F1 (indirect) dimension.
+ */
+function zoneCell(nmrium: NmriumPage, index: 1 | 2) {
+  return getTableRows(nmrium.getPanel('Zones').getByRole('table'))
+    .first()
+    .getByRole('cell')
+    .nth(index);
+}
+
 async function shiftSignal(nmrium: NmriumPage) {
-  const signalColumnLocator = nmrium.page.locator(
-    '_react=RangesTable >> .editable-column-input >> nth=1 ',
+  const signalColumnLocator = await getTableCell(
+    nmrium.getPanel('Ranges / Multiplet analysis').getByRole('table'),
+    0,
+    'δ (ppm)',
   );
 
   await signalColumnLocator.dblclick();
-  const inputLocator = signalColumnLocator.locator('input');
+  const inputLocator = signalColumnLocator.getByRole('spinbutton');
   await inputLocator.selectText();
   await inputLocator.fill('100');
   await inputLocator.press('Enter');
@@ -136,8 +151,8 @@ test('Automatic ranges detection should work', async ({ page }) => {
   expect(await nmrium.page.getByTestId('range').count()).toBeGreaterThanOrEqual(
     10,
   );
-  const ranges = nmrium.page.locator(
-    '_react=RangesTable >> _react=RangesTableRow',
+  const ranges = getTableRows(
+    nmrium.getPanel('Ranges / Multiplet analysis').getByRole('table'),
   );
 
   const rangesData = [
@@ -318,9 +333,9 @@ test('Range state', async ({ page }) => {
   });
   await test.step('Check that first spectrum range state saved', async () => {
     // Change spectra
-    await nmrium.page.click('_react=SpectraTable >> tbody tr >> nth=0');
+    await getTableRows(nmrium.getSpectraTable()).nth(0).click();
     // Change spectra
-    await nmrium.page.click('_react=SpectraTable >> tbody tr >> nth=1');
+    await getTableRows(nmrium.getSpectraTable()).nth(1).click();
     // Check that the peaks btn is not active
 
     //for now i will use the id to access the toggle peals picking toolbar item because I have tried all
@@ -424,9 +439,7 @@ test('Auto peak picking on all spectra', async ({ page }) => {
       nmrium.getPanel('Zones').getByText('[ 15 ]', { exact: true }),
     ).toBeVisible();
 
-    await nmrium.page.click(
-      '_react=SpectrumListPanel >> _react=TableRow[key="1"]',
-    );
+    await getTableRows(nmrium.getSpectraTable()).nth(1).click();
     await expect(nmrium.page.locator('.zone')).toHaveCount(44);
     await expect(
       nmrium.getPanel('Zones').getByText('[ 44 ]', { exact: true }),
@@ -462,48 +475,24 @@ test('2D spectra reference change', async ({ page }) => {
       nmrium.getPanel('Zones').getByText('[ 15 ]', { exact: true }),
     ).toBeVisible();
 
-    await expect(
-      nmrium.page.locator(
-        '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=1',
-      ),
-    ).toHaveText('2.91');
-    await expect(
-      nmrium.page.locator(
-        '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=2',
-      ),
-    ).toHaveText('35.65');
+    await expect(zoneCell(nmrium, 1)).toHaveText('2.91');
+    await expect(zoneCell(nmrium, 2)).toHaveText('35.65');
   });
   await test.step('Change reference', async () => {
     const x = 1000;
     const y = 2000;
-    await nmrium.page
-      .locator(
-        '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=1',
-      )
-      .click();
+    await zoneCell(nmrium, 1).click();
 
     await nmrium.page.keyboard.type(x.toString());
     await nmrium.page.keyboard.press('Enter');
 
-    await nmrium.page
-      .locator(
-        '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=2',
-      )
-      .click();
+    await zoneCell(nmrium, 2).click();
 
     await nmrium.page.keyboard.type(y.toString());
     await nmrium.page.keyboard.press('Enter');
 
-    await expect(
-      nmrium.page.locator(
-        '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=1',
-      ),
-    ).toHaveText(x.toFixed(2));
-    await expect(
-      nmrium.page.locator(
-        '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=2',
-      ),
-    ).toHaveText(y.toFixed(2));
+    await expect(zoneCell(nmrium, 1)).toHaveText(x.toFixed(2));
+    await expect(zoneCell(nmrium, 2)).toHaveText(y.toFixed(2));
 
     await expect(
       nmrium.page.locator(
