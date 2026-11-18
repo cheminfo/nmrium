@@ -106,7 +106,7 @@ test('should draw structure and display it with MF', async ({ page }) => {
   });
 });
 
-test('molecules 1H spectrum', async ({ page, browserName }) => {
+test('molecules 1H spectrum', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
 
@@ -404,39 +404,36 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     ).toBeVisible();
   });
 
-  if (browserName !== 'webkit') {
-    await test.step('Check copy as molfile V3 or V2 and paste', async () => {
-      await clickExportMenuOption(nmrium, 'text=Copy as molfile V3');
-      await nmrium.page.getByTestId('paste-molecule-action').click();
-      await clickExportMenuOption(nmrium, 'text=Copy as molfile V2');
-      await nmrium.page.getByTestId('paste-molecule-action').click();
+  await test.step('Check copy as molfile V3 or V2 and paste', async () => {
+    await clickExportMenuOption(nmrium, 'text=Copy as molfile V3');
+    await nmrium.page.getByTestId('paste-molecule-action').click();
+    await clickExportMenuOption(nmrium, 'text=Copy as molfile V2');
+    await nmrium.page.getByTestId('paste-molecule-action').click();
 
-      await expect(
-        nmrium.page.locator('_react=MoleculePanel >> text=5 / 5'),
-      ).toBeVisible();
-      await expect(
-        nmrium.page.locator('text=C6H6 - 78.11 >> nth=1'),
-      ).toBeVisible();
-      await expect(nmrium.page.locator('text=C6H6 - 78.11')).toHaveCount(3);
-      await checkMoleculeStructureIsExists(nmrium, 3);
-    });
-    await test.step('Delete the copy', async () => {
-      // Delete molecule.
-      await nmrium.page.click(
-        '_react=ToolbarItem[tooltip="Delete molecule" i]',
-      );
-      // Check deleted molecule.
-      await expect(nmrium.page.locator('text=C6H6 - 78.11')).toHaveCount(2);
-      // Check floated molecule.
-      await expect(
-        nmrium.page.locator(
-          '_react=DraggableStructure >> _react=MoleculeStructure >> nth=0',
-        ),
-      ).toBeVisible();
-    });
+    await expect(
+      nmrium.page.locator('_react=MoleculePanel >> text=5 / 5'),
+    ).toBeVisible();
+    await expect(
+      nmrium.page.locator('text=C6H6 - 78.11 >> nth=1'),
+    ).toBeVisible();
+    await expect(nmrium.page.locator('text=C6H6 - 78.11')).toHaveCount(3);
+    await checkMoleculeStructureIsExists(nmrium, 3);
+  });
+
+  await test.step('Delete the copy', async () => {
+    // Delete molecule.
+    await nmrium.page.click('_react=ToolbarItem[tooltip="Delete molecule" i]');
+    // Check deleted molecule.
+    await expect(nmrium.page.locator('text=C6H6 - 78.11')).toHaveCount(2);
+    // Check floated molecule.
+    await expect(
+      nmrium.page.locator(
+        '_react=DraggableStructure >> _react=MoleculeStructure >> nth=0',
+      ),
+    ).toBeVisible();
     // Go to the next molecule.
     await nmrium.page.click('_react=Arrow[direction="right"]');
-  }
+  });
 
   await test.step('Check delete float molecule', async () => {
     // Delete molecule.
@@ -448,16 +445,9 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
       ),
     ).toHaveCount(1);
     // Check selected molecule.
-
-    if (browserName !== 'webkit') {
-      await expect(
-        nmrium.page.locator('_react=MoleculePanel >> text=1 / 3'),
-      ).toBeVisible();
-    } else {
-      await expect(
-        nmrium.page.locator('_react=MoleculePanel >> text=1 / 2'),
-      ).toBeVisible();
-    }
+    await expect(
+      nmrium.page.locator('_react=MoleculePanel >> text=1 / 3'),
+    ).toBeVisible();
 
     await expect(nmrium.page.locator('text=C11H14N2O - 190.25')).toBeVisible();
     await checkMoleculeStructureIsExists(nmrium, 0);
@@ -467,16 +457,9 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     // Go to the next molecule.
     await nmrium.page.click('_react=Arrow[direction="right"]');
     // Check the second molecule.
-
-    if (browserName !== 'webkit') {
-      await expect(
-        nmrium.page.locator('_react=MoleculePanel >> text=2 / 3'),
-      ).toBeVisible();
-    } else {
-      await expect(
-        nmrium.page.locator('_react=MoleculePanel >> text=2 / 2'),
-      ).toBeVisible();
-    }
+    await expect(
+      nmrium.page.locator('_react=MoleculePanel >> text=2 / 3'),
+    ).toBeVisible();
 
     await expect(nmrium.page.locator('text=C6H12 - 84.16')).toBeVisible();
     await checkMoleculeStructureIsExists(nmrium, 1);
@@ -485,15 +468,9 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     await nmrium.clickToolByTitle('Delete molecule');
 
     // Check selected molecule.
-    if (browserName !== 'webkit') {
-      await expect(
-        nmrium.page.locator('_react=MoleculePanel >> text=1 / 2'),
-      ).toBeVisible();
-    } else {
-      await expect(
-        nmrium.page.locator('_react=MoleculePanel >> text=1 / 1'),
-      ).toBeVisible();
-    }
+    await expect(
+      nmrium.page.locator('_react=MoleculePanel >> text=1 / 2'),
+    ).toBeVisible();
 
     await expect(nmrium.page.locator('text=C11H14N2O - 190.25')).toBeVisible();
     await checkMoleculeStructureIsExists(nmrium, 0);
@@ -501,25 +478,15 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
 
   await test.step('Empty panel', async () => {
     // Check selected molecule.
-
-    if (browserName !== 'webkit') {
-      await expect(
-        nmrium.page.locator('_react=MoleculePanel >> text=1 / 2'),
-      ).toBeVisible();
-    } else {
-      await expect(
-        nmrium.page.locator('_react=MoleculePanel >> text=1 / 1'),
-      ).toBeVisible();
-    }
+    await expect(
+      nmrium.page.locator('_react=MoleculePanel >> text=1 / 2'),
+    ).toBeVisible();
 
     await expect(nmrium.page.locator('text=C11H14N2O - 190.25')).toBeVisible();
 
-    // Delete molecule.
+    // Delete both remaining molecules.
     await nmrium.clickToolByTitle('Delete molecule');
-    if (browserName !== 'webkit') {
-      // Delete molecule.
-      await nmrium.clickToolByTitle('Delete molecule');
-    }
+    await nmrium.clickToolByTitle('Delete molecule');
 
     // The SVG container should not be rendered when there are no molecules.
     await expect(nmrium.page.locator('.mol-svg-container ')).toBeHidden();

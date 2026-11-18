@@ -74,7 +74,6 @@
     "@zip.js/zip.js": "^2.25.0",
     "cheminfo-font": "^1.29.0",
     "cheminfo-types": "^1.16.0",
-    "clipboard-polyfill": "^4.1.1",
     "colord": "^2.14.0",
     "d3-array": "^3.2.5",
     "d3-scale": "^4.0.3",
