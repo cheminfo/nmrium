@@ -127,8 +127,7 @@ function Range(options: RangeProps) {
   const isSignalAssigned = isRangeAssigned(range);
   const isResizingActive = useResizerStatus('rangePicking');
   const hasOnlyOneSignal = signals.length === 1;
-  const isAssigned =
-    hasOnlyOneSignal && signal.diaIDs ? signal.diaIDs.length > 0 : false;
+  const isAssigned = hasOnlyOneSignal && (signal.diaIDs?.length ?? 0) > 0;
 
   const actionsButtons = useAssignmentsPopoverActionsButtons({
     isToggleMultiplicityTreeButtonVisible: !hasOnlyOneSignal,

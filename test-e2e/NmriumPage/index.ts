@@ -44,6 +44,14 @@ export default class NmriumPage {
     });
   }
 
+  /**
+   * Show a panel hidden from the accordion by clicking its panels bar icon.
+   * @param title - The panel title, as shown in the icon tooltip.
+   */
+  public async showPanel(title: string) {
+    await this.page.click(`_react=ActivityBarItem[tooltip="${title}"]`);
+  }
+
   public async clickTool(id: string) {
     await this.page
       .locator(`_react=ToolbarItem[id="${id}"] >> nth=0`)

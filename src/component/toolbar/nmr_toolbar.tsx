@@ -42,12 +42,12 @@ interface BaseToolItem extends Pick<ToolbarItemProps, 'disabled'> {
 }
 interface ToolItem extends BaseToolItem {
   onClick?: () => void;
-  tooltip: string | TooltipItem;
+  tooltip: TooltipItem;
 }
 interface PopoverToolItem extends BaseToolItem {
   onClick: (data?: any) => void;
   menuItems: ToolbarPopoverMenuItem[];
-  tooltip: string | TooltipItem;
+  tooltip: TooltipItem;
 }
 
 function isPopoverToolItem(
@@ -378,23 +378,23 @@ export default function NMRToolbar() {
     },
     {
       id: 'fftDimension1',
-      tooltip: options.fftDimension1.label,
+      tooltip: { title: options.fftDimension1.label },
       onClick: handleFFtDimension1Filter,
     },
     {
       id: 'fftDimension2',
-      tooltip: options.fftDimension2.label,
+      tooltip: { title: options.fftDimension2.label },
       onClick: handleFFtDimension2Filter,
     },
     {
       id: 'import',
-      tooltip: options.import.label,
+      tooltip: { title: options.import.label },
       menuItems: importMenu,
       onClick: importHandler,
     },
     {
       id: 'exportAs',
-      tooltip: options.exportAs.label,
+      tooltip: { title: options.exportAs.label },
       menuItems: exportMenu,
       onClick: exportHandler,
     },
@@ -489,13 +489,7 @@ export default function NMRToolbar() {
               <ToolbarPopoverItem
                 key={id}
                 options={menuItems}
-                tooltip={
-                  typeof tooltip === 'string' ? (
-                    tooltip
-                  ) : (
-                    <TooltipHelpContent {...tooltip} />
-                  )
-                }
+                tooltip={<TooltipHelpContent {...tooltip} />}
                 tooltipProps={{
                   minimal: true,
                 }}
@@ -514,13 +508,7 @@ export default function NMRToolbar() {
             <Toolbar.Item
               key={id}
               onClick={onClick || (() => handleChange(id))}
-              tooltip={
-                typeof tooltip === 'string' ? (
-                  tooltip
-                ) : (
-                  <TooltipHelpContent {...tooltip} />
-                )
-              }
+              tooltip={<TooltipHelpContent {...tooltip} />}
               tooltipProps={{
                 minimal: true,
               }}

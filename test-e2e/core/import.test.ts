@@ -37,7 +37,7 @@ test('should load and migrate .nmrium data from version 1 to version 2', async (
   await nmrium.page.click('_react=SpectraTabs >> _react=Tab[tabid="1H"]');
 
   await test.step('check Peaks', async () => {
-    await nmrium.clickPanel('Peaks');
+    await nmrium.showPanel('Peaks');
     const peaks = nmrium.page.locator(
       '_react=Peaks[peaksSource="peaks"] >> _react=PeakAnnotation',
     );
@@ -76,7 +76,7 @@ test('should load .nmrium data from version 3', async ({ page }) => {
   await expect(nmrium.page.locator('_react=Tab[tabid = "1H"]')).toBeVisible();
 
   await test.step('check Peaks', async () => {
-    await nmrium.clickPanel('Peaks');
+    await nmrium.showPanel('Peaks');
     const peaks = nmrium.page.locator(
       '_react=Peaks[peaksSource="peaks"] >> _react=PeakAnnotation',
     );
