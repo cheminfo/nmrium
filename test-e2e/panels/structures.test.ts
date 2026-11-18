@@ -7,11 +7,34 @@ async function checkMoleculeStructureIsExists(
   nmrium: NmriumPage,
   index: number,
 ) {
-  const locator = nmrium.page.locator(
-    `_react=MoleculePanel >> _react=MoleculeStructure >> nth=${index} >> svg`,
-  );
+  const slide = nmrium.getPanel('Chemical structures').getByRole('group', {
+    name: new RegExp(String.raw`^${index + 1} of \d+$`),
+  });
+  const locator = slide.getByRole('img');
   await expect(locator).toHaveAttribute('xmlns', 'http://www.w3.org/2000/svg');
   await expect(locator).toBeVisible();
+}
+
+/**
+ * Get a button of the molecules pager in the chemical structures panel.
+ * @param nmrium - The NMRium page.
+ * @param name - The name of the button.
+ */
+function getMoleculesPagerButton(
+  nmrium: NmriumPage,
+  name: 'Previous' | 'Next',
+) {
+  return nmrium
+    .getPanel('Chemical structures')
+    .getByRole('button', { name, exact: true });
+}
+
+/**
+ * Get the molecules floating over the spectrum.
+ * @param nmrium - The NMRium page.
+ */
+function getFloatingMolecules(nmrium: NmriumPage) {
+  return nmrium.page.getByRole('figure');
 }
 
 test('should draw structure and display it with MF', async ({ page }) => {
@@ -90,7 +113,7 @@ test('should draw structure and display it with MF', async ({ page }) => {
     await expect(nmrium.page.locator('text=C6H12 - 84.16')).toBeVisible();
 
     // Go to the previous molecule.
-    await nmrium.page.click('_react=Arrow[direction="left"]');
+    await getMoleculesPagerButton(nmrium, 'Previous').click();
 
     // Check selected molecule number.
     await expect(nmrium.page.locator('text=1 / 2')).toBeVisible();
@@ -99,7 +122,7 @@ test('should draw structure and display it with MF', async ({ page }) => {
     await expect(nmrium.page.locator('text=C6H6 - 78.11')).toBeVisible();
 
     // Go to the next molecule.
-    await nmrium.page.click('_react=Arrow[direction="right"]');
+    await getMoleculesPagerButton(nmrium, 'Next').click();
     // Check selected molecule number.
     await expect(nmrium.page.locator('text=2 / 2')).toBeVisible();
 
@@ -208,7 +231,7 @@ test('molecules 1H spectrum', async ({ page }) => {
     await expect(nmrium.page.locator('text=C6H12 - 84.16')).toBeVisible();
 
     // Go to the previous molecule.
-    await nmrium.page.click('_react=Arrow[direction="left"]');
+    await getMoleculesPagerButton(nmrium, 'Previous').click();
 
     // Check selected molecule number.
     await expect(
@@ -221,7 +244,7 @@ test('molecules 1H spectrum', async ({ page }) => {
     await expect(nmrium.page.locator('text=C6H6 - 78.11')).toBeVisible();
 
     // Go to the previous molecule.
-    await nmrium.page.click('_react=Arrow[direction="left"]');
+    await getMoleculesPagerButton(nmrium, 'Previous').click();
 
     // Check selected molecule number.
     await expect(
@@ -231,12 +254,10 @@ test('molecules 1H spectrum', async ({ page }) => {
     ).toBeVisible();
     // Check selected molecule formula.
     await expect(nmrium.page.locator('text=C11H14N2O - 190.25')).toBeVisible();
-    await expect(
-      nmrium.page.locator('_react=Arrow[direction="left"]'),
-    ).toBeHidden();
+    await expect(getMoleculesPagerButton(nmrium, 'Previous')).toBeHidden();
 
     // Go to the next molecule.
-    await nmrium.page.click('_react=Arrow[direction="right"]');
+    await getMoleculesPagerButton(nmrium, 'Next').click();
     // Check selected molecule number.
     await expect(
       nmrium
@@ -248,7 +269,7 @@ test('molecules 1H spectrum', async ({ page }) => {
     await expect(nmrium.page.locator('text=C6H6 - 78.11')).toBeVisible();
 
     // Go to the next molecule.
-    await nmrium.page.click('_react=Arrow[direction="right"]');
+    await getMoleculesPagerButton(nmrium, 'Next').click();
 
     // Check the third molecule.
     await expect(
@@ -257,12 +278,10 @@ test('molecules 1H spectrum', async ({ page }) => {
         .getByText('[ 3 / 3 ]', { exact: true }),
     ).toBeVisible();
     await expect(nmrium.page.locator('text=C6H12 - 84.16')).toBeVisible();
-    await expect(
-      nmrium.page.locator('_react=Arrow[direction="right"]'),
-    ).toBeHidden();
+    await expect(getMoleculesPagerButton(nmrium, 'Next')).toBeHidden();
 
     // Go to the previous molecule.
-    await nmrium.page.click('_react=Arrow[direction="left"]');
+    await getMoleculesPagerButton(nmrium, 'Previous').click();
 
     // Check selected molecule number.
     await expect(
@@ -290,9 +309,10 @@ test('molecules 1H spectrum', async ({ page }) => {
         'div[role="dialog"] >> text=New sum for H will be 14!',
       ),
     ).toBeVisible();
-    await nmrium.page.click(
-      'div[role="dialog"] >> _react=Arrow[direction="right"]',
-    );
+    await nmrium.page
+      .getByRole('dialog')
+      .getByRole('button', { name: 'Next', exact: true })
+      .click();
     await expect(
       nmrium.page.locator('div[role="dialog"] >> #molSVG1'),
     ).toBeVisible();
@@ -304,9 +324,10 @@ test('molecules 1H spectrum', async ({ page }) => {
         'div[role="dialog"] >> text=New sum for H will be 6!',
       ),
     ).toBeVisible();
-    await nmrium.page.click(
-      'div[role="dialog"] >> _react=Arrow[direction="right"]',
-    );
+    await nmrium.page
+      .getByRole('dialog')
+      .getByRole('button', { name: 'Next', exact: true })
+      .click();
     await expect(
       nmrium.page.locator('div[role="dialog"] >> #molSVG2'),
     ).toBeVisible();
@@ -339,9 +360,10 @@ test('molecules 1H spectrum', async ({ page }) => {
         'div[role="dialog"] >> text=New sum for H will be 14!',
       ),
     ).toBeVisible();
-    await nmrium.page.click(
-      'div[role="dialog"] >> _react=Arrow[direction="right"]',
-    );
+    await nmrium.page
+      .getByRole('dialog')
+      .getByRole('button', { name: 'Next', exact: true })
+      .click();
     await expect(
       nmrium.page.locator('div[role="dialog"] >> #molSVG1'),
     ).toBeVisible();
@@ -353,9 +375,10 @@ test('molecules 1H spectrum', async ({ page }) => {
         'div[role="dialog"] >> text=New sum for H will be 6!',
       ),
     ).toBeVisible();
-    await nmrium.page.click(
-      'div[role="dialog"] >> _react=Arrow[direction="right"]',
-    );
+    await nmrium.page
+      .getByRole('dialog')
+      .getByRole('button', { name: 'Next', exact: true })
+      .click();
     await expect(
       nmrium.page.locator('div[role="dialog"] >> #molSVG2'),
     ).toBeVisible();
@@ -381,11 +404,7 @@ test('molecules 1H spectrum', async ({ page }) => {
     // Click on float molecule button to hide it.
     await nmrium.clickToolByTitle('Float molecule');
     // Check floated molecule.
-    await expect(
-      nmrium.page.locator(
-        '_react=DraggableStructure >> _react=MoleculeStructure >> nth=0',
-      ),
-    ).toBeVisible();
+    await expect(getFloatingMolecules(nmrium).first()).toBeVisible();
     // Check float molecule btn is off.
     await expect(
       nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
@@ -394,17 +413,11 @@ test('molecules 1H spectrum', async ({ page }) => {
 
   await test.step('Close float molecule', async () => {
     // Close float molecule draggable structure.
-    const structureLocator = nmrium.page.locator('_react=DraggableStructure');
+    const structureLocator = getFloatingMolecules(nmrium);
     await structureLocator.hover();
-    await nmrium.page
-      .locator('_react=ActionButton[tooltipProps.content *= "Hide molecule" i]')
-      .click();
+    await nmrium.page.getByRole('button', { name: 'Hide molecule' }).click();
     // Check floated molecule.
-    await expect(
-      nmrium.page.locator(
-        '_react=DraggableStructure >> _react=MoleculeStructure >> nth=0',
-      ),
-    ).toBeHidden();
+    await expect(getFloatingMolecules(nmrium).first()).toBeHidden();
     await expect(structureLocator).toBeHidden();
     // Check float molecule btn is off.
     await expect(
@@ -413,11 +426,7 @@ test('molecules 1H spectrum', async ({ page }) => {
     // Click on float molecule button.
     await nmrium.clickToolByTitle('Float molecule');
     // Check floated molecule.
-    await expect(
-      nmrium.page.locator(
-        '_react=DraggableStructure >> _react=MoleculeStructure >> nth=0',
-      ),
-    ).toBeVisible();
+    await expect(getFloatingMolecules(nmrium).first()).toBeVisible();
     // Check float molecule btn is on.
     await expect(
       nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
@@ -425,9 +434,9 @@ test('molecules 1H spectrum', async ({ page }) => {
   });
 
   await test.step('Check copy as molfile V3 or V2 and paste', async () => {
-    await clickExportMenuOption(nmrium, 'text=Copy as molfile V3');
+    await clickExportMenuOption(nmrium, 'Copy as molfile V3');
     await nmrium.page.getByTestId('paste-molecule-action').click();
-    await clickExportMenuOption(nmrium, 'text=Copy as molfile V2');
+    await clickExportMenuOption(nmrium, 'Copy as molfile V2');
     await nmrium.page.getByTestId('paste-molecule-action').click();
 
     await expect(
@@ -448,24 +457,16 @@ test('molecules 1H spectrum', async ({ page }) => {
     // Check deleted molecule.
     await expect(nmrium.page.locator('text=C6H6 - 78.11')).toHaveCount(2);
     // Check floated molecule.
-    await expect(
-      nmrium.page.locator(
-        '_react=DraggableStructure >> _react=MoleculeStructure >> nth=0',
-      ),
-    ).toBeVisible();
+    await expect(getFloatingMolecules(nmrium).first()).toBeVisible();
     // Go to the next molecule.
-    await nmrium.page.click('_react=Arrow[direction="right"]');
+    await getMoleculesPagerButton(nmrium, 'Next').click();
   });
 
   await test.step('Check delete float molecule', async () => {
     // Delete molecule.
     await nmrium.clickToolByTitle('Delete molecule');
     // Check deleted Floated molecule.
-    await expect(
-      nmrium.page.locator(
-        '_react=DraggableStructure >> _react=MoleculeStructure',
-      ),
-    ).toHaveCount(1);
+    await expect(getFloatingMolecules(nmrium)).toHaveCount(1);
     // Check selected molecule.
     await expect(
       nmrium
@@ -479,7 +480,7 @@ test('molecules 1H spectrum', async ({ page }) => {
 
   await test.step('Delete molecule', async () => {
     // Go to the next molecule.
-    await nmrium.page.click('_react=Arrow[direction="right"]');
+    await getMoleculesPagerButton(nmrium, 'Next').click();
     // Check the second molecule.
     await expect(
       nmrium
@@ -602,27 +603,22 @@ test('check callbacks count on changing structures', async ({ page }) => {
       nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
     ).toBeVisible();
     // Check floated molecule.
-    await expect(
-      nmrium.page.locator(
-        '_react=DraggableStructure >> _react=MoleculeStructure >> nth=0',
-      ),
-    ).toBeVisible();
+    await expect(getFloatingMolecules(nmrium).first()).toBeVisible();
 
     await expect(dataCount).toContainText(String(initialDataCount + 1));
     await expect(viewCount).toContainText(String(initialViewCount + 1));
   });
 
   await test.step('change float position molecule', async () => {
-    const structureLocator = nmrium.page.locator('_react=DraggableStructure');
+    const structureLocator = getFloatingMolecules(nmrium);
     await structureLocator.hover();
     await nmrium.page
-      .locator(
-        '_react=ActionButton[tooltipProps.content *= "Move molecule" i] >> nth=0',
-      )
+      .getByRole('button', { name: 'Move molecule' })
       .dragTo(
-        nmrium.page.locator(
-          '_react=HorizontalAxis1D >> _react=Tickets >> nth=1',
-        ),
+        nmrium.page
+          .getByRole('group', { name: 'Horizontal axis' })
+          .getByTestId('axis-primary-tick-label')
+          .nth(1),
         { force: true },
       );
     await expect(dataCount).toContainText(String(initialDataCount + 1));
@@ -630,9 +626,10 @@ test('check callbacks count on changing structures', async ({ page }) => {
   });
 });
 
-async function clickExportMenuOption(nmrium: NmriumPage, selector: string) {
-  await nmrium.page.click(
-    '_react=MoleculePanelHeader >> button[id="molecule-export-as"]',
-  );
-  await nmrium.page.click(selector);
+async function clickExportMenuOption(nmrium: NmriumPage, option: string) {
+  await nmrium
+    .getPanel('Chemical structures')
+    .locator('#molecule-export-as')
+    .click();
+  await nmrium.page.getByRole('menuitem', { name: option }).click();
 }

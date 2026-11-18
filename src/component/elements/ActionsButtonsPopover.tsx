@@ -266,6 +266,7 @@ function ActionButtons(props: ActionButtonsProps) {
         // eslint-disable-next-line @eslint-react/no-array-index-key
         key={index}
         tooltipProps={{ content: title, compact: true }}
+        aria-label={title || undefined}
         {...otherProps}
         onClick={(event) => {
           onClick?.(event);
