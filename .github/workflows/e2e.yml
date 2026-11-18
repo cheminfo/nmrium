@@ -31,7 +31,6 @@ jobs:
         run: node --run build-no-minify
       - name: Run E2E tests on ${{ matrix.project }}
         run: npx playwright test --project ${{ matrix.project }}
-        continue-on-error: ${{ matrix.project == 'webkit' }}
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v7

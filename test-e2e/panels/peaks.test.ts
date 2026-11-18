@@ -1,3 +1,4 @@
+import type { Locator } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
 import NmriumPage from '../NmriumPage/index.js';
@@ -30,10 +31,20 @@ async function addPeaks(nmrium: NmriumPage) {
   await expect(peaksAnnotationLocator).toHaveCount(2);
 }
 
+// WebKit reports a shifted box for rotated SVG text, so Playwright's
+// click()/hover() miss the target. Use the DOM's own bounding rect instead.
+function getDomCenter(locator: Locator) {
+  return locator.evaluate((el) => {
+    const { x, y, width, height } = el.getBoundingClientRect();
+    return { x: x + width / 2, y: y + height / 2 };
+  });
+}
+
 async function shiftX(nmrium: NmriumPage) {
   const peakLocator = nmrium.page.locator(FIRST_PEAK_ANNOTATION_SELECTOR);
 
-  await peakLocator.click();
+  const { x, y } = await getDomCenter(peakLocator);
+  await nmrium.page.mouse.click(x, y);
   const peakInputLocator = nmrium.page.locator(
     '_react=PeakEditionField >> input',
   );
@@ -62,7 +73,8 @@ async function deletePeak(nmrium: NmriumPage) {
   const peakAnnotationLocator = nmrium.page.locator(
     FIRST_PEAK_ANNOTATION_SELECTOR,
   );
-  await peakAnnotationLocator.hover();
+  const { x, y } = await getDomCenter(peakAnnotationLocator);
+  await nmrium.page.mouse.move(x, y);
   await nmrium.page.keyboard.press('Delete');
 
   // Test that the peak deleted
