@@ -8,11 +8,10 @@ import type { PositionedLinkedSignal } from '../utilities/signalCrossings.js';
 
 import { LinkedSignalAssignmentLabel } from './LinkedSignalAssignmentLabel.js';
 
-const SignalCircle = styled.circle`
-  &:hover,
-  &:focus-visible {
+const Wrapper = styled.g`
+  &:hover > circle:first-of-type {
     fill: green;
-    stroke-width: 3;
+    stroke-width: 5;
   }
 `;
 
@@ -27,7 +26,7 @@ export function LinkedSignal({ signal }: LinkedSignalProps) {
   const { data: newLabel, setData } = useShareData<string | null>();
   const id = `${signal.xSignalId}:${signal.ySignalId}`;
 
-  function handleKeyDown(event: KeyboardEvent<SVGCircleElement>) {
+  function handleKeyDown(event: KeyboardEvent<SVGGElement>) {
     if (event.key === 'Backspace' || event.key === 'Delete') {
       event.preventDefault();
       event.stopPropagation();
@@ -39,21 +38,18 @@ export function LinkedSignal({ signal }: LinkedSignalProps) {
   }
 
   return (
-    <g>
-      <SignalCircle
+    <Wrapper onKeyDown={handleKeyDown}>
+      <circle
         cx={scaleX(signal.xDelta)}
         cy={scaleY(signal.yDelta)}
         r={4}
         fill="transparent"
         stroke="green"
         strokeWidth={2}
-        vectorEffect="non-scaling-stroke"
-        data-self-control="true"
         style={{ cursor: 'pointer' }}
         tabIndex={0}
         onMouseEnter={(event) => event.currentTarget.focus()}
         onMouseLeave={(event) => event.currentTarget.blur()}
-        onKeyDown={handleKeyDown}
         onClick={(event) => {
           event.stopPropagation();
           setData(id);
@@ -61,6 +57,6 @@ export function LinkedSignal({ signal }: LinkedSignalProps) {
       />
 
       <LinkedSignalAssignmentLabel signal={signal} />
-    </g>
+    </Wrapper>
   );
 }

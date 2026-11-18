@@ -112,6 +112,9 @@ export function LinkedSignalAssignmentLabel({
       isMoving={dragPosition !== null}
       data-self-control="true"
       {...disableMouseTrackingProps}
+      tabIndex={0}
+      onMouseEnter={(event) => event.currentTarget.focus()}
+      onMouseLeave={(event) => event.currentTarget.blur()}
     >
       <polygon points={path} fill="green" pointerEvents="none" />
       <g transform={`translate(${position.x} ${position.y})`}>
