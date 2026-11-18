@@ -6,19 +6,10 @@ import {
 } from 'ml-spectra-processing';
 import { xyAutoRangesPicking } from 'nmr-processing';
 
+import { RANGE_PEAK_NOISE_FACTOR } from './constants.js';
 import { detectSignalsByMultipletAnalysis } from './detectSignalsByMultipletAnalysis.js';
 
 const MAX_LENGTH = 4092;
-
-/**
- * Factor applied to the baseline noise of the whole spectrum to build the
- * peak picking threshold used inside a range.
- *
- * The threshold must not be derived from the range itself: in a narrow range
- * most of the points belong to the peaks, so a "noise" estimated from them is
- * close to (or bigger than) the peak height and nothing is detected.
- */
-const RANGE_PEAK_NOISE_FACTOR = 8;
 
 interface DetectSignalsOptions {
   from: number;

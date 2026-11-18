@@ -41,13 +41,10 @@ const FROM = -0.5;
 const TO = 10.5;
 const NB_POINTS = 64 * 1024;
 function buildSpectrum(peaks: Array<{ x: number; y: number; width: number }>) {
-  return generateSpectrum(
-    peaks.map(({ x, y, width }) => [x, y, width] as [number, number, number]),
-    {
-      generator: { from: FROM, to: TO, nbPoints: NB_POINTS },
-      noise: { distribution: 'uniform', percent: 0.2, seed: 123_456_789 },
-    },
-  );
+  return generateSpectrum(peaks, {
+    generator: { from: FROM, to: TO, nbPoints: NB_POINTS },
+    noise: { distribution: 'uniform', percent: 0.2, seed: 123_456_789 },
+  });
 }
 
 function getSignals(spectrum: DataXY<Float64Array>, from: number, to: number) {
