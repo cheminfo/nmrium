@@ -116,7 +116,11 @@ export function ProcessingsSectionsPanel() {
 
       {processingsStatus.length === 0 && <EmptyText text="No Processings" />}
       {processingsStatus.length > 0 && (
-        <Sections isOverflow renderActiveSectionContentOnly>
+        <Sections
+          aria-label="Processings"
+          isOverflow
+          renderActiveSectionContentOnly
+        >
           {processingsStatus.map(
             ({ operation, isOpen, isAfterOpen }, index) => (
               <ProcessingItem

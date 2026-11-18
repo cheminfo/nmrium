@@ -51,7 +51,9 @@ test('should draw structure and display it with MF', async ({ page }) => {
 
     // The number of molecules should now be visible in the panel.
     await expect(
-      nmrium.page.locator('_react=MoleculePanel >> text=1 / 1'),
+      nmrium
+        .getPanel('Chemical structures')
+        .getByText('[ 1 / 1 ]', { exact: true }),
     ).toBeVisible();
   });
 
@@ -123,7 +125,9 @@ test('molecules 1H spectrum', async ({ page }) => {
 
     // Check the existing number of molecules.
     await expect(
-      nmrium.page.locator('_react=MoleculePanel >> text=1 / 1'),
+      nmrium
+        .getPanel('Chemical structures')
+        .getByText('[ 1 / 1 ]', { exact: true }),
     ).toBeVisible();
   });
 
@@ -155,7 +159,9 @@ test('molecules 1H spectrum', async ({ page }) => {
 
     // Check the number of molecules.
     await expect(
-      nmrium.page.locator('_react=MoleculePanel >> text=2 / 2'),
+      nmrium
+        .getPanel('Chemical structures')
+        .getByText('[ 2 / 2 ]', { exact: true }),
     ).toBeVisible();
   });
 
@@ -186,14 +192,18 @@ test('molecules 1H spectrum', async ({ page }) => {
 
     // Check the number of molecules.
     await expect(
-      nmrium.page.locator('_react=MoleculePanel >> text=3 / 3'),
+      nmrium
+        .getPanel('Chemical structures')
+        .getByText('[ 3 / 3 ]', { exact: true }),
     ).toBeVisible();
   });
 
   await test.step('Switch between molecules', async () => {
     // Start with the third molecule.
     await expect(
-      nmrium.page.locator('_react=MoleculePanel >> text=3 / 3'),
+      nmrium
+        .getPanel('Chemical structures')
+        .getByText('[ 3 / 3 ]', { exact: true }),
     ).toBeVisible();
     await expect(nmrium.page.locator('text=C6H12 - 84.16')).toBeVisible();
 
@@ -202,7 +212,9 @@ test('molecules 1H spectrum', async ({ page }) => {
 
     // Check selected molecule number.
     await expect(
-      nmrium.page.locator('_react=MoleculePanel >> text=2 / 3'),
+      nmrium
+        .getPanel('Chemical structures')
+        .getByText('[ 2 / 3 ]', { exact: true }),
     ).toBeVisible();
 
     // Check selected molecule formula.
@@ -213,7 +225,9 @@ test('molecules 1H spectrum', async ({ page }) => {
 
     // Check selected molecule number.
     await expect(
-      nmrium.page.locator('_react=MoleculePanel >> text=1 / 3'),
+      nmrium
+        .getPanel('Chemical structures')
+        .getByText('[ 1 / 3 ]', { exact: true }),
     ).toBeVisible();
     // Check selected molecule formula.
     await expect(nmrium.page.locator('text=C11H14N2O - 190.25')).toBeVisible();
@@ -225,7 +239,9 @@ test('molecules 1H spectrum', async ({ page }) => {
     await nmrium.page.click('_react=Arrow[direction="right"]');
     // Check selected molecule number.
     await expect(
-      nmrium.page.locator('_react=MoleculePanel >> text=2 / 3'),
+      nmrium
+        .getPanel('Chemical structures')
+        .getByText('[ 2 / 3 ]', { exact: true }),
     ).toBeVisible();
 
     // Check selected molecule formula.
@@ -236,7 +252,9 @@ test('molecules 1H spectrum', async ({ page }) => {
 
     // Check the third molecule.
     await expect(
-      nmrium.page.locator('_react=MoleculePanel >> text=3 / 3'),
+      nmrium
+        .getPanel('Chemical structures')
+        .getByText('[ 3 / 3 ]', { exact: true }),
     ).toBeVisible();
     await expect(nmrium.page.locator('text=C6H12 - 84.16')).toBeVisible();
     await expect(
@@ -248,7 +266,9 @@ test('molecules 1H spectrum', async ({ page }) => {
 
     // Check selected molecule number.
     await expect(
-      nmrium.page.locator('_react=MoleculePanel >> text=2 / 3'),
+      nmrium
+        .getPanel('Chemical structures')
+        .getByText('[ 2 / 3 ]', { exact: true }),
     ).toBeVisible();
     // Check selected molecule formula.
     await expect(nmrium.page.locator('text=C6H6 - 78.11')).toBeVisible();
@@ -411,7 +431,9 @@ test('molecules 1H spectrum', async ({ page }) => {
     await nmrium.page.getByTestId('paste-molecule-action').click();
 
     await expect(
-      nmrium.page.locator('_react=MoleculePanel >> text=5 / 5'),
+      nmrium
+        .getPanel('Chemical structures')
+        .getByText('[ 5 / 5 ]', { exact: true }),
     ).toBeVisible();
     await expect(
       nmrium.page.locator('text=C6H6 - 78.11 >> nth=1'),
@@ -446,7 +468,9 @@ test('molecules 1H spectrum', async ({ page }) => {
     ).toHaveCount(1);
     // Check selected molecule.
     await expect(
-      nmrium.page.locator('_react=MoleculePanel >> text=1 / 3'),
+      nmrium
+        .getPanel('Chemical structures')
+        .getByText('[ 1 / 3 ]', { exact: true }),
     ).toBeVisible();
 
     await expect(nmrium.page.locator('text=C11H14N2O - 190.25')).toBeVisible();
@@ -458,7 +482,9 @@ test('molecules 1H spectrum', async ({ page }) => {
     await nmrium.page.click('_react=Arrow[direction="right"]');
     // Check the second molecule.
     await expect(
-      nmrium.page.locator('_react=MoleculePanel >> text=2 / 3'),
+      nmrium
+        .getPanel('Chemical structures')
+        .getByText('[ 2 / 3 ]', { exact: true }),
     ).toBeVisible();
 
     await expect(nmrium.page.locator('text=C6H12 - 84.16')).toBeVisible();
@@ -469,7 +495,9 @@ test('molecules 1H spectrum', async ({ page }) => {
 
     // Check selected molecule.
     await expect(
-      nmrium.page.locator('_react=MoleculePanel >> text=1 / 2'),
+      nmrium
+        .getPanel('Chemical structures')
+        .getByText('[ 1 / 2 ]', { exact: true }),
     ).toBeVisible();
 
     await expect(nmrium.page.locator('text=C11H14N2O - 190.25')).toBeVisible();
@@ -479,7 +507,9 @@ test('molecules 1H spectrum', async ({ page }) => {
   await test.step('Empty panel', async () => {
     // Check selected molecule.
     await expect(
-      nmrium.page.locator('_react=MoleculePanel >> text=1 / 2'),
+      nmrium
+        .getPanel('Chemical structures')
+        .getByText('[ 1 / 2 ]', { exact: true }),
     ).toBeVisible();
 
     await expect(nmrium.page.locator('text=C11H14N2O - 190.25')).toBeVisible();
@@ -527,7 +557,9 @@ test('check callbacks count on changing structures', async ({ page }) => {
 
     // The number of molecules should now be visible in the panel.
     await expect(
-      nmrium.page.locator('_react=MoleculePanel >> text=1 / 1'),
+      nmrium
+        .getPanel('Chemical structures')
+        .getByText('[ 1 / 1 ]', { exact: true }),
     ).toBeVisible();
   });
 
@@ -558,7 +590,9 @@ test('check callbacks count on changing structures', async ({ page }) => {
 
     // The number of molecules should now be visible in the panel.
     await expect(
-      nmrium.page.locator('_react=MoleculePanel >> text=2 / 2'),
+      nmrium
+        .getPanel('Chemical structures')
+        .getByText('[ 2 / 2 ]', { exact: true }),
     ).toBeVisible();
   });
 

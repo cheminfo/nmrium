@@ -75,6 +75,20 @@ export default class NmriumPage {
   }
 
   /**
+   * Get the options of the selected tool, displayed in the header.
+   */
+  public getToolOptions() {
+    return this.page.getByRole('group', { name: 'Tool options', exact: true });
+  }
+
+  /**
+   * Get the list of filters applied to the active spectrum, in the processing panel.
+   */
+  public getFiltersList() {
+    return this.getPanel('Processing').getByRole('list', { name: 'Filters' });
+  }
+
+  /**
    * Show a panel hidden from the accordion by clicking its panels bar icon.
    * @param title - The panel title, as shown in the icon tooltip.
    */
@@ -166,10 +180,7 @@ export default class NmriumPage {
       this.viewer.locator.getByTestId('pivot-indicator');
     await expect(pivotIndicatorLocator).toBeVisible();
 
-    const toolOptions = this.page.getByRole('group', {
-      name: 'Tool options',
-      exact: true,
-    });
+    const toolOptions = this.getToolOptions();
     const selectLocator = toolOptions.getByRole('combobox', {
       name: 'Phase correction mode',
       exact: true,
@@ -188,7 +199,7 @@ export default class NmriumPage {
       .click({ delay: 200 });
 
     await expect(
-      this.getPanel('Processing').getByText('Phase correction'),
+      this.getFiltersList().getByText('Phase correction'),
     ).toBeVisible();
   }
 
