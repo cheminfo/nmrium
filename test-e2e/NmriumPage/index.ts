@@ -43,7 +43,9 @@ export default class NmriumPage {
    * @param options
    */
   public async clickPanel(title: string, options: ClickOptions = {}) {
-    await this.page.getByRole('button', { name: title }).click(options);
+    await this.page
+      .getByRole('button', { name: title, exact: true })
+      .click(options);
   }
 
   /**
@@ -51,7 +53,25 @@ export default class NmriumPage {
    * @param title - The panel title, as shown in its header.
    */
   public getPanel(title: string) {
-    return this.page.getByRole('region', { name: title });
+    return this.page.getByRole('region', { name: title, exact: true });
+  }
+
+  /**
+   * Get all the tabs of the spectra panel.
+   */
+  public getSpectraTabs() {
+    return this.getPanel('Spectra').getByRole('tab');
+  }
+
+  /**
+   * Get a tab of the spectra panel.
+   * @param nucleus - The nucleus or nuclei of the tab (for example "1H" or "1H,13C").
+   */
+  public getSpectraTab(nucleus: string) {
+    return this.getPanel('Spectra').getByRole('tab', {
+      name: nucleus,
+      exact: true,
+    });
   }
 
   /**
@@ -89,7 +109,7 @@ export default class NmriumPage {
 
   public async assertOneDimensionXScaleDomain(min: number, max: number) {
     const xTickLabels = this.page
-      .getByRole('group', { name: 'Horizontal axis' })
+      .getByRole('group', { name: 'Horizontal axis', exact: true })
       .getByTestId('axis-primary-tick-label');
 
     const firstTick = xTickLabels.first();
@@ -146,9 +166,13 @@ export default class NmriumPage {
       this.viewer.locator.getByTestId('pivot-indicator');
     await expect(pivotIndicatorLocator).toBeVisible();
 
-    const toolOptions = this.page.getByRole('group', { name: 'Tool options' });
+    const toolOptions = this.page.getByRole('group', {
+      name: 'Tool options',
+      exact: true,
+    });
     const selectLocator = toolOptions.getByRole('combobox', {
       name: 'Phase correction mode',
+      exact: true,
     });
     if (mode === 'automatic') {
       await selectLocator.click();
@@ -160,7 +184,7 @@ export default class NmriumPage {
         .click();
     }
     await toolOptions
-      .getByRole('button', { name: 'Apply' })
+      .getByRole('button', { name: 'Apply', exact: true })
       .click({ delay: 200 });
 
     await expect(
@@ -178,7 +202,7 @@ export default class NmriumPage {
     }
 
     await this.page
-      .getByLabel('Import files')
+      .getByLabel('Import files', { exact: true })
       .setInputFiles(filenames.map((f) => `test-e2e/data/${f}`));
   }
 
@@ -202,7 +226,7 @@ export default class NmriumPage {
       .getByRole('alert')
       .filter({ hasText: text })
       .locator('..');
-    await toast.getByRole('button', { name: 'Close' }).click();
+    await toast.getByRole('button', { name: 'Close', exact: true }).click();
   }
 
   async changePanelStatus(
@@ -210,6 +234,7 @@ export default class NmriumPage {
     status: 'hidden' | 'active' | 'available',
   ) {
     const selectLocator = this.page
+      .getByRole('dialog')
       .getByRole('tabpanel')
       .getByLabel(panelTitle);
     await selectLocator.click();
