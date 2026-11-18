@@ -43,7 +43,9 @@ test('Matrix generation panel', async ({ page }) => {
     );
 
     await expect(
-      nmrium.page.locator('_react=HorizontalAxis1D >> _react=Tickets  >> text'),
+      nmrium.page
+        .getByRole('group', { name: 'Horizontal axis' })
+        .getByTestId('axis-primary-tick-label'),
     ).toContainText(expectedTicks);
   });
 });

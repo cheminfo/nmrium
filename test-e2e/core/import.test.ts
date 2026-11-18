@@ -15,7 +15,7 @@ test('should load and migrate .nmrium data from version 0 to version 1', async (
   await nmrium.getSpectraTab('1H').click();
 
   await test.step('check ranges', async () => {
-    const ranges = nmrium.page.locator('_react=Range');
+    const ranges = nmrium.page.getByTestId('range');
     await expect(ranges).toHaveCount(5);
   });
 });
@@ -34,14 +34,12 @@ test('should load and migrate .nmrium data from version 1 to version 2', async (
 
   await test.step('check Peaks', async () => {
     await nmrium.showPanel('Peaks');
-    const peaks = nmrium.page.locator(
-      '_react=Peaks[peaksSource="peaks"] >> _react=PeakAnnotation',
-    );
+    const peaks = nmrium.page.getByTestId('peak-annotation');
     await expect(peaks).toHaveCount(6);
   });
 
   await test.step('check ranges', async () => {
-    const ranges = nmrium.page.locator('_react=Range');
+    const ranges = nmrium.page.getByTestId('range');
     await expect(ranges).toHaveCount(3);
   });
 });
@@ -71,21 +69,17 @@ test('should load .nmrium data from version 3', async ({ page }) => {
 
   await test.step('check Peaks', async () => {
     await nmrium.showPanel('Peaks');
-    const peaks = nmrium.page.locator(
-      '_react=Peaks[peaksSource="peaks"] >> _react=PeakAnnotation',
-    );
+    const peaks = nmrium.page.getByTestId('peak-annotation');
     await expect(peaks).toHaveCount(2);
   });
 
   await test.step('check integrals', async () => {
-    const integrals = nmrium.page.locator(
-      '_react=IntegralsSeries >> _react=Integration',
-    );
+    const integrals = nmrium.page.getByTestId('integral');
     await expect(integrals).toHaveCount(1);
   });
 
   await test.step('check ranges', async () => {
-    const ranges = nmrium.page.locator('_react=Range');
+    const ranges = nmrium.page.getByTestId('range');
     await expect(ranges).toHaveCount(2);
   });
 });
@@ -99,7 +93,7 @@ test('should load and migrate .nmrium data from version 3 to version 4', async (
   await expect(nmrium.getSpectraTab('1H,1H')).toBeVisible();
 
   await test.step('check zones', async () => {
-    const ranges = nmrium.page.locator('_react=Zone');
+    const ranges = nmrium.page.getByTestId('zone');
     await expect(ranges).toHaveCount(9);
   });
 });

@@ -22,7 +22,7 @@ export function Integration(props: IntegralProps) {
   const integralPreferences = usePanelPreferences('integrals', nucleus);
 
   return (
-    <g>
+    <g data-testid="integral">
       <path
         className="line"
         stroke={integralPreferences.color}

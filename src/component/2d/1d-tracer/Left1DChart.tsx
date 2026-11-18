@@ -62,6 +62,8 @@ function Left1DChart({
   return (
     <svg
       ref={svgRef}
+      role="img"
+      aria-label="Left 1D spectrum"
       style={{ overflow: 'visible' }}
       viewBox={`0 0 ${width} ${innerHeight + margin.top}`}
       width={width}

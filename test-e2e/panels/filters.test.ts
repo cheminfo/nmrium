@@ -222,9 +222,7 @@ test('Exclusion zones', async ({ page }) => {
       endX: 150,
     });
     // check that the filters applied to all spectra
-    await expect(
-      nmrium.page.locator('_react=ExclusionZoneAnnotation'),
-    ).toHaveCount(13);
+    await expect(nmrium.page.getByTestId('exclusion-zone')).toHaveCount(13);
   });
 
   await test.step('Check Exclusion Zones filter for the third spectrum', async () => {
@@ -248,15 +246,14 @@ test('Exclusion zones', async ({ page }) => {
     });
 
     // the number of exclusion zones  should become 14 since the previous count for all spectra is 13
-    await expect(
-      nmrium.page.locator('_react=ExclusionZoneAnnotation'),
-    ).toHaveCount(14);
+    await expect(nmrium.page.getByTestId('exclusion-zone')).toHaveCount(14);
   });
 
   // the number of exclusion zones should become 2 since we have one from the previous step
+  // (the exclusion zones of the active spectrum are fully opaque, the others are dimmed).
   await expect(
-    nmrium.page.locator(
-      '_react=ExclusionZoneAnnotation >> _react=rect[style.opacity = 1]',
-    ),
+    nmrium.page
+      .getByTestId('exclusion-zone')
+      .locator('rect[style*="opacity: 1"]'),
   ).toHaveCount(2);
 });

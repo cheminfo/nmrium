@@ -41,7 +41,11 @@ function ExclusionZoneAnnotation({
   const { opacity } = useActiveSpectrumStyleOptions(spectrumID);
 
   return (
-    <g key={zone.id} transform={`translate(${scaleX()(zone.to)},0)`}>
+    <g
+      key={zone.id}
+      data-testid="exclusion-zone"
+      transform={`translate(${scaleX()(zone.to)},0)`}
+    >
       <Rect
         x="0"
         transform={`translate(0,${scaleY()(0) - (vAlign + 5)})`}

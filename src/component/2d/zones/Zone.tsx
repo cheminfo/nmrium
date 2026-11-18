@@ -114,6 +114,7 @@ function Zone(props: ZoneProps) {
   return (
     <g
       key={id}
+      data-testid="zone"
       onMouseEnter={() => {
         assignmentZone.highlight();
         highlightZone.show();

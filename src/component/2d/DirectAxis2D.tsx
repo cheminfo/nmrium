@@ -50,6 +50,7 @@ function DirectAxis2D(props: DirectAxis2DProps) {
   return (
     <D3Axis
       ref={refAxis}
+      aria-label="Horizontal axis"
       transform={`translate(0,${
         height - (margin.bottom + marginProps.bottom)
       })`}

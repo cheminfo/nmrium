@@ -12,17 +12,19 @@ test('Slicing too should show 1d (horizontal and vertical) traces', async ({
 
   await nmrium.viewer.moveMouse({ x: 200, y: 200 });
 
-  const horizontalPath = (await nmrium.page.getAttribute(
-    `_react=HorizontalSliceChart >> path >> nth=0`,
-    'd',
-  )) as string;
+  const horizontalPath = (await nmrium.page
+    .getByRole('img', { name: 'Horizontal slice' })
+    .locator('path')
+    .first()
+    .getAttribute('d')) as string;
   expect(horizontalPath.length).toBeGreaterThan(1000);
   expect(horizontalPath).not.toContain('NaN');
 
-  const verticalPath = (await nmrium.page.getAttribute(
-    `_react=VerticalSliceChart >> path >> nth=0`,
-    'd',
-  )) as string;
+  const verticalPath = (await nmrium.page
+    .getByRole('img', { name: 'Vertical slice' })
+    .locator('path')
+    .first()
+    .getAttribute('d')) as string;
   expect(verticalPath.length).toBeGreaterThan(1000);
   expect(verticalPath).not.toContain('NaN');
 });

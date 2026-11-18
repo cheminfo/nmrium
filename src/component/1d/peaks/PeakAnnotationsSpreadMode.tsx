@@ -15,7 +15,11 @@ import { resolve } from '../utilities/intersectionResolver.js';
 
 import { PeakEditionListener } from './PeakEditionManager.js';
 import type { PeaksAnnotationsProps, PeaksSource } from './Peaks.js';
-import { getHighlightExtraId, getHighlightSource } from './Peaks.js';
+import {
+  getHighlightExtraId,
+  getHighlightSource,
+  getPeakAnnotationTestId,
+} from './Peaks.js';
 
 const notationWidth = 10;
 const notationMargin = 2;
@@ -237,6 +241,7 @@ function PeakAnnotation(props: PeakAnnotationProps) {
   });
   return (
     <g
+      data-testid={getPeakAnnotationTestId(peaksSource)}
       onMouseEnter={() => highlight.show()}
       onMouseLeave={() => highlight.hide()}
       opacity={opacity}

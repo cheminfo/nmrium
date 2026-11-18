@@ -62,6 +62,7 @@ function IndirectAxis2D(props: IndirectAxis2DProps) {
   return (
     <D3Axis
       ref={refAxis}
+      aria-label="Vertical axis"
       transform={`translate(${width - marginProps.right})`}
       scale={ticksScale}
       axisPosition="right"
