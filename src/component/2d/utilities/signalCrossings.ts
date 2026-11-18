@@ -23,6 +23,7 @@ interface BuildCandidatesOptions extends Pick<Spectrum2D, 'linkedSignals'> {
   xSignals: Signal1D[];
   ySignals: Signal1D[];
   domains: CrossingDomains;
+  hasSameNucleus: boolean;
 }
 
 interface Position {
@@ -39,7 +40,10 @@ export function getLinkedSignalPositions({
   xSignals,
   ySignals,
   linkedSignals,
-}: Omit<BuildCandidatesOptions, 'domains'>): PositionedLinkedSignal[] {
+}: Omit<
+  BuildCandidatesOptions,
+  'domains' | 'hasSameNucleus'
+>): PositionedLinkedSignal[] {
   if (!linkedSignals?.length) return [];
 
   const xDeltaBySignalId = new Map(
@@ -67,11 +71,30 @@ function inDomain(value: number, domain: number[]) {
   return value >= Math.min(min, max) && value <= Math.max(min, max);
 }
 
+interface CrossingAssignmentLabelOptions {
+  xAssignment?: string;
+  yAssignment?: string;
+  hasSameNucleus: boolean;
+}
+
+function getCrossingAssignmentLabel({
+  xAssignment,
+  yAssignment,
+  hasSameNucleus,
+}: CrossingAssignmentLabelOptions): string {
+  if (hasSameNucleus && xAssignment === yAssignment) {
+    return xAssignment || '';
+  }
+
+  return [xAssignment, yAssignment].filter(Boolean).join('-');
+}
+
 export function buildCandidates({
   xSignals,
   ySignals,
   linkedSignals,
   domains,
+  hasSameNucleus,
 }: BuildCandidatesOptions): Candidate[] {
   const linked = new Set(
     linkedSignals?.map((link) => `${link.xSignalId}:${link.ySignalId}`),
@@ -92,7 +115,11 @@ export function buildCandidates({
         xDelta: x.delta,
         yDelta: y.delta,
         isLinked: linked.has(`${x.id}:${y.id}`),
-        assignment: [x.assignment, y.assignment].filter(Boolean).join(','),
+        assignment: getCrossingAssignmentLabel({
+          xAssignment: x.assignment,
+          yAssignment: y.assignment,
+          hasSameNucleus,
+        }),
       });
     }
   }
