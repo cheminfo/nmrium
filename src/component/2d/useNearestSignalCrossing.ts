@@ -36,11 +36,14 @@ export function useNearestSignalCrossing({
 
     const signalsX = extractSpectrumSignals(traces.x);
     const signalsY = extractSpectrumSignals(traces.y);
+    const hasSameNucleus = traces.x.info.nucleus === traces.y.info.nucleus;
+
     return buildCandidates({
       xSignals: signalsX,
       ySignals: signalsY,
       linkedSignals,
       domains: { xDomain, yDomain },
+      hasSameNucleus,
     });
   }, [traces.x, traces.y, linkedSignals, xDomain, yDomain]);
 
