@@ -1,12 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
 
-import {
-  newClipboardItem,
-  read,
-  readText,
-  write,
-  writeText,
-} from './clipboard.js';
 import type { ClipboardMode } from './types.js';
 
 interface UseClipboardReturn {
@@ -120,7 +113,7 @@ export function useClipboard(): UseClipboardReturn {
        */
       async read(): Promise<ClipboardItems | null> {
         try {
-          return await read();
+          return await navigator.clipboard.read();
         } catch {
           setShouldFallback('read');
           return null;
@@ -131,7 +124,7 @@ export function useClipboard(): UseClipboardReturn {
        */
       async readText(): Promise<string | null> {
         try {
-          return await readText();
+          return await navigator.clipboard.readText();
         } catch {
           setShouldFallback('readText');
           return null;
@@ -139,7 +132,7 @@ export function useClipboard(): UseClipboardReturn {
       },
       async write(data: ClipboardItems): Promise<void> {
         try {
-          return await write(data);
+          return await navigator.clipboard.write(data);
         } catch {
           const blobs = await Promise.all(
             data.map((ci) => ci.getType(ci.types[0])),
@@ -150,10 +143,10 @@ export function useClipboard(): UseClipboardReturn {
       },
       async rawWriteWithType(data: string, type = 'text/plain') {
         try {
-          const item = await newClipboardItem({
+          const item = new ClipboardItem({
             [type]: new Blob([data], { type }),
           });
-          return await write([item]);
+          return await navigator.clipboard.write([item]);
         } catch {
           setText(data);
           setShouldFallback('writeText');
@@ -161,7 +154,7 @@ export function useClipboard(): UseClipboardReturn {
       },
       async writeText(data: string) {
         try {
-          return await writeText(data);
+          return await navigator.clipboard.writeText(data);
         } catch {
           setText(data);
           setShouldFallback('writeText');

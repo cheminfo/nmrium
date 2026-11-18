@@ -15,6 +15,7 @@ import { useToaster } from '../../context/ToasterContext.js';
 import { NextPrev } from '../../elements/NextPrev.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import { useMoleculeEditor } from '../../modal/MoleculeStructureEditorModal.js';
+import { usePredictionErrorHandler } from '../../modal/PredictionLimitModal.tsx';
 import MoleculeHeader from '../MoleculesPanel/MoleculeHeader.js';
 import MoleculePanelHeader from '../MoleculesPanel/MoleculePanelHeader.js';
 import { TablePanel } from '../extra/BasicPanelStyle.js';
@@ -61,6 +62,8 @@ export default function PredictionPanel() {
   const { open: openAccordionPanel } = useAccordionControls();
   const predictionPreferences = usePanelPreferences('prediction');
   const { modal, openMoleculeEditor } = useMoleculeEditor(true);
+  const { handlePredictionError, predictionLimitModal } =
+    usePredictionErrorHandler();
   const refreshSliderRef = useRef<boolean>(true);
 
   const [initialMolfile] = useState(molfile ?? '');
@@ -129,8 +132,8 @@ export default function PredictionPanel() {
             },
           });
           openAccordionPanel('spectraPanel');
-        } catch (error: any) {
-          toaster.show({ message: error.message, intent: 'danger' });
+        } catch (error: unknown) {
+          handlePredictionError(error);
         } finally {
           hideLoading();
         }
@@ -261,6 +264,7 @@ export default function PredictionPanel() {
         </>
       )}
       {modal}
+      {predictionLimitModal}
     </TablePanel>
   );
 }

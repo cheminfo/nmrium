@@ -20,6 +20,8 @@ import type { SettingsRef } from '../panels/extra/utilities/settingImperativeHan
 import PredictionPreferences from '../panels/predictionPanel/PredictionOptionsPanel.js';
 import { useStateWithLocalStorage } from '../utility/LocalStorage.js';
 
+import { usePredictionErrorHandler } from './PredictionLimitModal.tsx';
+
 const DialogBody = styled(StyledDialogBody)`
   .inner-content {
     flex: 1;
@@ -62,6 +64,8 @@ export default function PredictSpectraModal({
   const refForm = useRef<SettingsRef | null>(null);
   const dispatch = useDispatch();
   const toaster = useToaster();
+  const { handlePredictionError, predictionLimitModal } =
+    usePredictionErrorHandler();
   const [predictionPreferences, setPredictionPreferences] =
     useStateWithLocalStorage('nmrium-prediction-preferences');
 
@@ -116,8 +120,8 @@ export default function PredictSpectraModal({
                 molecule,
               },
             });
-          } catch (error: any) {
-            toaster.show({ message: error?.message, intent: 'danger' });
+          } catch (error: unknown) {
+            handlePredictionError(error);
           } finally {
             hideLoading();
           }
@@ -133,6 +137,7 @@ export default function PredictSpectraModal({
       toaster,
       dispatch,
       logger,
+      handlePredictionError,
     ],
   );
 
@@ -179,6 +184,7 @@ export default function PredictSpectraModal({
           </Button.Done>
         </DialogFooter>
       </StandardDialog>
+      {predictionLimitModal}
     </>
   );
 }

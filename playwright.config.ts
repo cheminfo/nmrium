@@ -54,6 +54,7 @@ export default defineConfig({
       use: {
         ...devices['Desktop Safari'],
         viewport: viewportOverride,
+        permissions: ['clipboard-read'],
       },
     },
   ],
