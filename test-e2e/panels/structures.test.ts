@@ -298,10 +298,10 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
         'div[role="dialog"] >> text=New sum for H will be 12!',
       ),
     ).toBeVisible();
-    //TODO check why we have Button2 in development env and Button in production
-    await nmrium.page.click(
-      'div[role="dialog"] >> button:has(svg[data-icon="small-cross"])',
-    );
+    await nmrium.page
+      .getByRole('dialog')
+      .getByRole('button', { name: 'Close' })
+      .click();
   });
 
   await test.step('Check molecules in ranges', async () => {
@@ -347,10 +347,10 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
         'div[role="dialog"] >> text=New sum for H will be 12!',
       ),
     ).toBeVisible();
-    //TODO check why we have Button2 in development env and Button in production
-    await nmrium.page.click(
-      'div[role="dialog"] >> button:has(svg[data-icon="small-cross"])',
-    );
+    await nmrium.page
+      .getByRole('dialog')
+      .getByRole('button', { name: 'Close' })
+      .click();
   });
 
   await test.step('Check float molecule', async () => {
