@@ -83,7 +83,7 @@ export default function DropZone(props: DropZoneProps) {
         />
       )}
       <Container {...getRootProps()} role="none">
-        <input {...getInputProps()} />
+        <input {...getInputProps({ 'aria-label': 'Import files' })} />
         {isDragActive && (
           <DropContainer
             style={{

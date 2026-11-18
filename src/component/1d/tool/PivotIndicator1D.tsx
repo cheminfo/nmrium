@@ -39,6 +39,7 @@ function Indicator(props: IndicatorProps) {
   const { x, height } = props;
   return (
     <div
+      data-testid="pivot-indicator"
       style={{
         ...styles,
         transform: `translateX(${x}px) translateX(-50%)`,

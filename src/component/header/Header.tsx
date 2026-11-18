@@ -149,7 +149,12 @@ function HeaderInner(props: HeaderInnerProps) {
             </Toolbar>
           </div>
           {isExperimental && <PluginTopBarTool />}
-          <div className="toolOptionsPanel" style={{ flex: 1 }}>
+          <div
+            className="toolOptionsPanel"
+            role="group"
+            aria-label="Tool options"
+            style={{ flex: 1 }}
+          >
             {selectedPanel}
           </div>
         </HeaderWrapper>

@@ -37,11 +37,21 @@ export default class NmriumPage {
     await this.page.click('li >> text=COSY ethylbenzene');
   }
 
+  /**
+   * Click on a panel header to expand or collapse it.
+   * @param title - The panel title, as shown in its header.
+   * @param options
+   */
   public async clickPanel(title: string, options: ClickOptions = {}) {
-    await this.page.click(`_react=AccordionItem[title="${title}"]`, {
-      position: { x: 10, y: 10 },
-      ...options,
-    });
+    await this.page.getByRole('button', { name: title }).click(options);
+  }
+
+  /**
+   * Get the content of an accordion panel.
+   * @param title - The panel title, as shown in its header.
+   */
+  public getPanel(title: string) {
+    return this.page.getByRole('region', { name: title });
   }
 
   /**
@@ -79,7 +89,7 @@ export default class NmriumPage {
 
   public async assertOneDimensionXScaleDomain(min: number, max: number) {
     const xTickLabels = this.page
-      .locator('_react=HorizontalAxis1D')
+      .getByRole('group', { name: 'Horizontal axis' })
       .getByTestId('axis-primary-tick-label');
 
     const firstTick = xTickLabels.first();
@@ -89,9 +99,7 @@ export default class NmriumPage {
   }
 
   public async getNumberOfDistinctColors() {
-    const linesLocator = this.page
-      .getByTestId('spectrum-line')
-      .locator('_react=Line');
+    const linesLocator = this.page.getByTestId('spectrum-line');
     // Get all lines from the locator.
     const lines = await linesLocator.all();
     // Get all colours from lines.
@@ -134,14 +142,14 @@ export default class NmriumPage {
     await this.viewer.locator.click({
       position: { x: 100, y: 200 },
     });
-    const pivotIndicatorLocator = this.viewer.locator.locator(
-      '_react=PivotIndicator1D >> _react=Indicator[x=100]',
-    );
+    const pivotIndicatorLocator =
+      this.viewer.locator.getByTestId('pivot-indicator');
     await expect(pivotIndicatorLocator).toBeVisible();
 
-    const selectLocator = this.page
-      .locator('_react=SimplePhaseCorrectionOptionsPanel')
-      .getByRole('combobox');
+    const toolOptions = this.page.getByRole('group', { name: 'Tool options' });
+    const selectLocator = toolOptions.getByRole('combobox', {
+      name: 'Phase correction mode',
+    });
     if (mode === 'automatic') {
       await selectLocator.click();
       await this.page.getByRole('option', { name: 'automatic' }).click();
@@ -151,12 +159,12 @@ export default class NmriumPage {
         .getByRole('option', { name: 'Convert to absolute spectrum' })
         .click();
     }
-    await this.page.click('_react=Header >> button >> text=Apply', {
-      delay: 200,
-    });
+    await toolOptions
+      .getByRole('button', { name: 'Apply' })
+      .click({ delay: 200 });
 
     await expect(
-      this.page.locator('_react=FiltersSectionsPanel >> text=Phase correction'),
+      this.getPanel('Processing').getByText('Phase correction'),
     ).toBeVisible();
   }
 
@@ -170,7 +178,7 @@ export default class NmriumPage {
     }
 
     await this.page
-      .locator('_react=DropZone >> input[type=file]')
+      .getByLabel('Import files')
       .setInputFiles(filenames.map((f) => `test-e2e/data/${f}`));
   }
 
@@ -189,10 +197,12 @@ export default class NmriumPage {
   }
 
   async dismissAlert(text: string) {
-    const alert = this.page.locator('_react=ToasterProvider', {
-      hasText: text,
-    });
-    await alert.locator('button').click();
+    // The toast message has the alert role, and the close button is its sibling.
+    const toast = this.page
+      .getByRole('alert')
+      .filter({ hasText: text })
+      .locator('..');
+    await toast.getByRole('button', { name: 'Close' }).click();
   }
 
   async changePanelStatus(
