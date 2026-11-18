@@ -67,6 +67,8 @@ function DisplayButtons1D(props: ShowHideSpectrumButtonProps) {
       data-testid="hide-show-spectrum-button"
       style={buttonStyle}
       type="button"
+      aria-label="Show spectrum"
+      aria-pressed={display.isVisible}
       onClick={(e) => {
         e.stopPropagation();
         onChangeVisibility(data, 'isVisible');
@@ -97,6 +99,8 @@ function DisplayButtons2D(props: ShowHideSpectrumButtonProps) {
       <button
         style={buttonStyle}
         type="button"
+        aria-label="Show positive contours"
+        aria-pressed={display.isPositiveVisible}
         onClick={(e) => {
           e.stopPropagation();
           onChangeVisibility(data, 'isPositiveVisible');
@@ -113,6 +117,8 @@ function DisplayButtons2D(props: ShowHideSpectrumButtonProps) {
       <button
         style={buttonStyle}
         type="button"
+        aria-label="Show negative contours"
+        aria-pressed={display.isNegativeVisible}
         onClick={(e) => {
           e.stopPropagation();
           onChangeVisibility(data, 'isNegativeVisible');

@@ -10,9 +10,7 @@ test('should Change the visibility of the panels', async ({ page }) => {
   await nmrium.page.click('li >> text=1H spectrum');
 
   //hold a locator reference to database panel
-  const databaseLocator = nmrium.page.locator(
-    '_react=AccordionItem[title="Databases"]',
-  );
+  const databaseLocator = nmrium.getPanelButton('Databases');
 
   await test.step('Open general setting and change the "database panel" visibility to true', async () => {
     //open general setting

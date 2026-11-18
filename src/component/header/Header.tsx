@@ -169,6 +169,7 @@ function HeaderInner(props: HeaderInnerProps) {
 
           {!hideWorkspaces && (
             <DropDownButton
+              label="Workspace"
               data={workspacesList}
               selectedKey={workspace.current}
               onSelect={changeWorkspaceHandler}

@@ -11,6 +11,7 @@ interface ColorIndicator2DProps {
 function ColorIndicator1D({ display }: ColorIndicator1DProps) {
   return (
     <div
+      data-testid="color-indicator"
       style={{
         backgroundColor: display.color,
         height: '12px',
@@ -23,7 +24,13 @@ function ColorIndicator1D({ display }: ColorIndicator1DProps) {
 
 function ColorIndicator2D({ display }: ColorIndicator2DProps) {
   return (
-    <svg width="12" height="12" viewBox="0 0 12 12" style={{ margin: 'auto' }}>
+    <svg
+      data-testid="color-indicator"
+      width="12"
+      height="12"
+      viewBox="0 0 12 12"
+      style={{ margin: 'auto' }}
+    >
       <g>
         <path d="M0,0H12L0,12Z" fill={display.positiveColor} strokeWidth="0" />
         <path d="M12,12H0L12,0Z" fill={display.negativeColor} strokeWidth="0" />

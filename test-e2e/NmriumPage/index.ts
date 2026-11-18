@@ -43,9 +43,15 @@ export default class NmriumPage {
    * @param options
    */
   public async clickPanel(title: string, options: ClickOptions = {}) {
-    await this.page
-      .getByRole('button', { name: title, exact: true })
-      .click(options);
+    await this.getPanelButton(title).click(options);
+  }
+
+  /**
+   * Get the header button of an accordion panel, which expands or collapses it.
+   * @param title - The panel title, as shown in its header.
+   */
+  public getPanelButton(title: string) {
+    return this.page.getByRole('button', { name: title, exact: true });
   }
 
   /**
