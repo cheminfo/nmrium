@@ -45,6 +45,10 @@ export type AutoContourResult<TDiagnostics extends boolean = boolean> = {
 
   /**
    * Same values expressed in multiples of the noise level.
+   *
+   * When no noise level is supplied the search is anchored on the data range
+   * instead, and these values are expressed as a fraction of
+   * `maxAbsoluteValue`.
    */
   sigmaMultiplier: number;
   sigmaMultiplierWithoutT1Noise: number;
@@ -87,6 +91,10 @@ export interface AutoContourOptions {
    *
    * Smaller values produce a cleaner visualization but may suppress
    * weak peaks.
+   *
+   * Ignored when no noise level is supplied: without a noise model the FDR is
+   * not meaningful, and the selection relies on the occupancy and persistence
+   * criteria only.
    *
    * @default 0.05
    */
@@ -179,9 +187,22 @@ export interface AutoContourOptions {
    * Lower values can preserve weaker peaks but increase the risk
    * of including noise.
    *
-   * @default 2
+   * Ignored when no noise level is supplied.
+   *
+   * @default 5
    */
   minSigma?: number;
+
+  /**
+   * Lowest threshold considered by the automatic contour search when no noise
+   * level is supplied, expressed as a fraction of the data range.
+   *
+   * For example, minRelativeSigma = 0.005 means that thresholds below 0.5 % of
+   * the maximum absolute value are never considered.
+   *
+   * @default 0.005
+   */
+  minRelativeSigma?: number;
 
   /**
    * Exponent used to determine the spacing between candidate
@@ -251,21 +272,21 @@ export function findAutomaticContourLevels(
   matrix: ArrayLike<number>,
   rows: number,
   cols: number,
-  noiseLevel: number,
+  noiseLevel: number | undefined,
   options: AutoContourOptions & { diagnostics: true },
 ): AutoContourResult<true>;
 export function findAutomaticContourLevels(
   matrix: ArrayLike<number>,
   rows: number,
   cols: number,
-  noiseLevel: number,
+  noiseLevel: number | undefined,
   options?: AutoContourOptions,
 ): AutoContourResult<true>;
 export function findAutomaticContourLevels(
   matrix: ArrayLike<number>,
   rows: number,
   cols: number,
-  noiseLevel: number,
+  noiseLevel: number | undefined,
   options: AutoContourOptions & { diagnostics: false },
 ): AutoContourResult<false>;
 
@@ -273,7 +294,7 @@ export function findAutomaticContourLevels(
   matrix: ArrayLike<number>,
   rows: number,
   cols: number,
-  noiseLevel: number,
+  noiseLevel: number | undefined,
   options: AutoContourOptions = {},
 ): AutoContourResult<boolean> {
   validateInput(matrix, rows, cols, noiseLevel);
@@ -287,6 +308,7 @@ export function findAutomaticContourLevels(
     maxHorizontalRidgeScore = 0.25,
     ridgeCoverageThreshold = 0.5,
     minSigma = 5,
+    minRelativeSigma = 0.005,
     candidateRatioExponent = 0.5,
     persistenceLevels = 4,
     maxAnalysisDimension = 384,
@@ -305,9 +327,17 @@ export function findAutomaticContourLevels(
   } = maxPoolAbsolute(matrix, rows, cols, maxAnalysisDimension);
   const thresholdIndex = createThresholdIndex(values);
 
-  const maxSigmaInData = maxAbsoluteValue / noiseLevel;
+  // Without a noise estimate there is no noise scale to measure against: the
+  // candidate ladder is anchored on the data range and the false discovery rate
+  // criterion is disabled, because it needs a noise model to be meaningful.
+  const hasNoiseEstimate = noiseLevel !== undefined;
+  const anchor = noiseLevel ?? (maxAbsoluteValue > 0 ? maxAbsoluteValue : 1);
+  const effectiveMaxFdr = hasNoiseEstimate ? maxFdr : Infinity;
+  const effectiveMinSigma = hasNoiseEstimate ? minSigma : minRelativeSigma;
+
+  const maxSigmaInData = maxAbsoluteValue / anchor;
   const candidates = generateCandidateSigmaLevels(
-    minSigma,
+    effectiveMinSigma,
     maxSigmaInData,
     contourRatio,
     candidateRatioExponent,
@@ -321,7 +351,7 @@ export function findAutomaticContourLevels(
       values,
       analysisRows,
       analysisCols,
-      noiseLevel,
+      anchor,
       sigmaMultiplier,
       contourRatio,
       persistenceLevels,
@@ -332,7 +362,7 @@ export function findAutomaticContourLevels(
     evaluations.push(evaluation);
 
     const passed =
-      evaluation.fdr <= maxFdr &&
+      evaluation.fdr <= effectiveMaxFdr &&
       evaluation.occupancy <= maxOccupancy &&
       evaluation.persistence >= minPersistence;
 
@@ -345,7 +375,7 @@ export function findAutomaticContourLevels(
   if (!recommended) {
     recommended = evaluateFallbackThreshold(
       evaluations,
-      maxFdr,
+      effectiveMaxFdr,
       maxOccupancy,
       minPersistence,
     );
@@ -355,8 +385,8 @@ export function findAutomaticContourLevels(
     values,
     analysisRows,
     analysisCols,
-    noiseLevel,
-    recommended.sigmaMultiplier * noiseLevel,
+    anchor,
+    recommended.sigmaMultiplier * anchor,
     maxAbsoluteValue,
     contourRatio,
     maxVerticalRidgeScore,
@@ -370,12 +400,12 @@ export function findAutomaticContourLevels(
 
   const result: AutoContourResult<boolean> = {
     maxAbsoluteValue,
-    minLevel: recommended.sigmaMultiplier * noiseLevel,
+    minLevel: recommended.sigmaMultiplier * anchor,
     minLevelWithoutT1Noise: ridgeFreeLevel,
     hasT1Noise,
 
     sigmaMultiplier: recommended.sigmaMultiplier,
-    sigmaMultiplierWithoutT1Noise: ridgeFreeLevel / noiseLevel,
+    sigmaMultiplierWithoutT1Noise: ridgeFreeLevel / anchor,
   };
 
   if (diagnostics) {
@@ -383,7 +413,7 @@ export function findAutomaticContourLevels(
       values,
       analysisRows,
       analysisCols,
-      noiseLevel,
+      anchor,
       recommended.sigmaMultiplier,
       contourRatio,
       persistenceLevels,
@@ -395,8 +425,8 @@ export function findAutomaticContourLevels(
       values,
       analysisRows,
       analysisCols,
-      noiseLevel,
-      ridgeFreeLevel / noiseLevel,
+      anchor,
+      ridgeFreeLevel / anchor,
       contourRatio,
       1,
       ridgeCoverageThreshold,
@@ -407,7 +437,7 @@ export function findAutomaticContourLevels(
     result.diagnostics = {
       recommended: {
         sigmaMultiplier: recommendedDiagnostics.sigmaMultiplier,
-        minLevel: recommendedDiagnostics.sigmaMultiplier * noiseLevel,
+        minLevel: recommendedDiagnostics.sigmaMultiplier * anchor,
         occupancy: recommendedDiagnostics.occupancy,
         fdr: recommendedDiagnostics.fdr,
         persistence: recommendedDiagnostics.persistence,
