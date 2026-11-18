@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import type { Spectrum2D } from '@zakodium/nmrium-core';
 import debounce from 'lodash/debounce.js';
 import type { CSSProperties } from 'react';
-import { useMemo } from 'react';
+import { useId, useMemo } from 'react';
 import {
   Controller,
   FormProvider,
@@ -70,14 +70,18 @@ export function Spectrum2DSetting({ data, onSubmit }: Spectrum2DSettingProps) {
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <ApplyToAllSelected />
         <div>
-          <Container color={positiveColor}>
-            <span style={{ padding: '0 10px' }}>Positive</span>
-            <Settings sign="positive" onSubmit={onSubmit} />
-          </Container>
-          <Container color={negativeColor}>
-            <span style={{ padding: '0 10px' }}>Negative</span>
-            <Settings sign="negative" onSubmit={onSubmit} />
-          </Container>
+          <SignSettings
+            sign="positive"
+            title="Positive"
+            color={positiveColor}
+            onSubmit={onSubmit}
+          />
+          <SignSettings
+            sign="negative"
+            title="Negative"
+            color={negativeColor}
+            onSubmit={onSubmit}
+          />
           <Spectrum2DHistogram data={spectrumData} />
         </div>
       </div>
@@ -88,6 +92,25 @@ export function Spectrum2DSetting({ data, onSubmit }: Spectrum2DSettingProps) {
 interface SettingsProps {
   sign: 'positive' | 'negative';
   onSubmit: (values: any) => void;
+}
+
+interface SignSettingsProps extends SettingsProps {
+  title: string;
+  color: CSSProperties['backgroundColor'];
+}
+
+function SignSettings(props: SignSettingsProps) {
+  const { sign, title, color, onSubmit } = props;
+  const titleId = useId();
+
+  return (
+    <Container color={color} role="group" aria-labelledby={titleId}>
+      <span id={titleId} style={{ padding: '0 10px' }}>
+        {title}
+      </span>
+      <Settings sign={sign} onSubmit={onSubmit} />
+    </Container>
+  );
 }
 
 function Settings(props: SettingsProps) {
@@ -144,6 +167,10 @@ function Settings(props: SettingsProps) {
               value={value}
               showTrackFill
               progressColor={progressColor}
+              handleHtmlProps={{
+                start: { 'aria-label': 'Minimum level' },
+                end: { 'aria-label': 'Maximum level' },
+              }}
             />
           );
         }}

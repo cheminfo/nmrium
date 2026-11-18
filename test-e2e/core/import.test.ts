@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 import NmriumPage from '../NmriumPage/index.js';
+import { getTableRows } from '../table.js';
 
 test('should load and migrate .nmrium data from version 0 to version 1', async ({
   page,
@@ -124,7 +125,7 @@ test('should load multiple files using drag and drop', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.dropFile(['ethylbenzene-1h.jdx', 'ethylvinylether.zip']);
   // If the file was loaded successfully, there should be many spectra.
-  await expect(nmrium.page.locator('_react=SpectrumName')).toHaveCount(2);
+  await expect(getTableRows(nmrium.getSpectraTable())).toHaveCount(2);
 });
 
 test('should load JCAMP-DX file', async ({ page }) => {

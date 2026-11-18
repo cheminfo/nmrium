@@ -3,6 +3,41 @@ import { expect, test } from '@playwright/test';
 import NmriumPage from '../NmriumPage/index.js';
 import { getTableRows } from '../table.js';
 
+/**
+ * Get the button that opens the settings of a spectrum in the spectra table.
+ * It shows the color of the spectrum.
+ * @param nmrium - The NMRium page.
+ */
+function getSpectrumSettingsButton(nmrium: NmriumPage) {
+  return nmrium
+    .getSpectraTable()
+    .getByRole('button', { name: 'Spectrum settings' });
+}
+
+function getSpectrumSettingsDialog(nmrium: NmriumPage) {
+  return nmrium.page.getByRole('dialog', { name: 'Spectrum settings' });
+}
+
+async function expectColorIndicator2D(
+  nmrium: NmriumPage,
+  positiveColor: string,
+  negativeColor: string,
+) {
+  const triangles = nmrium.page.getByTestId('color-indicator').locator('path');
+  await expect(triangles.nth(0)).toHaveAttribute('fill', positiveColor);
+  await expect(triangles.nth(1)).toHaveAttribute('fill', negativeColor);
+}
+
+function getShowSpectrumButtons(nmrium: NmriumPage) {
+  return nmrium
+    .getSpectraTable()
+    .getByRole('button', { name: 'Show spectrum' });
+}
+
+function getSaveAsDialog(nmrium: NmriumPage) {
+  return nmrium.page.getByRole('dialog', { name: /^Save as/ });
+}
+
 test('Should 1d spectrum hide/show', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
@@ -33,7 +68,7 @@ test('Check if the color picker is visible after click on the ColorIndicator', a
   const colorPicker = nmrium.page.getByTestId('selected-color-btn');
 
   await expect(colorPicker).toHaveCount(0);
-  await nmrium.page.click('_react=ColorIndicator >> nth=0');
+  await getSpectrumSettingsButton(nmrium).first().click();
   await expect(colorPicker).toHaveCount(2);
 });
 
@@ -100,7 +135,7 @@ test('Check change spectrum color, Should be green', async ({ page }) => {
   // The spectrum line should not be green at the beginning.
   await expect(spectrumLine).not.toHaveAttribute('stroke', '#007d34');
   // Open Change colour modal.
-  await nmrium.page.click('_react=ColorIndicator');
+  await getSpectrumSettingsButton(nmrium).click();
   // Select the green colour preset.
   await nmrium.page.getByTestId('color-hex-#007D34').click();
   // The line should now be green.
@@ -138,9 +173,10 @@ test('2d spectrum', async ({ page }) => {
   });
   await test.step('Change 1H spectrum color', async () => {
     // Check ColorIndicator initial color
-    await expect(
-      nmrium.page.locator('_react=ColorIndicator[display.color="#7c2353"]'),
-    ).toBeVisible();
+    await expect(nmrium.page.getByTestId('color-indicator')).toHaveCSS(
+      'background-color',
+      'rgb(124, 35, 83)',
+    );
     // Check spectrum initial color match with ColorIndicator
     await expect(nmrium.page.getByTestId('spectrum-line')).toHaveAttribute(
       'stroke',
@@ -148,18 +184,19 @@ test('2d spectrum', async ({ page }) => {
     );
 
     // Open Change color modal
-    await nmrium.page.click('_react=ColorIndicator');
+    await getSpectrumSettingsButton(nmrium).click();
     await nmrium.page.getByTestId('select-color-btn').click();
 
     // change the color to #e4c0d3
-    await nmrium.page.click('_react=Saturation', {
-      position: { x: 40, y: 20 },
-    });
+    const hexInput = nmrium.page.getByLabel('hex', { exact: true });
+    await hexInput.fill('e4c0d3');
+    await hexInput.press('Enter');
 
     // Check that the selected color changed from the initial value
-    await expect(
-      nmrium.page.locator('_react=ColorIndicator'),
-    ).not.toHaveAttribute('display.color', '#7c2353');
+    await expect(nmrium.page.getByTestId('color-indicator')).not.toHaveCSS(
+      'background-color',
+      'rgb(124, 35, 83)',
+    );
     await expect(nmrium.page.getByTestId('spectrum-line')).not.toHaveAttribute(
       'stroke',
       '#7c2353',
@@ -167,7 +204,7 @@ test('2d spectrum', async ({ page }) => {
 
     // Close color picker
     await nmrium.viewer.locator.click({ force: true });
-    await expect(nmrium.page.locator('_react=Saturation')).toBeHidden();
+    await expect(getSpectrumSettingsDialog(nmrium)).toBeHidden();
   });
   await test.step('Change H1,H1 spectrum', async () => {
     await nmrium.getSpectraTab('1H,1H').click();
@@ -188,11 +225,7 @@ test('2d spectrum', async ({ page }) => {
   });
   await test.step('Change 1H,1H spectrum color', async () => {
     // Check ColorIndicator initial color
-    await expect(
-      nmrium.page.locator(
-        '_react=ColorIndicator[display.negativeColor="blue"][display.positiveColor="darkblue"]',
-      ),
-    ).toBeVisible();
+    await expectColorIndicator2D(nmrium, 'darkblue', 'blue');
     // Check spectrum initial color match with ColorIndicator
     await expect(
       nmrium.page.getByTestId('contours-positive').locator('path'),
@@ -200,14 +233,17 @@ test('2d spectrum', async ({ page }) => {
     await expect(nmrium.page.getByTestId('contours-negative')).toBeHidden();
 
     // Open Change color modal
-    await nmrium.page.click('_react=ColorIndicator');
+    await getSpectrumSettingsButton(nmrium).click();
 
     //Change contours levels
-    const slider = page.locator('_react=ContoursRangeSlider[name="negative"]');
-    await slider.hover();
-    await slider
-      .locator('[class*="-slider-label"]', { hasText: /^0$/ })
-      .click();
+    const negativeSettings = getSpectrumSettingsDialog(nmrium).getByRole(
+      'group',
+      { name: 'Negative', exact: true },
+    );
+    await negativeSettings
+      .getByRole('slider', { name: 'Minimum level' })
+      .hover();
+    await negativeSettings.getByText('0', { exact: true }).click();
 
     await nmrium.page.getByTestId('color-hex-#C10020').first().click();
 
@@ -216,11 +252,7 @@ test('2d spectrum', async ({ page }) => {
     await nmrium.page.getByTestId('color-hex-#803E75').nth(1).click();
 
     // Check that ColorIndicator color changed
-    await expect(
-      nmrium.page.locator(
-        '_react=ColorIndicator[display.negativeColor="#803e75"][display.positiveColor="#c10020"]',
-      ),
-    ).toBeVisible();
+    await expectColorIndicator2D(nmrium, '#c10020', '#803e75');
     // Check that spectra color changed
     await expect(
       nmrium.page.getByTestId('contours-positive').locator('path'),
@@ -230,38 +262,36 @@ test('2d spectrum', async ({ page }) => {
     ).toHaveAttribute('stroke', '#803e75');
     // Close color picker
     await nmrium.viewer.locator.click({ force: true });
-    await expect(
-      nmrium.page.locator('_react=SpectrumSettingContent'),
-    ).toBeHidden();
+    await expect(getSpectrumSettingsDialog(nmrium)).toBeHidden();
   });
   await test.step('Check hide spectra', async () => {
     // Hide positive spectrum
-    await nmrium.page.click(
-      '_react=ShowHideSpectrumButton >> _react=FaEye >> nth=0',
-    );
+    await nmrium.page
+      .getByRole('button', { name: 'Show positive contours' })
+      .click();
     await expect(nmrium.page.getByTestId('contours-positive')).toBeHidden();
     await expect(nmrium.page.getByTestId('contours-negative')).toBeVisible();
     await expect(nmrium.page.getByTestId('spectrum-line')).toHaveCount(1);
 
     // Hide negative spectrum
-    await nmrium.page.click(
-      '_react=ShowHideSpectrumButton >> _react=FaEye >> nth=1',
-    );
+    await nmrium.page
+      .getByRole('button', { name: 'Show negative contours' })
+      .click();
     await expect(nmrium.page.getByTestId('contours-positive')).toBeHidden();
     await expect(nmrium.page.getByTestId('contours-negative')).toBeHidden();
     await expect(nmrium.page.getByTestId('spectrum-line')).toHaveCount(0);
     // Show positive spectrum
-    await nmrium.page.click(
-      '_react=ShowHideSpectrumButton >> _react=FaEye >> nth=0',
-    );
+    await nmrium.page
+      .getByRole('button', { name: 'Show positive contours' })
+      .click();
     await expect(nmrium.page.getByTestId('contours-positive')).toBeVisible();
     await expect(nmrium.page.getByTestId('contours-negative')).toBeHidden();
     await expect(nmrium.page.getByTestId('spectrum-line')).toHaveCount(1);
 
     // Show negative spectrum
-    await nmrium.page.click(
-      '_react=ShowHideSpectrumButton >> _react=FaEye >> nth=1',
-    );
+    await nmrium.page
+      .getByRole('button', { name: 'Show negative contours' })
+      .click();
     await expect(nmrium.page.getByTestId('contours-positive')).toBeVisible();
     await expect(nmrium.page.getByTestId('contours-negative')).toBeVisible();
     await expect(nmrium.page.getByTestId('spectrum-line')).toHaveCount(2);
@@ -323,27 +353,19 @@ test('show/hide spectrum', async ({ page }) => {
     await expect(nmrium.page.getByTestId('spectrum-line')).toHaveCount(13);
   });
   await test.step('Check hide spectra', async () => {
-    // Hide positive spectrum
-    await nmrium.page.click(
-      '_react=ShowHideSpectrumButton >> _react=FaEye >> nth=0',
-    );
+    // Hide the first spectrum
+    await getShowSpectrumButtons(nmrium).nth(0).click();
     await expect(nmrium.page.getByTestId('spectrum-line')).toHaveCount(12);
 
-    // Hide negative spectrum
-    await nmrium.page.click(
-      '_react=ShowHideSpectrumButton >> _react=FaEye >> nth=1',
-    );
+    // Hide the second spectrum
+    await getShowSpectrumButtons(nmrium).nth(1).click();
     await expect(nmrium.page.getByTestId('spectrum-line')).toHaveCount(11);
-    // Show positive spectrum
-    await nmrium.page.click(
-      '_react=ShowHideSpectrumButton >> _react=FaEye >> nth=0',
-    );
+    // Show the first spectrum
+    await getShowSpectrumButtons(nmrium).nth(0).click();
     await expect(nmrium.page.getByTestId('spectrum-line')).toHaveCount(12);
 
-    // Show negative spectrum
-    await nmrium.page.click(
-      '_react=ShowHideSpectrumButton >> _react=FaEye >> nth=1',
-    );
+    // Show the second spectrum
+    await getShowSpectrumButtons(nmrium).nth(1).click();
     await expect(nmrium.page.getByTestId('spectrum-line')).toHaveCount(13);
   });
 });
@@ -358,14 +380,12 @@ test('Export sources from 1H spectrum', async ({ page }) => {
     await nmrium.page.click('_react=ToolbarPopoverItem  >> text=Save as');
   });
   await test.step('Check include data options', async () => {
-    const fields = nmrium.page.locator(
-      '_react=SaveAsModal >> input[type="radio"]',
-    );
+    const fields = getSaveAsDialog(nmrium).getByRole('radio');
     await expect(fields).toHaveCount(3);
 
-    const disabledFields = nmrium.page.locator(
-      '_react=SaveAsModal >> input[type="radio"][disabled]',
-    );
+    const disabledFields = getSaveAsDialog(nmrium).getByRole('radio', {
+      disabled: true,
+    });
     await expect(disabledFields).toHaveCount(0);
   });
 });
@@ -380,13 +400,11 @@ test('Export sources from imported spectrum', async ({ page }) => {
     await nmrium.page.click('_react=ToolbarPopoverItem  >> text=Save as');
   });
   await test.step('Check include data options', async () => {
-    const fields = nmrium.page.locator(
-      '_react=SaveAsModal >> input[type="radio"]',
-    );
+    const fields = getSaveAsDialog(nmrium).getByRole('radio');
     await expect(fields).toHaveCount(3);
-    const disabledFields = nmrium.page.locator(
-      '_react=SaveAsModal >> input[type="radio"][disabled]',
-    );
+    const disabledFields = getSaveAsDialog(nmrium).getByRole('radio', {
+      disabled: true,
+    });
     await expect(disabledFields).toHaveCount(1);
     await expect(disabledFields).toHaveAttribute(
       'value',

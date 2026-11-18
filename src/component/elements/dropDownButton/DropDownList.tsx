@@ -22,6 +22,18 @@ const MenuItem = styled.li`
   }
 `;
 
+const ItemButton = styled.button`
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  cursor: pointer;
+`;
+
 const Text = styled.span`
   display: block;
   padding: 5px 20px;
@@ -42,16 +54,19 @@ function DropDownList({
         {data.map((item, index) => (
           <MenuItem
             key={item.key}
-            onClick={(e) => {
-              e.stopPropagation();
-              onSelect(index);
-            }}
             style={{
               display: !('visible' in item) || item.visible ? 'block' : 'none',
-              cursor: 'pointer',
             }}
           >
-            {renderItem?.(item) || <Text>{item.label}</Text>}
+            <ItemButton
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onSelect(index);
+              }}
+            >
+              {renderItem?.(item) || <Text>{item.label}</Text>}
+            </ItemButton>
           </MenuItem>
         ))}
       </Menu>
