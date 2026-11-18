@@ -37,7 +37,10 @@ test('automatic assignment panel', async ({ page }, info) => {
     await nmrium.getToolbarLocatorByTitle('Automatic assignment').click();
 
     await expect(
-      nmrium.page.locator('_react=AutomaticAssignmentTable >> text=0.75'),
+      nmrium
+        .getPanel('Automatic assignment')
+        .getByRole('table')
+        .getByRole('cell', { name: '0.75', exact: true }),
     ).toHaveCount(2, { timeout: 30 * 1000 });
   });
 });

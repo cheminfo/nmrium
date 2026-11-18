@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 import NmriumPage from '../NmriumPage/index.js';
+import { getTableRows } from '../table.js';
 
 test('Should 1d spectrum hide/show', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
@@ -112,9 +113,7 @@ test('Should 2d deactivate spectrum', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open2D();
   await nmrium.getSpectraTab('1H,1H').click();
-  const spectrumButtonLocator = nmrium.page.locator(
-    '_react=SpectraTable >> tbody tr >> nth=0',
-  );
+  const spectrumButtonLocator = getTableRows(nmrium.getSpectraTable()).first();
 
   const spectrumLineLocator = nmrium.page.getByTestId('spectrum-line').nth(0);
 
@@ -438,30 +437,34 @@ test('Multiple spectra analysis', async ({ page }) => {
     expect(await nmrium.getNumberOfDistinctColors()).toBe(13);
   });
   await test.step('Check Recolour based on spectrum name', async () => {
-    await nmrium.page.click('_react=SpectraTable >> text="Spectrum Name"', {
-      button: 'right',
-    });
+    await nmrium
+      .getSpectraTable()
+      .getByRole('columnheader', { name: 'Spectrum Name', exact: true })
+      .click({ button: 'right' });
     await nmrium.page.click('text="Recolor based on distinct value"');
     expect(await nmrium.getNumberOfDistinctColors()).toBe(13);
   });
   await test.step('Check recolour based on pulse', async () => {
-    await nmrium.page.click('_react=SpectraTable >> text="Pulse"', {
-      button: 'right',
-    });
+    await nmrium
+      .getSpectraTable()
+      .getByRole('columnheader', { name: 'Pulse', exact: true })
+      .click({ button: 'right' });
     await nmrium.page.click('text="Recolor based on distinct value"');
     expect(await nmrium.getNumberOfDistinctColors()).toBe(1);
   });
   await test.step('Check again recolour based on spectrum name', async () => {
-    await nmrium.page.click('_react=SpectraTable >> text="Spectrum Name"', {
-      button: 'right',
-    });
+    await nmrium
+      .getSpectraTable()
+      .getByRole('columnheader', { name: 'Spectrum Name', exact: true })
+      .click({ button: 'right' });
     await nmrium.page.click('text="Recolor based on distinct value"');
     expect(await nmrium.getNumberOfDistinctColors()).toBe(13);
   });
   await test.step('Check recolour based on solvent', async () => {
-    await nmrium.page.click('_react=SpectraTable >> text="Solvent"', {
-      button: 'right',
-    });
+    await nmrium
+      .getSpectraTable()
+      .getByRole('columnheader', { name: 'Solvent', exact: true })
+      .click({ button: 'right' });
     await nmrium.page.click('text="Recolor based on distinct value"');
     expect(await nmrium.getNumberOfDistinctColors()).toBe(1);
   });

@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 import NmriumPage from '../NmriumPage/index.js';
+import { getTableCell, getTableRows } from '../table.js';
 
 const PEAK_ANNOTATIONS_SELECTOR =
   '_react=Peaks[peaksSource="peaks"] >> _react=PeakAnnotation';
@@ -44,12 +45,14 @@ async function shiftX(nmrium: NmriumPage) {
 }
 
 async function shiftSpectraByDeltaColumn(nmrium: NmriumPage) {
-  const ppmColumnLocator = nmrium.page.locator(
-    '_react=PeaksTable >> .editable-column-input >> nth=2 ',
+  const ppmColumnLocator = await getTableCell(
+    nmrium.getPanel('Peaks').getByRole('table'),
+    1,
+    'δ (ppm)',
   );
 
   await ppmColumnLocator.dblclick();
-  const inputLocator = ppmColumnLocator.locator('input');
+  const inputLocator = ppmColumnLocator.getByRole('spinbutton');
   await inputLocator.selectText();
   await inputLocator.fill('20');
   await inputLocator.press('Enter');
@@ -117,7 +120,7 @@ test('Processed spectra peaks', async ({ page }) => {
     //Open peaks panel
     await nmrium.showPanel('Peaks');
 
-    const peaks = nmrium.page.locator('_react=PeaksTable >> tbody >> tr');
+    const peaks = getTableRows(nmrium.getPanel('Peaks').getByRole('table'));
     await expect(peaks).toHaveCount(16);
 
     const peaksData = [
@@ -154,14 +157,13 @@ test('Check no negative peaks in processed spectra', async ({ page }) => {
     await nmrium.clickPanel('Ranges / Multiplet analysis');
     //Open peaks panel
     await nmrium.showPanel('Peaks');
-    const peaks = nmrium.page.locator('_react=PeaksTable >> tbody >> tr');
+    const peaksTable = nmrium.getPanel('Peaks').getByRole('table');
 
     for (let i = 0; i < 16; i++) {
-      const peak = peaks.nth(i);
       // eslint-disable-next-line no-await-in-loop
-      expect(await peak.locator('td >> nth=2').textContent()).not.toContain(
-        '-',
-      );
+      const intensity = await getTableCell(peaksTable, i, 'Intensity');
+      // eslint-disable-next-line no-await-in-loop
+      await expect(intensity).not.toContainText('-');
     }
   });
 });

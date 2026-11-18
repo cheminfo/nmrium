@@ -82,6 +82,13 @@ export default class NmriumPage {
   }
 
   /**
+   * Get the spectra table of the active tab in the spectra panel.
+   */
+  public getSpectraTable() {
+    return this.getPanel('Spectra').getByRole('table');
+  }
+
+  /**
    * Get the list of filters applied to the active spectrum, in the processing panel.
    */
   public getFiltersList() {
