@@ -25,7 +25,7 @@ export function LinkedSignal({ signal }: LinkedSignalProps) {
   const scaleY = useScale2DY();
   const dispatch = useDispatch();
   const { data: newLabel, setData } = useShareData<string | null>();
-  const { diaIDs } = signal;
+  const diaIDs = [...signal.xDiaIDs, ...signal.yDiaIDs];
   const { show, hide } = useHighlight(diaIDs, { type: 'LINKED_SIGNAL' });
   const id = `${signal.xSignalId}:${signal.ySignalId}`;
 
