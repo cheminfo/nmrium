@@ -120,6 +120,7 @@ export function getDefaultViewState(): ViewState {
     units1D: {},
     units2D: {},
     insets: {},
+    slicingScaleRatio: 1,
   };
 }
 export const getInitialState = (): State => ({
