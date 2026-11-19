@@ -2,6 +2,7 @@ import type { Spectrum2D } from '@zakodium/nmr-types';
 import type { MouseEvent } from 'react';
 
 import { useDispatch } from '../../context/DispatchContext.js';
+import { useIsPrimaryKeyActivated } from '../../context/KeyModifierContext.js';
 import { useShareData } from '../../context/ShareDataContext.js';
 import SignalDeltaLine from '../SignalDeltaLine.js';
 import { useNearestSignalCrossing } from '../useNearestSignalCrossing.js';
@@ -15,12 +16,15 @@ export function SignalCrossingIndicator({
   const scaleY = useScale2DY();
   const dispatch = useDispatch();
   const { setData } = useShareData<string | null>();
+  const isPrimary = useIsPrimaryKeyActivated();
 
-  if (!nearest || nearest.isLinked) return null;
+  if (!isPrimary || !nearest || nearest.isLinked) return null;
 
   const { xSignalId, ySignalId, assignment } = nearest;
 
   function handleClick(event: MouseEvent<SVGCircleElement>) {
+    if (event.button !== 0) return;
+
     event.stopPropagation();
 
     dispatch({
