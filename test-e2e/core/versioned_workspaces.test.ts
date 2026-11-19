@@ -7,8 +7,7 @@ test('workspaces given with an older version are migrated', async ({
 }) => {
   const nmrium = await NmriumPage.create(page);
 
-  await nmrium.page.click('li >> text=Workspaces');
-  await nmrium.page.click('li >> text=Versioned workspaces (v19)');
+  await nmrium.openDemo('Workspaces', 'Versioned workspaces (v19)');
 
   const workspaceButton = nmrium.page.getByRole('button', {
     name: /^Workspace:/,
