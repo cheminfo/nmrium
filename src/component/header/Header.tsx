@@ -144,7 +144,7 @@ function HeaderInner(props: HeaderInnerProps) {
           }}
         >
           <div>
-            <Toolbar>
+            <Toolbar aria-label="Main header left toolbar">
               <AboutUsModal />
             </Toolbar>
           </div>
@@ -180,7 +180,7 @@ function HeaderInner(props: HeaderInnerProps) {
           {!general?.hideLogs && <LogsHistoryModal />}
 
           <div>
-            <Toolbar>
+            <Toolbar aria-label="Main header right toolbar">
               {!general?.hideHelp && (
                 <Toolbar.Item
                   id="user-manual"
