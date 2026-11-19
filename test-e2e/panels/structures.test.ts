@@ -1,3 +1,4 @@
+import { Classes } from '@blueprintjs/core';
 import type { Locator } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
@@ -40,6 +41,8 @@ function getFloatingMolecules(nmrium: NmriumPage) {
 test('should draw structure and display it with MF', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
 
+  const structuresPanel = nmrium.getPanel('Chemical structures');
+
   // Open the "Structures" panel.
   await nmrium.clickPanel('Chemical structures');
 
@@ -58,11 +61,12 @@ test('should draw structure and display it with MF', async ({ page }) => {
     await nmrium.moleculeEditor.clickDrawArea({ x: 50, y: 50 });
 
     // Save the molecule.
-    await nmrium.page.click('button >> text=Save');
-
     await nmrium.page
-      .locator('div[role="dialog"]')
-      .waitFor({ state: 'hidden' });
+      .getByRole('dialog')
+      .getByRole('button', { name: 'Save' })
+      .click();
+
+    await nmrium.page.getByRole('dialog').waitFor({ state: 'hidden' });
   });
 
   await test.step('Check the visibly of the benzene molecule', async () => {
@@ -70,13 +74,11 @@ test('should draw structure and display it with MF', async ({ page }) => {
     await checkMoleculeStructureIsExists(nmrium, 0);
 
     // The molecular formula should now be visible in the panel.
-    await expect(nmrium.page.locator('text=C6H6 - 78.11')).toBeVisible();
+    await expect(structuresPanel.getByText('C6H6 - 78.11')).toBeVisible();
 
     // The number of molecules should now be visible in the panel.
     await expect(
-      nmrium
-        .getPanel('Chemical structures')
-        .getByText('[ 1 / 1 ]', { exact: true }),
+      structuresPanel.getByText('[ 1 / 1 ]', { exact: true }),
     ).toBeVisible();
   });
 
@@ -90,10 +92,11 @@ test('should draw structure and display it with MF', async ({ page }) => {
     await nmrium.moleculeEditor.clickDrawArea({ x: 50, y: 50 });
 
     // Save the molecule.
-    await nmrium.page.click('button >> text=Save');
     await nmrium.page
-      .locator('div[role="dialog"]')
-      .waitFor({ state: 'hidden' });
+      .getByRole('dialog')
+      .getByRole('button', { name: 'Save' })
+      .click();
+    await nmrium.page.getByRole('dialog').waitFor({ state: 'hidden' });
 
     // Check the visibility.
 
@@ -101,39 +104,45 @@ test('should draw structure and display it with MF', async ({ page }) => {
     await checkMoleculeStructureIsExists(nmrium, 1);
 
     // The molecular formula should now be visible in the panel.
-    await expect(nmrium.page.locator('text=C6H12 - 84.16')).toBeVisible();
+    await expect(structuresPanel.getByText('C6H12 - 84.16')).toBeVisible();
 
     // The number of molecules should now be visible in the panel.
-    await expect(nmrium.page.locator('text=2 / 2')).toBeVisible();
+    await expect(structuresPanel.getByText('2 / 2')).toBeVisible();
   });
 
   await test.step('Switch between molecules', async () => {
     // Start with the second molecule.
-    await expect(nmrium.page.locator('text=2 / 2')).toBeVisible();
-    await expect(nmrium.page.locator('text=C6H12 - 84.16')).toBeVisible();
+    await expect(structuresPanel.getByText('2 / 2')).toBeVisible();
+    await expect(structuresPanel.getByText('C6H12 - 84.16')).toBeVisible();
 
     // Go to the previous molecule.
     await getMoleculesPagerButton(nmrium, 'Previous').click();
 
     // Check selected molecule number.
-    await expect(nmrium.page.locator('text=1 / 2')).toBeVisible();
+    await expect(structuresPanel.getByText('1 / 2')).toBeVisible();
 
     // Check selected molecule formula.
-    await expect(nmrium.page.locator('text=C6H6 - 78.11')).toBeVisible();
+    await expect(structuresPanel.getByText('C6H6 - 78.11')).toBeVisible();
 
     // Go to the next molecule.
     await getMoleculesPagerButton(nmrium, 'Next').click();
     // Check selected molecule number.
-    await expect(nmrium.page.locator('text=2 / 2')).toBeVisible();
+    await expect(structuresPanel.getByText('2 / 2')).toBeVisible();
 
     // Check selected molecule formula.
-    await expect(nmrium.page.locator('text=C6H12 - 84.16')).toBeVisible();
+    await expect(structuresPanel.getByText('C6H12 - 84.16')).toBeVisible();
   });
 });
 
 test('molecules 1H spectrum', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
+
+  const structuresPanel = nmrium.getPanel('Chemical structures');
+  const floatMoleculeButton = nmrium.getPanelToolbarButton(
+    'Chemical structures',
+    'Float molecule',
+  );
 
   await test.step('open Chemical structures panel', async () => {
     await nmrium.clickPanel('Chemical structures');
@@ -144,14 +153,10 @@ test('molecules 1H spectrum', async ({ page }) => {
     await checkMoleculeStructureIsExists(nmrium, 0);
 
     // Check the existing molecular formula.
-    await expect(nmrium.page.locator('text=C11H14N2O - 190.25')).toBeVisible();
+    await expect(structuresPanel.getByText('C11H14N2O - 190.25')).toBeVisible();
 
     // Check the existing number of molecules.
-    await expect(
-      nmrium
-        .getPanel('Chemical structures')
-        .getByText('[ 1 / 1 ]', { exact: true }),
-    ).toBeVisible();
+    await expect(structuresPanel.getByText('[ 1 / 1 ]')).toBeVisible();
   });
 
   await test.step('Add benzene molecule and check the visibility', async () => {
@@ -167,10 +172,11 @@ test('molecules 1H spectrum', async ({ page }) => {
     });
 
     // Save the molecule.
-    await nmrium.page.click('button >> text=Save');
     await nmrium.page
-      .locator('div[role="dialog"]')
-      .waitFor({ state: 'hidden' });
+      .getByRole('dialog')
+      .getByRole('button', { name: 'Save', exact: true })
+      .click();
+    await nmrium.page.getByRole('dialog').waitFor({ state: 'hidden' });
 
     // Check the visibility.
 
@@ -178,14 +184,10 @@ test('molecules 1H spectrum', async ({ page }) => {
     await checkMoleculeStructureIsExists(nmrium, 1);
 
     // Check the molecular formula.
-    await expect(nmrium.page.locator('text=C6H6 - 78.11')).toBeVisible();
+    await expect(structuresPanel.getByText('C6H6 - 78.11')).toBeVisible();
 
     // Check the number of molecules.
-    await expect(
-      nmrium
-        .getPanel('Chemical structures')
-        .getByText('[ 2 / 2 ]', { exact: true }),
-    ).toBeVisible();
+    await expect(structuresPanel.getByText('[ 2 / 2 ]')).toBeVisible();
   });
 
   await test.step('Add a third molecule and check the visibility', async () => {
@@ -201,214 +203,122 @@ test('molecules 1H spectrum', async ({ page }) => {
     });
 
     // Save the molecule.
-    await nmrium.page.click('button >> text=Save');
     await nmrium.page
-      .locator('div[role="dialog"]')
-      .waitFor({ state: 'hidden' });
+      .getByRole('dialog')
+      .getByRole('button', { name: 'Save' })
+      .click();
+    await nmrium.page.getByRole('dialog').waitFor({ state: 'hidden' });
 
     // Check the visibility.
 
     // The molecule SVG rendering should now be visible in the panel.
     await checkMoleculeStructureIsExists(nmrium, 2);
     // Check the molecular formula.
-    await expect(nmrium.page.locator('text=C6H12 - 84.16')).toBeVisible();
+    await expect(structuresPanel.getByText('C6H12 - 84.16')).toBeVisible();
 
     // Check the number of molecules.
-    await expect(
-      nmrium
-        .getPanel('Chemical structures')
-        .getByText('[ 3 / 3 ]', { exact: true }),
-    ).toBeVisible();
+    await expect(structuresPanel.getByText('[ 3 / 3 ]')).toBeVisible();
   });
 
   await test.step('Switch between molecules', async () => {
     // Start with the third molecule.
-    await expect(
-      nmrium
-        .getPanel('Chemical structures')
-        .getByText('[ 3 / 3 ]', { exact: true }),
-    ).toBeVisible();
-    await expect(nmrium.page.locator('text=C6H12 - 84.16')).toBeVisible();
+    await expect(structuresPanel.getByText('[ 3 / 3 ]')).toBeVisible();
+    await expect(structuresPanel.getByText('C6H12 - 84.16')).toBeVisible();
 
     // Go to the previous molecule.
     await getMoleculesPagerButton(nmrium, 'Previous').click();
 
     // Check selected molecule number.
-    await expect(
-      nmrium
-        .getPanel('Chemical structures')
-        .getByText('[ 2 / 3 ]', { exact: true }),
-    ).toBeVisible();
+    await expect(structuresPanel.getByText('[ 2 / 3 ]')).toBeVisible();
 
     // Check selected molecule formula.
-    await expect(nmrium.page.locator('text=C6H6 - 78.11')).toBeVisible();
+    await expect(structuresPanel.getByText('C6H6 - 78.11')).toBeVisible();
 
     // Go to the previous molecule.
     await getMoleculesPagerButton(nmrium, 'Previous').click();
 
     // Check selected molecule number.
-    await expect(
-      nmrium
-        .getPanel('Chemical structures')
-        .getByText('[ 1 / 3 ]', { exact: true }),
-    ).toBeVisible();
+    await expect(structuresPanel.getByText('[ 1 / 3 ]')).toBeVisible();
     // Check selected molecule formula.
-    await expect(nmrium.page.locator('text=C11H14N2O - 190.25')).toBeVisible();
+    await expect(structuresPanel.getByText('C11H14N2O - 190.25')).toBeVisible();
     await expect(getMoleculesPagerButton(nmrium, 'Previous')).toBeHidden();
 
     // Go to the next molecule.
     await getMoleculesPagerButton(nmrium, 'Next').click();
     // Check selected molecule number.
-    await expect(
-      nmrium
-        .getPanel('Chemical structures')
-        .getByText('[ 2 / 3 ]', { exact: true }),
-    ).toBeVisible();
+    await expect(structuresPanel.getByText('[ 2 / 3 ]')).toBeVisible();
 
     // Check selected molecule formula.
-    await expect(nmrium.page.locator('text=C6H6 - 78.11')).toBeVisible();
+    await expect(structuresPanel.getByText('C6H6 - 78.11')).toBeVisible();
 
     // Go to the next molecule.
     await getMoleculesPagerButton(nmrium, 'Next').click();
 
     // Check the third molecule.
-    await expect(
-      nmrium
-        .getPanel('Chemical structures')
-        .getByText('[ 3 / 3 ]', { exact: true }),
-    ).toBeVisible();
-    await expect(nmrium.page.locator('text=C6H12 - 84.16')).toBeVisible();
+    await expect(structuresPanel.getByText('[ 3 / 3 ]')).toBeVisible();
+    await expect(structuresPanel.getByText('C6H12 - 84.16')).toBeVisible();
     await expect(getMoleculesPagerButton(nmrium, 'Next')).toBeHidden();
 
     // Go to the previous molecule.
     await getMoleculesPagerButton(nmrium, 'Previous').click();
 
     // Check selected molecule number.
-    await expect(
-      nmrium
-        .getPanel('Chemical structures')
-        .getByText('[ 2 / 3 ]', { exact: true }),
-    ).toBeVisible();
+    await expect(structuresPanel.getByText('[ 2 / 3 ]')).toBeVisible();
     // Check selected molecule formula.
-    await expect(nmrium.page.locator('text=C6H6 - 78.11')).toBeVisible();
+    await expect(structuresPanel.getByText('C6H6 - 78.11')).toBeVisible();
   });
 
   await test.step('Check molecules in integrals', async () => {
+    const dialog = nmrium.page.getByRole('dialog');
     await nmrium.showPanel('Integrals');
-    await nmrium.page.click(
-      '_react=IntegralPanel >> _react=ToolbarItem[tooltip*="Change integration" i]',
-    );
-    await expect(
-      nmrium.page.locator('div[role="dialog"] >> #molSVG0'),
-    ).toBeVisible();
-    await expect(
-      nmrium.page.locator('div[role="dialog"] >> text=C11H14N2O - 190.25'),
-    ).toBeVisible();
-    await expect(
-      nmrium.page.locator(
-        'div[role="dialog"] >> text=New sum for H will be 14!',
-      ),
-    ).toBeVisible();
-    await nmrium.page
-      .getByRole('dialog')
-      .getByRole('button', { name: 'Next', exact: true })
+    await nmrium
+      .getPanel('Integrals')
+      .getByRole('toolbar')
+      .getByRole('button', { name: 'Change integration sum' })
       .click();
-    await expect(
-      nmrium.page.locator('div[role="dialog"] >> #molSVG1'),
-    ).toBeVisible();
-    await expect(
-      nmrium.page.locator('div[role="dialog"] >> text=C6H6 - 78.11'),
-    ).toBeVisible();
-    await expect(
-      nmrium.page.locator(
-        'div[role="dialog"] >> text=New sum for H will be 6!',
-      ),
-    ).toBeVisible();
-    await nmrium.page
-      .getByRole('dialog')
-      .getByRole('button', { name: 'Next', exact: true })
-      .click();
-    await expect(
-      nmrium.page.locator('div[role="dialog"] >> #molSVG2'),
-    ).toBeVisible();
-    await expect(
-      nmrium.page.locator('div[role="dialog"] >> text=C6H12 - 84.16'),
-    ).toBeVisible();
-    await expect(
-      nmrium.page.locator(
-        'div[role="dialog"] >> text=New sum for H will be 12!',
-      ),
-    ).toBeVisible();
-    await nmrium.page
-      .getByRole('dialog')
-      .getByRole('button', { name: 'Close' })
-      .click();
+    await expect(dialog.locator('#molSVG0')).toBeVisible();
+    await expect(dialog.getByText('C11H14N2O - 190.25')).toBeVisible();
+    await expect(dialog.getByText('New sum for H will be 14!')).toBeVisible();
+    await dialog.getByRole('button', { name: 'Next', exact: true }).click();
+    await expect(dialog.locator('#molSVG1')).toBeVisible();
+    await expect(dialog.getByText('C6H6 - 78.11')).toBeVisible();
+    await expect(dialog.getByText('New sum for H will be 6!')).toBeVisible();
+    await dialog.getByRole('button', { name: 'Next', exact: true }).click();
+    await expect(dialog.locator('#molSVG2')).toBeVisible();
+    await expect(dialog.getByText('C6H12 - 84.16')).toBeVisible();
+    await expect(dialog.getByText('New sum for H will be 12!')).toBeVisible();
+    await dialog.getByRole('button', { name: 'Close' }).click();
   });
 
   await test.step('Check molecules in ranges', async () => {
-    await nmrium.page.click(
-      '_react=ToolbarItem[tooltip *= "Change ranges sum" i]',
-    );
-    await expect(
-      nmrium.page.locator('div[role="dialog"] >> #molSVG0'),
-    ).toBeVisible();
-    await expect(
-      nmrium.page.locator('div[role="dialog"] >> text=C11H14N2O - 190.25'),
-    ).toBeVisible();
-    await expect(
-      nmrium.page.locator(
-        'div[role="dialog"] >> text=New sum for H will be 14!',
-      ),
-    ).toBeVisible();
-    await nmrium.page
-      .getByRole('dialog')
-      .getByRole('button', { name: 'Next', exact: true })
+    const dialog = nmrium.page.getByRole('dialog');
+    await nmrium
+      .getPanel('Ranges / Multiplet analysis')
+      .getByRole('button', { name: 'Change ranges sum' })
       .click();
-    await expect(
-      nmrium.page.locator('div[role="dialog"] >> #molSVG1'),
-    ).toBeVisible();
-    await expect(
-      nmrium.page.locator('div[role="dialog"] >> text=C6H6 - 78.11'),
-    ).toBeVisible();
-    await expect(
-      nmrium.page.locator(
-        'div[role="dialog"] >> text=New sum for H will be 6!',
-      ),
-    ).toBeVisible();
-    await nmrium.page
-      .getByRole('dialog')
-      .getByRole('button', { name: 'Next', exact: true })
-      .click();
-    await expect(
-      nmrium.page.locator('div[role="dialog"] >> #molSVG2'),
-    ).toBeVisible();
-    await expect(
-      nmrium.page.locator('div[role="dialog"] >> text=C6H12 - 84.16'),
-    ).toBeVisible();
-    await expect(
-      nmrium.page.locator(
-        'div[role="dialog"] >> text=New sum for H will be 12!',
-      ),
-    ).toBeVisible();
-    await nmrium.page
-      .getByRole('dialog')
-      .getByRole('button', { name: 'Close' })
-      .click();
+    await expect(dialog.locator('#molSVG0')).toBeVisible();
+    await expect(dialog.getByText('C11H14N2O - 190.25')).toBeVisible();
+    await expect(dialog.getByText('New sum for H will be 14!')).toBeVisible();
+    await dialog.getByRole('button', { name: 'Next', exact: true }).click();
+    await expect(dialog.locator('#molSVG1')).toBeVisible();
+    await expect(dialog.getByText('C6H6 - 78.11')).toBeVisible();
+    await expect(dialog.getByText('New sum for H will be 6!')).toBeVisible();
+    await dialog.getByRole('button', { name: 'Next', exact: true }).click();
+    await expect(dialog.locator('#molSVG2')).toBeVisible();
+    await expect(dialog.getByText('C6H12 - 84.16')).toBeVisible();
+    await expect(dialog.getByText('New sum for H will be 12!')).toBeVisible();
+    await dialog.getByRole('button', { name: 'Close' }).click();
   });
 
   await test.step('Check float molecule', async () => {
     // Check float molecule btn is on.
-    await expect(
-      nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
-    ).toBeVisible();
+    await expect(floatMoleculeButton).toContainClass(Classes.ACTIVE);
     // Click on float molecule button to hide it.
     await nmrium.clickToolByTitle('Float molecule');
     // Check floated molecule.
     await expect(getFloatingMolecules(nmrium).first()).toBeVisible();
     // Check float molecule btn is off.
-    await expect(
-      nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
-    ).toBeHidden();
+    await expect(floatMoleculeButton).not.toContainClass(Classes.ACTIVE);
   });
 
   await test.step('Close float molecule', async () => {
@@ -420,17 +330,13 @@ test('molecules 1H spectrum', async ({ page }) => {
     await expect(getFloatingMolecules(nmrium).first()).toBeHidden();
     await expect(structureLocator).toBeHidden();
     // Check float molecule btn is off.
-    await expect(
-      nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
-    ).toBeHidden();
+    await expect(floatMoleculeButton).not.toContainClass(Classes.ACTIVE);
     // Click on float molecule button.
     await nmrium.clickToolByTitle('Float molecule');
     // Check floated molecule.
     await expect(getFloatingMolecules(nmrium).first()).toBeVisible();
     // Check float molecule btn is on.
-    await expect(
-      nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
-    ).toBeVisible();
+    await expect(floatMoleculeButton).toContainClass(Classes.ACTIVE);
   });
 
   await test.step('Check copy as molfile V3 or V2 and paste', async () => {
@@ -440,22 +346,19 @@ test('molecules 1H spectrum', async ({ page }) => {
     await nmrium.page.getByTestId('paste-molecule-action').click();
 
     await expect(
-      nmrium
-        .getPanel('Chemical structures')
-        .getByText('[ 5 / 5 ]', { exact: true }),
+      structuresPanel.getByText('[ 5 / 5 ]', { exact: true }),
     ).toBeVisible();
-    await expect(
-      nmrium.page.locator('text=C6H6 - 78.11 >> nth=1'),
-    ).toBeVisible();
-    await expect(nmrium.page.locator('text=C6H6 - 78.11')).toHaveCount(3);
+    await expect(structuresPanel.getByText('C6H6 - 78.11')).toHaveCount(3);
     await checkMoleculeStructureIsExists(nmrium, 3);
   });
 
   await test.step('Delete the copy', async () => {
     // Delete molecule.
-    await nmrium.page.click('_react=ToolbarItem[tooltip="Delete molecule" i]');
+    await structuresPanel
+      .getByRole('button', { name: 'Delete molecule', exact: true })
+      .click();
     // Check deleted molecule.
-    await expect(nmrium.page.locator('text=C6H6 - 78.11')).toHaveCount(2);
+    await expect(structuresPanel.getByText('C6H6 - 78.11')).toHaveCount(2);
     // Check floated molecule.
     await expect(getFloatingMolecules(nmrium).first()).toBeVisible();
     // Go to the next molecule.
@@ -469,12 +372,10 @@ test('molecules 1H spectrum', async ({ page }) => {
     await expect(getFloatingMolecules(nmrium)).toHaveCount(1);
     // Check selected molecule.
     await expect(
-      nmrium
-        .getPanel('Chemical structures')
-        .getByText('[ 1 / 3 ]', { exact: true }),
+      structuresPanel.getByText('[ 1 / 3 ]', { exact: true }),
     ).toBeVisible();
 
-    await expect(nmrium.page.locator('text=C11H14N2O - 190.25')).toBeVisible();
+    await expect(structuresPanel.getByText('C11H14N2O - 190.25')).toBeVisible();
     await checkMoleculeStructureIsExists(nmrium, 0);
   });
 
@@ -483,12 +384,10 @@ test('molecules 1H spectrum', async ({ page }) => {
     await getMoleculesPagerButton(nmrium, 'Next').click();
     // Check the second molecule.
     await expect(
-      nmrium
-        .getPanel('Chemical structures')
-        .getByText('[ 2 / 3 ]', { exact: true }),
+      structuresPanel.getByText('[ 2 / 3 ]', { exact: true }),
     ).toBeVisible();
 
-    await expect(nmrium.page.locator('text=C6H12 - 84.16')).toBeVisible();
+    await expect(structuresPanel.getByText('C6H12 - 84.16')).toBeVisible();
     await checkMoleculeStructureIsExists(nmrium, 1);
 
     // Delete molecule.
@@ -496,24 +395,20 @@ test('molecules 1H spectrum', async ({ page }) => {
 
     // Check selected molecule.
     await expect(
-      nmrium
-        .getPanel('Chemical structures')
-        .getByText('[ 1 / 2 ]', { exact: true }),
+      structuresPanel.getByText('[ 1 / 2 ]', { exact: true }),
     ).toBeVisible();
 
-    await expect(nmrium.page.locator('text=C11H14N2O - 190.25')).toBeVisible();
+    await expect(structuresPanel.getByText('C11H14N2O - 190.25')).toBeVisible();
     await checkMoleculeStructureIsExists(nmrium, 0);
   });
 
   await test.step('Empty panel', async () => {
     // Check selected molecule.
     await expect(
-      nmrium
-        .getPanel('Chemical structures')
-        .getByText('[ 1 / 2 ]', { exact: true }),
+      structuresPanel.getByText('[ 1 / 2 ]', { exact: true }),
     ).toBeVisible();
 
-    await expect(nmrium.page.locator('text=C11H14N2O - 190.25')).toBeVisible();
+    await expect(structuresPanel.getByText('C11H14N2O - 190.25')).toBeVisible();
 
     // Delete both remaining molecules.
     await nmrium.clickToolByTitle('Delete molecule');
@@ -532,11 +427,11 @@ async function getCount(locator: Locator): Promise<number> {
 
 test('check callbacks count on changing structures', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
+  const structuresPanel = nmrium.getPanel('Chemical structures');
   const dataCount = nmrium.page.getByTestId('data-count');
   const viewCount = nmrium.page.getByTestId('view-count');
   await test.step('open test page', async () => {
-    await nmrium.page.click('li >> text=Props debug');
-    await nmrium.page.click('li >> text=Callback - 1H spectrum cytisine');
+    await nmrium.openDemo('Props debug', 'Callback - 1H spectrum cytisine');
     // wait the spectrum to load
     await expect(nmrium.page.getByTestId('spectrum-line')).toBeVisible();
 
@@ -554,13 +449,11 @@ test('check callbacks count on changing structures', async ({ page }) => {
     await checkMoleculeStructureIsExists(nmrium, 0);
 
     // The molecular formula should now be visible in the panel.
-    await expect(nmrium.page.locator('text=C11H14N2O - 190.25')).toBeVisible();
+    await expect(structuresPanel.getByText('C11H14N2O - 190.25')).toBeVisible();
 
     // The number of molecules should now be visible in the panel.
     await expect(
-      nmrium
-        .getPanel('Chemical structures')
-        .getByText('[ 1 / 1 ]', { exact: true }),
+      structuresPanel.getByText('[ 1 / 1 ]', { exact: true }),
     ).toBeVisible();
   });
 
@@ -577,7 +470,10 @@ test('check callbacks count on changing structures', async ({ page }) => {
     });
 
     // Save the molecule.
-    await nmrium.page.click('button >> text=Save');
+    await nmrium.page
+      .getByRole('dialog')
+      .getByRole('button', { name: 'Save', exact: true })
+      .click();
 
     await expect(dataCount).toContainText(String(initialDataCount + 1));
     await expect(viewCount).toContainText(String(initialViewCount + 1));
@@ -587,21 +483,21 @@ test('check callbacks count on changing structures', async ({ page }) => {
     await checkMoleculeStructureIsExists(nmrium, 1);
 
     // The molecular formula should now be visible in the panel.
-    await expect(nmrium.page.locator('text=C6H12 - 84.16')).toBeVisible();
+    await expect(
+      nmrium.getPanel('Chemical structures').getByText('C6H12 - 84.16'),
+    ).toBeVisible();
 
     // The number of molecules should now be visible in the panel.
     await expect(
-      nmrium
-        .getPanel('Chemical structures')
-        .getByText('[ 2 / 2 ]', { exact: true }),
+      structuresPanel.getByText('[ 2 / 2 ]', { exact: true }),
     ).toBeVisible();
   });
 
   await test.step('Check float molecule', async () => {
-    // Check float molecule btn is off.
+    // Check float molecule btn is on.
     await expect(
-      nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
-    ).toBeVisible();
+      nmrium.getPanelToolbarButton('Chemical structures', 'Float molecule'),
+    ).toContainClass(Classes.ACTIVE);
     // Check floated molecule.
     await expect(getFloatingMolecules(nmrium).first()).toBeVisible();
 

@@ -1,10 +1,12 @@
-import type { Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 import { expect } from '@playwright/test';
+import type { Mandatory } from '@zakodium/utils';
 
 import { NmriumPageMoleculeEditor } from './NmriumPageMoleculeEditor.js';
 import { NmriumPageViewer } from './NmriumPageViewer.js';
 
 type ClickOptions = Parameters<Page['click']>[1];
+type GetByRoleOptions = Mandatory<Parameters<Locator['getByRole']>[1]>;
 
 interface ToolLocatorOptions {
   active?: boolean;
@@ -68,7 +70,15 @@ export default class NmriumPage {
    * @param title - The panel title, as shown in its header.
    */
   public getPanelButton(title: string) {
-    return this.page.getByRole('button', { name: title, exact: true });
+    return this.page
+      .getByRole('button', { name: title, exact: true, expanded: true })
+      .or(
+        this.page.getByRole('button', {
+          name: title,
+          exact: true,
+          expanded: false,
+        }),
+      );
   }
 
   /**
@@ -120,10 +130,26 @@ export default class NmriumPage {
 
   /**
    * Show a panel hidden from the accordion by clicking its panels bar icon.
-   * @param title - The panel title, as shown in the icon tooltip.
+   * @param name - The panel name, as shown in the icon tooltip.
    */
-  public async showPanel(title: string) {
-    await this.page.click(`_react=ActivityBarItem[tooltip="${title}"]`);
+  public async showPanel(name: string) {
+    await this.page
+      .getByRole('toolbar', { name: 'Panels bar', exact: true })
+      .getByRole('button', { name, exact: true, pressed: false })
+      .click();
+  }
+
+  public getPanelToolbarButton(
+    panelName: string,
+    buttonName: string,
+    options: Omit<GetByRoleOptions, 'name'> = {},
+  ) {
+    const { exact = true, ...restOptions } = options;
+    return this.getPanel(panelName).getByRole('button', {
+      name: buttonName,
+      exact,
+      ...restOptions,
+    });
   }
 
   public async clickTool(id: string) {
@@ -132,8 +158,9 @@ export default class NmriumPage {
       .or(this.page.locator(`_react=ToolbarPopoverItem[id="${id}"] >> nth=0`))
       .click();
   }
+
   public async clickToolByTitle(title: string) {
-    await this.page.click(`_react=ToolbarItem[tooltip="${title}"] >> nth=0`);
+    await this.page.getByRole('button', { name: title, exact: true }).click();
   }
 
   public getToolbarLocatorByTitle(
