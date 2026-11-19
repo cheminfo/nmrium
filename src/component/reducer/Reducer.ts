@@ -712,6 +712,11 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return MoleculeActions.handleAddMolecules(draft, action);
       case 'SET_MOLECULE':
         return MoleculeActions.handleSetMolecule(draft, action);
+      case 'CHANGE_ASSIGNMENT_LABEL_BY_DIAIDS':
+        return MoleculeActions.handleChangeAssignmentLabelsByDiaIds(
+          draft,
+          action,
+        );
       case 'CHANGE_MOLECULE_LABEL':
         return MoleculeActions.handleChangeMoleculeLabel(draft, action);
       case 'DELETE_MOLECULE':
@@ -780,11 +785,6 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return RangesActions.handleChange1DSignalAssignmentLabel(draft, action);
       case 'CHANGE_RANGES_VIEW_FLOATING_BOX_BOUNDING':
         return RangesActions.handleChangeRangesViewFloatingBoxBounding(
-          draft,
-          action,
-        );
-      case 'CHANGE_ASSIGNMENT_LABEL_BY_DIAIDS':
-        return RangesActions.handleChangeRangesAssignmentLabelsByDiaIds(
           draft,
           action,
         );

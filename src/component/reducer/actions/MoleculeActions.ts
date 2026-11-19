@@ -1,5 +1,14 @@
-import type { MoleculeView, StateMolecule } from '@zakodium/nmrium-core';
-import { isSpectrum1D, isSpectrum2D } from '@zakodium/nmrium-core';
+import type { Range, Zone } from '@zakodium/nmr-types';
+import type {
+  MoleculeView,
+  Spectrum2D,
+  StateMolecule,
+} from '@zakodium/nmrium-core';
+import {
+  isSpectrum1D,
+  isSpectrum2D,
+  isSpectrum2DFt,
+} from '@zakodium/nmrium-core';
 import type { Logger } from 'cheminfo-types';
 import type { FifoLogger } from 'fifo-logger';
 import type { Draft } from 'immer';
@@ -20,6 +29,7 @@ import { DRAGGABLE_STRUCTURE_INITIAL_BOUNDING_REACT } from '../../../data/molecu
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager.js';
 import { generateColor } from '../../../data/utilities/generateColor.js';
 import { convertPixelToPercent } from '../../hooks/useSVGUnitConverter.js';
+import type { SignalAssignmentUpdate } from '../../panels/MoleculesPanel/hooks/useSignalAssignmentUpdates.js';
 import { extractFromAtom } from '../../panels/MoleculesPanel/utilities/extractFromAtom.js';
 import nucleusToString from '../../utility/nucleusToString.js';
 import type { State } from '../Reducer.js';
@@ -95,6 +105,12 @@ type ChangeMoleculeLabelAction = ActionType<
   'CHANGE_MOLECULE_LABEL',
   { id: string; label: string }
 >;
+type ChangeAssignmentLabelsByDiaIdsAction = ActionType<
+  'CHANGE_ASSIGNMENT_LABEL_BY_DIAIDS',
+  {
+    assignments: SignalAssignmentUpdate[];
+  }
+>;
 
 export type MoleculeActions =
   | AddMoleculeAction
@@ -106,6 +122,7 @@ export type MoleculeActions =
   | ChangeFloatMoleculePositionAction
   | ChangeMoleculeLabelAction
   | ChangeMoleculeAnnotationAction
+  | ChangeAssignmentLabelsByDiaIdsAction
   | ToggleMoleculeLabelAction;
 
 export function addMolecule(draft: Draft<State>, props: AddMoleculeProps) {
@@ -184,6 +201,103 @@ export function handleSetMolecule(
   action: SetMoleculeAction,
 ) {
   setMolecule(draft, action.payload);
+}
+
+interface UpdateRangeSignalsAssignmentParams {
+  ranges: Range[];
+  signalId?: string;
+  assignment: string;
+}
+
+function updateRangeSignalsAssignment(
+  options: UpdateRangeSignalsAssignmentParams,
+) {
+  const { ranges, signalId, assignment } = options;
+  if (signalId === undefined) return;
+
+  for (const range of ranges) {
+    const signal = range.signals.find((item) => item.id === signalId);
+    if (signal?.isAutoAssignment) {
+      signal.assignment = assignment;
+      break;
+    }
+  }
+}
+
+interface UpdateZoneAssignmentsParams {
+  zones: Zone[];
+  signalId?: string;
+  assignment: string;
+}
+function updateZoneAssignments(options: UpdateZoneAssignmentsParams) {
+  const { zones, signalId, assignment } = options;
+  if (signalId === undefined) return;
+
+  for (const zone of zones) {
+    const signal = zone.signals.find((item) => item.id === signalId);
+    if (signal?.isAutoAssignment) {
+      signal.assignment = assignment;
+      break;
+    }
+  }
+}
+
+interface UpdateLinkedSignalAssignmentParams extends Pick<
+  Spectrum2D,
+  'linkedSignals'
+> {
+  linkedSignalId?: string;
+  assignment: string;
+}
+
+function updateLinkedSignalAssignment(
+  options: UpdateLinkedSignalAssignmentParams,
+) {
+  const { linkedSignals, linkedSignalId, assignment } = options;
+  if (linkedSignalId === undefined) return;
+
+  const link = linkedSignals.find(
+    (item) => `${item.xSignalId}:${item.ySignalId}` === linkedSignalId,
+  );
+  if (!link?.isAutoAssignment) return;
+
+  link.assignment = assignment;
+}
+
+export function handleChangeAssignmentLabelsByDiaIds(
+  draft: Draft<State>,
+  action: ChangeAssignmentLabelsByDiaIdsAction,
+) {
+  for (const spectrum of draft.data) {
+    const assignments = action.payload.assignments.filter(
+      (update) => update.spectrumId === spectrum.id,
+    );
+
+    if (isSpectrum1D(spectrum)) {
+      for (const { signalId, assignment } of assignments) {
+        if (signalId === undefined) continue;
+
+        updateRangeSignalsAssignment({
+          ranges: spectrum.ranges.values,
+          signalId,
+          assignment,
+        });
+      }
+    } else if (isSpectrum2DFt(spectrum)) {
+      for (const { signalId, linkedSignalId, assignment } of assignments) {
+        updateZoneAssignments({
+          zones: spectrum.zones.values,
+          signalId,
+          assignment,
+        });
+        updateLinkedSignalAssignment({
+          linkedSignals: spectrum.linkedSignals,
+          linkedSignalId,
+          assignment,
+        });
+      }
+    }
+  }
 }
 
 function clearDiaIDs(
