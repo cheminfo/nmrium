@@ -143,7 +143,9 @@ export function LinkedSignalAssignmentLabel({
       data-self-control="true"
       {...disableMouseTrackingProps}
       tabIndex={0}
-      onMouseEnter={(event) => event.currentTarget.focus()}
+      onMouseEnter={(event) => {
+        if (!isNewLabel) event.currentTarget.focus();
+      }}
       onMouseLeave={(event) => event.currentTarget.blur()}
     >
       <polygon points={path} fill="green" pointerEvents="none" />
