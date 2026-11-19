@@ -1,6 +1,4 @@
 dep: 'prod,dev'
 reject:
-  # https://github.com/cheminfo/nmrium/issues/3983
-  - '@playwright/test'
   # Not compatible with typescript-eslint
   - typescript
