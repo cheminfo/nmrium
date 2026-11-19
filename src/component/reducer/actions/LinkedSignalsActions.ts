@@ -18,7 +18,7 @@ type Delete2DSignalLinkAction = ActionType<
 >;
 type ChangeLinkedSignalAssignmentAction = ActionType<
   'CHANGE_LINKED_SIGNAL_ASSIGNMENT_LABEL',
-  { id: string; value: string }
+  { id: string; value: string; isAutoAssignment?: boolean }
 >;
 type SetLinkedSignalLabelCoordinationAction = ActionType<
   'SET_LINKED_SIGNAL_ASSIGNMENT_LABEL_COORDINATION',
@@ -72,7 +72,7 @@ export function handleAdd2DSignalLink(
     xSignalId,
     ySignalId,
     assignment,
-    isAutoAssignment: false,
+    isAutoAssignment: true,
   });
 }
 
@@ -80,13 +80,14 @@ export function handleChangeLinkedSignalAssignment(
   draft: Draft<State>,
   action: ChangeLinkedSignalAssignmentAction,
 ) {
-  const linkedSignal = getLinkedSignal(draft, action.payload.id);
+  const { isAutoAssignment = false, value, id } = action.payload;
+  const linkedSignal = getLinkedSignal(draft, id);
   if (!linkedSignal) {
     return;
   }
   const { link } = linkedSignal;
-  link.assignment = action.payload.value;
-  link.isAutoAssignment = false;
+  link.assignment = value;
+  link.isAutoAssignment = isAutoAssignment;
 }
 
 export function handleDelete2DSignalLink(

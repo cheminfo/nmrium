@@ -31,11 +31,14 @@ interface Position {
   y: number;
 }
 
-export type PositionedLinkedSignal = Spectrum2D['linkedSignals'][number] & {
+type LinkedSignal = Spectrum2D['linkedSignals'][number];
+
+export interface PositionedLinkedSignal extends LinkedSignal {
   xDelta: number;
   yDelta: number;
-  diaIDs: string[];
-};
+  xDiaIDs: string[];
+  yDiaIDs: string[];
+}
 
 export function getLinkedSignalPositions({
   xSignals,
@@ -61,7 +64,8 @@ export function getLinkedSignalPositions({
       ...link,
       xDelta: xSignal.delta,
       yDelta: ySignal.delta,
-      diaIDs: [...(xSignal.diaIDs ?? []), ...(ySignal.diaIDs ?? [])],
+      xDiaIDs: xSignal.diaIDs ?? [],
+      yDiaIDs: ySignal.diaIDs ?? [],
     });
   }
 
@@ -79,7 +83,7 @@ interface CrossingAssignmentLabelOptions {
   hasSameNucleus: boolean;
 }
 
-function getCrossingAssignmentLabel({
+export function getCrossingAssignmentLabel({
   xAssignment,
   yAssignment,
   hasSameNucleus,

@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
+import { isSpectrum2D } from '@zakodium/nmrium-core';
 import { useLayoutEffect, useRef, useState } from 'react';
 import { PiTextTSlash } from 'react-icons/pi';
+import { Button } from 'react-science/ui';
 
 import { FieldEdition } from '../../1d-2d/FieldEdition.js';
 import { disableMouseTrackingProps } from '../../EventsTrackers/MouseTracker.js';
@@ -11,9 +13,11 @@ import { useShareData } from '../../context/ShareDataContext.js';
 import { SVGButton } from '../../elements/SVGButton.js';
 import type { Position } from '../../elements/draggable/useDraggable.js';
 import useDraggable from '../../elements/draggable/useDraggable.js';
-import { useActiveSpectrum } from '../../hooks/useActiveSpectrum.js';
+import useSpectrum from '../../hooks/useSpectrum.js';
+import { useExtractAtomAssignmentLabel } from '../../panels/MoleculesPanel/hooks/useExtractAtomAssignmentLabel.js';
 import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 import type { PositionedLinkedSignal } from '../utilities/signalCrossings.js';
+import { getCrossingAssignmentLabel } from '../utilities/signalCrossings.js';
 import { useAssignmentLabelLinkPath } from '../utilities/useAssignmentLabelLinkPath.js';
 
 const LabelContainer = styled.g<{ isMoving: boolean }>`
@@ -35,11 +39,13 @@ interface LinkedSignalAssignmentLabelProps {
 export function LinkedSignalAssignmentLabel({
   signal,
 }: LinkedSignalAssignmentLabelProps) {
-  const { xSignalId, ySignalId, assignment } = signal;
+  const { xSignalId, ySignalId, assignment, isAutoAssignment } = signal;
   const id = `${xSignalId}:${ySignalId}`;
+  const hasLink = signal.xDiaIDs.length > 0 || signal.yDiaIDs.length > 0;
   const scaleX = useScale2DX();
   const scaleY = useScale2DY();
   const dispatch = useDispatch();
+  const { getAssignmentLabelByDiaIDs } = useExtractAtomAssignmentLabel();
   const { viewerRef } = useGlobal();
   const { data: newLabel, setData: setNewLabel } = useShareData<
     string | null
@@ -107,6 +113,30 @@ export function LinkedSignalAssignmentLabel({
     });
   }
 
+  function handleAssignmentLabel() {
+    if (!hasLink) return;
+
+    const isAutoAssignment = !signal.isAutoAssignment;
+    let value = signal.assignment ?? '';
+
+    if (isAutoAssignment) {
+      const autoLabel = getCrossingAssignmentLabel({
+        xAssignment: getAssignmentLabelByDiaIDs(signal.xDiaIDs),
+        yAssignment: getAssignmentLabelByDiaIDs(signal.yDiaIDs),
+        hasSameNucleus:
+          isSpectrum2D(spectrum) &&
+          spectrum.info.nucleus[0] === spectrum.info.nucleus[1],
+      });
+      if (!autoLabel) return;
+      value = autoLabel;
+    }
+
+    dispatch({
+      type: 'CHANGE_LINKED_SIGNAL_ASSIGNMENT_LABEL',
+      payload: { id, value, isAutoAssignment },
+    });
+  }
+
   return (
     <LabelContainer
       isMoving={dragPosition !== null}
@@ -122,6 +152,19 @@ export function LinkedSignalAssignmentLabel({
           onChange={handleChange}
           inputType="text"
           value={assignment || ''}
+          rightElement={
+            <Button
+              variant="minimal"
+              icon={isAutoAssignment ? 'link' : 'unlink'}
+              onClick={handleAssignmentLabel}
+              disabled={!isAutoAssignment && !hasLink}
+              tooltipProps={{
+                content: isAutoAssignment
+                  ? 'Switch to manual assignment'
+                  : 'Switch to automatic assignment',
+              }}
+            />
+          }
           PopoverProps={{
             placement: 'top',
             targetTagName: 'g',
@@ -181,7 +224,7 @@ function useLinkedSignalAssignmentLabelPosition({
 }: UseLinkedSignalAssignmentLabelPositionOptions) {
   const scaleX = useScale2DX();
   const scaleY = useScale2DY();
-  const spectrum = useActiveSpectrum();
+  const spectrum = useSpectrum();
   const { view } = useChartData();
   const externalPosition =
     spectrum && view.assignmentsLabelsCoordinates?.[spectrum.id]?.[id];
