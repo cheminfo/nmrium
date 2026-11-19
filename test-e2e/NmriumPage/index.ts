@@ -27,14 +27,31 @@ export default class NmriumPage {
     this.moleculeEditor = new NmriumPageMoleculeEditor(page);
   }
 
-  public async open1D() {
-    await this.page.click('li >> text=Cytisine');
-    await this.page.click('li >> text=1H spectrum');
+  /**
+   * Open a demo from the sidebar.
+   * @param category - The category of the demo.
+   * @param name - The name of the demo.
+   */
+  public async openDemo(category: string, name: string) {
+    await this.page
+      .getByRole('menuitem', { name: category })
+      .getByText(category, { exact: true })
+      .click();
+    await this.page.getByRole('menuitem', { name, exact: true }).click();
   }
 
+  /**
+   * Open the "Cytisine - 1H spectrum" demo.
+   */
+  public async open1D() {
+    await this.openDemo('Cytisine', '1H spectrum');
+  }
+
+  /**
+   * Open the "Simple spectra - COSY ethylbenzene" demo.
+   */
   public async open2D() {
-    await this.page.click('li >> text=Simple spectra');
-    await this.page.click('li >> text=COSY ethylbenzene');
+    await this.openDemo('Simple spectra', 'COSY ethylbenzene');
   }
 
   /**

@@ -8,8 +8,7 @@ test('automatic assignment panel', async ({ page }, info) => {
 
   const nmrium = await NmriumPage.create(page);
   await test.step('open 1H ethylvinylether spectrum', async () => {
-    await nmrium.page.click('li >> text=Simple spectra');
-    await nmrium.page.click('li >> text=1H ethylvinylether');
+    await nmrium.openDemo('Simple spectra', '1H ethylvinylether');
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
   });
   await test.step('activate automatic assignment panel', async () => {

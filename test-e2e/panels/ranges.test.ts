@@ -203,8 +203,7 @@ test('Publication string is visible after automatic ranges detection', async ({
 test('Multiplicity should be visible', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Open FULL ethylbenzene 2D spectrum', async () => {
-    await nmrium.page.click('li >> text=Simple spectra');
-    await nmrium.page.click('li >> text=FULL ethylbenzene');
+    await nmrium.openDemo('Simple spectra', 'FULL ethylbenzene');
   });
 
   // switch to 1H tab.
@@ -256,8 +255,7 @@ test('Multiplicity should be visible', async ({ page }) => {
 test('Range state', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Open FULL ethylbenzene 2D spectrum', async () => {
-    await nmrium.page.click('li >> text=Various formats');
-    await nmrium.page.click('li >> text=Linked jcamp');
+    await nmrium.openDemo('Various formats', 'Linked jcamp');
   });
 
   // switch to 1H tab.
@@ -367,8 +365,7 @@ test('Range state', async ({ page }) => {
 test('Auto peak picking on all spectra', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Open FULL ethylbenzene 2D spectrum', async () => {
-    await nmrium.page.click('li >> text=Cytisine');
-    await nmrium.page.click('li >> text=Full cytisine');
+    await nmrium.openDemo('Cytisine', 'Full cytisine');
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
   });
 
@@ -444,8 +441,7 @@ test('2D spectra reference change', async ({ page }) => {
   const yAxisDefault = [0, 20, 40, 60, 80, 100, 120, 140, 160];
   const nmrium = await NmriumPage.create(page);
   await test.step('Open 2D spectrum', async () => {
-    await nmrium.page.click('li >> text=Cytisine');
-    await nmrium.page.click('li >> text=HSQC cytisine + 1D spectra');
+    await nmrium.openDemo('Cytisine', 'HSQC cytisine + 1D spectra');
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
 
     await expect(

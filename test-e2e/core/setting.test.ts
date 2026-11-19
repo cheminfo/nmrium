@@ -6,8 +6,7 @@ test('should Change the visibility of the panels', async ({ page }) => {
   const nmrium = await NMriumPage.create(page);
 
   // navigate to "1H spectrum test" example
-  await nmrium.page.click('li >> text=Cytisine');
-  await nmrium.page.click('li >> text=1H spectrum');
+  await nmrium.open1D();
 
   //hold a locator reference to database panel
   const databaseLocator = nmrium.getPanelButton('Databases');
@@ -33,8 +32,7 @@ test('should Change the visibility of the panels', async ({ page }) => {
 
   //Switch to another example from the same workspace to test if the database panel still visible or not
   await test.step('"database panel" should still visible after switching  to another 1D example with "default" workspace', async () => {
-    await nmrium.page.click('li >> text=Simple spectra');
-    await nmrium.page.click('li >> text=1H ethylbenzene');
+    await nmrium.openDemo('Simple spectra', '1H ethylbenzene');
     await expect(databaseLocator).toBeVisible();
   });
 
@@ -51,8 +49,7 @@ test('should Change the visibility of the panels', async ({ page }) => {
   //Switch to another example from with "exercise" workspace to test if the database panel still visible or not
   await test.step('"database panel" should not be visible after switching to "exercise" workspace', async () => {
     // navigate to "Exercise 1" example
-    await nmrium.page.click('li >> text=Workspaces');
-    await nmrium.page.click('li >> text=Exercise 1');
+    await nmrium.openDemo('Workspaces', 'Exercise 1');
 
     //check if the database panel is hidden or not
     await expect(databaseLocator).toBeHidden();
@@ -60,8 +57,7 @@ test('should Change the visibility of the panels', async ({ page }) => {
 
   await test.step('"database panel" should be visible after switching  back to "default" workspace', async () => {
     // navigate to "1H spectrum test" example
-    await nmrium.page.click('li >> text=Cytisine');
-    await nmrium.page.click('li >> text=1H spectrum');
+    await nmrium.open1D();
 
     //check if the database panel is visible or not
     await expect(databaseLocator).toBeVisible();

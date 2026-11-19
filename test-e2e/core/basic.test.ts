@@ -6,8 +6,7 @@ test('should load and display the 1D and 2D spectrum', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   expect(await nmrium.page.title()).toBe('NMRium');
 
-  await nmrium.page.click('li >> text=Simple spectra');
-  await nmrium.page.click('li >> text=FULL ethylbenzene');
+  await nmrium.openDemo('Simple spectra', 'FULL ethylbenzene');
 
   //switch to 1d
   await nmrium.getSpectraTab('1H').click();
@@ -30,8 +29,7 @@ test('should load and display the 1D and 2D spectrum', async ({ page }) => {
 test('check callbacks count', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
 
-  await nmrium.page.click('li >> text=Props debug');
-  await nmrium.page.click('li >> text=Callback - Full cytisine');
+  await nmrium.openDemo('Props debug', 'Callback - FULL cytisine');
   await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
 
   const dataCount = nmrium.page.getByTestId('data-count');

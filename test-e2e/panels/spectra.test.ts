@@ -161,8 +161,7 @@ test('2d spectrum', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
 
   await test.step('Open COSY ethylbenzene 2D spectrum', async () => {
-    await nmrium.page.click('li >> text=Simple spectra');
-    await nmrium.page.click('li >> text=COSY ethylbenzene');
+    await nmrium.openDemo('Simple spectra', 'COSY ethylbenzene');
     // Wait the spectrum to load
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
 
@@ -346,8 +345,7 @@ test('show/hide spectrum', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
 
   await test.step('Open Coffee spectrum', async () => {
-    await nmrium.page.click('li >> text=Multiple spectra');
-    await nmrium.page.click('li >> text=Coffee');
+    await nmrium.openDemo('Multiple spectra', 'Coffee');
     // Wait the spectrum to load
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
     await expect(nmrium.page.getByTestId('spectrum-line')).toHaveCount(13);
@@ -417,8 +415,7 @@ test('Multiple spectra analysis', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
 
   await test.step('Open Coffee spectrum and check 13 spectra', async () => {
-    await nmrium.page.click('li >> text=Multiple spectra');
-    await nmrium.page.click('li >> text=Coffee');
+    await nmrium.openDemo('Multiple spectra', 'Coffee');
     // Wait the spectrum to load
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
     await expect(nmrium.page.getByTestId('spectrum-line')).toHaveCount(13);
@@ -465,8 +462,7 @@ test('Multiple spectra analysis', async ({ page }) => {
 });
 test('Load JResolv', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
-  await nmrium.page.click('li >> text=Cytisine');
-  await nmrium.page.click('li >> text=jResolv cytisine');
+  await nmrium.openDemo('Cytisine', 'jResolv cytisine');
 
   await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
   await expect(nmrium.page.getByTestId('spectrum-line')).toHaveCount(2);
