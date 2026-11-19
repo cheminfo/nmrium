@@ -51,7 +51,9 @@ export function LinkedSignal({ signal }: LinkedSignalProps) {
         strokeWidth={2}
         style={{ cursor: 'pointer' }}
         tabIndex={0}
-        onMouseEnter={(event) => event.currentTarget.focus()}
+        onMouseEnter={(event) => {
+          if (newLabel !== id) event.currentTarget.focus();
+        }}
         onMouseLeave={(event) => event.currentTarget.blur()}
         onClick={(event) => {
           event.stopPropagation();
