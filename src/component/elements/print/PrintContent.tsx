@@ -171,6 +171,7 @@ function InnerPrintFrame(props: InnerPrintFrameProps) {
   return (
     <PrintProvider width={width} height={height} margin={margin}>
       <iframe
+        sandbox="allow-same-origin allow-modals"
         ref={refHandler}
         style={{
           width: 0,

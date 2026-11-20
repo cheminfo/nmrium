@@ -140,6 +140,7 @@ function InnerPrintFrame(props: InnerExportFrameProps) {
       exportHeight={exportHeightInPixel}
     >
       <iframe
+        sandbox="allow-same-origin"
         ref={refHandler}
         style={{
           width: 0,
