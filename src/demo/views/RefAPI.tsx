@@ -1,13 +1,18 @@
 import { FileCollection } from 'file-collection';
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { Button, DropZone } from 'react-science/ui';
 
 import type { NMRiumRefAPI } from '../../component/main/index.js';
 import { NMRium } from '../../component/main/index.js';
 import { saveAs } from '../../component/utility/save_as.ts';
 
-export default function RefAPI() {
+import type { ViewProps } from './View.helpers.js';
+import { useView } from './View.helpers.js';
+
+export default function RefAPI(props: ViewProps) {
+  const [data] = useView(props);
   const nmriumRef = useRef<NMRiumRefAPI>(null);
+  const [exportedSvg, setExportedSvg] = useState('');
   const dropLoadFileCollectionHandler = useCallback((dropFiles: File[]) => {
     const fileCollection = new FileCollection();
     void fileCollection.appendFileList(dropFiles).then(() => {
@@ -30,6 +35,11 @@ export default function RefAPI() {
     saveAs({ blob, name: 'experiment', extension: '.nmrium.zip' });
   }
 
+  async function exportViewerAsSvg() {
+    const exported = await nmriumRef.current?.exportSpectraViewerAsBlob();
+    setExportedSvg(exported ? await exported.blob.text() : '');
+  }
+
   return (
     <div
       style={{
@@ -38,6 +48,13 @@ export default function RefAPI() {
       }}
     >
       <Button onClick={saveAsNMRiumFile}>Save as NMRium File</Button>
+      <Button onClick={exportViewerAsSvg}>Export viewer as SVG</Button>
+      <textarea
+        readOnly
+        hidden
+        data-testid="exported-svg"
+        value={exportedSvg}
+      />
       <div
         style={{
           display: 'flex',
@@ -46,7 +63,11 @@ export default function RefAPI() {
         }}
       >
         <div style={{ flex: 9 }}>
-          <NMRium ref={nmriumRef} />
+          <NMRium
+            ref={nmriumRef}
+            state={data?.state}
+            aggregator={data?.aggregator}
+          />
         </div>
         <div
           style={{

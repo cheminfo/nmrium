@@ -13,18 +13,31 @@ import { usePreferences } from '../../context/PreferencesContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
 import { useExportViewport } from '../../hooks/useExport.js';
 import { useWorkspaceExportSettings } from '../../hooks/useWorkspaceExportSettings.js';
+import type { BlobObject } from '../../utility/export.js';
+import { getBlob } from '../../utility/export.js';
 
 import { ExportContent } from './ExportContent.js';
 
 type ExportFormat = 'png' | 'svg';
-type ExportDestination = 'file' | 'clipboard';
+type ExportDestination = 'file' | 'clipboard' | 'blob';
 type ExportHandlers = Record<
-  ExportDestination,
+  Exclude<ExportDestination, 'blob'>,
   Partial<Record<ExportFormat, (targetElement: HTMLElement) => Promise<void>>>
 >;
 interface ExportOptions {
   format: ExportFormat;
+  /**
+   * Where the figure goes. `blob` hands the SVG to `onBlob`, rendered at the
+   * size of the viewer, without asking for export options.
+   * @default 'file'
+   */
   destination?: ExportDestination;
+  /**
+   * Receives the figure when `destination` is `blob`: an SVG, or `null` when
+   * none could be made.
+   * @default undefined
+   */
+  onBlob?: (blob: BlobObject | null) => void;
 }
 
 interface ExportManagerState {
@@ -64,9 +77,12 @@ interface ExportManagerControllerProps {
 
 export function ExportManagerController(props: ExportManagerControllerProps) {
   const { children } = props;
-  const { data, width } = useChartData();
+  const { data, width, height } = useChartData();
   const hasDataToExport = data.length > 0;
   const [exportOptions, triggerExport] = useState<ExportOptions | null>(null);
+  // The caller waiting for the figure of the export in progress, answered
+  // however that export ends.
+  const pendingBlob = useRef<ExportOptions['onBlob']>(undefined);
   const exportRef = useExportManagerAPI();
   const workspaceExportSettings = useWorkspaceExportSettings();
   const { dispatch } = usePreferences();
@@ -75,10 +91,15 @@ export function ExportManagerController(props: ExportManagerControllerProps) {
     exportRef,
     () => ({
       export: (options: ExportOptions) => {
+        pendingBlob.current?.(null);
+        pendingBlob.current = options.onBlob;
         triggerExport(options);
       },
       exportFinished: () => {
+        const onBlob = pendingBlob.current;
+        pendingBlob.current = undefined;
         triggerExport(null);
+        onBlob?.(null);
       },
     }),
     [],
@@ -87,8 +108,11 @@ export function ExportManagerController(props: ExportManagerControllerProps) {
   const { saveAsPNGHandler, saveAsSVGHandler, copyPNGToClipboardHandler } =
     useExportViewport();
 
-  function handleCloseExportOptionsDialog() {
+  function handleCloseExportOptionsDialog(blob: BlobObject | null = null) {
+    const onBlob = pendingBlob.current;
+    pendingBlob.current = undefined;
     triggerExport(null);
+    onBlob?.(blob);
   }
 
   function handleExport(
@@ -96,6 +120,17 @@ export function ExportManagerController(props: ExportManagerControllerProps) {
     options: ExportSettings,
   ): void {
     if (!exportOptions) {
+      return;
+    }
+
+    const { format, destination = 'file' } = exportOptions;
+
+    if (destination === 'blob') {
+      handleCloseExportOptionsDialog(
+        hasDataToExport && format === 'svg'
+          ? getBlob('nmrSVG', { rootElement: targetElement })
+          : null,
+      );
       return;
     }
 
@@ -107,8 +142,6 @@ export function ExportManagerController(props: ExportManagerControllerProps) {
       });
       return;
     }
-
-    const { format, destination = 'file' } = exportOptions;
 
     const handlers: ExportHandlers = {
       file: {
@@ -147,6 +180,28 @@ export function ExportManagerController(props: ExportManagerControllerProps) {
   if (!exportOptions) return null;
 
   const { destination = 'file' } = exportOptions;
+
+  if (destination === 'blob') {
+    // The figure keeps the viewer's size, as it is on screen.
+    const settings: ExportSettings = {
+      mode: 'advance',
+      width,
+      height,
+      unit: 'px',
+      dpi: 96,
+      useDefaultSettings: true,
+    };
+    return (
+      <ExportContent
+        onExportReady={handleExport}
+        onExportDialogClose={handleCloseExportOptionsDialog}
+        exportOptions={settings}
+        renderOptions={{ width, preserveAspectRatio: false }}
+      >
+        {children}
+      </ExportContent>
+    );
+  }
 
   let exportAs: keyof ExportPreferences = exportOptions.format;
 
