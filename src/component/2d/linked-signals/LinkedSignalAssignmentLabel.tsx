@@ -34,10 +34,12 @@ const LabelContainer = styled.g<{ isMoving: boolean }>`
 
 interface LinkedSignalAssignmentLabelProps {
   signal: PositionedLinkedSignal;
+  color: string;
 }
 
 export function LinkedSignalAssignmentLabel({
   signal,
+  color,
 }: LinkedSignalAssignmentLabelProps) {
   const { xSignalId, ySignalId, assignment, isAutoAssignment } = signal;
   const id = `${xSignalId}:${ySignalId}`;
@@ -148,7 +150,7 @@ export function LinkedSignalAssignmentLabel({
       }}
       onMouseLeave={(event) => event.currentTarget.blur()}
     >
-      <polygon points={path} fill="green" pointerEvents="none" />
+      <polygon points={path} fill={color} pointerEvents="none" />
       <g transform={`translate(${position.x} ${position.y})`}>
         <FieldEdition
           onChange={handleChange}

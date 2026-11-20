@@ -8,10 +8,11 @@ import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 import type { PositionedLinkedSignal } from '../utilities/signalCrossings.js';
 
 import { LinkedSignalAssignmentLabel } from './LinkedSignalAssignmentLabel.js';
+import { useClassifyCorrelation } from './useClassifyCorrelation.js';
 
-const Wrapper = styled.g`
+const Wrapper = styled.g<{ color: string }>`
   &:hover > circle:first-of-type {
-    fill: green;
+    fill: ${(props) => props.color};
     stroke-width: 5;
   }
 `;
@@ -19,15 +20,15 @@ const Wrapper = styled.g`
 interface LinkedSignalProps {
   signal: PositionedLinkedSignal;
 }
-
 export function LinkedSignal({ signal }: LinkedSignalProps) {
   const scaleX = useScale2DX();
   const scaleY = useScale2DY();
   const dispatch = useDispatch();
   const { data: newLabel, setData } = useShareData<string | null>();
   const diaIDs = [...signal.xDiaIDs, ...signal.yDiaIDs];
-  const { show, hide } = useHighlight(diaIDs, { type: 'LINKED_SIGNAL' });
+  const { onHover } = useHighlight(diaIDs, { type: 'LINKED_SIGNAL' });
   const id = `${signal.xSignalId}:${signal.ySignalId}`;
+  const { color } = useClassifyCorrelation(signal.xDiaIDs, signal.yDiaIDs);
 
   function handleKeyDown(event: KeyboardEvent<SVGGElement>) {
     if (event.key === 'Backspace' || event.key === 'Delete') {
@@ -41,13 +42,13 @@ export function LinkedSignal({ signal }: LinkedSignalProps) {
   }
 
   return (
-    <Wrapper onKeyDown={handleKeyDown} onMouseEnter={show} onMouseLeave={hide}>
+    <Wrapper color={color} onKeyDown={handleKeyDown} {...onHover}>
       <circle
         cx={scaleX(signal.xDelta)}
         cy={scaleY(signal.yDelta)}
         r={4}
         fill="transparent"
-        stroke="green"
+        stroke={color}
         strokeWidth={2}
         style={{ cursor: 'pointer' }}
         tabIndex={0}
@@ -61,7 +62,7 @@ export function LinkedSignal({ signal }: LinkedSignalProps) {
         }}
       />
 
-      <LinkedSignalAssignmentLabel signal={signal} />
+      <LinkedSignalAssignmentLabel signal={signal} color={color} />
     </Wrapper>
   );
 }
