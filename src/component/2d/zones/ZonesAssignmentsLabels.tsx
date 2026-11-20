@@ -11,7 +11,6 @@ import { useGlobal } from '../../context/GlobalContext.js';
 import { useShareData } from '../../context/ShareDataContext.js';
 import { SVGButton } from '../../elements/SVGButton.js';
 import { SVGGroup } from '../../elements/SVGGroup.js';
-import type { Position } from '../../elements/draggable/useDraggable.js';
 import useDraggable from '../../elements/draggable/useDraggable.js';
 import { useHighlight } from '../../highlight/index.js';
 import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState.js';
@@ -20,6 +19,7 @@ import type { GetTracesSpectraOptions } from '../useTracesSpectra.js';
 import { getTracesSpectra } from '../useTracesSpectra.js';
 import { getClosestSignal } from '../utilities/extractSpectrumSignals.js';
 import { useScale2DX, useScale2DY } from '../utilities/scale.js';
+import { useAssignmentLabelLinkPath } from '../utilities/useAssignmentLabelLinkPath.js';
 
 interface ZonesInnerProps {
   zones: ZonesType;
@@ -33,174 +33,6 @@ interface AssignmentLabelProps {
 const distance = 30;
 const iconSize = 16;
 const LabelBoxPadding = { left: 35, right: 0, top: 15, bottom: 15 };
-
-interface TargetBoundary {
-  x1: number;
-  x2: number;
-  y1: number;
-  y2: number;
-}
-
-function getDistance(x1: number, y1: number, x2: number, y2: number) {
-  const deltaX = x2 - x1;
-  const deltaY = y2 - y1;
-  return Math.hypot(deltaX, deltaY);
-}
-
-function radiansToDegrees(radians: number) {
-  return radians * (180 / Math.PI);
-}
-function getAngleFromSides(a: number, b: number, c: number) {
-  const radians = Math.acos((b ** 2 + c ** 2 - a ** 2) / (2 * b * c));
-  return radiansToDegrees(radians);
-}
-
-interface FindBestLinkResult {
-  sourcePoint: { a: Position; b: Position };
-  targetPoint: Position;
-  distance: number;
-  angle: number;
-}
-
-function findBestLink(
-  sourcePoints: Array<{ a: Position; b: Position }>,
-  targetPoints: Position[],
-): FindBestLinkResult {
-  const result: FindBestLinkResult[] = [];
-
-  for (const sourcePoint of sourcePoints) {
-    const { a, b } = sourcePoint;
-    for (const targetPoint of targetPoints) {
-      const { x, y } = targetPoint;
-      const aLength = getDistance(a.x, a.y, x, y);
-      const bLength = getDistance(b.x, b.y, x, y);
-      const deltaLength = getDistance(a.x, a.y, b.x, b.y);
-
-      const distance = Math.min(aLength, bLength);
-      const angle = Number(
-        getAngleFromSides(deltaLength, aLength, bLength).toFixed(1),
-      );
-
-      result.push({ distance, angle, targetPoint, sourcePoint });
-    }
-  }
-
-  result.sort((a, b) => {
-    if (a.angle !== b.angle) {
-      return b.angle - a.angle;
-    }
-    return a.distance - b.distance;
-  });
-  return result[0];
-}
-
-function useLinkPath(
-  currentPosition: Position,
-  targetBoundary: TargetBoundary,
-  sourceElementBoundary: Boundary,
-  options: { sideLength?: number; shift?: number } = {},
-) {
-  const { sideLength = 6, shift = 5 } = options;
-
-  const { x1, x2, y1, y2 } = targetBoundary;
-  const { x, y } = currentPosition;
-  const scaleX = useScale2DX();
-  const scaleY = useScale2DY();
-
-  const { width, height } = sourceElementBoundary;
-  const centerX = width / 2;
-  const centerY = height / 2;
-  const leftX = x - centerX - shift;
-  const rightX = x + centerX + shift;
-  const topY = y - height;
-  const bottomY = y + shift;
-
-  const targetWidth = scaleX(x2) - scaleX(x1);
-  const targetHeight = scaleY(y2) - scaleY(y1);
-  const targetXCenter = scaleX(x1) + targetWidth / 2;
-  const targetYCenter = scaleY(y1) + targetHeight / 2;
-
-  const sourcePoints: Array<{ a: Position; b: Position }> = [
-    {
-      a: { x, y: bottomY },
-      b: { x: x + sideLength, y: bottomY },
-    },
-    {
-      a: { x, y: topY },
-      b: { x: x + sideLength, y: topY },
-    },
-    {
-      a: { x: leftX, y: y - centerY - sideLength / 2 },
-      b: { x: leftX, y: y - centerY + sideLength / 2 },
-    },
-    {
-      a: { x: rightX, y: y - centerY - sideLength / 2 },
-      b: { x: rightX, y: y - centerY + sideLength / 2 },
-    },
-  ];
-
-  /**
-   * Zone coordination
-   *  xMid= x2-x1/2;
-   *  yMid= y2-y1/2;
-   * (x1,y1)     ----------  (xMid,y1)  ---------- (x2,y1)
-   *    |                                             |
-   *    |                                             |
-   * (x1,yMid)                                    (x2,yMid)
-   *    |                                             |
-   *    |                                             |
-   * (x1,y2)    ----------   (xMid,y2) ----------  (x2,y2)
-   *
-   */
-
-  const targetPoints: Position[] = [
-    {
-      //Left Top
-      x: scaleX(x1),
-      y: scaleY(y1),
-    },
-    {
-      //Center Top
-      x: targetXCenter,
-      y: scaleY(y1),
-    },
-    {
-      //Right Top
-      x: scaleX(x2),
-      y: scaleY(y1),
-    },
-    {
-      //Right Center
-      x: scaleX(x2),
-      y: targetYCenter,
-    },
-    {
-      //Right Bottom
-      x: scaleX(x2),
-      y: scaleY(y2),
-    },
-    {
-      //Center Bottom
-      x: targetXCenter,
-      y: scaleY(y2),
-    },
-
-    {
-      //Left Bottom
-      x: scaleX(x1),
-      y: scaleY(y2),
-    },
-    {
-      //Left Center
-      x: scaleX(x1),
-      y: targetYCenter,
-    },
-  ];
-
-  const link = findBestLink(sourcePoints, targetPoints);
-
-  return `${link.sourcePoint.a.x},${link.sourcePoint.a.y} ${link.sourcePoint.b.x},${link.sourcePoint.b.y} ${link.targetPoint.x},${link.targetPoint.y}`;
-}
 
 const GroupContainer = styled.g<{ isMoveActive: boolean }>(
   ({ isMoveActive }) =>
@@ -376,7 +208,7 @@ function AssignmentLabel(props: AssignmentLabelProps) {
     },
     parentElement: viewerRef,
   });
-  const path = useLinkPath(
+  const path = useAssignmentLabelLinkPath(
     currentPosition,
     { x1: x.to, x2: x.from, y1: y.from, y2: y.to },
     labelBoundary,

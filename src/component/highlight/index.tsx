@@ -37,6 +37,7 @@ interface HighlightEventSourceMap {
   DATABASE: { ranges: Range[]; jcampURL: string; baseURL: string };
   ATOM: never;
   ASSIGNMENT_TABLE: never;
+  LINKED_SIGNAL: never;
   UNKNOWN: never;
 }
 

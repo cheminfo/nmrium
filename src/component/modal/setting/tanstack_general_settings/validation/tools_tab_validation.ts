@@ -12,6 +12,7 @@ export const toolbarButtonsValidation = z
     peakPicking: z.boolean().optional(),
     integral: z.boolean().optional(),
     zonePicking: z.boolean().optional(),
+    signalLinking: z.boolean().optional(),
     slicing: z.boolean().optional(),
     rangePicking: z.boolean().optional(),
     zeroFilling: z.boolean().optional(),

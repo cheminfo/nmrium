@@ -128,6 +128,9 @@ const Spectra2DManipulationTools = withFieldGroup({
 
     return (
       <Section title="2D Spectra">
+        <AppField name="signalLinking">
+          {({ Checkbox }) => <Checkbox label="Link signals" />}
+        </AppField>
         <AppField name="zeroFillingDimension1">
           {({ Checkbox }) => <Checkbox label="Zero filling direct" />}
         </AppField>

@@ -1,4 +1,4 @@
-import type { Range, Signal1D, SignalKind, Zone } from '@zakodium/nmr-types';
+import type { Range, Signal1D, SignalKind } from '@zakodium/nmr-types';
 import type {
   BoundingBox,
   RangesViewState,
@@ -100,16 +100,6 @@ type Assign1DSignalAction = ActionType<
     spectrumId?: string;
   } & Required<Pick<Signal1D, 'diaIDs' | 'nbAtoms' | 'assignment'>>
 >;
-type ChangeRangesAssignmentsLabelsByDiaIdsAction = ActionType<
-  'CHANGE_ASSIGNMENT_LABEL_BY_DIAIDS',
-  {
-    assignments: Array<{
-      spectrumId: string;
-      signalId: string;
-      assignment: string;
-    }>;
-  }
->;
 type ResizeRangeAction = ActionType<
   'RESIZE_RANGE',
   {
@@ -207,7 +197,6 @@ export type RangesActions =
   | DeleteRangePeakAction
   | Change1DSignalAssignmentLabelAction
   | ChangeRangesViewFloatingBoxBoundingAction
-  | ChangeRangesAssignmentsLabelsByDiaIdsAction
   | ChangeSignalDeltaAction
   | ActionType<
       | 'AUTO_RANGES_SPECTRA_PICKING'
@@ -510,55 +499,6 @@ function handleAssign1DSignal(
   signal.nbAtoms = nbAtoms + (signal.nbAtoms || 0);
 }
 
-function updateRangeSignalsAssignment(
-  ranges: Range[],
-  signalId: string,
-  assignment: string,
-) {
-  for (const range of ranges) {
-    const signal = range.signals.find((item) => item.id === signalId);
-    if (signal?.isAutoAssignment) {
-      signal.assignment = assignment;
-      break;
-    }
-  }
-}
-
-function updateZoneAssignments(
-  zones: Zone[],
-  signalId: string,
-  assignment: string,
-) {
-  for (const zone of zones) {
-    const signal = zone.signals.find((item) => item.id === signalId);
-    if (signal?.isAutoAssignment) {
-      signal.assignment = assignment;
-      break;
-    }
-  }
-}
-
-//action
-function handleChangeRangesAssignmentLabelsByDiaIds(
-  draft: Draft<State>,
-  action: ChangeRangesAssignmentsLabelsByDiaIdsAction,
-) {
-  for (const { spectrumId, signalId, assignment } of action.payload
-    .assignments) {
-    const spectrum = draft.data.find((item) => item.id === spectrumId);
-    if (!spectrum) continue;
-
-    if (isSpectrum1D(spectrum)) {
-      updateRangeSignalsAssignment(
-        spectrum.ranges.values,
-        signalId,
-        assignment,
-      );
-    } else {
-      updateZoneAssignments(spectrum.zones.values, signalId, assignment);
-    }
-  }
-}
 //action
 function handleResizeRange(draft: Draft<State>, action: ResizeRangeAction) {
   const { range, spectrumKey } = action.payload;
@@ -833,7 +773,6 @@ export {
   handleChangeRangeSignalKind,
   handleChangeRangeSignalValue,
   handleChangeRangeSum,
-  handleChangeRangesAssignmentLabelsByDiaIds,
   handleChangeRangesSumFlag,
   handleChangeRangesViewFloatingBoxBounding,
   handleChangeSignalDelta,
