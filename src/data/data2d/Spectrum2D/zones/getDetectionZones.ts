@@ -70,20 +70,19 @@ function getSubMatrix(
   if (yIndexFrom > yIndexTo) [yIndexFrom, yIndexTo] = [yIndexTo, yIndexFrom];
 
   const z: NmrData2DContent['z'] = [];
-  let maxZ = Number.MAX_SAFE_INTEGER;
-  let minZ = Number.MIN_SAFE_INTEGER;
+  let maxZ = -Infinity;
+  let minZ = Infinity;
 
   const nbXPoints = xIndexTo - xIndexFrom + 1;
 
-  for (let j = yIndexFrom; j < yIndexTo; j++) {
+  for (let j = yIndexFrom; j <= yIndexTo; j++) {
     const row = new Float64Array(nbXPoints);
     let xIndex = xIndexFrom;
     for (let i = 0; i < nbXPoints; i++) {
-      row[i] = data.z[j][xIndex++];
-    }
-    for (const rowValue of row) {
-      if (maxZ < rowValue) maxZ = rowValue;
-      if (minZ > rowValue) minZ = rowValue;
+      const value = data.z[j][xIndex++];
+      row[i] = value;
+      if (maxZ < value) maxZ = value;
+      if (minZ > value) minZ = value;
     }
     z.push(row);
   }
