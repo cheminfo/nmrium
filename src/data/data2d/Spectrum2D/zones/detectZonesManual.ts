@@ -26,7 +26,7 @@ export function detectZonesManual(
   });
   let { fromX, fromY, toX, toY } = options.selectedZone;
   if (fromX > toX) [fromX, toX] = [toX, fromX];
-  if (fromX > toX) [fromY, toY] = [toY, fromY];
+  if (fromY > toY) [fromY, toY] = [toY, fromY];
   zones[0] = {
     ...zones[0],
     x: { from: fromX, to: toX },
