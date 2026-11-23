@@ -32,7 +32,7 @@ import type { SignalsByOclID } from './utilities/types.js';
 interface MoleculeAssignmentTableProps {
   groups: GroupedDiaID[];
   moleculeId: string;
-  expandedGroups: ReadonlySet<string>;
+  expandedGroups: Set<string>;
   onToggleRow: (id: string) => void;
   showAtomNumbers: boolean;
 }
@@ -162,6 +162,7 @@ export function MoleculeAssignmentTable(props: MoleculeAssignmentTableProps) {
               <AssignmentChemicalShiftCell
                 options={{
                   row: row.original,
+                  groups,
                   hydrogenIDsByParent,
                   signalsByOclID,
                 }}

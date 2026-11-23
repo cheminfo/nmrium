@@ -15,10 +15,11 @@ export function formatAssignmentShifts(
   options: FormatAssignmentShiftsOptions,
 ): string {
   const { assignment, deltaFormat } = options;
-  const { entries } = assignment;
+  const deltas = assignment.ranges.flatMap(({ signals }) =>
+    signals.map(({ delta }) => delta),
+  );
 
-  return entries
-    .map(({ signal }) => signal.delta)
+  return deltas
     .toSorted((a, b) => a - b)
     .map((delta) => formatNumber(delta, deltaFormat))
     .join(', ');

@@ -21,11 +21,11 @@ import type { GetAssignmentSignalsOptions } from './types.js';
 
 export type AssignmentExportRowMode = 'current' | 'expanded' | 'collapsed';
 
-export interface AssignmentExportOptions {
+interface AssignmentExportOptions {
   groups: GroupedDiaID[];
   topicMolecule: TopicMolecule;
   spectra: Spectrum[];
-  expandedGroups: ReadonlySet<string>;
+  expandedGroups: Set<string>;
   rowMode: AssignmentExportRowMode;
   acsExportSettings: Record<string, ACSExportOptions>;
   defaultACSOptions: ACSExportOptions;
@@ -98,6 +98,7 @@ function getAssignmentExportData(options: AssignmentExportOptions) {
         row,
         signalsByOclID,
         hydrogenIDsByParent,
+        groups,
         acs,
       }),
     ),

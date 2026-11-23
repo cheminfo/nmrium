@@ -1,5 +1,6 @@
 import type { Range, Signal1D } from '@zakodium/nmr-types';
 import type { ACSExportOptions, Spectrum1D } from '@zakodium/nmrium-core';
+import type { GroupedDiaID } from 'openchemlib-utils';
 
 import type { AssignmentListRow } from './atomGroupsToAssignmentRows.js';
 
@@ -14,14 +15,14 @@ export interface AssignedSignal {
   signal: Signal1D;
 }
 
-export type SignalsByOclID = ReadonlyMap<string, readonly AssignedSignal[]>;
+export type SignalsByOclID = Map<string, AssignedSignal[]>;
 
 /**
  * Index signals by nucleus, then OCL ID, so each column can directly look up
  * assignments across all spectra of its nucleus without filtering other nuclei.
  * Entries retain spectrum metadata because ACS formatting needs its frequency.
  */
-export type SignalsByNucleus = ReadonlyMap<string, SignalsByOclID>;
+export type SignalsByNucleus = Map<string, SignalsByOclID>;
 
 export interface AssignedAtomCounts {
   assigned: number;
@@ -30,14 +31,14 @@ export interface AssignedAtomCounts {
 
 export interface AssignmentSignals {
   spectrum: AssignmentSpectrum;
-  entries: AssignedSignal[];
+  ranges: Range[];
 }
 
 export interface GetAssignmentSignalsOptions {
   row: AssignmentListRow;
+  groups: GroupedDiaID[];
   signalsByOclID: SignalsByOclID;
-  hydrogenIDsByParent: ReadonlyMap<string, readonly string[]>;
-  spectrumId?: string;
+  hydrogenIDsByParent: Map<string, string[]>;
 }
 
 export interface FormatAssignmentOptions {
