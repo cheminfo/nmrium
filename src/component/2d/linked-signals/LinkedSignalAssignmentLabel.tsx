@@ -16,9 +16,10 @@ import useDraggable from '../../elements/draggable/useDraggable.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import { useExtractAtomAssignmentLabel } from '../../panels/MoleculesPanel/hooks/useExtractAtomAssignmentLabel.js';
 import { useScale2DX, useScale2DY } from '../utilities/scale.js';
-import type { PositionedLinkedSignal } from '../utilities/signalCrossings.js';
-import { getCrossingAssignmentLabel } from '../utilities/signalCrossings.js';
 import { useAssignmentLabelLinkPath } from '../utilities/useAssignmentLabelLinkPath.js';
+
+import type { PositionedLinkedSignal } from './utilities/signalCrossings.js';
+import { getCrossingAssignmentLabel } from './utilities/signalCrossings.js';
 
 const LabelContainer = styled.g<{ isMoving: boolean }>`
   pointer-events: bounding-box;

@@ -4,7 +4,7 @@ import { isSpectrum1D } from '@zakodium/nmrium-core';
 import type { DiaIDAndInfo } from 'openchemlib-utils';
 
 import type { StateMoleculeExtended } from '../../../../data/molecules/Molecule.js';
-import { getCrossingAssignmentLabel } from '../../../2d/utilities/signalCrossings.js';
+import { getCrossingAssignmentLabel } from '../../../2d/linked-signals/utilities/signalCrossings.js';
 import { useChartData } from '../../../context/ChartContext.js';
 
 import { useExtractAtomAssignmentLabel } from './useExtractAtomAssignmentLabel.js';

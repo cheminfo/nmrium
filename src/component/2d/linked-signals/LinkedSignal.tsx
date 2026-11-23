@@ -5,10 +5,10 @@ import { useDispatch } from '../../context/DispatchContext.js';
 import { useShareData } from '../../context/ShareDataContext.js';
 import { useHighlight } from '../../highlight/index.js';
 import { useScale2DX, useScale2DY } from '../utilities/scale.js';
-import type { PositionedLinkedSignal } from '../utilities/signalCrossings.js';
 
 import { LinkedSignalAssignmentLabel } from './LinkedSignalAssignmentLabel.js';
 import { useClassifyCorrelation } from './useClassifyCorrelation.js';
+import type { PositionedLinkedSignal } from './utilities/signalCrossings.js';
 
 const Wrapper = styled.g<{ color: string }>`
   &:hover > circle:first-of-type {

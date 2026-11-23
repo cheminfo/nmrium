@@ -1,12 +1,12 @@
 import type { Spectrum2D } from '@zakodium/nmr-types';
 import { useMemo } from 'react';
 
-import { useMouseTracker } from '../EventsTrackers/MouseTracker.js';
-import { useChartData } from '../context/ChartContext.js';
+import { useMouseTracker } from '../../EventsTrackers/MouseTracker.js';
+import { useChartData } from '../../context/ChartContext.js';
+import { useTracesSpectra } from '../useTracesSpectra.js';
+import { extractSpectrumSignals } from '../utilities/extractSpectrumSignals.js';
+import { useScale2DX, useScale2DY } from '../utilities/scale.js';
 
-import { useTracesSpectra } from './useTracesSpectra.js';
-import { extractSpectrumSignals } from './utilities/extractSpectrumSignals.js';
-import { useScale2DX, useScale2DY } from './utilities/scale.js';
 import {
   buildCandidates,
   findNearestCrossing,

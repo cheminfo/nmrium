@@ -5,8 +5,9 @@ import { useDispatch } from '../../context/DispatchContext.js';
 import { useIsPrimaryKeyActivated } from '../../context/KeyModifierContext.js';
 import { useShareData } from '../../context/ShareDataContext.js';
 import SignalDeltaLine from '../SignalDeltaLine.js';
-import { useNearestSignalCrossing } from '../useNearestSignalCrossing.js';
 import { useScale2DX, useScale2DY } from '../utilities/scale.js';
+
+import { useNearestSignalCrossing } from './useNearestSignalCrossing.js';
 
 export function SignalCrossingIndicator({
   linkedSignals,

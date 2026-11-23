@@ -7,10 +7,10 @@ import { ShareDataProvider } from '../../context/ShareDataContext.js';
 import useSpectrum from '../../hooks/useSpectrum.js';
 import { useTracesSpectra } from '../useTracesSpectra.js';
 import { extractSpectrumSignals } from '../utilities/extractSpectrumSignals.js';
-import { getLinkedSignalPositions } from '../utilities/signalCrossings.js';
 
 import { LinkedSignal } from './LinkedSignal.js';
 import { SignalCrossingIndicator } from './SignalCrossingIndicator.js';
+import { getLinkedSignalPositions } from './utilities/signalCrossings.js';
 
 export function LinkedSignals() {
   const spectrum = useSpectrum();
