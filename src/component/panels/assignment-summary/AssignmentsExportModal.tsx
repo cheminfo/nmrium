@@ -60,7 +60,7 @@ const INITIAL_VALUES: { rows: AssignmentExportRowMode } = { rows: 'current' };
 
 interface AssignmentsExportModalProps {
   groups: GroupedDiaID[];
-  expandedGroups: ReadonlySet<string>;
+  expandedGroups: Set<string>;
   molecule: StateMoleculeExtended;
 }
 

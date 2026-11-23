@@ -156,7 +156,7 @@ function addAssignmentToAtoms(
 export function formatLinkedCorrelations(
   row: AssignmentListRow,
   assignmentsByOclID: LinkedAssignmentsByOclID,
-  hydrogenIDsByParent: ReadonlyMap<string, readonly string[]>,
+  hydrogenIDsByParent: Map<string, string[]>,
 ): LinkedAssignment[] {
   const oclIDs = [row.id, ...(hydrogenIDsByParent.get(row.id) ?? [])];
   const assignments = new Map<string, LinkedAssignment>();

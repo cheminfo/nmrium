@@ -51,8 +51,8 @@ function getMoleculeOptions(moleculeAssignments: MoleculeAssignmentData[]) {
 }
 
 function toggleExpandedRows(
-  expandedRows: ReadonlySet<string>,
-  keys: readonly string[],
+  expandedRows: Set<string>,
+  keys: string[],
 ): Set<string> {
   const shouldCollapse = keys.every((key) => expandedRows.has(key));
   const next = new Set(expandedRows);
@@ -95,14 +95,14 @@ function useMoleculeAssignments(molecules: StateMoleculeExtended[]) {
 
 function useAssignmentExpansion(activeAssignment: MoleculeAssignmentData) {
   const [expandedGroupsByMolecule, setExpandedGroupsByMolecule] = useState<
-    ReadonlyMap<string, ReadonlySet<string>>
+    Map<string, Set<string>>
   >(() => new Map());
   const moleculeId = activeAssignment.molecule.id;
   const { expandableGroupIds } = activeAssignment;
   const expandedGroups =
     expandedGroupsByMolecule.get(moleculeId) ?? new Set<string>();
 
-  function toggleRows(groupIds: readonly string[]) {
+  function toggleRows(groupIds: string[]) {
     setExpandedGroupsByMolecule((previous) => {
       const next = new Map(previous);
       next.set(
