@@ -411,6 +411,12 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
               }
               break;
             }
+            case 'l': {
+              if (isToolVisible('signalLinking')) {
+                handleChangeOption(options.signalLinking.id);
+              }
+              break;
+            }
             default:
           }
         }
