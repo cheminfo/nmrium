@@ -50,7 +50,7 @@ function getShortestAssignment(
     xOclIDs,
     yOclIDs,
   );
-  if (distance === null) return null;
+  if (!distance) return null;
 
   const groups = topicMolecule.getDiaIDsObject();
   const matrix = topicMolecule.distanceMatrix;
@@ -59,6 +59,7 @@ function getShortestAssignment(
       for (const xAtom of groups[xDiaID]?.atoms ?? []) {
         for (const yAtom of groups[yDiaID]?.atoms ?? []) {
           if (matrix[xAtom][yAtom] !== distance) continue;
+
           const xLabel = getAtomLabel(topicMolecule, xAtom);
           const yLabel = getAtomLabel(topicMolecule, yAtom);
           if (!xLabel || !yLabel) return null;
