@@ -5,11 +5,13 @@ import { useState } from 'react';
 import { FaCopy, FaDownload, FaFileExport } from 'react-icons/fa';
 import { AppForm, Button, useForm } from 'react-science/ui';
 
+import type { StateMoleculeExtended } from '../../../data/molecules/Molecule.js';
 import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents.js';
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { usePreferences } from '../../context/PreferencesContext.js';
 import { useToaster } from '../../context/ToasterContext.js';
+import { useTopicMolecule } from '../../context/TopicMoleculeContext.js';
 import { StandardDialog } from '../../elements/StandardDialog.js';
 import { StyledDialogBody } from '../../elements/StyledDialogBody.js';
 import type { ToolbarPopoverMenuItem } from '../../elements/ToolbarPopoverItem.js';
@@ -59,12 +61,13 @@ const INITIAL_VALUES: { rows: AssignmentExportRowMode } = { rows: 'current' };
 interface AssignmentsExportModalProps {
   groups: GroupedDiaID[];
   expandedGroups: ReadonlySet<string>;
-  moleculeLabel: string;
+  molecule: StateMoleculeExtended;
 }
 
 export function AssignmentsExportModal(props: AssignmentsExportModalProps) {
-  const { groups, expandedGroups, moleculeLabel } = props;
+  const { groups, expandedGroups, molecule } = props;
   const { data } = useChartData();
+  const topicMolecules = useTopicMolecule();
   const { current } = usePreferences();
   const defaultACSOptions = useACSSettings(undefined);
   const toaster = useToaster();
@@ -91,8 +94,17 @@ export function AssignmentsExportModal(props: AssignmentsExportModalProps) {
   ) {
     const isCopy = exportAction === 'copy';
     try {
+      const topicMolecule = topicMolecules[molecule.id];
+      if (!topicMolecule) {
+        return toaster.show({
+          message: `Molecule "${molecule.label}" is not ready yet`,
+          intent: 'danger',
+        });
+      }
+
       const delimitedText = exportAssignments({
         groups,
+        topicMolecule,
         spectra: data,
         expandedGroups,
         rowMode,
@@ -108,7 +120,7 @@ export function AssignmentsExportModal(props: AssignmentsExportModalProps) {
 
       saveAs({
         blob: new Blob([delimitedText], { type: 'text/csv;charset=utf-8' }),
-        name: `${moleculeLabel}-assignments`,
+        name: `${molecule.label}-assignments`,
         extension: '.csv',
       });
 

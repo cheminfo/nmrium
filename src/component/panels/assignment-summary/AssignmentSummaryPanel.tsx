@@ -229,7 +229,7 @@ function AssignmentSummary(props: AssignmentSummaryProps) {
           <AssignmentsExportModal
             groups={activeAssignment.groups}
             expandedGroups={expansion.expandedGroups}
-            moleculeLabel={molecule.label}
+            molecule={molecule}
           />
           <ExpansionMenu
             canExpand={expansion.canExpand}
@@ -252,6 +252,7 @@ function AssignmentSummary(props: AssignmentSummaryProps) {
         <MoleculeAssignmentTable
           key={molecule.id}
           groups={activeAssignment.groups}
+          moleculeId={molecule.id}
           expandedGroups={expansion.expandedGroups}
           onToggleRow={expansion.toggleRow}
           showAtomNumbers={showAtomNumbers}
