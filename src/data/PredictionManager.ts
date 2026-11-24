@@ -40,6 +40,31 @@ export type PredictedSpectraResult = Partial<
   Record<Experiment, PredictionBase1D | PredictionBase2D>
 >;
 
+const TWO_D_EXPERIMENTS: Experiment[] = ['cosy', 'hsqc', 'hmbc'];
+
+/**
+ * A 2D prediction without signals cannot produce a meaningful 2D spectrum:
+ * `signals2DToZ` would build an all-zero matrix.
+ */
+export function isEmpty2DPrediction(spectrum: PredictionBase2D): boolean {
+  return spectrum.signals.length === 0;
+}
+
+/**
+ * Names of the requested 2D experiments whose prediction is empty, i.e. the ones
+ * that are not simulated and for which the user must be warned.
+ */
+export function getEmpty2DExperiments(
+  predictedSpectra: PredictedSpectraResult,
+): Experiment[] {
+  return TWO_D_EXPERIMENTS.filter((experiment) => {
+    const spectrum = predictedSpectra[experiment];
+    return (
+      spectrum && isEmpty2DPrediction(spectrum as PredictionBase2D)
+    );
+  });
+}
+
 export interface PredictionOptions {
   name: string;
   frequency: number;
@@ -151,8 +176,17 @@ export function generateSpectra(
         case 'cosy':
         case 'hsqc':
         case 'hmbc': {
+          const prediction = spectrum as PredictionBase2D;
+          if (isEmpty2DPrediction(prediction)) {
+            // an all-zero 2D matrix cannot be contoured, so the spectrum is
+            // dropped here instead of breaking the whole NMRium instance
+            logger.warn(
+              `${experiment.toUpperCase()} prediction is empty: the spectrum was not simulated.`,
+            );
+            break;
+          }
           const datum = generated2DSpectrum({
-            spectrum: spectrum as PredictionBase2D,
+            spectrum: prediction,
             options,
             experiment,
             color,

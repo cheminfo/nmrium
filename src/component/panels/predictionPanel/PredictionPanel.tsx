@@ -6,7 +6,10 @@ import type { CanvasEditorOnChangeMolecule } from 'react-ocl';
 import { CanvasMoleculeEditor } from 'react-ocl';
 import { Button, useAccordionControls } from 'react-science/ui';
 
-import { predictSpectra } from '../../../data/PredictionManager.js';
+import {
+  getEmpty2DExperiments,
+  predictSpectra,
+} from '../../../data/PredictionManager.js';
 import type { StateMoleculeExtended } from '../../../data/molecules/Molecule.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
@@ -131,6 +134,15 @@ export default function PredictionPanel() {
               action,
             },
           });
+          const emptyExperiments = getEmpty2DExperiments(data.spectra);
+          if (emptyExperiments.length > 0) {
+            toaster.show({
+              message: `${emptyExperiments
+                .join(', ')
+                .toUpperCase()} prediction is empty: no spectrum was simulated.`,
+              intent: 'warning',
+            });
+          }
           openAccordionPanel('spectraPanel');
         } catch (error: unknown) {
           handlePredictionError(error);

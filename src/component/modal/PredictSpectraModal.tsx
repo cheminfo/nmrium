@@ -6,6 +6,7 @@ import { Toolbar, useOnOff } from 'react-science/ui';
 
 import {
   getDefaultPredictionOptions,
+  getEmpty2DExperiments,
   predictSpectra,
 } from '../../data/PredictionManager.js';
 import type { StateMoleculeExtended } from '../../data/molecules/Molecule.js';
@@ -120,6 +121,15 @@ export default function PredictSpectraModal({
                 molecule,
               },
             });
+            const emptyExperiments = getEmpty2DExperiments(data.spectra);
+            if (emptyExperiments.length > 0) {
+              toaster.show({
+                message: `${emptyExperiments
+                  .join(', ')
+                  .toUpperCase()} prediction is empty: no spectrum was simulated.`,
+                intent: 'warning',
+              });
+            }
           } catch (error: unknown) {
             handlePredictionError(error);
           } finally {
