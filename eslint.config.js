@@ -36,7 +36,7 @@ export default defineConfig(
   {
     rules: {
       // TODO: review these rules and enable them one by one.
-      '@eslint-react/dom-no-missing-iframe-sandbox': 'off',
+      '@eslint-react/dom-no-missing-iframe-sandbox': 'error',
       '@eslint-react/naming-convention-ref-name': 'off',
       '@eslint-react/no-children-count': 'off',
       '@eslint-react/no-children-map': 'off',
