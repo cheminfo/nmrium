@@ -4,6 +4,7 @@ import type { GroupedDiaID } from 'openchemlib-utils';
 import { useMemo } from 'react';
 
 import { useChartData } from '../../context/ChartContext.js';
+import { useTopicMolecule } from '../../context/TopicMoleculeContext.js';
 import IsotopesViewer from '../../elements/IsotopesViewer.js';
 import {
   TanStackTable,
@@ -12,6 +13,7 @@ import {
 
 import { AssignmentAtomCell } from './table-cells/AssignmentAtomCell.js';
 import { AssignmentChemicalShiftCell } from './table-cells/AssignmentChemicalShiftCell.js';
+import { AssignmentCorrelationCell } from './table-cells/AssignmentCorrelationCell.js';
 import { AssignmentLabelCell } from './table-cells/AssignmentLabelCell.js';
 import type { AssignmentListRow } from './utilities/atomGroupsToAssignmentRows.js';
 import {
@@ -20,12 +22,17 @@ import {
   getVisibleAssignmentRows,
 } from './utilities/atomGroupsToAssignmentRows.js';
 import { getAssignedAtomCounts } from './utilities/getAssignedAtomCounts.js';
+import {
+  formatLinkedCorrelations,
+  getLinkedCorrelationsByExperiment,
+} from './utilities/getLinkedCorrelationsByExperiment.js';
 import { getSignalsByNucleus } from './utilities/getSignalsByNucleus.js';
 import type { SignalsByOclID } from './utilities/types.js';
 
 interface MoleculeAssignmentTableProps {
   groups: GroupedDiaID[];
-  expandedGroups: ReadonlySet<string>;
+  moleculeId: string;
+  expandedGroups: Set<string>;
   onToggleRow: (id: string) => void;
   showAtomNumbers: boolean;
 }
@@ -71,11 +78,20 @@ function SpectrumColumnHeader({
 }
 
 export function MoleculeAssignmentTable(props: MoleculeAssignmentTableProps) {
-  const { groups, expandedGroups, onToggleRow, showAtomNumbers } = props;
+  const { groups, moleculeId, expandedGroups, onToggleRow, showAtomNumbers } =
+    props;
   const { data } = useChartData();
+  const topicMolecule = useTopicMolecule();
   // Build once per data change.
   // headers and cells share the same nucleus lookup.
   const signalsByNucleus = useMemo(() => getSignalsByNucleus(data), [data]);
+  const linkedAssignmentsByExperiment = useMemo(
+    () =>
+      topicMolecule?.[moleculeId]
+        ? getLinkedCorrelationsByExperiment(data, topicMolecule[moleculeId])
+        : new Map(),
+    [data, topicMolecule, moleculeId],
+  );
   // Keep the complete hierarchy for assignments.
   // Expansion Only hides rows.
   const allRows = useMemo(
@@ -146,6 +162,7 @@ export function MoleculeAssignmentTable(props: MoleculeAssignmentTableProps) {
               <AssignmentChemicalShiftCell
                 options={{
                   row: row.original,
+                  groups,
                   hydrogenIDsByParent,
                   signalsByOclID,
                 }}
@@ -154,12 +171,32 @@ export function MoleculeAssignmentTable(props: MoleculeAssignmentTableProps) {
           },
         ]),
       ),
+      ...Array.from(linkedAssignmentsByExperiment).flatMap(
+        ([experiment, assignmentsByOclID]) =>
+          columnHelper.columns([
+            {
+              header: experiment,
+              id: experiment,
+              enableSorting: false,
+              cell: ({ row }) => (
+                <AssignmentCorrelationCell
+                  assignments={formatLinkedCorrelations(
+                    row.original,
+                    assignmentsByOclID,
+                    hydrogenIDsByParent,
+                  )}
+                />
+              ),
+            },
+          ]),
+      ),
     ]);
   }, [
     groups,
     onToggleRow,
     showAtomNumbers,
     signalsByNucleus,
+    linkedAssignmentsByExperiment,
     hydrogenIDsByParent,
   ]);
 

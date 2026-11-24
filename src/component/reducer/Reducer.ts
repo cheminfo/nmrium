@@ -26,6 +26,7 @@ import * as DomainActions from './actions/DomainActions.js';
 import * as FiltersActions from './actions/FiltersActions.js';
 import * as InsetActions from './actions/InsetActions.js';
 import * as IntegralsActions from './actions/IntegralsActions.js';
+import * as LinkedSignalsActions from './actions/LinkedSignalsActions.js';
 import { LoadActions } from './actions/LoadAction.js';
 import * as MoleculeActions from './actions/MoleculeActions.js';
 import * as PeaksActions from './actions/PeaksActions.js';
@@ -120,6 +121,7 @@ export function getDefaultViewState(): ViewState {
     units1D: {},
     units2D: {},
     insets: {},
+    slicingScaleRatio: 1,
   };
 }
 export const getInitialState = (): State => ({
@@ -711,6 +713,11 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return MoleculeActions.handleAddMolecules(draft, action);
       case 'SET_MOLECULE':
         return MoleculeActions.handleSetMolecule(draft, action);
+      case 'CHANGE_ASSIGNMENT_LABEL_BY_DIAIDS':
+        return MoleculeActions.handleChangeAssignmentLabelsByDiaIds(
+          draft,
+          action,
+        );
       case 'CHANGE_MOLECULE_LABEL':
         return MoleculeActions.handleChangeMoleculeLabel(draft, action);
       case 'DELETE_MOLECULE':
@@ -782,11 +789,6 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
           draft,
           action,
         );
-      case 'CHANGE_ASSIGNMENT_LABEL_BY_DIAIDS':
-        return RangesActions.handleChangeRangesAssignmentLabelsByDiaIds(
-          draft,
-          action,
-        );
       case 'CHANGE_SIGNAL_DELTA':
         return RangesActions.handleChangeSignalDelta(draft, action);
 
@@ -801,6 +803,20 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return ZonesActions.handleChangeZonesFactor(draft, action);
       case 'ADD_2D_ZONE':
         return ZonesActions.handleAdd2dZone(draft, action);
+      case 'ADD_2D_SIGNAL_LINK':
+        return LinkedSignalsActions.handleAdd2DSignalLink(draft, action);
+      case 'DELETE_2D_SIGNAL_LINK':
+        return LinkedSignalsActions.handleDelete2DSignalLink(draft, action);
+      case 'CHANGE_LINKED_SIGNAL_ASSIGNMENT_LABEL':
+        return LinkedSignalsActions.handleChangeLinkedSignalAssignment(
+          draft,
+          action,
+        );
+      case 'SET_LINKED_SIGNAL_ASSIGNMENT_LABEL_COORDINATION':
+        return LinkedSignalsActions.handleSetLinkedSignalLabelCoordination(
+          draft,
+          action,
+        );
       case 'DELETE_2D_ZONE':
         return ZonesActions.handleDeleteZone(draft, action);
       case 'DELETE_2D_SIGNAL':

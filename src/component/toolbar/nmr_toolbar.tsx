@@ -255,6 +255,14 @@ export default function NMRToolbar() {
       },
     },
     {
+      id: 'signalLinking',
+      tooltip: {
+        title: options.signalLinking.label,
+        shortcuts: ['l'],
+        description: `${!invert ? 'SHIFT + click' : 'Click'} a highlighted crossing of the two 1D traces to add a link to the active 2D spectrum.`,
+      },
+    },
+    {
       id: 'slicing',
       tooltip: {
         title: options.slicing.label,

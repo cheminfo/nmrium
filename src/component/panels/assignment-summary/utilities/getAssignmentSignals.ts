@@ -1,50 +1,55 @@
+import type { Range } from '@zakodium/nmr-types';
+
 import type {
   AssignedSignal,
   AssignmentSignals,
-  AssignmentSpectrum,
   GetAssignmentSignalsOptions,
 } from './types.js';
 
 /**
- * Collect a row's signals and those of its attached hydrogen groups.
- *
- * @param options - The row (`row.id` is its OCL ID), nucleus-specific signal
- * lookup, precomputed parent-to-hydrogen lookup, and optional spectrum ID.
- * @returns One group per matching spectrum, with duplicate entries removed when
- * the same signal matches several OCL IDs.
+ * Build each spectrum's ranges for a row, keeping only the row's signals and
+ * write how many of the row's atoms each range is assigned to as its integration.
  */
 export function getAssignmentSignals(
   options: GetAssignmentSignalsOptions,
 ): AssignmentSignals[] {
-  const { row, signalsByOclID, hydrogenIDsByParent, spectrumId } = options;
-  // Include attached H assignments on the parent row even when H rows are hidden.
-  const oclIDs = [row.id, ...(hydrogenIDsByParent.get(row.id) ?? [])];
-  const signalsBySpectrum = new Map<
-    string,
-    { spectrum: AssignmentSpectrum; signals: Set<AssignedSignal> }
-  >();
+  const { row, groups, signalsByOclID, hydrogenIDsByParent } = options;
+  const atomCountByOclID = new Map(
+    groups.map(({ oclID, atoms }) => [oclID, atoms.length]),
+  );
 
-  for (const oclID of oclIDs) {
+  // A signal appears under every group it is assigned to, so visiting the
+  // row's groups accumulates exactly the row's atoms for that signal.
+  const atomCounts = new Map<AssignedSignal, number>();
+  for (const oclID of [row.id, ...(hydrogenIDsByParent.get(row.id) ?? [])]) {
     for (const entry of signalsByOclID.get(oclID) ?? []) {
-      if (spectrumId !== undefined && entry.spectrum.id !== spectrumId) {
-        continue;
-      }
-      let group = signalsBySpectrum.get(entry.spectrum.id);
-
-      if (!group) {
-        group = { spectrum: entry.spectrum, signals: new Set() };
-        signalsBySpectrum.set(entry.spectrum.id, group);
-      }
-      // A signal linked to several of this row's groups should appear only once.
-      group.signals.add(entry);
+      const atomCount = atomCountByOclID.get(oclID) ?? 0;
+      atomCounts.set(entry, (atomCounts.get(entry) ?? 0) + atomCount);
     }
   }
 
-  return Array.from(signalsBySpectrum.values(), (group) => {
-    const entries = Array.from(group.signals);
-    return {
-      spectrum: group.spectrum,
-      entries,
-    };
-  });
+  const assignmentsBySpectrum = new Map<string, AssignmentSignals>();
+  const rowRangeBySource = new Map<Range, Range>();
+  for (const [{ spectrum, range, signal }, atomCount] of atomCounts) {
+    let assignment = assignmentsBySpectrum.get(spectrum.id);
+    if (!assignment) {
+      assignment = { spectrum, ranges: [] };
+      assignmentsBySpectrum.set(spectrum.id, assignment);
+    }
+    let rowRange = rowRangeBySource.get(range);
+    if (!rowRange) {
+      rowRange = {
+        ...range,
+        signals: [],
+        integration: 0,
+        pubIntegral: undefined,
+      };
+      rowRangeBySource.set(range, rowRange);
+      assignment.ranges.push(rowRange);
+    }
+    rowRange.signals.push(signal);
+    rowRange.integration = (rowRange.integration ?? 0) + atomCount;
+  }
+
+  return Array.from(assignmentsBySpectrum.values());
 }

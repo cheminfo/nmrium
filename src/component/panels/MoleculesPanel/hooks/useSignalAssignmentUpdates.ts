@@ -1,17 +1,31 @@
+import type { Signal1D } from '@zakodium/nmr-types';
 import type { Spectrum1D, Spectrum2D } from '@zakodium/nmrium-core';
 import { isSpectrum1D } from '@zakodium/nmrium-core';
 import type { DiaIDAndInfo } from 'openchemlib-utils';
 
 import type { StateMoleculeExtended } from '../../../../data/molecules/Molecule.js';
+import { getCrossingAssignmentLabel } from '../../../2d/linked-signals/utilities/signalCrossings.js';
 import { useChartData } from '../../../context/ChartContext.js';
 
 import { useExtractAtomAssignmentLabel } from './useExtractAtomAssignmentLabel.js';
 
-export interface SignalAssignmentUpdate {
+interface BaseAssignmentUpdate {
   spectrumId: string;
-  signalId: string;
   assignment: string;
 }
+
+interface RangeOrZoneAssignmentUpdate extends BaseAssignmentUpdate {
+  signalId: string;
+  linkedSignalId?: never;
+}
+
+interface LinkedSignalAssignmentUpdate extends BaseAssignmentUpdate {
+  linkedSignalId: string;
+  signalId?: never;
+}
+
+export type SignalAssignmentUpdate =
+  RangeOrZoneAssignmentUpdate | LinkedSignalAssignmentUpdate;
 
 function hasChangedDiaID(diaIDs: string[], changedDiaIDs: Set<string>) {
   return diaIDs.some((diaID) => changedDiaIDs.has(diaID));
@@ -42,8 +56,19 @@ export function useSignalAssignmentUpdates() {
       ...diaObject.attachedHydrogensIDCodes,
     ]);
     const updatedAssignments: SignalAssignmentUpdate[] = [];
+    const signalsById = new Map<string, Signal1D>();
 
-    // #2 Recalculate assignments only for affected range and zone signals.
+    for (const spectrum of spectra) {
+      if (!isSpectrum1D(spectrum)) continue;
+
+      for (const range of spectrum.ranges.values) {
+        for (const signal of range.signals) {
+          signalsById.set(signal.id, signal);
+        }
+      }
+    }
+
+    // #2 Recalculate assignments only for affected range, zone and linked signals.
     function getRangeSignalUpdates(spectrum: Spectrum1D) {
       const signalUpdates: SignalAssignmentUpdate[] = [];
 
@@ -108,11 +133,56 @@ export function useSignalAssignmentUpdates() {
       return signalUpdates;
     }
 
+    function getLinkedSignalUpdates(spectrum: Spectrum2D) {
+      const signalUpdates: SignalAssignmentUpdate[] = [];
+
+      for (const link of spectrum.linkedSignals) {
+        const xDiaIDs = signalsById.get(link.xSignalId)?.diaIDs ?? [];
+        const yDiaIDs = signalsById.get(link.ySignalId)?.diaIDs ?? [];
+        const diaIDs = [...xDiaIDs, ...yDiaIDs];
+        if (!isAffectedSignal(link, diaIDs, changedDiaIDs)) {
+          continue;
+        }
+
+        const xAssignment = getAssignmentLabelByDiaIDsForMolecule(
+          xDiaIDs,
+          molecule.id,
+          molecule.molfile,
+        );
+
+        const yAssignment = getAssignmentLabelByDiaIDsForMolecule(
+          yDiaIDs,
+          molecule.id,
+          molecule.molfile,
+        );
+
+        const [xNucleus, yNucleus] = spectrum.info.nucleus;
+        const hasSameNucleus = xNucleus === yNucleus;
+
+        const assignment = getCrossingAssignmentLabel({
+          xAssignment,
+          yAssignment,
+          hasSameNucleus,
+        });
+
+        signalUpdates.push({
+          spectrumId: spectrum.id,
+          linkedSignalId: `${link.xSignalId}:${link.ySignalId}`,
+          assignment,
+        });
+      }
+
+      return signalUpdates;
+    }
+
     for (const spectrum of spectra) {
       if (isSpectrum1D(spectrum)) {
         updatedAssignments.push(...getRangeSignalUpdates(spectrum));
       } else {
-        updatedAssignments.push(...getZoneSignalUpdates(spectrum));
+        updatedAssignments.push(
+          ...getZoneSignalUpdates(spectrum),
+          ...getLinkedSignalUpdates(spectrum),
+        );
       }
     }
 

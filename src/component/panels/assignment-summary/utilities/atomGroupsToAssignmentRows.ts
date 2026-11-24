@@ -9,7 +9,7 @@ import { sortAssignmentLabels } from '../../MoleculesPanel/utilities/sortAssignm
  * - A set of group IDs: show hydrogens only beneath the selected groups.
  * Hydrogens without a matching parent remain visible unless this is `false`.
  */
-export type AssignmentExpansion = boolean | ReadonlySet<string>;
+export type AssignmentExpansion = boolean | Set<string>;
 
 export interface AssignmentListRow {
   /**
@@ -41,8 +41,8 @@ interface AssignmentRowOptions {
  * Rows with no parent or whose parent is expanded remain visible.
  */
 export function getVisibleAssignmentRows(
-  allRows: readonly AssignmentListRow[],
-  expandedGroups: ReadonlySet<string>,
+  allRows: AssignmentListRow[],
+  expandedGroups: Set<string>,
 ): AssignmentListRow[] {
   const rows: AssignmentListRow[] = [];
   for (const row of allRows) {
@@ -59,8 +59,8 @@ export function getVisibleAssignmentRows(
 }
 
 export function getHydrogenIDsByParent(
-  rows: readonly AssignmentListRow[],
-): ReadonlyMap<string, readonly string[]> {
+  rows: AssignmentListRow[],
+): Map<string, string[]> {
   const hydrogenIDsByParent = new Map<string, string[]>();
   for (const row of rows) {
     if (row.parentOclId === undefined) continue;
@@ -141,8 +141,8 @@ function toAssignmentRow(
  * Each heavy atom is expected to belong to only one group.
  */
 function partitionHydrogenGroups(
-  heavyAtomGroups: readonly GroupedDiaID[],
-  hydrogenGroups: readonly GroupedDiaID[],
+  heavyAtomGroups: GroupedDiaID[],
+  hydrogenGroups: GroupedDiaID[],
 ): HydrogenPartition {
   const heavyGroupByAtomIndex = new Map<number, GroupedDiaID>();
   for (const heavyGroup of heavyAtomGroups) {
@@ -203,7 +203,7 @@ function partitionHydrogenGroups(
  *  C    | 1
  */
 export function atomGroupsToAssignmentRows(
-  groups: readonly GroupedDiaID[],
+  groups: GroupedDiaID[],
   expansion: AssignmentExpansion,
 ): AssignmentListRow[] {
   // 1. Put groups in molecule order and separate hydrogens from other atoms.

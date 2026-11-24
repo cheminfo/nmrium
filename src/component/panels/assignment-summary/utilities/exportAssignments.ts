@@ -1,5 +1,5 @@
 import type { ACSExportOptions, Spectrum } from '@zakodium/nmrium-core';
-import type { GroupedDiaID } from 'openchemlib-utils';
+import type { GroupedDiaID, TopicMolecule } from 'openchemlib-utils';
 import papa from 'papaparse';
 
 import { formatAssignmentLabel } from '../table-cells/AssignmentLabelCell.js';
@@ -12,15 +12,20 @@ import {
 import { formatAssignmentACS } from './formatAssignmentACS.js';
 import { formatAssignmentShifts } from './formatAssignmentShifts.js';
 import { getAssignmentSignals } from './getAssignmentSignals.js';
+import {
+  formatLinkedCorrelations,
+  getLinkedCorrelationsByExperiment,
+} from './getLinkedCorrelationsByExperiment.js';
 import { getSignalsByNucleus } from './getSignalsByNucleus.js';
 import type { GetAssignmentSignalsOptions } from './types.js';
 
 export type AssignmentExportRowMode = 'current' | 'expanded' | 'collapsed';
 
-interface ExportAssignmentsOptions {
-  groups: readonly GroupedDiaID[];
+interface AssignmentExportOptions {
+  groups: GroupedDiaID[];
+  topicMolecule: TopicMolecule;
   spectra: Spectrum[];
-  expandedGroups: ReadonlySet<string>;
+  expandedGroups: Set<string>;
   rowMode: AssignmentExportRowMode;
   acsExportSettings: Record<string, ACSExportOptions>;
   defaultACSOptions: ACSExportOptions;
@@ -30,15 +35,23 @@ interface ExportAssignmentsOptions {
 /**
  * Export the selected molecule as CSV or TSV using the table's formatting rules.
  */
-export function exportAssignments(options: ExportAssignmentsOptions): string {
+export function exportAssignments(options: AssignmentExportOptions): string {
+  const { fields, data } = getAssignmentExportData(options);
+  return papa.unparse(
+    { fields, data },
+    { delimiter: options.delimiter, escapeFormulae: true },
+  );
+}
+
+function getAssignmentExportData(options: AssignmentExportOptions) {
   const {
     groups,
+    topicMolecule,
     spectra,
     expandedGroups,
     rowMode,
     acsExportSettings,
     defaultACSOptions,
-    delimiter,
   } = options;
   const allRows = atomGroupsToAssignmentRows(groups, true);
   const rows =
@@ -49,6 +62,9 @@ export function exportAssignments(options: ExportAssignmentsOptions): string {
           rowMode === 'current' ? expandedGroups : new Set<string>(),
         );
   const hydrogenIDsByParent = getHydrogenIDsByParent(allRows);
+  const linkedAssignmentsByExperiment = Array.from(
+    getLinkedCorrelationsByExperiment(spectra, topicMolecule),
+  );
   const nuclei = Array.from(
     getSignalsByNucleus(spectra),
     ([nucleus, signals]) => ({
@@ -63,6 +79,7 @@ export function exportAssignments(options: ExportAssignmentsOptions): string {
     'Atom numbers',
     'Atom labels',
     ...nuclei.map(({ nucleus }) => nucleus),
+    ...linkedAssignmentsByExperiment.map(([experiment]) => experiment),
   ];
   const data = rows.map((row) => [
     row.atomLabel,
@@ -81,12 +98,18 @@ export function exportAssignments(options: ExportAssignmentsOptions): string {
         row,
         signalsByOclID,
         hydrogenIDsByParent,
+        groups,
         acs,
       }),
     ),
+    ...linkedAssignmentsByExperiment.map(([, assignmentsByOclID]) =>
+      formatLinkedCorrelations(row, assignmentsByOclID, hydrogenIDsByParent)
+        .map(({ text }) => text)
+        .join(', '),
+    ),
   ]);
 
-  return papa.unparse({ fields, data }, { delimiter, escapeFormulae: true });
+  return { fields, data };
 }
 
 interface FormatAssignmentCellOptions extends GetAssignmentSignalsOptions {

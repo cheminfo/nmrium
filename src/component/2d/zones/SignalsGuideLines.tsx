@@ -196,7 +196,12 @@ function IndicationLine(props: IndicationLineProps) {
   const { id: rangeId } = range;
   const highlightColor = useHighlightColor();
   const isSignalAssigned = isRangeSignalAssigned({ range, diaIDs, nbAtoms });
-  const { margin, width, height } = useChartData();
+  const {
+    margin,
+    width,
+    height,
+    toolOptions: { selectedTool },
+  } = useChartData();
   const { setData: addNewAssignmentLabel } = useShareData();
 
   const dispatch = useDispatch();
@@ -297,10 +302,12 @@ function IndicationLine(props: IndicationLineProps) {
   ];
 
   const isOpen = isAssignBtnTrigged.current ? isAssignmentActive : undefined;
+  const isLinking = selectedTool === 'signalLinking';
 
   return (
     <ActionsButtonsPopover
-      isOpen={isOpen}
+      isOpen={isLinking ? false : isOpen}
+      disabled={isLinking}
       targetTagName="g"
       buttons={actionsButtons}
       space={2}
