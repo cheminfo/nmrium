@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 import NmriumPage from '../NmriumPage/index.js';
+import { getTableRows } from '../table.js';
 
 test('should load and migrate .nmrium data from version 0 to version 1', async ({
   page,
@@ -9,15 +10,13 @@ test('should load and migrate .nmrium data from version 0 to version 1', async (
   await nmrium.dropFile('1h-version-0.nmrium');
 
   // If the file was loaded successfully, there should be a 1H,1H and 1H tab.
-  await expect(
-    nmrium.page.locator('_react=Tab[tabid = "1H,1H"]'),
-  ).toBeVisible();
-  await expect(nmrium.page.locator('_react=Tab[tabid = "1H"]')).toBeVisible();
+  await expect(nmrium.getSpectraTab('1H,1H')).toBeVisible();
+  await expect(nmrium.getSpectraTab('1H')).toBeVisible();
 
-  await nmrium.page.click('_react=SpectraTabs >> _react=Tab[tabid="1H"]');
+  await nmrium.getSpectraTab('1H').click();
 
   await test.step('check ranges', async () => {
-    const ranges = nmrium.page.locator('_react=Range');
+    const ranges = nmrium.page.getByTestId('range');
     await expect(ranges).toHaveCount(5);
   });
 });
@@ -29,23 +28,19 @@ test('should load and migrate .nmrium data from version 1 to version 2', async (
   await nmrium.dropFile('1h-version-1-datasource.nmrium');
 
   // If the file was loaded successfully, there should be a 1H,1H and 1H tab.
-  await expect(
-    nmrium.page.locator('_react=Tab[tabid = "1H,1H"]'),
-  ).toBeVisible();
-  await expect(nmrium.page.locator('_react=Tab[tabid = "1H"]')).toBeVisible();
+  await expect(nmrium.getSpectraTab('1H,1H')).toBeVisible();
+  await expect(nmrium.getSpectraTab('1H')).toBeVisible();
 
-  await nmrium.page.click('_react=SpectraTabs >> _react=Tab[tabid="1H"]');
+  await nmrium.getSpectraTab('1H').click();
 
   await test.step('check Peaks', async () => {
-    await nmrium.showPanel('Peaks');
-    const peaks = nmrium.page.locator(
-      '_react=Peaks[peaksSource="peaks"] >> _react=PeakAnnotation',
-    );
+    await nmrium.showPanel('peaksPanel');
+    const peaks = nmrium.page.getByTestId('peak-annotation');
     await expect(peaks).toHaveCount(6);
   });
 
   await test.step('check ranges', async () => {
-    const ranges = nmrium.page.locator('_react=Range');
+    const ranges = nmrium.page.getByTestId('range');
     await expect(ranges).toHaveCount(3);
   });
 });
@@ -57,14 +52,12 @@ test('should load and migrate .nmrium data from version 2 to version 3', async (
   await nmrium.dropFile('13c-version-2.nmrium');
 
   // If the file was loaded successfully, there should be a 13C tab.
-  await expect(nmrium.page.locator('_react=Tab[tabid = "13C"]')).toBeVisible();
+  await expect(nmrium.getSpectraTab('13C')).toBeVisible();
 
-  await nmrium.clickPanel('Processing');
+  await nmrium.clickPanel('processingsPanel');
 
   await expect(
-    nmrium.page.locator(
-      '_react=FiltersSectionsPanel >> text=Apodization / Window functions',
-    ),
+    nmrium.getFiltersList().getByText('Apodization / Window functions'),
   ).toBeVisible();
 });
 
@@ -73,25 +66,21 @@ test('should load .nmrium data from version 3', async ({ page }) => {
   await nmrium.dropFile('1h-version-3-1d.nmrium');
 
   // If the file was loaded successfully, there should be a 13C tab.
-  await expect(nmrium.page.locator('_react=Tab[tabid = "1H"]')).toBeVisible();
+  await expect(nmrium.getSpectraTab('1H')).toBeVisible();
 
   await test.step('check Peaks', async () => {
-    await nmrium.showPanel('Peaks');
-    const peaks = nmrium.page.locator(
-      '_react=Peaks[peaksSource="peaks"] >> _react=PeakAnnotation',
-    );
+    await nmrium.showPanel('peaksPanel');
+    const peaks = nmrium.page.getByTestId('peak-annotation');
     await expect(peaks).toHaveCount(2);
   });
 
   await test.step('check integrals', async () => {
-    const integrals = nmrium.page.locator(
-      '_react=IntegralsSeries >> _react=Integration',
-    );
+    const integrals = nmrium.page.getByTestId('integral');
     await expect(integrals).toHaveCount(1);
   });
 
   await test.step('check ranges', async () => {
-    const ranges = nmrium.page.locator('_react=Range');
+    const ranges = nmrium.page.getByTestId('range');
     await expect(ranges).toHaveCount(2);
   });
 });
@@ -102,12 +91,10 @@ test('should load and migrate .nmrium data from version 3 to version 4', async (
   const nmrium = await NmriumPage.create(page);
   await nmrium.dropFile('cosy-version-3-2d.nmrium');
   // If the file was loaded successfully, there should be a 1H,1H.
-  await expect(
-    nmrium.page.locator('_react=Tab[tabid = "1H,1H"]'),
-  ).toBeVisible();
+  await expect(nmrium.getSpectraTab('1H,1H')).toBeVisible();
 
   await test.step('check zones', async () => {
-    const ranges = nmrium.page.locator('_react=Zone');
+    const ranges = nmrium.page.getByTestId('zone');
     await expect(ranges).toHaveCount(9);
   });
 });
@@ -117,34 +104,32 @@ test('should load .zip files', async ({ page }) => {
   await nmrium.dropFile('ethylvinylether.zip');
 
   // If the file was loaded successfully, there should be a 1H tab.
-  await expect(nmrium.page.locator('_react=Tab[tabid = "1H"]')).toBeVisible();
+  await expect(nmrium.getSpectraTab('1H')).toBeVisible();
 });
 
 test('should load file using drag and drop .nmrium', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.dropFile('1h-version-1-datasource.nmrium');
   // If the file was loaded successfully, there should be a 1H,1H tab.
-  await expect(
-    nmrium.page.locator('_react=Tab[tabid = "1H,1H"]'),
-  ).toBeVisible();
+  await expect(nmrium.getSpectraTab('1H,1H')).toBeVisible();
 });
 
 test('should load file using drag and drop .zip', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.dropFile('ethylvinylether.zip');
   // If the file was loaded successfully, there should be a 1H tab.
-  await expect(nmrium.page.locator('_react=Tab[tabid = "1H"]')).toBeVisible();
+  await expect(nmrium.getSpectraTab('1H')).toBeVisible();
 });
 
 test('should load multiple files using drag and drop', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.dropFile(['ethylbenzene-1h.jdx', 'ethylvinylether.zip']);
   // If the file was loaded successfully, there should be many spectra.
-  await expect(nmrium.page.locator('_react=SpectrumName')).toHaveCount(2);
+  await expect(getTableRows(nmrium.getSpectraTable())).toHaveCount(2);
 });
 
 test('should load JCAMP-DX file', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.dropFile('ethylbenzene-1h.jdx');
-  await expect(nmrium.page.locator('_react=Tab[tabid = "1H"]')).toBeVisible();
+  await expect(nmrium.getSpectraTab('1H')).toBeVisible();
 });

@@ -1,85 +1,210 @@
-import type { Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 import { expect } from '@playwright/test';
+import type { Mandatory } from '@zakodium/utils';
 
 import { NmriumPageMoleculeEditor } from './NmriumPageMoleculeEditor.js';
 import { NmriumPageViewer } from './NmriumPageViewer.js';
+import type { NmrViewerToolId, PanelId } from './constants.ts';
+import { NMR_VIEWER_TOOLS, PANELS } from './constants.ts';
 
 type ClickOptions = Parameters<Page['click']>[1];
-
-interface ToolLocatorOptions {
-  active?: boolean;
-  caseSensitive?: boolean;
-}
+type GetByRoleOptions = Mandatory<Parameters<Locator['getByRole']>[1]>;
 
 export default class NmriumPage {
-  public static async create(page: Page): Promise<NmriumPage> {
+  static async create(page: Page): Promise<NmriumPage> {
     await page.goto('http://localhost:3000/#/');
     return new NmriumPage(page);
   }
 
-  public readonly page: Page;
-  public readonly viewer: NmriumPageViewer;
-  public readonly moleculeEditor: NmriumPageMoleculeEditor;
+  readonly page: Page;
+  readonly viewer: NmriumPageViewer;
+  readonly moleculeEditor: NmriumPageMoleculeEditor;
 
-  public constructor(page: Page) {
+  constructor(page: Page) {
     this.page = page;
     this.viewer = new NmriumPageViewer(page);
     this.moleculeEditor = new NmriumPageMoleculeEditor(page);
   }
 
-  public async open1D() {
-    await this.page.click('li >> text=Cytisine');
-    await this.page.click('li >> text=1H spectrum');
+  /**
+   * Open a demo from the sidebar.
+   * @param category - The category of the demo.
+   * @param name - The name of the demo.
+   */
+  async openDemo(category: string, name: string) {
+    await this.page
+      .getByRole('menuitem', { name: category })
+      .getByText(category, { exact: true })
+      .click();
+    await this.page.getByRole('menuitem', { name, exact: true }).click();
   }
 
-  public async open2D() {
-    await this.page.click('li >> text=Simple spectra');
-    await this.page.click('li >> text=COSY ethylbenzene');
+  /**
+   * Open the "Cytisine - 1H spectrum" demo.
+   */
+  async open1D() {
+    await this.openDemo('Cytisine', '1H spectrum');
   }
 
-  public async clickPanel(title: string, options: ClickOptions = {}) {
-    await this.page.click(`_react=AccordionItem[title="${title}"]`, {
-      position: { x: 10, y: 10 },
-      ...options,
+  /**
+   * Open the "Simple spectra - COSY ethylbenzene" demo.
+   */
+  async open2D() {
+    await this.openDemo('Simple spectra', 'COSY ethylbenzene');
+  }
+
+  /**
+   * Click on a panel header to expand or collapse it.
+   * @param panelId - The id of the panel.
+   * @param options
+   */
+  async clickPanel(panelId: PanelId, options: ClickOptions = {}) {
+    await this.getPanelButton(panelId).click(options);
+  }
+
+  /**
+   * Get the header button of an accordion panel, which expands or collapses it.
+   * @param panelId - The id of the panel.
+   */
+  getPanelButton(panelId: PanelId) {
+    return this.page
+      .getByRole('button', {
+        name: PANELS[panelId],
+        exact: true,
+        expanded: true,
+      })
+      .or(
+        this.page.getByRole('button', {
+          name: PANELS[panelId],
+          exact: true,
+          expanded: false,
+        }),
+      );
+  }
+
+  /**
+   * Get the content of an accordion panel.
+   * @param panelId - The id of the panel.
+   */
+  getPanel(panelId: PanelId) {
+    return this.page.getByRole('region', {
+      name: PANELS[panelId],
+      exact: true,
+    });
+  }
+
+  /**
+   * Get all the tabs of the spectra panel.
+   */
+  getSpectraTabs() {
+    return this.getPanel('spectraPanel').getByRole('tab');
+  }
+
+  /**
+   * Get a tab of the spectra panel.
+   * @param nucleus - The nucleus or nuclei of the tab (for example "1H" or "1H,13C").
+   */
+  getSpectraTab(nucleus: string) {
+    return this.getPanel('spectraPanel').getByRole('tab', {
+      name: nucleus,
+      exact: true,
+    });
+  }
+
+  /**
+   * Get the options of the selected tool, displayed in the header.
+   */
+  getToolOptions() {
+    return this.page.getByRole('group', { name: 'Tool options', exact: true });
+  }
+
+  /**
+   * Get the spectra table of the active tab in the spectra panel.
+   */
+  getSpectraTable() {
+    return this.getPanel('spectraPanel').getByRole('table');
+  }
+
+  /**
+   * Get the list of filters applied to the active spectrum, in the processing panel.
+   */
+  getFiltersList() {
+    return this.getPanel('processingsPanel').getByRole('list', {
+      name: 'Filters',
     });
   }
 
   /**
    * Show a panel hidden from the accordion by clicking its panels bar icon.
-   * @param title - The panel title, as shown in the icon tooltip.
+   * @param panelId - The id of the panel to show.
    */
-  public async showPanel(title: string) {
-    await this.page.click(`_react=ActivityBarItem[tooltip="${title}"]`);
-  }
-
-  public async clickTool(id: string) {
+  async showPanel(panelId: PanelId) {
     await this.page
-      .locator(`_react=ToolbarItem[id="${id}"] >> nth=0`)
-      .or(this.page.locator(`_react=ToolbarPopoverItem[id="${id}"] >> nth=0`))
+      .getByRole('toolbar', { name: 'Panels bar', exact: true })
+      .getByRole('button', {
+        name: PANELS[panelId],
+        exact: true,
+        pressed: false,
+      })
       .click();
   }
-  public async clickToolByTitle(title: string) {
-    await this.page.click(`_react=ToolbarItem[tooltip="${title}"] >> nth=0`);
+
+  getPanelHeader(panelId: PanelId) {
+    return this.getPanel(panelId).getByLabel('Panel header', { exact: true });
   }
 
-  public getToolbarLocatorByTitle(
-    title: string,
-    options: ToolLocatorOptions = {},
+  getPanelToolbarButton(
+    panelId: PanelId,
+    buttonName: string,
+    options: Omit<GetByRoleOptions, 'name'> = {},
   ) {
-    const { active, caseSensitive = false } = options;
-    const selectors: string[] = [
-      `_react=ToolbarItem[tooltip="${title}" ${caseSensitive ? '' : 'i'}]`,
-    ];
-
-    if (active !== undefined) {
-      selectors.push(`[active=${active}]`);
-    }
-    return this.page.locator(`${selectors.join('')} >> nth=0`);
+    const { exact = true, ...restOptions } = options;
+    return this.getPanelHeader(panelId)
+      .getByRole('toolbar', { name: 'Panel left toolbar', exact: true })
+      .getByRole('button', {
+        name: buttonName,
+        exact,
+        ...restOptions,
+      });
   }
 
-  public async assertOneDimensionXScaleDomain(min: number, max: number) {
+  openPanelSettings(panelId: PanelId) {
+    return this.getPanelHeader(panelId)
+      .getByRole('button', { name: 'Panel settings', exact: true })
+      .click();
+  }
+
+  getMainRightToolbarButton(
+    buttonName: string,
+    options: Omit<GetByRoleOptions, 'name'> = {},
+  ) {
+    const { exact = true, ...restOptions } = options;
+    return this.page
+      .getByRole('toolbar', { name: 'Main header right toolbar' })
+      .getByRole('button', {
+        name: buttonName,
+        exact,
+        ...restOptions,
+      });
+  }
+
+  openGeneralSettings() {
+    return this.getMainRightToolbarButton('General settings').click();
+  }
+
+  getNMRViewerTool(toolId: NmrViewerToolId) {
+    return this.page
+      .getByRole('toolbar', { name: 'NMR viewer toolbar' })
+      .getByRole('button', { name: NMR_VIEWER_TOOLS[toolId], exact: true });
+  }
+
+  async clickNMRViewerTool(toolId: NmrViewerToolId) {
+    return this.getNMRViewerTool(toolId).click();
+  }
+
+  async assertOneDimensionXScaleDomain(min: number, max: number) {
     const xTickLabels = this.page
-      .locator('_react=HorizontalAxis1D')
+      .getByRole('group', { name: 'Horizontal axis', exact: true })
       .getByTestId('axis-primary-tick-label');
 
     const firstTick = xTickLabels.first();
@@ -88,10 +213,8 @@ export default class NmriumPage {
     await expect(lastTick).toHaveText(max.toString());
   }
 
-  public async getNumberOfDistinctColors() {
-    const linesLocator = this.page
-      .getByTestId('spectrum-line')
-      .locator('_react=Line');
+  async getNumberOfDistinctColors() {
+    const linesLocator = this.page.getByTestId('spectrum-line');
     // Get all lines from the locator.
     const lines = await linesLocator.all();
     // Get all colours from lines.
@@ -105,7 +228,7 @@ export default class NmriumPage {
     return distinctColors.length;
   }
 
-  public async applyPhaseCorrection(
+  async applyPhaseCorrection(
     options: {
       keyboard?: boolean;
       mode?: 'automatic' | 'manual' | 'absolute';
@@ -117,7 +240,7 @@ export default class NmriumPage {
       await this.viewer.moveMouse();
       await this.page.keyboard.press('KeyA');
     } else {
-      await this.clickTool('phaseCorrection');
+      await this.clickNMRViewerTool('phaseCorrection');
     }
     if (mode === 'manual') {
       await this.page.fill('input[name="ph1"]', '100');
@@ -134,14 +257,15 @@ export default class NmriumPage {
     await this.viewer.locator.click({
       position: { x: 100, y: 200 },
     });
-    const pivotIndicatorLocator = this.viewer.locator.locator(
-      '_react=PivotIndicator1D >> _react=Indicator[x=100]',
-    );
+    const pivotIndicatorLocator =
+      this.viewer.locator.getByTestId('pivot-indicator');
     await expect(pivotIndicatorLocator).toBeVisible();
 
-    const selectLocator = this.page
-      .locator('_react=SimplePhaseCorrectionOptionsPanel')
-      .getByRole('combobox');
+    const toolOptions = this.getToolOptions();
+    const selectLocator = toolOptions.getByRole('combobox', {
+      name: 'Phase correction mode',
+      exact: true,
+    });
     if (mode === 'automatic') {
       await selectLocator.click();
       await this.page.getByRole('option', { name: 'automatic' }).click();
@@ -151,16 +275,16 @@ export default class NmriumPage {
         .getByRole('option', { name: 'Convert to absolute spectrum' })
         .click();
     }
-    await this.page.click('_react=Header >> button >> text=Apply', {
-      delay: 200,
-    });
+    await toolOptions
+      .getByRole('button', { name: 'Apply', exact: true })
+      .click({ delay: 200 });
 
     await expect(
-      this.page.locator('_react=FiltersSectionsPanel >> text=Phase correction'),
+      this.getFiltersList().getByText('Phase correction'),
     ).toBeVisible();
   }
 
-  public async dropFile(file: string | string[]) {
+  async dropFile(file: string | string[]) {
     const filenames: string[] = [];
 
     if (typeof file === 'string') {
@@ -170,7 +294,7 @@ export default class NmriumPage {
     }
 
     await this.page
-      .locator('_react=DropZone >> input[type=file]')
+      .getByLabel('Import files', { exact: true })
       .setInputFiles(filenames.map((f) => `test-e2e/data/${f}`));
   }
 
@@ -189,10 +313,12 @@ export default class NmriumPage {
   }
 
   async dismissAlert(text: string) {
-    const alert = this.page.locator('_react=ToasterProvider', {
-      hasText: text,
-    });
-    await alert.locator('button').click();
+    // The toast message has the alert role, and the close button is its sibling.
+    const toast = this.page
+      .getByRole('alert')
+      .filter({ hasText: text })
+      .locator('..');
+    await toast.getByRole('button', { name: 'Close', exact: true }).click();
   }
 
   async changePanelStatus(
@@ -200,6 +326,7 @@ export default class NmriumPage {
     status: 'hidden' | 'active' | 'available',
   ) {
     const selectLocator = this.page
+      .getByRole('dialog')
       .getByRole('tabpanel')
       .getByLabel(panelTitle);
     await selectLocator.click();

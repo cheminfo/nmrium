@@ -11,13 +11,15 @@ interface ArrowProps {
   style?: CSSProperties;
 }
 
-const ArrowButton = styled.div<{
+const ArrowButton = styled.button<{
   direction: Direction;
 }>`
   align-items: center;
   background-color: #f7f7f7;
   border: none;
   border-radius: 50%;
+  color: inherit;
+  padding: 0;
   cursor: pointer;
   display: inline-flex;
   height: 40px;
@@ -45,7 +47,13 @@ const ArrowButton = styled.div<{
 
 function Arrow({ direction, onClick, style = {} }: ArrowProps) {
   return (
-    <ArrowButton onClick={onClick} direction={direction} style={style}>
+    <ArrowButton
+      type="button"
+      aria-label={direction === 'left' ? 'Previous' : 'Next'}
+      onClick={onClick}
+      direction={direction}
+      style={style}
+    >
       <FaAngleLeft
         style={{ transform: `scaleX(${direction === 'right' ? '-1' : '1'})` }}
       />
@@ -142,9 +150,17 @@ export function NextPrev(props: NextPrevProps) {
         translation={translation}
         slidersWidth={slidersWidth}
       >
-        {Children.map(children, (child: ReactElement) => {
+        {Children.map(children, (child: ReactElement, slideIndex) => {
           return (
-            <Content key={child.key} width={width}>
+            <Content
+              key={child.key}
+              role="group"
+              aria-roledescription="slide"
+              aria-label={`${slideIndex + 1} of ${slidersCount}`}
+              // Slides out of view must not be reachable with the keyboard or assistive technologies.
+              inert={slideIndex !== activeIndex}
+              width={width}
+            >
               {child}
             </Content>
           );

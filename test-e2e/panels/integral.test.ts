@@ -16,18 +16,21 @@ async function addIntegral(
   });
 
   // Should have integral with at least 1000 points
-  const path = (await nmrium.page.getAttribute(
-    `_react=IntegralsSeries >> _react=Integration >> nth=${childIndex} >> path >> nth=0`,
-    'd',
-  )) as string;
+  const path = (await nmrium.page
+    .getByTestId('integral')
+    .nth(childIndex)
+    .locator('path')
+    .first()
+    .getAttribute('d')) as string;
   expect(path.length).toBeGreaterThan(1000);
   expect(path).not.toContain('NaN');
 }
 
 async function resizeIntegral(nmrium: NmriumPage) {
-  const rightResizer = nmrium.page.locator(
-    '_react=IntegralsSeries >> _react=Integration >> nth=0 >> _react=SVGResizerHandle >> nth=1',
-  );
+  const rightResizer = nmrium.page
+    .getByTestId('integral')
+    .first()
+    .getByTestId('resizer-handle-right');
 
   const {
     x,
@@ -45,45 +48,43 @@ async function resizeIntegral(nmrium: NmriumPage) {
   });
   await nmrium.page.mouse.up();
 
-  const path = (await nmrium.page.getAttribute(
-    '_react=IntegralsSeries >> _react=Integration >> nth=0 >> path >> nth=0',
-    'd',
-  )) as string;
+  const path = (await nmrium.page
+    .getByTestId('integral')
+    .first()
+    .locator('path')
+    .first()
+    .getAttribute('d')) as string;
 
   expect(path.length).toBeGreaterThan(1000);
   expect(path).not.toContain('NaN');
 
-  const container = nmrium.page.locator(
-    '_react=IntegralsSeries >> _react=Integration >> nth=0 >> rect >> nth=0',
-  );
+  const container = nmrium.page
+    .getByTestId('integral')
+    .first()
+    .locator('rect')
+    .first();
   const { width } = (await container.boundingBox()) as BoundingBox;
   expect(width).toBe(41);
 }
 
 async function deleteIntegral(nmrium: NmriumPage) {
-  const container = nmrium.page.locator(
-    '_react=IntegralsSeries >> _react=Integration >> nth=0 ',
-  );
+  const container = nmrium.page.getByTestId('integral').first();
   await container.hover();
   await nmrium.page.keyboard.press('Delete');
-  await expect(
-    nmrium.page.locator('_react=IntegralsSeries >> _react=Integration'),
-  ).toHaveCount(1);
+  await expect(nmrium.page.getByTestId('integral')).toHaveCount(1);
 }
 
 test('Should Integrals Add/resize/delete', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
-  await nmrium.clickTool('integral');
+  await nmrium.clickNMRViewerTool('integral');
 
   await test.step('Add integrals ', async () => {
     // Test add two integrals
     await addIntegral(nmrium, 50, 70, 0);
     await addIntegral(nmrium, 110, 130, 1);
 
-    await expect(
-      nmrium.page.locator('_react=IntegralsSeries >> _react=Integration'),
-    ).toHaveCount(2);
+    await expect(nmrium.page.getByTestId('integral')).toHaveCount(2);
   });
 
   await test.step('Resize one of the integrals ', async () => {

@@ -8,13 +8,15 @@ test('automatic assignment panel', async ({ page }, info) => {
 
   const nmrium = await NmriumPage.create(page);
   await test.step('open 1H ethylvinylether spectrum', async () => {
-    await nmrium.page.click('li >> text=Simple spectra');
-    await nmrium.page.click('li >> text=1H ethylvinylether');
+    await nmrium.openDemo('Simple spectra', '1H ethylvinylether');
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
   });
   await test.step('activate automatic assignment panel', async () => {
-    await nmrium.page.click('_react=ToolbarItem[id="general-settings"]');
-    await nmrium.page.getByRole('tablist').locator('text=Panels').click();
+    await nmrium.openGeneralSettings();
+    await nmrium.page
+      .getByRole('dialog')
+      .getByRole('tab', { name: 'Panels', exact: true })
+      .click();
 
     //change panel status to active (displays the panel in the accordion panels and the right bar )
     await nmrium.changePanelStatus('Automatic assignment', 'active');
@@ -22,19 +24,27 @@ test('automatic assignment panel', async ({ page }, info) => {
     await nmrium.saveWorkspaceModal('test');
   });
   await test.step('check automatic assignment panel', async () => {
-    await nmrium.clickPanel('Automatic assignment');
+    await nmrium.clickPanel('automaticAssignmentPanel');
     // Click on the automatic ranges button.
-    await nmrium.page.click(
-      '_react=AutomaticAssignment >> _react=SpectraAutomaticPickingButton',
-    );
+    await nmrium
+      .getPanelToolbarButton(
+        'automaticAssignmentPanel',
+        'Automatic ranges/zones picking for all spectra',
+      )
+      .click();
 
     // Wait for auto range to be applied.
-    await expect(nmrium.page.locator('_react=Range')).toHaveCount(5);
+    await expect(nmrium.page.getByTestId('range')).toHaveCount(5);
 
-    await nmrium.getToolbarLocatorByTitle('Automatic assignment').click();
+    await nmrium
+      .getPanelToolbarButton('automaticAssignmentPanel', 'Automatic assignment')
+      .click();
 
     await expect(
-      nmrium.page.locator('_react=AutomaticAssignmentTable >> text=0.75'),
+      nmrium
+        .getPanel('automaticAssignmentPanel')
+        .getByRole('table')
+        .getByRole('cell', { name: '0.75', exact: true }),
     ).toHaveCount(2, { timeout: 30 * 1000 });
   });
 });

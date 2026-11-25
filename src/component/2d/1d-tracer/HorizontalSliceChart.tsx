@@ -56,7 +56,13 @@ function HorizontalSliceChart(props: HorizontalSliceChartProps) {
   const innerWidth = width - margin.left - margin.right;
 
   return (
-    <svg viewBox={`0 0 ${width} ${height}`} width={width} height={height}>
+    <svg
+      role="img"
+      aria-label="Horizontal slice"
+      viewBox={`0 0 ${width} ${height}`}
+      width={width}
+      height={height}
+    >
       <defs>
         <clipPath id={`${displayerKey}clip-top`}>
           <rect width={innerWidth} height={height} x={margin.left} />

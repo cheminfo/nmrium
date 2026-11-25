@@ -23,6 +23,11 @@ export interface DropDownListProps<T> {
 }
 
 interface DropDownButtonProps<T> extends DropDownListProps<T> {
+  /**
+   * What the selected value is, for the accessible name of the button
+   * (for example "Workspace").
+   */
+  label?: string;
   selectedKey?: string;
   onSelect?: (item: DropDownListItem) => void;
   formatSelectedValue?: (Item: DropDownListItem) => string;
@@ -41,6 +46,7 @@ function DropDownButton<T extends DropDownListItem>(
     renderItem = null,
     style = {},
     className = '',
+    label,
   } = props;
   const [open, setOpen] = useState(false);
   const [item, setItem] = useState<DropDownListItem | null>();
@@ -78,6 +84,10 @@ function DropDownButton<T extends DropDownListItem>(
       <PopoverButton
         style={{ boxShadow: 'none', ...style }}
         endIcon="chevron-down"
+        aria-label={
+          label && item ? `${label}: ${formatSelectedValue(item)}` : label
+        }
+        aria-expanded={open}
         onClick={() => setOpen((flag) => !flag)}
       >
         {!item ? <FaEllipsisH /> : formatSelectedValue(item)}

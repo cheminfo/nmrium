@@ -30,6 +30,8 @@ interface BasicTabProps extends BaseTab {
   isActive?: boolean;
 }
 export interface TabProps extends BasicTabProps, TabEvents {
+  id?: string;
+  panelId?: string;
   tabstyles?: CSSProperties | SerializedStyles;
   canDelete?: boolean;
   render?: (options: Required<BasicTabProps>) => any;
@@ -38,6 +40,8 @@ export interface TabProps extends BasicTabProps, TabEvents {
 }
 
 export default function Tab({
+  id,
+  panelId,
   tabid,
   title,
   isActive,
@@ -70,6 +74,11 @@ export default function Tab({
 
   return (
     <li
+      id={id}
+      role="tab"
+      aria-selected={isActive || false}
+      aria-controls={isActive ? panelId : undefined}
+      tabIndex={isActive ? 0 : -1}
       className={`${classNames.join(' ')} ${className}`}
       onClick={clickHandler}
       css={styles(tabstyles)}

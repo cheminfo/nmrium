@@ -50,6 +50,10 @@ export interface PeaksAnnotationsProps extends BasePeaksProps {
   spectrumKey: string;
 }
 
+export function getPeakAnnotationTestId(peaksSource: PeaksSource) {
+  return peaksSource === 'peaks' ? 'peak-annotation' : 'range-peak-annotation';
+}
+
 export function getHighlightSource(peaksSource: PeaksSource) {
   return peaksSource === 'peaks' ? 'PEAK' : 'RANGE_PEAK';
 }

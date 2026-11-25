@@ -75,7 +75,7 @@ function DefaultPanelHeader(props: DefaultPanelHeaderProps) {
       total={hideCounter ? undefined : total}
     >
       <div style={styles.leftContainer}>
-        <Toolbar overflow="collapse">
+        <Toolbar aria-label="Panel left toolbar" overflow="collapse">
           {onDelete && (
             <Toolbar.Item
               id="delete-button"
@@ -101,7 +101,11 @@ function DefaultPanelHeader(props: DefaultPanelHeaderProps) {
         {children}
       </div>
 
-      <Toolbar>{mapToolbarButtons(rightButtons)}</Toolbar>
+      {rightButtons.length > 0 && (
+        <Toolbar aria-label="Panel right toolbar">
+          {mapToolbarButtons(rightButtons)}
+        </Toolbar>
+      )}
     </PanelHeader>
   );
 }

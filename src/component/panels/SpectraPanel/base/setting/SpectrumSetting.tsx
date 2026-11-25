@@ -1,6 +1,7 @@
 import { PopoverNext } from '@blueprintjs/core';
 import styled from '@emotion/styled';
 import type { Display1D, Display2D } from '@zakodium/nmrium-core';
+import type { CSSProperties } from 'react';
 
 import { useDispatch } from '../../../../context/DispatchContext.js';
 import { useActiveSpectra } from '../../../../hooks/useActiveSpectra.ts';
@@ -13,6 +14,14 @@ const SpectrumSettingContent = styled.div`
   max-height: 390px;
   overflow-y: auto;
 `;
+const settingsButtonStyle: CSSProperties = {
+  display: 'flex',
+  width: '100%',
+  padding: 0,
+  border: 'none',
+  background: 'none',
+};
+
 interface SpectrumSettingProps {
   data: any;
   display: Display1D | Display2D;
@@ -49,6 +58,8 @@ export function SpectrumSetting({
       canEscapeKeyClose
       content={
         <SpectrumSettingContent
+          role="dialog"
+          aria-label="Spectrum settings"
           onClick={(event) => event.stopPropagation()}
           onContextMenu={(e) => e.stopPropagation()}
         >
@@ -60,7 +71,10 @@ export function SpectrumSetting({
         </SpectrumSettingContent>
       }
       renderTarget={({ isOpen, onClick, ...targetProps }) => (
-        <div
+        <button
+          type="button"
+          aria-label="Spectrum settings"
+          style={settingsButtonStyle}
           {...targetProps}
           onClick={(event) => {
             event.stopPropagation();
@@ -68,7 +82,7 @@ export function SpectrumSetting({
           }}
         >
           <ColorIndicator display={display} dimension={dimension} />
-        </div>
+        </button>
       )}
     />
   );

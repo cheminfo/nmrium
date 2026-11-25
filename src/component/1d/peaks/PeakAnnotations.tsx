@@ -6,7 +6,11 @@ import { formatNumber } from '../../utility/formatNumber.js';
 
 import { PeakEditionListener } from './PeakEditionManager.js';
 import type { Peak, PeaksAnnotationsProps, PeaksSource } from './Peaks.js';
-import { getHighlightExtraId, getHighlightSource } from './Peaks.js';
+import {
+  getHighlightExtraId,
+  getHighlightSource,
+  getPeakAnnotationTestId,
+} from './Peaks.js';
 
 const textSize = 11;
 const textXOffset = 2;
@@ -184,6 +188,7 @@ function PeakAnnotation({
 
   return (
     <g
+      data-testid={getPeakAnnotationTestId(peaksSource)}
       style={{ outline: 'none' }}
       transform={`translate(${sx}, ${sy})`}
       onMouseEnter={() => highlight.show()}

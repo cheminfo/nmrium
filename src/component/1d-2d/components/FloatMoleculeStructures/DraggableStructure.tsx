@@ -196,6 +196,8 @@ export function DraggableStructure(props: DraggableStructureProps) {
       >
         <div
           className="content"
+          role="figure"
+          aria-label={molecule.label || undefined}
           onDoubleClick={(e) => {
             if ((e.target as HTMLElement).closest('form')) {
               return;

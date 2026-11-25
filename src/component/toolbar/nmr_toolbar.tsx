@@ -1,7 +1,10 @@
 import { isSpectrum2DQuadrants } from '@zakodium/nmrium-core';
 import { useCallback, useMemo } from 'react';
 import { FaDownload } from 'react-icons/fa';
-import type { ToolbarItemProps, TooltipItem } from 'react-science/ui';
+import type {
+  ToolbarItemProps,
+  TooltipHelpContentProps,
+} from 'react-science/ui';
 import { Toolbar, TooltipHelpContent } from 'react-science/ui';
 
 import { useChartData } from '../context/ChartContext.js';
@@ -42,12 +45,12 @@ interface BaseToolItem extends Pick<ToolbarItemProps, 'disabled'> {
 }
 interface ToolItem extends BaseToolItem {
   onClick?: () => void;
-  tooltip: TooltipItem;
+  tooltip: TooltipHelpContentProps;
 }
 interface PopoverToolItem extends BaseToolItem {
   onClick: (data?: any) => void;
   menuItems: ToolbarPopoverMenuItem[];
-  tooltip: TooltipItem;
+  tooltip: TooltipHelpContentProps;
 }
 
 function isPopoverToolItem(
@@ -482,7 +485,7 @@ export default function NMRToolbar() {
         <ExportAsJcampModal exportActiveSpectrum closeDialog={closeDialog} />
       )}
       <SaveAsModal isOpen={dialog.saveAs} onCloseDialog={closeDialog} />
-      <Toolbar vertical>
+      <Toolbar aria-label="NMR viewer toolbar" vertical>
         {toolItems.map((item) => {
           const { id, tooltip, disabled, isVisible, iconProps } = item;
           const Icon = getToolIcon(id, { verticalAlign, isRealSpectrumShown });

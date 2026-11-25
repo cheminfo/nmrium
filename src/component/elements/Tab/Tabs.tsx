@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import type { ReactElement } from 'react';
-import { Children, isValidElement, memo, useMemo } from 'react';
+import type { KeyboardEvent, ReactElement } from 'react';
+import { Children, isValidElement, memo, useId, useMemo } from 'react';
 
 import type { TabEvents, TabProps } from './Tab.js';
 import Tab from './Tab.js';
@@ -99,30 +99,72 @@ function Tabs({
   onDelete = () => null,
   activeTab,
 }: TabsProps) {
+  const baseId = useId();
+  const panelId = `${baseId}-panel`;
+
   function handleClickTab(tab: any) {
     const { title, tabid } = tab;
     onClick?.({ title, tabid });
   }
 
+  const tabItems: Array<Required<Pick<TabProps, 'tabid' | 'title'>>> = [];
   let contentChild;
+  let activeTabId: string | undefined;
   const tabs = Children.map(children, (child) => {
     if (!isValidElement(child)) return null;
 
-    const { tabid } = child.props;
+    const { tabid, title = '' } = child.props;
+    const id = `${baseId}-tab-${tabItems.length}`;
+    tabItems.push({ tabid, title });
 
     if (tabid === activeTab) {
       contentChild = child.props.children;
+      activeTabId = id;
     }
 
     return (
       <Tab
         {...child.props}
+        id={id}
+        panelId={panelId}
         isActive={tabid === activeTab}
         onClick={handleClickTab}
         onDelete={onDelete}
       />
     );
   });
+
+  function handleKeyDown(event: KeyboardEvent<HTMLOListElement>) {
+    const isVertical = position === 'LEFT';
+    const tabElements = [
+      ...event.currentTarget.querySelectorAll<HTMLElement>('[role="tab"]'),
+    ];
+    const currentIndex = tabElements.indexOf(event.target as HTMLElement);
+    if (currentIndex === -1) return;
+
+    const lastIndex = tabElements.length - 1;
+    let nextIndex: number;
+    switch (event.key) {
+      case isVertical ? 'ArrowUp' : 'ArrowLeft':
+        nextIndex = currentIndex === 0 ? lastIndex : currentIndex - 1;
+        break;
+      case isVertical ? 'ArrowDown' : 'ArrowRight':
+        nextIndex = currentIndex === lastIndex ? 0 : currentIndex + 1;
+        break;
+      case 'Home':
+        nextIndex = 0;
+        break;
+      case 'End':
+        nextIndex = lastIndex;
+        break;
+      default:
+        return;
+    }
+
+    event.preventDefault();
+    tabElements[nextIndex].focus();
+    handleClickTab(tabItems[nextIndex]);
+  }
 
   const styles = useMemo(() => {
     switch (position) {
@@ -137,8 +179,24 @@ function Tabs({
 
   return (
     <div className="tabs" css={styles}>
-      <ol className="tab-list">{tabs}</ol>
-      <div className="tab-content">{contentChild}</div>
+      <ol
+        className="tab-list"
+        role="tablist"
+        aria-orientation={position === 'LEFT' ? 'vertical' : 'horizontal'}
+        onKeyDown={handleKeyDown}
+      >
+        {tabs}
+      </ol>
+      {/* Keyed by tab so that switching tabs remounts the content. */}
+      <div
+        key={activeTab}
+        id={panelId}
+        className="tab-content"
+        role="tabpanel"
+        aria-labelledby={activeTabId}
+      >
+        {contentChild}
+      </div>
     </div>
   );
 }

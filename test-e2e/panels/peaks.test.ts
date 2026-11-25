@@ -1,16 +1,25 @@
 import { expect, test } from '@playwright/test';
 
 import NmriumPage from '../NmriumPage/index.js';
+import { getTableCell, getTableRows } from '../table.js';
 
-const PEAK_ANNOTATIONS_SELECTOR =
-  '_react=Peaks[peaksSource="peaks"] >> _react=PeakAnnotation';
-const FIRST_PEAK_ANNOTATION_SELECTOR = `${PEAK_ANNOTATIONS_SELECTOR} >> nth=0 >> text`;
+function getPeakAnnotations(nmrium: NmriumPage) {
+  return nmrium.page.getByTestId('peak-annotation');
+}
+
+/**
+ * Get the label of the first peak annotation, which shows its position.
+ * @param nmrium - The NMRium page.
+ */
+function getFirstPeakLabel(nmrium: NmriumPage) {
+  return getPeakAnnotations(nmrium).first().locator('text');
+}
 
 async function addPeaks(nmrium: NmriumPage) {
-  const peaksAnnotationLocator = nmrium.page.locator(PEAK_ANNOTATIONS_SELECTOR);
+  const peaksAnnotationLocator = getPeakAnnotations(nmrium);
 
   // Select peak picking tool.
-  await nmrium.clickTool('peakPicking');
+  await nmrium.clickNMRViewerTool('peakPicking');
 
   // Add peak by selecting range.
   await nmrium.viewer.drawRectangle({
@@ -31,12 +40,12 @@ async function addPeaks(nmrium: NmriumPage) {
 }
 
 async function shiftX(nmrium: NmriumPage) {
-  const peakLocator = nmrium.page.locator(FIRST_PEAK_ANNOTATION_SELECTOR);
+  const peakLocator = getFirstPeakLabel(nmrium);
 
   await peakLocator.click();
-  const peakInputLocator = nmrium.page.locator(
-    '_react=PeakEditionField >> input',
-  );
+  const peakInputLocator = nmrium.page.getByRole('spinbutton', {
+    name: 'Peak position',
+  });
   await peakInputLocator.pressSequentially('10');
   await peakInputLocator.press('Enter');
 
@@ -44,29 +53,29 @@ async function shiftX(nmrium: NmriumPage) {
 }
 
 async function shiftSpectraByDeltaColumn(nmrium: NmriumPage) {
-  const ppmColumnLocator = nmrium.page.locator(
-    '_react=PeaksTable >> .editable-column-input >> nth=2 ',
+  const ppmColumnLocator = await getTableCell(
+    nmrium.getPanel('peaksPanel').getByRole('table'),
+    1,
+    'δ (ppm)',
   );
 
   await ppmColumnLocator.dblclick();
-  const inputLocator = ppmColumnLocator.locator('input');
+  const inputLocator = ppmColumnLocator.getByRole('spinbutton');
   await inputLocator.selectText();
   await inputLocator.fill('20');
   await inputLocator.press('Enter');
 
-  const peakInputLocator = nmrium.page.locator(FIRST_PEAK_ANNOTATION_SELECTOR);
+  const peakInputLocator = getFirstPeakLabel(nmrium);
   await expect(peakInputLocator).toHaveText('20.00');
 }
 
 async function deletePeak(nmrium: NmriumPage) {
-  const peakAnnotationLocator = nmrium.page.locator(
-    FIRST_PEAK_ANNOTATION_SELECTOR,
-  );
+  const peakAnnotationLocator = getFirstPeakLabel(nmrium);
   await peakAnnotationLocator.hover();
   await nmrium.page.keyboard.press('Delete');
 
   // Test that the peak deleted
-  await expect(nmrium.page.locator(PEAK_ANNOTATIONS_SELECTOR)).toHaveCount(1);
+  await expect(getPeakAnnotations(nmrium)).toHaveCount(1);
 }
 
 test('add/shift/delete peaks', async ({ page }) => {
@@ -92,32 +101,37 @@ test('Automatic peak picking should work', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
 
-  //select range tool
-  await nmrium.clickTool('peakPicking');
+  // Select peak picking tool.
+  await nmrium.clickNMRViewerTool('peakPicking');
 
-  //apply auto ranges detection
-  await nmrium.page.click('button >> text=Apply');
+  // Apply auto peak detection.
+  await nmrium
+    .getToolOptions()
+    .getByRole('button', { name: 'Apply to 1 spectra', exact: true })
+    .click();
 
-  await expect(nmrium.page.locator(PEAK_ANNOTATIONS_SELECTOR)).toHaveCount(154);
+  await expect(getPeakAnnotations(nmrium)).toHaveCount(154);
 });
+
 test('Processed spectra peaks', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Open Processed 13C FID', async () => {
-    await nmrium.page.click('li >> text=Cytisine');
-    await nmrium.page.click('li >> text=Processed 13C FID');
+    await nmrium.openDemo('Cytisine', 'Processed 13C FID');
 
-    // wait spectrum to load
+    // Wait for the spectrum to load
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
   });
   await test.step('Check peaks', async () => {
     //Close spectra panel
-    await nmrium.clickPanel('Spectra');
+    await nmrium.clickPanel('spectraPanel');
     //Close ranges panel
-    await nmrium.clickPanel('Ranges / Multiplet analysis');
+    await nmrium.clickPanel('rangesPanel');
     //Open peaks panel
-    await nmrium.showPanel('Peaks');
+    await nmrium.showPanel('peaksPanel');
 
-    const peaks = nmrium.page.locator('_react=PeaksTable >> tbody >> tr');
+    const peaks = getTableRows(
+      nmrium.getPanel('peaksPanel').getByRole('table'),
+    );
     await expect(peaks).toHaveCount(16);
 
     const peaksData = [
@@ -138,30 +152,29 @@ test('Processed spectra peaks', async ({ page }) => {
     }
   });
 });
+
 test('Check no negative peaks in processed spectra', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Open 13c spectrum', async () => {
-    await nmrium.page.click('li >> text=Cytisine');
-    await nmrium.page.click('li >> text=Processed 13C FID');
+    await nmrium.openDemo('Cytisine', 'Processed 13C FID');
 
-    // wait spectrum to load
+    // Wait for the spectrum to load.
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
   });
   await test.step('Check negative peaks', async () => {
-    //Close spectra panel
-    await nmrium.clickPanel('Spectra');
-    //Close ranges panel
-    await nmrium.clickPanel('Ranges / Multiplet analysis');
-    //Open peaks panel
-    await nmrium.showPanel('Peaks');
-    const peaks = nmrium.page.locator('_react=PeaksTable >> tbody >> tr');
+    // Close spectra panel.
+    await nmrium.clickPanel('spectraPanel');
+    // Close ranges panel.
+    await nmrium.clickPanel('rangesPanel');
+    // Open peaks panel.
+    await nmrium.showPanel('peaksPanel');
+    const peaksTable = nmrium.getPanel('peaksPanel').getByRole('table');
 
     for (let i = 0; i < 16; i++) {
-      const peak = peaks.nth(i);
       // eslint-disable-next-line no-await-in-loop
-      expect(await peak.locator('td >> nth=2').textContent()).not.toContain(
-        '-',
-      );
+      const intensity = await getTableCell(peaksTable, i, 'Intensity');
+      // eslint-disable-next-line no-await-in-loop
+      await expect(intensity).not.toContainText('-');
     }
   });
 });

@@ -6,14 +6,16 @@ test('Matrix generation panel', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
 
   await test.step('open 1H ethylvinylether spectrum', async () => {
-    await nmrium.page.click('li >> text=Simple spectra');
-    await nmrium.page.click('li >> text=1H ethylvinylether');
+    await nmrium.openDemo('Simple spectra', '1H ethylvinylether');
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
   });
 
   await test.step('activate matrix generation panel', async () => {
-    await nmrium.page.click('_react=ToolbarItem[id="general-settings"]');
-    await nmrium.page.getByRole('tablist').locator('text=Panels').click();
+    await nmrium.openGeneralSettings();
+    await nmrium.page
+      .getByRole('dialog')
+      .getByRole('tab', { name: 'Panels', exact: true })
+      .click();
 
     //change panel status to active (displays the panel in the accordion panels and the right bar )
     await nmrium.changePanelStatus('Matrix generation', 'active');
@@ -21,24 +23,14 @@ test('Matrix generation panel', async ({ page }) => {
     await nmrium.saveWorkspaceModal('test');
   });
   await test.step('check matrix generation', async () => {
-    await nmrium.clickPanel('Matrix generation');
+    await nmrium.clickPanel('matrixGenerationPanel');
 
-    await nmrium.page.fill(
-      '_react=MatrixGenerationPanel >> [name*="range.from"]',
-      '0',
-    );
-    await nmrium.page.fill(
-      '_react=MatrixGenerationPanel >> [name*="range.to"]',
-      '5',
-    );
-    await nmrium.page.fill(
-      '_react=MatrixGenerationPanel >> [name*="numberOfPoints"]',
-      '1000',
-    );
+    const panel = nmrium.getPanel('matrixGenerationPanel');
+    await panel.getByLabel('From', { exact: true }).fill('0');
+    await panel.getByLabel('To', { exact: true }).fill('5');
+    await panel.getByLabel('Number of points', { exact: true }).fill('1000');
 
-    await nmrium.page.click(
-      '_react=MatrixGenerationPanel >> text=Apply processing',
-    );
+    await panel.getByRole('button', { name: 'Apply processing' }).click();
 
     const path = await nmrium.page.getAttribute('#nmrSVG path.line ', 'd');
     const pointCount = path?.match(/-?\d+(?<temp1>\.\d+)?/g)?.length ?? 0;
@@ -50,7 +42,9 @@ test('Matrix generation panel', async ({ page }) => {
     );
 
     await expect(
-      nmrium.page.locator('_react=HorizontalAxis1D >> _react=Tickets  >> text'),
+      nmrium.page
+        .getByRole('group', { name: 'Horizontal axis' })
+        .getByTestId('axis-primary-tick-label'),
     ).toContainText(expectedTicks);
   });
 });

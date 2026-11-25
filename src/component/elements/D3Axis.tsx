@@ -24,7 +24,10 @@ type SecondaryGridElementProps = PrimaryGridElementProps & {
 interface D3AxisProps
   extends
     BaseD3AxisProps,
-    Pick<SVGAttributes<SVGGElement>, 'transform' | 'children' | 'className'>,
+    Pick<
+      SVGAttributes<SVGGElement>,
+      'transform' | 'children' | 'className' | 'aria-label'
+    >,
     UseLinearPrimaryTicksResult {
   gridSize: number;
   primaryGridProps?: PrimaryGridElementProps;
@@ -247,6 +250,7 @@ export function D3Axis(props: D3AxisProps) {
   return (
     <g
       ref={ref}
+      role="group"
       fontSize="10"
       textAnchor={isVertical ? 'start' : 'middle'}
       {...otherProps}

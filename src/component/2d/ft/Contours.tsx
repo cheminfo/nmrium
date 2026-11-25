@@ -91,14 +91,16 @@ function ContoursPaths({
         (preferences?.current?.general?.dimmedSpectraOpacity ?? 0.1);
 
   return (
-    <path
-      fill="none"
-      data-testid="spectrum-line"
-      stroke={color}
-      strokeWidth="1"
-      opacity={opacity}
-      d={path}
-    />
+    <g data-testid={`contours-${sign}`}>
+      <path
+        fill="none"
+        data-testid="spectrum-line"
+        stroke={color}
+        strokeWidth="1"
+        opacity={opacity}
+        d={path}
+      />
+    </g>
   );
 }
 

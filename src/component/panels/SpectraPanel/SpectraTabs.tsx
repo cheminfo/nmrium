@@ -65,7 +65,7 @@ function SpectraTabsInner({
 
   return (
     <Container>
-      <Tabs key={activeTab} activeTab={activeTab} onClick={onTabChangeHandler}>
+      <Tabs activeTab={activeTab} onClick={onTabChangeHandler}>
         {spectraGroupByNucleus &&
           Object.entries(spectraGroupByNucleus).map(([nucleus, data]) => (
             <Tab

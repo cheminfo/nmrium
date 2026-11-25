@@ -45,6 +45,7 @@ export function HorizontalAxis1D() {
   return (
     <D3Axis
       ref={refAxis}
+      aria-label="Horizontal axis"
       transform={`translate(0,${height - margin.bottom})`}
       scale={ticksScale}
       axisPosition="bottom"

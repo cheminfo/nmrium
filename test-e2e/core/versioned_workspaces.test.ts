@@ -7,14 +7,13 @@ test('workspaces given with an older version are migrated', async ({
 }) => {
   const nmrium = await NmriumPage.create(page);
 
-  await nmrium.page.click('li >> text=Workspaces');
-  await nmrium.page.click('li >> text=Versioned workspaces (v19)');
+  await nmrium.openDemo('Workspaces', 'Versioned workspaces (v19)');
 
-  const workspaceButton = nmrium.page.locator('_react=DropDownButton >> nth=0');
-  const peaksPanel = nmrium.page.locator('_react=AccordionItem[title="Peaks"]');
-  const rangesPanel = nmrium.page.locator(
-    '_react=AccordionItem[title="Ranges / Multiplet analysis"]',
-  );
+  const workspaceButton = nmrium.page.getByRole('button', {
+    name: /^Workspace:/,
+  });
+  const peaksPanel = nmrium.getPanelButton('peaksPanel');
+  const rangesPanel = nmrium.getPanelButton('rangesPanel');
 
   // `legacyPeaks` is the requested workspace, it only displays the peaks panel.
   await expect(workspaceButton).toHaveText('Legacy peaks (v19)');
@@ -23,7 +22,9 @@ test('workspaces given with an older version are migrated', async ({
 
   // The second workspace of the same object is migrated as well.
   await workspaceButton.click();
-  await nmrium.page.click('span >> text=Legacy ranges (v19)');
+  await nmrium.page
+    .getByRole('button', { name: 'Legacy ranges (v19)' })
+    .click();
 
   await expect(workspaceButton).toHaveText('Legacy ranges (v19)');
   await expect(rangesPanel).toBeVisible();
