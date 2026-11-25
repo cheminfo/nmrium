@@ -59,9 +59,7 @@ export function getEmpty2DExperiments(
 ): Experiment[] {
   return TWO_D_EXPERIMENTS.filter((experiment) => {
     const spectrum = predictedSpectra[experiment];
-    return (
-      spectrum && isEmpty2DPrediction(spectrum as PredictionBase2D)
-    );
+    return spectrum && isEmpty2DPrediction(spectrum as PredictionBase2D);
   });
 }
 
