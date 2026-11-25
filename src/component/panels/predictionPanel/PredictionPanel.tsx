@@ -6,10 +6,7 @@ import type { CanvasEditorOnChangeMolecule } from 'react-ocl';
 import { CanvasMoleculeEditor } from 'react-ocl';
 import { Button, useAccordionControls } from 'react-science/ui';
 
-import {
-  getEmpty2DExperiments,
-  predictSpectra,
-} from '../../../data/PredictionManager.js';
+import { predictSpectra } from '../../../data/PredictionManager.js';
 import type { StateMoleculeExtended } from '../../../data/molecules/Molecule.js';
 import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
@@ -19,6 +16,7 @@ import { NextPrev } from '../../elements/NextPrev.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import { useMoleculeEditor } from '../../modal/MoleculeStructureEditorModal.js';
 import { usePredictionErrorHandler } from '../../modal/PredictionLimitModal.tsx';
+import { warnEmpty2DExperiments } from '../../utility/warnEmpty2DExperiments.js';
 import MoleculeHeader from '../MoleculesPanel/MoleculeHeader.js';
 import MoleculePanelHeader from '../MoleculesPanel/MoleculePanelHeader.js';
 import { TablePanel } from '../extra/BasicPanelStyle.js';
@@ -134,15 +132,9 @@ export default function PredictionPanel() {
               action,
             },
           });
-          const emptyExperiments = getEmpty2DExperiments(data.spectra);
-          if (emptyExperiments.length > 0) {
-            toaster.show({
-              message: `${emptyExperiments
-                .join(', ')
-                .toUpperCase()} prediction is empty: no spectrum was simulated.`,
-              intent: 'warning',
-            });
-          }
+          warnEmpty2DExperiments(toaster, data.spectra, {
+            moleculeLabel: molecules[currentIndex]?.label,
+          });
           openAccordionPanel('spectraPanel');
         } catch (error: unknown) {
           handlePredictionError(error);

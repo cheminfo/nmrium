@@ -6,7 +6,6 @@ import { Toolbar, useOnOff } from 'react-science/ui';
 
 import {
   getDefaultPredictionOptions,
-  getEmpty2DExperiments,
   predictSpectra,
 } from '../../data/PredictionManager.js';
 import type { StateMoleculeExtended } from '../../data/molecules/Molecule.js';
@@ -20,6 +19,7 @@ import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 import type { SettingsRef } from '../panels/extra/utilities/settingImperativeHandle.js';
 import PredictionPreferences from '../panels/predictionPanel/PredictionOptionsPanel.js';
 import { useStateWithLocalStorage } from '../utility/LocalStorage.js';
+import { warnEmpty2DExperiments } from '../utility/warnEmpty2DExperiments.js';
 
 import { usePredictionErrorHandler } from './PredictionLimitModal.tsx';
 
@@ -121,15 +121,9 @@ export default function PredictSpectraModal({
                 molecule,
               },
             });
-            const emptyExperiments = getEmpty2DExperiments(data.spectra);
-            if (emptyExperiments.length > 0) {
-              toaster.show({
-                message: `${emptyExperiments
-                  .join(', ')
-                  .toUpperCase()} prediction is empty: no spectrum was simulated.`,
-                intent: 'warning',
-              });
-            }
+            warnEmpty2DExperiments(toaster, data.spectra, {
+              moleculeLabel: molecule.label,
+            });
           } catch (error: unknown) {
             handlePredictionError(error);
           } finally {
