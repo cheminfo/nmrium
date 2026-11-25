@@ -1,6 +1,6 @@
 import type { Spectrum2D, Spectrum } from '@zakodium/nmrium-core';
 import { isSpectrum2DFt } from '@zakodium/nmrium-core';
-import type { NmrData2DFt } from 'cheminfo-types';
+import type { DoubleMatrix, NmrData2DFt } from 'cheminfo-types';
 import { Conrec } from 'ml-conrec';
 import { matrixToArray } from 'ml-spectra-processing';
 
@@ -60,6 +60,13 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
   // @ts-expect-error type of NmrData2D should have a discriminator field to separate fid and ft
   const quadrantData = data[quadrant];
 
+  // An all-zero matrix is strange but legal. The contour algorithm cannot derive
+  // thresholds from it and throws, which would unmount render-phase reducers.
+  // Fall back to the default options instead of letting the error escape.
+  if (matrixIsZero(quadrantData.z)) {
+    return DEFAULT_CONTOURS_OPTIONS;
+  }
+
   const {
     experiment = '',
     // @ts-expect-error will be included in nexts versions
@@ -116,6 +123,15 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
     },
   };
   return defaultLevel;
+}
+
+function matrixIsZero(matrix: DoubleMatrix): boolean {
+  for (const row of matrix) {
+    for (const value of row) {
+      if (value !== 0) return false;
+    }
+  }
+  return true;
 }
 
 function contoursManager(options: ContourOptions): ContoursManagerReturn {
