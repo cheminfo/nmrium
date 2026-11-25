@@ -254,16 +254,34 @@ export function findRidgeFreeThresholdTopDown(
   return lastCleanLevel;
 }
 
+/**
+ * Builds the multiplicative ladder of sigma multipliers explored by the
+ * automatic contour search.
+ *
+ * At least one candidate is always returned. When `maxSigma` is not a positive
+ * finite number there is no usable dynamic range, and starting the ladder above
+ * `maxSigma` would leave the caller without any threshold to evaluate. The
+ * ladder also never starts above the data range, so a `minSigma` larger than
+ * `maxSigma` still yields one candidate instead of an empty ladder.
+ */
 export function generateCandidateSigmaLevels(
   minSigma: number,
   maxSigma: number,
   contourRatio: number,
   exponent: number,
 ): number[] {
+  if (!(minSigma > 0)) {
+    throw new Error('minSigma must be a positive number');
+  }
+
+  if (!Number.isFinite(maxSigma) || maxSigma <= 0) {
+    return [minSigma];
+  }
+
   const step = contourRatio ** exponent;
   const candidates: number[] = [];
 
-  let sigma = minSigma;
+  let sigma = Math.min(minSigma, maxSigma);
 
   while (sigma <= maxSigma * (1 + 1e-12)) {
     candidates.push(sigma);
