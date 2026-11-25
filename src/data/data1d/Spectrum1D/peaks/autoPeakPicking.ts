@@ -1,6 +1,6 @@
 import type { Peak1D } from '@zakodium/nmr-types';
 import type { Spectrum1D } from '@zakodium/nmrium-core';
-import median from 'ml-array-median';
+import { xAbsoluteMedian } from 'ml-spectra-processing';
 import type { OptionsXYAutoPeaksPicking } from 'nmr-processing';
 import { mapPeaks, xyAutoPeaksPicking } from 'nmr-processing';
 
@@ -30,7 +30,7 @@ export function autoPeakPicking(
     defaultPeakShape = DEFAULT_PEAK_SHAPE,
   } = options;
   // we calculate the noise but this could be improved
-  const noise = median(spectrum.data.re.map((y) => Math.abs(y)));
+  const noise = xAbsoluteMedian(spectrum.data.re);
 
   let { re, x } = spectrum.data;
   const { originFrequency: frequency } = spectrum.info;
