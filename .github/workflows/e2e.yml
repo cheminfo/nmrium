@@ -8,10 +8,7 @@ on:
 
 jobs:
   e2e:
-    # Playwright 1.57 does not support Ubuntu 26.04.
-    # Migrate _react selectors to role/test-id locators before upgrading Playwright
-    # and returning to ubuntu-latest.
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         project: [chromium, firefox, webkit]
@@ -26,8 +23,6 @@ jobs:
       - name: Install Playwright
         run: npx playwright install --with-deps ${{ matrix.project }}
       - name: Build test application
-        env:
-          NODE_OPTIONS: --max-old-space-size=3072
         run: node --run build-no-minify
       - name: Run E2E tests on ${{ matrix.project }}
         run: npx playwright test --project ${{ matrix.project }}
