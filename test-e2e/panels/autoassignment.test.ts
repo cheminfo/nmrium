@@ -26,14 +26,19 @@ test('automatic assignment panel', async ({ page }, info) => {
   await test.step('check automatic assignment panel', async () => {
     await nmrium.clickPanel('Automatic assignment');
     // Click on the automatic ranges button.
-    await nmrium.page.click(
-      '_react=AutomaticAssignment >> _react=SpectraAutomaticPickingButton',
-    );
+    await nmrium
+      .getPanelToolbarButton(
+        'Automatic assignment',
+        'Automatic ranges/zones picking for all spectra',
+      )
+      .click();
 
     // Wait for auto range to be applied.
     await expect(nmrium.page.getByTestId('range')).toHaveCount(5);
 
-    await nmrium.getToolbarLocatorByTitle('Automatic assignment').click();
+    await nmrium
+      .getPanelToolbarButton('Automatic assignment', 'Automatic assignment')
+      .click();
 
     await expect(
       nmrium
