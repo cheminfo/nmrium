@@ -448,7 +448,9 @@ export function handlePredictSpectraFromMolecule(
     });
   }
 
-  if (id) {
+  // when each requested 2D prediction is empty
+  // the previous predictions are kept instead of being silently deleted
+  if (id && spectraIds.length > 0) {
     //save a set of the predicted spectra Ids by molecule ID in the view object in case we predict the spectra again we remove the old ones
     setPredictedSpectraReference(draft, id, spectraIds);
   }

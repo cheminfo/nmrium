@@ -19,6 +19,7 @@ import { StyledDialogBody } from '../elements/StyledDialogBody.js';
 import type { SettingsRef } from '../panels/extra/utilities/settingImperativeHandle.js';
 import PredictionPreferences from '../panels/predictionPanel/PredictionOptionsPanel.js';
 import { useStateWithLocalStorage } from '../utility/LocalStorage.js';
+import { warnEmpty2DExperiments } from '../utility/warnEmpty2DExperiments.js';
 
 import { usePredictionErrorHandler } from './PredictionLimitModal.tsx';
 
@@ -119,6 +120,9 @@ export default function PredictSpectraModal({
                 options: values,
                 molecule,
               },
+            });
+            warnEmpty2DExperiments(toaster, data.spectra, {
+              moleculeLabel: molecule.label,
             });
           } catch (error: unknown) {
             handlePredictionError(error);

@@ -16,6 +16,7 @@ import { NextPrev } from '../../elements/NextPrev.js';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences.js';
 import { useMoleculeEditor } from '../../modal/MoleculeStructureEditorModal.js';
 import { usePredictionErrorHandler } from '../../modal/PredictionLimitModal.tsx';
+import { warnEmpty2DExperiments } from '../../utility/warnEmpty2DExperiments.js';
 import MoleculeHeader from '../MoleculesPanel/MoleculeHeader.js';
 import MoleculePanelHeader from '../MoleculesPanel/MoleculePanelHeader.js';
 import { TablePanel } from '../extra/BasicPanelStyle.js';
@@ -130,6 +131,9 @@ export default function PredictionPanel() {
               molecule: { ...molecules[currentIndex], molfile },
               action,
             },
+          });
+          warnEmpty2DExperiments(toaster, data.spectra, {
+            moleculeLabel: molecules[currentIndex]?.label,
           });
           openAccordionPanel('spectraPanel');
         } catch (error: unknown) {
