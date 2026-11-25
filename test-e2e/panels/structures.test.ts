@@ -1,4 +1,3 @@
-import { Classes } from '@blueprintjs/core';
 import type { Locator } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
@@ -53,7 +52,9 @@ test('should draw structure and display it with MF', async ({ page }) => {
 
   await test.step('Add ring molecule', async () => {
     // Click on the "Add Molecule" button.
-    await nmrium.clickToolByTitle('Add molecule');
+    await nmrium
+      .getPanelToolbarButton('structuresPanel', 'Add molecule')
+      .click();
 
     // Select the aromatic ring tool.
     await nmrium.moleculeEditor.clickTool('aromaticRing');
@@ -84,7 +85,9 @@ test('should draw structure and display it with MF', async ({ page }) => {
 
   await test.step('Add a second molecule and check the visibility', async () => {
     // Click on the "Add Molecule" button.
-    await nmrium.clickToolByTitle('Add molecule');
+    await nmrium
+      .getPanelToolbarButton('structuresPanel', 'Add molecule')
+      .click();
 
     // Select the hexane tool.
     await nmrium.moleculeEditor.clickTool('hexane');
@@ -161,7 +164,9 @@ test('molecules 1H spectrum', async ({ page }) => {
 
   await test.step('Add benzene molecule and check the visibility', async () => {
     // Click on the "Add Molecule" button.
-    await nmrium.clickToolByTitle('Add molecule');
+    await nmrium
+      .getPanelToolbarButton('structuresPanel', 'Add molecule')
+      .click();
 
     // Select the aromatic ring tool.
     await nmrium.moleculeEditor.clickTool('aromaticRing');
@@ -192,7 +197,9 @@ test('molecules 1H spectrum', async ({ page }) => {
 
   await test.step('Add a third molecule and check the visibility', async () => {
     // Click on the "Add Molecule" button.
-    await nmrium.clickToolByTitle('Add molecule');
+    await nmrium
+      .getPanelToolbarButton('structuresPanel', 'Add molecule')
+      .click();
 
     // Select the hexane tool.
     await nmrium.moleculeEditor.clickTool('hexane');
@@ -312,13 +319,15 @@ test('molecules 1H spectrum', async ({ page }) => {
 
   await test.step('Check float molecule', async () => {
     // Check float molecule btn is on.
-    await expect(floatMoleculeButton).toContainClass(Classes.ACTIVE);
+    await expect(floatMoleculeButton).toHaveAttribute('aria-pressed', 'true');
     // Click on float molecule button to hide it.
-    await nmrium.clickToolByTitle('Float molecule');
+    await nmrium
+      .getPanelToolbarButton('structuresPanel', 'Float molecule')
+      .click();
     // Check floated molecule.
     await expect(getFloatingMolecules(nmrium).first()).toBeVisible();
     // Check float molecule btn is off.
-    await expect(floatMoleculeButton).not.toContainClass(Classes.ACTIVE);
+    await expect(floatMoleculeButton).toHaveAttribute('aria-pressed', 'false');
   });
 
   await test.step('Close float molecule', async () => {
@@ -330,13 +339,15 @@ test('molecules 1H spectrum', async ({ page }) => {
     await expect(getFloatingMolecules(nmrium).first()).toBeHidden();
     await expect(structureLocator).toBeHidden();
     // Check float molecule btn is off.
-    await expect(floatMoleculeButton).not.toContainClass(Classes.ACTIVE);
+    await expect(floatMoleculeButton).toHaveAttribute('aria-pressed', 'false');
     // Click on float molecule button.
-    await nmrium.clickToolByTitle('Float molecule');
+    await nmrium
+      .getPanelToolbarButton('structuresPanel', 'Float molecule')
+      .click();
     // Check floated molecule.
     await expect(getFloatingMolecules(nmrium).first()).toBeVisible();
     // Check float molecule btn is on.
-    await expect(floatMoleculeButton).toContainClass(Classes.ACTIVE);
+    await expect(floatMoleculeButton).toHaveAttribute('aria-pressed', 'true');
   });
 
   await test.step('Check copy as molfile V3 or V2 and paste', async () => {
@@ -367,7 +378,9 @@ test('molecules 1H spectrum', async ({ page }) => {
 
   await test.step('Check delete float molecule', async () => {
     // Delete molecule.
-    await nmrium.clickToolByTitle('Delete molecule');
+    await nmrium
+      .getPanelToolbarButton('structuresPanel', 'Delete molecule')
+      .click();
     // Check deleted Floated molecule.
     await expect(getFloatingMolecules(nmrium)).toHaveCount(1);
     // Check selected molecule.
@@ -391,7 +404,9 @@ test('molecules 1H spectrum', async ({ page }) => {
     await checkMoleculeStructureIsExists(nmrium, 1);
 
     // Delete molecule.
-    await nmrium.clickToolByTitle('Delete molecule');
+    await nmrium
+      .getPanelToolbarButton('structuresPanel', 'Delete molecule')
+      .click();
 
     // Check selected molecule.
     await expect(
@@ -411,8 +426,12 @@ test('molecules 1H spectrum', async ({ page }) => {
     await expect(structuresPanel.getByText('C11H14N2O - 190.25')).toBeVisible();
 
     // Delete both remaining molecules.
-    await nmrium.clickToolByTitle('Delete molecule');
-    await nmrium.clickToolByTitle('Delete molecule');
+    await nmrium
+      .getPanelToolbarButton('structuresPanel', 'Delete molecule')
+      .click();
+    await nmrium
+      .getPanelToolbarButton('structuresPanel', 'Delete molecule')
+      .click();
 
     // The SVG container should not be rendered when there are no molecules.
     await expect(nmrium.page.locator('.mol-svg-container ')).toBeHidden();
@@ -459,7 +478,9 @@ test('check callbacks count on changing structures', async ({ page }) => {
 
   await test.step('Add a second molecule and check the visibility', async () => {
     // Click on the "Add Molecule" button.
-    await nmrium.clickToolByTitle('Add molecule');
+    await nmrium
+      .getPanelToolbarButton('structuresPanel', 'Add molecule')
+      .click();
 
     // Select the hexane tool.
     await nmrium.moleculeEditor.clickTool('hexane');
@@ -496,8 +517,10 @@ test('check callbacks count on changing structures', async ({ page }) => {
   await test.step('Check float molecule', async () => {
     // Check float molecule btn is on.
     await expect(
-      nmrium.getPanelToolbarButton('structuresPanel', 'Float molecule'),
-    ).toContainClass(Classes.ACTIVE);
+      nmrium.getPanelToolbarButton('structuresPanel', 'Float molecule', {
+        pressed: true,
+      }),
+    ).toBeVisible();
     // Check floated molecule.
     await expect(getFloatingMolecules(nmrium).first()).toBeVisible();
 

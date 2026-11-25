@@ -418,7 +418,7 @@ export default function MoleculePanelHeader(props: MoleculePanelHeaderProps) {
       {dialog.autoLabelDatabaseDialog && (
         <MoleculeAutoLabelsDatabaseModal onClose={closeDialog} />
       )}
-      <Toolbar overflow="collapse">
+      <Toolbar aria-label="Panel left toolbar" overflow="collapse">
         {renderSource === 'predictionPanel' && <AboutPredictionModal />}
         {renderSource === 'moleculePanel' && (
           <ToolbarPopoverItem

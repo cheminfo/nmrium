@@ -202,10 +202,6 @@ export default class NmriumPage {
     return this.getNMRViewerTool(toolId).click();
   }
 
-  async clickToolByTitle(title: string) {
-    await this.page.getByRole('button', { name: title, exact: true }).click();
-  }
-
   async assertOneDimensionXScaleDomain(min: number, max: number) {
     const xTickLabels = this.page
       .getByRole('group', { name: 'Horizontal axis', exact: true })

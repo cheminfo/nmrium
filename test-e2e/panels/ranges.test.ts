@@ -234,9 +234,7 @@ test('Multiplicity should be visible', async ({ page }) => {
       .getPanelToolbarButton(
         'rangesPanel',
         'Show multiplicity trees in spectrum',
-        {
-          pressed: false,
-        },
+        { pressed: false },
       )
       .click();
 
@@ -294,35 +292,34 @@ test('Range state', async ({ page }) => {
     // Check that the peaks button is off.
     await expect(
       nmrium.getPanelToolbarButton('rangesPanel', 'Show peaks'),
-    ).toBeHidden();
+    ).toHaveAttribute('aria-pressed', 'false');
     // Check that the integrals button is off.
     await expect(
       nmrium.getPanelToolbarButton('rangesPanel', 'Show integrals'),
-    ).toBeHidden();
+    ).toHaveAttribute('aria-pressed', 'false');
     // Check that the multiplicity tree button is off.
     await expect(
       nmrium.getPanelToolbarButton(
         'rangesPanel',
-        'Show Multiplicity Trees in Spectrum',
+        'Show multiplicity trees in spectrum',
       ),
-    ).toBeHidden();
+    ).toHaveAttribute('aria-pressed', 'false');
 
     // Check peaks within ranges are hidden
     await expect(nmrium.page.getByTestId('range-peak-annotation')).toBeHidden();
     // Check integrals within ranges are hidden
     await expect(nmrium.page.getByTestId('range-integral')).toBeHidden();
 
-    // Check multiplicity tree
+    // Check multiplicity tree.
     await expect(nmrium.page.getByTestId('multiplicity-tree')).toBeHidden();
 
-    //show peaks
+    // Show peaks.
     await nmrium.getPanelToolbarButton('rangesPanel', 'Show peaks').click();
 
-    //show integrals
+    // Show integrals.
     await nmrium.getPanelToolbarButton('rangesPanel', 'Show integrals').click();
 
-    //show multiplicity trees
-
+    // Show multiplicity trees
     await nmrium
       .getPanelToolbarButton(
         'rangesPanel',
@@ -336,7 +333,7 @@ test('Range state', async ({ page }) => {
         'rangesPanel',
         'Hide multiplicity trees in spectrum',
       ),
-    ).toBeVisible();
+    ).toHaveAttribute('aria-pressed', 'true');
     // Check peaks within ranges are visible
     expect(
       await nmrium.page.getByTestId('range-peak-annotation').count(),
@@ -358,18 +355,18 @@ test('Range state', async ({ page }) => {
     // Check that the peaks btn is not active
     await expect(
       nmrium.getPanelToolbarButton('rangesPanel', 'Hide peaks'),
-    ).toBeVisible();
+    ).toHaveAttribute('aria-pressed', 'true');
     // Check that the integrals btn is not active
     await expect(
       nmrium.getPanelToolbarButton('rangesPanel', 'Hide integrals'),
-    ).toBeVisible();
+    ).toHaveAttribute('aria-pressed', 'true');
     // Check that the multiplicity tree btn is on
     await expect(
       nmrium.getPanelToolbarButton(
         'rangesPanel',
         'Hide multiplicity trees in spectrum',
       ),
-    ).toBeVisible();
+    ).toHaveAttribute('aria-pressed', 'true');
 
     // Check range peaks
     expect(
@@ -406,7 +403,7 @@ test('Auto peak picking on all spectra', async ({ page }) => {
     // Click on the automatic ranges button.
     await nmrium
       .getPanelToolbarButton(
-        'automaticAssignmentPanel',
+        'spectraPanel',
         'Automatic ranges/zones picking for all spectra',
       )
       .click();
@@ -511,13 +508,6 @@ test('2D spectra reference change', async ({ page }) => {
 
     await expect(zoneCell(nmrium, 1)).toHaveText(x.toFixed(2));
     await expect(zoneCell(nmrium, 2)).toHaveText(y.toFixed(2));
-
-    // await expect(
-    //   nmrium.page.locator(
-    //     'a[title=dummy]',
-    //     // `_react = Signal[signal.x.delta = ${x}][signal.y.delta = ${y}]`,
-    //   ),
-    // ).toBeVisible();
 
     const xShift = 997;
     const yShift = 1960;

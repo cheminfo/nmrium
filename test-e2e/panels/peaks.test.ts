@@ -107,7 +107,7 @@ test('Automatic peak picking should work', async ({ page }) => {
   // Apply auto peak detection.
   await nmrium
     .getToolOptions()
-    .getByRole('button', { name: 'Apply', exact: true })
+    .getByRole('button', { name: 'Apply to 1 spectra', exact: true })
     .click();
 
   await expect(getPeakAnnotations(nmrium)).toHaveCount(154);

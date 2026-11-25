@@ -29,7 +29,7 @@ test('should load and display the 1D and 2D spectrum', async ({ page }) => {
 test('check callbacks count', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
 
-  await nmrium.openDemo('Props debug', 'Callback - FULL cytisine');
+  await nmrium.openDemo('Props debug', 'Callback - Full cytisine');
   await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
 
   const dataCount = nmrium.page.getByTestId('data-count');

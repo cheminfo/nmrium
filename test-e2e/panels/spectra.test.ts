@@ -332,7 +332,9 @@ test('2d spectrum', async ({ page }) => {
 
   await test.step('Add projection', async () => {
     // Click add missing projection btn
-    await nmrium.clickToolByTitle('Add missing projection');
+    await nmrium
+      .getPanelToolbarButton('spectraPanel', 'Add missing projection')
+      .click();
 
     // Check tabs
     await expect(nmrium.getSpectraTabs()).toHaveText(['1H', '1H,1H']);
@@ -470,7 +472,9 @@ test('Multiple spectra analysis', async ({ page }) => {
     expect(await nmrium.getNumberOfDistinctColors()).toBe(1);
   });
   await test.step('Check Recolour BarButton', async () => {
-    await nmrium.clickToolByTitle('Default spectra recoloring');
+    await nmrium
+      .getPanelToolbarButton('spectraPanel', 'Default spectra recoloring')
+      .click();
     expect(await nmrium.getNumberOfDistinctColors()).toBe(13);
   });
 });

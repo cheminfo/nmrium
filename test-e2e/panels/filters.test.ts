@@ -88,6 +88,7 @@ async function addPeaks(nmrium: NmriumPage, { keyboard = false } = {}) {
     nmrium.getFiltersList().getByText('Baseline correction'),
   ).toBeVisible();
 }
+
 async function checkPeakNumber(nmrium: NmriumPage, number: number) {
   const peaksTable = nmrium.getPanel('peaksPanel').getByRole('table');
   // The table is virtualized: scroll to the end to render the last peak.
@@ -128,6 +129,7 @@ test('process 1d FID 13c spectrum', async ({ page }) => {
     await expect(nmrium.page.getByTestId('spectrum-line')).toBeVisible();
   });
 });
+
 test('process 13c spectrum with shortcuts', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await open13CFidSpectrum(nmrium);
@@ -163,7 +165,7 @@ test('process 13c spectrum with shortcuts', async ({ page }) => {
 test('Processed spectra filters', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Open 13c spectrum', async () => {
-    await nmrium.openDemo('Cytisine', '13C FID');
+    await nmrium.openDemo('Cytisine', 'Processed 13C FID');
 
     // wait spectrum to load
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
@@ -175,6 +177,7 @@ test('Processed spectra filters', async ({ page }) => {
     await expect(nmrium.getFiltersList().getByRole('listitem')).toHaveCount(6);
   });
 });
+
 test('Exclusion zones', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Open Coffee example', async () => {
