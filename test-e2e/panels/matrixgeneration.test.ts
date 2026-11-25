@@ -11,7 +11,7 @@ test('Matrix generation panel', async ({ page }) => {
   });
 
   await test.step('activate matrix generation panel', async () => {
-    await nmrium.page.click('_react=ToolbarItem[id="general-settings"]');
+    await nmrium.getMainRightToolbarButton('General settings').click();
     await nmrium.page
       .getByRole('dialog')
       .getByRole('tab', { name: 'Panels', exact: true })

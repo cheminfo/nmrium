@@ -12,7 +12,7 @@ test('automatic assignment panel', async ({ page }, info) => {
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
   });
   await test.step('activate automatic assignment panel', async () => {
-    await nmrium.page.click('_react=ToolbarItem[id="general-settings"]');
+    await nmrium.getMainRightToolbarButton('General settings').click();
     await nmrium.page
       .getByRole('dialog')
       .getByRole('tab', { name: 'Panels', exact: true })
