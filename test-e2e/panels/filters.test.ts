@@ -22,7 +22,7 @@ async function apodizationFilter(
     await nmrium.viewer.moveMouse();
     await nmrium.page.keyboard.press('KeyA');
   } else {
-    await nmrium.clickTool('apodization');
+    await nmrium.clickNMRViewerTool('apodization');
   }
 
   await expect(nmrium.page.getByTestId('apodization-line')).toBeVisible();
@@ -42,14 +42,14 @@ async function apodizationFilter(
 }
 
 async function zeroFillingFilter(nmrium: NmriumPage) {
-  await nmrium.clickTool('zeroFilling');
+  await nmrium.clickNMRViewerTool('zeroFilling');
   await clickApply(nmrium);
 
   await expect(nmrium.getFiltersList().getByText('Zero Filling')).toBeVisible();
 }
 
 async function fourierTransformFilter(nmrium: NmriumPage) {
-  await nmrium.clickTool('fft');
+  await nmrium.clickNMRViewerTool('fft');
 
   await expect(nmrium.getFiltersList().getByText('FFT')).toBeVisible();
 }
@@ -62,7 +62,7 @@ async function baselineCorrectionFilter(
     await nmrium.viewer.moveMouse();
     await nmrium.page.keyboard.press('KeyB');
   } else {
-    await nmrium.clickTool('baselineCorrection');
+    await nmrium.clickNMRViewerTool('baselineCorrection');
   }
   await clickApply(nmrium);
 
@@ -76,7 +76,7 @@ async function addPeaks(nmrium: NmriumPage, { keyboard = false } = {}) {
     await nmrium.viewer.moveMouse();
     await nmrium.page.keyboard.press('KeyP');
   } else {
-    await nmrium.clickTool('peakPicking');
+    await nmrium.clickNMRViewerTool('peakPicking');
   }
 
   await nmrium
@@ -89,7 +89,7 @@ async function addPeaks(nmrium: NmriumPage, { keyboard = false } = {}) {
   ).toBeVisible();
 }
 async function checkPeakNumber(nmrium: NmriumPage, number: number) {
-  const peaksTable = nmrium.getPanel('Peaks').getByRole('table');
+  const peaksTable = nmrium.getPanel('peaksPanel').getByRole('table');
   // The table is virtualized: scroll to the end to render the last peak.
   await peaksTable.hover();
   await nmrium.page.mouse.wheel(0, 100_000);
@@ -101,7 +101,7 @@ async function checkPeakNumber(nmrium: NmriumPage, number: number) {
 test('process 1d FID 13c spectrum', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await open13CFidSpectrum(nmrium);
-  await nmrium.clickPanel('Processing');
+  await nmrium.clickPanel('processingsPanel');
 
   await test.step('Apply Apodization filter', async () => {
     await apodizationFilter(nmrium);
@@ -131,7 +131,7 @@ test('process 1d FID 13c spectrum', async ({ page }) => {
 test('process 13c spectrum with shortcuts', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await open13CFidSpectrum(nmrium);
-  await nmrium.clickPanel('Processing');
+  await nmrium.clickPanel('processingsPanel');
 
   await test.step('Apply Apodization filter', async () => {
     await apodizationFilter(nmrium, { keyboard: true });
@@ -170,7 +170,7 @@ test('Processed spectra filters', async ({ page }) => {
   });
   await test.step('Check filters panel', async () => {
     //Open peaks panel
-    await nmrium.clickPanel('Processing');
+    await nmrium.clickPanel('processingsPanel');
 
     await expect(nmrium.getFiltersList().getByRole('listitem')).toHaveCount(6);
   });
@@ -188,16 +188,15 @@ test('Exclusion zones', async ({ page }) => {
   });
 
   await test.step('activate exclusion zones tool', async () => {
-    //open general setting
-    await nmrium.clickTool('general-settings');
+    await nmrium.openGeneralSettings();
 
-    //click on the display tab
+    // Click on the tools tab.
     await nmrium.page
       .getByRole('dialog')
       .getByRole('tab', { name: 'Tools', exact: true })
       .click();
 
-    //enable exclusion zone tool
+    // Enable exclusion zones tool.
     await nmrium.page
       .getByRole('dialog')
       .getByRole('tabpanel')
@@ -210,15 +209,15 @@ test('Exclusion zones', async ({ page }) => {
   });
 
   await test.step('add exclusion zones', async () => {
-    //select exclusion zones tool
-    await nmrium.clickTool('exclusionZones');
+    // Select exclusion zones tool.
+    await nmrium.clickNMRViewerTool('exclusionZones');
     // Add exclusion zones.
     await nmrium.viewer.drawRectangle({
       axis: 'x',
       startX: 100,
       endX: 150,
     });
-    // check that the filters applied to all spectra
+    // Check that the filters applied to all spectra.
     await expect(nmrium.page.getByTestId('exclusion-zone')).toHaveCount(13);
   });
 
@@ -232,8 +231,8 @@ test('Exclusion zones', async ({ page }) => {
   });
 
   await test.step('add exclusion zones to the active spectrum', async () => {
-    //select exclusion zones tool
-    await nmrium.clickTool('exclusionZones');
+    // Select exclusion zones tool.
+    await nmrium.clickNMRViewerTool('exclusionZones');
 
     // Add exclusion zones to the last spectrum which is active from the previous step.
     await nmrium.viewer.drawRectangle({

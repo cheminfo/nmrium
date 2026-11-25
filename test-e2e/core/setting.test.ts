@@ -9,11 +9,10 @@ test('should Change the visibility of the panels', async ({ page }) => {
   await nmrium.open1D();
 
   //hold a locator reference to database panel
-  const databaseLocator = nmrium.getPanelButton('Databases');
+  const databaseLocator = nmrium.getPanelButton('databasePanel');
 
   await test.step('Open general setting and change the "database panel" visibility to true', async () => {
-    //open general setting
-    await nmrium.clickTool('general-settings');
+    await nmrium.openGeneralSettings();
 
     //click on the display tab
     await nmrium.page

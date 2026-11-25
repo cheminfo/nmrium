@@ -4,42 +4,46 @@ import NmriumPage from '../NmriumPage/index.js';
 
 test('process 1d FID 13c spectrum', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
+
   await test.step('Spectra panel settings', async () => {
-    await nmrium.page.click(
-      '_react=AccordionItem[title="Spectra"] >> _react=PanelHeader >> button >> nth=-1',
-    );
-    await nmrium.page.click(
-      '_react=AccordionItem[title="Spectra"] >> _react=ToolbarItem[id="save-button"] >> nth=0',
-    );
-    await nmrium.clickPanel('Spectra');
+    await nmrium.openPanelSettings('spectraPanel');
+    await nmrium
+      .getPanel('spectraPanel')
+      .getByRole('toolbar', { name: 'Panel preferences toolbar', exact: true })
+      .getByRole('button', { name: 'Save preferences', exact: true })
+      .click();
+    await nmrium.clickPanel('spectraPanel');
   });
+
   await test.step('Peaks panel settings', async () => {
-    await nmrium.showPanel('Peaks');
-    await nmrium.page.click(
-      '_react=AccordionItem[title="Peaks"] >> _react=PanelHeader >> button >> nth=-1',
-    );
-    await nmrium.page.click(
-      '_react=AccordionItem[title="Peaks"] >> _react=ToolbarItem[id="save-button"] >> nth=0',
-    );
-    await nmrium.clickPanel('Peaks');
+    await nmrium.showPanel('peaksPanel');
+    await nmrium.openPanelSettings('peaksPanel');
+    await nmrium
+      .getPanel('peaksPanel')
+      .getByRole('toolbar', { name: 'Panel preferences toolbar', exact: true })
+      .getByRole('button', { name: 'Save preferences', exact: true })
+      .click();
+    await nmrium.clickPanel('peaksPanel');
   });
+
   await test.step('Integrals panel settings', async () => {
-    await nmrium.showPanel('Integrals');
-    await nmrium.page.click(
-      '_react=AccordionItem[title="Integrals"] >> _react=PanelHeader >> button >> nth=-1',
-    );
-    await nmrium.page.click(
-      '_react=AccordionItem[title="Integrals"] >> _react=ToolbarItem[id="save-button"] >> nth=0',
-    );
-    await nmrium.clickPanel('Integrals');
+    await nmrium.showPanel('integralsPanel');
+    await nmrium.openPanelSettings('integralsPanel');
+    await nmrium
+      .getPanel('integralsPanel')
+      .getByRole('toolbar', { name: 'Panel preferences toolbar', exact: true })
+      .getByRole('button', { name: 'Save preferences', exact: true })
+      .click();
+    await nmrium.clickPanel('integralsPanel');
   });
+
   await test.step('Ranges panel settings', async () => {
-    await nmrium.page.click(
-      '_react=AccordionItem[title="Ranges / Multiplet analysis"] >> _react=PanelHeader >> button >> nth=-1',
-    );
-    await nmrium.page.click(
-      '_react=AccordionItem[title="Ranges / Multiplet analysis"] >> _react=ToolbarItem[id="save-button"] >> nth=0',
-    );
-    await nmrium.clickPanel('Ranges / Multiplet analysis');
+    await nmrium.openPanelSettings('rangesPanel');
+    await nmrium
+      .getPanel('rangesPanel')
+      .getByRole('toolbar', { name: 'Panel preferences toolbar', exact: true })
+      .getByRole('button', { name: 'Save preferences', exact: true })
+      .click();
+    await nmrium.clickPanel('rangesPanel');
   });
 });

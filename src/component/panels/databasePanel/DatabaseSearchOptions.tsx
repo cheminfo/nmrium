@@ -10,7 +10,6 @@ import { useChartData } from '../../context/ChartContext.js';
 import { useDispatch } from '../../context/DispatchContext.js';
 import Input from '../../elements/Input.js';
 import Select from '../../elements/Select.js';
-import { ToolbarButton } from '../../elements/toolbar_button.tsx';
 import useToolsFunctions from '../../hooks/useToolsFunctions.js';
 import { options } from '../../toolbar/ToolTypes.js';
 
@@ -104,12 +103,14 @@ export function DatabaseSearchOptions(props: DatabaseSearchOptionsProps) {
             paddingBottom: '2px',
           }}
         >
-          <ToolbarButton
-            tooltip={`${showSimilarityTree ? 'Hide' : 'Show'} similarity tree`}
-            icon={<TbBinaryTree />}
-            active={showSimilarityTree}
-            onClick={handleShowSimilarityTree}
-          />
+          <Toolbar>
+            <Toolbar.Item
+              tooltip={`${showSimilarityTree ? 'Hide' : 'Show'} similarity tree`}
+              icon={<TbBinaryTree />}
+              active={showSimilarityTree}
+              onClick={handleShowSimilarityTree}
+            />
+          </Toolbar>
 
           <Select
             style={{ flex: 6, marginLeft: '5px' }}
@@ -144,12 +145,14 @@ export function DatabaseSearchOptions(props: DatabaseSearchOptionsProps) {
       </PanelHeader>
 
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <ToolbarButton
-          tooltip="Filter by select ranges"
-          icon={<FaICursor />}
-          active={selectedTool === options.databaseRangesSelection.id}
-          onClick={() => enableFilterHandler()}
-        />
+        <Toolbar>
+          <Toolbar.Item
+            tooltip="Filter by select ranges"
+            icon={<FaICursor />}
+            active={selectedTool === options.databaseRangesSelection.id}
+            onClick={() => enableFilterHandler()}
+          />
+        </Toolbar>
 
         <Input
           value={keywords.searchKeywords}

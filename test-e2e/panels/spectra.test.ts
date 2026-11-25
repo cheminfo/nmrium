@@ -103,7 +103,7 @@ test('Navigate spectra tabs with the keyboard', async ({ page }) => {
 
   // The panel shows the content of the selected tab.
   await expect(
-    nmrium.getPanel('Spectra').getByRole('tabpanel'),
+    nmrium.getPanel('spectraPanel').getByRole('tabpanel'),
   ).toHaveAccessibleName('1H');
 });
 
@@ -167,9 +167,11 @@ test('2d spectrum', async ({ page }) => {
 
     await nmrium.getSpectraTab('1H').click();
   });
+
   await test.step('Check two spectrum tabs', async () => {
     await expect(nmrium.getSpectraTabs()).toHaveText(['1H', '1H,1H']);
   });
+
   await test.step('Change 1H spectrum color', async () => {
     // Check ColorIndicator initial color
     await expect(nmrium.page.getByTestId('color-indicator')).toHaveCSS(
@@ -205,6 +207,7 @@ test('2d spectrum', async ({ page }) => {
     await nmrium.viewer.locator.click({ force: true });
     await expect(getSpectrumSettingsDialog(nmrium)).toBeHidden();
   });
+
   await test.step('Change H1,H1 spectrum', async () => {
     await nmrium.getSpectraTab('1H,1H').click();
     // Check top spectrum
@@ -222,6 +225,7 @@ test('2d spectrum', async ({ page }) => {
     await expect(nmrium.page.getByTestId('contours-negative')).toBeHidden();
     await expect(nmrium.page.getByTestId('spectrum-line')).toHaveCount(2);
   });
+
   await test.step('Change 1H,1H spectrum color', async () => {
     // Check ColorIndicator initial color
     await expectColorIndicator2D(nmrium, 'darkblue', 'blue');
@@ -263,6 +267,7 @@ test('2d spectrum', async ({ page }) => {
     await nmrium.viewer.locator.click({ force: true });
     await expect(getSpectrumSettingsDialog(nmrium)).toBeHidden();
   });
+
   await test.step('Check hide spectra', async () => {
     // Hide positive spectrum
     await nmrium.page
@@ -295,15 +300,19 @@ test('2d spectrum', async ({ page }) => {
     await expect(nmrium.page.getByTestId('contours-negative')).toBeVisible();
     await expect(nmrium.page.getByTestId('spectrum-line')).toHaveCount(2);
   });
+
   await test.step('Delete 1H tab', async () => {
     // Go to 1H tab
     await nmrium.getSpectraTab('1H').click();
 
-    await nmrium.page.click(
-      '_react=AccordionItem[title="Spectra"] >> _react=ToolbarItem[id="delete-button"] >> nth=0',
-    );
-    //confirm delete the selected
-    await nmrium.page.click('div[role="alertdialog"] >> text=Yes');
+    await nmrium
+      .getPanelToolbarButton('spectraPanel', 'Delete selected spectra')
+      .click();
+    // Confirm delete the selected spectra.
+    await nmrium.page
+      .getByRole('alertdialog')
+      .getByRole('button', { name: 'Yes', exact: true })
+      .click();
 
     // Check tabs
     await expect(nmrium.getSpectraTabs()).toHaveText(['1H,1H']);
@@ -320,6 +329,7 @@ test('2d spectrum', async ({ page }) => {
     await expect(nmrium.page.getByTestId('contours-negative')).toBeVisible();
     await expect(nmrium.page.getByTestId('spectrum-line')).toHaveCount(2);
   });
+
   await test.step('Add projection', async () => {
     // Click add missing projection btn
     await nmrium.clickToolByTitle('Add missing projection');
@@ -374,8 +384,10 @@ test('Export sources from 1H spectrum', async ({ page }) => {
     await nmrium.open1D();
   });
   await test.step('Open Save as window ', async () => {
-    await nmrium.clickTool('exportAs');
-    await nmrium.page.click('_react=ToolbarPopoverItem  >> text=Save as');
+    await nmrium.clickNMRViewerTool('exportAs');
+    await nmrium.page
+      .getByRole('menuitem', { name: 'Save as', exact: true })
+      .click();
   });
   await test.step('Check include data options', async () => {
     const fields = getSaveAsDialog(nmrium).getByRole('radio');
@@ -394,8 +406,10 @@ test('Export sources from imported spectrum', async ({ page }) => {
     await nmrium.dropFile('ethylbenzene-1h.jdx');
   });
   await test.step('Open Save as window ', async () => {
-    await nmrium.clickTool('exportAs');
-    await nmrium.page.click('_react=ToolbarPopoverItem  >> text=Save as');
+    await nmrium.clickNMRViewerTool('exportAs');
+    await nmrium.page
+      .getByRole('menuitem', { name: 'Save as', exact: true })
+      .click();
   });
   await test.step('Check include data options', async () => {
     const fields = getSaveAsDialog(nmrium).getByRole('radio');

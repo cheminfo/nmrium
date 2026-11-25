@@ -34,7 +34,7 @@ test('should load and migrate .nmrium data from version 1 to version 2', async (
   await nmrium.getSpectraTab('1H').click();
 
   await test.step('check Peaks', async () => {
-    await nmrium.showPanel('Peaks');
+    await nmrium.showPanel('peaksPanel');
     const peaks = nmrium.page.getByTestId('peak-annotation');
     await expect(peaks).toHaveCount(6);
   });
@@ -54,7 +54,7 @@ test('should load and migrate .nmrium data from version 2 to version 3', async (
   // If the file was loaded successfully, there should be a 13C tab.
   await expect(nmrium.getSpectraTab('13C')).toBeVisible();
 
-  await nmrium.clickPanel('Processing');
+  await nmrium.clickPanel('processingsPanel');
 
   await expect(
     nmrium.getFiltersList().getByText('Apodization / Window functions'),
@@ -69,7 +69,7 @@ test('should load .nmrium data from version 3', async ({ page }) => {
   await expect(nmrium.getSpectraTab('1H')).toBeVisible();
 
   await test.step('check Peaks', async () => {
-    await nmrium.showPanel('Peaks');
+    await nmrium.showPanel('peaksPanel');
     const peaks = nmrium.page.getByTestId('peak-annotation');
     await expect(peaks).toHaveCount(2);
   });

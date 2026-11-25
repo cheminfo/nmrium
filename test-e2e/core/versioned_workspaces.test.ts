@@ -12,8 +12,8 @@ test('workspaces given with an older version are migrated', async ({
   const workspaceButton = nmrium.page.getByRole('button', {
     name: /^Workspace:/,
   });
-  const peaksPanel = nmrium.getPanelButton('Peaks');
-  const rangesPanel = nmrium.getPanelButton('Ranges / Multiplet analysis');
+  const peaksPanel = nmrium.getPanelButton('peaksPanel');
+  const rangesPanel = nmrium.getPanelButton('rangesPanel');
 
   // `legacyPeaks` is the requested workspace, it only displays the peaks panel.
   await expect(workspaceButton).toHaveText('Legacy peaks (v19)');

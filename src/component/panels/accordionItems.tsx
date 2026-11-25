@@ -44,7 +44,7 @@ export interface AccordionItem extends Omit<
   openWithTool?: Tool;
 }
 
-const accordions: Record<
+export const accordions: Record<
   keyof NMRiumPanelPreferences,
   Omit<AccordionItem, 'id'>
 > = {

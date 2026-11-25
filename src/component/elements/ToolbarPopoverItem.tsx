@@ -3,7 +3,7 @@ import { Menu, MenuDivider, MenuItem, Tooltip } from '@blueprintjs/core';
 import type {
   ToolbarItemProps,
   ToolbarPopoverItemProps,
-  TooltipItem,
+  TooltipHelpContentProps,
 } from 'react-science/ui';
 import { Toolbar, TooltipHelpContent } from 'react-science/ui';
 
@@ -11,7 +11,7 @@ export interface ToolbarPopoverMenuItem<T = object>
   extends MenuItemProps, Pick<ToolbarItemProps, 'tooltipProps'> {
   menuItemType?: 'item';
   data?: T;
-  tooltip?: string | TooltipItem;
+  tooltip?: string | TooltipHelpContentProps;
 }
 
 export interface ToolbarPopoverMenuDivider extends MenuDividerProps {

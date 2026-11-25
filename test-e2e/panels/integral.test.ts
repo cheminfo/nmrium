@@ -77,7 +77,7 @@ async function deleteIntegral(nmrium: NmriumPage) {
 test('Should Integrals Add/resize/delete', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
-  await nmrium.clickTool('integral');
+  await nmrium.clickNMRViewerTool('integral');
 
   await test.step('Add integrals ', async () => {
     // Test add two integrals

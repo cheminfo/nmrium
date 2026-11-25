@@ -12,7 +12,7 @@ test('automatic assignment panel', async ({ page }, info) => {
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
   });
   await test.step('activate automatic assignment panel', async () => {
-    await nmrium.getMainRightToolbarButton('General settings').click();
+    await nmrium.openGeneralSettings();
     await nmrium.page
       .getByRole('dialog')
       .getByRole('tab', { name: 'Panels', exact: true })
@@ -24,11 +24,11 @@ test('automatic assignment panel', async ({ page }, info) => {
     await nmrium.saveWorkspaceModal('test');
   });
   await test.step('check automatic assignment panel', async () => {
-    await nmrium.clickPanel('Automatic assignment');
+    await nmrium.clickPanel('automaticAssignmentPanel');
     // Click on the automatic ranges button.
     await nmrium
       .getPanelToolbarButton(
-        'Automatic assignment',
+        'automaticAssignmentPanel',
         'Automatic ranges/zones picking for all spectra',
       )
       .click();
@@ -37,12 +37,12 @@ test('automatic assignment panel', async ({ page }, info) => {
     await expect(nmrium.page.getByTestId('range')).toHaveCount(5);
 
     await nmrium
-      .getPanelToolbarButton('Automatic assignment', 'Automatic assignment')
+      .getPanelToolbarButton('automaticAssignmentPanel', 'Automatic assignment')
       .click();
 
     await expect(
       nmrium
-        .getPanel('Automatic assignment')
+        .getPanel('automaticAssignmentPanel')
         .getByRole('table')
         .getByRole('cell', { name: '0.75', exact: true }),
     ).toHaveCount(2, { timeout: 30 * 1000 });

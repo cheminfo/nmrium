@@ -4,26 +4,23 @@ import type { Mandatory } from '@zakodium/utils';
 
 import { NmriumPageMoleculeEditor } from './NmriumPageMoleculeEditor.js';
 import { NmriumPageViewer } from './NmriumPageViewer.js';
+import type { NmrViewerToolId, PanelId } from './constants.ts';
+import { NMR_VIEWER_TOOLS, PANELS } from './constants.ts';
 
 type ClickOptions = Parameters<Page['click']>[1];
 type GetByRoleOptions = Mandatory<Parameters<Locator['getByRole']>[1]>;
 
-interface ToolLocatorOptions {
-  active?: boolean;
-  caseSensitive?: boolean;
-}
-
 export default class NmriumPage {
-  public static async create(page: Page): Promise<NmriumPage> {
+  static async create(page: Page): Promise<NmriumPage> {
     await page.goto('http://localhost:3000/#/');
     return new NmriumPage(page);
   }
 
-  public readonly page: Page;
-  public readonly viewer: NmriumPageViewer;
-  public readonly moleculeEditor: NmriumPageMoleculeEditor;
+  readonly page: Page;
+  readonly viewer: NmriumPageViewer;
+  readonly moleculeEditor: NmriumPageMoleculeEditor;
 
-  public constructor(page: Page) {
+  constructor(page: Page) {
     this.page = page;
     this.viewer = new NmriumPageViewer(page);
     this.moleculeEditor = new NmriumPageMoleculeEditor(page);
@@ -34,7 +31,7 @@ export default class NmriumPage {
    * @param category - The category of the demo.
    * @param name - The name of the demo.
    */
-  public async openDemo(category: string, name: string) {
+  async openDemo(category: string, name: string) {
     await this.page
       .getByRole('menuitem', { name: category })
       .getByText(category, { exact: true })
@@ -45,36 +42,40 @@ export default class NmriumPage {
   /**
    * Open the "Cytisine - 1H spectrum" demo.
    */
-  public async open1D() {
+  async open1D() {
     await this.openDemo('Cytisine', '1H spectrum');
   }
 
   /**
    * Open the "Simple spectra - COSY ethylbenzene" demo.
    */
-  public async open2D() {
+  async open2D() {
     await this.openDemo('Simple spectra', 'COSY ethylbenzene');
   }
 
   /**
    * Click on a panel header to expand or collapse it.
-   * @param title - The panel title, as shown in its header.
+   * @param panelId - The id of the panel.
    * @param options
    */
-  public async clickPanel(title: string, options: ClickOptions = {}) {
-    await this.getPanelButton(title).click(options);
+  async clickPanel(panelId: PanelId, options: ClickOptions = {}) {
+    await this.getPanelButton(panelId).click(options);
   }
 
   /**
    * Get the header button of an accordion panel, which expands or collapses it.
-   * @param title - The panel title, as shown in its header.
+   * @param panelId - The id of the panel.
    */
-  public getPanelButton(title: string) {
+  getPanelButton(panelId: PanelId) {
     return this.page
-      .getByRole('button', { name: title, exact: true, expanded: true })
+      .getByRole('button', {
+        name: PANELS[panelId],
+        exact: true,
+        expanded: true,
+      })
       .or(
         this.page.getByRole('button', {
-          name: title,
+          name: PANELS[panelId],
           exact: true,
           expanded: false,
         }),
@@ -83,25 +84,28 @@ export default class NmriumPage {
 
   /**
    * Get the content of an accordion panel.
-   * @param title - The panel title, as shown in its header.
+   * @param panelId - The id of the panel.
    */
-  public getPanel(title: string) {
-    return this.page.getByRole('region', { name: title, exact: true });
+  getPanel(panelId: PanelId) {
+    return this.page.getByRole('region', {
+      name: PANELS[panelId],
+      exact: true,
+    });
   }
 
   /**
    * Get all the tabs of the spectra panel.
    */
-  public getSpectraTabs() {
-    return this.getPanel('Spectra').getByRole('tab');
+  getSpectraTabs() {
+    return this.getPanel('spectraPanel').getByRole('tab');
   }
 
   /**
    * Get a tab of the spectra panel.
    * @param nucleus - The nucleus or nuclei of the tab (for example "1H" or "1H,13C").
    */
-  public getSpectraTab(nucleus: string) {
-    return this.getPanel('Spectra').getByRole('tab', {
+  getSpectraTab(nucleus: string) {
+    return this.getPanel('spectraPanel').getByRole('tab', {
       name: nucleus,
       exact: true,
     });
@@ -110,75 +114,99 @@ export default class NmriumPage {
   /**
    * Get the options of the selected tool, displayed in the header.
    */
-  public getToolOptions() {
+  getToolOptions() {
     return this.page.getByRole('group', { name: 'Tool options', exact: true });
   }
 
   /**
    * Get the spectra table of the active tab in the spectra panel.
    */
-  public getSpectraTable() {
-    return this.getPanel('Spectra').getByRole('table');
+  getSpectraTable() {
+    return this.getPanel('spectraPanel').getByRole('table');
   }
 
   /**
    * Get the list of filters applied to the active spectrum, in the processing panel.
    */
-  public getFiltersList() {
-    return this.getPanel('Processing').getByRole('list', { name: 'Filters' });
+  getFiltersList() {
+    return this.getPanel('processingsPanel').getByRole('list', {
+      name: 'Filters',
+    });
   }
 
   /**
    * Show a panel hidden from the accordion by clicking its panels bar icon.
-   * @param name - The panel name, as shown in the icon tooltip.
+   * @param panelId - The id of the panel to show.
    */
-  public async showPanel(name: string) {
+  async showPanel(panelId: PanelId) {
     await this.page
       .getByRole('toolbar', { name: 'Panels bar', exact: true })
-      .getByRole('button', { name, exact: true, pressed: false })
+      .getByRole('button', {
+        name: PANELS[panelId],
+        exact: true,
+        pressed: false,
+      })
       .click();
   }
 
-  public getPanelToolbarButton(
-    panelName: string,
+  getPanelHeader(panelId: PanelId) {
+    return this.getPanel(panelId).getByLabel('Panel header', { exact: true });
+  }
+
+  getPanelToolbarButton(
+    panelId: PanelId,
     buttonName: string,
     options: Omit<GetByRoleOptions, 'name'> = {},
   ) {
     const { exact = true, ...restOptions } = options;
-    return this.getPanel(panelName).getByRole('button', {
-      name: buttonName,
-      exact,
-      ...restOptions,
-    });
+    return this.getPanelHeader(panelId)
+      .getByRole('toolbar', { name: 'Panel left toolbar', exact: true })
+      .getByRole('button', {
+        name: buttonName,
+        exact,
+        ...restOptions,
+      });
   }
 
-  public async clickTool(id: string) {
-    await this.page
-      .locator(`_react=ToolbarItem[id="${id}"] >> nth=0`)
-      .or(this.page.locator(`_react=ToolbarPopoverItem[id="${id}"] >> nth=0`))
+  openPanelSettings(panelId: PanelId) {
+    return this.getPanelHeader(panelId)
+      .getByRole('button', { name: 'Panel settings', exact: true })
       .click();
   }
 
-  public async clickToolByTitle(title: string) {
+  getMainRightToolbarButton(
+    buttonName: string,
+    options: Omit<GetByRoleOptions, 'name'> = {},
+  ) {
+    const { exact = true, ...restOptions } = options;
+    return this.page
+      .getByRole('toolbar', { name: 'Main header right toolbar' })
+      .getByRole('button', {
+        name: buttonName,
+        exact,
+        ...restOptions,
+      });
+  }
+
+  openGeneralSettings() {
+    return this.getMainRightToolbarButton('General settings').click();
+  }
+
+  getNMRViewerTool(toolId: NmrViewerToolId) {
+    return this.page
+      .getByRole('toolbar', { name: 'NMR viewer toolbar' })
+      .getByRole('button', { name: NMR_VIEWER_TOOLS[toolId], exact: true });
+  }
+
+  async clickNMRViewerTool(toolId: NmrViewerToolId) {
+    return this.getNMRViewerTool(toolId).click();
+  }
+
+  async clickToolByTitle(title: string) {
     await this.page.getByRole('button', { name: title, exact: true }).click();
   }
 
-  public getToolbarLocatorByTitle(
-    title: string,
-    options: ToolLocatorOptions = {},
-  ) {
-    const { active, caseSensitive = false } = options;
-    const selectors: string[] = [
-      `_react=ToolbarItem[tooltip="${title}" ${caseSensitive ? '' : 'i'}]`,
-    ];
-
-    if (active !== undefined) {
-      selectors.push(`[active=${active}]`);
-    }
-    return this.page.locator(`${selectors.join('')} >> nth=0`);
-  }
-
-  public async assertOneDimensionXScaleDomain(min: number, max: number) {
+  async assertOneDimensionXScaleDomain(min: number, max: number) {
     const xTickLabels = this.page
       .getByRole('group', { name: 'Horizontal axis', exact: true })
       .getByTestId('axis-primary-tick-label');
@@ -189,7 +217,7 @@ export default class NmriumPage {
     await expect(lastTick).toHaveText(max.toString());
   }
 
-  public async getNumberOfDistinctColors() {
+  async getNumberOfDistinctColors() {
     const linesLocator = this.page.getByTestId('spectrum-line');
     // Get all lines from the locator.
     const lines = await linesLocator.all();
@@ -204,7 +232,7 @@ export default class NmriumPage {
     return distinctColors.length;
   }
 
-  public async applyPhaseCorrection(
+  async applyPhaseCorrection(
     options: {
       keyboard?: boolean;
       mode?: 'automatic' | 'manual' | 'absolute';
@@ -216,7 +244,7 @@ export default class NmriumPage {
       await this.viewer.moveMouse();
       await this.page.keyboard.press('KeyA');
     } else {
-      await this.clickTool('phaseCorrection');
+      await this.clickNMRViewerTool('phaseCorrection');
     }
     if (mode === 'manual') {
       await this.page.fill('input[name="ph1"]', '100');
@@ -260,7 +288,7 @@ export default class NmriumPage {
     ).toBeVisible();
   }
 
-  public async dropFile(file: string | string[]) {
+  async dropFile(file: string | string[]) {
     const filenames: string[] = [];
 
     if (typeof file === 'string') {

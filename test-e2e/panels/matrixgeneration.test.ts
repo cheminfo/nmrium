@@ -11,7 +11,7 @@ test('Matrix generation panel', async ({ page }) => {
   });
 
   await test.step('activate matrix generation panel', async () => {
-    await nmrium.getMainRightToolbarButton('General settings').click();
+    await nmrium.openGeneralSettings();
     await nmrium.page
       .getByRole('dialog')
       .getByRole('tab', { name: 'Panels', exact: true })
@@ -23,9 +23,9 @@ test('Matrix generation panel', async ({ page }) => {
     await nmrium.saveWorkspaceModal('test');
   });
   await test.step('check matrix generation', async () => {
-    await nmrium.clickPanel('Matrix generation');
+    await nmrium.clickPanel('matrixGenerationPanel');
 
-    const panel = nmrium.getPanel('Matrix generation');
+    const panel = nmrium.getPanel('matrixGenerationPanel');
     await panel.getByLabel('From', { exact: true }).fill('0');
     await panel.getByLabel('To', { exact: true }).fill('5');
     await panel.getByLabel('Number of points', { exact: true }).fill('1000');

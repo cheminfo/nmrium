@@ -19,7 +19,7 @@ async function addPeaks(nmrium: NmriumPage) {
   const peaksAnnotationLocator = getPeakAnnotations(nmrium);
 
   // Select peak picking tool.
-  await nmrium.clickTool('peakPicking');
+  await nmrium.clickNMRViewerTool('peakPicking');
 
   // Add peak by selecting range.
   await nmrium.viewer.drawRectangle({
@@ -54,7 +54,7 @@ async function shiftX(nmrium: NmriumPage) {
 
 async function shiftSpectraByDeltaColumn(nmrium: NmriumPage) {
   const ppmColumnLocator = await getTableCell(
-    nmrium.getPanel('Peaks').getByRole('table'),
+    nmrium.getPanel('peaksPanel').getByRole('table'),
     1,
     'δ (ppm)',
   );
@@ -101,31 +101,37 @@ test('Automatic peak picking should work', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
 
-  //select range tool
-  await nmrium.clickTool('peakPicking');
+  // Select peak picking tool.
+  await nmrium.clickNMRViewerTool('peakPicking');
 
-  //apply auto ranges detection
-  await nmrium.page.click('button >> text=Apply');
+  // Apply auto peak detection.
+  await nmrium
+    .getToolOptions()
+    .getByRole('button', { name: 'Apply', exact: true })
+    .click();
 
   await expect(getPeakAnnotations(nmrium)).toHaveCount(154);
 });
+
 test('Processed spectra peaks', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Open Processed 13C FID', async () => {
     await nmrium.openDemo('Cytisine', 'Processed 13C FID');
 
-    // wait spectrum to load
+    // Wait for the spectrum to load
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
   });
   await test.step('Check peaks', async () => {
     //Close spectra panel
-    await nmrium.clickPanel('Spectra');
+    await nmrium.clickPanel('spectraPanel');
     //Close ranges panel
-    await nmrium.clickPanel('Ranges / Multiplet analysis');
+    await nmrium.clickPanel('rangesPanel');
     //Open peaks panel
-    await nmrium.showPanel('Peaks');
+    await nmrium.showPanel('peaksPanel');
 
-    const peaks = getTableRows(nmrium.getPanel('Peaks').getByRole('table'));
+    const peaks = getTableRows(
+      nmrium.getPanel('peaksPanel').getByRole('table'),
+    );
     await expect(peaks).toHaveCount(16);
 
     const peaksData = [
@@ -146,22 +152,23 @@ test('Processed spectra peaks', async ({ page }) => {
     }
   });
 });
+
 test('Check no negative peaks in processed spectra', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Open 13c spectrum', async () => {
     await nmrium.openDemo('Cytisine', 'Processed 13C FID');
 
-    // wait spectrum to load
+    // Wait for the spectrum to load.
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
   });
   await test.step('Check negative peaks', async () => {
-    //Close spectra panel
-    await nmrium.clickPanel('Spectra');
-    //Close ranges panel
-    await nmrium.clickPanel('Ranges / Multiplet analysis');
-    //Open peaks panel
-    await nmrium.showPanel('Peaks');
-    const peaksTable = nmrium.getPanel('Peaks').getByRole('table');
+    // Close spectra panel.
+    await nmrium.clickPanel('spectraPanel');
+    // Close ranges panel.
+    await nmrium.clickPanel('rangesPanel');
+    // Open peaks panel.
+    await nmrium.showPanel('peaksPanel');
+    const peaksTable = nmrium.getPanel('peaksPanel').getByRole('table');
 
     for (let i = 0; i < 16; i++) {
       // eslint-disable-next-line no-await-in-loop

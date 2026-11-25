@@ -8,7 +8,7 @@ async function checkMoleculeStructureIsExists(
   nmrium: NmriumPage,
   index: number,
 ) {
-  const slide = nmrium.getPanel('Chemical structures').getByRole('group', {
+  const slide = nmrium.getPanel('structuresPanel').getByRole('group', {
     name: new RegExp(String.raw`^${index + 1} of \d+$`),
   });
   const locator = slide.getByRole('img');
@@ -26,7 +26,7 @@ function getMoleculesPagerButton(
   name: 'Previous' | 'Next',
 ) {
   return nmrium
-    .getPanel('Chemical structures')
+    .getPanel('structuresPanel')
     .getByRole('button', { name, exact: true });
 }
 
@@ -41,10 +41,10 @@ function getFloatingMolecules(nmrium: NmriumPage) {
 test('should draw structure and display it with MF', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
 
-  const structuresPanel = nmrium.getPanel('Chemical structures');
+  const structuresPanel = nmrium.getPanel('structuresPanel');
 
   // Open the "Structures" panel.
-  await nmrium.clickPanel('Chemical structures');
+  await nmrium.clickPanel('structuresPanel');
 
   await test.step('empty panel', async () => {
     // The SVG container should not be rendered when there are no molecules.
@@ -138,14 +138,14 @@ test('molecules 1H spectrum', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
 
-  const structuresPanel = nmrium.getPanel('Chemical structures');
+  const structuresPanel = nmrium.getPanel('structuresPanel');
   const floatMoleculeButton = nmrium.getPanelToolbarButton(
-    'Chemical structures',
+    'structuresPanel',
     'Float molecule',
   );
 
   await test.step('open Chemical structures panel', async () => {
-    await nmrium.clickPanel('Chemical structures');
+    await nmrium.clickPanel('structuresPanel');
   });
 
   await test.step('check existing molecule', async () => {
@@ -270,9 +270,9 @@ test('molecules 1H spectrum', async ({ page }) => {
 
   await test.step('Check molecules in integrals', async () => {
     const dialog = nmrium.page.getByRole('dialog');
-    await nmrium.showPanel('Integrals');
+    await nmrium.showPanel('integralsPanel');
     await nmrium
-      .getPanel('Integrals')
+      .getPanel('integralsPanel')
       .getByRole('toolbar')
       .getByRole('button', { name: 'Change integration sum' })
       .click();
@@ -293,7 +293,7 @@ test('molecules 1H spectrum', async ({ page }) => {
   await test.step('Check molecules in ranges', async () => {
     const dialog = nmrium.page.getByRole('dialog');
     await nmrium
-      .getPanel('Ranges / Multiplet analysis')
+      .getPanel('rangesPanel')
       .getByRole('button', { name: 'Change ranges sum' })
       .click();
     await expect(dialog.locator('#molSVG0')).toBeVisible();
@@ -427,7 +427,7 @@ async function getCount(locator: Locator): Promise<number> {
 
 test('check callbacks count on changing structures', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
-  const structuresPanel = nmrium.getPanel('Chemical structures');
+  const structuresPanel = nmrium.getPanel('structuresPanel');
   const dataCount = nmrium.page.getByTestId('data-count');
   const viewCount = nmrium.page.getByTestId('view-count');
   await test.step('open test page', async () => {
@@ -444,7 +444,7 @@ test('check callbacks count on changing structures', async ({ page }) => {
 
   await test.step('Check the visibly of molecule', async () => {
     // Open the "Structures" panel.
-    await nmrium.clickPanel('Chemical structures');
+    await nmrium.clickPanel('structuresPanel');
     // The molecule SVG rendering should now be visible in the panel.
     await checkMoleculeStructureIsExists(nmrium, 0);
 
@@ -484,7 +484,7 @@ test('check callbacks count on changing structures', async ({ page }) => {
 
     // The molecular formula should now be visible in the panel.
     await expect(
-      nmrium.getPanel('Chemical structures').getByText('C6H12 - 84.16'),
+      nmrium.getPanel('structuresPanel').getByText('C6H12 - 84.16'),
     ).toBeVisible();
 
     // The number of molecules should now be visible in the panel.
@@ -496,7 +496,7 @@ test('check callbacks count on changing structures', async ({ page }) => {
   await test.step('Check float molecule', async () => {
     // Check float molecule btn is on.
     await expect(
-      nmrium.getPanelToolbarButton('Chemical structures', 'Float molecule'),
+      nmrium.getPanelToolbarButton('structuresPanel', 'Float molecule'),
     ).toContainClass(Classes.ACTIVE);
     // Check floated molecule.
     await expect(getFloatingMolecules(nmrium).first()).toBeVisible();
@@ -524,7 +524,7 @@ test('check callbacks count on changing structures', async ({ page }) => {
 
 async function clickExportMenuOption(nmrium: NmriumPage, option: string) {
   await nmrium
-    .getPanel('Chemical structures')
+    .getPanel('structuresPanel')
     .locator('#molecule-export-as')
     .click();
   await nmrium.page.getByRole('menuitem', { name: option }).click();

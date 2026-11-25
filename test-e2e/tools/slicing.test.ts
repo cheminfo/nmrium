@@ -8,7 +8,7 @@ test('Slicing too should show 1d (horizontal and vertical) traces', async ({
   const nmrium = await NmriumPage.create(page);
   await nmrium.open2D();
 
-  await nmrium.clickTool('slicing');
+  await nmrium.clickNMRViewerTool('slicing');
 
   await nmrium.viewer.moveMouse({ x: 200, y: 200 });
 
